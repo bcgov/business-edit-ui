@@ -1,10 +1,5 @@
-import AddPeopleAndRoles from '@/views/AddPeopleAndRoles.vue'
-import CreateShareStructure from '@/views/CreateShareStructure.vue'
-import IncorporationAgreement from '@/views/IncorporationAgreement.vue'
-import DefineCompany from '@/views/DefineCompany.vue'
-import ReviewConfirm from '@/views/ReviewConfirm.vue'
-import SigninView from '@/views/auth/Signin.vue'
-import SignoutView from '@/views/auth/Signout.vue'
+import { Signin, Signout, AddPeopleAndRoles, CreateShareStructure, DefineCompany, IncorporationAgreement,
+  ReviewConfirm } from '@/views'
 import { RouteNames } from '@/enums'
 
 export const routes = [
@@ -12,7 +7,7 @@ export const routes = [
     // router.beforeEach() routes here:
     path: '/signin',
     name: RouteNames.SIGN_IN,
-    component: SigninView,
+    component: Signin,
     meta: {
       requiresAuth: false
     }
@@ -21,7 +16,7 @@ export const routes = [
     // SbcHeader.logout() redirects here:
     path: '/signout',
     name: RouteNames.SIGN_OUT,
-    component: SignoutView,
+    component: Signout,
     meta: {
       requiresAuth: false
     }

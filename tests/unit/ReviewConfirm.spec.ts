@@ -4,12 +4,10 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import { getVuexStore } from '@/store'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
+import mockRouter from './MockRouter'
 
 // Components
-import ReviewConfirm from '@/views/ReviewConfirm.vue'
-
-// Other
-import mockRouter from './MockRouter'
+import { ReviewConfirm } from '@/views'
 
 Vue.use(Vuetify)
 

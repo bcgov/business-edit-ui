@@ -14,7 +14,7 @@ import SbcSignin from 'sbc-common-components/src/components/SbcSignin.vue'
     SbcSignin
   }
 })
-export default class SigninView extends Vue {
+export default class Signin extends Vue {
   /** Called when Keycloak session is ready (ie, the user is authenticated). */
   private async onSessionReady () {
     if (this.$route.query.redirect) {

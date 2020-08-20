@@ -1,19 +1,8 @@
-import CommonMixin from './common-mixin'
-import DateMixin from './date-mixin'
-import FilingTemplateMixin from '@/mixins/filing-template-mixin'
-import LegalApiMixin from './legal-api-mixin'
-import EntityFilterMixin from '@/mixins/entityFilter-mixin'
-import NameRequestMixin from '@/mixins/name-request-mixin'
-import CurrencyLookupMixin from '@/mixins/currency-lookup-mixin'
-import BcolMixin from '@/mixins/bcol-mixin'
-
-export {
-  CommonMixin,
-  DateMixin,
-  EntityFilterMixin,
-  FilingTemplateMixin,
-  LegalApiMixin,
-  NameRequestMixin,
-  CurrencyLookupMixin,
-  BcolMixin
-}
+export { default as BcolMixin } from './bcol-mixin'
+export { default as CommonMixin } from './common-mixin'
+export { default as CurrencyLookupMixin } from './currency-lookup-mixin'
+export { default as DateMixin } from './date-mixin'
+export { default as EntityFilterMixin } from './entity-filter-mixin'
+export { default as FilingTemplateMixin } from './filing-template-mixin'
+export { default as LegalApiMixin } from './legal-api-mixin'
+export { default as NameRequestMixin } from './name-request-mixin'

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-import axios from '@/utils/axios-auth'
+import { axios } from '@/utils'
 
 /**
  * Fetches config from environment and API.

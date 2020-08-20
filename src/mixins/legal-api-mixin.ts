@@ -1,8 +1,8 @@
 // Libraries
-import axios from '@/utils/axios-auth'
 import { Component, Vue } from 'vue-property-decorator'
 import { State, Action, Getter } from 'vuex-class'
 import { NOT_FOUND } from 'http-status-codes'
+import { axios } from '@/utils'
 
 // Interfaces
 import { StateModelIF, ActionBindingIF, GetterIF, IncorporationFilingIF } from '@/interfaces'

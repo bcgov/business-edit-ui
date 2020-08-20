@@ -1,7 +1,2 @@
-import ListShareClass from './ListShareClass.vue'
-import ShareStructure from './ShareStructure.vue'
-
-export {
-  ShareStructure,
-  ListShareClass
-}
+export { default as ListShareClass } from './ListShareClass.vue'
+export { default as ShareStructure } from './ShareStructure.vue'

@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
 import { shallowMount, mount } from '@vue/test-utils'
 import { SaveErrorDialog } from '@/components/dialogs'
-import ErrorContact from '@/components/common/ErrorContact.vue'
+import { ErrorContact } from '@/components/common'
 
 Vue.use(Vuetify)
 

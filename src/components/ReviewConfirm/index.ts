@@ -1,9 +1,3 @@
-import Certify from './Certify.vue'
-import IncorporationDateTime from './IncorporationDateTime.vue'
-import Summary from './Summary.vue'
-
-export {
-  Certify,
-  IncorporationDateTime,
-  Summary
-}
+export { default as Certify } from './Certify.vue'
+export { default as IncorporationDateTime } from './IncorporationDateTime.vue'
+export { default as Summary } from './Summary.vue'

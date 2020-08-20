@@ -7,7 +7,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils'
 import mockRouter from './MockRouter'
 
 // Components
-import DefineCompany from '@/views/DefineCompany.vue'
+import { DefineCompany } from '@/views'
 
 Vue.use(Vuetify)
 

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import ErrorContact from '@/components/common/ErrorContact.vue'
+import { ErrorContact } from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})

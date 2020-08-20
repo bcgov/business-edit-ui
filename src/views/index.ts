@@ -1,17 +1,6 @@
-import AddPeopleAndRoles from './AddPeopleAndRoles.vue'
-import CreateShareStructure from './CreateShareStructure.vue'
-import DefineCompany from './DefineCompany.vue'
-import IncorporationAgreement from './IncorporationAgreement.vue'
-import ReviewConfirm from './ReviewConfirm.vue'
-import SignIn from './auth/Signin.vue'
-import SignOut from './auth/Signout.vue'
-
-export default {
-  CreateShareStructure,
-  AddPeopleAndRoles,
-  DefineCompany,
-  IncorporationAgreement,
-  ReviewConfirm,
-  SignIn,
-  SignOut
-}
+export * from './auth'
+export { default as AddPeopleAndRoles } from './AddPeopleAndRoles.vue'
+export { default as CreateShareStructure } from './CreateShareStructure.vue'
+export { default as DefineCompany } from './DefineCompany.vue'
+export { default as IncorporationAgreement } from './IncorporationAgreement.vue'
+export { default as ReviewConfirm } from './ReviewConfirm.vue'
