@@ -1,7 +1,7 @@
-# Registry application that is used to create a business.
+# Registry application that is used to correct a business (Incorporation Application).
 
-![PR CI](https://github.com/bcgov/bcrs-business-create-ui/workflows/PR%20CI/badge.svg)
-![Build CI](https://github.com/bcgov/bcrs-business-create-ui/workflows/Build%20CI/badge.svg)
+![PR CI](https://github.com/bcgov/bcrs-business-correct-ui/workflows/PR%20CI/badge.svg)
+![Build CI](https://github.com/bcgov/bcrs-business-correct-ui/workflows/Build%20CI/badge.svg)
 
 ## Project setup
 ```
