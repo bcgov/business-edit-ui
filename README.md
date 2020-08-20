@@ -36,14 +36,8 @@ npm run test:unit
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
----
-description: bcrs-entities-create-ui readme
-ignore: true
----
-
 ## About
-
-TBD.
+TBD
 
 ## Usage
 
