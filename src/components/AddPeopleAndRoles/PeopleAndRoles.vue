@@ -113,8 +113,7 @@ import { EntityFilterMixin } from '@/mixins'
 import { EntityTypes, IncorporatorTypes, Modes, Roles } from '@/enums'
 
 // Components
-import OrgPerson from './OrgPerson.vue'
-import ListPeopleAndRoles from './ListPeopleAndRoles.vue'
+import { OrgPerson, ListPeopleAndRoles } from '.'
 
 @Component({
   components: {

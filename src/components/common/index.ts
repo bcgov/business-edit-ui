@@ -1,11 +1,5 @@
-import Actions from './Actions.vue'
-import EntityInfo from './EntityInfo.vue'
-import NameRequestInfo from './NameRequestInfo.vue'
-import Stepper from './Stepper.vue'
-
-export {
-  Actions,
-  EntityInfo,
-  NameRequestInfo,
-  Stepper
-}
+export { default as Actions } from './Actions.vue'
+export { default as EntityInfo } from './EntityInfo.vue'
+export { default as ErrorContact } from './ErrorContact.vue'
+export { default as NameRequestInfo } from './NameRequestInfo.vue'
+export { default as Stepper } from './Stepper.vue'

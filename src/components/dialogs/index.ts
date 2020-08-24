@@ -1,23 +1,10 @@
-import AccountAuthorizationDialog from './AccountAuthorizationDialog.vue'
-import BcolErrorDialog from './BcolErrorDialog.vue'
-import ConfirmDialog from './ConfirmDialog.vue'
-import ConfirmRemoveDialog from './ConfimRemoveDialog.vue'
-import FetchErrorDialog from './FetchErrorDialog.vue'
-import InvalidIncorporationApplicationDialog from './InvalidIncorporationApplicationDialog.vue'
-import NameRequestInvalidErrorDialog from './NameRequestInvalidErrorDialog.vue'
-import PaymentErrorDialog from './PaymentErrorDialog.vue'
-import SaveErrorDialog from './SaveErrorDialog.vue'
-import FileAndPayInvalidNameRequestDialog from './FileAndPayInvalidNameRequestDialog.vue'
-
-export {
-  AccountAuthorizationDialog,
-  BcolErrorDialog,
-  ConfirmDialog,
-  ConfirmRemoveDialog,
-  FetchErrorDialog,
-  InvalidIncorporationApplicationDialog,
-  NameRequestInvalidErrorDialog,
-  PaymentErrorDialog,
-  SaveErrorDialog,
-  FileAndPayInvalidNameRequestDialog
-}
+export { default as AccountAuthorizationDialog } from './AccountAuthorizationDialog.vue'
+export { default as BcolErrorDialog } from './BcolErrorDialog.vue'
+export { default as ConfirmDialog } from './ConfirmDialog.vue'
+export { default as ConfirmRemoveDialog } from './ConfirmRemoveDialog.vue'
+export { default as FetchErrorDialog } from './FetchErrorDialog.vue'
+export { default as FileAndPayInvalidNameRequestDialog } from './FileAndPayInvalidNameRequestDialog.vue'
+export { default as InvalidIncorporationApplicationDialog } from './InvalidIncorporationApplicationDialog.vue'
+export { default as NameRequestInvalidErrorDialog } from './NameRequestInvalidErrorDialog.vue'
+export { default as PaymentErrorDialog } from './PaymentErrorDialog.vue'
+export { default as SaveErrorDialog } from './SaveErrorDialog.vue'

@@ -10,7 +10,6 @@ import { getVueRouter } from '@/router'
 import { getVuexStore } from '@/store'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
-import { featureFlags, initLDClient } from '@/common/FeatureFlags'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
 
@@ -25,7 +24,7 @@ import '@/assets/styles/overrides.scss'
 import App from './App.vue'
 
 // Helpers
-import { fetchConfig } from '@/utils'
+import { featureFlags, initLDClient, fetchConfig } from '@/utils'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 
 // get rid of "You are running Vue in development mode" console message

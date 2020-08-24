@@ -23,7 +23,7 @@
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 
 @Component({})
-export default class InvalidIncorporationDialogDialog extends Vue {
+export default class InvalidIncorporationApplicationDialog extends Vue {
   // Prop to display the dialog.
   @Prop() private dialog: boolean
 

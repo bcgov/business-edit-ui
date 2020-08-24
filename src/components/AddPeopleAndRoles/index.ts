@@ -1,9 +1,3 @@
-import PeopleAndRoles from './PeopleAndRoles.vue'
-import ListPeopleAndRoles from './ListPeopleAndRoles.vue'
-import OrgPerson from './OrgPerson.vue'
-
-export {
-  PeopleAndRoles,
-  OrgPerson,
-  ListPeopleAndRoles
-}
+export { default as ListPeopleAndRoles } from './ListPeopleAndRoles.vue'
+export { default as OrgPerson } from './OrgPerson.vue'
+export { default as PeopleAndRoles } from './PeopleAndRoles.vue'

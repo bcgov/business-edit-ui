@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator'
-import axios from '@/utils/axios-auth'
+import { axios } from '@/utils'
 
 @Component({})
 export default class BcolMixin extends Vue {

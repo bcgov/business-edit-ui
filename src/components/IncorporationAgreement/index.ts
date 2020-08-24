@@ -1,5 +1,1 @@
-import AgreementType from './AgreementType.vue'
-
-export {
-  AgreementType
-}
+export { default as AgreementType } from './AgreementType.vue'

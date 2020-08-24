@@ -13,7 +13,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { State } from 'vuex-class'
 
 // Components
-import { SummaryDefineCompany } from '@/components/Summary'
+import { SummaryDefineCompany } from '@/components/DefineCompany'
 import { ListPeopleAndRoles } from '@/components/AddPeopleAndRoles'
 import { ListShareClass } from '@/components/CreateShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'

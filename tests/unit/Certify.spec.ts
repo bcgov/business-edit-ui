@@ -16,7 +16,7 @@ import Vuetify from 'vuetify'
 import { mount, Wrapper } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 
-import Certify from '@/components/ReviewConfirm/Certify.vue'
+import { Certify } from '@/components/ReviewConfirm'
 import { CertifyStatementIF } from '@/interfaces'
 
 Vue.use(Vuetify)

@@ -1,13 +1,6 @@
-import BusinessContactInfo from './BusinessContactInfo.vue'
-import FolioNumber from './FolioNumber.vue'
-import ListNameTranslations from '@/components/DefineCompany/ListNameTranslations.vue'
-import AddNameTranslation from '@/components/DefineCompany/AddNameTranslation.vue'
-import OfficeAddresses from './OfficeAddresses.vue'
-
-export {
-  BusinessContactInfo,
-  FolioNumber,
-  ListNameTranslations,
-  AddNameTranslation,
-  OfficeAddresses
-}
+export { default as AddNameTranslation } from './AddNameTranslation.vue'
+export { default as BusinessContactInfo } from './BusinessContactInfo.vue'
+export { default as FolioNumber } from './FolioNumber.vue'
+export { default as ListNameTranslations } from './ListNameTranslations.vue'
+export { default as OfficeAddresses } from './OfficeAddresses.vue'
+export { default as SummaryDefineCompany } from './SummaryDefineCompany.vue'

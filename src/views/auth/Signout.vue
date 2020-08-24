@@ -14,7 +14,7 @@ import SbcSignout from 'sbc-common-components/src/components/SbcSignout.vue'
     SbcSignout
   }
 })
-export default class SignoutView extends Vue {
+export default class Signout extends Vue {
   /** The URL of the Business Registry home page. */
   private get businessesUrl (): string {
     return sessionStorage.getItem('BUSINESSES_URL')
