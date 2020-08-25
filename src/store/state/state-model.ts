@@ -12,6 +12,10 @@ export const stateModel: StateModelIF = {
     label: '',
     type: ''
   },
+  businessInformation: {
+    legalType: '',
+    identifier: ''
+  },
   nameRequest: {
     nrNumber: '',
     entityType: '',

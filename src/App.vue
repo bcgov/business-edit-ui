@@ -18,7 +18,7 @@
       attach="#app"
       :dialog="accountAuthorizationDialog"
       @exit="goToDashboard(true)"
-      @retry="fetchData()"
+      @retry="initApp()"
     />
 
     <invalid-incorporation-application-dialog
@@ -31,7 +31,7 @@
       attach="#app"
       :dialog="fetchErrorDialog"
       @exit="goToDashboard(true)"
-      @retry="fetchData()"
+      @retry="initApp()"
     />
 
     <payment-error-dialog
@@ -75,31 +75,13 @@
     <div class="app-body">
       <main v-if="!isErrorDialog">
         <entity-info />
-
         <v-container class="view-container pt-4">
           <v-row>
             <v-col cols="12" lg="9">
-              <header>
-                <h1>Incorporation Application</h1>
-              </header>
-
-              <stepper class="mt-10" />
-              <!-- Sign in and sign out components -->
-              <sign-in v-if="isRouteName(RouteNames.SIGN_IN)" />
-              <sign-out v-if="isRouteName(RouteNames.SIGN_OUT)" />
-
-              <!-- Only render when data is ready, or validation can't be properly evaluated. -->
-              <template v-if="haveData">
-                <!-- Using v-show to pre-create/mount components so validation on stepper is shown -->
-                <component
-                  v-for="step in getSteps"
-                  v-show="isRouteName(step.to)"
-                  :is="step.component"
-                  :key="step.step"
-                />
-              </template>
+              <router-view
+                @have-data="haveData = $event"
+              />
             </v-col>
-
             <v-col cols="12" lg="3" style="position: relative">
               <aside>
                 <affix relative-element-selector=".col-lg-9" :offset="{ top: 86, bottom: 12 }">
@@ -143,11 +125,11 @@ import { AccountAuthorizationDialog, BcolErrorDialog, NameRequestInvalidErrorDia
   InvalidIncorporationApplicationDialog, PaymentErrorDialog, SaveErrorDialog, FileAndPayInvalidNameRequestDialog
 } from '@/components/dialogs'
 import { BcolMixin, DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
+
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces'
-import { CertifyStatementResource } from '@/resources'
 
 // Enums and Constants
-import { EntityTypes, FilingCodes, FilingStatus, RouteNames, NameRequestStates } from '@/enums'
+import { EntityTypes, FilingCodes, RouteNames } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 @Component({
@@ -170,7 +152,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     ...Views
   }
 })
-export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin) {
+export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -187,6 +169,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   @Getter haveChanges!: boolean
   @Getter getSteps!: Array<any>
   @Getter getTempId!: string
+  @Getter isRoleStaff!: boolean
 
   // Global actions
   @Action setCurrentStep!: ActionBindingIF
@@ -201,6 +184,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   @Action setHaveChanges!: ActionBindingIF
   @Action setAccountInformation!: ActionBindingIF
   @Action setTempId!: ActionBindingIF
+  @Action setKeycloakRoles!: ActionBindingIF
 
   // Local Properties
   private filingData: Array<FilingDataIF> = []
@@ -252,11 +236,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     return process.env.ABOUT_TEXT
   }
 
-  /** Helper to check is the current route matches */
-  private isRouteName (routeName: string): boolean {
-    return this.$route.name === routeName
-  }
-
   /** Called when component is created. */
   private created (): void {
     // before unloading this page, if there are changes then prompt user
@@ -306,12 +285,36 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     })
   }
 
-  /** Called when component is destroyed. */
-  private destroyed (): void {
-    // stop listening for save error event
-    this.$root.$off('save-error-event')
-    this.$root.$off('name-request-invalid-errort')
-    this.$root.$off('name-request-retrieve-error')
+  /** Initialize App */
+  private async initApp (routeChanged: boolean = false): Promise<void> {
+    if (routeChanged && this.haveData) return
+    try {
+      // reset errors in case this method is invoked more than once (ie, retry)
+      this.resetFlags()
+
+      // get identifier from the query param
+      const businessIdentifier = this.$route?.query?.id as string
+
+      // ensure we have a business identifier
+      if (!businessIdentifier) {
+        this.fetchErrorDialog = true
+        throw new Error('Invalid business identifier')
+      }
+
+      // ensure user is authorized or is staff to access this business
+      await this.checkAuth(businessIdentifier).catch(error => {
+        console.log('Auth error =', error)
+        this.accountAuthorizationDialog = true
+        throw error // go to catch()
+      })
+      this.initEntityFees()
+      this.setCurrentDate(this.dateToUsableString(new Date()))
+    } catch (error) {
+      // fall through to finally
+    } finally {
+      // wait for things to stabilize, then reset flag
+      Vue.nextTick(() => this.setHaveChanges(false))
+    }
   }
 
   private goToManageBusinessDashboard () : void {
@@ -383,141 +386,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     sessionStorage.removeItem(SessionStorageKeys.CurrentAccount)
   }
 
-  /** Fetches NR data and fetches draft filing. */
-  private async fetchData (routeChanged: boolean = false): Promise<void> {
-    // only fetch data on first route change
-    if (routeChanged && this.haveData) return
-
-    // reset errors in case this method is invoked more than once (ie, retry)
-    this.resetFlags()
-
-    try {
-      this.setCurrentDate(this.dateToUsableString(new Date()))
-
-      const tempId = this.$route.query?.id
-      // ensure we have a Temporary Registration number
-      if (!tempId) {
-        this.nameRequestInvalidType = NameRequestStates.NOT_FOUND
-        this.nameRequestInvalidErrorDialog = true
-        return // go to finally()
-      }
-      this.setTempId(tempId)
-
-      // get user info
-      await this.getUserInfo().catch(error => {
-        console.log('User error =', error) // eslint-disable-line no-console
-        this.accountAuthorizationDialog = true
-        throw error // go to catch()
-      })
-
-      // ensure user is authorized to use this IA
-      await this.checkAuth().catch(error => {
-        console.log('Auth error =', error) // eslint-disable-line no-console
-        this.accountAuthorizationDialog = true
-        throw error // go to catch()
-      })
-
-      try {
-        // fetch draft filing
-        let draftFiling = await this.fetchDraft()
-
-        // If there is an existing filing, check if it is in a valid state to be edited
-        if (draftFiling) {
-          this.invalidIncorporationApplicationDialog = this.hasInvalidFilingState(draftFiling)
-          if (this.invalidIncorporationApplicationDialog) return
-        }
-        // merge draft properties into empty filing so all properties are initialized
-        const emptyFiling = this.buildFiling()
-        draftFiling = { ...emptyFiling.filing, ...draftFiling }
-
-        // parse draft filing into the store
-        if (draftFiling) {
-          this.parseDraft(draftFiling)
-        }
-
-        // verify nameRequest object
-        const nameRequest = draftFiling?.incorporationApplication?.nameRequest
-        if (!nameRequest) {
-          // there should be a nameRequest object but continue even if it doesn't exist
-          // TODO: after MVP, add a real check here
-          console.log('Filing should have nameRequest object') // eslint-disable-line no-console
-        }
-        /** Fetches and validates the NR and sets the data to the store. This method is different
-         * from the validateNameRequest method in Actions.vue. This method sets the data to
-         * the store shows a specific message for different invalid states and redirection is to the
-         * Filings Dashboard */
-        if (nameRequest?.nrNumber) {
-          await this.processNameRequest(draftFiling)
-        }
-
-        // Initialize Fee Summary
-        this.initEntityFees()
-
-        // Set the resources
-        this.setCertifyStatementResource(CertifyStatementResource.find(x => x.entityType === this.entityType))
-      } catch (error) {
-        console.log('Fetch error =', error) // eslint-disable-line no-console
-        this.fetchErrorDialog = true
-        throw error // go to catch()
-      }
-    } catch (e) {
-      // errors should be handled above
-      // just fall through to finally()
-    } finally {
-      this.haveData = true
-      // wait for things to stabilize, then reset flag
-      Vue.nextTick(() => this.setHaveChanges(false))
-    }
-  }
-
-  /** Used to check if the filing is in a valid state for changes. */
-  private hasInvalidFilingState (filing: any): boolean {
-    const filingStatus = filing.header.status
-    return filingStatus !== FilingStatus.DRAFT
-  }
-
-  /** Fetches NR and validates it. */
-  private async processNameRequest (filing: any): Promise<void> {
-    try {
-      const nrNumber = filing.incorporationApplication.nameRequest.nrNumber
-
-      // fetch NR data
-      const nrResponse = await this.fetchNameRequest(nrNumber).catch(error => {
-        console.log('NR error =', error) // eslint-disable-line no-console
-        this.nameRequestInvalidErrorDialog = true
-      })
-
-      // ensure NR was found
-      if (!nrResponse) {
-        this.nameRequestInvalidType = NameRequestStates.NOT_FOUND
-        this.nameRequestInvalidErrorDialog = true
-        return
-      }
-
-      // ensure NR is valid
-      if (!this.isNrValid(nrResponse)) {
-        this.nameRequestInvalidType = NameRequestStates.INVALID
-        this.nameRequestInvalidErrorDialog = true
-        return
-      }
-
-      // TODO: verify that nrResponse.entityTypeCd === business.legalType
-
-      // ensure NR is consumable
-      const state = this.getNrState(nrResponse)
-      if (state !== NameRequestStates.APPROVED && state !== NameRequestStates.CONDITIONAL) {
-        this.nameRequestInvalidType = state || NameRequestStates.INVALID
-        this.nameRequestInvalidErrorDialog = true
-        return
-      }
-      // if we get this far, the NR is good to go!
-      const nameRequestState = this.generateNameRequestState(nrResponse, filing.Id)
-      this.setNameRequestState(nameRequestState)
-    } catch (e) {
-      // errors should be handled above
-    }
-  }
-
   /** Resets all error flags/states. */
   private resetFlags (): void {
     this.haveData = false
@@ -533,23 +401,10 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     this.saveWarnings = []
   }
 
-  /** Gets current user info and stores it. */
-  private async getUserInfo (): Promise<any> {
-    // NB: will throw if API error
-    const response = await this.getCurrentUser()
-    // NB: just save email for now
-    const email = response?.data?.contacts[0].email
-    if (email) {
-      this.setUserEmail(email)
-    } else {
-      throw new Error('Invalid user info')
-    }
-  }
-
   /** Gets authorizations from Auth API, verifies roles, and stores them. */
-  private async checkAuth (): Promise<any> {
+  private async checkAuth (businessIdentifier: string): Promise<any> {
     // NB: will throw if API error
-    const response = await this.getNrAuthorizations(this.getTempId)
+    const response = await this.getAuthorizations(businessIdentifier)
     // NB: roles array may contain 'view', 'edit', 'staff' or nothing
     const authRoles = response?.data?.roles
     if (authRoles && authRoles.length > 0) {
@@ -567,22 +422,19 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     }
   }
 
-  /** Initializes the Fee Summary based on the entity type. */
-  @Watch('isFutureEffective')
+  /** Initializes the Fee Summary based on the filing type. */
   private initEntityFees (): void {
-    switch (this.entityType) {
-      case EntityTypes.BCOMP:
+    switch (this.$route.name) {
+      case RouteNames.CORRECTION:
         this.filingData = [{
-          filingTypeCode: FilingCodes.INCORPORATION_BC,
-          entityType: EntityTypes.BCOMP,
-          futureEffective: this.isFutureEffective
+          filingTypeCode: FilingCodes.CORRECTION,
+          entityType: EntityTypes.BCOMP
         }]
         break
-      case EntityTypes.COOP:
+      case RouteNames.ALTERATION:
         this.filingData = [{
-          filingTypeCode: FilingCodes.INCORPORATION_CP,
-          entityType: EntityTypes.COOP,
-          futureEffective: this.isFutureEffective
+          filingTypeCode: FilingCodes.ALTERATION,
+          entityType: EntityTypes.BCOMP
         }]
         break
       default:
@@ -598,9 +450,8 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
 
     // don't init if we are still on signin or signout route
     if (!isSigninRoute && !isSignoutRoute) {
-      this.setCurrentStep(this.$route.meta?.step)
       await this.startTokenService()
-      await this.fetchData(true)
+      await this.initApp(true)
 
       // Allow user settings account information to load into session storage before checking
       // There can be a timing issue when a session is first established where account information

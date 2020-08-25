@@ -104,7 +104,7 @@ export const getNameRequestNumber = (state: any): string => {
  * Returns the approved name of a name request.
  */
 export const getApprovedName = (state: any): string => {
-  return state.stateModel.nameRequest.details.approvedName
+  return state.stateModel.nameRequest.legalName
 }
 
 /**

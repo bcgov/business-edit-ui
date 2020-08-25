@@ -22,14 +22,28 @@
           <!-- Company Number -->
           <v-list-item-subtitle class="business-info">
             <dl>
-              <dt>{{ entityTitle() }}</dt>
-              <dd v-if="getNameRequestNumber">Name Request No:
-                <span id="entity-nr-number">{{ getNameRequestNumber }}</span>
+              <dt>Business No:</dt>
+              <dt class="ml-2" id="entity-business-number">
+                <span>{{ 'Not Available' }}</span>
+              </dt>
+              <dd></dd>
+              <dt>Incorporation No:</dt>
+              <dt class="ml-2">
+                <span id="entity-nr-number">{{ businessInformation.identifier }}</span>
+              </dt>
+            </dl>
+            <dl>
+              <dd id="entity-business-email" aria-label="Business Email">
+                <span>{{businessContact.email || 'Unknown Email'}}</span>
               </dd>
-              <dd v-else id="entity-numbered-label">Numbered Benefit Company</dd>
+              <template v-if="businessContact.phone">
+                <dt></dt>
+                <dd id="entity-business-phone" aria-label="Business Phone">
+                  <span>{{businessContact.phone}}</span>
+                </dd>
+              </template>
             </dl>
           </v-list-item-subtitle>
-
         </v-list-item-content>
 
       </v-list-item>
@@ -40,29 +54,32 @@
 <script lang="ts">
 // Libraries
 import { Component, Vue } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter, State } from 'vuex-class'
 
 // Interfaces
-import { GetterIF } from '@/interfaces'
+import { BusinessContactIF, BusinessInformationIF, GetterIF } from '@/interfaces'
 
 @Component({})
 export default class EntityInfo extends Vue {
+  // Global Store
+  @State(state => state.stateModel.businessInformation)
+  readonly businessInformation!: BusinessInformationIF
+
+  @State(state => state.stateModel.defineCompanyStep.businessContact)
+  readonly businessContact!: BusinessContactIF
+
   // Global getters
   @Getter isEntityType!: GetterIF
   @Getter isTypeBcomp!: GetterIF
   @Getter isTypeCoop!: GetterIF
-  @Getter getNameRequestNumber!: GetterIF
   @Getter getTempId!: GetterIF
   @Getter getApprovedName!: GetterIF
 
   /** The entity title  */
   private entityTitle (): string {
     if (this.isTypeBcomp) {
-      return 'BC Benefit Company Incorporation Application'
-    } else if (this.isTypeCoop) {
-      return 'Incorporate a BC Cooperative Association'
+      return 'Correction - Incorporation Application'
     }
-
     return ''
   }
 

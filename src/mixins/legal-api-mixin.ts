@@ -76,6 +76,29 @@ export default class LegalApiMixin extends Vue {
   }
 
   /**
+   * Fetches a filing.
+   * @returns a promise to return the filing of the specified type, or null if not found
+   */
+  async fetchFiling (businessId: string, filingType: string): Promise<IncorporationFilingIF> {
+    const url = `businesses/${businessId}/filings`
+    return axios.get(url)
+      .then(response => {
+        const filings = response?.data?.filings
+        const returnfiling = filings.find(filings => filings.filing.header.name === filingType)
+
+        if (!filings || !returnfiling) {
+          throw new Error('Invalid API response')
+        }
+        return returnfiling
+      })
+      .catch((error) => {
+        if (error?.response?.status === NOT_FOUND) {
+          throw error // IA not found
+        }
+      })
+  }
+
+  /**
    * Updates an existing filing.
    * @param data the object body of the request
    * @param isDraft boolean indicating whether to save draft or complete filing
@@ -100,13 +123,13 @@ export default class LegalApiMixin extends Vue {
 
   /**
    * Fetches authorizations.
-   * @param iaNumber the temporary registration id for this IA (eg, T1234567)
+   * @param businessIdentifier the business identifier (eg, BC1219948)
    * @returns a promise to return the authorizations object
    */
-  getNrAuthorizations (iaNumber: string): Promise<any> {
-    if (!iaNumber) throw new Error('Invalid parameter \'nrNumber\'')
+  getAuthorizations (businessIdentifier: string): Promise<any> {
+    if (!businessIdentifier) throw new Error('Invalid parameter \'businessIdentifier\'')
 
-    const url = `entities/${iaNumber}/authorizations`
+    const url = `entities/${businessIdentifier}/authorizations`
     const authUrl = sessionStorage.getItem('AUTH_API_URL')
     const config = { baseURL: authUrl }
     return axios.get(url, config)

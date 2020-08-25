@@ -11,5 +11,7 @@ export enum RouteNames {
     CREATE_SHARE_STRUCTURE = 'create-share-structure',
     DEFINE_COMPANY = 'define-company',
     INCORPORATION_AGREEMENT = 'incorporation-agreement',
-    REVIEW_CONFIRM = 'review-confirm'
+    REVIEW_CONFIRM = 'review-confirm',
+    CORRECTION = 'correction',
+    ALTERATION = 'alteration'
 }
