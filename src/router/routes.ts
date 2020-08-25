@@ -44,6 +44,6 @@ export const routes = [
     // default/fallback route
     // must be last
     path: '*',
-    redirect: '/alteration'
+    redirect: '/correction'
   }
 ]

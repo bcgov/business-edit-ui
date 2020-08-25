@@ -4,7 +4,7 @@
       <v-card-title id="dialog-title">Unable to Retrieve Filing</v-card-title>
 
       <v-card-text>
-        <p class="genErr">We were unable to retrieve your application filing. You can retry to retrieve your
+        <p class="genErr">We were unable to retrieve your application filing. You can try to retrieve your
           filing now, or you can exit and return to the dashboard.</p>
 
         <template v-if="!isRoleStaff">

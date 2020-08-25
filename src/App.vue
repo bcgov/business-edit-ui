@@ -124,8 +124,7 @@ import * as Views from '@/views'
 import { AccountAuthorizationDialog, BcolErrorDialog, NameRequestInvalidErrorDialog, ConfirmDialog, FetchErrorDialog,
   InvalidIncorporationApplicationDialog, PaymentErrorDialog, SaveErrorDialog, FileAndPayInvalidNameRequestDialog
 } from '@/components/dialogs'
-import { BcolMixin, DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
-
+import { BcolMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces'
 
 // Enums and Constants
@@ -169,7 +168,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   @Getter haveChanges!: boolean
   @Getter getSteps!: Array<any>
   @Getter getTempId!: string
-  @Getter isRoleStaff!: boolean
 
   // Global actions
   @Action setCurrentStep!: ActionBindingIF
@@ -184,7 +182,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   @Action setHaveChanges!: ActionBindingIF
   @Action setAccountInformation!: ActionBindingIF
   @Action setTempId!: ActionBindingIF
-  @Action setKeycloakRoles!: ActionBindingIF
 
   // Local Properties
   private filingData: Array<FilingDataIF> = []
@@ -317,11 +314,20 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     }
   }
 
+  /** Redirect to Manage Business Dash */
   private goToManageBusinessDashboard () : void {
     this.fileAndPayInvalidNameRequestDialog = false
     const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
     this.setHaveChanges(false)
     window.location.assign(manageBusinessUrl)
+  }
+
+  /** Called when component is destroyed. */
+  private destroyed (): void {
+    // stop listening for save error event
+    this.$root.$off('save-error-event')
+    this.$root.$off('name-request-invalid-errort')
+    this.$root.$off('name-request-retrieve-error')
   }
 
   /** Called to redirect to dashboard. */
