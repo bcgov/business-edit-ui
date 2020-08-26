@@ -300,14 +300,16 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
 
       // ensure user is authorized or is staff to access this business
       await this.checkAuth(businessIdentifier).catch(error => {
-        console.log('Auth error =', error)
         this.accountAuthorizationDialog = true
-        throw error // go to catch()
+        throw new Error(`Auth error: ${error}`)
       })
+
       this.initEntityFees()
       this.setCurrentDate(this.dateToUsableString(new Date()))
     } catch (error) {
-      // fall through to finally
+      console.log(error)
+      // Stop loader and fall through to finally
+      this.haveData = true
     } finally {
       // wait for things to stabilize, then reset flag
       Vue.nextTick(() => this.setHaveChanges(false))

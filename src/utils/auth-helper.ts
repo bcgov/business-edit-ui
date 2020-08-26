@@ -1,11 +1,7 @@
-/**
- * Fetches config from environment and API.
- * @returns A promise to get & set session storage keys with appropriate values.
- */
-/** Gets Keycloak JWT and parses it. */
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
-export function getJWT (): any {
+/** Gets Keycloak JWT and parses it. */
+function getJWT (): any {
   const token = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
   if (token) {
     return parseToken(token)

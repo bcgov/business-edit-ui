@@ -84,16 +84,16 @@ export default class LegalApiMixin extends Vue {
     return axios.get(url)
       .then(response => {
         const filings = response?.data?.filings
-        const returnfiling = filings.find(filings => filings.filing.header.name === filingType)
+        const returnFiling = filings?.find(filings => filings.filing.header.name === filingType)
 
-        if (!filings || !returnfiling) {
+        if (!filings || !returnFiling) {
           throw new Error('Invalid API response')
         }
-        return returnfiling
+        return returnFiling
       })
       .catch((error) => {
         if (error?.response?.status === NOT_FOUND) {
-          throw error // IA not found
+          throw error
         }
       })
   }

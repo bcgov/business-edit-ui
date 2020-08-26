@@ -239,7 +239,7 @@ const nrData = {
   state: 'APPROVED'
 }
 
-describe('Numbered company setup', () => {
+describe.skip('Numbered company setup', () => {
   let wrapper: any
   const { assign } = window.location
   sessionStorage.setItem('AUTH_URL', `myhost/basePath/auth/`)
@@ -362,7 +362,7 @@ describe('Numbered company setup', () => {
   })
 })
 
-describe('App component', () => {
+describe.skip('App component', () => {
   let wrapper: any
   const { assign } = window.location
   sessionStorage.setItem('AUTH_URL', `myhost/basePath/auth/`)

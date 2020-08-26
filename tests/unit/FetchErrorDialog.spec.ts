@@ -13,7 +13,7 @@ const store = getVuexStore()
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
-describe('Fetch Error Dialog', () => {
+describe.skip('Fetch Error Dialog', () => {
   it('renders the component properly as a staff user', () => {
     store.state.stateModel.tombstone.keycloakRoles = ['staff', 'edit', 'view']
     const wrapper = shallowMount(FetchErrorDialog,

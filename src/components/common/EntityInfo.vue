@@ -58,6 +58,7 @@ import { Getter, State } from 'vuex-class'
 
 // Interfaces
 import { BusinessContactIF, BusinessInformationIF, GetterIF } from '@/interfaces'
+import { EntityTypes, FilingCodes, RouteNames } from '@/enums'
 
 @Component({})
 export default class EntityInfo extends Vue {
@@ -77,10 +78,14 @@ export default class EntityInfo extends Vue {
 
   /** The entity title  */
   private entityTitle (): string {
-    if (this.isTypeBcomp) {
-      return 'Correction - Incorporation Application'
+    switch (this.$route.name) {
+      case RouteNames.CORRECTION:
+        return 'Correction - Incorporation Application'
+      case RouteNames.ALTERATION:
+        return 'Alteration'
+      default:
+        return ''
     }
-    return ''
   }
 
   /** Get route breadcrumbs. */
