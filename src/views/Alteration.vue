@@ -37,15 +37,8 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   }
 })
 export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixin) {
-  readonly ALTERATION = 'alteration'
-  readonly INCORPORATION_APPLICATION = 'incorporationApplication'
-
   // Getter definition for static type checking.
   @Getter isRoleStaff!: boolean
-
-  // Global state
-  // @State(state => state.stateModel)
-  // readonly stateModel!: StateModelIF
 
   @State(state => state.stateModel.addPeopleAndRoleStep.orgPeople)
   readonly orgPersonList: OrgPersonIF[]
@@ -62,34 +55,12 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
     if (isStaffOnly && !this.isRoleStaff) {
       const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
       window.location.assign(manageBusinessUrl)
-      return
     }
-
-    this.fetchAlterationFiling()
   }
 
   /** True if user is authenticated. */
   private get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
-  }
-
-  /** Fetches a filing. */
-  private async fetchAlterationFiling (): Promise<void> {
-    console.log('*** in fetchAlterationFiling()') // eslint-disable-line no-console
-    try {
-      const businessId = this.$route.query?.businessId as string
-
-      const { filing } = await this.fetchFiling(businessId, this.INCORPORATION_APPLICATION) // TEMP FOR TESTING
-      // const { filing } = await this.fetchFiling(businessId, this.ALTERATION) // FUTURE STATE
-
-      if (filing) {
-        this.parseIncorpFiling(filing) // TEMP FOR TESTING
-        // this.parseAlteration(filing) // FUTURE STATE
-        this.$emit('have-data', true) // Inform the app when the data is ready
-      }
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
   }
 }
 </script>

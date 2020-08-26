@@ -13,7 +13,7 @@ export interface StateModelIF {
   currentDate: string
   certifyState: CertifyIF
   currentStep: number
-  tempId: string
+  businessId: string
   entityType: string
   isSaving: boolean
   filingId: string

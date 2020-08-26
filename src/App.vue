@@ -81,13 +81,14 @@
         <v-container class="view-container pt-4">
           <v-row>
             <v-col cols="12" lg="9">
-              <router-view
-                @have-data="haveData = $event"
-              />
+              <router-view />
             </v-col>
             <v-col cols="12" lg="3" style="position: relative">
               <aside>
-                <affix relative-element-selector=".col-lg-9" :offset="{ top: 86, bottom: 12 }">
+                <affix
+                  relative-element-selector=".col-lg-9"
+                  :offset="{ top: 86, bottom: 12 }"
+                >
                   <sbc-fee-summary
                     :filingData="[...filingData]"
                     :payURL="payApiUrl"
@@ -121,7 +122,7 @@ import { getKeycloakRoles } from '@/utils'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { EntityInfo, Stepper, Actions } from '@/components/common'
+import { EntityInfo, Actions } from '@/components/common'
 import * as Views from '@/views'
 
 // Dialogs, mixins, interfaces, etc
@@ -141,7 +142,6 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     SbcFooter,
     SbcFeeSummary,
     EntityInfo,
-    Stepper,
     Actions,
     NameRequestInvalidErrorDialog,
     AccountAuthorizationDialog,
@@ -156,6 +156,9 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   }
 })
 export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
+  readonly ALTERATION = 'alteration'
+  readonly INCORPORATION_APPLICATION = 'incorporationApplication'
+
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -170,14 +173,13 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
 
   // Global getters
   @Getter haveChanges!: boolean
-  @Getter getSteps!: Array<any>
-  @Getter getTempId!: string
+  @Getter getBusinessId!: string
 
   // Global actions
+  @Action setBusinessId!: ActionBindingIF
   @Action setCurrentStep!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
-  @Action setNameRequestState!: ActionBindingIF
   @Action setUserEmail: ActionBindingIF
   @Action setAuthRoles: ActionBindingIF
   @Action setDefineCompanyStepValidity!: ActionBindingIF
@@ -188,6 +190,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   @Action setKeycloakRoles!: ActionBindingIF
 
   // Local Properties
+  private filing: any
   private filingData: Array<FilingDataIF> = []
   private accountAuthorizationDialog: boolean = false
   private fetchErrorDialog: boolean = false
@@ -315,37 +318,44 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
 
   /** Initializes application. */
   private async initApp (routeChanged: boolean = false): Promise<void> {
-    // if route has changed and we have data, don't re-init
+    // if route has changed and we already have data, don't re-init
     if (routeChanged && this.haveData) return
 
     try {
       // reset errors in case this method is invoked more than once (ie, retry)
       this.resetFlags()
 
-      // get identifier from the query param
-      // exactly one of these should exist
+      // get business ID query param
       const businessId = this.$route?.query?.businessId as string
-      const filingId = this.$route?.query?.filingId as string
-
-      // ensure we have a business of filing identifier
-      if (!businessId && !filingId) {
+      if (!businessId) {
         this.fetchErrorDialog = true
         if (!businessId) throw new Error('Invalid business identifier')
-        if (!filingId) throw new Error('Invalid filing identifier')
       }
+      this.setBusinessId(businessId)
 
-      // TODO: make this work for filing ID
       // ensure user is authorized or is staff to access this business
       await this.checkAuth(businessId).catch(error => {
         this.accountAuthorizationDialog = true
         throw new Error(`Auth error: ${error}`)
       })
 
+      // fetch IA filing to alter or correct
+      const { filing } = await this.fetchFiling(this.INCORPORATION_APPLICATION) // TEMP FOR TESTING
+      // const { filing } = await this.fetchFiling(this.ALTERATION) // FUTURE STATE
+
+      // parse filing into store
+      this.parseIncorpFiling(filing)
+
+      // initialize Fee Summary data
       this.initEntityFees()
+
+      // store today's date
       this.setCurrentDate(this.dateToUsableString(new Date()))
+
+      this.haveData = true
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
-      // Stop loader and fall through to finally
+      // stop init and fall through to finally
       this.haveData = true
     } finally {
       // wait for things to stabilize, then reset flag
@@ -367,7 +377,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     if (!this.haveChanges || force) {
       // redirect to dashboard
       const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-      window.location.assign(dashboardUrl + this.getTempId)
+      window.location.assign(dashboardUrl + this.getBusinessId)
       return
     }
 
@@ -391,7 +401,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
       this.setHaveChanges(false)
       // redirect to dashboard
       const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-      window.location.assign(dashboardUrl + this.getTempId)
+      window.location.assign(dashboardUrl + this.getBusinessId)
     })
   }
 

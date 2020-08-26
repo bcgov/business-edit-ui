@@ -23,7 +23,7 @@ describe.skip('Entity Info component with an NR', () => {
     // Entity type will always be set with or without an NR
     store.state.stateModel.entityType = 'BC'
     // Temp Id will always be set with or without an NR
-    store.state.stateModel.tempId = 'T1234567'
+    store.state.stateModel.businessId = 'T1234567'
     store.state.stateModel.nameRequest.nrNumber = 'NR 1234567'
     store.state.stateModel.nameRequest.details.approvedName = 'Xyz Ltd.'
 
@@ -70,7 +70,7 @@ describe.skip('Entity Info component without an NR', () => {
     // Entity type will always be set with or without an NR
     store.state.stateModel.entityType = 'BC'
     // Temp Id will always be set with or without an NR
-    store.state.stateModel.tempId = 'T1234567'
+    store.state.stateModel.businessId = 'T1234567'
     store.state.stateModel.nameRequest.nrNumber = null
     store.state.stateModel.nameRequest.details.approvedName = null
 

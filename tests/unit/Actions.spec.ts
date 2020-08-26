@@ -416,7 +416,7 @@ describe.skip('Actions component - Filing Functionality', () => {
     store.state.stateModel.createShareStructureStep.shareClasses = filing.filing.incorporationApplication.shareClasses
     store.state.stateModel.filingId = 1234
     store.state.stateModel.entityType = 'BC'
-    store.state.stateModel.tempId = 'T1234567'
+    store.state.stateModel.businessId = 'T1234567'
     store.state.stateModel.incorporationDateTime.isFutureEffective = filing.filing.header.isFutureEffective
     store.state.stateModel.incorporationAgreementStep.agreementType =
       filing.filing.incorporationApplication.incorporationAgreement.agreementType

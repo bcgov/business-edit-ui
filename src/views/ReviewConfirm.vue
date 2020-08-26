@@ -36,7 +36,7 @@
         <h2>Completing Party Statement</h2>
       </header>
       <Certify
-        :date="currentDate"
+        :date="getCurrentDate"
         :certifiedBy="certifyState.certifiedBy"
         :certifyStatementResource="certifyStatementResource"
         @valid="onValid($event)"
@@ -69,9 +69,6 @@ import { BenefitCompanyStatementResource } from '@/resources'
 })
 export default class ReviewConfirm extends Mixins() {
   // Global state
-  @State(state => state.stateModel.currentDate)
-  readonly currentDate!: string
-
   @State(state => state.stateModel.certifyState)
   readonly certifyState!: CertifyIF
 
@@ -83,6 +80,7 @@ export default class ReviewConfirm extends Mixins() {
 
   // Global Getters
   @Getter isTypeBcomp!: GetterIF
+  @Getter getCurrentDate!: string
 
   // Global Actions
   @Action setIsIncorporationDateTimeValid!: ActionBindingIF

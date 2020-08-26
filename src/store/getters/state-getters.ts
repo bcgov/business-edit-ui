@@ -75,9 +75,10 @@ export const getFilingId = (state: any): number => {
 /**
  * Returns the business identifier.
  */
-export const getTempId = (state: any): string => {
-  return state.stateModel.tempId
+export const getBusinessId = (state: any): string => {
+  return state.stateModel.businessId
 }
+
 /**
  * Returns the folio number.
  */
@@ -146,30 +147,9 @@ export const haveChanges = (state: any): boolean => {
 }
 
 //
-// Below is the business logic that allows the Stepper, the Actions, etc
+// Below is the business logic that allows the Actions, etc
 // to know how they should behave (ie, what to show or enable).
 //
-
-/**
- * Whether Back button should be displayed.
- */
-export const isShowBackBtn = (state: any): boolean => {
-  return (state.stateModel.currentStep > 1)
-}
-
-/**
- * Whether Review and Confirm button should be displayed.
- */
-export const isShowReviewConfirmBtn = (state: any, getters: any): boolean => {
-  return (!!state.stateModel.entityType && state.stateModel.currentStep < getters.getMaxStep)
-}
-
-/**
- * Whether File and Pay button should be displayed.
- */
-export const isShowFilePayBtn = (state: any, getters: any): boolean => {
-  return (state.stateModel.currentStep === getters.getMaxStep)
-}
 
 /**
  * Whether File and Pay button should be enabled.
@@ -197,11 +177,4 @@ export const isApplicationValid = (state: any): boolean => {
   return (state.stateModel.defineCompanyStep.valid && state.stateModel.addPeopleAndRoleStep.valid &&
     state.stateModel.createShareStructureStep.valid && state.stateModel.incorporationDateTime.valid &&
     state.stateModel.incorporationAgreementStep.valid && state.stateModel.certifyState.valid)
-}
-
-/**
- * Returns the maximum step number.
- */
-export const getMaxStep = (state: any, getters: any): number => {
-  return getters.getSteps ? getters.getSteps.filter(step => step.step !== -1).length : -1
 }

@@ -1,11 +1,11 @@
 // Libraries
 import { Component, Vue } from 'vue-property-decorator'
-import { State, Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import { NOT_FOUND } from 'http-status-codes'
 import { axios } from '@/utils'
 
 // Interfaces
-import { StateModelIF, ActionBindingIF, GetterIF, IncorporationFilingIF } from '@/interfaces'
+import { ActionBindingIF, GetterIF, IncorporationFilingIF } from '@/interfaces'
 
 /**
  * Mixin that provides the integration with the legal api.
@@ -15,16 +15,12 @@ export default class LegalApiMixin extends Vue {
   readonly NAME_REQUEST = 'nameRequest'
   readonly INCORPORATION_APPLICATION = 'incorporationApplication'
 
-  // Global state
-  @State stateModel!: StateModelIF
-
   // Global Getters
   @Getter isTypeBcomp!: GetterIF
   @Getter getFilingId!: number
-  @Getter getTempId!: string
+  @Getter getBusinessId!: string
 
   // Store Actions
-  @Action setNameRequestState!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
 
   /**
@@ -52,10 +48,10 @@ export default class LegalApiMixin extends Vue {
    */
   async fetchDraft (): Promise<any> {
     // get the draft filing from the tasks endpoint
-    const url = `businesses/${this.getTempId}/filings`
+    const url = `businesses/${this.getBusinessId}/filings`
     return axios.get(url)
       .then(response => {
-        // look at only the first task
+        // look at only the first filing
         const filing = response?.data?.filing
         const filingName = filing?.header?.name
         const filingId = +filing?.header?.filingId // may be NaN
@@ -79,8 +75,8 @@ export default class LegalApiMixin extends Vue {
    * Fetches a filing.
    * @returns a promise to return the filing of the specified type, or null if not found
    */
-  async fetchFiling (businessId: string, filingType: string): Promise<IncorporationFilingIF> {
-    const url = `businesses/${businessId}/filings`
+  async fetchFiling (filingType: string): Promise<IncorporationFilingIF> {
+    const url = `businesses/${this.getBusinessId}/filings`
     return axios.get(url)
       .then(response => {
         const filings = response?.data?.filings
@@ -106,7 +102,7 @@ export default class LegalApiMixin extends Vue {
    */
   private updateFiling (filing: IncorporationFilingIF, isDraft: boolean): Promise<any> {
     // put updated filing to filings endpoint
-    let url = `businesses/${this.getTempId}/filings/${this.getFilingId}`
+    let url = `businesses/${this.getBusinessId}/filings/${this.getFilingId}`
     if (isDraft) {
       url += '?draft=true'
     }
