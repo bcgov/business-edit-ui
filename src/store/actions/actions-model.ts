@@ -80,6 +80,10 @@ export const setAccountInformation: ActionIF = ({ commit }, accountInfo): void =
   commit('mutateAccountInformation', accountInfo)
 }
 
+export const setBusinessInformation: ActionIF = ({ commit }, businessInfo): void => {
+  commit('mutateBusinessInformation', businessInfo)
+}
+
 export const setNameRequestState: ActionIF = ({ commit }, nameRequestState): void => {
   commit('mutateNameRequestState', nameRequestState)
 }

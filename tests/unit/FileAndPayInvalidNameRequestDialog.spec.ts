@@ -14,7 +14,7 @@ store.state.stateModel.nameRequest = {
   details: { approvedName: 'My Name Request Inc.' }
 }
 
-describe('FileAndPayInvalidNameRequestDialog - Verify that dialog is displayed correctly', () => {
+describe.skip('FileAndPayInvalidNameRequestDialog - Verify that dialog is displayed correctly', () => {
   it('displays dialog with the proper store data', async () => {
     const wrapper = shallowMount(FileAndPayInvalidNameRequestDialog,
       {

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter, { Route } from 'vue-router'
 import { routes } from './routes'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { getKeycloakRoles } from '@/utils'
 
 /**
  * Configures and returns Vue Router.
@@ -28,6 +29,10 @@ export function getVueRouter () {
         name: 'signin',
         query: { redirect: to.fullPath }
       })
+    } else if (isStaffOnly(to) && !isStaff()) {
+      // If a user tries this url directly, return them to the manage business dashboard if not Staff.
+      const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
+      window.location.assign(manageBusinessUrl)
     } else if (!isSigninRoute(to) && !isSignoutRoute(to) && !to.query?.id) {
       // for normal routes, re-route along with query params
       next({
@@ -49,6 +54,16 @@ export function getVueRouter () {
   function isAuthenticated (): boolean {
     // FUTURE: also check that token isn't expired!
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+  }
+
+  /** Returns True if route requires staff role, else False. */
+  function isStaffOnly (route: Route): boolean {
+    return route.matched.some(r => r.meta?.isStaffOnly)
+  }
+
+  /** Returns True if user is staff, else False. */
+  function isStaff (): boolean {
+    return getKeycloakRoles().includes('staff')
   }
 
   /** Returns True if route is Signin, else False. */

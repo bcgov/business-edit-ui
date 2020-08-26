@@ -1,6 +1,6 @@
 import {
   CertifyStatementIF, CertifyIF, IncorporationAddressIf, NameRequestIF,
-  BusinessContactIF, OrgPersonIF, ShareClassIF, AccountInformationIF, IncorporationAgreementIF
+  BusinessContactIF, OrgPersonIF, ShareClassIF, AccountInformationIF, IncorporationAgreementIF, BusinessInformationIF
 } from '@/interfaces'
 
 export const mutateTempId = (state: any, tempId: string) => {
@@ -93,6 +93,10 @@ export const mutateFolioNumber = (state: any, folioNumber: string) => {
 
 export const mutateAccountInformation = (state: any, accountInfo: AccountInformationIF) => {
   state.stateModel.accountInformation = accountInfo
+}
+
+export const mutateBusinessInformation = (state: any, accountInfo: BusinessInformationIF) => {
+  state.stateModel.businessInformation = accountInfo
 }
 
 export const mutateNameRequestState = (state: any, nameRequestState: NameRequestIF) => {

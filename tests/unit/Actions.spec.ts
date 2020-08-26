@@ -59,7 +59,7 @@ const nrData = {
   state: 'APPROVED'
 }
 
-describe('Actions component', () => {
+describe.skip('Actions component', () => {
   let wrapper: any
 
   beforeEach(() => {
@@ -105,7 +105,7 @@ describe('Actions component', () => {
   })
 })
 
-describe('Emits error event if NR validation fails in file and pay', () => {
+describe.skip('Emits error event if NR validation fails in file and pay', () => {
   let wrapper: any
   const { assign } = window.location
   const effectiveDate = new Date(new Date().setDate(new Date().getDate() + 5))
@@ -180,7 +180,7 @@ describe('Emits error event if NR validation fails in file and pay', () => {
   })
 })
 
-describe('Actions component - Filing Functionality', () => {
+describe.skip('Actions component - Filing Functionality', () => {
   let wrapper: any
   const { assign } = window.location
   const effectiveDate = new Date(new Date().setDate(new Date().getDate() + 5))

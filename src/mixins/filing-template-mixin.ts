@@ -3,7 +3,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { State, Getter, Action } from 'vuex-class'
 
 // Interfaces
-import { ActionBindingIF, StateModelIF, IncorporationFilingIF, GetterIF } from '@/interfaces'
+import { ActionBindingIF, StateModelIF, IncorporationFilingIF, IncorporationFilingBodyIF, GetterIF } from '@/interfaces'
 
 // Constants
 import { INCORPORATION_APPLICATION } from '@/constants'
@@ -26,6 +26,7 @@ export default class FilingTemplateMixin extends Vue {
   // Global actions
   @Action setEntityType!: ActionBindingIF
   @Action setBusinessContact!: ActionBindingIF
+  @Action setBusinessInformation!: ActionBindingIF
   @Action setOfficeAddresses!: ActionBindingIF
   @Action setNameTranslationState!: ActionBindingIF
   @Action setDefineCompanyStepValidity!: ActionBindingIF
@@ -147,5 +148,70 @@ export default class FilingTemplateMixin extends Vue {
 
     // Set Folio Number
     this.setFolioNumber(draftFiling.header.folioNumber)
+  }
+
+  /**
+   * Parses a incorporation application filing into the store.
+   * @param filing the filing body to be parsed
+   */
+  parseIncorpFiling (filing: IncorporationFilingBodyIF): void {
+    // Set Entity Type
+    this.setEntityType(filing.business.legalType)
+
+    // Set Business Info
+    this.setBusinessInformation(filing.business)
+
+    // Set Name Request
+    this.setNameRequestState(filing.incorporationApplication.nameRequest)
+
+    // Set Office Addresses
+    this.setOfficeAddresses(filing.incorporationApplication.offices)
+
+    // Set Name Translations
+    this.setNameTranslationState(filing.incorporationApplication.nameTranslations?.new)
+
+    // Set Contact Info
+    const contact = {
+      ...filing.incorporationApplication.contactPoint,
+      confirmEmail: filing.incorporationApplication.contactPoint.email
+    }
+    this.setBusinessContact(contact)
+
+    // Set Persons and Organizations
+    this.setOrgPersonList(filing.incorporationApplication.parties)
+
+    // Set Share Structure
+    this.setShareClasses(filing.incorporationApplication.shareClasses)
+
+    // Set Incorporation Agreement
+    this.setIncorporationAgreementStepData({
+      agreementType: filing.incorporationApplication.incorporationAgreement?.agreementType
+    })
+
+    // Set Certify Form
+    this.setCertifyState({
+      valid: false,
+      certifiedBy: filing.header.certifiedBy
+    })
+
+    // Date check to improve UX and work around default effectiveDate set by backend.
+    let effectiveDate = filing.header.effectiveDate
+    effectiveDate = effectiveDate < new Date().toISOString() ? null : effectiveDate
+
+    // Set Future Effective Time
+    this.setEffectiveDate(effectiveDate)
+    this.setIsFutureEffective(!!effectiveDate)
+
+    // Set Folio Number
+    this.setFolioNumber(filing.header.folioNumber)
+  }
+
+  /**
+   * Parses an alteration filing into the store.
+   * @param filing the filing body to be parsed
+   */
+  parseAlteration (filing: any): void {
+    // Alteration body to parse TBD
+    // Will refactor above parse function into 1 generic filing parse function when we know more
   }
 }

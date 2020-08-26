@@ -1,5 +1,6 @@
-import { Signin, Signout, AddPeopleAndRoles, CreateShareStructure, DefineCompany, IncorporationAgreement,
-  ReviewConfirm } from '@/views'
+import {
+  Signin, Signout, Alteration, Correction
+} from '@/views'
 import { RouteNames } from '@/enums'
 
 export const routes = [
@@ -22,59 +23,27 @@ export const routes = [
     }
   },
   {
-    path: '/define-company',
-    name: RouteNames.DEFINE_COMPANY,
-    component: DefineCompany,
+    path: '/correction',
+    name: RouteNames.CORRECTION,
+    component: Correction,
     meta: {
-      step: 1,
-      label: 'Define Your Company',
-      requiresAuth: true
+      requiresAuth: true,
+      isStaffOnly: true
     }
   },
   {
-    path: '/add-people-roles',
-    name: RouteNames.ADD_PEOPLE_AND_ROLES,
-    component: AddPeopleAndRoles,
+    path: '/alteration',
+    name: RouteNames.ALTERATION,
+    component: Alteration,
     meta: {
-      step: 2,
-      label: 'Add People and Roles',
-      requiresAuth: true
-    }
-  },
-  {
-    path: '/create-share-structure',
-    name: RouteNames.CREATE_SHARE_STRUCTURE,
-    component: CreateShareStructure,
-    meta: {
-      step: 3,
-      label: 'Create Share Structure',
-      requiresAuth: true
-    }
-  },
-  {
-    path: '/incorporation-agreement',
-    name: RouteNames.INCORPORATION_AGREEMENT,
-    component: IncorporationAgreement,
-    meta: {
-      step: 4,
-      label: 'Incorporation Agreement',
-      requiresAuth: true
-    }
-  },
-  {
-    path: '/review-confirm',
-    name: RouteNames.REVIEW_CONFIRM,
-    component: ReviewConfirm,
-    meta: {
-      step: 5,
-      label: 'Review and Confirm',
-      requiresAuth: true
+      requiresAuth: true,
+      isStaffOnly: false
     }
   },
   {
     // default/fallback route
     // must be last
     path: '*',
-    redirect: '/define-company'
+    redirect: '/correction'
   }
 ]

@@ -31,20 +31,19 @@
         </v-btn>
       </v-fade-transition>
 
-      <v-fade-transition hide-on-leave>
-        <v-btn id="review-confirm-btn" large color="primary"
-          :to="nextRoute"
-          v-show="isShowReviewConfirmBtn"
-          :disabled="isBusySaving"
-        >
-          <span>{{ nextButtonLabel }}</span>
-          <v-icon>mdi-chevron-right</v-icon>
-        </v-btn>
-      </v-fade-transition>
+<!--      <v-fade-transition hide-on-leave>-->
+<!--        <v-btn id="review-confirm-btn" large color="primary"-->
+<!--          :to="nextRoute"-->
+<!--          v-show="isShowReviewConfirmBtn"-->
+<!--          :disabled="isBusySaving"-->
+<!--        >-->
+<!--          <span>{{ nextButtonLabel }}</span>-->
+<!--          <v-icon>mdi-chevron-right</v-icon>-->
+<!--        </v-btn>-->
+<!--      </v-fade-transition>-->
 
       <v-fade-transition hide-on-leave>
         <v-btn id="file-pay-btn" large color="primary"
-          v-show="isShowFilePayBtn"
           :disabled="!isEnableFilePayBtn || isBusySaving"
           :loading="stateModel.isFilingPaying"
           @click="onClickFilePay()"

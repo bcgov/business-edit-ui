@@ -11,7 +11,7 @@ import {
   isShowBackBtn, isShowReviewConfirmBtn, isShowFilePayBtn, isEnableFilePayBtn, isBusySaving,
   getFilingId, getTempId, isNamedBusiness, getNameRequestNumber, getApprovedName, getAccountId,
   getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses,
-  isApplicationValid, getSteps, getMaxStep, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations
+  isApplicationValid, getMaxStep, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations
 } from '@/store/getters'
 
 // Mutations
@@ -23,7 +23,7 @@ import {
   mutateAddPeopleAndRoleStepValidity, mutateShareClasses, mutateCreateShareStructureStepValidity,
   mutateIgnoreChanges, mutateHaveChanges, mutateIsFutureEffective, mutateEffectiveDate,
   mutateIsIncorporationDateTimeValid, mutateTempId, mutateEntityType, mutateIncorporationAgreementStepData,
-  mutateNameTranslation
+  mutateNameTranslation, mutateBusinessInformation
 } from '@/store/mutations'
 
 // Actions
@@ -34,7 +34,7 @@ import {
   setOfficeAddresses, setOrgPersonList, setAddPeopleAndRoleStepValidity, setShareClasses,
   setCreateShareStructureStepValidity, setIgnoreChanges, setHaveChanges, setIsFutureEffective,
   setEffectiveDate, setIsIncorporationDateTimeValid, setAccountInformation, setTempId, setEntityType,
-  setIncorporationAgreementStepData, setNameTranslationState
+  setIncorporationAgreementStepData, setNameTranslationState, setBusinessInformation
 } from './actions'
 
 /**
@@ -72,7 +72,6 @@ export function getVuexStore () {
       getNameRequestDetails,
       getOfficeAddresses,
       isApplicationValid,
-      getSteps,
       getMaxStep,
       getCurrentDate,
       ignoreChanges,
@@ -81,6 +80,7 @@ export function getVuexStore () {
     },
     mutations: {
       mutateAccountInformation,
+      mutateBusinessInformation,
       mutateCurrentStep,
       mutateIsSaving,
       mutateIsSavingResuming,
@@ -113,6 +113,7 @@ export function getVuexStore () {
     },
     actions: {
       setAccountInformation,
+      setBusinessInformation,
       setCurrentStep,
       setIsSaving,
       setIsSavingResuming,

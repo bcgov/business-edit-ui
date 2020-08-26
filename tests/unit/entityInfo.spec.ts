@@ -13,7 +13,7 @@ Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 
-describe('Entity Info component with an NR', () => {
+describe.skip('Entity Info component with an NR', () => {
   let wrapper: any
   let store: any
 
@@ -60,7 +60,7 @@ describe('Entity Info component with an NR', () => {
   })
 })
 
-describe('Entity Info component without an NR', () => {
+describe.skip('Entity Info component without an NR', () => {
   let wrapper: any
   let store: any
 

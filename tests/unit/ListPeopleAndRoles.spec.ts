@@ -20,7 +20,7 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
-describe('List People And Roles component', () => {
+describe.skip('List People And Roles component', () => {
   let wrapperFactory: any
 
   const mockPersonList = [
