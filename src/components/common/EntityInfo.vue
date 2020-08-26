@@ -71,8 +71,6 @@ export default class EntityInfo extends Vue {
 
   // Global getters
   @Getter isEntityType!: GetterIF
-  @Getter isTypeBcomp!: GetterIF
-  @Getter isTypeCoop!: GetterIF
   @Getter getBusinessId!: GetterIF
   @Getter getApprovedName!: GetterIF
 

@@ -76,6 +76,10 @@ export const setFolioNumber: ActionIF = ({ commit }, folioNumber): void => {
   commit('mutateFolioNumber', folioNumber)
 }
 
+export const setFilingDate: ActionIF = ({ commit }, filingDate): void => {
+  commit('mutateFilingDate', filingDate)
+}
+
 export const setAccountInformation: ActionIF = ({ commit }, accountInfo): void => {
   commit('mutateAccountInformation', accountInfo)
 }

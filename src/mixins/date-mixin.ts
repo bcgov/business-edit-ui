@@ -23,54 +23,63 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * Converts a number (YYYYMMDD) to a simple date string.
-   * @param n The number to convert.
-   * @returns A simple date string formatted as YYYY-MM-DD.
-   */
-  numToUsableString (val: number | string): string | null {
-    if (!val || val.toString().length !== 8) return null
-
-    val = val.toString()
-
-    const yyyy = val.substr(0, 4)
-    const mm = val.substr(4, 2)
-    const dd = val.substr(6, 2)
-    return `${yyyy}-${mm}-${dd}`
-  }
-
-  /**
-   * Compares simple date strings (YYYY-MM-DD).
-   * @param date1 The first date to compare.
-   * @param date2 The second date to compare.
-   * @param operator The operator to use for comparison.
-   * @returns The result of the comparison (true or false).
-   */
-  compareDates (date1: string, date2: string, operator: string): boolean {
-    if (!date1 || !date2 || !operator) return true
-
-    // convert dates to numbers YYYYMMDD
-    date1 = date1.split('-').join('')
-    date2 = date2.split('-').join('')
-
-    return eval(date1 + operator + date2) // eslint-disable-line no-eval
-  }
-
-  /**
    * Formats a simple date string (YYYY-MM-DD) to (Month Day, Year) for readability.
-   *
-   * @param date The date string to format.
-   * @returns The re-formatted date string without the day name.
+   * @param date the date string to format
+   * @returns the formatted date string
    */
   toReadableDate (date: string): string {
-    // Cast to a workable dateString
-    // Split into an array.
+    // cast to a workable dateString
+    // split into an array
     let formatDate = (new Date(date).toDateString()).split(' ')
 
-    // Remove the 'weekday' from the array
-    // Join the array
-    // Add a comma to the date output.
+    // remove the 'weekday' from the array
+    // join the array
+    // add a comma to the date output
     const regex = / (?!.* )/
     return formatDate.slice(1).join(' ').replace(regex, ', ')
+  }
+
+  /**
+   * Converts a datetime from UTC to local (Pacific) timezone.
+   * @param date the datetime string in UTC timezone
+   * @returns the datetime string in local timezone
+   */
+  convertUtcTimeToLocalTime (datetime: string): string {
+    if (!datetime) return null // safety check
+
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+      timeZone: 'America/Vancouver'
+    }
+
+    // chop off the milliseconds and append "Zulu" timezone abbreviation
+    // eg, 2020-08-28T21:53:58Z
+    datetime = datetime.slice(0, 19) + 'Z'
+
+    // locale 'en-CA' is the only one consistent between IE11 and other browsers
+    // example output: "2019-12-31 04:00:00 PM"
+    let datetimeLocal = new Intl.DateTimeFormat('en-CA', options).format(new Date(datetime))
+
+    // misc cleanup
+    datetimeLocal = datetimeLocal.replace(',', '')
+    datetimeLocal = datetimeLocal.replace('a.m.', 'AM')
+    datetimeLocal = datetimeLocal.replace('p.m.', 'PM')
+
+    // fix for Jest (which outputs MM/DD/YYYY no matter which 'en' locale is used)
+    if (datetimeLocal.indexOf('/') >= 0) {
+      const date = datetimeLocal.substr(0, 10).split('/')
+      const time = datetimeLocal.slice(11)
+      // set as YYYY-MM-DD HH:MM:SS AM/PM
+      datetimeLocal = `${date[2]}-${date[0]}-${date[1]} ${time}`
+    }
+
+    return datetimeLocal
   }
 
   /**

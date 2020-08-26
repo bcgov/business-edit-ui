@@ -230,6 +230,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
 
 #action-buttons-container {
   background-color: $gray1;
+  margin-top: 2rem;
   padding-top: 2rem;
   padding-bottom: 2rem;
   border-top: 1px solid $gray5;

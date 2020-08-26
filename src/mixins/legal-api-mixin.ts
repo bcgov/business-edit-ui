@@ -16,7 +16,6 @@ export default class LegalApiMixin extends Vue {
   readonly INCORPORATION_APPLICATION = 'incorporationApplication'
 
   // Global Getters
-  @Getter isTypeBcomp!: GetterIF
   @Getter getFilingId!: number
   @Getter getBusinessId!: string
 

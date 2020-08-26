@@ -4,7 +4,7 @@
         <v-icon>mdi-domain</v-icon>
         <label class="define-company-title"><strong>Your Company</strong></label>
     </div>
-    <div v-if="!valid" class="defineCompanyStepErrorMessage">
+    <div v-if="!valid && !isSummary" class="defineCompanyStepErrorMessage">
       <span>
         <v-icon color="blue darken-2">mdi-information-outline</v-icon>
         This step is not complete.
@@ -52,7 +52,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
 
 // Interfaces
@@ -92,6 +92,9 @@ export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
 
   @State(state => state.stateModel.defineCompanyStep.folioNumber)
   readonly folioNumber!: string
+
+  @Prop({ default: false })
+  private isSummary: boolean
 
   // Entity Enum
   readonly EntityTypes = EntityTypes

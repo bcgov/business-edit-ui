@@ -78,7 +78,7 @@
       <main v-if="!isErrorDialog">
         <entity-info />
 
-        <v-container class="view-container pt-4">
+        <v-container class="view-container pa-0">
           <v-row>
             <v-col cols="12" lg="9">
               <router-view />

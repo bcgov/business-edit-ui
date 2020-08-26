@@ -91,6 +91,10 @@ export const mutateFolioNumber = (state: any, folioNumber: string) => {
   state.stateModel.defineCompanyStep.folioNumber = folioNumber
 }
 
+export const mutateFilingDate = (state: any, filingDate: string) => {
+  state.stateModel.filingDate = filingDate
+}
+
 export const mutateAccountInformation = (state: any, accountInfo: AccountInformationIF) => {
   state.stateModel.accountInformation = accountInfo
 }

@@ -3,7 +3,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { State, Getter, Action } from 'vuex-class'
 
 // Interfaces
-import { ActionBindingIF, StateModelIF, IncorporationFilingIF, IncorporationFilingBodyIF, GetterIF } from '@/interfaces'
+import { ActionBindingIF, StateModelIF, IncorporationFilingIF, IncorporationFilingBodyIF } from '@/interfaces'
 
 // Constants
 import { INCORPORATION_APPLICATION } from '@/constants'
@@ -17,7 +17,6 @@ export default class FilingTemplateMixin extends Vue {
   @State stateModel!: StateModelIF
 
   // Global getters
-  @Getter isTypeBcomp!: GetterIF
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
   @Getter getApprovedName!: string
@@ -38,6 +37,7 @@ export default class FilingTemplateMixin extends Vue {
   @Action setEffectiveDate!: ActionBindingIF
   @Action setIsFutureEffective!: ActionBindingIF
   @Action setFolioNumber!: ActionBindingIF
+  @Action setFilingDate!: ActionBindingIF
   @Action setIncorporationAgreementStepData!: ActionBindingIF
 
   /** Constructs a filing body from store data. Used when saving a filing. */
@@ -97,61 +97,6 @@ export default class FilingTemplateMixin extends Vue {
   }
 
   /**
-   * Parses a draft filing into the store.
-   * @param draftFiling the draft filing body to be parsed
-   */
-  parseDraft (draftFiling: any): void {
-    // FUTURE: set types so each of these validate their parameters
-    // ref: https://www.typescriptlang.org/docs/handbook/generics.html
-
-    // NB: don't parse Name Request object -- NR is fetched from namex/NRO instead
-
-    // Set Entity Type
-    this.setEntityType(draftFiling.business.legalType)
-
-    // Set Office Addresses
-    this.setOfficeAddresses(draftFiling.incorporationApplication.offices)
-
-    // Set Name Translations
-    this.setNameTranslations(draftFiling.incorporationApplication.nameTranslations?.new)
-
-    // Set Contact Info
-    const draftContact = {
-      ...draftFiling.incorporationApplication.contactPoint,
-      confirmEmail: draftFiling.incorporationApplication.contactPoint.email
-    }
-    this.setBusinessContact(draftContact)
-
-    // Set Persons and Organizations
-    this.setOrgPersonList(draftFiling.incorporationApplication.parties)
-
-    // Set Share Structure
-    this.setShareClasses(draftFiling.incorporationApplication.shareClasses)
-
-    // Set Incorporation Agreement
-    this.setIncorporationAgreementStepData({
-      agreementType: draftFiling.incorporationApplication.incorporationAgreement?.agreementType
-    })
-
-    // Set Certify Form
-    this.setCertifyState({
-      valid: false,
-      certifiedBy: draftFiling.header.certifiedBy
-    })
-
-    // Date check to improve UX and work around default effectiveDate set by backend.
-    const draftEffectiveDate = draftFiling.header.effectiveDate
-    const effectiveDate = draftEffectiveDate < new Date().toISOString() ? null : draftEffectiveDate
-
-    // Set Future Effective Time
-    this.setEffectiveDate(effectiveDate)
-    this.setIsFutureEffective(!!effectiveDate)
-
-    // Set Folio Number
-    this.setFolioNumber(draftFiling.header.folioNumber)
-  }
-
-  /**
    * Parses a incorporation application filing into the store.
    * @param filing the filing body to be parsed
    */
@@ -205,6 +150,9 @@ export default class FilingTemplateMixin extends Vue {
 
     // Set Folio Number
     this.setFolioNumber(filing.header.folioNumber)
+
+    // Set Filing Date
+    this.setFilingDate(filing.header.date)
   }
 
   /**

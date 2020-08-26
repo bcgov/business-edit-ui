@@ -11,6 +11,7 @@ export interface StateModelIF {
   nameRequest: NameRequestIF
   nameTranslations: Array<string>
   currentDate: string
+  filingDate: string
   certifyState: CertifyIF
   currentStep: number
   businessId: string
