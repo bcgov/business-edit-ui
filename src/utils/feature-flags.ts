@@ -42,20 +42,23 @@ class FeatureFlags {
  * stored in the local storage.
  */
 export const initLDClient = () : Promise<any> => {
-  var user = { 'anonymous': true }
+  const ldClientId = window['ldClientId']
 
-  let ldClient = initialize(window['ldClientId'] || 'empty-key', user)
+  if (ldClientId) {
+    const user = { 'anonymous': true }
+    const ldClient = initialize(ldClientId, user)
 
-  return new Promise((resolve) => {
-    ldClient.on('initialized', () => {
-      featureFlags.setFlags(ldClient.allFlags())
-      resolve()
+    return new Promise((resolve) => {
+      ldClient.on('initialized', () => {
+        featureFlags.setFlags(ldClient.allFlags())
+        resolve()
+      })
+      ldClient.on('failed', () => {
+        featureFlags.setFlags(defaultFlagSet)
+        resolve()
+      })
     })
-    ldClient.on('failed', () => {
-      featureFlags.setFlags(defaultFlagSet)
-      resolve()
-    })
-  })
+  }
 }
 
 /**
