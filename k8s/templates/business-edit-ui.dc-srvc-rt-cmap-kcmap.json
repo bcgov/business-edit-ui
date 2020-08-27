@@ -221,21 +221,21 @@
             "displayName": "Name",
             "description": "The name assigned to all of the OpenShift resources associated to this app.",
             "required": true,
-            "value": "business-create-ui"
+            "value": "business-edit-ui"
         },
         {
             "name": "TEMPLATE_DESCRIPTION",
             "displayName": "DESCRIPTION",
             "description": "Description of what this deploy template is for.",
             "required": true,
-            "value": "Template to deploy the Business Create UI."
+            "value": "Template to deploy the Business Edit UI."
         },
         {
             "name": "APP_GROUP",
             "displayName": "App Group",
             "description": "The name assigned to all of the deployments in this project.",
             "required": true,
-            "value": "business-create"
+            "value": "business-edit"
         },
         {
             "name": "DOCKER_REGISTRY",
@@ -284,7 +284,7 @@
             "displayName": "URL Path",
             "description": "The path portion of the URL",
             "required": true,
-            "value": "/businesses/create/"
+            "value": "/businesses/edit/"
         },
         {
             "name": "LEGAL_API_URL",

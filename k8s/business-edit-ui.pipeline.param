@@ -1,13 +1,13 @@
 #=========================================================
 # Template parameters for:
-# Project: business-create-ui
+# Project: business-edit-ui
 # Component: pipeline
 # Action: build
-# Template File: templates/business-create-ui.pipeline.json
+# Template File: templates/business-edit-ui.pipeline.json
 #=========================================================
-NAME="business-create"
+NAME="business-edit"
 PIPELINE_PURPOSE="deploy-test"
-GIT_REPO_URL="https://github.com/bcgov/bcrs-business-create-ui.git"
+GIT_REPO_URL="https://github.com/bcgov/business-edit-ui.git"
 GIT_REF="master"
 SOURCE_CONTEXT_DIR="src"
 JENKINS_FILE="Jenkinsfiles/deploy-test.groovy"
