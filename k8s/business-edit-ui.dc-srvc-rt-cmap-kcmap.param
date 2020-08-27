@@ -4,8 +4,8 @@
 # Component: deployment config, service, route, config map, kc config map
 # Action: build
 # Template File: templates/business-edit-ui.dc-srvc-rt-cmap-kcmap.json
-# Hint: oc process -n mpgxod-dev -f templates/business-edit-ui.dc-srvc-rt-cmap-kcmap.json --param-file=business-create-ui.dc-srvc-rt-cmap-kcmap.param
-# Hint: oc process -n mpgxod-dev -f templates/business-edit-ui.dc-srvc-rt-cmap-kcmap.json --param-file=business-create-ui.dc-srvc-rt-cmap-kcmap.param | oc replace -n mpgxod-dev -f -
+# Hint: oc process -n mpgxod-dev -f templates/business-edit-ui.dc-srvc-rt-cmap-kcmap.json --param-file=business-edit-ui.dc-srvc-rt-cmap-kcmap.param
+# Hint: oc process -n mpgxod-dev -f templates/business-edit-ui.dc-srvc-rt-cmap-kcmap.json --param-file=business-edit-ui.dc-srvc-rt-cmap-kcmap.param | oc replace -n mpgxod-dev -f -
 #=========================================================
 NAME="business-edit"
 DOCKER_REGISTRY="docker-registry.default.svc:5000"
