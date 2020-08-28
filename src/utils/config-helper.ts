@@ -79,15 +79,21 @@ export async function fetchConfig (): Promise<any> {
   sessionStorage.setItem('KEYCLOAK_CONFIG_PATH', keycloakConfigPath)
   console.info('Set Keycloak Config Path to: ' + keycloakConfigPath)
 
-  const addressCompleteKey: string = response.data['ADDRESS_COMPLETE_KEY'];
-  (<any>window).addressCompleteKey = addressCompleteKey
-  console.info('Set Address Complete Key.')
+  const addressCompleteKey: string = response.data['ADDRESS_COMPLETE_KEY']
+  if (addressCompleteKey) {
+    (<any>window).addressCompleteKey = addressCompleteKey
+    console.info('Set Address Complete Key.')
+  }
 
-  const ldClientId: string = response.data['LD_CLIENT_ID'];
-  (<any>window).ldClientId = ldClientId
-  console.info('Set Launch Darkly Client ID.')
+  const ldClientId: string = response.data['LD_CLIENT_ID']
+  if (ldClientId) {
+    (<any>window).ldClientId = ldClientId
+    console.info('Set Launch Darkly Client ID.')
+  }
 
-  const sentryDsn = response.data['SENTRY_DSN'];
-  (<any>window).sentryDsn = sentryDsn
-  console.log('Set Sentry DSN.')
+  const sentryDsn = response.data['SENTRY_DSN']
+  if (sentryDsn) {
+    (<any>window).sentryDsn = sentryDsn
+    console.log('Set Sentry DSN.')
+  }
 }

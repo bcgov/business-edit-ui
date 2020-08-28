@@ -10,9 +10,10 @@
     />
 
     <file-and-pay-invalid-name-request-dialog
-     attach="#app"
-     :dialog="fileAndPayInvalidNameRequestDialog"
-     @okay="goToManageBusinessDashboard()"/>
+      attach="#app"
+      :dialog="fileAndPayInvalidNameRequestDialog"
+      @okay="goToManageBusinessDashboard()"
+    />
 
     <account-authorization-dialog
       attach="#app"
@@ -41,10 +42,11 @@
     />
 
     <bcol-error-dialog
-     attach="#app"
-     :bcolObject="bcolObj"
-     filingType="Incorporation Application"
-     @exit="goToDashboard(true)"/>
+      attach="#app"
+      :bcolObject="bcolObj"
+      filingType="Incorporation Application"
+      @exit="goToDashboard(true)"
+    />
 
     <save-error-dialog
       attach="#app"
@@ -75,6 +77,7 @@
     <div class="app-body">
       <main v-if="!isErrorDialog">
         <entity-info />
+
         <v-container class="view-container pt-4">
           <v-row>
             <v-col cols="12" lg="9">
@@ -112,6 +115,7 @@ import { Component, Vue, Watch, Mixins } from 'vue-property-decorator'
 import { State, Action, Getter } from 'vuex-class'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import { BAD_REQUEST, PAYMENT_REQUIRED, FORBIDDEN, UNPROCESSABLE_ENTITY } from 'http-status-codes'
+import { getKeycloakRoles } from '@/utils'
 
 // Components
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
@@ -181,7 +185,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   @Action setCreateShareStructureStepValidity!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
   @Action setAccountInformation!: ActionBindingIF
-  @Action setTempId!: ActionBindingIF
+  @Action setKeycloakRoles!: ActionBindingIF
 
   // Local Properties
   private filingData: Array<FilingDataIF> = []
@@ -228,6 +232,11 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     return (process.env.JEST_WORKER_ID !== undefined)
   }
 
+  /** True if user is authenticated. */
+  private get isAuthenticated (): boolean {
+    return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+  }
+
   /** The About text. */
   private get aboutText (): string {
     return process.env.ABOUT_TEXT
@@ -235,6 +244,18 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
 
   /** Called when component is created. */
   private created (): void {
+    // do nothing until user has signed in
+    if (!this.isAuthenticated) return
+
+    // decode and store keycloak roles from JWT
+    try {
+      this.setKeycloakRoles(getKeycloakRoles())
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+      this.accountAuthorizationDialog = true
+      return
+    }
+
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {
@@ -244,7 +265,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
       }
     }
 
-    // listen for save error event
+    // listen for save error events
     this.$root.$on('save-error-event', async error => {
       console.log('Save error =', error) // eslint-disable-line no-console
       // process errors/warnings
@@ -271,57 +292,17 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
       }
     })
 
+    // listen for name request invalid error events
     this.$root.$on('name-request-invalid-error', async error => {
       console.log('NR error during File and Pay =', error) // eslint-disable-line no-console
       this.fileAndPayInvalidNameRequestDialog = true
     })
 
+    // listen for name request retrieve error events
     this.$root.$on('name-request-retrieve-error', async () => {
       console.log('Error while retrieving NR during File and Pay') // eslint-disable-line no-console
       this.nameRequestInvalidErrorDialog = true
     })
-  }
-
-  /** Initialize App */
-  private async initApp (routeChanged: boolean = false): Promise<void> {
-    if (routeChanged && this.haveData) return
-    try {
-      // reset errors in case this method is invoked more than once (ie, retry)
-      this.resetFlags()
-
-      // get identifier from the query param
-      const businessIdentifier = this.$route?.query?.id as string
-
-      // ensure we have a business identifier
-      if (!businessIdentifier) {
-        this.fetchErrorDialog = true
-        throw new Error('Invalid business identifier')
-      }
-
-      // ensure user is authorized or is staff to access this business
-      await this.checkAuth(businessIdentifier).catch(error => {
-        this.accountAuthorizationDialog = true
-        throw new Error(`Auth error: ${error}`)
-      })
-
-      this.initEntityFees()
-      this.setCurrentDate(this.dateToUsableString(new Date()))
-    } catch (error) {
-      console.log(error)
-      // Stop loader and fall through to finally
-      this.haveData = true
-    } finally {
-      // wait for things to stabilize, then reset flag
-      Vue.nextTick(() => this.setHaveChanges(false))
-    }
-  }
-
-  /** Redirect to Manage Business Dash */
-  private goToManageBusinessDashboard () : void {
-    this.fileAndPayInvalidNameRequestDialog = false
-    const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
-    this.setHaveChanges(false)
-    window.location.assign(manageBusinessUrl)
   }
 
   /** Called when component is destroyed. */
@@ -332,7 +313,55 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     this.$root.$off('name-request-retrieve-error')
   }
 
-  /** Called to redirect to dashboard. */
+  /** Initializes application. */
+  private async initApp (routeChanged: boolean = false): Promise<void> {
+    // if route has changed and we have data, don't re-init
+    if (routeChanged && this.haveData) return
+
+    try {
+      // reset errors in case this method is invoked more than once (ie, retry)
+      this.resetFlags()
+
+      // get identifier from the query param
+      // exactly one of these should exist
+      const businessId = this.$route?.query?.businessId as string
+      const filingId = this.$route?.query?.filingId as string
+
+      // ensure we have a business of filing identifier
+      if (!businessId && !filingId) {
+        this.fetchErrorDialog = true
+        if (!businessId) throw new Error('Invalid business identifier')
+        if (!filingId) throw new Error('Invalid filing identifier')
+      }
+
+      // TODO: make this work for filing ID
+      // ensure user is authorized or is staff to access this business
+      await this.checkAuth(businessId).catch(error => {
+        this.accountAuthorizationDialog = true
+        throw new Error(`Auth error: ${error}`)
+      })
+
+      this.initEntityFees()
+      this.setCurrentDate(this.dateToUsableString(new Date()))
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+      // Stop loader and fall through to finally
+      this.haveData = true
+    } finally {
+      // wait for things to stabilize, then reset flag
+      Vue.nextTick(() => this.setHaveChanges(false))
+    }
+  }
+
+  /** Redirects to Manage Businesses dashboard. */
+  private goToManageBusinessDashboard () : void {
+    this.fileAndPayInvalidNameRequestDialog = false
+    const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
+    this.setHaveChanges(false)
+    window.location.assign(manageBusinessUrl)
+  }
+
+  /** Redirects to entity dashboard. */
   private goToDashboard (force: boolean = false): void {
     // check if there are no data changes
     if (!this.haveChanges || force) {
@@ -422,7 +451,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     }
   }
 
-  /** Gets account information (e.g. Premium account) and loads it into the state model */
+  /** Gets account information (e.g. Premium account) and loads it into the state model. */
   private loadAccountInformation (): void {
     if (sessionStorage.getItem(SessionStorageKeys.CurrentAccount)) {
       const accountInfo = JSON.parse(sessionStorage.getItem(SessionStorageKeys.CurrentAccount))
