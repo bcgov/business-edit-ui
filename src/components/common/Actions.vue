@@ -2,16 +2,18 @@
   <v-container id="action-buttons-container" class="list-item">
 
     <div class="buttons-left">
+      <!-- disable Save button for now -->
       <v-btn id="save-btn" large
-        :disabled="!isEntityType || isBusySaving"
+        :disabled="!isEntityType || isBusySaving || true"
         :loading="stateModel.isSaving"
         @click="onClickSave()"
       >
         <span>Save</span>
       </v-btn>
 
+      <!-- disable Save and Resume Later button for now -->
       <v-btn id="save-resume-btn" large
-        :disabled="!isEntityType || isBusySaving"
+        :disabled="!isEntityType || isBusySaving || true"
         :loading="stateModel.isSavingResuming"
         @click="onClickSaveResume()"
       >
@@ -20,28 +22,6 @@
     </div>
 
     <div class="buttons-right">
-      <v-fade-transition hide-on-leave>
-        <v-btn id="back-btn" large outlined
-          :to="previousRoute"
-          v-show="isShowBackBtn"
-          :disabled="isBusySaving"
-        >
-          <v-icon>mdi-chevron-left</v-icon>
-          <span>Back</span>
-        </v-btn>
-      </v-fade-transition>
-
-<!--      <v-fade-transition hide-on-leave>-->
-<!--        <v-btn id="review-confirm-btn" large color="primary"-->
-<!--          :to="nextRoute"-->
-<!--          v-show="isShowReviewConfirmBtn"-->
-<!--          :disabled="isBusySaving"-->
-<!--        >-->
-<!--          <span>{{ nextButtonLabel }}</span>-->
-<!--          <v-icon>mdi-chevron-right</v-icon>-->
-<!--        </v-btn>-->
-<!--      </v-fade-transition>-->
-
       <v-fade-transition hide-on-leave>
         <v-btn id="file-pay-btn" large color="primary"
           :disabled="!isEnableFilePayBtn || isBusySaving"
@@ -87,13 +67,8 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
 
   // Global getters
   @Getter isEntityType!: GetterIF
-  @Getter isShowBackBtn!: GetterIF
-  @Getter isShowReviewConfirmBtn!: GetterIF
-  @Getter isShowFilePayBtn!: GetterIF
   @Getter isEnableFilePayBtn!: GetterIF
   @Getter isBusySaving!: GetterIF
-  @Getter getSteps!: Array<any>
-  @Getter getMaxStep!: number
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
 
@@ -210,12 +185,12 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
       // assume Pay URL is always reachable
       // otherwise user will have to retry payment later
       if (!paymentCompleted) {
-        const returnUrl = encodeURIComponent(dashboardUrl + this.getTempId)
+        const returnUrl = encodeURIComponent(dashboardUrl + this.getBusinessId)
         const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
         window.location.assign(payUrl)
       } else {
         // Payment has been completed, redirect to dashboard without going through pay
-        window.location.assign(dashboardUrl + this.getTempId)
+        window.location.assign(dashboardUrl + this.getBusinessId)
       }
     } else {
       const error = new Error('Missing Payment Token')
@@ -242,42 +217,6 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
       this.$root.$emit('name-request-invalid-error', state || NameRequestStates.INVALID)
       throw new Error('Invalid Name request')
     }
-  }
-
-  /** The route to the next step. */
-  private get nextRoute (): string | undefined {
-    const nextStep = this.next()
-    return nextStep?.to || null
-  }
-
-  /** Label for the Next button. */
-  private get nextButtonLabel (): string {
-    const nextStep = this.next()
-    return nextStep ? nextStep.text.replace('\n', ' ') : ''
-  }
-
-  /** Returns the next step. */
-  private next (): any {
-    const currentStep: number | undefined = this.$router.currentRoute.meta?.step
-    if (currentStep && currentStep < this.getMaxStep) {
-      return this.getSteps.find(step => step.step === currentStep + 1)
-    }
-    return null
-  }
-
-  /** The route to the previous step. */
-  private get previousRoute (): string | undefined {
-    const prevStep = this.prev()
-    return prevStep?.to || null
-  }
-
-  /** Returns the previous step. */
-  private prev (): any {
-    const currentStep: number | undefined = this.$router.currentRoute.meta?.step
-    if (currentStep && currentStep > 1) {
-      return this.getSteps.find(step => step.step === currentStep - 1)
-    }
-    return null
   }
 
   /** Emits Go To Dashboard event. */

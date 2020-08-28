@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
 
 // Components
@@ -37,17 +37,8 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   }
 })
 export default class Correction extends Mixins(LegalApiMixin, FilingTemplateMixin) {
-  readonly INCORPORATION_APPLICATION = 'incorporationApplication'
-
   // Getter definition for static type checking.
   @Getter isRoleStaff!: boolean
-
-  // Global state
-  @State(state => state.stateModel.tombstone.keycloakRoles)
-  readonly keycloakRoles!: Array<string>
-
-  // @State(state => state.stateModel)
-  // readonly stateModel!: StateModelIF
 
   @State(state => state.stateModel.addPeopleAndRoleStep.orgPeople)
   readonly orgPersonList: OrgPersonIF[]
@@ -64,31 +55,12 @@ export default class Correction extends Mixins(LegalApiMixin, FilingTemplateMixi
     if (isStaffOnly && !this.isRoleStaff) {
       const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
       window.location.assign(manageBusinessUrl)
-      return
     }
-
-    this.fetchIncorporationApplication()
   }
 
   /** True if user is authenticated. */
   private get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
-  }
-
-  /** Fetches a filing. */
-  private async fetchIncorporationApplication (): Promise<void> {
-    console.log('*** in fetchIncorporationApplication()') // eslint-disable-line no-console
-    // try {
-    //   const filingId = this.$route.query?.filingId as string
-
-    //   const { filing } = await this.fetchFiling(filingId, this.INCORPORATION_APPLICATION)
-    //   if (filing) {
-    //     this.parseIncorpFiling(filing)
-    //     this.$emit('have-data', true) // Inform the app when the data is ready
-    //   }
-    // } catch (error) {
-    //   console.log(error) // eslint-disable-line no-console
-    // }
   }
 }
 </script>

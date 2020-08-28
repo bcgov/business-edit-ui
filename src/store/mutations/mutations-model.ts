@@ -3,8 +3,8 @@ import {
   BusinessContactIF, OrgPersonIF, ShareClassIF, AccountInformationIF, IncorporationAgreementIF, BusinessInformationIF
 } from '@/interfaces'
 
-export const mutateTempId = (state: any, tempId: string) => {
-  state.stateModel.tempId = tempId
+export const mutateBusinessId = (state: any, businessId: string) => {
+  state.stateModel.businessId = businessId
 }
 
 export const mutateCertifyStatementResource = (state: any, certifyStatementResource: CertifyStatementIF) => {
@@ -99,12 +99,12 @@ export const mutateBusinessInformation = (state: any, accountInfo: BusinessInfor
   state.stateModel.businessInformation = accountInfo
 }
 
-export const mutateNameRequestState = (state: any, nameRequestState: NameRequestIF) => {
-  state.stateModel.nameRequest = nameRequestState
+export const mutateNameRequest = (state: any, nameRequest: NameRequestIF) => {
+  state.stateModel.nameRequest = nameRequest
 }
 
-export const mutateNameTranslation = (state: any, nameTranslationState: Array<string>) => {
-  state.stateModel.nameTranslations = nameTranslationState
+export const mutateNameTranslations = (state: any, nameTranslations: Array<string>) => {
+  state.stateModel.nameTranslations = nameTranslations
 }
 
 export const mutateFilingId = (state: any, filingId: number) => {

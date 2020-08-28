@@ -13,7 +13,7 @@ import App from '@/App.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { EntityInfo, Stepper, Actions } from '@/components/common'
+import { EntityInfo, Actions } from '@/components/common'
 import { ConfirmDialog } from '@/components/dialogs'
 
 // Other
@@ -437,7 +437,6 @@ describe.skip('App component', () => {
     expect(wrapper.find(SbcFooter).exists()).toBe(true)
     expect(wrapper.find(SbcFeeSummary).exists()).toBe(true)
     expect(wrapper.find(EntityInfo).exists()).toBe(true)
-    expect(wrapper.find(Stepper).exists()).toBe(true)
     expect(wrapper.find(Actions).exists()).toBe(true)
   })
 

@@ -34,7 +34,7 @@ export const stateModel: StateModelIF = {
     valid: false,
     certifiedBy: ''
   },
-  tempId: '',
+  businessId: '',
   entityType: '',
   currentStep: 1,
   filingId: null,

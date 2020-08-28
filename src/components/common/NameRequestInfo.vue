@@ -171,13 +171,13 @@ export default class NameRequestInfo extends Mixins(DateMixin) {
   readonly nameTranslations!: Array<string>
 
   // Global Actions
-  @Action setNameTranslationState!: ActionBindingIF
+  @Action setNameTranslations!: ActionBindingIF
 
   // Global getters
   @Getter isEntityType!: GetterIF;
   @Getter isTypeBcomp!: GetterIF;
   @Getter isTypeCoop!: GetterIF;
-  @Getter getTempId!: GetterIF;
+  @Getter getBusinessId!: GetterIF;
   @Getter getNameRequestNumber!: GetterIF;
   @Getter getNameRequestDetails!: NameRequestDetailsIF;
   @Getter getNameRequestApplicant!: NameRequestApplicantIF;
@@ -265,7 +265,7 @@ export default class NameRequestInfo extends Mixins(DateMixin) {
       ? nameTranslations[this.editIndex] = name
       : nameTranslations.push(name)
 
-    this.setNameTranslationState(nameTranslations)
+    this.setNameTranslations(nameTranslations)
 
     // Emit Validation
     this.emitHasNameTranslation(this.validateNameTranslation())
@@ -292,7 +292,7 @@ export default class NameRequestInfo extends Mixins(DateMixin) {
     const nameTranslations = Object.assign([], this.getNameTranslations)
     nameTranslations.splice(index, 1)
 
-    this.setNameTranslationState(nameTranslations)
+    this.setNameTranslations(nameTranslations)
 
     // Emit Validation
     this.emitHasNameTranslation(this.validateNameTranslation())
@@ -323,7 +323,7 @@ export default class NameRequestInfo extends Mixins(DateMixin) {
         }
       ).then(async (confirm) => {
         if (confirm) {
-          this.setNameTranslationState([])
+          this.setNameTranslations([])
           this.hasNameTranslation = false
         }
       }).catch(() => {

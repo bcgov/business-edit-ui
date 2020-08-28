@@ -73,7 +73,7 @@ export default class EntityInfo extends Vue {
   @Getter isEntityType!: GetterIF
   @Getter isTypeBcomp!: GetterIF
   @Getter isTypeCoop!: GetterIF
-  @Getter getTempId!: GetterIF
+  @Getter getBusinessId!: GetterIF
   @Getter getApprovedName!: GetterIF
 
   /** The entity title  */
@@ -99,7 +99,7 @@ export default class EntityInfo extends Vue {
       {
         text: this.getApprovedName || 'Numbered Benefit Company',
         disabled: false,
-        href: `${sessionStorage.getItem('DASHBOARD_URL')}${this.getTempId}`
+        href: `${sessionStorage.getItem('DASHBOARD_URL')}${this.getBusinessId}`
       },
       {
         text: this.entityTitle(),

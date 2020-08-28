@@ -21,16 +21,17 @@ export default class FilingTemplateMixin extends Vue {
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
   @Getter getApprovedName!: string
-  @Getter getTempId!: string
+  @Getter getBusinessId!: string
+  @Getter getCurrentDate!: string
 
   // Global actions
   @Action setEntityType!: ActionBindingIF
   @Action setBusinessContact!: ActionBindingIF
   @Action setBusinessInformation!: ActionBindingIF
   @Action setOfficeAddresses!: ActionBindingIF
-  @Action setNameTranslationState!: ActionBindingIF
+  @Action setNameTranslations!: ActionBindingIF
   @Action setDefineCompanyStepValidity!: ActionBindingIF
-  @Action setNameRequestState!: ActionBindingIF
+  @Action setNameRequest!: ActionBindingIF
   @Action setOrgPersonList!: ActionBindingIF
   @Action setCertifyState!: ActionBindingIF
   @Action setShareClasses!: ActionBindingIF
@@ -52,13 +53,13 @@ export default class FilingTemplateMixin extends Vue {
         header: {
           name: INCORPORATION_APPLICATION,
           certifiedBy: this.stateModel.certifyState.certifiedBy,
-          date: this.stateModel.currentDate,
+          date: this.getCurrentDate,
           folioNumber: this.stateModel.defineCompanyStep.folioNumber,
           isFutureEffective: this.stateModel.incorporationDateTime.isFutureEffective
         },
         business: {
           legalType: this.stateModel.entityType,
-          identifier: this.getTempId
+          identifier: this.getBusinessId
         },
         incorporationApplication: {
           nameRequest: {
@@ -112,7 +113,7 @@ export default class FilingTemplateMixin extends Vue {
     this.setOfficeAddresses(draftFiling.incorporationApplication.offices)
 
     // Set Name Translations
-    this.setNameTranslationState(draftFiling.incorporationApplication.nameTranslations?.new)
+    this.setNameTranslations(draftFiling.incorporationApplication.nameTranslations?.new)
 
     // Set Contact Info
     const draftContact = {
@@ -162,13 +163,13 @@ export default class FilingTemplateMixin extends Vue {
     this.setBusinessInformation(filing.business)
 
     // Set Name Request
-    this.setNameRequestState(filing.incorporationApplication.nameRequest)
+    this.setNameRequest(filing.incorporationApplication.nameRequest)
 
     // Set Office Addresses
     this.setOfficeAddresses(filing.incorporationApplication.offices)
 
     // Set Name Translations
-    this.setNameTranslationState(filing.incorporationApplication.nameTranslations?.new)
+    this.setNameTranslations(filing.incorporationApplication.nameTranslations?.new)
 
     // Set Contact Info
     const contact = {

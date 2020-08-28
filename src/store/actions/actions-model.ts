@@ -4,8 +4,8 @@ export const setEntityType = ({ commit }, entityType): void => {
   commit('mutateEntityType', entityType)
 }
 
-export const setTempId = ({ commit }, tempId): void => {
-  commit('mutateTempId', tempId)
+export const setBusinessId = ({ commit }, businessId): void => {
+  commit('mutateBusinessId', businessId)
 }
 
 export const setCurrentStep: ActionIF = ({ commit }, currentStep): void => {
@@ -84,12 +84,12 @@ export const setBusinessInformation: ActionIF = ({ commit }, businessInfo): void
   commit('mutateBusinessInformation', businessInfo)
 }
 
-export const setNameRequestState: ActionIF = ({ commit }, nameRequestState): void => {
-  commit('mutateNameRequestState', nameRequestState)
+export const setNameRequest: ActionIF = ({ commit }, nameRequest): void => {
+  commit('mutateNameRequest', nameRequest)
 }
 
-export const setNameTranslationState: ActionIF = ({ commit }, nameTranslationState): void => {
-  commit('mutateNameTranslation', nameTranslationState)
+export const setNameTranslations: ActionIF = ({ commit }, nameTranslations): void => {
+  commit('mutateNameTranslations', nameTranslations)
 }
 
 export const setFilingId: ActionIF = ({ commit }, filingId): void => {
