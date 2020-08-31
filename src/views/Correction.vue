@@ -36,6 +36,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+import { featureFlags } from '@/utils'
 
 // Components
 import { SummaryDefineCompany } from '@/components/DefineCompany'
@@ -91,6 +92,11 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
 
   /** Called when this component is mounted. */
   private mounted (): void {
+    if (!featureFlags.getFlag('correction-ui-enabled')) {
+      alert('Corrections are under contruction. Please check again later.')
+      return
+    }
+
     if (!this.isAuthenticated) return
 
     // If a user (not staff) tries this url directly, return them to the Manage Businesses dashboard.

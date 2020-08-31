@@ -16,6 +16,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+import { featureFlags } from '@/utils'
 
 // Components
 import { SummaryDefineCompany } from '@/components/DefineCompany'
@@ -58,6 +59,11 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
 
   /** Called when this component is mounted. */
   private mounted (): void {
+    if (!featureFlags.getFlag('alteration-ui-enabled')) {
+      alert('Alterations are under contruction. Please check again later.')
+      return
+    }
+
     if (!this.isAuthenticated) return
 
     // If a user (not staff) tries this url directly, return them to the Manage Businesses dashboard.
