@@ -134,7 +134,7 @@ export default class DefineCompany extends Mixins(EntityFilterMixin) {
       this.setDefaultAddresses()
     }
 
-    // watch data changes once page has loaded (in next tick)
+    // resume tracking data changes once page has loaded (in next tick)
     Vue.nextTick(() => {
       this.setIgnoreChanges(false)
     })

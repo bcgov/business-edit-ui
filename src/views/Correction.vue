@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { featureFlags } from '@/utils'
 
@@ -71,6 +71,9 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   @Getter getFilingDate!: string
   @Getter getOrgPeople!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
+
+  // Global setters
+  @Action setIgnoreChanges!: ActionBindingIF
 
   /** The IA filing to correct. */
   private correctedFiling: any = null
@@ -120,6 +123,14 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
     // do not proceed if we don't have the necessary query params
     if (isNaN(this.correctedId) && isNaN(this.correctionId)) return
 
+    //
+    // TODO: handle filing fetch errors
+    // TODO: disable haveChanges
+    //
+
+    // temporarily ignore data changes
+    this.setIgnoreChanges(true)
+
     if (this.correctionId) {
       // fetch draft correction to resume
       const correctionFiling = await this.fetchFilingById(this.correctionId)
@@ -152,6 +163,11 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
     //   filingTypeCode: FilingCodes.CORRECTION,
     //   entityType: EntityTypes.BCOMP
     // }]
+
+    // resume tracking data changes once page has loaded (in next tick)
+    Vue.nextTick(() => {
+      this.setIgnoreChanges(false)
+    })
   }
 }
 </script>

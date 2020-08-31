@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { featureFlags } from '@/utils'
 
@@ -43,6 +43,9 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
   @Getter isRoleStaff!: boolean
   @Getter getOrgPeople!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
+
+  // Global setters
+  @Action setIgnoreChanges!: ActionBindingIF
 
   /** The id of the IA filing to alter. */
   // private get filingId (): number {
@@ -79,6 +82,9 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
     // do not proceed if we don't have the necessary query params
     // if (isNaN(this.filingId)) return
 
+    // temporarily ignore data changes
+    this.setIgnoreChanges(true)
+
     // fetch IA to alter
     const { filing } = await this.fetchFilingByType(this.INCORPORATION_APPLICATION)
 
@@ -91,6 +97,11 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
     //   filingTypeCode: FilingCodes.CORRECTION,
     //   entityType: EntityTypes.BCOMP
     // }]
+
+    // resume tracking data changes once page has loaded (in next tick)
+    Vue.nextTick(() => {
+      this.setIgnoreChanges(false)
+    })
   }
 }
 </script>

@@ -107,7 +107,6 @@ export default class CreateShareStructure extends Vue {
   // Global setters
   @Action setShareClasses!: ActionBindingIF
   @Action setCreateShareStructureStepValidity!: ActionBindingIF
-  @Action setIgnoreChanges!: ActionBindingIF
 
   private newShareClass: ShareClassIF = {
     id: null,
@@ -158,15 +157,6 @@ export default class CreateShareStructure extends Vue {
   private parentIndex: number = -1
   private nextId: number = -1
   private helpToggle: boolean = false
-
-  /** Called when component is created. */
-  private created (): void {
-    // ignore data changes until page has loaded
-    this.setIgnoreChanges(true)
-    Vue.nextTick(() => {
-      this.setIgnoreChanges(false)
-    })
-  }
 
   mounted (): void {
     this.setCreateShareStructureStepValidity(this.getShareClasses.length > 0)

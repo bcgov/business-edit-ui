@@ -78,8 +78,10 @@ export default class AgreementType extends Vue {
   private created (): void {
     // temporarily ignore data changes
     this.setIgnoreChanges(true)
+
     this.agreementType = this.agreementTypeState
-    // watch data changes once page has loaded (in next tick)
+
+    // resume tracking data changes once page has loaded (in next tick)
     Vue.nextTick(() => {
       this.setIgnoreChanges(false)
     })
