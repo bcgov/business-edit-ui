@@ -1,6 +1,9 @@
 import { initialize, LDFlagSet } from 'launchdarkly-js-client-sdk'
 
-const defaultFlagSet = { 'bcrs-create-ui-enabled': true }
+const defaultFlagSet = {
+  'correction-ui-enabled': true,
+  'alteration-ui-enabled': true
+}
 
 class FeatureFlags {
     private static instance: FeatureFlags

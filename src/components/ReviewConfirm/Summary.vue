@@ -1,8 +1,8 @@
 <template>
   <div class="summary-container">
     <SummaryDefineCompany/>
-    <ListPeopleAndRoles :personList="orgPersonList" :isSummary="true" :showErrorSummary="!step2Valid" />
-    <ListShareClass :shareClasses="shareClasses" :isSummary="true" :showErrorSummary="!step3Valid"/>
+    <ListPeopleAndRoles :personList="getOrgPeople" :isSummary="true" :showErrorSummary="!step2Valid" />
+    <ListShareClass :shareClasses="getShareClasses" :isSummary="true" :showErrorSummary="!step3Valid"/>
     <AgreementType :isSummary="true" :showErrorSummary="!step4Valid"/>
   </div>
 </template>
@@ -10,7 +10,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Vue } from 'vue-property-decorator'
-import { State } from 'vuex-class'
+import { Getter, State } from 'vuex-class'
 
 // Components
 import { SummaryDefineCompany } from '@/components/DefineCompany'
@@ -30,13 +30,11 @@ import { OrgPersonIF, ShareClassIF } from '@/interfaces'
   }
 })
 export default class Summary extends Vue {
+  // Global getters
+  @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter getShareClasses!: ShareClassIF[]
+
   // Global state
-  @State(state => state.stateModel.addPeopleAndRoleStep.orgPeople)
-  readonly orgPersonList: OrgPersonIF[]
-
-  @State(state => state.stateModel.createShareStructureStep.shareClasses)
-  readonly shareClasses: ShareClassIF[]
-
   @State(state => state.stateModel.addPeopleAndRoleStep.valid)
   readonly step2Valid: boolean
 

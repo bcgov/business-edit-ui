@@ -1,149 +1,147 @@
-// Enums
-import { AccountTypes, EntityTypes, RouteNames } from '@/enums'
-import { NameRequestDetailsIF, NameRequestApplicantIF } from '@/interfaces'
+// Enums and Interfaces
+import { AccountTypes, EntityTypes } from '@/enums'
+import { NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
 
-/**
- * Whether the user has "staff" keycloak role.
- */
+/** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: any): boolean => {
   return state.stateModel.tombstone.keycloakRoles.includes('staff')
 }
 
-/**
- * Whether the user is authorized to edit.
- */
+/** Whether the user is authorized to edit. */
 export const isAuthEdit = (state: any): boolean => {
   return state.stateModel.tombstone.authRoles.includes('edit')
 }
 
-/**
- * Whether the user is authorized to view.
- */
+/** Whether the user is authorized to view. */
 export const isAuthView = (state: any): boolean => {
   return state.stateModel.tombstone.authRoles.includes('view')
 }
 
-/**
- * Whether the entity type has been identified.
- */
+/** The entity type. */
+export const getEntityType = (state: any): EntityTypes => {
+  return state.stateModel.tombstone.entityType
+}
+
+/** Whether the entity type has been identified. */
 export const isEntityType = (state: any): boolean => {
-  return !!state.stateModel.entityType
+  return !!state.stateModel.tombstone.entityType
 }
 
-/**
- * Whether the entity is a BCOMP.
- */
+/** Whether the entity is a BCOMP. */
 export const isTypeBcomp = (state: any): boolean => {
-  return (state.stateModel.entityType === EntityTypes.BCOMP)
+  return (state.stateModel.tombstone.entityType === EntityTypes.BCOMP)
 }
 
-/**
- * Whether the entity is a COOP.
- */
+/** Whether the entity is a COOP. */
 export const isTypeCoop = (state: any): boolean => {
-  return (state.stateModel.entityType === EntityTypes.COOP)
+  return (state.stateModel.tombstone.entityType === EntityTypes.COOP)
 }
 
-/**
- * Whether the current account is a premium account
- */
+/** Whether the current account is a premium account. */
 export const isPremiumAccount = (state: any): boolean => {
   return (state.stateModel.accountInformation.accountType === AccountTypes.PREMIUM)
 }
 
-/**
- * Returns the current account id
- */
+/** Whether the current filing is future effective. */
+export const isFutureEffective = (state: any): boolean => {
+  return state.stateModel.incorporationDateTime.isFutureEffective
+}
+
+/** The current account id. */
 export const getAccountId = (state: any): number => {
   return state.stateModel.accountInformation.id
 }
 
-/**
- * Returns the current date.
- */
+/** The current date. */
 export const getCurrentDate = (state: any): string => {
-  return state.stateModel.currentDate
+  return state.stateModel.tombstone.currentDate
 }
 
-/**
- * Returns the filing id.
- */
+/** The filing date. */
+export const getFilingDate = (state: any): string => {
+  return state.stateModel.tombstone.filingDate
+}
+
+/** The filing id. */
 export const getFilingId = (state: any): number => {
-  return state.stateModel.filingId
+  return state.stateModel.tombstone.filingId
 }
 
-/**
- * Returns the business identifier.
- */
+/** The business identifier (aka incorporation number). */
 export const getBusinessId = (state: any): string => {
-  return state.stateModel.businessId
+  return state.stateModel.tombstone.businessId
 }
 
-/**
- * Returns the folio number.
- */
+/** The business number. */
+export const getBusinessNumber = (state: any): string => {
+  // remove first 2 chars from Business ID
+  return state.stateModel.tombstone.businessId?.substring(2)
+}
+
+/** The folio number. */
+export const getUserEmail = (state: any): string => {
+  return state.stateModel.tombstone.userEmail
+}
+
+/** The folio number. */
 export const getFolioNumber = (state: any): string => {
   return state.stateModel.defineCompanyStep.folioNumber
 }
 
-/**
- * Whether this IA is for a Named Business.
- */
+/** Whether this IA is for a named business. */
 export const isNamedBusiness = (state: any): boolean => {
   // a named business has a NR number
   return !!state.stateModel.nameRequest.nrNumber
 }
 
-/**
- * Returns the NR number of a name request.
- */
+/** The NR number of a name request. */
 export const getNameRequestNumber = (state: any): string => {
   return state.stateModel.nameRequest.nrNumber
 }
 
-/**
- * Returns the approved name of a name request.
- */
+/** The approved name of a name request. */
 export const getApprovedName = (state: any): string => {
   return state.stateModel.nameRequest.legalName
 }
 
-/**
- * Returns name request details.
- */
+/** The name request details. */
 export const getNameRequestDetails = (state: any): NameRequestDetailsIF => {
   return state.stateModel.nameRequest.details
 }
 
-/**
- * Returns name request applicant information.
- */
+/** The name request applicant information. */
 export const getNameRequestApplicant = (state: any): NameRequestApplicantIF => {
   return state.stateModel.nameRequest.applicant
 }
 
-/**
- * Returns name translations.
- */
+/** The name translations. */
 export const getNameTranslations = (state: any): Array<string> => {
   return state.stateModel.nameTranslations
 }
 
-/**
- * Returns the office addresses.
- */
-export const getOfficeAddresses = (state: any): string => {
+/** The office addresses. */
+export const getOfficeAddresses = (state: any): any => {
   return state.stateModel.defineCompanyStep.officeAddresses
+}
+
+/** The organization's people list. */
+export const getOrgPeople = (state: any): Array<OrgPersonIF> => {
+  return state.stateModel.addPeopleAndRoleStep.orgPeople
+}
+
+/** The share classes list. */
+export const getShareClasses = (state: any): Array<ShareClassIF> => {
+  return state.stateModel.createShareStructureStep.shareClasses
 }
 
 /** Whether we are ignoring data changes. */
 export const ignoreChanges = (state: any): boolean => {
-  return state.stateModel.ignoreChanges
+  return state.stateModel.tombstone.ignoreChanges
 }
 
 /** Whether there are unsaved data changes. */
 export const haveChanges = (state: any): boolean => {
-  return state.stateModel.haveChanges
+  return state.stateModel.tombstone.haveChanges
 }
 
 //
@@ -151,9 +149,7 @@ export const haveChanges = (state: any): boolean => {
 // to know how they should behave (ie, what to show or enable).
 //
 
-/**
- * Whether File and Pay button should be enabled.
- */
+/** Whether File and Pay button should be enabled. */
 export const isEnableFilePayBtn = (state: any, getters: any): boolean => {
   const step1Valid = state.stateModel.defineCompanyStep.valid
   const step2Valid = state.stateModel.addPeopleAndRoleStep.valid
@@ -163,16 +159,15 @@ export const isEnableFilePayBtn = (state: any, getters: any): boolean => {
   return (step1Valid && step2Valid && step3Valid && step4Valid && step5Valid)
 }
 
-/**
- * Whether app is busy saving or resuming.
- */
+/** Whether app is busy saving or resuming. */
 export const isBusySaving = (state: any): boolean => {
-  return (state.stateModel.isSaving || state.stateModel.isSavingResuming || state.stateModel.isFilingPaying)
+  return (state.stateModel.tombstone.isSaving ||
+    state.stateModel.tombstone.isSavingResuming ||
+    state.stateModel.tombstone.isFilingPaying)
 }
 
-/**
- * Whether all the incorporation steps are valid.
- */
+// TODO: change this to "all sections"?
+/** Whether all the incorporation steps are valid. */
 export const isApplicationValid = (state: any): boolean => {
   return (state.stateModel.defineCompanyStep.valid && state.stateModel.addPeopleAndRoleStep.valid &&
     state.stateModel.createShareStructureStep.valid && state.stateModel.incorporationDateTime.valid &&

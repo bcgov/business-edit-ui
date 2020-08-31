@@ -309,8 +309,8 @@ describe.skip('Numbered company setup', () => {
 
   it('loads a draft filing into the store', () => {
     // Validate IA for numbered company
-    expect(store.state.stateModel.entityType).toBe('BC')
-    expect(store.state.stateModel.filingId).toBe(54321)
+    expect(store.state.stateModel.tombstone.entityType).toBe('BC')
+    expect(store.state.stateModel.tombstone.filingId).toBe(54321)
 
     // Validate no offices are loaded
     expect(store.state.stateModel.defineCompanyStep.officeAddresses)
@@ -330,7 +330,7 @@ describe.skip('Numbered company setup', () => {
   it('does not load a name request into the store', () => {
     // All Name request specific fields should be empty
     expect(store.state.stateModel.nameRequest.nrNumber).toEqual('')
-    expect(store.state.stateModel.filingId).toBe(54321)
+    expect(store.state.stateModel.tombstone.filingId).toBe(54321)
 
     // Validate no NR Details
     expect(store.state.stateModel.nameRequest.details.approvedName).toBeUndefined()
@@ -448,10 +448,10 @@ describe.skip('App component', () => {
 
   it('loads a draft filing into the store', () => {
     // Validate Filing ID - set by fetchDraft()
-    expect(store.state.stateModel.filingId).toBe(12345)
+    expect(store.state.stateModel.tombstone.filingId).toBe(12345)
 
     // Validate Entity Type
-    expect(store.state.stateModel.entityType).toBe('BC')
+    expect(store.state.stateModel.tombstone.entityType).toBe('BC')
 
     // Validate Office Addresses
     expect(store.state.stateModel.defineCompanyStep.officeAddresses.registeredOffice)
@@ -478,9 +478,9 @@ describe.skip('App component', () => {
 
   it('loads a name request into the store', () => {
     // Validate Name Request
-    expect(store.state.stateModel.entityType).toBe(nrData.requestTypeCd)
+    expect(store.state.stateModel.tombstone.entityType).toBe(nrData.requestTypeCd)
     expect(store.state.stateModel.nameRequest.nrNumber).toBe(nrData.nrNum)
-    expect(store.state.stateModel.filingId).toBe(12345)
+    expect(store.state.stateModel.tombstone.filingId).toBe(12345)
     expect(store.state.stateModel.nameRequest.details).toBeDefined()
     expect(store.state.stateModel.nameRequest.applicant).toBeDefined()
 
@@ -507,7 +507,7 @@ describe.skip('App component', () => {
 
   it('shows confirm popup if exiting before saving changes', async () => {
     // simulate that we have unsaved changes
-    store.state.stateModel.haveChanges = true
+    store.state.stateModel.tombstone.haveChanges = true
 
     // call Go To Dashboard event handler
     await wrapper.vm.goToDashboard()
@@ -524,7 +524,7 @@ describe.skip('App component', () => {
 
   it('redirects to dashboard if exiting after saving changes', async () => {
     // simulate that we have no unsaved changes
-    store.state.stateModel.haveChanges = false
+    store.state.stateModel.tombstone.haveChanges = false
 
     // call Go To Dashboard event handler
     await wrapper.vm.goToDashboard()

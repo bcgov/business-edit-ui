@@ -47,9 +47,9 @@ describe('Name Request Info component', () => {
 
   beforeEach(() => {
     // Entity type will always be set with or without an NR
-    store.state.stateModel.entityType = 'BC'
+    store.state.stateModel.tombstone.entityType = 'BC'
     // Temp Id will always be set with or without an NR
-    store.state.stateModel.businessId = 'T1234567'
+    store.state.stateModel.tombstone.businessId = 'T1234567'
     store.state.stateModel.nameRequest.nrNumber = mockNrData.nrNumber
     wrapper = mount(NameRequestInfo, { vuetify, store })
   })
@@ -312,9 +312,9 @@ describe('Name Request Info component without an NR', () => {
 
   beforeEach(() => {
     // Entity type will always be set with or without an NR
-    store.state.stateModel.entityType = 'BC'
+    store.state.stateModel.tombstone.entityType = 'BC'
     // Temp Id will always be set with or without an NR
-    store.state.stateModel.businessId = 'T1234567'
+    store.state.stateModel.tombstone.businessId = 'T1234567'
     store.state.stateModel.nameRequest.nrNumber = null
     wrapper = mount(NameRequestInfo, { vuetify, store })
   })

@@ -5,7 +5,7 @@
       <!-- disable Save button for now -->
       <v-btn id="save-btn" large
         :disabled="!isEntityType || isBusySaving || true"
-        :loading="stateModel.isSaving"
+        :loading="stateModel.tombstone.isSaving"
         @click="onClickSave()"
       >
         <span>Save</span>
@@ -14,7 +14,7 @@
       <!-- disable Save and Resume Later button for now -->
       <v-btn id="save-resume-btn" large
         :disabled="!isEntityType || isBusySaving || true"
-        :loading="stateModel.isSavingResuming"
+        :loading="stateModel.tombstone.isSavingResuming"
         @click="onClickSaveResume()"
       >
         <span>Save and Resume Later</span>
@@ -25,7 +25,7 @@
       <v-fade-transition hide-on-leave>
         <v-btn id="file-pay-btn" large color="primary"
           :disabled="!isEnableFilePayBtn || isBusySaving"
-          :loading="stateModel.isFilingPaying"
+          :loading="stateModel.tombstone.isFilingPaying"
           @click="onClickFilePay()"
         >
           <span>File and Pay</span>
@@ -72,7 +72,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
 
-  // Global actions
+  // Global setters
   @Action setIsSaving!: ActionBindingIF
   @Action setIsSavingResuming!: ActionBindingIF
   @Action setIsFilingPaying!: ActionBindingIF
@@ -230,6 +230,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
 
 #action-buttons-container {
   background-color: $gray1;
+  margin-top: 2rem;
   padding-top: 2rem;
   padding-bottom: 2rem;
   border-top: 1px solid $gray5;

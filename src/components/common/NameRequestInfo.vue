@@ -170,14 +170,13 @@ export default class NameRequestInfo extends Mixins(DateMixin) {
   @State(state => state.stateModel.nameTranslations)
   readonly nameTranslations!: Array<string>
 
-  // Global Actions
+  // Global setters
   @Action setNameTranslations!: ActionBindingIF
 
   // Global getters
   @Getter isEntityType!: GetterIF;
   @Getter isTypeBcomp!: GetterIF;
   @Getter isTypeCoop!: GetterIF;
-  @Getter getBusinessId!: GetterIF;
   @Getter getNameRequestNumber!: GetterIF;
   @Getter getNameRequestDetails!: NameRequestDetailsIF;
   @Getter getNameRequestApplicant!: NameRequestApplicantIF;

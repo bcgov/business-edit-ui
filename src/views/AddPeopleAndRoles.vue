@@ -11,7 +11,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Getter, Action, State } from 'vuex-class'
 
 // Interfaces
@@ -35,20 +35,8 @@ export default class AddPeopleAndRoles extends Mixins(EntityFilterMixin) {
   // Global getters
   @Getter isEntityType!: GetterIF
 
-  // Global actions
-  @Action setIgnoreChanges!: ActionBindingIF
-
-  // Entity Enum
+  // Enum for template
   readonly EntityTypes = EntityTypes
-
-  /** Called when component is created. */
-  private created (): void {
-    // ignore data changes until page has loaded
-    this.setIgnoreChanges(true)
-    Vue.nextTick(() => {
-      this.setIgnoreChanges(false)
-    })
-  }
 }
 </script>
 

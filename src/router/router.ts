@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter, { Route } from 'vue-router'
 import { routes } from './routes'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { Dictionary } from 'vue-router/types/router'
 
 /**
  * Configures and returns Vue Router.
@@ -28,7 +29,7 @@ export function getVueRouter () {
         name: 'signin',
         query: { redirect: to.fullPath }
       })
-    } else if (!isSigninRoute(to) && !isSignoutRoute(to) && !to.query?.businessId && !to.query?.filingId) {
+    } else if (!isSigninRoute(to) && !isSignoutRoute(to) && !haveQueryParam(to.query)) {
       // for normal routes, re-route along with query params
       next({
         name: to.name,
@@ -59,6 +60,11 @@ export function getVueRouter () {
   /** Returns True if route is Signout, else False. */
   function isSignoutRoute (route: Route): boolean {
     return Boolean(route.name === 'signout')
+  }
+
+  /** Returns True if there is at least one of our expected query parameters. */
+  function haveQueryParam (query: Dictionary<string | string[]>): boolean {
+    return Boolean(query['corrected-id'] || query['correction-id'] || query['filing-id'])
   }
 
   return router

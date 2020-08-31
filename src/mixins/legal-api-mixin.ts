@@ -15,12 +15,11 @@ export default class LegalApiMixin extends Vue {
   readonly NAME_REQUEST = 'nameRequest'
   readonly INCORPORATION_APPLICATION = 'incorporationApplication'
 
-  // Global Getters
-  @Getter isTypeBcomp!: GetterIF
+  // Global getters
   @Getter getFilingId!: number
   @Getter getBusinessId!: string
 
-  // Store Actions
+  // Global setters
   @Action setFilingId!: ActionBindingIF
 
   /**
@@ -72,10 +71,10 @@ export default class LegalApiMixin extends Vue {
   }
 
   /**
-   * Fetches a filing.
-   * @returns a promise to return the filing of the specified type, or null if not found
+   * Fetches a filing by its type.
+   * @returns a promise to return the filing of the specified type
    */
-  async fetchFiling (filingType: string): Promise<IncorporationFilingIF> {
+  async fetchFilingByType (filingType: string): Promise<any> {
     const url = `businesses/${this.getBusinessId}/filings`
     return axios.get(url)
       .then(response => {
@@ -90,6 +89,24 @@ export default class LegalApiMixin extends Vue {
       .catch((error) => {
         if (error?.response?.status === NOT_FOUND) {
           throw error
+        }
+      })
+  }
+
+  /**
+   * Fetches a filing by its id.
+   * @returns a promise to return the filing of the specified type
+   */
+  async fetchFilingById (id: number): Promise<any> {
+    const url = `businesses/${this.getBusinessId}/filings/${id}`
+    return axios.get(url)
+      .then(response => {
+        if (response && response.data) {
+          return response.data.filing
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('fetchFilingById() error - invalid response =', response)
+          throw new Error('Invalid API response')
         }
       })
   }

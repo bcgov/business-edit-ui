@@ -55,7 +55,7 @@ describe('Define Company view', () => {
   })
 
   it('displays records office in the office address header when entity is a BCOMP', () => {
-    store.state.stateModel.entityType = 'BC'
+    store.state.stateModel.tombstone.entityType = 'BC'
     const wrapper = shallowMount(DefineCompany, { localVue, store, router, vuetify })
 
     expect(wrapper.vm.$el.querySelector('#office-address-header').textContent).toContain('Records')
@@ -97,7 +97,7 @@ describe('Define Company view', () => {
   })
 
   it('displays benefit company statement when it is a BC', () => {
-    store.state.stateModel.entityType = 'BC'
+    store.state.stateModel.tombstone.entityType = 'BC'
     const wrapper = shallowMount(DefineCompany, { localVue, store, router, vuetify })
 
     expect(wrapper.find('.benefit-company-statement').exists()).toBe(true)
@@ -107,7 +107,7 @@ describe('Define Company view', () => {
   })
 
   it('doesn\'t display benefit company statement when it is not a BC', () => {
-    store.state.stateModel.entityType = 'CP'
+    store.state.stateModel.tombstone.entityType = 'CP'
     const wrapper = shallowMount(DefineCompany, { localVue, store, router, vuetify })
 
     expect(wrapper.find('.benefit-company-statement').exists()).toBe(false)

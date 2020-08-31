@@ -87,7 +87,7 @@ describe.skip('Actions component', () => {
       valid: true,
       certifiedBy: 'Some certifier'
     }
-    store.state.stateModel.entityType = 'BC'
+    store.state.stateModel.tombstone.entityType = 'BC'
     store.state.stateModel.nameRequest = { entityType: 'BC' }
     store.state.stateModel.defineCompanyStep = { valid: true }
     store.state.stateModel.addPeopleAndRoleStep = { valid: true }
@@ -131,7 +131,7 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
       })))
 
     // init store
-    store.state.stateModel.currentDate = '2020/01/29'
+    store.state.stateModel.tombstone.currentDate = '2020/01/29'
     store.state.stateModel.nameRequest = {
       entityType: 'BC',
       nrNumber: 'NR 1234567',
@@ -146,7 +146,7 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
       valid: true,
       certifiedBy: 'Some certifier'
     }
-    store.state.stateModel.entityType = 'BC'
+    store.state.stateModel.tombstone.entityType = 'BC'
     store.state.stateModel.defineCompanyStep = { valid: true }
     store.state.stateModel.addPeopleAndRoleStep = { valid: true }
     store.state.stateModel.createShareStructureStep = { valid: true }
@@ -385,7 +385,7 @@ describe.skip('Actions component - Filing Functionality', () => {
       })))
 
     // init store
-    store.state.stateModel.currentDate = '2020/01/29'
+    store.state.stateModel.tombstone.currentDate = '2020/01/29'
     store.state.stateModel.nameRequest = {
       entityType: 'BC',
       nrNumber: 'NR 1234567',
@@ -414,9 +414,9 @@ describe.skip('Actions component - Filing Functionality', () => {
     store.state.stateModel.defineCompanyStep.folioNumber = filing.filing.header.folioNumber
     store.state.stateModel.addPeopleAndRoleStep.orgPeople = filing.filing.incorporationApplication.parties
     store.state.stateModel.createShareStructureStep.shareClasses = filing.filing.incorporationApplication.shareClasses
-    store.state.stateModel.filingId = 1234
-    store.state.stateModel.entityType = 'BC'
-    store.state.stateModel.businessId = 'T1234567'
+    store.state.stateModel.tombstone.filingId = 1234
+    store.state.stateModel.tombstone.entityType = 'BC'
+    store.state.stateModel.tombstone.businessId = 'T1234567'
     store.state.stateModel.incorporationDateTime.isFutureEffective = filing.filing.header.isFutureEffective
     store.state.stateModel.incorporationAgreementStep.agreementType =
       filing.filing.incorporationApplication.incorporationAgreement.agreementType

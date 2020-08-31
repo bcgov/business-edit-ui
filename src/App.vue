@@ -78,10 +78,13 @@
       <main v-if="!isErrorDialog">
         <entity-info />
 
-        <v-container class="view-container pt-4">
+        <v-container class="view-container pa-0">
           <v-row>
             <v-col cols="12" lg="9">
-              <router-view />
+              <router-view
+                @fetchError="fetchErrorDialog = true"
+                @filingData="filingData = $event"
+              />
             </v-col>
             <v-col cols="12" lg="3" style="position: relative">
               <aside>
@@ -113,7 +116,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Vue, Watch, Mixins } from 'vue-property-decorator'
-import { State, Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import { BAD_REQUEST, PAYMENT_REQUIRED, FORBIDDEN, UNPROCESSABLE_ENTITY } from 'http-status-codes'
 import { getKeycloakRoles } from '@/utils'
@@ -133,7 +136,6 @@ import { BcolMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixi
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces'
 
 // Enums and Constants
-import { EntityTypes, FilingCodes, RouteNames } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 @Component({
@@ -164,20 +166,12 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     confirm: ConfirmDialogType
   }
 
-  // Global state
-  @State(state => state.stateModel.entityType)
-  readonly entityType!: string
-
-  @State(state => state.stateModel.incorporationDateTime.isFutureEffective)
-  readonly isFutureEffective!: boolean
-
   // Global getters
   @Getter haveChanges!: boolean
   @Getter getBusinessId!: string
 
-  // Global actions
+  // Global setters
   @Action setBusinessId!: ActionBindingIF
-  @Action setCurrentStep!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
   @Action setUserEmail: ActionBindingIF
@@ -204,9 +198,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   private saveErrors: Array<object> = []
   private saveWarnings: Array<object> = []
   private fileAndPayInvalidNameRequestDialog: boolean = false
-
-  // Template Enums
-  readonly RouteNames = RouteNames
 
   /** Whether the token refresh service is initialized. */
   private tokenService: boolean = false
@@ -249,6 +240,9 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   private created (): void {
     // do nothing until user has signed in
     if (!this.isAuthenticated) return
+
+    // get and store business ID
+    this.setBusinessId(sessionStorage.getItem('BUSINESS_ID'))
 
     // decode and store keycloak roles from JWT
     try {
@@ -316,7 +310,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     this.$root.$off('name-request-retrieve-error')
   }
 
-  /** Initializes application. */
+  /** Initializes application. Is called after the router view is mounted. */
   private async initApp (routeChanged: boolean = false): Promise<void> {
     // if route has changed and we already have data, don't re-init
     if (routeChanged && this.haveData) return
@@ -325,31 +319,14 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
       // reset errors in case this method is invoked more than once (ie, retry)
       this.resetFlags()
 
-      // get business ID query param
-      const businessId = this.$route?.query?.businessId as string
-      if (!businessId) {
-        this.fetchErrorDialog = true
-        if (!businessId) throw new Error('Invalid business identifier')
-      }
-      this.setBusinessId(businessId)
-
       // ensure user is authorized or is staff to access this business
-      await this.checkAuth(businessId).catch(error => {
+      await this.checkAuth(this.getBusinessId).catch(error => {
         this.accountAuthorizationDialog = true
         throw new Error(`Auth error: ${error}`)
       })
 
-      // fetch IA filing to alter or correct
-      const { filing } = await this.fetchFiling(this.INCORPORATION_APPLICATION) // TEMP FOR TESTING
-      // const { filing } = await this.fetchFiling(this.ALTERATION) // FUTURE STATE
-
-      // parse filing into store
-      this.parseIncorpFiling(filing)
-
-      // initialize Fee Summary data
-      this.initEntityFees()
-
       // store today's date
+      // NB: keep this here in case user clicks Retry
       this.setCurrentDate(this.dateToUsableString(new Date()))
 
       this.haveData = true
@@ -466,26 +443,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     if (sessionStorage.getItem(SessionStorageKeys.CurrentAccount)) {
       const accountInfo = JSON.parse(sessionStorage.getItem(SessionStorageKeys.CurrentAccount))
       this.setAccountInformation(accountInfo)
-    }
-  }
-
-  /** Initializes the Fee Summary based on the filing type. */
-  private initEntityFees (): void {
-    switch (this.$route.name) {
-      case RouteNames.CORRECTION:
-        this.filingData = [{
-          filingTypeCode: FilingCodes.CORRECTION,
-          entityType: EntityTypes.BCOMP
-        }]
-        break
-      case RouteNames.ALTERATION:
-        this.filingData = [{
-          filingTypeCode: FilingCodes.ALTERATION,
-          entityType: EntityTypes.BCOMP
-        }]
-        break
-      default:
-        this.filingData = []
     }
   }
 

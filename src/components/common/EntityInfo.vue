@@ -24,7 +24,7 @@
             <dl>
               <dt>Business No:</dt>
               <dt class="ml-2" id="entity-business-number">
-                <span>{{ 'Not Available' }}</span>
+                <span>{{ getBusinessNumber || 'Not Available' }}</span>
               </dt>
               <dd></dd>
               <dt>Incorporation No:</dt>
@@ -70,14 +70,13 @@ export default class EntityInfo extends Vue {
   readonly businessContact!: BusinessContactIF
 
   // Global getters
-  @Getter isEntityType!: GetterIF
-  @Getter isTypeBcomp!: GetterIF
-  @Getter isTypeCoop!: GetterIF
-  @Getter getBusinessId!: GetterIF
-  @Getter getApprovedName!: GetterIF
+  @Getter isEntityType!: boolean
+  @Getter getBusinessId!: string
+  @Getter getBusinessNumber!: string
+  @Getter getApprovedName!: string
 
-  /** The entity title  */
-  private entityTitle (): string {
+  /** The entity title.  */
+  private get entityTitle (): string {
     switch (this.$route.name) {
       case RouteNames.CORRECTION:
         return 'Correction - Incorporation Application'
@@ -88,7 +87,7 @@ export default class EntityInfo extends Vue {
     }
   }
 
-  /** Get route breadcrumbs. */
+  /** The route breadcrumbs. */
   private get breadcrumbs (): Array<any> {
     return [
       {
@@ -102,7 +101,7 @@ export default class EntityInfo extends Vue {
         href: `${sessionStorage.getItem('DASHBOARD_URL')}${this.getBusinessId}`
       },
       {
-        text: this.entityTitle(),
+        text: this.entityTitle,
         disabled: false
       }
     ]

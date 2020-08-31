@@ -5,7 +5,9 @@
         <!-- Summary Header -->
         <div class="agreement-summary-header">
             <v-icon>mdi-handshake</v-icon>
-            <label class="agreement-summary-title"><strong>Incorporation Agreement and Benefit </strong></label>
+            <label class="agreement-summary-title">
+              <strong>Incorporation Agreement and Benefit Company Articles</strong>
+            </label>
         </div>
 
         <!-- Summary Warning -->
@@ -53,7 +55,7 @@ import { AgreementTypeResource } from '@/resources'
 
 @Component
 export default class AgreementType extends Vue {
-   private incorporationAgreementTypeResource = AgreementTypeResource
+  private incorporationAgreementTypeResource = AgreementTypeResource
 
   // State
   @State(state => state.stateModel.incorporationAgreementStep.agreementType)
@@ -65,18 +67,21 @@ export default class AgreementType extends Vue {
   @Prop({ default: false })
   private isSummary: boolean
 
-  // Actions
+  // Global setters
   @Action setIncorporationAgreementStepData!: ActionBindingIF
   @Action setIgnoreChanges!: ActionBindingIF
 
+  // Local properties
   private agreementType: string | null = null
 
   // Lifecycle methods
   private created (): void {
     // temporarily ignore data changes
     this.setIgnoreChanges(true)
+
     this.agreementType = this.agreementTypeState
-    // watch data changes once page has loaded (in next tick)
+
+    // resume tracking data changes once page has loaded (in next tick)
     Vue.nextTick(() => {
       this.setIgnoreChanges(false)
     })

@@ -7,30 +7,30 @@ import { stateModel, resourceModel } from './state'
 
 // Getters
 import {
-  isRoleStaff, isAuthEdit, isAuthView, isEntityType, isPremiumAccount, isTypeBcomp, isTypeCoop,
+  isRoleStaff, isAuthEdit, isAuthView, getEntityType, isEntityType, isPremiumAccount, isTypeBcomp, isTypeCoop,
   isEnableFilePayBtn, isBusySaving,
-  getFilingId, getBusinessId, isNamedBusiness, getNameRequestNumber, getApprovedName, getAccountId,
-  getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses,
-  isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations
+  getFilingId, getBusinessId, isNamedBusiness, getNameRequestNumber, getApprovedName, getAccountId, getBusinessNumber,
+  getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses, getFilingDate, getUserEmail,
+  isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations, getOrgPeople, getShareClasses
 } from '@/store/getters'
 
 // Mutations
 import {
-  mutateCurrentStep, mutateIsSaving, mutateIsSavingResuming, mutateIsFilingPaying,
-  mutateKeycloakRoles, mutateAuthRoles, mutateUserEmail, mutateCurrentDate, mutateFolioNumber,
+  mutateIsSaving, mutateIsSavingResuming, mutateIsFilingPaying,
+  mutateKeycloakRoles, mutateAuthRoles, mutateUserEmail, mutateCurrentDate, mutateFolioNumber, mutateFilingDate,
   mutateCertifyStatementResource, mutateCertifyState, mutateBusinessContact, mutateDefineCompanyStepValidity,
   mutateAccountInformation, mutateNameRequest, mutateFilingId, mutateOfficeAddresses, mutateOrgPersonList,
   mutateAddPeopleAndRoleStepValidity, mutateShareClasses, mutateCreateShareStructureStepValidity,
   mutateIgnoreChanges, mutateHaveChanges, mutateIsFutureEffective, mutateEffectiveDate,
-  mutateIsIncorporationDateTimeValid, mutateBusinessId, mutateEntityType, mutateIncorporationAgreementStepData,
+  mutateIsIncorporationDateTimeValid, mutateBusinessId, mutateIncorporationAgreementStepData, mutateEntityType,
   mutateNameTranslations, mutateBusinessInformation
 } from '@/store/mutations'
 
-// Actions
+// Setters
 import {
-  setCurrentStep, setIsSaving, setIsSavingResuming, setIsFilingPaying,
+  setIsSaving, setIsSavingResuming, setIsFilingPaying,
   setKeycloakRoles, setAuthRoles, setUserEmail, setCurrentDate, setCertifyStatementResource, setCertifyState,
-  setBusinessContact, setDefineCompanyStepValidity, setNameRequest, setFilingId, setFolioNumber,
+  setBusinessContact, setDefineCompanyStepValidity, setNameRequest, setFilingId, setFolioNumber, setFilingDate,
   setOfficeAddresses, setOrgPersonList, setAddPeopleAndRoleStepValidity, setShareClasses,
   setCreateShareStructureStepValidity, setIgnoreChanges, setHaveChanges, setIsFutureEffective,
   setEffectiveDate, setIsIncorporationDateTimeValid, setAccountInformation, setBusinessId, setEntityType,
@@ -52,14 +52,20 @@ export function getVuexStore () {
       getAccountId,
       getApprovedName,
       getBusinessId,
+      getBusinessNumber,
       getCurrentDate,
+      getFilingDate,
       getFilingId,
+      getEntityType,
       getFolioNumber,
       getNameRequestApplicant,
       getNameRequestDetails,
       getNameRequestNumber,
       getNameTranslations,
       getOfficeAddresses,
+      getOrgPeople,
+      getShareClasses,
+      getUserEmail,
       haveChanges,
       ignoreChanges,
       isApplicationValid,
@@ -85,10 +91,10 @@ export function getVuexStore () {
       mutateCertifyStatementResource,
       mutateCreateShareStructureStepValidity,
       mutateCurrentDate,
-      mutateCurrentStep,
       mutateDefineCompanyStepValidity,
       mutateEffectiveDate,
       mutateEntityType,
+      mutateFilingDate,
       mutateFilingId,
       mutateFolioNumber,
       mutateHaveChanges,
@@ -118,10 +124,10 @@ export function getVuexStore () {
       setCertifyStatementResource,
       setCreateShareStructureStepValidity,
       setCurrentDate,
-      setCurrentStep,
       setDefineCompanyStepValidity,
       setEffectiveDate,
       setEntityType,
+      setFilingDate,
       setFilingId,
       setFolioNumber,
       setHaveChanges,

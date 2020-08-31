@@ -45,7 +45,7 @@
     <p>Your application must include the following:</p>
     <ul>
       <li>
-        <v-icon color="blue" v-if="shareClasses.length > 0" class="cp-valid">mdi-check</v-icon>
+        <v-icon color="blue" v-if="getShareClasses.length > 0" class="cp-valid">mdi-check</v-icon>
         <span v-else><v-icon color="red" v-if="showErrors" class="cp-invalid">mdi-close</v-icon></span>
         <span class="chk-list-item-txt">At least one Class of Shares</span>
       </li>
@@ -65,15 +65,15 @@
         :activeIndex="activeIndex"
         :nextId="nextId"
         :parentIndex="parentIndex"
-        :shareClasses="shareClasses"
+        :shareClasses="getShareClasses"
         @addEditClass="addEditShareClass($event)"
         @addEditSeries="addEditShareSeries($event)"
         @removeClass="removeShareClass($event)"
         @removeSeries="removeSeries"
         @resetEvent="resetData()"/>
     </v-card>
-    <ListShareClass v-if="this.shareClasses.length > 0"
-      :shareClasses="shareClasses"
+    <ListShareClass v-if="this.getShareClasses.length > 0"
+      :shareClasses="getShareClasses"
       :componentDisabled="showShareStructureForm"
       @editClass="initShareClassForEdit($event)"
       @removeClass="removeShareClass($event)"
@@ -86,7 +86,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Vue } from 'vue-property-decorator'
-import { Action, State } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 
 // Interfaces
 import { ActionBindingIF, FormType, ShareClassIF } from '@/interfaces'
@@ -101,14 +101,12 @@ import { ListShareClass, ShareStructure } from '@/components/CreateShareStructur
   }
 })
 export default class CreateShareStructure extends Vue {
-  // Global state
-  @State(state => state.stateModel.createShareStructureStep.shareClasses)
-  readonly shareClasses: ShareClassIF[]
+  // Global getters
+  @Getter getShareClasses!: ShareClassIF[]
 
-  // Glbal actions
+  // Global setters
   @Action setShareClasses!: ActionBindingIF
   @Action setCreateShareStructureStepValidity!: ActionBindingIF
-  @Action setIgnoreChanges!: ActionBindingIF
 
   private newShareClass: ShareClassIF = {
     id: null,
@@ -160,26 +158,17 @@ export default class CreateShareStructure extends Vue {
   private nextId: number = -1
   private helpToggle: boolean = false
 
-  /** Called when component is created. */
-  private created (): void {
-    // ignore data changes until page has loaded
-    this.setIgnoreChanges(true)
-    Vue.nextTick(() => {
-      this.setIgnoreChanges(false)
-    })
-  }
-
   mounted (): void {
-    this.setCreateShareStructureStepValidity(this.shareClasses.length > 0)
+    this.setCreateShareStructureStepValidity(this.getShareClasses.length > 0)
   }
 
   private initNewShareClass (): void {
     this.currentShareStructure = { ...this.newShareClass }
     this.currentShareStructure.priority =
-    this.shareClasses.length === 0 ? 1 : this.shareClasses[this.shareClasses.length - 1].priority + 1
+      (this.getShareClasses.length === 0) ? 1 : this.getShareClasses[this.getShareClasses.length - 1].priority + 1
     this.activeIndex = -1
     this.parentIndex = -1
-    this.nextId = this.shareClasses.length === 0 ? 1 : (this.shareClasses.reduce(
+    this.nextId = this.getShareClasses.length === 0 ? 1 : (this.getShareClasses.reduce(
       (prev, current) => (prev.id > current.id) ? prev : current)).id + 1
     this.addEditInProgress = true
     this.showShareStructureForm = true
@@ -187,7 +176,7 @@ export default class CreateShareStructure extends Vue {
 
   // Event Handlers
   private initShareClassForEdit (index: number): void {
-    this.currentShareStructure = { ...this.shareClasses[index] }
+    this.currentShareStructure = { ...this.getShareClasses[index] }
     this.activeIndex = index
     this.parentIndex = -1
     this.addEditInProgress = true
@@ -198,7 +187,7 @@ export default class CreateShareStructure extends Vue {
     this.activeIndex = -1
     this.parentIndex = shareClassIndex
 
-    let newList: ShareClassIF[] = [...this.shareClasses]
+    let newList: ShareClassIF[] = [...this.getShareClasses]
     const parentShareClass = newList[shareClassIndex]
     const shareSeries = parentShareClass.series
     this.currentShareStructure = { ...this.newShareSeries }
@@ -214,7 +203,7 @@ export default class CreateShareStructure extends Vue {
   }
 
   private addEditShareClass (shareStructure: ShareClassIF): void {
-    let newList: ShareClassIF[] = [...this.shareClasses]
+    let newList: ShareClassIF[] = [...this.getShareClasses]
     // New Share Structue.
     if (this.activeIndex === -1) {
       newList.push(shareStructure)
@@ -223,14 +212,14 @@ export default class CreateShareStructure extends Vue {
       newList.splice(this.activeIndex, 1, shareStructure)
     }
     this.setShareClasses(newList)
-    this.setCreateShareStructureStepValidity(this.shareClasses.length > 0)
+    this.setCreateShareStructureStepValidity(this.getShareClasses.length > 0)
     this.resetData()
   }
 
   private editSeries (index: number, seriesIndex: number): void {
     this.activeIndex = seriesIndex
     this.parentIndex = index
-    let newList: ShareClassIF[] = [...this.shareClasses]
+    let newList: ShareClassIF[] = [...this.getShareClasses]
     this.currentShareStructure = { ...newList[this.parentIndex].series[this.activeIndex] }
     this.addEditInProgress = true
     this.showShareStructureForm = true
@@ -239,7 +228,7 @@ export default class CreateShareStructure extends Vue {
   private removeSeries (index: number, seriesIndex: number): void {
     this.activeIndex = seriesIndex
     this.parentIndex = index
-    let newList: ShareClassIF[] = [...this.shareClasses]
+    let newList: ShareClassIF[] = [...this.getShareClasses]
     const parentShareClass = newList[this.parentIndex]
     let series = [...parentShareClass.series]
     series.splice(this.activeIndex, 1)
@@ -249,7 +238,7 @@ export default class CreateShareStructure extends Vue {
   }
 
   private addEditShareSeries (shareSeries: ShareClassIF): void {
-    let newList: ShareClassIF[] = [...this.shareClasses]
+    let newList: ShareClassIF[] = [...this.getShareClasses]
     const parentShareClass = newList[this.parentIndex]
     let series = [...parentShareClass.series]
     // New Share Structue.
@@ -265,10 +254,10 @@ export default class CreateShareStructure extends Vue {
   }
 
   private removeShareClass (index: number): void {
-    let newList: ShareClassIF[] = [...this.shareClasses]
+    let newList: ShareClassIF[] = [...this.getShareClasses]
     newList.splice(index, 1)
     this.setShareClasses(newList)
-    this.setCreateShareStructureStepValidity(this.shareClasses.length > 0)
+    this.setCreateShareStructureStepValidity(this.getShareClasses.length > 0)
     this.resetData()
   }
 

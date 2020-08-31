@@ -170,7 +170,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Emit, Prop, Watch, Mixins } from 'vue-property-decorator'
-import { State } from 'vuex-class'
+import { Getter } from 'vuex-class'
 import { isEmpty } from 'lodash'
 
 // Schemas
@@ -202,6 +202,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
     recMailingAddress: any,
     recDeliveryAddress: any
   }
+
   /**
    * Addresses object from the parent page.
    * If this is null then this is a new filing; otherwise these are the addresses from a draft/navigation
@@ -209,17 +210,17 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
    * This will be emitted back to the parent page when the addresses are updated.
    */
   @Prop({ default: null })
-  readonly inputAddresses!: IncorporationAddressIf | null;
+  readonly inputAddresses!: IncorporationAddressIf | null
 
   // Whether to show the editable forms for the addresses (true) or just the static display addresses (false).
   @Prop({ default: true })
-  private isEditing!: boolean;
+  private isEditing!: boolean
 
-  // Global state
-  @State stateModel!: StateModelIF
+  // Global getters
+  @Getter getOfficeAddresses!: any
 
   // Local Properties
-  private addresses: IncorporationAddressIf | null = this.inputAddresses;
+  private addresses: IncorporationAddressIf | null = this.inputAddresses
   private defaultAddress: AddressIF = {
     addressCity: '',
     addressCountry: 'CA',
@@ -231,31 +232,31 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
   }
 
   // The 4 addresses that are the current state of the BaseAddress components:
-  private mailingAddress = {} as AddressIF;
-  private deliveryAddress = {} as AddressIF;
-  private recMailingAddress = {} as AddressIF;
-  private recDeliveryAddress = {} as AddressIF;
+  private mailingAddress = {} as AddressIF
+  private deliveryAddress = {} as AddressIF
+  private recMailingAddress = {} as AddressIF
+  private recDeliveryAddress = {} as AddressIF
 
   // Validation events from BaseAddress:
-  private mailingAddressValid: boolean = true;
-  private deliveryAddressValid: boolean = true;
-  private recMailingAddressValid: boolean = true;
-  private recDeliveryAddressValid: boolean = true;
+  private mailingAddressValid: boolean = true
+  private deliveryAddressValid: boolean = true
+  private recMailingAddressValid: boolean = true
+  private recDeliveryAddressValid: boolean = true
 
-  private inheritMailingAddress: boolean = true;
+  private inheritMailingAddress: boolean = true
 
   // State of the checkbox for determining whether or not the mailing address is the same as the delivery address
   // For Records Office
-  private inheritRecMailingAddress: boolean = true;
+  private inheritRecMailingAddress: boolean = true
 
   // State of the checkbox for determining whether the Record address is the same as the Registered address
-  private inheritRegisteredAddress: boolean = true;
+  private inheritRegisteredAddress: boolean = true
 
   // The Address schema containing Vuelidate rules.
-  private addressSchema = officeAddressSchema;
+  private addressSchema = officeAddressSchema
 
   // Entity Enum
-  readonly EntityTypes = EntityTypes;
+  readonly EntityTypes = EntityTypes
 
   /** Called when component is created. */
   private created (): void {
@@ -464,7 +465,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
     this.emitValid()
   }
 
-  @Watch('stateModel.defineCompanyStep.officeAddresses', { deep: true, immediate: true })
+  @Watch('getOfficeAddresses', { deep: true, immediate: true })
   private updateAddresses (): void {
     this.addresses = this.inputAddresses
     this.setAddresses(false)

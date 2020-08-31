@@ -48,7 +48,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { State, Action, Getter } from 'vuex-class'
 
 // Interfaces
@@ -82,23 +82,13 @@ export default class ReviewConfirm extends Mixins() {
   @Getter isTypeBcomp!: GetterIF
   @Getter getCurrentDate!: string
 
-  // Global Actions
+  // Global setters
   @Action setIsIncorporationDateTimeValid!: ActionBindingIF
   @Action setEffectiveDate!: ActionBindingIF
   @Action setCertifyState!: ActionBindingIF
-  @Action setIgnoreChanges!: ActionBindingIF
 
-  // Resources
+  // Resources for template
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
-
-  /** Called when component is created. */
-  private created (): void {
-    // ignore data changes until page has loaded
-    this.setIgnoreChanges(true)
-    Vue.nextTick(() => {
-      this.setIgnoreChanges(false)
-    })
-  }
 
   /** Handler for Valid change event. */
   private onValid (val: boolean): void {

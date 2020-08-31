@@ -104,7 +104,7 @@ function createShareStructure (
 }
 
 store.state.stateModel.nameRequest.entityType = 'BC'
-store.state.stateModel.currentDate = '2020-03-30'
+store.state.stateModel.tombstone.currentDate = '2020-03-30'
 
 describe('Share Structure component', () => {
   it('Loads the component and sets data for share structure', async () => {
