@@ -84,7 +84,7 @@ import { EntityTypes } from '@/enums'
 export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
   // Getters
   @Getter getApprovedName!: string
-  @Getter getBusinessId!: string
+  @Getter getBusinessNumber!: string
   @Getter isPremiumAccount!: GetterIF
   @Getter getNameTranslations!: Array<string>
   @Getter getOfficeAddresses!: any
@@ -107,9 +107,7 @@ export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
   private get companyName (): string {
     if (this.getApprovedName) return this.getApprovedName
 
-    // remove first 2 chars from Business ID
-    const incorporationNumber = this.getBusinessId?.substring(2) || '[Incorporation Number]'
-    return `${incorporationNumber} B.C. Ltd.`
+    return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 }
 </script>

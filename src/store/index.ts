@@ -9,7 +9,7 @@ import { stateModel, resourceModel } from './state'
 import {
   isRoleStaff, isAuthEdit, isAuthView, getEntityType, isEntityType, isPremiumAccount, isTypeBcomp, isTypeCoop,
   isEnableFilePayBtn, isBusySaving,
-  getFilingId, getBusinessId, isNamedBusiness, getNameRequestNumber, getApprovedName, getAccountId,
+  getFilingId, getBusinessId, isNamedBusiness, getNameRequestNumber, getApprovedName, getAccountId, getBusinessNumber,
   getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses, getFilingDate, getUserEmail,
   isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations, getOrgPeople
 } from '@/store/getters'
@@ -52,6 +52,7 @@ export function getVuexStore () {
       getAccountId,
       getApprovedName,
       getBusinessId,
+      getBusinessNumber,
       getCurrentDate,
       getFilingDate,
       getFilingId,

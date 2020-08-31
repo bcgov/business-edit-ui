@@ -67,9 +67,15 @@ export const getFilingId = (state: any): number => {
   return state.stateModel.tombstone.filingId
 }
 
-/** The business identifier. */
+/** The business identifier (aka incorporation number). */
 export const getBusinessId = (state: any): string => {
   return state.stateModel.tombstone.businessId
+}
+
+/** The business number. */
+export const getBusinessNumber = (state: any): string => {
+  // remove first 2 chars from Business ID
+  return state.stateModel.tombstone.businessId?.substring(2)
 }
 
 /** The folio number. */
