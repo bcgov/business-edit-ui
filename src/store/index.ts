@@ -7,28 +7,28 @@ import { stateModel, resourceModel } from './state'
 
 // Getters
 import {
-  isRoleStaff, isAuthEdit, isAuthView, isEntityType, isPremiumAccount, isTypeBcomp, isTypeCoop,
+  isRoleStaff, isAuthEdit, isAuthView, getEntityType, isEntityType, isPremiumAccount, isTypeBcomp, isTypeCoop,
   isEnableFilePayBtn, isBusySaving,
   getFilingId, getBusinessId, isNamedBusiness, getNameRequestNumber, getApprovedName, getAccountId,
-  getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses, getFilingDate,
-  isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations
+  getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses, getFilingDate, getUserEmail,
+  isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations, getOrgPeople
 } from '@/store/getters'
 
 // Mutations
 import {
-  mutateCurrentStep, mutateIsSaving, mutateIsSavingResuming, mutateIsFilingPaying,
+  mutateIsSaving, mutateIsSavingResuming, mutateIsFilingPaying,
   mutateKeycloakRoles, mutateAuthRoles, mutateUserEmail, mutateCurrentDate, mutateFolioNumber, mutateFilingDate,
   mutateCertifyStatementResource, mutateCertifyState, mutateBusinessContact, mutateDefineCompanyStepValidity,
   mutateAccountInformation, mutateNameRequest, mutateFilingId, mutateOfficeAddresses, mutateOrgPersonList,
   mutateAddPeopleAndRoleStepValidity, mutateShareClasses, mutateCreateShareStructureStepValidity,
   mutateIgnoreChanges, mutateHaveChanges, mutateIsFutureEffective, mutateEffectiveDate,
-  mutateIsIncorporationDateTimeValid, mutateBusinessId, mutateEntityType, mutateIncorporationAgreementStepData,
+  mutateIsIncorporationDateTimeValid, mutateBusinessId, mutateIncorporationAgreementStepData, mutateEntityType,
   mutateNameTranslations, mutateBusinessInformation
 } from '@/store/mutations'
 
-// Actions
+// Setters
 import {
-  setCurrentStep, setIsSaving, setIsSavingResuming, setIsFilingPaying,
+  setIsSaving, setIsSavingResuming, setIsFilingPaying,
   setKeycloakRoles, setAuthRoles, setUserEmail, setCurrentDate, setCertifyStatementResource, setCertifyState,
   setBusinessContact, setDefineCompanyStepValidity, setNameRequest, setFilingId, setFolioNumber, setFilingDate,
   setOfficeAddresses, setOrgPersonList, setAddPeopleAndRoleStepValidity, setShareClasses,
@@ -55,12 +55,15 @@ export function getVuexStore () {
       getCurrentDate,
       getFilingDate,
       getFilingId,
+      getEntityType,
       getFolioNumber,
       getNameRequestApplicant,
       getNameRequestDetails,
       getNameRequestNumber,
       getNameTranslations,
       getOfficeAddresses,
+      getOrgPeople,
+      getUserEmail,
       haveChanges,
       ignoreChanges,
       isApplicationValid,
@@ -86,7 +89,6 @@ export function getVuexStore () {
       mutateCertifyStatementResource,
       mutateCreateShareStructureStepValidity,
       mutateCurrentDate,
-      mutateCurrentStep,
       mutateDefineCompanyStepValidity,
       mutateEffectiveDate,
       mutateEntityType,
@@ -120,7 +122,6 @@ export function getVuexStore () {
       setCertifyStatementResource,
       setCreateShareStructureStepValidity,
       setCurrentDate,
-      setCurrentStep,
       setDefineCompanyStepValidity,
       setEffectiveDate,
       setEntityType,

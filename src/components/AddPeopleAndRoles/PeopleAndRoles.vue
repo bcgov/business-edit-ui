@@ -23,7 +23,7 @@
       </li>
     </ul>
 
-    <div class="btn-panel" v-if="orgPersonList.length === 0">
+    <div class="btn-panel" v-if="getOrgPeople.length === 0">
       <v-btn
         id="btn-start-add-cp"
         outlined
@@ -36,7 +36,7 @@
       </v-btn>
     </div>
 
-    <div class="btn-panel" v-if="orgPersonList.length > 0">
+    <div class="btn-panel" v-if="getOrgPeople.length > 0">
       <v-btn
         id="btn-add-person"
         outlined
@@ -87,9 +87,9 @@
       />
     </v-card>
 
-    <v-card v-if="orgPersonList.length > 0" flat :disabled="showOrgPersonForm" >
+    <v-card v-if="getOrgPeople.length > 0" flat :disabled="showOrgPersonForm" >
       <ListPeopleAndRoles
-        :personList="orgPersonList"
+        :personList="getOrgPeople"
         :isSummary="false"
         @editPerson="editOrgPerson($event)"
         @removePerson="onRemovePerson($event)"
@@ -101,7 +101,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins } from 'vue-property-decorator'
-import { Action, State } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 
 // Interfaces
 import { ActionBindingIF, OrgPersonIF, RolesIF } from '@/interfaces'
@@ -122,14 +122,11 @@ import { OrgPerson, ListPeopleAndRoles } from '.'
   }
 })
 export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
-  // Global state
-  @State(state => state.stateModel.addPeopleAndRoleStep.orgPeople)
-  readonly orgPersonList!: OrgPersonIF[]
+  // Global getters
+  @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter getUserEmail!: string
 
-  @State(state => state.stateModel.tombstone.userEmail)
-  readonly userEmail!: string
-
-  // Global actions
+  // Global setters
   @Action setOrgPersonList!: ActionBindingIF
   @Action setAddPeopleAndRoleStepValidity!: ActionBindingIF
 
@@ -175,14 +172,14 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
     this.currentOrgPerson.roles = rolesToInitialize
     this.currentOrgPerson.officer.partyType = type
     this.activeIndex = -1
-    this.nextId = (this.orgPersonList.length === 0)
-      ? 0 : this.orgPersonList[this.orgPersonList.length - 1].officer.id + 1
+    this.nextId = (this.getOrgPeople.length === 0)
+      ? 0 : this.getOrgPeople[this.getOrgPeople.length - 1].officer.id + 1
     this.addEditInProgress = true
     this.showOrgPersonForm = true
   }
 
   private editOrgPerson (index: number): void {
-    this.currentOrgPerson = { ...this.orgPersonList[index] }
+    this.currentOrgPerson = { ...this.getOrgPeople[index] }
     this.activeIndex = index
     this.addEditInProgress = true
     this.showOrgPersonForm = true
@@ -191,10 +188,10 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
   private onAddEditOrgPerson (person: OrgPersonIF): void {
     // if this is the completing party, assign email address from user profile
     if (person.roles.some(role => role.roleType === Roles.COMPLETING_PARTY)) {
-      person.officer.email = this.userEmail
+      person.officer.email = this.getUserEmail
     }
 
-    const newList: OrgPersonIF[] = Object.assign([], this.orgPersonList)
+    const newList: OrgPersonIF[] = Object.assign([], this.getOrgPeople)
     if (this.activeIndex === -1) {
       // Add Person.
       newList.push(person)
@@ -209,7 +206,7 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
   }
 
   private onRemovePerson (index: number): void {
-    const newList: OrgPersonIF[] = Object.assign([], this.orgPersonList)
+    const newList: OrgPersonIF[] = Object.assign([], this.getOrgPeople)
     newList.splice(index, 1)
     this.setOrgPersonList(newList)
     this.setAddPeopleAndRoleStepValidity(this.hasValidRoles())
@@ -217,7 +214,7 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
   }
 
   private removeCompletingPartyAssignment () {
-    const newList: OrgPersonIF[] = Object.assign([], this.orgPersonList)
+    const newList: OrgPersonIF[] = Object.assign([], this.getOrgPeople)
     const completingParty =
       newList.find(people => people.roles.some(role => role.roleType === Roles.COMPLETING_PARTY))
     if (completingParty) {
@@ -239,13 +236,13 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
 
   private hasValidRoles (): boolean {
     const numOfDirector: number =
-      this.orgPersonList.filter(people => people.roles.some(party => party.roleType === Roles.DIRECTOR)).length
+      this.getOrgPeople.filter(people => people.roles.some(party => party.roleType === Roles.DIRECTOR)).length
     const numOfIncorporator: number =
-      this.orgPersonList.filter(people => people.roles.some(party => party.roleType === Roles.INCORPORATOR)).length
+      this.getOrgPeople.filter(people => people.roles.some(party => party.roleType === Roles.INCORPORATOR)).length
     const numOfCompletingParty: number =
-      this.orgPersonList.filter(people => people.roles.some(party => party.roleType === Roles.COMPLETING_PARTY)).length
+      this.getOrgPeople.filter(people => people.roles.some(party => party.roleType === Roles.COMPLETING_PARTY)).length
     const numOfPeopleWithNoRoles: number =
-      this.orgPersonList.filter(people => people.roles.length === 0).length
+      this.getOrgPeople.filter(people => people.roles.length === 0).length
 
     if (this.entityFilter(EntityTypes.BCOMP)) {
       return numOfCompletingParty === 1 && numOfIncorporator >= 1 && numOfDirector >= 1 && numOfPeopleWithNoRoles === 0
@@ -256,7 +253,7 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
 
   private hasRole (roleName: Roles, count: number, mode: string): boolean {
     const orgPersonWithSpecifiedRole: OrgPersonIF[] =
-    this.orgPersonList.filter(people => people.roles.some(party => party.roleType === roleName))
+    this.getOrgPeople.filter(people => people.roles.some(party => party.roleType === roleName))
 
     if (mode === Modes.EXACT) {
       return orgPersonWithSpecifiedRole.length === count
@@ -270,7 +267,7 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
   }
 
   private get completingParty () : OrgPersonIF {
-    return this.orgPersonList.find(people => people.roles.some(party => party.roleType === Roles.COMPLETING_PARTY))
+    return this.getOrgPeople.find(people => people.roles.some(party => party.roleType === Roles.COMPLETING_PARTY))
   }
 }
 </script>

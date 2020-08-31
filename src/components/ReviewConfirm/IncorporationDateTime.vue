@@ -123,7 +123,7 @@ export default class IncorporationDateTime extends Mixins(DateMixin) {
   @Prop()
   private incorporationDateTime!: DateTimeIF
 
-  // Global Actions
+  // Global setters
   @Action setIsFutureEffective!: ActionBindingIF
 
   // Local properties

@@ -58,7 +58,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
-import { State } from 'vuex-class'
+import { Getter, State } from 'vuex-class'
 
 // Interfaces
 import { CertifyStatementIF, OrgPersonIF } from '@/interfaces'
@@ -68,12 +68,12 @@ import { Roles } from '@/enums'
 
 @Component({})
 export default class Certify extends Vue {
+  // Global getters
+  @Getter getOrgPeople!: OrgPersonIF[]
+
   // Global state
   @State(state => state.stateModel.defineCompanyStep.businessContact.email)
   readonly regOfficeEmail!: string
-
-  @State(state => state.stateModel.addPeopleAndRoleStep.orgPeople)
-  readonly orgPersonList!: OrgPersonIF[]
 
   // Props passed into this component
   @Prop({ default: '' })
@@ -97,7 +97,7 @@ export default class Certify extends Vue {
   /** The Completing Party's email address. */
   private get completingPartyEmail (): string | null {
     const completingParty =
-      this.orgPersonList.find(person => {
+      this.getOrgPeople.find(person => {
         return !!person.roles?.some(role => {
           return (role.roleType === Roles.COMPLETING_PARTY)
         })

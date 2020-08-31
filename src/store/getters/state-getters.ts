@@ -1,6 +1,6 @@
-// Enums
-import { AccountTypes, EntityTypes, RouteNames } from '@/enums'
-import { NameRequestDetailsIF, NameRequestApplicantIF } from '@/interfaces'
+// Enums and Interfaces
+import { AccountTypes, EntityTypes } from '@/enums'
+import { NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: any): boolean => {
@@ -17,24 +17,34 @@ export const isAuthView = (state: any): boolean => {
   return state.stateModel.tombstone.authRoles.includes('view')
 }
 
+/** The entity type. */
+export const getEntityType = (state: any): EntityTypes => {
+  return state.stateModel.tombstone.entityType
+}
+
 /** Whether the entity type has been identified. */
 export const isEntityType = (state: any): boolean => {
-  return !!state.stateModel.entityType
+  return !!state.stateModel.tombstone.entityType
 }
 
 /** Whether the entity is a BCOMP. */
 export const isTypeBcomp = (state: any): boolean => {
-  return (state.stateModel.entityType === EntityTypes.BCOMP)
+  return (state.stateModel.tombstone.entityType === EntityTypes.BCOMP)
 }
 
 /** Whether the entity is a COOP. */
 export const isTypeCoop = (state: any): boolean => {
-  return (state.stateModel.entityType === EntityTypes.COOP)
+  return (state.stateModel.tombstone.entityType === EntityTypes.COOP)
 }
 
 /** Whether the current account is a premium account. */
 export const isPremiumAccount = (state: any): boolean => {
   return (state.stateModel.accountInformation.accountType === AccountTypes.PREMIUM)
+}
+
+/** Whether the current filing is future effective. */
+export const isFutureEffective = (state: any): boolean => {
+  return state.stateModel.incorporationDateTime.isFutureEffective
 }
 
 /** The current account id. */
@@ -44,22 +54,27 @@ export const getAccountId = (state: any): number => {
 
 /** The current date. */
 export const getCurrentDate = (state: any): string => {
-  return state.stateModel.currentDate
+  return state.stateModel.tombstone.currentDate
 }
 
 /** The filing date. */
 export const getFilingDate = (state: any): string => {
-  return state.stateModel.filingDate
+  return state.stateModel.tombstone.filingDate
 }
 
 /** The filing id. */
 export const getFilingId = (state: any): number => {
-  return state.stateModel.filingId
+  return state.stateModel.tombstone.filingId
 }
 
 /** The business identifier. */
 export const getBusinessId = (state: any): string => {
-  return state.stateModel.businessId
+  return state.stateModel.tombstone.businessId
+}
+
+/** The folio number. */
+export const getUserEmail = (state: any): string => {
+  return state.stateModel.tombstone.userEmail
 }
 
 /** The folio number. */
@@ -99,18 +114,28 @@ export const getNameTranslations = (state: any): Array<string> => {
 }
 
 /** The office addresses. */
-export const getOfficeAddresses = (state: any): string => {
+export const getOfficeAddresses = (state: any): any => {
   return state.stateModel.defineCompanyStep.officeAddresses
+}
+
+/** The organization's people list. */
+export const getOrgPeople = (state: any): Array<OrgPersonIF> => {
+  return state.stateModel.addPeopleAndRoleStep.orgPeople
+}
+
+/** The share classes list. */
+export const getShareClasses = (state: any): Array<ShareClassIF> => {
+  return state.stateModel.createShareStructureStep.shareClasses
 }
 
 /** Whether we are ignoring data changes. */
 export const ignoreChanges = (state: any): boolean => {
-  return state.stateModel.ignoreChanges
+  return state.stateModel.tombstone.ignoreChanges
 }
 
 /** Whether there are unsaved data changes. */
 export const haveChanges = (state: any): boolean => {
-  return state.stateModel.haveChanges
+  return state.stateModel.tombstone.haveChanges
 }
 
 //
@@ -130,7 +155,9 @@ export const isEnableFilePayBtn = (state: any, getters: any): boolean => {
 
 /** Whether app is busy saving or resuming. */
 export const isBusySaving = (state: any): boolean => {
-  return (state.stateModel.isSaving || state.stateModel.isSavingResuming || state.stateModel.isFilingPaying)
+  return (state.stateModel.tombstone.isSaving ||
+    state.stateModel.tombstone.isSavingResuming ||
+    state.stateModel.tombstone.isFilingPaying)
 }
 
 // TODO: change this to "all sections"?

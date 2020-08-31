@@ -1,14 +1,13 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { State } from 'vuex-class'
+import { Getter } from 'vuex-class'
+import { EntityTypes } from '@/enums'
 
 /**
  * Mixin that provides an entity filter utility.
  */
 @Component({})
 export default class EntityFilterMixin extends Vue {
-  // Global state
-  @State(state => state.stateModel.entityType)
-  readonly entityType!: string
+  @Getter getEntityType!: EntityTypes
 
   /**
    * Method to compare the conditional entity to the entityType defined from the Store.
@@ -16,7 +15,7 @@ export default class EntityFilterMixin extends Vue {
    * @param entity The entity type of the component.
    * @return boolean A boolean indicating if the entityType given matches the entityType assigned to the component.
    */
-  entityFilter (entityType: string): boolean {
-    return this.entityType === entityType
+  entityFilter (entityType: EntityTypes): boolean {
+    return this.getEntityType === entityType
   }
 }

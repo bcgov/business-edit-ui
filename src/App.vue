@@ -113,7 +113,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Vue, Watch, Mixins } from 'vue-property-decorator'
-import { State, Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import { BAD_REQUEST, PAYMENT_REQUIRED, FORBIDDEN, UNPROCESSABLE_ENTITY } from 'http-status-codes'
 import { getKeycloakRoles } from '@/utils'
@@ -164,20 +164,12 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     confirm: ConfirmDialogType
   }
 
-  // Global state
-  @State(state => state.stateModel.entityType)
-  readonly entityType!: string
-
-  @State(state => state.stateModel.incorporationDateTime.isFutureEffective)
-  readonly isFutureEffective!: boolean
-
   // Global getters
   @Getter haveChanges!: boolean
   @Getter getBusinessId!: string
 
-  // Global actions
+  // Global setters
   @Action setBusinessId!: ActionBindingIF
-  @Action setCurrentStep!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
   @Action setUserEmail: ActionBindingIF
@@ -325,7 +317,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
       // reset errors in case this method is invoked more than once (ie, retry)
       this.resetFlags()
 
-      // get business ID query param
+      // get and store business ID query param
       const businessId = this.$route?.query?.businessId as string
       if (!businessId) {
         this.fetchErrorDialog = true
@@ -350,6 +342,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
       this.initEntityFees()
 
       // store today's date
+      // NB: keep this here in case user clicks Retry
       this.setCurrentDate(this.dateToUsableString(new Date()))
 
       this.haveData = true

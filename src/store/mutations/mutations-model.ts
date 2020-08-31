@@ -2,9 +2,10 @@ import {
   CertifyStatementIF, CertifyIF, IncorporationAddressIf, NameRequestIF,
   BusinessContactIF, OrgPersonIF, ShareClassIF, AccountInformationIF, IncorporationAgreementIF, BusinessInformationIF
 } from '@/interfaces'
+import { EntityTypes } from '@/enums'
 
 export const mutateBusinessId = (state: any, businessId: string) => {
-  state.stateModel.businessId = businessId
+  state.stateModel.tombstone.businessId = businessId
 }
 
 export const mutateCertifyStatementResource = (state: any, certifyStatementResource: CertifyStatementIF) => {
@@ -23,50 +24,46 @@ export const mutateUserEmail = (state: any, userEmail: string) => {
   state.stateModel.tombstone.userEmail = userEmail
 }
 
-export const mutateCurrentStep = (state: any, currentStep: boolean) => {
-  state.stateModel.currentStep = currentStep
-}
-
 export const mutateIsSaving = (state: any, isSaving: boolean) => {
-  state.stateModel.isSaving = isSaving
+  state.stateModel.tombstone.isSaving = isSaving
 }
 
 export const mutateIsSavingResuming = (state: any, isSavingResuming: boolean) => {
-  state.stateModel.isSavingResuming = isSavingResuming
+  state.stateModel.tombstone.isSavingResuming = isSavingResuming
 }
 
 export const mutateIsFilingPaying = (state: any, isFilingPaying: boolean) => {
-  state.stateModel.isFilingPaying = isFilingPaying
+  state.stateModel.tombstone.isFilingPaying = isFilingPaying
 }
 
 export const mutateCurrentDate = (state: any, currentDate: string) => {
-  state.stateModel.currentDate = currentDate
-  if (!state.stateModel.ignoreChanges) mutateHaveChanges(state, true)
+  state.stateModel.tombstone.currentDate = currentDate
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateIsFutureEffective = (state: any, isFutureEffective: boolean) => {
   state.stateModel.incorporationDateTime.isFutureEffective = isFutureEffective
-  if (!state.stateModel.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateEffectiveDate = (state: any, effectiveDate: string) => {
   state.stateModel.incorporationDateTime.effectiveDate = effectiveDate
-  if (!state.stateModel.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateIsIncorporationDateTimeValid = (state: any, incorporationDateTimeValid: boolean) => {
   state.stateModel.incorporationDateTime.valid = incorporationDateTimeValid
-  if (!state.stateModel.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateCertifyState = (state: any, certifyState: CertifyIF) => {
   state.stateModel.certifyState = certifyState
-  if (!state.stateModel.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateBusinessContact = (state: any, businessContact: BusinessContactIF) => {
   state.stateModel.defineCompanyStep.businessContact = businessContact
-  if (!state.stateModel.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateDefineCompanyStepValidity = (state: any, validity: boolean) => {
@@ -75,12 +72,12 @@ export const mutateDefineCompanyStepValidity = (state: any, validity: boolean) =
 
 export const mutateOfficeAddresses = (state: any, addresses: IncorporationAddressIf) => {
   state.stateModel.defineCompanyStep.officeAddresses = addresses
-  if (!state.stateModel.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateOrgPersonList = (state: any, orgPeople: OrgPersonIF[]) => {
   state.stateModel.addPeopleAndRoleStep.orgPeople = orgPeople
-  if (!state.stateModel.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateAddPeopleAndRoleStepValidity = (state: any, validity: boolean) => {
@@ -92,15 +89,15 @@ export const mutateFolioNumber = (state: any, folioNumber: string) => {
 }
 
 export const mutateFilingDate = (state: any, filingDate: string) => {
-  state.stateModel.filingDate = filingDate
+  state.stateModel.tombstone.filingDate = filingDate
 }
 
-export const mutateAccountInformation = (state: any, accountInfo: AccountInformationIF) => {
-  state.stateModel.accountInformation = accountInfo
+export const mutateAccountInformation = (state: any, accountInformation: AccountInformationIF) => {
+  state.stateModel.accountInformation = accountInformation
 }
 
-export const mutateBusinessInformation = (state: any, accountInfo: BusinessInformationIF) => {
-  state.stateModel.businessInformation = accountInfo
+export const mutateBusinessInformation = (state: any, businessInformation: BusinessInformationIF) => {
+  state.stateModel.businessInformation = businessInformation
 }
 
 export const mutateNameRequest = (state: any, nameRequest: NameRequestIF) => {
@@ -112,12 +109,12 @@ export const mutateNameTranslations = (state: any, nameTranslations: Array<strin
 }
 
 export const mutateFilingId = (state: any, filingId: number) => {
-  state.stateModel.filingId = filingId
+  state.stateModel.tombstone.filingId = filingId
 }
 
 export const mutateShareClasses = (state: any, shareClasses: ShareClassIF[]) => {
   state.stateModel.createShareStructureStep.shareClasses = shareClasses
-  if (!state.stateModel.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateCreateShareStructureStepValidity = (state: any, validity: boolean) => {
@@ -126,17 +123,17 @@ export const mutateCreateShareStructureStepValidity = (state: any, validity: boo
 
 export const mutateIncorporationAgreementStepData = (state: any, stepData: IncorporationAgreementIF) => {
   state.stateModel.incorporationAgreementStep = stepData
-  if (!state.stateModel.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateIgnoreChanges = (state: any, ignoreChanges: boolean) => {
-  state.stateModel.ignoreChanges = ignoreChanges
+  state.stateModel.tombstone.ignoreChanges = ignoreChanges
 }
 
 export const mutateHaveChanges = (state: any, haveChanges: boolean) => {
-  state.stateModel.haveChanges = haveChanges
+  state.stateModel.tombstone.haveChanges = haveChanges
 }
 
-export const mutateEntityType = (state: any, entityType) => {
-  state.stateModel.entityType = entityType
+export const mutateEntityType = (state: any, entityType: EntityTypes) => {
+  state.stateModel.tombstone.entityType = entityType
 }

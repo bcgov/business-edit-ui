@@ -82,6 +82,6 @@ export interface IncorporationFilingBodyIF {
 }
 
 export interface BusinessInformationIF {
-  legalType: string,
+  legalType: string
   identifier: string
 }

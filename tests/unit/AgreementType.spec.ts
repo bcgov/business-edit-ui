@@ -54,7 +54,7 @@ function createComponent (showErrorSummary:boolean = false, isSummary:boolean = 
 }
 
 store.state.stateModel.nameRequest.entityType = 'BC'
-store.state.stateModel.currentDate = '2020-03-30'
+store.state.stateModel.tombstone.currentDate = '2020-03-30'
 
 describe('Share Structure component', () => {
   it('Loads the component in edit mode and both agreement types are not selected', async () => {

@@ -33,7 +33,7 @@ import { Getter } from 'vuex-class'
 
 @Component({})
 export default class BcolErrorDialog extends Vue {
-  // Getter definition for static type checking.
+  // Global getters
   @Getter isRoleStaff!: boolean
 
   @Prop() private filingType: string

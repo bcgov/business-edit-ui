@@ -170,7 +170,7 @@ export default class NameRequestInfo extends Mixins(DateMixin) {
   @State(state => state.stateModel.nameTranslations)
   readonly nameTranslations!: Array<string>
 
-  // Global Actions
+  // Global setters
   @Action setNameTranslations!: ActionBindingIF
 
   // Global getters

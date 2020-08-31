@@ -36,7 +36,7 @@ describe('Review Confirm view', () => {
   })
 
   it('displays benefit company statement when it is a BC', () => {
-    store.state.stateModel.entityType = 'BC'
+    store.state.stateModel.tombstone.entityType = 'BC'
     const wrapper = shallowMount(ReviewConfirm, { localVue, store, router, vuetify })
 
     expect(wrapper.find('.benefit-company-statement').exists()).toBe(true)
@@ -46,7 +46,7 @@ describe('Review Confirm view', () => {
   })
 
   it('doesn\'t display benefit company statement when it is not a BC', () => {
-    store.state.stateModel.entityType = 'CP'
+    store.state.stateModel.tombstone.entityType = 'CP'
     const wrapper = shallowMount(ReviewConfirm, { localVue, store, router, vuetify })
 
     expect(wrapper.find('.benefit-company-statement').exists()).toBe(false)

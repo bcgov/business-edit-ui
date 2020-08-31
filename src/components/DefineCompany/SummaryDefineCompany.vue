@@ -4,6 +4,7 @@
         <v-icon>mdi-domain</v-icon>
         <label class="define-company-title"><strong>Your Company</strong></label>
     </div>
+
     <div v-if="!valid && !isSummary" class="defineCompanyStepErrorMessage">
       <span>
         <v-icon color="blue darken-2">mdi-information-outline</v-icon>
@@ -13,6 +14,7 @@
         </router-link>
       </span>
     </div>
+
     <div class="section-container">
       <!--TODO: Replace container content with Name Request Summary when it is ready -->
       <v-layout row>
@@ -20,7 +22,7 @@
           <label><strong>Company Name</strong></label>
         </v-flex>
         <v-flex md8>
-          <div class="company-name">{{ getApprovedName || '[Incorporation Number] B.C. Ltd.' }}</div>
+          <div class="company-name">{{ companyName }}</div>
           <div class="company-type">
             <span v-if="entityFilter(EntityTypes.BCOMP)">BC Benefit Company</span>
             <span v-else-if="entityFilter(EntityTypes.COOP)">BC Cooperative Association</span>
@@ -36,16 +38,21 @@
         </v-flex>
       </v-layout>
     </div>
-    <v-divider/>
+
+    <v-divider />
+
     <div class="section-container">
-      <OfficeAddresses :inputAddresses="addresses" :isEditing="false" />
+      <OfficeAddresses :inputAddresses="getOfficeAddresses" :isEditing="false" />
     </div>
-    <v-divider/>
+
+    <v-divider />
+
     <div class="section-container">
       <BusinessContactInfo :initialValue="businessContact" :isEditing="false" />
     </div>
+
     <div class="section-container" v-if="isPremiumAccount">
-      <FolioNumber :initialValue="folioNumber" :isEditing="false" />
+      <FolioNumber :initialValue="getFolioNumber" :isEditing="false" />
     </div>
   </v-card>
 </template>
@@ -76,9 +83,12 @@ import { EntityTypes } from '@/enums'
 })
 export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
   // Getters
-  @Getter getApprovedName!: GetterIF
+  @Getter getApprovedName!: string
+  @Getter getBusinessId!: string
   @Getter isPremiumAccount!: GetterIF
   @Getter getNameTranslations!: Array<string>
+  @Getter getOfficeAddresses!: any
+  @Getter getFolioNumber!: string
 
   // Global state
   @State(state => state.stateModel.defineCompanyStep.valid)
@@ -87,17 +97,20 @@ export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
   @State(state => state.stateModel.defineCompanyStep.businessContact)
   readonly businessContact!: BusinessContactIF
 
-  @State(state => state.stateModel.defineCompanyStep.officeAddresses)
-  readonly addresses!: IncorporationAddressIf
-
-  @State(state => state.stateModel.defineCompanyStep.folioNumber)
-  readonly folioNumber!: string
-
   @Prop({ default: false })
   private isSummary: boolean
 
   // Entity Enum
   readonly EntityTypes = EntityTypes
+
+  /** The company name (from NR, or incorporation number). */
+  private get companyName (): string {
+    if (this.getApprovedName) return this.getApprovedName
+
+    // remove first 2 chars from Business ID
+    const incorporationNumber = this.getBusinessId?.substring(2) || '[Incorporation Number]'
+    return `${incorporationNumber} B.C. Ltd.`
+  }
 }
 </script>
 

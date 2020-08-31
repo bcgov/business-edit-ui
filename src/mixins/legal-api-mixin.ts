@@ -15,11 +15,11 @@ export default class LegalApiMixin extends Vue {
   readonly NAME_REQUEST = 'nameRequest'
   readonly INCORPORATION_APPLICATION = 'incorporationApplication'
 
-  // Global Getters
+  // Global getters
   @Getter getFilingId!: number
   @Getter getBusinessId!: string
 
-  // Store Actions
+  // Global setters
   @Action setFilingId!: ActionBindingIF
 
   /**

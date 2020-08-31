@@ -8,10 +8,6 @@ export const setBusinessId = ({ commit }, businessId): void => {
   commit('mutateBusinessId', businessId)
 }
 
-export const setCurrentStep: ActionIF = ({ commit }, currentStep): void => {
-  commit('mutateCurrentStep', currentStep)
-}
-
 export const setIsSaving: ActionIF = ({ commit }, isSaving): void => {
   commit('mutateIsSaving', isSaving)
 }
@@ -80,12 +76,12 @@ export const setFilingDate: ActionIF = ({ commit }, filingDate): void => {
   commit('mutateFilingDate', filingDate)
 }
 
-export const setAccountInformation: ActionIF = ({ commit }, accountInfo): void => {
-  commit('mutateAccountInformation', accountInfo)
+export const setAccountInformation: ActionIF = ({ commit }, accountInformation): void => {
+  commit('mutateAccountInformation', accountInformation)
 }
 
-export const setBusinessInformation: ActionIF = ({ commit }, businessInfo): void => {
-  commit('mutateBusinessInformation', businessInfo)
+export const setBusinessInformation: ActionIF = ({ commit }, businessInformation): void => {
+  commit('mutateBusinessInformation', businessInformation)
 }
 
 export const setNameRequest: ActionIF = ({ commit }, nameRequest): void => {

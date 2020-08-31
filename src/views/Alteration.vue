@@ -6,8 +6,8 @@
       </header>
       <!-- The Summary Components Below are just for a visual representation. Future Components TBD -->
       <SummaryDefineCompany/>
-      <ListPeopleAndRoles :personList="orgPersonList" :isSummary="true" />
-      <ListShareClass :shareClasses="shareClasses" :isSummary="true" />
+      <ListPeopleAndRoles :personList="getOrgPeople" :isSummary="true" />
+      <ListShareClass :shareClasses="getShareClasses" :isSummary="true" />
       <AgreementType :isSummary="true" />
     </section>
   </div>
@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { Getter, State } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 
 // Components
 import { SummaryDefineCompany } from '@/components/DefineCompany'
@@ -25,7 +25,8 @@ import { AgreementType } from '@/components/IncorporationAgreement'
 
 // Mixins, Interfaces and Enums
 import { FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { OrgPersonIF, ShareClassIF, StateModelIF } from '@/interfaces'
+import { ActionBindingIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
+import { EntityTypes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 @Component({
@@ -37,17 +38,26 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   }
 })
 export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixin) {
-  // Getter definition for static type checking.
+  // Global getters
   @Getter isRoleStaff!: boolean
+  @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter getShareClasses!: ShareClassIF[]
 
-  @State(state => state.stateModel.addPeopleAndRoleStep.orgPeople)
-  readonly orgPersonList: OrgPersonIF[]
+  // Global setters
+  @Action setEntityType!: ActionBindingIF
 
-  @State(state => state.stateModel.createShareStructureStep.shareClasses)
-  readonly shareClasses: ShareClassIF[]
+  /** True if user is authenticated. */
+  private get isAuthenticated (): boolean {
+    return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+  }
 
+  /** Called when this component is created. */
+  private created (): void {
+    this.setEntityType(EntityTypes.BCOMP)
+  }
+
+  /** Called when this component is mounted. */
   private mounted (): void {
-    console.log('*** Alteration view is mounted') // eslint-disable-line no-console
     if (!this.isAuthenticated) return
 
     // If a user (not staff) tries this url directly, return them to the Manage Businesses dashboard.
@@ -56,11 +66,6 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
       const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
       window.location.assign(manageBusinessUrl)
     }
-  }
-
-  /** True if user is authenticated. */
-  private get isAuthenticated (): boolean {
-    return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 }
 </script>

@@ -24,7 +24,7 @@
         </p>
       </header>
       <OfficeAddresses
-        :inputAddresses="addresses"
+        :inputAddresses="getOfficeAddresses"
         @update:addresses="onAddressChange($event)"
         @valid="onAddressFormValidityChange($event)"
       />
@@ -57,7 +57,7 @@
       </header>
       <v-card flat class="step-container">
         <FolioNumber
-          :initialValue="folioNumber"
+          :initialValue="getFolioNumber"
           :isEditing="true"
           @folioNumberChange="onFolioNumberChange($event)"
         />
@@ -100,19 +100,14 @@ export default class DefineCompany extends Mixins(EntityFilterMixin) {
   @State(state => state.stateModel.defineCompanyStep.businessContact)
   readonly businessContact!: BusinessContactIF
 
-  @State(state => state.stateModel.defineCompanyStep.officeAddresses)
-  readonly addresses!: IncorporationAddressIf
-
-  @State(state => state.stateModel.defineCompanyStep.folioNumber)
-  readonly folioNumber!: string
-
   // Global getters
-  @Getter isEntityType!: GetterIF
-  @Getter isPremiumAccount!: GetterIF
-  @Getter isTypeBcomp!: GetterIF
+  @Getter isEntityType!: boolean
+  @Getter isPremiumAccount!: boolean
+  @Getter isTypeBcomp!: boolean
+  @Getter getOfficeAddresses!: any
+  @Getter getFolioNumber!: string
 
-  // Global actions
-  @Action setEntityType!: ActionBindingIF
+  // Global setters
   @Action setBusinessContact!: ActionBindingIF
   @Action setFolioNumber!: ActionBindingIF
   @Action setOfficeAddresses!: ActionBindingIF
@@ -135,7 +130,7 @@ export default class DefineCompany extends Mixins(EntityFilterMixin) {
     this.setIgnoreChanges(true)
 
     // if no addresses were fetched, set default addresses
-    if (!this.addresses.registeredOffice && !this.addresses.recordsOffice) {
+    if (!this.getOfficeAddresses.registeredOffice && !this.getOfficeAddresses.recordsOffice) {
       this.setDefaultAddresses()
     }
 

@@ -59,7 +59,7 @@ describe('Office Addresses component - COOP', () => {
 
   beforeAll(() => {
     // init store
-    store.state.stateModel.entityType = 'CP'
+    store.state.stateModel.tombstone.entityType = 'CP'
   })
 
   it('does not show the summary ui when editing', () => {
@@ -157,7 +157,7 @@ describe('Office Addresses component - BCOMP', () => {
 
   beforeAll(() => {
     // init store
-    store.state.stateModel.entityType = 'BC'
+    store.state.stateModel.tombstone.entityType = 'BC'
   })
 
   it('does not show the summary ui when editing', () => {
@@ -262,7 +262,7 @@ describe('same as checkboxes reset addresses to default when unchecked - BCOMP',
 
   beforeAll(() => {
     // init store
-    store.state.stateModel.entityType = 'BC'
+    store.state.stateModel.tombstone.entityType = 'BC'
   })
 
   it('should reset registered and records delivery addresses', async () => {
@@ -395,7 +395,7 @@ describe('should properly emit valid - BCOMP', () => {
 
   beforeAll(() => {
     // init store
-    store.state.stateModel.entityType = 'BC'
+    store.state.stateModel.tombstone.entityType = 'BC'
   })
 
   it('should emit valid form', async () => {

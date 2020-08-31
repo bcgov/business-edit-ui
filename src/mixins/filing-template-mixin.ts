@@ -3,10 +3,12 @@ import { Component, Vue } from 'vue-property-decorator'
 import { State, Getter, Action } from 'vuex-class'
 
 // Interfaces
-import { ActionBindingIF, StateModelIF, IncorporationFilingIF, IncorporationFilingBodyIF } from '@/interfaces'
+import { ActionBindingIF, StateModelIF, IncorporationFilingIF, IncorporationFilingBodyIF, OrgPersonIF, ShareClassIF
+} from '@/interfaces'
 
 // Constants
 import { INCORPORATION_APPLICATION } from '@/constants'
+import { EntityTypes } from '@/enums'
 
 /**
  * Mixin that provides the integration with the Legal API.
@@ -22,9 +24,14 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getApprovedName!: string
   @Getter getBusinessId!: string
   @Getter getCurrentDate!: string
+  @Getter getEntityType!: EntityTypes
+  @Getter getFilingDate!: string
+  @Getter isFutureEffective!: boolean
+  @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter getShareClasses!: ShareClassIF[]
+  @Getter getFolioNumber!: string
 
-  // Global actions
-  @Action setEntityType!: ActionBindingIF
+  // Global setters
   @Action setBusinessContact!: ActionBindingIF
   @Action setBusinessInformation!: ActionBindingIF
   @Action setOfficeAddresses!: ActionBindingIF
@@ -53,17 +60,17 @@ export default class FilingTemplateMixin extends Vue {
         header: {
           name: INCORPORATION_APPLICATION,
           certifiedBy: this.stateModel.certifyState.certifiedBy,
-          date: this.getCurrentDate,
-          folioNumber: this.stateModel.defineCompanyStep.folioNumber,
-          isFutureEffective: this.stateModel.incorporationDateTime.isFutureEffective
+          date: this.getFilingDate || this.getCurrentDate,
+          folioNumber: this.getFolioNumber,
+          isFutureEffective: this.isFutureEffective
         },
         business: {
-          legalType: this.stateModel.entityType,
+          legalType: this.getEntityType,
           identifier: this.getBusinessId
         },
         incorporationApplication: {
           nameRequest: {
-            legalType: this.stateModel.entityType
+            legalType: this.getEntityType
           },
           nameTranslations: {
             new: this.stateModel.nameTranslations
@@ -74,8 +81,8 @@ export default class FilingTemplateMixin extends Vue {
             phone: this.stateModel.defineCompanyStep.businessContact.phone,
             extension: this.stateModel.defineCompanyStep.businessContact.extension
           },
-          parties: this.stateModel.addPeopleAndRoleStep.orgPeople,
-          shareClasses: this.stateModel.createShareStructureStep.shareClasses,
+          parties: this.getOrgPeople,
+          shareClasses: this.getShareClasses,
           incorporationAgreement: {
             agreementType: this.stateModel.incorporationAgreementStep.agreementType
           }
@@ -101,10 +108,7 @@ export default class FilingTemplateMixin extends Vue {
    * @param filing the filing body to be parsed
    */
   parseIncorpFiling (filing: IncorporationFilingBodyIF): void {
-    // Set Entity Type
-    this.setEntityType(filing.business.legalType)
-
-    // Set Business Info
+    // Set Business Information
     this.setBusinessInformation(filing.business)
 
     // Set Name Request
@@ -116,7 +120,7 @@ export default class FilingTemplateMixin extends Vue {
     // Set Name Translations
     this.setNameTranslations(filing.incorporationApplication.nameTranslations?.new)
 
-    // Set Contact Info
+    // Set Business Contact
     const contact = {
       ...filing.incorporationApplication.contactPoint,
       confirmEmail: filing.incorporationApplication.contactPoint.email

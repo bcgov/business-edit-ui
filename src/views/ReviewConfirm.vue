@@ -82,7 +82,7 @@ export default class ReviewConfirm extends Mixins() {
   @Getter isTypeBcomp!: GetterIF
   @Getter getCurrentDate!: string
 
-  // Global Actions
+  // Global setters
   @Action setIsIncorporationDateTimeValid!: ActionBindingIF
   @Action setEffectiveDate!: ActionBindingIF
   @Action setCertifyState!: ActionBindingIF

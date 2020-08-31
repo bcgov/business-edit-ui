@@ -4,7 +4,17 @@ export const stateModel: StateModelIF = {
   tombstone: {
     keycloakRoles: [],
     authRoles: [],
-    userEmail: ''
+    userEmail: '',
+    businessId: '',
+    entityType: null,
+    currentDate: '',
+    filingDate: '',
+    filingId: null,
+    isSaving: false,
+    isSavingResuming: false,
+    isFilingPaying: false,
+    ignoreChanges: false,
+    haveChanges: false
   },
   accountInformation: {
     accountType: '',
@@ -24,8 +34,6 @@ export const stateModel: StateModelIF = {
     filingId: null
   },
   nameTranslations: [],
-  currentDate: '',
-  filingDate: '',
   incorporationDateTime: {
     valid: false,
     isFutureEffective: false,
@@ -35,15 +43,6 @@ export const stateModel: StateModelIF = {
     valid: false,
     certifiedBy: ''
   },
-  businessId: '',
-  entityType: '',
-  currentStep: 1,
-  filingId: null,
-  isSaving: false,
-  isSavingResuming: false,
-  isFilingPaying: false,
-  ignoreChanges: false,
-  haveChanges: false,
   defineCompanyStep: {
     valid: false,
     businessContact: {

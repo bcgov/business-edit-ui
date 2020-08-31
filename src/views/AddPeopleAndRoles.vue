@@ -35,7 +35,7 @@ export default class AddPeopleAndRoles extends Mixins(EntityFilterMixin) {
   // Global getters
   @Getter isEntityType!: GetterIF
 
-  // Global actions
+  // Global setters
   @Action setIgnoreChanges!: ActionBindingIF
 
   // Entity Enum

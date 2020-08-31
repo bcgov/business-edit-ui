@@ -20,10 +20,10 @@
       </div>
 
       <SummaryDefineCompany :isSummary="true" />
-      <!-- TODO: recognition date and time (as part of Your Company) -->
-      <!-- TODO: folio number (as part of Your Company) -->
-      <ListPeopleAndRoles :personList="orgPersonList" :isSummary="true" />
-      <ListShareClass :shareClasses="shareClasses" :isSummary="true" />
+      <!-- TODO: recognition date and time (as part of SummaryDefineCompany) -->
+      <!-- TODO: folio number (as part of SummaryDefineCompany) -->
+      <ListPeopleAndRoles :personList="getOrgPeople" :isSummary="true" />
+      <ListShareClass :shareClasses="getShareClasses" :isSummary="true" />
       <AgreementType :isSummary="true" />
       <!-- TODO: original completing party -->
       <!-- TODO: 1. detail -->
@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { Getter, State } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 
 // Components
 import { SummaryDefineCompany } from '@/components/DefineCompany'
@@ -45,7 +45,8 @@ import { AgreementType } from '@/components/IncorporationAgreement'
 
 // Mixins, Interfaces and Enums
 import { DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { GetterIF, OrgPersonIF, ShareClassIF, StateModelIF } from '@/interfaces'
+import { ActionBindingIF, GetterIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
+import { EntityTypes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 // Resources
@@ -63,21 +64,32 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   // Resources
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
 
-  // Getter definition for static type checking.
+  // Global setters
+  @Action setEntityType!: ActionBindingIF
+
+  // Global getters
   @Getter isRoleStaff!: boolean
   @Getter isTypeBcomp!: boolean
   @Getter getFilingDate!: string
+  @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter getShareClasses!: ShareClassIF[]
 
-  @State(state => state.stateModel.addPeopleAndRoleStep.orgPeople)
-  readonly orgPersonList: OrgPersonIF[]
-
-  @State(state => state.stateModel.createShareStructureStep.shareClasses)
-  readonly shareClasses: ShareClassIF[]
-
+  /** The filing date, in local timezone. */
   private get filingDateLocal (): string {
     return this.convertUtcTimeToLocalTime(this.getFilingDate)?.slice(0, 10)
   }
 
+  /** True if user is authenticated. */
+  private get isAuthenticated (): boolean {
+    return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+  }
+
+  /** Called when this component is created. */
+  private created (): void {
+    this.setEntityType(EntityTypes.BCOMP)
+  }
+
+  /** Called when this component is mounted. */
   private mounted (): void {
     if (!this.isAuthenticated) return
 
@@ -87,11 +99,6 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
       const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
       window.location.assign(manageBusinessUrl)
     }
-  }
-
-  /** True if user is authenticated. */
-  private get isAuthenticated (): boolean {
-    return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 }
 </script>

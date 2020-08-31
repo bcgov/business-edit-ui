@@ -55,7 +55,7 @@ import { AgreementTypeResource } from '@/resources'
 
 @Component
 export default class AgreementType extends Vue {
-   private incorporationAgreementTypeResource = AgreementTypeResource
+  private incorporationAgreementTypeResource = AgreementTypeResource
 
   // State
   @State(state => state.stateModel.incorporationAgreementStep.agreementType)
@@ -67,10 +67,11 @@ export default class AgreementType extends Vue {
   @Prop({ default: false })
   private isSummary: boolean
 
-  // Actions
+  // Global setters
   @Action setIncorporationAgreementStepData!: ActionBindingIF
   @Action setIgnoreChanges!: ActionBindingIF
 
+  // Local properties
   private agreementType: string | null = null
 
   // Lifecycle methods
