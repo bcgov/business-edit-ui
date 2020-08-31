@@ -73,6 +73,7 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
       // redirect to the Manage Businesses dashboard
       const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
       window.location.assign(manageBusinessUrl)
+      return
     }
 
     // do not proceed if we don't have the necessary query params
