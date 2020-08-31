@@ -81,7 +81,10 @@
         <v-container class="view-container pa-0">
           <v-row>
             <v-col cols="12" lg="9">
-              <router-view />
+              <router-view
+                @fetchError="fetchErrorDialog = true"
+                @filingData="filingData = $event"
+              />
             </v-col>
             <v-col cols="12" lg="3" style="position: relative">
               <aside>
@@ -133,7 +136,6 @@ import { BcolMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixi
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces'
 
 // Enums and Constants
-import { EntityTypes, FilingCodes, RouteNames } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 @Component({
@@ -170,7 +172,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
 
   // Global setters
   @Action setBusinessId!: ActionBindingIF
-  @Action setEntityType!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
   @Action setUserEmail: ActionBindingIF
@@ -197,9 +198,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   private saveErrors: Array<object> = []
   private saveWarnings: Array<object> = []
   private fileAndPayInvalidNameRequestDialog: boolean = false
-
-  // Template Enums
-  readonly RouteNames = RouteNames
 
   /** Whether the token refresh service is initialized. */
   private tokenService: boolean = false
@@ -327,31 +325,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
         throw new Error(`Auth error: ${error}`)
       })
 
-      // check for necessary query params
-      switch (this.$route.name) {
-        case RouteNames.ALTERATION:
-          // const filingId = +this.$route.query['filing-id']
-          // if (isNaN(filingId)) {
-          //   this.fetchErrorDialog = true
-          //   throw new Error('Invalid alteration filing ID')
-          // }
-          this.setEntityType(EntityTypes.BCOMP)
-          break
-        case RouteNames.CORRECTION:
-          const correctedId = +this.$route.query['corrected-id']
-          const correctionId = +this.$route.query['correction-id']
-          if (isNaN(correctedId) && isNaN(correctionId)) {
-            this.fetchErrorDialog = true
-            throw new Error('Invalid corrected or correction filing ID')
-          }
-          this.setEntityType(EntityTypes.BCOMP)
-          break
-      }
-
-      // TODO: move this to views?
-      // initialize Fee Summary data
-      this.initEntityFees()
-
       // store today's date
       // NB: keep this here in case user clicks Retry
       this.setCurrentDate(this.dateToUsableString(new Date()))
@@ -470,26 +443,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     if (sessionStorage.getItem(SessionStorageKeys.CurrentAccount)) {
       const accountInfo = JSON.parse(sessionStorage.getItem(SessionStorageKeys.CurrentAccount))
       this.setAccountInformation(accountInfo)
-    }
-  }
-
-  /** Initializes the Fee Summary based on the filing type. */
-  private initEntityFees (): void {
-    switch (this.$route.name) {
-      case RouteNames.CORRECTION:
-        this.filingData = [{
-          filingTypeCode: FilingCodes.CORRECTION,
-          entityType: EntityTypes.BCOMP
-        }]
-        break
-      case RouteNames.ALTERATION:
-        this.filingData = [{
-          filingTypeCode: FilingCodes.ALTERATION,
-          entityType: EntityTypes.BCOMP
-        }]
-        break
-      default:
-        this.filingData = []
     }
   }
 
