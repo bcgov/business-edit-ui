@@ -170,6 +170,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
 
   // Global setters
   @Action setBusinessId!: ActionBindingIF
+  @Action setEntityType!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
   @Action setUserEmail: ActionBindingIF
@@ -242,6 +243,9 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     // do nothing until user has signed in
     if (!this.isAuthenticated) return
 
+    // get and store business ID
+    this.setBusinessId(sessionStorage.getItem('BUSINESS_ID'))
+
     // decode and store keycloak roles from JWT
     try {
       this.setKeycloakRoles(getKeycloakRoles())
@@ -308,7 +312,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     this.$root.$off('name-request-retrieve-error')
   }
 
-  /** Initializes application. */
+  /** Initializes application. Is called after the router view is mounted. */
   private async initApp (routeChanged: boolean = false): Promise<void> {
     // if route has changed and we already have data, don't re-init
     if (routeChanged && this.haveData) return
@@ -317,27 +321,34 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
       // reset errors in case this method is invoked more than once (ie, retry)
       this.resetFlags()
 
-      // get and store business ID query param
-      const businessId = this.$route?.query?.businessId as string
-      if (!businessId) {
-        this.fetchErrorDialog = true
-        if (!businessId) throw new Error('Invalid business identifier')
-      }
-      this.setBusinessId(businessId)
-
       // ensure user is authorized or is staff to access this business
-      await this.checkAuth(businessId).catch(error => {
+      await this.checkAuth(this.getBusinessId).catch(error => {
         this.accountAuthorizationDialog = true
         throw new Error(`Auth error: ${error}`)
       })
 
-      // fetch IA filing to alter or correct
-      const { filing } = await this.fetchFiling(this.INCORPORATION_APPLICATION) // TEMP FOR TESTING
-      // const { filing } = await this.fetchFiling(this.ALTERATION) // FUTURE STATE
+      // check for necessary query params
+      switch (this.$route.name) {
+        case RouteNames.ALTERATION:
+          // const filingId = +this.$route.query['filing-id']
+          // if (isNaN(filingId)) {
+          //   this.fetchErrorDialog = true
+          //   throw new Error('Invalid alteration filing ID')
+          // }
+          this.setEntityType(EntityTypes.BCOMP)
+          break
+        case RouteNames.CORRECTION:
+          const correctedId = +this.$route.query['corrected-id']
+          const correctionId = +this.$route.query['correction-id']
+          if (isNaN(correctedId) && isNaN(correctionId)) {
+            this.fetchErrorDialog = true
+            throw new Error('Invalid corrected or correction filing ID')
+          }
+          this.setEntityType(EntityTypes.BCOMP)
+          break
+      }
 
-      // parse filing into store
-      this.parseIncorpFiling(filing)
-
+      // TODO: move this to views?
       // initialize Fee Summary data
       this.initEntityFees()
 

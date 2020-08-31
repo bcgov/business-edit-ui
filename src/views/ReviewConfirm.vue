@@ -88,7 +88,7 @@ export default class ReviewConfirm extends Mixins() {
   @Action setCertifyState!: ActionBindingIF
   @Action setIgnoreChanges!: ActionBindingIF
 
-  // Resources
+  // Resources for template
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
 
   /** Called when component is created. */

@@ -4,6 +4,7 @@ import { axios } from '@/utils'
 
 /**
  * Fetches config from environment and API.
+ * Also identifies Business ID from initial route.
  * @returns A promise to get & set session storage keys with appropriate values.
  */
 export async function fetchConfig (): Promise<any> {
@@ -11,23 +12,16 @@ export async function fetchConfig (): Promise<any> {
   const origin: string = window.location.origin
   const processEnvVueAppPath: string = process.env.VUE_APP_PATH
   const processEnvBaseUrl = process.env.BASE_URL
+  const windowLocationPathname = window.location.pathname // eg, /basePath/BC1218875/correction/
+  const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
 
-  if (!origin || !processEnvVueAppPath || !processEnvBaseUrl) {
+  if (!origin || !processEnvVueAppPath || !processEnvBaseUrl || !windowLocationPathname || !windowLocationOrigin) {
     return Promise.reject(new Error('Missing environment variables'))
   }
 
-  // set Base URL for returning from redirects
-  const baseUrl = `${origin}/${processEnvVueAppPath}/`
-  sessionStorage.setItem('BASE_URL', baseUrl)
-  console.log('Set Base URL to: ' + baseUrl)
-
-  // set Base for Vue Router
-  sessionStorage.setItem('VUE_ROUTER_BASE', processEnvBaseUrl)
-  console.log('Set Vue Router Base to: ' + processEnvBaseUrl)
-
   // fetch config from API
   // eg, http://localhost:8080/basePath/config/configuration.json
-  // eg, https://business-create-dev.pathfinder.gov.bc.ca/businesses/create/config/configuration.json
+  // eg, https://business-create-dev.pathfinder.gov.bc.ca/businesses/edit/config/configuration.json
   const url = `${origin}/${processEnvVueAppPath}/config/configuration.json`
   const headers = {
     'Accept': 'application/json',
@@ -96,4 +90,27 @@ export async function fetchConfig (): Promise<any> {
     (<any>window).sentryDsn = sentryDsn
     console.log('Set Sentry DSN.')
   }
+
+  // get Business ID and validate that it looks OK
+  // it should be first token after Base URL in Pathname
+  // FUTURE: improve Business ID validation
+  const id = windowLocationPathname.replace(processEnvBaseUrl, '').split('/', 1)[0]
+  // if (id?.startsWith('CP') || id?.startsWith('BC')) { // FUTURE
+  if (id?.startsWith('BC')) {
+    sessionStorage.setItem('BUSINESS_ID', id)
+  } else {
+    return Promise.reject(new Error('Missing or invalid Business ID.'))
+  }
+
+  // set Base for Vue Router
+  // eg, "/businesses/edit/BCxxx/"
+  const vueRouterBase = processEnvBaseUrl + id + '/'
+  sessionStorage.setItem('VUE_ROUTER_BASE', vueRouterBase)
+  console.info('Set Vue Router Base to: ' + vueRouterBase)
+
+  // set Base URL for returning from redirects
+  // eg, http://localhost:8080/businesses/edit/BCxxx/
+  const baseUrl = windowLocationOrigin + vueRouterBase
+  sessionStorage.setItem('BASE_URL', baseUrl)
+  console.info('Set Base URL to: ' + baseUrl)
 }

@@ -114,7 +114,7 @@ export default class DefineCompany extends Mixins(EntityFilterMixin) {
   @Action setDefineCompanyStepValidity!: ActionBindingIF
   @Action setIgnoreChanges!: ActionBindingIF
 
-  // Resources
+  // Resources for template
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
 
   private businessContactFormValid: boolean = false

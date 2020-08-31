@@ -11,7 +11,7 @@ import {
   isEnableFilePayBtn, isBusySaving,
   getFilingId, getBusinessId, isNamedBusiness, getNameRequestNumber, getApprovedName, getAccountId, getBusinessNumber,
   getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses, getFilingDate, getUserEmail,
-  isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations, getOrgPeople
+  isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations, getOrgPeople, getShareClasses
 } from '@/store/getters'
 
 // Mutations
@@ -64,6 +64,7 @@ export function getVuexStore () {
       getNameTranslations,
       getOfficeAddresses,
       getOrgPeople,
+      getShareClasses,
       getUserEmail,
       haveChanges,
       ignoreChanges,

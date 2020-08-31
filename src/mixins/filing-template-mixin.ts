@@ -104,10 +104,10 @@ export default class FilingTemplateMixin extends Vue {
   }
 
   /**
-   * Parses a incorporation application filing into the store.
-   * @param filing the filing body to be parsed
+   * Parses an incorporation application filing into the store.
+   * @param filing the IA filing body to be parsed
    */
-  parseIncorpFiling (filing: IncorporationFilingBodyIF): void {
+  parseIncorpApp (filing: IncorporationFilingBodyIF): void {
     // Set Business Information
     this.setBusinessInformation(filing.business)
 
@@ -161,10 +161,19 @@ export default class FilingTemplateMixin extends Vue {
 
   /**
    * Parses an alteration filing into the store.
-   * @param filing the filing body to be parsed
+   * @param filing the alteration filing body to be parsed
    */
   parseAlteration (filing: any): void {
     // Alteration body to parse TBD
     // Will refactor above parse function into 1 generic filing parse function when we know more
+  }
+
+  /**
+   * Parses a correction filing into the store.
+   * @param filing the correction filing body to be parsed
+   */
+  parseCorrection (filing: any): void {
+    // See https://github.com/bcgov/business-schemas/blob/master/src/registry_schemas/schemas/correction.json
+    // See https://github.com/bcgov/business-schemas/blob/master/src/registry_schemas/schemas/diff.json
   }
 }

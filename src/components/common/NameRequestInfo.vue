@@ -177,7 +177,6 @@ export default class NameRequestInfo extends Mixins(DateMixin) {
   @Getter isEntityType!: GetterIF;
   @Getter isTypeBcomp!: GetterIF;
   @Getter isTypeCoop!: GetterIF;
-  @Getter getBusinessId!: GetterIF;
   @Getter getNameRequestNumber!: GetterIF;
   @Getter getNameRequestDetails!: NameRequestDetailsIF;
   @Getter getNameRequestApplicant!: NameRequestApplicantIF;
