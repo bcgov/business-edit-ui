@@ -112,7 +112,7 @@ export default class DefineCompany extends Mixins(EntityFilterMixin) {
   @Action setFolioNumber!: ActionBindingIF
   @Action setOfficeAddresses!: ActionBindingIF
   @Action setDefineCompanyStepValidity!: ActionBindingIF
-  @Action setIgnoreChanges!: ActionBindingIF
+  @Action setHaveChanges!: ActionBindingIF
 
   // Resources for template
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
@@ -126,18 +126,13 @@ export default class DefineCompany extends Mixins(EntityFilterMixin) {
 
   /** Called when component is created. */
   private created (): void {
-    // temporarily ignore data changes
-    this.setIgnoreChanges(true)
-
     // if no addresses were fetched, set default addresses
     if (!this.getOfficeAddresses.registeredOffice && !this.getOfficeAddresses.recordsOffice) {
       this.setDefaultAddresses()
     }
 
-    // resume tracking data changes once page has loaded (in next tick)
-    Vue.nextTick(() => {
-      this.setIgnoreChanges(false)
-    })
+    // now that all data is loaded, wait for things to stabilize and reset flag
+    Vue.nextTick(() => this.setHaveChanges(false))
   }
 
   /** Sets default addresses in filing. (Will get overwritten by a fetched draft filing if there is one.) */
