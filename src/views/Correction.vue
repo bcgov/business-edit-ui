@@ -19,16 +19,49 @@
         </p>
       </div>
 
-      <SummaryDefineCompany :isSummary="true" />
+      <YourCompany
+        :isSummary="true"
+        @haveChanges="yourCompanyChanges = $event; emitHaveChanges()"
+      />
       <!-- TODO: recognition date and time (as part of SummaryDefineCompany) -->
       <!-- TODO: folio number (as part of SummaryDefineCompany) -->
-      <ListPeopleAndRoles :personList="getOrgPeople" :isSummary="true" />
-      <ListShareClass :shareClasses="getShareClasses" :isSummary="true" />
-      <AgreementType :isSummary="true" />
-      <!-- TODO: original completing party -->
-      <!-- TODO: 1. detail -->
-      <!-- TODO: 2. certify -->
+      <ListPeopleAndRoles
+        :isSummary="true"
+        :personList="getOrgPeople"
+        @haveChanges="peopleAndRolesChanges = $event; emitHaveChanges()"
+      />
+      <ListShareClass
+        :isSummary="true"
+        :shareClasses="getShareClasses"
+        @haveChanges="shareStructureChanges = $event; emitHaveChanges()"
+      />
+      <AgreementType
+        :isSummary="true"
+        @haveChanges="incorporationAgreementChanges = $event; emitHaveChanges()"
+      />
+
+      <div class="mt-6">
+        <h2>Original Completing Party</h2>
+        <!-- TODO: original completing party component here -->
+      </div>
+
+      <div class="mt-6">
+        <h2>1. Detail</h2>
+        Enter a Detail that will appear on the ledger for this entity.
+        <detail-comment />
+      </div>
+
+      <div class="mt-6">
+        <h2>2. Certify</h2>
+        Enter the legal name of the person authorized to complete and submit these changes.
+        <!-- TODO: certify component here -->
+      </div>
+
       <!-- TODO: 3. staff payment -->
+      <div class="mt-6">
+        <h2>3. Staff Payment</h2>
+        <!-- TODO: staff payment component here -->
+      </div>
     </section>
   </div>
 </template>
@@ -39,10 +72,11 @@ import { Action, Getter } from 'vuex-class'
 import { featureFlags } from '@/utils'
 
 // Components
-import { SummaryDefineCompany } from '@/components/DefineCompany'
+import { YourCompany } from '@/components/DefineCompany'
 import { ListPeopleAndRoles } from '@/components/AddPeopleAndRoles'
 import { ListShareClass } from '@/components/CreateShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'
+import DetailComment from '@vysakh-aot/detail-comment'
 
 // Mixins, Interfaces and Enums
 import { DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
@@ -57,8 +91,9 @@ import { BenefitCompanyStatementResource } from '@/resources'
   components: {
     ListShareClass,
     ListPeopleAndRoles,
-    SummaryDefineCompany,
-    AgreementType
+    YourCompany,
+    AgreementType,
+    DetailComment
   }
 })
 export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin) {
@@ -83,6 +118,18 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
 
   /** The IA filing to correct. */
   private correctedFiling: any = null
+
+  /** Whether Your Company component has changes. */
+  private yourCompanyChanges: boolean = false
+
+  /** Whether People and Roles component has changes. */
+  private peopleAndRolesChanges: boolean = false
+
+  /** Whether Share Structure component has changes. */
+  private shareStructureChanges: boolean = false
+
+  /** Whether Incorporation Agreement component has changes. */
+  private incorporationAgreementChanges: boolean = false
 
   /** The id of the IA filing being corrected. */
   private get correctedId (): number {
@@ -200,6 +247,15 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   /** Emits new Filing Data. */
   @Emit('filingData')
   private emitFilingData (filingData: FilingDataIF[]): void {}
+
+  /** Emits Have Changes event. */
+  @Emit('haveChanges')
+  private emitHaveChanges (): boolean {
+    return (this.yourCompanyChanges ||
+      this.peopleAndRolesChanges ||
+      this.shareStructureChanges ||
+      this.incorporationAgreementChanges)
+  }
 }
 </script>
 
