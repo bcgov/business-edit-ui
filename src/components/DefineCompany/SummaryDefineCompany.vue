@@ -17,16 +17,19 @@
 
     <div class="section-container">
       <!--TODO: Replace container content with Name Request Summary when it is ready -->
-      <v-layout row>
+      <v-layout row class="px-3">
         <v-flex md4>
           <label><strong>Company Name</strong></label>
         </v-flex>
-        <v-flex md8>
+        <v-flex md8 v-if="false">
           <div class="company-name">{{ companyName }}</div>
           <div class="company-type">
             <span v-if="entityFilter(EntityTypes.BCOMP)">BC Benefit Company</span>
             <span v-else-if="entityFilter(EntityTypes.COOP)">BC Cooperative Association</span>
           </div>
+        </v-flex>
+        <v-flex md8 v-else>
+          <correct-name-options :correction-name-options="correctionNameOptions"/>
         </v-flex>
       </v-layout>
       <v-layout row v-if="getNameTranslations && getNameTranslations.length" class="mt-3">
@@ -67,6 +70,7 @@ import { BusinessContactIF, GetterIF, IncorporationAddressIf } from '@/interface
 
 // Components
 import { FolioNumber, BusinessContactInfo, OfficeAddresses } from '@/components/DefineCompany'
+import { CorrectNameOptions, CorrectNameRequest } from '@/components/Company/CompanyName'
 
 // Mixins
 import { EntityFilterMixin } from '@/mixins'
@@ -77,6 +81,7 @@ import { EntityTypes } from '@/enums'
 @Component({
   components: {
     BusinessContactInfo,
+    CorrectNameOptions,
     OfficeAddresses,
     FolioNumber
   }
@@ -103,6 +108,21 @@ export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
   // Entity Enum
   readonly EntityTypes = EntityTypes
 
+  private correctionNameOptions = [
+    {
+      name: 'Edit the company name',
+      component: ''
+    },
+    {
+      name: 'Use the incorporation number as the name',
+      component: ''
+    },
+    {
+      name: 'Use a new name request number',
+      component: CorrectNameRequest
+    }
+  ]
+
   /** The company name (from NR, or incorporation number). */
   private get companyName (): string {
     if (this.getApprovedName) return this.getApprovedName
@@ -126,6 +146,7 @@ export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
   padding-left: 2rem;
   padding-top: 1.25rem;
   padding-bottom: 1.25rem;
+  padding-right: 2rem;
   font-size: 0.875rem;
 }
 
