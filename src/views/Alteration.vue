@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { featureFlags } from '@/utils'
 
@@ -45,8 +45,12 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
   @Getter getShareClasses!: ShareClassIF[]
 
   // Global setters
-  @Action setIgnoreChanges!: ActionBindingIF
+  @Action setHaveChanges!: ActionBindingIF
   @Action setEntityType!: ActionBindingIF
+
+  /** Whether App is ready. */
+  @Prop({ default: false })
+  private appReady: boolean
 
   /** The id of the IA filing to alter. */
   // private get filingId (): number {
@@ -58,10 +62,13 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** Called when this component is mounted. */
-  private async mounted (): Promise<void> {
+  /** Called when App is ready and this component can load its data. */
+  @Watch('appReady')
+  private async onAppReady (val: boolean): Promise<void> {
+    // do not proceed if app is not ready
+    if (!val) return
+
     // do not proceed if we are not anthenticated
-    // (this component will be re-mounted after authentication)
     if (!this.isAuthenticated) return
 
     // do not proceed if FF is disabled
@@ -91,9 +98,6 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
     //   return
     // }
 
-    // temporarily ignore data changes
-    this.setIgnoreChanges(true)
-
     // try to fetch data
     try {
       // fetch IA to alter
@@ -110,22 +114,27 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
         filingTypeCode: FilingCodes.ALTERATION,
         entityType: EntityTypes.BCOMP
       }])
+
+      // tell App that we're finished loading
+      this.emitHaveData()
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
       this.emitFetchError(err)
     }
 
-    // resume tracking data changes once page has loaded (in next tick)
-    Vue.nextTick(() => {
-      this.setIgnoreChanges(false)
-    })
+    // now that all data is loaded, wait for things to stabilize and reset flag
+    Vue.nextTick(() => this.setHaveChanges(false))
   }
 
-  /** Emits Fetch Error event for App to handle. */
+  /** Emits Fetch Error event. */
   @Emit('fetchError')
   private emitFetchError (message: string = ''): void {}
 
-  /** Emits new Filing Data to parent. */
+  /** Emits Have Data event. */
+  @Emit('haveData')
+  private emitHaveData (haveData: Boolean = true): void {}
+
+  /** Emits new Filing Data. */
   @Emit('filingData')
   private emitFilingData (filingData: FilingDataIF[]): void {}
 }

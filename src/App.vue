@@ -82,22 +82,28 @@
           <v-row>
             <v-col cols="12" lg="9">
               <router-view
+                :appReady=appReady
+                @profileReady="profileReady = true"
                 @fetchError="fetchErrorDialog = true"
+                @haveData="haveData = true"
                 @filingData="filingData = $event"
+                @haveChanges="showFeeSummary = true"
               />
             </v-col>
             <v-col cols="12" lg="3" style="position: relative">
-              <aside>
-                <affix
-                  relative-element-selector=".col-lg-9"
-                  :offset="{ top: 86, bottom: 12 }"
-                >
-                  <sbc-fee-summary
-                    :filingData="[...filingData]"
-                    :payURL="payApiUrl"
-                  />
-                </affix>
-              </aside>
+              <template v-if="showFeeSummary">
+                <aside>
+                  <affix
+                    relative-element-selector=".col-lg-9"
+                    :offset="{ top: 86, bottom: 12 }"
+                  >
+                    <sbc-fee-summary
+                      :filingData="[...filingData]"
+                      :payURL="payApiUrl"
+                    />
+                  </affix>
+                </aside>
+              </template>
             </v-col>
           </v-row>
         </v-container>
@@ -194,10 +200,21 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   private saveErrorDialog: boolean = false
   private nameRequestInvalidErrorDialog: boolean = false
   private nameRequestInvalidType: string = ''
-  private haveData: boolean = false
   private saveErrors: Array<object> = []
   private saveWarnings: Array<object> = []
   private fileAndPayInvalidNameRequestDialog: boolean = false
+  private showFeeSummary: boolean = false
+
+  // FUTURE: change profileReady/appReady/haveData to a state machine?
+
+  /** Whether the user profile is ready (ie, auth is loaded) and we can init the app. */
+  private profileReady: boolean = false
+
+  /** Whether the app is ready and the views can now load their data. */
+  private appReady: boolean = false
+
+  /** Whether the views have loaded their data and the spinner can be hidden. */
+  private haveData: boolean = false
 
   /** Whether the token refresh service is initialized. */
   private tokenService: boolean = false
@@ -226,33 +243,16 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     return (process.env.JEST_WORKER_ID !== undefined)
   }
 
-  /** True if user is authenticated. */
-  private get isAuthenticated (): boolean {
-    return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
-  }
-
   /** The About text. */
   private get aboutText (): string {
     return process.env.ABOUT_TEXT
   }
 
-  /** Called when component is created. */
+  /**
+   * Called when component is created.
+   * NB: User may not be authed yet.
+   */
   private created (): void {
-    // do nothing until user has signed in
-    if (!this.isAuthenticated) return
-
-    // get and store business ID
-    this.setBusinessId(sessionStorage.getItem('BUSINESS_ID'))
-
-    // decode and store keycloak roles from JWT
-    try {
-      this.setKeycloakRoles(getKeycloakRoles())
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-      this.accountAuthorizationDialog = true
-      return
-    }
-
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {
@@ -300,6 +300,11 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
       console.log('Error while retrieving NR during File and Pay') // eslint-disable-line no-console
       this.nameRequestInvalidErrorDialog = true
     })
+
+    // if we are already authenticated then go right to init
+    // (since we won't get the event from Signin component)
+    const isAuthenticated = Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+    if (isAuthenticated) this.onProfileReady(true)
   }
 
   /** Called when component is destroyed. */
@@ -310,34 +315,61 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     this.$root.$off('name-request-retrieve-error')
   }
 
-  /** Initializes application. Is called after the router view is mounted. */
-  private async initApp (routeChanged: boolean = false): Promise<void> {
-    // if route has changed and we already have data, don't re-init
-    if (routeChanged && this.haveData) return
+  /** Called when profile is ready -- we can now init app. */
+  @Watch('profileReady', { immediate: true })
+  private async onProfileReady (val: boolean): Promise<void> {
+    //
+    // do the one-time things here
+    //
 
-    try {
-      // reset errors in case this method is invoked more than once (ie, retry)
-      this.resetFlags()
+    if (val) {
+      // start KC token service
+      await this.startTokenService()
 
-      // ensure user is authorized or is staff to access this business
-      await this.checkAuth(this.getBusinessId).catch(error => {
-        this.accountAuthorizationDialog = true
-        throw new Error(`Auth error: ${error}`)
-      })
+      // get and store business ID
+      this.setBusinessId(sessionStorage.getItem('BUSINESS_ID'))
 
-      // store today's date
-      // NB: keep this here in case user clicks Retry
-      this.setCurrentDate(this.dateToUsableString(new Date()))
+      // load account information
+      this.loadAccountInformation()
 
-      this.haveData = true
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-      // stop init and fall through to finally
-      this.haveData = true
-    } finally {
-      // wait for things to stabilize, then reset flag
-      Vue.nextTick(() => this.setHaveChanges(false))
+      // initialize app
+      await this.initApp()
     }
+  }
+
+  /** Initializes application. Also called for retry. */
+  private async initApp (): Promise<void> {
+    //
+    // do the repeatable things here
+    //
+
+    // reset errors in case of retry
+    this.resetFlags()
+
+    // decode and store keycloak roles from JWT
+    try {
+      this.setKeycloakRoles(getKeycloakRoles())
+    } catch (error) {
+      console.log('Keycloak error =', error) // eslint-disable-line no-console
+      this.accountAuthorizationDialog = true
+      return
+    }
+
+    // ensure user is authorized to access this business
+    try {
+      await this.checkAuth()
+    } catch (error) {
+      console.log('Auth error =', error) // eslint-disable-line no-console
+      this.accountAuthorizationDialog = true
+      return
+    }
+
+    // store today's date
+    // NB: keep this here to reload date on retry
+    this.setCurrentDate(this.dateToUsableString(new Date()))
+
+    // finally, let router views know they can load their data
+    this.appReady = true
   }
 
   /** Redirects to Manage Businesses dashboard. */
@@ -382,37 +414,35 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     })
   }
 
-  /** Starts token service to refresh KC token periodically. */
+  /** Starts token service that refreshes KC token periodically. */
   private async startTokenService (): Promise<void> {
     // only initialize once
     // don't start during Jest tests as it messes up the test JWT
     if (this.tokenService || this.isJestRunning) return
+
     try {
       console.info('Starting token refresh service...') // eslint-disable-line no-console
       await KeycloakService.initializeToken()
       this.tokenService = true
-    } catch (error) {
-      // Happens when the refresh token has expired in session storage
-      // reload to get new tokens
-
-      // eslint-disable-next-line no-console
-      console.log('Could not initialize token refresher: ', error)
-      this.clearKeycloakSession()
+    } catch (e) {
+      // this happens when the refresh token has expired
+      // 1. clear flags and keycloak data
+      this.tokenService = false
+      this.profileReady = false
+      sessionStorage.removeItem(SessionStorageKeys.KeyCloakToken)
+      sessionStorage.removeItem(SessionStorageKeys.KeyCloakRefreshToken)
+      sessionStorage.removeItem(SessionStorageKeys.KeyCloakIdToken)
+      sessionStorage.removeItem(SessionStorageKeys.CurrentAccount)
+      // 2. reload app to get new tokens
       location.reload()
     }
   }
 
-  /** Clears Keycloak token information from session storage. */
-  private clearKeycloakSession (): void {
-    sessionStorage.removeItem(SessionStorageKeys.KeyCloakToken)
-    sessionStorage.removeItem(SessionStorageKeys.KeyCloakRefreshToken)
-    sessionStorage.removeItem(SessionStorageKeys.KeyCloakIdToken)
-    sessionStorage.removeItem(SessionStorageKeys.CurrentAccount)
-  }
-
   /** Resets all error flags/states. */
   private resetFlags (): void {
+    this.appReady = false
     this.haveData = false
+    this.showFeeSummary = false
     this.bcolObj = null
     this.nameRequestInvalidErrorDialog = false
     this.invalidIncorporationApplicationDialog = false
@@ -425,10 +455,10 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     this.saveWarnings = []
   }
 
-  /** Gets authorizations from Auth API, verifies roles, and stores them. */
-  private async checkAuth (businessIdentifier: string): Promise<any> {
+  /** Gets authorizations from Auth API, verifies roles and stores them. */
+  private async checkAuth (): Promise<any> {
     // NB: will throw if API error
-    const response = await this.getAuthorizations(businessIdentifier)
+    const response = await this.getAuthorizations(this.getBusinessId)
     // NB: roles array may contain 'view', 'edit', 'staff' or nothing
     const authRoles = response?.data?.roles
     if (authRoles && authRoles.length > 0) {
@@ -438,30 +468,11 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     }
   }
 
-  /** Gets account information (e.g. Premium account) and loads it into the state model. */
+  /** Gets account information (e.g. Premium account) and stores it. */
   private loadAccountInformation (): void {
     if (sessionStorage.getItem(SessionStorageKeys.CurrentAccount)) {
       const accountInfo = JSON.parse(sessionStorage.getItem(SessionStorageKeys.CurrentAccount))
       this.setAccountInformation(accountInfo)
-    }
-  }
-
-  /** Called when $route property changes. Used to init app. */
-  @Watch('$route', { immediate: true })
-  private async onRouteChanged (): Promise<void> {
-    const isSigninRoute = (this.$route.name === 'signin')
-    const isSignoutRoute = (this.$route.name === 'signout')
-
-    // don't init if we are still on signin or signout route
-    if (!isSigninRoute && !isSignoutRoute) {
-      await this.startTokenService()
-      await this.initApp(true)
-
-      // Allow user settings account information to load into session storage before checking
-      // There can be a timing issue when a session is first established where account information
-      // is not available right away in session storage
-      await Vue.nextTick()
-      this.loadAccountInformation()
     }
   }
 }

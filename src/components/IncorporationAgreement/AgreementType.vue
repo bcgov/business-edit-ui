@@ -69,22 +69,14 @@ export default class AgreementType extends Vue {
 
   // Global setters
   @Action setIncorporationAgreementStepData!: ActionBindingIF
-  @Action setIgnoreChanges!: ActionBindingIF
+  @Action setHaveChanges!: ActionBindingIF
 
   // Local properties
   private agreementType: string | null = null
 
   // Lifecycle methods
   private created (): void {
-    // temporarily ignore data changes
-    this.setIgnoreChanges(true)
-
     this.agreementType = this.agreementTypeState
-
-    // resume tracking data changes once page has loaded (in next tick)
-    Vue.nextTick(() => {
-      this.setIgnoreChanges(false)
-    })
   }
 
   mounted (): void {
@@ -92,6 +84,9 @@ export default class AgreementType extends Vue {
       valid: !!this.agreementType,
       agreementType: this.agreementType
     })
+
+    // now that all data is loaded, wait for things to stabilize and reset flag
+    Vue.nextTick(() => this.setHaveChanges(false))
   }
 
   private changeAgreementType (): void {
