@@ -8,7 +8,7 @@ import { ActionBindingIF, StateModelIF, IncorporationFilingIF, IncorporationFili
 
 // Constants
 import { INCORPORATION_APPLICATION } from '@/constants'
-import { EntityTypes } from '@/enums'
+import { EntityTypes, FilingStatus } from '@/enums'
 
 /**
  * Mixin that provides the integration with the Legal API.
@@ -147,7 +147,7 @@ export default class FilingTemplateMixin extends Vue {
     if (filing.header.effectiveDate) {
       let effectiveDatetime: Date = filing.header.effectiveDate ? new Date(filing.header.effectiveDate) : null
       // Compare datetime to improve UX and work around default effective date set by back end
-      if (filing.header.status !== 'COMPLETED' && effectiveDatetime < new Date()) {
+      if (filing.header.status !== FilingStatus.COMPLETED && effectiveDatetime < new Date()) {
         effectiveDatetime = null
       }
       this.setEffectiveDate(effectiveDatetime)

@@ -68,7 +68,7 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
     // do not proceed if app is not ready
     if (!val) return
 
-    // do not proceed if we are not anthenticated
+    // do not proceed if we are not authenticated (safety check - should never happen)
     if (!this.isAuthenticated) return
 
     // do not proceed if FF is disabled

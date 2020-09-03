@@ -74,7 +74,7 @@ import { Certify, CompletingParty, Detail, StaffPayment } from '@/components/com
 // Mixins, Interfaces and Enums
 import { DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, FilingDataIF, GetterIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
-import { EntityTypes, FilingCodes } from '@/enums'
+import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 // Resources
@@ -158,7 +158,7 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
     // do not proceed if app is not ready
     if (!val) return
 
-    // do not proceed if we are not anthenticated
+    // do not proceed if we are not authenticated (safety check - should never happen)
     if (!this.isAuthenticated) return
 
     // do not proceed if FF is disabled
@@ -176,19 +176,21 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
       return
     }
 
-    // do not proceed if we don't have the necessary query params
-    if (isNaN(this.correctedId) && isNaN(this.correctionId)) {
-      const err = 'Invalid corrected or correction filing ID'
-      console.log(err) // eslint-disable-line no-console
-      this.emitFetchError(err)
-      return
-    }
-
     // try to fetch data
     try {
       if (this.correctionId) {
         // fetch draft correction to resume
         const correctionFiling = await this.fetchFilingById(this.correctionId)
+
+        // do not proceed if this isn't a CORRECTION filing
+        if (!correctionFiling.correction) {
+          throw new Error('Invalid Correction filing')
+        }
+
+        // do not proceed if this isn't a DRAFT filing
+        if (correctionFiling.header.status !== FilingStatus.DRAFT) {
+          throw new Error('Invalid Correction status')
+        }
 
         // fetch original IA to correct
         this.correctedFiling = await this.fetchFilingById(correctionFiling.correctedFilingId)
@@ -200,15 +202,28 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
         // parse correction filing into store
         // this applies the diffs (corrections)
         this.parseCorrection(correctionFiling)
-      }
-
-      if (this.correctedId) {
+      } else if (this.correctedId) {
         // fetch original IA to correct
         this.correctedFiling = await this.fetchFilingById(this.correctedId)
+
+        // do not proceed if this isn't an IA filing
+        if (!this.correctedFiling.incorporationApplication) {
+          console.log('Invalid IA filing')
+          throw new Error('Invalid IA filing')
+        }
+
+        // do not proceed if this isn't a COMPLETED filing
+        if (this.correctedFiling.header.status !== FilingStatus.COMPLETED) {
+          console.log('Invalid IA status')
+          throw new Error('Invalid IA status')
+        }
 
         // parse IA filing into store
         // this is the initial state of the correction filing
         this.parseIncorpApp(this.correctedFiling)
+      } else {
+        // as we don't have the necessary query params, do not proceed
+        throw new Error('Invalid corrected or correction filing ID')
       }
 
       // set current entity type
