@@ -131,7 +131,8 @@ export default class FilingTemplateMixin extends Vue {
     this.setOrgPersonList(filing.incorporationApplication.parties)
 
     // Set Share Structure
-    this.setShareClasses(filing.incorporationApplication.shareStructure.shareClasses)
+    this.setShareClasses(filing.incorporationApplication.shareStructure
+      ? filing.incorporationApplication.shareStructure.shareClasses : [])
 
     // Set Incorporation Agreement
     this.setIncorporationAgreementStepData({
