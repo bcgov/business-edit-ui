@@ -1,4 +1,5 @@
 export interface CorrectNameOptionIF {
-  name: string,
+  id: string,
+  description?: string,
   component: any
 }

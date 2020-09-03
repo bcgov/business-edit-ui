@@ -21,16 +21,21 @@
         <v-flex md4>
           <label><strong>Company Name</strong></label>
         </v-flex>
-        <v-flex md8 v-if="false">
+        <v-flex md8>
           <div class="company-name">{{ companyName }}</div>
           <div class="company-type">
             <span v-if="entityFilter(EntityTypes.BCOMP)">BC Benefit Company</span>
             <span v-else-if="entityFilter(EntityTypes.COOP)">BC Cooperative Association</span>
           </div>
         </v-flex>
-        <v-flex md8 v-else>
-          <correct-name-options :correction-name-options="correctionNameOptions"/>
-        </v-flex>
+<!--        *** THIS IS AN EXAMPLE OF IMPLEMENTATION FOR DEVELOPMENT ONLY-->
+<!--        <v-flex md8 v-else>-->
+<!--          <correct-name-options-->
+<!--            :correctionNameChoices="correctionNameChoices"-->
+<!--            @save="nameCorrectionHandler($event)"-->
+<!--            @cancel="isEditingName = false"-->
+<!--          />-->
+<!--        </v-flex>-->
       </v-layout>
       <v-layout row v-if="getNameTranslations && getNameTranslations.length" class="mt-3">
         <v-flex md4>
@@ -66,11 +71,11 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
 
 // Interfaces
-import { BusinessContactIF, GetterIF, IncorporationAddressIf } from '@/interfaces'
+import { BusinessContactIF, GetterIF } from '@/interfaces'
 
 // Components
 import { FolioNumber, BusinessContactInfo, OfficeAddresses } from '@/components/DefineCompany'
-import { CorrectNameOptions, CorrectNameRequest } from '@/components/Company/CompanyName'
+import { CorrectNameOptions } from '@/components/Company/CompanyName'
 
 // Mixins
 import { EntityFilterMixin } from '@/mixins'
@@ -108,20 +113,8 @@ export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
   // Entity Enum
   readonly EntityTypes = EntityTypes
 
-  private correctionNameOptions = [
-    {
-      name: 'Edit the company name',
-      component: ''
-    },
-    {
-      name: 'Use the incorporation number as the name',
-      component: ''
-    },
-    {
-      name: 'Use a new name request number',
-      component: CorrectNameRequest
-    }
-  ]
+  // EXAMPLE IMPLEMENTATION OF PROP FOR DEVELOPMENT ONLY
+  // private correctionNameChoices = ['correct-new-nr', 'correct-name', 'correct-name-to-number']
 
   /** The company name (from NR, or incorporation number). */
   private get companyName (): string {
