@@ -21,15 +21,12 @@
         <v-flex md4>
           <label><strong>Company Name</strong></label>
         </v-flex>
-        <v-flex md8 v-if="false">
+        <v-flex md8>
           <div class="company-name">{{ companyName }}</div>
           <div class="company-type">
             <span v-if="entityFilter(EntityTypes.BCOMP)">BC Benefit Company</span>
             <span v-else-if="entityFilter(EntityTypes.COOP)">BC Cooperative Association</span>
           </div>
-        </v-flex>
-        <v-flex md8 v-else>
-          <correct-name-options :correction-name-options="correctionNameOptions"/>
         </v-flex>
       </v-layout>
       <v-layout row v-if="getNameTranslations && getNameTranslations.length" class="mt-3">
@@ -107,21 +104,6 @@ export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
 
   // Entity Enum
   readonly EntityTypes = EntityTypes
-
-  private correctionNameOptions = [
-    {
-      name: 'Edit the company name',
-      component: ''
-    },
-    {
-      name: 'Use the incorporation number as the name',
-      component: ''
-    },
-    {
-      name: 'Use a new name request number',
-      component: ''
-    }
-  ]
 
   /** The company name (from NR, or incorporation number). */
   private get companyName (): string {
