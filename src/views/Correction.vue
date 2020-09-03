@@ -1,69 +1,62 @@
 <template>
-  <div>
-    <section>
-      <header class="mt-4">
-        <h1>Correction - Incorporation Application</h1>
-      </header>
+  <section>
+    <header class="mt-4">
+      <h1>Correction - Incorporation Application</h1>
+    </header>
 
-      <div class="original-filing-date mt-6" v-if="isTypeBcomp">
-        <p>
-          <span class="original-filing-date-label">Original Filing Date:</span>
-          {{ filingDateLocal }}
-        </p>
-      </div>
+    <div class="original-filing-date mt-6" v-if="isTypeBcomp">
+      <p>
+        <span class="original-filing-date-label">Original Filing Date:</span>
+        {{ filingDateLocal }}
+      </p>
+    </div>
 
-      <div class="benefit-company-statement mt-6" v-if="isTypeBcomp">
-        <p>
-          <span class="benefit-company-statement-label">{{ BenefitCompanyStatementResource.title }}:</span>
-          {{ BenefitCompanyStatementResource.description }}
-        </p>
-      </div>
+    <div class="benefit-company-statement mt-6" v-if="isTypeBcomp">
+      <p>
+        <span class="benefit-company-statement-label">{{ BenefitCompanyStatementResource.title }}:</span>
+        {{ BenefitCompanyStatementResource.description }}
+      </p>
+    </div>
 
-      <YourCompany
-        :isSummary="true"
-        @haveChanges="yourCompanyChanges = $event; emitHaveChanges()"
-      />
-      <!-- TODO: recognition date and time (as part of SummaryDefineCompany) -->
-      <!-- TODO: folio number (as part of SummaryDefineCompany) -->
-      <ListPeopleAndRoles
-        :isSummary="true"
-        :personList="getOrgPeople"
-        @haveChanges="peopleAndRolesChanges = $event; emitHaveChanges()"
-      />
-      <ListShareClass
-        :isSummary="true"
-        :shareClasses="getShareClasses"
-        @haveChanges="shareStructureChanges = $event; emitHaveChanges()"
-      />
-      <AgreementType
-        :isSummary="true"
-        @haveChanges="incorporationAgreementChanges = $event; emitHaveChanges()"
-      />
+    <your-company
+      :isSummary="true"
+      @haveChanges="yourCompanyChanges = $event"
+    />
 
-      <div class="mt-6">
-        <h2>Original Completing Party</h2>
-        <!-- TODO: original completing party component here -->
-      </div>
+    <list-people-and-roles
+      :isSummary="true"
+      :personList="getOrgPeople"
+      @haveChanges="peopleRolesChanges = $event"
+    />
 
-      <div class="mt-6">
-        <h2>1. Detail</h2>
-        Enter a Detail that will appear on the ledger for this entity.
-        <detail-comment />
-      </div>
+    <list-share-class
+      :isSummary="true"
+      :shareClasses="getShareClasses"
+      @haveChanges="shareStructChanges = $event"
+    />
 
-      <div class="mt-6">
-        <h2>2. Certify</h2>
-        Enter the legal name of the person authorized to complete and submit these changes.
-        <!-- TODO: certify component here -->
-      </div>
+    <agreement-type
+      :isSummary="true"
+      @haveChanges="incorpAgrmtChanges = $event"
+    />
 
-      <!-- TODO: 3. staff payment -->
-      <div class="mt-6">
-        <h2>3. Staff Payment</h2>
-        <!-- TODO: staff payment component here -->
-      </div>
-    </section>
-  </div>
+    <completing-party class="mt-6" />
+
+    <detail
+      class="mt-6"
+      @emitValid="detailValid = $event"
+    />
+
+    <certify
+      class="mt-6"
+      @emitValid="certifyValid = $event"
+    />
+
+    <staff-payment
+      class="mt-6"
+      @emitValid="staffPaymntValid = $event"
+    />
+  </section>
 </template>
 
 <script lang="ts">
@@ -76,7 +69,7 @@ import { YourCompany } from '@/components/DefineCompany'
 import { ListPeopleAndRoles } from '@/components/AddPeopleAndRoles'
 import { ListShareClass } from '@/components/CreateShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'
-import DetailComment from '@vysakh-aot/detail-comment'
+import { Certify, CompletingParty, Detail, StaffPayment } from '@/components/common'
 
 // Mixins, Interfaces and Enums
 import { DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
@@ -89,11 +82,14 @@ import { BenefitCompanyStatementResource } from '@/resources'
 
 @Component({
   components: {
-    ListShareClass,
-    ListPeopleAndRoles,
-    YourCompany,
     AgreementType,
-    DetailComment
+    Certify,
+    CompletingParty,
+    Detail,
+    ListPeopleAndRoles,
+    ListShareClass,
+    StaffPayment,
+    YourCompany
   }
 })
 export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin) {
@@ -101,16 +97,16 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
 
   // Global getters
-  @Getter isRoleStaff!: boolean
-  @Getter isTypeBcomp!: boolean
+  @Getter getBusinessId!: string
   @Getter getFilingDate!: string
   @Getter getOrgPeople!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
-  @Getter getBusinessId!: string
+  @Getter isRoleStaff!: boolean
+  @Getter isTypeBcomp!: boolean
 
   // Global setters
-  @Action setHaveChanges!: ActionBindingIF
   @Action setEntityType!: ActionBindingIF
+  @Action setHaveChanges!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -119,17 +115,22 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   /** The IA filing to correct. */
   private correctedFiling: any = null
 
-  /** Whether Your Company component has changes. */
-  private yourCompanyChanges: boolean = false
+  // whether components have changes
+  private incorpAgrmtChanges = false
+  private peopleRolesChanges = false
+  private shareStructChanges = false
+  private yourCompanyChanges = false
 
-  /** Whether People and Roles component has changes. */
-  private peopleAndRolesChanges: boolean = false
-
-  /** Whether Share Structure component has changes. */
-  private shareStructureChanges: boolean = false
-
-  /** Whether Incorporation Agreement component has changes. */
-  private incorporationAgreementChanges: boolean = false
+  // whether components are valid
+  // TODO: use these to enable Save and File buttons
+  //       (need to refactor Actions.vue)
+  private certifyValid = false
+  private detailValid = false
+  private incorpAgrmtValid = false
+  private peopleRolesValid = false
+  private shareStructValid = false
+  private staffPaymntValid = false
+  private yourCompanyValid = false
 
   /** The id of the IA filing being corrected. */
   private get correctedId (): number {
@@ -236,6 +237,12 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
     window.location.assign(dashboardUrl + this.getBusinessId)
   }
 
+  // watchers for component change flags
+  @Watch('incorpAgrmtChanges') private onIncorpAgrmtChanges ():void { this.emitHaveChanges() }
+  @Watch('peopleRolesChanges') private onPeopleRolesChanges ():void { this.emitHaveChanges() }
+  @Watch('shareStructChanges') private onShareStructChanges ():void { this.emitHaveChanges() }
+  @Watch('yourCompanyChanges') private onYourCompanyChanges ():void { this.emitHaveChanges() }
+
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   private emitFetchError (message: string = ''): void {}
@@ -251,10 +258,12 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   /** Emits Have Changes event. */
   @Emit('haveChanges')
   private emitHaveChanges (): boolean {
-    return (this.yourCompanyChanges ||
-      this.peopleAndRolesChanges ||
-      this.shareStructureChanges ||
-      this.incorporationAgreementChanges)
+    return (
+      this.incorpAgrmtChanges ||
+      this.peopleRolesChanges ||
+      this.shareStructChanges ||
+      this.yourCompanyChanges
+    )
   }
 }
 </script>

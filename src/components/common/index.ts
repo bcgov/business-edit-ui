@@ -1,4 +1,8 @@
 export { default as Actions } from './Actions.vue'
+export { default as Certify } from './Certify.vue'
+export { default as CompletingParty } from './CompletingParty.vue'
+export { default as Detail } from './Detail.vue'
 export { default as EntityInfo } from './EntityInfo.vue'
 export { default as ErrorContact } from './ErrorContact.vue'
 export { default as NameRequestInfo } from './NameRequestInfo.vue'
+export { default as StaffPayment } from './StaffPayment.vue'

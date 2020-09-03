@@ -26,6 +26,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getCurrentDate!: string
   @Getter getEntityType!: EntityTypes
   @Getter getFilingDate!: string
+  @Getter getEffectiveDate!: Date
   @Getter isFutureEffective!: boolean
   @Getter getOrgPeople!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
@@ -47,13 +48,8 @@ export default class FilingTemplateMixin extends Vue {
   @Action setFilingDate!: ActionBindingIF
   @Action setIncorporationAgreementStepData!: ActionBindingIF
 
-  /** Constructs a filing body from store data. Used when saving a filing. */
-  buildFiling (): IncorporationFilingIF {
-    // Format DateTime for filing.
-    const effectiveDate = this.stateModel.incorporationDateTime.effectiveDate
-    const formattedDateTime = effectiveDate &&
-      (effectiveDate.toISOString()).replace('Z', '+00:00')
-
+  /** Constructs an Incorp App filing body from store data. Used when saving a filing. */
+  buildIaFiling (): IncorporationFilingIF {
     // Build filing.
     const filing: IncorporationFilingIF = {
       filing: {
@@ -97,7 +93,10 @@ export default class FilingTemplateMixin extends Vue {
     }
 
     // Pass the effective date only for a future effective filing.
-    if (formattedDateTime) {
+    // TODO: verify that this is UTC time
+    const effectiveDate: Date = this.getEffectiveDate
+    if (effectiveDate) {
+      const formattedDateTime = (effectiveDate.toISOString()).replace('Z', '+00:00')
       filing.filing.header.effectiveDate = formattedDateTime
     }
     return filing
@@ -144,13 +143,19 @@ export default class FilingTemplateMixin extends Vue {
       certifiedBy: filing.header.certifiedBy
     })
 
-    // Date check to improve UX and work around default effectiveDate set by backend.
-    let effectiveDate = filing.header.effectiveDate
-    effectiveDate = effectiveDate < new Date().toISOString() ? null : effectiveDate
-
-    // Set Future Effective Time
-    this.setEffectiveDate(effectiveDate)
-    this.setIsFutureEffective(!!effectiveDate)
+    // Set Effective Date
+    if (filing.header.effectiveDate) {
+      let effectiveDatetime: Date = filing.header.effectiveDate ? new Date(filing.header.effectiveDate) : null
+      // Compare datetime to improve UX and work around default effective date set by back end
+      if (filing.header.status !== 'COMPLETED' && effectiveDatetime < new Date()) {
+        effectiveDatetime = null
+      }
+      this.setEffectiveDate(effectiveDatetime)
+      this.setIsFutureEffective(!!effectiveDatetime)
+    } else {
+      this.setEffectiveDate(null)
+      this.setIsFutureEffective(false)
+    }
 
     // Set Folio Number
     this.setFolioNumber(filing.header.folioNumber)

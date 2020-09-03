@@ -193,15 +193,15 @@ export default class IncorporationDateTime extends Mixins(DateMixin) {
 
     // Clear Future Effective from store / fee summary
     this.setIsFutureEffective(false)
-    this.emitDateTime('')
+    this.emitDateTime(null)
   }
 
   /** Construct the Date Object for storage */
   private constructDate (): void {
     if (this.isFutureEffective) {
       // Format the selected date string and create Date
-      const dateString = this.dateText.replace(/-/g, ', ')
-      const dateToValidate = new Date(dateString)
+      const dateString: string = this.dateText.replace(/-/g, ', ')
+      const dateToValidate: Date = new Date(dateString)
 
       // Create references & Apply time period
       let hours = this.selectHour && +this.selectHour
@@ -231,8 +231,8 @@ export default class IncorporationDateTime extends Mixins(DateMixin) {
       this.isFutureEffective = this.selectDate === ISFUTUREEFFECTIVE
 
       // Reference Store and create date object
-      const effectiveDate = this.incorporationDateTime.effectiveDate
-      const dateToParse = effectiveDate && new Date(effectiveDate)
+      const effectiveDate: Date = this.incorporationDateTime.effectiveDate
+      const dateToParse: Date = effectiveDate && new Date(effectiveDate)
 
       if (dateToParse) {
         // Parse the Time and display DateTime
@@ -375,7 +375,7 @@ export default class IncorporationDateTime extends Mixins(DateMixin) {
 
   /** Emit DateTime. */
   @Emit('dateTime')
-  private emitDateTime (val): void {}
+  private emitDateTime (date: Date): void {}
 }
 </script>
 

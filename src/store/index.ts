@@ -8,7 +8,7 @@ import { stateModel, resourceModel } from './state'
 // Getters
 import {
   isRoleStaff, isAuthEdit, isAuthView, getEntityType, isEntityType, isPremiumAccount, isTypeBcomp, isTypeCoop,
-  isEnableFilePayBtn, isBusySaving,
+  isEnableFilePayBtn, isBusySaving, getEffectiveDate,
   getFilingId, getBusinessId, isNamedBusiness, getNameRequestNumber, getApprovedName, getAccountId, getBusinessNumber,
   getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses, getFilingDate, getUserEmail,
   isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations, getOrgPeople, getShareClasses
@@ -56,6 +56,7 @@ export function getVuexStore () {
       getCurrentDate,
       getFilingDate,
       getFilingId,
+      getEffectiveDate,
       getEntityType,
       getFolioNumber,
       getNameRequestApplicant,

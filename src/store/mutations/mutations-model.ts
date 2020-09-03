@@ -46,7 +46,7 @@ export const mutateIsFutureEffective = (state: any, isFutureEffective: boolean) 
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
-export const mutateEffectiveDate = (state: any, effectiveDate: string) => {
+export const mutateEffectiveDate = (state: any, effectiveDate: Date) => {
   state.stateModel.incorporationDateTime.effectiveDate = effectiveDate
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
