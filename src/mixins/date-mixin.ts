@@ -44,8 +44,8 @@ export default class DateMixin extends Vue {
    * @param date the datetime string in UTC timezone
    * @returns the datetime string in local timezone
    */
-  convertUtcTimeToLocalTime (datetime: string): string {
-    if (!datetime) return null // safety check
+  convertUtcTimeToLocalTime (dateString: string): string {
+    if (!dateString) return null // safety check
 
     const options = {
       year: 'numeric',
@@ -53,21 +53,21 @@ export default class DateMixin extends Vue {
       day: '2-digit',
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit',
       hour12: true,
       timeZone: 'America/Vancouver'
     }
 
     // chop off the milliseconds and append "Zulu" timezone abbreviation
     // eg, 2020-08-28T21:53:58Z
-    datetime = datetime.slice(0, 19) + 'Z'
+    dateString = dateString.slice(0, 19) + 'Z'
+    const date = new Date(dateString)
 
     // locale 'en-CA' is the only one consistent between IE11 and other browsers
-    // example output: "2019-12-31 04:00:00 PM"
-    let datetimeLocal = new Intl.DateTimeFormat('en-CA', options).format(new Date(datetime))
+    // example output: "2019-12-31 04:00 PM"
+    let datetimeLocal = new Intl.DateTimeFormat('en-CA', options).format(date)
 
     // misc cleanup
-    datetimeLocal = datetimeLocal.replace(',', '')
+    datetimeLocal = datetimeLocal.replace(', ', ' at ')
     datetimeLocal = datetimeLocal.replace('a.m.', 'AM')
     datetimeLocal = datetimeLocal.replace('p.m.', 'PM')
 
@@ -75,7 +75,7 @@ export default class DateMixin extends Vue {
     if (datetimeLocal.indexOf('/') >= 0) {
       const date = datetimeLocal.substr(0, 10).split('/')
       const time = datetimeLocal.slice(11)
-      // set as YYYY-MM-DD HH:MM:SS AM/PM
+      // set as YYYY-MM-DD HH:MM AM/PM
       datetimeLocal = `${date[2]}-${date[0]}-${date[1]} ${time}`
     }
 

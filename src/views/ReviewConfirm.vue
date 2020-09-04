@@ -116,8 +116,8 @@ export default class ReviewConfirm extends Mixins() {
   }
 
   /** Handler for setting DateTime. */
-  private setDateTime (val: string): void {
-    this.setEffectiveDate(val)
+  private setDateTime (date: Date): void {
+    this.setEffectiveDate(date)
   }
 }
 </script>

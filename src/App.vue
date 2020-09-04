@@ -87,7 +87,7 @@
                 @fetchError="fetchErrorDialog = true"
                 @haveData="haveData = true"
                 @filingData="filingData = $event"
-                @haveChanges="showFeeSummary = true"
+                @haveChanges="showFeeSummary = $event"
               />
             </v-col>
             <v-col cols="12" lg="3" style="position: relative">

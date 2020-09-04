@@ -27,7 +27,7 @@ import { AgreementType } from '@/components/IncorporationAgreement'
 // Mixins, Interfaces and Enums
 import { FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, FilingDataIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
-import { EntityTypes, FilingCodes } from '@/enums'
+import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 @Component({
@@ -68,15 +68,13 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
     // do not proceed if app is not ready
     if (!val) return
 
-    // do not proceed if we are not anthenticated
+    // do not proceed if we are not authenticated (safety check - should never happen)
     if (!this.isAuthenticated) return
 
     // do not proceed if FF is disabled
     if (!featureFlags.getFlag('alteration-ui-enabled')) {
       alert('Alterations are under contruction. Please check again later.')
-      // redirect to the Manage Businesses dashboard
-      const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
-      window.location.assign(manageBusinessUrl)
+      this.redirectEntityDashboard()
       return
     }
 
@@ -84,9 +82,7 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
     const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
     if (isStaffOnly && !this.isRoleStaff) {
       alert('Only staff can alter a business.')
-      // redirect to the Manage Businesses dashboard
-      const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
-      window.location.assign(manageBusinessUrl)
+      this.redirectEntityDashboard()
       return
     }
 
@@ -102,6 +98,16 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
     try {
       // fetch IA to alter
       const { filing } = await this.fetchFilingByType(this.INCORPORATION_APPLICATION)
+
+      // do not proceed if this isn't an IA filing
+      if (!filing.incorporationApplication) {
+        throw new Error('Invalid IA filing')
+      }
+
+      // do not proceed if this isn't a COMPLETED filing
+      if (filing.header.status !== FilingStatus.COMPLETED) {
+        throw new Error('Invalid IA status')
+      }
 
       // parse IA filing into store
       this.parseIncorpApp(filing)
@@ -124,6 +130,12 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
 
     // now that all data is loaded, wait for things to stabilize and reset flag
     Vue.nextTick(() => this.setHaveChanges(false))
+  }
+
+  /** Redirects browser to Entity Dashboard. */
+  private redirectEntityDashboard (): void {
+    const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
+    window.location.assign(dashboardUrl + this.getBusinessId)
   }
 
   /** Emits Fetch Error event. */

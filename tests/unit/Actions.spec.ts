@@ -167,7 +167,7 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
   })
 
   it('Emits the error event for an expired NR', async () => {
-    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildFiling')
+    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildIaFiling')
 
     await wrapper.vm.onClickFilePay()
 
@@ -437,9 +437,9 @@ describe.skip('Actions component - Filing Functionality', () => {
     wrapper.destroy()
   })
 
-  it('Calls the buildFiling method when onClickSave is called', async () => {
+  it('Calls the buildIaFiling method when onClickSave is called', async () => {
     // Mock the function call
-    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildFiling')
+    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildIaFiling')
 
     // Work-around to interact with the stubbed vuetify button component in ShallowMount
     await wrapper.vm.onClickSave()
@@ -469,8 +469,8 @@ describe.skip('Actions component - Filing Functionality', () => {
     expect(wrapper.vm.$route.name).toBe('define-company')
   })
 
-  it('Calls the buildFiling method when onClickSaveResume is called', async () => {
-    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildFiling')
+  it('Calls the buildIaFiling method when onClickSaveResume is called', async () => {
+    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildIaFiling')
 
     await wrapper.vm.onClickSaveResume()
 
@@ -495,8 +495,8 @@ describe.skip('Actions component - Filing Functionality', () => {
     expect(events.length).toBe(1)
   })
 
-  it('Calls the buildFiling and saveFiling methods when onClickFilePay is called', async () => {
-    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildFiling')
+  it('Calls the buildIaFiling and saveFiling methods when onClickFilePay is called', async () => {
+    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildIaFiling')
     const mockSaveFiling = jest.spyOn(wrapper.vm, 'saveFiling')
       .mockImplementation(() => Promise.resolve({ header: { paymentToken: 789 } }))
 
@@ -515,7 +515,7 @@ describe.skip('Actions component - Filing Functionality', () => {
   })
 
   it('Emits "Go To Dashboard" event when onClickCancel is called', async () => {
-    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildFiling')
+    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildIaFiling')
     const mockSaveFiling = jest.spyOn(wrapper.vm, 'saveFiling')
 
     await wrapper.vm.onClickCancel()

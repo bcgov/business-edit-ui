@@ -144,8 +144,7 @@ export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
   font-weight: bold
 }
 
-.company-type{
+.company-type {
   padding-top: 0.5rem
 }
-
 </style>

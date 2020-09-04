@@ -42,9 +42,9 @@ export const isPremiumAccount = (state: any): boolean => {
   return (state.stateModel.accountInformation.accountType === AccountTypes.PREMIUM)
 }
 
-/** Whether the current filing is future effective. */
-export const isFutureEffective = (state: any): boolean => {
-  return state.stateModel.incorporationDateTime.isFutureEffective
+/** The filing's effective date. */
+export const getEffectiveDate = (state: any): Date => {
+  return state.stateModel.incorporationDateTime.effectiveDate
 }
 
 /** The current account id. */
