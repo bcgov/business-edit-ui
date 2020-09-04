@@ -9,7 +9,7 @@
         <v-expansion-panel-header class="name-options-header">{{item.description}}</v-expansion-panel-header>
         <v-expansion-panel-content class="name-options-content">
           <v-container>
-            <component :is="item.component" :key="item.id" />
+            <component :is="item.component" :key="item.id" :triggerSubmit="triggerSubmit"/>
           </v-container>
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -29,6 +29,9 @@
 // Libraries
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 
+// Components
+import { CorrectNameRequest } from '@/components/Company/CompanyName/index'
+
 // Interfaces & Enums
 import { CorrectNameOptionIF } from '@/interfaces'
 import { CorrectionTypes } from '@/enums'
@@ -40,14 +43,19 @@ import { CorrectionTypes } from '@/enums'
  * 2. If this options list is only passed one value the option panel will be open by default.
  * 3. The parent component will have to watch for the 'save' and 'cancel' events and handle them accordingly.
  */
-@Component({})
+@Component({
+  components: {
+    CorrectNameRequest
+  }
+})
 export default class CorrectNameOptions extends Vue {
   /** The options to display */
-  @Prop() private correctionNameChoices: Array<string>
+  @Prop() correctionNameChoices: Array<string>
 
   // local properties
   private displayedOptions: Array<CorrectNameOptionIF> = []
   private panel = null as number
+  private triggerSubmit = false
   private correctionNameOptions: Array<CorrectNameOptionIF> = [
     {
       id: CorrectionTypes.CORRECT_NAME,
@@ -62,7 +70,7 @@ export default class CorrectNameOptions extends Vue {
     {
       id: CorrectionTypes.CORRECT_NEW_NR,
       description: 'Use a new name request number',
-      component: '' // CorrectNameRequest
+      component: CorrectNameRequest
     }
   ]
 
@@ -77,7 +85,8 @@ export default class CorrectNameOptions extends Vue {
   /** save name correction */
   @Emit('save')
   private emitSave (): void {
-    // Pass up event data for parent to handle setting to store etc
+    // Trigger form Submission
+    this.triggerSubmit = !this.triggerSubmit
   }
 
   /** cancel name correction */
