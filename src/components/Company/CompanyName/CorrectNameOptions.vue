@@ -30,7 +30,7 @@
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 
 // Interfaces & Enums
-import { CorrectNameOptionIF } from '@/interfaces/correction-interfaces'
+import { CorrectNameOptionIF } from '@/interfaces'
 import { CorrectionTypes } from '@/enums'
 
 /**
