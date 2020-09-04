@@ -208,13 +208,11 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
 
         // do not proceed if this isn't an IA filing
         if (!this.correctedFiling.incorporationApplication) {
-          console.log('Invalid IA filing')
           throw new Error('Invalid IA filing')
         }
 
         // do not proceed if this isn't a COMPLETED filing
         if (this.correctedFiling.header.status !== FilingStatus.COMPLETED) {
-          console.log('Invalid IA status')
           throw new Error('Invalid IA status')
         }
 
