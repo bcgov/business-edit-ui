@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Emit, Vue } from 'vue-property-decorator'
-import DetailComment from '@vysakh-aot/detail-comment'
+import DetailComment from '@bcrs-shared-components/detail-comment'
 
 @Component({
   components: { DetailComment }

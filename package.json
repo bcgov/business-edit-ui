@@ -13,10 +13,10 @@
   },
   "dependencies": {
     "@babel/compat-data": "^7.8.6",
+    "@bcrs-shared-components/detail-comment": "^1.0.2",
     "@mdi/font": "^5.0.45",
     "@sentry/browser": "^5.15.4",
     "@sentry/integrations": "^5.15.4",
-    "@vysakh-aot/detail-comment": "^1.0.4",
     "array.prototype.move": "0.0.4",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
