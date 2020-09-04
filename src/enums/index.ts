@@ -1,4 +1,5 @@
 export * from './accountTypes'
+export * from './correctionTypes'
 export * from './entityTypes'
 export * from './filingCodes'
 export * from './filingStatus'

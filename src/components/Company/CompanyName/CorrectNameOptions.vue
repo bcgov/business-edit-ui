@@ -29,8 +29,9 @@
 // Libraries
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 
-// Interfaces
+// Interfaces & Enums
 import { CorrectNameOptionIF } from '@/interfaces'
+import { CorrectionTypes } from '@/enums'
 
 /**
  * Operation:
@@ -49,17 +50,17 @@ export default class CorrectNameOptions extends Vue {
   private panel = null as number
   private correctionNameOptions: Array<CorrectNameOptionIF> = [
     {
-      id: 'correct-name',
+      id: CorrectionTypes.CORRECT_NAME,
       description: 'Edit the company name',
       component: ''// CorrectName
     },
     {
-      id: 'correct-name-to-number',
+      id: CorrectionTypes.CORRECT_NAME_TO_NUMBER,
       description: 'Use the incorporation number as the name',
       component: '' // CorrectNameToNumber
     },
     {
-      id: 'correct-new-nr',
+      id: CorrectionTypes.CORRECT_NEW_NR,
       description: 'Use a new name request number',
       component: '' // CorrectNameRequest
     }

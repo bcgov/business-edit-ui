@@ -28,14 +28,6 @@
             <span v-else-if="entityFilter(EntityTypes.COOP)">BC Cooperative Association</span>
           </div>
         </v-flex>
-<!--        *** THIS IS AN EXAMPLE OF IMPLEMENTATION FOR DEVELOPMENT ONLY-->
-<!--        <v-flex md8 v-else>-->
-<!--          <correct-name-options-->
-<!--            :correctionNameChoices="correctionNameChoices"-->
-<!--            @save="nameCorrectionHandler($event)"-->
-<!--            @cancel="isEditingName = false"-->
-<!--          />-->
-<!--        </v-flex>-->
       </v-layout>
       <v-layout row v-if="getNameTranslations && getNameTranslations.length" class="mt-3">
         <v-flex md4>
@@ -112,9 +104,6 @@ export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
 
   // Entity Enum
   readonly EntityTypes = EntityTypes
-
-  // EXAMPLE IMPLEMENTATION OF PROP FOR DEVELOPMENT ONLY
-  // private correctionNameChoices = ['correct-new-nr', 'correct-name', 'correct-name-to-number']
 
   /** The company name (from NR, or incorporation number). */
   private get companyName (): string {
