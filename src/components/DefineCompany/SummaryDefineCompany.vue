@@ -63,10 +63,11 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
 
 // Interfaces
-import { BusinessContactIF, GetterIF, IncorporationAddressIf } from '@/interfaces'
+import { BusinessContactIF, GetterIF } from '@/interfaces'
 
 // Components
 import { FolioNumber, BusinessContactInfo, OfficeAddresses } from '@/components/DefineCompany'
+import { CorrectNameOptions } from '@/components/Company/CompanyName'
 
 // Mixins
 import { EntityFilterMixin } from '@/mixins'
@@ -77,6 +78,7 @@ import { EntityTypes } from '@/enums'
 @Component({
   components: {
     BusinessContactInfo,
+    CorrectNameOptions,
     OfficeAddresses,
     FolioNumber
   }
@@ -126,6 +128,7 @@ export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
   padding-left: 2rem;
   padding-top: 1.25rem;
   padding-bottom: 1.25rem;
+  padding-right: 2rem;
   font-size: 0.875rem;
 }
 
