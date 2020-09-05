@@ -1,17 +1,20 @@
 // Libraries
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { NOT_FOUND } from 'http-status-codes'
 import { axios } from '@/utils'
 
 // Interfaces
-import { ActionBindingIF, GetterIF, IncorporationFilingIF } from '@/interfaces'
+import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces'
+
+// Mixins
+import { FilingTemplateMixin } from '@/mixins'
 
 /**
  * Mixin that provides the integration with the legal api.
  */
 @Component({})
-export default class LegalApiMixin extends Vue {
+export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
   readonly NAME_REQUEST = 'nameRequest'
   readonly INCORPORATION_APPLICATION = 'incorporationApplication'
 
@@ -124,7 +127,7 @@ export default class LegalApiMixin extends Vue {
       url += '?draft=true'
     }
 
-    return axios.put(url, filing).then(response => {
+    return axios.put(url, { filing }).then(response => {
       const filing = response?.data?.filing
       const filingId = +filing?.header?.filingId
       if (!filing || !filingId) {
@@ -180,36 +183,5 @@ export default class LegalApiMixin extends Vue {
         }
         throw error
       })
-  }
-
-  /**
-    * Ensure consisent object structure for an incorporation application
-    * whether it contains a Name Request or not, and whether it is an initial
-    * draft or it has been previously saved. Object merging does not
-    * work very well otherwise (due to nested properties)
-    * @param filing The filing fetched from legal-api
-    * @returns the filing in safe-empty state if applicable
-  */
-  formatEmptyFiling (filing: any): IncorporationFilingIF {
-    let toReturn = filing
-    if (toReturn.incorporationApplication) {
-      if (!toReturn.incorporationApplication?.offices) {
-        toReturn.incorporationApplication.offices = []
-      }
-      if (!toReturn.incorporationApplication?.contactPoint) {
-        toReturn.incorporationApplication.contactPoint = {
-          email: '',
-          phone: '',
-          extension: ''
-        }
-      }
-      if (!toReturn.incorporationApplication?.parties) {
-        toReturn.incorporationApplication.parties = []
-      }
-      if (!toReturn.incorporationApplication?.shareClasses) {
-        toReturn.incorporationApplication.shareClasses = []
-      }
-    }
-    return toReturn
   }
 }
