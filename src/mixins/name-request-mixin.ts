@@ -14,6 +14,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
   /** Fetches NR and validates it. */
   async validateNameRequest (nrNumber: string, applicantPhone?: string, applicantEmail?: string): Promise<any> {
     let nrResponse = await this.fetchNameRequest(nrNumber).catch(error => {
+      console.log(error)
       this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
       throw new Error(`Fetch Name Request error: ${error}`)
     })
@@ -55,9 +56,6 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
         }
         return data
       }).catch(error => {
-        if (error?.response?.status === NOT_FOUND) {
-          return null // NR not found
-        }
         throw error
       })
   }
