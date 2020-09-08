@@ -36,12 +36,22 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
+import { Action } from 'vuex-class'
+
+// Mixins
+import { NameRequestMixin } from '@/mixins'
+
+// Interfaces
+import { NrCorrectionIF } from '@/interfaces/correction-interfaces'
+import { ActionBindingIF } from '@/interfaces'
 
 @Component({})
-export default class CorrectNameRequest extends Vue {
+export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   /** Trigger form submission */
-  @Prop({ default: false }) triggerSubmit: boolean
+  @Prop({ default: false }) submit: boolean
+
+  @Action setNameRequest!: ActionBindingIF
 
   private valid = false
   private nameRequestNumber: string = ''
@@ -62,11 +72,9 @@ export default class CorrectNameRequest extends Vue {
     v => this.isValidateEmail(v) || 'Email is Invalid'
   ]
 
-  // Data
-
   // Validations
-  private isFormValid (): boolean {
-    return !!this.nameRequestNumber &&
+  private get isFormValid (): boolean {
+    return this.valid && !!this.nameRequestNumber &&
       (!!this.entityPhone || !!this.entityEmail)
   }
 
@@ -78,20 +86,50 @@ export default class CorrectNameRequest extends Vue {
     return ((!!this.entityPhone && !!value) || !!this.validateEmailFormat(value))
   }
 
-  private validateNameRequestNumber (value: string):boolean {
+  private validateNameRequestNumber (value: string): boolean {
     const VALID_FORMAT = new RegExp(/^(NR )?\d+$/)
     return VALID_FORMAT.test(value.toUpperCase())
   }
 
-  private validateEmailFormat (value: string):boolean {
+  private validateEmailFormat (value: string): boolean {
     const VALID_FORMAT = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
     return VALID_FORMAT.test(value)
   }
 
   /** Called when parent triggers form submission */
-  @Watch('triggerSubmit', { immediate: true })
-  private onTriggerSubmit (): void {
-    console.log(this.isFormValid())
+  @Watch('submit')
+  private async onSubmit (): Promise<any> {
+    try {
+      const nameRequestResponse = await this.validateNameRequest(
+        this.nameRequestNumber, this.entityPhone, this.entityEmail
+      )
+
+      if (nameRequestResponse) {
+        const nrCorrection: NrCorrectionIF = {
+          nrNumber: this.nameRequestNumber,
+          legalName: this._getApprovedName(nameRequestResponse)
+        }
+        this.setNameRequest(nrCorrection)
+        this.emitSave()
+      }
+    } catch (e) {
+      this.emitDone()
+    }
+  }
+
+  /** Tell parent to handle updates */
+  @Emit('save')
+  private emitSave (): void {}
+
+  /** Push data to parent */
+  @Emit('isDone')
+  private emitDone (): void {}
+
+  /** Push form validation to parent */
+  @Watch('valid')
+  @Emit('isValid')
+  private emitValid (): boolean {
+    return this.isFormValid
   }
 }
 </script>

@@ -162,26 +162,33 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
   }
 
   /**
-   * Fetches name request data.
-   * @param nrNumber the name request number (eg, NR 1234567)
-   * @returns a promise to return the NR data, or null if not found
-   */
-  fetchNameRequest (nrNumber: string): Promise<any> {
-    if (!nrNumber) throw new Error('Invalid parameter \'nrNumber\'')
-
-    const url = `nameRequests/${nrNumber}`
-    return axios.get(url)
-      .then(response => {
-        const data = response?.data
-        if (!data) {
-          throw new Error('Invalid API response')
+    * Ensure consisent object structure for an incorporation application
+    * whether it contains a Name Request or not, and whether it is an initial
+    * draft or it has been previously saved. Object merging does not
+    * work very well otherwise (due to nested properties)
+    * @param filing The filing fetched from legal-api
+    * @returns the filing in safe-empty state if applicable
+  */
+  formatEmptyFiling (filing: any): IncorporationFilingIF {
+    let toReturn = filing
+    if (toReturn.incorporationApplication) {
+      if (!toReturn.incorporationApplication?.offices) {
+        toReturn.incorporationApplication.offices = []
+      }
+      if (!toReturn.incorporationApplication?.contactPoint) {
+        toReturn.incorporationApplication.contactPoint = {
+          email: '',
+          phone: '',
+          extension: ''
         }
-        return data
-      }).catch(error => {
-        if (error?.response?.status === NOT_FOUND) {
-          return null // NR not found
-        }
-        throw error
-      })
+      }
+      if (!toReturn.incorporationApplication?.parties) {
+        toReturn.incorporationApplication.parties = []
+      }
+      if (!toReturn.incorporationApplication?.shareClasses) {
+        toReturn.incorporationApplication.shareClasses = []
+      }
+    }
+    return toReturn
   }
 }

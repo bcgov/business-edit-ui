@@ -3,3 +3,8 @@ export interface CorrectNameOptionIF {
   description?: string,
   component: any
 }
+
+export interface NrCorrectionIF {
+  nrNumber: string,
+  legalName: string
+}

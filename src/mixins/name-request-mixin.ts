@@ -3,12 +3,65 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { NameRequestStates, EntityTypes } from '@/enums'
 import { NameRequestIF } from '@/interfaces'
 import { DateMixin } from '@/mixins'
+import { axios } from '@/utils'
+import { NOT_FOUND } from 'http-status-codes'
 
 /**
  * Mixin for processing Name Request objects.
  */
 @Component({})
 export default class NameRequestMixin extends Mixins(DateMixin) {
+  /** Fetches NR and validates it. */
+  async validateNameRequest (nrNumber: string, applicantPhone?: string, applicantEmail?: string): Promise<any> {
+    let nrResponse = await this.fetchNameRequest(nrNumber).catch(error => {
+      this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
+      throw new Error(`Fetch Name Request error: ${error}`)
+    })
+
+    // Validate email / phone
+    if ((applicantPhone && nrResponse.applicants?.phoneNumber !== applicantPhone) ||
+      (applicantEmail && nrResponse.applicants?.emailAddress !== applicantEmail)) {
+      this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
+      throw new Error(`Invalid Phone or Email`)
+    }
+
+    if (!nrResponse || !this.isNrValid(nrResponse)) {
+      this.$root.$emit('invalid-name-request', NameRequestStates.INVALID)
+      throw new Error('Invalid Name Request')
+    }
+    // ensure NR is consumable
+    const state = this.getNrState(nrResponse)
+    if (state !== NameRequestStates.APPROVED) {
+      this.$root.$emit('invalid-name-request', state)
+      throw new Error(`Invalid Name request state: ${state}`)
+    }
+    return nrResponse
+  }
+
+  /**
+   * Fetches name request data.
+   * @param nrNumber the name request number (eg, NR 1234567)
+   * @returns a promise to return the NR data, or null if not found
+   */
+  fetchNameRequest (nrNumber: string): Promise<any> {
+    if (!nrNumber) throw new Error('Invalid parameter \'nrNumber\'')
+
+    const url = `nameRequests/${nrNumber}`
+    return axios.get(url)
+      .then(response => {
+        const data = response?.data
+        if (!data) {
+          throw new Error('Invalid API response')
+        }
+        return data
+      }).catch(error => {
+        if (error?.response?.status === NOT_FOUND) {
+          return null // NR not found
+        }
+        throw error
+      })
+  }
+
   /**
    * Generates Name Request state for the store.
    * @param nr the name request response payload
@@ -105,7 +158,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    * Returns the Name Request's approved name.
    * @param nr the name request response payload
    */
-  private _getApprovedName (nr: any): string {
+  _getApprovedName (nr: any): string {
     if (nr.state === NameRequestStates.APPROVED) {
       return nr.names.find(name => name.state === NameRequestStates.APPROVED).name
     }

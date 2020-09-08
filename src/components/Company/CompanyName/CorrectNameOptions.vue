@@ -9,16 +9,29 @@
         <v-expansion-panel-header class="name-options-header">{{item.description}}</v-expansion-panel-header>
         <v-expansion-panel-content class="name-options-content">
           <v-container>
-            <component :is="item.component" :key="item.id" :triggerSubmit="triggerSubmit"/>
+            <component
+              :is="item.component"
+              :key="item.id"
+              :submit="submit"
+              @save="emitSave"
+              @isDone="isLoading = false"
+              @isValid="isFormValid = $event"
+            />
           </v-container>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
 
     <div class="action-btns my-3">
-      <v-fade-transition hide-on-leave>
-        <v-btn id="done-btn" large color="primary" @click="emitSave()"><span>Done</span></v-btn>
-      </v-fade-transition>
+      <v-btn
+        id="done-btn"
+        large color="primary"
+        @click="submitNameCorrection"
+        :disabled="!isFormValid"
+        :loading="isLoading"
+      >
+        <span>Done</span>
+      </v-btn>
 
       <v-btn id="cancel-btn" large @click="emitCancel"><span>Cancel</span></v-btn>
     </div>
@@ -55,7 +68,9 @@ export default class CorrectNameOptions extends Vue {
   // local properties
   private displayedOptions: Array<CorrectNameOptionIF> = []
   private panel = null as number
-  private triggerSubmit = false
+  private submit = false
+  private isLoading = false
+  private isFormValid = false
   private correctionNameOptions: Array<CorrectNameOptionIF> = [
     {
       id: CorrectionTypes.CORRECT_NAME,
@@ -82,17 +97,22 @@ export default class CorrectNameOptions extends Vue {
     if (this.correctionNameChoices.length === 1) this.panel = 0 // open by default if only 1 option
   }
 
-  /** save name correction */
+  /** Request the child to submit it's form */
+  private submitNameCorrection (): void {
+    this.isLoading = true
+    this.submit = !this.submit
+  }
+
+  /** Pass event to parent to handle updates */
   @Emit('save')
   private emitSave (): void {
-    // Trigger form Submission
-    this.triggerSubmit = !this.triggerSubmit
+    this.panel = null
   }
 
   /** cancel name correction */
   @Emit('cancel')
   private emitCancel (): void {
-    this.panel = 0
+    this.panel = null
   }
 }
 </script>

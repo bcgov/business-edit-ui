@@ -54,9 +54,6 @@ import { StateModelIF, GetterIF, ActionBindingIF } from '@/interfaces'
 // Mixins
 import { DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
 
-// Enums
-import { NameRequestStates } from '@/enums'
-
 @Component({})
 export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin) {
   // Global state
@@ -194,26 +191,6 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
       const error = new Error('Missing Payment Token')
       this.$root.$emit('save-error-event', error)
       this.setIsFilingPaying(false)
-    }
-  }
-
-  /** Fetches NR and validates it. */
-  private async validateNameRequest (nrNumber: string): Promise<void> {
-    let nrResponse = await this.fetchNameRequest(nrNumber).catch(error => {
-      this.$root.$emit('name-request-retrieve-error')
-      throw new Error(error)
-    })
-
-    if (!nrResponse || !this.isNrValid(nrResponse)) {
-      this.$root.$emit('name-request-invalid-error', NameRequestStates.INVALID)
-      throw new Error('Invalid Name Request')
-    }
-
-    // ensure NR is consumable
-    const state = this.getNrState(nrResponse)
-    if (state !== NameRequestStates.APPROVED && state !== NameRequestStates.CONDITIONAL) {
-      this.$root.$emit('name-request-invalid-error', state || NameRequestStates.INVALID)
-      throw new Error('Invalid Name request')
     }
   }
 

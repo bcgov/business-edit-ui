@@ -11,12 +11,19 @@
         <v-flex md4>
           <label><strong>Company Name</strong></label>
         </v-flex>
-        <v-flex md6>
+        <v-flex md6 v-if="!companyNameChanges">
           <div class="company-name">{{ companyName }}</div>
           <div class="company-type">
             <span v-if="entityFilter(EntityTypes.BCOMP)">BC Benefit Company</span>
             <span v-else-if="entityFilter(EntityTypes.COOP)">BC Cooperative Association</span>
           </div>
+        </v-flex>
+        <v-flex md6 v-else>
+          <correct-name-options
+            :correction-name-choices="correctNameChoices"
+            @save="nameChangeHandler"
+            @cancel="companyNameChanges = false"
+          />
         </v-flex>
         <v-flex md2 class="align-right">
           <!-- only show buttons for named company -->
@@ -126,25 +133,27 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
 
 // Interfaces
-import { BusinessContactIF, GetterIF, IncorporationAddressIf } from '@/interfaces'
+import { BusinessContactIF, GetterIF } from '@/interfaces'
 
 // Components
-import { FolioNumber, BusinessContactInfo, OfficeAddresses } from '@/components/DefineCompany'
+import { BusinessContactInfo, FolioNumber, OfficeAddresses } from '@/components/DefineCompany'
+import { CorrectNameOptions } from '@/components/Company/CompanyName'
 
 // Mixins
-import { DateMixin, EntityFilterMixin } from '@/mixins'
+import { DateMixin, EntityFilterMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
 
 // Enums
-import { EntityTypes } from '@/enums'
+import { CorrectionTypes, EntityTypes } from '@/enums'
 
 @Component({
   components: {
+    CorrectNameOptions,
     BusinessContactInfo,
     OfficeAddresses,
     FolioNumber
   }
 })
-export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin) {
+export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, LegalApiMixin, NameRequestMixin) {
   // Getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
@@ -164,7 +173,8 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin) {
   @Prop({ default: false })
   private isSummary: boolean
 
-  // Entity Enum
+  // Enums
+  readonly CorrectionTypes = CorrectionTypes
   readonly EntityTypes = EntityTypes
 
   // whether components have changes
@@ -173,6 +183,11 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin) {
   private folioNumberChanges = false
   private nameTranslationChanges = false
   private officeAddressChanges = false
+  private correctNameChoices = [
+    CorrectionTypes.CORRECT_NEW_NR,
+    CorrectionTypes.CORRECT_NAME_TO_NUMBER,
+    CorrectionTypes.CORRECT_NAME
+  ]
 
   /** The company name (from NR, or incorporation number). */
   private get companyName (): string {
@@ -186,6 +201,12 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin) {
     return this.getEffectiveDate
       ? (this.convertUtcTimeToLocalTime(this.getEffectiveDate.toString()) + ' Pacific Time')
       : 'Unknown'
+  }
+
+  /** Handle the company name change data */
+  private async nameChangeHandler (): Promise<any> {
+    // Handle name corrections vs a snapshot of the original IA here for UI indicators.
+    this.companyNameChanges = false
   }
 
   // watchers for component change flags
