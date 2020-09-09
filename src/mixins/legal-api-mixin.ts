@@ -160,35 +160,4 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
     const config = { baseURL: authUrl }
     return axios.get('users/@me', config)
   }
-
-  /**
-    * Ensure consisent object structure for an incorporation application
-    * whether it contains a Name Request or not, and whether it is an initial
-    * draft or it has been previously saved. Object merging does not
-    * work very well otherwise (due to nested properties)
-    * @param filing The filing fetched from legal-api
-    * @returns the filing in safe-empty state if applicable
-  */
-  formatEmptyFiling (filing: any): IncorporationFilingIF {
-    let toReturn = filing
-    if (toReturn.incorporationApplication) {
-      if (!toReturn.incorporationApplication?.offices) {
-        toReturn.incorporationApplication.offices = []
-      }
-      if (!toReturn.incorporationApplication?.contactPoint) {
-        toReturn.incorporationApplication.contactPoint = {
-          email: '',
-          phone: '',
-          extension: ''
-        }
-      }
-      if (!toReturn.incorporationApplication?.parties) {
-        toReturn.incorporationApplication.parties = []
-      }
-      if (!toReturn.incorporationApplication?.shareClasses) {
-        toReturn.incorporationApplication.shareClasses = []
-      }
-    }
-    return toReturn
-  }
 }

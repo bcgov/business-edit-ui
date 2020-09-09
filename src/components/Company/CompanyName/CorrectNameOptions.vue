@@ -13,8 +13,7 @@
               :is="item.component"
               :key="item.id"
               :submit="submit"
-              @save="emitSave"
-              @isDone="isLoading = false"
+              @done="emitDone($event)"
               @isValid="isFormValid = $event"
             />
           </v-container>
@@ -97,16 +96,17 @@ export default class CorrectNameOptions extends Vue {
     if (this.correctionNameChoices.length === 1) this.panel = 0 // open by default if only 1 option
   }
 
-  /** Request the child to submit it's form */
+  /** Trigger form submission */
   private submitNameCorrection (): void {
     this.isLoading = true
     this.submit = !this.submit
   }
 
-  /** Pass event to parent to handle updates */
-  @Emit('save')
-  private emitSave (): void {
-    this.panel = null
+  /** Inform Parent name correction process is done. */
+  @Emit('done')
+  private emitDone (isSaved: boolean): void {
+    this.isLoading = false
+    if (isSaved) this.panel = null
   }
 
   /** cancel name correction */

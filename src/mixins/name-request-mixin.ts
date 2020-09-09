@@ -1,26 +1,30 @@
 // Libraries
+import { axios } from '@/utils'
+import { AxiosResponse } from 'axios'
 import { Component, Mixins } from 'vue-property-decorator'
 import { NameRequestStates, EntityTypes } from '@/enums'
 import { NameRequestIF } from '@/interfaces'
 import { DateMixin } from '@/mixins'
-import { axios } from '@/utils'
-import { NOT_FOUND } from 'http-status-codes'
 
 /**
  * Mixin for processing Name Request objects.
  */
 @Component({})
 export default class NameRequestMixin extends Mixins(DateMixin) {
-  /** Fetches NR and validates it. */
-  async validateNameRequest (nrNumber: string, applicantPhone?: string, applicantEmail?: string): Promise<any> {
+  /** Fetches NR and validates it against the applicants information.
+   * @param nrNumber The name request number to validate
+   * @param phone The applicants phone
+   * @param email The applicants email
+   * */
+  async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<AxiosResponse> {
     let nrResponse = await this.fetchNameRequest(nrNumber).catch(error => {
       this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
       throw new Error(`Fetch Name Request error: ${error}`)
     })
 
     // Validate email / phone
-    if ((applicantPhone && nrResponse.applicants?.phoneNumber !== applicantPhone) ||
-      (applicantEmail && nrResponse.applicants?.emailAddress !== applicantEmail)) {
+    if ((phone && nrResponse.applicants?.phoneNumber !== phone) ||
+      (email && nrResponse.applicants?.emailAddress !== email)) {
       this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
       throw new Error(`Invalid Phone or Email`)
     }
@@ -43,7 +47,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    * @param nrNumber the name request number (eg, NR 1234567)
    * @returns a promise to return the NR data, or null if not found
    */
-  fetchNameRequest (nrNumber: string): Promise<any> {
+  async fetchNameRequest (nrNumber: string): Promise<any> {
     if (!nrNumber) throw new Error('Invalid parameter \'nrNumber\'')
 
     const url = `nameRequests/${nrNumber}`
@@ -90,7 +94,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
         lastName: nr.applicants.lastName
       },
       details: {
-        approvedName: this._getApprovedName(nr),
+        approvedName: this.getApprovedName(nr),
         consentFlag: nr.consentFlag,
         expirationDate: nr.expirationDate,
         status: nr.state
@@ -155,7 +159,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    * Returns the Name Request's approved name.
    * @param nr the name request response payload
    */
-  _getApprovedName (nr: any): string {
+  getApprovedName (nr: any): string {
     if (nr.state === NameRequestStates.APPROVED) {
       return nr.names.find(name => name.state === NameRequestStates.APPROVED).name
     }

@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="addNRForm" v-model="valid" lazy-validation>
+  <v-form ref="correctNrForm" v-model="valid" lazy-validation>
     <v-text-field
       v-model="nameRequestNumber"
       filled
@@ -48,7 +48,7 @@ import { ActionBindingIF } from '@/interfaces'
 
 @Component({})
 export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
-  /** Trigger form submission */
+  /** Form Submission Prop */
   @Prop({ default: false }) submit: boolean
 
   @Action setNameRequest!: ActionBindingIF
@@ -57,6 +57,9 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   private nameRequestNumber: string = ''
   private entityPhone: string = ''
   private entityEmail: string = ''
+
+  // Form Ref
+  $refs: { correctNrForm: HTMLFormElement }
 
   // Rules
   private entityNumRules = [
@@ -96,36 +99,36 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
     return VALID_FORMAT.test(value)
   }
 
-  /** Called when parent triggers form submission */
-  @Watch('submit')
-  private async onSubmit (): Promise<any> {
-    try {
-      const nameRequestResponse = await this.validateNameRequest(
-        this.nameRequestNumber, this.entityPhone, this.entityEmail
-      )
-
-      if (nameRequestResponse) {
-        const nrCorrection: NrCorrectionIF = {
-          nrNumber: this.nameRequestNumber,
-          legalName: this._getApprovedName(nameRequestResponse)
-        }
-        this.setNameRequest(nrCorrection)
-        this.emitSave()
-      }
-    } catch (e) {
-      this.emitDone()
-    }
+  private resetForm () {
+    this.nameRequestNumber = ''
+    this.entityPhone = ''
+    this.entityEmail = ''
+    this.$refs.correctNrForm.resetValidation()
   }
 
-  /** Tell parent to handle updates */
-  @Emit('save')
-  private emitSave (): void {}
+  /** Watch for form submission and emit results. */
+  @Watch('submit')
+  private async onSubmit (): Promise<any> {
+    await this.validateNameRequest(this.nameRequestNumber, this.entityPhone, this.entityEmail)
+      .then(response => {
+        const nrCorrection: NrCorrectionIF = {
+          nrNumber: this.nameRequestNumber,
+          legalName: this.getApprovedName(response)
+        }
+        this.setNameRequest(nrCorrection)
+        this.emitDone(true)
+      }).catch(() => {
+        this.emitDone()
+      })
+  }
 
-  /** Push data to parent */
-  @Emit('isDone')
-  private emitDone (): void {}
+  /** Inform parent the process is complete. */
+  @Emit('done')
+  private emitDone (isSaved: boolean = false): void {
+    if (!isSaved) this.resetForm()
+  }
 
-  /** Push form validation to parent */
+  /** Inform parent when form is valid and ready for submission. */
   @Watch('valid')
   @Emit('isValid')
   private emitValid (): boolean {

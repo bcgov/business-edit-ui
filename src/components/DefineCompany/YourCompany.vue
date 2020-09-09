@@ -21,7 +21,7 @@
         <v-flex md6 v-else>
           <correct-name-options
             :correction-name-choices="correctNameChoices"
-            @save="nameChangeHandler"
+            @done="nameChangeHandler($event)"
             @cancel="companyNameChanges = false"
           />
         </v-flex>
@@ -140,7 +140,7 @@ import { BusinessContactInfo, FolioNumber, OfficeAddresses } from '@/components/
 import { CorrectNameOptions } from '@/components/Company/CompanyName'
 
 // Mixins
-import { DateMixin, EntityFilterMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
+import { DateMixin, EntityFilterMixin, LegalApiMixin } from '@/mixins'
 
 // Enums
 import { CorrectionTypes, EntityTypes } from '@/enums'
@@ -153,7 +153,7 @@ import { CorrectionTypes, EntityTypes } from '@/enums'
     FolioNumber
   }
 })
-export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, LegalApiMixin, NameRequestMixin) {
+export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, LegalApiMixin) {
   // Getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
@@ -204,9 +204,9 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   }
 
   /** Handle the company name change data */
-  private async nameChangeHandler (): Promise<any> {
+  private async nameChangeHandler (isSaved: boolean): Promise<any> {
     // Handle name corrections vs a snapshot of the original IA here for UI indicators.
-    this.companyNameChanges = false
+    if (isSaved) this.companyNameChanges = false
   }
 
   // watchers for component change flags
