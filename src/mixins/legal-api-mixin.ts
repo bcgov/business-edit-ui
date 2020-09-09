@@ -160,28 +160,4 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
     const config = { baseURL: authUrl }
     return axios.get('users/@me', config)
   }
-
-  /**
-   * Fetches name request data.
-   * @param nrNumber the name request number (eg, NR 1234567)
-   * @returns a promise to return the NR data, or null if not found
-   */
-  fetchNameRequest (nrNumber: string): Promise<any> {
-    if (!nrNumber) throw new Error('Invalid parameter \'nrNumber\'')
-
-    const url = `nameRequests/${nrNumber}`
-    return axios.get(url)
-      .then(response => {
-        const data = response?.data
-        if (!data) {
-          throw new Error('Invalid API response')
-        }
-        return data
-      }).catch(error => {
-        if (error?.response?.status === NOT_FOUND) {
-          return null // NR not found
-        }
-        throw error
-      })
-  }
 }

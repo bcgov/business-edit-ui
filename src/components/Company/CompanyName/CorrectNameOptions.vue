@@ -9,16 +9,28 @@
         <v-expansion-panel-header class="name-options-header">{{item.description}}</v-expansion-panel-header>
         <v-expansion-panel-content class="name-options-content">
           <v-container>
-            <component :is="item.component" :key="item.id" />
+            <component
+              :is="item.component"
+              :key="item.id"
+              :submit="submit"
+              @done="emitDone($event)"
+              @isValid="isFormValid = $event"
+            />
           </v-container>
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
 
     <div class="action-btns my-3">
-      <v-fade-transition hide-on-leave>
-        <v-btn id="done-btn" large color="primary" @click="emitSave()"><span>Done</span></v-btn>
-      </v-fade-transition>
+      <v-btn
+        id="done-btn"
+        large color="primary"
+        @click="submitNameCorrection"
+        :disabled="!isFormValid"
+        :loading="isLoading"
+      >
+        <span>Done</span>
+      </v-btn>
 
       <v-btn id="cancel-btn" large @click="emitCancel"><span>Cancel</span></v-btn>
     </div>
@@ -28,6 +40,9 @@
 <script lang="ts">
 // Libraries
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+
+// Components
+import CorrectNameRequest from './CorrectNameRequest.vue'
 
 // Interfaces & Enums
 import { CorrectNameOptionIF } from '@/interfaces'
@@ -40,14 +55,21 @@ import { CorrectionTypes } from '@/enums'
  * 2. If this options list is only passed one value the option panel will be open by default.
  * 3. The parent component will have to watch for the 'save' and 'cancel' events and handle them accordingly.
  */
-@Component({})
+@Component({
+  components: {
+    CorrectNameRequest
+  }
+})
 export default class CorrectNameOptions extends Vue {
   /** The options to display */
-  @Prop() private correctionNameChoices: Array<string>
+  @Prop() correctionNameChoices: Array<string>
 
   // local properties
   private displayedOptions: Array<CorrectNameOptionIF> = []
   private panel = null as number
+  private submit = false
+  private isLoading = false
+  private isFormValid = false
   private correctionNameOptions: Array<CorrectNameOptionIF> = [
     {
       id: CorrectionTypes.CORRECT_NAME,
@@ -62,7 +84,7 @@ export default class CorrectNameOptions extends Vue {
     {
       id: CorrectionTypes.CORRECT_NEW_NR,
       description: 'Use a new name request number',
-      component: '' // CorrectNameRequest
+      component: CorrectNameRequest
     }
   ]
 
@@ -74,16 +96,23 @@ export default class CorrectNameOptions extends Vue {
     if (this.correctionNameChoices.length === 1) this.panel = 0 // open by default if only 1 option
   }
 
-  /** save name correction */
-  @Emit('save')
-  private emitSave (): void {
-    // Pass up event data for parent to handle setting to store etc
+  /** Trigger form submission */
+  private submitNameCorrection (): void {
+    this.isLoading = true
+    this.submit = !this.submit
+  }
+
+  /** Inform Parent name correction process is done. */
+  @Emit('done')
+  private emitDone (isSaved: boolean): void {
+    this.isLoading = false
+    if (isSaved) this.panel = null
   }
 
   /** cancel name correction */
   @Emit('cancel')
   private emitCancel (): void {
-    this.panel = 0
+    this.panel = null
   }
 }
 </script>

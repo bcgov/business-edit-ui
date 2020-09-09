@@ -57,6 +57,13 @@
       @okay="saveErrorDialog = false"
     />
 
+    <name-request-error-dialog
+      attach="#app"
+      :type="nameRequestErrorType"
+      :dialog="nameRequestErrorDialog"
+      @close="nameRequestErrorDialog = false"
+    />
+
     <confirm-dialog
       ref="confirm"
       attach="#app"
@@ -136,7 +143,8 @@ import * as Views from '@/views'
 
 // Dialogs, mixins, interfaces, etc
 import { AccountAuthorizationDialog, BcolErrorDialog, NameRequestInvalidErrorDialog, ConfirmDialog, FetchErrorDialog,
-  InvalidIncorporationApplicationDialog, PaymentErrorDialog, SaveErrorDialog, FileAndPayInvalidNameRequestDialog
+  InvalidIncorporationApplicationDialog, PaymentErrorDialog, SaveErrorDialog, FileAndPayInvalidNameRequestDialog,
+  NameRequestErrorDialog
 } from '@/components/dialogs'
 import { BcolMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces'
@@ -155,6 +163,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     AccountAuthorizationDialog,
     FetchErrorDialog,
     InvalidIncorporationApplicationDialog,
+    NameRequestErrorDialog,
     PaymentErrorDialog,
     SaveErrorDialog,
     ConfirmDialog,
@@ -200,6 +209,8 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   private saveErrorDialog: boolean = false
   private nameRequestInvalidErrorDialog: boolean = false
   private nameRequestInvalidType: string = ''
+  private nameRequestErrorDialog: boolean = false
+  private nameRequestErrorType: string = ''
   private saveErrors: Array<object> = []
   private saveWarnings: Array<object> = []
   private fileAndPayInvalidNameRequestDialog: boolean = false
@@ -290,15 +301,10 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     })
 
     // listen for name request invalid error events
-    this.$root.$on('name-request-invalid-error', async error => {
-      console.log('NR error during File and Pay =', error) // eslint-disable-line no-console
-      this.fileAndPayInvalidNameRequestDialog = true
-    })
-
-    // listen for name request retrieve error events
-    this.$root.$on('name-request-retrieve-error', async () => {
-      console.log('Error while retrieving NR during File and Pay') // eslint-disable-line no-console
-      this.nameRequestInvalidErrorDialog = true
+    this.$root.$on('invalid-name-request', async error => {
+      console.log('Name request error:', error) // eslint-disable-line no-console
+      this.nameRequestErrorType = error
+      this.nameRequestErrorDialog = true
     })
 
     // if we are already authenticated then go right to init
