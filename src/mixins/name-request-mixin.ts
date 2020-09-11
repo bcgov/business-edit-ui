@@ -94,7 +94,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
         lastName: nr.applicants.lastName
       },
       details: {
-        approvedName: this.getApprovedName(nr),
+        approvedName: this.getNrApprovedName(nr),
         consentFlag: nr.consentFlag,
         expirationDate: nr.expirationDate,
         status: nr.state
@@ -159,7 +159,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    * Returns the Name Request's approved name.
    * @param nr the name request response payload
    */
-  getApprovedName (nr: any): string {
+  getNrApprovedName (nr: any): string {
     if (nr.state === NameRequestStates.APPROVED) {
       return nr.names.find(name => name.state === NameRequestStates.APPROVED).name
     }

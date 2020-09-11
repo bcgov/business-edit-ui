@@ -31,7 +31,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * @param filing filing body to be saved
    * @returns a promise to return the saved filing
    */
-  async saveFiling (filing: IncorporationFilingIF, isDraft: boolean): Promise<any> {
+  saveFiling (filing: IncorporationFilingIF, isDraft: boolean): Promise<any> {
     if (!filing) throw new Error('Invalid parameter \'filing\'')
     if (typeof isDraft !== 'boolean') throw new Error('Invalid parameter \'isDraft\'')
 
@@ -48,7 +48,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * Fetches a draft filing.
    * @returns a promise to return the draft filing, or null if not found
    */
-  async fetchDraft (): Promise<any> {
+  fetchDraft (): Promise<any> {
     // get the draft filing from the tasks endpoint
     const url = `businesses/${this.getBusinessId}/filings`
     return axios.get(url)
@@ -77,7 +77,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * Fetches a filing by its type.
    * @returns a promise to return the filing of the specified type
    */
-  async fetchFilingByType (filingType: string): Promise<any> {
+  fetchFilingByType (filingType: string): Promise<any> {
     const url = `businesses/${this.getBusinessId}/filings`
     return axios.get(url)
       .then(response => {
@@ -100,7 +100,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * Fetches a filing by its id.
    * @returns a promise to return the filing of the specified type
    */
-  async fetchFilingById (id: number): Promise<any> {
+  fetchFilingById (id: number): Promise<any> {
     const url = `businesses/${this.getBusinessId}/filings/${id}`
     return axios.get(url)
       .then(response => {
