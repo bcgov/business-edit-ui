@@ -53,7 +53,8 @@
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 
 // Components
-import { CorrectNameRequest, CorrectCompanyName } from './'
+import CorrectNameRequest from '@/components/Company/CompanyName/CorrectNameRequest.vue'
+import CorrectCompanyName from '@/components/Company/CompanyName/CorrectCompanyName.vue'
 
 // Interfaces & Enums
 import { CorrectNameOptionIF } from '@/interfaces'
