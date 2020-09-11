@@ -20,16 +20,16 @@ export interface NameRequestDetailsIF {
 
 // Name request applicant details interface
 export interface NameRequestApplicantIF {
-  firstName: string
-  middleName: string
-  lastName: string
-  emailAddress: string
-  phoneNumber: string
-  addressLine1: string
-  addressLine2: string
-  addressLine3: string
-  city: string
-  countryTypeCode: string
-  postalCode: string
-  stateProvinceCode: string
+  firstName?: string
+  middleName?: string
+  lastName?: string
+  emailAddress?: string
+  phoneNumber?: string
+  addressLine1?: string
+  addressLine2?: string
+  addressLine3?: string
+  city?: string
+  countryTypeCode?: string
+  postalCode?: string
+  stateProvinceCode?: string
 }

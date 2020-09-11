@@ -72,6 +72,10 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   @Prop({ default: null }) formType: CorrectionTypes
 
   @Action setNameRequest!: ActionBindingIF
+  @Action setBusinessInformation!: ActionBindingIF
+
+  @Getter getNameRequestNumber!: string
+  @Getter getNameRequestApplicant!: NameRequestApplicantIF
 
   @Getter getNameRequest!: NameRequestIF
   @Getter getNameRequestNumber!: string

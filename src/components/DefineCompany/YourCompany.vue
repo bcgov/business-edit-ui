@@ -154,14 +154,14 @@ import { DateMixin, EntityFilterMixin, LegalApiMixin } from '@/mixins'
 // Enums
 import { CorrectionTypes, EntityTypes } from '@/enums'
 
-@Component({
-  components: {
-    CorrectNameOptions,
-    BusinessContactInfo,
-    OfficeAddresses,
-    FolioNumber
-  }
-})
+  @Component({
+    components: {
+      CorrectNameOptions,
+      BusinessContactInfo,
+      OfficeAddresses,
+      FolioNumber
+    }
+  })
 export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, LegalApiMixin) {
   // Getters
   @Getter getApprovedName!: string

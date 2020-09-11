@@ -33,6 +33,7 @@ export default class CorrectCompanyName extends Vue {
   @Getter getApprovedName!: string
   @Getter getNameRequest!: NameRequestIF
 
+
   private valid = false
   private companyName = ''
 
