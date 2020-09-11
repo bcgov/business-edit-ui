@@ -259,6 +259,11 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     return process.env.ABOUT_TEXT
   }
 
+  /** Whether user is authenticated. */
+  private get isAuthenticated (): boolean {
+    return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+  }
+
   /**
    * Called when component is created.
    * NB: User may not be authed yet.
@@ -267,7 +272,9 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event) => {
       if (this.haveChanges) {
+        // cancel closing the page
         event.preventDefault()
+        // pop up confirmation dialog
         // NB: custom text is not supported in all browsers
         event.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
       }
@@ -300,29 +307,27 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
       }
     })
 
-    // listen for name request invalid error events
+    // listen for invalid name requests
     this.$root.$on('invalid-name-request', async error => {
-      console.log('Name request error:', error) // eslint-disable-line no-console
+      console.log('Name request error =', error) // eslint-disable-line no-console
       this.nameRequestErrorType = error
       this.nameRequestErrorDialog = true
     })
 
     // if we are already authenticated then go right to init
     // (since we won't get the event from Signin component)
-    const isAuthenticated = Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
-    if (isAuthenticated) this.onProfileReady(true)
+    if (this.isAuthenticated) this.onProfileReady(true)
   }
 
   /** Called when component is destroyed. */
   private destroyed (): void {
-    // stop listening for save error event
+    // stop listening for custom events
     this.$root.$off('save-error-event')
-    this.$root.$off('name-request-invalid-errort')
-    this.$root.$off('name-request-retrieve-error')
+    this.$root.$off('invalid-name-request')
   }
 
   /** Called when profile is ready -- we can now init app. */
-  @Watch('profileReady', { immediate: true })
+  @Watch('profileReady')
   private async onProfileReady (val: boolean): Promise<void> {
     //
     // do the one-time things here
@@ -333,7 +338,8 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
       await this.startTokenService()
 
       // get and store business ID
-      this.setBusinessId(sessionStorage.getItem('BUSINESS_ID'))
+      const businessId = sessionStorage.getItem('BUSINESS_ID')
+      this.setBusinessId(businessId)
 
       // load account information
       this.loadAccountInformation()
@@ -352,9 +358,10 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     // reset errors in case of retry
     this.resetFlags()
 
-    // decode and store keycloak roles from JWT
+    // get and store keycloak roles
     try {
-      this.setKeycloakRoles(getKeycloakRoles())
+      const keycloakRoles = getKeycloakRoles()
+      this.setKeycloakRoles(keycloakRoles)
     } catch (error) {
       console.log('Keycloak error =', error) // eslint-disable-line no-console
       this.accountAuthorizationDialog = true
@@ -363,7 +370,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
 
     // ensure user is authorized to access this business
     try {
-      await this.checkAuth()
+      await this.loadAuth()
     } catch (error) {
       console.log('Auth error =', error) // eslint-disable-line no-console
       this.accountAuthorizationDialog = true
@@ -461,8 +468,8 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     this.saveWarnings = []
   }
 
-  /** Gets authorizations from Auth API, verifies roles and stores them. */
-  private async checkAuth (): Promise<any> {
+  /** Fetches authorizations and verifies and stores roles. */
+  private async loadAuth (): Promise<any> {
     // NB: will throw if API error
     const response = await this.getAuthorizations(this.getBusinessId)
     // NB: roles array may contain 'view', 'edit', 'staff' or nothing
@@ -476,8 +483,9 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
 
   /** Gets account information (e.g. Premium account) and stores it. */
   private loadAccountInformation (): void {
-    if (sessionStorage.getItem(SessionStorageKeys.CurrentAccount)) {
-      const accountInfo = JSON.parse(sessionStorage.getItem(SessionStorageKeys.CurrentAccount))
+    const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
+    if (currentAccount) {
+      const accountInfo = JSON.parse(currentAccount)
       this.setAccountInformation(accountInfo)
     }
   }

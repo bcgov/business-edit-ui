@@ -113,7 +113,7 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
       .then(response => {
         const nrCorrection: NrCorrectionIF = {
           nrNumber: this.nameRequestNumber,
-          legalName: this.getApprovedName(response)
+          legalName: this.getNrApprovedName(response)
         }
         this.setNameRequest(nrCorrection)
         this.emitDone(true)
