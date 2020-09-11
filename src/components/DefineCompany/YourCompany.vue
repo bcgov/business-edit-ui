@@ -8,52 +8,65 @@
     <div class="section-container px-8">
       <!--TODO: Replace container content with Name Request Summary when it is ready -->
       <v-layout row>
-        <v-flex md4>
-          <label><strong>Company Name</strong></label>
+        <v-flex md3>
+          <v-layout column>
+            <label><strong>Company Name</strong></label>
+            <v-flex md1>
+              <v-chip
+                v-if="companyNameChanges"
+                class="ma-2 pa-2"
+                color="primary"
+                pill
+                x-small
+              >
+                Corrected
+              </v-chip>
+            </v-flex>
+          </v-layout>
         </v-flex>
-        <v-flex md6 v-if="!companyNameChanges">
-          <div class="company-name">{{ companyName }}</div>
-          <div class="company-type">
-            <span v-if="entityFilter(EntityTypes.BCOMP)">BC Benefit Company</span>
-            <span v-else-if="entityFilter(EntityTypes.COOP)">BC Cooperative Association</span>
-          </div>
-        </v-flex>
-        <v-flex md6 v-else>
-          <correct-name-options
-            :correction-name-choices="correctNameChoices"
-            @done="nameChangeHandler($event)"
-            @cancel="companyNameChanges = false"
-          />
-        </v-flex>
-        <v-flex md2 class="align-right">
-          <!-- only show buttons for named company -->
-          <template v-if="getApprovedName || true">
+        <template v-if="!isEditingNames">
+          <v-flex md7>
+            <div class="company-name">{{ companyName }}</div>
+            <div class="company-type">
+              <span v-if="entityFilter(EntityTypes.BCOMP)">BC Benefit Company</span>
+              <span v-else-if="entityFilter(EntityTypes.COOP)">BC Cooperative Association</span>
+            </div>
+          </v-flex>
+          <v-flex md2 class="align-right">
+            <!-- only show buttons for named company -->
             <v-btn
               v-if="!companyNameChanges"
               text color="primary"
               id="btn-correct-company-name"
-              @click="companyNameChanges = true"
+              @click="isEditingNames = true"
             >
               <v-icon small>mdi-pencil</v-icon>
               <span>Correct</span>
             </v-btn>
             <v-btn
-              v-if="companyNameChanges"
+              v-else
               text color="primary"
               id="btn-undo-company-name"
-              @click="companyNameChanges = false"
+              @click="resetName"
             >
               <v-icon small>mdi-undo</v-icon>
               <span>Undo</span>
             </v-btn>
-          </template>
+          </v-flex>
+        </template>
+        <v-flex v-else md9>
+          <correct-name-options
+            :correction-name-choices="correctNameChoices"
+            @done="nameChangeHandler($event)"
+            @cancel="isEditingNames = false"
+          />
         </v-flex>
       </v-layout>
       <v-layout row v-if="getNameTranslations && getNameTranslations.length" class="mt-3">
-        <v-flex md4>
+        <v-flex md3>
           <label><strong>Name Translation</strong></label>
         </v-flex>
-        <v-flex md6>
+        <v-flex md7>
           <div v-for="(name, index) in getNameTranslations" :key="`name_translation_${index}`">{{name}}</div>
         </v-flex>
         <v-flex md2 class="align-right">
@@ -83,10 +96,10 @@
 
     <div class="section-container px-8">
       <v-layout row>
-        <v-flex md4>
+        <v-flex md3>
           <label><strong>Recognition Date and Time</strong></label>
         </v-flex>
-        <v-flex md6>
+        <v-flex md7>
           <div>{{ recognitionDateTime }}</div>
         </v-flex>
         <v-flex md2 class="align-right">
@@ -131,28 +144,24 @@
 // Libraries
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
-
 // Interfaces
-import { BusinessContactIF, GetterIF } from '@/interfaces'
-
+import { BusinessContactIF, GetterIF, IncorporationFilingIF, StateModelIF } from '@/interfaces'
 // Components
 import { BusinessContactInfo, FolioNumber, OfficeAddresses } from '@/components/DefineCompany'
 import { CorrectNameOptions } from '@/components/Company/CompanyName'
-
 // Mixins
 import { DateMixin, EntityFilterMixin, LegalApiMixin } from '@/mixins'
-
 // Enums
 import { CorrectionTypes, EntityTypes } from '@/enums'
 
-@Component({
-  components: {
-    CorrectNameOptions,
-    BusinessContactInfo,
-    OfficeAddresses,
-    FolioNumber
-  }
-})
+  @Component({
+    components: {
+      CorrectNameOptions,
+      BusinessContactInfo,
+      OfficeAddresses,
+      FolioNumber
+    }
+  })
 export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, LegalApiMixin) {
   // Getters
   @Getter getApprovedName!: string
@@ -162,10 +171,17 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   @Getter getNameTranslations!: Array<string>
   @Getter getOfficeAddresses!: any
   @Getter isPremiumAccount!: GetterIF
+  @Getter isNamedBusiness!: boolean
 
   // Global state
   @State(state => state.stateModel.defineCompanyStep.valid)
   readonly valid!: boolean
+
+  @State(state => state.stateModel.originalIA)
+  readonly originalIA!: IncorporationFilingIF
+
+  @State(state => state.stateModel)
+  readonly stateModel!: StateModelIF
 
   @State(state => state.stateModel.defineCompanyStep.businessContact)
   readonly businessContact!: BusinessContactIF
@@ -183,11 +199,8 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   private folioNumberChanges = false
   private nameTranslationChanges = false
   private officeAddressChanges = false
-  private correctNameChoices = [
-    CorrectionTypes.CORRECT_NEW_NR,
-    CorrectionTypes.CORRECT_NAME_TO_NUMBER,
-    CorrectionTypes.CORRECT_NAME
-  ]
+  private correctNameChoices = []
+  private isEditingNames = false
 
   /** The company name (from NR, or incorporation number). */
   private get companyName (): string {
@@ -203,10 +216,36 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
       : 'Unknown'
   }
 
-  /** Handle the company name change data */
-  private async nameChangeHandler (isSaved: boolean): Promise<any> {
-    // Handle name corrections vs a snapshot of the original IA here for UI indicators.
-    if (isSaved) this.companyNameChanges = false
+  /** Compare current to corrected data and update UI.  */
+  private async nameChangeHandler (type: CorrectionTypes): Promise<any> {
+    if (type) {
+      switch (type) {
+        case CorrectionTypes.CORRECT_NEW_NR:
+          this.companyNameChanges = this.isNewName()
+          this.isEditingNames = false
+          break
+        case CorrectionTypes.CORRECT_NAME:
+          this.companyNameChanges = this.isNewName()
+          this.isEditingNames = false
+          break
+        default:
+          this.companyNameChanges = false
+      }
+    }
+  }
+
+  /** Compare names. */
+  private isNewName () {
+    const currentName = this.originalIA.incorporationApplication.nameRequest.legalName
+    const correctedName = this.stateModel.nameRequest.legalName
+    return currentName !== correctedName
+  }
+
+  /** Reset company name values to original. */
+  private resetName () {
+    this.setBusinessInformation(this.originalIA.business)
+    this.setNameRequest(this.originalIA.incorporationApplication.nameRequest)
+    this.companyNameChanges = false
   }
 
   // watchers for component change flags
@@ -215,6 +254,21 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   @Watch('folioNumberChanges') private onFolioNumberChanges ():void { this.emitHaveChanges() }
   @Watch('nameTranslationChanges') private onNameTranslationChanges ():void { this.emitHaveChanges() }
   @Watch('officeAddressChanges') private onOfficeAddressChanges ():void { this.emitHaveChanges() }
+
+  @Watch('getApprovedName')
+  private onApprovedName ():void {
+    if (this.getApprovedName) {
+      this.correctNameChoices = [
+        CorrectionTypes.CORRECT_NEW_NR,
+        CorrectionTypes.CORRECT_NAME,
+        CorrectionTypes.CORRECT_NAME_TO_NUMBER
+      ]
+    } else {
+      this.correctNameChoices = [
+        CorrectionTypes.CORRECT_NEW_NR
+      ]
+    }
+  }
 
   /** Emits Have Changes event. */
   @Emit('haveChanges')

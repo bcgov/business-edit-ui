@@ -1,18 +1,28 @@
 <template>
   <v-container id="name-options-container">
-    <h4 class="name-options-info mb-3">You can correct the company name in one of the following ways:</h4>
+    <p class="name-options-info mb-5" v-if="!isOneOption">
+      You can correct the company name in one of the following ways:
+    </p>
     <v-expansion-panels v-model="panel">
       <v-expansion-panel
         v-for="(item,i) in displayedOptions"
         :key="i"
+        :disabled="isOneOption"
+        @click="identifyForm(item.id)"
       >
-        <v-expansion-panel-header class="name-options-header">{{item.description}}</v-expansion-panel-header>
+        <v-expansion-panel-header class="px-0" :class="{'name-options-header': isOneOption}">
+          <span class="names-option-title">{{item.title}}</span>
+          <template v-slot:actions>
+            <v-icon color="primary">mdi-menu-down</v-icon>
+          </template>
+        </v-expansion-panel-header>
         <v-expansion-panel-content class="name-options-content">
+          <v-label color="primary">{{item.description}}</v-label>
           <v-container>
             <component
               :is="item.component"
               :key="item.id"
-              :submit="submit"
+              :submitId="submitId"
               @done="emitDone($event)"
               @isValid="isFormValid = $event"
             />
@@ -24,7 +34,8 @@
     <div class="action-btns my-3">
       <v-btn
         id="done-btn"
-        large color="primary"
+        large
+        color="primary"
         @click="submitNameCorrection"
         :disabled="!isFormValid"
         :loading="isLoading"
@@ -32,7 +43,7 @@
         <span>Done</span>
       </v-btn>
 
-      <v-btn id="cancel-btn" large @click="emitCancel"><span>Cancel</span></v-btn>
+      <v-btn id="cancel-btn" large outlined color="primary" @click="emitCancel"><span>Cancel</span></v-btn>
     </div>
   </v-container>
 </template>
@@ -42,7 +53,7 @@
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 
 // Components
-import CorrectNameRequest from './CorrectNameRequest.vue'
+import { CorrectNameRequest, CorrectCompanyName } from './'
 
 // Interfaces & Enums
 import { CorrectNameOptionIF } from '@/interfaces'
@@ -57,7 +68,8 @@ import { CorrectionTypes } from '@/enums'
  */
 @Component({
   components: {
-    CorrectNameRequest
+    CorrectNameRequest,
+    CorrectCompanyName
   }
 })
 export default class CorrectNameOptions extends Vue {
@@ -67,23 +79,28 @@ export default class CorrectNameOptions extends Vue {
   // local properties
   private displayedOptions: Array<CorrectNameOptionIF> = []
   private panel = null as number
-  private submit = false
+  private submitId = ''
+  private currentPanelId = ''
   private isLoading = false
   private isFormValid = false
   private correctionNameOptions: Array<CorrectNameOptionIF> = [
     {
       id: CorrectionTypes.CORRECT_NAME,
-      description: 'Edit the company name',
-      component: ''// CorrectName
+      title: 'Edit the company name',
+      description: 'Correct typographical errors int he existing company name.',
+      component: CorrectCompanyName
     },
     {
       id: CorrectionTypes.CORRECT_NAME_TO_NUMBER,
-      description: 'Use the incorporation number as the name',
+      title: 'Use the incorporation number as the name',
+      description: '',
       component: '' // CorrectNameToNumber
     },
     {
       id: CorrectionTypes.CORRECT_NEW_NR,
-      description: 'Use a new name request number',
+      title: 'Use a new name request number',
+      description: 'Enter the new Name Request Number (e.g., NR1234567) and either the applicant phone number OR the ' +
+        'applicant email that was used when the name was requested.',
       component: CorrectNameRequest
     }
   ]
@@ -93,20 +110,35 @@ export default class CorrectNameOptions extends Vue {
     this.displayedOptions = this.correctionNameOptions.filter(
       option => this.correctionNameChoices.includes(option.id)
     )
-    if (this.correctionNameChoices.length === 1) this.panel = 0 // open by default if only 1 option
+    // open by default and assign id if only 1 option
+    if (this.isOneOption) {
+      this.panel = 0
+      this.currentPanelId = this.displayedOptions[0].id
+    }
+  }
+
+  private get isOneOption (): boolean {
+    return this.correctionNameChoices.length === 1
   }
 
   /** Trigger form submission */
   private submitNameCorrection (): void {
     this.isLoading = true
-    this.submit = !this.submit
+    this.submitId = this.currentPanelId
+  }
+
+  /** Identify the current form */
+  private identifyForm (id: string) {
+    this.currentPanelId = id
+    this.isFormValid = false
   }
 
   /** Inform Parent name correction process is done. */
   @Emit('done')
-  private emitDone (isSaved: boolean): void {
+  private emitDone (type: CorrectionTypes): void {
     this.isLoading = false
-    if (isSaved) this.panel = null
+    this.submitId = ''
+    if (type) this.panel = null
   }
 
   /** cancel name correction */
@@ -121,6 +153,14 @@ export default class CorrectNameOptions extends Vue {
   #name-options-container {
     padding: 0;
 
+    .name-options-header {
+      align-items: start;
+    }
+
+    .names-option-title {
+      color: #1669BB
+    }
+
     .action-btns {
       display: flex;
       justify-content: flex-end;
@@ -128,6 +168,34 @@ export default class CorrectNameOptions extends Vue {
       .v-btn + .v-btn {
         margin-left: 0.5rem;
       }
+
+      .v-btn {
+        min-width: 6.5rem;
+      }
+
+      .v-btn[disabled] {
+        color: white !important;
+        background-color: #1669BB !important;
+        opacity: .2;
+      }
+    }
+  }
+
+  .v-expansion-panel-content ::v-deep .v-expansion-panel-content__wrap {
+    padding: 0;
+  }
+
+  .v-expansion-panel-header {
+    padding: .25rem 0 0;
+    color: #1669BB
+  }
+
+  .v-expansion-panel--active > .v-expansion-panel-header {
+    font-weight: bold;
+    min-height: 3rem;
+
+    .names-option-title {
+      color: #212529 !important;
     }
   }
 </style>

@@ -1,57 +1,90 @@
 <template>
   <v-form ref="correctNrForm" v-model="valid" lazy-validation>
-    <v-text-field
-      v-model="nameRequestNumber"
-      filled
-      label="Enter a Name Request Number"
-      hint="Example: NR 1234567"
-      req
-      persistent-hint
-      :rules="entityNumRules"
-      data-test="business-identifier"
-    ></v-text-field>
-    <v-text-field
-      v-model="entityPhone"
-      filled
-      label="Enter the Applicant Phone Number"
-      hint="Example: 555-555-5555"
-      persistent-hint
-      type="tel"
-      :rules="entityPhoneNumberRules"
-      data-test="entity-phone"
-    ></v-text-field>
-    <div class="font-weight-bold ml-3 mb-2">or</div>
-    <v-text-field
-      v-model="entityEmail"
-      filled
-      label="Enter the Applicant Email Address"
-      hint="Example: name@email.com"
-      persistent-hint
-      :rules="entityEmailRules"
-      data-test="entity-email"
-    >
-    </v-text-field>
+    <v-layout row>
+      <v-flex md1 class="pa-3 pl-0">
+        <v-btn x-small fab outlined disabled color="#1A5A96" class="step-icon">1</v-btn>
+      </v-flex>
+      <v-flex>
+        <v-text-field
+          v-model="nameRequestNumber"
+          filled
+          label="Enter the NR Number"
+          hint="Example: NR 1234567"
+          req
+          persistent-hint
+          :rules="entityNumRules"
+          data-test="business-identifier"
+        ></v-text-field>
+      </v-flex>
+    </v-layout>
+    <v-layout row>
+      <v-flex md1 class="pa-3 pl-0">
+        <v-btn x-small fab outlined disabled color="#1A5A96" class="step-icon">2</v-btn>
+      </v-flex>
+      <v-flex md5>
+        <v-text-field
+          v-model="entityPhone"
+          filled
+          label="Applicant's Phone Number"
+          hint="Example: 555-555-5555"
+          persistent-hint
+          type="tel"
+          :rules="entityPhoneNumberRules"
+          data-test="entity-phone"
+        ></v-text-field>
+      </v-flex>
+      <div class="ma-5">or</div>
+      <v-flex>
+        <v-text-field
+          v-model="entityEmail"
+          filled
+          label="Applicant's Notification Email"
+          hint="Example: name@email.com"
+          persistent-hint
+          :rules="entityEmailRules"
+          data-test="entity-email"
+        >
+        </v-text-field>
+      </v-flex>
+    </v-layout>
   </v-form>
 </template>
 
 <script lang="ts">
 // Libraries
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
-import { Action } from 'vuex-class'
+import { Action, Getter, State } from 'vuex-class'
 
 // Mixins
 import { NameRequestMixin } from '@/mixins'
 
-// Interfaces
-import { NrCorrectionIF } from '@/interfaces/correction-interfaces'
-import { ActionBindingIF } from '@/interfaces'
+// Interfaces & Enums
+import {
+  ActionBindingIF,
+  BusinessInformationIF,
+  NameRequestApplicantIF,
+  NameRequestIF,
+  NrCorrectionIF
+} from '@/interfaces'
+import { CorrectionTypes } from '@/enums'
 
 @Component({})
 export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   /** Form Submission Prop */
-  @Prop({ default: false }) submit: boolean
+  @Prop({ default: false }) submitId: string
+
+  // Global state
+  @State(state => state.stateModel.nameRequest)
+  readonly nameRequest!: NameRequestIF
+
+  @State(state => state.stateModel.businessInformation)
+  readonly businessInformation!: BusinessInformationIF
 
   @Action setNameRequest!: ActionBindingIF
+  @Action setBusinessInformation!: ActionBindingIF
+
+  @Getter getNameRequestNumber!: string
+  @Getter getNameRequestApplicant!: NameRequestApplicantIF
 
   private valid = false
   private nameRequestNumber: string = ''
@@ -74,6 +107,14 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
     v => this.isInputEntered(v, 'email') || 'Email is required',
     v => this.isValidateEmail(v) || 'Email is Invalid'
   ]
+
+  mounted (): void {
+    if (this.getNameRequestNumber) this.nameRequestNumber = this.getNameRequestNumber
+    if (this.getNameRequestApplicant) {
+      this.entityPhone = this.getNameRequestApplicant.phoneNumber
+      this.entityEmail = this.getNameRequestApplicant.emailAddress
+    }
+  }
 
   // Validations
   private get isFormValid (): boolean {
@@ -100,32 +141,35 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   }
 
   private resetForm () {
-    this.nameRequestNumber = ''
-    this.entityPhone = ''
-    this.entityEmail = ''
     this.$refs.correctNrForm.resetValidation()
   }
 
   /** Watch for form submission and emit results. */
-  @Watch('submit')
+  @Watch('submitId')
   private async onSubmit (): Promise<any> {
-    await this.validateNameRequest(this.nameRequestNumber, this.entityPhone, this.entityEmail)
-      .then(response => {
-        const nrCorrection: NrCorrectionIF = {
-          nrNumber: this.nameRequestNumber,
-          legalName: this.getNrApprovedName(response)
-        }
-        this.setNameRequest(nrCorrection)
-        this.emitDone(true)
-      }).catch(() => {
-        this.emitDone()
-      })
+    if (this.submitId === CorrectionTypes.CORRECT_NEW_NR) {
+      await this.validateNameRequest(this.nameRequestNumber, this.entityPhone, this.entityEmail)
+        .then(response => {
+          const nrCorrection: NrCorrectionIF = {
+            nrNumber: this.nameRequestNumber,
+            legalName: this.getNrApprovedName(response),
+            applicant: {
+              phoneNumber: this.entityPhone,
+              emailAddress: this.entityEmail
+            }
+          }
+          this.setNameRequest({ ...this.nameRequest, ...nrCorrection })
+          this.emitDone(CorrectionTypes.CORRECT_NEW_NR)
+        }).catch(() => {
+          this.emitDone()
+        })
+    }
   }
 
   /** Inform parent the process is complete. */
   @Emit('done')
-  private emitDone (isSaved: boolean = false): void {
-    if (!isSaved) this.resetForm()
+  private emitDone (type: CorrectionTypes = null): void {
+    if (!type) this.resetForm()
   }
 
   /** Inform parent when form is valid and ready for submission. */
@@ -138,4 +182,8 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
 </script>
 
 <style lang="scss" scoped>
+  .step-icon {
+    font-size: small;
+    font-weight: bold;
+  }
 </style>

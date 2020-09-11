@@ -72,6 +72,11 @@ export const getBusinessId = (state: any): string => {
   return state.stateModel.tombstone.businessId
 }
 
+/** The business identifier (aka incorporation number). */
+export const getCurrentBusinessName = (state: any): string => {
+  return state.stateModel.originalIA.incorporationApplication.nameRequest.legalName
+}
+
 /** The business number. */
 export const getBusinessNumber = (state: any): string => {
   // remove first 2 chars from Business ID

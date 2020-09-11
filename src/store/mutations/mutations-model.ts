@@ -1,6 +1,15 @@
 import {
-  CertifyStatementIF, CertifyIF, IncorporationAddressIf, NameRequestIF,
-  BusinessContactIF, OrgPersonIF, ShareClassIF, AccountInformationIF, IncorporationAgreementIF, BusinessInformationIF
+  CertifyStatementIF,
+  CertifyIF,
+  IncorporationAddressIf,
+  NameRequestIF,
+  BusinessContactIF,
+  OrgPersonIF,
+  ShareClassIF,
+  AccountInformationIF,
+  IncorporationAgreementIF,
+  BusinessInformationIF,
+  IncorporationFilingIF
 } from '@/interfaces'
 import { EntityTypes } from '@/enums'
 
@@ -136,4 +145,8 @@ export const mutateHaveChanges = (state: any, haveChanges: boolean) => {
 
 export const mutateEntityType = (state: any, entityType: EntityTypes) => {
   state.stateModel.tombstone.entityType = entityType
+}
+
+export const mutateOriginalIA = (state: any, originalIa: IncorporationFilingIF) => {
+  state.stateModel.originalIA = originalIa
 }

@@ -1,4 +1,4 @@
-import { StateModelIF } from '@/interfaces'
+import { IncorporationAddressIf, OrgPersonIF, ShareClassIF, StateModelIF } from '@/interfaces'
 
 export const stateModel: StateModelIF = {
   tombstone: {
@@ -27,6 +27,8 @@ export const stateModel: StateModelIF = {
     identifier: ''
   },
   nameRequest: {
+    legalType: '',
+    legalName: '',
     nrNumber: '',
     entityType: '',
     details: {},
@@ -65,5 +67,39 @@ export const stateModel: StateModelIF = {
   incorporationAgreementStep: {
     valid: false,
     agreementType: null
+  },
+  originalIA: {
+    header: {
+      name: '',
+      certifiedBy: '',
+      date: '',
+      folioNumber: '',
+      isFutureEffective: null
+    },
+    business: {
+      legalType: '',
+      identifier: ''
+    },
+    incorporationApplication: {
+      nameRequest: {
+        legalType: ''
+      },
+      nameTranslations: {
+        new: []
+      },
+      offices: {},
+      contactPoint: {
+        email: '',
+        phone: '',
+        extension: ','
+      },
+      parties: [],
+      shareStructure: {
+        shareClasses: []
+      },
+      incorporationAgreement: {
+        agreementType: ''
+      }
+    }
   }
 }

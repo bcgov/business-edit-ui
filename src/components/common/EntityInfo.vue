@@ -16,7 +16,7 @@
         <v-list-item-content id="nr-header" v-show="isEntityType">
           <!-- Company Name -->
           <v-list-item-title class="header-title" id="entity-legal-name">
-            <span>{{ getApprovedName || 'Numbered Benefit Company' }}</span>
+            <span>{{ getCurrentBusinessName || 'Numbered Benefit Company' }}</span>
           </v-list-item-title>
 
           <!-- Company Number -->
@@ -57,8 +57,8 @@ import { Component, Vue } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
 
 // Interfaces
-import { BusinessContactIF, BusinessInformationIF, GetterIF } from '@/interfaces'
-import { EntityTypes, FilingCodes, RouteNames } from '@/enums'
+import { BusinessContactIF, BusinessInformationIF } from '@/interfaces'
+import { RouteNames } from '@/enums'
 
 @Component({})
 export default class EntityInfo extends Vue {
@@ -73,7 +73,7 @@ export default class EntityInfo extends Vue {
   @Getter isEntityType!: boolean
   @Getter getBusinessId!: string
   @Getter getBusinessNumber!: string
-  @Getter getApprovedName!: string
+  @Getter getCurrentBusinessName!: string
 
   /** The entity title.  */
   private get entityTitle (): string {
@@ -96,7 +96,7 @@ export default class EntityInfo extends Vue {
         href: `${sessionStorage.getItem('AUTH_URL')}business`
       },
       {
-        text: this.getApprovedName || 'Numbered Benefit Company',
+        text: this.getCurrentBusinessName || 'Numbered Benefit Company',
         disabled: false,
         href: `${sessionStorage.getItem('DASHBOARD_URL')}${this.getBusinessId}`
       },
