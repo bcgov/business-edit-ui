@@ -4,7 +4,6 @@
         <v-icon>mdi-domain</v-icon>
         <label class="define-company-title"><strong>Your Company</strong></label>
     </div>
-      {{nameRequest}}
     <div class="section-container px-8">
       <!--TODO: Replace container content with Name Request Summary when it is ready -->
       <v-layout row>
@@ -176,10 +175,6 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   // Global state
   @State(state => state.stateModel.defineCompanyStep.valid)
   readonly valid!: boolean
-
-  // Global state
-  @State(state => state.stateModel.nameRequest)
-  readonly nameRequest!: NameRequestIF
 
   @State(state => state.stateModel.originalIA)
   readonly originalIA!: IncorporationFilingIF
