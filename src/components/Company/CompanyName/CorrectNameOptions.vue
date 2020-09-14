@@ -22,7 +22,7 @@
             <component
               :is="item.component"
               :key="item.id"
-              :submitId="submitId"
+              :formType="formType"
               @done="emitDone($event)"
               @isValid="isFormValid = $event"
             />
@@ -80,8 +80,8 @@ export default class CorrectNameOptions extends Vue {
   // local properties
   private displayedOptions: Array<CorrectNameOptionIF> = []
   private panel = null as number
-  private submitId = ''
-  private currentPanelId = ''
+  private formType = ''
+  private currentFormType = ''
   private isLoading = false
   private isFormValid = false
   private correctionNameOptions: Array<CorrectNameOptionIF> = [
@@ -114,7 +114,7 @@ export default class CorrectNameOptions extends Vue {
     // open by default and assign id if only 1 option
     if (this.isOneOption) {
       this.panel = 0
-      this.currentPanelId = this.displayedOptions[0].id
+      this.currentFormType = this.displayedOptions[0].id
     }
   }
 
@@ -125,12 +125,12 @@ export default class CorrectNameOptions extends Vue {
   /** Trigger form submission */
   private submitNameCorrection (): void {
     this.isLoading = true
-    this.submitId = this.currentPanelId
+    this.formType = this.currentFormType
   }
 
   /** Identify the current form */
-  private identifyForm (id: string) {
-    this.currentPanelId = id
+  private identifyForm (type: string) {
+    this.currentFormType = type
     this.isFormValid = false
   }
 
@@ -138,7 +138,7 @@ export default class CorrectNameOptions extends Vue {
   @Emit('done')
   private emitDone (type: CorrectionTypes): void {
     this.isLoading = false
-    this.submitId = ''
+    this.formType = ''
     if (type) this.panel = null
   }
 

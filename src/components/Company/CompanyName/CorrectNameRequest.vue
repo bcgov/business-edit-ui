@@ -61,7 +61,6 @@ import { NameRequestMixin } from '@/mixins'
 // Interfaces & Enums
 import {
   ActionBindingIF,
-  BusinessInformationIF,
   NameRequestApplicantIF,
   NameRequestIF,
   NrCorrectionIF
@@ -71,18 +70,11 @@ import { CorrectionTypes } from '@/enums'
 @Component({})
 export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   /** Form Submission Prop */
-  @Prop({ default: false }) submitId: string
-
-  // Global state
-  @State(state => state.stateModel.nameRequest)
-  readonly nameRequest!: NameRequestIF
-
-  @State(state => state.stateModel.businessInformation)
-  readonly businessInformation!: BusinessInformationIF
+  @Prop({ default: '' }) formType: string
 
   @Action setNameRequest!: ActionBindingIF
-  @Action setBusinessInformation!: ActionBindingIF
 
+  @Getter getNameRequest!: NameRequestIF
   @Getter getNameRequestNumber!: string
   @Getter getNameRequestApplicant!: NameRequestApplicantIF
 
@@ -145,9 +137,9 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   }
 
   /** Watch for form submission and emit results. */
-  @Watch('submitId')
+  @Watch('formType')
   private async onSubmit (): Promise<any> {
-    if (this.submitId === CorrectionTypes.CORRECT_NEW_NR) {
+    if (this.formType === CorrectionTypes.CORRECT_NEW_NR) {
       await this.validateNameRequest(this.nameRequestNumber, this.entityPhone, this.entityEmail)
         .then(response => {
           const nrCorrection: NrCorrectionIF = {
@@ -158,7 +150,7 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
               emailAddress: this.entityEmail
             }
           }
-          this.setNameRequest({ ...this.nameRequest, ...nrCorrection })
+          this.setNameRequest({ ...this.getNameRequest, ...nrCorrection })
           this.emitDone(CorrectionTypes.CORRECT_NEW_NR)
         }).catch(() => {
           this.emitDone()

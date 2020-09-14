@@ -10,5 +10,5 @@ export interface CorrectNameOptionIF {
 export interface NrCorrectionIF {
   nrNumber: string,
   legalName: string,
-  applicant: NameRequestApplicantIF
+  applicant: NameRequestApplicantIF | {}
 }

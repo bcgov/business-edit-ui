@@ -5,7 +5,6 @@
         <v-text-field
           v-model="companyName"
           filled
-          req
           persistent-hint
           :rules="companyNameRules"
           data-test="business-identifier"
@@ -25,9 +24,9 @@ import { ActionBindingIF, BusinessInformationIF, NameRequestIF } from '@/interfa
 import { CorrectionTypes } from '@/enums'
 
 @Component({})
-export default class CorrectNameRequest extends Vue {
+export default class CorrectCompanyName extends Vue {
   /** Form Submission Prop */
-  @Prop({ default: false }) submitId: string
+  @Prop({ default: '' }) formType: string
 
   // Global state
   @State(state => state.stateModel.nameRequest)
@@ -60,14 +59,10 @@ export default class CorrectNameRequest extends Vue {
     return this.valid
   }
 
-  private resetForm () {
-    this.$refs.correctNameForm.resetValidation()
-  }
-
   /** Watch for form submission and emit results. */
-  @Watch('submitId')
+  @Watch('formType')
   private async onSubmit (): Promise<any> {
-    if (this.submitId === CorrectionTypes.CORRECT_NAME) {
+    if (this.formType === CorrectionTypes.CORRECT_NAME) {
       const correctedCompanyName = { legalName: this.companyName }
       this.setNameRequest({ ...this.nameRequest, ...correctedCompanyName })
       this.emitDone(CorrectionTypes.CORRECT_NEW_NR)
@@ -76,9 +71,7 @@ export default class CorrectNameRequest extends Vue {
 
   /** Inform parent the process is complete. */
   @Emit('done')
-  private emitDone (type: CorrectionTypes = null): void {
-    if (!type) this.resetForm()
-  }
+  private emitDone (type: CorrectionTypes): void {}
 
   /** Inform parent when form is valid and ready for submission. */
   @Watch('valid')

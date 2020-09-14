@@ -12,7 +12,7 @@ import {
   getFilingId, getBusinessId, isNamedBusiness, getNameRequestNumber, getApprovedName, getAccountId, getBusinessNumber,
   getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses, getFilingDate, getUserEmail,
   isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations, getOrgPeople, getShareClasses,
-  getCurrentBusinessName
+  getCurrentBusinessName, getNameRequest
 } from '@/store/getters'
 
 // Mutations
@@ -61,6 +61,7 @@ export function getVuexStore () {
       getEffectiveDate,
       getEntityType,
       getFolioNumber,
+      getNameRequest,
       getNameRequestApplicant,
       getNameRequestDetails,
       getNameRequestNumber,
@@ -113,9 +114,9 @@ export function getVuexStore () {
       mutateNameTranslations,
       mutateOfficeAddresses,
       mutateOrgPersonList,
+      mutateOriginalIA,
       mutateShareClasses,
-      mutateUserEmail,
-      mutateOriginalIA
+      mutateUserEmail
     },
     actions: {
       setAccountInformation,
@@ -147,9 +148,9 @@ export function getVuexStore () {
       setNameTranslations,
       setOfficeAddresses,
       setOrgPersonList,
+      setOriginalIA,
       setShareClasses,
-      setUserEmail,
-      setOriginalIA
+      setUserEmail
     }
   })
 

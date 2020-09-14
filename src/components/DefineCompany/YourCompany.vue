@@ -180,9 +180,6 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   @State(state => state.stateModel.originalIA)
   readonly originalIA!: IncorporationFilingIF
 
-  @State(state => state.stateModel)
-  readonly stateModel!: StateModelIF
-
   @State(state => state.stateModel.defineCompanyStep.businessContact)
   readonly businessContact!: BusinessContactIF
 
@@ -199,7 +196,7 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   private folioNumberChanges = false
   private nameTranslationChanges = false
   private officeAddressChanges = false
-  private correctNameChoices = []
+  private correctNameChoices: Array<string> = []
   private isEditingNames = false
 
   /** The company name (from NR, or incorporation number). */
@@ -237,7 +234,7 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   /** Compare names. */
   private isNewName () {
     const currentName = this.originalIA.incorporationApplication.nameRequest.legalName
-    const correctedName = this.stateModel.nameRequest.legalName
+    const correctedName = this.getApprovedName
     return currentName !== correctedName
   }
 
