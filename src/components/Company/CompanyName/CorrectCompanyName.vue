@@ -62,13 +62,13 @@ export default class CorrectCompanyName extends Vue {
     if (this.formType === CorrectionTypes.CORRECT_NAME) {
       const correctedCompanyName = { legalName: this.companyName }
       this.setNameRequest({ ...this.getNameRequest, ...correctedCompanyName })
-      this.emitDone(CorrectionTypes.CORRECT_NEW_NR)
+      this.emitDone()
     }
   }
 
   /** Inform parent the process is complete. */
   @Emit('done')
-  private emitDone (type: CorrectionTypes): void {}
+  private emitDone (): void {}
 
   /** Inform parent when form is valid and ready for submission. */
   @Watch('valid')

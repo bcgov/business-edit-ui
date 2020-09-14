@@ -89,7 +89,7 @@ export default class CorrectNameOptions extends Vue {
     {
       id: CorrectionTypes.CORRECT_NAME,
       title: 'Edit the company name',
-      description: 'Correct typographical errors int he existing company name.',
+      description: 'Correct typographical errors in the existing company name.',
       component: CorrectCompanyName
     },
     {
