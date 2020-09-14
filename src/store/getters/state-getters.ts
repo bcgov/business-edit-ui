@@ -99,7 +99,7 @@ export const isNamedBusiness = (state: any): boolean => {
   return !!state.stateModel.nameRequest.nrNumber
 }
 
-/** The NR number of a name request. */
+/** The Name request state. */
 export const getNameRequest = (state: any): NameRequestIF => {
   return state.stateModel.nameRequest
 }

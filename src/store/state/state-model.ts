@@ -27,10 +27,10 @@ export const stateModel: StateModelIF = {
     identifier: ''
   },
   nameRequest: {
-    legalType: '',
+    legalType: null,
     legalName: '',
     nrNumber: '',
-    entityType: '',
+    entityType: null,
     details: {},
     applicant: {},
     filingId: null

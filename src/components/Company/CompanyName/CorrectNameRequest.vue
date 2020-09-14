@@ -10,7 +10,6 @@
           filled
           label="Enter the NR Number"
           hint="Example: NR 1234567"
-          req
           persistent-hint
           :rules="entityNumRules"
           data-test="business-identifier"
@@ -53,7 +52,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
-import { Action, Getter, State } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 
 // Mixins
 import { NameRequestMixin } from '@/mixins'
@@ -70,7 +69,7 @@ import { CorrectionTypes } from '@/enums'
 @Component({})
 export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   /** Form Submission Prop */
-  @Prop({ default: '' }) formType: CorrectionTypes
+  @Prop({ default: null }) formType: CorrectionTypes
 
   @Action setNameRequest!: ActionBindingIF
 
@@ -153,6 +152,8 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
           this.setNameRequest({ ...this.getNameRequest, ...nrCorrection })
           this.emitDone(CorrectionTypes.CORRECT_NEW_NR)
         }).catch(() => {
+          // Request is handling it's own errors
+          // Inform parent process is complete
           this.emitDone()
         })
     }

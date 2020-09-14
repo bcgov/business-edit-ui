@@ -17,16 +17,16 @@
 <script lang="ts">
 // Libraries
 import { Component, Prop, Watch, Emit, Vue } from 'vue-property-decorator'
-import { Action, Getter, State } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 
 // Interfaces && enums
-import { ActionBindingIF, BusinessInformationIF, NameRequestIF } from '@/interfaces'
+import { ActionBindingIF, NameRequestIF } from '@/interfaces'
 import { CorrectionTypes } from '@/enums'
 
 @Component({})
 export default class CorrectCompanyName extends Vue {
   /** Form Submission Prop */
-  @Prop({ default: '' }) formType: CorrectionTypes
+  @Prop({ default: null }) formType: CorrectionTypes
 
   @Action setNameRequest!: ActionBindingIF
 

@@ -80,8 +80,8 @@ export default class CorrectNameOptions extends Vue {
   // local properties
   private displayedOptions: Array<CorrectNameOptionIF> = []
   private panel = null as number
-  private formType = ''
-  private currentFormType = ''
+  private formType = null
+  private currentFormType = null
   private isLoading = false
   private isFormValid = false
   private correctionNameOptions: Array<CorrectNameOptionIF> = [
@@ -129,7 +129,7 @@ export default class CorrectNameOptions extends Vue {
   }
 
   /** Identify the current form */
-  private identifyForm (type: string) {
+  private identifyForm (type: CorrectionTypes) {
     this.currentFormType = type
     this.isFormValid = false
   }
