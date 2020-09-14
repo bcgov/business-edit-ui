@@ -77,10 +77,6 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   @Getter getNameRequestNumber!: string
   @Getter getNameRequestApplicant!: NameRequestApplicantIF
 
-  @Getter getNameRequest!: NameRequestIF
-  @Getter getNameRequestNumber!: string
-  @Getter getNameRequestApplicant!: NameRequestApplicantIF
-
   private valid = false
   private nameRequestNumber: string = ''
   private entityPhone: string = ''
