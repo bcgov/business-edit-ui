@@ -105,6 +105,11 @@ export const getNameRequest = (state: any): NameRequestIF => {
 }
 
 /** The NR number of a name request. */
+export const getNameRequest = (state: any): NameRequestIF => {
+  return state.stateModel.nameRequest
+}
+
+/** The NR number of a name request. */
 export const getNameRequestNumber = (state: any): string => {
   return state.stateModel.nameRequest.nrNumber
 }
