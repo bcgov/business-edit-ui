@@ -28,13 +28,10 @@ export default class CorrectCompanyName extends Vue {
   /** Form Submission Prop */
   @Prop({ default: '' }) formType: string
 
-  // Global state
-  @State(state => state.stateModel.nameRequest)
-  readonly nameRequest!: NameRequestIF
-
   @Action setNameRequest!: ActionBindingIF
 
   @Getter getApprovedName!: string
+  @Getter getNameRequest!: NameRequestIF
 
   private valid = false
   private companyName = ''
@@ -64,7 +61,7 @@ export default class CorrectCompanyName extends Vue {
   private async onSubmit (): Promise<any> {
     if (this.formType === CorrectionTypes.CORRECT_NAME) {
       const correctedCompanyName = { legalName: this.companyName }
-      this.setNameRequest({ ...this.nameRequest, ...correctedCompanyName })
+      this.setNameRequest({ ...this.getNameRequest, ...correctedCompanyName })
       this.emitDone(CorrectionTypes.CORRECT_NEW_NR)
     }
   }
