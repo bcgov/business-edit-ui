@@ -11,7 +11,8 @@ import {
   isEnableFilePayBtn, isBusySaving, getEffectiveDate,
   getFilingId, getBusinessId, isNamedBusiness, getNameRequestNumber, getApprovedName, getAccountId, getBusinessNumber,
   getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses, getFilingDate, getUserEmail,
-  isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations, getOrgPeople, getShareClasses
+  isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations, getOrgPeople, getShareClasses,
+  getCurrentBusinessName, getNameRequest
 } from '@/store/getters'
 
 // Mutations
@@ -23,7 +24,7 @@ import {
   mutateAddPeopleAndRoleStepValidity, mutateShareClasses, mutateCreateShareStructureStepValidity,
   mutateIgnoreChanges, mutateHaveChanges, mutateIsFutureEffective, mutateEffectiveDate,
   mutateIsIncorporationDateTimeValid, mutateBusinessId, mutateIncorporationAgreementStepData, mutateEntityType,
-  mutateNameTranslations, mutateBusinessInformation
+  mutateNameTranslations, mutateBusinessInformation, mutateOriginalIA
 } from '@/store/mutations'
 
 // Setters
@@ -34,7 +35,7 @@ import {
   setOfficeAddresses, setOrgPersonList, setAddPeopleAndRoleStepValidity, setShareClasses,
   setCreateShareStructureStepValidity, setIgnoreChanges, setHaveChanges, setIsFutureEffective,
   setEffectiveDate, setIsIncorporationDateTimeValid, setAccountInformation, setBusinessId, setEntityType,
-  setIncorporationAgreementStepData, setNameTranslations, setBusinessInformation
+  setIncorporationAgreementStepData, setNameTranslations, setBusinessInformation, setOriginalIA
 } from './actions'
 
 /**
@@ -52,6 +53,7 @@ export function getVuexStore () {
       getAccountId,
       getApprovedName,
       getBusinessId,
+      getCurrentBusinessName,
       getBusinessNumber,
       getCurrentDate,
       getFilingDate,
@@ -59,6 +61,7 @@ export function getVuexStore () {
       getEffectiveDate,
       getEntityType,
       getFolioNumber,
+      getNameRequest,
       getNameRequestApplicant,
       getNameRequestDetails,
       getNameRequestNumber,
@@ -111,6 +114,7 @@ export function getVuexStore () {
       mutateNameTranslations,
       mutateOfficeAddresses,
       mutateOrgPersonList,
+      mutateOriginalIA,
       mutateShareClasses,
       mutateUserEmail
     },
@@ -144,6 +148,7 @@ export function getVuexStore () {
       setNameTranslations,
       setOfficeAddresses,
       setOrgPersonList,
+      setOriginalIA,
       setShareClasses,
       setUserEmail
     }

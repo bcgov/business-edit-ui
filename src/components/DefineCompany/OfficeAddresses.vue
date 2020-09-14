@@ -3,7 +3,7 @@
     <!-- Address Review -->
     <template v-if="!isEditing">
       <v-layout row id="summary-registered-address">
-        <v-flex md4><label><strong>Registered Office</strong></label></v-flex>
+        <v-flex md3><label><strong>Registered Office</strong></label></v-flex>
         <v-flex md4>
           <label><strong>Mailing Address</strong></label>
           <mailing-address
@@ -25,7 +25,7 @@
       </v-layout>
 
       <v-layout row id="summary-records-address" v-if="entityFilter(EntityTypes.BCOMP)" class="mt-4">
-        <v-flex md4><label><strong>Records Office</strong></label></v-flex>
+        <v-flex md3><label><strong>Records Office</strong></label></v-flex>
         <v-flex md4>
           <label><strong>Mailing Address</strong></label>
           <mailing-address

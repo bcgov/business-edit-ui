@@ -14,7 +14,7 @@ export interface IncorporationFilingIF {
   }
   business: {
     legalType: string,
-    identifier: string
+    identifier: string,
   }
   incorporationApplication: {
     // NB: nameRequest must match schema

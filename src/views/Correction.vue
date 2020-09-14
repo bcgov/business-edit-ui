@@ -107,6 +107,7 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   // Global setters
   @Action setEntityType!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
+  @Action setOriginalIA!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -219,6 +220,10 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
         // parse IA filing into store
         // this is the initial state of the correction filing
         this.parseIncorpApp(this.correctedFiling)
+
+        // preserve the original filing
+        // this is for identifying changes and restoring state
+        this.setOriginalIA(this.correctedFiling)
       } else {
         // as we don't have the necessary query params, do not proceed
         throw new Error('Invalid corrected or correction filing ID')

@@ -1,7 +1,7 @@
 <template>
   <div>
      <v-layout row v-if="!isEditing">
-        <v-flex md4>
+        <v-flex md3>
           <label><strong>Registered Office Information</strong></label>
         </v-flex>
         <v-flex md4>

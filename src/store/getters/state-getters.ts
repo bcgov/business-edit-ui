@@ -1,6 +1,6 @@
 // Enums and Interfaces
 import { AccountTypes, EntityTypes } from '@/enums'
-import { NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
+import { NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF, NameRequestIF } from '@/interfaces'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: any): boolean => {
@@ -72,6 +72,11 @@ export const getBusinessId = (state: any): string => {
   return state.stateModel.tombstone.businessId
 }
 
+/** The business identifier (aka incorporation number). */
+export const getCurrentBusinessName = (state: any): string => {
+  return state.stateModel.originalIA.incorporationApplication.nameRequest.legalName
+}
+
 /** The business number. */
 export const getBusinessNumber = (state: any): string => {
   // remove first 2 chars from Business ID
@@ -92,6 +97,11 @@ export const getFolioNumber = (state: any): string => {
 export const isNamedBusiness = (state: any): boolean => {
   // a named business has a NR number
   return !!state.stateModel.nameRequest.nrNumber
+}
+
+/** The Name request state. */
+export const getNameRequest = (state: any): NameRequestIF => {
+  return state.stateModel.nameRequest
 }
 
 /** The NR number of a name request. */
