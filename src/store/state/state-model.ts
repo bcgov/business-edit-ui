@@ -30,7 +30,6 @@ export const stateModel: StateModelIF = {
     legalType: null,
     legalName: '',
     nrNumber: '',
-    entityType: null,
     details: {},
     applicant: {},
     filingId: null

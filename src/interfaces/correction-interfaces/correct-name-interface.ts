@@ -1,7 +1,8 @@
 import { NameRequestApplicantIF } from '@/interfaces'
+import { CorrectionTypes } from '@/enums'
 
 export interface CorrectNameOptionIF {
-  id: string,
+  id: CorrectionTypes,
   title: string,
   description?: string,
   component: any

@@ -5,7 +5,6 @@ export interface NameRequestIF {
   legalType: EntityTypes
   legalName: string
   nrNumber: string
-  entityType: EntityTypes
   details: NameRequestDetailsIF | {}
   applicant: NameRequestApplicantIF | {}
   filingId: number | null

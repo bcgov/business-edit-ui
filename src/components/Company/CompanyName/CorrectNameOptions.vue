@@ -80,8 +80,8 @@ export default class CorrectNameOptions extends Vue {
   // local properties
   private displayedOptions: Array<CorrectNameOptionIF> = []
   private panel = null as number
-  private formType = null
-  private currentFormType = null
+  private formType = null as CorrectionTypes
+  private currentFormType = null as CorrectionTypes
   private isLoading = false
   private isFormValid = false
   private correctionNameOptions: Array<CorrectNameOptionIF> = [
@@ -138,7 +138,7 @@ export default class CorrectNameOptions extends Vue {
   @Emit('done')
   private emitDone (type: CorrectionTypes): void {
     this.isLoading = false
-    this.formType = ''
+    this.formType = null
     if (type) this.panel = null
   }
 
