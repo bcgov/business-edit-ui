@@ -5,10 +5,6 @@ export interface NameRequestIF {
   legalType: EntityTypes
   legalName: string
   nrNumber: string
-<<<<<<< HEAD
-=======
-  entityType: EntityTypes
->>>>>>> More PR updates
   details: NameRequestDetailsIF | {}
   applicant: NameRequestApplicantIF | {}
   filingId: number | null
