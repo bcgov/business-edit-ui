@@ -26,7 +26,7 @@ import { CorrectionTypes } from '@/enums'
 @Component({})
 export default class CorrectCompanyName extends Vue {
   /** Form Submission Prop */
-  @Prop({ default: '' }) formType: string
+  @Prop({ default: '' }) formType: CorrectionTypes
 
   @Action setNameRequest!: ActionBindingIF
 

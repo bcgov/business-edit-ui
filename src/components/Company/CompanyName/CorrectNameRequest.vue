@@ -70,7 +70,7 @@ import { CorrectionTypes } from '@/enums'
 @Component({})
 export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   /** Form Submission Prop */
-  @Prop({ default: '' }) formType: string
+  @Prop({ default: '' }) formType: CorrectionTypes
 
   @Action setNameRequest!: ActionBindingIF
 
