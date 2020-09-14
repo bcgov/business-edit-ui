@@ -217,7 +217,6 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
           throw new Error('Invalid IA status')
         }
 
-        this.correctedFiling.incorporationApplication.nameRequest.legalName = 'Bobs Plumbing'
         // parse IA filing into store
         // this is the initial state of the correction filing
         this.parseIncorpApp(this.correctedFiling)
