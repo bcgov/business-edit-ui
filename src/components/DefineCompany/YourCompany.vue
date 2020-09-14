@@ -4,7 +4,7 @@
         <v-icon>mdi-domain</v-icon>
         <label class="define-company-title"><strong>Your Company</strong></label>
     </div>
-
+      {{nameRequest}}
     <div class="section-container px-8">
       <!--TODO: Replace container content with Name Request Summary when it is ready -->
       <v-layout row>
@@ -145,7 +145,7 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
 // Interfaces
-import { BusinessContactIF, GetterIF, IncorporationFilingIF, StateModelIF } from '@/interfaces'
+import { BusinessContactIF, GetterIF, IncorporationFilingIF, NameRequestIF, StateModelIF } from '@/interfaces'
 // Components
 import { BusinessContactInfo, FolioNumber, OfficeAddresses } from '@/components/DefineCompany'
 import { CorrectNameOptions } from '@/components/Company/CompanyName'
@@ -176,6 +176,10 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   // Global state
   @State(state => state.stateModel.defineCompanyStep.valid)
   readonly valid!: boolean
+
+  // Global state
+  @State(state => state.stateModel.nameRequest)
+  readonly nameRequest!: NameRequestIF
 
   @State(state => state.stateModel.originalIA)
   readonly originalIA!: IncorporationFilingIF

@@ -55,6 +55,7 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 // Components
 import CorrectNameRequest from '@/components/Company/CompanyName/CorrectNameRequest.vue'
 import CorrectCompanyName from '@/components/Company/CompanyName/CorrectCompanyName.vue'
+import CorrectNameToNumber from '@/components/Company/CompanyName/CorrectNameToNumber.vue'
 
 // Interfaces & Enums
 import { CorrectNameOptionIF } from '@/interfaces'
@@ -94,8 +95,8 @@ export default class CorrectNameOptions extends Vue {
     {
       id: CorrectionTypes.CORRECT_NAME_TO_NUMBER,
       title: 'Use the incorporation number as the name',
-      description: '',
-      component: '' // CorrectNameToNumber
+      description: null,
+      component: CorrectNameToNumber
     },
     {
       id: CorrectionTypes.CORRECT_NEW_NR,
