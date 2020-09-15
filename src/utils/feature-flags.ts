@@ -1,70 +1,76 @@
-import { initialize, LDFlagSet } from 'launchdarkly-js-client-sdk'
+import { initialize, LDClient, LDFlagSet, LDOptions, LDUser } from 'launchdarkly-js-client-sdk'
 
-const defaultFlagSet = {
+/**
+ * Default feature flags in case LD env key is not defined (eg, local development).
+ */
+const defaultFlagSet: LDFlagSet = {
   'correction-ui-enabled': true,
   'alteration-ui-enabled': true
 }
 
-class FeatureFlags {
-    private static instance: FeatureFlags
-    private flags: LDFlagSet
-
-    private constructor () {
-      this.flags = defaultFlagSet
-    }
-
-    /**
-     * Gets the singleton instance of the class.
-     */
-    public static get Instance (): FeatureFlags {
-      return this.instance || (this.instance = new this())
-    }
-
-    /**
-     * Sets all flags available for the client id.
-     *
-     * @param allFlags all Flags.
-     */
-    public setFlags (allFlags: LDFlagSet): void {
-      this.flags = allFlags
-    }
-
-    /**
-     * Gets the value of a specified feature flag.
-     *
-     * @param flagName the name of the feature flag to get to status of.
-     * @returns The flag value of any variant
-     */
-    public getFlag (flagName: string): any {
-      return this.flags[flagName]
-    }
-}
+/**
+ * The Launch Darkly client instance.
+ */
+let ldClient: LDClient = null
 
 /**
- * The method that initializes Launch Darkly using the LD client
- * stored in the local storage.
+ * An async method that initializes the Launch Darkly client.
  */
-export const initLDClient = () : Promise<any> => {
-  const ldClientId = window['ldClientId']
+export async function initLdClient (): Promise<void> {
+  const envKey: string = window['ldClientId']
 
-  if (ldClientId) {
-    const user = { 'anonymous': true }
-    const ldClient = initialize(ldClientId, user)
+  if (envKey) {
+    const user: LDUser = {
+      // since we have no user data yet, use a shared key temporarily
+      key: 'anonymous'
+    }
+    const options: LDOptions = {
+      // fetch flags using REPORT request (to see user data as JSON)
+      useReport: true,
+      // opt out of sending diagnostics data
+      diagnosticOptOut: true,
+      // open streaming connection for live flag updates
+      streaming: true
+    }
 
-    return new Promise((resolve) => {
-      ldClient.on('initialized', () => {
-        featureFlags.setFlags(ldClient.allFlags())
-        resolve()
-      })
-      ldClient.on('failed', () => {
-        featureFlags.setFlags(defaultFlagSet)
-        resolve()
-      })
-    })
+    ldClient = initialize(envKey, user, options)
+
+    try {
+      await ldClient.waitForInitialization()
+    } catch (e) {
+      // shut down client -- `variation()` will return undefined values
+      await ldClient.close()
+      // NB: LD logs its own errors
+    }
   }
 }
 
 /**
- * The singleton instance of the feature flags class.
+ * An async method that updates the Launch Darkly user properties.
+ * @param key a unique string identifying a user
+ * @param email the user's email address
+ * @param firstName the user's first name
+ * @param lastName the user's last name
+ * @param custom optional object of additional attributes associated with the user
  */
-export const featureFlags = FeatureFlags.Instance
+export async function updateLdUser (
+  key: string, email: string, firstName: string, lastName: string, custom: any = null
+): Promise<void> {
+  if (ldClient) {
+    const user: LDUser = { key, email, firstName, lastName, custom }
+    try {
+      await ldClient.identify(user)
+    } catch (e) {
+      // NB: LD logs its own errors
+    }
+  }
+}
+
+/**
+ * A method that gets the value of the specified feature flag.
+ * @param name the name of the feature flag
+ * @returns the flag value/variation, or undefined if the flag is not found
+ */
+export function getFeatureFlag (name: string): any {
+  return ldClient ? ldClient.variation(name) : defaultFlagSet[name]
+}

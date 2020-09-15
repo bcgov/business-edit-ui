@@ -62,7 +62,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { featureFlags } from '@/utils'
+import { getFeatureFlag } from '@/utils'
 
 // Components
 import { YourCompany } from '@/components/DefineCompany'
@@ -163,7 +163,7 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
     if (!this.isAuthenticated) return
 
     // do not proceed if FF is disabled
-    if (!featureFlags.getFlag('correction-ui-enabled')) {
+    if (!getFeatureFlag('correction-ui-enabled')) {
       alert('Corrections are under contruction. Please check again later.')
       this.redirectEntityDashboard()
       return

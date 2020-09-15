@@ -132,7 +132,7 @@ import { Component, Vue, Watch, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import { BAD_REQUEST, PAYMENT_REQUIRED, FORBIDDEN, UNPROCESSABLE_ENTITY } from 'http-status-codes'
-import { getKeycloakRoles } from '@/utils'
+import { getKeycloakRoles, updateLdUser } from '@/utils'
 
 // Components
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
@@ -344,6 +344,9 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
       // load account information
       this.loadAccountInformation()
 
+      // fetch current user and update Launch Darkly
+      await this.loadCurrentUserLd()
+
       // initialize app
       await this.initApp()
     }
@@ -487,6 +490,28 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     if (currentAccount) {
       const accountInfo = JSON.parse(currentAccount)
       this.setAccountInformation(accountInfo)
+    }
+  }
+
+  /** Fetches current user and updates Launch Darkly accordingly. */
+  private async loadCurrentUserLd (): Promise<any> {
+    try {
+      const response = await this.getCurrentUser()
+      const currentUser = response?.data
+      if (!currentUser) throw new Error('Invalid data')
+
+      // since username is unique, use it as the user key
+      const key: string = currentUser.username
+      const email: string = currentUser.email
+      const firstName: string = currentUser.firstname
+      const lastName: string = currentUser.lastname
+      // remove leading { and trailing } and tokenize string
+      const custom: any = { roles: currentUser.roles?.slice(1, -1).split(',') }
+
+      await updateLdUser(key, email, firstName, lastName, custom)
+    } catch (error) {
+      // just log the error -- no need to halt app
+      console.log('Load current user error =', error) // eslint-disable-line no-console
     }
   }
 }

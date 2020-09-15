@@ -24,7 +24,7 @@ import '@/assets/styles/overrides.scss'
 import App from './App.vue'
 
 // Helpers
-import { initLDClient, fetchConfig } from '@/utils'
+import { initLdClient, fetchConfig } from '@/utils'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 
 // get rid of "You are running Vue in development mode" console message
@@ -49,7 +49,7 @@ async function start () {
   })
 
   // initialize Launch Darkly
-  await initLDClient()
+  await initLdClient()
 
   // configure KeyCloak Service
   console.info('Starting Keycloak service...') // eslint-disable-line no-console

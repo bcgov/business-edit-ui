@@ -16,7 +16,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { featureFlags } from '@/utils'
+import { getFeatureFlag } from '@/utils'
 
 // Components
 import { SummaryDefineCompany } from '@/components/DefineCompany'
@@ -72,7 +72,7 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
     if (!this.isAuthenticated) return
 
     // do not proceed if FF is disabled
-    if (!featureFlags.getFlag('alteration-ui-enabled')) {
+    if (!getFeatureFlag('alteration-ui-enabled')) {
       alert('Alterations are under contruction. Please check again later.')
       this.redirectEntityDashboard()
       return
