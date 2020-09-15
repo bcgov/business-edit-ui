@@ -20,7 +20,7 @@ import { getFeatureFlag } from '@/utils'
 
 // Components
 import { SummaryDefineCompany } from '@/components/DefineCompany'
-import { ListPeopleAndRoles } from '@/components/AddPeopleAndRoles'
+import { ListPeopleAndRoles } from '@/components/PeopleAndRoles'
 import { ListShareClass } from '@/components/CreateShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'
 

@@ -23,10 +23,9 @@
       @haveChanges="yourCompanyChanges = $event"
     />
 
-    <list-people-and-roles
-      :isSummary="true"
-      :personList="getOrgPeople"
+    <people-and-roles
       @haveChanges="peopleRolesChanges = $event"
+      @isValid="peopleRolesValid = $event"
     />
 
     <list-share-class
@@ -66,7 +65,7 @@ import { getFeatureFlag } from '@/utils'
 
 // Components
 import { YourCompany } from '@/components/DefineCompany'
-import { ListPeopleAndRoles } from '@/components/AddPeopleAndRoles'
+import { PeopleAndRoles } from '@/components/PeopleAndRoles'
 import { ListShareClass } from '@/components/CreateShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { Certify, CompletingParty, Detail, StaffPayment } from '@/components/common'
@@ -86,7 +85,7 @@ import { BenefitCompanyStatementResource } from '@/resources'
     Certify,
     CompletingParty,
     Detail,
-    ListPeopleAndRoles,
+    PeopleAndRoles,
     ListShareClass,
     StaffPayment,
     YourCompany
@@ -99,9 +98,9 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   // Global getters
   @Getter getBusinessId!: string
   @Getter getFilingDate!: string
-  @Getter getOrgPeople!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
   @Getter isRoleStaff!: boolean
+  @Getter isStep2Valid!: boolean // TODO: use this or peopleRolesValid below
   @Getter isTypeBcomp!: boolean
 
   // Global setters
@@ -126,7 +125,7 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   private certifyValid = false
   private detailValid = false
   private incorpAgrmtValid = false
-  private peopleRolesValid = false
+  private peopleRolesValid = false // TODO: use this or isStep2Valid above
   private shareStructValid = false
   private staffPaymntValid = false
   private yourCompanyValid = false

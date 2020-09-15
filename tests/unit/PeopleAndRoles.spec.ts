@@ -12,7 +12,7 @@ import { getVuexStore } from '@/store'
 import { createLocalVue, mount } from '@vue/test-utils'
 
 // Components
-import { PeopleAndRoles } from '@/components/AddPeopleAndRoles'
+import { PeopleAndRoles } from '@/components/PeopleAndRoles'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)

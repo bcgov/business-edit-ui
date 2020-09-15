@@ -1,10 +1,6 @@
 <template>
   <div>
-    <p>
-      Add the people and corporations/firms who will have a role in your company. People can have multiple roles;
-      Corporation/firms can only be Incorporators.
-    </p>
-    Your application must include the following:
+    This application must include the following:
     <ul>
       <li>
         <v-icon v-if="hasRole(Roles.COMPLETING_PARTY, 1, 'EXACT')" color="blue" class="cp-valid">mdi-check</v-icon>
@@ -32,7 +28,7 @@
         @click="addOrgPerson([{ roleType: Roles.COMPLETING_PARTY }], IncorporatorTypes.PERSON)"
       >
         <v-icon>mdi-account-plus-outline</v-icon>
-        <span>Start by Adding the Completing Party</span>
+        <span>Add the Completing Party</span>
       </v-btn>
     </div>
 
@@ -81,7 +77,7 @@
         :nextId="nextId"
         :existingCompletingParty="completingParty"
         @addEditPerson="onAddEditOrgPerson($event)"
-        @removePersonEvent="onRemovePerson($event)"
+        @removePersonEvent="onRemoveOrgPerson($event)"
         @resetEvent="resetData()"
         @removeCompletingPartyRole="removeCompletingPartyAssignment()"
       />
@@ -92,7 +88,7 @@
         :personList="getOrgPeople"
         :isSummary="false"
         @editPerson="editOrgPerson($event)"
-        @removePerson="onRemovePerson($event)"
+        @removePerson="onRemoveOrgPerson($event)"
       />
     </v-card>
   </div>
@@ -100,7 +96,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Interfaces
@@ -121,7 +117,7 @@ import { OrgPerson, ListPeopleAndRoles } from '.'
     ListPeopleAndRoles
   }
 })
-export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
+export default class AddPeopleAndRoles extends Mixins(EntityFilterMixin) {
   // Global getters
   @Getter getOrgPeople!: OrgPersonIF[]
   @Getter getUserEmail!: string
@@ -130,6 +126,7 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
   @Action setOrgPersonList!: ActionBindingIF
   @Action setAddPeopleAndRoleStepValidity!: ActionBindingIF
 
+  /** Empty OrgPerson for adding a new one. */
   private newOrgPerson: OrgPersonIF = {
     officer: {
       id: null,
@@ -152,18 +149,35 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
     }
   }
 
+  // Local properties
   private showOrgPersonForm: boolean = false
   private activeIndex: number = -1
   private addEditInProgress: boolean = false
   private currentOrgPerson: OrgPersonIF | null = null
   private nextId: number = -1
 
+  // Enums for the template
   readonly EntityTypes = EntityTypes
   readonly Roles = Roles
   readonly IncorporatorTypes = IncorporatorTypes
 
+  /** Whether to show errors. */
+  private get showErrors (): boolean {
+    return Boolean(this.$route.query.showErrors)
+  }
+
+  /** The completing party if found, otherwise undefined. */
+  private get completingParty () : OrgPersonIF {
+    return this.getOrgPeople.find(people =>
+      people.roles.some(party => party.roleType === Roles.COMPLETING_PARTY)
+    )
+  }
+
+  /** Updates validity when component is mounted. */
   private mounted (): void {
-    this.setAddPeopleAndRoleStepValidity(this.hasValidRoles())
+    const hasValidRoles = this.hasValidRoles()
+    this.setAddPeopleAndRoleStepValidity(hasValidRoles)
+    this.emitIsValid(hasValidRoles)
   }
 
   // Methods
@@ -201,15 +215,19 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
     }
     // set updated list
     this.setOrgPersonList(newList)
-    this.setAddPeopleAndRoleStepValidity(this.hasValidRoles())
+    const hasValidRoles = this.hasValidRoles()
+    this.setAddPeopleAndRoleStepValidity(hasValidRoles)
+    this.emitIsValid(hasValidRoles)
     this.resetData()
   }
 
-  private onRemovePerson (index: number): void {
+  private onRemoveOrgPerson (index: number): void {
     const newList: OrgPersonIF[] = Object.assign([], this.getOrgPeople)
     newList.splice(index, 1)
     this.setOrgPersonList(newList)
-    this.setAddPeopleAndRoleStepValidity(this.hasValidRoles())
+    const hasValidRoles = this.hasValidRoles()
+    this.setAddPeopleAndRoleStepValidity(hasValidRoles)
+    this.emitIsValid(hasValidRoles)
     this.resetData()
   }
 
@@ -262,13 +280,13 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
     }
   }
 
-  private get showErrors (): boolean {
-    return Boolean(this.$route.query.showErrors)
-  }
+  /** Emits Have Changes event. */
+  @Emit('haveChanges')
+  private emitHaveChanges (val: boolean): void {}
 
-  private get completingParty () : OrgPersonIF {
-    return this.getOrgPeople.find(people => people.roles.some(party => party.roleType === Roles.COMPLETING_PARTY))
-  }
+  /** Emits Is Valid event. */
+  @Emit('isValid')
+  private emitIsValid (val: boolean): void {}
 }
 </script>
 

@@ -174,6 +174,11 @@ export const getHaveCorrection = (state: any): boolean => {
   return state.stateModel.tombstone.haveCorrection
 }
 
+/** Whether Step 2 is valid. */
+export const isStep2Valid = (state: any): boolean => {
+  return state.stateModel.addPeopleAndRoleStep.valid
+}
+
 //
 // Below is the business logic that allows the Actions, etc
 // to know how they should behave (ie, what to show or enable).
