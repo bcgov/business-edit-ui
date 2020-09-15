@@ -213,9 +213,11 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   }
 
   /** Compare current to corrected data and update UI.  */
-  private nameChangeHandler (): void {
-    this.companyNameChanges = this.isNewName()
-    this.isEditingNames = false
+  private nameChangeHandler (isSaved: boolean): void {
+    if (isSaved) {
+      this.companyNameChanges = this.isNewName()
+      this.isEditingNames = false
+    }
   }
 
   /** Compare names. */

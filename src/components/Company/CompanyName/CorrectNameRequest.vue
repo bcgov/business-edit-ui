@@ -132,7 +132,7 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   }
 
   private resetForm () {
-    this.$refs.correctNrForm.resetValidation()
+    // this.$refs.correctNrForm.resetValidation()
   }
 
   /** Watch for form submission and emit results. */
@@ -161,8 +161,9 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
 
   /** Inform parent the process is complete. */
   @Emit('done')
-  private emitDone (isSaved: boolean = false): void {
+  private emitDone (isSaved: boolean = false): boolean {
     if (!isSaved) this.resetForm()
+    return isSaved
   }
 
   /** Inform parent when form is valid and ready for submission. */

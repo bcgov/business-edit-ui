@@ -3,7 +3,7 @@
     <v-layout row>
         <v-checkbox
           v-model="correctToNumbered"
-          label="Change the company name to 1234567 B.C. Ltd."
+          :label="`Change the company name to ${getBusinessId} B.C. Ltd.`"
         ></v-checkbox>
     </v-layout>
   </v-form>
@@ -16,7 +16,7 @@ import { Action, Getter } from 'vuex-class'
 
 // Interfaces && enums
 import { ActionBindingIF } from '@/interfaces'
-import { CorrectionTypes } from '@/enums'
+import { CorrectionTypes, EntityTypes } from '@/enums'
 
 @Component({})
 export default class CorrectNameToNumber extends Vue {
@@ -26,7 +26,8 @@ export default class CorrectNameToNumber extends Vue {
   @Action setNameRequest!: ActionBindingIF
 
   @Getter getApprovedName!: string
-  @Getter getEntityType!: string
+  @Getter getEntityType!: EntityTypes
+  @Getter getBusinessId!: string
 
   // Local Properties
   private correctToNumbered = false
@@ -37,13 +38,13 @@ export default class CorrectNameToNumber extends Vue {
     if (this.formType === CorrectionTypes.CORRECT_NAME_TO_NUMBER) {
       const correctedNameToNumber = { legalType: this.getEntityType }
       this.setNameRequest(correctedNameToNumber)
-      this.emitDone()
+      this.emitDone(true)
     }
   }
 
   /** Inform parent the process is complete. */
   @Emit('done')
-  private emitDone (): void {}
+  private emitDone (isSaved: boolean): void {}
 
   /** Inform parent when form is valid and ready for submission. */
   @Watch('correctToNumbered')
