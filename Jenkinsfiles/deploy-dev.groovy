@@ -20,7 +20,7 @@
 //   See: https://docs.openshift.com/container-platform/3.9/using_images/other_images/jenkins.html for a complete list of JENKINS env vars
 // define constants
 def NAMESPACE = 'mpgxod'
-def COMPONENT_NAME = 'business-create'
+def COMPONENT_NAME = 'business-edit'
 def SOURCE_TAG = 'latest'
 def DEPLOY_TAG = 'dev'
 def PREV_TAG = "${DEPLOY_TAG}-previous"
