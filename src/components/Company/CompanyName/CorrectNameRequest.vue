@@ -132,7 +132,7 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   }
 
   private resetForm () {
-    this.$refs.correctNrForm.resetValidation()
+    // this.$refs.correctNrForm.resetValidation()
   }
 
   /** Watch for form submission and emit results. */
@@ -150,7 +150,7 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
             }
           }
           this.setNameRequest({ ...this.getNameRequest, ...nrCorrection })
-          this.emitDone(CorrectionTypes.CORRECT_NEW_NR)
+          this.emitDone(true)
         }).catch(() => {
           // Request is handling it's own errors
           // Inform parent process is complete
@@ -161,8 +161,9 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
 
   /** Inform parent the process is complete. */
   @Emit('done')
-  private emitDone (type: CorrectionTypes = null): void {
-    if (!type) this.resetForm()
+  private emitDone (isSaved: boolean = false): boolean {
+    if (!isSaved) this.resetForm()
+    return isSaved
   }
 
   /** Inform parent when form is valid and ready for submission. */

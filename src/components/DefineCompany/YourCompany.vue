@@ -4,7 +4,6 @@
         <v-icon>mdi-domain</v-icon>
         <label class="define-company-title"><strong>Your Company</strong></label>
     </div>
-
     <div class="section-container px-8">
       <!--TODO: Replace container content with Name Request Summary when it is ready -->
       <v-layout row>
@@ -145,7 +144,7 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Getter, State } from 'vuex-class'
 // Interfaces
-import { BusinessContactIF, GetterIF, IncorporationFilingIF, StateModelIF } from '@/interfaces'
+import { BusinessContactIF, GetterIF, IncorporationFilingIF, NameRequestIF, StateModelIF } from '@/interfaces'
 // Components
 import { BusinessContactInfo, FolioNumber, OfficeAddresses } from '@/components/DefineCompany'
 import { CorrectNameOptions } from '@/components/Company/CompanyName'
@@ -214,20 +213,10 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   }
 
   /** Compare current to corrected data and update UI.  */
-  private async nameChangeHandler (type: CorrectionTypes): Promise<any> {
-    if (type) {
-      switch (type) {
-        case CorrectionTypes.CORRECT_NEW_NR:
-          this.companyNameChanges = this.isNewName()
-          this.isEditingNames = false
-          break
-        case CorrectionTypes.CORRECT_NAME:
-          this.companyNameChanges = this.isNewName()
-          this.isEditingNames = false
-          break
-        default:
-          this.companyNameChanges = false
-      }
+  private nameChangeHandler (isSaved: boolean): void {
+    if (isSaved) {
+      this.companyNameChanges = this.isNewName()
+      this.isEditingNames = false
     }
   }
 

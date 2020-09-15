@@ -55,6 +55,7 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 // Components
 import CorrectNameRequest from '@/components/Company/CompanyName/CorrectNameRequest.vue'
 import CorrectCompanyName from '@/components/Company/CompanyName/CorrectCompanyName.vue'
+import CorrectNameToNumber from '@/components/Company/CompanyName/CorrectNameToNumber.vue'
 
 // Interfaces & Enums
 import { CorrectNameOptionIF } from '@/interfaces'
@@ -88,14 +89,14 @@ export default class CorrectNameOptions extends Vue {
     {
       id: CorrectionTypes.CORRECT_NAME,
       title: 'Edit the company name',
-      description: 'Correct typographical errors int he existing company name.',
+      description: 'Correct typographical errors in the existing company name.',
       component: CorrectCompanyName
     },
     {
       id: CorrectionTypes.CORRECT_NAME_TO_NUMBER,
       title: 'Use the incorporation number as the name',
-      description: '',
-      component: '' // CorrectNameToNumber
+      description: null,
+      component: CorrectNameToNumber
     },
     {
       id: CorrectionTypes.CORRECT_NEW_NR,
@@ -136,10 +137,11 @@ export default class CorrectNameOptions extends Vue {
 
   /** Inform Parent name correction process is done. */
   @Emit('done')
-  private emitDone (type: CorrectionTypes): void {
+  private emitDone (isSaved: boolean): boolean {
     this.isLoading = false
     this.formType = null
-    if (type) this.panel = null
+    if (isSaved) this.panel = null
+    return isSaved
   }
 
   /** cancel name correction */
