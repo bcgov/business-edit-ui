@@ -4,7 +4,7 @@ export const stateModel: StateModelIF = {
   tombstone: {
     keycloakRoles: [],
     authRoles: [],
-    userEmail: '',
+    userInfo: null,
     businessId: '',
     entityType: null,
     currentDate: '',
@@ -59,6 +59,7 @@ export const stateModel: StateModelIF = {
   },
   addPeopleAndRoleStep: {
     valid: false,
+    changed: false,
     orgPeople: []
   },
   createShareStructureStep: {

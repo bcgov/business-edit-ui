@@ -29,8 +29,8 @@ export const mutateAuthRoles = (state: any, authRoles: Array<string>) => {
   state.stateModel.tombstone.authRoles = authRoles
 }
 
-export const mutateUserEmail = (state: any, userEmail: string) => {
-  state.stateModel.tombstone.userEmail = userEmail
+export const mutateUserInfo = (state: any, userInfo: any) => {
+  state.stateModel.tombstone.userInfo = userInfo
 }
 
 export const mutateIsSaving = (state: any, isSaving: boolean) => {
@@ -84,13 +84,17 @@ export const mutateOfficeAddresses = (state: any, addresses: IncorporationAddres
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
-export const mutateOrgPersonList = (state: any, orgPeople: OrgPersonIF[]) => {
+export const mutatePeopleAndRoles = (state: any, orgPeople: OrgPersonIF[]) => {
   state.stateModel.addPeopleAndRoleStep.orgPeople = orgPeople
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
-export const mutateAddPeopleAndRoleStepValidity = (state: any, validity: boolean) => {
-  state.stateModel.addPeopleAndRoleStep.valid = validity
+export const mutatePeopleAndRoleStepChanged = (state: any, changed: boolean) => {
+  state.stateModel.addPeopleAndRoleStep.changed = changed
+}
+
+export const mutatePeopleAndRoleStepValidity = (state: any, valid: boolean) => {
+  state.stateModel.addPeopleAndRoleStep.valid = valid
 }
 
 export const mutateFolioNumber = (state: any, folioNumber: string) => {

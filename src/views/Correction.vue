@@ -23,10 +23,7 @@
       @haveChanges="yourCompanyChanges = $event"
     />
 
-    <people-and-roles
-      @haveChanges="peopleRolesChanges = $event"
-      @isValid="peopleRolesValid = $event"
-    />
+    <people-and-roles />
 
     <list-share-class
       :isSummary="true"
@@ -100,7 +97,6 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   @Getter getFilingDate!: string
   @Getter getShareClasses!: ShareClassIF[]
   @Getter isRoleStaff!: boolean
-  @Getter isStep2Valid!: boolean // TODO: use this or peopleRolesValid below
   @Getter isTypeBcomp!: boolean
 
   // Global setters
@@ -114,21 +110,16 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   private appReady: boolean
 
   // whether components have changes
+  // TODO: delete these and use store instead
   private incorpAgrmtChanges = false
-  private peopleRolesChanges = false
   private shareStructChanges = false
   private yourCompanyChanges = false
 
   // whether components are valid
-  // TODO: use these to enable Save and File buttons
-  //       (need to refactor Actions.vue)
+  // TODO: delete these and use store instead
   private certifyValid = false
   private detailValid = false
-  private incorpAgrmtValid = false
-  private peopleRolesValid = false // TODO: use this or isStep2Valid above
-  private shareStructValid = false
   private staffPaymntValid = false
-  private yourCompanyValid = false
 
   /** The id of the correction being edited. */
   private get correctionId (): number {
@@ -232,8 +223,8 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   }
 
   // watchers for component change flags
+  // TODO: delete these and use store instead
   @Watch('incorpAgrmtChanges') private onIncorpAgrmtChanges ():void { this.emitHaveChanges() }
-  @Watch('peopleRolesChanges') private onPeopleRolesChanges ():void { this.emitHaveChanges() }
   @Watch('shareStructChanges') private onShareStructChanges ():void { this.emitHaveChanges() }
   @Watch('yourCompanyChanges') private onYourCompanyChanges ():void { this.emitHaveChanges() }
 
@@ -250,11 +241,11 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   private emitFilingData (filingData: FilingDataIF[]): void {}
 
   /** Emits Have Changes event. */
+  // TODO: delete this and use store instead
   @Emit('haveChanges')
   private emitHaveChanges (): boolean {
     return (
       this.incorpAgrmtChanges ||
-      this.peopleRolesChanges ||
       this.shareStructChanges ||
       this.yourCompanyChanges
     )

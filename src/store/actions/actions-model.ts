@@ -28,8 +28,8 @@ export const setAuthRoles: ActionIF = ({ commit }, authRoles): void => {
   commit('mutateAuthRoles', authRoles)
 }
 
-export const setUserEmail: ActionIF = ({ commit }, userEmail): void => {
-  commit('mutateUserEmail', userEmail)
+export const setUserInfo: ActionIF = ({ commit }, userInfo): void => {
+  commit('mutateUserInfo', userInfo)
 }
 
 export const setCurrentDate: ActionIF = ({ commit }, currentDate): void => {
@@ -100,12 +100,16 @@ export const setCorrectedFilingId: ActionIF = ({ commit }, correctedFilingId): v
   commit('mutateCorrectedFilingId', correctedFilingId)
 }
 
-export const setOrgPersonList = ({ commit }, orgPeople) => {
-  commit('mutateOrgPersonList', orgPeople)
+export const setPeopleAndRoles = ({ commit }, orgPeople) => {
+  commit('mutatePeopleAndRoles', orgPeople)
 }
 
-export const setAddPeopleAndRoleStepValidity = ({ commit }, validity) => {
-  commit('mutateAddPeopleAndRoleStepValidity', validity)
+export const setPeopleAndRoleStepChanged = ({ commit }, validity) => {
+  commit('mutatePeopleAndRoleStepChanged', validity)
+}
+
+export const setPeopleAndRoleStepValidity = ({ commit }, validity) => {
+  commit('mutatePeopleAndRoleStepValidity', validity)
 }
 
 export const setShareClasses = ({ commit }, shareClasses) => {
