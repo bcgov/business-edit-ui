@@ -74,6 +74,7 @@ export default class EntityInfo extends Vue {
   @Getter getBusinessId!: string
   @Getter getBusinessNumber!: string
   @Getter getCurrentBusinessName!: string
+  @Getter isRoleStaff!: boolean
 
   /** The entity title.  */
   private get entityTitle (): string {
@@ -91,7 +92,7 @@ export default class EntityInfo extends Vue {
   private get breadcrumbs (): Array<any> {
     return [
       {
-        text: 'Manage Businesses Dashboard',
+        text: this.isRoleStaff ? 'Staff Dashboard' : 'Manage Businesses Dashboard',
         disabled: false,
         href: `${sessionStorage.getItem('AUTH_URL')}business`
       },
@@ -107,7 +108,6 @@ export default class EntityInfo extends Vue {
     ]
   }
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -163,10 +163,6 @@ dl {
 dd, dt {
   float: left;
 }
-
-// dt {
-//   position: relative;
-// }
 
 dt + dd:before {
   content: "•";
