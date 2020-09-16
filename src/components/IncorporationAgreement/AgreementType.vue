@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="agreement-summary" v-if="isSummary">
+    <div id="agreement-summary">
       <v-card flat>
         <!-- Summary Header -->
         <div class="agreement-summary-header">
@@ -25,8 +25,7 @@
           </div>
           <div>
             <v-flex md2 class="align-right">
-              <v-btn
-                v-if="!hasAgreementTypeChange"
+              <v-btn v-if="!hasAgreementTypeChange"
                 text
                 color="primary"
                 id="btn-correct-agreement-type"
@@ -34,8 +33,7 @@
                 <v-icon small>mdi-pencil</v-icon>
                 <span>Correct</span>
               </v-btn>
-              <v-btn
-                v-if="hasAgreementTypeChange"
+              <v-btn v-if="hasAgreementTypeChange"
                 text
                 color="primary"
                 id="btn-undo-agreement-type"
@@ -63,8 +61,7 @@
               <v-btn id="done-btn" large color="primary" @click="setAgreementType">
                 <span>Done</span>
               </v-btn>
-
-              <v-btn v-btn id="cancel-btn" large outlined color="primary" @click="resetAgreementType">
+              <v-btn id="cancel-btn" large outlined color="primary" @click="resetAgreementType">
                 <span>Cancel</span>
               </v-btn>
             </div>
@@ -94,9 +91,6 @@ export default class AgreementType extends Vue {
 
   @State(state => state.stateModel.originalIA)
   readonly originalIA!: IncorporationFilingIF
-
-  @Prop({ default: false })
-  private isSummary: boolean
 
   // Global setters
   @Action setIncorporationAgreementStepData!: ActionBindingIF
