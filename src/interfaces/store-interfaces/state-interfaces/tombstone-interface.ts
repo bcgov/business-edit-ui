@@ -10,9 +10,11 @@ export interface TombStoneIF {
   currentDate: string
   filingDate: string
   filingId: string
+  correctedFilingId: string
   isSaving: boolean
   isSavingResuming: boolean
   isFilingPaying: boolean
   ignoreChanges: boolean
   haveChanges: boolean
+  haveCorrection: boolean
 }

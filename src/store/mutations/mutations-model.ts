@@ -121,6 +121,10 @@ export const mutateFilingId = (state: any, filingId: number) => {
   state.stateModel.tombstone.filingId = filingId
 }
 
+export const mutateCorrectedFilingId = (state: any, correctedFilingId: number) => {
+  state.stateModel.tombstone.correctedFilingId = correctedFilingId
+}
+
 export const mutateShareClasses = (state: any, shareClasses: ShareClassIF[]) => {
   state.stateModel.createShareStructureStep.shareClasses = shareClasses
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
@@ -141,6 +145,10 @@ export const mutateIgnoreChanges = (state: any, ignoreChanges: boolean) => {
 
 export const mutateHaveChanges = (state: any, haveChanges: boolean) => {
   state.stateModel.tombstone.haveChanges = haveChanges
+}
+
+export const mutateHaveCorrection = (state: any, haveCorrection: boolean) => {
+  state.stateModel.tombstone.haveCorrection = haveCorrection
 }
 
 export const mutateEntityType = (state: any, entityType: EntityTypes) => {
