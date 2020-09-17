@@ -8,11 +8,11 @@ import { stateModel, resourceModel } from './state'
 // Getters
 import {
   isRoleStaff, isAuthEdit, isAuthView, getEntityType, isEntityType, isPremiumAccount, isTypeBcomp, isTypeCoop,
-  isEnableFilePayBtn, isBusySaving, getEffectiveDate,
+  isEnableFilePayBtn, isBusySaving, getAgreementType, getEffectiveDate,
   getFilingId, getBusinessId, isNamedBusiness, getNameRequestNumber, getApprovedName, getAccountId, getBusinessNumber,
   getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses, getFilingDate, getUserEmail,
-  isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations, getOrgPeople, getShareClasses,
-  getCurrentBusinessName, getNameRequest
+  isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations, getOriginalIA, getOrgPeople,
+  getShareClasses, getCurrentBusinessName, getNameRequest
 } from '@/store/getters'
 
 // Mutations
@@ -51,6 +51,7 @@ export function getVuexStore () {
     },
     getters: {
       getAccountId,
+      getAgreementType,
       getApprovedName,
       getBusinessId,
       getCurrentBusinessName,
@@ -67,6 +68,7 @@ export function getVuexStore () {
       getNameRequestNumber,
       getNameTranslations,
       getOfficeAddresses,
+      getOriginalIA,
       getOrgPeople,
       getShareClasses,
       getUserEmail,
