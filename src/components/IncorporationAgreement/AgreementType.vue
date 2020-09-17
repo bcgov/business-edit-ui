@@ -97,11 +97,6 @@ export default class AgreementType extends Vue {
   private agreementType: string | null = null
   private showAgreementTypeForm = false
 
-  // Lifecycle methods
-  private created (): void {
-    this.agreementType = this.getAgreementType
-  }
-
   mounted (): void {
     this.setIncorporationAgreementStepData({
       valid: !!this.agreementType,
@@ -144,7 +139,7 @@ export default class AgreementType extends Vue {
     )
   }
 
-  @Watch('getAgreementType')
+  @Watch('getAgreementType', { immediate: true })
   private onAgreementTypeStateChange () {
     this.agreementType = this.getAgreementType
   }
