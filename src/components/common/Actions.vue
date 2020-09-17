@@ -4,7 +4,7 @@
     <div class="buttons-left">
       <!-- disable Save button for now -->
       <v-btn id="save-btn" large
-        :disabled="!isEntityType || isBusySaving || true"
+        :disabled="!isEntityType || isBusySaving"
         :loading="stateModel.tombstone.isSaving"
         @click="onClickSave()"
       >
@@ -13,7 +13,7 @@
 
       <!-- disable Save and Resume Later button for now -->
       <v-btn id="save-resume-btn" large
-        :disabled="!isEntityType || isBusySaving || true"
+        :disabled="!isEntityType || isBusySaving"
         :loading="stateModel.tombstone.isSavingResuming"
         @click="onClickSaveResume()"
       >
@@ -24,7 +24,7 @@
     <div class="buttons-right">
       <v-fade-transition hide-on-leave>
         <v-btn id="file-pay-btn" large color="primary"
-          :disabled="!isEnableFilePayBtn || isBusySaving"
+          :disabled="!getHaveCorrection || isBusySaving"
           :loading="stateModel.tombstone.isFilingPaying"
           @click="onClickFilePay()"
         >
@@ -66,6 +66,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
   @Getter getEffectiveDate!: Date
+  @Getter getHaveCorrection!: boolean
 
   // Global setters
   @Action setIsSaving!: ActionBindingIF
@@ -91,7 +92,8 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     let filingComplete
 
     try {
-      const filing = await this.buildIaFiling()
+      const filing = await this.buildIaCorrectionFiling()
+      console.log(filing)
       filingComplete = await this.saveFiling(filing, true)
       // reset flag
       this.setHaveChanges(false)
@@ -114,7 +116,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     let filingComplete
 
     try {
-      const filing = await this.buildIaFiling()
+      const filing = await this.buildIaCorrectionFiling()
       filingComplete = await this.saveFiling(filing, true)
       // reset flag
       this.setHaveChanges(false)
@@ -160,7 +162,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     }
 
     try {
-      const filing = await this.buildIaFiling()
+      const filing = await this.buildIaCorrectionFiling()
       filingComplete = await this.saveFiling(filing, false)
       // reset flag
       this.setHaveChanges(false)

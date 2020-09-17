@@ -3,10 +3,17 @@ import { Component, Vue } from 'vue-property-decorator'
 import { State, Getter, Action } from 'vuex-class'
 
 // Interfaces
-import { ActionBindingIF, StateModelIF, IncorporationFilingIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
+import {
+  ActionBindingIF,
+  StateModelIF,
+  IncorporationFilingIF,
+  OrgPersonIF,
+  ShareClassIF,
+  CorrectionFilingIF
+} from '@/interfaces'
 
 // Constants
-import { INCORPORATION_APPLICATION } from '@/constants'
+import { CORRECTION, INCORPORATION_APPLICATION } from '@/constants'
 import { EntityTypes, FilingStatus } from '@/enums'
 
 /**
@@ -25,6 +32,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getCurrentDate!: string
   @Getter getEntityType!: EntityTypes
   @Getter getFilingDate!: string
+  @Getter getCorrectedFilingId!: string
   @Getter getEffectiveDate!: Date
   @Getter isFutureEffective!: boolean
   @Getter getOrgPeople!: OrgPersonIF[]
@@ -48,95 +56,94 @@ export default class FilingTemplateMixin extends Vue {
   @Action setIncorporationAgreementStepData!: ActionBindingIF
 
   /**
-   * Builds an Incorporation Application filing body from store data. Used when saving a filing.
-   * @returns the IA filing body to save
+   * Builds an Incorporation Application Correction filing body from store data. Used when saving a filing.
+   * @returns the IA Correction filing body to save
    */
-  buildIaFiling (): IncorporationFilingIF {
+  buildIaCorrectionFiling (): CorrectionFilingIF {
     // Build filing.
-    const filing: IncorporationFilingIF = {
+    const filing: CorrectionFilingIF = {
       header: {
-        name: INCORPORATION_APPLICATION,
+        name: CORRECTION,
         certifiedBy: this.stateModel.certifyState.certifiedBy,
-        date: this.getFilingDate || this.getCurrentDate,
-        folioNumber: this.getFolioNumber,
-        isFutureEffective: this.isFutureEffective
+        date: this.getCurrentDate,
+        folioNumber: this.getFolioNumber
       },
       business: {
         legalType: this.getEntityType,
-        identifier: this.getBusinessId
+        identifier: this.getBusinessId,
+        legalName: this.getApprovedName
       },
-      incorporationApplication: {
-        nameRequest: {
-          legalType: this.getEntityType
-        },
-        nameTranslations: {
-          new: this.stateModel.nameTranslations
-        },
-        offices: this.stateModel.defineCompanyStep.officeAddresses,
-        contactPoint: {
-          email: this.stateModel.defineCompanyStep.businessContact.email,
-          phone: this.stateModel.defineCompanyStep.businessContact.phone,
-          extension: this.stateModel.defineCompanyStep.businessContact.extension
-        },
-        parties: this.getOrgPeople,
-        shareStructure: {
-          shareClasses: this.getShareClasses
-        },
-        incorporationAgreement: {
-          agreementType: this.stateModel.incorporationAgreementStep.agreementType
+      correction: {
+        correctedFilingId: this.getCorrectedFilingId,
+        correctedFilingType: INCORPORATION_APPLICATION,
+        correctedFilingDate: this.getCurrentDate,
+        comment: '',
+        incorporationApplication: {
+          nameRequest: {
+            legalType: this.getEntityType
+          },
+          nameTranslations: {
+            new: this.stateModel.nameTranslations
+          },
+          offices: this.stateModel.defineCompanyStep.officeAddresses,
+          contactPoint: {
+            email: this.stateModel.defineCompanyStep.businessContact.email,
+            phone: this.stateModel.defineCompanyStep.businessContact.phone,
+            extension: this.stateModel.defineCompanyStep.businessContact.extension
+          },
+          parties: this.getOrgPeople,
+          shareStructure: {
+            shareClasses: this.getShareClasses
+          },
+          incorporationAgreement: {
+            agreementType: this.stateModel.incorporationAgreementStep.agreementType
+          }
         }
       }
     }
 
     // If this is a named IA then save Name Request Number and Approved Name.
     if (this.isNamedBusiness) {
-      filing.incorporationApplication.nameRequest.nrNumber = this.getNameRequestNumber
-      filing.incorporationApplication.nameRequest.legalName = this.getApprovedName
+      filing.correction.incorporationApplication.nameRequest.nrNumber = this.getNameRequestNumber
+      filing.correction.incorporationApplication.nameRequest.legalName = this.getApprovedName
     }
 
-    // Pass the effective date only for a future effective filing.
-    // TODO: verify that this is UTC time
-    const effectiveDate: Date = this.getEffectiveDate
-    if (effectiveDate) {
-      const formattedDateTime = (effectiveDate.toISOString()).replace('Z', '+00:00')
-      filing.header.effectiveDate = formattedDateTime
-    }
     return filing
   }
 
   /**
-   * Parses an Incorporation Application filing into the store. Used when loading a filing.
-   * @param filing the IA filing body to parse
+   * Parses a correction filing into the store.
+   * @param filing the correction filing body to be parsed
    */
-  parseIncorpApp (filing: IncorporationFilingIF): void {
+  parseCorrection (filing: CorrectionFilingIF): void {
     // Set Business Information
     this.setBusinessInformation(filing.business)
 
     // Set Name Request
-    this.setNameRequest(filing.incorporationApplication.nameRequest)
+    this.setNameRequest(filing.correction.incorporationApplication.nameRequest)
 
     // Set Name Translations
-    this.setNameTranslations(filing.incorporationApplication.nameTranslations?.new)
+    this.setNameTranslations(filing.correction.incorporationApplication.nameTranslations?.new)
 
     // Set Office Addresses
-    this.setOfficeAddresses(filing.incorporationApplication.offices)
+    this.setOfficeAddresses(filing.correction.incorporationApplication.offices)
 
     // Set Business Contact
     const contact = {
-      ...filing.incorporationApplication.contactPoint,
-      confirmEmail: filing.incorporationApplication.contactPoint.email
+      ...filing.correction.incorporationApplication.contactPoint,
+      confirmEmail: filing.correction.incorporationApplication.contactPoint.email
     }
     this.setBusinessContact(contact)
 
     // Set Persons and Organizations
-    this.setOrgPersonList(filing.incorporationApplication.parties || [])
+    this.setOrgPersonList(filing.correction.incorporationApplication.parties || [])
 
     // Set Share Structure
-    if (filing.incorporationApplication.shareStructure) {
-      this.setShareClasses(filing.incorporationApplication.shareStructure.shareClasses)
+    if (filing.correction.incorporationApplication.shareStructure) {
+      this.setShareClasses(filing.correction.incorporationApplication.shareStructure.shareClasses)
     } else {
       // if it exists, load data from old schema
-      const shareClasses = (filing.incorporationApplication as any).shareClasses
+      const shareClasses = (filing.correction.incorporationApplication as any).shareClasses
       if (shareClasses) {
         this.setShareClasses(shareClasses)
       } else {
@@ -146,7 +153,7 @@ export default class FilingTemplateMixin extends Vue {
 
     // Set Incorporation Agreement
     this.setIncorporationAgreementStepData({
-      agreementType: filing.incorporationApplication.incorporationAgreement?.agreementType
+      agreementType: filing.correction.incorporationApplication.incorporationAgreement?.agreementType
     })
 
     // Set Certify Form
@@ -154,20 +161,6 @@ export default class FilingTemplateMixin extends Vue {
       valid: false,
       certifiedBy: filing.header.certifiedBy
     })
-
-    // Set Effective Date
-    if (filing.header.effectiveDate) {
-      let effectiveDatetime: Date = filing.header.effectiveDate ? new Date(filing.header.effectiveDate) : null
-      // Compare datetime to improve UX and work around default effective date set by back end
-      if (filing.header.status !== FilingStatus.COMPLETED && effectiveDatetime < new Date()) {
-        effectiveDatetime = null
-      }
-      this.setEffectiveDate(effectiveDatetime)
-      this.setIsFutureEffective(!!effectiveDatetime)
-    } else {
-      this.setEffectiveDate(null)
-      this.setIsFutureEffective(false)
-    }
 
     // Set Folio Number
     this.setFolioNumber(filing.header.folioNumber)
@@ -183,15 +176,6 @@ export default class FilingTemplateMixin extends Vue {
   parseAlteration (filing: any): void {
     // Alteration body to parse TBD
     // Will refactor above parse function into 1 generic filing parse function when we know more
-  }
-
-  /**
-   * Parses a correction filing into the store.
-   * @param filing the correction filing body to be parsed
-   */
-  parseCorrection (filing: any): void {
-    // See https://github.com/bcgov/business-schemas/blob/master/src/registry_schemas/schemas/correction.json
-    // See https://github.com/bcgov/business-schemas/blob/master/src/registry_schemas/schemas/diff.json
   }
 
   /**

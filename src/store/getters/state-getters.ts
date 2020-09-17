@@ -68,6 +68,11 @@ export const getFilingId = (state: any): number => {
   return state.stateModel.tombstone.filingId
 }
 
+/** The corrected filing id. */
+export const getCorrectedFilingId = (state: any): number => {
+  return state.stateModel.tombstone.correctedFilingId
+}
+
 /** The business identifier (aka incorporation number). */
 export const getBusinessId = (state: any): string => {
   return state.stateModel.tombstone.businessId
@@ -162,6 +167,11 @@ export const ignoreChanges = (state: any): boolean => {
 /** Whether there are unsaved data changes. */
 export const haveChanges = (state: any): boolean => {
   return state.stateModel.tombstone.haveChanges
+}
+
+/** Whether any corrections have been made. */
+export const getHaveCorrection = (state: any): boolean => {
+  return state.stateModel.tombstone.haveCorrection
 }
 
 //

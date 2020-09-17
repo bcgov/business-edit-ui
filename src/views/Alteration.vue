@@ -110,7 +110,7 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
       }
 
       // parse IA filing into store
-      this.parseIncorpApp(filing)
+      this.parseAlteration(filing)
 
       // set current entity type
       this.setEntityType(EntityTypes.BCOMP)

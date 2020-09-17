@@ -56,7 +56,7 @@
         <v-flex v-else md9>
           <correct-name-options
             :correction-name-choices="correctNameChoices"
-            @done="nameChangeHandler($event)"
+            @done="nameChangeHandler"
             @cancel="isEditingNames = false"
           />
         </v-flex>
@@ -211,15 +211,14 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   }
 
   /** Compare current to corrected data and update UI.  */
-  private nameChangeHandler (isSaved: boolean): void {
-    if (isSaved) {
-      this.companyNameChanges = this.isNewName()
-      this.isEditingNames = false
-    }
+  @Watch('getApprovedName')
+  private nameChangeHandler (): void {
+    this.companyNameChanges = this.isNewName
+    this.isEditingNames = false
   }
 
   /** Compare names. */
-  private isNewName () {
+  private get isNewName () {
     const currentName = this.getOriginalIA.incorporationApplication.nameRequest.legalName
     const correctedName = this.getApprovedName
     return currentName !== correctedName
