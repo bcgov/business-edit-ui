@@ -1,6 +1,7 @@
 // Enums and Interfaces
 import { AccountTypes, EntityTypes } from '@/enums'
-import { NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF, NameRequestIF } from '@/interfaces'
+import { IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
+  NameRequestIF } from '@/interfaces'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: any): boolean => {
@@ -77,6 +78,11 @@ export const getCurrentBusinessName = (state: any): string => {
   return state.stateModel.originalIA.incorporationApplication.nameRequest.legalName
 }
 
+/** The original Incorporation Application filing( or the filing being corrected). */
+export const getOriginalIA = (state: any): IncorporationFilingIF => {
+  return state.stateModel.originalIA
+}
+
 /** The business number. */
 export const getBusinessNumber = (state: any): string => {
   // remove first 2 chars from Business ID
@@ -142,6 +148,10 @@ export const getOrgPeople = (state: any): Array<OrgPersonIF> => {
 /** The share classes list. */
 export const getShareClasses = (state: any): Array<ShareClassIF> => {
   return state.stateModel.createShareStructureStep.shareClasses
+}
+
+export const getAgreementType = (state: any): string | null => {
+  return state.stateModel.incorporationAgreementStep.agreementType
 }
 
 /** Whether we are ignoring data changes. */

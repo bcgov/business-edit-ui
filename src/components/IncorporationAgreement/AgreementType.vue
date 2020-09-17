@@ -75,7 +75,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Emit, Vue, Prop, Watch } from 'vue-property-decorator'
-import { Action, State } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 
 // Interfaces
 import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces'
@@ -86,11 +86,8 @@ export default class AgreementType extends Vue {
   private incorporationAgreementTypeResource = AgreementTypeResource
 
   // State
-  @State(state => state.stateModel.incorporationAgreementStep.agreementType)
-  readonly agreementTypeState: string | null
-
-  @State(state => state.stateModel.originalIA)
-  readonly originalIA!: IncorporationFilingIF
+  @Getter getAgreementType!: string
+  @Getter getOriginalIA!: IncorporationFilingIF
 
   // Global setters
   @Action setIncorporationAgreementStepData!: ActionBindingIF
@@ -102,7 +99,7 @@ export default class AgreementType extends Vue {
 
   // Lifecycle methods
   private created (): void {
-    this.agreementType = this.agreementTypeState
+    this.agreementType = this.getAgreementType
   }
 
   mounted (): void {
@@ -125,17 +122,17 @@ export default class AgreementType extends Vue {
   }
 
   private resetAgreementType (): void {
-    this.agreementType = this.originalIA.incorporationApplication.incorporationAgreement.agreementType
+    this.agreementType = this.getOriginalIA.incorporationApplication.incorporationAgreement.agreementType
     this.setAgreementType()
   }
 
   private get hasAgreementTypeChange (): boolean {
-    return this.agreementType !== this.originalIA.incorporationApplication.incorporationAgreement.agreementType
+    return this.agreementType !== this.getOriginalIA.incorporationApplication.incorporationAgreement.agreementType
   }
 
   private get selectedAgreementDescription () : string {
-    if (this.agreementTypeState) {
-      return this.incorporationAgreementTypeResource.find(item => item.code === this.agreementTypeState)
+    if (this.getAgreementType) {
+      return this.incorporationAgreementTypeResource.find(item => item.code === this.getAgreementType)
         .summaryDescription
     } else { return '' }
   }
@@ -147,9 +144,9 @@ export default class AgreementType extends Vue {
     )
   }
 
-  @Watch('agreementTypeState')
+  @Watch('getAgreementType')
   private onAgreementTypeStateChange () {
-    this.agreementType = this.agreementTypeState
+    this.agreementType = this.getAgreementType
   }
 }
 </script>
