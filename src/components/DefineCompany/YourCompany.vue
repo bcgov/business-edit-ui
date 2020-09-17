@@ -171,13 +171,11 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   @Getter getOfficeAddresses!: any
   @Getter isPremiumAccount!: GetterIF
   @Getter isNamedBusiness!: boolean
+  @Getter getOriginalIA!: IncorporationFilingIF
 
   // Global state
   @State(state => state.stateModel.defineCompanyStep.valid)
   readonly valid!: boolean
-
-  @State(state => state.stateModel.originalIA)
-  readonly originalIA!: IncorporationFilingIF
 
   @State(state => state.stateModel.defineCompanyStep.businessContact)
   readonly businessContact!: BusinessContactIF
@@ -222,15 +220,15 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
 
   /** Compare names. */
   private isNewName () {
-    const currentName = this.originalIA.incorporationApplication.nameRequest.legalName
+    const currentName = this.getOriginalIA.incorporationApplication.nameRequest.legalName
     const correctedName = this.getApprovedName
     return currentName !== correctedName
   }
 
   /** Reset company name values to original. */
   private resetName () {
-    this.setBusinessInformation(this.originalIA.business)
-    this.setNameRequest(this.originalIA.incorporationApplication.nameRequest)
+    this.setBusinessInformation(this.getOriginalIA.business)
+    this.setNameRequest(this.getOriginalIA.incorporationApplication.nameRequest)
     this.companyNameChanges = false
   }
 
