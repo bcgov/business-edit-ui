@@ -100,7 +100,7 @@ import { ListShareClass, ShareStructure } from '@/components/CreateShareStructur
     ShareStructure
   }
 })
-export default class CreateShareStructure extends Vue {
+export default class _CreateShareStructure extends Vue {
   // Global getters
   @Getter getShareClasses!: ShareClassIF[]
 

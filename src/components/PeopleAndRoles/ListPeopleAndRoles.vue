@@ -1,9 +1,8 @@
 <template>
-  <v-card flat id="people-roles">
-
+  <v-card flat id="list-people-roles">
     <ConfirmRemoveDialog
       :dialog="dialog"
-      attach="#people-roles"
+      attach="#list-people-roles"
       @confirm="emitRemovePerson(personId)"
       @exit="dialog = false"
     />
@@ -188,7 +187,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, EntityFilter
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-#people-roles {
+#list-people-roles {
   margin-top: 1rem;
 }
 

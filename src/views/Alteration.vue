@@ -6,7 +6,7 @@
       </header>
       <!-- The Summary Components Below are just for a visual representation. Future Components TBD -->
       <SummaryDefineCompany/>
-      <ListPeopleAndRoles :personList="getOrgPeople" :isSummary="true" />
+      <ListPeopleAndRoles :personList="getPeopleAndRoles" :isSummary="true" />
       <ListShareClass :shareClasses="getShareClasses" :isSummary="true" />
       <AgreementType :isSummary="true" />
     </section>
@@ -20,7 +20,7 @@ import { getFeatureFlag } from '@/utils'
 
 // Components
 import { SummaryDefineCompany } from '@/components/DefineCompany'
-import { ListPeopleAndRoles } from '@/components/AddPeopleAndRoles'
+import { ListPeopleAndRoles } from '@/components/PeopleAndRoles'
 import { ListShareClass } from '@/components/CreateShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'
 
@@ -41,7 +41,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixin) {
   // Global getters
   @Getter isRoleStaff!: boolean
-  @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
 
   // Global setters

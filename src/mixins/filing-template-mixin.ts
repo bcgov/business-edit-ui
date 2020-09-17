@@ -37,7 +37,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getCorrectedFilingId!: string
   @Getter getEffectiveDate!: Date
   @Getter isFutureEffective!: boolean
-  @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getFolioNumber!: string
   @Getter getStaffPayment!: StaffPaymentIF
@@ -49,7 +49,7 @@ export default class FilingTemplateMixin extends Vue {
   @Action setNameTranslations!: ActionBindingIF
   @Action setDefineCompanyStepValidity!: ActionBindingIF
   @Action setNameRequest!: ActionBindingIF
-  @Action setOrgPersonList!: ActionBindingIF
+  @Action setPeopleAndRoles!: ActionBindingIF
   @Action setCertifyState!: ActionBindingIF
   @Action setShareClasses!: ActionBindingIF
   @Action setEffectiveDate!: ActionBindingIF
@@ -97,7 +97,7 @@ export default class FilingTemplateMixin extends Vue {
             phone: this.stateModel.defineCompanyStep.businessContact.phone,
             extension: this.stateModel.defineCompanyStep.businessContact.extension
           },
-          parties: this.getOrgPeople,
+          parties: this.getPeopleAndRoles,
           shareStructure: {
             shareClasses: this.getShareClasses
           },
@@ -163,8 +163,8 @@ export default class FilingTemplateMixin extends Vue {
     }
     this.setBusinessContact(contact)
 
-    // Set Persons and Organizations
-    this.setOrgPersonList(filing.correction.incorporationApplication.parties || [])
+    // Set People and Roles
+    this.setPeopleAndRoles(filing.correction.incorporationApplication.parties || [])
 
     // Set Share Structure
     if (filing.correction.incorporationApplication.shareStructure) {

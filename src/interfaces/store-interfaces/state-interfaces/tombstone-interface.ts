@@ -4,7 +4,7 @@ import { EntityTypes } from '@/enums'
 export interface TombStoneIF {
   keycloakRoles: Array<string>
   authRoles: Array<string>
-  userEmail: string // from auth profile
+  userInfo: any // from auth profile
   businessId: string
   entityType: EntityTypes
   currentDate: string

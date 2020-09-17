@@ -96,9 +96,32 @@ export const getBusinessNumber = (state: any): string => {
   return state.stateModel.tombstone.businessId?.substring(2)
 }
 
-/** The folio number. */
+/** The current user's email. */
 export const getUserEmail = (state: any): string => {
-  return state.stateModel.tombstone.userEmail
+  const userInfo = state.stateModel.tombstone.userInfo
+  // get email from contacts[0] if it exists (ie, for BCSC users)
+  // else get email from root object
+  return userInfo?.contacts[0]?.email || userInfo?.email
+}
+
+/** The current user's first name. */
+export const getUserFirstName = (state: any): any => {
+  return state.stateModel.tombstone.userInfo?.firstname
+}
+
+/** The current user's last name. */
+export const getUserLastName = (state: any): any => {
+  return state.stateModel.tombstone.userInfo?.lastname
+}
+
+/** The current user's roles. */
+export const getUserRoles = (state: any): any => {
+  return state.stateModel.tombstone.userInfo?.roles
+}
+
+/** The current user's username. */
+export const getUserUsername = (state: any): any => {
+  return state.stateModel.tombstone.userInfo?.username
 }
 
 /** The folio number. */
@@ -147,8 +170,8 @@ export const getOfficeAddresses = (state: any): any => {
   return state.stateModel.defineCompanyStep.officeAddresses
 }
 
-/** The organization's people list. */
-export const getOrgPeople = (state: any): Array<OrgPersonIF> => {
+/** The people and roles list. */
+export const getPeopleAndRoles = (state: any): Array<OrgPersonIF> => {
   return state.stateModel.addPeopleAndRoleStep.orgPeople
 }
 
@@ -181,6 +204,11 @@ export const getHaveCorrection = (state: any): boolean => {
   return state.stateModel.tombstone.haveCorrection
 }
 
+/** Whether People and Roles step (component) is valid. */
+export const isPeopleAndRoleStepValid = (state: any): boolean => {
+  return state.stateModel.addPeopleAndRoleStep.valid
+}
+
 //
 // Below is the business logic that allows the Actions, etc
 // to know how they should behave (ie, what to show or enable).
@@ -203,10 +231,14 @@ export const isBusySaving = (state: any): boolean => {
     state.stateModel.tombstone.isFilingPaying)
 }
 
-// TODO: change this to "all sections"?
-/** Whether all the incorporation steps are valid. */
-export const isApplicationValid = (state: any): boolean => {
-  return (state.stateModel.defineCompanyStep.valid && state.stateModel.addPeopleAndRoleStep.valid &&
-    state.stateModel.createShareStructureStep.valid && state.stateModel.incorporationDateTime.valid &&
-    state.stateModel.incorporationAgreementStep.valid && state.stateModel.certifyState.valid)
+/** Whether any correction sections have changed. */
+export const isCorrectionChanged = (state: any): boolean => {
+  // TODO: add other sections here
+  return (state.stateModel.addPeopleAndRoleStep.changed)
+}
+
+/** Whether all the correction sections are valid. */
+export const isCorrectionValid = (state: any): boolean => {
+  // TODO: add other sections here
+  return (state.stateModel.addPeopleAndRoleStep.valid)
 }

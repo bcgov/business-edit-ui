@@ -126,7 +126,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * Fetches current user data.
    * @returns a promise to return the user data
    */
-  getCurrentUser (): Promise<any> {
+  fetchCurrentUser (): Promise<any> {
     const authUrl = sessionStorage.getItem('AUTH_API_URL')
     const config = { baseURL: authUrl }
     return axios.get('users/@me', config)

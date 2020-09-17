@@ -23,11 +23,7 @@
       @haveChanges="yourCompanyChanges = $event"
     />
 
-    <list-people-and-roles
-      :isSummary="true"
-      :personList="getOrgPeople"
-      @haveChanges="peopleRolesChanges = $event"
-    />
+    <people-and-roles />
 
     <list-share-class
       :isSummary="true"
@@ -66,7 +62,7 @@ import { getFeatureFlag } from '@/utils'
 
 // Components
 import { YourCompany } from '@/components/DefineCompany'
-import { ListPeopleAndRoles } from '@/components/AddPeopleAndRoles'
+import { PeopleAndRoles } from '@/components/PeopleAndRoles'
 import { ListShareClass } from '@/components/CreateShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { Certify, CompletingParty, Detail, StaffPayment } from '@/components/common'
@@ -86,7 +82,7 @@ import { BenefitCompanyStatementResource } from '@/resources'
     Certify,
     CompletingParty,
     Detail,
-    ListPeopleAndRoles,
+    PeopleAndRoles,
     ListShareClass,
     StaffPayment,
     YourCompany
@@ -99,7 +95,6 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   // Global getters
   @Getter getBusinessId!: string
   @Getter getFilingDate!: string
-  @Getter getOrgPeople!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
   @Getter isRoleStaff!: boolean
   @Getter isTypeBcomp!: boolean
@@ -115,21 +110,16 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   private appReady: boolean
 
   // whether components have changes
+  // TODO: delete these and use store instead
   private incorpAgrmtChanges = false
-  private peopleRolesChanges = false
   private shareStructChanges = false
   private yourCompanyChanges = false
 
   // whether components are valid
-  // TODO: use these to enable Save and File buttons
-  //       (need to refactor Actions.vue)
+  // TODO: delete these and use store instead
   private certifyValid = false
   private detailValid = false
-  private incorpAgrmtValid = false
-  private peopleRolesValid = false
-  private shareStructValid = false
   private staffPaymntValid = false
-  private yourCompanyValid = false
 
   /** The id of the correction being edited. */
   private get correctionId (): number {
@@ -233,8 +223,8 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   }
 
   // watchers for component change flags
+  // TODO: delete these and use store instead
   @Watch('incorpAgrmtChanges') private onIncorpAgrmtChanges ():void { this.emitHaveChanges() }
-  @Watch('peopleRolesChanges') private onPeopleRolesChanges ():void { this.emitHaveChanges() }
   @Watch('shareStructChanges') private onShareStructChanges ():void { this.emitHaveChanges() }
   @Watch('yourCompanyChanges') private onYourCompanyChanges ():void { this.emitHaveChanges() }
 
@@ -251,11 +241,11 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   private emitFilingData (filingData: FilingDataIF[]): void {}
 
   /** Emits Have Changes event. */
+  // TODO: delete this and use store instead
   @Emit('haveChanges')
   private emitHaveChanges (): boolean {
     return (
       this.incorpAgrmtChanges ||
-      this.peopleRolesChanges ||
       this.shareStructChanges ||
       this.yourCompanyChanges
     )
