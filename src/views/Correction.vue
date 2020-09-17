@@ -117,9 +117,6 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   @Prop({ default: false })
   private appReady: boolean
 
-  /** The IA filing to correct. */
-  private correctedFiling: any = null
-
   // whether components have changes
   private incorpAgrmtChanges = false
   private peopleRolesChanges = false
@@ -205,12 +202,12 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
         }
         // fetch original IA to correct
         const correctedFilingID = correctionFiling.correction?.correctedFilingId
-        this.correctedFiling = await this.fetchFilingById(correctedFilingID)
+        const correctedFiling = await this.fetchFilingById(correctedFilingID)
         this.setCorrectedFilingId(correctedFilingID)
 
         // parse IA filing into store
         // this is the initial state of the correction filing
-        this.setOriginalIA(this.correctedFiling)
+        this.setOriginalIA(correctedFiling)
 
         // parse correction filing into store
         // this applies the diffs (corrections)

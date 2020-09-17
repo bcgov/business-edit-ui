@@ -80,7 +80,9 @@ export default class FilingTemplateMixin extends Vue {
         comment: '',
         incorporationApplication: {
           nameRequest: {
-            legalType: this.getEntityType
+            legalType: this.getEntityType,
+            legalName: this.getApprovedName,
+            nrNumber: this.getNameRequestNumber
           },
           nameTranslations: {
             new: this.stateModel.nameTranslations
