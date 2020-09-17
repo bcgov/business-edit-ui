@@ -13,7 +13,7 @@ import {
   getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses, getFilingDate, getCurrentDate,
   ignoreChanges, haveChanges, getNameTranslations, getOriginalIA, getPeopleAndRoles, getShareClasses,
   getCurrentBusinessName, getNameRequest, getCorrectedFilingId, getHaveCorrection, isCorrectionChanged,
-  isCorrectionValid, getUserEmail, getUserFirstName, getUserLastName, getUserRoles, getUserUsername,, getStaffPayment
+  isCorrectionValid, getUserEmail, getUserFirstName, getUserLastName, getUserRoles, getUserUsername, getStaffPayment
 } from '@/store/getters'
 
 // Mutations

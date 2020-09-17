@@ -217,7 +217,12 @@ export default class FilingTemplateMixin extends Vue {
       })
     } else {
       this.setStaffPayment({
-        option: StaffPaymentOptions.NONE
+        option: StaffPaymentOptions.NONE,
+        bcolAccountNumber: '',
+        datNumber: '',
+        folioNumber: '',
+        isPriority: false,
+        routingSlipNumber: ''
       })
     }
   }
