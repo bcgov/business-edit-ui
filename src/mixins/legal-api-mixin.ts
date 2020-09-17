@@ -5,7 +5,7 @@ import { NOT_FOUND } from 'http-status-codes'
 import { axios } from '@/utils'
 
 // Interfaces
-import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces'
+import { ActionBindingIF, CorrectionFilingIF, IncorporationFilingIF } from '@/interfaces'
 
 // Mixins
 import { FilingTemplateMixin } from '@/mixins'
@@ -31,7 +31,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * @param filing filing body to be saved
    * @returns a promise to return the saved filing
    */
-  saveFiling (filing: IncorporationFilingIF, isDraft: boolean): Promise<any> {
+  saveFiling (filing: CorrectionFilingIF, isDraft: boolean): Promise<any> {
     if (!filing) throw new Error('Invalid parameter \'filing\'')
     if (typeof isDraft !== 'boolean') throw new Error('Invalid parameter \'isDraft\'')
 
@@ -42,35 +42,6 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
       // This should never happen. Filing Id should always be present
       throw new Error('Invalid filing Id')
     }
-  }
-
-  /**
-   * Fetches a draft filing.
-   * @returns a promise to return the draft filing, or null if not found
-   */
-  fetchDraft (): Promise<any> {
-    // get the draft filing from the tasks endpoint
-    const url = `businesses/${this.getBusinessId}/filings`
-    return axios.get(url)
-      .then(response => {
-        // look at only the first filing
-        const filing = response?.data?.filing
-        const filingName = filing?.header?.name
-        const filingId = +filing?.header?.filingId // may be NaN
-
-        if (!filing || filingName !== this.INCORPORATION_APPLICATION || !filingId) {
-          throw new Error('Invalid API response')
-        }
-        // save Filing ID from the header
-        this.setFilingId(filingId)
-        return this.formatEmptyFiling(filing)
-      })
-      .catch((error) => {
-        if (error?.response?.status === NOT_FOUND) {
-          return null // IA not found
-        }
-        throw error
-      })
   }
 
   /**
@@ -116,11 +87,11 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
 
   /**
    * Updates an existing filing.
-   * @param data the object body of the request
+   * @param filing the object body of the request
    * @param isDraft boolean indicating whether to save draft or complete filing
    * @returns a promise to return the updated filing
    */
-  private updateFiling (filing: IncorporationFilingIF, isDraft: boolean): Promise<any> {
+  private updateFiling (filing: CorrectionFilingIF, isDraft: boolean): Promise<any> {
     // put updated filing to filings endpoint
     let url = `businesses/${this.getBusinessId}/filings/${this.getFilingId}`
     if (isDraft) {

@@ -59,9 +59,7 @@ export default class CorrectCompanyName extends Vue {
   /** Watch for form submission and emit results. */
   @Watch('formType')
   private async onSubmit (): Promise<any> {
-    console.log(this.formType)
     if (this.formType === CorrectionTypes.CORRECT_NAME) {
-      console.log('inside correct')
       const correctedCompanyName = { legalName: this.companyName }
       this.setNameRequest({ ...this.getNameRequest, ...correctedCompanyName })
       this.emitDone(true)

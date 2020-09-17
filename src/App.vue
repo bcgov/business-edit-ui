@@ -94,7 +94,7 @@
                 @fetchError="fetchErrorDialog = true"
                 @haveData="haveData = true"
                 @filingData="filingData = $event"
-                @haveChanges="showFeeSummary = $event"
+                @haveChanges="stateChangeHandler($event)"
               />
             </v-col>
             <v-col cols="12" lg="3" style="position: relative">
@@ -128,7 +128,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Vue, Watch, Mixins } from 'vue-property-decorator'
+import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import { BAD_REQUEST, PAYMENT_REQUIRED, FORBIDDEN, UNPROCESSABLE_ENTITY } from 'http-status-codes'
@@ -195,6 +195,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   @Action setAddPeopleAndRoleStepValidity!: ActionBindingIF
   @Action setCreateShareStructureStepValidity!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
+  @Action setHaveCorrection!: ActionBindingIF
   @Action setAccountInformation!: ActionBindingIF
   @Action setKeycloakRoles!: ActionBindingIF
 
@@ -262,6 +263,12 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   /** Whether user is authenticated. */
   private get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+  }
+
+  /** Handle State Changes */
+  private stateChangeHandler (hasStateChanges: boolean): void {
+    this.showFeeSummary = hasStateChanges
+    this.setHaveCorrection(hasStateChanges)
   }
 
   /**

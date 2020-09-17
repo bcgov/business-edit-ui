@@ -10,11 +10,13 @@ export const stateModel: StateModelIF = {
     currentDate: '',
     filingDate: '',
     filingId: null,
+    correctedFilingId: null,
     isSaving: false,
     isSavingResuming: false,
     isFilingPaying: false,
     ignoreChanges: false,
-    haveChanges: false
+    haveChanges: false,
+    haveCorrection: false
   },
   accountInformation: {
     accountType: '',

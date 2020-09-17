@@ -137,11 +137,10 @@ export default class CorrectNameOptions extends Vue {
 
   /** Inform Parent name correction process is done. */
   @Emit('done')
-  private emitDone (isSaved: boolean): boolean {
+  private emitDone (isSaved: boolean): void {
     this.isLoading = false
     this.formType = null
     if (isSaved) this.panel = null
-    return isSaved
   }
 
   /** cancel name correction */

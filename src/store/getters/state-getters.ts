@@ -1,7 +1,9 @@
 // Enums and Interfaces
 import { AccountTypes, EntityTypes } from '@/enums'
-import { IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
-  NameRequestIF } from '@/interfaces'
+import {
+  IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
+  NameRequestIF
+} from '@/interfaces'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: any): boolean => {
@@ -66,6 +68,11 @@ export const getFilingDate = (state: any): string => {
 /** The filing id. */
 export const getFilingId = (state: any): number => {
   return state.stateModel.tombstone.filingId
+}
+
+/** The corrected filing id. */
+export const getCorrectedFilingId = (state: any): number => {
+  return state.stateModel.tombstone.correctedFilingId
 }
 
 /** The business identifier (aka incorporation number). */
@@ -167,6 +174,11 @@ export const haveChanges = (state: any): boolean => {
 /** The staff payment. */
 export const getStaffPayment = (state: any): any => {
   return state.stateModel.staffPayment
+}
+
+/** Whether any corrections have been made. */
+export const getHaveCorrection = (state: any): boolean => {
+  return state.stateModel.tombstone.haveCorrection
 }
 
 //

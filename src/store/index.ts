@@ -12,7 +12,7 @@ import {
   getFilingId, getBusinessId, isNamedBusiness, getNameRequestNumber, getApprovedName, getAccountId, getBusinessNumber,
   getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses, getFilingDate, getUserEmail,
   isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations, getOriginalIA, getOrgPeople,
-  getShareClasses, getCurrentBusinessName, getNameRequest, getStaffPayment
+  getShareClasses, getCurrentBusinessName, getNameRequest, getCorrectedFilingId, getHaveCorrection, getStaffPayment
 } from '@/store/getters'
 
 // Mutations
@@ -24,7 +24,8 @@ import {
   mutateAddPeopleAndRoleStepValidity, mutateShareClasses, mutateCreateShareStructureStepValidity,
   mutateIgnoreChanges, mutateHaveChanges, mutateIsFutureEffective, mutateEffectiveDate,
   mutateIsIncorporationDateTimeValid, mutateBusinessId, mutateIncorporationAgreementStepData, mutateEntityType,
-  mutateNameTranslations, mutateBusinessInformation, mutateOriginalIA, mutateStaffPayment
+  mutateNameTranslations, mutateBusinessInformation, mutateOriginalIA, mutateCorrectedFilingId, mutateHaveCorrection,
+  mutateStaffPayment
 } from '@/store/mutations'
 
 // Setters
@@ -35,7 +36,8 @@ import {
   setOfficeAddresses, setOrgPersonList, setAddPeopleAndRoleStepValidity, setShareClasses,
   setCreateShareStructureStepValidity, setIgnoreChanges, setHaveChanges, setIsFutureEffective,
   setEffectiveDate, setIsIncorporationDateTimeValid, setAccountInformation, setBusinessId, setEntityType,
-  setIncorporationAgreementStepData, setNameTranslations, setBusinessInformation, setOriginalIA, setStaffPayment
+  setIncorporationAgreementStepData, setNameTranslations, setBusinessInformation, setOriginalIA, setCorrectedFilingId,
+  setHaveCorrection, setStaffPayment
 } from './actions'
 
 /**
@@ -56,12 +58,14 @@ export function getVuexStore () {
       getBusinessId,
       getCurrentBusinessName,
       getBusinessNumber,
+      getCorrectedFilingId,
       getCurrentDate,
       getFilingDate,
       getFilingId,
       getEffectiveDate,
       getEntityType,
       getFolioNumber,
+      getHaveCorrection,
       getNameRequest,
       getNameRequestApplicant,
       getNameRequestDetails,
@@ -96,6 +100,7 @@ export function getVuexStore () {
       mutateBusinessInformation,
       mutateCertifyState,
       mutateCertifyStatementResource,
+      mutateCorrectedFilingId,
       mutateCreateShareStructureStepValidity,
       mutateCurrentDate,
       mutateDefineCompanyStepValidity,
@@ -105,6 +110,7 @@ export function getVuexStore () {
       mutateFilingId,
       mutateFolioNumber,
       mutateHaveChanges,
+      mutateHaveCorrection,
       mutateIgnoreChanges,
       mutateIncorporationAgreementStepData,
       mutateIsFilingPaying,
@@ -131,6 +137,7 @@ export function getVuexStore () {
       setBusinessInformation,
       setCertifyState,
       setCertifyStatementResource,
+      setCorrectedFilingId,
       setCreateShareStructureStepValidity,
       setCurrentDate,
       setDefineCompanyStepValidity,
@@ -140,6 +147,7 @@ export function getVuexStore () {
       setFilingId,
       setFolioNumber,
       setHaveChanges,
+      setHaveCorrection,
       setIgnoreChanges,
       setIncorporationAgreementStepData,
       setIsFilingPaying,

@@ -96,6 +96,10 @@ export const setFilingId: ActionIF = ({ commit }, filingId): void => {
   commit('mutateFilingId', filingId)
 }
 
+export const setCorrectedFilingId: ActionIF = ({ commit }, correctedFilingId): void => {
+  commit('mutateCorrectedFilingId', correctedFilingId)
+}
+
 export const setOrgPersonList = ({ commit }, orgPeople) => {
   commit('mutateOrgPersonList', orgPeople)
 }
@@ -122,6 +126,10 @@ export const setIgnoreChanges: ActionIF = ({ commit }, ignoreChanges): void => {
 
 export const setHaveChanges: ActionIF = ({ commit }, haveChanges): void => {
   commit('mutateHaveChanges', haveChanges)
+}
+
+export const setHaveCorrection: ActionIF = ({ commit }, haveCorrection): void => {
+  commit('mutateHaveCorrection', haveCorrection)
 }
 
 export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
