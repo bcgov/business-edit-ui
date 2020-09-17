@@ -73,7 +73,7 @@ import { Certify, CompletingParty, Detail, StaffPayment } from '@/components/com
 
 // Mixins, Interfaces and Enums
 import { DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { ActionBindingIF, FilingDataIF, GetterIF, OrgPersonIF, ShareClassIF, StateModelIF } from '@/interfaces'
+import { ActionBindingIF, FilingDataIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
 import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
@@ -95,9 +95,6 @@ import { BenefitCompanyStatementResource } from '@/resources'
 export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin) {
   // Resources for template
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
-
-  // Global state
-  @State stateModel!: StateModelIF
 
   // Global getters
   @Getter getBusinessId!: string

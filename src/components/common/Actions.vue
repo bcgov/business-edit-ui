@@ -93,7 +93,6 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
 
     try {
       const filing = await this.buildIaCorrectionFiling()
-      console.log(filing)
       filingComplete = await this.saveFiling(filing, true)
       // reset flag
       this.setHaveChanges(false)
