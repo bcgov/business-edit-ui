@@ -4,7 +4,7 @@ import { IncorporationAddressIf, OrgPersonIF, ShareClassIF } from '@/interfaces'
 export interface IncorporationApplicationIF {
   nameRequest: {
     legalType: string
-    nrNumber?: string
+    nrNumber?: string // only set when there is an NR
     legalName?: string // only set when there is an NR
   }
   nameTranslations: {

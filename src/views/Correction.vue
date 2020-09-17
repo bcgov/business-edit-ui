@@ -176,6 +176,7 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
       this.setEntityType(EntityTypes.BCOMP)
 
       // initialize Fee Summary data
+      // TODO: Set/Clear Data according to filing type / entity type
       this.emitFilingData([{
         filingTypeCode: FilingCodes.CORRECTION,
         entityType: EntityTypes.BCOMP
