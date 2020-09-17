@@ -11,10 +11,12 @@ import {
   ShareClassIF,
   CorrectionFilingIF
 } from '@/interfaces'
+import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
 // Constants
 import { CORRECTION, INCORPORATION_APPLICATION } from '@/constants'
 import { EntityTypes, FilingStatus } from '@/enums'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 /**
  * Mixin that provides the integration with the Legal API.
@@ -38,6 +40,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getOrgPeople!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getFolioNumber!: string
+  @Getter getStaffPayment!: StaffPaymentIF
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -54,6 +57,7 @@ export default class FilingTemplateMixin extends Vue {
   @Action setFolioNumber!: ActionBindingIF
   @Action setFilingDate!: ActionBindingIF
   @Action setIncorporationAgreementStepData!: ActionBindingIF
+  @Action setStaffPayment!: ActionBindingIF
 
   /**
    * Builds an Incorporation Application Correction filing body from store data. Used when saving a filing.
@@ -108,6 +112,28 @@ export default class FilingTemplateMixin extends Vue {
     if (this.isNamedBusiness) {
       filing.correction.incorporationApplication.nameRequest.nrNumber = this.getNameRequestNumber
       filing.correction.incorporationApplication.nameRequest.legalName = this.getApprovedName
+    }
+
+    // Populate Staff Payment according to payment option
+    switch (this.getStaffPayment.option) {
+      case StaffPaymentOptions.FAS:
+        filing.header.routingSlipNumber = this.getStaffPayment.routingSlipNumber
+        filing.header.priority = this.getStaffPayment.isPriority
+        break
+
+      case StaffPaymentOptions.BCOL:
+        filing.header.bcolAccountNumber = this.getStaffPayment.bcolAccountNumber
+        filing.header.datNumber = this.getStaffPayment.datNumber
+        filing.header.folioNumber = this.getStaffPayment.folioNumber
+        filing.header.priority = this.getStaffPayment.isPriority
+        break
+
+      case StaffPaymentOptions.NO_FEE:
+        filing.header.waiveFees = true
+        break
+
+      case StaffPaymentOptions.NONE: // should never happen
+        break
     }
 
     return filing
@@ -169,6 +195,31 @@ export default class FilingTemplateMixin extends Vue {
 
     // Set Filing Date
     this.setFilingDate(filing.header.date)
+
+    // Set Staff Payment
+    if (filing.header.routingSlipNumber) {
+      this.setStaffPayment({
+        option: StaffPaymentOptions.FAS,
+        routingSlipNumber: filing.header.routingSlipNumber,
+        isPriority: filing.header.priority
+      })
+    } else if (filing.header.bcolAccountNumber) {
+      this.setStaffPayment({
+        option: StaffPaymentOptions.BCOL,
+        bcolAccountNumber: filing.header.bcolAccountNumber,
+        datNumber: filing.header.datNumber,
+        folioNumber: filing.header.folioNumber,
+        isPriority: filing.header.priority
+      })
+    } else if (filing.header.waiveFees) {
+      this.setStaffPayment({
+        option: StaffPaymentOptions.NO_FEE
+      })
+    } else {
+      this.setStaffPayment({
+        option: StaffPaymentOptions.NONE
+      })
+    }
   }
 
   /**
