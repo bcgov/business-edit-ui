@@ -69,7 +69,7 @@ import { Roles } from '@/enums'
 @Component({})
 export default class Certify extends Vue {
   // Global getters
-  @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter getPeopleAndRoles!: OrgPersonIF[]
 
   // Global state
   @State(state => state.stateModel.defineCompanyStep.businessContact.email)
@@ -97,7 +97,7 @@ export default class Certify extends Vue {
   /** The Completing Party's email address. */
   private get completingPartyEmail (): string | null {
     const completingParty =
-      this.getOrgPeople.find(person => {
+      this.getPeopleAndRoles.find(person => {
         return !!person.roles?.some(role => {
           return (role.roleType === Roles.COMPLETING_PARTY)
         })

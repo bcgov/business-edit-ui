@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 
-import { OrgPerson } from '@/components/AddPeopleAndRoles'
+import { OrgPerson } from '@/components/PeopleAndRoles'
 
 // Store
 import { getVuexStore } from '@/store'

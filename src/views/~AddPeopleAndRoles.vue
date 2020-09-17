@@ -4,7 +4,7 @@
       <header id="people-role-header">
         <h2>1. Add People or Corporations/Firms to your Application</h2>
       </header>
-      <PeopleAndRoles/>
+      <people-and-roles/>
     </section>
   </div>
 </template>
@@ -24,14 +24,14 @@ import { EntityFilterMixin } from '@/mixins'
 import { EntityTypes } from '@/enums'
 
 // Components
-import { PeopleAndRoles } from '@/components/AddPeopleAndRoles'
+import { PeopleAndRoles } from '@/components/PeopleAndRoles'
 
 @Component({
   components: {
     PeopleAndRoles
   }
 })
-export default class AddPeopleAndRoles extends Mixins(EntityFilterMixin) {
+export default class _AddPeopleAndRoles extends Mixins(EntityFilterMixin) {
   // Global getters
   @Getter isEntityType!: GetterIF
 

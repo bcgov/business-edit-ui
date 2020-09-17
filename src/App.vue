@@ -184,20 +184,21 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   // Global getters
   @Getter haveChanges!: boolean
   @Getter getBusinessId!: string
+  @Getter getUserEmail!: string
+  @Getter getUserFirstName!: string
+  @Getter getUserLastName!: string
+  @Getter getUserRoles!: string
+  @Getter getUserUsername!: string
 
   // Global setters
   @Action setBusinessId!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
-  @Action setCertifyStatementResource!: ActionBindingIF
-  @Action setUserEmail: ActionBindingIF
   @Action setAuthRoles: ActionBindingIF
-  @Action setDefineCompanyStepValidity!: ActionBindingIF
-  @Action setAddPeopleAndRoleStepValidity!: ActionBindingIF
-  @Action setCreateShareStructureStepValidity!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
   @Action setHaveCorrection!: ActionBindingIF
   @Action setAccountInformation!: ActionBindingIF
   @Action setKeycloakRoles!: ActionBindingIF
+  @Action setUserInfo: ActionBindingIF
 
   // Local Properties
   private filing: any
@@ -351,9 +352,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
       // load account information
       this.loadAccountInformation()
 
-      // fetch current user and update Launch Darkly
-      await this.loadCurrentUserLd()
-
       // initialize app
       await this.initApp()
     }
@@ -385,6 +383,23 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
       console.log('Auth error =', error) // eslint-disable-line no-console
       this.accountAuthorizationDialog = true
       return
+    }
+
+    // load user info
+    try {
+      await this.loadUserInfo()
+    } catch (error) {
+      console.log('User info error =', error) // eslint-disable-line no-console
+      this.accountAuthorizationDialog = true
+      return
+    }
+
+    // update Launch Darkly
+    try {
+      await this.updateLaunchDarkly()
+    } catch (error) {
+      // just log the error -- no need to halt app
+      console.log('Launch Darkly update error =', error) // eslint-disable-line no-console
     }
 
     // store today's date
@@ -491,6 +506,18 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     }
   }
 
+  /** Fetches current user info and stores it. */
+  private async loadUserInfo (): Promise<any> {
+    // NB: will throw if API error
+    const response = await this.fetchCurrentUser()
+    const userInfo = response?.data
+    if (userInfo) {
+      this.setUserInfo(userInfo)
+    } else {
+      throw new Error('Invalid user info')
+    }
+  }
+
   /** Gets account information (e.g. Premium account) and stores it. */
   private loadAccountInformation (): void {
     const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
@@ -500,26 +527,17 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     }
   }
 
-  /** Fetches current user and updates Launch Darkly accordingly. */
-  private async loadCurrentUserLd (): Promise<any> {
-    try {
-      const response = await this.getCurrentUser()
-      const currentUser = response?.data
-      if (!currentUser) throw new Error('Invalid data')
+  /** Updates Launch Darkly with user info. */
+  private async updateLaunchDarkly (): Promise<any> {
+    // since username is unique, use it as the user key
+    const key: string = this.getUserUsername
+    const email: string = this.getUserEmail
+    const firstName: string = this.getUserFirstName
+    const lastName: string = this.getUserLastName
+    // remove leading { and trailing } and tokenize string
+    const custom: any = { roles: this.getUserRoles?.slice(1, -1).split(',') }
 
-      // since username is unique, use it as the user key
-      const key: string = currentUser.username
-      const email: string = currentUser.email
-      const firstName: string = currentUser.firstname
-      const lastName: string = currentUser.lastname
-      // remove leading { and trailing } and tokenize string
-      const custom: any = { roles: currentUser.roles?.slice(1, -1).split(',') }
-
-      await updateLdUser(key, email, firstName, lastName, custom)
-    } catch (error) {
-      // just log the error -- no need to halt app
-      console.log('Load current user error =', error) // eslint-disable-line no-console
-    }
+    await updateLdUser(key, email, firstName, lastName, custom)
   }
 }
 </script>

@@ -1,10 +1,7 @@
 <template>
-  <div>
-    <p>
-      Add the people and corporations/firms who will have a role in your company. People can have multiple roles;
-      Corporation/firms can only be Incorporators.
-    </p>
-    Your application must include the following:
+  <v-card class="mt-4">
+    <div class="font-weight-bold">THIS SECTION IS IN PROGRESS...</div>
+    This application must include the following:
     <ul>
       <li>
         <v-icon v-if="hasRole(Roles.COMPLETING_PARTY, 1, 'EXACT')" color="blue" class="cp-valid">mdi-check</v-icon>
@@ -23,7 +20,7 @@
       </li>
     </ul>
 
-    <div class="btn-panel" v-if="getOrgPeople.length === 0">
+    <div class="btn-panel" v-if="getPeopleAndRoles.length === 0">
       <v-btn
         id="btn-start-add-cp"
         outlined
@@ -32,11 +29,11 @@
         @click="addOrgPerson([{ roleType: Roles.COMPLETING_PARTY }], IncorporatorTypes.PERSON)"
       >
         <v-icon>mdi-account-plus-outline</v-icon>
-        <span>Start by Adding the Completing Party</span>
+        <span>Add the Completing Party</span>
       </v-btn>
     </div>
 
-    <div class="btn-panel" v-if="getOrgPeople.length > 0">
+    <div class="btn-panel" v-if="getPeopleAndRoles.length > 0">
       <v-btn
         id="btn-add-person"
         outlined
@@ -81,21 +78,21 @@
         :nextId="nextId"
         :existingCompletingParty="completingParty"
         @addEditPerson="onAddEditOrgPerson($event)"
-        @removePersonEvent="onRemovePerson($event)"
+        @removePersonEvent="onRemoveOrgPerson($event)"
         @resetEvent="resetData()"
         @removeCompletingPartyRole="removeCompletingPartyAssignment()"
       />
     </v-card>
 
-    <v-card v-if="getOrgPeople.length > 0" flat :disabled="showOrgPersonForm" >
+    <v-card v-if="getPeopleAndRoles.length > 0" flat :disabled="showOrgPersonForm">
       <ListPeopleAndRoles
-        :personList="getOrgPeople"
+        :personList="getPeopleAndRoles"
         :isSummary="false"
         @editPerson="editOrgPerson($event)"
-        @removePerson="onRemovePerson($event)"
+        @removePerson="onRemoveOrgPerson($event)"
       />
     </v-card>
-  </div>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -123,13 +120,15 @@ import { OrgPerson, ListPeopleAndRoles } from '.'
 })
 export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
   // Global getters
-  @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getUserEmail!: string
 
   // Global setters
-  @Action setOrgPersonList!: ActionBindingIF
-  @Action setAddPeopleAndRoleStepValidity!: ActionBindingIF
+  @Action setPeopleAndRoles!: ActionBindingIF
+  @Action setPeopleAndRoleStepChanged!: ActionBindingIF
+  @Action setPeopleAndRoleStepValidity!: ActionBindingIF
 
+  /** Empty OrgPerson for adding a new one. */
   private newOrgPerson: OrgPersonIF = {
     officer: {
       id: null,
@@ -152,18 +151,34 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
     }
   }
 
+  // Local properties
   private showOrgPersonForm: boolean = false
   private activeIndex: number = -1
   private addEditInProgress: boolean = false
   private currentOrgPerson: OrgPersonIF | null = null
   private nextId: number = -1
 
+  // Enums for the template
   readonly EntityTypes = EntityTypes
   readonly Roles = Roles
   readonly IncorporatorTypes = IncorporatorTypes
 
+  /** Whether to show errors. */
+  private get showErrors (): boolean {
+    return Boolean(this.$route.query.showErrors)
+  }
+
+  /** The completing party if found, otherwise undefined. */
+  private get completingParty () : OrgPersonIF {
+    return this.getPeopleAndRoles.find(people =>
+      people.roles.some(party => party.roleType === Roles.COMPLETING_PARTY)
+    )
+  }
+
+  /** Updates validity when component is mounted. */
   private mounted (): void {
-    this.setAddPeopleAndRoleStepValidity(this.hasValidRoles())
+    this.setPeopleAndRoleStepValidity(this.hasValidRoles())
+    this.setPeopleAndRoleStepChanged(false)
   }
 
   // Methods
@@ -172,14 +187,14 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
     this.currentOrgPerson.roles = rolesToInitialize
     this.currentOrgPerson.officer.partyType = type
     this.activeIndex = -1
-    this.nextId = (this.getOrgPeople.length === 0)
-      ? 0 : this.getOrgPeople[this.getOrgPeople.length - 1].officer.id + 1
+    this.nextId = (this.getPeopleAndRoles.length === 0)
+      ? 0 : this.getPeopleAndRoles[this.getPeopleAndRoles.length - 1].officer.id + 1
     this.addEditInProgress = true
     this.showOrgPersonForm = true
   }
 
   private editOrgPerson (index: number): void {
-    this.currentOrgPerson = { ...this.getOrgPeople[index] }
+    this.currentOrgPerson = { ...this.getPeopleAndRoles[index] }
     this.activeIndex = index
     this.addEditInProgress = true
     this.showOrgPersonForm = true
@@ -191,30 +206,32 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
       person.officer.email = this.getUserEmail
     }
 
-    const newList: OrgPersonIF[] = Object.assign([], this.getOrgPeople)
+    const newList: OrgPersonIF[] = Object.assign([], this.getPeopleAndRoles)
     if (this.activeIndex === -1) {
-      // Add Person.
+      // add person
       newList.push(person)
     } else {
-      // Edit Person.
+      // edit person
       newList.splice(this.activeIndex, 1, person)
     }
     // set updated list
-    this.setOrgPersonList(newList)
-    this.setAddPeopleAndRoleStepValidity(this.hasValidRoles())
+    this.setPeopleAndRoles(newList)
+    this.setPeopleAndRoleStepValidity(this.hasValidRoles())
+    this.setPeopleAndRoleStepChanged(true)
     this.resetData()
   }
 
-  private onRemovePerson (index: number): void {
-    const newList: OrgPersonIF[] = Object.assign([], this.getOrgPeople)
+  private onRemoveOrgPerson (index: number): void {
+    const newList: OrgPersonIF[] = Object.assign([], this.getPeopleAndRoles)
     newList.splice(index, 1)
-    this.setOrgPersonList(newList)
-    this.setAddPeopleAndRoleStepValidity(this.hasValidRoles())
+    this.setPeopleAndRoles(newList)
+    this.setPeopleAndRoleStepValidity(this.hasValidRoles())
+    this.setPeopleAndRoleStepChanged(true)
     this.resetData()
   }
 
   private removeCompletingPartyAssignment () {
-    const newList: OrgPersonIF[] = Object.assign([], this.getOrgPeople)
+    const newList: OrgPersonIF[] = Object.assign([], this.getPeopleAndRoles)
     const completingParty =
       newList.find(people => people.roles.some(role => role.roleType === Roles.COMPLETING_PARTY))
     if (completingParty) {
@@ -223,7 +240,7 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
       // remove email address that we got from user profile
       completingParty.officer.email = null
       // set updated list
-      this.setOrgPersonList(newList)
+      this.setPeopleAndRoles(newList)
     }
   }
 
@@ -235,39 +252,35 @@ export default class PeopleAndRoles extends Mixins(EntityFilterMixin) {
   }
 
   private hasValidRoles (): boolean {
-    const numOfDirector: number =
-      this.getOrgPeople.filter(people => people.roles.some(party => party.roleType === Roles.DIRECTOR)).length
-    const numOfIncorporator: number =
-      this.getOrgPeople.filter(people => people.roles.some(party => party.roleType === Roles.INCORPORATOR)).length
-    const numOfCompletingParty: number =
-      this.getOrgPeople.filter(people => people.roles.some(party => party.roleType === Roles.COMPLETING_PARTY)).length
-    const numOfPeopleWithNoRoles: number =
-      this.getOrgPeople.filter(people => people.roles.length === 0).length
+    const numOfDirector: number = this.getPeopleAndRoles
+      .filter(people => people.roles.some(party => party.roleType === Roles.DIRECTOR)).length
+    const numOfIncorporator: number = this.getPeopleAndRoles
+      .filter(people => people.roles.some(party => party.roleType === Roles.INCORPORATOR)).length
+    const numOfCompletingParty: number = this.getPeopleAndRoles
+      .filter(people => people.roles.some(party => party.roleType === Roles.COMPLETING_PARTY)).length
+    const numOfPeopleWithNoRoles: number = this.getPeopleAndRoles
+      .filter(people => people.roles.length === 0).length
 
     if (this.entityFilter(EntityTypes.BCOMP)) {
-      return numOfCompletingParty === 1 && numOfIncorporator >= 1 && numOfDirector >= 1 && numOfPeopleWithNoRoles === 0
+      return (
+        numOfCompletingParty === 1 && numOfIncorporator >= 1 && numOfDirector >= 1 && numOfPeopleWithNoRoles === 0
+      )
     } else if (this.entityFilter(EntityTypes.COOP)) {
-      return numOfCompletingParty === 1 && numOfIncorporator >= 3 && numOfDirector >= 3 && numOfPeopleWithNoRoles === 0
+      return (
+        numOfCompletingParty === 1 && numOfIncorporator >= 3 && numOfDirector >= 3 && numOfPeopleWithNoRoles === 0
+      )
     }
   }
 
   private hasRole (roleName: Roles, count: number, mode: string): boolean {
     const orgPersonWithSpecifiedRole: OrgPersonIF[] =
-    this.getOrgPeople.filter(people => people.roles.some(party => party.roleType === roleName))
+      this.getPeopleAndRoles.filter(people => people.roles.some(party => party.roleType === roleName))
 
     if (mode === Modes.EXACT) {
       return orgPersonWithSpecifiedRole.length === count
     } else if (mode === Modes.AT_LEAST) {
       return orgPersonWithSpecifiedRole.length >= count
     }
-  }
-
-  private get showErrors (): boolean {
-    return Boolean(this.$route.query.showErrors)
-  }
-
-  private get completingParty () : OrgPersonIF {
-    return this.getOrgPeople.find(people => people.roles.some(party => party.roleType === Roles.COMPLETING_PARTY))
   }
 }
 </script>

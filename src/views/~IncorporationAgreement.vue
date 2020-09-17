@@ -197,7 +197,7 @@ import { AgreementType } from '@/components/IncorporationAgreement'
     AgreementType
   }
 })
-export default class IncorporationAgreement extends Vue {
+export default class _IncorporationAgreement extends Vue {
   private helpToggle: boolean = false
   private readMoreFlag: boolean = false
 

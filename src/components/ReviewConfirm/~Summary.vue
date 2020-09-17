@@ -1,7 +1,7 @@
 <template>
   <div class="summary-container">
     <SummaryDefineCompany/>
-    <ListPeopleAndRoles :personList="getOrgPeople" :isSummary="true" :showErrorSummary="!step2Valid" />
+    <ListPeopleAndRoles :personList="getPeopleAndRoles" :isSummary="true" :showErrorSummary="!step2Valid" />
     <ListShareClass :shareClasses="getShareClasses" :isSummary="true" :showErrorSummary="!step3Valid"/>
     <AgreementType :isSummary="true" :showErrorSummary="!step4Valid"/>
   </div>
@@ -14,7 +14,7 @@ import { Getter, State } from 'vuex-class'
 
 // Components
 import { SummaryDefineCompany } from '@/components/DefineCompany'
-import { ListPeopleAndRoles } from '@/components/AddPeopleAndRoles'
+import { ListPeopleAndRoles } from '@/components/PeopleAndRoles'
 import { ListShareClass } from '@/components/CreateShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'
 
@@ -31,7 +31,7 @@ import { OrgPersonIF, ShareClassIF } from '@/interfaces'
 })
 export default class Summary extends Vue {
   // Global getters
-  @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
 
   // Global state
