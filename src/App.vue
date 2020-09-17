@@ -85,7 +85,7 @@
       <main v-if="!isErrorDialog">
         <entity-info />
 
-        <v-container class="view-container pa-0">
+        <v-container class="view-container py-0">
           <v-row>
             <v-col cols="12" lg="9">
               <router-view
@@ -142,7 +142,8 @@ import { EntityInfo, Actions } from '@/components/common'
 import * as Views from '@/views'
 
 // Dialogs, mixins, interfaces, etc
-import { AccountAuthorizationDialog, BcolErrorDialog, NameRequestInvalidErrorDialog, ConfirmDialog, FetchErrorDialog,
+import {
+  AccountAuthorizationDialog, BcolErrorDialog, NameRequestInvalidErrorDialog, ConfirmDialog, FetchErrorDialog,
   InvalidIncorporationApplicationDialog, PaymentErrorDialog, SaveErrorDialog, FileAndPayInvalidNameRequestDialog,
   NameRequestErrorDialog
 } from '@/components/dialogs'
@@ -411,7 +412,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   }
 
   /** Redirects to Manage Businesses dashboard. */
-  private goToManageBusinessDashboard () : void {
+  private goToManageBusinessDashboard (): void {
     this.fileAndPayInvalidNameRequestDialog = false
     const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
     this.setHaveChanges(false)

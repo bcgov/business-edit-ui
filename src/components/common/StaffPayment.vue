@@ -85,7 +85,6 @@ export default class StaffPayment extends Vue {
         break
     }
     this.setStaffPayment(staffPaymentData)
-    console.log(this.getStaffPayment)
   }
 }
 </script>
