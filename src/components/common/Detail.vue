@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Emit, Vue } from 'vue-property-decorator'
-import DetailComment from '@bcrs-shared-components/detail-comment'
+import { DetailComment } from '@bcrs-shared-components/detail-comment'
 
 @Component({
   components: { DetailComment }
@@ -29,7 +29,7 @@ export default class Detail extends Vue {
 
   /** Emits Valid event. */
   @Emit('emitValid')
-  private emitValid (): void {}
+  private emitValid (): void { }
 }
 </script>
 

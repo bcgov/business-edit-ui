@@ -127,3 +127,7 @@ export const setHaveChanges: ActionIF = ({ commit }, haveChanges): void => {
 export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
   commit('mutateOriginalIA', originalIA)
 }
+
+export const setStaffPayment: ActionIF = ({ commit }, staffPayment): void => {
+  commit('mutateStaffPayment', staffPayment)
+}

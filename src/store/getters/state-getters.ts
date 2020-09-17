@@ -154,6 +154,11 @@ export const haveChanges = (state: any): boolean => {
   return state.stateModel.tombstone.haveChanges
 }
 
+/** The staff payment. */
+export const getStaffPayment = (state: any): any => {
+  return state.stateModel.staffPayment
+}
+
 //
 // Below is the business logic that allows the Actions, etc
 // to know how they should behave (ie, what to show or enable).

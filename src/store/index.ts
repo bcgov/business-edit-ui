@@ -12,7 +12,7 @@ import {
   getFilingId, getBusinessId, isNamedBusiness, getNameRequestNumber, getApprovedName, getAccountId, getBusinessNumber,
   getFolioNumber, getNameRequestDetails, getNameRequestApplicant, getOfficeAddresses, getFilingDate, getUserEmail,
   isApplicationValid, getCurrentDate, ignoreChanges, haveChanges, getNameTranslations, getOrgPeople, getShareClasses,
-  getCurrentBusinessName, getNameRequest
+  getCurrentBusinessName, getNameRequest, getStaffPayment
 } from '@/store/getters'
 
 // Mutations
@@ -24,7 +24,7 @@ import {
   mutateAddPeopleAndRoleStepValidity, mutateShareClasses, mutateCreateShareStructureStepValidity,
   mutateIgnoreChanges, mutateHaveChanges, mutateIsFutureEffective, mutateEffectiveDate,
   mutateIsIncorporationDateTimeValid, mutateBusinessId, mutateIncorporationAgreementStepData, mutateEntityType,
-  mutateNameTranslations, mutateBusinessInformation, mutateOriginalIA
+  mutateNameTranslations, mutateBusinessInformation, mutateOriginalIA, mutateStaffPayment
 } from '@/store/mutations'
 
 // Setters
@@ -35,7 +35,7 @@ import {
   setOfficeAddresses, setOrgPersonList, setAddPeopleAndRoleStepValidity, setShareClasses,
   setCreateShareStructureStepValidity, setIgnoreChanges, setHaveChanges, setIsFutureEffective,
   setEffectiveDate, setIsIncorporationDateTimeValid, setAccountInformation, setBusinessId, setEntityType,
-  setIncorporationAgreementStepData, setNameTranslations, setBusinessInformation, setOriginalIA
+  setIncorporationAgreementStepData, setNameTranslations, setBusinessInformation, setOriginalIA, setStaffPayment
 } from './actions'
 
 /**
@@ -69,6 +69,7 @@ export function getVuexStore () {
       getOfficeAddresses,
       getOrgPeople,
       getShareClasses,
+      getStaffPayment,
       getUserEmail,
       haveChanges,
       ignoreChanges,
@@ -116,6 +117,7 @@ export function getVuexStore () {
       mutateOrgPersonList,
       mutateOriginalIA,
       mutateShareClasses,
+      mutateStaffPayment,
       mutateUserEmail
     },
     actions: {
@@ -150,6 +152,7 @@ export function getVuexStore () {
       setOrgPersonList,
       setOriginalIA,
       setShareClasses,
+      setStaffPayment,
       setUserEmail
     }
   })

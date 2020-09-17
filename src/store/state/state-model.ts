@@ -100,5 +100,13 @@ export const stateModel: StateModelIF = {
         agreementType: ''
       }
     }
+  },
+  staffPayment: {
+    option: NaN,
+    routingSlipNumber: '',
+    bcolAccountNumber: '',
+    datNumber: '',
+    folioNumber: '',
+    isPriority: false
   }
 }
