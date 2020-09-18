@@ -1,4 +1,5 @@
 import { IncorporationAddressIf, OrgPersonIF, ShareClassIF, StateModelIF } from '@/interfaces'
+import { FilingCodes, EntityTypes } from '@/enums'
 
 export const stateModel: StateModelIF = {
   tombstone: {
@@ -103,5 +104,19 @@ export const stateModel: StateModelIF = {
         agreementType: ''
       }
     }
+  },
+  staffPayment: {
+    option: NaN,
+    routingSlipNumber: '',
+    bcolAccountNumber: '',
+    datNumber: '',
+    folioNumber: '',
+    isPriority: false
+  },
+  filingData: {
+    filingTypeCode: null,
+    entityType: null,
+    priority: false,
+    waiveFees: false
   }
 }

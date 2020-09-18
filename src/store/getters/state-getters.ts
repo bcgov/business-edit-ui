@@ -1,7 +1,9 @@
 // Enums and Interfaces
 import { AccountTypes, EntityTypes } from '@/enums'
-import { IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
-  NameRequestIF } from '@/interfaces'
+import {
+  IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
+  NameRequestIF
+} from '@/interfaces'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: any): boolean => {
@@ -190,6 +192,16 @@ export const ignoreChanges = (state: any): boolean => {
 /** Whether there are unsaved data changes. */
 export const haveChanges = (state: any): boolean => {
   return state.stateModel.tombstone.haveChanges
+}
+
+/** The staff payment. */
+export const getStaffPayment = (state: any): any => {
+  return state.stateModel.staffPayment
+}
+
+/** The filing data. */
+export const getFilingData = (state: any): any => {
+  return state.stateModel.filingData
 }
 
 /** Whether any corrections have been made. */

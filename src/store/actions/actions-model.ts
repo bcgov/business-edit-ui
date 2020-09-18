@@ -139,3 +139,11 @@ export const setHaveCorrection: ActionIF = ({ commit }, haveCorrection): void =>
 export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
   commit('mutateOriginalIA', originalIA)
 }
+
+export const setStaffPayment: ActionIF = ({ commit }, staffPayment): void => {
+  commit('mutateStaffPayment', staffPayment)
+}
+
+export const setFilingData: ActionIF = ({ commit }, filingData): void => {
+  commit('mutateFilingData', filingData)
+}

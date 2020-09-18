@@ -8,6 +8,10 @@ export interface CorrectionFilingIF {
     date: string
     routingSlipNumber?: string
     folioNumber?: string
+    bcolAccountNumber?: string
+    datNumber?: string
+    waiveFees?: boolean
+    priority?: boolean
   }
   business: {
     legalType: string
