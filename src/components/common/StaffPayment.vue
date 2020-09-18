@@ -20,7 +20,7 @@ import { StaffPayment as StaffPaymentComponent } from '@bcrs-shared-components/s
 
 // Mixins, Interfaces and Enums
 import { FilingTemplateMixin } from '@/mixins'
-import { ActionBindingIF } from '@/interfaces'
+import { ActionBindingIF, FilingDataIF } from '@/interfaces'
 
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
@@ -33,9 +33,11 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 export default class StaffPayment extends Vue {
   // Global getters
   @Getter getStaffPayment!: StaffPaymentIF
+  @Getter getFilingData!: FilingDataIF
 
   // Global setters
   @Action setStaffPayment!: ActionBindingIF
+  @Action setFilingData!: ActionBindingIF
 
   private staffPaymentFormValid: boolean = false
 
@@ -48,6 +50,9 @@ export default class StaffPayment extends Vue {
 
   private onStaffPaymentData (event) {
     let staffPaymentData: StaffPaymentIF = { ...this.getStaffPayment, ...event }
+    if (!this.staffPaymentFormValid) {
+      return
+    }
     switch (staffPaymentData.option) {
       case StaffPaymentOptions.FAS:
         staffPaymentData = {
@@ -85,7 +90,22 @@ export default class StaffPayment extends Vue {
       case StaffPaymentOptions.NONE: // should never happen
         break
     }
+
+    // Set Fee Summary data
+    this.setFilingData({
+      filingTypeCode: this.getFilingData.filingTypeCode,
+      entityType: this.getFilingData.entityType,
+      priority: staffPaymentData.isPriority,
+      waiveFees: staffPaymentData.option === StaffPaymentOptions.NO_FEE
+    } as FilingDataIF)
+
     this.setStaffPayment(staffPaymentData)
+    this.emitHaveChanges()
+  }
+
+  @Emit('haveChanges')
+  private emitHaveChanges (): boolean {
+    return true
   }
 }
 </script>

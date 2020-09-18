@@ -199,6 +199,11 @@ export const getStaffPayment = (state: any): any => {
   return state.stateModel.staffPayment
 }
 
+/** The filing data. */
+export const getFilingData = (state: any): any => {
+  return state.stateModel.filingData
+}
+
 /** Whether any corrections have been made. */
 export const getHaveCorrection = (state: any): boolean => {
   return state.stateModel.tombstone.haveCorrection

@@ -47,6 +47,7 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
   // Global setters
   @Action setHaveChanges!: ActionBindingIF
   @Action setEntityType!: ActionBindingIF
+  @Action setFilingData!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -116,10 +117,11 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
       this.setEntityType(EntityTypes.BCOMP)
 
       // initialize Fee Summary data
-      this.emitFilingData([{
+      this.setFilingData({
         filingTypeCode: FilingCodes.ALTERATION,
-        entityType: EntityTypes.BCOMP
-      }])
+        entityType: EntityTypes.BCOMP,
+        priority: false
+      })
 
       // tell App that we're finished loading
       this.emitHaveData()
@@ -140,15 +142,11 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
-  private emitFetchError (message: string = ''): void {}
+  private emitFetchError (message: string = ''): void { }
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: Boolean = true): void {}
-
-  /** Emits new Filing Data. */
-  @Emit('filingData')
-  private emitFilingData (filingData: FilingDataIF[]): void {}
+  private emitHaveData (haveData: Boolean = true): void { }
 }
 </script>
 

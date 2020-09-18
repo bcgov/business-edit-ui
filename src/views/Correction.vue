@@ -51,6 +51,7 @@
     <staff-payment
       class="mt-6"
       @emitValid="staffPaymntValid = $event"
+      @haveChanges="staffPaymentChanges = $event"
     />
   </section>
 </template>
@@ -104,6 +105,7 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   @Action setEntityType!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
   @Action setOriginalIA!: ActionBindingIF
+  @Action setFilingData!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -114,6 +116,7 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   private incorpAgrmtChanges = false
   private shareStructChanges = false
   private yourCompanyChanges = false
+  private staffPaymentChanges = false
 
   // whether components are valid
   // TODO: delete these and use store instead
@@ -167,10 +170,11 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
 
       // initialize Fee Summary data
       // TODO: Set/Clear Data according to filing type / entity type
-      this.emitFilingData([{
+      this.setFilingData({
         filingTypeCode: FilingCodes.CORRECTION,
-        entityType: EntityTypes.BCOMP
-      }])
+        entityType: EntityTypes.BCOMP,
+        priority: false
+      })
 
       if (this.correctionId) { // Resuming a DRAFT incorporation Correction
         // Set the filing Id to store
@@ -224,21 +228,18 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
 
   // watchers for component change flags
   // TODO: delete these and use store instead
-  @Watch('incorpAgrmtChanges') private onIncorpAgrmtChanges ():void { this.emitHaveChanges() }
-  @Watch('shareStructChanges') private onShareStructChanges ():void { this.emitHaveChanges() }
-  @Watch('yourCompanyChanges') private onYourCompanyChanges ():void { this.emitHaveChanges() }
+  @Watch('incorpAgrmtChanges') private onIncorpAgrmtChanges (): void { this.emitHaveChanges() }
+  @Watch('shareStructChanges') private onShareStructChanges (): void { this.emitHaveChanges() }
+  @Watch('yourCompanyChanges') private onYourCompanyChanges (): void { this.emitHaveChanges() }
+  @Watch('staffPaymentChanges') private onStaffPaymentChanges (): void { this.emitHaveChanges() }
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
-  private emitFetchError (message: string = ''): void {}
+  private emitFetchError (message: string = ''): void { }
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: Boolean = true): void {}
-
-  /** Emits new Filing Data. */
-  @Emit('filingData')
-  private emitFilingData (filingData: FilingDataIF[]): void {}
+  private emitHaveData (haveData: Boolean = true): void { }
 
   /** Emits Have Changes event. */
   // TODO: delete this and use store instead
@@ -247,7 +248,8 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
     return (
       this.incorpAgrmtChanges ||
       this.shareStructChanges ||
-      this.yourCompanyChanges
+      this.yourCompanyChanges ||
+      this.staffPaymentChanges
     )
   }
 }

@@ -9,7 +9,8 @@ import {
   AccountInformationIF,
   IncorporationAgreementIF,
   BusinessInformationIF,
-  IncorporationFilingIF
+  IncorporationFilingIF,
+  FilingDataIF
 } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { EntityTypes } from '@/enums'
@@ -166,4 +167,8 @@ export const mutateOriginalIA = (state: any, originalIa: IncorporationFilingIF) 
 
 export const mutateStaffPayment = (state: any, staffPayment: StaffPaymentIF) => {
   state.stateModel.staffPayment = staffPayment
+}
+
+export const mutateFilingData = (state: any, filingData: FilingDataIF) => {
+  state.stateModel.filingData = filingData
 }

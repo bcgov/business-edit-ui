@@ -93,7 +93,6 @@
                 @profileReady="profileReady = true"
                 @fetchError="fetchErrorDialog = true"
                 @haveData="haveData = true"
-                @filingData="filingData = $event"
                 @haveChanges="stateChangeHandler($event)"
               />
             </v-col>
@@ -105,7 +104,7 @@
                     :offset="{ top: 86, bottom: 12 }"
                   >
                     <sbc-fee-summary
-                      :filingData="[...filingData]"
+                      :filingData="[...getFilingData]"
                       :payURL="payApiUrl"
                     />
                   </affix>
@@ -190,6 +189,7 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   @Getter getUserLastName!: string
   @Getter getUserRoles!: string
   @Getter getUserUsername!: string
+  @Getter getFilingData!: FilingDataIF
 
   // Global setters
   @Action setBusinessId!: ActionBindingIF
@@ -203,7 +203,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
 
   // Local Properties
   private filing: any
-  private filingData: Array<FilingDataIF> = []
   private accountAuthorizationDialog: boolean = false
   private fetchErrorDialog: boolean = false
   private invalidIncorporationApplicationDialog: boolean = false

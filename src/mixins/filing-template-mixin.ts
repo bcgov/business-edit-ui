@@ -119,6 +119,10 @@ export default class FilingTemplateMixin extends Vue {
       case StaffPaymentOptions.FAS:
         filing.header.routingSlipNumber = this.getStaffPayment.routingSlipNumber
         filing.header.priority = this.getStaffPayment.isPriority
+
+        filing.header.bcolAccountNumber = null
+        filing.header.datNumber = null
+        filing.header.folioNumber = null
         break
 
       case StaffPaymentOptions.BCOL:
@@ -126,10 +130,18 @@ export default class FilingTemplateMixin extends Vue {
         filing.header.datNumber = this.getStaffPayment.datNumber
         filing.header.folioNumber = this.getStaffPayment.folioNumber
         filing.header.priority = this.getStaffPayment.isPriority
+
+        filing.header.routingSlipNumber = null
         break
 
       case StaffPaymentOptions.NO_FEE:
         filing.header.waiveFees = true
+
+        filing.header.routingSlipNumber = null
+        filing.header.bcolAccountNumber = null
+        filing.header.datNumber = null
+        filing.header.folioNumber = null
+        filing.header.priority = false
         break
 
       case StaffPaymentOptions.NONE: // should never happen
@@ -201,11 +213,15 @@ export default class FilingTemplateMixin extends Vue {
       this.setStaffPayment({
         option: StaffPaymentOptions.FAS,
         routingSlipNumber: filing.header.routingSlipNumber,
+        bcolAccountNumber: '',
+        datNumber: '',
+        folioNumber: '',
         isPriority: filing.header.priority
       })
     } else if (filing.header.bcolAccountNumber) {
       this.setStaffPayment({
         option: StaffPaymentOptions.BCOL,
+        routingSlipNumber: '',
         bcolAccountNumber: filing.header.bcolAccountNumber,
         datNumber: filing.header.datNumber,
         folioNumber: filing.header.folioNumber,
@@ -213,16 +229,21 @@ export default class FilingTemplateMixin extends Vue {
       })
     } else if (filing.header.waiveFees) {
       this.setStaffPayment({
-        option: StaffPaymentOptions.NO_FEE
+        option: StaffPaymentOptions.NO_FEE,
+        routingSlipNumber: '',
+        bcolAccountNumber: '',
+        datNumber: '',
+        folioNumber: '',
+        isPriority: false
       })
     } else {
       this.setStaffPayment({
         option: StaffPaymentOptions.NONE,
+        routingSlipNumber: '',
         bcolAccountNumber: '',
         datNumber: '',
         folioNumber: '',
-        isPriority: false,
-        routingSlipNumber: ''
+        isPriority: false
       })
     }
   }
