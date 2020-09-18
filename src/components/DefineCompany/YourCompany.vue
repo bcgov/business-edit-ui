@@ -120,10 +120,7 @@
     <v-divider />
 
     <div class="section-container">
-      <!-- TODO: add Correct button -->
       <business-contact-info
-        :initialValue="businessContact"
-        :isEditing="false"
         @haveChanges="contactInfoChanges = $event"
       />
     </div>
@@ -172,13 +169,11 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   @Getter isPremiumAccount!: GetterIF
   @Getter isNamedBusiness!: boolean
   @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter getBusinessContact!: BusinessContactIF
 
   // Global state
   @State(state => state.stateModel.defineCompanyStep.valid)
   readonly valid!: boolean
-
-  @State(state => state.stateModel.defineCompanyStep.businessContact)
-  readonly businessContact!: BusinessContactIF
 
   @Prop({ default: false })
   private isSummary: boolean

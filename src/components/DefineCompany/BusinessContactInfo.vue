@@ -1,24 +1,54 @@
 <template>
   <div>
-     <v-layout row v-if="!isEditing">
+    <v-layout row v-if="!isEditing">
+      <v-flex md3>
+        <label><strong>Registered Office Information</strong></label>
+      </v-flex>
+      <v-flex md4>
+        <div>
+          <label><strong>Email Address</strong></label>
+        </div>
+        <div id="lbl-email">{{ !!contact.email ? contact.email : "(Not entered)" }}</div>
+      </v-flex>
+      <v-flex md3>
+        <div>
+          <label><strong>Phone Number</strong></label>
+        </div>
+        <div id="lbl-phone" v-if="!!contact.phone">
+          {{ contact.phone }}
+          <span v-if="!!contact.extension">Ext: {{ contact.extension }}</span>
+        </div>
+        <div id="lbl-phone" v-else>(Not entered)</div>
+      </v-flex>
+      <v-flex md2>
+        <v-btn
+          v-if="!hasBusinessContactInfoChange"
+          text
+          color="primary"
+          id="btn-correct-contact-info"
+          @click="isEditing = true">
+          <v-icon small>mdi-pencil</v-icon>
+          <span>Correct</span>
+        </v-btn>
+        <v-btn
+          v-if="hasBusinessContactInfoChange"
+          text
+          color="primary"
+          id="btn-undo-contact-info"
+          @click="resetContactInfo">
+          <v-icon small>mdi-undo</v-icon>
+          <span>Undo</span>
+        </v-btn>
+      </v-flex>
+    </v-layout>
+    <div v-else>
+      <v-layout row>
         <v-flex md3>
           <label><strong>Registered Office Information</strong></label>
         </v-flex>
-        <v-flex md4>
-          <div><label><strong>Email Address</strong></label></div>
-          <div id="lbl-email">{{ !!contact.email ? contact.email : '(Not entered)' }}</div>
-        </v-flex>
-        <v-flex md4>
-          <div><label><strong>Phone Number</strong></label></div>
-          <div id="lbl-phone" v-if="!!contact.phone">{{ contact.phone }}
-            <span v-if="!!contact.extension">Ext: {{ contact.extension }}</span>
-          </div>
-          <div id="lbl-phone" v-else>(Not entered)</div>
-        </v-flex>
-    </v-layout>
-    <v-card flat class="business-contact-container" v-else>
-      <v-form v-model="formValid" ref="form" name="business-contact-form">
-       <v-row>
+      </v-layout>
+      <v-form v-model="formValid" ref="form" name="business-contact-form" class="business-contact-form">
+        <v-row>
           <v-col cols="12">
             <v-text-field
               filled
@@ -70,8 +100,20 @@
             </v-text-field>
           </v-col>
         </v-row>
+        <v-row>
+          <v-col cols="12">
+            <div class="action-btns">
+              <v-btn id="done-btn" large color="primary" @click="updateContactInfo" :disabled="!formValid">
+                <span>Done</span>
+              </v-btn>
+              <v-btn id="cancel-btn" large outlined color="primary" @click="resetContactInfo">
+                <span>Cancel</span>
+              </v-btn>
+            </div>
+          </v-col>
+        </v-row>
       </v-form>
-    </v-card>
+    </div>
   </div>
 </template>
 
@@ -81,38 +123,25 @@ import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorato
 import { mask } from 'vue-the-mask'
 
 // Interfaces
-import { BusinessContactIF } from '@/interfaces'
+import { ActionBindingIF, BusinessContactIF, IncorporationFilingIF } from '@/interfaces'
 
 // Mixins
 import { CommonMixin } from '@/mixins'
+import { Action, Getter } from 'vuex-class'
 
 @Component({
   directives: { mask }
 })
 export default class BusinessContactInfo extends Mixins(CommonMixin) {
-  // Props
-  @Prop()
-  private initialValue!: BusinessContactIF
+  @Action setBusinessContact!: ActionBindingIF
 
-  @Prop({ default: false })
-  private isEditing!: boolean
-
-  @Prop({ default: false })
-  private showErrors!: boolean
+  @Getter getBusinessContact!: BusinessContactIF
+  @Getter getOriginalIA!: IncorporationFilingIF
 
   // Properties
-  private contact: BusinessContactIF = this.initialValue
-
+  private isEditing: boolean = false
+  private contact: BusinessContactIF
   private formValid: boolean = false
-
-  // Used as an initial comparison to re-validate the form
-  // This is so we don't flag errors for a new application right away
-  private defaultBusinessContact: BusinessContactIF = {
-    email: '',
-    confirmEmail: '',
-    phone: '',
-    extension: ''
-  }
 
   // Rules
   private emailRules = [
@@ -131,37 +160,44 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
     return (this.contact.email === this.contact.confirmEmail) ? '' : 'Email addresses must match'
   }
 
-  // Life cycle methods
-  private mounted (): void {
-    if (this.showErrors) {
-      (this.$refs.form as Vue & { validate: () => boolean }).validate()
-    } else if (this.$refs.form && !this.isSame(this.initialValue, this.defaultBusinessContact)) {
-      (this.$refs.form as any).validate()
-    }
+  private get hasBusinessContactInfoChange () {
+    return !this.isSame(this.getBusinessContact, this.getOriginalBusinessContact())
   }
 
   // Watchers
-  @Watch('initialValue', { deep: true, immediate: true })
+  @Watch('getBusinessContact', { deep: true, immediate: true })
   private onContactPropValueChanged (): void {
-    this.contact = this.initialValue
+    this.contact = this.getBusinessContact
   }
 
-  @Watch('contact', { deep: true, immediate: true })
-  private onContactInfoChanged (contactInfo : BusinessContactIF): void {
-    this.emitContactInfo(contactInfo)
+  private updateContactInfo (): void {
+    this.setBusinessContact(this.contact)
+    this.emitHaveChanges()
+    this.isEditing = false
   }
 
-  @Watch('formValid')
-  private onFormValidityChange (val: boolean): void {
-    this.emitContactFormState(val)
+  private resetContactInfo (): void {
+    this.contact = this.getOriginalBusinessContact()
+    this.setBusinessContact(this.contact)
+    this.emitHaveChanges()
+    this.isEditing = false
   }
 
-  // Events
-  @Emit('contactInfoChange')
-  private emitContactInfo (contactInfo: BusinessContactIF): void { }
+  private getOriginalBusinessContact (): BusinessContactIF {
+    return {
+      email: this.getOriginalIA.incorporationApplication.contactPoint.email,
+      confirmEmail: this.getOriginalIA.incorporationApplication.contactPoint.email,
+      phone: this.getOriginalIA.incorporationApplication.contactPoint.phone,
+      extension: this.getOriginalIA.incorporationApplication.contactPoint.extension
+    }
+  }
 
-  @Emit('contactInfoFormValidityChange')
-  private emitContactFormState (validity: boolean): void { }
+  @Emit('haveChanges')
+  private emitHaveChanges (): boolean {
+    return (
+      this.hasBusinessContactInfoChange
+    )
+  }
 }
 </script>
 
@@ -171,8 +207,29 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   padding-bottom: 0;
 }
 
-.business-contact-container {
+.business-contact-form {
   margin-top: 1rem;
   padding: 1.25rem;
+}
+
+.action-btns {
+      display: flex;
+      justify-content: flex-end;
+      padding-bottom: 1rem;
+      padding-right:0.5rem;
+
+      .v-btn + .v-btn {
+        margin-left: 0.5rem;
+      }
+
+      .v-btn {
+        min-width: 6.5rem;
+      }
+
+      .v-btn[disabled] {
+        color: white !important;
+        background-color: #1669BB !important;
+        opacity: .2;
+      }
 }
 </style>
