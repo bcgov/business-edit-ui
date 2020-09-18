@@ -10,7 +10,7 @@
         </div>
         <div id="lbl-email">{{ !!contact.email ? contact.email : "(Not entered)" }}</div>
         <div v-if="hasEmailAddressChange">
-          <v-chip x-small label color="primary" text-color="white" id="corrected-lbl">
+          <v-chip x-small label color="primary" text-color="white" id="email-corrected-lbl">
             Corrected
           </v-chip>
         </div>
@@ -25,7 +25,7 @@
         </div>
         <div id="lbl-phone" v-else>(Not entered)</div>
         <div v-if="hasPhoneNumberChange">
-          <v-chip x-small label color="primary" text-color="white" id="corrected-lbl">
+          <v-chip x-small label color="primary" text-color="white" id="phone-corrected-lbl">
             Corrected
           </v-chip>
         </div>
@@ -225,9 +225,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   private emitContactInfo (contactInfo: BusinessContactIF): void { }
 
   @Emit('haveChanges')
-  private emitHaveChanges (haveChanges: boolean): void {
-    console.log(haveChanges)
-  }
+  private emitHaveChanges (haveChanges: boolean): void { }
 }
 </script>
 
