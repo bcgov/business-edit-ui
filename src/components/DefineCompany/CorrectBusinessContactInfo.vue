@@ -3,13 +3,14 @@
       <business-contact-info
       :businessContact="getBusinessContact"
       :originalBusinessContact="getOriginalIA.incorporationApplication.contactPoint"
-      @contactInfoChange="updateContactInfo($event)"/>
+      @contactInfoChange="updateContactInfo($event)"
+      @haveChanges="emitHaveChanges($event)"/>
   </div>
 </template>
 
 <script lang="ts">
 // Libraries
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Emit, Vue } from 'vue-property-decorator'
 
 // Interfaces
 import { ActionBindingIF, BusinessContactIF, IncorporationFilingIF } from '@/interfaces'
@@ -34,6 +35,9 @@ export default class CorrectBusinessContactInfo extends Vue {
   private updateContactInfo (contactInfo: BusinessContactIF): void {
     this.setBusinessContact(contactInfo)
   }
+
+  @Emit('haveChanges')
+  private emitHaveChanges (haveChanges: boolean): void {}
 }
 </script>
 

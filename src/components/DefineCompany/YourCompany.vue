@@ -11,14 +11,8 @@
           <v-layout column>
             <label><strong>Company Name</strong></label>
             <v-flex md1>
-              <v-chip
-                v-if="companyNameChanges"
-                class="ma-2 pa-2"
-                color="primary"
-                pill
-                x-small
-              >
-                Corrected
+              <v-chip x-small label color="primary" text-color="white" id='corrected-lbl'>
+                 Corrected
               </v-chip>
             </v-flex>
           </v-layout>

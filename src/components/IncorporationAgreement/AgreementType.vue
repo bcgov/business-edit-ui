@@ -203,12 +203,4 @@ export default class AgreementType extends Vue {
         opacity: .2;
       }
 }
-
-.v-size--x-small {
-  display: table;
-  margin-top: 0.5rem;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 0.6rem;
-}
 </style>

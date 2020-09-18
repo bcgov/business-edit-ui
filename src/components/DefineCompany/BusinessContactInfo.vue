@@ -10,7 +10,7 @@
         </div>
         <div id="lbl-email">{{ !!contact.email ? contact.email : "(Not entered)" }}</div>
         <div v-if="hasEmailAddressChange">
-          <v-chip x-small label color="primary" text-color="white" id='corrected-lbl'>
+          <v-chip x-small label color="primary" text-color="white" id="corrected-lbl">
             Corrected
           </v-chip>
         </div>
@@ -25,7 +25,7 @@
         </div>
         <div id="lbl-phone" v-else>(Not entered)</div>
         <div v-if="hasPhoneNumberChange">
-          <v-chip x-small label color="primary" text-color="white" id='corrected-lbl'>
+          <v-chip x-small label color="primary" text-color="white" id="corrected-lbl">
             Corrected
           </v-chip>
         </div>
@@ -192,14 +192,14 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 
   private updateContactInfo (): void {
     this.emitContactInfo(this.contact)
-    this.emitHaveChanges()
     this.isEditing = false
+    this.emitHaveChanges(this.hasBusinessContactInfoChange)
   }
 
   private resetContactInfo (): void {
     this.contact = this.getOriginalBusinessContact()
     this.emitContactInfo(this.contact)
-    this.emitHaveChanges()
+    this.emitHaveChanges(false)
     this.isEditing = false
   }
 
@@ -225,10 +225,8 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   private emitContactInfo (contactInfo: BusinessContactIF): void { }
 
   @Emit('haveChanges')
-  private emitHaveChanges (): boolean {
-    return (
-      this.hasBusinessContactInfoChange
-    )
+  private emitHaveChanges (haveChanges: boolean): void {
+    console.log(haveChanges)
   }
 }
 </script>
@@ -265,13 +263,5 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
         background-color: #1669BB !important;
         opacity: .2;
       }
-}
-
-.v-size--x-small {
-  display: table;
-  margin-top: 0.5rem;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 0.6rem;
 }
 </style>
