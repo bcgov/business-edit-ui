@@ -7,7 +7,7 @@
     <staff-payment-component
       :staffPaymentData="getStaffPayment"
       @update:staffPaymentData="onStaffPaymentData"
-      @valid="staffPaymentFormValid=$event"/>
+      @valid="emitValid"/>
   </section>
 </template>
 
@@ -37,11 +37,12 @@ export default class StaffPayment extends Vue {
   // Global setters
   @Action setStaffPayment!: ActionBindingIF
 
-  private staffPaymentFormValid: boolean = null
+  private staffPaymentFormValid: boolean = false
 
   /** Emits Valid event. */
   @Emit('emitValid')
-  private emitValid (): boolean {
+  private emitValid (isValid: boolean): boolean {
+    this.staffPaymentFormValid = isValid
     return this.staffPaymentFormValid
   }
 
