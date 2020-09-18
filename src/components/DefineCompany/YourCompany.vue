@@ -120,7 +120,7 @@
     <v-divider />
 
     <div class="section-container">
-      <business-contact-info
+      <correct-business-contact-info
         @haveChanges="contactInfoChanges = $event"
       />
     </div>
@@ -143,7 +143,7 @@ import { Getter, State } from 'vuex-class'
 // Interfaces
 import { BusinessContactIF, GetterIF, IncorporationFilingIF, NameRequestIF, StateModelIF } from '@/interfaces'
 // Components
-import { BusinessContactInfo, FolioNumber, OfficeAddresses } from '@/components/DefineCompany'
+import { CorrectBusinessContactInfo, FolioNumber, OfficeAddresses } from '@/components/DefineCompany'
 import { CorrectNameOptions } from '@/components/Company/CompanyName'
 // Mixins
 import { DateMixin, EntityFilterMixin, LegalApiMixin } from '@/mixins'
@@ -153,7 +153,7 @@ import { CorrectionTypes, EntityTypes } from '@/enums'
 @Component({
   components: {
     CorrectNameOptions,
-    BusinessContactInfo,
+    CorrectBusinessContactInfo,
     OfficeAddresses,
     FolioNumber
   }

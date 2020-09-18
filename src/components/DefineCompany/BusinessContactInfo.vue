@@ -9,6 +9,11 @@
           <label><strong>Email Address</strong></label>
         </div>
         <div id="lbl-email">{{ !!contact.email ? contact.email : "(Not entered)" }}</div>
+        <div v-if="hasEmailAddressChange">
+          <v-chip x-small label color="primary" text-color="white" id='corrected-lbl'>
+            Corrected
+          </v-chip>
+        </div>
       </v-flex>
       <v-flex md3>
         <div>
@@ -19,8 +24,13 @@
           <span v-if="!!contact.extension">Ext: {{ contact.extension }}</span>
         </div>
         <div id="lbl-phone" v-else>(Not entered)</div>
+        <div v-if="hasPhoneNumberChange">
+          <v-chip x-small label color="primary" text-color="white" id='corrected-lbl'>
+            Corrected
+          </v-chip>
+        </div>
       </v-flex>
-      <v-flex md2>
+      <v-flex md2 class="pl-9">
         <v-btn
           v-if="!hasBusinessContactInfoChange"
           text
@@ -142,10 +152,11 @@ import { Action, Getter } from 'vuex-class'
   directives: { mask }
 })
 export default class BusinessContactInfo extends Mixins(CommonMixin) {
-  @Action setBusinessContact!: ActionBindingIF
+  @Prop()
+  private businessContact!: BusinessContactIF
 
-  @Getter getBusinessContact!: BusinessContactIF
-  @Getter getOriginalIA!: IncorporationFilingIF
+  @Prop()
+  private originalBusinessContact!: BusinessContactIF
 
   // Properties
   private isEditing: boolean = false
@@ -170,36 +181,48 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   }
 
   private get hasBusinessContactInfoChange () {
-    return !this.isSame(this.getBusinessContact, this.getOriginalBusinessContact())
+    return !this.isSame(this.businessContact, this.getOriginalBusinessContact())
   }
 
   // Watchers
-  @Watch('getBusinessContact', { deep: true, immediate: true })
+  @Watch('businessContact', { deep: true, immediate: true })
   private onContactPropValueChanged (): void {
-    this.contact = this.getBusinessContact
+    this.contact = this.businessContact
   }
 
   private updateContactInfo (): void {
-    this.setBusinessContact(this.contact)
+    this.emitContactInfo(this.contact)
     this.emitHaveChanges()
     this.isEditing = false
   }
 
   private resetContactInfo (): void {
     this.contact = this.getOriginalBusinessContact()
-    this.setBusinessContact(this.contact)
+    this.emitContactInfo(this.contact)
     this.emitHaveChanges()
     this.isEditing = false
   }
 
   private getOriginalBusinessContact (): BusinessContactIF {
     return {
-      email: this.getOriginalIA.incorporationApplication.contactPoint.email,
-      confirmEmail: this.getOriginalIA.incorporationApplication.contactPoint.email,
-      phone: this.getOriginalIA.incorporationApplication.contactPoint.phone,
-      extension: this.getOriginalIA.incorporationApplication.contactPoint.extension
+      email: this.originalBusinessContact.email,
+      confirmEmail: this.originalBusinessContact.email,
+      phone: this.originalBusinessContact.phone,
+      extension: this.originalBusinessContact.extension
     }
   }
+
+  private get hasPhoneNumberChange (): boolean {
+    return this.businessContact.phone !== this.originalBusinessContact.phone ||
+    this.businessContact.extension !== this.originalBusinessContact.extension
+  }
+
+  private get hasEmailAddressChange (): boolean {
+    return this.businessContact.email !== this.originalBusinessContact.email
+  }
+
+  @Emit('contactInfoChange')
+  private emitContactInfo (contactInfo: BusinessContactIF): void { }
 
   @Emit('haveChanges')
   private emitHaveChanges (): boolean {
@@ -242,5 +265,13 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
         background-color: #1669BB !important;
         opacity: .2;
       }
+}
+
+.v-size--x-small {
+  display: table;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.6rem;
 }
 </style>
