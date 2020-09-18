@@ -48,8 +48,11 @@
         </v-flex>
       </v-layout>
       <v-form v-model="formValid" ref="form" name="business-contact-form" class="business-contact-form">
-        <v-row>
-          <v-col cols="12">
+        <v-layout row>
+          <v-flex md2>
+            <label><strong>Email Address</strong></label>
+          </v-flex>
+          <v-flex md10>
             <v-text-field
               filled
               label="Email Address"
@@ -59,10 +62,13 @@
               v-model="contact.email"
               id="txt-email">
             </v-text-field>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
+          </v-flex>
+        </v-layout>
+        <v-layout row>
+          <v-flex md2>
+            <label><strong>Confirm Email</strong></label>
+          </v-flex>
+          <v-flex md10>
             <v-text-field
               filled
               label="Confirm Email Address"
@@ -72,10 +78,13 @@
               v-model="contact.confirmEmail"
               id="txt-confirm-email">
             </v-text-field>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" md="6">
+          </v-flex>
+        </v-layout>
+        <v-layout row>
+          <v-flex md2>
+            <label><strong>Phone Number</strong></label>
+          </v-flex>
+          <v-flex md6 class="pr-3">
             <v-text-field
               filled
               label="Phone Number"
@@ -87,8 +96,8 @@
               :rules="phoneRules"
               id="txt-phone">
             </v-text-field>
-          </v-col>
-          <v-col cols="3">
+          </v-flex>
+          <v-flex>
             <v-text-field
               filled
               label="Extension"
@@ -98,10 +107,10 @@
               :disabled="!contact.phone"
               id="txt-phone-extension">
             </v-text-field>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12">
+          </v-flex>
+        </v-layout>
+        <v-layout row>
+          <v-flex md12>
             <div class="action-btns">
               <v-btn id="done-btn" large color="primary" @click="updateContactInfo" :disabled="!formValid">
                 <span>Done</span>
@@ -110,8 +119,8 @@
                 <span>Cancel</span>
               </v-btn>
             </div>
-          </v-col>
-        </v-row>
+          </v-flex>
+        </v-layout>
       </v-form>
     </div>
   </div>
@@ -210,6 +219,8 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 .business-contact-form {
   margin-top: 1rem;
   padding: 1.25rem;
+  padding-left: 0;
+  margin-right: 1rem;
 }
 
 .action-btns {
