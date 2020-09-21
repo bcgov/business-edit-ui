@@ -81,37 +81,37 @@ export default class FilingTemplateMixin extends Vue {
         correctedFilingId: this.getCorrectedFilingId,
         correctedFilingType: INCORPORATION_APPLICATION,
         correctedFilingDate: this.getCurrentDate,
-        comment: '',
-        incorporationApplication: {
-          nameRequest: {
-            legalType: this.getEntityType,
-            legalName: this.getApprovedName,
-            nrNumber: this.getNameRequestNumber
-          },
-          nameTranslations: {
-            new: this.stateModel.nameTranslations
-          },
-          offices: this.stateModel.defineCompanyStep.officeAddresses,
-          contactPoint: {
-            email: this.stateModel.defineCompanyStep.businessContact.email,
-            phone: this.stateModel.defineCompanyStep.businessContact.phone,
-            extension: this.stateModel.defineCompanyStep.businessContact.extension
-          },
-          parties: this.getPeopleAndRoles,
-          shareStructure: {
-            shareClasses: this.getShareClasses
-          },
-          incorporationAgreement: {
-            agreementType: this.stateModel.incorporationAgreementStep.agreementType
-          }
+        comment: ''
+      },
+      incorporationApplication: {
+        nameRequest: {
+          legalType: this.getEntityType,
+          legalName: this.getApprovedName,
+          nrNumber: this.getNameRequestNumber
+        },
+        nameTranslations: {
+          new: this.stateModel.nameTranslations
+        },
+        offices: this.stateModel.defineCompanyStep.officeAddresses,
+        contactPoint: {
+          email: this.stateModel.defineCompanyStep.businessContact.email,
+          phone: this.stateModel.defineCompanyStep.businessContact.phone,
+          extension: this.stateModel.defineCompanyStep.businessContact.extension
+        },
+        parties: this.getPeopleAndRoles,
+        shareStructure: {
+          shareClasses: this.getShareClasses
+        },
+        incorporationAgreement: {
+          agreementType: this.stateModel.incorporationAgreementStep.agreementType
         }
       }
     }
 
     // If this is a named IA then save Name Request Number and Approved Name.
     if (this.isNamedBusiness) {
-      filing.correction.incorporationApplication.nameRequest.nrNumber = this.getNameRequestNumber
-      filing.correction.incorporationApplication.nameRequest.legalName = this.getApprovedName
+      filing.incorporationApplication.nameRequest.nrNumber = this.getNameRequestNumber
+      filing.incorporationApplication.nameRequest.legalName = this.getApprovedName
     }
 
     // Populate Staff Payment according to payment option
@@ -160,30 +160,30 @@ export default class FilingTemplateMixin extends Vue {
     this.setBusinessInformation(filing.business)
 
     // Set Name Request
-    this.setNameRequest(filing.correction.incorporationApplication.nameRequest)
+    this.setNameRequest(filing.incorporationApplication.nameRequest)
 
     // Set Name Translations
-    this.setNameTranslations(filing.correction.incorporationApplication.nameTranslations?.new)
+    this.setNameTranslations(filing.incorporationApplication.nameTranslations?.new)
 
     // Set Office Addresses
-    this.setOfficeAddresses(filing.correction.incorporationApplication.offices)
+    this.setOfficeAddresses(filing.incorporationApplication.offices)
 
     // Set Business Contact
     const contact = {
-      ...filing.correction.incorporationApplication.contactPoint,
-      confirmEmail: filing.correction.incorporationApplication.contactPoint.email
+      ...filing.incorporationApplication.contactPoint,
+      confirmEmail: filing.incorporationApplication.contactPoint.email
     }
     this.setBusinessContact(contact)
 
     // Set People and Roles
-    this.setPeopleAndRoles(filing.correction.incorporationApplication.parties || [])
+    this.setPeopleAndRoles(filing.incorporationApplication.parties || [])
 
     // Set Share Structure
-    if (filing.correction.incorporationApplication.shareStructure) {
-      this.setShareClasses(filing.correction.incorporationApplication.shareStructure.shareClasses)
+    if (filing.incorporationApplication.shareStructure) {
+      this.setShareClasses(filing.incorporationApplication.shareStructure.shareClasses)
     } else {
       // if it exists, load data from old schema
-      const shareClasses = (filing.correction.incorporationApplication as any).shareClasses
+      const shareClasses = (filing.incorporationApplication as any).shareClasses
       if (shareClasses) {
         this.setShareClasses(shareClasses)
       } else {
@@ -193,7 +193,7 @@ export default class FilingTemplateMixin extends Vue {
 
     // Set Incorporation Agreement
     this.setIncorporationAgreementStepData({
-      agreementType: filing.correction.incorporationApplication.incorporationAgreement?.agreementType
+      agreementType: filing.incorporationApplication.incorporationAgreement?.agreementType
     })
 
     // Set Certify Form
@@ -207,6 +207,9 @@ export default class FilingTemplateMixin extends Vue {
 
     // Set Filing Date
     this.setFilingDate(filing.header.date)
+
+    // Set Effective Time
+    this.setEffectiveDate(filing.header.effectiveDate)
 
     // Set Staff Payment
     if (filing.header.routingSlipNumber) {
