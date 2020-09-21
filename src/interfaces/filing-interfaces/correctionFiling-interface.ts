@@ -6,6 +6,7 @@ export interface CorrectionFilingIF {
     name: string
     certifiedBy: string
     date: string
+    effectiveDate?: string
     routingSlipNumber?: string
     folioNumber?: string
     bcolAccountNumber?: string
@@ -23,6 +24,6 @@ export interface CorrectionFilingIF {
     correctedFilingType: string
     correctedFilingDate: string
     comment: string
-    incorporationApplication?: IncorporationApplicationIF
   }
+  incorporationApplication?: IncorporationApplicationIF
 }
