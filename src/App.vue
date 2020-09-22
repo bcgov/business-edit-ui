@@ -85,7 +85,7 @@
       <main v-if="!isErrorDialog">
         <entity-info />
 
-        <v-container class="view-container py-0">
+        <v-container class="view-container my-8 py-0">
           <v-row>
             <v-col cols="12" lg="9">
               <router-view

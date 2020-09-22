@@ -1,16 +1,28 @@
 <template>
-  <div>
-    <section class="mt-10">
-      <header>
-        <h1>Alteration</h1>
-      </header>
-      <!-- The Summary Components Below are just for a visual representation. Future Components TBD -->
-      <SummaryDefineCompany/>
-      <ListPeopleAndRoles :personList="getPeopleAndRoles" :isSummary="true" />
-      <ListShareClass :shareClasses="getShareClasses" :isSummary="true" />
-      <AgreementType :isSummary="true" />
-    </section>
-  </div>
+  <section>
+    <header>
+      <h1>Alteration</h1>
+    </header>
+
+    <!-- The Summary Components Below are just for a visual representation. Future Components TBD -->
+    <SummaryDefineCompany
+       class="mt-10"
+    />
+    <ListPeopleAndRoles
+      class="mt-10"
+      :personList="getPeopleAndRoles"
+      :isSummary="true"
+    />
+    <ListShareClass
+      class="mt-10"
+      :shareClasses="getShareClasses"
+      :isSummary="true"
+    />
+    <AgreementType
+      class="mt-10"
+      :isSummary="true"
+    />
+  </section>
 </template>
 
 <script lang="ts">

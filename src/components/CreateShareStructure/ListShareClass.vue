@@ -296,10 +296,6 @@ export default class ListShareClass extends Vue {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-#share-structure {
-  margin-top: 1rem;
-}
-
 .share-summary-header {
   display: flex;
   background-color: $BCgovBlue5O;

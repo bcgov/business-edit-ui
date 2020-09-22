@@ -1,5 +1,5 @@
 <template>
-  <v-card flat id="people-and-roles" class="mt-4">
+  <v-card flat id="people-and-roles">
     <!-- Header -->
     <div class="header-container">
       <v-icon color="#38598A">mdi-account-multiple-plus</v-icon>

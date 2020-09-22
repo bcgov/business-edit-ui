@@ -1,6 +1,6 @@
 <template>
   <section>
-    <header class="mt-4">
+    <header>
       <h1>Correction - Incorporation Application</h1>
     </header>
 
@@ -20,14 +20,18 @@
 
     <!-- TODO: replace haveChanges event with global state -->
     <your-company
+      class="mt-10"
       :isSummary="true"
       @haveChanges="yourCompanyChanges = $event"
     />
 
-    <people-and-roles />
+    <people-and-roles
+      class="mt-10"
+    />
 
     <!-- TODO: replace haveChanges event with global state -->
     <list-share-class
+      class="mt-10"
       :isSummary="true"
       :shareClasses="getShareClasses"
       @haveChanges="shareStructChanges = $event"
@@ -35,27 +39,31 @@
 
     <!-- TODO: replace haveChanges event with global state -->
     <agreement-type
+      class="mt-10"
       :isSummary="true"
       @haveChanges="incorpAgrmtChanges = $event"
     />
 
-    <completing-party class="mt-6" />
+    <completing-party
+      class="mt-10"
+    />
 
     <!-- TODO: replace emitValid event with global state -->
     <detail
-      class="mt-6"
+      class="mt-10"
       @emitValid="detailValid = $event"
     />
 
     <!-- TODO: replace emitValid event with global state -->
     <certify
-      class="mt-6"
+      class="mt-10"
       @emitValid="certifyValid = $event"
     />
 
     <!-- TODO: replace emitValid event with global state -->
+    <!-- TODO: replace haveChanges event with global state -->
     <staff-payment
-      class="mt-6"
+      class="mt-10"
       @emitValid="staffPaymntValid = $event"
       @haveChanges="staffPaymentChanges = $event"
     />
