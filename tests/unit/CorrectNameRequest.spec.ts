@@ -10,14 +10,17 @@ import { getVuexStore } from '@/store'
 
 // Components
 import { mount, Wrapper } from '@vue/test-utils'
-import { CorrectNameRequest } from '@/components/Company/CompanyName'
+import { CorrectNameRequest } from '@/components/YourCompany/CompanyName'
 
 Vue.use(Vuetify)
 
-function getLastEvent (wrapper: Wrapper<CorrectNameRequest>, emitTag: string): any {
-  const eventsList: Array<any> = wrapper.emitted(emitTag)
-  const events: Array<any> = eventsList[eventsList.length - 1]
-  return events[0]
+function getLastEvent (wrapper: Wrapper<CorrectNameRequest>, name: string): any {
+  const eventsList: Array<any> = wrapper.emitted(name)
+  if (eventsList) {
+    const events: Array<any> = eventsList[eventsList.length - 1]
+    return events[0]
+  }
+  return null
 }
 
 describe('CorrectNameRequest', () => {

@@ -138,7 +138,7 @@ import { Getter, State } from 'vuex-class'
 import { BusinessContactIF, GetterIF, IncorporationFilingIF, NameRequestIF, StateModelIF } from '@/interfaces'
 // Components
 import { CorrectBusinessContactInfo, FolioNumber, OfficeAddresses } from '.'
-import { CorrectNameOptions } from '@/components/Company/CompanyName'
+import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 // Mixins
 import { DateMixin, EntityFilterMixin, LegalApiMixin } from '@/mixins'
 // Enums

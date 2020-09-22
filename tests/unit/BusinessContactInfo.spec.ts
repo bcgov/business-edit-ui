@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import { mount, Wrapper } from '@vue/test-utils'
 
-import { BusinessContactInfo } from '@/components/DefineCompany'
+import { BusinessContactInfo } from '@/components/YourCompany'
 import { BusinessContactIF } from '@/interfaces'
 
 Vue.use(Vuetify)
@@ -39,8 +39,11 @@ const cancelBtnSelector: string = '#cancel-btn'
  */
 function getLastEvent (wrapper: Wrapper<BusinessContactInfo>, name: string): any {
   const eventsList: Array<any> = wrapper.emitted(name)
-  const events: Array<any> = eventsList[eventsList.length - 1]
-  return events[0]
+  if (eventsList) {
+    const events: Array<any> = eventsList[eventsList.length - 1]
+    return events[0]
+  }
+  return null
 }
 
 /**

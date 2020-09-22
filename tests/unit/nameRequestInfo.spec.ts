@@ -8,7 +8,7 @@ import { getVuexStore } from '@/store'
 // Components
 import { mount } from '@vue/test-utils'
 import { NameRequestInfo } from '@/components/common'
-import { AddNameTranslation, ListNameTranslations } from '@/components/DefineCompany'
+import { AddNameTranslation, ListNameTranslations } from '@/components/YourCompany'
 
 Vue.use(Vuetify)
 

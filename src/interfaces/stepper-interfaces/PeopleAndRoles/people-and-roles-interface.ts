@@ -1,6 +1,6 @@
 import { OrgPersonIF } from '@/interfaces'
 
-export interface PeopleAndRoleIF {
+export interface PeopleAndRolesIF {
     valid: boolean
     changed: boolean
     orgPeople: OrgPersonIF[]

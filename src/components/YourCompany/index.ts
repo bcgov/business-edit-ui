@@ -1,3 +1,4 @@
+export * from './CompanyName'
 export { default as AddNameTranslation } from './AddNameTranslation.vue'
 export { default as BusinessContactInfo } from './BusinessContactInfo.vue'
 export { default as CorrectBusinessContactInfo } from './CorrectBusinessContactInfo.vue'

@@ -12,7 +12,7 @@ import { getVuexStore } from '@/store'
 import { createLocalVue, mount } from '@vue/test-utils'
 
 // Components
-import { AddNameTranslation } from '@/components/DefineCompany'
+import { AddNameTranslation } from '@/components/YourCompany'
 import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)

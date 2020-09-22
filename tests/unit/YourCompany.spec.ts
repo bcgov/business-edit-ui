@@ -7,8 +7,8 @@ import { getVuexStore } from '@/store'
 
 // Components
 import { mount } from '@vue/test-utils'
-import { BusinessContactInfo, FolioNumber, OfficeAddresses, YourCompany } from '@/components/DefineCompany'
-import { CorrectNameOptions } from '@/components/Company/CompanyName'
+import { BusinessContactInfo, FolioNumber, OfficeAddresses, YourCompany } from '@/components/YourCompany'
+import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 
 Vue.use(Vuetify)
 

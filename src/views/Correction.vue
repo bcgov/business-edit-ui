@@ -76,9 +76,9 @@ import { Action, Getter, State } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 
 // Components
-import { YourCompany } from '@/components/DefineCompany'
+import { YourCompany } from '@/components/YourCompany'
 import { PeopleAndRoles } from '@/components/PeopleAndRoles'
-import { ListShareClass } from '@/components/CreateShareStructure'
+import { ListShareClass } from '@/components/ShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { Certify, CompletingParty, Detail, StaffPayment } from '@/components/common'
 

@@ -8,14 +8,17 @@ import { getVuexStore } from '@/store'
 
 // Components
 import { mount, Wrapper } from '@vue/test-utils'
-import { CorrectCompanyName } from '@/components/Company/CompanyName'
+import { CorrectCompanyName } from '@/components/YourCompany/CompanyName'
 
 Vue.use(Vuetify)
 
-function getLastEvent (wrapper: Wrapper<CorrectCompanyName>, emitTag: string): any {
-  const eventsList: Array<any> = wrapper.emitted(emitTag)
-  const events: Array<any> = eventsList[eventsList.length - 1]
-  return events[0]
+function getLastEvent (wrapper: Wrapper<CorrectCompanyName>, name: string): any {
+  const eventsList: Array<any> = wrapper.emitted(name)
+  if (eventsList) {
+    const events: Array<any> = eventsList[eventsList.length - 1]
+    return events[0]
+  }
+  return null
 }
 
 describe('CorrectCompanyName', () => {

@@ -89,7 +89,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, IncorporationFilingIF, OrgPersonIF, RolesIF } from '@/interfaces'
+import { ActionBindingIF, IncorporationFilingIF, OrgPersonIF, RoleIF } from '@/interfaces'
 import { ActionTypes, EntityTypes, IncorporatorTypes, Modes, Roles } from '@/enums'
 import { OrgPerson, ListPeopleAndRoles } from '.'
 
@@ -193,7 +193,7 @@ export default class PeopleAndRoles extends Vue {
    * @param roles The roles of this item.
    * @param type The incorporator (party) type of this item.
    */
-  private addOrgPerson (roles: RolesIF[], type: IncorporatorTypes): void {
+  private addOrgPerson (roles: RoleIF[], type: IncorporatorTypes): void {
     this.currentOrgPerson = { ...this.emptyOrgPerson }
     this.currentOrgPerson.roles = roles
     this.currentOrgPerson.officer.partyType = type

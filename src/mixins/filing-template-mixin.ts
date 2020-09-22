@@ -14,8 +14,7 @@ import {
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
 // Constants
-import { CORRECTION, INCORPORATION_APPLICATION } from '@/constants'
-import { EntityTypes, FilingStatus } from '@/enums'
+import { EntityTypes, FilingTypes } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 /**
@@ -75,7 +74,7 @@ export default class FilingTemplateMixin extends Vue {
     // Build filing.
     const filing: CorrectionFilingIF = {
       header: {
-        name: CORRECTION,
+        name: FilingTypes.CORRECTION,
         certifiedBy: this.stateModel.certifyState.certifiedBy,
         date: this.getCurrentDate,
         folioNumber: this.getFolioNumber
@@ -87,7 +86,7 @@ export default class FilingTemplateMixin extends Vue {
       },
       correction: {
         correctedFilingId: this.getCorrectedFilingId,
-        correctedFilingType: INCORPORATION_APPLICATION,
+        correctedFilingType: FilingTypes.INCORPORATION_APPLICATION,
         correctedFilingDate: this.getCurrentDate,
         comment: ''
       },
