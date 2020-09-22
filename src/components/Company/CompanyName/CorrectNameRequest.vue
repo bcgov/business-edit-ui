@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="correctNrForm" v-model="valid" lazy-validation>
+  <v-form id="correct-nr-form" ref="correctNrForm" v-model="valid" lazy-validation>
     <v-layout row>
       <v-flex md1 class="pa-3 pl-0">
         <v-btn x-small fab outlined disabled color="#1A5A96" class="step-icon">1</v-btn>
@@ -7,6 +7,7 @@
       <v-flex>
         <v-text-field
           v-model="nameRequestNumber"
+          class="text-input-field"
           filled
           label="Enter the NR Number"
           hint="Example: NR 1234567"
@@ -23,6 +24,7 @@
       <v-flex md5>
         <v-text-field
           v-model="entityPhone"
+          class="text-input-field"
           filled
           label="Applicant's Phone Number"
           hint="Example: 555-555-5555"
@@ -36,6 +38,7 @@
       <v-flex>
         <v-text-field
           v-model="entityEmail"
+          class="text-input-field"
           filled
           label="Applicant's Notification Email"
           hint="Example: name@email.com"
@@ -92,7 +95,7 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   ]
   private entityPhoneNumberRules = [
     v => this.isInputEntered(v, 'phone') || 'Phone number is required',
-    v => !(v.length > 12) || 'Phone number is invalid'
+    v => !(v?.length > 12) || 'Phone number is invalid'
   ]
   private entityEmailRules = [
     v => this.isInputEntered(v, 'email') || 'Email is required',
