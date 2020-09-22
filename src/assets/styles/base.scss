@@ -276,3 +276,12 @@ ul.list {
 .vue-affix {
   width: 282px;
 }
+
+// Overrides the chip style for 'Corrected' label used across components
+.v-size--x-small {
+  display: table;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 0.6rem;
+}

@@ -11,14 +11,8 @@
           <v-layout column>
             <label><strong>Company Name</strong></label>
             <v-flex md1>
-              <v-chip
-                v-if="companyNameChanges"
-                class="ma-2 pa-2"
-                color="primary"
-                pill
-                x-small
-              >
-                Corrected
+              <v-chip x-small label color="#1669BB" text-color="white" id="corrected-lbl">
+                 Corrected
               </v-chip>
             </v-flex>
           </v-layout>
@@ -120,10 +114,7 @@
     <v-divider />
 
     <div class="section-container">
-      <!-- TODO: add Correct button -->
-      <business-contact-info
-        :initialValue="businessContact"
-        :isEditing="false"
+      <correct-business-contact-info
         @haveChanges="contactInfoChanges = $event"
       />
     </div>
@@ -146,7 +137,7 @@ import { Getter, State } from 'vuex-class'
 // Interfaces
 import { BusinessContactIF, GetterIF, IncorporationFilingIF, NameRequestIF, StateModelIF } from '@/interfaces'
 // Components
-import { BusinessContactInfo, FolioNumber, OfficeAddresses } from '@/components/DefineCompany'
+import { CorrectBusinessContactInfo, FolioNumber, OfficeAddresses } from '@/components/DefineCompany'
 import { CorrectNameOptions } from '@/components/Company/CompanyName'
 // Mixins
 import { DateMixin, EntityFilterMixin, LegalApiMixin } from '@/mixins'
@@ -156,7 +147,7 @@ import { CorrectionTypes, EntityTypes } from '@/enums'
 @Component({
   components: {
     CorrectNameOptions,
-    BusinessContactInfo,
+    CorrectBusinessContactInfo,
     OfficeAddresses,
     FolioNumber
   }
@@ -172,13 +163,11 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   @Getter isPremiumAccount!: GetterIF
   @Getter isNamedBusiness!: boolean
   @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter getBusinessContact!: BusinessContactIF
 
   // Global state
   @State(state => state.stateModel.defineCompanyStep.valid)
   readonly valid!: boolean
-
-  @State(state => state.stateModel.defineCompanyStep.businessContact)
-  readonly businessContact!: BusinessContactIF
 
   @Prop({ default: false })
   private isSummary: boolean

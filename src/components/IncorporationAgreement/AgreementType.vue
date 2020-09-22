@@ -18,7 +18,7 @@
               {{ selectedAgreementDescription }}
             </div>
             <div v-if="hasAgreementTypeChange">
-              <v-chip x-small label color="blue" text-color="white" id='corrected-lbl'>
+              <v-chip x-small label color="#1669BB" text-color="white" id="corrected-lbl">
                 Corrected
               </v-chip>
             </div>
@@ -202,13 +202,5 @@ export default class AgreementType extends Vue {
         background-color: #1669BB !important;
         opacity: .2;
       }
-}
-
-.v-size--x-small {
-  display: table;
-  margin-top: 0.5rem;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 0.6rem;
 }
 </style>

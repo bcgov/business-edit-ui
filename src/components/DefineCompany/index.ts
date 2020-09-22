@@ -1,5 +1,6 @@
 export { default as AddNameTranslation } from './AddNameTranslation.vue'
 export { default as BusinessContactInfo } from './BusinessContactInfo.vue'
+export { default as CorrectBusinessContactInfo } from './CorrectBusinessContactInfo.vue'
 export { default as FolioNumber } from './FolioNumber.vue'
 export { default as ListNameTranslations } from './ListNameTranslations.vue'
 export { default as OfficeAddresses } from './OfficeAddresses.vue'

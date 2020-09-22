@@ -2,7 +2,7 @@
 import { AccountTypes, EntityTypes } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
-  NameRequestIF
+  NameRequestIF, BusinessContactIF
 } from '@/interfaces'
 
 /** Whether the user has "staff" keycloak role. */
@@ -182,6 +182,10 @@ export const getShareClasses = (state: any): Array<ShareClassIF> => {
 
 export const getAgreementType = (state: any): string | null => {
   return state.stateModel.incorporationAgreementStep.agreementType
+}
+
+export const getBusinessContact = (state: any): BusinessContactIF => {
+  return state.stateModel.defineCompanyStep.businessContact
 }
 
 /** Whether we are ignoring data changes. */
