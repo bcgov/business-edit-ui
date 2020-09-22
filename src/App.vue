@@ -139,17 +139,11 @@ import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { EntityInfo, Actions } from '@/components/common'
 import * as Views from '@/views'
+import * as Dialogs from '@/components/dialogs'
 
-// Dialogs, mixins, interfaces, etc
-import {
-  AccountAuthorizationDialog, BcolErrorDialog, NameRequestInvalidErrorDialog, ConfirmDialog, FetchErrorDialog,
-  InvalidIncorporationApplicationDialog, PaymentErrorDialog, SaveErrorDialog, FileAndPayInvalidNameRequestDialog,
-  NameRequestErrorDialog
-} from '@/components/dialogs'
+// Mixins, interfaces, etc
 import { BcolMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces'
-
-// Enums and Constants
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 @Component({
@@ -159,16 +153,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     SbcFeeSummary,
     EntityInfo,
     Actions,
-    NameRequestInvalidErrorDialog,
-    AccountAuthorizationDialog,
-    FetchErrorDialog,
-    InvalidIncorporationApplicationDialog,
-    NameRequestErrorDialog,
-    PaymentErrorDialog,
-    SaveErrorDialog,
-    ConfirmDialog,
-    BcolErrorDialog,
-    FileAndPayInvalidNameRequestDialog,
+    ...Dialogs,
     ...Views
   }
 })
