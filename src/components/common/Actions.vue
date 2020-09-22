@@ -32,7 +32,7 @@
         </v-btn>
       </v-fade-transition>
 
-      <v-btn id="app-cancel-btn" large
+      <v-btn id="app-cancel-btn" large outlined color="primary"
         :disabled="isBusySaving"
         @click="onClickCancel()"
       >
@@ -92,7 +92,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     let filingComplete
 
     try {
-      const filing = await this.buildIaCorrectionFiling()
+      const filing = await this.buildIaCorrectionFiling(true)
       filingComplete = await this.saveFiling(filing, true)
       // reset flag
       this.setHaveChanges(false)
@@ -115,7 +115,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     let filingComplete
 
     try {
-      const filing = await this.buildIaCorrectionFiling()
+      const filing = await this.buildIaCorrectionFiling(true)
       filingComplete = await this.saveFiling(filing, true)
       // reset flag
       this.setHaveChanges(false)
@@ -154,7 +154,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     }
 
     try {
-      const filing = await this.buildIaCorrectionFiling()
+      const filing = await this.buildIaCorrectionFiling(false)
       filingComplete = await this.saveFiling(filing, false)
       // reset flag
       this.setHaveChanges(false)

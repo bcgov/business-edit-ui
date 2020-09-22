@@ -35,7 +35,7 @@ export default class Summary extends Vue {
   @Getter getShareClasses!: ShareClassIF[]
 
   // Global state
-  @State(state => state.stateModel.addPeopleAndRoleStep.valid)
+  @State(state => state.stateModel.peopleAndRoles.valid)
   readonly step2Valid: boolean
 
   @State(state => state.stateModel.createShareStructureStep.valid)

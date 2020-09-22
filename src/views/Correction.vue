@@ -18,6 +18,7 @@
       </p>
     </div>
 
+    <!-- TODO: replace haveChanges event with global state -->
     <your-company
       :isSummary="true"
       @haveChanges="yourCompanyChanges = $event"
@@ -25,12 +26,14 @@
 
     <people-and-roles />
 
+    <!-- TODO: replace haveChanges event with global state -->
     <list-share-class
       :isSummary="true"
       :shareClasses="getShareClasses"
       @haveChanges="shareStructChanges = $event"
     />
 
+    <!-- TODO: replace haveChanges event with global state -->
     <agreement-type
       :isSummary="true"
       @haveChanges="incorpAgrmtChanges = $event"
@@ -38,16 +41,19 @@
 
     <completing-party class="mt-6" />
 
+    <!-- TODO: replace emitValid event with global state -->
     <detail
       class="mt-6"
       @emitValid="detailValid = $event"
     />
 
+    <!-- TODO: replace emitValid event with global state -->
     <certify
       class="mt-6"
       @emitValid="certifyValid = $event"
     />
 
+    <!-- TODO: replace emitValid event with global state -->
     <staff-payment
       class="mt-6"
       @emitValid="staffPaymntValid = $event"
@@ -192,17 +198,16 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
         if (correctionFiling.header.status !== FilingStatus.DRAFT) {
           throw new Error('Invalid Correction status')
         }
-        // fetch original IA to correct
-        const correctedFilingID = correctionFiling.correction?.correctedFilingId
-        const correctedFiling = await this.fetchFilingById(correctedFilingID)
-        this.setCorrectedFilingId(correctedFilingID)
 
-        // parse IA filing into store
-        // this is the initial state of the correction filing
-        this.setOriginalIA(correctedFiling)
+        // get and store ID of filing that is being corrected (ie, original IA)
+        const correctedFilingId = correctionFiling.correction?.correctedFilingId
+        this.setCorrectedFilingId(correctedFilingId)
+
+        // fetch and store original IA
+        const originalIa = await this.fetchFilingById(correctedFilingId)
+        this.setOriginalIA(originalIa)
 
         // parse correction filing into store
-        // this applies the diffs (corrections)
         this.parseCorrection(correctionFiling)
       } else {
         // as we don't have the necessary query params, do not proceed

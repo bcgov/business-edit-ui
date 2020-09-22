@@ -6,7 +6,7 @@
       <!-- Summary Header -->
       <div class="share-summary-header" >
         <v-icon>mdi-file-tree</v-icon>
-        <label class="share-summary-header-title"><strong> Share Structure</strong></label>
+        <label class="share-summary-header-title font-weight-bold">Share Structure</label>
       </div>
 
       <!-- Summary Warning -->
@@ -53,7 +53,7 @@
 
               <!-- Share Class Dropdown Actions -->
               <span>
-                <v-menu offset-y  :disabled="componentDisabled">
+                <v-menu offset-y :disabled="componentDisabled">
                   <template v-slot:activator="{ on }">
                     <v-btn text small
                       color="primary"
@@ -68,7 +68,9 @@
                       :class="{ 'item-disabled': !row.item.hasRightsOrRestrictions }"
                       :disabled="!row.item.hasRightsOrRestrictions"
                       @click="emitAddSeries(row.index)">
-                      <v-list-item-subtitle><v-icon>mdi-playlist-plus</v-icon> Add Series</v-list-item-subtitle>
+                      <v-list-item-subtitle>
+                        <v-icon>mdi-playlist-plus</v-icon> Add Series
+                      </v-list-item-subtitle>
                     </v-list-item>
                     <v-list-item
                       class="actions-dropdown_item"
@@ -91,7 +93,9 @@
                       </v-list-item-subtitle>
                     </v-list-item>
                     <v-list-item class="actions-dropdown_item" @click="emitRemoveClass(row.index)">
-                      <v-list-item-subtitle><v-icon>mdi-delete</v-icon> Remove</v-list-item-subtitle>
+                      <v-list-item-subtitle>
+                        <v-icon>mdi-delete</v-icon> Remove
+                      </v-list-item-subtitle>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -362,7 +366,7 @@ export default class ListShareClass extends Vue {
   }
 
   .actions-dropdown_item {
-    min-height: 0!important;
+    min-height: 0 !important;
     margin: 1rem 0;
   }
 }

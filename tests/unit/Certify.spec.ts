@@ -91,7 +91,7 @@ function createComponent (
 describe('Certify component', () => {
   beforeEach(() => {
     store.state.stateModel.defineCompanyStep.businessContact.email = 'registered-office@example.com'
-    store.state.stateModel.addPeopleAndRoleStep.orgPeople.push({
+    store.state.stateModel.peopleAndRoles.orgPeople.push({
       officer: { email: 'completing-party@example.com' },
       roles: [{ roleType: 'Completing Party' }]
     })

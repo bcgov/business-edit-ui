@@ -87,16 +87,16 @@ export const mutateOfficeAddresses = (state: any, addresses: IncorporationAddres
 }
 
 export const mutatePeopleAndRoles = (state: any, orgPeople: OrgPersonIF[]) => {
-  state.stateModel.addPeopleAndRoleStep.orgPeople = orgPeople
+  state.stateModel.peopleAndRoles.orgPeople = orgPeople
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
-export const mutatePeopleAndRoleStepChanged = (state: any, changed: boolean) => {
-  state.stateModel.addPeopleAndRoleStep.changed = changed
+export const mutatePeopleAndRolesChanged = (state: any, changed: boolean) => {
+  state.stateModel.peopleAndRoles.changed = changed
 }
 
-export const mutatePeopleAndRoleStepValidity = (state: any, valid: boolean) => {
-  state.stateModel.addPeopleAndRoleStep.valid = valid
+export const mutatePeopleAndRolesValid = (state: any, valid: boolean) => {
+  state.stateModel.peopleAndRoles.valid = valid
 }
 
 export const mutateFolioNumber = (state: any, folioNumber: string) => {

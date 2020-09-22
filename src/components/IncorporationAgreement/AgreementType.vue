@@ -5,8 +5,8 @@
         <!-- Summary Header -->
         <div class="agreement-summary-header">
           <v-icon>mdi-handshake</v-icon>
-          <label class="agreement-summary-title">
-            <strong>Incorporation Agreement and Benefit Company Articles</strong>
+          <label class="agreement-summary-title font-weight-bold">
+            Incorporation Agreement and Benefit Company Articles
           </label>
         </div>
 

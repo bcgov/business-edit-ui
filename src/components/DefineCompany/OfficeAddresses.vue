@@ -174,7 +174,7 @@ import { Getter } from 'vuex-class'
 import { isEmpty } from 'lodash'
 
 // Schemas
-import { officeAddressSchema } from '@/schemas'
+import { OfficeAddressSchema } from '@/schemas'
 
 // Components
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
@@ -253,7 +253,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
   private inheritRegisteredAddress: boolean = true
 
   // The Address schema containing Vuelidate rules.
-  private addressSchema = officeAddressSchema
+  private addressSchema = OfficeAddressSchema
 
   // Entity Enum
   readonly EntityTypes = EntityTypes

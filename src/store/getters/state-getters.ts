@@ -172,7 +172,7 @@ export const getOfficeAddresses = (state: any): any => {
 
 /** The people and roles list. */
 export const getPeopleAndRoles = (state: any): Array<OrgPersonIF> => {
-  return state.stateModel.addPeopleAndRoleStep.orgPeople
+  return state.stateModel.peopleAndRoles.orgPeople
 }
 
 /** The share classes list. */
@@ -209,13 +209,14 @@ export const getFilingData = (state: any): any => {
 }
 
 /** Whether any corrections have been made. */
+// TODO: replace this with isCorrectionChanged() below
 export const getHaveCorrection = (state: any): boolean => {
   return state.stateModel.tombstone.haveCorrection
 }
 
-/** Whether People and Roles step (component) is valid. */
-export const isPeopleAndRoleStepValid = (state: any): boolean => {
-  return state.stateModel.addPeopleAndRoleStep.valid
+/** Whether People and Roles component is valid. */
+export const isPeopleAndRoleValid = (state: any): boolean => {
+  return state.stateModel.peopleAndRoles.valid
 }
 
 //
@@ -226,7 +227,7 @@ export const isPeopleAndRoleStepValid = (state: any): boolean => {
 /** Whether File and Pay button should be enabled. */
 export const isEnableFilePayBtn = (state: any, getters: any): boolean => {
   const step1Valid = state.stateModel.defineCompanyStep.valid
-  const step2Valid = state.stateModel.addPeopleAndRoleStep.valid
+  const step2Valid = state.stateModel.peopleAndRoles.valid
   const step3Valid = getters.isTypeBcomp ? state.stateModel.createShareStructureStep.valid : false
   const step4Valid = getters.isTypeBcomp ? state.stateModel.incorporationAgreementStep.valid : false
   const step5Valid = state.stateModel.certifyState.valid && state.stateModel.incorporationDateTime.valid
@@ -243,11 +244,11 @@ export const isBusySaving = (state: any): boolean => {
 /** Whether any correction sections have changed. */
 export const isCorrectionChanged = (state: any): boolean => {
   // TODO: add other sections here
-  return (state.stateModel.addPeopleAndRoleStep.changed)
+  return (state.stateModel.peopleAndRoles.changed)
 }
 
 /** Whether all the correction sections are valid. */
 export const isCorrectionValid = (state: any): boolean => {
   // TODO: add other sections here
-  return (state.stateModel.addPeopleAndRoleStep.valid)
+  return (state.stateModel.peopleAndRoles.valid)
 }

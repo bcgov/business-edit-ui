@@ -104,12 +104,12 @@ export const setPeopleAndRoles = ({ commit }, orgPeople) => {
   commit('mutatePeopleAndRoles', orgPeople)
 }
 
-export const setPeopleAndRoleStepChanged = ({ commit }, validity) => {
-  commit('mutatePeopleAndRoleStepChanged', validity)
+export const setPeopleAndRolesChanged = ({ commit }, validity) => {
+  commit('mutatePeopleAndRolesChanged', validity)
 }
 
-export const setPeopleAndRoleStepValidity = ({ commit }, validity) => {
-  commit('mutatePeopleAndRoleStepValidity', validity)
+export const setPeopleAndRolesValid = ({ commit }, validity) => {
+  commit('mutatePeopleAndRolesValid', validity)
 }
 
 export const setShareClasses = ({ commit }, shareClasses) => {
