@@ -1,0 +1,114 @@
+// Libraries
+import Vue from 'vue'
+import Vuetify from 'vuetify'
+import flushPromises from 'flush-promises'
+
+// Store
+import { getVuexStore } from '@/store'
+
+// Components
+import { mount, Wrapper } from '@vue/test-utils'
+import { CorrectNameToNumber } from '@/components/Company/CompanyName'
+
+Vue.use(Vuetify)
+
+function getLastEvent (wrapper: Wrapper<CorrectNameToNumber>, emitTag: string): any {
+  const eventsList: Array<any> = wrapper.emitted(emitTag)
+  const events: Array<any> = eventsList[eventsList.length - 1]
+  return events[0]
+}
+
+describe('CorrectNameToNumber', () => {
+  let vuetify: any
+  let wrapperFactory: any
+  let store: any = getVuexStore()
+
+  beforeEach(() => {
+    vuetify = new Vuetify({})
+
+    store.state.stateModel.nameRequest.legalName = 'Bobs Plumbing'
+    store.state.stateModel.tombstone.businessId = 'BC 1234567'
+    store.state.stateModel.tombstone.entityType = 'BC'
+
+    wrapperFactory = (props) => {
+      return mount(CorrectNameToNumber, {
+        propsData: {
+          props
+        },
+        store,
+        vuetify
+      })
+    }
+  })
+
+  it('renders the CorrectNameToNumber Component', async () => {
+    const wrapper = wrapperFactory()
+
+    expect(wrapper.find(CorrectNameToNumber).exists()).toBe(true)
+  })
+
+  it('verifies the checkbox default state', async () => {
+    const wrapper = wrapperFactory()
+    const nameToNumberInput = wrapper.find('#correct-name-to-number-checkbox')
+
+    await Vue.nextTick()
+
+    // Verify data from Store
+    expect(nameToNumberInput.attributes('aria-checked')).toBe('false')
+    expect(wrapper.emitted('isValid')).toBeUndefined()
+    expect(store.state.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
+  })
+
+  it('verifies the emission when checkbox state changes', async () => {
+    const wrapper = wrapperFactory()
+    const nameToNumberInput = wrapper.find('#correct-name-to-number-checkbox')
+
+    await Vue.nextTick()
+
+    // Verify data from Store
+    expect(nameToNumberInput.attributes('aria-checked')).toBe('false')
+    expect(wrapper.emitted('isValid')).toBeUndefined()
+
+    // Select Name to Number Checkbox
+    nameToNumberInput.trigger('click')
+
+    await Vue.nextTick()
+
+    // Verify local state change and event emission
+    expect(nameToNumberInput.attributes('aria-checked')).toBe('true')
+    expect(getLastEvent(wrapper, 'isValid')).toBe(true)
+    expect(store.state.stateModel.nameRequest.legalType).toBeNull()
+    expect(store.state.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
+  })
+
+  it('verifies the form submission and verify global state change', async () => {
+    const wrapper = wrapperFactory()
+    const nameToNumberInput = wrapper.find('#correct-name-to-number-checkbox')
+
+    await Vue.nextTick()
+
+    // Verify data from Store
+    expect(nameToNumberInput.attributes('aria-checked')).toBe('false')
+    expect(wrapper.emitted('isValid')).toBeUndefined()
+
+    // Select Name to Number Checkbox
+    nameToNumberInput.trigger('click')
+
+    await Vue.nextTick()
+
+    // Verify local state change and event emission
+    expect(nameToNumberInput.attributes('aria-checked')).toBe('true')
+    expect(getLastEvent(wrapper, 'isValid')).toBe(true)
+    expect(store.state.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
+
+    // Submit Change
+    await wrapper.setProps({ formType: 'correct-name-to-number' })
+    await flushPromises()
+
+    expect(getLastEvent(wrapper, 'done')).toBe(true)
+
+    // Verify Data change in store
+    expect(store.state.stateModel.nameRequest.legalType).toBe('BC')
+    expect(store.state.stateModel.nameRequest.legalName).toBeUndefined()
+  })
+})

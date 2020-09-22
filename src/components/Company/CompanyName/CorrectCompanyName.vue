@@ -1,9 +1,10 @@
 <template>
-  <v-form ref="correctNameForm" v-model="valid" lazy-validation>
+  <v-form id="correct-name-form" ref="correctNameForm" v-model="valid" lazy-validation>
     <v-layout row>
       <v-flex>
         <v-text-field
           v-model="companyName"
+          id="company-name-input"
           filled
           persistent-hint
           :rules="companyNameRules"

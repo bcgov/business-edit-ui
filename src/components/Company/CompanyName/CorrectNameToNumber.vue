@@ -1,8 +1,9 @@
 <template>
-  <v-form lazy-validation>
+  <v-form id="correct-name-to-number-form" lazy-validation>
     <v-layout row>
         <v-checkbox
           v-model="correctToNumbered"
+          id="correct-name-to-number-checkbox"
           :label="`Change the company name to ${getBusinessId} B.C. Ltd.`"
         ></v-checkbox>
     </v-layout>

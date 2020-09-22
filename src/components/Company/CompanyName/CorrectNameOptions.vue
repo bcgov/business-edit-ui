@@ -6,6 +6,7 @@
     <v-expansion-panels v-model="panel">
       <v-expansion-panel
         v-for="(item,i) in displayedOptions"
+        :id="item.id"
         :key="i"
         :disabled="isOneOption"
         @click="identifyForm(item.id)"
@@ -17,7 +18,7 @@
           </template>
         </v-expansion-panel-header>
         <v-expansion-panel-content class="name-options-content">
-          <v-label color="primary">{{item.description}}</v-label>
+          <v-label class="name-content-label" color="primary">{{item.description}}</v-label>
           <v-container>
             <component
               :is="item.component"
