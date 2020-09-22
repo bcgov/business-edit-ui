@@ -1,6 +1,6 @@
 <template>
   <div>
-      <business-contact-info
+    <business-contact-info
       :businessContact="getBusinessContact"
       :originalBusinessContact="getOriginalIA.incorporationApplication.contactPoint"
       @contactInfoChange="updateContactInfo($event)"

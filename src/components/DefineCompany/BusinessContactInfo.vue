@@ -10,7 +10,7 @@
         </div>
         <div id="lbl-email">{{ !!contact.email ? contact.email : "(Not entered)" }}</div>
         <div v-if="hasEmailAddressChange">
-          <v-chip x-small label color="primary" text-color="white" id="email-corrected-lbl">
+          <v-chip x-small label color="#1669BB" text-color="white" id="email-corrected-lbl">
             Corrected
           </v-chip>
         </div>
@@ -25,7 +25,7 @@
         </div>
         <div id="lbl-phone" v-else>(Not entered)</div>
         <div v-if="hasPhoneNumberChange">
-          <v-chip x-small label color="primary" text-color="white" id="phone-corrected-lbl">
+          <v-chip x-small label color="#1669BB" text-color="white" id="phone-corrected-lbl">
             Corrected
           </v-chip>
         </div>
@@ -230,36 +230,36 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 </script>
 
 <style lang="scss" scoped>
-[class^="col"] {
-  padding-top: 0;
-  padding-bottom: 0;
-}
+  [class^="col"] {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
 
-.business-contact-form {
-  margin-top: 1rem;
-  padding: 1.25rem;
-  padding-left: 0;
-  margin-right: 1rem;
-}
+  .business-contact-form {
+    margin-top: 1rem;
+    padding: 1.25rem;
+    padding-left: 0;
+    margin-right: 1rem;
+  }
 
-.action-btns {
-      display: flex;
-      justify-content: flex-end;
-      padding-bottom: 1rem;
-      padding-right:0.5rem;
+  .action-btns {
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 1rem;
+    padding-right: 0.5rem;
 
-      .v-btn + .v-btn {
-        margin-left: 0.5rem;
-      }
+    .v-btn + .v-btn {
+      margin-left: 0.5rem;
+    }
 
-      .v-btn {
-        min-width: 6.5rem;
-      }
+    .v-btn {
+      min-width: 6.5rem;
+    }
 
-      .v-btn[disabled] {
-        color: white !important;
-        background-color: #1669BB !important;
-        opacity: .2;
-      }
-}
+    .v-btn[disabled] {
+      color: white !important;
+      background-color: #1669bb !important;
+      opacity: 0.2;
+    }
+  }
 </style>

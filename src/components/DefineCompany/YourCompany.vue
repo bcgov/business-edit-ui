@@ -11,7 +11,7 @@
           <v-layout column>
             <label><strong>Company Name</strong></label>
             <v-flex md1>
-              <v-chip x-small label color="primary" text-color="white" id='corrected-lbl'>
+              <v-chip x-small label color="#1669BB" text-color="white" id="corrected-lbl">
                  Corrected
               </v-chip>
             </v-flex>

@@ -18,7 +18,7 @@
               {{ selectedAgreementDescription }}
             </div>
             <div v-if="hasAgreementTypeChange">
-              <v-chip x-small label color="primary" text-color="white" id='corrected-lbl'>
+              <v-chip x-small label color="#1669BB" text-color="white" id="corrected-lbl">
                 Corrected
               </v-chip>
             </div>
