@@ -148,7 +148,7 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
     return this.convertUtcTimeToLocalTime(this.getFilingDate)?.slice(0, 10)
   }
 
-  /** Whether the user is authenticated. */
+  /** True if user is authenticated. */
   private get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
@@ -190,8 +190,8 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
         priority: false
       })
 
-      if (this.correctionId) { // Resuming a DRAFT incorporation Correction
-        // Set the filing Id to store
+      if (this.correctionId) {
+        // store the filing ID
         this.setFilingId(this.correctionId)
 
         // fetch draft correction to resume
@@ -219,7 +219,7 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
         this.parseCorrection(correctionFiling)
       } else {
         // as we don't have the necessary query params, do not proceed
-        throw new Error('Invalid corrected or correction filing ID')
+        throw new Error('Invalid correction filing ID')
       }
 
       // tell App that we're finished loading

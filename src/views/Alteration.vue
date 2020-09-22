@@ -65,10 +65,10 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
   @Prop({ default: false })
   private appReady: boolean
 
-  /** The id of the IA filing to alter. */
-  // private get filingId (): number {
-  //   return +this.$route.query['filing-id']
-  // }
+  /** The id of the alteration being edited. */
+  private get alterationId (): number {
+    return +this.$route.query['alteration-id']
+  }
 
   /** True if user is authenticated. */
   private get isAuthenticated (): boolean {
@@ -99,41 +99,42 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
       return
     }
 
-    // do not proceed if we don't have the necessary query params
-    // if (isNaN(this.filingId)) {
-    //   const err = 'Invalid filing ID'
-    //   console.log(err) // eslint-disable-line no-console
-    //   this.emitFetchError(err)
-    //   return
-    // }
-
     // try to fetch data
     try {
-      // fetch IA to alter
-      const { filing } = await this.fetchFilingByType(this.INCORPORATION_APPLICATION)
-
-      // do not proceed if this isn't an IA filing
-      if (!filing.incorporationApplication) {
-        throw new Error('Invalid IA filing')
-      }
-
-      // do not proceed if this isn't a COMPLETED filing
-      if (filing.header.status !== FilingStatus.COMPLETED) {
-        throw new Error('Invalid IA status')
-      }
-
-      // parse IA filing into store
-      this.parseAlteration(filing)
-
       // set current entity type
       this.setEntityType(EntityTypes.BCOMP)
 
       // initialize Fee Summary data
+      // TODO: Set/Clear Data according to filing type / entity type
       this.setFilingData({
         filingTypeCode: FilingCodes.ALTERATION,
         entityType: EntityTypes.BCOMP,
         priority: false
       })
+
+      if (this.alterationId) {
+        // store the filing ID
+        this.setFilingId(this.alterationId)
+
+        // fetch draft alteration to resume
+        const alterationFiling = await this.fetchFilingById(this.alterationId)
+
+        // do not proceed if this isn't an ALTERATION filing
+        if (!alterationFiling.alteration) {
+          throw new Error('Invalid Alteration filing')
+        }
+
+        // do not proceed if this isn't a DRAFT filing
+        if (alterationFiling.header.status !== FilingStatus.DRAFT) {
+          throw new Error('Invalid Alteration status')
+        }
+
+        // parse alteration filing into store
+        this.parseAlteration(alterationFiling)
+      } else {
+        // as we don't have the necessary query params, do not proceed
+        throw new Error('Invalid alteration filing ID')
+      }
 
       // tell App that we're finished loading
       this.emitHaveData()

@@ -35,7 +35,7 @@
         outlined
         color="primary"
         :disabled="showOrgPersonForm"
-        @click="addOrgPerson([], IncorporatorTypes.PERSON)"
+        @click="initAdd([], IncorporatorTypes.PERSON)"
       >
         <v-icon>mdi-account-plus</v-icon>
         <span>Add a Person</span>
@@ -46,7 +46,7 @@
         color="primary"
         class="ml-2"
         :disabled="showOrgPersonForm"
-        @click="addOrgPerson([{ roleType: Roles.INCORPORATOR }], IncorporatorTypes.CORPORATION)"
+        @click="initAdd([{ roleType: Roles.INCORPORATOR }], IncorporatorTypes.CORPORATION)"
       >
         <v-icon>mdi-domain-plus</v-icon>
         <span>Add a Corporation or Firm</span>
@@ -58,7 +58,7 @@
         color="primary"
         class="ml-2"
         :disabled="showOrgPersonForm"
-        @click="addOrgPerson([{ roleType: Roles.COMPLETING_PARTY }], IncorporatorTypes.PERSON)"
+        @click="initAdd([{ roleType: Roles.COMPLETING_PARTY }], IncorporatorTypes.PERSON)"
       >
         <v-icon>mdi-account-plus-outline</v-icon>
         <span>Add the Completing Party</span>
@@ -68,19 +68,19 @@
     <div class="list-container px-4">
       <!-- FUTURE: move OrgPerson inside ListPeopleAndRoles -->
       <org-person v-if="showOrgPersonForm"
-        :initialValue="currentOrgPerson"
+        :currentOrgPerson="currentOrgPerson"
         :activeIndex="activeIndex"
         :nextId="nextId"
         :existingCompletingParty="completingParty"
-        @changeOrgPerson="changeOrgPerson($event)"
-        @removeOrgPerson="removeOrgPerson($event)"
-        @resetData="resetData()"
+        @addEdit="performAddEdit($event)"
+        @remove="performRemove($event)"
+        @reset="performReset()"
         @removeCompletingPartyRole="removeCompletingPartyRole()"
       />
       <list-people-and-roles v-else
-        @undoOrgPerson="undoOrgPerson($event)"
-        @editOrgPerson="editOrgPerson($event)"
-        @removeOrgPerson="removeOrgPerson($event)"
+        @undo="performUndo($event)"
+        @edit="initEdit($event)"
+        @remove="performRemove($event)"
       />
     </div>
   </v-card>
@@ -89,6 +89,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+import { cloneDeep } from 'lodash'
 import { ActionBindingIF, IncorporationFilingIF, OrgPersonIF, RoleIF } from '@/interfaces'
 import { ActionTypes, EntityTypes, IncorporatorTypes, Modes, Roles } from '@/enums'
 import { OrgPerson, ListPeopleAndRoles } from '.'
@@ -110,6 +111,7 @@ export default class PeopleAndRoles extends Vue {
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getUserEmail!: string
   @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter isRoleStaff!: boolean
 
   // Global setters
   @Action setPeopleAndRoles!: ActionBindingIF
@@ -146,13 +148,19 @@ export default class PeopleAndRoles extends Vue {
   private currentOrgPerson: OrgPersonIF = null
   private nextId: number = NaN
 
-  /** The completing party if found, otherwise undefined. */
+  /** The orgs/persons list from the original IA. */
+  private get originalList (): Array<OrgPersonIF> {
+    return this.getOriginalIA.incorporationApplication.parties
+  }
+
+  /** The current Completing Party if found, otherwise undefined. */
   private get completingParty () : OrgPersonIF {
-    return this.getPeopleAndRoles.find(orgPerson =>
-      orgPerson.roles.some(role =>
-        role.roleType === Roles.COMPLETING_PARTY
-      )
-    )
+    return this.getCompletingParty(this.getPeopleAndRoles)
+  }
+
+  /** The original Completing Party if found, otherwise undefined. */
+  private get originalCompletingParty () : OrgPersonIF {
+    return this.getCompletingParty(this.originalList)
   }
 
   /** True if we have a Completing Party. */
@@ -175,9 +183,18 @@ export default class PeopleAndRoles extends Vue {
     return (this.cpValid && this.incorpValid && this.dirValid)
   }
 
-  /** True if we have any changes. */
+  /** True if we have any changes (from original IA). */
   private get hasChanges (): boolean {
     return this.getPeopleAndRoles.some(x => x.action)
+  }
+
+  /** The user email to use for the Completing Party. */
+  private get userEmail (): string {
+    // if we are staff, return the original CP's email
+    // otherwise return the current user's email
+    return this.isRoleStaff
+      ? this.originalCompletingParty?.officer.email
+      : this.getUserEmail
   }
 
   /**
@@ -189,40 +206,69 @@ export default class PeopleAndRoles extends Vue {
   }
 
   /**
-   * Sets properties to add an org/person.
+   * Determines whether we have the specified role by count and mode.
+   */
+  private hasRole (roleName: Roles, count: number, mode: Modes): boolean {
+    // 1. filter out removed people
+    // 2. filter in people with specified role
+    const orgPersonWithSpecifiedRole = this.getPeopleAndRoles
+      .filter(people => people.action !== ActionTypes.REMOVED)
+      .filter(people => people.roles.some(party => party.roleType === roleName))
+
+    if (mode === Modes.EXACT) {
+      return (orgPersonWithSpecifiedRole.length === count)
+    }
+    if (mode === Modes.AT_LEAST) {
+      return (orgPersonWithSpecifiedRole.length >= count)
+    }
+  }
+
+  /**
+   * Sets state properties to add an org/person.
    * @param roles The roles of this item.
    * @param type The incorporator (party) type of this item.
    */
-  private addOrgPerson (roles: RoleIF[], type: IncorporatorTypes): void {
-    this.currentOrgPerson = { ...this.emptyOrgPerson }
+  private initAdd (roles: RoleIF[], type: IncorporatorTypes): void {
+    // make a copy so we don't change the original object
+    this.currentOrgPerson = cloneDeep(this.emptyOrgPerson)
     this.currentOrgPerson.roles = roles
     this.currentOrgPerson.officer.partyType = type
     this.activeIndex = NaN
     this.nextId = (this.getPeopleAndRoles.length === 0)
-      ? 0 : this.getPeopleAndRoles[this.getPeopleAndRoles.length - 1].officer.id + 1
+      ? 0 : (this.getPeopleAndRoles[this.getPeopleAndRoles.length - 1].officer.id + 1)
     this.showOrgPersonForm = true
   }
 
   /**
-   * Sets properties to edit an org/person.
+   * Sets state properties to edit an org/person.
    * @param index The index of the org/person to edit.
    */
-  private editOrgPerson (index: number): void {
-    this.currentOrgPerson = { ...this.getPeopleAndRoles[index] }
+  private initEdit (index: number): void {
+    // make a copy so we don't change the original object
+    this.currentOrgPerson = cloneDeep(this.getPeopleAndRoles[index])
     this.activeIndex = index
     this.showOrgPersonForm = true
+  }
+
+  /**
+   * Resets state properties after a change is completed (or to cancel).
+   */
+  private performReset (): void {
+    this.currentOrgPerson = null
+    this.activeIndex = NaN
+    this.showOrgPersonForm = false
   }
 
   /**
    * Undoes changes to the specified org/person.
    * @param index The index of the org/person to undo.
    */
-  private undoOrgPerson (index: number): void {
-    // get org/person to undo
-    const person = this.getPeopleAndRoles[index]
-
+  private performUndo (index: number): void {
     // make a copy so Vue reacts when we set the updated list
-    const tempList = [...this.getPeopleAndRoles]
+    const tempList = cloneDeep(this.getPeopleAndRoles)
+
+    // get org/person to undo
+    const person = tempList[index]
 
     switch (person.action) {
       case ActionTypes.ADDED:
@@ -235,14 +281,26 @@ export default class PeopleAndRoles extends Vue {
         // get ID of person to undo
         const id = person?.officer?.id
 
-        // get original person from original IA
-        const originalList = this.getOriginalIA.incorporationApplication?.parties || []
-        const originalPerson = originalList.find(x => x.officer.id === id)
+        // get value of original person from original IA
+        const originalPerson = this.originalList.find(x => x.officer.id === id)
 
         // safety check
         if (!originalPerson) {
-          console.log('Failed to find original person with id =', id) // eslint-disable-line no-console
+          // eslint-disable-next-line no-console
+          console.log('Failed to find original person with id =', id)
           return
+        }
+
+        // check if original person had CP role and another person has it now
+        const hadCp = originalPerson.roles.some(role => role.roleType === Roles.COMPLETING_PARTY)
+        // get the Completing Party
+        // (we update this record right in the temp list)
+        const otherPerson = this.getCompletingParty(tempList)
+
+        if (hadCp && otherPerson && (originalPerson.officer.id !== otherPerson.officer.id)) {
+          // remove the other CP and their email
+          otherPerson.roles = otherPerson.roles.filter(r => r.roleType !== Roles.COMPLETING_PARTY)
+          otherPerson.officer.email = null
         }
 
         // splice in the original person
@@ -258,21 +316,21 @@ export default class PeopleAndRoles extends Vue {
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
-    this.resetData()
+    this.performReset()
   }
 
   /**
-   * Changes the specified org/person.
+   * Adds/changes the specified org/person.
    * @param person The data object of the org/person to change.
    */
-  private changeOrgPerson (person: OrgPersonIF): void {
-    // if this is the completing party, assign email address from user profile
-    if (person.roles.some(role => role.roleType === Roles.COMPLETING_PARTY)) {
-      person.officer.email = this.getUserEmail
-    }
-
+  private performAddEdit (person: OrgPersonIF): void {
     // make a copy so Vue reacts when we set the new list
-    const tempList = [...this.getPeopleAndRoles]
+    const tempList = cloneDeep(this.getPeopleAndRoles)
+
+    // if this is the Completing Party, set email address from user profile
+    if (person.roles.some(role => role.roleType === Roles.COMPLETING_PARTY)) {
+      person.officer.email = this.userEmail
+    }
 
     if (isNaN(this.activeIndex)) {
       person.action = ActionTypes.ADDED
@@ -292,27 +350,24 @@ export default class PeopleAndRoles extends Vue {
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
-    this.resetData()
+    this.performReset()
   }
 
   /**
    * Tags the specified org/person for removal.
    * @param index The index of the org/person to remove.
    */
-  private removeOrgPerson (index: number): void {
-    // get org/person to remove
-    // make a copy so we don't change the item in the list
-    const person = { ...this.getPeopleAndRoles[index] }
-
+  private performRemove (index: number): void {
     // make a copy so Vue reacts when we set the new list
-    const tempList = [...this.getPeopleAndRoles]
+    const tempList = cloneDeep(this.getPeopleAndRoles)
+
+    // get org/person to remove
+    // (we update this record right in the temp list)
+    const person = tempList[index]
 
     // just set the action (ie, soft-delete)
     // person will be filtered out on file and pay
     person.action = ActionTypes.REMOVED
-
-    // splice in the updated person
-    tempList.splice(index, 1, person)
 
     // set the new list
     this.setPeopleAndRoles(tempList)
@@ -322,31 +377,35 @@ export default class PeopleAndRoles extends Vue {
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
-    this.resetData()
+    this.performReset()
   }
 
   /**
-   * Removes the Completing Party role from the respective person.
+   * Removes the Completing Party role from whichever person has it.
+   * Also removes their email address.
    */
-  private removeCompletingPartyRole () {
+  private removeCompletingPartyRole (): void {
     // make a copy so Vue reacts when we set the new list
-    const tempList = [...this.getPeopleAndRoles]
+    const tempList = cloneDeep(this.getPeopleAndRoles)
 
-    // find the completing party in the temp list
-    const completingParty = tempList.find(orgPerson =>
-      orgPerson.roles.some(role =>
-        role.roleType === Roles.COMPLETING_PARTY
-      )
-    )
+    // get the Completing Party
+    // (we update this record right in the temp list)
+    const person = this.getCompletingParty(tempList)
 
-    if (completingParty) {
+    if (person) {
       // remove the Completing Party role
-      completingParty.roles = completingParty.roles.filter(role =>
+      person.roles = person.roles.filter(role =>
         role.roleType !== Roles.COMPLETING_PARTY
       )
 
+      // identify that this person has been edited
+      // (unless they were already added, edited or removed)
+      if (!person.action) {
+        person.action = ActionTypes.EDITED
+      }
+
       // remove email address that we got from user profile
-      completingParty.officer.email = null
+      person.officer.email = null
 
       // set the new list
       this.setPeopleAndRoles(tempList)
@@ -356,30 +415,17 @@ export default class PeopleAndRoles extends Vue {
   }
 
   /**
-   * Resets state properties after a change is completed (or to cancel).
+   * Gets the Completing Party in a specified org/person list.
+   * @param list The list to search.
+   * @returns The Completing Party if found, otherwise undefined.
    */
-  private resetData (): void {
-    this.currentOrgPerson = null
-    this.activeIndex = NaN
-    this.showOrgPersonForm = false
-  }
-
-  /**
-   * Determines whether we have the specified role by count and mode.
-   */
-  private hasRole (roleName: Roles, count: number, mode: Modes): boolean {
-    // 1. filter out removed people
-    // 2. filter in people with specified role
-    const orgPersonWithSpecifiedRole =
-      this.getPeopleAndRoles.filter(people => people.action !== ActionTypes.REMOVED)
-        .filter(people => people.roles.some(party => party.roleType === roleName))
-
-    if (mode === Modes.EXACT) {
-      return (orgPersonWithSpecifiedRole.length === count)
-    }
-    if (mode === Modes.AT_LEAST) {
-      return (orgPersonWithSpecifiedRole.length >= count)
-    }
+  private getCompletingParty (list: OrgPersonIF[]): OrgPersonIF {
+    const i = list?.findIndex(orgPerson =>
+      orgPerson.roles.some(role =>
+        role.roleType === Roles.COMPLETING_PARTY
+      )
+    )
+    return (i >= 0) ? list[i] : undefined
   }
 
   /**
