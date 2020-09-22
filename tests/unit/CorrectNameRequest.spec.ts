@@ -69,7 +69,7 @@ describe('CorrectNameRequest', () => {
     wrapper.vm.entityPhone = '123 456 7890'
     wrapper.vm.entityEmail = 'mock@email.com'
 
-    await Vue.nextTick()
+    await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(true)
   })
@@ -83,7 +83,7 @@ describe('CorrectNameRequest', () => {
     wrapper.vm.nameRequestNumber = '123123NR'
     wrapper.vm.entityEmail = 'mock@email.com'
 
-    await Vue.nextTick()
+    await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(false)
   })
@@ -97,7 +97,7 @@ describe('CorrectNameRequest', () => {
     wrapper.vm.nameRequestNumber = '123123NR'
     wrapper.vm.entityEmail = 'mockemail.com'
 
-    await Vue.nextTick()
+    await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(false)
   })
@@ -111,7 +111,7 @@ describe('CorrectNameRequest', () => {
     wrapper.vm.nameRequestNumber = '123123NR'
     wrapper.vm.entityPhone = '123 456 7890 1212'
 
-    await Vue.nextTick()
+    await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(false)
   })
@@ -126,7 +126,7 @@ describe('CorrectNameRequest', () => {
     wrapper.vm.entityPhone = ''
     wrapper.vm.entityEmail = ''
 
-    await Vue.nextTick()
+    await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(false)
   })
@@ -141,7 +141,7 @@ describe('CorrectNameRequest', () => {
     wrapper.vm.entityPhone = '250 516 8257'
     wrapper.vm.entityEmail = ''
 
-    await Vue.nextTick()
+    await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(true)
     expect(getLastEvent(wrapper, 'isValid')).toBe(true)
@@ -157,7 +157,7 @@ describe('CorrectNameRequest', () => {
     wrapper.vm.entityPhone = ''
     wrapper.vm.entityEmail = ''
 
-    await Vue.nextTick()
+    await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(false)
     expect(getLastEvent(wrapper, 'isValid')).toBe(false)
