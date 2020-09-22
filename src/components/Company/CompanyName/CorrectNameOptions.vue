@@ -6,7 +6,7 @@
     <v-expansion-panels v-model="panel">
       <v-expansion-panel
         v-for="(item,i) in displayedOptions"
-        :id="item.id"
+        :id="`x-panel: ${item.id}`"
         :key="i"
         :disabled="isOneOption"
         @click="identifyForm(item.id)"
