@@ -49,7 +49,7 @@ describe('CorrectCompanyName', () => {
     const wrapper = wrapperFactory()
     const companyNameInput = wrapper.find('#company-name-input')
 
-    await Vue.nextTick()
+    await flushPromises()
 
     // Verify data from Store
     expect(companyNameInput.element.value).toBe('Bobs Plumbing')
@@ -61,7 +61,7 @@ describe('CorrectCompanyName', () => {
     const companyNameInput = wrapper.find('#company-name-input')
     wrapper.vm.companyName = null
 
-    await Vue.nextTick()
+    await flushPromises()
 
     // Verify data from Store
     expect(companyNameInput.element.value).toBe('')
@@ -73,7 +73,7 @@ describe('CorrectCompanyName', () => {
     const companyNameInput = wrapper.find('#company-name-input')
     wrapper.vm.companyName = 'Bob\'s Plumbing Ltd.'
 
-    await Vue.nextTick()
+    await flushPromises()
 
     // Verify data from Store
     expect(companyNameInput.element.value).toBe('Bob\'s Plumbing Ltd.')
