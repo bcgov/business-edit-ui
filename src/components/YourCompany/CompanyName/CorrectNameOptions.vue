@@ -54,9 +54,9 @@
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 
 // Components
-import CorrectNameRequest from '@/components/Company/CompanyName/CorrectNameRequest.vue'
-import CorrectCompanyName from '@/components/Company/CompanyName/CorrectCompanyName.vue'
-import CorrectNameToNumber from '@/components/Company/CompanyName/CorrectNameToNumber.vue'
+import CorrectNameRequest from '@/components/YourCompany/CompanyName/CorrectNameRequest.vue'
+import CorrectCompanyName from '@/components/YourCompany/CompanyName/CorrectCompanyName.vue'
+import CorrectNameToNumber from '@/components/YourCompany/CompanyName/CorrectNameToNumber.vue'
 
 // Interfaces & Enums
 import { CorrectNameOptionIF } from '@/interfaces'

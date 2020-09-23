@@ -169,7 +169,7 @@
 import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
 
 // Interfaces
-import { OrgPersonIF, BaseAddressType, FormType, AddressIF, ConfirmDialogType, RolesIF } from '@/interfaces'
+import { OrgPersonIF, BaseAddressType, FormType, AddressIF, ConfirmDialogType, RoleIF } from '@/interfaces'
 
 // Components
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
@@ -413,8 +413,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     return { ...this.inProgressDeliveryAddress }
   }
 
-  private setPersonRoles (): RolesIF[] {
-    let roles: RolesIF[] = []
+  private setPersonRoles (): RoleIF[] {
+    let roles: RoleIF[] = []
     if (this.isCompletingParty) {
       roles.push({ roleType: Roles.COMPLETING_PARTY, appointmentDate: this.getCurrentDate })
     }

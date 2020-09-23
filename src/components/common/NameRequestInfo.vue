@@ -122,7 +122,7 @@ import { getName } from 'country-list'
 
 // Components
 import { ConfirmDialog } from '@/components/dialogs'
-import { ListNameTranslations, AddNameTranslation } from '@/components/DefineCompany'
+import { ListNameTranslations, AddNameTranslation } from '@/components/YourCompany'
 
 // Enums
 import { NameRequestStates } from '@/enums'

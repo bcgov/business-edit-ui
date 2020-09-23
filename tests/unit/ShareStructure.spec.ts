@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 
-import { ShareStructure } from '@/components/CreateShareStructure'
+import { ShareStructure } from '@/components/ShareStructure'
 import { ShareClassIF } from '@/interfaces'
 
 // Store

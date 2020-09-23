@@ -19,7 +19,7 @@ import { ActionBindingIF, BusinessContactIF, IncorporationFilingIF } from '@/int
 import { Action, Getter } from 'vuex-class'
 
 // Components
-import { BusinessContactInfo } from '@/components/DefineCompany'
+import { BusinessContactInfo } from '@/components/YourCompany'
 
 @Component({
   components: {

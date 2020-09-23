@@ -12,7 +12,7 @@ import {
   CorrectCompanyName,
   CorrectNameRequest,
   CorrectNameToNumber
-} from '@/components/Company/CompanyName'
+} from '@/components/YourCompany/CompanyName'
 
 Vue.use(Vuetify)
 

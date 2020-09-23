@@ -8,7 +8,7 @@ import { getVuexStore } from '@/store'
 import { createLocalVue, mount } from '@vue/test-utils'
 
 // Components
-import { ListShareClass } from '@/components/CreateShareStructure'
+import { ListShareClass } from '@/components/ShareStructure'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)

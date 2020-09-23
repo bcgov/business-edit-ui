@@ -1,4 +1,4 @@
 export enum IncorporatorTypes {
-    PERSON = 'Person',
-    CORPORATION = 'Org'
-  }
+  PERSON = 'Person',
+  CORPORATION = 'Org'
+}

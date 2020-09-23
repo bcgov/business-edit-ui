@@ -158,9 +158,6 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   }
 })
 export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
-  readonly ALTERATION = 'alteration'
-  readonly INCORPORATION_APPLICATION = 'incorporationApplication'
-
   // Refs
   $refs!: {
     confirm: ConfirmDialogType

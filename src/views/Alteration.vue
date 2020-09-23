@@ -31,9 +31,9 @@ import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 
 // Components
-import { SummaryDefineCompany } from '@/components/DefineCompany'
+import { SummaryDefineCompany } from '@/components/YourCompany'
 import { ListPeopleAndRoles } from '@/components/PeopleAndRoles'
-import { ListShareClass } from '@/components/CreateShareStructure'
+import { ListShareClass } from '@/components/ShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'
 
 // Mixins, Interfaces and Enums

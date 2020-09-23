@@ -66,8 +66,8 @@ import { Getter, State } from 'vuex-class'
 import { BusinessContactIF, GetterIF } from '@/interfaces'
 
 // Components
-import { FolioNumber, BusinessContactInfo, OfficeAddresses } from '@/components/DefineCompany'
-import { CorrectNameOptions } from '@/components/Company/CompanyName'
+import { FolioNumber, BusinessContactInfo, OfficeAddresses } from '@/components/YourCompany'
+import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 
 // Mixins
 import { EntityFilterMixin } from '@/mixins'
