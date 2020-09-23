@@ -1,70 +1,73 @@
 <template>
-  <v-card flat id="list-people-roles">
-    <ConfirmRemoveDialog
-      :dialog="dialog"
-      attach="#list-people-roles"
-      @confirm="emitRemovePerson(personId)"
-      @exit="dialog = false"
-    />
-
-    <!-- Summary Section -->
-    <div id="people-roles-summary" v-if="isSummary">
-      <!-- Summary Header -->
-      <div class="people-roles-summary-header" >
-        <v-icon>mdi-account</v-icon>
-        <label class="people-roles-title"><strong>People and Roles</strong></label>
-      </div>
-
-      <!-- Summary Warning -->
-      <div v-if="showErrorSummary" class="people-roles-invalid-message">
-        <span>
-          <v-icon color="blue darken-2">mdi-information-outline</v-icon>
-          This step is not complete.
-          <router-link id="router-link" :to="{ path: '/add-people-roles', query: { showErrors: true } }">
-            Return to this step to complete it.
-          </router-link>
-        </span>
-      </div>
-    </div>
-
+  <div flat id="list-people-roles" class="mt-0">
     <!-- List Display Section -->
-    <div id="people-roles-list">
+    <div id="people-roles-list" v-if="getPeopleAndRoles.length > 0">
       <!-- List Headers -->
-      <v-row class="people-roles-header list-item__subtitle" no-gutters>
+      <v-row class="people-roles-list-header list-item__subtitle pb-3" no-gutters>
         <v-col v-for="(title, index) in tableHeaders" :key="index">
           <span>{{ title }}</span>
         </v-col>
-        <!-- Spacer Column For Actions -->
-        <v-col sm="1" v-if="!isSummary"></v-col>
+        <!-- Spacer Column for Actions -->
+        <v-col lg="1"></v-col>
       </v-row>
 
       <!-- List Content -->
+
+      <!-- FUTURE: either show the item or show the edit component -->
+      <!-- "if (edit_me) then ... else ..." -->
+      <!-- <template v-for="(orgPerson, index) in getPeopleAndRoles">
+        <v-row
+          class="people-roles-content list-item__subtitle"
+          :key="index"
+          no-gutters
+        >
+          <v-col>this row is to edit {{formatName(orgPerson)}}</v-col>
+        </v-row>
+      </template> -->
+
       <v-row
-        class="people-roles-content"
-        :class="{ 'list-item__subtitle': !isSummary }"
-        v-for="(officer, index) in personList"
+        class="people-roles-content list-item__subtitle py-3"
+        v-for="(orgPerson, index) in getPeopleAndRoles"
         :key="index"
-        no-gutters>
+        no-gutters
+      >
+        <!-- Name + Badge -->
         <v-col class="text-truncate">
-          <v-tooltip top :disabled="formatName(officer).length < 25" color="primary">
+          <!-- provide tooltip to display full name if name is longer than 25 chars -->
+          <v-tooltip top :disabled="formatName(orgPerson).length < 25" color="primary">
             <template v-slot:activator="{ on }">
-              <span v-on="on" class="people-roles-title"><strong>{{ formatName(officer) }}</strong></span>
+              <span v-on="on" class="people-roles-title">{{ formatName(orgPerson) }}</span>
             </template>
-            <span>{{ formatName(officer) }}</span>
+            <span>{{ formatName(orgPerson) }}</span>
           </v-tooltip>
+
+          <br v-if="orgPerson.action">
+          <v-chip v-if="orgPerson.action === ActionTypes.ADDED"
+            x-small label color="#1669BB" text-color="white">ADDED</v-chip>
+          <v-chip v-if="orgPerson.action === ActionTypes.EDITED"
+            x-small label color="#1669BB" text-color="white">CORRECTED</v-chip>
+          <v-chip v-if="orgPerson.action === ActionTypes.REMOVED"
+            x-small label color="#E0E0E0" text-color="grey darken-1">REMOVED</v-chip>
         </v-col>
+
+        <!-- Mailing Address -->
         <v-col>
-          <base-address class="peoples-roles-mailing-address" :address="officer.mailingAddress" />
+          <base-address class="peoples-roles-mailing-address" :address="orgPerson.mailingAddress" />
         </v-col>
+
+        <!-- Delivery Address (for directors only) -->
         <v-col>
-          <p v-if="isSame(officer.mailingAddress, officer.deliveryAddress)"
+          <p v-if="isSame(orgPerson.mailingAddress, orgPerson.deliveryAddress)"
             class="peoples-roles-delivery-address">Same as Mailing Address
           </p>
-          <base-address v-else class="peoples-roles-delivery-address" :address="officer.deliveryAddress"/>
+          <base-address v-else class="peoples-roles-delivery-address" :address="orgPerson.deliveryAddress"/>
         </v-col>
+
+        <!-- Roles -->
         <v-col>
-          <div v-if="officer.roles.length>0">
-            <v-col v-for="(role, index) in officer.roles" :key="index" class="col-roles">
+          <!-- Warning if orgPerson has no roles -->
+          <div v-if="orgPerson.roles.length > 0">
+            <v-col v-for="(role, index) in orgPerson.roles" :key="index" class="col-roles">
               <span>{{ role.roleType }}</span>
             </v-col>
           </div>
@@ -74,30 +77,55 @@
           </div>
         </v-col>
 
-        <!-- Actions Column -->
-        <v-col sm="1" v-if="!isSummary">
-          <div class="actions">
+        <!-- Actions Buttons -->
+        <v-col lg="1">
+          <div v-if="orgPerson.action" class="actions">
+            <span class="undo-action mr-4">
+              <v-btn
+                text small color="primary"
+                :id="'officer-' + orgPerson.officer.id + '-undo-btn'"
+                @click="emitUndoOrgPerson(index)"
+              >
+                <v-icon small>mdi-undo</v-icon>
+                <span>Undo</span>
+              </v-btn>
+            </span>
+          </div>
+
+          <div v-else class="actions">
             <span class="edit-action">
-              <v-btn small text color="primary"
-                :id="'officer-' + officer.id + '-change-btn'"
-                @click="emitPersonInfo(index)"
+              <v-btn
+                text small color="primary"
+                :id="'officer-' + orgPerson.officer.id + '-edit-btn'"
+                @click="emitEditPerson(index)"
               >
                 <v-icon small>mdi-pencil</v-icon>
-                <span>Edit</span>
+                <span>Correct</span>
               </v-btn>
             </span>
 
-            <!-- more actions menu -->
-            <span>
+            <!-- More Actions Menu -->
+            <span class="more-actions mr-4">
               <v-menu offset-y>
                 <template v-slot:activator="{ on }">
-                  <v-btn text small color="primary" class="actions__more-actions__btn" v-on="on">
+                  <v-btn
+                    text small color="primary"
+                    class="more-actions-btn"
+                    v-on="on"
+                  >
                     <v-icon>mdi-menu-down</v-icon>
                   </v-btn>
                 </template>
-                <v-list class="actions__more-actions">
-                  <v-list-item @click="confirmRemove(index)">
-                    <v-list-item-title><v-icon>mdi-delete</v-icon>Remove</v-list-item-title>
+                <v-list>
+                  <v-list-item
+                    class="actions-dropdown_item"
+                    :id="'officer-' + orgPerson.officer.id + '-remove-btn'"
+                    @click="emitRemoveOrgPerson(index)"
+                  >
+                    <v-list-item-subtitle>
+                      <v-icon small>mdi-delete</v-icon>
+                      <span class="ml-1">Remove</span>
+                    </v-list-item-subtitle>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -106,51 +134,36 @@
         </v-col>
       </v-row>
     </div>
-  </v-card>
+  </div>
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Prop, Mixins, Emit } from 'vue-property-decorator'
-
-// Components
+import { Getter } from 'vuex-class'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-
-// Dialogs
-import { ConfirmRemoveDialog } from '@/components/dialogs'
-
-// Mixins
-import { CommonMixin, EntityFilterMixin } from '@/mixins'
-
-// Interfaces
+import { CommonMixin } from '@/mixins'
 import { OrgPersonIF } from '@/interfaces'
+import { ActionTypes } from '@/enums'
 
 @Component({
   components: {
-    BaseAddress,
-    ConfirmRemoveDialog
+    BaseAddress
   }
 })
-export default class ListPeopleAndRoles extends Mixins(CommonMixin, EntityFilterMixin) {
-  // Props passed in to this component
-  @Prop({ default: () => [] })
-  private personList: Array<OrgPersonIF>
+export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
+  // Enum for template
+  readonly ActionTypes = ActionTypes
 
-  @Prop({ default: false })
-  private showErrorSummary: boolean
+  // Getter
+  @Getter getPeopleAndRoles!: Array<OrgPersonIF>
 
-  @Prop({ default: false })
-  private isSummary: boolean
-
-  // Local Properties
+  /** Headers for the person table. */
   readonly tableHeaders: Array<string> = ['Name', 'Mailing Address', 'Delivery Address', 'Roles']
-  private dialog: boolean = false
-  private personId: number
 
   /**
-   * Determine if Corporation/Firm or Person.
+   * Formats the org or person name for display.
    * @param filing The filing body which contains the name/title.
-   * @returns The appropriate Corporation or Person name.
+   * @returns The formatted org/person name.
    */
   private formatName (filing: any): string {
     return filing?.officer?.orgName ? filing?.officer?.orgName
@@ -158,29 +171,25 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, EntityFilter
   }
 
   /**
-   * Identify and confirm the removal of a person/org through dialog.
-   * @param index The active index which is subject to removal.
+   * Emits an event and index to the parent to handle undoing.
+   * @param index The index of the org/person to undo.
    */
-  confirmRemove (index: number): void {
-    this.personId = index
-    this.dialog = true
-  }
+  @Emit('undoOrgPerson')
+  private emitUndoOrgPerson (index: number): void {}
 
   /**
-   * Emit an index and event to the parent to handle removal.
-   * @param index The active index which is subject to removal.
+   * Emits an event and index to the parent to handle editing.
+   * @param index The index of the org/person to edit.
    */
-  @Emit('removePerson')
-  private emitRemovePerson (index: number): void {
-    this.dialog = false
-  }
+  @Emit('editOrgPerson')
+  private emitEditPerson (index: number): void {}
 
   /**
-   * Emit an index and event to the parent to handle editing.
-   * @param index The active index which is subject to change.
+   * Emits an event and index to the parent to handle removal.
+   * @param index The index of the org/person to remove.
    */
-  @Emit('editPerson')
-  private emitPersonInfo (index: number): void {}
+  @Emit('removeOrgPerson')
+  private emitRemoveOrgPerson (index: number): void {}
 }
 </script>
 
@@ -191,37 +200,26 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, EntityFilter
   margin-top: 1rem;
 }
 
-.people-roles-summary-header {
-  display: flex;
-  background-color: $BCgovBlue5O;
-  padding: 1.25rem;
-
-  .people-roles-title {
-    padding-left: .5rem;
-  }
-
-}
-
 .people-roles-invalid-message {
   padding: 1.25rem;
   font-weight: bold;
   color: $BCgovABlue2;
 }
 
-.people-roles-header {
-  padding: .5rem 1.25rem .5rem 1.25rem;
-  font-size: 0.875rem;
-  margin-top: 1rem;
+.people-roles-list-header {
+  // NB: same styles as v-data-table header
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.75rem;
+  font-weight: 700;
 }
 
 .people-roles-content {
-  margin-top: .5rem;
-  padding: .5rem 1.25rem .5rem 1.25rem;
   border-top: 1px solid $gray1;
   font-size: 0.875rem;
 
   .people-roles-title {
     color: $gray7;
+    font-weight: 700;
   }
 
   .actions {
@@ -233,7 +231,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, EntityFilter
     }
 
     .v-btn {
-      min-width: .5rem;
+      min-width: 0.5rem;
     }
 
     .v-btn + .v-btn {
@@ -244,11 +242,11 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, EntityFilter
 
 .v-list-item {
   min-height: 0;
-  padding: 0 1rem 0 .5rem;
+  padding: 0 1rem 0 0.5rem;
 }
 
 .col {
-  padding: .25rem;
+  padding: 0.25rem;
 
   .col-roles {
     padding: 0!important;
@@ -261,5 +259,4 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, EntityFilter
   left: 2px;
   color: $BCgovGold9
 }
-
 </style>

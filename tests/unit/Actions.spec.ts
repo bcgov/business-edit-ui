@@ -90,7 +90,7 @@ describe.skip('Actions component', () => {
     store.state.stateModel.tombstone.entityType = 'BC'
     store.state.stateModel.nameRequest = { entityType: 'BC' }
     store.state.stateModel.defineCompanyStep = { valid: true }
-    store.state.stateModel.addPeopleAndRoleStep = { valid: true }
+    store.state.stateModel.peopleAndRoles = { valid: true }
     store.state.stateModel.createShareStructureStep = { valid: true }
     store.state.stateModel.incorporationAgreementStep = { valid: true }
     store.state.stateModel.incorporationDateTime = { valid: true }
@@ -148,7 +148,7 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
     }
     store.state.stateModel.tombstone.entityType = 'BC'
     store.state.stateModel.defineCompanyStep = { valid: true }
-    store.state.stateModel.addPeopleAndRoleStep = { valid: true }
+    store.state.stateModel.peopleAndRoles = { valid: true }
     store.state.stateModel.createShareStructureStep = { valid: true }
     store.state.stateModel.incorporationAgreementStep = { valid: true }
     store.state.stateModel.incorporationDateTime = { valid: true }
@@ -412,7 +412,7 @@ describe.skip('Actions component - Filing Functionality', () => {
     }
     store.state.stateModel.defineCompanyStep.officeAddresses = filing.filing.incorporationApplication.offices
     store.state.stateModel.defineCompanyStep.folioNumber = filing.filing.header.folioNumber
-    store.state.stateModel.addPeopleAndRoleStep.orgPeople = filing.filing.incorporationApplication.parties
+    store.state.stateModel.peopleAndRoles.orgPeople = filing.filing.incorporationApplication.parties
     store.state.stateModel.createShareStructureStep.shareClasses = filing.filing.incorporationApplication.shareClasses
     store.state.stateModel.tombstone.filingId = 1234
     store.state.stateModel.tombstone.entityType = 'BC'

@@ -61,9 +61,17 @@ export default class FilingTemplateMixin extends Vue {
 
   /**
    * Builds an Incorporation Application Correction filing body from store data. Used when saving a filing.
+   * @param isDraft boolean indicating whether this is a draft
    * @returns the IA Correction filing body to save
    */
-  buildIaCorrectionFiling (): CorrectionFilingIF {
+  buildIaCorrectionFiling (isDraft: boolean): CorrectionFilingIF {
+    // if filing and paying, filter out removed orgs/persons and omit the 'action' property
+    let parties = this.getPeopleAndRoles
+    if (!isDraft) {
+      parties = parties.filter(x => x.action !== 'removed')
+        .map((x) => { const { action, ...rest } = x; return rest })
+    }
+
     // Build filing.
     const filing: CorrectionFilingIF = {
       header: {
@@ -98,7 +106,7 @@ export default class FilingTemplateMixin extends Vue {
           phone: this.stateModel.defineCompanyStep.businessContact.phone,
           extension: this.stateModel.defineCompanyStep.businessContact.extension
         },
-        parties: this.getPeopleAndRoles,
+        parties,
         shareStructure: {
           shareClasses: this.getShareClasses
         },

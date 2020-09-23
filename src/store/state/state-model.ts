@@ -58,7 +58,7 @@ export const stateModel: StateModelIF = {
     officeAddresses: {},
     folioNumber: null
   },
-  addPeopleAndRoleStep: {
+  peopleAndRoles: {
     valid: false,
     changed: false,
     orgPeople: []

@@ -14,7 +14,7 @@ export interface StateModelIF {
   nameTranslations: Array<string>
   certifyState: CertifyIF
   defineCompanyStep: DefineCompanyIF
-  addPeopleAndRoleStep: PeopleAndRoleIF
+  peopleAndRoles: PeopleAndRoleIF
   createShareStructureStep: ShareStructureIF
   incorporationAgreementStep: IncorporationAgreementIF
   incorporationDateTime: DateTimeIF,

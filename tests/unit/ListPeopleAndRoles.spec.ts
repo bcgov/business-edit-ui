@@ -201,19 +201,6 @@ describe.skip('List People And Roles component', () => {
     expect(peoplesListItem2.querySelector('.actions')).toBeNull()
   })
 
-  it('displays the Summary header when in summary view', () => {
-    const wrapper = wrapperFactory({ personList: mockPersonList, isSummary: true })
-
-    expect(wrapper.vm.$el.querySelector('.people-roles-summary-header').textContent)
-      .toContain('People and Roles')
-  })
-
-  it('does NOT display the Summary header when NOT in summary view', () => {
-    const wrapper = wrapperFactory({ personList: mockPersonList })
-
-    expect(wrapper.vm.$el.querySelector('.people-roles-summary-header')).toBeNull()
-  })
-
   it('displays invalid warning message when in summary view and step 2 data is invalid', () => {
     const wrapper = wrapperFactory({ personList: mockPersonList, showErrorSummary: true, isSummary: true })
 

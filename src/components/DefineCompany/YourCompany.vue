@@ -1,8 +1,8 @@
 <template>
-  <v-card flat>
+  <v-card flat id="your-company">
      <div class="define-company-header">
         <v-icon>mdi-domain</v-icon>
-        <label class="define-company-title"><strong>Your Company</strong></label>
+        <label class="define-company-title font-weight-bold">Your Company</label>
     </div>
     <div class="section-container px-8">
       <!--TODO: Replace container content with Name Request Summary when it is ready -->
@@ -137,7 +137,7 @@ import { Getter, State } from 'vuex-class'
 // Interfaces
 import { BusinessContactIF, GetterIF, IncorporationFilingIF, NameRequestIF, StateModelIF } from '@/interfaces'
 // Components
-import { CorrectBusinessContactInfo, FolioNumber, OfficeAddresses } from '@/components/DefineCompany'
+import { CorrectBusinessContactInfo, FolioNumber, OfficeAddresses } from '.'
 import { CorrectNameOptions } from '@/components/Company/CompanyName'
 // Mixins
 import { DateMixin, EntityFilterMixin, LegalApiMixin } from '@/mixins'
@@ -172,8 +172,7 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   @Prop({ default: false })
   private isSummary: boolean
 
-  // Enums
-  readonly CorrectionTypes = CorrectionTypes
+  // Enum for the template
   readonly EntityTypes = EntityTypes
 
   // whether components have changes

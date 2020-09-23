@@ -49,10 +49,11 @@ describe.skip('Entity Info component with an NR', () => {
     const breadcrumbs = wrapper.findAll('.v-breadcrumbs li')
 
     const crumb1 = breadcrumbs.at(0)
-    const divider = breadcrumbs.at(1)// Divider is present every odd index
+    const divider = breadcrumbs.at(1) // Divider is present every odd index
     const crumb2 = breadcrumbs.at(2)
     const crumb3 = breadcrumbs.at(4)
 
+    // TODO: add test for "Staff Dashboard" when user is staff
     expect(crumb1.text()).toStrictEqual('Manage Businesses Dashboard')
     expect(divider.text()).toStrictEqual('>')
     expect(crumb2.text()).toStrictEqual('Xyz Ltd.')
@@ -96,10 +97,11 @@ describe.skip('Entity Info component without an NR', () => {
     const breadcrumbs = wrapper.findAll('.v-breadcrumbs li')
 
     const crumb1 = breadcrumbs.at(0)
-    const divider = breadcrumbs.at(1)// Divider is present every odd index
+    const divider = breadcrumbs.at(1) // Divider is present every odd index
     const crumb2 = breadcrumbs.at(2)
     const crumb3 = breadcrumbs.at(4)
 
+    // TODO: add test for "Staff Dashboard" when user is staff
     expect(crumb1.text()).toStrictEqual('Manage Businesses Dashboard')
     expect(divider.text()).toStrictEqual('>')
     expect(crumb2.text()).toStrictEqual('Numbered Benefit Company')
