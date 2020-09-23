@@ -207,6 +207,10 @@ export default class PeopleAndRoles extends Vue {
 
   /**
    * Determines whether we have the specified role by count and mode.
+   * @param roleName the role we are interested in
+   * @param count the minimum count of items with this role
+   * @param mode the count comparison mode (eg, exact or at-least)
+   * @returns True if the conditions are met, else False
    */
   private hasRole (roleName: Roles, count: number, mode: Modes): boolean {
     // 1. filter out removed people
