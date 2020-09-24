@@ -177,7 +177,6 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
   @Action setCurrentDate!: ActionBindingIF
   @Action setAuthRoles: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
-  @Action setHaveCorrection!: ActionBindingIF
   @Action setAccountInformation!: ActionBindingIF
   @Action setKeycloakRoles!: ActionBindingIF
   @Action setUserInfo: ActionBindingIF

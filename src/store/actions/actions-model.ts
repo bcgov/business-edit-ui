@@ -136,10 +136,6 @@ export const setHaveChanges: ActionIF = ({ commit }, haveChanges): void => {
   commit('mutateHaveChanges', haveChanges)
 }
 
-export const setHaveCorrection: ActionIF = ({ commit }, haveCorrection): void => {
-  commit('mutateHaveCorrection', haveCorrection)
-}
-
 export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
   commit('mutateOriginalIA', originalIA)
 }

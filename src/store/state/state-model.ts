@@ -16,8 +16,7 @@ export const stateModel: StateModelIF = {
     isSavingResuming: false,
     isFilingPaying: false,
     ignoreChanges: false,
-    haveChanges: false,
-    haveCorrection: false
+    haveChanges: false
   },
   accountInformation: {
     accountType: '',

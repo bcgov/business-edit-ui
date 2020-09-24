@@ -157,10 +157,6 @@ export const mutateHaveChanges = (state: any, haveChanges: boolean) => {
   state.stateModel.tombstone.haveChanges = haveChanges
 }
 
-export const mutateHaveCorrection = (state: any, haveCorrection: boolean) => {
-  state.stateModel.tombstone.haveCorrection = haveCorrection
-}
-
 export const mutateEntityType = (state: any, entityType: EntityTypes) => {
   state.stateModel.tombstone.entityType = entityType
 }

@@ -208,12 +208,6 @@ export const getFilingData = (state: any): any => {
   return state.stateModel.filingData
 }
 
-/** Whether any corrections have been made. */
-// TODO: replace this with isCorrectionChanged() below
-export const getHaveCorrection = (state: any): boolean => {
-  return state.stateModel.tombstone.haveCorrection
-}
-
 /** Whether People and Roles component is valid. */
 export const isPeopleAndRoleValid = (state: any): boolean => {
   return state.stateModel.peopleAndRoles.valid
