@@ -1,5 +1,6 @@
 export interface ShareStructureIF {
     valid: boolean;
+    changed: boolean;
     shareClasses: ShareClassIF[];
 }
 

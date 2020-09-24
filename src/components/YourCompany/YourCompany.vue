@@ -133,9 +133,10 @@
 <script lang="ts">
 // Libraries
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Getter, State } from 'vuex-class'
+import { Action, Getter, State } from 'vuex-class'
 // Interfaces
-import { BusinessContactIF, GetterIF, IncorporationFilingIF, NameRequestIF, StateModelIF } from '@/interfaces'
+import { ActionBindingIF, BusinessContactIF, GetterIF, IncorporationFilingIF,
+  NameRequestIF, StateModelIF } from '@/interfaces'
 // Components
 import { CorrectBusinessContactInfo, FolioNumber, OfficeAddresses } from '.'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
@@ -164,6 +165,8 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   @Getter isNamedBusiness!: boolean
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getBusinessContact!: BusinessContactIF
+
+  @Action setDefineCompanyStepChanged: ActionBindingIF
 
   // Global state
   @State(state => state.stateModel.defineCompanyStep.valid)
@@ -220,11 +223,11 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   }
 
   // watchers for component change flags
-  @Watch('companyNameChanges') private onCompanyNameChanges ():void { this.emitHaveChanges() }
-  @Watch('contactInfoChanges') private onContactInfoChanges ():void { this.emitHaveChanges() }
-  @Watch('folioNumberChanges') private onFolioNumberChanges ():void { this.emitHaveChanges() }
-  @Watch('nameTranslationChanges') private onNameTranslationChanges ():void { this.emitHaveChanges() }
-  @Watch('officeAddressChanges') private onOfficeAddressChanges ():void { this.emitHaveChanges() }
+  @Watch('companyNameChanges') private onCompanyNameChanges ():void { this.setDataChanges() }
+  @Watch('contactInfoChanges') private onContactInfoChanges ():void { this.setDataChanges() }
+  @Watch('folioNumberChanges') private onFolioNumberChanges ():void { this.setDataChanges() }
+  @Watch('nameTranslationChanges') private onNameTranslationChanges ():void { this.setDataChanges() }
+  @Watch('officeAddressChanges') private onOfficeAddressChanges ():void { this.setDataChanges() }
 
   @Watch('getApprovedName')
   private onApprovedName ():void {
@@ -241,17 +244,19 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
     }
   }
 
-  /** Emits Have Changes event. */
-  @Emit('haveChanges')
-  private emitHaveChanges (): boolean {
-    return (
-      this.companyNameChanges ||
+  private setDataChanges (): void {
+    const haveChanges: boolean = this.companyNameChanges ||
       this.contactInfoChanges ||
       this.folioNumberChanges ||
       this.nameTranslationChanges ||
       this.officeAddressChanges
-    )
+    this.setDefineCompanyStepChanged(haveChanges)
+    this.emitHaveChanges(haveChanges)
   }
+
+  /** Emits Have Changes event. */
+  @Emit('haveChanges')
+  private emitHaveChanges (haveChanges: boolean): void {}
 }
 </script>
 

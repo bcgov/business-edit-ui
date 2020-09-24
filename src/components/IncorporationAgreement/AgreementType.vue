@@ -96,22 +96,23 @@ export default class AgreementType extends Vue {
   private showAgreementTypeForm = false
 
   mounted (): void {
-    this.setIncorporationAgreementStepData({
-      valid: !!this.agreementType,
-      agreementType: this.agreementType
-    })
-
+    this.setIncorporationAgreementData()
     // now that all data is loaded, wait for things to stabilize and reset flag
     Vue.nextTick(() => this.setHaveChanges(false))
   }
 
   private setAgreementType (): void {
-    this.setIncorporationAgreementStepData({
-      valid: !!this.agreementType,
-      agreementType: this.agreementType
-    })
+    this.setIncorporationAgreementData()
     this.emitHaveChanges()
     this.showAgreementTypeForm = false
+  }
+
+  private setIncorporationAgreementData (): void {
+    this.setIncorporationAgreementStepData({
+      valid: !!this.agreementType,
+      changed: this.hasAgreementTypeChange,
+      agreementType: this.agreementType
+    })
   }
 
   private resetAgreementType (): void {
@@ -140,6 +141,7 @@ export default class AgreementType extends Vue {
   @Watch('getAgreementType', { immediate: true })
   private onAgreementTypeStateChange () {
     this.agreementType = this.getAgreementType
+    this.setIncorporationAgreementData()
   }
 }
 </script>

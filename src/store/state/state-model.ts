@@ -49,6 +49,7 @@ export const stateModel: StateModelIF = {
   },
   defineCompanyStep: {
     valid: false,
+    changed: false,
     businessContact: {
       email: '',
       confirmEmail: '',
@@ -65,10 +66,12 @@ export const stateModel: StateModelIF = {
   },
   createShareStructureStep: {
     valid: false,
+    changed: false,
     shareClasses: []
   },
   incorporationAgreementStep: {
     valid: false,
+    changed: false,
     agreementType: null
   },
   originalIA: {
@@ -119,4 +122,5 @@ export const stateModel: StateModelIF = {
     priority: false,
     waiveFees: false
   }
+
 }

@@ -241,14 +241,18 @@ export const isBusySaving = (state: any): boolean => {
     state.stateModel.tombstone.isFilingPaying)
 }
 
-/** Whether any correction sections have changed. */
-export const isCorrectionChanged = (state: any): boolean => {
+/** Whether any correction/alteration sections have changed. */
+export const isFilingChanged = (state: any): boolean => {
   // TODO: add other sections here
-  return (state.stateModel.peopleAndRoles.changed)
+  return (state.stateModel.peopleAndRoles.changed ||
+    state.stateModel.defineCompanyStep.changed ||
+    state.stateModel.createShareStructureStep.changed ||
+    state.stateModel.incorporationAgreementStep.changed)
 }
 
-/** Whether all the correction sections are valid. */
-export const isCorrectionValid = (state: any): boolean => {
-  // TODO: add other sections here
+/** Whether any correction/alteration sections have changed. */
+export const isFilingValid = (state: any): boolean => {
+  // Add sections that can have only invalid data like people and roles and share structure
+  // Define company, Agreement Type wont allow saving and invalid state to the store
   return (state.stateModel.peopleAndRoles.valid)
 }

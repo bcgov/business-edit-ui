@@ -81,6 +81,10 @@ export const mutateDefineCompanyStepValidity = (state: any, validity: boolean) =
   state.stateModel.defineCompanyStep.valid = validity
 }
 
+export const mutateDefineCompanyStepChanged = (state: any, changed: boolean) => {
+  state.stateModel.defineCompanyStep.changed = changed
+}
+
 export const mutateOfficeAddresses = (state: any, addresses: IncorporationAddressIf) => {
   state.stateModel.defineCompanyStep.officeAddresses = addresses
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)

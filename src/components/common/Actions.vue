@@ -4,7 +4,7 @@
     <div class="buttons-left">
       <!-- disable Save button for now -->
       <v-btn id="save-btn" large
-        :disabled="!isEntityType || isBusySaving"
+        :disabled="!isEntityType || isBusySaving || !isFilingValid"
         :loading="stateModel.tombstone.isSaving"
         @click="onClickSave()"
       >
@@ -13,7 +13,7 @@
 
       <!-- disable Save and Resume Later button for now -->
       <v-btn id="save-resume-btn" large
-        :disabled="!isEntityType || isBusySaving"
+        :disabled="!isEntityType || isBusySaving || !isFilingValid"
         :loading="stateModel.tombstone.isSavingResuming"
         @click="onClickSaveResume()"
       >
@@ -24,7 +24,7 @@
     <div class="buttons-right">
       <v-fade-transition hide-on-leave>
         <v-btn id="file-pay-btn" large color="primary"
-          :disabled="!getHaveCorrection || isBusySaving"
+          :disabled="!isFilingChanged || isBusySaving || !isFilingValid"
           :loading="stateModel.tombstone.isFilingPaying"
           @click="onClickFilePay()"
         >
@@ -66,7 +66,8 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
   @Getter getEffectiveDate!: Date
-  @Getter getHaveCorrection!: boolean
+  @Getter isFilingChanged!: boolean
+  @Getter isFilingValid!: boolean
 
   // Global setters
   @Action setIsSaving!: ActionBindingIF
