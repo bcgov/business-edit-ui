@@ -148,6 +148,10 @@ export const setStaffPayment: ActionIF = ({ commit }, staffPayment): void => {
   commit('mutateStaffPayment', staffPayment)
 }
 
+export const setStaffPaymentValidity: ActionIF = ({ commit }, staffPaymentValidity): void => {
+  commit('mutateStaffPaymentValidity', staffPaymentValidity)
+}
+
 export const setFilingData: ActionIF = ({ commit }, filingData): void => {
   commit('mutateFilingData', filingData)
 }

@@ -173,6 +173,10 @@ export const mutateStaffPayment = (state: any, staffPayment: StaffPaymentIF) => 
   state.stateModel.staffPayment = staffPayment
 }
 
+export const mutateStaffPaymentValidity = (state: any, staffPaymentValidity: boolean) => {
+  state.stateModel.staffPaymentValidity = staffPaymentValidity
+}
+
 export const mutateFilingData = (state: any, filingData: FilingDataIF) => {
   state.stateModel.filingData = filingData
 }

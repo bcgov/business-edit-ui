@@ -20,5 +20,6 @@ export interface StateModelIF {
   incorporationDateTime: DateTimeIF,
   originalIA: IncorporationFilingIF,
   staffPayment: StaffPaymentIF,
-  filingData: FilingDataIF
+  filingData: FilingDataIF,
+  staffPaymentValidity: boolean
 }

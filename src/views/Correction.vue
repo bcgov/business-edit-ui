@@ -64,7 +64,6 @@
     <!-- TODO: replace haveChanges event with global state -->
     <staff-payment
       class="mt-10"
-      @emitValid="staffPaymntValid = $event"
       @haveChanges="staffPaymentChanges = $event"
     />
   </section>
@@ -136,7 +135,6 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   // TODO: delete these and use store instead
   private certifyValid = false
   private detailValid = false
-  private staffPaymntValid = false
 
   /** The id of the correction being edited. */
   private get correctionId (): number {

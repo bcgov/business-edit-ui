@@ -116,6 +116,7 @@ export const stateModel: StateModelIF = {
     folioNumber: '',
     isPriority: false
   },
+  staffPaymentValidity: false,
   filingData: {
     filingTypeCode: null,
     entityType: null,
