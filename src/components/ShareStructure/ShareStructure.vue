@@ -1,427 +1,607 @@
 <template>
-  <div>
-    <v-expand-transition id="addShareStructureContainer">
-      <ul class="list add-share-structure">
-        <li class="add-share-structure-container">
-          <div class="meta-container">
-            <label class="add-share-structure-header">
-              <span v-if="activeIndex === -1">Add Share {{ shareStructure.type }}</span>
-              <span v-else>Edit Share {{ shareStructure.type }}</span>
-            </label>
+  <v-card flat id="share-structure">
 
-            <div class="meta-container__inner">
-              <v-form
-                ref="shareStructureForm"
-                class="share-structure-form"
-                v-model="formValid"
-                v-on:submit.prevent="addShareStructure">
-                <v-text-field
-                  filled
-                  :label="shareStructure.type + ' Name [Shares]'"
-                  :hint="'Enter the name of the  '+ shareStructure.type.toLowerCase() +
-                  '  - the words &quot;Shares&quot; is automatically added'"
-                  id="txt-name"
-                  v-model="shareStructure.name"
-                  :rules="getNameRule()"
-                  suffix="Shares"
-                  persistent-hint/>
+    <!-- Summary Section -->
+    <div id="share-summary">
+      <!-- Summary Header -->
+      <div class="share-summary-header" >
+        <v-icon>mdi-file-tree</v-icon>
+        <label class="share-summary-header-title"><strong> Share Structure</strong></label>
+      </div>
+    </div>
 
-                <v-divider class="separator" />
+    <!-- Instructional Text -->
+    <div class="share-info-container pt-6 px-4">
+      Legal obligations copy TBD:
+    </div>
 
-                <v-radio-group
-                  v-model="hasNoMaximumShares"
-                  column
-                  class="radio-group"
-                  @change="changeMaximumShareFlag()">
-                  <v-radio :value="false">
-                    <template v-slot:label>
-                      <v-row><v-col cols="6">
-                      <v-text-field
-                        filled
-                        label="Maximum Number of Shares"
-                        id="txt-max-shares"
-                        v-model="shareStructure.maxNumberOfShares"
-                        persistent-hint
-                        :hint="'Enter the maximum number of shares in the ' + shareStructure.type"
-                        :rules="getMaximumShareRule()"
-                        :disabled="hasNoMaximumShares"/>
-                    </v-col></v-row>
-                    </template>
-                  </v-radio>
-                  <v-radio :value="true" label="No maximum" id="lbl-no-maximum" v-if="isNoMaxSharesVisible"/>
-                </v-radio-group>
+    <!-- Add Buttons -->
+    <div class="btn-container py-6 px-4">
+      <v-btn
+        id="btn-add-person"
+        outlined
+        color="primary"
+        :disabled="false"
+        @click="initNewShareClass()"
+      >
+        <v-icon>mdi-plus</v-icon>
+        <span>Add Share Class</span>
+      </v-btn>
+    </div>
 
-                <v-divider class="separator" />
+    <v-card flat class="add-share-structure-container" v-if="showAddShareStructureForm">
+      <edit-share-structure
+        v-show="showAddShareStructureForm"
+        :initialValue="currentShareStructure"
+        :activeIndex="activeIndex"
+        :nextId="nextId"
+        :parentIndex="parentIndex"
+        :shareClasses="shareClasses"
+        @addEditClass="addEditShareClass($event)"
+        @removeClass="removeShareClass($event)"
+        @resetEvent="resetData()"/>
+    </v-card>
 
-                <v-radio-group
-                  v-model="hasNoParValue"
-                  column
-                  class="radio-group"
-                  @change="changeParValueFlag()" v-show="isClass">
-                  <v-radio :value="false" id="radio-par-value">
-                    <template v-slot:label>
-                      <v-row>
-                        <v-col cols="6">
-                          <v-text-field
-                            filled
-                            label="Par Value"
-                            id="class-par-value"
-                            v-model="shareStructure.parValue"
-                            :rules="getParValueRule()"
-                            hint="Enter the initial value of each share"
-                            persistent-hint/>
-                        </v-col>
-                        <v-col cols="6">
-                          <v-select
-                            :items="getCurrencyList()"
-                            filled
-                            label="Currency"
-                            v-model="shareStructure.currency"
-                            :rules="getCurrencyRule()"
-                            item-text="`${data.item.name}, ${data.item.code}`"
-                            item-value="code"
-                            id='class-currency'>
-                            <template slot="selection" slot-scope="data">
-                               {{ data.item.name }} ({{ data.item.code }})
-                            </template>
-                            <template slot="item" slot-scope="data">
-                              {{ data.item.name }} ({{ data.item.code }})
-                            </template>
-                          </v-select>
-                        </v-col>
-                      </v-row>
-                    </template>
-                  </v-radio>
-                  <v-radio :value="true" label="No par value" id="radio-no-par"/>
-                </v-radio-group>
+    <v-data-table
+      class="share-structure-table"
+      :headers="headers"
+      :items="shareClasses"
+      disable-pagination
+      disable-sort
+      hide-default-footer
+    >
+<!--      EXAMPLE OF SLOTS FOR CUSTOMIZING HEADERS-->
+<!--      <template v-slot:header.maxNumberOfShares="{ header }">-->
+<!--        <span class="">{{ header.text }}</span>-->
+<!--      </template>-->
+      <template v-slot:item="row" class="share-data-table">
 
-                <div v-show="isSeries">
-                    <v-row v-if="shareStructure.hasParValue">
-                        <v-col cols="6">
-                            <v-text-field
-                            label="Par Value"
-                            id="series-par-value"
-                            :value="shareStructure.parValue"
-                            :disabled="true"
-                            width="10"/>
-                        </v-col>
-                        <v-col cols="6">
-                            <v-text-field
-                            id="series-currency"
-                            label="Currency"
-                            :value="`${getCurrencyNameByCode(shareStructure.currency)} (${shareStructure.currency})`"
-                            :disabled="true"/>
-                        </v-col>
-                    </v-row>
-                    <v-label id='lbl-no-par' v-else>No par value</v-label>
-                </div>
+        <!-- Share Class Rows-->
+        <tr :key="row.item.id" class="class-row" :class="{ 'class-row-has-series': row.item.series.length}">
+          <td class="list-item__title">
+            {{ row.item.name }}
+            <action-chip v-if="row.item.action" class="mb-3" :actionable-item="row.item"/>
+          </td>
+          <td>{{ row.item.maxNumberOfShares ? (+row.item.maxNumberOfShares).toLocaleString() : 'No Maximum' }}</td>
+          <td>{{ row.item.parValue ? row.item.parValue : 'No Par Value' }}</td>
+          <td>{{ row.item.currency }}</td>
+          <td>{{ row.item.hasRightsOrRestrictions ? 'Yes' : 'No' }}</td>
 
-                <v-divider class="separator" />
+          <!-- Share Class Action Btns -->
+          <td>
+            <div class="actions">
+              <!-- Share Class Correct Btn -->
+              <span v-if="!row.item.action" class="edit-action">
+                <v-btn small text color="primary"
+                  :id="'class-' + row.index + '-change-btn'"
+                  @click="initShareClassForEdit(row.index)"
+                  :disabled="addEditInProgress"
+                >
+                  <v-icon small>mdi-pencil</v-icon>
+                  <span>Correct</span>
+                </v-btn>
+              </span>
 
-                <div class="form__row">
-                  <v-checkbox
-                     id="special-rights-check-box"
-                    :label="'This share ' + shareStructure.type.toLowerCase() + ' has special rights or restrictions'"
-                    v-model="shareStructure.hasRightsOrRestrictions"/>
-                </div>
+              <!-- Share Class Undo Btn -->
+              <span v-else class="undo-action">
+                <v-btn small text color="primary"
+                  :id="'class-' + row.index + '-undo-btn'"
+                  @click="undoCorrection(row.item.action, row.index)"
+                  :disabled="addEditInProgress"
+                >
+                  <v-icon small>mdi-undo</v-icon>
+                  <span>Undo</span>
+                </v-btn>
+              </span>
 
-                <div class="form__row form__btns">
-                  <v-btn large color="error" :disabled="activeIndex === -1"
-                    @click="removeShareStructure()" id="btn-remove">Remove</v-btn>
-
-                  <v-btn large color="primary" class="form-primary-btn"
-                    @click="validateForm()" :disabled="!formValid" id="btn-done">Done</v-btn>
-
-                  <v-btn large class="form-cancel-btn" @click="resetFormAndData(true)" id="btn-cancel">Cancel</v-btn>
-                </div>
-              </v-form>
+              <!-- Share Class Dropdown Actions -->
+              <span>
+                <v-menu offset-y>
+                  <template v-slot:activator="{ on }">
+                    <v-btn text small
+                           color="primary"
+                           class="actions__more-actions__btn"
+                           :disabled="addEditInProgress"
+                           v-on="on">
+                      <v-icon>mdi-menu-down</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list class="more-actions">
+<!--                    <v-list-item-->
+<!--                      class="actions-dropdown_item"-->
+<!--                      :class="{ 'item-disabled': !row.item.hasRightsOrRestrictions }"-->
+<!--                      :disabled="!row.item.hasRightsOrRestrictions"-->
+<!--                      @click="emitAddSeries(row.index)">-->
+<!--                      <v-list-item-subtitle><v-icon>mdi-playlist-plus</v-icon> Add Series</v-list-item-subtitle>-->
+<!--                    </v-list-item>-->
+                    <v-list-item
+                      class="actions-dropdown_item"
+                      :class="{ 'item-disabled': isMoveDisabled(row.index, 'up') }"
+                      @click="moveIndex(row.index, 'up')"
+                      :disabled="isMoveDisabled(row.index, 'up')"
+                    >
+                      <v-list-item-subtitle class="move-up-selector">
+                        <v-icon>mdi-arrow-up</v-icon> Move Up
+                      </v-list-item-subtitle>
+                    </v-list-item>
+                    <v-list-item
+                      class="actions-dropdown_item"
+                      :class="{ 'item-disabled': isMoveDisabled(row.index, 'down') }"
+                      @click="moveIndex(row.index, 'down')"
+                      :disabled="isMoveDisabled(row.index, 'down')"
+                    >
+                      <v-list-item-subtitle class="move-down-selector">
+                        <v-icon>mdi-arrow-down</v-icon> Move Down
+                      </v-list-item-subtitle>
+                    </v-list-item>
+                    <v-list-item
+                      v-if="!row.item.action"
+                      class="actions-dropdown_item"
+                      @click="removeShareClass(row.index)"
+                    >
+                      <v-list-item-subtitle><v-icon>mdi-delete</v-icon> Remove</v-list-item-subtitle>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </span>
             </div>
-          </div>
-        </li>
-      </ul>
-    </v-expand-transition>
-  </div>
+          </td>
+        </tr>
+        <tr v-if="showEditShareStructureForm[row.index]">
+          <td colspan="6">
+            <div flat class="edit-share-structure-container">
+              <edit-share-structure
+                v-show="showEditShareStructureForm"
+                :initialValue="currentShareStructure"
+                :activeIndex="activeIndex"
+                :nextId="nextId"
+                :parentIndex="parentIndex"
+                :shareClasses="shareClasses"
+                @addEditClass="addEditShareClass($event)"
+                @removeClass="removeShareClass($event)"
+                @resetEvent="resetData()"/>
+            </div>
+          </td>
+        </tr>
+<!--        &lt;!&ndash; Share Series rows &ndash;&gt;-->
+<!--        <tr v-for="(seriesItem, index) in row.item.series" :key="`class:${row.index}-Series:${index}`"-->
+<!--            class="series-row"-->
+<!--            :class="{ 'series-row-last': index === row.item.series.length - 1}"-->
+<!--        >-->
+<!--          <td class="series-name"><span>{{ seriesItem.name }}</span></td>-->
+<!--          <td>{{ seriesItem.maxNumberOfShares ? (+seriesItem.maxNumberOfShares).toLocaleString()-->
+<!--            : 'No Maximum' }}</td>-->
+<!--          <td>{{ row.item.parValue ? row.item.parValue : 'No Par Value' }}</td>-->
+<!--          <td>{{ row.item.currency }}</td>-->
+<!--          <td>{{ seriesItem.hasRightsOrRestrictions ? 'Yes' : 'No' }}</td>-->
+
+<!--          &lt;!&ndash; Share Series Edit Btn &ndash;&gt;-->
+<!--          <td>-->
+<!--            <div class="actions">-->
+<!--              <span class="edit-action">-->
+<!--                <v-btn small text color="primary"-->
+<!--                       :id="'series-' + index + '-change-btn'"-->
+<!--                       @click="emitShareSeries(row.index, index)"-->
+<!--                >-->
+<!--                  <v-icon small>mdi-pencil</v-icon>-->
+<!--                  <span>Edit</span>-->
+<!--                </v-btn>-->
+<!--              </span>-->
+
+<!--              &lt;!&ndash; Share Series Dropdown Actions &ndash;&gt;-->
+<!--              <span>-->
+<!--                  <v-menu offset-y>-->
+<!--                    <template v-slot:activator="{ on }">-->
+<!--                      <v-btn text small color="primary"-->
+<!--                        class="actions__more-actions__btn" v-on="on"-->
+<!--                      >-->
+<!--                        <v-icon>mdi-menu-down</v-icon>-->
+<!--                      </v-btn>-->
+<!--                    </template>-->
+<!--                    <v-list class="more-actions">-->
+<!--                      <v-list-item-->
+<!--                        class="actions-dropdown_item"-->
+<!--                        :class="{ 'item-disabled': isMoveDisabled(row.index, 'up', index) }"-->
+<!--                        @click="moveIndex(row.index, 'up', index)"-->
+<!--                        :disabled="isMoveDisabled(row.index, 'up', index)"-->
+<!--                      >-->
+<!--                        <v-list-item-subtitle class="move-up-selector">-->
+<!--                          <v-icon>mdi-arrow-up</v-icon> Move Up-->
+<!--                        </v-list-item-subtitle>-->
+<!--                      </v-list-item>-->
+<!--                      <v-list-item-->
+<!--                        class="actions-dropdown_item"-->
+<!--                        :class="{ 'item-disabled': isMoveDisabled(row.index, 'down', index) }"-->
+<!--                        @click="moveIndex(row.index, 'down', index)"-->
+<!--                        :disabled="isMoveDisabled(row.index, 'down', index)"-->
+<!--                      >-->
+<!--                        <v-list-item-subtitle class="move-down-selector">-->
+<!--                          <v-icon>mdi-arrow-down</v-icon> Move Down-->
+<!--                        </v-list-item-subtitle>-->
+<!--                      </v-list-item>-->
+<!--                      <v-list-item class="actions-dropdown_item" @click="emitRemoveSeries(row.index, index)">-->
+<!--                        <v-list-item-subtitle><v-icon>mdi-delete</v-icon> Remove</v-list-item-subtitle>-->
+<!--                      </v-list-item>-->
+<!--                    </v-list>-->
+<!--                  </v-menu>-->
+<!--                </span>-->
+<!--            </div>-->
+<!--          </td>-->
+<!--        </tr>-->
+      </template>
+    </v-data-table>
+  </v-card>
 </template>
 
 <script lang="ts">
 // Libraries
-import { Component, Prop, Emit, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
+import 'array.prototype.move'
+import { isEqual } from 'lodash'
 
-// Interfaces
-import { ShareClassIF, FormType } from '@/interfaces'
+// Components
+import { ActionChip } from '@/components/common'
+import EditShareStructure from './EditShareStructure.vue'
 
-// Mixins
-import { CurrencyLookupMixin } from '@/mixins'
+// Interfaces or Enums
+import { IncorporationFilingIF, ShareClassIF, ShareStructureIF } from '@/interfaces'
+import { ActionTypes } from '@/enums'
 
-@Component({})
-export default class ShareStructure extends Mixins(CurrencyLookupMixin) {
-  // Refs
-  $refs!: {
-    shareStructureForm: FormType
-  };
+@Component({
+  components: {
+    ActionChip,
+    EditShareStructure
+  }
+})
+export default class ShareStructure extends Vue {
+  @Prop({ default: () => [] })
+  private shareClasses: any
 
-  // Props
-  @Prop()
-  private initialValue!: ShareClassIF
+  @Prop({ default: false })
+  private showErrorSummary: boolean
 
-  @Prop()
-  private activeIndex: number
+  @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter getShareClasses!: ShareStructureIF
 
-  @Prop()
-  private parentIndex: number
+  // Local Properties
+  private activeIndex: number = -1
+  private parentIndex: number = -1
+  private nextId: number = -1
+  private showAddShareStructureForm = false
+  private showEditShareStructureForm: Array<boolean> = [false]
+  private addEditInProgress = false
+  private currentShareStructure: ShareClassIF | null = null
 
-  @Prop()
-  private nextId: number
+  private headers: Array<any> = [
+    {
+      text: 'Name of Share Class or Series',
+      align: 'start',
+      sortable: false,
+      value: 'name'
+    },
+    { text: 'Maximum Number of Shares', value: 'maxNumberOfShares' },
+    { text: 'Par Value', value: 'parValue' },
+    { text: 'Currency', value: 'currency' },
+    { text: 'Special Rights or Restrictions', value: 'hasRightsOrRestrictions' },
+    { text: '', value: 'actions' }
+  ]
 
-  @Prop()
-  private shareClasses: ShareClassIF[]
-
-  // Data Properties
-  private shareStructure: ShareClassIF = null
-  private formValid: boolean = true
-  private hasNoMaximumShares: boolean = false
-  private hasNoParValue: boolean = false
-
-  private excludedWordsListForClass: string [] = ['share', 'shares', 'value']
-  private excludedWordsListForSeries: string [] = ['share', 'shares']
-
-  // Rules
-  private getNameRule (): Array<Function> {
-    let rules: Array<Function> = [
-      v => !!v || 'A name is required',
-      v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-      v => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
-    ]
-    if (this.isClass) {
-      rules.push(
-        v => !(this.shareClasses
-          .find((s, index) => {
-            // Don't apply uniqueness check to self
-            return index !== this.activeIndex && s.name.split(' Shares')[0].toLowerCase() === v.toLowerCase()
-          })) || 'Class name must be unique')
-      rules.push(v => !(v.split(' ').some(r => this.excludedWordsListForClass.includes(r.toLowerCase()))) ||
-      'Class name should not contain any of the words share, shares or value')
-    } else if (this.isSeries) {
-      rules.push(v => !(this.shareClasses[this.parentIndex].series
-        .find((s, index) => {
-          // Don't apply uniqueness check to self
-          return index !== this.activeIndex && s.name.split(' Shares')[0].toLowerCase() === v.toLowerCase()
-        })) || 'Series name must be unique')
-      rules.push(v => !(v.split(' ').some(r => this.excludedWordsListForSeries.includes(r.toLowerCase()))) ||
-      'Series name should not contain any of the words share or shares')
-    }
-    return rules
+  private newShareClass: ShareClassIF = {
+    id: null,
+    priority: null,
+    type: 'Class',
+    name: '',
+    hasMaximumShares: true,
+    maxNumberOfShares: null,
+    hasParValue: true,
+    parValue: null,
+    currency: 'CAD',
+    hasRightsOrRestrictions: false,
+    series: [],
+    action: ActionTypes.ADDED
   }
 
-  private getMaximumShareRule (): Array<Function> {
-    let rules: Array<Function> = []
-    if (!this.hasNoMaximumShares) {
-      rules = [
-        v => !!v || 'Maximum share value is required',
-        v => /^\d+$/.test(v) || 'Must be a number greater than 0']
-      // To prevent changing share class value to a lower value after adding series.
-      if (this.isClass && this.activeIndex !== -1 && !this.hasNoMaximumShares &&
-       this.shareStructure.series.length > 0) {
-        const seriesSum = this.shareStructure.series.reduce((a, b) => +a + +b.maxNumberOfShares, 0)
-        rules.push(v => +v >= seriesSum ||
-        'The number for the series (or all series combined, if there are multiple under ' +
-        'a class) cannot exceed the number for the class')
-      }
-      if (this.isSeries && this.shareClasses[this.parentIndex].hasMaximumShares) {
-        let filteredSeries = this.shareClasses[this.parentIndex].series
-        // The series is in edit mode and should be avoided from the calculating the total
-        if (this.activeIndex !== -1) {
-          filteredSeries = filteredSeries.filter((series) => (
-            series.id !== this.shareClasses[this.parentIndex].series[this.activeIndex].id))
-        }
-        const currentSum = filteredSeries.reduce((a, b) => +a + +b.maxNumberOfShares, 0)
-        rules.push(v => +v + currentSum <= +this.shareClasses[this.parentIndex].maxNumberOfShares ||
-        'The number for the series (or all series combined, if there are multiple under ' +
-        'a class) cannot exceed the number for the class')
-      }
-    }
-    return rules
+  /**
+   * Initialize the Add Share Class Form
+   */
+  private initNewShareClass (): void {
+    this.currentShareStructure = { ...this.newShareClass }
+    this.currentShareStructure.priority =
+      this.shareClasses.length === 0 ? 1 : this.shareClasses[this.shareClasses.length - 1].priority + 1
+    this.activeIndex = -1
+    this.parentIndex = -1
+    this.nextId = this.shareClasses.length === 0 ? 1 : (this.shareClasses.reduce(
+      (prev, current) => (prev.id > current.id) ? prev : current)).id + 1
+    this.addEditInProgress = true
+    this.showAddShareStructureForm = true
   }
 
-  private getParValueRule (): Array<Function> {
-    if (!this.hasNoParValue) {
-      return [
-        v => !!v || 'Par value is required',
-        v => v > 0 || 'Amount must be greater than 0',
-        v => (v < 1) ? (/^(\d+(\.\d{0,3})?|\.\d{0,3})$/.test(v) || 'Amounts less than 1 can be entered with up to 3 decimal place')
-          : (/^\d+(\.\d{1,2})?$/.test(v) || 'Amounts greater than 1 can be entered with up to 2 decimal place')]
+  /**
+   * Add / Edit Share Class and set to store
+   * @param shareStructure The current share structure object
+   */
+  private addEditShareClass (shareStructure: ShareClassIF): void {
+    // Apply a correction tag if Share is changed
+    if (shareStructure.action !== ActionTypes.ADDED && this.isShareClassEdited(shareStructure)) {
+      shareStructure.action = ActionTypes.EDITED
     }
-    return []
-  }
 
-  private getCurrencyRule (): Array<Function> {
-    if (!this.hasNoParValue) {
-      return [v => !!v || 'Currency is required']
-    }
-    return []
-  }
-
-  /** Called when component is created. */
-  private created (): void {
-    if (this.initialValue) {
-      this.shareStructure = { ...this.initialValue }
-      this.hasNoMaximumShares = !this.shareStructure.hasMaximumShares
-      this.hasNoParValue = !this.shareStructure.hasParValue
-
-      if (this.activeIndex !== -1) {
-        const name = this.shareStructure.name
-        this.shareStructure.name = name.substr(0, name.indexOf(' Shares'))
-      }
-    }
-  }
-
-  // Methods
-  private validateForm (): void {
-    if (this.formValid) {
-      const shareStructure: ShareClassIF = this.addShareStructure()
-      this.emitAddShareStructureEvent(shareStructure)
-      this.resetFormAndData(false)
-    }
-  }
-
-  private emitAddShareStructureEvent (shareStructure: ShareClassIF): void {
-    if (this.isClass) {
-      this.emitAddEditShareClassEvent(shareStructure)
-    } else if (this.isSeries) {
-      this.emitAddEditShareSeriesEvent(shareStructure)
-    }
-  }
-
-  private addShareStructure (): ShareClassIF {
-    let shareStructureToAdd: ShareClassIF = { ...this.shareStructure }
+    let newList: ShareClassIF[] = [...this.shareClasses]
+    // New Share Structure.
     if (this.activeIndex === -1) {
-      shareStructureToAdd.id = this.nextId
+      newList.push(shareStructure)
+    } else {
+      // Edit Share Structure.
+      newList.splice(this.activeIndex, 1, shareStructure)
     }
-    shareStructureToAdd.name = `${shareStructureToAdd.name} Shares`
-    shareStructureToAdd.hasMaximumShares = !this.hasNoMaximumShares
-    shareStructureToAdd.hasParValue = !this.hasNoParValue
-    return shareStructureToAdd
+    this.emitSetShareClassEvent(newList)
+    this.resetData()
   }
 
-  private removeShareStructure (): void {
-    if (this.isClass) {
-      this.emitRemoveShareClassEvent(this.activeIndex)
-    } else if (this.isSeries) {
-      this.emitRemoveShareSeriesEvent(this.parentIndex, this.activeIndex)
+  /**
+   * Remove the Share Class from the Store
+   * @param index The share class identifier
+   */
+  private removeShareClass (index: number): void {
+    // get share class to remove
+    // make a copy so we don't change the item in the list
+    const shareClass = { ...this.getShareClasses[index] }
+    let tempList: ShareClassIF[] = [...this.getShareClasses]
+
+    if (shareClass.action === ActionTypes.ADDED) {
+      tempList.splice(index, 1)
+    } else {
+      shareClass.action = ActionTypes.REMOVED
+      tempList.splice(index, 1, shareClass)
+    }
+
+    this.emitSetShareClassEvent(tempList)
+    this.resetData()
+  }
+
+  /**
+   * Remove the Share Class from the Store
+   * @param index The share class identifier
+   */
+  private restoreShareClass (index: number): void {
+    // Fetch and identify the ShareClass to restore
+    const shareClassToRestore = this.getOriginalIA.incorporationApplication.shareStructure.shareClasses.find(
+      shareClass => shareClass.id === this.shareClasses[index].id
+    )
+
+    // Create a new ShareClass List and restore the original data
+    let newList: ShareClassIF[] = [...this.shareClasses]
+    newList[index] = shareClassToRestore
+
+    this.emitSetShareClassEvent(newList)
+    this.resetData()
+  }
+
+  /**
+   *  Initialize the Add Share Class Form to Edit existing ShareClass
+   *  @param index The identifier of the ShareClass to be edited.
+   */
+  private initShareClassForEdit (index: number): void {
+    this.currentShareStructure = { ...this.shareClasses[index] }
+    this.activeIndex = index
+    this.parentIndex = -1
+    this.addEditInProgress = true
+    this.showEditShareStructureForm[index] = true
+  }
+
+  /**
+   * Adjust the priority of the list share class
+   * @param indexFrom The index of the class
+   * @param direction The direction of the move
+   * @param seriesIndex The index of the series
+   */
+  private moveIndex (indexFrom: number, direction: string, seriesIndex: number = -1): void {
+    let indexTo
+    if (seriesIndex >= 0) {
+      indexTo = direction === 'up' ? seriesIndex - 1 : seriesIndex + 1
+      this.shareClasses[indexFrom].series[seriesIndex].priority = indexTo
+      this.shareClasses[indexFrom].series[seriesIndex].priority = indexFrom
+      this.shareClasses[indexFrom].series.move(seriesIndex, indexTo)
+    } else {
+      indexTo = direction === 'up' ? indexFrom - 1 : indexFrom + 1
+      this.shareClasses[indexFrom].priority = indexTo
+      this.shareClasses[indexTo].priority = indexFrom
+      this.shareClasses.move(indexFrom, indexTo)
     }
   }
 
-  private resetFormAndData (emitEvent: boolean): void {
-    this.$refs.shareStructureForm.reset()
-    if (emitEvent) {
-      this.emitResetEvent()
+  /**
+   * Determine if the move up / move down is enabled
+   * @param index index of the class item
+   * @param direction The direction of the move
+   * @param seriesIndex index of the series item
+   * @returns A boolean indicating if a move is enabled
+   */
+  private isMoveDisabled (index: number, direction: string, seriesIndex: number = -1): boolean {
+    const seriesCheck = seriesIndex >= 0
+    const arrBoundry = seriesCheck ? this.shareClasses[index].series.length - 1 : this.shareClasses.length - 1
+    switch (direction) {
+      case 'up':
+        if (seriesCheck) {
+          return seriesIndex === 0
+        } else {
+          return index === 0
+        }
+      case 'down':
+        if (seriesCheck) {
+          return seriesIndex === arrBoundry
+        } else {
+          return index === arrBoundry
+        }
+      default:
+        return false
     }
   }
 
-  private changeMaximumShareFlag (): void {
-    if (this.hasNoMaximumShares) {
-      this.shareStructure.maxNumberOfShares = null
+  /**
+   * Compare ShareClass to its original to identify any changes
+   * @params shareClass The Share class to compare
+   */
+  private isShareClassEdited (shareClass: ShareClassIF): boolean {
+    const originalShareClass = this.getOriginalIA.incorporationApplication.shareStructure.shareClasses.find(
+      share => share.id === shareClass.id
+    )
+
+    return !isEqual({ ...shareClass }, { ...originalShareClass })
+  }
+
+  /**
+   * Undo the adding or editing of a Share class or series
+   * @param actionType The type of action to undo
+   * @param index The identifier of which share class/series to undo
+   */
+  private undoCorrection (actionType: ActionTypes, index: number): void {
+    switch (actionType) {
+      case ActionTypes.ADDED:
+        this.removeShareClass(index)
+        break
+      case ActionTypes.EDITED:
+        this.restoreShareClass(index)
+        break
+      case ActionTypes.REMOVED:
+        this.restoreShareClass(index)
+        break
     }
   }
 
-  private changeParValueFlag (): void {
-    if (this.hasNoParValue) {
-      this.shareStructure.currency = null
-      this.shareStructure.parValue = null
-    }
-  }
-
-  // Getters
-  get isClass (): boolean {
-    return this.shareStructure.type === 'Class'
-  }
-
-  get isSeries (): boolean {
-    return this.shareStructure.type === 'Series'
-  }
-
-  get isNoMaxSharesVisible (): boolean {
-    return this.isSeries ? !(this.shareClasses[this.parentIndex].hasMaximumShares) : true
+  /**
+   * Clear and set local tracking properties to default
+   */
+  private resetData (): void {
+    this.currentShareStructure = null
+    this.activeIndex = -1
+    this.addEditInProgress = false
+    this.showAddShareStructureForm = false
+    this.showEditShareStructureForm = [false]
+    this.parentIndex = -1
+    this.nextId = -1
   }
 
   // Events
-  @Emit('addEditClass')
-  private emitAddEditShareClassEvent (shareClass: ShareClassIF): void {}
+  /**
+   * Emit an event to the parent to handle addition or edit of a shareClass.
+   * @param shareClass The shareClass object to set to store.
+   */
+  @Emit('setShareClass')
+  private emitSetShareClassEvent (shareClass: ShareClassIF[]): void {}
 
-  @Emit('addEditSeries')
-  private emitAddEditShareSeriesEvent (shareSeries: ShareClassIF): void {}
-
-  @Emit('removeClass')
-  private emitRemoveShareClassEvent (shareClassIndex: number): void {}
-
-  @Emit('removeSeries')
-  private emitRemoveShareSeriesEvent (parentIndex: number, shareSeriesIndex: number): void {}
-
-  @Emit('resetEvent')
-  private emitResetEvent (): void {}
+  // /**
+  //  * Emit an index and event to the parent to handle removal.
+  //  * @param index The active index which is subject to removal.
+  //  */
+  // @Emit('removeClass')
+  // private emitRemoveClass (index: number): void {}
+  //
+  // /**
+  //  * Emit an index and event to the parent to handle removal.
+  //  * @param index The active index which is subject to removal.
+  //  */
+  // @Emit('removeSeries')
+  // private emitRemoveSeries (index: number, seriesIndex: number): void {}
+  //
+  // /**
+  //  * Emit an class and event to the parent to handle editing.
+  //  * @param addSeries The series item to be edited.
+  //  */
+  // @Emit('addSeries')
+  // private emitAddSeries (index: number): void {}
+  //
+  // /**
+  //  * Emit an class and event to the parent to handle editing.
+  //  * @param classItem The series item to be edited.
+  //  */
+  // @Emit('editClass')
+  // private emitShareClass (index: number): void {}
+  //
+  // /**
+  //  * Emit an  series item and event to the parent to handle editing.
+  //  * @param seriesItem The series item to be edited.
+  //  */
+  // @Emit('editSeries')
+  // private emitShareSeries (index: number, seriesIndex: number): void {}
 }
 </script>
 
 <style lang="scss" scoped>
-ul {
-  padding-top: 0.5rem;
-}
+  @import '@/assets/styles/theme.scss';
 
-li {
-  list-style: None;
-  padding-top: 0.25rem;
-}
+  #share-structure {
+    margin-top: 1rem;
+  }
 
-.add-share-structure {
-  .add-share-structure-container {
+  .share-summary-header {
+    display: flex;
+    background-color: $BCgovBlue5O;
     padding: 1.25rem;
 
-    .meta-container {
-      > label:first-child {
-        margin-bottom: 1.5rem;
-      }
+    .share-summary-header-title {
+      padding-left: .5rem;
     }
   }
-}
 
-.meta-container {
-  display: flex;
-  flex-flow: column nowrap;
-  position: relative;
-
-  > label:first-child {
-    font-weight: 700;
+  .class-row td{
+    height: 4rem !important;
   }
 
-  &__inner {
-    flex: 1 1 auto;
+  .class-row td:not(:first-child) {
+    color: $gray6;
   }
-}
 
-.add-share-structure-header {
-  font-size: 1rem;
-  font-weight: bold;
-  line-height: 1.5rem;
-}
+  .class-row-has-series td {
+    border-bottom: thin dashed rgba(0, 0, 0, 0.12)!important;
+  }
 
-@media (min-width: 768px) {
-  .meta-container {
-    flex-flow: row nowrap;
+  .series-row {
+    .series-name {
+      padding-left: 2rem;
+    }
 
-    > label:first-child {
-      flex: 0 0 auto;
-      margin-right: 1rem;
-      width: 10rem;
+    td {
+      border-bottom: none!important;
+    }
+
+    td:not(:first-child){
+      color: $gray6;
     }
   }
-}
 
-.separator {
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-}
+  .series-row-last td {
+    border-bottom: thin solid rgba(0, 0, 0, 0.12)!important;
+  }
 
-.radio-group {
-  padding-top:0.875rem
-}
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+
+    .edit-action, .undo-action {
+      border-right: 1px solid $gray1;
+    }
+
+    .v-btn {
+      min-width: .5rem;
+    }
+
+    .v-btn + .v-btn {
+      margin-left: 0.5rem;
+    }
+  }
+
+  .more-actions {
+    padding: 2px 0;
+
+    .item-disabled {
+      opacity: .5;
+    }
+
+    .actions-dropdown_item {
+      min-height: 0!important;
+      margin: 1rem 0;
+    }
+  }
 </style>

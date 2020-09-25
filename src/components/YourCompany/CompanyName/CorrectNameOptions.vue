@@ -107,8 +107,8 @@ export default class CorrectNameOptions extends Vue {
     {
       id: CorrectionTypes.CORRECT_NEW_NR,
       title: 'Use a new name request number',
-      description: 'Enter the new Name Request Number (e.g., NR1234567) and either the applicant phone number OR the ' +
-        'applicant email that was used when the name was requested.',
+      description: 'Enter the new Name Request Number (e.g., NR 1234567) and either the applicant phone number OR ' +
+        'the applicant email that was used when the name was requested.',
       component: CorrectNameRequest
     }
   ]
