@@ -22,7 +22,6 @@
     <your-company
       class="mt-10"
       :isSummary="true"
-      @haveChanges="yourCompanyChanges = $event"
     />
 
     <people-and-roles
@@ -34,14 +33,12 @@
       class="mt-10"
       :isSummary="true"
       :shareClasses="getShareClasses"
-      @haveChanges="shareStructChanges = $event"
     />
 
     <!-- TODO: replace haveChanges event with global state -->
     <agreement-type
       class="mt-10"
       :isSummary="true"
-      @haveChanges="incorpAgrmtChanges = $event"
     />
 
     <completing-party
@@ -64,7 +61,6 @@
     <!-- TODO: replace haveChanges event with global state -->
     <staff-payment
       class="mt-10"
-      @haveChanges="staffPaymentChanges = $event"
     />
   </section>
 </template>
@@ -123,13 +119,6 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   /** Whether App is ready. */
   @Prop({ default: false })
   private appReady: boolean
-
-  // whether components have changes
-  // TODO: delete these and use store instead
-  private incorpAgrmtChanges = false
-  private shareStructChanges = false
-  private yourCompanyChanges = false
-  private staffPaymentChanges = false
 
   // whether components are valid
   // TODO: delete these and use store instead
@@ -237,13 +226,6 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
     window.location.assign(dashboardUrl + this.getBusinessId)
   }
 
-  // watchers for component change flags
-  // TODO: delete these and use store instead
-  @Watch('incorpAgrmtChanges') private onIncorpAgrmtChanges (): void { this.emitHaveChanges() }
-  @Watch('shareStructChanges') private onShareStructChanges (): void { this.emitHaveChanges() }
-  @Watch('yourCompanyChanges') private onYourCompanyChanges (): void { this.emitHaveChanges() }
-  @Watch('staffPaymentChanges') private onStaffPaymentChanges (): void { this.emitHaveChanges() }
-
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   private emitFetchError (message: string = ''): void { }
@@ -251,18 +233,6 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   /** Emits Have Data event. */
   @Emit('haveData')
   private emitHaveData (haveData: Boolean = true): void { }
-
-  /** Emits Have Changes event. */
-  // TODO: delete this and use store instead
-  @Emit('haveChanges')
-  private emitHaveChanges (): boolean {
-    return (
-      this.incorpAgrmtChanges ||
-      this.shareStructChanges ||
-      this.yourCompanyChanges ||
-      this.staffPaymentChanges
-    )
-  }
 }
 </script>
 

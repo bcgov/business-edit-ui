@@ -1,9 +1,8 @@
 import {
   AccountInformationIF, CertifyIF, DefineCompanyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF,
   ShareStructureIF, DateTimeIF, IncorporationAgreementIF, BusinessInformationIF, IncorporationFilingIF,
-  FilingDataIF
+  FilingDataIF, StaffPaymentStepIF
 } from '@/interfaces'
-import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
 // State model example
 export interface StateModelIF {
@@ -19,7 +18,6 @@ export interface StateModelIF {
   incorporationAgreementStep: IncorporationAgreementIF
   incorporationDateTime: DateTimeIF,
   originalIA: IncorporationFilingIF,
-  staffPayment: StaffPaymentIF,
-  filingData: FilingDataIF,
-  staffPaymentValidity: boolean
+  staffPaymentStep: StaffPaymentStepIF,
+  filingData: FilingDataIF
 }

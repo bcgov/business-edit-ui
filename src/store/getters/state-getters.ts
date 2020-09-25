@@ -200,7 +200,7 @@ export const haveChanges = (state: any): boolean => {
 
 /** The staff payment. */
 export const getStaffPayment = (state: any): any => {
-  return state.stateModel.staffPayment
+  return state.stateModel.staffPaymentStep.staffPayment
 }
 
 /** The filing data. */
@@ -248,5 +248,5 @@ export const isFilingChanged = (state: any): boolean => {
 export const isFilingValid = (state: any): boolean => {
   // Add sections that can have only invalid data like people and roles and share structure
   // Define company, Agreement Type wont allow saving and invalid state to the store
-  return (state.stateModel.peopleAndRoles.valid && state.stateModel.staffPaymentValidity)
+  return (state.stateModel.peopleAndRoles.valid && state.stateModel.staffPaymentStep.valid)
 }

@@ -107,15 +107,17 @@ export const stateModel: StateModelIF = {
       }
     }
   },
-  staffPayment: {
-    option: NaN,
-    routingSlipNumber: '',
-    bcolAccountNumber: '',
-    datNumber: '',
-    folioNumber: '',
-    isPriority: false
+  staffPaymentStep: {
+    valid: false,
+    staffPayment: {
+      option: NaN,
+      routingSlipNumber: '',
+      bcolAccountNumber: '',
+      datNumber: '',
+      folioNumber: '',
+      isPriority: false
+    }
   },
-  staffPaymentValidity: false,
   filingData: {
     filingTypeCode: null,
     entityType: null,

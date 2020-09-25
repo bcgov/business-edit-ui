@@ -167,11 +167,12 @@ export const mutateOriginalIA = (state: any, originalIa: IncorporationFilingIF) 
 }
 
 export const mutateStaffPayment = (state: any, staffPayment: StaffPaymentIF) => {
-  state.stateModel.staffPayment = staffPayment
+  state.stateModel.staffPaymentStep.staffPayment = staffPayment
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateStaffPaymentValidity = (state: any, staffPaymentValidity: boolean) => {
-  state.stateModel.staffPaymentValidity = staffPaymentValidity
+  state.stateModel.staffPaymentStep.valid = staffPaymentValidity
 }
 
 export const mutateFilingData = (state: any, filingData: FilingDataIF) => {
