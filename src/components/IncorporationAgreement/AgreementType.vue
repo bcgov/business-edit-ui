@@ -89,17 +89,10 @@ export default class AgreementType extends Vue {
 
   // Global setters
   @Action setIncorporationAgreementStepData!: ActionBindingIF
-  @Action setHaveChanges!: ActionBindingIF
 
   // Local properties
   private agreementType: string | null = null
   private showAgreementTypeForm = false
-
-  mounted (): void {
-    this.setIncorporationAgreementData()
-    // now that all data is loaded, wait for things to stabilize and reset flag
-    Vue.nextTick(() => this.setHaveChanges(false))
-  }
 
   private setAgreementType (): void {
     this.setIncorporationAgreementData()

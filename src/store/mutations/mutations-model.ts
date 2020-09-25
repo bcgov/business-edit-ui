@@ -121,6 +121,7 @@ export const mutateBusinessInformation = (state: any, businessInformation: Busin
 
 export const mutateNameRequest = (state: any, nameRequest: NameRequestIF) => {
   state.stateModel.nameRequest = nameRequest
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateNameTranslations = (state: any, nameTranslations: Array<string>) => {

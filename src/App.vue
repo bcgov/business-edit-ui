@@ -245,6 +245,9 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
+  /** Safety check to ensure that fee summary component is not loaded until there
+   *  is a valid filing type and entity code.
+   */
   private get showFeeSummary (): boolean {
     const defaultFilingData = {
       filingTypeCode: null,
