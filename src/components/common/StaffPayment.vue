@@ -44,9 +44,6 @@ export default class StaffPayment extends Vue {
 
   private onStaffPaymentData (event) {
     let staffPaymentData: StaffPaymentIF = { ...this.getStaffPayment, ...event }
-    if (!this.staffPaymentFormValid) {
-      return
-    }
     switch (staffPaymentData.option) {
       case StaffPaymentOptions.FAS:
         staffPaymentData = {
