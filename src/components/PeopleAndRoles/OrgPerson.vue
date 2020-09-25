@@ -148,7 +148,7 @@
                 <div class="form__row form__btns">
                   <v-btn id="btn-remove" large color="error"
                     :disabled="isNaN(activeIndex)"
-                    @click="emitRemoveOrgPerson(activeIndex)">Remove</v-btn>
+                    @click="emitRemove(activeIndex)">Remove</v-btn>
                   <v-btn id="btn-done" large color="primary" class="ml-auto"
                     @click="validateOrgPersonForm()"
                     :disabled="!isFormValid">Done</v-btn>
@@ -165,23 +165,12 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
-
-// Interfaces
 import { OrgPersonIF, BaseAddressType, FormType, AddressIF, ConfirmDialogType, RoleIF } from '@/interfaces'
-
-// Components
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ConfirmDialog } from '@/components/dialogs'
-
-// Mixins
 import { CommonMixin } from '@/mixins'
-
-// Enums
 import { EntityTypes, Roles, IncorporatorTypes } from '@/enums'
-
-// Schemas
 import { PersonAddressSchema } from '@/schemas'
 import { Getter } from 'vuex-class'
 
@@ -208,16 +197,19 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   // Schema object for template
   readonly PersonAddressSchema = PersonAddressSchema
 
-  // Props
-  @Prop()
-  private initialValue!: OrgPersonIF
+  /** The current org/person to edit or add. */
+  @Prop() private currentOrgPerson!: OrgPersonIF
 
-  @Prop()
-  private activeIndex: number
+  /** The index of the org/person to edit, or NaN to add. */
+  @Prop() private activeIndex: number
 
-  @Prop()
-  private nextId: number
+  /** The next ID to assign to an officer being added. */
+  @Prop() private nextId: number
 
+  /**
+   * The existing Completing Party (or undefined).
+   * This is passed in because this component doesn't know about the list.
+   */
   @Prop()
   private existingCompletingParty: OrgPersonIF
 
@@ -227,6 +219,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   /** The current org/person being added/edited. */
   private orgPerson: OrgPersonIF = null
 
+  /** Model value for org/person form validity. */
   private orgPersonFormValid: boolean = true
 
   // Address related properties
@@ -298,12 +291,12 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 
   /** True if current data object is a person. */
   private get isPerson (): boolean {
-    return (this.orgPerson.officer?.partyType === IncorporatorTypes.PERSON)
+    return (this.orgPerson?.officer.partyType === IncorporatorTypes.PERSON)
   }
 
   /** True if current data object is an organization (corporation/firm). */
   private get isOrg (): boolean {
-    return (this.orgPerson.officer?.partyType === IncorporatorTypes.CORPORATION)
+    return (this.orgPerson?.officer.partyType === IncorporatorTypes.CORPORATION)
   }
 
   /**
@@ -311,9 +304,10 @@ export default class OrgPerson extends Mixins(CommonMixin) {
    * Sets local properties if this an edit.
    */
   private created (): void {
-    if (this.initialValue) {
-      this.orgPerson = { ...this.initialValue }
-      this.orgPerson.officer = { ...this.initialValue.officer }
+    // safety check
+    if (this.currentOrgPerson) {
+      this.orgPerson = { ...this.currentOrgPerson }
+      this.orgPerson.officer = { ...this.currentOrgPerson.officer }
       // set the Director checkbox
       this.isDirector = this.orgPerson.roles.some(party => party.roleType === Roles.DIRECTOR)
       // set the Incorporator checkbox
@@ -332,7 +326,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
    * Called when Completing Party checkbox is changed.
    */
   private assignCompletingPartyRole (): void {
-    if (this.isCompletingParty && this.existingCompletingParty &&
+    if (this.orgPerson && this.isCompletingParty && this.existingCompletingParty &&
       (this.orgPerson.officer.id !== this.existingCompletingParty.officer.id)
     ) {
       this.confirmReassignPerson()
@@ -359,7 +353,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
         this.emitRemoveCompletingPartyRole()
       }
       const person = this.addPerson()
-      this.emitAddEditPerson(person)
+      this.emitAddEdit(person)
       this.resetAddPersonData(false)
     }
   }
@@ -381,6 +375,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
       }
     ).then(async (confirm) => {
       if (confirm) {
+        // set flag to reassign CP when Done is clicked
         this.reassignCompletingParty = true
       }
     }).catch(() => {
@@ -437,12 +432,12 @@ export default class OrgPerson extends Mixins(CommonMixin) {
       this.$refs.deliveryAddressNew.$refs.addressForm.reset()
     }
     if (emitEvent) {
-      this.emitResetData()
+      this.emitReset()
     }
   }
 
   private isRoleLocked (role: Roles): boolean {
-    return (this.orgPerson.roles.some(party => party.roleType === role) && isNaN(this.activeIndex))
+    return (this.orgPerson?.roles.some(party => party.roleType === role) && isNaN(this.activeIndex))
   }
 
   private reassignPersonErrorMessage (): string {
@@ -454,21 +449,21 @@ export default class OrgPerson extends Mixins(CommonMixin) {
    * Emits an event and person object to the parent to add or edit.
    * @param person The data object of the org/person to add or edit.
    */
-  @Emit('changeOrgPerson')
-  private emitAddEditPerson (person: OrgPersonIF): void {}
+  @Emit('addEdit')
+  private emitAddEdit (person: OrgPersonIF): void {}
 
   /**
    * Emits an event and index to the parent to handle removal.
    * @param index The index of the org/person to remove.
    */
-  @Emit('removeOrgPerson')
-  private emitRemoveOrgPerson (index: number): void {}
+  @Emit('remove')
+  private emitRemove (index: number): void {}
 
   /**
-   * Emits an event and index to the parent to reset the state data.
+   * Emits an event and index to the parent to reset the state.
    */
-  @Emit('resetData')
-  private emitResetData (): void {}
+  @Emit('reset')
+  private emitReset (): void {}
 
   /**
    * Emits an event and index to the parent to remove the Completing Party role.

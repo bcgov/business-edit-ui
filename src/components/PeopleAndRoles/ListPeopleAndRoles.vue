@@ -42,11 +42,11 @@
           </v-tooltip>
 
           <br v-if="orgPerson.action">
-          <v-chip v-if="orgPerson.action === ActionTypes.ADDED"
+          <v-chip v-if="wasAdded(orgPerson)"
             x-small label color="#1669BB" text-color="white">ADDED</v-chip>
-          <v-chip v-if="orgPerson.action === ActionTypes.EDITED"
+          <v-chip v-if="wasEdited(orgPerson)"
             x-small label color="#1669BB" text-color="white">CORRECTED</v-chip>
-          <v-chip v-if="orgPerson.action === ActionTypes.REMOVED"
+          <v-chip v-if="wasRemoved(orgPerson)"
             x-small label color="#E0E0E0" text-color="grey darken-1">REMOVED</v-chip>
         </v-col>
 
@@ -84,7 +84,7 @@
               <v-btn
                 text small color="primary"
                 :id="'officer-' + orgPerson.officer.id + '-undo-btn'"
-                @click="emitUndoOrgPerson(index)"
+                @click="emitUndo(index)"
               >
                 <v-icon small>mdi-undo</v-icon>
                 <span>Undo</span>
@@ -97,7 +97,7 @@
               <v-btn
                 text small color="primary"
                 :id="'officer-' + orgPerson.officer.id + '-edit-btn'"
-                @click="emitEditPerson(index)"
+                @click="emitEdit(index)"
               >
                 <v-icon small>mdi-pencil</v-icon>
                 <span>Correct</span>
@@ -120,7 +120,7 @@
                   <v-list-item
                     class="actions-dropdown_item"
                     :id="'officer-' + orgPerson.officer.id + '-remove-btn'"
-                    @click="emitRemoveOrgPerson(index)"
+                    @click="emitRemove(index)"
                   >
                     <v-list-item-subtitle>
                       <v-icon small>mdi-delete</v-icon>
@@ -161,6 +161,33 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   readonly tableHeaders: Array<string> = ['Name', 'Mailing Address', 'Delivery Address', 'Roles']
 
   /**
+   * Checks if specified org/person was added.
+   * @param person The org/person to check.
+   * @returns True if the org/person was added.
+   */
+  private wasAdded (person: OrgPersonIF): boolean {
+    return (person.action === ActionTypes.ADDED)
+  }
+
+  /**
+   * Checks if specified org/person was edited.
+   * @param person The org/person to check.
+   * @returns True if the org/person was edited.
+   */
+  private wasEdited (person: OrgPersonIF): boolean {
+    return (person.action === ActionTypes.EDITED)
+  }
+
+  /**
+   * Checks if specified org/person was removed.
+   * @param person The org/person to check.
+   * @returns True if the org/person was removed.
+   */
+  private wasRemoved (person: OrgPersonIF): boolean {
+    return (person.action === ActionTypes.REMOVED)
+  }
+
+  /**
    * Formats the org or person name for display.
    * @param filing The filing body which contains the name/title.
    * @returns The formatted org/person name.
@@ -174,22 +201,22 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
    * Emits an event and index to the parent to handle undoing.
    * @param index The index of the org/person to undo.
    */
-  @Emit('undoOrgPerson')
-  private emitUndoOrgPerson (index: number): void {}
+  @Emit('undo')
+  private emitUndo (index: number): void {}
 
   /**
    * Emits an event and index to the parent to handle editing.
    * @param index The index of the org/person to edit.
    */
-  @Emit('editOrgPerson')
-  private emitEditPerson (index: number): void {}
+  @Emit('edit')
+  private emitEdit (index: number): void {}
 
   /**
    * Emits an event and index to the parent to handle removal.
    * @param index The index of the org/person to remove.
    */
-  @Emit('removeOrgPerson')
-  private emitRemoveOrgPerson (index: number): void {}
+  @Emit('remove')
+  private emitRemove (index: number): void {}
 }
 </script>
 
