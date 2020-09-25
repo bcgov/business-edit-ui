@@ -24,7 +24,7 @@
     <div class="buttons-right">
       <v-fade-transition hide-on-leave>
         <v-btn id="file-pay-btn" large color="primary"
-          :disabled="!getHaveCorrection || isBusySaving"
+          :disabled="!isFilingChanged || isBusySaving || !isFilingValid"
           :loading="stateModel.tombstone.isFilingPaying"
           @click="onClickFilePay()"
         >
@@ -66,7 +66,8 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
   @Getter getEffectiveDate!: Date
-  @Getter getHaveCorrection!: boolean
+  @Getter isFilingChanged!: boolean
+  @Getter isFilingValid!: boolean
 
   // Global setters
   @Action setIsSaving!: ActionBindingIF

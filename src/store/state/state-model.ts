@@ -16,8 +16,7 @@ export const stateModel: StateModelIF = {
     isSavingResuming: false,
     isFilingPaying: false,
     ignoreChanges: false,
-    haveChanges: false,
-    haveCorrection: false
+    haveChanges: false
   },
   accountInformation: {
     accountType: '',
@@ -49,6 +48,7 @@ export const stateModel: StateModelIF = {
   },
   defineCompanyStep: {
     valid: false,
+    changed: false,
     businessContact: {
       email: '',
       confirmEmail: '',
@@ -65,10 +65,12 @@ export const stateModel: StateModelIF = {
   },
   createShareStructureStep: {
     valid: false,
+    changed: false,
     shareClasses: []
   },
   incorporationAgreementStep: {
     valid: false,
+    changed: false,
     agreementType: null
   },
   originalIA: {
@@ -105,13 +107,16 @@ export const stateModel: StateModelIF = {
       }
     }
   },
-  staffPayment: {
-    option: NaN,
-    routingSlipNumber: '',
-    bcolAccountNumber: '',
-    datNumber: '',
-    folioNumber: '',
-    isPriority: false
+  staffPaymentStep: {
+    valid: false,
+    staffPayment: {
+      option: NaN,
+      routingSlipNumber: '',
+      bcolAccountNumber: '',
+      datNumber: '',
+      folioNumber: '',
+      isPriority: false
+    }
   },
   filingData: {
     filingTypeCode: null,
@@ -119,4 +124,5 @@ export const stateModel: StateModelIF = {
     priority: false,
     waiveFees: false
   }
+
 }

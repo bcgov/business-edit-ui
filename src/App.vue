@@ -93,7 +93,6 @@
                 @profileReady="profileReady = true"
                 @fetchError="fetchErrorDialog = true"
                 @haveData="haveData = true"
-                @haveChanges="stateChangeHandler($event)"
               />
             </v-col>
             <v-col cols="12" lg="3" style="position: relative">
@@ -101,8 +100,7 @@
                 <aside>
                   <affix
                     relative-element-selector=".col-lg-9"
-                    :offset="{ top: 86, bottom: 12 }"
-                  >
+                    :offset="{ top: 86, bottom: 12 }">
                     <sbc-fee-summary
                       :filingData="[...getFilingData]"
                       :payURL="payApiUrl"
@@ -142,7 +140,7 @@ import * as Views from '@/views'
 import * as Dialogs from '@/components/dialogs'
 
 // Mixins, interfaces, etc
-import { BcolMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
+import { BcolMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
@@ -157,7 +155,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     ...Views
   }
 })
-export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
+export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -172,13 +170,13 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   @Getter getUserRoles!: string
   @Getter getUserUsername!: string
   @Getter getFilingData!: FilingDataIF
+  @Getter isFilingChanged!: boolean
 
   // Global setters
   @Action setBusinessId!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
   @Action setAuthRoles: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
-  @Action setHaveCorrection!: ActionBindingIF
   @Action setAccountInformation!: ActionBindingIF
   @Action setKeycloakRoles!: ActionBindingIF
   @Action setUserInfo: ActionBindingIF
@@ -198,7 +196,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   private saveErrors: Array<object> = []
   private saveWarnings: Array<object> = []
   private fileAndPayInvalidNameRequestDialog: boolean = false
-  private showFeeSummary: boolean = false
 
   // FUTURE: change profileReady/appReady/haveData to a state machine?
 
@@ -248,10 +245,17 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** Handle State Changes */
-  private stateChangeHandler (hasStateChanges: boolean): void {
-    this.showFeeSummary = hasStateChanges
-    this.setHaveCorrection(hasStateChanges)
+  /** Safety check to ensure that fee summary component is not loaded until there
+   *  is a valid filing type and entity code.
+   */
+  private get showFeeSummary (): boolean {
+    const defaultFilingData = {
+      filingTypeCode: null,
+      entityType: null,
+      priority: false,
+      waiveFees: false
+    }
+    return this.isFilingChanged && !this.isSame(this.getFilingData, defaultFilingData)
   }
 
   /**
@@ -462,7 +466,6 @@ export default class App extends Mixins(BcolMixin, DateMixin, FilingTemplateMixi
   private resetFlags (): void {
     this.appReady = false
     this.haveData = false
-    this.showFeeSummary = false
     this.bcolObj = null
     this.nameRequestInvalidErrorDialog = false
     this.invalidIncorporationApplicationDialog = false

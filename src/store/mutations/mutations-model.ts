@@ -81,6 +81,10 @@ export const mutateDefineCompanyStepValidity = (state: any, validity: boolean) =
   state.stateModel.defineCompanyStep.valid = validity
 }
 
+export const mutateDefineCompanyStepChanged = (state: any, changed: boolean) => {
+  state.stateModel.defineCompanyStep.changed = changed
+}
+
 export const mutateOfficeAddresses = (state: any, addresses: IncorporationAddressIf) => {
   state.stateModel.defineCompanyStep.officeAddresses = addresses
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
@@ -117,6 +121,7 @@ export const mutateBusinessInformation = (state: any, businessInformation: Busin
 
 export const mutateNameRequest = (state: any, nameRequest: NameRequestIF) => {
   state.stateModel.nameRequest = nameRequest
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateNameTranslations = (state: any, nameTranslations: Array<string>) => {
@@ -153,10 +158,6 @@ export const mutateHaveChanges = (state: any, haveChanges: boolean) => {
   state.stateModel.tombstone.haveChanges = haveChanges
 }
 
-export const mutateHaveCorrection = (state: any, haveCorrection: boolean) => {
-  state.stateModel.tombstone.haveCorrection = haveCorrection
-}
-
 export const mutateEntityType = (state: any, entityType: EntityTypes) => {
   state.stateModel.tombstone.entityType = entityType
 }
@@ -166,7 +167,12 @@ export const mutateOriginalIA = (state: any, originalIa: IncorporationFilingIF) 
 }
 
 export const mutateStaffPayment = (state: any, staffPayment: StaffPaymentIF) => {
-  state.stateModel.staffPayment = staffPayment
+  state.stateModel.staffPaymentStep.staffPayment = staffPayment
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+}
+
+export const mutateStaffPaymentValidity = (state: any, staffPaymentValidity: boolean) => {
+  state.stateModel.staffPaymentStep.valid = staffPaymentValidity
 }
 
 export const mutateFilingData = (state: any, filingData: FilingDataIF) => {

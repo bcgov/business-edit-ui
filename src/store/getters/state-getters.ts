@@ -200,18 +200,12 @@ export const haveChanges = (state: any): boolean => {
 
 /** The staff payment. */
 export const getStaffPayment = (state: any): any => {
-  return state.stateModel.staffPayment
+  return state.stateModel.staffPaymentStep.staffPayment
 }
 
 /** The filing data. */
 export const getFilingData = (state: any): any => {
   return state.stateModel.filingData
-}
-
-/** Whether any corrections have been made. */
-// TODO: replace this with isCorrectionChanged() below
-export const getHaveCorrection = (state: any): boolean => {
-  return state.stateModel.tombstone.haveCorrection
 }
 
 /** Whether People and Roles component is valid. */
@@ -241,14 +235,18 @@ export const isBusySaving = (state: any): boolean => {
     state.stateModel.tombstone.isFilingPaying)
 }
 
-/** Whether any correction sections have changed. */
-export const isCorrectionChanged = (state: any): boolean => {
+/** Whether any correction/alteration sections have changed. */
+export const isFilingChanged = (state: any): boolean => {
   // TODO: add other sections here
-  return (state.stateModel.peopleAndRoles.changed)
+  return (state.stateModel.peopleAndRoles.changed ||
+    state.stateModel.defineCompanyStep.changed ||
+    state.stateModel.createShareStructureStep.changed ||
+    state.stateModel.incorporationAgreementStep.changed)
 }
 
-/** Whether all the correction sections are valid. */
-export const isCorrectionValid = (state: any): boolean => {
-  // TODO: add other sections here
-  return (state.stateModel.peopleAndRoles.valid)
+/** Whether any correction/alteration sections have changed. */
+export const isFilingValid = (state: any): boolean => {
+  // Add sections that can have only invalid data like people and roles and share structure
+  // Define company, Agreement Type wont allow saving and invalid state to the store
+  return (state.stateModel.peopleAndRoles.valid && state.stateModel.staffPaymentStep.valid)
 }

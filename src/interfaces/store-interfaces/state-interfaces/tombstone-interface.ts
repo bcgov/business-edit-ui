@@ -16,5 +16,4 @@ export interface TombStoneIF {
   isFilingPaying: boolean
   ignoreChanges: boolean
   haveChanges: boolean
-  haveCorrection: boolean
 }

@@ -64,6 +64,10 @@ export const setDefineCompanyStepValidity: ActionIF = ({ commit }, validity): vo
   commit('mutateDefineCompanyStepValidity', validity)
 }
 
+export const setDefineCompanyStepChanged: ActionIF = ({ commit }, changed): void => {
+  commit('mutateDefineCompanyStepChanged', changed)
+}
+
 export const setOfficeAddresses: ActionIF = ({ commit }, address): void => {
   commit('mutateOfficeAddresses', address)
 }
@@ -132,16 +136,16 @@ export const setHaveChanges: ActionIF = ({ commit }, haveChanges): void => {
   commit('mutateHaveChanges', haveChanges)
 }
 
-export const setHaveCorrection: ActionIF = ({ commit }, haveCorrection): void => {
-  commit('mutateHaveCorrection', haveCorrection)
-}
-
 export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
   commit('mutateOriginalIA', originalIA)
 }
 
 export const setStaffPayment: ActionIF = ({ commit }, staffPayment): void => {
   commit('mutateStaffPayment', staffPayment)
+}
+
+export const setStaffPaymentValidity: ActionIF = ({ commit }, staffPaymentValidity): void => {
+  commit('mutateStaffPaymentValidity', staffPaymentValidity)
 }
 
 export const setFilingData: ActionIF = ({ commit }, filingData): void => {
