@@ -28,7 +28,7 @@ const undoButtonSelector: string = '#btn-undo-agreement-type'
 const sampleAgreementText = 'The sample Incorporation Agreement and Benefit Company Articles containing a benefit ' +
   'provision have been completed and a copy added to the company\'s record book.'
 const customAgreementText = 'A custom Incorporation Agreement and custom Benefit Company Articles containing ' +
-'a benefit provision have been completed and a copy added to the company\'s record book.'
+  'a benefit provision have been completed and a copy added to the company\'s record book.'
 
 /**
  * Utility method to get around with the timing issues
@@ -58,7 +58,7 @@ function createComponent (): Wrapper<AgreementType> {
   })
 }
 
-store.state.stateModel.nameRequest.entityType = 'BC'
+store.state.stateModel.nameRequest.entityType = 'BEN'
 store.state.stateModel.tombstone.currentDate = '2020-03-30'
 store.state.stateModel.incorporationAgreementStep.agreementType = 'sample'
 store.state.stateModel.originalIA = {

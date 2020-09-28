@@ -21,7 +21,7 @@ describe.skip('Entity Info component with an NR', () => {
     store = getVuexStore()
 
     // Entity type will always be set with or without an NR
-    store.state.stateModel.tombstone.entityType = 'BC'
+    store.state.stateModel.tombstone.entityType = 'BEN'
     // Temp Id will always be set with or without an NR
     store.state.stateModel.tombstone.businessId = 'T1234567'
     store.state.stateModel.nameRequest.nrNumber = 'NR 1234567'
@@ -69,7 +69,7 @@ describe.skip('Entity Info component without an NR', () => {
     store = getVuexStore()
 
     // Entity type will always be set with or without an NR
-    store.state.stateModel.tombstone.entityType = 'BC'
+    store.state.stateModel.tombstone.entityType = 'BEN'
     // Temp Id will always be set with or without an NR
     store.state.stateModel.tombstone.businessId = 'T1234567'
     store.state.stateModel.nameRequest.nrNumber = null
