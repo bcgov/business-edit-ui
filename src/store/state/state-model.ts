@@ -123,6 +123,9 @@ export const stateModel: StateModelIF = {
     entityType: null,
     priority: false,
     waiveFees: false
+  },
+  detail: {
+    valid: false,
+    comment: ''
   }
-
 }

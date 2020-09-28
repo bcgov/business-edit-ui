@@ -40,6 +40,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getFolioNumber!: string
   @Getter getStaffPayment!: StaffPaymentIF
+  @Getter getDetailComment!: string | null
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -57,6 +58,7 @@ export default class FilingTemplateMixin extends Vue {
   @Action setFilingDate!: ActionBindingIF
   @Action setIncorporationAgreementStepData!: ActionBindingIF
   @Action setStaffPayment!: ActionBindingIF
+  @Action setDetailComment!: ActionBindingIF
 
   /**
    * Builds an Incorporation Application Correction filing body from store data. Used when saving a filing.
@@ -88,7 +90,7 @@ export default class FilingTemplateMixin extends Vue {
         correctedFilingId: this.getCorrectedFilingId,
         correctedFilingType: FilingTypes.INCORPORATION_APPLICATION,
         correctedFilingDate: this.getCurrentDate,
-        comment: ''
+        comment: this.getDetailComment
       },
       incorporationApplication: {
         nameRequest: {
@@ -208,6 +210,8 @@ export default class FilingTemplateMixin extends Vue {
       valid: false,
       certifiedBy: filing.header.certifiedBy
     })
+
+    this.setDetailComment(filing.correction.comment)
 
     // Set Folio Number
     this.setFolioNumber(filing.header.folioNumber)
