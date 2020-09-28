@@ -126,10 +126,6 @@ export default class FilingTemplateMixin extends Vue {
       case StaffPaymentOptions.FAS:
         filing.header.routingSlipNumber = this.getStaffPayment.routingSlipNumber
         filing.header.priority = this.getStaffPayment.isPriority
-
-        filing.header.bcolAccountNumber = ''
-        filing.header.datNumber = ''
-        filing.header.folioNumber = ''
         break
 
       case StaffPaymentOptions.BCOL:
@@ -137,17 +133,10 @@ export default class FilingTemplateMixin extends Vue {
         filing.header.datNumber = this.getStaffPayment.datNumber
         filing.header.folioNumber = this.getStaffPayment.folioNumber
         filing.header.priority = this.getStaffPayment.isPriority
-
-        filing.header.routingSlipNumber = ''
         break
 
       case StaffPaymentOptions.NO_FEE:
         filing.header.waiveFees = true
-
-        filing.header.routingSlipNumber = ''
-        filing.header.bcolAccountNumber = ''
-        filing.header.datNumber = ''
-        filing.header.folioNumber = ''
         filing.header.priority = false
         break
 
