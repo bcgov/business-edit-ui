@@ -31,7 +31,7 @@ describe('CorrectNameToNumber', () => {
 
     store.state.stateModel.nameRequest.legalName = 'Bobs Plumbing'
     store.state.stateModel.tombstone.businessId = 'BC 1234567'
-    store.state.stateModel.tombstone.entityType = 'BC'
+    store.state.stateModel.tombstone.entityType = 'BEN'
 
     wrapperFactory = (props) => {
       return mount(CorrectNameToNumber, {
@@ -111,7 +111,7 @@ describe('CorrectNameToNumber', () => {
     expect(getLastEvent(wrapper, 'done')).toBe(true)
 
     // Verify Data change in store
-    expect(store.state.stateModel.nameRequest.legalType).toBe('BC')
+    expect(store.state.stateModel.nameRequest.legalType).toBe('BEN')
     expect(store.state.stateModel.nameRequest.legalName).toBeUndefined()
   })
 })
