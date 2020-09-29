@@ -178,3 +178,11 @@ export const mutateStaffPaymentValidity = (state: any, staffPaymentValidity: boo
 export const mutateFilingData = (state: any, filingData: FilingDataIF) => {
   state.stateModel.filingData = filingData
 }
+
+export const mutateDetailValidity = (state: any, validity: boolean) => {
+  state.stateModel.detail.valid = validity
+}
+
+export const mutateDetailComment = (state: any, comment: string) => {
+  state.stateModel.detail.comment = comment
+}

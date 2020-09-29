@@ -248,5 +248,14 @@ export const isFilingChanged = (state: any): boolean => {
 export const isFilingValid = (state: any): boolean => {
   // Add sections that can have only invalid data like people and roles and share structure
   // Define company, Agreement Type wont allow saving and invalid state to the store
-  return (state.stateModel.peopleAndRoles.valid && state.stateModel.staffPaymentStep.valid)
+  return (state.stateModel.peopleAndRoles.valid && state.stateModel.staffPaymentStep.valid &&
+    state.stateModel.detail.valid)
+}
+
+export const getOriginalIAFilingDate = (state: any): boolean => {
+  return state.stateModel.originalIA.header.date.split('T')[0]
+}
+
+export const getDetailComment = (state: any): string => {
+  return state.stateModel.detail.comment
 }
