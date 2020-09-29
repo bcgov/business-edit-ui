@@ -21,8 +21,11 @@
               <detail-comment
                 v-model="comment"
                 placeholder="Add a Detail that will appear on the ledger for this entity."
+                :textAreaStyle="textAreaStyle"
                 :maxLength="maxLength"
-                @valid="onValidityChange($event)"/>
+                :rowCount="2"
+                @valid="onValidityChange($event)"
+                />
             </div>
           </v-flex>
         </v-layout>
@@ -49,6 +52,7 @@ export default class Detail extends Vue {
 
   private comment: string = null
   private maxLength: number = 4038
+  private textAreaStyle: string='filled'
 
   private onValidityChange (valid: boolean): void {
     this.setDetailValidity(valid)
