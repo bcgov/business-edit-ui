@@ -136,7 +136,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter, State } from 'vuex-class'
 import { ActionBindingIF, BusinessContactIF, GetterIF, IncorporationFilingIF,
   NameRequestIF, StateModelIF } from '@/interfaces'
@@ -171,9 +171,6 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   // Global state
   @State(state => state.stateModel.defineCompanyStep.valid)
   readonly valid!: boolean
-
-  @Prop({ default: false })
-  private isSummary: boolean
 
   // Declaration for template
   readonly EntityTypes = EntityTypes
@@ -271,9 +268,7 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
 }
 
 .section-container {
-  padding-left: 2rem;
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
+  padding: 1.25rem 1rem;
   font-size: 0.875rem;
 }
 

@@ -4,7 +4,7 @@
       <h1>Correction - Incorporation Application</h1>
     </header>
 
-    <div class="original-filing-date mt-6" v-if="isTypeBcomp">
+    <div class="original-filing-date mt-6">
       <p>
         <span class="original-filing-date-label">Original Filing Date:</span>
         {{ filingDateLocal }}
@@ -18,50 +18,26 @@
       </p>
     </div>
 
-    <!-- TODO: replace haveChanges event with global state -->
-    <your-company
-      class="mt-10"
-      :isSummary="true"
-    />
+    <your-company class="mt-10" />
 
-    <people-and-roles
-      class="mt-10"
-    />
+    <people-and-roles class="mt-10" />
 
-    <!-- TODO: replace haveChanges event with global state -->
+    <!-- TODO: remove unneeded props and collapse element -->
     <list-share-class
       class="mt-10"
       :isSummary="true"
       :shareClasses="getShareClasses"
     />
 
-    <!-- TODO: replace haveChanges event with global state -->
-    <agreement-type
-      class="mt-10"
-      :isSummary="true"
-    />
+    <agreement-type class="mt-10" />
 
-    <completing-party
-      class="mt-10"
-    />
+    <completing-party class="mt-10" />
 
-    <!-- TODO: replace emitValid event with global state -->
-    <detail
-      class="mt-10"
-      @emitValid="detailValid = $event"
-    />
+    <detail class="mt-10" />
 
-    <!-- TODO: replace emitValid event with global state -->
-    <certify
-      class="mt-10"
-      @emitValid="certifyValid = $event"
-    />
+    <certify class="mt-10" />
 
-    <!-- TODO: replace emitValid event with global state -->
-    <!-- TODO: replace haveChanges event with global state -->
-    <staff-payment
-      class="mt-10"
-    />
+    <staff-payment class="mt-10" />
   </section>
 </template>
 
@@ -69,21 +45,15 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter, State } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-
-// Components
 import { YourCompany } from '@/components/YourCompany'
 import { PeopleAndRoles } from '@/components/PeopleAndRoles'
 import { ListShareClass } from '@/components/ShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { Certify, CompletingParty, Detail, StaffPayment } from '@/components/common'
-
-// Mixins, Interfaces and Enums
 import { DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, FilingDataIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
 import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-
-// Resources
 import { BenefitCompanyStatementResource } from '@/resources'
 
 @Component({
@@ -119,11 +89,6 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   /** Whether App is ready. */
   @Prop({ default: false })
   private appReady: boolean
-
-  // whether components are valid
-  // TODO: delete these and use store instead
-  private certifyValid = false
-  private detailValid = false
 
   /** The id of the correction being edited. */
   private get correctionId (): number {

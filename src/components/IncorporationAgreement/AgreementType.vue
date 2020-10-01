@@ -72,7 +72,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Emit, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Interfaces
@@ -96,7 +96,6 @@ export default class AgreementType extends Vue {
 
   private setAgreementType (): void {
     this.setIncorporationAgreementData()
-    this.emitHaveChanges()
     this.showAgreementTypeForm = false
   }
 
@@ -121,14 +120,8 @@ export default class AgreementType extends Vue {
     if (this.getAgreementType) {
       return this.incorporationAgreementTypeResource.find(item => item.code === this.getAgreementType)
         .summaryDescription
-    } else { return '' }
-  }
-
-  @Emit('haveChanges')
-  private emitHaveChanges (): boolean {
-    return (
-      this.hasAgreementTypeChange
-    )
+    }
+    return ''
   }
 
   @Watch('getAgreementType', { immediate: true })
@@ -153,10 +146,10 @@ export default class AgreementType extends Vue {
 }
 
 .summary-desc {
-    padding: 1rem;
-    font-size: 0.875rem;
-    display: flex;
-    justify-content: center;
+  padding: 1rem;
+  font-size: 0.875rem;
+  display: flex;
+  justify-content: center;
 }
 
 .agreement-valid-icon {
@@ -173,23 +166,20 @@ export default class AgreementType extends Vue {
 }
 
 .action-btns {
-      display: flex;
-      justify-content: flex-end;
-      padding-bottom: 1rem;
-      padding-right:0.5rem;
-
-      .v-btn + .v-btn {
-        margin-left: 0.5rem;
-      }
-
-      .v-btn {
-        min-width: 6.5rem;
-      }
-
-      .v-btn[disabled] {
-        color: white !important;
-        background-color: #1669BB !important;
-        opacity: .2;
-      }
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 1rem;
+  padding-right: 0.5rem;
+  .v-btn + .v-btn {
+    margin-left: 0.5rem;
+  }
+  .v-btn {
+    min-width: 6.5rem;
+  }
+  .v-btn[disabled] {
+    color: white !important;
+    background-color: #1669BB !important;
+    opacity: 0.2;
+  }
 }
 </style>
