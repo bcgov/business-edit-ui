@@ -26,7 +26,7 @@
       class="mt-10"
       :shareClasses="getShareClasses"
       @setShareClass="setShareClasses($event)"
-      @haveChanges="shareStructChanges = $event"
+      @haveChanges="setShareClassesChanged($event)"
     />
 
     <agreement-type class="mt-10" />
@@ -88,6 +88,7 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   @Action setOriginalIA!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setShareClasses!: ActionBindingIF
+  @Action setShareClassesChanged!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })

@@ -263,7 +263,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import 'array.prototype.move'
 import { isEqual, omit } from 'lodash'
@@ -631,6 +631,11 @@ export default class ShareStructure extends Vue {
     this.nextId = -1
   }
 
+  /** True if we have any changes (from original IA). */
+  private get hasChanges (): boolean {
+    return this.shareClasses.some(x => x.action)
+  }
+
   // Events
   /**
    * Emit an event to the parent to handle addition or edit of a shareClass.
@@ -638,6 +643,12 @@ export default class ShareStructure extends Vue {
    */
   @Emit('setShareClass')
   private emitSetShareClassEvent (shareClass: ShareClassIF[]): void {}
+
+  @Watch('hasChanges')
+  @Emit('haveChanges')
+  private emitHaveChanges (): boolean {
+    return this.hasChanges
+  }
 }
 </script>
 
