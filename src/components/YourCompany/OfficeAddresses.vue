@@ -152,8 +152,8 @@
                   :address="mailingAddress"
                   :editing="true"
                   :schema="addressSchema"
-                  @update:address="updateAddress('mailingAddress', mailingAddress, $event)"
-                  @valid="updateValidity('mailingAddress', $event)"
+                  @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, mailingAddress, $event)"
+                  @valid="updateValidity(AddressTypes.MAILING_ADDRESS, $event)"
                 />
               </div>
             </div>
@@ -185,8 +185,8 @@
                   :address="deliveryAddress"
                   :editing="true"
                   :schema="addressSchema"
-                  @update:address="updateAddress('deliveryAddress', deliveryAddress, $event)"
-                  @valid="updateValidity('deliveryAddress', $event)"
+                  @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, deliveryAddress, $event)"
+                  @valid="updateValidity(AddressTypes.DELIVERY_ADDRESS, $event)"
                 />
               </div>
             </div>
@@ -218,8 +218,8 @@
                       :address="recMailingAddress"
                       :editing="true"
                       :schema="addressSchema"
-                      @update:address="updateAddress('recMailingAddress', recMailingAddress, $event)"
-                      @valid="updateValidity('recMailingAddress', $event)"
+                      @update:address="updateAddress(AddressTypes.REC_MAILING_ADDRESS, recMailingAddress, $event)"
+                      @valid="updateValidity(AddressTypes.REC_MAILING_ADDRESS, $event)"
                     />
                   </div>
                 </div>
@@ -248,8 +248,8 @@
                       :address="recDeliveryAddress"
                       :editing="true"
                       :schema="addressSchema"
-                      @update:address="updateAddress('recDeliveryAddress', recDeliveryAddress, $event)"
-                      @valid="updateValidity('recDeliveryAddress', $event)"
+                      @update:address="updateAddress(AddressTypes.REC_DELIVERY_ADDRESS, recDeliveryAddress, $event)"
+                      @valid="updateValidity(AddressTypes.REC_DELIVERY_ADDRESS, $event)"
                     />
                   </div>
                 </div>
@@ -287,7 +287,7 @@ import { isEmpty } from 'lodash'
 import { OfficeAddressSchema } from '@/schemas'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, IncorporationAddressIf, IncorporationFilingIF } from '@/interfaces'
-import { EntityTypes } from '@/enums'
+import { AddressTypes, EntityTypes } from '@/enums'
 import { CommonMixin, EntityFilterMixin } from '@/mixins'
 
 @Component({
@@ -303,6 +303,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
 
   // Declarations for template
   readonly isEmpty = isEmpty
+  readonly AddressTypes = AddressTypes
   readonly EntityTypes = EntityTypes
   readonly addressSchema = OfficeAddressSchema
 
@@ -474,10 +475,10 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
   /**
    * Handles update events from address sub-components.
    */
-  private updateAddress (addressToUpdate: string, baseAddress: AddressIF, newAddress: AddressIF): void {
+  private updateAddress (addressToUpdate: AddressTypes, baseAddress: AddressIF, newAddress: AddressIF): void {
     Object.assign(baseAddress, newAddress)
     switch (addressToUpdate) {
-      case 'mailingAddress':
+      case AddressTypes.MAILING_ADDRESS:
         if (this.inheritMailingAddress) {
           this.deliveryAddress = { ...newAddress }
         }
@@ -486,17 +487,17 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
           this.recDeliveryAddress = { ...this.deliveryAddress }
         }
         break
-      case 'deliveryAddress':
+      case AddressTypes.DELIVERY_ADDRESS:
         if (this.inheritRegisteredAddress) {
           this.recDeliveryAddress = { ...newAddress }
         }
         break
-      case 'recMailingAddress':
+      case AddressTypes.REC_MAILING_ADDRESS:
         if (this.inheritRecMailingAddress) {
           this.recDeliveryAddress = { ...newAddress }
         }
         break
-      case 'recDeliveryAddress':
+      case AddressTypes.REC_DELIVERY_ADDRESS:
         // nothing to do
         break
       default:
@@ -511,18 +512,18 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
    * @param addressToValidate the address to set the validity of
    * @param isValid whether the address is valid
    */
-  private updateValidity (addressToValidate: string, isValid: boolean): void {
+  private updateValidity (addressToValidate: AddressTypes, isValid: boolean): void {
     switch (addressToValidate) {
-      case 'mailingAddress':
+      case AddressTypes.MAILING_ADDRESS:
         this.mailingAddressValid = isValid
         break
-      case 'deliveryAddress':
+      case AddressTypes.DELIVERY_ADDRESS:
         this.deliveryAddressValid = isValid
         break
-      case 'recMailingAddress':
+      case AddressTypes.REC_MAILING_ADDRESS:
         this.recMailingAddressValid = isValid
         break
-      case 'recDeliveryAddress':
+      case AddressTypes.REC_DELIVERY_ADDRESS:
         this.recDeliveryAddressValid = isValid
         break
       default:
