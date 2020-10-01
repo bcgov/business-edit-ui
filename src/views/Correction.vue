@@ -164,10 +164,77 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
 
         // get and store ID of filing that is being corrected (ie, original IA)
         const correctedFilingId = correctionFiling.correction?.correctedFilingId
+        correctionFiling.incorporationApplication.nameRequest.legalName = 'Bobs Plumbing'
         this.setCorrectedFilingId(correctedFilingId)
 
         // fetch and store original IA
         const originalIa = await this.fetchFilingById(correctedFilingId)
+        originalIa.incorporationApplication.nameRequest.legalName = 'Bobs Plumbing'
+        originalIa.incorporationApplication.shareStructure.shareClasses.push({
+          'currency': 'CAD',
+          'hasMaximumShares': true,
+          'hasParValue': true,
+          'hasRightsOrRestrictions': true,
+          'id': 2,
+          'maxNumberOfShares': '100',
+          'name': 'Class B Shares',
+          'parValue': '1.00',
+          'priority': 1,
+          'series': [
+            {
+              'id': 1,
+              'priority': 1,
+              'type': 'Series',
+              'name': 'Series 1 Shares',
+              'hasMaximumShares': true,
+              'maxNumberOfShares': '20',
+              'hasParValue': true,
+              'parValue': '1.00',
+              'currency': 'CAD',
+              'hasRightsOrRestrictions': false
+            },
+            {
+              'id': 2,
+              'priority': 2,
+              'type': 'Series',
+              'name': 'Series 2 Shares',
+              'hasMaximumShares': true,
+              'maxNumberOfShares': '20',
+              'hasParValue': true,
+              'parValue': '1.00',
+              'currency': 'CAD',
+              'hasRightsOrRestrictions': false
+            },
+            {
+              'id': 3,
+              'priority': 3,
+              'type': 'Series',
+              'name': 'Series 3 Shares',
+              'hasMaximumShares': true,
+              'maxNumberOfShares': '30',
+              'hasParValue': true,
+              'parValue': '1.00',
+              'currency': 'CAD',
+              'hasRightsOrRestrictions': false
+            }
+          ],
+          'type': 'Class'
+        },
+        {
+          'currency': 'CAD',
+          'hasMaximumShares': true,
+          'hasParValue': true,
+          'hasRightsOrRestrictions': false,
+          'id': 3,
+          'maxNumberOfShares': '100',
+          'name': 'Class C Shares',
+          'parValue': '1.00',
+          'priority': 1,
+          'series': [
+
+          ],
+          'type': 'Class'
+        })
         this.setOriginalIA(originalIa)
 
         // parse correction filing into store

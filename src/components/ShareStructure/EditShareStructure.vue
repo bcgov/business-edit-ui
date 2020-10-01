@@ -1,5 +1,11 @@
 <template>
   <div>
+
+    <confirm-dialog
+      ref="confirm"
+      attach="#app"
+    />
+
     <v-expand-transition id="addShareStructureContainer">
       <ul class="list add-share-structure">
         <li class="add-share-structure-container">
@@ -118,11 +124,13 @@
 
                 <v-divider class="separator" />
 
-                <div class="form__row">
+                <div class="form__row">{{hasSeriesShares}}
                   <v-checkbox
                      id="special-rights-check-box"
                     :label="'This share ' + shareStructure.type.toLowerCase() + ' has special rights or restrictions'"
-                    v-model="shareStructure.hasRightsOrRestrictions"/>
+                    v-model="shareStructure.hasRightsOrRestrictions"
+                    @click="confirmSeriesRemoval"
+                    />
                 </div>
 
                 <div class="form__row form__btns">
@@ -157,17 +165,25 @@
 // Libraries
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 
+// Components
+import * as Dialogs from '@/components/dialogs'
+
 // Interfaces and Enums
-import { FormType, ShareClassIF } from '@/interfaces'
-import { ActionTypes } from '@/enums'
+import { ConfirmDialogType, FormType, ShareClassIF } from '@/interfaces'
 
 // Mixins
 import { CurrencyLookupMixin } from '@/mixins'
+import { ActionTypes } from '@/enums'
 
-  @Component({})
+@Component({
+  components: {
+    ...Dialogs
+  }
+})
 export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   // Refs
   $refs!: {
+    confirm: ConfirmDialogType,
     shareStructureForm: FormType
   };
 
@@ -192,6 +208,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   private formValid: boolean = true
   private hasNoMaximumShares: boolean = false
   private hasNoParValue: boolean = false
+  private hasSeriesShares: boolean = false
 
   private excludedWordsListForClass: string [] = ['share', 'shares', 'value']
   private excludedWordsListForSeries: string [] = ['share', 'shares']
@@ -278,6 +295,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
       this.shareStructure = { ...this.initialValue }
       this.hasNoMaximumShares = !this.shareStructure.hasMaximumShares
       this.hasNoParValue = !this.shareStructure.hasParValue
+      this.hasSeriesShares = this.shareStructure.hasRightsOrRestrictions && this.shareStructure.series?.length >= 1
 
       if (this.activeIndex !== -1) {
         const name = this.shareStructure.name
@@ -311,6 +329,12 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     shareStructureToAdd.name = `${shareStructureToAdd.name} Shares`
     shareStructureToAdd.hasMaximumShares = !this.hasNoMaximumShares
     shareStructureToAdd.hasParValue = !this.hasNoParValue
+
+    if (!shareStructureToAdd.hasRightsOrRestrictions && shareStructureToAdd.series) {
+      shareStructureToAdd.series.forEach(series => {
+        series.action = ActionTypes.REMOVED
+      })
+    }
     return shareStructureToAdd
   }
 
@@ -318,7 +342,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     if (this.isClass) {
       this.emitRemoveShareClassEvent(this.activeIndex)
     } else if (this.isSeries) {
-      this.emitRemoveShareSeriesEvent(this.parentIndex, this.activeIndex)
+      this.emitRemoveShareSeriesEvent(this.activeIndex, this.parentIndex)
     }
   }
 
@@ -339,6 +363,30 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     if (this.hasNoParValue) {
       this.shareStructure.currency = null
       this.shareStructure.parValue = null
+    }
+  }
+
+  private confirmSeriesRemoval (): void {
+    if (this.hasSeriesShares && !this.shareStructure.hasRightsOrRestrictions) {
+      // open confirmation dialog and wait for response
+      this.$refs.confirm.open(
+        'Remove Share Series',
+        'A share series exists for this class. Removing the Special Rights or Restrictions for this class' +
+        ' will remove all associated Share Series',
+        {
+          width: '45rem',
+          persistent: true,
+          yes: 'Remove share series',
+          no: null,
+          cancel: 'Cancel'
+        }
+      ).then(() => {
+        // if we get here, Yes was clicked
+        this.shareStructure.hasRightsOrRestrictions = false
+      }).catch(() => {
+        // if we get here, Cancel was clicked
+        this.shareStructure.hasRightsOrRestrictions = true
+      })
     }
   }
 
@@ -366,7 +414,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   private emitRemoveShareClassEvent (shareClassIndex: number): void {}
 
   @Emit('removeSeries')
-  private emitRemoveShareSeriesEvent (parentIndex: number, shareSeriesIndex: number): void {}
+  private emitRemoveShareSeriesEvent (shareSeriesIndex: number, parentIndex: number): void {}
 
   @Emit('resetEvent')
   private emitResetEvent (): void {}
