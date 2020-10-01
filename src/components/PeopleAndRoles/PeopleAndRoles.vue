@@ -101,7 +101,7 @@ import { OrgPerson, ListPeopleAndRoles } from '.'
   }
 })
 export default class PeopleAndRoles extends Vue {
-  // Enums for template
+  // Declarations for template
   readonly EntityTypes = EntityTypes
   readonly Roles = Roles
   readonly IncorporatorTypes = IncorporatorTypes

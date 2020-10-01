@@ -1,64 +1,114 @@
 <template>
   <div id="office-addresses">
-    <!-- Address Review -->
+
+    <!-- Addresses Summary -->
     <template v-if="!isEditing">
-      <v-layout row id="summary-registered-address">
-        <v-flex md3><label><strong>Registered Office</strong></label></v-flex>
-        <v-flex md4>
-          <label><strong>Mailing Address</strong></label>
+      <v-layout row id="summary-registered-address" class="mx-0">
+        <v-flex xs3>
+          <label>Registered Office</label>
+        </v-flex>
+
+        <v-flex xs4>
+          <label class="d-flex flex-wrap">
+            <span class="mr-2">Mailing Address</span>
+            <v-chip v-if="hasRegisteredMailingChange"
+              x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
+          </label>
           <mailing-address
-            v-if="!isEmptyAddress(mailingAddress)"
+            v-if="!isEmpty(mailingAddress)"
             :address="mailingAddress"
             :editing="false"/>
           <div v-else>(Not entered)</div>
         </v-flex>
 
-        <v-flex md4>
-          <label><strong>Delivery Address</strong></label>
+        <v-flex xs4>
+          <label class="d-flex flex-wrap">
+            <span class="mr-2">Delivery Address</span>
+            <v-chip v-if="hasRegisteredDeliveryChange"
+              x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
+          </label>
           <delivery-address
-            v-if="!isEmptyAddress(deliveryAddress) && !inheritMailingAddress"
+            v-if="!isEmpty(deliveryAddress) && !inheritMailingAddress"
             :address="deliveryAddress"
             :editing="false"/>
-          <div v-else-if="isEmptyAddress(deliveryAddress)">(Not entered)</div>
+          <div v-else-if="isEmpty(deliveryAddress)">(Not entered)</div>
           <div v-else>Same as Mailing Address</div>
+        </v-flex>
+
+        <v-flex xs1 class="ml-n5 mt-n2">
+          <v-btn
+            v-if="hasOfficeAddressesChange"
+            text color="primary"
+            id="btn-undo-office-addresses"
+            @click="resetContactInfo"
+          >
+            <v-icon small>mdi-undo</v-icon>
+            <span>Undo</span>
+          </v-btn>
+          <v-btn
+            v-else
+            text color="primary"
+            id="btn-correct-office-addresses"
+            @click="isEditing = true"
+          >
+            <v-icon small>mdi-pencil</v-icon>
+            <span>Correct</span>
+          </v-btn>
         </v-flex>
       </v-layout>
 
-      <v-layout row id="summary-records-address" v-if="entityFilter(EntityTypes.BCOMP)" class="mt-4">
-        <v-flex md3><label><strong>Records Office</strong></label></v-flex>
-        <v-flex md4>
-          <label><strong>Mailing Address</strong></label>
+      <v-layout v-if="entityFilter(EntityTypes.BCOMP)"
+        row id="summary-records-address" class="mt-4 mx-0"
+      >
+        <v-flex xs3>
+          <label class>Records Office</label>
+        </v-flex>
+
+        <v-flex xs4>
+          <label class="d-flex flex-wrap">
+            <span class="mr-2">Mailing Address</span>
+            <v-chip v-if="hasRecordsMailingChange"
+              x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
+          </label>
           <mailing-address
-            v-if="!inheritRegisteredAddress && !isEmptyAddress(recMailingAddress)"
+            v-if="!inheritRegisteredAddress && !isEmpty(recMailingAddress)"
             :address="recMailingAddress"
             :editing="false"/>
-          <div v-else-if="isEmptyAddress(recMailingAddress)">(Not entered)</div>
+          <div v-else-if="isEmpty(recMailingAddress)">(Not entered)</div>
           <div v-else>Same as Registered Office</div>
         </v-flex>
 
-        <v-flex md4>
-          <label><strong>Delivery Address</strong></label>
+        <v-flex xs4>
+          <label class="d-flex flex-wrap">
+            <span class="mr-2">Delivery Address</span>
+            <v-chip v-if="hasRecordsDeliveryChange"
+              x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
+          </label>
           <delivery-address
-            v-if="!inheritRecMailingAddress && !inheritRegisteredAddress && !isEmptyAddress(recDeliveryAddress)"
+            v-if="!inheritRecMailingAddress && !inheritRegisteredAddress && !isEmpty(recDeliveryAddress)"
             :address="recDeliveryAddress"
             :editing="false"/>
-          <div v-else-if="isEmptyAddress(recDeliveryAddress)">(Not entered)</div>
+          <div v-else-if="isEmpty(recDeliveryAddress)">(Not entered)</div>
           <div v-else-if="inheritRegisteredAddress">Same as Registered Office</div>
           <div v-else>Same as Mailing Address</div>
         </v-flex>
+
+        <!-- empty column to force alignment with Registered Office section -->
+        <v-flex xs1>&nbsp;</v-flex>
       </v-layout>
     </template>
 
-    <!-- Address Form -->
+    <!-- Addresses Edit -->
+    <!-- TODO: add Done/Cancel buttons and actions -->
     <v-card flat v-else>
-      <ul class="list address-list address-form">
+      <ul class="list address-list">
         <!-- Registered Office -->
         <div class="address-edit-header">
           <label class="address-edit-title">Registered Office</label>
         </div>
 
         <!-- Registered Mailing Address -->
-        <li class="address-list-container">
+        <li class="ma-5">
           <div class="meta-container">
             <label>Mailing Address</label>
             <div class="meta-container__inner">
@@ -69,14 +119,15 @@
                   :editing="true"
                   :schema="addressSchema"
                   @update:address="updateAddress('mailingAddress', mailingAddress, $event)"
-                  @valid="updateAddressValid('mailingAddress', $event)"/>
+                  @valid="updateAddressValid('mailingAddress', $event)"
+                />
               </div>
             </div>
           </div>
         </li>
 
         <!-- Registered Delivery Address -->
-        <li class="address-list-container">
+        <li class="ma-5">
           <div class="meta-container">
             <label>Delivery Address</label>
             <div class="meta-container__inner">
@@ -85,11 +136,15 @@
                   id="registered-mailing-same-chkbx"
                   class="inherit-checkbox"
                   label="Same as Mailing Address"
+                  hide-details
                   v-model="inheritMailingAddress"
-                  v-on:change="setDeliveryAddressToMailingAddress()"/>
+                  v-on:change="setDeliveryAddressToMailingAddress()"
+                />
               </div>
-              <div class="address-wrapper"
-                   v-if="!isSame(mailingAddress, deliveryAddress, 'actions') || !inheritMailingAddress">
+              <div
+                class="address-wrapper"
+                v-if="!isSame(mailingAddress, deliveryAddress, 'actions') || !inheritMailingAddress"
+              >
                 <delivery-address ref="regDeliveryAddress"
                   id="address-registered-delivery"
                   v-if="!inheritMailingAddress"
@@ -97,7 +152,8 @@
                   :editing="true"
                   :schema="addressSchema"
                   @update:address="updateAddress('deliveryAddress', deliveryAddress, $event)"
-                  @valid="updateAddressValid('deliveryAddress', $event)"/>
+                  @valid="updateAddressValid('deliveryAddress', $event)"
+                />
               </div>
             </div>
           </div>
@@ -111,13 +167,15 @@
               id="records-mailing-same-chkbx"
               class="records-inherit-checkbox"
               label="Same as Registered Office"
+              hide-details
               v-model="inheritRegisteredAddress"
-              v-on:change="setRecordOfficeToRegisteredOffice()"/>
+              v-on:change="setRecordOfficeToRegisteredOffice()"
+            />
           </div>
 
           <template v-if="!inheritRegisteredAddress">
             <!-- Records Mailing Address -->
-            <li class="address-list-container">
+            <li class="ma-5">
               <div class="meta-container">
                 <label>Mailing Address</label>
                 <div class="meta-container__inner">
@@ -128,14 +186,15 @@
                       :editing="true"
                       :schema="addressSchema"
                       @update:address="updateAddress('recMailingAddress', recMailingAddress, $event)"
-                      @valid="updateAddressValid('recMailingAddress', $event)"/>
+                      @valid="updateAddressValid('recMailingAddress', $event)"
+                    />
                   </div>
                 </div>
               </div>
             </li>
 
             <!-- Records Delivery Address -->
-            <li class="address-list-container">
+            <li class="ma-5">
               <div class="meta-container">
                 <label>Delivery Address</label>
                 <div class="meta-container__inner">
@@ -143,8 +202,10 @@
                     <v-checkbox
                       class="inherit-checkbox"
                       label="Same as Mailing Address"
+                      hide-details
                       v-model="inheritRecMailingAddress"
-                      v-on:change="setRecordDeliveryAddressToMailingAddress()"/>
+                      v-on:change="setRecordDeliveryAddressToMailingAddress()"
+                    />
                   </div>
                   <div
                     class="address-wrapper"
@@ -155,7 +216,8 @@
                       :editing="true"
                       :schema="addressSchema"
                       @update:address="updateAddress('recDeliveryAddress', recDeliveryAddress, $event)"
-                      @valid="updateAddressValid('recDeliveryAddress', $event)"/>
+                      @valid="updateAddressValid('recDeliveryAddress', $event)"
+                    />
                   </div>
                 </div>
               </div>
@@ -168,24 +230,13 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Emit, Prop, Watch, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { isEmpty } from 'lodash'
-
-// Schemas
 import { OfficeAddressSchema } from '@/schemas'
-
-// Components
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-
-// Interfaces
-import { IncorporationAddressIf, AddressIF, FormType, StateModelIF } from '@/interfaces'
-
-// Enums
+import { AddressIF, FormType, IncorporationAddressIf, StateModelIF } from '@/interfaces'
 import { EntityTypes } from '@/enums'
-
-// Mixins
 import { CommonMixin, EntityFilterMixin } from '@/mixins'
 
 @Component({
@@ -203,24 +254,21 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
     recDeliveryAddress: any
   }
 
-  /**
-   * Addresses object from the parent page.
-   * If this is null then this is a new filing; otherwise these are the addresses from a draft/navigation
-   * from other step.
-   * This will be emitted back to the parent page when the addresses are updated.
-   */
-  @Prop({ default: null })
-  readonly inputAddresses!: IncorporationAddressIf | null
-
-  // Whether to show the editable forms for the addresses (true) or just the static display addresses (false).
-  @Prop({ default: true })
-  private isEditing!: boolean
-
   // Global getters
   @Getter getOfficeAddresses!: any
 
+  // Declaration for template
+  readonly isEmpty = isEmpty
+
+  private hasOfficeAddressesChange = false
+
   // Local Properties
-  private addresses: IncorporationAddressIf | null = this.inputAddresses
+  private hasRegisteredMailingChange = true
+  private hasRegisteredDeliveryChange = true
+  private hasRecordsMailingChange = true
+  private hasRecordsDeliveryChange = true
+
+  private addresses: IncorporationAddressIf
   private defaultAddress: AddressIF = {
     addressCity: '',
     addressCountry: 'CA',
@@ -230,6 +278,9 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
     streetAddress: '',
     streetAddressAdditional: ''
   }
+
+  /** Whether to show the editable forms for the addresses (true) or the static display addresses (false). */
+  private isEditing: boolean = false
 
   // The 4 addresses that are the current state of the BaseAddress components:
   private mailingAddress = {} as AddressIF
@@ -261,7 +312,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
   /** Called when component is created. */
   private created (): void {
     // on first load, determine inherited flags based on address values and update parent
-    this.setAddresses(true)
+    this.initializeAddresses(true)
     this.emitValid()
   }
 
@@ -299,7 +350,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
    * Sets address data.
    * @param loadInheritedFlags used to update inherited flags based on isSame checks if true
    */
-  private setAddresses (loadInheritedFlags: boolean): void {
+  private initializeAddresses (loadInheritedFlags: boolean): void {
     if (this.addresses.registeredOffice) {
       this.mailingAddress = this.addresses.registeredOffice.mailingAddress
       this.deliveryAddress = this.addresses.registeredOffice.deliveryAddress
@@ -319,8 +370,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
             this.isSame(
               this.addresses.registeredOffice.deliveryAddress,
               this.addresses.recordsOffice?.deliveryAddress
-            ) &&
-            this.isSame(
+            ) && this.isSame(
               this.addresses.registeredOffice.mailingAddress,
               this.addresses.recordsOffice?.mailingAddress
             )
@@ -347,11 +397,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
       (this.recMailingAddressValid && (this.inheritRecMailingAddress || this.recDeliveryAddressValid))
 
     return registeredOfficeValid && recordsOfficeValid
-  }
-
-  /** Whether the address object is empty. */
-  private isEmptyAddress (address: AddressIF): boolean {
-    return isEmpty(address)
   }
 
   //
@@ -466,15 +511,12 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
   }
 
   @Watch('getOfficeAddresses', { deep: true, immediate: true })
-  private updateAddresses (): void {
-    this.addresses = this.inputAddresses
-    this.setAddresses(false)
+  private updateAddresses (addresses: IncorporationAddressIf): void {
+    this.addresses = addresses
+    this.initializeAddresses(false)
     this.emitValid()
   }
 
-  //
-  // Event Emitters
-  //
   /** Emits the valid state of this address form. */
   @Emit('valid')
   private emitValid (): boolean {
@@ -482,6 +524,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
   }
 
   /** Emits updated addresses object to the parent page. */
+  // TODO: update in global state instead
   @Emit('update:addresses')
   private emitAddresses (): object {
     if (this.entityFilter(EntityTypes.BCOMP)) {
@@ -508,10 +551,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
 </script>
 
 <style lang="scss" scoped>
-.address-list-container {
-  padding: 1rem;
-}
-
 .meta-container {
   display: flex;
   flex-flow: column nowrap;
@@ -551,13 +590,8 @@ label:first-child {
 
 @media (min-width: 768px) {
   .address-list .form {
-    margin-top: 0rem;
+    margin-top: 0;
   }
-}
-
-// Address Block Layout
-.address-wrapper {
-  margin-top: 0.5rem;
 }
 
 // Form Row Elements
@@ -587,13 +621,6 @@ label:first-child {
 
   .v-messages {
     display: none !important;
-  }
-}
-
-// Registered Office Address Form Behavior
-.address-form {
-  li:first-child {
-    padding-bottom: 0;
   }
 }
 

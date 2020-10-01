@@ -125,7 +125,6 @@
                 <!-- Delivery Address (for directors only) -->
                 <div class="form__row" v-if="isDirector">
                   <v-checkbox
-                    class="inherit-checkbox"
                     label="Delivery Address same as Mailing Address"
                     v-model="inheritMailingAddress"
                   />
@@ -189,12 +188,10 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     reassignCpDialog: ConfirmDialogType
   }
 
-  // Enums for template
+  // Declarations for template
   readonly EntityTypes = EntityTypes
   readonly Roles = Roles
   readonly IncorporatorTypes = IncorporatorTypes
-
-  // Schema object for template
   readonly PersonAddressSchema = PersonAddressSchema
 
   /** The current org/person to edit or add. */

@@ -99,7 +99,7 @@ import { BenefitCompanyStatementResource } from '@/resources'
   }
 })
 export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin) {
-  // Resources for template
+  // Declaration for template
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
 
   // Global getters

@@ -25,7 +25,7 @@ describe.skip('List People And Roles component', () => {
 
   const mockPersonList = [
     {
-      'officer': {
+      officer: {
         'id': 0,
         'firstName': 'Cameron',
         'lastName': 'Bowler',
@@ -34,11 +34,11 @@ describe.skip('List People And Roles component', () => {
         'partyType': 'Person',
         'email': 'completing-party@example.com'
       },
-      'roles': [
+      roles: [
         { 'roleType': 'Completing Party', 'appointmentDate': '2020-03-30' },
         { 'roleType': 'Director', 'appointmentDate': '2020-03-30' }
       ],
-      'mailingAddress': {
+      mailingAddress: {
         'streetAddress': '122-12210 Boul De Pierrefonds',
         'streetAddressAdditional': '',
         'addressCity': 'Pierrefonds',
@@ -46,7 +46,7 @@ describe.skip('List People And Roles component', () => {
         'postalCode': 'H9A 2X6',
         'addressCountry': 'CA'
       },
-      'deliveryAddress': {
+      deliveryAddress: {
         'streetAddress': '122-12210 Boul De Pierrefonds',
         'streetAddressAdditional': '',
         'addressCity': 'Pierrefonds',
@@ -56,7 +56,7 @@ describe.skip('List People And Roles component', () => {
       }
     },
     {
-      'officer': {
+      officer: {
         'id': 1,
         'firstName': '',
         'lastName': '',
@@ -64,10 +64,10 @@ describe.skip('List People And Roles component', () => {
         'orgName': 'Sysco Foods Company',
         'partyType': 'Org'
       },
-      'roles': [
+      roles: [
         { 'roleType': 'Incorporator', 'appointmentDate': '2020-03-30' }
       ],
-      'mailingAddress': {
+      mailingAddress: {
         'streetAddress': '12-1044 Boul 21De Normandie',
         'streetAddressAdditional': '',
         'addressCity': 'Saint-Jean-Sur-Richelieu',

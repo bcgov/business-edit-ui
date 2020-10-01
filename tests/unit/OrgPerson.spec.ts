@@ -33,7 +33,7 @@ const cancelButtonSelector: string = '#btn-cancel'
 const orgPersonFormSelector: string = '#org-person-form'
 
 const validPersonData = {
-  'officer': {
+  officer: {
     'id': 0,
     'firstName': 'Adam',
     'lastName': 'Smith',
@@ -42,11 +42,11 @@ const validPersonData = {
     'partyType': 'Person',
     'email': 'completing-party@example.com'
   },
-  'roles': [
+  roles: [
     { 'roleType': 'Director', 'appointmentDate': '2020-03-30' },
     { 'roleType': 'Completing Party', 'appointmentDate': '2020-03-30' }
   ],
-  'mailingAddress': {
+  mailingAddress: {
     'streetAddress': '123 Fake Street',
     'streetAddressAdditional': '',
     'addressCity': 'Victoria',
@@ -54,7 +54,7 @@ const validPersonData = {
     'postalCode': 'V8Z 5C6',
     'addressCountry': 'CA'
   },
-  'deliveryAddress': {
+  deliveryAddress: {
     'streetAddress': '123 Fake Street',
     'streetAddressAdditional': '',
     'addressCity': 'Victoria',
@@ -65,7 +65,7 @@ const validPersonData = {
 }
 
 const validIncorporator = {
-  'officer': {
+  officer: {
     'id': 1,
     'firstName': 'Adam',
     'lastName': 'Smith',
@@ -73,10 +73,10 @@ const validIncorporator = {
     'orgName': '',
     'partyType': 'Person'
   },
-  'roles': [
+  roles: [
     { 'roleType': 'Incorporator', 'appointmentDate': '2020-03-30' }
   ],
-  'mailingAddress': {
+  mailingAddress: {
     'streetAddress': '123 Fake Street',
     'streetAddressAdditional': '',
     'addressCity': 'Victoria',
@@ -84,7 +84,7 @@ const validIncorporator = {
     'postalCode': 'V8Z 5C6',
     'addressCountry': 'CA'
   },
-  'deliveryAddress': {
+  deliveryAddress: {
     'streetAddress': '123 Fake Street',
     'streetAddressAdditional': '',
     'addressCity': 'Victoria',
@@ -95,7 +95,7 @@ const validIncorporator = {
 }
 
 const validOrgData = {
-  'officer': {
+  officer: {
     'id': 0,
     'firstName': '',
     'lastName': '',
@@ -103,10 +103,10 @@ const validOrgData = {
     'orgName': 'Test Org',
     'partyType': 'Org'
   },
-  'roles': [
+  roles: [
     { 'roleType': 'Incorporator', 'appointmentDate': '2020-03-30' }
   ],
-  'mailingAddress': {
+  mailingAddress: {
     'streetAddress': '3942 Fake Street',
     'streetAddressAdditional': '',
     'addressCity': 'Victoria',
@@ -185,7 +185,7 @@ describe('Org/Person component', () => {
 
   xit('Displays form data for org', async () => {
     const wrapper: Wrapper<OrgPerson> = createComponent(validOrgData, -1, 0, null)
-    expect((<HTMLInputElement>wrapper.find(orgNameSelector).element).value)
+    expect((<HTMLInputElement> wrapper.find(orgNameSelector).element).value)
       .toEqual(validOrgData['officer']['orgName'])
     await Vue.nextTick()
     expect(wrapper.find(doneButtonSelector).attributes('disabled')).toBeUndefined()
@@ -196,11 +196,11 @@ describe('Org/Person component', () => {
 
   it('Displays form data for person', async () => {
     const wrapper: Wrapper<OrgPerson> = createComponent(validPersonData, 0, 0, null)
-    expect((<HTMLInputElement>wrapper.find(firstNameSelector).element).value)
+    expect((<HTMLInputElement> wrapper.find(firstNameSelector).element).value)
       .toEqual(validPersonData['officer']['firstName'])
-    expect((<HTMLInputElement>wrapper.find(middleNameSelector).element).value)
+    expect((<HTMLInputElement> wrapper.find(middleNameSelector).element).value)
       .toEqual(validPersonData['officer']['middleName'])
-    expect((<HTMLInputElement>wrapper.find(lastNameSelector).element).value)
+    expect((<HTMLInputElement> wrapper.find(lastNameSelector).element).value)
       .toEqual(validPersonData['officer']['lastName'])
     await Vue.nextTick()
     expect(wrapper.find(doneButtonSelector).attributes('disabled')).toBeUndefined()
@@ -231,7 +231,7 @@ describe('Org/Person component', () => {
 
   xit('Clicking Done button emits event for add edit person/org', async () => {
     const wrapper: Wrapper<OrgPerson> = createComponent(validOrgData, -1, 0, null)
-    expect((<HTMLInputElement>wrapper.find(orgNameSelector).element).value)
+    expect((<HTMLInputElement> wrapper.find(orgNameSelector).element).value)
       .toEqual(validOrgData['officer']['orgName'])
     await Vue.nextTick()
     expect(wrapper.find(doneButtonSelector).attributes('disabled')).toBeUndefined()

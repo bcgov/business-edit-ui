@@ -4,10 +4,11 @@
         <v-icon>mdi-domain</v-icon>
         <label class="define-company-title font-weight-bold">Your Company</label>
     </div>
-    <div class="section-container px-8">
+
+    <div class="section-container">
       <!--TODO: Replace container content with Name Request Summary when it is ready -->
-      <v-layout row>
-        <v-flex md3>
+      <v-layout row class="mx-0">
+        <v-flex xs3>
           <v-layout column>
             <label><strong>Company Name</strong></label>
             <v-flex md1>
@@ -17,18 +18,29 @@
             </v-flex>
           </v-layout>
         </v-flex>
+
         <template v-if="!isEditingNames">
-          <v-flex md7>
+          <v-flex xs8>
             <div class="company-name">{{ companyName }}</div>
             <div class="company-type">
               <span v-if="entityFilter(EntityTypes.BCOMP)">BC Benefit Company</span>
               <span v-else-if="entityFilter(EntityTypes.COOP)">BC Cooperative Association</span>
             </div>
           </v-flex>
-          <v-flex md2 class="align-right">
-            <!-- only show buttons for named company -->
+
+          <v-flex xs1 class="ml-n5 mt-n2">
+            <!-- TODO: only show buttons for named company -->
             <v-btn
-              v-if="!companyNameChanges"
+              v-if="companyNameChanges"
+              text color="primary"
+              id="btn-undo-company-name"
+              @click="resetName()"
+            >
+              <v-icon small>mdi-undo</v-icon>
+              <span>Undo</span>
+            </v-btn>
+            <v-btn
+              v-else
               text color="primary"
               id="btn-correct-company-name"
               @click="isEditingNames = true"
@@ -36,44 +48,31 @@
               <v-icon small>mdi-pencil</v-icon>
               <span>Correct</span>
             </v-btn>
-            <v-btn
-              v-else
-              text color="primary"
-              id="btn-undo-company-name"
-              @click="resetName"
-            >
-              <v-icon small>mdi-undo</v-icon>
-              <span>Undo</span>
-            </v-btn>
           </v-flex>
         </template>
-        <v-flex v-else md9>
-          <correct-name-options
-            :correction-name-choices="correctNameChoices"
-            @done="nameChangeHandler"
-            @cancel="isEditingNames = false"
-          />
-        </v-flex>
+
+        <template v-else>
+          <v-flex xs9>
+            <correct-name-options
+              :correction-name-choices="correctNameChoices"
+              @done="nameChangeHandler"
+              @cancel="isEditingNames = false"
+            />
+          </v-flex>
+        </template>
       </v-layout>
-      <v-layout row v-if="getNameTranslations && getNameTranslations.length" class="mt-3">
-        <v-flex md3>
+
+      <v-layout row v-if="getNameTranslations && getNameTranslations.length" class="mt-3 mx-0">
+        <v-flex xs3>
           <label><strong>Name Translation</strong></label>
         </v-flex>
-        <v-flex md7>
+
+        <v-flex xs8>
           <div v-for="(name, index) in getNameTranslations" :key="`name_translation_${index}`">{{name}}</div>
         </v-flex>
-        <v-flex md2 class="align-right">
-          <v-btn
-            v-if="!nameTranslationChanges"
-            text color="primary"
-            id="btn-correct-name-translations"
-            @click="nameTranslationChanges = true"
-          >
-            <v-icon small>mdi-pencil</v-icon>
-            <span>Correct</span>
-          </v-btn>
-          <v-btn
-            v-if="nameTranslationChanges"
+
+        <v-flex xs1 class="ml-n5 mt-n2">
+          <v-btn v-if="nameTranslationChanges"
             text color="primary"
             id="btn-undo-name-translations"
             @click="nameTranslationChanges = false"
@@ -81,37 +80,40 @@
             <v-icon small>mdi-undo</v-icon>
             <span>Undo</span>
           </v-btn>
+          <v-btn v-else
+            text color="primary"
+            id="btn-correct-name-translations"
+            @click="nameTranslationChanges = true"
+          >
+            <v-icon small>mdi-pencil</v-icon>
+            <span>Correct</span>
+          </v-btn>
         </v-flex>
       </v-layout>
     </div>
 
-    <v-divider />
-
-    <div class="section-container px-8">
-      <v-layout row>
-        <v-flex md3>
-          <label><strong>Recognition Date and Time</strong></label>
-        </v-flex>
-        <v-flex md7>
-          <div>{{ recognitionDateTime }}</div>
-        </v-flex>
-        <v-flex md2 class="align-right">
-        </v-flex>
-      </v-layout>
-    </div>
-
-    <v-divider />
+    <v-divider class="mx-4" />
 
     <div class="section-container">
-      <!-- TODO: add Correct button -->
+      <v-layout row class="mx-0">
+        <v-flex xs3>
+          <label><strong>Recognition Date and Time</strong></label>
+        </v-flex>
+        <v-flex xs9>
+          <div>{{ recognitionDateTime }}</div>
+        </v-flex>
+      </v-layout>
+    </div>
+
+    <v-divider class="mx-4" />
+
+    <div class="section-container">
       <office-addresses
-        :inputAddresses="getOfficeAddresses"
-        :isEditing="false"
         @haveChanges="officeAddressChanges = $event"
       />
     </div>
 
-    <v-divider />
+    <v-divider class="mx-4" />
 
     <div class="section-container">
       <correct-business-contact-info
@@ -119,30 +121,28 @@
       />
     </div>
 
-    <div class="section-container" v-if="isPremiumAccount">
-      <!-- TODO: add Correct button -->
-      <folio-number
-        :initialValue="getFolioNumber"
-        :isEditing="false"
-        @haveChanges="folioNumberChanges = $event"
-      />
-    </div>
+    <template  v-if="isPremiumAccount">
+      <v-divider class="mx-4" />
+
+      <div class="section-container">
+        <folio-number
+          :initialValue="getFolioNumber"
+          :isEditing="false"
+          @haveChanges="folioNumberChanges = $event"
+        />
+      </div>
+    </template>
   </v-card>
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter, State } from 'vuex-class'
-// Interfaces
 import { ActionBindingIF, BusinessContactIF, GetterIF, IncorporationFilingIF,
   NameRequestIF, StateModelIF } from '@/interfaces'
-// Components
 import { CorrectBusinessContactInfo, FolioNumber, OfficeAddresses } from '.'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
-// Mixins
 import { DateMixin, EntityFilterMixin, LegalApiMixin } from '@/mixins'
-// Enums
 import { CorrectionTypes, EntityTypes } from '@/enums'
 
 @Component({
@@ -175,7 +175,7 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   @Prop({ default: false })
   private isSummary: boolean
 
-  // Enum for the template
+  // Declaration for template
   readonly EntityTypes = EntityTypes
 
   // whether components have changes
