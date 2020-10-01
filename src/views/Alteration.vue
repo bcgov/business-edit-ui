@@ -5,20 +5,20 @@
     </header>
 
     <!-- The Summary Components Below are just for a visual representation. Future Components TBD -->
-    <SummaryDefineCompany
+    <summary-define-company
        class="mt-10"
     />
-    <ListPeopleAndRoles
+    <list-people-and-roles
       class="mt-10"
       :personList="getPeopleAndRoles"
       :isSummary="true"
     />
-    <ListShareClass
+    <list-share-class
       class="mt-10"
       :shareClasses="getShareClasses"
       :isSummary="true"
     />
-    <AgreementType
+    <agreement-type
       class="mt-10"
       :isSummary="true"
     />
@@ -29,14 +29,10 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-
-// Components
 import { SummaryDefineCompany } from '@/components/YourCompany'
 import { ListPeopleAndRoles } from '@/components/PeopleAndRoles'
 import { ListShareClass } from '@/components/ShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'
-
-// Mixins, Interfaces and Enums
 import { FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, FilingDataIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
 import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'

@@ -37,7 +37,7 @@ function resetStore (): void {
 function getPersonList (roles = [completingPartyRole]): any {
   const mockPersonList = [
     {
-      'officer': {
+      officer: {
         'id': 0,
         'firstName': 'Adam',
         'lastName': 'Smith',
@@ -45,8 +45,8 @@ function getPersonList (roles = [completingPartyRole]): any {
         'orgName': '',
         'type': 'Person'
       },
-      'roles': roles,
-      'address': {
+      roles,
+      address: {
         'mailingAddress': {
           'streetAddress': '123 Fake Street',
           'streetAddressAdditional': '',
@@ -55,7 +55,7 @@ function getPersonList (roles = [completingPartyRole]): any {
           'postalCode': 'V8Z 5C6',
           'addressCountry': 'CA'
         },
-        'deliveryAddress': {
+        deliveryAddress: {
           'streetAddress': '123 Fake Street',
           'streetAddressAdditional': '',
           'addressCity': 'Victoria',

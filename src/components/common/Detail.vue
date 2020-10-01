@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Vue, Watch } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { DetailComment } from '@bcrs-shared-components/detail-comment'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF } from '@/interfaces'

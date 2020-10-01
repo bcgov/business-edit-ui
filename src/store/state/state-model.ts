@@ -1,5 +1,4 @@
-import { IncorporationAddressIf, OrgPersonIF, ShareClassIF, StateModelIF } from '@/interfaces'
-import { FilingCodes, EntityTypes } from '@/enums'
+import { StateModelIF } from '@/interfaces'
 
 export const stateModel: StateModelIF = {
   tombstone: {

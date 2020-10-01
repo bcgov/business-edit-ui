@@ -82,7 +82,7 @@
           <div v-if="orgPerson.action" class="actions">
             <span class="undo-action mr-4">
               <v-btn
-                text small color="primary"
+                text color="primary"
                 :id="'officer-' + orgPerson.officer.id + '-undo-btn'"
                 @click="emitUndo(index)"
               >
@@ -95,7 +95,7 @@
           <div v-else class="actions">
             <span class="edit-action">
               <v-btn
-                text small color="primary"
+                text color="primary"
                 :id="'officer-' + orgPerson.officer.id + '-edit-btn'"
                 @click="emitEdit(index)"
               >
@@ -151,7 +151,7 @@ import { ActionTypes } from '@/enums'
   }
 })
 export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
-  // Enum for template
+  // Declaration for template
   readonly ActionTypes = ActionTypes
 
   // Getter

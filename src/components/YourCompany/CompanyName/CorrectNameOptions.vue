@@ -1,5 +1,5 @@
 <template>
-  <v-container id="name-options-container">
+  <v-container id="name-options-container" class="pa-0">
     <p class="name-options-info mb-5" v-if="!isOneOption">
       You can correct the company name in one of the following ways:
     </p>
@@ -32,19 +32,24 @@
       </v-expansion-panel>
     </v-expansion-panels>
 
-    <div class="action-btns my-3">
+    <div class="action-btns">
       <v-btn
         id="done-btn"
-        large
-        color="primary"
-        @click="submitNameCorrection"
+        large color="primary"
         :disabled="!isFormValid"
         :loading="isLoading"
+        @click="submitNameCorrection()"
       >
         <span>Done</span>
       </v-btn>
 
-      <v-btn id="cancel-btn" large outlined color="primary" @click="emitCancel"><span>Cancel</span></v-btn>
+      <v-btn
+        id="cancel-btn"
+        large outlined color="primary"
+        @click="emitCancel()"
+      >
+        <span>Cancel</span>
+      </v-btn>
     </div>
   </v-container>
 </template>
@@ -153,52 +158,48 @@ export default class CorrectNameOptions extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  #name-options-container {
-    padding: 0;
+.name-options-header {
+  align-items: start;
+}
 
-    .name-options-header {
-      align-items: start;
-    }
+.names-option-title {
+  color: #1669BB;
+}
 
-    .names-option-title {
-      color: #1669BB
-    }
+.v-expansion-panel-content ::v-deep .v-expansion-panel-content__wrap {
+  padding: 0;
+}
 
-    .action-btns {
-      display: flex;
-      justify-content: flex-end;
+.v-expansion-panel-header {
+  padding: .25rem 0 0;
+  color: #1669BB;
+}
 
-      .v-btn + .v-btn {
-        margin-left: 0.5rem;
-      }
+.v-expansion-panel--active > .v-expansion-panel-header {
+  font-weight: bold;
+  min-height: 3rem;
 
-      .v-btn {
-        min-width: 6.5rem;
-      }
+  .names-option-title {
+    color: #212529 !important;
+  }
+}
 
-      .v-btn[disabled] {
-        color: white !important;
-        background-color: #1669BB !important;
-        opacity: .2;
-      }
-    }
+.action-btns {
+  display: flex;
+  justify-content: flex-end;
+
+  .v-btn + .v-btn {
+    margin-left: 0.5rem;
   }
 
-  .v-expansion-panel-content ::v-deep .v-expansion-panel-content__wrap {
-    padding: 0;
+  .v-btn {
+    min-width: 6.5rem;
   }
 
-  .v-expansion-panel-header {
-    padding: .25rem 0 0;
-    color: #1669BB
+  #done-btn[disabled] {
+    color: white !important;
+    background-color: #1669BB !important;
+    opacity: 0.2;
   }
-
-  .v-expansion-panel--active > .v-expansion-panel-header {
-    font-weight: bold;
-    min-height: 3rem;
-
-    .names-option-title {
-      color: #212529 !important;
-    }
-  }
+}
 </style>

@@ -1,68 +1,73 @@
 <template>
   <div>
-    <v-layout row v-if="!isEditing">
-      <v-flex md3>
+    <v-layout row v-if="!isEditing" class="mx-0">
+      <v-flex xs3>
         <label><strong>Registered Office Information</strong></label>
       </v-flex>
-      <v-flex md4>
-        <div>
-          <label><strong>Email Address</strong></label>
-        </div>
+
+      <v-flex xs4>
+        <label class="d-flex flex-wrap">
+          <span class="font-weight-bold mr-2">Email Address</span>
+          <v-chip v-if="hasEmailAddressChange" id="email-corrected-lbl"
+            x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
+        </label>
         <div id="lbl-email">{{ !!contact.email ? contact.email : "(Not entered)" }}</div>
-        <div v-if="hasEmailAddressChange">
-          <v-chip x-small label color="#1669BB" text-color="white" id="email-corrected-lbl">
-            Corrected
-          </v-chip>
-        </div>
       </v-flex>
-      <v-flex md3>
-        <div>
-          <label><strong>Phone Number</strong></label>
-        </div>
+
+      <v-flex xs4>
+        <label class="d-flex flex-wrap">
+          <span class="font-weight-bold mr-2">Phone Number</span>
+          <v-chip v-if="hasPhoneNumberChange" id="phone-corrected-lbl"
+            x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
+        </label>
         <div id="lbl-phone" v-if="!!contact.phone">
           {{ contact.phone }}
           <span v-if="!!contact.extension">Ext: {{ contact.extension }}</span>
         </div>
         <div id="lbl-phone" v-else>(Not entered)</div>
-        <div v-if="hasPhoneNumberChange">
-          <v-chip x-small label color="#1669BB" text-color="white" id="phone-corrected-lbl">
-            Corrected
-          </v-chip>
-        </div>
       </v-flex>
-      <v-flex md2 class="pl-9">
-        <v-btn
-          v-if="!hasBusinessContactInfoChange"
-          text
-          color="primary"
-          id="btn-correct-contact-info"
-          @click="isEditing = true">
-          <v-icon small>mdi-pencil</v-icon>
-          <span>Correct</span>
-        </v-btn>
+
+      <v-flex xs1 class="ml-n5 mt-n2">
         <v-btn
           v-if="hasBusinessContactInfoChange"
-          text
-          color="primary"
+          text color="primary"
           id="btn-undo-contact-info"
-          @click="resetContactInfo">
+          @click="resetContactInfo()"
+        >
           <v-icon small>mdi-undo</v-icon>
           <span>Undo</span>
         </v-btn>
+        <v-btn
+          v-else
+          text color="primary"
+          id="btn-correct-contact-info"
+          @click="isEditing = true"
+        >
+          <v-icon small>mdi-pencil</v-icon>
+          <span>Correct</span>
+        </v-btn>
       </v-flex>
     </v-layout>
-    <div v-else>
-      <v-layout row>
-        <v-flex md3>
+
+    <template v-else>
+      <v-layout row class="mx-0">
+        <v-flex xs3>
           <label><strong>Registered Office Information</strong></label>
         </v-flex>
       </v-layout>
-      <v-form v-model="formValid" ref="form" name="business-contact-form" class="business-contact-form">
-        <v-layout row>
-          <v-flex md2>
+
+      <v-form
+        v-model="formValid"
+        ref="form"
+        name="business-contact-form"
+        class="business-contact-form pt-5"
+      >
+        <!-- Line 1 -->
+        <v-layout row class="mx-0">
+          <v-flex xs2>
             <label><strong>Email Address</strong></label>
           </v-flex>
-          <v-flex md10>
+          <v-flex xs10>
             <v-text-field
               filled
               label="Email Address"
@@ -70,15 +75,18 @@
               persistent-hint
               :rules="emailRules"
               v-model="contact.email"
-              id="txt-email">
+              id="txt-email"
+            >
             </v-text-field>
           </v-flex>
         </v-layout>
-        <v-layout row>
-          <v-flex md2>
+
+        <!-- Line 2 -->
+        <v-layout row class="mx-0">
+          <v-flex xs2>
             <label><strong>Confirm Email</strong></label>
           </v-flex>
-          <v-flex md10>
+          <v-flex xs10>
             <v-text-field
               filled
               label="Confirm Email Address"
@@ -86,15 +94,18 @@
               persistent-hint
               :error-messages="emailMustMatch()"
               v-model="contact.confirmEmail"
-              id="txt-confirm-email">
+              id="txt-confirm-email"
+            >
             </v-text-field>
           </v-flex>
         </v-layout>
-        <v-layout row>
-          <v-flex md2>
+
+        <!-- Line 3 -->
+        <v-layout row class="mx-0">
+          <v-flex xs2>
             <label><strong>Phone Number</strong></label>
           </v-flex>
-          <v-flex md6 class="pr-3">
+          <v-flex xs6 class="pr-3">
             <v-text-field
               filled
               label="Phone Number"
@@ -104,10 +115,11 @@
               v-mask="['(###) ###-####']"
               v-model="contact.phone"
               :rules="phoneRules"
-              id="txt-phone">
+              id="txt-phone"
+            >
             </v-text-field>
           </v-flex>
-          <v-flex>
+          <v-flex xs4>
             <v-text-field
               filled
               label="Extension"
@@ -115,24 +127,36 @@
               v-mask="'#####'"
               v-model="contact.extension"
               :disabled="!contact.phone"
-              id="txt-phone-extension">
+              id="txt-phone-extension"
+            >
             </v-text-field>
           </v-flex>
         </v-layout>
-        <v-layout row>
-          <v-flex md12>
+
+        <!-- Buttons -->
+        <v-layout row class="mx-0 pt-3">
+          <v-flex xs12>
             <div class="action-btns">
-              <v-btn id="done-btn" large color="primary" @click="updateContactInfo" :disabled="!formValid">
+              <v-btn
+                id="done-btn"
+                large color="primary"
+                :disabled="!formValid"
+                @click="updateContactInfo()"
+              >
                 <span>Done</span>
               </v-btn>
-              <v-btn id="cancel-btn" large outlined color="primary" @click="resetContactInfo">
+              <v-btn
+                id="cancel-btn"
+                large outlined color="primary"
+                @click="resetContactInfo()"
+              >
                 <span>Cancel</span>
               </v-btn>
             </div>
           </v-flex>
         </v-layout>
       </v-form>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -187,8 +211,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   // Watchers
   @Watch('businessContact', { deep: true, immediate: true })
   private onContactPropValueChanged (): void {
-    this.contact = { ...this.businessContact }
-    this.emitHaveChanges(this.hasBusinessContactInfoChange)
+    this.contact = this.businessContact
   }
 
   private updateContactInfo (): void {
@@ -231,36 +254,27 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 </script>
 
 <style lang="scss" scoped>
-  [class^="col"] {
-    padding-top: 0;
-    padding-bottom: 0;
+[class^="col"] {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.action-btns {
+  display: flex;
+  justify-content: flex-end;
+
+  .v-btn + .v-btn {
+    margin-left: 0.5rem;
   }
 
-  .business-contact-form {
-    margin-top: 1rem;
-    padding: 1.25rem;
-    padding-left: 0;
-    margin-right: 1rem;
+  .v-btn {
+    min-width: 6.5rem;
   }
 
-  .action-btns {
-    display: flex;
-    justify-content: flex-end;
-    padding-bottom: 1rem;
-    padding-right: 0.5rem;
-
-    .v-btn + .v-btn {
-      margin-left: 0.5rem;
-    }
-
-    .v-btn {
-      min-width: 6.5rem;
-    }
-
-    .v-btn[disabled] {
-      color: white !important;
-      background-color: #1669bb !important;
-      opacity: 0.2;
-    }
+  #done-btn[disabled] {
+    color: white !important;
+    background-color: #1669bb !important;
+    opacity: 0.2;
   }
+}
 </style>
