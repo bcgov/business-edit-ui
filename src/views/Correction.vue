@@ -164,12 +164,10 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
 
         // get and store ID of filing that is being corrected (ie, original IA)
         const correctedFilingId = correctionFiling.correction?.correctedFilingId
-        correctionFiling.incorporationApplication.nameRequest.legalName = 'Bobs Plumbing'
         this.setCorrectedFilingId(correctedFilingId)
 
         // fetch and store original IA
         const originalIa = await this.fetchFilingById(correctedFilingId)
-        originalIa.incorporationApplication.nameRequest.legalName = 'Bobs Plumbing'
         originalIa.incorporationApplication.shareStructure.shareClasses.push({
           'currency': 'CAD',
           'hasMaximumShares': true,

@@ -66,11 +66,22 @@ export default class FilingTemplateMixin extends Vue {
    * @returns the IA Correction filing body to save
    */
   buildIaCorrectionFiling (isDraft: boolean): CorrectionFilingIF {
-    // if filing and paying, filter out removed orgs/persons and omit the 'action' property
+    // if filing and paying, filter out removed entities and omit the 'action' property
     let parties = this.getPeopleAndRoles
+    let shareStructure = this.getShareClasses
     if (!isDraft) {
       parties = parties.filter(x => x.action !== 'removed')
         .map((x) => { const { action, ...rest } = x; return rest })
+
+      // Filter out class actions
+      shareStructure = shareStructure.filter(x => x.action !== 'removed')
+        .map((x) => { const { action, ...rest } = x; return rest })
+
+      // Filter out series actions
+      for (const [index, share] of shareStructure.entries()) {
+        shareStructure[index].series = share.series?.filter(x => x.action !== 'removed')
+          .map((x) => { const { action, ...rest } = x; return rest })
+      }
     }
 
     // Build filing.
@@ -109,7 +120,7 @@ export default class FilingTemplateMixin extends Vue {
         },
         parties,
         shareStructure: {
-          shareClasses: this.getShareClasses
+          shareClasses: shareStructure
         },
         incorporationAgreement: {
           agreementType: this.stateModel.incorporationAgreementStep.agreementType
