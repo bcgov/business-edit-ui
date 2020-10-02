@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div id="add-name-translation">
     <confirm-dialog
       ref="confirmTranslationDialog"
+      attach="#add-name-translation"
     />
     <!-- Name Translation form -->
     <v-form v-model="nameTranslationForm" class="name-translation-form">
@@ -20,19 +21,15 @@
       <v-row>
         <v-col>
           <div class="action-btns">
-          <v-btn large color="primary"
-            id="name-translation-btn-ok"
-            :disabled="!nameTranslationForm"
-            @click="addTranslation"
-          >
-            OK
-          </v-btn>
-          <v-btn large outlined color="primary"
-            id="name-translation-btn-cancel"
-            @click="cancelNameTranslation"
-          >
-            Cancel new name
-          </v-btn>
+            <v-btn large color="primary"
+              id="name-translation-btn-ok"
+              :disabled="!nameTranslationForm"
+              @click="addTranslation()"
+            >OK</v-btn>
+            <v-btn large outlined color="primary"
+              id="name-translation-btn-cancel"
+              @click="cancelNameTranslation()"
+            >Cancel new name</v-btn>
           </div>
         </v-col>
       </v-row>
@@ -123,11 +120,12 @@ export default class AddNameTranslation extends Vue {
 
 <style lang="scss" scoped>
   .name-translation-form {
+    padding-right: 0.5rem;
+
     .action-btns {
       display: flex;
       justify-content: flex-end;
       padding-bottom: 1rem;
-      padding-right: 0.5rem;
 
       .v-btn + .v-btn {
         margin-left: 0.5rem;

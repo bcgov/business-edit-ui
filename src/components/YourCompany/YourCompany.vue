@@ -61,7 +61,7 @@
           </v-flex>
         </template>
       </v-layout>
-      <correct-name-translation
+      <correct-name-translation class="mt-3"
         @haveChanges="nameTranslationChanges = $event"
       />
     </div>

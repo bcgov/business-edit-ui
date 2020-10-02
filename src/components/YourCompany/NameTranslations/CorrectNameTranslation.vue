@@ -1,10 +1,10 @@
 <template>
   <name-translation
-        :nameTranslations="getNameTranslations"
-        :originalNameTranslations="originalNameTranslations"
-        @nameTranslationsChange="setNameTranslations"
-        @haveChanges="emitHaveChanges($event)"
-      />
+    :nameTranslations="getNameTranslations"
+    :originalNameTranslations="originalNameTranslations"
+    @nameTranslationsChange="updateNameTranslations($event)"
+    @haveChanges="emitHaveChanges($event)"
+  />
 </template>
 
 <script lang="ts">
@@ -34,7 +34,7 @@ export default class CorrectNameTranslation extends Vue {
   // Setters
   @Action setNameTranslations!: ActionBindingIF
 
-  private get originalNameTranslations () {
+  private get originalNameTranslations (): Array<string> {
     return this.getOriginalIA.incorporationApplication.nameTranslations?.new
   }
 

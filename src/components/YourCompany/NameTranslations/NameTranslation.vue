@@ -4,8 +4,8 @@
       ref="confirmTranslationDialog"
       attach="#name-translation"
     />
-    <v-layout class="mt-3" v-if="!isEditing">
-      <v-flex md3>
+    <v-layout v-if="!isEditing">
+      <v-flex xs3>
         <label><strong>Name Translation(s)</strong></label>
         <v-flex md1>
             <v-chip v-if="hasNameTranslationChange" x-small label color="#1669BB" text-color="white">
@@ -13,14 +13,15 @@
             </v-chip>
           </v-flex>
       </v-flex>
-      <v-flex md7 v-if="drafTranslations && drafTranslations.length">
+      <v-flex xs7 v-if="drafTranslations && drafTranslations.length">
         <div v-for="(name, index) in drafTranslations" :key="`name_translation_${index}`">{{name}}</div>
       </v-flex>
-      <v-flex md7 v-else>
+      <v-flex xs7 v-else>
         No name translations
       </v-flex>
-      <v-flex md2 class="align-right" v-if="!hasNameTranslationChange">
+      <v-flex xs2 class="align-right" v-if="!hasNameTranslationChange">
         <v-btn
+          id="correct-name-translation"
           text color="primary"
           @click="isEditing = true"
         >
@@ -28,8 +29,9 @@
           <span>Correct</span>
         </v-btn>
       </v-flex>
-      <v-flex md2 class="align-right" v-else>
+      <v-flex xs2 class="align-right" v-else>
         <v-btn
+          id="undo-name-translation"
           text color="primary" class="undo-name-translation"
           @click="resetNameTranslations"
         >
@@ -64,11 +66,11 @@
         </span>
       </v-flex>
     </v-layout>
-    <v-layout class="mt-3" v-else>
-      <v-flex md3>
+    <v-layout v-else>
+      <v-flex xs3>
         <label><strong>Name Translation(s)</strong></label>
       </v-flex>
-      <v-flex md9>
+      <v-flex xs9>
         <v-layout>
           <v-flex>
             <p>Name translations must use the Latin Alphabet (English, French, etc.).
@@ -80,13 +82,13 @@
             </v-btn>
           </v-flex>
         </v-layout>
-        <v-layout pb-5>
+        <v-layout>
           <v-flex>
             <add-name-translation
               v-if="isAddingNameTranslation"
               :editNameTranslation="editingNameTranslation"
               @addTranslation="addName($event)"
-              @cancelTranslation="cancelNameTranslation()"
+              @cancelTranslation="cancelOrResetEditing()"
             ></add-name-translation>
             <list-name-translation
               v-if="drafTranslations && drafTranslations.length > 0"
@@ -97,8 +99,8 @@
             />
           </v-flex>
         </v-layout>
-        <v-layout>
-          <v-flex md12>
+        <v-layout pt-5>
+          <v-flex xs12>
             <div class="action-btns">
               <v-btn large color="primary"
                 :disabled="isAddingNameTranslation || !hasNameTranslationChange"
@@ -211,7 +213,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
         this.setNameTranslations()
       }
     }).catch(() => {
-      this.onNameTranslationsPropValueChanged()
+      this.drafTranslations = this.nameTranslations ? [ ...this.nameTranslations ] : []
       this.isEditing = false
     })
   }
@@ -226,10 +228,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
       ? this.drafTranslations[this.editIndex] = name
       : this.drafTranslations.push(name)
 
-    // Emit haveChanges
-    // this.emitHaveChanges(this.hasNameTranslationChange)
-
-    this.cancelNameTranslation()
+    this.cancelOrResetEditing()
   }
 
   /** Pass an index of the name translation to be edited
@@ -249,14 +248,11 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   private removeNameTranslation (index: number): void {
     this.drafTranslations.splice(index, 1)
 
-    // Emit haveChanges
-    // this.emitHaveChanges(this.hasNameTranslationChange)
-
-    this.cancelNameTranslation()
+    this.cancelOrResetEditing()
   }
 
   /** Cancel adding or editing of name translation */
-  private cancelNameTranslation (): void {
+  private cancelOrResetEditing (): void {
     this.isAddingNameTranslation = false
     this.editingNameTranslation = ''
     this.editIndex = -1
