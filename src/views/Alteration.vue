@@ -14,12 +14,7 @@
       :isSummary="true"
     />
 
-    <share-structure
-      class="mt-10"
-      :shareClasses="getShareClasses"
-      @setShareClass="setShareClasses($event)"
-      @haveChanges="shareStructChanges = $event"
-    />
+    <share-structure class="mt-10" />
 
     <agreement-type
       class="mt-10"
@@ -55,7 +50,6 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
   // Global getters
   @Getter isRoleStaff!: boolean
   @Getter getPeopleAndRoles!: OrgPersonIF[]
-  @Getter getShareClasses!: ShareClassIF[]
 
   // Global setters
   @Action setHaveChanges!: ActionBindingIF

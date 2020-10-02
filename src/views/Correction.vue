@@ -22,12 +22,7 @@
 
     <people-and-roles class="mt-10" />
 
-    <share-structure
-      class="mt-10"
-      :shareClasses="getShareClasses"
-      @setShareClass="setShareClasses($event)"
-      @haveChanges="setShareClassesChanged($event)"
-    />
+    <share-structure class="mt-10" />
 
     <agreement-type class="mt-10" />
 

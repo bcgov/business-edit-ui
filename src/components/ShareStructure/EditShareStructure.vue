@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div id="edit-share-structure">
 
     <confirm-dialog
       ref="confirm"
-      attach="#app"
+      attach="#edit-share-structure"
     />
 
-    <v-expand-transition id="addShareStructureContainer">
+    <v-expand-transition>
       <ul class="list add-share-structure">
         <li class="add-share-structure-container">
           <div class="meta-container">
@@ -32,7 +32,7 @@
                   suffix="Shares"
                   persistent-hint/>
 
-                <v-divider class="separator" />
+                <v-divider class="separator mx-4" />
 
                 <v-radio-group
                   v-model="hasNoMaximumShares"
@@ -57,7 +57,7 @@
                   <v-radio :value="true" label="No maximum" id="lbl-no-maximum" v-if="isNoMaxSharesVisible"/>
                 </v-radio-group>
 
-                <v-divider class="separator" />
+                <v-divider class="separator mx-4" />
 
                 <v-radio-group
                   v-model="hasNoParValue"
@@ -102,34 +102,34 @@
                 </v-radio-group>
 
                 <div v-show="isSeries">
-                    <v-row v-if="shareStructure.hasParValue">
-                        <v-col cols="6">
-                            <v-text-field
-                            label="Par Value"
-                            id="series-par-value"
-                            :value="shareStructure.parValue"
-                            :disabled="true"
-                            width="10"/>
-                        </v-col>
-                        <v-col cols="6">
-                            <v-text-field
-                            id="series-currency"
-                            label="Currency"
-                            :value="`${getCurrencyNameByCode(shareStructure.currency)} (${shareStructure.currency})`"
-                            :disabled="true"/>
-                        </v-col>
-                    </v-row>
-                    <v-label id='lbl-no-par' v-else>No par value</v-label>
+                  <v-row v-if="shareStructure.hasParValue">
+                      <v-col cols="6">
+                          <v-text-field
+                          label="Par Value"
+                          id="series-par-value"
+                          :value="shareStructure.parValue"
+                          :disabled="true"
+                          width="10"/>
+                      </v-col>
+                      <v-col cols="6">
+                          <v-text-field
+                          id="series-currency"
+                          label="Currency"
+                          :value="`${getCurrencyNameByCode(shareStructure.currency)} (${shareStructure.currency})`"
+                          :disabled="true"/>
+                      </v-col>
+                  </v-row>
+                  <v-label id="lbl-no-par" v-else>No par value</v-label>
                 </div>
 
-                <v-divider class="separator" />
+                <v-divider class="separator mx-4" />
 
-                <div class="form__row">{{hasSeriesShares}}
+                <div class="form__row">
                   <v-checkbox
                      id="special-rights-check-box"
                     :label="'This share ' + shareStructure.type.toLowerCase() + ' has special rights or restrictions'"
                     v-model="shareStructure.hasRightsOrRestrictions"
-                    @click="confirmSeriesRemoval"
+                    @click="confirmSeriesRemoval()"
                     />
                 </div>
 
@@ -212,6 +212,19 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
 
   private excludedWordsListForClass: string [] = ['share', 'shares', 'value']
   private excludedWordsListForSeries: string [] = ['share', 'shares']
+
+  // Getters
+  get isClass (): boolean {
+    return this.shareStructure.type === 'Class'
+  }
+
+  get isSeries (): boolean {
+    return this.shareStructure.type === 'Series'
+  }
+
+  get isNoMaxSharesVisible (): boolean {
+    return this.isSeries ? !(this.shareClasses[this.parentIndex].hasMaximumShares) : true
+  }
 
   // Rules
   private getNameRule (): Array<Function> {
@@ -388,19 +401,6 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
         this.shareStructure.hasRightsOrRestrictions = true
       })
     }
-  }
-
-  // Getters
-  get isClass (): boolean {
-    return this.shareStructure.type === 'Class'
-  }
-
-  get isSeries (): boolean {
-    return this.shareStructure.type === 'Series'
-  }
-
-  get isNoMaxSharesVisible (): boolean {
-    return this.isSeries ? !(this.shareClasses[this.parentIndex].hasMaximumShares) : true
   }
 
   // Events

@@ -12,11 +12,12 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ActionTypes } from '@/enums'
+import { ActionableItemIF } from '@/interfaces'
 
 @Component({})
 export default class ActionChip extends Vue {
   @Prop({ default: {} })
-  private actionableItem: {}
+  private actionableItem: ActionableItemIF
 
   // Enum for template
   readonly ActionTypes = ActionTypes
