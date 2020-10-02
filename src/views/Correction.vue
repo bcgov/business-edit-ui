@@ -72,7 +72,6 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   // Global getters
   @Getter getBusinessId!: string
   @Getter getFilingDate!: string
-  @Getter getShareClasses!: ShareClassIF[]
   @Getter isRoleStaff!: boolean
   @Getter isTypeBcomp!: boolean
 
@@ -82,8 +81,6 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   @Action setHaveChanges!: ActionBindingIF
   @Action setOriginalIA!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
-  @Action setShareClasses!: ActionBindingIF
-  @Action setShareClassesChanged!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })

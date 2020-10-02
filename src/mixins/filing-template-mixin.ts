@@ -68,6 +68,7 @@ export default class FilingTemplateMixin extends Vue {
     let parties = this.getPeopleAndRoles
     let shareClasses = this.getShareClasses
     if (!isDraft) {
+      // Filter out parties actions
       parties = parties.filter(x => x.action !== ActionTypes.REMOVED)
         .map((x) => { const { action, ...rest } = x; return rest })
 
