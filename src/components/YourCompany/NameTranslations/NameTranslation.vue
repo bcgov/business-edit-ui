@@ -103,12 +103,14 @@
           <v-flex xs12>
             <div class="action-btns">
               <v-btn large color="primary"
+                id="name-translation-done"
                 :disabled="isAddingNameTranslation || !hasNameTranslationChange"
                 @click="setNameTranslations()"
               >
                 <span>Done</span>
               </v-btn>
               <v-btn large outlined color="primary"
+                id="name-translation-cancel"
                 @click="cancelNameTranslationCorrection()"
                 :disabled="isAddingNameTranslation"
               >
