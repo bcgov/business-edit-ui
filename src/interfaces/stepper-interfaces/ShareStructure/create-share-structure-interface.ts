@@ -1,3 +1,5 @@
+import { ActionTypes } from '@/enums'
+
 export interface ShareStructureIF {
     valid: boolean;
     changed: boolean;
@@ -16,4 +18,5 @@ export interface ShareClassIF {
     currency?: string;
     hasRightsOrRestrictions: boolean;
     series?: ShareClassIF[];
+    action?: ActionTypes; // Local state indicates corrected/added/removed
 }

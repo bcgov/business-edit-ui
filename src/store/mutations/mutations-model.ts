@@ -141,6 +141,10 @@ export const mutateShareClasses = (state: any, shareClasses: ShareClassIF[]) => 
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
+export const mutateShareClassesChanged = (state: any, changed: boolean) => {
+  state.stateModel.createShareStructureStep.changed = changed
+}
+
 export const mutateCreateShareStructureStepValidity = (state: any, validity: boolean) => {
   state.stateModel.createShareStructureStep.valid = validity
 }

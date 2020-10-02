@@ -22,12 +22,7 @@
 
     <people-and-roles class="mt-10" />
 
-    <!-- TODO: remove unneeded props and collapse element -->
-    <list-share-class
-      class="mt-10"
-      :isSummary="true"
-      :shareClasses="getShareClasses"
-    />
+    <share-structure class="mt-10" />
 
     <agreement-type class="mt-10" />
 
@@ -47,9 +42,11 @@ import { Action, Getter, State } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 import { YourCompany } from '@/components/YourCompany'
 import { PeopleAndRoles } from '@/components/PeopleAndRoles'
-import { ListShareClass } from '@/components/ShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { Certify, CompletingParty, Detail, StaffPayment } from '@/components/common'
+import { ShareStructure } from '@/components/ShareStructure'
+
+// Mixins, Interfaces and Enums
 import { DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, FilingDataIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
 import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
@@ -63,7 +60,7 @@ import { BenefitCompanyStatementResource } from '@/resources'
     CompletingParty,
     Detail,
     PeopleAndRoles,
-    ListShareClass,
+    ShareStructure,
     StaffPayment,
     YourCompany
   }
@@ -75,7 +72,6 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   // Global getters
   @Getter getBusinessId!: string
   @Getter getFilingDate!: string
-  @Getter getShareClasses!: ShareClassIF[]
   @Getter isRoleStaff!: boolean
   @Getter isTypeBcomp!: boolean
 

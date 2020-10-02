@@ -1,20 +1,18 @@
 // Libraries
 import { Component, Vue } from 'vue-property-decorator'
-import { State, Getter, Action } from 'vuex-class'
-
+import { Action, Getter, State } from 'vuex-class'
 // Interfaces
 import {
   ActionBindingIF,
-  StateModelIF,
+  CorrectionFilingIF,
   IncorporationFilingIF,
   OrgPersonIF,
   ShareClassIF,
-  CorrectionFilingIF
+  StateModelIF
 } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-
 // Constants
-import { EntityTypes, FilingTypes } from '@/enums'
+import { ActionTypes, EntityTypes, FilingTypes } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 /**
@@ -66,11 +64,23 @@ export default class FilingTemplateMixin extends Vue {
    * @returns the IA Correction filing body to save
    */
   buildIaCorrectionFiling (isDraft: boolean): CorrectionFilingIF {
-    // if filing and paying, filter out removed orgs/persons and omit the 'action' property
+    // if filing and paying, filter out removed entities and omit the 'action' property
     let parties = this.getPeopleAndRoles
+    let shareClasses = this.getShareClasses
     if (!isDraft) {
-      parties = parties.filter(x => x.action !== 'removed')
+      // Filter out parties actions
+      parties = parties.filter(x => x.action !== ActionTypes.REMOVED)
         .map((x) => { const { action, ...rest } = x; return rest })
+
+      // Filter out class actions
+      shareClasses = shareClasses.filter(x => x.action !== ActionTypes.REMOVED)
+        .map((x) => { const { action, ...rest } = x; return rest })
+
+      // Filter out series actions
+      for (const [index, share] of shareClasses.entries()) {
+        shareClasses[index].series = share.series?.filter(x => x.action !== ActionTypes.REMOVED)
+          .map((x) => { const { action, ...rest } = x; return rest })
+      }
     }
 
     // Build filing.
@@ -109,7 +119,7 @@ export default class FilingTemplateMixin extends Vue {
         },
         parties,
         shareStructure: {
-          shareClasses: this.getShareClasses
+          shareClasses
         },
         incorporationAgreement: {
           agreementType: this.stateModel.incorporationAgreementStep.agreementType
