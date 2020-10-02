@@ -12,7 +12,7 @@ import { getVuexStore } from '@/store'
 import { createLocalVue, mount } from '@vue/test-utils'
 
 // Components
-import { ListNameTranslations } from '@/components/YourCompany'
+import { ListNameTranslation } from '@/components/YourCompany'
 import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)
@@ -47,7 +47,7 @@ describe('List Name Translation component', () => {
     store.state.stateModel.nameTranslations = []
 
     wrapperFactory = (propsData) => {
-      return mount(ListNameTranslations, {
+      return mount(ListNameTranslation, {
         localVue,
         router,
         store,
@@ -58,14 +58,14 @@ describe('List Name Translation component', () => {
   })
 
   it('displays the list of name translations and action btns', async () => {
-    const wrapper = wrapperFactory({ translationsList: nameTranslationsList })
+    const wrapper = wrapperFactory({ translationList: nameTranslationsList })
     await flushPromises()
 
     // Verify list exists
     expect(wrapper.find(nameTranslationsUi).exists()).toBeTruthy()
 
     // Verify list title
-    expect(wrapper.find('.name-translation-title').text()).toContain('Name Translations:')
+    expect(wrapper.find('.name-translation-title').text()).toContain('Name Translations')
 
     // Verify list items
     const namesList = wrapper.vm.$el.querySelectorAll('.names-translation-content')
@@ -91,7 +91,7 @@ describe('List Name Translation component', () => {
   })
 
   it('disables the edit and drop down btns when editing a name translation', async () => {
-    const wrapper = wrapperFactory({ translationsList: nameTranslationsList, isAddingNameTranslation: true })
+    const wrapper = wrapperFactory({ translationList: nameTranslationsList, isAddingNameTranslation: true })
     await Vue.nextTick()
 
     // Verify edit btn and default state
@@ -112,7 +112,7 @@ describe('List Name Translation component', () => {
   })
 
   it('emits the correct name index when selected for edit', async () => {
-    const wrapper = wrapperFactory({ translationsList: nameTranslationsList })
+    const wrapper = wrapperFactory({ translationList: nameTranslationsList })
     await Vue.nextTick()
 
     const namesList = wrapper.vm.$el.querySelectorAll('.names-translation-content')
@@ -135,7 +135,7 @@ describe('List Name Translation component', () => {
   })
 
   it('emits the correct name index when selected for removal', async () => {
-    const wrapper = wrapperFactory({ translationsList: nameTranslationsList })
+    const wrapper = wrapperFactory({ translationList: nameTranslationsList })
     await Vue.nextTick()
 
     const namesList = wrapper.vm.$el.querySelectorAll('.names-translation-content')

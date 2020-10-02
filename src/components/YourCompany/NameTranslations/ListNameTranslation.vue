@@ -3,14 +3,14 @@
       <!-- List Headers -->
       <v-row class="name-translation-title list-item__subtitle" no-gutters>
         <v-col>
-          <h3>Name Translations:</h3>
+          <h3>Name Translations</h3>
         </v-col>
       </v-row>
 
       <!-- List Content -->
       <v-row
         class="names-translation-content"
-        v-for="(translation, index) in translationsList"
+        v-for="(translation, index) in translationList"
         :key="`name_translation_${index}`"
         no-gutters>
         <v-col class="text-truncate">
@@ -47,7 +47,10 @@
                 </template>
                 <v-list class="actions__more-actions">
                   <v-list-item  @click="emitRemoveName(index)">
-                    <v-list-item-title color="primary"><v-icon>mdi-delete</v-icon>Remove</v-list-item-title>
+                    <v-list-item-subtitle>
+                      <v-icon small>mdi-delete</v-icon>
+                      <span class="ml-1">Remove</span>
+                    </v-list-item-subtitle>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -63,9 +66,9 @@
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
 
 @Component({})
-export default class ListNameTranslations extends Vue {
+export default class ListNameTranslation extends Vue {
   @Prop({ default: () => [] })
-  private translationsList: Array<string>
+  private translationList: Array<string>
 
   @Prop({ default: false })
   private isAddingNameTranslation: boolean
@@ -90,6 +93,8 @@ export default class ListNameTranslations extends Vue {
   @import '@/assets/styles/theme.scss';
 
   #name-translations-list {
+    padding-right: 0.5rem;
+
     .name-translation-title {
       display: flex;
       background-color: $BCgovBlue5O;
@@ -124,5 +129,10 @@ export default class ListNameTranslations extends Vue {
         }
       }
     }
+  }
+
+  .v-list-item {
+    min-height: 0;
+    padding: 0 1rem 0 0.5rem;
   }
 </style>
