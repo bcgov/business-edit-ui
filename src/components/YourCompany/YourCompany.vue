@@ -28,26 +28,28 @@
             </div>
           </v-flex>
 
-          <v-flex xs1 class="ml-n5 mt-n2">
-            <!-- TODO: only show buttons for named company -->
-            <v-btn
-              v-if="companyNameChanges"
-              text color="primary"
-              id="btn-undo-company-name"
-              @click="resetName()"
-            >
-              <v-icon small>mdi-undo</v-icon>
-              <span>Undo</span>
-            </v-btn>
-            <v-btn
-              v-else
-              text color="primary"
-              id="btn-correct-company-name"
-              @click="isEditingNames = true"
-            >
-              <v-icon small>mdi-pencil</v-icon>
-              <span>Correct</span>
-            </v-btn>
+          <v-flex xs1 class="mt-n2">
+            <div class="actions mr-4">
+              <!-- TODO: only show buttons for named company -->
+              <v-btn
+                v-if="companyNameChanges"
+                text color="primary"
+                id="btn-undo-company-name"
+                @click="resetName()"
+              >
+                <v-icon small>mdi-undo</v-icon>
+                <span>Undo</span>
+              </v-btn>
+              <v-btn
+                v-else
+                text color="primary"
+                id="btn-correct-company-name"
+                @click="isEditingNames = true"
+              >
+                <v-icon small>mdi-pencil</v-icon>
+                <span>Correct</span>
+              </v-btn>
+            </div>
           </v-flex>
         </template>
 
@@ -95,7 +97,7 @@
       />
     </div>
 
-    <template  v-if="isPremiumAccount">
+    <template v-if="isPremiumAccount">
       <v-divider class="mx-4" />
 
       <div class="section-container">
@@ -264,5 +266,14 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
 
 .company-type {
   padding-top: 0.5rem
+}
+
+.actions {
+  position: absolute;
+  right: 0;
+
+  .v-btn {
+    min-width: 0.5rem;
+  }
 }
 </style>

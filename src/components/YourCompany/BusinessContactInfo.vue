@@ -27,25 +27,27 @@
         <div id="lbl-phone" v-else>(Not entered)</div>
       </v-flex>
 
-      <v-flex xs1 class="ml-n5 mt-n2">
-        <v-btn
-          v-if="hasBusinessContactInfoChange"
-          text color="primary"
-          id="btn-undo-contact-info"
-          @click="resetContactInfo()"
-        >
-          <v-icon small>mdi-undo</v-icon>
-          <span>Undo</span>
-        </v-btn>
-        <v-btn
-          v-else
-          text color="primary"
-          id="btn-correct-contact-info"
-          @click="isEditing = true"
-        >
-          <v-icon small>mdi-pencil</v-icon>
-          <span>Correct</span>
-        </v-btn>
+      <v-flex xs1 class="mt-n2">
+        <div class="actions mr-4">
+          <v-btn
+            v-if="hasBusinessContactInfoChange"
+            text color="primary"
+            id="btn-undo-contact-info"
+            @click="resetContactInfo()"
+          >
+            <v-icon small>mdi-undo</v-icon>
+            <span>Undo</span>
+          </v-btn>
+          <v-btn
+            v-else
+            text color="primary"
+            id="btn-correct-contact-info"
+            @click="isEditing = true"
+          >
+            <v-icon small>mdi-pencil</v-icon>
+            <span>Correct</span>
+          </v-btn>
+        </div>
       </v-flex>
     </v-layout>
 
@@ -257,6 +259,15 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 [class^="col"] {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.actions {
+  position: absolute;
+  right: 0;
+
+  .v-btn {
+    min-width: 0.5rem;
+  }
 }
 
 .action-btns {

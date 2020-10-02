@@ -47,7 +47,7 @@ function getPersonList (roles = [completingPartyRole]): any {
       },
       roles,
       address: {
-        'mailingAddress': {
+        mailingAddress: {
           'streetAddress': '123 Fake Street',
           'streetAddressAdditional': '',
           'addressCity': 'Victoria',
