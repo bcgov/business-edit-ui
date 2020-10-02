@@ -1,0 +1,6 @@
+export enum AddressTypes {
+  MAILING_ADDRESS = 1,
+  DELIVERY_ADDRESS = 2,
+  REC_MAILING_ADDRESS = 3,
+  REC_DELIVERY_ADDRESS = 4
+}

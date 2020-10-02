@@ -153,7 +153,7 @@ export default class AgreementType extends Vue {
 }
 
 .agreement-valid-icon {
-    padding-right: 0.5rem;
+  padding-right: 0.5rem;
 }
 
 .agreement-option-list {
@@ -170,12 +170,15 @@ export default class AgreementType extends Vue {
   justify-content: flex-end;
   padding-bottom: 1rem;
   padding-right: 0.5rem;
+
   .v-btn + .v-btn {
     margin-left: 0.5rem;
   }
+
   .v-btn {
     min-width: 6.5rem;
   }
+
   .v-btn[disabled] {
     color: white !important;
     background-color: #1669BB !important;
