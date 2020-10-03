@@ -125,7 +125,7 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   }
 
   private validateNameRequestNumber (value: string): boolean {
-    const VALID_FORMAT = new RegExp(/^(NR )?\d+$/)
+    const VALID_FORMAT = new RegExp(/^(NR )\d{7}$/)
     return VALID_FORMAT.test(value.toUpperCase())
   }
 

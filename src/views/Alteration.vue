@@ -13,11 +13,9 @@
       :personList="getPeopleAndRoles"
       :isSummary="true"
     />
-    <list-share-class
-      class="mt-10"
-      :shareClasses="getShareClasses"
-      :isSummary="true"
-    />
+
+    <share-structure class="mt-10" />
+
     <agreement-type
       class="mt-10"
       :isSummary="true"
@@ -31,8 +29,10 @@ import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 import { SummaryDefineCompany } from '@/components/YourCompany'
 import { ListPeopleAndRoles } from '@/components/PeopleAndRoles'
-import { ListShareClass } from '@/components/ShareStructure'
 import { AgreementType } from '@/components/IncorporationAgreement'
+import { ShareStructure } from '@/components/ShareStructure'
+
+// Mixins, Interfaces and Enums
 import { FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, FilingDataIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
 import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
@@ -40,17 +40,16 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 @Component({
   components: {
-    ListShareClass,
+    AgreementType,
     ListPeopleAndRoles,
     SummaryDefineCompany,
-    AgreementType
+    ShareStructure
   }
 })
 export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixin) {
   // Global getters
   @Getter isRoleStaff!: boolean
   @Getter getPeopleAndRoles!: OrgPersonIF[]
-  @Getter getShareClasses!: ShareClassIF[]
 
   // Global setters
   @Action setHaveChanges!: ActionBindingIF

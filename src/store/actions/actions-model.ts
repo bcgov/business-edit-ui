@@ -120,6 +120,10 @@ export const setShareClasses = ({ commit }, shareClasses) => {
   commit('mutateShareClasses', shareClasses)
 }
 
+export const setShareClassesChanged = ({ commit }, validity) => {
+  commit('mutateShareClassesChanged', validity)
+}
+
 export const setCreateShareStructureStepValidity = ({ commit }, validity) => {
   commit('mutateCreateShareStructureStepValidity', validity)
 }
