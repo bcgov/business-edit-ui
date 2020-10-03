@@ -1,7 +1,6 @@
 <template>
   <name-translation
     :nameTranslations="getNameTranslations"
-    :originalNameTranslations="originalNameTranslations"
     @nameTranslationsChange="updateNameTranslations($event)"
     @haveChanges="emitHaveChanges($event)"
   />
@@ -15,7 +14,8 @@ import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorato
 import { NameTranslation } from '.'
 
 // Interfaces
-import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces'
+import { ActionBindingIF, IncorporationFilingIF,
+  NameTranslationDraftIF, NameTranslationIF } from '@/interfaces'
 
 // Mixins
 import { CommonMixin } from '@/mixins'
@@ -28,17 +28,12 @@ import { Action, Getter } from 'vuex-class'
 })
 export default class CorrectNameTranslation extends Vue {
   // Getters
-  @Getter getNameTranslations!: Array<string>
-  @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter getNameTranslations!: NameTranslationDraftIF[]
 
   // Setters
   @Action setNameTranslations!: ActionBindingIF
 
-  private get originalNameTranslations (): Array<string> {
-    return this.getOriginalIA.incorporationApplication.nameTranslations?.new
-  }
-
-  private updateNameTranslations (nameTranslations: Array<string>): void {
+  private updateNameTranslations (nameTranslations: NameTranslationDraftIF[]): void {
     this.setNameTranslations(nameTranslations)
   }
 

@@ -14,11 +14,64 @@
         :key="`name_translation_${index}`"
         no-gutters>
         <v-col class="text-truncate">
-         <span class="name-title">{{translation}}</span>
+         <span class="name-title">{{translation.value}}</span>
+
+        <br v-if="translation.action">
+        <v-chip v-if="translation.action === actionTypes.ADDED"
+          x-small label color="#1669BB" text-color="white">ADDED</v-chip>
+        <v-chip v-if="translation.action === actionTypes.EDITED"
+          x-small label color="#1669BB" text-color="white">CORRECTED</v-chip>
+        <v-chip v-if="translation.action === actionTypes.REMOVED"
+          x-small label color="#E0E0E0" text-color="grey darken-1">REMOVED</v-chip>
         </v-col>
 
         <!-- Actions Column -->
-        <v-col>
+        <v-col v-if="translation.action === actionTypes.EDITED || translation.action === actionTypes.REMOVED">
+          <div class="actions">
+            <span class="edit-action">
+              <v-btn
+                small
+                text
+                color="primary"
+                :disabled="isAddingNameTranslation"
+                @click="emitNameUndo(index)">
+                  <v-icon small>mdi-undo</v-icon>
+                  <span>Undo</span>
+              </v-btn>
+            </span>
+            <!-- more actions menu -->
+            <span>
+              <v-menu offset-y>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    text
+                    small
+                    v-on="on"
+                    color="primary"
+                    class="actions__more-actions__btn"
+                    :disabled="isAddingNameTranslation || translation.action === actionTypes.REMOVED">
+                    <v-icon>mdi-menu-down</v-icon>
+                  </v-btn>
+                </template>
+                <v-list class="actions__more-actions">
+                  <v-list-item  @click="emitNameEdit(index)">
+                    <v-list-item-subtitle>
+                      <v-icon small>mdi-pencil</v-icon>
+                      <span class="ml-1">Edit</span>
+                    </v-list-item-subtitle>
+                  </v-list-item>
+                  <v-list-item  @click="emitRemoveName(index)">
+                    <v-list-item-subtitle>
+                      <v-icon small>mdi-delete</v-icon>
+                      <span class="ml-1">Remove</span>
+                    </v-list-item-subtitle>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </span>
+          </div>
+        </v-col>
+        <v-col v-else>
           <div class="actions">
             <span class="edit-action">
               <v-btn
@@ -65,13 +118,21 @@
 // Libraries
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
 
+// Interfaces
+import { NameTranslationDraftIF } from '@/interfaces'
+
+// Enums
+import { ActionTypes } from '@/enums'
+
 @Component({})
 export default class ListNameTranslation extends Vue {
   @Prop({ default: () => [] })
-  private translationList: Array<string>
+  private translationList: NameTranslationDraftIF[]
 
   @Prop({ default: false })
   private isAddingNameTranslation: boolean
+
+  private actionTypes = ActionTypes
 
   /**
    * Emit an index and event to the parent to handle editing.
@@ -79,6 +140,13 @@ export default class ListNameTranslation extends Vue {
    */
   @Emit('editNameTranslation')
   private emitNameEdit (index: number): void {}
+
+  /**
+   * Emit an index and event to the parent to handle undo.
+   * @param index The active index which is subject to undo.
+   */
+  @Emit('nameUndo')
+  private emitNameUndo (index: number): void {}
 
   /**
    * Emit an index and event to the parent to handle removal.
@@ -126,6 +194,10 @@ export default class ListNameTranslation extends Vue {
 
         .v-btn + .v-btn {
           margin-left: 0.5rem;
+        }
+
+        .actions__more-actions__btn {
+          margin-right: 0.5rem;
         }
       }
     }

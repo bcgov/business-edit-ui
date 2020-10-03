@@ -13,8 +13,9 @@
             </v-chip>
           </v-flex>
       </v-flex>
-      <v-flex xs7 v-if="drafTranslations && drafTranslations.length">
-        <div v-for="(name, index) in drafTranslations" :key="`name_translation_${index}`">{{name}}</div>
+      <v-flex xs7 v-if="draftTranslations && draftTranslations.filter(x => x.action !== 'removed').length">
+        <div v-for="(translation, index) in draftTranslations.filter(x => x.action !== 'removed')"
+          :key="`name_translation_${index}`">{{translation.value}}</div>
       </v-flex>
       <v-flex xs7 v-else>
         No name translations
@@ -91,11 +92,12 @@
               @cancelTranslation="cancelOrResetEditing()"
             ></add-name-translation>
             <list-name-translation
-              v-if="drafTranslations && drafTranslations.length > 0"
+              v-if="draftTranslations && draftTranslations.length > 0"
               :isAddingNameTranslation="isAddingNameTranslation"
-              :translationList="drafTranslations"
+              :translationList="draftTranslations"
               @editNameTranslation="editNameTranslation($event)"
               @removeNameTranslation="removeNameTranslation($event)"
+              @nameUndo="undoNameTranslation($event)"
             />
           </v-flex>
         </v-layout>
@@ -104,7 +106,7 @@
             <div class="action-btns">
               <v-btn large color="primary"
                 id="name-translation-done"
-                :disabled="isAddingNameTranslation || !hasNameTranslationChange"
+                :disabled="isAddingNameTranslation || !hasPendingChange"
                 @click="setNameTranslations()"
               >
                 <span>Done</span>
@@ -133,7 +135,11 @@ import { ConfirmDialog } from '@/components/dialogs'
 import { ListNameTranslation, AddNameTranslation } from '.'
 
 // Interfaces
-import { ActionBindingIF, ConfirmDialogType } from '@/interfaces'
+import { ActionBindingIF, ConfirmDialogType,
+  NameTranslationDraftIF, NameTranslationIF } from '@/interfaces'
+
+// Enums
+import { ActionTypes } from '@/enums'
 
 // Mixins
 import { CommonMixin } from '@/mixins'
@@ -153,43 +159,56 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   }
 
   @Prop({ default: () => [] })
-  private nameTranslations!: Array<string>
+  private nameTranslations!: NameTranslationDraftIF[]
 
-  @Prop({ default: () => [] })
-  private originalNameTranslations!: Array<string>
+  private actionTypes = ActionTypes
 
   // Properties
-  private drafTranslations: Array<string> = []
+  private draftTranslations: NameTranslationDraftIF[] = []
   private isEditing: boolean = false
   private isAddingNameTranslation = false
   private editingNameTranslation = ''
   private editIndex = -1
 
-  private get hasNameTranslationChange (): boolean {
-    return this.drafTranslations.length !== this.originalNameTranslations.length ||
-      !this.drafTranslations.every((value, index) => {
-        return this.originalNameTranslations[index] === value
+  private get hasPendingChange (): boolean {
+    return this.draftTranslations.length !== this.nameTranslations.length ||
+      !this.draftTranslations.every((translation, index) => {
+        return this.nameTranslations[index].value === translation.value
       })
   }
 
+  private get hasNameTranslationChange (): boolean {
+    return this.draftTranslations.length > 0 &&
+      this.draftTranslations.filter(x => x.action).length > 0
+  }
+
   private setNameTranslations (): void {
-    this.emitNameTranslations(this.drafTranslations)
+    this.emitNameTranslations(this.draftTranslations)
     this.emitHaveChanges(this.hasNameTranslationChange)
     this.isEditing = false
   }
 
   private resetNameTranslations (): void {
-    this.drafTranslations = [ ...this.originalNameTranslations ]
-    this.emitNameTranslations(this.drafTranslations)
+    this.draftTranslations = this.nameTranslations
+      .filter(x => x.action !== 'added')
+      .map(a => {
+        const translation = Object.assign({}, a)
+        translation.value = translation.oldValue || translation.value
+        translation.oldValue = null
+        translation.action = null
+        return translation
+      })
+    this.emitNameTranslations(this.draftTranslations)
     this.emitHaveChanges(false)
     this.isEditing = false
   }
 
   private cancelNameTranslationCorrection () {
     const nameTranslations = this.nameTranslations || []
-    const hasUnsavedData = this.drafTranslations.length !== nameTranslations.length ||
-      !this.drafTranslations.every((value, index) => {
-        return nameTranslations[index] === value
+    const hasUnsavedData = this.draftTranslations.length !== nameTranslations.length ||
+      !this.draftTranslations.every((translation, index) => {
+        return nameTranslations[index].value === translation.value &&
+          nameTranslations[index].action === translation.action
       })
     if (hasUnsavedData) {
       this.confirmUnsavedChanges()
@@ -215,7 +234,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
         this.setNameTranslations()
       }
     }).catch(() => {
-      this.drafTranslations = this.nameTranslations ? [ ...this.nameTranslations ] : []
+      this.draftTranslations = this.nameTranslations ? this.nameTranslations.map(a => Object.assign({}, a)) : []
       this.isEditing = false
     })
   }
@@ -226,9 +245,21 @@ export default class NameTranslation extends Mixins(CommonMixin) {
    */
   private addName (name: string): void {
     // Handle name translation adds or updates
-    this.editIndex > -1
-      ? this.drafTranslations[this.editIndex] = name
-      : this.drafTranslations.push(name)
+    if (this.editIndex > -1) {
+      const translation = this.draftTranslations[this.editIndex]
+      if (!translation.action) {
+        // If editing for the first time
+        translation.oldValue = translation.value
+        translation.action = ActionTypes.EDITED
+      } else if (translation.oldValue === name) {
+        // If user revert to old value
+        translation.action = null
+        translation.oldValue = null
+      }
+      translation.value = name
+    } else {
+      this.draftTranslations.push({ value: name, oldValue: null, action: ActionTypes.ADDED })
+    }
 
     this.cancelOrResetEditing()
   }
@@ -238,7 +269,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
    * @param index Index number of the name translation to edit
    */
   private editNameTranslation (index: number): void {
-    this.editingNameTranslation = this.drafTranslations[index]
+    this.editingNameTranslation = this.draftTranslations[index].value
     this.editIndex = index
     this.isAddingNameTranslation = true
   }
@@ -248,8 +279,16 @@ export default class NameTranslation extends Mixins(CommonMixin) {
    * @param index Index number of the name translation to remove
    */
   private removeNameTranslation (index: number): void {
-    this.drafTranslations.splice(index, 1)
-
+    const translation = this.draftTranslations[index]
+    if (translation.action === ActionTypes.ADDED) {
+      this.draftTranslations.splice(index, 1)
+    } else {
+      if (translation.action === ActionTypes.EDITED) {
+        translation.value = translation.oldValue
+        translation.oldValue = null
+      }
+      translation.action = ActionTypes.REMOVED
+    }
     this.cancelOrResetEditing()
   }
 
@@ -260,15 +299,24 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     this.editIndex = -1
   }
 
+  private undoNameTranslation (index: number): void {
+    const translation = this.draftTranslations[index]
+    if (translation.action === ActionTypes.EDITED) {
+      translation.value = translation.oldValue
+      translation.oldValue = null
+    }
+    translation.action = null
+  }
+
   // Watchers
   @Watch('nameTranslations', { deep: true, immediate: true })
   private onNameTranslationsPropValueChanged (): void {
-    this.drafTranslations = this.nameTranslations ? [ ...this.nameTranslations ] : []
+    this.draftTranslations = this.nameTranslations ? this.nameTranslations.map(a => Object.assign({}, a)) : []
     this.emitHaveChanges(this.hasNameTranslationChange)
   }
 
   @Emit('nameTranslationsChange')
-  private emitNameTranslations (translations: Array<string>): void {}
+  private emitNameTranslations (translations: NameTranslationDraftIF[]): void {}
 
   @Emit('haveChanges')
   private emitHaveChanges (haveChanges: boolean): void {}

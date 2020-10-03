@@ -1,4 +1,5 @@
-import { IncorporationAddressIf, OrgPersonIF, ShareClassIF } from '@/interfaces'
+import { IncorporationAddressIf, OrgPersonIF, ShareClassIF,
+  NameTranslationIF, NameTranslationDraftIF } from '@/interfaces'
 
 /** Incorporation Application filing loaded from / saved to the Legal API. */
 export interface IncorporationApplicationIF {
@@ -7,9 +8,7 @@ export interface IncorporationApplicationIF {
     nrNumber?: string // only set when there is an NR
     legalName?: string // only set when there is an NR
   }
-  nameTranslations: {
-    new: Array<string>
-  }
+  nameTranslations: NameTranslationIF | NameTranslationDraftIF[]
   offices: IncorporationAddressIf | {}
   contactPoint: {
     email: string

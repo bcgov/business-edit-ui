@@ -9,7 +9,7 @@ import {
   IncorporationFilingIF,
   OrgPersonIF,
   ShareClassIF,
-  CorrectionFilingIF
+  CorrectionFilingIF, NameTranslationIF, NameTranslationDraftIF
 } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
@@ -68,9 +68,28 @@ export default class FilingTemplateMixin extends Vue {
   buildIaCorrectionFiling (isDraft: boolean): CorrectionFilingIF {
     // if filing and paying, filter out removed orgs/persons and omit the 'action' property
     let parties = this.getPeopleAndRoles
+    let nameTranslations = this.stateModel.nameTranslations
     if (!isDraft) {
       parties = parties.filter(x => x.action !== 'removed')
         .map((x) => { const { action, ...rest } = x; return rest })
+
+      const translations = this.stateModel.nameTranslations as NameTranslationDraftIF[]
+      nameTranslations = {
+        new: translations
+          .filter(x => x.action === 'added')
+          .map(x => x.value),
+        modified: translations
+          .filter(x => x.action === 'edited')
+          .map(x => {
+            return {
+              newValue: x.value,
+              oldValue: x.oldValue
+            }
+          }),
+        ceased: translations
+          .filter(x => x.action === 'removed')
+          .map(x => x.value)
+      } as NameTranslationIF
     }
 
     // Build filing.
@@ -98,9 +117,7 @@ export default class FilingTemplateMixin extends Vue {
           legalName: this.getApprovedName,
           nrNumber: this.getNameRequestNumber
         },
-        nameTranslations: {
-          new: this.stateModel.nameTranslations
-        },
+        nameTranslations: nameTranslations,
         offices: this.stateModel.defineCompanyStep.officeAddresses,
         contactPoint: {
           email: this.stateModel.defineCompanyStep.businessContact.email,
@@ -161,7 +178,19 @@ export default class FilingTemplateMixin extends Vue {
     this.setNameRequest(filing.incorporationApplication.nameRequest)
 
     // Set Name Translations
-    this.setNameTranslations(filing.incorporationApplication.nameTranslations?.new)
+    if (filing.incorporationApplication.nameTranslations instanceof Array) {
+      this.setNameTranslations(filing.incorporationApplication.nameTranslations)
+    } else {
+      this.setNameTranslations(
+        filing.incorporationApplication.nameTranslations.new?.map(x => {
+          return {
+            value: x,
+            oldValue: null,
+            action: null
+          }
+        })
+      )
+    }
 
     // Set Office Addresses
     this.setOfficeAddresses(filing.incorporationApplication.offices)
