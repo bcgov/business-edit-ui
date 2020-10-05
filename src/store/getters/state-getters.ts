@@ -250,7 +250,7 @@ export const isFilingValid = (state: any): boolean => {
   // Define company, Agreement Type wont allow saving and invalid state to the store
   return (state.stateModel.peopleAndRoles.valid &&
     state.stateModel.detail.valid &&
-    state.stateModel.certifyState.valid &&
+    // state.stateModel.certifyState.valid &&
     state.stateModel.staffPaymentStep.valid)
 }
 
