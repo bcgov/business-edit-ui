@@ -17,16 +17,16 @@
          <span class="name-title">{{translation.value}}</span>
 
         <br v-if="translation.action">
-        <v-chip v-if="translation.action === actionTypes.ADDED"
+        <v-chip v-if="translation.action === ActionTypes.ADDED"
           x-small label color="#1669BB" text-color="white">ADDED</v-chip>
-        <v-chip v-if="translation.action === actionTypes.EDITED"
+        <v-chip v-if="translation.action === ActionTypes.EDITED"
           x-small label color="#1669BB" text-color="white">CORRECTED</v-chip>
-        <v-chip v-if="translation.action === actionTypes.REMOVED"
+        <v-chip v-if="translation.action === ActionTypes.REMOVED"
           x-small label color="#E0E0E0" text-color="grey darken-1">REMOVED</v-chip>
         </v-col>
 
         <!-- Actions Column -->
-        <v-col v-if="translation.action === actionTypes.EDITED || translation.action === actionTypes.REMOVED">
+        <v-col v-if="translation.action === ActionTypes.EDITED || translation.action === ActionTypes.REMOVED">
           <div class="actions">
             <span class="edit-action">
               <v-btn
@@ -40,7 +40,7 @@
               </v-btn>
             </span>
             <!-- more actions menu -->
-            <span>
+            <span class="actions__more" v-if="translation.action !== ActionTypes.REMOVED">
               <v-menu offset-y>
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -49,7 +49,7 @@
                     v-on="on"
                     color="primary"
                     class="actions__more-actions__btn"
-                    :disabled="isAddingNameTranslation || translation.action === actionTypes.REMOVED">
+                    :disabled="isAddingNameTranslation">
                     <v-icon>mdi-menu-down</v-icon>
                   </v-btn>
                 </template>
@@ -57,7 +57,7 @@
                   <v-list-item  @click="emitNameEdit(index)">
                     <v-list-item-subtitle>
                       <v-icon small>mdi-pencil</v-icon>
-                      <span class="ml-1">Edit</span>
+                      <span class="ml-1">Correct</span>
                     </v-list-item-subtitle>
                   </v-list-item>
                   <v-list-item  @click="emitRemoveName(index)">
@@ -81,11 +81,11 @@
                 :disabled="isAddingNameTranslation"
                 @click="emitNameEdit(index)">
                   <v-icon small>mdi-pencil</v-icon>
-                  <span>Edit</span>
+                  <span>Correct</span>
               </v-btn>
             </span>
             <!-- more actions menu -->
-            <span>
+            <span class="actions__more">
               <v-menu offset-y>
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -132,7 +132,7 @@ export default class ListNameTranslation extends Vue {
   @Prop({ default: false })
   private isAddingNameTranslation: boolean
 
-  private actionTypes = ActionTypes
+  private ActionTypes = ActionTypes
 
   /**
    * Emit an index and event to the parent to handle editing.
@@ -184,8 +184,8 @@ export default class ListNameTranslation extends Vue {
         position: absolute;
         right: 0;
 
-        .edit-action {
-          border-right: 1px solid $gray1;
+        .actions__more {
+          border-left: 1px solid $gray1;
         }
 
         .v-btn {

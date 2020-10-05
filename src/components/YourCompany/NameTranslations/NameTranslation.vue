@@ -13,8 +13,8 @@
             </v-chip>
           </v-flex>
       </v-flex>
-      <v-flex xs7 v-if="draftTranslations && draftTranslations.filter(x => x.action !== 'removed').length">
-        <div v-for="(translation, index) in draftTranslations.filter(x => x.action !== 'removed')"
+      <v-flex xs7 v-if="draftTranslations && translationsExceptRemoved.length">
+        <div v-for="(translation, index) in translationsExceptRemoved"
           :key="`name_translation_${index}`">{{translation.value}}</div>
       </v-flex>
       <v-flex xs7 v-else>
@@ -129,6 +129,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
+import { cloneDeep } from 'lodash'
 
 // Components
 import { ConfirmDialog } from '@/components/dialogs'
@@ -173,13 +174,18 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   private get hasPendingChange (): boolean {
     return this.draftTranslations.length !== this.nameTranslations.length ||
       !this.draftTranslations.every((translation, index) => {
-        return this.nameTranslations[index].value === translation.value
+        return this.nameTranslations[index].value === translation.value &&
+          this.nameTranslations[index].action === translation.action
       })
   }
 
   private get hasNameTranslationChange (): boolean {
     return this.draftTranslations.length > 0 &&
       this.draftTranslations.filter(x => x.action).length > 0
+  }
+
+  private get translationsExceptRemoved (): NameTranslationDraftIF[] {
+    return this.draftTranslations.filter(x => x.action !== 'removed')
   }
 
   private setNameTranslations (): void {
@@ -192,7 +198,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     this.draftTranslations = this.nameTranslations
       .filter(x => x.action !== 'added')
       .map(a => {
-        const translation = Object.assign({}, a)
+        const translation = cloneDeep(a)
         translation.value = translation.oldValue || translation.value
         translation.oldValue = null
         translation.action = null
@@ -205,6 +211,9 @@ export default class NameTranslation extends Mixins(CommonMixin) {
 
   private cancelNameTranslationCorrection () {
     const nameTranslations = this.nameTranslations || []
+    // Compare initial/draft translation with the modified translation to identify unsaved data
+    // If length is different that means added or removed (a drafted one).
+    // If any value is different that means undo or editted.
     const hasUnsavedData = this.draftTranslations.length !== nameTranslations.length ||
       !this.draftTranslations.every((translation, index) => {
         return nameTranslations[index].value === translation.value &&
@@ -234,7 +243,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
         this.setNameTranslations()
       }
     }).catch(() => {
-      this.draftTranslations = this.nameTranslations ? this.nameTranslations.map(a => Object.assign({}, a)) : []
+      this.draftTranslations = this.nameTranslations ? this.nameTranslations.map(a => cloneDeep(a)) : []
       this.isEditing = false
     })
   }
@@ -311,7 +320,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   // Watchers
   @Watch('nameTranslations', { deep: true, immediate: true })
   private onNameTranslationsPropValueChanged (): void {
-    this.draftTranslations = this.nameTranslations ? this.nameTranslations.map(a => Object.assign({}, a)) : []
+    this.draftTranslations = this.nameTranslations ? this.nameTranslations.map(a => cloneDeep(a)) : []
     this.emitHaveChanges(this.hasNameTranslationChange)
   }
 

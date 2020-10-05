@@ -85,24 +85,8 @@ export default class FilingTemplateMixin extends Vue {
           .map((x) => { const { action, ...rest } = x; return rest })
       }
 
-      // Filter out and modify name translation
-      const translations = this.stateModel.nameTranslations as NameTranslationDraftIF[]
-      nameTranslations = {
-        new: translations
-          .filter(x => x.action === 'added')
-          .map(x => x.value),
-        modified: translations
-          .filter(x => x.action === 'edited')
-          .map(x => {
-            return {
-              newValue: x.value,
-              oldValue: x.oldValue
-            }
-          }),
-        ceased: translations
-          .filter(x => x.action === 'removed')
-          .map(x => x.value)
-      } as NameTranslationIF
+      // Filter out and modify name translation to match schema
+      nameTranslations = this.prepareNameTranslations()
     }
 
     // Build filing.
@@ -180,6 +164,29 @@ export default class FilingTemplateMixin extends Vue {
   }
 
   /**
+   * Prepare name translations for non draft correction
+   */
+  prepareNameTranslations () : NameTranslationIF {
+    const translations = this.stateModel.nameTranslations as NameTranslationDraftIF[]
+    return {
+      new: translations
+        .filter(x => x.action === 'added')
+        .map(x => x.value),
+      modified: translations
+        .filter(x => x.action === 'edited')
+        .map(x => {
+          return {
+            newValue: x.value,
+            oldValue: x.oldValue
+          }
+        }),
+      ceased: translations
+        .filter(x => x.action === 'removed')
+        .map(x => x.value)
+    } as NameTranslationIF
+  }
+
+  /**
    * Parses a correction filing into the store.
    * @param filing the correction filing body to be parsed
    */
@@ -192,8 +199,10 @@ export default class FilingTemplateMixin extends Vue {
 
     // Set Name Translations
     if (filing.incorporationApplication.nameTranslations instanceof Array) {
+      // If it's an array that means it's a draft which is saved from edit-ui by staff.
       this.setNameTranslations(filing.incorporationApplication.nameTranslations)
     } else {
+      // If it's an object that means it's an initial draft created from filing-ui and has a structure of an IA.
       this.setNameTranslations(
         filing.incorporationApplication.nameTranslations.new?.map(x => {
           return {
