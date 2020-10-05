@@ -185,7 +185,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   }
 
   private get translationsExceptRemoved (): NameTranslationDraftIF[] {
-    return this.draftTranslations.filter(x => x.action !== 'removed')
+    return this.draftTranslations.filter(x => x.action !== ActionTypes.REMOVED)
   }
 
   private setNameTranslations (): void {
@@ -196,7 +196,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
 
   private resetNameTranslations (): void {
     this.draftTranslations = this.nameTranslations
-      .filter(x => x.action !== 'added')
+      .filter(x => x.action !== ActionTypes.ADDED)
       .map(a => {
         const translation = cloneDeep(a)
         translation.value = translation.oldValue || translation.value
@@ -243,7 +243,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
         this.setNameTranslations()
       }
     }).catch(() => {
-      this.draftTranslations = this.nameTranslations ? this.nameTranslations.map(a => cloneDeep(a)) : []
+      this.draftTranslations = this.nameTranslations ? cloneDeep(this.nameTranslations) : []
       this.isEditing = false
     })
   }
@@ -320,7 +320,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   // Watchers
   @Watch('nameTranslations', { deep: true, immediate: true })
   private onNameTranslationsPropValueChanged (): void {
-    this.draftTranslations = this.nameTranslations ? this.nameTranslations.map(a => cloneDeep(a)) : []
+    this.draftTranslations = this.nameTranslations ? cloneDeep(this.nameTranslations) : []
     this.emitHaveChanges(this.hasNameTranslationChange)
   }
 

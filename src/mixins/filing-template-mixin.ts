@@ -170,10 +170,10 @@ export default class FilingTemplateMixin extends Vue {
     const translations = this.stateModel.nameTranslations as NameTranslationDraftIF[]
     return {
       new: translations
-        .filter(x => x.action === 'added')
+        .filter(x => x.action === ActionTypes.ADDED)
         .map(x => x.value),
       modified: translations
-        .filter(x => x.action === 'edited')
+        .filter(x => x.action === ActionTypes.EDITED)
         .map(x => {
           return {
             newValue: x.value,
@@ -181,7 +181,7 @@ export default class FilingTemplateMixin extends Vue {
           }
         }),
       ceased: translations
-        .filter(x => x.action === 'removed')
+        .filter(x => x.action === ActionTypes.REMOVED)
         .map(x => x.value)
     } as NameTranslationIF
   }
