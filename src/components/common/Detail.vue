@@ -13,9 +13,7 @@
           </v-flex>
           <v-flex md10>
             <div>
-              <label>
-                <strong>Correction for Incorporation Application. Filed on {{getOriginalIAFilingDate}}</strong>
-                </label>
+              <label><strong>{{detailLabel}}</strong></label>
             </div>
             <div class="pt-2">
               <detail-comment
@@ -51,8 +49,16 @@ export default class Detail extends Vue {
   @Action setDetailValidity: ActionBindingIF
 
   private comment: string = null
-  private maxLength: number = 4038
-  private textAreaStyle: string='filled'
+  private textAreaStyle = 'filled'
+
+  private get detailLabel (): string {
+    return `Correction for Incorporation Application. Filed on ${this.getOriginalIAFilingDate}`
+  }
+
+  private get maxLength (): number {
+    // = (max size in db) - (default comment length) - (Carriage Return)
+    return (4096 - this.detailLabel.length - 1)
+  }
 
   private onValidityChange (valid: boolean): void {
     this.setDetailValidity(valid)
@@ -65,7 +71,7 @@ export default class Detail extends Vue {
   }
 
   @Watch('getDetailComment')
-  private onCommentStateChange (): void {
+  private onCommentStateChanged (): void {
     this.comment = this.getDetailComment
   }
 }
