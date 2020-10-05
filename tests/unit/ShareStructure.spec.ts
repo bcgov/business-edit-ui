@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
+import flushPromises from 'flush-promises'
 
 // Utils
 import { createLocalVue, mount } from '@vue/test-utils'
@@ -19,10 +20,10 @@ const localVue = createLocalVue()
 const store = getVuexStore()
 document.body.setAttribute('data-app', 'true')
 
-describe.skip('Share Structure component', () => {
+describe('Share Structure component', () => {
   let wrapper
 
-  const shareClasses = [
+  const shareClasses: any = [
     {
       id: 1,
       name: 'Common Shares',
@@ -91,13 +92,13 @@ describe.skip('Share Structure component', () => {
     }]
 
   beforeEach(() => {
+    store.state.stateModel.createShareStructureStep.shareClasses = shareClasses
+    store.state.stateModel.originalIA = shareClasses
+
     wrapper = mount(ShareStructure, {
       localVue,
       vuetify,
-      store,
-      propsData: {
-        shareClasses: shareClasses
-      }
+      store
     })
   })
 
@@ -159,12 +160,12 @@ describe.skip('Share Structure component', () => {
 
   it('assigns the correct data for ShareClasses after moving an item', async () => {
     // Validate the Class values pre move
-    expect(wrapper.vm.$props.shareClasses[0].name).toBe('Common Shares')
-    expect(wrapper.vm.$props.shareClasses[1].name).toBe('Non-voting Shares')
+    expect(wrapper.vm.getShareClasses[0].name).toBe('Common Shares')
+    expect(wrapper.vm.getShareClasses[1].name).toBe('Non-voting Shares')
 
     // Validate the Series values pre move
-    expect(wrapper.vm.$props.shareClasses[0].series[0].name).toBe('Share Series 1')
-    expect(wrapper.vm.$props.shareClasses[0].series[1].name).toBe('Share Series 2')
+    expect(wrapper.vm.getShareClasses[0].series[0].name).toBe('Share Series 1')
+    expect(wrapper.vm.getShareClasses[0].series[1].name).toBe('Share Series 2')
 
     // Identify and click the dropdown menu
     const dropDownMenu = wrapper.find('.actions__more-actions__btn')
@@ -177,10 +178,10 @@ describe.skip('Share Structure component', () => {
     await moveDown.trigger('click')
 
     // Validate class data post move
-    expect(wrapper.vm.$props.shareClasses[0].name).toBe('Non-voting Shares')
-    expect(wrapper.vm.$props.shareClasses[1].name).toBe('Common Shares')
+    expect(wrapper.vm.getShareClasses[0].name).toBe('Non-voting Shares')
+    expect(wrapper.vm.getShareClasses[1].name).toBe('Common Shares')
 
     // Validate series data post move
-    expect(wrapper.vm.$props.shareClasses[0].series[0].name).toBe('Share Series 3')
+    expect(wrapper.vm.getShareClasses[0].series[0].name).toBe('Share Series 3')
   })
 })

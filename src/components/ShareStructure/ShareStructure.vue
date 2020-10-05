@@ -55,7 +55,12 @@
         <tr :key="row.item.id" class="class-row" :class="{ 'class-row-has-series': row.item.series.length}">
           <td :class="{ 'list-item__subtitle' : row.item.action === ActionTypes.REMOVED }" class="list-item__title">
             {{ row.item.name }}
-            <action-chip v-if="row.item.action" class="mb-3" :actionable-item="row.item"/>
+            <action-chip
+              v-if="row.item.action"
+              id="action-chip"
+              class="mb-3"
+              :actionable-item="row.item"
+            />
           </td>
           <td>{{ row.item.maxNumberOfShares ? (+row.item.maxNumberOfShares).toLocaleString() : 'No Maximum' }}</td>
           <td>{{ row.item.parValue ? row.item.parValue : 'No Par Value' }}</td>
@@ -458,6 +463,11 @@ export default class ShareStructure extends Vue {
     // Create a new ShareClass List and restore the original data
     let newList: ShareClassIF[] = [...this.getShareClasses]
     newList[index] = { ...shareClassToRestore, series: [...this.getShareClasses[index].series] }
+
+    // Reset series if corrected RightsOrRestrictions is no longer true
+    newList.forEach(classShare => {
+      if (!classShare.hasRightsOrRestrictions) classShare.series = []
+    })
 
     this.setShareClasses(newList)
     this.resetData()
