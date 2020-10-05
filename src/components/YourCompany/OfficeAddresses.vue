@@ -50,7 +50,7 @@
               </v-btn>
             </span>
             <span class="more-actions">
-              <v-menu offset-y>
+              <v-menu offset-y attach=".more-actions">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     text small color="primary"
@@ -91,9 +91,7 @@
         </v-flex>
       </v-layout>
 
-      <v-layout v-if="entityFilter(EntityTypes.BCOMP)"
-        row id="summary-records-address" class="mt-4 mx-0"
-      >
+      <v-layout row id="summary-records-address" class="mt-4 mx-0" v-if="entityFilter(EntityTypes.BCOMP)">
         <v-flex xs3>
           <label class>Records Office</label>
         </v-flex>
@@ -137,63 +135,65 @@
     <!-- Addresses Edit -->
     <v-card flat v-else>
       <ul class="list address-list">
-        <div class="address-edit-header">
-          <label class="address-edit-title">Registered Office</label>
+        <div id="edit-registered-address">
+          <div class="address-edit-header">
+            <label class="address-edit-title">Registered Office</label>
+          </div>
+
+          <!-- Registered Mailing Address -->
+          <li class="ma-5">
+            <div class="meta-container">
+              <label>Mailing Address</label>
+              <div class="meta-container__inner">
+                <div class="address-wrapper">
+                  <base-address ref="regMailingAddress"
+                    id="address-registered-mailing"
+                    :address="mailingAddress"
+                    :editing="true"
+                    :schema="addressSchema"
+                    @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, mailingAddress, $event)"
+                    @valid="updateValidity(AddressTypes.MAILING_ADDRESS, $event)"
+                  />
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <!-- Registered Delivery Address -->
+          <li class="ma-5">
+            <div class="meta-container">
+              <label>Delivery Address</label>
+              <div class="meta-container__inner">
+                <div class="form__row">
+                  <v-checkbox
+                    id="registered-mailing-same-chkbx"
+                    class="inherit-checkbox"
+                    label="Same as Mailing Address"
+                    hide-details
+                    v-model="inheritMailingAddress"
+                    @change="setDeliveryAddressToMailingAddress()"
+                  />
+                </div>
+                <div
+                  class="address-wrapper pt-6"
+                  v-if="!isSame(mailingAddress, deliveryAddress, 'actions') || !inheritMailingAddress"
+                >
+                  <base-address ref="regDeliveryAddress"
+                    id="address-registered-delivery"
+                    v-if="!inheritMailingAddress"
+                    :address="deliveryAddress"
+                    :editing="true"
+                    :schema="addressSchema"
+                    @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, deliveryAddress, $event)"
+                    @valid="updateValidity(AddressTypes.DELIVERY_ADDRESS, $event)"
+                  />
+                </div>
+              </div>
+            </div>
+          </li>
         </div>
 
-        <!-- Registered Mailing Address -->
-        <li class="ma-5">
-          <div class="meta-container">
-            <label>Mailing Address</label>
-            <div class="meta-container__inner">
-              <div class="address-wrapper">
-                <base-address ref="regMailingAddress"
-                  id="address-registered-mailing"
-                  :address="mailingAddress"
-                  :editing="true"
-                  :schema="addressSchema"
-                  @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, mailingAddress, $event)"
-                  @valid="updateValidity(AddressTypes.MAILING_ADDRESS, $event)"
-                />
-              </div>
-            </div>
-          </div>
-        </li>
-
-        <!-- Registered Delivery Address -->
-        <li class="ma-5">
-          <div class="meta-container">
-            <label>Delivery Address</label>
-            <div class="meta-container__inner">
-              <div class="form__row">
-                <v-checkbox
-                  id="registered-mailing-same-chkbx"
-                  class="inherit-checkbox"
-                  label="Same as Mailing Address"
-                  hide-details
-                  v-model="inheritMailingAddress"
-                  @change="setDeliveryAddressToMailingAddress()"
-                />
-              </div>
-              <div
-                class="address-wrapper pt-6"
-                v-if="!isSame(mailingAddress, deliveryAddress, 'actions') || !inheritMailingAddress"
-              >
-                <base-address ref="regDeliveryAddress"
-                  id="address-registered-delivery"
-                  v-if="!inheritMailingAddress"
-                  :address="deliveryAddress"
-                  :editing="true"
-                  :schema="addressSchema"
-                  @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, deliveryAddress, $event)"
-                  @valid="updateValidity(AddressTypes.DELIVERY_ADDRESS, $event)"
-                />
-              </div>
-            </div>
-          </div>
-        </li>
-
-        <template v-if="entityFilter(EntityTypes.BCOMP)">
+        <div id="edit-records-address" v-if="entityFilter(EntityTypes.BCOMP)">
           <div class="address-edit-header" :class="{'mt-8': inheritMailingAddress}">
             <label class="address-edit-title">Records Office</label>
             <v-checkbox
@@ -233,6 +233,7 @@
                 <div class="meta-container__inner">
                   <div class="form__row">
                     <v-checkbox
+                      id="records-delivery-same-chkbx"
                       class="inherit-checkbox"
                       label="Same as Mailing Address"
                       hide-details
@@ -256,7 +257,7 @@
               </div>
             </li>
           </template>
-        </template>
+        </div>
       </ul>
 
       <div class="action-btns" :class="{'mt-6': inheritRegisteredAddress}">
