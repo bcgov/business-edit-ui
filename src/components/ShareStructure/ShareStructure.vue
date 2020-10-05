@@ -55,12 +55,7 @@
         <tr :key="row.item.id" class="class-row" :class="{ 'class-row-has-series': row.item.series.length}">
           <td :class="{ 'list-item__subtitle' : row.item.action === ActionTypes.REMOVED }" class="list-item__title">
             {{ row.item.name }}
-            <action-chip
-              v-if="row.item.action"
-              id="action-chip"
-              class="mb-3"
-              :actionable-item="row.item"
-            />
+            <action-chip v-if="row.item.action" class="mb-3" :actionable-item="row.item" />
           </td>
           <td>{{ row.item.maxNumberOfShares ? (+row.item.maxNumberOfShares).toLocaleString() : 'No Maximum' }}</td>
           <td>{{ row.item.parValue ? row.item.parValue : 'No Par Value' }}</td>

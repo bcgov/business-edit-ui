@@ -3,7 +3,6 @@ import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
-import flushPromises from 'flush-promises'
 
 // Utils
 import { createLocalVue, mount } from '@vue/test-utils'
