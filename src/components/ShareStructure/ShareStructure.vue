@@ -83,9 +83,9 @@
                 class="undo-action"
               >
                 <v-btn small text color="primary"
-                       :id="'class-' + row.index + '-undo-btn'"
-                       @click="undoCorrection(true, row.item.action, row.index)"
-                       :disabled="addEditInProgress"
+                  :id="'class-' + row.index + '-undo-btn'"
+                  @click="undoCorrection(true, row.item.action, row.index)"
+                  :disabled="addEditInProgress"
                 >
                   <v-icon small>mdi-undo</v-icon>
                   <span>Undo</span>
