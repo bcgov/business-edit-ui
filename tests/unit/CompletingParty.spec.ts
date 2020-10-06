@@ -11,7 +11,7 @@ const vuetify = new Vuetify({})
 const store = getVuexStore()
 
 /** Original person with CP role. */
-const original_person_cp = {
+const originalPersonCp = {
   officer: {
     id: 1,
     partyType: 'Person',
@@ -26,9 +26,9 @@ const original_person_cp = {
   ],
   mailingAddress: {}
 }
- 
+
 /** Original person without CP role. */
-const original_person_not_cp = {
+const originalPersonNotCp = {
   officer: {
     id: 1,
     partyType: 'Person',
@@ -45,7 +45,7 @@ const original_person_not_cp = {
 }
 
 /** Original organization. */
-const original_org = {
+const originalOrg = {
   officer: {
     id: 2,
     partyType: 'Org',
@@ -60,7 +60,7 @@ const original_org = {
 }
 
 /** New person with CP role. */
-const new_person_cp = {
+const newPersonCp = {
   officer: {
     id: 3,
     partyType: 'Person',
@@ -69,12 +69,12 @@ const new_person_cp = {
     orgName: ''
   },
   roles: [
-    { roleType: 'Completing Party' },
+    { roleType: 'Completing Party' }
   ],
   mailingAddress: {},
   action: 'added'
 }
-  
+
 describe('unit tests', () => {
   it('displays titles and null data correctly', () => {
     const wrapper = mount(CompletingParty, { store, vuetify })
@@ -91,15 +91,15 @@ describe('unit tests', () => {
     store.state.stateModel.originalIA = {
       incorporationApplication: {
         parties: [
-          original_person_cp,
-          original_org
+          originalPersonCp,
+          originalOrg
         ]
       }
     }
     store.state.stateModel.peopleAndRoles = {
       orgPeople: [
-        original_person_cp,
-        original_org
+        originalPersonCp,
+        originalOrg
       ]
     }
 
@@ -115,16 +115,16 @@ describe('unit tests', () => {
     store.state.stateModel.originalIA = {
       incorporationApplication: {
         parties: [
-          original_person_cp,
-          original_org
+          originalPersonCp,
+          originalOrg
         ]
       }
     }
     store.state.stateModel.peopleAndRoles = {
       orgPeople: [
-        original_person_not_cp,
-        original_org,
-        new_person_cp
+        originalPersonNotCp,
+        originalOrg,
+        newPersonCp
       ]
     }
 
