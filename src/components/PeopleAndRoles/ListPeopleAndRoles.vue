@@ -72,8 +72,8 @@
             </v-col>
           </div>
           <div v-else>
-            <v-icon color="$BCgovGold9" small>mdi-alert</v-icon>
-            <span class="warning-text">Add Role</span>
+            <v-icon color="red darken-3" small>mdi-alert</v-icon>
+            <span class="warning-text">Missing Role</span>
           </div>
         </v-col>
 
@@ -289,6 +289,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   position: relative;
   top: 2px;
   left: 2px;
-  color: $BCgovGold9
+  color: $BCgovInputError;
 }
 </style>
