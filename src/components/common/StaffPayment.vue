@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section id="staff-payment-section">
     <header>
       <h2>3. Staff Payment</h2>
     </header>
@@ -7,7 +7,8 @@
     <staff-payment-component
       :staffPaymentData="getStaffPayment"
       @update:staffPaymentData="onStaffPaymentData"
-      @valid="staffPaymentFormValid = $event"/>
+      @valid="staffPaymentFormValid = $event"
+    />
   </section>
 </template>
 
@@ -107,10 +108,4 @@ export default class StaffPayment extends Vue {
 </script>
 
 <style lang="scss" scoped>
-#staff-payment-container {
-  width: 100%;
-  height: 4rem;
-  padding: 1rem;
-  background-color: white;
-}
 </style>

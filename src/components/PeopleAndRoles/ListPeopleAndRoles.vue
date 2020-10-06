@@ -193,7 +193,8 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
    * @returns The formatted org/person name.
    */
   private formatName (filing: any): string {
-    return filing?.officer?.orgName ? filing?.officer?.orgName
+    return filing?.officer?.orgName
+      ? filing?.officer?.orgName
       : `${filing.officer.firstName} ${filing.officer.middleName || ''} ${filing.officer.lastName}`
   }
 

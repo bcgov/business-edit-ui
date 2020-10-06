@@ -302,8 +302,8 @@ export default class ShareStructure extends Vue {
   private addEditInProgress = false
   private currentShareStructure: ShareClassIF | null = null
 
-  // Enums
-  private ActionTypes = ActionTypes
+  // Declaration for template
+  readonly ActionTypes = ActionTypes
 
   private headers: Array<any> = [
     {

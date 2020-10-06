@@ -19,7 +19,7 @@ export default class ActionChip extends Vue {
   @Prop({ default: {} })
   private actionableItem: ActionableItemIF
 
-  // Enum for template
+  // Declaration for template
   readonly ActionTypes = ActionTypes
 }
 </script>
