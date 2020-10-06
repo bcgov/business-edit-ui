@@ -78,14 +78,29 @@
               </span>
 
               <!-- Share Class Undo Btn -->
-              <span v-else class="undo-action">
+              <span
+                v-if="row.item.action === ActionTypes.EDITED || row.item.action === ActionTypes.REMOVED"
+                class="undo-action"
+              >
                 <v-btn small text color="primary"
-                  :id="'class-' + row.index + '-undo-btn'"
-                  @click="undoCorrection(true, row.item.action, row.index)"
-                  :disabled="addEditInProgress"
+                       :id="'class-' + row.index + '-undo-btn'"
+                       @click="undoCorrection(true, row.item.action, row.index)"
+                       :disabled="addEditInProgress"
                 >
                   <v-icon small>mdi-undo</v-icon>
                   <span>Undo</span>
+                </v-btn>
+              </span>
+
+              <!-- Share Class Edit Btn -->
+              <span v-if="row.item.action === ActionTypes.ADDED" class="edit-action">
+                <v-btn small text color="primary"
+                  :id="'class-' + row.index + '-change-added-btn'"
+                  @click="initShareClassForEdit(row.index)"
+                  :disabled="addEditInProgress"
+                >
+                  <v-icon small>mdi-pencil</v-icon>
+                  <span>Edit</span>
                 </v-btn>
               </span>
 
@@ -137,7 +152,6 @@
                       </v-list-item-subtitle>
                     </v-list-item>
                     <v-list-item
-                      v-if="!row.item.action"
                       class="actions-dropdown_item"
                       @click="removeShareClass(row.index)"
                     >
@@ -149,11 +163,11 @@
             </div>
           </td>
         </tr>
-        <tr v-if="showEditShareStructureForm[row.index]">
+        <tr v-if="showClassEditForm[row.index]">
           <td colspan="6">
             <div class="edit-share-structure-container">
               <edit-share-structure
-                v-show="showEditShareStructureForm"
+                v-show="showClassEditForm"
                 :initialValue="currentShareStructure"
                 :activeIndex="activeIndex"
                 :nextId="nextId"
@@ -191,6 +205,7 @@
           <!-- Share Series Edit Btn -->
           <td>
             <div class="actions" v-if="row.item.action !== ActionTypes.REMOVED">
+              <!-- Series Correct Btn -->
               <span v-if="!seriesItem.action" class="edit-action">
                 <v-btn small text color="primary"
                        :id="'series-' + index + '-change-btn'"
@@ -201,7 +216,12 @@
                   <span>Correct</span>
                 </v-btn>
               </span>
-              <span v-else-if="row.item.hasRightsOrRestrictions" class="undo-action">
+
+              <!-- Series Undo btn -->
+              <span
+                v-else-if="row.item.hasRightsOrRestrictions && !row.item.action === ActionTypes.ADDED"
+                class="undo-action"
+              >
                 <v-btn small text color="primary"
                        :id="'series-' + index + '-undo-btn'"
                        @click="undoCorrection(false, seriesItem.action, index, row.index)"
@@ -209,6 +229,18 @@
                 >
                   <v-icon small>mdi-undo</v-icon>
                   <span>Undo</span>
+                </v-btn>
+              </span>
+
+              <!-- Series Edit Btn -->
+              <span v-else class="edit-action">
+                <v-btn small text color="primary"
+                       :id="'series-' + index + '-change-added-btn'"
+                       @click="editSeries(row.index, index)"
+                       :disabled="addEditInProgress"
+                >
+                  <v-icon small>mdi-pencil</v-icon>
+                  <span>Edit</span>
                 </v-btn>
               </span>
 
@@ -260,6 +292,25 @@
             </div>
           </td>
         </tr>
+        <!-- Series Share Edit Form -->
+        <tr v-if="showSeriesEditForm[row.index]">
+          <td colspan="6">
+            <div class="edit-share-structure-container">
+              <edit-share-structure
+                v-show="showSeriesEditForm"
+                :initialValue="currentShareStructure"
+                :activeIndex="activeIndex"
+                :nextId="nextId"
+                :parentIndex="parentIndex"
+                :shareClasses="getShareClasses"
+                @addEditClass="addEditShareClass($event)"
+                @addEditSeries="addEditShareSeries($event)"
+                @removeClass="removeShareClass($event)"
+                @removeSeries="removeSeries"
+                @resetEvent="resetData()"/>
+            </div>
+          </td>
+        </tr>
       </template>
     </v-data-table>
   </v-card>
@@ -298,7 +349,8 @@ export default class ShareStructure extends Vue {
   private parentIndex: number = -1
   private nextId: number = -1
   private showAddShareStructureForm = false
-  private showEditShareStructureForm: Array<boolean> = [false]
+  private showClassEditForm: Array<boolean> = [false]
+  private showSeriesEditForm: Array<boolean> = [false]
   private addEditInProgress = false
   private currentShareStructure: ShareClassIF | null = null
 
@@ -387,7 +439,7 @@ export default class ShareStructure extends Vue {
     this.activeIndex = index
     this.parentIndex = -1
     this.addEditInProgress = true
-    this.showEditShareStructureForm[index] = true
+    this.showClassEditForm[index] = true
   }
 
   /**
@@ -488,7 +540,7 @@ export default class ShareStructure extends Vue {
     this.nextId = shareSeries.length === 0 ? 1 : (shareSeries.reduce(
       (prev, current) => (prev.id > current.id) ? prev : current)).id + 1
     this.addEditInProgress = true
-    this.showEditShareStructureForm[shareClassIndex] = true
+    this.showSeriesEditForm[shareClassIndex] = true
   }
 
   /**
@@ -526,7 +578,7 @@ export default class ShareStructure extends Vue {
     let newList: ShareClassIF[] = [...this.getShareClasses]
     this.currentShareStructure = { ...newList[this.parentIndex].series[this.activeIndex] }
     this.addEditInProgress = true
-    this.showEditShareStructureForm[index] = true
+    this.showSeriesEditForm[index] = true
   }
 
   /**
@@ -648,7 +700,8 @@ export default class ShareStructure extends Vue {
     this.activeIndex = -1
     this.addEditInProgress = false
     this.showAddShareStructureForm = false
-    this.showEditShareStructureForm = [false]
+    this.showClassEditForm = [false]
+    this.showSeriesEditForm = [false]
     this.parentIndex = -1
     this.nextId = -1
   }
