@@ -202,13 +202,13 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
 
   /** True if an error dialog is displayed. */
   private get isErrorDialog (): boolean {
+    // NB: ignore nameRequestErrorDialog (to leave underlying components rendered)
     return (
       this.accountAuthorizationDialog ||
       this.bcolObj != null ||
       this.fetchErrorDialog ||
       this.paymentErrorDialog ||
       this.saveErrorDialog ||
-      this.nameRequestErrorDialog ||
       this.fileAndPayInvalidNameRequestDialog
     )
   }

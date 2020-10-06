@@ -105,7 +105,9 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   ]
 
   mounted (): void {
-    if (this.getNameRequestNumber) this.nameRequestNumber = this.getNameRequestNumber
+    if (this.getNameRequestNumber) {
+      this.nameRequestNumber = this.getNameRequestNumber
+    }
     if (this.getNameRequestApplicant) {
       this.entityPhone = this.getNameRequestApplicant.phoneNumber
       this.entityEmail = this.getNameRequestApplicant.emailAddress
