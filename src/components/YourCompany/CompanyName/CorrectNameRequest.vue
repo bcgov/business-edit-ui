@@ -94,11 +94,13 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
     v => this.validateNameRequestNumber(v) || 'Name Request Number is invalid'
   ]
   private entityPhoneNumberRules = [
-    v => this.isInputEntered(v, 'phone') || 'Phone number is required',
+    v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+    v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
     v => !(v?.length > 12) || 'Phone number is invalid'
   ]
   private entityEmailRules = [
-    v => this.isInputEntered(v, 'email') || 'Email is required',
+    v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+    v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
     v => this.isValidateEmail(v) || 'Email is Invalid'
   ]
 
@@ -116,11 +118,8 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
       (!!this.entityPhone || !!this.entityEmail)
   }
 
-  private isInputEntered (value: any, inputType: string) {
-    return (!!((inputType === 'email') ? this.entityPhone : this.entityEmail) || !!value)
-  }
-
   private isValidateEmail (value: any) {
+    if (value?.length < 1) return true
     return ((!!this.entityPhone && !!value) || !!this.validateEmailFormat(value))
   }
 
@@ -135,7 +134,7 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   }
 
   private resetForm () {
-    // this.$refs.correctNrForm.resetValidation()
+    this.$refs.correctNrForm.resetValidation()
   }
 
   /** Watch for form submission and emit results. */
@@ -171,6 +170,8 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
 
   /** Inform parent when form is valid and ready for submission. */
   @Watch('valid')
+  @Watch('entityPhone')
+  @Watch('entityEmail')
   @Emit('isValid')
   private emitValid (): boolean {
     return this.isFormValid
