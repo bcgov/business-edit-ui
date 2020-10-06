@@ -166,20 +166,21 @@ store.state.stateModel.tombstone.currentDate = '2020-03-30'
 describe('Org/Person component', () => {
   it('Loads the component and sets data for person', async () => {
     const wrapper: Wrapper<OrgPerson> = createComponent(validPersonData, -1, 0, null)
+    await Vue.nextTick()
     expect(wrapper.vm.$data.orgPerson).toStrictEqual(validPersonData)
-    expect(wrapper.vm.$data.isIncorporator).toBe(false)
-    expect(wrapper.vm.$data.isDirector).toBe(true)
-    expect(wrapper.vm.$data.isCompletingParty).toBe(true)
+    expect((wrapper.vm as any).isIncorporator).toBe(false)
+    expect((wrapper.vm as any).isDirector).toBe(true)
+    expect((wrapper.vm as any).isCompletingParty).toBe(true)
     wrapper.destroy()
   })
 
   it('Loads the component and sets data for org', async () => {
     const wrapper: Wrapper<OrgPerson> = createComponent(validOrgData, -1, 0, null)
-    expect(wrapper.vm.$data.orgPerson).toStrictEqual(validOrgData)
-    expect(wrapper.vm.$data.isIncorporator).toBe(true)
-    expect(wrapper.vm.$data.isDirector).toBe(false)
-    expect(wrapper.vm.$data.isCompletingParty).toBe(false)
     await Vue.nextTick()
+    expect(wrapper.vm.$data.orgPerson).toStrictEqual(validOrgData)
+    expect((wrapper.vm as any).isIncorporator).toBe(true)
+    expect((wrapper.vm as any).isDirector).toBe(false)
+    expect((wrapper.vm as any).isCompletingParty).toBe(false)
     wrapper.destroy()
   })
 

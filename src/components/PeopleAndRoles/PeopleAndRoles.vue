@@ -34,7 +34,7 @@
         id="btn-add-person"
         outlined
         color="primary"
-        :disabled="showOrgPersonForm"
+        :disabled="renderOrgPersonForm"
         @click="initAdd([], IncorporatorTypes.PERSON)"
       >
         <v-icon>mdi-account-plus</v-icon>
@@ -45,7 +45,7 @@
         outlined
         color="primary"
         class="ml-2"
-        :disabled="showOrgPersonForm"
+        :disabled="renderOrgPersonForm"
         @click="initAdd([{ roleType: Roles.INCORPORATOR }], IncorporatorTypes.CORPORATION)"
       >
         <v-icon>mdi-domain-plus</v-icon>
@@ -57,7 +57,7 @@
         outlined
         color="primary"
         class="ml-2"
-        :disabled="showOrgPersonForm"
+        :disabled="renderOrgPersonForm"
         @click="initAdd([{ roleType: Roles.COMPLETING_PARTY }], IncorporatorTypes.PERSON)"
       >
         <v-icon>mdi-account-plus-outline</v-icon>
@@ -67,7 +67,7 @@
 
     <div class="list-container px-4">
       <!-- FUTURE: move OrgPerson inside ListPeopleAndRoles -->
-      <org-person v-if="showOrgPersonForm"
+      <org-person v-if="renderOrgPersonForm"
         :currentOrgPerson="currentOrgPerson"
         :activeIndex="activeIndex"
         :nextId="nextId"
@@ -143,7 +143,7 @@ export default class PeopleAndRoles extends Vue {
   }
 
   // Local properties
-  private showOrgPersonForm: boolean = false
+  private renderOrgPersonForm: boolean = false
   private activeIndex: number = NaN
   private currentOrgPerson: OrgPersonIF = null
   private nextId: number = NaN
@@ -227,7 +227,7 @@ export default class PeopleAndRoles extends Vue {
     this.activeIndex = NaN
     this.nextId = (this.getPeopleAndRoles.length === 0)
       ? 0 : (this.getPeopleAndRoles[this.getPeopleAndRoles.length - 1].officer.id + 1)
-    this.showOrgPersonForm = true
+    this.renderOrgPersonForm = true
   }
 
   /**
@@ -238,7 +238,7 @@ export default class PeopleAndRoles extends Vue {
     // make a copy so we don't change the original object
     this.currentOrgPerson = cloneDeep(this.getPeopleAndRoles[index])
     this.activeIndex = index
-    this.showOrgPersonForm = true
+    this.renderOrgPersonForm = true
   }
 
   /**
@@ -247,7 +247,7 @@ export default class PeopleAndRoles extends Vue {
   private performReset (): void {
     this.currentOrgPerson = null
     this.activeIndex = NaN
-    this.showOrgPersonForm = false
+    this.renderOrgPersonForm = false
   }
 
   /**
