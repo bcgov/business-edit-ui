@@ -29,6 +29,12 @@
           <p class="genErr" v-else-if="type === NameRequestStates.INVALID">
             The specified name request data is invalid.</p>
 
+          <p class="genErr" v-else-if="type === NameRequestStates.INCORRECT_EMAIL">
+            The specified email address does not match the name request.</p>
+
+          <p class="genErr" v-else-if="type === NameRequestStates.INCORRECT_PHONE">
+            The specified phone number does not match the name request.</p>
+
           <p class="genErr" v-else>An unexpected error has occurred.</p>
         </slot>
       </v-card-text>
@@ -44,7 +50,7 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { NameRequestStates } from '@/enums/nameRequestStates'
 
 @Component({})
-export default class InvalidNrDialog extends Vue {
+export default class NameRequestErrorDialog extends Vue {
   /** Prop to display the dialog. */
   @Prop() private dialog: boolean
 
