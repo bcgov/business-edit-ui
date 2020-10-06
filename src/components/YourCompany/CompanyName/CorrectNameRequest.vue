@@ -94,12 +94,14 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
     v => this.validateNameRequestNumber(v) || 'Name Request Number is invalid'
   ]
   private entityPhoneNumberRules = [
-    v => (v !== '' || !this.entityEmail) || 'Phone number is required',
+    v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+    v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
     v => !(v?.length > 12) || 'Phone number is invalid'
   ]
   private entityEmailRules = [
-    v => (v !== '' || !this.entityPhone) || 'Email is required',
-    v => (v === '' || this.isValidateEmail(v)) || 'Email is Invalid'
+    v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+    v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+    v => this.isValidateEmail(v) || 'Email is Invalid'
   ]
 
   mounted (): void {
@@ -117,6 +119,7 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   }
 
   private isValidateEmail (value: any) {
+    if (value?.length < 1) return true
     return ((!!this.entityPhone && !!value) || !!this.validateEmailFormat(value))
   }
 
