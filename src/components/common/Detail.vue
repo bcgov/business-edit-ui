@@ -8,10 +8,10 @@
     <v-card flat class="mt-4">
       <div class="pl-8 pt-8 pr-8">
         <v-layout row>
-          <v-flex md2>
+          <v-flex xs3 md2>
             <label><strong>Detail</strong></label>
           </v-flex>
-          <v-flex md10>
+          <v-flex xs9 md10>
             <label>
               <strong>Correction for Incorporation Application. Filed on {{getOriginalIAFilingDate}}</strong>
             </label>
