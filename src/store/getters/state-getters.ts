@@ -2,7 +2,7 @@
 import { AccountTypes, EntityTypes } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
-  NameRequestIF, BusinessContactIF
+  NameRequestIF, BusinessContactIF, NameTranslationDraftIF
 } from '@/interfaces'
 
 /** Whether the user has "staff" keycloak role. */
@@ -161,7 +161,7 @@ export const getNameRequestApplicant = (state: any): NameRequestApplicantIF => {
 }
 
 /** The name translations. */
-export const getNameTranslations = (state: any): Array<string> => {
+export const getNameTranslations = (state: any): NameTranslationDraftIF[] => {
   return state.stateModel.nameTranslations
 }
 

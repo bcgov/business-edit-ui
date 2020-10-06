@@ -12,8 +12,9 @@ import { getVuexStore } from '@/store'
 import { createLocalVue, mount } from '@vue/test-utils'
 
 // Components
-import { ListNameTranslations } from '@/components/YourCompany'
+import { ListNameTranslation } from '@/components/YourCompany'
 import flushPromises from 'flush-promises'
+import { NameTranslationDraftIF } from '@/interfaces'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -28,11 +29,11 @@ function resetStore (): void {
 
 // Local references
 const nameTranslationsUi = '#name-translations-list'
-const nameTranslationsList = [
-  'First mock name translation ltd.',
-  'Second mock name translation inc',
-  'Third mock name translation ltd.',
-  'Quatrième nom simulé'
+const nameTranslationsList: NameTranslationDraftIF[] = [
+  { value: 'First mock name translation ltd.' },
+  { value: 'Second mock name translation inc' },
+  { value: 'Third mock name translation ltd.' },
+  { value: 'Quatrième nom simulé' }
 ]
 
 describe('List Name Translation component', () => {
@@ -47,7 +48,7 @@ describe('List Name Translation component', () => {
     store.state.stateModel.nameTranslations = []
 
     wrapperFactory = (propsData) => {
-      return mount(ListNameTranslations, {
+      return mount(ListNameTranslation, {
         localVue,
         router,
         store,
@@ -58,21 +59,21 @@ describe('List Name Translation component', () => {
   })
 
   it('displays the list of name translations and action btns', async () => {
-    const wrapper = wrapperFactory({ translationsList: nameTranslationsList })
+    const wrapper = wrapperFactory({ translationList: nameTranslationsList })
     await flushPromises()
 
     // Verify list exists
     expect(wrapper.find(nameTranslationsUi).exists()).toBeTruthy()
 
     // Verify list title
-    expect(wrapper.find('.name-translation-title').text()).toContain('Name Translations:')
+    expect(wrapper.find('.name-translation-title').text()).toContain('Name Translations')
 
     // Verify list items
     const namesList = wrapper.vm.$el.querySelectorAll('.names-translation-content')
-    expect(namesList[0].textContent).toContain(nameTranslationsList[0])
-    expect(namesList[1].textContent).toContain(nameTranslationsList[1])
-    expect(namesList[2].textContent).toContain(nameTranslationsList[2])
-    expect(namesList[3].textContent).toContain(nameTranslationsList[3])
+    expect(namesList[0].textContent).toContain(nameTranslationsList[0].value)
+    expect(namesList[1].textContent).toContain(nameTranslationsList[1].value)
+    expect(namesList[2].textContent).toContain(nameTranslationsList[2].value)
+    expect(namesList[3].textContent).toContain(nameTranslationsList[3].value)
 
     // Verify edit btn and default state
     expect(wrapper.find('.edit-action .v-btn').exists()).toBeTruthy()
@@ -91,7 +92,7 @@ describe('List Name Translation component', () => {
   })
 
   it('disables the edit and drop down btns when editing a name translation', async () => {
-    const wrapper = wrapperFactory({ translationsList: nameTranslationsList, isAddingNameTranslation: true })
+    const wrapper = wrapperFactory({ translationList: nameTranslationsList, isAddingNameTranslation: true })
     await Vue.nextTick()
 
     // Verify edit btn and default state
@@ -112,14 +113,14 @@ describe('List Name Translation component', () => {
   })
 
   it('emits the correct name index when selected for edit', async () => {
-    const wrapper = wrapperFactory({ translationsList: nameTranslationsList })
+    const wrapper = wrapperFactory({ translationList: nameTranslationsList })
     await Vue.nextTick()
 
     const namesList = wrapper.vm.$el.querySelectorAll('.names-translation-content')
-    expect(namesList[0].textContent).toContain(nameTranslationsList[0])
-    expect(namesList[1].textContent).toContain(nameTranslationsList[1])
-    expect(namesList[2].textContent).toContain(nameTranslationsList[2])
-    expect(namesList[3].textContent).toContain(nameTranslationsList[3])
+    expect(namesList[0].textContent).toContain(nameTranslationsList[0].value)
+    expect(namesList[1].textContent).toContain(nameTranslationsList[1].value)
+    expect(namesList[2].textContent).toContain(nameTranslationsList[2].value)
+    expect(namesList[3].textContent).toContain(nameTranslationsList[3].value)
 
     const editBtns = wrapper.findAll('.edit-action .v-btn')
 
@@ -135,14 +136,14 @@ describe('List Name Translation component', () => {
   })
 
   it('emits the correct name index when selected for removal', async () => {
-    const wrapper = wrapperFactory({ translationsList: nameTranslationsList })
+    const wrapper = wrapperFactory({ translationList: nameTranslationsList })
     await Vue.nextTick()
 
     const namesList = wrapper.vm.$el.querySelectorAll('.names-translation-content')
-    expect(namesList[0].textContent).toContain(nameTranslationsList[0])
-    expect(namesList[1].textContent).toContain(nameTranslationsList[1])
-    expect(namesList[2].textContent).toContain(nameTranslationsList[2])
-    expect(namesList[3].textContent).toContain(nameTranslationsList[3])
+    expect(namesList[0].textContent).toContain(nameTranslationsList[0].value)
+    expect(namesList[1].textContent).toContain(nameTranslationsList[1].value)
+    expect(namesList[2].textContent).toContain(nameTranslationsList[2].value)
+    expect(namesList[3].textContent).toContain(nameTranslationsList[3].value)
 
     // Open the first list item dropdown
     const actionsDropdown = wrapper.findAll('.actions__more-actions__btn')
