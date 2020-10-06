@@ -219,7 +219,7 @@
 
               <!-- Series Undo btn -->
               <span
-                v-else-if="row.item.hasRightsOrRestrictions && !row.item.action === ActionTypes.ADDED"
+                v-else-if="row.item.hasRightsOrRestrictions && row.item.action !== ActionTypes.ADDED"
                 class="undo-action"
               >
                 <v-btn small text color="primary"
