@@ -87,12 +87,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF, IncorporationFilingIF, OrgPersonIF, RoleIF } from '@/interfaces'
 import { ActionTypes, EntityTypes, IncorporatorTypes, Modes, Roles } from '@/enums'
 import { OrgPerson, ListPeopleAndRoles } from '.'
+import { CommonMixin } from '@/mixins'
 
 @Component({
   components: {
@@ -100,7 +101,7 @@ import { OrgPerson, ListPeopleAndRoles } from '.'
     ListPeopleAndRoles
   }
 })
-export default class PeopleAndRoles extends Vue {
+export default class PeopleAndRoles extends Mixins(CommonMixin) {
   // Declarations for template
   readonly EntityTypes = EntityTypes
   readonly Roles = Roles
@@ -250,8 +251,7 @@ export default class PeopleAndRoles extends Vue {
     this.renderOrgPersonForm = false
 
     // as Vue has updated the visible sections, scroll back to the top of this component
-    const element: any = this.$el
-    Vue.nextTick(() => { window.scrollTo({ top: element.offsetTop, behavior: 'smooth' }) })
+    this.scrollToTop(this.$el)
   }
 
   /**

@@ -569,6 +569,9 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
     this.storeAddresses()
 
     this.isEditing = false
+
+    // as Vue has updated the visible sections, scroll back to the top of this component
+    this.scrollToTop(this.$el)
   }
 
   /**
@@ -579,6 +582,9 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
     this.setLocalProperties()
 
     this.isEditing = false
+
+    // as Vue has updated the visible sections, scroll back to the top of this component
+    this.scrollToTop(this.$el)
   }
 
   /**
