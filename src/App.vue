@@ -1,14 +1,6 @@
 <template>
   <v-app class="app-container" id="app">
     <!-- Dialogs -->
-    <name-request-invalid-error-dialog
-      attach="#app"
-      :dialog="nameRequestInvalidErrorDialog"
-      :type="nameRequestInvalidType"
-      @okay="nameRequestInvalidErrorDialog = false"
-      @redirect="goToDashboard(true)"
-    />
-
     <file-and-pay-invalid-name-request-dialog
       attach="#app"
       :dialog="fileAndPayInvalidNameRequestDialog"
@@ -20,12 +12,6 @@
       :dialog="accountAuthorizationDialog"
       @exit="goToDashboard(true)"
       @retry="initApp()"
-    />
-
-    <invalid-incorporation-application-dialog
-      attach="#app"
-      :dialog="invalidIncorporationApplicationDialog"
-      @exit="goToDashboard(true)"
     />
 
     <fetch-error-dialog
@@ -185,11 +171,9 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
   private filing: any
   private accountAuthorizationDialog: boolean = false
   private fetchErrorDialog: boolean = false
-  private invalidIncorporationApplicationDialog: boolean = false
   private paymentErrorDialog: boolean = false
   private bcolObj: object = null
   private saveErrorDialog: boolean = false
-  private nameRequestInvalidErrorDialog: boolean = false
   private nameRequestInvalidType: string = ''
   private nameRequestErrorDialog: boolean = false
   private nameRequestErrorType: string = ''
@@ -221,11 +205,10 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
     return (
       this.accountAuthorizationDialog ||
       this.bcolObj != null ||
-      this.nameRequestInvalidErrorDialog ||
       this.fetchErrorDialog ||
-      this.invalidIncorporationApplicationDialog ||
       this.paymentErrorDialog ||
       this.saveErrorDialog ||
+      this.nameRequestErrorDialog ||
       this.fileAndPayInvalidNameRequestDialog
     )
   }
@@ -467,12 +450,11 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
     this.appReady = false
     this.haveData = false
     this.bcolObj = null
-    this.nameRequestInvalidErrorDialog = false
-    this.invalidIncorporationApplicationDialog = false
     this.accountAuthorizationDialog = false
     this.fetchErrorDialog = false
     this.paymentErrorDialog = false
     this.saveErrorDialog = false
+    this.nameRequestErrorDialog = false
     this.fileAndPayInvalidNameRequestDialog = false
     this.saveErrors = []
     this.saveWarnings = []
