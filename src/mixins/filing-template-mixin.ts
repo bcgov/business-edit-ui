@@ -204,7 +204,7 @@ export default class FilingTemplateMixin extends Vue {
     } else {
       // If it's an object that means it's an initial draft created from filing-ui and has a structure of an IA.
       this.setNameTranslations(
-        filing.incorporationApplication.nameTranslations.new?.map(x => {
+        filing.incorporationApplication.nameTranslations?.new?.map(x => {
           return {
             value: x,
             oldValue: null,
