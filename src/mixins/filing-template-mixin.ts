@@ -41,6 +41,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getFolioNumber!: string
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getDetailComment!: string | null
+  @Getter getDefaultCorrectionDetailComment!: string
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -106,7 +107,7 @@ export default class FilingTemplateMixin extends Vue {
         correctedFilingId: this.getCorrectedFilingId,
         correctedFilingType: FilingTypes.INCORPORATION_APPLICATION,
         correctedFilingDate: this.getCurrentDate,
-        comment: this.getDetailComment
+        comment: `${this.getDefaultCorrectionDetailComment}\n${this.getDetailComment}`
       },
       incorporationApplication: {
         nameRequest: {
@@ -251,7 +252,9 @@ export default class FilingTemplateMixin extends Vue {
       certifiedBy: filing.header.certifiedBy
     })
 
-    this.setDetailComment(filing.correction.comment)
+    const comment: string = filing.correction.comment || ''
+    const detailComment = comment.split('\n').slice(1).join('\n')
+    this.setDetailComment(detailComment)
 
     // Set Folio Number
     this.setFolioNumber(filing.header.folioNumber)

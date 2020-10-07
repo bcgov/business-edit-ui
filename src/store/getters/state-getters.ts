@@ -254,8 +254,9 @@ export const isFilingValid = (state: any): boolean => {
     state.stateModel.staffPaymentStep.valid)
 }
 
-export const getOriginalIAFilingDate = (state: any): boolean => {
-  return state.stateModel.originalIA.header.date.split('T')[0]
+export const getDefaultCorrectionDetailComment = (state: any): string => {
+  const filingDate = state.stateModel.originalIA.header.date.split('T')[0]
+  return `Correction for Incorporation Application. Filed on ${filingDate}`
 }
 
 export const getDetailComment = (state: any): string => {
