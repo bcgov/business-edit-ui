@@ -10,13 +10,16 @@ import { DateMixin } from '@/mixins'
  */
 @Component({})
 export default class NameRequestMixin extends Mixins(DateMixin) {
-  /** Fetches NR and validates it against the applicants information.
-   * @param nrNumber The name request number to validate
-   * @param phone The applicants phone
-   * @param email The applicants email
-   * */
+  /**
+   * Fetches an NR and validates it against the applicant's information.
+   * Throws an error if there is a problem.
+   * @param nrNumber the name request number to validate
+   * @param phone the applicant's phone number
+   * @param email the applicant's email address
+   * @returns the name request response payload
+   */
   async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<AxiosResponse> {
-    let nrResponse = await this.fetchNameRequest(nrNumber).catch(error => {
+    const nrResponse = await this.fetchNameRequest(nrNumber).catch(error => {
       this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
       throw new Error(`Fetch Name Request error: ${error}`)
     })
@@ -33,6 +36,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
       throw new Error(`Incorrect Phone`)
     }
 
+    // ensure NR is valid
     if (!nrResponse || !this.isNrValid(nrResponse)) {
       this.$root.$emit('invalid-name-request', NameRequestStates.INVALID)
       throw new Error('Invalid Name Request')
@@ -44,6 +48,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
       this.$root.$emit('invalid-name-request', state)
       throw new Error(`Invalid Name request state: ${state}`)
     }
+
     return nrResponse
   }
 
