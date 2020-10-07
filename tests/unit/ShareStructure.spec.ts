@@ -141,12 +141,11 @@ describe('Share Structure component', () => {
       series: [
         {
           id: 1,
-          name: 'Share Series 3A',
+          name: 'Share Series 3',
           priority: 1,
           hasMaximumShares: true,
           maxNumberOfShares: 50,
-          hasRightsOrRestrictions: false,
-          actions: 'removed'
+          hasRightsOrRestrictions: false
         },
         {
           id: 2,
@@ -155,7 +154,7 @@ describe('Share Structure component', () => {
           hasMaximumShares: true,
           maxNumberOfShares: 50,
           hasRightsOrRestrictions: false,
-          actions: 'added'
+          action: 'added'
         }
       ]
     },
@@ -260,6 +259,46 @@ describe('Share Structure component', () => {
     expect(seriesListItem2.querySelectorAll('td')[4].textContent).toContain('No')
   })
 
+  it('checks for the Action chips on modified Class shares', () => {
+    expect(wrapper.find(ActionChip).exists()).toBe(true)
+
+    const classSharesEdited = wrapper.findAll(ActionChip).at(4)
+    const classSharesRemoved = wrapper.findAll(ActionChip).at(5)
+    const classSharesAdded = wrapper.findAll(ActionChip).at(6)
+
+    expect(classSharesEdited.text()).toContain('CORRECTED')
+    expect(classSharesRemoved.text()).toContain('REMOVED')
+    expect(classSharesAdded.text()).toContain('ADDED')
+  })
+
+  it('checks for the Action chips on modified Series shares', () => {
+    expect(wrapper.find(ActionChip).exists()).toBe(true)
+
+    const seriesSharesRemoved = wrapper.findAll(ActionChip).at(0)
+    const seriesSharesEdited = wrapper.findAll(ActionChip).at(1)
+    const seriesSharesAdded = wrapper.findAll(ActionChip).at(2)
+
+    expect(seriesSharesRemoved.text()).toContain('REMOVED')
+    expect(seriesSharesEdited.text()).toContain('CORRECTED')
+    expect(seriesSharesAdded.text()).toContain('ADDED')
+  })
+
+  it('checks for correct CLASS primary action', () => {
+    // Verify the correct PRIMARY action
+    const classRows = wrapper.vm.$el.querySelectorAll('.v-data-table .class-row')
+    expect(classRows[0].querySelector('#class-0-change-btn').textContent).toContain('Correct')
+    expect(classRows[3].querySelector('#class-3-undo-btn').textContent).toContain('Undo')
+    expect(classRows[4].querySelector('#class-4-change-added-btn').textContent).toContain('Edit')
+  })
+
+  it('checks for correct SERIES primary action', () => {
+    // Verify the correct PRIMARY action
+    const seriesRows = wrapper.vm.$el.querySelectorAll('.v-data-table .series-row')
+    expect(seriesRows[0].querySelector('#series-0-undo-btn').textContent).toContain('Undo')
+    expect(seriesRows[2].querySelector('#series-2-change-added-btn').textContent).toContain('Edit')
+    expect(seriesRows[3].querySelector('#series-0-change-btn').textContent).toContain('Correct')
+  })
+
   it('assigns the correct data for ShareClasses after moving an item', async () => {
     // Validate the Class values pre move
     expect(wrapper.vm.getShareClasses[0].name).toBe('Common Shares')
@@ -284,30 +323,6 @@ describe('Share Structure component', () => {
     expect(wrapper.vm.getShareClasses[1].name).toBe('Common Shares')
 
     // Validate series data post move
-    expect(wrapper.vm.getShareClasses[0].series[0].name).toBe('Share Series 3A')
-  })
-
-  it('checks for the Action chips on modified Class shares', async () => {
-    expect(wrapper.find(ActionChip).exists()).toBe(true)
-
-    const classSharesEdited = wrapper.findAll(ActionChip).at(3)
-    const classSharesRemoved = wrapper.findAll(ActionChip).at(4)
-    const classSharesAdded = wrapper.findAll(ActionChip).at(5)
-
-    expect(classSharesEdited.text()).toContain('CORRECTED')
-    expect(classSharesRemoved.text()).toContain('REMOVED')
-    expect(classSharesAdded.text()).toContain('ADDED')
-  })
-
-  it('checks for the Action chips on modified Series shares', async () => {
-    expect(wrapper.find(ActionChip).exists()).toBe(true)
-
-    const seriesSharesRemoved = wrapper.findAll(ActionChip).at(0)
-    const seriesSharesEdited = wrapper.findAll(ActionChip).at(1)
-    const seriesSharesAdded = wrapper.findAll(ActionChip).at(2)
-
-    expect(seriesSharesRemoved.text()).toContain('REMOVED')
-    expect(seriesSharesEdited.text()).toContain('CORRECTED')
-    expect(seriesSharesAdded.text()).toContain('ADDED')
+    expect(wrapper.vm.getShareClasses[0].series[0].name).toBe('Share Series 3')
   })
 })
