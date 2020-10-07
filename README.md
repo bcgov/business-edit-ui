@@ -1,5 +1,7 @@
 # Registry application that is used to correct a business (Incorporation Application).
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](../LICENSE)
+[![codecov](https://codecov.io/gh/bcgov/business-edit-ui/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/business-edit-ui)
 ![PR CI](https://github.com/bcgov/bcrs-business-correct-ui/workflows/PR%20CI/badge.svg)
 ![Build CI](https://github.com/bcgov/bcrs-business-correct-ui/workflows/Build%20CI/badge.svg)
 
@@ -58,7 +60,7 @@ To report bugs/issues/feature requests, please file an [issue](https://github.co
 
 If you would like to contribute, please see our [CONTRIBUTING](CONTRIBUTING.md) guidelines.
 
-Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). 
+Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md).
 By participating in this project you agree to abide by its terms.
 
 ## Issues/Suggestions
@@ -80,4 +82,4 @@ Issues are [markdown supported](https://guides.github.com/features/mastering-mar
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-    
+
