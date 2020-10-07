@@ -252,6 +252,7 @@ export default class FilingTemplateMixin extends Vue {
       certifiedBy: filing.header.certifiedBy
     })
 
+    // load Detail Comment, removing the first line (default comment)
     const comment: string = filing.correction.comment || ''
     const detailComment = comment.split('\n').slice(1).join('\n')
     this.setDetailComment(detailComment)

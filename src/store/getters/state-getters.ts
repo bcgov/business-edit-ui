@@ -255,7 +255,7 @@ export const isFilingValid = (state: any): boolean => {
 }
 
 export const getDefaultCorrectionDetailComment = (state: any): string => {
-  const filingDate = state.stateModel.originalIA.header.date.split('T')[0]
+  const filingDate = state.stateModel.originalIA.header.date.split('T')[0] || ''
   return `Correction for Incorporation Application. Filed on ${filingDate}`
 }
 
