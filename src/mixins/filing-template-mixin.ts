@@ -169,19 +169,16 @@ export default class FilingTemplateMixin extends Vue {
   prepareNameTranslations () : NameTranslationIF {
     const translations = this.stateModel.nameTranslations as NameTranslationDraftIF[]
     return {
-      new: translations
-        .filter(x => x.action === ActionTypes.ADDED)
+      new: translations?.filter(x => x.action === ActionTypes.ADDED)
         .map(x => x.value),
-      modified: translations
-        .filter(x => x.action === ActionTypes.EDITED)
+      modified: translations?.filter(x => x.action === ActionTypes.EDITED)
         .map(x => {
           return {
             newValue: x.value,
             oldValue: x.oldValue
           }
         }),
-      ceased: translations
-        .filter(x => x.action === ActionTypes.REMOVED)
+      ceased: translations?.filter(x => x.action === ActionTypes.REMOVED)
         .map(x => x.value)
     } as NameTranslationIF
   }
@@ -204,7 +201,7 @@ export default class FilingTemplateMixin extends Vue {
     } else {
       // If it's an object that means it's an initial draft created from filing-ui and has a structure of an IA.
       this.setNameTranslations(
-        filing.incorporationApplication.nameTranslations.new?.map(x => {
+        filing.incorporationApplication.nameTranslations?.new?.map(x => {
           return {
             value: x,
             oldValue: null,
