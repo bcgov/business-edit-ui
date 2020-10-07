@@ -167,7 +167,6 @@
           <td colspan="6">
             <div class="edit-share-structure-container">
               <edit-share-structure
-                v-show="showClassEditForm"
                 :initialValue="currentShareStructure"
                 :activeIndex="activeIndex"
                 :nextId="nextId"
@@ -219,7 +218,7 @@
 
               <!-- Series Undo btn -->
               <span
-                v-else-if="row.item.hasRightsOrRestrictions && row.item.action !== ActionTypes.ADDED"
+                v-else-if="row.item.hasRightsOrRestrictions && seriesItem.action !== ActionTypes.ADDED"
                 class="undo-action"
               >
                 <v-btn small text color="primary"
@@ -297,7 +296,6 @@
           <td colspan="6">
             <div class="edit-share-structure-container">
               <edit-share-structure
-                v-show="showSeriesEditForm"
                 :initialValue="currentShareStructure"
                 :activeIndex="activeIndex"
                 :nextId="nextId"
