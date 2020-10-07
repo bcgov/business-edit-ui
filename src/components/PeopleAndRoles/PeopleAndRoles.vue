@@ -248,6 +248,10 @@ export default class PeopleAndRoles extends Vue {
     this.currentOrgPerson = null
     this.activeIndex = NaN
     this.renderOrgPersonForm = false
+
+    // as Vue has updated the visible sections, scroll back to the top of this component
+    const element: any = this.$el
+    Vue.nextTick(() => { window.scrollTo({ top: element.offsetTop, behavior: 'smooth' }) })
   }
 
   /**
