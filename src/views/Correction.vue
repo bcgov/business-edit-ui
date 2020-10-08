@@ -4,19 +4,19 @@
       <h1>Correction - Incorporation Application</h1>
     </header>
 
-    <div class="original-filing-date mt-6">
+    <section id="original-filing-date" class="mt-6">
       <p>
-        <span class="original-filing-date-label">Original Filing Date:</span>
+        <span id="original-filing-date-label">Original Filing Date:</span>
         {{ filingDateLocal }}
       </p>
-    </div>
+    </section>
 
-    <div class="benefit-company-statement mt-6" v-if="isTypeBcomp">
+    <section id="benefit-company-statement" class="mt-6" v-if="isTypeBcomp">
       <p>
-        <span class="benefit-company-statement-label">{{ BenefitCompanyStatementResource.title }}:</span>
+        <span id="benefit-company-statement-label">{{ BenefitCompanyStatementResource.title }}:</span>
         {{ BenefitCompanyStatementResource.description }}
       </p>
-    </div>
+    </section>
 
     <your-company class="mt-10" />
 
@@ -198,8 +198,8 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
 </script>
 
 <style lang="scss" scoped>
-.original-filing-date-label,
-.benefit-company-statement-label {
+#original-filing-date-label,
+#benefit-company-statement-label {
   letter-spacing: -0.04rem;
   font-weight: 700;
 }

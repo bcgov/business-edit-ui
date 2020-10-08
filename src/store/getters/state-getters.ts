@@ -2,7 +2,7 @@
 import { AccountTypes, EntityTypes } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
-  NameRequestIF, BusinessContactIF
+  NameRequestIF, BusinessContactIF, NameTranslationDraftIF
 } from '@/interfaces'
 
 /** Whether the user has "staff" keycloak role. */
@@ -161,7 +161,7 @@ export const getNameRequestApplicant = (state: any): NameRequestApplicantIF => {
 }
 
 /** The name translations. */
-export const getNameTranslations = (state: any): Array<string> => {
+export const getNameTranslations = (state: any): NameTranslationDraftIF[] => {
   return state.stateModel.nameTranslations
 }
 
@@ -254,8 +254,9 @@ export const isFilingValid = (state: any): boolean => {
     state.stateModel.staffPaymentStep.valid)
 }
 
-export const getOriginalIAFilingDate = (state: any): boolean => {
-  return state.stateModel.originalIA.header.date.split('T')[0]
+export const getDefaultCorrectionDetailComment = (state: any): string => {
+  const filingDate = state.stateModel.originalIA.header.date.split('T')[0] || ''
+  return `Correction for Incorporation Application. Filed on ${filingDate}`
 }
 
 export const getDetailComment = (state: any): string => {

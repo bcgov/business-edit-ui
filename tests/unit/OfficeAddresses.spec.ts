@@ -1,16 +1,10 @@
-// Libraries
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-
-// Store
 import { getVuexStore } from '@/store'
-
-// Utils
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils'
-
-// Components
+import { mount } from '@vue/test-utils'
 import { OfficeAddresses } from '@/components/YourCompany'
+import { AddressIF, IncorporationAddressIf } from '@/interfaces'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -18,538 +12,1126 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
-describe('Office Addresses component - COOP', () => {
-  let wrapper: any
+/**
+ * Returns a customized Address object (except for country
+ * and region, so we get meaningful display strings).
+ * @param x the number to append to each property
+ */
+function getAddressX (x: number): AddressIF {
+  return {
+    addressCity: `addressCity${x}`,
+    addressCountry: 'CA',
+    addressRegion: 'BC',
+    deliveryInstructions: `deliveryInstructions${x}`,
+    postalCode: `postalCode${x}`,
+    streetAddress: `streetAddress${x}`,
+    streetAddressAdditional: `streetAddressAdditional${x}`
+  } as AddressIF
+}
 
-  const registeredOffice = {
+/**
+ * Returns a customized Incorporation Address object.
+ * @param a1 the number to customize the 1st address (registered-mailing)
+ * @param a2 the number to customize the 2nd address (registered-delivery)
+ * @param a3 the number to customize the 3rd address (records-mailing)
+ * @param a4 the number to customize the 4th address (records-delivery)
+ */
+function getIncorporationAddress (a1: number, a2: number, a3: number, a4: number): IncorporationAddressIf {
+  return {
     registeredOffice: {
-      deliveryAddress: {
-        addressCity: 'someCity',
-        addressCountry: 'someCountry',
-        addressRegion: 'someRegion',
-        postalCode: 'somePostalCode',
-        streetAddress: 'someStreet'
-      },
-      mailingAddress: {
-        addressCity: 'someCity',
-        addressCountry: 'someCountry',
-        addressRegion: 'someRegion',
-        postalCode: 'somePostalCode',
-        streetAddress: 'someStreet'
-      }
+      mailingAddress: getAddressX(a1),
+      deliveryAddress: getAddressX(a2)
+    },
+    recordsOffice: {
+      mailingAddress: getAddressX(a3),
+      deliveryAddress: getAddressX(a4)
     }
   }
+}
 
-  beforeEach(() => {
-    const localVue = createLocalVue()
-    wrapper = shallowMount(OfficeAddresses, {
-      propsData: {
-        inputAddresses: registeredOffice,
-        isEditing: true
-      },
-      localVue,
-      store,
-      vuetify
-    })
+describe('summary mode', () => {
+  beforeAll(() => {
+    // init entity type
+    store.state.stateModel.tombstone.entityType = 'BEN'
+  })
+
+  it('displays the correct sections', () => {
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    expect(wrapper.find('#summary-registered-address').exists()).toBe(true)
+    expect(wrapper.find('#summary-records-address').exists()).toBe(true)
+    expect(wrapper.find('#edit-registered-address').exists()).toBe(false)
+    expect(wrapper.find('#edit-records-address').exists()).toBe(false)
+    expect(wrapper.find('.action-btns').exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('displays the registered office row - not same as mailing address', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    await Vue.nextTick()
+
+    const cols = wrapper.findAll('#summary-registered-address .flex')
+
+    // verify header
+    {
+      const label = cols.at(0).find('label')
+      expect(label.text()).toBe('Registered Office')
+    }
+
+    // verify mailing address
+    {
+      const mailingAddress = cols.at(1)
+      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
+      expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
+
+      const rows = mailingAddress.findAll('.address-block__info-row')
+      expect(rows.at(0).text()).toBe('streetAddress1')
+      expect(rows.at(1).text()).toBe('streetAddressAdditional1')
+      expect(rows.at(2).text()).toContain('addressCity1')
+      expect(rows.at(2).text()).toContain('BC')
+      expect(rows.at(2).text()).toContain('postalCode1')
+      expect(rows.at(3).text()).toBe('Canada')
+      expect(rows.at(4).text()).toBe('deliveryInstructions1')
+    }
+
+    // verify delivery address
+    {
+      const deliveryAddress = cols.at(2)
+      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
+      expect(deliveryAddress.find('label > .v-chip').exists()).toBe(false)
+
+      const rows = deliveryAddress.findAll('.address-block__info-row')
+      expect(rows.at(0).text()).toBe('streetAddress2')
+      expect(rows.at(1).text()).toBe('streetAddressAdditional2')
+      expect(rows.at(2).text()).toContain('addressCity2')
+      expect(rows.at(2).text()).toContain('BC')
+      expect(rows.at(2).text()).toContain('postalCode2')
+      expect(rows.at(3).text()).toBe('Canada')
+      expect(rows.at(4).text()).toBe('deliveryInstructions2')
+    }
+
+    // verify actions
+    {
+      const actions = cols.at(3)
+      const correctBtn = actions.find('.actions #btn-correct-office-addresses')
+      expect(correctBtn.find('span').text()).toBe('Correct')
+    }
+
+    wrapper.destroy()
+  })
+
+  it('displays the registered office row - same as mailing address', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
+    await Vue.nextTick()
+
+    const cols = wrapper.findAll('#summary-registered-address .flex')
+
+    // verify header
+    {
+      const label = cols.at(0).find('label')
+      expect(label.text()).toBe('Registered Office')
+    }
+
+    // verify mailing address
+    {
+      const mailingAddress = cols.at(1)
+      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
+      expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
+
+      const rows = mailingAddress.findAll('.address-block__info-row')
+      expect(rows.at(0).text()).toBe('streetAddress1')
+      expect(rows.at(1).text()).toBe('streetAddressAdditional1')
+      expect(rows.at(2).text()).toContain('addressCity1')
+      expect(rows.at(2).text()).toContain('BC')
+      expect(rows.at(2).text()).toContain('postalCode1')
+      expect(rows.at(3).text()).toBe('Canada')
+      expect(rows.at(4).text()).toBe('deliveryInstructions1')
+    }
+
+    // verify delivery address
+    {
+      const deliveryAddress = cols.at(2)
+      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
+      expect(deliveryAddress.find('label > .v-chip').exists()).toBe(false)
+      expect(deliveryAddress.find('label + div').text()).toBe('Same as Mailing Address')
+    }
+
+    // verify actions
+    {
+      const actions = cols.at(3)
+      const correctBtn = actions.find('.actions #btn-correct-office-addresses')
+      expect(correctBtn.find('span').text()).toBe('Correct')
+    }
+
+    wrapper.destroy()
+  })
+
+  it('displays the registered office row - changed addresses', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(4, 3, 2, 1))
+    await Vue.nextTick()
+
+    const cols = wrapper.findAll('#summary-registered-address .flex')
+
+    // verify header
+    {
+      const label = cols.at(0).find('label')
+      expect(label.text()).toBe('Registered Office')
+    }
+
+    // verify mailing address
+    {
+      const mailingAddress = cols.at(1)
+      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
+      expect(mailingAddress.find('label > .v-chip span').text()).toBe('CORRECTED')
+
+      const rows = mailingAddress.findAll('.address-block__info-row')
+      expect(rows.at(0).text()).toBe('streetAddress4')
+      expect(rows.at(1).text()).toBe('streetAddressAdditional4')
+      expect(rows.at(2).text()).toContain('addressCity4')
+      expect(rows.at(2).text()).toContain('BC')
+      expect(rows.at(2).text()).toContain('postalCode4')
+      expect(rows.at(3).text()).toBe('Canada')
+      expect(rows.at(4).text()).toBe('deliveryInstructions4')
+    }
+
+    // verify delivery address
+    {
+      const deliveryAddress = cols.at(2)
+      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
+      expect(deliveryAddress.find('label > .v-chip span').text()).toBe('CORRECTED')
+
+      const rows = deliveryAddress.findAll('.address-block__info-row')
+      expect(rows.at(0).text()).toBe('streetAddress3')
+      expect(rows.at(1).text()).toBe('streetAddressAdditional3')
+      expect(rows.at(2).text()).toContain('addressCity3')
+      expect(rows.at(2).text()).toContain('BC')
+      expect(rows.at(2).text()).toContain('postalCode3')
+      expect(rows.at(3).text()).toBe('Canada')
+      expect(rows.at(4).text()).toBe('deliveryInstructions3')
+    }
+
+    // verify actions
+    {
+      const actions = cols.at(3)
+
+      const undoBtn = actions.find('.actions .edit-action #btn-undo-office-addresses')
+      expect(undoBtn.find('span').text()).toBe('Undo')
+
+      const moreBtn = actions.find('.actions .more-actions #btn-more-actions span')
+      expect(moreBtn.find('span').exists()).toBe(true)
+      moreBtn.trigger('click')
+      await Vue.nextTick()
+      const correctBtn = actions.find('.actions .more-actions #btn-more-actions-edit')
+      expect(correctBtn.find('span').text()).toBe('Correct')
+    }
+
+    wrapper.destroy()
+  })
+
+  it('displays the records office row - not same as registered office', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    await Vue.nextTick()
+
+    const cols = wrapper.findAll('#summary-records-address .flex')
+
+    // verify header
+    {
+      const label = cols.at(0).find('label')
+      expect(label.text()).toBe('Records Office')
+    }
+
+    // verify mailing address
+    {
+      const mailingAddress = cols.at(1)
+      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
+      expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
+
+      const rows = mailingAddress.findAll('.address-block__info-row')
+      expect(rows.at(0).text()).toBe('streetAddress3')
+      expect(rows.at(1).text()).toBe('streetAddressAdditional3')
+      expect(rows.at(2).text()).toContain('addressCity3')
+      expect(rows.at(2).text()).toContain('BC')
+      expect(rows.at(2).text()).toContain('postalCode3')
+      expect(rows.at(3).text()).toBe('Canada')
+      expect(rows.at(4).text()).toBe('deliveryInstructions3')
+    }
+
+    // verify delivery address
+    {
+      const deliveryAddress = cols.at(2)
+      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
+      expect(deliveryAddress.find('label > .v-chip').exists()).toBe(false)
+
+      const rows = deliveryAddress.findAll('.address-block__info-row')
+      expect(rows.at(0).text()).toBe('streetAddress4')
+      expect(rows.at(1).text()).toBe('streetAddressAdditional4')
+      expect(rows.at(2).text()).toContain('addressCity4')
+      expect(rows.at(2).text()).toContain('BC')
+      expect(rows.at(2).text()).toContain('postalCode4')
+      expect(rows.at(3).text()).toBe('Canada')
+      expect(rows.at(4).text()).toBe('deliveryInstructions4')
+    }
+
+    wrapper.destroy()
+  })
+
+  it('displays the records office row - same as registered office', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
+    await Vue.nextTick()
+
+    const cols = wrapper.findAll('#summary-records-address .flex')
+
+    // verify header
+    {
+      const label = cols.at(0).find('label')
+      expect(label.text()).toBe('Records Office')
+    }
+
+    // verify mailing address
+    {
+      const mailingAddress = cols.at(1)
+      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
+      expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
+      expect(mailingAddress.find('label + div').text()).toBe('Same as Registered Office')
+    }
+
+    // verify delivery address
+    {
+      const deliveryAddress = cols.at(2)
+      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
+      expect(deliveryAddress.find('label > .v-chip').exists()).toBe(false)
+      expect(deliveryAddress.find('label + div').text()).toBe('Same as Registered Office')
+    }
+
+    wrapper.destroy()
+  })
+
+  it('displays the records office row - same as mailing address', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 3, 3)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
+    await Vue.nextTick()
+
+    const cols = wrapper.findAll('#summary-records-address .flex')
+
+    // verify header
+    {
+      const label = cols.at(0).find('label')
+      expect(label.text()).toBe('Records Office')
+    }
+
+    // verify mailing address
+    {
+      const mailingAddress = cols.at(1)
+      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
+      expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
+
+      const rows = mailingAddress.findAll('.address-block__info-row')
+      expect(rows.at(0).text()).toBe('streetAddress3')
+      expect(rows.at(1).text()).toBe('streetAddressAdditional3')
+      expect(rows.at(2).text()).toContain('addressCity3')
+      expect(rows.at(2).text()).toContain('BC')
+      expect(rows.at(2).text()).toContain('postalCode3')
+      expect(rows.at(3).text()).toBe('Canada')
+      expect(rows.at(4).text()).toBe('deliveryInstructions3')
+    }
+
+    // verify delivery address
+    {
+      const deliveryAddress = cols.at(2)
+      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
+      expect(deliveryAddress.find('label > .v-chip').exists()).toBe(false)
+      expect(deliveryAddress.find('label + div').text()).toBe('Same as Mailing Address')
+    }
+
+    wrapper.destroy()
+  })
+
+  it('displays the records office row - changed addresses', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(4, 3, 2, 1))
+    await Vue.nextTick()
+
+    const cols = wrapper.findAll('#summary-records-address .flex')
+
+    // verify header
+    {
+      const label = cols.at(0).find('label')
+      expect(label.text()).toBe('Records Office')
+    }
+
+    // verify mailing address
+    {
+      const mailingAddress = cols.at(1)
+      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
+      expect(mailingAddress.find('label > .v-chip span').text()).toBe('CORRECTED')
+
+      const rows = mailingAddress.findAll('.address-block__info-row')
+      expect(rows.at(0).text()).toBe('streetAddress2')
+      expect(rows.at(1).text()).toBe('streetAddressAdditional2')
+      expect(rows.at(2).text()).toContain('addressCity2')
+      expect(rows.at(2).text()).toContain('BC')
+      expect(rows.at(2).text()).toContain('postalCode2')
+      expect(rows.at(3).text()).toBe('Canada')
+      expect(rows.at(4).text()).toBe('deliveryInstructions2')
+    }
+
+    // verify delivery address
+    {
+      const deliveryAddress = cols.at(2)
+      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
+      expect(deliveryAddress.find('label > .v-chip span').text()).toBe('CORRECTED')
+
+      const rows = deliveryAddress.findAll('.address-block__info-row')
+      expect(rows.at(0).text()).toBe('streetAddress1')
+      expect(rows.at(1).text()).toBe('streetAddressAdditional1')
+      expect(rows.at(2).text()).toContain('addressCity1')
+      expect(rows.at(2).text()).toContain('BC')
+      expect(rows.at(2).text()).toContain('postalCode1')
+      expect(rows.at(3).text()).toBe('Canada')
+      expect(rows.at(4).text()).toBe('deliveryInstructions1')
+    }
+
+    wrapper.destroy()
+  })
+})
+
+describe('edit mode', () => {
+  beforeAll(() => {
+    // init entity type
+    store.state.stateModel.tombstone.entityType = 'BEN'
+  })
+
+  it('displays the correct sections', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    await Vue.nextTick()
+
+    // change to edit mode
+    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
+    correctBtn.trigger('click')
+    await Vue.nextTick()
+
+    expect(wrapper.find('#summary-registered-address').exists()).toBe(false)
+    expect(wrapper.find('#summary-records-address').exists()).toBe(false)
+    expect(wrapper.find('#edit-registered-address').exists()).toBe(true)
+    expect(wrapper.find('#edit-records-address').exists()).toBe(true)
+    expect(wrapper.find('.action-btns').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('displays the registered office mailing address', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    await Vue.nextTick()
+
+    // change to edit mode
+    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
+    correctBtn.trigger('click')
+    await Vue.nextTick()
+
+    const editRegisteredAddress = wrapper.find('#edit-registered-address')
+
+    // verify header
+    {
+      const header = editRegisteredAddress.find('.address-edit-header .address-edit-title')
+      expect(header.text()).toBe('Registered Office')
+    }
+
+    // verify mailing address
+    {
+      const block = editRegisteredAddress.findAll('li').at(0)
+      expect(block.find('label').text()).toBe('Mailing Address')
+
+      const address = block.find('#address-registered-mailing')
+      expect(address.find('.v-input.street-address').props('value')).toBe('streetAddress1')
+      expect(address.find('.v-input.street-address-additional').props('value')).toBe('streetAddressAdditional1')
+      expect(address.find('.v-input.address-city').props('value')).toBe('addressCity1')
+      expect(address.find('.v-input.address-region').props('value')).toBe('BC')
+      expect(address.find('.v-input.postal-code').props('value')).toBe('postalCode1')
+      expect(address.find('.v-input.address-country').props('value')).toBe('CA')
+      expect(address.find('.v-input.delivery-instructions').props('value')).toBe('deliveryInstructions1')
+    }
+
+    wrapper.destroy()
+  })
+
+  it('displays the registered office delivery address - not same as mailing address', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    await Vue.nextTick()
+
+    // change to edit mode
+    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
+    correctBtn.trigger('click')
+    await Vue.nextTick()
+
+    const editRegisteredAddress = wrapper.find('#edit-registered-address')
+
+    // verify header
+    {
+      const header = editRegisteredAddress.find('.address-edit-header .address-edit-title')
+      expect(header.text()).toBe('Registered Office')
+    }
+
+    // verify delivery address
+    {
+      const block = editRegisteredAddress.findAll('li').at(1)
+      expect(block.find('label').text()).toBe('Delivery Address')
+      expect(block.find('.inherit-checkbox').props('inputValue')).toBe(false)
+
+      const address = block.find('#address-registered-delivery')
+      expect(address.find('.v-input.street-address').props('value')).toBe('streetAddress2')
+      expect(address.find('.v-input.street-address-additional').props('value')).toBe('streetAddressAdditional2')
+      expect(address.find('.v-input.address-city').props('value')).toBe('addressCity2')
+      expect(address.find('.v-input.address-region').props('value')).toBe('BC')
+      expect(address.find('.v-input.postal-code').props('value')).toBe('postalCode2')
+      expect(address.find('.v-input.address-country').props('value')).toBe('CA')
+      expect(address.find('.v-input.delivery-instructions').props('value')).toBe('deliveryInstructions2')
+    }
+
+    wrapper.destroy()
+  })
+
+  it('displays the registered office delivery address - same as mailing address', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 3, 3)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
+    await Vue.nextTick()
+
+    // change to edit mode
+    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
+    correctBtn.trigger('click')
+    await Vue.nextTick()
+
+    const editRegisteredAddress = wrapper.find('#edit-registered-address')
+
+    // verify header
+    {
+      const header = editRegisteredAddress.find('.address-edit-header .address-edit-title')
+      expect(header.text()).toBe('Registered Office')
+    }
+
+    // verify delivery address
+    {
+      const block = editRegisteredAddress.findAll('li').at(1)
+      expect(block.find('label').text()).toBe('Delivery Address')
+      expect(block.find('.inherit-checkbox').props('inputValue')).toBe(true)
+      expect(block.find('#address-registered-delivery').exists()).toBe(false)
+    }
+
+    wrapper.destroy()
+  })
+
+  it('displays the records office mailing - not same as registered office', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    await Vue.nextTick()
+
+    // change to edit mode
+    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
+    correctBtn.trigger('click')
+    await Vue.nextTick()
+
+    const editRecordsAddress = wrapper.find('#edit-records-address')
+    expect(editRecordsAddress.find('.records-inherit-checkbox').props('inputValue')).toBe(false)
+
+    // verify header
+    {
+      const header = editRecordsAddress.find('.address-edit-header .address-edit-title')
+      expect(header.text()).toBe('Records Office')
+    }
+
+    // verify mailing address
+    {
+      const block = editRecordsAddress.findAll('li').at(0)
+      expect(block.find('label').text()).toBe('Mailing Address')
+
+      const address = block.find('#address-records-mailing')
+      expect(address.find('.v-input.street-address').props('value')).toBe('streetAddress3')
+      expect(address.find('.v-input.street-address-additional').props('value')).toBe('streetAddressAdditional3')
+      expect(address.find('.v-input.address-city').props('value')).toBe('addressCity3')
+      expect(address.find('.v-input.address-region').props('value')).toBe('BC')
+      expect(address.find('.v-input.postal-code').props('value')).toBe('postalCode3')
+      expect(address.find('.v-input.address-country').props('value')).toBe('CA')
+      expect(address.find('.v-input.delivery-instructions').props('value')).toBe('deliveryInstructions3')
+    }
+
+    wrapper.destroy()
+  })
+
+  it('displays the records office mailing address - same as registered office', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
+    await Vue.nextTick()
+
+    // change to edit mode
+    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
+    correctBtn.trigger('click')
+    await Vue.nextTick()
+
+    const editRecordsAddress = wrapper.find('#edit-records-address')
+    expect(editRecordsAddress.find('.records-inherit-checkbox').props('inputValue')).toBe(true)
+
+    // verify header
+    {
+      const header = editRecordsAddress.find('.address-edit-header .address-edit-title')
+      expect(header.text()).toBe('Records Office')
+    }
+
+    // verify mailing address
+    {
+      const blocks = editRecordsAddress.findAll('li')
+      expect(blocks.length).toBe(0)
+    }
+
+    wrapper.destroy()
+  })
+
+  it('displays the records office delivery address - not same same as mailing address', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    await Vue.nextTick()
+
+    // change to edit mode
+    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
+    correctBtn.trigger('click')
+    await Vue.nextTick()
+
+    const editRecordsAddress = wrapper.find('#edit-records-address')
+
+    // verify header
+    {
+      const header = editRecordsAddress.find('.address-edit-header .address-edit-title')
+      expect(header.text()).toBe('Records Office')
+    }
+
+    // verify delivery address
+    {
+      const block = editRecordsAddress.findAll('li').at(1)
+      expect(block.find('label').text()).toBe('Delivery Address')
+      expect(block.find('.inherit-checkbox').props('inputValue')).toBe(false)
+
+      const address = block.find('#address-records-delivery')
+      expect(address.find('.v-input.street-address').props('value')).toBe('streetAddress4')
+      expect(address.find('.v-input.street-address-additional').props('value')).toBe('streetAddressAdditional4')
+      expect(address.find('.v-input.address-city').props('value')).toBe('addressCity4')
+      expect(address.find('.v-input.address-region').props('value')).toBe('BC')
+      expect(address.find('.v-input.postal-code').props('value')).toBe('postalCode4')
+      expect(address.find('.v-input.address-country').props('value')).toBe('CA')
+      expect(address.find('.v-input.delivery-instructions').props('value')).toBe('deliveryInstructions4')
+    }
+
+    wrapper.destroy()
+  })
+
+  it('displays the records office delivery address - same as mailing address', async () => {
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 3, 3)
+
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
+    await Vue.nextTick()
+
+    // change to edit mode
+    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
+    correctBtn.trigger('click')
+    await Vue.nextTick()
+
+    const editRecordsAddress = wrapper.find('#edit-records-address')
+
+    // verify header
+    {
+      const header = editRecordsAddress.find('.address-edit-header .address-edit-title')
+      expect(header.text()).toBe('Records Office')
+    }
+
+    // verify delivery address
+    {
+      const block = editRecordsAddress.findAll('li').at(1)
+      expect(block.find('label').text()).toBe('Delivery Address')
+      expect(block.find('.inherit-checkbox').props('inputValue')).toBe(true)
+      expect(block.find('#address-records-delivery').exists()).toBe(false)
+    }
+
+    wrapper.destroy()
+  })
+})
+
+describe('"same as" checkboxes', () => {
+  let wrapper: any = null
+
+  beforeAll(() => {
+    // init entity type
+    store.state.stateModel.tombstone.entityType = 'BEN'
+
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
+  })
+
+  beforeEach(async () => {
+    wrapper = mount(OfficeAddresses, { store, vuetify })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
+    await Vue.nextTick()
+
+    // change to edit mode
+    const correctBtn = wrapper.find('#btn-correct-office-addresses')
+    correctBtn.trigger('click')
+    await Vue.nextTick()
   })
 
   afterEach(() => {
     wrapper.destroy()
   })
 
-  beforeAll(() => {
-    // init store
-    store.state.stateModel.tombstone.entityType = 'CP'
-  })
+  it('toggles registered delivery address same as registered mailing address', async () => {
+    // verify initial mailing and delivery address data
+    expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity1')
+    expect(wrapper.vm.$data.deliveryAddress.addressCity).toBe('addressCity1')
 
-  xit('does not show the summary ui when editing', () => {
-    expect(wrapper.vm.$el.querySelector('#summary-registered-address')).toBeNull()
-    expect(wrapper.vm.$el.querySelector('#summary-records-address')).toBeNull()
-  })
-
-  it('displays the ui for registered mailing and NOT delivery address when new filing', () => {
-    expect(wrapper.vm.$el.querySelector('#address-registered-mailing')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-registered-delivery')).toBeNull()
-  })
-
-  xit('displays the ui for delivery address when the `same as mailing` checkbox is unchecked', () => {
-    // Verify no ui for registered delivery address
-    expect(wrapper.vm.$el.querySelector('#address-registered-delivery')).toBeNull()
-
-    // un-Check the 'same as mailing' checkbox ( Default is checked )
+    // verify that checkbox is checked and that address doesn't exist
     const checkbox = wrapper.find('#registered-mailing-same-chkbx')
+    expect(checkbox.attributes('aria-checked')).toBe('true')
+    let address = wrapper.find('#address-registered-delivery')
+    expect(address.exists()).toBe(false)
+
+    // uncheck and verify the checkbox
     checkbox.trigger('click')
+    await Vue.nextTick()
+    expect(checkbox.attributes('aria-checked')).toBe('false')
 
-    expect(wrapper.vm.$el.querySelector('#address-registered-mailing')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-registered-delivery')).toBeDefined()
+    // verify the address data and elements
+    expect(wrapper.vm.$data.deliveryAddress.addressCity).toBe('')
+    // NB: since the address didn't exist previously, we need to find it again
+    address = wrapper.find('#address-registered-delivery')
+    expect(address.exists()).toBe(true)
+    expect(address.find('.v-input.street-address').props('value')).toBe('')
+    expect(address.find('.v-input.street-address-additional').props('value')).toBe('')
+    expect(address.find('.v-input.address-city').props('value')).toBe('')
+    expect(address.find('.v-input.address-region').props('value')).toBe('BC')
+    expect(address.find('.v-input.postal-code').props('value')).toBe('')
+    expect(address.find('.v-input.address-country').props('value')).toBe('CA')
+    expect(address.find('.v-input.delivery-instructions').props('value')).toBe('')
+
+    // re-check and verify the checkbox
+    checkbox.trigger('click')
+    await Vue.nextTick()
+    expect(checkbox.attributes('aria-checked')).toBe('true')
+
+    // verify the address data and elements
+    expect(wrapper.vm.$data.deliveryAddress.addressCity).toBe('addressCity1')
+    // NB: since the address existed previously, we need to find it again
+    address = wrapper.find('#address-registered-delivery')
+    expect(address.exists()).toBe(false)
   })
 
-  xit('loads the current office addresses properly from a draft filing', () => {
-    const deliveryAddress = wrapper.vm.addresses.registeredOffice.deliveryAddress
-    expect(deliveryAddress['streetAddress']).toEqual('someStreet')
-    expect(deliveryAddress['addressCity']).toEqual('someCity')
-    expect(deliveryAddress['addressRegion']).toEqual('someRegion')
-    expect(deliveryAddress['postalCode']).toEqual('somePostalCode')
-    expect(deliveryAddress['addressCountry']).toEqual('someCountry')
+  it('toggles records mailing address same as registered mailing address', async () => {
+    // verify initial registered mailing and records mailing address data
+    expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity1')
+    expect(wrapper.vm.$data.recMailingAddress.addressCity).toBe('addressCity1')
 
-    const mailingAddress = wrapper.vm.addresses.registeredOffice.mailingAddress
-    expect(mailingAddress['streetAddress']).toEqual('someStreet')
-    expect(mailingAddress['addressCity']).toEqual('someCity')
-    expect(mailingAddress['addressRegion']).toEqual('someRegion')
-    expect(mailingAddress['postalCode']).toEqual('somePostalCode')
-    expect(mailingAddress['addressCountry']).toEqual('someCountry')
+    // verify that checkbox is checked and that address doesn't exist
+    const checkbox = wrapper.find('#records-mailing-same-chkbx')
+    expect(checkbox.attributes('aria-checked')).toBe('true')
+    let address = wrapper.find('#address-records-mailing')
+    expect(address.exists()).toBe(false)
+
+    // uncheck and verify the checkbox
+    checkbox.trigger('click')
+    await Vue.nextTick()
+    expect(checkbox.attributes('aria-checked')).toBe('false')
+
+    // verify the address data and elements
+    expect(wrapper.vm.$data.recMailingAddress.addressCity).toBe('')
+    // NB: since the address didn't exist previously, we need to find it again
+    address = wrapper.find('#address-records-mailing')
+    expect(address.exists()).toBe(true)
+    expect(address.find('.v-input.street-address').props('value')).toBe('')
+    expect(address.find('.v-input.street-address-additional').props('value')).toBe('')
+    expect(address.find('.v-input.address-city').props('value')).toBe('')
+    expect(address.find('.v-input.address-region').props('value')).toBe('BC')
+    expect(address.find('.v-input.postal-code').props('value')).toBe('')
+    expect(address.find('.v-input.address-country').props('value')).toBe('CA')
+    expect(address.find('.v-input.delivery-instructions').props('value')).toBe('')
+
+    // re-check and verify the checkbox
+    checkbox.trigger('click')
+    await Vue.nextTick()
+    expect(checkbox.attributes('aria-checked')).toBe('true')
+
+    // verify the address data and elements
+    expect(wrapper.vm.$data.recMailingAddress.addressCity).toBe('addressCity1')
+    // NB: since the address existed previously, we need to find it again
+    address = wrapper.find('#address-records-mailing')
+    expect(address.exists()).toBe(false)
+  })
+
+  it('toggles records delivery address same as records mailing address', async () => {
+    // verify initial registered mailing and records mailing address data
+    expect(wrapper.vm.$data.recMailingAddress.addressCity).toBe('addressCity1')
+    expect(wrapper.vm.$data.recDeliveryAddress.addressCity).toBe('addressCity1')
+
+    // first need to make records addresses not same as registered addresses
+    const recordsCheckbox = wrapper.find('#records-mailing-same-chkbx')
+    recordsCheckbox.trigger('click')
+    await Vue.nextTick()
+
+    // the above assigned a default address to records mailing address so set a new one
+    wrapper.vm.$data.recMailingAddress = getAddressX(3)
+
+    // verify that checkbox is checked and that address doesn't exist
+    const checkbox = wrapper.find('#records-delivery-same-chkbx')
+    expect(checkbox.attributes('aria-checked')).toBe('true')
+    let address = wrapper.find('#address-records-delivery')
+    expect(address.exists()).toBe(false)
+
+    // uncheck and verify the checkbox
+    checkbox.trigger('click')
+    await Vue.nextTick()
+    expect(checkbox.attributes('aria-checked')).toBe('false')
+
+    // verify the address data and elements
+    expect(wrapper.vm.$data.recDeliveryAddress.addressCity).toBe('')
+    // NB: since the address didn't exist previously, we need to find it again
+    address = wrapper.find('#address-records-delivery')
+    expect(address.exists()).toBe(true)
+    expect(address.find('.v-input.street-address').props('value')).toBe('')
+    expect(address.find('.v-input.street-address-additional').props('value')).toBe('')
+    expect(address.find('.v-input.address-city').props('value')).toBe('')
+    expect(address.find('.v-input.address-region').props('value')).toBe('BC')
+    expect(address.find('.v-input.postal-code').props('value')).toBe('')
+    expect(address.find('.v-input.address-country').props('value')).toBe('CA')
+    expect(address.find('.v-input.delivery-instructions').props('value')).toBe('')
+
+    // re-check and verify the checkbox
+    checkbox.trigger('click')
+    await Vue.nextTick()
+    expect(checkbox.attributes('aria-checked')).toBe('true')
+
+    // verify the address data and elements
+    expect(wrapper.vm.$data.recDeliveryAddress.addressCity).toBe('addressCity3')
+    // NB: since the address existed previously, we need to find it again
+    address = wrapper.find('#address-records-delivery')
+    expect(address.exists()).toBe(false)
   })
 })
 
-describe('Office Addresses component - BCOMP', () => {
-  let wrapper: any
-
-  const registeredOffice = {
-    deliveryAddress: {
-      addressCity: 'someCity',
-      addressCountry: 'someCountry',
-      addressRegion: 'someRegion',
-      postalCode: 'somePostalCode',
-      streetAddress: 'someStreet'
-    },
-    mailingAddress: {
-      addressCity: 'someCity',
-      addressCountry: 'someCountry',
-      addressRegion: 'someRegion',
-      postalCode: 'somePostalCode',
-      streetAddress: 'someStreet'
-    }
-  }
-
-  const recordsOffice = {
-    deliveryAddress: {
-      addressCity: 'someRecCity',
-      addressCountry: 'someRecCountry',
-      addressRegion: 'someRecRegion',
-      postalCode: 'someRecPostalCode',
-      streetAddress: 'someRecStreet'
-    },
-    mailingAddress: {
-      addressCity: 'someRecCity',
-      addressCountry: 'someRecCountry',
-      addressRegion: 'someRecRegion',
-      postalCode: 'someRecPostalCode',
-      streetAddress: 'someRecStreet'
-    }
-  }
-
-  beforeEach(() => {
-    const localVue = createLocalVue()
-    wrapper = shallowMount(OfficeAddresses, {
-      propsData: {
-        inputAddresses: { registeredOffice, recordsOffice },
-        isEditing: true
-      },
-      localVue,
-      store,
-      vuetify
-    })
-  })
-
-  afterEach(() => {
-    wrapper.destroy()
-  })
+describe('actions and events', () => {
+  let wrapper: any = null
 
   beforeAll(() => {
-    // init store
+    // init entity type
     store.state.stateModel.tombstone.entityType = 'BEN'
+
+    // init original offices
+    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
   })
 
-  xit('does not show the summary ui when editing', () => {
-    expect(wrapper.vm.$el.querySelector('#summary-registered-address')).toBeNull()
-    expect(wrapper.vm.$el.querySelector('#summary-records-address')).toBeNull()
-  })
+  beforeEach(async () => {
+    wrapper = mount(OfficeAddresses, { store, vuetify })
 
-  it('displays the ui for mailing and NOT delivery address for Records & Registered Office when new filing', () => {
-    expect(wrapper.vm.$el.querySelector('#address-registered-mailing')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-registered-delivery')).toBeNull()
-    expect(wrapper.vm.$el.querySelector('#address-records-mailing')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-records-delivery')).toBeNull()
-  })
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    await Vue.nextTick()
 
-  xit('displays the ui for registered mailing and NOT delivery address when new filing', () => {
-    // Verify no ui for registered delivery address
-    expect(wrapper.vm.$el.querySelector('#address-registered-delivery')).toBeNull()
-    expect(wrapper.vm.$el.querySelector('#address-records-mailing')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-records-delivery')).toBeNull()
-
-    // un-Check the 'same as mailing' checkbox ( Default is checked )
-    const checkbox1 = wrapper.find('#registered-mailing-same-chkbx')
-    checkbox1.trigger('click')
-
-    // un-Check the 'same as mailing' checkbox ( Default is checked )
-    const checkbox2 = wrapper.find('#records-mailing-same-chkbx')
-    checkbox2.trigger('click')
-
-    expect(wrapper.vm.$el.querySelector('#address-registered-mailing')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-registered-delivery')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-records-mailing')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-records-delivery')).toBeDefined()
-  })
-
-  xit('loads the current office addresses properly from a draft filing', () => {
-    const deliveryAddress = wrapper.vm.addresses.registeredOffice.deliveryAddress
-    expect(deliveryAddress['streetAddress']).toEqual('someStreet')
-    expect(deliveryAddress['addressCity']).toEqual('someCity')
-    expect(deliveryAddress['addressRegion']).toEqual('someRegion')
-    expect(deliveryAddress['postalCode']).toEqual('somePostalCode')
-    expect(deliveryAddress['addressCountry']).toEqual('someCountry')
-
-    const mailingAddress = wrapper.vm.addresses.registeredOffice.mailingAddress
-    expect(mailingAddress['streetAddress']).toEqual('someStreet')
-    expect(mailingAddress['addressCity']).toEqual('someCity')
-    expect(mailingAddress['addressRegion']).toEqual('someRegion')
-    expect(mailingAddress['postalCode']).toEqual('somePostalCode')
-    expect(mailingAddress['addressCountry']).toEqual('someCountry')
-
-    const recDeliveryAddress = wrapper.vm.addresses.recordsOffice.deliveryAddress
-    expect(recDeliveryAddress['streetAddress']).toEqual('someRecStreet')
-    expect(recDeliveryAddress['addressCity']).toEqual('someRecCity')
-    expect(recDeliveryAddress['addressRegion']).toEqual('someRecRegion')
-    expect(recDeliveryAddress['postalCode']).toEqual('someRecPostalCode')
-    expect(recDeliveryAddress['addressCountry']).toEqual('someRecCountry')
-
-    const recMailingAddress = wrapper.vm.addresses.recordsOffice.mailingAddress
-    expect(recMailingAddress['streetAddress']).toEqual('someRecStreet')
-    expect(recMailingAddress['addressCity']).toEqual('someRecCity')
-    expect(recMailingAddress['addressRegion']).toEqual('someRecRegion')
-    expect(recMailingAddress['postalCode']).toEqual('someRecPostalCode')
-    expect(recMailingAddress['addressCountry']).toEqual('someRecCountry')
-  })
-})
-
-describe('same as checkboxes reset addresses to default when unchecked - BCOMP', () => {
-  let wrapper: any
-
-  const registeredOffice = {
-    deliveryAddress: {
-      addressCity: 'someCity',
-      addressCountry: 'someCountry',
-      addressRegion: 'someRegion',
-      postalCode: 'somePostalCode',
-      streetAddress: 'someStreet'
-    },
-    mailingAddress: {
-      addressCity: 'someCity',
-      addressCountry: 'someCountry',
-      addressRegion: 'someRegion',
-      postalCode: 'somePostalCode',
-      streetAddress: 'someStreet'
-    }
-  }
-
-  beforeEach(() => {
-    const localVue = createLocalVue()
-    wrapper = mount(OfficeAddresses, {
-      propsData: {
-        inputAddresses: { registeredOffice, recordsOffice: registeredOffice },
-        isEditing: true
-      },
-      localVue,
-      store,
-      vuetify
-    })
+    // change to edit mode
+    const correctBtn = wrapper.find('#btn-correct-office-addresses')
+    correctBtn.trigger('click')
+    await Vue.nextTick()
   })
 
   afterEach(() => {
     wrapper.destroy()
   })
 
-  beforeAll(() => {
-    // init store
-    store.state.stateModel.tombstone.entityType = 'BEN'
+  it('starts valid initially', () => {
+    // verify initial buttons
+    expect(wrapper.find('#done-btn').props('disabled')).toBe(false)
+    expect(wrapper.find('#cancel-btn').props('disabled')).toBe(false)
+
+    // verify initial data
+    expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
+    expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity1')
+
+    // verify initial events
+    const valid = wrapper.emitted('valid')
+    expect(valid.length).toBe(1)
+    expect(valid.pop()).toEqual([true])
+    const haveChanges = wrapper.emitted('haveChanges')
+    expect(haveChanges.length).toBe(1)
+    expect(haveChanges.pop()).toEqual([false])
   })
 
-  xit('should reset registered and records delivery addresses', async () => {
-    // Verify no ui for registered delivery address
-    expect(wrapper.vm.$el.querySelector('#address-registered-delivery')).toBeNull()
-    expect(wrapper.vm.$el.querySelector('#address-records-mailing')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-records-delivery')).toBeNull()
+  it('handles an invalid address', async () => {
+    // set invalid/blank data (and verify)
+    await wrapper.setData({ mailingAddress: wrapper.vm.$data.defaultAddress })
+    expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('')
 
-    // un-Check the 'same as mailing' checkbox ( Default is checked )
-    const checkbox1 = wrapper.find('#registered-mailing-same-chkbx')
-    checkbox1.trigger('click')
+    // verify buttons
+    expect(wrapper.find('#done-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#cancel-btn').props('disabled')).toBe(false)
+
+    // verify data
+    expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
+
+    // verify there are no new events
+    expect(wrapper.emitted('valid').length).toEqual(1)
+    expect(wrapper.emitted('haveChanges').length).toEqual(1)
+  })
+
+  it('ignores a canceled change', async () => {
+    // make a change (and verify)
+    await wrapper.setData({ mailingAddress: getAddressX(5) })
+    expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity5')
+
+    // click Cancel button
+    const cancelBtn = wrapper.find('#cancel-btn')
+    cancelBtn.trigger('click')
     await Vue.nextTick()
 
-    expect(wrapper.vm.$el.querySelector('#address-registered-delivery')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-records-mailing')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-records-delivery')).toBeNull()
-
-    const deliveryAddress = wrapper.vm.$data.deliveryAddress
-    expect(deliveryAddress['streetAddress']).toEqual('')
-    expect(deliveryAddress['addressCity']).toEqual('')
-    expect(deliveryAddress['addressRegion']).toEqual('BC')
-    expect(deliveryAddress['postalCode']).toEqual('')
-    expect(deliveryAddress['addressCountry']).toEqual('CA')
-
-    const mailingAddress = wrapper.vm.$data.mailingAddress
-    expect(mailingAddress['streetAddress']).toEqual('someStreet')
-    expect(mailingAddress['addressCity']).toEqual('someCity')
-    expect(mailingAddress['addressRegion']).toEqual('someRegion')
-    expect(mailingAddress['postalCode']).toEqual('somePostalCode')
-    expect(mailingAddress['addressCountry']).toEqual('someCountry')
-
-    const recMailingAddress = wrapper.vm.$data.recMailingAddress
-    expect(recMailingAddress['streetAddress']).toEqual('someStreet')
-    expect(recMailingAddress['addressCity']).toEqual('someCity')
-    expect(recMailingAddress['addressRegion']).toEqual('someRegion')
-    expect(recMailingAddress['postalCode']).toEqual('somePostalCode')
-    expect(recMailingAddress['addressCountry']).toEqual('someCountry')
-
-    const recDeliveryAddress = wrapper.vm.$data.recDeliveryAddress
-    expect(recDeliveryAddress['streetAddress']).toEqual('')
-    expect(recDeliveryAddress['addressCity']).toEqual('')
-    expect(recDeliveryAddress['addressRegion']).toEqual('BC')
-    expect(recDeliveryAddress['postalCode']).toEqual('')
-    expect(recDeliveryAddress['addressCountry']).toEqual('CA')
-  })
-
-  xit('should reset records delivery and mailing addresses', async () => {
-    // Verify no ui for registered delivery address
-    expect(wrapper.vm.$el.querySelector('#address-registered-delivery')).toBeNull()
-    expect(wrapper.vm.$el.querySelector('#address-records-mailing')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-records-delivery')).toBeNull()
-
-    // un-Check the 'Same as Registered Office' checkbox ( Default is checked )
-    const checkbox1 = wrapper.find('#records-mailing-same-chkbx')
-    checkbox1.trigger('click')
-    await Vue.nextTick()
-
-    expect(wrapper.vm.$el.querySelector('#address-registered-delivery')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-records-mailing')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#address-records-delivery')).toBeNull()
-
-    const deliveryAddress = wrapper.vm.$data.deliveryAddress
-    expect(deliveryAddress['streetAddress']).toEqual('someStreet')
-    expect(deliveryAddress['addressCity']).toEqual('someCity')
-    expect(deliveryAddress['addressRegion']).toEqual('someRegion')
-    expect(deliveryAddress['postalCode']).toEqual('somePostalCode')
-    expect(deliveryAddress['addressCountry']).toEqual('someCountry')
-
-    const mailingAddress = wrapper.vm.$data.mailingAddress
-    expect(mailingAddress['streetAddress']).toEqual('someStreet')
-    expect(mailingAddress['addressCity']).toEqual('someCity')
-    expect(mailingAddress['addressRegion']).toEqual('someRegion')
-    expect(mailingAddress['postalCode']).toEqual('somePostalCode')
-    expect(mailingAddress['addressCountry']).toEqual('someCountry')
-
-    const recMailingAddress = wrapper.vm.$data.recMailingAddress
-    expect(recMailingAddress['streetAddress']).toEqual('')
-    expect(recMailingAddress['addressCity']).toEqual('')
-    expect(recMailingAddress['addressRegion']).toEqual('BC')
-    expect(recMailingAddress['postalCode']).toEqual('')
-    expect(recMailingAddress['addressCountry']).toEqual('CA')
-
-    const recDeliveryAddress = wrapper.vm.$data.recDeliveryAddress
-    expect(recDeliveryAddress['streetAddress']).toEqual('')
-    expect(recDeliveryAddress['addressCity']).toEqual('')
-    expect(recDeliveryAddress['addressRegion']).toEqual('BC')
-    expect(recDeliveryAddress['postalCode']).toEqual('')
-    expect(recDeliveryAddress['addressCountry']).toEqual('CA')
-  })
-})
-
-describe('should properly emit valid - BCOMP', () => {
-  let wrapper: any
-  const localVue = createLocalVue()
-  const invalidDeliveryAddress = {
-    addressCity: 'someCity',
-    addressCountry: 'someCountry',
-    addressRegion: 'someRegion',
-    postalCode: 'somePostalCode',
-    streetAddress: 'someStreet'
-  }
-
-  const invalidMailingAddress = {
-    addressCity: 'someCity',
-    addressCountry: 'someCountry',
-    addressRegion: 'someRegion',
-    postalCode: 'somePostalCode',
-    streetAddress: 'someStreet'
-  }
-
-  const validDeliveryAddress = {
-    addressCity: 'someCity1',
-    addressCountry: 'CA',
-    addressRegion: 'BC',
-    postalCode: 'somePostalCode',
-    streetAddress: 'someStreet'
-  }
-
-  const validMailingAddress = {
-    addressCity: 'someCity2',
-    addressCountry: 'CA',
-    addressRegion: 'BC',
-    postalCode: 'somePostalCode',
-    streetAddress: 'someStreet'
-  }
-
-  afterEach(() => {
-    wrapper.destroy()
-  })
-
-  beforeAll(() => {
-    // init store
-    store.state.stateModel.tombstone.entityType = 'BEN'
-  })
-
-  xit('should emit valid form', async () => {
-    wrapper = mount(OfficeAddresses, {
-      propsData: {
-        inputAddresses: {
-          registeredOffice: { deliveryAddress: validDeliveryAddress, mailingAddress: validMailingAddress },
-          recordsOffice: { deliveryAddress: validDeliveryAddress, mailingAddress: validMailingAddress }
-        },
-        isEditing: true
-      },
-      localVue,
-      store,
-      vuetify
-    })
-    await Vue.nextTick()
-
-    expect(wrapper.emitted('valid').pop()).toEqual([true])
-  })
-
-  xit('should emit invalid with invalid registered delivery address', async () => {
-    wrapper = mount(OfficeAddresses, {
-      propsData: {
-        inputAddresses: {
-          registeredOffice: { deliveryAddress: invalidDeliveryAddress, mailingAddress: validMailingAddress },
-          recordsOffice: { deliveryAddress: validDeliveryAddress, mailingAddress: validMailingAddress }
-        },
-        isEditing: true
-      },
-      localVue,
-      store,
-      vuetify
-    })
-    await Vue.nextTick()
-
-    expect(wrapper.emitted('valid').pop()).toEqual([false])
-  })
-
-  xit('should emit invalid with invalid registered mailing address', async () => {
-    wrapper = mount(OfficeAddresses, {
-      propsData: {
-        inputAddresses: {
-          registeredOffice: { deliveryAddress: validDeliveryAddress, mailingAddress: invalidMailingAddress },
-          recordsOffice: { deliveryAddress: validDeliveryAddress, mailingAddress: validMailingAddress }
-        },
-        isEditing: true
-      },
-      localVue,
-      store,
-      vuetify
-    })
-    await Vue.nextTick()
-
-    expect(wrapper.emitted('valid').pop()).toEqual([false])
-  })
-
-  xit('should emit invalid with invalid records delivery address', async () => {
-    wrapper = mount(OfficeAddresses, {
-      propsData: {
-        inputAddresses: {
-          registeredOffice: { deliveryAddress: validDeliveryAddress, mailingAddress: validMailingAddress },
-          recordsOffice: { deliveryAddress: invalidDeliveryAddress, mailingAddress: validMailingAddress }
-        },
-        isEditing: true
-      },
-      localVue,
-      store,
-      vuetify
-    })
-    await Vue.nextTick()
-
-    expect(wrapper.emitted('valid').pop()).toEqual([false])
-  })
-
-  xit('should emit invalid with invalid records mailing address', async () => {
-    wrapper = mount(OfficeAddresses, {
-      propsData: {
-        inputAddresses: {
-          registeredOffice: { deliveryAddress: validDeliveryAddress, mailingAddress: validMailingAddress },
-          recordsOffice: { deliveryAddress: validDeliveryAddress, mailingAddress: invalidMailingAddress }
-        },
-        isEditing: true
-      },
-      localVue,
-      store,
-      vuetify
-    })
-    await Vue.nextTick()
-
-    expect(wrapper.emitted('valid').pop()).toEqual([false])
-  })
-})
-
-describe('Office Addresses component - Summary UI', () => {
-  let wrapper: any
-
-  const registeredOffice = {
-    deliveryAddress: {
-      addressCity: 'someCity',
-      addressCountry: 'someCountry',
-      addressRegion: 'someRegion',
-      postalCode: 'somePostalCode',
-      streetAddress: 'someStreet'
-    },
-    mailingAddress: {
-      addressCity: 'someCity',
-      addressCountry: 'someCountry',
-      addressRegion: 'someRegion',
-      postalCode: 'somePostalCode',
-      streetAddress: 'someStreet'
+    // verify that summary shows Correct button
+    {
+      const cols = wrapper.findAll('#summary-registered-address .flex')
+      const actions = cols.at(3)
+      const correctBtn = actions.find('.actions #btn-correct-office-addresses')
+      expect(correctBtn.find('span').text()).toBe('Correct')
     }
-  }
 
-  const recordsOffice = {
-    deliveryAddress: {
-      addressCity: 'someRecCity',
-      addressCountry: 'someRecCountry',
-      addressRegion: 'someRecRegion',
-      postalCode: 'someRecPostalCode',
-      streetAddress: 'someRecStreet'
-    },
-    mailingAddress: {
-      addressCity: 'someRecCity',
-      addressCountry: 'someRecCountry',
-      addressRegion: 'someRecRegion',
-      postalCode: 'someRecPostalCode',
-      streetAddress: 'someRecStreet'
+    // verify data
+    expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
+
+    // verify there are no new events
+    expect(wrapper.emitted('valid').length).toEqual(1)
+    expect(wrapper.emitted('haveChanges').length).toEqual(1)
+  })
+
+  it('ignores a null change', async () => {
+    // make a change (and verify)
+    await wrapper.setData({ mailingAddress: getAddressX(5) })
+    expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity5')
+
+    // revert the change (and verify)
+    await wrapper.setData({ mailingAddress: getAddressX(1) })
+    expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity1')
+
+    // click Done button
+    const doneBtn = wrapper.find('#done-btn')
+    doneBtn.trigger('click')
+    await Vue.nextTick()
+
+    // verify that summary shows Correct button
+    {
+      const cols = wrapper.findAll('#summary-registered-address .flex')
+      const actions = cols.at(3)
+      const correctBtn = actions.find('.actions #btn-correct-office-addresses')
+      expect(correctBtn.find('span').text()).toBe('Correct')
     }
-  }
 
-  beforeEach(() => {
-    const localVue = createLocalVue()
-    wrapper = shallowMount(OfficeAddresses, {
-      propsData: {
-        inputAddresses: { registeredOffice, recordsOffice },
-        isEditing: false
-      },
-      localVue,
-      store,
-      vuetify
-    })
+    // verify data
+    expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
+
+    // verify new events
+    const valid = wrapper.emitted('valid')
+    expect(valid.length).toBe(2)
+    expect(valid.pop()).toEqual([true])
+    const haveChanges = wrapper.emitted('haveChanges')
+    expect(haveChanges.length).toBe(2)
+    expect(haveChanges.pop()).toEqual([false])
   })
 
-  afterEach(() => {
-    wrapper.destroy()
+  it('accepts a valid change', async () => {
+    // make a change (and verify)
+    await wrapper.setData({ mailingAddress: getAddressX(5) })
+    expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity5')
+
+    // click Done button
+    const doneBtn = wrapper.find('#done-btn')
+    doneBtn.trigger('click')
+    await Vue.nextTick()
+
+    // verify that summary shows Undo button
+    {
+      const cols = wrapper.findAll('#summary-registered-address .flex')
+      const actions = cols.at(3)
+      const undoBtn = actions.find('.actions .edit-action #btn-undo-office-addresses')
+      expect(undoBtn.find('span').text()).toBe('Undo')
+    }
+
+    // verify data
+    expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity5')
+
+    // verify new events
+    const valid = wrapper.emitted('valid')
+    expect(valid.length).toBe(2)
+    expect(valid.pop()).toEqual([true])
+    const haveChanges = wrapper.emitted('haveChanges')
+    expect(haveChanges.length).toBe(2)
+    expect(haveChanges.pop()).toEqual([true])
   })
 
-  beforeAll(() => {
-    // init store
-    store.state.stateModel.nameRequest.entityType = 'BEN'
+  it('handles undo action', async () => {
+    // make a change (and verify)
+    await wrapper.setData({ mailingAddress: getAddressX(5) })
+    expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity5')
+
+    // click Done button
+    const doneBtn = wrapper.find('#done-btn')
+    doneBtn.trigger('click')
+    await Vue.nextTick()
+
+    // click Undo button
+    {
+      const cols = wrapper.findAll('#summary-registered-address .flex')
+      const actions = cols.at(3)
+      const undoBtn = actions.find('.actions .edit-action #btn-undo-office-addresses')
+      undoBtn.trigger('click')
+      await Vue.nextTick()
+    }
+
+    // verify that summary shows Correct button
+    {
+      const cols = wrapper.findAll('#summary-registered-address .flex')
+      const actions = cols.at(3)
+      const correctBtn = actions.find('.actions #btn-correct-office-addresses')
+      expect(correctBtn.find('span').text()).toBe('Correct')
+    }
+
+    // verify data
+    expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
+
+    // verify new events
+    const valid = wrapper.emitted('valid')
+    expect(valid.length).toBe(3)
+    expect(valid.pop()).toEqual([true])
+    const haveChanges = wrapper.emitted('haveChanges')
+    expect(haveChanges.length).toBe(3)
+    expect(haveChanges.pop()).toEqual([false])
   })
 
-  it('displays the summary ui when in summary mode', () => {
-    expect(wrapper.vm.$el.querySelector('#summary-registered-address')).toBeDefined()
-    expect(wrapper.vm.$el.querySelector('#summary-records-address')).toBeDefined()
+  it('handles re-correct action', async () => {
+    // make a change (and verify)
+    await wrapper.setData({ mailingAddress: getAddressX(5) })
+    expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity5')
+
+    // click Done button
+    {
+      const doneBtn = wrapper.find('#done-btn')
+      doneBtn.trigger('click')
+      await Vue.nextTick()
+    }
+
+    // click Correct button
+    {
+      const cols = wrapper.findAll('#summary-registered-address .flex')
+      const actions = cols.at(3)
+      const moreBtn = actions.find('.actions .more-actions #btn-more-actions span')
+      expect(moreBtn.find('span').exists()).toBe(true)
+      moreBtn.trigger('click')
+      await Vue.nextTick()
+      const correctBtn = actions.find('.actions .more-actions #btn-more-actions-edit')
+      correctBtn.trigger('click')
+      await Vue.nextTick()
+    }
+
+    // make a change (and verify)
+    await wrapper.setData({ mailingAddress: getAddressX(6) })
+    expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity6')
+
+    // click Done button
+    {
+      const doneBtn = wrapper.find('#done-btn')
+      doneBtn.trigger('click')
+      await Vue.nextTick()
+    }
+
+    // verify data
+    expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity6')
+
+    // verify new events
+    const valid = wrapper.emitted('valid')
+    expect(valid.length).toBe(3)
+    expect(valid.pop()).toEqual([true])
+    const haveChanges = wrapper.emitted('haveChanges')
+    expect(haveChanges.length).toBe(3)
+    expect(haveChanges.pop()).toEqual([true])
   })
 })

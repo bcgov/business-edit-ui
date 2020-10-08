@@ -1,12 +1,12 @@
 <template>
-  <section>
+  <section id="certify-section">
     <header>
       <h2>2. Certify</h2>
     </header>
 
     <span>Enter the legal name of the person authorized to complete and submit these changes.</span>
 
-    <div id="certify-container">
+    <div id="certify-container" class="mt-4">
       Under construction!
     </div>
   </section>

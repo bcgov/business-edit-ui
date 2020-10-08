@@ -10,34 +10,45 @@ import { DateMixin } from '@/mixins'
  */
 @Component({})
 export default class NameRequestMixin extends Mixins(DateMixin) {
-  /** Fetches NR and validates it against the applicants information.
-   * @param nrNumber The name request number to validate
-   * @param phone The applicants phone
-   * @param email The applicants email
-   * */
+  /**
+   * Fetches an NR and validates it against the applicant's information.
+   * Throws an error if there is a problem.
+   * @param nrNumber the name request number to validate
+   * @param phone the applicant's phone number
+   * @param email the applicant's email address
+   * @returns the name request response payload
+   */
   async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<AxiosResponse> {
-    let nrResponse = await this.fetchNameRequest(nrNumber).catch(error => {
+    const nrResponse = await this.fetchNameRequest(nrNumber).catch(error => {
       this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
       throw new Error(`Fetch Name Request error: ${error}`)
     })
 
-    // Validate email / phone
-    if ((phone && nrResponse.applicants?.phoneNumber !== phone) ||
-      (email && nrResponse.applicants?.emailAddress !== email)) {
-      this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
-      throw new Error(`Invalid Phone or Email`)
+    // validate email
+    if (email && nrResponse.applicants?.emailAddress !== email) {
+      this.$root.$emit('invalid-name-request', NameRequestStates.INCORRECT_EMAIL)
+      throw new Error(`Incorrect Email`)
     }
 
+    // validate phone
+    if (phone && nrResponse.applicants?.phoneNumber !== phone) {
+      this.$root.$emit('invalid-name-request', NameRequestStates.INCORRECT_PHONE)
+      throw new Error(`Incorrect Phone`)
+    }
+
+    // ensure NR is valid
     if (!nrResponse || !this.isNrValid(nrResponse)) {
       this.$root.$emit('invalid-name-request', NameRequestStates.INVALID)
       throw new Error('Invalid Name Request')
     }
+
     // ensure NR is consumable
     const state = this.getNrState(nrResponse)
     if (state !== NameRequestStates.APPROVED) {
       this.$root.$emit('invalid-name-request', state)
       throw new Error(`Invalid Name request state: ${state}`)
     }
+
     return nrResponse
   }
 
@@ -46,7 +57,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    * @param nrNumber the name request number (eg, NR 1234567)
    * @returns a promise to return the NR data, or null if not found
    */
-  async fetchNameRequest (nrNumber: string): Promise<any> {
+  private async fetchNameRequest (nrNumber: string): Promise<any> {
     if (!nrNumber) throw new Error('Invalid parameter \'nrNumber\'')
 
     const url = `nameRequests/${nrNumber}`
@@ -57,8 +68,6 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
           throw new Error('Invalid API response')
         }
         return data
-      }).catch(error => {
-        throw error
       })
   }
 

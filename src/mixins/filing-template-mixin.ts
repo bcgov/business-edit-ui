@@ -8,7 +8,9 @@ import {
   IncorporationFilingIF,
   OrgPersonIF,
   ShareClassIF,
-  StateModelIF
+  StateModelIF,
+  NameTranslationIF,
+  NameTranslationDraftIF
 } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 // Constants
@@ -39,6 +41,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getFolioNumber!: string
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getDetailComment!: string | null
+  @Getter getDefaultCorrectionDetailComment!: string
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -67,6 +70,7 @@ export default class FilingTemplateMixin extends Vue {
     // if filing and paying, filter out removed entities and omit the 'action' property
     let parties = this.getPeopleAndRoles
     let shareClasses = this.getShareClasses
+    let nameTranslations = this.stateModel.nameTranslations
     if (!isDraft) {
       // Filter out parties actions
       parties = parties.filter(x => x.action !== ActionTypes.REMOVED)
@@ -81,6 +85,9 @@ export default class FilingTemplateMixin extends Vue {
         shareClasses[index].series = share.series?.filter(x => x.action !== ActionTypes.REMOVED)
           .map((x) => { const { action, ...rest } = x; return rest })
       }
+
+      // Filter out and modify name translation to match schema
+      nameTranslations = this.prepareNameTranslations()
     }
 
     // Build filing.
@@ -100,7 +107,7 @@ export default class FilingTemplateMixin extends Vue {
         correctedFilingId: this.getCorrectedFilingId,
         correctedFilingType: FilingTypes.INCORPORATION_APPLICATION,
         correctedFilingDate: this.getCurrentDate,
-        comment: this.getDetailComment
+        comment: `${this.getDefaultCorrectionDetailComment}\n${this.getDetailComment}`
       },
       incorporationApplication: {
         nameRequest: {
@@ -108,9 +115,7 @@ export default class FilingTemplateMixin extends Vue {
           legalName: this.getApprovedName,
           nrNumber: this.getNameRequestNumber
         },
-        nameTranslations: {
-          new: this.stateModel.nameTranslations
-        },
+        nameTranslations: nameTranslations,
         offices: this.stateModel.defineCompanyStep.officeAddresses,
         contactPoint: {
           email: this.stateModel.defineCompanyStep.businessContact.email,
@@ -160,6 +165,26 @@ export default class FilingTemplateMixin extends Vue {
   }
 
   /**
+   * Prepare name translations for non draft correction
+   */
+  prepareNameTranslations () : NameTranslationIF {
+    const translations = this.stateModel.nameTranslations as NameTranslationDraftIF[]
+    return {
+      new: translations?.filter(x => x.action === ActionTypes.ADDED)
+        .map(x => x.value),
+      modified: translations?.filter(x => x.action === ActionTypes.EDITED)
+        .map(x => {
+          return {
+            newValue: x.value,
+            oldValue: x.oldValue
+          }
+        }),
+      ceased: translations?.filter(x => x.action === ActionTypes.REMOVED)
+        .map(x => x.value)
+    } as NameTranslationIF
+  }
+
+  /**
    * Parses a correction filing into the store.
    * @param filing the correction filing body to be parsed
    */
@@ -171,7 +196,21 @@ export default class FilingTemplateMixin extends Vue {
     this.setNameRequest(filing.incorporationApplication.nameRequest)
 
     // Set Name Translations
-    this.setNameTranslations(filing.incorporationApplication.nameTranslations?.new)
+    if (filing.incorporationApplication.nameTranslations instanceof Array) {
+      // If it's an array that means it's a draft which is saved from edit-ui by staff.
+      this.setNameTranslations(filing.incorporationApplication.nameTranslations)
+    } else {
+      // If it's an object that means it's an initial draft created from filing-ui and has a structure of an IA.
+      this.setNameTranslations(
+        filing.incorporationApplication.nameTranslations?.new?.map(x => {
+          return {
+            value: x,
+            oldValue: null,
+            action: null
+          }
+        })
+      )
+    }
 
     // Set Office Addresses
     this.setOfficeAddresses(filing.incorporationApplication.offices)
@@ -210,7 +249,10 @@ export default class FilingTemplateMixin extends Vue {
       certifiedBy: filing.header.certifiedBy
     })
 
-    this.setDetailComment(filing.correction.comment)
+    // load Detail Comment, removing the first line (default comment)
+    const comment: string = filing.correction.comment || ''
+    const detailComment = comment.split('\n').slice(1).join('\n')
+    this.setDetailComment(detailComment)
 
     // Set Folio Number
     this.setFolioNumber(filing.header.folioNumber)

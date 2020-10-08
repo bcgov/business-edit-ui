@@ -63,37 +63,9 @@
           </v-flex>
         </template>
       </v-layout>
-
-      <v-layout row v-if="getNameTranslations && getNameTranslations.length" class="mt-3 mx-0">
-        <v-flex xs3>
-          <label><strong>Name Translation</strong></label>
-        </v-flex>
-
-        <v-flex xs8>
-          <div v-for="(name, index) in getNameTranslations" :key="`name_translation_${index}`">{{name}}</div>
-        </v-flex>
-
-        <v-flex xs1 class="mt-n2">
-          <div class="actions mr-4">
-            <v-btn v-if="nameTranslationChanges"
-              text color="primary"
-              id="btn-undo-name-translations"
-              @click="nameTranslationChanges = false"
-            >
-              <v-icon small>mdi-undo</v-icon>
-              <span>Undo</span>
-            </v-btn>
-            <v-btn v-else
-              text color="primary"
-              id="btn-correct-name-translations"
-              @click="nameTranslationChanges = true"
-            >
-              <v-icon small>mdi-pencil</v-icon>
-              <span>Correct</span>
-            </v-btn>
-          </div>
-        </v-flex>
-      </v-layout>
+      <correct-name-translation class="mt-3"
+        @haveChanges="nameTranslationChanges = $event"
+      />
     </div>
 
     <v-divider class="mx-4" />
@@ -144,7 +116,8 @@ import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter, State } from 'vuex-class'
 import { ActionBindingIF, BusinessContactIF, GetterIF, IncorporationFilingIF,
   NameRequestIF, StateModelIF } from '@/interfaces'
-import { CorrectBusinessContactInfo, FolioNumber, OfficeAddresses } from '.'
+// Components
+import { CorrectBusinessContactInfo, FolioNumber, CorrectNameTranslation, OfficeAddresses } from '.'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 import { DateMixin, EntityFilterMixin, LegalApiMixin } from '@/mixins'
 import { CorrectionTypes, EntityTypes } from '@/enums'
@@ -154,7 +127,8 @@ import { CorrectionTypes, EntityTypes } from '@/enums'
     CorrectNameOptions,
     CorrectBusinessContactInfo,
     OfficeAddresses,
-    FolioNumber
+    FolioNumber,
+    CorrectNameTranslation
   }
 })
 export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, LegalApiMixin) {
@@ -163,7 +137,6 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   @Getter getBusinessNumber!: string
   @Getter getEffectiveDate!: Date
   @Getter getFolioNumber!: string
-  @Getter getNameTranslations!: Array<string>
   @Getter getOfficeAddresses!: any
   @Getter isPremiumAccount!: GetterIF
   @Getter isNamedBusiness!: boolean

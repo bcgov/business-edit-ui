@@ -30,9 +30,9 @@ const seriesCurrency: string = '#series-currency'
 const noParValueSelector: string = '#radio-no-par'
 const parValueSelector: string = '#radio-par-value'
 const specialRightsChkBoxSelector: string = '#special-rights-check-box'
-const doneButtonSelector: string = '#btn-done'
-const removeButtonSelector: string = '#btn-remove'
-const cancelButtonSelector: string = '#btn-cancel'
+const doneButtonSelector: string = '#done-btn'
+const removeButtonSelector: string = '#remove-btn'
+const cancelButtonSelector: string = '#cancel-btn'
 const formSelector: string = '.share-structure-form'
 
 /**
@@ -106,7 +106,7 @@ function createShareStructure (
 store.state.stateModel.nameRequest.entityType = 'BEN'
 store.state.stateModel.tombstone.currentDate = '2020-03-30'
 
-describe.skip('Edit Share Structure component', () => {
+describe('Edit Share Structure component', () => {
   it('Loads the component and sets data for share structure', async () => {
     const shareClass = createShareStructure(null, 1, 'Class', 'Class A', true, 100, true, 0.50, 'CAD', true)
     const wrapper: Wrapper<EditShareStructure> = createComponent(shareClass, -1, 1, null, [])

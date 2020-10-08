@@ -10,7 +10,8 @@ import {
   IncorporationAgreementIF,
   BusinessInformationIF,
   IncorporationFilingIF,
-  FilingDataIF
+  FilingDataIF,
+  NameTranslationIF
 } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { EntityTypes } from '@/enums'
@@ -124,7 +125,7 @@ export const mutateNameRequest = (state: any, nameRequest: NameRequestIF) => {
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
-export const mutateNameTranslations = (state: any, nameTranslations: Array<string>) => {
+export const mutateNameTranslations = (state: any, nameTranslations: NameTranslationIF) => {
   state.stateModel.nameTranslations = nameTranslations
 }
 
