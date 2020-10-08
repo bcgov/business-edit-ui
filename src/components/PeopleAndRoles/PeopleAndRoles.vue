@@ -439,6 +439,14 @@ export default class PeopleAndRoles extends Vue {
   private onPeopleAndRoles (): void {
     this.setPeopleAndRolesValid(this.hasValidRoles)
   }
+
+  /**
+   * Sets the 'changes' flag when a user has made changes.
+   */
+  @Watch('hasChanges')
+  private onPeopleAndRolesChanges (): void {
+    this.setPeopleAndRolesChanged(this.hasChanges)
+  }
 }
 </script>
 
