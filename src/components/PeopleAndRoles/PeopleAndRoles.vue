@@ -147,21 +147,8 @@ export default class PeopleAndRoles extends Vue {
   private activeIndex: number = NaN
   private currentOrgPerson: OrgPersonIF = null
   private nextId: number = NaN
-
-  /** The orgs/persons list from the original IA. */
-  private get originalList (): Array<OrgPersonIF> {
-    return this.getOriginalIA.incorporationApplication.parties
-  }
-
-  /** The current Completing Party if found, otherwise undefined. */
-  private get completingParty () : OrgPersonIF {
-    return this.getCompletingParty(this.getPeopleAndRoles)
-  }
-
-  /** The original Completing Party if found, otherwise undefined. */
-  private get originalCompletingParty () : OrgPersonIF {
-    return this.getCompletingParty(this.originalList)
-  }
+  private completingParty: OrgPersonIF = null
+  private originalCompletingParty: OrgPersonIF = null
 
   /** True if we have a Completing Party. */
   private get cpValid (): boolean {
@@ -286,7 +273,8 @@ export default class PeopleAndRoles extends Vue {
         const id = person?.officer?.id
 
         // get value of original person from original IA
-        const originalPerson = this.originalList.find(x => x.officer.id === id)
+        const parties = this.getOriginalIA?.incorporationApplication?.parties || []
+        const originalPerson = parties.find(x => x.officer.id === id)
 
         // safety check
         if (!originalPerson) {
@@ -425,18 +413,28 @@ export default class PeopleAndRoles extends Vue {
    */
   private getCompletingParty (list: OrgPersonIF[]): OrgPersonIF {
     const i = list?.findIndex(orgPerson =>
-      orgPerson.roles.some(role =>
-        role.roleType === Roles.COMPLETING_PARTY
-      )
+      (orgPerson.action !== ActionTypes.REMOVED) &&
+        orgPerson.roles.some(role => role.roleType === Roles.COMPLETING_PARTY)
     )
     return (i >= 0) ? list[i] : undefined
   }
 
   /**
-   * Sets component 'valid' flag on initial load and when user has made changes.
+   * On initial load, sets the Original Completing Party (if any).
    */
-  @Watch('getPeopleAndRoles')
-  private onPeopleAndRoles (): void {
+  @Watch('getOriginalIA', { deep: true })
+  private onOriginalIAChanged (): void {
+    const parties = this.getOriginalIA?.incorporationApplication?.parties || []
+    this.originalCompletingParty = this.getCompletingParty(parties)
+  }
+
+  /**
+   * On initial load and when user has made changes, sets the current
+   * Completing Party (if any) and the component 'valid' flag.
+   */
+  @Watch('getPeopleAndRoles', { deep: true })
+  private onPeopleAndRolesChanged (): void {
+    this.completingParty = this.getCompletingParty(this.getPeopleAndRoles)
     this.setPeopleAndRolesValid(this.hasValidRoles)
   }
 }
