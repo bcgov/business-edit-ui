@@ -13,7 +13,7 @@
           </v-flex>
           <v-flex xs9 md10>
             <label>
-              <strong>Correction for Incorporation Application. Filed on {{getOriginalIAFilingDate}}</strong>
+              <strong>{{getDefaultCorrectionDetailComment}}</strong>
             </label>
             <div class="pt-2">
               <detail-comment
@@ -42,15 +42,19 @@ import { ActionBindingIF } from '@/interfaces'
   components: { DetailComment }
 })
 export default class Detail extends Vue {
-  @Getter getOriginalIAFilingDate!: string
   @Getter getDetailComment!: string
+  @Getter getDefaultCorrectionDetailComment!: string
 
   @Action setDetailComment: ActionBindingIF
   @Action setDetailValidity: ActionBindingIF
 
   private comment: string = null
-  private maxLength: number = 4038
-  private textAreaStyle: string='filled'
+  private textAreaStyle = 'filled'
+
+  private get maxLength (): number {
+    // = (max size in db) - (default comment length) - (Carriage Return)
+    return (4096 - this.getDefaultCorrectionDetailComment.length - 1)
+  }
 
   private onValidityChange (valid: boolean): void {
     this.setDetailValidity(valid)
