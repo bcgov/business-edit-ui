@@ -247,8 +247,6 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
     this.emitHaveChanges(this.hasBusinessContactInfoChange)
   }
 
-  @Watch('')
-
   @Emit('contactInfoChange')
   private emitContactInfo (contactInfo: BusinessContactIF): void { }
 
