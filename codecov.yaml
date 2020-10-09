@@ -10,13 +10,13 @@ comment:
 coverage:
   precision: 2
   round: down
-  range: "70...100"
+  range: "50...100"
   status:
-    patch: false
     project:
       default:
         target: auto
         if_not_found: success
+        only_pulls: true
 
 ignore:
   - "^/tests/**/*" # ignore test harness code
@@ -28,6 +28,3 @@ parsers:
       loop: true
       method: false
       macro: false
-
-github_checks:
-    annotations: true
