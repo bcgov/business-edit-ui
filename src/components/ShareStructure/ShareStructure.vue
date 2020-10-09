@@ -406,7 +406,7 @@ export default class ShareStructure extends Vue {
 
   /** True if we have any changes (from original IA). */
   private get hasSeriesChanges (): boolean {
-    return !!this.getShareClasses.find(classShare => classShare.series?.some(x => x.action))
+    return !!this.getShareClasses.find(shareClass => shareClass.series?.some(x => x.action))
   }
 
   // Share Class Functionality
