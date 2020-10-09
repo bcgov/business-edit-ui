@@ -164,15 +164,14 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { mask } from 'vue-the-mask'
 
 // Interfaces
-import { ActionBindingIF, BusinessContactIF, IncorporationFilingIF } from '@/interfaces'
+import { BusinessContactIF } from '@/interfaces'
 
 // Mixins
 import { CommonMixin } from '@/mixins'
-import { Action, Getter } from 'vuex-class'
 
 @Component({
   directives: { mask }
@@ -210,12 +209,6 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
     return !this.isSame(this.businessContact, this.getOriginalBusinessContact())
   }
 
-  // Watchers
-  @Watch('businessContact', { deep: true, immediate: true })
-  private onContactPropValueChanged (): void {
-    this.contact = this.businessContact
-  }
-
   private updateContactInfo (): void {
     this.emitContactInfo(this.contact)
     this.isEditing = false
@@ -245,6 +238,13 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 
   private get hasEmailAddressChange (): boolean {
     return this.businessContact.email !== this.originalBusinessContact.email
+  }
+
+  // Watchers
+  @Watch('businessContact', { deep: true, immediate: true })
+  private onContactPropValueChanged (): void {
+    this.contact = { ...this.businessContact }
+    this.emitHaveChanges(this.hasBusinessContactInfoChange)
   }
 
   @Emit('contactInfoChange')

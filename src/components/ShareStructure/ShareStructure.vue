@@ -223,7 +223,8 @@
               >
                 <v-btn small text color="primary"
                        :id="'series-' + index + '-undo-btn'"
-                       @click="undoCorrection(false, seriesItem.action, index, row.index)"
+                       @click="undoCorrection
+                       (false, seriesItem.action, index, row.index, row.item.id, seriesItem.id)"
                        :disabled="addEditInProgress"
                 >
                   <v-icon small>mdi-undo</v-icon>
@@ -232,7 +233,7 @@
               </span>
 
               <!-- Series Edit Btn -->
-              <span v-else class="edit-action">
+              <span v-else-if="seriesItem.action !== ActionTypes.REMOVED" class="edit-action">
                 <v-btn small text color="primary"
                        :id="'series-' + index + '-change-added-btn'"
                        @click="editSeries(row.index, index)"
@@ -501,8 +502,10 @@ export default class ShareStructure extends Vue {
    */
   private restoreShareClass (index: number): void {
     // Fetch and identify the ShareClass to restore
-    const shareClassToRestore = this.getOriginalIA.incorporationApplication.shareStructure.shareClasses.find(
-      shareClass => shareClass.id === this.getShareClasses[index].id
+    const shareClassToRestore = Object.assign({},
+      this.getOriginalIA.incorporationApplication.shareStructure.shareClasses.find(
+        shareClass => shareClass.id === this.getShareClasses[index].id
+      )
     )
 
     // Create a new ShareClass List and restore the original data
@@ -604,12 +607,19 @@ export default class ShareStructure extends Vue {
    * @param seriesIndex The share series identifier
    * @param parentIndex the share series parent class index
    */
-  private restoreShareSeries (seriesIndex: number, parentIndex: number): void {
-    // Fetch and identify the ShareClass to restore
-    const shareSeriesToRestore =
-      this.getOriginalIA.incorporationApplication.shareStructure.shareClasses[parentIndex].series.find(
-        shareSeries => shareSeries.id === this.getShareClasses[parentIndex].series[seriesIndex].id
+  private restoreShareSeries (seriesIndex: number, parentIndex: number, parentId: number, seriesId: number): void {
+    // Fetch the original Share class ( In the event the list is moved up or down, find the original by ID )
+    const originalShareClass = Object.assign({},
+      this.getOriginalIA.incorporationApplication.shareStructure.shareClasses.find(
+        shareClass => shareClass.id === parentId
       )
+    )
+
+    // Fetch and identify the ShareSeries to restore
+    const shareSeriesToRestore = Object.assign({},
+      originalShareClass.series.find(
+        shareSeries => shareSeries.id === seriesId
+      ))
 
     // Create a new ShareSeries List and restore the original data
     let newList: ShareClassIF[] = [...this.getShareClasses]
@@ -675,17 +685,25 @@ export default class ShareStructure extends Vue {
    * @param actionType The type of action to undo
    * @param index The identifier of which share class/series to undo
    * @param parentIndex The identifier of the parent class when handling series.
+   * @param parentId The parent class Id.
+   * @param seriesId The series Id.
    */
-  private undoCorrection (isClass: boolean, actionType: ActionTypes, index: number, parentIndex: number = null): void {
+  private undoCorrection (
+    isClass: boolean,
+    actionType: ActionTypes,
+    index: number,
+    parentIndex: number = null,
+    parentId: number = null,
+    seriesId: number = null): void {
     switch (actionType) {
       case ActionTypes.ADDED:
         isClass ? this.removeShareClass(index) : this.removeSeries(index, parentIndex)
         break
       case ActionTypes.EDITED:
-        isClass ? this.restoreShareClass(index) : this.restoreShareSeries(index, parentIndex)
+        isClass ? this.restoreShareClass(index) : this.restoreShareSeries(index, parentIndex, parentId, seriesId)
         break
       case ActionTypes.REMOVED:
-        isClass ? this.restoreShareClass(index) : this.restoreShareSeries(index, parentIndex)
+        isClass ? this.restoreShareClass(index) : this.restoreShareSeries(index, parentIndex, parentId, seriesId)
         break
     }
   }
