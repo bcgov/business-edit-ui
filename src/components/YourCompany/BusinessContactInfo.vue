@@ -241,9 +241,9 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   }
 
   // Watchers
-  @Watch('businessContact', { immediate: true })
+  @Watch('businessContact', { deep: true, immediate: true })
   private onContactPropValueChanged (): void {
-    this.contact = this.businessContact
+    this.contact = { ...this.businessContact }
     this.emitHaveChanges(this.hasBusinessContactInfoChange)
   }
 
