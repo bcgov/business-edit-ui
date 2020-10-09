@@ -90,7 +90,7 @@
               :editNameTranslation="editingNameTranslation"
               @addTranslation="addName($event)"
               @cancelTranslation="cancelOrResetEditing()"
-            ></add-name-translation>
+            />
             <list-name-translation
               v-if="draftTranslations && draftTranslations.length > 0"
               :isAddingNameTranslation="isAddingNameTranslation"

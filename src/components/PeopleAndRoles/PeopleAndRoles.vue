@@ -66,21 +66,19 @@
     </div>
 
     <div class="list-container px-4">
-      <!-- FUTURE: move OrgPerson inside ListPeopleAndRoles -->
-      <org-person v-if="renderOrgPersonForm"
+      <list-people-and-roles
+        :peopleAndRoles="getPeopleAndRoles"
+        :renderOrgPersonForm="renderOrgPersonForm"
         :currentOrgPerson="currentOrgPerson"
         :activeIndex="activeIndex"
         :nextId="nextId"
-        :existingCompletingParty="completingParty"
-        @addEdit="performAddEdit($event)"
-        @remove="performRemove($event)"
-        @reset="performReset()"
+        :currentCompletingParty="currentCompletingParty"
+        @initEdit="initEdit($event)"
+        @addEdit="addEdit($event)"
+        @remove="remove($event)"
+        @undo="undo($event)"
+        @reset="reset()"
         @removeCompletingPartyRole="removeCompletingPartyRole()"
-      />
-      <list-people-and-roles v-else
-        @undo="performUndo($event)"
-        @edit="initEdit($event)"
-        @remove="performRemove($event)"
       />
     </div>
   </v-card>
@@ -91,22 +89,17 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF, IncorporationFilingIF, OrgPersonIF, RoleIF } from '@/interfaces'
-import { ActionTypes, EntityTypes, IncorporatorTypes, Modes, Roles } from '@/enums'
-import { OrgPerson, ListPeopleAndRoles } from '.'
+import { ActionTypes, IncorporatorTypes, CompareModes, Roles } from '@/enums'
+import { ListPeopleAndRoles } from '.'
 import { CommonMixin } from '@/mixins'
 
 @Component({
-  components: {
-    OrgPerson,
-    ListPeopleAndRoles
-  }
+  components: { ListPeopleAndRoles }
 })
 export default class PeopleAndRoles extends Mixins(CommonMixin) {
   // Declarations for template
-  readonly EntityTypes = EntityTypes
   readonly Roles = Roles
   readonly IncorporatorTypes = IncorporatorTypes
-  readonly Modes = Modes
 
   // Global getters
   @Getter getPeopleAndRoles!: OrgPersonIF[]
@@ -148,22 +141,22 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   private activeIndex: number = NaN
   private currentOrgPerson: OrgPersonIF = null
   private nextId: number = NaN
-  private completingParty: OrgPersonIF = null
+  private currentCompletingParty: OrgPersonIF = null
   private originalCompletingParty: OrgPersonIF = null
 
   /** True if we have a Completing Party. */
   private get cpValid (): boolean {
-    return this.hasRole(Roles.COMPLETING_PARTY, 1, Modes.EXACT)
+    return this.hasRole(Roles.COMPLETING_PARTY, 1, CompareModes.EXACT)
   }
 
   /** True if we have at least 1 Incorporator. */
   private get incorpValid (): boolean {
-    return this.hasRole(Roles.INCORPORATOR, 1, Modes.AT_LEAST)
+    return this.hasRole(Roles.INCORPORATOR, 1, CompareModes.AT_LEAST)
   }
 
   /** True if we have at least 1 Director. */
   private get dirValid (): boolean {
-    return this.hasRole(Roles.DIRECTOR, 1, Modes.AT_LEAST)
+    return this.hasRole(Roles.DIRECTOR, 1, CompareModes.AT_LEAST)
   }
 
   /** True if we have all valid roles. */
@@ -188,7 +181,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   /**
    * Called when component is mounted.
    */
-  private async mounted (): Promise<void> {
+  private mounted (): void {
     // initialize component 'changed' flag
     this.setPeopleAndRolesChanged(false)
   }
@@ -200,17 +193,17 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    * @param mode the count comparison mode (eg, exact or at-least)
    * @returns True if the conditions are met, else False
    */
-  private hasRole (roleName: Roles, count: number, mode: Modes): boolean {
+  private hasRole (roleName: Roles, count: number, mode: CompareModes): boolean {
     // 1. filter out removed people
     // 2. filter in people with specified role
     const orgPersonWithSpecifiedRole = this.getPeopleAndRoles
       .filter(people => people.action !== ActionTypes.REMOVED)
       .filter(people => people.roles.some(party => party.roleType === roleName))
 
-    if (mode === Modes.EXACT) {
+    if (mode === CompareModes.EXACT) {
       return (orgPersonWithSpecifiedRole.length === count)
     }
-    if (mode === Modes.AT_LEAST) {
+    if (mode === CompareModes.AT_LEAST) {
       return (orgPersonWithSpecifiedRole.length >= count)
     }
   }
@@ -245,7 +238,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   /**
    * Resets state properties after a change is completed (or to cancel).
    */
-  private performReset (): void {
+  private reset (): void {
     this.currentOrgPerson = null
     this.activeIndex = NaN
     this.renderOrgPersonForm = false
@@ -258,7 +251,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    * Undoes changes to the specified org/person.
    * @param index The index of the org/person to undo.
    */
-  private performUndo (index: number): void {
+  private undo (index: number): void {
     // make a copy so Vue reacts when we set the updated list
     const tempList = cloneDeep(this.getPeopleAndRoles)
 
@@ -312,14 +305,14 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
-    this.performReset()
+    this.reset()
   }
 
   /**
    * Adds/changes the specified org/person.
    * @param person The data object of the org/person to change.
    */
-  private performAddEdit (person: OrgPersonIF): void {
+  private addEdit (person: OrgPersonIF): void {
     // make a copy so Vue reacts when we set the new list
     const tempList = cloneDeep(this.getPeopleAndRoles)
 
@@ -346,14 +339,14 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
-    this.performReset()
+    this.reset()
   }
 
   /**
    * Tags the specified org/person for removal.
    * @param index The index of the org/person to remove.
    */
-  private performRemove (index: number): void {
+  private remove (index: number): void {
     // make a copy so Vue reacts when we set the new list
     const tempList = cloneDeep(this.getPeopleAndRoles)
 
@@ -373,7 +366,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
-    this.performReset()
+    this.reset()
   }
 
   /**
@@ -438,16 +431,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    */
   @Watch('getPeopleAndRoles', { deep: true })
   private onPeopleAndRolesChanged (): void {
-    this.completingParty = this.getCompletingParty(this.getPeopleAndRoles)
+    this.currentCompletingParty = this.getCompletingParty(this.getPeopleAndRoles)
     this.setPeopleAndRolesValid(this.hasValidRoles)
-  }
-
-  /**
-   * Sets the 'changes' flag when a user has made changes.
-   */
-  @Watch('hasChanges')
-  private onPeopleAndRolesChanges (): void {
-    this.setPeopleAndRolesChanged(this.hasChanges)
   }
 }
 </script>

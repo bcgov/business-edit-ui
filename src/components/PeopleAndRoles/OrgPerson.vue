@@ -215,12 +215,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   /** The next ID to assign to an officer being added. */
   @Prop() private nextId: number
 
-  /**
-   * The existing Completing Party (or undefined).
-   * This is passed in because this component doesn't know about the list.
-   */
-  @Prop()
-  private existingCompletingParty: OrgPersonIF
+  /** The current Completing Party (or undefined). */
+  @Prop() private currentCompletingParty: OrgPersonIF
 
   // Global getter
   @Getter getCurrentDate!: string
@@ -302,13 +298,13 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     return isFormValid
   }
 
-  /** The formatted, existing completing party's name. */
-  private get existingCompletingPartyName (): string {
-    let name = this.existingCompletingParty.officer.firstName
-    if (this.existingCompletingParty.officer.middleName) {
-      name += ` ${this.existingCompletingParty.officer.middleName}`
+  /** The formatted, current completing party's name. */
+  private get currentCompletingPartyName (): string {
+    let name = this.currentCompletingParty?.officer.firstName
+    if (this.currentCompletingParty?.officer.middleName) {
+      name += ` ${this.currentCompletingParty.officer.middleName}`
     }
-    name += ` ${this.existingCompletingParty.officer.lastName}`
+    name += ` ${this.currentCompletingParty?.officer.lastName}`
     return name
   }
 
@@ -346,8 +342,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
    * Called when Completing Party checkbox is changed.
    */
   private assignCompletingPartyRole (): void {
-    if (this.orgPerson && this.isCompletingParty && this.existingCompletingParty &&
-      (this.orgPerson.officer.id !== this.existingCompletingParty.officer.id)
+    if (this.orgPerson && this.isCompletingParty && this.currentCompletingParty &&
+      (this.orgPerson.officer.id !== this.currentCompletingParty.officer.id)
     ) {
       this.confirmReassignPerson()
     }
@@ -480,7 +476,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   private reassignPersonErrorMessage (): string {
-    return `The Completing Party role is already assigned to ${this.existingCompletingPartyName}.\n` +
+    return `The Completing Party role is already assigned to ${this.currentCompletingPartyName}.\n` +
       'Selecting "Completing Party" here will change the Completing Party.'
   }
 
