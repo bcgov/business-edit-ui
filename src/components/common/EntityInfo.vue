@@ -83,6 +83,8 @@ export default class EntityInfo extends Vue {
         return 'Correction - Incorporation Application'
       case RouteNames.ALTERATION:
         return 'Alteration'
+      case RouteNames.SIGN_OUT:
+        return 'SignOut'
       default:
         return ''
     }

@@ -8,6 +8,7 @@ export default class BcolMixin extends Vue {
       const fetchUrl: string = this.payApi + 'codes/errors/' + errCode
       // Currently no desirable way to handle errors during this request,
       // null is returned in any error situation regardless.
+      // testing
       const errObj: any = await axios.get(fetchUrl)
       if (errObj?.data) {
         return errObj.data
