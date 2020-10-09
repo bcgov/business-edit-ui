@@ -3,16 +3,21 @@ codecov:
   branch: master
   max_report_age: false
 
+comment:
+  layout: "diff,flags,tree"
+  behavior: default
+  require_changes: true
+
 coverage:
   precision: 2
   round: down
   range: "70...100"
   status:
-    project: 
+    project:
       default:
-        target: auto  # this is default
-        if_not_found: success  # no commit found? still set a success
-        only_pulls: false
+        target: auto
+        if_not_found: success
+        only_pulls: true
 
 ignore:
   - "^/tests/**/*" # ignore test harness code
@@ -24,8 +29,3 @@ parsers:
       loop: true
       method: false
       macro: false
-
-comment:
-  layout: "diff,flags,tree"
-  behavior: default
-  require_changes: true
