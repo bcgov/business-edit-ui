@@ -19,12 +19,12 @@
                 id="org-person-form"
                 ref="orgPersonForm"
                 v-model="orgPersonFormValid"
-                v-on:submit.prevent="addPerson"
+                v-on:submit.prevent
               >
                 <!-- Person's Name -->
                 <template v-if="isPerson">
                   <label class="sub-header">Person's Name</label>
-                  <div class="form__row three-column">
+                  <div class="form__row three-column pt-6">
                     <v-text-field
                       filled
                       class="item"
@@ -55,7 +55,7 @@
                 <!-- Org's Name -->
                 <template v-if="isOrg">
                   <label class="sub-header">Corporation or Firm Name</label>
-                  <div class="org-name-container">
+                  <div class="org-name-container pt-6">
                     <v-text-field
                       filled
                       class="item"
@@ -70,39 +70,50 @@
                 <!-- Roles -->
                 <template>
                   <label class="sub-header">Roles</label>
-                  <v-row>
-                    <v-col cols="4" v-if="isPerson">
-                      <div :class="{'highlightedRole': isRoleLocked(Roles.COMPLETING_PARTY)}">
+                  <v-row class="roles-row my-6">
+                    <v-col cols="4" class="mt-0" v-if="isPerson">
+                      <div class="pa-1" :class="{'highlightedRole': isRoleLocked(Roles.COMPLETING_PARTY)}">
                         <v-checkbox
-                          v-model="isCompletingParty"
                           id="cp-checkbox"
+                          class="mt-1"
+                          v-model="selectedRoles"
+                          :value="Roles.COMPLETING_PARTY"
                           :label="Roles.COMPLETING_PARTY"
                           :disabled="isRoleLocked(Roles.COMPLETING_PARTY)"
+                          :rules="roleRules"
                           @change="assignCompletingPartyRole()"
                         />
                       </div>
                     </v-col>
-                    <v-col cols="4">
-                      <div :class="{ 'highlightedRole':
+                    <v-col cols="4" class="mt-0">
+                      <div class="pa-1" :class="{ 'highlightedRole':
                         isRoleLocked(Roles.INCORPORATOR) ||
                         orgPerson.officer.partyType === IncorporatorTypes.CORPORATION }"
                       >
                         <v-checkbox
-                          v-model="isIncorporator"
                           id="incorp-checkbox"
+                          class="mt-1"
+                          v-model="selectedRoles"
+                          :value="Roles.INCORPORATOR"
                           :label="Roles.INCORPORATOR"
                           :disabled="isRoleLocked(Roles.INCORPORATOR) ||
-                          orgPerson.officer.partyType === IncorporatorTypes.CORPORATION"
-                        />
+                            orgPerson.officer.partyType === IncorporatorTypes.CORPORATION"
+                          :rules="roleRules"
+                      />
                       </div>
                     </v-col>
-                    <v-col cols="4" v-if="isPerson">
-                      <v-checkbox
-                        v-model="isDirector"
-                        id="dir-checkbox"
-                        :label="Roles.DIRECTOR"
-                        @change="assignDirectorRole()"
-                      />
+                    <v-col cols="4" class="mt-0" v-if="isPerson">
+                      <div class="pa-1">
+                        <v-checkbox
+                          id="dir-checkbox"
+                          class="mt-1"
+                          v-model="selectedRoles"
+                          :value="Roles.DIRECTOR"
+                          :label="Roles.DIRECTOR"
+                          :rules="roleRules"
+                          @change="assignDirectorRole()"
+                        />
+                      </div>
                     </v-col>
                   </v-row>
                 </template>
@@ -110,7 +121,7 @@
                 <!-- Mailing Address -->
                 <template>
                   <label class="sub-header">Mailing Address</label>
-                  <div class="address-wrapper">
+                  <div class="address-wrapper pt-6">
                     <base-address
                       ref="mailingAddressNew"
                       :editing="true"
@@ -130,7 +141,7 @@
                   />
                   <div v-if="!inheritMailingAddress">
                     <label class="sub-header">Delivery Address</label>
-                    <div class="address-wrapper">
+                    <div class="address-wrapper pt-6">
                       <base-address
                         ref="deliveryAddressNew"
                         :editing="true"
@@ -165,6 +176,7 @@
 
 <script lang="ts">
 import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
+import { cloneDeep, isEqual } from 'lodash'
 import { OrgPersonIF, BaseAddressType, FormType, AddressIF, ConfirmDialogType, RoleIF } from '@/interfaces'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ConfirmDialog } from '@/components/dialogs'
@@ -227,14 +239,28 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   private deliveryAddressValid: boolean = false
   private reassignCompletingParty: boolean = false
 
-  /** Model value for Completing Party checkbox. */
-  private isCompletingParty: boolean = false
+  /** Model value for roles checboxes. */
+  private selectedRoles: Array<Roles> = []
 
-  /** Model value for Incorporator checkbox. */
-  private isIncorporator: boolean = false
+  /** True if Completing Party is checked. */
+  private get isCompletingParty (): boolean {
+    return this.selectedRoles.includes(Roles.COMPLETING_PARTY)
+  }
 
-  /** Model value for Director checkbox. */
-  private isDirector: boolean = false
+  /** True if Incorporator is checked. */
+  private get isIncorporator (): boolean {
+    return this.selectedRoles.includes(Roles.INCORPORATOR)
+  }
+
+  /** True if Director is checked. */
+  private get isDirector (): boolean {
+    return this.selectedRoles.includes(Roles.DIRECTOR)
+  }
+
+  /** The validation rules for the roles. */
+  private get roleRules (): Array<Function> {
+    return [ () => this.selectedRoles.length > 0 || 'A role is required' ]
+  }
 
   /** The validation rules for person first name. */
   private readonly firstNameRules: Array<Function> = [
@@ -297,20 +323,17 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   /**
-   * Called when component is created.
-   * Sets local properties if this an edit.
+   * Called when component is created to set local properties.
    */
   private created (): void {
     // safety check
     if (this.currentOrgPerson) {
-      this.orgPerson = { ...this.currentOrgPerson }
-      this.orgPerson.officer = { ...this.currentOrgPerson.officer }
-      // set the Director checkbox
-      this.isDirector = this.orgPerson.roles.some(party => party.roleType === Roles.DIRECTOR)
-      // set the Incorporator checkbox
-      this.isIncorporator = this.orgPerson.roles.some(party => party.roleType === Roles.INCORPORATOR)
-      // set the Completing Party checkbox
-      this.isCompletingParty = this.orgPerson.roles.some(party => party.roleType === Roles.COMPLETING_PARTY)
+      this.orgPerson = cloneDeep(this.currentOrgPerson)
+
+      // set checkbox array
+      this.selectedRoles = this.orgPerson.roles.map(r => r.roleType)
+
+      // populate addresses as needed
       this.inProgressMailingAddress = { ...this.orgPerson.mailingAddress }
       if (this.isDirector) {
         this.inProgressDeliveryAddress = { ...this.orgPerson.deliveryAddress }
@@ -346,13 +369,32 @@ export default class OrgPerson extends Mixins(CommonMixin) {
    */
   private validateOrgPersonForm (): void {
     if (this.isFormValid) {
-      if (this.reassignCompletingParty) {
-        this.emitRemoveCompletingPartyRole()
-      }
       const person = this.addPerson()
-      this.emitAddEdit(person)
-      this.resetAddPersonData(false)
+      // only process if person has actually changed
+      if (this.hasPersonChanged(person)) {
+        if (this.reassignCompletingParty) {
+          this.emitRemoveCompletingPartyRole()
+        }
+        this.emitAddEdit(person)
+        this.resetAddPersonData(false)
+      } else {
+        this.resetAddPersonData(true)
+      }
     }
+  }
+
+  /**
+   * Returns True if person has changed from its original properties.
+   */
+  private hasPersonChanged (person: OrgPersonIF): boolean {
+    const officer = !isEqual(person.officer, this.currentOrgPerson?.officer)
+    const mailing = !isEqual(person.mailingAddress, this.currentOrgPerson?.mailingAddress)
+    const delivery = !isEqual(person.deliveryAddress, this.currentOrgPerson?.deliveryAddress)
+    // just look at role type (ignore role.appointmentDate and role.cessationDate,
+    // which will have changed if the user toggled the checkboxes)
+    const roleTypes = !isEqual(person.roles.map(r => r.roleType), this.currentOrgPerson?.roles.map(r => r.roleType))
+    // NB: ignore actions
+    return (officer || mailing || delivery || roleTypes)
   }
 
   /**
@@ -376,8 +418,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
         this.reassignCompletingParty = true
       }
     }).catch(() => {
-      // clear the checkbox
-      this.isCompletingParty = false
+      // remove the role
+      this.selectedRoles = this.selectedRoles.filter(r => r !== Roles.COMPLETING_PARTY)
     })
   }
 
@@ -385,7 +427,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
    * Returns a new data object from current local properties.
    */
   private addPerson (): OrgPersonIF {
-    let personToAdd: OrgPersonIF = { ...this.orgPerson }
+    let personToAdd: OrgPersonIF = cloneDeep(this.orgPerson)
     personToAdd.officer = { ...this.orgPerson.officer }
     if (isNaN(this.activeIndex)) {
       personToAdd.officer.id = this.nextId
@@ -406,7 +448,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   private setPersonRoles (): RoleIF[] {
-    let roles: RoleIF[] = []
+    let roles: Array<RoleIF> = []
     if (this.isCompletingParty) {
       roles.push({ roleType: Roles.COMPLETING_PARTY, appointmentDate: this.getCurrentDate })
     }
@@ -434,7 +476,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   private isRoleLocked (role: Roles): boolean {
-    return (this.orgPerson?.roles.some(party => party.roleType === role) && isNaN(this.activeIndex))
+    return (this.orgPerson?.roles.some(r => r.roleType === role) && !isNaN(this.activeIndex))
   }
 
   private reassignPersonErrorMessage (): string {
@@ -578,10 +620,6 @@ li {
   line-height: 1.5rem;
 }
 
-.address-wrapper {
-  margin-top: 1.5rem;
-}
-
 .org-name-container {
   padding-top: 1rem;
 }
@@ -606,10 +644,21 @@ li {
   background-color: rgb(55, 164, 71);
   color: rgb(255, 255, 255) !important;
   font-weight: bold;
-  padding: 0.25rem;
 }
 
 ::v-deep .theme--light.v-label--is-disabled {
   color: white !important;
- }
+}
+
+.roles-row {
+  padding-bottom: 0;
+  margin-left: 0;
+  margin-right: 0;
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+// conditionally hide the v-messages (as we normally don't want their height)
+::v-deep .v-input--checkbox .v-messages:not(.error--text) {
+  display: none;
+}
 </style>
