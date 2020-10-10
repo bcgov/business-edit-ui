@@ -78,7 +78,7 @@
         @remove="remove($event)"
         @undo="undo($event)"
         @reset="reset()"
-        @removeCompletingPartyRole="removeCompletingPartyRole()"
+        @removeCpRole="removeCpRole()"
       />
     </div>
   </v-card>
@@ -373,7 +373,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    * Removes the Completing Party role from whichever person has it.
    * Also removes their email address.
    */
-  private removeCompletingPartyRole (): void {
+  private removeCpRole (): void {
     // make a copy so Vue reacts when we set the new list
     const tempList = cloneDeep(this.getPeopleAndRoles)
 

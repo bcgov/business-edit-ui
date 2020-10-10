@@ -1,20 +1,23 @@
 <template>
   <div flat id="list-people-roles" class="mt-0">
+
     <!-- conditionally render add component -->
-    <div id="people-roles-add" v-if="renderOrgPersonForm && isNaN(activeIndex)">
-      <v-divider class="px-4" />
-      <org-person
-        :currentOrgPerson="currentOrgPerson"
-        :activeIndex="activeIndex"
-        :nextId="nextId"
-        :currentCompletingParty="currentCompletingParty"
-        @addEdit="emitAddEdit($event)"
-        @remove="emitRemove($event)"
-        @reset="emitReset()"
-        @removeCompletingPartyRole="emitRemoveCompletingPartyRole()"
-      />
-      <v-divider class="px-4 mt-2 mb-4" />
-    </div>
+    <v-expand-transition>
+      <div id="people-roles-add" v-if="renderOrgPersonForm && isNaN(activeIndex)">
+        <v-divider class="px-4" />
+        <org-person
+          :currentOrgPerson="currentOrgPerson"
+          :activeIndex="activeIndex"
+          :nextId="nextId"
+          :currentCompletingParty="currentCompletingParty"
+          @addEdit="emitAddEdit($event)"
+          @remove="emitRemove($event)"
+          @reset="emitReset()"
+          @removeCpRole="emitRemoveCpRole()"
+        />
+        <v-divider class="px-4 mt-2 mb-4" />
+      </div>
+    </v-expand-transition>
 
     <!-- List Display Section -->
     <div id="people-roles-list" v-if="peopleAndRoles.length > 0">
@@ -44,7 +47,7 @@
             @addEdit="emitAddEdit($event)"
             @remove="emitRemove($event)"
             @reset="emitReset()"
-            @removeCompletingPartyRole="emitRemoveCompletingPartyRole()"
+            @removeCpRole="emitRemoveCpRole()"
           />
         </div>
 
@@ -60,6 +63,7 @@
             </v-tooltip>
 
             <br v-if="orgPerson.action">
+
             <v-chip v-if="wasAdded(orgPerson)"
               x-small label color="#1669BB" text-color="white">ADDED</v-chip>
             <v-chip v-if="wasEdited(orgPerson)"
@@ -266,16 +270,16 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   private emitAddEdit (person: OrgPersonIF): void {}
 
   /**
-   * Emits an event and index to the parent to reset the state.
+   * Emits an event to the parent to reset the state.
    */
   @Emit('reset')
   private emitReset (): void {}
 
   /**
-   * Emits an event and index to the parent to remove the Completing Party role.
+   * Emits an event to the parent to remove the Completing Party role.
    */
-  @Emit('removeCompletingPartyRole')
-  private emitRemoveCompletingPartyRole (): void {}
+  @Emit('removeCpRole')
+  private emitRemoveCpRole (): void {}
 }
 </script>
 
@@ -332,7 +336,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
 }
 
 .col {
-  padding: 0.25rem;
+  padding: 0 0.25rem;
 
   .col-roles {
     padding: 0!important;

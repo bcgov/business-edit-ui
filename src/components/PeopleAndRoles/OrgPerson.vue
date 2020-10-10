@@ -5,176 +5,173 @@
       attach="#add-edit-org-person"
     />
 
-    <v-expand-transition>
-      <ul class="list add-person">
-        <li class="add-person-container">
-          <div class="meta-container">
-            <label class="add-org-header" v-if="isPerson">
-              <span v-if="isNaN(activeIndex)">Add Person</span>
-              <span v-else>Edit Person</span>
-            </label>
-            <label class="add-org-header" v-if="isOrg">
-              <span v-if="isNaN(activeIndex)">Add Corporation or Firm</span>
-              <span v-else>Edit Corporation or Firm</span>
-            </label>
+    <ul class="list add-person">
+      <li class="add-person-container">
+        <div class="meta-container">
+          <label class="add-org-header" v-if="isPerson">
+            <span v-if="isNaN(activeIndex)">Add Person</span>
+            <span v-else>Edit Person</span>
+          </label>
+          <label class="add-org-header" v-if="isOrg">
+            <span v-if="isNaN(activeIndex)">Add Corporation or Firm</span>
+            <span v-else>Edit Corporation or Firm</span>
+          </label>
 
-            <div class="meta-container__inner">
-              <v-form
-                id="org-person-form"
-                ref="orgPersonForm"
-                v-model="orgPersonFormValid"
-                v-on:submit.prevent
-              >
-                <!-- Person's Name -->
-                <template v-if="isPerson">
-                  <label class="sub-header">Person's Name</label>
-                  <div class="form__row three-column pt-6">
-                    <v-text-field
-                      filled
-                      class="item"
-                      label="First Name"
-                      id="person__first-name"
-                      v-model="orgPerson.officer.firstName"
-                      :rules="firstNameRules"
-                    />
-                    <v-text-field
-                      filled
-                      class="item"
-                      label="Middle Name"
-                      id="person__middle-name"
-                      v-model="orgPerson.officer.middleName"
-                      :rules="middleNameRules"
-                    />
-                    <v-text-field
-                      filled
-                      class="item"
-                      label="Last Name"
-                      id="person__last-name"
-                      v-model="orgPerson.officer.lastName"
-                      :rules="lastNameRules"
-                    />
-                  </div>
-                </template>
-
-                <!-- Org's Name -->
-                <template v-if="isOrg">
-                  <label class="sub-header">Corporation or Firm Name</label>
-                  <div class="org-name-container pt-6">
-                    <v-text-field
-                      filled
-                      class="item"
-                      label="Full Legal Corporation or Firm Name"
-                      id="firm-name"
-                      v-model="orgPerson.officer.orgName"
-                      :rules="orgNameRules"
-                    />
-                  </div>
-                </template>
-
-                <!-- Roles -->
-                <template>
-                  <label class="sub-header">Roles</label>
-                  <v-row class="roles-row my-6">
-                    <v-col cols="4" class="mt-0" v-if="isPerson">
-                      <div class="pa-1" :class="{'highlightedRole': isRoleLocked(Roles.COMPLETING_PARTY)}">
-                        <v-checkbox
-                          id="cp-checkbox"
-                          class="mt-1"
-                          v-model="selectedRoles"
-                          :value="Roles.COMPLETING_PARTY"
-                          :label="Roles.COMPLETING_PARTY"
-                          :disabled="isRoleLocked(Roles.COMPLETING_PARTY)"
-                          :rules="roleRules"
-                          @change="assignCompletingPartyRole()"
-                        />
-                      </div>
-                    </v-col>
-                    <v-col cols="4" class="mt-0">
-                      <div class="pa-1" :class="{ 'highlightedRole':
-                        isRoleLocked(Roles.INCORPORATOR) ||
-                        orgPerson.officer.partyType === IncorporatorTypes.CORPORATION }"
-                      >
-                        <v-checkbox
-                          id="incorp-checkbox"
-                          class="mt-1"
-                          v-model="selectedRoles"
-                          :value="Roles.INCORPORATOR"
-                          :label="Roles.INCORPORATOR"
-                          :disabled="isRoleLocked(Roles.INCORPORATOR) ||
-                            orgPerson.officer.partyType === IncorporatorTypes.CORPORATION"
-                          :rules="roleRules"
-                      />
-                      </div>
-                    </v-col>
-                    <v-col cols="4" class="mt-0" v-if="isPerson">
-                      <div class="pa-1">
-                        <v-checkbox
-                          id="dir-checkbox"
-                          class="mt-1"
-                          v-model="selectedRoles"
-                          :value="Roles.DIRECTOR"
-                          :label="Roles.DIRECTOR"
-                          :rules="roleRules"
-                          @change="assignDirectorRole()"
-                        />
-                      </div>
-                    </v-col>
-                  </v-row>
-                </template>
-
-                <!-- Mailing Address -->
-                <template>
-                  <label class="sub-header">Mailing Address</label>
-                  <div class="address-wrapper pt-6">
-                    <base-address
-                      ref="mailingAddressNew"
-                      :editing="true"
-                      :schema="PersonAddressSchema"
-                      :address="inProgressMailingAddress"
-                      @update:address="inProgressMailingAddress = $event"
-                      @valid="mailingAddressValid = $event"
-                    />
-                  </div>
-                </template>
-
-                <!-- Delivery Address (for directors only) -->
-                <div class="form__row" v-if="isDirector">
-                  <v-checkbox
-                    label="Delivery Address same as Mailing Address"
-                    v-model="inheritMailingAddress"
+          <div class="meta-container__inner">
+            <v-form
+              id="org-person-form"
+              ref="orgPersonForm"
+              v-model="orgPersonFormValid"
+              v-on:submit.prevent
+            >
+              <!-- Person's Name -->
+              <template v-if="isPerson">
+                <label class="sub-header">Person's Name</label>
+                <div class="form__row three-column pt-6">
+                  <v-text-field
+                    filled
+                    class="item"
+                    label="First Name"
+                    id="person__first-name"
+                    v-model="orgPerson.officer.firstName"
+                    :rules="firstNameRules"
                   />
-                  <div v-if="!inheritMailingAddress">
-                    <label class="sub-header">Delivery Address</label>
-                    <div class="address-wrapper pt-6">
-                      <base-address
-                        ref="deliveryAddressNew"
-                        :editing="true"
-                        :schema="PersonAddressSchema"
-                        :address="inProgressDeliveryAddress"
-                        @update:address="inProgressDeliveryAddress = $event"
-                        @valid="deliveryAddressValid = $event"
+                  <v-text-field
+                    filled
+                    class="item"
+                    label="Middle Name"
+                    id="person__middle-name"
+                    v-model="orgPerson.officer.middleName"
+                    :rules="middleNameRules"
+                  />
+                  <v-text-field
+                    filled
+                    class="item"
+                    label="Last Name"
+                    id="person__last-name"
+                    v-model="orgPerson.officer.lastName"
+                    :rules="lastNameRules"
+                  />
+                </div>
+              </template>
+
+              <!-- Org's Name -->
+              <template v-if="isOrg">
+                <label class="sub-header">Corporation or Firm Name</label>
+                <div class="org-name-container pt-6">
+                  <v-text-field
+                    filled
+                    class="item"
+                    label="Full Legal Corporation or Firm Name"
+                    id="firm-name"
+                    v-model="orgPerson.officer.orgName"
+                    :rules="orgNameRules"
+                  />
+                </div>
+              </template>
+
+              <!-- Roles -->
+              <template>
+                <label class="sub-header">Roles</label>
+                <v-row class="roles-row my-6">
+                  <v-col cols="4" class="mt-0" v-if="isPerson">
+                    <div class="pa-1" :class="{'highlightedRole': isRoleLocked(Roles.COMPLETING_PARTY)}">
+                      <v-checkbox
+                        id="cp-checkbox"
+                        class="mt-1"
+                        v-model="selectedRoles"
+                        :value="Roles.COMPLETING_PARTY"
+                        :label="Roles.COMPLETING_PARTY"
+                        :disabled="isRoleLocked(Roles.COMPLETING_PARTY)"
+                        :rules="roleRules"
+                        @change="assignCompletingPartyRole()"
                       />
                     </div>
+                  </v-col>
+                  <v-col cols="4" class="mt-0">
+                    <div class="pa-1" :class="{ 'highlightedRole': isRoleLocked(Roles.INCORPORATOR) ||
+                      orgPerson.officer.partyType === IncorporatorTypes.CORPORATION }"
+                    >
+                      <v-checkbox
+                        id="incorp-checkbox"
+                        class="mt-1"
+                        v-model="selectedRoles"
+                        :value="Roles.INCORPORATOR"
+                        :label="Roles.INCORPORATOR"
+                        :disabled="isRoleLocked(Roles.INCORPORATOR) ||
+                          orgPerson.officer.partyType === IncorporatorTypes.CORPORATION"
+                        :rules="roleRules"
+                    />
+                    </div>
+                  </v-col>
+                  <v-col cols="4" class="mt-0" v-if="isPerson">
+                    <div class="pa-1">
+                      <v-checkbox
+                        id="dir-checkbox"
+                        class="mt-1"
+                        v-model="selectedRoles"
+                        :value="Roles.DIRECTOR"
+                        :label="Roles.DIRECTOR"
+                        :rules="roleRules"
+                        @change="assignDirectorRole()"
+                      />
+                    </div>
+                  </v-col>
+                </v-row>
+              </template>
+
+              <!-- Mailing Address -->
+              <template>
+                <label class="sub-header">Mailing Address</label>
+                <div class="address-wrapper pt-6">
+                  <base-address
+                    ref="mailingAddressNew"
+                    :editing="true"
+                    :schema="PersonAddressSchema"
+                    :address="inProgressMailingAddress"
+                    @update:address="inProgressMailingAddress = $event"
+                    @valid="mailingAddressValid = $event"
+                  />
+                </div>
+              </template>
+
+              <!-- Delivery Address (for directors only) -->
+              <div class="form__row" v-if="isDirector">
+                <v-checkbox
+                  label="Delivery Address same as Mailing Address"
+                  v-model="inheritMailingAddress"
+                />
+                <div v-if="!inheritMailingAddress">
+                  <label class="sub-header">Delivery Address</label>
+                  <div class="address-wrapper pt-6">
+                    <base-address
+                      ref="deliveryAddressNew"
+                      :editing="true"
+                      :schema="PersonAddressSchema"
+                      :address="inProgressDeliveryAddress"
+                      @update:address="inProgressDeliveryAddress = $event"
+                      @valid="deliveryAddressValid = $event"
+                    />
                   </div>
                 </div>
+              </div>
 
-                <!-- Action Buttons -->
-                <div class="form__row form__btns">
-                  <v-btn id="btn-remove" large color="error"
-                    :disabled="isNaN(activeIndex)"
-                    @click="emitRemove(activeIndex)">Remove</v-btn>
-                  <v-btn id="btn-done" large color="primary" class="ml-auto"
-                    @click="validateOrgPersonForm()"
-                    :disabled="!isFormValid">Done</v-btn>
-                  <v-btn id="btn-cancel" large outlined color="primary"
-                    @click="resetAddPersonData(true)">Cancel</v-btn>
-                </div>
-              </v-form>
-            </div>
+              <!-- Action Buttons -->
+              <div class="form__row form__btns">
+                <v-btn id="btn-remove" large color="error"
+                  :disabled="isNaN(activeIndex)"
+                  @click="emitRemove(activeIndex)">Remove</v-btn>
+                <v-btn id="btn-done" large color="primary" class="ml-auto"
+                  @click="validateOrgPersonForm()"
+                  :disabled="!isFormValid">Done</v-btn>
+                <v-btn id="btn-cancel" large outlined color="primary"
+                  @click="resetAddPersonData(true)">Cancel</v-btn>
+              </div>
+            </v-form>
           </div>
-        </li>
-      </ul>
-    </v-expand-transition>
+        </div>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -373,10 +370,10 @@ export default class OrgPerson extends Mixins(CommonMixin) {
       // only process if person has actually changed
       if (this.hasPersonChanged(person)) {
         if (this.reassignCompletingParty) {
-          this.emitRemoveCompletingPartyRole()
+          this.emitRemoveCpRole()
         }
         this.emitAddEdit(person)
-        this.resetAddPersonData(false)
+        this.resetAddPersonData(false) // don't emit event
       } else {
         this.resetAddPersonData(true)
       }
@@ -499,16 +496,16 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   private emitRemove (index: number): void {}
 
   /**
-   * Emits an event and index to the parent to reset the state.
+   * Emits an event to the parent to reset the state.
    */
   @Emit('reset')
   private emitReset (): void {}
 
   /**
-   * Emits an event and index to the parent to remove the Completing Party role.
+   * Emits an event to the parent to remove the Completing Party role.
    */
-  @Emit('removeCompletingPartyRole')
-  private emitRemoveCompletingPartyRole (): void {}
+  @Emit('removeCpRole')
+  private emitRemoveCpRole (): void {}
 }
 </script>
 
