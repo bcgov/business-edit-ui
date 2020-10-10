@@ -29,7 +29,7 @@
 
       <!-- List Content -->
       <v-row
-        class="people-roles-content list-item__subtitle py-3"
+        class="people-roles-content py-3"
         v-for="(orgPerson, index) in peopleAndRoles"
         :key="index"
         no-gutters

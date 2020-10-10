@@ -9,6 +9,10 @@
       <ul class="list add-person">
         <li class="add-person-container">
           <div class="meta-container">
+            <label class="add-org-header" v-if="isPerson">
+              <span v-if="isNaN(activeIndex)">Add Person</span>
+              <span v-else>Edit Person</span>
+            </label>
             <label class="add-org-header" v-if="isOrg">
               <span v-if="isNaN(activeIndex)">Add Corporation or Firm</span>
               <span v-else>Edit Corporation or Firm</span>
