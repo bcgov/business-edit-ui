@@ -24,6 +24,8 @@ const middleNameSelector = '#person__middle-name'
 const lastNameSelector = '#person__last-name'
 const orgNameSelector = '#firm-name'
 const completingPartyChkBoxSelector = '#cp-checkbox'
+const incorporatorChkBoxSelector = '#incorp-checkbox'
+const directorChkBoxSelector = '#dir-checkbox'
 const removeButtonSelector = '#btn-remove'
 const doneButtonSelector = '#btn-done'
 const cancelButtonSelector = '#btn-cancel'
@@ -113,11 +115,34 @@ const validOrgData = {
   }
 }
 
+const emptyPerson = {
+  officer: {
+    id: null,
+    firstName: '',
+    lastName: '',
+    middleName: '',
+    orgName: '',
+    partyType: 'Person',
+    email: null
+  },
+  roles: [],
+  mailingAddress: {
+    streetAddress: '',
+    streetAddressAdditional: '',
+    addressCity: '',
+    addressRegion: '',
+    postalCode: '',
+    addressCountry: '',
+    deliveryInstructions: ''
+  },
+  action: null
+}
+
 /**
  * Returns the last event for a given name, to be used for testing event propagation in response to component changes.
- * @param wrapper the wrapper for the component that is being tested.
- * @param name the name of the event that is to be returned.
- * @returns the value of the last named event for the wrapper.
+ * @param wrapper the wrapper for the component that is being tested
+ * @param name the name of the event that is to be returned
+ * @returns the value of the last named event for the wrapper
  */
 function getLastEvent (wrapper: Wrapper<OrgPerson>, name: string): any {
   const eventsList = wrapper.emitted(name)
@@ -180,10 +205,12 @@ describe('Org/Person component', () => {
     wrapper.destroy()
   })
 
-  it('Displays form data for person', async () => {
+  // NB: edit functions the same as add for a person
+  it('Displays edit form for person', async () => {
     const wrapper = createComponent(validPersonData, 0, null, null)
     await Vue.nextTick()
 
+    // verify person's name
     expect((wrapper.find(firstNameSelector).element as HTMLInputElement).value)
       .toEqual(validPersonData['officer']['firstName'])
     expect((wrapper.find(middleNameSelector).element as HTMLInputElement).value)
@@ -191,6 +218,17 @@ describe('Org/Person component', () => {
     expect((wrapper.find(lastNameSelector).element as HTMLInputElement).value)
       .toEqual(validPersonData['officer']['lastName'])
 
+    // verify role checkboxes
+    expect(wrapper.find(completingPartyChkBoxSelector).attributes('aria-checked')).toBe("true")
+    expect(wrapper.find(incorporatorChkBoxSelector).attributes('aria-checked')).toBe("false")
+    expect(wrapper.find(directorChkBoxSelector).attributes('aria-checked')).toBe("true")
+
+    // verify that all role checkboxes are enabled
+    expect(wrapper.find(completingPartyChkBoxSelector).attributes('disabled')).toBeUndefined()
+    expect(wrapper.find(incorporatorChkBoxSelector).attributes('disabled')).toBeUndefined()
+    expect(wrapper.find(directorChkBoxSelector).attributes('disabled')).toBeUndefined()
+
+    // verify action buttons
     expect(wrapper.find(doneButtonSelector).attributes('disabled')).toBeUndefined()
     expect(wrapper.find(removeButtonSelector).attributes('disabled')).toBeUndefined()
     expect(wrapper.find(cancelButtonSelector).attributes('disabled')).toBeUndefined()
@@ -198,13 +236,24 @@ describe('Org/Person component', () => {
     wrapper.destroy()
   })
 
-  it('Displays form data for org', async () => {
+  // NB: add functions the same as edit for an org
+  it('Displays add form for org', async () => {
     const wrapper = createComponent(validOrgData, NaN, 0, null)
     await Vue.nextTick()
 
+    // verify org's name
     expect((wrapper.find(orgNameSelector).element as HTMLInputElement).value)
       .toEqual(validOrgData['officer']['orgName'])
 
+    // verify role checkboxes
+    expect(wrapper.find(completingPartyChkBoxSelector).exists()).toBe(false)
+    expect(wrapper.find(incorporatorChkBoxSelector).attributes('aria-checked')).toBe("true")
+    expect(wrapper.find(directorChkBoxSelector).exists()).toBe(false)
+
+    // verify that role checkbox is disabled (ie, role is locked)
+    expect(wrapper.find(incorporatorChkBoxSelector).attributes('disabled')).toBe("disabled")
+
+    // verify action buttons
     expect(wrapper.find(doneButtonSelector).attributes('disabled')).toBeUndefined()
     expect(wrapper.find(removeButtonSelector).attributes('disabled')).toBeDefined()
     expect(wrapper.find(cancelButtonSelector).attributes('disabled')).toBeUndefined()
@@ -212,7 +261,7 @@ describe('Org/Person component', () => {
     wrapper.destroy()
   })
 
-  it('Remove button is enabled in edit mode', async () => {
+  it('Enables Remove button in edit mode', async () => {
     const wrapper = createComponent(validOrgData, 0, null, null)
 
     expect(wrapper.find(removeButtonSelector).attributes('disabled')).toBeUndefined()
@@ -220,7 +269,7 @@ describe('Org/Person component', () => {
     wrapper.destroy()
   })
 
-  it('Remove button is disabled in create mode', async () => {
+  it('Disables Remove button in create mode', async () => {
     const wrapper = createComponent(validOrgData, NaN, 0, null)
 
     expect(wrapper.find(removeButtonSelector).attributes('disabled')).toBeDefined()
@@ -228,7 +277,7 @@ describe('Org/Person component', () => {
     wrapper.destroy()
   })
 
-  it('Clicking Remove button emits "remove" event', async () => {
+  it('Emits "remove" event when clicking Remove button', async () => {
     const wrapper = createComponent(validOrgData, 0, null, null)
 
     wrapper.find(removeButtonSelector).trigger('click')
@@ -239,7 +288,7 @@ describe('Org/Person component', () => {
     wrapper.destroy()
   })
 
-  it('Clicking Done button when org not changed emits "reset" event', async () => {
+  it('Emits "reset" event when clicking Done button and org has not changed', async () => {
     const wrapper = createComponent(validOrgData, 0, null, null)
     await Vue.nextTick()
 
@@ -256,7 +305,7 @@ describe('Org/Person component', () => {
     wrapper.destroy()
   })
 
-  it('Clicking Done button when org changed emits "addEdit" event', async () => {
+  it('Emits "addEdit" event when clicking Done button and org has changed', async () => {
     const wrapper = createComponent(validOrgData, 0, null, null)
     await Vue.nextTick()
 
@@ -277,7 +326,7 @@ describe('Org/Person component', () => {
     wrapper.destroy()
   })
 
-  it('Clicking Cancel button emits "reset" event', async () => {
+  it('Emits "reset" event when clicking Cancel button', async () => {
     const wrapper = createComponent(validOrgData, 0, null, null)
 
     wrapper.find(cancelButtonSelector).trigger('click')
@@ -405,7 +454,20 @@ describe('Org/Person component', () => {
     wrapper.destroy()
   })
 
-  it('Emits "removeCpRole" and "addEdit" events on reassigning completing party', async () => {
+  // TODO
+  // it('Shows popup when undoing an edit would change the Completing Party', async () => {
+  //   const wrapper = createComponent(validIncorporator, NaN, 0, validPersonData)
+
+  //   const checkbox = wrapper.find(completingPartyChkBoxSelector)
+  //   checkbox.setChecked(true)
+  //   await Vue.nextTick()
+
+  //   expect(wrapper.vm.$refs.reassignCpDialog).toBeTruthy()
+
+  //   wrapper.destroy()
+  // })
+
+  it('Emits "removeCpRole" and "addEdit" events on reassigning the Completing Party', async () => {
     const wrapper = createComponent(validIncorporator, NaN, 1, validPersonData)
 
     // add Completing Party role
@@ -431,6 +493,37 @@ describe('Org/Person component', () => {
 
     expect(getLastEvent(wrapper, addEditEvent).roles[0])
       .toStrictEqual({ roleType: 'Completing Party', appointmentDate: '2020-03-30' })
+
+    wrapper.destroy()
+  })
+
+  it('Displays errors and does not submit form when clicking Done button and form is invalid', async () => {
+    const wrapper = createComponent(emptyPerson, NaN, 0, null)
+
+    // verify that Done button is enabled, even for an empty person
+    // then click it
+    const button = wrapper.find(doneButtonSelector)
+    expect(button.attributes('disabled')).toBeUndefined()
+    button.trigger('click')
+    await Vue.nextTick()
+
+    // get a list of validation messages
+    const wrappers = wrapper.findAll('.v-messages__message')
+    const messages: Array<string> = []
+    for (let i = 0; i < wrappers.length; i++) {
+      messages.push(wrappers.at(i).text())
+    }
+
+    // verify some error messages
+    expect(messages.includes('A first name is required'))
+    expect(messages.includes('A last name is required'))
+    expect(messages.includes('A role is required'))
+    expect(messages.includes('This field is required'))
+
+    // verify that no events were emitted
+    expect(wrapper.emitted(removeCpRoleEvent)).toBeUndefined()
+    expect(wrapper.emitted(addEditEvent)).toBeUndefined()
+    expect(wrapper.emitted(resetEvent)).toBeUndefined()
 
     wrapper.destroy()
   })
