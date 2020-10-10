@@ -10,13 +10,10 @@
 
         <p v-else-if="type === NameRequestStates.NEED_CONSENT">The specified name request is awaiting consent.</p>
 
-        <p v-else-if="type === NameRequestStates.NOT_FOUND">The specified name request could not be found.</p>
-
         <p v-else-if="type === NameRequestStates.CONSUMED">The specified name request has already been consumed.</p>
 
-        <p v-else-if="type === NameRequestStates.INVALID">The specified name request data is invalid.</p>
-
-        <template v-else-if="type === NameRequestStates.INCORRECT_EMAIL || type === NameRequestStates.INCORRECT_PHONE">
+        <template v-else-if="type === NameRequestStates.NOT_FOUND || type === NameRequestStates.INVALID ||
+                  type === NameRequestStates.INCORRECT_EMAIL || type === NameRequestStates.INCORRECT_PHONE">
           <p>We could not find a match for the information you have entered.
           Please verify the NR Number and the phone number or email address and try again.</p>
         </template>

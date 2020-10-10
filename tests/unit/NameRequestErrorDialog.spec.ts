@@ -19,7 +19,10 @@ describe('unit tests', () => {
 
     expect(wrapper.isVisible()).toBe(true)
     expect(wrapper.find('.v-card__title').text()).toBe('Name Request Not Found')
-    expect(wrapper.find('.v-card__text p').text()).toBe('The specified name request could not be found.')
+    expect(wrapper.find('.v-card__text p').text())
+      .toContain('We could not find a match for the information you have entered.')
+    expect(wrapper.find('.v-card__text p').text())
+      .toContain('Please verify the NR Number and the phone number or email address and try again.')
     expect(wrapper.find('.v-card__actions button').text()).toBe('OK')
 
     wrapper.destroy()
@@ -71,7 +74,10 @@ describe('unit tests', () => {
     expect(wrapper.isVisible()).toBe(true)
     // look for stubs due to shallow mount
     expect(wrapper.find('.v-card__title').text()).toBe('Name Request Not Found')
-    expect(wrapper.find('.v-card__text p').text()).toBe('The specified name request data is invalid.')
+    expect(wrapper.find('.v-card__text p').text())
+      .toContain('We could not find a match for the information you have entered.')
+    expect(wrapper.find('.v-card__text p').text())
+      .toContain('Please verify the NR Number and the phone number or email address and try again.')
     expect(wrapper.find('.v-card__actions button').text()).toBe('OK')
 
     wrapper.destroy()
