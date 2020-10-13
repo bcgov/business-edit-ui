@@ -192,6 +192,75 @@ describe('Share Structure component', () => {
       action: 'added'
     }]
 
+  const shareClassesNestedSeriesCorrected: any = [
+    {
+      id: 1,
+      name: 'Common Shares',
+      priority: 0,
+      maxNumberOfShares: 10000,
+      parValue: 1.58,
+      currency: 'CAD',
+      hasRightsOrRestrictions: true,
+      series: [
+        {
+          id: 1,
+          name: 'Share Series 1',
+          priority: 1,
+          hasMaximumShares: true,
+          maxNumberOfShares: 50,
+          hasRightsOrRestrictions: false
+        },
+        {
+          id: 2,
+          name: 'Share Series 2',
+          priority: 2,
+          hasMaximumShares: true,
+          maxNumberOfShares: 100,
+          hasRightsOrRestrictions: false
+        }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Non-voting Shares',
+      priority: 1,
+      maxNumberOfShares: 1000,
+      parValue: null,
+      currency: '',
+      hasRightsOrRestrictions: false,
+      series: [
+        {
+          id: 1,
+          name: 'Share Series 3B',
+          priority: 1,
+          hasMaximumShares: true,
+          maxNumberOfShares: 50,
+          hasRightsOrRestrictions: false,
+          action: 'Corrected'
+        }
+      ]
+    },
+    {
+      id: 3,
+      name: 'Common Shares 2',
+      priority: 2,
+      maxNumberOfShares: 10000,
+      parValue: 0.568,
+      currency: 'CAD',
+      hasRightsOrRestrictions: true,
+      series: []
+    },
+    {
+      id: 4,
+      priority: 3,
+      name: 'Non-voting Shares 2',
+      maxNumberOfShares: 1000,
+      parValue: null,
+      currency: '',
+      hasRightsOrRestrictions: false,
+      series: []
+    }]
+
   beforeEach(() => {
     store.state.stateModel.originalIA = shareClassesOriginal
     store.state.stateModel.createShareStructureStep.shareClasses = shareClassesCorrected
@@ -340,7 +409,7 @@ describe('Share Structure component', () => {
     store.state.stateModel.createShareStructureStep.shareClasses = shareClassesOriginal
     expect(wrapper.vm.hasSeriesChanges).toBe(false)
 
-    store.state.stateModel.createShareStructureStep.shareClasses = shareClassesCorrected
+    store.state.stateModel.createShareStructureStep.shareClasses = shareClassesNestedSeriesCorrected
     expect(wrapper.vm.hasSeriesChanges).toBe(true)
   })
 })
