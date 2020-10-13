@@ -213,11 +213,6 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
     )
   }
 
-  /** True if Jest is running the code. */
-  private get isJestRunning (): boolean {
-    return (process.env.JEST_WORKER_ID !== undefined)
-  }
-
   /** The About text. */
   private get aboutText (): string {
     return process.env.ABOUT_TEXT
