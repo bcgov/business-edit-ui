@@ -12,7 +12,8 @@
 
     <!-- Instructional Text -->
     <div class="share-info-container pt-6 px-4">
-      Legal obligations copy TBD:
+      You can correct the share structure for this business by adding new shares classes or by changing the share
+      classes as filed.
     </div>
 
     <!-- Add Buttons -->

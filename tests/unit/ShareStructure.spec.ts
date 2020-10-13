@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
+import flushPromises from 'flush-promises'
 
 // Utils
 import { createLocalVue, mount } from '@vue/test-utils'
@@ -269,6 +270,7 @@ describe('Share Structure component', () => {
     expect(classSharesEdited.text()).toContain('CORRECTED')
     expect(classSharesRemoved.text()).toContain('REMOVED')
     expect(classSharesAdded.text()).toContain('ADDED')
+    expect(wrapper.vm.hasClassChanges).toBe(true)
   })
 
   it('checks for the Action chips on modified Series shares', () => {
@@ -281,6 +283,7 @@ describe('Share Structure component', () => {
     expect(seriesSharesRemoved.text()).toContain('REMOVED')
     expect(seriesSharesEdited.text()).toContain('CORRECTED')
     expect(seriesSharesAdded.text()).toContain('ADDED')
+    expect(wrapper.vm.hasSeriesChanges).toBe(true)
   })
 
   it('checks for correct CLASS primary action', () => {
@@ -324,5 +327,21 @@ describe('Share Structure component', () => {
 
     // Validate series data post move
     expect(wrapper.vm.getShareClasses[0].series[0].name).toBe('Share Series 3')
+  })
+
+  it('correctly identifies no changes in the class and series structure', async () => {
+    // Restore the Share Structure to it's original state
+    store.state.stateModel.createShareStructureStep.shareClasses = shareClassesOriginal
+    expect(wrapper.vm.hasClassChanges).toBe(false)
+    expect(wrapper.vm.hasSeriesChanges).toBe(false)
+  })
+
+  it('correctly identifies changes in the nested series structure', async () => {
+    // Restore the Share Structure to it's original state
+    store.state.stateModel.createShareStructureStep.shareClasses = shareClassesOriginal
+    expect(wrapper.vm.hasSeriesChanges).toBe(false)
+
+    store.state.stateModel.createShareStructureStep.shareClasses = shareClassesCorrected
+    expect(wrapper.vm.hasSeriesChanges).toBe(true)
   })
 })

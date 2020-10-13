@@ -104,16 +104,6 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
     v => this.isValidateEmail(v) || 'Email is Invalid'
   ]
 
-  mounted (): void {
-    if (this.getNameRequestNumber) {
-      this.nameRequestNumber = this.getNameRequestNumber
-    }
-    if (this.getNameRequestApplicant) {
-      this.entityPhone = this.getNameRequestApplicant.phoneNumber
-      this.entityEmail = this.getNameRequestApplicant.emailAddress
-    }
-  }
-
   // Validations
   private get isFormValid (): boolean {
     return this.valid && !!this.nameRequestNumber &&
