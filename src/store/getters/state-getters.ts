@@ -145,6 +145,15 @@ export const getNameRequestNumber = (state: any): string => {
   return state.stateModel.nameRequest.nrNumber
 }
 
+/** Identify if changes were made to the NrNumber */
+export const hasNewNr = (state: any): boolean => {
+  const newNr = state.stateModel.nameRequest?.nrNumber
+  const originalNr = state.stateModel.originalIA.incorporationApplication.nameRequest?.nrNumber
+
+  // Evaluate only if both properties exist.
+  return (newNr && originalNr) ? newNr !== originalNr : false
+}
+
 /** The approved name of a name request. */
 export const getApprovedName = (state: any): string => {
   return state.stateModel.nameRequest.legalName

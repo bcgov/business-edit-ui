@@ -68,6 +68,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
   @Getter getEffectiveDate!: Date
   @Getter isFilingChanged!: boolean
   @Getter isFilingValid!: boolean
+  @Getter hasNewNr!: boolean
 
   // Global setters
   @Action setIsSaving!: ActionBindingIF
@@ -140,6 +141,19 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
 
     this.setIsFilingPaying(true)
     let filingComplete
+
+    /** If it is a named company IA, validate NR before filing submission. This method is different
+     * from the processNameRequest method in App.vue. This method shows a generic message if
+     * the Name Request is not valid and clicking ok in the pop up redirects to the Manage Businesses
+     * dashboard */
+    if (this.isNamedBusiness && this.hasNewNr) {
+      try {
+        await this.validateNameRequest(this.getNameRequestNumber)
+      } catch (error) {
+        this.setIsFilingPaying(false)
+        return
+      }
+    }
 
     try {
       const filing = await this.buildIaCorrectionFiling(false)
