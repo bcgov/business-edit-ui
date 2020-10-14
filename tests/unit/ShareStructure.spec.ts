@@ -192,6 +192,75 @@ describe('Share Structure component', () => {
       action: 'added'
     }]
 
+  const shareClassesNestedSeriesCorrected: any = [
+    {
+      id: 1,
+      name: 'Common Shares',
+      priority: 0,
+      maxNumberOfShares: 10000,
+      parValue: 1.58,
+      currency: 'CAD',
+      hasRightsOrRestrictions: true,
+      series: [
+        {
+          id: 1,
+          name: 'Share Series 1',
+          priority: 1,
+          hasMaximumShares: true,
+          maxNumberOfShares: 50,
+          hasRightsOrRestrictions: false
+        },
+        {
+          id: 2,
+          name: 'Share Series 2',
+          priority: 2,
+          hasMaximumShares: true,
+          maxNumberOfShares: 100,
+          hasRightsOrRestrictions: false
+        }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Non-voting Shares',
+      priority: 1,
+      maxNumberOfShares: 1000,
+      parValue: null,
+      currency: '',
+      hasRightsOrRestrictions: false,
+      series: [
+        {
+          id: 1,
+          name: 'Share Series 3B',
+          priority: 1,
+          hasMaximumShares: true,
+          maxNumberOfShares: 50,
+          hasRightsOrRestrictions: false,
+          action: 'Corrected'
+        }
+      ]
+    },
+    {
+      id: 3,
+      name: 'Common Shares 2',
+      priority: 2,
+      maxNumberOfShares: 10000,
+      parValue: 0.568,
+      currency: 'CAD',
+      hasRightsOrRestrictions: true,
+      series: []
+    },
+    {
+      id: 4,
+      priority: 3,
+      name: 'Non-voting Shares 2',
+      maxNumberOfShares: 1000,
+      parValue: null,
+      currency: '',
+      hasRightsOrRestrictions: false,
+      series: []
+    }]
+
   beforeEach(() => {
     store.state.stateModel.originalIA = shareClassesOriginal
     store.state.stateModel.createShareStructureStep.shareClasses = shareClassesCorrected
@@ -269,6 +338,7 @@ describe('Share Structure component', () => {
     expect(classSharesEdited.text()).toContain('CORRECTED')
     expect(classSharesRemoved.text()).toContain('REMOVED')
     expect(classSharesAdded.text()).toContain('ADDED')
+    expect(wrapper.vm.hasClassChanges).toBe(true)
   })
 
   it('checks for the Action chips on modified Series shares', () => {
@@ -281,6 +351,7 @@ describe('Share Structure component', () => {
     expect(seriesSharesRemoved.text()).toContain('REMOVED')
     expect(seriesSharesEdited.text()).toContain('CORRECTED')
     expect(seriesSharesAdded.text()).toContain('ADDED')
+    expect(wrapper.vm.hasSeriesChanges).toBe(true)
   })
 
   it('checks for correct CLASS primary action', () => {
@@ -324,5 +395,21 @@ describe('Share Structure component', () => {
 
     // Validate series data post move
     expect(wrapper.vm.getShareClasses[0].series[0].name).toBe('Share Series 3')
+  })
+
+  it('correctly identifies no changes in the class and series structure', async () => {
+    // Restore the Share Structure to it's original state
+    store.state.stateModel.createShareStructureStep.shareClasses = shareClassesOriginal
+    expect(wrapper.vm.hasClassChanges).toBe(false)
+    expect(wrapper.vm.hasSeriesChanges).toBe(false)
+  })
+
+  it('correctly identifies changes in the nested series structure', async () => {
+    // Restore the Share Structure to it's original state
+    store.state.stateModel.createShareStructureStep.shareClasses = shareClassesOriginal
+    expect(wrapper.vm.hasSeriesChanges).toBe(false)
+
+    store.state.stateModel.createShareStructureStep.shareClasses = shareClassesNestedSeriesCorrected
+    expect(wrapper.vm.hasSeriesChanges).toBe(true)
   })
 })

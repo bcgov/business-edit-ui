@@ -145,6 +145,15 @@ export const getNameRequestNumber = (state: any): string => {
   return state.stateModel.nameRequest.nrNumber
 }
 
+/** Identify if changes were made to the NrNumber */
+export const hasNewNr = (state: any): boolean => {
+  const newNr = state.stateModel.nameRequest?.nrNumber
+  const originalNr = state.stateModel.originalIA.incorporationApplication.nameRequest?.nrNumber
+
+  // Evaluate only if both properties exist.
+  return (newNr && originalNr) ? newNr !== originalNr : false
+}
+
 /** The approved name of a name request. */
 export const getApprovedName = (state: any): string => {
   return state.stateModel.nameRequest.legalName
@@ -256,7 +265,7 @@ export const isFilingValid = (state: any): boolean => {
 
 export const getDefaultCorrectionDetailComment = (state: any): string => {
   const filingDate = state.stateModel.originalIA.header.date.split('T')[0] || ''
-  return `Correction for Incorporation Application. Filed on ${filingDate}`
+  return `Correction for Incorporation Application filed on ${filingDate}.`
 }
 
 export const getDetailComment = (state: any): string => {

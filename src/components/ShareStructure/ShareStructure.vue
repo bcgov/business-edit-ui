@@ -12,7 +12,8 @@
 
     <!-- Instructional Text -->
     <div class="share-info-container pt-6 px-4">
-      Legal obligations copy TBD:
+      You can correct the share structure for this business by adding new shares classes or by changing the share
+      classes as filed.
     </div>
 
     <!-- Add Buttons -->
@@ -405,10 +406,8 @@ export default class ShareStructure extends Vue {
   }
 
   /** True if we have any changes (from original IA). */
-  private get hasSeriesChanges (): void {
-    for (const share of this.getShareClasses) {
-      return share.series?.some(x => x.action)
-    }
+  private get hasSeriesChanges (): boolean {
+    return !!this.getShareClasses.find(shareClass => shareClass.series?.some(x => x.action))
   }
 
   // Share Class Functionality
