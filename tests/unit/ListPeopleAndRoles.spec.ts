@@ -2,14 +2,9 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import VueRouter from 'vue-router'
-import mockRouter from './MockRouter'
-
-// Store
-import { getVuexStore } from '@/store'
 
 // Utils
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 
 // Components
 import { ListPeopleAndRoles } from '@/components/PeopleAndRoles'
@@ -18,216 +13,361 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
 
-describe.skip('List People And Roles component', () => {
+// Sample data is from:
+// https://www.name-generator.org.uk/quick/
+// https://www.fakeaddressgenerator.com/World/ca_address_generator
+const peopleAndRoles = [
+  {
+    officer: {
+      id: 0,
+      firstName: 'Romeo',
+      lastName: 'Whitehead',
+      middleName: 'D',
+      orgName: '',
+      partyType: 'Person',
+      email: 'completing-party@example.com'
+    },
+    roles: [
+      { roleType: 'Completing Party', appointmentDate: '2020-03-30' },
+      { roleType: 'Incorporator', appointmentDate: '2020-03-30' },
+      { roleType: 'Director', appointmentDate: '2020-03-30' }
+    ],
+    mailingAddress: {
+      streetAddress: '4219 St. John Street',
+      streetAddressAdditional: '',
+      addressCity: 'Birch Hills',
+      addressRegion: 'SK',
+      postalCode: 'S4P 3Y2',
+      addressCountry: 'CA'
+    },
+    deliveryAddress: {
+      streetAddress: '4219 St. John Street',
+      streetAddressAdditional: '',
+      addressCity: 'Birch Hills',
+      addressRegion: 'SK',
+      postalCode: 'S4P 3Y2',
+      addressCountry: 'CA'
+    }
+    // no action here
+  },
+  {
+    officer: {
+      id: 1,
+      firstName: '',
+      lastName: '',
+      middleName: '',
+      orgName: 'Random Food Distributors',
+      partyType: 'Org'
+    },
+    roles: [
+      { roleType: 'Incorporator', appointmentDate: '2020-03-30' }
+    ],
+    mailingAddress: {
+      streetAddress: '1797 rue Levy',
+      streetAddressAdditional: '',
+      addressCity: 'Montreal',
+      addressRegion: 'QC',
+      postalCode: 'H3C 5K4',
+      addressCountry: 'CA'
+    },
+    action: 'edited'
+  },
+  {
+    officer: {
+      id: 2,
+      firstName: 'Lawrence',
+      lastName: 'Kavanagh',
+      middleName: 'H',
+      orgName: '',
+      partyType: 'Person'
+    },
+    // for testing "missing role":
+    roles: [],
+    // for testing "different addresses":
+    mailingAddress: {
+      streetAddress: '917 Hardy Street',
+      streetAddressAdditional: '',
+      addressCity: 'Kelowna',
+      addressRegion: 'BC',
+      postalCode: 'V1Y 8H2',
+      addressCountry: 'CA'
+    },
+    deliveryAddress: {
+      streetAddress: '4434 Cassells St',
+      streetAddressAdditional: '',
+      addressCity: 'North Bay',
+      addressRegion: 'ON',
+      postalCode: 'P1B 2Y7',
+      addressCountry: 'CA'
+    },
+    action: 'added'
+  },
+  {
+    officer: {
+      id: 3,
+      firstName: 'Christy',
+      lastName: 'Sawyer',
+      middleName: 'Z',
+      orgName: '',
+      partyType: 'Person'
+    },
+    roles: [
+      { roleType: 'Director', appointmentDate: '2020-03-30' }
+    ],
+    // for testing "different addresses":
+    mailingAddress: {
+      streetAddress: '1179 A Avenue',
+      streetAddressAdditional: '',
+      addressCity: 'Edmonton',
+      addressRegion: 'AB',
+      postalCode: 'T5J 0K7',
+      addressCountry: 'CA'
+    },
+    deliveryAddress: {
+      streetAddress: '433 Ferry Road',
+      streetAddressAdditional: '',
+      addressCity: 'Cornwall',
+      addressRegion: 'PE',
+      postalCode: 'C0A 1H8',
+      addressCountry: 'CA'
+    },
+    action: 'removed'
+  }
+]
+
+const emptyPerson = {
+  officer: {
+    id: null,
+    firstName: '',
+    lastName: '',
+    middleName: '',
+    orgName: '',
+    partyType: 'Person',
+    email: null
+  },
+  roles: [],
+  mailingAddress: {
+    streetAddress: '',
+    streetAddressAdditional: '',
+    addressCity: '',
+    addressRegion: '',
+    postalCode: '',
+    addressCountry: '',
+    deliveryInstructions: ''
+  },
+  action: null
+}
+
+const emptyOrg = {
+  officer: {
+    id: null,
+    firstName: '',
+    lastName: '',
+    middleName: '',
+    orgName: '',
+    partyType: 'Org',
+    email: null
+  },
+  roles: [],
+  mailingAddress: {
+    streetAddress: '',
+    streetAddressAdditional: '',
+    addressCity: '',
+    addressRegion: '',
+    postalCode: '',
+    addressCountry: '',
+    deliveryInstructions: ''
+  },
+  action: null
+}
+
+describe('List People And Roles component', () => {
   let wrapperFactory: any
 
-  const mockPersonList = [
-    {
-      officer: {
-        'id': 0,
-        'firstName': 'Cameron',
-        'lastName': 'Bowler',
-        'middleName': 'D',
-        'orgName': '',
-        'partyType': 'Person',
-        'email': 'completing-party@example.com'
-      },
-      roles: [
-        { 'roleType': 'Completing Party', 'appointmentDate': '2020-03-30' },
-        { 'roleType': 'Director', 'appointmentDate': '2020-03-30' }
-      ],
-      mailingAddress: {
-        'streetAddress': '122-12210 Boul De Pierrefonds',
-        'streetAddressAdditional': '',
-        'addressCity': 'Pierrefonds',
-        'addressRegion': 'QC',
-        'postalCode': 'H9A 2X6',
-        'addressCountry': 'CA'
-      },
-      deliveryAddress: {
-        'streetAddress': '122-12210 Boul De Pierrefonds',
-        'streetAddressAdditional': '',
-        'addressCity': 'Pierrefonds',
-        'addressRegion': 'QC',
-        'postalCode': 'H9A 2X6',
-        'addressCountry': 'CA'
-      }
-    },
-    {
-      officer: {
-        'id': 1,
-        'firstName': '',
-        'lastName': '',
-        'middleName': '',
-        'orgName': 'Sysco Foods Company',
-        'partyType': 'Org'
-      },
-      roles: [
-        { 'roleType': 'Incorporator', 'appointmentDate': '2020-03-30' }
-      ],
-      mailingAddress: {
-        'streetAddress': '12-1044 Boul 21De Normandie',
-        'streetAddressAdditional': '',
-        'addressCity': 'Saint-Jean-Sur-Richelieu',
-        'addressRegion': 'QC',
-        'postalCode': 'J3A 1H7',
-        'addressCountry': 'CA'
-      }
-    }
-  ]
-
-  beforeEach(() => {
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-    const router = mockRouter.mock()
-
+  beforeAll(() => {
     wrapperFactory = (propsData) => {
-      return shallowMount(ListPeopleAndRoles, {
-        propsData: {
-          ...propsData
-        },
-        localVue,
-        router,
-        store,
-        vuetify
-      })
+      return mount(ListPeopleAndRoles, { propsData: { ...propsData }, vuetify })
     }
   })
 
-  it('does not show the peoples / roles list if there is no data to display', () => {
+  it('does not show the list if there is no data to display', () => {
     const wrapper = wrapperFactory()
-    const displayListCount = wrapper.vm.$el.querySelectorAll('.people-roles-content').length
 
-    expect(displayListCount).toEqual(0)
-    expect(wrapper.vm.$el.querySelector('.people-roles-content')).toBeNull()
+    const rows = wrapper.findAll('.people-roles-content')
+    expect(rows.length).toEqual(0)
+    expect(wrapper.find('#people-roles-list').exists()).toBe(false)
+
+    wrapper.destroy()
   })
 
-  it('displays the correct amount of peoples / roles list when data is present', () => {
-    const wrapper = wrapperFactory({ personList: mockPersonList })
-    const displayListCount = wrapper.vm.$el.querySelectorAll('.people-roles-content').length
+  it('displays the correct number of items when data is present', () => {
+    const wrapper = wrapperFactory({ peopleAndRoles })
 
-    expect(displayListCount).toEqual(2)
-    expect(wrapper.vm.$el.querySelector('.people-roles-content')).not.toBeNull()
+    expect(wrapper.find('#people-roles-list').exists()).toBe(true)
+    const rows = wrapper.findAll('.people-roles-content')
+    expect(rows.length).toEqual(4)
+
+    wrapper.destroy()
   })
 
-  it('displays the correct name data in the peoples / roles list', () => {
-    // Mounting the Wrapper to allow for the test to reach into the vuetify tooltip to validate data
-    const wrapper = mount(ListPeopleAndRoles, { propsData: { personList: mockPersonList }, vuetify })
+  it('displays the correct names and badges in the list', () => {
+    const wrapper = wrapperFactory({ peopleAndRoles })
 
-    const peoplesListItem1 = wrapper.vm.$el.querySelectorAll('.people-roles-content')[0]
-    const peoplesListItem2 = wrapper.vm.$el.querySelectorAll('.people-roles-content')[1]
+    const rows = wrapper.findAll('.people-roles-content')
+    expect(rows.at(0).find('.people-roles-title').text()).toBe('Romeo D Whitehead')
+    expect(rows.at(0).find('.v-chip').exists()).toBe(false)
+    expect(rows.at(1).find('.people-roles-title').text()).toBe('Random Food Distributors')
+    expect(rows.at(1).find('.v-chip').text()).toBe('CORRECTED')
+    expect(rows.at(2).find('.people-roles-title').text()).toBe('Lawrence H Kavanagh')
+    expect(rows.at(2).find('.v-chip').text()).toBe('ADDED')
+    expect(rows.at(3).find('.people-roles-title').text()).toBe('Christy Z Sawyer')
+    expect(rows.at(3).find('.v-chip').text()).toBe('REMOVED')
 
-    expect(peoplesListItem1.querySelector('.people-roles-title').textContent)
-      .toContain('Cameron D Bowler')
-
-    expect(peoplesListItem2.querySelector('.people-roles-title').textContent)
-      .toContain('Sysco Foods Company')
+    wrapper.destroy()
   })
 
-  it('displays the correct address data in the peoples / roles list', () => {
-    // Mounting the Wrapper to allow for the test to reach into the baseAddress component to validate data
-    const wrapper = mount(ListPeopleAndRoles, { propsData: { personList: mockPersonList }, vuetify })
+  it('displays the correct mailing addresses in the list', () => {
+    const wrapper = wrapperFactory({ peopleAndRoles })
 
-    const peoplesListItem1 = wrapper.vm.$el.querySelectorAll('.people-roles-content')[0]
-    const peoplesListItem2 = wrapper.vm.$el.querySelectorAll('.people-roles-content')[1]
+    const rows = wrapper.findAll('.people-roles-content')
+    expect(rows.at(0).find('.peoples-roles-mailing-address').text()).toContain('4219 St. John Street')
+    expect(rows.at(1).find('.peoples-roles-mailing-address').text()).toContain('1797 rue Levy')
+    expect(rows.at(2).find('.peoples-roles-mailing-address').text()).toContain('917 Hardy Street')
+    expect(rows.at(3).find('.peoples-roles-mailing-address').text()).toContain('1179 A Avenue')
 
-    expect(peoplesListItem1.querySelector('.peoples-roles-mailing-address').textContent)
-      .toContain('122-12210 Boul De Pierrefonds')
-
-    expect(peoplesListItem2.querySelector('.peoples-roles-mailing-address').textContent)
-      .toContain('12-1044 Boul 21De Normandie')
+    wrapper.destroy()
   })
 
-  it('displays the `same as Mailing Address` text when mailing and delivery match', () => {
-    // Mounting the Wrapper to allow for the test to reach into the baseAddress component to validate data
-    const wrapper = mount(ListPeopleAndRoles, { propsData: { personList: mockPersonList }, vuetify })
+  it('displays the correct delivery addresses in the list', () => {
+    const wrapper = wrapperFactory({ peopleAndRoles })
 
-    const peoplesListItem = wrapper.vm.$el.querySelectorAll('.people-roles-content')[0]
+    const rows = wrapper.findAll('.people-roles-content')
+    expect(rows.at(0).find('.peoples-roles-delivery-address').text()).toBe('Same as Mailing Address')
+    expect(rows.at(1).find('.peoples-roles-delivery-address').text()).toBe('')
+    expect(rows.at(2).find('.peoples-roles-delivery-address').text()).toContain('4434 Cassells St')
+    expect(rows.at(3).find('.peoples-roles-delivery-address').text()).toContain('433 Ferry Road')
 
-    expect(peoplesListItem.querySelector('.peoples-roles-mailing-address').textContent)
-      .toContain('122-12210 Boul De Pierrefonds')
-
-    expect(peoplesListItem.querySelector('.peoples-roles-delivery-address').textContent)
-      .toContain('Same as Mailing Address')
-  })
-
-  it('displays the correct addresses text when mailing and delivery do NOT match', () => {
-    mockPersonList[0].deliveryAddress.streetAddress = '123 Different rd'
-    // Mounting the Wrapper to allow for the test to reach into the baseAddress component to validate data
-    const wrapper = mount(ListPeopleAndRoles, { propsData: { personList: mockPersonList }, vuetify })
-
-    const peoplesListItem = wrapper.vm.$el.querySelectorAll('.people-roles-content')[0]
-
-    expect(peoplesListItem.querySelector('.peoples-roles-mailing-address').textContent)
-      .toContain('122-12210 Boul De Pierrefonds')
-
-    expect(peoplesListItem.querySelector('.peoples-roles-delivery-address').textContent).not
-      .toContain('Same as Mailing Address')
-
-    expect(peoplesListItem.querySelector('.peoples-roles-delivery-address').textContent)
-      .toContain('123 Different rd')
+    wrapper.destroy()
   })
 
   it('displays the correct roles', () => {
-    const wrapper = wrapperFactory({ personList: mockPersonList })
-    const peoplesListItem1 = wrapper.vm.$el.querySelectorAll('.people-roles-content')[0]
-    const peoplesListItem2 = wrapper.vm.$el.querySelectorAll('.people-roles-content')[1]
+    const wrapper = wrapperFactory({ peopleAndRoles })
 
-    expect(peoplesListItem1.querySelectorAll('.col-roles')[0].textContent)
-      .toContain('Completing Party')
-    expect(peoplesListItem1.querySelectorAll('.col-roles')[1].textContent)
-      .toContain('Director')
+    const item1 = wrapper.findAll('.people-roles-content').at(0)
+    expect(item1.findAll('.col-roles').at(0).text()).toBe('Completing Party')
+    expect(item1.findAll('.col-roles').at(1).text()).toBe('Incorporator')
+    expect(item1.findAll('.col-roles').at(2).text()).toBe('Director')
 
-    expect(peoplesListItem2.querySelector('.col-roles').textContent).toContain('Incorporator')
+    const item2 = wrapper.findAll('.people-roles-content').at(1)
+    expect(item2.find('.col-roles').text()).toBe('Incorporator')
+
+    const item3 = wrapper.findAll('.people-roles-content').at(2)
+    expect(item3.findAll('.col').at(3).text()).toBe('Missing Role')
+
+    const item4 = wrapper.findAll('.people-roles-content').at(3)
+    expect(item4.find('.col-roles').text()).toBe('Director')
+
+    wrapper.destroy()
   })
 
-  it('displays the actions menu when viewed not in summary view', () => {
-    const wrapper = wrapperFactory({ personList: mockPersonList })
-    const peoplesListItem1 = wrapper.vm.$el.querySelectorAll('.people-roles-content')[0]
-    const peoplesListItem2 = wrapper.vm.$el.querySelectorAll('.people-roles-content')[1]
+  it('displays the correct actions menus', () => {
+    const wrapper = wrapperFactory({ peopleAndRoles })
 
-    expect(peoplesListItem1.querySelector('.actions')).not.toBeNull()
-    expect(peoplesListItem2.querySelector('.actions')).not.toBeNull()
+    const item1 = wrapper.findAll('.people-roles-content').at(0)
+    const button1 = item1.find('.actions .edit-action #officer-0-edit-btn')
+    expect(button1.exists()).toBe(true)
+    expect(button1.text()).toBe('Correct')
+
+    const item2 = wrapper.findAll('.people-roles-content').at(1)
+    const button2 = item2.find('.actions .undo-action #officer-1-undo-btn')
+    expect(button2.exists()).toBe(true)
+    expect(button2.text()).toBe('Undo')
+
+    const item3 = wrapper.findAll('.people-roles-content').at(2)
+    const button3 = item3.find('.actions .undo-action #officer-2-undo-btn')
+    expect(button3.exists()).toBe(true)
+    expect(button3.text()).toBe('Undo')
+
+    const item4 = wrapper.findAll('.people-roles-content').at(3)
+    const button4 = item4.find('.actions .undo-action #officer-3-undo-btn')
+    expect(button4.exists()).toBe(true)
+    expect(button4.text()).toBe('Undo')
+
+    wrapper.destroy()
   })
 
-  it('does NOT display the actions menu when viewed in summary view', () => {
-    const wrapper = wrapperFactory({ personList: mockPersonList, isSummary: true })
-    const peoplesListItem1 = wrapper.vm.$el.querySelectorAll('.people-roles-content')[0]
-    const peoplesListItem2 = wrapper.vm.$el.querySelectorAll('.people-roles-content')[1]
+  it('correctly displays Add Person component', () => {
+    const wrapper = wrapperFactory({
+      peopleAndRoles,
+      renderOrgPersonForm: true,
+      currentOrgPerson: emptyPerson,
+      activeIndex: NaN,
+      nextId: 4,
+      currentCompletingParty: undefined
+    })
 
-    expect(peoplesListItem1.querySelector('.actions')).toBeNull()
-    expect(peoplesListItem2.querySelector('.actions')).toBeNull()
+    // verify that add component is at the top (above the list)
+    const section = wrapper.find('#list-people-roles > #people-roles-add')
+    expect(section.exists()).toBe(true)
+    expect(section.find('.add-org-header').text()).toBe('Add Person')
+    expect(section.find('#org-person-form').exists()).toBe(true)
+
+    wrapper.destroy()
   })
 
-  it('displays invalid warning message when in summary view and step 2 data is invalid', () => {
-    const wrapper = wrapperFactory({ personList: mockPersonList, showErrorSummary: true, isSummary: true })
+  it('correctly displays Add Corporation component', () => {
+    const wrapper = wrapperFactory({
+      peopleAndRoles,
+      renderOrgPersonForm: true,
+      currentOrgPerson: emptyOrg,
+      activeIndex: NaN,
+      nextId: 4,
+      currentCompletingParty: undefined
+    })
 
-    expect(wrapper.vm.$el.querySelector('.people-roles-invalid-message').textContent)
-      .toContain('This step is not complete.')
+    // verify that add component is at the top (above the list)
+    const section = wrapper.find('#list-people-roles > #people-roles-add')
+    expect(section.exists()).toBe(true)
+    expect(section.find('.add-org-header').text()).toBe('Add Corporation or Firm')
+    expect(section.find('#org-person-form').exists()).toBe(true)
 
-    expect(wrapper.vm.$el.querySelector('.people-roles-invalid-message').textContent)
-      .toContain('Return to this step to complete it.')
+    wrapper.destroy()
   })
 
-  it('sends you to step 2 when the error message link is clicked', () => {
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-    const router = mockRouter.mock()
-    const wrapper = mount(ListPeopleAndRoles,
-      {
-        propsData: { personList: mockPersonList, showErrorSummary: true, isSummary: true
-        },
-        vuetify,
-        localVue,
-        router
-      })
-    expect(wrapper.vm.$route.name).toBeNull()
+  it('correctly displays Edit Person component', () => {
+    const wrapper = wrapperFactory({
+      peopleAndRoles,
+      renderOrgPersonForm: true,
+      currentOrgPerson: peopleAndRoles[0],
+      activeIndex: 0,
+      currentCompletingParty: undefined
+    })
 
-    const errorLink = wrapper.find('#router-link')
-    errorLink.trigger('click')
+    // verify that edit component is within the list (inline)
+    const section = wrapper.find('#people-roles-list #people-roles-edit')
+    expect(section.exists()).toBe(true)
+    expect(section.find('.add-org-header').text()).toBe('Edit Person')
+    expect(section.find('#org-person-form').exists()).toBe(true)
 
-    expect(wrapper.vm.$route.name).toBe('add-people-roles')
+    wrapper.destroy()
+  })
+
+  it('correctly displays Edit Corporation component', () => {
+    const wrapper = wrapperFactory({
+      peopleAndRoles,
+      renderOrgPersonForm: true,
+      currentOrgPerson: peopleAndRoles[1],
+      activeIndex: 0,
+      currentCompletingParty: undefined
+    })
+
+    // verify that edit component is within the list (inline)
+    const section = wrapper.find('#people-roles-list #people-roles-edit')
+    expect(section.exists()).toBe(true)
+    expect(section.find('.add-org-header').text()).toBe('Edit Corporation or Firm')
+    expect(section.find('#org-person-form').exists()).toBe(true)
+
+    wrapper.destroy()
   })
 })
