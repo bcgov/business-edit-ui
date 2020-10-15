@@ -6,46 +6,79 @@ import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
 
 // Components
-import { mount } from '@vue/test-utils'
+import { createLocalVue, mount } from '@vue/test-utils'
 import { EntityInfo } from '@/components/common'
 
+// Other
+import mockRouter from './MockRouter'
+import VueRouter from 'vue-router'
+
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+const store = getVuexStore()
+let state = store.state.stateModel
+document.body.setAttribute('data-app', 'true')
 
-describe.skip('Entity Info component with an NR', () => {
-  let wrapper: any
-  let store: any
+describe('Entity Info component in a Correction as a named company', () => {
+  let wrapper
+
+  const mockFiling = {
+    header: {
+      name: 'incorporationApplication',
+      filingId: 12345
+    },
+    business: {
+      identifier: 'BC1234567',
+      legalType: 'BEN'
+    },
+    incorporationApplication: {
+      contactPoint: {
+        email: 'mock@email.com',
+        phone: '123-456-7890'
+      },
+      nameRequest: {
+        legalType: 'BEN',
+        nrNumber: 'NR 1234567',
+        legalName: 'My Mock Name Inc.'
+      },
+      offices: {},
+      parties: [],
+      shareClasses: [],
+      incorporationAgreement: {}
+    }
+  }
+
+  beforeAll(() => {
+    state.tombstone.keycloakRoles = ['staff']
+    state.businessInformation = mockFiling.business
+    state.tombstone.businessId = mockFiling.business.identifier
+    state.defineCompanyStep.businessContact = mockFiling.incorporationApplication.contactPoint
+    state.originalIA.incorporationApplication.nameRequest = mockFiling.incorporationApplication.nameRequest
+  })
 
   beforeEach(() => {
-    store = getVuexStore()
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
 
-    // Entity type will always be set with or without an NR
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    // Temp Id will always be set with or without an NR
-    store.state.stateModel.tombstone.businessId = 'T1234567'
-    store.state.stateModel.nameRequest.nrNumber = 'NR 1234567'
-    store.state.stateModel.nameRequest.details.approvedName = 'Xyz Ltd.'
-
-    wrapper = mount(EntityInfo, { vuetify, store })
+    wrapper = mount(EntityInfo, {
+      localVue,
+      vuetify,
+      store,
+      router
+    })
   })
 
   afterEach(() => {
     wrapper.destroy()
   })
 
-  it('renders the Name Request header when the EntityType(BC) is present', async () => {
-    expect(wrapper.vm.$el.querySelector('#nr-header').textContent)
-      .toContain('BC Benefit Company Incorporation Application')
-
-    expect(wrapper.vm.$el.querySelector('#entity-legal-name').textContent)
-      .toContain('Xyz Ltd.')
-
-    expect(wrapper.vm.$el.querySelector('#entity-nr-number').textContent)
-      .toContain('NR 1234567')
+  it('renders the EntityInfo Component', () => {
+    expect(wrapper.find(EntityInfo).exists()).toBe(true)
   })
 
-  it('displays the breadcrumb correctly as a named benefit company', async () => {
+  it('displays the breadcrumb correctly as a named benefit company', () => {
     const breadcrumbs = wrapper.findAll('.v-breadcrumbs li')
 
     const crumb1 = breadcrumbs.at(0)
@@ -53,47 +86,80 @@ describe.skip('Entity Info component with an NR', () => {
     const crumb2 = breadcrumbs.at(2)
     const crumb3 = breadcrumbs.at(4)
 
-    // TODO: add test for "Staff Dashboard" when user is staff
-    expect(crumb1.text()).toStrictEqual('Manage Businesses Dashboard')
-    expect(divider.text()).toStrictEqual('>')
-    expect(crumb2.text()).toStrictEqual('Xyz Ltd.')
-    expect(crumb3.text()).toStrictEqual('BC Benefit Company Incorporation Application')
+    expect(crumb1.text()).toBe('Staff Dashboard')
+    expect(divider.text()).toBe('>')
+    expect(crumb2.text()).toBe('My Mock Name Inc.')
+    expect(crumb3.text()).toBe('Correction - Incorporation Application')
+  })
+
+  it('renders the business name and numbers', () => {
+    expect(wrapper.find('#entity-legal-name').text()).toContain('My Mock Name Inc.')
+    expect(wrapper.find('#entity-business-number').text()).toContain('1234567')
+    expect(wrapper.find('#entity-incorp-number').text()).toContain('BC1234567')
+  })
+
+  it('renders the business contact information', () => {
+    expect(wrapper.find('#entity-business-email').text()).toContain('mock@email.com')
+    expect(wrapper.find('#entity-business-phone').text()).toContain('123-456-7890')
   })
 })
 
-describe.skip('Entity Info component without an NR', () => {
-  let wrapper: any
-  let store: any
+describe('Entity Info component in a Correction as a numbered company', () => {
+  let wrapper
+
+  const mockFiling = {
+    header: {
+      name: 'incorporationApplication',
+      filingId: 12345
+    },
+    business: {
+      identifier: 'BC7654321',
+      legalType: 'BEN'
+    },
+    incorporationApplication: {
+      contactPoint: {
+        email: 'mock@email.com',
+        phone: '321-456-7890'
+      },
+      nameRequest: {},
+      offices: {},
+      parties: [],
+      shareClasses: [],
+      incorporationAgreement: {}
+    }
+  }
+
+  beforeAll(() => {
+    state.tombstone.keycloakRoles = ['staff']
+    state.businessInformation = mockFiling.business
+    state.tombstone.businessId = mockFiling.business.identifier
+    state.defineCompanyStep.businessContact = mockFiling.incorporationApplication.contactPoint
+    state.originalIA.incorporationApplication.nameRequest = mockFiling.incorporationApplication.nameRequest
+  })
 
   beforeEach(() => {
-    store = getVuexStore()
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
 
-    // Entity type will always be set with or without an NR
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    // Temp Id will always be set with or without an NR
-    store.state.stateModel.tombstone.businessId = 'T1234567'
-    store.state.stateModel.nameRequest.nrNumber = null
-    store.state.stateModel.nameRequest.details.approvedName = null
-
-    wrapper = mount(EntityInfo, { vuetify, store })
+    wrapper = mount(EntityInfo, {
+      localVue,
+      vuetify,
+      store,
+      router
+    })
   })
 
   afterEach(() => {
     wrapper.destroy()
   })
 
-  it('renders the Numbered Company header when the EntityType(BC) is present with no NR', async () => {
-    expect(wrapper.vm.$el.querySelector('#nr-header').textContent)
-      .toContain('BC Benefit Company Incorporation Application')
-
-    expect(wrapper.vm.$el.querySelector('#entity-legal-name').textContent)
-      .toContain('Numbered Benefit Company')
-
-    expect(wrapper.vm.$el.querySelector('#entity-numbered-label').textContent)
-      .toContain('Numbered Benefit Company')
+  it('renders the EntityInfo Component', () => {
+    expect(wrapper.find(EntityInfo).exists()).toBe(true)
   })
 
-  it('displays the breadcrumb correctly as a numbered benefit company', async () => {
+  it('displays the breadcrumb correctly as a named benefit company', () => {
     const breadcrumbs = wrapper.findAll('.v-breadcrumbs li')
 
     const crumb1 = breadcrumbs.at(0)
@@ -101,10 +167,20 @@ describe.skip('Entity Info component without an NR', () => {
     const crumb2 = breadcrumbs.at(2)
     const crumb3 = breadcrumbs.at(4)
 
-    // TODO: add test for "Staff Dashboard" when user is staff
-    expect(crumb1.text()).toStrictEqual('Manage Businesses Dashboard')
-    expect(divider.text()).toStrictEqual('>')
-    expect(crumb2.text()).toStrictEqual('Numbered Benefit Company')
-    expect(crumb3.text()).toStrictEqual('BC Benefit Company Incorporation Application')
+    expect(crumb1.text()).toBe('Staff Dashboard')
+    expect(divider.text()).toBe('>')
+    expect(crumb2.text()).toBe('Numbered Benefit Company')
+    expect(crumb3.text()).toBe('Correction - Incorporation Application')
+  })
+
+  it('renders the business name and numbers', () => {
+    expect(wrapper.find('#entity-legal-name').text()).toContain('Numbered Benefit Company')
+    expect(wrapper.find('#entity-business-number').text()).toContain('7654321')
+    expect(wrapper.find('#entity-incorp-number').text()).toContain('BC7654321')
+  })
+
+  it('renders the business contact information', () => {
+    expect(wrapper.find('#entity-business-email').text()).toContain('mock@email.com')
+    expect(wrapper.find('#entity-business-phone').text()).toContain('321-456-7890')
   })
 })
