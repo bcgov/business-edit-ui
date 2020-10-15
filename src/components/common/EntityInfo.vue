@@ -29,7 +29,7 @@
               <dd></dd>
               <dt>Incorporation No:</dt>
               <dt class="ml-2">
-                <span id="entity-nr-number">{{ businessInformation.identifier }}</span>
+                <span id="entity-incorp-number">{{ businessInformation.identifier }}</span>
               </dt>
             </dl>
             <dl>
