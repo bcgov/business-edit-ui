@@ -211,8 +211,9 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    * Called when component is mounted.
    */
   private mounted (): void {
-    // initialize component 'changed' flag
-    this.setPeopleAndRolesChanged(false)
+    // initialize this component's 'valid' and 'changed' flags
+    this.setPeopleAndRolesValid(this.hasValidRoles && this.noMissingRoles)
+    this.setPeopleAndRolesChanged(this.hasChanges)
   }
 
   /**
@@ -227,7 +228,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     // 2. filter in people with specified role
     const orgPersonWithSpecifiedRole = this.getPeopleAndRoles
       .filter(people => people.action !== ActionTypes.REMOVED)
-      .filter(people => people.roles.some(party => party.roleType === roleName))
+      .filter(people => people.roles.some(role => role.roleType === roleName))
 
     if (mode === CompareModes.EXACT) {
       return (orgPersonWithSpecifiedRole.length === count)
@@ -447,7 +448,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 
   /**
    * Displays dialog to prompt user whether to change the Completing Party.
-   * @returns a promise that is fulfilled/rejected when the user responds
+   * @returns a promise that is resolved when the user responds
    */
   private async confirmReassignCp (): Promise<any> {
     // open confirmation dialog and wait for response

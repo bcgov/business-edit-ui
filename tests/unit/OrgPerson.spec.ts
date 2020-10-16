@@ -445,27 +445,19 @@ describe('Org/Person component', () => {
   it('Shows popup if there is an existing completing party', async () => {
     const wrapper = createComponent(validIncorporator, NaN, 0, validPersonData)
 
+    // verify that popup is not yet displayed
+    expect(wrapper.find('.confirm-dialog').exists()).toBe(false)
+
+    // check the Completing Party box
     const checkbox = wrapper.find(completingPartyChkBoxSelector)
     checkbox.setChecked(true)
     await Vue.nextTick()
 
-    expect(wrapper.vm.$refs.reassignCpDialog).toBeTruthy()
+    // verify that popup is now displayed
+    expect(wrapper.find('.confirm-dialog').exists()).toBe(true)
 
     wrapper.destroy()
   })
-
-  // TODO (move this to PeopleAndRoles.spec.ts)
-  // it('Shows popup when undoing an edit would change the Completing Party', async () => {
-  //   const wrapper = createComponent(validIncorporator, NaN, 0, validPersonData)
-
-  //   const checkbox = wrapper.find(completingPartyChkBoxSelector)
-  //   checkbox.setChecked(true)
-  //   await Vue.nextTick()
-
-  //   expect(wrapper.vm.$refs.reassignCpDialog).toBeTruthy()
-
-  //   wrapper.destroy()
-  // })
 
   it('Emits "removeCpRole" and "addEdit" events on reassigning the Completing Party', async () => {
     const wrapper = createComponent(validIncorporator, NaN, 1, validPersonData)
