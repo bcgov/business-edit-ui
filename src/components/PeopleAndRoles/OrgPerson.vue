@@ -1,5 +1,6 @@
 <template>
   <div id="add-edit-org-person">
+
     <confirm-dialog
       ref="reassignCpDialog"
       attach="#add-edit-org-person"
@@ -223,15 +224,15 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   private orgPerson: OrgPersonIF = null
 
   /** Model value for org/person form validity. */
-  private orgPersonFormValid: boolean = true
+  private orgPersonFormValid = true
 
   // Address related properties
   private inProgressMailingAddress: AddressIF = undefined
   private inProgressDeliveryAddress: AddressIF = undefined
-  private inheritMailingAddress: boolean = true
-  private mailingAddressValid: boolean = false
-  private deliveryAddressValid: boolean = false
-  private reassignCompletingParty: boolean = false
+  private inheritMailingAddress = true
+  private mailingAddressValid = false
+  private deliveryAddressValid = false
+  private reassignCompletingParty = false
 
   /** Model value for roles checboxes. */
   private selectedRoles: Array<Roles> = []
@@ -294,16 +295,6 @@ export default class OrgPerson extends Mixins(CommonMixin) {
       isFormValid = (isFormValid && this.deliveryAddressValid)
     }
     return isFormValid
-  }
-
-  /** The formatted, current completing party's name. */
-  private get currentCompletingPartyName (): string {
-    let name = this.currentCompletingParty?.officer.firstName
-    if (this.currentCompletingParty?.officer.middleName) {
-      name += ` ${this.currentCompletingParty.officer.middleName}`
-    }
-    name += ` ${this.currentCompletingParty?.officer.lastName}`
-    return name
   }
 
   /** True if current data object is a person. */
@@ -400,28 +391,28 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   /**
-   * Prompts user whether to change the Completing Party.
-   * */
+   * Displays dialog to prompt user whether to change the Completing Party.
+   */
   private confirmReassignPerson () {
     // open confirmation dialog and wait for response
     this.$refs.reassignCpDialog.open(
       'Change Completing Party?',
-      this.reassignPersonErrorMessage(),
+      this.changeCpMessage,
       {
         width: '45rem',
         persistent: true,
         yes: 'Change Completing Party',
-        no: null,
-        cancel: 'Cancel'
+        no: 'Cancel',
+        cancel: null
       }
-    ).then(async (confirm) => {
+    ).then(confirm => {
       if (confirm) {
         // set flag to reassign CP when Done is clicked
         this.reassignCompletingParty = true
+      } else {
+        // remove the role
+        this.selectedRoles = this.selectedRoles.filter(r => r !== Roles.COMPLETING_PARTY)
       }
-    }).catch(() => {
-      // remove the role
-      this.selectedRoles = this.selectedRoles.filter(r => r !== Roles.COMPLETING_PARTY)
     })
   }
 
@@ -477,8 +468,10 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     }
   }
 
-  private reassignPersonErrorMessage (): string {
-    return `The Completing Party role is already assigned to ${this.currentCompletingPartyName}.\n` +
+  /** The Completing Party change message. */
+  private get changeCpMessage (): string {
+    const currentCpName = this.formatFullName(this.currentCompletingParty?.officer)
+    return `The Completing Party role is already assigned to ${currentCpName}.\n` +
       'Selecting "Completing Party" here will change the Completing Party.'
   }
 

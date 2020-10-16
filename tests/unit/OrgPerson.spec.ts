@@ -219,9 +219,9 @@ describe('Org/Person component', () => {
       .toEqual(validPersonData['officer']['lastName'])
 
     // verify role checkboxes
-    expect(wrapper.find(completingPartyChkBoxSelector).attributes('aria-checked')).toBe("true")
-    expect(wrapper.find(incorporatorChkBoxSelector).attributes('aria-checked')).toBe("false")
-    expect(wrapper.find(directorChkBoxSelector).attributes('aria-checked')).toBe("true")
+    expect(wrapper.find(completingPartyChkBoxSelector).attributes('aria-checked')).toBe('true')
+    expect(wrapper.find(incorporatorChkBoxSelector).attributes('aria-checked')).toBe('false')
+    expect(wrapper.find(directorChkBoxSelector).attributes('aria-checked')).toBe('true')
 
     // verify that all role checkboxes are enabled
     expect(wrapper.find(completingPartyChkBoxSelector).attributes('disabled')).toBeUndefined()
@@ -247,11 +247,11 @@ describe('Org/Person component', () => {
 
     // verify role checkboxes
     expect(wrapper.find(completingPartyChkBoxSelector).exists()).toBe(false)
-    expect(wrapper.find(incorporatorChkBoxSelector).attributes('aria-checked')).toBe("true")
+    expect(wrapper.find(incorporatorChkBoxSelector).attributes('aria-checked')).toBe('true')
     expect(wrapper.find(directorChkBoxSelector).exists()).toBe(false)
 
     // verify that role checkbox is disabled (ie, role is locked)
-    expect(wrapper.find(incorporatorChkBoxSelector).attributes('disabled')).toBe("disabled")
+    expect(wrapper.find(incorporatorChkBoxSelector).attributes('disabled')).toBe('disabled')
 
     // verify action buttons
     expect(wrapper.find(doneButtonSelector).attributes('disabled')).toBeUndefined()
@@ -454,7 +454,7 @@ describe('Org/Person component', () => {
     wrapper.destroy()
   })
 
-  // TODO
+  // TODO (move this to PeopleAndRoles.spec.ts)
   // it('Shows popup when undoing an edit would change the Completing Party', async () => {
   //   const wrapper = createComponent(validIncorporator, NaN, 0, validPersonData)
 
