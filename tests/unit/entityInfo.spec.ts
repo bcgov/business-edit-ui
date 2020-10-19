@@ -20,7 +20,7 @@ let state = store.state.stateModel
 document.body.setAttribute('data-app', 'true')
 
 describe('Entity Info component in a Correction as a named company', () => {
-  let wrapper
+  let wrapper: any
 
   const mockFiling = {
     header: {
@@ -42,8 +42,8 @@ describe('Entity Info component in a Correction as a named company', () => {
         legalName: 'My Mock Name Inc.'
       },
       offices: {},
-      parties: [],
-      shareClasses: [],
+      parties: [] as [],
+      shareClasses: [] as [],
       incorporationAgreement: {}
     }
   }
@@ -105,7 +105,7 @@ describe('Entity Info component in a Correction as a named company', () => {
 })
 
 describe('Entity Info component in a Correction as a numbered company', () => {
-  let wrapper
+  let wrapper: any
 
   const mockFiling = {
     header: {
@@ -123,8 +123,8 @@ describe('Entity Info component in a Correction as a numbered company', () => {
       },
       nameRequest: {},
       offices: {},
-      parties: [],
-      shareClasses: [],
+      parties: [] as [],
+      shareClasses: [] as [],
       incorporationAgreement: {}
     }
   }

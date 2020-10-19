@@ -129,6 +129,7 @@ import * as Dialogs from '@/components/dialogs'
 import { BcolMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { EntityTypes, FilingCodes } from '@/enums'
 
 @Component({
   components: {
@@ -228,8 +229,8 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
    */
   private get showFeeSummary (): boolean {
     const defaultFilingData = {
-      filingTypeCode: null,
-      entityType: null,
+      filingTypeCode: null as FilingCodes,
+      entityType: null as EntityTypes,
       priority: false,
       waiveFees: false
     }
@@ -242,7 +243,7 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
    */
   private created (): void {
     // before unloading this page, if there are changes then prompt user
-    window.onbeforeunload = (event) => {
+    window.onbeforeunload = (event: any) => {
       if (this.haveChanges) {
         // cancel closing the page
         event.preventDefault()
@@ -253,7 +254,7 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
     }
 
     // listen for save error events
-    this.$root.$on('save-error-event', async error => {
+    this.$root.$on('save-error-event', async (error: any) => {
       console.log('Save error =', error) // eslint-disable-line no-console
       // process errors/warnings
       switch (error?.response?.status) {
@@ -280,7 +281,7 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
     })
 
     // listen for invalid name requests
-    this.$root.$on('invalid-name-request', async error => {
+    this.$root.$on('invalid-name-request', async (error: any) => {
       console.log('Name request error =', error) // eslint-disable-line no-console
       this.nameRequestErrorType = error
       this.nameRequestErrorDialog = true

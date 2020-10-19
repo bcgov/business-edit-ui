@@ -179,7 +179,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   readonly ActionTypes = ActionTypes
 
   /** The current orgs/people list. */
-  @Prop({ default: () => [] }) private peopleAndRoles!: Array<OrgPersonIF>
+  @Prop({ default: () => { return [] as [] } }) private peopleAndRoles!: Array<OrgPersonIF>
 
   /** Whether to render the OrgPersonForm (for edit or add). */
   @Prop() private renderOrgPersonForm: boolean

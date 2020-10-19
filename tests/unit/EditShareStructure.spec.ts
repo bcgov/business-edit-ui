@@ -74,28 +74,28 @@ function createComponent (
 }
 
 function createShareStructure (
-  id = null,
-  priority = null,
-  type,
-  name,
-  hasMaximumShares = true,
-  maxNumberOfShares = null,
-  hasParValue = true,
-  parValue = null,
-  currency = null,
-  hasRightsOrRestrictions = false
+  id: number,
+  priority: number,
+  type: string,
+  name: string,
+  hasMaximumShares: boolean,
+  maxNumberOfShares: number,
+  hasParValue: boolean,
+  parValue: number,
+  currency: string,
+  hasRightsOrRestrictions: boolean
 ): ShareClassIF {
   const shareStructure: ShareClassIF = {
-    id: id,
-    priority: priority,
-    type: type,
-    name: name,
-    hasMaximumShares: hasMaximumShares,
-    maxNumberOfShares: maxNumberOfShares,
-    hasParValue: hasParValue,
-    parValue: parValue,
-    currency: currency,
-    hasRightsOrRestrictions: hasRightsOrRestrictions
+    id,
+    priority,
+    type,
+    name,
+    hasMaximumShares,
+    maxNumberOfShares,
+    hasParValue,
+    parValue,
+    currency,
+    hasRightsOrRestrictions
   }
   if (type === 'Class') {
     shareStructure['series'] = []

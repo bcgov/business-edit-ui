@@ -36,14 +36,14 @@ const nrData = {
     stateProvinceCd: 'BC'
   },
   consentFlag: 'R',
-  corpNum: null,
+  corpNum: null as string,
   expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
   requestTypeCd: 'BC',
   names: [
     {
       choice: 1,
-      consumptionDate: null,
-      corpNum: null,
+      consumptionDate: null as string,
+      corpNum: null as string,
       name: 'ABC 1234',
       state: 'APPROVED'
     },
@@ -197,7 +197,7 @@ describe.skip('Actions component - Filing Functionality', () => {
         certifiedBy: 'Certified By',
         date: '2020/01/29',
         effectiveDate: formattedEffectiveDate,
-        folioNumber: null,
+        folioNumber: null as string,
         isFutureEffective: false
       },
       business: {
@@ -211,7 +211,7 @@ describe.skip('Actions component - Filing Functionality', () => {
           legalName: 'My Name Request Inc.'
         },
         nameTranslations: {
-          new: []
+          new: [] as string[]
         },
         offices: {
           registeredOffice: {

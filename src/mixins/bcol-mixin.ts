@@ -20,7 +20,7 @@ export default class BcolMixin extends Vue {
 
   getErrorCode (error: any): string {
     if (error?.response?.data?.errors) {
-      const msgCode = error.response.data.errors.find(x =>
+      const msgCode = error.response.data.errors.find((x: any) =>
         x?.payment_error_type?.startsWith('BCOL')) // eslint-disable-line camelcase
 
       if (msgCode) {

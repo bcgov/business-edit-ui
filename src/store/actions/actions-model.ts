@@ -1,10 +1,10 @@
 import { ActionIF } from '@/interfaces/store-interfaces/action-interface'
 
-export const setEntityType = ({ commit }, entityType): void => {
+export const setEntityType: ActionIF = ({ commit }, entityType): void => {
   commit('mutateEntityType', entityType)
 }
 
-export const setBusinessId = ({ commit }, businessId): void => {
+export const setBusinessId: ActionIF = ({ commit }, businessId): void => {
   commit('mutateBusinessId', businessId)
 }
 
@@ -104,27 +104,27 @@ export const setCorrectedFilingId: ActionIF = ({ commit }, correctedFilingId): v
   commit('mutateCorrectedFilingId', correctedFilingId)
 }
 
-export const setPeopleAndRoles = ({ commit }, orgPeople) => {
+export const setPeopleAndRoles: ActionIF = ({ commit }, orgPeople) => {
   commit('mutatePeopleAndRoles', orgPeople)
 }
 
-export const setPeopleAndRolesChanged = ({ commit }, validity) => {
+export const setPeopleAndRolesChanged: ActionIF = ({ commit }, validity) => {
   commit('mutatePeopleAndRolesChanged', validity)
 }
 
-export const setPeopleAndRolesValid = ({ commit }, validity) => {
+export const setPeopleAndRolesValid: ActionIF = ({ commit }, validity) => {
   commit('mutatePeopleAndRolesValid', validity)
 }
 
-export const setShareClasses = ({ commit }, shareClasses) => {
+export const setShareClasses: ActionIF = ({ commit }, shareClasses) => {
   commit('mutateShareClasses', shareClasses)
 }
 
-export const setShareClassesChanged = ({ commit }, validity) => {
+export const setShareClassesChanged: ActionIF = ({ commit }, validity) => {
   commit('mutateShareClassesChanged', validity)
 }
 
-export const setCreateShareStructureStepValidity = ({ commit }, validity) => {
+export const setCreateShareStructureStepValidity: ActionIF = ({ commit }, validity) => {
   commit('mutateCreateShareStructureStepValidity', validity)
 }
 

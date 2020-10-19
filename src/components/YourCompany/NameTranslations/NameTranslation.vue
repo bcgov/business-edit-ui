@@ -159,7 +159,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     confirmTranslationDialog: ConfirmDialogType
   }
 
-  @Prop({ default: () => [] })
+  @Prop({ default: () => { return [] as [] } })
   private nameTranslations!: NameTranslationDraftIF[]
 
   private actionTypes = ActionTypes

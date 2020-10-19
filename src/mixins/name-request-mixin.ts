@@ -116,7 +116,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
     }
 
     // If the NR has already been consumed, it is not consumable.
-    if (nr.names.some(name => name.consumptionDate)) {
+    if (nr.names.some((name: any) => name.consumptionDate)) {
       return NameRequestStates.CONSUMED
     }
 
@@ -130,10 +130,10 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    */
   getNrApprovedName (nr: any): string {
     if (nr.state === NameRequestStates.APPROVED) {
-      return nr.names.find(name => name.state === NameRequestStates.APPROVED).name
+      return nr.names.find((name: any) => name.state === NameRequestStates.APPROVED).name
     }
     if (nr.state === NameRequestStates.CONDITIONAL) {
-      return nr.names.find(name => name.state === NameRequestStates.CONDITION).name
+      return nr.names.find((name: any) => name.state === NameRequestStates.CONDITION).name
     }
     return '' // should never happen
   }

@@ -32,7 +32,7 @@ describe('CorrectNameRequest', () => {
   beforeEach(() => {
     vuetify = new Vuetify({})
 
-    wrapperFactory = (props) => {
+    wrapperFactory = (props: any) => {
       return mount(CorrectNameRequest, {
         propsData: {
           props

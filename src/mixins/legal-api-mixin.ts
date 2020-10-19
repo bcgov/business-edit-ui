@@ -53,7 +53,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
     return axios.get(url)
       .then(response => {
         const filings = response?.data?.filings
-        const returnFiling = filings?.find(filings => filings.filing.header.name === filingType)
+        const returnFiling = filings?.find((filings: any) => filings.filing.header.name === filingType)
 
         if (!filings || !returnFiling) {
           throw new Error('Invalid API response')

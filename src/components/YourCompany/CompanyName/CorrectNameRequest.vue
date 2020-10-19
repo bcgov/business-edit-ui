@@ -90,18 +90,18 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
 
   // Rules
   private entityNumRules = [
-    v => !!v || 'Name Request Number is required',
-    v => this.validateNameRequestNumber(v) || 'Name Request Number is invalid'
+    (v: string) => !!v || 'Name Request Number is required',
+    (v: string) => this.validateNameRequestNumber(v) || 'Name Request Number is invalid'
   ]
   private entityPhoneNumberRules = [
-    v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-    v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    v => !(v?.length > 12) || 'Phone number is invalid'
+    (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+    (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+    (v: string) => !(v?.length > 12) || 'Phone number is invalid'
   ]
   private entityEmailRules = [
-    v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-    v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    v => this.isValidateEmail(v) || 'Email is Invalid'
+    (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+    (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+    (v: string) => this.isValidateEmail(v) || 'Email is Invalid'
   ]
 
   // Validations

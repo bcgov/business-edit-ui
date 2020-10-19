@@ -72,10 +72,10 @@ export default class SaveErrorDialog extends Vue {
   @Prop() private attach: string
 
   /** Prop containing error messages. */
-  @Prop({ default: () => [] }) private errors: object[]
+  @Prop({ default: () => { return [] as [] } }) private errors: object[]
 
   /** Prop containing warning messages. */
-  @Prop({ default: () => [] }) private warnings: object[]
+  @Prop({ default: () => { return [] as [] } }) private warnings: object[]
 
   /** The number of errors in the passed-in array. */
   private get numErrors (): number {

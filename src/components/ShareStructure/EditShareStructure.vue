@@ -228,28 +228,34 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
 
   // Rules
   private getNameRule (): Array<Function> {
-    let rules: Array<Function> = [
-      v => !!v || 'A name is required',
-      v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-      v => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
+    const rules: Array<Function> = [
+      (v: string) => !!v || 'A name is required',
+      (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+      (v: string) => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
     ]
     if (this.isClass) {
       rules.push(
-        v => !(this.shareClasses
+        (v: string) => !(this.shareClasses
           .find((s, index) => {
             // Don't apply uniqueness check to self
             return index !== this.activeIndex && s.name.split(' Shares')[0].toLowerCase() === v.toLowerCase()
-          })) || 'Class name must be unique')
-      rules.push(v => !(v.split(' ').some(r => this.excludedWordsListForClass.includes(r.toLowerCase()))) ||
-      'Class name should not contain any of the words share, shares or value')
+          })
+        ) || 'Class name must be unique')
+      rules.push(
+        (v: string) => !(v.split(' ').some(r => this.excludedWordsListForClass.includes(r.toLowerCase()))) ||
+          'Class name should not contain any of the words share, shares or value')
     } else if (this.isSeries) {
-      rules.push(v => !(this.shareClasses[this.parentIndex].series
-        .find((s, index) => {
-          // Don't apply uniqueness check to self
-          return index !== this.activeIndex && s.name.split(' Shares')[0].toLowerCase() === v.toLowerCase()
-        })) || 'Series name must be unique')
-      rules.push(v => !(v.split(' ').some(r => this.excludedWordsListForSeries.includes(r.toLowerCase()))) ||
-      'Series name should not contain any of the words share or shares')
+      rules.push(
+        (v: string) => !(this.shareClasses[this.parentIndex].series
+          .find((s, index) => {
+            // Don't apply uniqueness check to self
+            return index !== this.activeIndex &&
+              s.name.split(' Shares')[0].toLowerCase() === v.toLowerCase()
+          })
+        ) || 'Series name must be unique')
+      rules.push(
+        (v: string) => !(v.split(' ').some(r => this.excludedWordsListForSeries.includes(r.toLowerCase()))) ||
+          'Series name should not contain any of the words share or shares')
     }
     return rules
   }
@@ -258,13 +264,13 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     let rules: Array<Function> = []
     if (!this.hasNoMaximumShares) {
       rules = [
-        v => !!v || 'Maximum share value is required',
-        v => /^\d+$/.test(v) || 'Must be a number greater than 0']
+        (v: string) => !!v || 'Maximum share value is required',
+        (v: string) => /^\d+$/.test(v) || 'Must be a number greater than 0']
       // To prevent changing share class value to a lower value after adding series.
       if (this.isClass && this.activeIndex !== -1 && !this.hasNoMaximumShares &&
        this.shareStructure.series.length > 0) {
         const seriesSum = this.shareStructure.series.reduce((a, b) => +a + +b.maxNumberOfShares, 0)
-        rules.push(v => +v >= seriesSum ||
+        rules.push((v: string) => +v >= seriesSum ||
         'The number for the series (or all series combined, if there are multiple under ' +
         'a class) cannot exceed the number for the class')
       }
@@ -276,9 +282,10 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
             series.id !== this.shareClasses[this.parentIndex].series[this.activeIndex].id))
         }
         const currentSum = filteredSeries.reduce((a, b) => +a + +b.maxNumberOfShares, 0)
-        rules.push(v => +v + currentSum <= +this.shareClasses[this.parentIndex].maxNumberOfShares ||
-        'The number for the series (or all series combined, if there are multiple under ' +
-        'a class) cannot exceed the number for the class')
+        rules.push(
+          (v: string) => +v + currentSum <= +this.shareClasses[this.parentIndex].maxNumberOfShares ||
+            'The number for the series (or all series combined, if there are multiple under ' +
+            'a class) cannot exceed the number for the class')
       }
     }
     return rules
@@ -287,9 +294,9 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   private getParValueRule (): Array<Function> {
     if (!this.hasNoParValue) {
       return [
-        v => !!v || 'Par value is required',
-        v => v > 0 || 'Amount must be greater than 0',
-        v => (v < 1) ? (/^(\d+(\.\d{0,3})?|\.\d{0,3})$/.test(v) || 'Amounts less than 1 can be entered with up to 3 decimal place')
+        (v: string) => !!v || 'Par value is required',
+        (v: string) => +v > 0 || 'Amount must be greater than 0',
+        (v: string) => (+v < 1) ? (/^(\d+(\.\d{0,3})?|\.\d{0,3})$/.test(v) || 'Amounts less than 1 can be entered with up to 3 decimal place')
           : (/^\d+(\.\d{1,2})?$/.test(v) || 'Amounts greater than 1 can be entered with up to 2 decimal place')]
     }
     return []
@@ -297,7 +304,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
 
   private getCurrencyRule (): Array<Function> {
     if (!this.hasNoParValue) {
-      return [v => !!v || 'Currency is required']
+      return [(v: string) => !!v || 'Currency is required']
     }
     return []
   }

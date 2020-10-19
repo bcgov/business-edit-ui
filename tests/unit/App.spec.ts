@@ -216,14 +216,14 @@ const nrData = {
     stateProvinceCd: 'BC'
   },
   consentFlag: 'R',
-  corpNum: null,
+  corpNum: null as string,
   expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
   requestTypeCd: 'BC',
   names: [
     {
       choice: 1,
-      consumptionDate: null,
-      corpNum: null,
+      consumptionDate: null as string,
+      corpNum: null as string,
       name: 'ABC 1234',
       state: 'APPROVED'
     },

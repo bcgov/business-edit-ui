@@ -36,7 +36,7 @@ const completingPartyRole = { roleType: 'Completing Party', appointmentDate: '20
 const incorporatorRole = { roleType: 'Incorporator', appointmentDate: '2020-03-30' }
 const directorRole = { roleType: 'Director', appointmentDate: '2020-03-30' }
 
-function getPersonList (roles = []): Array<any> {
+function getPersonList (roles: Array<any> = []): Array<any> {
   return [
     {
       officer: {

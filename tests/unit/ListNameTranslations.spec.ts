@@ -47,7 +47,7 @@ describe('List Name Translation component', () => {
     // Init Store
     store.state.stateModel.nameTranslations = []
 
-    wrapperFactory = (propsData) => {
+    wrapperFactory = (propsData: any) => {
       return mount(ListNameTranslation, {
         localVue,
         router,

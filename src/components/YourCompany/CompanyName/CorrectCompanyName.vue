@@ -42,7 +42,7 @@ export default class CorrectCompanyName extends Vue {
 
   // Rules
   private companyNameRules = [
-    v => !!v || ' A company name is required'
+    (v: string) => !!v || ' A company name is required'
   ]
 
   mounted (): void {

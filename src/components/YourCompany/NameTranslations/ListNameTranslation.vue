@@ -126,7 +126,7 @@ import { ActionTypes } from '@/enums'
 
 @Component({})
 export default class ListNameTranslation extends Vue {
-  @Prop({ default: () => [] })
+  @Prop({ default: () => { return [] as [] } })
   private translationList: NameTranslationDraftIF[]
 
   @Prop({ default: false })

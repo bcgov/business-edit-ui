@@ -67,9 +67,9 @@ export default class AddNameTranslation extends Vue {
 
   // Validation Rules
   private readonly nameTranslationRules: Array<Function> = [
-    v => !!v || 'A name translation is required', // is not empty
-    v => /^[A-Za-zÀ-ÿ_@./#’&+-]+(?: [A-Za-zÀ-ÿ_@./#’&+-]+)*$/.test(v) || 'Invalid character', // English, French and single spaces
-    v => (!v || v.length <= 150) || 'Cannot exceed 150 characters' // maximum character count
+    (v: string) => !!v || 'A name translation is required', // is not empty
+    (v: string) => /^[A-Za-zÀ-ÿ_@./#’&+-]+(?: [A-Za-zÀ-ÿ_@./#’&+-]+)*$/.test(v) || 'Invalid character', // English, French and single spaces
+    (v: string) => (!v || v.length <= 150) || 'Cannot exceed 150 characters' // maximum character count
   ]
 
   mounted () {
