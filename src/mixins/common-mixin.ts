@@ -1,5 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { omit, isEqual } from 'lodash'
+import { RouteNames } from '@/enums'
 
 /**
  * Mixin that provides some useful common utilities.
@@ -46,5 +47,15 @@ export default class CommonMixin extends Vue {
     if (officer?.middleName) fullName += officer.middleName + ' '
     if (officer?.lastName) fullName += officer.lastName
     return fullName.trimRight()
+  }
+
+  /** Return true when in correction filings */
+  isCorrection (): boolean {
+    return this.$route.name === RouteNames.CORRECTION
+  }
+
+  /** Return true when in alteration filings */
+  isAlteration (): boolean {
+    return this.$route.name === RouteNames.ALTERATION
   }
 }

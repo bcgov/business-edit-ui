@@ -27,7 +27,7 @@
         <div id="lbl-phone" v-else>(Not entered)</div>
       </v-flex>
 
-      <v-flex xs1 class="mt-n2" v-if="!isCorrection">
+      <v-flex xs1 class="mt-n2" v-if="!isCorrection()">
         <div class="actions mr-4">
           <v-btn
             v-if="hasBusinessContactInfoChange"
@@ -169,7 +169,6 @@ import { mask } from 'vue-the-mask'
 
 // Interfaces & enums
 import { BusinessContactIF } from '@/interfaces'
-import { FilingTypes } from '@/enums'
 
 // Mixins
 import { CommonMixin } from '@/mixins'
@@ -239,10 +238,6 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 
   private get hasEmailAddressChange (): boolean {
     return this.businessContact.email !== this.originalBusinessContact.email
-  }
-
-  private get isCorrection (): boolean {
-    return this.$route.name === FilingTypes.CORRECTION
   }
 
   // Watchers
