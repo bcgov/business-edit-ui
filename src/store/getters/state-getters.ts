@@ -2,7 +2,7 @@
 import { AccountTypes, EntityTypes } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
-  NameRequestIF, BusinessContactIF, NameTranslationDraftIF
+  NameRequestIF, BusinessContactIF, NameTranslationDraftIF, BusinessInformationIF
 } from '@/interfaces'
 
 /** Whether the user has "staff" keycloak role. */
@@ -30,12 +30,12 @@ export const isEntityType = (state: any): boolean => {
   return !!state.stateModel.tombstone.entityType
 }
 
-/** Whether the entity is a BCOMP. */
+/** Whether the entity is a Benefit Company. */
 export const isTypeBcomp = (state: any): boolean => {
-  return (state.stateModel.tombstone.entityType === EntityTypes.BCOMP)
+  return (state.stateModel.tombstone.entityType === EntityTypes.BENEFIT_COMPANY)
 }
 
-/** Whether the entity is a COOP. */
+/** Whether the entity is a Cooperative. */
 export const isTypeCoop = (state: any): boolean => {
   return (state.stateModel.tombstone.entityType === EntityTypes.COOP)
 }
@@ -198,6 +198,7 @@ export const getAgreementType = (state: any): string | null => {
   return state.stateModel.incorporationAgreementStep.agreementType
 }
 
+/** The business contact object. */
 export const getBusinessContact = (state: any): BusinessContactIF => {
   return state.stateModel.defineCompanyStep.businessContact
 }
@@ -275,4 +276,9 @@ export const getDefaultCorrectionDetailComment = (state: any): string => {
 
 export const getDetailComment = (state: any): string => {
   return state.stateModel.detail.comment
+}
+
+/** The business information object. */
+export const getBusinessInformation = (state: any): BusinessInformationIF => {
+  return state.stateModel.businessInformation
 }

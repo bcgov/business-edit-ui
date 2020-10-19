@@ -91,7 +91,7 @@
         </v-flex>
       </v-layout>
 
-      <v-layout row id="summary-records-address" class="mt-4 mx-0" v-if="entityFilter(EntityTypes.BCOMP)">
+      <v-layout row id="summary-records-address" class="mt-4 mx-0" v-if="entityFilter(EntityTypes.BENEFIT_COMPANY)">
         <v-flex xs3>
           <label class>Records Office</label>
         </v-flex>
@@ -193,7 +193,7 @@
           </li>
         </div>
 
-        <div id="edit-records-address" v-if="entityFilter(EntityTypes.BCOMP)">
+        <div id="edit-records-address" v-if="entityFilter(EntityTypes.BENEFIT_COMPANY)">
           <div class="address-edit-header" :class="{'mt-8': inheritMailingAddress}">
             <label class="address-edit-title">Records Office</label>
             <v-checkbox
@@ -402,7 +402,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
       )
 
       // for BCOMPS, also set the Records Address
-      if (this.entityFilter(EntityTypes.BCOMP)) {
+      if (this.entityFilter(EntityTypes.BENEFIT_COMPANY)) {
         this.recMailingAddress = { ...this.getOfficeAddresses.recordsOffice?.mailingAddress }
         this.recDeliveryAddress = { ...this.getOfficeAddresses.recordsOffice?.deliveryAddress }
 
@@ -538,7 +538,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
    * Sets updated office addresses in store.
    */
   private storeAddresses (): void {
-    if (this.entityFilter(EntityTypes.BCOMP)) {
+    if (this.entityFilter(EntityTypes.BENEFIT_COMPANY)) {
       this.setOfficeAddresses({
         registeredOffice: {
           deliveryAddress: this.deliveryAddress,

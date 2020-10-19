@@ -24,7 +24,7 @@
         <v-flex md8>
           <div class="company-name">{{ companyName }}</div>
           <div class="company-type">
-            <span v-if="entityFilter(EntityTypes.BCOMP)">BC Benefit Company</span>
+            <span v-if="entityFilter(EntityTypes.BENEFIT_COMPANY)">BC Benefit Company</span>
             <span v-else-if="entityFilter(EntityTypes.COOP)">BC Cooperative Association</span>
           </div>
         </v-flex>

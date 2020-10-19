@@ -97,13 +97,13 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
     // try to fetch data
     try {
       // set current entity type
-      this.setEntityType(EntityTypes.BCOMP)
+      this.setEntityType(EntityTypes.BENEFIT_COMPANY)
 
       // initialize Fee Summary data
       // TODO: Set/Clear Data according to filing type / entity type
       this.setFilingData({
         filingTypeCode: FilingCodes.ALTERATION,
-        entityType: EntityTypes.BCOMP,
+        entityType: EntityTypes.BENEFIT_COMPANY,
         priority: false
       })
 

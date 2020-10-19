@@ -1,82 +1,60 @@
 <template>
   <div id="entity-info">
-    <v-container>
-      <v-breadcrumbs :items="breadcrumbs" divider=">" class="breadcrumb mb-5">
-        <v-breadcrumbs-item
-          slot="item"
-          slot-scope="{ item }"
-          exact
-          :href="item.href">
+    <v-container class="py-2 pb-6">
+      <v-breadcrumbs :items="breadcrumbs" divider=">" class="breadcrumb pa-0">
+        <v-breadcrumbs-item slot="item" slot-scope="{ item }" exact :href="item.href">
           {{ item.text }}
         </v-breadcrumbs-item>
       </v-breadcrumbs>
-      <v-list-item three-line id="entity-info-header">
 
-        <!-- Header -->
-        <v-list-item-content id="nr-header" v-show="isEntityType">
-          <!-- Company Name -->
-          <v-list-item-title class="header-title" id="entity-legal-name">
-            <span>{{ getCurrentBusinessName || 'Numbered Benefit Company' }}</span>
-          </v-list-item-title>
+      <div class="d-flex justify-space-between mt-5">
+        <div class="left-column align-self-end">
+          <div class="title-container">
+            <span id="entity-legal-name">{{ getCurrentBusinessName || 'Numbered Benefit Company' }}</span>
+          </div>
 
-          <!-- Company Number -->
-          <v-list-item-subtitle class="business-info">
-            <dl>
-              <dt>Business No:</dt>
-              <dt class="ml-2" id="entity-business-number">
-                <span>{{ getBusinessNumber || 'Not Available' }}</span>
-              </dt>
-              <dd></dd>
-              <dt>Incorporation No:</dt>
-              <dt class="ml-2">
-                <span id="entity-incorp-number">{{ businessInformation.identifier }}</span>
-              </dt>
-            </dl>
-            <dl>
-              <dd id="entity-business-email" aria-label="Business Email">
-                <span>{{businessContact.email || 'Unknown Email'}}</span>
-              </dd>
-              <template v-if="businessContact.phone">
-                <dt></dt>
-                <dd id="entity-business-phone" aria-label="Business Phone">
-                  <span>{{businessContact.phone}}</span>
-                </dd>
-              </template>
-            </dl>
-          </v-list-item-subtitle>
-        </v-list-item-content>
+          <dl class="business-info">
+            <dt class="mr-2">Business No:</dt>
+            <dd id="entity-business-number">{{ getBusinessNumber || 'Not Available' }}</dd>
+            <dt class="mr-2">Incorporation No:</dt>
+            <dd id="entity-incorp-number">{{ getBusinessInformation.identifier }}</dd>
+          </dl>
+        </div>
 
-      </v-list-item>
+        <div class="right-column text-right align-self-end">
+          <dl class="profile-info">
+            <dt><span class="sr-only mr-2">Business Email:</span></dt>
+            <dd id="entity-business-email">{{getBusinessContact.email || 'Unknown Email'}}</dd>
+            <template v-if="getBusinessContact.phone">
+              <dt><span class="sr-only mr-2">Business Phone:</span></dt>
+              <dd id="entity-business-phone">{{getBusinessContact.phone}}</dd>
+            </template>
+          </dl>
+        </div>
+      </div>
     </v-container>
   </div>
 </template>
 
 <script lang="ts">
-// Libraries
-import { Component, Vue } from 'vue-property-decorator'
-import { Getter, State } from 'vuex-class'
-
-// Interfaces
+import { Component, Mixins } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
+import { EnumMixin } from '@/mixins'
 import { BusinessContactIF, BusinessInformationIF } from '@/interfaces'
-import { RouteNames } from '@/enums'
+import { EntityTypes, RouteNames } from '@/enums'
 
 @Component({})
-export default class EntityInfo extends Vue {
-  // Global Store
-  @State(state => state.stateModel.businessInformation)
-  readonly businessInformation!: BusinessInformationIF
-
-  @State(state => state.stateModel.defineCompanyStep.businessContact)
-  readonly businessContact!: BusinessContactIF
-
+export default class EntityInfo extends Mixins(EnumMixin) {
   // Global getters
   @Getter isEntityType!: boolean
   @Getter getBusinessId!: string
   @Getter getBusinessNumber!: string
   @Getter getCurrentBusinessName!: string
   @Getter isRoleStaff!: boolean
+  @Getter getBusinessContact!: BusinessContactIF
+  @Getter getBusinessInformation!: BusinessInformationIF
 
-  /** The entity title.  */
+  /** The entity title. */
   private get entityTitle (): string {
     switch (this.$route.name) {
       case RouteNames.CORRECTION:
@@ -88,7 +66,7 @@ export default class EntityInfo extends Vue {
     }
   }
 
-  /** The route breadcrumbs. */
+  /** The route breadcrumbs list. */
   private get breadcrumbs (): Array<any> {
     return [
       {
@@ -115,43 +93,31 @@ export default class EntityInfo extends Vue {
 
 #entity-info {
   background: $BCgovInputBG;
+}
 
-  .breadcrumb {
-    padding: 0;
+.v-breadcrumbs li {
+  font-size: 0.75rem;
+}
+
+::v-deep {
+  .v-breadcrumbs a {
+    color: $gray8 !important;
   }
 
-  .v-breadcrumbs li {
-    font-size: .75rem;
-  }
-
-  ::v-deep {
-    .v-breadcrumbs a {
-      color: $gray8;
-    }
-
-    .v-breadcrumbs a:hover {
-      color: $BCgovABlue3;
-    }
+  .v-breadcrumbs a:hover {
+    color: $BCgovABlue3 !important;
   }
 }
 
-#entity-info-header {
-  padding: 0!important;
-}
-
-.container {
-  padding-top: .5rem;
-  padding-bottom: .5rem;
-}
-
-.header-title {
-  font-size: 1.25rem;
+.title-container {
+  font-size: 1.125rem;
   font-weight: bold;
+  color: black;
 }
 
-.business-info {
-  display: flex;
-  justify-content: space-between;
+.business-info,
+.profile-info {
+  font-size: 1rem;
 }
 
 dl {
@@ -164,7 +130,7 @@ dd, dt {
   float: left;
 }
 
-dt + dd:before {
+dd + dt:before {
   content: "•";
   display: inline-block;
   margin-right: 0.75rem;

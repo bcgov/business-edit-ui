@@ -49,13 +49,13 @@ export default class CommonMixin extends Vue {
     return fullName.trimRight()
   }
 
-  /** Return true when in correction filings */
+  /** Return true when in correction filings. */
   isCorrection (): boolean {
-    return this.$route.name === RouteNames.CORRECTION
+    return (this.$route.name === RouteNames.CORRECTION)
   }
 
-  /** Return true when in alteration filings */
+  /** Return true when in alteration filings. */
   isAlteration (): boolean {
-    return this.$route.name === RouteNames.ALTERATION
+    return (this.$route.name === RouteNames.ALTERATION)
   }
 }

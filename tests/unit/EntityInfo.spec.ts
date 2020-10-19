@@ -93,14 +93,14 @@ describe('Entity Info component in a Correction as a named company', () => {
   })
 
   it('renders the business name and numbers', () => {
-    expect(wrapper.find('#entity-legal-name').text()).toContain('My Mock Name Inc.')
-    expect(wrapper.find('#entity-business-number').text()).toContain('1234567')
-    expect(wrapper.find('#entity-incorp-number').text()).toContain('BC1234567')
+    expect(wrapper.find('#entity-legal-name').text()).toBe('My Mock Name Inc.')
+    expect(wrapper.find('#entity-business-number').text()).toBe('1234567')
+    expect(wrapper.find('#entity-incorp-number').text()).toBe('BC1234567')
   })
 
   it('renders the business contact information', () => {
-    expect(wrapper.find('#entity-business-email').text()).toContain('mock@email.com')
-    expect(wrapper.find('#entity-business-phone').text()).toContain('123-456-7890')
+    expect(wrapper.find('#entity-business-email').text()).toBe('mock@email.com')
+    expect(wrapper.find('#entity-business-phone').text()).toBe('123-456-7890')
   })
 })
 
@@ -174,13 +174,13 @@ describe('Entity Info component in a Correction as a numbered company', () => {
   })
 
   it('renders the business name and numbers', () => {
-    expect(wrapper.find('#entity-legal-name').text()).toContain('Numbered Benefit Company')
-    expect(wrapper.find('#entity-business-number').text()).toContain('7654321')
-    expect(wrapper.find('#entity-incorp-number').text()).toContain('BC7654321')
+    expect(wrapper.find('#entity-legal-name').text()).toBe('Numbered Benefit Company')
+    expect(wrapper.find('#entity-business-number').text()).toBe('7654321')
+    expect(wrapper.find('#entity-incorp-number').text()).toBe('BC7654321')
   })
 
   it('renders the business contact information', () => {
-    expect(wrapper.find('#entity-business-email').text()).toContain('mock@email.com')
-    expect(wrapper.find('#entity-business-phone').text()).toContain('321-456-7890')
+    expect(wrapper.find('#entity-business-email').text()).toBe('mock@email.com')
+    expect(wrapper.find('#entity-business-phone').text()).toBe('321-456-7890')
   })
 })
