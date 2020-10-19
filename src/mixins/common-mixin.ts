@@ -34,4 +34,17 @@ export default class CommonMixin extends Vue {
       if (!this.isJestRunning) window.scrollTo({ top: element.offsetTop, behavior: 'smooth' })
     })
   }
+
+  /**
+   * Returns the full (first-middle-last) name of the subject officer.
+   * @param officer the object to get the names from
+   * @returns the formatted full name string
+   */
+  formatFullName (officer: any): string {
+    let fullName: string = ''
+    if (officer?.firstName) fullName += officer.firstName + ' '
+    if (officer?.middleName) fullName += officer.middleName + ' '
+    if (officer?.lastName) fullName += officer.lastName
+    return fullName.trimRight()
+  }
 }

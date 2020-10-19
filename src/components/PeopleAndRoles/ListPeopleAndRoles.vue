@@ -197,7 +197,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   @Prop() private currentCompletingParty: OrgPersonIF
 
   /** Headers for the person table. */
-  readonly tableHeaders: Array<string> = ['Name', 'Mailing Address', 'Delivery Address', 'Roles']
+  readonly tableHeaders = ['Name', 'Mailing Address', 'Delivery Address', 'Roles']
 
   /**
    * Checks if specified org/person was added.
@@ -227,16 +227,16 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   }
 
   /**
-   * Formats the org or person name for display.
-   * @param filing The filing body which contains the name/title.
-   * @returns The formatted org/person name.
+   * Returns the org or person full name for display.
+   * @param orgPerson the org/person object
+   * @returns the formatted name
    */
-  private formatName (filing: any): string {
-    if (filing?.officer?.orgName) {
-      return filing.officer.orgName
+  private formatName (orgPerson: OrgPersonIF): string {
+    if (orgPerson?.officer?.orgName) {
+      return orgPerson.officer.orgName
     }
-    if (filing?.officer) {
-      return `${filing.officer.firstName} ${filing.officer.middleName || ''} ${filing.officer.lastName}`
+    if (orgPerson?.officer) {
+      return this.formatFullName(orgPerson.officer)
     }
     return ''
   }

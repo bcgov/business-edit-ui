@@ -1,5 +1,6 @@
 <template>
   <div id="add-edit-org-person">
+
     <confirm-dialog
       ref="reassignCpDialog"
       attach="#add-edit-org-person"
@@ -8,10 +9,12 @@
     <ul class="list add-person">
       <li class="add-person-container">
         <div class="meta-container">
+
           <label class="add-org-header" v-if="isPerson">
             <span v-if="isNaN(activeIndex)">Add Person</span>
             <span v-else>Edit Person</span>
           </label>
+
           <label class="add-org-header" v-if="isOrg">
             <span v-if="isNaN(activeIndex)">Add Corporation or Firm</span>
             <span v-else>Edit Corporation or Firm</span>
@@ -75,31 +78,27 @@
                 <label class="sub-header">Roles</label>
                 <v-row class="roles-row my-6">
                   <v-col cols="4" class="mt-0" v-if="isPerson">
-                    <div class="pa-1" :class="{'highlightedRole': isRoleLocked(Roles.COMPLETING_PARTY)}">
+                    <div class="pa-1">
                       <v-checkbox
                         id="cp-checkbox"
                         class="mt-1"
                         v-model="selectedRoles"
                         :value="Roles.COMPLETING_PARTY"
                         :label="Roles.COMPLETING_PARTY"
-                        :disabled="isRoleLocked(Roles.COMPLETING_PARTY)"
                         :rules="roleRules"
                         @change="assignCompletingPartyRole()"
                       />
                     </div>
                   </v-col>
                   <v-col cols="4" class="mt-0">
-                    <div class="pa-1" :class="{ 'highlightedRole': isRoleLocked(Roles.INCORPORATOR) ||
-                      orgPerson.officer.partyType === IncorporatorTypes.CORPORATION }"
-                    >
+                    <div class="pa-1" :class="{ 'highlightedRole': isOrg }">
                       <v-checkbox
                         id="incorp-checkbox"
                         class="mt-1"
                         v-model="selectedRoles"
                         :value="Roles.INCORPORATOR"
                         :label="Roles.INCORPORATOR"
-                        :disabled="isRoleLocked(Roles.INCORPORATOR) ||
-                          orgPerson.officer.partyType === IncorporatorTypes.CORPORATION"
+                        :disabled="isOrg"
                         :rules="roleRules"
                     />
                     </div>
@@ -162,8 +161,7 @@
                   :disabled="isNaN(activeIndex)"
                   @click="emitRemove(activeIndex)">Remove</v-btn>
                 <v-btn id="btn-done" large color="primary" class="ml-auto"
-                  @click="validateOrgPersonForm()"
-                  :disabled="!isFormValid">Done</v-btn>
+                  @click="validateOrgPersonForm()">Done</v-btn>
                 <v-btn id="btn-cancel" large outlined color="primary"
                   @click="resetAddPersonData(true)">Cancel</v-btn>
               </div>
@@ -226,15 +224,15 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   private orgPerson: OrgPersonIF = null
 
   /** Model value for org/person form validity. */
-  private orgPersonFormValid: boolean = true
+  private orgPersonFormValid = true
 
   // Address related properties
   private inProgressMailingAddress: AddressIF = undefined
   private inProgressDeliveryAddress: AddressIF = undefined
-  private inheritMailingAddress: boolean = true
-  private mailingAddressValid: boolean = false
-  private deliveryAddressValid: boolean = false
-  private reassignCompletingParty: boolean = false
+  private inheritMailingAddress = true
+  private mailingAddressValid = false
+  private deliveryAddressValid = false
+  private reassignCompletingParty = false
 
   /** Model value for roles checboxes. */
   private selectedRoles: Array<Roles> = []
@@ -290,23 +288,13 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     v => (v?.length <= 155) || 'Cannot exceed 155 characters' // maximum character count
   ]
 
-  /* True if the form is valid. */
+  /** True if the form is valid. */
   private get isFormValid (): boolean {
     let isFormValid = (this.orgPersonFormValid && this.mailingAddressValid)
     if (this.isDirector && !this.inheritMailingAddress) {
-      isFormValid = isFormValid && this.deliveryAddressValid
+      isFormValid = (isFormValid && this.deliveryAddressValid)
     }
     return isFormValid
-  }
-
-  /** The formatted, current completing party's name. */
-  private get currentCompletingPartyName (): string {
-    let name = this.currentCompletingParty?.officer.firstName
-    if (this.currentCompletingParty?.officer.middleName) {
-      name += ` ${this.currentCompletingParty.officer.middleName}`
-    }
-    name += ` ${this.currentCompletingParty?.officer.lastName}`
-    return name
   }
 
   /** True if current data object is a person. */
@@ -320,7 +308,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   /**
-   * Called when component is created to set local properties.
+   * Called when component is created, to set local properties.
    */
   private created (): void {
     // safety check
@@ -365,9 +353,17 @@ export default class OrgPerson extends Mixins(CommonMixin) {
    * Called when user clicks Done button.
    */
   private validateOrgPersonForm (): void {
+    // validate the main form and address form(s)
+    this.$refs.orgPersonForm.validate()
+    this.$refs.mailingAddressNew.$refs.addressForm.validate()
+    if (this.$refs.deliveryAddressNew) {
+      this.$refs.deliveryAddressNew.$refs.addressForm.validate()
+    }
+
+    // only proceed if form is valid
     if (this.isFormValid) {
       const person = this.addPerson()
-      // only process if person has actually changed
+      // only process if org/person has actually changed
       if (this.hasPersonChanged(person)) {
         if (this.reassignCompletingParty) {
           this.emitRemoveCpRole()
@@ -395,28 +391,28 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   /**
-   * Prompts user whether to change the Completing Party.
-   * */
+   * Displays dialog to prompt user whether to change the Completing Party.
+   */
   private confirmReassignPerson () {
     // open confirmation dialog and wait for response
     this.$refs.reassignCpDialog.open(
       'Change Completing Party?',
-      this.reassignPersonErrorMessage(),
+      this.changeCpMessage,
       {
         width: '45rem',
         persistent: true,
         yes: 'Change Completing Party',
-        no: null,
-        cancel: 'Cancel'
+        no: 'Cancel',
+        cancel: null
       }
-    ).then(async (confirm) => {
+    ).then(confirm => {
       if (confirm) {
         // set flag to reassign CP when Done is clicked
         this.reassignCompletingParty = true
+      } else {
+        // remove the role
+        this.selectedRoles = this.selectedRoles.filter(r => r !== Roles.COMPLETING_PARTY)
       }
-    }).catch(() => {
-      // remove the role
-      this.selectedRoles = this.selectedRoles.filter(r => r !== Roles.COMPLETING_PARTY)
     })
   }
 
@@ -472,12 +468,10 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     }
   }
 
-  private isRoleLocked (role: Roles): boolean {
-    return (this.orgPerson?.roles.some(r => r.roleType === role) && !isNaN(this.activeIndex))
-  }
-
-  private reassignPersonErrorMessage (): string {
-    return `The Completing Party role is already assigned to ${this.currentCompletingPartyName}.\n` +
+  /** The Completing Party change message. */
+  private get changeCpMessage (): string {
+    const currentCpName = this.formatFullName(this.currentCompletingParty?.officer)
+    return `The Completing Party role is already assigned to ${currentCpName}.\n` +
       'Selecting "Completing Party" here will change the Completing Party.'
   }
 

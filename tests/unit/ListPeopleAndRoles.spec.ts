@@ -78,7 +78,7 @@ const peopleAndRoles = [
       id: 2,
       firstName: 'Lawrence',
       lastName: 'Kavanagh',
-      middleName: 'H',
+      middleName: '',
       orgName: '',
       partyType: 'Person'
     },
@@ -108,7 +108,7 @@ const peopleAndRoles = [
       id: 3,
       firstName: 'Christy',
       lastName: 'Sawyer',
-      middleName: 'Z',
+      middleName: '',
       orgName: '',
       partyType: 'Person'
     },
@@ -219,9 +219,9 @@ describe('List People And Roles component', () => {
     expect(rows.at(0).find('.v-chip').exists()).toBe(false)
     expect(rows.at(1).find('.people-roles-title').text()).toBe('Random Food Distributors')
     expect(rows.at(1).find('.v-chip').text()).toBe('CORRECTED')
-    expect(rows.at(2).find('.people-roles-title').text()).toBe('Lawrence H Kavanagh')
+    expect(rows.at(2).find('.people-roles-title').text()).toBe('Lawrence Kavanagh')
     expect(rows.at(2).find('.v-chip').text()).toBe('ADDED')
-    expect(rows.at(3).find('.people-roles-title').text()).toBe('Christy Z Sawyer')
+    expect(rows.at(3).find('.people-roles-title').text()).toBe('Christy Sawyer')
     expect(rows.at(3).find('.v-chip').text()).toBe('REMOVED')
 
     wrapper.destroy()

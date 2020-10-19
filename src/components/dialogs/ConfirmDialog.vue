@@ -5,6 +5,7 @@
     :max-width="options.width"
     :style="{ zIndex: options.zIndex }"
     :persistent="options.persistent"
+    :attach="attach"
     @keydown.esc="onClickCancel">
 
     <v-card>
@@ -56,7 +57,7 @@
  *   this.$root.$confirm = this.$refs.confirm.open
  * }
  */
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
 interface OptionsObject {
   width?: number | string,
@@ -69,6 +70,9 @@ interface OptionsObject {
 
 @Component({})
 export default class ConfirmDialog extends Vue {
+  /** Prop to provide attachment selector. */
+  @Prop() private attach: string
+
   /** Whether the subject dialog is currently displayed. */
   private dialog: boolean = false
 
@@ -106,6 +110,7 @@ export default class ConfirmDialog extends Vue {
     this.title = title
     this.message = message
     this.options = Object.assign(this.options, options)
+
     return new Promise((resolve, reject) => {
       this.resolve = resolve
       this.reject = reject

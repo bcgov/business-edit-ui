@@ -1,102 +1,119 @@
 <template>
-  <v-card flat id="people-and-roles">
-    <!-- Header -->
-    <div class="header-container">
-      <v-icon color="#38598A">mdi-account-multiple-plus</v-icon>
-      <label class="font-weight-bold pl-2">People and Roles</label>
-    </div>
+  <div id="people-and-roles">
 
-    <!-- Instructional Text -->
-    <div class="role-container pt-6 px-4">
-      This application must include the following:
-      <ul>
-        <li>
-          <v-icon v-if="cpValid" color="blue" class="cp-valid">mdi-check</v-icon>
-          <v-icon v-else color="red" class="cp-invalid">mdi-close</v-icon>
-          <span class="ml-2">The Completing Party</span>
-        </li>
-        <li>
-          <v-icon v-if="incorpValid" color="blue" class="incorp-valid">mdi-check</v-icon>
-          <v-icon v-else color="red" class="incorp-invalid">mdi-close</v-icon>
-          <span class="ml-2">At least one Incorporator</span>
-        </li>
-        <li>
-          <v-icon v-if="dirValid" color="blue" class="dir-valid">mdi-check</v-icon>
-          <v-icon v-else color="red" class="dir-invalid">mdi-close</v-icon>
-          <span class="ml-2">At least one Director</span>
-        </li>
-      </ul>
-    </div>
+    <confirm-dialog
+      ref="changeCpDialog"
+      attach="#people-and-roles"
+    />
 
-    <!-- Add Buttons -->
-    <div class="btn-container py-6 px-4">
-      <v-btn
-        id="btn-add-person"
-        outlined
-        color="primary"
-        :disabled="renderOrgPersonForm"
-        @click="initAdd([], IncorporatorTypes.PERSON)"
-      >
-        <v-icon>mdi-account-plus</v-icon>
-        <span>Add a Person</span>
-      </v-btn>
-      <v-btn
-        id="btn-add-corp"
-        outlined
-        color="primary"
-        class="ml-2"
-        :disabled="renderOrgPersonForm"
-        @click="initAdd([{ roleType: Roles.INCORPORATOR }], IncorporatorTypes.CORPORATION)"
-      >
-        <v-icon>mdi-domain-plus</v-icon>
-        <span>Add a Corporation or Firm</span>
-      </v-btn>
-      <v-btn
-        v-if="!cpValid"
-        id="btn-add-cp"
-        outlined
-        color="primary"
-        class="ml-2"
-        :disabled="renderOrgPersonForm"
-        @click="initAdd([{ roleType: Roles.COMPLETING_PARTY }], IncorporatorTypes.PERSON)"
-      >
-        <v-icon>mdi-account-plus-outline</v-icon>
-        <span>Add the Completing Party</span>
-      </v-btn>
-    </div>
+    <v-card flat>
+      <!-- Header -->
+      <div class="header-container">
+        <v-icon color="#38598A">mdi-account-multiple-plus</v-icon>
+        <label class="font-weight-bold pl-2">People and Roles</label>
+      </div>
 
-    <div class="list-container px-4">
-      <list-people-and-roles
-        :peopleAndRoles="getPeopleAndRoles"
-        :renderOrgPersonForm="renderOrgPersonForm"
-        :currentOrgPerson="currentOrgPerson"
-        :activeIndex="activeIndex"
-        :nextId="nextId"
-        :currentCompletingParty="currentCompletingParty"
-        @initEdit="initEdit($event)"
-        @addEdit="addEdit($event)"
-        @remove="remove($event)"
-        @undo="undo($event)"
-        @reset="reset()"
-        @removeCpRole="removeCpRole()"
-      />
-    </div>
-  </v-card>
+      <!-- Instructional Text -->
+      <div class="role-container pt-6 px-4">
+        This application must include the following:
+        <ul>
+          <li>
+            <v-icon v-if="cpValid" color="blue" class="cp-valid">mdi-check</v-icon>
+            <v-icon v-else color="red" class="cp-invalid">mdi-close</v-icon>
+            <span class="ml-2">The Completing Party</span>
+          </li>
+          <li>
+            <v-icon v-if="incorpValid" color="blue" class="incorp-valid">mdi-check</v-icon>
+            <v-icon v-else color="red" class="incorp-invalid">mdi-close</v-icon>
+            <span class="ml-2">At least one Incorporator</span>
+          </li>
+          <li>
+            <v-icon v-if="dirValid" color="blue" class="dir-valid">mdi-check</v-icon>
+            <v-icon v-else color="red" class="dir-invalid">mdi-close</v-icon>
+            <span class="ml-2">At least one Director</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Add Buttons -->
+      <div class="btn-container py-6 px-4">
+        <v-btn
+          id="btn-add-person"
+          outlined
+          color="primary"
+          :disabled="renderOrgPersonForm"
+          @click="initAdd([], IncorporatorTypes.PERSON)"
+        >
+          <v-icon>mdi-account-plus</v-icon>
+          <span>Add a Person</span>
+        </v-btn>
+        <v-btn
+          id="btn-add-corp"
+          outlined
+          color="primary"
+          class="ml-2"
+          :disabled="renderOrgPersonForm"
+          @click="initAdd([{ roleType: Roles.INCORPORATOR }], IncorporatorTypes.CORPORATION)"
+        >
+          <v-icon>mdi-domain-plus</v-icon>
+          <span>Add a Corporation or Firm</span>
+        </v-btn>
+        <v-btn
+          v-if="!cpValid"
+          id="btn-add-cp"
+          outlined
+          color="primary"
+          class="ml-2"
+          :disabled="renderOrgPersonForm"
+          @click="initAdd([{ roleType: Roles.COMPLETING_PARTY }], IncorporatorTypes.PERSON)"
+        >
+          <v-icon>mdi-account-plus-outline</v-icon>
+          <span>Add the Completing Party</span>
+        </v-btn>
+      </div>
+
+      <div class="list-container px-4">
+        <list-people-and-roles
+          :peopleAndRoles="getPeopleAndRoles"
+          :renderOrgPersonForm="renderOrgPersonForm"
+          :currentOrgPerson="currentOrgPerson"
+          :activeIndex="activeIndex"
+          :nextId="nextId"
+          :currentCompletingParty="currentCompletingParty"
+          @initEdit="initEdit($event)"
+          @addEdit="addEdit($event)"
+          @remove="remove($event)"
+          @undo="undo($event)"
+          @reset="reset()"
+          @removeCpRole="removeCpRole()"
+        />
+      </div>
+    </v-card>
+  </div>
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
-import { ActionBindingIF, IncorporationFilingIF, OrgPersonIF, RoleIF } from '@/interfaces'
+import { ActionBindingIF, ConfirmDialogType, IncorporationFilingIF, OrgPersonIF, RoleIF } from '@/interfaces'
 import { ActionTypes, IncorporatorTypes, CompareModes, Roles } from '@/enums'
+import { ConfirmDialog } from '@/components/dialogs'
 import { ListPeopleAndRoles } from '.'
 import { CommonMixin } from '@/mixins'
 
 @Component({
-  components: { ListPeopleAndRoles }
+  components: {
+    ConfirmDialog,
+    ListPeopleAndRoles
+  }
 })
 export default class PeopleAndRoles extends Mixins(CommonMixin) {
+  // Refs
+  $refs!: {
+    changeCpDialog: ConfirmDialogType
+  }
+
   // Declarations for template
   readonly Roles = Roles
   readonly IncorporatorTypes = IncorporatorTypes
@@ -137,10 +154,10 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   }
 
   // Local properties
-  private renderOrgPersonForm: boolean = false
-  private activeIndex: number = NaN
+  private renderOrgPersonForm = false
+  private activeIndex = NaN
   private currentOrgPerson: OrgPersonIF = null
-  private nextId: number = NaN
+  private nextId = NaN
   private currentCompletingParty: OrgPersonIF = null
   private originalCompletingParty: OrgPersonIF = null
 
@@ -164,6 +181,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     return (this.cpValid && this.incorpValid && this.dirValid)
   }
 
+  /** True if there are no orgs/persons with missing roles. */
+  private get noMissingRoles (): boolean {
+    return this.getPeopleAndRoles.every(p => p.roles.length > 0)
+  }
+
   /** True if we have any changes (from original IA). */
   private get hasChanges (): boolean {
     return this.getPeopleAndRoles.some(x => x.action)
@@ -178,12 +200,20 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
       : this.getUserEmail
   }
 
+  /** The Completing Party change message. */
+  private get changeCpMessage (): string {
+    const currentCpName = this.formatFullName(this.currentCompletingParty?.officer)
+    return `The Completing Party role was re-assigned to ${currentCpName}.\n` +
+      'This undo will restore the original Completing Party.'
+  }
+
   /**
    * Called when component is mounted.
    */
   private mounted (): void {
-    // initialize component 'changed' flag
-    this.setPeopleAndRolesChanged(false)
+    // initialize this component's 'valid' and 'changed' flags
+    this.setPeopleAndRolesValid(this.hasValidRoles && this.noMissingRoles)
+    this.setPeopleAndRolesChanged(this.hasChanges)
   }
 
   /**
@@ -198,7 +228,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     // 2. filter in people with specified role
     const orgPersonWithSpecifiedRole = this.getPeopleAndRoles
       .filter(people => people.action !== ActionTypes.REMOVED)
-      .filter(people => people.roles.some(party => party.roleType === roleName))
+      .filter(people => people.roles.some(role => role.roleType === roleName))
 
     if (mode === CompareModes.EXACT) {
       return (orgPersonWithSpecifiedRole.length === count)
@@ -251,7 +281,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    * Undoes changes to the specified org/person.
    * @param index The index of the org/person to undo.
    */
-  private undo (index: number): void {
+  private async undo (index: number): Promise<void> {
     // make a copy so Vue reacts when we set the updated list
     const tempList = cloneDeep(this.getPeopleAndRoles)
 
@@ -269,31 +299,44 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
         // get ID of person to undo
         const id = person?.officer?.id
 
-        // get value of original person from original IA
+        // get copy of original person from original IA
         const parties = this.getOriginalIA?.incorporationApplication?.parties || []
-        const originalPerson = parties.find(x => x.officer.id === id)
+        const thisPerson = cloneDeep(parties.find(x => x.officer.id === id))
 
         // safety check
-        if (!originalPerson) {
+        if (!thisPerson) {
           // eslint-disable-next-line no-console
           console.log('Failed to find original person with id =', id)
           return
         }
 
-        // check if original person had CP role and another person has it now
-        const hadCp = originalPerson.roles.some(role => role.roleType === Roles.COMPLETING_PARTY)
-        // get the Completing Party
-        // (we update this record right in the temp list)
+        // check if original person had CP role
+        const hadCp = thisPerson.roles.some(role => role.roleType === Roles.COMPLETING_PARTY)
+
+        // check if an other person has CP role right now
+        // NB: we will update this record right in the temp list - no need to splice
         const otherPerson = this.getCompletingParty(tempList)
 
-        if (hadCp && otherPerson && (originalPerson.officer.id !== otherPerson.officer.id)) {
-          // remove the other CP and their email
-          otherPerson.roles = otherPerson.roles.filter(r => r.roleType !== Roles.COMPLETING_PARTY)
-          otherPerson.officer.email = null
+        // check if we would restore the original CP
+        if (hadCp && otherPerson && (thisPerson.officer.id !== otherPerson.officer.id)) {
+          // prompt user for confirmation
+          await this.confirmReassignCp().then(confirm => {
+            if (confirm) {
+              // remove the other person's CP role and their email
+              otherPerson.roles = otherPerson.roles.filter(r => r.roleType !== Roles.COMPLETING_PARTY)
+              otherPerson.officer.email = null
+            } else {
+              // remove this person's CP role and their email
+              thisPerson.roles = thisPerson.roles.filter(r => r.roleType !== Roles.COMPLETING_PARTY)
+              thisPerson.officer.email = null
+              // set action (since they lost their CP role)
+              thisPerson.action = ActionTypes.EDITED
+            }
+          })
         }
 
         // splice in the original person
-        tempList.splice(index, 1, originalPerson)
+        tempList.splice(index, 1, thisPerson)
         break
     }
 
@@ -301,7 +344,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     this.setPeopleAndRoles(tempList)
 
     // update this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValid(this.hasValidRoles)
+    this.setPeopleAndRolesValid(this.hasValidRoles && this.noMissingRoles)
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
@@ -335,7 +378,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     this.setPeopleAndRoles(tempList)
 
     // update this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValid(this.hasValidRoles)
+    this.setPeopleAndRolesValid(this.hasValidRoles && this.noMissingRoles)
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
@@ -362,7 +405,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     this.setPeopleAndRoles(tempList)
 
     // update this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValid(this.hasValidRoles)
+    this.setPeopleAndRolesValid(this.hasValidRoles && this.noMissingRoles)
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
@@ -404,6 +447,25 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   }
 
   /**
+   * Displays dialog to prompt user whether to change the Completing Party.
+   * @returns a promise that is resolved when the user responds
+   */
+  private async confirmReassignCp (): Promise<any> {
+    // open confirmation dialog and wait for response
+    return this.$refs.changeCpDialog.open(
+      'Change Completing Party?',
+      this.changeCpMessage,
+      {
+        width: '45rem',
+        persistent: true,
+        yes: 'Restore original Completing Party',
+        no: 'Cancel',
+        cancel: null
+      }
+    )
+  }
+
+  /**
    * Gets the Completing Party in a specified org/person list.
    * @param list The list to search.
    * @returns The Completing Party if found, otherwise undefined.
@@ -432,7 +494,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   @Watch('getPeopleAndRoles', { deep: true })
   private onPeopleAndRolesChanged (): void {
     this.currentCompletingParty = this.getCompletingParty(this.getPeopleAndRoles)
-    this.setPeopleAndRolesValid(this.hasValidRoles)
+    this.setPeopleAndRolesValid(this.hasValidRoles && this.noMissingRoles)
   }
 }
 </script>
