@@ -1,25 +1,34 @@
 // Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import mockRouter from './MockRouter'
+import VueRouter from 'vue-router'
 
 // Store
 import { getVuexStore } from '@/store'
 
 // Components
-import { mount } from '@vue/test-utils'
+import { createLocalVue, mount } from '@vue/test-utils'
 import { BusinessContactInfo, FolioNumber, OfficeAddresses, YourCompany } from '@/components/YourCompany'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 
 Vue.use(Vuetify)
+const localVue = createLocalVue()
+localVue.use(VueRouter)
+const router = mockRouter.mock()
 
 const vuetify = new Vuetify({})
 
-describe('YourCompany', () => {
+describe('YourCompany in a Correction', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
+  beforeAll(() => {
+    router.push({ name: 'correction' })
+  })
+
   beforeEach(() => {
-    wrapper = mount(YourCompany, { vuetify, store })
+    wrapper = mount(YourCompany, { vuetify, store, localVue, router })
   })
 
   afterEach(() => {

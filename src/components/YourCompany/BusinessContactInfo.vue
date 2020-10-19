@@ -27,7 +27,7 @@
         <div id="lbl-phone" v-else>(Not entered)</div>
       </v-flex>
 
-      <v-flex xs1 class="mt-n2">
+      <v-flex xs1 class="mt-n2" v-if="!isCorrection()">
         <div class="actions mr-4">
           <v-btn
             v-if="hasBusinessContactInfoChange"
@@ -167,7 +167,7 @@
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { mask } from 'vue-the-mask'
 
-// Interfaces
+// Interfaces & enums
 import { BusinessContactIF } from '@/interfaces'
 
 // Mixins

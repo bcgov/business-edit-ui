@@ -350,7 +350,18 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     shareStructureToAdd.hasMaximumShares = !this.hasNoMaximumShares
     shareStructureToAdd.hasParValue = !this.hasNoParValue
 
+    // Check if Corrections disabled share Classes capability to support Series
     if (!shareStructureToAdd.hasRightsOrRestrictions && shareStructureToAdd.series) {
+      shareStructureToAdd.series.forEach(series => {
+        // First remove any ADDED series from the list
+        if (series.action === ActionTypes.ADDED) {
+          // Find the index of the series to remove due to sorting functionality potentially changing indexes
+          const seriesIndex = shareStructureToAdd.series.findIndex(x => x.id === series.id)
+          shareStructureToAdd.series.splice(seriesIndex, 1)
+        }
+      })
+
+      // Set the actions to REMOVED for any original series
       shareStructureToAdd.series.forEach(series => {
         series.action = ActionTypes.REMOVED
       })
@@ -362,7 +373,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     if (this.isClass) {
       this.emitRemoveShareClassEvent(this.activeIndex)
     } else if (this.isSeries) {
-      this.emitRemoveShareSeriesEvent(this.activeIndex, this.parentIndex)
+      this.emitRemoveShareSeriesEvent(this.activeIndex)
     }
   }
 
@@ -390,13 +401,13 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     if (this.hasSeriesShares && !this.shareStructure.hasRightsOrRestrictions) {
       // open confirmation dialog and wait for response
       this.$refs.confirm.open(
-        'Remove Share Series',
+        'Remove Share Series with Class',
         'A share series exists for this class. Removing the Special Rights or Restrictions for this class' +
-        ' will remove all associated Share Series',
+        ' will remove all associated share series',
         {
           width: '45rem',
           persistent: true,
-          yes: 'Remove share series',
+          yes: 'Remove',
           no: null,
           cancel: 'Cancel'
         }
@@ -421,7 +432,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   private emitRemoveShareClassEvent (shareClassIndex: number): void {}
 
   @Emit('removeSeries')
-  private emitRemoveShareSeriesEvent (shareSeriesIndex: number, parentIndex: number): void {}
+  private emitRemoveShareSeriesEvent (shareSeriesIndex: number): void {}
 
   @Emit('resetEvent')
   private emitResetEvent (): void {}

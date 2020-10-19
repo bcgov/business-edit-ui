@@ -1,6 +1,11 @@
 <template>
   <v-card flat id="share-structure">
 
+    <confirm-dialog
+      ref="confirm"
+      attach="#share-structure"
+    />
+
     <!-- Summary Section -->
     <div id="share-summary">
       <!-- Summary Header -->
@@ -30,17 +35,19 @@
       </v-btn>
     </div>
 
-    <v-card flat class="add-share-structure-container" v-if="showAddShareStructureForm">
-      <edit-share-structure
-        v-show="showAddShareStructureForm"
-        :initialValue="currentShareStructure"
-        :activeIndex="activeIndex"
-        :nextId="nextId"
-        :parentIndex="parentIndex"
-        :shareClasses="getShareClasses"
-        @addEditClass="addEditShareClass($event)"
-        @resetEvent="resetData()"/>
-    </v-card>
+    <v-expand-transition>
+      <v-card flat class="add-share-structure-container" v-if="showAddShareStructureForm">
+        <edit-share-structure
+          v-show="showAddShareStructureForm"
+          :initialValue="currentShareStructure"
+          :activeIndex="activeIndex"
+          :nextId="nextId"
+          :parentIndex="parentIndex"
+          :shareClasses="getShareClasses"
+          @addEditClass="addEditShareClass($event)"
+          @resetEvent="resetData()"/>
+      </v-card>
+    </v-expand-transition>
 
     <v-data-table
       class="share-structure-table"
@@ -53,7 +60,12 @@
       <template v-slot:item="row" class="share-data-table">
 
         <!-- Share Class Rows-->
-        <tr :key="row.item.id" class="class-row" :class="{ 'class-row-has-series': row.item.series.length}">
+        <tr
+          v-if="!showClassEditForm[row.index]"
+          :key="row.item.id"
+          class="class-row"
+          :class="{ 'class-row-has-series': row.item.series.length}"
+        >
           <td :class="{ 'list-item__subtitle' : row.item.action === ActionTypes.REMOVED }" class="list-item__title">
             {{ row.item.name }}
             <action-chip v-if="row.item.action" class="mb-3" :actionable-item="row.item" />
@@ -154,9 +166,11 @@
                     </v-list-item>
                     <v-list-item
                       class="actions-dropdown_item"
-                      @click="removeShareClass(row.index)"
+                      @click="confirmShareRemoval(row.index)"
                     >
-                      <v-list-item-subtitle><v-icon>mdi-delete</v-icon> Remove</v-list-item-subtitle>
+                      <v-list-item-subtitle class="remove-selector">
+                        <v-icon>mdi-delete</v-icon> Remove
+                      </v-list-item-subtitle>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -166,47 +180,53 @@
         </tr>
         <tr v-if="showClassEditForm[row.index]">
           <td colspan="6">
-            <div class="edit-share-structure-container">
-              <edit-share-structure
-                :initialValue="currentShareStructure"
-                :activeIndex="activeIndex"
-                :nextId="nextId"
-                :parentIndex="parentIndex"
-                :shareClasses="getShareClasses"
-                @addEditClass="addEditShareClass($event)"
-                @addEditSeries="addEditShareSeries($event)"
-                @removeClass="removeShareClass($event)"
-                @removeSeries="removeSeries"
-                @resetEvent="resetData()"/>
-            </div>
+            <v-expand-transition>
+              <div class="edit-share-structure-container">
+                <edit-share-structure
+                  :initialValue="currentShareStructure"
+                  :activeIndex="activeIndex"
+                  :nextId="nextId"
+                  :parentIndex="parentIndex"
+                  :shareClasses="getShareClasses"
+                  @addEditClass="addEditShareClass($event)"
+                  @addEditSeries="addEditShareSeries($event)"
+                  @removeClass="confirmShareRemoval($event)"
+                  @resetEvent="resetData()"/>
+              </div>
+            </v-expand-transition>
           </td>
         </tr>
         <!-- Share Series rows -->
-        <tr v-for="(seriesItem, index) in row.item.series" :key="`class:${row.index}-Series:${index}`"
+        <template v-for="(seriesItem, index) in row.item.series">
+          <tr
+            v-if="!showSeriesEditForm[row.index]"
+            :key="`class:${row.index}-Series:${index}`"
             class="series-row"
             :class="{ 'series-row-last': index === row.item.series.length - 1}"
-        >
-          <td class="series-name">
+          >
+            <td class="series-name">
             <span :class="{'list-item__subtitle' : row.item.action === ActionTypes.REMOVED ||
               seriesItem.action === ActionTypes.REMOVED }">
               {{ seriesItem.name }}
             </span>
-            <action-chip
-              v-if="row.item.action !== ActionTypes.REMOVED && seriesItem.action"
-              class="mb-3"
-              :actionable-item="seriesItem"
-            />
-          </td>
-          <td>{{ seriesItem.maxNumberOfShares ? (+seriesItem.maxNumberOfShares).toLocaleString() : 'No Maximum' }}</td>
-          <td>{{ row.item.parValue ? row.item.parValue : 'No Par Value' }}</td>
-          <td>{{ row.item.currency }}</td>
-          <td>{{ seriesItem.hasRightsOrRestrictions ? 'Yes' : 'No' }}</td>
+              <action-chip
+                v-if="row.item.action !== ActionTypes.REMOVED && seriesItem.action"
+                class="mb-3"
+                :actionable-item="seriesItem"
+              />
+            </td>
+            <td>
+              {{ seriesItem.maxNumberOfShares ? (+seriesItem.maxNumberOfShares).toLocaleString() : 'No Maximum' }}
+            </td>
+            <td>{{ row.item.parValue ? row.item.parValue : 'No Par Value' }}</td>
+            <td>{{ row.item.currency }}</td>
+            <td>{{ seriesItem.hasRightsOrRestrictions ? 'Yes' : 'No' }}</td>
 
-          <!-- Share Series Edit Btn -->
-          <td>
-            <div class="actions" v-if="row.item.action !== ActionTypes.REMOVED">
-              <!-- Series Correct Btn -->
-              <span v-if="!seriesItem.action" class="edit-action">
+            <!-- Share Series Edit Btn -->
+            <td>
+              <div class="actions" v-if="row.item.action !== ActionTypes.REMOVED">
+                <!-- Series Correct Btn -->
+                <span v-if="!seriesItem.action" class="edit-action">
                 <v-btn small text color="primary"
                        :id="'series-' + index + '-change-btn'"
                        @click="editSeries(row.index, index)"
@@ -217,11 +237,11 @@
                 </v-btn>
               </span>
 
-              <!-- Series Undo btn -->
-              <span
-                v-else-if="row.item.hasRightsOrRestrictions && seriesItem.action !== ActionTypes.ADDED"
-                class="undo-action"
-              >
+                <!-- Series Undo btn -->
+                <span
+                  v-else-if="row.item.hasRightsOrRestrictions && seriesItem.action !== ActionTypes.ADDED"
+                  class="undo-action"
+                >
                 <v-btn small text color="primary"
                        :id="'series-' + index + '-undo-btn'"
                        @click="undoCorrection
@@ -233,8 +253,8 @@
                 </v-btn>
               </span>
 
-              <!-- Series Edit Btn -->
-              <span v-else-if="seriesItem.action !== ActionTypes.REMOVED" class="edit-action">
+                <!-- Series Edit Btn -->
+                <span v-else-if="seriesItem.action !== ActionTypes.REMOVED" class="edit-action">
                 <v-btn small text color="primary"
                        :id="'series-' + index + '-change-added-btn'"
                        @click="editSeries(row.index, index)"
@@ -245,13 +265,13 @@
                 </v-btn>
               </span>
 
-              <!-- Share Series Dropdown Actions -->
-              <span v-if="seriesItem.action !== ActionTypes.REMOVED">
+                <!-- Share Series Dropdown Actions -->
+                <span v-if="seriesItem.action !== ActionTypes.REMOVED">
                   <v-menu offset-y>
                     <template v-slot:activator="{ on }">
                       <v-btn text small color="primary"
-                        class="actions__more-actions__btn" v-on="on"
-                        :disabled="addEditInProgress"
+                             class="actions__more-actions__btn" v-on="on"
+                             :disabled="addEditInProgress"
                       >
                         <v-icon>mdi-menu-down</v-icon>
                       </v-btn>
@@ -290,25 +310,27 @@
                     </v-list>
                   </v-menu>
                 </span>
-            </div>
-          </td>
-        </tr>
+              </div>
+            </td>
+          </tr>
+        </template>
         <!-- Series Share Edit Form -->
         <tr v-if="showSeriesEditForm[row.index]">
           <td colspan="6">
-            <div class="edit-share-structure-container">
-              <edit-share-structure
-                :initialValue="currentShareStructure"
-                :activeIndex="activeIndex"
-                :nextId="nextId"
-                :parentIndex="parentIndex"
-                :shareClasses="getShareClasses"
-                @addEditClass="addEditShareClass($event)"
-                @addEditSeries="addEditShareSeries($event)"
-                @removeClass="removeShareClass($event)"
-                @removeSeries="removeSeries"
-                @resetEvent="resetData()"/>
-            </div>
+            <v-expand-transition>
+              <div class="edit-share-structure-container">
+                <edit-share-structure
+                  :initialValue="currentShareStructure"
+                  :activeIndex="activeIndex"
+                  :nextId="nextId"
+                  :parentIndex="parentIndex"
+                  :shareClasses="getShareClasses"
+                  @addEditClass="addEditShareClass($event)"
+                  @addEditSeries="addEditShareSeries($event)"
+                  @removeSeries="removeSeries($event, row.index)"
+                  @resetEvent="resetData()"/>
+              </div>
+            </v-expand-transition>
           </td>
         </tr>
       </template>
@@ -318,26 +340,36 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Emit, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import 'array.prototype.move'
-import { isEqual, omit } from 'lodash'
+import { cloneDeep, isEqual, omit } from 'lodash'
 
 // Components
 import { ActionChip } from '@/components/common'
 import EditShareStructure from './EditShareStructure.vue'
+import { ConfirmDialog } from '@/components/dialogs'
+
+// Mixins
+import { CommonMixin } from '@/mixins'
 
 // Interfaces or Enums
-import { ActionBindingIF, IncorporationFilingIF, ShareClassIF } from '@/interfaces'
 import { ActionTypes } from '@/enums'
+import { ActionBindingIF, ConfirmDialogType, IncorporationFilingIF, ShareClassIF } from '@/interfaces'
 
 @Component({
   components: {
     ActionChip,
-    EditShareStructure
+    EditShareStructure,
+    ConfirmDialog
   }
 })
-export default class ShareStructure extends Vue {
+export default class ShareStructure extends Mixins(CommonMixin) {
+  // Refs
+  $refs!: {
+    confirm: ConfirmDialogType,
+  };
+
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getShareClasses!: ShareClassIF[]
 
@@ -500,20 +532,25 @@ export default class ShareStructure extends Vue {
    * @param index The share class identifier
    */
   private restoreShareClass (index: number): void {
+    const originalShareClasses = cloneDeep(this.getOriginalIA.incorporationApplication.shareStructure.shareClasses)
+
     // Fetch and identify the ShareClass to restore
-    const shareClassToRestore = Object.assign({},
-      this.getOriginalIA.incorporationApplication.shareStructure.shareClasses.find(
-        shareClass => shareClass.id === this.getShareClasses[index].id
-      )
+    const shareClassToRestore = originalShareClasses.find(
+      shareClass => shareClass.id === this.getShareClasses[index].id
     )
 
     // Create a new ShareClass List and restore the original data
     let newList: ShareClassIF[] = [...this.getShareClasses]
-    newList[index] = { ...shareClassToRestore, series: [...this.getShareClasses[index].series] }
+    newList[index] = { ...shareClassToRestore, series: [...shareClassToRestore.series] }
 
-    // Reset series if corrected RightsOrRestrictions is no longer true
     newList.forEach(classShare => {
+      // Reset series if corrected RightsOrRestrictions is no longer true
       if (!classShare.hasRightsOrRestrictions) classShare.series = []
+
+      // Reset REMOVED actions for series without affecting CORRECTED OR ADDED series
+      classShare.series.forEach(x => {
+        if (x.action === ActionTypes.REMOVED) x.action = null
+      })
     })
 
     this.setShareClasses(newList)
@@ -604,7 +641,9 @@ export default class ShareStructure extends Vue {
   /**
    * Restore the Share Series from the Store
    * @param seriesIndex The share series identifier
-   * @param parentIndex the share series parent class index
+   * @param parentIndex The share series parent class index
+   * @param parentId The Parent class Id
+   * @param seriesId The Series Id
    */
   private restoreShareSeries (seriesIndex: number, parentIndex: number, parentId: number, seriesId: number): void {
     // Fetch the original Share class ( In the event the list is moved up or down, find the original by ID )
@@ -719,6 +758,35 @@ export default class ShareStructure extends Vue {
     this.showSeriesEditForm = [false]
     this.parentIndex = -1
     this.nextId = -1
+    this.scrollToTop(this.$el)
+  }
+
+  private confirmShareRemoval (index: number): void {
+    const shareClass = { ...this.getShareClasses[index] }
+
+    if (shareClass.series.length > 0) {
+      // open confirmation dialog and wait for response
+      this.$refs.confirm.open(
+        'Remove Share Series with Class',
+        'A share series exists for this class. Removing the share class will remove all associated share ' +
+        'series.',
+        {
+          width: '45rem',
+          persistent: true,
+          yes: 'Remove',
+          no: null,
+          cancel: 'Cancel'
+        }
+      ).then(() => {
+        // if we get here, Yes was clicked
+        this.removeShareClass(index)
+      }).catch(() => {
+        // if we get here, Cancel was clicked
+        this.resetData()
+      })
+    } else {
+      this.removeShareClass(index)
+    }
   }
 
   @Watch('hasClassChanges')

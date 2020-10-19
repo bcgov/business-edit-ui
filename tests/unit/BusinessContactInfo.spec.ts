@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
-import { mount, Wrapper } from '@vue/test-utils'
+import { createLocalVue, mount, Wrapper } from '@vue/test-utils'
+import mockRouter from './MockRouter'
 
 import { BusinessContactInfo } from '@/components/YourCompany'
 import { BusinessContactIF } from '@/interfaces'
+import VueRouter from 'vue-router'
 
 Vue.use(Vuetify)
 
@@ -28,6 +30,9 @@ const correctButtonSelector: string = '#btn-correct-contact-info'
 const undoButtonSelector: string = '#btn-undo-contact-info'
 const doneButtonSelector: string = '#done-btn'
 const cancelBtnSelector: string = '#cancel-btn'
+const localVue = createLocalVue()
+localVue.use(VueRouter)
+const router = mockRouter.mock()
 
 /**
  * Returns the last event for a given name, to be used for testing event propagation in response to component changes.
@@ -80,11 +85,17 @@ function createComponent (originalContactInfo: BusinessContactIF, contactInfo: B
  Wrapper<BusinessContactInfo> {
   return mount(BusinessContactInfo, {
     propsData: { businessContact: contactInfo, originalBusinessContact: originalContactInfo },
-    vuetify
+    vuetify,
+    localVue,
+    router
   })
 }
 
-describe('Business Contact Info component', () => {
+describe('Business Contact Info component for non-correction', () => {
+  beforeAll(() => {
+    router.push({ name: 'alteration' })
+  })
+
   it('Loads the component in read only mode and displays data', async () => {
     const wrapper: Wrapper<BusinessContactInfo> =
     createComponent(originalBusinessContactInfo, originalBusinessContactInfo)
@@ -220,6 +231,28 @@ describe('Business Contact Info component', () => {
     inputElement.trigger('change')
     await waitForUpdate(wrapper)
     expect(wrapper.find(formSelector).text()).toContain('Valid email is required')
+    wrapper.destroy()
+  })
+})
+
+describe('Business Contact Info component for correction', () => {
+  beforeAll(() => {
+    router.push({ name: 'correction' })
+  })
+
+  it('Loads the component in read only mode and displays data', async () => {
+    const wrapper: Wrapper<BusinessContactInfo> =
+      createComponent(originalBusinessContactInfo, originalBusinessContactInfo)
+    expect(wrapper.find(readOnlyEmailSelector).text()).toEqual(originalBusinessContactInfo.email)
+    expect(wrapper.find(readOnlyPhoneSelector).text()).toEqual(originalBusinessContactInfo.phone)
+    wrapper.destroy()
+  })
+
+  it('Shows no correction buttons in contact info', async () => {
+    const wrapper: Wrapper<BusinessContactInfo> =
+      createComponent(originalBusinessContactInfo, originalBusinessContactInfo)
+    expect(wrapper.find(correctButtonSelector).exists()).toBe(false)
+    expect(wrapper.find(undoButtonSelector).exists()).toBe(false)
     wrapper.destroy()
   })
 })

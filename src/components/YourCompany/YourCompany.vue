@@ -135,7 +135,7 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   // Getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
-  @Getter getEffectiveDate!: Date
+  @Getter getOriginalEffectiveDate!: Date
   @Getter getFolioNumber!: string
   @Getter getOfficeAddresses!: any
   @Getter isPremiumAccount!: GetterIF
@@ -170,8 +170,8 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
 
   /** The recognition (aka effective) datetime. */
   private get recognitionDateTime (): string {
-    return this.getEffectiveDate
-      ? (this.convertUtcTimeToLocalTime(this.getEffectiveDate.toString()) + ' Pacific Time')
+    return this.getOriginalEffectiveDate
+      ? (this.convertUtcTimeToLocalTime(this.getOriginalEffectiveDate.toString()) + ' Pacific Time')
       : 'Unknown'
   }
 
