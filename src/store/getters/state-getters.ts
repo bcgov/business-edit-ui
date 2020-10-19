@@ -51,7 +51,7 @@ export const getEffectiveDate = (state: any): Date => {
 }
 
 /** The filing's original effective date. */
-export const getOriginalEffectiveDate = (state: any): Date => {
+export const getOriginalEffectiveDate = (state: any): string => {
   return state.stateModel.originalIA.header.date
 }
 

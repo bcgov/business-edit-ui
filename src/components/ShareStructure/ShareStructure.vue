@@ -348,7 +348,7 @@ import { cloneDeep, isEqual, omit } from 'lodash'
 // Components
 import { ActionChip } from '@/components/common'
 import EditShareStructure from './EditShareStructure.vue'
-import * as Dialogs from '@/components/dialogs'
+import { ConfirmDialog } from '@/components/dialogs'
 
 // Mixins
 import { CommonMixin } from '@/mixins'
@@ -361,7 +361,7 @@ import { ActionBindingIF, ConfirmDialogType, IncorporationFilingIF, ShareClassIF
   components: {
     ActionChip,
     EditShareStructure,
-    ...Dialogs
+    ConfirmDialog
   }
 })
 export default class ShareStructure extends Mixins(CommonMixin) {
