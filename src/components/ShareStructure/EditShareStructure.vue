@@ -366,7 +366,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     if (this.isClass) {
       this.emitRemoveShareClassEvent(this.activeIndex)
     } else if (this.isSeries) {
-      this.emitRemoveShareSeriesEvent(this.activeIndex, this.parentIndex)
+      this.emitRemoveShareSeriesEvent(this.activeIndex)
     }
   }
 
@@ -425,7 +425,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   private emitRemoveShareClassEvent (shareClassIndex: number): void {}
 
   @Emit('removeSeries')
-  private emitRemoveShareSeriesEvent (shareSeriesIndex: number, parentIndex: number): void {}
+  private emitRemoveShareSeriesEvent (shareSeriesIndex: number): void {}
 
   @Emit('resetEvent')
   private emitResetEvent (): void {}

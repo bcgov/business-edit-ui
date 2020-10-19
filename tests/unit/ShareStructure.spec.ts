@@ -8,7 +8,7 @@ import { getVuexStore } from '@/store'
 import { createLocalVue, mount } from '@vue/test-utils'
 
 // Components
-import { ShareStructure } from '@/components/ShareStructure'
+import { ShareStructure, EditShareStructure } from '@/components/ShareStructure'
 import { ActionChip } from '@/components/common'
 
 Vue.use(Vuetify)
@@ -395,6 +395,21 @@ describe('Share Structure component', () => {
 
     // Validate series data post move
     expect(wrapper.vm.getShareClasses[0].series[0].name).toBe('Share Series 3')
+  })
+
+  it('displays the Confirm Class Removal dialog when the class to remove has Series', async () => {
+    // Confirm dialog is not viewable by default
+    expect(wrapper.find('.confirm-dialog').exists()).toBe(false)
+
+    const dropDownMenu = wrapper.find('.actions__more-actions__btn')
+    await dropDownMenu.trigger('click')
+    await Vue.nextTick()
+
+    const moveDown = wrapper.find('.remove-selector')
+    await moveDown.trigger('click')
+    await Vue.nextTick()
+
+    expect(wrapper.find('.confirm-dialog').exists()).toBe(true)
   })
 
   it('correctly identifies no changes in the class and series structure', async () => {

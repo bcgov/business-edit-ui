@@ -35,17 +35,19 @@
       </v-btn>
     </div>
 
-    <v-card flat class="add-share-structure-container" v-if="showAddShareStructureForm">
-      <edit-share-structure
-        v-show="showAddShareStructureForm"
-        :initialValue="currentShareStructure"
-        :activeIndex="activeIndex"
-        :nextId="nextId"
-        :parentIndex="parentIndex"
-        :shareClasses="getShareClasses"
-        @addEditClass="addEditShareClass($event)"
-        @resetEvent="resetData()"/>
-    </v-card>
+    <v-expand-transition>
+      <v-card flat class="add-share-structure-container" v-if="showAddShareStructureForm">
+        <edit-share-structure
+          v-show="showAddShareStructureForm"
+          :initialValue="currentShareStructure"
+          :activeIndex="activeIndex"
+          :nextId="nextId"
+          :parentIndex="parentIndex"
+          :shareClasses="getShareClasses"
+          @addEditClass="addEditShareClass($event)"
+          @resetEvent="resetData()"/>
+      </v-card>
+    </v-expand-transition>
 
     <v-data-table
       class="share-structure-table"
@@ -166,7 +168,9 @@
                       class="actions-dropdown_item"
                       @click="confirmShareRemoval(row.index)"
                     >
-                      <v-list-item-subtitle><v-icon>mdi-delete</v-icon> Remove</v-list-item-subtitle>
+                      <v-list-item-subtitle class="remove-selector">
+                        <v-icon>mdi-delete</v-icon> Remove
+                      </v-list-item-subtitle>
                     </v-list-item>
                   </v-list>
                 </v-menu>
@@ -176,19 +180,20 @@
         </tr>
         <tr v-if="showClassEditForm[row.index]">
           <td colspan="6">
-            <div class="edit-share-structure-container">
-              <edit-share-structure
-                :initialValue="currentShareStructure"
-                :activeIndex="activeIndex"
-                :nextId="nextId"
-                :parentIndex="parentIndex"
-                :shareClasses="getShareClasses"
-                @addEditClass="addEditShareClass($event)"
-                @addEditSeries="addEditShareSeries($event)"
-                @removeClass="removeShareClass($event)"
-                @removeSeries="removeSeries()"
-                @resetEvent="resetData()"/>
-            </div>
+            <v-expand-transition>
+              <div class="edit-share-structure-container">
+                <edit-share-structure
+                  :initialValue="currentShareStructure"
+                  :activeIndex="activeIndex"
+                  :nextId="nextId"
+                  :parentIndex="parentIndex"
+                  :shareClasses="getShareClasses"
+                  @addEditClass="addEditShareClass($event)"
+                  @addEditSeries="addEditShareSeries($event)"
+                  @removeClass="confirmShareRemoval($event)"
+                  @resetEvent="resetData()"/>
+              </div>
+            </v-expand-transition>
           </td>
         </tr>
         <!-- Share Series rows -->
@@ -312,19 +317,20 @@
         <!-- Series Share Edit Form -->
         <tr v-if="showSeriesEditForm[row.index]">
           <td colspan="6">
-            <div class="edit-share-structure-container">
-              <edit-share-structure
-                :initialValue="currentShareStructure"
-                :activeIndex="activeIndex"
-                :nextId="nextId"
-                :parentIndex="parentIndex"
-                :shareClasses="getShareClasses"
-                @addEditClass="addEditShareClass($event)"
-                @addEditSeries="addEditShareSeries($event)"
-                @removeClass="removeShareClass($event)"
-                @removeSeries="removeSeries()"
-                @resetEvent="resetData()"/>
-            </div>
+            <v-expand-transition>
+              <div class="edit-share-structure-container">
+                <edit-share-structure
+                  :initialValue="currentShareStructure"
+                  :activeIndex="activeIndex"
+                  :nextId="nextId"
+                  :parentIndex="parentIndex"
+                  :shareClasses="getShareClasses"
+                  @addEditClass="addEditShareClass($event)"
+                  @addEditSeries="addEditShareSeries($event)"
+                  @removeSeries="removeSeries($event, row.index)"
+                  @resetEvent="resetData()"/>
+              </div>
+            </v-expand-transition>
           </td>
         </tr>
       </template>

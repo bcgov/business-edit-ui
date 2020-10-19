@@ -50,6 +50,11 @@ export const getEffectiveDate = (state: any): Date => {
   return state.stateModel.incorporationDateTime.effectiveDate
 }
 
+/** The filing's original effective date. */
+export const getOriginalEffectiveDate = (state: any): Date => {
+  return state.stateModel.originalIA.header.date
+}
+
 /** The current account id. */
 export const getAccountId = (state: any): number => {
   return state.stateModel.accountInformation.id
