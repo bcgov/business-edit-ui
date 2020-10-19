@@ -117,15 +117,15 @@ const validOrgData = {
 
 const emptyPerson = {
   officer: {
-    id: null,
+    id: null as number,
     firstName: '',
     lastName: '',
     middleName: '',
     orgName: '',
     partyType: 'Person',
-    email: null
+    email: null as string
   },
-  roles: [],
+  roles: [] as [],
   mailingAddress: {
     streetAddress: '',
     streetAddressAdditional: '',
@@ -135,7 +135,7 @@ const emptyPerson = {
     addressCountry: '',
     deliveryInstructions: ''
   },
-  action: null
+  action: null as string
 }
 
 /**

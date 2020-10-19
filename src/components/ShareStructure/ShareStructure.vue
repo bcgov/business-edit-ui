@@ -339,7 +339,7 @@ import { ActionTypes } from '@/enums'
 })
 export default class ShareStructure extends Vue {
   @Getter getOriginalIA!: IncorporationFilingIF
-  @Getter getShareClasses!: any
+  @Getter getShareClasses!: ShareClassIF[]
 
   @Action setShareClasses!: ActionBindingIF
   @Action setShareClassesChanged!: ActionBindingIF
@@ -352,7 +352,7 @@ export default class ShareStructure extends Vue {
   private showClassEditForm: Array<boolean> = [false]
   private showSeriesEditForm: Array<boolean> = [false]
   private addEditInProgress = false
-  private currentShareStructure: ShareClassIF | null = null
+  private currentShareStructure: ShareClassIF = null
 
   // Declaration for template
   readonly ActionTypes = ActionTypes
@@ -640,13 +640,13 @@ export default class ShareStructure extends Vue {
     if (seriesIndex >= 0) {
       indexTo = direction === 'up' ? seriesIndex - 1 : seriesIndex + 1
       this.getShareClasses[indexFrom].series[seriesIndex].priority = indexTo
-      this.getShareClasses[indexFrom].series[seriesIndex].priority = indexFrom
-      this.getShareClasses[indexFrom].series.move(seriesIndex, indexTo)
+      this.getShareClasses[indexFrom].series[seriesIndex].priority = indexFrom;
+      (this.getShareClasses[indexFrom].series as any).move(seriesIndex, indexTo)
     } else {
       indexTo = direction === 'up' ? indexFrom - 1 : indexFrom + 1
       this.getShareClasses[indexFrom].priority = indexTo
-      this.getShareClasses[indexTo].priority = indexFrom
-      this.getShareClasses.move(indexFrom, indexTo)
+      this.getShareClasses[indexTo].priority = indexFrom;
+      (this.getShareClasses as any).move(indexFrom, indexTo)
     }
   }
 

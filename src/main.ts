@@ -27,6 +27,9 @@ import App from './App.vue'
 import { initLdClient, fetchConfig } from '@/utils'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 
+// get rid of "element implicitly has an 'any' type..."
+declare const window: any
+
 // get rid of "You are running Vue in development mode" console message
 Vue.config.productionTip = false
 

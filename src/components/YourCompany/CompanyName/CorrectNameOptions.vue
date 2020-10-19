@@ -86,9 +86,9 @@ export default class CorrectNameOptions extends Vue {
 
   // local properties
   private displayedOptions: Array<CorrectNameOptionIF> = []
-  private panel = null as number
-  private formType = null as CorrectionTypes
-  private currentFormType = null as CorrectionTypes
+  private panel: number = null
+  private formType: CorrectionTypes = null
+  private currentFormType: CorrectionTypes = null
   private isLoading = false
   private isFormValid = false
   private correctionNameOptions: Array<CorrectNameOptionIF> = [

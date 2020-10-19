@@ -1,5 +1,8 @@
 import { initialize, LDClient, LDFlagSet, LDOptions, LDUser } from 'launchdarkly-js-client-sdk'
 
+// get rid of "element implicitly has an 'any' type..."
+declare const window: any
+
 /**
  * Default feature flags in case LD env key is not defined (eg, local development).
  */

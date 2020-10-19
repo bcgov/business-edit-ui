@@ -259,33 +259,33 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 
   /** The validation rules for person first name. */
   private readonly firstNameRules: Array<Function> = [
-    v => !!v || 'A first name is required',
-    v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-    v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    v => (v?.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
+    (v: string) => !!v || 'A first name is required',
+    (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+    (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+    (v: string) => (v?.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
   ]
 
   /** The validation rules for person middle name. */
   private readonly middleNameRules: Array<Function> = [
-    v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-    v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    v => (!v || v.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
+    (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+    (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+    (v: string) => (!v || v.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
   ]
 
   /** The validation rules for person last name. */
   private readonly lastNameRules: Array<Function> = [
-    v => !!v || 'A last name is required',
-    v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-    v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    v => (v?.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
+    (v: string) => !!v || 'A last name is required',
+    (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+    (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+    (v: string) => (v?.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
   ]
 
   /** The validation rules for org name. */
   private readonly orgNameRules: Array<Function> = [
-    v => !!v || 'A firm name is required',
-    v => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-    v => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    v => (v?.length <= 155) || 'Cannot exceed 155 characters' // maximum character count
+    (v: string) => !!v || 'A firm name is required',
+    (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+    (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+    (v: string) => (v?.length <= 155) || 'Cannot exceed 155 characters' // maximum character count
   ]
 
   /** True if the form is valid. */

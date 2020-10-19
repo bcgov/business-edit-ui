@@ -31,7 +31,7 @@ describe('CorrectCompanyName', () => {
 
     store.state.stateModel.nameRequest.legalName = 'Bobs Plumbing'
 
-    wrapperFactory = (props) => {
+    wrapperFactory = (props: any) => {
       return mount(CorrectCompanyName, {
         propsData: {
           props

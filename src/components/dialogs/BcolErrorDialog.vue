@@ -38,7 +38,7 @@ export default class BcolErrorDialog extends Vue {
 
   @Prop() private filingType: string
 
-  @Prop({ default: () => { return null } }) private bcolObject: object
+  @Prop({ default: () => { return null as object } }) private bcolObject: object
 
   // Prop to provide attachment selector.
   @Prop() private attach: string

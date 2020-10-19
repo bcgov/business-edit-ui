@@ -33,7 +33,7 @@ describe('CorrectNameToNumber', () => {
     store.state.stateModel.tombstone.businessId = 'BC 1234567'
     store.state.stateModel.tombstone.entityType = 'BEN'
 
-    wrapperFactory = (props) => {
+    wrapperFactory = (props: any) => {
       return mount(CorrectNameToNumber, {
         propsData: {
           props

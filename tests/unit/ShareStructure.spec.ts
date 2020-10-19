@@ -21,7 +21,7 @@ const store = getVuexStore()
 document.body.setAttribute('data-app', 'true')
 
 describe('Share Structure component', () => {
-  let wrapper
+  let wrapper: any
 
   const shareClassesOriginal: any = [
     {

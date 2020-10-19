@@ -24,7 +24,7 @@ describe('CorrectNameOptions', () => {
   let store: any = getVuexStore()
 
   beforeEach(() => {
-    wrapperFactory = (propsData) => {
+    wrapperFactory = (propsData: any) => {
       return shallowMount(CorrectNameOptions, {
         propsData: {
           ...propsData
