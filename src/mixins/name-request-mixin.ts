@@ -76,7 +76,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    * @param nr the name request response payload
    * */
   isNrValid (nr: any): boolean {
-    // TODO: implement check for supported entity types when namex supports BCOMP
+    // TODO: implement check for supported entity types when namex supports BENEFIT_COMPANY
     return Boolean(nr &&
       nr.state &&
       nr.expirationDate &&

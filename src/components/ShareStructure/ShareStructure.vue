@@ -178,6 +178,7 @@
             </div>
           </td>
         </tr>
+
         <tr v-if="showClassEditForm[row.index]">
           <td colspan="6">
             <v-expand-transition>
@@ -196,6 +197,7 @@
             </v-expand-transition>
           </td>
         </tr>
+
         <!-- Share Series rows -->
         <template v-for="(seriesItem, index) in row.item.series">
           <tr
@@ -205,10 +207,10 @@
             :class="{ 'series-row-last': index === row.item.series.length - 1}"
           >
             <td class="series-name">
-            <span :class="{'list-item__subtitle' : row.item.action === ActionTypes.REMOVED ||
-              seriesItem.action === ActionTypes.REMOVED }">
-              {{ seriesItem.name }}
-            </span>
+              <span :class="{'list-item__subtitle' : row.item.action === ActionTypes.REMOVED ||
+                seriesItem.action === ActionTypes.REMOVED }">
+                {{ seriesItem.name }}
+              </span>
               <action-chip
                 v-if="row.item.action !== ActionTypes.REMOVED && seriesItem.action"
                 class="mb-3"
@@ -227,51 +229,51 @@
               <div class="actions" v-if="row.item.action !== ActionTypes.REMOVED">
                 <!-- Series Correct Btn -->
                 <span v-if="!seriesItem.action" class="edit-action">
-                <v-btn small text color="primary"
-                       :id="'series-' + index + '-change-btn'"
-                       @click="editSeries(row.index, index)"
-                       :disabled="addEditInProgress"
-                >
-                  <v-icon small>mdi-pencil</v-icon>
-                  <span>Correct</span>
-                </v-btn>
-              </span>
+                  <v-btn small text color="primary"
+                    :id="'series-' + index + '-change-btn'"
+                    @click="editSeries(row.index, index)"
+                    :disabled="addEditInProgress"
+                  >
+                    <v-icon small>mdi-pencil</v-icon>
+                    <span>Correct</span>
+                  </v-btn>
+                </span>
 
                 <!-- Series Undo btn -->
                 <span
                   v-else-if="row.item.hasRightsOrRestrictions && seriesItem.action !== ActionTypes.ADDED"
                   class="undo-action"
                 >
-                <v-btn small text color="primary"
-                       :id="'series-' + index + '-undo-btn'"
-                       @click="undoCorrection
-                       (false, seriesItem.action, index, row.index, row.item.id, seriesItem.id)"
-                       :disabled="addEditInProgress"
-                >
-                  <v-icon small>mdi-undo</v-icon>
-                  <span>Undo</span>
-                </v-btn>
-              </span>
+                  <v-btn small text color="primary"
+                    :id="'series-' + index + '-undo-btn'"
+                    @click="undoCorrection
+                    (false, seriesItem.action, index, row.index, row.item.id, seriesItem.id)"
+                    :disabled="addEditInProgress"
+                  >
+                    <v-icon small>mdi-undo</v-icon>
+                    <span>Undo</span>
+                  </v-btn>
+                </span>
 
                 <!-- Series Edit Btn -->
                 <span v-else-if="seriesItem.action !== ActionTypes.REMOVED" class="edit-action">
-                <v-btn small text color="primary"
-                       :id="'series-' + index + '-change-added-btn'"
-                       @click="editSeries(row.index, index)"
-                       :disabled="addEditInProgress"
-                >
-                  <v-icon small>mdi-pencil</v-icon>
-                  <span>Edit</span>
-                </v-btn>
-              </span>
+                  <v-btn small text color="primary"
+                    :id="'series-' + index + '-change-added-btn'"
+                    @click="editSeries(row.index, index)"
+                    :disabled="addEditInProgress"
+                  >
+                    <v-icon small>mdi-pencil</v-icon>
+                    <span>Edit</span>
+                  </v-btn>
+                </span>
 
                 <!-- Share Series Dropdown Actions -->
                 <span v-if="seriesItem.action !== ActionTypes.REMOVED">
                   <v-menu offset-y>
                     <template v-slot:activator="{ on }">
                       <v-btn text small color="primary"
-                             class="actions__more-actions__btn" v-on="on"
-                             :disabled="addEditInProgress"
+                        class="actions__more-actions__btn" v-on="on"
+                        :disabled="addEditInProgress"
                       >
                         <v-icon>mdi-menu-down</v-icon>
                       </v-btn>
@@ -281,8 +283,11 @@
                         v-if="seriesItem.action === ActionTypes.EDITED"
                         class="actions-dropdown_item"
                         @click="editSeries(row.index, index)"
-                        :disabled="addEditInProgress">
-                      <v-list-item-subtitle><v-icon small>mdi-pencil</v-icon> Correct</v-list-item-subtitle>
+                        :disabled="addEditInProgress"
+                      >
+                      <v-list-item-subtitle>
+                        <v-icon small>mdi-pencil</v-icon> Correct
+                      </v-list-item-subtitle>
                     </v-list-item>
                       <v-list-item
                         class="actions-dropdown_item"
@@ -305,7 +310,9 @@
                         </v-list-item-subtitle>
                       </v-list-item>
                       <v-list-item class="actions-dropdown_item" @click="removeSeries(index, row.index)">
-                        <v-list-item-subtitle><v-icon>mdi-delete</v-icon> Remove</v-list-item-subtitle>
+                        <v-list-item-subtitle>
+                          <v-icon>mdi-delete</v-icon> Remove
+                        </v-list-item-subtitle>
                       </v-list-item>
                     </v-list>
                   </v-menu>
@@ -314,6 +321,7 @@
             </td>
           </tr>
         </template>
+
         <!-- Series Share Edit Form -->
         <tr v-if="showSeriesEditForm[row.index]">
           <td colspan="6">
