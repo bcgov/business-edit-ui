@@ -83,8 +83,8 @@
                         id="cp-checkbox"
                         class="mt-1"
                         v-model="selectedRoles"
-                        :value="Roles.COMPLETING_PARTY"
-                        :label="Roles.COMPLETING_PARTY"
+                        :value="RoleTypes.COMPLETING_PARTY"
+                        :label="RoleTypes.COMPLETING_PARTY"
                         :rules="roleRules"
                         @change="assignCompletingPartyRole()"
                       />
@@ -96,8 +96,8 @@
                         id="incorp-checkbox"
                         class="mt-1"
                         v-model="selectedRoles"
-                        :value="Roles.INCORPORATOR"
-                        :label="Roles.INCORPORATOR"
+                        :value="RoleTypes.INCORPORATOR"
+                        :label="RoleTypes.INCORPORATOR"
                         :disabled="isOrg"
                         :rules="roleRules"
                     />
@@ -109,8 +109,8 @@
                         id="dir-checkbox"
                         class="mt-1"
                         v-model="selectedRoles"
-                        :value="Roles.DIRECTOR"
-                        :label="Roles.DIRECTOR"
+                        :value="RoleTypes.DIRECTOR"
+                        :label="RoleTypes.DIRECTOR"
                         :rules="roleRules"
                         @change="assignDirectorRole()"
                       />
@@ -181,7 +181,7 @@ import { OrgPersonIF, BaseAddressType, FormType, AddressIF, ConfirmDialogType, R
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ConfirmDialog } from '@/components/dialogs'
 import { CommonMixin } from '@/mixins'
-import { EntityTypes, Roles, IncorporatorTypes } from '@/enums'
+import { EntityTypes, RoleTypes, IncorporatorTypes } from '@/enums'
 import { PersonAddressSchema } from '@/schemas'
 import { Getter } from 'vuex-class'
 
@@ -202,7 +202,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 
   // Declarations for template
   readonly EntityTypes = EntityTypes
-  readonly Roles = Roles
+  readonly RoleTypes = RoleTypes
   readonly IncorporatorTypes = IncorporatorTypes
   readonly PersonAddressSchema = PersonAddressSchema
 
@@ -233,21 +233,21 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   private reassignCompletingParty = false
 
   /** Model value for roles checboxes. */
-  private selectedRoles: Array<Roles> = []
+  private selectedRoles: Array<RoleTypes> = []
 
   /** True if Completing Party is checked. */
   private get isCompletingParty (): boolean {
-    return this.selectedRoles.includes(Roles.COMPLETING_PARTY)
+    return this.selectedRoles.includes(RoleTypes.COMPLETING_PARTY)
   }
 
   /** True if Incorporator is checked. */
   private get isIncorporator (): boolean {
-    return this.selectedRoles.includes(Roles.INCORPORATOR)
+    return this.selectedRoles.includes(RoleTypes.INCORPORATOR)
   }
 
   /** True if Director is checked. */
   private get isDirector (): boolean {
-    return this.selectedRoles.includes(Roles.DIRECTOR)
+    return this.selectedRoles.includes(RoleTypes.DIRECTOR)
   }
 
   /** The validation rules for the roles. */
@@ -409,7 +409,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
         this.reassignCompletingParty = true
       } else {
         // remove the role
-        this.selectedRoles = this.selectedRoles.filter(r => r !== Roles.COMPLETING_PARTY)
+        this.selectedRoles = this.selectedRoles.filter(r => r !== RoleTypes.COMPLETING_PARTY)
       }
     })
   }
@@ -418,18 +418,18 @@ export default class OrgPerson extends Mixins(CommonMixin) {
    * Returns a new data object from current local properties.
    */
   private addPerson (): OrgPersonIF {
-    let personToAdd: OrgPersonIF = cloneDeep(this.orgPerson)
-    personToAdd.officer = { ...this.orgPerson.officer }
+    let person: OrgPersonIF = cloneDeep(this.orgPerson)
+    person.officer = { ...this.orgPerson.officer }
     if (isNaN(this.activeIndex)) {
       // assign a new (random) ID
-      personToAdd.officer.id = uuidv4()
+      person.officer.id = uuidv4()
     }
-    personToAdd.mailingAddress = { ...this.inProgressMailingAddress }
+    person.mailingAddress = { ...this.inProgressMailingAddress }
     if (this.isDirector) {
-      personToAdd.deliveryAddress = this.setPersonDeliveryAddress()
+      person.deliveryAddress = this.setPersonDeliveryAddress()
     }
-    personToAdd.roles = this.setPersonRoles()
-    return personToAdd
+    person.roles = this.setPersonRoles(this.orgPerson)
+    return person
   }
 
   private setPersonDeliveryAddress (): AddressIF {
@@ -439,16 +439,29 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     return { ...this.inProgressDeliveryAddress }
   }
 
-  private setPersonRoles (): RoleIF[] {
+  private setPersonRoles (orgPerson: OrgPersonIF): RoleIF[] {
+    // NB: if roles previously existed, retain old appointment dates
     let roles: Array<RoleIF> = []
     if (this.isCompletingParty) {
-      roles.push({ roleType: Roles.COMPLETING_PARTY, appointmentDate: this.getCurrentDate })
+      const role = orgPerson.roles.find(r => r.roleType === RoleTypes.COMPLETING_PARTY)
+      roles.push({
+        roleType: RoleTypes.COMPLETING_PARTY,
+        appointmentDate: role?.appointmentDate || this.getCurrentDate
+      })
     }
     if (this.isIncorporator) {
-      roles.push({ roleType: Roles.INCORPORATOR, appointmentDate: this.getCurrentDate })
+      const role = orgPerson.roles.find(r => r.roleType === RoleTypes.INCORPORATOR)
+      roles.push({
+        roleType: RoleTypes.INCORPORATOR,
+        appointmentDate: role?.appointmentDate || this.getCurrentDate
+      })
     }
     if (this.isDirector) {
-      roles.push({ roleType: Roles.DIRECTOR, appointmentDate: this.getCurrentDate })
+      const role = orgPerson.roles.find(r => r.roleType === RoleTypes.DIRECTOR)
+      roles.push({
+        roleType: RoleTypes.DIRECTOR,
+        appointmentDate: role?.appointmentDate || this.getCurrentDate
+      })
     }
     return roles
   }

@@ -9,7 +9,7 @@
         <v-layout row>
           <v-flex xs3 md2>
             <label class="font-weight-bold">Legal Name</label>
-            <action-chip v-if="isCorrected" :actionable-item="{ action: ActionTypes.EDITED }" />
+            <action-chip v-if="isChanged" :actionable-item="{ action: ActionTypes.EDITED }" />
           </v-flex>
           <v-flex xs9 md10>
             <span>{{formatName(completingParty) || "Unknown"}}</span>
@@ -25,7 +25,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { ActionChip } from '@/components/common'
 import { IncorporationFilingIF, OrgPersonIF } from '@/interfaces'
-import { ActionTypes, Roles } from '@/enums'
+import { ActionTypes, RoleTypes } from '@/enums'
 
 @Component({
   components: { ActionChip }
@@ -47,8 +47,8 @@ export default class CompletingParty extends Vue {
     return this.getCompletingParty(this.getOriginalIA?.incorporationApplication?.parties)
   }
 
-  /** True if the Completing Party has been corrected. */
-  private get isCorrected (): boolean {
+  /** True if the Completing Party has been changed. */
+  private get isChanged (): boolean {
     return (this.completingParty?.officer.id !== this.originalCompletingParty?.officer.id)
   }
 
@@ -60,7 +60,7 @@ export default class CompletingParty extends Vue {
   private getCompletingParty (list: OrgPersonIF[]): OrgPersonIF {
     const i = list?.findIndex(orgPerson =>
       orgPerson.roles.some(role =>
-        role.roleType === Roles.COMPLETING_PARTY
+        role.roleType === RoleTypes.COMPLETING_PARTY
       )
     )
     return (i >= 0) ? list[i] : undefined

@@ -1,4 +1,4 @@
-export enum Roles {
+export enum RoleTypes {
   COMPLETING_PARTY = 'Completing Party',
   INCORPORATOR = 'Incorporator',
   DIRECTOR = 'Director',
