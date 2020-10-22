@@ -78,7 +78,6 @@
           :renderOrgPersonForm="renderOrgPersonForm"
           :currentOrgPerson="currentOrgPerson"
           :activeIndex="activeIndex"
-          :nextId="nextId"
           :currentCompletingParty="currentCompletingParty"
           @initEdit="initEdit($event)"
           @addEdit="addEdit($event)"
@@ -157,9 +156,13 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   private renderOrgPersonForm = false
   private activeIndex = NaN
   private currentOrgPerson: OrgPersonIF = null
-  private nextId = NaN
   private currentCompletingParty: OrgPersonIF = null
   private originalCompletingParty: OrgPersonIF = null
+
+  /** The list of original parties. */
+  private get originalParties (): OrgPersonIF[] {
+    return (this.getOriginalIA?.incorporationApplication?.parties || [])
+  }
 
   /** True if we have a Completing Party. */
   private get cpValid (): boolean {
@@ -249,8 +252,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     this.currentOrgPerson.roles = roles
     this.currentOrgPerson.officer.partyType = type
     this.activeIndex = NaN
-    this.nextId = (this.getPeopleAndRoles.length === 0)
-      ? 0 : (this.getPeopleAndRoles[this.getPeopleAndRoles.length - 1].officer.id + 1)
     this.renderOrgPersonForm = true
   }
 
@@ -299,9 +300,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
         // get ID of person to undo
         const id = person?.officer?.id
 
-        // get copy of original person from original IA
-        const parties = this.getOriginalIA?.incorporationApplication?.parties || []
-        const thisPerson = cloneDeep(parties.find(x => x.officer.id === id))
+        // get a copy of original person from original IA
+        const thisPerson = cloneDeep(this.originalParties.find(x => x.officer.id === id))
 
         // safety check
         if (!thisPerson) {
@@ -483,8 +483,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    */
   @Watch('getOriginalIA', { deep: true })
   private onOriginalIAChanged (): void {
-    const parties = this.getOriginalIA?.incorporationApplication?.parties || []
-    this.originalCompletingParty = this.getCompletingParty(parties)
+    this.originalCompletingParty = this.getCompletingParty(this.originalParties)
   }
 
   /**

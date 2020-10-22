@@ -176,6 +176,7 @@
 <script lang="ts">
 import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
 import { cloneDeep, isEqual } from 'lodash'
+import { v4 as uuidv4 } from 'uuid'
 import { OrgPersonIF, BaseAddressType, FormType, AddressIF, ConfirmDialogType, RoleIF } from '@/interfaces'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ConfirmDialog } from '@/components/dialogs'
@@ -210,9 +211,6 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 
   /** The index of the org/person to edit, or NaN to add. */
   @Prop() private activeIndex: number
-
-  /** The next ID to assign to an officer being added. */
-  @Prop() private nextId: number
 
   /** The current Completing Party (or undefined). */
   @Prop() private currentCompletingParty: OrgPersonIF
@@ -423,7 +421,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     let personToAdd: OrgPersonIF = cloneDeep(this.orgPerson)
     personToAdd.officer = { ...this.orgPerson.officer }
     if (isNaN(this.activeIndex)) {
-      personToAdd.officer.id = this.nextId
+      // assign a new (random) ID
+      personToAdd.officer.id = uuidv4()
     }
     personToAdd.mailingAddress = { ...this.inProgressMailingAddress }
     if (this.isDirector) {

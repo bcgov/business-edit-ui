@@ -9,7 +9,7 @@
         <v-layout row>
           <v-flex xs3 md2>
             <label class="font-weight-bold">Legal Name</label>
-            <action-chip v-if="corrected" :actionable-item="{ action: ActionTypes.EDITED }" />
+            <action-chip v-if="isCorrected" :actionable-item="{ action: ActionTypes.EDITED }" />
           </v-flex>
           <v-flex xs9 md10>
             <span>{{formatName(completingParty) || "Unknown"}}</span>
@@ -48,7 +48,7 @@ export default class CompletingParty extends Vue {
   }
 
   /** True if the Completing Party has been corrected. */
-  private get corrected (): boolean {
+  private get isCorrected (): boolean {
     return (this.completingParty?.officer.id !== this.originalCompletingParty?.officer.id)
   }
 

@@ -3,7 +3,7 @@ import { ActionTypes, IncorporatorTypes } from '@/enums'
 
 export interface OrgPersonIF {
   officer: {
-    id: number
+    id: string
     partyType: IncorporatorTypes
     firstName: string
     middleName?: string

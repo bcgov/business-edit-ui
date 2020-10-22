@@ -33,7 +33,7 @@ const orgPersonFormSelector = '#org-person-form'
 
 const validPersonData = {
   officer: {
-    id: 0,
+    id: '0',
     firstName: 'Adam',
     lastName: 'Smith',
     middleName: 'D',
@@ -65,7 +65,7 @@ const validPersonData = {
 
 const validIncorporator = {
   officer: {
-    id: 1,
+    id: '1',
     firstName: 'Adam',
     lastName: 'Smith',
     middleName: 'D',
@@ -95,7 +95,7 @@ const validIncorporator = {
 
 const validOrgData = {
   officer: {
-    id: 0,
+    id: '2',
     firstName: '',
     lastName: '',
     middleName: '',
@@ -117,7 +117,7 @@ const validOrgData = {
 
 const emptyPerson = {
   officer: {
-    id: null as number,
+    id: null as string,
     firstName: '',
     lastName: '',
     middleName: '',
@@ -160,7 +160,6 @@ function getLastEvent (wrapper: Wrapper<OrgPerson>, name: string): any {
 function createComponent (
   currentOrgPerson: any,
   activeIndex: number = NaN,
-  nextId: number = -1,
   currentCompletingParty: any
 ): Wrapper<OrgPerson> {
   const localVue = createLocalVue()
@@ -169,7 +168,7 @@ function createComponent (
 
   return mount(OrgPerson, {
     localVue,
-    propsData: { currentOrgPerson, activeIndex, nextId, currentCompletingParty },
+    propsData: { currentOrgPerson, activeIndex, currentCompletingParty },
     store,
     vuetify
   })
@@ -182,7 +181,7 @@ describe('Org/Person component', () => {
   })
 
   it('Loads the component and sets data for person', async () => {
-    const wrapper = createComponent(validPersonData, NaN, 0, null)
+    const wrapper = createComponent(validPersonData, NaN, null)
     await Vue.nextTick()
 
     expect(wrapper.vm.$data.orgPerson).toStrictEqual(validPersonData)
@@ -194,7 +193,7 @@ describe('Org/Person component', () => {
   })
 
   it('Loads the component and sets data for org', async () => {
-    const wrapper = createComponent(validOrgData, NaN, 0, null)
+    const wrapper = createComponent(validOrgData, NaN, null)
     await Vue.nextTick()
 
     expect(wrapper.vm.$data.orgPerson).toStrictEqual(validOrgData)
@@ -207,7 +206,7 @@ describe('Org/Person component', () => {
 
   // NB: edit functions the same as add for a person
   it('Displays edit form for person', async () => {
-    const wrapper = createComponent(validPersonData, 0, null, null)
+    const wrapper = createComponent(validPersonData, 0, null)
     await Vue.nextTick()
 
     // verify person's name
@@ -238,7 +237,7 @@ describe('Org/Person component', () => {
 
   // NB: add functions the same as edit for an org
   it('Displays add form for org', async () => {
-    const wrapper = createComponent(validOrgData, NaN, 0, null)
+    const wrapper = createComponent(validOrgData, NaN, null)
     await Vue.nextTick()
 
     // verify org's name
@@ -262,7 +261,7 @@ describe('Org/Person component', () => {
   })
 
   it('Enables Remove button in edit mode', async () => {
-    const wrapper = createComponent(validOrgData, 0, null, null)
+    const wrapper = createComponent(validOrgData, 0, null)
 
     expect(wrapper.find(removeButtonSelector).attributes('disabled')).toBeUndefined()
 
@@ -270,7 +269,7 @@ describe('Org/Person component', () => {
   })
 
   it('Disables Remove button in create mode', async () => {
-    const wrapper = createComponent(validOrgData, NaN, 0, null)
+    const wrapper = createComponent(validOrgData, NaN, null)
 
     expect(wrapper.find(removeButtonSelector).attributes('disabled')).toBeDefined()
 
@@ -278,7 +277,7 @@ describe('Org/Person component', () => {
   })
 
   it('Emits "remove" event when clicking Remove button', async () => {
-    const wrapper = createComponent(validOrgData, 0, null, null)
+    const wrapper = createComponent(validOrgData, 0, null)
 
     wrapper.find(removeButtonSelector).trigger('click')
     await Vue.nextTick()
@@ -289,7 +288,7 @@ describe('Org/Person component', () => {
   })
 
   it('Emits "reset" event when clicking Done button and org has not changed', async () => {
-    const wrapper = createComponent(validOrgData, 0, null, null)
+    const wrapper = createComponent(validOrgData, 0, null)
     await Vue.nextTick()
 
     // verify that button is not disabled, then click it
@@ -306,7 +305,7 @@ describe('Org/Person component', () => {
   })
 
   it('Emits "addEdit" event when clicking Done button and org has changed', async () => {
-    const wrapper = createComponent(validOrgData, 0, null, null)
+    const wrapper = createComponent(validOrgData, 0, null)
     await Vue.nextTick()
 
     // change org name
@@ -327,7 +326,7 @@ describe('Org/Person component', () => {
   })
 
   it('Emits "reset" event when clicking Cancel button', async () => {
-    const wrapper = createComponent(validOrgData, 0, null, null)
+    const wrapper = createComponent(validOrgData, 0, null)
 
     wrapper.find(cancelButtonSelector).trigger('click')
     await Vue.nextTick()
@@ -340,7 +339,7 @@ describe('Org/Person component', () => {
   })
 
   it('Does not display error message when user enters valid org name', async () => {
-    const wrapper = createComponent(validOrgData, NaN, 0, null)
+    const wrapper = createComponent(validOrgData, NaN, null)
 
     const input = wrapper.find(orgNameSelector)
     input.setValue('Valid Org Name')
@@ -354,7 +353,7 @@ describe('Org/Person component', () => {
   })
 
   it('Displays error message when user enters invalid org name', async () => {
-    const wrapper = createComponent(validOrgData, NaN, 0, null)
+    const wrapper = createComponent(validOrgData, NaN, null)
 
     const input = wrapper.find(orgNameSelector)
     input.setValue(' Invalid Org Name ')
@@ -368,7 +367,7 @@ describe('Org/Person component', () => {
   })
 
   it('Does not display error message when user enters valid person names', async () => {
-    const wrapper = createComponent(validPersonData, NaN, 0, null)
+    const wrapper = createComponent(validPersonData, NaN, null)
 
     const input1 = wrapper.find(firstNameSelector)
     input1.setValue('First')
@@ -390,7 +389,7 @@ describe('Org/Person component', () => {
   })
 
   it('Displays error message when user does not enter person names', async () => {
-    const wrapper = createComponent(validPersonData, NaN, 0, null)
+    const wrapper = createComponent(validPersonData, NaN, null)
 
     const input1 = wrapper.find(firstNameSelector)
     input1.setValue('')
@@ -415,7 +414,7 @@ describe('Org/Person component', () => {
   })
 
   it('Displays error message when user enters person names that are too long', async () => {
-    const wrapper = createComponent(validPersonData, NaN, 0, null)
+    const wrapper = createComponent(validPersonData, NaN, null)
 
     const input1 = wrapper.find(firstNameSelector)
     input1.setValue('1234567890123456789012345678901')
@@ -443,7 +442,7 @@ describe('Org/Person component', () => {
   })
 
   it('Shows popup if there is an existing completing party', async () => {
-    const wrapper = createComponent(validIncorporator, NaN, 0, validPersonData)
+    const wrapper = createComponent(validIncorporator, NaN, validPersonData)
 
     // verify that popup is not yet displayed
     expect(wrapper.find('.confirm-dialog').exists()).toBe(false)
@@ -460,7 +459,7 @@ describe('Org/Person component', () => {
   })
 
   it('Emits "removeCpRole" and "addEdit" events on reassigning the Completing Party', async () => {
-    const wrapper = createComponent(validIncorporator, NaN, 1, validPersonData)
+    const wrapper = createComponent(validIncorporator, NaN, validPersonData)
 
     // add Completing Party role
     const checkbox = wrapper.find(completingPartyChkBoxSelector)
@@ -490,7 +489,7 @@ describe('Org/Person component', () => {
   })
 
   it('Displays errors and does not submit form when clicking Done button and form is invalid', async () => {
-    const wrapper = createComponent(emptyPerson, NaN, 0, null)
+    const wrapper = createComponent(emptyPerson, NaN, null)
 
     // verify that Done button is enabled, even for an empty person
     // then click it
