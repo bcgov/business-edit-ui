@@ -111,10 +111,11 @@ export const stateModel: StateModelIF = {
       name: '',
       certifiedBy: '',
       date: '',
-      folioNumber: '',
-      isFutureEffective: null
+      folioNumber: ''
     },
     business: {
+      foundingDate: '',
+      legalName: '',
       legalType: '',
       identifier: ''
     },

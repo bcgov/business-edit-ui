@@ -41,7 +41,7 @@ import { ShareStructure } from '@/components/ShareStructure'
 // Mixins, Interfaces and Enums
 import { FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF } from '@/interfaces'
-import { EntityTypes, FilingCodes } from '@/enums'
+import { BusinessDataTypes, EntityTypes, FilingCodes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 @Component({
@@ -160,10 +160,10 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
   /** Fetch Business Snapshot */
   private async fetchBusinessSnapshot (): Promise<any> {
     const businessData = await this.getBusinessData()
-    const businessAliases = await this.getBusinessData('aliases')
-    const businessAddresses = await this.getBusinessData('addresses')
-    const businessDirectors = await this.getBusinessData('directors')
-    const businessShareStructure = await this.getBusinessData('share-classes')
+    const businessAliases = await this.getBusinessData(BusinessDataTypes.TRANSLATIONS)
+    const businessAddresses = await this.getBusinessData(BusinessDataTypes.ADDRESSES)
+    const businessDirectors = await this.getBusinessData(BusinessDataTypes.DIRECTORS)
+    const businessShareStructure = await this.getBusinessData(BusinessDataTypes.SHARE_CLASSSES)
     const contactInfo = await this.getContactInfo()
 
     return {

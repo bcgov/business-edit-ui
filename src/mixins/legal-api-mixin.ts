@@ -133,9 +133,9 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
   }
 
   /**
-   * Fetch business data for current businessId by type.
+   * Fetch business data for current business.
    * @param datatype The type of data to request.
-   * @returns a promise to return the business base info or of the specified type of data.
+   * @returns a promise to return the business base info or of the specified data type.
    */
   getBusinessData (datatype: string = null): Promise<any> {
     if (!this.getBusinessId) throw new Error('Invalid parameter \'businessIdentifier\'')
