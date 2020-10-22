@@ -104,8 +104,8 @@ export const setCorrectedFilingId: ActionIF = ({ commit }, correctedFilingId): v
   commit('mutateCorrectedFilingId', correctedFilingId)
 }
 
-export const setPeopleAndRoles: ActionIF = ({ commit }, orgPeople) => {
-  commit('mutatePeopleAndRoles', orgPeople)
+export const setPeopleAndRoles: ActionIF = ({ commit }, peopleAndRoles) => {
+  commit('mutatePeopleAndRoles', peopleAndRoles)
 }
 
 export const setPeopleAndRolesChanged: ActionIF = ({ commit }, validity) => {

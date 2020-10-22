@@ -13,7 +13,7 @@ const store = getVuexStore()
 /** Original person with CP role. */
 const originalPersonCp = {
   officer: {
-    id: 1,
+    id: '1',
     partyType: 'Person',
     firstName: 'Original',
     lastName: 'Person',
@@ -30,7 +30,7 @@ const originalPersonCp = {
 /** Original person without CP role. */
 const originalPersonNotCp = {
   officer: {
-    id: 1,
+    id: '1',
     partyType: 'Person',
     firstName: 'Original',
     lastName: 'Person',
@@ -47,7 +47,7 @@ const originalPersonNotCp = {
 /** Original organization. */
 const originalOrg = {
   officer: {
-    id: 2,
+    id: '2',
     partyType: 'Org',
     firstName: '',
     lastName: '',
@@ -62,7 +62,7 @@ const originalOrg = {
 /** New person with CP role. */
 const newPersonCp = {
   officer: {
-    id: 3,
+    id: '3',
     partyType: 'Person',
     firstName: 'New',
     lastName: 'Person',

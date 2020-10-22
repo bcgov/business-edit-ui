@@ -53,7 +53,7 @@
           color="primary"
           class="ml-2"
           :disabled="renderOrgPersonForm"
-          @click="initAdd([{ roleType: Roles.INCORPORATOR }], IncorporatorTypes.CORPORATION)"
+          @click="initAdd([{ roleType: RoleTypes.INCORPORATOR }], IncorporatorTypes.CORPORATION)"
         >
           <v-icon>mdi-domain-plus</v-icon>
           <span>Add a Corporation or Firm</span>
@@ -65,7 +65,7 @@
           color="primary"
           class="ml-2"
           :disabled="renderOrgPersonForm"
-          @click="initAdd([{ roleType: Roles.COMPLETING_PARTY }], IncorporatorTypes.PERSON)"
+          @click="initAdd([{ roleType: RoleTypes.COMPLETING_PARTY }], IncorporatorTypes.PERSON)"
         >
           <v-icon>mdi-account-plus-outline</v-icon>
           <span>Add the Completing Party</span>
@@ -78,7 +78,6 @@
           :renderOrgPersonForm="renderOrgPersonForm"
           :currentOrgPerson="currentOrgPerson"
           :activeIndex="activeIndex"
-          :nextId="nextId"
           :currentCompletingParty="currentCompletingParty"
           @initEdit="initEdit($event)"
           @addEdit="addEdit($event)"
@@ -97,7 +96,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF, ConfirmDialogType, IncorporationFilingIF, OrgPersonIF, RoleIF } from '@/interfaces'
-import { ActionTypes, IncorporatorTypes, CompareModes, Roles } from '@/enums'
+import { ActionTypes, IncorporatorTypes, CompareModes, RoleTypes } from '@/enums'
 import { ConfirmDialog } from '@/components/dialogs'
 import { ListPeopleAndRoles } from '.'
 import { CommonMixin } from '@/mixins'
@@ -115,7 +114,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   }
 
   // Declarations for template
-  readonly Roles = Roles
+  readonly RoleTypes = RoleTypes
   readonly IncorporatorTypes = IncorporatorTypes
 
   // Global getters
@@ -157,23 +156,27 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   private renderOrgPersonForm = false
   private activeIndex = NaN
   private currentOrgPerson: OrgPersonIF = null
-  private nextId = NaN
   private currentCompletingParty: OrgPersonIF = null
   private originalCompletingParty: OrgPersonIF = null
 
+  /** The list of original parties. */
+  private get originalParties (): OrgPersonIF[] {
+    return (this.getOriginalIA?.incorporationApplication?.parties || [])
+  }
+
   /** True if we have a Completing Party. */
   private get cpValid (): boolean {
-    return this.hasRole(Roles.COMPLETING_PARTY, 1, CompareModes.EXACT)
+    return this.hasRole(RoleTypes.COMPLETING_PARTY, 1, CompareModes.EXACT)
   }
 
   /** True if we have at least 1 Incorporator. */
   private get incorpValid (): boolean {
-    return this.hasRole(Roles.INCORPORATOR, 1, CompareModes.AT_LEAST)
+    return this.hasRole(RoleTypes.INCORPORATOR, 1, CompareModes.AT_LEAST)
   }
 
   /** True if we have at least 1 Director. */
   private get dirValid (): boolean {
-    return this.hasRole(Roles.DIRECTOR, 1, CompareModes.AT_LEAST)
+    return this.hasRole(RoleTypes.DIRECTOR, 1, CompareModes.AT_LEAST)
   }
 
   /** True if we have all valid roles. */
@@ -223,7 +226,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    * @param mode the count comparison mode (eg, exact or at-least)
    * @returns True if the conditions are met, else False
    */
-  private hasRole (roleName: Roles, count: number, mode: CompareModes): boolean {
+  private hasRole (roleName: RoleTypes, count: number, mode: CompareModes): boolean {
     // 1. filter out removed people
     // 2. filter in people with specified role
     const orgPersonWithSpecifiedRole = this.getPeopleAndRoles
@@ -249,8 +252,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     this.currentOrgPerson.roles = roles
     this.currentOrgPerson.officer.partyType = type
     this.activeIndex = NaN
-    this.nextId = (this.getPeopleAndRoles.length === 0)
-      ? 0 : (this.getPeopleAndRoles[this.getPeopleAndRoles.length - 1].officer.id + 1)
     this.renderOrgPersonForm = true
   }
 
@@ -299,9 +300,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
         // get ID of person to undo
         const id = person?.officer?.id
 
-        // get copy of original person from original IA
-        const parties = this.getOriginalIA?.incorporationApplication?.parties || []
-        const thisPerson = cloneDeep(parties.find(x => x.officer.id === id))
+        // get a copy of original person from original IA
+        const thisPerson = (id !== undefined) && cloneDeep(this.originalParties.find(x => x.officer.id === id))
 
         // safety check
         if (!thisPerson) {
@@ -311,7 +311,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
         }
 
         // check if original person had CP role
-        const hadCp = thisPerson.roles.some(role => role.roleType === Roles.COMPLETING_PARTY)
+        const hadCp = thisPerson.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)
 
         // check if an other person has CP role right now
         // NB: we will update this record right in the temp list - no need to splice
@@ -323,14 +323,14 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
           await this.confirmReassignCp().then(confirm => {
             if (confirm) {
               // remove the other person's CP role and their email
-              otherPerson.roles = otherPerson.roles.filter(r => r.roleType !== Roles.COMPLETING_PARTY)
-              otherPerson.officer.email = null
+              otherPerson.roles = otherPerson.roles.filter(r => r.roleType !== RoleTypes.COMPLETING_PARTY)
+              delete otherPerson.officer.email
+              otherPerson.action = this.computeAction(otherPerson)
             } else {
               // remove this person's CP role and their email
-              thisPerson.roles = thisPerson.roles.filter(r => r.roleType !== Roles.COMPLETING_PARTY)
-              thisPerson.officer.email = null
-              // set action (since they lost their CP role)
-              thisPerson.action = ActionTypes.EDITED
+              thisPerson.roles = thisPerson.roles.filter(r => r.roleType !== RoleTypes.COMPLETING_PARTY)
+              delete thisPerson.officer.email
+              thisPerson.action = this.computeAction(thisPerson)
             }
           })
         }
@@ -352,6 +352,20 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   }
 
   /**
+   * Returns the computed action for the specified org/person compared with their original state.
+   * @param person the person to compare
+   * @returns the action (or null if none)
+   */
+  private computeAction (person: OrgPersonIF): ActionTypes {
+    if (!person) return ActionTypes.REMOVED
+    const original = this.originalParties.find(x => x.officer.id === person.officer.id)
+    if (!original) return ActionTypes.ADDED
+    // ignore "action" when comparing
+    if (!this.isSame(person, original, 'action')) return ActionTypes.EDITED
+    return null // no action
+  }
+
+  /**
    * Adds/changes the specified org/person.
    * @param person The data object of the org/person to change.
    */
@@ -360,7 +374,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     const tempList = cloneDeep(this.getPeopleAndRoles)
 
     // if this is the Completing Party, set email address from user profile
-    if (person.roles.some(role => role.roleType === Roles.COMPLETING_PARTY)) {
+    if (person.roles.find(role => role.roleType === RoleTypes.COMPLETING_PARTY)) {
       person.officer.email = this.userEmail
     }
 
@@ -427,7 +441,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     if (person) {
       // remove the Completing Party role
       person.roles = person.roles.filter(role =>
-        role.roleType !== Roles.COMPLETING_PARTY
+        role.roleType !== RoleTypes.COMPLETING_PARTY
       )
 
       // identify that this person has been edited
@@ -473,7 +487,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   private getCompletingParty (list: OrgPersonIF[]): OrgPersonIF {
     const i = list?.findIndex(orgPerson =>
       (orgPerson.action !== ActionTypes.REMOVED) &&
-        orgPerson.roles.some(role => role.roleType === Roles.COMPLETING_PARTY)
+        orgPerson.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)
     )
     return (i >= 0) ? list[i] : undefined
   }
@@ -483,8 +497,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    */
   @Watch('getOriginalIA', { deep: true })
   private onOriginalIAChanged (): void {
-    const parties = this.getOriginalIA?.incorporationApplication?.parties || []
-    this.originalCompletingParty = this.getCompletingParty(parties)
+    this.originalCompletingParty = this.getCompletingParty(this.originalParties)
   }
 
   /**

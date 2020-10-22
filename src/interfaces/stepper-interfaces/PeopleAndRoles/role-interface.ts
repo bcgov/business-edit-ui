@@ -1,7 +1,7 @@
-import { Roles } from '@/enums'
+import { RoleTypes } from '@/enums'
 
 export interface RoleIF {
-  roleType: Roles;
+  roleType: RoleTypes;
   appointmentDate?: string;
   cessationDate?: string;
 }

@@ -20,7 +20,7 @@ const vuetify = new Vuetify({})
 const peopleAndRoles = [
   {
     officer: {
-      id: 0,
+      id: '0',
       firstName: 'Romeo',
       lastName: 'Whitehead',
       middleName: 'D',
@@ -53,7 +53,7 @@ const peopleAndRoles = [
   },
   {
     officer: {
-      id: 1,
+      id: '1',
       firstName: '',
       lastName: '',
       middleName: '',
@@ -75,7 +75,7 @@ const peopleAndRoles = [
   },
   {
     officer: {
-      id: 2,
+      id: '2',
       firstName: 'Lawrence',
       lastName: 'Kavanagh',
       middleName: '',
@@ -105,7 +105,7 @@ const peopleAndRoles = [
   },
   {
     officer: {
-      id: 3,
+      id: '3',
       firstName: 'Christy',
       lastName: 'Sawyer',
       middleName: '',
@@ -138,7 +138,7 @@ const peopleAndRoles = [
 
 const emptyPerson = {
   officer: {
-    id: null as number,
+    id: null as string,
     firstName: '',
     lastName: '',
     middleName: '',
@@ -161,7 +161,7 @@ const emptyPerson = {
 
 const emptyOrg = {
   officer: {
-    id: null as number,
+    id: null as string,
     firstName: '',
     lastName: '',
     middleName: '',
@@ -303,7 +303,6 @@ describe('List People And Roles component', () => {
       renderOrgPersonForm: true,
       currentOrgPerson: emptyPerson,
       activeIndex: NaN,
-      nextId: 4,
       currentCompletingParty: undefined
     })
 
@@ -322,7 +321,6 @@ describe('List People And Roles component', () => {
       renderOrgPersonForm: true,
       currentOrgPerson: emptyOrg,
       activeIndex: NaN,
-      nextId: 4,
       currentCompletingParty: undefined
     })
 

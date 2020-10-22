@@ -40,7 +40,7 @@ function getPersonList (roles: Array<any> = []): Array<any> {
   return [
     {
       officer: {
-        id: 0,
+        id: '0',
         firstName: 'Adam',
         lastName: 'Smith',
         middleName: 'D',
@@ -117,7 +117,6 @@ describe('People And Roles component', () => {
     wrapper.find(btnAddPerson).trigger('click')
     await Vue.nextTick()
     expect(wrapper.vm.$data.renderOrgPersonForm).toBe(true)
-    expect(wrapper.vm.$data.nextId).toBe(0)
     wrapper.destroy()
   })
 
@@ -127,7 +126,6 @@ describe('People And Roles component', () => {
     wrapper.find(btnAddCorp).trigger('click')
     await Vue.nextTick()
     expect(wrapper.vm.$data.renderOrgPersonForm).toBe(true)
-    expect(wrapper.vm.$data.nextId).toBe(0)
     wrapper.destroy()
   })
 
@@ -272,16 +270,16 @@ describe('People And Roles component', () => {
   it('shows popup when undoing an edit would change the Completing Party', async () => {
     // original IA containing original CP:
     const originalCp = getPersonList([completingPartyRole])[0]
-    originalCp.officer.id = 1
+    originalCp.officer.id = '1'
     originalCp.action = undefined
     store.state.stateModel.originalIA.incorporationApplication.parties = [originalCp]
 
     // current orgPeople list containing edited CP and added CP:
     const editedCp = getPersonList([])[0]
-    editedCp.officer.id = 1
+    editedCp.officer.id = '1'
     editedCp.action = 'edited'
     const addedCp = getPersonList([completingPartyRole])[0]
-    addedCp.officer.id = 2
+    addedCp.officer.id = '2'
     addedCp.action = 'added'
     store.state.stateModel.peopleAndRoles.orgPeople = [editedCp, addedCp]
 
@@ -291,7 +289,7 @@ describe('People And Roles component', () => {
     expect(wrapper.find('.confirm-dialog').exists()).toBe(false)
 
     // click the first person's Undo button
-    wrapper.find('#officer-1-undo-btn').trigger('click')
+    wrapper.find('#officer-0-undo-btn').trigger('click')
     await Vue.nextTick()
 
     // verify that popup is now displayed

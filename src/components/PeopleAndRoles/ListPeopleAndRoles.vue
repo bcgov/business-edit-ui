@@ -8,7 +8,6 @@
         <org-person
           :currentOrgPerson="currentOrgPerson"
           :activeIndex="activeIndex"
-          :nextId="nextId"
           :currentCompletingParty="currentCompletingParty"
           @addEdit="emitAddEdit($event)"
           @remove="emitRemove($event)"
@@ -38,11 +37,10 @@
         no-gutters
       >
         <!-- conditionally render edit component instead of table row -->
-        <div id="people-roles-edit" v-if="renderOrgPersonForm && orgPerson.officer.id === activeIndex">
+        <div id="people-roles-edit" v-if="renderOrgPersonForm && (index === activeIndex)">
           <org-person
             :currentOrgPerson="currentOrgPerson"
             :activeIndex="activeIndex"
-            :nextId="nextId"
             :currentCompletingParty="currentCompletingParty"
             @addEdit="emitAddEdit($event)"
             @remove="emitRemove($event)"
@@ -105,7 +103,7 @@
               <span class="undo-action mr-4">
                 <v-btn
                   text color="primary"
-                  :id="'officer-' + orgPerson.officer.id + '-undo-btn'"
+                  :id="`officer-${index}-undo-btn`"
                   @click="emitUndo(index)"
                 >
                   <v-icon small>mdi-undo</v-icon>
@@ -118,7 +116,7 @@
               <span class="edit-action">
                 <v-btn
                   text color="primary"
-                  :id="'officer-' + orgPerson.officer.id + '-edit-btn'"
+                  :id="`officer-${index}-edit-btn`"
                   @click="emitInitEdit(index)"
                 >
                   <v-icon small>mdi-pencil</v-icon>
@@ -141,7 +139,7 @@
                   <v-list>
                     <v-list-item
                       class="actions-dropdown_item"
-                      :id="'officer-' + orgPerson.officer.id + '-remove-btn'"
+                      :id="`officer-${index}-remove-btn`"
                       @click="emitRemove(index)"
                     >
                       <v-list-item-subtitle>
@@ -189,9 +187,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
 
   /** The index of the org/person to edit, or NaN to add. */
   @Prop() private activeIndex: number
-
-  /** The next ID to assign to an officer being added. */
-  @Prop() private nextId: number
 
   /** The current completing party (or undefined). */
   @Prop() private currentCompletingParty: OrgPersonIF
