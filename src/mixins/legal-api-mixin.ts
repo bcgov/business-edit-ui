@@ -131,4 +131,52 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
     const config = { baseURL: authUrl }
     return axios.get('users/@me', config)
   }
+
+  /**
+   * Fetch business data for current businessId by type.
+   * @param datatype The type of data to request.
+   * @returns a promise to return the business base info or of the specified type of data.
+   */
+  getBusinessData (datatype: string = null): Promise<any> {
+    if (!this.getBusinessId) throw new Error('Invalid parameter \'businessIdentifier\'')
+
+    let url = `businesses/${this.getBusinessId}`
+    if (datatype) {
+      url += `/${datatype}`
+    }
+
+    return axios.get(url)
+      .then(response => {
+        if (response && response.data) {
+          return response.data
+        } else {
+          // eslint-disable-next-line no-console
+          console.log(`getBusinessData(${datatype}) error - invalid response =`, response)
+          throw new Error('Invalid API response')
+        }
+      })
+  }
+
+  /**
+   * Fetches contact information for the specified business.
+   * @returns a promise to return the contact data
+   */
+  getContactInfo (): Promise<any> {
+    if (!this.getBusinessId) throw new Error('Invalid parameter \'businessIdentifier\'')
+
+    const url = `entities/${this.getBusinessId}`
+    const authUrl = sessionStorage.getItem('AUTH_API_URL')
+    const config = { baseURL: authUrl }
+
+    return axios.get(url, config)
+      .then(response => {
+        if (response && response.data) {
+          return response.data.contacts[0] // Always take the first contact. Modelled as array but no current use-cases
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('getContactInfo() error - invalid response =', response)
+          throw new Error('Invalid API response')
+        }
+      })
+  }
 }

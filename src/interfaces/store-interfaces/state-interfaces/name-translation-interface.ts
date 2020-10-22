@@ -17,3 +17,9 @@ export interface NameTranslationDraftIF {
   oldValue?: string
   action?: ActionTypes
 }
+
+export interface NameTranslationSnapshotIF {
+  alias: string,
+  id: number,
+  type: string
+}

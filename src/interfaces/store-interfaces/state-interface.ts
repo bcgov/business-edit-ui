@@ -1,5 +1,5 @@
 import {
-  AccountInformationIF, CertifyIF, DefineCompanyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF,
+  AccountInformationIF, AlterationFilingIF, CertifyIF, DefineCompanyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF,
   ShareStructureIF, DateTimeIF, IncorporationAgreementIF, BusinessInformationIF, IncorporationFilingIF,
   FilingDataIF, StaffPaymentStepIF, DetailIF, NameTranslationIF, NameTranslationDraftIF
 } from '@/interfaces'
@@ -18,6 +18,7 @@ export interface StateModelIF {
   incorporationAgreementStep: IncorporationAgreementIF
   incorporationDateTime: DateTimeIF,
   originalIA: IncorporationFilingIF,
+  originalAlteration: AlterationFilingIF
   staffPaymentStep: StaffPaymentStepIF,
   filingData: FilingDataIF,
   detail: DetailIF

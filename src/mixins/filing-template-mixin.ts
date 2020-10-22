@@ -10,7 +10,8 @@ import {
   ShareClassIF,
   StateModelIF,
   NameTranslationIF,
-  NameTranslationDraftIF
+  NameTranslationDraftIF,
+  BusinessSnapshotIF, AlterationFilingIF
 } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 // Constants
@@ -165,6 +166,17 @@ export default class FilingTemplateMixin extends Vue {
   }
 
   /**
+   * Builds an Alteration filing body from store data. Used when saving a filing.
+   * @param isDraft boolean indicating whether this is a draft
+   * @returns the Alteration filing body to save
+   */
+  buildAlterationFiling (isDraft: boolean): AlterationFilingIF {
+    // Alteration body to save TBD
+    const alteration: AlterationFilingIF = null
+    return alteration
+  }
+
+  /**
    * Prepare name translations for non draft correction
    */
   prepareNameTranslations () : NameTranslationIF {
@@ -310,6 +322,38 @@ export default class FilingTemplateMixin extends Vue {
   parseAlteration (filing: any): void {
     // Alteration body to parse TBD
     // Will refactor above parse function into 1 generic filing parse function when we know more
+  }
+
+  /**
+   * Parses a business snapshot into the store.
+   * @param businessSnapshot the business to be parsed
+   */
+  parseBusinessSnapshot (businessSnapshot: BusinessSnapshotIF): void {
+    // Set Business Information
+    this.setBusinessInformation(businessSnapshot.businessData.business)
+
+    // Set Name Translations
+    this.setNameTranslations(
+      businessSnapshot.businessAliases.aliases?.map(x => {
+        return {
+          value: x.alias,
+          oldValue: null,
+          action: null
+        }
+      })
+    )
+
+    // Set Office Addresses
+    this.setOfficeAddresses(businessSnapshot.businessAddresses)
+
+    // Set Contact Information
+    this.setBusinessContact(businessSnapshot.contactInfo)
+
+    // Set People and Roles
+    this.setPeopleAndRoles(businessSnapshot.businessDirectors.directors)
+
+    // Set Share Structure
+    this.setShareClasses(businessSnapshot.businessShareStructure.shareClasses)
   }
 
   /**
