@@ -3,7 +3,7 @@ import {
   BusinessInformationIF,
   IncorporationAddressIf,
   NameTranslationSnapshotIF,
-  getOrgPersonsIF,
+  GetOrgPersonsIF,
   ShareStructureIF
 } from '@/interfaces'
 
@@ -11,7 +11,7 @@ export interface BusinessSnapshotIF {
   business: BusinessInformationIF,
   aliases: Array<NameTranslationSnapshotIF>,
   offices: IncorporationAddressIf,
-  directors: Array<getOrgPersonsIF>,
+  directors: Array<GetOrgPersonsIF>,
   shareClasses: ShareStructureIF,
   contacts: BusinessContactIF
 }

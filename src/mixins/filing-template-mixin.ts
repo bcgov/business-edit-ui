@@ -13,14 +13,13 @@ import {
   ShareClassIF,
   StateModelIF,
   NameTranslationIF,
-  NameTranslationDraftIF,
-  RoleIF
+  NameTranslationDraftIF
 } from '@/interfaces'
 
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
 // Constants
-import { ActionTypes, EntityTypes, FilingTypes, Roles } from '@/enums'
+import { ActionTypes, EntityTypes, FilingTypes } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 /**
@@ -356,7 +355,12 @@ export default class FilingTemplateMixin extends Vue {
     // Set People and Roles
     this.setPeopleAndRoles(businessSnapshot[3].directors?.map(director => {
       return {
-        ...director,
+        officer: {
+          firstName: director.officer.firstName,
+          lastName: director.officer.lastName
+        },
+        mailingAddress: director.deliveryAddress,
+        deliveryAddress: director.mailingAddress,
         roles: [
           {
             roleType: director.role,

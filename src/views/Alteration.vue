@@ -53,9 +53,6 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   }
 })
 export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixin) {
-  // Global getters
-  @Getter isRoleStaff!: boolean
-
   // Global setters
   @Action setHaveChanges!: ActionBindingIF
   @Action setEntityType!: ActionBindingIF

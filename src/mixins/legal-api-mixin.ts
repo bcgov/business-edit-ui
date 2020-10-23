@@ -170,8 +170,8 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
 
     return axios.get(url, config)
       .then(response => {
-        if (response && response.data) {
-          return response.data.contacts[0] // Always take the first contact. Modelled as array but no current use-cases
+        if (response && response.data && response.data.contacts) {
+          return response.data.contacts[0] || [] // Always take the first contact.
         } else {
           // eslint-disable-next-line no-console
           console.log('getContactInfo() error - invalid response =', response)
