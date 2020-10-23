@@ -1,9 +1,12 @@
 // Libraries
 import { Component, Vue } from 'vue-property-decorator'
 import { Action, Getter, State } from 'vuex-class'
+
 // Interfaces
 import {
   ActionBindingIF,
+  AlterationFilingIF,
+  BusinessSnapshotIF,
   CorrectionFilingIF,
   IncorporationFilingIF,
   OrgPersonIF,
@@ -11,11 +14,13 @@ import {
   StateModelIF,
   NameTranslationIF,
   NameTranslationDraftIF,
-  BusinessSnapshotIF, AlterationFilingIF
+  RoleIF
 } from '@/interfaces'
+
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+
 // Constants
-import { ActionTypes, EntityTypes, FilingTypes } from '@/enums'
+import { ActionTypes, EntityTypes, FilingTypes, Roles } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 /**
@@ -329,7 +334,8 @@ export default class FilingTemplateMixin extends Vue {
    * @param businessSnapshot the business to be parsed
    */
   parseBusinessSnapshot (businessSnapshot: BusinessSnapshotIF[]): void {
-    console.log(businessSnapshot)
+    if (businessSnapshot.length !== 6) throw new Error('Incomplete request responses  \'businessIdentifier\'')
+
     // Set Business Information
     this.setBusinessInformation(businessSnapshot[0].business)
 
@@ -348,7 +354,18 @@ export default class FilingTemplateMixin extends Vue {
     this.setOfficeAddresses(businessSnapshot[2])
 
     // Set People and Roles
-    this.setPeopleAndRoles(businessSnapshot[3].directors)
+    this.setPeopleAndRoles(businessSnapshot[3].directors?.map(director => {
+      return {
+        ...director,
+        roles: [
+          {
+            roleType: director.role,
+            appointmentDate: director.appointmentDate,
+            cessationDate: null
+          }
+        ]
+      }
+    }))
 
     // Set Share Structure
     this.setShareClasses(businessSnapshot[4].shareClasses)

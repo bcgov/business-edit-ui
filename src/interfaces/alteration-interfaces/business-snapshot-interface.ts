@@ -3,15 +3,15 @@ import {
   BusinessInformationIF,
   IncorporationAddressIf,
   NameTranslationSnapshotIF,
-  OrgPersonIF,
+  getOrgPersonsIF,
   ShareStructureIF
 } from '@/interfaces'
 
 export interface BusinessSnapshotIF {
   business: BusinessInformationIF,
   aliases: Array<NameTranslationSnapshotIF>,
-  IncorporationAddressIf,
-  directors: OrgPersonIF,
+  offices: IncorporationAddressIf,
+  directors: Array<getOrgPersonsIF>,
   shareClasses: ShareStructureIF,
-  BusinessContactIF
+  contacts: BusinessContactIF
 }

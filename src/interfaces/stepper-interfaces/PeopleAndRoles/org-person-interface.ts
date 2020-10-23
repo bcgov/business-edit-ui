@@ -16,3 +16,15 @@ export interface OrgPersonIF {
   deliveryAddress?: AddressIF
   action?: ActionTypes
 }
+
+export interface getOrgPersonsIF {
+  appointmentDate: string,
+  cessationDate: string,
+  deliveryAddress: AddressIF,
+  mailingAddress: AddressIF,
+  officer: {
+    firstName: string,
+    lastName: string
+  },
+  role: string
+}

@@ -10,15 +10,11 @@
 
     <your-company class="mt-10" />
 
-    <!--Disabled due to formatting errors-->
-    <!--<people-and-roles class="mt-10" />-->
+    <people-and-roles class="mt-10" />
 
     <share-structure class="mt-10" />
 
     <agreement-type class="mt-10" />
-
-    <!--Disabled due to formatting errors-->
-    <!--<completing-party class="mt-10" />-->
 
     <detail class="mt-10" />
 
@@ -30,7 +26,7 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
-import { Action, Getter, State } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
@@ -40,7 +36,7 @@ import { ShareStructure } from '@/components/ShareStructure'
 
 // Mixins, Interfaces and Enums
 import { FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { ActionBindingIF } from '@/interfaces'
+import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
 import { BusinessDataTypes, EntityTypes, FilingCodes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
@@ -91,14 +87,6 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
     // do not proceed if FF is disabled
     if (!getFeatureFlag('alteration-ui-enabled')) {
       alert('Alterations are under contruction. Please check again later.')
-      this.redirectEntityDashboard()
-      return
-    }
-
-    // do not proceed if user is not staff
-    const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
-    if (isStaffOnly && !this.isRoleStaff) {
-      alert('Only staff can alter a business.')
       this.redirectEntityDashboard()
       return
     }
@@ -156,14 +144,14 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
   }
 
   /** Fetch Business Snapshot */
-  private async fetchBusinessSnapshot (): Promise<any> {
+  private async fetchBusinessSnapshot (): Promise<BusinessSnapshotIF[]> {
     return Promise.all([
       this.getBusinessData(),
       this.getBusinessData(BusinessDataTypes.TRANSLATIONS),
       this.getBusinessData(BusinessDataTypes.ADDRESSES),
       this.getBusinessData(BusinessDataTypes.DIRECTORS),
-      await this.getBusinessData(BusinessDataTypes.SHARE_CLASSSES),
-      await this.getContactInfo()
+      this.getBusinessData(BusinessDataTypes.SHARE_CLASSSES),
+      this.getContactInfo()
     ])
   }
 
