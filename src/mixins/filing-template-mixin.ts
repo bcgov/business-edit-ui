@@ -328,13 +328,14 @@ export default class FilingTemplateMixin extends Vue {
    * Parses a business snapshot into the store.
    * @param businessSnapshot the business to be parsed
    */
-  parseBusinessSnapshot (businessSnapshot: BusinessSnapshotIF): void {
+  parseBusinessSnapshot (businessSnapshot: BusinessSnapshotIF[]): void {
+    console.log(businessSnapshot)
     // Set Business Information
-    this.setBusinessInformation(businessSnapshot.businessData.business)
+    this.setBusinessInformation(businessSnapshot[0].business)
 
     // Set Name Translations
     this.setNameTranslations(
-      businessSnapshot.businessAliases.aliases?.map(x => {
+      businessSnapshot[1].aliases?.map(x => {
         return {
           value: x.alias,
           oldValue: null,
@@ -344,16 +345,16 @@ export default class FilingTemplateMixin extends Vue {
     )
 
     // Set Office Addresses
-    this.setOfficeAddresses(businessSnapshot.businessAddresses)
-
-    // Set Contact Information
-    this.setBusinessContact(businessSnapshot.contactInfo)
+    this.setOfficeAddresses(businessSnapshot[2])
 
     // Set People and Roles
-    this.setPeopleAndRoles(businessSnapshot.businessDirectors.directors)
+    this.setPeopleAndRoles(businessSnapshot[3].directors)
 
     // Set Share Structure
-    this.setShareClasses(businessSnapshot.businessShareStructure.shareClasses)
+    this.setShareClasses(businessSnapshot[4].shareClasses)
+
+    // Set Contact Information
+    this.setBusinessContact(businessSnapshot[5])
   }
 
   /**

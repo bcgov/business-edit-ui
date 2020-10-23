@@ -57,8 +57,6 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   }
 })
 export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixin) {
-  @State stateModel
-
   // Global getters
   @Getter isRoleStaff!: boolean
 
@@ -159,21 +157,14 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
 
   /** Fetch Business Snapshot */
   private async fetchBusinessSnapshot (): Promise<any> {
-    const businessData = await this.getBusinessData()
-    const businessAliases = await this.getBusinessData(BusinessDataTypes.TRANSLATIONS)
-    const businessAddresses = await this.getBusinessData(BusinessDataTypes.ADDRESSES)
-    const businessDirectors = await this.getBusinessData(BusinessDataTypes.DIRECTORS)
-    const businessShareStructure = await this.getBusinessData(BusinessDataTypes.SHARE_CLASSSES)
-    const contactInfo = await this.getContactInfo()
-
-    return {
-      businessData,
-      businessAliases,
-      businessAddresses,
-      businessDirectors,
-      businessShareStructure,
-      contactInfo
-    }
+    return Promise.all([
+      this.getBusinessData(),
+      this.getBusinessData(BusinessDataTypes.TRANSLATIONS),
+      this.getBusinessData(BusinessDataTypes.ADDRESSES),
+      this.getBusinessData(BusinessDataTypes.DIRECTORS),
+      await this.getBusinessData(BusinessDataTypes.SHARE_CLASSSES),
+      await this.getContactInfo()
+    ])
   }
 
   /** Redirects browser to Entity Dashboard. */

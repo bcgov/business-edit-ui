@@ -8,16 +8,10 @@ import {
 } from '@/interfaces'
 
 export interface BusinessSnapshotIF {
-  businessData: {
-    business: BusinessInformationIF
-  },
-  businessAliases: {
-    aliases: Array<NameTranslationSnapshotIF>
-  },
-  businessAddresses: IncorporationAddressIf,
-  contactInfo: BusinessContactIF,
-  businessDirectors: {
-    directors: OrgPersonIF
-  },
-  businessShareStructure: ShareStructureIF
+  business: BusinessInformationIF,
+  aliases: Array<NameTranslationSnapshotIF>,
+  IncorporationAddressIf,
+  directors: OrgPersonIF,
+  shareClasses: ShareStructureIF,
+  BusinessContactIF
 }
