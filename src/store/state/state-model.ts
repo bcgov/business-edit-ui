@@ -106,6 +106,42 @@ export const stateModel: StateModelIF = {
       }
     }
   },
+  originalAlteration: {
+    header: {
+      name: '',
+      certifiedBy: '',
+      date: '',
+      folioNumber: ''
+    },
+    business: {
+      foundingDate: '',
+      legalName: '',
+      legalType: '',
+      identifier: ''
+    },
+    alteration: {
+      provisionsRemoved: null,
+      business: {
+        legalType: '',
+        identifier: ''
+      },
+      nameRequest: {
+        legalType: ''
+      },
+      nameTranslations: {
+        new: []
+      },
+      shareStructure: {
+        resolutionDates: [],
+        shareClasses: []
+      },
+      contactPoint: {
+        email: '',
+        phone: '',
+        extension: ','
+      }
+    }
+  },
   staffPaymentStep: {
     valid: false,
     staffPayment: {

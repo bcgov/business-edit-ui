@@ -29,12 +29,6 @@ export function getVueRouter () {
         name: 'signin',
         query: { redirect: to.fullPath }
       })
-    } else if (!isSigninRoute(to) && !isSignoutRoute(to) && !haveQueryParam(to.query)) {
-      // for normal routes, re-route along with query params
-      next({
-        name: to.name,
-        query: { ...from.query, ...to.query }
-      })
     } else {
       // otherwise just proceed normally
       next()
@@ -64,7 +58,7 @@ export function getVueRouter () {
 
   /** Returns True if there is at least one of our expected query parameters. */
   function haveQueryParam (query: Dictionary<string | string[]>): boolean {
-    return Boolean(query['corrected-id'] || query['correction-id'] || query['filing-id'])
+    return Boolean(query['correction-id'] || query['filing-id'])
   }
 
   return router

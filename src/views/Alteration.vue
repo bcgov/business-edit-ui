@@ -1,25 +1,26 @@
 <template>
   <section>
     <header>
-      <h1>Alteration</h1>
+      <h1>Company Information</h1>
     </header>
+    <section class="mt-6">
+      <p>You are legally obligated to keep your company information up to date. Necessary fees will be applied as
+        updates are made.</p>
+    </section>
 
-    <!-- The Summary Components Below are just for a visual representation. Future Components TBD -->
-    <summary-define-company
-       class="mt-10"
-    />
-    <list-people-and-roles
-      class="mt-10"
-      :personList="getPeopleAndRoles"
-      :isSummary="true"
-    />
+    <your-company class="mt-10" />
+
+    <people-and-roles class="mt-10" />
 
     <share-structure class="mt-10" />
 
-    <agreement-type
-      class="mt-10"
-      :isSummary="true"
-    />
+    <agreement-type class="mt-10" />
+
+    <detail class="mt-10" />
+
+    <certify class="mt-10" />
+
+    <staff-payment class="mt-10" />
   </section>
 </template>
 
@@ -27,30 +28,31 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-import { SummaryDefineCompany } from '@/components/YourCompany'
-import { ListPeopleAndRoles } from '@/components/PeopleAndRoles'
+import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
+import { PeopleAndRoles } from '@/components/PeopleAndRoles'
+import { Certify, CompletingParty, Detail, StaffPayment } from '@/components/common'
 import { ShareStructure } from '@/components/ShareStructure'
 
 // Mixins, Interfaces and Enums
 import { FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { ActionBindingIF, FilingDataIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
-import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
+import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
+import { BusinessDataTypes, EntityTypes, FilingCodes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 @Component({
   components: {
     AgreementType,
-    ListPeopleAndRoles,
-    SummaryDefineCompany,
-    ShareStructure
+    Certify,
+    CompletingParty,
+    Detail,
+    PeopleAndRoles,
+    ShareStructure,
+    StaffPayment,
+    YourCompany
   }
 })
 export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixin) {
-  // Global getters
-  @Getter isRoleStaff!: boolean
-  @Getter getPeopleAndRoles!: OrgPersonIF[]
-
   // Global setters
   @Action setHaveChanges!: ActionBindingIF
   @Action setEntityType!: ActionBindingIF
@@ -86,14 +88,6 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
       return
     }
 
-    // do not proceed if user is not staff
-    const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
-    if (isStaffOnly && !this.isRoleStaff) {
-      alert('Only staff can alter a business.')
-      this.redirectEntityDashboard()
-      return
-    }
-
     // try to fetch data
     try {
       // set current entity type
@@ -107,29 +101,33 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
         priority: false
       })
 
-      if (this.alterationId) {
-        // store the filing ID
-        this.setFilingId(this.alterationId)
+      // TODO: Handle Returning from a DRAFT alteration filing
+      // if (this.alterationId) {
+      // store the filing ID
+      // this.setFilingId(this.alterationId)
 
-        // fetch draft alteration to resume
-        const alterationFiling = await this.fetchFilingById(this.alterationId)
+      // fetch draft alteration to resume
+      // const alterationFiling = await this.fetchFilingById(this.alterationId)
 
-        // do not proceed if this isn't an ALTERATION filing
-        if (!alterationFiling.alteration) {
-          throw new Error('Invalid Alteration filing')
-        }
+      // // do not proceed if this isn't an ALTERATION filing
+      // if (!alterationFiling.alteration) {
+      //   throw new Error('Invalid Alteration filing')
+      // }
+      //
+      // // do not proceed if this isn't a DRAFT filing
+      // if (alterationFiling.header.status !== FilingStatus.DRAFT) {
+      //   throw new Error('Invalid Alteration status')
+      // }
+      //
+      // // parse alteration filing into store
+      // this.parseAlteration(alterationFiling)
+      // } else {
+      //   // as we don't have the necessary query params, do not proceed
+      //   throw new Error('Invalid alteration filing ID')
+      // }
 
-        // do not proceed if this isn't a DRAFT filing
-        if (alterationFiling.header.status !== FilingStatus.DRAFT) {
-          throw new Error('Invalid Alteration status')
-        }
-
-        // parse alteration filing into store
-        this.parseAlteration(alterationFiling)
-      } else {
-        // as we don't have the necessary query params, do not proceed
-        throw new Error('Invalid alteration filing ID')
-      }
+      const businessSnapshot = await this.fetchBusinessSnapshot()
+      await this.parseBusinessSnapshot(businessSnapshot)
 
       // tell App that we're finished loading
       this.emitHaveData()
@@ -140,6 +138,18 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
 
     // now that all data is loaded, wait for things to stabilize and reset flag
     Vue.nextTick(() => this.setHaveChanges(false))
+  }
+
+  /** Fetch Business Snapshot */
+  private async fetchBusinessSnapshot (): Promise<BusinessSnapshotIF[]> {
+    return Promise.all([
+      this.getBusinessData(),
+      this.getBusinessData(BusinessDataTypes.TRANSLATIONS),
+      this.getBusinessData(BusinessDataTypes.ADDRESSES),
+      this.getBusinessData(BusinessDataTypes.DIRECTORS),
+      this.getBusinessData(BusinessDataTypes.SHARE_CLASSSES),
+      this.getContactInfo()
+    ])
   }
 
   /** Redirects browser to Entity Dashboard. */

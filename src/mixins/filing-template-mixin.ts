@@ -1,9 +1,12 @@
 // Libraries
 import { Component, Vue } from 'vue-property-decorator'
 import { Action, Getter, State } from 'vuex-class'
+
 // Interfaces
 import {
   ActionBindingIF,
+  AlterationFilingIF,
+  BusinessSnapshotIF,
   CorrectionFilingIF,
   IncorporationFilingIF,
   OrgPersonIF,
@@ -12,7 +15,9 @@ import {
   NameTranslationIF,
   NameTranslationDraftIF
 } from '@/interfaces'
+
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+
 // Constants
 import { ActionTypes, EntityTypes, FilingTypes } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
@@ -165,6 +170,17 @@ export default class FilingTemplateMixin extends Vue {
   }
 
   /**
+   * Builds an Alteration filing body from store data. Used when saving a filing.
+   * @param isDraft boolean indicating whether this is a draft
+   * @returns the Alteration filing body to save
+   */
+  buildAlterationFiling (isDraft: boolean): AlterationFilingIF {
+    // Alteration body to save TBD
+    const alteration: AlterationFilingIF = null
+    return alteration
+  }
+
+  /**
    * Prepare name translations for non draft correction
    */
   prepareNameTranslations () : NameTranslationIF {
@@ -310,6 +326,56 @@ export default class FilingTemplateMixin extends Vue {
   parseAlteration (filing: any): void {
     // Alteration body to parse TBD
     // Will refactor above parse function into 1 generic filing parse function when we know more
+  }
+
+  /**
+   * Parses a business snapshot into the store.
+   * @param businessSnapshot the business to be parsed
+   */
+  parseBusinessSnapshot (businessSnapshot: BusinessSnapshotIF[]): void {
+    if (businessSnapshot.length !== 6) throw new Error('Incomplete request responses  \'businessIdentifier\'')
+
+    // Set Business Information
+    this.setBusinessInformation(businessSnapshot[0].business)
+
+    // Set Name Translations
+    this.setNameTranslations(
+      businessSnapshot[1].aliases?.map(x => {
+        return {
+          value: x.alias,
+          oldValue: null,
+          action: null
+        }
+      })
+    )
+
+    // Set Office Addresses
+    this.setOfficeAddresses(businessSnapshot[2])
+
+    // Set People and Roles
+    this.setPeopleAndRoles(businessSnapshot[3].directors?.map(director => {
+      return {
+        officer: {
+          firstName: director.officer.firstName,
+          lastName: director.officer.lastName
+        },
+        mailingAddress: director.deliveryAddress,
+        deliveryAddress: director.mailingAddress,
+        roles: [
+          {
+            roleType: director.role,
+            appointmentDate: director.appointmentDate,
+            cessationDate: null
+          }
+        ]
+      }
+    }))
+
+    // Set Share Structure
+    this.setShareClasses(businessSnapshot[4].shareClasses)
+
+    // Set Contact Information
+    this.setBusinessContact(businessSnapshot[5])
   }
 
   /**

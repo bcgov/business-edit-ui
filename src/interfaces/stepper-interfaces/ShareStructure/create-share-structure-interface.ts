@@ -1,8 +1,9 @@
 import { ActionTypes } from '@/enums'
 
 export interface ShareStructureIF {
-    valid: boolean;
-    changed: boolean;
+    resolutionDates?: string[];
+    valid?: boolean;
+    changed?: boolean;
     shareClasses: ShareClassIF[];
 }
 
