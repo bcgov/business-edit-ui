@@ -104,7 +104,7 @@
                 <v-btn
                   text color="primary"
                   :id="`officer-${index}-undo-btn`"
-                  @click="emitUndo(index)"
+                  @click="emitUndo(index); dropdown[index]=false"
                 >
                   <v-icon small>mdi-undo</v-icon>
                   <span>Undo</span>
@@ -125,15 +125,19 @@
               </span>
 
               <!-- More Actions Menu -->
-              <span class="more-actions mr-4">
-                <v-menu offset-y>
+              <span :class="`more-actions-${index}`" class="mr-4">
+                <v-menu
+                  offset-y left nudge-bottom="4"
+                  v-model="dropdown[index]"
+                  :attach="`#list-people-roles .more-actions-${index}`"
+                >
                   <template v-slot:activator="{ on }">
                     <v-btn
                       text small color="primary"
                       class="more-actions-btn"
                       v-on="on"
                     >
-                      <v-icon>mdi-menu-down</v-icon>
+                      <v-icon>{{dropdown[index] ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
                     </v-btn>
                   </template>
                   <v-list>
@@ -193,6 +197,9 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
 
   /** Headers for the person table. */
   readonly tableHeaders = ['Name', 'Mailing Address', 'Delivery Address', 'Roles']
+
+  /** V-model for dropdown menus. */
+  private dropdown: Array<boolean> = []
 
   /**
    * Checks if specified org/person was added.
@@ -310,6 +317,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   .actions {
     position: absolute;
     right: 0;
+    margin-top: -0.5rem;
 
     .edit-action {
       border-right: 1px solid $gray1;
@@ -327,7 +335,15 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
 
 .v-list-item {
   min-height: 0;
-  padding: 0 1rem 0 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.v-list-item__subtitle {
+  color: var(--v-primary-base) !important;
+
+  .v-icon {
+    color: var(--v-primary-base) !important;
+  }
 }
 
 .col {
@@ -343,5 +359,11 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   top: 2px;
   left: 2px;
   color: $BCgovInputError;
+}
+
+// italicize the delivery instructions in the base address component
+::v-deep .address-block__info-row:last-of-type {
+  padding-top: 0.75rem;
+  font-style: italic;
 }
 </style>

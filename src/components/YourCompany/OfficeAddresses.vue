@@ -37,27 +37,31 @@
           <div v-else>Same as Mailing Address</div>
         </v-flex>
 
-        <v-flex xs1 class="mt-n2" v-if="officeAddressesChanged">
+        <v-flex xs1 v-if="officeAddressesChanged">
           <div class="actions mr-4">
             <span class="edit-action">
               <v-btn
                 text color="primary"
                 id="btn-undo-office-addresses"
-                @click="resetOfficeAddresses()"
+                @click="resetOfficeAddresses(); dropdown=false"
               >
                 <v-icon small>mdi-undo</v-icon>
                 <span>Undo</span>
               </v-btn>
             </span>
             <span class="more-actions">
-              <v-menu offset-y attach=".more-actions">
+              <v-menu
+                offset-y left nudge-bottom="4"
+                v-model="dropdown"
+                attach="#office-addresses .more-actions"
+              >
                 <template v-slot:activator="{ on }">
                   <v-btn
                     text small color="primary"
                     id="btn-more-actions"
                     v-on="on"
                   >
-                    <v-icon>mdi-menu-down</v-icon>
+                    <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
                   </v-btn>
                 </template>
                 <v-list>
@@ -320,6 +324,9 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
 
   /** Whether to show the editable forms for the addresses (true) or the static display addresses (false). */
   private isEditing: boolean = false
+
+  /** V-model for dropdown menu. */
+  private dropdown: boolean = null
 
   // The 4 addresses that are the current state of the BaseAddress sub-components:
   private mailingAddress = {} as AddressIF
@@ -709,6 +716,7 @@ ul {
 .actions {
   position: absolute;
   right: 0;
+  margin-top: -0.5rem;
 
   .edit-action {
     border-right: 1px solid $gray1;
@@ -721,7 +729,15 @@ ul {
 
 .v-list-item {
   min-height: 0;
-  padding: 0 1rem 0 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.v-list-item__subtitle {
+  color: var(--v-primary-base) !important;
+
+  .v-icon {
+    color: var(--v-primary-base) !important;
+  }
 }
 
 .action-btns {
@@ -739,6 +755,7 @@ ul {
 
 // italicize the delivery instructions in the base address component
 ::v-deep .address-block__info-row:last-of-type {
+  padding-top: 0.75rem;
   font-style: italic;
 }
 </style>
