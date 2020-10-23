@@ -74,7 +74,7 @@ function createComponent (
 }
 
 function createShareStructure (
-  id: number,
+  id: string,
   priority: number,
   type: string,
   name: string,
@@ -180,8 +180,8 @@ describe('Edit Share Structure component', () => {
   })
 
   it('Emits remove series event', async () => {
-    const shareClass = createShareStructure(1, 1, 'Class', 'Class A', true, 100, true, 0.50, 'CAD', true)
-    const shareSeries = createShareStructure(1, 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
+    const shareClass = createShareStructure('1', 1, 'Class', 'Class A', true, 100, true, 0.50, 'CAD', true)
+    const shareSeries = createShareStructure('1', 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
     shareClass.series.push(shareSeries)
     const wrapper: Wrapper<EditShareStructure> = createComponent(shareSeries, 0, -1, 0, [shareClass])
     wrapper.find(removeButtonSelector).trigger('click')
@@ -215,8 +215,8 @@ describe('Edit Share Structure component', () => {
 
   it('Shows error message for duplicate share series name', async () => {
     const shareClass = createShareStructure(null, 1, 'Class', 'Class A', true, 100, true, 0.50, 'CAD', true)
-    const shareSeries1 = createShareStructure(1, 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
-    const shareSeries2 = createShareStructure(1, 1, 'Series', 'Series B', true, 100, true, 0.50, 'CAD', true)
+    const shareSeries1 = createShareStructure('1', 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
+    const shareSeries2 = createShareStructure('1', 1, 'Series', 'Series B', true, 100, true, 0.50, 'CAD', true)
     shareClass.series.push(shareSeries1)
     const wrapper: Wrapper<EditShareStructure> = createComponent(shareSeries2, -1, 1, 0, [shareClass])
     const inputElement: Wrapper<Vue> = wrapper.find(nameSelector)
@@ -313,7 +313,7 @@ describe('Edit Share Structure component', () => {
 
   it('Shows error message if series maximum shares is greater than class max shares', async () => {
     const shareClass = createShareStructure(null, 1, 'Class', 'Class A', true, 100, true, 0.50, 'CAD', true)
-    const shareSeries = createShareStructure(1, 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
+    const shareSeries = createShareStructure('1', 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
     shareClass.series.push(shareSeries)
     const wrapper: Wrapper<EditShareStructure> = createComponent(shareSeries, 0, -1, 0, [shareClass])
     const inputElement: Wrapper<Vue> = wrapper.find(txtMaxShares)
@@ -329,7 +329,7 @@ describe('Edit Share Structure component', () => {
 
   it('Shows error message if sum of series maximum shares is greater than class max shares', async () => {
     const shareClass = createShareStructure(null, 1, 'Class', 'Class A', true, 200, true, 0.50, 'CAD', true)
-    const shareSeries1 = createShareStructure(1, 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
+    const shareSeries1 = createShareStructure('1', 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
     const shareSeries2 = createShareStructure(null, 2, 'Series', 'Series B', true, 50, true, 0.50, 'CAD', true)
     shareClass.series.push(shareSeries1)
     const wrapper: Wrapper<EditShareStructure> = createComponent(shareSeries2, -1, 2, 0, [shareClass])
@@ -346,7 +346,7 @@ describe('Edit Share Structure component', () => {
 
   it('Shows series par value and currency in read only mode', async () => {
     const shareClass = createShareStructure(null, 1, 'Class', 'Class A', true, 100, true, 0.50, 'CAD', true)
-    const shareSeries = createShareStructure(1, 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
+    const shareSeries = createShareStructure('1', 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
     shareClass.series.push(shareSeries)
     const wrapper: Wrapper<EditShareStructure> = createComponent(shareSeries, 0, -1, 0, [shareClass])
     expect((<HTMLInputElement> wrapper.find(seriesParValue).element).value)
@@ -360,7 +360,7 @@ describe('Edit Share Structure component', () => {
 
   it('Do not display series no max share option if class has max share', async () => {
     const shareClass = createShareStructure(null, 1, 'Class', 'Class A', true, 100, true, 0.50, 'CAD', true)
-    const shareSeries = createShareStructure(1, 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
+    const shareSeries = createShareStructure('1', 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
     shareClass.series.push(shareSeries)
     const wrapper: Wrapper<EditShareStructure> = createComponent(shareSeries, 0, -1, 0, [shareClass])
     expect(wrapper.find('#lbl-no-maximum').exists()).toBe(false)
@@ -381,9 +381,9 @@ describe('Edit Share Structure component', () => {
   })
 
   it('Shows error if maximum shares of class is changed to lower value than series max shares', async () => {
-    const shareClass = createShareStructure(1, 1, 'Class', 'Class A', true, 200, true, 0.50, 'CAD', true)
-    const shareSeries1 = createShareStructure(1, 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
-    const shareSeries2 = createShareStructure(2, 2, 'Series', 'Series B', true, 50, true, 0.50, 'CAD', true)
+    const shareClass = createShareStructure('1', 1, 'Class', 'Class A', true, 200, true, 0.50, 'CAD', true)
+    const shareSeries1 = createShareStructure('1', 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
+    const shareSeries2 = createShareStructure('2', 2, 'Series', 'Series B', true, 50, true, 0.50, 'CAD', true)
     shareClass.series.push(shareSeries1)
     shareClass.series.push(shareSeries2)
     const wrapper: Wrapper<EditShareStructure> = createComponent(shareClass, 1, 2, null, [])
@@ -400,7 +400,7 @@ describe('Edit Share Structure component', () => {
 
   it('Does not show error message if series max shares is changed to lower than class max shares', async () => {
     const shareClass = createShareStructure(null, 1, 'Class', 'Class A', true, 100, true, 0.50, 'CAD', true)
-    const shareSeries = createShareStructure(1, 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
+    const shareSeries = createShareStructure('1', 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
     shareClass.series.push(shareSeries)
     const wrapper: Wrapper<EditShareStructure> = createComponent(shareSeries, 0, -1, 0, [shareClass])
     const inputElement: Wrapper<Vue> = wrapper.find(txtMaxShares)
@@ -428,8 +428,8 @@ describe('Edit Share Structure component', () => {
 
   it('Shows error message for duplicate share series name for edit', async () => {
     const shareClass = createShareStructure(null, 1, 'Class', 'Class A', true, 100, true, 0.50, 'CAD', true)
-    const shareSeries1 = createShareStructure(1, 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
-    const shareSeries2 = createShareStructure(1, 1, 'Series', 'Series B', true, 100, true, 0.50, 'CAD', true)
+    const shareSeries1 = createShareStructure('1', 1, 'Series', 'Series A', true, 100, true, 0.50, 'CAD', true)
+    const shareSeries2 = createShareStructure('1', 1, 'Series', 'Series B', true, 100, true, 0.50, 'CAD', true)
     shareClass.series.push(shareSeries1)
     shareClass.series.push(shareSeries2)
     const wrapper: Wrapper<EditShareStructure> = createComponent(shareSeries2, 1, 1, 0, [shareClass])

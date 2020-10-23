@@ -41,7 +41,7 @@
           v-show="showAddShareStructureForm"
           :initialValue="currentShareStructure"
           :activeIndex="activeIndex"
-          :nextId="nextId"
+          :shareId="shareId"
           :parentIndex="parentIndex"
           :shareClasses="getShareClasses"
           @addEditClass="addEditShareClass($event)"
@@ -186,7 +186,7 @@
                 <edit-share-structure
                   :initialValue="currentShareStructure"
                   :activeIndex="activeIndex"
-                  :nextId="nextId"
+                  :shareId="shareId"
                   :parentIndex="parentIndex"
                   :shareClasses="getShareClasses"
                   @addEditClass="addEditShareClass($event)"
@@ -330,7 +330,7 @@
                 <edit-share-structure
                   :initialValue="currentShareStructure"
                   :activeIndex="activeIndex"
-                  :nextId="nextId"
+                  :shareId="shareId"
                   :parentIndex="parentIndex"
                   :shareClasses="getShareClasses"
                   @addEditClass="addEditShareClass($event)"
@@ -352,6 +352,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import 'array.prototype.move'
 import { cloneDeep, isEqual, omit } from 'lodash'
+import { v4 as uuidv4 } from 'uuid'
 
 // Components
 import { ActionChip } from '@/components/common'
@@ -387,7 +388,7 @@ export default class ShareStructure extends Mixins(CommonMixin) {
   // Local Properties
   private activeIndex: number = -1
   private parentIndex: number = -1
-  private nextId: number = -1
+  private shareId: string = ''
   private showAddShareStructureForm = false
   private showClassEditForm: Array<boolean> = [false]
   private showSeriesEditForm: Array<boolean> = [false]
@@ -461,9 +462,8 @@ export default class ShareStructure extends Mixins(CommonMixin) {
     this.currentShareStructure.priority = this.getShareClasses.length === 0
       ? 1
       : this.getShareClasses[this.getShareClasses.length - 1].priority + 1
-    this.nextId = this.getShareClasses.length === 0
-      ? 1
-      : (this.getShareClasses.reduce((prev, current) => (prev.id > current.id) ? prev : current)).id + 1
+    this.shareId = uuidv4() // assign a new (random) ID
+
     this.addEditInProgress = true
     this.showAddShareStructureForm = true
   }
@@ -554,11 +554,6 @@ export default class ShareStructure extends Mixins(CommonMixin) {
     newList.forEach(classShare => {
       // Reset series if corrected RightsOrRestrictions is no longer true
       if (!classShare.hasRightsOrRestrictions) classShare.series = []
-
-      // Reset REMOVED actions for series without affecting CORRECTED OR ADDED series
-      classShare.series.forEach(x => {
-        if (x.action === ActionTypes.REMOVED) x.action = null
-      })
     })
 
     this.setShareClasses(newList)
@@ -582,8 +577,7 @@ export default class ShareStructure extends Mixins(CommonMixin) {
     this.currentShareStructure.currency = parentShareClass.currency
     this.currentShareStructure.priority =
       shareSeries.length === 0 ? 1 : shareSeries[shareSeries.length - 1].priority + 1
-    this.nextId = shareSeries.length === 0 ? 1 : (shareSeries.reduce(
-      (prev, current) => (prev.id > current.id) ? prev : current)).id + 1
+    this.shareId = uuidv4()
     this.addEditInProgress = true
     this.showSeriesEditForm[shareClassIndex] = true
   }
@@ -653,7 +647,7 @@ export default class ShareStructure extends Mixins(CommonMixin) {
    * @param parentId The Parent class Id
    * @param seriesId The Series Id
    */
-  private restoreShareSeries (seriesIndex: number, parentIndex: number, parentId: number, seriesId: number): void {
+  private restoreShareSeries (seriesIndex: number, parentIndex: number, parentId: string, seriesId: string): void {
     // Fetch the original Share class ( In the event the list is moved up or down, find the original by ID )
     const originalShareClass = Object.assign({},
       this.getOriginalIA.incorporationApplication.shareStructure.shareClasses.find(
@@ -739,8 +733,8 @@ export default class ShareStructure extends Mixins(CommonMixin) {
     actionType: ActionTypes,
     index: number,
     parentIndex: number = null,
-    parentId: number = null,
-    seriesId: number = null): void {
+    parentId: string = null,
+    seriesId: string = null): void {
     switch (actionType) {
       case ActionTypes.ADDED:
         isClass ? this.removeShareClass(index) : this.removeSeries(index, parentIndex)
@@ -765,7 +759,7 @@ export default class ShareStructure extends Mixins(CommonMixin) {
     this.showClassEditForm = [false]
     this.showSeriesEditForm = [false]
     this.parentIndex = -1
-    this.nextId = -1
+    this.shareId = ''
     this.scrollToTop(this.$el)
   }
 
