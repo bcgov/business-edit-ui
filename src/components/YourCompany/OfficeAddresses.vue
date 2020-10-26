@@ -81,7 +81,7 @@
           </div>
         </v-flex>
 
-        <v-flex xs1 class="mt-n2" v-else>
+        <v-flex xs1 v-else>
           <div class="actions mr-4">
             <v-btn
               text color="primary"
