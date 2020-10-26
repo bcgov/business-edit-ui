@@ -2,7 +2,7 @@
 import { AccountTypes, EntityTypes } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
-  NameRequestIF, BusinessContactIF, NameTranslationDraftIF, BusinessInformationIF
+  NameRequestIF, BusinessContactIF, NameTranslationDraftIF, BusinessInformationIF, CertifyIF
 } from '@/interfaces'
 
 /** Whether the user has "staff" keycloak role. */
@@ -265,7 +265,7 @@ export const isFilingValid = (state: any): boolean => {
   // Define company, Agreement Type wont allow saving and invalid state to the store
   return (state.stateModel.peopleAndRoles.valid &&
     state.stateModel.detail.valid &&
-    // state.stateModel.certifyState.valid &&
+    state.stateModel.certifyState.valid &&
     state.stateModel.staffPaymentStep.valid)
 }
 
@@ -281,4 +281,8 @@ export const getDetailComment = (state: any): string => {
 /** The business information object. */
 export const getBusinessInformation = (state: any): BusinessInformationIF => {
   return state.stateModel.businessInformation
+}
+
+export const getCertifyState = (state: any): CertifyIF => {
+  return state.stateModel.certifyState
 }
