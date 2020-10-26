@@ -197,8 +197,8 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   @Prop()
   private parentIndex: number
 
-  @Prop()
-  private nextId: number
+  @Prop({ default: '' })
+  private shareId: string
 
   @Prop()
   private shareClasses: ShareClassIF[]
@@ -344,7 +344,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   private addShareStructure (): ShareClassIF {
     let shareStructureToAdd: ShareClassIF = { ...this.shareStructure }
     if (this.activeIndex === -1) {
-      shareStructureToAdd.id = this.nextId
+      shareStructureToAdd.id = this.shareId
     }
     shareStructureToAdd.name = `${shareStructureToAdd.name} Shares`
     shareStructureToAdd.hasMaximumShares = !this.hasNoMaximumShares
@@ -352,14 +352,17 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
 
     // Check if Corrections disabled share Classes capability to support Series
     if (!shareStructureToAdd.hasRightsOrRestrictions && shareStructureToAdd.series) {
+      let addedSeriesIndexes: number[] = []
       shareStructureToAdd.series.forEach(series => {
         // First remove any ADDED series from the list
         if (series.action === ActionTypes.ADDED) {
           // Find the index of the series to remove due to sorting functionality potentially changing indexes
           const seriesIndex = shareStructureToAdd.series.findIndex(x => x.id === series.id)
-          shareStructureToAdd.series.splice(seriesIndex, 1)
+          addedSeriesIndexes.push(seriesIndex)
         }
       })
+      // Remove the added series from the array starting at the highest index, as to not shift the indexes of series
+      addedSeriesIndexes.reverse().forEach(index => shareStructureToAdd.series.splice(index, 1))
 
       // Set the actions to REMOVED for any original series
       shareStructureToAdd.series.forEach(series => {

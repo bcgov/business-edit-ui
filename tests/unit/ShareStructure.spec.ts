@@ -25,7 +25,7 @@ describe('Share Structure component', () => {
 
   const shareClassesOriginal: any = [
     {
-      id: 1,
+      id: '1',
       name: 'Common Shares',
       priority: 0,
       maxNumberOfShares: 10000,
@@ -34,7 +34,7 @@ describe('Share Structure component', () => {
       hasRightsOrRestrictions: true,
       series: [
         {
-          id: 1,
+          id: '1',
           name: 'Share Series 1',
           priority: 1,
           hasMaximumShares: true,
@@ -42,7 +42,7 @@ describe('Share Structure component', () => {
           hasRightsOrRestrictions: false
         },
         {
-          id: 2,
+          id: '2',
           name: 'Share Series 2',
           priority: 2,
           hasMaximumShares: true,
@@ -52,7 +52,7 @@ describe('Share Structure component', () => {
       ]
     },
     {
-      id: 2,
+      id: '2',
       name: 'Non-voting Shares',
       priority: 1,
       maxNumberOfShares: 1000,
@@ -61,7 +61,7 @@ describe('Share Structure component', () => {
       hasRightsOrRestrictions: false,
       series: [
         {
-          id: 1,
+          id: '1',
           name: 'Share Series 3',
           priority: 1,
           hasMaximumShares: true,
@@ -71,7 +71,7 @@ describe('Share Structure component', () => {
       ]
     },
     {
-      id: 3,
+      id: '3',
       name: 'Common Shares 2',
       priority: 2,
       maxNumberOfShares: 10000,
@@ -81,7 +81,7 @@ describe('Share Structure component', () => {
       series: []
     },
     {
-      id: 4,
+      id: '4',
       priority: 3,
       name: 'Non-voting Shares 2',
       maxNumberOfShares: 1000,
@@ -93,7 +93,7 @@ describe('Share Structure component', () => {
 
   const shareClassesCorrected: any = [
     {
-      id: 1,
+      id: '1',
       name: 'Common Shares',
       priority: 0,
       maxNumberOfShares: 10000,
@@ -102,7 +102,7 @@ describe('Share Structure component', () => {
       hasRightsOrRestrictions: true,
       series: [
         {
-          id: 1,
+          id: '1',
           name: 'Share Series 1',
           priority: 1,
           hasMaximumShares: true,
@@ -111,7 +111,7 @@ describe('Share Structure component', () => {
           action: 'removed'
         },
         {
-          id: 2,
+          id: '2',
           name: 'Share Series 2B',
           priority: 2,
           hasMaximumShares: true,
@@ -120,7 +120,7 @@ describe('Share Structure component', () => {
           action: 'edited'
         },
         {
-          id: 3,
+          id: '3',
           name: 'Share Series 3C',
           priority: 3,
           hasMaximumShares: true,
@@ -131,7 +131,7 @@ describe('Share Structure component', () => {
       ]
     },
     {
-      id: 2,
+      id: '2',
       name: 'Non-voting Shares',
       priority: 1,
       maxNumberOfShares: 1000,
@@ -140,7 +140,7 @@ describe('Share Structure component', () => {
       hasRightsOrRestrictions: false,
       series: [
         {
-          id: 1,
+          id: '1',
           name: 'Share Series 3',
           priority: 1,
           hasMaximumShares: true,
@@ -148,7 +148,7 @@ describe('Share Structure component', () => {
           hasRightsOrRestrictions: false
         },
         {
-          id: 2,
+          id: '2',
           name: 'Share Series 3B',
           priority: 2,
           hasMaximumShares: true,
@@ -159,7 +159,7 @@ describe('Share Structure component', () => {
       ]
     },
     {
-      id: 3,
+      id: '3',
       name: 'Common Shares 2B',
       priority: 2,
       maxNumberOfShares: 10000,
@@ -170,7 +170,7 @@ describe('Share Structure component', () => {
       action: 'edited'
     },
     {
-      id: 4,
+      id: '4',
       priority: 3,
       name: 'Non-voting Shares 2',
       maxNumberOfShares: 1000,
@@ -181,7 +181,7 @@ describe('Share Structure component', () => {
       action: 'removed'
     },
     {
-      id: 5,
+      id: '5',
       priority: 4,
       name: 'Non-voting Shares 3',
       maxNumberOfShares: 1000,
@@ -194,7 +194,7 @@ describe('Share Structure component', () => {
 
   const shareClassesNestedSeriesCorrected: any = [
     {
-      id: 1,
+      id: '1',
       name: 'Common Shares',
       priority: 0,
       maxNumberOfShares: 10000,
@@ -203,7 +203,7 @@ describe('Share Structure component', () => {
       hasRightsOrRestrictions: true,
       series: [
         {
-          id: 1,
+          id: '1',
           name: 'Share Series 1',
           priority: 1,
           hasMaximumShares: true,
@@ -211,7 +211,7 @@ describe('Share Structure component', () => {
           hasRightsOrRestrictions: false
         },
         {
-          id: 2,
+          id: '2',
           name: 'Share Series 2',
           priority: 2,
           hasMaximumShares: true,
@@ -221,7 +221,7 @@ describe('Share Structure component', () => {
       ]
     },
     {
-      id: 2,
+      id: '2',
       name: 'Non-voting Shares',
       priority: 1,
       maxNumberOfShares: 1000,
@@ -230,7 +230,7 @@ describe('Share Structure component', () => {
       hasRightsOrRestrictions: false,
       series: [
         {
-          id: 1,
+          id: '1',
           name: 'Share Series 3B',
           priority: 1,
           hasMaximumShares: true,
@@ -241,7 +241,7 @@ describe('Share Structure component', () => {
       ]
     },
     {
-      id: 3,
+      id: '3',
       name: 'Common Shares 2',
       priority: 2,
       maxNumberOfShares: 10000,
@@ -251,7 +251,7 @@ describe('Share Structure component', () => {
       series: []
     },
     {
-      id: 4,
+      id: '4',
       priority: 3,
       name: 'Non-voting Shares 2',
       maxNumberOfShares: 1000,
