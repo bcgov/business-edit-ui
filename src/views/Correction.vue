@@ -51,7 +51,7 @@ import { DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, FilingDataIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
 import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { BenefitCompanyStatementResource } from '@/resources'
+import { BenefitCompanyStatementResource, CertifyStatementResource } from '@/resources'
 
 @Component({
   components: {
@@ -68,12 +68,14 @@ import { BenefitCompanyStatementResource } from '@/resources'
 export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin) {
   // Declaration for template
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
+  readonly CertifyStatementResource = CertifyStatementResource
 
   // Global getters
   @Getter getBusinessId!: string
   @Getter getFilingDate!: string
   @Getter isRoleStaff!: boolean
   @Getter isTypeBcomp!: boolean
+  @Getter getEntityType!: EntityTypes
 
   // Global setters
   @Action setCorrectedFilingId!: ActionBindingIF
@@ -81,6 +83,7 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
   @Action setHaveChanges!: ActionBindingIF
   @Action setOriginalIA!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
+  @Action setCertifyStatementResource!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -169,6 +172,11 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
         // as we don't have the necessary query params, do not proceed
         throw new Error('Invalid correction filing ID')
       }
+
+      // Set the resources
+      this.setCertifyStatementResource(
+        CertifyStatementResource.find(x => x.entityType === this.getEntityType)
+      )
 
       // tell App that we're finished loading
       this.emitHaveData()

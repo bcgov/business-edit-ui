@@ -2,7 +2,7 @@
 import { AccountTypes, EntityTypes } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
-  NameRequestIF, BusinessContactIF, NameTranslationDraftIF, BusinessInformationIF, CertifyIF
+  NameRequestIF, BusinessContactIF, NameTranslationDraftIF, BusinessInformationIF, CertifyIF, CertifyStatementIF
 } from '@/interfaces'
 
 /** Whether the user has "staff" keycloak role. */
@@ -285,4 +285,8 @@ export const getBusinessInformation = (state: any): BusinessInformationIF => {
 
 export const getCertifyState = (state: any): CertifyIF => {
   return state.stateModel.certifyState
+}
+
+export const getCertifyResource = (state: any): CertifyStatementIF => {
+  return state.resourceModel.certifyStatementResource
 }

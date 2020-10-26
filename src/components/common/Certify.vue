@@ -23,9 +23,11 @@ import { Action, Getter } from 'vuex-class'
 // Components
 import { Certify } from '@bcrs-shared-components/certify'
 
-// Interfaces & Mixins
+// Mixins
 import { DateMixin, EnumMixin } from '@/mixins'
-import { ActionBindingIF, CertifyIF } from '@/interfaces'
+
+// Interfaces, Enums & Resources
+import { ActionBindingIF, CertifyIF, CertifyStatementIF } from '@/interfaces'
 import { EntityTypes } from '@/enums'
 
 @Component({
@@ -37,11 +39,9 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   @Getter getCertifyState!: CertifyIF
   @Getter getCurrentDate!: string
   @Getter getEntityType!: EntityTypes
+  @Getter getCertifyResource!: CertifyStatementIF
 
   @Action setCertifyState!: ActionBindingIF
-
-  readonly certifyMessage = 'Note: It is an offence to make a false of misleading statement in respeoct of a material' +
-    'fact in a record submitted to the Corporate Registry for filing. See section 427 of the Business Corporations Act.'
 
   /** Get current date in a readable format */
   private get readableCurrentDate (): string {
@@ -51,6 +51,11 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   /** Get the entity type in readable format */
   private get readableEntityType (): string {
     return this.entityTypeToDescription(this.getEntityType)
+  }
+
+  /** Get the certify resource message */
+  private get certifyMessage (): string {
+    return this.getCertifyResource.certifyClause
   }
 
   /** Handler for Valid change event. */
