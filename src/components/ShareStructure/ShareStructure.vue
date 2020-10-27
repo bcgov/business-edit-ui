@@ -201,7 +201,7 @@
         <!-- Share Series rows -->
         <template v-for="(seriesItem, index) in row.item.series">
           <tr
-            v-if="!showSeriesEditForm[row.index]"
+            v-if="showSeriesEditForm[row.index] && !showSeriesEditForm[row.index][index]"
             :key="`class:${row.index}-Series:${index}`"
             class="series-row"
             :class="{ 'series-row-last': index === row.item.series.length - 1}"
@@ -320,10 +320,32 @@
               </div>
             </td>
           </tr>
+          <!-- Series Share Edit Form -->
+          <tr
+            v-if="showSeriesEditForm[row.index] && showSeriesEditForm[row.index][index]"
+            :key="`class:${row.index}-Series:${index}-edit-form`"
+          >
+            <td colspan="6">
+              <v-expand-transition>
+                <div class="edit-share-structure-container">
+                  <edit-share-structure
+                    :initialValue="currentShareStructure"
+                    :activeIndex="activeIndex"
+                    :shareId="shareId"
+                    :parentIndex="parentIndex"
+                    :shareClasses="getShareClasses"
+                    @addEditClass="addEditShareClass($event)"
+                    @addEditSeries="addEditShareSeries($event)"
+                    @removeSeries="removeSeries($event, row.index)"
+                    @resetEvent="resetData()"/>
+                </div>
+              </v-expand-transition>
+            </td>
+          </tr>
         </template>
 
-        <!-- Series Share Edit Form -->
-        <tr v-if="showSeriesEditForm[row.index]">
+        <!-- Series Share Add Form -->
+        <tr v-if="showSeriesAddForm[row.index]">
           <td colspan="6">
             <v-expand-transition>
               <div class="edit-share-structure-container">
@@ -391,7 +413,8 @@ export default class ShareStructure extends Mixins(CommonMixin) {
   private shareId: string = ''
   private showAddShareStructureForm = false
   private showClassEditForm: Array<boolean> = [false]
-  private showSeriesEditForm: Array<boolean> = [false]
+  private showSeriesAddForm: Array<boolean> = [false]
+  private showSeriesEditForm: Array<any> = this.mapEmpty2dArray()
   private addEditInProgress = false
   private currentShareStructure: ShareClassIF = null
 
@@ -579,7 +602,7 @@ export default class ShareStructure extends Mixins(CommonMixin) {
       shareSeries.length === 0 ? 1 : shareSeries[shareSeries.length - 1].priority + 1
     this.shareId = uuidv4()
     this.addEditInProgress = true
-    this.showSeriesEditForm[shareClassIndex] = true
+    this.showSeriesAddForm[shareClassIndex] = true
   }
 
   /**
@@ -594,7 +617,7 @@ export default class ShareStructure extends Mixins(CommonMixin) {
     let newList: ShareClassIF[] = [...this.getShareClasses]
     const parentShareClass = newList[this.parentIndex]
     let series = [...parentShareClass.series]
-    // New Share Structue.
+    // New Share Structure.
     if (this.activeIndex === -1) {
       series.push(shareSeries)
     } else {
@@ -617,7 +640,7 @@ export default class ShareStructure extends Mixins(CommonMixin) {
     let newList: ShareClassIF[] = [...this.getShareClasses]
     this.currentShareStructure = { ...newList[this.parentIndex].series[this.activeIndex] }
     this.addEditInProgress = true
-    this.showSeriesEditForm[index] = true
+    this.showSeriesEditForm[index][seriesIndex] = true
   }
 
   /**
@@ -757,7 +780,8 @@ export default class ShareStructure extends Mixins(CommonMixin) {
     this.addEditInProgress = false
     this.showAddShareStructureForm = false
     this.showClassEditForm = [false]
-    this.showSeriesEditForm = [false]
+    this.showSeriesAddForm = [false]
+    this.showSeriesEditForm = this.mapEmpty2dArray()
     this.parentIndex = -1
     this.shareId = ''
     this.scrollToTop(this.$el)
@@ -789,6 +813,11 @@ export default class ShareStructure extends Mixins(CommonMixin) {
     } else {
       this.removeShareClass(index)
     }
+  }
+
+  /** Map an empty 2d array to handle the unknown size of nested Share Classes and Series */
+  private mapEmpty2dArray (): Array<any> {
+    return new Array(50).fill(null).map(() => new Array(50).fill(null))
   }
 
   @Watch('hasClassChanges')

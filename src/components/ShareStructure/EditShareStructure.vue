@@ -406,7 +406,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
       this.$refs.confirm.open(
         'Remove Share Series with Class',
         'A share series exists for this class. Removing the Special Rights or Restrictions for this class' +
-        ' will remove all associated share series',
+        ' will remove all associated share series.',
         {
           width: '45rem',
           persistent: true,
