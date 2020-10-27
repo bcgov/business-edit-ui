@@ -18,7 +18,7 @@
 
     <detail class="mt-10" />
 
-    <certify class="mt-10" />
+    <certify-section class="mt-10" />
 
     <staff-payment class="mt-10" />
   </section>
@@ -31,7 +31,7 @@ import { getFeatureFlag } from '@/utils'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { PeopleAndRoles } from '@/components/PeopleAndRoles'
-import { Certify, CompletingParty, Detail, StaffPayment } from '@/components/common'
+import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
 import { ShareStructure } from '@/components/ShareStructure'
 
 // Mixins, Interfaces and Enums
@@ -43,7 +43,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 @Component({
   components: {
     AgreementType,
-    Certify,
+    CertifySection,
     CompletingParty,
     Detail,
     PeopleAndRoles,

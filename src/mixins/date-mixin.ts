@@ -28,9 +28,12 @@ export default class DateMixin extends Vue {
    * @returns the formatted date string
    */
   toReadableDate (date: string): string {
-    // cast to a workable dateString
+    // cast to a workable dateString 'America/Vancouver'
     // split into an array
-    let formatDate = (new Date(date).toDateString()).split(' ')
+    let newDate = new Date(date)
+    // Factor in the UTC offset so date displayed is local
+    newDate.setTime(newDate.getTime() + newDate.getTimezoneOffset() * 60 * 1000)
+    let formatDate = (newDate.toDateString()).split(' ')
 
     // remove the 'weekday' from the array
     // join the array
