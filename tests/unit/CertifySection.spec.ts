@@ -57,7 +57,7 @@ describe('Certify component', () => {
   it('fetches date to pass to Certify and converts to a readable format', () => {
     const wrapper: Wrapper<CertifySection> = createComponent()
 
-    expect((wrapper.vm as any).readableCurrentDate).toBe('Jan 01, 2019')
+    expect((wrapper.vm as any).getCurrentDate).toBe('2019-01-01')
   })
 
   it('fetches entityType to pass to Certify in a readable format', () => {

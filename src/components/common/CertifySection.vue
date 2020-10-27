@@ -5,7 +5,7 @@
     </header>
     <span>Enter the legal name of the person authorized to complete and submit these changes.</span>
     <certify
-      :currentDate="readableCurrentDate"
+      :currentDate="getCurrentDate"
       :certified-by="getCertifyState.certifiedBy"
       :is-certified="getCertifyState.valid"
       :entity-display="readableEntityType"
@@ -42,11 +42,6 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   @Getter getCertifyResource!: CertifyStatementIF
 
   @Action setCertifyState!: ActionBindingIF
-
-  /** Get current date in a readable format */
-  private get readableCurrentDate (): string {
-    return this.toReadableDate(this.getCurrentDate)
-  }
 
   /** Get the entity type in readable format */
   private get readableEntityType (): string {
