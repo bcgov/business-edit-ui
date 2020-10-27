@@ -269,5 +269,4 @@ describe('App component', () => {
     expect(store.state.stateModel.defineCompanyStep.businessContact.email).toBe('mock@email.com')
     expect(store.state.stateModel.defineCompanyStep.businessContact.phone).toBe('123-456-7890')
   })
-
 })
