@@ -50,7 +50,7 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
 
   /** Get the certify resource message */
   private get certifyMessage (): string {
-    return this.getCertifyResource.certifyClause
+    return this.getCertifyResource?.certifyClause
   }
 
   /** Handler for Valid change event. */
