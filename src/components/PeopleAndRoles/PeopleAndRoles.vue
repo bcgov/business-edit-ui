@@ -18,17 +18,17 @@
         This application must include the following:
         <ul>
           <li>
-            <v-icon v-if="cpValid" color="blue" class="cp-valid">mdi-check</v-icon>
+            <v-icon v-if="cpValid" color="green" class="cp-valid">mdi-check</v-icon>
             <v-icon v-else color="red" class="cp-invalid">mdi-close</v-icon>
             <span class="ml-2">The Completing Party</span>
           </li>
           <li>
-            <v-icon v-if="incorpValid" color="blue" class="incorp-valid">mdi-check</v-icon>
+            <v-icon v-if="incorpValid" color="green" class="incorp-valid">mdi-check</v-icon>
             <v-icon v-else color="red" class="incorp-invalid">mdi-close</v-icon>
             <span class="ml-2">At least one Incorporator</span>
           </li>
           <li>
-            <v-icon v-if="dirValid" color="blue" class="dir-valid">mdi-check</v-icon>
+            <v-icon v-if="dirValid" color="green" class="dir-valid">mdi-check</v-icon>
             <v-icon v-else color="red" class="dir-invalid">mdi-close</v-icon>
             <span class="ml-2">At least one Director</span>
           </li>
