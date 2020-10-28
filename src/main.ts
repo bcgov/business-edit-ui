@@ -52,7 +52,9 @@ async function start () {
   })
 
   // initialize Launch Darkly
-  await initLdClient()
+  if (window['ldClientId']) {
+    await initLdClient()
+  }
 
   // configure KeyCloak Service
   console.info('Starting Keycloak service...') // eslint-disable-line no-console
