@@ -361,7 +361,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     const original = this.originalParties.find(x => x.officer.id === person.officer.id)
     if (!original) return ActionTypes.ADDED
     // ignore "action" when comparing
-    if (!this.isSame(person, original, 'action')) return ActionTypes.EDITED
+    if (!this.isSame(person, original, ['action'])) return ActionTypes.EDITED
     return null // no action
   }
 

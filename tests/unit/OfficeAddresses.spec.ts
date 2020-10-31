@@ -850,7 +850,12 @@ describe('"same as" checkboxes', () => {
     expect(wrapper.vm.$data.recMailingAddress.addressCity).toBe('addressCity1')
     expect(wrapper.vm.$data.recDeliveryAddress.addressCity).toBe('addressCity1')
 
-    // first need to make records addresses not same as registered addresses
+    // verify that checkbox is checked and that records addresses don't exist
+    expect(wrapper.find('#records-mailing-same-chkbx').attributes('aria-checked')).toBe('true')
+    expect(wrapper.find('#address-records-mailing').exists()).toBe(false)
+    expect(wrapper.find('#address-records-delivery').exists()).toBe(false)
+
+    // first make records office not the same as registered office
     const recordsCheckbox = wrapper.find('#records-mailing-same-chkbx')
     recordsCheckbox.trigger('click')
     await Vue.nextTick()
