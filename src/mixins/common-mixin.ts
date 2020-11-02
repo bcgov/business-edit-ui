@@ -13,16 +13,14 @@ export default class CommonMixin extends Vue {
   }
 
   /**
-   * Compares two objects while omitting a specified property from the comparison.
-   *
-   * @param addressA the first object to compare
-   * @param addressB the second object to compare
-   * @param prop the property to omit during the comparison
-   *
+   * Compares two objects while omitting specified properties from the comparison.
+   * @param objA the first object to compare
+   * @param objB the second object to compare
+   * @param props an optional array of properties to omit during the comparison
    * @return a boolean indicating a match of objects
    */
-  isSame (objA: {}, objB: {}, prop: string = null): boolean {
-    return isEqual({ ...omit(objA, prop ? [prop] : []) }, { ...omit(objB, prop ? [prop] : []) })
+  isSame (objA: {}, objB: {}, props: string[] = []): boolean {
+    return isEqual({ ...omit(objA, props) }, { ...omit(objB, props) })
   }
 
   /**
@@ -49,12 +47,12 @@ export default class CommonMixin extends Vue {
     return fullName.trimRight()
   }
 
-  /** Return true when in correction filings. */
+  /** Returns true when filing a correction. */
   isCorrection (): boolean {
     return (this.$route.name === RouteNames.CORRECTION)
   }
 
-  /** Return true when in alteration filings. */
+  /** Returns true when filing an alteration. */
   isAlteration (): boolean {
     return (this.$route.name === RouteNames.ALTERATION)
   }

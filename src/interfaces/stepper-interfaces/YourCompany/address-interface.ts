@@ -7,6 +7,7 @@ export interface AddressIF {
   postalCode: string;
   streetAddress: string;
   streetAddressAdditional?: string;
+  addressType?: string
 }
 
 /** Interface to define the joint base addresses. */

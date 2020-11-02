@@ -43,7 +43,7 @@
               <v-btn
                 text color="primary"
                 id="btn-undo-office-addresses"
-                @click="resetOfficeAddresses(); dropdown=false"
+                @click="resetOfficeAddresses(); dropdown = false"
               >
                 <v-icon small>mdi-undo</v-icon>
                 <span>Undo</span>
@@ -68,7 +68,7 @@
                   <v-list-item
                     class="v-list-item"
                     id="btn-more-actions-edit"
-                    @click="isEditing = true"
+                    @click="isEditing = true; dropdown = false"
                   >
                     <v-list-item-subtitle>
                       <v-icon small>mdi-pencil</v-icon>
@@ -180,7 +180,8 @@
                 </div>
                 <div
                   class="address-wrapper pt-6"
-                  v-if="!isSame(mailingAddress, deliveryAddress, 'actions') || !inheritMailingAddress"
+                  v-if="!isSame(mailingAddress, deliveryAddress, ['actions', 'addressType']) ||
+                  !inheritMailingAddress"
                 >
                   <base-address ref="regDeliveryAddress"
                     id="address-registered-delivery"
@@ -247,7 +248,9 @@
                   </div>
                   <div
                     class="address-wrapper pt-6"
-                    v-if="!isSame(recMailingAddress, recDeliveryAddress, 'actions') || !inheritRecMailingAddress">
+                    v-if="!isSame(recMailingAddress, recDeliveryAddress, ['actions', 'addressType']) ||
+                    !inheritRecMailingAddress"
+                  >
                     <base-address ref="recDeliveryAddress"
                       id="address-records-delivery"
                       :address="recDeliveryAddress"
@@ -357,25 +360,25 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
   /** True if (registered) mailing address has changed. */
   private get mailingChanged (): boolean {
     return !this.isSame(this.getOfficeAddresses.registeredOffice?.mailingAddress,
-      this.originalOfficeAddresses.registeredOffice?.mailingAddress)
+      this.originalOfficeAddresses.registeredOffice?.mailingAddress, ['addressCountryDescription'])
   }
 
   /** True if (registered) delivery address has changed. */
   private get deliveryChanged (): boolean {
     return !this.isSame(this.getOfficeAddresses.registeredOffice?.deliveryAddress,
-      this.originalOfficeAddresses.registeredOffice?.deliveryAddress)
+      this.originalOfficeAddresses.registeredOffice?.deliveryAddress, ['addressCountryDescription'])
   }
 
   /** True if records mailing address has changed. */
   private get recMailingChanged (): boolean {
     return !this.isSame(this.getOfficeAddresses.recordsOffice?.mailingAddress,
-      this.originalOfficeAddresses.recordsOffice?.mailingAddress)
+      this.originalOfficeAddresses.recordsOffice?.mailingAddress, ['addressCountryDescription'])
   }
 
   /** True if records delivery address has changed. */
   private get recDeliveryChanged (): boolean {
     return !this.isSame(this.getOfficeAddresses.recordsOffice?.deliveryAddress,
-      this.originalOfficeAddresses.recordsOffice?.deliveryAddress)
+      this.originalOfficeAddresses.recordsOffice?.deliveryAddress, ['addressCountryDescription'])
   }
 
   /** True if any office address has changed. */
@@ -395,17 +398,20 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
   }
 
   /**
-   * Sets local address data and "inherited" flags from store.
+   * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
     if (this.getOfficeAddresses.registeredOffice) {
       this.mailingAddress = { ...this.getOfficeAddresses.registeredOffice.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses.registeredOffice.deliveryAddress }
 
-      // compare addresses to set the "inherited mailing" flag
+      // compare addresses to set the "inherit mailing" flag
+      // ignore Address Type since it's different
+      // ignore Address Country Description since it's not always present
       this.inheritMailingAddress = this.isSame(
         this.getOfficeAddresses.registeredOffice.mailingAddress,
-        this.getOfficeAddresses.registeredOffice.deliveryAddress
+        this.getOfficeAddresses.registeredOffice.deliveryAddress,
+        ['addressType', 'addressCountryDescription']
       )
 
       // for BCOMPS, also set the Records Address
@@ -414,20 +420,26 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
         this.recDeliveryAddress = { ...this.getOfficeAddresses.recordsOffice?.deliveryAddress }
 
         // compare addresses to set the "inherit registered" flag
+        // ignore Address Country Description since it's not always present
         this.inheritRegisteredAddress = (
           this.isSame(
             this.getOfficeAddresses.registeredOffice.deliveryAddress,
-            this.getOfficeAddresses.recordsOffice?.deliveryAddress
+            this.getOfficeAddresses.recordsOffice?.deliveryAddress,
+            ['addressCountryDescription']
           ) && this.isSame(
             this.getOfficeAddresses.registeredOffice.mailingAddress,
-            this.getOfficeAddresses.recordsOffice?.mailingAddress
+            this.getOfficeAddresses.recordsOffice?.mailingAddress,
+            ['addressCountryDescription']
           )
         )
 
-        // compare addresses to set the "inherited records mailing" flag
+        // compare addresses to set the "inherit records mailing" flag
+        // ignore Address Type since it's different
+        // ignore Address Country Description since it's not always present
         this.inheritRecMailingAddress = this.isSame(
           this.getOfficeAddresses.recordsOffice?.mailingAddress,
-          this.getOfficeAddresses.recordsOffice?.deliveryAddress
+          this.getOfficeAddresses.recordsOffice?.deliveryAddress,
+          ['addressType', 'addressCountryDescription']
         )
       }
     }
@@ -439,10 +451,10 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
    */
   private setDeliveryAddressToMailingAddress (): void {
     if (this.inheritMailingAddress) {
-      this.deliveryAddress = { ...this.mailingAddress }
+      this.deliveryAddress = { ...this.mailingAddress, addressType: 'delivery' }
     } else {
       // clear to default
-      this.deliveryAddress = { ...this.defaultAddress }
+      this.deliveryAddress = { ...this.defaultAddress, addressType: 'delivery' }
     }
 
     // Records delivery address also needs to be updated if inherited
@@ -462,8 +474,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
     } else {
       this.inheritRecMailingAddress = this.inheritMailingAddress
       // clear to default
-      this.recMailingAddress = { ...this.defaultAddress }
-      this.recDeliveryAddress = { ...this.defaultAddress }
+      this.recMailingAddress = { ...this.defaultAddress, addressType: 'mailing' }
+      this.recDeliveryAddress = { ...this.defaultAddress, addressType: 'delivery' }
     }
   }
 
@@ -473,10 +485,10 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
    */
   private setRecordDeliveryAddressToMailingAddress (): void {
     if (this.inheritRecMailingAddress) {
-      this.recDeliveryAddress = { ...this.recMailingAddress }
+      this.recDeliveryAddress = { ...this.recMailingAddress, addressType: 'delivery' }
     } else {
       // clear to default
-      this.recDeliveryAddress = { ...this.defaultAddress }
+      this.recDeliveryAddress = { ...this.defaultAddress, addressType: 'delivery' }
     }
   }
 
@@ -488,21 +500,21 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
     switch (addressToUpdate) {
       case AddressTypes.MAILING_ADDRESS:
         if (this.inheritMailingAddress) {
-          this.deliveryAddress = { ...newAddress }
+          this.deliveryAddress = { ...newAddress, addressType: 'delivery' }
         }
         if (this.inheritRegisteredAddress) {
-          this.recMailingAddress = { ...newAddress }
-          this.recDeliveryAddress = { ...this.deliveryAddress }
+          this.recMailingAddress = { ...newAddress, addressType: 'mailing' }
+          this.recDeliveryAddress = { ...this.deliveryAddress, addressType: 'delivery' }
         }
         break
       case AddressTypes.DELIVERY_ADDRESS:
         if (this.inheritRegisteredAddress) {
-          this.recDeliveryAddress = { ...newAddress }
+          this.recDeliveryAddress = { ...newAddress, addressType: 'delivery' }
         }
         break
       case AddressTypes.REC_MAILING_ADDRESS:
         if (this.inheritRecMailingAddress) {
-          this.recDeliveryAddress = { ...newAddress }
+          this.recDeliveryAddress = { ...newAddress, addressType: 'delivery' }
         }
         break
       case AddressTypes.REC_DELIVERY_ADDRESS:
