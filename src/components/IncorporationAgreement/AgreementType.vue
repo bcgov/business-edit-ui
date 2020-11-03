@@ -11,7 +11,7 @@
 
       <!-- Summary Content -->
       <div v-if="!showAgreementTypeForm" class="summary-desc">
-        <div><v-icon color="green" class="agreement-valid-icon">mdi-check</v-icon></div>
+        <div><v-icon color="green darken-2" class="agreement-valid-icon">mdi-check</v-icon></div>
         <div>
           <div>
             {{ selectedAgreementDescription }}
