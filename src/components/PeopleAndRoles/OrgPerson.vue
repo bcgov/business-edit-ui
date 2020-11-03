@@ -157,7 +157,7 @@
 
               <!-- Action Buttons -->
               <div class="form__row form__btns">
-                <v-btn id="btn-remove" large color="error"
+                <v-btn id="btn-remove" large outlined color="error"
                   :disabled="isNaN(activeIndex)"
                   @click="emitRemove(activeIndex)">Remove</v-btn>
                 <v-btn id="btn-done" large color="primary" class="ml-auto"
