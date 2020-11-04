@@ -12,7 +12,7 @@ export default class DateMixin extends Vue {
    * @param date The date to convert.
    * @returns A simple date string formatted as YYYY-MM-DD.
    */
-  dateToUsableString (date: Date): string | null{
+  dateToUsableString (date: Date): string {
     if (!date || date.toString() === 'Invalid Date') return null
 
     const yyyy = date.getFullYear().toString()

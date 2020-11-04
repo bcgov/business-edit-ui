@@ -126,7 +126,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   // Global setters
   @Action setPeopleAndRoles!: ActionBindingIF
   @Action setPeopleAndRolesChanged!: ActionBindingIF
-  @Action setPeopleAndRolesValid!: ActionBindingIF
+  @Action setPeopleAndRolesValidity!: ActionBindingIF
 
   /** Empty OrgPerson for adding a new one. */
   private emptyOrgPerson: OrgPersonIF = {
@@ -215,7 +215,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    */
   private mounted (): void {
     // initialize this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValid(this.hasValidRoles && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.hasValidRoles && this.noMissingRoles)
     this.setPeopleAndRolesChanged(this.hasChanges)
   }
 
@@ -344,7 +344,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     this.setPeopleAndRoles(tempList)
 
     // update this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValid(this.hasValidRoles && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.hasValidRoles && this.noMissingRoles)
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
@@ -392,7 +392,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     this.setPeopleAndRoles(tempList)
 
     // update this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValid(this.hasValidRoles && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.hasValidRoles && this.noMissingRoles)
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
@@ -419,7 +419,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     this.setPeopleAndRoles(tempList)
 
     // update this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValid(this.hasValidRoles && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.hasValidRoles && this.noMissingRoles)
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
@@ -507,7 +507,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   @Watch('getPeopleAndRoles', { deep: true })
   private onPeopleAndRolesChanged (): void {
     this.currentCompletingParty = this.getCompletingParty(this.getPeopleAndRoles)
-    this.setPeopleAndRolesValid(this.hasValidRoles && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.hasValidRoles && this.noMissingRoles)
   }
 }
 </script>

@@ -263,7 +263,7 @@ describe('Share Structure component', () => {
 
   beforeEach(() => {
     store.state.stateModel.originalIA = shareClassesOriginal
-    store.state.stateModel.createShareStructureStep.shareClasses = shareClassesCorrected
+    store.state.stateModel.shareStructureStep.shareClasses = shareClassesCorrected
 
     wrapper = mount(ShareStructure, {
       localVue,
@@ -414,17 +414,17 @@ describe('Share Structure component', () => {
 
   it('correctly identifies no changes in the class and series structure', async () => {
     // Restore the Share Structure to it's original state
-    store.state.stateModel.createShareStructureStep.shareClasses = shareClassesOriginal
+    store.state.stateModel.shareStructureStep.shareClasses = shareClassesOriginal
     expect(wrapper.vm.hasClassChanges).toBe(false)
     expect(wrapper.vm.hasSeriesChanges).toBe(false)
   })
 
   it('correctly identifies changes in the nested series structure', async () => {
     // Restore the Share Structure to it's original state
-    store.state.stateModel.createShareStructureStep.shareClasses = shareClassesOriginal
+    store.state.stateModel.shareStructureStep.shareClasses = shareClassesOriginal
     expect(wrapper.vm.hasSeriesChanges).toBe(false)
 
-    store.state.stateModel.createShareStructureStep.shareClasses = shareClassesNestedSeriesCorrected
+    store.state.stateModel.shareStructureStep.shareClasses = shareClassesNestedSeriesCorrected
     expect(wrapper.vm.hasSeriesChanges).toBe(true)
   })
 })

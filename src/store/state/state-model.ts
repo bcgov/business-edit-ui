@@ -9,8 +9,8 @@ export const stateModel: StateModelIF = {
     entityType: null,
     currentDate: '',
     filingDate: '',
-    filingId: null,
-    correctedFilingId: null,
+    filingId: null as number,
+    correctedFilingId: null as number,
     isSaving: false,
     isSavingResuming: false,
     isFilingPaying: false,
@@ -57,12 +57,12 @@ export const stateModel: StateModelIF = {
     officeAddresses: {},
     folioNumber: null
   },
-  peopleAndRoles: {
+  peopleAndRolesStep: {
     valid: false,
     changed: false,
     orgPeople: []
   },
-  createShareStructureStep: {
+  shareStructureStep: {
     valid: false,
     changed: false,
     shareClasses: []
@@ -162,5 +162,13 @@ export const stateModel: StateModelIF = {
   detail: {
     valid: false,
     comment: ''
+  },
+  editingFlags: {
+    companyName: false,
+    nameTranslations: false,
+    officeAddresses: false,
+    peopleAndRoles: false,
+    shareStructure: false,
+    incorporationAgreement: false
   }
 }

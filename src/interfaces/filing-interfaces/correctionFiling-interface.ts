@@ -20,7 +20,7 @@ export interface CorrectionFilingIF {
     identifier: string
   }
   correction: {
-    correctedFilingId: string
+    correctedFilingId: number
     correctedFilingType: string
     correctedFilingDate: string
     comment: string

@@ -405,7 +405,7 @@ export default class ShareStructure extends Mixins(CommonMixin) {
   @Getter getShareClasses!: ShareClassIF[]
 
   @Action setShareClasses!: ActionBindingIF
-  @Action setShareClassesChanged!: ActionBindingIF
+  @Action setShareStructureChanged!: ActionBindingIF
 
   // Local Properties
   private activeIndex: number = -1
@@ -823,7 +823,7 @@ export default class ShareStructure extends Mixins(CommonMixin) {
   @Watch('hasClassChanges')
   @Watch('hasSeriesChanges')
   private emitHaveChanges (): void {
-    this.setShareClassesChanged(this.hasClassChanges || this.hasSeriesChanges)
+    this.setShareStructureChanged(this.hasClassChanges || this.hasSeriesChanges)
   }
 }
 </script>

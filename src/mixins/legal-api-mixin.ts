@@ -31,7 +31,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * @param filing filing body to be saved
    * @returns a promise to return the saved filing
    */
-  saveFiling (filing: CorrectionFilingIF, isDraft: boolean): Promise<any> {
+  async saveFiling (filing: CorrectionFilingIF | IncorporationFilingIF, isDraft: boolean): Promise<any> {
     if (!filing) throw new Error('Invalid parameter \'filing\'')
     if (typeof isDraft !== 'boolean') throw new Error('Invalid parameter \'isDraft\'')
 
@@ -48,8 +48,9 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * Fetches a filing by its type.
    * @returns a promise to return the filing of the specified type
    */
-  fetchFilingByType (filingType: string): Promise<any> {
+  async fetchFilingByType (filingType: string): Promise<any> {
     const url = `businesses/${this.getBusinessId}/filings`
+
     return axios.get(url)
       .then(response => {
         const filings = response?.data?.filings
@@ -71,8 +72,9 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * Fetches a filing by its id.
    * @returns a promise to return the filing of the specified type
    */
-  fetchFilingById (id: number): Promise<any> {
+  async fetchFilingById (id: number): Promise<any> {
     const url = `businesses/${this.getBusinessId}/filings/${id}`
+
     return axios.get(url)
       .then(response => {
         if (response && response.data) {
@@ -91,21 +93,23 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * @param isDraft boolean indicating whether to save draft or complete filing
    * @returns a promise to return the updated filing
    */
-  private updateFiling (filing: CorrectionFilingIF, isDraft: boolean): Promise<any> {
+  private async updateFiling (filing: CorrectionFilingIF | IncorporationFilingIF, isDraft: boolean): Promise<any> {
     // put updated filing to filings endpoint
     let url = `businesses/${this.getBusinessId}/filings/${this.getFilingId}`
     if (isDraft) {
       url += '?draft=true'
     }
 
-    return axios.put(url, { filing }).then(response => {
-      const filing = response?.data?.filing
-      const filingId = +filing?.header?.filingId
-      if (!filing || !filingId) {
-        throw new Error('Invalid API response')
-      }
-      return filing
-    })
+    return axios.put(url, { filing })
+      .then(response => {
+        const filing = response?.data?.filing
+        const filingId = +filing?.header?.filingId
+
+        if (!filing || !filingId) {
+          throw new Error('Invalid API response')
+        }
+        return filing
+      })
   }
 
   /**
@@ -119,6 +123,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
     const url = `entities/${businessIdentifier}/authorizations`
     const authUrl = sessionStorage.getItem('AUTH_API_URL')
     const config = { baseURL: authUrl }
+
     return axios.get(url, config)
   }
 
@@ -126,9 +131,10 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * Fetches current user data.
    * @returns a promise to return the user data
    */
-  fetchCurrentUser (): Promise<any> {
+  async fetchCurrentUser (): Promise<any> {
     const authUrl = sessionStorage.getItem('AUTH_API_URL')
     const config = { baseURL: authUrl }
+
     return axios.get('users/@me', config)
   }
 
@@ -137,7 +143,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * @param datatype The type of data to request.
    * @returns a promise to return the business base info or of the specified data type.
    */
-  getBusinessData (datatype: string = null): Promise<any> {
+  async getBusinessData (datatype: string = null): Promise<any> {
     if (!this.getBusinessId) throw new Error('Invalid parameter \'businessIdentifier\'')
 
     let url = `businesses/${this.getBusinessId}`
@@ -161,7 +167,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * Fetches contact information for the specified business.
    * @returns a promise to return the contact data
    */
-  getContactInfo (): Promise<any> {
+  async getContactInfo (): Promise<any> {
     if (!this.getBusinessId) throw new Error('Invalid parameter \'businessIdentifier\'')
 
     const url = `entities/${this.getBusinessId}`

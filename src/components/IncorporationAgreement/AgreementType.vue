@@ -91,7 +91,7 @@ export default class AgreementType extends Vue {
   @Action setIncorporationAgreementStepData!: ActionBindingIF
 
   // Local properties
-  private agreementType: string | null = null
+  private agreementType: string = null
   private showAgreementTypeForm = false
 
   private setAgreementType (): void {
