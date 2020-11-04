@@ -130,6 +130,7 @@
 // Libraries
 import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash'
+import { Action } from 'vuex-class'
 
 // Components
 import { ConfirmDialog } from '@/components/dialogs'
@@ -144,7 +145,6 @@ import { ActionTypes } from '@/enums'
 
 // Mixins
 import { CommonMixin } from '@/mixins'
-import { Action, Getter } from 'vuex-class'
 
 @Component({
   components: {
@@ -162,7 +162,8 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   @Prop({ default: () => { return [] as [] } })
   private nameTranslations!: NameTranslationDraftIF[]
 
-  private actionTypes = ActionTypes
+  // Actions
+  @Action setEditingNameTranslations: ActionBindingIF
 
   // Properties
   private draftTranslations: NameTranslationDraftIF[] = []
@@ -324,6 +325,13 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     this.emitHaveChanges(this.hasNameTranslationChange)
   }
 
+  /** Updates store when local Editing property has changed. */
+  @Watch('isEditing', { immediate: true })
+  private onEditingChanged (val: boolean): void {
+    this.setEditingNameTranslations(val)
+  }
+
+  // Emitters
   @Emit('nameTranslationsChange')
   private emitNameTranslations (translations: NameTranslationDraftIF[]): void {}
 

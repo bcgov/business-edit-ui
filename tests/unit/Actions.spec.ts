@@ -83,7 +83,7 @@ describe('Action button states', () => {
 
     setEditing = async (val: boolean) => {
       // set any editing flag
-      await wrapper.vm.$store.commit('mutateCompanyNameEditing', val)
+      await wrapper.vm.$store.commit('mutateEditingCompanyName', val)
     }
   })
 

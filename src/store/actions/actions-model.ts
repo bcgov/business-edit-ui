@@ -137,6 +137,10 @@ export const setIncorporationAgreementStepData: ActionIF = ({ commit }, stepData
   commit('mutateIncorporationAgreementStepData', stepData)
 }
 
+export const setIncorporationAgreementValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateIncorporationAgreementValidity', validity)
+}
+
 export const setIgnoreChanges: ActionIF = ({ commit }, ignoreChanges): void => {
   commit('mutateIgnoreChanges', ignoreChanges)
 }
@@ -169,30 +173,26 @@ export const setDetailValidity: ActionIF = ({ commit }, validity: boolean): void
   commit('mutateDetailValidity', validity)
 }
 
-export const setCompanyNameEditing: ActionIF = ({ commit }, editing: boolean): void => {
-  commit('mutateCompanyNameEditing', editing)
+export const setEditingCompanyName: ActionIF = ({ commit }, editing: boolean): void => {
+  commit('mutateEditingCompanyName', editing)
 }
 
-export const setNameTranslationsEditing: ActionIF = ({ commit }, editing: boolean): void => {
-  commit('mutateNameTranslationsEditing', editing)
+export const setEditingNameTranslations: ActionIF = ({ commit }, editing: boolean): void => {
+  commit('mutateEditingNameTranslations', editing)
 }
 
-export const setOfficeAddressesEditing: ActionIF = ({ commit }, editing: boolean): void => {
-  commit('mutateOfficeAddressesEditing', editing)
+export const setEditingOfficeAddresses: ActionIF = ({ commit }, editing: boolean): void => {
+  commit('mutateEditingOfficeAddresses', editing)
 }
 
-export const setPeopleAndRolesEditing: ActionIF = ({ commit }, editing: boolean): void => {
-  commit('mutatePeopleAndRolesEditing', editing)
+export const setEditingPeopleAndRoles: ActionIF = ({ commit }, editing: boolean): void => {
+  commit('mutateEditingPeopleAndRoles', editing)
 }
 
-export const setShareStructureEditing: ActionIF = ({ commit }, editing: boolean): void => {
-  commit('mutateShareStructureEditing', editing)
+export const setEditingShareStructure: ActionIF = ({ commit }, editing: boolean): void => {
+  commit('mutateEditingShareStructure', editing)
 }
 
-export const setIncorporationAgreementValidity: ActionIF = ({ commit }, validity: boolean): void => {
-  commit('mutateIncorporationAgreementValidity', validity)
-}
-
-export const setIncorporationAgreementEditing: ActionIF = ({ commit }, editing: boolean): void => {
-  commit('mutateIncorporationAgreementEditing', editing)
+export const setEditingIncorporationAgreement: ActionIF = ({ commit }, editing: boolean): void => {
+  commit('mutateEditingIncorporationAgreement', editing)
 }

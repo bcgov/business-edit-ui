@@ -140,7 +140,8 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   @Getter getBusinessContact!: BusinessContactIF
 
   // Actions
-  @Action setDefineCompanyStepChanged: ActionBindingIF
+  @Action setDefineCompanyStepChanged!: ActionBindingIF
+  @Action setEditingCompanyName!: ActionBindingIF
 
   // Declaration for template
   readonly EntityTypes = EntityTypes
@@ -224,6 +225,12 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   /** Emits Have Changes event. */
   @Emit('haveChanges')
   private emitHaveChanges (haveChanges: boolean): void {}
+
+  /** Updates store when local Editing property has changed. */
+  @Watch('isEditingNames', { immediate: true })
+  private onEditingChanged (val: boolean): void {
+    this.setEditingCompanyName(val)
+  }
 }
 </script>
 
