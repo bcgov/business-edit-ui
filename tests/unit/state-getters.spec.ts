@@ -19,7 +19,7 @@ describe('State Getters', () => {
     await Vue.nextTick()
   })
 
-  it('returns correct values for "Is Busy Saving" getter', async () => {
+  it('returns correct values for "Is Busy Saving" et al getters', async () => {
     // initially, these getters should be false
     expect(vm.isSaving).toBe(false)
     expect(vm.isSavingResuming).toBe(false)

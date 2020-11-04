@@ -1,4 +1,3 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
@@ -6,13 +5,8 @@ import { getVuexStore } from '@/store'
 import { shallowMount, createLocalVue, createWrapper } from '@vue/test-utils'
 import sinon from 'sinon'
 import { axios } from '@/utils'
-
-// Components
 import { Actions } from '@/components/common'
-
-// Other
 import mockRouter from './MockRouter'
-import { NameRequestStates } from '@/enums'
 
 Vue.use(Vuetify)
 
@@ -59,49 +53,167 @@ const nrData = {
   state: 'APPROVED'
 }
 
-describe.skip('Actions component', () => {
+describe('Action button states', () => {
   let wrapper: any
+  let setEntityType: Function
+  let setChanged: Function
+  let setValidity: Function
+  let setEditing: Function
 
-  beforeEach(() => {
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-    const router = mockRouter.mock()
-    wrapper = shallowMount(Actions, { localVue, store, router, vuetify })
+  beforeAll(async () => {
+    wrapper = shallowMount(Actions, { store, vuetify })
+    await Vue.nextTick()
+
+    setEntityType = async (val: string) => {
+      await wrapper.vm.$store.commit('mutateEntityType', val)
+    }
+
+    setChanged = async (val: boolean) => {
+      // set any changed flag
+      await wrapper.vm.$store.commit('mutatePeopleAndRolesChanged', val)
+    }
+
+    setValidity = async (val: boolean) => {
+      // set all validity flags
+      await wrapper.vm.$store.commit('mutatePeopleAndRolesValidity', val)
+      await wrapper.vm.$store.commit('mutateDetailValidity', val)
+      await wrapper.vm.$store.commit('mutateCertifyStateValidity', val)
+      await wrapper.vm.$store.commit('mutateStaffPaymentValidity', val)
+    }
+
+    setEditing = async (val: boolean) => {
+      // set any editing flag
+      await wrapper.vm.$store.commit('mutateCompanyNameEditing', val)
+    }
   })
 
-  afterEach(() => {
+  afterAll(() => {
     wrapper.destroy()
   })
 
-  it('Disables File and Pay button when certify from is not valid', () => {
-    // verify File and Pay button state
-    store.state.stateModel.certifyState = {
-      valid: false,
-      certifiedBy: 'Some Certifier'
-    }
-    expect(wrapper.find('#file-pay-btn').attributes('disabled')).toBe('true')
+  it('renders an empty container before Entity Type is known', () => {
+    // empty container
+    expect(wrapper.find('#action-buttons-container').exists()).toBe(true)
+    expect(wrapper.find('#save-btn').exists()).toBe(false)
+    expect(wrapper.find('#save-resume-btn').exists()).toBe(false)
+    expect(wrapper.find('#file-pay-btn').exists()).toBe(false)
+    expect(wrapper.find('#app-cancel-btn').exists()).toBe(false)
   })
 
-  it('Enables File and Pay button when certify from is valid', async () => {
-    store.state.stateModel.certifyState = {
-      valid: true,
-      certifiedBy: 'Some certifier'
-    }
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.stateModel.nameRequest = { entityType: 'BEN' }
-    store.state.stateModel.defineCompanyStep = { valid: true }
-    store.state.stateModel.peopleAndRolesStep = { valid: true }
-    store.state.stateModel.shareStructureStep = { valid: true }
-    store.state.stateModel.incorporationAgreementStep = { valid: true }
-    store.state.stateModel.incorporationDateTime = { valid: true }
-    await Vue.nextTick()
-
-    // verify File and Pay button state
-    expect(wrapper.find('#file-pay-btn').attributes('disabled')).toBeUndefined()
+  it('renders buttons once Entity Type is known', async () => {
+    await setEntityType('BEN')
+    // all buttons are rendered
+    expect(wrapper.find('#action-buttons-container').exists()).toBe(true)
+    expect(wrapper.find('#save-btn').exists()).toBe(true)
+    expect(wrapper.find('#save-resume-btn').exists()).toBe(true)
+    expect(wrapper.find('#file-pay-btn').exists()).toBe(true)
+    expect(wrapper.find('#app-cancel-btn').exists()).toBe(true)
   })
 
-  it('renders the component properly', () => {
-    // FUTURE
+  it('shows initial enabled buttons', async () => {
+    await setEntityType('BEN')
+    // only the File and Pay button should be disabled
+    // (because the filing has not changed and is invalid)
+    expect(wrapper.find('#save-btn').props('disabled')).toBe(false)
+    expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(false)
+    expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(false)
+  })
+
+  it('disables buttons while saving', async () => {
+    await setEntityType('BEN')
+    await setChanged(true)
+    await setValidity(true)
+    await wrapper.vm.setIsSaving(true)
+    // all buttons should be disabled
+    // Save button should be loading
+    expect(wrapper.find('#save-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#save-btn').props('loading')).toBe(true)
+    expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(true)
+    // reset
+    await setChanged(false)
+    await setValidity(false)
+    await wrapper.vm.setIsSaving(false)
+  })
+
+  it('disables buttons while saving and resuming', async () => {
+    await setEntityType('BEN')
+    await setChanged(true)
+    await setValidity(true)
+    await wrapper.vm.setIsSavingResuming(true)
+    // all buttons should be disabled
+    // Save and Resume button should be loading
+    expect(wrapper.find('#save-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#save-resume-btn').props('loading')).toBe(true)
+    expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(true)
+    // reset
+    await setChanged(false)
+    await setValidity(false)
+    await wrapper.vm.setIsSavingResuming(false)
+  })
+
+  it('disables buttons while filing and paying', async () => {
+    await setEntityType('BEN')
+    await setChanged(true)
+    await setValidity(true)
+    await wrapper.vm.setIsFilingPaying(true)
+    // all buttons should be disabled
+    // File and Pay button should be loading
+    expect(wrapper.find('#save-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#file-pay-btn').props('loading')).toBe(true)
+    expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(true)
+    // reset
+    await setChanged(false)
+    await setValidity(false)
+    await wrapper.vm.setIsFilingPaying(false)
+  })
+
+  it('disables buttons while editing', async () => {
+    await setEntityType('BEN')
+    await setChanged(true)
+    await setValidity(true)
+    await setEditing(true)
+    // all buttons should be disabled except Cancel
+    expect(wrapper.find('#save-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(false)
+    // reset
+    await setChanged(false)
+    await setValidity(false)
+    await setEditing(false)
+  })
+
+  it('disables File and Pay button when filing is changed but not valid', async () => {
+    await setEntityType('BEN')
+    await setChanged(true)
+    // only the File and Pay button should be disabled
+    expect(wrapper.find('#save-btn').props('disabled')).toBe(false)
+    expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(false)
+    expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
+    expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(false)
+    // reset
+    await setChanged(false)
+  })
+
+  it('enables File and Pay button when filing is changed and valid', async () => {
+    await setEntityType('BEN')
+    await setChanged(true)
+    await setValidity(true)
+    // all buttons should be enabled
+    expect(wrapper.find('#save-btn').props('disabled')).toBe(false)
+    expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(false)
+    expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(false)
+    expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(false)
+    // reset
+    await setChanged(false)
+    await setValidity(false)
   })
 })
 

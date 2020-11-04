@@ -1,45 +1,46 @@
 <template>
   <v-container id="action-buttons-container" class="list-item">
-
-    <div class="buttons-left">
-      <!-- disable Save button for now -->
-      <v-btn id="save-btn" large
-        :disabled="isSaveButtonDisabled"
-        :loading="isSaving"
-        @click="onClickSave()"
-      >
-        <span>Save</span>
-      </v-btn>
-
-      <!-- disable Save and Resume Later button for now -->
-      <v-btn id="save-resume-btn" large
-        :disabled="isSaveResumeButtonDisabled"
-        :loading="isSavingResuming"
-        @click="onClickSaveResume()"
-      >
-        <span>Save and Resume Later</span>
-      </v-btn>
-    </div>
-
-    <div class="buttons-right">
-      <v-fade-transition hide-on-leave>
-        <v-btn id="file-pay-btn" large color="primary"
-          :disabled="isFilePayButtonDisabled"
-          :loading="isFilingPaying"
-          @click="onClickFilePay()"
+    <!-- don't show buttons until Entity Type is identified -->
+    <template v-if="isEntityType">
+      <div class="buttons-left">
+        <!-- disable Save button for now -->
+        <v-btn id="save-btn" large
+          :disabled="isSaveButtonDisabled"
+          :loading="isSaving"
+          @click="onClickSave()"
         >
-          <span>File and Pay</span>
+          <span>Save</span>
         </v-btn>
-      </v-fade-transition>
 
-      <v-btn id="app-cancel-btn" large outlined color="primary"
-        :disabled="isBusySaving"
-        @click="onClickCancel()"
-      >
-        <span>Cancel</span>
-      </v-btn>
-    </div>
+        <!-- disable Save and Resume Later button for now -->
+        <v-btn id="save-resume-btn" large
+          :disabled="isSaveResumeButtonDisabled"
+          :loading="isSavingResuming"
+          @click="onClickSaveResume()"
+        >
+          <span>Save and Resume Later</span>
+        </v-btn>
+      </div>
 
+      <div class="buttons-right">
+        <v-fade-transition hide-on-leave>
+          <v-btn id="file-pay-btn" large color="primary"
+            :disabled="isFilePayButtonDisabled"
+            :loading="isFilingPaying"
+            @click="onClickFilePay()"
+          >
+            <span>File and Pay</span>
+          </v-btn>
+        </v-fade-transition>
+
+        <v-btn id="app-cancel-btn" large outlined color="primary"
+          :disabled="isBusySaving"
+          @click="onClickCancel()"
+        >
+          <span>Cancel</span>
+        </v-btn>
+      </div>
+    </template>
   </v-container>
 </template>
 
@@ -58,11 +59,9 @@ import { DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from 
 export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin) {
   // Global getters
   @Getter isEntityType!: boolean
-  @Getter isEnableFilePayBtn!: boolean
   @Getter isBusySaving!: boolean
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
-  @Getter getEffectiveDate!: Date
   @Getter isFilingChanged!: boolean
   @Getter isFilingValid!: boolean
   @Getter hasNewNr!: boolean
@@ -79,12 +78,12 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
 
   /** True if the Save button should be disabled. */
   private get isSaveButtonDisabled (): boolean {
-    return (!this.isEntityType || this.isBusySaving || this.isEditing)
+    return (this.isBusySaving || this.isEditing)
   }
 
   /** True if the Save and Resume button should be disabled. */
   private get isSaveResumeButtonDisabled (): boolean {
-    return (!this.isEntityType || this.isBusySaving || this.isEditing)
+    return (this.isBusySaving || this.isEditing)
   }
 
   /** True if the File and Pay button should be disabled. */

@@ -1,6 +1,7 @@
 import { ActionIF } from '@/interfaces/store-interfaces/action-interface'
+import { EntityTypes } from '@/enums'
 
-export const setEntityType: ActionIF = ({ commit }, entityType): void => {
+export const setEntityType: ActionIF = ({ commit }, entityType: EntityTypes): void => {
   commit('mutateEntityType', entityType)
 }
 
@@ -54,6 +55,10 @@ export const setCertifyStatementResource: ActionIF = ({ commit }, certifyStateme
 
 export const setCertifyState: ActionIF = ({ commit }, certifyState): void => {
   commit('mutateCertifyState', certifyState)
+}
+
+export const setCertifyStateValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateCertifyStateValidity', validity)
 }
 
 export const setBusinessContact: ActionIF = ({ commit }, businessContact): void => {
