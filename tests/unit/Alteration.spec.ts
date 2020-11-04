@@ -254,15 +254,15 @@ describe('App component', () => {
       .toBe('rec mailing_address - address line two')
 
     // Validate People And Roles
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('CAMERON')
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.lastName).toBe('BOWLER')
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('director')
+    expect(store.state.stateModel.peopleAndRolesStep.orgPeople[0].officer.firstName).toBe('CAMERON')
+    expect(store.state.stateModel.peopleAndRolesStep.orgPeople[0].officer.lastName).toBe('BOWLER')
+    expect(store.state.stateModel.peopleAndRolesStep.orgPeople[0].roles[0].roleType).toBe('director')
 
     // Validate Share Structure
-    expect(store.state.stateModel.createShareStructureStep.shareClasses[0].name).toBe('Class A Shares')
-    expect(store.state.stateModel.createShareStructureStep.shareClasses[0].series[0].name)
+    expect(store.state.stateModel.shareStructureStep.shareClasses[0].name).toBe('Class A Shares')
+    expect(store.state.stateModel.shareStructureStep.shareClasses[0].series[0].name)
       .toBe('Series A Shares')
-    expect(store.state.stateModel.createShareStructureStep.shareClasses[0].series[1].name)
+    expect(store.state.stateModel.shareStructureStep.shareClasses[0].series[1].name)
       .toBe('Series 2 Shares')
 
     // Validate Contact Info

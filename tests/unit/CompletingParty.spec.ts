@@ -96,7 +96,7 @@ describe('unit tests', () => {
         ]
       }
     }
-    store.state.stateModel.peopleAndRoles = {
+    store.state.stateModel.peopleAndRolesStep = {
       orgPeople: [
         originalPersonCp,
         originalOrg
@@ -120,7 +120,7 @@ describe('unit tests', () => {
         ]
       }
     }
-    store.state.stateModel.peopleAndRoles = {
+    store.state.stateModel.peopleAndRolesStep = {
       orgPeople: [
         originalPersonNotCp,
         originalOrg,

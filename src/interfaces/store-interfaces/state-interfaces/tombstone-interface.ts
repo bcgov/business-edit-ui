@@ -9,8 +9,8 @@ export interface TombStoneIF {
   entityType: EntityTypes
   currentDate: string
   filingDate: string
-  filingId: string
-  correctedFilingId: string
+  filingId: number
+  correctedFilingId: number
   isSaving: boolean
   isSavingResuming: boolean
   isFilingPaying: boolean

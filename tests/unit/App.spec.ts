@@ -323,7 +323,7 @@ describe.skip('Numbered company setup', () => {
       .toBeDefined()
 
     // Validate Share Structure
-    expect(store.state.stateModel.createShareStructureStep.shareClasses)
+    expect(store.state.stateModel.shareStructureStep.shareClasses)
       .toBeDefined()
   })
 
@@ -464,11 +464,11 @@ describe.skip('App component', () => {
       .toStrictEqual(filingData.incorporationApplication.contactPoint)
 
     // Validate People And Roles
-    expect(store.state.stateModel.peopleAndRoles.orgPeople)
+    expect(store.state.stateModel.peopleAndRolesStep.orgPeople)
       .toStrictEqual(filingData.incorporationApplication.parties)
 
     // Validate Share Structure
-    expect(store.state.stateModel.createShareStructureStep.shareClasses)
+    expect(store.state.stateModel.shareStructureStep.shareClasses)
       .toStrictEqual(filingData.incorporationApplication.shareClasses)
 
     // Validate Incorporation Agreement

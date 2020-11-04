@@ -4,8 +4,8 @@
     <div class="buttons-left">
       <!-- disable Save button for now -->
       <v-btn id="save-btn" large
-        :disabled="!isEntityType || isBusySaving"
-        :loading="stateModel.tombstone.isSaving"
+        :disabled="isSaveButtonDisabled"
+        :loading="isSaving"
         @click="onClickSave()"
       >
         <span>Save</span>
@@ -13,8 +13,8 @@
 
       <!-- disable Save and Resume Later button for now -->
       <v-btn id="save-resume-btn" large
-        :disabled="!isEntityType || isBusySaving"
-        :loading="stateModel.tombstone.isSavingResuming"
+        :disabled="isSaveResumeButtonDisabled"
+        :loading="isSavingResuming"
         @click="onClickSaveResume()"
       >
         <span>Save and Resume Later</span>
@@ -24,8 +24,8 @@
     <div class="buttons-right">
       <v-fade-transition hide-on-leave>
         <v-btn id="file-pay-btn" large color="primary"
-          :disabled="!isFilingChanged || isBusySaving || !isFilingValid"
-          :loading="stateModel.tombstone.isFilingPaying"
+          :disabled="isFilePayButtonDisabled"
+          :loading="isFilingPaying"
           @click="onClickFilePay()"
         >
           <span>File and Pay</span>
@@ -46,36 +46,51 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Emit } from 'vue-property-decorator'
-import { State, Getter, Action } from 'vuex-class'
+import { Getter, Action } from 'vuex-class'
 
 // Interfaces
-import { StateModelIF, GetterIF, ActionBindingIF } from '@/interfaces'
+import { GetterIF, ActionBindingIF } from '@/interfaces'
 
 // Mixins
 import { DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
 
 @Component({})
 export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin) {
-  // Global state
-  @State stateModel!: StateModelIF
-
   // Global getters
-  @Getter isEntityType!: GetterIF
-  @Getter isEnableFilePayBtn!: GetterIF
-  @Getter isBusySaving!: GetterIF
+  @Getter isEntityType!: boolean
+  @Getter isEnableFilePayBtn!: boolean
+  @Getter isBusySaving!: boolean
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
   @Getter getEffectiveDate!: Date
   @Getter isFilingChanged!: boolean
   @Getter isFilingValid!: boolean
   @Getter hasNewNr!: boolean
+  @Getter isSaving!: boolean
+  @Getter isSavingResuming!: boolean
+  @Getter isFilingPaying!: boolean
+  @Getter isEditing!: boolean
 
   // Global setters
   @Action setIsSaving!: ActionBindingIF
   @Action setIsSavingResuming!: ActionBindingIF
   @Action setIsFilingPaying!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
-  @Action setIsIncorporationDateTimeValid!: ActionBindingIF
+
+  /** True if the Save button should be disabled. */
+  private get isSaveButtonDisabled (): boolean {
+    return (!this.isEntityType || this.isBusySaving || this.isEditing)
+  }
+
+  /** True if the Save and Resume button should be disabled. */
+  private get isSaveResumeButtonDisabled (): boolean {
+    return (!this.isEntityType || this.isBusySaving || this.isEditing)
+  }
+
+  /** True if the File and Pay button should be disabled. */
+  private get isFilePayButtonDisabled (): boolean {
+    return (!this.isFilingChanged || this.isBusySaving || !this.isFilingValid || this.isEditing)
+  }
 
   /** Called when Cancel button is clicked. */
   private onClickCancel (): void {

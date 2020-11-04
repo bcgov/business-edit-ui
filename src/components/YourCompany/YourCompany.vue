@@ -113,10 +113,8 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter, State } from 'vuex-class'
-import { ActionBindingIF, BusinessContactIF, GetterIF, IncorporationFilingIF,
-  NameRequestIF, StateModelIF } from '@/interfaces'
-// Components
+import { Action, Getter } from 'vuex-class'
+import { ActionBindingIF, BusinessContactIF, GetterIF, IncorporationFilingIF, NameRequestIF } from '@/interfaces'
 import { CorrectBusinessContactInfo, FolioNumber, CorrectNameTranslation, OfficeAddresses } from '.'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 import { DateMixin, EntityFilterMixin, LegalApiMixin } from '@/mixins'
@@ -137,17 +135,12 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   @Getter getBusinessNumber!: string
   @Getter getOriginalEffectiveDate!: Date
   @Getter getFolioNumber!: string
-  @Getter getOfficeAddresses!: any
   @Getter isPremiumAccount!: GetterIF
-  @Getter isNamedBusiness!: boolean
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getBusinessContact!: BusinessContactIF
 
+  // Actions
   @Action setDefineCompanyStepChanged: ActionBindingIF
-
-  // Global state
-  @State(state => state.stateModel.defineCompanyStep.valid)
-  readonly valid!: boolean
 
   // Declaration for template
   readonly EntityTypes = EntityTypes

@@ -1,17 +1,19 @@
 // Libraries
 import { Component, Vue } from 'vue-property-decorator'
-import { Action, Getter, State } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 
 // Interfaces
 import {
   ActionBindingIF,
   AlterationFilingIF,
+  BusinessContactIF,
   BusinessSnapshotIF,
+  CertifyIF,
   CorrectionFilingIF,
+  IncorporationAddressIf,
   IncorporationFilingIF,
   OrgPersonIF,
   ShareClassIF,
-  StateModelIF,
   NameTranslationIF,
   NameTranslationDraftIF
 } from '@/interfaces'
@@ -27,9 +29,6 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
  */
 @Component({})
 export default class FilingTemplateMixin extends Vue {
-  // Global state
-  @State stateModel!: StateModelIF
-
   // Global getters
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
@@ -38,15 +37,20 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getCurrentDate!: string
   @Getter getEntityType!: EntityTypes
   @Getter getFilingDate!: string
-  @Getter getCorrectedFilingId!: string
+  @Getter getCorrectedFilingId!: number
   @Getter getEffectiveDate!: Date
   @Getter isFutureEffective!: boolean
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getFolioNumber!: string
   @Getter getStaffPayment!: StaffPaymentIF
-  @Getter getDetailComment!: string | null
+  @Getter getDetailComment!: string
   @Getter getDefaultCorrectionDetailComment!: string
+  @Getter getNameTranslations!: NameTranslationIF | NameTranslationDraftIF[]
+  @Getter getCertifyState!: CertifyIF
+  @Getter getOfficeAddresses!: IncorporationAddressIf | {}
+  @Getter getBusinessContact!: BusinessContactIF
+  @Getter getAgreementType!: string
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -75,7 +79,7 @@ export default class FilingTemplateMixin extends Vue {
     // if filing and paying, filter out removed entities and omit the 'action' property
     let parties = this.getPeopleAndRoles
     let shareClasses = this.getShareClasses
-    let nameTranslations = this.stateModel.nameTranslations
+    let nameTranslations = this.getNameTranslations
     if (!isDraft) {
       // Filter out parties actions
       parties = parties.filter(x => x.action !== ActionTypes.REMOVED)
@@ -99,7 +103,7 @@ export default class FilingTemplateMixin extends Vue {
     const filing: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
-        certifiedBy: this.stateModel.certifyState.certifiedBy,
+        certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate,
         folioNumber: this.getFolioNumber
       },
@@ -121,18 +125,18 @@ export default class FilingTemplateMixin extends Vue {
           nrNumber: this.getNameRequestNumber
         },
         nameTranslations: nameTranslations,
-        offices: this.stateModel.defineCompanyStep.officeAddresses,
+        offices: this.getOfficeAddresses,
         contactPoint: {
-          email: this.stateModel.defineCompanyStep.businessContact.email,
-          phone: this.stateModel.defineCompanyStep.businessContact.phone,
-          extension: this.stateModel.defineCompanyStep.businessContact.extension
+          email: this.getBusinessContact.email,
+          phone: this.getBusinessContact.phone,
+          extension: this.getBusinessContact.extension
         },
         parties,
         shareStructure: {
           shareClasses
         },
         incorporationAgreement: {
-          agreementType: this.stateModel.incorporationAgreementStep.agreementType
+          agreementType: this.getAgreementType
         }
       }
     }
@@ -184,7 +188,7 @@ export default class FilingTemplateMixin extends Vue {
    * Prepare name translations for non draft correction
    */
   prepareNameTranslations () : NameTranslationIF {
-    const translations = this.stateModel.nameTranslations as NameTranslationDraftIF[]
+    const translations = this.getNameTranslations as NameTranslationDraftIF[]
     return {
       new: translations?.filter(x => x.action === ActionTypes.ADDED)
         .map(x => x.value),

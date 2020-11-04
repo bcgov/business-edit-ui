@@ -159,7 +159,7 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
         }
 
         // get and store ID of filing that is being corrected (ie, original IA)
-        const correctedFilingId = correctionFiling.correction?.correctedFilingId
+        const correctedFilingId: number = +correctionFiling.correction?.correctedFilingId
         this.setCorrectedFilingId(correctedFilingId)
 
         // fetch and store original IA

@@ -8,18 +8,26 @@ import {
 export interface StateModelIF {
   tombstone: TombStoneIF
   accountInformation: AccountInformationIF
-  businessInformation: BusinessInformationIF,
+  businessInformation: BusinessInformationIF
   nameRequest: NameRequestIF
   nameTranslations: NameTranslationIF | NameTranslationDraftIF[]
   certifyState: CertifyIF
   defineCompanyStep: DefineCompanyIF
-  peopleAndRoles: PeopleAndRolesIF
-  createShareStructureStep: ShareStructureIF
+  peopleAndRolesStep: PeopleAndRolesIF
+  shareStructureStep: ShareStructureIF
   incorporationAgreementStep: IncorporationAgreementIF
-  incorporationDateTime: DateTimeIF,
-  originalIA: IncorporationFilingIF,
+  incorporationDateTime: DateTimeIF
+  originalIA: IncorporationFilingIF
   originalAlteration: AlterationFilingIF
-  staffPaymentStep: StaffPaymentStepIF,
-  filingData: FilingDataIF,
+  staffPaymentStep: StaffPaymentStepIF
+  filingData: FilingDataIF
   detail: DetailIF
+  editingFlags: {
+    companyName: boolean
+    nameTranslations: boolean
+    officeAddresses: boolean
+    peopleAndRoles: boolean
+    shareStructure: boolean
+    incorporationAgreement: boolean
+  }
 }

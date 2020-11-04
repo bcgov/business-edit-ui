@@ -7,7 +7,7 @@ export interface NameRequestIF {
   nrNumber: string
   details: NameRequestDetailsIF | {}
   applicant: NameRequestApplicantIF | {}
-  filingId: number | null
+  filingId: number
 }
 
 // Name request response details interface

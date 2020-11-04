@@ -44,8 +44,8 @@ export const setEffectiveDate: ActionIF = ({ commit }, effectiveDate): void => {
   commit('mutateEffectiveDate', effectiveDate)
 }
 
-export const setIsIncorporationDateTimeValid: ActionIF = ({ commit }, incorporationDateTimeValid): void => {
-  commit('mutateIsIncorporationDateTimeValid', incorporationDateTimeValid)
+export const setIsIncorporationDateTimeValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateIsIncorporationDateTimeValidity', validity)
 }
 
 export const setCertifyStatementResource: ActionIF = ({ commit }, certifyStatementResource): void => {
@@ -60,11 +60,11 @@ export const setBusinessContact: ActionIF = ({ commit }, businessContact): void 
   commit('mutateBusinessContact', businessContact)
 }
 
-export const setDefineCompanyStepValidity: ActionIF = ({ commit }, validity): void => {
+export const setDefineCompanyStepValidity: ActionIF = ({ commit }, validity: boolean): void => {
   commit('mutateDefineCompanyStepValidity', validity)
 }
 
-export const setDefineCompanyStepChanged: ActionIF = ({ commit }, changed): void => {
+export const setDefineCompanyStepChanged: ActionIF = ({ commit }, changed: boolean): void => {
   commit('mutateDefineCompanyStepChanged', changed)
 }
 
@@ -96,11 +96,11 @@ export const setNameTranslations: ActionIF = ({ commit }, nameTranslations): voi
   commit('mutateNameTranslations', nameTranslations)
 }
 
-export const setFilingId: ActionIF = ({ commit }, filingId): void => {
+export const setFilingId: ActionIF = ({ commit }, filingId: number): void => {
   commit('mutateFilingId', filingId)
 }
 
-export const setCorrectedFilingId: ActionIF = ({ commit }, correctedFilingId): void => {
+export const setCorrectedFilingId: ActionIF = ({ commit }, correctedFilingId: number): void => {
   commit('mutateCorrectedFilingId', correctedFilingId)
 }
 
@@ -108,23 +108,23 @@ export const setPeopleAndRoles: ActionIF = ({ commit }, peopleAndRoles) => {
   commit('mutatePeopleAndRoles', peopleAndRoles)
 }
 
-export const setPeopleAndRolesChanged: ActionIF = ({ commit }, validity) => {
-  commit('mutatePeopleAndRolesChanged', validity)
+export const setPeopleAndRolesChanged: ActionIF = ({ commit }, changed: boolean) => {
+  commit('mutatePeopleAndRolesChanged', changed)
 }
 
-export const setPeopleAndRolesValid: ActionIF = ({ commit }, validity) => {
-  commit('mutatePeopleAndRolesValid', validity)
+export const setPeopleAndRolesValidity: ActionIF = ({ commit }, validity: boolean) => {
+  commit('mutatePeopleAndRolesValidity', validity)
 }
 
 export const setShareClasses: ActionIF = ({ commit }, shareClasses) => {
   commit('mutateShareClasses', shareClasses)
 }
 
-export const setShareClassesChanged: ActionIF = ({ commit }, validity) => {
-  commit('mutateShareClassesChanged', validity)
+export const setShareStructureChanged: ActionIF = ({ commit }, changed: boolean) => {
+  commit('mutateShareStructureChanged', changed)
 }
 
-export const setCreateShareStructureStepValidity: ActionIF = ({ commit }, validity) => {
+export const setCreateShareStructureStepValidity: ActionIF = ({ commit }, validity: boolean) => {
   commit('mutateCreateShareStructureStepValidity', validity)
 }
 
@@ -148,8 +148,8 @@ export const setStaffPayment: ActionIF = ({ commit }, staffPayment): void => {
   commit('mutateStaffPayment', staffPayment)
 }
 
-export const setStaffPaymentValidity: ActionIF = ({ commit }, staffPaymentValidity): void => {
-  commit('mutateStaffPaymentValidity', staffPaymentValidity)
+export const setStaffPaymentValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateStaffPaymentValidity', validity)
 }
 
 export const setFilingData: ActionIF = ({ commit }, filingData): void => {
@@ -160,6 +160,34 @@ export const setDetailComment: ActionIF = ({ commit }, comment): void => {
   commit('mutateDetailComment', comment)
 }
 
-export const setDetailValidity: ActionIF = ({ commit }, validity): void => {
+export const setDetailValidity: ActionIF = ({ commit }, validity: boolean): void => {
   commit('mutateDetailValidity', validity)
+}
+
+export const setCompanyNameEditing: ActionIF = ({ commit }, editing: boolean): void => {
+  commit('mutateCompanyNameEditing', editing)
+}
+
+export const setNameTranslationsEditing: ActionIF = ({ commit }, editing: boolean): void => {
+  commit('mutateNameTranslationsEditing', editing)
+}
+
+export const setOfficeAddressesEditing: ActionIF = ({ commit }, editing: boolean): void => {
+  commit('mutateOfficeAddressesEditing', editing)
+}
+
+export const setPeopleAndRolesEditing: ActionIF = ({ commit }, editing: boolean): void => {
+  commit('mutatePeopleAndRolesEditing', editing)
+}
+
+export const setShareStructureEditing: ActionIF = ({ commit }, editing: boolean): void => {
+  commit('mutateShareStructureEditing', editing)
+}
+
+export const setIncorporationAgreementValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateIncorporationAgreementValidity', validity)
+}
+
+export const setIncorporationAgreementEditing: ActionIF = ({ commit }, editing: boolean): void => {
+  commit('mutateIncorporationAgreementEditing', editing)
 }

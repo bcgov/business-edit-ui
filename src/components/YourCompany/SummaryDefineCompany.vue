@@ -5,7 +5,7 @@
         <label class="define-company-title"><strong>Your Company</strong></label>
     </div>
 
-    <div v-if="!valid && !isSummary" class="defineCompanyStepErrorMessage">
+    <div v-if="!isDefineCompanyStepValid && !isSummary" class="defineCompanyStepErrorMessage">
       <span>
         <v-icon color="blue darken-2">mdi-information-outline</v-icon>
         This step is not complete.
@@ -48,7 +48,7 @@
     <v-divider />
 
     <div class="section-container">
-      <BusinessContactInfo :initialValue="businessContact" :isEditing="false" />
+      <BusinessContactInfo :initialValue="getBusinessContact" :isEditing="false" />
     </div>
 
     <div class="section-container" v-if="isPremiumAccount">
@@ -60,7 +60,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { Getter, State } from 'vuex-class'
+import { Getter } from 'vuex-class'
 
 // Interfaces
 import { BusinessContactIF, GetterIF } from '@/interfaces'
@@ -91,13 +91,8 @@ export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
   @Getter getNameTranslations!: Array<string>
   @Getter getOfficeAddresses!: any
   @Getter getFolioNumber!: string
-
-  // Global state
-  @State(state => state.stateModel.defineCompanyStep.valid)
-  readonly valid!: boolean
-
-  @State(state => state.stateModel.defineCompanyStep.businessContact)
-  readonly businessContact!: BusinessContactIF
+  @Getter isDefineCompanyStepValid!: boolean
+  @Getter getBusinessContact!: BusinessContactIF
 
   @Prop({ default: false })
   private isSummary: boolean
