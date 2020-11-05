@@ -158,6 +158,7 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
   @Getter getUserUsername!: string
   @Getter getFilingData!: FilingDataIF
   @Getter isFilingChanged!: boolean
+  @Getter isEditing!: boolean
 
   // Global setters
   @Action setBusinessId!: ActionBindingIF
@@ -244,7 +245,7 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
   private created (): void {
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event: any) => {
-      if (this.haveChanges) {
+      if (this.haveChanges || this.isEditing) {
         // cancel closing the page
         event.preventDefault()
         // pop up confirmation dialog
@@ -386,7 +387,7 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
   /** Redirects to entity dashboard. */
   private goToDashboard (force: boolean = false): void {
     // check if there are no data changes
-    if (!this.haveChanges || force) {
+    if (!this.haveChanges || !this.isEditing || force) {
       // redirect to dashboard
       const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
       window.location.assign(dashboardUrl + this.getBusinessId)
