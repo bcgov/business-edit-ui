@@ -19,7 +19,7 @@ describe('State Getters', () => {
     await Vue.nextTick()
   })
 
-  it('returns correct values for "Is Busy Saving" getter', async () => {
+  it('returns correct values for "Is Busy Saving" et al getters', async () => {
     // initially, these getters should be false
     expect(vm.isSaving).toBe(false)
     expect(vm.isSavingResuming).toBe(false)
@@ -122,39 +122,39 @@ describe('State Getters', () => {
     expect(vm.isEditing).toBe(false)
 
     // verify that the Company Name Editing flag works
-    await vm.$store.commit('mutateCompanyNameEditing', true)
+    await vm.$store.commit('mutateEditingCompanyName', true)
     expect(vm.isEditing).toBe(true)
-    await vm.$store.commit('mutateCompanyNameEditing', false)
+    await vm.$store.commit('mutateEditingCompanyName', false)
     expect(vm.isEditing).toBe(false)
 
     // verify that the Name Translations Editing flag works
-    await vm.$store.commit('mutateNameTranslationsEditing', true)
+    await vm.$store.commit('mutateEditingNameTranslations', true)
     expect(vm.isEditing).toBe(true)
-    await vm.$store.commit('mutateNameTranslationsEditing', false)
+    await vm.$store.commit('mutateEditingNameTranslations', false)
     expect(vm.isEditing).toBe(false)
 
     // verify that the Office Addresses Editing flag works
-    await vm.$store.commit('mutateOfficeAddressesEditing', true)
+    await vm.$store.commit('mutateEditingOfficeAddresses', true)
     expect(vm.isEditing).toBe(true)
-    await vm.$store.commit('mutateOfficeAddressesEditing', false)
+    await vm.$store.commit('mutateEditingOfficeAddresses', false)
     expect(vm.isEditing).toBe(false)
 
     // verify that the People And Roles Editing flag works
-    await vm.$store.commit('mutatePeopleAndRolesEditing', true)
+    await vm.$store.commit('mutateEditingPeopleAndRoles', true)
     expect(vm.isEditing).toBe(true)
-    await vm.$store.commit('mutatePeopleAndRolesEditing', false)
+    await vm.$store.commit('mutateEditingPeopleAndRoles', false)
     expect(vm.isEditing).toBe(false)
 
     // verify that the Company Share Structure flag works
-    await vm.$store.commit('mutateShareStructureEditing', true)
+    await vm.$store.commit('mutateEditingShareStructure', true)
     expect(vm.isEditing).toBe(true)
-    await vm.$store.commit('mutateShareStructureEditing', false)
+    await vm.$store.commit('mutateEditingShareStructure', false)
     expect(vm.isEditing).toBe(false)
 
     // verify that the Incorporation Agreement Editing flag works
-    await vm.$store.commit('mutateIncorporationAgreementEditing', true)
+    await vm.$store.commit('mutateEditingIncorporationAgreement', true)
     expect(vm.isEditing).toBe(true)
-    await vm.$store.commit('mutateIncorporationAgreementEditing', false)
+    await vm.$store.commit('mutateEditingIncorporationAgreement', false)
     expect(vm.isEditing).toBe(false)
   })
 })

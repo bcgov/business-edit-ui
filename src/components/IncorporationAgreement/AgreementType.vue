@@ -89,6 +89,7 @@ export default class AgreementType extends Vue {
 
   // Global setters
   @Action setIncorporationAgreementStepData!: ActionBindingIF
+  @Action setEditingIncorporationAgreement!: ActionBindingIF
 
   // Local properties
   private agreementType: string = null
@@ -128,6 +129,12 @@ export default class AgreementType extends Vue {
   private onAgreementTypeStateChange () {
     this.agreementType = this.getAgreementType
     this.setIncorporationAgreementData()
+  }
+
+  /** Updates store when local Editing property has changed. */
+  @Watch('showAgreementTypeForm', { immediate: true })
+  private onEditingChanged (val: boolean): void {
+    this.setEditingIncorporationAgreement(val)
   }
 }
 </script>

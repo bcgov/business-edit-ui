@@ -38,7 +38,6 @@
     <v-expand-transition>
       <v-card flat class="add-share-structure-container" v-if="showAddShareStructureForm">
         <edit-share-structure
-          v-show="showAddShareStructureForm"
           :initialValue="currentShareStructure"
           :activeIndex="activeIndex"
           :shareId="shareId"
@@ -406,6 +405,7 @@ export default class ShareStructure extends Mixins(CommonMixin) {
 
   @Action setShareClasses!: ActionBindingIF
   @Action setShareStructureChanged!: ActionBindingIF
+  @Action setEditingShareStructure!: ActionBindingIF
 
   // Local Properties
   private activeIndex: number = -1
@@ -824,6 +824,12 @@ export default class ShareStructure extends Mixins(CommonMixin) {
   @Watch('hasSeriesChanges')
   private emitHaveChanges (): void {
     this.setShareStructureChanged(this.hasClassChanges || this.hasSeriesChanges)
+  }
+
+  /** Updates store when local Editing property has changed. */
+  @Watch('addEditInProgress', { immediate: true })
+  private onEditingChanged (val: boolean): void {
+    this.setEditingShareStructure(val)
   }
 }
 </script>

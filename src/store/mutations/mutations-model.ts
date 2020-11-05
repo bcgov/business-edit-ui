@@ -164,6 +164,10 @@ export const mutateIncorporationAgreementChanged = (state: StateIF, changed: boo
   state.stateModel.incorporationAgreementStep.changed = changed
 }
 
+export const mutateIncorporationAgreementValidity = (state: StateIF, validity: boolean) => {
+  state.stateModel.incorporationAgreementStep.valid = validity
+}
+
 export const mutateIgnoreChanges = (state: StateIF, ignoreChanges: boolean) => {
   state.stateModel.tombstone.ignoreChanges = ignoreChanges
 }
@@ -201,30 +205,26 @@ export const mutateDetailComment = (state: StateIF, comment: string) => {
   state.stateModel.detail.comment = comment
 }
 
-export const mutateCompanyNameEditing = (state: StateIF, editing: boolean) => {
+export const mutateEditingCompanyName = (state: StateIF, editing: boolean) => {
   state.stateModel.editingFlags.companyName = editing
 }
 
-export const mutateNameTranslationsEditing = (state: StateIF, editing: boolean) => {
+export const mutateEditingNameTranslations = (state: StateIF, editing: boolean) => {
   state.stateModel.editingFlags.nameTranslations = editing
 }
 
-export const mutateOfficeAddressesEditing = (state: StateIF, editing: boolean) => {
+export const mutateEditingOfficeAddresses = (state: StateIF, editing: boolean) => {
   state.stateModel.editingFlags.officeAddresses = editing
 }
 
-export const mutatePeopleAndRolesEditing = (state: StateIF, editing: boolean) => {
+export const mutateEditingPeopleAndRoles = (state: StateIF, editing: boolean) => {
   state.stateModel.editingFlags.peopleAndRoles = editing
 }
 
-export const mutateShareStructureEditing = (state: StateIF, editing: boolean) => {
+export const mutateEditingShareStructure = (state: StateIF, editing: boolean) => {
   state.stateModel.editingFlags.shareStructure = editing
 }
 
-export const mutateIncorporationAgreementValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.incorporationAgreementStep.valid = validity
-}
-
-export const mutateIncorporationAgreementEditing = (state: StateIF, editing: boolean) => {
+export const mutateEditingIncorporationAgreement = (state: StateIF, editing: boolean) => {
   state.stateModel.editingFlags.incorporationAgreement = editing
 }

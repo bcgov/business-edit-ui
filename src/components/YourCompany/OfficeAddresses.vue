@@ -308,6 +308,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
 
   // Global setters
   @Action setOfficeAddresses!: ActionBindingIF
+  @Action setEditingOfficeAddresses!: ActionBindingIF
 
   // Declarations for template
   readonly isEmpty = isEmpty
@@ -628,6 +629,12 @@ export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMix
     // update external state
     this.emitValid()
     this.emitHaveChanges()
+  }
+
+  /** Updates store when local Editing property has changed. */
+  @Watch('isEditing', { immediate: true })
+  private onEditingChanged (val: boolean): void {
+    this.setEditingOfficeAddresses(val)
   }
 
   /** Emits the validity state of this component. */

@@ -127,6 +127,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   @Action setPeopleAndRoles!: ActionBindingIF
   @Action setPeopleAndRolesChanged!: ActionBindingIF
   @Action setPeopleAndRolesValidity!: ActionBindingIF
+  @Action setEditingPeopleAndRoles!: ActionBindingIF
 
   /** Empty OrgPerson for adding a new one. */
   private emptyOrgPerson: OrgPersonIF = {
@@ -508,6 +509,12 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   private onPeopleAndRolesChanged (): void {
     this.currentCompletingParty = this.getCompletingParty(this.getPeopleAndRoles)
     this.setPeopleAndRolesValidity(this.hasValidRoles && this.noMissingRoles)
+  }
+
+  /** Updates store when local Editing property has changed. */
+  @Watch('renderOrgPersonForm', { immediate: true })
+  private onEditingChanged (val: boolean): void {
+    this.setEditingPeopleAndRoles(val)
   }
 }
 </script>

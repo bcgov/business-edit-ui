@@ -226,28 +226,13 @@ export const getFilingData = (state: StateIF): FilingDataIF => {
 }
 
 /** Whether People and Roles component is valid. */
-export const isPeopleAndRoleValid = (state: StateIF): boolean => {
+export const isPeopleAndRolesValid = (state: StateIF): boolean => {
   return state.stateModel.peopleAndRolesStep.valid
 }
 
 /** Whether Define Company Step is valid. */
 export const isDefineCompanyStepValid = (state: StateIF): boolean => {
   return state.stateModel.defineCompanyStep.valid
-}
-
-//
-// Below is the business logic that allows the Actions, etc
-// to know how they should behave (ie, what to show or enable).
-//
-
-/** Whether File and Pay button should be enabled. */
-export const isEnableFilePayBtn = (state: StateIF, getters: any): boolean => {
-  const step1Valid = isDefineCompanyStepValid(state)
-  const step2Valid = isPeopleAndRoleValid(state)
-  const step3Valid = getters.isTypeBcomp ? state.stateModel.shareStructureStep.valid : false
-  const step4Valid = getters.isTypeBcomp ? state.stateModel.incorporationAgreementStep.valid : false
-  const step5Valid = state.stateModel.certifyState.valid && state.stateModel.incorporationDateTime.valid
-  return (step1Valid && step2Valid && step3Valid && step4Valid && step5Valid)
 }
 
 /** Whether app is busy saving/saving and resuming/filing and paying. */
