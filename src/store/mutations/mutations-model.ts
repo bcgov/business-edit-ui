@@ -130,7 +130,7 @@ export const mutateNameRequest = (state: StateIF, nameRequest: NameRequestIF) =>
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
-export const mutateNameTranslations = (state: StateIF, nameTranslations: NameTranslationIF) => {
+export const mutateNameTranslations = (state: StateIF, nameTranslations: NameTranslationIF[]) => {
   state.stateModel.nameTranslations = nameTranslations
 }
 

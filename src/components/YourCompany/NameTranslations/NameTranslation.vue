@@ -15,7 +15,7 @@
       </v-flex>
       <v-flex xs7 v-if="draftTranslations && translationsExceptRemoved.length">
         <div v-for="(translation, index) in translationsExceptRemoved"
-          :key="`name_translation_${index}`">{{translation.value}}</div>
+          :key="`name_translation_${index}`">{{translation.name}}</div>
       </v-flex>
       <v-flex xs7 v-else>
         No name translations
@@ -137,8 +137,7 @@ import { ConfirmDialog } from '@/components/dialogs'
 import { ListNameTranslation, AddNameTranslation } from '.'
 
 // Interfaces
-import { ActionBindingIF, ConfirmDialogType,
-  NameTranslationDraftIF, NameTranslationIF } from '@/interfaces'
+import { ActionBindingIF, ConfirmDialogType, NameTranslationIF } from '@/interfaces'
 
 // Enums
 import { ActionTypes } from '@/enums'
@@ -160,13 +159,13 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   }
 
   @Prop({ default: () => { return [] as [] } })
-  private nameTranslations!: NameTranslationDraftIF[]
+  private nameTranslations!: NameTranslationIF[]
 
   // Actions
   @Action setEditingNameTranslations: ActionBindingIF
 
   // Properties
-  private draftTranslations: NameTranslationDraftIF[] = []
+  private draftTranslations: NameTranslationIF[] = []
   private isEditing: boolean = false
   private isAddingNameTranslation = false
   private editingNameTranslation = ''
@@ -175,7 +174,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   private get hasPendingChange (): boolean {
     return this.draftTranslations.length !== this.nameTranslations.length ||
       !this.draftTranslations.every((translation, index) => {
-        return this.nameTranslations[index].value === translation.value &&
+        return this.nameTranslations[index].name === translation.name &&
           this.nameTranslations[index].action === translation.action
       })
   }
@@ -185,7 +184,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
       this.draftTranslations.filter(x => x.action).length > 0
   }
 
-  private get translationsExceptRemoved (): NameTranslationDraftIF[] {
+  private get translationsExceptRemoved (): NameTranslationIF[] {
     return this.draftTranslations.filter(x => x.action !== ActionTypes.REMOVED)
   }
 
@@ -200,8 +199,8 @@ export default class NameTranslation extends Mixins(CommonMixin) {
       .filter(x => x.action !== ActionTypes.ADDED)
       .map(a => {
         const translation = cloneDeep(a)
-        translation.value = translation.oldValue || translation.value
-        translation.oldValue = null
+        translation.name = translation.oldName || translation.name
+        translation.oldName = null
         translation.action = null
         return translation
       })
@@ -217,7 +216,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     // If any value is different that means undo or editted.
     const hasUnsavedData = this.draftTranslations.length !== nameTranslations.length ||
       !this.draftTranslations.every((translation, index) => {
-        return nameTranslations[index].value === translation.value &&
+        return nameTranslations[index].name === translation.name &&
           nameTranslations[index].action === translation.action
       })
     if (hasUnsavedData) {
@@ -259,16 +258,16 @@ export default class NameTranslation extends Mixins(CommonMixin) {
       const translation = this.draftTranslations[this.editIndex]
       if (!translation.action) {
         // If editing for the first time
-        translation.oldValue = translation.value
+        translation.oldName = translation.name
         translation.action = ActionTypes.EDITED
-      } else if (translation.oldValue === name) {
+      } else if (translation.oldName === name) {
         // If user revert to old value
         translation.action = null
-        translation.oldValue = null
+        translation.oldName = null
       }
-      translation.value = name
+      translation.name = name
     } else {
-      this.draftTranslations.push({ value: name, oldValue: null, action: ActionTypes.ADDED })
+      this.draftTranslations.push({ name: name, oldName: null, action: ActionTypes.ADDED })
     }
 
     this.cancelOrResetEditing()
@@ -279,7 +278,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
    * @param index Index number of the name translation to edit
    */
   private editNameTranslation (index: number): void {
-    this.editingNameTranslation = this.draftTranslations[index].value
+    this.editingNameTranslation = this.draftTranslations[index].name
     this.editIndex = index
     this.isAddingNameTranslation = true
   }
@@ -294,8 +293,8 @@ export default class NameTranslation extends Mixins(CommonMixin) {
       this.draftTranslations.splice(index, 1)
     } else {
       if (translation.action === ActionTypes.EDITED) {
-        translation.value = translation.oldValue
-        translation.oldValue = null
+        translation.name = translation.oldName
+        translation.oldName = null
       }
       translation.action = ActionTypes.REMOVED
     }
@@ -312,8 +311,8 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   private undoNameTranslation (index: number): void {
     const translation = this.draftTranslations[index]
     if (translation.action === ActionTypes.EDITED) {
-      translation.value = translation.oldValue
-      translation.oldValue = null
+      translation.name = translation.oldName
+      translation.oldName = null
     }
     translation.action = null
   }
@@ -333,7 +332,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
 
   // Emitters
   @Emit('nameTranslationsChange')
-  private emitNameTranslations (translations: NameTranslationDraftIF[]): void {}
+  private emitNameTranslations (translations: NameTranslationIF[]): void {}
 
   @Emit('haveChanges')
   private emitHaveChanges (haveChanges: boolean): void {}

@@ -2,7 +2,7 @@
 import { AccountTypes, EntityTypes } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
-  NameRequestIF, BusinessContactIF, NameTranslationDraftIF, BusinessInformationIF, CertifyIF,
+  NameRequestIF, BusinessContactIF, BusinessInformationIF, CertifyIF,
   CertifyStatementIF, NameTranslationIF, IncorporationAddressIf, FilingDataIF, StateIF
 } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
@@ -177,7 +177,7 @@ export const getNameRequestApplicant = (state: StateIF): NameRequestApplicantIF 
 }
 
 /** The name translations. */
-export const getNameTranslations = (state: StateIF): NameTranslationIF | NameTranslationDraftIF[] => {
+export const getNameTranslations = (state: StateIF): NameTranslationIF[] => {
   return state.stateModel.nameTranslations
 }
 
