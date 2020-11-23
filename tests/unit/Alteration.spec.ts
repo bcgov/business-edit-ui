@@ -245,7 +245,7 @@ describe('App component', () => {
     expect(state.businessInformation.identifier).toBe('BC1234567')
 
     // Validate Name Translations
-    expect(state.nameTranslations[0].value).toBe('Mock Business French Ltd.')
+    expect(state.nameTranslations[0].name).toBe('Mock Business French Ltd.')
 
     // Validate Office Addresses
     expect(state.defineCompanyStep.officeAddresses.registeredOffice.deliveryAddress.streetAddress)

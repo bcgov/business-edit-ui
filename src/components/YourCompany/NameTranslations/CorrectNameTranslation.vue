@@ -14,8 +14,7 @@ import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorato
 import { NameTranslation } from '.'
 
 // Interfaces
-import { ActionBindingIF, IncorporationFilingIF,
-  NameTranslationDraftIF, NameTranslationIF } from '@/interfaces'
+import { ActionBindingIF, IncorporationFilingIF, NameTranslationIF } from '@/interfaces'
 
 // Mixins
 import { CommonMixin } from '@/mixins'
@@ -28,12 +27,12 @@ import { Action, Getter } from 'vuex-class'
 })
 export default class CorrectNameTranslation extends Vue {
   // Getters
-  @Getter getNameTranslations!: NameTranslationDraftIF[]
+  @Getter getNameTranslations!: NameTranslationIF[]
 
   // Setters
   @Action setNameTranslations!: ActionBindingIF
 
-  private updateNameTranslations (nameTranslations: NameTranslationDraftIF[]): void {
+  private updateNameTranslations (nameTranslations: NameTranslationIF[]): void {
     this.setNameTranslations(nameTranslations)
   }
 

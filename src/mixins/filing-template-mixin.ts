@@ -14,8 +14,7 @@ import {
   IncorporationFilingIF,
   OrgPersonIF,
   ShareClassIF,
-  NameTranslationIF,
-  NameTranslationDraftIF
+  NameTranslationIF
 } from '@/interfaces'
 
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
@@ -46,7 +45,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getDetailComment!: string
   @Getter getDefaultCorrectionDetailComment!: string
-  @Getter getNameTranslations!: NameTranslationIF | NameTranslationDraftIF[]
+  @Getter getNameTranslations!: NameTranslationIF[]
   @Getter getCertifyState!: CertifyIF
   @Getter getOfficeAddresses!: IncorporationAddressIf | {}
   @Getter getBusinessContact!: BusinessContactIF
@@ -187,21 +186,17 @@ export default class FilingTemplateMixin extends Vue {
   /**
    * Prepare name translations for non draft correction
    */
-  prepareNameTranslations () : NameTranslationIF {
-    const translations = this.getNameTranslations as NameTranslationDraftIF[]
-    return {
-      new: translations?.filter(x => x.action === ActionTypes.ADDED)
-        .map(x => x.value),
-      modified: translations?.filter(x => x.action === ActionTypes.EDITED)
-        .map(x => {
-          return {
-            newValue: x.value,
-            oldValue: x.oldValue
-          }
-        }),
-      ceased: translations?.filter(x => x.action === ActionTypes.REMOVED)
-        .map(x => x.value)
-    } as NameTranslationIF
+  prepareNameTranslations () : NameTranslationIF[] {
+    return this.getNameTranslations?.filter(x => x.action === ActionTypes.ADDED || x.action === ActionTypes.EDITED)
+      .map(x => {
+        let nameTranslation = {
+          name: x.name
+        }
+        if (x.action === ActionTypes.EDITED) {
+          nameTranslation['id'] = x.id
+        }
+        return nameTranslation
+      })
   }
 
   /**
@@ -216,21 +211,21 @@ export default class FilingTemplateMixin extends Vue {
     this.setNameRequest(filing.incorporationApplication.nameRequest)
 
     // Set Name Translations
-    if (filing.incorporationApplication.nameTranslations instanceof Array) {
-      // If it's an array that means it's a draft which is saved from edit-ui by staff.
-      this.setNameTranslations(filing.incorporationApplication.nameTranslations)
-    } else {
-      // If it's an object that means it's an initial draft created from filing-ui and has a structure of an IA.
-      this.setNameTranslations(
-        filing.incorporationApplication.nameTranslations?.new?.map(x => {
-          return {
-            value: x,
-            oldValue: null,
-            action: null
-          }
-        })
-      )
-    }
+    // For the first time (when we initiate a correction) the `oldName` and `action` props
+    // are not availablein the api response, which creates an issue of not having these props in store.
+    // Due to missing props change event was not triggering if the action value is changed
+    // (at the time of Delete there is no other prop change except action).
+    // To handle this scenario I had to keep this structure.
+    this.setNameTranslations(
+      filing.incorporationApplication.nameTranslations?.map(x => {
+        return {
+          id: x.id,
+          name: x.name,
+          oldName: x.oldName || null,
+          action: x.action || null
+        }
+      }) || []
+    )
 
     // Set Office Addresses
     this.setOfficeAddresses(filing.incorporationApplication.offices)
@@ -346,8 +341,9 @@ export default class FilingTemplateMixin extends Vue {
     this.setNameTranslations(
       businessSnapshot[1].aliases?.map(x => {
         return {
-          value: x.alias,
-          oldValue: null,
+          id: x.id,
+          name: x.alias,
+          oldName: null,
           action: null
         }
       })

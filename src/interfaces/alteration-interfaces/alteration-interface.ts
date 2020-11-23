@@ -14,7 +14,7 @@ export interface AlterationIF {
     nrNumber?: string // only set when there is an NR
     legalName?: string // only set when there is an NR
   }
-  nameTranslations: NameTranslationIF,
+  nameTranslations: NameTranslationIF[],
   shareStructure: ShareStructureIF,
   contactPoint: BusinessContactIF
 }

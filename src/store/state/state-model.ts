@@ -88,9 +88,7 @@ export const stateModel: StateModelIF = {
       nameRequest: {
         legalType: ''
       },
-      nameTranslations: {
-        new: []
-      },
+      nameTranslations: [],
       offices: {},
       contactPoint: {
         email: '',
@@ -128,9 +126,7 @@ export const stateModel: StateModelIF = {
       nameRequest: {
         legalType: ''
       },
-      nameTranslations: {
-        new: []
-      },
+      nameTranslations: [],
       shareStructure: {
         resolutionDates: [],
         shareClasses: []

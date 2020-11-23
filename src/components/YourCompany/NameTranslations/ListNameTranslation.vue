@@ -14,7 +14,7 @@
         :key="`name_translation_${index}`"
         no-gutters>
         <v-col class="text-truncate">
-         <span class="name-title">{{translation.value}}</span>
+         <span class="name-title">{{translation.name}}</span>
 
         <br v-if="translation.action">
         <v-chip v-if="translation.action === ActionTypes.ADDED"
@@ -119,7 +119,7 @@
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
 
 // Interfaces
-import { NameTranslationDraftIF } from '@/interfaces'
+import { NameTranslationIF } from '@/interfaces'
 
 // Enums
 import { ActionTypes } from '@/enums'
@@ -127,7 +127,7 @@ import { ActionTypes } from '@/enums'
 @Component({})
 export default class ListNameTranslation extends Vue {
   @Prop({ default: () => { return [] as [] } })
-  private translationList: NameTranslationDraftIF[]
+  private translationList: NameTranslationIF[]
 
   @Prop({ default: false })
   private isAddingNameTranslation: boolean
