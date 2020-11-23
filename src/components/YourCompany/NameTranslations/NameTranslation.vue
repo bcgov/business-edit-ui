@@ -173,9 +173,9 @@ export default class NameTranslation extends Mixins(CommonMixin) {
 
   private get hasPendingChange (): boolean {
     return this.draftTranslations.length !== this.nameTranslations.length ||
-      !this.draftTranslations.every((translation, index) => {
-        return this.nameTranslations[index].name === translation.name &&
-          this.nameTranslations[index].action === translation.action
+      this.draftTranslations.some((translation, index) => {
+        return this.nameTranslations[index].name !== translation.name ||
+          this.nameTranslations[index].action !== translation.action
       })
   }
 

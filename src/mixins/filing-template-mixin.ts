@@ -211,15 +211,20 @@ export default class FilingTemplateMixin extends Vue {
     this.setNameRequest(filing.incorporationApplication.nameRequest)
 
     // Set Name Translations
+    // For the first time (when we initiate a correction) the `oldName` and `action` props
+    // are not availablein the api response, which creates an issue of not having these props in store.
+    // Due to missing props change event was not triggering if the action value is changed
+    // (at the time of Delete there is no other prop change except action).
+    // To handle this scenario I had to keep this structure.
     this.setNameTranslations(
       filing.incorporationApplication.nameTranslations?.map(x => {
         return {
           id: x.id,
           name: x.name,
-          oldName: x.oldName,
-          action: x.action
+          oldName: x.oldName || null,
+          action: x.action || null
         }
-      })
+      }) || []
     )
 
     // Set Office Addresses
