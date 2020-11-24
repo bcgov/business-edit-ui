@@ -346,7 +346,7 @@ export default class FilingTemplateMixin extends Vue {
           oldName: null,
           action: null
         }
-      })
+      }) || []
     )
 
     // Set Office Addresses
