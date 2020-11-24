@@ -187,12 +187,12 @@ export default class FilingTemplateMixin extends Vue {
    * Prepare name translations for non draft correction
    */
   prepareNameTranslations () : NameTranslationIF[] {
-    return this.getNameTranslations?.filter(x => x.action === ActionTypes.ADDED || x.action === ActionTypes.EDITED)
+    return this.getNameTranslations?.filter(x => x.action !== ActionTypes.REMOVED)
       .map(x => {
         let nameTranslation = {
           name: x.name
         }
-        if (x.action === ActionTypes.EDITED) {
+        if (x.action !== ActionTypes.ADDED) {
           nameTranslation['id'] = x.id
         }
         return nameTranslation
@@ -342,7 +342,7 @@ export default class FilingTemplateMixin extends Vue {
       businessSnapshot[1].aliases?.map(x => {
         return {
           id: x.id,
-          name: x.alias,
+          name: x.name,
           oldName: null,
           action: null
         }

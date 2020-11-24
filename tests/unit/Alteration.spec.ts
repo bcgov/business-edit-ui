@@ -77,9 +77,8 @@ describe('App component', () => {
       .returns(new Promise((resolve) => resolve({
         data: {
           aliases: [{
-            alias: 'Mock Business French Ltd.',
-            id: 12,
-            type: 'TRANSLATION'
+            name: 'Mock Business French Ltd.',
+            id: '12'
           }]
         }
       })))
