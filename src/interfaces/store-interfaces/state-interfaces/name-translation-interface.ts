@@ -4,12 +4,7 @@ import { ActionTypes } from '@/enums'
 export interface NameTranslationIF {
   id?: string
   name: string
+
   oldName?: string
   action?: ActionTypes
-}
-
-export interface NameTranslationSnapshotIF {
-  alias: string,
-  id: number,
-  type: string
 }
