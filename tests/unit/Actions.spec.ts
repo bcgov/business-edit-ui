@@ -610,7 +610,12 @@ describe.skip('Actions component - Filing Functionality', () => {
   it('Calls the buildIaFiling and saveFiling methods when onClickFilePay is called', async () => {
     const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildIaFiling')
     const mockSaveFiling = jest.spyOn(wrapper.vm, 'saveFiling')
-      .mockImplementation(() => Promise.resolve({ header: { paymentToken: 789 } }))
+      .mockImplementation(() => Promise.resolve({
+        header: {
+          paymentToken: 789,
+          isPaymentActionRequired: true
+        }
+      }))
 
     await wrapper.vm.onClickFilePay()
 

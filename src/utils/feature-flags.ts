@@ -4,11 +4,12 @@ import { initialize, LDClient, LDFlagSet, LDOptions, LDUser } from 'launchdarkly
 declare const window: any
 
 /**
- * Default feature flags in case LD env key is not defined (eg, local development).
+ * Default flag values when LD is not available.
+ * Uses "business-edit" project (per LD client id in config).
  */
 const defaultFlagSet: LDFlagSet = {
-  'correction-ui-enabled': true,
-  'alteration-ui-enabled': true
+  'alteration-ui-enabled': false,
+  'correction-ui-enabled': false
 }
 
 /**

@@ -47,7 +47,7 @@ import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/compone
 import { ShareStructure } from '@/components/ShareStructure'
 
 // Mixins, Interfaces and Enums
-import { DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
+import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, FilingDataIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
 import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -65,7 +65,7 @@ import { BenefitCompanyStatementResource, CertifyStatementResource } from '@/res
     YourCompany
   }
 })
-export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin) {
+export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
   // Declaration for template
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
   readonly CertifyStatementResource = CertifyStatementResource
@@ -114,8 +114,9 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
     if (!this.isAuthenticated) return
 
     // do not proceed if FF is disabled
-    if (!getFeatureFlag('correction-ui-enabled')) {
-      alert('Corrections are under contruction. Please check again later.')
+    // bypass this when Jest is running as FF are not fetched
+    if (!this.isJestRunning && !getFeatureFlag('correction-ui-enabled')) {
+      window.alert('Corrections are under contruction. Please check again later.')
       this.redirectEntityDashboard()
       return
     }
@@ -123,7 +124,7 @@ export default class Correction extends Mixins(DateMixin, FilingTemplateMixin, L
     // do not proceed if user is not staff
     const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
     if (isStaffOnly && !this.isRoleStaff) {
-      alert('Only staff can correct an Incorporation Application.')
+      window.alert('Only staff can correct an Incorporation Application.')
       this.redirectEntityDashboard()
       return
     }
