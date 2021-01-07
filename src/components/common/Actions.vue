@@ -154,7 +154,6 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     if (this.isBusySaving) return
 
     this.setIsFilingPaying(true)
-    let filingComplete
 
     /** If it is a named company IA, validate NR before filing submission. This method is different
      * from the processNameRequest method in App.vue. This method shows a generic message if
@@ -169,6 +168,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
       }
     }
 
+    let filingComplete: any
     try {
       const filing = await this.buildIaCorrectionFiling(false)
       filingComplete = await this.saveFiling(filing, false)
@@ -181,20 +181,20 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     }
 
     const paymentToken = filingComplete?.header?.paymentToken
-    const paymentCompleted = filingComplete.header?.paymentStatusCode === 'COMPLETED'
     if (paymentToken) {
-      // redirect to pay and return to the dashboard
-      const authUrl = sessionStorage.getItem('AUTH_URL')
+      const isPaymentActionRequired: boolean = filingComplete.header?.isPaymentActionRequired
       const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
 
-      // assume Pay URL is always reachable
-      // otherwise user will have to retry payment later
-      if (!paymentCompleted) {
+      // if payment action is required, redirect to Pay URL
+      if (isPaymentActionRequired) {
+        const authUrl = sessionStorage.getItem('AUTH_URL')
         const returnUrl = encodeURIComponent(dashboardUrl + this.getBusinessId)
         const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
+        // assume Pay URL is always reachable
+        // otherwise user will have to retry payment later
         window.location.assign(payUrl)
       } else {
-        // Payment has been completed, redirect to dashboard without going through pay
+        // redirect to Dashboard URL
         window.location.assign(dashboardUrl + this.getBusinessId)
       }
     } else {

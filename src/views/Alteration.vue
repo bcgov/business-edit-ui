@@ -35,7 +35,7 @@ import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/compone
 import { ShareStructure } from '@/components/ShareStructure'
 
 // Mixins, Interfaces and Enums
-import { FilingTemplateMixin, LegalApiMixin } from '@/mixins'
+import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
 import { BusinessDataTypes, EntityTypes, FilingCodes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -52,7 +52,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     YourCompany
   }
 })
-export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixin) {
+export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin) {
   // Global setters
   @Action setHaveChanges!: ActionBindingIF
   @Action setEntityType!: ActionBindingIF
@@ -82,8 +82,9 @@ export default class Alteration extends Mixins(LegalApiMixin, FilingTemplateMixi
     if (!this.isAuthenticated) return
 
     // do not proceed if FF is disabled
-    if (!getFeatureFlag('alteration-ui-enabled')) {
-      alert('Alterations are under contruction. Please check again later.')
+    // bypass this when Jest is running as FF are not fetched
+    if (!this.isJestRunning && !getFeatureFlag('alteration-ui-enabled')) {
+      window.alert('Alterations are under contruction. Please check again later.')
       this.redirectEntityDashboard()
       return
     }
