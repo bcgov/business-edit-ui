@@ -103,17 +103,18 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
   private async onClickSave (): Promise<void> {
     // prevent double saving
     if (this.isBusySaving) return
-
     this.setIsSaving(true)
-    let filingComplete
 
+    let filingComplete: any
     try {
       const filing = await this.buildIaCorrectionFiling(true)
-      filingComplete = await this.saveFiling(filing, true)
-      // reset flag
+      filingComplete = await this.updateFiling(filing, true)
+      // clear flag
       this.setHaveChanges(false)
     } catch (error) {
       this.$root.$emit('save-error-event', error)
+      this.setIsSaving(false)
+      return
     }
 
     this.setIsSaving(false)
@@ -126,14 +127,13 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
   private async onClickSaveResume (): Promise<void> {
     // prevent double saving
     if (this.isBusySaving) return
-
     this.setIsSavingResuming(true)
-    let filingComplete
 
+    let filingComplete: any
     try {
       const filing = await this.buildIaCorrectionFiling(true)
-      filingComplete = await this.saveFiling(filing, true)
-      // reset flag
+      filingComplete = await this.updateFiling(filing, true)
+      // clear flag
       this.setHaveChanges(false)
     } catch (error) {
       this.$root.$emit('save-error-event', error)
@@ -146,19 +146,18 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
   }
 
   /**
-  * Called when File and Pay button is clicked.
-  * @returns a promise (ie, this is an async method)
-  */
+   * Called when File and Pay button is clicked.
+   * @returns a promise (ie, this is an async method)
+   */
   private async onClickFilePay (): Promise<void> {
     // prevent double saving
     if (this.isBusySaving) return
-
     this.setIsFilingPaying(true)
 
-    /** If it is a named company IA, validate NR before filing submission. This method is different
-     * from the processNameRequest method in App.vue. This method shows a generic message if
-     * the Name Request is not valid and clicking ok in the pop up redirects to the Manage Businesses
-     * dashboard */
+    // If this is a named company IA, validate NR before filing submission. This method is different
+    // from the processNameRequest method in App.vue. This method shows a generic message if
+    // the Name Request is not valid and clicking ok in the pop up redirects to the Manage Businesses
+    // dashboard.
     if (this.isNamedBusiness && this.hasNewNr) {
       try {
         await this.validateNameRequest(this.getNameRequestNumber)
@@ -171,8 +170,8 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     let filingComplete: any
     try {
       const filing = await this.buildIaCorrectionFiling(false)
-      filingComplete = await this.saveFiling(filing, false)
-      // reset flag
+      filingComplete = await this.updateFiling(filing, false)
+      // clear flag
       this.setHaveChanges(false)
     } catch (error) {
       this.$root.$emit('save-error-event', error)

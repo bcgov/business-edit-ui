@@ -21,21 +21,20 @@
       @retry="initApp()"
     />
 
+    <!-- FUTURE: pass actual filing name -->
     <payment-error-dialog
       attach="#app"
+      filingName="Application"
       :dialog="paymentErrorDialog"
+      :errors="saveErrors"
+      :warnings="saveWarnings"
       @exit="goToDashboard(true)"
     />
 
-    <bcol-error-dialog
-      attach="#app"
-      :bcolObject="bcolObj"
-      filingType="Incorporation Application"
-      @exit="goToDashboard(true)"
-    />
-
+    <!-- FUTURE: pass actual filing name -->
     <save-error-dialog
       attach="#app"
+      filingName="Application"
       :dialog="saveErrorDialog"
       :errors="saveErrors"
       :warnings="saveWarnings"
@@ -114,7 +113,7 @@
 import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
-import { BAD_REQUEST, PAYMENT_REQUIRED, FORBIDDEN, UNPROCESSABLE_ENTITY } from 'http-status-codes'
+import { PAYMENT_REQUIRED } from 'http-status-codes'
 import { getKeycloakRoles, updateLdUser } from '@/utils'
 
 // Components
@@ -126,7 +125,7 @@ import * as Views from '@/views'
 import * as Dialogs from '@/components/dialogs'
 
 // Mixins, interfaces, etc
-import { BcolMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
+import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { EntityTypes, FilingCodes } from '@/enums'
@@ -142,7 +141,7 @@ import { EntityTypes, FilingCodes } from '@/enums'
     ...Views
   }
 })
-export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
+export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -174,7 +173,6 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
   private accountAuthorizationDialog: boolean = false
   private fetchErrorDialog: boolean = false
   private paymentErrorDialog: boolean = false
-  private bcolObj: object = null
   private saveErrorDialog: boolean = false
   private nameRequestInvalidType: string = ''
   private nameRequestErrorDialog: boolean = false
@@ -207,7 +205,6 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
     // NB: ignore nameRequestErrorDialog (to leave underlying components rendered)
     return (
       this.accountAuthorizationDialog ||
-      this.bcolObj != null ||
       this.fetchErrorDialog ||
       this.paymentErrorDialog ||
       this.saveErrorDialog ||
@@ -255,29 +252,18 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
     }
 
     // listen for save error events
-    this.$root.$on('save-error-event', async (error: any) => {
-      console.log('Save error =', error) // eslint-disable-line no-console
-      // process errors/warnings
-      switch (error?.response?.status) {
-        case PAYMENT_REQUIRED:
-          // Changes were saved if a 402 is received. haveChanges flag is cleared.
-          this.haveChanges = false
-          const errObj = await this.getErrorObj(this.getErrorCode(error))
-          if (errObj) {
-            this.bcolObj = errObj
-          } else {
-            this.paymentErrorDialog = true
-          }
-          break
-        case BAD_REQUEST:
-        case FORBIDDEN:
-        case UNPROCESSABLE_ENTITY:
-          this.saveErrors = error?.response?.data?.errors || []
-          this.saveWarnings = error?.response?.data?.warnings || []
-          this.saveErrorDialog = true
-          break
-        default:
-          this.saveErrorDialog = true
+    this.$root.$on('save-error-event', async error => {
+      // save errors/warnings
+      this.saveErrors = error?.response?.data?.errors || []
+      this.saveWarnings = error?.response?.data?.warnings || []
+
+      if (error?.response?.status === PAYMENT_REQUIRED) {
+        // changes were saved if a 402 is received, so clear flag
+        this.haveChanges = false
+        this.paymentErrorDialog = true
+      } else {
+        console.log('save error =', error) // eslint-disable-line no-console
+        this.saveErrorDialog = true
       }
     })
 
@@ -446,7 +432,6 @@ export default class App extends Mixins(BcolMixin, CommonMixin, DateMixin, Filin
   private resetFlags (): void {
     this.appReady = false
     this.haveData = false
-    this.bcolObj = null
     this.accountAuthorizationDialog = false
     this.fetchErrorDialog = false
     this.paymentErrorDialog = false

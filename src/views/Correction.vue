@@ -84,6 +84,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   @Action setOriginalIA!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
+  @Action setFilingId!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -91,7 +92,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
 
   /** The id of the correction being edited. */
   private get correctionId (): number {
-    return +this.$route.query['correction-id']
+    return +this.$route.query['correction-id'] || 0
   }
 
   /** The filing date, in local timezone. */
