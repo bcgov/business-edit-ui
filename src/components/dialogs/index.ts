@@ -1,5 +1,4 @@
 export { default as AccountAuthorizationDialog } from './AccountAuthorizationDialog.vue'
-export { default as BcolErrorDialog } from './BcolErrorDialog.vue'
 export { default as ConfirmDialog } from './ConfirmDialog.vue'
 export { default as ConfirmRemoveDialog } from './ConfirmRemoveDialog.vue'
 export { default as FetchErrorDialog } from './FetchErrorDialog.vue'

@@ -11,38 +11,15 @@ import { ActionBindingIF, CorrectionFilingIF, IncorporationFilingIF } from '@/in
 import { FilingTemplateMixin } from '@/mixins'
 
 /**
- * Mixin that provides the integration with the legal api.
+ * Mixin that provides integration with the Legal API.
  */
 @Component({})
 export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
-  readonly NAME_REQUEST = 'nameRequest'
   readonly INCORPORATION_APPLICATION = 'incorporationApplication'
 
   // Global getters
   @Getter getFilingId!: number
   @Getter getBusinessId!: string
-
-  // Global setters
-  @Action setFilingId!: ActionBindingIF
-
-  /**
-   * Saves a filing.
-   * @param isDraft boolean indicating whether to complete filing
-   * @param filing filing body to be saved
-   * @returns a promise to return the saved filing
-   */
-  async saveFiling (filing: CorrectionFilingIF | IncorporationFilingIF, isDraft: boolean): Promise<any> {
-    if (!filing) throw new Error('Invalid parameter \'filing\'')
-    if (typeof isDraft !== 'boolean') throw new Error('Invalid parameter \'isDraft\'')
-
-    // if we have a Filing ID, update an existing filing
-    if (this.getFilingId && this.getFilingId > 0) {
-      return this.updateFiling(filing, isDraft)
-    } else {
-      // This should never happen. Filing Id should always be present
-      throw new Error('Invalid filing Id')
-    }
-  }
 
   /**
    * Fetches a filing by its type.
@@ -90,26 +67,29 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
   /**
    * Updates an existing filing.
    * @param filing the object body of the request
-   * @param isDraft boolean indicating whether to save draft or complete filing
+   * @param isDraft boolean indicating whether to save draft or complete the filing
    * @returns a promise to return the updated filing
    */
-  private async updateFiling (filing: CorrectionFilingIF | IncorporationFilingIF, isDraft: boolean): Promise<any> {
+  async updateFiling (filing: CorrectionFilingIF | IncorporationFilingIF, isDraft: boolean): Promise<any> {
+    if (!filing) throw new Error('updateFiling(), invalid filing')
+    const filingId = this.getFilingId
+    if (!filingId) throw new Error('updateFiling(), invalid filing id')
+
     // put updated filing to filings endpoint
-    let url = `businesses/${this.getBusinessId}/filings/${this.getFilingId}`
+    let url = `businesses/${this.getBusinessId}/filings/${filingId}`
     if (isDraft) {
       url += '?draft=true'
     }
 
-    return axios.put(url, { filing })
-      .then(response => {
-        const filing = response?.data?.filing
-        const filingId = +filing?.header?.filingId
-
-        if (!filing || !filingId) {
-          throw new Error('Invalid API response')
-        }
-        return filing
-      })
+    return axios.put(url, { filing }).then(response => {
+      const filing = response?.data?.filing
+      const filingId = +filing?.header?.filingId
+      if (!filing || !filingId) {
+        throw new Error('Invalid API response')
+      }
+      return filing
+    })
+    // NB: for error handling, see "save-error-event"
   }
 
   /**

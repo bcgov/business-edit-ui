@@ -37,7 +37,7 @@ import { ShareStructure } from '@/components/ShareStructure'
 // Mixins, Interfaces and Enums
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
-import { BusinessDataTypes, EntityTypes, FilingCodes } from '@/enums'
+import { BusinessDataTypes, EntityTypes, FilingCodes, FilingStatus } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 @Component({
@@ -57,6 +57,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Action setHaveChanges!: ActionBindingIF
   @Action setEntityType!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
+  @Action setFilingId!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -64,7 +65,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
 
   /** The id of the alteration being edited. */
   private get alterationId (): number {
-    return +this.$route.query['alteration-id']
+    return +this.$route.query['alteration-id'] || 0
   }
 
   /** True if user is authenticated. */
@@ -104,24 +105,24 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
 
       // TODO: Handle Returning from a DRAFT alteration filing
       // if (this.alterationId) {
-      // store the filing ID
-      // this.setFilingId(this.alterationId)
+      //   // store the filing ID
+      //   this.setFilingId(this.alterationId)
 
-      // fetch draft alteration to resume
-      // const alterationFiling = await this.fetchFilingById(this.alterationId)
+      //   // fetch draft alteration to resume
+      //   const alterationFiling = await this.fetchFilingById(this.alterationId)
 
-      // // do not proceed if this isn't an ALTERATION filing
-      // if (!alterationFiling.alteration) {
-      //   throw new Error('Invalid Alteration filing')
-      // }
-      //
-      // // do not proceed if this isn't a DRAFT filing
-      // if (alterationFiling.header.status !== FilingStatus.DRAFT) {
-      //   throw new Error('Invalid Alteration status')
-      // }
-      //
-      // // parse alteration filing into store
-      // this.parseAlteration(alterationFiling)
+      //   // do not proceed if this isn't an ALTERATION filing
+      //   if (!alterationFiling.alteration) {
+      //     throw new Error('Invalid Alteration filing')
+      //   }
+
+      //   // do not proceed if this isn't a DRAFT filing
+      //   if (alterationFiling.header.status !== FilingStatus.DRAFT) {
+      //     throw new Error('Invalid Alteration status')
+      //   }
+
+      //   // parse alteration filing into store
+      //   this.parseAlteration(alterationFiling)
       // } else {
       //   // as we don't have the necessary query params, do not proceed
       //   throw new Error('Invalid alteration filing ID')

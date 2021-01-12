@@ -1,4 +1,3 @@
-export { default as BcolMixin } from './bcol-mixin'
 export { default as CommonMixin } from './common-mixin'
 export { default as CurrencyLookupMixin } from './currency-lookup-mixin'
 export { default as DateMixin } from './date-mixin'
