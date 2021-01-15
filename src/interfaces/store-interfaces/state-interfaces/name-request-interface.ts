@@ -5,6 +5,8 @@ export interface NameRequestIF {
   legalType: EntityTypes
   legalName: string
   nrNumber: string
+  expiry?: string
+  status?: string
   details: NameRequestDetailsIF | {}
   applicant: NameRequestApplicantIF | {}
   filingId: number
@@ -20,6 +22,8 @@ export interface NameRequestDetailsIF {
 
 // Name request applicant details interface
 export interface NameRequestApplicantIF {
+  address?: string
+  fullName?: string
   firstName: string
   middleName: string
   lastName: string

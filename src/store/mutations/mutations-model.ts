@@ -12,7 +12,7 @@ import {
   IncorporationFilingIF,
   FilingDataIF,
   NameTranslationIF,
-  StateIF
+  StateIF, BusinessSnapshotIF
 } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { EntityTypes } from '@/enums'
@@ -182,6 +182,10 @@ export const mutateEntityType = (state: StateIF, entityType: EntityTypes) => {
 
 export const mutateOriginalIA = (state: StateIF, originalIa: IncorporationFilingIF) => {
   state.stateModel.originalIA = originalIa
+}
+
+export const mutateOriginalSnapshot = (state: StateIF, originalSnapshot: BusinessSnapshotIF[]) => {
+  state.stateModel.originalSnaphot = originalSnapshot
 }
 
 export const mutateStaffPayment = (state: StateIF, staffPayment: StaffPaymentIF) => {

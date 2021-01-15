@@ -3,7 +3,7 @@ import { AccountTypes, EntityTypes } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
   NameRequestIF, BusinessContactIF, BusinessInformationIF, CertifyIF,
-  CertifyStatementIF, NameTranslationIF, IncorporationAddressIf, FilingDataIF, StateIF
+  CertifyStatementIF, NameTranslationIF, IncorporationAddressIf, FilingDataIF, StateIF, BusinessSnapshotIF
 } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
@@ -97,6 +97,11 @@ export const getOriginalIA = (state: StateIF): IncorporationFilingIF => {
   return state.stateModel.originalIA
 }
 
+/** The original business snapshot */
+export const getOriginalSnapshot = (state: StateIF): BusinessSnapshotIF[] => {
+  return state.stateModel.originalSnaphot
+}
+
 /** The business number. */
 export const getBusinessNumber = (state: StateIF): string => {
   // remove first 2 chars from Business ID
@@ -157,8 +162,8 @@ export const hasNewNr = (state: StateIF): boolean => {
   const newNr = state.stateModel.nameRequest?.nrNumber
   const originalNr = state.stateModel.originalIA.incorporationApplication.nameRequest?.nrNumber
 
-  // Evaluate only if both properties exist.
-  return (newNr && originalNr) ? newNr !== originalNr : false
+  // Evaluate only if a new NR exists.
+  return newNr ? newNr !== originalNr : false
 }
 
 /** The approved name of a name request. */
@@ -304,4 +309,10 @@ export const getCertifyState = (state: StateIF): CertifyIF => {
 
 export const getCertifyResource = (state: StateIF): CertifyStatementIF => {
   return state.resourceModel.certifyStatementResource
+}
+
+export const isConflictingLegalType = (state: StateIF): boolean => {
+  console.log(state.stateModel.tombstone.entityType)
+  console.log(state.stateModel.nameRequest.legalType)
+  return state.stateModel.tombstone.entityType !== state.stateModel.nameRequest.legalType
 }

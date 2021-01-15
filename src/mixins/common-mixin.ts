@@ -1,6 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { omit, isEqual } from 'lodash'
-import { RouteNames } from '@/enums'
+import { EntityTypes, RouteNames } from '@/enums'
 
 /**
  * Mixin that provides some useful common utilities.
@@ -47,6 +47,22 @@ export default class CommonMixin extends Vue {
     return fullName.trimRight()
   }
 
+  /**
+   * Returns the full address of the subject.
+   * @param addressData the object to get the address from
+   * @returns the formatted full address string
+   */
+  formatFullAddress (addressData: any): string {
+    let fullAddress: string = ''
+    if (addressData?.addrLine1) fullAddress += addressData.addrLine1 + ', '
+    if (addressData?.city) fullAddress += addressData.city + ', '
+    if (addressData?.stateProvinceCd) fullAddress += addressData.stateProvinceCd + ', '
+    if (addressData?.postalCd) fullAddress += addressData.postalCd + ', '
+    if (addressData?.countryTypeCd) fullAddress += addressData.countryTypeCd
+
+    return fullAddress.trimRight()
+  }
+
   /** Returns true when filing a correction. */
   isCorrection (): boolean {
     return (this.$route.name === RouteNames.CORRECTION)
@@ -55,5 +71,33 @@ export default class CommonMixin extends Vue {
   /** Returns true when filing an alteration. */
   isAlteration (): boolean {
     return (this.$route.name === RouteNames.ALTERATION)
+  }
+
+  /** Returns the appropriate edit label for corrections or alterations */
+  get editLabel (): string {
+    return this.isCorrection() ? 'Correct' : 'Change'
+  }
+
+  /** Returns the appropriate edited label for corrections or alterations */
+  get editedLabel (): string {
+    return this.isCorrection() ? 'Corrected' : 'Changed'
+  }
+
+  /**
+   * Get an entity type descriptor based on entity type code
+   * @param entityType The entity type code
+   * @returns a readable entity descriptor
+   * */
+  getEntityDesc (entityType: string): string {
+    switch (entityType) {
+      case EntityTypes.BENEFIT_COMPANY:
+        return 'BC Benefit Company'
+      case EntityTypes.BC_CORPORATION:
+        return 'BC Limited Company'
+      case EntityTypes.COOP:
+        return 'BC Cooperative Association'
+      default:
+        return ''
+    }
   }
 }
