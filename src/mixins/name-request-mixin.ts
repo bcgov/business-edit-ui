@@ -50,6 +50,11 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
       throw new Error(`Invalid Name request state: ${state}`)
     }
 
+    // Convert NR types of BC to BEN to align with Lear
+    if (nrResponse.entity_type_cd === EntityTypes.NRO_BENEFIT_COMPANY) {
+      nrResponse.entity_type_cd = EntityTypes.BENEFIT_COMPANY
+    }
+
     return nrResponse
   }
 

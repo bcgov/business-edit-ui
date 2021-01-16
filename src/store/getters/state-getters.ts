@@ -311,8 +311,12 @@ export const getCertifyResource = (state: StateIF): CertifyStatementIF => {
   return state.resourceModel.certifyStatementResource
 }
 
+/** Check for a 7 digit pattern to clearly identify a businesses name as a Numbered company */
+export const isNumberedCompany = (state: StateIF): boolean => {
+  console.log(state.stateModel.businessInformation.legalName)
+  return RegExp('^\\d{7}$').test(state.stateModel.businessInformation.legalName.split(' ')[0])
+}
+
 export const isConflictingLegalType = (state: StateIF): boolean => {
-  console.log(state.stateModel.tombstone.entityType)
-  console.log(state.stateModel.nameRequest.legalType)
   return state.stateModel.tombstone.entityType !== state.stateModel.nameRequest.legalType
 }

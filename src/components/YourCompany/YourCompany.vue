@@ -36,13 +36,15 @@
                 <span>The name of this business will be the current Incorporation Number followed by "B.C. Ltd."</span>
               </div>
             </template>
-            <template v-if="hasNewNr">
+            <template v-if="isAlteration() && hasNewNr">
               <div class="company-info mt-4">
                 <span class="font-weight-bold">Business Type: </span>
                 <span>{{getEntityDesc(getNameRequest.legalType)}}</span>
                 <v-tooltip top content-class="top-tooltip" transition="fade-transition">
                   <template v-slot:activator="{ on }">
-                    <v-icon v-on="on" class="ml-2" color="red darken-3" small>mdi-alert</v-icon>
+                    <v-icon v-if="isConflictingLegalType" v-on="on" class="ml-2" color="red darken-3" small>
+                      mdi-alert
+                    </v-icon>
                   </template>
                   <span>Business Types do not match</span>
                 </v-tooltip>
@@ -87,6 +89,34 @@
                 <v-icon small>mdi-pencil</v-icon>
                 <span>{{editLabel}}</span>
               </v-btn>
+              <span class="more-actions" v-if="companyNameChanges">
+                <v-menu
+                  offset-y left nudge-bottom="4"
+                  v-model="dropdown"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      text small color="primary"
+                      id="btn-more-actions"
+                      v-on="on"
+                    >
+                      <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      class="v-list-item"
+                      id="btn-more-actions-edit"
+                      @click="isEditingNames = true; dropdown = false"
+                    >
+                      <v-list-item-subtitle>
+                        <v-icon small color="primary">mdi-pencil</v-icon>
+                        <span class="drop-down-action ml-1">Change</span>
+                      </v-list-item-subtitle>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </span>
             </div>
           </v-flex>
         </template>
@@ -101,7 +131,7 @@
           </v-flex>
         </template>
 
-        <template v-if="hasNewNr">
+        <template v-if="isAlteration() && hasNewNr">
           <v-flex xs3 class="mt-6">
             <v-layout column>
               <label><strong>Name Request Applicant</strong></label>
@@ -220,6 +250,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   @Getter getOriginalEffectiveDate!: Date
   @Getter getFolioNumber!: string
   @Getter isConflictingLegalType!: boolean
+  @Getter isNumberedCompany!: boolean
   @Getter isPremiumAccount!: GetterIF
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getOriginalSnapshot!: BusinessSnapshotIF[]
@@ -232,6 +263,9 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   // Declaration for template
   readonly EntityTypes = EntityTypes
 
+  /** V-model for dropdown menu. */
+  private dropdown: boolean = null
+
   // whether components have changes
   private companyNameChanges = false
   private nameToNumberChanges = true
@@ -241,6 +275,9 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   private officeAddressChanges = false
   private correctNameChoices: Array<string> = []
   private isEditingNames = false
+
+  /**  Initialize the name choices for alterations numbered companies */
+  mounted () { this.onApprovedName() }
 
   /** The company name (from NR, or incorporation number). */
   private get companyName (): string {
@@ -287,7 +324,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   @Watch('hasNewNr')
   private openConflictWarning (): void {
-    if (this.isConflictingLegalType) {
+    if (this.isConflictingLegalType && this.isAlteration()) {
       // open confirmation dialog and wait for response
       this.$refs.confirm.open(
         'Name Request Type Does Not Match Business Type',
@@ -317,7 +354,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   @Watch('getApprovedName')
   private onApprovedName ():void {
-    if (this.getApprovedName) {
+    if (this.getApprovedName && !this.isNumberedCompany) {
       this.correctNameChoices = [
         CorrectionTypes.CORRECT_NEW_NR,
         this.isCorrection() && CorrectionTypes.CORRECT_NAME, // Only allow editable name changes for Corrections
@@ -393,5 +430,9 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   .v-btn {
     min-width: 0.5rem;
   }
+}
+
+.drop-down-action{
+  color: $primary-blue;
 }
 </style>
