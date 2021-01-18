@@ -185,7 +185,7 @@ export const mutateOriginalIA = (state: StateIF, originalIa: IncorporationFiling
 }
 
 export const mutateOriginalSnapshot = (state: StateIF, originalSnapshot: BusinessSnapshotIF[]) => {
-  state.stateModel.originalSnaphot = originalSnapshot
+  state.stateModel.originalSnapshot = originalSnapshot
 }
 
 export const mutateStaffPayment = (state: StateIF, staffPayment: StaffPaymentIF) => {

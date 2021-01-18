@@ -1,5 +1,4 @@
 import { StateModelIF } from '@/interfaces'
-import { snapshotModel } from '@/store/state/snapshot-model'
 
 export const stateModel: StateModelIF = {
   tombstone: {
@@ -139,7 +138,7 @@ export const stateModel: StateModelIF = {
       }
     }
   },
-  originalSnaphot: snapshotModel,
+  originalSnapshot: [],
   staffPaymentStep: {
     valid: false,
     staffPayment: {

@@ -99,7 +99,7 @@ export const getOriginalIA = (state: StateIF): IncorporationFilingIF => {
 
 /** The original business snapshot */
 export const getOriginalSnapshot = (state: StateIF): BusinessSnapshotIF[] => {
-  return state.stateModel.originalSnaphot
+  return state.stateModel.originalSnapshot
 }
 
 /** The business number. */
@@ -311,9 +311,8 @@ export const getCertifyResource = (state: StateIF): CertifyStatementIF => {
   return state.resourceModel.certifyStatementResource
 }
 
-/** Check for a 7 digit pattern to clearly identify a businesses name as a Numbered company */
+/** Check for a 7 digit pattern to identify a Numbered company from the legal name. */
 export const isNumberedCompany = (state: StateIF): boolean => {
-  console.log(state.stateModel.businessInformation.legalName)
   return RegExp('^\\d{7}$').test(state.stateModel.businessInformation.legalName.split(' ')[0])
 }
 
