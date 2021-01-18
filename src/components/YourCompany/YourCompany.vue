@@ -55,7 +55,7 @@
               </div>
               <div class="company-info">
                 <span class="font-weight-bold">Expiry Date: </span>
-                <span>{{getNameRequest.expiry}}</span>
+                <span>{{expiryDate}}</span>
               </div>
               <div class="company-info">
                 <span class="font-weight-bold">Status: </span>
@@ -134,20 +134,20 @@
             </v-layout>
           </v-flex>
           <v-flex xs6 class="mt-6">
-            <template v-if="hasNewNr">
-              <div>
+            <template>
+              <div class="name-request-applicant-info">
                 <span class="font-weight-bold">Name: </span>
                 <span>{{getNameRequest.applicant.fullName}}</span>
               </div>
-              <div class="company-info">
+              <div class="name-request-applicant-info">
                 <span class="font-weight-bold">Address: </span>
                 <span>{{getNameRequest.applicant.address}}</span>
               </div>
-              <div class="company-info">
+              <div class="name-request-applicant-info">
                 <span class="font-weight-bold">Email: </span>
                 <span>{{getNameRequest.applicant.emailAddress || 'N/A'}}</span>
               </div>
-              <div class="company-info">
+              <div class="name-request-applicant-info">
                 <span class="font-weight-bold">Phone: </span>
                 <span>{{getNameRequest.applicant.phoneNumber || 'N/A'}}</span>
               </div>
@@ -279,6 +279,10 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
     if (this.getApprovedName) return this.getApprovedName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
+  }
+
+  private get expiryDate (): string {
+    return new Date(this.getNameRequest.expiry).toDateString()
   }
 
   /** The recognition (aka effective) datetime. */
@@ -416,6 +420,10 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 }
 
 .company-info {
+  padding-top: 0.5rem
+}
+
+.name-request-applicant-info:not(:first-child) {
   padding-top: 0.5rem
 }
 
