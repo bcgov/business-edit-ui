@@ -357,9 +357,10 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
     if (this.getApprovedName && !this.isNumberedCompany) {
       this.correctNameChoices = [
         CorrectionTypes.CORRECT_NEW_NR,
-        this.isCorrection() && CorrectionTypes.CORRECT_NAME, // Only allow editable name changes for Corrections
         CorrectionTypes.CORRECT_NAME_TO_NUMBER
       ]
+      // Only allow editable name changes for Corrections
+      this.isCorrection() && this.correctNameChoices.push(CorrectionTypes.CORRECT_NAME)
     } else {
       this.correctNameChoices = [
         CorrectionTypes.CORRECT_NEW_NR
