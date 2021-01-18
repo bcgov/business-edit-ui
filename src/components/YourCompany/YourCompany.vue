@@ -61,10 +61,6 @@
                 <span class="font-weight-bold">Status: </span>
                 <span>{{getNameRequest.status}}</span>
               </div>
-              <div class="company-info">
-                <span class="font-weight-bold">Condition/Consent: </span>
-                <span>N/A</span>
-              </div>
             </template>
           </v-flex>
 
@@ -149,11 +145,11 @@
               </div>
               <div class="company-info">
                 <span class="font-weight-bold">Email: </span>
-                <span>{{getNameRequest.applicant.emailAddress || 'Not Available'}}</span>
+                <span>{{getNameRequest.applicant.emailAddress || 'N/A'}}</span>
               </div>
               <div class="company-info">
                 <span class="font-weight-bold">Phone: </span>
-                <span>{{getNameRequest.applicant.phoneNumber || 'Not Available'}}</span>
+                <span>{{getNameRequest.applicant.phoneNumber || 'N/A'}}</span>
               </div>
             </template>
           </v-flex>
@@ -221,7 +217,7 @@ import {
 } from '@/interfaces'
 import { CorrectBusinessContactInfo, FolioNumber, CorrectNameTranslation, OfficeAddresses } from '.'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
-import { CommonMixin, DateMixin, EntityFilterMixin, LegalApiMixin } from '@/mixins'
+import { CommonMixin, DateMixin, LegalApiMixin } from '@/mixins'
 import { CorrectionTypes, EntityTypes } from '@/enums'
 import { ConfirmDialog } from '@/components/dialogs'
 
@@ -268,7 +264,6 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   // whether components have changes
   private companyNameChanges = false
-  private nameToNumberChanges = true
   private contactInfoChanges = false
   private folioNumberChanges = false
   private nameTranslationChanges = false
@@ -276,7 +271,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   private correctNameChoices: Array<string> = []
   private isEditingNames = false
 
-  /**  Initialize the name choices for alterations numbered companies */
+  /**  Initialize the name choices for alterations */
   mounted () { this.onApprovedName() }
 
   /** The company name (from NR, or incorporation number). */
@@ -305,13 +300,14 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   /** Reset company name values to original. */
   private resetName () {
-    if (this.isCorrection()) {
-      this.setBusinessInformation(this.getOriginalIA.business)
-      this.setNameRequest(this.getOriginalIA.incorporationApplication.nameRequest)
-    } else {
-      this.setBusinessInformation(this.getOriginalSnapshot[0].business)
-      this.setNameRequest(this.getOriginalSnapshot[0].business)
-    }
+    this.setBusinessInformation(this.isCorrection()
+      ? this.getOriginalIA.business
+      : this.getOriginalSnapshot[0].business
+    )
+    this.setNameRequest(this.isCorrection()
+      ? this.getOriginalIA.incorporationApplication.nameRequest
+      : this.getOriginalSnapshot[0].business
+    )
     this.companyNameChanges = false
   }
 

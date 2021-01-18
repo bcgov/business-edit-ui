@@ -19,7 +19,7 @@ export interface NrCorrectionIF {
 
 export interface NrResponseIf {
   // eslint-disable-next-line camelcase
-  entity_type_cd: string,
+  entity_type_cd: string, // Ignore lint error on property name served from api.
   expirationDate: string,
   state: string,
   applicants: {
@@ -33,15 +33,3 @@ export interface NrResponseIf {
     emailAddress: string
   }
 }
-
-// TEST DOWNLOADS CORP.
-// Business Type: BC Limited Company
-// Request Type: BC Benefit Company
-// Expiry Date: BC Benefit Company
-// Status: BC Benefit Company
-// Condition/Consent: BC Benefit Company
-// Name Request Applicant
-// Name: BC Benefit Company
-// Address: BC Benefit Company
-// Email: BC Benefit Company
-// Phone: BC Benefit Company

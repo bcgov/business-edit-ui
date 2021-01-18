@@ -62,7 +62,7 @@ import { CommonMixin, NameRequestMixin } from '@/mixins'
 
 // Interfaces & Enums
 import {
-  ActionBindingIF, ConfirmDialogType,
+  ActionBindingIF,
   NameRequestApplicantIF,
   NameRequestIF,
   NrCorrectionIF,
