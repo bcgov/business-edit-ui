@@ -32,7 +32,20 @@ export const stateModel: StateModelIF = {
     legalName: '',
     nrNumber: '',
     details: {},
-    applicant: {},
+    applicant: {
+      firstName: '',
+      middleName: '',
+      lastName: '',
+      emailAddress: '',
+      phoneNumber: '',
+      addressLine1: '',
+      addressLine2: '',
+      addressLine3: '',
+      city: '',
+      countryTypeCode: '',
+      postalCode: '',
+      stateProvinceCode: ''
+    },
     filingId: null
   },
   nameTranslations: [],

@@ -137,19 +137,19 @@
             <template>
               <div class="name-request-applicant-info">
                 <span class="font-weight-bold">Name: </span>
-                <span>{{getNameRequest.applicant.fullName}}</span>
+                <span>{{nrApplicant.fullName}}</span>
               </div>
               <div class="name-request-applicant-info">
                 <span class="font-weight-bold">Address: </span>
-                <span>{{getNameRequest.applicant.fullAddress}}</span>
+                <span>{{nrApplicant.fullAddress}}</span>
               </div>
               <div class="name-request-applicant-info">
                 <span class="font-weight-bold">Email: </span>
-                <span>{{getNameRequest.applicant.emailAddress || 'N/A'}}</span>
+                <span>{{nrApplicant.emailAddress || 'N/A'}}</span>
               </div>
               <div class="name-request-applicant-info">
                 <span class="font-weight-bold">Phone: </span>
-                <span>{{getNameRequest.applicant.phoneNumber || 'N/A'}}</span>
+                <span>{{nrApplicant.phoneNumber || 'N/A'}}</span>
               </div>
             </template>
           </v-flex>
@@ -213,6 +213,7 @@ import {
   ConfirmDialogType,
   GetterIF,
   IncorporationFilingIF,
+  NameRequestApplicantIF,
   NameRequestIF
 } from '@/interfaces'
 import { CorrectBusinessContactInfo, FolioNumber, CorrectNameTranslation, OfficeAddresses } from '.'
@@ -279,6 +280,10 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
     if (this.getApprovedName) return this.getApprovedName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
+  }
+
+  private get nrApplicant (): NameRequestApplicantIF {
+    return this.getNameRequest?.applicant
   }
 
   private get expiryDate (): string {
