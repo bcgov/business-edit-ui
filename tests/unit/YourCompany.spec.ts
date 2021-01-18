@@ -69,7 +69,7 @@ describe('YourCompany in a Correction', () => {
   })
 })
 
-describe.only('YourCompany in an Alteration', () => {
+describe('YourCompany in an Alteration', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
@@ -104,18 +104,8 @@ describe.only('YourCompany in an Alteration', () => {
     expect(wrapper.find(BusinessContactInfo).exists()).toBe(true)
     expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
 
-    // Not a premium account
-    expect(wrapper.find(FolioNumber).exists()).toBe(false)
-
     // Not currently editing Company Name
     expect(wrapper.find(CorrectNameOptions).exists()).toBe(false)
-  })
-
-  it('renders the FolioNumber Component and account is premium', async () => {
-    store.state.stateModel.accountInformation.accountType = 'PREMIUM'
-    await Vue.nextTick()
-
-    expect(wrapper.find(FolioNumber).exists()).toBe(true)
   })
 
   it('renders the CHANGE label for editing a name option', async () => {
