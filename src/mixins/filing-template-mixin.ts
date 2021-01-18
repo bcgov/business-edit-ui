@@ -337,6 +337,9 @@ export default class FilingTemplateMixin extends Vue {
     // Set Business Information
     this.setBusinessInformation(businessSnapshot[0].business)
 
+    // Set Name Request
+    this.setNameRequest(businessSnapshot[0].business)
+
     // Set Name Translations
     this.setNameTranslations(
       businessSnapshot[1].aliases?.map(x => {

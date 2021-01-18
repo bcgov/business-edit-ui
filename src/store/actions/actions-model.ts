@@ -153,6 +153,10 @@ export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
   commit('mutateOriginalIA', originalIA)
 }
 
+export const setOriginalSnapshot: ActionIF = ({ commit }, originalSnapshot): void => {
+  commit('mutateOriginalSnapshot', originalSnapshot)
+}
+
 export const setStaffPayment: ActionIF = ({ commit }, staffPayment): void => {
   commit('mutateStaffPayment', staffPayment)
 }

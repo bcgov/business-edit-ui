@@ -9,9 +9,9 @@ import {
 
 export interface BusinessSnapshotIF {
   business: BusinessInformationIF,
-  aliases: Array<NameTranslationIF>,
-  offices: IncorporationAddressIf,
+  aliases: NameTranslationIF[],
+  IncorporationAddressIf,
   directors: Array<GetOrgPersonsIF>,
   shareClasses: ShareStructureIF,
-  contacts: BusinessContactIF
+  BusinessContactIF
 }

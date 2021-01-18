@@ -1,5 +1,10 @@
 <template>
   <v-card flat id="your-company">
+    <confirm-dialog
+      ref="confirm"
+      attach="#app"
+    />
+
      <div class="define-company-header">
         <v-icon color="#38598A">mdi-domain</v-icon>
         <label class="define-company-title font-weight-bold">Your Company</label>
@@ -13,19 +18,50 @@
             <label><strong>Company Name</strong></label>
             <v-flex md1>
               <v-chip v-if="companyNameChanges" x-small label color="#1669BB" text-color="white" id="corrected-lbl">
-                 Corrected
+                 {{editedLabel}}
               </v-chip>
             </v-flex>
           </v-layout>
         </v-flex>
 
         <template v-if="!isEditingNames">
-          <v-flex xs8>
+          <v-flex xs6>
             <div class="company-name">{{ companyName }}</div>
-            <div class="company-type">
-              <span v-if="entityFilter(EntityTypes.BENEFIT_COMPANY)">BC Benefit Company</span>
-              <span v-else-if="entityFilter(EntityTypes.COOP)">BC Cooperative Association</span>
-            </div>
+            <template v-if="companyNameChanges && !hasNewNr">
+              <div class="company-info mt-4">
+                <span class="font-weight-bold">Business Type: </span>
+                <span>{{getEntityDesc(getEntityType)}}</span>
+              </div>
+              <div class="company-info">
+                <span>The name of this business will be the current Incorporation Number followed by "B.C. Ltd."</span>
+              </div>
+            </template>
+            <template v-if="isAlteration() && hasNewNr">
+              <div class="company-info mt-4">
+                <span class="font-weight-bold">Business Type: </span>
+                <span>{{getEntityDesc(getNameRequest.legalType)}}</span>
+                <v-tooltip top content-class="top-tooltip" transition="fade-transition">
+                  <template v-slot:activator="{ on }">
+                    <v-icon v-if="isConflictingLegalType" v-on="on" class="ml-2" color="red darken-3" small>
+                      mdi-alert
+                    </v-icon>
+                  </template>
+                  <span>Business Types do not match</span>
+                </v-tooltip>
+              </div>
+              <div class="company-info">
+                <span class="font-weight-bold">Request Type: </span>
+                <span>New Business</span>
+              </div>
+              <div class="company-info">
+                <span class="font-weight-bold">Expiry Date: </span>
+                <span>{{expiryDate}}</span>
+              </div>
+              <div class="company-info">
+                <span class="font-weight-bold">Status: </span>
+                <span>{{getNameRequest.status}}</span>
+              </div>
+            </template>
           </v-flex>
 
           <v-flex xs1 class="mt-n2">
@@ -47,8 +83,36 @@
                 @click="isEditingNames = true"
               >
                 <v-icon small>mdi-pencil</v-icon>
-                <span>Correct</span>
+                <span>{{editLabel}}</span>
               </v-btn>
+              <span class="more-actions" v-if="companyNameChanges">
+                <v-menu
+                  offset-y left nudge-bottom="4"
+                  v-model="dropdown"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      text small color="primary"
+                      id="btn-more-actions"
+                      v-on="on"
+                    >
+                      <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      class="v-list-item"
+                      id="btn-more-actions-edit"
+                      @click="isEditingNames = true; dropdown = false"
+                    >
+                      <v-list-item-subtitle>
+                        <v-icon small color="primary">mdi-pencil</v-icon>
+                        <span class="drop-down-action ml-1">Change</span>
+                      </v-list-item-subtitle>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </span>
             </div>
           </v-flex>
         </template>
@@ -62,8 +126,36 @@
             />
           </v-flex>
         </template>
+
+        <template v-if="isAlteration() && hasNewNr">
+          <v-flex xs3 class="mt-6">
+            <v-layout column>
+              <label><strong>Name Request Applicant</strong></label>
+            </v-layout>
+          </v-flex>
+          <v-flex xs6 class="mt-6">
+            <template>
+              <div class="name-request-applicant-info">
+                <span class="font-weight-bold">Name: </span>
+                <span>{{nrApplicant.fullName}}</span>
+              </div>
+              <div class="name-request-applicant-info">
+                <span class="font-weight-bold">Address: </span>
+                <span>{{nrApplicant.fullAddress}}</span>
+              </div>
+              <div class="name-request-applicant-info">
+                <span class="font-weight-bold">Email: </span>
+                <span>{{nrApplicant.emailAddress || 'N/A'}}</span>
+              </div>
+              <div class="name-request-applicant-info">
+                <span class="font-weight-bold">Phone: </span>
+                <span>{{nrApplicant.phoneNumber || 'N/A'}}</span>
+              </div>
+            </template>
+          </v-flex>
+        </template>
       </v-layout>
-      <correct-name-translation class="mt-3"
+      <correct-name-translation class="mt-5"
         @haveChanges="nameTranslationChanges = $event"
       />
     </div>
@@ -114,14 +206,25 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, BusinessContactIF, GetterIF, IncorporationFilingIF, NameRequestIF } from '@/interfaces'
+import {
+  ActionBindingIF,
+  BusinessContactIF,
+  BusinessSnapshotIF,
+  ConfirmDialogType,
+  GetterIF,
+  IncorporationFilingIF,
+  NameRequestApplicantIF,
+  NameRequestIF
+} from '@/interfaces'
 import { CorrectBusinessContactInfo, FolioNumber, CorrectNameTranslation, OfficeAddresses } from '.'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
-import { DateMixin, EntityFilterMixin, LegalApiMixin } from '@/mixins'
+import { CommonMixin, DateMixin, LegalApiMixin } from '@/mixins'
 import { CorrectionTypes, EntityTypes } from '@/enums'
+import { ConfirmDialog } from '@/components/dialogs'
 
 @Component({
   components: {
+    ConfirmDialog,
     CorrectNameOptions,
     CorrectBusinessContactInfo,
     OfficeAddresses,
@@ -129,14 +232,25 @@ import { CorrectionTypes, EntityTypes } from '@/enums'
     CorrectNameTranslation
   }
 })
-export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, LegalApiMixin) {
+export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApiMixin) {
+  // Refs
+  $refs!: {
+    confirm: ConfirmDialogType
+  }
+
   // Getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
+  @Getter getEntityType!: EntityTypes
+  @Getter getNameRequest!: NameRequestIF
+  @Getter hasNewNr!: boolean
   @Getter getOriginalEffectiveDate!: Date
   @Getter getFolioNumber!: string
+  @Getter isConflictingLegalType!: boolean
+  @Getter isNumberedCompany!: boolean
   @Getter isPremiumAccount!: GetterIF
   @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter getOriginalSnapshot!: BusinessSnapshotIF[]
   @Getter getBusinessContact!: BusinessContactIF
 
   // Actions
@@ -145,6 +259,9 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
 
   // Declaration for template
   readonly EntityTypes = EntityTypes
+
+  /** V-model for dropdown menu. */
+  private dropdown: boolean = null
 
   // whether components have changes
   private companyNameChanges = false
@@ -155,11 +272,22 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   private correctNameChoices: Array<string> = []
   private isEditingNames = false
 
+  /**  Initialize the name choices for alterations */
+  mounted () { this.onApprovedName() }
+
   /** The company name (from NR, or incorporation number). */
   private get companyName (): string {
     if (this.getApprovedName) return this.getApprovedName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
+  }
+
+  private get nrApplicant (): NameRequestApplicantIF {
+    return this.getNameRequest?.applicant
+  }
+
+  private get expiryDate (): string {
+    return new Date(this.getNameRequest.expiry).toDateString()
   }
 
   /** The recognition (aka effective) datetime. */
@@ -169,6 +297,29 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
       : 'Unknown'
   }
 
+  /** Compare names. */
+  private get isNewName () {
+    const correctedName = this.getApprovedName
+    const currentName = this.isCorrection()
+      ? this.getOriginalIA.incorporationApplication.nameRequest.legalName
+      : this.getOriginalSnapshot[0].business.legalName
+
+    return correctedName !== currentName
+  }
+
+  /** Reset company name values to original. */
+  private resetName () {
+    this.setBusinessInformation(this.isCorrection()
+      ? this.getOriginalIA.business
+      : this.getOriginalSnapshot[0].business
+    )
+    this.setNameRequest(this.isCorrection()
+      ? this.getOriginalIA.incorporationApplication.nameRequest
+      : this.getOriginalSnapshot[0].business
+    )
+    this.companyNameChanges = false
+  }
+
   /** Compare current to corrected data and update UI.  */
   @Watch('getApprovedName')
   private nameChangeHandler (): void {
@@ -176,18 +327,27 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
     this.isEditingNames = false
   }
 
-  /** Compare names. */
-  private get isNewName () {
-    const currentName = this.getOriginalIA.incorporationApplication.nameRequest.legalName
-    const correctedName = this.getApprovedName
-    return currentName !== correctedName
-  }
-
-  /** Reset company name values to original. */
-  private resetName () {
-    this.setBusinessInformation(this.getOriginalIA.business)
-    this.setNameRequest(this.getOriginalIA.incorporationApplication.nameRequest)
-    this.companyNameChanges = false
+  @Watch('hasNewNr')
+  private openConflictWarning (): void {
+    if (this.isConflictingLegalType && this.isAlteration()) {
+      // open confirmation dialog and wait for response
+      this.$refs.confirm.open(
+        'Name Request Type Does Not Match Business Type',
+        `This ${this.getEntityDesc(this.getNameRequest.legalType)} Name Request does not match the current ` +
+        `business ${this.getEntityDesc(this.getEntityType)}.\n\n` +
+        `The Name Request type must match the business type before you can continue.`,
+        {
+          width: '35rem',
+          persistent: true,
+          yes: 'Ok',
+          no: null,
+          cancel: null
+        }
+      ).then(() => {
+        // if we get here, Yes was clicked
+        // nothing to do
+      })
+    }
   }
 
   // watchers for component change flags
@@ -199,12 +359,13 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
 
   @Watch('getApprovedName')
   private onApprovedName ():void {
-    if (this.getApprovedName) {
+    if (this.getApprovedName && !this.isNumberedCompany) {
       this.correctNameChoices = [
         CorrectionTypes.CORRECT_NEW_NR,
-        CorrectionTypes.CORRECT_NAME,
         CorrectionTypes.CORRECT_NAME_TO_NUMBER
       ]
+      // Only allow editable name changes for Corrections
+      this.isCorrection() && this.correctNameChoices.push(CorrectionTypes.CORRECT_NAME)
     } else {
       this.correctNameChoices = [
         CorrectionTypes.CORRECT_NEW_NR
@@ -264,7 +425,11 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   font-weight: bold
 }
 
-.company-type {
+.company-info {
+  padding-top: 0.5rem
+}
+
+.name-request-applicant-info:not(:first-child) {
   padding-top: 0.5rem
 }
 
@@ -275,5 +440,9 @@ export default class YourCompany extends Mixins(DateMixin, EntityFilterMixin, Le
   .v-btn {
     min-width: 0.5rem;
   }
+}
+
+.drop-down-action{
+  color: $primary-blue;
 }
 </style>

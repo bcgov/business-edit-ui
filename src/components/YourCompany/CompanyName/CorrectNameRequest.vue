@@ -58,19 +58,20 @@ import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Mixins
-import { NameRequestMixin } from '@/mixins'
+import { CommonMixin, NameRequestMixin } from '@/mixins'
 
 // Interfaces & Enums
 import {
   ActionBindingIF,
   NameRequestApplicantIF,
   NameRequestIF,
-  NrCorrectionIF
+  NrCorrectionIF,
+  NrResponseIF
 } from '@/interfaces'
 import { CorrectionTypes } from '@/enums'
 
 @Component({})
-export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
+export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestMixin) {
   /** Form Submission Prop */
   @Prop({ default: null }) formType: CorrectionTypes
 
@@ -133,23 +134,35 @@ export default class CorrectNameRequest extends Mixins(NameRequestMixin) {
   @Watch('formType')
   private async onSubmit (): Promise<any> {
     if (this.formType === CorrectionTypes.CORRECT_NEW_NR) {
-      await this.validateNameRequest(this.nameRequestNumber, this.entityPhone, this.entityEmail)
-        .then(response => {
-          const nrCorrection: NrCorrectionIF = {
-            nrNumber: this.nameRequestNumber,
-            legalName: this.getNrApprovedName(response),
-            applicant: {
-              phoneNumber: this.entityPhone,
-              emailAddress: this.entityEmail
-            }
+      try {
+        // Validate and return the name request data
+        const response: NrResponseIF = await this.validateNameRequest(
+          this.nameRequestNumber,
+          this.entityPhone,
+          this.entityEmail
+        )
+
+        // Parse the name request data
+        const nrCorrection: NrCorrectionIF = {
+          legalType: response.entity_type_cd,
+          nrNumber: this.nameRequestNumber,
+          legalName: this.getNrApprovedName(response),
+          expiry: response.expirationDate,
+          status: response.state,
+          applicant: {
+            fullName: this.formatFullName(response.applicants),
+            fullAddress: this.formatFullAddress(response.applicants),
+            phoneNumber: response.applicants.phoneNumber,
+            emailAddress: response.applicants.emailAddress
           }
-          this.setNameRequest({ ...this.getNameRequest, ...nrCorrection })
-          this.emitDone(true)
-        }).catch(() => {
-          // Request is handling it's own errors
-          // Inform parent process is complete
-          this.emitDone()
-        })
+        }
+        this.setNameRequest({ ...this.getNameRequest, ...nrCorrection })
+        this.emitDone(true)
+      } catch {
+        // Request is handling it's own errors
+        // Inform parent process is complete
+        this.emitDone()
+      }
     }
   }
 

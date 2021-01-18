@@ -14,6 +14,7 @@
           </div>
 
           <dl class="business-info">
+            <dd id="entity-legal-type">{{getEntityDesc(getEntityType)}}</dd>
             <dt class="mr-2">Business No:</dt>
             <dd id="entity-business-number">{{ getBusinessNumber || 'Not Available' }}</dd>
             <dt class="mr-2">Incorporation No:</dt>
@@ -39,32 +40,21 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { EnumMixin } from '@/mixins'
+import { CommonMixin, EnumMixin } from '@/mixins'
 import { BusinessContactIF, BusinessInformationIF } from '@/interfaces'
 import { EntityTypes, RouteNames } from '@/enums'
 
 @Component({})
-export default class EntityInfo extends Mixins(EnumMixin) {
+export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   // Global getters
   @Getter isEntityType!: boolean
   @Getter getBusinessId!: string
   @Getter getBusinessNumber!: string
   @Getter getCurrentBusinessName!: string
+  @Getter getEntityType!: string
   @Getter isRoleStaff!: boolean
   @Getter getBusinessContact!: BusinessContactIF
   @Getter getBusinessInformation!: BusinessInformationIF
-
-  /** The entity title. */
-  private get entityTitle (): string {
-    switch (this.$route.name) {
-      case RouteNames.CORRECTION:
-        return 'Correction - Incorporation Application'
-      case RouteNames.ALTERATION:
-        return 'Alteration'
-      default:
-        return ''
-    }
-  }
 
   /** The route breadcrumbs list. */
   private get breadcrumbs (): Array<any> {

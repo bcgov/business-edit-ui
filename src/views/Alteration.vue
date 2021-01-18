@@ -58,6 +58,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Action setEntityType!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
+  @Action setOriginalSnapshot!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -129,6 +130,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       // }
 
       const businessSnapshot = await this.fetchBusinessSnapshot()
+      this.setOriginalSnapshot(businessSnapshot)
       await this.parseBusinessSnapshot(businessSnapshot)
 
       // tell App that we're finished loading

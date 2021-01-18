@@ -2,8 +2,9 @@
 import { axios } from '@/utils'
 import { AxiosResponse } from 'axios'
 import { Component, Mixins } from 'vue-property-decorator'
-import { NameRequestStates } from '@/enums'
+import { EntityTypes, NameRequestStates } from '@/enums'
 import { DateMixin } from '@/mixins'
+import { NrResponseIF } from '@/interfaces'
 
 /**
  * Mixin for processing Name Request objects.
@@ -18,8 +19,8 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    * @param email the applicant's email address
    * @returns the name request response payload
    */
-  async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<AxiosResponse> {
-    const nrResponse = await this.fetchNameRequest(nrNumber).catch(error => {
+  async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<NrResponseIF> {
+    const nrResponse: NrResponseIF = await this.fetchNameRequest(nrNumber).catch(error => {
       this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
       throw new Error(`Fetch Name Request error: ${error}`)
     })
@@ -47,6 +48,11 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
     if (state !== NameRequestStates.APPROVED) {
       this.$root.$emit('invalid-name-request', state)
       throw new Error(`Invalid Name request state: ${state}`)
+    }
+
+    // Convert NR types of BC to BEN to align with Lear
+    if (nrResponse.entity_type_cd === EntityTypes.NRO_BENEFIT_COMPANY) {
+      nrResponse.entity_type_cd = EntityTypes.BENEFIT_COMPANY
     }
 
     return nrResponse
