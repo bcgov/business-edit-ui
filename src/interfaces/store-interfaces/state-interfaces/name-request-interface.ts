@@ -1,4 +1,4 @@
-import { EntityTypes } from '@/enums'
+import { EntityTypes, NameRequestStates } from '@/enums'
 
 // Name Request State interface
 export interface NameRequestIF {
@@ -6,7 +6,7 @@ export interface NameRequestIF {
   legalName: string
   nrNumber: string
   expiry?: string
-  status?: string
+  status?: NameRequestStates
   details: NameRequestDetailsIF | {}
   applicant: NameRequestApplicantIF | {}
   filingId: number
@@ -22,7 +22,7 @@ export interface NameRequestDetailsIF {
 
 // Name request applicant details interface
 export interface NameRequestApplicantIF {
-  address?: string
+  fullAddress?: string
   fullName?: string
   firstName: string
   middleName: string

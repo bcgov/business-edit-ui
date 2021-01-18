@@ -141,7 +141,7 @@
               </div>
               <div class="name-request-applicant-info">
                 <span class="font-weight-bold">Address: </span>
-                <span>{{getNameRequest.applicant.address}}</span>
+                <span>{{getNameRequest.applicant.fullAddress}}</span>
               </div>
               <div class="name-request-applicant-info">
                 <span class="font-weight-bold">Email: </span>

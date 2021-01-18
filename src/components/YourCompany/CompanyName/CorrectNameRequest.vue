@@ -66,7 +66,7 @@ import {
   NameRequestApplicantIF,
   NameRequestIF,
   NrCorrectionIF,
-  NrResponseIf
+  NrResponseIF
 } from '@/interfaces'
 import { CorrectionTypes } from '@/enums'
 
@@ -136,7 +136,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
     if (this.formType === CorrectionTypes.CORRECT_NEW_NR) {
       try {
         // Validate and return the name request data
-        const response: NrResponseIf = await this.validateNameRequest(
+        const response: NrResponseIF = await this.validateNameRequest(
           this.nameRequestNumber,
           this.entityPhone,
           this.entityEmail
@@ -151,7 +151,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
           status: response.state,
           applicant: {
             fullName: this.formatFullName(response.applicants),
-            address: this.formatFullAddress(response.applicants),
+            fullAddress: this.formatFullAddress(response.applicants),
             phoneNumber: response.applicants.phoneNumber,
             emailAddress: response.applicants.emailAddress
           }

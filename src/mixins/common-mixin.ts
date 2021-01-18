@@ -83,6 +83,18 @@ export default class CommonMixin extends Vue {
     return this.isCorrection() ? 'Corrected' : 'Changed'
   }
 
+  /** The entity title. */
+  get entityTitle (): string {
+    switch (this.$route.name) {
+      case RouteNames.CORRECTION:
+        return 'Correction - Incorporation Application'
+      case RouteNames.ALTERATION:
+        return 'Company Information'
+      default:
+        return ''
+    }
+  }
+
   /**
    * Get an entity type descriptor based on entity type code
    * @param entityType The entity type code

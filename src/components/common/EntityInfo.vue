@@ -56,18 +56,6 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   @Getter getBusinessContact!: BusinessContactIF
   @Getter getBusinessInformation!: BusinessInformationIF
 
-  /** The entity title. */
-  private get entityTitle (): string {
-    switch (this.$route.name) {
-      case RouteNames.CORRECTION:
-        return 'Correction - Incorporation Application'
-      case RouteNames.ALTERATION:
-        return 'Company Information'
-      default:
-        return ''
-    }
-  }
-
   /** The route breadcrumbs list. */
   private get breadcrumbs (): Array<any> {
     return [

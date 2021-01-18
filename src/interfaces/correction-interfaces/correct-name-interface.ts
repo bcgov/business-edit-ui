@@ -1,5 +1,5 @@
 import { NameRequestApplicantIF } from '@/interfaces'
-import { CorrectionTypes } from '@/enums'
+import { CorrectionTypes, EntityTypes, NameRequestStates } from '@/enums'
 
 export interface CorrectNameOptionIF {
   id: CorrectionTypes,
@@ -9,19 +9,19 @@ export interface CorrectNameOptionIF {
 }
 
 export interface NrCorrectionIF {
-  legalType: string,
+  legalType: EntityTypes,
   nrNumber: string,
   legalName: string,
   expiry: string,
-  status: string
+  status: NameRequestStates
   applicant: NameRequestApplicantIF | {}
 }
 
-export interface NrResponseIf {
+export interface NrResponseIF {
   // eslint-disable-next-line camelcase
-  entity_type_cd: string, // Ignore lint error on property name served from api.
+  entity_type_cd: EntityTypes, // Ignore lint error on property name served from api.
   expirationDate: string,
-  state: string,
+  state: NameRequestStates,
   applicants: {
     firstName: string,
     lastName: string

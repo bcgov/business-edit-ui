@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 import { Component, Mixins } from 'vue-property-decorator'
 import { EntityTypes, NameRequestStates } from '@/enums'
 import { DateMixin } from '@/mixins'
-import { NrResponseIf } from '@/interfaces'
+import { NrResponseIF } from '@/interfaces'
 
 /**
  * Mixin for processing Name Request objects.
@@ -19,8 +19,8 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    * @param email the applicant's email address
    * @returns the name request response payload
    */
-  async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<NrResponseIf> {
-    const nrResponse: NrResponseIf = await this.fetchNameRequest(nrNumber).catch(error => {
+  async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<NrResponseIF> {
+    const nrResponse: NrResponseIF = await this.fetchNameRequest(nrNumber).catch(error => {
       this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
       throw new Error(`Fetch Name Request error: ${error}`)
     })

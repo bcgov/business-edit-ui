@@ -11,7 +11,6 @@ import { getVuexStore } from '@/store'
 import { createLocalVue, mount } from '@vue/test-utils'
 import { BusinessContactInfo, FolioNumber, OfficeAddresses, YourCompany } from '@/components/YourCompany'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
-import flushPromises from 'flush-promises';
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
@@ -142,7 +141,7 @@ describe('YourCompany in an Alteration', () => {
     store.state.stateModel.nameRequest.expiry = 'Wed, 10 Mar 2021 08:00:00 GMT'
     store.state.stateModel.nameRequest.status = 'APPROVED'
     store.state.stateModel.nameRequest.applicant.fullName = 'Mock Full Name'
-    store.state.stateModel.nameRequest.applicant.address = '123 Mock Lane, Victoria, BC, 1t2 3t4, CA'
+    store.state.stateModel.nameRequest.applicant.fullAddress = '123 Mock Lane, Victoria, BC, 1t2 3t4, CA'
     store.state.stateModel.nameRequest.applicant.phoneNumber = '250 123-4567'
     await Vue.nextTick()
 
