@@ -158,6 +158,7 @@
           </v-flex>
         </template>
       </v-layout>
+      <correct-business-type class="mt-5" />
       <correct-name-translation class="mt-5"
         @haveChanges="nameTranslationChanges = $event"
       />
@@ -219,7 +220,13 @@ import {
   NameRequestApplicantIF,
   NameRequestIF
 } from '@/interfaces'
-import { CorrectBusinessContactInfo, FolioNumber, CorrectNameTranslation, OfficeAddresses } from '.'
+import {
+  CorrectBusinessContactInfo,
+  CorrectBusinessType,
+  FolioNumber,
+  CorrectNameTranslation,
+  OfficeAddresses
+} from '.'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 import { CommonMixin, DateMixin, LegalApiMixin } from '@/mixins'
 import { CorrectionTypes, EntityTypes } from '@/enums'
@@ -228,11 +235,12 @@ import { ConfirmDialog } from '@/components/dialogs'
 @Component({
   components: {
     ConfirmDialog,
-    CorrectNameOptions,
     CorrectBusinessContactInfo,
+    CorrectBusinessType,
+    CorrectNameOptions,
+    CorrectNameTranslation,
     OfficeAddresses,
-    FolioNumber,
-    CorrectNameTranslation
+    FolioNumber
   }
 })
 export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApiMixin) {
