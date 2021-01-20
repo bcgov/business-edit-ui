@@ -256,6 +256,8 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
 [class^="col"] {
   padding-top: 0;
   padding-bottom: 0;
@@ -284,7 +286,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 
   #done-btn[disabled] {
     color: white !important;
-    background-color: #1669bb !important;
+    background-color: $app-blue !important;
     opacity: 0.2;
   }
 }

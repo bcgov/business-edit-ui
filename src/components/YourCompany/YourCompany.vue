@@ -17,7 +17,7 @@
           <v-layout column>
             <label><strong>Company Name</strong></label>
             <v-flex md1>
-              <v-chip v-if="companyNameChanges" x-small label color="#1669BB" text-color="white" id="corrected-lbl">
+              <v-chip v-if="companyNameChanges" x-small label color="primary" text-color="white" id="corrected-lbl">
                  {{editedLabel}}
               </v-chip>
             </v-flex>
@@ -44,7 +44,7 @@
                 </span>
                 <v-tooltip top content-class="top-tooltip" transition="fade-transition">
                   <template v-slot:activator="{ on }">
-                    <v-icon v-if="isConflictingLegalType" v-on="on" class="ml-2" color="#d3272c" small>
+                    <v-icon v-if="isConflictingLegalType" v-on="on" class="ml-2" color="error" small>
                       mdi-alert
                     </v-icon>
                   </template>
@@ -132,7 +132,7 @@
 
         <template v-if="isAlteration() && hasNewNr">
           <v-flex xs3 class="mt-6">
-            <v-layout column class="pt-2">
+            <v-layout column>
               <label><strong>Name Request Applicant</strong></label>
             </v-layout>
           </v-flex>
@@ -439,16 +439,15 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 }
 
 .hasConflict {
-  color: $BCgovError;
+  color: $app-red;
 }
 
 .name-request-applicant-info {
   font-size: 1rem;
   color: $gray7;
-  padding-top: 0.5rem
 }
 
-.name-request-applicant-info :not(:first-child) {
+.name-request-applicant-info:not(:first-child) {
   padding-top: 0.5rem
 }
 
