@@ -137,7 +137,7 @@ describe('YourCompany in an Alteration', () => {
 
   it('displays the Name Request information when NR data changes', async () => {
     store.state.stateModel.nameRequest.nrNumber = 'NR1234567'
-    store.state.stateModel.nameRequest.legalType = 'BEN'
+    store.state.stateModel.nameRequest.legalType = 'CR'
     store.state.stateModel.nameRequest.expiry = 'Wed, 10 Mar 2021 08:00:00 GMT'
     store.state.stateModel.nameRequest.status = 'APPROVED'
     store.state.stateModel.nameRequest.applicant.fullName = 'Mock Full Name'
@@ -147,7 +147,8 @@ describe('YourCompany in an Alteration', () => {
 
     const companyInfo = wrapper.findAll('.company-info')
 
-    expect(companyInfo.at(0).text()).toBe('Business Type:  BC Benefit Company')
+    expect(wrapper.vm.isConflictingLegalType).toBe(true)
+    expect(companyInfo.at(0).text()).toBe('Business Type:  BC Limited Company')
     expect(companyInfo.at(1).text()).toBe('Request Type:  New Business')
     expect(companyInfo.at(2).text()).toBe('Expiry Date:  Wed Mar 10 2021')
     expect(companyInfo.at(3).text()).toBe('Status:  APPROVED')

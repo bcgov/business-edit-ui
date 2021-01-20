@@ -3,7 +3,7 @@
     <p class="name-options-info mb-5" v-if="!isOneOption">
       You can correct the company name in one of the following ways:
     </p>
-    <v-expansion-panels v-model="panel">
+    <v-expansion-panels v-model="panel" class="names-options-panels" accordion>
       <v-expansion-panel
         v-for="(item,i) in displayedOptions"
         :id="`x-panel: ${item.id}`"
@@ -11,14 +11,14 @@
         :disabled="isOneOption"
         @click="identifyForm(item.id)"
       >
-        <v-expansion-panel-header class="px-0" :class="{'name-options-header': isOneOption}">
+        <v-expansion-panel-header class="px-0 my-1" :class="{'name-options-header': isOneOption}">
           <span class="names-option-title">{{item.title}}</span>
           <template v-slot:actions>
             <v-icon color="primary">mdi-menu-down</v-icon>
           </template>
         </v-expansion-panel-header>
         <v-expansion-panel-content class="name-options-content">
-          <v-label class="name-content-label" color="primary">{{item.description}}</v-label>
+          <span class="name-content-label" color="primary">{{item.description}}</span>
           <v-container>
             <component
               :is="item.component"
@@ -158,12 +158,33 @@ export default class CorrectNameOptions extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
+.name-options-info {
+  font-size: 1rem;
+  color: $gray7;
+}
+
 .name-options-header {
   align-items: start;
 }
 
+.names-options-panels {
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+}
+
 .names-option-title {
+  font-size: 1rem;
   color: #1669BB;
+}
+
+.name-content-label {
+  font-size: 1rem;
+  color: $gray7;
+  font-weight: normal;
+  line-height: 1.5rem;
 }
 
 .v-expansion-panel-content ::v-deep .v-expansion-panel-content__wrap {
@@ -180,11 +201,12 @@ export default class CorrectNameOptions extends Vue {
   min-height: 3rem;
 
   .names-option-title {
-    color: #212529 !important;
+    color: $gray9 !important;
   }
 }
 
 .action-btns {
+  margin: 30px 0;
   display: flex;
   justify-content: flex-end;
 

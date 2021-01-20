@@ -2,7 +2,7 @@
   <v-form id="correct-nr-form" ref="correctNrForm" v-model="valid" lazy-validation>
     <v-layout row>
       <v-flex md1 class="pa-3 pl-0">
-        <v-btn x-small fab outlined disabled color="#1A5A96" class="step-icon">1</v-btn>
+        <v-btn x-small fab outlined :ripple="false" color="#495057" class="step-icon">1</v-btn>
       </v-flex>
       <v-flex>
         <v-text-field
@@ -19,7 +19,7 @@
     </v-layout>
     <v-layout row>
       <v-flex md1 class="pa-3 pl-0">
-        <v-btn x-small fab outlined disabled color="#1A5A96" class="step-icon">2</v-btn>
+        <v-btn x-small fab outlined :ripple="false" color="#495057" class="step-icon">2</v-btn>
       </v-flex>
       <v-flex md5>
         <v-text-field
@@ -185,8 +185,16 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
 </script>
 
 <style lang="scss" scoped>
-  .step-icon {
-    font-size: small;
-    font-weight: bold;
-  }
+@import '@/assets/styles/theme.scss';
+
+.step-icon {
+  font-size: small;
+  font-weight: bold;
+}
+
+::v-deep .theme--light.v-label {
+  font-size: 1rem;
+  color: $gray7;
+  font-weight: normal;
+}
 </style>

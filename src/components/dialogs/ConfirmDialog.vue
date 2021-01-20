@@ -10,7 +10,7 @@
 
     <v-card>
       <v-card-title>{{ title }}</v-card-title>
-      <v-card-text class="black--text pre-wrap" v-show="!!message">{{ message }}</v-card-text>
+      <v-card-text class="dialog-content pre-wrap" v-show="!!message">{{ message }}</v-card-text>
       <v-divider class="my-0" v-show="!!options.yes || !!options.no || !!options.cancel"></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -136,3 +136,12 @@ export default class ConfirmDialog extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
+.dialog-content {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: $gray7 !important;
+}
+</style>
