@@ -57,8 +57,15 @@ export default class CorrectNameToNumber extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .v-input--selection-controls {
-    padding: 0;
-    margin: 0;
-  }
+@import '@/assets/styles/theme.scss';
+
+.v-input--selection-controls {
+  padding: 0;
+  margin: 0;
+}
+::v-deep .theme--light.v-label {
+  font-size: 1rem;
+  color: $gray7;
+  font-weight: normal;
+}
 </style>

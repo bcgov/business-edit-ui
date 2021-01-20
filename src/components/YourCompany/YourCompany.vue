@@ -7,7 +7,7 @@
 
      <div class="define-company-header">
         <v-icon color="#38598A">mdi-domain</v-icon>
-        <label class="define-company-title font-weight-bold">Your Company</label>
+        <label class="define-company-title">Your Company</label>
     </div>
 
     <div class="section-container">
@@ -17,7 +17,7 @@
           <v-layout column>
             <label><strong>Company Name</strong></label>
             <v-flex md1>
-              <v-chip v-if="companyNameChanges" x-small label color="#1669BB" text-color="white" id="corrected-lbl">
+              <v-chip v-if="companyNameChanges" x-small label color="primary" text-color="white" id="corrected-lbl">
                  {{editedLabel}}
               </v-chip>
             </v-flex>
@@ -25,11 +25,11 @@
         </v-flex>
 
         <template v-if="!isEditingNames">
-          <v-flex xs6>
-            <div class="company-name">{{ companyName }}</div>
+          <v-flex xs6 class="mt-n2">
+            <div class="company-name font-weight-bold">{{ companyName }}</div>
             <template v-if="companyNameChanges && !hasNewNr">
               <div class="company-info mt-4">
-                <span class="font-weight-bold">Business Type: </span>
+                <span class="subtitle">Business Type: </span>
                 <span>{{getEntityDesc(getEntityType)}}</span>
               </div>
               <div class="company-info">
@@ -37,28 +37,31 @@
               </div>
             </template>
             <template v-if="isAlteration() && hasNewNr">
+              <div class="company-name">{{ getNameRequest.nrNumber }}</div>
               <div class="company-info mt-4">
-                <span class="font-weight-bold">Business Type: </span>
-                <span>{{getEntityDesc(getNameRequest.legalType)}}</span>
+                <span class="subtitle">Business Type: </span>
+                <span :class="{ 'hasConflict': isConflictingLegalType}">{{getEntityDesc(getNameRequest.legalType)}}
+                </span>
                 <v-tooltip top content-class="top-tooltip" transition="fade-transition">
                   <template v-slot:activator="{ on }">
-                    <v-icon v-if="isConflictingLegalType" v-on="on" class="ml-2" color="red darken-3" small>
+                    <v-icon v-if="isConflictingLegalType" v-on="on" class="ml-2" color="error" small>
                       mdi-alert
                     </v-icon>
                   </template>
-                  <span>Business Types do not match</span>
+                  <span>Business Types do not match. The Name Request type must match the business type before you can
+                    continue.</span>
                 </v-tooltip>
               </div>
               <div class="company-info">
-                <span class="font-weight-bold">Request Type: </span>
+                <span class="subtitle">Request Type: </span>
                 <span>New Business</span>
               </div>
               <div class="company-info">
-                <span class="font-weight-bold">Expiry Date: </span>
+                <span class="subtitle">Expiry Date: </span>
                 <span>{{expiryDate}}</span>
               </div>
               <div class="company-info">
-                <span class="font-weight-bold">Status: </span>
+                <span class="subtitle">Status: </span>
                 <span>{{getNameRequest.status}}</span>
               </div>
             </template>
@@ -136,19 +139,19 @@
           <v-flex xs6 class="mt-6">
             <template>
               <div class="name-request-applicant-info">
-                <span class="font-weight-bold">Name: </span>
+                <span class="subtitle">Name: </span>
                 <span>{{nrApplicant.fullName}}</span>
               </div>
               <div class="name-request-applicant-info">
-                <span class="font-weight-bold">Address: </span>
+                <span class="subtitle">Address: </span>
                 <span>{{nrApplicant.fullAddress}}</span>
               </div>
               <div class="name-request-applicant-info">
-                <span class="font-weight-bold">Email: </span>
+                <span class="subtitle">Email: </span>
                 <span>{{nrApplicant.emailAddress || 'N/A'}}</span>
               </div>
               <div class="name-request-applicant-info">
-                <span class="font-weight-bold">Phone: </span>
+                <span class="subtitle">Phone: </span>
                 <span>{{nrApplicant.phoneNumber || 'N/A'}}</span>
               </div>
             </template>
@@ -334,12 +337,12 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
       this.$refs.confirm.open(
         'Name Request Type Does Not Match Business Type',
         `This ${this.getEntityDesc(this.getNameRequest.legalType)} Name Request does not match the current ` +
-        `business ${this.getEntityDesc(this.getEntityType)}.\n\n` +
+        `business type ${this.getEntityDesc(this.getEntityType)}.\n\n` +
         `The Name Request type must match the business type before you can continue.`,
         {
           width: '35rem',
           persistent: true,
-          yes: 'Ok',
+          yes: 'OK',
           no: null,
           cancel: null
         }
@@ -421,12 +424,27 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 }
 
 .company-name {
-  font-size: 1.375rem;
-  font-weight: bold
+  font-size: 1.5rem;
 }
 
 .company-info {
-  padding-top: 0.5rem
+  font-size: 1rem;
+  padding-top: 0.5rem;
+  color: $gray7;
+}
+
+.subtitle {
+  color: $gray9;
+  font-weight: bold;
+}
+
+.hasConflict {
+  color: $app-red;
+}
+
+.name-request-applicant-info {
+  font-size: 1rem;
+  color: $gray7;
 }
 
 .name-request-applicant-info:not(:first-child) {

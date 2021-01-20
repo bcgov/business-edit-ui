@@ -8,16 +8,15 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
+import { Component, Vue, Emit } from 'vue-property-decorator'
 
 // Components
 import { NameTranslation } from '.'
 
 // Interfaces
-import { ActionBindingIF, IncorporationFilingIF, NameTranslationIF } from '@/interfaces'
+import { ActionBindingIF, NameTranslationIF } from '@/interfaces'
 
 // Mixins
-import { CommonMixin } from '@/mixins'
 import { Action, Getter } from 'vuex-class'
 
 @Component({
