@@ -44,7 +44,8 @@
 
       <!-- Editing Mode -->
       <v-flex xs9 v-if="isEditingType" class="pr-4">
-        <v-select :items="entityTypeOptions"
+        <v-select id="business-type-selector"
+                  :items="entityTypeOptions"
                   v-model="selectedEntityType"
                   hint="Select a New Business Type"
                   persistent-hint
@@ -148,13 +149,14 @@
             v-if="isNewBusinessType"
             text color="primary"
             id="btn-undo-business-type"
+            class="undo-action"
             @click="resetType()"
           >
             <v-icon small>mdi-undo</v-icon>
             <span>Undo</span>
           </v-btn>
           <v-btn
-            v-else
+            v-else-if="entityFilter(EntityTypes.BC_CORPORATION)"
             text color="primary"
             id="btn-correct-business-type"
             @click="isEditingType = true"
@@ -283,19 +285,19 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
 
 ol {
   counter-reset: item;
-}
 
-ol > li {
-  counter-increment: item;
-}
+  > li {
+    counter-increment: item;
+  }
 
-ol ol > li {
-  display: block;
-}
+  ol > li {
+    display: block;
+  }
 
-ol ol > li:before {
-  content: counters(item, ".");
-  margin-left: -32px;
+  ol > li:before {
+    content: counters(item, ".");
+    margin-left: -32px;
+  }
 }
 
 .help-toggle {
@@ -314,6 +316,10 @@ ol ol > li:before {
 .actions {
   position: absolute;
   right: 0;
+
+  .undo-action{
+    border-right: 1px solid $gray1;
+  }
 
   .v-btn {
     min-width: 0.5rem;

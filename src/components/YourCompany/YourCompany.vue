@@ -79,6 +79,7 @@
                 v-if="companyNameChanges"
                 text color="primary"
                 id="btn-undo-company-name"
+                class="undo-action"
                 @click="resetName()"
               >
                 <v-icon small>mdi-undo</v-icon>
@@ -321,13 +322,15 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   /** The recognition/founding (aka effective) datetime. */
   private get recognitionDateTime (): string {
-    return this.isCorrection()
-      ? this.getOriginalEffectiveDate
+    if (this.isCorrection()) {
+      return this.getOriginalEffectiveDate
         ? (this.convertUtcTimeToLocalTime(this.getOriginalEffectiveDate.toString()) + ' Pacific Time')
         : 'Unknown'
-      : this.getBusinessFoundingDate
+    } else {
+      return this.getBusinessFoundingDate
         ? (this.convertUtcTimeToLocalTime(this.getBusinessFoundingDate.toString()) + ' Pacific Time')
         : 'Unknown'
+    }
   }
 
   /** Compare names. */
@@ -473,6 +476,10 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 .actions {
   position: absolute;
   right: 0;
+
+  .undo-action{
+    border-right: 1px solid $gray1;
+  }
 
   .v-btn {
     min-width: 0.5rem;

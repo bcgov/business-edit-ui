@@ -53,9 +53,11 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   }
 })
 export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin) {
+  // Global getters
+  @Getter getEntityType!: EntityTypes
+
   // Global setters
   @Action setHaveChanges!: ActionBindingIF
-  @Action setEntityType!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setOriginalSnapshot!: ActionBindingIF
@@ -93,17 +95,6 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
 
     // try to fetch data
     try {
-      // set current entity type
-      this.setEntityType(EntityTypes.BENEFIT_COMPANY)
-
-      // initialize Fee Summary data
-      // TODO: Set/Clear Data according to filing type / entity type
-      this.setFilingData({
-        filingTypeCode: FilingCodes.ALTERATION,
-        entityType: EntityTypes.BENEFIT_COMPANY,
-        priority: false
-      })
-
       // TODO: Handle Returning from a DRAFT alteration filing
       // if (this.alterationId) {
       //   // store the filing ID
@@ -132,6 +123,13 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       const businessSnapshot = await this.fetchBusinessSnapshot()
       this.setOriginalSnapshot(businessSnapshot)
       await this.parseBusinessSnapshot(businessSnapshot)
+
+      // initialize Fee Summary data
+      this.setFilingData({
+        filingTypeCode: FilingCodes.ALTERATION,
+        entityType: this.getEntityType,
+        priority: false
+      })
 
       // tell App that we're finished loading
       this.emitHaveData()

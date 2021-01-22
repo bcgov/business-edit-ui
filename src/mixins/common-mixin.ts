@@ -119,7 +119,7 @@ export default class CommonMixin extends Vue {
   /**
    * Method to compare the conditional entity to the entityType defined from the Store.
    *
-   * @param entity The entity type of the component.
+   * @param entityType The entity type of the component.
    * @return boolean A boolean indicating if the entityType given matches the entityType assigned to the component.
    */
   entityFilter (entityType: EntityTypes): boolean {

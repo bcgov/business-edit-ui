@@ -9,7 +9,13 @@ import { getVuexStore } from '@/store'
 
 // Components
 import { createLocalVue, mount } from '@vue/test-utils'
-import { BusinessContactInfo, FolioNumber, OfficeAddresses, YourCompany } from '@/components/YourCompany'
+import {
+  BusinessContactInfo,
+  CorrectBusinessType,
+  FolioNumber,
+  OfficeAddresses,
+  YourCompany
+} from '@/components/YourCompany'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 
 Vue.use(Vuetify)
@@ -100,6 +106,7 @@ describe('YourCompany in an Alteration', () => {
 
   it('renders the YourCompany Component and default subcomponents', async () => {
     expect(wrapper.find(YourCompany).exists()).toBe(true)
+    expect(wrapper.find(CorrectBusinessType).exists()).toBe(true)
     expect(wrapper.find(BusinessContactInfo).exists()).toBe(true)
     expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
 
