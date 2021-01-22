@@ -172,7 +172,8 @@
       />
 
       <!-- Edit Name Translation -->
-      <correct-name-translation class="sub-section"
+      <correct-name-translation
+        class="sub-section"
         @haveChanges="nameTranslationChanges = $event"
       />
     </div>

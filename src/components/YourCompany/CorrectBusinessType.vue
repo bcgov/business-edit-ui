@@ -5,7 +5,7 @@
       <v-flex xs3>
         <label><strong>Business Type</strong></label>
         <v-flex md1>
-          <v-chip v-if="isNewBusinessType" x-small label color="#1669BB" text-color="white">
+          <v-chip v-if="isNewBusinessType" x-small label color="primary" text-color="white">
             {{editedLabel}}
           </v-chip>
         </v-flex>
@@ -34,7 +34,7 @@
           <template v-if="isNewBusinessType && confirmArticles">
             <p class="subtitle pt-2">Benefit Company Articles</p>
             <p class="info-text">
-              <v-icon color="green darken-2">mdi-check</v-icon>
+              <v-icon color="success">mdi-check</v-icon>
               The company has completed a set Benefit Company Articles containing a benefit provision, and a copy of
               these articles has been added to the company's record book.
             </p>
@@ -48,9 +48,10 @@
                   v-model="selectedEntityType"
                   hint="Select a New Business Type"
                   persistent-hint
-                  filled>
+                  filled
+        >
           <template slot="item" slot-scope="data">
-          <span class="list-item" :class="{ 'last-select-item': data.item.value === 'FD' }">
+          <span class="list-item">
             {{ data.item.text }}
           </span>
           </template>
@@ -115,7 +116,7 @@
             v-model="confirmArticles"
             id="confirm-articles-checkbox"
             :label="`The company has completed a set Benefit Company Articles containing a benefit provision, and a copy
-          of these articles has been added to company's record book.`"
+             of these articles has been added to company's record book.`"
           ></v-checkbox>
         </div>
 
@@ -125,7 +126,6 @@
             id="done-btn"
             large color="primary"
             :disabled="!confirmArticles"
-            :loading="false"
             @click="submitTypeChange()"
           >
             <span>Done</span>
