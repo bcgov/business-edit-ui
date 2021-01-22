@@ -52,6 +52,11 @@ export const getEffectiveDate = (state: StateIF): Date => {
   return state.stateModel.incorporationDateTime.effectiveDate
 }
 
+/** The filing's effective date. */
+export const getBusinessFoundingDate = (state: StateIF): Date => {
+  return state.stateModel.businessInformation.foundingDate
+}
+
 /** The filing's original effective date. */
 export const getOriginalEffectiveDate = (state: StateIF): string => {
   return state.stateModel.originalIA.header.date
@@ -89,7 +94,9 @@ export const getBusinessId = (state: StateIF): string => {
 
 /** The business identifier (aka incorporation number). */
 export const getCurrentBusinessName = (state: StateIF): string => {
-  return state.stateModel.originalIA.incorporationApplication.nameRequest.legalName
+  // Return the legal name from an IA for Corrections or the legal name of the business for Alterations
+  return state.stateModel.originalIA.incorporationApplication.nameRequest.legalName ||
+    state.stateModel.businessInformation.legalName
 }
 
 /** The original Incorporation Application filing( or the filing being corrected). */

@@ -1,6 +1,6 @@
 <template>
   <v-container id="name-options-container" class="pa-0">
-    <p class="name-options-info mb-5" v-if="!isOneOption">
+    <p class="info-text mb-5" v-if="!isOneOption">
       You can correct the company name in one of the following ways:
     </p>
     <v-expansion-panels v-model="panel" class="names-options-panels" accordion>
@@ -18,7 +18,7 @@
           </template>
         </v-expansion-panel-header>
         <v-expansion-panel-content class="name-options-content">
-          <span class="name-content-label" color="primary">{{item.description}}</span>
+          <span class="info-text" color="primary">{{item.description}}</span>
           <v-container>
             <component
               :is="item.component"
@@ -160,11 +160,6 @@ export default class CorrectNameOptions extends Vue {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-.name-options-info {
-  font-size: 1rem;
-  color: $gray7;
-}
-
 .name-options-header {
   align-items: start;
 }
@@ -177,14 +172,7 @@ export default class CorrectNameOptions extends Vue {
 
 .names-option-title {
   font-size: 1rem;
-  color: #1669BB;
-}
-
-.name-content-label {
-  font-size: 1rem;
-  color: $gray7;
-  font-weight: normal;
-  line-height: 1.5rem;
+  color: $app-blue;
 }
 
 .v-expansion-panel-content ::v-deep .v-expansion-panel-content__wrap {
@@ -193,7 +181,7 @@ export default class CorrectNameOptions extends Vue {
 
 .v-expansion-panel-header {
   padding: .25rem 0 0;
-  color: #1669BB;
+  color: $app-blue;
 }
 
 .v-expansion-panel--active > .v-expansion-panel-header {
@@ -220,7 +208,7 @@ export default class CorrectNameOptions extends Vue {
 
   #done-btn[disabled] {
     color: white !important;
-    background-color: #1669BB !important;
+    background-color: $app-blue !important;
     opacity: 0.2;
   }
 }

@@ -70,7 +70,7 @@ import { FolioNumber, BusinessContactInfo, OfficeAddresses } from '@/components/
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 
 // Mixins
-import { EntityFilterMixin } from '@/mixins'
+import { CommonMixin } from '@/mixins'
 
 // Enums
 import { EntityTypes } from '@/enums'
@@ -83,7 +83,7 @@ import { EntityTypes } from '@/enums'
     FolioNumber
   }
 })
-export default class SummaryDefineCompany extends Mixins(EntityFilterMixin) {
+export default class SummaryDefineCompany extends Mixins(CommonMixin) {
   // Getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string

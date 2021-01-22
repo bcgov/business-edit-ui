@@ -1,4 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
 import { omit, isEqual } from 'lodash'
 import { EntityTypes, RouteNames } from '@/enums'
 
@@ -7,6 +8,8 @@ import { EntityTypes, RouteNames } from '@/enums'
  */
 @Component({})
 export default class CommonMixin extends Vue {
+  @Getter getEntityType!: EntityTypes
+
   /** True if Jest is running the code. */
   get isJestRunning (): boolean {
     return (process.env.JEST_WORKER_ID !== undefined)
@@ -111,5 +114,15 @@ export default class CommonMixin extends Vue {
       default:
         return ''
     }
+  }
+
+  /**
+   * Method to compare the conditional entity to the entityType defined from the Store.
+   *
+   * @param entityType The entity type of the component.
+   * @return boolean A boolean indicating if the entityType given matches the entityType assigned to the component.
+   */
+  entityFilter (entityType: EntityTypes): boolean {
+    return this.getEntityType === entityType
   }
 }

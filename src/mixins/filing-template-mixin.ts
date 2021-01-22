@@ -54,6 +54,7 @@ export default class FilingTemplateMixin extends Vue {
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
   @Action setBusinessInformation!: ActionBindingIF
+  @Action setEntityType!: ActionBindingIF
   @Action setOfficeAddresses!: ActionBindingIF
   @Action setNameTranslations!: ActionBindingIF
   @Action setDefineCompanyStepValidity!: ActionBindingIF
@@ -333,6 +334,9 @@ export default class FilingTemplateMixin extends Vue {
    */
   parseBusinessSnapshot (businessSnapshot: BusinessSnapshotIF[]): void {
     if (businessSnapshot.length !== 6) throw new Error('Incomplete request responses  \'businessIdentifier\'')
+
+    // set current entity type
+    this.setEntityType(businessSnapshot[0].business.legalType)
 
     // Set Business Information
     this.setBusinessInformation(businessSnapshot[0].business)

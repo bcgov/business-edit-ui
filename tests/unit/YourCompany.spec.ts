@@ -9,7 +9,13 @@ import { getVuexStore } from '@/store'
 
 // Components
 import { createLocalVue, mount } from '@vue/test-utils'
-import { BusinessContactInfo, FolioNumber, OfficeAddresses, YourCompany } from '@/components/YourCompany'
+import {
+  BusinessContactInfo,
+  CorrectBusinessType,
+  FolioNumber,
+  OfficeAddresses,
+  YourCompany
+} from '@/components/YourCompany'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 
 Vue.use(Vuetify)
@@ -100,6 +106,7 @@ describe('YourCompany in an Alteration', () => {
 
   it('renders the YourCompany Component and default subcomponents', async () => {
     expect(wrapper.find(YourCompany).exists()).toBe(true)
+    expect(wrapper.find(CorrectBusinessType).exists()).toBe(true)
     expect(wrapper.find(BusinessContactInfo).exists()).toBe(true)
     expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
 
@@ -127,10 +134,10 @@ describe('YourCompany in an Alteration', () => {
     store.state.stateModel.nameRequest.legalName = 'BC1234567 B.C. Ltd.'
     await Vue.nextTick()
 
-    const companyInfo = wrapper.findAll('.company-info')
+    const companyInfo = wrapper.findAll('.info-text')
 
     expect(wrapper.find('.company-name').text()).toBe('BC1234567 B.C. Ltd.')
-    expect(companyInfo.at(0).text()).toBe('Business Type:  BC Benefit Company')
+    expect(companyInfo.at(0).text()).toBe('BC Benefit Company')
     expect(companyInfo.at(1).text()).toBe('The name of this business will be the current Incorporation ' +
       'Number followed by "B.C. Ltd."')
   })

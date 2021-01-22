@@ -141,6 +141,21 @@ p {
   text-align: right !important;
 }
 
+// Common Text styles
+.subtitle {
+  color: $gray9;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: bold;
+}
+
+.info-text {
+  color: $gray7;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: normal;
+}
+
 // Loading Indicator
 .loading-container {
   display: flex;
@@ -237,6 +252,10 @@ ul.list {
   }
 }
 
+.drop-down-action{
+  color: $primary-blue;
+}
+
 // No Results
 .no-results {
   text-align: center;
@@ -261,6 +280,10 @@ ul.list {
 
 .genErr {
   font-size: 0.9rem;
+}
+
+.hasConflict {
+  color: $app-red;
 }
 
 .white-background {
