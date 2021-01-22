@@ -9,7 +9,7 @@ declare const window: any
  */
 const defaultFlagSet: LDFlagSet = {
   'alteration-ui-enabled': false,
-  'correction-ui-enabled': falseß
+  'correction-ui-enabled': false
 }
 
 /**
