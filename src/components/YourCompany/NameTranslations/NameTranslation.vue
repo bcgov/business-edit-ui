@@ -14,7 +14,7 @@
           </v-flex>
       </v-flex>
       <v-flex xs7 v-if="draftTranslations && translationsExceptRemoved.length">
-        <div v-for="(translation, index) in translationsExceptRemoved"
+        <div class="info-text" v-for="(translation, index) in translationsExceptRemoved"
           :key="`name_translation_${index}`">{{translation.name}}</div>
       </v-flex>
       <v-flex xs7 v-else>

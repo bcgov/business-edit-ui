@@ -11,12 +11,11 @@
     </div>
 
     <div class="section-container">
-      <!--TODO: Replace container content with Name Request Summary when it is ready -->
       <v-layout row class="mx-0">
         <v-flex xs3>
           <v-layout column>
             <label><strong>Company Name</strong></label>
-            <v-flex md1>
+            <v-flex md1 class="mt-1">
               <v-chip v-if="companyNameChanges" x-small label color="primary" text-color="white" id="corrected-lbl">
                  {{editedLabel}}
               </v-chip>
@@ -27,24 +26,29 @@
         <template v-if="!isEditingNames">
           <v-flex xs6 class="mt-n2">
             <div class="company-name font-weight-bold">{{ companyName }}</div>
+
+            <!-- Business Type Info -->
             <template v-if="companyNameChanges && !hasNewNr">
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
-                <span>{{getEntityDesc(getEntityType)}}</span>
+                <span class="info-text">{{getEntityDesc(getEntityType)}}</span>
               </div>
-              <div class="company-info">
+              <div class="info-text pt-3">
                 <span>The name of this business will be the current Incorporation Number followed by "B.C. Ltd."</span>
               </div>
             </template>
+
+            <!-- Name Request Info -->
             <template v-if="isAlteration() && hasNewNr">
               <div class="company-name">{{ getNameRequest.nrNumber }}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
-                <span :class="{ 'hasConflict': isConflictingLegalType}">{{getEntityDesc(getNameRequest.legalType)}}
+                <span :class="{ 'hasConflict': isConflictingLegalType}"
+                      class="info-text">{{getEntityDesc(getNameRequest.legalType)}}
                 </span>
-                <v-tooltip top content-class="top-tooltip" transition="fade-transition">
+                <v-tooltip top content-class="top-tooltip" transition="fade-transition" nudge-right="3">
                   <template v-slot:activator="{ on }">
-                    <v-icon v-if="isConflictingLegalType" v-on="on" class="ml-2" color="error" small>
+                    <v-icon v-if="isConflictingLegalType" v-on="on" color="error" small>
                       mdi-alert
                     </v-icon>
                   </template>
@@ -54,19 +58,20 @@
               </div>
               <div class="company-info">
                 <span class="subtitle">Request Type: </span>
-                <span>New Business</span>
+                <span class="info-text">New Business</span>
               </div>
               <div class="company-info">
                 <span class="subtitle">Expiry Date: </span>
-                <span>{{expiryDate}}</span>
+                <span class="info-text">{{expiryDate}}</span>
               </div>
               <div class="company-info">
                 <span class="subtitle">Status: </span>
-                <span>{{getNameRequest.status}}</span>
+                <span class="info-text">{{getNameRequest.status}}</span>
               </div>
             </template>
           </v-flex>
 
+          <!-- Actions -->
           <v-flex xs1 class="mt-n2">
             <div class="actions mr-4">
               <!-- TODO: only show buttons for named company -->
@@ -130,36 +135,44 @@
           </v-flex>
         </template>
 
+        <!-- Name Request Applicant Info -->
         <template v-if="isAlteration() && hasNewNr">
-          <v-flex xs3 class="mt-6">
+          <v-flex xs3 class="sub-section">
             <v-layout column>
               <label><strong>Name Request Applicant</strong></label>
             </v-layout>
           </v-flex>
-          <v-flex xs6 class="mt-6">
+          <v-flex xs6 class="sub-section">
             <template>
               <div class="name-request-applicant-info">
                 <span class="subtitle">Name: </span>
-                <span>{{nrApplicant.fullName}}</span>
+                <span class="info-text">{{nrApplicant.fullName}}</span>
               </div>
               <div class="name-request-applicant-info">
                 <span class="subtitle">Address: </span>
-                <span>{{nrApplicant.fullAddress}}</span>
+                <span class="info-text">{{nrApplicant.fullAddress}}</span>
               </div>
               <div class="name-request-applicant-info">
                 <span class="subtitle">Email: </span>
-                <span>{{nrApplicant.emailAddress || 'N/A'}}</span>
+                <span class="info-text">{{nrApplicant.emailAddress || 'N/A'}}</span>
               </div>
               <div class="name-request-applicant-info">
                 <span class="subtitle">Phone: </span>
-                <span>{{nrApplicant.phoneNumber || 'N/A'}}</span>
+                <span class="info-text">{{nrApplicant.phoneNumber || 'N/A'}}</span>
               </div>
             </template>
           </v-flex>
         </template>
       </v-layout>
-      <correct-business-type class="mt-5" />
-      <correct-name-translation class="mt-5"
+
+      <!-- Edit Business Type -->
+      <correct-business-type
+        class="sub-section"
+        @haveChanges="companyTypeChanges = $event"
+      />
+
+      <!-- Edit Name Translation -->
+      <correct-name-translation class="sub-section"
         @haveChanges="nameTranslationChanges = $event"
       />
     </div>
@@ -172,7 +185,7 @@
           <label><strong>Recognition Date and Time</strong></label>
         </v-flex>
         <v-flex xs9>
-          <div>{{ recognitionDateTime }}</div>
+          <div class="info-text">{{ recognitionDateTime }}</div>
         </v-flex>
       </v-layout>
     </div>
@@ -256,6 +269,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   @Getter getNameRequest!: NameRequestIF
   @Getter hasNewNr!: boolean
   @Getter getOriginalEffectiveDate!: Date
+  @Getter getBusinessFoundingDate!: Date
   @Getter getFolioNumber!: string
   @Getter isConflictingLegalType!: boolean
   @Getter isNumberedCompany!: boolean
@@ -276,6 +290,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   // whether components have changes
   private companyNameChanges = false
+  private companyTypeChanges = false
   private contactInfoChanges = false
   private folioNumberChanges = false
   private nameTranslationChanges = false
@@ -293,19 +308,25 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 
+  /** Name Request applicant info */
   private get nrApplicant (): NameRequestApplicantIF {
     return this.getNameRequest?.applicant
   }
 
+  /** Name Request expiry */
   private get expiryDate (): string {
     return new Date(this.getNameRequest.expiry).toDateString()
   }
 
-  /** The recognition (aka effective) datetime. */
+  /** The recognition/founding (aka effective) datetime. */
   private get recognitionDateTime (): string {
-    return this.getOriginalEffectiveDate
-      ? (this.convertUtcTimeToLocalTime(this.getOriginalEffectiveDate.toString()) + ' Pacific Time')
-      : 'Unknown'
+    return this.isCorrection()
+      ? this.getOriginalEffectiveDate
+        ? (this.convertUtcTimeToLocalTime(this.getOriginalEffectiveDate.toString()) + ' Pacific Time')
+        : 'Unknown'
+      : this.getBusinessFoundingDate
+        ? (this.convertUtcTimeToLocalTime(this.getBusinessFoundingDate.toString()) + ' Pacific Time')
+        : 'Unknown'
   }
 
   /** Compare names. */
@@ -340,13 +361,13 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   @Watch('hasNewNr')
   private openConflictWarning (): void {
-    if (this.isConflictingLegalType && this.isAlteration()) {
+    if (this.isConflictingLegalType && !this.companyTypeChanges && this.isAlteration()) {
       // open confirmation dialog and wait for response
       this.$refs.confirm.open(
         'Name Request Type Does Not Match Business Type',
-        `This ${this.getEntityDesc(this.getNameRequest.legalType)} Name Request does not match the current ` +
-        `business type ${this.getEntityDesc(this.getEntityType)}.\n\n` +
-        `The Name Request type must match the business type before you can continue.`,
+        `<p class="info-text">This ${this.getEntityDesc(this.getNameRequest.legalType)} Name Request does ` +
+        `not match the current business type <b>${this.getEntityDesc(this.getEntityType)}</b>.\n\n` +
+        `The Name Request type must match the business type before you can continue.</p>`,
         {
           width: '35rem',
           persistent: true,
@@ -363,6 +384,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   // watchers for component change flags
   @Watch('companyNameChanges') private onCompanyNameChanges ():void { this.setDataChanges() }
+  @Watch('companyTypeChanges') private onCompanyTypeChanges ():void { this.setDataChanges() }
   @Watch('contactInfoChanges') private onContactInfoChanges ():void { this.setDataChanges() }
   @Watch('folioNumberChanges') private onFolioNumberChanges ():void { this.setDataChanges() }
   @Watch('nameTranslationChanges') private onNameTranslationChanges ():void { this.setDataChanges() }
@@ -386,6 +408,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   private setDataChanges (): void {
     const haveChanges: boolean = this.companyNameChanges ||
+      this.companyTypeChanges ||
       this.contactInfoChanges ||
       this.folioNumberChanges ||
       this.nameTranslationChanges ||
@@ -418,7 +441,10 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
 .section-container {
   padding: 1.25rem 1rem;
-  font-size: 0.875rem;
+
+  .sub-section {
+    margin-top: 1.5rem;
+  }
 }
 
 .define-company-header {
@@ -436,23 +462,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 }
 
 .company-info {
-  font-size: 1rem;
   padding-top: 0.5rem;
-  color: $gray7;
-}
-
-.subtitle {
-  color: $gray9;
-  font-weight: bold;
-}
-
-.hasConflict {
-  color: $app-red;
-}
-
-.name-request-applicant-info {
-  font-size: 1rem;
-  color: $gray7;
 }
 
 .name-request-applicant-info:not(:first-child) {
@@ -466,9 +476,5 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   .v-btn {
     min-width: 0.5rem;
   }
-}
-
-.drop-down-action{
-  color: $primary-blue;
 }
 </style>

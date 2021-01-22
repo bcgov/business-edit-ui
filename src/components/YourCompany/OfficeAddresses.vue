@@ -296,12 +296,12 @@ import { OfficeAddressSchema } from '@/schemas'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, IncorporationAddressIf, IncorporationFilingIF } from '@/interfaces'
 import { AddressTypes, EntityTypes } from '@/enums'
-import { CommonMixin, EntityFilterMixin } from '@/mixins'
+import { CommonMixin } from '@/mixins'
 
 @Component({
   components: { BaseAddress }
 })
-export default class OfficeAddresses extends Mixins(CommonMixin, EntityFilterMixin) {
+export default class OfficeAddresses extends Mixins(CommonMixin) {
   // Global getters
   @Getter getOfficeAddresses!: IncorporationAddressIf // NB: may be {}
   @Getter getOriginalIA!: IncorporationFilingIF

@@ -52,6 +52,11 @@ export const getEffectiveDate = (state: StateIF): Date => {
   return state.stateModel.incorporationDateTime.effectiveDate
 }
 
+/** The filing's effective date. */
+export const getBusinessFoundingDate = (state: StateIF): Date => {
+  return state.stateModel.businessInformation.foundingDate
+}
+
 /** The filing's original effective date. */
 export const getOriginalEffectiveDate = (state: StateIF): string => {
   return state.stateModel.originalIA.header.date

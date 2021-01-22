@@ -42,7 +42,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { CommonMixin, EnumMixin } from '@/mixins'
 import { BusinessContactIF, BusinessInformationIF } from '@/interfaces'
-import { EntityTypes, RouteNames } from '@/enums'
+import { EntityTypes } from '@/enums'
 
 @Component({})
 export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
@@ -51,7 +51,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   @Getter getBusinessId!: string
   @Getter getBusinessNumber!: string
   @Getter getCurrentBusinessName!: string
-  @Getter getEntityType!: string
+  @Getter getEntityType!: EntityTypes
   @Getter isRoleStaff!: boolean
   @Getter getBusinessContact!: BusinessContactIF
   @Getter getBusinessInformation!: BusinessInformationIF
