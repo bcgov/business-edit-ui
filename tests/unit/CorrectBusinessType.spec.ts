@@ -50,7 +50,7 @@ describe('CorrectBusinessType in an Alteration', () => {
     {
       business: {
         legalName: 'Mock Original Name',
-        legalType: 'CR'
+        legalType: 'BC'
       }
     }
   ]

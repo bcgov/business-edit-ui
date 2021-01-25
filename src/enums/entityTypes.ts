@@ -2,10 +2,11 @@
 export enum EntityTypes {
   BC_CCC = 'CC',
   BC_COMPANY = 'BCC', // FUTURE: should be 'BC'
-  BC_CORPORATION = 'CR', // NOT IN COLIN - NR ONLY?
+  NR_BC_CORPORATION = 'CR', // NOT IN COLIN - NR ONLY
+  BC_CORPORATION = 'BC', // BC Corporation limited company code in Lear
   BC_ULC_COMPANY = 'ULC',
   BENEFIT_COMPANY = 'BEN',
-  NRO_BENEFIT_COMPANY = 'BC', // FUTURE: Can remove when/if upstream Benefit Company Code is updated to BEN
+  NR_BENEFIT_COMPANY = 'BC', // FUTURE: Can remove when/if upstream Benefit Company Code is updated to BEN
   CCC_CONTINUE_IN = 'CCC',
   CO_1860 = 'QA',
   CO_1862 = 'QB',

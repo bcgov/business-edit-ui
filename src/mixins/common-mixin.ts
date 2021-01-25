@@ -109,6 +109,8 @@ export default class CommonMixin extends Vue {
         return 'BC Benefit Company'
       case EntityTypes.BC_CORPORATION:
         return 'BC Limited Company'
+      case EntityTypes.NR_BC_CORPORATION:
+        return 'BC Limited Company'
       case EntityTypes.COOP:
         return 'BC Cooperative Association'
       default:
