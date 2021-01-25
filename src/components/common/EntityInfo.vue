@@ -14,7 +14,7 @@
           </div>
 
           <dl class="business-info">
-            <dd id="entity-legal-type">{{getEntityDesc(getEntityType)}}</dd>
+            <dd id="entity-legal-type">{{originalEntityType}}</dd>
             <dt class="mr-2">Business No:</dt>
             <dd id="entity-business-number">{{ getBusinessNumber || 'Not Available' }}</dd>
             <dt class="mr-2">Incorporation No:</dt>
@@ -41,7 +41,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { CommonMixin, EnumMixin } from '@/mixins'
-import { BusinessContactIF, BusinessInformationIF } from '@/interfaces'
+import { BusinessContactIF, BusinessInformationIF, BusinessSnapshotIF, IncorporationFilingIF } from '@/interfaces'
 import { EntityTypes } from '@/enums'
 
 @Component({})
@@ -55,6 +55,16 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   @Getter isRoleStaff!: boolean
   @Getter getBusinessContact!: BusinessContactIF
   @Getter getBusinessInformation!: BusinessInformationIF
+  @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter getOriginalSnapshot!: BusinessSnapshotIF[]
+
+  /** Get original etity type. */
+  private get originalEntityType () {
+    return this.getEntityDesc(this.isCorrection()
+      ? this.getOriginalIA.business.legalType
+      : this.getOriginalSnapshot[0].business.legalType
+    )
+  }
 
   /** The route breadcrumbs list. */
   private get breadcrumbs (): Array<any> {

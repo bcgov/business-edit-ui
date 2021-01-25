@@ -17,7 +17,7 @@
         <div class="info-text" v-for="(translation, index) in translationsExceptRemoved"
           :key="`name_translation_${index}`">{{translation.name}}</div>
       </v-flex>
-      <v-flex xs7 v-else>
+      <v-flex class="info-text" xs7 v-else>
         No name translations
       </v-flex>
       <v-flex xs2 class="align-right" v-if="!hasNameTranslationChange">

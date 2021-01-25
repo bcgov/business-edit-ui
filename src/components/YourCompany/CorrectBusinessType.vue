@@ -32,7 +32,7 @@
             </span>
           </v-tooltip>
           <template v-if="isNewBusinessType && confirmArticles">
-            <p class="subtitle pt-2">Benefit Company Articles</p>
+            <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
             <p class="info-text">
               <v-icon color="success">mdi-check</v-icon>
               The company has completed a set Benefit Company Articles containing a benefit provision, and a copy of
@@ -244,7 +244,7 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
   /** Entity Options. */
   private entityTypeOptions = [
     {
-      value: 'CR',
+      value: 'BC',
       SHORT_DESC: 'BC Limited Company',
       text: 'BC Limited Company'
     },
