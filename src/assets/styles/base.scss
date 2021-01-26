@@ -144,21 +144,12 @@ p {
 // Common Text styles
 .subtitle {
   color: $gray9;
-  font-size: 1rem;
-  line-height: 1.5rem;
   font-weight: bold;
 }
 
 .info-text {
   color: $gray7;
-  font-size: 1rem;
-  line-height: 1.5rem;
   font-weight: normal;
-}
-
-.small-text {
-  font-size: .875rem !important;
-  line-height: 1.375rem !important;
 }
 
 // Loading Indicator

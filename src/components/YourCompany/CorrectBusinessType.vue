@@ -35,7 +35,7 @@
             <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
             <div class="confirmed-msg">
               <v-icon color="success" class="confirmed-icon">mdi-check</v-icon>
-              <span class="info-text small-text confirmed-icon ml-2">
+              <span class="info-text text-body-3 confirmed-icon ml-2">
               The company has completed a set Benefit Company Articles containing a benefit provision, and a copy of
               these articles has been added to the company's record book.
               </span>
@@ -75,7 +75,7 @@
               containing a benefit provision.</p>
           </div>
 
-          <section class="help-section">
+          <section class="text-body-3">
             <!-- Help Section Toggle -->
             <div class="info-text help-toggle pt-2" @click="helpToggle = !helpToggle">
               <v-icon class="pr-2 mt-n2" color="primary">mdi-help-circle-outline</v-icon>
@@ -120,8 +120,7 @@
               <v-checkbox
                 v-model="confirmArticles"
                 id="confirm-articles-checkbox"
-                :label="`The company has completed a set Benefit Company Articles containing a benefit provision, and a
-              copy of these articles has been added to company's record book.`"
+                :label="confirmLabel"
               ></v-checkbox>
             </div>
           </section>
@@ -242,6 +241,9 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
   /** V-model for dropdown menu. */
   private dropdown: boolean = null
 
+  private readonly confirmLabel: string = `The company has completed a set Benefit Company Articles containing a benefit
+    provision, and a copy of these articles has been added to company's record book.`
+
   /** Define the entity type locally once the value has been populated in the store. */
   @Watch('getEntityType')
   private initializeEntityType () {
@@ -270,12 +272,12 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
 
   /** Verify New Business type. */
   private get isNewBusinessType (): boolean {
-    return this.getEntityType && this.getEntityType !== this.getOriginalSnapshot[0]?.business?.legalType
+    return this.getEntityType && (this.getEntityType !== this.getOriginalSnapshot[0]?.business?.legalType)
   }
 
   /** Verify New Business name. */
   private get isNewName (): boolean {
-    return this.getApprovedName && this.getApprovedName !== this.getOriginalSnapshot[0]?.business?.legalName
+    return this.getApprovedName && (this.getApprovedName !== this.getOriginalSnapshot[0]?.business?.legalName)
   }
 
   /** Check is current entity selection is a Benefit Company */
@@ -305,13 +307,6 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-
-.help-section {
-  .subtitle, .info-text {
-    font-size: .875rem !important;
-    line-height: 1.375rem !important;
-  }
-}
 
 ol {
   counter-reset: item;
