@@ -278,6 +278,7 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
     return this.getApprovedName && this.getApprovedName !== this.getOriginalSnapshot[0]?.business?.legalName
   }
 
+  /** Check is current entity selection is a Benefit Company */
   private get isBenefit (): boolean {
     return this.selectedEntityType === EntityTypes.BENEFIT_COMPANY
   }
