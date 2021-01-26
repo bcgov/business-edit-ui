@@ -61,8 +61,8 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   /** Get original etity type. */
   private get originalEntityType () {
     return this.getEntityDesc(this.isCorrection()
-      ? this.getOriginalIA.business.legalType
-      : this.getOriginalSnapshot[0].business.legalType
+      ? this.getOriginalIA?.business?.legalType
+      : this.getOriginalSnapshot[0]?.business?.legalType
     )
   }
 

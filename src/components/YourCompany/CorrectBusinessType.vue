@@ -15,10 +15,10 @@
       <v-flex xs8 v-if="!isEditingType">
         <template>
           <span class="info-text"
-                :class="{ 'hasConflict': isConflictingLegalType && !isNewBusinessType}"
+                :class="{ 'hasConflict': isConflictingLegalType && isNewName}"
           >{{getEntityDesc(getEntityType)}}
           </span>
-          <v-tooltip v-if="isConflictingLegalType && !isNewBusinessType"
+          <v-tooltip v-if="isConflictingLegalType && isNewName"
                      top
                      content-class="top-tooltip"
                      transition="fade-transition"
@@ -31,13 +31,15 @@
               Business Types do not match. The Name Request type must match the business type before you can continue.
             </span>
           </v-tooltip>
-          <template v-if="isNewBusinessType && confirmArticles">
+          <template v-if="isNewBusinessType">
             <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
-            <p class="info-text">
-              <v-icon color="success">mdi-check</v-icon>
+            <div class="confirmed-msg">
+              <v-icon color="success" class="confirmed-icon">mdi-check</v-icon>
+              <span class="info-text small-text confirmed-icon ml-2">
               The company has completed a set Benefit Company Articles containing a benefit provision, and a copy of
               these articles has been added to the company's record book.
-            </p>
+              </span>
+            </div>
           </template>
         </template>
       </v-flex>
@@ -65,61 +67,65 @@
         <!-- Contact Info -->
         <contact-info :direction="'col'"/>
 
-        <div class="my-6">
-          <p class="subtitle">Benefit Company Articles</p>
-          <p class="info-text">Before submitting your alteration notice you <span class="font-weight-bold">must change
-            your company's articles to include a set of Benefit Company Articles</span> OR draft new articles containing
-            a benefit provision.</p>
-        </div>
+        <template v-if="isBenefit">
+          <div class="my-6">
+            <p class="subtitle">Benefit Company Articles</p>
+            <p class="info-text">Before submitting your alteration notice you <span class="font-weight-bold">must
+                change your company's articles to include a set of Benefit Company Articles</span> OR draft new articles
+              containing a benefit provision.</p>
+          </div>
 
-        <!-- Help Section Toggle -->
-        <div class="info-text help-toggle pt-2" @click="helpToggle = !helpToggle">
-          <v-icon class="pr-2 mt-n2" color="primary">mdi-help-circle-outline</v-icon>
-          <span v-if="!helpToggle">Learn More</span>
-          <span v-else>Hide Learn More</span>
-        </div>
+          <section class="help-section">
+            <!-- Help Section Toggle -->
+            <div class="info-text help-toggle pt-2" @click="helpToggle = !helpToggle">
+              <v-icon class="pr-2 mt-n2" color="primary">mdi-help-circle-outline</v-icon>
+              <span v-if="!helpToggle">Learn More</span>
+              <span v-else>Hide Learn More</span>
+            </div>
 
-        <!-- Help Section -->
-        <section v-show="helpToggle" class="mx-8 my-6">
-          <p class="subtitle mb-2">Benefit Provision</p>
-          <p class="info-text">
-            A benefit company must include a benefit provision (a statement by the company of its public benefits and
-            its commitments to promote those public benefits and to conduct business in a responsible and sustainable
-            manner) in the company's articles. The benefit provision can be added as part of the company's existing
-            articles or as part of new articles.
-          </p>
-          <div class="provision-help">
-            <p class="subtitle">Part 1 - Benefit Provision</p>
-            <ol class="info-text ml-2 pl-0">
-              <li style="list-style:none;">
-                <ol>
-                  <li class="mb-4">
-                    <span class="ml-4">The Company commits to promote the following public benefits:</span><br>
-                    <span class="ml-2">[List your public benefits in this section]</span>
-                  </li>
-                  <li>
-                    <span class="ml-4">The Company commits</span><br>
-                    <div class="ml-5">
+            <!-- Help Section -->
+            <section v-show="helpToggle" class="mx-8 my-7">
+              <p class="subtitle mb-2">Benefit Provision</p>
+              <p class="info-text">
+                A benefit company must include a benefit provision (a statement by the company of its public benefits
+                and its commitments to promote those public benefits and to conduct business in a responsible and
+                sustainable manner) in the company's articles. The benefit provision can be added as part of the
+                company's existing articles or as part of new articles.
+              </p>
+              <div class="provision-help">
+                <p class="subtitle">Part 1 - Benefit Provision</p>
+                <ol class="info-text ml-2 pl-0">
+                  <li style="list-style:none;">
+                    <ol>
+                      <li class="mb-4">
+                        <span class="ml-4">The Company commits to promote the following public benefits:</span><br>
+                        <span class="ml-2">[List your public benefits in this section]</span>
+                      </li>
+                      <li>
+                        <span class="ml-4">The Company commits</span><br>
+                        <div class="ml-5">
                       <span class="ml-n3">i) to conduct the benefit company's business in a responsible and sustainable
                       manner;</span><br>
-                      <span class="ml-n3">ii) to promote the public benefits specific in paragraph 1.1</span>
-                    </div>
+                          <span class="ml-n3">ii) to promote the public benefits specific in paragraph 1.1</span>
+                        </div>
+                      </li>
+                    </ol>
                   </li>
                 </ol>
-              </li>
-            </ol>
-          </div>
-        </section>
+              </div>
+            </section>
 
-        <!-- Confirm Articles Checkbox -->
-        <div class="pt-2 pr-2">
-          <v-checkbox
-            v-model="confirmArticles"
-            id="confirm-articles-checkbox"
-            :label="`The company has completed a set Benefit Company Articles containing a benefit provision, and a copy
-             of these articles has been added to company's record book.`"
-          ></v-checkbox>
-        </div>
+            <!-- Confirm Articles Checkbox -->
+            <div class="pr-2">
+              <v-checkbox
+                v-model="confirmArticles"
+                id="confirm-articles-checkbox"
+                :label="`The company has completed a set Benefit Company Articles containing a benefit provision, and a
+              copy of these articles has been added to company's record book.`"
+              ></v-checkbox>
+            </div>
+          </section>
+        </template>
 
         <!-- Done Actions -->
         <div class="action-btns">
@@ -219,6 +225,7 @@ import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
   }
 })
 export default class CorrectBusinessType extends Mixins(CommonMixin) {
+  @Getter getApprovedName!: string
   @Getter getEntityType!: EntityTypes
   @Getter isConflictingLegalType: boolean
   @Getter getOriginalSnapshot: BusinessSnapshotIF
@@ -241,6 +248,12 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
     this.selectedEntityType = this.getEntityType
   }
 
+  /** Clear the articles confirm checkbox whenever the selected entity type changes. */
+  @Watch('selectedEntityType')
+  private clearConfirmArticles () {
+    this.confirmArticles = false
+  }
+
   /** Entity Options. */
   private entityTypeOptions = [
     {
@@ -258,6 +271,15 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
   /** Verify New Business type. */
   private get isNewBusinessType (): boolean {
     return this.getEntityType && this.getEntityType !== this.getOriginalSnapshot[0]?.business?.legalType
+  }
+
+  /** Verify New Business name. */
+  private get isNewName (): boolean {
+    return this.getApprovedName && this.getApprovedName !== this.getOriginalSnapshot[0]?.business?.legalName
+  }
+
+  private get isBenefit (): boolean {
+    return this.selectedEntityType === EntityTypes.BENEFIT_COMPANY
   }
 
   /** Reset company type values to original. */
@@ -283,6 +305,13 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
+.help-section {
+  .subtitle, .info-text {
+    font-size: .875rem !important;
+    line-height: 1.375rem !important;
+  }
+}
+
 ol {
   counter-reset: item;
 
@@ -297,6 +326,13 @@ ol {
   ol > li:before {
     content: counters(item, ".");
     margin-left: -32px;
+  }
+}
+
+.confirmed-msg {
+  display: flex;
+  .confirmed-icon, .confirmed-note {
+    display: block;
   }
 }
 
@@ -327,7 +363,7 @@ ol {
 }
 
 .action-btns {
-  margin: 30px 0;
+  margin: 15px 0;
   display: flex;
   justify-content: flex-end;
 

@@ -11,7 +11,7 @@
     </div>
 
     <div class="section-container">
-      <v-layout row class="mx-0">
+      <v-layout row class="mx-0 mt-4">
         <v-flex xs3>
           <v-layout column>
             <label><strong>Company Name</strong></label>
@@ -46,9 +46,14 @@
                 <span :class="{ 'hasConflict': isConflictingLegalType}"
                       class="info-text">{{getEntityDesc(getNameRequest.legalType)}}
                 </span>
-                <v-tooltip top content-class="top-tooltip" transition="fade-transition" nudge-right="3">
+                <v-tooltip v-if="isConflictingLegalType"
+                           top
+                           content-class="top-tooltip"
+                           transition="fade-transition"
+                           nudge-right="3"
+                >
                   <template v-slot:activator="{ on }">
-                    <v-icon v-if="isConflictingLegalType" v-on="on" color="error" small>
+                    <v-icon v-on="on" color="error" small>
                       mdi-alert
                     </v-icon>
                   </template>
@@ -159,7 +164,7 @@
               </div>
               <div class="name-request-applicant-info">
                 <span class="subtitle">Phone: </span>
-                <span class="info-text">{{nrApplicant.phoneNumber || 'N/A'}}</span>
+                <span class="info-text">{{phoneNumber || 'N/A'}}</span>
               </div>
             </template>
           </v-flex>
@@ -317,7 +322,12 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   /** Name Request expiry */
   private get expiryDate (): string {
-    return new Date(this.getNameRequest.expiry).toDateString()
+    return this.toDisplayDate(this.getNameRequest.expiry)
+  }
+
+  /** Name Request phone number */
+  private get phoneNumber (): string {
+    return this.toDisplayPhone(this.nrApplicant.phoneNumber)
   }
 
   /** The recognition/founding (aka effective) datetime. */

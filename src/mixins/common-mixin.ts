@@ -127,4 +127,23 @@ export default class CommonMixin extends Vue {
   entityFilter (entityType: EntityTypes): boolean {
     return this.getEntityType === entityType
   }
+
+  /**
+   * Format a phone number for display.
+   * @param phoneNumber The phone number to format.
+   * @returns string A formatted phone display phone number.
+   */
+  toDisplayPhone (phoneNumber: string): string {
+    // Filter only numbers from the input
+    let cleaned = ('' + phoneNumber).replace(/\D/g, '')
+
+    // Check if the input is of correct length
+    let match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+
+    if (match) {
+      return '(' + match[1] + ') ' + match[2] + '-' + match[3]
+    }
+
+    return null
+  }
 }

@@ -97,6 +97,10 @@ describe('CorrectBusinessType in an Alteration', () => {
   })
 
   it('displays the confirm articles checkbox and enables Done btn when selected', async () => {
+    // Set the selected entity to Benefit Company
+    wrapper.vm.selectedEntityType = 'BEN'
+    await Vue.nextTick()
+
     // Verify checkbox is hidden until in display mode
     expect(wrapper.find('#confirm-articles-checkbox').exists()).toBe(false)
 
