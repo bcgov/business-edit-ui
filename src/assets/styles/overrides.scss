@@ -1,6 +1,20 @@
 // Vuetify Overrides
 @import "theme.scss";
 
+// Text
+.v-application {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-family: 'BCSans', Verdana, Arial, sans-serif !important;
+  padding: 0;
+
+  .text-body-3 {
+    font-family: inherit;
+    font-size: 0.875rem !important;
+    line-height: 1.375rem !important;
+  }
+}
+
 // Buttons
 .v-btn {
   min-width: 0;

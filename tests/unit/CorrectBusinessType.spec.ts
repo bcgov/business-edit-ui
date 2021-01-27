@@ -97,6 +97,9 @@ describe('CorrectBusinessType in an Alteration', () => {
   })
 
   it('displays the confirm articles checkbox and enables Done btn when selected', async () => {
+    // Set the selected entity to Benefit Company
+    wrapper.setData({ selectedEntityType: 'BEN' })
+
     // Verify checkbox is hidden until in display mode
     expect(wrapper.find('#confirm-articles-checkbox').exists()).toBe(false)
 

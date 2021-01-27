@@ -23,22 +23,18 @@ export default class DateMixin extends Vue {
   }
 
   /**
-   * Formats a simple date string (YYYY-MM-DD) to (Month Day, Year) for readability.
-   * @param date the date string to format
-   * @returns the formatted date string
+   * Converts a date to the preferred display format
+   * @param date The date to display
+   * @returns A date in display format
    */
-  toReadableDate (date: string): string {
-    // cast to a workable dateString
-    // split into an array
-    let formatDate = (new Date(date).toDateString()).split(' ')
+  toDisplayDate (date: string): string {
+    const newDate = new Date(date)
+    const month = newDate.toLocaleString('default', { month: 'long' })
+    const day = newDate.getDate()
+    const year = newDate.getFullYear()
 
-    // remove the 'weekday' from the array
-    // join the array
-    // add a comma to the date output
-    const regex = / (?!.* )/
-    return formatDate.slice(1).join(' ').replace(regex, ', ')
+    return `${month} ${day}, ${year}`
   }
-
   /**
    * Converts a datetime from UTC to local (Pacific) timezone.
    * @param date the datetime string in UTC timezone

@@ -149,7 +149,7 @@ describe('YourCompany in an Alteration', () => {
     store.state.stateModel.nameRequest.status = 'APPROVED'
     store.state.stateModel.nameRequest.applicant.fullName = 'Mock Full Name'
     store.state.stateModel.nameRequest.applicant.fullAddress = '123 Mock Lane, Victoria, BC, 1t2 3t4, CA'
-    store.state.stateModel.nameRequest.applicant.phoneNumber = '250 123-4567'
+    store.state.stateModel.nameRequest.applicant.phoneNumber = '2501234567'
     await Vue.nextTick()
 
     const companyInfo = wrapper.findAll('.company-info')
@@ -159,7 +159,7 @@ describe('YourCompany in an Alteration', () => {
 
     expect(companyInfo.at(0).text()).toBe('Business Type:  BC Limited Company')
     expect(companyInfo.at(1).text()).toBe('Request Type:  New Business')
-    expect(companyInfo.at(2).text()).toBe('Expiry Date:  Wed Mar 10 2021')
+    expect(companyInfo.at(2).text()).toBe('Expiry Date:  March 10, 2021')
     expect(companyInfo.at(3).text()).toBe('Status:  APPROVED')
 
     const nameRequestApplicantInfo = wrapper.findAll('.name-request-applicant-info')
@@ -167,6 +167,37 @@ describe('YourCompany in an Alteration', () => {
     expect(nameRequestApplicantInfo.at(0).text()).toBe('Name:  Mock Full Name')
     expect(nameRequestApplicantInfo.at(1).text()).toBe('Address:  123 Mock Lane, Victoria, BC, 1t2 3t4, CA')
     expect(nameRequestApplicantInfo.at(2).text()).toBe('Email:  N/A')
-    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  250 123-4567')
+    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  (250) 123-4567')
+  })
+
+  it('formats multiple phone numbers correctly', async () => {
+    const nameRequestApplicantInfo = wrapper.findAll('.name-request-applicant-info')
+
+    store.state.stateModel.nameRequest.applicant.phoneNumber = '123 456 7890'
+    await Vue.nextTick()
+
+    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  (123) 456-7890')
+
+    store.state.stateModel.nameRequest.applicant.phoneNumber = '0987654321'
+    await Vue.nextTick()
+
+    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  (098) 765-4321')
+
+    store.state.stateModel.nameRequest.applicant.phoneNumber = '123-456-7890'
+    await Vue.nextTick()
+
+    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  (123) 456-7890')
+
+    // Verify an incomplete phone number
+    store.state.stateModel.nameRequest.applicant.phoneNumber = '456 7890'
+    await Vue.nextTick()
+
+    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  N/A')
+
+    // Verify an empty phone number
+    store.state.stateModel.nameRequest.applicant.phoneNumber = null
+    await Vue.nextTick()
+
+    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  N/A')
   })
 })
