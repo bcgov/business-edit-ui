@@ -5,7 +5,7 @@ import { NOT_FOUND } from 'http-status-codes'
 import { axios } from '@/utils'
 
 // Interfaces
-import { ActionBindingIF, CorrectionFilingIF, IncorporationFilingIF } from '@/interfaces'
+import { ActionBindingIF, AlterationFilingIF, CorrectionFilingIF, IncorporationFilingIF } from '@/interfaces'
 
 // Mixins
 import { FilingTemplateMixin } from '@/mixins'
@@ -70,7 +70,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * @param isDraft boolean indicating whether to save draft or complete the filing
    * @returns a promise to return the updated filing
    */
-  async updateFiling (filing: CorrectionFilingIF | IncorporationFilingIF, isDraft: boolean): Promise<any> {
+  async updateFiling (filing: CorrectionFilingIF | AlterationFilingIF, isDraft: boolean): Promise<any> {
     if (!filing) throw new Error('updateFiling(), invalid filing')
     const filingId = this.getFilingId
     if (!filingId) throw new Error('updateFiling(), invalid filing id')
@@ -82,6 +82,33 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
     }
 
     return axios.put(url, { filing }).then(response => {
+      console.log(response)
+      const filing = response?.data?.filing
+      const filingId = +filing?.header?.filingId
+      if (!filing || !filingId) {
+        throw new Error('Invalid API response')
+      }
+      return filing
+    })
+    // NB: for error handling, see "save-error-event"
+  }
+
+  /**
+   * Creates an alteration filing.
+   * @param filing the object body of the request
+   * @param isDraft boolean indicating whether to save draft or complete the filing
+   * @returns a promise to return the updated filing
+   */
+  async createAlteration (filing: AlterationFilingIF, isDraft: boolean): Promise<any> {
+    if (!filing) throw new Error('updateFiling(), invalid filing')
+
+    // put updated filing to filings endpoint
+    let url = `businesses/${this.getBusinessId}/filings`
+    if (isDraft) {
+      url += '?draft=true'
+    }
+
+    return axios.post(url, { filing }).then(response => {
       const filing = response?.data?.filing
       const filingId = +filing?.header?.filingId
       if (!filing || !filingId) {

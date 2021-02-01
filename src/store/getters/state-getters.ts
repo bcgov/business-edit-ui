@@ -324,5 +324,5 @@ export const isNumberedCompany = (state: StateIF): boolean => {
 }
 
 export const isConflictingLegalType = (state: StateIF): boolean => {
-  return state.stateModel.tombstone.entityType !== state.stateModel.nameRequest.legalType
+  return state.stateModel.tombstone.entityType !== state.stateModel.businessInformation.legalType
 }

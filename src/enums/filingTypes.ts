@@ -1,4 +1,5 @@
 export enum FilingTypes {
-  INCORPORATION_APPLICATION = 'incorporationApplication',
-  CORRECTION = 'correction'
+  ALTERATION = 'alteration',
+  CORRECTION = 'correction',
+  INCORPORATION_APPLICATION = 'incorporationApplication'
 }

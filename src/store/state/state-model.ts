@@ -122,10 +122,11 @@ export const stateModel: StateModelIF = {
       name: '',
       certifiedBy: '',
       date: '',
-      folioNumber: ''
+      folioNumber: '',
+      effectiveDate: null
     },
     business: {
-      foundingDate: '',
+      foundingDate: null,
       legalName: '',
       legalType: '',
       identifier: ''
@@ -137,7 +138,9 @@ export const stateModel: StateModelIF = {
         identifier: ''
       },
       nameRequest: {
-        legalType: ''
+        legalType: null,
+        nrNumber: '',
+        legalName: ''
       },
       nameTranslations: [],
       shareStructure: {

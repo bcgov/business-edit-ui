@@ -14,7 +14,7 @@ import {
   IncorporationFilingIF,
   OrgPersonIF,
   ShareClassIF,
-  NameTranslationIF
+  NameTranslationIF, NameRequestIF
 } from '@/interfaces'
 
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
@@ -32,6 +32,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
   @Getter getApprovedName!: string
+  @Getter getBusinessFoundingDate!: Date
   @Getter getBusinessId!: string
   @Getter getCurrentDate!: string
   @Getter getEntityType!: EntityTypes
@@ -46,10 +47,12 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getDetailComment!: string
   @Getter getDefaultCorrectionDetailComment!: string
   @Getter getNameTranslations!: NameTranslationIF[]
+  @Getter getNameRequest!: NameRequestIF
   @Getter getCertifyState!: CertifyIF
   @Getter getOfficeAddresses!: IncorporationAddressIf | {}
   @Getter getBusinessContact!: BusinessContactIF
   @Getter getAgreementType!: string
+  @Getter getOriginalSnapshot: BusinessSnapshotIF[]
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -69,6 +72,7 @@ export default class FilingTemplateMixin extends Vue {
   @Action setIncorporationAgreementStepData!: ActionBindingIF
   @Action setStaffPayment!: ActionBindingIF
   @Action setDetailComment!: ActionBindingIF
+  @Action setOriginalSnapshot!: ActionBindingIF
 
   /**
    * Builds an Incorporation Application Correction filing body from store data. Used when saving a filing.
@@ -179,9 +183,66 @@ export default class FilingTemplateMixin extends Vue {
    * @returns the Alteration filing body to save
    */
   buildAlterationFiling (isDraft: boolean): AlterationFilingIF {
-    // Alteration body to save TBD
-    const alteration: AlterationFilingIF = null
-    return alteration
+    // TODO: This section should be extracted to something common between all build filings.
+    // if filing and paying, filter out removed entities and omit the 'action' property
+    let parties = this.getPeopleAndRoles
+    let shareClasses = this.getShareClasses
+    let nameTranslations = this.getNameTranslations
+
+    if (!isDraft) {
+      // Filter out parties actions
+      parties = parties.filter(x => x.action !== ActionTypes.REMOVED)
+        .map((x) => { const { action, ...rest } = x; return rest })
+
+      // Filter out class actions
+      shareClasses = shareClasses.filter(x => x.action !== ActionTypes.REMOVED)
+        .map((x) => { const { action, ...rest } = x; return rest })
+
+      // Filter out series actions
+      for (const [index, share] of shareClasses.entries()) {
+        shareClasses[index].series = share.series?.filter(x => x.action !== ActionTypes.REMOVED)
+          .map((x) => { const { action, ...rest } = x; return rest })
+      }
+
+      // Filter out and modify name translation to match schema
+      nameTranslations = this.prepareNameTranslations()
+    }
+
+    // Build filing.
+    const filing: AlterationFilingIF = {
+      header: {
+        name: FilingTypes.ALTERATION,
+        certifiedBy: this.getCertifyState.certifiedBy,
+        date: this.getCurrentDate,
+        effectiveDate: this.getEffectiveDate
+      },
+      business: {
+        foundingDate: this.getOriginalSnapshot[0].business.foundingDate,
+        legalType: this.getOriginalSnapshot[0].business.legalType,
+        identifier: this.getOriginalSnapshot[0].business.identifier,
+        legalName: this.getOriginalSnapshot[0].business.legalName
+      },
+      alteration: {
+        provisionsRemoved: null,
+        business: {
+          identifier: this.getBusinessId,
+          legalType: this.getEntityType
+        },
+        nameRequest: { ...this.getNameRequest },
+        nameTranslations: nameTranslations,
+        shareStructure: {
+          resolutionDates: [],
+          shareClasses
+        },
+        contactPoint: {
+          email: this.getBusinessContact.email,
+          phone: this.getBusinessContact.phone,
+          extension: this.getBusinessContact.extension
+        }
+      }
+    }
+
+    return filing
   }
 
   /**
@@ -321,11 +382,92 @@ export default class FilingTemplateMixin extends Vue {
 
   /**
    * Parses an alteration filing into the store.
-   * @param filing the alteration filing body to be parsed
+   * @param filing The alteration filing body to be parsed
+   * @param businessSnapshot The current business snapshot
    */
-  parseAlteration (filing: any): void {
-    // Alteration body to parse TBD
-    // Will refactor above parse function into 1 generic filing parse function when we know more
+  parseAlteration (filing: AlterationFilingIF, businessSnapshot: BusinessSnapshotIF[]): void {
+    if (businessSnapshot.length !== 6) throw new Error('Incomplete request responses  \'businessIdentifier\'')
+
+    // Set original snapshot to store
+    this.setOriginalSnapshot(businessSnapshot)
+
+    // set current entity type
+    this.setEntityType(filing.alteration.business.legalType)
+
+    // Set Business Information
+    this.setBusinessInformation({ foundingDate: filing.business.foundingDate, ...filing.alteration.business })
+
+    // Set Name Request
+    this.setNameRequest(filing.alteration.nameRequest)
+
+    // Set Name Translations
+    this.setNameTranslations(
+      filing.alteration.nameTranslations?.map(x => {
+        return {
+          id: x.id,
+          name: x.name,
+          oldName: x.oldName || null,
+          action: x.action || null
+        }
+      }) || []
+    )
+
+    // Set Office Addresses
+    this.setOfficeAddresses(businessSnapshot[2])
+
+    // Set Business Contact
+    const contact = {
+      ...filing.alteration.contactPoint,
+      confirmEmail: filing.alteration.contactPoint.email
+    }
+    this.setBusinessContact(contact)
+
+    // Set People and Roles
+    this.setPeopleAndRoles(businessSnapshot[3].directors?.map(director => {
+      return {
+        officer: {
+          firstName: director.officer.firstName,
+          lastName: director.officer.lastName
+        },
+        mailingAddress: director.deliveryAddress,
+        deliveryAddress: director.mailingAddress,
+        roles: [
+          {
+            roleType: director.role,
+            appointmentDate: director.appointmentDate,
+            cessationDate: null
+          }
+        ]
+      }
+    }))
+
+    // Set Share Structure
+    if (filing.alteration.shareStructure) {
+      this.setShareClasses(filing.alteration.shareStructure.shareClasses)
+    } else {
+      // if it exists, load data from old schema
+      const shareClasses = (filing.alteration as any).shareClasses
+      if (shareClasses) {
+        this.setShareClasses(shareClasses)
+      } else {
+        this.setShareClasses([])
+      }
+    }
+
+    // Set Certify Form
+    this.setCertifyState({
+      valid: false,
+      certifiedBy: filing.header.certifiedBy
+    })
+
+    // Set Folio Number
+    this.setFolioNumber(filing.header.folioNumber)
+
+    // Set Filing Date
+    this.setFilingDate(filing.header.date)
+
+    // Set Effective Time
+    this.setEffectiveDate(filing.header.effectiveDate)
   }
 
   /**
@@ -334,6 +476,9 @@ export default class FilingTemplateMixin extends Vue {
    */
   parseBusinessSnapshot (businessSnapshot: BusinessSnapshotIF[]): void {
     if (businessSnapshot.length !== 6) throw new Error('Incomplete request responses  \'businessIdentifier\'')
+
+    // Set original snapshot to store
+    this.setOriginalSnapshot(businessSnapshot)
 
     // set current entity type
     this.setEntityType(businessSnapshot[0].business.legalType)

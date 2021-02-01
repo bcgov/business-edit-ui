@@ -7,9 +7,9 @@ export interface NameRequestIF {
   nrNumber: string
   expiry?: string
   status?: NameRequestStates
-  details: NameRequestDetailsIF | {}
-  applicant: NameRequestApplicantIF
-  filingId: number
+  details?: NameRequestDetailsIF | {}
+  applicant?: NameRequestApplicantIF
+  filingId?: number
 }
 
 // Name request response details interface

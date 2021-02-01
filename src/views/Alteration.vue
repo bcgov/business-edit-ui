@@ -53,6 +53,10 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   }
 })
 export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin) {
+  /** To hide or show the summary  mode. */
+  @Prop({ default: false })
+  readonly isSummaryMode: boolean
+
   // Global getters
   @Getter getEntityType!: EntityTypes
 
@@ -60,7 +64,6 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Action setHaveChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
-  @Action setOriginalSnapshot!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -95,34 +98,31 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
 
     // try to fetch data
     try {
-      // TODO: Handle Returning from a DRAFT alteration filing
-      // if (this.alterationId) {
-      //   // store the filing ID
-      //   this.setFilingId(this.alterationId)
-
-      //   // fetch draft alteration to resume
-      //   const alterationFiling = await this.fetchFilingById(this.alterationId)
-
-      //   // do not proceed if this isn't an ALTERATION filing
-      //   if (!alterationFiling.alteration) {
-      //     throw new Error('Invalid Alteration filing')
-      //   }
-
-      //   // do not proceed if this isn't a DRAFT filing
-      //   if (alterationFiling.header.status !== FilingStatus.DRAFT) {
-      //     throw new Error('Invalid Alteration status')
-      //   }
-
-      //   // parse alteration filing into store
-      //   this.parseAlteration(alterationFiling)
-      // } else {
-      //   // as we don't have the necessary query params, do not proceed
-      //   throw new Error('Invalid alteration filing ID')
-      // }
-
       const businessSnapshot = await this.fetchBusinessSnapshot()
-      this.setOriginalSnapshot(businessSnapshot)
-      await this.parseBusinessSnapshot(businessSnapshot)
+
+      if (this.alterationId) {
+        // store the filing ID
+        this.setFilingId(this.alterationId)
+
+        // fetch draft alteration to resume
+        const alterationFiling = await this.fetchFilingById(this.alterationId)
+
+        // do not proceed if this isn't an ALTERATION filing
+        if (!alterationFiling.alteration) {
+          throw new Error('Invalid Alteration filing')
+        }
+
+        // do not proceed if this isn't a DRAFT filing
+        if (alterationFiling.header.status !== FilingStatus.DRAFT) {
+          throw new Error('Invalid Alteration status')
+        }
+
+        // parse alteration filing and original business snapshot into store
+        await this.parseAlteration(alterationFiling, businessSnapshot)
+      } else {
+        // parse business data into store
+        await this.parseBusinessSnapshot(businessSnapshot)
+      }
 
       // initialize Fee Summary data
       this.setFilingData({

@@ -1,6 +1,6 @@
 import {
   BusinessContactIF,
-  BusinessInformationIF,
+  BusinessInformationIF, NameRequestApplicantIF,
   NameRequestIF,
   NameTranslationIF,
   ShareStructureIF
@@ -9,11 +9,7 @@ import {
 export interface AlterationIF {
   provisionsRemoved: boolean,
   business: BusinessInformationIF,
-  nameRequest: {
-    legalType: string
-    nrNumber?: string // only set when there is an NR
-    legalName?: string // only set when there is an NR
-  }
+  nameRequest: NameRequestIF,
   nameTranslations: NameTranslationIF[],
   shareStructure: ShareStructureIF,
   contactPoint: BusinessContactIF
