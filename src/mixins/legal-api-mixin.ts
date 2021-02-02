@@ -82,7 +82,6 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
     }
 
     return axios.put(url, { filing }).then(response => {
-      console.log(response)
       const filing = response?.data?.filing
       const filingId = +filing?.header?.filingId
       if (!filing || !filingId) {

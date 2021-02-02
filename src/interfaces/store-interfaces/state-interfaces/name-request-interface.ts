@@ -37,3 +37,9 @@ export interface NameRequestApplicantIF {
   postalCode: string
   stateProvinceCode: string
 }
+
+export const EmptyNameRequest: NameRequestIF = {
+  legalType: null,
+  legalName: '',
+  nrNumber: ''
+}

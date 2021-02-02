@@ -1,6 +1,6 @@
 import {
   BusinessContactIF,
-  BusinessInformationIF, NameRequestApplicantIF,
+  BusinessInformationIF,
   NameRequestIF,
   NameTranslationIF,
   ShareStructureIF

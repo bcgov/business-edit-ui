@@ -1,4 +1,4 @@
-import { AlterationIF, BusinessSnapshotIF } from '@/interfaces'
+import { AlterationIF } from '@/interfaces'
 
 export interface AlterationFilingIF {
   header: {
