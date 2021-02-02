@@ -137,7 +137,7 @@ export const stateModel: StateModelIF = {
         legalType: '',
         identifier: ''
       },
-      nameRequest: EmptyNameRequest,
+      nameRequest: { ...EmptyNameRequest },
       nameTranslations: [],
       shareStructure: {
         resolutionDates: [],
