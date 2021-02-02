@@ -6,10 +6,11 @@ export interface AlterationFilingIF {
     certifiedBy: string
     date: string
     filingId?: number // Optional as this is not required when building a filing - causes an error for new filings
-    folioNumber?: string // Optional to the user and only displayed for certain account types
+    folioNumber?: string
+    effectiveDate: Date // Optional to the user and only displayed for certain account types
   }
   business: {
-    foundingDate: string,
+    foundingDate: Date,
     legalName: string,
     legalType: string,
     identifier: string,

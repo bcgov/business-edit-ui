@@ -7,9 +7,9 @@ export interface NameRequestIF {
   nrNumber: string
   expiry?: string
   status?: NameRequestStates
-  details: NameRequestDetailsIF | {}
-  applicant: NameRequestApplicantIF
-  filingId: number
+  details?: NameRequestDetailsIF | {}
+  applicant?: NameRequestApplicantIF
+  filingId?: number
 }
 
 // Name request response details interface
@@ -36,4 +36,10 @@ export interface NameRequestApplicantIF {
   countryTypeCode: string
   postalCode: string
   stateProvinceCode: string
+}
+
+export const EmptyNameRequest: NameRequestIF = {
+  legalType: null,
+  legalName: '',
+  nrNumber: ''
 }

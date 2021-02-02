@@ -75,13 +75,16 @@
             <v-col cols="12" lg="9">
               <router-view
                 :appReady=appReady
+                :isSummaryMode="isSummaryMode"
                 @profileReady="profileReady = true"
                 @fetchError="fetchErrorDialog = true"
                 @haveData="haveData = true"
               />
             </v-col>
             <v-col cols="12" lg="3" style="position: relative">
-              <template v-if="showFeeSummary">
+
+              <!-- Corrections still uses the unmodified fee summary -->
+              <template v-if="showFeeSummary && isCorrection()">
                 <aside>
                   <affix
                     relative-element-selector=".col-lg-9"
@@ -93,11 +96,25 @@
                   </affix>
                 </aside>
               </template>
+
+              <!-- Alterations is using the fee summary shared component -->
+              <fee-summary
+                v-else
+                :show-fee-summary="showFeeSummary"
+                :filing-data="getFilingData"
+                :pay-api-url="payApiUrl"
+                :isBusySaving="isBusySaving"
+                :hasConflicts="isConflictingLegalType"
+                :isSummaryMode="isSummaryMode"
+                @action="handleSummaryActions($event)"
+              />
             </v-col>
           </v-row>
         </v-container>
 
+        <!-- Action bar is for Corrections ONLY -->
         <actions
+          v-if="isCorrection()"
           :key="$route.path"
           @goToDashboard="goToDashboard()"
         />
@@ -120,6 +137,7 @@ import { getKeycloakRoles, updateLdUser } from '@/utils'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
+import { FeeSummary } from '@bcrs-shared-components/fee-summary'
 import { EntityInfo, Actions } from '@/components/common'
 import * as Views from '@/views'
 import * as Dialogs from '@/components/dialogs'
@@ -128,15 +146,16 @@ import * as Dialogs from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { EntityTypes, FilingCodes } from '@/enums'
+import { EntityTypes, FilingCodes, SummaryActions } from '@/enums'
 
 @Component({
   components: {
+    Actions,
+    EntityInfo,
+    FeeSummary,
     SbcHeader,
     SbcFooter,
     SbcFeeSummary,
-    EntityInfo,
-    Actions,
     ...Dialogs,
     ...Views
   }
@@ -148,7 +167,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   }
 
   // Global getters
-  @Getter haveChanges!: boolean
   @Getter getBusinessId!: string
   @Getter getUserEmail!: string
   @Getter getUserFirstName!: string
@@ -156,15 +174,20 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getUserRoles!: string
   @Getter getUserUsername!: string
   @Getter getFilingData!: FilingDataIF
+  @Getter haveChanges!: boolean
+  @Getter isBusySaving!: boolean
+  @Getter isConflictingLegalType!: boolean
   @Getter isFilingChanged!: boolean
   @Getter isEditing!: boolean
 
   // Global setters
+  @Action setAccountInformation!: ActionBindingIF
+  @Action setAuthRoles: ActionBindingIF
   @Action setBusinessId!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
-  @Action setAuthRoles: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
-  @Action setAccountInformation!: ActionBindingIF
+  @Action setIsFilingPaying!: ActionBindingIF
+  @Action setIsSaving!: ActionBindingIF
   @Action setKeycloakRoles!: ActionBindingIF
   @Action setUserInfo: ActionBindingIF
 
@@ -172,9 +195,9 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   private filing: any
   private accountAuthorizationDialog: boolean = false
   private fetchErrorDialog: boolean = false
+  private isSummaryMode: boolean = false
   private paymentErrorDialog: boolean = false
   private saveErrorDialog: boolean = false
-  private nameRequestInvalidType: string = ''
   private nameRequestErrorDialog: boolean = false
   private nameRequestErrorType: string = ''
   private saveErrors: Array<object> = []
@@ -362,6 +385,30 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     this.appReady = true
   }
 
+  /** Handle the emitted actions from the fee summary component.
+   * @param event The triggered event from the fee summary.
+   * */
+  private async handleSummaryActions (event: SummaryActions): Promise<void> {
+    switch (event) {
+      case SummaryActions.RESUME:
+        // Save filing and return to dashboard
+        await this.onClickSave()
+        this.goToDashboard()
+        break
+      case SummaryActions.CANCEL:
+        // Return to edit mode if in summary mode else return to the dashboard
+        // TODO: Prompt Confirm dialog if there are changes, will come in review/summary ticket.
+        this.goToDashboard()
+        break
+      case SummaryActions.CONFIRM:
+        // If Summary Mode: Check validity, save and file else move into summary mode.
+        this.isSummaryMode
+          ? await this.onClickSave(false)
+          : this.isSummaryMode = true
+        break
+    }
+  }
+
   /** Redirects to Manage Businesses dashboard. */
   private goToManageBusinessDashboard (): void {
     this.fileAndPayInvalidNameRequestDialog = false
@@ -487,6 +534,63 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     const custom: any = { roles: this.getUserRoles?.slice(1, -1).split(',') }
 
     await updateLdUser(key, email, firstName, lastName, custom)
+  }
+
+  /**
+   * Will create/update a draft alteration or file and pay.
+   * @returns a promise (ie, this is an async method)
+   */
+  private async onClickSave (isDraft: boolean = true): Promise<void> {
+    // prevent double saving
+    if (this.isBusySaving) return
+    this.setIsSaving(true)
+
+    let filingComplete: any
+    try {
+      const filing = await this.buildAlterationFiling(isDraft)
+
+      // Update or file the alteration if we have a filingId or create a draft if not.
+      this.getFilingId
+        ? filingComplete = await this.updateFiling(filing, isDraft)
+        : await this.createAlteration(filing, isDraft)
+
+      // clear flag
+      this.setHaveChanges(false)
+    } catch (error) {
+      this.$root.$emit('save-error-event', error)
+      this.setIsSaving(false)
+      return
+    }
+
+    // If filing is not a draft, proceed with payment
+    if (!isDraft && filingComplete) {
+      this.setIsFilingPaying(true)
+      const paymentToken = filingComplete?.header?.paymentToken
+      if (paymentToken) {
+        const isPaymentActionRequired: boolean = filingComplete.header?.isPaymentActionRequired
+        const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
+
+        // if payment action is required, redirect to Pay URL
+        if (isPaymentActionRequired) {
+          const authUrl = sessionStorage.getItem('AUTH_URL')
+          const returnUrl = encodeURIComponent(dashboardUrl + this.getBusinessId)
+          const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
+          // assume Pay URL is always reachable
+          // otherwise user will have to retry payment later
+          window.location.assign(payUrl)
+        } else {
+          // redirect to Dashboard URL
+          window.location.assign(dashboardUrl + this.getBusinessId)
+        }
+      } else {
+        const error = new Error('Missing Payment Token')
+        this.$root.$emit('save-error-event', error)
+        this.setIsFilingPaying(false)
+      }
+    }
+
+    this.setIsFilingPaying(false)
+    this.setIsSaving(false)
   }
 }
 </script>

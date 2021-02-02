@@ -1,4 +1,4 @@
-import { StateModelIF } from '@/interfaces'
+import { EmptyNameRequest, StateModelIF } from '@/interfaces'
 
 export const stateModel: StateModelIF = {
   tombstone: {
@@ -122,10 +122,11 @@ export const stateModel: StateModelIF = {
       name: '',
       certifiedBy: '',
       date: '',
-      folioNumber: ''
+      folioNumber: '',
+      effectiveDate: null
     },
     business: {
-      foundingDate: '',
+      foundingDate: null,
       legalName: '',
       legalType: '',
       identifier: ''
@@ -136,9 +137,7 @@ export const stateModel: StateModelIF = {
         legalType: '',
         identifier: ''
       },
-      nameRequest: {
-        legalType: ''
-      },
+      nameRequest: { ...EmptyNameRequest },
       nameTranslations: [],
       shareStructure: {
         resolutionDates: [],
