@@ -179,11 +179,10 @@ export default class FilingTemplateMixin extends Vue {
 
   /**
    * Builds an Alteration filing body from store data. Used when saving a filing.
-   * @param isDraft boolean indicating whether this is a draft
-   * @returns the Alteration filing body to save
+   * @param isDraft boolean indicating whether this is a draft.
+   * @returns the Alteration filing body.
    */
   buildAlterationFiling (isDraft: boolean): AlterationFilingIF {
-    // TODO: This section should be extracted to something common between all build filings.
     // if filing and paying, filter out removed entities and omit the 'action' property
     let parties = this.getPeopleAndRoles
     let shareClasses = this.getShareClasses

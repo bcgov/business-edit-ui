@@ -97,7 +97,7 @@
                 </aside>
               </template>
 
-              <!-- Alterations is using the summary actions shared component -->
+              <!-- Alterations is using the fee summary shared component -->
               <fee-summary
                 v-else
                 :show-fee-summary="showFeeSummary"
@@ -385,8 +385,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     this.appReady = true
   }
 
-  /** Handle the emitted actions from the action summary component.
-   * @param event The triggered event from the action summary.
+  /** Handle the emitted actions from the fee summary component.
+   * @param event The triggered event from the fee summary.
    * */
   private async handleSummaryActions (event: SummaryActions): Promise<void> {
     switch (event) {
@@ -397,11 +397,11 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
         break
       case SummaryActions.CANCEL:
         // Return to edit mode if in summary mode else return to the dashboard
-        // TODO: Prompt Confirm if the there is changes
-        this.isSummaryMode ? this.isSummaryMode = false : this.goToDashboard()
+        // TODO: Prompt Confirm dialog if there are changes, will come in review/summary ticket.
+        this.goToDashboard()
         break
       case SummaryActions.CONFIRM:
-        // If Summary Mode: Check validity, save anf file.
+        // If Summary Mode: Check validity, save and file else move into summary mode.
         this.isSummaryMode
           ? await this.onClickSave(false)
           : this.isSummaryMode = true
