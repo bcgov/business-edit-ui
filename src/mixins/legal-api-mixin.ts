@@ -66,7 +66,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
 
   /**
    * Deletes a filing by its id.
-   * @returns a promise to return the filing of the specified type
+   * @returns a promise to delete the filing or return a failure.
    */
   async deleteFilingById (id: number): Promise<any> {
     const url = `businesses/${this.getBusinessId}/filings/${id}`
