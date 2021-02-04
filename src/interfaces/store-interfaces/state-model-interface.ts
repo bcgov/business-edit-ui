@@ -31,4 +31,5 @@ export interface StateModelIF {
     shareStructure: boolean
     incorporationAgreement: boolean
   }
+  summaryMode: boolean
 }

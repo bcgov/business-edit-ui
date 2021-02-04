@@ -200,3 +200,7 @@ export const setEditingShareStructure: ActionIF = ({ commit }, editing: boolean)
 export const setEditingIncorporationAgreement: ActionIF = ({ commit }, editing: boolean): void => {
   commit('mutateEditingIncorporationAgreement', editing)
 }
+
+export const setSummaryMode: ActionIF = ({ commit }, summaryMode: boolean): void => {
+  commit('mutateSummaryMode', summaryMode)
+}

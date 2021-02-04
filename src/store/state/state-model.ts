@@ -179,5 +179,6 @@ export const stateModel: StateModelIF = {
     peopleAndRoles: false,
     shareStructure: false,
     incorporationAgreement: false
-  }
+  },
+  summaryMode: false
 }

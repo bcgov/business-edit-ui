@@ -65,6 +65,21 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
   }
 
   /**
+   * Deletes a filing by its id.
+   * @returns a promise to return the filing of the specified type
+   */
+  async deleteFilingById (id: number): Promise<any> {
+    const url = `businesses/${this.getBusinessId}/filings/${id}`
+
+    return axios.delete(url)
+      .then().catch(error => {
+        // eslint-disable-next-line no-console
+        console.log('deleteFilingById() error - invalid response =', error)
+        throw new Error('Invalid API response')
+      })
+  }
+
+  /**
    * Updates an existing filing.
    * @param filing the object body of the request
    * @param isDraft boolean indicating whether to save draft or complete the filing

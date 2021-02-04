@@ -16,7 +16,12 @@
           <v-layout column>
             <label><strong>Company Name</strong></label>
             <v-flex md1 class="mt-1">
-              <v-chip v-if="companyNameChanges" x-small label color="primary" text-color="white" id="corrected-lbl">
+              <v-chip v-if="companyNameChanges || hasBusinessNameChanged"
+                      id="corrected-lbl"
+                      x-small label
+                      color="primary"
+                      text-color="white"
+              >
                  {{editedLabel}}
               </v-chip>
             </v-flex>
@@ -24,11 +29,11 @@
         </v-flex>
 
         <template v-if="!isEditingNames">
-          <v-flex xs6 class="mt-n2">
+          <v-flex xs6 class="mt-n1">
             <div class="company-name font-weight-bold">{{ companyName }}</div>
 
             <!-- Business Type Info -->
-            <template v-if="companyNameChanges && !hasNewNr">
+            <template v-if="(companyNameChanges || hasBusinessNameChanged) && !hasNewNr">
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
                 <span class="info-text">{{getEntityDesc(getEntityType)}}</span>
@@ -81,7 +86,7 @@
             <div class="actions mr-4">
               <!-- TODO: only show buttons for named company -->
               <v-btn
-                v-if="companyNameChanges"
+                v-if="companyNameChanges || (isAlteration() && hasBusinessNameChanged)"
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -99,7 +104,7 @@
                 <v-icon small>mdi-pencil</v-icon>
                 <span>{{editLabel}}</span>
               </v-btn>
-              <span class="more-actions" v-if="companyNameChanges">
+              <span class="more-actions" v-if="companyNameChanges || (isAlteration() && hasBusinessNameChanged)">
                 <v-menu
                   offset-y left nudge-bottom="4"
                   v-model="dropdown"
@@ -284,6 +289,8 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getOriginalSnapshot!: BusinessSnapshotIF[]
   @Getter getBusinessContact!: BusinessContactIF
+  // Alteration flag getters
+  @Getter hasBusinessNameChanged!: boolean
 
   // Actions
   @Action setDefineCompanyStepChanged!: ActionBindingIF

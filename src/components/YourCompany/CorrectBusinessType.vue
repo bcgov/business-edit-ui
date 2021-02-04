@@ -5,7 +5,7 @@
       <v-flex xs3>
         <label><strong>Business Type</strong></label>
         <v-flex md1>
-          <v-chip v-if="isNewBusinessType" x-small label color="primary" text-color="white">
+          <v-chip v-if="hasBusinessTypeChanged" x-small label color="primary" text-color="white">
             {{editedLabel}}
           </v-chip>
         </v-flex>
@@ -31,7 +31,7 @@
               Business Types do not match. The Name Request type must match the business type before you can continue.
             </span>
           </v-tooltip>
-          <template v-if="isNewBusinessType">
+          <template v-if="hasBusinessTypeChanged">
             <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
             <div class="confirmed-msg">
               <v-icon color="success" class="confirmed-icon">mdi-check</v-icon>
@@ -151,7 +151,7 @@
       <v-flex v-if="!isEditingType" xs1 class="mt-n2">
         <div class="actions mr-4">
           <v-btn
-            v-if="isNewBusinessType"
+            v-if="hasBusinessTypeChanged"
             text color="primary"
             id="btn-undo-business-type"
             class="undo-action"
@@ -169,7 +169,7 @@
             <v-icon small>mdi-pencil</v-icon>
             <span>{{editLabel}}</span>
           </v-btn>
-          <span class="more-actions" v-if="isNewBusinessType">
+          <span class="more-actions" v-if="hasBusinessTypeChanged">
             <v-menu
               offset-y left nudge-bottom="4"
               v-model="dropdown"
@@ -224,10 +224,14 @@ import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
   }
 })
 export default class CorrectBusinessType extends Mixins(CommonMixin) {
+  // Global Getters
   @Getter getApprovedName!: string
   @Getter getEntityType!: EntityTypes
   @Getter isConflictingLegalType: boolean
   @Getter getOriginalSnapshot: BusinessSnapshotIF
+
+  // Alteration Flag Getters
+  @Getter hasBusinessTypeChanged!: boolean
 
   @Action setEntityType!: ActionBindingIF
 
@@ -269,11 +273,6 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
       text: 'BC Benefit Company'
     }
   ]
-
-  /** Verify New Business type. */
-  private get isNewBusinessType (): boolean {
-    return this.getEntityType && (this.getEntityType !== this.getOriginalSnapshot[0]?.business?.legalType)
-  }
 
   /** Verify New Business name. */
   private get isNewName (): boolean {

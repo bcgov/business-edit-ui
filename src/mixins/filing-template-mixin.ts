@@ -394,7 +394,7 @@ export default class FilingTemplateMixin extends Vue {
     this.setEntityType(filing.alteration.business.legalType)
 
     // Set Business Information
-    this.setBusinessInformation({ foundingDate: filing.business.foundingDate, ...filing.alteration.business })
+    this.setBusinessInformation({ ...filing.business, ...filing.alteration.business })
 
     // Set Name Request
     this.setNameRequest(filing.alteration.nameRequest)
@@ -473,7 +473,7 @@ export default class FilingTemplateMixin extends Vue {
    * Parses a business snapshot into the store.
    * @param businessSnapshot the business to be parsed
    */
-  parseBusinessSnapshot (businessSnapshot: BusinessSnapshotIF[]): void {
+  parseBusinessSnapshot (businessSnapshot: BusinessSnapshotIF[] = this.getOriginalSnapshot): void {
     if (businessSnapshot.length !== 6) throw new Error('Incomplete request responses  \'businessIdentifier\'')
 
     // Set original snapshot to store
@@ -486,7 +486,11 @@ export default class FilingTemplateMixin extends Vue {
     this.setBusinessInformation(businessSnapshot[0].business)
 
     // Set Name Request
-    this.setNameRequest(businessSnapshot[0].business)
+    this.setNameRequest({
+      legalType: businessSnapshot[0].business.legalType,
+      legalName: businessSnapshot[0].business.legalName,
+      foundingDate: businessSnapshot[0].business.foundingDate
+    })
 
     // Set Name Translations
     this.setNameTranslations(
