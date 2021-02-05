@@ -325,7 +325,8 @@ export const isNumberedCompany = (state: StateIF): boolean => {
 
 /** Check for conflicting legal types between current type and altered type. */
 export const isConflictingLegalType = (state: StateIF): boolean => {
-  return state.stateModel.tombstone.entityType !== state.stateModel.nameRequest.legalType
+  return hasBusinessNameChanged &&
+    (state.stateModel.tombstone.entityType !== state.stateModel.nameRequest.legalType)
 }
 
 /** Get Summary mode state. */

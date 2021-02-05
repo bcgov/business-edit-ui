@@ -240,7 +240,7 @@ export default class FilingTemplateMixin extends Vue {
         }
       }
     }
-
+    console.log(filing)
     return filing
   }
 

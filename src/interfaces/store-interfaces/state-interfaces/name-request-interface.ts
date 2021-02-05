@@ -4,7 +4,7 @@ import { EntityTypes, NameRequestStates } from '@/enums'
 export interface NameRequestIF {
   legalType: EntityTypes
   legalName: string
-  nrNumber: string
+  nrNumber?: string
   expiry?: string
   status?: NameRequestStates
   details?: NameRequestDetailsIF | {}
