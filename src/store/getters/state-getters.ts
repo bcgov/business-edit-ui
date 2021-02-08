@@ -167,8 +167,8 @@ export const getNameRequestNumber = (state: StateIF): string => {
 /** Identify if changes were made to the NrNumber */
 export const hasNewNr = (state: StateIF): boolean => {
   const newNr = state.stateModel.nameRequest?.nrNumber
-  const originalNr = state.stateModel.originalIA.incorporationApplication.nameRequest?.nrNumber
-  // || state.stateModel.originalAlteration.alteration.nameRequest.nrNumber
+  const originalNr = state.stateModel.originalIA.incorporationApplication.nameRequest?.nrNumber ||
+    state.stateModel.originalAlteration.alteration.nameRequest.nrNumber
 
   // Evaluate only if a new NR exists.
   return newNr ? newNr !== originalNr : false
