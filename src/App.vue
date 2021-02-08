@@ -432,25 +432,29 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
-      'Unsaved Changes',
-      'This will cancel your alteration filing. Do you want to exit?',
+      'Cancel Filings',
+      'Any changes to your company information requiring a fee will be cancelled.',
       {
         width: '45rem',
         persistent: true,
-        yes: 'Return to my application',
+        yes: 'Cancel my changes',
         no: null,
-        cancel: 'Exit without saving'
+        cancel: 'Keep my changes'
       }
-    ).then(() => {
-      // if we get here, Yes was clicked
-      // nothing to do
-    }).catch(async () => {
+    ).then(async () => {
       // Delete the draft filing
       this.getFilingId && await this.deleteFilingById(this.getFilingId)
-
-      // redirect to dashboard
-      const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-      window.location.assign(dashboardUrl + this.getBusinessId)
+        .then(() => {
+          // redirect to dashboard
+          const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
+          window.location.assign(dashboardUrl + this.getBusinessId)
+        })
+        .catch((error) => {
+          this.$root.$emit('save-error-event', error)
+        })
+    }).catch(() => {
+      // if we get here, No was clicked
+      // nothing to do
     })
   }
 

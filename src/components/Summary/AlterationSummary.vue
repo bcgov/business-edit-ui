@@ -135,22 +135,22 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
   private restoreOriginalSnapshot (): void {
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
-      'Remove Changes',
-      'This will remove the changes made to your business. Do you want to continue?',
+      'Remove Alteration',
+      'All changes to your company information will be removed.',
       {
         width: '45rem',
         persistent: true,
-        yes: 'Return to my application',
+        yes: 'Remove Alteration',
         no: null,
-        cancel: 'Remove'
+        cancel: 'Cancel'
       }
     ).then(() => {
-      // if we get here, Yes was clicked
-      // nothing to do
-    }).catch(async () => {
       // Restore original data
       this.parseBusinessSnapshot()
       this.setSummaryMode(false)
+    }).catch(async () => {
+      // if we get here, no was clicked
+      // nothing to do
     })
   }
 }

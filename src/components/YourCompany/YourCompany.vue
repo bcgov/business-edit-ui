@@ -6,7 +6,7 @@
     />
 
      <div class="define-company-header">
-        <v-icon color="#38598A">mdi-domain</v-icon>
+        <v-icon color="app-dk-blue">mdi-domain</v-icon>
         <label class="define-company-title">Your Company</label>
     </div>
 

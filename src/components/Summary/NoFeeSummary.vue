@@ -3,7 +3,7 @@
     <div class="summary-header">
       <v-layout row class="mx-0">
         <v-flex xs9>
-          <v-icon class="my-n1" color="#38598A">mdi-handshake</v-icon>
+          <v-icon class="my-n1" color="app-dk-blue">mdi-handshake</v-icon>
           <label class="summary-title">No-Fee Changes</label>
         </v-flex>
       </v-layout>
