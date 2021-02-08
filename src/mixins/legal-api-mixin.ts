@@ -72,8 +72,8 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
     const url = `businesses/${this.getBusinessId}/filings/${id}`
 
     return axios.delete(url)
-      .then().catch(error => {
-        // eslint-disable-next-line no-console
+      .catch(error => {
+      // eslint-disable-next-line no-console
         console.log('deleteFilingById() error - invalid response =', error)
         throw new Error('Invalid API response')
       })

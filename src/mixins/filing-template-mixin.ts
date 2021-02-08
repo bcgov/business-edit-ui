@@ -14,7 +14,8 @@ import {
   IncorporationFilingIF,
   OrgPersonIF,
   ShareClassIF,
-  NameTranslationIF, NameRequestIF
+  NameTranslationIF,
+  NameRequestIF
 } from '@/interfaces'
 
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
@@ -53,6 +54,8 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getBusinessContact!: BusinessContactIF
   @Getter getAgreementType!: string
   @Getter getOriginalSnapshot: BusinessSnapshotIF[]
+  @Getter hasBusinessNameChanged!: boolean
+  @Getter hasNewNr!: boolean
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -212,8 +215,7 @@ export default class FilingTemplateMixin extends Vue {
       header: {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
-        date: this.getCurrentDate,
-        effectiveDate: this.getEffectiveDate
+        date: this.getCurrentDate
       },
       business: {
         foundingDate: this.getOriginalSnapshot[0].business.foundingDate,
@@ -240,7 +242,10 @@ export default class FilingTemplateMixin extends Vue {
         }
       }
     }
-    console.log(filing)
+
+    // Include name request info when applicable
+    if (this.hasNewNr || this.hasBusinessNameChanged) filing.alteration.nameRequest = { ...this.getNameRequest }
+
     return filing
   }
 

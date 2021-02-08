@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isAlteration()" id="business-type">
+  <div v-if="isAlterationView()" id="business-type">
     <v-layout>
       <!-- Row Title -->
       <v-flex xs3>

@@ -67,23 +67,23 @@ export default class CommonMixin extends Vue {
   }
 
   /** Returns true when filing a correction. */
-  isCorrection (): boolean {
+  isCorrectionView (): boolean {
     return (this.$route.name === RouteNames.CORRECTION)
   }
 
   /** Returns true when filing an alteration. */
-  isAlteration (): boolean {
+  isAlterationView (): boolean {
     return (this.$route.name === RouteNames.ALTERATION)
   }
 
   /** Returns the appropriate edit label for corrections or alterations */
   get editLabel (): string {
-    return this.isCorrection() ? 'Correct' : 'Change'
+    return this.isCorrectionView() ? 'Correct' : 'Change'
   }
 
   /** Returns the appropriate edited label for corrections or alterations */
   get editedLabel (): string {
-    return this.isCorrection() ? 'Corrected' : 'Changed'
+    return this.isCorrectionView() ? 'Corrected' : 'Changed'
   }
 
   /** The entity title. */

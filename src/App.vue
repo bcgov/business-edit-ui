@@ -84,7 +84,7 @@
             <v-col cols="12" lg="3" style="position: relative">
 
               <!-- Corrections still uses the unmodified fee summary -->
-              <template v-if="showFeeSummary && isCorrection()">
+              <template v-if="showFeeSummary && isCorrectionView()">
                 <aside>
                   <affix
                     relative-element-selector=".col-lg-9"
@@ -114,7 +114,7 @@
 
         <!-- Action bar is for Corrections ONLY -->
         <actions
-          v-if="isCorrection()"
+          v-if="isCorrectionView()"
           :key="$route.path"
           @goToDashboard="goToDashboard()"
         />
@@ -553,8 +553,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       const filing = await this.buildAlterationFiling(isDraft)
 
       // Update or file the alteration if we have a filingId or create a draft if not.
-      this.getFilingId
-        ? filingComplete = await this.updateFiling(filing, isDraft)
+      filingComplete = this.getFilingId
+        ? await this.updateFiling(filing, isDraft)
         : await this.createAlteration(filing, isDraft)
 
       // clear flag

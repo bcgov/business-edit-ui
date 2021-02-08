@@ -27,7 +27,7 @@
         <div id="lbl-phone" v-else>(Not entered)</div>
       </v-flex>
 
-      <v-flex xs1 class="mt-n2" v-if="!isCorrection()">
+      <v-flex xs1 class="mt-n2" v-if="!isCorrectionView()">
         <div class="actions mr-4">
           <v-btn
             v-if="hasBusinessContactInfoChange"
