@@ -49,6 +49,16 @@
       @close="nameRequestErrorDialog = false"
     />
 
+    <delete-error-dialog
+      attach="#app"
+      filingName="Application"
+      :dialog="deleteErrorDialog"
+      :errors="deleteErrors"
+      :warnings="deleteWarnings"
+      @exit="goToDashboard(true)"
+      @okay="deleteErrorDialog = false"
+    />
+
     <confirm-dialog
       ref="confirm"
       attach="#app"
@@ -200,6 +210,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   // Local Properties
   private filing: any
   private accountAuthorizationDialog: boolean = false
+  private deleteErrorDialog: boolean = false
   private fetchErrorDialog: boolean = false
   private paymentErrorDialog: boolean = false
   private saveErrorDialog: boolean = false
@@ -207,6 +218,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   private nameRequestErrorType: string = ''
   private saveErrors: Array<object> = []
   private saveWarnings: Array<object> = []
+  private deleteErrors: Array<object> = []
+  private deleteWarnings: Array<object> = []
   private fileAndPayInvalidNameRequestDialog: boolean = false
 
   // FUTURE: change profileReady/appReady/haveData to a state machine?
@@ -300,6 +313,16 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       console.log('Name request error =', error) // eslint-disable-line no-console
       this.nameRequestErrorType = error
       this.nameRequestErrorDialog = true
+    })
+
+    // listen for invalid delete requests
+    this.$root.$on('delete-error-event', async (error: any) => {
+      console.log('Delete error =', error) // eslint-disable-line no-console
+      this.saveErrors = error?.response?.data?.errors || []
+      this.saveWarnings = error?.response?.data?.warnings || []
+
+      console.log('Delete error =', error) // eslint-disable-line no-console
+      this.deleteErrorDialog = true
     })
 
     // if we are already authenticated then go right to init
@@ -443,15 +466,21 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       }
     ).then(async () => {
       // Delete the draft filing
-      this.getFilingId && await this.deleteFilingById(this.getFilingId)
-        .then(() => {
-          // redirect to dashboard
-          const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-          window.location.assign(dashboardUrl + this.getBusinessId)
-        })
-        .catch((error) => {
-          this.$root.$emit('save-error-event', error)
-        })
+      if (this.getFilingId) {
+        await this.deleteFilingById(this.getFilingId)
+          .then(() => {
+            // redirect to dashboard
+            const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
+            window.location.assign(dashboardUrl + this.getBusinessId)
+          })
+          .catch((error) => {
+            this.$root.$emit('delete-error-event', error)
+          })
+      } else {
+        // redirect to dashboard
+        const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
+        window.location.assign(dashboardUrl + this.getBusinessId)
+      }
     }).catch(() => {
       // if we get here, No was clicked
       // nothing to do
