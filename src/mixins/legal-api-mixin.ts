@@ -1,11 +1,11 @@
 // Libraries
 import { Component, Mixins } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Getter } from 'vuex-class'
 import { NOT_FOUND } from 'http-status-codes'
 import { axios } from '@/utils'
 
 // Interfaces
-import { ActionBindingIF, AlterationFilingIF, CorrectionFilingIF, IncorporationFilingIF } from '@/interfaces'
+import { AlterationFilingIF, CorrectionFilingIF } from '@/interfaces'
 
 // Mixins
 import { FilingTemplateMixin } from '@/mixins'
@@ -15,8 +15,6 @@ import { FilingTemplateMixin } from '@/mixins'
  */
 @Component({})
 export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
-  readonly INCORPORATION_APPLICATION = 'incorporationApplication'
-
   // Global getters
   @Getter getFilingId!: number
   @Getter getBusinessId!: string
@@ -61,6 +59,21 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
           console.log('fetchFilingById() error - invalid response =', response)
           throw new Error('Invalid API response')
         }
+      })
+  }
+
+  /**
+   * Deletes a filing by its id.
+   * @returns a promise to delete the filing or return a failure.
+   */
+  async deleteFilingById (id: number): Promise<any> {
+    const url = `businesses/${this.getBusinessId}/filings/${id}`
+
+    return axios.delete(url)
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log('deleteFilingById() error - invalid response =', error)
+        throw new Error('Invalid API response')
       })
   }
 

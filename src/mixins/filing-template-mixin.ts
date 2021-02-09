@@ -14,7 +14,8 @@ import {
   IncorporationFilingIF,
   OrgPersonIF,
   ShareClassIF,
-  NameTranslationIF, NameRequestIF
+  NameTranslationIF,
+  NameRequestIF
 } from '@/interfaces'
 
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
@@ -53,6 +54,8 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getBusinessContact!: BusinessContactIF
   @Getter getAgreementType!: string
   @Getter getOriginalSnapshot: BusinessSnapshotIF[]
+  @Getter hasBusinessNameChanged!: boolean
+  @Getter hasNewNr!: boolean
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -212,8 +215,7 @@ export default class FilingTemplateMixin extends Vue {
       header: {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
-        date: this.getCurrentDate,
-        effectiveDate: this.getEffectiveDate
+        date: this.getCurrentDate
       },
       business: {
         foundingDate: this.getOriginalSnapshot[0].business.foundingDate,
@@ -240,6 +242,9 @@ export default class FilingTemplateMixin extends Vue {
         }
       }
     }
+
+    // Include name request info when applicable
+    if (this.hasNewNr || this.hasBusinessNameChanged) filing.alteration.nameRequest = { ...this.getNameRequest }
 
     return filing
   }
@@ -394,7 +399,7 @@ export default class FilingTemplateMixin extends Vue {
     this.setEntityType(filing.alteration.business.legalType)
 
     // Set Business Information
-    this.setBusinessInformation({ foundingDate: filing.business.foundingDate, ...filing.alteration.business })
+    this.setBusinessInformation({ ...filing.business, ...filing.alteration.business })
 
     // Set Name Request
     this.setNameRequest(filing.alteration.nameRequest)
@@ -473,7 +478,7 @@ export default class FilingTemplateMixin extends Vue {
    * Parses a business snapshot into the store.
    * @param businessSnapshot the business to be parsed
    */
-  parseBusinessSnapshot (businessSnapshot: BusinessSnapshotIF[]): void {
+  parseBusinessSnapshot (businessSnapshot: BusinessSnapshotIF[] = this.getOriginalSnapshot): void {
     if (businessSnapshot.length !== 6) throw new Error('Incomplete request responses  \'businessIdentifier\'')
 
     // Set original snapshot to store
@@ -486,7 +491,11 @@ export default class FilingTemplateMixin extends Vue {
     this.setBusinessInformation(businessSnapshot[0].business)
 
     // Set Name Request
-    this.setNameRequest(businessSnapshot[0].business)
+    this.setNameRequest({
+      legalType: businessSnapshot[0].business.legalType,
+      legalName: businessSnapshot[0].business.legalName,
+      foundingDate: businessSnapshot[0].business.foundingDate
+    })
 
     // Set Name Translations
     this.setNameTranslations(

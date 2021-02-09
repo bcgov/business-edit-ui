@@ -6,7 +6,7 @@
     />
 
      <div class="define-company-header">
-        <v-icon color="#38598A">mdi-domain</v-icon>
+        <v-icon color="app-dk-blue">mdi-domain</v-icon>
         <label class="define-company-title">Your Company</label>
     </div>
 
@@ -16,7 +16,12 @@
           <v-layout column>
             <label><strong>Company Name</strong></label>
             <v-flex md1 class="mt-1">
-              <v-chip v-if="companyNameChanges" x-small label color="primary" text-color="white" id="corrected-lbl">
+              <v-chip v-if="companyNameChanges || hasBusinessNameChanged"
+                      id="corrected-lbl"
+                      x-small label
+                      color="primary"
+                      text-color="white"
+              >
                  {{editedLabel}}
               </v-chip>
             </v-flex>
@@ -24,11 +29,11 @@
         </v-flex>
 
         <template v-if="!isEditingNames">
-          <v-flex xs6 class="mt-n2">
+          <v-flex xs6 class="mt-n1">
             <div class="company-name font-weight-bold">{{ companyName }}</div>
 
             <!-- Business Type Info -->
-            <template v-if="companyNameChanges && !hasNewNr">
+            <template v-if="(companyNameChanges || hasBusinessNameChanged) && !hasNewNr">
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
                 <span class="info-text">{{getEntityDesc(getEntityType)}}</span>
@@ -39,7 +44,7 @@
             </template>
 
             <!-- Name Request Info -->
-            <template v-if="isAlteration() && hasNewNr">
+            <template v-if="isAlterationView() && hasNewNr">
               <div class="company-name">{{ getNameRequest.nrNumber }}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -81,7 +86,7 @@
             <div class="actions mr-4">
               <!-- TODO: only show buttons for named company -->
               <v-btn
-                v-if="companyNameChanges"
+                v-if="companyNameChanges || (isAlterationView() && hasBusinessNameChanged)"
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -99,7 +104,7 @@
                 <v-icon small>mdi-pencil</v-icon>
                 <span>{{editLabel}}</span>
               </v-btn>
-              <span class="more-actions" v-if="companyNameChanges">
+              <span class="more-actions" v-if="companyNameChanges || (isAlterationView() && hasBusinessNameChanged)">
                 <v-menu
                   offset-y left nudge-bottom="4"
                   v-model="dropdown"
@@ -142,7 +147,7 @@
         </template>
 
         <!-- Name Request Applicant Info -->
-        <template v-if="isAlteration() && hasNewNr">
+        <template v-if="isAlterationView() && hasNewNr">
           <v-flex xs3 class="sub-section">
             <v-layout column>
               <label><strong>Name Request Applicant</strong></label>
@@ -284,6 +289,8 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getOriginalSnapshot!: BusinessSnapshotIF[]
   @Getter getBusinessContact!: BusinessContactIF
+  // Alteration flag getters
+  @Getter hasBusinessNameChanged!: boolean
 
   // Actions
   @Action setDefineCompanyStepChanged!: ActionBindingIF
@@ -332,7 +339,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   /** The recognition/founding (aka effective) datetime. */
   private get recognitionDateTime (): string {
-    if (this.isCorrection()) {
+    if (this.isCorrectionView()) {
       return this.getOriginalEffectiveDate
         ? (this.convertUtcTimeToLocalTime(this.getOriginalEffectiveDate.toString()) + ' Pacific Time')
         : 'Unknown'
@@ -346,7 +353,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   /** Compare names. */
   private get isNewName () {
     const correctedName = this.getApprovedName
-    const currentName = this.isCorrection()
+    const currentName = this.isCorrectionView()
       ? this.getOriginalIA.incorporationApplication.nameRequest.legalName
       : this.getOriginalSnapshot[0].business.legalName
 
@@ -355,11 +362,11 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   /** Reset company name values to original. */
   private resetName () {
-    this.setBusinessInformation(this.isCorrection()
+    this.setBusinessInformation(this.isCorrectionView()
       ? this.getOriginalIA.business
       : this.getOriginalSnapshot[0].business
     )
-    this.setNameRequest(this.isCorrection()
+    this.setNameRequest(this.isCorrectionView()
       ? this.getOriginalIA.incorporationApplication.nameRequest
       : this.getOriginalSnapshot[0].business
     )
@@ -375,7 +382,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   @Watch('hasNewNr')
   private openConflictWarning (): void {
-    if (this.isConflictingLegalType && !this.companyTypeChanges && this.isAlteration()) {
+    if (this.isConflictingLegalType && !this.companyTypeChanges && this.isAlterationView()) {
       // open confirmation dialog and wait for response
       this.$refs.confirm.open(
         'Name Request Type Does Not Match Business Type',
@@ -412,7 +419,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
         CorrectionTypes.CORRECT_NAME_TO_NUMBER
       ]
       // Only allow editable name changes for Corrections
-      this.isCorrection() && this.correctNameChoices.push(CorrectionTypes.CORRECT_NAME)
+      this.isCorrectionView() && this.correctNameChoices.push(CorrectionTypes.CORRECT_NAME)
     } else {
       this.correctNameChoices = [
         CorrectionTypes.CORRECT_NEW_NR

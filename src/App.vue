@@ -49,6 +49,15 @@
       @close="nameRequestErrorDialog = false"
     />
 
+    <delete-error-dialog
+      attach="#app"
+      filingName="Application"
+      :dialog="deleteErrorDialog"
+      :errors="deleteErrors"
+      :warnings="deleteWarnings"
+      @exit="goToDashboard(true)"
+    />
+
     <confirm-dialog
       ref="confirm"
       attach="#app"
@@ -56,7 +65,7 @@
 
     <!-- Initial Page Load Transition -->
     <transition name="fade">
-      <div class="loading-container" v-show="!haveData">
+      <div class="loading-container" v-show="!haveData && !fetchErrorDialog">
         <div class="loading__content">
           <v-progress-circular color="primary" size="50" indeterminate />
           <div class="loading-msg">Loading</div>
@@ -84,7 +93,7 @@
             <v-col cols="12" lg="3" style="position: relative">
 
               <!-- Corrections still uses the unmodified fee summary -->
-              <template v-if="showFeeSummary && isCorrection()">
+              <template v-if="showFeeSummary && isCorrectionView()">
                 <aside>
                   <affix
                     relative-element-selector=".col-lg-9"
@@ -104,7 +113,7 @@
                 :filing-data="getFilingData"
                 :pay-api-url="payApiUrl"
                 :isBusySaving="isBusySaving"
-                :hasConflicts="isConflictingLegalType"
+                :hasConflicts="isConflictingLegalType && hasBusinessNameChanged"
                 :isSummaryMode="isSummaryMode"
                 @action="handleSummaryActions($event)"
               />
@@ -114,7 +123,7 @@
 
         <!-- Action bar is for Corrections ONLY -->
         <actions
-          v-if="isCorrection()"
+          v-if="isCorrectionView()"
           :key="$route.path"
           @goToDashboard="goToDashboard()"
         />
@@ -176,9 +185,14 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getFilingData!: FilingDataIF
   @Getter haveChanges!: boolean
   @Getter isBusySaving!: boolean
-  @Getter isConflictingLegalType!: boolean
   @Getter isFilingChanged!: boolean
   @Getter isEditing!: boolean
+  @Getter isSummaryMode!: boolean
+
+  // Alteration flag getters
+  @Getter hasAlterationChanges!: boolean
+  @Getter hasBusinessNameChanged!: boolean
+  @Getter isConflictingLegalType!: boolean
 
   // Global setters
   @Action setAccountInformation!: ActionBindingIF
@@ -190,18 +204,21 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Action setIsSaving!: ActionBindingIF
   @Action setKeycloakRoles!: ActionBindingIF
   @Action setUserInfo: ActionBindingIF
+  @Action setSummaryMode!: ActionBindingIF
 
   // Local Properties
   private filing: any
   private accountAuthorizationDialog: boolean = false
+  private deleteErrorDialog: boolean = false
   private fetchErrorDialog: boolean = false
-  private isSummaryMode: boolean = false
   private paymentErrorDialog: boolean = false
   private saveErrorDialog: boolean = false
   private nameRequestErrorDialog: boolean = false
   private nameRequestErrorType: string = ''
   private saveErrors: Array<object> = []
   private saveWarnings: Array<object> = []
+  private deleteErrors: Array<object> = []
+  private deleteWarnings: Array<object> = []
   private fileAndPayInvalidNameRequestDialog: boolean = false
 
   // FUTURE: change profileReady/appReady/haveData to a state machine?
@@ -295,6 +312,16 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       console.log('Name request error =', error) // eslint-disable-line no-console
       this.nameRequestErrorType = error
       this.nameRequestErrorDialog = true
+    })
+
+    // listen for invalid delete requests
+    this.$root.$on('delete-error-event', async (error: any) => {
+      console.log('Delete error =', error) // eslint-disable-line no-console
+      this.saveErrors = error?.response?.data?.errors || []
+      this.saveWarnings = error?.response?.data?.warnings || []
+
+      console.log('Delete error =', error) // eslint-disable-line no-console
+      this.deleteErrorDialog = true
     })
 
     // if we are already authenticated then go right to init
@@ -393,18 +420,16 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       case SummaryActions.RESUME:
         // Save filing and return to dashboard
         await this.onClickSave()
-        this.goToDashboard()
+        this.goToDashboard(true)
         break
       case SummaryActions.CANCEL:
-        // Return to edit mode if in summary mode else return to the dashboard
-        // TODO: Prompt Confirm dialog if there are changes, will come in review/summary ticket.
         this.goToDashboard()
         break
       case SummaryActions.CONFIRM:
         // If Summary Mode: Check validity, save and file else move into summary mode.
         this.isSummaryMode
           ? await this.onClickSave(false)
-          : this.isSummaryMode = true
+          : this.setSummaryMode(true)
         break
     }
   }
@@ -420,7 +445,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   /** Redirects to entity dashboard. */
   private goToDashboard (force: boolean = false): void {
     // check if there are no data changes
-    if (!this.haveChanges || !this.isEditing || force) {
+    if (!this.hasAlterationChanges || force) {
       // redirect to dashboard
       const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
       window.location.assign(dashboardUrl + this.getBusinessId)
@@ -429,25 +454,35 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
-      'Unsaved Changes',
-      'You have unsaved changes in your Incorporation Application. Do you want to exit?',
+      'Cancel Filings',
+      'Any changes to your company information requiring a fee will be cancelled.',
       {
         width: '45rem',
         persistent: true,
-        yes: 'Return to my application',
+        yes: 'Cancel my changes',
         no: null,
-        cancel: 'Exit without saving'
+        cancel: 'Keep my changes'
       }
-    ).then(() => {
-      // if we get here, Yes was clicked
-      // nothing to do
+    ).then(async () => {
+      // Delete the draft filing
+      if (this.getFilingId) {
+        await this.deleteFilingById(this.getFilingId)
+          .then(() => {
+            // redirect to dashboard
+            const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
+            window.location.assign(dashboardUrl + this.getBusinessId)
+          })
+          .catch((error) => {
+            this.$root.$emit('delete-error-event', error)
+          })
+      } else {
+        // redirect to dashboard
+        const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
+        window.location.assign(dashboardUrl + this.getBusinessId)
+      }
     }).catch(() => {
-      // if we get here, Cancel was clicked
-      // ignore changes
-      this.setHaveChanges(false)
-      // redirect to dashboard
-      const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-      window.location.assign(dashboardUrl + this.getBusinessId)
+      // if we get here, No was clicked
+      // nothing to do
     })
   }
 
@@ -550,8 +585,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       const filing = await this.buildAlterationFiling(isDraft)
 
       // Update or file the alteration if we have a filingId or create a draft if not.
-      this.getFilingId
-        ? filingComplete = await this.updateFiling(filing, isDraft)
+      filingComplete = this.getFilingId
+        ? await this.updateFiling(filing, isDraft)
         : await this.createAlteration(filing, isDraft)
 
       // clear flag

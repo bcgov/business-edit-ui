@@ -232,3 +232,7 @@ export const mutateEditingShareStructure = (state: StateIF, editing: boolean) =>
 export const mutateEditingIncorporationAgreement = (state: StateIF, editing: boolean) => {
   state.stateModel.editingFlags.incorporationAgreement = editing
 }
+
+export const mutateSummaryMode = (state: StateIF, summaryMode: boolean) => {
+  state.stateModel.summaryMode = summaryMode
+}

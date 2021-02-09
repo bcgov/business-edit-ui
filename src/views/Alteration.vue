@@ -1,26 +1,46 @@
 <template>
   <section>
-    <header>
-      <h1>Company Information</h1>
-    </header>
-    <section class="mt-6">
-      <p>You are legally obligated to keep your company information up to date. Necessary fees will be applied as
-        updates are made.</p>
-    </section>
+    <!-- Profile View -->
+    <template v-if="!isSummaryMode">
+      <header>
+        <h1>Company Information</h1>
 
-    <your-company class="mt-10" />
+      </header>
+      <section class="mt-6">
+        <p>You are legally obligated to keep your company information up to date. Necessary fees will be applied as
+          updates are made.</p>
+      </section>
 
-    <people-and-roles class="mt-10" />
+      <your-company class="mt-10" />
 
-    <share-structure class="mt-10" />
+      <people-and-roles class="mt-10" />
 
-    <agreement-type class="mt-10" />
+      <share-structure class="mt-10" />
 
-    <detail class="mt-10" />
+      <agreement-type class="mt-10" />
 
-    <certify-section class="mt-10" />
+      <detail class="mt-10" />
 
-    <staff-payment class="mt-10" />
+      <certify-section class="mt-10" />
+
+      <staff-payment class="mt-10" />
+    </template>
+
+    <!-- Summary View -->
+    <template v-else>
+      <header>
+        <h1>Review and Certify</h1>
+      </header>
+      <section class="mt-6">
+        <p>Review and certify the changes you are about to make to your company. Certain changes require an Alteration
+          Notice which will incur a $100 Fee.</p>
+      </section>
+
+      <alteration-summary class="mt-10"/>
+
+      <no-fee-summary class="mt-10" />
+
+    </template>
   </section>
 </template>
 
@@ -28,6 +48,7 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
+import { AlterationSummary, NoFeeSummary } from '@/components/Summary'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { PeopleAndRoles } from '@/components/PeopleAndRoles'
@@ -43,9 +64,11 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 @Component({
   components: {
     AgreementType,
+    AlterationSummary,
     CertifySection,
     CompletingParty,
     Detail,
+    NoFeeSummary,
     PeopleAndRoles,
     ShareStructure,
     StaffPayment,
@@ -53,17 +76,19 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   }
 })
 export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin) {
-  /** To hide or show the summary  mode. */
-  @Prop({ default: false })
-  readonly isSummaryMode: boolean
-
   // Global getters
   @Getter getEntityType!: EntityTypes
+  @Getter isSummaryMode!: boolean
+
+  // Alteration Flag Getters
+  @Getter hasBusinessNameChanged!: boolean
+  @Getter hasBusinessTypeChanged!: boolean
 
   // Global setters
   @Action setHaveChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
+  @Action setSummaryMode!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })

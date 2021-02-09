@@ -10,7 +10,7 @@
     <div id="share-summary">
       <!-- Summary Header -->
       <div class="share-summary-header" >
-        <v-icon color="#38598A">mdi-file-tree</v-icon>
+        <v-icon color="app-dk-blue">mdi-file-tree</v-icon>
         <label class="share-summary-header-title"><strong> Share Structure</strong></label>
       </div>
     </div>
