@@ -56,7 +56,6 @@
       :errors="deleteErrors"
       :warnings="deleteWarnings"
       @exit="goToDashboard(true)"
-      @okay="deleteErrorDialog = false"
     />
 
     <confirm-dialog
