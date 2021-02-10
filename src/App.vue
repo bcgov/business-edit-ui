@@ -113,7 +113,7 @@
                 :filing-data="getFilingData"
                 :pay-api-url="payApiUrl"
                 :isBusySaving="isBusySaving"
-                :hasConflicts="isConflictingLegalType && hasBusinessNameChanged"
+                :hasConflicts="isConflictingLegalType && hasNewNr"
                 :isSummaryMode="isSummaryMode"
                 @action="handleSummaryActions($event)"
               />
@@ -184,14 +184,15 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getUserUsername!: string
   @Getter getFilingData!: FilingDataIF
   @Getter haveChanges!: boolean
+  @Getter hasNewNr!: boolean
   @Getter isBusySaving!: boolean
   @Getter isFilingChanged!: boolean
   @Getter isEditing!: boolean
   @Getter isSummaryMode!: boolean
 
   // Alteration flag getters
-  @Getter hasAlterationChanges!: boolean
   @Getter hasBusinessNameChanged!: boolean
+  @Getter hasBusinessTypeChanged!: boolean
   @Getter isConflictingLegalType!: boolean
 
   // Global setters
@@ -257,6 +258,14 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     return process.env.ABOUT_TEXT
   }
 
+  /** Track changes to alteration specific pieces. */
+  private get hasAlterationChanges (): boolean {
+    return (
+      this.hasBusinessNameChanged ||
+      this.hasBusinessTypeChanged
+    )
+  }
+
   /** Whether user is authenticated. */
   private get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
@@ -317,8 +326,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     // listen for invalid delete requests
     this.$root.$on('delete-error-event', async (error: any) => {
       console.log('Delete error =', error) // eslint-disable-line no-console
-      this.saveErrors = error?.response?.data?.errors || []
-      this.saveWarnings = error?.response?.data?.warnings || []
+      this.deleteErrors = error?.response?.data?.errors || []
+      this.deleteWarnings = error?.response?.data?.warnings || []
 
       console.log('Delete error =', error) // eslint-disable-line no-console
       this.deleteErrorDialog = true
@@ -459,9 +468,9 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       {
         width: '45rem',
         persistent: true,
-        yes: 'Cancel my changes',
+        yes: 'Cancel my Changes',
         no: null,
-        cancel: 'Keep my changes'
+        cancel: 'Keep my Changes'
       }
     ).then(async () => {
       // Delete the draft filing

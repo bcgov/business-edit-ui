@@ -248,6 +248,10 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
   private readonly confirmLabel: string = `The company has completed a set Benefit Company Articles containing a benefit
     provision, and a copy of these articles has been added to company's record book.`
 
+  mounted () {
+    this.initializeEntityType()
+  }
+
   /** Define the entity type locally once the value has been populated in the store. */
   @Watch('getEntityType')
   private initializeEntityType () {

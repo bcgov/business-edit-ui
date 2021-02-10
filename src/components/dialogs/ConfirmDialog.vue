@@ -10,15 +10,15 @@
 
     <v-card>
       <v-card-title>{{ title }}</v-card-title>
-      <v-card-text class="info-text pre-wrap" v-show="!!message" v-html="message"></v-card-text>
+      <v-card-text class="pre-wrap my-2" v-show="!!message" v-html="message"></v-card-text>
       <v-divider class="my-0" v-show="!!options.yes || !!options.no || !!options.cancel"></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn id="dialog-yes-button" color="primary" text v-show="!!options.yes"
+        <v-btn id="dialog-yes-button" color="primary" class="font-weight-bold" text v-show="!!options.yes"
           @click.native="onClickYes()">{{ options.yes }}</v-btn>
         <v-btn id="dialog-no-button" color="primary" text v-show="!!options.no"
           @click.native="onClickNo()">{{ options.no }}</v-btn>
-        <v-btn id="dialog-cancel-button" text v-show="!!options.cancel"
+        <v-btn id="dialog-cancel-button" color="primary" text v-show="!!options.cancel"
           @click.native="onClickCancel()">{{ options.cancel }}</v-btn>
       </v-card-actions>
     </v-card>

@@ -33,7 +33,7 @@
       </header>
       <section class="mt-6">
         <p>Review and certify the changes you are about to make to your company. Certain changes require an Alteration
-          Notice which will incur a $100 Fee.</p>
+          Notice which will incur a $100.00 Fee.</p>
       </section>
 
       <alteration-summary class="mt-10"/>
