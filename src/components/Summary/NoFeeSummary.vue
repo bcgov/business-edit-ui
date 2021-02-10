@@ -52,7 +52,6 @@
 
         </v-layout>
       </div>
-      <v-divider class="mx-4" />
     </template>
   </v-card>
 </template>

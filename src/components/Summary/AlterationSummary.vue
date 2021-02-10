@@ -54,7 +54,7 @@
           </v-flex>
         </v-layout>
       </div>
-      <v-divider class="mx-4" />
+      <v-divider v-if="hasBusinessTypeChanged" class="mx-4" />
     </template>
 
     <!-- Business Type -->
@@ -75,16 +75,15 @@
                 <div class="confirmed-msg">
                   <v-icon color="success" class="confirmed-icon">mdi-check</v-icon>
                   <span class="info-text text-body-3 confirmed-icon ml-2">
-              The company has completed a set Benefit Company Articles containing a benefit provision, and a copy of
-              these articles has been added to the company's record book.
-              </span>
+                    The company has completed a set Benefit Company Articles containing a benefit provision, and a copy
+                    of these articles has been added to the company's record book.
+                  </span>
                 </div>
               </template>
             </template>
           </v-flex>
         </v-layout>
       </div>
-      <v-divider class="mx-4" />
     </template>
   </v-card>
 </template>
