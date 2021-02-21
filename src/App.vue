@@ -125,7 +125,7 @@
         <actions
           v-if="isCorrectionView()"
           :key="$route.path"
-          @goToDashboard="goToDashboard()"
+          @goToDashboard="goToDashboard(true)"
         />
       </main>
     </div>

@@ -16,7 +16,7 @@
           <v-layout column>
             <label><strong>Company Name</strong></label>
             <v-flex md1 class="mt-1">
-              <v-chip v-if="companyNameChanges || hasBusinessNameChanged"
+              <v-chip v-if="companyNameChanges || (isAlterationView() && hasBusinessNameChanged)"
                       id="corrected-lbl"
                       x-small label
                       color="primary"
@@ -33,7 +33,7 @@
             <div class="company-name font-weight-bold">{{ companyName }}</div>
 
             <!-- Business Type Info -->
-            <template v-if="(companyNameChanges || hasBusinessNameChanged) && !hasNewNr">
+            <template v-if="(isAlterationView() && hasBusinessNameChanged) && !hasNewNr">
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
                 <span class="info-text">{{getEntityDesc(getEntityType)}}</span>
