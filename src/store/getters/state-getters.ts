@@ -1,5 +1,5 @@
 // Enums and Interfaces
-import { AccountTypes, EntityTypes } from '@/enums'
+import { AccountTypes, EntityTypes, RouteNames } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
   NameRequestIF, BusinessContactIF, BusinessInformationIF, CertifyIF,
@@ -343,4 +343,11 @@ export const hasBusinessNameChanged = (state: StateIF): boolean => {
 /** Identify changes to business type. */
 export const hasBusinessTypeChanged = (state: StateIF): boolean => {
   return state.stateModel.tombstone.entityType !== state.stateModel.originalSnapshot[0]?.business?.legalType
+}
+
+/** Check for changes between current contact and original contact. */
+export const hasContactInfoChange = (state: StateIF, rootState: any): boolean => {
+  return state.stateModel.defineCompanyStep.businessContact.email !== state.stateModel.originalSnapshot[5].email ||
+    state.stateModel.defineCompanyStep.businessContact.phone !== state.stateModel.originalSnapshot[5].phone ||
+    state.stateModel.defineCompanyStep.businessContact.extension !== state.stateModel.originalSnapshot[5].extension
 }

@@ -1,3 +1,4 @@
+export { default as AuthApiMixin } from './auth-api-mixin'
 export { default as CommonMixin } from './common-mixin'
 export { default as CurrencyLookupMixin } from './currency-lookup-mixin'
 export { default as DateMixin } from './date-mixin'

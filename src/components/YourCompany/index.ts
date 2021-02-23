@@ -1,7 +1,6 @@
 export * from './CompanyName'
 export * from './NameTranslations'
 export { default as BusinessContactInfo } from './BusinessContactInfo.vue'
-export { default as BusinessContactInfoShared } from './BusinessContactInfoShared.vue'
 export { default as CorrectBusinessContactInfo } from './CorrectBusinessContactInfo.vue'
 export { default as CorrectBusinessType } from './CorrectBusinessType.vue'
 export { default as FolioNumber } from './FolioNumber.vue'

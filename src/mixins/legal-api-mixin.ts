@@ -181,27 +181,4 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
         }
       })
   }
-
-  /**
-   * Fetches contact information for the specified business.
-   * @returns a promise to return the contact data
-   */
-  async getContactInfo (): Promise<any> {
-    if (!this.getBusinessId) throw new Error('Invalid parameter \'businessIdentifier\'')
-
-    const url = `entities/${this.getBusinessId}`
-    const authUrl = sessionStorage.getItem('AUTH_API_URL')
-    const config = { baseURL: authUrl }
-
-    return axios.get(url, config)
-      .then(response => {
-        if (response && response.data && response.data.contacts) {
-          return response.data.contacts[0] || [] // Always take the first contact.
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('getContactInfo() error - invalid response =', response)
-          throw new Error('Invalid API response')
-        }
-      })
-  }
 }
