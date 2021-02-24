@@ -65,7 +65,7 @@
 
     <!-- Initial Page Load Transition -->
     <transition name="fade">
-      <div class="loading-container" v-show="(!haveData && !fetchErrorDialog) || showSpinner">
+      <div class="loading-container" v-show="(!haveData && !fetchErrorDialog)">
         <div class="loading__content">
           <v-progress-circular color="primary" size="50" indeterminate />
           <div class="loading-msg">Loading</div>
@@ -221,7 +221,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   private deleteErrors: Array<object> = []
   private deleteWarnings: Array<object> = []
   private fileAndPayInvalidNameRequestDialog: boolean = false
-  private showSpinner = false
 
   // FUTURE: change profileReady/appReady/haveData to a state machine?
 
@@ -301,9 +300,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       }
     }
 
-    // listen for spinner show/hide events
-    this.$root.$on('showSpinner', (flag = false) => { this.showSpinner = flag })
-
     // listen for save error events
     this.$root.$on('save-error-event', async error => {
       // save errors/warnings
@@ -347,7 +343,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     // stop listening for custom events
     this.$root.$off('save-error-event')
     this.$root.$off('invalid-name-request')
-    this.$root.$off('showSpinner')
   }
 
   /** Called when profile is ready -- we can now init app. */
