@@ -213,7 +213,7 @@
     <v-divider class="mx-4" />
 
     <div class="section-container">
-      <correct-business-contact-info
+      <business-contact-info
         @haveChanges="contactInfoChanges = $event"
       />
     </div>
@@ -246,7 +246,7 @@ import {
   NameRequestIF
 } from '@/interfaces'
 import {
-  CorrectBusinessContactInfo,
+  BusinessContactInfo,
   CorrectBusinessType,
   FolioNumber,
   CorrectNameTranslation,
@@ -260,7 +260,7 @@ import { ConfirmDialog } from '@/components/dialogs'
 @Component({
   components: {
     ConfirmDialog,
-    CorrectBusinessContactInfo,
+    BusinessContactInfo,
     CorrectBusinessType,
     CorrectNameOptions,
     CorrectNameTranslation,

@@ -10,7 +10,7 @@
     </div>
 
     <!-- Contact Information -->
-    <template v-if="hasContactInfoChange">
+    <template v-if="hasContactInfoChange" id="no-fee-contact">
       <div class="section-container">
         <v-layout row class="mx-0 mt-4">
           <v-flex xs3>
@@ -39,7 +39,7 @@
     </template>
 
     <!-- Folio Number -->
-    <template>
+    <template id="no-fee-folio">
       <div class="section-container">
         <v-layout row class="mx-0 mt-4">
           <v-flex xs3>

@@ -45,16 +45,19 @@ export default class AuthApiMixin extends Vue {
    * @param contactInfo The contact information payload.
    */
   updateContactInfo (contactInfo: BusinessContactIF): Promise<any> {
-    const contactPayload = {
-      email: contactInfo.email,
-      phone: contactInfo.phone,
-      phoneExtension: contactInfo.extension
-    }
-    const authUrl = sessionStorage.getItem('AUTH_API_URL')
+    try {
+      const contactPayload = {
+        email: contactInfo.email,
+        phone: contactInfo.phone,
+        phoneExtension: contactInfo.extension
+      }
+      const authUrl = sessionStorage.getItem('AUTH_API_URL')
+      let url = `${authUrl}entities/${this.getBusinessId}/contacts`
 
-    let url = `${authUrl}entities/${this.getBusinessId}/contacts`
-    return axios.put(url, contactPayload).catch(error => {
+      return axios.put(url, contactPayload)
+    } catch (error) {
+      // TODO: Update error handling modal after design review
       this.$root.$emit('save-error-event', error)
-    })
+    }
   }
 }
