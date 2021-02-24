@@ -123,7 +123,7 @@ export default class Alteration extends Mixins(AuthApiMixin, CommonMixin, LegalA
 
     // try to fetch data
     try {
-      const businessSnapshot = await this.fetchBusinessSnapshot()
+      const businessSnapshot: BusinessSnapshotIF[] = await this.fetchBusinessSnapshot()
 
       if (this.alterationId) {
         // store the filing ID

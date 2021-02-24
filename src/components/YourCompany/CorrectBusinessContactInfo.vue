@@ -52,9 +52,9 @@ export default class CorrectBusinessContactInfo extends Mixins(AuthApiMixin, Com
 
   /** Check for changes between current contact and original contact. */
   private get hasBusinessContactInfoChange (): boolean {
-    return this.getBusinessContact.email !== this.originalContact.email ||
-      this.getBusinessContact.phone !== this.originalContact.phone ||
-      this.getBusinessContact.extension !== this.originalContact.extension
+    return this.getBusinessContact?.email !== this.originalContact?.email ||
+      this.getBusinessContact?.phone !== this.originalContact?.phone ||
+      this.getBusinessContact?.extension !== this.originalContact?.extension
   }
 
   /** Update Contact info. */
