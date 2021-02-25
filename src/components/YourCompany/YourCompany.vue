@@ -237,7 +237,6 @@ import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import {
   ActionBindingIF,
-  BusinessContactIF,
   BusinessSnapshotIF,
   ConfirmDialogType,
   GetterIF,
@@ -245,6 +244,8 @@ import {
   NameRequestApplicantIF,
   NameRequestIF
 } from '@/interfaces'
+// Shared Interfaces
+import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 import {
   BusinessContactInfo,
   CorrectBusinessType,
@@ -288,7 +289,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   @Getter isPremiumAccount!: GetterIF
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getOriginalSnapshot!: BusinessSnapshotIF[]
-  @Getter getBusinessContact!: BusinessContactIF
+  @Getter getBusinessContact!: ContactPointIF
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
 

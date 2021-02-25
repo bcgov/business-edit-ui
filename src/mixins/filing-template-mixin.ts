@@ -6,7 +6,6 @@ import { Action, Getter } from 'vuex-class'
 import {
   ActionBindingIF,
   AlterationFilingIF,
-  BusinessContactIF,
   BusinessSnapshotIF,
   CertifyIF,
   CorrectionFilingIF,
@@ -18,7 +17,11 @@ import {
   NameRequestIF
 } from '@/interfaces'
 
-import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+// Shared Interfaces
+import {
+  ContactPointIF,
+  StaffPaymentIF
+} from '@bcrs-shared-components/interfaces'
 
 // Constants
 import { ActionTypes, EntityTypes, FilingTypes } from '@/enums'
@@ -51,7 +54,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getNameRequest!: NameRequestIF
   @Getter getCertifyState!: CertifyIF
   @Getter getOfficeAddresses!: IncorporationAddressIf | {}
-  @Getter getBusinessContact!: BusinessContactIF
+  @Getter getBusinessContact!: ContactPointIF
   @Getter getAgreementType!: string
   @Getter getOriginalSnapshot: BusinessSnapshotIF[]
   @Getter hasBusinessNameChanged!: boolean

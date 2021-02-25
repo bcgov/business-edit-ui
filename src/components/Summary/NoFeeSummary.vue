@@ -61,11 +61,13 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { BusinessContactIF } from '@/interfaces'
+
+// Shared Interfaces
+import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
 @Component({})
 export default class NoFeeSummary extends Vue {
-  @Getter getBusinessContact!: BusinessContactIF
+  @Getter getBusinessContact!: ContactPointIF
   @Getter hasContactInfoChange!: boolean
   @Getter isSummaryMode!: boolean
 }

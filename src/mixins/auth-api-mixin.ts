@@ -3,8 +3,11 @@ import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { axios } from '@/utils'
 
-// Interfaces
-import { BusinessContactIF } from '@/interfaces'
+// Shared Interfaces
+import {
+  ContactPointIF
+} from '@bcrs-shared-components/interfaces'
+
 /**
  * Mixin that provides integration with the Auth API.
  */
@@ -16,7 +19,7 @@ export default class AuthApiMixin extends Vue {
    * Update a businesses contact information.
    * @param contactInfo The contact information payload.
    */
-  updateContactInfo (contactInfo: BusinessContactIF): Promise<any> {
+  updateContactInfo (contactInfo: ContactPointIF): Promise<any> {
     try {
       const contactPayload = {
         email: contactInfo.email,

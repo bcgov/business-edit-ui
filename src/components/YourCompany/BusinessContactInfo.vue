@@ -12,16 +12,18 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Interfaces
 import {
   ActionBindingIF,
-  BusinessContactIF,
   BusinessSnapshotIF,
   IncorporationFilingIF
 } from '@/interfaces'
+
+// Shared Interfaces
+import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
 // Mixins
 import { AuthApiMixin, CommonMixin } from '@/mixins'
@@ -37,13 +39,13 @@ import { ContactInfo } from '@bcrs-shared-components/contact-info'
 export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixin) {
   @Action setBusinessContact!: ActionBindingIF
 
-  @Getter getBusinessContact!: BusinessContactIF
+  @Getter getBusinessContact!: ContactPointIF
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getOriginalSnapshot!: BusinessSnapshotIF
-  @Getter getSnapshotContact!: BusinessContactIF
+  @Getter getSnapshotContact!: ContactPointIF
 
   /** Get the original Contact info dependant on filing type. */
-  private get originalContact (): BusinessContactIF {
+  private get originalContact (): ContactPointIF {
     return this.isCorrectionView()
       ? this.getOriginalIA.incorporationApplication.contactPoint
       : this.getSnapshotContact
@@ -57,14 +59,14 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
   }
 
   /** Update Contact info. */
-  private async setContact (contactInfo: BusinessContactIF): Promise<void> {
+  private async setContact (contactInfo: ContactPointIF): Promise<void> {
     this.isCorrectionView()
       ? this.setBusinessContact(contactInfo)
       : await this.updateContactRequest(contactInfo)
   }
 
   /** Request to update contact info in Auth and Store. */
-  private async updateContactRequest (contactInfo: BusinessContactIF): Promise<void> {
+  private async updateContactRequest (contactInfo: ContactPointIF): Promise<void> {
     await this.updateContactInfo(contactInfo)
     this.setBusinessContact(contactInfo)
   }
