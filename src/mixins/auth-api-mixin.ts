@@ -6,39 +6,11 @@ import { axios } from '@/utils'
 // Interfaces
 import { BusinessContactIF } from '@/interfaces'
 /**
- * Mixin that provides integration with the Legal API.
+ * Mixin that provides integration with the Auth API.
  */
 @Component({})
 export default class AuthApiMixin extends Vue {
   @Getter getBusinessId!: string
-
-  /**
-   * Fetches contact information for the specified business.
-   * @returns a promise to return the contact data
-   */
-  async getContactInfo (): Promise<any> {
-    if (!this.getBusinessId) throw new Error('Invalid parameter \'businessIdentifier\'')
-
-    const url = `entities/${this.getBusinessId}`
-    const authUrl = sessionStorage.getItem('AUTH_API_URL')
-    const config = { baseURL: authUrl }
-
-    return axios.get(url, config)
-      .then(response => {
-        if (response && response.data && response.data.contacts) {
-          // Always take the first contact.
-          return {
-            ...response.data.contacts[0],
-            confirmEmail: response.data.contacts[0].email,
-            extension: response.data.contacts[0].phoneExtension
-          } || []
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('getContactInfo() error - invalid response =', response)
-          throw new Error('Invalid API response')
-        }
-      })
-  }
 
   /**
    * Update a businesses contact information.

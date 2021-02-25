@@ -56,7 +56,7 @@ import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/compone
 import { ShareStructure } from '@/components/ShareStructure'
 
 // Mixins, Interfaces and Enums
-import { AuthApiMixin, CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
+import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
 import { BusinessDataTypes, EntityTypes, FilingCodes, FilingStatus } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -75,7 +75,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     YourCompany
   }
 })
-export default class Alteration extends Mixins(AuthApiMixin, CommonMixin, LegalApiMixin, FilingTemplateMixin) {
+export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin) {
   // Global getters
   @Getter getEntityType!: EntityTypes
   @Getter isSummaryMode!: boolean

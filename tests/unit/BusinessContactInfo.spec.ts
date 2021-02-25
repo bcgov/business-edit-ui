@@ -10,7 +10,7 @@ import { axios } from '@/utils'
 import { getVuexStore } from '@/store'
 
 // Components
-import { createLocalVue, mount } from '@vue/test-utils'
+import { createLocalVue, createWrapper, mount } from '@vue/test-utils'
 import { BusinessContactInfo } from '@/components/YourCompany'
 import flushPromises from 'flush-promises'
 
@@ -55,8 +55,8 @@ describe('BusinessContactInfo for a correction', () => {
   })
 
   it('loads the correct original contact info for a correction', async () => {
-    expect(wrapper.vm.originalContact.email = originalCorrectionContact.email)
-    expect(wrapper.vm.originalContact.phone = originalCorrectionContact.phone)
+    expect(wrapper.vm.originalContact.email).toEqual(originalCorrectionContact.email)
+    expect(wrapper.vm.originalContact.phone).toEqual(originalCorrectionContact.phone)
   })
 
   it('watches for business contact info changes ', async () => {
@@ -87,7 +87,8 @@ describe('CorrectBusinessContactInfo for an alteration', () => {
   const originalAlterationContact = {
     email: 'mockAlteration@email.com',
     confirmEmail: 'mockAlteration@email.com',
-    phone: '250-123-4567'
+    phone: '250-123-4567',
+    extension: '123'
   }
 
   beforeAll(async () => {
@@ -111,8 +112,8 @@ describe('CorrectBusinessContactInfo for an alteration', () => {
   })
 
   it('loads the correct original contact info for an alteration', async () => {
-    expect(wrapper.vm.originalContact.email = originalAlterationContact.email)
-    expect(wrapper.vm.originalContact.phone = originalAlterationContact.phone)
+    expect(wrapper.vm.originalContact.email).toEqual(originalAlterationContact.email)
+    expect(wrapper.vm.originalContact.phone).toEqual(originalAlterationContact.phone)
   })
 
   it('watches for business contact info changes ', async () => {

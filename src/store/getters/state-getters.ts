@@ -218,6 +218,11 @@ export const getBusinessContact = (state: StateIF): BusinessContactIF => {
   return state.stateModel.defineCompanyStep.businessContact
 }
 
+export const getSnapshotContact = (state: StateIF): BusinessContactIF => {
+  const snapShotContact: unknown = state.stateModel.originalSnapshot[5]
+  return snapShotContact as BusinessContactIF
+}
+
 /** Whether we are ignoring data changes. */
 export const ignoreChanges = (state: StateIF): boolean => {
   return state.stateModel.tombstone.ignoreChanges
@@ -346,11 +351,10 @@ export const hasBusinessTypeChanged = (state: StateIF): boolean => {
 }
 
 /** Check for changes between current contact and original contact. */
-export const hasContactInfoChange = (state: StateIF, rootState: any): boolean => {
+export const hasContactInfoChange = (state: StateIF): boolean => {
   const businessContact: BusinessContactIF = state.stateModel.defineCompanyStep.businessContact
-  const originalSnapshot: any = state.stateModel.originalSnapshot[5]
 
-  return businessContact.email !== originalSnapshot.email ||
-    businessContact.phone !== originalSnapshot.phone ||
-    businessContact.extension !== originalSnapshot.extension
+  return businessContact.email !== getSnapshotContact(state).email ||
+    businessContact.phone !== getSnapshotContact(state).phone ||
+    businessContact.extension !== getSnapshotContact(state).extension
 }

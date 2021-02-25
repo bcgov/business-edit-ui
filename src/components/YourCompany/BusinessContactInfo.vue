@@ -5,14 +5,14 @@
     :hasBusinessContactInfoChange="hasBusinessContactInfoChange"
     :edit-label="editLabel"
     :edited-label="editedLabel"
+    :disable-actions="isCorrectionView()"
     @contactInfoChange="setContact($event)"
-    @haveChanges="emitHaveChanges($event)"
   />
 </template>
 
 <script lang="ts">
 // Libraries
-import { Component, Emit, Mixins } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Interfaces
@@ -40,12 +40,13 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
   @Getter getBusinessContact!: BusinessContactIF
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getOriginalSnapshot!: BusinessSnapshotIF
+  @Getter getSnapshotContact!: BusinessContactIF
 
   /** Get the original Contact info dependant on filing type. */
   private get originalContact (): BusinessContactIF {
     return this.isCorrectionView()
       ? this.getOriginalIA.incorporationApplication.contactPoint
-      : this.getOriginalSnapshot[5]
+      : this.getSnapshotContact
   }
 
   /** Check for changes between current contact and original contact. */
@@ -67,9 +68,6 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
     await this.updateContactInfo(contactInfo)
     this.setBusinessContact(contactInfo)
   }
-
-  @Emit('haveChanges')
-  private emitHaveChanges (haveChanges: boolean): void {}
 }
 </script>
 
