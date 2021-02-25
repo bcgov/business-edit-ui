@@ -10,7 +10,7 @@
     </div>
 
     <!-- Contact Information -->
-    <template>
+    <template v-if="hasContactInfoChange" id="no-fee-contact">
       <div class="section-container">
         <v-layout row class="mx-0 mt-4">
           <v-flex xs3>
@@ -22,13 +22,15 @@
           <!-- Email -->
           <v-flex xs4>
             <span class="subtitle text-body-3 mr-2">Email Address</span>
-            <div id="lbl-email" class="info-text">{{ "mock@email.io" }}</div> <!-- Placeholder Value -->
+            <div id="lbl-email" class="info-text">{{ getBusinessContact.email }}</div>
           </v-flex>
 
           <!-- Phone -->
           <v-flex xs4>
             <span class="subtitle text-body-3 mr-2">Phone Number</span>
-            <div id="lbl-phone" class="info-text">{{ "123-456-7890" }}</div> <!-- Placeholder Value -->
+            <div id="lbl-phone" class="info-text">{{ getBusinessContact.phone }}
+              <span v-if="!!getBusinessContact.extension">Ext: {{ getBusinessContact.extension }}</span>
+            </div>
           </v-flex>
 
         </v-layout>
@@ -37,7 +39,7 @@
     </template>
 
     <!-- Folio Number -->
-    <template>
+    <template id="no-fee-folio">
       <div class="section-container">
         <v-layout row class="mx-0 mt-4">
           <v-flex xs3>
@@ -60,8 +62,13 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 
+// Shared Interfaces
+import { ContactPointIF } from '@bcrs-shared-components/interfaces'
+
 @Component({})
 export default class NoFeeSummary extends Vue {
+  @Getter getBusinessContact!: ContactPointIF
+  @Getter hasContactInfoChange!: boolean
   @Getter isSummaryMode!: boolean
 }
 </script>

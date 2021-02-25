@@ -116,14 +116,14 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
     if (!this.isJestRunning && !getFeatureFlag('alteration-ui-enabled')) {
-      window.alert('Alterations are under contruction. Please check again later.')
+      window.alert('Alterations are not available at the moment. Please check again later.')
       this.redirectEntityDashboard()
       return
     }
 
     // try to fetch data
     try {
-      const businessSnapshot = await this.fetchBusinessSnapshot()
+      const businessSnapshot: BusinessSnapshotIF[] = await this.fetchBusinessSnapshot()
 
       if (this.alterationId) {
         // store the filing ID

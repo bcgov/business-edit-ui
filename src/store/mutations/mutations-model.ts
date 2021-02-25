@@ -3,7 +3,6 @@ import {
   CertifyIF,
   IncorporationAddressIf,
   NameRequestIF,
-  BusinessContactIF,
   OrgPersonIF,
   ShareClassIF,
   AccountInformationIF,
@@ -14,7 +13,11 @@ import {
   NameTranslationIF,
   StateIF, BusinessSnapshotIF
 } from '@/interfaces'
-import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+// Shared Interfaces
+import {
+  ContactPointIF,
+  StaffPaymentIF
+} from '@bcrs-shared-components/interfaces'
 import { EntityTypes } from '@/enums'
 
 export const mutateBusinessId = (state: StateIF, businessId: string) => {
@@ -78,7 +81,7 @@ export const mutateCertifyStateValidity = (state: StateIF, validity: boolean) =>
   state.stateModel.certifyState.valid = validity
 }
 
-export const mutateBusinessContact = (state: StateIF, businessContact: BusinessContactIF) => {
+export const mutateBusinessContact = (state: StateIF, businessContact: ContactPointIF) => {
   state.stateModel.defineCompanyStep.businessContact = businessContact
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }

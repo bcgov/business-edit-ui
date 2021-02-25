@@ -117,7 +117,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
     if (!this.isJestRunning && !getFeatureFlag('correction-ui-enabled')) {
-      window.alert('Corrections are under contruction. Please check again later.')
+      window.alert('Corrections are not available at the moment. Please check again later.')
       this.redirectEntityDashboard()
       return
     }

@@ -2,10 +2,14 @@
 import { AccountTypes, EntityTypes } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
-  NameRequestIF, BusinessContactIF, BusinessInformationIF, CertifyIF,
-  CertifyStatementIF, NameTranslationIF, IncorporationAddressIf, FilingDataIF, StateIF, BusinessSnapshotIF
+  NameRequestIF, BusinessInformationIF, CertifyIF, CertifyStatementIF, NameTranslationIF, IncorporationAddressIf,
+  FilingDataIF, StateIF, BusinessSnapshotIF
 } from '@/interfaces'
-import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+// Shared Interfaces
+import {
+  ContactPointIF,
+  StaffPaymentIF
+} from '@bcrs-shared-components/interfaces'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: StateIF): boolean => {
@@ -214,8 +218,13 @@ export const getAgreementType = (state: StateIF): string => {
 }
 
 /** The business contact object. */
-export const getBusinessContact = (state: StateIF): BusinessContactIF => {
+export const getBusinessContact = (state: StateIF): ContactPointIF => {
   return state.stateModel.defineCompanyStep.businessContact
+}
+
+export const getSnapshotContact = (state: StateIF): ContactPointIF => {
+  const snapShotContact: unknown = state.stateModel.originalSnapshot[5]
+  return snapShotContact as ContactPointIF
 }
 
 /** Whether we are ignoring data changes. */
@@ -343,4 +352,13 @@ export const hasBusinessNameChanged = (state: StateIF): boolean => {
 /** Identify changes to business type. */
 export const hasBusinessTypeChanged = (state: StateIF): boolean => {
   return state.stateModel.tombstone.entityType !== state.stateModel.originalSnapshot[0]?.business?.legalType
+}
+
+/** Check for changes between current contact and original contact. */
+export const hasContactInfoChange = (state: StateIF): boolean => {
+  const businessContact: ContactPointIF = state.stateModel.defineCompanyStep.businessContact
+
+  return businessContact.email !== getSnapshotContact(state).email ||
+    businessContact.phone !== getSnapshotContact(state).phone ||
+    businessContact.extension !== getSnapshotContact(state).extension
 }

@@ -63,7 +63,10 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 
 // Interfaces
-import { BusinessContactIF, GetterIF } from '@/interfaces'
+import { GetterIF } from '@/interfaces'
+
+// Shared Interfaces
+import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
 // Components
 import { FolioNumber, BusinessContactInfo, OfficeAddresses } from '@/components/YourCompany'
@@ -92,7 +95,7 @@ export default class SummaryDefineCompany extends Mixins(CommonMixin) {
   @Getter getOfficeAddresses!: any
   @Getter getFolioNumber!: string
   @Getter isDefineCompanyStepValid!: boolean
-  @Getter getBusinessContact!: BusinessContactIF
+  @Getter getBusinessContact!: ContactPointIF
 
   @Prop({ default: false })
   private isSummary: boolean
