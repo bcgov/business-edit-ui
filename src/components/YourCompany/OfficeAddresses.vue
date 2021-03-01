@@ -11,7 +11,7 @@
         <v-flex xs4>
           <label class="d-flex flex-wrap">
             <span class="mr-2">Mailing Address</span>
-            <v-chip v-if="this.isCorrectionView() && mailingChanged"
+            <v-chip v-if="isCorrectionView() && mailingChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
@@ -25,7 +25,7 @@
         <v-flex xs4>
           <label class="d-flex flex-wrap">
             <span class="mr-2">Delivery Address</span>
-            <v-chip v-if="this.isCorrectionView() && deliveryChanged"
+            <v-chip v-if="isCorrectionView() && deliveryChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
@@ -37,7 +37,7 @@
           <div v-else class="info-text">Same as Mailing Address</div>
         </v-flex>
 
-        <v-flex xs1 v-if="this.isCorrectionView() && officeAddressesChanged">
+        <v-flex xs1 v-if="isCorrectionView() && officeAddressesChanged">
           <div class="actions mr-4">
             <span class="edit-action">
               <v-btn
@@ -81,7 +81,7 @@
           </div>
         </v-flex>
 
-        <v-flex xs1 v-else-if="this.isCorrectionView()">
+        <v-flex xs1 v-else-if="isCorrectionView()">
           <div class="actions mr-4">
             <v-btn
               text color="primary"
@@ -776,5 +776,10 @@ ul {
 ::v-deep .address-block__info-row:last-of-type {
   padding-top: 0.75rem;
   font-style: italic;
+}
+
+::v-deep .address-block__info-row {
+  color: $gray7;
+  font-weight: normal;
 }
 </style>
