@@ -1,15 +1,10 @@
-// Enums and Interfaces
 import { AccountTypes, EntityTypes } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
   NameRequestIF, BusinessInformationIF, CertifyIF, CertifyStatementIF, NameTranslationIF, IncorporationAddressIf,
-  FilingDataIF, StateIF, BusinessSnapshotIF
+  FilingDataIF, StateIF, BusinessSnapshotIF, EffectiveDateTimeIF
 } from '@/interfaces'
-// Shared Interfaces
-import {
-  ContactPointIF,
-  StaffPaymentIF
-} from '@bcrs-shared-components/interfaces'
+import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: StateIF): boolean => {
@@ -51,19 +46,24 @@ export const isPremiumAccount = (state: StateIF): boolean => {
   return (state.stateModel.accountInformation.accountType === AccountTypes.PREMIUM)
 }
 
-/** The filing's effective date. */
-export const getEffectiveDate = (state: StateIF): Date => {
-  return state.stateModel.incorporationDateTime.effectiveDate
+/** The filing's effective date-time object. */
+export const getEffectiveDateTime = (state: StateIF): EffectiveDateTimeIF => {
+  return state.stateModel.effectiveDateTime
 }
 
-/** The filing's effective date. */
-export const getBusinessFoundingDate = (state: StateIF): Date => {
-  return state.stateModel.businessInformation.foundingDate
+/** The business' founding date-time. */
+export const getBusinessFoundingDateTime = (state: StateIF): string => {
+  return state.stateModel.businessInformation.foundingDateTime
 }
 
-/** The filing's original effective date. */
-export const getOriginalEffectiveDate = (state: StateIF): string => {
+/** The filing's original effective date-time. */
+export const getOriginalFilingDateTime = (state: StateIF): string => {
   return state.stateModel.originalIA.header.date
+}
+
+/** The filing's original effective date-time. */
+export const getOriginalEffectiveDateTime = (state: StateIF): string => {
+  return state.stateModel.originalIA.header.effectiveDate
 }
 
 /** The current account id. */
@@ -71,14 +71,19 @@ export const getAccountId = (state: StateIF): number => {
   return state.stateModel.accountInformation.id
 }
 
-/** The current date. */
+/** The current date, which is refreshed every time the app inits. */
 export const getCurrentDate = (state: StateIF): string => {
   return state.stateModel.tombstone.currentDate
 }
 
+/** The current JS Date object, which is refreshed every minute. */
+export const getCurrentJsDate = (state: StateIF): Date => {
+  return state.stateModel.currentJsDate
+}
+
 /** The filing date. */
-export const getFilingDate = (state: StateIF): string => {
-  return state.stateModel.tombstone.filingDate
+export const getFilingDateTime = (state: StateIF): string => {
+  return state.stateModel.tombstone.filingDateTime
 }
 
 /** The filing id. */

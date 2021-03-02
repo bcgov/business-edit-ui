@@ -85,20 +85,60 @@
         </v-layout>
       </div>
     </template>
+
+    <!-- TODO: Name Translation -->
+
+    <!-- TODO: Pre-existing Company Provisions -->
+
+    <!-- TODO: Share Structure -->
+
+    <!-- Alteration Date and Time -->
+    <div class="ma-6 pb-6">
+      <v-container class="alteration-date-time" :class="{ 'invalid': alterationDateTimeInvalid }">
+        <v-row no-gutters>
+          <v-col cols="3" class="pr-4">
+            <label><strong>Alteration Date and Time</strong></label>
+          </v-col>
+
+          <v-col cols="9" class="pl-4">
+            <p class="info-text">Select the date and time of alteration of your business. You may select a date and
+              time up to 10 days in the future (note: there is an <strong>additional fee of $100.00</strong> to enter
+              an alteration date and time in the future). Unless a business has special requirements, most businesses
+              select an immediate Alteration Date and Time.
+            </p>
+
+            <effective-date-time
+              :currentJsDate="getCurrentJsDate"
+              :effectiveDateTime="getEffectiveDateTime"
+              @dateTimeString="setEffectiveDateTimeString($event)"
+              @isFutureEffective="setIsFutureEffective($event)"
+              @valid="setEffectiveDateValid($event)"
+            />
+
+            <v-card flat class="px-16 pb-8 mt-n12" v-if="isFutureEffective && isEffectiveDateTimeValid">
+              The alteration for this business will be effective as of:<br>
+              <strong>{{effectiveDateTimeString}}</strong>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
   </v-card>
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ConfirmDialog } from '@/components/dialogs'
-import { ActionBindingIF, ConfirmDialogType, NameRequestIF } from '@/interfaces'
+import { ActionBindingIF, ConfirmDialogType, EffectiveDateTimeIF, NameRequestIF } from '@/interfaces'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { EntityTypes } from '@/enums'
+import { EffectiveDateTime } from '@/components/common'
 
 @Component({
   components: {
-    ConfirmDialog
+    ConfirmDialog,
+    EffectiveDateTime
   }
 })
 export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
@@ -108,17 +148,38 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
   }
 
   // Global Getters
+  @Getter getCurrentJsDate!: Date
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
   @Getter getEntityType!: EntityTypes
   @Getter isSummaryMode!: boolean
   @Getter getNameRequest!: NameRequestIF
+  @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   // Alteration Flag Getters
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
 
   // Actions
   @Action setSummaryMode!: ActionBindingIF
+  @Action setEffectiveDateTimeString!: ActionBindingIF
+  @Action setIsFutureEffective!: ActionBindingIF
+  @Action setEffectiveDateValid!: ActionBindingIF
+
+  /** Prop to perform validation. */
+  @Prop() readonly pleaseValidate: boolean
+
+  private get isFutureEffective (): boolean {
+    return this.getEffectiveDateTime.isFutureEffective
+  }
+
+  private get isEffectiveDateTimeValid (): boolean {
+    return this.getEffectiveDateTime.valid
+  }
+
+  private get effectiveDateTimeString (): string {
+    const date = new Date(this.getEffectiveDateTime.dateTimeString || '2021-03-05T08:30:00Z')
+    return this.fullFormatDate(date)
+  }
 
   /** The company name (from NR, or incorporation number). */
   private get companyName (): string {
@@ -129,6 +190,11 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
 
   private get originalEntityType (): string {
     return this.getOriginalSnapshot[0]?.business?.legalType
+  }
+
+  /** True if invalid class should be set for Alteration Date-Time container. */
+  private get alterationDateTimeInvalid (): boolean {
+    return (this.pleaseValidate && !this.getEffectiveDateTime.valid)
   }
 
   private restoreOriginalSnapshot (): void {
@@ -197,6 +263,20 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
 
   .v-btn {
     min-width: 0.5rem;
+  }
+}
+
+.alteration-date-time {
+  padding: 2rem;
+  background-color: $gray1;
+
+  &.invalid {
+    border-left: 4px solid $BCgovInputError;
+    padding-left: calc(2rem - 4px);
+
+    label {
+      color: $BCgovInputError;
+    }
   }
 }
 </style>

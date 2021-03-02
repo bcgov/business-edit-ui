@@ -33,20 +33,24 @@ export const setUserInfo: ActionIF = ({ commit }, userInfo): void => {
   commit('mutateUserInfo', userInfo)
 }
 
-export const setCurrentDate: ActionIF = ({ commit }, currentDate): void => {
-  commit('mutateCurrentDate', currentDate)
+export const setCurrentDate: ActionIF = ({ commit }, dateString: string): void => {
+  commit('mutateCurrentDate', dateString)
 }
 
-export const setIsFutureEffective: ActionIF = ({ commit }, isFutureEffective): void => {
+export const setCurrentJsDate: ActionIF = ({ commit }, date: Date): void => {
+  commit('mutateCurrentJsDate', date)
+}
+
+export const setIsFutureEffective: ActionIF = ({ commit }, isFutureEffective: boolean): void => {
   commit('mutateIsFutureEffective', isFutureEffective)
 }
 
-export const setEffectiveDate: ActionIF = ({ commit }, effectiveDate): void => {
-  commit('mutateEffectiveDate', effectiveDate)
+export const setEffectiveDateTimeString: ActionIF = ({ commit }, dateTimeString: string): void => {
+  commit('mutateEffectiveDateTimeString', dateTimeString)
 }
 
-export const setIsIncorporationDateTimeValidity: ActionIF = ({ commit }, validity: boolean): void => {
-  commit('mutateIsIncorporationDateTimeValidity', validity)
+export const setEffectiveDateValid: ActionIF = ({ commit }, valid: boolean): void => {
+  commit('mutateEffectiveDateValid', valid)
 }
 
 export const setCertifyStatementResource: ActionIF = ({ commit }, certifyStatementResource): void => {
@@ -65,10 +69,6 @@ export const setBusinessContact: ActionIF = ({ commit }, businessContact): void 
   commit('mutateBusinessContact', businessContact)
 }
 
-export const setDefineCompanyStepValidity: ActionIF = ({ commit }, validity: boolean): void => {
-  commit('mutateDefineCompanyStepValidity', validity)
-}
-
 export const setDefineCompanyStepChanged: ActionIF = ({ commit }, changed: boolean): void => {
   commit('mutateDefineCompanyStepChanged', changed)
 }
@@ -81,8 +81,8 @@ export const setFolioNumber: ActionIF = ({ commit }, folioNumber): void => {
   commit('mutateFolioNumber', folioNumber)
 }
 
-export const setFilingDate: ActionIF = ({ commit }, filingDate): void => {
-  commit('mutateFilingDate', filingDate)
+export const setFilingDateTime: ActionIF = ({ commit }, dateTimeString): void => {
+  commit('mutateFilingDateTime', dateTimeString)
 }
 
 export const setAccountInformation: ActionIF = ({ commit }, accountInformation): void => {

@@ -281,8 +281,8 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   @Getter getEntityType!: EntityTypes
   @Getter getNameRequest!: NameRequestIF
   @Getter hasNewNr!: boolean
-  @Getter getOriginalEffectiveDate!: Date
-  @Getter getBusinessFoundingDate!: Date
+  @Getter getOriginalEffectiveDateTime!: string
+  @Getter getBusinessFoundingDateTime!: string
   @Getter getFolioNumber!: string
   @Getter isConflictingLegalType!: boolean
   @Getter isNumberedCompany!: boolean
@@ -330,7 +330,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
 
   /** Name Request expiry */
   private get expiryDate (): string {
-    return this.toDisplayDate(this.getNameRequest.expiry)
+    return this.formatDateString(this.getNameRequest.expiry)
   }
 
   /** Name Request phone number */
@@ -341,14 +341,16 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   /** The recognition/founding (aka effective) datetime. */
   private get recognitionDateTime (): string {
     if (this.isCorrectionView()) {
-      return this.getOriginalEffectiveDate
-        ? (this.convertUtcTimeToLocalTime(this.getOriginalEffectiveDate.toString()) + ' Pacific Time')
-        : 'Unknown'
-    } else {
-      return this.getBusinessFoundingDate
-        ? (this.convertUtcTimeToLocalTime(this.getBusinessFoundingDate.toString()) + ' Pacific Time')
-        : 'Unknown'
+      if (this.getOriginalEffectiveDateTime) {
+        return (this.apiToDateAndTimeString(this.getOriginalEffectiveDateTime) + ' Pacific time')
+      }
     }
+    if (this.isAlterationView()) {
+      if (this.getBusinessFoundingDateTime) {
+        return (this.apiToDateAndTimeString(this.getBusinessFoundingDateTime) + ' Pacific time')
+      }
+    }
+    return 'Unknown'
   }
 
   /** Compare names. */

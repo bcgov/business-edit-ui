@@ -547,7 +547,7 @@ li {
 .sub-header {
   padding-bottom: 1.5rem;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: bold;
   line-height: 1.5rem;
 }
 </style>
