@@ -31,9 +31,16 @@ module.exports = {
     proxy: {
       // this is needed to prevent a CORS error when running locally
       '/local-keycloak-config-url/*': {
-        target: 'https://business-create-dev.pathfinder.gov.bc.ca/businesses/edit/config/kc/',
+        target: 'https://business-edit-dev.apps.silver.devops.gov.bc.ca/businesses/edit/config/kc/',
         pathRewrite: {
           '/local-keycloak-config-url': ''
+        }
+      },
+      // this is needed to avoid a PAYBC Not Found error when running locally
+      '/status/PAYBC': {
+        target: 'https://status-api-dev.apps.silver.devops.gov.bc.ca/api/v1/status/PAYBC',
+        pathRewrite: {
+          '/status/PAYBC': ''
         }
       }
     }
