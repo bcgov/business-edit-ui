@@ -11,7 +11,7 @@
         <v-flex xs4>
           <label class="d-flex flex-wrap">
             <span class="mr-2">Mailing Address</span>
-            <v-chip v-if="mailingChanged"
+            <v-chip v-if="isCorrectionView() && mailingChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
@@ -19,13 +19,13 @@
             :address="mailingAddress"
             :editing="false"
           />
-          <div v-else>(Not entered)</div>
+          <div v-else class="info-text">(Not entered)</div>
         </v-flex>
 
         <v-flex xs4>
           <label class="d-flex flex-wrap">
             <span class="mr-2">Delivery Address</span>
-            <v-chip v-if="deliveryChanged"
+            <v-chip v-if="isCorrectionView() && deliveryChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
@@ -34,10 +34,10 @@
             :editing="false"
           />
           <div v-else-if="isEmpty(deliveryAddress)">(Not entered)</div>
-          <div v-else>Same as Mailing Address</div>
+          <div v-else class="info-text">Same as Mailing Address</div>
         </v-flex>
 
-        <v-flex xs1 v-if="officeAddressesChanged">
+        <v-flex xs1 v-if="isCorrectionView() && officeAddressesChanged">
           <div class="actions mr-4">
             <span class="edit-action">
               <v-btn
@@ -81,7 +81,7 @@
           </div>
         </v-flex>
 
-        <v-flex xs1 v-else>
+        <v-flex xs1 v-else-if="isCorrectionView()">
           <div class="actions mr-4">
             <v-btn
               text color="primary"
@@ -111,8 +111,8 @@
             :address="recMailingAddress"
             :editing="false"
           />
-          <div v-else-if="isEmpty(recMailingAddress)">(Not entered)</div>
-          <div v-else>Same as Registered Office</div>
+          <div v-else-if="isEmpty(recMailingAddress)" class="info-text">(Not entered)</div>
+          <div v-else class="info-text">Same as Registered Office</div>
         </v-flex>
 
         <v-flex xs4>
@@ -126,9 +126,9 @@
             :address="recDeliveryAddress"
             :editing="false"
           />
-          <div v-else-if="isEmpty(recDeliveryAddress)">(Not entered)</div>
-          <div v-else-if="inheritRegisteredAddress">Same as Registered Office</div>
-          <div v-else>Same as Mailing Address</div>
+          <div v-else-if="isEmpty(recDeliveryAddress)" class="info-text">(Not entered)</div>
+          <div v-else-if="inheritRegisteredAddress" class="info-text">Same as Registered Office</div>
+          <div v-else class="info-text">Same as Mailing Address</div>
         </v-flex>
 
         <!-- empty column to force alignment with Registered Office section -->
@@ -776,5 +776,10 @@ ul {
 ::v-deep .address-block__info-row:last-of-type {
   padding-top: 0.75rem;
   font-style: italic;
+}
+
+::v-deep .address-block__info-row {
+  color: $gray7;
+  font-weight: normal;
 }
 </style>
