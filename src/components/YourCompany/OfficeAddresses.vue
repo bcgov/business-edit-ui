@@ -95,7 +95,7 @@
         </v-flex>
       </v-layout>
 
-      <v-layout row id="summary-records-address" class="mt-4 mx-0" v-if="entityFilter(EntityTypes.BENEFIT_COMPANY)">
+      <v-layout row id="summary-records-address" class="mt-4 mx-0" v-if="!entityFilter(EntityTypes.COOP)">
         <v-flex xs3>
           <label class>Records Office</label>
         </v-flex>
