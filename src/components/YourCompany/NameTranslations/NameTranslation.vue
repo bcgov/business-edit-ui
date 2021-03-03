@@ -88,7 +88,9 @@
             <add-name-translation
               v-if="isAddingNameTranslation"
               :editNameTranslation="editingNameTranslation"
+              :editNameIndex="editIndex"
               @addTranslation="addName($event)"
+              @removeNameTranslation="removeNameTranslation($event)"
               @cancelTranslation="cancelOrResetEditing()"
             />
             <list-name-translation
@@ -182,6 +184,10 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   private get hasNameTranslationChange (): boolean {
     return this.draftTranslations.length > 0 &&
       this.draftTranslations.filter(x => x.action).length > 0
+  }
+
+  private get isAddingAction (): boolean {
+    return this.editIndex === -1
   }
 
   private get translationsExceptRemoved (): NameTranslationIF[] {
@@ -372,5 +378,11 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   .v-list-item {
     min-height: 0;
     padding: 0 1rem 0 0.5rem;
+  }
+  ::v-deep {
+    .theme--light.v-btn.v-btn--disabled {
+        color: #1669bb !important;
+        opacity: 0.4;
+    }
   }
 </style>
