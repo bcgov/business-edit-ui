@@ -17,6 +17,8 @@
 
       <share-structure class="mt-10" />
 
+      <articles class="mt-10" />
+
       <agreement-type class="mt-10" />
 
       <detail class="mt-10" />
@@ -54,6 +56,7 @@ import { AgreementType } from '@/components/IncorporationAgreement'
 import { PeopleAndRoles } from '@/components/PeopleAndRoles'
 import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
 import { ShareStructure } from '@/components/ShareStructure'
+import { Articles } from '@/components/Articles'
 
 // Mixins, Interfaces and Enums
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
@@ -71,6 +74,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     NoFeeSummary,
     PeopleAndRoles,
     ShareStructure,
+    Articles,
     StaffPayment,
     YourCompany
   }
