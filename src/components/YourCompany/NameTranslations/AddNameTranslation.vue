@@ -21,18 +21,23 @@
       <v-row>
         <v-col>
           <div class="action-btns">
-            <v-btn v-if="!isAddingTranslation" large outlined color="error"
-                id="name-translation-remove"
-                 @click="emitRemoveName(nameIndex)"
-              >
-                <span>Remove</span>
-              </v-btn>
-            <v-btn large color="primary" class="ml-auto"
+            <v-btn v-if="!isAddingTranslation"
+              large outlined color="error"
+              id="name-translation-remove"
+              @click="emitRemoveName(nameIndex)"
+            >
+              <span>Remove</span>
+            </v-btn>
+            <v-btn
+              large color="primary" class="ml-auto"
               id="name-translation-btn-ok"
               :disabled="!nameTranslationForm"
               @click="addTranslation()"
-            >Done</v-btn>
-            <v-btn large outlined color="primary"
+            >
+                Done
+            </v-btn>
+            <v-btn
+              large outlined color="primary"
               id="name-translation-btn-cancel"
               @click="cancelNameTranslation()"
             >
@@ -121,6 +126,9 @@ export default class AddNameTranslation extends Vue {
     })
   }
 
+  /**
+   * Returns true if we are adding, false if editing
+   */
   private get isAddingTranslation () {
     return this.editNameTranslation === ''
   }

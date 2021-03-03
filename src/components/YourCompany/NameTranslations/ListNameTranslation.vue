@@ -211,7 +211,7 @@ export default class ListNameTranslation extends Mixins(CommonMixin) {
     padding: 0 1rem 0 0.5rem;
   }
   .v-list-item__subtitle {
-  color: var(--v-primary-base) !important;
+  color: $app-blue !important;
 
   .v-icon {
     color: var(--v-primary-base) !important;
