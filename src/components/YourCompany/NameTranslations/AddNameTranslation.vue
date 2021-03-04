@@ -129,7 +129,7 @@ export default class AddNameTranslation extends Vue {
   /**
    * Returns true if we are adding, false if editing
    */
-  private get isAddingTranslation () {
+  private get isAddingTranslation (): boolean {
     return this.editNameTranslation === ''
   }
 
