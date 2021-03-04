@@ -10,7 +10,7 @@
 
         <v-flex xs4>
           <label class="d-flex flex-wrap">
-            <span class="mr-2">Mailing Address</span>
+            <span class="subtitle text-body-3 mr-2">Mailing Address</span>
             <v-chip v-if="isCorrectionView() && mailingChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
@@ -24,7 +24,7 @@
 
         <v-flex xs4>
           <label class="d-flex flex-wrap">
-            <span class="mr-2">Delivery Address</span>
+            <span class="subtitle text-body-3 mr-2">Delivery Address</span>
             <v-chip v-if="isCorrectionView() && deliveryChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
@@ -33,7 +33,7 @@
             :address="deliveryAddress"
             :editing="false"
           />
-          <div v-else-if="isEmpty(deliveryAddress)">(Not entered)</div>
+          <div v-else-if="isEmpty(deliveryAddress)" class="info-text">(Not entered)</div>
           <div v-else class="info-text">Same as Mailing Address</div>
         </v-flex>
 
@@ -95,15 +95,15 @@
         </v-flex>
       </v-layout>
 
-      <v-layout row id="summary-records-address" class="mt-4 mx-0" v-if="entityFilter(EntityTypes.BENEFIT_COMPANY)">
+      <v-layout row id="summary-records-address" class="mt-4 mx-0" v-if="!entityFilter(EntityTypes.COOP)">
         <v-flex xs3>
           <label class>Records Office</label>
         </v-flex>
 
         <v-flex xs4>
           <label class="d-flex flex-wrap">
-            <span class="mr-2">Mailing Address</span>
-            <v-chip v-if="recMailingChanged"
+            <span class="subtitle text-body-3 mr-2">Mailing Address</span>
+            <v-chip v-if="isCorrectionView() && recMailingChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
@@ -117,8 +117,8 @@
 
         <v-flex xs4>
           <label class="d-flex flex-wrap">
-            <span class="mr-2">Delivery Address</span>
-            <v-chip v-if="recDeliveryChanged"
+            <span class="subtitle text-body-3 mr-2">Delivery Address</span>
+            <v-chip v-if="isCorrectionView() && recDeliveryChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
