@@ -214,7 +214,7 @@ export default class ListNameTranslation extends Mixins(CommonMixin) {
   color: $app-blue !important;
 
   .v-icon {
-    color: var(--v-primary-base) !important;
+    color: $app-blue !important;
   }
 }
 </style>
