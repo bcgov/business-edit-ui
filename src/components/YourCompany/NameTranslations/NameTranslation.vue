@@ -263,9 +263,12 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     if (this.editIndex > -1) {
       const translation = this.draftTranslations[this.editIndex]
       if (!translation.action) {
-        // If editing for the first time
-        translation.oldName = translation.name
-        translation.action = ActionTypes.EDITED
+        // if translation has changed at all
+        if (translation.name !== name) {
+          // If editing for the first time
+          translation.oldName = translation.name
+          translation.action = ActionTypes.EDITED
+        }
       } else if (translation.oldName === name) {
         // If user revert to old value
         translation.action = null
@@ -380,9 +383,12 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     padding: 0 1rem 0 0.5rem;
   }
   ::v-deep {
-    .theme--light.v-btn.v-btn--disabled {
+    .theme--light.v-btn.v-btn--disabled, .theme--light.v-btn.v-btn--disabled .v-icon {
         color: #1669bb !important;
         opacity: 0.4;
     }
+  }
+  ::v-deep #correct-name-translation {
+    align-items: flex-start;
   }
 </style>
