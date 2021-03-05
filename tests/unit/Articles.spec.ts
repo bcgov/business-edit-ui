@@ -16,16 +16,13 @@ const store = getVuexStore()
 
 describe('articles', () => {
   beforeAll(() => {
-    // init entity type
-    //   store.state.stateModel.tombstone.entityType = 'BEN'
+    //
   })
 
   it('displays the correct sections', () => {
     const router = mockRouter.mock()
     router.push({ name: 'alteration' })
-    const wrapper = mount(Articles, { router, vuetify })
-
-    //   expect(wrapper.find('#summary-records-address').exists()).toBe(true)
+    const wrapper = mount(Articles, { router, store, vuetify })
 
     wrapper.destroy()
   })

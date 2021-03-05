@@ -204,3 +204,7 @@ export const setEditingIncorporationAgreement: ActionIF = ({ commit }, editing: 
 export const setSummaryMode: ActionIF = ({ commit }, summaryMode: boolean): void => {
   commit('mutateSummaryMode', summaryMode)
 }
+
+export const setProvisionsRemoved: ActionIF = ({ commit }, provisionsRemoved: boolean): void => {
+  commit('mutateProvisionsRemoved', provisionsRemoved)
+}
