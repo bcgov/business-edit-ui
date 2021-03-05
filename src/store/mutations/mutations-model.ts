@@ -239,3 +239,7 @@ export const mutateEditingIncorporationAgreement = (state: StateIF, editing: boo
 export const mutateSummaryMode = (state: StateIF, summaryMode: boolean) => {
   state.stateModel.summaryMode = summaryMode
 }
+
+export const mutateProvisionsRemoved = (state: StateIF, provisionsRemoved: boolean) => {
+  state.stateModel.originalAlteration.alteration.provisionsRemoved = provisionsRemoved
+}

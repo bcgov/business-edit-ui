@@ -8,7 +8,11 @@
     </div>
 
     <div class="section-container">
-      <company-provisions class="sub-section" @haveChanges="nameTranslationChanges = $event" />
+      <company-provisions
+        class="sub-section"
+        :provisionsRemoved="getProvisionsRemoved"
+        @companyProvisionsChanged="updateProvisionsRemoved($event)"
+        @haveChanges="emitHaveChanges($event)"/>
     </div>
   </v-card>
 </template>
@@ -18,6 +22,8 @@ import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { CommonMixin } from '@/mixins'
 import { ConfirmDialog } from '@/components/dialogs'
 import CompanyProvisions from './CompanyProvisions.vue'
+import { Action, Getter } from 'vuex-class'
+import { ActionBindingIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -25,7 +31,28 @@ import CompanyProvisions from './CompanyProvisions.vue'
     CompanyProvisions
   }
 })
-export default class Articles extends Mixins(CommonMixin) {}
+export default class Articles extends Mixins(CommonMixin) {
+  // whether components have changes
+  private companyProvisionsChanges = false
+
+  @Getter getProvisionsRemoved!: boolean
+
+  // Setters
+  @Action setProvisionsRemoved!: ActionBindingIF
+
+  private updateProvisionsRemoved (provisionsRemoved: boolean): void {
+    this.setProvisionsRemoved(provisionsRemoved)
+  }
+
+  private setDataChanges (): void {
+    const haveChanges: boolean = this.companyProvisionsChanges
+    this.emitHaveChanges(haveChanges)
+  }
+
+  /** Emits Have Changes event. */
+  @Emit('haveChanges')
+  private emitHaveChanges (haveChanges: boolean): void {}
+}
 </script>
 
 <style lang="scss" scoped>

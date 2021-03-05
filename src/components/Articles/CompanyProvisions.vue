@@ -1,26 +1,26 @@
 <template>
   <div id="company-provisions">
-    <confirm-dialog ref="confirmTranslationDialog" attach="#company-provisions" />
+    <confirm-dialog ref="confirmCompanyProvisionsDialog" attach="#company-provisions" />
     <v-layout v-if="!isEditing">
       <v-flex xs3>
         <label><strong>Pre-existing Company Provisions</strong></label>
-        <v-chip v-if="hasCompanyProvisionsChange" x-small label color="#1669BB" text-color="white">
+        <v-chip v-if="hasProvisionsRemovedPropsChanged" x-small label color="#1669BB" text-color="white">
           CHANGED
         </v-chip>
       </v-flex>
-      <v-flex xs7 class="info-text" v-if="isCheckBoxChecked">
-        CHECKBOX CHECKED
+      <v-flex xs7 class="info-text" v-if="provisionsRemoved">
+        The company has resolved that none of the Pre-existing Company Provisions are to apply to this company.
       </v-flex>
       <v-flex xs7 class="info-text" v-else>
-        CHECKBOX NOT CHECKED
+        This company has Pre-existing Company Provisions
       </v-flex>
-      <v-flex xs2 class="align-right" v-if="!hasCompanyProvisionsChange">
+      <v-flex mt-n2 xs2 class="align-right" v-if="!hasProvisionsRemovedPropsChanged">
         <v-btn id="correct-company-provisions" text color="primary" @click="isEditing = true">
           <v-icon small>mdi-pencil</v-icon>
           <span>{{ editLabel }}</span>
         </v-btn>
       </v-flex>
-      <v-flex xs2 class="align-right" v-else>
+      <v-flex mt-n2 xs2 class="align-right" v-else>
         <v-btn
           id="undo-company-provisions"
           text
@@ -59,38 +59,32 @@
       <v-flex xs9>
         <v-layout>
           <v-flex>
-            <p>
-              Name translations must use the Latin Alphabet (English, French, etc.). Names that use other writing
-              systems must spell the name phonetically in English or French.
+            <p class="instructions-paragraph">
+              Complete this item only if the company has resolved that none of the Pre-existing Company Provisions
+              are to apply to this company (refer to Part 17 and Table 3 of the Regulation under the Business
+              Corporations Act).
             </p>
-            <!-- <v-btn
-              outlined
-              color="primary"
-              @click="isChangingCompanyProvisions = true"
-              :disabled="isChangingCompanyProvisions"
-            >
-              <v-icon>mdi-plus</v-icon>
-            </v-btn> -->
-            <v-checkbox
-              id="cp-checkbox"
-              class="mt-1"
-              v-model="companyProvisionsApply"
-              @change="hasCompanyProvisionsChange()"
-            />
-            <span>
-              The company has resolved that none of the Pre-existing Company Provisions are to apply to this company
-            </span>
+            <v-layout>
+                <v-checkbox
+                  id="cp-checkbox"
+                  class="mt-1"
+                  :color="isInvalid ? checkBoxColor : ''"
+                  v-model="draftProvisionsRemoved"
+                />
+                <span class="checkbox-label" :class="{ 'invalid': isInvalid }">
+                  The company has resolved that none of the Pre-existing Company Provisions are to apply to this company
+                </span>
+            </v-layout>
           </v-flex>
         </v-layout>
-        <v-layout pt-5>
+        <v-layout pt-10>
           <v-flex xs12>
             <div class="action-btns">
               <v-btn
                 large
                 color="primary"
                 id="company-provisions-done"
-                :disabled="isChangingCompanyProvisions || !hasPendingChange"
-                @click="setNameTranslations()"
+                @click="setCompanyProvisionsDone()"
               >
                 <span>Done</span>
               </v-btn>
@@ -100,7 +94,6 @@
                 color="primary"
                 id="company-provisions-cancel"
                 @click="cancelCompanyProvisionChange()"
-                :disabled="isChangingCompanyProvisions"
               >
                 <span>Cancel</span>
               </v-btn>
@@ -113,7 +106,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Emit, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { CommonMixin } from '@/mixins'
 import { ConfirmDialog } from '@/components/dialogs'
 
@@ -123,20 +116,76 @@ import { ConfirmDialog } from '@/components/dialogs'
   }
 })
 export default class CompanyProvisions extends Mixins(CommonMixin) {
-  // Properties
+  private draftProvisionsRemoved: boolean = false
   private isEditing: boolean = false
-  private isCheckBoxChecked: boolean = false
-  private isChangingCompanyProvisions: boolean = false
-  private hasPendingChange = false
+  private haveChanges: boolean = false
+  private originalProvisionsRemovedValue: boolean = false
+  private isInvalid = false
+  private checkBoxColor = '#d3272c' // $app-red
 
-  private get hasCompanyProvisionsChange (): boolean {
-    return this.isCheckBoxChecked
+  // Props
+  @Prop({ default: () => { return false } })
+  private provisionsRemoved!: boolean
+
+  // Emitters
+  @Emit('companyProvisionsChanged')
+  private emitCompanyProvisionsChanged (provisionsremoved: boolean): void {}
+
+  @Emit('haveChanges')
+  private emitHaveChanges (haveChanges: boolean): void {}
+
+  // Watchers
+  @Watch('provisionsRemoved', { deep: true, immediate: true })
+  private onProvisionsRemovedPropValueChanged (): void {
+    if (!this.haveChanges) {
+      this.originalProvisionsRemovedValue = this.provisionsRemoved
+      this.draftProvisionsRemoved = this.provisionsRemoved
+      this.emitHaveChanges(this.haveChanges)
+    }
+  }
+
+  @Watch('draftProvisionsRemoved', { deep: true, immediate: true })
+  private onDraftProvisionsRemovedPropValueChanged (): void {
+    this.isInvalid = false
+  }
+
+  private setCompanyProvisionsDone (): void {
+    if (this.draftProvisionsRemoved !== this.provisionsRemoved) {
+      this.isEditing = false
+      if (this.hasDraftProvisionsRemovedChanged) {
+        this.haveChanges = true
+      } else {
+        this.haveChanges = false
+      }
+      this.emitHaveChanges(this.haveChanges)
+      this.emitCompanyProvisionsChanged(this.draftProvisionsRemoved)
+      this.isInvalid = false
+    } else {
+      this.isInvalid = true
+    }
+  }
+
+  private get hasProvisionsRemovedPropsChanged (): boolean {
+    return this.provisionsRemoved !== this.originalProvisionsRemovedValue
+  }
+
+  private get hasDraftProvisionsRemovedChanged (): boolean {
+    return this.draftProvisionsRemoved !== this.originalProvisionsRemovedValue
   }
 
   private cancelCompanyProvisionChange () {
+    this.draftProvisionsRemoved = this.provisionsRemoved
+    this.isInvalid = false
     this.isEditing = false
   }
-  mounted () {}
+
+  private resetCompanyProvisions () {
+    this.haveChanges = false
+    this.draftProvisionsRemoved = this.originalProvisionsRemovedValue
+    this.emitCompanyProvisionsChanged(this.draftProvisionsRemoved)
+    this.emitHaveChanges(false)
+    this.isEditing = false
+  }
 }
 </script>
 
@@ -162,4 +211,17 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
     opacity: 0.2;
   }
 }
+.instructions-paragraph {
+  margin-bottom: 1.875rem;
+  line-height: 1.375rem;
+}
+.checkbox-label {
+  line-height: 1.375rem;
+  font-size: 0.875rem;
+}
+
+.invalid {
+  color: $app-red;
+}
+
 </style>
