@@ -366,7 +366,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
         min-width: 6.5rem;
       }
 
-      .v-btn[disabled] {
+      #name-translation-done[disabled] {
         color: white !important;
         background-color: #1669bb !important;
         opacity: 0.2;
