@@ -15,7 +15,7 @@
 
       <current-directors class="mt-10" />
 
-      <share-structure class="mt-10" />
+      <share-structures class="mt-10" />
 
       <articles class="mt-10" />
 
@@ -62,7 +62,8 @@ import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { CurrentDirectors } from '@/components/PeopleAndRoles'
 import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
-import { ShareStructure } from '@/components/ShareStructure'
+
+import { ShareStructures } from '@/components/ShareStructure'
 import { Articles } from '@/components/Articles'
 
 // Mixins, Interfaces, Enums, etc
@@ -82,8 +83,8 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     Detail,
     NoFeeSummary,
     CurrentDirectors,
-    ShareStructure,
     Articles,
+    ShareStructures,
     StaffPayment,
     YourCompany
   }

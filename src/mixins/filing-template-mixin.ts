@@ -542,8 +542,18 @@ export default class FilingTemplateMixin extends Vue {
       }
     }))
 
-    // Set Share Structure
-    this.setShareClasses(businessSnapshot[4].shareClasses)
+    // Infer type on Business snapshot shareClasses
+    const businessShareClasses: unknown = businessSnapshot[4].shareClasses
+    const shareClasses: ShareClassIF[] = businessShareClasses as ShareClassIF[]
+
+    // Apply a type to share classes and series
+    shareClasses.forEach(shareClass => {
+      shareClass.type = 'Class'
+      shareClass.series.forEach(shareSeries => { shareSeries.type = 'Series' })
+    })
+
+    // // Set Share Structure
+    this.setShareClasses(shareClasses)
 
     // Set Contact Information
     this.setBusinessContact(businessSnapshot[5])

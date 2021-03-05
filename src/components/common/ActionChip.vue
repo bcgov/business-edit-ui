@@ -1,21 +1,22 @@
 <template>
   <div>
     <v-chip v-if="actionableItem.action === ActionTypes.ADDED"
-            x-small label color="#1669BB" text-color="white">ADDED</v-chip>
+            x-small label color="primary" text-color="white">ADDED</v-chip>
     <v-chip v-if="actionableItem.action === ActionTypes.EDITED"
-            x-small label color="#1669BB" text-color="white">CORRECTED</v-chip>
+            x-small label color="primary" text-color="white">{{editedLabel}}</v-chip>
     <v-chip v-if="actionableItem.action === ActionTypes.REMOVED"
-            x-small label color="#E0E0E0" text-color="grey darken-1">REMOVED</v-chip>
+            x-small label color="#E0E0E0" text-color="#212529">REMOVED</v-chip>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Vue } from 'vue-property-decorator'
 import { ActionTypes } from '@/enums'
 import { ActionableItemIF } from '@/interfaces'
+import { CommonMixin } from '@/mixins'
 
 @Component({})
-export default class ActionChip extends Vue {
+export default class ActionChip extends Mixins(CommonMixin) {
   @Prop({ default: {} })
   private actionableItem: ActionableItemIF
 

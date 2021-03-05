@@ -11,8 +11,10 @@
         <li class="add-share-structure-container">
           <div class="meta-container">
             <label class="add-share-structure-header">
-              <span v-if="activeIndex === -1">Add Share {{ shareStructure.type }}</span>
-              <span v-else>Edit Share {{ shareStructure.type }}</span>
+              <span v-if="activeIndex === -1" class="pl-5" :class="{'pl-10 text-body-3': isSeries}">
+                Add Share {{ shareStructure.type }}
+              </span>
+              <span v-else :class="{'pl-10 text-body-3': isSeries}">Edit Share {{ shareStructure.type }}</span>
             </label>
 
             <div class="meta-container__inner">
@@ -25,14 +27,14 @@
                   filled
                   :label="shareStructure.type + ' Name [Shares]'"
                   :hint="'Enter the name of the  '+ shareStructure.type.toLowerCase() +
-                  '  - the words &quot;Shares&quot; is automatically added'"
+                  '  - the word &quot;Shares&quot; is automatically added'"
                   id="txt-name"
                   v-model="shareStructure.name"
-                  :rules="getNameRule()"
+                  :rules="nameRules"
                   suffix="Shares"
                   persistent-hint/>
 
-                <v-divider class="separator mx-4" />
+                <v-divider class="separator" />
 
                 <v-radio-group
                   v-model="hasNoMaximumShares"
@@ -49,7 +51,7 @@
                         v-model="shareStructure.maxNumberOfShares"
                         persistent-hint
                         :hint="'Enter the maximum number of shares in the ' + shareStructure.type.toLowerCase()"
-                        :rules="getMaximumShareRule()"
+                        :rules="maximumShareRules"
                         :disabled="hasNoMaximumShares"/>
                     </v-col></v-row>
                     </template>
@@ -73,7 +75,7 @@
                             label="Par Value"
                             id="class-par-value"
                             v-model="shareStructure.parValue"
-                            :rules="getParValueRule()"
+                            :rules="parValueRules"
                             hint="Enter the initial value of each share"
                             persistent-hint/>
                         </v-col>
@@ -83,7 +85,7 @@
                             filled
                             label="Currency"
                             v-model="shareStructure.currency"
-                            :rules="getCurrencyRule()"
+                            :rules="currencyRules"
                             item-text="`${data.item.name}, ${data.item.code}`"
                             item-value="code"
                             id='class-currency'>
@@ -101,7 +103,7 @@
                   <v-radio :value="true" label="No par value" id="radio-no-par"/>
                 </v-radio-group>
 
-                <div v-show="isSeries">
+                <div v-show="isSeries" class="pl-10">
                   <v-row v-if="shareStructure.hasParValue">
                       <v-col cols="6">
                           <v-text-field
@@ -143,7 +145,6 @@
                     class="form-primary-btn"
                     color="primary"
                     @click="validateForm()"
-                    :disabled="!formValid"
                   >
                     Done
                   </v-btn>
@@ -163,7 +164,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 
 // Components
 import * as Dialogs from '@/components/dialogs'
@@ -188,20 +189,29 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   };
 
   // Props
-  @Prop()
+  @Prop({ default: null })
   private initialValue!: ShareClassIF
 
-  @Prop()
+  @Prop({ default: null })
   private activeIndex: number
 
-  @Prop()
+  @Prop({ default: null })
   private parentIndex: number
 
   @Prop({ default: '' })
   private shareId: string
 
-  @Prop()
+  @Prop({ default: [] })
   private shareClasses: ShareClassIF[]
+
+  @Prop({ default: false })
+  private resolutionRequired: boolean
+
+  // Text-field Rules
+  private nameRules = []
+  private maximumShareRules = []
+  private parValueRules = []
+  private currencyRules = []
 
   // Data Properties
   private shareStructure: ShareClassIF = null
@@ -227,14 +237,14 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   }
 
   // Rules
-  private getNameRule (): Array<Function> {
+  private get nameRule (): Array<Function> {
     const rules: Array<Function> = [
-      (v: string) => !!v || 'A name is required',
       (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
       (v: string) => !/\s$/g.test(v) || 'Invalid spaces' // trailing spaces
     ]
     if (this.isClass) {
       rules.push(
+        (v: string) => !!v || 'Enter the name of the class - the word "Shares" is automatically added',
         (v: string) => !(this.shareClasses
           .find((s, index) => {
             // Don't apply uniqueness check to self
@@ -246,6 +256,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
           'Class name should not contain any of the words share, shares or value')
     } else if (this.isSeries) {
       rules.push(
+        (v: string) => !!v || 'Enter the name of the series - the word "Shares" is automatically added',
         (v: string) => !(this.shareClasses[this.parentIndex].series
           .find((s, index) => {
             // Don't apply uniqueness check to self
@@ -260,17 +271,18 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     return rules
   }
 
-  private getMaximumShareRule (): Array<Function> {
+  private get maximumShareRule (): Array<Function> {
     let rules: Array<Function> = []
     if (!this.hasNoMaximumShares) {
       rules = [
-        (v: string) => !!v || 'Maximum share value is required',
         (v: string) => /^\d+$/.test(v) || 'Must be a number greater than 0']
       // To prevent changing share class value to a lower value after adding series.
       if (this.isClass && this.activeIndex !== -1 && !this.hasNoMaximumShares &&
        this.shareStructure.series.length > 0) {
         const seriesSum = this.shareStructure.series.reduce((a, b) => +a + +b.maxNumberOfShares, 0)
-        rules.push((v: string) => +v >= seriesSum ||
+        rules.push(
+          (v: string) => !!v || 'Enter the maximum number of shares in the class',
+          (v: string) => +v >= seriesSum ||
         'The number for the series (or all series combined, if there are multiple under ' +
         'a class) cannot exceed the number for the class')
       }
@@ -283,6 +295,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
         }
         const currentSum = filteredSeries.reduce((a, b) => +a + +b.maxNumberOfShares, 0)
         rules.push(
+          (v: string) => !!v || 'Enter the maximum number of shares in the series',
           (v: string) => +v + currentSum <= +this.shareClasses[this.parentIndex].maxNumberOfShares ||
             'The number for the series (or all series combined, if there are multiple under ' +
             'a class) cannot exceed the number for the class')
@@ -291,7 +304,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     return rules
   }
 
-  private getParValueRule (): Array<Function> {
+  private get parValueRule (): Array<Function> {
     if (!this.hasNoParValue) {
       return [
         (v: string) => !!v || 'Par value is required',
@@ -302,7 +315,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     return []
   }
 
-  private getCurrencyRule (): Array<Function> {
+  private get currencyRule (): Array<Function> {
     if (!this.hasNoParValue) {
       return [(v: string) => !!v || 'Currency is required']
     }
@@ -325,7 +338,16 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
   }
 
   // Methods
-  private validateForm (): void {
+  private async validateForm (): Promise<void> {
+    this.nameRules = this.nameRule
+    this.maximumShareRules = this.maximumShareRule
+    this.parValueRules = this.parValueRule
+    this.currencyRules = this.currencyRule
+
+    // Await the applied rules and validate form
+    await Vue.nextTick()
+    this.$refs.shareStructureForm.validate()
+
     if (this.formValid) {
       const shareStructure: ShareClassIF = this.addShareStructure()
       this.emitAddShareStructureEvent(shareStructure)
@@ -400,7 +422,7 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
     }
   }
 
-  private confirmSeriesRemoval (): void {
+  private async confirmSeriesRemoval (): Promise<void> {
     if (this.hasSeriesShares && !this.shareStructure.hasRightsOrRestrictions) {
       // open confirmation dialog and wait for response
       this.$refs.confirm.open(
@@ -421,7 +443,19 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
         // if we get here, Cancel was clicked
         this.shareStructure.hasRightsOrRestrictions = true
       })
+    } else {
+      // Prompt parent to collect resolution info if required
+      if (this.resolutionRequired) {
+        await this.emitResolutionPrompt(true)
+        this.shareStructure.hasRightsOrRestrictions = false
+      }
     }
+  }
+
+  @Watch('resolutionRequired')
+  private updateResolutionRequirement (): any {
+    // When resolution requirements have been satisfied, update the model
+    this.shareStructure.hasRightsOrRestrictions = !this.resolutionRequired
   }
 
   // Events
@@ -439,10 +473,15 @@ export default class EditShareStructure extends Mixins(CurrencyLookupMixin) {
 
   @Emit('resetEvent')
   private emitResetEvent (): void {}
+
+  @Emit('resolutionPrompt')
+  private emitResolutionPrompt (requiresPrompt: boolean): void {}
 }
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
 ul {
   padding-top: 0.5rem;
 }
@@ -452,13 +491,17 @@ li {
   padding-top: 0.25rem;
 }
 
+::v-deep .v-input .v-label {
+  font-weight: normal !important;
+}
+
 .v-btn {
   min-width: 6.5rem !important;
 }
 
 .add-share-structure {
   .add-share-structure-container {
-    padding: 1.25rem;
+    padding: 1.25rem 1.25rem 1.25rem 0;
 
     .meta-container {
       > label:first-child {
@@ -507,5 +550,9 @@ li {
 
 .radio-group {
   padding-top:0.875rem
+}
+
+::v-deep .theme--light.v-btn.v-btn--disabled {
+  color: rgba(211, 39, 44, .4) !important;
 }
 </style>
