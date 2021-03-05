@@ -5,8 +5,6 @@ import { createLocalVue, mount, Wrapper } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import { EffectiveDateTime } from '@/components/common'
 
-import get = Reflect.get; // *** TODO: what is this for?
-
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 const vuetify = new Vuetify({})

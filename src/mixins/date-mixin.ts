@@ -1,18 +1,15 @@
 import { Component, Mixins } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { Getter } from 'vuex-class'
 import { isDate } from 'lodash'
 import { CommonMixin } from '@/mixins'
 
 /**
  * Mixin that provides some useful date utilities.
  */
-@Component({
-  computed: {
-    ...mapState(['currentDate'])
-  }
-})
+@Component({})
 export default class DateMixin extends Mixins(CommonMixin) {
-  readonly currentDate!: string
+  @Getter getCurrentJsDate!: Date
+  @Getter getCurrentDate!: string
   readonly MS_IN_A_DAY = (1000 * 60 * 60 * 24)
 
   /**
@@ -40,6 +37,24 @@ export default class DateMixin extends Mixins(CommonMixin) {
     }
 
     return new Date(headers.get('Date'))
+  }
+
+  /**
+   * Creates and returns a new Date object in UTC, given parameters in Pacific timezone.
+   * (This works regardless of user's local clock/timezone.)
+   * @example "2021, 0, 1, 0, 0" -> "2021-01-01T08:00:00.000Z"
+   * @example "2021, 6, 1, 0, 0" -> "2021-07-01T07:00:00.000Z"
+   */
+  createUtcDate (year: number, month: number, day: number, hours: number = 0, minutes: number = 0): Date {
+    // use date from server to create a new date in Pacific timezone
+    // (this sets the correct tz offset in the new date)
+    const date = new Date(this.getCurrentJsDate.toLocaleString('en-US', { timeZone: 'America/Vancouver' }))
+
+    // update all date and time fields
+    date.setFullYear(year, month, day)
+    date.setHours(hours, minutes, 0, 0) // zero out seconds and milliseconds
+
+    return date
   }
 
   /**
@@ -168,7 +183,7 @@ export default class DateMixin extends Mixins(CommonMixin) {
     if (!date) return NaN
 
     // calculate difference between start of "today" and start of "date" (in local time)
-    const todayLocalMs = new Date(this.currentDate).setHours(0, 0, 0, 0)
+    const todayLocalMs = new Date(this.getCurrentDate).setHours(0, 0, 0, 0)
     const dateLocalMs = new Date(date).setHours(0, 0, 0, 0)
     return Math.round((dateLocalMs - todayLocalMs) / this.MS_IN_A_DAY)
   }

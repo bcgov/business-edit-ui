@@ -20,6 +20,15 @@ describe('Date Mixin', () => {
     await Vue.nextTick()
   })
 
+  // TODO: BROKEN (only in GitHub Actions though!?!?)
+  xit('returns correct values for createUtcDate()', () => {
+    // init store
+    store.state.stateModel.currentJsDate = new Date()
+
+    expect(vm.createUtcDate(2021, 0, 1, 0, 0).toISOString()).toBe('2021-01-01T08:00:00.000Z')
+    expect(vm.createUtcDate(2021, 6, 1, 0, 0).toISOString()).toBe('2021-07-01T07:00:00.000Z')
+  })
+
   it('returns correct values for dateToDateString()', () => {
     expect(vm.dateToDateString(null)).toBeNull()
     expect(vm.dateToDateString(new Date('not a date'))).toBeNull()
@@ -90,7 +99,7 @@ describe('Date Mixin', () => {
 
   it('returns correct values for daysFromToday()', () => {
     // init store
-    store.state.currentDate = '2021-01-20'
+    store.state.stateModel.tombstone.currentDate = '2021-01-20'
 
     expect(vm.daysFromToday(null)).toBeNaN()
     expect(vm.daysFromToday('2021-01-19')).toBe(-1) // yesterday

@@ -156,9 +156,13 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
     return []
   }
 
-  /** True if date is >= the minimum (ie, today) and <= the maximum (ie, the 10th day). */
+  /**
+   * True if date is >= the minimum (ie, today) and <= the maximum (ie, the 10th day).
+   * This is used for Vue form validation (in Date Rules above).
+   */
   private isValidDateRange (v: string): boolean {
     let date = new Date(v)
+    // only compare year/month/day (ignore time)
     date = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
     const minDay = new Date(this.minDate.getFullYear(), this.minDate.getMonth(), this.minDate.getDate())
     const maxDay = new Date(this.maxDate.getFullYear(), this.maxDate.getMonth(), this.maxDate.getDate())
@@ -281,8 +285,8 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
         hours += 12
       }
 
-      // construct date
-      const dateTime = new Date(year, month, date, hours, minutes)
+      // construct date in UTC using parameters in Pacific time
+      const dateTime = this.createUtcDate(year, month, date, hours, minutes)
 
       // update date-time string only if fields were valid
       this.emitDateTimeString(dateTime.toISOString())
