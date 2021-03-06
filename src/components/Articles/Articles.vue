@@ -1,7 +1,5 @@
 <template>
   <v-card flat id="articles">
-    <confirm-dialog ref="confirm" attach="#app" />
-
     <div class="define-article-header">
       <v-icon color="app-dk-blue">mdi-handshake</v-icon>
       <label class="define-article-title">Articles</label>
@@ -11,7 +9,7 @@
       <company-provisions
         class="sub-section"
         :provisionsRemoved="getProvisionsRemoved"
-        @companyProvisionsChanged="updateProvisionsRemoved($event)"
+        @companyProvisionsChanged="setProvisionsRemoved($event)"
         @haveChanges="emitHaveChanges($event)"/>
     </div>
   </v-card>
@@ -20,29 +18,23 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { CommonMixin } from '@/mixins'
-import { ConfirmDialog } from '@/components/dialogs'
 import CompanyProvisions from './CompanyProvisions.vue'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF } from '@/interfaces'
 
 @Component({
   components: {
-    ConfirmDialog,
     CompanyProvisions
   }
 })
 export default class Articles extends Mixins(CommonMixin) {
   // whether components have changes
-  private companyProvisionsChanges = false
+  private companyProvisionsChanges: boolean
 
   @Getter getProvisionsRemoved!: boolean
 
   // Setters
   @Action setProvisionsRemoved!: ActionBindingIF
-
-  private updateProvisionsRemoved (provisionsRemoved: boolean): void {
-    this.setProvisionsRemoved(provisionsRemoved)
-  }
 
   private setDataChanges (): void {
     const haveChanges: boolean = this.companyProvisionsChanges
