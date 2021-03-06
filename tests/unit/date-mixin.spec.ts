@@ -20,7 +20,7 @@ describe('Date Mixin', () => {
     await Vue.nextTick()
   })
 
-  // TODO: BROKEN (only in GitHub Actions though!?!?)
+  // FUTURE: this works locally but not in GHA; fix later
   xit('returns correct values for createUtcDate()', () => {
     // init store
     store.state.stateModel.currentJsDate = new Date()

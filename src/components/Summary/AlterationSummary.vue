@@ -177,7 +177,7 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
   }
 
   private get effectiveDateTimeString (): string {
-    const date = new Date(this.getEffectiveDateTime.dateTimeString || '2021-03-05T08:30:00Z')
+    const date = new Date(this.getEffectiveDateTime.dateTimeString)
     return this.fullFormatDate(date)
   }
 

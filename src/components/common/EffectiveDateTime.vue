@@ -37,6 +37,7 @@
         <v-col cols="12" sm="6" md="3">
           <v-combobox
             id="hour-selector"
+            ref="hourSelector"
             filled
             class="mr-1"
             v-model="selectHour"
@@ -49,6 +50,7 @@
         <v-col cols="12" sm="6" md="3">
           <v-combobox
             id="minute-selector"
+            ref="minuteSelector"
             filled
             class="ml-1"
             v-model="selectMinute"
@@ -59,7 +61,7 @@
         </v-col>
         <v-col cols="12" sm="6" md="3">
           <v-select
-            id="am-pm-selector"
+            id="period-selector"
             filled
             v-model="selectPeriod"
             :items="timePeriod"
@@ -89,7 +91,7 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { DateMixin } from '@/mixins'
 import { EffectiveDateTypes } from '@/enums'
-import { EffectiveDateTimeIF, FormType } from '@/interfaces'
+import { EffectiveDateTimeIF, FormFieldType, FormType } from '@/interfaces'
 
 enum PeriodTypes {
   AM = 'am',
@@ -103,7 +105,9 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
 
   // Add element types to refs
   $refs!: {
-    form: FormType
+    form: FormType,
+    hourSelector: FormFieldType, // used in unit tests
+    minuteSelector: FormFieldType // used in unit tests
   }
 
   /** Current JS date, expected to be passed in periodically. */
@@ -136,8 +140,8 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   private selectPeriod = PeriodTypes.AM
 
   // Combobox items
-  private hours = [...Array(12).keys()].map(num => (++num).toLocaleString('en-CA'))
-  private minutes = [...Array(60).keys()].map(num => num.toLocaleString('en-CA', { minimumIntegerDigits: 2 }))
+  private hours = [...Array(12).keys()].map(num => (num + 1).toString())
+  private minutes = [...Array(60).keys()].map(num => num.toString().padStart(2, '0'))
   private timePeriod = [PeriodTypes.AM, PeriodTypes.PM]
 
   /** Validations rules for date text field. */
@@ -257,8 +261,8 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
 
       // set model values
       this.dateText = this.dateToDateString(date)
-      this.selectHour = [hour.toLocaleString()]
-      this.selectMinute = [minute.toLocaleString('en-US', { minimumIntegerDigits: 2 })]
+      this.selectHour = [hour.toString()]
+      this.selectMinute = [minute.toString().padStart(2, '0')]
       this.selectPeriod = period
     }
   }
@@ -382,7 +386,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   private async emitValid (): Promise<boolean> {
     // wait for form to update itself before checking validity
     await Vue.nextTick()
-    return Boolean(this.effectiveDateType && this.$refs.form.validate() && !this.isUnderTime && !this.isOverTime)
+    return (!!this.effectiveDateType && this.$refs.form.validate() && !this.isUnderTime && !this.isOverTime)
   }
 }
 </script>
