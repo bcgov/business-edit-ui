@@ -163,6 +163,8 @@ export default class AddNameTranslation extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
   .name-translation-form {
     padding-right: 0.5rem;
 
@@ -187,7 +189,7 @@ export default class AddNameTranslation extends Vue {
     }
   }
   ::v-deep .v-label {
-      color: $grey-7;
+      color: $gray7;
       font-weight: normal;
     }
 </style>
