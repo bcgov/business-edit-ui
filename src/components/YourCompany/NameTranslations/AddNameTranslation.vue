@@ -58,7 +58,7 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { ConfirmDialog } from '@/components/dialogs'
 
 // Interfaces
-import { ConfirmDialogType, FormType } from '@/interfaces'
+import { ConfirmDialogType } from '@/interfaces'
 
 @Component({
   components: {
@@ -181,13 +181,13 @@ export default class AddNameTranslation extends Vue {
 
       .v-btn[disabled] {
         color: white !important;
-        background-color: #1669bb !important;
+        background-color: $app-blue !important;
         opacity: 0.2;
       }
     }
   }
   ::v-deep .v-label {
-      color: #495057;
+      color: $grey-7;
       font-weight: normal;
     }
 </style>

@@ -18,14 +18,14 @@
 
         <br v-if="translation.action">
         <v-chip v-if="translation.action === ActionTypes.ADDED"
-          x-small label color="#1669BB" text-color="white">ADDED</v-chip>
+          x-small label color="$app-blue" text-color="white">ADDED</v-chip>
         <v-chip v-if="translation.action === ActionTypes.EDITED"
-          x-small label color="#1669BB" text-color="white">
+          x-small label color="$app-blue" text-color="white">
           <span v-if="isCorrectionView()">CORRECTED</span>
           <span v-else>CHANGED</span>
         </v-chip>
         <v-chip v-if="translation.action === ActionTypes.REMOVED"
-          x-small label color="#E0E0E0" text-color="grey darken-4">REMOVED</v-chip>
+          x-small label color="grey lighten-2" text-color="grey darken-4">REMOVED</v-chip>
         </v-col>
 
         <!-- Actions Column -->

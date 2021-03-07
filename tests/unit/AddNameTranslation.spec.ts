@@ -119,7 +119,7 @@ describe('Add Name Translation component', () => {
     wrapper.destroy()
   })
 
-  it('disables the Done button when the input field does NOT meet validation rules', async () => {
+  it('shows the validation message when the input field does NOT meet validation rules', async () => {
     const wrapper = wrapperFactory()
 
     // Verify input field
@@ -142,6 +142,13 @@ describe('Add Name Translation component', () => {
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
 
+    wrapper.vm.$refs.nameTranslationForm.validate()
+
+    // verify the error message
+    expect(wrapper.findAll('.v-messages__message').length).toBe(1)
+    expect(wrapper.find('.v-messages__message').text()).toContain('Invalid character')
+
+
     wrapper.destroy()
   })
 
@@ -163,7 +170,7 @@ describe('Add Name Translation component', () => {
     wrapper.destroy()
   })
 
-  it('disables the Done btn when editing a name translation that does NOT meet validation', async () => {
+  it('shows the validaton message when editing a name translation that does NOT meet validation', async () => {
     const wrapper = wrapperFactory({ editNameTranslation: 'Mock Name Edit' })
     await flushPromises()
 
@@ -183,6 +190,12 @@ describe('Add Name Translation component', () => {
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
+
+    wrapper.vm.$refs.nameTranslationForm.validate()
+
+    // verify the error message
+    expect(wrapper.findAll('.v-messages__message').length).toBe(1)
+    expect(wrapper.find('.v-messages__message').text()).toContain('Invalid character')
 
     wrapper.destroy()
   })

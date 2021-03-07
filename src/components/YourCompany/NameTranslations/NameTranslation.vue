@@ -368,7 +368,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
 
       #name-translation-done[disabled] {
         color: white !important;
-        background-color: #1669bb !important;
+        background-color: $app-blue !important;
         opacity: 0.2;
       }
     }
@@ -383,8 +383,9 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     padding: 0 1rem 0 0.5rem;
   }
   ::v-deep {
-    .theme--light.v-btn.v-btn--disabled, .theme--light.v-btn.v-btn--disabled .v-icon {
-        color: #1669bb !important;
+    .theme--light.v-btn.v-btn--disabled, 
+    .theme--light.v-btn.v-btn--disabled .v-icon {
+        color: $app-blue !important;
         opacity: 0.4;
     }
   }
