@@ -5,7 +5,7 @@
       attach="#add-name-translation"
     />
     <!-- Name Translation form -->
-    <v-form v-model="nameTranslationForm" class="name-translation-form">
+    <v-form v-model="nameTranslationForm" ref="nameTranslationForm" class="name-translation-form">
       <v-row>
         <v-col class="pb-0">
           <v-text-field
@@ -31,8 +31,7 @@
             <v-btn
               large color="primary" class="ml-auto"
               id="name-translation-btn-ok"
-              :disabled="!nameTranslationForm"
-              @click="addTranslation()"
+              @click="validateAddTranslation()"
             >
                 Done
             </v-btn>
@@ -59,7 +58,7 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { ConfirmDialog } from '@/components/dialogs'
 
 // Interfaces
-import { ConfirmDialogType } from '@/interfaces'
+import { ConfirmDialogType, FormType } from '@/interfaces'
 
 @Component({
   components: {
@@ -69,7 +68,8 @@ import { ConfirmDialogType } from '@/interfaces'
 export default class AddNameTranslation extends Vue {
   // Refs
   $refs!: {
-    confirmTranslationDialog: ConfirmDialogType
+    confirmTranslationDialog: ConfirmDialogType,
+    nameTranslationForm: FormType
   }
 
   @Prop({ default: '' })
@@ -92,8 +92,10 @@ export default class AddNameTranslation extends Vue {
 
   mounted () {
     // Editing an existing name translation
-    if (this.editNameTranslation) this.nameTranslation = this.editNameTranslation
-    if (this.editNameIndex) this.nameIndex = this.editNameIndex
+    if (this.editNameTranslation) {
+      this.nameTranslation = this.editNameTranslation
+      this.nameIndex = this.editNameIndex
+    }
   }
 
   private cancelNameTranslation () {
@@ -133,6 +135,15 @@ export default class AddNameTranslation extends Vue {
     return this.editNameTranslation === ''
   }
 
+  /**
+   * Trigger validation before add in case of blank name
+   */
+  private validateAddTranslation (): void {
+    if (this.$refs.nameTranslationForm.validate()) {
+      this.addTranslation()
+    }
+  }
+
   // Events
   @Emit('addTranslation')
   private addTranslation (): string {
@@ -152,6 +163,8 @@ export default class AddNameTranslation extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
   .name-translation-form {
     padding-right: 0.5rem;
 
@@ -170,9 +183,13 @@ export default class AddNameTranslation extends Vue {
 
       .v-btn[disabled] {
         color: white !important;
-        background-color: #1669bb !important;
+        background-color: $app-blue !important;
         opacity: 0.2;
       }
     }
   }
+  ::v-deep .v-label {
+      color: $gray7;
+      font-weight: normal;
+    }
 </style>
