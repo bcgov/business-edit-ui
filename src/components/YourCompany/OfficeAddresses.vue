@@ -665,7 +665,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 }
 
 label:first-child {
-  font-weight: 700;
+  font-weight: bold;
   &__inner {
     flex: 1 1 auto;
   }

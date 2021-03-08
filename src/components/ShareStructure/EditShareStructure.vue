@@ -474,7 +474,7 @@ li {
   position: relative;
 
   > label:first-child {
-    font-weight: 700;
+    font-weight: bold;
   }
 
   &__inner {

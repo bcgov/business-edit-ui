@@ -8,13 +8,14 @@ import { getVuexStore } from '@/store'
 // Components
 import { createLocalVue, mount } from '@vue/test-utils'
 import { AlterationSummary } from '@/components/Summary'
+import { EffectiveDateTime } from '@/components/common'
 import { ConfirmDialog } from '@/components/dialogs'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
 const vuetify = new Vuetify({})
 
-describe('AlterationSummary', () => {
+describe('Alteration Summary component', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
@@ -26,6 +27,12 @@ describe('AlterationSummary', () => {
       }
     }
   ]
+
+  beforeAll(() => {
+    // init store
+    store.state.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
+    store.state.stateModel.tombstone.currentDate = '2021-03-01'
+  })
 
   beforeEach(() => {
     // Set Original business Data
@@ -41,8 +48,9 @@ describe('AlterationSummary', () => {
     wrapper.destroy()
   })
 
-  it('renders the AlterationSummary Component', async () => {
+  it('renders the components', async () => {
     expect(wrapper.find(AlterationSummary).exists()).toBe(true)
+    expect(wrapper.find(EffectiveDateTime).exists()).toBe(true)
     expect(wrapper.find(ConfirmDialog).exists()).toBe(true)
   })
 
@@ -101,5 +109,39 @@ describe('AlterationSummary', () => {
     expect(wrapper.find('.business-type-summary').text()).toContain(
       'Changing from a BC Limited Company to a BC Benefit Company'
     )
+  })
+
+  it('renders the default alteration date and time section', async () => {
+    store.state.stateModel.effectiveDateTime = {
+      valid: false,
+      isFutureEffective: null,
+      dateTimeString: ''
+    }
+    await Vue.nextTick()
+
+    // verify section
+    expect(wrapper.find('.alteration-date-time').exists()).toBe(true)
+
+    // verify info-text paragraph
+    expect(wrapper.find('.alteration-date-time .info-text').exists()).toBe(true)
+    expect(wrapper.find('.alteration-date-time .info-text').text()).toContain('Select the date and time')
+
+    // verify effective-date-time div only (no the end blurb div)
+    expect(wrapper.findAll('.alteration-date-time .v-card').length).toBe(1)
+  })
+
+  it('renders the alteration date and time section with end blurb', async () => {
+    store.state.stateModel.effectiveDateTime = {
+      valid: true,
+      isFutureEffective: true,
+      dateTimeString: '2021-03-05T16:30:00Z'
+    }
+    await Vue.nextTick()
+
+    // verify end blurb div
+    const divs = wrapper.findAll('.alteration-date-time .v-card')
+    expect(divs.length).toBe(2)
+    expect(divs.at(1).text()).toContain('The alteration for this business will be effective as of:')
+    expect(divs.at(1).text()).toContain('Friday, March 5, 2021 at 8:30 am Pacific time')
   })
 })

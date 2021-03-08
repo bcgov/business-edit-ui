@@ -189,6 +189,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter isFilingChanged!: boolean
   @Getter isEditing!: boolean
   @Getter isSummaryMode!: boolean
+  @Getter getCurrentJsDate!: Date
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -200,6 +201,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Action setAuthRoles: ActionBindingIF
   @Action setBusinessId!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
+  @Action setCurrentJsDate!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
   @Action setIsFilingPaying!: ActionBindingIF
   @Action setIsSaving!: ActionBindingIF
@@ -235,6 +237,9 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
   /** Whether the token refresh service is initialized. */
   private tokenService: boolean = false
+
+  /** The Update Current JS Date timer id. */
+  private updateCurrentJsDateId = 0
 
   /** The URL of the Pay API. */
   private get payApiUrl (): string {
@@ -288,7 +293,11 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
    * Called when component is created.
    * NB: User may not be authed yet.
    */
-  private created (): void {
+  private async created (): Promise<void> {
+    // update Current Js Date now and every 1 minute thereafter
+    await this.updateCurrentJsDate()
+    this.updateCurrentJsDateId = setInterval(this.updateCurrentJsDate, 60000)
+
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event: any) => {
       if (this.haveChanges || this.isEditing) {
@@ -338,8 +347,17 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     if (this.isAuthenticated) this.onProfileReady(true)
   }
 
+  /** Fetches and stores the current JS date. */
+  private async updateCurrentJsDate (): Promise<void> {
+    const jsDate = await this.getServerDate()
+    this.setCurrentJsDate(jsDate)
+  }
+
   /** Called when component is destroyed. */
   private destroyed (): void {
+    // stop Update Current Js Date timer
+    clearInterval(this.updateCurrentJsDateId)
+
     // stop listening for custom events
     this.$root.$off('save-error-event')
     this.$root.$off('invalid-name-request')
@@ -413,9 +431,10 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       console.log('Launch Darkly update error =', error) // eslint-disable-line no-console
     }
 
-    // store today's date
+    // fetch and store today's date
     // NB: keep this here to reload date on retry
-    this.setCurrentDate(this.dateToUsableString(new Date()))
+    const currentDate = this.dateToDateString(this.getCurrentJsDate)
+    this.setCurrentDate(currentDate)
 
     // finally, let router views know they can load their data
     this.appReady = true

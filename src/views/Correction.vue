@@ -7,7 +7,7 @@
     <section id="original-filing-date" class="mt-6">
       <p>
         <span id="original-filing-date-label">Original Filing Date:</span>
-        {{ filingDateLocal }}
+        {{ originalFilingDate }}
       </p>
     </section>
 
@@ -72,7 +72,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
 
   // Global getters
   @Getter getBusinessId!: string
-  @Getter getFilingDate!: string
+  @Getter getOriginalFilingDateTime!: string
   @Getter isRoleStaff!: boolean
   @Getter isTypeBcomp!: boolean
   @Getter getEntityType!: EntityTypes
@@ -95,9 +95,9 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
     return +this.$route.query['correction-id'] || 0
   }
 
-  /** The filing date, in local timezone. */
-  private get filingDateLocal (): string {
-    return this.convertUtcTimeToLocalTime(this.getFilingDate)?.slice(0, 10)
+  /** The original filing datetime, in Pacific time. */
+  private get originalFilingDate (): string {
+    return this.apiToDateAndTimeString(this.getOriginalFilingDateTime)?.slice(0, 10)
   }
 
   /** True if user is authenticated. */
@@ -211,6 +211,6 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
 #original-filing-date-label,
 #benefit-company-statement-label {
   letter-spacing: -0.04rem;
-  font-weight: 700;
+  font-weight: bold;
 }
 </style>

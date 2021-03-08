@@ -4,24 +4,12 @@ import { Action, Getter } from 'vuex-class'
 
 // Interfaces
 import {
-  ActionBindingIF,
-  AlterationFilingIF,
-  BusinessSnapshotIF,
-  CertifyIF,
-  CorrectionFilingIF,
-  IncorporationAddressIf,
-  IncorporationFilingIF,
-  OrgPersonIF,
-  ShareClassIF,
-  NameTranslationIF,
-  NameRequestIF
+  ActionBindingIF, AlterationFilingIF, BusinessSnapshotIF, CertifyIF, CorrectionFilingIF, EffectiveDateTimeIF,
+  IncorporationAddressIf, IncorporationFilingIF, OrgPersonIF, ShareClassIF, NameTranslationIF, NameRequestIF
 } from '@/interfaces'
 
 // Shared Interfaces
-import {
-  ContactPointIF,
-  StaffPaymentIF
-} from '@bcrs-shared-components/interfaces'
+import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
 // Constants
 import { ActionTypes, EntityTypes, FilingTypes } from '@/enums'
@@ -36,14 +24,11 @@ export default class FilingTemplateMixin extends Vue {
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
   @Getter getApprovedName!: string
-  @Getter getBusinessFoundingDate!: Date
   @Getter getBusinessId!: string
   @Getter getCurrentDate!: string
   @Getter getEntityType!: EntityTypes
-  @Getter getFilingDate!: string
   @Getter getCorrectedFilingId!: number
-  @Getter getEffectiveDate!: Date
-  @Getter isFutureEffective!: boolean
+  @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getFolioNumber!: string
@@ -66,15 +51,14 @@ export default class FilingTemplateMixin extends Vue {
   @Action setEntityType!: ActionBindingIF
   @Action setOfficeAddresses!: ActionBindingIF
   @Action setNameTranslations!: ActionBindingIF
-  @Action setDefineCompanyStepValidity!: ActionBindingIF
   @Action setNameRequest!: ActionBindingIF
   @Action setPeopleAndRoles!: ActionBindingIF
   @Action setCertifyState!: ActionBindingIF
   @Action setShareClasses!: ActionBindingIF
-  @Action setEffectiveDate!: ActionBindingIF
+  @Action setEffectiveDateTimeString!: ActionBindingIF
   @Action setIsFutureEffective!: ActionBindingIF
   @Action setFolioNumber!: ActionBindingIF
-  @Action setFilingDate!: ActionBindingIF
+  @Action setFilingDateTime!: ActionBindingIF
   @Action setIncorporationAgreementStepData!: ActionBindingIF
   @Action setStaffPayment!: ActionBindingIF
   @Action setDetailComment!: ActionBindingIF
@@ -218,10 +202,11 @@ export default class FilingTemplateMixin extends Vue {
       header: {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
-        date: this.getCurrentDate
+        date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
+        folioNumber: this.getFolioNumber
       },
       business: {
-        foundingDate: this.getOriginalSnapshot[0].business.foundingDate,
+        foundingDate: this.getOriginalSnapshot[0].business.foundingDateTime,
         legalType: this.getOriginalSnapshot[0].business.legalType,
         identifier: this.getOriginalSnapshot[0].business.identifier,
         legalName: this.getOriginalSnapshot[0].business.legalName
@@ -244,6 +229,13 @@ export default class FilingTemplateMixin extends Vue {
           extension: this.getBusinessContact.extension
         }
       }
+    }
+
+    // If FED then set header fields
+    if (this.getEffectiveDateTime.isFutureEffective) {
+      filing.header.isFutureEffective = true
+      const effectiveDate = new Date(this.getEffectiveDateTime.dateTimeString)
+      filing.header.effectiveDate = effectiveDate.toISOString() // in UTC
     }
 
     // Include name request info when applicable
@@ -327,7 +319,7 @@ export default class FilingTemplateMixin extends Vue {
       agreementType: filing.incorporationApplication.incorporationAgreement?.agreementType
     })
 
-    // Set Certify Form
+    // Set Certify State
     this.setCertifyState({
       valid: false,
       certifiedBy: filing.header.certifiedBy
@@ -342,10 +334,11 @@ export default class FilingTemplateMixin extends Vue {
     this.setFolioNumber(filing.header.folioNumber)
 
     // Set Filing Date
-    this.setFilingDate(filing.header.date)
+    this.setFilingDateTime(filing.header.date)
 
-    // Set Effective Time
-    this.setEffectiveDate(filing.header.effectiveDate)
+    // Set Effective Date
+    this.setEffectiveDateTimeString(filing.header.effectiveDate)
+    this.setIsFutureEffective(filing.header.isFutureEffective)
 
     // Set Staff Payment
     if (filing.header.routingSlipNumber) {
@@ -398,7 +391,7 @@ export default class FilingTemplateMixin extends Vue {
     // Set original snapshot to store
     this.setOriginalSnapshot(businessSnapshot)
 
-    // set current entity type
+    // Set current entity type
     this.setEntityType(filing.alteration.business.legalType)
 
     // Set Business Information
@@ -461,7 +454,7 @@ export default class FilingTemplateMixin extends Vue {
       }
     }
 
-    // Set Certify Form
+    // Set Certify State
     this.setCertifyState({
       valid: false,
       certifiedBy: filing.header.certifiedBy
@@ -471,10 +464,11 @@ export default class FilingTemplateMixin extends Vue {
     this.setFolioNumber(filing.header.folioNumber)
 
     // Set Filing Date
-    this.setFilingDate(filing.header.date)
+    this.setFilingDateTime(filing.header.date)
 
-    // Set Effective Time
-    this.setEffectiveDate(filing.header.effectiveDate)
+    // Set Effective Date
+    this.setEffectiveDateTimeString(filing.header.effectiveDate)
+    this.setIsFutureEffective(filing.header.isFutureEffective)
   }
 
   /**
@@ -497,7 +491,7 @@ export default class FilingTemplateMixin extends Vue {
     this.setNameRequest({
       legalType: businessSnapshot[0].business.legalType,
       legalName: businessSnapshot[0].business.legalName,
-      foundingDate: businessSnapshot[0].business.foundingDate
+      foundingDate: businessSnapshot[0].business.foundingDateTime
     })
 
     // Set Name Translations

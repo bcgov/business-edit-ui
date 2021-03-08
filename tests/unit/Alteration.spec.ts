@@ -5,7 +5,7 @@ import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import { getVuexStore } from '@/store'
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { axios } from '@/utils'
 
 // Components
@@ -22,7 +22,7 @@ const store = getVuexStore()
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
-describe('App component', () => {
+describe('Alteration component', () => {
   let wrapper: any
   const { assign } = window.location
 
@@ -209,6 +209,8 @@ describe('App component', () => {
         }
       })))
 
+    // FUTURE: mock GET alteration filing
+
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -231,7 +233,7 @@ describe('App component', () => {
   })
 
   it('loads the business snapshot into the store', async () => {
-    wrapper.setProps({ appReady: true })
+    await wrapper.setProps({ appReady: true })
     await flushPromises()
     const state = store.state.stateModel
 
@@ -267,5 +269,13 @@ describe('App component', () => {
     // Validate Contact Info
     expect(store.state.stateModel.defineCompanyStep.businessContact.email).toBe('mock@email.com')
     expect(store.state.stateModel.defineCompanyStep.businessContact.phone).toBe('123-456-7890')
+  })
+
+  // FUTURE
+  xit('loads a draft alteration into the store', async () => {
+    // Validate Effective Date-Time
+    expect(store.state.stateModel.effectiveDateTime.valid).toBe('mock@email.com')
+    expect(store.state.stateModel.effectiveDateTime.isFutureEffective).toBe('mock@email.com')
+    expect(store.state.stateModel.effectiveDateTime.dateTimeString).toBe('mock@email.com')
   })
 })
