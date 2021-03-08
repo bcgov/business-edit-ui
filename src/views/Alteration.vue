@@ -51,7 +51,7 @@ import { getFeatureFlag } from '@/utils'
 import { AlterationSummary, NoFeeSummary } from '@/components/Summary'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
-import { CurrentDirectors } from '@/components/CurrentDirectors'
+import { CurrentDirectors } from '@/components/PeopleAndRoles'
 import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
 import { ShareStructure } from '@/components/ShareStructure'
 

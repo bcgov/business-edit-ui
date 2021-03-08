@@ -9,16 +9,16 @@
       </div>
 
       <!-- Instructional Text -->
-      <div class="instructional-text pt-10 pb-15 px-4">
+      <div class="instructional-text pt-10 px-4">
         To change directors, please use the Change feature in the Current Directors list on you business dashboard.
       </div>
 
-      <div class="list-container px-4">
+      <div class="list-container px-4 pt-15">
         <!-- List Display Section -->
-        <div id="people-roles-list" v-if="currentDirectors.length > 0">
+        <section id="people-roles-list" v-if="currentDirectors.length > 0">
           <!-- List Headers -->
-          <v-row class="people-roles-list-header list-item__subtitle pb-3" no-gutters>
-            <v-col class="pr-5" v-for="(title, index) in tableHeaders" :key="index">
+          <v-row class="people-roles-list-header list-item__subtitle pb-3">
+            <v-col v-for="(title, index) in tableHeaders" :key="index">
               <span class="directors-title">{{ title }}</span>
             </v-col>
           </v-row>
@@ -27,17 +27,16 @@
           <v-row
             class="people-roles-content py-3"
             v-for="(orgPerson, index) in currentDirectors"
-            :key="index"
-            no-gutters
+            :key="`director:${index}`"
           >
             <!-- Name + Badge -->
-            <v-col class="text-truncate pr-5">
+            <v-col class="text-truncate">
               <!-- provide tooltip to display full name if name is longer than 25 chars -->
               <v-tooltip top :disabled="formatFullName(orgPerson.officer).length < 25" color="primary">
                 <template v-slot:activator="{ on }">
-                  <span v-on="on" class="director-name">{{ formatFullName(orgPerson.officer).toLowerCase() }}</span>
+                  <span v-on="on" class="director-name">{{ formatFullName(orgPerson.officer) }}</span>
                 </template>
-                <span class="director-name">{{ formatFullName(orgPerson.officer).toLowerCase() }}</span>
+                <span class="director-name">{{ formatFullName(orgPerson.officer) }}</span>
               </v-tooltip>
             </v-col>
 
@@ -59,7 +58,7 @@
               <span class="director-detail">{{ orgPerson.roles[0].appointmentDate }} to Current</span>
             </v-col>
           </v-row>
-        </div>
+        </section>
       </div>
     </v-card>
   </div>
@@ -89,20 +88,15 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
   readonly tableHeaders = ['Name', 'Mailing Address', 'Delivery Address', 'Effective Dates']
 
   /**
-   * Called when component is mounted.
-   */
-  private mounted (): void {}
-
-  /**
    * Returns the current directors from the people and roles.
    * @returns array of directors
    */
   private get currentDirectors () : OrgPersonIF[] {
     const directors = this.getPeopleAndRoles
       .filter(people => people.roles.some(role =>
-        role.roleType.toLowerCase() === 'director' && role.cessationDate === null))
+        role.roleType.toLowerCase() === RoleTypes.DIRECTOR.toLowerCase() && !role.cessationDate))
     for (const director of directors) {
-      director.roles = director.roles.filter(role => role.roleType.toLowerCase() === 'director')
+      director.roles = director.roles.filter(role => role.roleType.toLowerCase() === RoleTypes.DIRECTOR.toLowerCase())
     }
     return directors
   }
@@ -123,11 +117,6 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
   padding-bottom: 0;
 }
 
-.instructional-text {
-  font-size: 16px;
-  color: $gray7;
-}
-
 .people-roles-list-header {
   box-shadow: 0px 2px $gray1;
 }
@@ -135,23 +124,19 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
 .people-roles-content {
   border-top: 1px solid $gray1;
   font-size: 0.875rem;
+  color: $gray7;
 }
 
 .directors-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: $gray9;
   font-weight: bold;
 }
 
 .director-name {
-  font-size: 16px;
-  text-transform: capitalize;
+  font-size: 1rem;
   color: $gray9;
   font-weight: bold;
 }
 
-.director-detail {
-  font-size: 14px;
-  color: $gray7;
-}
 </style>
