@@ -23,8 +23,6 @@
 
       <detail class="mt-10" />
 
-      <certify-section class="mt-10" />
-
       <staff-payment
         class="mt-10"
         @haveChanges="onStaffPaymentChanges()"
@@ -49,6 +47,10 @@
       />
 
       <no-fee-summary class="mt-10" />
+      <document-delivery-section class="mt-10" />
+
+      <certify-section class="mt-10" />
+
     </template>
   </section>
 </template>
@@ -61,7 +63,7 @@ import { AlterationSummary, NoFeeSummary } from '@/components/Summary'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { PeopleAndRoles } from '@/components/PeopleAndRoles'
-import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
+import { CertifySection, CompletingParty, Detail, StaffPayment, DocumentsDelivery } from '@/components/common'
 import { ShareStructure } from '@/components/ShareStructure'
 import { Articles } from '@/components/Articles'
 
@@ -80,6 +82,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     CertifySection,
     CompletingParty,
     Detail,
+    DocumentsDelivery,
     NoFeeSummary,
     PeopleAndRoles,
     ShareStructure,
