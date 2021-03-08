@@ -18,11 +18,14 @@
 
         <br v-if="translation.action">
         <v-chip v-if="translation.action === ActionTypes.ADDED"
-          x-small label color="#1669BB" text-color="white">ADDED</v-chip>
+          x-small label color="primary" text-color="white">ADDED</v-chip>
         <v-chip v-if="translation.action === ActionTypes.EDITED"
-          x-small label color="#1669BB" text-color="white">CORRECTED</v-chip>
+          x-small label color="primary" text-color="white">
+          <span v-if="isCorrectionView()">CORRECTED</span>
+          <span v-else>CHANGED</span>
+        </v-chip>
         <v-chip v-if="translation.action === ActionTypes.REMOVED"
-          x-small label color="#E0E0E0" text-color="grey darken-1">REMOVED</v-chip>
+          x-small label color="grey lighten-2" text-color="grey darken-4">REMOVED</v-chip>
         </v-col>
 
         <!-- Actions Column -->
@@ -75,7 +78,6 @@
           <div class="actions">
             <span class="edit-action">
               <v-btn
-                small
                 text
                 color="primary"
                 :disabled="isAddingNameTranslation"
@@ -177,7 +179,6 @@ export default class ListNameTranslation extends Mixins(CommonMixin) {
     .names-translation-content {
       padding: .5rem 1.25rem .5rem 1.25rem;
       border-top: 1px solid $gray1;
-      font-size: 0.875rem;
 
       .name-title {
         color: $gray7;

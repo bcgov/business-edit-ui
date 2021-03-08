@@ -52,23 +52,26 @@ export const mutateIsFilingPaying = (state: StateIF, isFilingPaying: boolean) =>
   state.stateModel.tombstone.isFilingPaying = isFilingPaying
 }
 
-export const mutateCurrentDate = (state: StateIF, currentDate: string) => {
-  state.stateModel.tombstone.currentDate = currentDate
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+export const mutateCurrentDate = (state: StateIF, dateString: string) => {
+  state.stateModel.tombstone.currentDate = dateString
+}
+
+export const mutateCurrentJsDate = (state: StateIF, date: Date) => {
+  state.stateModel.currentJsDate = date
 }
 
 export const mutateIsFutureEffective = (state: StateIF, isFutureEffective: boolean) => {
-  state.stateModel.incorporationDateTime.isFutureEffective = isFutureEffective
+  state.stateModel.effectiveDateTime.isFutureEffective = isFutureEffective
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
-export const mutateEffectiveDate = (state: StateIF, effectiveDate: Date) => {
-  state.stateModel.incorporationDateTime.effectiveDate = effectiveDate
+export const mutateEffectiveDateTimeString = (state: StateIF, dateTimeString: string) => {
+  state.stateModel.effectiveDateTime.dateTimeString = dateTimeString
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
-export const mutateIsIncorporationDateTimeValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.incorporationDateTime.valid = validity
+export const mutateEffectiveDateValid = (state: StateIF, valid: boolean) => {
+  state.stateModel.effectiveDateTime.valid = valid
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
@@ -116,8 +119,8 @@ export const mutateFolioNumber = (state: StateIF, folioNumber: string) => {
   state.stateModel.defineCompanyStep.folioNumber = folioNumber
 }
 
-export const mutateFilingDate = (state: StateIF, filingDate: string) => {
-  state.stateModel.tombstone.filingDate = filingDate
+export const mutateFilingDateTime = (state: StateIF, dateTimeString: string) => {
+  state.stateModel.tombstone.filingDateTime = dateTimeString
 }
 
 export const mutateAccountInformation = (state: StateIF, accountInformation: AccountInformationIF) => {
@@ -183,8 +186,8 @@ export const mutateEntityType = (state: StateIF, entityType: EntityTypes) => {
   state.stateModel.tombstone.entityType = entityType
 }
 
-export const mutateOriginalIA = (state: StateIF, originalIa: IncorporationFilingIF) => {
-  state.stateModel.originalIA = originalIa
+export const mutateOriginalIA = (state: StateIF, originalIA: IncorporationFilingIF) => {
+  state.stateModel.originalIA = originalIA
 }
 
 export const mutateOriginalSnapshot = (state: StateIF, originalSnapshot: BusinessSnapshotIF[]) => {
