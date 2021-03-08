@@ -16,6 +16,6 @@ export interface BusinessSnapshotIF {
   aliases: NameTranslationIF[],
   addresses: IncorporationAddressIf,
   directors: Array<GetOrgPersonsIF>,
-  shareClasses: ShareStructureIF,
+  shareClasses: ShareStructureIF[],
   ContactPointIF
 }

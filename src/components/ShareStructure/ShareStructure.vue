@@ -74,7 +74,7 @@
         >
           <td :class="{ 'list-item__subtitle' : row.item.action === ActionTypes.REMOVED }" class="list-item__title">
             {{ row.item.name }}
-            <action-chip v-if="row.item.action" :actionable-item="row.item" />
+            <action-chip v-if="row.item.action" :actionable-item="row.item" :is-correction="isCorrection" />
           </td>
           <td class="text-right">
             {{ row.item.maxNumberOfShares ? (+row.item.maxNumberOfShares).toLocaleString() : 'No Maximum' }}
@@ -89,12 +89,12 @@
               <!-- Share Class Correct Btn -->
               <span v-if="!row.item.action" class="edit-action">
                 <v-btn text color="primary"
-                  :id="'class-' + row.index + '-change-btn'"
-                  @click="initShareClassForEdit(row.index)"
-                  :disabled="addEditInProgress"
+                       :id="'class-' + row.index + '-change-btn'"
+                       @click="initShareClassForEdit(row.index)"
+                       :disabled="addEditInProgress"
                 >
                   <v-icon small>mdi-pencil</v-icon>
-                  <span>{{editLabel}}</span>
+                  <span>{{editLabel(isCorrection)}}</span>
                 </v-btn>
               </span>
 
@@ -104,9 +104,9 @@
                 class="undo-action"
               >
                 <v-btn text color="primary"
-                  :id="'class-' + row.index + '-undo-btn'"
-                  @click="undoCorrection(true, row.item.action, row.index)"
-                  :disabled="addEditInProgress"
+                       :id="'class-' + row.index + '-undo-btn'"
+                       @click="undoCorrection(true, row.item.action, row.index)"
+                       :disabled="addEditInProgress"
                 >
                   <v-icon small>mdi-undo</v-icon>
                   <span>Undo</span>
@@ -116,9 +116,9 @@
               <!-- Share Class Edit Btn -->
               <span v-if="row.item.action === ActionTypes.ADDED" class="edit-action">
                 <v-btn text color="primary"
-                  :id="'class-' + row.index + '-change-added-btn'"
-                  @click="initShareClassForEdit(row.index)"
-                  :disabled="addEditInProgress"
+                       :id="'class-' + row.index + '-change-added-btn'"
+                       @click="initShareClassForEdit(row.index)"
+                       :disabled="addEditInProgress"
                 >
                   <v-icon small>mdi-pencil</v-icon>
                   <span>Edit</span>
@@ -143,7 +143,9 @@
                       class="actions-dropdown_item"
                       @click="initShareClassForEdit(row.index)"
                       :disabled="addEditInProgress">
-                      <v-list-item-subtitle><v-icon small>mdi-pencil</v-icon> {{editLabel}}</v-list-item-subtitle>
+                      <v-list-item-subtitle>
+                        <v-icon small>mdi-pencil</v-icon> {{editLabel(isCorrection)}}
+                      </v-list-item-subtitle>
                     </v-list-item>
                     <v-list-item
                       class="actions-dropdown_item"
@@ -232,6 +234,7 @@
               <action-chip
                 v-if="row.item.action !== ActionTypes.REMOVED && seriesItem.action"
                 :actionable-item="seriesItem"
+                :is-correction="isCorrection"
               />
             </td>
             <td class="text-right">
@@ -247,12 +250,12 @@
                 <!-- Series Correct Btn -->
                 <span v-if="!seriesItem.action" class="edit-action">
                   <v-btn text color="primary"
-                    :id="'series-' + index + '-change-btn'"
-                    @click="editSeries(row.index, index)"
-                    :disabled="addEditInProgress"
+                         :id="'series-' + index + '-change-btn'"
+                         @click="editSeries(row.index, index)"
+                         :disabled="addEditInProgress"
                   >
                     <v-icon small>mdi-pencil</v-icon>
-                    <span>{{editLabel}}</span>
+                    <span>{{editLabel(isCorrection)}}</span>
                   </v-btn>
                 </span>
 
@@ -262,10 +265,10 @@
                   class="undo-action"
                 >
                   <v-btn text color="primary"
-                    :id="'series-' + index + '-undo-btn'"
-                    @click="undoCorrection
+                         :id="'series-' + index + '-undo-btn'"
+                         @click="undoCorrection
                     (false, seriesItem.action, index, row.index, row.item.id, seriesItem.id)"
-                    :disabled="addEditInProgress"
+                         :disabled="addEditInProgress"
                   >
                     <v-icon small>mdi-undo</v-icon>
                     <span>Undo</span>
@@ -275,9 +278,9 @@
                 <!-- Series Edit Btn -->
                 <span v-else-if="seriesItem.action !== ActionTypes.REMOVED" class="edit-action">
                   <v-btn text color="primary"
-                    :id="'series-' + index + '-change-added-btn'"
-                    @click="editSeries(row.index, index)"
-                    :disabled="addEditInProgress"
+                         :id="'series-' + index + '-change-added-btn'"
+                         @click="editSeries(row.index, index)"
+                         :disabled="addEditInProgress"
                   >
                     <v-icon small>mdi-pencil</v-icon>
                     <span>Edit</span>
@@ -289,8 +292,8 @@
                   <v-menu offset-y left>
                     <template v-slot:activator="{ on }">
                       <v-btn text color="primary"
-                        class="actions__more-actions__btn" v-on="on"
-                        :disabled="addEditInProgress"
+                             class="actions__more-actions__btn" v-on="on"
+                             :disabled="addEditInProgress"
                       >
                         <v-icon>mdi-menu-down</v-icon>
                       </v-btn>
@@ -303,7 +306,7 @@
                         :disabled="addEditInProgress"
                       >
                       <v-list-item-subtitle>
-                        <v-icon small>mdi-pencil</v-icon> {{editLabel}}
+                        <v-icon small>mdi-pencil</v-icon> {{editLabel(isCorrection)}}
                       </v-list-item-subtitle>
                     </v-list-item>
                       <v-list-item
@@ -391,43 +394,46 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import 'array.prototype.move'
 import { cloneDeep, isEqual, omit } from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
 
 // Components
 import { ActionChip } from '@/components/common'
-import EditShareStructure from './EditShareStructure.vue'
 import { ConfirmDialog } from '@/components/dialogs'
+import EditShareStructure from './EditShareStructure.vue'
 
 // Mixins
 import { CommonMixin } from '@/mixins'
 
-// Interfaces or Enums
-import { ActionTypes } from '@/enums'
 import {
-  ActionBindingIF,
   BusinessSnapshotIF,
   ConfirmDialogType,
   IncorporationFilingIF,
   ShareClassIF
 } from '@/interfaces'
 
+// Interfaces or Enums
+import { ActionTypes } from '@/enums'
+
 @Component({
   components: {
     ActionChip,
-    EditShareStructure,
-    ConfirmDialog
+    ConfirmDialog,
+    EditShareStructure
   }
 })
 export default class ShareStructure extends Mixins(CommonMixin) {
   // Refs
-  $refs!: {
+  $refs!: Vue['$refs'] & {
     confirm: ConfirmDialogType,
   };
 
   // Props
+  @Prop()
+  private isCorrection: boolean
+
   @Prop({ default: null })
   private incorporationApplication: IncorporationFilingIF
 
@@ -498,6 +504,12 @@ export default class ShareStructure extends Mixins(CommonMixin) {
     action: ActionTypes.ADDED
   }
 
+  // Initialize data set
+  mounted () {
+    this.updateOriginalIA()
+    this.updateSnapshot()
+  }
+
   /** True if we have any changes (from original IA). */
   private get hasClassChanges (): boolean {
     return this.shareClasses.some(x => x.action)
@@ -505,7 +517,7 @@ export default class ShareStructure extends Mixins(CommonMixin) {
 
   /** True if we have any changes (from original IA). */
   private get hasSeriesChanges (): boolean {
-    return !!this.shareClasses.find(shareClass => shareClass.series?.some(x => x.action))
+    return !!this.shareClasses.find(shareClass => shareClass.series.some(x => x.action))
   }
 
   // Share Class Functionality
@@ -564,11 +576,18 @@ export default class ShareStructure extends Mixins(CommonMixin) {
    * @params shareClass The Share class to compare
    */
   private isShareClassEdited (shareClass: ShareClassIF): boolean {
-    const originalShareClass = this.originalIA?.incorporationApplication.shareStructure.shareClasses.find(
+    const originalShareClasses: any = this.isCorrection
+      ? cloneDeep(this.originalIA.incorporationApplication.shareStructure.shareClasses)
+      : cloneDeep(this.originalSnapshot[4].shareClasses)
+
+    const originalShareClass = originalShareClasses.find(
       share => share.id === shareClass.id
     )
 
-    return !isEqual({ ...omit(shareClass, 'action') }, { ...omit(originalShareClass, 'action') })
+    return !isEqual(
+      { ...omit(shareClass, 'action') },
+      { ...omit(originalShareClass, 'action') }
+    )
   }
 
   /**
@@ -597,7 +616,7 @@ export default class ShareStructure extends Mixins(CommonMixin) {
    * @param index The share class identifier
    */
   private restoreShareClass (index: number): void {
-    const originalShareClasses: any = this.isCorrectionView()
+    const originalShareClasses: any = this.isCorrection
       ? cloneDeep(this.originalIA.incorporationApplication.shareStructure.shareClasses)
       : cloneDeep(this.originalSnapshot[4].shareClasses)
 
@@ -708,7 +727,7 @@ export default class ShareStructure extends Mixins(CommonMixin) {
    * @param seriesId The Series Id
    */
   private restoreShareSeries (seriesIndex: number, parentIndex: number, parentId: string, seriesId: string): void {
-    const originalShareClasses: any = this.isCorrectionView()
+    const originalShareClasses: any = this.isCorrection
       ? cloneDeep(this.originalIA.incorporationApplication.shareStructure.shareClasses)
       : cloneDeep(this.originalSnapshot[4].shareClasses)
 
@@ -1036,5 +1055,4 @@ export default class ShareStructure extends Mixins(CommonMixin) {
   color: $gray9;
   font-weight: normal;
 }
-
 </style>

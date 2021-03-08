@@ -4,10 +4,8 @@
       ref="confirm"
       attach="#share-structure"
     />
-    IA: <span>{{getOriginalIA}}</span><br>
-    shareClasses <span>{{getShareClasses}}</span>
-
     <share-structure
+      :isCorrection="isCorrectionView()"
       :incorporation-application="getOriginalIA"
       :share-classes="getShareClasses"
       :business-snapshot="getOriginalSnapshot"
@@ -62,6 +60,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
     this.resolutionRequired = this.isAlterationView()
   }
 
+  // PLACEHOLDER FOR DATE SELECTOR
   private promptDialog (val: any) {
     if (val) {
       // open confirmation dialog and wait for response
