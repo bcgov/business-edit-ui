@@ -86,6 +86,6 @@ export default class FolioNumber extends Vue {
 }
 
 label {
-  font-weight: 700;
+  font-weight: bold;
 }
 </style>

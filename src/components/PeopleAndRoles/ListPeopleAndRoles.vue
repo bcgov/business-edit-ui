@@ -302,7 +302,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   // NB: same styles as v-data-table header
   color: rgba(0, 0, 0, 0.6);
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: bold;
 }
 
 .people-roles-content {
@@ -311,7 +311,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
 
   .people-roles-title {
     color: $gray7;
-    font-weight: 700;
+    font-weight: bold;
   }
 
   .actions {

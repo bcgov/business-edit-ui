@@ -122,6 +122,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   }
 
   private validateEmailFormat (value: string): boolean {
+    // eslint-disable-next-line max-len
     const VALID_FORMAT = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
     return VALID_FORMAT.test(value)
   }
@@ -156,6 +157,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
             emailAddress: response.applicants.emailAddress
           }
         }
+
         this.setNameRequest({ ...this.getNameRequest, ...nrCorrection })
         this.emitDone(true)
       } catch {

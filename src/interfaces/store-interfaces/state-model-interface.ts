@@ -1,11 +1,12 @@
 import {
   AccountInformationIF, AlterationFilingIF, CertifyIF, DefineCompanyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF,
-  ShareStructureIF, DateTimeIF, IncorporationAgreementIF, BusinessInformationIF, IncorporationFilingIF,
+  ShareStructureIF, EffectiveDateTimeIF, IncorporationAgreementIF, BusinessInformationIF, IncorporationFilingIF,
   FilingDataIF, StaffPaymentStepIF, DetailIF, NameTranslationIF, BusinessSnapshotIF
 } from '@/interfaces'
 
-// State model example
+/** Data object used internally only (not to/from API). */
 export interface StateModelIF {
+  currentJsDate: Date
   tombstone: TombStoneIF
   accountInformation: AccountInformationIF
   businessInformation: BusinessInformationIF
@@ -16,7 +17,7 @@ export interface StateModelIF {
   peopleAndRolesStep: PeopleAndRolesIF
   shareStructureStep: ShareStructureIF
   incorporationAgreementStep: IncorporationAgreementIF
-  incorporationDateTime: DateTimeIF
+  effectiveDateTime: EffectiveDateTimeIF
   originalIA: IncorporationFilingIF
   originalAlteration: AlterationFilingIF
   originalSnapshot: BusinessSnapshotIF[]
