@@ -1,63 +1,65 @@
 <template>
   <div id="company-provisions">
-    <v-layout v-if="!isEditing">
-      <v-flex xs3>
-        <label><strong>Pre-existing Company Provisions</strong></label>
-        <v-chip v-if="hasProvisionsRemovedPropsChanged" x-small label color="#1669BB" text-color="white">
-          CHANGED
-        </v-chip>
-      </v-flex>
-      <v-flex xs7 class="info-text" v-if="provisionsRemoved">
-        The company has resolved that none of the Pre-existing Company Provisions are to apply to this company.
-      </v-flex>
-      <v-flex xs7 class="info-text" v-else>
-        This company has Pre-existing Company Provisions.
-      </v-flex>
-      <v-flex mt-n2 xs2 class="align-right" v-if="!hasProvisionsRemovedPropsChanged">
-        <v-btn id="correct-company-provisions" text color="primary" @click="isEditing = true">
-          <v-icon small>mdi-pencil</v-icon>
-          <span>{{ editLabel }}</span>
-        </v-btn>
-      </v-flex>
-      <v-flex mt-n2 xs2 class="align-right" v-else>
-        <v-btn
-          id="undo-company-provisions"
-          text
-          color="primary"
-          class="undo-company-provisions"
-          @click="resetCompanyProvisions"
-        >
-          <v-icon small>mdi-undo</v-icon>
-          <span>Undo</span>
-        </v-btn>
+    <v-container pa-0 ma-0 v-if="!isEditing">
+      <v-row>
+        <v-col cols="3">
+          <label class="define-company-provisions-title">Pre-existing Company Provisions</label>
+          <v-chip v-if="hasProvisionsRemovedPropsChanged" x-small label color="#1669BB" text-color="white">
+            CHANGED
+          </v-chip>
+        </v-col>
+        <v-col cols="7" class="info-text" v-if="provisionsRemoved">
+          The company has resolved that none of the Pre-existing Company Provisions are to apply to this company.
+        </v-col>
+        <v-col cols="7" class="info-text" v-else>
+          This company has Pre-existing Company Provisions.
+        </v-col>
+        <v-col mt-n2 cols="2" class="align-right" v-if="!hasProvisionsRemovedPropsChanged">
+          <v-btn id="correct-company-provisions" text color="primary" @click="isEditing = true">
+            <v-icon small>mdi-pencil</v-icon>
+            <span>{{ editLabel }}</span>
+          </v-btn>
+        </v-col>
+        <v-col mt-n2 cols="2" class="align-right" v-else>
+          <v-btn
+            id="undo-company-provisions"
+            text
+            color="primary"
+            class="undo-company-provisions"
+            @click="resetCompanyProvisions"
+          >
+            <v-icon small>mdi-undo</v-icon>
+            <span>Undo</span>
+          </v-btn>
 
-        <!-- More Actions Menu -->
-        <span class="more-actions">
-          <v-menu offset-y>
-            <template v-slot:activator="{ on }">
-              <v-btn text small color="primary" class="more-actions-btn" v-on="on">
-                <v-icon>mdi-menu-down</v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item class="actions-dropdown_item" @click="isEditing = true">
-                <v-list-item-subtitle>
-                  <v-icon small>mdi-pencil</v-icon>
-                  <span class="ml-1">{{ editLabel }}</span>
-                </v-list-item-subtitle>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </span>
-      </v-flex>
-    </v-layout>
-    <v-layout v-else>
-      <v-flex xs3>
-        <label><strong>Pre-existing Company Provisions</strong></label>
-      </v-flex>
-      <v-flex xs9>
-        <v-layout>
-          <v-flex>
+          <!-- More Actions Menu -->
+          <span class="more-actions">
+            <v-menu offset-y>
+              <template v-slot:activator="{ on }">
+                <v-btn text small color="primary" class="more-actions-btn" v-on="on">
+                  <v-icon>mdi-menu-down</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item class="actions-dropdown_item" @click="isEditing = true">
+                  <v-list-item-subtitle>
+                    <v-icon small>mdi-pencil</v-icon>
+                    <span class="ml-1">{{ editLabel }}</span>
+                  </v-list-item-subtitle>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </span>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-container v-else>
+      <v-row>
+        <v-col cols="3">
+          <label class="define-company-provisions-title">Pre-existing Company Provisions</label>
+        </v-col>
+        <v-col cols="8">
+          <v-row>
             <p class="info-text instructions-paragraph">
               Complete this item only if the company has resolved that none of the Pre-existing Company Provisions
               are to apply to this company (refer to Part 17 and Table 3 of the Regulation under the Business
@@ -75,10 +77,13 @@
                   company.
                 </span>
             </div>
-          </v-flex>
-        </v-layout>
-        <v-layout pt-10>
-          <v-flex xs12>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-container pt-10>
+          <v-row xs12>
+            <v-spacer></v-spacer>
             <div class="action-btns">
               <v-btn
                 large
@@ -98,10 +103,10 @@
                 <span>Cancel</span>
               </v-btn>
             </div>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
+          </v-row>
+        </v-container>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -190,7 +195,7 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   display: flex;
   justify-content: flex-end;
   padding-bottom: 1rem;
-  padding-right: 0.5rem;
+  padding-right: 0.875rem;
 
   .v-btn + .v-btn {
     margin-left: 0.5rem;
@@ -242,4 +247,9 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   color: $app-red;
 }
 
+.define-company-provisions-title {
+  font-weight: bold;
+  font-size: 1rem;
+  overflow-wrap: break-word;
+}
 </style>
