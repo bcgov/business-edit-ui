@@ -168,6 +168,7 @@ describe('CorrectNameRequest', () => {
 
   it('emits done and true when the process is done and the Name Request accepted', async () => {
     const wrapper = wrapperFactory()
+    store.state.stateModel.tombstone.currentDate = '2021-01-20'
 
     // GET NR Data
     get.withArgs('nameRequests/NR 1234567')

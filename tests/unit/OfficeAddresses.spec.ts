@@ -1,13 +1,16 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
+import VueRouter from 'vue-router'
 import { getVuexStore } from '@/store'
 import { mount } from '@vue/test-utils'
 import { OfficeAddresses } from '@/components/YourCompany'
 import { AddressIF, IncorporationAddressIf } from '@/interfaces'
+import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
+Vue.use(VueRouter)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
@@ -56,7 +59,9 @@ describe('summary mode', () => {
   })
 
   it('displays the correct sections', () => {
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     expect(wrapper.find('#summary-registered-address').exists()).toBe(true)
     expect(wrapper.find('#summary-records-address').exists()).toBe(true)
@@ -71,7 +76,9 @@ describe('summary mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -131,7 +138,9 @@ describe('summary mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
@@ -183,7 +192,9 @@ describe('summary mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(4, 3, 2, 1))
@@ -251,7 +262,9 @@ describe('summary mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -304,7 +317,9 @@ describe('summary mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
@@ -341,7 +356,9 @@ describe('summary mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 3, 3)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
@@ -386,7 +403,9 @@ describe('summary mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(4, 3, 2, 1))
@@ -446,7 +465,9 @@ describe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -470,7 +491,9 @@ describe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -511,7 +534,9 @@ describe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -553,7 +578,9 @@ describe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 3, 3)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
@@ -587,7 +614,9 @@ describe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -629,7 +658,9 @@ describe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
@@ -662,7 +693,9 @@ describe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -704,7 +737,9 @@ describe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 3, 3)
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
@@ -747,7 +782,9 @@ describe('"same as" checkboxes', () => {
   })
 
   beforeEach(async () => {
-    wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
@@ -912,7 +949,9 @@ describe('actions and events', () => {
   })
 
   beforeEach(async () => {
-    wrapper = mount(OfficeAddresses, { store, vuetify })
+    const router = mockRouter.mock()
+    router.push({ name: 'correction' })
+    wrapper = mount(OfficeAddresses, { store, router, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))

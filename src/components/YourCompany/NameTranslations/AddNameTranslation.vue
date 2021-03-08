@@ -5,7 +5,7 @@
       attach="#add-name-translation"
     />
     <!-- Name Translation form -->
-    <v-form v-model="nameTranslationForm" class="name-translation-form">
+    <v-form v-model="nameTranslationForm" ref="nameTranslationForm" class="name-translation-form">
       <v-row>
         <v-col class="pb-0">
           <v-text-field
@@ -21,15 +21,28 @@
       <v-row>
         <v-col>
           <div class="action-btns">
-            <v-btn large color="primary"
+            <v-btn v-if="!isAddingTranslation"
+              large outlined color="error"
+              id="name-translation-remove"
+              @click="emitRemoveName(nameIndex)"
+            >
+              <span>Remove</span>
+            </v-btn>
+            <v-btn
+              large color="primary" class="ml-auto"
               id="name-translation-btn-ok"
-              :disabled="!nameTranslationForm"
-              @click="addTranslation()"
-            >OK</v-btn>
-            <v-btn large outlined color="primary"
+              @click="validateAddTranslation()"
+            >
+                Done
+            </v-btn>
+            <v-btn
+              large outlined color="primary"
               id="name-translation-btn-cancel"
               @click="cancelNameTranslation()"
-            >Cancel new name</v-btn>
+            >
+              <span v-if="isAddingTranslation">Cancel New Name</span>
+              <span v-else>Cancel</span>
+            </v-btn>
           </div>
         </v-col>
       </v-row>
@@ -45,7 +58,7 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { ConfirmDialog } from '@/components/dialogs'
 
 // Interfaces
-import { ConfirmDialogType } from '@/interfaces'
+import { ConfirmDialogType, FormType } from '@/interfaces'
 
 @Component({
   components: {
@@ -55,15 +68,20 @@ import { ConfirmDialogType } from '@/interfaces'
 export default class AddNameTranslation extends Vue {
   // Refs
   $refs!: {
-    confirmTranslationDialog: ConfirmDialogType
+    confirmTranslationDialog: ConfirmDialogType,
+    nameTranslationForm: FormType
   }
 
   @Prop({ default: '' })
   private editNameTranslation: string
 
+  @Prop({ default: -1 })
+  private editNameIndex: number
+
   // Local Properties
   private nameTranslationForm: boolean = false
   private nameTranslation: string = ''
+  private nameIndex: number = -1
 
   // Validation Rules
   private readonly nameTranslationRules: Array<Function> = [
@@ -74,7 +92,10 @@ export default class AddNameTranslation extends Vue {
 
   mounted () {
     // Editing an existing name translation
-    if (this.editNameTranslation) this.nameTranslation = this.editNameTranslation
+    if (this.editNameTranslation) {
+      this.nameTranslation = this.editNameTranslation
+      this.nameIndex = this.editNameIndex
+    }
   }
 
   private cancelNameTranslation () {
@@ -107,6 +128,22 @@ export default class AddNameTranslation extends Vue {
     })
   }
 
+  /**
+   * Returns true if we are adding, false if editing
+   */
+  private get isAddingTranslation (): boolean {
+    return this.editNameTranslation === ''
+  }
+
+  /**
+   * Trigger validation before add in case of blank name
+   */
+  private validateAddTranslation (): void {
+    if (this.$refs.nameTranslationForm.validate()) {
+      this.addTranslation()
+    }
+  }
+
   // Events
   @Emit('addTranslation')
   private addTranslation (): string {
@@ -115,10 +152,19 @@ export default class AddNameTranslation extends Vue {
 
   @Emit('cancelTranslation')
   private cancelTranslation (): void {}
+
+  /**
+   * Emit an index and event to the parent to handle removal.
+   * @param index The active index which is subject to removal.
+   */
+  @Emit('removeNameTranslation')
+  private emitRemoveName (index: number): void {}
 }
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
   .name-translation-form {
     padding-right: 0.5rem;
 
@@ -137,9 +183,13 @@ export default class AddNameTranslation extends Vue {
 
       .v-btn[disabled] {
         color: white !important;
-        background-color: #1669bb !important;
+        background-color: $app-blue !important;
         opacity: 0.2;
       }
     }
   }
+  ::v-deep .v-label {
+      color: $gray7;
+      font-weight: normal;
+    }
 </style>

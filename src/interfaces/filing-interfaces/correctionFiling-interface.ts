@@ -1,29 +1,16 @@
-import { IncorporationApplicationIF } from '@/interfaces'
+import { FilingBusinessIF, FilingHeaderIF, IncorporationApplicationIF } from '@/interfaces'
 
-/** Incorporation Application filing loaded from / saved to the Legal API. */
+interface CorrectionIF {
+  correctedFilingId: number
+  correctedFilingType: string
+  correctedFilingDate: string
+  comment: string
+}
+
+/** Interface for data object UI sends to API. */
 export interface CorrectionFilingIF {
-  header: {
-    name: string
-    certifiedBy: string
-    date: string
-    effectiveDate?: string
-    routingSlipNumber?: string
-    folioNumber?: string
-    bcolAccountNumber?: string
-    datNumber?: string
-    waiveFees?: boolean
-    priority?: boolean
-  }
-  business: {
-    legalType: string
-    legalName: string
-    identifier: string
-  }
-  correction: {
-    correctedFilingId: number
-    correctedFilingType: string
-    correctedFilingDate: string
-    comment: string
-  }
+  header: FilingHeaderIF
+  business: FilingBusinessIF
+  correction: CorrectionIF
   incorporationApplication?: IncorporationApplicationIF
 }

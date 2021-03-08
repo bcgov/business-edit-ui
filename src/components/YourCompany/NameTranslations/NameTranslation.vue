@@ -88,7 +88,9 @@
             <add-name-translation
               v-if="isAddingNameTranslation"
               :editNameTranslation="editingNameTranslation"
+              :editNameIndex="editIndex"
               @addTranslation="addName($event)"
+              @removeNameTranslation="removeNameTranslation($event)"
               @cancelTranslation="cancelOrResetEditing()"
             />
             <list-name-translation
@@ -184,6 +186,10 @@ export default class NameTranslation extends Mixins(CommonMixin) {
       this.draftTranslations.filter(x => x.action).length > 0
   }
 
+  private get isAddingAction (): boolean {
+    return this.editIndex === -1
+  }
+
   private get translationsExceptRemoved (): NameTranslationIF[] {
     return this.draftTranslations.filter(x => x.action !== ActionTypes.REMOVED)
   }
@@ -257,9 +263,12 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     if (this.editIndex > -1) {
       const translation = this.draftTranslations[this.editIndex]
       if (!translation.action) {
-        // If editing for the first time
-        translation.oldName = translation.name
-        translation.action = ActionTypes.EDITED
+        // if translation has changed at all
+        if (translation.name !== name) {
+          // If editing for the first time
+          translation.oldName = translation.name
+          translation.action = ActionTypes.EDITED
+        }
       } else if (translation.oldName === name) {
         // If user revert to old value
         translation.action = null
@@ -357,9 +366,9 @@ export default class NameTranslation extends Mixins(CommonMixin) {
         min-width: 6.5rem;
       }
 
-      .v-btn[disabled] {
+      #name-translation-done[disabled] {
         color: white !important;
-        background-color: #1669bb !important;
+        background-color: $app-blue !important;
         opacity: 0.2;
       }
     }
@@ -372,5 +381,15 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   .v-list-item {
     min-height: 0;
     padding: 0 1rem 0 0.5rem;
+  }
+  ::v-deep {
+    .theme--light.v-btn.v-btn--disabled,
+    .theme--light.v-btn.v-btn--disabled .v-icon {
+        color: $app-blue !important;
+        opacity: 0.4;
+    }
+  }
+  ::v-deep #correct-name-translation {
+    align-items: flex-start;
   }
 </style>

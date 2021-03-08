@@ -4,8 +4,8 @@
     <template v-if="!isSummaryMode">
       <header>
         <h1>Company Information</h1>
-
       </header>
+
       <section class="mt-6">
         <p>You are legally obligated to keep your company information up to date. Necessary fees will be applied as
           updates are made.</p>
@@ -36,10 +36,10 @@
           Notice which will incur a $100.00 Fee.</p>
       </section>
 
-      <alteration-summary class="mt-10"/>
+      <!-- FUTURE: set `pleaseValidate` when user clicks File and Pay -->
+      <alteration-summary class="mt-10" :pleaseValidate="true" />
 
       <no-fee-summary class="mt-10" />
-
     </template>
   </section>
 </template>

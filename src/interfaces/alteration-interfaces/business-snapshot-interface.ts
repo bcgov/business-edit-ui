@@ -1,8 +1,8 @@
 import {
   BusinessInformationIF,
+  GetOrgPersonsIF,
   IncorporationAddressIf,
   NameTranslationIF,
-  GetOrgPersonsIF,
   ShareStructureIF
 } from '@/interfaces'
 

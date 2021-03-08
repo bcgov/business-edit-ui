@@ -1,5 +1,5 @@
 <template>
-  <v-card flat id="name-translations-list">
+  <v-card flat id="name-translations-list" :style="{opacity: isAddingNameTranslation ? '0.4' : '1.0'}">
       <!-- List Headers -->
       <v-row class="name-translation-title list-item__subtitle" no-gutters>
         <v-col>
@@ -18,11 +18,14 @@
 
         <br v-if="translation.action">
         <v-chip v-if="translation.action === ActionTypes.ADDED"
-          x-small label color="#1669BB" text-color="white">ADDED</v-chip>
+          x-small label color="primary" text-color="white">ADDED</v-chip>
         <v-chip v-if="translation.action === ActionTypes.EDITED"
-          x-small label color="#1669BB" text-color="white">CORRECTED</v-chip>
+          x-small label color="primary" text-color="white">
+          <span v-if="isCorrectionView()">CORRECTED</span>
+          <span v-else>CHANGED</span>
+        </v-chip>
         <v-chip v-if="translation.action === ActionTypes.REMOVED"
-          x-small label color="#E0E0E0" text-color="grey darken-1">REMOVED</v-chip>
+          x-small label color="grey lighten-2" text-color="grey darken-4">REMOVED</v-chip>
         </v-col>
 
         <!-- Actions Column -->
@@ -75,18 +78,18 @@
           <div class="actions">
             <span class="edit-action">
               <v-btn
-                small
                 text
                 color="primary"
                 :disabled="isAddingNameTranslation"
                 @click="emitNameEdit(index)">
                   <v-icon small>mdi-pencil</v-icon>
-                  <span>Correct</span>
+                  <span v-if="isCorrectionView()">Correct</span>
+                  <span v-else>Edit</span>
               </v-btn>
             </span>
             <!-- more actions menu -->
             <span class="actions__more">
-              <v-menu offset-y>
+              <v-menu offset-y left nudge-bottom="4">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     text
@@ -116,7 +119,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Prop, Vue, Emit } from 'vue-property-decorator'
+import { Component, Prop, Vue, Emit, Mixins } from 'vue-property-decorator'
 
 // Interfaces
 import { NameTranslationIF } from '@/interfaces'
@@ -124,8 +127,10 @@ import { NameTranslationIF } from '@/interfaces'
 // Enums
 import { ActionTypes } from '@/enums'
 
+import { CommonMixin } from '@/mixins'
+
 @Component({})
-export default class ListNameTranslation extends Vue {
+export default class ListNameTranslation extends Mixins(CommonMixin) {
   @Prop({ default: () => { return [] as [] } })
   private translationList: NameTranslationIF[]
 
@@ -174,7 +179,6 @@ export default class ListNameTranslation extends Vue {
     .names-translation-content {
       padding: .5rem 1.25rem .5rem 1.25rem;
       border-top: 1px solid $gray1;
-      font-size: 0.875rem;
 
       .name-title {
         color: $gray7;
@@ -207,4 +211,11 @@ export default class ListNameTranslation extends Vue {
     min-height: 0;
     padding: 0 1rem 0 0.5rem;
   }
+  .v-list-item__subtitle {
+  color: $app-blue !important;
+
+  .v-icon {
+    color: $app-blue !important;
+  }
+}
 </style>

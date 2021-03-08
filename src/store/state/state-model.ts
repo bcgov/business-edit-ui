@@ -1,6 +1,7 @@
 import { EmptyNameRequest, StateModelIF } from '@/interfaces'
 
 export const stateModel: StateModelIF = {
+  currentJsDate: null,
   tombstone: {
     keycloakRoles: [],
     authRoles: [],
@@ -8,7 +9,7 @@ export const stateModel: StateModelIF = {
     businessId: '',
     entityType: null,
     currentDate: '',
-    filingDate: '',
+    filingDateTime: '',
     filingId: 0,
     correctedFilingId: null,
     isSaving: false,
@@ -49,10 +50,10 @@ export const stateModel: StateModelIF = {
     filingId: null
   },
   nameTranslations: [],
-  incorporationDateTime: {
+  effectiveDateTime: {
     valid: false,
-    isFutureEffective: false,
-    effectiveDate: null
+    isFutureEffective: null,
+    dateTimeString: ''
   },
   certifyState: {
     valid: false,
@@ -91,6 +92,7 @@ export const stateModel: StateModelIF = {
       certifiedBy: '',
       date: '',
       folioNumber: '',
+      effectiveDate: '',
       isFutureEffective: null
     },
     business: {
@@ -122,11 +124,10 @@ export const stateModel: StateModelIF = {
       name: '',
       certifiedBy: '',
       date: '',
-      folioNumber: '',
-      effectiveDate: null
+      folioNumber: ''
     },
     business: {
-      foundingDate: null,
+      foundingDate: '',
       legalName: '',
       legalType: '',
       identifier: ''

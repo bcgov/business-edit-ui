@@ -60,7 +60,8 @@ describe('Add Name Translation component', () => {
 
     // Verify Action btns and there default states
     expect(wrapper.find(okBtn).exists()).toBeTruthy()
-    expect(wrapper.find(okBtn).attributes('disabled')).toBeTruthy()
+    // done button not disabled anymore, validation done by validation function 
+    expect(wrapper.find(okBtn).attributes('disabled')).toBeUndefined()
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
@@ -70,12 +71,13 @@ describe('Add Name Translation component', () => {
 
   it('enables the Done button when the input field meets validation rules', async () => {
     const wrapper = wrapperFactory()
+    const vm: any = wrapper.vm
 
     // Verify input field
     expect(wrapper.find(addTranslationInput).exists()).toBeTruthy()
 
     // Set Input field values
-    wrapper.vm.$el.querySelector(addTranslationInput).textContent = 'Mock Name Translation'
+    vm.$el.querySelector(addTranslationInput).textContent = 'Mock Name Translation'
     wrapper.find(addTranslationInput).setValue('MockNameTranslation')
     wrapper.find(addTranslationInput).trigger('change')
     await flushPromises()
@@ -90,17 +92,21 @@ describe('Add Name Translation component', () => {
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
 
+    // Verify that is adding function returns true
+    expect(vm.isAddingTranslation).toBeTruthy() 
+
     wrapper.destroy()
   })
 
   it('enables the Done button when the input field meets validation rules in French characters', async () => {
     const wrapper = wrapperFactory()
+    const vm: any = wrapper.vm
 
     // Verify input field
     expect(wrapper.find(addTranslationInput).exists()).toBeTruthy()
 
     // Set Input field values
-    wrapper.vm.$el.querySelector(addTranslationInput).textContent = 'Nom commercial simulé'
+    vm.$el.querySelector(addTranslationInput).textContent = 'Nom commercial simulé'
     wrapper.find(addTranslationInput).setValue('Nom commercial simulé')
     wrapper.find(addTranslationInput).trigger('change')
     await flushPromises()
@@ -118,14 +124,15 @@ describe('Add Name Translation component', () => {
     wrapper.destroy()
   })
 
-  it('disables the Done button when the input field does NOT meet validation rules', async () => {
+  it('shows the validation message when the input field does NOT meet validation rules', async () => {
     const wrapper = wrapperFactory()
+    const vm: any = wrapper.vm
 
     // Verify input field
     expect(wrapper.find(addTranslationInput).exists()).toBeTruthy()
 
     // Set Input field values
-    wrapper.vm.$el.querySelector(addTranslationInput).textContent = 'Mock Fail 1212'
+    vm.$el.querySelector(addTranslationInput).textContent = 'Mock Fail 1212'
     wrapper.find(addTranslationInput).setValue('Mock Fail 1212')
     wrapper.find(addTranslationInput).trigger('change')
     await flushPromises()
@@ -135,16 +142,24 @@ describe('Add Name Translation component', () => {
 
     // Verify Action btns and there states
     expect(wrapper.find(okBtn).exists()).toBeTruthy()
-    expect(wrapper.find(okBtn).attributes('disabled')).toBeTruthy()
+    // done button not disabled anymore, validation done by validation function
+    expect(wrapper.find(okBtn).attributes('disabled')).toBeUndefined()
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
+
+    vm.$refs.nameTranslationForm.validate()
+
+    // verify the error message
+    expect(wrapper.findAll('.v-messages__message').length).toBe(1)
+    expect(wrapper.find('.v-messages__message').text()).toContain('Invalid character')
 
     wrapper.destroy()
   })
 
   it('opens the Add Name Translation with the correct Name when Editing a Name Translation', async () => {
     const wrapper = wrapperFactory({ editNameTranslation: 'Mock Name Edit' })
+    const vm: any = wrapper.vm
     await flushPromises()
 
     // Verify input field
@@ -158,11 +173,15 @@ describe('Add Name Translation component', () => {
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
 
+    // Verify that is adding functions returns false
+    expect(vm.isAddingTranslation).toBeFalsy() 
+
     wrapper.destroy()
   })
 
-  it('disables the Done btn when editing a name translation that does NOT meet validation', async () => {
+  it('shows the validaton message when editing a name translation that does NOT meet validation', async () => {
     const wrapper = wrapperFactory({ editNameTranslation: 'Mock Name Edit' })
+    const vm: any = wrapper.vm
     await flushPromises()
 
     // Verify input field
@@ -176,10 +195,17 @@ describe('Add Name Translation component', () => {
 
     // Verify Action btns and there states
     expect(wrapper.find(okBtn).exists()).toBeTruthy()
-    expect(wrapper.find(okBtn).attributes('disabled')).toBeTruthy()
+    // done button not disabled anymore, validation done by validation function 
+    expect(wrapper.find(okBtn).attributes('disabled')).toBeUndefined()
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
+
+    vm.$refs.nameTranslationForm.validate()
+
+    // verify the error message
+    expect(wrapper.findAll('.v-messages__message').length).toBe(1)
+    expect(wrapper.find('.v-messages__message').text()).toContain('Invalid character')
 
     wrapper.destroy()
   })

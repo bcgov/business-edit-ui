@@ -1,19 +1,8 @@
-import { AlterationIF } from '@/interfaces'
+import { AlterationIF, FilingBusinessIF, FilingHeaderIF } from '@/interfaces'
 
+/** Interface for data object UI sends to API. */
 export interface AlterationFilingIF {
-  header: {
-    name: string
-    certifiedBy: string
-    date: string
-    filingId?: number // Optional as this is not required when building a filing - causes an error for new filings
-    folioNumber?: string
-    effectiveDate?: Date // Optional to the user and only displayed for certain account types
-  }
-  business: {
-    foundingDate: Date,
-    legalName: string,
-    legalType: string,
-    identifier: string,
-  },
+  header: FilingHeaderIF
+  business: FilingBusinessIF
   alteration: AlterationIF
 }
