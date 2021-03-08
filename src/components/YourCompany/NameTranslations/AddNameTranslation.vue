@@ -58,7 +58,7 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { ConfirmDialog } from '@/components/dialogs'
 
 // Interfaces
-import { ConfirmDialogType } from '@/interfaces'
+import { ConfirmDialogType, FormType } from '@/interfaces'
 
 @Component({
   components: {
@@ -69,7 +69,7 @@ export default class AddNameTranslation extends Vue {
   // Refs
   $refs!: {
     confirmTranslationDialog: ConfirmDialogType,
-    nameTranslationForm: HTMLFormElement
+    nameTranslationForm: FormType
   }
 
   @Prop({ default: '' })
