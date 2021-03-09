@@ -8,19 +8,19 @@
             CHANGED
           </v-chip>
         </v-col>
-        <v-col cols="7" class="pt-0 pl-0 info-text" v-if="provisionsRemoved">
+        <v-col id="noneOfProvisionsApplyText" cols="7" class="pt-0 pl-0 info-text" v-if="provisionsRemoved">
           The company has resolved that none of the Pre-existing Company Provisions are to apply to this company.
         </v-col>
-        <v-col cols="7" class="pt-0 pl-0 info-text" v-else>
+        <v-col id="hasPreExistingProvisionsText" cols="7" class="pt-0 pl-0 info-text" v-else>
           This company has Pre-existing Company Provisions.
         </v-col>
-        <v-col mt-n2 cols="2" class="pt-0 align-right" v-if="!hasProvisionsRemovedPropsChanged">
-          <v-btn id="correct-company-provisions" text color="primary" @click="isEditing = true">
+        <v-col cols="2" class="pt-0 mt-n2 align-right" v-if="!hasProvisionsRemovedPropsChanged">
+          <v-btn id="change-company-provisions" text color="primary" @click="isEditing = true">
             <v-icon small>mdi-pencil</v-icon>
             <span>{{ editLabel }}</span>
           </v-btn>
         </v-col>
-        <v-col pt-0 mt-n2 cols="2" class="align-right" v-else>
+        <v-col cols="2" class="pt-0 mt-n2 align-right" v-else>
           <v-btn
             id="undo-company-provisions"
             text
@@ -53,14 +53,14 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-container pa-0 ma-0 v-else>
+    <v-container class="pa-0 ma-0" v-else>
       <v-row no-gutters>
         <v-col class="pr-0 pl-0 pt-0" cols="3">
           <label class="font-weight-bold">Pre-existing Company Provisions</label>
         </v-col>
         <v-col class="pt-0 pl-0" cols="8">
-          <v-row no-gutters class="pl-1 pa-0 ma-0">
-            <p class="info-text mb-0">
+          <v-row no-gutters class="pa-0 ma-0">
+            <p id="company-provisions-user-instructions" class="info-text mb-0">
               Complete this item only if the company has resolved that none of the Pre-existing Company Provisions
               are to apply to this company (refer to Part 17 and Table 3 of the Regulation under the Business
               Corporations Act).
@@ -72,7 +72,10 @@
                   ref="checkboxRef"
                   v-model="draftProvisionsRemoved"
                 />
-                <span class="info-text checkbox-label" :class="{ 'invalid': isInvalid }">
+                <span id="company-provisions-checkbox-text"
+                  class="info-text checkbox-label"
+                  :class="{ 'invalid': isInvalid }"
+                  >
                   The company has resolved that none of the Pre-existing Company Provisions are to apply to this
                   company.
                 </span>
@@ -81,8 +84,8 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-container pt-10>
-          <v-row xs12>
+        <v-container class="pt-10">
+          <v-row>
             <v-spacer></v-spacer>
             <div class="action-btns">
               <v-btn
