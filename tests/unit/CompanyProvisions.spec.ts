@@ -23,11 +23,10 @@ const defineCompanyProvisionsTitle = '.define-company-provisions-title'
 const changedButton = 'span.v-chip > span.v-chip__content'
 const undoCompanyProvisions = '#undo-company-provisions'
 const userInstructionsText = '#company-provisions-user-instructions'
-const companyProvisionsCheckboxText = '#company-provisions-checkbox-text'
 const companyProvisionsCheckbox = '#cp-checkbox'
 const companyProvisionDoneButton = '#company-provisions-done'
 const companyProvisionCancelButton = '#company-provisions-cancel'
-
+const companyProvisionsComponent = '#checkbox-div .v-input--selection-controls.v-input--checkbox'
 // CSS Classes
 const infoTextClassName = 'info-text'
 const invalidClassName = 'invalid'
@@ -89,7 +88,6 @@ describe('company provisions', () => {
 
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(false)
     expect(wrapper.find(userInstructionsText).exists()).toBe(true)
-    expect(wrapper.find(companyProvisionsCheckboxText).exists()).toBe(true)
     expect(wrapper.find(companyProvisionsCheckbox).exists()).toBe(true)
     expect(wrapper.find(companyProvisionDoneButton).exists()).toBe(true)
     expect(wrapper.find(companyProvisionCancelButton).exists()).toBe(true)
@@ -112,22 +110,19 @@ describe('company provisions', () => {
     await Vue.nextTick()
 
     // Initial state (valid)
-    expect(wrapper.find(companyProvisionsCheckboxText).element.classList.value.includes(infoTextClassName)).toBeTruthy()
-    expect(wrapper.find(companyProvisionsCheckboxText).element.classList.value.includes(invalidClassName)).toBeFalsy()
+    expect(wrapper.find(companyProvisionsComponent).element.classList.value.includes(invalidClassName)).toBeFalsy()
 
     wrapper.find(companyProvisionDoneButton).trigger('click')
     await Vue.nextTick()
 
     // Invalid state
-    expect(wrapper.find(companyProvisionsCheckboxText).element.classList.value.includes(infoTextClassName)).toBeTruthy()
-    expect(wrapper.find(companyProvisionsCheckboxText).element.classList.value.includes(invalidClassName)).toBeTruthy()
+    expect(wrapper.find(companyProvisionsComponent).element.classList.value.includes(invalidClassName)).toBeTruthy()
 
     wrapper.find(companyProvisionsCheckbox).trigger('click')
     await Vue.nextTick()
 
     // Valid state
-    expect(wrapper.find(companyProvisionsCheckboxText).element.classList.value.includes(infoTextClassName)).toBeTruthy()
-    expect(wrapper.find(companyProvisionsCheckboxText).element.classList.value.includes(invalidClassName)).toBeFalsy()
+    expect(wrapper.find(companyProvisionsComponent).element.classList.value.includes(invalidClassName)).toBeFalsy()
 
     wrapper.destroy()
   })
