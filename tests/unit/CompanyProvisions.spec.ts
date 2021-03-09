@@ -17,7 +17,7 @@ const store = getVuexStore()
 const alterationRouterName = 'alteration'
 
 // Selectors
-const hasPreExistingProvisionsText = '#hasPreExistingProvisionsText'
+const hasPreExistingProvisionsText = '#has-pre-existing-provisions-text'
 const changeCompanyProvisionsButton = '#change-company-provisions'
 const defineCompanyProvisionsTitle = '.define-company-provisions-title'
 const changedButton = 'span.v-chip > span.v-chip__content'
@@ -32,7 +32,6 @@ const companyProvisionCancelButton = '#company-provisions-cancel'
 const infoTextClassName = 'info-text'
 const invalidClassName = 'invalid'
 describe('company provisions', () => {
-
   it('renders the component properly', () => {
     const router = mockRouter.mock()
     router.push({ name: alterationRouterName })
@@ -174,7 +173,7 @@ describe('company provisions', () => {
     wrapper.vm.$data.originalProvisionsRemovedValue = false
     await Vue.nextTick()
 
-    expect(wrapper.find('#noneOfProvisionsApplyText').text()).toBe('The company has resolved that none of the ' +
+    expect(wrapper.find('#none-of-provisions-apply-text').text()).toBe('The company has resolved that none of the ' +
       'Pre-existing Company Provisions are to apply to this company.')
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(false)
     expect(wrapper.find(undoCompanyProvisions).exists()).toBe(true)

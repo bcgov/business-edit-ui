@@ -8,10 +8,10 @@
             CHANGED
           </v-chip>
         </v-col>
-        <v-col id="noneOfProvisionsApplyText" cols="7" class="pt-0 pl-0 info-text" v-if="provisionsRemoved">
+        <v-col id="none-of-provisions-apply-text" cols="7" class="pt-0 pl-0 info-text" v-if="provisionsRemoved">
           The company has resolved that none of the Pre-existing Company Provisions are to apply to this company.
         </v-col>
-        <v-col id="hasPreExistingProvisionsText" cols="7" class="pt-0 pl-0 info-text" v-else>
+        <v-col id="has-pre-existing-provisions-text" cols="7" class="pt-0 pl-0 info-text" v-else>
           This company has Pre-existing Company Provisions.
         </v-col>
         <v-col cols="2" class="pt-0 mt-n2 align-right" v-if="!hasProvisionsRemovedPropsChanged">
