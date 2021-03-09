@@ -47,7 +47,7 @@
       />
 
       <no-fee-summary class="mt-10" />
-      <document-delivery-section class="mt-10" />
+      <documents-delivery class="mt-10" />
 
       <certify-section class="mt-10" />
 
@@ -59,11 +59,11 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-import { AlterationSummary, NoFeeSummary } from '@/components/Summary'
+import { AlterationSummary, NoFeeSummary, DocumentsDelivery } from '@/components/Summary'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { PeopleAndRoles } from '@/components/PeopleAndRoles'
-import { CertifySection, CompletingParty, Detail, StaffPayment, DocumentsDelivery } from '@/components/common'
+import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
 import { ShareStructure } from '@/components/ShareStructure'
 import { Articles } from '@/components/Articles'
 
