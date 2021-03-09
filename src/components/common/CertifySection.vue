@@ -3,7 +3,7 @@
     <header>
       <h2>2. Certify</h2>
     </header>
-    <span>Enter the legal name of the person authorized to complete and submit these changes.</span>
+    <div class="pt-4">Enter the legal name of the person authorized to complete and submit these changes.</div>
     <certify
       :currentDate="getCurrentDate"
       :certified-by="getCertifyState.certifiedBy"
