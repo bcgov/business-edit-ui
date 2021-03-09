@@ -19,11 +19,11 @@
 </template>
 <script lang="ts">
 // Libraries
-import { Component, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Components
-import { ShareStructure } from './index' // REPLACE WITH SHARED COMP IMPORT
+import { ShareStructure } from '@bcrs-shared-components/share-structure'
 import { ConfirmDialog } from '@/components/dialogs'
 import { CommonMixin } from '@/mixins'
 

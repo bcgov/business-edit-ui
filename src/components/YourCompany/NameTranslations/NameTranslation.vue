@@ -27,7 +27,7 @@
           @click="isEditing = true"
         >
           <v-icon small>mdi-pencil</v-icon>
-          <span>{{editLabel}}</span>
+          <span>{{editLabel(isCorrectionView())}}</span>
         </v-btn>
       </v-flex>
       <v-flex xs2 class="align-right" v-else>
@@ -59,7 +59,7 @@
               >
                 <v-list-item-subtitle>
                   <v-icon small>mdi-pencil</v-icon>
-                  <span class="ml-1">{{editLabel}}</span>
+                  <span class="ml-1">{{editLabel(isCorrectionView())}}</span>
                 </v-list-item-subtitle>
               </v-list-item>
             </v-list>
