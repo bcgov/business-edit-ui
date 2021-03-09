@@ -33,7 +33,6 @@
           <div class="actions">
             <span class="edit-action">
               <v-btn
-                small
                 text
                 color="primary"
                 :disabled="isAddingNameTranslation"
@@ -44,7 +43,7 @@
             </span>
             <!-- more actions menu -->
             <span class="actions__more" v-if="translation.action !== ActionTypes.REMOVED">
-              <v-menu offset-y>
+              <v-menu offset-y left nudge-bottom="4">
                 <template v-slot:activator="{ on }">
                   <v-btn
                     text
@@ -88,7 +87,7 @@
               </v-btn>
             </span>
             <!-- more actions menu -->
-            <span class="actions__more">
+            <span class="actions__more mr-4">
               <v-menu offset-y left nudge-bottom="4">
                 <template v-slot:activator="{ on }">
                   <v-btn
@@ -186,6 +185,7 @@ export default class ListNameTranslation extends Mixins(CommonMixin) {
 
       .actions {
         position: absolute;
+        margin-top: -0.5rem;
         right: 0;
 
         .actions__more {
@@ -209,7 +209,7 @@ export default class ListNameTranslation extends Mixins(CommonMixin) {
 
   .v-list-item {
     min-height: 0;
-    padding: 0 1rem 0 0.5rem;
+    padding: 0.5rem 1rem;
   }
   .v-list-item__subtitle {
   color: $app-blue !important;
