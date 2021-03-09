@@ -367,3 +367,8 @@ export const hasContactInfoChange = (state: StateIF): boolean => {
     businessContact.phone !== getSnapshotContact(state).phone ||
     businessContact.extension !== getSnapshotContact(state).extension
 }
+
+/** Get Provisions Removed state. */
+export const getProvisionsRemoved = (state: StateIF): boolean => {
+  return !!state.stateModel.originalAlteration.alteration.provisionsRemoved
+}
