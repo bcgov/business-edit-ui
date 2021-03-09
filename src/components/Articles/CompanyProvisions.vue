@@ -1,26 +1,26 @@
 <template>
   <div id="company-provisions">
-    <v-container pa-0 ma-0 v-if="!isEditing">
-      <v-row>
-        <v-col cols="3">
+    <v-container class="pa-0 ma-0" v-if="!isEditing">
+      <v-row no-gutters>
+        <v-col class="pr-0 pl-0 pt-0" cols="3">
           <label class="define-company-provisions-title">Pre-existing Company Provisions</label>
-          <v-chip v-if="hasProvisionsRemovedPropsChanged" x-small label color="#1669BB" text-color="white">
+          <v-chip v-if="hasProvisionsRemovedPropsChanged" x-small label color="primary" text-color="white">
             CHANGED
           </v-chip>
         </v-col>
-        <v-col cols="7" class="info-text" v-if="provisionsRemoved">
+        <v-col cols="7" class="pt-0 pl-0 info-text" v-if="provisionsRemoved">
           The company has resolved that none of the Pre-existing Company Provisions are to apply to this company.
         </v-col>
-        <v-col cols="7" class="info-text" v-else>
+        <v-col cols="7" class="pt-0 pl-0 info-text" v-else>
           This company has Pre-existing Company Provisions.
         </v-col>
-        <v-col mt-n2 cols="2" class="align-right" v-if="!hasProvisionsRemovedPropsChanged">
+        <v-col mt-n2 cols="2" class="pt-0 align-right" v-if="!hasProvisionsRemovedPropsChanged">
           <v-btn id="correct-company-provisions" text color="primary" @click="isEditing = true">
             <v-icon small>mdi-pencil</v-icon>
             <span>{{ editLabel }}</span>
           </v-btn>
         </v-col>
-        <v-col mt-n2 cols="2" class="align-right" v-else>
+        <v-col pt-0 mt-n2 cols="2" class="align-right" v-else>
           <v-btn
             id="undo-company-provisions"
             text
@@ -53,14 +53,14 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-container v-else>
-      <v-row>
-        <v-col cols="3">
-          <label class="define-company-provisions-title">Pre-existing Company Provisions</label>
+    <v-container pa-0 ma-0 v-else>
+      <v-row no-gutters>
+        <v-col class="pr-0 pl-0 pt-0" cols="3">
+          <label class="font-weight-bold">Pre-existing Company Provisions</label>
         </v-col>
-        <v-col cols="8">
-          <v-row>
-            <p class="info-text instructions-paragraph">
+        <v-col class="pt-0 pl-0" cols="8">
+          <v-row no-gutters class="pl-1 pa-0 ma-0">
+            <p class="info-text mb-0">
               Complete this item only if the company has resolved that none of the Pre-existing Company Provisions
               are to apply to this company (refer to Part 17 and Table 3 of the Regulation under the Business
               Corporations Act).
@@ -121,10 +121,9 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   private haveChanges = false
   private originalProvisionsRemovedValue = false
   private isInvalid = false
-  private checkboxColor = this.$vuetify.theme.currentTheme.error
 
   // Props
-  @Prop({ default: () => { return false } })
+  @Prop({ default: false })
   private provisionsRemoved!: boolean
 
   // Emitters
@@ -207,16 +206,13 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
 
   .v-btn[disabled] {
     color: white !important;
-    background-color: #1669bb !important;
+    background-color: $app-blue !important;
     opacity: 0.2;
   }
 }
 
 .undo-company-provisions {
   border-right: 1px solid $gray1;
-}
-.instructions-paragraph {
-  margin-bottom: 0;
 }
 
 ::v-deep .v-input--checkbox .theme--light.v-icon {
@@ -247,9 +243,4 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   color: $app-red;
 }
 
-.define-company-provisions-title {
-  font-weight: bold;
-  font-size: 1rem;
-  overflow-wrap: break-word;
-}
 </style>
