@@ -65,20 +65,14 @@
               are to apply to this company (refer to Part 17 and Table 3 of the Regulation under the Business
               Corporations Act).
             </p>
-            <div class="d-flex align-start">
-                <v-checkbox ma-0 pa-0
+            <div id="checkbox-div" class="d-flex align-start">
+                <v-checkbox
                   id="cp-checkbox"
                   :class="{ 'invalid': isInvalid }"
-                  ref="checkboxRef"
+                  label="The company has resolved that none of the Pre-existing Company Provisions are to apply to this
+                    company."
                   v-model="draftProvisionsRemoved"
                 />
-                <span id="company-provisions-checkbox-text"
-                  class="info-text checkbox-label"
-                  :class="{ 'invalid': isInvalid }"
-                  >
-                  The company has resolved that none of the Pre-existing Company Provisions are to apply to this
-                  company.
-                </span>
             </div>
           </v-row>
         </v-col>
@@ -229,15 +223,22 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   margin-left: 0;
 }
 
-::v-deep .v-input--selection-controls {
-  margin-top: 1.875rem;
-  padding: 0;
-}
-
-.checkbox-label {
+::v-deep .v-input--checkbox .theme--light.v-label {
   line-height: 1.375rem;
   font-size: 0.875rem;
   font-weight: normal;
+}
+
+::v-deep .invalid.v-input--checkbox .theme--light.v-label {
+  color: $app-red;
+}
+
+::v-deep #checkbox-div .v-input__slot {
+  align-items: start;
+  justify-content: start;
+}
+
+::v-deep .v-input--selection-controls {
   margin-top: 1.875rem;
   padding: 0;
 }
