@@ -32,13 +32,16 @@
 
     <certify-section class="mt-10" />
 
-    <staff-payment class="mt-10" />
+    <staff-payment
+      class="mt-10"
+      @haveChanges="onStaffPaymentChanges()"
+    />
   </section>
 </template>
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
-import { Action, Getter, State } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 import { YourCompany } from '@/components/YourCompany'
 import { PeopleAndRoles } from '@/components/PeopleAndRoles'
@@ -46,10 +49,12 @@ import { AgreementType } from '@/components/IncorporationAgreement'
 import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
 import { ShareStructure } from '@/components/ShareStructure'
 
-// Mixins, Interfaces and Enums
+// Mixins, Interfaces, Enums, etc
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { ActionBindingIF, FilingDataIF, OrgPersonIF, ShareClassIF } from '@/interfaces'
+import { ActionBindingIF, FilingDataIF } from '@/interfaces'
+import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BenefitCompanyStatementResource, CertifyStatementResource } from '@/resources'
 
@@ -66,7 +71,7 @@ import { BenefitCompanyStatementResource, CertifyStatementResource } from '@/res
   }
 })
 export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
-  // Declaration for template
+  // Declarations for template
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
   readonly CertifyStatementResource = CertifyStatementResource
 
@@ -76,6 +81,8 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   @Getter isRoleStaff!: boolean
   @Getter isTypeBcomp!: boolean
   @Getter getEntityType!: EntityTypes
+  @Getter getStaffPayment!: StaffPaymentIF
+  @Getter getFilingData!: FilingDataIF
 
   // Global setters
   @Action setCorrectedFilingId!: ActionBindingIF
@@ -88,7 +95,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
 
   /** Whether App is ready. */
   @Prop({ default: false })
-  private appReady: boolean
+  readonly appReady: boolean
 
   /** The id of the correction being edited. */
   private get correctionId (): number {
@@ -96,7 +103,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   }
 
   /** The original filing datetime, in Pacific time. */
-  private get originalFilingDate (): string {
+  get originalFilingDate (): string {
     return this.apiToDateAndTimeString(this.getOriginalFilingDateTime)?.slice(0, 10)
   }
 
@@ -107,7 +114,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
 
   /** Called when App is ready and this component can load its data. */
   @Watch('appReady')
-  private async onAppReady (val: boolean): Promise<void> {
+  async onAppReady (val: boolean): Promise<void> {
     // do not proceed if app is not ready
     if (!val) return
 
@@ -191,6 +198,15 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
     Vue.nextTick(() => this.setHaveChanges(false))
   }
 
+  onStaffPaymentChanges (): void {
+    // update filing data with staff payment fields
+    this.setFilingData({
+      ...this.getFilingData,
+      priority: this.getStaffPayment.isPriority,
+      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
+    })
+  }
+
   /** Redirects browser to Entity Dashboard. */
   private redirectEntityDashboard (): void {
     const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
@@ -199,11 +215,11 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
-  private emitFetchError (message: string = ''): void { }
+  private emitFetchError (message: string = ''): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: Boolean = true): void { }
+  private emitHaveData (haveData: Boolean = true): void {}
 }
 </script>
 

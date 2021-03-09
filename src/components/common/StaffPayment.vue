@@ -6,8 +6,8 @@
 
     <staff-payment-component
       :staffPaymentData="getStaffPayment"
-      @update:staffPaymentData="onStaffPaymentData"
-      @valid="staffPaymentFormValid = $event"
+      @update:staffPaymentData="onStaffPaymentDataUpdate()"
+      @valid="setStaffPaymentValidity($event)"
     />
   </section>
 </template>
@@ -19,10 +19,8 @@ import { Action, Getter } from 'vuex-class'
 // Components
 import { StaffPayment as StaffPaymentComponent } from '@bcrs-shared-components/staff-payment'
 
-// Mixins, Interfaces and Enums
-import { FilingTemplateMixin } from '@/mixins'
-import { ActionBindingIF, FilingDataIF } from '@/interfaces'
-
+// Interfaces and Enums
+import { ActionBindingIF } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
@@ -34,17 +32,14 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 export default class StaffPayment extends Vue {
   // Global getters
   @Getter getStaffPayment!: StaffPaymentIF
-  @Getter getFilingData!: FilingDataIF
 
   // Global setters
   @Action setStaffPayment!: ActionBindingIF
-  @Action setFilingData!: ActionBindingIF
   @Action setStaffPaymentValidity!: ActionBindingIF
 
-  private staffPaymentFormValid: boolean = false
-
-  private onStaffPaymentData (event: any) {
+  onStaffPaymentDataUpdate (event: any) {
     let staffPaymentData: StaffPaymentIF = { ...this.getStaffPayment, ...event }
+
     switch (staffPaymentData.option) {
       case StaffPaymentOptions.FAS:
         staffPaymentData = {
@@ -83,27 +78,12 @@ export default class StaffPayment extends Vue {
         break
     }
 
-    // Set Fee Summary data
-    this.setFilingData({
-      filingTypeCode: this.getFilingData.filingTypeCode,
-      entityType: this.getFilingData.entityType,
-      priority: staffPaymentData.isPriority,
-      waiveFees: staffPaymentData.option === StaffPaymentOptions.NO_FEE
-    } as FilingDataIF)
-
     this.setStaffPayment(staffPaymentData)
     this.emitHaveChanges()
   }
 
   @Emit('haveChanges')
-  private emitHaveChanges (): boolean {
-    return true
-  }
-
-  @Watch('staffPaymentFormValid')
-  private onFormValidityChange (): void{
-    this.setStaffPaymentValidity(this.staffPaymentFormValid)
-  }
+  private emitHaveChanges (): void {}
 }
 </script>
 

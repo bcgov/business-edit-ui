@@ -111,7 +111,7 @@
               :currentJsDate="getCurrentJsDate"
               :effectiveDateTime="getEffectiveDateTime"
               @dateTimeString="setEffectiveDateTimeString($event)"
-              @isFutureEffective="setIsFutureEffective($event)"
+              @isFutureEffective="setIsFutureEffective($event); emitHaveChanges()"
               @valid="setEffectiveDateValid($event)"
             />
 
@@ -127,7 +127,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ConfirmDialog } from '@/components/dialogs'
 import { ActionBindingIF, ConfirmDialogType, EffectiveDateTimeIF, NameRequestIF } from '@/interfaces'
@@ -168,36 +168,36 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
   /** Prop to perform validation. */
   @Prop() readonly pleaseValidate: boolean
 
-  private get isFutureEffective (): boolean {
+  get isFutureEffective (): boolean {
     return this.getEffectiveDateTime.isFutureEffective
   }
 
-  private get isEffectiveDateTimeValid (): boolean {
+  get isEffectiveDateTimeValid (): boolean {
     return this.getEffectiveDateTime.valid
   }
 
-  private get effectiveDateTimeString (): string {
+  get effectiveDateTimeString (): string {
     const date = new Date(this.getEffectiveDateTime.dateTimeString)
     return this.fullFormatDate(date)
   }
 
   /** The company name (from NR, or incorporation number). */
-  private get companyName (): string {
+  get companyName (): string {
     if (this.getApprovedName) return this.getApprovedName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 
-  private get originalEntityType (): string {
+  get originalEntityType (): string {
     return this.getOriginalSnapshot[0]?.business?.legalType
   }
 
   /** True if invalid class should be set for Alteration Date-Time container. */
-  private get alterationDateTimeInvalid (): boolean {
+  get alterationDateTimeInvalid (): boolean {
     return (this.pleaseValidate && !this.getEffectiveDateTime.valid)
   }
 
-  private restoreOriginalSnapshot (): void {
+  restoreOriginalSnapshot (): void {
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
       'Remove Alteration',
@@ -218,6 +218,9 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
       // nothing to do
     })
   }
+
+  @Emit('haveChanges')
+  emitHaveChanges (): void {}
 }
 </script>
 
