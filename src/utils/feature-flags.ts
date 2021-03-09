@@ -8,7 +8,7 @@ declare const window: any
  * Uses "business-edit" project (per LD client id in config).
  */
 const defaultFlagSet: LDFlagSet = {
-  'alteration-ui-enabled': true,
+  'alteration-ui-enabled': false,
   'correction-ui-enabled': false
 }
 
