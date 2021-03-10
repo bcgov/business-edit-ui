@@ -67,7 +67,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
 
   private validateEmailFormat (value: string): boolean {
     // allow empty as the email is optional
-    if (value == ""){
+    if (value === '') {
       return true
     } else {
       const VALID_FORMAT = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)

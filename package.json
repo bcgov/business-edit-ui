@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@babel/compat-data": "^7.11.0",
-    "@bcrs-shared-components/certify": "1.0.3",
+    "@bcrs-shared-components/certify": "1.0.7",
     "@bcrs-shared-components/contact-info": "1.0.5",
     "@bcrs-shared-components/detail-comment": "1.0.4",
     "@bcrs-shared-components/enums": "1.0.8",
