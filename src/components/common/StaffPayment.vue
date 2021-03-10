@@ -6,7 +6,7 @@
 
     <staff-payment-component
       :staffPaymentData="getStaffPayment"
-      @update:staffPaymentData="onStaffPaymentDataUpdate()"
+      @update:staffPaymentData="onStaffPaymentDataUpdate($event)"
       @valid="setStaffPaymentValidity($event)"
     />
   </section>
