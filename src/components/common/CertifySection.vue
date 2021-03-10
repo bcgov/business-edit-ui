@@ -10,6 +10,7 @@
       :is-certified="getCertifyState.valid"
       :entity-display="readableEntityType"
       :message="certifyMessage"
+      :is-staff="isRoleStaff"
       @update:certifiedBy="onCertifiedBy($event)"
       @update:isCertified="onValid($event)"
     />
@@ -40,6 +41,7 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   @Getter getCurrentDate!: string
   @Getter getEntityType!: EntityTypes
   @Getter getCertifyResource!: CertifyStatementIF
+  @Getter isRoleStaff!: boolean
 
   @Action setCertifyState!: ActionBindingIF
 

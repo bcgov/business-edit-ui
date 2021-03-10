@@ -13,12 +13,30 @@
           {{getBusinessContact.email || '(Not entered)'}}
         </v-flex>
       </v-layout>
-      <v-layout row>
+      <v-layout row v-if="isRoleStaff">
         <v-flex xs3 md2>
           <label><strong>User Account</strong></label>
         </v-flex>
         <v-flex xs9 md10 pl-4>
           {{ getUserEmail }}
+        </v-flex>
+      </v-layout>
+      <v-layout row v-else>
+        <v-flex xs3 md2>
+          <label><strong>Optional Email</strong></label>
+        </v-flex>
+        <v-flex xs9 md10 pl-4>
+          <v-text-field
+          v-model="optionalEmail"
+          class="text-input-field"
+          filled
+          label="Optional Email"
+          hint="Example: name@email.com"
+          persistent-hint
+          :rules="entityEmailRules"
+          data-test="entity-email"
+        >
+        </v-text-field>
         </v-flex>
       </v-layout>
     </div>
@@ -37,5 +55,24 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   // Global getters
   @Getter getUserEmail!: string
   @Getter getBusinessContact!: ContactPointIF
+  @Getter isRoleStaff!: boolean
+
+  private optionalEmail: string = ''
+
+  private entityEmailRules = [
+    (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+    (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+    (v: string) => this.validateEmailFormat(v) || 'Email is Invalid'
+  ]
+
+  private validateEmailFormat (value: string): boolean {
+    // allow empty as the email is optional
+    if (value == ""){
+      return true
+    } else {
+      const VALID_FORMAT = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+      return VALID_FORMAT.test(value)
+    }
+  }
 }
 </script>
