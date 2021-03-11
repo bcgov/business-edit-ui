@@ -94,9 +94,9 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
   private get currentDirectors () : OrgPersonIF[] {
     const directors = this.getPeopleAndRoles
       .filter(people => people.roles.some(role =>
-        role.roleType.toLowerCase() === RoleTypes.DIRECTOR.toLowerCase() && !role.cessationDate))
+        role.roleType === RoleTypes.DIRECTOR && !role.cessationDate))
     for (const director of directors) {
-      director.roles = director.roles.filter(role => role.roleType.toLowerCase() === RoleTypes.DIRECTOR.toLowerCase())
+      director.roles = director.roles.filter(role => role.roleType === RoleTypes.DIRECTOR)
     }
     return directors
   }
