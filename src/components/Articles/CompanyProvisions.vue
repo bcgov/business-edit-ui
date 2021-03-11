@@ -128,6 +128,7 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   private haveChanges = false
   private originalProvisionsRemovedValue = false
   private isInvalid = false
+  private dropdown = false
 
   // Props
   @Prop({ default: false })
@@ -191,6 +192,7 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
     this.emitCompanyProvisionsChanged(this.draftProvisionsRemoved)
     this.emitHaveChanges(false)
     this.isEditing = false
+    this.dropdown = false
   }
 }
 </script>

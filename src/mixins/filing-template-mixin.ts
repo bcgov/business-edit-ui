@@ -65,7 +65,6 @@ export default class FilingTemplateMixin extends Vue {
   @Action setDetailComment!: ActionBindingIF
   @Action setOriginalSnapshot!: ActionBindingIF
   @Action setProvisionsRemoved!: ActionBindingIF
-  @Action setHasProvisions!: ActionBindingIF
 
   /**
    * Builds an Incorporation Application Correction filing body from store data. Used when saving a filing.
