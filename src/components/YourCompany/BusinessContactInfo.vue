@@ -3,8 +3,8 @@
     :businessContact="getBusinessContact"
     :originalBusinessContact="originalContact"
     :hasBusinessContactInfoChange="hasBusinessContactInfoChange"
-    :edit-label="editLabel(isCorrectionView())"
-    :edited-label="editedLabel(isCorrectionView())"
+    :edit-label="editLabel"
+    :edited-label="editedLabel"
     :disable-actions="isCorrectionView()"
     @contactInfoChange="setContact($event)"
   />

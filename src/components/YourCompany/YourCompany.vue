@@ -22,7 +22,7 @@
                       color="primary"
                       text-color="white"
               >
-                 {{editedLabel(isCorrectionView())}}
+                 {{editedLabel}}
               </v-chip>
             </v-flex>
           </v-layout>
@@ -102,7 +102,7 @@
                 @click="isEditingNames = true"
               >
                 <v-icon small>mdi-pencil</v-icon>
-                <span>{{editLabel(isCorrectionView())}}</span>
+                <span>{{editLabel}}</span>
               </v-btn>
               <span class="more-actions" v-if="companyNameChanges || (isAlterationView() && hasBusinessNameChanged)">
                 <v-menu

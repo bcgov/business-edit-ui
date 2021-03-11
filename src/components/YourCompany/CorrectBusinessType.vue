@@ -6,7 +6,7 @@
         <label><strong>Business Type</strong></label>
         <v-flex md1>
           <v-chip v-if="hasBusinessTypeChanged" x-small label color="primary" text-color="white">
-            {{editedLabel(isCorrectionView())}}
+            {{editedLabel}}
           </v-chip>
         </v-flex>
       </v-flex>
@@ -167,7 +167,7 @@
             @click="isEditingType = true"
           >
             <v-icon small>mdi-pencil</v-icon>
-            <span>{{editLabel(isCorrectionView())}}</span>
+            <span>{{editLabel}}</span>
           </v-btn>
           <span class="more-actions" v-if="hasBusinessTypeChanged">
             <v-menu

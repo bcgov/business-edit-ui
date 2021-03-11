@@ -4,8 +4,19 @@ import { Action, Getter } from 'vuex-class'
 
 // Interfaces
 import {
-  ActionBindingIF, AlterationFilingIF, BusinessSnapshotIF, CertifyIF, CorrectionFilingIF, EffectiveDateTimeIF,
-  IncorporationAddressIf, IncorporationFilingIF, OrgPersonIF, ShareClassIF, NameTranslationIF, NameRequestIF
+  ActionBindingIF,
+  AlterationFilingIF,
+  BusinessSnapshotIF,
+  CertifyIF,
+  CorrectionFilingIF,
+  EffectiveDateTimeIF,
+  IncorporationAddressIf,
+  IncorporationFilingIF,
+  OrgPersonIF,
+  ShareClassIF,
+  NameTranslationIF,
+  NameRequestIF,
+  ShareStructureIF
 } from '@/interfaces'
 
 // Shared Interfaces
@@ -42,6 +53,8 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getBusinessContact!: ContactPointIF
   @Getter getAgreementType!: string
   @Getter getOriginalSnapshot: BusinessSnapshotIF[]
+  @Getter getNewResolutionDates!: string[]
+  @Getter getSnapshotShareStructure!: ShareStructureIF
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasNewNr!: boolean
   @Getter getNewAlteration!: any // FUTURE AlterationFilingIF
@@ -65,6 +78,8 @@ export default class FilingTemplateMixin extends Vue {
   @Action setDetailComment!: ActionBindingIF
   @Action setOriginalSnapshot!: ActionBindingIF
   @Action setProvisionsRemoved!: ActionBindingIF
+  @Action setPreviousResolutionDates!: ActionBindingIF
+  @Action setResolutionDates!: ActionBindingIF
 
   /**
    * Builds an Incorporation Application Correction filing body from store data. Used when saving a filing.
@@ -205,7 +220,7 @@ export default class FilingTemplateMixin extends Vue {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber
+        folioNumber: this.getFolioNumber || ''
       },
       business: {
         foundingDate: this.getOriginalSnapshot[0].business.foundingDateTime,
@@ -222,7 +237,7 @@ export default class FilingTemplateMixin extends Vue {
         nameRequest: { ...this.getNameRequest },
         nameTranslations: nameTranslations,
         shareStructure: {
-          resolutionDates: [],
+          resolutionDates: this.getNewResolutionDates,
           shareClasses
         },
         contactPoint: {
@@ -451,7 +466,9 @@ export default class FilingTemplateMixin extends Vue {
     }))
 
     // Set Share Structure
+    this.setPreviousResolutionDates(this.getSnapshotShareStructure.resolutionDates)
     if (filing.alteration.shareStructure) {
+      this.setResolutionDates(filing.alteration.shareStructure.resolutionDates)
       this.setShareClasses(filing.alteration.shareStructure.shareClasses)
     } else {
       // if it exists, load data from old schema
@@ -543,16 +560,17 @@ export default class FilingTemplateMixin extends Vue {
     }))
 
     // Infer type on Business snapshot shareClasses
-    const businessShareClasses: unknown = businessSnapshot[4].shareClasses
-    const shareClasses: ShareClassIF[] = businessShareClasses as ShareClassIF[]
+    const businessStructure: any = businessSnapshot[4]
+    const businessShareClasses: ShareStructureIF = businessStructure as ShareStructureIF
+    const shareClasses: ShareClassIF[] = businessShareClasses.shareClasses as ShareClassIF[]
 
     // Apply a type to share classes and series
     shareClasses.forEach(shareClass => {
       shareClass.type = 'Class'
       shareClass.series.forEach(shareSeries => { shareSeries.type = 'Series' })
     })
-
     // // Set Share Structure
+    this.setPreviousResolutionDates(businessStructure.resolutionDates)
     this.setShareClasses(shareClasses)
 
     // Set Contact Information
