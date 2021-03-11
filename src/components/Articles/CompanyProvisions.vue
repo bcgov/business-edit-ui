@@ -34,17 +34,27 @@
 
           <!-- More Actions Menu -->
           <span class="more-actions">
-            <v-menu offset-y>
+            <v-menu
+              offset-y left nudge-bottom="4"
+              v-model="dropdown"
+            >
               <template v-slot:activator="{ on }">
-                <v-btn text small color="primary" class="more-actions-btn" v-on="on">
-                  <v-icon>mdi-menu-down</v-icon>
+                <v-btn
+                  text small color="primary"
+                  class="more-actions-btn"
+                  v-on="on"
+                >
+                  <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
                 </v-btn>
               </template>
               <v-list>
-                <v-list-item class="actions-dropdown_item" @click="isEditing = true">
+                <v-list-item
+                  class="v-list-item"
+                  @click="isEditing = true; dropdown = false"
+                >
                   <v-list-item-subtitle>
-                    <v-icon small>mdi-pencil</v-icon>
-                    <span class="ml-1">{{ editLabel }}</span>
+                    <v-icon small color="primary">mdi-pencil</v-icon>
+                    <span class="drop-down-action ml-1">{{ editLabel }}</span>
                   </v-list-item-subtitle>
                 </v-list-item>
               </v-list>

@@ -370,5 +370,5 @@ export const hasContactInfoChange = (state: StateIF): boolean => {
 
 /** Get Provisions Removed state. */
 export const getProvisionsRemoved = (state: StateIF): boolean => {
-  return !!state.stateModel.originalAlteration.alteration.provisionsRemoved
+  return !!state.stateModel.newAlteration.provisionsRemoved
 }

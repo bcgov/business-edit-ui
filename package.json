@@ -1,10 +1,6 @@
 {
   "name": "business-edit-ui",
-<<<<<<< HEAD
-  "version": "0.5.13",
-=======
-  "version": "0.5.14",
->>>>>>> master
+  "version": "0.5.15",
   "private": true,
   "appName": "Edit UI",
   "sbcName": "SBC Common Components",

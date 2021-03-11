@@ -20,6 +20,7 @@ export interface StateModelIF {
   effectiveDateTime: EffectiveDateTimeIF
   originalIA: IncorporationFilingIF
   originalAlteration: AlterationFilingIF
+  newAlteration: any // any for now. FUTURE: AlterationFilingIF
   originalSnapshot: BusinessSnapshotIF[]
   staffPaymentStep: StaffPaymentStepIF
   filingData: FilingDataIF
