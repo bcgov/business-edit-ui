@@ -17,13 +17,18 @@
 
       <share-structure class="mt-10" />
 
+      <articles class="mt-10" />
+
       <agreement-type class="mt-10" />
 
       <detail class="mt-10" />
 
       <certify-section class="mt-10" />
 
-      <staff-payment class="mt-10" />
+      <staff-payment
+        class="mt-10"
+        @haveChanges="onStaffPaymentChanges()"
+      />
     </template>
 
     <!-- Summary View -->
@@ -37,7 +42,11 @@
       </section>
 
       <!-- FUTURE: set `pleaseValidate` when user clicks File and Pay -->
-      <alteration-summary class="mt-10" :pleaseValidate="true" />
+      <alteration-summary
+        class="mt-10"
+        :pleaseValidate="true"
+        @haveChanges="onAlterationSummaryChanges()"
+      />
 
       <no-fee-summary class="mt-10" />
     </template>
@@ -54,11 +63,14 @@ import { AgreementType } from '@/components/IncorporationAgreement'
 import { CurrentDirectors } from '@/components/PeopleAndRoles'
 import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
 import { ShareStructure } from '@/components/ShareStructure'
+import { Articles } from '@/components/Articles'
 
-// Mixins, Interfaces and Enums
+// Mixins, Interfaces, Enums, etc
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
+import { ActionBindingIF, BusinessSnapshotIF, EffectiveDateTimeIF, FilingDataIF } from '@/interfaces'
+import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { BusinessDataTypes, EntityTypes, FilingCodes, FilingStatus } from '@/enums'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
 @Component({
@@ -71,6 +83,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     NoFeeSummary,
     CurrentDirectors,
     ShareStructure,
+    Articles,
     StaffPayment,
     YourCompany
   }
@@ -79,10 +92,11 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   // Global getters
   @Getter getEntityType!: EntityTypes
   @Getter isSummaryMode!: boolean
-
-  // Alteration Flag Getters
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
+  @Getter getEffectiveDateTime!: EffectiveDateTimeIF
+  @Getter getStaffPayment!: StaffPaymentIF
+  @Getter getFilingData!: FilingDataIF
 
   // Global setters
   @Action setHaveChanges!: ActionBindingIF
@@ -92,7 +106,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
 
   /** Whether App is ready. */
   @Prop({ default: false })
-  private appReady: boolean
+  readonly appReady: boolean
 
   /** The id of the alteration being edited. */
   private get alterationId (): number {
@@ -106,7 +120,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
 
   /** Called when App is ready and this component can load its data. */
   @Watch('appReady')
-  private async onAppReady (val: boolean): Promise<void> {
+  async onAppReady (val: boolean): Promise<void> {
     // do not proceed if app is not ready
     if (!val) return
 
@@ -179,6 +193,25 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     ])
   }
 
+  /** Called when staff payment data has changed. */
+  onStaffPaymentChanges (): void {
+    // update filing data with staff payment fields
+    this.setFilingData({
+      ...this.getFilingData,
+      priority: this.getStaffPayment.isPriority,
+      waiveFees: this.getStaffPayment.option === StaffPaymentOptions.NO_FEE
+    })
+  }
+
+  /** Called when alteration summary data has changed. */
+  onAlterationSummaryChanges (): void {
+    // update filing data with future effective field
+    this.setFilingData({
+      ...this.getFilingData,
+      futureEffective: this.getEffectiveDateTime.isFutureEffective
+    })
+  }
+
   /** Redirects browser to Entity Dashboard. */
   private redirectEntityDashboard (): void {
     const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
@@ -194,6 +227,3 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   private emitHaveData (haveData: Boolean = true): void { }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>
