@@ -244,5 +244,5 @@ export const mutateSummaryMode = (state: StateIF, summaryMode: boolean) => {
 }
 
 export const mutateProvisionsRemoved = (state: StateIF, provisionsRemoved: boolean) => {
-  state.stateModel.originalAlteration.alteration.provisionsRemoved = provisionsRemoved
+  state.stateModel.newAlteration.provisionsRemoved = provisionsRemoved
 }

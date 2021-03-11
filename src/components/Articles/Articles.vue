@@ -5,7 +5,10 @@
       <label class="define-article-title">Articles</label>
     </div>
 
-    <div class="section-container">
+    <div
+      class="section-container"
+      v-if="getBusinessInformation.hasRestrictions"
+      >
       <company-provisions
         class="sub-section"
         :provisionsRemoved="getProvisionsRemoved"
@@ -20,7 +23,7 @@ import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { CommonMixin } from '@/mixins'
 import CompanyProvisions from './CompanyProvisions.vue'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF } from '@/interfaces'
+import { ActionBindingIF, BusinessInformationIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -31,6 +34,7 @@ export default class Articles extends Mixins(CommonMixin) {
   // whether components have changes
   private companyProvisionsChanges: boolean
 
+  @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getProvisionsRemoved!: boolean
 
   // Setters

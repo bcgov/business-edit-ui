@@ -4,4 +4,5 @@ export interface BusinessInformationIF {
   identifier: string
   legalName?: string
   foundingDateTime?: string
+  hasRestrictions?: boolean
 }

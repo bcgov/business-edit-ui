@@ -44,6 +44,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getOriginalSnapshot: BusinessSnapshotIF[]
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasNewNr!: boolean
+  @Getter getNewAlteration!: any // FUTURE AlterationFilingIF
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -63,6 +64,7 @@ export default class FilingTemplateMixin extends Vue {
   @Action setStaffPayment!: ActionBindingIF
   @Action setDetailComment!: ActionBindingIF
   @Action setOriginalSnapshot!: ActionBindingIF
+  @Action setProvisionsRemoved!: ActionBindingIF
 
   /**
    * Builds an Incorporation Application Correction filing body from store data. Used when saving a filing.
@@ -212,7 +214,7 @@ export default class FilingTemplateMixin extends Vue {
         legalName: this.getOriginalSnapshot[0].business.legalName
       },
       alteration: {
-        provisionsRemoved: null,
+        provisionsRemoved: this.getNewAlteration.provisionsRemoved,
         business: {
           identifier: this.getBusinessId,
           legalType: this.getEntityType
@@ -411,6 +413,8 @@ export default class FilingTemplateMixin extends Vue {
         }
       }) || []
     )
+
+    this.setProvisionsRemoved(filing.alteration.provisionsRemoved)
 
     // Set Office Addresses
     this.setOfficeAddresses(businessSnapshot[2])
