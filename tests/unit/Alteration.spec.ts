@@ -257,7 +257,7 @@ describe('Alteration component', () => {
     // Validate People And Roles
     expect(store.state.stateModel.peopleAndRolesStep.orgPeople[0].officer.firstName).toBe('CAMERON')
     expect(store.state.stateModel.peopleAndRolesStep.orgPeople[0].officer.lastName).toBe('BOWLER')
-    expect(store.state.stateModel.peopleAndRolesStep.orgPeople[0].roles[0].roleType).toBe('director')
+    expect(store.state.stateModel.peopleAndRolesStep.orgPeople[0].roles[0].roleType).toBe('Director')
 
     // Validate Share Structure
     expect(store.state.stateModel.shareStructureStep.shareClasses[0].name).toBe('Class A Shares')
