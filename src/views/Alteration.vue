@@ -13,7 +13,7 @@
 
       <your-company class="mt-10" />
 
-      <people-and-roles class="mt-10" />
+      <current-directors class="mt-10" />
 
       <share-structure class="mt-10" />
 
@@ -60,7 +60,7 @@ import { getFeatureFlag } from '@/utils'
 import { AlterationSummary, NoFeeSummary } from '@/components/Summary'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
-import { PeopleAndRoles } from '@/components/PeopleAndRoles'
+import { CurrentDirectors } from '@/components/PeopleAndRoles'
 import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
 import { ShareStructure } from '@/components/ShareStructure'
 import { Articles } from '@/components/Articles'
@@ -81,7 +81,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     CompletingParty,
     Detail,
     NoFeeSummary,
-    PeopleAndRoles,
+    CurrentDirectors,
     ShareStructure,
     Articles,
     StaffPayment,

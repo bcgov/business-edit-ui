@@ -12,7 +12,7 @@ import {
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
 // Constants
-import { ActionTypes, EntityTypes, FilingTypes } from '@/enums'
+import { ActionTypes, EntityTypes, FilingTypes, RoleTypes } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 /**
@@ -437,7 +437,12 @@ export default class FilingTemplateMixin extends Vue {
         deliveryAddress: director.mailingAddress,
         roles: [
           {
-            roleType: director.role,
+            roleType: director.role in RoleTypes ? director.role
+              : Object.values(RoleTypes).find(role => {
+                if (role.toLocaleLowerCase() === director.role.toLocaleLowerCase()) {
+                  return role
+                }
+              }),
             appointmentDate: director.appointmentDate,
             cessationDate: null
           }
@@ -524,7 +529,12 @@ export default class FilingTemplateMixin extends Vue {
         deliveryAddress: director.mailingAddress,
         roles: [
           {
-            roleType: director.role,
+            roleType: director.role in RoleTypes ? director.role
+              : Object.values(RoleTypes).find(role => {
+                if (role.toLocaleLowerCase() === director.role.toLocaleLowerCase()) {
+                  return role
+                }
+              }),
             appointmentDate: director.appointmentDate,
             cessationDate: null
           }
