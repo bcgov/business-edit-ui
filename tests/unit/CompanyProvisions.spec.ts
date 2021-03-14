@@ -46,7 +46,7 @@ describe('company provisions', () => {
       .toBe('This company has Pre-existing Company Provisions.')
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(true)
     expect(wrapper.find(defineCompanyProvisionsTitle).text())
-      .toBe('Pre-existing Company Provisions')
+      .toBe('Pre-existing  Company Provisions')
     expect(wrapper.find(changedButton).exists()).toBe(false)
 
     wrapper.destroy()

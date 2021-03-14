@@ -74,7 +74,7 @@ export const stateModel: StateModelIF = {
       extension: ''
     },
     officeAddresses: {},
-    folioNumber: null
+    folioNumber: ''
   },
   peopleAndRolesStep: {
     valid: false,

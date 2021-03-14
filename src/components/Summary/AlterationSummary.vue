@@ -221,7 +221,7 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
 
   /** Local getter, using a mixin method to detect changes to Share Structure. */
   private get hasShareStructureChanged (): boolean {
-    return !this.isSame(this.getShareClasses, this.getSnapshotShareStructure?.shareClasses, ['action'])
+    return !this.isSame(this.getShareClasses, this.getSnapshotShareStructure.shareClasses, ['action'])
   }
 
   /** Restore baseline data to original snapshot. */

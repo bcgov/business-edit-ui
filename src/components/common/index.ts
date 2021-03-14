@@ -1,5 +1,4 @@
 export { default as Actions } from './Actions.vue'
-export { default as ActionChip } from './ActionChip.vue'
 export { default as CertifySection } from './CertifySection.vue'
 export { default as CompletingParty } from './CompletingParty.vue'
 export { default as ContactInfo } from './ContactInfo.vue'

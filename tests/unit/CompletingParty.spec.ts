@@ -1,14 +1,19 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { mount, Wrapper } from '@vue/test-utils'
+import { createLocalVue, mount } from '@vue/test-utils'
+import VueRouter from 'vue-router'
+import mockRouter from './MockRouter'
+
 import { getVuexStore } from '@/store'
 import { CompletingParty } from '@/components/common'
-// import { IncorporationFilingIF, OrgPersonIF } from '@/interfaces'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
+const localVue = createLocalVue()
+localVue.use(VueRouter)
+const router = mockRouter.mock()
 
 /** Original person with CP role. */
 const originalPersonCp = {
@@ -76,8 +81,13 @@ const newPersonCp = {
 }
 
 describe('unit tests', () => {
+  beforeAll(async () => {
+    await router.push({ name: 'correction' })
+    await Vue.nextTick()
+  })
+
   it('displays titles and null data correctly', () => {
-    const wrapper = mount(CompletingParty, { store, vuetify })
+    const wrapper = mount(CompletingParty, { store, vuetify, localVue, router })
 
     expect(wrapper.find('h2').text()).toBe('Original Completing Party')
     expect(wrapper.findAll('.flex').at(0).find('label').text()).toBe('Legal Name')
@@ -103,7 +113,7 @@ describe('unit tests', () => {
       ]
     }
 
-    const wrapper = mount(CompletingParty, { store, vuetify })
+    const wrapper = mount(CompletingParty, { store, vuetify, localVue, router })
 
     expect(wrapper.findAll('.flex').at(0).find('.v-chip').exists()).toBe(false)
     expect(wrapper.findAll('.flex').at(1).find('span').text()).toBe('Original  Person')
@@ -128,7 +138,7 @@ describe('unit tests', () => {
       ]
     }
 
-    const wrapper = mount(CompletingParty, { store, vuetify })
+    const wrapper = mount(CompletingParty, { store, vuetify, localVue, router })
 
     expect(wrapper.findAll('.flex').at(0).find('.v-chip').exists()).toBe(true)
     expect(wrapper.findAll('.flex').at(1).find('span').text()).toBe('New  Person')

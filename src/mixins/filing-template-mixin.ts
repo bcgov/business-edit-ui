@@ -58,6 +58,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasNewNr!: boolean
   @Getter getNewAlteration!: any // FUTURE AlterationFilingIF
+  @Getter getProvisionsRemoved!: boolean
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -220,7 +221,7 @@ export default class FilingTemplateMixin extends Vue {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber || ''
+        folioNumber: this.getFolioNumber
       },
       business: {
         foundingDate: this.getOriginalSnapshot[0].business.foundingDateTime,
@@ -229,7 +230,7 @@ export default class FilingTemplateMixin extends Vue {
         legalName: this.getOriginalSnapshot[0].business.legalName
       },
       alteration: {
-        provisionsRemoved: this.getNewAlteration.provisionsRemoved,
+        provisionsRemoved: this.getProvisionsRemoved,
         business: {
           identifier: this.getBusinessId,
           legalType: this.getEntityType

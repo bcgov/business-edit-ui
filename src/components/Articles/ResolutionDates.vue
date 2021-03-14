@@ -34,7 +34,7 @@
         <v-col cols="7">
           <ul class="resolution-date-list info-text pl-0 mt-2">
             <li v-for="(date, index) in addedDates"
-                :key="`newResolutionDate: ${index}`"
+                :key="`newResolutionDate-${index}`"
                 class="my-n2"
             >
               <strong class="mr-2">{{date}}</strong>
@@ -78,7 +78,7 @@
           </v-btn>
           <template v-if="displayPreviousDates">
             <ul class="resolution-date-list info-text pl-0 mt-2">
-              <li v-for="(date, index) in previousDates" :key="`resolutionDate: ${index}`">{{date}}</li>
+              <li v-for="(date, index) in previousDates" :key="`resolutionDate-${index}`">{{date}}</li>
             </ul>
           </template>
         </v-col>

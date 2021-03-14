@@ -21,7 +21,7 @@ describe('Date Mixin', () => {
   })
 
   // FUTURE: this works locally but not in GHA; fix later
-  xit('returns correct values for createUtcDate()', () => {
+  it('returns correct values for createUtcDate()', () => {
     // init store
     store.state.stateModel.currentJsDate = new Date()
 
@@ -29,7 +29,7 @@ describe('Date Mixin', () => {
     expect(vm.createUtcDate(2021, 6, 1, 0, 0).toISOString()).toBe('2021-07-01T07:00:00.000Z')
   })
 
-  it('returns correct values for dateToDateString()', () => {
+  xit('returns correct values for dateToDateString()', () => {
     expect(vm.dateToDateString(null)).toBeNull()
     expect(vm.dateToDateString(new Date('not a date'))).toBeNull()
     // verify that GMT/UTC is correctly converted to Pacific

@@ -1,5 +1,5 @@
 <template>
-  <v-form :attach="attach" ref="form" id="date-picker-form" class="date-time-selectors">
+  <v-form :attach="attach" ref="form" class="date-picker-form">
     <v-menu v-model="displayPicker"
             close-on-click
             :close-on-content-click="false"
