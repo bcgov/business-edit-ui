@@ -57,6 +57,17 @@
        :pleaseValidate="true"
       />
 
+      <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
+      <template>
+        <header>
+          <h2>x. Court Order and Plan of Arrangement</h2>
+        </header>
+        <p class="my-2">If this filing is pursuant to a court order, enter the court order number. If this filing
+          is pursuant to a plan of arrangement, <br>enter the court order number and select Plan of Arrangement.</p>
+
+        <court-order-poa />
+      </template>
+
     </template>
   </section>
 </template>
@@ -65,12 +76,13 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
+
+// Components
 import { AlterationSummary, NoFeeSummary, DocumentsDelivery } from '@/components/Summary'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { CurrentDirectors } from '@/components/PeopleAndRoles'
-import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
-
+import { CertifySection, CompletingParty, CourtOrderPoa, Detail, StaffPayment } from '@/components/common'
 import { ShareStructures } from '@/components/ShareStructure'
 import { Articles } from '@/components/Articles'
 
@@ -88,6 +100,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     AlterationSummary,
     CertifySection,
     CompletingParty,
+    CourtOrderPoa,
     Detail,
     DocumentsDelivery,
     NoFeeSummary,
