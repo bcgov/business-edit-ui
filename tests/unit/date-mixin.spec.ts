@@ -21,7 +21,7 @@ describe('Date Mixin', () => {
   })
 
   // FUTURE: this works locally but not in GHA; fix later
-  it('returns correct values for createUtcDate()', () => {
+  xit('returns correct values for createUtcDate()', () => {
     // init store
     store.state.stateModel.currentJsDate = new Date()
 
