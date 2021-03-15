@@ -74,7 +74,7 @@ export const stateModel: StateModelIF = {
       extension: ''
     },
     officeAddresses: {},
-    folioNumber: null
+    folioNumber: ''
   },
   peopleAndRolesStep: {
     valid: false,
@@ -84,6 +84,7 @@ export const stateModel: StateModelIF = {
   shareStructureStep: {
     valid: false,
     changed: false,
+    resolutionDates: [],
     shareClasses: []
   },
   incorporationAgreementStep: {

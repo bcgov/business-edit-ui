@@ -25,20 +25,22 @@ describe('Alteration Summary component', () => {
         legalName: 'Mock Original Name',
         legalType: 'BC'
       }
-    }
+    }, {}, {}, {}, {}, {}
   ]
 
   beforeAll(() => {
     // init store
     store.state.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
     store.state.stateModel.tombstone.currentDate = '2021-03-01'
+    store.state.stateModel.originalSnapshot = originalSnapShot
+    store.state.stateModel.shareStructureStep.shareClasses = []
+    store.state.stateModel.originalSnapshot[4].shareClasses = []
   })
 
   beforeEach(() => {
     // Set Original business Data
     store.state.stateModel.nameRequest.legalName = originalSnapShot[0].business.legalName
     store.state.stateModel.tombstone.entityType = originalSnapShot[0].business.legalType
-    store.state.stateModel.originalSnapshot = originalSnapShot
     store.state.stateModel.summaryMode = true
 
     wrapper = mount(AlterationSummary, { vuetify, store, localVue })

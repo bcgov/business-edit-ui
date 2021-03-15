@@ -208,3 +208,11 @@ export const setSummaryMode: ActionIF = ({ commit }, summaryMode: boolean): void
 export const setProvisionsRemoved: ActionIF = ({ commit }, provisionsRemoved: boolean): void => {
   commit('mutateProvisionsRemoved', provisionsRemoved)
 }
+
+export const setPreviousResolutionDates: ActionIF = ({ commit }, resolutionDates: string[]): void => {
+  commit('mutatePreviousResolutionDates', resolutionDates)
+}
+
+export const setResolutionDates: ActionIF = ({ commit }, resolutionDates: string[]): void => {
+  commit('mutateResolutionDates', resolutionDates)
+}

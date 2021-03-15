@@ -2,7 +2,7 @@ import { AccountTypes, EntityTypes } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
   NameRequestIF, BusinessInformationIF, CertifyIF, CertifyStatementIF, NameTranslationIF, IncorporationAddressIf,
-  FilingDataIF, StateIF, BusinessSnapshotIF, EffectiveDateTimeIF
+  FilingDataIF, StateIF, BusinessSnapshotIF, EffectiveDateTimeIF, ShareStructureIF
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
@@ -232,6 +232,11 @@ export const getSnapshotContact = (state: StateIF): ContactPointIF => {
   return snapShotContact as ContactPointIF
 }
 
+export const getSnapshotShareStructure = (state: StateIF): ShareStructureIF => {
+  const snapShotContact: unknown = state.stateModel.originalSnapshot[4]
+  return snapShotContact as ShareStructureIF
+}
+
 /** Whether we are ignoring data changes. */
 export const ignoreChanges = (state: StateIF): boolean => {
   return state.stateModel.tombstone.ignoreChanges
@@ -371,4 +376,14 @@ export const hasContactInfoChange = (state: StateIF): boolean => {
 /** Get Provisions Removed state. */
 export const getProvisionsRemoved = (state: StateIF): boolean => {
   return !!state.stateModel.newAlteration.provisionsRemoved
+}
+
+/** Get Provisions Removed state. */
+export const getPreviousResolutionDates = (state: StateIF): string[] => {
+  return state.stateModel.originalAlteration.alteration.shareStructure.resolutionDates
+}
+
+/** Get Provisions Removed state. */
+export const getNewResolutionDates = (state: StateIF): string[] => {
+  return state.stateModel.shareStructureStep.resolutionDates
 }

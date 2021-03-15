@@ -3,7 +3,7 @@
     <v-container class="pa-0 ma-0" v-if="!isEditing">
       <v-row no-gutters>
         <v-col class="pr-0 pl-0 pt-0" cols="3">
-          <label class="define-company-provisions-title">Pre-existing Company Provisions</label>
+          <label class="define-company-provisions-title">Pre-existing <br> Company Provisions</label>
           <v-chip v-if="hasProvisionsRemovedPropsChanged" x-small label color="primary" text-color="white">
             CHANGED
           </v-chip>
