@@ -42,7 +42,7 @@
       <!-- FUTURE: set `pleaseValidate` when user clicks File and Pay -->
       <alteration-summary
         class="mt-10"
-        :pleaseValidate="true"
+        :validate="getAppValidate"
         @haveChanges="onAlterationSummaryChanges()"
       />
 
@@ -57,6 +57,22 @@
        :pleaseValidate="true"
       />
 
+      <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
+      <template v-if="isRoleStaff">
+        <header class="mt-10">
+          <h2>3. Court Order and Plan of Arrangement</h2>
+        </header>
+        <p class="my-3 pb-2">If this filing is pursuant to a court order, enter the court order number. If this filing
+          is pursuant to a plan of arrangement, <br>enter the court order number and select Plan of Arrangement.</p>
+        <court-order-poa
+          id="court-order"
+          :validate="getAppValidate"
+          @emitCourtNumber="setCourtOrderNumber($event)"
+          @emitPoa="setPlanOfArrangement($event)"
+          @emitValid="setValidCourtNum($event)"
+        />
+      </template>
+
     </template>
   </section>
 </template>
@@ -65,14 +81,16 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
+
+// Components
 import { AlterationSummary, NoFeeSummary, DocumentsDelivery } from '@/components/Summary'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { CurrentDirectors } from '@/components/PeopleAndRoles'
 import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
-
 import { ShareStructures } from '@/components/ShareStructure'
 import { Articles } from '@/components/Articles'
+import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 
 // Mixins, Interfaces, Enums, etc
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
@@ -88,6 +106,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     AlterationSummary,
     CertifySection,
     CompletingParty,
+    CourtOrderPoa,
     Detail,
     DocumentsDelivery,
     NoFeeSummary,
@@ -102,19 +121,24 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   // Global getters
   @Getter getEntityType!: EntityTypes
   @Getter isSummaryMode!: boolean
+  @Getter isRoleStaff!: boolean
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
   @Getter getDocumentOptionalEmail!: string
+  @Getter getAppValidate!: boolean
 
   // Global actions
+  @Action setCourtOrderNumber!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
+  @Action setPlanOfArrangement!: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action setValidCourtNum!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
