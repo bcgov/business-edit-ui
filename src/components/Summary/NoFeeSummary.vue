@@ -76,14 +76,6 @@ export default class NoFeeSummary extends Vue {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-.section-container {
-  padding: 1.25rem 1rem;
-
-  .sub-section {
-    margin-top: 1.5rem;
-  }
-}
-
 .summary-header {
   display: flex;
   background-color: $BCgovBlue5O;

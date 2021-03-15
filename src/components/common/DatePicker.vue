@@ -30,7 +30,7 @@
       <v-date-picker width="490" v-model="dateText">
         <template v-slot:default>
           <div>
-            <v-btn text color="primary" @click="emitDate(dateText)"><strong>Ok</strong></v-btn>
+            <v-btn text color="primary" @click="emitDate(dateText)"><strong>OK</strong></v-btn>
             <v-btn text color="primary" @click="emitCancel()">Cancel</v-btn>
           </div>
         </template>
@@ -95,5 +95,9 @@ export default class DatePicker extends Vue {
 ::v-deep .v-input .v-label {
   font-weight: normal;
   color: $gray7;
+}
+
+::v-deep .v-icon.v-icon {
+  color: $app-blue
 }
 </style>

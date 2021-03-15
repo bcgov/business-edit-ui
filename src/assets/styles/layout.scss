@@ -52,6 +52,14 @@
   }
 }
 
+.section-container {
+  padding: 1.25rem 1rem;
+
+  .sub-section {
+    margin-top: 1.5rem;
+  }
+}
+
 // Form Layout
 .form__row + .form__row {
   margin-top: 0.25rem;

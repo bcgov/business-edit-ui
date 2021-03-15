@@ -1,7 +1,7 @@
 import {
   AccountInformationIF, AlterationFilingIF, CertifyIF, DefineCompanyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF,
   ShareStructureIF, EffectiveDateTimeIF, IncorporationAgreementIF, BusinessInformationIF, IncorporationFilingIF,
-  FilingDataIF, StaffPaymentStepIF, DetailIF, NameTranslationIF, BusinessSnapshotIF, DocumentDeliveryIF
+  FilingDataIF, StaffPaymentStepIF, DetailIF, NameTranslationIF, BusinessSnapshotIF, DocumentDeliveryIF, NewAlterationIF
 } from '@/interfaces'
 
 /** Data object used internally only (not to/from API). */
@@ -21,7 +21,7 @@ export interface StateModelIF {
   effectiveDateTime: EffectiveDateTimeIF
   originalIA: IncorporationFilingIF
   originalAlteration: AlterationFilingIF
-  newAlteration: any // FUTURE: change to AlterationFilingIF
+  newAlteration: NewAlterationIF
   originalSnapshot: BusinessSnapshotIF
   staffPaymentStep: StaffPaymentStepIF
   filingData: FilingDataIF

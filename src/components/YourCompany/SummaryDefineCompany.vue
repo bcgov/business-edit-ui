@@ -122,14 +122,6 @@ export default class SummaryDefineCompany extends Mixins(CommonMixin) {
   color: $primary-blue;
 }
 
-.section-container {
-  padding-left: 2rem;
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
-  padding-right: 2rem;
-  font-size: 0.875rem;
-}
-
 .define-company-header {
   display: flex;
   background-color: $BCgovBlue5O;
