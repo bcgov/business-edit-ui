@@ -5,45 +5,60 @@
       <label class="define-article-title">Articles</label>
     </div>
 
-    <div class="section-container">
+    <div
+      class="section-container"
+      v-if="getBusinessInformation.hasRestrictions"
+      >
       <company-provisions
         class="sub-section"
         :provisionsRemoved="getProvisionsRemoved"
         @companyProvisionsChanged="setProvisionsRemoved($event)"
         @haveChanges="emitHaveChanges($event)"/>
     </div>
+
+    <div class="section-container">
+      <resolution-dates
+        :added-dates="getNewResolutionDates"
+        :previous-dates="getPreviousResolutionDates"
+        @addRemoveDate="setResolutionDates($event)"/>
+    </div>
   </v-card>
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
-import { CommonMixin } from '@/mixins'
-import CompanyProvisions from './CompanyProvisions.vue'
+import { Component, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF } from '@/interfaces'
+// Components
+import CompanyProvisions from './CompanyProvisions.vue'
+import ResolutionDates from './ResolutionDates.vue'
+// Mixins
+import { CommonMixin } from '@/mixins'
+// Interfaces
+import { ActionBindingIF, BusinessInformationIF } from '@/interfaces'
 
 @Component({
   components: {
-    CompanyProvisions
+    CompanyProvisions,
+    ResolutionDates
   }
 })
 export default class Articles extends Mixins(CommonMixin) {
   // whether components have changes
   private companyProvisionsChanges: boolean
 
+  // Global Getters
+  @Getter getBusinessInformation!: BusinessInformationIF
+  @Getter getNewResolutionDates!: string []
   @Getter getProvisionsRemoved!: boolean
+  @Getter getPreviousResolutionDates!: string[]
 
-  // Setters
+  // Global Actions
   @Action setProvisionsRemoved!: ActionBindingIF
-
-  private setDataChanges (): void {
-    const haveChanges: boolean = this.companyProvisionsChanges
-    this.emitHaveChanges(haveChanges)
-  }
+  @Action setResolutionDates!: ActionBindingIF
 
   /** Emits Have Changes event. */
   @Emit('haveChanges')
-  private emitHaveChanges (haveChanges: boolean): void {}
+  emitHaveChanges (haveChanges: boolean): void {}
 }
 </script>
 

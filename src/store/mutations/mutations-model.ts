@@ -244,5 +244,13 @@ export const mutateSummaryMode = (state: StateIF, summaryMode: boolean) => {
 }
 
 export const mutateProvisionsRemoved = (state: StateIF, provisionsRemoved: boolean) => {
-  state.stateModel.originalAlteration.alteration.provisionsRemoved = provisionsRemoved
+  state.stateModel.newAlteration.provisionsRemoved = provisionsRemoved
+}
+
+export const mutatePreviousResolutionDates = (state: StateIF, resolutionDates: string[]) => {
+  state.stateModel.originalAlteration.alteration.shareStructure.resolutionDates = resolutionDates
+}
+
+export const mutateResolutionDates = (state: StateIF, resolutionDates: string[]) => {
+  state.stateModel.shareStructureStep.resolutionDates = resolutionDates
 }

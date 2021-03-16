@@ -18,6 +18,11 @@ export const stateModel: StateModelIF = {
     ignoreChanges: false,
     haveChanges: false
   },
+  newAlteration: {
+    // All the new alteration stuff should be here
+    // FUTURE: include alteration stuff here please
+    provisionsRemoved: null
+  },
   accountInformation: {
     accountType: '',
     id: null,
@@ -69,7 +74,7 @@ export const stateModel: StateModelIF = {
       extension: ''
     },
     officeAddresses: {},
-    folioNumber: null
+    folioNumber: ''
   },
   peopleAndRolesStep: {
     valid: false,
@@ -79,6 +84,7 @@ export const stateModel: StateModelIF = {
   shareStructureStep: {
     valid: false,
     changed: false,
+    resolutionDates: [],
     shareClasses: []
   },
   incorporationAgreementStep: {

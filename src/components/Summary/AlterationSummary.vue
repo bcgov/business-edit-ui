@@ -54,11 +54,11 @@
           </v-flex>
         </v-layout>
       </div>
-      <v-divider v-if="hasBusinessTypeChanged" class="mx-4" />
     </template>
 
     <!-- Business Type -->
     <template v-if="hasBusinessTypeChanged">
+      <v-divider class="mx-4" />
       <div class="section-container business-type-summary">
         <v-layout row class="mx-0 mt-4">
           <v-flex xs3>
@@ -90,7 +90,17 @@
 
     <!-- TODO: Pre-existing Company Provisions -->
 
-    <!-- TODO: Share Structure -->
+    <template v-if="hasShareStructureChanged">
+      <v-divider class="mx-4" />
+      <div class="section-container">
+        <v-row no-gutters>
+          <v-col cols="3">
+            <label><strong>Share Structure</strong></label>
+          </v-col>
+        </v-row>
+        <share-structures class="mt-6" :is-edit-mode="false" />
+      </div>
+    </template>
 
     <!-- Alteration Date and Time -->
     <div class="ma-6 pb-6">
@@ -130,15 +140,24 @@
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ConfirmDialog } from '@/components/dialogs'
-import { ActionBindingIF, ConfirmDialogType, EffectiveDateTimeIF, NameRequestIF } from '@/interfaces'
+import {
+  ActionBindingIF,
+  ConfirmDialogType,
+  EffectiveDateTimeIF,
+  NameRequestIF,
+  ShareClassIF,
+  ShareStructureIF
+} from '@/interfaces'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { EntityTypes } from '@/enums'
 import { EffectiveDateTime } from '@/components/common'
+import { ShareStructures } from '@/components/ShareStructure'
 
 @Component({
   components: {
     ConfirmDialog,
-    EffectiveDateTime
+    EffectiveDateTime,
+    ShareStructures
   }
 })
 export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
@@ -155,6 +174,9 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
   @Getter isSummaryMode!: boolean
   @Getter getNameRequest!: NameRequestIF
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
+  @Getter getShareClasses!: ShareClassIF[]
+  @Getter getSnapshotShareStructure: ShareStructureIF
+
   // Alteration Flag Getters
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
@@ -197,6 +219,12 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
     return (this.pleaseValidate && !this.getEffectiveDateTime.valid)
   }
 
+  /** Local getter, using a mixin method to detect changes to Share Structure. */
+  private get hasShareStructureChanged (): boolean {
+    return !this.isSame(this.getShareClasses, this.getSnapshotShareStructure.shareClasses, ['action'])
+  }
+
+  /** Restore baseline data to original snapshot. */
   restoreOriginalSnapshot (): void {
     // open confirmation dialog and wait for response
     this.$refs.confirm.open(
