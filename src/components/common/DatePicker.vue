@@ -96,4 +96,8 @@ export default class DatePicker extends Vue {
   font-weight: normal;
   color: $gray7;
 }
+
+::v-deep .v-icon.v-icon {
+  color: $app-blue
+}
 </style>
