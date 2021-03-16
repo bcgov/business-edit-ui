@@ -260,3 +260,15 @@ export const mutateOriginalResolutionDates = (state: StateIF, resolutionDates: s
 export const mutateResolutionDates = (state: StateIF, resolutionDates: string[]) => {
   state.stateModel.shareStructureStep.resolutionDates = resolutionDates
 }
+
+export const mutateCourtOrderNumber = (state: StateIF, courtOrderNumber: string) => {
+  state.stateModel.newAlteration.courtOrder.fileNumber = courtOrderNumber
+}
+
+export const mutatePlanOfArrangement = (state: StateIF, poa: boolean) => {
+  state.stateModel.newAlteration.planOfArrangement = poa
+}
+
+export const mutateValidCourtNum = (state: StateIF, isValid: boolean) => {
+  state.stateModel.newAlteration.validFlags.isValidCourtNum = isValid
+}

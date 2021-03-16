@@ -64,8 +64,16 @@
         </header>
         <p class="my-2">If this filing is pursuant to a court order, enter the court order number. If this filing
           is pursuant to a plan of arrangement, <br>enter the court order number and select Plan of Arrangement.</p>
-
-        <court-order-poa />
+        {{getAlterationsValidity}}
+        <v-btn @click="test = !test">
+          Validate
+        </v-btn>
+        <court-order-poa
+          :validate="test"
+          @emitCourtNumber="setCourtOrderNumber($event)"
+          @emitPoa="setPlanOfArrangement($event)"
+          @emitValid="setValidCourtNum($event)"
+        />
       </template>
 
     </template>
@@ -112,7 +120,9 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   }
 })
 export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin) {
+  private test = false
   // Global getters
+  @Getter getAlterationsValidity!: string
   @Getter getEntityType!: EntityTypes
   @Getter isSummaryMode!: boolean
   @Getter hasBusinessNameChanged!: boolean
@@ -123,11 +133,14 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Getter getDocumentOptionalEmail!: string
 
   // Global actions
+  @Action setCourtOrderNumber!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
+  @Action setPlanOfArrangement!: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action setValidCourtNum!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })

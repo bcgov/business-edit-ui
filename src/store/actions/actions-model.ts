@@ -235,3 +235,15 @@ export const setOriginalResolutionDates: ActionIF = ({ commit }, resolutionDates
 export const setResolutionDates: ActionIF = ({ commit }, resolutionDates: string[]): void => {
   commit('mutateResolutionDates', resolutionDates)
 }
+
+export const setCourtOrderNumber: ActionIF = ({ commit }, courtOrderNumber: string): void => {
+  commit('mutateCourtOrderNumber', courtOrderNumber)
+}
+
+export const setPlanOfArrangement: ActionIF = ({ commit }, poa: boolean): void => {
+  commit('mutatePlanOfArrangement', poa)
+}
+
+export const setValidCourtNum: ActionIF = ({ commit }, isValid: boolean): void => {
+  commit('mutateValidCourtNum', isValid)
+}

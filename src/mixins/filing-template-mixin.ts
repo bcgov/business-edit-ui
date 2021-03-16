@@ -577,7 +577,6 @@ export default class FilingTemplateMixin extends Vue {
       shareClass.series.forEach(shareSeries => { shareSeries.type = 'Series' })
     })
 
-    // Store share classes and original resolution dates
     this.setShareClasses(shareClasses)
     this.setOriginalResolutionDates(shareStructure.resolutionDates)
 

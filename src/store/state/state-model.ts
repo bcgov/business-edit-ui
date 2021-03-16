@@ -19,9 +19,14 @@ export const stateModel: StateModelIF = {
     haveChanges: false
   },
   newAlteration: {
-    // All the new alteration stuff should be here
-    // FUTURE: include alteration stuff here please
-    provisionsRemoved: null
+    provisionsRemoved: null,
+    planOfArrangement: false,
+    courtOrder: {
+      fileNumber: ''
+    },
+    validFlags: {
+      isValidCourtNum: false
+    }
   },
   accountInformation: {
     accountType: '',
