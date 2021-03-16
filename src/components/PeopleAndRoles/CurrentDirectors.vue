@@ -5,7 +5,7 @@
       <!-- Header -->
       <div class="header-container">
         <v-icon color="app-dk-blue">mdi-account-multiple-plus</v-icon>
-        <label class="font-weight-bold pl-2">Current Directors</label>
+        <label class="font-weight-bold pl-2">Directors</label>
       </div>
 
       <!-- Instructional Text -->
@@ -13,24 +13,25 @@
         To change directors, please use the Change feature in the Current Directors list on you business dashboard.
       </div>
 
-      <div class="list-container px-4 pt-15">
+      <v-simple-table class="director-table pt-15">
         <!-- List Display Section -->
-        <section id="people-roles-list" v-if="currentDirectors.length > 0">
+        <thead v-if="currentDirectors.length > 0">
           <!-- List Headers -->
-          <v-row class="people-roles-list-header list-item__subtitle pb-3">
-            <v-col v-for="(title, index) in tableHeaders" :key="index">
+          <tr class="director-list-header pb-3">
+            <th v-for="(title, index) in tableHeaders" :key="index">
               <span class="directors-title">{{ title }}</span>
-            </v-col>
-          </v-row>
-
+            </th>
+          </tr>
+        </thead>
+        <tbody>
           <!-- List Content -->
-          <v-row
-            class="people-roles-content py-3"
+          <tr
+            class="director-content py-3"
             v-for="(orgPerson, index) in currentDirectors"
             :key="`director:${index}`"
           >
             <!-- Name + Badge -->
-            <v-col class="text-truncate">
+            <td class="text-truncate">
               <!-- provide tooltip to display full name if name is longer than 25 chars -->
               <v-tooltip top :disabled="formatFullName(orgPerson.officer).length < 25" color="primary">
                 <template v-slot:activator="{ on }">
@@ -38,28 +39,28 @@
                 </template>
                 <span class="director-name">{{ formatFullName(orgPerson.officer) }}</span>
               </v-tooltip>
-            </v-col>
+            </td>
 
             <!-- Mailing Address -->
-            <v-col class="pr-5">
+            <td class="pr-5">
               <base-address class="director-detail" :address="orgPerson.mailingAddress" />
-            </v-col>
+            </td>
 
             <!-- Delivery Address -->
-            <v-col class="pr-5">
+            <td class="pr-5">
               <p v-if="isSame(orgPerson.mailingAddress, orgPerson.deliveryAddress)"
                 class="director-detail">Same as Mailing Address
               </p>
               <base-address v-else class="director-detail" :address="orgPerson.deliveryAddress"/>
-            </v-col>
+            </td>
 
             <!-- Appoinment Date -->
-            <v-col class="pr-5">
+            <td class="pr-5">
               <span class="director-detail">{{ orgPerson.roles[0].appointmentDate }} to Current</span>
-            </v-col>
-          </v-row>
-        </section>
-      </div>
+            </td>
+          </tr>
+        </tbody>
+      </v-simple-table>
     </v-card>
   </div>
 </template>
@@ -117,26 +118,37 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
   padding-bottom: 0;
 }
 
-.people-roles-list-header {
-  box-shadow: 0px 2px $gray1;
-}
-
-.people-roles-content {
-  border-top: 1px solid $gray1;
-  font-size: 0.875rem;
+.instructional-text {
   color: $gray7;
 }
 
-.directors-title {
-  font-size: 0.875rem;
-  color: $gray9;
-  font-weight: bold;
+.director-list-header th {
+  border-bottom: thin solid rgba(0, 0, 0, 0.12)!important;
+
+  .directors-title {
+    font-size: 0.875rem;
+    color: $gray9;
+    font-weight: bold;
+  }
 }
 
-.director-name {
-  font-size: 1rem;
-  color: $gray9;
-  font-weight: bold;
+.director-table tbody .director-content {
+  td {
+    border-bottom: thin solid rgba(0, 0, 0, 0.12)!important;
+    font-size: 1rem;
+    color: $gray9;
+    font-weight: bold;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    vertical-align: text-top;
+  }
+
+  td:not(:first-child){
+    border-top: 1px solid $gray1;
+    font-size: 0.875rem;
+    color: $gray7;
+    font-weight: normal;
+  }
 }
 
 </style>
