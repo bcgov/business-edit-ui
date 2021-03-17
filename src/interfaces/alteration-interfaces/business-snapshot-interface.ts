@@ -4,10 +4,10 @@ import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
 /** Business snapshot object. */
 export interface BusinessSnapshotIF {
-  businessInfo: BusinessInformationIF,
+  businessInfo: BusinessInformationIF
   contactPoint: ContactPointIF
-  incorporationAddress: IncorporationAddressIf,
-  nameTranslations: NameTranslationIF[],
-  orgPersons: GetOrgPersonsIF[],
-  shareStructure: ShareStructureIF,
+  incorporationAddress: IncorporationAddressIf
+  nameTranslations: NameTranslationIF[]
+  orgPersons: GetOrgPersonsIF[]
+  shareStructure: ShareStructureIF
 }

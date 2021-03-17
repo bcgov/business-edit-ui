@@ -8,14 +8,14 @@
     />
 
     <share-structure
-      :is-edit-mode="isEditMode"
+      :isEditMode="isEditMode"
       :isCorrection="isCorrectionView()"
-      :incorporation-application="getOriginalIA"
-      :share-classes="getShareClasses"
-      :business-snapshot="getOriginalSnapshot"
-      :resolution-required="resolutionsRequired"
-      :edit-label="editLabel"
-      :edited-label="editedLabel"
+      :incorporationApplication="getOriginalIA"
+      :shareClasses="getShareClasses"
+      :originalShareStructure="originalShareStructure"
+      :resolutionRequired="resolutionsRequired"
+      :editLabel="editLabel"
+      :editedLabel="editedLabel"
       @emitShareClasses="setShareClasses($event)"
       @emitShareStructureChanged="setShareStructureChanged($event)"
       @emitEditingShareStructure="setEditingShareStructure($event)"
@@ -38,7 +38,8 @@ import {
   ActionBindingIF,
   BusinessSnapshotIF,
   IncorporationFilingIF,
-  ShareClassIF
+  ShareClassIF,
+  ShareStructureIF
 } from '@/interfaces'
 
 @Component({
@@ -65,6 +66,10 @@ export default class ShareStructures extends Mixins(CommonMixin) {
 
   // Local property
   toggleResolutionDateDialog = false
+
+  get originalShareStructure (): ShareStructureIF {
+    return this.getOriginalSnapshot?.shareStructure
+  }
 
   /** Is true if changes to share structure rights will require a resolution date. */
   get resolutionsRequired (): boolean {
