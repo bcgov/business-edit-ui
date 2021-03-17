@@ -114,7 +114,7 @@ export const getOriginalIA = (state: StateIF): IncorporationFilingIF => {
 }
 
 /** The original business snapshot */
-export const getOriginalSnapshot = (state: StateIF): BusinessSnapshotIF[] => {
+export const getOriginalSnapshot = (state: StateIF): BusinessSnapshotIF => {
   return state.stateModel.originalSnapshot
 }
 
@@ -180,7 +180,7 @@ export const hasNewNr = (state: StateIF): boolean => {
     state.stateModel.originalAlteration.alteration.nameRequest.nrNumber
 
   // Evaluate only if a new NR exists.
-  return newNr ? newNr !== originalNr : false
+  return newNr ? (newNr !== originalNr) : false
 }
 
 /** The approved name of a name request. */
@@ -228,13 +228,11 @@ export const getBusinessContact = (state: StateIF): ContactPointIF => {
 }
 
 export const getSnapshotContact = (state: StateIF): ContactPointIF => {
-  const snapShotContact: unknown = state.stateModel.originalSnapshot[5]
-  return snapShotContact as ContactPointIF
+  return state.stateModel.originalSnapshot?.contactPoint
 }
 
 export const getSnapshotShareStructure = (state: StateIF): ShareStructureIF => {
-  const snapShotContact: unknown = state.stateModel.originalSnapshot[4]
-  return snapShotContact as ShareStructureIF
+  return state.stateModel.originalSnapshot?.shareStructure
 }
 
 /** Whether we are ignoring data changes. */
@@ -317,6 +315,7 @@ export const isEditing = (state: StateIF): boolean => {
 }
 
 export const getDefaultCorrectionDetailComment = (state: StateIF): string => {
+  // *** TODO: fix this, since header.data is UTC
   const filingDate = state.stateModel.originalIA.header.date.split('T')[0] || ''
   return `Correction for Incorporation Application filed on ${filingDate}.`
 }
@@ -345,7 +344,7 @@ export const isNumberedCompany = (state: StateIF): boolean => {
 
 /** Check for conflicting legal types between current type and altered type. */
 export const isConflictingLegalType = (state: StateIF): boolean => {
-  return state.stateModel.tombstone.entityType !== state.stateModel.nameRequest.legalType
+  return (state.stateModel.tombstone.entityType !== state.stateModel.nameRequest.legalType)
 }
 
 /** Get Summary mode state. */
@@ -353,24 +352,25 @@ export const isSummaryMode = (state: StateIF): boolean => {
   return state.stateModel.summaryMode
 }
 
-// Alteration Flag Getters
 /** Identify changes to business name. */
 export const hasBusinessNameChanged = (state: StateIF): boolean => {
-  return state.stateModel.nameRequest?.legalName !== state.stateModel.originalSnapshot[0]?.business?.legalName
+  const originalLegalName = state.stateModel.originalSnapshot?.businessInfo.legalName
+  return (state.stateModel.nameRequest?.legalName !== originalLegalName)
 }
 
 /** Identify changes to business type. */
 export const hasBusinessTypeChanged = (state: StateIF): boolean => {
-  return state.stateModel.tombstone.entityType !== state.stateModel.originalSnapshot[0]?.business?.legalType
+  const originalLegalType = state.stateModel.originalSnapshot?.businessInfo.legalType
+  return (state.stateModel.tombstone.entityType !== originalLegalType)
 }
 
 /** Check for changes between current contact and original contact. */
 export const hasContactInfoChange = (state: StateIF): boolean => {
   const businessContact: ContactPointIF = state.stateModel.defineCompanyStep.businessContact
 
-  return businessContact.email !== getSnapshotContact(state).email ||
-    businessContact.phone !== getSnapshotContact(state).phone ||
-    businessContact.extension !== getSnapshotContact(state).extension
+  return (businessContact.email !== getSnapshotContact(state).email) ||
+    (businessContact.phone !== getSnapshotContact(state).phone) ||
+    (businessContact.extension !== getSnapshotContact(state).extension)
 }
 
 /** Get Provisions Removed state. */

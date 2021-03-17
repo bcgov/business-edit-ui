@@ -8,14 +8,14 @@
     />
 
     <share-structure
-      :is-edit-mode="isEditMode"
+      :isEditMode="isEditMode"
       :isCorrection="isCorrectionView()"
-      :incorporation-application="getOriginalIA"
-      :share-classes="getShareClasses"
-      :business-snapshot="getOriginalSnapshot"
-      :resolution-required="resolutionsRequired"
-      :edit-label="editLabel"
-      :edited-label="editedLabel"
+      :incorporationApplication="getOriginalIA"
+      :shareClasses="getShareClasses"
+      :originalShareStructure="originalShareStructure"
+      :resolutionRequired="resolutionsRequired"
+      :editLabel="editLabel"
+      :editedLabel="editedLabel"
       @emitShareClasses="setShareClasses($event)"
       @emitShareStructureChanged="setShareStructureChanged($event)"
       @emitEditingShareStructure="setEditingShareStructure($event)"
@@ -23,6 +23,7 @@
     />
   </div>
 </template>
+
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
@@ -37,7 +38,8 @@ import {
   ActionBindingIF,
   BusinessSnapshotIF,
   IncorporationFilingIF,
-  ShareClassIF
+  ShareClassIF,
+  ShareStructureIF
 } from '@/interfaces'
 
 @Component({
@@ -49,23 +51,27 @@ import {
 export default class ShareStructures extends Mixins(CommonMixin) {
   /** Edit Mode */
   @Prop({ default: true })
-  private isEditMode!: string
+  readonly isEditMode!: string
 
-  // Global Getters
+  // Global getters
   @Getter getNewResolutionDates!: string []
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getShareClasses!: ShareClassIF[]
-  @Getter getOriginalSnapshot!: BusinessSnapshotIF[]
+  @Getter getOriginalSnapshot!: BusinessSnapshotIF
 
-  // Global Actions
+  // Global actions
   @Action setShareClasses!: ActionBindingIF
   @Action setShareStructureChanged!: ActionBindingIF
   @Action setEditingShareStructure!: ActionBindingIF
 
-  // Local Properties
-  private toggleResolutionDateDialog = false
+  // Local property
+  toggleResolutionDateDialog = false
 
-  /** Return true if changes to share structure rights will require a resolution date. */
+  get originalShareStructure (): ShareStructureIF {
+    return this.getOriginalSnapshot?.shareStructure
+  }
+
+  /** Is true if changes to share structure rights will require a resolution date. */
   get resolutionsRequired (): boolean {
     return this.getNewResolutionDates.length === 0 && this.isAlterationView()
   }

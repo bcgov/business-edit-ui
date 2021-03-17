@@ -123,7 +123,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter isRoleStaff!: boolean
 
-  // Global setters
+  // Global actions
   @Action setPeopleAndRoles!: ActionBindingIF
   @Action setPeopleAndRolesChanged!: ActionBindingIF
   @Action setPeopleAndRolesValidity!: ActionBindingIF

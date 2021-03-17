@@ -17,7 +17,7 @@ export interface OrgPersonIF {
   action?: ActionTypes
 }
 
-export interface GetOrgPersonsIF {
+export interface GetOrgPersonIF {
   appointmentDate: string,
   cessationDate: string,
   deliveryAddress: AddressIF,

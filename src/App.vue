@@ -196,7 +196,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter hasBusinessTypeChanged!: boolean
   @Getter isConflictingLegalType!: boolean
 
-  // Global setters
+  // Global actions
   @Action setAccountInformation!: ActionBindingIF
   @Action setAuthRoles: ActionBindingIF
   @Action setBusinessId!: ActionBindingIF
@@ -209,7 +209,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Action setUserInfo: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
 
-  // Local Properties
+  // Local properties
   private filing: any
   private accountAuthorizationDialog: boolean = false
   private deleteErrorDialog: boolean = false

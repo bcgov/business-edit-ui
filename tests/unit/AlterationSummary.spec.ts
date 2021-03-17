@@ -19,14 +19,12 @@ describe('Alteration Summary component', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
-  const originalSnapShot = [
-    {
-      business: {
-        legalName: 'Mock Original Name',
-        legalType: 'BC'
-      }
-    }, {}, {}, {}, {}, {}
-  ]
+  const originalSnapShot = {
+    businessInfo: {
+      legalName: 'Mock Original Name',
+      legalType: 'BC'
+    }
+  }
 
   beforeAll(() => {
     // init store
@@ -34,13 +32,13 @@ describe('Alteration Summary component', () => {
     store.state.stateModel.tombstone.currentDate = '2021-03-01'
     store.state.stateModel.originalSnapshot = originalSnapShot
     store.state.stateModel.shareStructureStep.shareClasses = []
-    store.state.stateModel.originalSnapshot[4].shareClasses = []
+    store.state.stateModel.originalSnapshot.shareStructure = { shareClasses: [] }
   })
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.stateModel.nameRequest.legalName = originalSnapShot[0].business.legalName
-    store.state.stateModel.tombstone.entityType = originalSnapShot[0].business.legalType
+    store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
+    store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
     store.state.stateModel.summaryMode = true
 
     wrapper = mount(AlterationSummary, { vuetify, store, localVue })

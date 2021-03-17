@@ -142,6 +142,7 @@ import { Action, Getter } from 'vuex-class'
 import { ConfirmDialog } from '@/components/dialogs'
 import {
   ActionBindingIF,
+  BusinessSnapshotIF,
   ConfirmDialogType,
   EffectiveDateTimeIF,
   NameRequestIF,
@@ -166,7 +167,7 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
     confirm: ConfirmDialogType
   }
 
-  // Global Getters
+  // Global getters
   @Getter getCurrentJsDate!: Date
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
@@ -176,12 +177,13 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getSnapshotShareStructure: ShareStructureIF
+  @Getter getOriginalSnapshot: BusinessSnapshotIF
 
-  // Alteration Flag Getters
+  // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
 
-  // Actions
+  // Global actions
   @Action setSummaryMode!: ActionBindingIF
   @Action setEffectiveDateTimeString!: ActionBindingIF
   @Action setIsFutureEffective!: ActionBindingIF
@@ -211,7 +213,7 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
   }
 
   get originalEntityType (): string {
-    return this.getOriginalSnapshot[0]?.business?.legalType
+    return this.getOriginalSnapshot?.businessInfo?.legalType
   }
 
   /** True if invalid class should be set for Alteration Date-Time container. */
@@ -221,7 +223,7 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
 
   /** Local getter, using a mixin method to detect changes to Share Structure. */
   private get hasShareStructureChanged (): boolean {
-    return !this.isSame(this.getShareClasses, this.getSnapshotShareStructure.shareClasses, ['action'])
+    return !this.isSame(this.getShareClasses, this.getSnapshotShareStructure?.shareClasses, ['action'])
   }
 
   /** Restore baseline data to original snapshot. */

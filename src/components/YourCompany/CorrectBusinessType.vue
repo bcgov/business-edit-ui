@@ -224,13 +224,13 @@ import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
   }
 })
 export default class CorrectBusinessType extends Mixins(CommonMixin) {
-  // Global Getters
+  // Global getters
   @Getter getApprovedName!: string
   @Getter getEntityType!: EntityTypes
   @Getter isConflictingLegalType: boolean
   @Getter getOriginalSnapshot: BusinessSnapshotIF
 
-  // Alteration Flag Getters
+  // Alteration flag getters
   @Getter hasBusinessTypeChanged!: boolean
 
   @Action setEntityType!: ActionBindingIF
@@ -280,7 +280,8 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
 
   /** Verify New Business name. */
   private get isNewName (): boolean {
-    return this.getApprovedName && (this.getApprovedName !== this.getOriginalSnapshot[0]?.business?.legalName)
+    return this.getApprovedName &&
+      (this.getApprovedName !== this.getOriginalSnapshot?.businessInfo?.legalName)
   }
 
   /** Check is current entity selection is a Benefit Company */
@@ -290,7 +291,7 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
 
   /** Reset company type values to original. */
   private resetType () {
-    this.setEntityType(this.getOriginalSnapshot[0]?.business?.legalType)
+    this.setEntityType(this.getOriginalSnapshot?.businessInfo?.legalType)
     this.emitHaveChanges(false)
     this.isEditingType = false
     this.confirmArticles = false

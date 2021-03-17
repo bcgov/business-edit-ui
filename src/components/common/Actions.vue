@@ -70,7 +70,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
   @Getter isFilingPaying!: boolean
   @Getter isEditing!: boolean
 
-  // Global setters
+  // Global actions
   @Action setIsSaving!: ActionBindingIF
   @Action setIsSavingResuming!: ActionBindingIF
   @Action setIsFilingPaying!: ActionBindingIF
