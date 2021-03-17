@@ -64,6 +64,7 @@ export default class FilingTemplateMixin extends Vue {
   @Action setStaffPayment!: ActionBindingIF
   @Action setDetailComment!: ActionBindingIF
   @Action setOriginalSnapshot!: ActionBindingIF
+  @Action setDocumentOptionalEmail!: ActionBindingIF
 
   /**
    * Builds an Incorporation Application Correction filing body from store data. Used when saving a filing.
@@ -470,6 +471,9 @@ export default class FilingTemplateMixin extends Vue {
 
     // Set Filing Date
     this.setFilingDateTime(filing.header.date)
+
+    // Set document optional email
+    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
 
     // Set Effective Date
     this.setEffectiveDateTimeString(filing.header.effectiveDate)

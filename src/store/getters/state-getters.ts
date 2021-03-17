@@ -337,6 +337,10 @@ export const getDocumentOptionalEmail = (state: StateIF): string => {
   return state.stateModel.documentDelivery.documentOptionalEmail
 }
 
+export const getDocumentOptionalEmailValid = (state: StateIF): boolean => {
+  return state.stateModel.documentDelivery.valid
+}
+
 /** Check for a 7 digit pattern to identify a Numbered company from the legal name. */
 export const isNumberedCompany = (state: StateIF): boolean => {
   return RegExp('^\\d{7}$').test(state.stateModel.businessInformation?.legalName?.split(' ')[0])

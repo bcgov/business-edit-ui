@@ -49,6 +49,7 @@
       <documents-delivery
        class="mt-10"
        :pleaseValidate="true"
+        @valid="setDocumentOptionalEmailValidity($event)"
       />
 
       <certify-section
@@ -112,6 +113,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
+  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })

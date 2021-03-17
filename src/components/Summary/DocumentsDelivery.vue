@@ -50,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Emit, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins'
 import { ActionBindingIF } from '@/interfaces'
@@ -67,6 +67,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
 
   // Global actions
   @Action setDocumentOptionalEmail!: ActionBindingIF
+  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
 
   private optionalEmail: string = ''
 
@@ -95,6 +96,13 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
     if (this.validateEmailFormat) {
       this.setDocumentOptionalEmail(val)
     }
+  }
+
+  @Emit('valid')
+  private async emitValid (): Promise<boolean> {
+    // wait for form to update itself before checking validity
+    await Vue.nextTick()
+    return (this.validateEmailFormat(this.optionalEmail))
   }
 }
 </script>

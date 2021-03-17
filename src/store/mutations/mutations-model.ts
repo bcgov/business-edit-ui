@@ -89,6 +89,10 @@ export const mutateDocumentOptionalEmail = (state: StateIF, documentOptionalEmai
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
+export const mutateDocumentOptionalEmailValidity = (state: StateIF, validity: boolean) => {
+  state.stateModel.documentDelivery.valid = validity
+}
+
 export const mutateBusinessContact = (state: StateIF, businessContact: ContactPointIF) => {
   state.stateModel.defineCompanyStep.businessContact = businessContact
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)

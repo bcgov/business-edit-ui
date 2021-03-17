@@ -6,9 +6,9 @@
     <div class="pt-4">Enter the legal name of the person authorized to complete and submit these changes.</div>
     <certify
       :currentDate="getCurrentDate"
-      :certified-by="getCertifyState.certifiedBy"
-      :is-certified="getCertifyState.valid"
-      :entity-display="readableEntityType"
+      :certifiedBy="getCertifyState.certifiedBy"
+      :isCertified="getCertifyState.valid"
+      :entityDisplay="readableEntityType"
       :message="certifyMessage"
       :isStaff="isRoleStaff"
       @update:certifiedBy="onCertifiedBy($event)"
