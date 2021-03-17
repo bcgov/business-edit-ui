@@ -30,7 +30,7 @@ export const stateModel: StateModelIF = {
     type: ''
   },
   businessInformation: {
-    legalType: '',
+    legalType: null,
     identifier: ''
   },
   nameRequest: {
@@ -141,7 +141,7 @@ export const stateModel: StateModelIF = {
     alteration: {
       provisionsRemoved: null,
       business: {
-        legalType: '',
+        legalType: null,
         identifier: ''
       },
       nameRequest: { ...EmptyNameRequest },
@@ -157,7 +157,7 @@ export const stateModel: StateModelIF = {
       }
     }
   },
-  originalSnapshot: [],
+  originalSnapshot: null,
   staffPaymentStep: {
     valid: false,
     staffPayment: {

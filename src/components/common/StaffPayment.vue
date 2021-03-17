@@ -33,7 +33,7 @@ export default class StaffPayment extends Vue {
   // Global getters
   @Getter getStaffPayment!: StaffPaymentIF
 
-  // Global setters
+  // Global actions
   @Action setStaffPayment!: ActionBindingIF
   @Action setStaffPaymentValidity!: ActionBindingIF
 

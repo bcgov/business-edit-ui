@@ -1,23 +1,20 @@
 import {
-  CertifyStatementIF,
+  AccountInformationIF,
+  BusinessInformationIF,
+  BusinessSnapshotIF,
   CertifyIF,
+  CertifyStatementIF,
+  FilingDataIF,
   IncorporationAddressIf,
+  IncorporationAgreementIF,
+  IncorporationFilingIF,
   NameRequestIF,
+  NameTranslationIF,
   OrgPersonIF,
   ShareClassIF,
-  AccountInformationIF,
-  IncorporationAgreementIF,
-  BusinessInformationIF,
-  IncorporationFilingIF,
-  FilingDataIF,
-  NameTranslationIF,
-  StateIF, BusinessSnapshotIF
+  StateIF
 } from '@/interfaces'
-// Shared Interfaces
-import {
-  ContactPointIF,
-  StaffPaymentIF
-} from '@bcrs-shared-components/interfaces'
+import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { EntityTypes } from '@/enums'
 
 export const mutateBusinessId = (state: StateIF, businessId: string) => {
@@ -65,8 +62,8 @@ export const mutateIsFutureEffective = (state: StateIF, isFutureEffective: boole
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
-export const mutateEffectiveDateTimeString = (state: StateIF, dateTimeString: string) => {
-  state.stateModel.effectiveDateTime.dateTimeString = dateTimeString
+export const mutateEffectiveDateTimeString = (state: StateIF, dateTime: string) => {
+  state.stateModel.effectiveDateTime.dateTimeString = dateTime
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
@@ -119,8 +116,8 @@ export const mutateFolioNumber = (state: StateIF, folioNumber: string) => {
   state.stateModel.defineCompanyStep.folioNumber = folioNumber
 }
 
-export const mutateFilingDateTime = (state: StateIF, dateTimeString: string) => {
-  state.stateModel.tombstone.filingDateTime = dateTimeString
+export const mutateFilingDateTime = (state: StateIF, dateTime: string) => {
+  state.stateModel.tombstone.filingDateTime = dateTime
 }
 
 export const mutateAccountInformation = (state: StateIF, accountInformation: AccountInformationIF) => {
@@ -190,7 +187,7 @@ export const mutateOriginalIA = (state: StateIF, originalIA: IncorporationFiling
   state.stateModel.originalIA = originalIA
 }
 
-export const mutateOriginalSnapshot = (state: StateIF, originalSnapshot: BusinessSnapshotIF[]) => {
+export const mutateOriginalSnapshot = (state: StateIF, originalSnapshot: BusinessSnapshotIF) => {
   state.stateModel.originalSnapshot = originalSnapshot
 }
 
@@ -247,7 +244,7 @@ export const mutateProvisionsRemoved = (state: StateIF, provisionsRemoved: boole
   state.stateModel.newAlteration.provisionsRemoved = provisionsRemoved
 }
 
-export const mutatePreviousResolutionDates = (state: StateIF, resolutionDates: string[]) => {
+export const mutateOriginalResolutionDates = (state: StateIF, resolutionDates: string[]) => {
   state.stateModel.originalAlteration.alteration.shareStructure.resolutionDates = resolutionDates
 }
 

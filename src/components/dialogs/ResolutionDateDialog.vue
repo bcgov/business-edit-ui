@@ -45,13 +45,13 @@ export default class ResolutionDateDialog extends Vue {
   /** Prop to display the dialog. */
   @Prop() private dialog: boolean
 
-  // Global Getter
+  // Global getter
   @Getter getNewResolutionDates!: string []
 
-  // Global Action
+  // Global action
   @Action setResolutionDates!: ActionBindingIF
 
-  // Local Properties
+  // Local properties
   private date = ''
   private errorMsg = ''
 

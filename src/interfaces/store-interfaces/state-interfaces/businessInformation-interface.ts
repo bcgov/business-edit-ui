@@ -1,6 +1,8 @@
+import { EntityTypes } from '@/enums'
+
 /** Data object used internally only (not to/from API). */
 export interface BusinessInformationIF {
-  legalType: string
+  legalType: EntityTypes
   identifier: string
   legalName?: string
   foundingDateTime?: string

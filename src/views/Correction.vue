@@ -84,7 +84,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
 
-  // Global setters
+  // Global actions
   @Action setCorrectedFilingId!: ActionBindingIF
   @Action setEntityType!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF

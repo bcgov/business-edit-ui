@@ -306,7 +306,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter getOfficeAddresses!: IncorporationAddressIf // NB: may be {}
   @Getter getOriginalIA!: IncorporationFilingIF
 
-  // Global setters
+  // Global actions
   @Action setOfficeAddresses!: ActionBindingIF
   @Action setEditingOfficeAddresses!: ActionBindingIF
 

@@ -18,7 +18,6 @@ import { Action, Getter } from 'vuex-class'
 // Interfaces
 import {
   ActionBindingIF,
-  BusinessSnapshotIF,
   IncorporationFilingIF
 } from '@/interfaces'
 
@@ -41,7 +40,6 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
 
   @Getter getBusinessContact!: ContactPointIF
   @Getter getOriginalIA!: IncorporationFilingIF
-  @Getter getOriginalSnapshot!: BusinessSnapshotIF
   @Getter getSnapshotContact!: ContactPointIF
 
   /** Get the original Contact info dependant on filing type. */

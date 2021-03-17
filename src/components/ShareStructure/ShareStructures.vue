@@ -23,6 +23,7 @@
     />
   </div>
 </template>
+
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
@@ -49,23 +50,23 @@ import {
 export default class ShareStructures extends Mixins(CommonMixin) {
   /** Edit Mode */
   @Prop({ default: true })
-  private isEditMode!: string
+  readonly isEditMode!: string
 
-  // Global Getters
+  // Global getters
   @Getter getNewResolutionDates!: string []
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getShareClasses!: ShareClassIF[]
-  @Getter getOriginalSnapshot!: BusinessSnapshotIF[]
+  @Getter getOriginalSnapshot!: BusinessSnapshotIF
 
-  // Global Actions
+  // Global actions
   @Action setShareClasses!: ActionBindingIF
   @Action setShareStructureChanged!: ActionBindingIF
   @Action setEditingShareStructure!: ActionBindingIF
 
-  // Local Properties
-  private toggleResolutionDateDialog = false
+  // Local property
+  toggleResolutionDateDialog = false
 
-  /** Return true if changes to share structure rights will require a resolution date. */
+  /** Is true if changes to share structure rights will require a resolution date. */
   get resolutionsRequired (): boolean {
     return this.getNewResolutionDates.length === 0 && this.isAlterationView()
   }

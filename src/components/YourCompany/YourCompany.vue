@@ -275,7 +275,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
     confirm: ConfirmDialogType
   }
 
-  // Getters
+  // global getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
   @Getter getEntityType!: EntityTypes
@@ -288,12 +288,13 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   @Getter isNumberedCompany!: boolean
   @Getter isPremiumAccount!: GetterIF
   @Getter getOriginalIA!: IncorporationFilingIF
-  @Getter getOriginalSnapshot!: BusinessSnapshotIF[]
+  @Getter getOriginalSnapshot!: BusinessSnapshotIF
   @Getter getBusinessContact!: ContactPointIF
+
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
 
-  // Actions
+  // Global actions
   @Action setDefineCompanyStepChanged!: ActionBindingIF
   @Action setEditingCompanyName!: ActionBindingIF
 
@@ -303,7 +304,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   /** V-model for dropdown menu. */
   private dropdown: boolean = null
 
-  // whether components have changes
+  // Whether components have changes
   private companyNameChanges = false
   private companyTypeChanges = false
   private contactInfoChanges = false
@@ -358,7 +359,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
     const correctedName = this.getApprovedName
     const currentName = this.isCorrectionView()
       ? this.getOriginalIA.incorporationApplication.nameRequest.legalName
-      : this.getOriginalSnapshot[0].business.legalName
+      : this.getOriginalSnapshot.businessInfo.legalName
 
     return correctedName !== currentName
   }
@@ -367,11 +368,11 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   private resetName () {
     this.setBusinessInformation(this.isCorrectionView()
       ? this.getOriginalIA.business
-      : this.getOriginalSnapshot[0].business
+      : this.getOriginalSnapshot.businessInfo
     )
     this.setNameRequest(this.isCorrectionView()
       ? this.getOriginalIA.incorporationApplication.nameRequest
-      : this.getOriginalSnapshot[0].business
+      : this.getOriginalSnapshot.businessInfo
     )
     this.companyNameChanges = false
   }

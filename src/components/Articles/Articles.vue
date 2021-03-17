@@ -43,16 +43,16 @@ import { ActionBindingIF, BusinessInformationIF } from '@/interfaces'
   }
 })
 export default class Articles extends Mixins(CommonMixin) {
-  // whether components have changes
+  // Whether components have changes
   private companyProvisionsChanges: boolean
 
-  // Global Getters
+  // Global getters
   @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getNewResolutionDates!: string []
   @Getter getProvisionsRemoved!: boolean
   @Getter getPreviousResolutionDates!: string[]
 
-  // Global Actions
+  // Global actions
   @Action setProvisionsRemoved!: ActionBindingIF
   @Action setResolutionDates!: ActionBindingIF
 
