@@ -5,7 +5,9 @@ import { NOT_FOUND } from 'http-status-codes'
 import { axios } from '@/utils'
 
 // Interfaces
-import { AlterationFilingIF, CorrectionFilingIF } from '@/interfaces'
+import { AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF, IncorporationAddressIf,
+  NameTranslationIF, GetOrgPersonIF, ShareStructureIF } from '@/interfaces'
+import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
 // Mixins
 import { FilingTemplateMixin } from '@/mixins'
@@ -158,10 +160,10 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
   }
 
   /**
-   * Fetches the business data of the current business.
+   * Fetches the business info of the current business.
    * @returns a promise to return the data
    */
-  async fetchBusiness (): Promise<any> {
+  async fetchBusinessInfo (): Promise<BusinessInformationIF> {
     if (!this.getBusinessId) throw new Error('Invalid business id')
 
     const url = `businesses/${this.getBusinessId}`
@@ -169,20 +171,20 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
     return axios.get(url)
       .then(response => {
         if (response?.data) {
-          return response.data
+          return response.data.business
         } else {
           // eslint-disable-next-line no-console
-          console.log('fetchBusiness() error - invalid response =', response)
+          console.log('fetchBusinessInfo() error - invalid response =', response)
           throw new Error('Invalid API response')
         }
       })
   }
 
   /**
-   * Fetches the aliases of the current business.
+   * Fetches the name translations of the current business.
    * @returns a promise to return the data
    */
-  async fetchAliases (): Promise<any> {
+  async fetchNameTranslations (): Promise<NameTranslationIF[]> {
     if (!this.getBusinessId) throw new Error('Invalid business id')
 
     const url = `businesses/${this.getBusinessId}/aliases`
@@ -190,20 +192,20 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
     return axios.get(url)
       .then(response => {
         if (response?.data) {
-          return response.data
+          return response.data.aliases
         } else {
           // eslint-disable-next-line no-console
-          console.log('fetchAliases() error - invalid response =', response)
+          console.log('fetchNameTranslations() error - invalid response =', response)
           throw new Error('Invalid API response')
         }
       })
   }
 
   /**
-   * Fetches the addresses of the current business.
+   * Fetches the incorporation address of the current business.
    * @returns a promise to return the data
    */
-  async fetchAddresses (): Promise<any> {
+  async fetchIncorporationAddress (): Promise<IncorporationAddressIf> {
     if (!this.getBusinessId) throw new Error('Invalid business id')
 
     const url = `businesses/${this.getBusinessId}/addresses`
@@ -214,17 +216,17 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
           return response.data
         } else {
           // eslint-disable-next-line no-console
-          console.log('fetchAddresses() error - invalid response =', response)
+          console.log('fetchIncorporationAddress() error - invalid response =', response)
           throw new Error('Invalid API response')
         }
       })
   }
 
   /**
-   * Fetches the directors of the current business.
+   * Fetches the org persons of the current business.
    * @returns a promise to return the data
    */
-  async fetchDirectors (): Promise<any> {
+  async fetchOrgPersons (): Promise<GetOrgPersonIF[]> {
     if (!this.getBusinessId) throw new Error('Invalid business id')
 
     const url = `businesses/${this.getBusinessId}/directors`
@@ -232,20 +234,20 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
     return axios.get(url)
       .then(response => {
         if (response?.data) {
-          return response.data
+          return response.data.directors
         } else {
           // eslint-disable-next-line no-console
-          console.log('fetchDirectors() error - invalid response =', response)
+          console.log('fetchOrgPersons() error - invalid response =', response)
           throw new Error('Invalid API response')
         }
       })
   }
 
   /**
-   * Fetch the share classes of the current business.
+   * Fetch the share structure of the current business.
    * @returns a promise to return the data
    */
-  async fetchShareClasses (): Promise<any> {
+  async fetchShareStructure (): Promise<ShareStructureIF> {
     if (!this.getBusinessId) throw new Error('Invalid business id')
 
     const url = `businesses/${this.getBusinessId}/share-classes`
@@ -256,17 +258,17 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
           return response.data
         } else {
           // eslint-disable-next-line no-console
-          console.log('fetchShareClasses() error - invalid response =', response)
+          console.log('fetchShareStructure() error - invalid response =', response)
           throw new Error('Invalid API response')
         }
       })
   }
 
   /**
-   * Fetches the auth entity data of the current business.
+   * Fetches the contact point of the current business.
    * @returns a promise to return the data
    */
-  async fetchAuthEntity (): Promise<any> {
+  async fetchContactPoint (): Promise<ContactPointIF> {
     if (!this.getBusinessId) throw new Error('Invalid business id')
 
     const url = `entities/${this.getBusinessId}`
@@ -275,11 +277,18 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
 
     return axios.get(url, config)
       .then(response => {
-        if (response?.data) {
-          return response.data
+        // take the first contact
+        const contact = response?.data?.contacts[0]
+        if (contact) {
+          return {
+            email: contact.email,
+            confirmEmail: contact.email,
+            phone: contact.phone,
+            extension: contact.phoneExtension
+          }
         } else {
           // eslint-disable-next-line no-console
-          console.log('fetchAuthEntity() error - invalid response =', response)
+          console.log('fetchContactPoint() error - invalid response =', response)
           throw new Error('Invalid API response')
         }
       })

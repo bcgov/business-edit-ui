@@ -68,10 +68,8 @@ import { Articles } from '@/components/Articles'
 
 // Mixins, Interfaces, Enums, etc
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { ActionBindingIF, BusinessInformationIF, BusinessSnapshotIF,
-  EffectiveDateTimeIF, FilingDataIF, GetOrgPersonsIF, IncorporationAddressIf,
-  NameTranslationIF, ShareStructureIF } from '@/interfaces'
-import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+import { ActionBindingIF, BusinessSnapshotIF, EffectiveDateTimeIF, FilingDataIF } from '@/interfaces'
+import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -187,37 +185,24 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   /** Fetches the business snapshot. */
   private async fetchBusinessSnapshot (): Promise<BusinessSnapshotIF> {
     const items = await Promise.all([
-      this.fetchBusiness(),
-      this.fetchAuthEntity(),
-      this.fetchAddresses(),
-      this.fetchAliases(),
-      this.fetchDirectors(),
-      this.fetchShareClasses()
+      this.fetchBusinessInfo(),
+      this.fetchContactPoint(),
+      this.fetchIncorporationAddress(),
+      this.fetchNameTranslations(),
+      this.fetchOrgPersons(),
+      this.fetchShareStructure()
     ])
 
     if (items.length !== 6) throw new Error('Failed to fetch business snapshot')
 
-    const businessInfo: BusinessInformationIF = items[0].business
-    const contactPoint: ContactPointIF = {
-      // take the first contact
-      email: items[1].contacts[0].email,
-      confirmEmail: items[1].contacts[0].email,
-      phone: items[1].contacts[0].phone,
-      extension: items[1].contacts[0].phoneExtension
+    return {
+      businessInfo: items[0],
+      contactPoint: items[1],
+      incorporationAddress: items[2],
+      nameTranslations: items[3],
+      orgPersons: items[4],
+      shareStructure: items[5]
     }
-    const incorporationAddress: IncorporationAddressIf = items[2]
-    const nameTranslations: NameTranslationIF[] = items[3].aliases
-    const orgPersons: GetOrgPersonsIF[] = items[4].directors
-    const shareStructure: ShareStructureIF = items[5]
-
-    return ({
-      businessInfo,
-      contactPoint,
-      incorporationAddress,
-      nameTranslations,
-      orgPersons,
-      shareStructure
-    })
   }
 
   /** Called when staff payment data has changed. */
