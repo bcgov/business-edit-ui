@@ -9,6 +9,9 @@ export interface FilingHeaderIF {
   effectiveDate?: string
   isFutureEffective?: boolean
 
+  // document delivery optional email property:
+  documentOptionalEmail?: string
+
   // staff payment properties:
   routingSlipNumber?: string
   bcolAccountNumber?: string

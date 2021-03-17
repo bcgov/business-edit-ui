@@ -333,6 +333,10 @@ export const getCertifyResource = (state: StateIF): CertifyStatementIF => {
   return state.resourceModel.certifyStatementResource
 }
 
+export const getDocumentOptionalEmail = (state: StateIF): string => {
+  return state.stateModel.documentDelivery.documentOptionalEmail
+}
+
 /** Check for a 7 digit pattern to identify a Numbered company from the legal name. */
 export const isNumberedCompany = (state: StateIF): boolean => {
   return RegExp('^\\d{7}$').test(state.stateModel.businessInformation?.legalName?.split(' ')[0])

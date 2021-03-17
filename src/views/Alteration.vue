@@ -46,10 +46,15 @@
         @haveChanges="onAlterationSummaryChanges()"
       />
 
-      <no-fee-summary class="mt-10" />
-      <documents-delivery class="mt-10" />
+      <documents-delivery
+       class="mt-10"
+       :pleaseValidate="true"
+      />
 
-      <certify-section class="mt-10" />
+      <certify-section
+       class="mt-10"
+       :pleaseValidate="true"
+      />
 
     </template>
   </section>
@@ -100,6 +105,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
+  @Getter getDocumentOptionalEmail!: string
 
   // Global setters
   @Action setHaveChanges!: ActionBindingIF

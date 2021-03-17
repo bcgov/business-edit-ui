@@ -93,7 +93,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
     if (isDraft) {
       url += '?draft=true'
     }
-
+    debugger
     return axios.put(url, { filing }).then(response => {
       const filing = response?.data?.filing
       const filingId = +filing?.header?.filingId

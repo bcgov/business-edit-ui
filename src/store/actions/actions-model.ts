@@ -65,6 +65,10 @@ export const setCertifyStateValidity: ActionIF = ({ commit }, validity): void =>
   commit('mutateCertifyStateValidity', validity)
 }
 
+export const setDocumentOptionalEmail: ActionIF = ({ commit }, documentOptionalEmail: string): void => {
+  commit('mutateDocumentOptionalEmail', documentOptionalEmail)
+}
+
 export const setBusinessContact: ActionIF = ({ commit }, businessContact): void => {
   commit('mutateBusinessContact', businessContact)
 }

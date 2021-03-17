@@ -10,7 +10,7 @@
       :is-certified="getCertifyState.valid"
       :entity-display="readableEntityType"
       :message="certifyMessage"
-      :is-staff="isRoleStaff"
+      :isStaff="isRoleStaff"
       @update:certifiedBy="onCertifiedBy($event)"
       @update:isCertified="onValid($event)"
     />
