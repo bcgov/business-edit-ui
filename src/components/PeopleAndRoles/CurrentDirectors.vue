@@ -10,7 +10,7 @@
 
       <!-- Instructional Text -->
       <div class="instructional-text pt-10 px-4">
-        To change directors, please use the Change feature in the Current Directors list on you business dashboard.
+        To change directors, please use the Change feature in the Current Directors list on your business dashboard.
       </div>
 
       <v-simple-table class="director-table pt-15">

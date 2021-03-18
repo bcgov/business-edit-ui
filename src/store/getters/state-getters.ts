@@ -51,9 +51,9 @@ export const getEffectiveDateTime = (state: StateIF): EffectiveDateTimeIF => {
   return state.stateModel.effectiveDateTime
 }
 
-/** The business' founding date-time. */
-export const getBusinessFoundingDateTime = (state: StateIF): string => {
-  return state.stateModel.businessInformation.foundingDateTime
+/** The business' founding date (actually date-time). */
+export const getBusinessFoundingDate = (state: StateIF): string => {
+  return state.stateModel.businessInformation.foundingDate
 }
 
 /** The filing's original effective date-time. */

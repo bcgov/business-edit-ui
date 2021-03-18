@@ -101,7 +101,7 @@
     <!-- TODO: Pre-existing Company Provisions -->
 
     <!-- Resolution or Court Order Dates -->
-    <template v-if="showResolutionCourtOrderDatesSummary">
+    <template v-if="getNewResolutionDates && getNewResolutionDates.length > 0">
       <v-divider class="mx-4" />
       <div class="section-container resolution-court-order-dates-summary">
         <resolution-dates
@@ -238,10 +238,6 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
   /** Local getter, using a mixin method to detect changes to Share Structure. */
   get hasShareStructureChanged (): boolean {
     return !this.isSame(this.getShareClasses, this.getSnapshotShareStructure?.shareClasses, ['action'])
-  }
-
-  get showResolutionCourtOrderDatesSummary (): boolean {
-    return (this.getNewResolutionDates?.length > 0) || (this.getPreviousResolutionDates?.length > 0)
   }
 
   /** Restore baseline data to original snapshot. */

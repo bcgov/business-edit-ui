@@ -224,7 +224,7 @@ export default class FilingTemplateMixin extends Vue {
         folioNumber: this.getFolioNumber
       },
       business: {
-        foundingDate: this.getOriginalSnapshot.businessInfo.foundingDateTime,
+        foundingDate: this.getOriginalSnapshot.businessInfo.foundingDate,
         legalType: this.getOriginalSnapshot.businessInfo.legalType,
         identifier: this.getOriginalSnapshot.businessInfo.identifier,
         legalName: this.getOriginalSnapshot.businessInfo.legalName
@@ -514,7 +514,8 @@ export default class FilingTemplateMixin extends Vue {
     this.setNameRequest({
       legalType: businessSnapshot.businessInfo.legalType,
       legalName: businessSnapshot.businessInfo.legalName,
-      foundingDate: businessSnapshot.businessInfo.foundingDateTime
+      // *** TODO: Founding Date is not needed in Name Request object???
+      foundingDate: businessSnapshot.businessInfo.foundingDate
     })
 
     // Store name translations
