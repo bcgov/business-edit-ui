@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@babel/compat-data": "^7.11.0",
-    "@bcrs-shared-components/certify": "1.0.7",
     "@bcrs-shared-components/action-chip": "1.0.2",
+    "@bcrs-shared-components/certify": "1.0.7",
     "@bcrs-shared-components/confirm-dialog": "1.0.1",
     "@bcrs-shared-components/contact-info": "1.0.8",
     "@bcrs-shared-components/court-order-poa": "1.0.1",

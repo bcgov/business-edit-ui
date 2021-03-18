@@ -569,7 +569,7 @@ export default class FilingTemplateMixin extends Vue {
     )
 
     // Store share classes and original resolution dates
-    this.setShareClasses(businessSnapshot.shareStructure.shareClasses)
+    this.setShareClasses(cloneDeep(businessSnapshot.shareStructure.shareClasses))
     this.setOriginalResolutionDates(businessSnapshot.shareStructure.resolutionDates)
 
     // Store business contact

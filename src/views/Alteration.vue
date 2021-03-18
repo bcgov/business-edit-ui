@@ -59,8 +59,8 @@
 
       <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
       <template v-if="isRoleStaff">
-        <header>
-          <h2>Court Order and Plan of Arrangement</h2>
+        <header class="mt-10">
+          <h2>3. Court Order and Plan of Arrangement</h2>
         </header>
         <p class="my-3 pb-2">If this filing is pursuant to a court order, enter the court order number. If this filing
           is pursuant to a plan of arrangement, <br>enter the court order number and select Plan of Arrangement.</p>
@@ -118,7 +118,6 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   }
 })
 export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin) {
-  private test = false
   // Global getters
   @Getter getEntityType!: EntityTypes
   @Getter isSummaryMode!: boolean
