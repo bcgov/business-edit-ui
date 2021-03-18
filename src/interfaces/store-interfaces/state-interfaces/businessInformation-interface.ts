@@ -5,6 +5,6 @@ export interface BusinessInformationIF {
   legalType: EntityTypes
   identifier: string
   legalName?: string
-  foundingDateTime?: string
+  foundingDate?: string // actually date-time
   hasRestrictions?: boolean
 }

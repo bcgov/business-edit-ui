@@ -282,7 +282,7 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   @Getter getNameRequest!: NameRequestIF
   @Getter hasNewNr!: boolean
   @Getter getOriginalEffectiveDateTime!: string
-  @Getter getBusinessFoundingDateTime!: string
+  @Getter getBusinessFoundingDate!: string // actually date-time
   @Getter getFolioNumber!: string
   @Getter isConflictingLegalType!: boolean
   @Getter isNumberedCompany!: boolean
@@ -347,8 +347,8 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
       }
     }
     if (this.isAlterationView()) {
-      if (this.getBusinessFoundingDateTime) {
-        return (this.apiToDateAndTimeString(this.getBusinessFoundingDateTime) + ' Pacific time')
+      if (this.getBusinessFoundingDate) {
+        return (this.apiToDateAndTimeString(this.getBusinessFoundingDate) + ' Pacific time')
       }
     }
     return 'Unknown'
