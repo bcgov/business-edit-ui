@@ -65,7 +65,7 @@
 
     <!-- Initial Page Load Transition -->
     <transition name="fade">
-      <div class="loading-container" v-show="!haveData && !fetchErrorDialog">
+      <div class="loading-container" v-show="!haveData && !isErrorDialog">
         <div class="loading__content">
           <v-progress-circular color="primary" size="50" indeterminate />
           <div class="loading-msg">Loading</div>
