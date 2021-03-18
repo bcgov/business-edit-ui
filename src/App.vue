@@ -601,7 +601,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     await updateLdUser(key, email, firstName, lastName, custom)
   }
 
-  /** Perform high level validations before filing. */
+  /** Perform high level validations before filing and paying. */
   private async validateApp (): Promise<void> {
     // Prompt app validations
     this.setAppValidate(true)
