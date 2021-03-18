@@ -22,7 +22,7 @@
 
     <people-and-roles class="mt-10" />
 
-    <share-structure class="mt-10" />
+    <share-structures class="mt-10" />
 
     <agreement-type class="mt-10" />
 
@@ -47,7 +47,7 @@ import { YourCompany } from '@/components/YourCompany'
 import { PeopleAndRoles } from '@/components/PeopleAndRoles'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
-import { ShareStructure } from '@/components/ShareStructure'
+import { ShareStructures } from '@/components/ShareStructure'
 
 // Mixins, Interfaces, Enums, etc
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
@@ -65,7 +65,7 @@ import { BenefitCompanyStatementResource, CertifyStatementResource } from '@/res
     CompletingParty,
     Detail,
     PeopleAndRoles,
-    ShareStructure,
+    ShareStructures,
     StaffPayment,
     YourCompany
   }
@@ -84,7 +84,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
 
-  // Global setters
+  // Global actions
   @Action setCorrectedFilingId!: ActionBindingIF
   @Action setEntityType!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF

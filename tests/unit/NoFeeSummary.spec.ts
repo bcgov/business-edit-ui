@@ -39,7 +39,7 @@ describe('NoFeeSummary', () => {
     await router.push({ name: 'alteration' })
     store.state.stateModel.summaryMode = true
     store.state.stateModel.defineCompanyStep.businessContact = contactInfo
-    store.state.stateModel.originalSnapshot[5] = originalAlterationContact
+    store.state.stateModel.originalSnapshot = { contactPoint: originalAlterationContact }
   })
 
   beforeEach(() => {

@@ -13,9 +13,9 @@
 
       <your-company class="mt-10" />
 
-      <people-and-roles class="mt-10" />
+      <current-directors class="mt-10" />
 
-      <share-structure class="mt-10" />
+      <share-structures class="mt-10" />
 
       <articles class="mt-10" />
 
@@ -68,16 +68,17 @@ import { getFeatureFlag } from '@/utils'
 import { AlterationSummary, NoFeeSummary, DocumentsDelivery } from '@/components/Summary'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
-import { PeopleAndRoles } from '@/components/PeopleAndRoles'
+import { CurrentDirectors } from '@/components/PeopleAndRoles'
 import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
-import { ShareStructure } from '@/components/ShareStructure'
+
+import { ShareStructures } from '@/components/ShareStructure'
 import { Articles } from '@/components/Articles'
 
 // Mixins, Interfaces, Enums, etc
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, BusinessSnapshotIF, EffectiveDateTimeIF, FilingDataIF } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { BusinessDataTypes, EntityTypes, FilingCodes, FilingStatus } from '@/enums'
+import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
@@ -90,9 +91,9 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     Detail,
     DocumentsDelivery,
     NoFeeSummary,
-    PeopleAndRoles,
-    ShareStructure,
+    CurrentDirectors,
     Articles,
+    ShareStructures,
     StaffPayment,
     YourCompany
   }
@@ -108,7 +109,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Getter getFilingData!: FilingDataIF
   @Getter getDocumentOptionalEmail!: string
 
-  // Global setters
+  // Global actions
   @Action setHaveChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
@@ -148,7 +149,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
 
     // try to fetch data
     try {
-      const businessSnapshot: BusinessSnapshotIF[] = await this.fetchBusinessSnapshot()
+      const businessSnapshot = await this.fetchBusinessSnapshot()
 
       if (this.alterationId) {
         // store the filing ID
@@ -192,16 +193,27 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     Vue.nextTick(() => this.setHaveChanges(false))
   }
 
-  /** Fetch Business Snapshot */
-  private async fetchBusinessSnapshot (): Promise<BusinessSnapshotIF[]> {
-    return Promise.all([
-      this.getBusinessData(),
-      this.getBusinessData(BusinessDataTypes.TRANSLATIONS),
-      this.getBusinessData(BusinessDataTypes.ADDRESSES),
-      this.getBusinessData(BusinessDataTypes.DIRECTORS),
-      this.getBusinessData(BusinessDataTypes.SHARE_CLASSSES),
-      this.getContactInfo()
+  /** Fetches the business snapshot. */
+  private async fetchBusinessSnapshot (): Promise<BusinessSnapshotIF> {
+    const items = await Promise.all([
+      this.fetchBusinessInfo(),
+      this.fetchContactPoint(),
+      this.fetchIncorporationAddress(),
+      this.fetchNameTranslations(),
+      this.fetchOrgPersons(),
+      this.fetchShareStructure()
     ])
+
+    if (items.length !== 6) throw new Error('Failed to fetch business snapshot')
+
+    return {
+      businessInfo: items[0],
+      contactPoint: items[1],
+      incorporationAddress: items[2],
+      nameTranslations: items[3],
+      orgPersons: items[4],
+      shareStructure: items[5]
+    }
   }
 
   /** Called when staff payment data has changed. */

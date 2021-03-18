@@ -5,7 +5,9 @@ import { NOT_FOUND } from 'http-status-codes'
 import { axios } from '@/utils'
 
 // Interfaces
-import { AlterationFilingIF, CorrectionFilingIF } from '@/interfaces'
+import { AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF, IncorporationAddressIf,
+  NameTranslationIF, GetOrgPersonIF, ShareStructureIF } from '@/interfaces'
+import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
 // Mixins
 import { FilingTemplateMixin } from '@/mixins'
@@ -135,7 +137,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * @param businessIdentifier the business identifier (eg, BC1219948)
    * @returns a promise to return the authorizations object
    */
-  getAuthorizations (businessIdentifier: string): Promise<any> {
+  async getAuthorizations (businessIdentifier: string): Promise<any> {
     if (!businessIdentifier) throw new Error('Invalid parameter \'businessIdentifier\'')
 
     const url = `entities/${businessIdentifier}/authorizations`
@@ -146,8 +148,8 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
   }
 
   /**
-   * Fetches current user data.
-   * @returns a promise to return the user data
+   * Fetches the current user data.
+   * @returns a promise to return the data
    */
   async fetchCurrentUser (): Promise<any> {
     const authUrl = sessionStorage.getItem('AUTH_API_URL')
@@ -157,36 +159,116 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
   }
 
   /**
-   * Fetch business data for current business.
-   * @param datatype The type of data to request.
-   * @returns a promise to return the business base info or of the specified data type.
+   * Fetches the business info of the current business.
+   * @returns a promise to return the data
    */
-  async getBusinessData (datatype: string = null): Promise<any> {
-    if (!this.getBusinessId) throw new Error('Invalid parameter \'businessIdentifier\'')
+  async fetchBusinessInfo (): Promise<BusinessInformationIF> {
+    if (!this.getBusinessId) throw new Error('Invalid business id')
 
-    let url = `businesses/${this.getBusinessId}`
-    if (datatype) {
-      url += `/${datatype}`
-    }
+    const url = `businesses/${this.getBusinessId}`
 
     return axios.get(url)
       .then(response => {
-        if (response && response.data) {
-          return response.data
+        if (response?.data) {
+          return response.data.business
         } else {
           // eslint-disable-next-line no-console
-          console.log(`getBusinessData(${datatype}) error - invalid response =`, response)
+          console.log('fetchBusinessInfo() error - invalid response =', response)
           throw new Error('Invalid API response')
         }
       })
   }
 
   /**
-   * Fetches contact information for the specified business.
-   * @returns a promise to return the contact data
+   * Fetches the name translations of the current business.
+   * @returns a promise to return the data
    */
-  async getContactInfo (): Promise<any> {
-    if (!this.getBusinessId) throw new Error('Invalid parameter \'businessIdentifier\'')
+  async fetchNameTranslations (): Promise<NameTranslationIF[]> {
+    if (!this.getBusinessId) throw new Error('Invalid business id')
+
+    const url = `businesses/${this.getBusinessId}/aliases`
+
+    return axios.get(url)
+      .then(response => {
+        if (response?.data) {
+          return response.data.aliases
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('fetchNameTranslations() error - invalid response =', response)
+          throw new Error('Invalid API response')
+        }
+      })
+  }
+
+  /**
+   * Fetches the incorporation address of the current business.
+   * @returns a promise to return the data
+   */
+  async fetchIncorporationAddress (): Promise<IncorporationAddressIf> {
+    if (!this.getBusinessId) throw new Error('Invalid business id')
+
+    const url = `businesses/${this.getBusinessId}/addresses`
+
+    return axios.get(url)
+      .then(response => {
+        if (response?.data) {
+          return response.data
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('fetchIncorporationAddress() error - invalid response =', response)
+          throw new Error('Invalid API response')
+        }
+      })
+  }
+
+  /**
+   * Fetches the org persons of the current business.
+   * @returns a promise to return the data
+   */
+  async fetchOrgPersons (): Promise<GetOrgPersonIF[]> {
+    if (!this.getBusinessId) throw new Error('Invalid business id')
+
+    const url = `businesses/${this.getBusinessId}/directors`
+
+    return axios.get(url)
+      .then(response => {
+        if (response?.data) {
+          return response.data.directors
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('fetchOrgPersons() error - invalid response =', response)
+          throw new Error('Invalid API response')
+        }
+      })
+  }
+
+  /**
+   * Fetch the share structure of the current business.
+   * @returns a promise to return the data
+   */
+  async fetchShareStructure (): Promise<ShareStructureIF> {
+    if (!this.getBusinessId) throw new Error('Invalid business id')
+
+    const url = `businesses/${this.getBusinessId}/share-classes`
+
+    return axios.get(url)
+      .then(response => {
+        if (response?.data) {
+          return response.data
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('fetchShareStructure() error - invalid response =', response)
+          throw new Error('Invalid API response')
+        }
+      })
+  }
+
+  /**
+   * Fetches the contact point of the current business.
+   * @returns a promise to return the data
+   */
+  async fetchContactPoint (): Promise<ContactPointIF> {
+    if (!this.getBusinessId) throw new Error('Invalid business id')
 
     const url = `entities/${this.getBusinessId}`
     const authUrl = sessionStorage.getItem('AUTH_API_URL')
@@ -194,16 +276,18 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
 
     return axios.get(url, config)
       .then(response => {
-        if (response && response.data && response.data.contacts) {
-          // Always take the first contact.
+        // take the first contact
+        const contact = response?.data?.contacts[0]
+        if (contact) {
           return {
-            ...response.data.contacts[0],
-            confirmEmail: response.data.contacts[0].email,
-            extension: response.data.contacts[0].phoneExtension
+            email: contact.email,
+            confirmEmail: contact.email,
+            phone: contact.phone,
+            extension: contact.phoneExtension
           }
         } else {
           // eslint-disable-next-line no-console
-          console.log('getContactInfo() error - invalid response =', response)
+          console.log('fetchContactPoint() error - invalid response =', response)
           throw new Error('Invalid API response')
         }
       })

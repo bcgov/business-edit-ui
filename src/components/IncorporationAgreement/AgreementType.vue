@@ -83,11 +83,11 @@ import { AgreementTypeResource } from '@/resources'
 export default class AgreementType extends Vue {
   private incorporationAgreementTypeResource = AgreementTypeResource
 
-  // State
+  // Global getters
   @Getter getAgreementType!: string
   @Getter getOriginalIA!: IncorporationFilingIF
 
-  // Global setters
+  // Global actions
   @Action setIncorporationAgreementStepData!: ActionBindingIF
   @Action setEditingIncorporationAgreement!: ActionBindingIF
 

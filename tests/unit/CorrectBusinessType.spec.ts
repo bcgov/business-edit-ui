@@ -46,14 +46,12 @@ describe('CorrectBusinessType in an Alteration', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
-  const originalSnapShot = [
-    {
-      business: {
-        legalName: 'Mock Original Name',
-        legalType: 'BC'
-      }
+  const originalSnapShot = {
+    businessInfo: {
+      legalName: 'Mock Original Name',
+      legalType: 'BC'
     }
-  ]
+  }
 
   beforeAll(() => {
     router.push({ name: 'alteration' })
@@ -61,8 +59,8 @@ describe('CorrectBusinessType in an Alteration', () => {
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.stateModel.nameRequest.legalName = originalSnapShot[0].business.legalName
-    store.state.stateModel.tombstone.entityType = originalSnapShot[0].business.legalType
+    store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
+    store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
     store.state.stateModel.originalSnapshot = originalSnapShot
 
     wrapper = mount(CorrectBusinessType, { vuetify, store, localVue, router })

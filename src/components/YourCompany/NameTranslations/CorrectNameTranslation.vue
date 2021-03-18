@@ -25,10 +25,10 @@ import { Action, Getter } from 'vuex-class'
   }
 })
 export default class CorrectNameTranslation extends Vue {
-  // Getters
+  // Global getter
   @Getter getNameTranslations!: NameTranslationIF[]
 
-  // Setters
+  // Global action
   @Action setNameTranslations!: ActionBindingIF
 
   private updateNameTranslations (nameTranslations: NameTranslationIF[]): void {

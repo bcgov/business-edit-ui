@@ -1,0 +1,94 @@
+<template>
+  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="resolution-date-dialog">
+    <v-card id="resolution-dates-dialog">
+      <v-card-title id="dialog-title">Resolution or Court Order Required</v-card-title>
+
+      <v-card-text id="dialog-text">
+        <div>
+          <p>Your share structure contains a class or series of shares with special rights or restrictions. You must
+          have passed a resolution or have a court order to change your share structure.</p>
+          <p>Enter the date of the Resolution or Court Order here:</p>
+        </div>
+        <date-picker title="Resolution or Court Order Date"
+                     :error-msg="errors"
+                     nudge-right="100"
+                     @emitDate="onAdd($event)"
+                     @emitCancel="exit()"
+                     @emitDateSync="date = $event"/>
+      </v-card-text>
+
+      <v-divider class="my-0"></v-divider>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn id="dialog-done-button" color="primary" @click="onAdd(date)">Done</v-btn>
+        <v-btn id="dialog-cancel-button" color="primary" outlined @click="exit()">Cancel</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script lang="ts">
+import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import { Action, Getter } from 'vuex-class'
+import { DatePicker } from '@/components/common'
+import { cloneDeep } from 'lodash'
+import { ActionBindingIF } from '@/interfaces'
+
+@Component({
+  components: { DatePicker }
+})
+export default class ResolutionDateDialog extends Vue {
+  /** Prop to provide attachment selector. */
+  @Prop() private attach: string
+
+  /** Prop to display the dialog. */
+  @Prop() private dialog: boolean
+
+  // Global getter
+  @Getter getNewResolutionDates!: string []
+
+  // Global action
+  @Action setResolutionDates!: ActionBindingIF
+
+  // Local properties
+  private date = ''
+  private errorMsg = ''
+
+  /** Return an error msg if there is no date at Done. */
+  get errors (): string {
+    return this.date ? '' : this.errorMsg
+  }
+
+  /** Clear local properties. */
+  clearLocal (): void {
+    this.date = ''
+    this.errorMsg = ''
+  }
+
+  /** Add a new date event. */
+  private onAdd (date: string): void {
+    if (date) {
+      // Create a copy of the prop and add the new date
+      const tempNewDates = cloneDeep(this.getNewResolutionDates)
+      tempNewDates.push(date)
+
+      // Emit to parent the new store value
+      this.setResolutionDates(tempNewDates)
+
+      this.exit()
+      this.clearLocal()
+    } else this.errorMsg = 'Enter Resolution or Court Order Date'
+  }
+
+  // Pass click events to parent.
+  @Emit('emitClose') private exit () { this.clearLocal() }
+}
+</script>
+
+<style lang="scss" scoped>
+::v-deep .v-card__actions > .v-btn.v-btn {
+  min-width: 100px;
+  min-height: 40px;
+}
+</style>

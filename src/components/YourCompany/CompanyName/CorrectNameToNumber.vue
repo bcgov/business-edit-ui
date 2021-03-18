@@ -30,7 +30,7 @@ export default class CorrectNameToNumber extends Vue {
   @Getter getEntityType!: EntityTypes
   @Getter getBusinessId!: string
 
-  // Local Properties
+  // Local properties
   private correctToNumbered = false
 
   /** Watch for form submission and emit results. */

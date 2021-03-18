@@ -35,7 +35,8 @@ describe('articles', () => {
   it('displays the correct sections', () => {
     const router = mockRouter.mock()
     router.push({ name: alterationRoute })
-    store.state.stateModel.originalAlteration.alteration.provisionsRemoved = false
+    store.state.stateModel.businessInformation.hasRestrictions = true
+    store.state.stateModel.newAlteration.provisionsRemoved = false
     const wrapper = mount(Articles, { router, store, vuetify })
 
     expect(wrapper.find(articlesTitle).exists()).toBe(true)
@@ -46,10 +47,25 @@ describe('articles', () => {
     wrapper.destroy()
   })
 
+  it('should not display the company provisions sections when company doesn\'t have pre-existing provisions', () => {
+    const router = mockRouter.mock()
+    router.push({ name: alterationRoute })
+    store.state.stateModel.businessInformation.hasRestrictions = false
+    store.state.stateModel.newAlteration.provisionsRemoved = false
+    const wrapper = mount(Articles, { router, store, vuetify })
+
+    expect(wrapper.find(articlesTitle).exists()).toBe(true)
+    expect(wrapper.find(articlesHeaderIcon).exists()).toBe(true)
+    expect(wrapper.find(articlesHeaderLabel).text()).toBe('Articles')
+    expect(wrapper.find(companyProvisionsSection).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
   it('shows only Change button when list for the initial state', () => {
     const router = mockRouter.mock()
     router.push({ name: alterationRoute })
-    store.state.stateModel.originalAlteration.alteration.provisionsRemoved = false
+    store.state.stateModel.businessInformation.hasRestrictions = true
+    store.state.stateModel.newAlteration.provisionsRemoved = false
     const wrapper = mount(Articles, { router, store, vuetify })
 
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(true)
@@ -61,7 +77,8 @@ describe('articles', () => {
   it('should emit changes', async () => {
     const router = mockRouter.mock()
     router.push({ name: alterationRoute })
-    store.state.stateModel.originalAlteration.alteration.provisionsRemoved = false
+    store.state.stateModel.businessInformation.hasRestrictions = true
+    store.state.stateModel.newAlteration.provisionsRemoved = false
     const wrapper = mount(Articles, { router, store, vuetify })
 
     wrapper.find(changeCompanyProvisionsButton).trigger('click')
@@ -87,7 +104,8 @@ describe('articles', () => {
   it('should allow the user to change company provisions', async () => {
     const router = mockRouter.mock()
     router.push({ name: alterationRoute })
-    store.state.stateModel.originalAlteration.alteration.provisionsRemoved = false
+    store.state.stateModel.businessInformation.hasRestrictions = true
+    store.state.stateModel.newAlteration.provisionsRemoved = false
     const wrapper = mount(Articles, { router, store, vuetify })
 
     wrapper.find(changeCompanyProvisionsButton).trigger('click')
@@ -97,14 +115,15 @@ describe('articles', () => {
     wrapper.find(companyProvisionDoneButton).trigger('click')
     await Vue.nextTick()
 
-    expect(store.state.stateModel.originalAlteration.alteration.provisionsRemoved).toBeTruthy()
+    expect(store.state.stateModel.newAlteration.provisionsRemoved).toBeTruthy()
 
     wrapper.destroy()
   })
   it('should allow the user to undo changes to company provisions', async () => {
     const router = mockRouter.mock()
     router.push({ name: alterationRoute })
-    store.state.stateModel.originalAlteration.alteration.provisionsRemoved = false
+    store.state.stateModel.businessInformation.hasRestrictions = true
+    store.state.stateModel.newAlteration.provisionsRemoved = false
     const wrapper = mount(Articles, { router, store, vuetify })
 
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(true)
@@ -115,13 +134,13 @@ describe('articles', () => {
     wrapper.find(companyProvisionDoneButton).trigger('click')
     await Vue.nextTick()
 
-    expect(store.state.stateModel.originalAlteration.alteration.provisionsRemoved).toBeTruthy()
+    expect(store.state.stateModel.newAlteration.provisionsRemoved).toBeTruthy()
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(false)
     expect(wrapper.find(undoCompanyProvisions).exists()).toBe(true)
     wrapper.find(undoCompanyProvisions).trigger('click')
     await Vue.nextTick()
 
-    expect(store.state.stateModel.originalAlteration.alteration.provisionsRemoved).toBeFalsy()
+    expect(store.state.stateModel.newAlteration.provisionsRemoved).toBeFalsy()
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(true)
 
     wrapper.destroy()

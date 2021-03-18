@@ -78,14 +78,12 @@ describe('YourCompany in an Alteration', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
-  const originalSnapShot = [
-    {
-      business: {
-        legalName: 'Mock Original Name',
-        legalType: 'BEN'
-      }
+  const originalSnapShot = {
+    businessInfo: {
+      legalName: 'Mock Original Name',
+      legalType: 'BEN'
     }
-  ]
+  }
 
   beforeAll(() => {
     router.push({ name: 'alteration' })
@@ -93,8 +91,8 @@ describe('YourCompany in an Alteration', () => {
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.stateModel.nameRequest.legalName = originalSnapShot[0].business.legalName
-    store.state.stateModel.tombstone.entityType = originalSnapShot[0].business.legalType
+    store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
+    store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
     store.state.stateModel.originalSnapshot = originalSnapShot
 
     wrapper = mount(YourCompany, { vuetify, store, localVue, router })

@@ -18,6 +18,11 @@ export const stateModel: StateModelIF = {
     ignoreChanges: false,
     haveChanges: false
   },
+  newAlteration: {
+    // All the new alteration stuff should be here
+    // FUTURE: include alteration stuff here please
+    provisionsRemoved: null
+  },
   accountInformation: {
     accountType: '',
     id: null,
@@ -25,7 +30,7 @@ export const stateModel: StateModelIF = {
     type: ''
   },
   businessInformation: {
-    legalType: '',
+    legalType: null,
     identifier: ''
   },
   nameRequest: {
@@ -73,7 +78,7 @@ export const stateModel: StateModelIF = {
       extension: ''
     },
     officeAddresses: {},
-    folioNumber: null
+    folioNumber: ''
   },
   peopleAndRolesStep: {
     valid: false,
@@ -83,6 +88,7 @@ export const stateModel: StateModelIF = {
   shareStructureStep: {
     valid: false,
     changed: false,
+    resolutionDates: [],
     shareClasses: []
   },
   incorporationAgreementStep: {
@@ -139,7 +145,7 @@ export const stateModel: StateModelIF = {
     alteration: {
       provisionsRemoved: null,
       business: {
-        legalType: '',
+        legalType: null,
         identifier: ''
       },
       nameRequest: { ...EmptyNameRequest },
@@ -155,7 +161,7 @@ export const stateModel: StateModelIF = {
       }
     }
   },
-  originalSnapshot: [],
+  originalSnapshot: null,
   staffPaymentStep: {
     valid: false,
     staffPayment: {
