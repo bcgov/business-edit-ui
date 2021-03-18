@@ -157,7 +157,8 @@ import {
   EffectiveDateTimeIF,
   NameRequestIF,
   ShareClassIF,
-  ShareStructureIF, ValidFlagsIF
+  ShareStructureIF,
+  ValidFlagsIF
 } from '@/interfaces'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { EntityTypes } from '@/enums'
