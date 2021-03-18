@@ -64,6 +64,10 @@ export const stateModel: StateModelIF = {
     valid: false,
     certifiedBy: ''
   },
+  documentDelivery: {
+    valid: false,
+    documentOptionalEmail: ''
+  },
   defineCompanyStep: {
     valid: false,
     changed: false,

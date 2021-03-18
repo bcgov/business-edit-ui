@@ -23,8 +23,6 @@
 
       <detail class="mt-10" />
 
-      <certify-section class="mt-10" />
-
       <staff-payment
         class="mt-10"
         @haveChanges="onStaffPaymentChanges()"
@@ -48,7 +46,17 @@
         @haveChanges="onAlterationSummaryChanges()"
       />
 
-      <no-fee-summary class="mt-10" />
+      <documents-delivery
+       class="mt-10"
+       :pleaseValidate="true"
+        @valid="setDocumentOptionalEmailValidity($event)"
+      />
+
+      <certify-section
+       class="mt-10"
+       :pleaseValidate="true"
+      />
+
     </template>
   </section>
 </template>
@@ -57,7 +65,7 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-import { AlterationSummary, NoFeeSummary } from '@/components/Summary'
+import { AlterationSummary, NoFeeSummary, DocumentsDelivery } from '@/components/Summary'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { CurrentDirectors } from '@/components/PeopleAndRoles'
@@ -81,6 +89,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     CertifySection,
     CompletingParty,
     Detail,
+    DocumentsDelivery,
     NoFeeSummary,
     CurrentDirectors,
     Articles,
@@ -98,12 +107,14 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
+  @Getter getDocumentOptionalEmail!: string
 
   // Global actions
   @Action setHaveChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
+  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })

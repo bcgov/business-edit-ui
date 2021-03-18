@@ -41,6 +41,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getEntityType!: EntityTypes
   @Getter getCorrectedFilingId!: number
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
+  @Getter getDocumentOptionalEmail: string
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getFolioNumber!: string
@@ -79,6 +80,7 @@ export default class FilingTemplateMixin extends Vue {
   @Action setStaffPayment!: ActionBindingIF
   @Action setDetailComment!: ActionBindingIF
   @Action setOriginalSnapshot!: ActionBindingIF
+  @Action setDocumentOptionalEmail!: ActionBindingIF
   @Action setProvisionsRemoved!: ActionBindingIF
   @Action setOriginalResolutionDates!: ActionBindingIF
   @Action setResolutionDates!: ActionBindingIF
@@ -254,6 +256,10 @@ export default class FilingTemplateMixin extends Vue {
       filing.header.isFutureEffective = true
       const effectiveDate = new Date(this.getEffectiveDateTime.dateTimeString)
       filing.header.effectiveDate = effectiveDate.toISOString() // in UTC
+    }
+
+    if (this.getDocumentOptionalEmail) {
+      filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
     }
 
     // Include name request info when applicable
@@ -490,6 +496,9 @@ export default class FilingTemplateMixin extends Vue {
 
     // Store filing date
     this.setFilingDateTime(filing.header.date)
+
+    // Set document optional email
+    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
 
     // Store effective date
     this.setEffectiveDateTimeString(filing.header.effectiveDate)

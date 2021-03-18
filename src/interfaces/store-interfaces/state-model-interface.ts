@@ -1,7 +1,7 @@
 import {
   AccountInformationIF, AlterationFilingIF, CertifyIF, DefineCompanyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF,
   ShareStructureIF, EffectiveDateTimeIF, IncorporationAgreementIF, BusinessInformationIF, IncorporationFilingIF,
-  FilingDataIF, StaffPaymentStepIF, DetailIF, NameTranslationIF, BusinessSnapshotIF
+  FilingDataIF, StaffPaymentStepIF, DetailIF, NameTranslationIF, BusinessSnapshotIF, DocumentDeliveryIF
 } from '@/interfaces'
 
 /** Data object used internally only (not to/from API). */
@@ -13,6 +13,7 @@ export interface StateModelIF {
   nameRequest: NameRequestIF
   nameTranslations: NameTranslationIF[]
   certifyState: CertifyIF
+  documentDelivery: DocumentDeliveryIF
   defineCompanyStep: DefineCompanyIF
   peopleAndRolesStep: PeopleAndRolesIF
   shareStructureStep: ShareStructureIF

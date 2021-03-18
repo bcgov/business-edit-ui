@@ -3,13 +3,14 @@
     <header>
       <h2>2. Certify</h2>
     </header>
-    <span>Enter the legal name of the person authorized to complete and submit these changes.</span>
+    <div class="pt-4">Enter the legal name of the person authorized to complete and submit these changes.</div>
     <certify
       :currentDate="getCurrentDate"
-      :certified-by="getCertifyState.certifiedBy"
-      :is-certified="getCertifyState.valid"
-      :entity-display="readableEntityType"
+      :certifiedBy="getCertifyState.certifiedBy"
+      :isCertified="getCertifyState.valid"
+      :entityDisplay="readableEntityType"
       :message="certifyMessage"
+      :isStaff="isRoleStaff"
       @update:certifiedBy="onCertifiedBy($event)"
       @update:isCertified="onValid($event)"
     />
@@ -40,6 +41,7 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   @Getter getCurrentDate!: string
   @Getter getEntityType!: EntityTypes
   @Getter getCertifyResource!: CertifyStatementIF
+  @Getter isRoleStaff!: boolean
 
   @Action setCertifyState!: ActionBindingIF
 
