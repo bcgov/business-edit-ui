@@ -10,7 +10,7 @@
       </v-col>
 
       <v-col :cols="isEditMode ? '7' : '9'">
-        <div class="info-text" v-if="isEditMode">
+        <div class="info-text" v-if="isAdding">
           Indicate the date of the resolution or court order used to alter the company's share
           structure or the special rights and restrictions of a class or series of shares:
         </div>

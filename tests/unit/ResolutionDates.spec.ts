@@ -35,7 +35,7 @@ describe('Resolution Dates component - edit mode', () => {
     // verify column text
     expect(cols.at(0).text()).toContain('Resolution or')
     expect(cols.at(0).text()).toContain('Court Order Dates')
-    expect(cols.at(1).text()).toContain('Indicate the date of the resolution or court order')
+    expect(cols.at(1).text()).toContain('Dates of resolutions or court orders to alter the')
 
     // verify add button
     const button = cols.at(2).find('.add-btn')
@@ -126,6 +126,10 @@ describe('Resolution Dates component - edit mode', () => {
     // verify there are now 2 rows
     rows = wrapper.findAll('.row')
     expect(rows.length).toBe(2)
+
+    // verify blurb
+    const cols = rows.at(0).findAll('.col')
+    expect(cols.at(1).text()).toContain('Indicate the date of the resolution or court order')
 
     // verify date picker form
     expect(wrapper.find('.date-picker-form')).toBeDefined()
