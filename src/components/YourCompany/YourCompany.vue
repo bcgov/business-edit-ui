@@ -476,6 +476,8 @@ export default class YourCompany extends Mixins(CommonMixin, DateMixin, LegalApi
   display: flex;
   background-color: $BCgovBlue5O;
   padding: 1.25rem;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
 }
 
 .define-company-title {

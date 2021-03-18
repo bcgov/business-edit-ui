@@ -17,6 +17,7 @@
     "@bcrs-shared-components/action-chip": "1.0.2",
     "@bcrs-shared-components/confirm-dialog": "1.0.1",
     "@bcrs-shared-components/contact-info": "1.0.8",
+    "@bcrs-shared-components/court-order-poa": "1.0.0",
     "@bcrs-shared-components/detail-comment": "1.0.4",
     "@bcrs-shared-components/enums": "1.0.8",
     "@bcrs-shared-components/fee-summary": "1.0.9",

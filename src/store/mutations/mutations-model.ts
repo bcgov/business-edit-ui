@@ -68,7 +68,7 @@ export const mutateEffectiveDateTimeString = (state: StateIF, dateTime: string) 
 }
 
 export const mutateEffectiveDateValid = (state: StateIF, valid: boolean) => {
-  state.stateModel.effectiveDateTime.valid = valid
+  state.stateModel.newAlteration.validFlags.isValidEffectiveDate = valid
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
@@ -267,6 +267,10 @@ export const mutateCourtOrderNumber = (state: StateIF, courtOrderNumber: string)
 
 export const mutatePlanOfArrangement = (state: StateIF, poa: boolean) => {
   state.stateModel.newAlteration.planOfArrangement = poa
+}
+
+export const mutateAppValidate = (state: StateIF, isValid: boolean) => {
+  state.stateModel.newAlteration.appValidate = isValid
 }
 
 export const mutateValidCourtNum = (state: StateIF, isValid: boolean) => {

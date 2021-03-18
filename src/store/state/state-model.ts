@@ -19,13 +19,17 @@ export const stateModel: StateModelIF = {
     haveChanges: false
   },
   newAlteration: {
+    appValidate: false,
     provisionsRemoved: null,
     planOfArrangement: false,
     courtOrder: {
       fileNumber: ''
     },
     validFlags: {
-      isValidCourtNum: false
+      isValidEffectiveDate: true,
+      isValidCourtNum: true, // Staff only.
+      isValidCertify: true,
+      isValidStaffPayment: true // Staff Only
     }
   },
   accountInformation: {

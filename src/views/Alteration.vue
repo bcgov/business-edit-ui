@@ -42,7 +42,7 @@
       <!-- FUTURE: set `pleaseValidate` when user clicks File and Pay -->
       <alteration-summary
         class="mt-10"
-        :pleaseValidate="true"
+        :validate="getAppValidate"
         @haveChanges="onAlterationSummaryChanges()"
       />
 
@@ -58,18 +58,15 @@
       />
 
       <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
-      <template>
+      <template v-if="isRoleStaff">
         <header>
-          <h2>x. Court Order and Plan of Arrangement</h2>
+          <h2>Court Order and Plan of Arrangement</h2>
         </header>
-        <p class="my-2">If this filing is pursuant to a court order, enter the court order number. If this filing
+        <p class="my-3 pb-2">If this filing is pursuant to a court order, enter the court order number. If this filing
           is pursuant to a plan of arrangement, <br>enter the court order number and select Plan of Arrangement.</p>
-        {{getAlterationsValidity}}
-        <v-btn @click="test = !test">
-          Validate
-        </v-btn>
         <court-order-poa
-          :validate="test"
+          id="court-order"
+          :validate="getAppValidate"
           @emitCourtNumber="setCourtOrderNumber($event)"
           @emitPoa="setPlanOfArrangement($event)"
           @emitValid="setValidCourtNum($event)"
@@ -90,9 +87,10 @@ import { AlterationSummary, NoFeeSummary, DocumentsDelivery } from '@/components
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { CurrentDirectors } from '@/components/PeopleAndRoles'
-import { CertifySection, CompletingParty, CourtOrderPoa, Detail, StaffPayment } from '@/components/common'
+import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
 import { ShareStructures } from '@/components/ShareStructure'
 import { Articles } from '@/components/Articles'
+import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 
 // Mixins, Interfaces, Enums, etc
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
@@ -122,15 +120,16 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin) {
   private test = false
   // Global getters
-  @Getter getAlterationsValidity!: string
   @Getter getEntityType!: EntityTypes
   @Getter isSummaryMode!: boolean
+  @Getter isRoleStaff!: boolean
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
   @Getter getDocumentOptionalEmail!: string
+  @Getter getAppValidate!: boolean
 
   // Global actions
   @Action setCourtOrderNumber!: ActionBindingIF

@@ -244,6 +244,10 @@ export const setPlanOfArrangement: ActionIF = ({ commit }, poa: boolean): void =
   commit('mutatePlanOfArrangement', poa)
 }
 
+export const setAppValidate: ActionIF = ({ commit }, validate: boolean): void => {
+  commit('mutateAppValidate', validate)
+}
+
 export const setValidCourtNum: ActionIF = ({ commit }, isValid: boolean): void => {
   commit('mutateValidCourtNum', isValid)
 }

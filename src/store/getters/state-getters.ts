@@ -314,6 +314,16 @@ export const isEditing = (state: StateIF): boolean => {
     state.stateModel.editingFlags.incorporationAgreement)
 }
 
+/** Flag to prompt app level validations. */
+export const getAppValidate = (state: StateIF): boolean => {
+  return state.stateModel.newAlteration.appValidate
+}
+
+/** Get state of alterations validity. */
+export const getAlterationValidFlags = (state: StateIF): ValidFlagsIF => {
+  return state.stateModel.newAlteration.validFlags
+}
+
 export const getDefaultCorrectionDetailComment = (state: StateIF): string => {
   // *** TODO: fix this, since header.data is UTC
   const filingDate = state.stateModel.originalIA.header.date.split('T')[0] || ''
@@ -404,9 +414,4 @@ export const getCourtOrderNum = (state: StateIF): string => {
 /** Get Plan of Arrangement state. */
 export const getPlanOfArrangement = (state: StateIF): boolean => {
   return state.stateModel.newAlteration.planOfArrangement
-}
-
-/** Get state of alterations validity. */
-export const getAlterationsValidity = (state: StateIF): ValidFlagsIF => {
-  return state.stateModel.newAlteration.validFlags
 }
