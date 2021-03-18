@@ -136,7 +136,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Watch, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
