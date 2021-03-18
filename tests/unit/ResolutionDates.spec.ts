@@ -131,7 +131,7 @@ describe('Resolution Dates component - edit mode', () => {
     expect(wrapper.find('.date-picker-form')).toBeDefined()
 
     // inject a date
-    vm.onDate('2021-03-17')
+    vm.onDateEmitted('2021-03-17')
 
     // verify new date is emitted
     expect(wrapper.emitted('addRemoveDate').pop()[0]).toEqual(['2021-03-17'])

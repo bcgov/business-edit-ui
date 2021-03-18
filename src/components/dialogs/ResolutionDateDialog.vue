@@ -12,7 +12,7 @@
         <date-picker title="Resolution or Court Order Date"
                      :error-msg="errors"
                      nudge-right="100"
-                     @emitDate="onAdd($event)"
+                     @emitDate="onDateEmitted($event)"
                      @emitCancel="exit()"
                      @emitDateSync="date = $event"/>
       </v-card-text>
@@ -21,7 +21,7 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn id="dialog-done-button" color="primary" @click="onAdd(date)">Done</v-btn>
+        <v-btn id="dialog-done-button" color="primary" @click="onDateEmitted(date)">Done</v-btn>
         <v-btn id="dialog-cancel-button" color="primary" outlined @click="exit()">Cancel</v-btn>
       </v-card-actions>
     </v-card>
@@ -40,10 +40,10 @@ import { ActionBindingIF } from '@/interfaces'
 })
 export default class ResolutionDateDialog extends Vue {
   /** Prop to provide attachment selector. */
-  @Prop() private attach: string
+  @Prop() readonly attach: string
 
   /** Prop to display the dialog. */
-  @Prop() private dialog: boolean
+  @Prop() readonly dialog: boolean
 
   // Global getter
   @Getter getNewResolutionDates!: string []
@@ -67,7 +67,7 @@ export default class ResolutionDateDialog extends Vue {
   }
 
   /** Add a new date event. */
-  private onAdd (date: string): void {
+  onDateEmitted (date: string): void {
     if (date) {
       // Create a copy of the prop and add the new date
       const tempNewDates = cloneDeep(this.getNewResolutionDates)

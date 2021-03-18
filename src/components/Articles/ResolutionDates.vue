@@ -63,7 +63,7 @@
           title="Resolution or Court Order Date"
           nudge-right="80"
           nudge-top="15"
-          @emitDate="onDate($event)"
+          @emitDate="onDateEmitted($event)"
           @emitCancel="isAdding = false"
           @
         />
@@ -130,7 +130,7 @@ export default class ResolutionDates extends Mixins(DateMixin, CommonMixin) {
   }
 
   /** Called to add a new date. */
-  onDate (date: string): void {
+  onDateEmitted (date: string): void {
     if (date) {
       // Create a copy of the prop and add the new date
       const tempNewDates = cloneDeep(this.addedDates)
