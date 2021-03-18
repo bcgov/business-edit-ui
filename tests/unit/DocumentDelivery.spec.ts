@@ -17,7 +17,7 @@ const optionalEmailInput = '#optionalEmail'
 /**
  * Creates and mounts a component, so that it can be tested.
  */
-function createComponent(): Wrapper<DocumentsDelivery> {
+function createComponent (): Wrapper<DocumentsDelivery> {
   return mount(DocumentsDelivery, {
     vuetify,
     store
@@ -49,7 +49,7 @@ describe('Document Delivery component', () => {
   it('validates a valid email', async () => {
     const wrapper: Wrapper<DocumentsDelivery> = createComponent()
     const vm: any = wrapper.vm
-    
+
     // Set Input field value
     const input = wrapper.find(optionalEmailInput)
     input.setValue('optional@mail.com')
@@ -77,5 +77,4 @@ describe('Document Delivery component', () => {
     expect(wrapper.findAll('.v-messages__message').length).toBe(1)
     expect(wrapper.find('.v-messages__message').text()).toContain('Email is Invalid')
   })
-
 })
