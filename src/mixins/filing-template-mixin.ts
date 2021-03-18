@@ -568,17 +568,9 @@ export default class FilingTemplateMixin extends Vue {
       }) || []
     )
 
-    const shareStructure = businessSnapshot.shareStructure
-    const shareClasses = cloneDeep(shareStructure.shareClasses)
-
-    // Apply a type to share classes and series
-    shareClasses.forEach(shareClass => {
-      shareClass.type = 'Class'
-      shareClass.series.forEach(shareSeries => { shareSeries.type = 'Series' })
-    })
-
-    this.setShareClasses(shareClasses)
-    this.setOriginalResolutionDates(shareStructure.resolutionDates)
+    // Store share classes and original resolution dates
+    this.setShareClasses(businessSnapshot.shareStructure.shareClasses)
+    this.setOriginalResolutionDates(businessSnapshot.shareStructure.resolutionDates)
 
     // Store business contact
     this.setBusinessContact(businessSnapshot.contactPoint)

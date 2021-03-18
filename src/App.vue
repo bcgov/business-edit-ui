@@ -604,7 +604,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   /** Perform high level validations before filing. */
   private async validateApp (): Promise<void> {
     // Prompt app validations
-    await this.setAppValidate(true)
+    this.setAppValidate(true)
 
     // evaluate valid flags. Scroll to invalid components or file alteration.
     if (this.validateAndScroll(this.getAlterationValidFlags)) await this.onClickSave(false)
