@@ -15,6 +15,7 @@ const vuetify = new Vuetify({})
 const store = getVuexStore()
 
 const alterationRoute = 'alteration'
+
 // Selectors
 const articlesTitle = '#articles'
 const articlesHeaderIcon = '#articles > div.define-article-header > i.v-icon'
@@ -22,16 +23,10 @@ const articlesHeaderLabel = '#articles > div.define-article-header > label.defin
 const companyProvisionsSection = '#company-provisions'
 const changeCompanyProvisionsButton = '#change-company-provisions'
 const undoCompanyProvisions = '#undo-company-provisions'
-const userInstructionsText = '#company-provisions-user-instructions'
-const companyProvisionsCheckboxText = '#company-provisions-checkbox-text'
 const companyProvisionsCheckbox = '#cp-checkbox'
 const companyProvisionDoneButton = '#company-provisions-done'
-const companyProvisionCancelButton = '#company-provisions-cancel'
 
-// CSS Classes
-const infoTextClassName = 'info-text'
-const invalidClassName = 'invalid'
-describe('articles', () => {
+describe('Articles component', () => {
   it('displays the correct sections', () => {
     const router = mockRouter.mock()
     router.push({ name: alterationRoute })
@@ -61,6 +56,7 @@ describe('articles', () => {
 
     wrapper.destroy()
   })
+
   it('shows only Change button when list for the initial state', () => {
     const router = mockRouter.mock()
     router.push({ name: alterationRoute })
@@ -119,6 +115,7 @@ describe('articles', () => {
 
     wrapper.destroy()
   })
+
   it('should allow the user to undo changes to company provisions', async () => {
     const router = mockRouter.mock()
     router.push({ name: alterationRoute })

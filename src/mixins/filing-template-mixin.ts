@@ -53,7 +53,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getOfficeAddresses!: IncorporationAddressIf | {}
   @Getter getBusinessContact!: ContactPointIF
   @Getter getAgreementType!: string
-  @Getter getOriginalSnapshot: BusinessSnapshotIF
+  @Getter getOriginalSnapshot!: BusinessSnapshotIF
   @Getter getNewResolutionDates!: string[]
   @Getter getSnapshotShareStructure!: ShareStructureIF
   @Getter hasBusinessNameChanged!: boolean
@@ -471,7 +471,7 @@ export default class FilingTemplateMixin extends Vue {
     const shareStructure = filing.alteration.shareStructure
     this.setShareClasses(shareStructure.shareClasses)
     this.setResolutionDates(shareStructure.resolutionDates)
-    this.setOriginalResolutionDates(this.getSnapshotShareStructure.resolutionDates)
+    this.setOriginalResolutionDates(this.getSnapshotShareStructure?.resolutionDates || null)
 
     // Store business contact
     this.setBusinessContact({

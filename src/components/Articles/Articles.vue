@@ -5,22 +5,22 @@
       <label class="define-article-title">Articles</label>
     </div>
 
-    <div
-      class="section-container"
-      v-if="getBusinessInformation.hasRestrictions"
-      >
+    <div class="section-container" v-if="getBusinessInformation.hasRestrictions">
       <company-provisions
         class="sub-section"
         :provisionsRemoved="getProvisionsRemoved"
         @companyProvisionsChanged="setProvisionsRemoved($event)"
-        @haveChanges="emitHaveChanges($event)"/>
+        @haveChanges="emitHaveChanges($event)"
+      />
     </div>
 
     <div class="section-container">
       <resolution-dates
         :added-dates="getNewResolutionDates"
         :previous-dates="getPreviousResolutionDates"
-        @addRemoveDate="setResolutionDates($event)"/>
+        :isEditMode="true"
+        @addRemoveDate="setResolutionDates($event)"
+      />
     </div>
   </v-card>
 </template>

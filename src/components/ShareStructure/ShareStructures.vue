@@ -49,9 +49,9 @@ import {
   }
 })
 export default class ShareStructures extends Mixins(CommonMixin) {
-  /** Edit Mode */
+  /** Whether this component should be in edit mode or review mode. */
   @Prop({ default: true })
-  readonly isEditMode!: string
+  readonly isEditMode: boolean
 
   // Global getters
   @Getter getNewResolutionDates!: string []

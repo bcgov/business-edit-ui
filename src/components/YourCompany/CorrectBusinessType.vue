@@ -71,7 +71,7 @@
           <div class="my-6">
             <p class="subtitle">Benefit Company Articles</p>
             <p class="info-text">Before submitting your alteration notice you <span class="font-weight-bold">must
-                change your company's articles to include a set of Benefit Company Articles</span> OR draft new articles
+              change your company's articles to include a set of Benefit Company Articles</span> OR draft new articles
               containing a benefit provision.</p>
           </div>
 
@@ -102,10 +102,12 @@
                         <span class="ml-2">[List your public benefits in this section]</span>
                       </li>
                       <li>
-                        <span class="ml-4">The Company commits</span><br>
+                        <span class="ml-4">The Company commits</span>
+                        <br>
                         <div class="ml-5">
-                      <span class="ml-n3">i) to conduct the benefit company's business in a responsible and sustainable
-                      manner;</span><br>
+                          <span class="ml-n3">i) to conduct the benefit company's business in a responsible and
+                            sustainable manner;</span>
+                          <br>
                           <span class="ml-n3">ii) to promote the public benefits specific in paragraph 1.1</span>
                         </div>
                       </li>
@@ -227,8 +229,8 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
   // Global getters
   @Getter getApprovedName!: string
   @Getter getEntityType!: EntityTypes
-  @Getter isConflictingLegalType: boolean
-  @Getter getOriginalSnapshot: BusinessSnapshotIF
+  @Getter isConflictingLegalType!: boolean
+  @Getter getOriginalSnapshot!: BusinessSnapshotIF
 
   // Alteration flag getters
   @Getter hasBusinessTypeChanged!: boolean
