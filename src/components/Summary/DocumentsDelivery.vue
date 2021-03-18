@@ -32,15 +32,15 @@
           </v-col>
           <v-col cols="10" sm="9" md="10" class="secondCol">
             <v-text-field
-            v-model="optionalEmail"
-            id="optionalEmail"
-            class="text-input-field"
-            filled
-            label="Optional Email"
-            hint="Example: name@email.com"
-            persistent-hint
-            :rules="entityEmailRules"
-          >
+              v-model="optionalEmail"
+              id="optionalEmail"
+              class="text-input-field"
+              filled
+              label="Optional Email"
+              hint="Example: name@email.com"
+              persistent-hint
+              :rules="entityEmailRules"
+            >
           </v-text-field>
           </v-col>
         </v-row>
