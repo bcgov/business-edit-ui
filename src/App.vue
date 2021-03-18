@@ -612,7 +612,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
   /**
    * Will create/update a draft alteration or file and pay.
-   * @returns a promise (ie, this is an async method)
+   * @returns a promise (ie, this is an async method).
    */
   private async onClickSave (isDraft: boolean = true): Promise<void> {
     // prevent double saving
