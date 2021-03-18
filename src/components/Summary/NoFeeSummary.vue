@@ -15,7 +15,7 @@
         <v-layout row class="mx-0 mt-4">
           <v-flex xs3>
             <v-layout column>
-              <label><strong>Registered Office<br> Contact Information</strong></label>
+              <label><strong>Registered Office<br>Contact Information</strong></label>
             </v-layout>
           </v-flex>
 

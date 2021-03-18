@@ -9,7 +9,7 @@ const vuetify = new Vuetify({})
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
-describe('unit tests', () => {
+describe('Name Request Error Dialog', () => {
   it('displays "not found" message', async () => {
     const wrapper = mount(NameRequestErrorDialog, {
       vuetify,

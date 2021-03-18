@@ -66,21 +66,18 @@
           </v-flex>
 
           <v-flex xs8>
-            <template>
-              <span class="info-text">
-                Changing from a {{ getEntityDesc(originalEntityType) }} to a {{getEntityDesc(getEntityType)}}
+            <span class="info-text">
+              Changing from a {{ getEntityDesc(originalEntityType) }} to a {{getEntityDesc(getEntityType)}}
+            </span>
+
+            <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
+            <div class="confirmed-msg">
+              <v-icon color="success" class="confirmed-icon">mdi-check</v-icon>
+              <span class="info-text text-body-3 confirmed-icon ml-2">
+                The company has completed a set Benefit Company Articles containing a benefit provision, and a copy
+                of these articles has been added to the company's record book.
               </span>
-              <template>
-                <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
-                <div class="confirmed-msg">
-                  <v-icon color="success" class="confirmed-icon">mdi-check</v-icon>
-                  <span class="info-text text-body-3 confirmed-icon ml-2">
-                    The company has completed a set Benefit Company Articles containing a benefit provision, and a copy
-                    of these articles has been added to the company's record book.
-                  </span>
-                </div>
-              </template>
-            </template>
+            </div>
           </v-flex>
         </v-layout>
       </div>
@@ -88,17 +85,30 @@
 
     <!-- TODO: Name Translation -->
 
-    <!-- TODO: Pre-existing Company Provisions -->
-
+    <!-- Share Structure -->
     <template v-if="hasShareStructureChanged">
       <v-divider class="mx-4" />
-      <div class="section-container">
+      <div class="section-container share-structure-summary">
         <v-row no-gutters>
           <v-col cols="3">
             <label><strong>Share Structure</strong></label>
           </v-col>
         </v-row>
         <share-structures class="mt-6" :is-edit-mode="false" />
+      </div>
+    </template>
+
+    <!-- TODO: Pre-existing Company Provisions -->
+
+    <!-- Resolution or Court Order Dates -->
+    <template v-if="showResolutionCourtOrderDatesSummary">
+      <v-divider class="mx-4" />
+      <div class="section-container resolution-court-order-dates-summary">
+        <resolution-dates
+          :added-dates="getNewResolutionDates"
+          :previous-dates="getPreviousResolutionDates"
+          :isEditMode="false"
+        />
       </div>
     </template>
 
@@ -153,11 +163,13 @@ import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mi
 import { EntityTypes } from '@/enums'
 import { EffectiveDateTime } from '@/components/common'
 import { ShareStructures } from '@/components/ShareStructure'
+import { ResolutionDates } from '@/components/Articles'
 
 @Component({
   components: {
     ConfirmDialog,
     EffectiveDateTime,
+    ResolutionDates,
     ShareStructures
   }
 })
@@ -176,8 +188,10 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
   @Getter getNameRequest!: NameRequestIF
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getShareClasses!: ShareClassIF[]
-  @Getter getSnapshotShareStructure: ShareStructureIF
-  @Getter getOriginalSnapshot: BusinessSnapshotIF
+  @Getter getSnapshotShareStructure!: ShareStructureIF
+  @Getter getOriginalSnapshot!: BusinessSnapshotIF
+  @Getter getNewResolutionDates!: string[]
+  @Getter getPreviousResolutionDates!: string[]
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -222,8 +236,12 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
   }
 
   /** Local getter, using a mixin method to detect changes to Share Structure. */
-  private get hasShareStructureChanged (): boolean {
+  get hasShareStructureChanged (): boolean {
     return !this.isSame(this.getShareClasses, this.getSnapshotShareStructure?.shareClasses, ['action'])
+  }
+
+  get showResolutionCourtOrderDatesSummary (): boolean {
+    return (this.getNewResolutionDates?.length > 0) || (this.getPreviousResolutionDates?.length > 0)
   }
 
   /** Restore baseline data to original snapshot. */

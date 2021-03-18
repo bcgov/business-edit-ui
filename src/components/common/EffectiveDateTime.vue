@@ -111,10 +111,10 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   }
 
   /** Current JS date, expected to be passed in periodically. */
-  @Prop()readonly currentJsDate!: Date
+  @Prop() readonly currentJsDate: Date
 
   /** Effective Date Time object, for initial config. */
-  @Prop()readonly effectiveDateTime!: EffectiveDateTimeIF
+  @Prop() readonly effectiveDateTime: EffectiveDateTimeIF
 
   // Declaration for template
   readonly EffectiveDateTypes = EffectiveDateTypes

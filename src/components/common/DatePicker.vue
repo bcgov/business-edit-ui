@@ -1,7 +1,7 @@
 <template>
   <v-form :attach="attach" ref="form" class="date-picker-form">
     <v-menu v-model="displayPicker"
-            close-on-click
+            :close-on-click="false"
             :close-on-content-click="false"
             :nudge-top="nudgeTop"
             :nudge-bottom="nudgeBottom"
@@ -44,26 +44,26 @@ import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class DatePicker extends Vue {
-  @Prop()
-  private attach!: string
+  @Prop({ default: null })
+  readonly attach: string
 
   @Prop({ default: '' })
-  private title!: string
+  readonly title: string
 
   @Prop({ default: null })
-  private errorMsg!: string
+  readonly errorMsg: string
 
   @Prop({ default: null })
-  private nudgeTop!: number
+  readonly nudgeTop: number
 
   @Prop({ default: null })
-  private nudgeBottom!: number
+  readonly nudgeBottom: number
 
   @Prop({ default: null })
-  private nudgeRight!: number
+  readonly nudgeRight: number
 
   @Prop({ default: null })
-  private nudgeLeft!: number
+  readonly nudgeLeft: number
 
   private dateText = ''
   private displayPicker = false
@@ -91,6 +91,7 @@ export default class DatePicker extends Vue {
 ::v-deep .v-card__actions {
   justify-content: flex-end;
 }
+
 ::v-deep .v-input .v-label {
   font-weight: normal;
   color: $gray7;
