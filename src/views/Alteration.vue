@@ -130,7 +130,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** Called when App is ready and this component can load its data. */
+  /** Called when App is ready and this component can load its data */
   @Watch('appReady')
   async onAppReady (val: boolean): Promise<void> {
     // do not proceed if app is not ready
