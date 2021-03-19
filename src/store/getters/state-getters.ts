@@ -2,7 +2,7 @@ import { AccountTypes, EntityTypes } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
   NameRequestIF, BusinessInformationIF, CertifyIF, CertifyStatementIF, NameTranslationIF, IncorporationAddressIf,
-  FilingDataIF, StateIF, BusinessSnapshotIF, EffectiveDateTimeIF, ShareStructureIF
+  FilingDataIF, StateIF, BusinessSnapshotIF, EffectiveDateTimeIF, ShareStructureIF, ValidFlagsIF
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
@@ -314,6 +314,16 @@ export const isEditing = (state: StateIF): boolean => {
     state.stateModel.editingFlags.incorporationAgreement)
 }
 
+/** Flag to prompt app level validations. */
+export const getAppValidate = (state: StateIF): boolean => {
+  return state.stateModel.newAlteration.appValidate
+}
+
+/** Get state of alterations validity. */
+export const getAlterationValidFlags = (state: StateIF): ValidFlagsIF => {
+  return state.stateModel.newAlteration.validFlags
+}
+
 export const getDefaultCorrectionDetailComment = (state: StateIF): string => {
   // *** TODO: fix this, since header.data is UTC
   const filingDate = state.stateModel.originalIA.header.date.split('T')[0] || ''
@@ -394,4 +404,14 @@ export const getPreviousResolutionDates = (state: StateIF): string[] => {
 /** Get Provisions Removed state. */
 export const getNewResolutionDates = (state: StateIF): string[] => {
   return state.stateModel.shareStructureStep.resolutionDates
+}
+
+/** Get the court order number. */
+export const getCourtOrderNum = (state: StateIF): string => {
+  return state.stateModel.newAlteration.courtOrder.fileNumber
+}
+
+/** Get Plan of Arrangement state. */
+export const getPlanOfArrangement = (state: StateIF): boolean => {
+  return state.stateModel.newAlteration.planOfArrangement
 }

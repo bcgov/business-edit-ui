@@ -157,7 +157,8 @@ import {
   EffectiveDateTimeIF,
   NameRequestIF,
   ShareClassIF,
-  ShareStructureIF
+  ShareStructureIF,
+  ValidFlagsIF
 } from '@/interfaces'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { EntityTypes } from '@/enums'
@@ -194,6 +195,7 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
   @Getter getPreviousResolutionDates!: string[]
 
   // Alteration flag getters
+  @Getter getAlterationValidFlags!: ValidFlagsIF
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
 
@@ -204,7 +206,7 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
   @Action setEffectiveDateValid!: ActionBindingIF
 
   /** Prop to perform validation. */
-  @Prop() readonly pleaseValidate: boolean
+  @Prop() readonly validate: boolean
 
   get isFutureEffective (): boolean {
     return this.getEffectiveDateTime.isFutureEffective
@@ -232,7 +234,7 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
 
   /** True if invalid class should be set for Alteration Date-Time container. */
   get alterationDateTimeInvalid (): boolean {
-    return (this.pleaseValidate && !this.getEffectiveDateTime.valid)
+    return (this.validate && !this.getAlterationValidFlags.isValidEffectiveDate)
   }
 
   /** Local getter, using a mixin method to detect changes to Share Structure. */
@@ -270,14 +272,6 @@ export default class AlterationSummary extends Mixins(CommonMixin, DateMixin, Fi
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-
-.section-container {
-  padding: 1.25rem 1rem;
-
-  .sub-section {
-    margin-top: 1.5rem;
-  }
-}
 
 .summary-header {
   display: flex;

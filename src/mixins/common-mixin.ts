@@ -1,7 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { omit, isEqual } from 'lodash'
-import { EntityTypes, RouteNames } from '@/enums'
+import { EntityTypes, RouteNames, ReviewSummaryFlags } from '@/enums'
+import { ValidFlagsIF } from '@/interfaces'
 
 /**
  * Mixin that provides some useful common utilities.
@@ -35,6 +36,24 @@ export default class CommonMixin extends Vue {
       // don't call window.scrollTo during Jest tests because jsdom doesn't implement it
       if (!this.isJestRunning) window.scrollTo({ top: element.offsetTop, behavior: 'smooth' })
     })
+  }
+
+  /**
+   * Identifies the first invalid flag and scrolls to the component
+   * @param validatorFlags The component valid flags
+   */
+  validateAndScroll (validatorFlags: ValidFlagsIF): boolean {
+    // Create an array of the flag values
+    const validFlagArray = Object.keys(validatorFlags).map(key => validatorFlags[key])
+
+    // Find the first corresponding flag id that is invalid
+    const component = document.getElementById(ReviewSummaryFlags[validFlagArray.indexOf(false)])
+
+    // Scroll to the top of the first invalid component or return true
+    if (component) {
+      this.scrollToTop(component)
+      return false
+    } else return true
   }
 
   /**

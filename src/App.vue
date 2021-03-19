@@ -136,7 +136,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Watch, Mixins } from 'vue-property-decorator'
+import { Component, Watch, Mixins, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
@@ -153,7 +153,7 @@ import * as Dialogs from '@/components/dialogs'
 
 // Mixins, interfaces, etc
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces'
+import { FilingDataIF, ActionBindingIF, ConfirmDialogType, ValidFlagsIF } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { EntityTypes, FilingCodes, SummaryActions } from '@/enums'
 
@@ -192,12 +192,14 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getCurrentJsDate!: Date
 
   // Alteration flag getters
+  @Getter getAlterationValidFlags!: ValidFlagsIF
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
   @Getter isConflictingLegalType!: boolean
 
   // Global actions
   @Action setAccountInformation!: ActionBindingIF
+  @Action setAppValidate!: ActionBindingIF
   @Action setAuthRoles: ActionBindingIF
   @Action setBusinessId!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
@@ -456,7 +458,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       case SummaryActions.CONFIRM:
         // If Summary Mode: Check validity, save and file else move into summary mode.
         this.isSummaryMode
-          ? await this.onClickSave(false)
+          ? await this.validateApp()
           : this.setSummaryMode(true)
         break
     }
@@ -599,9 +601,18 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     await updateLdUser(key, email, firstName, lastName, custom)
   }
 
+  /** Perform high level validations before filing. */
+  private async validateApp (): Promise<void> {
+    // Prompt app validations
+    this.setAppValidate(true)
+
+    // evaluate valid flags. Scroll to invalid components or file alteration.
+    if (this.validateAndScroll(this.getAlterationValidFlags)) await this.onClickSave(false)
+  }
+
   /**
    * Will create/update a draft alteration or file and pay.
-   * @returns a promise (ie, this is an async method)
+   * @returns a promise (ie, this is an async method).
    */
   private async onClickSave (isDraft: boolean = true): Promise<void> {
     // prevent double saving

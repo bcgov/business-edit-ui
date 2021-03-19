@@ -254,7 +254,14 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
     return axios.get(url)
       .then(response => {
         if (response?.data) {
-          return response.data
+          const shareStructure = response.data
+          // Apply a type to share classes and series
+          shareStructure.shareClasses.forEach(shareClass => {
+            shareClass.type = 'Class'
+            shareClass.series.forEach(shareSeries => { shareSeries.type = 'Series' })
+          })
+
+          return shareStructure
         } else {
           // eslint-disable-next-line no-console
           console.log('fetchShareStructure() error - invalid response =', response)
