@@ -23,10 +23,7 @@
         </v-flex>
         <v-flex md8>
           <div class="company-name">{{ companyName }}</div>
-          <div class="company-type">
-            <span v-if="entityFilter(EntityTypes.BENEFIT_COMPANY)">BC Benefit Company</span>
-            <span v-else-if="entityFilter(EntityTypes.COOP)">BC Cooperative Association</span>
-          </div>
+          <div class="company-type">{{ getCorpTypeDescription(getEntityType) }}</div>
         </v-flex>
       </v-layout>
       <v-layout row v-if="getNameTranslations && getNameTranslations.length" class="mt-3">
@@ -76,7 +73,7 @@ import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 import { CommonMixin } from '@/mixins'
 
 // Enums
-import { EntityTypes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 
 @Component({
   components: {
@@ -96,12 +93,13 @@ export default class SummaryDefineCompany extends Mixins(CommonMixin) {
   @Getter getFolioNumber!: string
   @Getter isDefineCompanyStepValid!: boolean
   @Getter getBusinessContact!: ContactPointIF
+  @Getter getEntityType!: CorpTypeCd
 
   @Prop({ default: false })
   private isSummary: boolean
 
   // Entity Enum
-  readonly EntityTypes = EntityTypes
+  readonly CorpTypeCd = CorpTypeCd
 
   /** The company name (from NR, or incorporation number). */
   private get companyName (): string {

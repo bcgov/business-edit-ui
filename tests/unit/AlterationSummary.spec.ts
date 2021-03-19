@@ -106,9 +106,8 @@ describe('Alteration Summary component', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('.business-type-summary').exists()).toBe(true)
-    expect(wrapper.find('.business-type-summary').text()).toContain(
-      'Changing from a BC Limited Company to a BC Benefit Company'
-    )
+    expect(wrapper.find('.business-type-summary').text()).toContain('Changing from a BC Limited Company')
+    expect(wrapper.find('.business-type-summary').text()).toContain('to a BC Benefit Company')
   })
 
   it('renders the default alteration date and time section', async () => {

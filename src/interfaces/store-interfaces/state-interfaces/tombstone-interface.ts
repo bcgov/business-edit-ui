@@ -1,4 +1,4 @@
-import { EntityTypes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 
 /** Data object used internally only (not to/from API). */
 export interface TombStoneIF {
@@ -6,7 +6,7 @@ export interface TombStoneIF {
   authRoles: Array<string>
   userInfo: any // from auth profile
   businessId: string
-  entityType: EntityTypes
+  entityType: CorpTypeCd
   currentDate: string // YYYY-MM-DD
   filingDateTime: string
   filingId: number

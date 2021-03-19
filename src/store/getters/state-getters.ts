@@ -1,4 +1,4 @@
-import { AccountTypes, EntityTypes } from '@/enums'
+import { AccountTypes, CorpTypeCd } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
   NameRequestIF, BusinessInformationIF, CertifyIF, CertifyStatementIF, NameTranslationIF, IncorporationAddressIf,
@@ -22,7 +22,7 @@ export const isAuthView = (state: StateIF): boolean => {
 }
 
 /** The entity type. */
-export const getEntityType = (state: StateIF): EntityTypes => {
+export const getEntityType = (state: StateIF): CorpTypeCd => {
   return state.stateModel.tombstone.entityType
 }
 
@@ -33,12 +33,12 @@ export const isEntityType = (state: StateIF): boolean => {
 
 /** Whether the entity is a Benefit Company. */
 export const isTypeBcomp = (state: StateIF): boolean => {
-  return (state.stateModel.tombstone.entityType === EntityTypes.BENEFIT_COMPANY)
+  return (state.stateModel.tombstone.entityType === CorpTypeCd.BENEFIT_COMPANY)
 }
 
 /** Whether the entity is a Cooperative. */
 export const isTypeCoop = (state: StateIF): boolean => {
-  return (state.stateModel.tombstone.entityType === EntityTypes.COOP)
+  return (state.stateModel.tombstone.entityType === CorpTypeCd.COOP)
 }
 
 /** Whether the current account is a premium account. */

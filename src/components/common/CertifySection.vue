@@ -29,7 +29,7 @@ import { DateMixin, EnumMixin } from '@/mixins'
 
 // Interfaces, Enums & Resources
 import { ActionBindingIF, CertifyIF, CertifyStatementIF } from '@/interfaces'
-import { EntityTypes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 
 @Component({
   components: {
@@ -39,7 +39,7 @@ import { EntityTypes } from '@/enums'
 export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   @Getter getCertifyState!: CertifyIF
   @Getter getCurrentDate!: string
-  @Getter getEntityType!: EntityTypes
+  @Getter getEntityType!: CorpTypeCd
   @Getter getCertifyResource!: CertifyStatementIF
   @Getter isRoleStaff!: boolean
 
@@ -47,7 +47,7 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
 
   /** Get the entity type in readable format */
   private get readableEntityType (): string {
-    return this.entityTypeToDescription(this.getEntityType)
+    return this.getCorpTypeDescription(this.getEntityType)
   }
 
   /** Get the certify resource message */

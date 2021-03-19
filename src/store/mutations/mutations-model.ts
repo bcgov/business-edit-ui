@@ -15,7 +15,7 @@ import {
   StateIF
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { EntityTypes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 
 export const mutateBusinessId = (state: StateIF, businessId: string) => {
   state.stateModel.tombstone.businessId = businessId
@@ -188,7 +188,7 @@ export const mutateHaveChanges = (state: StateIF, haveChanges: boolean) => {
   state.stateModel.tombstone.haveChanges = haveChanges
 }
 
-export const mutateEntityType = (state: StateIF, entityType: EntityTypes) => {
+export const mutateEntityType = (state: StateIF, entityType: CorpTypeCd) => {
   state.stateModel.tombstone.entityType = entityType
 }
 

@@ -17,7 +17,7 @@ import { Action, Getter } from 'vuex-class'
 
 // Interfaces && enums
 import { ActionBindingIF } from '@/interfaces'
-import { CorrectionTypes, EntityTypes } from '@/enums'
+import { CorrectionTypes, CorpTypeCd } from '@/enums'
 
 @Component({})
 export default class CorrectNameToNumber extends Vue {
@@ -27,7 +27,7 @@ export default class CorrectNameToNumber extends Vue {
   @Action setNameRequest!: ActionBindingIF
 
   @Getter getApprovedName!: string
-  @Getter getEntityType!: EntityTypes
+  @Getter getEntityType!: CorpTypeCd
   @Getter getBusinessId!: string
 
   // Local properties

@@ -2,7 +2,7 @@
 import { axios } from '@/utils'
 import { AxiosResponse } from 'axios'
 import { Component, Mixins } from 'vue-property-decorator'
-import { EntityTypes, NameRequestStates } from '@/enums'
+import { CorpTypeCd, NameRequestStates } from '@/enums'
 import { DateMixin } from '@/mixins'
 import { NrResponseIF } from '@/interfaces'
 
@@ -50,14 +50,14 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
       throw new Error(`Invalid Name request state: ${state}`)
     }
 
-    // Convert NR types of BC to BEN to align with Colin
-    if (nrResponse.entity_type_cd === EntityTypes.NR_BENEFIT_COMPANY) {
-      nrResponse.entity_type_cd = EntityTypes.BENEFIT_COMPANY
+    // Convert NR type of BC to BEN to align with COLIN
+    if (nrResponse.entity_type_cd === CorpTypeCd.BC_COMPANY) {
+      nrResponse.entity_type_cd = CorpTypeCd.BENEFIT_COMPANY
     }
 
-    // Convert NR types of CR (NR Limited Company) to BC (Lear Limited Company) to align with Colin
-    if (nrResponse.entity_type_cd === EntityTypes.NR_BC_CORPORATION) {
-      nrResponse.entity_type_cd = EntityTypes.BC_CORPORATION
+    // Convert NR type of CR to BC to align with COLIN
+    if (nrResponse.entity_type_cd === CorpTypeCd.BC_CORPORATION) {
+      nrResponse.entity_type_cd = CorpTypeCd.BC_COMPANY
     }
 
     return nrResponse

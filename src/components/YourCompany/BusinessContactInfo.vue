@@ -5,7 +5,7 @@
     :hasBusinessContactInfoChange="hasBusinessContactInfoChange"
     :edit-label="editLabel"
     :edited-label="editedLabel"
-    :disable-actions="isCorrectionView()"
+    :disable-actions="isCorrectionView"
     @contactInfoChange="setContact($event)"
   />
 </template>
@@ -44,7 +44,7 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
 
   /** Get the original Contact info dependant on filing type. */
   private get originalContact (): ContactPointIF {
-    return this.isCorrectionView()
+    return this.isCorrectionView
       ? this.getOriginalIA.incorporationApplication.contactPoint
       : this.getSnapshotContact
   }
@@ -58,7 +58,7 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
 
   /** Update Contact info. */
   private async setContact (contactInfo: ContactPointIF): Promise<void> {
-    this.isCorrectionView()
+    this.isCorrectionView
       ? this.setBusinessContact(contactInfo)
       : await this.updateContactRequest(contactInfo)
   }

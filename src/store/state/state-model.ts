@@ -27,9 +27,9 @@ export const stateModel: StateModelIF = {
     },
     validFlags: {
       isValidEffectiveDate: true,
-      isValidCourtNum: true, // Staff only.
+      isValidCourtNum: true, // Staff only
       isValidCertify: true,
-      isValidStaffPayment: true // Staff Only
+      isValidStaffPayment: true // Staff only
     }
   },
   accountInformation: {
@@ -115,7 +115,7 @@ export const stateModel: StateModelIF = {
       isFutureEffective: null
     },
     business: {
-      legalType: '',
+      legalType: null,
       identifier: ''
     },
     incorporationApplication: {
@@ -143,7 +143,9 @@ export const stateModel: StateModelIF = {
       name: '',
       certifiedBy: '',
       date: '',
-      folioNumber: ''
+      folioNumber: '',
+      effectiveDate: '',
+      isFutureEffective: null
     },
     business: {
       foundingDate: '',
