@@ -1,7 +1,8 @@
 // Libraries
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
+import { DateMixin } from '@/mixins'
 
 // Interfaces
 import {
@@ -31,7 +32,7 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
  * Mixin that provides the integration with the Legal API.
  */
 @Component({})
-export default class FilingTemplateMixin extends Vue {
+export default class FilingTemplateMixin extends Mixins(DateMixin) {
   // Global getters
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
@@ -255,7 +256,8 @@ export default class FilingTemplateMixin extends Vue {
     if (this.getEffectiveDateTime.isFutureEffective) {
       filing.header.isFutureEffective = true
       const effectiveDate = new Date(this.getEffectiveDateTime.dateTimeString)
-      filing.header.effectiveDate = effectiveDate.toISOString() // in UTC
+      const effectiveDateIso = this.dateToApiIsoDateTimeString(effectiveDate)
+      filing.header.effectiveDate = effectiveDateIso // in UTC
     }
 
     if (this.getDocumentOptionalEmail) {
