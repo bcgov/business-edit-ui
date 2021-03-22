@@ -93,7 +93,7 @@
             <v-col cols="12" lg="3" style="position: relative">
 
               <!-- Corrections still uses the unmodified fee summary -->
-              <template v-if="showFeeSummary && isCorrectionView()">
+              <template v-if="showFeeSummary && isCorrectionView">
                 <aside>
                   <affix
                     relative-element-selector=".col-lg-9"
@@ -123,7 +123,7 @@
 
         <!-- Action bar is for Corrections ONLY -->
         <actions
-          v-if="isCorrectionView()"
+          v-if="isCorrectionView"
           :key="$route.path"
           @goToDashboard="goToDashboard(true)"
         />
@@ -155,7 +155,7 @@ import * as Dialogs from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, ValidFlagsIF } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { EntityTypes, FilingCodes, SummaryActions } from '@/enums'
+import { CorpTypeCd, FilingCodes, SummaryActions } from '@/enums'
 
 @Component({
   components: {
@@ -284,7 +284,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   private get showFeeSummary (): boolean {
     const defaultFilingData = {
       filingTypeCode: null as FilingCodes,
-      entityType: null as EntityTypes,
+      entityType: null as CorpTypeCd,
       priority: false,
       waiveFees: false
     }

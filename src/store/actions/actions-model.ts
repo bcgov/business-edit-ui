@@ -10,9 +10,9 @@ import {
   ShareClassIF
 } from '@/interfaces'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
-import { EntityTypes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 
-export const setEntityType: ActionIF = ({ commit }, entityType: EntityTypes): void => {
+export const setEntityType: ActionIF = ({ commit }, entityType: CorpTypeCd): void => {
   commit('mutateEntityType', entityType)
 }
 

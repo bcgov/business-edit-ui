@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isAlterationView()" id="business-type">
+  <div v-if="isAlterationView" id="business-type">
     <v-layout>
       <!-- Row Title -->
       <v-flex xs3>
@@ -14,9 +14,8 @@
       <!-- Display Mode -->
       <v-flex xs8 v-if="!isEditingType">
         <template>
-          <span class="info-text"
-                :class="{ 'hasConflict': isConflictingLegalType && isNewName}"
-          >{{getEntityDesc(getEntityType)}}
+          <span class="info-text" :class="{ 'hasConflict': isConflictingLegalType && isNewName}">
+            {{getCorpTypeDescription(getEntityType)}}
           </span>
           <v-tooltip v-if="isConflictingLegalType && isNewName"
                      top
@@ -163,7 +162,7 @@
             <span>Undo</span>
           </v-btn>
           <v-btn
-            v-else-if="entityFilter(EntityTypes.BC_CORPORATION)"
+            v-else-if="entityFilter(CorpTypeCd.BC_COMPANY)"
             text color="primary"
             id="btn-correct-business-type"
             @click="isEditingType = true"
@@ -214,10 +213,10 @@ import { Action, Getter } from 'vuex-class'
 import { ContactInfo } from '@/components/common'
 
 // Mixins
-import { CommonMixin } from '@/mixins'
+import { CommonMixin, EnumMixin } from '@/mixins'
 
 // Enums and Interfaces
-import { EntityTypes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
 
 @Component({
@@ -225,10 +224,10 @@ import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
     ContactInfo
   }
 })
-export default class CorrectBusinessType extends Mixins(CommonMixin) {
+export default class CorrectBusinessType extends Mixins(CommonMixin, EnumMixin) {
   // Global getters
   @Getter getApprovedName!: string
-  @Getter getEntityType!: EntityTypes
+  @Getter getEntityType!: CorpTypeCd
   @Getter isConflictingLegalType!: boolean
   @Getter getOriginalSnapshot!: BusinessSnapshotIF
 
@@ -237,9 +236,9 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
 
   @Action setEntityType!: ActionBindingIF
 
-  readonly EntityTypes = EntityTypes
+  readonly CorpTypeCd = CorpTypeCd
 
-  private selectedEntityType: EntityTypes = null
+  private selectedEntityType: CorpTypeCd = null
   private confirmArticles: boolean = false
   private helpToggle: boolean = false
   private isEditingType = false
@@ -288,7 +287,7 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
 
   /** Check is current entity selection is a Benefit Company */
   private get isBenefit (): boolean {
-    return this.selectedEntityType === EntityTypes.BENEFIT_COMPANY
+    return (this.selectedEntityType === CorpTypeCd.BENEFIT_COMPANY)
   }
 
   /** Reset company type values to original. */

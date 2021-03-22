@@ -24,7 +24,7 @@ import {
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
 // Constants
-import { ActionTypes, EntityTypes, FilingTypes, RoleTypes } from '@/enums'
+import { ActionTypes, CorpTypeCd, FilingTypes, RoleTypes } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 /**
@@ -38,7 +38,7 @@ export default class FilingTemplateMixin extends Vue {
   @Getter getApprovedName!: string
   @Getter getBusinessId!: string
   @Getter getCurrentDate!: string
-  @Getter getEntityType!: EntityTypes
+  @Getter getEntityType!: CorpTypeCd
   @Getter getCorrectedFilingId!: number
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getDocumentOptionalEmail: string

@@ -44,7 +44,7 @@ import { CommonMixin, EnumMixin } from '@/mixins'
 import { BusinessInformationIF, BusinessSnapshotIF, IncorporationFilingIF } from '@/interfaces'
 // Shared Interfaces
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
-import { EntityTypes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 
 @Component({})
 export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
@@ -53,7 +53,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   @Getter getBusinessId!: string
   @Getter getBusinessNumber!: string
   @Getter getCurrentBusinessName!: string
-  @Getter getEntityType!: EntityTypes
+  @Getter getEntityType!: CorpTypeCd
   @Getter isRoleStaff!: boolean
   @Getter getBusinessContact!: ContactPointIF
   @Getter getBusinessInformation!: BusinessInformationIF
@@ -61,8 +61,8 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   @Getter getOriginalSnapshot!: BusinessSnapshotIF
 
   /** Get original entity type. */
-  private get originalEntityType () {
-    return this.getEntityDesc(this.isCorrectionView()
+  private get originalEntityType (): string {
+    return this.getCorpTypeDescription(this.isCorrectionView
       ? this.getOriginalIA?.business?.legalType
       : this.getOriginalSnapshot?.businessInfo?.legalType
     )

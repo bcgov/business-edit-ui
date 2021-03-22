@@ -96,7 +96,7 @@ import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, BusinessSnapshotIF, EffectiveDateTimeIF, FilingDataIF } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
+import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
@@ -119,7 +119,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 })
 export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter getEntityType!: EntityTypes
+  @Getter getEntityType!: CorpTypeCd
   @Getter isSummaryMode!: boolean
   @Getter isRoleStaff!: boolean
   @Getter hasBusinessNameChanged!: boolean

@@ -1,8 +1,8 @@
-import { EntityTypes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 
 /** Data object used internally only (not to/from API). */
 export interface BusinessInformationIF {
-  legalType: EntityTypes
+  legalType: CorpTypeCd
   identifier: string
   legalName?: string
   foundingDate?: string // actually date-time

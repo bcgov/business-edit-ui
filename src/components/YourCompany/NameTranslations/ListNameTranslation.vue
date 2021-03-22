@@ -21,7 +21,7 @@
           x-small label color="primary" text-color="white">ADDED</v-chip>
         <v-chip v-if="translation.action === ActionTypes.EDITED"
           x-small label color="primary" text-color="white">
-          <span v-if="isCorrectionView()">CORRECTED</span>
+          <span v-if="isCorrectionView">CORRECTED</span>
           <span v-else>CHANGED</span>
         </v-chip>
         <v-chip v-if="translation.action === ActionTypes.REMOVED"
@@ -82,7 +82,7 @@
                 :disabled="isAddingNameTranslation"
                 @click="emitNameEdit(index)">
                   <v-icon small>mdi-pencil</v-icon>
-                  <span v-if="isCorrectionView()">Correct</span>
+                  <span v-if="isCorrectionView">Correct</span>
                   <span v-else>Edit</span>
               </v-btn>
             </span>
