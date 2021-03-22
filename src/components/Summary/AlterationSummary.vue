@@ -246,7 +246,7 @@ export default class AlterationSummary extends Mixins(
   }
 
   get isEffectiveDateTimeValid (): boolean {
-    return this.getEffectiveDateTime.valid
+    return this.getAlterationValidFlags.isValidEffectiveDate
   }
 
   get effectiveDateTimeString (): string {

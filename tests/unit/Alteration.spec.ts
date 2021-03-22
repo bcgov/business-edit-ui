@@ -274,8 +274,8 @@ describe('Alteration component', () => {
   // FUTURE
   xit('loads a draft alteration into the store', async () => {
     // Validate Effective Date-Time
-    expect(store.state.stateModel.effectiveDateTime.valid).toBe('mock@email.com')
-    expect(store.state.stateModel.effectiveDateTime.isFutureEffective).toBe('mock@email.com')
-    expect(store.state.stateModel.effectiveDateTime.dateTimeString).toBe('mock@email.com')
+    expect(store.state.stateModel.effectiveDateTime.isFutureEffective).toBe(true)
+    expect(store.state.stateModel.effectiveDateTime.dateTimeString).toBe('2021-03-22T18:00:00.000Z')
+    expect(store.state.stateModel.newAlteration.validFlags.isValidEffectiveDate).toBe(true)
   })
 })
