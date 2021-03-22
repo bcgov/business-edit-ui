@@ -5,32 +5,22 @@
     </header>
     <div class="pt-4">Copies of the alteration documents will be sent to the following email address listed below.</div>
     <div class="pt-8 pr-8">
-      <v-container pb-6>
+      <v-container>
         <v-row class="pl-4">
-          <v-col cols="2" sm="3" md="2" class="firstCol">
+          <v-col cols="3" class="px-0">
             <label><strong>Registered Office</strong></label>
           </v-col>
-          <v-col cols="10" sm="9" md="10" class="secondCol">
+          <v-col cols="9" class="px-0">
             {{getBusinessContact.email || '(Not entered)'}}
           </v-col>
         </v-row>
       </v-container>
       <v-container v-if="isRoleStaff">
         <v-row class="pl-4">
-          <v-col cols="2" sm="3" md="2" class="firstCol">
-            <label><strong>User Account</strong></label>
-          </v-col>
-          <v-col cols="10" sm="9" md="10" class="secondCol">
-            {{ getUserEmail }}
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-container v-else>
-        <v-row class="pl-4">
-          <v-col cols="2" sm="3" md="2" class="firstCol">
+          <v-col cols="3" class="px-0">
             <label><strong>Optional Email</strong></label>
           </v-col>
-          <v-col cols="10" sm="9" md="10" class="secondCol">
+          <v-col cols="9" class="px-0">
             <v-text-field
               v-model="optionalEmail"
               id="optionalEmail"
@@ -42,6 +32,16 @@
               :rules="entityEmailRules"
             >
           </v-text-field>
+          </v-col>
+        </v-row>
+      </v-container>
+      <v-container v-else>
+        <v-row class="pl-4">
+          <v-col cols="3" class="px-0">
+            <label><strong>User Account</strong></label>
+          </v-col>
+          <v-col cols="9" class="px-0">
+            {{ getUserEmail }}
           </v-col>
         </v-row>
       </v-container>
@@ -74,7 +74,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   private entityEmailRules = [
     (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    (v: string) => this.validateEmailFormat(v) || 'Email is Invalid'
+    (v: string) => this.validateEmailFormat(v) || 'Enter valid email address'
   ]
 
   mounted () {
@@ -95,6 +95,9 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   onEmailChanged (val: string): void {
     if (this.validateEmailFormat) {
       this.setDocumentOptionalEmail(val)
+      this.setDocumentOptionalEmailValidity(true)
+    } else {
+      this.setDocumentOptionalEmailValidity(false)
     }
   }
 
@@ -107,7 +110,13 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
 }
 </script>
 <style lang="scss" scoped>
-  .firstCol, .secondCol {
-    padding-left: 0px;
+  ::v-deep{
+    .v-application--is-ltr .v-text-field .v-label {
+      font-weight: normal;
+    }
+    .container {
+      padding-bottom: 0px;
+      padding-top: 0px;
+    }
   }
 </style>

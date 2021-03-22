@@ -11,6 +11,8 @@
       :entityDisplay="readableEntityType"
       :message="certifyMessage"
       :isStaff="isRoleStaff"
+      :firstColumn="3"
+      :secondColumn="9"
       @update:certifiedBy="onCertifiedBy($event)"
       @update:isCertified="onValid($event)"
     />
