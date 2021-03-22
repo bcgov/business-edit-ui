@@ -69,7 +69,6 @@ export const mutateEffectiveDateTimeString = (state: StateIF, dateTime: string) 
 
 export const mutateEffectiveDateValid = (state: StateIF, valid: boolean) => {
   state.stateModel.newAlteration.validFlags.isValidEffectiveDate = valid
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateCertifyState = (state: StateIF, certifyState: CertifyIF) => {

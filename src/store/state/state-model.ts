@@ -65,7 +65,6 @@ export const stateModel: StateModelIF = {
   },
   nameTranslations: [],
   effectiveDateTime: {
-    valid: false,
     isFutureEffective: null,
     dateTimeString: ''
   },

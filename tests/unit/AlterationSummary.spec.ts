@@ -112,10 +112,10 @@ describe('Alteration Summary component', () => {
 
   it('renders the default alteration date and time section', async () => {
     store.state.stateModel.effectiveDateTime = {
-      valid: false,
       isFutureEffective: null,
       dateTimeString: ''
     }
+    store.state.stateModel.newAlteration.validFlags.isValidEffectiveDate = false
     await Vue.nextTick()
 
     // verify section
@@ -131,10 +131,10 @@ describe('Alteration Summary component', () => {
 
   it('renders the alteration date and time section with end blurb', async () => {
     store.state.stateModel.effectiveDateTime = {
-      valid: true,
       isFutureEffective: true,
       dateTimeString: '2021-03-05T16:30:00Z'
     }
+    store.state.stateModel.newAlteration.validFlags.isValidEffectiveDate = true
     await Vue.nextTick()
 
     // verify end blurb div
