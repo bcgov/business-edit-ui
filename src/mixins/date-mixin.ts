@@ -172,6 +172,22 @@ export default class DateMixin extends Mixins(CommonMixin) {
   }
 
   /**
+   * Converts a date object to an ISO datetime string format that the API accepts (YYYY-MM-DDThh:mm:ss.sss+00:00)
+   # @example "2021-01-01 23:59:59 PST" -> "2021-01-02T07:59:59.000+00:00"
+   */
+  dateToApiIsoDateTimeString (date: Date): string {
+    if (!date) return null // safety check
+
+    // convert date object to ISO format that API accepts
+    // Note: the Z offset is not included as the API(Python)
+    // expects '+00:00' to be used for the offset
+    // eg, 2021-03-25T10:02:00.000+00:00
+    const dateStr = date.toISOString().slice(0, 23) + '+00:00'
+
+    return dateStr
+  }
+
+  /**
    * The number of days that 'date' is from today.
    * @returns -1 for yesterday
    * @returns 0 for today
