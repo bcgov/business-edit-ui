@@ -123,8 +123,6 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
 }
 
 .director-list-header th {
-  border-bottom: thin solid rgba(0, 0, 0, 0.12)!important;
-
   .directors-title {
     font-size: 0.875rem;
     color: $gray9;
@@ -134,7 +132,6 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
 
 .director-table tbody .director-content {
   td {
-    border-bottom: thin solid rgba(0, 0, 0, 0.12)!important;
     font-size: 1rem;
     color: $gray9;
     font-weight: bold;
@@ -144,11 +141,14 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
   }
 
   td:not(:first-child){
-    border-top: 1px solid $gray1;
     font-size: 0.875rem;
     color: $gray7;
     font-weight: normal;
   }
+}
+
+.director-content:hover {
+  background: none !important;
 }
 
 </style>
