@@ -1,8 +1,6 @@
 <template>
-  <section id="document-delivery-section">
-    <header>
-      <h2>1. Alteration Documents Delivery</h2>
-    </header>
+  <div class="ma-6 pb-6" id="document-delivery-section" :class="{ 'invalid': documentDeliveryInvalid }">
+    <h2>1. Alteration Documents Delivery</h2>
     <div class="pt-4">Copies of the alteration documents will be sent to the following email address listed below.</div>
     <div class="pt-8 pr-8">
       <v-container>
@@ -29,6 +27,7 @@
               label="Optional Email"
               hint="Example: name@email.com"
               persistent-hint
+              validate-on-blur
               :rules="entityEmailRules"
             >
           </v-text-field>
@@ -46,14 +45,14 @@
         </v-row>
       </v-container>
     </div>
-  </section>
+  </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Emit, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Emit, Vue, Watch, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins'
-import { ActionBindingIF } from '@/interfaces'
+import { ActionBindingIF, ValidFlagsIF } from '@/interfaces'
 // Shared Interfaces
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
@@ -64,10 +63,14 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   @Getter getBusinessContact!: ContactPointIF
   @Getter isRoleStaff!: boolean
   @Getter getDocumentOptionalEmail!: string
+  @Getter getAlterationValidFlags!: ValidFlagsIF
 
   // Global actions
   @Action setDocumentOptionalEmail!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
+
+  /** Prop to perform validation. */
+  @Prop() readonly validate: boolean
 
   private optionalEmail: string = ''
 
@@ -91,9 +94,14 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
     }
   }
 
+  /** True if invalid class should be set for certify container. */
+  get documentDeliveryInvalid (): boolean {
+    return (this.validate && !this.getAlterationValidFlags.isValidDocumentOptionalEmail)
+  }
+
   @Watch('optionalEmail')
-  onEmailChanged (val: string): void {
-    if (this.validateEmailFormat) {
+  onOptionalEmailChanged (val: string): void {
+    if (this.validateEmailFormat(val)) {
       this.setDocumentOptionalEmail(val)
       this.setDocumentOptionalEmailValidity(true)
     } else {
@@ -110,6 +118,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
   ::v-deep{
     .v-application--is-ltr .v-text-field .v-label {
       font-weight: normal;
@@ -117,6 +126,15 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
     .container {
       padding-bottom: 0px;
       padding-top: 0px;
+    }
+  }
+  #document-delivery-section {
+    &.invalid {
+      border-left: 4px solid $BCgovInputError;
+      padding-left: calc(2rem - 4px);
+      h2 {
+        color: $BCgovInputError;
+      }
     }
   }
 </style>

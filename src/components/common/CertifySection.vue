@@ -1,8 +1,6 @@
 <template>
-  <section id="certify-section">
-    <header>
-      <h2>2. Certify</h2>
-    </header>
+  <div class="ma-6 pb-6" id="certify-section" :class="{ 'invalid': certificationInvalid }">
+    <h2>2. Certify</h2>
     <div class="pt-4">Enter the legal name of the person authorized to complete and submit these changes.</div>
     <certify
       :currentDate="getCurrentDate"
@@ -16,11 +14,11 @@
       @update:certifiedBy="onCertifiedBy($event)"
       @update:isCertified="onValid($event)"
     />
-  </section>
+  </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Components
@@ -46,6 +44,19 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   @Getter isRoleStaff!: boolean
 
   @Action setCertifyState!: ActionBindingIF
+
+  /** Prop to perform validation. */
+  @Prop() readonly validate: boolean
+
+  /** Called when component is mounted. */
+  mounted (): void {
+    this.setCertifyState(
+      {
+        valid: this.getCertifyState.valid,
+        certifiedBy: this.getCertifyState.certifiedBy
+      }
+    )
+  }
 
   /** Get the entity type in readable format */
   private get readableEntityType (): string {
@@ -76,14 +87,22 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
       }
     )
   }
+  /** True if invalid class should be set for certify container. */
+  get certificationInvalid (): boolean {
+    return (this.validate && !this.getCertifyState.valid)
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-#certify-container {
-  width: 100%;
-  height: 4rem;
-  padding: 1rem;
-  background-color: white;
+@import '@/assets/styles/theme.scss';
+#certify-section {
+  &.invalid {
+    border-left: 4px solid $BCgovInputError;
+    padding-left: calc(2rem - 4px);
+    h2 {
+      color: $BCgovInputError;
+    }
+  }
 }
 </style>

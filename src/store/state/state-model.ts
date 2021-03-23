@@ -28,8 +28,9 @@ export const stateModel: StateModelIF = {
     validFlags: {
       isValidEffectiveDate: true,
       isValidCourtNum: true, // Staff only
-      isValidCertify: true,
-      isValidStaffPayment: true // Staff only
+      isValidCertify: false, // initialize to false (unsigned)
+      isValidStaffPayment: true, // Staff Only
+      isValidDocumentOptionalEmail: true
     }
   },
   accountInformation: {
@@ -73,7 +74,6 @@ export const stateModel: StateModelIF = {
     certifiedBy: ''
   },
   documentDelivery: {
-    valid: false,
     documentOptionalEmail: ''
   },
   defineCompanyStep: {

@@ -48,12 +48,14 @@
 
       <documents-delivery
        class="mt-10"
+       :validate="getAppValidate"
        :pleaseValidate="true"
         @valid="setDocumentOptionalEmailValidity($event)"
       />
 
       <certify-section
        class="mt-10"
+       :validate="getAppValidate"
        :pleaseValidate="true"
       />
 
