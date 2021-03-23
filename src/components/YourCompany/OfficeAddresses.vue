@@ -11,7 +11,7 @@
         <v-flex xs4>
           <label class="d-flex flex-wrap">
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
-            <v-chip v-if="isCorrectionView() && mailingChanged"
+            <v-chip v-if="isCorrectionView && mailingChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
@@ -25,7 +25,7 @@
         <v-flex xs4>
           <label class="d-flex flex-wrap">
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
-            <v-chip v-if="isCorrectionView() && deliveryChanged"
+            <v-chip v-if="isCorrectionView && deliveryChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
@@ -37,7 +37,7 @@
           <div v-else class="info-text">Same as Mailing Address</div>
         </v-flex>
 
-        <v-flex xs1 v-if="isCorrectionView() && officeAddressesChanged">
+        <v-flex xs1 v-if="isCorrectionView && officeAddressesChanged">
           <div class="actions mr-4">
             <span class="edit-action">
               <v-btn
@@ -81,7 +81,7 @@
           </div>
         </v-flex>
 
-        <v-flex xs1 v-else-if="isCorrectionView()">
+        <v-flex xs1 v-else-if="isCorrectionView">
           <div class="actions mr-4">
             <v-btn
               text color="primary"
@@ -95,7 +95,7 @@
         </v-flex>
       </v-layout>
 
-      <v-layout row id="summary-records-address" class="mt-4 mx-0" v-if="!entityFilter(EntityTypes.COOP)">
+      <v-layout row id="summary-records-address" class="mt-4 mx-0" v-if="entityFilter(CorpTypeCd.BENEFIT_COMPANY)">
         <v-flex xs3>
           <label class>Records Office</label>
         </v-flex>
@@ -103,7 +103,7 @@
         <v-flex xs4>
           <label class="d-flex flex-wrap">
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
-            <v-chip v-if="isCorrectionView() && recMailingChanged"
+            <v-chip v-if="isCorrectionView && recMailingChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
@@ -118,7 +118,7 @@
         <v-flex xs4>
           <label class="d-flex flex-wrap">
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
-            <v-chip v-if="isCorrectionView() && recDeliveryChanged"
+            <v-chip v-if="isCorrectionView && recDeliveryChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
@@ -198,7 +198,7 @@
           </li>
         </div>
 
-        <div id="edit-records-address" v-if="entityFilter(EntityTypes.BENEFIT_COMPANY)">
+        <div id="edit-records-address" v-if="entityFilter(CorpTypeCd.BENEFIT_COMPANY)">
           <div class="address-edit-header" :class="{'mt-8': inheritMailingAddress}">
             <label class="address-edit-title">Records Office</label>
             <v-checkbox
@@ -295,7 +295,7 @@ import { isEmpty } from 'lodash'
 import { OfficeAddressSchema } from '@/schemas'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, IncorporationAddressIf, IncorporationFilingIF } from '@/interfaces'
-import { AddressTypes, EntityTypes } from '@/enums'
+import { AddressTypes, CorpTypeCd } from '@/enums'
 import { CommonMixin } from '@/mixins'
 
 @Component({
@@ -306,14 +306,14 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter getOfficeAddresses!: IncorporationAddressIf // NB: may be {}
   @Getter getOriginalIA!: IncorporationFilingIF
 
-  // Global setters
+  // Global actions
   @Action setOfficeAddresses!: ActionBindingIF
   @Action setEditingOfficeAddresses!: ActionBindingIF
 
   // Declarations for template
   readonly isEmpty = isEmpty
   readonly AddressTypes = AddressTypes
-  readonly EntityTypes = EntityTypes
+  readonly CorpTypeCd = CorpTypeCd
   readonly addressSchema = OfficeAddressSchema
 
   readonly defaultAddress: AddressIF = {
@@ -416,7 +416,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       )
 
       // for BCOMPS, also set the Records Address
-      if (this.entityFilter(EntityTypes.BENEFIT_COMPANY)) {
+      if (this.entityFilter(CorpTypeCd.BENEFIT_COMPANY)) {
         this.recMailingAddress = { ...this.getOfficeAddresses.recordsOffice?.mailingAddress }
         this.recDeliveryAddress = { ...this.getOfficeAddresses.recordsOffice?.deliveryAddress }
 
@@ -558,7 +558,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets updated office addresses in store.
    */
   private storeAddresses (): void {
-    if (this.entityFilter(EntityTypes.BENEFIT_COMPANY)) {
+    if (this.entityFilter(CorpTypeCd.BENEFIT_COMPANY)) {
       this.setOfficeAddresses({
         registeredOffice: {
           deliveryAddress: this.deliveryAddress,

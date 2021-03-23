@@ -23,8 +23,6 @@
 
       <detail class="mt-10" />
 
-      <certify-section class="mt-10" />
-
       <staff-payment
         class="mt-10"
         @haveChanges="onStaffPaymentChanges()"
@@ -44,11 +42,37 @@
       <!-- FUTURE: set `pleaseValidate` when user clicks File and Pay -->
       <alteration-summary
         class="mt-10"
-        :pleaseValidate="true"
+        :validate="getAppValidate"
         @haveChanges="onAlterationSummaryChanges()"
       />
 
-      <no-fee-summary class="mt-10" />
+      <documents-delivery
+       class="mt-10"
+       :pleaseValidate="true"
+        @valid="setDocumentOptionalEmailValidity($event)"
+      />
+
+      <certify-section
+       class="mt-10"
+       :pleaseValidate="true"
+      />
+
+      <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
+      <template v-if="isRoleStaff">
+        <header class="mt-10">
+          <h2>3. Court Order and Plan of Arrangement</h2>
+        </header>
+        <p class="my-3 pb-2">If this filing is pursuant to a court order, enter the court order number. If this filing
+          is pursuant to a plan of arrangement, <br>enter the court order number and select Plan of Arrangement.</p>
+        <court-order-poa
+          id="court-order"
+          :validate="getAppValidate"
+          @emitCourtNumber="setCourtOrderNumber($event)"
+          @emitPoa="setPlanOfArrangement($event)"
+          @emitValid="setValidCourtNum($event)"
+        />
+      </template>
+
     </template>
   </section>
 </template>
@@ -57,20 +81,22 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-import { AlterationSummary, NoFeeSummary } from '@/components/Summary'
+
+// Components
+import { AlterationSummary, NoFeeSummary, DocumentsDelivery } from '@/components/Summary'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { CurrentDirectors } from '@/components/PeopleAndRoles'
 import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
-
 import { ShareStructures } from '@/components/ShareStructure'
 import { Articles } from '@/components/Articles'
+import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 
 // Mixins, Interfaces, Enums, etc
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, BusinessSnapshotIF, EffectiveDateTimeIF, FilingDataIF } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { BusinessDataTypes, EntityTypes, FilingCodes, FilingStatus } from '@/enums'
+import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 
@@ -80,7 +106,9 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     AlterationSummary,
     CertifySection,
     CompletingParty,
+    CourtOrderPoa,
     Detail,
+    DocumentsDelivery,
     NoFeeSummary,
     CurrentDirectors,
     Articles,
@@ -91,19 +119,26 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 })
 export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter getEntityType!: EntityTypes
+  @Getter getEntityType!: CorpTypeCd
   @Getter isSummaryMode!: boolean
+  @Getter isRoleStaff!: boolean
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
+  @Getter getDocumentOptionalEmail!: string
+  @Getter getAppValidate!: boolean
 
-  // Global setters
+  // Global actions
+  @Action setCourtOrderNumber!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
+  @Action setPlanOfArrangement!: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
+  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action setValidCourtNum!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -138,7 +173,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
 
     // try to fetch data
     try {
-      const businessSnapshot: BusinessSnapshotIF[] = await this.fetchBusinessSnapshot()
+      const businessSnapshot = await this.fetchBusinessSnapshot()
 
       if (this.alterationId) {
         // store the filing ID
@@ -182,16 +217,27 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     Vue.nextTick(() => this.setHaveChanges(false))
   }
 
-  /** Fetch Business Snapshot */
-  private async fetchBusinessSnapshot (): Promise<BusinessSnapshotIF[]> {
-    return Promise.all([
-      this.getBusinessData(),
-      this.getBusinessData(BusinessDataTypes.TRANSLATIONS),
-      this.getBusinessData(BusinessDataTypes.ADDRESSES),
-      this.getBusinessData(BusinessDataTypes.DIRECTORS),
-      this.getBusinessData(BusinessDataTypes.SHARE_CLASSSES),
-      this.getContactInfo()
+  /** Fetches the business snapshot. */
+  private async fetchBusinessSnapshot (): Promise<BusinessSnapshotIF> {
+    const items = await Promise.all([
+      this.fetchBusinessInfo(),
+      this.fetchContactPoint(),
+      this.fetchIncorporationAddress(),
+      this.fetchNameTranslations(),
+      this.fetchOrgPersons(),
+      this.fetchShareStructure()
     ])
+
+    if (items.length !== 6) throw new Error('Failed to fetch business snapshot')
+
+    return {
+      businessInfo: items[0],
+      contactPoint: items[1],
+      incorporationAddress: items[2],
+      nameTranslations: items[3],
+      orgPersons: items[4],
+      shareStructure: items[5]
+    }
   }
 
   /** Called when staff payment data has changed. */

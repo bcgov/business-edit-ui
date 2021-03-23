@@ -163,10 +163,10 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   @Prop({ default: () => { return [] as [] } })
   private nameTranslations!: NameTranslationIF[]
 
-  // Actions
+  // Global action
   @Action setEditingNameTranslations: ActionBindingIF
 
-  // Properties
+  // Local properties
   private draftTranslations: NameTranslationIF[] = []
   private isEditing: boolean = false
   private isAddingNameTranslation = false

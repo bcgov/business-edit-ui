@@ -181,7 +181,7 @@ import { OrgPersonIF, BaseAddressType, FormType, AddressIF, ConfirmDialogType, R
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ConfirmDialog } from '@/components/dialogs'
 import { CommonMixin } from '@/mixins'
-import { EntityTypes, RoleTypes, IncorporatorTypes } from '@/enums'
+import { CorpTypeCd, RoleTypes, IncorporatorTypes } from '@/enums'
 import { PersonAddressSchema } from '@/schemas'
 import { Getter } from 'vuex-class'
 
@@ -201,7 +201,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   // Declarations for template
-  readonly EntityTypes = EntityTypes
+  readonly CorpTypeCd = CorpTypeCd
   readonly RoleTypes = RoleTypes
   readonly IncorporatorTypes = IncorporatorTypes
   readonly PersonAddressSchema = PersonAddressSchema

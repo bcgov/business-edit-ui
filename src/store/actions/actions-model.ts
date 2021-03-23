@@ -1,7 +1,18 @@
-import { ActionIF } from '@/interfaces/store-interfaces/action-interface'
-import { EntityTypes } from '@/enums'
+import {
+  ActionIF,
+  BusinessInformationIF,
+  BusinessSnapshotIF,
+  CertifyIF,
+  IncorporationAddressIf,
+  NameRequestIF,
+  NameTranslationIF,
+  OrgPersonIF,
+  ShareClassIF
+} from '@/interfaces'
+import { ContactPointIF } from '@bcrs-shared-components/interfaces'
+import { CorpTypeCd } from '@/enums'
 
-export const setEntityType: ActionIF = ({ commit }, entityType: EntityTypes): void => {
+export const setEntityType: ActionIF = ({ commit }, entityType: CorpTypeCd): void => {
   commit('mutateEntityType', entityType)
 }
 
@@ -45,8 +56,8 @@ export const setIsFutureEffective: ActionIF = ({ commit }, isFutureEffective: bo
   commit('mutateIsFutureEffective', isFutureEffective)
 }
 
-export const setEffectiveDateTimeString: ActionIF = ({ commit }, dateTimeString: string): void => {
-  commit('mutateEffectiveDateTimeString', dateTimeString)
+export const setEffectiveDateTimeString: ActionIF = ({ commit }, dateTime: string): void => {
+  commit('mutateEffectiveDateTimeString', dateTime)
 }
 
 export const setEffectiveDateValid: ActionIF = ({ commit }, valid: boolean): void => {
@@ -57,7 +68,7 @@ export const setCertifyStatementResource: ActionIF = ({ commit }, certifyStateme
   commit('mutateCertifyStatementResource', certifyStatementResource)
 }
 
-export const setCertifyState: ActionIF = ({ commit }, certifyState): void => {
+export const setCertifyState: ActionIF = ({ commit }, certifyState: CertifyIF): void => {
   commit('mutateCertifyState', certifyState)
 }
 
@@ -65,7 +76,15 @@ export const setCertifyStateValidity: ActionIF = ({ commit }, validity): void =>
   commit('mutateCertifyStateValidity', validity)
 }
 
-export const setBusinessContact: ActionIF = ({ commit }, businessContact): void => {
+export const setDocumentOptionalEmail: ActionIF = ({ commit }, documentOptionalEmail: string): void => {
+  commit('mutateDocumentOptionalEmail', documentOptionalEmail)
+}
+
+export const setDocumentOptionalEmailValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateDocumentOptionalEmailValidity', validity)
+}
+
+export const setBusinessContact: ActionIF = ({ commit }, businessContact: ContactPointIF): void => {
   commit('mutateBusinessContact', businessContact)
 }
 
@@ -73,31 +92,31 @@ export const setDefineCompanyStepChanged: ActionIF = ({ commit }, changed: boole
   commit('mutateDefineCompanyStepChanged', changed)
 }
 
-export const setOfficeAddresses: ActionIF = ({ commit }, address): void => {
+export const setOfficeAddresses: ActionIF = ({ commit }, address: IncorporationAddressIf): void => {
   commit('mutateOfficeAddresses', address)
 }
 
-export const setFolioNumber: ActionIF = ({ commit }, folioNumber): void => {
+export const setFolioNumber: ActionIF = ({ commit }, folioNumber: string): void => {
   commit('mutateFolioNumber', folioNumber)
 }
 
-export const setFilingDateTime: ActionIF = ({ commit }, dateTimeString): void => {
-  commit('mutateFilingDateTime', dateTimeString)
+export const setFilingDateTime: ActionIF = ({ commit }, dateTime: string): void => {
+  commit('mutateFilingDateTime', dateTime)
 }
 
 export const setAccountInformation: ActionIF = ({ commit }, accountInformation): void => {
   commit('mutateAccountInformation', accountInformation)
 }
 
-export const setBusinessInformation: ActionIF = ({ commit }, businessInformation): void => {
+export const setBusinessInformation: ActionIF = ({ commit }, businessInformation: BusinessInformationIF): void => {
   commit('mutateBusinessInformation', businessInformation)
 }
 
-export const setNameRequest: ActionIF = ({ commit }, nameRequest): void => {
+export const setNameRequest: ActionIF = ({ commit }, nameRequest: NameRequestIF): void => {
   commit('mutateNameRequest', nameRequest)
 }
 
-export const setNameTranslations: ActionIF = ({ commit }, nameTranslations): void => {
+export const setNameTranslations: ActionIF = ({ commit }, nameTranslations: NameTranslationIF[]): void => {
   commit('mutateNameTranslations', nameTranslations)
 }
 
@@ -109,7 +128,7 @@ export const setCorrectedFilingId: ActionIF = ({ commit }, correctedFilingId: nu
   commit('mutateCorrectedFilingId', correctedFilingId)
 }
 
-export const setPeopleAndRoles: ActionIF = ({ commit }, peopleAndRoles) => {
+export const setPeopleAndRoles: ActionIF = ({ commit }, peopleAndRoles: OrgPersonIF[]) => {
   commit('mutatePeopleAndRoles', peopleAndRoles)
 }
 
@@ -121,7 +140,7 @@ export const setPeopleAndRolesValidity: ActionIF = ({ commit }, validity: boolea
   commit('mutatePeopleAndRolesValidity', validity)
 }
 
-export const setShareClasses: ActionIF = ({ commit }, shareClasses) => {
+export const setShareClasses: ActionIF = ({ commit }, shareClasses: ShareClassIF[]) => {
   commit('mutateShareClasses', shareClasses)
 }
 
@@ -153,7 +172,7 @@ export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
   commit('mutateOriginalIA', originalIA)
 }
 
-export const setOriginalSnapshot: ActionIF = ({ commit }, originalSnapshot): void => {
+export const setOriginalSnapshot: ActionIF = ({ commit }, originalSnapshot: BusinessSnapshotIF): void => {
   commit('mutateOriginalSnapshot', originalSnapshot)
 }
 
@@ -169,7 +188,7 @@ export const setFilingData: ActionIF = ({ commit }, filingData): void => {
   commit('mutateFilingData', filingData)
 }
 
-export const setDetailComment: ActionIF = ({ commit }, comment): void => {
+export const setDetailComment: ActionIF = ({ commit }, comment: string): void => {
   commit('mutateDetailComment', comment)
 }
 
@@ -209,10 +228,26 @@ export const setProvisionsRemoved: ActionIF = ({ commit }, provisionsRemoved: bo
   commit('mutateProvisionsRemoved', provisionsRemoved)
 }
 
-export const setPreviousResolutionDates: ActionIF = ({ commit }, resolutionDates: string[]): void => {
-  commit('mutatePreviousResolutionDates', resolutionDates)
+export const setOriginalResolutionDates: ActionIF = ({ commit }, resolutionDates: string[]): void => {
+  commit('mutateOriginalResolutionDates', resolutionDates)
 }
 
 export const setResolutionDates: ActionIF = ({ commit }, resolutionDates: string[]): void => {
   commit('mutateResolutionDates', resolutionDates)
+}
+
+export const setCourtOrderNumber: ActionIF = ({ commit }, courtOrderNumber: string): void => {
+  commit('mutateCourtOrderNumber', courtOrderNumber)
+}
+
+export const setPlanOfArrangement: ActionIF = ({ commit }, poa: boolean): void => {
+  commit('mutatePlanOfArrangement', poa)
+}
+
+export const setAppValidate: ActionIF = ({ commit }, validate: boolean): void => {
+  commit('mutateAppValidate', validate)
+}
+
+export const setValidCourtNum: ActionIF = ({ commit }, isValid: boolean): void => {
+  commit('mutateValidCourtNum', isValid)
 }

@@ -3,13 +3,14 @@
     <header>
       <h2>2. Certify</h2>
     </header>
-    <span>Enter the legal name of the person authorized to complete and submit these changes.</span>
+    <div class="pt-4">Enter the legal name of the person authorized to complete and submit these changes.</div>
     <certify
       :currentDate="getCurrentDate"
-      :certified-by="getCertifyState.certifiedBy"
-      :is-certified="getCertifyState.valid"
-      :entity-display="readableEntityType"
+      :certifiedBy="getCertifyState.certifiedBy"
+      :isCertified="getCertifyState.valid"
+      :entityDisplay="readableEntityType"
       :message="certifyMessage"
+      :isStaff="isRoleStaff"
       @update:certifiedBy="onCertifiedBy($event)"
       @update:isCertified="onValid($event)"
     />
@@ -28,7 +29,7 @@ import { DateMixin, EnumMixin } from '@/mixins'
 
 // Interfaces, Enums & Resources
 import { ActionBindingIF, CertifyIF, CertifyStatementIF } from '@/interfaces'
-import { EntityTypes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 
 @Component({
   components: {
@@ -38,14 +39,15 @@ import { EntityTypes } from '@/enums'
 export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   @Getter getCertifyState!: CertifyIF
   @Getter getCurrentDate!: string
-  @Getter getEntityType!: EntityTypes
+  @Getter getEntityType!: CorpTypeCd
   @Getter getCertifyResource!: CertifyStatementIF
+  @Getter isRoleStaff!: boolean
 
   @Action setCertifyState!: ActionBindingIF
 
   /** Get the entity type in readable format */
   private get readableEntityType (): string {
-    return this.entityTypeToDescription(this.getEntityType)
+    return this.getCorpTypeDescription(this.getEntityType)
   }
 
   /** Get the certify resource message */

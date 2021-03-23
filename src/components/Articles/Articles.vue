@@ -5,22 +5,22 @@
       <label class="define-article-title">Articles</label>
     </div>
 
-    <div
-      class="section-container"
-      v-if="getBusinessInformation.hasRestrictions"
-      >
+    <div class="section-container" v-if="getBusinessInformation.hasRestrictions">
       <company-provisions
         class="sub-section"
         :provisionsRemoved="getProvisionsRemoved"
         @companyProvisionsChanged="setProvisionsRemoved($event)"
-        @haveChanges="emitHaveChanges($event)"/>
+        @haveChanges="emitHaveChanges($event)"
+      />
     </div>
 
     <div class="section-container">
       <resolution-dates
         :added-dates="getNewResolutionDates"
         :previous-dates="getPreviousResolutionDates"
-        @addRemoveDate="setResolutionDates($event)"/>
+        :isEditMode="true"
+        @addRemoveDate="setResolutionDates($event)"
+      />
     </div>
   </v-card>
 </template>
@@ -43,16 +43,16 @@ import { ActionBindingIF, BusinessInformationIF } from '@/interfaces'
   }
 })
 export default class Articles extends Mixins(CommonMixin) {
-  // whether components have changes
+  // Whether components have changes
   private companyProvisionsChanges: boolean
 
-  // Global Getters
+  // Global getters
   @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getNewResolutionDates!: string []
   @Getter getProvisionsRemoved!: boolean
   @Getter getPreviousResolutionDates!: string[]
 
-  // Global Actions
+  // Global actions
   @Action setProvisionsRemoved!: ActionBindingIF
   @Action setResolutionDates!: ActionBindingIF
 
@@ -64,14 +64,6 @@ export default class Articles extends Mixins(CommonMixin) {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-
-.section-container {
-  padding: 1.25rem 1rem;
-
-  .sub-section {
-    margin-top: 1.5rem;
-  }
-}
 
 .define-article-header {
   display: flex;

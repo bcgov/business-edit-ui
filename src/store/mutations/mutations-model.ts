@@ -1,24 +1,21 @@
 import {
-  CertifyStatementIF,
+  AccountInformationIF,
+  BusinessInformationIF,
+  BusinessSnapshotIF,
   CertifyIF,
+  CertifyStatementIF,
+  FilingDataIF,
   IncorporationAddressIf,
+  IncorporationAgreementIF,
+  IncorporationFilingIF,
   NameRequestIF,
+  NameTranslationIF,
   OrgPersonIF,
   ShareClassIF,
-  AccountInformationIF,
-  IncorporationAgreementIF,
-  BusinessInformationIF,
-  IncorporationFilingIF,
-  FilingDataIF,
-  NameTranslationIF,
-  StateIF, BusinessSnapshotIF
+  StateIF
 } from '@/interfaces'
-// Shared Interfaces
-import {
-  ContactPointIF,
-  StaffPaymentIF
-} from '@bcrs-shared-components/interfaces'
-import { EntityTypes } from '@/enums'
+import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+import { CorpTypeCd } from '@/enums'
 
 export const mutateBusinessId = (state: StateIF, businessId: string) => {
   state.stateModel.tombstone.businessId = businessId
@@ -65,14 +62,13 @@ export const mutateIsFutureEffective = (state: StateIF, isFutureEffective: boole
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
-export const mutateEffectiveDateTimeString = (state: StateIF, dateTimeString: string) => {
-  state.stateModel.effectiveDateTime.dateTimeString = dateTimeString
+export const mutateEffectiveDateTimeString = (state: StateIF, dateTime: string) => {
+  state.stateModel.effectiveDateTime.dateTimeString = dateTime
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
 }
 
 export const mutateEffectiveDateValid = (state: StateIF, valid: boolean) => {
-  state.stateModel.effectiveDateTime.valid = valid
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+  state.stateModel.newAlteration.validFlags.isValidEffectiveDate = valid
 }
 
 export const mutateCertifyState = (state: StateIF, certifyState: CertifyIF) => {
@@ -82,6 +78,15 @@ export const mutateCertifyState = (state: StateIF, certifyState: CertifyIF) => {
 
 export const mutateCertifyStateValidity = (state: StateIF, validity: boolean) => {
   state.stateModel.certifyState.valid = validity
+}
+
+export const mutateDocumentOptionalEmail = (state: StateIF, documentOptionalEmail: string) => {
+  state.stateModel.documentDelivery.documentOptionalEmail = documentOptionalEmail
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+}
+
+export const mutateDocumentOptionalEmailValidity = (state: StateIF, validity: boolean) => {
+  state.stateModel.documentDelivery.valid = validity
 }
 
 export const mutateBusinessContact = (state: StateIF, businessContact: ContactPointIF) => {
@@ -119,8 +124,8 @@ export const mutateFolioNumber = (state: StateIF, folioNumber: string) => {
   state.stateModel.defineCompanyStep.folioNumber = folioNumber
 }
 
-export const mutateFilingDateTime = (state: StateIF, dateTimeString: string) => {
-  state.stateModel.tombstone.filingDateTime = dateTimeString
+export const mutateFilingDateTime = (state: StateIF, dateTime: string) => {
+  state.stateModel.tombstone.filingDateTime = dateTime
 }
 
 export const mutateAccountInformation = (state: StateIF, accountInformation: AccountInformationIF) => {
@@ -182,7 +187,7 @@ export const mutateHaveChanges = (state: StateIF, haveChanges: boolean) => {
   state.stateModel.tombstone.haveChanges = haveChanges
 }
 
-export const mutateEntityType = (state: StateIF, entityType: EntityTypes) => {
+export const mutateEntityType = (state: StateIF, entityType: CorpTypeCd) => {
   state.stateModel.tombstone.entityType = entityType
 }
 
@@ -190,7 +195,7 @@ export const mutateOriginalIA = (state: StateIF, originalIA: IncorporationFiling
   state.stateModel.originalIA = originalIA
 }
 
-export const mutateOriginalSnapshot = (state: StateIF, originalSnapshot: BusinessSnapshotIF[]) => {
+export const mutateOriginalSnapshot = (state: StateIF, originalSnapshot: BusinessSnapshotIF) => {
   state.stateModel.originalSnapshot = originalSnapshot
 }
 
@@ -247,10 +252,26 @@ export const mutateProvisionsRemoved = (state: StateIF, provisionsRemoved: boole
   state.stateModel.newAlteration.provisionsRemoved = provisionsRemoved
 }
 
-export const mutatePreviousResolutionDates = (state: StateIF, resolutionDates: string[]) => {
+export const mutateOriginalResolutionDates = (state: StateIF, resolutionDates: string[]) => {
   state.stateModel.originalAlteration.alteration.shareStructure.resolutionDates = resolutionDates
 }
 
 export const mutateResolutionDates = (state: StateIF, resolutionDates: string[]) => {
   state.stateModel.shareStructureStep.resolutionDates = resolutionDates
+}
+
+export const mutateCourtOrderNumber = (state: StateIF, courtOrderNumber: string) => {
+  state.stateModel.newAlteration.courtOrder.fileNumber = courtOrderNumber
+}
+
+export const mutatePlanOfArrangement = (state: StateIF, poa: boolean) => {
+  state.stateModel.newAlteration.planOfArrangement = poa
+}
+
+export const mutateAppValidate = (state: StateIF, isValid: boolean) => {
+  state.stateModel.newAlteration.appValidate = isValid
+}
+
+export const mutateValidCourtNum = (state: StateIF, isValid: boolean) => {
+  state.stateModel.newAlteration.validFlags.isValidCourtNum = isValid
 }

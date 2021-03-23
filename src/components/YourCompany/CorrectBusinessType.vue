@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isAlterationView()" id="business-type">
+  <div v-if="isAlterationView" id="business-type">
     <v-layout>
       <!-- Row Title -->
       <v-flex xs3>
@@ -14,9 +14,8 @@
       <!-- Display Mode -->
       <v-flex xs8 v-if="!isEditingType">
         <template>
-          <span class="info-text"
-                :class="{ 'hasConflict': isConflictingLegalType && isNewName}"
-          >{{getEntityDesc(getEntityType)}}
+          <span class="info-text" :class="{ 'hasConflict': isConflictingLegalType && isNewName}">
+            {{getCorpTypeDescription(getEntityType)}}
           </span>
           <v-tooltip v-if="isConflictingLegalType && isNewName"
                      top
@@ -71,7 +70,7 @@
           <div class="my-6">
             <p class="subtitle">Benefit Company Articles</p>
             <p class="info-text">Before submitting your alteration notice you <span class="font-weight-bold">must
-                change your company's articles to include a set of Benefit Company Articles</span> OR draft new articles
+              change your company's articles to include a set of Benefit Company Articles</span> OR draft new articles
               containing a benefit provision.</p>
           </div>
 
@@ -102,10 +101,12 @@
                         <span class="ml-2">[List your public benefits in this section]</span>
                       </li>
                       <li>
-                        <span class="ml-4">The Company commits</span><br>
+                        <span class="ml-4">The Company commits</span>
+                        <br>
                         <div class="ml-5">
-                      <span class="ml-n3">i) to conduct the benefit company's business in a responsible and sustainable
-                      manner;</span><br>
+                          <span class="ml-n3">i) to conduct the benefit company's business in a responsible and
+                            sustainable manner;</span>
+                          <br>
                           <span class="ml-n3">ii) to promote the public benefits specific in paragraph 1.1</span>
                         </div>
                       </li>
@@ -161,7 +162,7 @@
             <span>Undo</span>
           </v-btn>
           <v-btn
-            v-else-if="entityFilter(EntityTypes.BC_CORPORATION)"
+            v-else-if="entityFilter(CorpTypeCd.BC_COMPANY)"
             text color="primary"
             id="btn-correct-business-type"
             @click="isEditingType = true"
@@ -212,10 +213,10 @@ import { Action, Getter } from 'vuex-class'
 import { ContactInfo } from '@/components/common'
 
 // Mixins
-import { CommonMixin } from '@/mixins'
+import { CommonMixin, EnumMixin } from '@/mixins'
 
 // Enums and Interfaces
-import { EntityTypes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
 
 @Component({
@@ -223,21 +224,21 @@ import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
     ContactInfo
   }
 })
-export default class CorrectBusinessType extends Mixins(CommonMixin) {
-  // Global Getters
+export default class CorrectBusinessType extends Mixins(CommonMixin, EnumMixin) {
+  // Global getters
   @Getter getApprovedName!: string
-  @Getter getEntityType!: EntityTypes
-  @Getter isConflictingLegalType: boolean
-  @Getter getOriginalSnapshot: BusinessSnapshotIF
+  @Getter getEntityType!: CorpTypeCd
+  @Getter isConflictingLegalType!: boolean
+  @Getter getOriginalSnapshot!: BusinessSnapshotIF
 
-  // Alteration Flag Getters
+  // Alteration flag getters
   @Getter hasBusinessTypeChanged!: boolean
 
   @Action setEntityType!: ActionBindingIF
 
-  readonly EntityTypes = EntityTypes
+  readonly CorpTypeCd = CorpTypeCd
 
-  private selectedEntityType: EntityTypes = null
+  private selectedEntityType: CorpTypeCd = null
   private confirmArticles: boolean = false
   private helpToggle: boolean = false
   private isEditingType = false
@@ -280,17 +281,18 @@ export default class CorrectBusinessType extends Mixins(CommonMixin) {
 
   /** Verify New Business name. */
   private get isNewName (): boolean {
-    return this.getApprovedName && (this.getApprovedName !== this.getOriginalSnapshot[0]?.business?.legalName)
+    return this.getApprovedName &&
+      (this.getApprovedName !== this.getOriginalSnapshot?.businessInfo?.legalName)
   }
 
   /** Check is current entity selection is a Benefit Company */
   private get isBenefit (): boolean {
-    return this.selectedEntityType === EntityTypes.BENEFIT_COMPANY
+    return (this.selectedEntityType === CorpTypeCd.BENEFIT_COMPANY)
   }
 
   /** Reset company type values to original. */
   private resetType () {
-    this.setEntityType(this.getOriginalSnapshot[0]?.business?.legalType)
+    this.setEntityType(this.getOriginalSnapshot?.businessInfo?.legalType)
     this.emitHaveChanges(false)
     this.isEditingType = false
     this.confirmArticles = false

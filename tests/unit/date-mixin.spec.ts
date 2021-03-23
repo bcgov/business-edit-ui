@@ -106,4 +106,24 @@ describe('Date Mixin', () => {
     expect(vm.daysFromToday('2021-01-20')).toBe(0) // today
     expect(vm.daysFromToday('2021-01-21')).toBe(1) // tomorrow
   })
+
+  it('returns correct values for dateToApiIsoDateTimeString()', () => {
+    // verify that GMT/UTC is correctly converted to API UTC format
+    expect(vm.dateToApiIsoDateTimeString(new Date('2021-01-01 06:00:00 GMT'))).toBe('2021-01-01T06:00:00.000+00:00')
+    expect(vm.dateToApiIsoDateTimeString(new Date('2021-01-01 08:00:00 GMT'))).toBe('2021-01-01T08:00:00.000+00:00')
+    expect(vm.dateToApiIsoDateTimeString(new Date('2021-07-01 06:00:00 GMT'))).toBe('2021-07-01T06:00:00.000+00:00')
+    expect(vm.dateToApiIsoDateTimeString(new Date('2021-07-01 07:00:00 GMT'))).toBe('2021-07-01T07:00:00.000+00:00')
+
+    // verify that Pacific is correctly converted to API UTC format
+    expect(vm.dateToApiIsoDateTimeString(new Date('2021-01-01 00:00:00 PST'))).toBe('2021-01-01T08:00:00.000+00:00')
+    expect(vm.dateToApiIsoDateTimeString(new Date('2021-01-01 23:59:59 PST'))).toBe('2021-01-02T07:59:59.000+00:00')
+    expect(vm.dateToApiIsoDateTimeString(new Date('2021-07-01 00:00:00 PDT'))).toBe('2021-07-01T07:00:00.000+00:00')
+    expect(vm.dateToApiIsoDateTimeString(new Date('2021-07-01 23:59:59 PDT'))).toBe('2021-07-02T06:59:59.000+00:00')
+
+    // verify that Eastern is correctly converted to API UTC format
+    expect(vm.dateToApiIsoDateTimeString(new Date('2021-01-01 02:00:00 EST'))).toBe('2021-01-01T07:00:00.000+00:00')
+    expect(vm.dateToApiIsoDateTimeString(new Date('2021-01-01 03:00:00 EST'))).toBe('2021-01-01T08:00:00.000+00:00')
+    expect(vm.dateToApiIsoDateTimeString(new Date('2021-07-01 02:00:00 EDT'))).toBe('2021-07-01T06:00:00.000+00:00')
+    expect(vm.dateToApiIsoDateTimeString(new Date('2021-07-01 03:00:00 EDT'))).toBe('2021-07-01T07:00:00.000+00:00')
+  })
 })

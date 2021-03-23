@@ -53,7 +53,7 @@ import { ShareStructures } from '@/components/ShareStructure'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { ActionBindingIF, FilingDataIF } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { EntityTypes, FilingCodes, FilingStatus } from '@/enums'
+import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BenefitCompanyStatementResource, CertifyStatementResource } from '@/resources'
@@ -80,11 +80,11 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   @Getter getOriginalFilingDateTime!: string
   @Getter isRoleStaff!: boolean
   @Getter isTypeBcomp!: boolean
-  @Getter getEntityType!: EntityTypes
+  @Getter getEntityType!: CorpTypeCd
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
 
-  // Global setters
+  // Global actions
   @Action setCorrectedFilingId!: ActionBindingIF
   @Action setEntityType!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
@@ -140,13 +140,13 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
     // try to fetch data
     try {
       // set current entity type
-      this.setEntityType(EntityTypes.BENEFIT_COMPANY)
+      this.setEntityType(CorpTypeCd.BENEFIT_COMPANY)
 
       // initialize Fee Summary data
       // TODO: Set/Clear Data according to filing type / entity type
       this.setFilingData({
         filingTypeCode: FilingCodes.CORRECTION,
-        entityType: EntityTypes.BENEFIT_COMPANY,
+        entityType: CorpTypeCd.BENEFIT_COMPANY,
         priority: false
       })
 

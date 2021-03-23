@@ -80,7 +80,7 @@ const newPersonCp = {
   action: 'added'
 }
 
-describe('unit tests', () => {
+describe('Completing Party', () => {
   beforeAll(async () => {
     await router.push({ name: 'correction' })
     await Vue.nextTick()

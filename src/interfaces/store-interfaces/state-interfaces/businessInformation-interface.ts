@@ -1,8 +1,10 @@
+import { CorpTypeCd } from '@/enums'
+
 /** Data object used internally only (not to/from API). */
 export interface BusinessInformationIF {
-  legalType: string
+  legalType: CorpTypeCd
   identifier: string
   legalName?: string
-  foundingDateTime?: string
+  foundingDate?: string // actually date-time
   hasRestrictions?: boolean
 }

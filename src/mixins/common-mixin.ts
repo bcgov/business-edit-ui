@@ -1,16 +1,17 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { omit, isEqual } from 'lodash'
-import { EntityTypes, RouteNames } from '@/enums'
+import { CorpTypeCd, RouteNames, ReviewSummaryFlags } from '@/enums'
+import { ValidFlagsIF } from '@/interfaces'
 
 /**
  * Mixin that provides some useful common utilities.
  */
 @Component({})
 export default class CommonMixin extends Vue {
-  @Getter getEntityType!: EntityTypes
+  @Getter getEntityType!: CorpTypeCd
 
-  /** True if Jest is running the code. */
+  /** Is True if Jest is running the code. */
   get isJestRunning (): boolean {
     return (process.env.JEST_WORKER_ID !== undefined)
   }
@@ -35,6 +36,24 @@ export default class CommonMixin extends Vue {
       // don't call window.scrollTo during Jest tests because jsdom doesn't implement it
       if (!this.isJestRunning) window.scrollTo({ top: element.offsetTop, behavior: 'smooth' })
     })
+  }
+
+  /**
+   * Identifies the first invalid flag and scrolls to the component.
+   * @param validatorFlags the component valid flags
+   */
+  validateAndScroll (validatorFlags: ValidFlagsIF): boolean {
+    // Create an array of the flag values
+    const validFlagArray = Object.keys(validatorFlags).map(key => validatorFlags[key])
+
+    // Find the first corresponding flag id that is invalid
+    const component = document.getElementById(ReviewSummaryFlags[validFlagArray.indexOf(false)])
+
+    // Scroll to the top of the first invalid component or return true
+    if (component) {
+      this.scrollToTop(component)
+      return false
+    } else return true
   }
 
   /**
@@ -66,24 +85,24 @@ export default class CommonMixin extends Vue {
     return fullAddress.trimRight()
   }
 
-  /** Returns true when filing a correction. */
-  isCorrectionView (): boolean {
+  /** Is True when filing a correction. */
+  get isCorrectionView (): boolean {
     return (this.$route.name === RouteNames.CORRECTION)
   }
 
-  /** Returns true when filing an alteration. */
-  isAlterationView (): boolean {
+  /** Is True when filing an alteration. */
+  get isAlterationView (): boolean {
     return (this.$route.name === RouteNames.ALTERATION)
   }
 
-  /** Returns the appropriate edit label for corrections or alterations */
+  /** The appropriate edit label for corrections or alterations. */
   get editLabel (): string {
-    return this.isCorrectionView() ? 'Correct' : 'Change'
+    return this.isCorrectionView ? 'Correct' : 'Change'
   }
 
-  /** Returns the appropriate edited label for corrections or alterations */
+  /** The appropriate edited label for corrections or alterations. */
   get editedLabel (): string {
-    return this.isCorrectionView() ? 'Corrected' : 'Changed'
+    return this.isCorrectionView ? 'Corrected' : 'Changed'
   }
 
   /** The entity title. */
@@ -99,39 +118,18 @@ export default class CommonMixin extends Vue {
   }
 
   /**
-   * Get an entity type descriptor based on entity type code
-   * @param entityType The entity type code
-   * @returns a readable entity descriptor
-   * */
-  getEntityDesc (entityType: string): string {
-    switch (entityType) {
-      case EntityTypes.BENEFIT_COMPANY:
-        return 'BC Benefit Company'
-      case EntityTypes.BC_CORPORATION:
-        return 'BC Limited Company'
-      case EntityTypes.NR_BC_CORPORATION:
-        return 'BC Limited Company'
-      case EntityTypes.COOP:
-        return 'BC Cooperative Association'
-      default:
-        return ''
-    }
-  }
-
-  /**
-   * Method to compare the conditional entity to the entityType defined from the Store.
-   *
-   * @param entityType The entity type of the component.
-   * @return boolean A boolean indicating if the entityType given matches the entityType assigned to the component.
+   * Checks if the specified entity type matches the current entity's type.
+   * @param entityType the entity type to check
+   * @return True if the check passes, else False
    */
-  entityFilter (entityType: EntityTypes): boolean {
-    return this.getEntityType === entityType
+  entityFilter (entityType: CorpTypeCd): boolean {
+    return (this.getEntityType === entityType)
   }
 
   /**
-   * Format a phone number for display.
-   * @param phoneNumber The phone number to format.
-   * @returns string A formatted phone display phone number.
+   * Formats a phone number for display.
+   * @param phoneNumber the phone number to format
+   * @returns a formatted phone number
    */
   toDisplayPhone (phoneNumber: string): string {
     // Filter only numbers from the input

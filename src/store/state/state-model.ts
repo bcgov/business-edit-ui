@@ -19,9 +19,18 @@ export const stateModel: StateModelIF = {
     haveChanges: false
   },
   newAlteration: {
-    // All the new alteration stuff should be here
-    // FUTURE: include alteration stuff here please
-    provisionsRemoved: null
+    appValidate: false,
+    provisionsRemoved: null,
+    planOfArrangement: false,
+    courtOrder: {
+      fileNumber: ''
+    },
+    validFlags: {
+      isValidEffectiveDate: true,
+      isValidCourtNum: true, // Staff only
+      isValidCertify: true,
+      isValidStaffPayment: true // Staff only
+    }
   },
   accountInformation: {
     accountType: '',
@@ -30,7 +39,7 @@ export const stateModel: StateModelIF = {
     type: ''
   },
   businessInformation: {
-    legalType: '',
+    legalType: null,
     identifier: ''
   },
   nameRequest: {
@@ -56,13 +65,16 @@ export const stateModel: StateModelIF = {
   },
   nameTranslations: [],
   effectiveDateTime: {
-    valid: false,
     isFutureEffective: null,
     dateTimeString: ''
   },
   certifyState: {
     valid: false,
     certifiedBy: ''
+  },
+  documentDelivery: {
+    valid: false,
+    documentOptionalEmail: ''
   },
   defineCompanyStep: {
     valid: false,
@@ -102,7 +114,7 @@ export const stateModel: StateModelIF = {
       isFutureEffective: null
     },
     business: {
-      legalType: '',
+      legalType: null,
       identifier: ''
     },
     incorporationApplication: {
@@ -130,7 +142,9 @@ export const stateModel: StateModelIF = {
       name: '',
       certifiedBy: '',
       date: '',
-      folioNumber: ''
+      folioNumber: '',
+      effectiveDate: '',
+      isFutureEffective: null
     },
     business: {
       foundingDate: '',
@@ -141,7 +155,7 @@ export const stateModel: StateModelIF = {
     alteration: {
       provisionsRemoved: null,
       business: {
-        legalType: '',
+        legalType: null,
         identifier: ''
       },
       nameRequest: { ...EmptyNameRequest },
@@ -157,7 +171,7 @@ export const stateModel: StateModelIF = {
       }
     }
   },
-  originalSnapshot: [],
+  originalSnapshot: null,
   staffPaymentStep: {
     valid: false,
     staffPayment: {
