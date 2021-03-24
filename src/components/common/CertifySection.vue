@@ -44,6 +44,7 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   @Getter isRoleStaff!: boolean
 
   @Action setCertifyState!: ActionBindingIF
+  @Action setCertifyStateValidity!: ActionBindingIF
 
   /** Prop to perform validation. */
   @Prop() readonly validate: boolean
@@ -70,12 +71,9 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
 
   /** Handler for Valid change event. */
   private onValid (val: boolean): void {
-    this.setCertifyState(
-      {
-        valid: val,
-        certifiedBy: this.getCertifyState.certifiedBy
-      }
-    )
+    if ((val) && (this.getCertifyState.certifiedBy)) {
+      this.setCertifyStateValidity(true)
+    }
   }
 
   /** Handler for CertifiedBy change event. */
