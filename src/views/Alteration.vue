@@ -48,13 +48,13 @@
 
       <documents-delivery
        class="mt-10"
-       :pleaseValidate="true"
+       :validate="getAppValidate"
         @valid="setDocumentOptionalEmailValidity($event)"
       />
 
       <certify-section
        class="mt-10"
-       :pleaseValidate="true"
+       :validate="getAppValidate"
       />
 
       <!-- STAFF ONLY: Court Order and Plan of Arrangement -->

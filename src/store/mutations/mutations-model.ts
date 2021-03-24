@@ -86,7 +86,7 @@ export const mutateDocumentOptionalEmail = (state: StateIF, documentOptionalEmai
 }
 
 export const mutateDocumentOptionalEmailValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.documentDelivery.valid = validity
+  state.stateModel.newAlteration.validFlags.isValidDocumentOptionalEmail = validity
 }
 
 export const mutateBusinessContact = (state: StateIF, businessContact: ContactPointIF) => {
