@@ -78,6 +78,7 @@ export const mutateCertifyState = (state: StateIF, certifyState: CertifyIF) => {
 
 export const mutateCertifyStateValidity = (state: StateIF, validity: boolean) => {
   state.stateModel.certifyState.valid = validity
+  state.stateModel.newAlteration.validFlags.isValidCertify = validity
 }
 
 export const mutateDocumentOptionalEmail = (state: StateIF, documentOptionalEmail: string) => {
