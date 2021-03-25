@@ -5,32 +5,32 @@
       attach="#app"
     />
 
-     <div class="define-company-header">
-        <v-icon color="app-dk-blue">mdi-domain</v-icon>
-        <label class="define-company-title">Your Company</label>
+    <div class="define-company-header">
+      <v-icon color="app-dk-blue">mdi-domain</v-icon>
+      <label class="define-company-title">Your Company</label>
     </div>
 
-    <div class="section-container">
-      <v-layout row class="mx-0 mt-4">
-        <v-flex xs3>
-          <v-layout column>
-            <label><strong>Company Name</strong></label>
-            <v-flex md1 class="mt-1">
-              <v-chip v-if="companyNameChanges || (isAlterationView && hasBusinessNameChanged)"
-                      id="corrected-lbl"
-                      x-small label
-                      color="primary"
-                      text-color="white"
-              >
-                 {{editedLabel}}
-              </v-chip>
-            </v-flex>
-          </v-layout>
-        </v-flex>
+    <div class="section-container mt-4">
+      <!-- Company Name -->
+      <v-row no-gutters>
+        <v-col cols="3">
+          <label><strong>Company Name</strong></label>
+          <v-flex md1 class="mt-1">
+            <v-chip v-if="companyNameChanges || (isAlterationView && hasBusinessNameChanged)"
+                    id="corrected-lbl"
+                    x-small label
+                    color="primary"
+                    text-color="white"
+            >
+              {{editedLabel}}
+            </v-chip>
+          </v-flex>
+        </v-col>
 
+        <!-- Display Mode -->
         <template v-if="!isEditingNames">
-          <v-flex xs6 class="mt-n1">
-            <div class="company-name font-weight-bold">{{ companyName }}</div>
+          <v-col cols="7" class="mt-n1">
+            <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
 
             <!-- Business Type Info -->
             <template v-if="(isAlterationView && hasBusinessNameChanged) && !hasNewNr">
@@ -45,7 +45,7 @@
 
             <!-- Name Request Info -->
             <template v-if="isAlterationView && hasNewNr">
-              <div class="company-name">{{ getNameRequest.nrNumber }}</div>
+              <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
                 <span :class="{ 'hasConflict': isConflictingLegalType}"
@@ -79,10 +79,10 @@
                 <span class="info-text">{{getNameRequest.status}}</span>
               </div>
             </template>
-          </v-flex>
+          </v-col>
 
           <!-- Actions -->
-          <v-flex xs1 class="mt-n2">
+          <v-col cols="2" class="mt-n2">
             <div class="actions mr-4">
               <!-- TODO: only show buttons for named company -->
               <v-btn
@@ -133,77 +133,76 @@
                 </v-menu>
               </span>
             </div>
-          </v-flex>
+          </v-col>
         </template>
 
-        <template v-else>
-          <v-flex xs9>
-            <correct-name-options
-              :correction-name-choices="correctNameChoices"
-              @done="nameChangeHandler"
-              @cancel="isEditingNames = false"
-            />
-          </v-flex>
-        </template>
+        <!-- Editing Mode -->
+        <v-col cols="9" v-else>
+          <correct-name-options
+            :correction-name-choices="correctNameChoices"
+            @done="nameChangeHandler"
+            @cancel="isEditingNames = false"
+          />
+        </v-col>
+      </v-row>
 
-        <!-- Name Request Applicant Info -->
-        <template v-if="isAlterationView && hasNewNr">
-          <v-flex xs3 class="sub-section">
-            <v-layout column>
-              <label><strong>Name Request Applicant</strong></label>
-            </v-layout>
-          </v-flex>
-          <v-flex xs6 class="sub-section">
-            <template>
-              <div class="name-request-applicant-info">
-                <span class="subtitle">Name: </span>
-                <span class="info-text">{{nrApplicant.fullName}}</span>
-              </div>
-              <div class="name-request-applicant-info">
-                <span class="subtitle">Address: </span>
-                <span class="info-text">{{nrApplicant.fullAddress}}</span>
-              </div>
-              <div class="name-request-applicant-info">
-                <span class="subtitle">Email: </span>
-                <span class="info-text">{{nrApplicant.emailAddress || 'N/A'}}</span>
-              </div>
-              <div class="name-request-applicant-info">
-                <span class="subtitle">Phone: </span>
-                <span class="info-text">{{phoneNumber || 'N/A'}}</span>
-              </div>
-            </template>
-          </v-flex>
-        </template>
-      </v-layout>
+      <!-- Name Request Applicant -->
+      <v-row no-gutters v-if="isAlterationView && hasNewNr" class="sub-section">
+        <v-col cols="3">
+          <v-layout column>
+            <label><strong>Name Request Applicant</strong></label>
+          </v-layout>
+        </v-col>
 
-      <!-- Edit Business Type -->
-      <correct-business-type
-        class="sub-section"
+        <v-col cols="7">
+          <div class="name-request-applicant-info">
+            <span class="subtitle">Name: </span>
+            <span class="info-text">{{nrApplicant.fullName}}</span>
+          </div>
+          <div class="name-request-applicant-info">
+            <span class="subtitle">Address: </span>
+            <span class="info-text">{{nrApplicant.fullAddress}}</span>
+          </div>
+          <div class="name-request-applicant-info">
+            <span class="subtitle">Email: </span>
+            <span class="info-text">{{nrApplicant.emailAddress || 'N/A'}}</span>
+          </div>
+          <div class="name-request-applicant-info">
+            <span class="subtitle">Phone: </span>
+            <span class="info-text">{{phoneNumber || 'N/A'}}</span>
+          </div>
+        </v-col>
+      </v-row>
+
+      <!-- Business Type -->
+      <correct-business-type class="sub-section"
         @haveChanges="companyTypeChanges = $event"
       />
 
-      <!-- Edit Name Translation -->
-      <correct-name-translation
-        class="sub-section"
+      <!-- Name Translation(s) -->
+      <correct-name-translation class="sub-section"
         @haveChanges="nameTranslationChanges = $event"
       />
     </div>
 
     <v-divider class="mx-4" />
 
+    <!-- Recognition Date and Time -->
     <div class="section-container">
-      <v-layout row class="mx-0">
-        <v-flex xs3>
+      <v-row no-gutters>
+        <v-col cols="3">
           <label><strong>Recognition Date and Time</strong></label>
-        </v-flex>
-        <v-flex xs9>
+        </v-col>
+
+        <v-col cols="9">
           <div class="info-text">{{ recognitionDateTime }}</div>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </div>
 
     <v-divider class="mx-4" />
 
+    <!-- Registered Office -->
     <div class="section-container">
       <office-addresses
         @haveChanges="officeAddressChanges = $event"
@@ -212,12 +211,14 @@
 
     <v-divider class="mx-4" />
 
+    <!-- Registered Office Contact Information -->
     <div class="section-container">
       <business-contact-info
         @haveChanges="contactInfoChanges = $event"
       />
     </div>
 
+    <!-- Folio Number -->
     <template v-if="isPremiumAccount">
       <v-divider class="mx-4" />
 

@@ -1,31 +1,33 @@
 <template>
   <v-form id="correct-name-form" ref="correctNameForm" v-model="valid" lazy-validation>
-    <v-layout row>
-      <v-flex>
+    <v-row no-gutters>
+      <v-col>
         <v-text-field
           v-model="companyName"
           id="company-name-input"
+          class="mb-n3"
           filled
-          persistent-hint
           :rules="companyNameRules"
-          data-test="business-identifier"
-        ></v-text-field>
-      </v-flex>
-    </v-layout>
+          @keyup="uppercase('companyName')"
+        />
+      </v-col>
+    </v-row>
   </v-form>
 </template>
-
 <script lang="ts">
 // Libraries
-import { Component, Prop, Watch, Emit, Vue } from 'vue-property-decorator'
+import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+
+// Mixins
+import { CommonMixin } from '@/mixins'
 
 // Interfaces && enums
 import { ActionBindingIF, NameRequestIF } from '@/interfaces'
 import { CorrectionTypes } from '@/enums'
 
 @Component({})
-export default class CorrectCompanyName extends Vue {
+export default class CorrectCompanyName extends Mixins(CommonMixin) {
   /** Form Submission Prop */
   @Prop({ default: null }) formType: CorrectionTypes
 
@@ -81,7 +83,8 @@ export default class CorrectCompanyName extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .v-expansion-panel-content ::v-deep .v-expansion-panel-content__wrap {
-    padding: 0;
-  }
+::v-deep #company-name-input {
+  // hide uppercase transformation delay from user
+  text-transform: uppercase;
+}
 </style>

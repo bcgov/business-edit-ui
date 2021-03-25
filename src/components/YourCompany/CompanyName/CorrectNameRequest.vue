@@ -1,10 +1,10 @@
 <template>
-  <v-form id="correct-nr-form" ref="correctNrForm" v-model="valid" lazy-validation>
-    <v-layout row>
-      <v-flex md1 class="pa-3 pl-0">
+  <v-form id="correct-nr-form" ref="correctNrForm" v-model="formValid" lazy-validation>
+    <v-row no-gutters>
+      <v-col cols="1" class="mt-1">
         <v-btn x-small fab outlined :ripple="false" color="#495057" class="step-icon">1</v-btn>
-      </v-flex>
-      <v-flex>
+      </v-col>
+      <v-col>
         <v-text-field
           v-model="nameRequestNumber"
           class="text-input-field"
@@ -12,43 +12,45 @@
           label="Enter the NR Number"
           hint="Example: NR 1234567"
           persistent-hint
-          :rules="entityNumRules"
-          data-test="business-identifier"
-        ></v-text-field>
-      </v-flex>
-    </v-layout>
-    <v-layout row>
-      <v-flex md1 class="pa-3 pl-0">
+          :rules="done && nrNumRules"
+          id="nr-number"
+          @keyup="uppercase('nameRequestNumber')"
+        />
+      </v-col>
+    </v-row>
+
+    <v-row no-gutters class="mt-4 mb-n1">
+      <v-col cols="1" class="mt-1">
         <v-btn x-small fab outlined :ripple="false" color="#495057" class="step-icon">2</v-btn>
-      </v-flex>
-      <v-flex md5>
+      </v-col>
+      <v-col cols="5">
         <v-text-field
-          v-model="entityPhone"
+          v-model="applicantPhone"
           class="text-input-field"
           filled
           label="Applicant's Phone Number"
           hint="Example: 555-555-5555"
           persistent-hint
           type="tel"
-          :rules="entityPhoneNumberRules"
-          data-test="entity-phone"
-        ></v-text-field>
-      </v-flex>
+          :rules="done && phoneRules"
+          id="applicant-phone"
+        />
+      </v-col>
       <div class="ma-5">or</div>
-      <v-flex>
+      <v-col>
         <v-text-field
-          v-model="entityEmail"
+          v-model="applicantEmail"
           class="text-input-field"
           filled
           label="Applicant's Notification Email"
           hint="Example: name@email.com"
           persistent-hint
-          :rules="entityEmailRules"
-          data-test="entity-email"
-        >
-        </v-text-field>
-      </v-flex>
-    </v-layout>
+          type="email"
+          :rules="done && emailRules"
+          id="applicant-email"
+        />
+      </v-col>
+    </v-row>
   </v-form>
 </template>
 
@@ -73,7 +75,8 @@ import { CorrectionTypes } from '@/enums'
 @Component({})
 export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestMixin) {
   /** Form Submission Prop */
-  @Prop({ default: null }) formType: CorrectionTypes
+  @Prop({ default: null })
+  readonly formType: CorrectionTypes
 
   @Action setNameRequest!: ActionBindingIF
 
@@ -81,44 +84,48 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   @Getter getNameRequestNumber!: string
   @Getter getNameRequestApplicant!: NameRequestApplicantIF
 
-  private valid = false
-  private nameRequestNumber: string = ''
-  private entityPhone: string = ''
-  private entityEmail: string = ''
+  // V-model properties
+  private formValid = false
+  private nameRequestNumber = ''
+  private applicantPhone = ''
+  private applicantEmail = ''
+
+  // FUTURE: use this to turn on/off validations
+  private done = true
 
   // Form Ref
   $refs: { correctNrForm: HTMLFormElement }
 
   // Rules
-  private entityNumRules = [
+  nrNumRules = [
     (v: string) => !!v || 'Name Request Number is required',
-    (v: string) => this.validateNameRequestNumber(v) || 'Name Request Number is invalid'
+    (v: string) => this.isValidNrNumber(v) || 'Name Request Number is invalid'
   ]
-  private entityPhoneNumberRules = [
+  phoneRules = [
     (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
     (v: string) => !(v?.length > 12) || 'Phone number is invalid'
   ]
-  private entityEmailRules = [
+  emailRules = [
     (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    (v: string) => this.isValidateEmail(v) || 'Email is Invalid'
+    (v: string) => this.isValidEmail(v) || 'Email is invalid'
   ]
 
   // Validations
   private get isFormValid (): boolean {
-    return this.valid && !!this.nameRequestNumber &&
-      (!!this.entityPhone || !!this.entityEmail)
+    return this.formValid && !!this.nameRequestNumber &&
+      (!!this.applicantPhone || !!this.applicantEmail)
   }
 
-  private isValidateEmail (value: any) {
+  private isValidEmail (value: string): boolean {
     if (value?.length < 1) return true
-    return ((!!this.entityPhone && !!value) || !!this.validateEmailFormat(value))
+    return ((!!this.applicantPhone && !!value) || !!this.validateEmailFormat(value))
   }
 
-  private validateNameRequestNumber (value: string): boolean {
+  private isValidNrNumber (value: string): boolean {
     const VALID_FORMAT = new RegExp(/^(NR )\d{7}$/)
-    return VALID_FORMAT.test(value.toUpperCase())
+    return VALID_FORMAT.test(value)
   }
 
   private validateEmailFormat (value: string): boolean {
@@ -139,8 +146,8 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
         // Validate and return the name request data
         const response: NrResponseIF = await this.validateNameRequest(
           this.nameRequestNumber,
-          this.entityPhone,
-          this.entityEmail
+          this.applicantPhone,
+          this.applicantEmail
         )
 
         // Parse the name request data
@@ -161,7 +168,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
         this.setNameRequest({ ...this.getNameRequest, ...nrCorrection })
         this.emitDone(true)
       } catch {
-        // Request is handling it's own errors
+        // "validateNameRequest" handles its own errors
         // Inform parent process is complete
         this.emitDone()
       }
@@ -176,9 +183,10 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   }
 
   /** Inform parent when form is valid and ready for submission. */
-  @Watch('valid')
-  @Watch('entityPhone')
-  @Watch('entityEmail')
+  @Watch('formValid')
+  @Watch('nameRequestNumber')
+  @Watch('applicantPhone')
+  @Watch('applicantEmail')
   @Emit('isValid')
   private emitValid (): boolean {
     return this.isFormValid
@@ -192,6 +200,11 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
 .step-icon {
   font-size: small;
   font-weight: bold;
+}
+
+::v-deep #nr-number {
+  // hide uppercase transformation delay from user
+  text-transform: uppercase;
 }
 
 ::v-deep .theme--light.v-label {
