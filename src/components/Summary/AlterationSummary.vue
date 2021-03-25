@@ -353,6 +353,10 @@ export default class AlterationSummary extends Mixins(
   }
 }
 
+#name-translation {
+  width: 100%;
+}
+
 .inner-col-1 {
   // adjustment to make this inner container column the same width as the outer columns
   // ie, decrease width by 1/2 container margin + padding
