@@ -10,10 +10,18 @@ import { createLocalVue, mount } from '@vue/test-utils'
 import { AlterationSummary } from '@/components/Summary'
 import { EffectiveDateTime } from '@/components/common'
 import { ConfirmDialog } from '@/components/dialogs'
+import { NameTranslationIF } from '@/interfaces'
+import { NameTranslation } from '@/components/YourCompany/NameTranslations'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
 const vuetify = new Vuetify({})
+const nameTranslationsList: NameTranslationIF[] = [
+  { name: 'First mock name translation ltd.' },
+  { name: 'Second mock name translation inc' },
+  { name: 'Third mock name translation ltd.' },
+  { name: 'Quatrième nom simulé' }
+]
 
 describe('Alteration Summary component', () => {
   let wrapper: any
@@ -40,6 +48,7 @@ describe('Alteration Summary component', () => {
     store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
     store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
     store.state.stateModel.summaryMode = true
+    store.state.stateModel.nameTranslations = nameTranslationsList
 
     wrapper = mount(AlterationSummary, { vuetify, store, localVue })
   })
@@ -52,6 +61,7 @@ describe('Alteration Summary component', () => {
     expect(wrapper.find(AlterationSummary).exists()).toBe(true)
     expect(wrapper.find(EffectiveDateTime).exists()).toBe(true)
     expect(wrapper.find(ConfirmDialog).exists()).toBe(true)
+    expect(wrapper.find(NameTranslation).exists()).toBe(true)
   })
 
   it('renders the Change and Remove actions', async () => {
@@ -143,4 +153,18 @@ describe('Alteration Summary component', () => {
     expect(divs.at(1).text()).toContain('The alteration for this business will be effective as of:')
     expect(divs.at(1).text()).toContain('Friday, March 5, 2021 at 8:30 am Pacific time')
   })
+
+  it('displays the list of name translations', async () => {
+
+    // Verify list exists
+    expect(wrapper.find('#name-translation').exists()).toBeTruthy()
+
+    // Verify list items
+    const namesList = wrapper.vm.$el.querySelectorAll('.info-text')
+    expect(namesList[0].textContent).toContain(nameTranslationsList[0].name)
+    expect(namesList[1].textContent).toContain(nameTranslationsList[1].name)
+    expect(namesList[2].textContent).toContain(nameTranslationsList[2].name)
+    expect(namesList[3].textContent).toContain(nameTranslationsList[3].name)
+  })
+
 })

@@ -9,7 +9,8 @@
         <label><strong>Name Translation(s)</strong></label>
         <v-flex md1>
             <v-chip v-if="hasNameTranslationChange" x-small label color="#1669BB" text-color="white">
-                Corrected
+              <span v-if="isCorrectionView">Corrected</span>
+              <span v-else>Changed</span>
             </v-chip>
           </v-flex>
       </v-flex>
@@ -20,7 +21,7 @@
       <v-flex class="info-text" xs7 v-else>
         No name translations
       </v-flex>
-      <v-flex xs2 class="align-right" v-if="!hasNameTranslationChange">
+      <v-flex xs2 class="align-right" v-if="!hasNameTranslationChange && !isSummaryMode">
         <v-btn
           id="correct-name-translation"
           text color="primary"
@@ -30,7 +31,7 @@
           <span>{{editLabel}}</span>
         </v-btn>
       </v-flex>
-      <v-flex xs2 class="align-right" v-else>
+      <v-flex xs2 class="align-right" v-else-if="hasNameTranslationChange && !isSummaryMode">
         <v-btn
           id="undo-name-translation"
           text color="primary" class="undo-name-translation"
@@ -162,6 +163,9 @@ export default class NameTranslation extends Mixins(CommonMixin) {
 
   @Prop({ default: () => { return [] as [] } })
   private nameTranslations!: NameTranslationIF[]
+
+  @Prop({ default: false })
+  private isSummaryMode: boolean
 
   // Global action
   @Action setEditingNameTranslations: ActionBindingIF
@@ -329,6 +333,11 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   // Watchers
   @Watch('nameTranslations', { deep: true, immediate: true })
   private onNameTranslationsPropValueChanged (): void {
+    if (this.isSummaryMode) {
+      this.nameTranslations.forEach(function (translation) {
+        translation.name = translation.name.toUpperCase()
+      })
+    }
     this.draftTranslations = this.nameTranslations ? cloneDeep(this.nameTranslations) : []
     this.emitHaveChanges(this.hasNameTranslationChange)
   }
