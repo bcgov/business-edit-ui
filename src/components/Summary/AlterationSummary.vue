@@ -85,12 +85,10 @@
     <template v-if="true">
       <v-divider class="mx-4" />
       <div class="section-container name-translation-summary">
-        <v-row no-gutters>
-          <name-translation
-            :nameTranslations="getNameTranslations"
-            :isSummaryMode="true"
-          />
-        </v-row>
+        <name-translation
+          :nameTranslations="getNameTranslations"
+          :isSummaryMode="true"
+        />
       </div>
     </template>
 
@@ -353,10 +351,6 @@ export default class AlterationSummary extends Mixins(
       color: $BCgovInputError;
     }
   }
-}
-
-#name-translation {
-  width: 100%;
 }
 
 .inner-col-1 {
