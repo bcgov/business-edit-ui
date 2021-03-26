@@ -1,33 +1,33 @@
 <template>
-  <v-container id="name-options-container" class="pa-0">
-    <p class="info-text mb-5" v-if="!isOneOption">
+  <v-container id="name-options-container" class="pa-0 pr-4">
+    <p class="info-text mb-5 pb-5 bottom-border" v-if="!isOneOption">
       You can correct the company name in one of the following ways:
     </p>
-    <v-expansion-panels v-model="panel" class="names-options-panels" accordion>
+    <v-expansion-panels v-model="panel" class="bottom-border" accordion>
       <v-expansion-panel
         v-for="(item,i) in displayedOptions"
-        :id="`x-panel: ${item.id}`"
+        class="mb-4"
+        :id="`x-panel-${item.id}`"
         :key="i"
         :disabled="isOneOption"
         @click="identifyForm(item.id)"
       >
-        <v-expansion-panel-header class="px-0 my-1" :class="{'name-options-header': isOneOption}">
+        <v-expansion-panel-header class="mb-n6" :class="{'name-options-header': isOneOption}">
           <span class="names-option-title">{{item.title}}</span>
           <template v-slot:actions>
             <v-icon color="primary">mdi-menu-down</v-icon>
           </template>
         </v-expansion-panel-header>
-        <v-expansion-panel-content class="name-options-content">
-          <span class="info-text" color="primary">{{item.description}}</span>
-          <v-container>
-            <component
-              :is="item.component"
-              :key="item.id"
-              :formType="formType"
-              @done="emitDone($event)"
-              @isValid="isFormValid = $event"
-            />
-          </v-container>
+
+        <v-expansion-panel-content class="name-options-content pt-4">
+          <div v-if="item.description" class="info-text mb-4" color="primary">{{item.description}}</div>
+          <component
+            :is="item.component"
+            :key="item.id"
+            :formType="formType"
+            @done="emitDone($event)"
+            @isValid="isFormValid = $event"
+          />
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
@@ -59,9 +59,9 @@
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 
 // Components
-import CorrectNameRequest from '@/components/YourCompany/CompanyName/CorrectNameRequest.vue'
 import CorrectCompanyName from '@/components/YourCompany/CompanyName/CorrectCompanyName.vue'
 import CorrectNameToNumber from '@/components/YourCompany/CompanyName/CorrectNameToNumber.vue'
+import CorrectNameRequest from '@/components/YourCompany/CompanyName/CorrectNameRequest.vue'
 
 // Interfaces & Enums
 import { CorrectNameOptionIF } from '@/interfaces'
@@ -76,8 +76,9 @@ import { CorrectionTypes } from '@/enums'
  */
 @Component({
   components: {
-    CorrectNameRequest,
-    CorrectCompanyName
+    CorrectCompanyName,
+    CorrectNameToNumber,
+    CorrectNameRequest
   }
 })
 export default class CorrectNameOptions extends Vue {
@@ -164,10 +165,13 @@ export default class CorrectNameOptions extends Vue {
   align-items: start;
 }
 
-.names-options-panels {
+.bottom-border {
   border-color: rgba(0, 0, 0, 0.1) !important;
-  border-top: 1px solid;
   border-bottom: 1px solid;
+}
+
+.v-expansion-panel:not(:first-child) {
+  padding-top: 1.25rem;
 }
 
 .names-option-title {

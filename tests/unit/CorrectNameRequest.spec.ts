@@ -69,8 +69,8 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(false)
 
     wrapper.vm.nameRequestNumber = 'NR 1234567'
-    wrapper.vm.entityPhone = '123 456 7890'
-    wrapper.vm.entityEmail = 'mock@email.com'
+    wrapper.vm.applicantPhone = '123 456 7890'
+    wrapper.vm.applicantEmail = 'mock@email.com'
 
     await flushPromises()
 
@@ -84,7 +84,7 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(false)
 
     wrapper.vm.nameRequestNumber = '123123NR'
-    wrapper.vm.entityEmail = 'mock@email.com'
+    wrapper.vm.applicantEmail = 'mock@email.com'
 
     await flushPromises()
 
@@ -98,7 +98,7 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(false)
 
     wrapper.vm.nameRequestNumber = '123123NR'
-    wrapper.vm.entityEmail = 'mockemail.com'
+    wrapper.vm.applicantEmail = 'mockemail.com'
 
     await flushPromises()
 
@@ -112,7 +112,7 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(false)
 
     wrapper.vm.nameRequestNumber = '123123NR'
-    wrapper.vm.entityPhone = '123 456 7890 1212'
+    wrapper.vm.applicantPhone = '123 456 7890 1212'
 
     await flushPromises()
 
@@ -126,8 +126,8 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(false)
 
     wrapper.vm.nameRequestNumber = '123123NR'
-    wrapper.vm.entityPhone = ''
-    wrapper.vm.entityEmail = ''
+    wrapper.vm.applicantPhone = ''
+    wrapper.vm.applicantEmail = ''
 
     await flushPromises()
 
@@ -141,8 +141,8 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(false)
 
     wrapper.vm.nameRequestNumber = 'NR 1234567'
-    wrapper.vm.entityPhone = '250 516 8257'
-    wrapper.vm.entityEmail = ''
+    wrapper.vm.applicantPhone = '250 516 8257'
+    wrapper.vm.applicantEmail = ''
 
     await flushPromises()
 
@@ -157,8 +157,8 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(false)
 
     wrapper.vm.nameRequestNumber = 'NR 1234567'
-    wrapper.vm.entityPhone = ''
-    wrapper.vm.entityEmail = ''
+    wrapper.vm.applicantPhone = ''
+    wrapper.vm.applicantEmail = ''
 
     await flushPromises()
 
@@ -195,8 +195,8 @@ describe('CorrectNameRequest', () => {
 
     // Set values and submit form
     wrapper.vm.nameRequestNumber = 'NR 1234567'
-    wrapper.vm.entityPhone = '250 516 8257'
-    wrapper.vm.entityEmail = ''
+    wrapper.vm.applicantPhone = '250 516 8257'
+    wrapper.vm.applicantEmail = ''
     await wrapper.setProps({ formType: 'correct-new-nr' })
     await flushPromises()
 
@@ -231,14 +231,14 @@ describe('CorrectNameRequest', () => {
 
     // Verify Invalid before input
     wrapper.vm.nameRequestNumber = ''
-    wrapper.vm.entityPhone = ''
-    wrapper.vm.entityEmail = ''
+    wrapper.vm.applicantPhone = ''
+    wrapper.vm.applicantEmail = ''
     expect(wrapper.vm.isFormValid).toBe(false)
 
     // Set values and submit form
     wrapper.vm.nameRequestNumber = 'NR 1234567'
-    wrapper.vm.entityPhone = '250 516 8258'
-    wrapper.vm.entityEmail = ''
+    wrapper.vm.applicantPhone = '250 516 8258'
+    wrapper.vm.applicantEmail = ''
     await wrapper.setProps({ formType: 'correct-new-nr' })
     await flushPromises()
 
@@ -273,14 +273,14 @@ describe('CorrectNameRequest', () => {
 
     // Verify Invalid before input
     wrapper.vm.nameRequestNumber = ''
-    wrapper.vm.entityPhone = ''
-    wrapper.vm.entityEmail = ''
+    wrapper.vm.applicantPhone = ''
+    wrapper.vm.applicantEmail = ''
     expect(wrapper.vm.isFormValid).toBe(false)
 
     // Set values and submit form
     wrapper.vm.nameRequestNumber = 'NR 1234567'
-    wrapper.vm.entityPhone = '250 516 8257'
-    wrapper.vm.entityEmail = 'mockBad@email.com'
+    wrapper.vm.applicantPhone = '250 516 8257'
+    wrapper.vm.applicantEmail = 'mockBad@email.com'
     await wrapper.setProps({ formType: 'correct-new-nr' })
     await flushPromises()
 

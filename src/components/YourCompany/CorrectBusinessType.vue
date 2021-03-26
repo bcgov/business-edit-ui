@@ -1,18 +1,18 @@
 <template>
   <div v-if="isAlterationView" id="business-type">
-    <v-layout>
+    <v-row no-gutters>
       <!-- Row Title -->
-      <v-flex xs3>
+      <v-col cols="3">
         <label><strong>Business Type</strong></label>
         <v-flex md1>
           <v-chip v-if="hasBusinessTypeChanged" x-small label color="primary" text-color="white">
             {{editedLabel}}
           </v-chip>
         </v-flex>
-      </v-flex>
+      </v-col>
 
       <!-- Display Mode -->
-      <v-flex xs8 v-if="!isEditingType">
+      <v-col cols="7" v-if="!isEditingType">
         <template>
           <span class="info-text" :class="{ 'hasConflict': isConflictingLegalType && isNewName}">
             {{getCorpTypeDescription(getEntityType)}}
@@ -41,10 +41,10 @@
             </div>
           </template>
         </template>
-      </v-flex>
+      </v-col>
 
       <!-- Editing Mode -->
-      <v-flex xs9 v-if="isEditingType" class="pr-4">
+      <v-col cols="9" v-if="isEditingType" class="pr-4">
         <v-select id="business-type-selector"
                   :items="entityTypeOptions"
                   v-model="selectedEntityType"
@@ -146,10 +146,10 @@
             <span>Cancel</span>
           </v-btn>
         </div>
-      </v-flex>
+      </v-col>
 
       <!-- Edit Actions -->
-      <v-flex v-if="!isEditingType" xs1 class="mt-n2">
+      <v-col cols="2" v-if="!isEditingType" class="mt-n2">
         <div class="actions mr-4">
           <v-btn
             v-if="hasBusinessTypeChanged"
@@ -199,8 +199,8 @@
             </v-menu>
           </span>
         </div>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
   </div>
 </template>
 

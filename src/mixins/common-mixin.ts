@@ -85,6 +85,11 @@ export default class CommonMixin extends Vue {
     return fullAddress.trimRight()
   }
 
+  /** Changes the specified prop to uppercase. */
+  uppercase (prop: string): void {
+    this[prop] = this[prop]?.toUpperCase()
+  }
+
   /** Is True when filing a correction. */
   get isCorrectionView (): boolean {
     return (this.$route.name === RouteNames.CORRECTION)

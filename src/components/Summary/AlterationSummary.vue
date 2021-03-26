@@ -47,8 +47,8 @@
           </v-col>
 
           <v-col cols="8" class="mt-n1">
-            <div class="company-name font-weight-bold">{{ companyName }}</div>
-            <div class="company-name">{{ getNameRequest.nrNumber }}</div>
+            <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
+            <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
           </v-col>
         </v-row>
       </div>

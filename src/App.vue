@@ -106,7 +106,7 @@
                 </aside>
               </template>
 
-              <!-- Alterations is using the fee summary shared component -->
+              <!-- Alterations uses the new fee summary shared component -->
               <fee-summary
                 v-else
                 :show-fee-summary="showFeeSummary"
@@ -117,6 +117,7 @@
                 :isSummaryMode="isSummaryMode"
                 @action="handleSummaryActions($event)"
               />
+
             </v-col>
           </v-row>
         </v-container>
@@ -322,25 +323,23 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
         this.setHaveChanges(false)
         this.paymentErrorDialog = true
       } else {
-        console.log('save error =', error) // eslint-disable-line no-console
+        console.log('Save error =', error) // eslint-disable-line no-console
         this.saveErrorDialog = true
       }
     })
 
-    // listen for invalid name requests
+    // listen for invalid name request events
     this.$root.$on('invalid-name-request', async (error: any) => {
-      console.log('Name request error =', error) // eslint-disable-line no-console
+      console.log('Name Request error =', error) // eslint-disable-line no-console
       this.nameRequestErrorType = error
       this.nameRequestErrorDialog = true
     })
 
-    // listen for invalid delete requests
+    // listen for delete error events
     this.$root.$on('delete-error-event', async (error: any) => {
       console.log('Delete error =', error) // eslint-disable-line no-console
       this.deleteErrors = error?.response?.data?.errors || []
       this.deleteWarnings = error?.response?.data?.warnings || []
-
-      console.log('Delete error =', error) // eslint-disable-line no-console
       this.deleteErrorDialog = true
     })
 

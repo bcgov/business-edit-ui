@@ -70,7 +70,7 @@ describe('Document Delivery component', () => {
     wrapper.find('.text-input-field').trigger('focus')
     wrapper.find('.text-input-field').find('input').setValue('1212')
     wrapper.find('.text-input-field').trigger('blur')
-    await Vue.nextTick();
+    await Vue.nextTick()
 
     expect(wrapper.find(optionalEmailInput).text()).toEqual('1212')
 
