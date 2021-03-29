@@ -14,7 +14,8 @@
             label="Name Translation"
             id="name-translation-input"
             v-model="nameTranslation"
-            :rules="nameTranslationRules">
+            :rules="nameTranslationRules"
+            @keyup="uppercase('nameTranslation')">
           </v-text-field>
         </v-col>
       </v-row>
@@ -52,7 +53,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import { Component, Emit, Prop, Mixins } from 'vue-property-decorator'
 
 // Components
 import { ConfirmDialog } from '@/components/dialogs'
@@ -60,12 +61,15 @@ import { ConfirmDialog } from '@/components/dialogs'
 // Interfaces
 import { ConfirmDialogType, FormType } from '@/interfaces'
 
+// Mixins
+import { CommonMixin } from '@/mixins'
+
 @Component({
   components: {
     ConfirmDialog
   }
 })
-export default class AddNameTranslation extends Vue {
+export default class AddNameTranslation extends Mixins(CommonMixin) {
   // Refs
   $refs!: {
     confirmTranslationDialog: ConfirmDialogType,

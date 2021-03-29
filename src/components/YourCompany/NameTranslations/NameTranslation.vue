@@ -4,23 +4,23 @@
       ref="confirmTranslationDialog"
       attach="#name-translation"
     />
-    <v-layout v-if="!isEditing">
-      <v-flex xs3>
+    <v-row no-gutters v-if="!isEditing">
+      <v-col cols="3">
         <label><strong>Name Translation(s)</strong></label>
-        <v-flex md1>
-            <v-chip v-if="hasNameTranslationChange" x-small label color="#1669BB" text-color="white">
-                Corrected
-            </v-chip>
-          </v-flex>
-      </v-flex>
-      <v-flex xs7 v-if="draftTranslations && translationsExceptRemoved.length">
-        <div class="info-text" v-for="(translation, index) in translationsExceptRemoved"
+          <v-col cols="1">
+            <action-chip v-if="hasNameTranslationChange"
+                      :actionable-item="{ action: ActionTypes.EDITED }"
+                      :editedLabel="editedLabel" />
+          </v-col>
+      </v-col>
+      <v-col cols="7" v-if="draftTranslations && translationsExceptRemoved.length">
+        <div class="info-text text-uppercase" v-for="(translation, index) in translationsExceptRemoved"
           :key="`name_translation_${index}`">{{translation.name}}</div>
-      </v-flex>
-      <v-flex class="info-text" xs7 v-else>
+      </v-col>
+      <v-col cols="7" class="info-text" v-else>
         No name translations
-      </v-flex>
-      <v-flex xs2 class="align-right" v-if="!hasNameTranslationChange">
+      </v-col>
+      <v-col cols="2" class="align-right" v-if="!hasNameTranslationChange && !isSummaryMode">
         <v-btn
           id="correct-name-translation"
           text color="primary"
@@ -29,8 +29,8 @@
           <v-icon small>mdi-pencil</v-icon>
           <span>{{editLabel}}</span>
         </v-btn>
-      </v-flex>
-      <v-flex xs2 class="align-right" v-else>
+      </v-col>
+      <v-col cols="2" class="align-right" v-else-if="hasNameTranslationChange && !isSummaryMode">
         <v-btn
           id="undo-name-translation"
           text color="primary" class="undo-name-translation"
@@ -65,15 +65,15 @@
             </v-list>
           </v-menu>
         </span>
-      </v-flex>
-    </v-layout>
-    <v-layout v-else>
-      <v-flex xs3>
+      </v-col>
+    </v-row>
+    <v-row no-gutters v-else>
+      <v-col cols="3">
         <label><strong>Name Translation(s)</strong></label>
-      </v-flex>
-      <v-flex xs9>
-        <v-layout>
-          <v-flex>
+      </v-col>
+      <v-col cols="9">
+        <v-row no-gutters>
+          <v-col>
             <p>Name translations must use the Latin Alphabet (English, French, etc.).
               Names that use other writing systems must spell the name phonetically in English or French.
             </p>
@@ -81,10 +81,10 @@
               <v-icon>mdi-plus</v-icon>
               <span>Add Name Translation</span>
             </v-btn>
-          </v-flex>
-        </v-layout>
-        <v-layout>
-          <v-flex>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
             <add-name-translation
               v-if="isAddingNameTranslation"
               :editNameTranslation="editingNameTranslation"
@@ -101,10 +101,10 @@
               @removeNameTranslation="removeNameTranslation($event)"
               @nameUndo="undoNameTranslation($event)"
             />
-          </v-flex>
-        </v-layout>
-        <v-layout pt-5>
-          <v-flex xs12>
+          </v-col>
+        </v-row>
+        <v-row pt-5>
+          <v-col cols="12">
             <div class="action-btns">
               <v-btn large color="primary"
                 id="name-translation-done"
@@ -121,10 +121,10 @@
                 <span>Cancel</span>
               </v-btn>
             </div>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-    </v-layout>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -133,6 +133,7 @@
 import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash'
 import { Action } from 'vuex-class'
+import { ActionChip } from '@bcrs-shared-components/action-chip'
 
 // Components
 import { ConfirmDialog } from '@/components/dialogs'
@@ -151,7 +152,8 @@ import { CommonMixin } from '@/mixins'
   components: {
     AddNameTranslation,
     ListNameTranslation,
-    ConfirmDialog
+    ConfirmDialog,
+    ActionChip
   }
 })
 export default class NameTranslation extends Mixins(CommonMixin) {
@@ -163,8 +165,14 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   @Prop({ default: () => { return [] as [] } })
   private nameTranslations!: NameTranslationIF[]
 
+  @Prop({ default: false })
+  private isSummaryMode: boolean
+
   // Global action
   @Action setEditingNameTranslations: ActionBindingIF
+
+  // Declaration for template
+  readonly ActionTypes = ActionTypes
 
   // Local properties
   private draftTranslations: NameTranslationIF[] = []

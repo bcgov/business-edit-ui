@@ -85,15 +85,10 @@
     <template v-if="true">
       <v-divider class="mx-4" />
       <div class="section-container name-translation-summary">
-        <v-row no-gutters>
-          <v-col cols="3">
-            <label><strong>Name Translation</strong></label>
-          </v-col>
-
-          <v-col cols="8">
-            <i>FUTURE</i>
-          </v-col>
-        </v-row>
+        <name-translation
+          :nameTranslations="getNameTranslations"
+          :isSummaryMode="true"
+        />
       </div>
     </template>
 
@@ -185,20 +180,23 @@ import {
   NameRequestIF,
   ShareClassIF,
   ShareStructureIF,
-  ValidFlagsIF
+  ValidFlagsIF,
+  NameTranslationIF
 } from '@/interfaces'
 import { CommonMixin, DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { CorpTypeCd } from '@/enums'
 import { EffectiveDateTime } from '@/components/common'
 import { ShareStructures } from '@/components/ShareStructure'
 import { ResolutionDates } from '@/components/Articles'
+import { NameTranslation } from '@/components/YourCompany/NameTranslations'
 
 @Component({
   components: {
     ConfirmDialog,
     EffectiveDateTime,
     ResolutionDates,
-    ShareStructures
+    ShareStructures,
+    NameTranslation
   }
 })
 export default class AlterationSummary extends Mixins(
@@ -226,6 +224,7 @@ export default class AlterationSummary extends Mixins(
   @Getter getOriginalSnapshot!: BusinessSnapshotIF
   @Getter getNewResolutionDates!: string[]
   @Getter getPreviousResolutionDates!: string[]
+  @Getter getNameTranslations!: NameTranslationIF[]
 
   // Alteration flag getters
   @Getter getAlterationValidFlags!: ValidFlagsIF
