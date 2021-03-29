@@ -337,11 +337,6 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   // Watchers
   @Watch('nameTranslations', { deep: true, immediate: true })
   private onNameTranslationsPropValueChanged (): void {
-    if (this.isSummaryMode) {
-      this.nameTranslations.forEach(function (translation) {
-        translation.name = translation.name.toUpperCase()
-      })
-    }
     this.draftTranslations = this.nameTranslations ? cloneDeep(this.nameTranslations) : []
     this.emitHaveChanges(this.hasNameTranslationChange)
   }
