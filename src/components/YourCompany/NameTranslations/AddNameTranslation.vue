@@ -14,8 +14,7 @@
             label="Name Translation"
             id="name-translation-input"
             v-model="nameTranslation"
-            :rules="nameTranslationRules"
-            @keyup="uppercase('nameTranslation')">
+            :rules="nameTranslationRules">
           </v-text-field>
         </v-col>
       </v-row>

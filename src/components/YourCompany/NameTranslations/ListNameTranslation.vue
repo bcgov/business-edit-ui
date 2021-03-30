@@ -14,7 +14,7 @@
         :key="`name_translation_${index}`"
         no-gutters>
         <v-col class="text-truncate">
-         <span class="name-title">{{translation.name}}</span>
+         <span class="name-title text-uppercase">{{translation.name}}</span>
 
         <br v-if="translation.action">
         <v-chip v-if="translation.action === ActionTypes.ADDED"

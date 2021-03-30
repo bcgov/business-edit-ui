@@ -1,5 +1,5 @@
 <template>
-  <div id="name-translation">
+  <div id="name-translation" v-if="!isSummaryMode || hasNameTranslationChange">
     <confirm-dialog
       ref="confirmTranslationDialog"
       attach="#name-translation"
@@ -7,7 +7,7 @@
     <v-row no-gutters v-if="!isEditing">
       <v-col cols="3">
         <label><strong>Name Translation(s)</strong></label>
-          <v-col cols="1">
+          <v-col cols="1" class="pa-0">
             <action-chip v-if="hasNameTranslationChange"
                       :actionable-item="{ action: ActionTypes.EDITED }"
                       :editedLabel="editedLabel" />
@@ -42,7 +42,10 @@
 
         <!-- More Actions Menu -->
         <span class="more-actions">
-          <v-menu offset-y>
+          <v-menu
+                offset-y left nudge-bottom="4"
+                v-model="dropdown"
+              >
             <template v-slot:activator="{ on }">
               <v-btn
                 text small color="primary"
@@ -52,7 +55,7 @@
                 <v-icon>mdi-menu-down</v-icon>
               </v-btn>
             </template>
-            <v-list>
+            <v-list class="actions__more-actions">
               <v-list-item
                 class="actions-dropdown_item"
                 @click="isEditing = true"
@@ -390,6 +393,27 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     min-height: 0;
     padding: 0 1rem 0 0.5rem;
   }
+  .v-list-item__subtitle {
+    color: $app-blue !important;
+  }
+
+  .v-icon {
+    color: $app-blue !important;
+  }
+
+  .actions {
+    position: absolute;
+    right: 0;
+
+    .undo-action{
+      border-right: 1px solid $gray1;
+    }
+
+    .v-btn {
+      min-width: 0.5rem;
+    }
+  }
+
   ::v-deep {
     .theme--light.v-btn.v-btn--disabled,
     .theme--light.v-btn.v-btn--disabled .v-icon {
