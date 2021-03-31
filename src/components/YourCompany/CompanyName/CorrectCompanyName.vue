@@ -8,12 +8,12 @@
           class="mb-n3"
           filled
           :rules="companyNameRules"
-          @keyup="uppercase('companyName')"
         />
       </v-col>
     </v-row>
   </v-form>
 </template>
+
 <script lang="ts">
 // Libraries
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
@@ -81,10 +81,3 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-::v-deep #company-name-input {
-  // hide uppercase transformation delay from user
-  text-transform: uppercase;
-}
-</style>
