@@ -14,6 +14,7 @@
         :minDate="dateToDateString(minDate)"
         :maxDate="dateToDateString(maxDate)"
         @emitDate="dateText = $event"
+        @emitCancel="dateText = ''"
       />
 
       <v-row>
@@ -372,9 +373,17 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
 
   @Emit('valid')
   private async emitValid (): Promise<boolean> {
+    // localized dateText check for future effective selections
+    const validDateText = this.isFutureEffective ? !!this.dateText : true
+
     // wait for form to update itself before checking validity
     await Vue.nextTick()
-    return (!!this.effectiveDateType && this.$refs.form.validate() && !this.isUnderTime && !this.isOverTime)
+    return (!!this.effectiveDateType &&
+      this.$refs.form.validate() &&
+      !this.isUnderTime &&
+      !this.isOverTime &&
+      validDateText
+    )
   }
 }
 </script>
