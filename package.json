@@ -43,7 +43,6 @@
     "vue-router": "^3.4.3",
     "vue-the-mask": "^0.11.1",
     "vue2-filters": "^0.10.0",
-    "vue-loader-v16": "^16.0.0-beta.5.4",
     "vuelidate": "^0.7.5",
     "vuetify": "^2.3.10",
     "vuex": "^3.5.1"
@@ -73,6 +72,7 @@
     "typescript": "^3.9.7",
     "vue-class-component": "^7.2.5",
     "vue-cli-plugin-vuetify": "^2.0.7",
+    "vue-loader-v16": "^16.0.0-beta.5.4",
     "vue-plugin-helper-decorator": "^0.0.12",
     "vue-property-decorator": "^8.4.0",
     "vue-template-compiler": "^2.6.12",
