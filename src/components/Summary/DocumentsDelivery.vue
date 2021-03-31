@@ -1,8 +1,9 @@
 <template>
   <div class="ma-6 pb-6" id="document-delivery-section" :class="{ 'invalid': documentDeliveryInvalid }">
     <h2>1. Alteration Documents Delivery</h2>
-    <div class="pt-4">Copies of the alteration documents will be sent to the following email address listed below.</div>
-    <div class="pt-8 pr-8">
+    <div class="pt-4 pb-4">Copies of the alteration documents will be sent 
+      to the following email address listed below.</div>
+    <v-card flat class="pt-4 pr-8">
       <v-container>
         <v-row class="pl-4">
           <v-col cols="3" class="px-0">
@@ -44,7 +45,7 @@
           </v-col>
         </v-row>
       </v-container>
-    </div>
+    </v-card>
   </div>
 </template>
 
@@ -119,13 +120,13 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
 </script>
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-  ::v-deep{
-    .v-application--is-ltr .v-text-field .v-label {
-      font-weight: normal;
-    }
+  ::v-deep {
     .container {
       padding-bottom: 0px;
       padding-top: 0px;
+    }
+    .v-label {
+      font-weight: normal;
     }
   }
   #document-delivery-section {
