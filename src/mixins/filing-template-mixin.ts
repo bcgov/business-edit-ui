@@ -238,7 +238,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           identifier: this.getBusinessId,
           legalType: this.getEntityType
         },
-        nameRequest: { ...this.getNameRequest },
         nameTranslations: nameTranslations,
         shareStructure: {
           resolutionDates: this.getNewResolutionDates,
@@ -249,6 +248,15 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           phone: this.getBusinessContact.phone,
           extension: this.getBusinessContact.extension
         }
+      }
+    }
+
+    // Apply Name Request data if applicable
+    if (this.getNameRequest.nrNumber) {
+      filing.alteration.nameRequest = {
+        legalType: this.getNameRequest.legalType,
+        legalName: this.getNameRequest.legalName,
+        nrNumber: this.getNameRequest.nrNumber
       }
     }
 
