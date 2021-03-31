@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "0.5.30",
+  "version": "0.5.31",
   "private": true,
   "appName": "Edit UI",
   "sbcName": "SBC Common Components",
@@ -20,6 +20,7 @@
     "@bcrs-shared-components/contact-info": "1.0.8",
     "@bcrs-shared-components/corp-type-module": "1.0.3",
     "@bcrs-shared-components/court-order-poa": "1.0.1",
+    "@bcrs-shared-components/date-picker": "1.0.0",
     "@bcrs-shared-components/detail-comment": "1.0.4",
     "@bcrs-shared-components/enums": "1.0.8",
     "@bcrs-shared-components/fee-summary": "1.0.9",
@@ -72,6 +73,7 @@
     "typescript": "^3.9.7",
     "vue-class-component": "^7.2.5",
     "vue-cli-plugin-vuetify": "^2.0.7",
+    "vue-loader-v16": "^16.0.0-beta.5.4",
     "vue-plugin-helper-decorator": "^0.0.12",
     "vue-property-decorator": "^8.4.0",
     "vue-template-compiler": "^2.6.12",

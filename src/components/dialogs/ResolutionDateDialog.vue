@@ -9,12 +9,14 @@
           have passed a resolution or have a court order to change your share structure.</p>
           <p>Enter the date of the Resolution or Court Order here:</p>
         </div>
-        <date-picker title="Resolution or Court Order Date"
-                     :error-msg="errors"
-                     nudge-right="100"
-                     @emitDate="onDateEmitted($event)"
-                     @emitCancel="exit()"
-                     @emitDateSync="date = $event"/>
+        <date-picker
+          title="Resolution or Court Order Date"
+          :error-msg="errors"
+          nudge-right="100"
+          @emitDate="onDateEmitted($event)"
+          @emitCancel="exit()"
+          @emitDateSync="date = $event"
+        />
       </v-card-text>
 
       <v-divider class="my-0"></v-divider>
@@ -31,7 +33,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { DatePicker } from '@/components/common'
+import { DatePicker } from '@bcrs-shared-components/date-picker'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF } from '@/interfaces'
 

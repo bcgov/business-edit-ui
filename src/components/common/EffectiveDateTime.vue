@@ -6,32 +6,16 @@
     </v-radio-group>
 
     <v-form ref="form" class="date-time-selectors">
-      <v-menu
-        close-on-content-click
-        :nudge-right="40"
-        transition="scale-transition"
-        offset-y
-        min-width="290px"
-      >
-        <template v-slot:activator="{ on }">
-          <v-text-field
-            id="date-text-field"
-            append-icon="mdi-calendar"
-            v-model="dateText"
-            placeholder="Date"
-            autocomplete="chrome-off"
-            :name="Math.random()"
-            :rules="dateRules"
-            :disabled="!isFutureEffective"
-            v-on="on"
-            filled
-          />
-        </template>
-        <v-date-picker
-          v-model="datePicker"
-          :min=dateToDateString(minDate)
-          :max=dateToDateString(maxDate) />
-      </v-menu>
+      <date-picker
+        title="Date"
+        nudge-right="40"
+        :inputRules="dateRules"
+        :disablePicker="effectiveDateType !== EffectiveDateTypes.FUTUREEFFECTIVE"
+        :minDate="dateToDateString(minDate)"
+        :maxDate="dateToDateString(maxDate)"
+        @emitDate="dateText = $event"
+        @emitCancel="dateText = ''"
+      />
 
       <v-row>
         <v-col cols="12" sm="6" md="3">
@@ -89,6 +73,7 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
+import { DatePicker } from '@bcrs-shared-components/date-picker'
 import { DateMixin } from '@/mixins'
 import { EffectiveDateTypes } from '@/enums'
 import { EffectiveDateTimeIF, FormFieldType, FormType } from '@/interfaces'
@@ -98,7 +83,11 @@ enum PeriodTypes {
   PM = 'pm'
 }
 
-@Component({})
+@Component({
+  components: {
+    DatePicker
+  }
+})
 export default class EffectiveDateTime extends Mixins(DateMixin) {
   readonly MIN_DIFF_MINUTES = 3
   readonly MAX_DIFF_DAYS = 10
@@ -384,9 +373,17 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
 
   @Emit('valid')
   private async emitValid (): Promise<boolean> {
+    // localized dateText check for future effective selections
+    const validDateText = this.isFutureEffective ? !!this.dateText : true
+
     // wait for form to update itself before checking validity
     await Vue.nextTick()
-    return (!!this.effectiveDateType && this.$refs.form.validate() && !this.isUnderTime && !this.isOverTime)
+    return (!!this.effectiveDateType &&
+      this.$refs.form.validate() &&
+      !this.isUnderTime &&
+      !this.isOverTime &&
+      validDateText
+    )
   }
 }
 </script>

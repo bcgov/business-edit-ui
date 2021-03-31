@@ -65,7 +65,6 @@
           nudge-top="15"
           @emitDate="onDateEmitted($event)"
           @emitCancel="isAdding = false"
-          @
         />
       </v-col>
     </v-row>
@@ -95,7 +94,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { CommonMixin, DateMixin } from '@/mixins'
-import { DatePicker } from '@/components/common'
+import { DatePicker } from '@bcrs-shared-components/date-picker'
 import { cloneDeep } from 'lodash'
 
 @Component({
