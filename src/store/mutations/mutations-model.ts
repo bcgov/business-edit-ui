@@ -207,6 +207,7 @@ export const mutateStaffPayment = (state: StateIF, staffPayment: StaffPaymentIF)
 
 export const mutateStaffPaymentValidity = (state: StateIF, validity: boolean) => {
   state.stateModel.staffPaymentStep.valid = validity
+  state.stateModel.newAlteration.validFlags.isValidStaffPayment = validity
 }
 
 export const mutateFilingData = (state: StateIF, filingData: FilingDataIF) => {

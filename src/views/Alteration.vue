@@ -22,11 +22,6 @@
       <agreement-type class="mt-10" />
 
       <detail class="mt-10" />
-
-      <staff-payment
-        class="mt-10"
-        @haveChanges="onStaffPaymentChanges()"
-      />
     </template>
 
     <!-- Summary View -->
@@ -72,6 +67,12 @@
           @emitValid="setValidCourtNum($event)"
         />
       </template>
+
+      <staff-payment
+        class="mt-10"
+        :validate="getAppValidate"
+        @haveChanges="onStaffPaymentChanges()"
+      />
 
     </template>
   </section>

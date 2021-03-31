@@ -1,5 +1,5 @@
 <template>
-  <section id="staff-payment-section">
+  <section id="staff-payment">
     <header>
       <h2>3. Staff Payment</h2>
     </header>
@@ -88,4 +88,16 @@ export default class StaffPayment extends Vue {
 </script>
 
 <style lang="scss" scoped>
+  ::v-deep .v-input .v-label {
+    font-weight: normal;
+  }
+  ::v-deep .v-input--radio-group__input {
+    .v-radio:not(:first-child) {
+      padding-top: 2rem;
+    }
+    .v-input--checkbox {
+      padding-top: 2rem;
+    }
+  }
+
 </style>
