@@ -44,7 +44,6 @@
         <span class="more-actions">
           <v-menu
                 offset-y left nudge-bottom="4"
-                v-model="dropdown"
               >
             <template v-slot:activator="{ on }">
               <v-btn
