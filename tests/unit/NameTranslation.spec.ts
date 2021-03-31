@@ -21,7 +21,7 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
-function resetStore(): void {
+function resetStore (): void {
   store.state.stateModel.nameTranslations = []
 }
 
@@ -87,8 +87,6 @@ describe('Name Translation component', () => {
     // Verify list exists
     expect(wrapper.find('#name-translation').exists()).toBeFalsy()
 
-
     wrapper.destroy()
   })
-
 })

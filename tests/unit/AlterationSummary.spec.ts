@@ -42,7 +42,7 @@ describe('Alteration Summary component', () => {
     store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
     store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
     store.state.stateModel.summaryMode = true
-    
+
     wrapper = mount(AlterationSummary, { vuetify, store, localVue })
   })
 
@@ -146,5 +146,4 @@ describe('Alteration Summary component', () => {
     expect(divs.at(1).text()).toContain('The alteration for this business will be effective as of:')
     expect(divs.at(1).text()).toContain('Friday, March 5, 2021 at 8:30 am Pacific time')
   })
-
 })
