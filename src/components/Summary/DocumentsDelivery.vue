@@ -1,7 +1,7 @@
 <template>
   <div class="ma-6 pb-6" id="document-delivery-section" :class="{ 'invalid': documentDeliveryInvalid }">
     <h2>1. Alteration Documents Delivery</h2>
-    <div class="pt-4 pb-4">Copies of the alteration documents will be sent 
+    <div class="pt-4 pb-4">Copies of the alteration documents will be sent
       to the following email address listed below.</div>
     <v-card flat class="pt-4 pr-8">
       <v-container>
