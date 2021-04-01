@@ -82,7 +82,7 @@
     </template>
 
     <!-- Name Translation -->
-    <template v-if="true">
+    <template v-if="hasNameTranslationChange">
       <v-divider class="mx-4" />
       <div class="section-container name-translation-summary">
         <name-translation
@@ -272,6 +272,11 @@ export default class AlterationSummary extends Mixins(
   /** Local getter, using a mixin method to detect changes to Share Structure. */
   get hasShareStructureChanged (): boolean {
     return !this.isSame(this.getShareClasses, this.getSnapshotShareStructure?.shareClasses, ['action'])
+  }
+
+  get hasNameTranslationChange (): boolean {
+    return this.getNameTranslations.length > 0 &&
+      this.getNameTranslations.filter(x => x.action).length > 0
   }
 
   /** Restore baseline data to original snapshot. */
