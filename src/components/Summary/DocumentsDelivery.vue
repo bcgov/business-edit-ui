@@ -17,7 +17,7 @@
       <v-container v-if="isRoleStaff">
         <v-row class="pl-4">
           <v-col cols="3" class="px-0">
-            <label><strong>Optional Email</strong></label>
+            <label><strong>User Account</strong></label>
           </v-col>
           <v-col cols="9" class="px-0">
             <v-text-field
@@ -25,7 +25,7 @@
               id="optionalEmail"
               class="text-input-field"
               filled
-              label="Optional Email"
+              label="Client Email Address (optional)"
               hint="Example: name@email.com"
               persistent-hint
               validate-on-blur
