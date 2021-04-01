@@ -240,8 +240,8 @@ export const setCourtOrderNumber: ActionIF = ({ commit }, courtOrderNumber: stri
   commit('mutateCourtOrderNumber', courtOrderNumber)
 }
 
-export const setPlanOfArrangement: ActionIF = ({ commit }, poa: boolean): void => {
-  commit('mutatePlanOfArrangement', poa)
+export const setHasPlanOfArrangement: ActionIF = ({ commit }, hasPoa: boolean): void => {
+  commit('mutateHasPlanOfArrangement', hasPoa)
 }
 
 export const setAppValidate: ActionIF = ({ commit }, validate: boolean): void => {

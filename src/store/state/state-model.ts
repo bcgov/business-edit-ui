@@ -21,10 +21,9 @@ export const stateModel: StateModelIF = {
   newAlteration: {
     appValidate: false,
     provisionsRemoved: null,
-    planOfArrangement: false,
     courtOrder: {
-      fileNumber: '',
-      planOfArrangement: false
+      fileNumber: '', // fileNumber is Court Order Number in the backend
+      hasPlanOfArrangement: false
     },
     validFlags: {
       isValidEffectiveDate: true,
@@ -172,7 +171,7 @@ export const stateModel: StateModelIF = {
       },
       courtOrder: {
         fileNumber: '',
-        planOfArrangement: false
+        hasPlanOfArrangement: false
       }
     }
   },

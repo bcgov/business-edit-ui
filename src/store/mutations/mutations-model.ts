@@ -266,8 +266,8 @@ export const mutateCourtOrderNumber = (state: StateIF, courtOrderNumber: string)
   state.stateModel.newAlteration.courtOrder.fileNumber = courtOrderNumber
 }
 
-export const mutatePlanOfArrangement = (state: StateIF, poa: boolean) => {
-  state.stateModel.newAlteration.planOfArrangement = poa
+export const mutateHasPlanOfArrangement = (state: StateIF, hasPoa: boolean) => {
+  state.stateModel.newAlteration.courtOrder.hasPlanOfArrangement = hasPoa
 }
 
 export const mutateAppValidate = (state: StateIF, isValid: boolean) => {

@@ -63,7 +63,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getNewAlteration!: any // FUTURE AlterationFilingIF
   @Getter getProvisionsRemoved!: boolean
   @Getter getCourtOrderNum!: string
-  @Getter getPlanOfArrangement!: boolean
+  @Getter getHasPlanOfArrangement!: boolean
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -88,7 +88,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setOriginalResolutionDates!: ActionBindingIF
   @Action setResolutionDates!: ActionBindingIF
   @Action setCourtOrderNumber: ActionBindingIF
-  @Action setPlanOfArrangement!: ActionBindingIF
+  @Action setHasPlanOfArrangement!: ActionBindingIF
 
   /**
    * Builds an Incorporation Application correction filing from store data. Used when saving a filing.
@@ -265,7 +265,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // Save this boolean to drafts only
     // It is a state required for UX when resuming drafts
-    if (isDraft) filing.alteration.courtOrder.planOfArrangement = this.getPlanOfArrangement
+    if (isDraft) filing.alteration.courtOrder.hasPlanOfArrangement = this.getHasPlanOfArrangement
 
     // If FED then set header fields
     if (this.getEffectiveDateTime.isFutureEffective) {
@@ -523,7 +523,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // Store Court Order date
     this.setCourtOrderNumber(filing.alteration.courtOrder.fileNumber)
-    this.setPlanOfArrangement(filing.alteration.courtOrder.planOfArrangement)
+    this.setHasPlanOfArrangement(filing.alteration.courtOrder.hasPlanOfArrangement)
   }
 
   /**

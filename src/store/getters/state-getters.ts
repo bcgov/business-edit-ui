@@ -402,12 +402,12 @@ export const getNewResolutionDates = (state: StateIF): string[] => {
   return state.stateModel.shareStructureStep.resolutionDates
 }
 
-/** Get the court order number. */
+/** Get the court order number. fileNumber is the backend name for Court Order Number */
 export const getCourtOrderNum = (state: StateIF): string => {
   return state.stateModel.newAlteration.courtOrder.fileNumber
 }
 
 /** Get Plan of Arrangement state. */
-export const getPlanOfArrangement = (state: StateIF): boolean => {
-  return state.stateModel.newAlteration.planOfArrangement
+export const getHasPlanOfArrangement = (state: StateIF): boolean => {
+  return state.stateModel.newAlteration.courtOrder.hasPlanOfArrangement
 }

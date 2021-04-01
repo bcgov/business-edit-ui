@@ -63,9 +63,9 @@
           id="court-order"
           :validate="getAppValidate"
           :draftCourtOrderNumber="getCourtOrderNum"
-          :hasDraftPlanOfArrangement="getPlanOfArrangement"
+          :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
           @emitCourtNumber="setCourtOrderNumber($event)"
-          @emitPoa="setPlanOfArrangement($event)"
+          @emitPoa="setHasPlanOfArrangement($event)"
           @emitValid="setValidCourtNum($event)"
         />
 
@@ -133,14 +133,14 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Getter getDocumentOptionalEmail!: string
   @Getter getAppValidate!: boolean
   @Getter getCourtOrderNum!: string
-  @Getter getPlanOfArrangement!: boolean
+  @Getter getHasPlanOfArrangement!: boolean
 
   // Global actions
   @Action setCourtOrderNumber!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
-  @Action setPlanOfArrangement!: ActionBindingIF
+  @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setValidCourtNum!: ActionBindingIF
