@@ -62,17 +62,19 @@
         <court-order-poa
           id="court-order"
           :validate="getAppValidate"
+          :draftCourtOrderNumber="getCourtOrderNum"
+          :hasDraftPlanOfArrangement="getPlanOfArrangement"
           @emitCourtNumber="setCourtOrderNumber($event)"
           @emitPoa="setPlanOfArrangement($event)"
           @emitValid="setValidCourtNum($event)"
         />
-      </template>
 
-      <staff-payment
-        class="mt-10"
-        :validate="getAppValidate"
-        @haveChanges="onStaffPaymentChanges()"
-      />
+        <staff-payment
+          class="mt-10"
+          :validate="getAppValidate"
+          @haveChanges="onStaffPaymentChanges()"
+        />
+      </template>
 
     </template>
   </section>
@@ -130,6 +132,8 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Getter getFilingData!: FilingDataIF
   @Getter getDocumentOptionalEmail!: string
   @Getter getAppValidate!: boolean
+  @Getter getCourtOrderNum!: string
+  @Getter getPlanOfArrangement!: boolean
 
   // Global actions
   @Action setCourtOrderNumber!: ActionBindingIF

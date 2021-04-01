@@ -23,7 +23,8 @@ export const stateModel: StateModelIF = {
     provisionsRemoved: null,
     planOfArrangement: false,
     courtOrder: {
-      fileNumber: ''
+      fileNumber: '',
+      planOfArrangement: false
     },
     validFlags: {
       isValidEffectiveDate: true,
@@ -168,6 +169,10 @@ export const stateModel: StateModelIF = {
         email: '',
         phone: '',
         extension: ','
+      },
+      courtOrder: {
+        fileNumber: '',
+        planOfArrangement: false
       }
     }
   },

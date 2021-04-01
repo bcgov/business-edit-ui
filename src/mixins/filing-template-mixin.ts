@@ -62,6 +62,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter hasNewNr!: boolean
   @Getter getNewAlteration!: any // FUTURE AlterationFilingIF
   @Getter getProvisionsRemoved!: boolean
+  @Getter getCourtOrderNum!: string
+  @Getter getPlanOfArrangement!: boolean
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -85,6 +87,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setProvisionsRemoved!: ActionBindingIF
   @Action setOriginalResolutionDates!: ActionBindingIF
   @Action setResolutionDates!: ActionBindingIF
+  @Action setCourtOrderNumber: ActionBindingIF
+  @Action setPlanOfArrangement!: ActionBindingIF
 
   /**
    * Builds an Incorporation Application correction filing from store data. Used when saving a filing.
@@ -238,6 +242,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           identifier: this.getBusinessId,
           legalType: this.getEntityType
         },
+        nameRequest: {
+          legalType: this.getNameRequest.legalType,
+          legalName: this.getNameRequest.legalName,
+          nrNumber: this.getNameRequest.nrNumber
+        },
         nameTranslations: nameTranslations,
         shareStructure: {
           resolutionDates: this.getNewResolutionDates,
@@ -247,18 +256,16 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           email: this.getBusinessContact.email,
           phone: this.getBusinessContact.phone,
           extension: this.getBusinessContact.extension
+        },
+        courtOrder: {
+          fileNumber: this.getCourtOrderNum
         }
       }
     }
 
-    // Apply Name Request data if applicable
-    if (this.getNameRequest.nrNumber) {
-      filing.alteration.nameRequest = {
-        legalType: this.getNameRequest.legalType,
-        legalName: this.getNameRequest.legalName,
-        nrNumber: this.getNameRequest.nrNumber
-      }
-    }
+    // Save this boolean to drafts only
+    // It is a state required for UX when resuming drafts
+    if (isDraft) filing.alteration.courtOrder.planOfArrangement = this.getPlanOfArrangement
 
     // If FED then set header fields
     if (this.getEffectiveDateTime.isFutureEffective) {
@@ -513,6 +520,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store effective date
     this.setEffectiveDateTimeString(filing.header.effectiveDate)
     this.setIsFutureEffective(filing.header.isFutureEffective)
+
+    // Store Court Order date
+    this.setCourtOrderNumber(filing.alteration.courtOrder.fileNumber)
+    this.setPlanOfArrangement(filing.alteration.courtOrder.planOfArrangement)
   }
 
   /**
