@@ -54,7 +54,6 @@ describe('Alteration Summary component', () => {
     expect(wrapper.find(AlterationSummary).exists()).toBe(true)
     expect(wrapper.find(EffectiveDateTime).exists()).toBe(true)
     expect(wrapper.find(ConfirmDialog).exists()).toBe(true)
-    expect(wrapper.find(NameTranslation).exists()).toBe(true)
   })
 
   it('renders the Change and Remove actions', async () => {
