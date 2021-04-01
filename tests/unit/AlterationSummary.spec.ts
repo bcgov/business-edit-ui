@@ -27,6 +27,12 @@ describe('Alteration Summary component', () => {
       legalType: 'BC'
     }
   }
+  const nameTranslationsListChanged = [
+    { name: 'First mock name translation ltd.', action: 'edited' },
+    { name: 'Second mock name translation inc' },
+    { name: 'Third mock name translation ltd.' },
+    { name: 'Quatrième nom simulé' }
+  ]
 
   beforeAll(() => {
     // init store
@@ -42,6 +48,7 @@ describe('Alteration Summary component', () => {
     store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
     store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
     store.state.stateModel.summaryMode = true
+    store.state.stateModel.nameTranslations = nameTranslationsListChanged
 
     wrapper = mount(AlterationSummary, { vuetify, store, localVue })
   })

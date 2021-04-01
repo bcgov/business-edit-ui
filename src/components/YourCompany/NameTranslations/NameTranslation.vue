@@ -8,7 +8,7 @@
       <v-col cols="3">
         <label><strong>Name Translation(s)</strong></label>
           <v-col cols="1" class="pa-0">
-            <action-chip v-if="hasNameTranslationChange"
+            <action-chip v-if="hasNameTranslationChange && !isSummaryMode"
                       :actionable-item="{ action: ActionTypes.EDITED }"
                       :editedLabel="editedLabel" />
           </v-col>
