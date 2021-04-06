@@ -456,9 +456,12 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
         break
       case SummaryActions.CONFIRM:
         // If Summary Mode: Check validity, save and file else move into summary mode.
-        this.isSummaryMode
-          ? await this.validateApp()
-          : this.setSummaryMode(true)
+        if (this.isSummaryMode) await this.validateApp()
+        else {
+          // We don't change views just interchange components, so scroll to top for better UX.
+          this.scrollToTop(document.getElementById('app'))
+          this.setSummaryMode(true)
+        }
         break
     }
   }
