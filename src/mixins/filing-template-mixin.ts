@@ -62,7 +62,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter hasNewNr!: boolean
   @Getter getNewAlteration!: any // FUTURE AlterationFilingIF
   @Getter getProvisionsRemoved!: boolean
-  @Getter getCourtOrderNum!: string
+  @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
 
   // Global actions
@@ -87,7 +87,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setProvisionsRemoved!: ActionBindingIF
   @Action setOriginalResolutionDates!: ActionBindingIF
   @Action setResolutionDates!: ActionBindingIF
-  @Action setCourtOrderNumber: ActionBindingIF
+  @Action setFileNumber: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
 
   /**
@@ -258,7 +258,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           extension: this.getBusinessContact.extension
         },
         courtOrder: {
-          fileNumber: this.getCourtOrderNum
+          fileNumber: this.getFileNumber
         }
       }
     }
@@ -522,7 +522,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setIsFutureEffective(filing.header.isFutureEffective)
 
     // Store Court Order date
-    this.setCourtOrderNumber(filing.alteration.courtOrder.fileNumber)
+    this.setFileNumber(filing.alteration.courtOrder.fileNumber)
     this.setHasPlanOfArrangement(filing.alteration.courtOrder.hasPlanOfArrangement)
   }
 

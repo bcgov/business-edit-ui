@@ -449,7 +449,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       case SummaryActions.RESUME:
         // Save filing and return to dashboard
         await this.onClickSave()
-        // this.goToDashboard(true)
+        this.goToDashboard(true)
         break
       case SummaryActions.CANCEL:
         this.goToDashboard()

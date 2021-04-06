@@ -403,7 +403,7 @@ export const getNewResolutionDates = (state: StateIF): string[] => {
 }
 
 /** Get the court order number. fileNumber is the backend name for Court Order Number */
-export const getCourtOrderNum = (state: StateIF): string => {
+export const getFileNumber = (state: StateIF): string => {
   return state.stateModel.newAlteration.courtOrder.fileNumber
 }
 

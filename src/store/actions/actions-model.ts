@@ -236,8 +236,8 @@ export const setResolutionDates: ActionIF = ({ commit }, resolutionDates: string
   commit('mutateResolutionDates', resolutionDates)
 }
 
-export const setCourtOrderNumber: ActionIF = ({ commit }, courtOrderNumber: string): void => {
-  commit('mutateCourtOrderNumber', courtOrderNumber)
+export const setFileNumber: ActionIF = ({ commit }, courtOrderNumber: string): void => {
+  commit('mutateFileNumber', courtOrderNumber)
 }
 
 export const setHasPlanOfArrangement: ActionIF = ({ commit }, hasPoa: boolean): void => {
@@ -248,6 +248,6 @@ export const setAppValidate: ActionIF = ({ commit }, validate: boolean): void =>
   commit('mutateAppValidate', validate)
 }
 
-export const setValidCourtNum: ActionIF = ({ commit }, isValid: boolean): void => {
-  commit('mutateValidCourtNum', isValid)
+export const setValidFileNumber: ActionIF = ({ commit }, isValid: boolean): void => {
+  commit('mutateValidFileNumber', isValid)
 }

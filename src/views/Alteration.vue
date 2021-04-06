@@ -59,14 +59,15 @@
         </header>
         <p class="my-3 pb-2">If this filing is pursuant to a court order, enter the court order number. If this filing
           is pursuant to a plan of arrangement, <br>enter the court order number and select Plan of Arrangement.</p>
+
         <court-order-poa
           id="court-order"
           :validate="getAppValidate"
-          :draftCourtOrderNumber="getCourtOrderNum"
+          :draftCourtOrderNumber="getFileNumber"
           :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
-          @emitCourtNumber="setCourtOrderNumber($event)"
+          @emitCourtNumber="setFileNumber($event)"
           @emitPoa="setHasPlanOfArrangement($event)"
-          @emitValid="setValidCourtNum($event)"
+          @emitValid="setValidFileNumber($event)"
         />
 
         <staff-payment
@@ -132,18 +133,18 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Getter getFilingData!: FilingDataIF
   @Getter getDocumentOptionalEmail!: string
   @Getter getAppValidate!: boolean
-  @Getter getCourtOrderNum!: string
+  @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
 
   // Global actions
-  @Action setCourtOrderNumber!: ActionBindingIF
+  @Action setFileNumber!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action setValidCourtNum!: ActionBindingIF
+  @Action setValidFileNumber!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })

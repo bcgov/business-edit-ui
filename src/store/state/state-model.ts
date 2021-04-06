@@ -22,12 +22,12 @@ export const stateModel: StateModelIF = {
     appValidate: false,
     provisionsRemoved: null,
     courtOrder: {
-      fileNumber: '', // fileNumber is Court Order Number in the backend
+      fileNumber: '',
       hasPlanOfArrangement: false
     },
     validFlags: {
       isValidEffectiveDate: true,
-      isValidCourtNum: true, // Staff only
+      isValidFileNum: true, // Staff only
       isValidCertify: false, // initialize to false (unsigned)
       isValidStaffPayment: true, // Staff Only
       isValidDocumentOptionalEmail: true
