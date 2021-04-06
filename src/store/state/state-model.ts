@@ -21,13 +21,13 @@ export const stateModel: StateModelIF = {
   newAlteration: {
     appValidate: false,
     provisionsRemoved: null,
-    planOfArrangement: false,
     courtOrder: {
-      fileNumber: ''
+      fileNumber: '',
+      hasPlanOfArrangement: false
     },
     validFlags: {
       isValidEffectiveDate: true,
-      isValidCourtNum: true, // Staff only
+      isValidFileNum: true, // Staff only
       isValidCertify: false, // initialize to false (unsigned)
       isValidStaffPayment: true, // Staff Only
       isValidDocumentOptionalEmail: true
@@ -168,6 +168,10 @@ export const stateModel: StateModelIF = {
         email: '',
         phone: '',
         extension: ','
+      },
+      courtOrder: {
+        fileNumber: '',
+        hasPlanOfArrangement: false
       }
     }
   },

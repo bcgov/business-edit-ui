@@ -1,7 +1,7 @@
 
 export interface ValidFlagsIF {
   isValidEffectiveDate: boolean,
-  isValidCourtNum: boolean,
+  isValidFileNum: boolean,
   isValidStaffPayment?: boolean,
   isValidCertify?: boolean,
   isValidDocumentOptionalEmail?: boolean

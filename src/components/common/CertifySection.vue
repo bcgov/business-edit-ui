@@ -1,19 +1,21 @@
 <template>
-  <div class="ma-6 pb-6" id="certify-section" :class="{ 'invalid': certificationInvalid }">
-    <h2>2. Certify</h2>
+  <div class="pb-6" id="certify-section">
+    <h2 :class="{ 'invalid-label': certificationInvalid }">2. Certify</h2>
     <div class="pt-4">Enter the legal name of the person authorized to complete and submit these changes.</div>
-    <certify
-      :currentDate="getCurrentDate"
-      :certifiedBy="getCertifyState.certifiedBy"
-      :isCertified="getCertifyState.valid"
-      :entityDisplay="readableEntityType"
-      :message="certifyMessage"
-      :isStaff="isRoleStaff"
-      :firstColumn="3"
-      :secondColumn="9"
-      @update:certifiedBy="onCertifiedBy($event)"
-      @update:isCertified="onValid($event)"
-    />
+    <div :class="{ 'invalid': certificationInvalid }">
+      <certify
+        :currentDate="getCurrentDate"
+        :certifiedBy="getCertifyState.certifiedBy"
+        :isCertified="getCertifyState.valid"
+        :entityDisplay="readableEntityType"
+        :message="certifyMessage"
+        :isStaff="isRoleStaff"
+        :firstColumn="3"
+        :secondColumn="9"
+        @update:certifiedBy="onCertifiedBy($event)"
+        @update:isCertified="onValid($event)"
+      />
+    </div>
   </div>
 </template>
 
@@ -94,13 +96,13 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-#certify-section {
-  &.invalid {
-    border-left: 4px solid $BCgovInputError;
-    padding-left: calc(2rem - 4px);
-    h2 {
-      color: $BCgovInputError;
-    }
-  }
+
+.invalid {
+  margin-left: -4px !important;
+  border-left: 4px solid $BCgovInputError;
+}
+
+.invalid-label {
+  color: $BCgovInputError;
 }
 </style>
