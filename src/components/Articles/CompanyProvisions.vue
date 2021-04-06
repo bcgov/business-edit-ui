@@ -145,7 +145,6 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   @Watch('provisionsRemoved')
   private onProvisionsRemovedPropValueChanged (): void {
     if (!this.haveChanges) {
-      this.originalProvisionsRemovedValue = this.provisionsRemoved
       this.draftProvisionsRemoved = this.provisionsRemoved
       this.emitHaveChanges(this.haveChanges)
     }

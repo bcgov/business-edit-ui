@@ -106,7 +106,7 @@
     </template>
 
     <!-- Pre-existing Company Provisions -->
-    <template v-if="true">
+    <template v-if="getProvisionsRemoved">
       <v-divider class="mx-4" />
       <div class="section-container name-translation-summary">
         <v-row no-gutters>
@@ -115,7 +115,9 @@
           </v-col>
 
           <v-col cols="8">
-            <i>FUTURE</i>
+            <span class="info-text">
+              The company has resolved that none of the Pre-existing Company Provisions are to apply to this company.
+            </span>
           </v-col>
         </v-row>
       </div>
