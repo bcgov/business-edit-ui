@@ -25,7 +25,7 @@ import {
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
 // Constants
-import { ActionTypes, CorpTypeCd, FilingTypes, RoleTypes } from '@/enums'
+import { ActionTypes, CorpTypeCd, FilingTypes, EffectOfOrders, RoleTypes } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 /**
@@ -256,16 +256,18 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           email: this.getBusinessContact.email,
           phone: this.getBusinessContact.phone,
           extension: this.getBusinessContact.extension
-        },
-        courtOrder: {
-          fileNumber: this.getFileNumber
         }
       }
     }
 
-    // Save this boolean to drafts only
-    // It is a state required for UX when resuming drafts
-    if (isDraft) filing.alteration.courtOrder.hasPlanOfArrangement = this.getHasPlanOfArrangement
+    // Apply Court Order ONLY when it is required and applied
+    if (this.getHasPlanOfArrangement || this.getFileNumber) {
+      filing.alteration.courtOrder = {
+        fileNumber: this.getFileNumber,
+        effectOfOrder: EffectOfOrders.PLAN_OF_ARRANGEMENT,
+        hasPlanOfArrangement: this.getHasPlanOfArrangement
+      }
+    }
 
     // If FED then set header fields
     if (this.getEffectiveDateTime.isFutureEffective) {
@@ -522,8 +524,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setIsFutureEffective(filing.header.isFutureEffective)
 
     // Store Court Order date
-    this.setFileNumber(filing.alteration.courtOrder.fileNumber)
-    this.setHasPlanOfArrangement(filing.alteration.courtOrder.hasPlanOfArrangement)
+    this.setFileNumber(filing.alteration.courtOrder?.fileNumber)
+    this.setHasPlanOfArrangement(filing.alteration.courtOrder?.hasPlanOfArrangement)
   }
 
   /**

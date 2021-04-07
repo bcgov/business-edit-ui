@@ -16,5 +16,5 @@ export interface AlterationIF {
   nameTranslations: NameTranslationIF[],
   shareStructure: ShareStructureIF,
   contactPoint: ContactPointIF,
-  courtOrder: CourtOrderIF
+  courtOrder?: CourtOrderIF
 }
