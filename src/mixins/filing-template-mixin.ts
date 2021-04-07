@@ -264,7 +264,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     if (this.getHasPlanOfArrangement || this.getFileNumber) {
       filing.alteration.courtOrder = {
         fileNumber: this.getFileNumber,
-        effectOfOrder: EffectOfOrders.PLAN_OF_ARRANGEMENT,
+        effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : null,
         hasPlanOfArrangement: this.getHasPlanOfArrangement
       }
     }
