@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="pb-10">
     <!-- Profile View -->
     <template v-if="!isSummaryMode">
       <header>
@@ -19,9 +19,9 @@
 
       <articles class="mt-10" />
 
-      <agreement-type class="mt-10" />
-
-      <detail class="mt-10" />
+<!--      Commented out until required-->
+<!--      <agreement-type class="mt-10" />-->
+<!--      <detail class="mt-10" />-->
     </template>
 
     <!-- Summary View -->
