@@ -35,6 +35,16 @@
           <span>Add</span>
         </v-btn>
       </v-col>
+      <v-col cols="2" class="align-right" v-else-if="isAdding">
+        <v-btn id="close-resolution-date"
+               class="close-btn"
+               text color="primary"
+               @click="isAdding = false"
+        >
+          <v-icon small>mdi-close</v-icon>
+          <span>Cancel</span>
+        </v-btn>
+      </v-col>
     </v-row>
 
     <!-- Added Dates -->
@@ -185,7 +195,7 @@ export default class ResolutionDates extends Mixins(DateMixin, CommonMixin) {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-.add-btn {
+.add-btn, .close-btn {
   height: inherit !important;
 }
 
