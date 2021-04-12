@@ -16,6 +16,7 @@
       :resolutionRequired="resolutionsRequired"
       :editLabel="editLabel"
       :editedLabel="editedLabel"
+      :hasRightsOrRestrictions="getHasRightsOrRestrictions"
       @emitShareClasses="setShareClasses($event)"
       @emitShareStructureChanged="setShareStructureChanged($event)"
       @emitEditingShareStructure="setEditingShareStructure($event)"
@@ -58,6 +59,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getOriginalSnapshot!: BusinessSnapshotIF
+  @Getter getHasRightsOrRestrictions!: boolean
 
   // Global actions
   @Action setShareClasses!: ActionBindingIF

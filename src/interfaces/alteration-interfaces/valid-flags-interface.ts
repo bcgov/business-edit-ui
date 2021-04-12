@@ -1,4 +1,3 @@
-
 export interface ValidFlagsIF {
   isValidEffectiveDate: boolean,
   isValidFileNum: boolean,

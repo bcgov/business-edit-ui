@@ -1,23 +1,69 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import flushPromises from 'flush-promises'
 import { ResolutionDates } from '@/components/Articles'
+import { getVuexStore } from '@/store'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
+const store = getVuexStore()
 
 const arrayOfDates = [
   '2020-05-23',
   '2020-06-01'
 ]
 
+const shareClasses = [
+  {
+    'id': 1,
+    'name': 'Share Class 1',
+    'priority': 1,
+    'hasMaximumShares': true,
+    'maxNumberOfShares': 100,
+    'hasParValue': true,
+    'parValue': 10,
+    'currency': 'CAD',
+    'hasRightsOrRestrictions': false,
+    'series': [
+      {
+        'id': 1,
+        'name': 'Share Series 1',
+        'priority': 1,
+        'hasMaximumShares': true,
+        'maxNumberOfShares': 50,
+        'hasRightsOrRestrictions': false
+      },
+      {
+        'id': 2,
+        'name': 'Share Series 2',
+        'priority': 2,
+        'hasMaximumShares': true,
+        'maxNumberOfShares': 100,
+        'hasRightsOrRestrictions': false
+      }
+    ]
+  },
+  {
+    'id': 2,
+    'name': 'Share Class 2',
+    'priority': 1,
+    'hasMaximumShares': false,
+    'maxNumberOfShares': null,
+    'hasParValue': false,
+    'parValue': null,
+    'currency': null,
+    'hasRightsOrRestrictions': true,
+    'series': []
+  }
+]
+
 describe('Resolution Dates component - edit mode', () => {
   let wrapperFactory: any
 
   beforeAll(() => {
+    store.state.stateModel.shareStructureStep.shareClasses = shareClasses
     wrapperFactory = (propsData: any) => {
-      return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: true }, vuetify })
+      return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: true }, vuetify, store })
     }
   })
 
@@ -165,8 +211,9 @@ describe('Resolution Dates component - review mode', () => {
   let wrapperFactory: any
 
   beforeAll(() => {
+    store.state.stateModel.shareStructureStep.shareClasses = shareClasses
     wrapperFactory = (propsData: any) => {
-      return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: false }, vuetify })
+      return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: false }, vuetify, store })
     }
   })
 

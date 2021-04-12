@@ -277,3 +277,7 @@ export const mutateAppValidate = (state: StateIF, isValid: boolean) => {
 export const mutateValidFileNumber = (state: StateIF, isValid: boolean) => {
   state.stateModel.newAlteration.validFlags.isValidFileNum = isValid
 }
+
+export const mutateIsValidResolutionDate = (state: StateIF, isValid: boolean) => {
+  state.stateModel.newAlteration.validComponents.isValidResolutionDate = isValid
+}

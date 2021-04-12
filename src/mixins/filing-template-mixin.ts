@@ -535,7 +535,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   parseBusinessSnapshot (businessSnapshot: BusinessSnapshotIF = this.getOriginalSnapshot): void {
     // Store original snapshot
     this.setOriginalSnapshot(businessSnapshot)
-
+    console.log(businessSnapshot)
     // Store current entity type
     this.setEntityType(businessSnapshot.businessInfo.legalType)
 
@@ -590,6 +590,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         }
       }) || []
     )
+    // TODO: REMOVE MOCK DATA
+    businessSnapshot.shareStructure.resolutionDates = ['2012/04/06', '2014/06/16', '2015/07/05']
 
     // Store share classes and original resolution dates
     this.setShareClasses(cloneDeep(businessSnapshot.shareStructure.shareClasses))

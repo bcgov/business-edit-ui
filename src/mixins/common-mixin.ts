@@ -40,14 +40,15 @@ export default class CommonMixin extends Vue {
 
   /**
    * Identifies the first invalid flag and scrolls to the component.
-   * @param validatorFlags the component valid flags
+   * @param validatorFlags The current validity state of the components.
+   * @param elementFlags Static element Ids to identify the component to scroll too.
    */
-  validateAndScroll (validatorFlags: ValidFlagsIF): boolean {
+  validateAndScroll (validatorFlags: object, elementFlags: object): boolean {
     // Create an array of the flag values
     const validFlagArray = Object.keys(validatorFlags).map(key => validatorFlags[key])
 
     // Find the first corresponding flag id that is invalid
-    const component = document.getElementById(ReviewSummaryFlags[validFlagArray.indexOf(false)])
+    const component = document.getElementById(elementFlags[validFlagArray.indexOf(false)])
 
     // Scroll to the top of the first invalid component or return true
     if (component) {

@@ -154,9 +154,9 @@ import * as Dialogs from '@/components/dialogs'
 
 // Mixins, interfaces, etc
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { FilingDataIF, ActionBindingIF, ConfirmDialogType, ValidFlagsIF } from '@/interfaces'
+import { FilingDataIF, ActionBindingIF, ConfirmDialogType, ValidFlagsIF, ValidComponentsIF } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { CorpTypeCd, FilingCodes, SummaryActions } from '@/enums'
+import { ComponentFlags, CorpTypeCd, FilingCodes, ReviewSummaryFlags, SummaryActions } from '@/enums'
 
 @Component({
   components: {
@@ -197,12 +197,16 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
   @Getter isConflictingLegalType!: boolean
+  @Getter getComponentsValidated!: boolean
+  @Getter getValidComponentFlags!: ValidComponentsIF
+  @Getter getIsResolutionDatesValid!: boolean
 
   // Global actions
   @Action setAccountInformation!: ActionBindingIF
   @Action setAppValidate!: ActionBindingIF
   @Action setAuthRoles: ActionBindingIF
   @Action setBusinessId!: ActionBindingIF
+  @Action setComponentValidate!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
   @Action setCurrentJsDate!: ActionBindingIF
   @Action setHaveChanges!: ActionBindingIF
@@ -211,6 +215,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Action setKeycloakRoles!: ActionBindingIF
   @Action setUserInfo: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
+  @Action setValidResolutionDate!: ActionBindingIF
 
   // Local properties
   private filing: any
@@ -457,11 +462,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       case SummaryActions.CONFIRM:
         // If Summary Mode: Check validity, save and file else move into summary mode.
         if (this.isSummaryMode) await this.validateApp()
-        else {
-          // We don't change views just interchange components, so scroll to top for better UX.
-          this.scrollToTop(document.getElementById('app'))
-          this.setSummaryMode(true)
-        }
+        else await this.validateComponents()
         break
     }
   }
@@ -603,13 +604,26 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     await updateLdUser(key, email, firstName, lastName, custom)
   }
 
+  /** Perform high level component validations before proceeding to summary. */
+  private async validateComponents (): Promise<void> {
+    // Verify component validations
+    await this.setValidResolutionDate(this.getIsResolutionDatesValid)
+
+    // evaluate valid flags. Scroll to invalid components or continue to review.
+    if (this.validateAndScroll(this.getValidComponentFlags, ComponentFlags)) {
+      // We don't change views just interchange components, so scroll to top for better UX.
+      this.scrollToTop(document.getElementById('app'))
+      this.setSummaryMode(true)
+    }
+  }
+
   /** Perform high level validations before filing. */
   private async validateApp (): Promise<void> {
     // Prompt app validations
     this.setAppValidate(true)
 
     // evaluate valid flags. Scroll to invalid components or file alteration.
-    if (this.validateAndScroll(this.getAlterationValidFlags)) await this.onClickSave(false)
+    if (this.validateAndScroll(this.getAlterationValidFlags, ReviewSummaryFlags)) await this.onClickSave(false)
   }
 
   /**

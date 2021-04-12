@@ -152,6 +152,13 @@ p {
   font-weight: normal;
 }
 
+.error-text {
+  color: $app-red;
+  font-size: .75rem;
+  line-height: 1.0625rem;
+  letter-spacing: 0;
+}
+
 // Loading Indicator
 .loading-container {
   display: flex;
