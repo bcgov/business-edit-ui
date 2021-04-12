@@ -68,6 +68,8 @@
           title="Resolution or Court Order Date"
           nudge-right="80"
           nudge-top="15"
+          :minDate="getBusinessFoundingDate"
+          :maxDate="currentDateString"
           @emitDate="onDateEmitted($event)"
           @emitCancel="isAdding = false"
         />
@@ -126,6 +128,7 @@ export default class ResolutionDates extends Mixins(DateMixin, CommonMixin) {
   readonly hasRightsOrRestrictions: boolean
 
   // Global getters
+  @Getter getBusinessFoundingDate!: string
   @Getter getIsResolutionDatesValid!: boolean
 
   // Local properties
@@ -138,6 +141,10 @@ export default class ResolutionDates extends Mixins(DateMixin, CommonMixin) {
 
   get havePreviousDates (): boolean {
     return (this.previousDates?.length > 0)
+  }
+
+  get currentDateString (): string {
+    return this.dateToDateString(new Date())
   }
 
   /** Called to add a new date. */
