@@ -7,7 +7,7 @@
     />
 
     <!-- Section Header -->
-    <div class="summary-header px-4 mb-4">
+    <div class="summary-header px-4 mb-4 rounded-t">
       <v-row no-gutters>
         <v-col cols="9">
           <img  class="my-n1" src="@/assets/images/currency-usd-circle.svg">
@@ -31,7 +31,7 @@
               @click="restoreOriginalSnapshot()"
             >
               <v-icon small>mdi-delete</v-icon>
-              <span>Remove</span>
+              <span>Delete</span>
             </v-btn>
           </div>
         </v-col>

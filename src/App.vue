@@ -81,6 +81,7 @@
 
         <v-container class="view-container my-8 py-0">
           <v-row>
+            <!-- left side -->
             <v-col cols="12" lg="9">
               <router-view
                 :appReady=appReady
@@ -90,39 +91,38 @@
                 @haveData="haveData = true"
               />
             </v-col>
+
+            <!-- right side -->
             <v-col cols="12" lg="3" style="position: relative">
-
-              <!-- Corrections still uses the unmodified fee summary -->
-              <template v-if="showFeeSummary && isCorrectionView">
-                <aside>
-                  <affix
-                    relative-element-selector=".col-lg-9"
-                    :offset="{ top: 86, bottom: 12 }">
-                    <sbc-fee-summary
-                      :filingData="[...getFilingData]"
-                      :payURL="payApiUrl"
-                    />
-                  </affix>
+              <affix v-if="showFeeSummary"
+                relative-element-selector=".col-lg-9"
+                :offset="{ top: 86, bottom: 12 }"
+              >
+                <!-- Corrections still uses the unmodified fee summary -->
+                <aside v-if="isCorrectionView">
+                  <sbc-fee-summary
+                    :filingData="[...getFilingData]"
+                    :payURL="payApiUrl"
+                  />
                 </aside>
-              </template>
 
-              <!-- Alterations uses the new fee summary shared component -->
-              <fee-summary
-                v-else
-                :show-fee-summary="showFeeSummary"
-                :filing-data="getFilingData"
-                :pay-api-url="payApiUrl"
-                :isBusySaving="isBusySaving"
-                :hasConflicts="isConflictingLegalType && hasNewNr"
-                :isSummaryMode="isSummaryMode"
-                @action="handleSummaryActions($event)"
-              />
-
+                <!-- Alterations uses the new fee summary shared component -->
+                <fee-summary v-if="isAlterationView"
+                  :show-fee-summary="showFeeSummary"
+                  :filing-data="getFilingData"
+                  :pay-api-url="payApiUrl"
+                  :isBusySaving="isBusySaving"
+                  :hasConflicts="isConflictingLegalType && hasNewNr"
+                  :isSummaryMode="isSummaryMode"
+                  :errorMessage="feeSummaryError"
+                  @action="handleSummaryActions($event)"
+                />
+              </affix>
             </v-col>
           </v-row>
         </v-container>
 
-        <!-- Action bar is for Corrections ONLY -->
+        <!-- Actions component is for Corrections only -->
         <actions
           v-if="isCorrectionView"
           :key="$route.path"
@@ -137,7 +137,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Watch, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
@@ -297,6 +297,12 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     return this.isFilingChanged && !this.isSame(this.getFilingData, defaultFilingData)
   }
 
+  private get feeSummaryError (): string {
+    // TODO: finish this
+    // return 'display this message or "'< Please complete required information'
+    // return '< You have unfinished changes'
+    return ''
+  }
   /**
    * Called when component is created.
    * NB: User may not be authed yet.
@@ -451,12 +457,12 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
    * */
   private async handleSummaryActions (event: SummaryActions): Promise<void> {
     switch (event) {
-      case SummaryActions.RESUME:
+      case SummaryActions.SAVE_RESUME_LATER:
         // Save filing and return to dashboard
         await this.onClickSave()
         this.goToDashboard(true)
         break
-      case SummaryActions.CANCEL:
+      case SummaryActions.DELETE_ALL:
         this.goToDashboard()
         break
       case SummaryActions.CONFIRM:

@@ -69,7 +69,7 @@ describe('Alteration Summary component', () => {
     expect(changeAction).toBe('Change')
 
     const removeAction = wrapper.find('#btn-delete-alteration').text()
-    expect(removeAction).toBe('Remove')
+    expect(removeAction).toBe('Delete')
   })
 
   it('reverts out of summaryMode when selecting the change action', async () => {

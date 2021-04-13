@@ -35,6 +35,3 @@ export default class AccountAuthorizationDialog extends Vue {
   @Emit() private retry () { }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>
