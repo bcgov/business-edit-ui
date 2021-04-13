@@ -19,6 +19,7 @@
         :added-dates="getNewResolutionDates"
         :previous-dates="getPreviousResolutionDates"
         :isEditMode="true"
+        :hasRightsOrRestrictions="getHasRightsOrRestrictions"
         @addRemoveDate="setResolutionDates($event)"
       />
     </div>
@@ -51,6 +52,7 @@ export default class Articles extends Mixins(CommonMixin) {
   @Getter getNewResolutionDates!: string []
   @Getter getProvisionsRemoved!: boolean
   @Getter getPreviousResolutionDates!: string[]
+  @Getter getHasRightsOrRestrictions!: boolean
 
   // Global actions
   @Action setProvisionsRemoved!: ActionBindingIF

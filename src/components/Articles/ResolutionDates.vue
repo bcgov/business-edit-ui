@@ -18,22 +18,37 @@
           Dates of resolutions or court orders to alter the company's share structure or the
           special rights or restrictions attached to a class or series of shares:
         </div>
+        <p v-if="!getIsResolutionDatesValid" class="error-text mt-6">
+          You must add a resolution or court order date because your share structure contains a class or series of
+          shares with special rights or restrictions and changes were made to you share structure.
+        </p>
       </v-col>
 
       <v-col cols="2" class="align-right" v-if="isEditMode && !isAdding">
         <v-btn id="add-resolution-date"
                class="add-btn"
                text color="primary"
+               :disabled="haveAddedDates"
                @click="isAdding = true"
         >
           <v-icon small>mdi-plus</v-icon>
           <span>Add</span>
         </v-btn>
       </v-col>
+      <v-col cols="2" class="align-right" v-else-if="isAdding">
+        <v-btn id="close-resolution-date"
+               class="close-btn"
+               text color="primary"
+               @click="isAdding = false"
+        >
+          <v-icon small>mdi-close</v-icon>
+          <span>Cancel</span>
+        </v-btn>
+      </v-col>
     </v-row>
 
     <!-- Added Dates -->
-    <v-row no-gutters v-if="haveAddedDates" class="mt-3 mb-1">
+    <v-row no-gutters v-if="haveAddedDates" class="mt-2 mb-1">
       <v-col cols="3"></v-col>
       <v-col cols="7">
         <ul class="resolution-date-list info-text pl-0 mt-2">
@@ -63,6 +78,8 @@
           title="Resolution or Court Order Date"
           nudge-right="80"
           nudge-top="15"
+          :minDate="getBusinessFoundingDate"
+          :maxDate="getCurrentDate"
           @emitDate="onDateEmitted($event)"
           @emitCancel="isAdding = false"
         />
@@ -70,7 +87,7 @@
     </v-row>
 
     <!-- Previous Dates -->
-    <v-row no-gutters v-if="havePreviousDates" class="mt-3 mb-1">
+    <v-row no-gutters v-if="havePreviousDates" class="mt-2 mb-1">
       <v-col cols="3"></v-col>
       <v-col cols="7">
         <v-btn class="show-previous-dates-btn ml-n4"
@@ -92,8 +109,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
-import { CommonMixin, DateMixin } from '@/mixins'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
+import { CommonMixin } from '@/mixins'
 import { DatePicker } from '@bcrs-shared-components/date-picker'
 import { cloneDeep } from 'lodash'
 
@@ -102,7 +120,7 @@ import { cloneDeep } from 'lodash'
     DatePicker
   }
 })
-export default class ResolutionDates extends Mixins(DateMixin, CommonMixin) {
+export default class ResolutionDates extends Mixins(CommonMixin) {
   /** New resolution dates. */
   @Prop({ default: () => [] })
   readonly addedDates: string[]
@@ -114,6 +132,15 @@ export default class ResolutionDates extends Mixins(DateMixin, CommonMixin) {
   /** Whether this component should be in edit mode or review mode. */
   @Prop({ default: true })
   readonly isEditMode: boolean
+
+  /** Boolean indicating rights or restrictions in ShareStructure. */
+  @Prop({ default: false })
+  readonly hasRightsOrRestrictions: boolean
+
+  // Global getters
+  @Getter getBusinessFoundingDate!: string
+  @Getter getCurrentDate!: string
+  @Getter getIsResolutionDatesValid!: boolean
 
   // Local properties
   displayPreviousDates = false
@@ -150,6 +177,12 @@ export default class ResolutionDates extends Mixins(DateMixin, CommonMixin) {
     this.emitAddRemoveDate(tempNewDates)
   }
 
+  /** Remove resolution date if rights or restrictions are removed from ShareStructure. */
+  @Watch('hasRightsOrRestrictions')
+  private removeResolutionDate (): void {
+    if (!this.hasRightsOrRestrictions) this.onRemove(0)
+  }
+
   /** Emit updated list of dates. */
   @Emit('addRemoveDate')
   private emitAddRemoveDate (dates: string[]): void {}
@@ -159,7 +192,7 @@ export default class ResolutionDates extends Mixins(DateMixin, CommonMixin) {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-.add-btn {
+.add-btn, .close-btn {
   height: inherit !important;
 }
 
@@ -169,5 +202,15 @@ export default class ResolutionDates extends Mixins(DateMixin, CommonMixin) {
 
 .resolution-date-list {
   list-style-type: none;
+}
+
+#add-resolution-date[disabled] {
+  color: $app-blue !important;
+  opacity: 0.4;
+}
+
+::v-deep .theme--light.v-btn.v-btn--disabled .v-icon {
+  color: $app-blue !important;
+  opacity: 0.4;
 }
 </style>

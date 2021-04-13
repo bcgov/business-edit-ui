@@ -251,3 +251,7 @@ export const setAppValidate: ActionIF = ({ commit }, validate: boolean): void =>
 export const setValidFileNumber: ActionIF = ({ commit }, isValid: boolean): void => {
   commit('mutateValidFileNumber', isValid)
 }
+
+export const setValidResolutionDate: ActionIF = ({ commit }, isValid: boolean): void => {
+  commit('mutateIsValidResolutionDate', isValid)
+}

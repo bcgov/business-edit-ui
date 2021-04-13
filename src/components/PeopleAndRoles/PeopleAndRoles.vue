@@ -270,13 +270,13 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   /**
    * Resets state properties after a change is completed (or to cancel).
    */
-  private reset (): void {
+  private async reset (): Promise<void> {
     this.currentOrgPerson = null
     this.activeIndex = NaN
     this.renderOrgPersonForm = false
 
     // as Vue has updated the visible sections, scroll back to the top of this component
-    this.scrollToTop(this.$el)
+    await this.scrollToTop(this.$el)
   }
 
   /**

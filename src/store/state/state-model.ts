@@ -25,6 +25,9 @@ export const stateModel: StateModelIF = {
       fileNumber: '',
       hasPlanOfArrangement: false
     },
+    validComponents: {
+      isValidResolutionDate: true
+    },
     validFlags: {
       isValidEffectiveDate: true,
       isValidFileNum: true, // Staff only

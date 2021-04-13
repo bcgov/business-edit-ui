@@ -13,6 +13,8 @@
           title="Resolution or Court Order Date"
           :error-msg="errors"
           nudge-right="100"
+          :minDate="getBusinessFoundingDate"
+          :maxDate="getCurrentDate"
           @emitDate="onDateEmitted($event)"
           @emitCancel="exit()"
           @emitDateSync="date = $event"
@@ -31,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { DatePicker } from '@bcrs-shared-components/date-picker'
 import { cloneDeep } from 'lodash'
@@ -48,6 +50,8 @@ export default class ResolutionDateDialog extends Vue {
   @Prop() readonly dialog: boolean
 
   // Global getter
+  @Getter getBusinessFoundingDate!: string
+  @Getter getCurrentDate!: string
   @Getter getNewResolutionDates!: string []
 
   // Global action

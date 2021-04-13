@@ -2,9 +2,10 @@ import { AccountTypes, CorpTypeCd } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
   NameRequestIF, BusinessInformationIF, CertifyIF, CertifyStatementIF, NameTranslationIF, IncorporationAddressIf,
-  FilingDataIF, StateIF, BusinessSnapshotIF, EffectiveDateTimeIF, ShareStructureIF, ValidFlagsIF
+  FilingDataIF, StateIF, BusinessSnapshotIF, EffectiveDateTimeIF, ShareStructureIF, ValidFlagsIF, ValidComponentsIF
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+import { isEqual } from 'lodash'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: StateIF): boolean => {
@@ -324,6 +325,11 @@ export const getAlterationValidFlags = (state: StateIF): ValidFlagsIF => {
   return state.stateModel.newAlteration.validFlags
 }
 
+/** Get state of alterations components validity. */
+export const getValidComponentFlags = (state: StateIF): ValidComponentsIF => {
+  return state.stateModel.newAlteration.validComponents
+}
+
 export const getDefaultCorrectionDetailComment = (state: StateIF): string => {
   // *** TODO: fix this, since header.data is UTC
   const filingDate = state.stateModel.originalIA.header.date.split('T')[0] || ''
@@ -387,6 +393,14 @@ export const hasContactInfoChange = (state: StateIF): boolean => {
     (businessContact.extension !== getSnapshotContact(state).extension)
 }
 
+/** Check for changes between current contact and original contact. */
+export const hasShareStructureChanges = (state: StateIF): boolean => {
+  const originalShareClasses = state.stateModel.originalSnapshot?.shareStructure.shareClasses
+  const currentShareClasses = state.stateModel.shareStructureStep.shareClasses
+
+  return (!isEqual(originalShareClasses, currentShareClasses))
+}
+
 /** Get Provisions Removed state. */
 export const getProvisionsRemoved = (state: StateIF): boolean => {
   return !!state.stateModel.newAlteration.provisionsRemoved
@@ -410,4 +424,28 @@ export const getFileNumber = (state: StateIF): string => {
 /** Get Plan of Arrangement state. */
 export const getHasPlanOfArrangement = (state: StateIF): boolean => {
   return state.stateModel.newAlteration.courtOrder.hasPlanOfArrangement
+}
+
+/** Get boolean indicating if the share structure contains any special rights of restrictions. */
+export const getHasRightsOrRestrictions = (state: StateIF): any => {
+  const shareClasses = state.stateModel.shareStructureStep.shareClasses
+
+  // Search and return on the first match
+  // Don't need to search Series, as they can't exist on a parent without rights or restrictions
+  return shareClasses.some(shareClass => shareClass.hasRightsOrRestrictions)
+}
+
+/** Get component validations. */
+export const getComponentsValidated = (state: StateIF): boolean => {
+  return getIsResolutionDatesValid(state) &&
+    true && // Add individual component checks here
+    true && // Add individual component checks here
+    true // Add individual component checks here ...
+}
+
+/** Get resolution dates validity. */
+export const getIsResolutionDatesValid = (state: StateIF): boolean => {
+  if (hasShareStructureChanges(state) && getHasRightsOrRestrictions(state)) {
+    return getNewResolutionDates(state).length >= 1
+  } else return true
 }
