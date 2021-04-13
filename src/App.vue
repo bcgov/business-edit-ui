@@ -82,7 +82,7 @@
         <v-container class="view-container my-8 py-0">
           <v-row>
             <!-- left side -->
-            <v-col cols="12" lg="9">
+            <v-col cols="12" md="9">
               <router-view
                 :appReady=appReady
                 :isSummaryMode="isSummaryMode"
@@ -93,9 +93,9 @@
             </v-col>
 
             <!-- right side -->
-            <v-col cols="12" lg="3" style="position: relative">
+            <v-col cols="12" md="3" style="position: relative">
               <affix v-if="showFeeSummary"
-                relative-element-selector=".col-lg-9"
+                relative-element-selector=".col-md-9"
                 :offset="{ top: 86, bottom: 12 }"
               >
                 <!-- Corrections still uses the unmodified fee summary -->
