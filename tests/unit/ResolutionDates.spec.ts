@@ -3,7 +3,6 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { ResolutionDates } from '@/components/Articles'
 import { getVuexStore } from '@/store'
-import flushPromises from "flush-promises";
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
