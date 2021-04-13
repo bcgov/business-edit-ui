@@ -5,7 +5,7 @@ import {
   FilingDataIF, StateIF, BusinessSnapshotIF, EffectiveDateTimeIF, ShareStructureIF, ValidFlagsIF, ValidComponentsIF
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { cloneDeep, isEqual } from 'lodash'
+import { isEqual } from 'lodash'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: StateIF): boolean => {
@@ -395,8 +395,8 @@ export const hasContactInfoChange = (state: StateIF): boolean => {
 
 /** Check for changes between current contact and original contact. */
 export const hasShareStructureChanges = (state: StateIF): boolean => {
-  const originalShareClasses = cloneDeep(state.stateModel.originalSnapshot?.shareStructure.shareClasses)
-  const currentShareClasses = cloneDeep(state.stateModel.shareStructureStep.shareClasses)
+  const originalShareClasses = state.stateModel.originalSnapshot?.shareStructure.shareClasses
+  const currentShareClasses = state.stateModel.shareStructureStep.shareClasses
 
   return (!isEqual(originalShareClasses, currentShareClasses))
 }
@@ -429,17 +429,12 @@ export const getHasPlanOfArrangement = (state: StateIF): boolean => {
 /** Get boolean indicating if the share structure contains any special rights of restrictions. */
 export const getHasRightsOrRestrictions = (state: StateIF): any => {
   const shareClasses = state.stateModel.shareStructureStep.shareClasses
-  const hasRightsOrRestrictionsArr = []
 
-  // Isolate the hasRightsOrRestrictions boolean values
-  shareClasses.forEach(shareClass => {
-    hasRightsOrRestrictionsArr.push(shareClass.hasRightsOrRestrictions)
-    shareClass.series.forEach(shareSeries => {
-      hasRightsOrRestrictionsArr.push(shareSeries.hasRightsOrRestrictions)
-    })
+  // Search and return on the first match
+  // Don't need to search Series, as they can't exist on a parent without rights or restrictions
+  return shareClasses.some(shareClass => {
+    return shareClass.hasRightsOrRestrictions === true
   })
-
-  return hasRightsOrRestrictionsArr.includes(true)
 }
 
 /** Get component validations. */

@@ -14,7 +14,7 @@
           :error-msg="errors"
           nudge-right="100"
           :minDate="getBusinessFoundingDate"
-          :maxDate="currentDateString"
+          :maxDate="getCurrentDate"
           @emitDate="onDateEmitted($event)"
           @emitCancel="exit()"
           @emitDateSync="date = $event"
@@ -33,17 +33,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { DatePicker } from '@bcrs-shared-components/date-picker'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF } from '@/interfaces'
-import { DateMixin } from '@/mixins'
 
 @Component({
   components: { DatePicker }
 })
-export default class ResolutionDateDialog extends Mixins(DateMixin) {
+export default class ResolutionDateDialog extends Vue {
   /** Prop to provide attachment selector. */
   @Prop() readonly attach: string
 
@@ -52,6 +51,7 @@ export default class ResolutionDateDialog extends Mixins(DateMixin) {
 
   // Global getter
   @Getter getBusinessFoundingDate!: string
+  @Getter getCurrentDate!: string
   @Getter getNewResolutionDates!: string []
 
   // Global action
@@ -64,10 +64,6 @@ export default class ResolutionDateDialog extends Mixins(DateMixin) {
   /** Return an error msg if there is no date at Done. */
   get errors (): string {
     return this.date ? '' : this.errorMsg
-  }
-
-  get currentDateString (): string {
-    return this.dateToDateString(new Date())
   }
 
   /** Clear local properties. */

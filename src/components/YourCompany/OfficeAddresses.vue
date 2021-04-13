@@ -582,7 +582,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /**
    * When Done is clicked, stores updated addresses.
    */
-  private acceptChanges (): void {
+  private async acceptChanges (): Promise<void> {
     // set store value
     // NB: this will cause setLocalProperties() to be called to reset local properties
     // NB: this will cause updateAddresses() to be called to update state
@@ -591,20 +591,20 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     this.isEditing = false
 
     // as Vue has updated the visible sections, scroll back to the top of this component
-    this.scrollToTop(this.$el)
+    await this.scrollToTop(this.$el)
   }
 
   /**
    * When Cancel is clicked, discards changes.
    */
-  private discardChanges (): void {
+  private async discardChanges (): Promise<void> {
     // reset local properties from store
     this.setLocalProperties()
 
     this.isEditing = false
 
     // as Vue has updated the visible sections, scroll back to the top of this component
-    this.scrollToTop(this.$el)
+    await this.scrollToTop(this.$el)
   }
 
   /**

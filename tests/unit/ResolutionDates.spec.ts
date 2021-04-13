@@ -3,6 +3,7 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { ResolutionDates } from '@/components/Articles'
 import { getVuexStore } from '@/store'
+import flushPromises from "flush-promises";
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -202,6 +203,72 @@ describe('Resolution Dates component - edit mode', () => {
 
     // verify no date is emitted
     expect(wrapper.emitted('addRemoveDate').pop()[0]).toEqual([])
+
+    wrapper.destroy()
+  })
+
+  it('displays the error message when invalid', async () => {
+    const wrapper = wrapperFactory()
+
+    // verify there is just 1 row
+    const rows = wrapper.findAll('.row')
+    expect(rows.length).toBe(1)
+
+    // verify first row has 3 columns
+    const cols = rows.at(0).findAll('.col')
+    expect(cols.length).toBe(3)
+
+    // verify column text
+    expect(cols.at(1).text()).toContain('You must add a resolution or court order date')
+
+    wrapper.destroy()
+  })
+
+  it('hides the error message when valid', async () => {
+    const wrapper = wrapperFactory()
+    const vm = wrapper.vm
+
+    // verify there is just 1 row
+    let rows = wrapper.findAll('.row')
+    expect(rows.length).toBe(1)
+
+    // verify first row has 3 columns
+    const cols = rows.at(0).findAll('.col')
+    expect(cols.length).toBe(3)
+
+    // verify column text contains error initially
+    expect(cols.at(1).text()).toContain('You must add a resolution or court order date')
+
+    // click the Add button
+    await vm.$el.querySelector('.add-btn').click()
+
+    // verify there are now 2 rows
+    rows = wrapper.findAll('.row')
+    expect(rows.length).toBe(2)
+
+    // verify date picker form
+    expect(wrapper.find('.date-picker-form')).toBeDefined()
+
+    // inject a date
+    vm.onDateEmitted('2021-03-17')
+    store.state.stateModel.shareStructureStep.resolutionDates = ['2021-03-17']
+    await Vue.nextTick()
+
+    // verify new date is emitted
+    expect(wrapper.emitted('addRemoveDate').pop()[0]).toEqual(['2021-03-17'])
+
+    // verify column text does NOT contain error message
+    expect(cols.at(1).text()).not.toContain('You must add a resolution or court order date')
+
+    wrapper.destroy()
+  })
+
+  it('disables add btn when a date has already been added', async () => {
+    const wrapper = wrapperFactory({ addedDates: ['2021-03-17'] })
+
+    // Verify the Add button is disabled
+    expect(wrapper.find('.add-btn').exists()).toBe(true)
+    expect(wrapper.find('.add-btn').attributes('disabled')).toBeDefined()
 
     wrapper.destroy()
   })

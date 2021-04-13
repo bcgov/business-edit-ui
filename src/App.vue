@@ -610,9 +610,9 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     await this.setValidResolutionDate(this.getIsResolutionDatesValid)
 
     // evaluate valid flags. Scroll to invalid components or continue to review.
-    if (this.validateAndScroll(this.getValidComponentFlags, ComponentFlags)) {
+    if (await this.validateAndScroll(this.getValidComponentFlags, ComponentFlags)) {
       // We don't change views just interchange components, so scroll to top for better UX.
-      this.scrollToTop(document.getElementById('app'))
+      await this.scrollToTop(document.getElementById('app'))
       this.setSummaryMode(true)
     }
   }
@@ -623,7 +623,9 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     this.setAppValidate(true)
 
     // evaluate valid flags. Scroll to invalid components or file alteration.
-    if (this.validateAndScroll(this.getAlterationValidFlags, ReviewSummaryFlags)) await this.onClickSave(false)
+    if (await this.validateAndScroll(this.getAlterationValidFlags, ReviewSummaryFlags)) {
+      await this.onClickSave(false)
+    }
   }
 
   /**

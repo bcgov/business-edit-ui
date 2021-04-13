@@ -79,7 +79,7 @@
           nudge-right="80"
           nudge-top="15"
           :minDate="getBusinessFoundingDate"
-          :maxDate="currentDateString"
+          :maxDate="getCurrentDate"
           @emitDate="onDateEmitted($event)"
           @emitCancel="isAdding = false"
         />
@@ -111,7 +111,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { CommonMixin, DateMixin } from '@/mixins'
+import { CommonMixin } from '@/mixins'
 import { DatePicker } from '@bcrs-shared-components/date-picker'
 import { cloneDeep } from 'lodash'
 
@@ -120,7 +120,7 @@ import { cloneDeep } from 'lodash'
     DatePicker
   }
 })
-export default class ResolutionDates extends Mixins(DateMixin, CommonMixin) {
+export default class ResolutionDates extends Mixins(CommonMixin) {
   /** New resolution dates. */
   @Prop({ default: () => [] })
   readonly addedDates: string[]
@@ -139,6 +139,7 @@ export default class ResolutionDates extends Mixins(DateMixin, CommonMixin) {
 
   // Global getters
   @Getter getBusinessFoundingDate!: string
+  @Getter getCurrentDate!: string
   @Getter getIsResolutionDatesValid!: boolean
 
   // Local properties
@@ -151,10 +152,6 @@ export default class ResolutionDates extends Mixins(DateMixin, CommonMixin) {
 
   get havePreviousDates (): boolean {
     return (this.previousDates?.length > 0)
-  }
-
-  get currentDateString (): string {
-    return this.dateToDateString(new Date())
   }
 
   /** Called to add a new date. */

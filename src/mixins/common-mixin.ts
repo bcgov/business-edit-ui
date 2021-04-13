@@ -31,11 +31,9 @@ export default class CommonMixin extends Vue {
    * Scrolls the window to the top of the specified element.
    * @param element the element to scroll to the top of
    */
-  scrollToTop (element: any): void {
-    Vue.nextTick(() => {
-      // don't call window.scrollTo during Jest tests because jsdom doesn't implement it
-      if (!this.isJestRunning) window.scrollTo({ top: element.offsetTop, behavior: 'smooth' })
-    })
+  async scrollToTop (element: any): Promise<void> {
+    // don't call window.scrollTo during Jest tests because jsdom doesn't implement it
+    if (!this.isJestRunning) await window.scrollTo({ top: element.offsetTop, behavior: 'smooth' })
   }
 
   /**
@@ -43,7 +41,7 @@ export default class CommonMixin extends Vue {
    * @param validatorFlags The current validity state of the components.
    * @param elementFlags Static element Ids to identify the component to scroll too.
    */
-  validateAndScroll (validatorFlags: object, elementFlags: object): boolean {
+  async validateAndScroll (validatorFlags: object, elementFlags: object): Promise<boolean> {
     // Create an array of the flag values
     const validFlagArray = Object.keys(validatorFlags).map(key => validatorFlags[key])
 
@@ -52,7 +50,7 @@ export default class CommonMixin extends Vue {
 
     // Scroll to the top of the first invalid component or return true
     if (component) {
-      this.scrollToTop(component)
+      await this.scrollToTop(component)
       return false
     } else return true
   }
