@@ -432,9 +432,7 @@ export const getHasRightsOrRestrictions = (state: StateIF): any => {
 
   // Search and return on the first match
   // Don't need to search Series, as they can't exist on a parent without rights or restrictions
-  return shareClasses.some(shareClass => {
-    return shareClass.hasRightsOrRestrictions === true
-  })
+  return shareClasses.some(shareClass => shareClass.hasRightsOrRestrictions)
 }
 
 /** Get component validations. */
