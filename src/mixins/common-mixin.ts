@@ -89,12 +89,12 @@ export default class CommonMixin extends Vue {
     this[prop] = this[prop]?.toUpperCase()
   }
 
-  /** Is True when filing a correction. */
+  /** Is True when filing is a correction. */
   get isCorrectionView (): boolean {
     return (this.$route.name === RouteNames.CORRECTION)
   }
 
-  /** Is True when filing an alteration. */
+  /** Is True when filing is an alteration. */
   get isAlterationView (): boolean {
     return (this.$route.name === RouteNames.ALTERATION)
   }

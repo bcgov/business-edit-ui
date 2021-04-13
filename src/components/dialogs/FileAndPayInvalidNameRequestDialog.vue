@@ -54,6 +54,3 @@ export default class FileAndPayInvalidNameRequestDialog extends Vue {
   @Emit() private okay () { }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

@@ -92,6 +92,3 @@ export default class PaymentErrorDialog extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

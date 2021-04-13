@@ -13,8 +13,7 @@ export * from './incorporatorTypes'
 export * from './nameRequestStates'
 export * from './roleTypes'
 export * from './routeNames'
-export * from './summaryActions'
 export * from './reviewSummaryFlags'
 
 // external enums
-export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'
+export { CorpTypeCd, CorpClass, SummaryActions } from '@bcrs-shared-components/enums'

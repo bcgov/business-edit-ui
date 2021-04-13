@@ -59,7 +59,7 @@ describe('NoFeeSummary', () => {
     expect(wrapper.find('#no-fee-summary').exists()).toBe(true)
     expect(wrapper.find('#lbl-email').text()).toBe('mock@email.com')
     expect(wrapper.find('#lbl-phone').text()).toContain('250-123-4567')
-    expect(wrapper.find('#lbl-phone span').text()).toContain('Ext: 456')
+    expect(wrapper.find('#lbl-phone span').text()).toContain('ext 456')
   })
 
   it('hides the contact info when there is no changes', async () => {

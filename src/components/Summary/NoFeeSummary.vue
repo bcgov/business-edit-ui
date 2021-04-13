@@ -29,7 +29,7 @@
           <v-flex xs4>
             <span class="subtitle text-body-3 mr-2">Phone Number</span>
             <div id="lbl-phone" class="info-text">{{ getBusinessContact.phone }}
-              <span v-if="!!getBusinessContact.extension">Ext: {{ getBusinessContact.extension }}</span>
+              <span v-if="!!getBusinessContact.extension">ext {{ getBusinessContact.extension }}</span>
             </div>
           </v-flex>
 
