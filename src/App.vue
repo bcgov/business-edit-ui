@@ -81,8 +81,7 @@
 
         <v-container class="view-container my-8 py-0">
           <v-row>
-            <!-- left side -->
-            <v-col cols="12" md="9">
+            <v-col cols="9" class="left-side">
               <router-view
                 :appReady=appReady
                 :isSummaryMode="isSummaryMode"
@@ -92,10 +91,9 @@
               />
             </v-col>
 
-            <!-- right side -->
-            <v-col cols="12" md="3" style="position: relative">
+            <v-col cols="3" class="right-side">
               <affix v-if="showFeeSummary"
-                relative-element-selector=".col-md-9"
+                relative-element-selector=".left-side"
                 :offset="{ top: 86, bottom: 12 }"
               >
                 <!-- Corrections still uses the unmodified fee summary -->
@@ -697,5 +695,9 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 // place app header on top of dialogs (and therefore still usable)
 .app-header {
   z-index: 1000;
+}
+
+.right-side {
+  position: relative;
 }
 </style>
