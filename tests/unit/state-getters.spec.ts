@@ -51,33 +51,41 @@ describe('State Getters', () => {
     expect(vm.isBusySaving).toBe(false)
   })
 
-  it('returns correct values for "Is Filing Changed" getter', async () => {
+  it('returns correct values for "Has Correction Changed" getter', async () => {
     // initially, this getter should be false
-    expect(vm.isFilingChanged).toBe(false)
+    expect(vm.hasCorrectionChanged).toBe(false)
 
     // verify that the People and Roles Changed flag works
     await vm.$store.commit('mutatePeopleAndRolesChanged', true)
-    expect(vm.isFilingChanged).toBe(true)
+    expect(vm.hasCorrectionChanged).toBe(true)
     await vm.$store.commit('mutatePeopleAndRolesChanged', false)
-    expect(vm.isFilingChanged).toBe(false)
+    expect(vm.hasCorrectionChanged).toBe(false)
 
     // verify that the Define Company Changed flag works
     await vm.$store.commit('mutateDefineCompanyStepChanged', true)
-    expect(vm.isFilingChanged).toBe(true)
+    expect(vm.hasCorrectionChanged).toBe(true)
     await vm.$store.commit('mutateDefineCompanyStepChanged', false)
-    expect(vm.isFilingChanged).toBe(false)
+    expect(vm.hasCorrectionChanged).toBe(false)
 
     // verify that the Share Structure Changed flag works
     await vm.$store.commit('mutateShareStructureChanged', true)
-    expect(vm.isFilingChanged).toBe(true)
+    expect(vm.hasCorrectionChanged).toBe(true)
     await vm.$store.commit('mutateShareStructureChanged', false)
-    expect(vm.isFilingChanged).toBe(false)
+    expect(vm.hasCorrectionChanged).toBe(false)
 
     // verify that the Incorporation Agreement Changed flag works
     await vm.$store.commit('mutateIncorporationAgreementChanged', true)
-    expect(vm.isFilingChanged).toBe(true)
+    expect(vm.hasCorrectionChanged).toBe(true)
     await vm.$store.commit('mutateIncorporationAgreementChanged', false)
-    expect(vm.isFilingChanged).toBe(false)
+    expect(vm.hasCorrectionChanged).toBe(false)
+  })
+
+  //
+  // FUTURE: implement this
+  //
+  xit('returns correct values for "Has Alteration Changed" getter', async () => {
+    // initially, this getter should be false
+    expect(vm.hasAlterationChanged).toBe(false)
   })
 
   it('returns correct values for "Is Filing Valid" getter', async () => {

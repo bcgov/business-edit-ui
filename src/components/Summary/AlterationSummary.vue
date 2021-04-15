@@ -1,11 +1,5 @@
 <template>
-  <v-card flat id="alteration-summary" v-if="isSummaryMode">
-
-    <confirm-dialog
-      ref="confirm"
-      attach="#app"
-    />
-
+  <v-card flat id="alteration-summary">
     <!-- Section Header -->
     <div class="summary-header px-4 mb-4 rounded-t">
       <v-row no-gutters>
@@ -20,7 +14,7 @@
             <v-btn
               text color="primary"
               id="btn-change-alteration"
-              @click="setSummaryMode(false)"
+              @click="onChangeClicked()"
             >
               <v-icon small>mdi-pencil</v-icon>
               <span>Change</span>
@@ -28,7 +22,7 @@
             <v-btn
               text color="primary"
               id="btn-delete-alteration"
-              @click="restoreOriginalSnapshot()"
+              @click="onDeleteClicked()"
             >
               <v-icon small>mdi-delete</v-icon>
               <span>Delete</span>
@@ -82,7 +76,7 @@
     </template>
 
     <!-- Name Translation -->
-    <template v-if="hasNameTranslationChange">
+    <template v-if="hasNameTranslationChanged">
       <v-divider class="mx-4" />
       <div class="section-container name-translation-summary">
         <name-translation
@@ -124,7 +118,7 @@
     </template>
 
     <!-- Resolution or Court Order Dates -->
-    <template v-if="getNewResolutionDates && getNewResolutionDates.length > 0">
+    <template v-if="hasNewResolutionDatesChanged">
       <v-divider class="mx-4" />
       <div class="section-container resolution-court-order-dates-summary">
         <resolution-dates
@@ -166,18 +160,15 @@
         </v-row>
       </v-container>
     </div>
-
   </v-card>
 </template>
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ConfirmDialog } from '@/components/dialogs'
 import {
   ActionBindingIF,
   BusinessSnapshotIF,
-  ConfirmDialogType,
   EffectiveDateTimeIF,
   NameRequestIF,
   ShareClassIF,
@@ -185,8 +176,8 @@ import {
   ValidFlagsIF,
   NameTranslationIF
 } from '@/interfaces'
-import { CommonMixin, DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { CorpTypeCd } from '@/enums'
+import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
+import { CorpTypeCd, RouteNames } from '@/enums'
 import { EffectiveDateTime } from '@/components/common'
 import { ShareStructures } from '@/components/ShareStructure'
 import { ResolutionDates } from '@/components/Articles'
@@ -194,7 +185,6 @@ import { NameTranslation } from '@/components/YourCompany/NameTranslations'
 
 @Component({
   components: {
-    ConfirmDialog,
     EffectiveDateTime,
     ResolutionDates,
     ShareStructures,
@@ -202,23 +192,16 @@ import { NameTranslation } from '@/components/YourCompany/NameTranslations'
   }
 })
 export default class AlterationSummary extends Mixins(
-  CommonMixin,
   DateMixin,
   EnumMixin,
   FilingTemplateMixin,
   LegalApiMixin
 ) {
-  // Refs
-  $refs!: {
-    confirm: ConfirmDialogType
-  }
-
   // Global getters
   @Getter getCurrentJsDate!: Date
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
   @Getter getEntityType!: CorpTypeCd
-  @Getter isSummaryMode!: boolean
   @Getter getNameRequest!: NameRequestIF
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getShareClasses!: ShareClassIF[]
@@ -227,11 +210,15 @@ export default class AlterationSummary extends Mixins(
   @Getter getNewResolutionDates!: string[]
   @Getter getPreviousResolutionDates!: string[]
   @Getter getNameTranslations!: NameTranslationIF[]
+  @Getter getProvisionsRemoved!: boolean
 
   // Alteration flag getters
   @Getter getAlterationValidFlags!: ValidFlagsIF
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
+  @Getter hasNameTranslationChanged!: boolean
+  @Getter hasShareStructureChanged!: boolean
+  @Getter hasNewResolutionDatesChanged!: boolean
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF
@@ -271,37 +258,14 @@ export default class AlterationSummary extends Mixins(
     return (this.validate && !this.getAlterationValidFlags.isValidEffectiveDate)
   }
 
-  /** Local getter, using a mixin method to detect changes to Share Structure. */
-  get hasShareStructureChanged (): boolean {
-    return !this.isSame(this.getShareClasses, this.getSnapshotShareStructure?.shareClasses, ['action'])
+  async onChangeClicked (): Promise<void> {
+    this.setSummaryMode(false)
+    // We don't change views just interchange components, so scroll to top for better UX.
+    await this.scrollToTop(document.getElementById('app'))
   }
 
-  get hasNameTranslationChange (): boolean {
-    return this.getNameTranslations.length > 0 &&
-      this.getNameTranslations.filter(x => x.action).length > 0
-  }
-
-  /** Restore baseline data to original snapshot. */
-  restoreOriginalSnapshot (): void {
-    // open confirmation dialog and wait for response
-    this.$refs.confirm.open(
-      'Remove Alteration',
-      'All changes to your company information will be removed.',
-      {
-        width: '45rem',
-        persistent: true,
-        yes: 'Remove Alteration',
-        no: null,
-        cancel: 'Cancel'
-      }
-    ).then(() => {
-      // Restore original data
-      this.parseBusinessSnapshot()
-      this.setSummaryMode(false)
-    }).catch(async () => {
-      // if we get here, no was clicked
-      // nothing to do
-    })
+  onDeleteClicked (): void {
+    this.$root.$emit('delete-all')
   }
 
   @Emit('haveChanges')

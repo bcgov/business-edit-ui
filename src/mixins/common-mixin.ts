@@ -1,8 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { omit, isEqual } from 'lodash'
-import { CorpTypeCd, RouteNames, ReviewSummaryFlags } from '@/enums'
-import { ValidFlagsIF } from '@/interfaces'
+import { CorpTypeCd, RouteNames } from '@/enums'
 
 /**
  * Mixin that provides some useful common utilities.
@@ -10,6 +9,8 @@ import { ValidFlagsIF } from '@/interfaces'
 @Component({})
 export default class CommonMixin extends Vue {
   @Getter getEntityType!: CorpTypeCd
+  @Getter isCorrectionFiling!: boolean
+  @Getter isAlterationFiling!: boolean
 
   /** Is True if Jest is running the code. */
   get isJestRunning (): boolean {
@@ -89,24 +90,14 @@ export default class CommonMixin extends Vue {
     this[prop] = this[prop]?.toUpperCase()
   }
 
-  /** Is True when filing is a correction. */
-  get isCorrectionView (): boolean {
-    return (this.$route.name === RouteNames.CORRECTION)
-  }
-
-  /** Is True when filing is an alteration. */
-  get isAlterationView (): boolean {
-    return (this.$route.name === RouteNames.ALTERATION)
-  }
-
   /** The appropriate edit label for corrections or alterations. */
   get editLabel (): string {
-    return this.isCorrectionView ? 'Correct' : 'Change'
+    return this.isCorrectionFiling ? 'Correct' : 'Change'
   }
 
   /** The appropriate edited label for corrections or alterations. */
   get editedLabel (): string {
-    return this.isCorrectionView ? 'Corrected' : 'Changed'
+    return this.isCorrectionFiling ? 'Corrected' : 'Changed'
   }
 
   /** The entity title. */

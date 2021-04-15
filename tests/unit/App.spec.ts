@@ -507,7 +507,7 @@ describe.skip('App component', () => {
 
   it('shows confirm popup if exiting before saving changes', async () => {
     // simulate that we have unsaved changes
-    store.state.stateModel.tombstone.haveChanges = true
+    store.state.stateModel.tombstone.haveUnsavedChanges = true
 
     // call Go To Dashboard event handler
     await wrapper.vm.goToDashboard()
@@ -524,7 +524,7 @@ describe.skip('App component', () => {
 
   it('redirects to dashboard if exiting after saving changes', async () => {
     // simulate that we have no unsaved changes
-    store.state.stateModel.tombstone.haveChanges = false
+    store.state.stateModel.tombstone.haveUnsavedChanges = false
 
     // call Go To Dashboard event handler
     await wrapper.vm.goToDashboard()

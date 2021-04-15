@@ -87,7 +87,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   // Global actions
   @Action setCorrectedFilingId!: ActionBindingIF
   @Action setEntityType!: ActionBindingIF
-  @Action setHaveChanges!: ActionBindingIF
+  @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setOriginalIA!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
@@ -195,7 +195,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
     }
 
     // now that all data is loaded, wait for things to stabilize and reset flag
-    Vue.nextTick(() => this.setHaveChanges(false))
+    Vue.nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
   onStaffPaymentChanges (): void {

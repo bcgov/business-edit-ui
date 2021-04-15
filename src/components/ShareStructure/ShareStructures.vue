@@ -9,7 +9,7 @@
 
     <share-structure
       :isEditMode="isEditMode"
-      :isCorrection="isCorrectionView"
+      :isCorrection="isCorrectionFiling"
       :incorporationApplication="getOriginalIA"
       :shareClasses="getShareClasses"
       :originalShareStructure="originalShareStructure"
@@ -60,6 +60,8 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getOriginalSnapshot!: BusinessSnapshotIF
   @Getter getHasRightsOrRestrictions!: boolean
+  @Getter isCorrectionFiling!: boolean
+  @Getter isAlterationFiling!: boolean
 
   // Global actions
   @Action setShareClasses!: ActionBindingIF
@@ -75,7 +77,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
 
   /** Is true if changes to share structure rights will require a resolution date. */
   get resolutionsRequired (): boolean {
-    return (this.getNewResolutionDates.length === 0) && this.isAlterationView
+    return (this.getNewResolutionDates.length === 0) && this.isAlterationFiling
   }
 }
 </script>

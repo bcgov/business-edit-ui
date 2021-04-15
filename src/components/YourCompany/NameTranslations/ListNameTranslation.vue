@@ -21,7 +21,7 @@
           x-small label color="primary" text-color="white">ADDED</v-chip>
         <v-chip v-if="translation.action === ActionTypes.EDITED"
           x-small label color="primary" text-color="white">
-          <span v-if="isCorrectionView">CORRECTED</span>
+          <span v-if="isCorrectionFiling">CORRECTED</span>
           <span v-else>CHANGED</span>
         </v-chip>
         <v-chip v-if="translation.action === ActionTypes.REMOVED"
@@ -82,7 +82,7 @@
                 :disabled="isAddingNameTranslation"
                 @click="emitNameEdit(index)">
                   <v-icon small>mdi-pencil</v-icon>
-                  <span v-if="isCorrectionView">Correct</span>
+                  <span v-if="isCorrectionFiling">Correct</span>
                   <span v-else>Edit</span>
               </v-btn>
             </span>
@@ -118,7 +118,8 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Prop, Vue, Emit, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
 
 // Interfaces
 import { NameTranslationIF } from '@/interfaces'
@@ -131,10 +132,13 @@ import { CommonMixin } from '@/mixins'
 @Component({})
 export default class ListNameTranslation extends Mixins(CommonMixin) {
   @Prop({ default: () => { return [] as [] } })
-  private translationList: NameTranslationIF[]
+  readonly translationList: NameTranslationIF[]
 
   @Prop({ default: false })
-  private isAddingNameTranslation: boolean
+  readonly isAddingNameTranslation: boolean
+
+  // Global getter
+  @Getter isCorrectionFiling!: boolean
 
   private ActionTypes = ActionTypes
 

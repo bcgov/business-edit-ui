@@ -1,83 +1,105 @@
 <template>
   <section class="pb-10">
-    <!-- Profile View -->
-    <template v-if="!isSummaryMode">
-      <header>
-        <h1>Company Information</h1>
-      </header>
-
-      <section class="mt-6">
-        <p>You are legally obligated to keep your company information up to date. Necessary fees will be applied as
-          updates are made.</p>
-      </section>
-
-      <your-company class="mt-10" />
-
-      <current-directors class="mt-10" />
-
-      <share-structures class="mt-10" />
-
-      <articles class="mt-10" />
-
-<!--      Commented out until required-->
-<!--      <agreement-type class="mt-10" />-->
-<!--      <detail class="mt-10" />-->
-    </template>
-
-    <!-- Summary View -->
-    <template v-else>
-      <header>
-        <h1>Review and Certify</h1>
-      </header>
-      <section class="mt-6">
-        <p>Review and certify the changes you are about to make to your company. Certain changes require an Alteration
-          Notice which will incur a $100.00 Fee.</p>
-      </section>
-
-      <!-- FUTURE: set `pleaseValidate` when user clicks File and Pay -->
-      <alteration-summary
-        class="mt-10"
-        :validate="getAppValidate"
-        @haveChanges="onAlterationSummaryChanges()"
-      />
-
-      <documents-delivery
-       class="mt-10"
-       :validate="getAppValidate"
-        @valid="setDocumentOptionalEmailValidity($event)"
-      />
-
-      <certify-section
-       class="mt-10"
-       :validate="getAppValidate"
-      />
-
-      <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
-      <template v-if="isRoleStaff">
-        <header class="mt-10">
-          <h2>3. Court Order and Plan of Arrangement</h2>
+    <!-- Company Information-->
+    <v-slide-x-transition hide-on-leave>
+      <div v-if="!isSummaryMode">
+        <header>
+          <h1>Company Information</h1>
         </header>
-        <p class="my-3 pb-2">If this filing is pursuant to a court order, enter the court order number. If this filing
-          is pursuant to a plan of arrangement, <br>enter the court order number and select Plan of Arrangement.</p>
 
-        <court-order-poa
-          id="court-order"
-          :validate="getAppValidate"
-          :draftCourtOrderNumber="getFileNumber"
-          :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
-          @emitCourtNumber="setFileNumber($event)"
-          @emitPoa="setHasPlanOfArrangement($event)"
-          @emitValid="setValidFileNumber($event)"
-        />
+        <section class="mt-6">
+          You are legally obligated to keep your company information up to date. Necessary fees
+          will be applied as updates are made.
+        </section>
 
-        <staff-payment
+        <YourCompany class="mt-10" />
+
+        <CurrentDirectors class="mt-10" />
+
+        <ShareStructures class="mt-10" />
+
+        <Articles class="mt-10" />
+
+        <AgreementType class="mt-10" v-if="false" />
+
+        <Detail class="mt-10" v-if="false" />
+      </div>
+    </v-slide-x-transition>
+
+    <!-- Review and Certify-->
+    <v-slide-x-reverse-transition hide-on-leave>
+      <div v-if="isSummaryMode && showFeeSummary">
+        <header>
+          <h1>Review and Certify</h1>
+        </header>
+
+        <section class="mt-6">
+          Review and certify the changes you are about to make to your company. Certain changes
+          require an Alteration Notice which will incur a $100.00 Fee.
+        </section>
+
+        <AlterationSummary
           class="mt-10"
           :validate="getAppValidate"
-          @haveChanges="onStaffPaymentChanges()"
+          @haveChanges="onAlterationSummaryChanges()"
         />
-      </template>
 
-    </template>
+        <DocumentsDelivery
+          class="mt-10"
+          :validate="getAppValidate"
+          @valid="setDocumentOptionalEmailValidity($event)"
+        />
+
+        <CertifySection
+          class="mt-10"
+          :validate="getAppValidate"
+        />
+
+        <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
+        <template v-if="isRoleStaff">
+          <h2 class="mt-10">3. Court Order and Plan of Arrangement</h2>
+          <p class="my-3 pb-2">
+            If this filing is pursuant to a court order, enter the court order number. If this
+            filing is pursuant to a plan of arrangement, enter the court order number and select
+            Plan of Arrangement.
+          </p>
+
+          <CourtOrderPoa
+            id="court-order"
+            :validate="getAppValidate"
+            :draftCourtOrderNumber="getFileNumber"
+            :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
+            @emitCourtNumber="setFileNumber($event)"
+            @emitPoa="setHasPlanOfArrangement($event)"
+            @emitValid="setValidFileNumber($event)"
+          />
+
+          <StaffPayment
+            class="mt-10"
+            :validate="getAppValidate"
+            @haveChanges="onStaffPaymentChanges()"
+          />
+        </template>
+      </div>
+    </v-slide-x-reverse-transition>
+
+    <!-- Done-->
+    <v-fade-transition>
+      <div v-if="isSummaryMode && !showFeeSummary">
+        <header>
+          <h1>Review and Certify</h1>
+        </header>
+
+        <section class="mt-6">
+          You have deleted all fee-based changes and your company information has reverted to its
+          original state. If you made any non-fee changes such as updates to your Registered
+          Office Contact Information, please note that these changes have already been saved.
+        </section>
+
+        <!-- TODO: on click, return to entity dashboard -->
+        <v-btn large color="primary" id="done-button" class="mt-8" @click="null" >Done</v-btn>
+      </div>
+    </v-fade-transition>
   </section>
 </template>
 
@@ -87,11 +109,11 @@ import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 
 // Components
-import { AlterationSummary, NoFeeSummary, DocumentsDelivery } from '@/components/Summary'
+import { AlterationSummary, DocumentsDelivery } from '@/components/Summary'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { CurrentDirectors } from '@/components/PeopleAndRoles'
-import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
+import { CertifySection, Detail, StaffPayment } from '@/components/common'
 import { ShareStructures } from '@/components/ShareStructure'
 import { Articles } from '@/components/Articles'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
@@ -108,14 +130,12 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   components: {
     AgreementType,
     AlterationSummary,
+    Articles,
     CertifySection,
-    CompletingParty,
     CourtOrderPoa,
+    CurrentDirectors,
     Detail,
     DocumentsDelivery,
-    NoFeeSummary,
-    CurrentDirectors,
-    Articles,
     ShareStructures,
     StaffPayment,
     YourCompany
@@ -126,23 +146,20 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Getter getEntityType!: CorpTypeCd
   @Getter isSummaryMode!: boolean
   @Getter isRoleStaff!: boolean
-  @Getter hasBusinessNameChanged!: boolean
-  @Getter hasBusinessTypeChanged!: boolean
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
-  @Getter getDocumentOptionalEmail!: string
   @Getter getAppValidate!: boolean
   @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
+  @Getter showFeeSummary!: boolean
 
   // Global actions
   @Action setFileNumber!: ActionBindingIF
-  @Action setHaveChanges!: ActionBindingIF
+  @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
-  @Action setSummaryMode!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setValidFileNumber!: ActionBindingIF
 
@@ -220,7 +237,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     }
 
     // now that all data is loaded, wait for things to stabilize and reset flag
-    Vue.nextTick(() => this.setHaveChanges(false))
+    Vue.nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
   /** Fetches the business snapshot. */
@@ -280,3 +297,11 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   private emitHaveData (haveData: Boolean = true): void { }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
+#done-button {
+  width: 10rem;
+}
+</style>

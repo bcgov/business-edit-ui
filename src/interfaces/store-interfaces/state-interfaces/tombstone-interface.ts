@@ -1,7 +1,8 @@
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 /** Data object used internally only (not to/from API). */
 export interface TombStoneIF {
+  filingType: FilingTypes
   keycloakRoles: Array<string>
   authRoles: Array<string>
   userInfo: any // from auth profile
@@ -15,5 +16,5 @@ export interface TombStoneIF {
   isSavingResuming: boolean
   isFilingPaying: boolean
   ignoreChanges: boolean
-  haveChanges: boolean
+  haveUnsavedChanges: boolean
 }

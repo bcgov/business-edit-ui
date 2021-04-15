@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isAlterationView" id="business-type">
+  <div v-if="isAlterationFiling" id="business-type">
     <v-row no-gutters>
       <!-- Row Title -->
       <v-col cols="3">
@@ -230,6 +230,7 @@ export default class CorrectBusinessType extends Mixins(CommonMixin, EnumMixin) 
   @Getter getEntityType!: CorpTypeCd
   @Getter isConflictingLegalType!: boolean
   @Getter getOriginalSnapshot!: BusinessSnapshotIF
+  @Getter isAlterationFiling!: boolean
 
   // Alteration flag getters
   @Getter hasBusinessTypeChanged!: boolean

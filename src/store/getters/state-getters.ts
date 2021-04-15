@@ -1,11 +1,11 @@
-import { AccountTypes, CorpTypeCd } from '@/enums'
+import { AccountTypes, CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
 import {
   IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
   NameRequestIF, BusinessInformationIF, CertifyIF, CertifyStatementIF, NameTranslationIF, IncorporationAddressIf,
   FilingDataIF, StateIF, BusinessSnapshotIF, EffectiveDateTimeIF, ShareStructureIF, ValidFlagsIF, ValidComponentsIF
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { isEqual } from 'lodash'
+import { isEqual, omit } from 'lodash'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: StateIF): boolean => {
@@ -22,14 +22,19 @@ export const isAuthView = (state: StateIF): boolean => {
   return state.stateModel.tombstone.authRoles.includes('view')
 }
 
+/** Whether the current filing is a correction. */
+export const isCorrectionFiling = (state: StateIF): boolean => {
+  return (state.stateModel.tombstone.filingType === FilingTypes.CORRECTION)
+}
+
+/** Whether the current filing is an alteration. */
+export const isAlterationFiling = (state: StateIF): boolean => {
+  return (state.stateModel.tombstone.filingType === FilingTypes.ALTERATION)
+}
+
 /** The entity type. */
 export const getEntityType = (state: StateIF): CorpTypeCd => {
   return state.stateModel.tombstone.entityType
-}
-
-/** Whether the entity type has been identified. */
-export const isEntityType = (state: StateIF): boolean => {
-  return !!state.stateModel.tombstone.entityType
 }
 
 /** Whether the entity is a Benefit Company. */
@@ -204,6 +209,11 @@ export const getNameTranslations = (state: StateIF): NameTranslationIF[] => {
   return state.stateModel.nameTranslations
 }
 
+/** Whether name translations data has changed. */
+export const hasNameTranslationChanged = (state: StateIF): boolean => {
+  return (getNameTranslations(state).filter(x => x.action).length > 0)
+}
+
 /** The office addresses. */
 export const getOfficeAddresses = (state: StateIF): IncorporationAddressIf | {} => {
   return state.stateModel.defineCompanyStep.officeAddresses
@@ -242,8 +252,8 @@ export const ignoreChanges = (state: StateIF): boolean => {
 }
 
 /** Whether there are unsaved data changes. */
-export const haveChanges = (state: StateIF): boolean => {
-  return state.stateModel.tombstone.haveChanges
+export const haveUnsavedChanges = (state: StateIF): boolean => {
+  return state.stateModel.tombstone.haveUnsavedChanges
 }
 
 /** The staff payment. */
@@ -286,12 +296,26 @@ export const isFilingPaying = (state: StateIF): boolean => {
   return state.stateModel.tombstone.isFilingPaying
 }
 
-/** Whether any correction/alteration sections have changed. */
-export const isFilingChanged = (state: StateIF): boolean => {
-  return (state.stateModel.peopleAndRolesStep.changed ||
+/** Whether any correction data has changed. */
+export const hasCorrectionChanged = (state: StateIF): boolean => {
+  return (
+    state.stateModel.peopleAndRolesStep.changed ||
     state.stateModel.defineCompanyStep.changed ||
     state.stateModel.shareStructureStep.changed ||
-    state.stateModel.incorporationAgreementStep.changed)
+    state.stateModel.incorporationAgreementStep.changed
+  )
+}
+
+/** Whether any alteration fee-required data has changed. */
+export const hasAlterationChanged = (state: StateIF): boolean => {
+  return (
+    hasBusinessNameChanged(state) ||
+    hasBusinessTypeChanged(state) ||
+    hasNameTranslationChanged(state) ||
+    hasShareStructureChanged(state) ||
+    getProvisionsRemoved(state) ||
+    hasNewResolutionDatesChanged(state)
+  )
 }
 
 /** Whether all correction/alteration sections are valid. */
@@ -372,48 +396,55 @@ export const isSummaryMode = (state: StateIF): boolean => {
   return state.stateModel.summaryMode
 }
 
-/** Identify changes to business name. */
+/** Whether business name has changed. */
 export const hasBusinessNameChanged = (state: StateIF): boolean => {
   const originalLegalName = state.stateModel.originalSnapshot?.businessInfo.legalName
   return (state.stateModel.nameRequest?.legalName !== originalLegalName)
 }
 
-/** Identify changes to business type. */
+/** Whether business type has changed. */
 export const hasBusinessTypeChanged = (state: StateIF): boolean => {
   const originalLegalType = state.stateModel.originalSnapshot?.businessInfo.legalType
   return (state.stateModel.tombstone.entityType !== originalLegalType)
 }
 
 /** Check for changes between current contact and original contact. */
-export const hasContactInfoChange = (state: StateIF): boolean => {
-  const businessContact: ContactPointIF = state.stateModel.defineCompanyStep.businessContact
+export const hasContactInfoChanged = (state: StateIF): boolean => {
+  const businessContact = state.stateModel.defineCompanyStep.businessContact
 
-  return (businessContact.email !== getSnapshotContact(state).email) ||
+  return (
+    (businessContact.email !== getSnapshotContact(state).email) ||
     (businessContact.phone !== getSnapshotContact(state).phone) ||
     (businessContact.extension !== getSnapshotContact(state).extension)
+  )
 }
 
-/** Check for changes between current contact and original contact. */
-export const hasShareStructureChanges = (state: StateIF): boolean => {
-  const originalShareClasses = state.stateModel.originalSnapshot?.shareStructure.shareClasses
-  const currentShareClasses = state.stateModel.shareStructureStep.shareClasses
+/** Whether share structure data has changed. */
+export const hasShareStructureChanged = (state: StateIF): boolean => {
+  const currentShareClasses = { ...omit(state.stateModel.shareStructureStep.shareClasses, ['action']) }
+  const originalShareClasses = { ...omit(state.stateModel.originalSnapshot?.shareStructure.shareClasses, ['action']) }
 
   return (!isEqual(originalShareClasses, currentShareClasses))
 }
 
 /** Get Provisions Removed state. */
 export const getProvisionsRemoved = (state: StateIF): boolean => {
-  return !!state.stateModel.newAlteration.provisionsRemoved
+  return (state.stateModel.newAlteration.provisionsRemoved === true)
 }
 
-/** Get Provisions Removed state. */
+/** Get original resolution dates. */
 export const getPreviousResolutionDates = (state: StateIF): string[] => {
   return state.stateModel.originalAlteration.alteration.shareStructure.resolutionDates
 }
 
-/** Get Provisions Removed state. */
+/** Get new resolution dates. */
 export const getNewResolutionDates = (state: StateIF): string[] => {
   return state.stateModel.shareStructureStep.resolutionDates
+}
+
+/** Whether new resolution dates has changed. */
+export const hasNewResolutionDatesChanged = (state: StateIF): boolean => {
+  return (getNewResolutionDates(state)?.length > 0)
 }
 
 /** Get the court order number. fileNumber is the backend name for Court Order Number */
@@ -445,7 +476,27 @@ export const getComponentsValidated = (state: StateIF): boolean => {
 
 /** Get resolution dates validity. */
 export const getIsResolutionDatesValid = (state: StateIF): boolean => {
-  if (hasShareStructureChanges(state) && getHasRightsOrRestrictions(state)) {
+  if (hasShareStructureChanged(state) && getHasRightsOrRestrictions(state)) {
     return getNewResolutionDates(state).length >= 1
-  } else return true
+  }
+  return true
+}
+
+/**
+ * Whether to show the fee summary.
+ * This is a safety check to ensure that fee summary component is not loaded
+ * until there is a valid filing type and entity code.
+ */
+export const showFeeSummary = (state: StateIF): boolean => {
+  const defaultFilingData = {
+    filingTypeCode: null as FilingCodes,
+    entityType: null as CorpTypeCd,
+    priority: false,
+    waiveFees: false
+  }
+  const haveFilingChange = (
+    (isCorrectionFiling(state) && hasCorrectionChanged(state)) ||
+    (isAlterationFiling(state) && hasAlterationChanged(state))
+  )
+  return (haveFilingChange && !isEqual(getFilingData(state), defaultFilingData))
 }

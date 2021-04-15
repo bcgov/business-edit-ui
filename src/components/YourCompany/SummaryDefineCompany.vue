@@ -96,7 +96,7 @@ export default class SummaryDefineCompany extends Mixins(CommonMixin) {
   @Getter getEntityType!: CorpTypeCd
 
   @Prop({ default: false })
-  private isSummary: boolean
+  readonly isSummary: boolean
 
   // Entity Enum
   readonly CorpTypeCd = CorpTypeCd
