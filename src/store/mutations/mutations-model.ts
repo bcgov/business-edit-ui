@@ -1,5 +1,6 @@
 import {
   AccountInformationIF,
+  ActionKvIF,
   BusinessInformationIF,
   BusinessSnapshotIF,
   CertifyIF,
@@ -278,10 +279,18 @@ export const mutateAppValidate = (state: StateIF, isValid: boolean) => {
   state.stateModel.newAlteration.appValidate = isValid
 }
 
+export const mutateComponentValidate = (state: StateIF, isValid: boolean) => {
+  state.stateModel.newAlteration.componentValidate = isValid
+}
+
 export const mutateValidFileNumber = (state: StateIF, isValid: boolean) => {
   state.stateModel.newAlteration.validFlags.isValidFileNum = isValid
 }
 
 export const mutateIsValidResolutionDate = (state: StateIF, isValid: boolean) => {
   state.stateModel.newAlteration.validComponents.isValidResolutionDate = isValid
+}
+
+export const mutateIsValidComponent = (state: StateIF, kv: ActionKvIF) => {
+  state.stateModel.newAlteration.validComponents[kv.key] = kv.value
 }

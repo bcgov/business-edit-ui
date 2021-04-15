@@ -64,15 +64,18 @@
             Plan of Arrangement.
           </p>
 
-          <CourtOrderPoa
-            id="court-order"
-            :validate="getAppValidate"
-            :draftCourtOrderNumber="getFileNumber"
-            :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
-            @emitCourtNumber="setFileNumber($event)"
-            @emitPoa="setHasPlanOfArrangement($event)"
-            @emitValid="setValidFileNumber($event)"
-          />
+          <div :class="{'invalid-section': invalidPoa}">
+            <CourtOrderPoa
+              id="court-order"
+              :validate="getAppValidate"
+              :draftCourtOrderNumber="getFileNumber"
+              :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
+              :invalidSection="invalidPoa"
+              @emitCourtNumber="setFileNumber($event)"
+              @emitPoa="setHasPlanOfArrangement($event)"
+              @emitValid="setValidFileNumber($event)"
+            />
+          </div>
 
           <StaffPayment
             class="mt-10"
@@ -127,7 +130,7 @@ import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 
 // Mixins, Interfaces, Enums, etc
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { ActionBindingIF, BusinessSnapshotIF, EffectiveDateTimeIF, FilingDataIF } from '@/interfaces'
+import { ActionBindingIF, BusinessSnapshotIF, EffectiveDateTimeIF, FilingDataIF, ValidFlagsIF } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
@@ -150,6 +153,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 })
 export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin) {
   // Global getters
+  @Getter getAlterationValidFlags!: ValidFlagsIF
   @Getter getEntityType!: CorpTypeCd
   @Getter isSummaryMode!: boolean
   @Getter isRoleStaff!: boolean
@@ -182,6 +186,11 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   /** True if user is authenticated. */
   private get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+  }
+
+  /** Check validity state, only when prompted by app. */
+  private get invalidPoa (): boolean {
+    return this.getAppValidate && !this.getAlterationValidFlags.isValidFileNum
   }
 
   /** Called when App is ready and this component can load its data. */

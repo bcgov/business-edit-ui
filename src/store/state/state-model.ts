@@ -21,12 +21,18 @@ export const stateModel: StateModelIF = {
   },
   newAlteration: {
     appValidate: false,
+    componentValidate: false,
     provisionsRemoved: null,
     courtOrder: {
       fileNumber: '',
       hasPlanOfArrangement: false
     },
     validComponents: {
+      isValidCompanyName: true,
+      isValidBusinessType: true,
+      isValidNameTranslation: true,
+      isValidContactInfo: true,
+      isValidShareStructure: true,
       isValidResolutionDate: true
     },
     validFlags: {

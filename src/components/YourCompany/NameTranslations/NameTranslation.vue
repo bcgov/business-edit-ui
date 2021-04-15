@@ -71,7 +71,7 @@
     </v-row>
     <v-row no-gutters v-else>
       <v-col cols="3">
-        <label><strong>Name Translation(s)</strong></label>
+        <label :class="{'error-text': invalidSection}"><strong>Name Translation(s)</strong></label>
       </v-col>
       <v-col cols="9">
         <v-row no-gutters>
@@ -163,6 +163,9 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   $refs!: {
     confirmTranslationDialog: ConfirmDialogType
   }
+
+  @Prop({ default: false })
+  private invalidSection: boolean
 
   @Prop({ default: () => { return [] as [] } })
   private nameTranslations!: NameTranslationIF[]
@@ -355,6 +358,10 @@ export default class NameTranslation extends Mixins(CommonMixin) {
 
   @Emit('haveChanges')
   private emitHaveChanges (haveChanges: boolean): void {}
+
+  @Watch('isEditing')
+  @Emit('isEditingTranslations')
+  private emitIsEditingTranslations (isEditing: boolean): void {}
 }
 </script>
 

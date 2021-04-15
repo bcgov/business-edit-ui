@@ -358,6 +358,11 @@ export const getAppValidate = (state: StateIF): boolean => {
   return state.stateModel.newAlteration.appValidate
 }
 
+/** Flag to prompt component level validations. */
+export const getComponentValidate = (state: StateIF): boolean => {
+  return state.stateModel.newAlteration.componentValidate
+}
+
 /** Get state of alterations validity. */
 export const getAlterationValidFlags = (state: StateIF): ValidFlagsIF => {
   return state.stateModel.newAlteration.validFlags

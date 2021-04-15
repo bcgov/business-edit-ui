@@ -154,9 +154,17 @@ p {
 
 .error-text {
   color: $app-red;
-  font-size: .75rem;
   line-height: 1.0625rem;
   letter-spacing: 0;
+}
+
+.small-text {
+  font-size: 0.875rem;
+}
+
+// Error Border
+.invalid-section {
+  border-left: 3px solid $app-red;
 }
 
 // Loading Indicator

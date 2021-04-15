@@ -1,5 +1,6 @@
 import {
   ActionIF,
+  ActionKvIF,
   BusinessInformationIF,
   BusinessSnapshotIF,
   CertifyIF,
@@ -252,10 +253,18 @@ export const setAppValidate: ActionIF = ({ commit }, validate: boolean): void =>
   commit('mutateAppValidate', validate)
 }
 
+export const setComponentValidate: ActionIF = ({ commit }, validate: boolean): void => {
+  commit('mutateComponentValidate', validate)
+}
+
 export const setValidFileNumber: ActionIF = ({ commit }, isValid: boolean): void => {
   commit('mutateValidFileNumber', isValid)
 }
 
 export const setValidResolutionDate: ActionIF = ({ commit }, isValid: boolean): void => {
   commit('mutateIsValidResolutionDate', isValid)
+}
+
+export const setValidComponent: ActionIF = ({ commit }, kv: ActionKvIF): void => {
+  commit('mutateIsValidComponent', kv)
 }
