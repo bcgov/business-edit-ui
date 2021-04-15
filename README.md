@@ -2,9 +2,10 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](../LICENSE)
 [![codecov](https://codecov.io/gh/bcgov/business-edit-ui/branch/master/graph/badge.svg)](https://codecov.io/gh/bcgov/business-edit-ui)
+[![img](https://img.shields.io/badge/Lifecycle-Stable-97ca00)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 ![PR CI](https://github.com/bcgov/bcrs-business-correct-ui/workflows/PR%20CI/badge.svg")
 ![Build CI](https://github.com/bcgov/bcrs-business-correct-ui/workflows/Build%20CI/badge.svg)
-![Lifecycle](https://img.shields.io/badge/Lifecycle-Stable-97ca00)
+
 
 ## Project setup
 ```
