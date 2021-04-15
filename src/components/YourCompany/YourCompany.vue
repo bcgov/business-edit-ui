@@ -439,10 +439,6 @@ export default class YourCompany extends Mixins(
     }
   }
 
-  //
-  // FUTURE: fix this so it's not True initially as it is currently
-  //         causing "unsaved changes" to always be True
-  //
   private setDataChanges (): void {
     const haveChanges = (
       this.companyNameChanges ||
