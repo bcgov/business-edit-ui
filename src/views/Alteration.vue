@@ -96,8 +96,15 @@
           Office Contact Information, please note that these changes have already been saved.
         </section>
 
-        <!-- TODO: on click, return to entity dashboard -->
-        <v-btn large color="primary" id="done-button" class="mt-8" @click="null" >Done</v-btn>
+        <v-btn
+          large
+          color="primary"
+          id="done-button"
+          class="mt-8"
+          @click="$root.$emit('go-to-dashboard')"
+        >
+          <span>Done</span>
+        </v-btn>
       </div>
     </v-fade-transition>
   </section>
@@ -190,7 +197,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     // bypass this when Jest is running as FF are not fetched
     if (!this.isJestRunning && !getFeatureFlag('alteration-ui-enabled')) {
       window.alert('Alterations are not available at the moment. Please check again later.')
-      this.redirectEntityDashboard()
+      this.$root.$emit('go-to-dashboard')
       return
     }
 
@@ -280,12 +287,6 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       ...this.getFilingData,
       futureEffective: this.getEffectiveDateTime.isFutureEffective
     })
-  }
-
-  /** Redirects browser to Entity Dashboard. */
-  private redirectEntityDashboard (): void {
-    const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-    window.location.assign(dashboardUrl + this.getBusinessId)
   }
 
   /** Emits Fetch Error event. */

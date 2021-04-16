@@ -118,7 +118,6 @@
         <Actions
           v-if="isCorrectionFiling"
           :key="$route.path"
-          @goToDashboard="goToDashboard()"
         />
       </main>
     </div>
@@ -326,6 +325,11 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       this.confirmDeleteAllDialog = true
     })
 
+    // listen for go to dashboard events
+    this.$root.$on('go-to-dashboard', () => {
+      this.goToDashboard()
+    })
+
     // if we are already authenticated then go right to init
     // (since we won't get the event from Signin component)
     if (this.isAuthenticated) this.onProfileReady(true)
@@ -346,6 +350,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     this.$root.$off('save-error-event')
     this.$root.$off('invalid-name-request')
     this.$root.$off('delete-all')
+    this.$root.$off('go-to-dashboard')
   }
 
   /** Called when profile is ready -- we can now init app. */

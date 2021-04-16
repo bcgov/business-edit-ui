@@ -46,7 +46,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Mixins, Emit } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Getter, Action } from 'vuex-class'
 
 // Interfaces and Enums
@@ -92,11 +92,6 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
   /** True if the File and Pay button should be disabled. */
   private get isFilePayButtonDisabled (): boolean {
     return (!this.hasCorrectionChanged || this.isBusySaving || !this.isFilingValid || this.isEditing)
-  }
-
-  /** Called when Cancel button is clicked. */
-  private onClickCancel (): void {
-    this.emitGoToDashboard()
   }
 
   /**
@@ -145,7 +140,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     }
 
     this.setIsSavingResuming(false)
-    this.emitGoToDashboard()
+    this.$root.$emit('go-to-dashboard')
   }
 
   /**
@@ -196,8 +191,8 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
         // otherwise user will have to retry payment later
         window.location.assign(payUrl)
       } else {
-        // redirect to Dashboard URL
-        window.location.assign(dashboardUrl + this.getBusinessId)
+        // otherwise go straight to dashboard
+        this.$root.$emit('go-to-dashboard')
       }
     } else {
       const error = new Error('Missing Payment Token')
@@ -206,9 +201,10 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     }
   }
 
-  /** Emits Go To Dashboard event. */
-  @Emit('goToDashboard')
-  private emitGoToDashboard (): void { }
+  /** Called when Cancel button is clicked. */
+  private onClickCancel (): void {
+    this.$root.$emit('go-to-dashboard')
+  }
 }
 </script>
 
