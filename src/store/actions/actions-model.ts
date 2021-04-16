@@ -10,7 +10,7 @@ import {
   ShareClassIF
 } from '@/interfaces'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 export const setEntityType: ActionIF = ({ commit }, entityType: CorpTypeCd): void => {
   commit('mutateEntityType', entityType)
@@ -160,12 +160,12 @@ export const setIncorporationAgreementValidity: ActionIF = ({ commit }, validity
   commit('mutateIncorporationAgreementValidity', validity)
 }
 
-export const setIgnoreChanges: ActionIF = ({ commit }, ignoreChanges): void => {
+export const setIgnoreChanges: ActionIF = ({ commit }, ignoreChanges: boolean): void => {
   commit('mutateIgnoreChanges', ignoreChanges)
 }
 
-export const setHaveChanges: ActionIF = ({ commit }, haveChanges): void => {
-  commit('mutateHaveChanges', haveChanges)
+export const setHaveUnsavedChanges: ActionIF = ({ commit }, haveUnsavedChanges: boolean): void => {
+  commit('mutateHaveUnsavedChanges', haveUnsavedChanges)
 }
 
 export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
@@ -222,6 +222,10 @@ export const setEditingIncorporationAgreement: ActionIF = ({ commit }, editing: 
 
 export const setSummaryMode: ActionIF = ({ commit }, summaryMode: boolean): void => {
   commit('mutateSummaryMode', summaryMode)
+}
+
+export const setFilingType: ActionIF = ({ commit }, filingType: FilingTypes): void => {
+  commit('mutateFilingType', filingType)
 }
 
 export const setProvisionsRemoved: ActionIF = ({ commit }, provisionsRemoved: boolean): void => {

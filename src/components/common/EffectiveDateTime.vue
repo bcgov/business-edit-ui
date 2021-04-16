@@ -291,20 +291,23 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
 
   @Watch('currentJsDate', { immediate: true })
   onCurrentJsDateChanged (val: Date) {
-    // set new min date
-    const minDate = new Date()
-    // add 3 minutes
-    minDate.setTime(val.getTime() + this.MIN_DIFF_MINUTES * 60 * 1000)
-    this.minDate = minDate
+    // safety check (val may be null)
+    if (val) {
+      // set new min date
+      const minDate = new Date()
+      // add 3 minutes
+      minDate.setTime(val.getTime() + this.MIN_DIFF_MINUTES * 60 * 1000)
+      this.minDate = minDate
 
-    // set new max date
-    const maxDate = new Date()
-    // add 10 days
-    maxDate.setTime(val.getTime() + this.MAX_DIFF_DAYS * 24 * 60 * 60 * 1000)
-    this.maxDate = maxDate
+      // set new max date
+      const maxDate = new Date()
+      // add 10 days
+      maxDate.setTime(val.getTime() + this.MAX_DIFF_DAYS * 24 * 60 * 60 * 1000)
+      this.maxDate = maxDate
 
-    // check if form is still valid
-    this.emitValid()
+      // check if form is still valid
+      this.emitValid()
+    }
   }
 
   @Watch('datePicker')

@@ -49,7 +49,6 @@ import { CorpTypeCd } from '@/enums'
 @Component({})
 export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   // Global getters
-  @Getter isEntityType!: boolean
   @Getter getBusinessId!: string
   @Getter getBusinessNumber!: string
   @Getter getCurrentBusinessName!: string
@@ -59,10 +58,11 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getOriginalSnapshot!: BusinessSnapshotIF
+  @Getter isCorrectionFiling!: boolean
 
   /** Get original entity type. */
   private get originalEntityType (): string {
-    return this.getCorpTypeDescription(this.isCorrectionView
+    return this.getCorpTypeDescription(this.isCorrectionFiling
       ? this.getOriginalIA?.business?.legalType
       : this.getOriginalSnapshot?.businessInfo?.legalType
     )

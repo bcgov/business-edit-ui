@@ -3,6 +3,7 @@ import { EmptyNameRequest, StateModelIF } from '@/interfaces'
 export const stateModel: StateModelIF = {
   currentJsDate: null,
   tombstone: {
+    filingType: null,
     keycloakRoles: [],
     authRoles: [],
     userInfo: null,
@@ -16,7 +17,7 @@ export const stateModel: StateModelIF = {
     isSavingResuming: false,
     isFilingPaying: false,
     ignoreChanges: false,
-    haveChanges: false
+    haveUnsavedChanges: false
   },
   newAlteration: {
     appValidate: false,

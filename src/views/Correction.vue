@@ -87,7 +87,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   // Global actions
   @Action setCorrectedFilingId!: ActionBindingIF
   @Action setEntityType!: ActionBindingIF
-  @Action setHaveChanges!: ActionBindingIF
+  @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setOriginalIA!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
@@ -125,7 +125,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
     // bypass this when Jest is running as FF are not fetched
     if (!this.isJestRunning && !getFeatureFlag('correction-ui-enabled')) {
       window.alert('Corrections are not available at the moment. Please check again later.')
-      this.redirectEntityDashboard()
+      this.$root.$emit('go-to-dashboard')
       return
     }
 
@@ -133,7 +133,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
     const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
     if (isStaffOnly && !this.isRoleStaff) {
       window.alert('Only staff can correct an Incorporation Application.')
-      this.redirectEntityDashboard()
+      this.$root.$emit('go-to-dashboard')
       return
     }
 
@@ -195,7 +195,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
     }
 
     // now that all data is loaded, wait for things to stabilize and reset flag
-    Vue.nextTick(() => this.setHaveChanges(false))
+    Vue.nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
   onStaffPaymentChanges (): void {
@@ -205,12 +205,6 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
       priority: this.getStaffPayment.isPriority,
       waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
     })
-  }
-
-  /** Redirects browser to Entity Dashboard. */
-  private redirectEntityDashboard (): void {
-    const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-    window.location.assign(dashboardUrl + this.getBusinessId)
   }
 
   /** Emits Fetch Error event. */

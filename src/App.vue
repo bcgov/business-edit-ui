@@ -1,66 +1,59 @@
 <template>
   <v-app class="app-container" id="app">
     <!-- Dialogs -->
-    <file-and-pay-invalid-name-request-dialog
+    <FileAndPayInvalidNameRequestDialog
       attach="#app"
       :dialog="fileAndPayInvalidNameRequestDialog"
       @okay="goToManageBusinessDashboard()"
     />
 
-    <account-authorization-dialog
+    <AccountAuthorizationDialog
       attach="#app"
       :dialog="accountAuthorizationDialog"
-      @exit="goToDashboard(true)"
+      @exit="goToDashboard()"
       @retry="initApp()"
     />
 
-    <fetch-error-dialog
+    <FetchErrorDialog
       attach="#app"
       :dialog="fetchErrorDialog"
-      @exit="goToDashboard(true)"
+      @exit="goToDashboard()"
       @retry="initApp()"
     />
 
     <!-- FUTURE: pass actual filing name -->
-    <payment-error-dialog
+    <PaymentErrorDialog
       attach="#app"
       filingName="Application"
       :dialog="paymentErrorDialog"
       :errors="saveErrors"
       :warnings="saveWarnings"
-      @exit="goToDashboard(true)"
+      @exit="goToDashboard()"
     />
 
     <!-- FUTURE: pass actual filing name -->
-    <save-error-dialog
+    <SaveErrorDialog
       attach="#app"
       filingName="Application"
       :dialog="saveErrorDialog"
       :errors="saveErrors"
       :warnings="saveWarnings"
-      @exit="goToDashboard(true)"
+      @exit="goToDashboard()"
       @okay="saveErrorDialog = false"
     />
 
-    <name-request-error-dialog
+    <NameRequestErrorDialog
       attach="#app"
       :type="nameRequestErrorType"
       :dialog="nameRequestErrorDialog"
       @close="nameRequestErrorDialog = false"
     />
 
-    <delete-error-dialog
+    <ConfirmDeleteAllDialog
       attach="#app"
-      filingName="Application"
-      :dialog="deleteErrorDialog"
-      :errors="deleteErrors"
-      :warnings="deleteWarnings"
-      @exit="goToDashboard(true)"
-    />
-
-    <confirm-dialog
-      ref="confirm"
-      attach="#app"
+      :dialog="confirmDeleteAllDialog"
+      @confirm="doDeleteAll()"
+      @cancel="confirmDeleteAllDialog = false"
     />
 
     <!-- Initial Page Load Transition -->
@@ -73,11 +66,11 @@
       </div>
     </transition>
 
-    <sbc-header />
+    <SbcHeader />
 
     <div class="app-body">
       <main v-if="!isErrorDialog">
-        <entity-info />
+        <EntityInfo />
 
         <v-container class="view-container my-8 py-0">
           <v-row>
@@ -96,46 +89,46 @@
                 relative-element-selector=".left-side"
                 :offset="{ top: 86, bottom: 12 }"
               >
-                <!-- Corrections still uses the unmodified fee summary -->
-                <aside v-if="isCorrectionView">
-                  <sbc-fee-summary
+                <!-- Corrections still use the basic Fee Summary component -->
+                <aside v-if="isCorrectionFiling">
+                  <SbcFeeSummary
                     :filingData="[...getFilingData]"
                     :payURL="payApiUrl"
                   />
                 </aside>
 
-                <!-- Alterations uses the new fee summary shared component -->
-                <fee-summary v-if="isAlterationView"
-                  :show-fee-summary="showFeeSummary"
-                  :filing-data="getFilingData"
-                  :pay-api-url="payApiUrl"
-                  :isBusySaving="isBusySaving"
-                  :hasConflicts="isConflictingLegalType && hasNewNr"
-                  :isSummaryMode="isSummaryMode"
-                  :errorMessage="feeSummaryError"
-                  @action="handleSummaryActions($event)"
-                />
+                <!-- Alterations use the enhanced Fee Summary shared component -->
+                <v-expand-transition>
+                  <FeeSummary v-if="isAlterationFiling"
+                    :filingData="getFilingData"
+                    :payApiUrl="payApiUrl"
+                    :isBusySaving="isBusySaving"
+                    :hasConflicts="isConflictingLegalType && hasNewNr"
+                    :confirmLabel="feeSummaryConfirmLabel"
+                    :errorMessage="feeSummaryError"
+                    @action="handleFeeSummaryActions($event)"
+                  />
+                </v-expand-transition>
               </affix>
             </v-col>
           </v-row>
         </v-container>
 
         <!-- Actions component is for Corrections only -->
-        <actions
-          v-if="isCorrectionView"
+        <Actions
+          v-if="isCorrectionFiling"
           :key="$route.path"
-          @goToDashboard="goToDashboard(true)"
         />
       </main>
     </div>
 
-    <sbc-footer :aboutText=aboutText />
+    <SbcFooter :aboutText=aboutText />
   </v-app>
 </template>
 
 <script lang="ts">
 // Libraries
-import { Component, Watch, Mixins } from 'vue-property-decorator'
+import { Component, Watch, Mixins, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
@@ -152,9 +145,9 @@ import * as Dialogs from '@/components/dialogs'
 
 // Mixins, interfaces, etc
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { FilingDataIF, ActionBindingIF, ConfirmDialogType, ValidFlagsIF, ValidComponentsIF } from '@/interfaces'
+import { FilingDataIF, ActionBindingIF, ValidFlagsIF, ValidComponentsIF } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { ComponentFlags, CorpTypeCd, FilingCodes, ReviewSummaryFlags, SummaryActions } from '@/enums'
+import { ComponentFlags, ReviewSummaryFlags, SummaryActions, RouteNames } from '@/enums'
 
 @Component({
   components: {
@@ -169,11 +162,6 @@ import { ComponentFlags, CorpTypeCd, FilingCodes, ReviewSummaryFlags, SummaryAct
   }
 })
 export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
-  // Refs
-  $refs!: {
-    confirm: ConfirmDialogType
-  }
-
   // Global getters
   @Getter getBusinessId!: string
   @Getter getUserEmail!: string
@@ -182,13 +170,15 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getUserRoles!: string
   @Getter getUserUsername!: string
   @Getter getFilingData!: FilingDataIF
-  @Getter haveChanges!: boolean
+  @Getter haveUnsavedChanges!: boolean
   @Getter hasNewNr!: boolean
   @Getter isBusySaving!: boolean
-  @Getter isFilingChanged!: boolean
   @Getter isEditing!: boolean
   @Getter isSummaryMode!: boolean
   @Getter getCurrentJsDate!: Date
+  @Getter showFeeSummary!: boolean
+  @Getter isCorrectionFiling!: boolean
+  @Getter isAlterationFiling!: boolean
 
   // Alteration flag getters
   @Getter getAlterationValidFlags!: ValidFlagsIF
@@ -207,28 +197,26 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Action setComponentValidate!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
   @Action setCurrentJsDate!: ActionBindingIF
-  @Action setHaveChanges!: ActionBindingIF
+  @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setIsFilingPaying!: ActionBindingIF
   @Action setIsSaving!: ActionBindingIF
   @Action setKeycloakRoles!: ActionBindingIF
   @Action setUserInfo: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
+  @Action setFilingType!: ActionBindingIF
   @Action setValidResolutionDate!: ActionBindingIF
 
   // Local properties
-  private filing: any
-  private accountAuthorizationDialog: boolean = false
-  private deleteErrorDialog: boolean = false
-  private fetchErrorDialog: boolean = false
-  private paymentErrorDialog: boolean = false
-  private saveErrorDialog: boolean = false
-  private nameRequestErrorDialog: boolean = false
-  private nameRequestErrorType: string = ''
+  private accountAuthorizationDialog = false
+  private fetchErrorDialog = false
+  private paymentErrorDialog = false
+  private saveErrorDialog = false
+  private nameRequestErrorDialog = false
+  private nameRequestErrorType = ''
   private saveErrors: Array<object> = []
   private saveWarnings: Array<object> = []
-  private deleteErrors: Array<object> = []
-  private deleteWarnings: Array<object> = []
-  private fileAndPayInvalidNameRequestDialog: boolean = false
+  private fileAndPayInvalidNameRequestDialog = false
+  private confirmDeleteAllDialog = false
 
   // FUTURE: change profileReady/appReady/haveData to a state machine?
 
@@ -260,7 +248,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       this.fetchErrorDialog ||
       this.paymentErrorDialog ||
       this.saveErrorDialog ||
-      this.fileAndPayInvalidNameRequestDialog
+      this.fileAndPayInvalidNameRequestDialog ||
+      this.confirmDeleteAllDialog
     )
   }
 
@@ -269,38 +258,25 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     return process.env.ABOUT_TEXT
   }
 
-  /** Track changes to alteration specific pieces. */
-  private get hasAlterationChanges (): boolean {
-    return (
-      this.hasBusinessNameChanged ||
-      this.hasBusinessTypeChanged
-    )
-  }
-
   /** Whether user is authenticated. */
   private get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** Safety check to ensure that fee summary component is not loaded until there
-   *  is a valid filing type and entity code.
-   */
-  private get showFeeSummary (): boolean {
-    const defaultFilingData = {
-      filingTypeCode: null as FilingCodes,
-      entityType: null as CorpTypeCd,
-      priority: false,
-      waiveFees: false
-    }
-    return this.isFilingChanged && !this.isSame(this.getFilingData, defaultFilingData)
-  }
-
+  /** The error to display in the fee summary component, if any. */
   private get feeSummaryError (): string {
     // TODO: finish this
-    // return 'display this message or "'< Please complete required information'
+    // return '< Please complete required information'
+    // or
     // return '< You have unfinished changes'
     return ''
   }
+
+  /** The fee summary confirm button label. */
+  private get feeSummaryConfirmLabel (): string {
+    return (this.isSummaryMode ? 'File and Pay' : 'Review and Certify')
+  }
+
   /**
    * Called when component is created.
    * NB: User may not be authed yet.
@@ -312,7 +288,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     // before unloading this page, if there are changes then prompt user
     window.onbeforeunload = (event: any) => {
-      if (this.haveChanges || this.isEditing) {
+      if (this.haveUnsavedChanges || this.isEditing) {
         // cancel closing the page
         event.preventDefault()
         // pop up confirmation dialog
@@ -322,14 +298,14 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     }
 
     // listen for save error events
-    this.$root.$on('save-error-event', async error => {
+    this.$root.$on('save-error-event', (error: any) => {
       // save errors/warnings
       this.saveErrors = error?.response?.data?.errors || []
       this.saveWarnings = error?.response?.data?.warnings || []
 
       if (error?.response?.status === PAYMENT_REQUIRED) {
         // changes were saved if a 402 is received, so clear flag
-        this.setHaveChanges(false)
+        this.setHaveUnsavedChanges(false)
         this.paymentErrorDialog = true
       } else {
         console.log('Save error =', error) // eslint-disable-line no-console
@@ -338,18 +314,20 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     })
 
     // listen for invalid name request events
-    this.$root.$on('invalid-name-request', async (error: any) => {
+    this.$root.$on('invalid-name-request', (error: any) => {
       console.log('Name Request error =', error) // eslint-disable-line no-console
       this.nameRequestErrorType = error
       this.nameRequestErrorDialog = true
     })
 
-    // listen for delete error events
-    this.$root.$on('delete-error-event', async (error: any) => {
-      console.log('Delete error =', error) // eslint-disable-line no-console
-      this.deleteErrors = error?.response?.data?.errors || []
-      this.deleteWarnings = error?.response?.data?.warnings || []
-      this.deleteErrorDialog = true
+    // listen for delete all events
+    this.$root.$on('delete-all', () => {
+      this.confirmDeleteAllDialog = true
+    })
+
+    // listen for go to dashboard events
+    this.$root.$on('go-to-dashboard', () => {
+      this.goToDashboard()
     })
 
     // if we are already authenticated then go right to init
@@ -371,6 +349,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     // stop listening for custom events
     this.$root.$off('save-error-event')
     this.$root.$off('invalid-name-request')
+    this.$root.$off('delete-all')
+    this.$root.$off('go-to-dashboard')
   }
 
   /** Called when profile is ready -- we can now init app. */
@@ -381,6 +361,10 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     //
 
     if (val) {
+      // store current filing type
+      const filingType = this.$route.matched[0]?.meta.filingType
+      filingType && this.setFilingType(filingType)
+
       // start KC token service
       await this.startTokenService()
 
@@ -450,23 +434,29 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     this.appReady = true
   }
 
-  /** Handle the emitted actions from the fee summary component.
-   * @param event The triggered event from the fee summary.
-   * */
-  private async handleSummaryActions (event: SummaryActions): Promise<void> {
-    switch (event) {
+  /**
+   * Handles actions from the fee summary component.
+   * NOTE: This is only implemented for Alteration filings atm.
+   * @param action the emitted action
+   */
+  private async handleFeeSummaryActions (action: SummaryActions): Promise<void> {
+    switch (action) {
       case SummaryActions.SAVE_RESUME_LATER:
-        // Save filing and return to dashboard
+        // Save filing and return to dashboard.
         await this.onClickSave()
-        this.goToDashboard(true)
-        break
-      case SummaryActions.DELETE_ALL:
         this.goToDashboard()
         break
+      case SummaryActions.DELETE_ALL:
+        this.$root.$emit('delete-all')
+        break
       case SummaryActions.CONFIRM:
-        // If Summary Mode: Check validity, save and file else move into summary mode.
-        if (this.isSummaryMode) await this.validateApp()
-        else await this.validateComponents()
+        if (this.isSummaryMode) {
+          // Check validity, and if OK then save and file.
+          await this.validateApp()
+        } else {
+          // Check validity, and if OK then go to summary page.
+          await this.validateCompanyInfoPage()
+        }
         break
     }
   }
@@ -474,53 +464,30 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   /** Redirects to Manage Businesses dashboard. */
   private goToManageBusinessDashboard (): void {
     this.fileAndPayInvalidNameRequestDialog = false
+    this.setHaveUnsavedChanges(false)
+    // FUTURE: Manage Businesses URL should come from config
     const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
-    this.setHaveChanges(false)
     window.location.assign(manageBusinessUrl)
   }
 
   /** Redirects to entity dashboard. */
-  private goToDashboard (force: boolean = false): void {
-    // check if there are no data changes
-    if (!this.hasAlterationChanges || force) {
-      // redirect to dashboard
-      const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-      window.location.assign(dashboardUrl + this.getBusinessId)
-      return
-    }
+  private goToDashboard (): void {
+    // this.setHaveUnsavedChanges(false)
+    const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
+    window.location.assign(dashboardUrl + this.getBusinessId)
+  }
 
-    // open confirmation dialog and wait for response
-    this.$refs.confirm.open(
-      'Cancel Filings',
-      'Any changes to your company information requiring a fee will be cancelled.',
-      {
-        width: '45rem',
-        persistent: true,
-        yes: 'Cancel my Changes',
-        no: null,
-        cancel: 'Keep my Changes'
-      }
-    ).then(async () => {
-      // Delete the draft filing
-      if (this.getFilingId) {
-        await this.deleteFilingById(this.getFilingId)
-          .then(() => {
-            // redirect to dashboard
-            const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-            window.location.assign(dashboardUrl + this.getBusinessId)
-          })
-          .catch((error) => {
-            this.$root.$emit('delete-error-event', error)
-          })
-      } else {
-        // redirect to dashboard
-        const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-        window.location.assign(dashboardUrl + this.getBusinessId)
-      }
-    }).catch(() => {
-      // if we get here, No was clicked
-      // nothing to do
-    })
+  private async doDeleteAll (): Promise<void> {
+    // Restore baseline data to original snapshot.
+    this.parseBusinessSnapshot()
+    this.setHaveUnsavedChanges(false)
+    if (this.isSummaryMode) {
+      // just close the Delete All dialog
+      this.confirmDeleteAllDialog = false
+    } else {
+      // redirect to entity dashboard
+      this.goToDashboard()
+    }
   }
 
   /** Starts token service that refreshes KC token periodically. */
@@ -557,6 +524,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     this.saveErrorDialog = false
     this.nameRequestErrorDialog = false
     this.fileAndPayInvalidNameRequestDialog = false
+    this.confirmDeleteAllDialog = false
     this.saveErrors = []
     this.saveWarnings = []
   }
@@ -608,25 +576,25 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     await updateLdUser(key, email, firstName, lastName, custom)
   }
 
-  /** Perform high level component validations before proceeding to summary. */
-  private async validateComponents (): Promise<void> {
+  /** Perform high level component validations before proceeding to summary page. */
+  private async validateCompanyInfoPage (): Promise<void> {
     // Verify component validations
     await this.setValidResolutionDate(this.getIsResolutionDatesValid)
 
-    // evaluate valid flags. Scroll to invalid components or continue to review.
+    // Evaluate valid flags. Scroll to invalid components or continue to review.
     if (await this.validateAndScroll(this.getValidComponentFlags, ComponentFlags)) {
+      this.setSummaryMode(true)
       // We don't change views just interchange components, so scroll to top for better UX.
       await this.scrollToTop(document.getElementById('app'))
-      this.setSummaryMode(true)
     }
   }
 
   /** Perform high level validations before filing. */
   private async validateApp (): Promise<void> {
-    // Prompt app validations
+    // Prompt app validations.
     this.setAppValidate(true)
 
-    // evaluate valid flags. Scroll to invalid components or file alteration.
+    // Evaluate valid flags. Scroll to invalid components or file alteration.
     if (await this.validateAndScroll(this.getAlterationValidFlags, ReviewSummaryFlags)) {
       await this.onClickSave(false)
     }
@@ -651,7 +619,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
         : await this.createAlteration(filing, isDraft)
 
       // clear flag
-      this.setHaveChanges(false)
+      this.setHaveUnsavedChanges(false)
     } catch (error) {
       this.$root.$emit('save-error-event', error)
       this.setIsSaving(false)

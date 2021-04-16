@@ -11,7 +11,7 @@
         <v-flex xs4>
           <label class="d-flex flex-wrap">
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
-            <v-chip v-if="isCorrectionView && mailingChanged"
+            <v-chip v-if="isCorrectionFiling && mailingChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
@@ -25,7 +25,7 @@
         <v-flex xs4>
           <label class="d-flex flex-wrap">
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
-            <v-chip v-if="isCorrectionView && deliveryChanged"
+            <v-chip v-if="isCorrectionFiling && deliveryChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
@@ -37,7 +37,7 @@
           <div v-else class="info-text">Same as Mailing Address</div>
         </v-flex>
 
-        <v-flex xs1 v-if="isCorrectionView && officeAddressesChanged">
+        <v-flex xs1 v-if="isCorrectionFiling && officeAddressesChanged">
           <div class="actions mr-4">
             <span class="edit-action">
               <v-btn
@@ -81,7 +81,7 @@
           </div>
         </v-flex>
 
-        <v-flex xs1 v-else-if="isCorrectionView">
+        <v-flex xs1 v-else-if="isCorrectionFiling">
           <div class="actions mr-4">
             <v-btn
               text color="primary"
@@ -103,7 +103,7 @@
         <v-flex xs4>
           <label class="d-flex flex-wrap">
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
-            <v-chip v-if="isCorrectionView && recMailingChanged"
+            <v-chip v-if="isCorrectionFiling && recMailingChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
@@ -118,7 +118,7 @@
         <v-flex xs4>
           <label class="d-flex flex-wrap">
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
-            <v-chip v-if="isCorrectionView && recDeliveryChanged"
+            <v-chip v-if="isCorrectionFiling && recDeliveryChanged"
               x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
@@ -305,6 +305,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   // Global getters
   @Getter getOfficeAddresses!: IncorporationAddressIf // NB: may be {}
   @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter isCorrectionFiling!: boolean
 
   // Global actions
   @Action setOfficeAddresses!: ActionBindingIF
