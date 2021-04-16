@@ -73,6 +73,10 @@ describe('YourCompany in a Correction', () => {
 
     expect(wrapper.find(CorrectNameOptions).exists()).toBe(true)
   })
+
+  it('hides the business type for corrections', async () => {
+    expect(wrapper.find('#company-type-section').exists()).toBe(false)
+  })
 })
 
 describe('YourCompany in an Alteration', () => {

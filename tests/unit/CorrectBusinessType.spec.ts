@@ -36,10 +36,6 @@ describe('CorrectBusinessType in a Correction', () => {
   it('renders the CorrectBusinessType Component', async () => {
     expect(wrapper.find(CorrectBusinessType).exists()).toBe(true)
   })
-
-  it('hides the row for corrections', async () => {
-    expect(wrapper.find('#business-type').exists()).toBe(false)
-  })
 })
 
 describe('CorrectBusinessType in an Alteration', () => {
