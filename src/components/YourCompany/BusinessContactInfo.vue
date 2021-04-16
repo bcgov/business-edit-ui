@@ -7,7 +7,7 @@
     :edited-label="editedLabel"
     :disable-actions="isCorrectionFiling"
     :invalidSection="invalidContactSection"
-    @isEditingChange="setContactInfoValidity($event)"
+    @isEditingContact="setContactInfoValidity($event)"
     @contactInfoChange="setContact($event)"
   />
 </template>
@@ -84,8 +84,8 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
   }
 
   /** Keep the store in sync with components state of validity. */
-  private setContactInfoValidity (value: boolean): void {
-    this.setValidComponent({ key: 'isValidContactInfo', value: value })
+  private setContactInfoValidity (isEditing: boolean): void {
+    this.setValidComponent({ key: 'isValidContactInfo', value: !isEditing })
   }
 }
 </script>

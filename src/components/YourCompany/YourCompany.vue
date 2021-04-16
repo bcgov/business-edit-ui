@@ -68,7 +68,7 @@
               </div>
               <div class="company-info">
                 <span class="subtitle">Request Type: </span>
-                <span class="info-text">New Business</span>
+                <span class="info-text">{{getNrRequestDesc(getNameRequest.requestType)}}</span>
               </div>
               <div class="company-info">
                 <span class="subtitle">Expiry Date: </span>
@@ -178,7 +178,6 @@
     <!-- Business Type -->
     <div id="company-type-section" class="section-container" :class="{'invalid-section': invalidTypeSection}">
       <correct-business-type
-        class="sub-section"
         :invalidSection="invalidTypeSection"
         @haveChanges="companyTypeChanges = $event"
         @isEditingBusinessType="isEditingType = $event"
@@ -188,7 +187,6 @@
     <!-- Name Translation(s) -->
     <div id="name-translate-section" class="section-container" :class="{'invalid-section': invalidTranslationSection}">
       <correct-name-translation
-        class="sub-section"
         :invalidSection="invalidTranslationSection"
         @haveChanges="nameTranslationChanges = $event"
         @isEditingTranslations="isEditingTranslations = $event"
@@ -265,7 +263,7 @@ import {
   OfficeAddresses
 } from '.'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
-import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin } from '@/mixins'
+import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
 import { CorrectionTypes, CorpTypeCd } from '@/enums'
 import { ConfirmDialog } from '@/components/dialogs'
 
@@ -284,7 +282,8 @@ export default class YourCompany extends Mixins(
   CommonMixin,
   DateMixin,
   EnumMixin,
-  LegalApiMixin
+  LegalApiMixin,
+  NameRequestMixin
 ) {
   // Refs
   $refs!: {

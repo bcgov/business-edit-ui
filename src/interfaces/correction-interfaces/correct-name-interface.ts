@@ -1,5 +1,5 @@
 import { NameRequestApplicantIF } from '@/interfaces'
-import { CorrectionTypes, CorpTypeCd, NameRequestStates } from '@/enums'
+import { CorrectionTypes, CorpTypeCd, NameRequestStates, NameRequestTypes } from '@/enums'
 
 export interface CorrectNameOptionIF {
   id: CorrectionTypes,
@@ -13,7 +13,8 @@ export interface NrCorrectionIF {
   nrNumber: string,
   legalName: string,
   expiry: string,
-  status: NameRequestStates
+  requestType: string,
+  status: NameRequestStates,
   applicant: NameRequestApplicantIF | {}
 }
 
@@ -22,6 +23,8 @@ export interface NrResponseIF {
   entity_type_cd: CorpTypeCd,
   expirationDate: string,
   state: NameRequestStates,
+  // eslint-disable-next-line camelcase
+  request_action_cd: NameRequestTypes,
   applicants: {
     firstName: string,
     lastName: string
