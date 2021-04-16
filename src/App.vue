@@ -582,14 +582,11 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   private async validateCompanyInfoPage (): Promise<void> {
     this.setComponentValidate(true)
 
-    // Verify component validations
-    await this.setValidResolutionDate(this.getIsResolutionDatesValid)
-
-    // Evaluate valid flags. Scroll to invalid components or continue to review.
+    // evaluate valid flags. Scroll to invalid components or continue to review.
     if (await this.validateAndScroll(this.getValidComponentFlags, ComponentFlags)) {
       this.setSummaryMode(true)
 
-      // Reset local and global flags
+      // Reset global flag
       this.setComponentValidate(false)
 
       // We don't change views just interchange components, so scroll to top for better UX.
