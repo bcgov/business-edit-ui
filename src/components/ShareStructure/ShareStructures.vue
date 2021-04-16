@@ -41,7 +41,8 @@ import {
   BusinessSnapshotIF,
   IncorporationFilingIF,
   ShareClassIF,
-  ShareStructureIF, ValidComponentsIF
+  ShareStructureIF,
+  ValidComponentsIF
 } from '@/interfaces'
 
 @Component({

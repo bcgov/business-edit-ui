@@ -176,7 +176,11 @@
     </div>
 
     <!-- Business Type -->
-    <div id="company-type-section" class="section-container" :class="{'invalid-section': invalidTypeSection}">
+    <div v-if="isAlterationView"
+         id="company-type-section"
+         class="section-container"
+         :class="{'invalid-section': invalidTypeSection}"
+    >
       <correct-business-type
         :invalidSection="invalidTypeSection"
         @haveChanges="companyTypeChanges = $event"

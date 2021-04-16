@@ -149,7 +149,6 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
           this.applicantPhone,
           this.applicantEmail
         )
-        console.log(response)
 
         // Parse the name request data
         const nrCorrection: NrCorrectionIF = {
@@ -166,7 +165,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
             emailAddress: response.applicants.emailAddress
           }
         }
-        console.log(nrCorrection)
+
         this.setNameRequest({ ...this.getNameRequest, ...nrCorrection })
         this.emitDone(true)
       } catch {
