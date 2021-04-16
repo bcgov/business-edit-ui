@@ -296,7 +296,13 @@ export const isFilingPaying = (state: StateIF): boolean => {
   return state.stateModel.tombstone.isFilingPaying
 }
 
-/** Whether any correction data has changed. */
+/**
+ * Whether any correction data has changed (for the purpose of showing the
+ * fee summary), ie, does not include:
+ * - detail
+ * - certify
+ * - staff payment
+ */
 export const hasCorrectionChanged = (state: StateIF): boolean => {
   return (
     state.stateModel.peopleAndRolesStep.changed ||
@@ -306,7 +312,15 @@ export const hasCorrectionChanged = (state: StateIF): boolean => {
   )
 }
 
-/** Whether any alteration fee-required data has changed. */
+/**
+ * Whether any alteration data has changed (for the purpose of showing the
+ * fee summary), ie, does not include:
+ * - alteration date and time
+ * - alteration documents delivery
+ * - certify
+ * - court order and POA
+ * - staff payment
+ */
 export const hasAlterationChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||

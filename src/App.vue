@@ -174,8 +174,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter haveUnsavedChanges!: boolean
   @Getter hasNewNr!: boolean
   @Getter isBusySaving!: boolean
-  @Getter hasCorrectionChanged!: boolean
-  @Getter hasAlterationChanged!: boolean
   @Getter isEditing!: boolean
   @Getter isSummaryMode!: boolean
   @Getter getCurrentJsDate!: Date
