@@ -181,7 +181,7 @@
          class="section-container"
          :class="{'invalid-section': invalidTypeSection}"
     >
-      <correct-business-type
+      <changeBusinessType
         :invalidSection="invalidTypeSection"
         @haveChanges="companyTypeChanges = $event"
         @isEditingBusinessType="isEditingType = $event"
@@ -261,7 +261,7 @@ import {
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 import {
   BusinessContactInfo,
-  CorrectBusinessType,
+  ChangeBusinessType,
   FolioNumber,
   CorrectNameTranslation,
   OfficeAddresses
@@ -275,7 +275,7 @@ import { ConfirmDialog } from '@/components/dialogs'
   components: {
     ConfirmDialog,
     BusinessContactInfo,
-    CorrectBusinessType,
+    ChangeBusinessType,
     CorrectNameOptions,
     CorrectNameTranslation,
     OfficeAddresses,

@@ -11,7 +11,7 @@ import { getVuexStore } from '@/store'
 import { createLocalVue, mount } from '@vue/test-utils'
 import {
   BusinessContactInfo,
-  CorrectBusinessType,
+  ChangeBusinessType,
   FolioNumber,
   OfficeAddresses,
   YourCompany
@@ -109,7 +109,7 @@ describe('YourCompany in an Alteration', () => {
 
   it('renders the YourCompany Component and default subcomponents', async () => {
     expect(wrapper.find(YourCompany).exists()).toBe(true)
-    expect(wrapper.find(CorrectBusinessType).exists()).toBe(true)
+    expect(wrapper.find(ChangeBusinessType).exists()).toBe(true)
     expect(wrapper.find(BusinessContactInfo).exists()).toBe(true)
     expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
 

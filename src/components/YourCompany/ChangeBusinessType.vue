@@ -224,7 +224,7 @@ import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
     ContactInfo
   }
 })
-export default class CorrectBusinessType extends Mixins(CommonMixin, EnumMixin) {
+export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {
   @Prop({ default: false })
   private invalidSection: boolean
 
