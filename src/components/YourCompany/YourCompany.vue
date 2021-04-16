@@ -181,7 +181,7 @@
          class="section-container"
          :class="{'invalid-section': invalidTypeSection}"
     >
-      <changeBusinessType
+      <ChangeBusinessType
         :invalidSection="invalidTypeSection"
         @haveChanges="companyTypeChanges = $event"
         @isEditingBusinessType="isEditingType = $event"
