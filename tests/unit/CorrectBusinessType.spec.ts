@@ -1,8 +1,6 @@
 // Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import mockRouter from './MockRouter'
-import VueRouter from 'vue-router'
 
 // Store
 import { getVuexStore } from '@/store'
@@ -13,20 +11,15 @@ import { ChangeBusinessType } from '@/components/YourCompany'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
-localVue.use(VueRouter)
-const router = mockRouter.mock()
 const vuetify = new Vuetify({})
 
 describe('CorrectBusinessType in a Correction', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
-  beforeAll(() => {
-    router.push({ name: 'correction' })
-  })
-
   beforeEach(() => {
-    wrapper = mount(ChangeBusinessType, { vuetify, store, localVue, router })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    wrapper = mount(ChangeBusinessType, { vuetify, store, localVue })
   })
 
   afterEach(() => {
@@ -49,17 +42,14 @@ describe('ChangeBusinessType in an Alteration', () => {
     }
   }
 
-  beforeAll(() => {
-    router.push({ name: 'alteration' })
-  })
-
   beforeEach(() => {
     // Set Original business Data
     store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
     store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
     store.state.stateModel.originalSnapshot = originalSnapShot
+    store.state.stateModel.tombstone.filingType = 'alteration'
 
-    wrapper = mount(ChangeBusinessType, { vuetify, store, localVue, router })
+    wrapper = mount(ChangeBusinessType, { vuetify, store, localVue })
   })
 
   afterEach(() => {
@@ -70,19 +60,16 @@ describe('ChangeBusinessType in an Alteration', () => {
     expect(wrapper.find(ChangeBusinessType).exists()).toBe(true)
   })
 
-  // TODO: fix this
-  xit('displays the Business Type row for Alterations', async () => {
+  it('displays the Business Type row for Alterations', async () => {
     expect(wrapper.find('#business-type').exists()).toBe(true)
   })
 
-  // TODO: fix this
-  xit('displays the title and entity type in display mode', async () => {
+  it('displays the title and entity type in display mode', async () => {
     expect(wrapper.findAll('label').at(0).text()).toBe('Business Type')
     expect(wrapper.findAll('.info-text').at(0).text()).toBe('BC Limited Company')
   })
 
-  // TODO: fix this
-  xit('displays the type selector in edit mode', async () => {
+  it('displays the type selector in edit mode', async () => {
     // Verify selector is hidden in display mode
     expect(wrapper.find('#business-type-selector').exists()).toBe(false)
 
@@ -93,8 +80,7 @@ describe('ChangeBusinessType in an Alteration', () => {
     expect(wrapper.find('#business-type-selector').exists()).toBe(true)
   })
 
-  // TODO: fix this
-  xit('displays the confirm articles checkbox and enables Done btn when selected', async () => {
+  it('displays the confirm articles checkbox and enables Done btn when selected', async () => {
     // Set the selected entity to Benefit Company
     wrapper.setData({ selectedEntityType: 'BEN' })
 
@@ -117,8 +103,7 @@ describe('ChangeBusinessType in an Alteration', () => {
     expect(wrapper.find('#done-btn').attributes('disabled')).toBeUndefined()
   })
 
-  // TODO: fix this
-  xit('renders the CHANGE option for editing a business type', async () => {
+  it('renders the CHANGE option for editing a business type', async () => {
     const editLabel = wrapper.find('#btn-correct-business-type').text()
     expect(editLabel).toBe('Change')
   })

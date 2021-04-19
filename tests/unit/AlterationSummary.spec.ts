@@ -6,11 +6,10 @@ import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
 
 // Components
-import { createLocalVue, mount } from '@vue/test-utils'
+import { createLocalVue, createWrapper, mount } from '@vue/test-utils'
 import { AlterationSummary } from '@/components/Summary'
 import { EffectiveDateTime } from '@/components/common'
 import { ConfirmDialog } from '@/components/dialogs'
-import { NameTranslationIF } from '@/interfaces'
 import { NameTranslation } from '@/components/YourCompany/NameTranslations'
 
 Vue.use(Vuetify)
@@ -85,19 +84,21 @@ describe('Alteration Summary component', () => {
     expect(store.state.stateModel.summaryMode).toBe(false)
   })
 
-  // TODO: change this to verify the Confirm Delete All dialog
-  // TODO: may need to check that event is emitted instead (as App displays dialog)
-  xit('displays the confirm dialog when selecting Remove action', async () => {
-    // verify that popup is not yet displayed
-    expect(wrapper.find('.confirm-dialog').exists()).toBe(false)
+  it('displays the confirm dialog when selecting Remove action', async () => {
+    const mock = jest.spyOn(wrapper.vm, 'onDeleteClicked')
+    expect(mock).not.toHaveBeenCalled()
+
+    const rootWrapper = createWrapper(wrapper.vm.$root)
+    expect(rootWrapper.emitted('delete-all')).toBeUndefined()
 
     // Select the remove action
     const removeAction = wrapper.find('#btn-delete-alteration')
     removeAction.trigger('click')
 
-    await Vue.nextTick()
+    // await Vue.nextTick()
 
-    expect(wrapper.find('.confirm-dialog').exists()).toBe(true)
+    expect(mock).toHaveBeenCalled()
+    expect(rootWrapper.emitted('delete-all').length).toBe(1)
   })
 
   it('does not render the summary sections when no changes have been made', async () => {
