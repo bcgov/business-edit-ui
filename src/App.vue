@@ -245,13 +245,13 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   /** True if an error dialog is displayed. */
   private get isErrorDialog (): boolean {
     // NB: ignore nameRequestErrorDialog (to leave underlying components rendered)
+    // NB: ignore confirmDeleteAllDialog (to leave underlying components rendered)
     return (
       this.accountAuthorizationDialog ||
       this.fetchErrorDialog ||
       this.paymentErrorDialog ||
       this.saveErrorDialog ||
-      this.fileAndPayInvalidNameRequestDialog ||
-      this.confirmDeleteAllDialog
+      this.fileAndPayInvalidNameRequestDialog
     )
   }
 
