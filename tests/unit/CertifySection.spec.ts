@@ -50,8 +50,8 @@ describe('Certify component', () => {
   it('mounts the certify section and the imported certify component ', () => {
     const wrapper: Wrapper<CertifySection> = createComponent()
 
-    expect(wrapper.find(CertifySection).exists()).toBe(true)
-    expect(wrapper.find(Certify).exists()).toBe(true)
+    expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
+    expect(wrapper.findComponent(Certify).exists()).toBe(true)
   })
 
   it('fetches date to pass to Certify and converts to a readable format', () => {

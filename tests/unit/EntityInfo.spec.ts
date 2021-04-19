@@ -75,7 +75,7 @@ describe('Entity Info component in a Correction as a named company', () => {
   })
 
   it('renders the EntityInfo Component', () => {
-    expect(wrapper.find(EntityInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(EntityInfo).exists()).toBe(true)
   })
 
   it('displays the breadcrumb correctly as a named benefit company', () => {
@@ -156,7 +156,7 @@ describe('Entity Info component in a Correction as a numbered company', () => {
   })
 
   it('renders the EntityInfo Component', () => {
-    expect(wrapper.find(EntityInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(EntityInfo).exists()).toBe(true)
   })
 
   it('displays the breadcrumb correctly as a named benefit company', () => {

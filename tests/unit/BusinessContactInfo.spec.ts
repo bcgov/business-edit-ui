@@ -47,7 +47,7 @@ describe('BusinessContactInfo for a correction', () => {
   })
 
   it('renders the CorrectBusinessContactInfo Component', async () => {
-    expect(wrapper.find(BusinessContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
   })
 
   it('loads the correct original contact info for a correction', async () => {
@@ -104,7 +104,7 @@ describe('CorrectBusinessContactInfo for an alteration', () => {
   })
 
   it('renders the CorrectBusinessContactInfo Component', async () => {
-    expect(wrapper.find(BusinessContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
   })
 
   it('loads the correct original contact info for an alteration', async () => {

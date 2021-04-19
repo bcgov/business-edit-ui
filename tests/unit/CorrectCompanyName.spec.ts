@@ -45,7 +45,7 @@ describe('CorrectCompanyName', () => {
   it('renders the CorrectCompanyName Component', async () => {
     const wrapper = wrapperFactory()
 
-    expect(wrapper.find(CorrectCompanyName).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectCompanyName).exists()).toBe(true)
   })
 
   it('verifies the text field populated from store', async () => {

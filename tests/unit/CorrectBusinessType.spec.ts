@@ -27,7 +27,7 @@ describe('CorrectBusinessType in a Correction', () => {
   })
 
   it('renders the ChangeBusinessType Component', async () => {
-    expect(wrapper.find(ChangeBusinessType).exists()).toBe(true)
+    expect(wrapper.findComponent(ChangeBusinessType).exists()).toBe(true)
   })
 })
 
@@ -57,7 +57,7 @@ describe('ChangeBusinessType in an Alteration', () => {
   })
 
   it('renders the ChangeBusinessType Component', async () => {
-    expect(wrapper.find(ChangeBusinessType).exists()).toBe(true)
+    expect(wrapper.findComponent(ChangeBusinessType).exists()).toBe(true)
   })
 
   it('displays the Business Type row for Alterations', async () => {

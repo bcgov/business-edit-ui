@@ -39,7 +39,7 @@ describe('CorrectNameOptions', () => {
     correctionNameChoices = ['correct-new-nr']
     const wrapper = wrapperFactory({ correctionNameChoices })
 
-    expect(wrapper.find(CorrectNameOptions).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(true)
   })
 
   it('renders the CorrectNameRequest when a numbered company', async () => {
@@ -48,9 +48,9 @@ describe('CorrectNameOptions', () => {
     await Vue.nextTick()
 
     // Verify correct sub components are mounted
-    expect(wrapper.find(CorrectNameRequest).exists()).toBe(true)
-    expect(wrapper.find(CorrectCompanyName).exists()).toBe(false)
-    expect(wrapper.find(CorrectNameToNumber).exists()).toBe(false)
+    expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectCompanyName).exists()).toBe(false)
+    expect(wrapper.findComponent(CorrectNameToNumber).exists()).toBe(false)
   })
 
   it('renders the Correction selector when correcting a Named Company', async () => {
@@ -59,9 +59,9 @@ describe('CorrectNameOptions', () => {
     await Vue.nextTick()
 
     // Verify correct sub components are mounted
-    expect(wrapper.find(CorrectNameRequest).exists()).toBe(true)
-    expect(wrapper.find(CorrectCompanyName).exists()).toBe(true)
-    expect(wrapper.find(CorrectNameToNumber).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectCompanyName).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectNameToNumber).exists()).toBe(true)
 
     const selectorTitles = wrapper.vm.$el.querySelectorAll('.names-option-title')
     const correctCompanyName = selectorTitles[0]

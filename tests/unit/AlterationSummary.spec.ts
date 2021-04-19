@@ -57,10 +57,10 @@ describe('Alteration Summary component', () => {
   })
 
   it('renders the components', async () => {
-    expect(wrapper.find(AlterationSummary).exists()).toBe(true)
-    expect(wrapper.find(EffectiveDateTime).exists()).toBe(true)
-    expect(wrapper.find(ConfirmDialog).exists()).toBe(true)
-    expect(wrapper.find(NameTranslation).exists()).toBe(true)
+    expect(wrapper.findComponent(AlterationSummary).exists()).toBe(true)
+    expect(wrapper.findComponent(EffectiveDateTime).exists()).toBe(true)
+    expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(NameTranslation).exists()).toBe(true)
   })
 
   it('renders the Change and Remove actions', async () => {
@@ -84,7 +84,7 @@ describe('Alteration Summary component', () => {
     expect(store.state.stateModel.summaryMode).toBe(false)
   })
 
-  it('displays the confirm dialog when selecting Remove action', async () => {
+  it('displays the confirm dialog when selecting Remove action', () => {
     const mock = jest.spyOn(wrapper.vm, 'onDeleteClicked')
     expect(mock).not.toHaveBeenCalled()
 
@@ -94,8 +94,6 @@ describe('Alteration Summary component', () => {
     // Select the remove action
     const removeAction = wrapper.find('#btn-delete-alteration')
     removeAction.trigger('click')
-
-    // await Vue.nextTick()
 
     expect(mock).toHaveBeenCalled()
     expect(rootWrapper.emitted('delete-all').length).toBe(1)

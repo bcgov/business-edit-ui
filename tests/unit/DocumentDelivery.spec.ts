@@ -37,7 +37,7 @@ describe('Document Delivery component', () => {
   it('mounts the document delivery component ', () => {
     const wrapper: Wrapper<DocumentsDelivery> = createComponent()
 
-    expect(wrapper.find(DocumentsDelivery).exists()).toBe(true)
+    expect(wrapper.findComponent(DocumentsDelivery).exists()).toBe(true)
     expect(wrapper.find('#document-delivery-section').exists()).toBe(true)
   })
 
