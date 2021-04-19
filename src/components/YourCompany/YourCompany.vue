@@ -176,7 +176,7 @@
     </div>
 
     <!-- Business Type -->
-    <div v-if="isAlterationView"
+    <div v-if="isAlterationFiling"
          id="company-type-section"
          class="section-container"
          :class="{'invalid-section': invalidTypeSection}"

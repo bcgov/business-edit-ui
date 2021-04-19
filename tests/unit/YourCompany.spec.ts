@@ -17,6 +17,7 @@ import {
   YourCompany
 } from '@/components/YourCompany'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
+import { FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
@@ -96,9 +97,11 @@ describe('YourCompany in an Alteration', () => {
 
   beforeEach(() => {
     // Set Original business Data
+    store.state.stateModel.summaryMode = false
     store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
     store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
     store.state.stateModel.originalSnapshot = originalSnapShot
+    store.state.stateModel.tombstone.filingType = FilingTypes.ALTERATION
 
     wrapper = mount(YourCompany, { vuetify, store, localVue, router })
   })

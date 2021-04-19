@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isAlterationFiling" id="business-type">
+  <div id="business-type">
     <v-row no-gutters>
       <!-- Row Title -->
       <v-col cols="3">
