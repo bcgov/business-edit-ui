@@ -34,7 +34,7 @@ describe('Payment Error Dialog', () => {
     expect(wrapper.find('#dialog-title').text()).toBe('Unable to process payment')
     expect(wrapper.findAll('p').length).toBe(1)
     expect(wrapper.findAll('p').at(0).text()).toContain('We are unable to process your payment')
-    expect(wrapper.find(ErrorContact).exists()).toBe(false)
+    expect(wrapper.findComponent(ErrorContact).exists()).toBe(false)
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
 
     wrapper.destroy()
@@ -60,7 +60,7 @@ describe('Payment Error Dialog', () => {
     expect(wrapper.findAll('li').at(0).text()).toContain('Monday to Friday')
     expect(wrapper.findAll('li').at(1).text()).toContain('Saturday')
     expect(wrapper.findAll('li').at(2).text()).toContain('Sunday')
-    expect(wrapper.find(ErrorContact).exists()).toBe(true)
+    expect(wrapper.findComponent(ErrorContact).exists()).toBe(true)
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
 
     wrapper.destroy()
@@ -108,7 +108,7 @@ describe('Payment Error Dialog', () => {
     expect(wrapper.findAll('li').length).toBe(1)
     expect(wrapper.findAll('li').at(0).text()).toContain(padError[0].message)
 
-    expect(wrapper.find(ErrorContact).exists()).toBe(true)
+    expect(wrapper.findComponent(ErrorContact).exists()).toBe(true)
     expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
 
     wrapper.destroy()

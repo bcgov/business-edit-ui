@@ -1,16 +1,13 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import VueRouter from 'vue-router'
 import { getVuexStore } from '@/store'
 import { mount } from '@vue/test-utils'
 import { OfficeAddresses } from '@/components/YourCompany'
 import { AddressIF, IncorporationAddressIf } from '@/interfaces'
-import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
-Vue.use(VueRouter)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
@@ -59,9 +56,8 @@ describe('summary mode', () => {
   })
 
   it('displays the correct sections', () => {
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     expect(wrapper.find('#summary-registered-address').exists()).toBe(true)
     expect(wrapper.find('#summary-records-address').exists()).toBe(true)
@@ -76,9 +72,8 @@ describe('summary mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -125,12 +120,11 @@ describe('summary mode', () => {
     }
 
     // verify actions
-    // TODO: fix this
-    // {
-    //   const actions = cols.at(3)
-    //   const correctBtn = actions.find('.actions #btn-correct-office-addresses')
-    //   expect(correctBtn.find('span').text()).toBe('Correct')
-    // }
+    {
+      const actions = cols.at(3)
+      const correctBtn = actions.find('.actions #btn-correct-office-addresses')
+      expect(correctBtn.find('span').text()).toBe('Correct')
+    }
 
     wrapper.destroy()
   })
@@ -139,9 +133,8 @@ describe('summary mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
@@ -180,24 +173,21 @@ describe('summary mode', () => {
     }
 
     // verify actions
-    // TODO: fix this
-    // {
-    //   const actions = cols.at(3)
-    //   const correctBtn = actions.find('.actions #btn-correct-office-addresses')
-    //   expect(correctBtn.find('span').text()).toBe('Correct')
-    // }
+    {
+      const actions = cols.at(3)
+      const correctBtn = actions.find('.actions #btn-correct-office-addresses')
+      expect(correctBtn.find('span').text()).toBe('Correct')
+    }
 
     wrapper.destroy()
   })
 
-  // TODO: fix this
-  xit('displays the registered office row - changed addresses', async () => {
+  it('displays the registered office row - changed addresses', async () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(4, 3, 2, 1))
@@ -265,9 +255,8 @@ describe('summary mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -320,9 +309,8 @@ describe('summary mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
@@ -359,9 +347,8 @@ describe('summary mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 3, 3)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
@@ -406,9 +393,8 @@ describe('summary mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(4, 3, 2, 1))
@@ -423,45 +409,42 @@ describe('summary mode', () => {
     }
 
     // verify mailing address
-    // TODO: fix this
-    // {
-    //   const mailingAddress = cols.at(1)
-    //   expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
-    //   expect(mailingAddress.find('label > .v-chip span').text()).toBe('CORRECTED')
+    {
+      const mailingAddress = cols.at(1)
+      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
+      expect(mailingAddress.find('label > .v-chip span').text()).toBe('CORRECTED')
 
-    //   const rows = mailingAddress.findAll('.address-block__info-row')
-    //   expect(rows.at(0).text()).toBe('streetAddress2')
-    //   expect(rows.at(1).text()).toBe('streetAddressAdditional2')
-    //   expect(rows.at(2).text()).toContain('addressCity2')
-    //   expect(rows.at(2).text()).toContain('BC')
-    //   expect(rows.at(2).text()).toContain('postalCode2')
-    //   expect(rows.at(3).text()).toBe('Canada')
-    //   expect(rows.at(4).text()).toBe('deliveryInstructions2')
-    // }
+      const rows = mailingAddress.findAll('.address-block__info-row')
+      expect(rows.at(0).text()).toBe('streetAddress2')
+      expect(rows.at(1).text()).toBe('streetAddressAdditional2')
+      expect(rows.at(2).text()).toContain('addressCity2')
+      expect(rows.at(2).text()).toContain('BC')
+      expect(rows.at(2).text()).toContain('postalCode2')
+      expect(rows.at(3).text()).toBe('Canada')
+      expect(rows.at(4).text()).toBe('deliveryInstructions2')
+    }
 
     // verify delivery address
-    // TODO: fix this
-    // {
-    //   const deliveryAddress = cols.at(2)
-    //   expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
-    //   expect(deliveryAddress.find('label > .v-chip span').text()).toBe('CORRECTED')
+    {
+      const deliveryAddress = cols.at(2)
+      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
+      expect(deliveryAddress.find('label > .v-chip span').text()).toBe('CORRECTED')
 
-    //   const rows = deliveryAddress.findAll('.address-block__info-row')
-    //   expect(rows.at(0).text()).toBe('streetAddress1')
-    //   expect(rows.at(1).text()).toBe('streetAddressAdditional1')
-    //   expect(rows.at(2).text()).toContain('addressCity1')
-    //   expect(rows.at(2).text()).toContain('BC')
-    //   expect(rows.at(2).text()).toContain('postalCode1')
-    //   expect(rows.at(3).text()).toBe('Canada')
-    //   expect(rows.at(4).text()).toBe('deliveryInstructions1')
-    // }
+      const rows = deliveryAddress.findAll('.address-block__info-row')
+      expect(rows.at(0).text()).toBe('streetAddress1')
+      expect(rows.at(1).text()).toBe('streetAddressAdditional1')
+      expect(rows.at(2).text()).toContain('addressCity1')
+      expect(rows.at(2).text()).toContain('BC')
+      expect(rows.at(2).text()).toContain('postalCode1')
+      expect(rows.at(3).text()).toBe('Canada')
+      expect(rows.at(4).text()).toBe('deliveryInstructions1')
+    }
 
     wrapper.destroy()
   })
 })
 
-// TODO: fix this
-xdescribe('edit mode', () => {
+describe('edit mode', () => {
   beforeAll(() => {
     // init entity type
     store.state.stateModel.tombstone.entityType = 'BEN'
@@ -471,9 +454,8 @@ xdescribe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -497,9 +479,8 @@ xdescribe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -540,9 +521,8 @@ xdescribe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -584,9 +564,8 @@ xdescribe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 3, 3)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
@@ -620,9 +599,8 @@ xdescribe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -664,9 +642,8 @@ xdescribe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
@@ -699,9 +676,8 @@ xdescribe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
@@ -743,9 +719,8 @@ xdescribe('edit mode', () => {
     // init original offices
     store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 3, 3)
 
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    const wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
@@ -776,8 +751,7 @@ xdescribe('edit mode', () => {
   })
 })
 
-// TODO: fix this
-xdescribe('"same as" checkboxes', () => {
+describe('"same as" checkboxes', () => {
   let wrapper: any = null
 
   beforeAll(() => {
@@ -789,9 +763,8 @@ xdescribe('"same as" checkboxes', () => {
   })
 
   beforeEach(async () => {
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
@@ -944,8 +917,7 @@ xdescribe('"same as" checkboxes', () => {
   })
 })
 
-// TODO: fix this
-xdescribe('actions and events', () => {
+describe('actions and events', () => {
   let wrapper: any = null
 
   beforeAll(() => {
@@ -957,9 +929,8 @@ xdescribe('actions and events', () => {
   })
 
   beforeEach(async () => {
-    const router = mockRouter.mock()
-    router.push({ name: 'correction' })
-    wrapper = mount(OfficeAddresses, { store, router, vuetify })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))

@@ -229,7 +229,7 @@ describe('Alteration component', () => {
   })
 
   it('renders Alteration View', () => {
-    expect(wrapper.find(Alteration).exists()).toBe(true)
+    expect(wrapper.findComponent(Alteration).exists()).toBe(true)
   })
 
   it('loads the business snapshot into the store', async () => {

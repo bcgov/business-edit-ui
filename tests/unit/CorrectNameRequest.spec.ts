@@ -46,7 +46,7 @@ describe('CorrectNameRequest', () => {
   it('renders the CorrectNameRequest Component', async () => {
     const wrapper = wrapperFactory()
 
-    expect(wrapper.find(CorrectNameRequest).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
   })
 
   it('verify the text fields and there label', async () => {
