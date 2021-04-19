@@ -496,7 +496,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     const shareStructure = filing.alteration.shareStructure
     this.setShareClasses(shareStructure.shareClasses)
     this.setResolutionDates(shareStructure.resolutionDates)
-    this.setOriginalResolutionDates(this.getSnapshotShareStructure?.resolutionDates || null)
+    this.setOriginalResolutionDates(businessSnapshot.resolutions)
 
     // Store business contact
     this.setBusinessContact({
@@ -596,8 +596,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // Store share classes and original resolution dates
     this.setShareClasses(cloneDeep(businessSnapshot.shareStructure.shareClasses))
-    this.setResolutionDates([]) // clear new resolution dates
-    this.setOriginalResolutionDates(businessSnapshot.shareStructure.resolutionDates)
+    this.setOriginalResolutionDates(businessSnapshot.resolutions)
 
     // Store business contact
     this.setBusinessContact(businessSnapshot.contactPoint)

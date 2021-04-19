@@ -1,8 +1,24 @@
 import { AccountTypes, CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
 import {
-  IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
-  NameRequestIF, BusinessInformationIF, CertifyIF, CertifyStatementIF, NameTranslationIF, IncorporationAddressIf,
-  FilingDataIF, StateIF, BusinessSnapshotIF, EffectiveDateTimeIF, ShareStructureIF, ValidFlagsIF, ValidComponentsIF
+  IncorporationFilingIF,
+  NameRequestDetailsIF,
+  NameRequestApplicantIF,
+  OrgPersonIF,
+  ShareClassIF,
+  NameRequestIF,
+  BusinessInformationIF,
+  CertifyIF,
+  CertifyStatementIF,
+  NameTranslationIF,
+  IncorporationAddressIf,
+  FilingDataIF,
+  StateIF,
+  BusinessSnapshotIF,
+  EffectiveDateTimeIF,
+  ShareStructureIF,
+  ValidFlagsIF,
+  ValidComponentsIF,
+  ResolutionsIF
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { isEqual, omit } from 'lodash'
@@ -452,8 +468,8 @@ export const getProvisionsRemoved = (state: StateIF): boolean => {
 }
 
 /** Get original resolution dates. */
-export const getPreviousResolutionDates = (state: StateIF): string[] => {
-  return state.stateModel.originalAlteration.alteration.shareStructure.resolutionDates
+export const getPreviousResolutionDates = (state: StateIF): ResolutionsIF[] => {
+  return state.stateModel.shareStructureStep.previousResolutionDates
 }
 
 /** Get new resolution dates. */

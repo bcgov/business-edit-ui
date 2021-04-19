@@ -12,6 +12,7 @@ import {
   NameRequestIF,
   NameTranslationIF,
   OrgPersonIF,
+  ResolutionsIF,
   ShareClassIF,
   StateIF
 } from '@/interfaces'
@@ -259,8 +260,8 @@ export const mutateProvisionsRemoved = (state: StateIF, provisionsRemoved: boole
   state.stateModel.newAlteration.provisionsRemoved = provisionsRemoved
 }
 
-export const mutateOriginalResolutionDates = (state: StateIF, resolutionDates: string[]) => {
-  state.stateModel.originalAlteration.alteration.shareStructure.resolutionDates = resolutionDates
+export const mutateOriginalResolutionDates = (state: StateIF, resolutionDates: ResolutionsIF[]) => {
+  state.stateModel.shareStructureStep.previousResolutionDates = resolutionDates
 }
 
 export const mutateResolutionDates = (state: StateIF, resolutionDates: string[]) => {

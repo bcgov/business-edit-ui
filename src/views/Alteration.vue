@@ -264,10 +264,11 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       this.fetchIncorporationAddress(),
       this.fetchNameTranslations(),
       this.fetchOrgPersons(),
-      this.fetchShareStructure()
+      this.fetchShareStructure(),
+      this.fetchResolutions()
     ])
 
-    if (items.length !== 6) throw new Error('Failed to fetch business snapshot')
+    if (items.length !== 7) throw new Error('Failed to fetch business snapshot')
 
     return {
       businessInfo: items[0],
@@ -275,7 +276,8 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       incorporationAddress: items[2],
       nameTranslations: items[3],
       orgPersons: items[4],
-      shareStructure: items[5]
+      shareStructure: items[5],
+      resolutions: items[6]
     }
   }
 

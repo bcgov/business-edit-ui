@@ -271,6 +271,27 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
   }
 
   /**
+   * Fetch the resolutions of the current business.
+   * @returns a promise to return the data
+   */
+  async fetchResolutions (): Promise<any> {
+    if (!this.getBusinessId) throw new Error('Invalid business id')
+
+    const url = `businesses/${this.getBusinessId}/resolutions`
+
+    return axios.get(url)
+      .then(response => {
+        if (response?.data) {
+          return response.data.resolutions
+        } else {
+          // eslint-disable-next-line no-console
+          console.log('fetchResolutions() error - invalid response =', response)
+          throw new Error('Invalid API response')
+        }
+      })
+  }
+
+  /**
    * Fetches the contact point of the current business.
    * @returns a promise to return the data
    */

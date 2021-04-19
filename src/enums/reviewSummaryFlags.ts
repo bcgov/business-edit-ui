@@ -5,8 +5,8 @@
  * */
 export enum ReviewSummaryFlags {
   'effective-date-time',
-  'court-order',
+  'document-delivery-section',
   'certify-section',
-  'staff-payment',
-  'document-delivery-section'
+  'court-order',
+  'staff-payment'
 }
