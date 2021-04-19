@@ -182,6 +182,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
   // Alteration flag getters
   @Getter getAlterationValidFlags!: ValidFlagsIF
+  @Getter getAppValidate!: boolean
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
   @Getter getComponentValidate!: boolean
@@ -271,12 +272,28 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
   /** Error text to display in the Fee Summary component. */
   private get feeSummaryError (): string {
-    return this.hasInvalidSections ? '&lt; You have unfinished changes' : ''
+    let errorPrompt
+    let errorMsg
+
+    if (this.isSummaryMode) {
+      errorPrompt = this.hasInvalidReviewSections
+      errorMsg = '&lt; Please complete required information'
+    } else {
+      errorPrompt = this.hasInvalidSections
+      errorMsg = '&lt; You have unfinished changes'
+    }
+
+    return errorPrompt ? errorMsg : ''
   }
 
   /** Check for any invalid component sections. */
   private get hasInvalidSections (): boolean {
     return this.getComponentValidate && Object.values(this.getValidComponentFlags).some(val => val === false)
+  }
+
+  /** Check for any invalid review sections. */
+  private get hasInvalidReviewSections (): boolean {
+    return this.getAppValidate && Object.values(this.getAlterationValidFlags).some(val => val === false)
   }
 
   /**

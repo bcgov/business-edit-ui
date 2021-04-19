@@ -1,51 +1,53 @@
 <template>
-  <div class="pb-6" id="document-delivery-section" :class="{ 'invalid': documentDeliveryInvalid }">
+  <div class="pb-6" id="document-delivery-section">
     <h2>1. Alteration Documents Delivery</h2>
     <div class="pt-4 pb-4">Copies of the alteration documents will be sent
       to the following email address listed below.</div>
-    <v-card flat class="pt-4 pr-8">
-      <v-container>
-        <v-row class="pl-4">
-          <v-col cols="3" class="px-0">
-            <label><strong>Registered Office</strong></label>
-          </v-col>
-          <v-col cols="9" class="px-0">
-            {{getBusinessContact.email || '(Not entered)'}}
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-container v-if="isRoleStaff">
-        <v-row class="pl-4">
-          <v-col cols="3" class="px-0">
-            <label><strong>User Account</strong></label>
-          </v-col>
-          <v-col cols="9" class="px-0">
-            <v-text-field
-              v-model="optionalEmail"
-              id="optionalEmail"
-              class="text-input-field"
-              filled
-              label="Client Email Address (optional)"
-              hint="Example: name@email.com"
-              persistent-hint
-              validate-on-blur
-              :rules="entityEmailRules"
-            >
-          </v-text-field>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-container v-else>
-        <v-row class="pl-4">
-          <v-col cols="3" class="px-0">
-            <label><strong>User Account</strong></label>
-          </v-col>
-          <v-col cols="9" class="px-0">
-            {{ getUserEmail }}
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-card>
+    <div :class="{ 'invalid-section': documentDeliveryInvalid }">
+      <v-card flat class="pt-4 pr-8">
+        <v-container>
+          <v-row class="pl-4">
+            <v-col cols="3" class="px-0">
+              <label><strong>Registered Office</strong></label>
+            </v-col>
+            <v-col cols="9" class="px-0">
+              {{getBusinessContact.email || '(Not entered)'}}
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-container v-if="isRoleStaff">
+          <v-row class="pl-4">
+            <v-col cols="3" class="px-0">
+              <label :class="{ 'error-text': documentDeliveryInvalid }"><strong>User Account</strong></label>
+            </v-col>
+            <v-col cols="9" class="px-0">
+              <v-text-field
+                v-model="optionalEmail"
+                id="optionalEmail"
+                class="text-input-field"
+                filled
+                label="Client Email Address (optional)"
+                hint="Example: name@email.com"
+                persistent-hint
+                validate-on-blur
+                :rules="entityEmailRules"
+              >
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-container v-else>
+          <v-row class="pl-4">
+            <v-col cols="3" class="px-0">
+              <label><strong>User Account</strong></label>
+            </v-col>
+            <v-col cols="9" class="px-0">
+              {{ getUserEmail }}
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
+    </div>
   </div>
 </template>
 
