@@ -18,7 +18,7 @@
           Dates of resolutions or court orders to alter the company's share structure or the
           special rights or restrictions attached to a class or series of shares:
         </div>
-        <p v-if="!getIsResolutionDatesValid" class="error-text mt-6">
+        <p v-if="!getIsResolutionDatesValid" class="error-text small-text mt-6">
           You must add a resolution or court order date because your share structure contains a class or series of
           shares with special rights or restrictions and changes were made to you share structure.
         </p>
@@ -110,10 +110,11 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins'
 import { DatePicker } from '@bcrs-shared-components/date-picker'
 import { cloneDeep } from 'lodash'
+import { ActionBindingIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -141,6 +142,9 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   @Getter getBusinessFoundingDate!: string
   @Getter getCurrentDate!: string
   @Getter getIsResolutionDatesValid!: boolean
+
+  // Global setter
+  @Action setValidComponent!: ActionBindingIF
 
   // Local properties
   displayPreviousDates = false
@@ -181,6 +185,12 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   @Watch('hasRightsOrRestrictions')
   private removeResolutionDate (): void {
     if (!this.hasRightsOrRestrictions) this.onRemove(0)
+  }
+
+  /** Updates store when resolution dates validity changes. */
+  @Watch('getIsResolutionDatesValid', { immediate: true })
+  private onEditingNameChanged (val: boolean): void {
+    this.setValidComponent({ key: 'isValidResolutionDate', value: val })
   }
 
   /** Emit updated list of dates. */

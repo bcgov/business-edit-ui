@@ -4,6 +4,7 @@ import { ValidComponentsIF } from './valid-components-interface'
 
 export interface NewAlterationIF {
   appValidate: boolean,
+  componentValidate: boolean,
   provisionsRemoved: boolean,
   courtOrder: CourtOrderIF,
   validFlags: ValidFlagsIF,

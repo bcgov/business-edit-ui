@@ -157,6 +157,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
           legalName: this.getNrApprovedName(response),
           expiry: response.expirationDate,
           status: response.state,
+          requestType: response.request_action_cd,
           applicant: {
             fullName: this.formatFullName(response.applicants),
             fullAddress: this.formatFullAddress(response.applicants),

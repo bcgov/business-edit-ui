@@ -1,4 +1,4 @@
-import { CorpTypeCd, NameRequestStates } from '@/enums'
+import { CorpTypeCd, NameRequestStates, NameRequestTypes } from '@/enums'
 
 // Name Request State interface
 export interface NameRequestIF {
@@ -6,6 +6,7 @@ export interface NameRequestIF {
   legalName: string
   nrNumber?: string
   expiry?: string
+  requestType?: NameRequestTypes
   status?: NameRequestStates
   details?: NameRequestDetailsIF | {}
   applicant?: NameRequestApplicantIF

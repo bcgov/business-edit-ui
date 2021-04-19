@@ -184,6 +184,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getAlterationValidFlags!: ValidFlagsIF
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
+  @Getter getComponentValidate!: boolean
   @Getter isConflictingLegalType!: boolean
   @Getter getComponentsValidated!: boolean
   @Getter getValidComponentFlags!: ValidComponentsIF
@@ -263,18 +264,19 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The error to display in the fee summary component, if any. */
-  private get feeSummaryError (): string {
-    // TODO: finish this
-    // return '< Please complete required information'
-    // or
-    // return '< You have unfinished changes'
-    return ''
-  }
-
   /** The fee summary confirm button label. */
   private get feeSummaryConfirmLabel (): string {
     return (this.isSummaryMode ? 'File and Pay' : 'Review and Certify')
+  }
+
+  /** Error text to display in the Fee Summary component. */
+  private get feeSummaryError (): string {
+    return this.hasInvalidSections ? '&lt; You have unfinished changes' : ''
+  }
+
+  /** Check for any invalid component sections. */
+  private get hasInvalidSections (): boolean {
+    return this.getComponentValidate && Object.values(this.getValidComponentFlags).some(val => val === false)
   }
 
   /**
@@ -578,12 +580,15 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
   /** Perform high level component validations before proceeding to summary page. */
   private async validateCompanyInfoPage (): Promise<void> {
-    // Verify component validations
-    await this.setValidResolutionDate(this.getIsResolutionDatesValid)
+    this.setComponentValidate(true)
 
-    // Evaluate valid flags. Scroll to invalid components or continue to review.
+    // evaluate valid flags. Scroll to invalid components or continue to review.
     if (await this.validateAndScroll(this.getValidComponentFlags, ComponentFlags)) {
       this.setSummaryMode(true)
+
+      // Reset global flag
+      this.setComponentValidate(false)
+
       // We don't change views just interchange components, so scroll to top for better UX.
       await this.scrollToTop(document.getElementById('app'))
     }

@@ -11,12 +11,13 @@ import { getVuexStore } from '@/store'
 import { createLocalVue, mount } from '@vue/test-utils'
 import {
   BusinessContactInfo,
-  CorrectBusinessType,
+  ChangeBusinessType,
   FolioNumber,
   OfficeAddresses,
   YourCompany
 } from '@/components/YourCompany'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
+import { FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
@@ -73,6 +74,10 @@ describe('YourCompany in a Correction', () => {
 
     expect(wrapper.find(CorrectNameOptions).exists()).toBe(true)
   })
+
+  it('hides the business type for corrections', async () => {
+    expect(wrapper.find('#company-type-section').exists()).toBe(false)
+  })
 })
 
 describe('YourCompany in an Alteration', () => {
@@ -92,9 +97,11 @@ describe('YourCompany in an Alteration', () => {
 
   beforeEach(() => {
     // Set Original business Data
+    store.state.stateModel.summaryMode = false
     store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
     store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
     store.state.stateModel.originalSnapshot = originalSnapShot
+    store.state.stateModel.tombstone.filingType = FilingTypes.ALTERATION
 
     wrapper = mount(YourCompany, { vuetify, store, localVue, router })
   })
@@ -105,7 +112,7 @@ describe('YourCompany in an Alteration', () => {
 
   it('renders the YourCompany Component and default subcomponents', async () => {
     expect(wrapper.find(YourCompany).exists()).toBe(true)
-    expect(wrapper.find(CorrectBusinessType).exists()).toBe(true)
+    expect(wrapper.find(ChangeBusinessType).exists()).toBe(true)
     expect(wrapper.find(BusinessContactInfo).exists()).toBe(true)
     expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
 
@@ -148,6 +155,7 @@ describe('YourCompany in an Alteration', () => {
     store.state.stateModel.nameRequest.legalType = 'CR'
     store.state.stateModel.nameRequest.expiry = 'Wed, 10 Mar 2021 08:00:00 GMT'
     store.state.stateModel.nameRequest.status = 'APPROVED'
+    store.state.stateModel.nameRequest.requestType = 'NEW'
     store.state.stateModel.nameRequest.applicant.fullName = 'Mock Full Name'
     store.state.stateModel.nameRequest.applicant.fullAddress = '123 Mock Lane, Victoria, BC, 1t2 3t4, CA'
     store.state.stateModel.nameRequest.applicant.phoneNumber = '2501234567'

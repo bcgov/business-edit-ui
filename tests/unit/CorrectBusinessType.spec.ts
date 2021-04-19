@@ -9,7 +9,7 @@ import { getVuexStore } from '@/store'
 
 // Components
 import { createLocalVue, mount } from '@vue/test-utils'
-import { CorrectBusinessType } from '@/components/YourCompany'
+import { ChangeBusinessType } from '@/components/YourCompany'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
@@ -26,23 +26,19 @@ describe('CorrectBusinessType in a Correction', () => {
   })
 
   beforeEach(() => {
-    wrapper = mount(CorrectBusinessType, { vuetify, store, localVue, router })
+    wrapper = mount(ChangeBusinessType, { vuetify, store, localVue, router })
   })
 
   afterEach(() => {
     wrapper.destroy()
   })
 
-  it('renders the CorrectBusinessType Component', async () => {
-    expect(wrapper.find(CorrectBusinessType).exists()).toBe(true)
-  })
-
-  it('hides the row for corrections', async () => {
-    expect(wrapper.find('#business-type').exists()).toBe(false)
+  it('renders the ChangeBusinessType Component', async () => {
+    expect(wrapper.find(ChangeBusinessType).exists()).toBe(true)
   })
 })
 
-describe('CorrectBusinessType in an Alteration', () => {
+describe('ChangeBusinessType in an Alteration', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
@@ -63,15 +59,15 @@ describe('CorrectBusinessType in an Alteration', () => {
     store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
     store.state.stateModel.originalSnapshot = originalSnapShot
 
-    wrapper = mount(CorrectBusinessType, { vuetify, store, localVue, router })
+    wrapper = mount(ChangeBusinessType, { vuetify, store, localVue, router })
   })
 
   afterEach(() => {
     wrapper.destroy()
   })
 
-  it('renders the CorrectBusinessType Component', async () => {
-    expect(wrapper.find(CorrectBusinessType).exists()).toBe(true)
+  it('renders the ChangeBusinessType Component', async () => {
+    expect(wrapper.find(ChangeBusinessType).exists()).toBe(true)
   })
 
   // TODO: fix this

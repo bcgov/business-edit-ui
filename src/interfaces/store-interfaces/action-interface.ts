@@ -8,3 +8,8 @@ export interface ActionIF {
 export interface ActionBindingIF {
   (x: any): void
 }
+
+export interface ActionKvIF {
+  key: string,
+  value: string
+}

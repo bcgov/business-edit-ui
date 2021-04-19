@@ -1,8 +1,7 @@
 // Libraries
 import { axios } from '@/utils'
-import { AxiosResponse } from 'axios'
 import { Component, Mixins } from 'vue-property-decorator'
-import { CorpTypeCd, NameRequestStates } from '@/enums'
+import { CorpTypeCd, NameRequestStates, NameRequestTypes } from '@/enums'
 import { DateMixin } from '@/mixins'
 import { NrResponseIF } from '@/interfaces'
 
@@ -147,5 +146,17 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
       return nr.names.find((name: any) => name.state === NameRequestStates.CONDITION).name
     }
     return '' // should never happen
+  }
+
+  /** Map the request type to a display description
+   * @param nrRequestType The name request type code
+   */
+  getNrRequestDesc (nrRequestType: NameRequestTypes): string {
+    switch (nrRequestType) {
+      case NameRequestTypes.NEW:
+        return 'New Business'
+      case NameRequestTypes.CHANGE_OF_NAME:
+        return 'Change of Name'
+    }
   }
 }
