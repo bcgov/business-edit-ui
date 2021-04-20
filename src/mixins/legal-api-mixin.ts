@@ -5,8 +5,10 @@ import { NOT_FOUND } from 'http-status-codes'
 import { axios } from '@/utils'
 
 // Interfaces
-import { AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF, IncorporationAddressIf,
-  NameTranslationIF, GetOrgPersonIF, ShareStructureIF } from '@/interfaces'
+import {
+  AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF, IncorporationAddressIf,
+  NameTranslationIF, GetOrgPersonIF, ShareStructureIF, ResolutionsIF
+} from '@/interfaces'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
 // Mixins
@@ -274,7 +276,7 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
    * Fetch the resolutions of the current business.
    * @returns a promise to return the data
    */
-  async fetchResolutions (): Promise<any> {
+  async fetchResolutions (): Promise<ResolutionsIF[]> {
     if (!this.getBusinessId) throw new Error('Invalid business id')
 
     const url = `businesses/${this.getBusinessId}/resolutions`

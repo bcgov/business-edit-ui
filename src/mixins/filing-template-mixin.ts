@@ -594,8 +594,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }) || []
     )
 
-    // Store share classes and original resolution dates
+    // Store share classes and resolution dates
     this.setShareClasses(cloneDeep(businessSnapshot.shareStructure.shareClasses))
+    this.setResolutionDates([])
     this.setOriginalResolutionDates(businessSnapshot.resolutions)
 
     // Store business contact

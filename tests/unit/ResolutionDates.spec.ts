@@ -8,7 +8,7 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
-const arrayOfDates = [
+const addedDates = [
   '2020-05-23',
   '2020-06-01'
 ]
@@ -101,7 +101,7 @@ describe('Resolution Dates component - edit mode', () => {
   })
 
   it('displays previous dates', async () => {
-    const wrapper = wrapperFactory({ previousDates: previousDates })
+    const wrapper = wrapperFactory({ previousDates })
     const vm = wrapper.vm
 
     // verify there is a second row
@@ -139,7 +139,7 @@ describe('Resolution Dates component - edit mode', () => {
   })
 
   it('displays added dates', () => {
-    const wrapper = wrapperFactory({ addedDates: arrayOfDates })
+    const wrapper = wrapperFactory({ addedDates })
     const vm = wrapper.vm
 
     // verify there is a second row
@@ -312,7 +312,7 @@ describe('Resolution Dates component - review mode', () => {
   })
 
   it('displays previous dates', async () => {
-    const wrapper = wrapperFactory({ previousDates: previousDates })
+    const wrapper = wrapperFactory({ previousDates })
     const vm = wrapper.vm
 
     // verify there is a second row
@@ -350,7 +350,7 @@ describe('Resolution Dates component - review mode', () => {
   })
 
   it('displays added dates', () => {
-    const wrapper = wrapperFactory({ addedDates: arrayOfDates })
+    const wrapper = wrapperFactory({ addedDates })
     const vm = wrapper.vm
 
     // verify there is a second row
