@@ -14,10 +14,10 @@
       />
     </div>
 
-    <div class="section-container">
+    <div class="section-container" :class="{'invalid-section': !getIsResolutionDatesValid}">
       <resolution-dates
-        :added-dates="getNewResolutionDates"
-        :previous-dates="getPreviousResolutionDates"
+        :addedDates="getNewResolutionDates"
+        :previousDates="getPreviousResolutionDates"
         :isEditMode="true"
         :hasRightsOrRestrictions="getHasRightsOrRestrictions"
         @addRemoveDate="setResolutionDates($event)"
@@ -53,6 +53,7 @@ export default class Articles extends Mixins(CommonMixin) {
   @Getter getProvisionsRemoved!: boolean
   @Getter getPreviousResolutionDates!: string[]
   @Getter getHasRightsOrRestrictions!: boolean
+  @Getter getIsResolutionDatesValid!: boolean
 
   // Global actions
   @Action setProvisionsRemoved!: ActionBindingIF

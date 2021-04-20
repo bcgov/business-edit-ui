@@ -5,7 +5,7 @@
     <v-row no-gutters>
       <v-col cols="3">
         <label>
-          <span>Resolution or<br>Court Order Dates</span>
+          <span :class="{'error-text': !getIsResolutionDatesValid}">Resolution or<br>Court Order Dates</span>
         </label>
       </v-col>
 
@@ -141,6 +141,8 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessFoundingDate!: string
   @Getter getCurrentDate!: string
+  @Getter hasShareStructureChanged!: boolean
+  @Getter getHasOriginalRightsOrRestrictions!: boolean
   @Getter getIsResolutionDatesValid!: boolean
   @Getter isSummaryMode!: boolean
 
@@ -184,8 +186,11 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
 
   /** Remove resolution date if rights or restrictions are removed from ShareStructure. */
   @Watch('hasRightsOrRestrictions')
+  @Watch('hasShareStructureChanged')
   private removeResolutionDate (): void {
-    if (!this.hasRightsOrRestrictions) this.onRemove(0)
+    if ((!this.getHasOriginalRightsOrRestrictions && !this.hasRightsOrRestrictions) || !this.hasShareStructureChanged) {
+      this.onRemove(0)
+    }
   }
 
   /** Updates store when resolution dates validity changes. */

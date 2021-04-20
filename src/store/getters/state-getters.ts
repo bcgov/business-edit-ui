@@ -456,8 +456,21 @@ export const hasContactInfoChanged = (state: StateIF): boolean => {
 
 /** Whether share structure data has changed. */
 export const hasShareStructureChanged = (state: StateIF): boolean => {
-  const currentShareClasses = { ...omit(state.stateModel.shareStructureStep.shareClasses, ['action']) }
-  const originalShareClasses = { ...omit(state.stateModel.originalSnapshot?.shareStructure.shareClasses, ['action']) }
+  let currentShareClasses = getShareClasses(state)
+  let originalShareClasses = state.stateModel.originalSnapshot?.shareStructure.shareClasses
+
+  // Null action properties can be assigned to the ShareClasses when cancelling edits
+  // This is fail safe to ensure null actions are not included in the comparison
+  const removeNullProps = (obj) => {
+    return Object.fromEntries(
+      Object.entries(obj)
+        .filter(([_, v]) => v != null)
+        .map(([k, v]) => [k, v === Object(v) ? removeNullProps(v) : v])
+    )
+  }
+
+  currentShareClasses = currentShareClasses && removeNullProps(currentShareClasses)
+  originalShareClasses = originalShareClasses && removeNullProps(originalShareClasses)
 
   return (!isEqual(originalShareClasses, currentShareClasses))
 }
@@ -501,17 +514,20 @@ export const getHasRightsOrRestrictions = (state: StateIF): any => {
   return shareClasses.some(shareClass => shareClass.hasRightsOrRestrictions)
 }
 
-/** Get component validations. */
-export const getComponentsValidated = (state: StateIF): boolean => {
-  return getIsResolutionDatesValid(state) &&
-    true && // Add individual component checks here
-    true && // Add individual component checks here
-    true // Add individual component checks here ...
+/** Get boolean indicating if the share structure contains any special rights of restrictions. */
+export const getHasOriginalRightsOrRestrictions = (state: StateIF): any => {
+  const shareClasses = state.stateModel.originalSnapshot?.shareStructure?.shareClasses
+
+  // Search and return on the first match
+  // Don't need to search Series, as they can't exist on a parent without rights or restrictions
+  return shareClasses?.some(shareClass => shareClass.hasRightsOrRestrictions)
 }
 
 /** Get resolution dates validity. */
 export const getIsResolutionDatesValid = (state: StateIF): boolean => {
-  if (hasShareStructureChanged(state) && getHasRightsOrRestrictions(state)) {
+  if (hasShareStructureChanged(state) &&
+    (getHasOriginalRightsOrRestrictions(state) || getHasRightsOrRestrictions(state))
+  ) {
     return getNewResolutionDates(state).length >= 1
   }
   return true
