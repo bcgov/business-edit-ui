@@ -14,6 +14,7 @@
             <v-btn
               text color="primary"
               id="btn-change-alteration"
+              :disabled="isBusySaving"
               @click="onChangeClicked()"
             >
               <v-icon small>mdi-pencil</v-icon>
@@ -22,6 +23,7 @@
             <v-btn
               text color="primary"
               id="btn-delete-alteration"
+              :disabled="isBusySaving"
               @click="onDeleteClicked()"
             >
               <v-icon small>mdi-delete</v-icon>
@@ -177,7 +179,7 @@ import {
   NameTranslationIF
 } from '@/interfaces'
 import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { CorpTypeCd, RouteNames } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 import { EffectiveDateTime } from '@/components/common'
 import { ShareStructures } from '@/components/ShareStructure'
 import { ResolutionDates } from '@/components/Articles'
@@ -211,6 +213,7 @@ export default class AlterationSummary extends Mixins(
   @Getter getPreviousResolutionDates!: string[]
   @Getter getNameTranslations!: NameTranslationIF[]
   @Getter getProvisionsRemoved!: boolean
+  @Getter isBusySaving!: boolean
 
   // Alteration flag getters
   @Getter getAlterationValidFlags!: ValidFlagsIF
