@@ -107,6 +107,7 @@ export const stateModel: StateModelIF = {
     valid: false,
     changed: false,
     resolutionDates: [],
+    previousResolutionDates: [],
     shareClasses: []
   },
   incorporationAgreementStep: {

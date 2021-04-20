@@ -1,12 +1,12 @@
 /**
  * Enum for validator flags.
  * enum properties MUST match component ID to scroll correctly.
- * Order is arbitrary but follow component hierarchy.
+ * Order should follow component hierarchy.
  * */
 export enum ReviewSummaryFlags {
   'effective-date-time',
-  'court-order',
+  'document-delivery-section',
   'certify-section',
-  'staff-payment',
-  'document-delivery-section'
+  'court-order',
+  'staff-payment'
 }

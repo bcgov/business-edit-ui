@@ -5,7 +5,7 @@
     <v-row no-gutters>
       <v-col cols="3">
         <label>
-          <span>Resolution or<br>Court Order Dates</span>
+          <span :class="{'error-text': !getIsResolutionDatesValid}">Resolution or<br>Court Order Dates</span>
         </label>
       </v-col>
 
@@ -87,7 +87,7 @@
     </v-row>
 
     <!-- Previous Dates -->
-    <v-row no-gutters v-if="havePreviousDates" class="mt-2 mb-1">
+    <v-row no-gutters v-if="havePreviousDates && !isSummaryMode" class="mt-2 mb-1">
       <v-col cols="3"></v-col>
       <v-col cols="7">
         <v-btn class="show-previous-dates-btn ml-n4"
@@ -100,7 +100,7 @@
         </v-btn>
         <template v-if="displayPreviousDates">
           <ul class="resolution-date-list info-text pl-0 mt-3">
-            <li v-for="(date, index) in previousDates" :key="`resolutionDate-${index}`">{{date}}</li>
+            <li v-for="(resolutions, index) in previousDates" :key="`resolutionDate-${index}`">{{resolutions.date}}</li>
           </ul>
         </template>
       </v-col>
@@ -141,7 +141,10 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessFoundingDate!: string
   @Getter getCurrentDate!: string
+  @Getter hasShareStructureChanged!: boolean
+  @Getter getHasOriginalRightsOrRestrictions!: boolean
   @Getter getIsResolutionDatesValid!: boolean
+  @Getter isSummaryMode!: boolean
 
   // Global setter
   @Action setValidComponent!: ActionBindingIF
@@ -183,8 +186,11 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
 
   /** Remove resolution date if rights or restrictions are removed from ShareStructure. */
   @Watch('hasRightsOrRestrictions')
+  @Watch('hasShareStructureChanged')
   private removeResolutionDate (): void {
-    if (!this.hasRightsOrRestrictions) this.onRemove(0)
+    if ((!this.getHasOriginalRightsOrRestrictions && !this.hasRightsOrRestrictions) || !this.hasShareStructureChanged) {
+      this.onRemove(0)
+    }
   }
 
   /** Updates store when resolution dates validity changes. */

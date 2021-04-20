@@ -187,7 +187,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter hasBusinessTypeChanged!: boolean
   @Getter getComponentValidate!: boolean
   @Getter isConflictingLegalType!: boolean
-  @Getter getComponentsValidated!: boolean
   @Getter getValidComponentFlags!: ValidComponentsIF
   @Getter getIsResolutionDatesValid!: boolean
 
