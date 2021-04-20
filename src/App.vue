@@ -102,7 +102,7 @@
                   <FeeSummary v-if="isAlterationFiling"
                     :filingData="getFilingData"
                     :payApiUrl="payApiUrl"
-                    :isBusySaving="isBusySaving"
+                    :isLoading="isBusySaving"
                     :hasConflicts="isConflictingLegalType && hasNewNr"
                     :confirmLabel="feeSummaryConfirmLabel"
                     :errorMessage="feeSummaryError"
@@ -670,11 +670,10 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       } else {
         const error = new Error('Missing Payment Token')
         this.$root.$emit('save-error-event', error)
-        this.setIsFilingPaying(false)
       }
+      this.setIsFilingPaying(false)
     }
 
-    this.setIsFilingPaying(false)
     this.setIsSaving(false)
   }
 }
