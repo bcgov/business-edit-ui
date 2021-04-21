@@ -1,6 +1,9 @@
 // Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import flushPromises from 'flush-promises'
+import sinon from 'sinon'
+import { axios } from '@/utils'
 
 // Store
 import { getVuexStore } from '@/store'
@@ -44,6 +47,29 @@ describe('Alteration Summary component', () => {
   })
 
   beforeEach(() => {
+
+    sessionStorage.setItem('PAY_API_URL', `myhost/basePath/pay-api/`)
+    const get = sinon.stub(axios, 'get')
+    
+    // GET payment fee for future alteration
+    get.withArgs('myhost/basePath/pay-api/fees/BC/ALTER?futureEffective=true')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          'filingFees': 100.0,
+          'filingType': 'Alteration',
+          'filingTypeCode': 'ALTER',
+          'futureEffectiveFees': 100.0,
+          'priorityFees': 0,
+          'processingFees': 0,
+          'serviceFees': 1.5,
+          'tax': {
+              'gst': 0,
+              'pst': 0
+          },
+          'total': 201.5
+        }
+    })))
+
     // Set Original business Data
     store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
     store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
@@ -54,6 +80,7 @@ describe('Alteration Summary component', () => {
   })
 
   afterEach(() => {
+    sinon.restore()
     wrapper.destroy()
   })
 
@@ -153,4 +180,46 @@ describe('Alteration Summary component', () => {
     expect(divs.at(1).text()).toContain('The alteration for this business will be effective as of:')
     expect(divs.at(1).text()).toContain('Friday, March 5, 2021 at 8:30 am Pacific time')
   })
+
+  it('renders Alteration Notice Changes fees accordingly', async () => {
+    store.state.stateModel.currentFees = {
+      'filingFees': 100.0,
+      'filingType': 'Alteration',
+      'filingTypeCode': 'ALTER',
+      'futureEffectiveFees': 0,
+      'priorityFees': 0,
+      'processingFees': 0,
+      'serviceFees': 1.5,
+      'tax': {
+          'gst': 0,
+          'pst': 0
+      },
+      'total': 101.5
+    }
+    await Vue.nextTick()
+    expect(wrapper.find('.summary-title').text()).toBe('Alteration Notice Changes ($100.00 Fee)')
+    store.state.stateModel.currentFees = {
+      'filingFees': 100.0,
+      'filingType': 'Alteration',
+      'filingTypeCode': 'ALTER',
+      'futureEffectiveFees': 100.0,
+      'priorityFees': 0,
+      'processingFees': 0,
+      'serviceFees': 1.5,
+      'tax': {
+          'gst': 0,
+          'pst': 0
+      },
+      'total': 201.5
+    }
+    await Vue.nextTick()
+    expect(wrapper.find('.summary-title').text()).toBe('Alteration Notice Changes ($200.00 Fee)')
+  })
+
+  it('renders the futureEffective fee correctly', async () => {
+    await flushPromises()
+    await Vue.nextTick()
+    expect(wrapper.find('#effective-date-time-instructions').text()).toContain('additional fee of $100.00')
+  })
+
 })

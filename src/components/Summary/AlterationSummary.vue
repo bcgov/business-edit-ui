@@ -144,11 +144,13 @@
           </v-col>
 
           <v-col cols="9" class="inner-col-2">
-            <p class="info-text">Select the date and time of alteration of your business. You may select a date and
-              time up to 10 days in the future (note: there is an <strong>additional fee of
-              ${{futureEffectiveFees.toFixed(2)}}</strong> to enter
-              an alteration date and time in the future). Unless a business has special requirements, most businesses
-              select an immediate Alteration Date and Time.
+            <p 
+              id="effective-date-time-instructions" 
+              class="info-text">
+              Select the date and time of alteration of your business. You may select a date and time up to 10 days in 
+              the future (note: there is an <strong>additional fee of ${{futureEffectiveFees.toFixed(2)}}</strong> to 
+              enter an alteration date and time in the future). Unless a business has special requirements, most 
+              businesses select an immediate Alteration Date and Time.
             </p>
 
             <effective-date-time

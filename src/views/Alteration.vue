@@ -217,6 +217,9 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
         priority: false
       })
 
+      this.setCurrentFees(await this.fetchCurrentFees())
+      this.feePrices = await this.fetchFeePrices()
+
       // tell App that we're finished loading
       this.emitHaveData()
     } catch (err) {
@@ -224,16 +227,13 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       this.emitFetchError(err)
     }
 
-    this.setCurrentFees(await this.fetchCurrentFees())
-    this.feePrices = await this.fetchFeePrices()
-
     // now that all data is loaded, wait for things to stabilize and reset flag
     Vue.nextTick(() => this.setHaveChanges(false))
   }
 
   private async fetchCurrentFees (): Promise<FeesIF> {
     const result = await Promise.resolve(this.fetchFilingFees(FilingCodes.ALTERATION,
-      this.getEntityType, this.getFilingData.futureEffective))
+      this.getEntityType, this.getEffectiveDateTime.isFutureEffective))
     if (!('filingFees' in result)) throw new Error('Failed to fetch current fees')
     return result
   }
