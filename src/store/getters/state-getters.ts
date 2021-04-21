@@ -1,6 +1,6 @@
 import { AccountTypes, CorpTypeCd } from '@/enums'
 import {
-  IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF,
+  IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF, ShareClassIF, FeesIF,
   NameRequestIF, BusinessInformationIF, CertifyIF, CertifyStatementIF, NameTranslationIF, IncorporationAddressIf,
   FilingDataIF, StateIF, BusinessSnapshotIF, EffectiveDateTimeIF, ShareStructureIF, ValidFlagsIF, ValidComponentsIF
 } from '@/interfaces'
@@ -448,4 +448,9 @@ export const getIsResolutionDatesValid = (state: StateIF): boolean => {
   if (hasShareStructureChanges(state) && getHasRightsOrRestrictions(state)) {
     return getNewResolutionDates(state).length >= 1
   } else return true
+}
+
+/** Get current fees state. */
+export const getCurrentFees = (state: StateIF): FeesIF => {
+  return state.stateModel.currentFees
 }

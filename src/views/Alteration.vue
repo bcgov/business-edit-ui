@@ -31,7 +31,8 @@
       </header>
       <section class="mt-6">
         <p>Review and certify the changes you are about to make to your company. Certain changes require an Alteration
-          Notice which will incur a $100.00 Fee.</p>
+           Notice which will incur a ${{feePrices.filingFees.toFixed(2)}} fee. Choosing an alteration date and time in
+           the future will incur an additional ${{feePrices.futureEffectiveFees.toFixed(2)}} fee.</p>
       </section>
 
       <!-- FUTURE: set `pleaseValidate` when user clicks File and Pay -->
@@ -97,8 +98,8 @@ import { Articles } from '@/components/Articles'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 
 // Mixins, Interfaces, Enums, etc
-import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { ActionBindingIF, BusinessSnapshotIF, EffectiveDateTimeIF, FilingDataIF } from '@/interfaces'
+import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
+import { ActionBindingIF, BusinessSnapshotIF, EffectiveDateTimeIF, FilingDataIF, FeesIF } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
@@ -121,7 +122,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     YourCompany
   }
 })
-export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin) {
+export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin, PayApiMixin) {
   // Global getters
   @Getter getEntityType!: CorpTypeCd
   @Getter isSummaryMode!: boolean
@@ -145,6 +146,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Action setSummaryMode!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setValidFileNumber!: ActionBindingIF
+  @Action setCurrentFees!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -154,6 +156,9 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   private get alterationId (): number {
     return +this.$route.query['alteration-id'] || 0
   }
+
+  /** The fees prices for Alteration. */
+  private feePrices: FeesIF
 
   /** True if user is authenticated. */
   private get isAuthenticated (): boolean {
@@ -219,8 +224,25 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       this.emitFetchError(err)
     }
 
+    this.setCurrentFees(await this.fetchCurrentFees())
+    this.feePrices = await this.fetchFeePrices()
+
     // now that all data is loaded, wait for things to stabilize and reset flag
     Vue.nextTick(() => this.setHaveChanges(false))
+  }
+
+  private async fetchCurrentFees (): Promise<FeesIF> {
+    const result = await Promise.resolve(this.fetchFilingFees(FilingCodes.ALTERATION,
+      this.getEntityType, this.getFilingData.futureEffective))
+    if (!('filingFees' in result)) throw new Error('Failed to fetch current fees')
+    return result
+  }
+
+  private async fetchFeePrices (): Promise<FeesIF> {
+    const result = await Promise.resolve(this.fetchFilingFees(FilingCodes.ALTERATION,
+      this.getEntityType, true))
+    if (!('filingFees' in result)) throw new Error('Failed to fetch fees prices')
+    return result
   }
 
   /** Fetches the business snapshot. */
@@ -257,12 +279,13 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   }
 
   /** Called when alteration summary data has changed. */
-  onAlterationSummaryChanges (): void {
+  async onAlterationSummaryChanges (): Promise<void> {
     // update filing data with future effective field
     this.setFilingData({
       ...this.getFilingData,
       futureEffective: this.getEffectiveDateTime.isFutureEffective
     })
+    this.setCurrentFees(await this.fetchCurrentFees())
   }
 
   /** Redirects browser to Entity Dashboard. */

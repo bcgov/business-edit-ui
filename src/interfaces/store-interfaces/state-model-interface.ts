@@ -1,7 +1,8 @@
 import {
   AccountInformationIF, AlterationFilingIF, CertifyIF, DefineCompanyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF,
   ShareStructureIF, EffectiveDateTimeIF, IncorporationAgreementIF, BusinessInformationIF, IncorporationFilingIF,
-  FilingDataIF, StaffPaymentStepIF, DetailIF, NameTranslationIF, BusinessSnapshotIF, DocumentDeliveryIF, NewAlterationIF
+  FilingDataIF, StaffPaymentStepIF, DetailIF, NameTranslationIF, BusinessSnapshotIF, DocumentDeliveryIF, FeesIF,
+  NewAlterationIF
 } from '@/interfaces'
 
 /** Data object used internally only (not to/from API). */
@@ -34,5 +35,6 @@ export interface StateModelIF {
     shareStructure: boolean
     incorporationAgreement: boolean
   }
-  summaryMode: boolean
+  summaryMode: boolean,
+  currentFees: FeesIF
 }

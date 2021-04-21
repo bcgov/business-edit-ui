@@ -208,5 +208,19 @@ export const stateModel: StateModelIF = {
     shareStructure: false,
     incorporationAgreement: false
   },
-  summaryMode: false
+  summaryMode: false,
+  currentFees: {
+    filingFees: 0,
+    filingType: '',
+    filingTypeCode: '',
+    futureEffectiveFees: 0,
+    priorityFees: 0,
+    processingFees: 0,
+    serviceFees: 0,
+    tax: {
+      pst: 0,
+      gst: 0
+    },
+    total: 0
+  }
 }

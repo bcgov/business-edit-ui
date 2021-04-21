@@ -12,7 +12,8 @@ import {
   NameTranslationIF,
   OrgPersonIF,
   ShareClassIF,
-  StateIF
+  StateIF,
+  FeesIF
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { CorpTypeCd } from '@/enums'
@@ -280,4 +281,8 @@ export const mutateValidFileNumber = (state: StateIF, isValid: boolean) => {
 
 export const mutateIsValidResolutionDate = (state: StateIF, isValid: boolean) => {
   state.stateModel.newAlteration.validComponents.isValidResolutionDate = isValid
+}
+
+export const mutateCurrentFees = (state: StateIF, fees: FeesIF) => {
+  state.stateModel.currentFees = fees
 }

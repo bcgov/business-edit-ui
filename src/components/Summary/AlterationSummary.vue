@@ -11,7 +11,7 @@
       <v-row no-gutters>
         <v-col cols="9">
           <img  class="my-n1" src="@/assets/images/currency-usd-circle.svg">
-          <label class="summary-title">Alteration Notice Changes ($100.00 Fee)</label>
+          <label class="summary-title">Alteration Notice Changes (${{alterationFees.toFixed(2)}} Fee)</label>
         </v-col>
 
         <!-- Actions -->
@@ -145,7 +145,8 @@
 
           <v-col cols="9" class="inner-col-2">
             <p class="info-text">Select the date and time of alteration of your business. You may select a date and
-              time up to 10 days in the future (note: there is an <strong>additional fee of $100.00</strong> to enter
+              time up to 10 days in the future (note: there is an <strong>additional fee of
+              ${{futureEffectiveFees.toFixed(2)}}</strong> to enter
               an alteration date and time in the future). Unless a business has special requirements, most businesses
               select an immediate Alteration Date and Time.
             </p>
@@ -183,10 +184,11 @@ import {
   ShareClassIF,
   ShareStructureIF,
   ValidFlagsIF,
-  NameTranslationIF
+  NameTranslationIF,
+  FeesIF
 } from '@/interfaces'
-import { CommonMixin, DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { CorpTypeCd } from '@/enums'
+import { CommonMixin, DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
+import { CorpTypeCd, FilingCodes } from '@/enums'
 import { EffectiveDateTime } from '@/components/common'
 import { ShareStructures } from '@/components/ShareStructure'
 import { ResolutionDates } from '@/components/Articles'
@@ -206,7 +208,8 @@ export default class AlterationSummary extends Mixins(
   DateMixin,
   EnumMixin,
   FilingTemplateMixin,
-  LegalApiMixin
+  LegalApiMixin,
+  PayApiMixin
 ) {
   // Refs
   $refs!: {
@@ -227,6 +230,7 @@ export default class AlterationSummary extends Mixins(
   @Getter getNewResolutionDates!: string[]
   @Getter getPreviousResolutionDates!: string[]
   @Getter getNameTranslations!: NameTranslationIF[]
+  @Getter getCurrentFees!: FeesIF
 
   // Alteration flag getters
   @Getter getAlterationValidFlags!: ValidFlagsIF
@@ -241,6 +245,21 @@ export default class AlterationSummary extends Mixins(
 
   /** Prop to perform validation. */
   @Prop() readonly validate: boolean
+
+  /** The fees prices for Alteration. */
+  futureEffectiveFees: number = 0
+
+  async mounted () {
+    const feePrices = await this.fetchFeePrices()
+    this.futureEffectiveFees = feePrices.futureEffectiveFees
+  }
+
+  private async fetchFeePrices (): Promise<FeesIF> {
+    const result = await Promise.resolve(this.fetchFilingFees(FilingCodes.ALTERATION,
+      this.getEntityType, true))
+    if (!('filingFees' in result)) throw new Error('Failed to fetch fees prices')
+    return result
+  }
 
   get isFutureEffective (): boolean {
     return this.getEffectiveDateTime.isFutureEffective
@@ -279,6 +298,10 @@ export default class AlterationSummary extends Mixins(
   get hasNameTranslationChange (): boolean {
     return this.getNameTranslations.length > 0 &&
       this.getNameTranslations.filter(x => x.action).length > 0
+  }
+
+  get alterationFees (): number {
+    return this.getCurrentFees.filingFees + this.getCurrentFees.futureEffectiveFees
   }
 
   /** Restore baseline data to original snapshot. */
