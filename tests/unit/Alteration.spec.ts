@@ -73,13 +73,13 @@ describe('Alteration component', () => {
           'processingFees': 0,
           'serviceFees': 1.5,
           'tax': {
-              'gst': 0,
-              'pst': 0
+            'gst': 0,
+            'pst': 0
           },
           'total': 101.5
         }
-    })))
-    
+      })))
+
     // GET payment fee for future alteration
     get.withArgs('myhost/basePath/pay-api/fees/BEN/ALTER?futureEffective=true')
       .returns(new Promise((resolve) => resolve({
@@ -92,12 +92,12 @@ describe('Alteration component', () => {
           'processingFees': 0,
           'serviceFees': 1.5,
           'tax': {
-              'gst': 0,
-              'pst': 0
+            'gst': 0,
+            'pst': 0
           },
           'total': 201.5
         }
-    })))
+      })))
 
     // GET Base business
     get.withArgs('businesses/BC1234567')
@@ -323,14 +323,13 @@ describe('Alteration component', () => {
   it('updates the current fees when AlterationSummary changes', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
-    
+
     const state = store.state.stateModel
     state.effectiveDateTime.isFutureEffective = true
 
     await wrapper.vm.onAlterationSummaryChanges()
     expect(store.state.stateModel.currentFees.filingFees).toBe(100)
     expect(store.state.stateModel.currentFees.futureEffectiveFees).toBe(100)
-    
   })
 
   // FUTURE

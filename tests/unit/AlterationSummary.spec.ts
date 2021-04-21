@@ -47,10 +47,9 @@ describe('Alteration Summary component', () => {
   })
 
   beforeEach(() => {
-
     sessionStorage.setItem('PAY_API_URL', `myhost/basePath/pay-api/`)
     const get = sinon.stub(axios, 'get')
-    
+
     // GET payment fee for future alteration
     get.withArgs('myhost/basePath/pay-api/fees/BC/ALTER?futureEffective=true')
       .returns(new Promise((resolve) => resolve({
@@ -63,12 +62,12 @@ describe('Alteration Summary component', () => {
           'processingFees': 0,
           'serviceFees': 1.5,
           'tax': {
-              'gst': 0,
-              'pst': 0
+            'gst': 0,
+            'pst': 0
           },
           'total': 201.5
         }
-    })))
+      })))
 
     // Set Original business Data
     store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
@@ -191,8 +190,8 @@ describe('Alteration Summary component', () => {
       'processingFees': 0,
       'serviceFees': 1.5,
       'tax': {
-          'gst': 0,
-          'pst': 0
+        'gst': 0,
+        'pst': 0
       },
       'total': 101.5
     }
@@ -207,8 +206,8 @@ describe('Alteration Summary component', () => {
       'processingFees': 0,
       'serviceFees': 1.5,
       'tax': {
-          'gst': 0,
-          'pst': 0
+        'gst': 0,
+        'pst': 0
       },
       'total': 201.5
     }
@@ -221,5 +220,4 @@ describe('Alteration Summary component', () => {
     await Vue.nextTick()
     expect(wrapper.find('#effective-date-time-instructions').text()).toContain('additional fee of $100.00')
   })
-
 })
