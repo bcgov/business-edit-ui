@@ -1,7 +1,7 @@
 <template>
   <section id="staff-payment">
     <header>
-      <h2>3. Staff Payment</h2>
+      <h2>4. Staff Payment</h2>
     </header>
 
     <staff-payment-component
@@ -88,6 +88,7 @@ export default class StaffPayment extends Vue {
 </script>
 
 <style lang="scss" scoped>
+  @import '@/assets/styles/theme.scss';
   ::v-deep .v-input .v-label {
     font-weight: normal;
   }
@@ -99,5 +100,12 @@ export default class StaffPayment extends Vue {
       padding-top: 2rem;
     }
   }
-
+  ::v-deep .v-input--selection-controls__ripple {
+    color: $gray7;
+  }
+  ::v-deep .v-text-field__slot {
+    .v-label {
+      color: $gray7;
+    }
+  }
 </style>
