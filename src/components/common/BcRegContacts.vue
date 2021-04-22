@@ -15,7 +15,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({})
-export default class ContactInfo extends Vue {
+export default class BcRegContacts extends Vue {
   /** Can be "row" (default) or "col". */
   @Prop({ default: 'row' })
   readonly direction: string

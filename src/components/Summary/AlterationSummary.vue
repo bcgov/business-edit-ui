@@ -88,6 +88,10 @@
       </div>
     </template>
 
+    <template v-if="hasFolioNumberChanged">
+      <!-- TODO: implement this (#5024) -->
+    </template>
+
     <!-- Share Structure -->
     <template v-if="hasShareStructureChanged">
       <v-divider class="mx-4" />
@@ -220,6 +224,7 @@ export default class AlterationSummary extends Mixins(
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
   @Getter hasNameTranslationChanged!: boolean
+  @Getter hasFolioNumberChanged!: boolean
   @Getter hasShareStructureChanged!: boolean
   @Getter hasNewResolutionDatesChanged!: boolean
 

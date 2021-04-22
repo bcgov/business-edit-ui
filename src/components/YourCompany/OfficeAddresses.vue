@@ -383,9 +383,10 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       this.originalOfficeAddresses.recordsOffice?.deliveryAddress, ['addressCountryDescription'])
   }
 
-  /** True if any office address has changed. */
+  /** True if any office address has changed. Applies to corrections only. */
   private get officeAddressesChanged (): boolean {
-    return (this.mailingChanged || this.deliveryChanged || this.recMailingChanged || this.recDeliveryChanged)
+    return this.isCorrectionFiling &&
+      (this.mailingChanged || this.deliveryChanged || this.recMailingChanged || this.recDeliveryChanged)
   }
 
   /** True if the address form is valid. */

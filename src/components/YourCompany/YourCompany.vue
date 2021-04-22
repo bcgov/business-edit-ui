@@ -1,6 +1,6 @@
 <template>
   <v-card flat id="your-company">
-    <confirm-dialog
+    <ConfirmDialog
       ref="confirm"
       attach="#app"
     />
@@ -138,7 +138,7 @@
 
         <!-- Editing Mode -->
         <v-col cols="9" v-else>
-          <correct-name-options
+          <CorrectNameOptions
             :correction-name-choices="correctNameChoices"
             @done="nameChangeHandler"
             @cancel="isEditingNames = false"
@@ -190,7 +190,7 @@
 
     <!-- Name Translation(s) -->
     <div id="name-translate-section" class="section-container" :class="{'invalid-section': invalidTranslationSection}">
-      <correct-name-translation
+      <CorrectNameTranslation
         :invalidSection="invalidTranslationSection"
         @haveChanges="nameTranslationChanges = $event"
         @isEditingTranslations="isEditingTranslations = $event"
@@ -214,9 +214,9 @@
 
     <v-divider class="mx-4" />
 
-    <!-- Registered Office -->
+    <!-- Registered Office and Records Office addresses -->
     <div class="section-container">
-      <office-addresses
+      <OfficeAddresses
         @haveChanges="officeAddressChanges = $event"
       />
     </div>
@@ -225,20 +225,22 @@
 
     <!-- Registered Office Contact Information -->
     <div id="contact-info" class="section-container" :class="{'invalid-section': invalidContactSection}">
-      <business-contact-info
+      <BusinessContactInfo
         @haveChanges="contactInfoChanges = $event"
       />
     </div>
 
-    <!-- Folio Number -->
+    <!-- Folio Information -->
     <template v-if="isPremiumAccount">
       <v-divider class="mx-4" />
 
-      <div class="section-container">
-        <folio-number
+      <div id="folio-number" class="section-container" :class="{'invalid-section': invalidFolioSection}">
+        <FolioNumber
           :initialValue="getFolioNumber"
           :isEditing="false"
+          :invalidSection="invalidTypeSection"
           @haveChanges="folioNumberChanges = $event"
+          @isEditing="isEditingFolio = $event"
         />
       </div>
     </template>
@@ -271,6 +273,7 @@ import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin, NameRequestMixin } fr
 import { CorrectionTypes, CorpTypeCd } from '@/enums'
 import { ConfirmDialog } from '@/components/dialogs'
 
+/** Note: this component is used by both corrections and alterations. */
 @Component({
   components: {
     ConfirmDialog,
@@ -332,32 +335,41 @@ export default class YourCompany extends Mixins(
   private companyNameChanges = false
   private companyTypeChanges = false
   private contactInfoChanges = false
-  private folioNumberChanges = false
   private nameTranslationChanges = false
   private officeAddressChanges = false
+  private folioNumberChanges = false
   private correctNameChoices: Array<string> = []
   private isEditingNames = false
   private isEditingType = false
   private isEditingTranslations = false
+  private isEditingFolio = false
 
   /**  Initialize the name choices for alterations */
   mounted () { this.onApprovedName() }
 
+  /** The name section validity state (when prompted by app). */
   private get invalidNameSection (): boolean {
     return this.getComponentValidate && this.isEditingNames
   }
 
+  /** The type section validity state (when prompted by app). */
   private get invalidTypeSection (): boolean {
     return this.getComponentValidate && this.isEditingType
   }
 
+  /** The translation section validity state (when prompted by app). */
   private get invalidTranslationSection (): boolean {
     return this.getComponentValidate && this.isEditingTranslations
   }
 
-  /** Check validity state, only when prompted by app. */
+  /** The contact section validity state (when prompted by app). */
   private get invalidContactSection (): boolean {
     return this.getComponentValidate && !this.getValidComponentFlags.isValidContactInfo
+  }
+
+  /** The folio section validity state (when prompted by app). */
+  private get invalidFolioSection (): boolean {
+    return this.getComponentValidate && !this.getValidComponentFlags.isValidFolioNumber
   }
 
   /** The company name (from NR, or incorporation number). */
@@ -454,8 +466,8 @@ export default class YourCompany extends Mixins(
   @Watch('companyNameChanges') private onCompanyNameChanges ():void { this.setDataChanges() }
   @Watch('companyTypeChanges') private onCompanyTypeChanges ():void { this.setDataChanges() }
   @Watch('contactInfoChanges') private onContactInfoChanges ():void { this.setDataChanges() }
-  @Watch('folioNumberChanges') private onFolioNumberChanges ():void { this.setDataChanges() }
   @Watch('nameTranslationChanges') private onNameTranslationChanges ():void { this.setDataChanges() }
+  @Watch('folioNumberChanges') private onFolioNumberChanges ():void { this.setDataChanges() }
   @Watch('officeAddressChanges') private onOfficeAddressChanges ():void { this.setDataChanges() }
 
   @Watch('getApprovedName')
@@ -479,8 +491,8 @@ export default class YourCompany extends Mixins(
       this.companyNameChanges ||
       this.companyTypeChanges ||
       this.contactInfoChanges ||
-      this.folioNumberChanges ||
       this.nameTranslationChanges ||
+      this.folioNumberChanges ||
       this.officeAddressChanges
     )
     this.setDefineCompanyStepChanged(haveChanges)
@@ -489,25 +501,31 @@ export default class YourCompany extends Mixins(
 
   /** Emits Have Changes event. */
   @Emit('haveChanges')
-  private emitHaveChanges (haveChanges: boolean): void {}
+  private emitHaveChanges (val: boolean): void {}
 
-  /** Updates store when local isEditingName property has changed. */
+  /** Updates store initially and when local isEditingName property has changed. */
   @Watch('isEditingNames', { immediate: true })
   private onEditingNameChanged (val: boolean): void {
     this.setValidComponent({ key: 'isValidCompanyName', value: !val })
     this.setEditingCompanyName(val)
   }
 
-  /** Updates store when local isEditingType property has changed. */
+  /** Updates store initially and when local isEditingType property has changed. */
   @Watch('isEditingType', { immediate: true })
-  private onEditingTypeChange (val: boolean): void {
+  private onEditingTypeChanged (val: boolean): void {
     this.setValidComponent({ key: 'isValidBusinessType', value: !val })
   }
 
-  /** Updates store when local isEditingTranslations property has changed. */
+  /** Updates store initially and when local isEditingTranslations property has changed. */
   @Watch('isEditingTranslations', { immediate: true })
-  private onEditingTranslationChange (val: boolean): void {
+  private onEditingTranslationChanged (val: boolean): void {
     this.setValidComponent({ key: 'isValidNameTranslation', value: !val })
+  }
+
+  /** Updates store initially and when local isEditingFolio property has changed. */
+  @Watch('isEditingFolio', { immediate: true })
+  private onEditingFolioChanged (val: boolean): void {
+    this.setValidComponent({ key: 'isValidFolioNumber', value: !val })
   }
 }
 </script>

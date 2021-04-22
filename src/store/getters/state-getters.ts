@@ -230,6 +230,11 @@ export const hasNameTranslationChanged = (state: StateIF): boolean => {
   return (getNameTranslations(state).filter(x => x.action).length > 0)
 }
 
+/** Whether folio number has changed. */
+export const hasFolioNumberChanged = (state: StateIF): boolean => {
+  return false // TODO: implement this (#5024)
+}
+
 /** The office addresses. */
 export const getOfficeAddresses = (state: StateIF): IncorporationAddressIf | {} => {
   return state.stateModel.defineCompanyStep.officeAddresses
