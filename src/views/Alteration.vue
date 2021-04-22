@@ -257,7 +257,10 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
         priority: false
       })
 
+      // update the current fees for the Filing
       this.setCurrentFees(await this.fetchCurrentFees())
+
+      // fetches the fee prices to display in the text
       this.feePrices = await this.fetchFeePrices()
 
       // tell App that we're finished loading
@@ -271,6 +274,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     Vue.nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
+  /** Fetches current fees for the Filing */
   private async fetchCurrentFees (): Promise<FeesIF> {
     const result = await Promise.resolve(this.fetchFilingFees(FilingCodes.ALTERATION,
       this.getEntityType, this.getEffectiveDateTime.isFutureEffective))
@@ -278,6 +282,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     return result
   }
 
+  /** Fetches the Fee prices to display in the text */
   private async fetchFeePrices (): Promise<FeesIF> {
     const result = await Promise.resolve(this.fetchFilingFees(FilingCodes.ALTERATION,
       this.getEntityType, true))
@@ -327,6 +332,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       ...this.getFilingData,
       futureEffective: this.getEffectiveDateTime.isFutureEffective
     })
+    // update the current fees for the filing
     this.setCurrentFees(await this.fetchCurrentFees())
   }
 

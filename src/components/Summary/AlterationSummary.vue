@@ -238,14 +238,16 @@ export default class AlterationSummary extends Mixins(
   /** Prop to perform validation. */
   @Prop() readonly validate: boolean
 
-  /** The fees prices for Alteration. */
+  /** The future effective fee for Alteration. */
   futureEffectiveFees: number = 0
 
   async mounted () {
+    // fetches the fee prices to display in the text
     const feePrices = await this.fetchFeePrices()
     this.futureEffectiveFees = feePrices.futureEffectiveFees
   }
 
+  /** Fetches the Fee prices to display in the text */
   private async fetchFeePrices (): Promise<FeesIF> {
     const result = await Promise.resolve(this.fetchFilingFees(FilingCodes.ALTERATION,
       this.getEntityType, true))
@@ -288,6 +290,7 @@ export default class AlterationSummary extends Mixins(
     await this.scrollToTop(document.getElementById('app'))
   }
 
+  // sum of alteration fees
   get alterationFees (): number {
     return this.getCurrentFees.filingFees + this.getCurrentFees.futureEffectiveFees
   }
