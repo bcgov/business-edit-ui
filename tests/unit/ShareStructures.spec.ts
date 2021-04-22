@@ -9,7 +9,6 @@ import { createLocalVue, mount } from '@vue/test-utils'
 
 // Components
 import { ShareStructures } from '@/components/ShareStructure'
-import {YourCompany} from "@/components/YourCompany";
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -20,7 +19,7 @@ const store = getVuexStore()
 // Store
 document.body.setAttribute('data-app', 'true')
 
-describe('Share Structure component', () => {
+describe('Share Structures component', () => {
   let wrapper: any
 
   const shareClasses: any = [
