@@ -63,8 +63,8 @@
           not listed, contact BC Registry staff:</p>
         </div>
 
-        <!-- Contact Info -->
-        <contact-info :direction="'col'"/>
+        <!-- BC Registry Contacts -->
+        <BcRegContacts :direction="'col'"/>
 
         <template v-if="isBenefit">
           <div class="my-6">
@@ -210,7 +210,7 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Components
-import { ContactInfo } from '@/components/common'
+import { BcRegContacts } from '@/components/common'
 
 // Mixins
 import { CommonMixin, EnumMixin } from '@/mixins'
@@ -221,7 +221,7 @@ import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
 
 @Component({
   components: {
-    ContactInfo
+    BcRegContacts
   }
 })
 export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {

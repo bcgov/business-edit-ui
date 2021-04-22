@@ -1,18 +1,21 @@
 <template>
-  <div id="folio-number">
-    <v-layout row v-if="!isEditing" id="folio-number-read-only" class="mx-0">
-      <v-flex xs3>
+  <div>
+    <v-row no-gutters v-if="!isEditing" id="folio-number-read-only">
+      <v-col cols="3">
         <label><strong>Folio Information</strong></label>
-      </v-flex>
-      <v-flex xs9>
+      </v-col>
+      <v-col cols="7">
         <label><strong>Folio Number</strong></label>
         <div id="lbl-folio-number">{{ !!folioNumber ? folioNumber : 'Not entered' }}</div>
-      </v-flex>
-    </v-layout>
+      </v-col>
+      <v-col cols="2">
+        <!-- TODO: add actions here (for alterations only) -->
+      </v-col>
+    </v-row>
 
-    <v-row v-else id="folio-number-editing">
+    <v-row no-gutters v-else id="folio-number-editing">
       <v-col>
-        <label>Folio Number</label>
+        <label><strong>Folio Number</strong></label>
       </v-col>
       <v-col cols="12" sm="8" md="10">
         <v-form>
@@ -37,13 +40,16 @@ import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator'
 @Component({})
 export default class FolioNumber extends Vue {
   // Props
-  @Prop()
-  private initialValue: string
+  @Prop({ default: null })
+  readonly initialValue: string
 
   @Prop({ default: false })
-  private isEditing: boolean
+  readonly isEditing: boolean
 
-  // Data variables
+  @Prop({ default: false })
+  readonly invalidSection: boolean
+
+  // Data variable
   private folioNumber: string = null
 
   // Validation rules
@@ -64,28 +70,20 @@ export default class FolioNumber extends Vue {
     this.folioNumber = this.initialValue
   }
 
-  /**
-   * Set folio number on user typed input.
-   * @param val The folio number input
-   */
+  // TODO: never used; delete or keep this?
+  /** When Folio Number changes, emit it to parent. */
   @Watch('folioNumber')
-  private onFolioNumberChange (val: string): void {
-    this.emitFolioNumber(val)
+  @Emit('folioNumberChange')
+  private emitFolioNumber (val: string): void { }
+
+  @Emit('haveChanges')
+  private emitHaveChanges (val: boolean): void {
+    // TODO: implement
   }
 
-  // Events
-  @Emit('folioNumberChange')
-  private emitFolioNumber (folioNumber: string): void { }
+  @Emit('isEditing')
+  private emitIsEditing (val: boolean): void {
+    // TODO: implement
+  }
 }
 </script>
-
-<style lang="scss" scoped>
-.row .col:first-child {
-  width: 12rem;
-  max-width: 12rem;
-}
-
-label {
-  font-weight: bold;
-}
-</style>
