@@ -1,8 +1,8 @@
 <template>
   <div class="pb-6" id="certify-section">
-    <h2 :class="{ 'invalid-label': certificationInvalid }">2. Certify</h2>
+    <h2>2. Certify</h2>
     <div class="pt-4">Enter the legal name of the person authorized to complete and submit these changes.</div>
-    <div :class="{ 'invalid': certificationInvalid }">
+    <div :class="{ 'invalid-section': certificationInvalid }">
       <certify
         :currentDate="getCurrentDate"
         :certifiedBy="getCertifyState.certifiedBy"
@@ -12,6 +12,7 @@
         :isStaff="isRoleStaff"
         :firstColumn="3"
         :secondColumn="9"
+        :invalidSection="certificationInvalid"
         @update:certifiedBy="onCertifiedBy($event)"
         @update:isCertified="onValid($event)"
       />
@@ -30,7 +31,7 @@ import { Certify } from '@bcrs-shared-components/certify'
 import { DateMixin, EnumMixin } from '@/mixins'
 
 // Interfaces, Enums & Resources
-import { ActionBindingIF, CertifyIF, CertifyStatementIF } from '@/interfaces'
+import { ActionBindingIF, CertifyIF, CertifyStatementIF, ValidFlagsIF } from '@/interfaces'
 import { CorpTypeCd } from '@/enums'
 
 @Component({
@@ -44,6 +45,8 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   @Getter getEntityType!: CorpTypeCd
   @Getter getCertifyResource!: CertifyStatementIF
   @Getter isRoleStaff!: boolean
+  @Getter getAlterationValidFlags!: ValidFlagsIF
+  @Getter getAppValidate!: boolean
 
   @Action setCertifyState!: ActionBindingIF
   @Action setCertifyStateValidity!: ActionBindingIF

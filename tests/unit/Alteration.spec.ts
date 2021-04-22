@@ -248,6 +248,21 @@ describe('Alteration component', () => {
         }
       })))
 
+    // GET resolutions
+    get.withArgs('businesses/BC1234567/resolutions')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          resolutions: [
+            {
+              date: '2021-05-05'
+            },
+            {
+              date: '2021-07-05'
+            }
+          ]
+        }
+      })))
+
     // FUTURE: mock GET alteration filing
 
     // create a Local Vue and install router on it
@@ -268,7 +283,7 @@ describe('Alteration component', () => {
   })
 
   it('renders Alteration View', () => {
-    expect(wrapper.find(Alteration).exists()).toBe(true)
+    expect(wrapper.findComponent(Alteration).exists()).toBe(true)
   })
 
   it('loads the business snapshot into the store', async () => {

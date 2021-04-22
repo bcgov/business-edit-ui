@@ -1,9 +1,9 @@
 <template>
-  <div v-if="isAlterationView" id="business-type">
+  <div id="business-type">
     <v-row no-gutters>
       <!-- Row Title -->
       <v-col cols="3">
-        <label><strong>Business Type</strong></label>
+        <label :class="{'error-text': invalidSection}"><strong>Business Type</strong></label>
         <v-flex md1>
           <v-chip v-if="hasBusinessTypeChanged" x-small label color="primary" text-color="white">
             {{editedLabel}}
@@ -206,7 +206,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Components
@@ -224,12 +224,16 @@ import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
     ContactInfo
   }
 })
-export default class CorrectBusinessType extends Mixins(CommonMixin, EnumMixin) {
+export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {
+  @Prop({ default: false })
+  private invalidSection: boolean
+
   // Global getters
   @Getter getApprovedName!: string
   @Getter getEntityType!: CorpTypeCd
   @Getter isConflictingLegalType!: boolean
   @Getter getOriginalSnapshot!: BusinessSnapshotIF
+  @Getter isAlterationFiling!: boolean
 
   // Alteration flag getters
   @Getter hasBusinessTypeChanged!: boolean
@@ -307,6 +311,10 @@ export default class CorrectBusinessType extends Mixins(CommonMixin, EnumMixin) 
 
   @Emit('haveChanges')
   private emitHaveChanges (haveChanges: boolean): void {}
+
+  @Watch('isEditingType')
+  @Emit('isEditingBusinessType')
+  private emitIsEditingType (isEditing: boolean): void {}
 }
 </script>
 

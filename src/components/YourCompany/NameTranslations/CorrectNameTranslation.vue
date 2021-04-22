@@ -1,14 +1,16 @@
 <template>
   <name-translation
+    :invalidSection="invalidSection"
     :nameTranslations="getNameTranslations"
     @nameTranslationsChange="updateNameTranslations($event)"
     @haveChanges="emitHaveChanges($event)"
+    @isEditingTranslations="isEditingTranslations = $event"
   />
 </template>
 
 <script lang="ts">
 // Libraries
-import { Component, Vue, Emit } from 'vue-property-decorator'
+import { Component, Vue, Emit, Prop, Watch } from 'vue-property-decorator'
 
 // Components
 import { NameTranslation } from '.'
@@ -25,11 +27,16 @@ import { Action, Getter } from 'vuex-class'
   }
 })
 export default class CorrectNameTranslation extends Vue {
+  @Prop({ default: false })
+  private invalidSection: boolean
+
   // Global getter
   @Getter getNameTranslations!: NameTranslationIF[]
 
   // Global action
   @Action setNameTranslations!: ActionBindingIF
+
+  private isEditingTranslations = false
 
   private updateNameTranslations (nameTranslations: NameTranslationIF[]): void {
     this.setNameTranslations(nameTranslations)
@@ -37,6 +44,10 @@ export default class CorrectNameTranslation extends Vue {
 
   @Emit('haveChanges')
   private emitHaveChanges (haveChanges: boolean): void {}
+
+  @Watch('isEditingTranslations')
+  @Emit('isEditingTranslations')
+  private emitIsEditingTranslations (isEditing: boolean): void {}
 }
 </script>
 

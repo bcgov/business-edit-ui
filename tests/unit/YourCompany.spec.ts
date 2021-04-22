@@ -1,8 +1,6 @@
 // Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import mockRouter from './MockRouter'
-import VueRouter from 'vue-router'
 
 // Store
 import { getVuexStore } from '@/store'
@@ -11,7 +9,7 @@ import { getVuexStore } from '@/store'
 import { createLocalVue, mount } from '@vue/test-utils'
 import {
   BusinessContactInfo,
-  CorrectBusinessType,
+  ChangeBusinessType,
   FolioNumber,
   OfficeAddresses,
   YourCompany
@@ -20,8 +18,6 @@ import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
-localVue.use(VueRouter)
-const router = mockRouter.mock()
 
 const vuetify = new Vuetify({})
 
@@ -29,12 +25,9 @@ describe('YourCompany in a Correction', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
-  beforeAll(() => {
-    router.push({ name: 'correction' })
-  })
-
   beforeEach(() => {
-    wrapper = mount(YourCompany, { vuetify, store, localVue, router })
+    store.state.stateModel.tombstone.filingType = 'correction'
+    wrapper = mount(YourCompany, { vuetify, store, localVue })
   })
 
   afterEach(() => {
@@ -42,22 +35,22 @@ describe('YourCompany in a Correction', () => {
   })
 
   it('renders the YourCompany Component and default subcomponents', async () => {
-    expect(wrapper.find(YourCompany).exists()).toBe(true)
-    expect(wrapper.find(BusinessContactInfo).exists()).toBe(true)
-    expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
+    expect(wrapper.findComponent(YourCompany).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
 
     // Not a premium account
-    expect(wrapper.find(FolioNumber).exists()).toBe(false)
+    expect(wrapper.findComponent(FolioNumber).exists()).toBe(false)
 
     // Not currently editing Company Name
-    expect(wrapper.find(CorrectNameOptions).exists()).toBe(false)
+    expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(false)
   })
 
   it('renders the FolioNumber Component and account is premium', async () => {
     store.state.stateModel.accountInformation.accountType = 'PREMIUM'
     await Vue.nextTick()
 
-    expect(wrapper.find(FolioNumber).exists()).toBe(true)
+    expect(wrapper.findComponent(FolioNumber).exists()).toBe(true)
   })
 
   it('renders the CORRECT label for editing a name option', async () => {
@@ -70,7 +63,11 @@ describe('YourCompany in a Correction', () => {
     wrapper.find('#btn-correct-company-name').trigger('click')
     await Vue.nextTick()
 
-    expect(wrapper.find(CorrectNameOptions).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(true)
+  })
+
+  it('hides the business type for corrections', async () => {
+    expect(wrapper.find('#company-type-section').exists()).toBe(false)
   })
 })
 
@@ -85,17 +82,15 @@ describe('YourCompany in an Alteration', () => {
     }
   }
 
-  beforeAll(() => {
-    router.push({ name: 'alteration' })
-  })
-
   beforeEach(() => {
     // Set Original business Data
+    store.state.stateModel.summaryMode = false
     store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
     store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
     store.state.stateModel.originalSnapshot = originalSnapShot
+    store.state.stateModel.tombstone.filingType = 'alteration'
 
-    wrapper = mount(YourCompany, { vuetify, store, localVue, router })
+    wrapper = mount(YourCompany, { vuetify, store, localVue })
   })
 
   afterEach(() => {
@@ -103,13 +98,13 @@ describe('YourCompany in an Alteration', () => {
   })
 
   it('renders the YourCompany Component and default subcomponents', async () => {
-    expect(wrapper.find(YourCompany).exists()).toBe(true)
-    expect(wrapper.find(CorrectBusinessType).exists()).toBe(true)
-    expect(wrapper.find(BusinessContactInfo).exists()).toBe(true)
-    expect(wrapper.find(OfficeAddresses).exists()).toBe(true)
+    expect(wrapper.findComponent(YourCompany).exists()).toBe(true)
+    expect(wrapper.findComponent(ChangeBusinessType).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
 
     // Not currently editing Company Name
-    expect(wrapper.find(CorrectNameOptions).exists()).toBe(false)
+    expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(false)
   })
 
   it('renders the CHANGE label for editing a name option', async () => {
@@ -122,7 +117,7 @@ describe('YourCompany in an Alteration', () => {
     wrapper.find('#btn-correct-company-name').trigger('click')
     await Vue.nextTick()
 
-    expect(wrapper.find(CorrectNameOptions).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(true)
   })
 
   it('displays the business type and message after changing to a numbered Company', async () => {
@@ -145,6 +140,7 @@ describe('YourCompany in an Alteration', () => {
     store.state.stateModel.nameRequest.legalType = 'CR'
     store.state.stateModel.nameRequest.expiry = 'Wed, 10 Mar 2021 08:00:00 GMT'
     store.state.stateModel.nameRequest.status = 'APPROVED'
+    store.state.stateModel.nameRequest.requestType = 'NEW'
     store.state.stateModel.nameRequest.applicant.fullName = 'Mock Full Name'
     store.state.stateModel.nameRequest.applicant.fullAddress = '123 Mock Lane, Victoria, BC, 1t2 3t4, CA'
     store.state.stateModel.nameRequest.applicant.phoneNumber = '2501234567'

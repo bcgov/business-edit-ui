@@ -1,8 +1,6 @@
 // Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import VueRouter from 'vue-router'
-import mockRouter from './MockRouter'
 import sinon from 'sinon'
 import { axios } from '@/utils'
 
@@ -10,14 +8,12 @@ import { axios } from '@/utils'
 import { getVuexStore } from '@/store'
 
 // Components
-import { createLocalVue, createWrapper, mount } from '@vue/test-utils'
+import { createLocalVue, mount } from '@vue/test-utils'
 import { BusinessContactInfo } from '@/components/YourCompany'
 import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
-localVue.use(VueRouter)
-const router = mockRouter.mock()
 const vuetify = new Vuetify({})
 
 const contactInfo = {
@@ -37,13 +33,13 @@ describe('BusinessContactInfo for a correction', () => {
   }
 
   beforeAll(async () => {
-    await router.push({ name: 'correction' })
+    store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.defineCompanyStep.businessContact = contactInfo
     store.state.stateModel.originalIA.incorporationApplication.contactPoint = originalCorrectionContact
   })
 
   beforeEach(async () => {
-    wrapper = mount(BusinessContactInfo, { vuetify, store, localVue, router })
+    wrapper = mount(BusinessContactInfo, { vuetify, store, localVue })
   })
 
   afterEach(() => {
@@ -51,7 +47,7 @@ describe('BusinessContactInfo for a correction', () => {
   })
 
   it('renders the CorrectBusinessContactInfo Component', async () => {
-    expect(wrapper.find(BusinessContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
   })
 
   it('loads the correct original contact info for a correction', async () => {
@@ -92,7 +88,7 @@ describe('CorrectBusinessContactInfo for an alteration', () => {
   }
 
   beforeAll(async () => {
-    await router.push({ name: 'alteration' })
+    store.state.stateModel.tombstone.filingType = 'alteration'
     sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
     store.state.stateModel.tombstone.businessId = 'BC1234567'
     store.state.stateModel.defineCompanyStep.businessContact = contactInfo
@@ -100,7 +96,7 @@ describe('CorrectBusinessContactInfo for an alteration', () => {
   })
 
   beforeEach(async () => {
-    wrapper = mount(BusinessContactInfo, { vuetify, store, localVue, router })
+    wrapper = mount(BusinessContactInfo, { vuetify, store, localVue })
   })
 
   afterEach(() => {
@@ -108,7 +104,7 @@ describe('CorrectBusinessContactInfo for an alteration', () => {
   })
 
   it('renders the CorrectBusinessContactInfo Component', async () => {
-    expect(wrapper.find(BusinessContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
   })
 
   it('loads the correct original contact info for an alteration', async () => {

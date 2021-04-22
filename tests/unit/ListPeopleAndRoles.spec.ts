@@ -307,7 +307,7 @@ describe('List People And Roles component', () => {
     })
 
     // verify that add component is at the top (above the list)
-    const section = wrapper.find('#list-people-roles > #people-roles-add')
+    const section = wrapper.find('#people-roles-add')
     expect(section.exists()).toBe(true)
     expect(section.find('.add-org-header').text()).toBe('Add Person')
     expect(section.find('#org-person-form').exists()).toBe(true)
@@ -325,7 +325,7 @@ describe('List People And Roles component', () => {
     })
 
     // verify that add component is at the top (above the list)
-    const section = wrapper.find('#list-people-roles > #people-roles-add')
+    const section = wrapper.find('#people-roles-add')
     expect(section.exists()).toBe(true)
     expect(section.find('.add-org-header').text()).toBe('Add Corporation or Firm')
     expect(section.find('#org-person-form').exists()).toBe(true)

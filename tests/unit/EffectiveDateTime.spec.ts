@@ -245,7 +245,7 @@ describe('Effective Date Time component', () => {
     expect(getLastEvent(wrapper, 'valid')).toEqual(false)
   })
 
-  // this test runs fine locally but fails in GH CI action
+  // FUTURE: this works locally but not in GHA; fix later
   xit('emits a valid state when Future Effective is selected and valid date and time are entered', async () => {
     const wrapper = wrapperFactory({
       currentJsDate: today,
@@ -296,7 +296,7 @@ describe('Effective Date Time component', () => {
     expect(getLastEvent(wrapper, 'valid')).toEqual(false)
   })
 
-  // this test runs fine locally but fails in GH CI action
+  // FUTURE: this works locally but not in GHA; fix later
   xit('displays an invalid Date Alert when the date is invalid', async () => {
     const wrapper = wrapperFactory({
       currentJsDate: today,

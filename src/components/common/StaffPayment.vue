@@ -1,14 +1,17 @@
 <template>
   <section id="staff-payment">
     <header>
-      <h2>3. Staff Payment</h2>
+      <h2>4. Staff Payment</h2>
     </header>
 
-    <staff-payment-component
-      :staffPaymentData="getStaffPayment"
-      @update:staffPaymentData="onStaffPaymentDataUpdate($event)"
-      @valid="setStaffPaymentValidity($event)"
-    />
+    <div :class="{'invalid-section': invalidStaffPayment}">
+      <staff-payment-component
+        :staffPaymentData="getStaffPayment"
+        :invalidSection="invalidStaffPayment"
+        @update:staffPaymentData="onStaffPaymentDataUpdate($event)"
+        @valid="setStaffPaymentValidity($event)"
+      />
+    </div>
   </section>
 </template>
 
@@ -20,7 +23,7 @@ import { Action, Getter } from 'vuex-class'
 import { StaffPayment as StaffPaymentComponent } from '@bcrs-shared-components/staff-payment'
 
 // Interfaces and Enums
-import { ActionBindingIF } from '@/interfaces'
+import { ActionBindingIF, ValidFlagsIF } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
@@ -31,11 +34,18 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 })
 export default class StaffPayment extends Vue {
   // Global getters
+  @Getter getAlterationValidFlags!: ValidFlagsIF
+  @Getter getAppValidate!: boolean
   @Getter getStaffPayment!: StaffPaymentIF
 
   // Global actions
   @Action setStaffPayment!: ActionBindingIF
   @Action setStaffPaymentValidity!: ActionBindingIF
+
+  /** Check validity state, only when prompted by app. */
+  private get invalidStaffPayment (): boolean {
+    return this.getAppValidate && !this.getAlterationValidFlags.isValidStaffPayment
+  }
 
   onStaffPaymentDataUpdate (event: any) {
     let staffPaymentData: StaffPaymentIF = { ...this.getStaffPayment, ...event }
@@ -88,16 +98,29 @@ export default class StaffPayment extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  ::v-deep .v-input .v-label {
-    font-weight: normal;
+@import '@/assets/styles/theme.scss';
+
+::v-deep .v-input .v-label {
+  font-weight: normal;
+}
+
+::v-deep .v-input--radio-group__input {
+  .v-radio:not(:first-child) {
+    padding-top: 2rem;
   }
-  ::v-deep .v-input--radio-group__input {
-    .v-radio:not(:first-child) {
-      padding-top: 2rem;
-    }
-    .v-input--checkbox {
-      padding-top: 2rem;
-    }
+  .v-input--checkbox {
+    padding-top: 2rem;
   }
+}
+
+::v-deep .v-input--selection-controls__ripple {
+  color: $gray7;
+}
+
+::v-deep .v-text-field__slot {
+  .v-label {
+    color: $gray7;
+  }
+}
 
 </style>

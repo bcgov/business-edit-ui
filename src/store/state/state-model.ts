@@ -3,6 +3,7 @@ import { EmptyNameRequest, StateModelIF } from '@/interfaces'
 export const stateModel: StateModelIF = {
   currentJsDate: null,
   tombstone: {
+    filingType: null,
     keycloakRoles: [],
     authRoles: [],
     userInfo: null,
@@ -16,16 +17,22 @@ export const stateModel: StateModelIF = {
     isSavingResuming: false,
     isFilingPaying: false,
     ignoreChanges: false,
-    haveChanges: false
+    haveUnsavedChanges: false
   },
   newAlteration: {
     appValidate: false,
+    componentValidate: false,
     provisionsRemoved: null,
     courtOrder: {
       fileNumber: '',
       hasPlanOfArrangement: false
     },
     validComponents: {
+      isValidCompanyName: true,
+      isValidBusinessType: true,
+      isValidNameTranslation: true,
+      isValidContactInfo: true,
+      isValidShareStructure: true,
       isValidResolutionDate: true
     },
     validFlags: {
@@ -100,6 +107,7 @@ export const stateModel: StateModelIF = {
     valid: false,
     changed: false,
     resolutionDates: [],
+    previousResolutionDates: [],
     shareClasses: []
   },
   incorporationAgreementStep: {

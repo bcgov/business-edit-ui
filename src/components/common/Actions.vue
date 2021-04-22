@@ -1,7 +1,7 @@
 <template>
   <v-container id="action-buttons-container" class="list-item">
     <!-- don't show buttons until Entity Type is identified -->
-    <template v-if="isEntityType">
+    <template v-if="!!getEntityType">
       <div class="buttons-left">
         <!-- disable Save button for now -->
         <v-btn id="save-btn" large
@@ -46,23 +46,26 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Mixins, Emit } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Getter, Action } from 'vuex-class'
 
-// Interfaces
-import { GetterIF, ActionBindingIF } from '@/interfaces'
+// Interfaces and Enums
+import { ActionBindingIF } from '@/interfaces'
+import { CorpTypeCd } from '@/enums'
 
 // Mixins
 import { DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
 
+/** This component is only implemented for Correction filings atm. */
 @Component({})
 export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin) {
   // Global getters
-  @Getter isEntityType!: boolean
+  @Getter getEntityType!: CorpTypeCd
   @Getter isBusySaving!: boolean
   @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
-  @Getter isFilingChanged!: boolean
+  @Getter hasCorrectionChanged!: boolean
+  @Getter hasAlterationChanged!: boolean // for testing state-getters
   @Getter isFilingValid!: boolean
   @Getter hasNewNr!: boolean
   @Getter isSaving!: boolean
@@ -74,7 +77,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
   @Action setIsSaving!: ActionBindingIF
   @Action setIsSavingResuming!: ActionBindingIF
   @Action setIsFilingPaying!: ActionBindingIF
-  @Action setHaveChanges!: ActionBindingIF
+  @Action setHaveUnsavedChanges!: ActionBindingIF
 
   /** True if the Save button should be disabled. */
   private get isSaveButtonDisabled (): boolean {
@@ -88,12 +91,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
 
   /** True if the File and Pay button should be disabled. */
   private get isFilePayButtonDisabled (): boolean {
-    return (!this.isFilingChanged || this.isBusySaving || !this.isFilingValid || this.isEditing)
-  }
-
-  /** Called when Cancel button is clicked. */
-  private onClickCancel (): void {
-    this.emitGoToDashboard()
+    return (!this.hasCorrectionChanged || this.isBusySaving || !this.isFilingValid || this.isEditing)
   }
 
   /**
@@ -110,7 +108,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
       const filing = await this.buildIaCorrectionFiling(true)
       filingComplete = await this.updateFiling(filing, true)
       // clear flag
-      this.setHaveChanges(false)
+      this.setHaveUnsavedChanges(false)
     } catch (error) {
       this.$root.$emit('save-error-event', error)
       this.setIsSaving(false)
@@ -134,7 +132,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
       const filing = await this.buildIaCorrectionFiling(true)
       filingComplete = await this.updateFiling(filing, true)
       // clear flag
-      this.setHaveChanges(false)
+      this.setHaveUnsavedChanges(false)
     } catch (error) {
       this.$root.$emit('save-error-event', error)
       this.setIsSavingResuming(false)
@@ -142,7 +140,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     }
 
     this.setIsSavingResuming(false)
-    this.emitGoToDashboard()
+    this.$root.$emit('go-to-dashboard')
   }
 
   /**
@@ -172,7 +170,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
       const filing = await this.buildIaCorrectionFiling(false)
       filingComplete = await this.updateFiling(filing, false)
       // clear flag
-      this.setHaveChanges(false)
+      this.setHaveUnsavedChanges(false)
     } catch (error) {
       this.$root.$emit('save-error-event', error)
       this.setIsFilingPaying(false)
@@ -193,8 +191,8 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
         // otherwise user will have to retry payment later
         window.location.assign(payUrl)
       } else {
-        // redirect to Dashboard URL
-        window.location.assign(dashboardUrl + this.getBusinessId)
+        // otherwise go straight to dashboard
+        this.$root.$emit('go-to-dashboard')
       }
     } else {
       const error = new Error('Missing Payment Token')
@@ -203,9 +201,10 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     }
   }
 
-  /** Emits Go To Dashboard event. */
-  @Emit('goToDashboard')
-  private emitGoToDashboard (): void { }
+  /** Called when Cancel button is clicked. */
+  private onClickCancel (): void {
+    this.$root.$emit('go-to-dashboard')
+  }
 }
 </script>
 

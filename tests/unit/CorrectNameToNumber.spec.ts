@@ -47,7 +47,7 @@ describe('CorrectNameToNumber', () => {
   it('renders the CorrectNameToNumber Component', async () => {
     const wrapper = wrapperFactory()
 
-    expect(wrapper.find(CorrectNameToNumber).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectNameToNumber).exists()).toBe(true)
   })
 
   it('verifies the checkbox default state', async () => {

@@ -1,7 +1,5 @@
-import {
-  Signin, Signout, Alteration, Correction
-} from '@/views'
-import { RouteNames } from '@/enums'
+import { Signin, Signout, Alteration, Correction } from '@/views'
+import { FilingTypes, RouteNames } from '@/enums'
 
 export const routes = [
   {
@@ -28,7 +26,8 @@ export const routes = [
     component: Correction,
     meta: {
       requiresAuth: true,
-      isStaffOnly: true
+      isStaffOnly: true,
+      filingType: FilingTypes.CORRECTION
     }
   },
   {
@@ -37,7 +36,8 @@ export const routes = [
     component: Alteration,
     meta: {
       requiresAuth: true,
-      isStaffOnly: false
+      isStaffOnly: false,
+      filingType: FilingTypes.ALTERATION
     }
   },
   {

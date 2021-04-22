@@ -496,7 +496,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     const shareStructure = filing.alteration.shareStructure
     this.setShareClasses(shareStructure.shareClasses)
     this.setResolutionDates(shareStructure.resolutionDates)
-    this.setOriginalResolutionDates(this.getSnapshotShareStructure?.resolutionDates || null)
+    this.setOriginalResolutionDates(businessSnapshot.resolutions)
 
     // Store business contact
     this.setBusinessContact({
@@ -532,7 +532,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * Parses a business snapshot into the store.
    * @param businessSnapshot the latest business snapshot
    */
-  parseBusinessSnapshot (businessSnapshot: BusinessSnapshotIF = this.getOriginalSnapshot): void {
+  parseBusinessSnapshot (businessSnapshot = this.getOriginalSnapshot): void {
     // Store original snapshot
     this.setOriginalSnapshot(businessSnapshot)
 
@@ -561,6 +561,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         }
       }) || []
     )
+
+    // Clear provisions removed
+    this.setProvisionsRemoved(null)
 
     // Store office addresses
     this.setOfficeAddresses(businessSnapshot.incorporationAddress)
@@ -591,9 +594,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }) || []
     )
 
-    // Store share classes and original resolution dates
+    // Store share classes and resolution dates
     this.setShareClasses(cloneDeep(businessSnapshot.shareStructure.shareClasses))
-    this.setOriginalResolutionDates(businessSnapshot.shareStructure.resolutionDates)
+    this.setResolutionDates([])
+    this.setOriginalResolutionDates(businessSnapshot.resolutions)
 
     // Store business contact
     this.setBusinessContact(businessSnapshot.contactPoint)

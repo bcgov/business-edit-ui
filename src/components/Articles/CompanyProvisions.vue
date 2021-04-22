@@ -198,6 +198,7 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
 .action-btns {
   display: flex;
   justify-content: flex-end;
@@ -257,5 +258,4 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
 .invalid {
   color: $app-red;
 }
-
 </style>

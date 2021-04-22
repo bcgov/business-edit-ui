@@ -1,5 +1,6 @@
 import {
   AccountInformationIF,
+  ActionKvIF,
   BusinessInformationIF,
   BusinessSnapshotIF,
   CertifyIF,
@@ -11,12 +12,13 @@ import {
   NameRequestIF,
   NameTranslationIF,
   OrgPersonIF,
+  ResolutionsIF,
   ShareClassIF,
   StateIF,
   FeesIF
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 export const mutateBusinessId = (state: StateIF, businessId: string) => {
   state.stateModel.tombstone.businessId = businessId
@@ -60,12 +62,12 @@ export const mutateCurrentJsDate = (state: StateIF, date: Date) => {
 
 export const mutateIsFutureEffective = (state: StateIF, isFutureEffective: boolean) => {
   state.stateModel.effectiveDateTime.isFutureEffective = isFutureEffective
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutateEffectiveDateTimeString = (state: StateIF, dateTime: string) => {
   state.stateModel.effectiveDateTime.dateTimeString = dateTime
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutateEffectiveDateValid = (state: StateIF, valid: boolean) => {
@@ -74,7 +76,7 @@ export const mutateEffectiveDateValid = (state: StateIF, valid: boolean) => {
 
 export const mutateCertifyState = (state: StateIF, certifyState: CertifyIF) => {
   state.stateModel.certifyState = certifyState
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutateCertifyStateValidity = (state: StateIF, validity: boolean) => {
@@ -84,7 +86,7 @@ export const mutateCertifyStateValidity = (state: StateIF, validity: boolean) =>
 
 export const mutateDocumentOptionalEmail = (state: StateIF, documentOptionalEmail: string) => {
   state.stateModel.documentDelivery.documentOptionalEmail = documentOptionalEmail
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutateDocumentOptionalEmailValidity = (state: StateIF, validity: boolean) => {
@@ -93,7 +95,7 @@ export const mutateDocumentOptionalEmailValidity = (state: StateIF, validity: bo
 
 export const mutateBusinessContact = (state: StateIF, businessContact: ContactPointIF) => {
   state.stateModel.defineCompanyStep.businessContact = businessContact
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutateDefineCompanyStepValidity = (state: StateIF, validity: boolean) => {
@@ -106,12 +108,12 @@ export const mutateDefineCompanyStepChanged = (state: StateIF, changed: boolean)
 
 export const mutateOfficeAddresses = (state: StateIF, addresses: IncorporationAddressIf) => {
   state.stateModel.defineCompanyStep.officeAddresses = addresses
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutatePeopleAndRoles = (state: StateIF, orgPeople: OrgPersonIF[]) => {
   state.stateModel.peopleAndRolesStep.orgPeople = orgPeople
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutatePeopleAndRolesChanged = (state: StateIF, changed: boolean) => {
@@ -140,7 +142,7 @@ export const mutateBusinessInformation = (state: StateIF, businessInformation: B
 
 export const mutateNameRequest = (state: StateIF, nameRequest: NameRequestIF) => {
   state.stateModel.nameRequest = nameRequest
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutateNameTranslations = (state: StateIF, nameTranslations: NameTranslationIF[]) => {
@@ -157,7 +159,7 @@ export const mutateCorrectedFilingId = (state: StateIF, correctedFilingId: numbe
 
 export const mutateShareClasses = (state: StateIF, shareClasses: ShareClassIF[]) => {
   state.stateModel.shareStructureStep.shareClasses = shareClasses
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutateShareStructureChanged = (state: StateIF, changed: boolean) => {
@@ -170,7 +172,7 @@ export const mutateCreateShareStructureStepValidity = (state: StateIF, validity:
 
 export const mutateIncorporationAgreementStepData = (state: StateIF, stepData: IncorporationAgreementIF) => {
   state.stateModel.incorporationAgreementStep = stepData
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutateIncorporationAgreementChanged = (state: StateIF, changed: boolean) => {
@@ -185,8 +187,8 @@ export const mutateIgnoreChanges = (state: StateIF, ignoreChanges: boolean) => {
   state.stateModel.tombstone.ignoreChanges = ignoreChanges
 }
 
-export const mutateHaveChanges = (state: StateIF, haveChanges: boolean) => {
-  state.stateModel.tombstone.haveChanges = haveChanges
+export const mutateHaveUnsavedChanges = (state: StateIF, haveUnsavedChanges: boolean) => {
+  state.stateModel.tombstone.haveUnsavedChanges = haveUnsavedChanges
 }
 
 export const mutateEntityType = (state: StateIF, entityType: CorpTypeCd) => {
@@ -203,7 +205,7 @@ export const mutateOriginalSnapshot = (state: StateIF, originalSnapshot: Busines
 
 export const mutateStaffPayment = (state: StateIF, staffPayment: StaffPaymentIF) => {
   state.stateModel.staffPaymentStep.staffPayment = staffPayment
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveChanges(state, true)
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutateStaffPaymentValidity = (state: StateIF, validity: boolean) => {
@@ -251,12 +253,16 @@ export const mutateSummaryMode = (state: StateIF, summaryMode: boolean) => {
   state.stateModel.summaryMode = summaryMode
 }
 
+export const mutateFilingType = (state: StateIF, filingType: FilingTypes) => {
+  state.stateModel.tombstone.filingType = filingType
+}
+
 export const mutateProvisionsRemoved = (state: StateIF, provisionsRemoved: boolean) => {
   state.stateModel.newAlteration.provisionsRemoved = provisionsRemoved
 }
 
-export const mutateOriginalResolutionDates = (state: StateIF, resolutionDates: string[]) => {
-  state.stateModel.originalAlteration.alteration.shareStructure.resolutionDates = resolutionDates
+export const mutateOriginalResolutionDates = (state: StateIF, resolutionDates: ResolutionsIF[]) => {
+  state.stateModel.shareStructureStep.previousResolutionDates = resolutionDates
 }
 
 export const mutateResolutionDates = (state: StateIF, resolutionDates: string[]) => {
@@ -275,6 +281,10 @@ export const mutateAppValidate = (state: StateIF, isValid: boolean) => {
   state.stateModel.newAlteration.appValidate = isValid
 }
 
+export const mutateComponentValidate = (state: StateIF, isValid: boolean) => {
+  state.stateModel.newAlteration.componentValidate = isValid
+}
+
 export const mutateValidFileNumber = (state: StateIF, isValid: boolean) => {
   state.stateModel.newAlteration.validFlags.isValidFileNum = isValid
 }
@@ -285,4 +295,8 @@ export const mutateIsValidResolutionDate = (state: StateIF, isValid: boolean) =>
 
 export const mutateCurrentFees = (state: StateIF, fees: FeesIF) => {
   state.stateModel.currentFees = fees
+}
+
+export const mutateIsValidComponent = (state: StateIF, kv: ActionKvIF) => {
+  state.stateModel.newAlteration.validComponents[kv.key] = kv.value
 }

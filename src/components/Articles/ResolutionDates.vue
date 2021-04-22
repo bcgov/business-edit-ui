@@ -5,7 +5,7 @@
     <v-row no-gutters>
       <v-col cols="3">
         <label>
-          <span>Resolution or<br>Court Order Dates</span>
+          <span :class="{'error-text': !getIsResolutionDatesValid}">Resolution or<br>Court Order Dates</span>
         </label>
       </v-col>
 
@@ -18,7 +18,7 @@
           Dates of resolutions or court orders to alter the company's share structure or the
           special rights or restrictions attached to a class or series of shares:
         </div>
-        <p v-if="!getIsResolutionDatesValid" class="error-text mt-6">
+        <p v-if="!getIsResolutionDatesValid" class="error-text small-text mt-6">
           You must add a resolution or court order date because your share structure contains a class or series of
           shares with special rights or restrictions and changes were made to you share structure.
         </p>
@@ -74,7 +74,7 @@
     <v-row no-gutters v-if="isAdding" class="mt-4">
       <v-col cols="3"></v-col>
       <v-col cols="9" class="mb-n4 pr-3">
-        <date-picker
+        <DatePicker
           title="Resolution or Court Order Date"
           nudge-right="80"
           nudge-top="15"
@@ -87,7 +87,7 @@
     </v-row>
 
     <!-- Previous Dates -->
-    <v-row no-gutters v-if="havePreviousDates" class="mt-2 mb-1">
+    <v-row no-gutters v-if="havePreviousDates && !isSummaryMode" class="mt-2 mb-1">
       <v-col cols="3"></v-col>
       <v-col cols="7">
         <v-btn class="show-previous-dates-btn ml-n4"
@@ -100,7 +100,7 @@
         </v-btn>
         <template v-if="displayPreviousDates">
           <ul class="resolution-date-list info-text pl-0 mt-3">
-            <li v-for="(date, index) in previousDates" :key="`resolutionDate-${index}`">{{date}}</li>
+            <li v-for="(resolutions, index) in previousDates" :key="`resolutionDate-${index}`">{{resolutions.date}}</li>
           </ul>
         </template>
       </v-col>
@@ -110,10 +110,11 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins'
 import { DatePicker } from '@bcrs-shared-components/date-picker'
 import { cloneDeep } from 'lodash'
+import { ActionBindingIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -140,7 +141,13 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessFoundingDate!: string
   @Getter getCurrentDate!: string
+  @Getter hasShareStructureChanged!: boolean
+  @Getter getHasOriginalRightsOrRestrictions!: boolean
   @Getter getIsResolutionDatesValid!: boolean
+  @Getter isSummaryMode!: boolean
+
+  // Global setter
+  @Action setValidComponent!: ActionBindingIF
 
   // Local properties
   displayPreviousDates = false
@@ -179,8 +186,17 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
 
   /** Remove resolution date if rights or restrictions are removed from ShareStructure. */
   @Watch('hasRightsOrRestrictions')
+  @Watch('hasShareStructureChanged')
   private removeResolutionDate (): void {
-    if (!this.hasRightsOrRestrictions) this.onRemove(0)
+    if ((!this.getHasOriginalRightsOrRestrictions && !this.hasRightsOrRestrictions) || !this.hasShareStructureChanged) {
+      this.onRemove(0)
+    }
+  }
+
+  /** Updates store when resolution dates validity changes. */
+  @Watch('getIsResolutionDatesValid', { immediate: true })
+  private onEditingNameChanged (val: boolean): void {
+    this.setValidComponent({ key: 'isValidResolutionDate', value: val })
   }
 
   /** Emit updated list of dates. */

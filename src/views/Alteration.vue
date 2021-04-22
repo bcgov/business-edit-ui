@@ -1,84 +1,116 @@
 <template>
   <section class="pb-10">
-    <!-- Profile View -->
-    <template v-if="!isSummaryMode">
-      <header>
-        <h1>Company Information</h1>
-      </header>
+    <!-- Company Information-->
+    <v-slide-x-transition hide-on-leave>
+      <div v-if="!isSummaryMode">
+        <header>
+          <h1>Company Information</h1>
+        </header>
 
-      <section class="mt-6">
-        <p>You are legally obligated to keep your company information up to date. Necessary fees will be applied as
-          updates are made.</p>
-      </section>
+        <section class="mt-6">
+          You are legally obligated to keep your company information up to date. Necessary fees
+          will be applied as updates are made.
+        </section>
 
-      <your-company class="mt-10" />
+        <YourCompany class="mt-10" />
 
-      <current-directors class="mt-10" />
+        <CurrentDirectors class="mt-10" />
 
-      <share-structures class="mt-10" />
+        <ShareStructures class="mt-10" />
 
-      <articles class="mt-10" />
+        <Articles class="mt-10" />
 
-<!--      Commented out until required-->
-<!--      <agreement-type class="mt-10" />-->
-<!--      <detail class="mt-10" />-->
-    </template>
+        <AgreementType class="mt-10" v-if="false" />
 
-    <!-- Summary View -->
-    <template v-else>
-      <header>
-        <h1>Review and Certify</h1>
-      </header>
-      <section class="mt-6">
-        <p>Review and certify the changes you are about to make to your company. Certain changes require an Alteration
+        <Detail class="mt-10" v-if="false" />
+      </div>
+    </v-slide-x-transition>
+
+    <!-- Review and Certify-->
+    <v-slide-x-reverse-transition hide-on-leave>
+      <div v-if="isSummaryMode && showFeeSummary">
+        <header>
+          <h1>Review and Certify</h1>
+        </header>
+
+        <section class="mt-6">
+          <p>Review and certify the changes you are about to make to your company. Certain changes require an Alteration
            Notice which will incur a ${{feePrices.filingFees.toFixed(2)}} fee. Choosing an alteration date and time in
            the future will incur an additional ${{feePrices.futureEffectiveFees.toFixed(2)}} fee.</p>
-      </section>
+        </section>
 
-      <!-- FUTURE: set `pleaseValidate` when user clicks File and Pay -->
-      <alteration-summary
-        class="mt-10"
-        :validate="getAppValidate"
-        @haveChanges="onAlterationSummaryChanges()"
-      />
-
-      <documents-delivery
-       class="mt-10"
-       :validate="getAppValidate"
-        @valid="setDocumentOptionalEmailValidity($event)"
-      />
-
-      <certify-section
-       class="mt-10"
-       :validate="getAppValidate"
-      />
-
-      <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
-      <template v-if="isRoleStaff">
-        <header class="mt-10">
-          <h2>3. Court Order and Plan of Arrangement</h2>
-        </header>
-        <p class="my-3 pb-2">If this filing is pursuant to a court order, enter the court order number. If this filing
-          is pursuant to a plan of arrangement, <br>enter the court order number and select Plan of Arrangement.</p>
-
-        <court-order-poa
-          id="court-order"
-          :validate="getAppValidate"
-          :draftCourtOrderNumber="getFileNumber"
-          :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
-          @emitCourtNumber="setFileNumber($event)"
-          @emitPoa="setHasPlanOfArrangement($event)"
-          @emitValid="setValidFileNumber($event)"
-        />
-
-        <staff-payment
+        <AlterationSummary
           class="mt-10"
           :validate="getAppValidate"
-          @haveChanges="onStaffPaymentChanges()"
+          @haveChanges="onAlterationSummaryChanges()"
         />
-      </template>
 
-    </template>
+        <DocumentsDelivery
+          class="mt-10"
+          :validate="getAppValidate"
+          @valid="setDocumentOptionalEmailValidity($event)"
+        />
+
+        <CertifySection
+          class="mt-10"
+          :validate="getAppValidate"
+        />
+
+        <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
+        <template v-if="isRoleStaff">
+          <h2 class="mt-10">3. Court Order and Plan of Arrangement</h2>
+          <p class="my-3 pb-2">
+            If this filing is pursuant to a court order, enter the court order number. If this
+            filing is pursuant to a plan of arrangement, enter the court order number and select
+            Plan of Arrangement.
+          </p>
+
+          <div :class="{'invalid-section': invalidPoa}">
+            <CourtOrderPoa
+              id="court-order"
+              :validate="getAppValidate"
+              :draftCourtOrderNumber="getFileNumber"
+              :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
+              :invalidSection="invalidPoa"
+              @emitCourtNumber="setFileNumber($event)"
+              @emitPoa="setHasPlanOfArrangement($event)"
+              @emitValid="setValidFileNumber($event)"
+            />
+          </div>
+
+          <StaffPayment
+            class="mt-10"
+            :validate="getAppValidate"
+            @haveChanges="onStaffPaymentChanges()"
+          />
+        </template>
+      </div>
+    </v-slide-x-reverse-transition>
+
+    <!-- Done-->
+    <v-fade-transition>
+      <div v-if="isSummaryMode && !showFeeSummary">
+        <header>
+          <h1>Review and Certify</h1>
+        </header>
+
+        <section class="mt-6">
+          You have deleted all fee-based changes and your company information has reverted to its
+          original state. If you made any non-fee changes such as updates to your Registered
+          Office Contact Information, please note that these changes have already been saved.
+        </section>
+
+        <v-btn
+          large
+          color="primary"
+          id="done-button"
+          class="mt-8"
+          @click="$root.$emit('go-to-dashboard')"
+        >
+          <span>Done</span>
+        </v-btn>
+      </div>
+    </v-fade-transition>
   </section>
 </template>
 
@@ -88,18 +120,25 @@ import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 
 // Components
-import { AlterationSummary, NoFeeSummary, DocumentsDelivery } from '@/components/Summary'
+import { AlterationSummary, DocumentsDelivery } from '@/components/Summary'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { CurrentDirectors } from '@/components/PeopleAndRoles'
-import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
+import { CertifySection, Detail, StaffPayment } from '@/components/common'
 import { ShareStructures } from '@/components/ShareStructure'
 import { Articles } from '@/components/Articles'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 
 // Mixins, Interfaces, Enums, etc
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
-import { ActionBindingIF, BusinessSnapshotIF, EffectiveDateTimeIF, FilingDataIF, FeesIF } from '@/interfaces'
+import {
+  ActionBindingIF,
+  BusinessSnapshotIF,
+  EffectiveDateTimeIF,
+  FilingDataIF,
+  ValidFlagsIF,
+  FeesIF
+} from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
@@ -109,14 +148,12 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
   components: {
     AgreementType,
     AlterationSummary,
+    Articles,
     CertifySection,
-    CompletingParty,
     CourtOrderPoa,
+    CurrentDirectors,
     Detail,
     DocumentsDelivery,
-    NoFeeSummary,
-    CurrentDirectors,
-    Articles,
     ShareStructures,
     StaffPayment,
     YourCompany
@@ -124,26 +161,24 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 })
 export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin, PayApiMixin) {
   // Global getters
+  @Getter getAlterationValidFlags!: ValidFlagsIF
   @Getter getEntityType!: CorpTypeCd
   @Getter isSummaryMode!: boolean
   @Getter isRoleStaff!: boolean
-  @Getter hasBusinessNameChanged!: boolean
-  @Getter hasBusinessTypeChanged!: boolean
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
-  @Getter getDocumentOptionalEmail!: string
   @Getter getAppValidate!: boolean
   @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
+  @Getter showFeeSummary!: boolean
 
   // Global actions
   @Action setFileNumber!: ActionBindingIF
-  @Action setHaveChanges!: ActionBindingIF
+  @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
-  @Action setSummaryMode!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setValidFileNumber!: ActionBindingIF
   @Action setCurrentFees!: ActionBindingIF
@@ -165,6 +200,11 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
+  /** Check validity state, only when prompted by app. */
+  private get invalidPoa (): boolean {
+    return this.getAppValidate && !this.getAlterationValidFlags.isValidFileNum
+  }
+
   /** Called when App is ready and this component can load its data. */
   @Watch('appReady')
   async onAppReady (val: boolean): Promise<void> {
@@ -178,7 +218,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     // bypass this when Jest is running as FF are not fetched
     if (!this.isJestRunning && !getFeatureFlag('alteration-ui-enabled')) {
       window.alert('Alterations are not available at the moment. Please check again later.')
-      this.redirectEntityDashboard()
+      this.$root.$emit('go-to-dashboard')
       return
     }
 
@@ -228,7 +268,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     }
 
     // now that all data is loaded, wait for things to stabilize and reset flag
-    Vue.nextTick(() => this.setHaveChanges(false))
+    Vue.nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
   private async fetchCurrentFees (): Promise<FeesIF> {
@@ -253,10 +293,11 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       this.fetchIncorporationAddress(),
       this.fetchNameTranslations(),
       this.fetchOrgPersons(),
-      this.fetchShareStructure()
+      this.fetchShareStructure(),
+      this.fetchResolutions()
     ])
 
-    if (items.length !== 6) throw new Error('Failed to fetch business snapshot')
+    if (items.length !== 7) throw new Error('Failed to fetch business snapshot')
 
     return {
       businessInfo: items[0],
@@ -264,7 +305,8 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       incorporationAddress: items[2],
       nameTranslations: items[3],
       orgPersons: items[4],
-      shareStructure: items[5]
+      shareStructure: items[5],
+      resolutions: items[6]
     }
   }
 
@@ -288,12 +330,6 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     this.setCurrentFees(await this.fetchCurrentFees())
   }
 
-  /** Redirects browser to Entity Dashboard. */
-  private redirectEntityDashboard (): void {
-    const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-    window.location.assign(dashboardUrl + this.getBusinessId)
-  }
-
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   private emitFetchError (message: string = ''): void { }
@@ -303,3 +339,11 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   private emitHaveData (haveData: Boolean = true): void { }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
+#done-button {
+  width: 10rem;
+}
+</style>

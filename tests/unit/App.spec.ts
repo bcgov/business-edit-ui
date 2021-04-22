@@ -13,8 +13,17 @@ import App from '@/App.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
+import { FeeSummary } from '@bcrs-shared-components/fee-summary'
 import { EntityInfo, Actions } from '@/components/common'
-import { ConfirmDialog } from '@/components/dialogs'
+import {
+  FileAndPayInvalidNameRequestDialog,
+  AccountAuthorizationDialog,
+  FetchErrorDialog,
+  PaymentErrorDialog,
+  SaveErrorDialog,
+  NameRequestErrorDialog,
+  ConfirmDeleteAllDialog
+} from '@/components/dialogs'
 
 // Other
 import mockRouter from './MockRouter'
@@ -301,7 +310,7 @@ describe.skip('Numbered company setup', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     router.push({ name: 'define-company', query: { id: 'T7654321' } })
-    wrapper = shallowMount(App, { localVue, store, router, vuetify, stubs: { Affix: true, ConfirmDialog } })
+    wrapper = shallowMount(App, { localVue, store, router, vuetify, stubs: { Affix: true } })
 
     // wait for all queries to complete
     await flushPromises()
@@ -420,7 +429,7 @@ describe.skip('App component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     router.push({ name: 'define-company', query: { id: 'T1234567' } })
-    wrapper = shallowMount(App, { localVue, store, router, vuetify, stubs: { Affix: true, ConfirmDialog } })
+    wrapper = shallowMount(App, { localVue, store, router, vuetify, stubs: { Affix: true } })
 
     // wait for all queries to complete
     await flushPromises()
@@ -430,14 +439,6 @@ describe.skip('App component', () => {
     window.location.assign = assign
     sinon.restore()
     wrapper.destroy()
-  })
-
-  it('renders the sub-components properly', () => {
-    expect(wrapper.find(SbcHeader).exists()).toBe(true)
-    expect(wrapper.find(SbcFooter).exists()).toBe(true)
-    expect(wrapper.find(SbcFeeSummary).exists()).toBe(true)
-    expect(wrapper.find(EntityInfo).exists()).toBe(true)
-    expect(wrapper.find(Actions).exists()).toBe(true)
   })
 
   it('gets auth and user info properly', () => {
@@ -507,7 +508,7 @@ describe.skip('App component', () => {
 
   it('shows confirm popup if exiting before saving changes', async () => {
     // simulate that we have unsaved changes
-    store.state.stateModel.tombstone.haveChanges = true
+    store.state.stateModel.tombstone.haveUnsavedChanges = true
 
     // call Go To Dashboard event handler
     await wrapper.vm.goToDashboard()
@@ -524,7 +525,7 @@ describe.skip('App component', () => {
 
   it('redirects to dashboard if exiting after saving changes', async () => {
     // simulate that we have no unsaved changes
-    store.state.stateModel.tombstone.haveChanges = false
+    store.state.stateModel.tombstone.haveUnsavedChanges = false
 
     // call Go To Dashboard event handler
     await wrapper.vm.goToDashboard()
@@ -536,5 +537,51 @@ describe.skip('App component', () => {
     // verify redirection
     const baseUrl = 'myhost/business/T1234567'
     expect(window.location.assign).toHaveBeenCalledWith(baseUrl)
+  })
+})
+
+describe('App component - other', () => {
+  let wrapper: any
+
+  beforeEach(async () => {
+    wrapper = shallowMount(App, { store, vuetify, stubs: { Affix: true } })
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('renders the dialogs properly', () => {
+    expect(wrapper.findComponent(FileAndPayInvalidNameRequestDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(AccountAuthorizationDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(FetchErrorDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(PaymentErrorDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(SaveErrorDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(NameRequestErrorDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(ConfirmDeleteAllDialog).exists()).toBe(true)
+  })
+
+  it('renders the sub-components properly', () => {
+    expect(wrapper.findComponent(SbcHeader).exists()).toBe(true)
+    expect(wrapper.findComponent(SbcFooter).exists()).toBe(true)
+    expect(wrapper.findComponent(SbcFeeSummary).exists()).toBe(false) // not used for alterations
+    expect(wrapper.findComponent(FeeSummary).exists()).toBe(false) // not displayed initially
+    expect(wrapper.findComponent(SbcFooter).exists()).toBe(true)
+    expect(wrapper.findComponent(EntityInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(Actions).exists()).toBe(false) // not used for alterations
+  })
+
+  it('initializes the local properties properly', () => {
+    const vm: any = wrapper.vm
+    expect(vm.accountAuthorizationDialog).toBe(false)
+    expect(vm.fetchErrorDialog).toBe(false)
+    expect(vm.paymentErrorDialog).toBe(false)
+    expect(vm.saveErrorDialog).toBe(false)
+    expect(vm.nameRequestErrorDialog).toBe(false)
+    expect(vm.nameRequestErrorType).toBe('')
+    expect(vm.saveErrors).toEqual([])
+    expect(vm.saveWarnings).toEqual([])
+    expect(vm.fileAndPayInvalidNameRequestDialog).toBe(false)
+    expect(vm.confirmDeleteAllDialog).toBe(false)
   })
 })

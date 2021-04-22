@@ -10,13 +10,13 @@
       <label class="define-company-title">Your Company</label>
     </div>
 
-    <div class="section-container mt-4">
+    <div id="company-name-section" class="section-container" :class="{'invalid-section': invalidNameSection}">
       <!-- Company Name -->
-      <v-row no-gutters>
+      <v-row no-gutters class="mt-4">
         <v-col cols="3">
-          <label><strong>Company Name</strong></label>
+          <label :class="{'error-text': invalidNameSection}"><strong>Company Name</strong></label>
           <v-flex md1 class="mt-1">
-            <v-chip v-if="companyNameChanges || (isAlterationView && hasBusinessNameChanged)"
+            <v-chip v-if="companyNameChanges || (isAlterationFiling && hasBusinessNameChanged)"
                     id="corrected-lbl"
                     x-small label
                     color="primary"
@@ -33,7 +33,7 @@
             <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
 
             <!-- Business Type Info -->
-            <template v-if="(isAlterationView && hasBusinessNameChanged) && !hasNewNr">
+            <template v-if="(isAlterationFiling && hasBusinessNameChanged) && !hasNewNr">
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
                 <span class="info-text">{{getCorpTypeDescription(getEntityType)}}</span>
@@ -44,7 +44,7 @@
             </template>
 
             <!-- Name Request Info -->
-            <template v-if="isAlterationView && hasNewNr">
+            <template v-if="isAlterationFiling && hasNewNr">
               <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -68,7 +68,7 @@
               </div>
               <div class="company-info">
                 <span class="subtitle">Request Type: </span>
-                <span class="info-text">New Business</span>
+                <span class="info-text">{{getNrRequestDesc(getNameRequest.requestType)}}</span>
               </div>
               <div class="company-info">
                 <span class="subtitle">Expiry Date: </span>
@@ -86,7 +86,7 @@
             <div class="actions mr-4">
               <!-- TODO: only show buttons for named company -->
               <v-btn
-                v-if="companyNameChanges || (isAlterationView && hasBusinessNameChanged)"
+                v-if="companyNameChanges || (isAlterationFiling && hasBusinessNameChanged)"
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -104,7 +104,7 @@
                 <v-icon small>mdi-pencil</v-icon>
                 <span>{{editLabel}}</span>
               </v-btn>
-              <span class="more-actions" v-if="companyNameChanges || (isAlterationView && hasBusinessNameChanged)">
+              <span class="more-actions" v-if="companyNameChanges || (isAlterationFiling && hasBusinessNameChanged)">
                 <v-menu
                   offset-y left nudge-bottom="4"
                   v-model="dropdown"
@@ -147,7 +147,7 @@
       </v-row>
 
       <!-- Name Request Applicant -->
-      <v-row no-gutters v-if="isAlterationView && hasNewNr" class="sub-section">
+      <v-row no-gutters v-if="isAlterationFiling && hasNewNr" class="sub-section">
         <v-col cols="3">
           <v-layout column>
             <label><strong>Name Request Applicant</strong></label>
@@ -173,15 +173,27 @@
           </div>
         </v-col>
       </v-row>
+    </div>
 
-      <!-- Business Type -->
-      <correct-business-type class="sub-section"
+    <!-- Business Type -->
+    <div v-if="isAlterationFiling"
+         id="company-type-section"
+         class="section-container"
+         :class="{'invalid-section': invalidTypeSection}"
+    >
+      <ChangeBusinessType
+        :invalidSection="invalidTypeSection"
         @haveChanges="companyTypeChanges = $event"
+        @isEditingBusinessType="isEditingType = $event"
       />
+    </div>
 
-      <!-- Name Translation(s) -->
-      <correct-name-translation class="sub-section"
+    <!-- Name Translation(s) -->
+    <div id="name-translate-section" class="section-container" :class="{'invalid-section': invalidTranslationSection}">
+      <correct-name-translation
+        :invalidSection="invalidTranslationSection"
         @haveChanges="nameTranslationChanges = $event"
+        @isEditingTranslations="isEditingTranslations = $event"
       />
     </div>
 
@@ -212,7 +224,7 @@
     <v-divider class="mx-4" />
 
     <!-- Registered Office Contact Information -->
-    <div class="section-container">
+    <div id="contact-info" class="section-container" :class="{'invalid-section': invalidContactSection}">
       <business-contact-info
         @haveChanges="contactInfoChanges = $event"
       />
@@ -243,19 +255,19 @@ import {
   GetterIF,
   IncorporationFilingIF,
   NameRequestApplicantIF,
-  NameRequestIF
+  NameRequestIF, ValidComponentsIF
 } from '@/interfaces'
 // Shared Interfaces
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 import {
   BusinessContactInfo,
-  CorrectBusinessType,
+  ChangeBusinessType,
   FolioNumber,
   CorrectNameTranslation,
   OfficeAddresses
 } from '.'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
-import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin } from '@/mixins'
+import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
 import { CorrectionTypes, CorpTypeCd } from '@/enums'
 import { ConfirmDialog } from '@/components/dialogs'
 
@@ -263,7 +275,7 @@ import { ConfirmDialog } from '@/components/dialogs'
   components: {
     ConfirmDialog,
     BusinessContactInfo,
-    CorrectBusinessType,
+    ChangeBusinessType,
     CorrectNameOptions,
     CorrectNameTranslation,
     OfficeAddresses,
@@ -274,7 +286,8 @@ export default class YourCompany extends Mixins(
   CommonMixin,
   DateMixin,
   EnumMixin,
-  LegalApiMixin
+  LegalApiMixin,
+  NameRequestMixin
 ) {
   // Refs
   $refs!: {
@@ -284,6 +297,7 @@ export default class YourCompany extends Mixins(
   // global getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
+  @Getter getComponentValidate!: boolean
   @Getter getEntityType!: CorpTypeCd
   @Getter getNameRequest!: NameRequestIF
   @Getter hasNewNr!: boolean
@@ -296,13 +310,17 @@ export default class YourCompany extends Mixins(
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getOriginalSnapshot!: BusinessSnapshotIF
   @Getter getBusinessContact!: ContactPointIF
+  @Getter isCorrectionFiling!: boolean
+  @Getter isAlterationFiling!: boolean
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
+  @Getter getValidComponentFlags!: ValidComponentsIF
 
   // Global actions
   @Action setDefineCompanyStepChanged!: ActionBindingIF
   @Action setEditingCompanyName!: ActionBindingIF
+  @Action setValidComponent!: ActionBindingIF
 
   // Declaration for template
   readonly CorpTypeCd = CorpTypeCd
@@ -319,9 +337,28 @@ export default class YourCompany extends Mixins(
   private officeAddressChanges = false
   private correctNameChoices: Array<string> = []
   private isEditingNames = false
+  private isEditingType = false
+  private isEditingTranslations = false
 
   /**  Initialize the name choices for alterations */
   mounted () { this.onApprovedName() }
+
+  private get invalidNameSection (): boolean {
+    return this.getComponentValidate && this.isEditingNames
+  }
+
+  private get invalidTypeSection (): boolean {
+    return this.getComponentValidate && this.isEditingType
+  }
+
+  private get invalidTranslationSection (): boolean {
+    return this.getComponentValidate && this.isEditingTranslations
+  }
+
+  /** Check validity state, only when prompted by app. */
+  private get invalidContactSection (): boolean {
+    return this.getComponentValidate && !this.getValidComponentFlags.isValidContactInfo
+  }
 
   /** The company name (from NR, or incorporation number). */
   private get companyName (): string {
@@ -347,12 +384,12 @@ export default class YourCompany extends Mixins(
 
   /** The recognition/founding (aka effective) datetime. */
   private get recognitionDateTime (): string {
-    if (this.isCorrectionView) {
+    if (this.isCorrectionFiling) {
       if (this.getOriginalEffectiveDateTime) {
         return (this.apiToDateAndTimeString(this.getOriginalEffectiveDateTime) + ' Pacific time')
       }
     }
-    if (this.isAlterationView) {
+    if (this.isAlterationFiling) {
       if (this.getBusinessFoundingDate) {
         return (this.apiToDateAndTimeString(this.getBusinessFoundingDate) + ' Pacific time')
       }
@@ -363,7 +400,7 @@ export default class YourCompany extends Mixins(
   /** Compare names. */
   private get isNewName () {
     const correctedName = this.getApprovedName
-    const currentName = this.isCorrectionView
+    const currentName = this.isCorrectionFiling
       ? this.getOriginalIA.incorporationApplication.nameRequest.legalName
       : this.getOriginalSnapshot.businessInfo.legalName
 
@@ -372,11 +409,11 @@ export default class YourCompany extends Mixins(
 
   /** Reset company name values to original. */
   private resetName () {
-    this.setBusinessInformation(this.isCorrectionView
+    this.setBusinessInformation(this.isCorrectionFiling
       ? this.getOriginalIA.business
       : this.getOriginalSnapshot.businessInfo
     )
-    this.setNameRequest(this.isCorrectionView
+    this.setNameRequest(this.isCorrectionFiling
       ? this.getOriginalIA.incorporationApplication.nameRequest
       : this.getOriginalSnapshot.businessInfo
     )
@@ -392,7 +429,7 @@ export default class YourCompany extends Mixins(
 
   @Watch('hasNewNr')
   private openConflictWarning (): void {
-    if (this.isConflictingLegalType && !this.companyTypeChanges && this.isAlterationView) {
+    if (this.isConflictingLegalType && !this.companyTypeChanges && this.isAlterationFiling) {
       // open confirmation dialog and wait for response
       this.$refs.confirm.open(
         'Name Request Type Does Not Match Business Type',
@@ -429,7 +466,7 @@ export default class YourCompany extends Mixins(
         CorrectionTypes.CORRECT_NAME_TO_NUMBER
       ]
       // Only allow editable name changes for Corrections
-      this.isCorrectionView && this.correctNameChoices.push(CorrectionTypes.CORRECT_NAME)
+      this.isCorrectionFiling && this.correctNameChoices.push(CorrectionTypes.CORRECT_NAME)
     } else {
       this.correctNameChoices = [
         CorrectionTypes.CORRECT_NEW_NR
@@ -438,12 +475,14 @@ export default class YourCompany extends Mixins(
   }
 
   private setDataChanges (): void {
-    const haveChanges: boolean = this.companyNameChanges ||
+    const haveChanges = (
+      this.companyNameChanges ||
       this.companyTypeChanges ||
       this.contactInfoChanges ||
       this.folioNumberChanges ||
       this.nameTranslationChanges ||
       this.officeAddressChanges
+    )
     this.setDefineCompanyStepChanged(haveChanges)
     this.emitHaveChanges(haveChanges)
   }
@@ -452,10 +491,23 @@ export default class YourCompany extends Mixins(
   @Emit('haveChanges')
   private emitHaveChanges (haveChanges: boolean): void {}
 
-  /** Updates store when local Editing property has changed. */
+  /** Updates store when local isEditingName property has changed. */
   @Watch('isEditingNames', { immediate: true })
-  private onEditingChanged (val: boolean): void {
+  private onEditingNameChanged (val: boolean): void {
+    this.setValidComponent({ key: 'isValidCompanyName', value: !val })
     this.setEditingCompanyName(val)
+  }
+
+  /** Updates store when local isEditingType property has changed. */
+  @Watch('isEditingType', { immediate: true })
+  private onEditingTypeChange (val: boolean): void {
+    this.setValidComponent({ key: 'isValidBusinessType', value: !val })
+  }
+
+  /** Updates store when local isEditingTranslations property has changed. */
+  @Watch('isEditingTranslations', { immediate: true })
+  private onEditingTranslationChange (val: boolean): void {
+    this.setValidComponent({ key: 'isValidNameTranslation', value: !val })
   }
 }
 </script>
