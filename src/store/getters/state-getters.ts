@@ -1,4 +1,4 @@
-import { AccountTypes, CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
+import { AccountTypes, ActionTypes, CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
 import {
   IncorporationFilingIF,
   NameRequestDetailsIF,
@@ -550,4 +550,15 @@ export const showFeeSummary = (state: StateIF): boolean => {
     (isAlterationFiling(state) && hasAlterationChanged(state))
   )
   return (haveFilingChange && !isEqual(getFilingData(state), defaultFilingData))
+}
+
+/** Return a boolean indicating if the minimum share classes requirements are met. */
+export const invalidMinimumShareClass = (state: StateIF): boolean => {
+  const shareClasses = state.stateModel.shareStructureStep.shareClasses
+
+  // Filter out class actions
+  const currentShareClasses = shareClasses.filter(x => x.action !== ActionTypes.REMOVED)
+    .map((x) => { const { action, ...rest } = x; return rest })
+
+  return currentShareClasses.length < 1
 }

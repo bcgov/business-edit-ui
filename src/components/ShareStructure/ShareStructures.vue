@@ -18,6 +18,7 @@
       :editedLabel="editedLabel"
       :hasRightsOrRestrictions="getHasRightsOrRestrictions"
       :invalidSection="invalidShareSection"
+      :invalidMinimumShareClass="invalidMinimumShareClass"
       @emitShareClasses="setShareClasses($event)"
       @emitShareStructureChanged="setShareStructureChanged($event)"
       @emitEditingShareStructure="setShareStructureValidity($event)"
@@ -28,7 +29,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Components
@@ -66,6 +67,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
   @Getter getValidComponentFlags!: ValidComponentsIF
+  @Getter invalidMinimumShareClass!: boolean
 
   // Global actions
   @Action setShareClasses!: ActionBindingIF
@@ -91,9 +93,13 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   }
 
   /** Keep the store in sync with components state of validity. */
+  @Watch('invalidMinimumShareClass')
   private setShareStructureValidity (isEditing: boolean): void {
+    // Check valid conditions
+    const isValid = !isEditing && !this.invalidMinimumShareClass
+
     this.setEditingShareStructure(isEditing)
-    this.setValidComponent({ key: 'isValidShareStructure', value: !isEditing })
+    this.setValidComponent({ key: 'isValidShareStructure', value: isValid })
   }
 }
 </script>
