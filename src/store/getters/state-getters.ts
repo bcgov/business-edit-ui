@@ -552,7 +552,7 @@ export const showFeeSummary = (state: StateIF): boolean => {
   return (haveFilingChange && !isEqual(getFilingData(state), defaultFilingData))
 }
 
-/** Return a boolean indicating if the minimum share classes requirements are not met. */
+/** A boolean indicating if the minimum share classes requirements are not met. */
 export const invalidMinimumShareClass = (state: StateIF): boolean => {
   const shareClasses = state.stateModel.shareStructureStep.shareClasses
 
