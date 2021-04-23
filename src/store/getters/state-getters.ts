@@ -1,4 +1,4 @@
-import { AccountTypes, CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
+import { AccountTypes, ActionTypes, CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
 import {
   IncorporationFilingIF,
   NameRequestDetailsIF,
@@ -229,6 +229,11 @@ export const getNameTranslations = (state: StateIF): NameTranslationIF[] => {
 /** Whether name translations data has changed. */
 export const hasNameTranslationChanged = (state: StateIF): boolean => {
   return (getNameTranslations(state).filter(x => x.action).length > 0)
+}
+
+/** Whether folio number has changed. */
+export const hasFolioNumberChanged = (state: StateIF): boolean => {
+  return false // TODO: implement this (#5024)
 }
 
 /** The office addresses. */
@@ -561,4 +566,14 @@ export const getCurrentFees = (state: StateIF): FeesIF => {
 /** Get fee prices state. */
 export const getFeePrices = (state: StateIF): FeesIF => {
   return state.stateModel.feePrices
+}
+
+/** A boolean indicating if the minimum share classes requirements are not met. */
+export const invalidMinimumShareClass = (state: StateIF): boolean => {
+  const shareClasses = state.stateModel.shareStructureStep.shareClasses
+
+  // Filter out REMOVED class actions
+  const currentShareClasses = shareClasses.filter(x => x.action !== ActionTypes.REMOVED)
+
+  return currentShareClasses.length < 1
 }

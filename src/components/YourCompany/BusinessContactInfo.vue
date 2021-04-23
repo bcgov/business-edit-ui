@@ -1,5 +1,5 @@
 <template>
-  <contact-info
+  <ContactInfo
     :businessContact="getBusinessContact"
     :originalBusinessContact="originalContact"
     :hasBusinessContactInfoChange="hasBusinessContactInfoChange"

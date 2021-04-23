@@ -147,7 +147,7 @@ import * as Dialogs from '@/components/dialogs'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { FilingDataIF, ActionBindingIF, ValidFlagsIF, ValidComponentsIF } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { ComponentFlags, ReviewSummaryFlags, SummaryActions, RouteNames } from '@/enums'
+import { AlterationCompanyInfoFlags, AlterationReviewCertifyFlags, SummaryActions, RouteNames } from '@/enums'
 
 @Component({
   components: {
@@ -470,7 +470,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       case SummaryActions.CONFIRM:
         if (this.isSummaryMode) {
           // Check validity, and if OK then save and file.
-          await this.validateApp()
+          await this.validateReviewCertifyPage()
         } else {
           // Check validity, and if OK then go to summary page.
           await this.validateCompanyInfoPage()
@@ -598,25 +598,25 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   private async validateCompanyInfoPage (): Promise<void> {
     this.setComponentValidate(true)
 
-    // evaluate valid flags. Scroll to invalid components or continue to review.
-    if (await this.validateAndScroll(this.getValidComponentFlags, ComponentFlags)) {
+    // Evaluate valid flags. Scroll to invalid components or continue to review.
+    if (await this.validateAndScroll(this.getValidComponentFlags, AlterationCompanyInfoFlags)) {
       this.setSummaryMode(true)
 
       // Reset global flag
       this.setComponentValidate(false)
 
-      // We don't change views just interchange components, so scroll to top for better UX.
+      // We don't change views, just interchange components, so scroll to top for better UX.
       await this.scrollToTop(document.getElementById('app'))
     }
   }
 
-  /** Perform high level validations before filing. */
-  private async validateApp (): Promise<void> {
+  /** Perform high level component validations before proceeding to filing and paying. */
+  private async validateReviewCertifyPage (): Promise<void> {
     // Prompt app validations.
     this.setAppValidate(true)
 
     // Evaluate valid flags. Scroll to invalid components or file alteration.
-    if (await this.validateAndScroll(this.getAlterationValidFlags, ReviewSummaryFlags)) {
+    if (await this.validateAndScroll(this.getAlterationValidFlags, AlterationReviewCertifyFlags)) {
       await this.onClickSave(false)
     }
   }
