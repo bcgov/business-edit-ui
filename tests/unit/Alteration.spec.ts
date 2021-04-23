@@ -13,6 +13,7 @@ import { Alteration } from '@/views'
 
 // Other
 import mockRouter from './MockRouter'
+import { FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
@@ -331,8 +332,32 @@ describe('Alteration component', () => {
   it('fetches the fee prices after loading', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
-    expect(wrapper.vm.feePrices.filingFees).toBe(100)
-    expect(wrapper.vm.feePrices.futureEffectiveFees).toBe(100)
+    expect(store.state.stateModel.feePrices.filingFees).toBe(100)
+    expect(store.state.stateModel.feePrices.futureEffectiveFees).toBe(100)
+  })
+
+  it('display the fee prices properly', async () => {
+    await wrapper.setProps({ appReady: true })
+    await flushPromises()
+    store.state.stateModel.summaryMode = true
+    store.state.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
+    await Vue.nextTick()
+    expect(
+      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
+    ).toContain('Certain changes require an Alteration Notice which will incur a $100.00 fee.')
+    expect(
+      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
+    ).toContain('Choosing an alteration date and time in the future will incur an additional $100.00 fee.')
+
+    store.state.stateModel.feePrices = {}
+    await flushPromises()
+    expect(
+      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
+    ).toContain('Certain changes require an Alteration Notice which will incur a fee.')
+    expect(
+      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
+    ).toContain('Choosing an alteration date and time in the future will incur an additional fee.')
   })
 
   it('updates the current fees when AlterationSummary changes', async () => {

@@ -2,11 +2,9 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { axios } from '@/utils'
 
-// Shared Interfaces
-import { AlterationFilingIF, EffectiveDateTimeIF } from '@/interfaces'
-
 import { FilingCodes } from '@/enums/filingCodes'
 import { CorpTypeCd } from '@/enums'
+import { FeesIF } from '@/interfaces'
 /**
  * Mixin that provides integration with the Auth API.
  */
@@ -16,7 +14,7 @@ export default class PayApiMixin extends Vue {
    * Fetches filing fees.
    * @returns a promise to return the fees for a filing
    */
-  async fetchFilingFees (filingCode: FilingCodes, entityType: CorpTypeCd, isFutureEffective: boolean): Promise<any> {
+  async fetchFilingFees (filingCode: FilingCodes, entityType: CorpTypeCd, isFutureEffective: boolean): Promise<FeesIF> {
     let url = sessionStorage.getItem('PAY_API_URL') + 'fees/' + entityType + '/' + filingCode
     if (isFutureEffective) {
       url += '?futureEffective=true'

@@ -297,6 +297,10 @@ export const mutateCurrentFees = (state: StateIF, fees: FeesIF) => {
   state.stateModel.currentFees = fees
 }
 
+export const mutateFeePrices = (state: StateIF, feePrices: FeesIF) => {
+  state.stateModel.feePrices = feePrices
+}
+
 export const mutateIsValidComponent = (state: StateIF, kv: ActionKvIF) => {
   state.stateModel.newAlteration.validComponents[kv.key] = kv.value
 }

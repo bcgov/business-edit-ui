@@ -557,3 +557,8 @@ export const showFeeSummary = (state: StateIF): boolean => {
 export const getCurrentFees = (state: StateIF): FeesIF => {
   return state.stateModel.currentFees
 }
+
+/** Get fee prices state. */
+export const getFeePrices = (state: StateIF): FeesIF => {
+  return state.stateModel.feePrices
+}

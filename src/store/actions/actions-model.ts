@@ -270,6 +270,10 @@ export const setCurrentFees: ActionIF = ({ commit }, fees: FeesIF): void => {
   commit('mutateCurrentFees', fees)
 }
 
+export const setFeePrices: ActionIF = ({ commit }, feePrices: FeesIF): void => {
+  commit('mutateFeePrices', feePrices)
+}
+
 export const setValidComponent: ActionIF = ({ commit }, kv: ActionKvIF): void => {
   commit('mutateIsValidComponent', kv)
 }

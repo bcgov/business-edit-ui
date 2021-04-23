@@ -34,9 +34,11 @@
         </header>
 
         <section class="mt-6">
-          <p>Review and certify the changes you are about to make to your company. Certain changes require an Alteration
-           Notice which will incur a ${{feePrices.filingFees.toFixed(2)}} fee. Choosing an alteration date and time in
-           the future will incur an additional ${{feePrices.futureEffectiveFees.toFixed(2)}} fee.</p>
+          <p id="intro-text">
+            Review and certify the changes you are about to make to your company. Certain changes require an Alteration
+            Notice which will incur a {{filingFeesPrice}} fee. Choosing an alteration date and time in the future will
+            incur an additional {{futureEffectiveFeesPrice}} fee.
+          </p>
         </section>
 
         <AlterationSummary
@@ -172,6 +174,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
   @Getter showFeeSummary!: boolean
+  @Getter getFeePrices!: FeesIF
 
   // Global actions
   @Action setFileNumber!: ActionBindingIF
@@ -182,6 +185,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setValidFileNumber!: ActionBindingIF
   @Action setCurrentFees!: ActionBindingIF
+  @Action setFeePrices!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -192,9 +196,6 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     return +this.$route.query['alteration-id'] || 0
   }
 
-  /** The fees prices for Alteration. */
-  private feePrices: FeesIF
-
   /** True if user is authenticated. */
   private get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
@@ -203,6 +204,20 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   /** Check validity state, only when prompted by app. */
   private get invalidPoa (): boolean {
     return this.getAppValidate && !this.getAlterationValidFlags.isValidFileNum
+  }
+
+  private get filingFeesPrice (): string {
+    if (this.getFeePrices?.filingFees) {
+      return '$' + this.getFeePrices.filingFees.toFixed(2)
+    }
+    return ''
+  }
+
+  private get futureEffectiveFeesPrice (): string {
+    if (this.getFeePrices?.futureEffectiveFees) {
+      return '$' + this.getFeePrices.futureEffectiveFees.toFixed(2)
+    }
+    return ''
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -258,10 +273,12 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       })
 
       // update the current fees for the Filing
-      this.setCurrentFees(await this.fetchCurrentFees())
+      this.setCurrentFees(await this.fetchFilingFees(
+        FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
+      ) || {})
 
       // fetches the fee prices to display in the text
-      this.feePrices = await this.fetchFeePrices()
+      this.setFeePrices(await this.fetchFilingFees(FilingCodes.ALTERATION, this.getEntityType, true) || {})
 
       // tell App that we're finished loading
       this.emitHaveData()
@@ -272,22 +289,6 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
 
     // now that all data is loaded, wait for things to stabilize and reset flag
     Vue.nextTick(() => this.setHaveUnsavedChanges(false))
-  }
-
-  /** Fetches current fees for the Filing */
-  private async fetchCurrentFees (): Promise<FeesIF> {
-    const result = await Promise.resolve(this.fetchFilingFees(FilingCodes.ALTERATION,
-      this.getEntityType, this.getEffectiveDateTime.isFutureEffective))
-    if (!('filingFees' in result)) throw new Error('Failed to fetch current fees')
-    return result
-  }
-
-  /** Fetches the Fee prices to display in the text */
-  private async fetchFeePrices (): Promise<FeesIF> {
-    const result = await Promise.resolve(this.fetchFilingFees(FilingCodes.ALTERATION,
-      this.getEntityType, true))
-    if (!('filingFees' in result)) throw new Error('Failed to fetch fees prices')
-    return result
   }
 
   /** Fetches the business snapshot. */
@@ -333,7 +334,9 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       futureEffective: this.getEffectiveDateTime.isFutureEffective
     })
     // update the current fees for the filing
-    this.setCurrentFees(await this.fetchCurrentFees())
+    this.setCurrentFees(await this.fetchFilingFees(
+      FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
+    ))
   }
 
   /** Emits Fetch Error event. */

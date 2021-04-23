@@ -36,5 +36,6 @@ export interface StateModelIF {
     incorporationAgreement: boolean
   }
   summaryMode: boolean,
-  currentFees: FeesIF
+  currentFees: FeesIF,
+  feePrices: FeesIF
 }

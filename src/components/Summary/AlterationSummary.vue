@@ -5,7 +5,7 @@
       <v-row no-gutters>
         <v-col cols="9">
           <img  class="my-n1" src="@/assets/images/currency-usd-circle.svg">
-          <label class="summary-title">Alteration Notice Changes (${{alterationFees.toFixed(2)}} Fee)</label>
+          <label class="summary-title">Alteration Notice Changes {{alterationFees}}</label>
         </v-col>
 
         <!-- Actions -->
@@ -140,11 +140,9 @@
           </v-col>
 
           <v-col cols="9" class="inner-col-2">
-            <p
-              id="effective-date-time-instructions"
-              class="info-text">
+            <p id="effective-date-time-instructions" class="info-text">
               Select the date and time of alteration of your business. You may select a date and time up to 10 days in
-              the future (note: there is an <strong>additional fee of ${{futureEffectiveFees.toFixed(2)}}</strong> to
+              the future (note: there is an <strong>additional fee {{futureEffectiveFeePrice}}</strong> to
               enter an alteration date and time in the future). Unless a business has special requirements, most
               businesses select an immediate Alteration Date and Time.
             </p>
@@ -220,6 +218,7 @@ export default class AlterationSummary extends Mixins(
   @Getter getCurrentFees!: FeesIF
   @Getter getProvisionsRemoved!: boolean
   @Getter isBusySaving!: boolean
+  @Getter getFeePrices!: FeesIF
 
   // Alteration flag getters
   @Getter getAlterationValidFlags!: ValidFlagsIF
@@ -237,23 +236,6 @@ export default class AlterationSummary extends Mixins(
 
   /** Prop to perform validation. */
   @Prop() readonly validate: boolean
-
-  /** The future effective fee for Alteration. */
-  futureEffectiveFees: number = 0
-
-  async mounted () {
-    // fetches the fee prices to display in the text
-    const feePrices = await this.fetchFeePrices()
-    this.futureEffectiveFees = feePrices.futureEffectiveFees
-  }
-
-  /** Fetches the Fee prices to display in the text */
-  private async fetchFeePrices (): Promise<FeesIF> {
-    const result = await Promise.resolve(this.fetchFilingFees(FilingCodes.ALTERATION,
-      this.getEntityType, true))
-    if (!('filingFees' in result)) throw new Error('Failed to fetch fees prices')
-    return result
-  }
 
   get isFutureEffective (): boolean {
     return this.getEffectiveDateTime.isFutureEffective
@@ -291,8 +273,18 @@ export default class AlterationSummary extends Mixins(
   }
 
   // sum of alteration fees
-  get alterationFees (): number {
-    return this.getCurrentFees.filingFees + this.getCurrentFees.futureEffectiveFees
+  get alterationFees (): string {
+    if (this.getCurrentFees?.filingFees) {
+      return '($' + (this.getCurrentFees.filingFees + this.getCurrentFees?.futureEffectiveFees).toFixed(2) + ' Fee)'
+    }
+    return ''
+  }
+
+  get futureEffectiveFeePrice (): string {
+    if (this.getFeePrices?.futureEffectiveFees) {
+      return 'of $' + this.getFeePrices.futureEffectiveFees.toFixed(2)
+    }
+    return ''
   }
 
   onDeleteClicked (): void {
