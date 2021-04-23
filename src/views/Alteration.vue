@@ -220,6 +220,21 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
     return ''
   }
 
+  private emptyFees: FeesIF = {
+    filingFees: 0,
+    filingType: '',
+    filingTypeCode: '',
+    futureEffectiveFees: 0,
+    priorityFees: 0,
+    processingFees: 0,
+    serviceFees: 0,
+    tax: {
+      pst: 0,
+      gst: 0
+    },
+    total: 0
+  }
+
   /** Called when App is ready and this component can load its data. */
   @Watch('appReady')
   async onAppReady (val: boolean): Promise<void> {
@@ -275,10 +290,10 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       // update the current fees for the Filing
       this.setCurrentFees(await this.fetchFilingFees(
         FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
-      ) || {})
+      ) || this.emptyFees)
 
       // fetches the fee prices to display in the text
-      this.setFeePrices(await this.fetchFilingFees(FilingCodes.ALTERATION, this.getEntityType, true) || {})
+      this.setFeePrices(await this.fetchFilingFees(FilingCodes.ALTERATION, this.getEntityType, true) || this.emptyFees)
 
       // tell App that we're finished loading
       this.emitHaveData()
