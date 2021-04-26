@@ -14,6 +14,7 @@ import { Alteration } from '@/views'
 // Other
 import mockRouter from './MockRouter'
 import { FilingTypes } from '@/enums'
+import { emptyFees } from '@/interfaces'
 
 Vue.use(Vuetify)
 
@@ -350,7 +351,7 @@ describe('Alteration component', () => {
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
     ).toContain('Choosing an alteration date and time in the future will incur an additional $100.00 fee.')
 
-    store.state.stateModel.feePrices = {}
+    store.state.stateModel.feePrices = emptyFees
     await flushPromises()
     expect(
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')

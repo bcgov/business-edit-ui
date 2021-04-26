@@ -14,6 +14,7 @@ import { AlterationSummary } from '@/components/Summary'
 import { EffectiveDateTime } from '@/components/common'
 import { ConfirmDialog } from '@/components/dialogs'
 import { NameTranslation } from '@/components/YourCompany/NameTranslations'
+import { emptyFees } from '@/interfaces'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
@@ -194,7 +195,7 @@ describe('Alteration Summary component', () => {
     await Vue.nextTick()
     expect(wrapper.find('.summary-title').text()).toBe('Alteration Notice Changes ($200.00 Fee)')
 
-    store.state.stateModel.currentFees = {}
+    store.state.stateModel.currentFees = emptyFees
     await Vue.nextTick()
     expect(wrapper.find('.summary-title').text()).toBe('Alteration Notice Changes')
   })
@@ -221,7 +222,7 @@ describe('Alteration Summary component', () => {
       wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' ')
     ).toContain('additional fee of $100.00 to enter an alteration date and time in the future).')
 
-    store.state.stateModel.feePrices = {}
+    store.state.stateModel.feePrices = emptyFees
     await flushPromises()
     expect(
       wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' ')

@@ -139,7 +139,8 @@ import {
   EffectiveDateTimeIF,
   FilingDataIF,
   ValidFlagsIF,
-  FeesIF
+  FeesIF,
+  emptyFees
 } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
@@ -207,32 +208,17 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   }
 
   private get filingFeesPrice (): string {
-    if (this.getFeePrices?.filingFees) {
+    if (this.getFeePrices.filingFees !== null) {
       return `$${this.getFeePrices.filingFees.toFixed(2)}`
     }
     return ''
   }
 
   private get futureEffectiveFeesPrice (): string {
-    if (this.getFeePrices?.futureEffectiveFees) {
+    if (this.getFeePrices.futureEffectiveFees !== null) {
       return `$${this.getFeePrices.futureEffectiveFees.toFixed(2)}`
     }
     return ''
-  }
-
-  private emptyFees: FeesIF = {
-    filingFees: null,
-    filingType: null,
-    filingTypeCode: null,
-    futureEffectiveFees: null,
-    priorityFees: null,
-    processingFees: null,
-    serviceFees: null,
-    tax: {
-      pst: null,
-      gst: null
-    },
-    total: null
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -291,13 +277,13 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       this.setCurrentFees(
         await this.fetchFilingFees(
           FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
-        ).catch(() => this.emptyFees) || this.emptyFees
+        ).catch(() => emptyFees) || emptyFees
       )
 
       // fetches the fee prices to display in the text
       this.setFeePrices(
         await this.fetchFilingFees(FilingCodes.ALTERATION, this.getEntityType, true
-        ).catch(() => this.emptyFees) || this.emptyFees
+        ).catch(() => emptyFees) || emptyFees
       )
 
       // tell App that we're finished loading

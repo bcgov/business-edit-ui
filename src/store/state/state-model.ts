@@ -1,4 +1,4 @@
-import { EmptyNameRequest, StateModelIF } from '@/interfaces'
+import { EmptyNameRequest, StateModelIF, emptyFees } from '@/interfaces'
 
 export const stateModel: StateModelIF = {
   currentJsDate: null,
@@ -218,32 +218,6 @@ export const stateModel: StateModelIF = {
     incorporationAgreement: false
   },
   summaryMode: false,
-  currentFees: {
-    filingFees: null,
-    filingType: null,
-    filingTypeCode: null,
-    futureEffectiveFees: null,
-    priorityFees: null,
-    processingFees: null,
-    serviceFees: null,
-    tax: {
-      pst: null,
-      gst: null
-    },
-    total: null
-  },
-  feePrices: {
-    filingFees: null,
-    filingType: null,
-    filingTypeCode: null,
-    futureEffectiveFees: null,
-    priorityFees: null,
-    processingFees: null,
-    serviceFees: null,
-    tax: {
-      pst: null,
-      gst: null
-    },
-    total: null
-  }
+  currentFees: emptyFees,
+  feePrices: emptyFees
 }
