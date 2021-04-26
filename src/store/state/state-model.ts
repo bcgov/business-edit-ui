@@ -219,31 +219,31 @@ export const stateModel: StateModelIF = {
   },
   summaryMode: false,
   currentFees: {
-    filingFees: 0,
-    filingType: '',
-    filingTypeCode: '',
-    futureEffectiveFees: 0,
-    priorityFees: 0,
-    processingFees: 0,
-    serviceFees: 0,
+    filingFees: null,
+    filingType: null,
+    filingTypeCode: null,
+    futureEffectiveFees: null,
+    priorityFees: null,
+    processingFees: null,
+    serviceFees: null,
     tax: {
-      pst: 0,
-      gst: 0
+      pst: null,
+      gst: null
     },
-    total: 0
+    total: null
   },
   feePrices: {
-    filingFees: 0,
-    filingType: '',
-    filingTypeCode: '',
-    futureEffectiveFees: 0,
-    priorityFees: 0,
-    processingFees: 0,
-    serviceFees: 0,
+    filingFees: null,
+    filingType: null,
+    filingTypeCode: null,
+    futureEffectiveFees: null,
+    priorityFees: null,
+    processingFees: null,
+    serviceFees: null,
     tax: {
-      pst: 0,
-      gst: 0
+      pst: null,
+      gst: null
     },
-    total: 0
+    total: null
   }
 }

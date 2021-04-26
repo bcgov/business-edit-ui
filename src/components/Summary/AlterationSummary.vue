@@ -280,14 +280,14 @@ export default class AlterationSummary extends Mixins(
   // sum of alteration fees
   get alterationFees (): string {
     if (this.getCurrentFees?.filingFees) {
-      return '($' + (this.getCurrentFees.filingFees + this.getCurrentFees?.futureEffectiveFees).toFixed(2) + ' Fee)'
+      return `($${(this.getCurrentFees.filingFees + this.getCurrentFees?.futureEffectiveFees).toFixed(2)} Fee)`
     }
     return ''
   }
 
   get futureEffectiveFeePrice (): string {
     if (this.getFeePrices?.futureEffectiveFees) {
-      return 'of $' + this.getFeePrices.futureEffectiveFees.toFixed(2)
+      return `of $${this.getFeePrices.futureEffectiveFees.toFixed(2)}`
     }
     return ''
   }

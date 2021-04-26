@@ -208,31 +208,31 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
 
   private get filingFeesPrice (): string {
     if (this.getFeePrices?.filingFees) {
-      return '$' + this.getFeePrices.filingFees.toFixed(2)
+      return `$${this.getFeePrices.filingFees.toFixed(2)}`
     }
     return ''
   }
 
   private get futureEffectiveFeesPrice (): string {
     if (this.getFeePrices?.futureEffectiveFees) {
-      return '$' + this.getFeePrices.futureEffectiveFees.toFixed(2)
+      return `$${this.getFeePrices.futureEffectiveFees.toFixed(2)}`
     }
     return ''
   }
 
   private emptyFees: FeesIF = {
-    filingFees: 0,
-    filingType: '',
-    filingTypeCode: '',
-    futureEffectiveFees: 0,
-    priorityFees: 0,
-    processingFees: 0,
-    serviceFees: 0,
+    filingFees: null,
+    filingType: null,
+    filingTypeCode: null,
+    futureEffectiveFees: null,
+    priorityFees: null,
+    processingFees: null,
+    serviceFees: null,
     tax: {
-      pst: 0,
-      gst: 0
+      pst: null,
+      gst: null
     },
-    total: 0
+    total: null
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -288,12 +288,17 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       })
 
       // update the current fees for the Filing
-      this.setCurrentFees(await this.fetchFilingFees(
-        FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
-      ) || this.emptyFees)
+      this.setCurrentFees(
+        await this.fetchFilingFees(
+          FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
+        ).catch(() => this.emptyFees) || this.emptyFees
+      )
 
       // fetches the fee prices to display in the text
-      this.setFeePrices(await this.fetchFilingFees(FilingCodes.ALTERATION, this.getEntityType, true) || this.emptyFees)
+      this.setFeePrices(
+        await this.fetchFilingFees(FilingCodes.ALTERATION, this.getEntityType, true
+        ).catch(() => this.emptyFees) || this.emptyFees
+      )
 
       // tell App that we're finished loading
       this.emitHaveData()
