@@ -25,7 +25,7 @@ import { isEqual, omit } from 'lodash'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: StateIF): boolean => {
-  return true // state.stateModel.tombstone.keycloakRoles.includes('staff')
+  return state.stateModel.tombstone.keycloakRoles.includes('staff')
 }
 
 /** Whether the user is authorized to edit. */
