@@ -7,6 +7,7 @@
     <div :class="{'invalid-section': invalidStaffPayment}">
       <staff-payment-component
         :staffPaymentData="getStaffPayment"
+        :validate="getAppValidate"
         :invalidSection="invalidStaffPayment"
         @update:staffPaymentData="onStaffPaymentDataUpdate($event)"
         @valid="setStaffPaymentValidity($event)"

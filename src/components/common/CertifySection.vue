@@ -12,16 +12,17 @@
         :isStaff="isRoleStaff"
         :firstColumn="3"
         :secondColumn="9"
+        :validate="getAppValidate"
         :invalidSection="certificationInvalid"
         @update:certifiedBy="onCertifiedBy($event)"
-        @update:isCertified="onValid($event)"
+        @update:isCertified="onIsCertified($event)"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Components
@@ -75,14 +76,15 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   }
 
   /** Handler for Valid change event. */
-  private onValid (val: boolean): void {
+  private onIsCertified (val: boolean): void {
     if ((val) && (this.getCertifyState.certifiedBy)) {
       this.setCertifyStateValidity(true)
-    }
+    } else this.setCertifyStateValidity(false)
   }
 
   /** Handler for CertifiedBy change event. */
   private onCertifiedBy (val: string): void {
+    if (!val) this.setCertifyStateValidity(false)
     this.setCertifyState(
       {
         valid: this.getCertifyState.valid,
