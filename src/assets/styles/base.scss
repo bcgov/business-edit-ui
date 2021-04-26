@@ -153,13 +153,13 @@ p {
 }
 
 .error-text {
-  color: $app-red;
-  line-height: 1.0625rem;
-  letter-spacing: 0;
+  color: $app-red !important;
 }
 
 .small-text {
   font-size: 0.875rem;
+  line-height: 1.0625rem;
+  letter-spacing: 0;
 }
 
 // Error Border
