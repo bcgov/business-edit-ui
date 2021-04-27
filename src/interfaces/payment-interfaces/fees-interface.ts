@@ -13,7 +13,7 @@ interface FeesIF {
     total?: number
 }
 
-const emptyFees = {
+const emptyFees: FeesIF = {
   filingFees: null,
   filingType: null,
   filingTypeCode: null,

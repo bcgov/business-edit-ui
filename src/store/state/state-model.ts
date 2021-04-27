@@ -1,4 +1,5 @@
 import { EmptyNameRequest, StateModelIF, emptyFees } from '@/interfaces'
+import { cloneDeep } from 'lodash'
 
 export const stateModel: StateModelIF = {
   currentJsDate: null,
@@ -218,6 +219,6 @@ export const stateModel: StateModelIF = {
     incorporationAgreement: false
   },
   summaryMode: false,
-  currentFees: emptyFees,
-  feePrices: emptyFees
+  currentFees: cloneDeep(emptyFees),
+  feePrices: cloneDeep(emptyFees)
 }

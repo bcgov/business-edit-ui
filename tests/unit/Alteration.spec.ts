@@ -13,7 +13,6 @@ import { Alteration } from '@/views'
 
 // Other
 import mockRouter from './MockRouter'
-import { FilingTypes } from '@/enums'
 import { emptyFees } from '@/interfaces'
 
 Vue.use(Vuetify)
@@ -341,7 +340,7 @@ describe('Alteration component', () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
     store.state.stateModel.summaryMode = true
-    store.state.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.state.stateModel.tombstone.filingType = 'alteration'
     store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
     await Vue.nextTick()
     expect(
@@ -351,7 +350,21 @@ describe('Alteration component', () => {
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
     ).toContain('Choosing an alteration date and time in the future will incur an additional $100.00 fee.')
 
-    store.state.stateModel.feePrices = emptyFees
+    store.state.stateModel.feePrices = {
+      filingFees: null,
+      filingType: null,
+      filingTypeCode: null,
+      futureEffectiveFees: null,
+      priorityFees: null,
+      processingFees: null,
+      serviceFees: null,
+      tax: {
+        pst: null,
+        gst: null
+      },
+      total: null
+    }
+
     await flushPromises()
     expect(
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')

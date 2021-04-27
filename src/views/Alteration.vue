@@ -146,6 +146,7 @@ import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { cloneDeep } from 'lodash'
 
 @Component({
   components: {
@@ -277,13 +278,13 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       this.setCurrentFees(
         await this.fetchFilingFees(
           FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
-        ).catch(() => emptyFees) || emptyFees
+        ).catch(() => cloneDeep(emptyFees))
       )
 
       // fetches the fee prices to display in the text
       this.setFeePrices(
         await this.fetchFilingFees(FilingCodes.ALTERATION, this.getEntityType, true
-        ).catch(() => emptyFees) || emptyFees
+        ).catch(() => cloneDeep(emptyFees))
       )
 
       // tell App that we're finished loading
