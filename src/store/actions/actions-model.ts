@@ -8,7 +8,8 @@ import {
   NameRequestIF,
   NameTranslationIF,
   OrgPersonIF,
-  ShareClassIF
+  ShareClassIF,
+  FeesIF
 } from '@/interfaces'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 import { CorpTypeCd, FilingTypes } from '@/enums'
@@ -263,6 +264,14 @@ export const setValidFileNumber: ActionIF = ({ commit }, isValid: boolean): void
 
 export const setValidResolutionDate: ActionIF = ({ commit }, isValid: boolean): void => {
   commit('mutateIsValidResolutionDate', isValid)
+}
+
+export const setCurrentFees: ActionIF = ({ commit }, fees: FeesIF): void => {
+  commit('mutateCurrentFees', fees)
+}
+
+export const setFeePrices: ActionIF = ({ commit }, feePrices: FeesIF): void => {
+  commit('mutateFeePrices', feePrices)
 }
 
 export const setValidComponent: ActionIF = ({ commit }, kv: ActionKvIF): void => {

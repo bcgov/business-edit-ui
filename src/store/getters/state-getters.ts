@@ -18,7 +18,8 @@ import {
   ShareStructureIF,
   ValidFlagsIF,
   ValidComponentsIF,
-  ResolutionsIF
+  ResolutionsIF,
+  FeesIF
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { isEqual, omit } from 'lodash'
@@ -555,6 +556,16 @@ export const showFeeSummary = (state: StateIF): boolean => {
     (isAlterationFiling(state) && hasAlterationChanged(state))
   )
   return (haveFilingChange && !isEqual(getFilingData(state), defaultFilingData))
+}
+
+/** Get current fees state. */
+export const getCurrentFees = (state: StateIF): FeesIF => {
+  return state.stateModel.currentFees
+}
+
+/** Get fee prices state. */
+export const getFeePrices = (state: StateIF): FeesIF => {
+  return state.stateModel.feePrices
 }
 
 /** A boolean indicating if the minimum share classes requirements are not met. */

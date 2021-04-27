@@ -5,7 +5,7 @@
       <v-row no-gutters>
         <v-col cols="9">
           <img  class="my-n1" src="@/assets/images/currency-usd-circle.svg">
-          <label class="summary-title">Alteration Notice Changes ($100.00 Fee)</label>
+          <label class="summary-title">Alteration Notice Changes {{alterationFees}}</label>
         </v-col>
 
         <!-- Actions -->
@@ -144,10 +144,11 @@
           </v-col>
 
           <v-col cols="9" class="inner-col-2">
-            <p class="info-text">Select the date and time of alteration of your business. You may select a date and
-              time up to 10 days in the future (note: there is an <strong>additional fee of $100.00</strong> to enter
-              an alteration date and time in the future). Unless a business has special requirements, most businesses
-              select an immediate Alteration Date and Time.
+            <p id="effective-date-time-instructions" class="info-text">
+              Select the date and time of alteration of your business. You may select a date and time up to 10 days in
+              the future (note: there is an <strong>additional fee {{futureEffectiveFeePrice}}</strong> to
+              enter an alteration date and time in the future). Unless a business has special requirements, most
+              businesses select an immediate Alteration Date and Time.
             </p>
 
             <effective-date-time
@@ -180,10 +181,11 @@ import {
   ShareClassIF,
   ShareStructureIF,
   ValidFlagsIF,
-  NameTranslationIF
+  NameTranslationIF,
+  FeesIF
 } from '@/interfaces'
-import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { CorpTypeCd } from '@/enums'
+import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
+import { CorpTypeCd, FilingCodes } from '@/enums'
 import { EffectiveDateTime } from '@/components/common'
 import { ShareStructures } from '@/components/ShareStructure'
 import { ResolutionDates } from '@/components/Articles'
@@ -201,7 +203,8 @@ export default class AlterationSummary extends Mixins(
   DateMixin,
   EnumMixin,
   FilingTemplateMixin,
-  LegalApiMixin
+  LegalApiMixin,
+  PayApiMixin
 ) {
   // Global getters
   @Getter getCurrentJsDate!: Date
@@ -216,8 +219,10 @@ export default class AlterationSummary extends Mixins(
   @Getter getNewResolutionDates!: string[]
   @Getter getPreviousResolutionDates!: string[]
   @Getter getNameTranslations!: NameTranslationIF[]
+  @Getter getCurrentFees!: FeesIF
   @Getter getProvisionsRemoved!: boolean
   @Getter isBusySaving!: boolean
+  @Getter getFeePrices!: FeesIF
 
   // Alteration flag getters
   @Getter getAlterationValidFlags!: ValidFlagsIF
@@ -270,6 +275,21 @@ export default class AlterationSummary extends Mixins(
     this.setSummaryMode(false)
     // We don't change views just interchange components, so scroll to top for better UX.
     await this.scrollToTop(document.getElementById('app'))
+  }
+
+  // sum of alteration fees
+  get alterationFees (): string {
+    if (this.getCurrentFees.filingFees !== null && this.getCurrentFees.futureEffectiveFees !== null) {
+      return `($${(this.getCurrentFees.filingFees + this.getCurrentFees.futureEffectiveFees).toFixed(2)} Fee)`
+    }
+    return ''
+  }
+
+  get futureEffectiveFeePrice (): string {
+    if (this.getFeePrices.futureEffectiveFees !== null) {
+      return `of $${this.getFeePrices.futureEffectiveFees.toFixed(2)}`
+    }
+    return ''
   }
 
   onDeleteClicked (): void {

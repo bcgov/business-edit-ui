@@ -13,6 +13,7 @@ import { Alteration } from '@/views'
 
 // Other
 import mockRouter from './MockRouter'
+import { emptyFees } from '@/interfaces'
 
 Vue.use(Vuetify)
 
@@ -27,6 +28,7 @@ describe('Alteration component', () => {
   const { assign } = window.location
 
   // Define Session
+  sessionStorage.setItem('PAY_API_URL', `myhost/basePath/pay-api/`)
   sessionStorage.setItem('AUTH_URL', `myhost/basePath/auth/`)
   sessionStorage.setItem('DASHBOARD_URL', `myhost/business/`)
   sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3' +
@@ -59,6 +61,44 @@ describe('Alteration component', () => {
     window.location = { assign: jest.fn() } as any
 
     const get = sinon.stub(axios, 'get')
+
+    // GET payment fee for immediate alteration
+    get.withArgs('myhost/basePath/pay-api/fees/BEN/ALTER')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          'filingFees': 100.0,
+          'filingType': 'Alteration',
+          'filingTypeCode': 'ALTER',
+          'futureEffectiveFees': 0,
+          'priorityFees': 0,
+          'processingFees': 0,
+          'serviceFees': 1.5,
+          'tax': {
+            'gst': 0,
+            'pst': 0
+          },
+          'total': 101.5
+        }
+      })))
+
+    // GET payment fee for future alteration
+    get.withArgs('myhost/basePath/pay-api/fees/BEN/ALTER?futureEffective=true')
+      .returns(new Promise((resolve) => resolve({
+        data: {
+          'filingFees': 100.0,
+          'filingType': 'Alteration',
+          'filingTypeCode': 'ALTER',
+          'futureEffectiveFees': 100.0,
+          'priorityFees': 0,
+          'processingFees': 0,
+          'serviceFees': 1.5,
+          'tax': {
+            'gst': 0,
+            'pst': 0
+          },
+          'total': 201.5
+        }
+      })))
 
     // GET Base business
     get.withArgs('businesses/BC1234567')
@@ -284,6 +324,66 @@ describe('Alteration component', () => {
     // Validate Contact Info
     expect(store.state.stateModel.defineCompanyStep.businessContact.email).toBe('mock@email.com')
     expect(store.state.stateModel.defineCompanyStep.businessContact.phone).toBe('123-456-7890')
+
+    expect(store.state.stateModel.currentFees.filingFees).toBe(100)
+    expect(store.state.stateModel.currentFees.futureEffectiveFees).toBe(0)
+  })
+
+  it('fetches the fee prices after loading', async () => {
+    await wrapper.setProps({ appReady: true })
+    await flushPromises()
+    expect(store.state.stateModel.feePrices.filingFees).toBe(100)
+    expect(store.state.stateModel.feePrices.futureEffectiveFees).toBe(100)
+  })
+
+  it('display the fee prices properly', async () => {
+    await wrapper.setProps({ appReady: true })
+    await flushPromises()
+    store.state.stateModel.summaryMode = true
+    store.state.stateModel.tombstone.filingType = 'alteration'
+    store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
+    await Vue.nextTick()
+    expect(
+      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
+    ).toContain('Certain changes require an Alteration Notice which will incur a $100.00 fee.')
+    expect(
+      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
+    ).toContain('Choosing an alteration date and time in the future will incur an additional $100.00 fee.')
+
+    store.state.stateModel.feePrices = {
+      filingFees: null,
+      filingType: null,
+      filingTypeCode: null,
+      futureEffectiveFees: null,
+      priorityFees: null,
+      processingFees: null,
+      serviceFees: null,
+      tax: {
+        pst: null,
+        gst: null
+      },
+      total: null
+    }
+
+    await flushPromises()
+    expect(
+      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
+    ).toContain('Certain changes require an Alteration Notice which will incur a fee.')
+    expect(
+      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
+    ).toContain('Choosing an alteration date and time in the future will incur an additional fee.')
+  })
+
+  it('updates the current fees when AlterationSummary changes', async () => {
+    await wrapper.setProps({ appReady: true })
+    await flushPromises()
+
+    const state = store.state.stateModel
+    state.effectiveDateTime.isFutureEffective = true
+
+    await wrapper.vm.onAlterationSummaryChanges()
+    expect(store.state.stateModel.currentFees.filingFees).toBe(100)
+    expect(store.state.stateModel.currentFees.futureEffectiveFees).toBe(100)
   })
 
   // FUTURE

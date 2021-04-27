@@ -34,8 +34,11 @@
         </header>
 
         <section class="mt-6">
-          Review and certify the changes you are about to make to your company. Certain changes
-          require an Alteration Notice which will incur a $100.00 Fee.
+          <p id="intro-text">
+            Review and certify the changes you are about to make to your company. Certain changes require an Alteration
+            Notice which will incur a {{filingFeesPrice}} fee. Choosing an alteration date and time in the future will
+            incur an additional {{futureEffectiveFeesPrice}} fee.
+          </p>
         </section>
 
         <AlterationSummary
@@ -129,12 +132,21 @@ import { Articles } from '@/components/Articles'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 
 // Mixins, Interfaces, Enums, etc
-import { CommonMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { ActionBindingIF, BusinessSnapshotIF, EffectiveDateTimeIF, FilingDataIF, ValidFlagsIF } from '@/interfaces'
+import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
+import {
+  ActionBindingIF,
+  BusinessSnapshotIF,
+  EffectiveDateTimeIF,
+  FilingDataIF,
+  ValidFlagsIF,
+  FeesIF,
+  emptyFees
+} from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { cloneDeep } from 'lodash'
 
 @Component({
   components: {
@@ -151,7 +163,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
     YourCompany
   }
 })
-export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin) {
+export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin, PayApiMixin) {
   // Global getters
   @Getter getAlterationValidFlags!: ValidFlagsIF
   @Getter getEntityType!: CorpTypeCd
@@ -164,6 +176,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
   @Getter showFeeSummary!: boolean
+  @Getter getFeePrices!: FeesIF
 
   // Global actions
   @Action setFileNumber!: ActionBindingIF
@@ -173,6 +186,8 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setValidFileNumber!: ActionBindingIF
+  @Action setCurrentFees!: ActionBindingIF
+  @Action setFeePrices!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -191,6 +206,20 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   /** Check validity state, only when prompted by app. */
   private get invalidPoa (): boolean {
     return this.getAppValidate && !this.getAlterationValidFlags.isValidFileNum
+  }
+
+  private get filingFeesPrice (): string {
+    if (this.getFeePrices.filingFees !== null) {
+      return `$${this.getFeePrices.filingFees.toFixed(2)}`
+    }
+    return ''
+  }
+
+  private get futureEffectiveFeesPrice (): string {
+    if (this.getFeePrices.futureEffectiveFees !== null) {
+      return `$${this.getFeePrices.futureEffectiveFees.toFixed(2)}`
+    }
+    return ''
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -245,6 +274,19 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
         priority: false
       })
 
+      // update the current fees for the Filing
+      this.setCurrentFees(
+        await this.fetchFilingFees(
+          FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
+        ).catch(() => cloneDeep(emptyFees))
+      )
+
+      // fetches the fee prices to display in the text
+      this.setFeePrices(
+        await this.fetchFilingFees(FilingCodes.ALTERATION, this.getEntityType, true
+        ).catch(() => cloneDeep(emptyFees))
+      )
+
       // tell App that we're finished loading
       this.emitHaveData()
     } catch (err) {
@@ -292,12 +334,16 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   }
 
   /** Called when alteration summary data has changed. */
-  onAlterationSummaryChanges (): void {
+  async onAlterationSummaryChanges (): Promise<void> {
     // update filing data with future effective field
     this.setFilingData({
       ...this.getFilingData,
       futureEffective: this.getEffectiveDateTime.isFutureEffective
     })
+    // update the current fees for the filing
+    this.setCurrentFees(await this.fetchFilingFees(
+      FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
+    ))
   }
 
   /** Emits Fetch Error event. */

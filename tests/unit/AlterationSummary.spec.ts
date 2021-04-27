@@ -1,6 +1,8 @@
 // Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import flushPromises from 'flush-promises'
+import sinon from 'sinon'
 
 // Store
 import { getVuexStore } from '@/store'
@@ -11,6 +13,7 @@ import { AlterationSummary } from '@/components/Summary'
 import { EffectiveDateTime } from '@/components/common'
 import { ConfirmDialog } from '@/components/dialogs'
 import { NameTranslation } from '@/components/YourCompany/NameTranslations'
+import { emptyFees } from '@/interfaces'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
@@ -53,6 +56,7 @@ describe('Alteration Summary component', () => {
   })
 
   afterEach(() => {
+    sinon.restore()
     wrapper.destroy()
   })
 
@@ -153,5 +157,102 @@ describe('Alteration Summary component', () => {
     expect(divs.length).toBe(2)
     expect(divs.at(1).text()).toContain('The alteration for this business will be effective as of:')
     expect(divs.at(1).text()).toContain('Friday, March 5, 2021 at 8:30 am Pacific time')
+  })
+
+  it('renders Alteration Notice Changes fees accordingly', async () => {
+    store.state.stateModel.currentFees = {
+      'filingFees': 100.0,
+      'filingType': 'Alteration',
+      'filingTypeCode': 'ALTER',
+      'futureEffectiveFees': 0,
+      'priorityFees': 0,
+      'processingFees': 0,
+      'serviceFees': 1.5,
+      'tax': {
+        'gst': 0,
+        'pst': 0
+      },
+      'total': 101.5
+    }
+    await Vue.nextTick()
+    expect(wrapper.find('.summary-title').text()).toBe('Alteration Notice Changes ($100.00 Fee)')
+
+    store.state.stateModel.currentFees = {
+      'filingFees': 100.0,
+      'filingType': 'Alteration',
+      'filingTypeCode': 'ALTER',
+      'futureEffectiveFees': 100.0,
+      'priorityFees': 0,
+      'processingFees': 0,
+      'serviceFees': 1.5,
+      'tax': {
+        'gst': 0,
+        'pst': 0
+      },
+      'total': 201.5
+    }
+    await Vue.nextTick()
+    expect(wrapper.find('.summary-title').text()).toBe('Alteration Notice Changes ($200.00 Fee)')
+
+    store.state.stateModel.currentFees = {
+      filingFees: null,
+      filingType: null,
+      filingTypeCode: null,
+      futureEffectiveFees: null,
+      priorityFees: null,
+      processingFees: null,
+      serviceFees: null,
+      tax: {
+        pst: null,
+        gst: null
+      },
+      total: null
+    }
+
+    await Vue.nextTick()
+    expect(wrapper.find('.summary-title').text()).toBe('Alteration Notice Changes')
+  })
+
+  it('renders the futureEffective fee correctly', async () => {
+    store.state.stateModel.feePrices = {
+      'filingFees': 100.0,
+      'filingType': 'Alteration',
+      'filingTypeCode': 'ALTER',
+      'futureEffectiveFees': 100.0,
+      'priorityFees': 0,
+      'processingFees': 0,
+      'serviceFees': 1.5,
+      'tax': {
+        'gst': 0,
+        'pst': 0
+      },
+      'total': 201.5
+    }
+    await Vue.nextTick()
+    await flushPromises()
+    await Vue.nextTick()
+    expect(
+      wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' ')
+    ).toContain('additional fee of $100.00 to enter an alteration date and time in the future).')
+
+    store.state.stateModel.feePrices = {
+      filingFees: null,
+      filingType: null,
+      filingTypeCode: null,
+      futureEffectiveFees: null,
+      priorityFees: null,
+      processingFees: null,
+      serviceFees: null,
+      tax: {
+        pst: null,
+        gst: null
+      },
+      total: null
+    }
+
+    await flushPromises()
+    expect(
+      wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' ')
+    ).toContain('additional fee to enter an alteration date and time in the future).')
   })
 })
