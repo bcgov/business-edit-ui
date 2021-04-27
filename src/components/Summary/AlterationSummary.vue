@@ -286,7 +286,7 @@ export default class AlterationSummary extends Mixins(
   }
 
   get futureEffectiveFeePrice (): string {
-    if (this.getFeePrices?.futureEffectiveFees) {
+    if (this.getFeePrices.futureEffectiveFees !== null) {
       return `of $${this.getFeePrices.futureEffectiveFees.toFixed(2)}`
     }
     return ''
