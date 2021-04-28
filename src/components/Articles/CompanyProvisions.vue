@@ -120,8 +120,6 @@
 <script lang="ts">
 import { Component, Emit, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { CommonMixin } from '@/mixins'
-import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF } from '@/interfaces'
 
 @Component({})
 export default class CompanyProvisions extends Mixins(CommonMixin) {
