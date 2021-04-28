@@ -12,9 +12,9 @@
       <company-provisions
         class="sub-section"
         :provisionsRemoved="getProvisionsRemoved"
-        @companyProvisionsChanged="setProvisionsRemoved($event)"
+        @isChanged="setProvisionsRemoved($event)"
         @haveChanges="emitHaveChanges($event)"
-        @onEditingCompanyProvisions="setEditingCompanyProvisions($event)"
+        @isEditing="setEditingCompanyProvisions($event)"
       />
     </div>
 
@@ -27,7 +27,7 @@
         :isEditMode="true"
         :hasRightsOrRestrictions="getHasRightsOrRestrictions"
         @addRemoveDate="setResolutionDates($event)"
-        @onAddingResolutionDate="setIsAddingResolutionDate($event)"
+        @isEditing="setIsAddingResolutionDate($event)"
       />
     </div>
   </v-card>

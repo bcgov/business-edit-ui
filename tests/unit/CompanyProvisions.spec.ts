@@ -148,7 +148,7 @@ describe('company provisions', () => {
     let haveChanges = wrapper.emitted('haveChanges')
     expect(haveChanges.length).toBe(1)
     expect(haveChanges.pop()).toEqual([true])
-    expect(wrapper.emitted('companyProvisionsChanged').length).toBe(1)
+    expect(wrapper.emitted('isChanged').length).toBe(1)
 
     wrapper.destroy()
   })
@@ -178,7 +178,7 @@ describe('company provisions', () => {
     let haveChanges = wrapper.emitted('haveChanges')
     expect(haveChanges.length).toBe(1)
     expect(haveChanges.pop()).toEqual([false])
-    expect(wrapper.emitted('companyProvisionsChanged').length).toBe(1)
+    expect(wrapper.emitted('isChanged').length).toBe(1)
 
     wrapper.destroy()
   })

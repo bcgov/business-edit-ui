@@ -209,8 +209,8 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   private emitAddRemoveDate (dates: string[]): void {}
 
   @Watch('isAdding', { immediate: true })
-  @Emit('onAddingResolutionDate')
-  private onAddingResolutionDate (): boolean {
+  @Emit('isEditing')
+  private emitIsEditing (): boolean {
     return this.isAdding
   }
 }

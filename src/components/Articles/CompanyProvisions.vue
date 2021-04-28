@@ -135,12 +135,12 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   private provisionsRemoved!: boolean
 
   // Emitters
-  @Emit('companyProvisionsChanged')
-  private emitCompanyProvisionsChanged (provisionsremoved: boolean): void {}
+  @Emit('isChanged')
+  private emitIsChanged (provisionsremoved: boolean): void {}
 
   @Watch('isEditing')
-  @Emit('onEditingCompanyProvisions')
-  private emitOnEditingCompanyProvisions (): boolean {
+  @Emit('isEditing')
+  private emitIsEditing (): boolean {
     return this.isEditing
   }
 
@@ -172,7 +172,7 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
         this.haveChanges = false
       }
       this.emitHaveChanges(this.haveChanges)
-      this.emitCompanyProvisionsChanged(this.draftProvisionsRemoved)
+      this.emitIsChanged(this.draftProvisionsRemoved)
       this.isInvalid = false
     }
   }
@@ -194,7 +194,7 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   private resetCompanyProvisions () {
     this.haveChanges = false
     this.draftProvisionsRemoved = this.originalProvisionsRemovedValue
-    this.emitCompanyProvisionsChanged(this.draftProvisionsRemoved)
+    this.emitIsChanged(this.draftProvisionsRemoved)
     this.emitHaveChanges(false)
     this.isEditing = false
     this.dropdown = false
