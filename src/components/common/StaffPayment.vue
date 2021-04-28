@@ -7,7 +7,7 @@
     <div :class="{'invalid-section': invalidStaffPayment}">
       <staff-payment-component
         :staffPaymentData="getStaffPayment"
-        :validate="validateStaffPaymentFields"
+        :validate="validateStaffPayment"
         :invalidSection="invalidStaffPayment"
         @update:staffPaymentData="onStaffPaymentDataUpdate($event)"
         @valid="setStaffPaymentValidity($event)"
@@ -48,8 +48,8 @@ export default class StaffPayment extends Vue {
     return this.getAppValidate && !this.getAlterationValidFlags.isValidStaffPayment
   }
 
-  /** Check validity state, only when prompted by app. */
-  private get validateStaffPaymentFields (): boolean {
+  /** Is true when prompted by the app AND the user has selected an option. */
+  private get validateStaffPayment (): boolean {
     return this.getAppValidate && !!this.getStaffPayment?.option
   }
 
