@@ -97,7 +97,7 @@ describe('Articles component', () => {
     wrapper.destroy()
   })
 
-  it('sets component as invalid when editing', async () => {
+  it('sets company provisions component as invalid when editing', async () => {
     const router = mockRouter.mock()
     router.push({ name: alterationRoute })
     store.state.stateModel.businessInformation.hasRestrictions = true
