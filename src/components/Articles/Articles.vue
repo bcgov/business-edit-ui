@@ -14,7 +14,7 @@
         :provisionsRemoved="getProvisionsRemoved"
         @companyProvisionsChanged="setProvisionsRemoved($event)"
         @haveChanges="emitHaveChanges($event)"
-        @isEditingCompanyProvisions="setEditingCompanyProvisions($event)"
+        @onEditingCompanyProvisions="setEditingCompanyProvisions($event)"
       />
     </div>
 
@@ -27,6 +27,7 @@
         :isEditMode="true"
         :hasRightsOrRestrictions="getHasRightsOrRestrictions"
         @addRemoveDate="setResolutionDates($event)"
+        @onAddingResolutionDate="setIsAddingResolutionDate($event)"
       />
     </div>
   </v-card>
@@ -54,6 +55,7 @@ export default class Articles extends Mixins(CommonMixin) {
   private companyProvisionsChanges: boolean
 
   private isEditingCompanyProvisions = false
+  private isAddingResolutionDate = false
 
   // Global getters
   @Getter getBusinessInformation!: BusinessInformationIF
@@ -80,12 +82,16 @@ export default class Articles extends Mixins(CommonMixin) {
     this.setValidComponent({ key: 'isValidCompanyProvisions', value: !editing })
   }
 
+  setIsAddingResolutionDate (addingResolutionDate: boolean) {
+    this.isAddingResolutionDate = addingResolutionDate
+  }
+
   private get invalidCompanyProvisions (): boolean {
     return this.getComponentValidate && this.isEditingCompanyProvisions
   }
 
   private get invalidResolutionDates (): boolean {
-    return this.getComponentValidate && !this.getIsResolutionDatesValid
+    return this.getComponentValidate && (this.isAddingResolutionDate || !this.getIsResolutionDatesValid)
   }
 }
 </script>

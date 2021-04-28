@@ -531,7 +531,12 @@ export const getHasOriginalRightsOrRestrictions = (state: StateIF): any => {
 
 /** Get resolution dates validity. */
 export const getIsResolutionDatesValid = (state: StateIF): boolean => {
-  return state.stateModel.newAlteration.validComponents.isValidResolutionDate
+  if (hasShareStructureChanged(state) &&
+    (getHasOriginalRightsOrRestrictions(state) || getHasRightsOrRestrictions(state))
+  ) {
+    return getNewResolutionDates(state).length >= 1
+  }
+  return true
 }
 
 /**

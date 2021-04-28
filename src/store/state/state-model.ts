@@ -42,6 +42,7 @@ export const stateModel: StateModelIF = {
       isValidEffectiveDate: true,
       isValidFileNum: true, // Staff only
       isValidCertify: false, // initialize to false (unsigned)
+      isValidCourtOrder: true, // Just to keep the page order. It's important for validateAndScroll() in common-mixin.ts
       isValidStaffPayment: true, // Staff Only
       isValidDocumentOptionalEmail: true
     }

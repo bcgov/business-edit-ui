@@ -34,7 +34,7 @@ export default class CommonMixin extends Vue {
    */
   async scrollToTop (element: any): Promise<void> {
     // don't call window.scrollTo during Jest tests because jsdom doesn't implement it
-    if (!this.isJestRunning) await window.scrollTo({ top: element.offsetTop, behavior: 'smooth' })
+    if (!this.isJestRunning) await element.scrollIntoView({ behavior: 'smooth' })
   }
 
   /**

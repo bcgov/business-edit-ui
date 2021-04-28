@@ -139,8 +139,8 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   private emitCompanyProvisionsChanged (provisionsremoved: boolean): void {}
 
   @Watch('isEditing')
-  @Emit('isEditingCompanyProvisions')
-  private emitIsEditingCompanyProvisions (): boolean {
+  @Emit('onEditingCompanyProvisions')
+  private emitOnEditingCompanyProvisions (): boolean {
     return this.isEditing
   }
 
