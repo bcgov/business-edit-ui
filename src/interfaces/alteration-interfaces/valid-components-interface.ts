@@ -4,7 +4,8 @@ export interface ValidComponentsIF {
   isValidNameTranslation: boolean,
   isValidContactInfo: boolean,
   isValidFolioNumber: boolean,
-  isValidShareStructure: boolean
+  isValidShareStructure: boolean,
+  isValidCompanyProvisions: boolean,
   isValidResolutionDate: boolean,
   // To be expanded for any components that need validation before proceeding to summary
 }

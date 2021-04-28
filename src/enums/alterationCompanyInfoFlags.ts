@@ -10,5 +10,6 @@ export enum AlterationCompanyInfoFlags {
   'contact-info',
   'folio-number',
   'share-structures',
-  'articles'
+  'company-provisions',
+  'resolution-dates'
 }

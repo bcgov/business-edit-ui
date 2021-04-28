@@ -35,6 +35,7 @@ export const stateModel: StateModelIF = {
       isValidContactInfo: true,
       isValidFolioNumber: true,
       isValidShareStructure: true,
+      isValidCompanyProvisions: true,
       isValidResolutionDate: true
     },
     validFlags: {

@@ -97,6 +97,22 @@ describe('Articles component', () => {
     wrapper.destroy()
   })
 
+  it('sets component as invalid when editing', async () => {
+    const router = mockRouter.mock()
+    router.push({ name: alterationRoute })
+    store.state.stateModel.businessInformation.hasRestrictions = true
+    store.state.stateModel.newAlteration.provisionsRemoved = false
+    const wrapper = mount(Articles, { router, store, vuetify })
+    await Vue.nextTick()
+    expect(store.state.stateModel.newAlteration.validComponents.isValidCompanyProvisions).toBe(true)
+
+    wrapper.find(changeCompanyProvisionsButton).trigger('click')
+    await Vue.nextTick()
+    expect(store.state.stateModel.newAlteration.validComponents.isValidCompanyProvisions).toBe(false)
+
+    wrapper.destroy()
+  })
+
   it('should allow the user to change company provisions', async () => {
     const router = mockRouter.mock()
     router.push({ name: alterationRoute })

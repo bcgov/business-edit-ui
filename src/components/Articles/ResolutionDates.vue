@@ -5,7 +5,7 @@
     <v-row no-gutters>
       <v-col cols="3">
         <label>
-          <span :class="{'error-text': !getIsResolutionDatesValid}">Resolution or<br>Court Order Dates</span>
+          <span :class="{'error-text': newResolutionDateRequired}">Resolution or<br>Court Order Dates</span>
         </label>
       </v-col>
 
@@ -18,7 +18,7 @@
           Dates of resolutions or court orders to alter the company's share structure or the
           special rights or restrictions attached to a class or series of shares:
         </div>
-        <p v-if="!getIsResolutionDatesValid" class="error-text small-text mt-6">
+        <p v-if="newResolutionDateRequired" class="error-text small-text mt-6">
           You must add a resolution or court order date because your share structure contains a class or series of
           shares with special rights or restrictions and changes were made to you share structure.
         </p>
@@ -145,6 +145,8 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   @Getter getHasOriginalRightsOrRestrictions!: boolean
   @Getter getIsResolutionDatesValid!: boolean
   @Getter isSummaryMode!: boolean
+  @Getter getHasRightsOrRestrictions!: boolean
+  @Getter getNewResolutionDates!: string[]
 
   // Global setter
   @Action setValidComponent!: ActionBindingIF
@@ -193,10 +195,26 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
     }
   }
 
-  /** Updates store when resolution dates validity changes. */
-  @Watch('getIsResolutionDatesValid', { immediate: true })
-  private onEditingNameChanged (val: boolean): void {
-    this.setValidComponent({ key: 'isValidResolutionDate', value: val })
+  @Watch('hasRightsOrRestrictions')
+  @Watch('hasShareStructureChanged')
+  @Watch('isAdding')
+  private updateResolutionDatesValidity (): void {
+    if (this.isAdding) {
+      this.setValidComponent({ key: 'isValidResolutionDate', value: false })
+    } else {
+      this.setValidComponent({ key: 'isValidResolutionDate', value: !this.newResolutionDateRequired })
+    }
+  }
+
+  private get newResolutionDateRequired (): boolean {
+    if (this.hasSharedStructureChangeAndRestrictions) {
+      return this.getNewResolutionDates.length < 1
+    }
+    return false
+  }
+
+  private get hasSharedStructureChangeAndRestrictions (): boolean {
+    return this.hasShareStructureChanged && (this.getHasOriginalRightsOrRestrictions || this.getHasRightsOrRestrictions)
   }
 
   /** Emit updated list of dates. */

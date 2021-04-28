@@ -120,6 +120,8 @@
 <script lang="ts">
 import { Component, Emit, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { CommonMixin } from '@/mixins'
+import { Action, Getter } from 'vuex-class'
+import { ActionBindingIF } from '@/interfaces'
 
 @Component({})
 export default class CompanyProvisions extends Mixins(CommonMixin) {
@@ -137,6 +139,12 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   // Emitters
   @Emit('companyProvisionsChanged')
   private emitCompanyProvisionsChanged (provisionsremoved: boolean): void {}
+
+  @Watch('isEditing')
+  @Emit('isEditingCompanyProvisions')
+  private emitIsEditingCompanyProvisions (): boolean {
+    return this.isEditing
+  }
 
   @Emit('haveChanges')
   private emitHaveChanges (haveChanges: boolean): void {}

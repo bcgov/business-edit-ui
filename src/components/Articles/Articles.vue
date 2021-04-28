@@ -5,16 +5,22 @@
       <label class="define-article-title">Articles</label>
     </div>
 
-    <div class="section-container" v-if="getBusinessInformation.hasRestrictions">
+    <div
+      class="section-container"
+      v-if="getBusinessInformation.hasRestrictions"
+      :class="{'invalid-section': invalidCompanyProvisions}">
       <company-provisions
         class="sub-section"
         :provisionsRemoved="getProvisionsRemoved"
         @companyProvisionsChanged="setProvisionsRemoved($event)"
         @haveChanges="emitHaveChanges($event)"
+        @isEditingCompanyProvisions="setEditingCompanyProvisions($event)"
       />
     </div>
 
-    <div class="section-container" :class="{'invalid-section': !getIsResolutionDatesValid}">
+    <div
+      class="section-container"
+      :class="{'invalid-section': invalidResolutionDates}">
       <resolution-dates
         :addedDates="getNewResolutionDates"
         :previousDates="getPreviousResolutionDates"
@@ -47,6 +53,8 @@ export default class Articles extends Mixins(CommonMixin) {
   // Whether components have changes
   private companyProvisionsChanges: boolean
 
+  private isEditingCompanyProvisions = false
+
   // Global getters
   @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getNewResolutionDates!: string []
@@ -54,14 +62,31 @@ export default class Articles extends Mixins(CommonMixin) {
   @Getter getPreviousResolutionDates!: string[]
   @Getter getHasRightsOrRestrictions!: boolean
   @Getter getIsResolutionDatesValid!: boolean
+  @Getter getIsCompanyProvisionsValid!: boolean
+  @Getter getComponentValidate!: boolean
+  @Getter getValidComponentFlags!: boolean
 
   // Global actions
   @Action setProvisionsRemoved!: ActionBindingIF
   @Action setResolutionDates!: ActionBindingIF
+  @Action setValidComponent!: ActionBindingIF
 
   /** Emits Have Changes event. */
   @Emit('haveChanges')
   emitHaveChanges (haveChanges: boolean): void {}
+
+  setEditingCompanyProvisions (editing: boolean) {
+    this.isEditingCompanyProvisions = editing
+    this.setValidComponent({ key: 'isValidCompanyProvisions', value: !editing })
+  }
+
+  private get invalidCompanyProvisions (): boolean {
+    return this.getComponentValidate && this.isEditingCompanyProvisions
+  }
+
+  private get invalidResolutionDates (): boolean {
+    return this.getComponentValidate && !this.getIsResolutionDatesValid
+  }
 }
 </script>
 

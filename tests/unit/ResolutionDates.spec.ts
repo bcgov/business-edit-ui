@@ -271,6 +271,25 @@ describe('Resolution Dates component - edit mode', () => {
     wrapper.destroy()
   })
 
+  it('sets component as invalid when editing', async () => {
+    const wrapper = wrapperFactory()
+    await Vue.nextTick()
+    expect(store.state.stateModel.newAlteration.validComponents.isValidResolutionDate).toBe(true)
+
+    const rows = wrapper.findAll('.row')
+    expect(rows.length).toBe(1)
+
+    const cols = rows.at(0).findAll('.col')
+    expect(cols.length).toBe(3)
+
+    const button = cols.at(2).find('.add-btn')
+    button.trigger('click')
+    await Vue.nextTick()
+    expect(store.state.stateModel.newAlteration.validComponents.isValidResolutionDate).toBe(false)
+
+    wrapper.destroy()
+  })
+
   it('disables add btn when a date has already been added', async () => {
     const wrapper = wrapperFactory({ addedDates: ['2021-03-17'] })
 

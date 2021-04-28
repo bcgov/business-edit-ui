@@ -531,12 +531,7 @@ export const getHasOriginalRightsOrRestrictions = (state: StateIF): any => {
 
 /** Get resolution dates validity. */
 export const getIsResolutionDatesValid = (state: StateIF): boolean => {
-  if (hasShareStructureChanged(state) &&
-    (getHasOriginalRightsOrRestrictions(state) || getHasRightsOrRestrictions(state))
-  ) {
-    return getNewResolutionDates(state).length >= 1
-  }
-  return true
+  return state.stateModel.newAlteration.validComponents.isValidResolutionDate
 }
 
 /**
@@ -576,4 +571,9 @@ export const invalidMinimumShareClass = (state: StateIF): boolean => {
   const currentShareClasses = shareClasses.filter(x => x.action !== ActionTypes.REMOVED)
 
   return currentShareClasses.length < 1
+}
+
+/** Get state of company provisions validity. */
+export const getIsCompanyProvisionsValid = (state: StateIF): boolean => {
+  return state.stateModel.newAlteration.validComponents.isValidCompanyProvisions
 }
