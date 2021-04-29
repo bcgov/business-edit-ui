@@ -142,7 +142,6 @@ describe('Effective Date Time component', () => {
     const radioIsFutureEffective = radioInput.at(1)
 
     await radioIsFutureEffective.trigger('click')
-    wrapper.vm.dateText = new Date().toISOString().split('T')[0]
 
     await Vue.nextTick()
 
