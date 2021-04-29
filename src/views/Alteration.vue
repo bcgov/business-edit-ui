@@ -147,6 +147,7 @@ import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
+import { CertifyStatementResource } from '@/resources'
 
 @Component({
   components: {
@@ -164,6 +165,9 @@ import { cloneDeep } from 'lodash'
   }
 })
 export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin, PayApiMixin) {
+  // Declarations for template
+  readonly CertifyStatementResource = CertifyStatementResource
+
   // Global getters
   @Getter getAlterationValidFlags!: ValidFlagsIF
   @Getter getEntityType!: CorpTypeCd
@@ -188,6 +192,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   @Action setValidFileNumber!: ActionBindingIF
   @Action setCurrentFees!: ActionBindingIF
   @Action setFeePrices!: ActionBindingIF
+  @Action setCertifyStatementResource!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -287,6 +292,10 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
         ).catch(() => cloneDeep(emptyFees))
       )
 
+      // Set the resources
+      this.setCertifyStatementResource(
+        CertifyStatementResource.find(x => x.entityType === this.getEntityType)
+      )
       // tell App that we're finished loading
       this.emitHaveData()
     } catch (err) {

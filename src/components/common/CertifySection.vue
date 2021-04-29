@@ -77,24 +77,30 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
 
   /** Handler for Valid change event. */
   private onIsCertified (val: boolean): void {
-    if ((val) && (this.getCertifyState.certifiedBy)) {
-      this.setCertifyStateValidity(true)
-    } else this.setCertifyStateValidity(false)
+    this.setCertifyState(
+      {
+        valid: val,
+        certifiedBy: this.getCertifyState.certifiedBy
+      }
+    )
+    this.setCertifyStateValidity(Boolean(val && this.getCertifyState.certifiedBy))
   }
 
   /** Handler for CertifiedBy change event. */
   private onCertifiedBy (val: string): void {
-    if (!val) this.setCertifyStateValidity(false)
     this.setCertifyState(
       {
         valid: this.getCertifyState.valid,
         certifiedBy: val
       }
     )
+    this.setCertifyStateValidity(Boolean(this.getCertifyState.valid && val))
   }
+
   /** True if invalid class should be set for certify container. */
   get certificationInvalid (): boolean {
-    return (this.validate && !this.getCertifyState.valid)
+    console.log(!(this.getCertifyState.valid && this.getCertifyState.certifiedBy))
+    return (this.validate && !(this.getCertifyState.valid && this.getCertifyState.certifiedBy))
   }
 }
 </script>
