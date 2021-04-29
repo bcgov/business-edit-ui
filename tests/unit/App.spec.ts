@@ -322,18 +322,14 @@ describe.skip('Numbered company setup', () => {
     expect(store.state.stateModel.tombstone.filingId).toBe(54321)
 
     // Validate no offices are loaded
-    expect(store.state.stateModel.defineCompanyStep.officeAddresses)
-      .toBeDefined()
-    expect(store.state.stateModel.defineCompanyStep.officeAddresses.recordsOffice)
-      .toBeUndefined()
+    expect(store.state.stateModel.officeAddresses).toBeDefined()
+    expect(store.state.stateModel.officeAddresses.recordsOffice).toBeUndefined()
 
     // Validate Contact Info
-    expect(store.state.stateModel.defineCompanyStep.businessContact)
-      .toBeDefined()
+    expect(store.state.stateModel.businessContact).toBeDefined()
 
     // Validate Share Structure
-    expect(store.state.stateModel.shareStructureStep.shareClasses)
-      .toBeDefined()
+    expect(store.state.stateModel.shareStructureStep.shareClasses).toBeDefined()
   })
 
   it('does not load a name request into the store', () => {
@@ -357,11 +353,9 @@ describe.skip('Numbered company setup', () => {
     expect(store.state.stateModel.nameRequest.applicant.addressLine2).toBeUndefined()
     expect(store.state.stateModel.nameRequest.applicant.addressLine3).toBeUndefined()
     expect(store.state.stateModel.nameRequest.applicant.city).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.applicant.countryTypeCode)
-      .toBeUndefined()
+    expect(store.state.stateModel.nameRequest.applicant.countryTypeCode).toBeUndefined()
     expect(store.state.stateModel.nameRequest.applicant.postalCode).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.applicant.stateProvinceCode)
-      .toBeUndefined()
+    expect(store.state.stateModel.nameRequest.applicant.stateProvinceCode).toBeUndefined()
   })
 
   afterEach(() => {
@@ -455,13 +449,13 @@ describe.skip('App component', () => {
     expect(store.state.stateModel.tombstone.entityType).toBe('BEN')
 
     // Validate Office Addresses
-    expect(store.state.stateModel.defineCompanyStep.officeAddresses.registeredOffice)
+    expect(store.state.stateModel.officeAddresses.registeredOffice)
       .toStrictEqual(filingData.incorporationApplication.offices.registeredOffice)
-    expect(store.state.stateModel.defineCompanyStep.officeAddresses.recordsOffice)
+    expect(store.state.stateModel.officeAddresses.recordsOffice)
       .toStrictEqual(filingData.incorporationApplication.offices.recordsOffice)
 
     // Validate Contact Info
-    expect(store.state.stateModel.defineCompanyStep.businessContact)
+    expect(store.state.stateModel.businessContact)
       .toStrictEqual(filingData.incorporationApplication.contactPoint)
 
     // Validate People And Roles

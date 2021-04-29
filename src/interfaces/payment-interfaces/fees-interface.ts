@@ -1,7 +1,7 @@
 /** Interface for Fees from Payment API. */
 import { TaxesIF } from '@/interfaces'
 
-interface FeesIF {
+export interface FeesIF {
     filingFees: number
     filingType: string
     filingTypeCode: string
@@ -13,7 +13,7 @@ interface FeesIF {
     total?: number
 }
 
-const emptyFees: FeesIF = {
+export const EmptyFees: FeesIF = {
   filingFees: null,
   filingType: null,
   filingTypeCode: null,
@@ -27,5 +27,3 @@ const emptyFees: FeesIF = {
   },
   total: null
 }
-
-export { FeesIF, emptyFees }

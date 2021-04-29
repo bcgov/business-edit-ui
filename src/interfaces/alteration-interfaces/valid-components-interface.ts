@@ -3,7 +3,7 @@ export interface ValidComponentsIF {
   isValidBusinessType: boolean,
   isValidNameTranslation: boolean,
   isValidContactInfo: boolean,
-  isValidFolioNumber: boolean,
+  isValidFolioInfo: boolean,
   isValidShareStructure: boolean,
   isValidCompanyProvisions: boolean,
   isValidResolutionDate: boolean,

@@ -132,7 +132,13 @@ import { Articles } from '@/components/Articles'
 import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 
 // Mixins, Interfaces, Enums, etc
-import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
+import {
+  AuthApiMixin,
+  CommonMixin,
+  FilingTemplateMixin,
+  LegalApiMixin,
+  PayApiMixin
+} from '@/mixins'
 import {
   ActionBindingIF,
   BusinessSnapshotIF,
@@ -140,7 +146,7 @@ import {
   FilingDataIF,
   ValidFlagsIF,
   FeesIF,
-  emptyFees
+  EmptyFees
 } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
@@ -164,7 +170,13 @@ import { CertifyStatementResource } from '@/resources'
     YourCompany
   }
 })
-export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, FilingTemplateMixin, PayApiMixin) {
+export default class Alteration extends Mixins(
+  AuthApiMixin,
+  CommonMixin,
+  LegalApiMixin,
+  FilingTemplateMixin,
+  PayApiMixin
+) {
   // Declarations for template
   readonly CertifyStatementResource = CertifyStatementResource
 
@@ -283,13 +295,13 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
       this.setCurrentFees(
         await this.fetchFilingFees(
           FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
-        ).catch(() => cloneDeep(emptyFees))
+        ).catch(() => cloneDeep(EmptyFees))
       )
 
       // fetches the fee prices to display in the text
       this.setFeePrices(
         await this.fetchFilingFees(FilingCodes.ALTERATION, this.getEntityType, true
-        ).catch(() => cloneDeep(emptyFees))
+        ).catch(() => cloneDeep(EmptyFees))
       )
 
       // Set the resources
@@ -311,7 +323,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
   private async fetchBusinessSnapshot (): Promise<BusinessSnapshotIF> {
     const items = await Promise.all([
       this.fetchBusinessInfo(),
-      this.fetchContactPoint(),
+      this.fetchAuthInfo(),
       this.fetchIncorporationAddress(),
       this.fetchNameTranslations(),
       this.fetchOrgPersons(),
@@ -323,7 +335,7 @@ export default class Alteration extends Mixins(CommonMixin, LegalApiMixin, Filin
 
     return {
       businessInfo: items[0],
-      contactPoint: items[1],
+      authInfo: items[1],
       incorporationAddress: items[2],
       nameTranslations: items[3],
       orgPersons: items[4],

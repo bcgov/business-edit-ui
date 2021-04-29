@@ -226,21 +226,17 @@
     <!-- Registered Office Contact Information -->
     <div id="contact-info" class="section-container" :class="{'invalid-section': invalidContactSection}">
       <BusinessContactInfo
-        @haveChanges="contactInfoChanges = $event"
+        :invalidSection="invalidContactSection"
       />
     </div>
 
     <!-- Folio Information -->
-    <template v-if="isPremiumAccount">
+    <template v-if="isPremiumAccount && !isRoleStaff">
       <v-divider class="mx-4" />
 
       <div id="folio-number" class="section-container" :class="{'invalid-section': invalidFolioSection}">
-        <FolioNumber
-          :initialValue="getFolioNumber"
-          :isEditing="false"
-          :invalidSection="invalidTypeSection"
-          @haveChanges="folioNumberChanges = $event"
-          @isEditing="isEditingFolio = $event"
+        <FolioInformation
+          :invalidSection="invalidFolioSection"
         />
       </div>
     </template>
@@ -264,10 +260,10 @@ import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 import {
   BusinessContactInfo,
   ChangeBusinessType,
-  FolioNumber,
+  FolioInformation,
   CorrectNameTranslation,
   OfficeAddresses
-} from '.'
+} from './'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
 import { CorrectionTypes, CorpTypeCd } from '@/enums'
@@ -282,7 +278,7 @@ import { ConfirmDialog } from '@/components/dialogs'
     CorrectNameOptions,
     CorrectNameTranslation,
     OfficeAddresses,
-    FolioNumber
+    FolioInformation
   }
 })
 export default class YourCompany extends Mixins(
@@ -297,7 +293,7 @@ export default class YourCompany extends Mixins(
     confirm: ConfirmDialogType
   }
 
-  // global getters
+  // Global getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
   @Getter getComponentValidate!: boolean
@@ -306,15 +302,15 @@ export default class YourCompany extends Mixins(
   @Getter hasNewNr!: boolean
   @Getter getOriginalEffectiveDateTime!: string
   @Getter getBusinessFoundingDate!: string // actually date-time
-  @Getter getFolioNumber!: string
   @Getter isConflictingLegalType!: boolean
   @Getter isNumberedCompany!: boolean
   @Getter isPremiumAccount!: GetterIF
   @Getter getOriginalIA!: IncorporationFilingIF
-  @Getter getOriginalSnapshot!: BusinessSnapshotIF
+  @Getter getBusinessSnapshot!: BusinessSnapshotIF
   @Getter getBusinessContact!: ContactPointIF
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
+  @Getter isRoleStaff!: boolean
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -324,6 +320,8 @@ export default class YourCompany extends Mixins(
   @Action setDefineCompanyStepChanged!: ActionBindingIF
   @Action setEditingCompanyName!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
+  @Action setBusinessInformation!: ActionBindingIF
+  @Action setNameRequest!: ActionBindingIF
 
   // Declaration for template
   readonly CorpTypeCd = CorpTypeCd
@@ -331,18 +329,16 @@ export default class YourCompany extends Mixins(
   /** V-model for dropdown menu. */
   private dropdown: boolean = null
 
-  // Whether components have changes
+  // Whether components have changes (only used by corrections)
   private companyNameChanges = false
   private companyTypeChanges = false
-  private contactInfoChanges = false
   private nameTranslationChanges = false
   private officeAddressChanges = false
-  private folioNumberChanges = false
+
   private correctNameChoices: Array<string> = []
   private isEditingNames = false
   private isEditingType = false
   private isEditingTranslations = false
-  private isEditingFolio = false
 
   /**  Initialize the name choices for alterations */
   mounted () { this.onApprovedName() }
@@ -369,7 +365,7 @@ export default class YourCompany extends Mixins(
 
   /** The folio section validity state (when prompted by app). */
   private get invalidFolioSection (): boolean {
-    return this.getComponentValidate && !this.getValidComponentFlags.isValidFolioNumber
+    return this.getComponentValidate && !this.getValidComponentFlags.isValidFolioInfo
   }
 
   /** The company name (from NR, or incorporation number). */
@@ -414,7 +410,7 @@ export default class YourCompany extends Mixins(
     const correctedName = this.getApprovedName
     const currentName = this.isCorrectionFiling
       ? this.getOriginalIA.incorporationApplication.nameRequest.legalName
-      : this.getOriginalSnapshot.businessInfo.legalName
+      : this.getBusinessSnapshot.businessInfo.legalName
 
     return correctedName !== currentName
   }
@@ -423,11 +419,11 @@ export default class YourCompany extends Mixins(
   private resetName () {
     this.setBusinessInformation(this.isCorrectionFiling
       ? this.getOriginalIA.business
-      : this.getOriginalSnapshot.businessInfo
+      : this.getBusinessSnapshot.businessInfo
     )
     this.setNameRequest(this.isCorrectionFiling
       ? this.getOriginalIA.incorporationApplication.nameRequest
-      : this.getOriginalSnapshot.businessInfo
+      : this.getBusinessSnapshot.businessInfo
     )
     this.companyNameChanges = false
   }
@@ -462,12 +458,10 @@ export default class YourCompany extends Mixins(
     }
   }
 
-  // watchers for component change flags
+  // Watchers for component change flags (only used by corrections)
   @Watch('companyNameChanges') private onCompanyNameChanges ():void { this.setDataChanges() }
   @Watch('companyTypeChanges') private onCompanyTypeChanges ():void { this.setDataChanges() }
-  @Watch('contactInfoChanges') private onContactInfoChanges ():void { this.setDataChanges() }
   @Watch('nameTranslationChanges') private onNameTranslationChanges ():void { this.setDataChanges() }
-  @Watch('folioNumberChanges') private onFolioNumberChanges ():void { this.setDataChanges() }
   @Watch('officeAddressChanges') private onOfficeAddressChanges ():void { this.setDataChanges() }
 
   @Watch('getApprovedName')
@@ -490,42 +484,34 @@ export default class YourCompany extends Mixins(
     const haveChanges = (
       this.companyNameChanges ||
       this.companyTypeChanges ||
-      this.contactInfoChanges ||
       this.nameTranslationChanges ||
-      this.folioNumberChanges ||
       this.officeAddressChanges
     )
     this.setDefineCompanyStepChanged(haveChanges)
     this.emitHaveChanges(haveChanges)
   }
 
-  /** Emits Have Changes event. */
+  /** Emits Have Changes event (only used by corrections). */
   @Emit('haveChanges')
   private emitHaveChanges (val: boolean): void {}
 
-  /** Updates store initially and when local isEditingName property has changed. */
+  /** Updates store initially and when isEditingName property has changed. */
   @Watch('isEditingNames', { immediate: true })
   private onEditingNameChanged (val: boolean): void {
     this.setValidComponent({ key: 'isValidCompanyName', value: !val })
     this.setEditingCompanyName(val)
   }
 
-  /** Updates store initially and when local isEditingType property has changed. */
+  /** Updates store initially and when isEditingType property has changed. */
   @Watch('isEditingType', { immediate: true })
   private onEditingTypeChanged (val: boolean): void {
     this.setValidComponent({ key: 'isValidBusinessType', value: !val })
   }
 
-  /** Updates store initially and when local isEditingTranslations property has changed. */
+  /** Updates store initially and when isEditingTranslations property has changed. */
   @Watch('isEditingTranslations', { immediate: true })
   private onEditingTranslationChanged (val: boolean): void {
     this.setValidComponent({ key: 'isValidNameTranslation', value: !val })
-  }
-
-  /** Updates store initially and when local isEditingFolio property has changed. */
-  @Watch('isEditingFolio', { immediate: true })
-  private onEditingFolioChanged (val: boolean): void {
-    this.setValidComponent({ key: 'isValidFolioNumber', value: !val })
   }
 }
 </script>

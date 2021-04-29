@@ -17,4 +17,5 @@ export interface TombStoneIF {
   isFilingPaying: boolean
   ignoreChanges: boolean
   haveUnsavedChanges: boolean
+  folioNumber: string
 }

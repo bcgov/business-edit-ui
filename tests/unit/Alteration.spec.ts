@@ -13,7 +13,6 @@ import { Alteration } from '@/views'
 
 // Other
 import mockRouter from './MockRouter'
-import { emptyFees } from '@/interfaces'
 
 Vue.use(Vuetify)
 
@@ -304,9 +303,9 @@ describe('Alteration component', () => {
     expect(state.nameTranslations[0].name).toBe('Mock Business French Ltd.')
 
     // Validate Office Addresses
-    expect(state.defineCompanyStep.officeAddresses.registeredOffice.deliveryAddress.streetAddress)
+    expect(state.officeAddresses.registeredOffice.deliveryAddress.streetAddress)
       .toBe('reg delivery_address - address line one')
-    expect(state.defineCompanyStep.officeAddresses.recordsOffice.mailingAddress.streetAddress)
+    expect(state.officeAddresses.recordsOffice.mailingAddress.streetAddress)
       .toBe('rec mailing_address - address line two')
 
     // Validate People And Roles
@@ -322,8 +321,8 @@ describe('Alteration component', () => {
       .toBe('Series 2 Shares')
 
     // Validate Contact Info
-    expect(store.state.stateModel.defineCompanyStep.businessContact.email).toBe('mock@email.com')
-    expect(store.state.stateModel.defineCompanyStep.businessContact.phone).toBe('123-456-7890')
+    expect(store.state.stateModel.businessContact.email).toBe('mock@email.com')
+    expect(store.state.stateModel.businessContact.phone).toBe('123-456-7890')
 
     expect(store.state.stateModel.currentFees.filingFees).toBe(100)
     expect(store.state.stateModel.currentFees.futureEffectiveFees).toBe(0)

@@ -1,10 +1,10 @@
 import {
   BusinessInformationIF,
+  CourtOrderIF,
   NameRequestIF,
   NameTranslationIF,
   ShareStructureIF
 } from '@/interfaces'
-import { CourtOrderIF } from '@/interfaces/alteration-interfaces/court-order-interface'
 
 // Shared Interfaces
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'

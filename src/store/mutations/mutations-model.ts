@@ -93,20 +93,20 @@ export const mutateDocumentOptionalEmailValidity = (state: StateIF, validity: bo
 }
 
 export const mutateBusinessContact = (state: StateIF, businessContact: ContactPointIF) => {
-  state.stateModel.defineCompanyStep.businessContact = businessContact
+  state.stateModel.businessContact = businessContact
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutateDefineCompanyStepValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.defineCompanyStep.valid = validity
+  state.stateModel.validFlags.defineCompanyStep = validity
 }
 
 export const mutateDefineCompanyStepChanged = (state: StateIF, changed: boolean) => {
-  state.stateModel.defineCompanyStep.changed = changed
+  state.stateModel.changedFlags.defineCompanyStep = changed
 }
 
 export const mutateOfficeAddresses = (state: StateIF, addresses: IncorporationAddressIf) => {
-  state.stateModel.defineCompanyStep.officeAddresses = addresses
+  state.stateModel.officeAddresses = addresses
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
@@ -124,7 +124,8 @@ export const mutatePeopleAndRolesValidity = (state: StateIF, validity: boolean) 
 }
 
 export const mutateFolioNumber = (state: StateIF, folioNumber: string) => {
-  state.stateModel.defineCompanyStep.folioNumber = folioNumber
+  state.stateModel.tombstone.folioNumber = folioNumber
+  // NB: folio number was changed immediately in auth db - do not set unsaved Changes flag
 }
 
 export const mutateFilingDateTime = (state: StateIF, dateTime: string) => {
@@ -198,8 +199,8 @@ export const mutateOriginalIA = (state: StateIF, originalIA: IncorporationFiling
   state.stateModel.originalIA = originalIA
 }
 
-export const mutateOriginalSnapshot = (state: StateIF, originalSnapshot: BusinessSnapshotIF) => {
-  state.stateModel.originalSnapshot = originalSnapshot
+export const mutateBusinessSnapshot = (state: StateIF, businessSnapshot: BusinessSnapshotIF) => {
+  state.stateModel.businessSnapshot = businessSnapshot
 }
 
 export const mutateStaffPayment = (state: StateIF, staffPayment: StaffPaymentIF) => {
@@ -234,6 +235,10 @@ export const mutateEditingNameTranslations = (state: StateIF, editing: boolean) 
 
 export const mutateEditingOfficeAddresses = (state: StateIF, editing: boolean) => {
   state.stateModel.editingFlags.officeAddresses = editing
+}
+
+export const mutateEditingFolioNumber = (state: StateIF, editing: boolean) => {
+  state.stateModel.editingFlags.folioNumber = editing
 }
 
 export const mutateEditingPeopleAndRoles = (state: StateIF, editing: boolean) => {
@@ -286,10 +291,6 @@ export const mutateComponentValidate = (state: StateIF, isValid: boolean) => {
 
 export const mutateValidFileNumber = (state: StateIF, isValid: boolean) => {
   state.stateModel.newAlteration.validFlags.isValidFileNum = isValid
-}
-
-export const mutateIsValidResolutionDate = (state: StateIF, isValid: boolean) => {
-  state.stateModel.newAlteration.validComponents.isValidResolutionDate = isValid
 }
 
 export const mutateCurrentFees = (state: StateIF, fees: FeesIF) => {

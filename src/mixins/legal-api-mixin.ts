@@ -1,7 +1,6 @@
 // Libraries
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { NOT_FOUND } from 'http-status-codes'
 import { axios } from '@/utils'
 
 // Interfaces
@@ -9,43 +8,15 @@ import {
   AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF, IncorporationAddressIf,
   NameTranslationIF, GetOrgPersonIF, ShareStructureIF, ResolutionsIF
 } from '@/interfaces'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces'
-
-// Mixins
-import { FilingTemplateMixin } from '@/mixins'
 
 /**
  * Mixin that provides integration with the Legal API.
  */
 @Component({})
-export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
+export default class LegalApiMixin extends Vue {
   // Global getters
   @Getter getFilingId!: number
   @Getter getBusinessId!: string
-
-  /**
-   * Fetches a filing by its type.
-   * @returns a promise to return the filing of the specified type
-   */
-  async fetchFilingByType (filingType: string): Promise<any> {
-    const url = `businesses/${this.getBusinessId}/filings`
-
-    return axios.get(url)
-      .then(response => {
-        const filings = response?.data?.filings
-        const returnFiling = filings?.find((filings: any) => filings.filing.header.name === filingType)
-
-        if (!filings || !returnFiling) {
-          throw new Error('Invalid API response')
-        }
-        return returnFiling
-      })
-      .catch((error) => {
-        if (error?.response?.status === NOT_FOUND) {
-          throw error
-        }
-      })
-  }
 
   /**
    * Fetches a filing by its id.
@@ -132,32 +103,6 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
       return filing
     })
     // NB: for error handling, see "save-error-event"
-  }
-
-  /**
-   * Fetches authorizations.
-   * @param businessIdentifier the business identifier (eg, BC1219948)
-   * @returns a promise to return the authorizations object
-   */
-  async getAuthorizations (businessIdentifier: string): Promise<any> {
-    if (!businessIdentifier) throw new Error('Invalid parameter \'businessIdentifier\'')
-
-    const url = `entities/${businessIdentifier}/authorizations`
-    const authUrl = sessionStorage.getItem('AUTH_API_URL')
-    const config = { baseURL: authUrl }
-
-    return axios.get(url, config)
-  }
-
-  /**
-   * Fetches the current user data.
-   * @returns a promise to return the data
-   */
-  async fetchCurrentUser (): Promise<any> {
-    const authUrl = sessionStorage.getItem('AUTH_API_URL')
-    const config = { baseURL: authUrl }
-
-    return axios.get('users/@me', config)
   }
 
   /**
@@ -288,36 +233,6 @@ export default class LegalApiMixin extends Mixins(FilingTemplateMixin) {
         } else {
           // eslint-disable-next-line no-console
           console.log('fetchResolutions() error - invalid response =', response)
-          throw new Error('Invalid API response')
-        }
-      })
-  }
-
-  /**
-   * Fetches the contact point of the current business.
-   * @returns a promise to return the data
-   */
-  async fetchContactPoint (): Promise<ContactPointIF> {
-    if (!this.getBusinessId) throw new Error('Invalid business id')
-
-    const url = `entities/${this.getBusinessId}`
-    const authUrl = sessionStorage.getItem('AUTH_API_URL')
-    const config = { baseURL: authUrl }
-
-    return axios.get(url, config)
-      .then(response => {
-        // take the first contact
-        const contact = response?.data?.contacts[0]
-        if (contact) {
-          return {
-            email: contact.email,
-            confirmEmail: contact.email,
-            phone: contact.phone,
-            extension: contact.phoneExtension
-          }
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('fetchContactPoint() error - invalid response =', response)
           throw new Error('Invalid API response')
         }
       })
