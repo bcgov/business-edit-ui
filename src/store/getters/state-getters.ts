@@ -577,3 +577,8 @@ export const invalidMinimumShareClass = (state: StateIF): boolean => {
 
   return currentShareClasses.length < 1
 }
+
+/** Get state of company provisions validity. */
+export const getIsCompanyProvisionsValid = (state: StateIF): boolean => {
+  return state.stateModel.newAlteration.validComponents.isValidCompanyProvisions
+}

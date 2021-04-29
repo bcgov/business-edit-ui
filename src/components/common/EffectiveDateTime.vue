@@ -1,5 +1,5 @@
 <template>
-  <v-card flat id="effective-date-time">
+  <v-card flat id="effective-date-time-box">
     <v-radio-group column class="pt-0 mt-0" v-model="effectiveDateType">
       <v-radio label="Immediate (date and time of filing)" :value=EffectiveDateTypes.IMMEDIATE />
       <v-radio label="A date and time in the future" :value=EffectiveDateTypes.FUTUREEFFECTIVE />
@@ -394,7 +394,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-#effective-date-time {
+#effective-date-time-box {
   padding: 2rem 2rem 0.5rem;
   line-height: 1.2rem;
 }

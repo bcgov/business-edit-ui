@@ -137,7 +137,10 @@
 
     <!-- Alteration Date and Time -->
     <div class="ma-6 pb-6">
-      <v-container class="alteration-date-time" :class="{ 'invalid': alterationDateTimeInvalid }">
+      <v-container
+        id="effective-date-time"
+        class="alteration-date-time"
+        :class="{ 'invalid': alterationDateTimeInvalid }">
         <v-row no-gutters>
           <v-col cols="3" class="inner-col-1">
             <label><strong>Alteration Date<br>and Time</strong></label>

@@ -194,14 +194,25 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   }
 
   /** Updates store when resolution dates validity changes. */
+  @Watch('isAdding', { immediate: true })
   @Watch('getIsResolutionDatesValid', { immediate: true })
   private onEditingNameChanged (val: boolean): void {
-    this.setValidComponent({ key: 'isValidResolutionDate', value: val })
+    if (this.isAdding) {
+      this.setValidComponent({ key: 'isValidResolutionDate', value: false })
+    } else {
+      this.setValidComponent({ key: 'isValidResolutionDate', value: this.getIsResolutionDatesValid })
+    }
   }
 
   /** Emit updated list of dates. */
   @Emit('addRemoveDate')
   private emitAddRemoveDate (dates: string[]): void {}
+
+  @Watch('isAdding', { immediate: true })
+  @Emit('isEditing')
+  private emitIsEditing (): boolean {
+    return this.isAdding
+  }
 }
 </script>
 
