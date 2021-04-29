@@ -77,6 +77,17 @@ describe('Action button states', () => {
       // set all validity flags
       await wrapper.vm.$store.commit('mutatePeopleAndRolesValidity', val)
       await wrapper.vm.$store.commit('mutateDetailValidity', val)
+      if (val) {
+        await wrapper.vm.$store.commit('mutateCertifyState', {
+          valid: true,
+          certifiedBy: 'user'
+        })
+      } else {
+        await wrapper.vm.$store.commit('mutateCertifyState', {
+          valid: false,
+          certifiedBy: ''
+        })
+      }
       await wrapper.vm.$store.commit('mutateCertifyStateValidity', val)
       await wrapper.vm.$store.commit('mutateStaffPaymentValidity', val)
     }
