@@ -115,11 +115,19 @@ describe('State Getters', () => {
     // verify that all flags works
     await vm.$store.commit('mutatePeopleAndRolesValidity', true)
     await vm.$store.commit('mutateDetailValidity', true)
+    await vm.$store.commit('mutateCertifyState', {
+      valid: true,
+      certifiedBy: 'user'
+    })
     await vm.$store.commit('mutateCertifyStateValidity', true)
     await vm.$store.commit('mutateStaffPaymentValidity', true)
     expect(vm.isFilingValid).toBe(true)
     await vm.$store.commit('mutatePeopleAndRolesValidity', false)
     await vm.$store.commit('mutateDetailValidity', false)
+    await vm.$store.commit('mutateCertifyState', {
+      valid: false,
+      certifiedBy: ''
+    })
     await vm.$store.commit('mutateCertifyStateValidity', false)
     await vm.$store.commit('mutateStaffPaymentValidity', false)
     expect(vm.isFilingValid).toBe(false)
