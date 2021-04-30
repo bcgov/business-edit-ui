@@ -99,7 +99,6 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
 
   /** True if invalid class should be set for certify container. */
   get certificationInvalid (): boolean {
-    console.log(!(this.getCertifyState.valid && this.getCertifyState.certifiedBy))
     return (this.validate && !(this.getCertifyState.valid && this.getCertifyState.certifiedBy))
   }
 }
