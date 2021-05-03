@@ -4,3 +4,5 @@ export interface FormType extends HTMLFormElement {
   validate(): boolean
   resetValidation(): void
 }
+// To keep compatibility with the shared components that use FormIF and not FormType
+export interface FormIF extends FormType {}

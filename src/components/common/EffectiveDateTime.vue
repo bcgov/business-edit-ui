@@ -266,7 +266,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
     // wait for form to update itself before checking validity
     await Vue.nextTick()
 
-    const isDateValid = this.$refs.datePickerRef.$refs.form['validate']()
+    const isDateValid = this.$refs.datePickerRef.validateForm()
     const isTimeValid = this.$refs.form.validate()
     if (isDateValid && isTimeValid) {
       const year = +this.dateText.slice(0, 4)
@@ -363,7 +363,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
       this.selectHour = []
       this.selectMinute = []
       this.selectPeriod = PeriodTypes.AM
-      this.$refs.datePickerRef.$refs.form['reset']()
+      this.$refs.datePickerRef.clearDate()
     }
 
     // update the parent
@@ -389,7 +389,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
 
     // wait for form to update itself before checking validity
     await Vue.nextTick()
-    const isDateValid = this.$refs.datePickerRef.$refs.form['validate']()
+    const isDateValid = this.$refs.datePickerRef.validateForm()
     const isTimeValid = this.$refs.form.validate()
     return (!!this.effectiveDateType &&
       isDateValid && isTimeValid &&
