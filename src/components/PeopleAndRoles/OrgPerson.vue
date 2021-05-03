@@ -177,7 +177,7 @@
 import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
 import { cloneDeep, isEqual } from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
-import { OrgPersonIF, BaseAddressType, FormType, AddressIF, ConfirmDialogType, RoleIF } from '@/interfaces'
+import { OrgPersonIF, BaseAddressType, FormIF, AddressIF, ConfirmDialogType, RoleIF } from '@/interfaces'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ConfirmDialog } from '@/components/dialogs'
 import { CommonMixin } from '@/mixins'
@@ -194,7 +194,7 @@ import { Getter } from 'vuex-class'
 export default class OrgPerson extends Mixins(CommonMixin) {
   // Refs
   $refs!: {
-    orgPersonForm: FormType,
+    orgPersonForm: FormIF,
     mailingAddressNew: BaseAddressType,
     deliveryAddressNew: BaseAddressType,
     reassignCpDialog: ConfirmDialogType

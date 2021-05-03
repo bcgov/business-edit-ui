@@ -122,10 +122,9 @@ describe('Effective Date Time component', () => {
     const radioIsFutureEffective = radioInput.at(1)
 
     await radioIsFutureEffective.trigger('click')
-    wrapper.vm.dateText = new Date().toISOString().split('T')[0]
-
     await Vue.nextTick()
 
+    expect(wrapper.vm.dateText).toBe('') // No need to have a selected date
     expect(wrapper.find('#date-text-field').attributes('disabled')).toBeUndefined()
     expect(wrapper.find('#hour-selector').attributes('disabled')).toBeUndefined()
     expect(wrapper.find('#minute-selector').attributes('disabled')).toBeUndefined()
@@ -143,7 +142,6 @@ describe('Effective Date Time component', () => {
     const radioIsFutureEffective = radioInput.at(1)
 
     await radioIsFutureEffective.trigger('click')
-    wrapper.vm.dateText = new Date().toISOString().split('T')[0]
 
     await Vue.nextTick()
 
@@ -158,6 +156,8 @@ describe('Effective Date Time component', () => {
     expect(wrapper.find('#hour-selector').attributes('disabled')).toBe('disabled')
     expect(wrapper.find('#minute-selector').attributes('disabled')).toBe('disabled')
     expect(wrapper.find('#period-selector').attributes('disabled')).toBe('disabled')
+
+    expect(wrapper.find('#date-text-field').text()).toBe('')
   })
 
   it('emits a valid state when Immediate is selected', async () => {

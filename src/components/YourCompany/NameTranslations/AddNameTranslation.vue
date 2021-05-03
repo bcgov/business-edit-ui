@@ -58,7 +58,7 @@ import { Component, Emit, Prop, Mixins } from 'vue-property-decorator'
 import { ConfirmDialog } from '@/components/dialogs'
 
 // Interfaces
-import { ConfirmDialogType, FormType } from '@/interfaces'
+import { ConfirmDialogType, FormIF } from '@/interfaces'
 
 // Mixins
 import { CommonMixin } from '@/mixins'
@@ -72,7 +72,7 @@ export default class AddNameTranslation extends Mixins(CommonMixin) {
   // Refs
   $refs!: {
     confirmTranslationDialog: ConfirmDialogType,
-    nameTranslationForm: FormType
+    nameTranslationForm: FormIF
   }
 
   @Prop({ default: '' })
