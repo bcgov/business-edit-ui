@@ -78,7 +78,7 @@ import { Getter } from 'vuex-class'
 import { DatePicker } from '@bcrs-shared-components/date-picker'
 import { DateMixin } from '@/mixins'
 import { EffectiveDateTypes } from '@/enums'
-import { EffectiveDateTimeIF, FormFieldType, FormType } from '@/interfaces'
+import { EffectiveDateTimeIF, FormFieldType, FormIF } from '@/interfaces'
 
 enum PeriodTypes {
   AM = 'am',
@@ -96,7 +96,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
 
   // Add element types to refs
   $refs!: {
-    form: FormType,
+    form: FormIF,
     datePickerRef: DatePicker,
     hourSelector: FormFieldType, // used in unit tests
     minuteSelector: FormFieldType // used in unit tests
