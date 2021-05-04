@@ -162,7 +162,11 @@
               @valid="setEffectiveDateValid($event)"
             />
 
-            <v-card flat class="px-16 pb-8 mt-n12" v-if="isFutureEffective && isEffectiveDateTimeValid">
+            <v-card
+              flat
+              class="px-16 pb-8 mt-n12"
+              id="effectiveness-text"
+              v-if="isFutureEffective && isEffectiveDateTimeValid">
               The alteration for this business will be effective as of:<br>
               <strong>{{effectiveDateTimeString}}</strong>
             </v-card>
@@ -366,5 +370,9 @@ export default class AlterationSummary extends Mixins(
   // ie, increase width by 1/2 container margin + padding
   flex: 0 0 calc(75% + 1.5rem);
   max-width: calc(75% + 1.5rem);
+}
+
+#effectiveness-text {
+  color: $gray7;
 }
 </style>

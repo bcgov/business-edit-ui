@@ -30,6 +30,7 @@ function getLastEvent (wrapper: Wrapper<EffectiveDateTime>, name: string): any {
 describe('Effective Date Time component', () => {
   let wrapperFactory: any
   const today = new Date()
+  const futureInvalidDate = new Date(today.getTime() + 11 * 24 * 60 * 60 * 1000)
 
   const dateTimeDefault = {
     valid: false,
@@ -55,7 +56,7 @@ describe('Effective Date Time component', () => {
     valid: false,
     isFutureEffective: true,
     // effective date is more than 10 days from now
-    dateTimeString: new Date(today.getTime() + 11 * 24 * 60 * 60 * 1000).toISOString()
+    dateTimeString: futureInvalidDate.toISOString()
   }
 
   beforeAll(() => {
@@ -196,7 +197,8 @@ describe('Effective Date Time component', () => {
     await flushPromises()
 
     // Verify the last Valid event is false
-    expect(getLastEvent(wrapper, 'valid')).toEqual(false)
+    // Note that it is important to test 'event === false' to check it is not 0 (zero) or other falsy evaluation
+    expect(getLastEvent(wrapper, 'valid') === false).toBeTruthy()
   })
 
   it('emits a invalid state when Future Effective is selected and no hour is entered', async () => {
@@ -219,7 +221,8 @@ describe('Effective Date Time component', () => {
     await flushPromises()
 
     // Verify the last Valid event is false
-    expect(getLastEvent(wrapper, 'valid')).toEqual(false)
+    // Note that it is important to test 'event === false' to check it is not 0 (zero) or other falsy evaluation
+    expect(getLastEvent(wrapper, 'valid') === false).toBeTruthy()
   })
 
   it('emits a invalid state when Future Effective is selected and no minute is entered', async () => {
@@ -242,7 +245,8 @@ describe('Effective Date Time component', () => {
     await flushPromises()
 
     // Verify the last Valid event is false
-    expect(getLastEvent(wrapper, 'valid')).toEqual(false)
+    // Note that it is important to test 'event === false' to check it is not 0 (zero) or other falsy evaluation
+    expect(getLastEvent(wrapper, 'valid') === false).toBeTruthy()
   })
 
   // FUTURE: this works locally but not in GHA; fix later
@@ -270,7 +274,8 @@ describe('Effective Date Time component', () => {
     expect(getLastEvent(wrapper, 'valid')).toEqual(true)
   })
 
-  it('emits a valid state when component mounts with valid Effective Date Time', async () => {
+  // FUTURE: It was decided not to load FED from draft for now
+  xit('emits a valid state when component mounts with valid Effective Date Time', async () => {
     const wrapper = wrapperFactory({
       currentJsDate: today,
       effectiveDateTime: dateTimeValid
@@ -321,6 +326,18 @@ describe('Effective Date Time component', () => {
       effectiveDateTime: dateTimeUnder
     })
 
+    // select Future Effective
+    const radioInput = wrapper.findAll('input[type="radio"]')
+    const radioIsFutureEffective = radioInput.at(1)
+    await radioIsFutureEffective.trigger('click')
+
+    // set current date and time
+    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToDateString(today))
+    wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
+    wrapper.vm.$refs.minuteSelector.setValue((today.getMinutes()).toString())
+    await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
+    wrapper.vm.dateText = wrapper.vm.dateToDateString(today)
+
     // wait a bit for validation to complete
     await flushPromises()
 
@@ -330,7 +347,8 @@ describe('Effective Date Time component', () => {
       .toContain(`The time must be at least ${minTime} for the selected date`)
 
     // Verify the last Valid event is false
-    expect(getLastEvent(wrapper, 'valid')).toEqual(false)
+    // Note that it is important to test 'event === false' to check it is not 0 (zero) or other falsy evaluation
+    expect(getLastEvent(wrapper, 'valid') === false).toBeTruthy()
   })
 
   it('displays a validation error when the effective time is more than 10 days from now', async () => {
@@ -338,6 +356,18 @@ describe('Effective Date Time component', () => {
       currentJsDate: today,
       effectiveDateTime: dateTimeOver
     })
+
+    // select Future Effective
+    const radioInput = wrapper.findAll('input[type="radio"]')
+    const radioIsFutureEffective = radioInput.at(1)
+    await radioIsFutureEffective.trigger('click')
+
+    // set current date + 11 days and time
+    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToDateString(futureInvalidDate))
+    wrapper.vm.$refs.hourSelector.setValue((futureInvalidDate.getHours() % 12).toString())
+    wrapper.vm.$refs.minuteSelector.setValue((futureInvalidDate.getMinutes()).toString())
+    await wrapper.find('#period-selector').setValue(futureInvalidDate.getHours() >= 12 ? 'pm' : 'am')
+    wrapper.vm.dateText = wrapper.vm.dateToDateString(futureInvalidDate)
 
     // wait a bit for validation to complete
     await flushPromises()
