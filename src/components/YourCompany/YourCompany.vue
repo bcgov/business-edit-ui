@@ -231,9 +231,7 @@
     </div>
 
     <!-- Folio Information -->
-    <!-- TODO: show for corrections -->
-    <!-- TODO: show for staff but hide action buttons -->
-    <template v-if="isPremiumAccount && !isRoleStaff">
+    <template v-if="isPremiumAccount">
       <v-divider class="mx-4" />
 
       <div id="folio-number" class="section-container" :class="{'invalid-section': invalidFolioSection}">
@@ -312,7 +310,6 @@ export default class YourCompany extends Mixins(
   @Getter getBusinessContact!: ContactPointIF
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
-  @Getter isRoleStaff!: boolean
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
