@@ -18,21 +18,21 @@
       </p>
     </section>
 
-    <your-company class="mt-10" />
+    <YourCompany class="mt-10" />
 
-    <people-and-roles class="mt-10" />
+    <PeopleAndRoles class="mt-10" />
 
-    <share-structures class="mt-10" />
+    <ShareStructures class="mt-10" />
 
-    <agreement-type class="mt-10" />
+    <AgreementType class="mt-10" />
 
-    <completing-party class="mt-10" />
+    <CompletingParty class="mt-10" />
 
-    <detail class="mt-10" />
+    <Detail class="mt-10" />
 
-    <certify-section class="mt-10" />
+    <CertifySection class="mt-10" />
 
-    <staff-payment
+    <StaffPayment
       class="mt-10"
       @haveChanges="onStaffPaymentChanges()"
     />

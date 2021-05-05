@@ -92,12 +92,16 @@ export default class CommonMixin extends Vue {
 
   /** The appropriate edit label for corrections or alterations. */
   get editLabel (): string {
-    return this.isCorrectionFiling ? 'Correct' : 'Change'
+    if (this.isCorrectionFiling) return 'Correct'
+    if (this.isAlterationFiling) return 'Change'
+    return 'Edit'
   }
 
   /** The appropriate edited label for corrections or alterations. */
   get editedLabel (): string {
-    return this.isCorrectionFiling ? 'Corrected' : 'Changed'
+    if (this.isCorrectionFiling) return 'Corrected'
+    if (this.isAlterationFiling) return 'Changed'
+    return 'Edited'
   }
 
   /** The entity title. */

@@ -13,7 +13,6 @@ import { AlterationSummary } from '@/components/Summary'
 import { EffectiveDateTime } from '@/components/common'
 import { ConfirmDialog } from '@/components/dialogs'
 import { NameTranslation } from '@/components/YourCompany/NameTranslations'
-import { emptyFees } from '@/interfaces'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
@@ -23,7 +22,7 @@ describe('Alteration Summary component', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
-  const originalSnapShot = {
+  const businessSnapshot = {
     businessInfo: {
       legalName: 'Mock Original Name',
       legalType: 'BC'
@@ -40,15 +39,15 @@ describe('Alteration Summary component', () => {
     // init store
     store.state.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
     store.state.stateModel.tombstone.currentDate = '2021-03-01'
-    store.state.stateModel.originalSnapshot = originalSnapShot
+    store.state.stateModel.businessSnapshot = businessSnapshot
     store.state.stateModel.shareStructureStep.shareClasses = []
-    store.state.stateModel.originalSnapshot.shareStructure = { shareClasses: [] }
+    store.state.stateModel.businessSnapshot.shareStructure = { shareClasses: [] }
   })
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
-    store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
+    store.state.stateModel.nameRequest.legalName = businessSnapshot.businessInfo.legalName
+    store.state.stateModel.tombstone.entityType = businessSnapshot.businessInfo.legalType
     store.state.stateModel.summaryMode = true
     store.state.stateModel.nameTranslations = nameTranslationsListChanged
 

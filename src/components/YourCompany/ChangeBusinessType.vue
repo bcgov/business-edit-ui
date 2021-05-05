@@ -232,8 +232,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {
   @Getter getApprovedName!: string
   @Getter getEntityType!: CorpTypeCd
   @Getter isConflictingLegalType!: boolean
-  @Getter getOriginalSnapshot!: BusinessSnapshotIF
-  @Getter isAlterationFiling!: boolean
+  @Getter getBusinessSnapshot!: BusinessSnapshotIF
 
   // Alteration flag getters
   @Getter hasBusinessTypeChanged!: boolean
@@ -286,7 +285,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {
   /** Verify New Business name. */
   private get isNewName (): boolean {
     return this.getApprovedName &&
-      (this.getApprovedName !== this.getOriginalSnapshot?.businessInfo?.legalName)
+      (this.getApprovedName !== this.getBusinessSnapshot?.businessInfo?.legalName)
   }
 
   /** Check is current entity selection is a Benefit Company */
@@ -296,7 +295,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {
 
   /** Reset company type values to original. */
   private resetType () {
-    this.setEntityType(this.getOriginalSnapshot?.businessInfo?.legalType)
+    this.setEntityType(this.getBusinessSnapshot?.businessInfo?.legalType)
     this.emitHaveChanges(false)
     this.isEditingType = false
     this.confirmArticles = false

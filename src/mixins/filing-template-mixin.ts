@@ -1,5 +1,5 @@
 // Libraries
-import { Component, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins'
@@ -13,7 +13,6 @@ import {
   CorrectionFilingIF,
   EffectiveDateTimeIF,
   IncorporationAddressIf,
-  IncorporationFilingIF,
   OrgPersonIF,
   ShareClassIF,
   NameTranslationIF,
@@ -22,7 +21,7 @@ import {
 } from '@/interfaces'
 
 // Shared Interfaces
-import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+import { ContactPointIF, EmptyContactPoint, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
 // Constants
 import { ActionTypes, CorpTypeCd, FilingTypes, EffectOfOrders, RoleTypes } from '@/enums'
@@ -55,7 +54,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getOfficeAddresses!: IncorporationAddressIf | {}
   @Getter getBusinessContact!: ContactPointIF
   @Getter getAgreementType!: string
-  @Getter getOriginalSnapshot!: BusinessSnapshotIF
+  @Getter getBusinessSnapshot!: BusinessSnapshotIF
   @Getter getNewResolutionDates!: string[]
   @Getter getSnapshotShareStructure!: ShareStructureIF
   @Getter hasBusinessNameChanged!: boolean
@@ -82,7 +81,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setIncorporationAgreementStepData!: ActionBindingIF
   @Action setStaffPayment!: ActionBindingIF
   @Action setDetailComment!: ActionBindingIF
-  @Action setOriginalSnapshot!: ActionBindingIF
+  @Action setBusinessSnapshot!: ActionBindingIF
   @Action setDocumentOptionalEmail!: ActionBindingIF
   @Action setProvisionsRemoved!: ActionBindingIF
   @Action setOriginalResolutionDates!: ActionBindingIF
@@ -119,13 +118,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       nameTranslations = this.prepareNameTranslations()
     }
 
-    // Build filing
+    // Build correction filing
     const filing: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
         certifiedBy: this.getCertifyState.certifiedBy,
-        date: this.getCurrentDate,
-        folioNumber: this.getFolioNumber
+        date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
+        folioNumber: this.getFolioNumber // original folio number, unless overridden by staff payment below
       },
       business: {
         legalType: this.getEntityType,
@@ -177,7 +176,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       case StaffPaymentOptions.BCOL:
         filing.header.bcolAccountNumber = this.getStaffPayment.bcolAccountNumber
         filing.header.datNumber = this.getStaffPayment.datNumber
-        filing.header.folioNumber = this.getStaffPayment.folioNumber
+        filing.header.folioNumber = this.getStaffPayment.folioNumber // this overrides original folio number
         filing.header.priority = this.getStaffPayment.isPriority
         break
 
@@ -222,19 +221,19 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       nameTranslations = this.prepareNameTranslations()
     }
 
-    // Build filing
+    // Build alteration filing
     const filing: AlterationFilingIF = {
       header: {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber
+        folioNumber: this.getFolioNumber // FUTURE: override this as needed
       },
       business: {
-        foundingDate: this.getOriginalSnapshot.businessInfo.foundingDate,
-        legalType: this.getOriginalSnapshot.businessInfo.legalType,
-        identifier: this.getOriginalSnapshot.businessInfo.identifier,
-        legalName: this.getOriginalSnapshot.businessInfo.legalName
+        foundingDate: this.getBusinessSnapshot.businessInfo.foundingDate,
+        legalType: this.getBusinessSnapshot.businessInfo.legalType,
+        identifier: this.getBusinessSnapshot.businessInfo.identifier,
+        legalName: this.getBusinessSnapshot.businessInfo.legalName
       },
       alteration: {
         provisionsRemoved: this.getProvisionsRemoved,
@@ -291,7 +290,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * Prepares name translations for non-draft save.
    * @returns the updated name translations array
    */
-  prepareNameTranslations () : NameTranslationIF[] {
+  private prepareNameTranslations () : NameTranslationIF[] {
     // Filter out and modify name translation to match schema
     return this.getNameTranslations?.filter(x => x.action !== ActionTypes.REMOVED)
       .map(x => {
@@ -432,22 +431,22 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param businessSnapshot the latest business snapshot
    */
   parseAlteration (filing: AlterationFilingIF, businessSnapshot: BusinessSnapshotIF): void {
-    // Store original snapshot
-    this.setOriginalSnapshot(businessSnapshot)
+    // Store business snapshot
+    this.setBusinessSnapshot(businessSnapshot)
 
-    // Store current entity type
+    // Restore current entity type
     this.setEntityType(filing.alteration.business.legalType)
 
-    // Store business information
+    // Restore business information
     this.setBusinessInformation({
       ...filing.business,
       ...filing.alteration.business
     })
 
-    // Store name request
+    // Restore name request
     this.setNameRequest(filing.alteration.nameRequest)
 
-    // Store name translations
+    // Restore name translations
     this.setNameTranslations(
       filing.alteration.nameTranslations?.map(x => {
         return {
@@ -459,14 +458,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }) || []
     )
 
+    // Restore provisions removed
     this.setProvisionsRemoved(filing.alteration.provisionsRemoved)
 
-    // Store office addresses
-    // *** TODO: should restore office addresses from alteration, not snapshot???
+    // Store office addresses **from snapshot** (because we don't change office addresses in an alteration)
     this.setOfficeAddresses(businessSnapshot.incorporationAddress)
 
-    // Store people and roles
-    // *** TODO: should restore people and roles from alteration, not snapshot???
+    // Store people and roles **from snapshot** (because we don't change people and roles in an alteration)
     this.setPeopleAndRoles(
       businessSnapshot.orgPersons?.map(director => {
         return {
@@ -492,38 +490,38 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }) || []
     )
 
-    // Store share classes and resolution dates
+    // Restore share classes and resolution dates
     const shareStructure = filing.alteration.shareStructure
     this.setShareClasses(shareStructure.shareClasses)
     this.setResolutionDates(shareStructure.resolutionDates)
     this.setOriginalResolutionDates(businessSnapshot.resolutions)
 
-    // Store business contact
+    // Restore business contact
     this.setBusinessContact({
       ...filing.alteration.contactPoint,
       confirmEmail: filing.alteration.contactPoint.email
     })
 
-    // Store certify state
+    // Restore certify state
     this.setCertifyState({
       valid: false,
       certifiedBy: filing.header.certifiedBy
     })
 
-    // Store folio number
+    // Restore folio number
     this.setFolioNumber(filing.header.folioNumber)
 
-    // Store filing date
+    // Restore filing date
     this.setFilingDateTime(filing.header.date)
 
-    // Set document optional email
+    // Restore document optional email
     this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
 
-    // Store effective date
+    // Restore effective date
     this.setEffectiveDateTimeString(filing.header.effectiveDate)
     this.setIsFutureEffective(filing.header.isFutureEffective)
 
-    // Store Court Order date
+    // Restore Court Order date
     this.setFileNumber(filing.alteration.courtOrder?.fileNumber)
     this.setHasPlanOfArrangement(filing.alteration.courtOrder?.hasPlanOfArrangement)
   }
@@ -532,9 +530,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * Parses a business snapshot into the store.
    * @param businessSnapshot the latest business snapshot
    */
-  parseBusinessSnapshot (businessSnapshot = this.getOriginalSnapshot): void {
-    // Store original snapshot
-    this.setOriginalSnapshot(businessSnapshot)
+  parseBusinessSnapshot (businessSnapshot = this.getBusinessSnapshot): void {
+    // Store business snapshot
+    this.setBusinessSnapshot(businessSnapshot)
+
+    // Store folio number
+    this.setFolioNumber(businessSnapshot.authInfo.folioNumber || '')
 
     // Store current entity type
     this.setEntityType(businessSnapshot.businessInfo.legalType)
@@ -599,55 +600,15 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setResolutionDates([])
     this.setOriginalResolutionDates(businessSnapshot.resolutions)
 
-    // Store business contact
-    this.setBusinessContact(businessSnapshot.contactPoint)
-  }
-
-  /**
-    * Ensure consistent object structure for an incorporation application
-    * whether it contains a Name Request or not, and whether it is an initial
-    * draft or it has been previously saved. Object merging does not
-    * work very well otherwise (due to nested properties).
-    * @param filing the draft filing fetched from legal-api
-    * @returns the filing in safe-empty state if applicable
-  */
-  formatEmptyFiling (filing: any): IncorporationFilingIF {
-    let toReturn = filing
-    if (toReturn.incorporationApplication) {
-      // if there are no offices, populate empty array
-      if (!toReturn.incorporationApplication.offices) {
-        toReturn.incorporationApplication.offices = []
-      }
-
-      // if there is no contact point, populate empty object
-      if (!toReturn.incorporationApplication.contactPoint) {
-        toReturn.incorporationApplication.contactPoint = {
-          email: '',
-          phone: '',
-          extension: ''
-        }
-      }
-
-      // if there are no parties, populate empty array
-      if (!toReturn.incorporationApplication.parties) {
-        toReturn.incorporationApplication.parties = []
-      }
-
-      // if there is no share structure...
-      if (!toReturn.incorporationApplication.shareStructure) {
-        // if there are share classes (ie, old schema), assign them to the share structure (ie, new schema)
-        if (toReturn.incorporationApplication.shareClasses) {
-          toReturn.incorporationApplication.shareStructure = {
-            shareClasses: toReturn.incorporationApplication.shareClasses
-          }
-        } else {
-          // otherwise populate empty object
-          toReturn.incorporationApplication.shareStructure = {
-            shareClasses: []
-          }
-        }
+    // Store the first business contact
+    let contactPoint = cloneDeep(EmptyContactPoint)
+    const contact = businessSnapshot.authInfo.contacts[0]
+    if (contact) {
+      contactPoint = {
+        ...contact,
+        confirmEmail: contact.email
       }
     }
-    return toReturn
+    this.setBusinessContact(contactPoint)
   }
 }
