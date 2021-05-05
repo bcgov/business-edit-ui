@@ -221,7 +221,8 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
 
   /** Called when component is mounted. */
   mounted (): void {
-    this.parseInitialEffectiveDateTime()
+    /** It was decided not doing it for now */
+    // this.parseInitialEffectiveDateTime()
   }
 
   /** Parses initial Effective Date Time and sets state. */
@@ -268,7 +269,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
 
     const isDateValid = this.$refs.datePickerRef.validateForm()
     const isTimeValid = this.$refs.form.validate()
-    if (isDateValid && isTimeValid) {
+    if (isDateValid && isTimeValid && !!this.selectHour.length && !!this.selectMinute.length) {
       const year = +this.dateText.slice(0, 4)
       const month = (+this.dateText.slice(5, 7) - 1) // zero-relative
       const date = +this.dateText.slice(8, 10)
@@ -391,8 +392,9 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
     await Vue.nextTick()
     const isDateValid = this.$refs.datePickerRef.validateForm()
     const isTimeValid = this.$refs.form.validate()
-    return (!!this.effectiveDateType &&
+    return this.isImmediate || (!!this.effectiveDateType &&
       isDateValid && isTimeValid &&
+      !!this.selectHour.length && !!this.selectMinute.length &&
       !this.isUnderTime &&
       !this.isOverTime &&
       validDateText
@@ -443,6 +445,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
 .time-zone-label {
   position: absolute;
   top: -10px;
+  color: $gray7;
 }
 
 .disabled {
@@ -460,6 +463,17 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
     font-size: 12px;
     font-weight: 500;
     color: $BCgovInputError !important;
+  }
+}
+::v-deep {
+  .v-icon.v-icon.v-icon--disabled {
+    color: $app-blue !important;
+  }
+  .v-input--is-disabled {
+    opacity: 0.4;
+  }
+  .v-input--is-disabled .v-input__control > .v-input__slot:before {
+    border-image: none;
   }
 }
 </style>

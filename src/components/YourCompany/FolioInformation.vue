@@ -4,7 +4,7 @@
     :originalValue="originalFolioNumber"
     :editLabel="editLabel"
     :editedLabel="editedLabel"
-    :disableActions="isCorrectionFiling"
+    :hideActions="hideActions"
     :invalidSection="invalidSection"
     @newFolioNumber="onNewFolioNumber($event)"
     @haveChanges="onHaveChanges($event)"
@@ -30,6 +30,7 @@ export default class FolioInformation extends Mixins(AuthApiMixin, CommonMixin) 
   @Getter isAlterationFiling!: boolean
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getSnapshotFolioNumber!: string
+  @Getter isRoleStaff!: boolean
 
   // Global setters
   @Action setFolioNumber!: ActionBindingIF
@@ -45,6 +46,13 @@ export default class FolioInformation extends Mixins(AuthApiMixin, CommonMixin) 
     if (this.isCorrectionFiling) return this.getOriginalIA.header.folioNumber
     if (this.isAlterationFiling) return this.getSnapshotFolioNumber
     return null
+  }
+
+  /** Whether to hide the component's actions. */
+  private get hideActions (): boolean {
+    // hide actions in a correction filing
+    // hide actions from staff users
+    return (this.isCorrectionFiling || this.isRoleStaff)
   }
 
   /** On new folio number, updates auth db and store. */

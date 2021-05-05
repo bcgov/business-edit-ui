@@ -11,12 +11,12 @@
         </label>
       </v-col>
 
-      <v-col :cols="disableActions ? '9' : '7'">
+      <v-col :cols="hideActions ? '9' : '7'">
         <div id="folio-number-readonly">{{ !!folioNumber ? folioNumber : 'None' }}</div>
       </v-col>
 
       <!-- Edit Actions -->
-      <v-col cols="2" class="mt-n2" v-if="!disableActions">
+      <v-col cols="2" class="mt-n2" v-if="!hideActions">
         <div class="edit-actions mr-4">
           <v-btn
             v-if="hasFolioNumberChanged"
@@ -151,7 +151,7 @@ export default class FolioNumber extends Vue {
   // Props
   @Prop({ default: null }) readonly initialValue: string
   @Prop({ default: null }) readonly originalValue: string
-  @Prop({ default: false }) readonly disableActions: boolean
+  @Prop({ default: false }) readonly hideActions: boolean
   @Prop() readonly editLabel: string
   @Prop() readonly editedLabel!: string
   @Prop({ default: false }) readonly invalidSection!: boolean
