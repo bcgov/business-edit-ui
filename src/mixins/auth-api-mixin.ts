@@ -79,7 +79,7 @@ export default class AuthApiMixin extends Vue {
       phoneExtension: contactInfo.extension
     }
     const authUrl = sessionStorage.getItem('AUTH_API_URL')
-    let url = `${authUrl}entities2/${this.getBusinessId}/contacts`
+    let url = `${authUrl}entities/${this.getBusinessId}/contacts`
 
     return axios.put(url, data)
   }
