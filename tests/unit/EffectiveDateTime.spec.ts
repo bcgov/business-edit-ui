@@ -30,6 +30,8 @@ function getLastEvent (wrapper: Wrapper<EffectiveDateTime>, name: string): any {
 describe('Effective Date Time component', () => {
   let wrapperFactory: any
   const today = new Date()
+
+  // invalid future effective date is more than 10 days from now
   const futureInvalidDate = new Date(today.getTime() + 11 * 24 * 60 * 60 * 1000)
 
   const dateTimeDefault = {
@@ -55,7 +57,6 @@ describe('Effective Date Time component', () => {
   const dateTimeOver = {
     valid: false,
     isFutureEffective: true,
-    // effective date is more than 10 days from now
     dateTimeString: futureInvalidDate.toISOString()
   }
 
