@@ -354,11 +354,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Model value for "same as (records) mailing address" checkbox. */
   private inheritRecMailingAddress: boolean = true
 
-  /** Use 'mounted' lifecycle hook to ensure component is kept up to date after changing views. */
-  mounted (): void {
-    this.updateAddresses()
-  }
-
   /** The office addresses from the original IA. NB: may be {} */
   private get originalOfficeAddresses (): IncorporationAddressIf {
     return (this.getOriginalIA.incorporationApplication.offices as IncorporationAddressIf)
@@ -628,7 +623,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * When stored office addresses change (ie, when data is loaded/updated/reset),
    * sets local properties and emits state events.
    */
-  @Watch('getOfficeAddresses', { deep: true })
+  @Watch('getOfficeAddresses', { deep: true, immediate: true })
   private updateAddresses (): void {
     // set local properties from store
     this.setLocalProperties()
