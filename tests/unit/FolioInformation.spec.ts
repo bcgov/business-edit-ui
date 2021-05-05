@@ -16,7 +16,6 @@ const store = getVuexStore()
 describe('Folio Information component', () => {
   it('renders itself and its sub-component', () => {
     const wrapper = mount(FolioInformation, { vuetify, store })
-    const vm: any = wrapper.vm
 
     expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
     expect(wrapper.findComponent(FolioNumber).exists()).toBe(true)
@@ -118,6 +117,7 @@ describe('Folio Information component', () => {
     const vm: any = wrapper.vm
 
     await vm.onHaveChanges(true)
+
     expect(wrapper.emitted('haveChanges')).toEqual([[true]])
 
     wrapper.destroy()
@@ -128,6 +128,7 @@ describe('Folio Information component', () => {
     const vm: any = wrapper.vm
 
     await vm.onIsEditing(true)
+
     expect(store.state.stateModel.editingFlags.folioNumber).toBe(true)
     expect(store.state.stateModel.newAlteration.validComponents['isValidFolioInfo']).toBe(false)
     expect(wrapper.emitted('isEditing')).toEqual([[true]])
