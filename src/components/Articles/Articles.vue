@@ -9,7 +9,7 @@
       class="section-container"
       v-if="getBusinessInformation.hasRestrictions"
       :class="{'invalid-section': invalidCompanyProvisions}">
-      <company-provisions
+      <CompanyProvisions
         class="sub-section"
         :provisionsRemoved="getProvisionsRemoved"
         @isChanged="setProvisionsRemoved($event)"
@@ -21,7 +21,7 @@
     <div
       class="section-container"
       :class="{'invalid-section': invalidResolutionDates}">
-      <resolution-dates
+      <ResolutionDates
         :addedDates="getNewResolutionDates"
         :previousDates="getPreviousResolutionDates"
         :isEditMode="true"
@@ -51,9 +51,6 @@ import { ActionBindingIF, BusinessInformationIF } from '@/interfaces'
   }
 })
 export default class Articles extends Mixins(CommonMixin) {
-  // Whether components have changes
-  private companyProvisionsChanges: boolean
-
   private isEditingCompanyProvisions = false
   private isAddingResolutionDate = false
 
