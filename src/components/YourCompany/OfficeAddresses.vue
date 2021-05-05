@@ -620,15 +620,19 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   }
 
   /**
-   * When stored office addresses change (ie, when data is loaded/updated/reset),
+   * When the component is mounted or stored office addresses change (ie, when data is loaded/updated/reset),
    * sets local properties and emits state events.
+   *
+   * Called on mount to init data in the event the component is destroyed and there is no changes to trigger the Watcher
+   * This happens in Alterations when navigating between views and where office addresses are not editable.
    */
-  @Watch('getOfficeAddresses', { deep: true })
-  private updateAddresses (addresses: IncorporationAddressIf): void {
+  @Watch('getOfficeAddresses', { deep: true, immediate: true })
+  private updateAddresses (): void {
     // set local properties from store
     this.setLocalProperties()
 
     // update external state
+    // Will emit on component mount and subsequent changes
     this.emitHaveChanges()
   }
 

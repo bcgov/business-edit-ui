@@ -957,7 +957,7 @@ describe('actions and events', () => {
 
     // verify initial events
     const haveChanges = wrapper.emitted('haveChanges')
-    expect(haveChanges.length).toBe(1)
+    expect(haveChanges.length).toBe(2)
     expect(haveChanges.pop()).toEqual([false])
   })
 
@@ -974,7 +974,7 @@ describe('actions and events', () => {
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
 
     // verify there are no new events
-    expect(wrapper.emitted('haveChanges').length).toEqual(1)
+    expect(wrapper.emitted('haveChanges').length).toEqual(2)
   })
 
   it('ignores a canceled change', async () => {
@@ -999,7 +999,7 @@ describe('actions and events', () => {
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
 
     // verify there are no new events
-    expect(wrapper.emitted('haveChanges').length).toEqual(1)
+    expect(wrapper.emitted('haveChanges').length).toEqual(2)
   })
 
   it('ignores a null change', async () => {
@@ -1029,7 +1029,7 @@ describe('actions and events', () => {
 
     // verify new events
     const haveChanges = wrapper.emitted('haveChanges')
-    expect(haveChanges.length).toBe(2)
+    expect(haveChanges.length).toBe(3)
     expect(haveChanges.pop()).toEqual([false])
   })
 
@@ -1056,7 +1056,7 @@ describe('actions and events', () => {
 
     // verify new events
     const haveChanges = wrapper.emitted('haveChanges')
-    expect(haveChanges.length).toBe(2)
+    expect(haveChanges.length).toBe(3)
     expect(haveChanges.pop()).toEqual([true])
   })
 
@@ -1092,7 +1092,7 @@ describe('actions and events', () => {
 
     // verify new events
     const haveChanges = wrapper.emitted('haveChanges')
-    expect(haveChanges.length).toBe(3)
+    expect(haveChanges.length).toBe(4)
     expect(haveChanges.pop()).toEqual([false])
   })
 
@@ -1137,7 +1137,7 @@ describe('actions and events', () => {
 
     // verify new events
     const haveChanges = wrapper.emitted('haveChanges')
-    expect(haveChanges.length).toBe(3)
+    expect(haveChanges.length).toBe(4)
     expect(haveChanges.pop()).toEqual([true])
   })
 })

@@ -119,7 +119,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Build correction filing
-    const filing: CorrectionFilingIF = {
+    let filing: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
         certifiedBy: this.getCertifyState.certifiedBy,
@@ -166,28 +166,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       filing.incorporationApplication.nameRequest.legalName = this.getApprovedName
     }
 
-    // Populate Staff Payment according to payment option
-    switch (this.getStaffPayment.option) {
-      case StaffPaymentOptions.FAS:
-        filing.header.routingSlipNumber = this.getStaffPayment.routingSlipNumber
-        filing.header.priority = this.getStaffPayment.isPriority
-        break
-
-      case StaffPaymentOptions.BCOL:
-        filing.header.bcolAccountNumber = this.getStaffPayment.bcolAccountNumber
-        filing.header.datNumber = this.getStaffPayment.datNumber
-        filing.header.folioNumber = this.getStaffPayment.folioNumber // this overrides original folio number
-        filing.header.priority = this.getStaffPayment.isPriority
-        break
-
-      case StaffPaymentOptions.NO_FEE:
-        filing.header.waiveFees = true
-        filing.header.priority = false
-        break
-
-      case StaffPaymentOptions.NONE: // should never happen
-        break
-    }
+    // Include Staff Payment into the Correction filing
+    this.buildStaffPayment(filing)
 
     return filing
   }
@@ -222,7 +202,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Build alteration filing
-    const filing: AlterationFilingIF = {
+    let filing: AlterationFilingIF = {
       header: {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
@@ -282,6 +262,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // Include name request info when applicable
     if (this.hasNewNr || this.hasBusinessNameChanged) filing.alteration.nameRequest = { ...this.getNameRequest }
+
+    // Include Staff Payment into the Alteration filing
+    this.buildStaffPayment(filing)
 
     return filing
   }
@@ -385,44 +368,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setEffectiveDateTimeString(filing.header.effectiveDate)
     this.setIsFutureEffective(filing.header.isFutureEffective)
 
-    // Store staff payment
-    if (filing.header.routingSlipNumber) {
-      this.setStaffPayment({
-        option: StaffPaymentOptions.FAS,
-        routingSlipNumber: filing.header.routingSlipNumber,
-        bcolAccountNumber: '',
-        datNumber: '',
-        folioNumber: '',
-        isPriority: filing.header.priority
-      })
-    } else if (filing.header.bcolAccountNumber) {
-      this.setStaffPayment({
-        option: StaffPaymentOptions.BCOL,
-        routingSlipNumber: '',
-        bcolAccountNumber: filing.header.bcolAccountNumber,
-        datNumber: filing.header.datNumber,
-        folioNumber: filing.header.folioNumber,
-        isPriority: filing.header.priority
-      })
-    } else if (filing.header.waiveFees) {
-      this.setStaffPayment({
-        option: StaffPaymentOptions.NO_FEE,
-        routingSlipNumber: '',
-        bcolAccountNumber: '',
-        datNumber: '',
-        folioNumber: '',
-        isPriority: false
-      })
-    } else {
-      this.setStaffPayment({
-        option: StaffPaymentOptions.NONE,
-        routingSlipNumber: '',
-        bcolAccountNumber: '',
-        datNumber: '',
-        folioNumber: '',
-        isPriority: false
-      })
-    }
+    // Restore Staff Payment data
+    this.storeStaffPayment(filing)
   }
 
   /**
@@ -524,6 +471,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Restore Court Order date
     this.setFileNumber(filing.alteration.courtOrder?.fileNumber)
     this.setHasPlanOfArrangement(filing.alteration.courtOrder?.hasPlanOfArrangement)
+
+    // Restore Staff Payment data
+    this.storeStaffPayment(filing)
   }
 
   /**
@@ -610,5 +560,77 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }
     }
     this.setBusinessContact(contactPoint)
+  }
+
+  /** Build Staff Payment data into the filing.
+   * @param filing The alteration or correction filing.
+   */
+  private buildStaffPayment (filing: AlterationFilingIF | CorrectionFilingIF): void {
+    // Populate Staff Payment according to payment option
+    switch (this.getStaffPayment.option) {
+      case StaffPaymentOptions.FAS:
+        filing.header.routingSlipNumber = this.getStaffPayment.routingSlipNumber
+        filing.header.priority = this.getStaffPayment.isPriority
+        break
+
+      case StaffPaymentOptions.BCOL:
+        filing.header.bcolAccountNumber = this.getStaffPayment.bcolAccountNumber
+        filing.header.datNumber = this.getStaffPayment.datNumber
+        filing.header.folioNumber = this.getStaffPayment.folioNumber // this overrides original folio number
+        filing.header.priority = this.getStaffPayment.isPriority
+        break
+
+      case StaffPaymentOptions.NO_FEE:
+        filing.header.waiveFees = true
+        filing.header.priority = false
+        break
+
+      case StaffPaymentOptions.NONE: // should never happen
+        break
+    }
+  }
+
+  /** Parse Staff Payment data into store.
+   * @param filing The alteration or correction filing to parse.
+   */
+  private storeStaffPayment (filing: AlterationFilingIF | CorrectionFilingIF): void {
+    // Parse staff payment
+    if (filing.header.routingSlipNumber) {
+      this.setStaffPayment({
+        option: StaffPaymentOptions.FAS,
+        routingSlipNumber: filing.header.routingSlipNumber,
+        bcolAccountNumber: '',
+        datNumber: '',
+        folioNumber: '',
+        isPriority: filing.header.priority
+      })
+    } else if (filing.header.bcolAccountNumber) {
+      this.setStaffPayment({
+        option: StaffPaymentOptions.BCOL,
+        routingSlipNumber: '',
+        bcolAccountNumber: filing.header.bcolAccountNumber,
+        datNumber: filing.header.datNumber,
+        folioNumber: filing.header.folioNumber,
+        isPriority: filing.header.priority
+      })
+    } else if (filing.header.waiveFees) {
+      this.setStaffPayment({
+        option: StaffPaymentOptions.NO_FEE,
+        routingSlipNumber: '',
+        bcolAccountNumber: '',
+        datNumber: '',
+        folioNumber: '',
+        isPriority: false
+      })
+    } else {
+      this.setStaffPayment({
+        option: StaffPaymentOptions.NONE,
+        routingSlipNumber: '',
+        bcolAccountNumber: '',
+        datNumber: '',
+        folioNumber: '',
+        isPriority: false
+      })
+    }
   }
 }
