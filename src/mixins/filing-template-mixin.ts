@@ -167,7 +167,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Include Staff Payment into the Correction filing
-    filing = this.buildStaffPayment(filing)
+    this.buildStaffPayment(filing)
 
     return filing
   }
@@ -264,7 +264,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     if (this.hasNewNr || this.hasBusinessNameChanged) filing.alteration.nameRequest = { ...this.getNameRequest }
 
     // Include Staff Payment into the Alteration filing
-    filing = this.buildStaffPayment(filing)
+    this.buildStaffPayment(filing)
 
     return filing
   }
@@ -565,7 +565,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   /** Build Staff Payment data into the filing.
    * @param filing The alteration or correction filing.
    */
-  private buildStaffPayment (filing: AlterationFilingIF | CorrectionFilingIF): any {
+  private buildStaffPayment (filing: AlterationFilingIF | CorrectionFilingIF): void {
     // Populate Staff Payment according to payment option
     switch (this.getStaffPayment.option) {
       case StaffPaymentOptions.FAS:
@@ -588,8 +588,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       case StaffPaymentOptions.NONE: // should never happen
         break
     }
-
-    return filing
   }
 
   /** Parse Staff Payment data into store.
