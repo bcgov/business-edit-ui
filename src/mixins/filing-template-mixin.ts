@@ -124,7 +124,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         name: FilingTypes.CORRECTION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getStaffPayment.folioNumber // keep original folio number
+        folioNumber: this.getFolioNumber // original folio number, unless overridden by staff payment below
       },
       business: {
         legalType: this.getEntityType,
@@ -176,7 +176,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       case StaffPaymentOptions.BCOL:
         filing.header.bcolAccountNumber = this.getStaffPayment.bcolAccountNumber
         filing.header.datNumber = this.getStaffPayment.datNumber
-        filing.header.folioNumber = this.getStaffPayment.folioNumber // keep original folio number
+        filing.header.folioNumber = this.getStaffPayment.folioNumber // this overrides original folio number
         filing.header.priority = this.getStaffPayment.isPriority
         break
 
