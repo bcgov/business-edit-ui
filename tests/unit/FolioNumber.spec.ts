@@ -8,7 +8,7 @@ import FolioNumber from '@/components/YourCompany/FolioNumber.vue'
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
-xdescribe('Folio number component', () => {
+xdescribe('Folio Number component', () => {
   it('displays editing view', () => {
     const wrapper = mount(FolioNumber, {
       propsData: { initialValue: '1234', isEditing: true },
