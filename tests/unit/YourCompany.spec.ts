@@ -10,7 +10,7 @@ import { createLocalVue, mount } from '@vue/test-utils'
 import {
   BusinessContactInfo,
   ChangeBusinessType,
-  FolioNumber,
+  FolioInformation,
   OfficeAddresses,
   YourCompany
 } from '@/components/YourCompany'
@@ -34,23 +34,23 @@ describe('YourCompany in a Correction', () => {
     wrapper.destroy()
   })
 
-  it('renders the YourCompany Component and default subcomponents', async () => {
+  it('renders the YourCompany component and default subcomponents', async () => {
     expect(wrapper.findComponent(YourCompany).exists()).toBe(true)
     expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
 
     // Not a premium account
-    expect(wrapper.findComponent(FolioNumber).exists()).toBe(false)
+    expect(wrapper.findComponent(FolioInformation).exists()).toBe(false)
 
     // Not currently editing Company Name
     expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(false)
   })
 
-  it('renders the FolioNumber Component and account is premium', async () => {
+  it('renders the FolioInformation component when account is premium', async () => {
     store.state.stateModel.accountInformation.accountType = 'PREMIUM'
     await Vue.nextTick()
 
-    expect(wrapper.findComponent(FolioNumber).exists()).toBe(true)
+    expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
   })
 
   it('renders the CORRECT label for editing a name option', async () => {
@@ -58,7 +58,7 @@ describe('YourCompany in a Correction', () => {
     expect(editLabel).toBe('Correct')
   })
 
-  it('renders the CorrectNameOptions when correcting Company Name', async () => {
+  it('renders the CorrectNameOptions component when correcting Company Name', async () => {
     // Click the `Correct` btn
     wrapper.find('#btn-correct-company-name').trigger('click')
     await Vue.nextTick()
@@ -75,7 +75,7 @@ describe('YourCompany in an Alteration', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
-  const originalSnapShot = {
+  const businessSnapshot = {
     businessInfo: {
       legalName: 'Mock Original Name',
       legalType: 'BEN'
@@ -85,9 +85,9 @@ describe('YourCompany in an Alteration', () => {
   beforeEach(() => {
     // Set Original business Data
     store.state.stateModel.summaryMode = false
-    store.state.stateModel.nameRequest.legalName = originalSnapShot.businessInfo.legalName
-    store.state.stateModel.tombstone.entityType = originalSnapShot.businessInfo.legalType
-    store.state.stateModel.originalSnapshot = originalSnapShot
+    store.state.stateModel.nameRequest.legalName = businessSnapshot.businessInfo.legalName
+    store.state.stateModel.tombstone.entityType = businessSnapshot.businessInfo.legalType
+    store.state.stateModel.businessSnapshot = businessSnapshot
     store.state.stateModel.tombstone.filingType = 'alteration'
 
     wrapper = mount(YourCompany, { vuetify, store, localVue })

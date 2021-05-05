@@ -16,7 +16,7 @@
     </div>
 
     <div class="section-container">
-      <!--TODO: Replace container content with Name Request Summary when it is ready -->
+      <!-- TODO: Replace container content with Name Request Summary when it is ready -->
       <v-layout row>
         <v-flex md4>
           <label><strong>Company Name</strong></label>
@@ -39,17 +39,17 @@
     <v-divider />
 
     <div class="section-container">
-      <OfficeAddresses :inputAddresses="getOfficeAddresses" :isEditing="false" />
+      <OfficeAddresses />
     </div>
 
     <v-divider />
 
     <div class="section-container">
-      <BusinessContactInfo :initialValue="getBusinessContact" :isEditing="false" />
+      <BusinessContactInfo />
     </div>
 
     <div class="section-container" v-if="isPremiumAccount">
-      <FolioNumber :initialValue="getFolioNumber" :isEditing="false" />
+      <FolioInformation />
     </div>
   </v-card>
 </template>
@@ -62,11 +62,8 @@ import { Getter } from 'vuex-class'
 // Interfaces
 import { GetterIF } from '@/interfaces'
 
-// Shared Interfaces
-import { ContactPointIF } from '@bcrs-shared-components/interfaces'
-
 // Components
-import { FolioNumber, BusinessContactInfo, OfficeAddresses } from '@/components/YourCompany'
+import { FolioInformation, BusinessContactInfo, OfficeAddresses } from '@/components/YourCompany'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
 
 // Mixins
@@ -80,7 +77,7 @@ import { CorpTypeCd } from '@/enums'
     BusinessContactInfo,
     CorrectNameOptions,
     OfficeAddresses,
-    FolioNumber
+    FolioInformation
   }
 })
 export default class SummaryDefineCompany extends Mixins(CommonMixin) {
@@ -89,10 +86,7 @@ export default class SummaryDefineCompany extends Mixins(CommonMixin) {
   @Getter getBusinessNumber!: string
   @Getter isPremiumAccount!: GetterIF
   @Getter getNameTranslations!: Array<string>
-  @Getter getOfficeAddresses!: any
-  @Getter getFolioNumber!: string
   @Getter isDefineCompanyStepValid!: boolean
-  @Getter getBusinessContact!: ContactPointIF
   @Getter getEntityType!: CorpTypeCd
 
   @Prop({ default: false })

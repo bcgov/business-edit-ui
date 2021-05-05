@@ -34,7 +34,7 @@
     <!-- FUTURE: pass actual filing name -->
     <SaveErrorDialog
       attach="#app"
-      filingName="Application"
+      filingName="Filing"
       :dialog="saveErrorDialog"
       :errors="saveErrors"
       :warnings="saveWarnings"
@@ -144,7 +144,7 @@ import * as Views from '@/views'
 import * as Dialogs from '@/components/dialogs'
 
 // Mixins, interfaces, etc
-import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
+import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
 import { FilingDataIF, ActionBindingIF, ValidFlagsIF, ValidComponentsIF } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { AlterationCompanyInfoFlags, AlterationReviewCertifyFlags, SummaryActions, RouteNames } from '@/enums'
@@ -161,7 +161,7 @@ import { AlterationCompanyInfoFlags, AlterationReviewCertifyFlags, SummaryAction
     ...Views
   }
 })
-export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
+export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
   // Global getters
   @Getter getBusinessId!: string
   @Getter getUserEmail!: string
@@ -188,7 +188,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getComponentValidate!: boolean
   @Getter isConflictingLegalType!: boolean
   @Getter getValidComponentFlags!: ValidComponentsIF
-  @Getter getIsResolutionDatesValid!: boolean
 
   // Global actions
   @Action setAccountInformation!: ActionBindingIF
@@ -205,7 +204,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Action setUserInfo: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
   @Action setFilingType!: ActionBindingIF
-  @Action setValidResolutionDate!: ActionBindingIF
 
   // Local properties
   private accountAuthorizationDialog = false
@@ -331,6 +329,15 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       }
     })
 
+    // listen for update error events
+    this.$root.$on('update-error-event', (message: string) => {
+      // save error
+      this.saveErrors = [{ error: message }]
+
+      console.log('Update error =', message) // eslint-disable-line no-console
+      this.saveErrorDialog = true
+    })
+
     // listen for invalid name request events
     this.$root.$on('invalid-name-request', (error: any) => {
       console.log('Name Request error =', error) // eslint-disable-line no-console
@@ -366,6 +373,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     // stop listening for custom events
     this.$root.$off('save-error-event')
+    this.$root.$off('update-error-event')
     this.$root.$off('invalid-name-request')
     this.$root.$off('delete-all')
     this.$root.$off('go-to-dashboard')
@@ -550,7 +558,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   /** Fetches authorizations and verifies and stores roles. */
   private async loadAuth (): Promise<any> {
     // NB: will throw if API error
-    const response = await this.getAuthorizations(this.getBusinessId)
+    const response = await this.fetchAuthorizations(this.getBusinessId)
     // NB: roles array may contain 'view', 'edit', 'staff' or nothing
     const authRoles = response?.data?.roles
     if (authRoles && authRoles.length > 0) {

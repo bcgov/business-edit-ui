@@ -268,7 +268,7 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
       certifiedBy: 'Some certifier'
     }
     store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.stateModel.defineCompanyStep = { valid: true }
+    store.state.stateModel.validFlags.defineCompanyStep = true
     store.state.stateModel.peopleAndRolesStep = { valid: true }
     store.state.stateModel.shareStructureStep = { valid: true }
     store.state.stateModel.incorporationAgreementStep = { valid: true }
@@ -519,20 +519,15 @@ describe.skip('Actions component - Filing Functionality', () => {
       userEmail: 'completing-party@example.com'
     }
     store.state.stateModel.certifyState.certifiedBy = filing.filing.header.certifiedBy
-    store.state.stateModel.defineCompanyStep.businessContact = {
-      email: filing.filing.incorporationApplication.contactPoint.email,
-      phone: filing.filing.incorporationApplication.contactPoint.phone,
-      extension: filing.filing.incorporationApplication.contactPoint.extension
-    }
     store.state.stateModel.effectiveDateTime.dateTimeString = effectiveDate.toISOString()
-    store.state.stateModel.defineCompanyStep.businessContact = {
+    store.state.stateModel.businessContact = {
       email: 'registered-office@example.com',
       confirmEmail: 'registered-office@example.com',
       phone: '111-222-3333',
       extension: '444'
     }
-    store.state.stateModel.defineCompanyStep.officeAddresses = filing.filing.incorporationApplication.offices
-    store.state.stateModel.defineCompanyStep.folioNumber = filing.filing.header.folioNumber
+    store.state.stateModel.officeAddresses = filing.filing.incorporationApplication.offices
+    store.state.stateModel.tombstone.folioNumber = filing.filing.header.folioNumber
     store.state.stateModel.peopleAndRolesStep.orgPeople = filing.filing.incorporationApplication.parties
     store.state.stateModel.shareStructureStep.shareClasses = filing.filing.incorporationApplication.shareClasses
     store.state.stateModel.tombstone.filingId = 1234

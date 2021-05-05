@@ -629,7 +629,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     this.setLocalProperties()
 
     // update external state
-    this.emitValid()
     this.emitHaveChanges()
   }
 
@@ -637,12 +636,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Watch('isEditing', { immediate: true })
   private onEditingChanged (val: boolean): void {
     this.setEditingOfficeAddresses(val)
-  }
-
-  /** Emits the validity state of this component. */
-  @Emit('valid')
-  private emitValid (): boolean {
-    return this.formValid
   }
 
   /** Emits the changed state of this component. */

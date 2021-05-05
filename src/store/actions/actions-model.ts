@@ -174,8 +174,8 @@ export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
   commit('mutateOriginalIA', originalIA)
 }
 
-export const setOriginalSnapshot: ActionIF = ({ commit }, originalSnapshot: BusinessSnapshotIF): void => {
-  commit('mutateOriginalSnapshot', originalSnapshot)
+export const setBusinessSnapshot: ActionIF = ({ commit }, businessSnapshot: BusinessSnapshotIF): void => {
+  commit('mutateBusinessSnapshot', businessSnapshot)
 }
 
 export const setStaffPayment: ActionIF = ({ commit }, staffPayment): void => {
@@ -208,6 +208,10 @@ export const setEditingNameTranslations: ActionIF = ({ commit }, editing: boolea
 
 export const setEditingOfficeAddresses: ActionIF = ({ commit }, editing: boolean): void => {
   commit('mutateEditingOfficeAddresses', editing)
+}
+
+export const setEditingFolioNumber: ActionIF = ({ commit }, editing: boolean): void => {
+  commit('mutateEditingFolioNumber', editing)
 }
 
 export const setEditingPeopleAndRoles: ActionIF = ({ commit }, editing: boolean): void => {
@@ -260,10 +264,6 @@ export const setComponentValidate: ActionIF = ({ commit }, validate: boolean): v
 
 export const setValidFileNumber: ActionIF = ({ commit }, isValid: boolean): void => {
   commit('mutateValidFileNumber', isValid)
-}
-
-export const setValidResolutionDate: ActionIF = ({ commit }, isValid: boolean): void => {
-  commit('mutateIsValidResolutionDate', isValid)
 }
 
 export const setCurrentFees: ActionIF = ({ commit }, fees: FeesIF): void => {

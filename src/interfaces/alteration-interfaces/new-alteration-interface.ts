@@ -1,6 +1,4 @@
-import { CourtOrderIF } from './court-order-interface'
-import { ValidFlagsIF } from './valid-flags-interface'
-import { ValidComponentsIF } from './valid-components-interface'
+import { CourtOrderIF, ValidFlagsIF, ValidComponentsIF } from './'
 
 export interface NewAlterationIF {
   appValidate: boolean,

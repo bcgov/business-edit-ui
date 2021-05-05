@@ -62,7 +62,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Getter getNewResolutionDates!: string []
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getShareClasses!: ShareClassIF[]
-  @Getter getOriginalSnapshot!: BusinessSnapshotIF
+  @Getter getBusinessSnapshot!: BusinessSnapshotIF
   @Getter getHasRightsOrRestrictions!: boolean
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
@@ -84,7 +84,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   }
 
   get originalShareStructure (): ShareStructureIF {
-    return this.getOriginalSnapshot?.shareStructure
+    return this.getBusinessSnapshot?.shareStructure
   }
 
   /** Is true if changes to share structure rights will require a resolution date. */

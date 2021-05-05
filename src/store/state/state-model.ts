@@ -1,4 +1,5 @@
-import { EmptyNameRequest, StateModelIF, emptyFees } from '@/interfaces'
+import { EmptyNameRequest, StateModelIF, EmptyFees } from '@/interfaces'
+import { EmptyContactPoint } from '@bcrs-shared-components/interfaces'
 import { cloneDeep } from 'lodash'
 
 export const stateModel: StateModelIF = {
@@ -18,7 +19,8 @@ export const stateModel: StateModelIF = {
     isSavingResuming: false,
     isFilingPaying: false,
     ignoreChanges: false,
-    haveUnsavedChanges: false
+    haveUnsavedChanges: false,
+    folioNumber: ''
   },
   newAlteration: {
     appValidate: false,
@@ -33,7 +35,7 @@ export const stateModel: StateModelIF = {
       isValidBusinessType: true,
       isValidNameTranslation: true,
       isValidContactInfo: true,
-      isValidFolioNumber: true,
+      isValidFolioInfo: true,
       isValidShareStructure: true,
       isValidCompanyProvisions: true,
       isValidResolutionDate: true
@@ -53,6 +55,7 @@ export const stateModel: StateModelIF = {
     label: '',
     type: ''
   },
+  businessContact: cloneDeep(EmptyContactPoint),
   businessInformation: {
     legalType: null,
     identifier: ''
@@ -79,10 +82,6 @@ export const stateModel: StateModelIF = {
     filingId: null
   },
   nameTranslations: [],
-  effectiveDateTime: {
-    isFutureEffective: null,
-    dateTimeString: ''
-  },
   certifyState: {
     valid: false,
     certifiedBy: ''
@@ -90,18 +89,7 @@ export const stateModel: StateModelIF = {
   documentDelivery: {
     documentOptionalEmail: ''
   },
-  defineCompanyStep: {
-    valid: false,
-    changed: false,
-    businessContact: {
-      email: '',
-      confirmEmail: '',
-      phone: '',
-      extension: ''
-    },
-    officeAddresses: {},
-    folioNumber: ''
-  },
+  officeAddresses: {},
   peopleAndRolesStep: {
     valid: false,
     changed: false,
@@ -118,6 +106,10 @@ export const stateModel: StateModelIF = {
     valid: false,
     changed: false,
     agreementType: null
+  },
+  effectiveDateTime: {
+    isFutureEffective: null,
+    dateTimeString: ''
   },
   originalIA: {
     header: {
@@ -190,7 +182,7 @@ export const stateModel: StateModelIF = {
       }
     }
   },
-  originalSnapshot: null,
+  businessSnapshot: null,
   staffPaymentStep: {
     valid: false,
     staffPayment: {
@@ -212,15 +204,22 @@ export const stateModel: StateModelIF = {
     valid: false,
     comment: ''
   },
+  changedFlags: {
+    defineCompanyStep: false
+  },
   editingFlags: {
     companyName: false,
     nameTranslations: false,
     officeAddresses: false,
+    folioNumber: false,
     peopleAndRoles: false,
     shareStructure: false,
     incorporationAgreement: false
   },
+  validFlags: {
+    defineCompanyStep: false
+  },
   summaryMode: false,
-  currentFees: cloneDeep(emptyFees),
-  feePrices: cloneDeep(emptyFees)
+  currentFees: cloneDeep(EmptyFees),
+  feePrices: cloneDeep(EmptyFees)
 }

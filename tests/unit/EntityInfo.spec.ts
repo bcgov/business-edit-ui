@@ -52,7 +52,7 @@ describe('Entity Info component in a Correction as a named company', () => {
     state.tombstone.keycloakRoles = ['staff']
     state.businessInformation = mockFiling.business
     state.tombstone.businessId = mockFiling.business.identifier
-    state.defineCompanyStep.businessContact = mockFiling.incorporationApplication.contactPoint
+    state.businessContact = mockFiling.incorporationApplication.contactPoint
     state.originalIA.incorporationApplication.nameRequest = mockFiling.incorporationApplication.nameRequest
   })
 
@@ -133,7 +133,7 @@ describe('Entity Info component in a Correction as a numbered company', () => {
     state.tombstone.keycloakRoles = ['staff']
     state.businessInformation = mockFiling.business
     state.tombstone.businessId = mockFiling.business.identifier
-    state.defineCompanyStep.businessContact = mockFiling.incorporationApplication.contactPoint
+    state.businessContact = mockFiling.incorporationApplication.contactPoint
     state.originalIA.incorporationApplication.nameRequest = mockFiling.incorporationApplication.nameRequest
   })
 

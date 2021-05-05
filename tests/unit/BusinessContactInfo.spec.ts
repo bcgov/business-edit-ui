@@ -10,7 +10,6 @@ import { getVuexStore } from '@/store'
 // Components
 import { createLocalVue, mount } from '@vue/test-utils'
 import { BusinessContactInfo } from '@/components/YourCompany'
-import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
@@ -34,7 +33,7 @@ describe('BusinessContactInfo for a correction', () => {
 
   beforeAll(async () => {
     store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.defineCompanyStep.businessContact = contactInfo
+    store.state.stateModel.businessContact = contactInfo
     store.state.stateModel.originalIA.incorporationApplication.contactPoint = originalCorrectionContact
   })
 
@@ -60,7 +59,7 @@ describe('BusinessContactInfo for a correction', () => {
     expect(wrapper.vm.hasBusinessContactInfoChange).toBe(true)
 
     // Call the set Contact method and set the data back to it's original
-    wrapper.vm.setContact(originalCorrectionContact)
+    wrapper.vm.onContactInfoChange(originalCorrectionContact)
     await Vue.nextTick()
 
     // Verify there is NO diff between current and original contact data
@@ -76,9 +75,6 @@ describe('CorrectBusinessContactInfo for an alteration', () => {
 
   // Update Contact Info
   put.withArgs('myhost/basePath/auth/entities/BC1234567/contacts', contactInfo)
-    .returns(new Promise(resolve => resolve({
-      resolve
-    })))
 
   const originalAlterationContact = {
     email: 'mockAlteration@email.com',
@@ -91,8 +87,8 @@ describe('CorrectBusinessContactInfo for an alteration', () => {
     store.state.stateModel.tombstone.filingType = 'alteration'
     sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
     store.state.stateModel.tombstone.businessId = 'BC1234567'
-    store.state.stateModel.defineCompanyStep.businessContact = contactInfo
-    store.state.stateModel.originalSnapshot = { contactPoint: originalAlterationContact }
+    store.state.stateModel.businessContact = contactInfo
+    store.state.stateModel.businessSnapshot = { authInfo: { contacts: [ originalAlterationContact ] } }
   })
 
   beforeEach(async () => {
@@ -117,8 +113,7 @@ describe('CorrectBusinessContactInfo for an alteration', () => {
     expect(wrapper.vm.hasBusinessContactInfoChange).toBe(true)
 
     // Call the set Contact method and set the data back to it's original
-    wrapper.vm.setContact(originalAlterationContact)
-    await flushPromises()
+    await wrapper.vm.onContactInfoChange(originalAlterationContact)
 
     // Verify there is NO diff between current and original contact data
     expect(wrapper.vm.hasBusinessContactInfoChange).toBe(false)

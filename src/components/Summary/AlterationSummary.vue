@@ -1,7 +1,7 @@
 <template>
   <v-card flat id="alteration-summary">
     <!-- Section Header -->
-    <div class="summary-header px-4 mb-4 rounded-t">
+    <div class="summary-header px-4 mb-2 rounded-t">
       <v-row no-gutters>
         <v-col cols="9">
           <img  class="my-n1" src="@/assets/images/currency-usd-circle.svg">
@@ -36,6 +36,7 @@
 
     <!-- Business Name -->
     <template v-if="hasBusinessNameChanged">
+      <v-divider class="mx-4" />
       <div class="section-container business-name-summary">
         <v-row no-gutters>
           <v-col cols="3">
@@ -88,10 +89,6 @@
       </div>
     </template>
 
-    <template v-if="hasFolioNumberChanged">
-      <!-- TODO: implement this (#5024) -->
-    </template>
-
     <!-- Share Structure -->
     <template v-if="hasShareStructureChanged">
       <v-divider class="mx-4" />
@@ -108,7 +105,7 @@
     <!-- Pre-existing Company Provisions -->
     <template v-if="getProvisionsRemoved">
       <v-divider class="mx-4" />
-      <div class="section-container name-translation-summary">
+      <div class="section-container provisions-removed-summary">
         <v-row no-gutters>
           <v-col cols="3">
             <label><strong>Pre-existing<br>Company Provisions</strong></label>
@@ -126,7 +123,7 @@
     <!-- Resolution or Court Order Dates -->
     <template v-if="hasNewResolutionDatesChanged">
       <v-divider class="mx-4" />
-      <div class="section-container resolution-court-order-dates-summary">
+      <div class="section-container new-resolution-dates-summary">
         <resolution-dates
           :added-dates="getNewResolutionDates"
           :previous-dates="getPreviousResolutionDates"
@@ -192,7 +189,7 @@ import {
   FeesIF
 } from '@/interfaces'
 import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
-import { CorpTypeCd, FilingCodes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
 import { EffectiveDateTime } from '@/components/common'
 import { ShareStructures } from '@/components/ShareStructure'
 import { ResolutionDates } from '@/components/Articles'
@@ -222,7 +219,7 @@ export default class AlterationSummary extends Mixins(
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getSnapshotShareStructure!: ShareStructureIF
-  @Getter getOriginalSnapshot!: BusinessSnapshotIF
+  @Getter getBusinessSnapshot!: BusinessSnapshotIF
   @Getter getNewResolutionDates!: string[]
   @Getter getPreviousResolutionDates!: string[]
   @Getter getNameTranslations!: NameTranslationIF[]
@@ -236,7 +233,6 @@ export default class AlterationSummary extends Mixins(
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
   @Getter hasNameTranslationChanged!: boolean
-  @Getter hasFolioNumberChanged!: boolean
   @Getter hasShareStructureChanged!: boolean
   @Getter hasNewResolutionDatesChanged!: boolean
 
@@ -270,7 +266,7 @@ export default class AlterationSummary extends Mixins(
   }
 
   get originalEntityType (): string {
-    return this.getOriginalSnapshot?.businessInfo?.legalType
+    return this.getBusinessSnapshot?.businessInfo?.legalType
   }
 
   /** True if invalid class should be set for Alteration Date-Time container. */
@@ -374,5 +370,10 @@ export default class AlterationSummary extends Mixins(
 
 #effective-date-text {
   color: $gray7;
+}
+
+// hide first v-divider
+.v-divider:first-of-type {
+  display: none;
 }
 </style>
