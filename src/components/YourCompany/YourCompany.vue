@@ -231,8 +231,8 @@
     </div>
 
     <!-- Folio Information -->
-    <!-- FUTURE: show for corrections? -->
-    <!-- FUTURE: show for staff but hide Change button? -->
+    <!-- TODO: show for corrections -->
+    <!-- TODO: show for staff but hide action buttons -->
     <template v-if="isPremiumAccount && !isRoleStaff">
       <v-divider class="mx-4" />
 

@@ -188,7 +188,6 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   @Getter getComponentValidate!: boolean
   @Getter isConflictingLegalType!: boolean
   @Getter getValidComponentFlags!: ValidComponentsIF
-  @Getter getIsResolutionDatesValid!: boolean
 
   // Global actions
   @Action setAccountInformation!: ActionBindingIF
