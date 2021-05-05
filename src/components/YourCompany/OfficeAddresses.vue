@@ -620,7 +620,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   }
 
   /**
-   * When stored office addresses change (ie, when data is loaded/updated/reset),
+   * When the component is mounted or stored office addresses change (ie, when data is loaded/updated/reset),
    * sets local properties and emits state events.
    */
   @Watch('getOfficeAddresses', { deep: true, immediate: true })
@@ -629,6 +629,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     this.setLocalProperties()
 
     // update external state
+    // Will emit on component mount and subsequent changes
     this.emitHaveChanges()
   }
 
