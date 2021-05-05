@@ -466,13 +466,10 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   }
 }
 ::v-deep {
-  .date-picker-form  .v-input__control > .v-input__slot:before {
-    border-image: none;
-  }
-  .theme--light.v-icon.v-icon.v-icon--disabled {
+  .v-icon.v-icon.v-icon--disabled {
     color: $app-blue !important;
   }
-  .theme--light.v-input--is-disabled {
+  .v-input--is-disabled {
     opacity: 0.4;
   }
   .v-input--is-disabled .v-input__control > .v-input__slot:before {

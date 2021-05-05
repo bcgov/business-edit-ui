@@ -165,7 +165,7 @@
             <v-card
               flat
               class="px-16 pb-8 mt-n12"
-              id="effectiveness-text"
+              id="effective-date-text"
               v-if="isFutureEffective && isEffectiveDateTimeValid">
               The alteration for this business will be effective as of:<br>
               <strong>{{effectiveDateTimeString}}</strong>
@@ -372,7 +372,7 @@ export default class AlterationSummary extends Mixins(
   max-width: calc(75% + 1.5rem);
 }
 
-#effectiveness-text {
+#effective-date-text {
   color: $gray7;
 }
 </style>
