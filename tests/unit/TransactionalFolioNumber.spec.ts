@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import { mount, Wrapper } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import { DocumentsDelivery } from '@/components/Summary'
+import { TransactionalFolioNumber } from '@/components/Summary'
 
 Vue.use(Vuetify)
 
@@ -14,14 +14,15 @@ const optionalEmailInput = '#optionalEmail'
 /**
  * Creates and mounts a component, so that it can be tested.
  */
-function createComponent (): Wrapper<DocumentsDelivery> {
-  return mount(DocumentsDelivery, {
+function createComponent (): Wrapper<TransactionalFolioNumber> {
+  return mount(TransactionalFolioNumber, {
     vuetify,
     store
   })
 }
 
-describe('Document Delivery component', () => {
+// TODO: implement
+xdescribe('Transactional Folio Number component', () => {
   let wrapperFactory: any
   beforeAll(() => {
     store.state.stateModel.tombstone.keycloakRoles = ['staff']
@@ -32,20 +33,20 @@ describe('Document Delivery component', () => {
   })
 
   it('mounts the document delivery component ', () => {
-    const wrapper: Wrapper<DocumentsDelivery> = createComponent()
+    const wrapper: Wrapper<TransactionalFolioNumber> = createComponent()
 
-    expect(wrapper.findComponent(DocumentsDelivery).exists()).toBe(true)
+    expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
     expect(wrapper.find('#document-delivery-section').exists()).toBe(true)
   })
 
   it('shows users email', () => {
-    const wrapper: Wrapper<DocumentsDelivery> = createComponent()
+    const wrapper: Wrapper<TransactionalFolioNumber> = createComponent()
 
     expect((wrapper.vm as any).getUserEmail).toBe('currentuser@mail.com')
   })
 
   it('validates a valid email', async () => {
-    const wrapper: Wrapper<DocumentsDelivery> = createComponent()
+    const wrapper: Wrapper<TransactionalFolioNumber> = createComponent()
     const vm: any = wrapper.vm
 
     // Set Input field value
@@ -59,7 +60,7 @@ describe('Document Delivery component', () => {
   })
 
   it('validates an invalid email', async () => {
-    const wrapper: Wrapper<DocumentsDelivery> = createComponent()
+    const wrapper: Wrapper<TransactionalFolioNumber> = createComponent()
     const vm: any = wrapper.vm
 
     // Set Input field values

@@ -1,6 +1,6 @@
 <template>
   <div class="pb-6" id="certify-section">
-    <h2>2. Certify</h2>
+    <h2>{{sectionNumber}} Certify</h2>
     <div class="pt-4">Enter the legal name of the person authorized to complete and submit these changes.</div>
     <div :class="{ 'invalid-section': certificationInvalid }">
       <certify
@@ -52,8 +52,11 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   @Action setCertifyState!: ActionBindingIF
   @Action setCertifyStateValidity!: ActionBindingIF
 
+  /** Prop to provide section number. */
+  @Prop({ default: '' }) readonly sectionNumber: string
+
   /** Prop to perform validation. */
-  @Prop() readonly validate: boolean
+  @Prop({ default: false }) readonly validate: boolean
 
   /** Called when component is mounted. */
   mounted (): void {
