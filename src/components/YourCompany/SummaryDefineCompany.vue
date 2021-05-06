@@ -59,9 +59,6 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 
-// Interfaces
-import { GetterIF } from '@/interfaces'
-
 // Components
 import { FolioInformation, BusinessContactInfo, OfficeAddresses } from '@/components/YourCompany'
 import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
@@ -84,7 +81,7 @@ export default class SummaryDefineCompany extends Mixins(CommonMixin) {
   // Getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
-  @Getter isPremiumAccount!: GetterIF
+  @Getter isPremiumAccount!: boolean
   @Getter getNameTranslations!: Array<string>
   @Getter isDefineCompanyStepValid!: boolean
   @Getter getEntityType!: CorpTypeCd

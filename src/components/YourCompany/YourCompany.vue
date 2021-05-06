@@ -250,7 +250,6 @@ import {
   ActionBindingIF,
   BusinessSnapshotIF,
   ConfirmDialogType,
-  GetterIF,
   IncorporationFilingIF,
   NameRequestApplicantIF,
   NameRequestIF, ValidComponentsIF
@@ -304,7 +303,7 @@ export default class YourCompany extends Mixins(
   @Getter getBusinessFoundingDate!: string // actually date-time
   @Getter isConflictingLegalType!: boolean
   @Getter isNumberedCompany!: boolean
-  @Getter isPremiumAccount!: GetterIF
+  @Getter isPremiumAccount!: boolean
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getBusinessSnapshot!: BusinessSnapshotIF
   @Getter getBusinessContact!: ContactPointIF
