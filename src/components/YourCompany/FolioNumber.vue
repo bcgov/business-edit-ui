@@ -130,8 +130,8 @@
               <span>Save</span>
             </v-btn>
             <v-btn
-              id="cancel-btn"
               large outlined color="primary"
+              class="cancel-button"
               @click="onCancelClicked()"
             >
               <span>Cancel</span>
@@ -164,7 +164,7 @@ export default class FolioNumber extends Vue {
 
   // Validation rules
   private readonly rules: Array<Function> = [
-    (v: string) => (!v || v.length <= 15) || 'Maximum 15 characters reached'
+    (v: string) => (!v || v.length <= 30) || 'Maximum 30 characters reached'
   ]
 
   /** Whether folio number has changed from original value. */
