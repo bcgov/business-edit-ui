@@ -43,7 +43,7 @@ import {
   IncorporationFilingIF,
   ShareClassIF,
   ShareStructureIF,
-  ValidComponentsIF
+  FlagsCompanyInfoIF
 } from '@/interfaces'
 
 @Component({
@@ -66,7 +66,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Getter getHasRightsOrRestrictions!: boolean
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
-  @Getter getValidComponentFlags!: ValidComponentsIF
+  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter invalidMinimumShareClass!: boolean
 
   // Global actions
@@ -80,7 +80,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
 
   /** Check validity state, only when prompted by app. */
   get invalidShareSection (): boolean {
-    return this.getComponentValidate && !this.getValidComponentFlags.isValidShareStructure
+    return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidShareStructure
   }
 
   get originalShareStructure (): ShareStructureIF {

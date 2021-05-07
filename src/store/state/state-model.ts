@@ -20,7 +20,8 @@ export const stateModel: StateModelIF = {
     isFilingPaying: false,
     ignoreChanges: false,
     haveUnsavedChanges: false,
-    folioNumber: ''
+    folioNumber: '',
+    transactionalFolioNumber: ''
   },
   newAlteration: {
     appValidate: false,
@@ -30,7 +31,8 @@ export const stateModel: StateModelIF = {
       fileNumber: '',
       hasPlanOfArrangement: false
     },
-    validComponents: {
+    flagsCompanyInfo: {
+      // NB: this must be in same order as ComponentsCompanyInfo enum!
       isValidCompanyName: true,
       isValidBusinessType: true,
       isValidNameTranslation: true,
@@ -40,13 +42,14 @@ export const stateModel: StateModelIF = {
       isValidCompanyProvisions: true,
       isValidResolutionDate: true
     },
-    validFlags: {
+    flagsReviewCertify: {
+      // NB: this must be in same order as ComponentsReviewCertify enum!
       isValidEffectiveDate: true,
-      isValidFileNum: true, // Staff only
-      isValidCertify: false, // initialize to false (unsigned)
-      isValidCourtOrder: true, // Just to keep the page order. It's important for validateAndScroll() in common-mixin.ts
-      isValidStaffPayment: true, // Staff Only
-      isValidDocumentOptionalEmail: true
+      isValidDocumentOptionalEmail: true,
+      isValidTransactionalFolioNumber: true,
+      isValidCertify: false, // initially un-signed
+      isValidCourtOrder: true,
+      isValidStaffPayment: true
     }
   },
   accountInformation: {

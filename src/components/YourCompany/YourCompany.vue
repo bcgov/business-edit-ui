@@ -250,9 +250,10 @@ import {
   ActionBindingIF,
   BusinessSnapshotIF,
   ConfirmDialogType,
+  FlagsCompanyInfoIF,
   IncorporationFilingIF,
   NameRequestApplicantIF,
-  NameRequestIF, ValidComponentsIF
+  NameRequestIF
 } from '@/interfaces'
 // Shared Interfaces
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
@@ -312,7 +313,7 @@ export default class YourCompany extends Mixins(
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
-  @Getter getValidComponentFlags!: ValidComponentsIF
+  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
 
   // Global actions
   @Action setDefineCompanyStepChanged!: ActionBindingIF
@@ -358,12 +359,12 @@ export default class YourCompany extends Mixins(
 
   /** The contact section validity state (when prompted by app). */
   private get invalidContactSection (): boolean {
-    return this.getComponentValidate && !this.getValidComponentFlags.isValidContactInfo
+    return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidContactInfo
   }
 
   /** The folio section validity state (when prompted by app). */
   private get invalidFolioSection (): boolean {
-    return this.getComponentValidate && !this.getValidComponentFlags.isValidFolioInfo
+    return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidFolioInfo
   }
 
   /** The company name (from NR, or incorporation number). */

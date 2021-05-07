@@ -54,7 +54,7 @@
 import { Component, Mixins, Emit, Vue, Watch, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins'
-import { ActionBindingIF, ValidFlagsIF } from '@/interfaces'
+import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces'
 // Shared Interfaces
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
@@ -65,7 +65,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   @Getter getBusinessContact!: ContactPointIF
   @Getter isRoleStaff!: boolean
   @Getter getDocumentOptionalEmail!: string
-  @Getter getAlterationValidFlags!: ValidFlagsIF
+  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
 
   // Global actions
   @Action setDocumentOptionalEmail!: ActionBindingIF
@@ -77,6 +77,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   /** Prop to perform validation. */
   @Prop({ default: false }) readonly validate: boolean
 
+  // Local properties
   private optionalEmail: string = ''
 
   private entityEmailRules = [
@@ -101,7 +102,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
 
   /** True if invalid class should be set for certify container. */
   get documentDeliveryInvalid (): boolean {
-    return (this.validate && !this.getAlterationValidFlags.isValidDocumentOptionalEmail)
+    return (this.validate && !this.getFlagsReviewCertify.isValidDocumentOptionalEmail)
   }
 
   @Watch('optionalEmail')
@@ -122,6 +123,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   }
 }
 </script>
+
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 

@@ -184,7 +184,7 @@ import {
   NameRequestIF,
   ShareClassIF,
   ShareStructureIF,
-  ValidFlagsIF,
+  FlagsReviewCertifyIF,
   NameTranslationIF,
   FeesIF
 } from '@/interfaces'
@@ -229,7 +229,7 @@ export default class AlterationSummary extends Mixins(
   @Getter getFeePrices!: FeesIF
 
   // Alteration flag getters
-  @Getter getAlterationValidFlags!: ValidFlagsIF
+  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
   @Getter hasNameTranslationChanged!: boolean
@@ -250,7 +250,7 @@ export default class AlterationSummary extends Mixins(
   }
 
   get isEffectiveDateTimeValid (): boolean {
-    return this.getAlterationValidFlags.isValidEffectiveDate
+    return this.getFlagsReviewCertify.isValidEffectiveDate
   }
 
   get effectiveDateTimeString (): string {
@@ -271,7 +271,7 @@ export default class AlterationSummary extends Mixins(
 
   /** True if invalid class should be set for Alteration Date-Time container. */
   get alterationDateTimeInvalid (): boolean {
-    return (this.validate && !this.getAlterationValidFlags.isValidEffectiveDate)
+    return (this.validate && !this.getFlagsReviewCertify.isValidEffectiveDate)
   }
 
   async onChangeClicked (): Promise<void> {

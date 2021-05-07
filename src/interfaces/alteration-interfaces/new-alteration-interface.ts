@@ -1,10 +1,10 @@
-import { CourtOrderIF, ValidFlagsIF, ValidComponentsIF } from './'
+import { CourtOrderIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF } from './'
 
 export interface NewAlterationIF {
-  appValidate: boolean,
-  componentValidate: boolean,
-  provisionsRemoved: boolean,
-  courtOrder: CourtOrderIF,
-  validFlags: ValidFlagsIF,
-  validComponents: ValidComponentsIF
+  appValidate: boolean
+  componentValidate: boolean
+  provisionsRemoved: boolean
+  courtOrder: CourtOrderIF
+  flagsReviewCertify: FlagsReviewCertifyIF
+  flagsCompanyInfo: FlagsCompanyInfoIF
 }

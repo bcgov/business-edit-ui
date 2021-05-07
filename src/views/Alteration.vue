@@ -76,16 +76,16 @@
             Plan of Arrangement.
           </p>
 
-          <div class="pb-6" :class="{'invalid-section': invalidPoa}">
+          <div class="pb-6" :class="{'invalid-section': invalidCourtOrder}">
             <CourtOrderPoa
               id="court-order"
               :validate="getAppValidate"
               :draftCourtOrderNumber="getFileNumber"
               :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
-              :invalidSection="invalidPoa"
+              :invalidSection="invalidCourtOrder"
               @emitCourtNumber="setFileNumber($event)"
               @emitPoa="setHasPlanOfArrangement($event)"
-              @emitValid="setValidFileNumber($event)"
+              @emitValid="setValidCourtOrder($event)"
             />
           </div>
 
@@ -154,7 +154,7 @@ import {
   BusinessSnapshotIF,
   EffectiveDateTimeIF,
   FilingDataIF,
-  ValidFlagsIF,
+  FlagsReviewCertifyIF,
   FeesIF,
   EmptyFees
 } from '@/interfaces'
@@ -192,7 +192,7 @@ export default class Alteration extends Mixins(
   readonly CertifyStatementResource = CertifyStatementResource
 
   // Global getters
-  @Getter getAlterationValidFlags!: ValidFlagsIF
+  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getEntityType!: CorpTypeCd
   @Getter isSummaryMode!: boolean
   @Getter isRoleStaff!: boolean
@@ -213,7 +213,7 @@ export default class Alteration extends Mixins(
   @Action setFilingId!: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action setValidFileNumber!: ActionBindingIF
+  @Action setValidCourtOrder!: ActionBindingIF
   @Action setCurrentFees!: ActionBindingIF
   @Action setFeePrices!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
@@ -224,8 +224,7 @@ export default class Alteration extends Mixins(
 
   /** Whether to show the Transactional Folio Number section. */
   private get showTransactionalFolioNumber (): boolean {
-    // TODO: implement
-    return false // (this.isPremiumAccount && !this.isRoleStaff)
+    return (this.isPremiumAccount && !this.isRoleStaff)
   }
 
   /** The id of the alteration being edited. */
@@ -239,8 +238,8 @@ export default class Alteration extends Mixins(
   }
 
   /** Check validity state, only when prompted by app. */
-  private get invalidPoa (): boolean {
-    return this.getAppValidate && !this.getAlterationValidFlags.isValidFileNum
+  private get invalidCourtOrder (): boolean {
+    return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
   }
 
   private get filingFeesPrice (): string {

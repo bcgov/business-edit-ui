@@ -104,11 +104,11 @@ describe('Articles component', () => {
     store.state.stateModel.newAlteration.provisionsRemoved = false
     const wrapper = mount(Articles, { router, store, vuetify })
     await Vue.nextTick()
-    expect(store.state.stateModel.newAlteration.validComponents.isValidCompanyProvisions).toBe(true)
+    expect(store.state.stateModel.newAlteration.flagsCompanyInfo.isValidCompanyProvisions).toBe(true)
 
     wrapper.find(changeCompanyProvisionsButton).trigger('click')
     await Vue.nextTick()
-    expect(store.state.stateModel.newAlteration.validComponents.isValidCompanyProvisions).toBe(false)
+    expect(store.state.stateModel.newAlteration.flagsCompanyInfo.isValidCompanyProvisions).toBe(false)
 
     wrapper.destroy()
   })

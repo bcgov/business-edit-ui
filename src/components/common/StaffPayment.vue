@@ -24,7 +24,7 @@ import { Action, Getter } from 'vuex-class'
 import { StaffPayment as StaffPaymentComponent } from '@bcrs-shared-components/staff-payment'
 
 // Interfaces and Enums
-import { ActionBindingIF, ValidFlagsIF } from '@/interfaces'
+import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
@@ -35,7 +35,7 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 })
 export default class StaffPayment extends Vue {
   // Global getters
-  @Getter getAlterationValidFlags!: ValidFlagsIF
+  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getAppValidate!: boolean
   @Getter getStaffPayment!: StaffPaymentIF
 
@@ -48,7 +48,7 @@ export default class StaffPayment extends Vue {
 
   /** Check validity state, only when prompted by app. */
   private get invalidStaffPayment (): boolean {
-    return this.getAppValidate && !this.getAlterationValidFlags.isValidStaffPayment
+    return this.getAppValidate && !this.getFlagsReviewCertify.isValidStaffPayment
   }
 
   /** Is true when prompted by the app AND the user has selected an option. */

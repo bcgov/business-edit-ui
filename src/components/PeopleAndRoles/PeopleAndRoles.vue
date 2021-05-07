@@ -214,7 +214,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   /**
    * Called when component is mounted.
    */
-  private mounted (): void {
+  mounted (): void {
     // initialize this component's 'valid' and 'changed' flags
     this.setPeopleAndRolesValidity(this.hasValidRoles && this.noMissingRoles)
     this.setPeopleAndRolesChanged(this.hasChanges)
