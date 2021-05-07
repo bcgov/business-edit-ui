@@ -1,6 +1,6 @@
 <template>
   <section class="pb-10">
-    <!-- Company Information-->
+    <!-- Company Information page-->
     <v-slide-x-transition hide-on-leave>
       <div v-if="!isSummaryMode">
         <header>
@@ -26,7 +26,7 @@
       </div>
     </v-slide-x-transition>
 
-    <!-- Review and Certify-->
+    <!-- Review and Certify page -->
     <v-slide-x-reverse-transition hide-on-leave>
       <div v-if="isSummaryMode && showFeeSummary">
         <header>
@@ -49,25 +49,34 @@
 
         <DocumentsDelivery
           class="mt-10"
+          sectionNumber="1."
           :validate="getAppValidate"
           @valid="setDocumentOptionalEmailValidity($event)"
         />
 
+        <TransactionalFolioNumber
+          v-if="showTransactionalFolioNumber"
+          class="mt-10"
+          sectionNumber="2."
+          :validate="getAppValidate"
+        />
+
         <CertifySection
           class="mt-10"
+          :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
           :validate="getAppValidate"
         />
 
         <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
         <template v-if="isRoleStaff">
-          <h2 class="mt-10">3. Court Order and Plan of Arrangement</h2>
+          <h2 class="mt-10">{{showTransactionalFolioNumber ? '4.' : '3.'}} Court Order and Plan of Arrangement</h2>
           <p class="my-3 pb-2">
             If this filing is pursuant to a court order, enter the court order number. If this
             filing is pursuant to a plan of arrangement, enter the court order number and select
             Plan of Arrangement.
           </p>
 
-          <div :class="{'invalid-section': invalidPoa}">
+          <div class="pb-6" :class="{'invalid-section': invalidPoa}">
             <CourtOrderPoa
               id="court-order"
               :validate="getAppValidate"
@@ -81,7 +90,8 @@
           </div>
 
           <StaffPayment
-            class="mt-10"
+            class="mt-10 pb-6"
+            :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
             :validate="getAppValidate"
             @haveChanges="onStaffPaymentChanges()"
           />
@@ -122,7 +132,7 @@ import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 
 // Components
-import { AlterationSummary, DocumentsDelivery } from '@/components/Summary'
+import { AlterationSummary, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Summary'
 import { YourCompany } from '@/components/YourCompany'
 import { AgreementType } from '@/components/IncorporationAgreement'
 import { CurrentDirectors } from '@/components/PeopleAndRoles'
@@ -167,6 +177,7 @@ import { CertifyStatementResource } from '@/resources'
     DocumentsDelivery,
     ShareStructures,
     StaffPayment,
+    TransactionalFolioNumber,
     YourCompany
   }
 })
@@ -185,6 +196,7 @@ export default class Alteration extends Mixins(
   @Getter getEntityType!: CorpTypeCd
   @Getter isSummaryMode!: boolean
   @Getter isRoleStaff!: boolean
+  @Getter isPremiumAccount!: boolean
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
@@ -209,6 +221,12 @@ export default class Alteration extends Mixins(
   /** Whether App is ready. */
   @Prop({ default: false })
   readonly appReady: boolean
+
+  /** Whether to show the Transactional Folio Number section. */
+  private get showTransactionalFolioNumber (): boolean {
+    // TODO: implement
+    return false // (this.isPremiumAccount && !this.isRoleStaff)
+  }
 
   /** The id of the alteration being edited. */
   private get alterationId (): number {
@@ -350,7 +368,7 @@ export default class Alteration extends Mixins(
     this.setFilingData({
       ...this.getFilingData,
       priority: this.getStaffPayment.isPriority,
-      waiveFees: this.getStaffPayment.option === StaffPaymentOptions.NO_FEE
+      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
     })
   }
 

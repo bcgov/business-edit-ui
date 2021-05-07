@@ -14,8 +14,8 @@
             label="Name Translation"
             id="name-translation-input"
             v-model="nameTranslation"
-            :rules="nameTranslationRules">
-          </v-text-field>
+            :rules="nameTranslationRules"
+          />
         </v-col>
       </v-row>
       <v-row>

@@ -1,6 +1,6 @@
 <template>
   <div class="pb-6" id="document-delivery-section">
-    <h2>1. Alteration Documents Delivery</h2>
+    <h2>{{sectionNumber}} Alteration Documents Delivery</h2>
     <div class="pt-4 pb-4">Copies of the alteration documents will be sent
       to the following email address listed below.</div>
     <div :class="{ 'invalid-section': documentDeliveryInvalid }">
@@ -11,7 +11,7 @@
               <label><strong>Registered Office</strong></label>
             </v-col>
             <v-col cols="9" class="px-0">
-              {{getBusinessContact.email || '(Not entered)'}}
+              <span class="info-text">{{getBusinessContact.email || '(Not entered)'}}</span>
             </v-col>
           </v-row>
         </v-container>
@@ -26,13 +26,12 @@
                 id="optionalEmail"
                 class="text-input-field"
                 filled
-                label="Client Email Address (optional)"
+                label="Client Email Address (Optional)"
                 hint="Example: name@email.com"
                 persistent-hint
                 validate-on-blur
                 :rules="entityEmailRules"
-              >
-              </v-text-field>
+              />
             </v-col>
           </v-row>
         </v-container>
@@ -72,8 +71,11 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   @Action setDocumentOptionalEmail!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
 
+  /** Prop to provide section number. */
+  @Prop({ default: '' }) readonly sectionNumber: string
+
   /** Prop to perform validation. */
-  @Prop() readonly validate: boolean
+  @Prop({ default: false }) readonly validate: boolean
 
   private optionalEmail: string = ''
 
@@ -122,22 +124,24 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
 </script>
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-  ::v-deep {
-    .container {
-      padding-bottom: 0px;
-      padding-top: 0px;
-    }
-    .v-label {
-      font-weight: normal;
+
+::v-deep {
+  .container {
+    padding-bottom: 0px;
+    padding-top: 0px;
+  }
+  .v-label {
+    font-weight: normal;
+  }
+}
+
+#document-delivery-section {
+  &.invalid {
+    border-left: 4px solid $BCgovInputError;
+    padding-left: calc(2rem - 4px);
+    h2 {
+      color: $BCgovInputError;
     }
   }
-  #document-delivery-section {
-    &.invalid {
-      border-left: 4px solid $BCgovInputError;
-      padding-left: calc(2rem - 4px);
-      h2 {
-        color: $BCgovInputError;
-      }
-    }
-  }
+}
 </style>

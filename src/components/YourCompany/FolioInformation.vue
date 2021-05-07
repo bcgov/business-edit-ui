@@ -17,8 +17,7 @@ import { Component, Emit, Mixins, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces'
 import { AuthApiMixin, CommonMixin } from '@/mixins'
-// TODO: move FolioNumber to bcrs-shared-components (#5024 part 2)
-import FolioNumber from './FolioNumber.vue'
+import { FolioNumber } from '@bcrs-shared-components/folio-number'
 
 @Component({
   components: { FolioNumber }

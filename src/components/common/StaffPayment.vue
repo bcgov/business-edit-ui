@@ -1,7 +1,7 @@
 <template>
   <section id="staff-payment">
     <header>
-      <h2>4. Staff Payment</h2>
+      <h2>{{sectionNumber}} Staff Payment</h2>
     </header>
 
     <div :class="{'invalid-section': invalidStaffPayment}">
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Vue, Watch } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Components
@@ -42,6 +42,9 @@ export default class StaffPayment extends Vue {
   // Global actions
   @Action setStaffPayment!: ActionBindingIF
   @Action setStaffPaymentValidity!: ActionBindingIF
+
+  /** Prop to provide section number. */
+  @Prop({ default: '' }) readonly sectionNumber: string
 
   /** Check validity state, only when prompted by app. */
   private get invalidStaffPayment (): boolean {
