@@ -45,6 +45,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getFolioNumber!: string
+  @Getter getTransactionalFolioNumber!: string
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getDetailComment!: string
   @Getter getDefaultCorrectionDetailComment!: string
@@ -77,6 +78,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setEffectiveDateTimeString!: ActionBindingIF
   @Action setIsFutureEffective!: ActionBindingIF
   @Action setFolioNumber!: ActionBindingIF
+  @Action setTransactionalFolioNumber!: ActionBindingIF
   @Action setFilingDateTime!: ActionBindingIF
   @Action setIncorporationAgreementStepData!: ActionBindingIF
   @Action setStaffPayment!: ActionBindingIF
@@ -207,7 +209,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // FUTURE: override this as needed
+        folioNumber: this.getFolioNumber
       },
       business: {
         foundingDate: this.getBusinessSnapshot.businessInfo.foundingDate,
@@ -237,6 +239,15 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           extension: this.getBusinessContact.extension
         }
       }
+    }
+
+    // If a Transactional Folio Number was entered then override the folio number
+    // in the filing and save a flag to correctly restore a draft if needed.
+    const fn = this.getFolioNumber
+    const tfn = this.getTransactionalFolioNumber
+    if (tfn !== fn) {
+      filing.header.folioNumber = tfn
+      filing.header.isTransactionalFolioNumber = true
     }
 
     // Apply Court Order ONLY when it is required and applied
@@ -288,7 +299,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Parses a correction filing into the store.
+   * Parses a draft correction filing into the store.
    * @param filing the correction filing
    */
   parseCorrection (filing: CorrectionFilingIF): void {
@@ -373,7 +384,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Parses an alteration filing into the store.
+   * Parses a draft alteration filing into the store.
    * @param filing the alteration filing
    * @param businessSnapshot the latest business snapshot
    */
@@ -382,9 +393,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setBusinessSnapshot(businessSnapshot)
 
     // Restore current entity type
+    // TODO: should we omit this as it was set from business snapshot ???
     this.setEntityType(filing.alteration.business.legalType)
 
     // Restore business information
+    // TODO: should we omit this as it was set from business snapshot ???
     this.setBusinessInformation({
       ...filing.business,
       ...filing.alteration.business
@@ -455,8 +468,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       certifiedBy: filing.header.certifiedBy
     })
 
-    // Restore folio number
-    this.setFolioNumber(filing.header.folioNumber)
+    // NB: do not restore Folio Number - it was already set from business snapshot
+
+    // If Transactional Folio Number was saved then restore it.
+    if (filing.header.isTransactionalFolioNumber) {
+      this.setTransactionalFolioNumber(filing.header.folioNumber)
+    }
 
     // Restore filing date
     this.setFilingDateTime(filing.header.date)

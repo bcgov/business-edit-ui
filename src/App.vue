@@ -145,9 +145,9 @@ import * as Dialogs from '@/components/dialogs'
 
 // Mixins, interfaces, etc
 import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { FilingDataIF, ActionBindingIF, ValidFlagsIF, ValidComponentsIF } from '@/interfaces'
+import { FilingDataIF, ActionBindingIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { AlterationCompanyInfoFlags, AlterationReviewCertifyFlags, SummaryActions, RouteNames } from '@/enums'
+import { ComponentsCompanyInfo, ComponentsReviewCertify, SummaryActions, RouteNames } from '@/enums'
 
 @Component({
   components: {
@@ -181,13 +181,13 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   @Getter isAlterationFiling!: boolean
 
   // Alteration flag getters
-  @Getter getAlterationValidFlags!: ValidFlagsIF
+  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter getAppValidate!: boolean
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
   @Getter getComponentValidate!: boolean
   @Getter isConflictingLegalType!: boolean
-  @Getter getValidComponentFlags!: ValidComponentsIF
 
   // Global actions
   @Action setAccountInformation!: ActionBindingIF
@@ -285,12 +285,12 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
   /** Check for any invalid component sections. */
   private get hasInvalidSections (): boolean {
-    return this.getComponentValidate && Object.values(this.getValidComponentFlags).some(val => val === false)
+    return this.getComponentValidate && Object.values(this.getFlagsCompanyInfo).some(val => val === false)
   }
 
   /** Check for any invalid review sections. */
   private get hasInvalidReviewSections (): boolean {
-    return this.getAppValidate && Object.values(this.getAlterationValidFlags).some(val => val === false)
+    return this.getAppValidate && Object.values(this.getFlagsReviewCertify).some(val => val === false)
   }
 
   /**
@@ -607,8 +607,12 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     this.setComponentValidate(true)
 
     // Evaluate valid flags. Scroll to invalid components or continue to review.
-    if (await this.validateAndScroll(this.getValidComponentFlags, AlterationCompanyInfoFlags)) {
+    if (await this.validateAndScroll(this.getFlagsCompanyInfo, ComponentsCompanyInfo)) {
+      // show summary page
       this.setSummaryMode(true)
+
+      // reset validate flag
+      this.setAppValidate(false)
 
       // Reset global flag
       this.setComponentValidate(false)
@@ -624,7 +628,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     this.setAppValidate(true)
 
     // Evaluate valid flags. Scroll to invalid components or file alteration.
-    if (await this.validateAndScroll(this.getAlterationValidFlags, AlterationReviewCertifyFlags)) {
+    if (await this.validateAndScroll(this.getFlagsReviewCertify, ComponentsReviewCertify)) {
       await this.onClickSave(false)
     }
   }

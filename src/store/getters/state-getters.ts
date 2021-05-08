@@ -16,8 +16,8 @@ import {
   BusinessSnapshotIF,
   EffectiveDateTimeIF,
   ShareStructureIF,
-  ValidFlagsIF,
-  ValidComponentsIF,
+  FlagsReviewCertifyIF,
+  FlagsCompanyInfoIF,
   ResolutionsIF,
   FeesIF
 } from '@/interfaces'
@@ -178,6 +178,11 @@ export const getUserUsername = (state: StateIF): string => {
 /** The folio number. */
 export const getFolioNumber = (state: StateIF): string => {
   return state.stateModel.tombstone.folioNumber
+}
+
+/** The transactional folio number. */
+export const getTransactionalFolioNumber = (state: StateIF): string => {
+  return state.stateModel.tombstone.transactionalFolioNumber
 }
 
 /** Whether this IA is for a named business. */
@@ -390,14 +395,14 @@ export const getComponentValidate = (state: StateIF): boolean => {
   return state.stateModel.newAlteration.componentValidate
 }
 
-/** The alterations flags validity. */
-export const getAlterationValidFlags = (state: StateIF): ValidFlagsIF => {
-  return state.stateModel.newAlteration.validFlags
+/** The review and certify page validity flags. */
+export const getFlagsReviewCertify = (state: StateIF): FlagsReviewCertifyIF => {
+  return state.stateModel.newAlteration.flagsReviewCertify
 }
 
-/** The alterations components validity. */
-export const getValidComponentFlags = (state: StateIF): ValidComponentsIF => {
-  return state.stateModel.newAlteration.validComponents
+/** The company info page validity flags. */
+export const getFlagsCompanyInfo = (state: StateIF): FlagsCompanyInfoIF => {
+  return state.stateModel.newAlteration.flagsCompanyInfo
 }
 
 export const getDefaultCorrectionDetailComment = (state: StateIF): string => {
@@ -585,5 +590,5 @@ export const invalidMinimumShareClass = (state: StateIF): boolean => {
 
 /** Get state of company provisions validity. */
 export const getIsCompanyProvisionsValid = (state: StateIF): boolean => {
-  return state.stateModel.newAlteration.validComponents.isValidCompanyProvisions
+  return state.stateModel.newAlteration.flagsCompanyInfo.isValidCompanyProvisions
 }

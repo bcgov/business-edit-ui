@@ -86,6 +86,14 @@ export const setDocumentOptionalEmailValidity: ActionIF = ({ commit }, validity)
   commit('mutateDocumentOptionalEmailValidity', validity)
 }
 
+export const setTransactionalFolioNumber: ActionIF = ({ commit }, folioNumber: string): void => {
+  commit('mutateTransactionalFolioNumber', folioNumber)
+}
+
+export const setTransactionalFolioNumberValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateTransactionalFolioNumberValidity', validity)
+}
+
 export const setBusinessContact: ActionIF = ({ commit }, businessContact: ContactPointIF): void => {
   commit('mutateBusinessContact', businessContact)
 }
@@ -262,8 +270,8 @@ export const setComponentValidate: ActionIF = ({ commit }, validate: boolean): v
   commit('mutateComponentValidate', validate)
 }
 
-export const setValidFileNumber: ActionIF = ({ commit }, isValid: boolean): void => {
-  commit('mutateValidFileNumber', isValid)
+export const setValidCourtOrder: ActionIF = ({ commit }, isValid: boolean): void => {
+  commit('mutateValidCourtOrder', isValid)
 }
 
 export const setCurrentFees: ActionIF = ({ commit }, fees: FeesIF): void => {

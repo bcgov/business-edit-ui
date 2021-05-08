@@ -9,12 +9,12 @@
       report and receipt for this filing.
     </div>
 
-    <div :class="{ 'invalid-section': sectionInvalid }">
+    <div :class="{ 'invalid-section': !sectionValid }">
       <v-card flat class="pt-4 pr-8">
         <v-container>
           <v-row class="pl-4">
             <v-col cols="3" class="px-0">
-              <label :class="{ 'error-text': sectionInvalid }">
+              <label :class="{ 'error-text': !sectionValid }">
                 <strong>Folio or Reference<br>Number</strong>
               </label>
             </v-col>
@@ -22,9 +22,9 @@
               <v-text-field
                 filled persistent-hint
                 id="folio-number-input"
+                ref="folioNumberInput"
                 autocomplete="chrome-off"
                 label="Folio or Reference Number (Optional)"
-                validate-on-blur
                 v-model="folioNumber"
                 :name="Math.random()"
                 :rules="rules"
@@ -38,24 +38,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Emit, Vue, Watch, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins'
-import { ActionBindingIF, ValidFlagsIF } from '@/interfaces'
-// Shared Interfaces
-import { ContactPointIF } from '@bcrs-shared-components/interfaces'
+import { ActionBindingIF, FlagsReviewCertifyIF, FormFieldType } from '@/interfaces'
 
 @Component({})
 export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
+  // Add element type to refs
+  $refs!: {
+    folioNumberInput: FormFieldType
+  }
+
   // Global getters
-  @Getter getUserEmail!: string
-  @Getter getBusinessContact!: ContactPointIF
-  @Getter getDocumentOptionalEmail!: string
-  @Getter getAlterationValidFlags!: ValidFlagsIF
+  @Getter getFolioNumber!: string
+  @Getter getTransactionalFolioNumber!: string
+  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
 
   // Global actions
-  @Action setDocumentOptionalEmail!: ActionBindingIF
-  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action setTransactionalFolioNumber!: ActionBindingIF // TODO
+  @Action setTransactionalFolioNumberValidity!: ActionBindingIF
 
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber: string
@@ -71,33 +73,27 @@ export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
     (v: string) => (!v || v.length <= 30) || 'Maximum 30 characters reached'
   ]
 
-  mounted () {
-    // TODO: implement
-    // this.folioNumber = this.getDocumentOptionalEmail
+  /** Called when component is mounted. */
+  mounted (): void {
+    // assign transactional FN if it exists, otherwise business FN
+    this.folioNumber = this.getTransactionalFolioNumber || this.getFolioNumber
   }
 
-  /** True if this section is invalid. */
-  get sectionInvalid (): boolean {
-    // TODO: implement
-    return false
-    // return (this.validate && !this.getAlterationValidFlags.isValidDocumentOptionalEmail)
+  /** True if this section is valid. */
+  get sectionValid (): boolean {
+    return (!this.validate || this.getFlagsReviewCertify.isValidTransactionalFolioNumber)
   }
 
   @Watch('folioNumber')
-  onFolioNumberChanged (val: string): void {
-    // this.setDocumentOptionalEmail(val)
-    // this.setDocumentOptionalEmailValidity(true)
-  }
-
-  @Emit('valid')
-  private async emitValid (): Promise<boolean> {
-    // wait for form to update itself before checking validity
+  private async onFolioNumberChanged (val: string): Promise<void> {
+    this.setTransactionalFolioNumber(val)
+    // wait for form field to update itself before checking validity
     await Vue.nextTick()
-    // TODO: use form or element validity instead?
-    return true
+    this.setTransactionalFolioNumberValidity(this.$refs.folioNumberInput.valid)
   }
 }
 </script>
+
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 

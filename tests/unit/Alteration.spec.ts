@@ -390,6 +390,6 @@ describe('Alteration component', () => {
     // Validate Effective Date-Time
     expect(store.state.stateModel.effectiveDateTime.isFutureEffective).toBe(true)
     expect(store.state.stateModel.effectiveDateTime.dateTimeString).toBe('2021-03-22T18:00:00.000Z')
-    expect(store.state.stateModel.newAlteration.validFlags.isValidEffectiveDate).toBe(true)
+    expect(store.state.stateModel.newAlteration.flagsReviewCertify.isValidEffectiveDate).toBe(true)
   })
 })

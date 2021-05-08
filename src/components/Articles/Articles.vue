@@ -61,9 +61,7 @@ export default class Articles extends Mixins(CommonMixin) {
   @Getter getPreviousResolutionDates!: string[]
   @Getter getHasRightsOrRestrictions!: boolean
   @Getter getIsResolutionDatesValid!: boolean
-  @Getter getIsCompanyProvisionsValid!: boolean
   @Getter getComponentValidate!: boolean
-  @Getter getValidComponentFlags!: boolean
 
   // Global actions
   @Action setProvisionsRemoved!: ActionBindingIF

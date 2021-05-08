@@ -18,4 +18,6 @@ export interface FilingHeaderIF {
   datNumber?: string
   waiveFees?: boolean
   priority?: boolean
+
+  [propName: string]: any; // excess properties
 }

@@ -129,7 +129,7 @@ describe('Alteration Summary component', () => {
       isFutureEffective: null,
       dateTimeString: ''
     }
-    store.state.stateModel.newAlteration.validFlags.isValidEffectiveDate = false
+    store.state.stateModel.newAlteration.flagsReviewCertify.isValidEffectiveDate = false
     await Vue.nextTick()
 
     // verify section
@@ -148,7 +148,7 @@ describe('Alteration Summary component', () => {
       isFutureEffective: true,
       dateTimeString: '2021-03-05T16:30:00Z'
     }
-    store.state.stateModel.newAlteration.validFlags.isValidEffectiveDate = true
+    store.state.stateModel.newAlteration.flagsReviewCertify.isValidEffectiveDate = true
     await Vue.nextTick()
 
     // verify end blurb div
