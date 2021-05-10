@@ -22,7 +22,6 @@ function createComponent (): Wrapper<DocumentsDelivery> {
 }
 
 describe('Document Delivery component', () => {
-  let wrapperFactory: any
   beforeAll(() => {
     store.state.stateModel.tombstone.keycloakRoles = ['staff']
     store.state.stateModel.tombstone.userInfo = {

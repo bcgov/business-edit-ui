@@ -41,7 +41,7 @@
               <label><strong>User Account</strong></label>
             </v-col>
             <v-col cols="9" class="px-0">
-              {{ getUserEmail }}
+              <span class="info-text">{{ getUserEmail }}</span>
             </v-col>
           </v-row>
         </v-container>

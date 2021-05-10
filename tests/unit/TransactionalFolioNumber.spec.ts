@@ -1,78 +1,156 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
-import { mount, Wrapper } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import { TransactionalFolioNumber } from '@/components/Summary'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 const store = getVuexStore()
-const optionalEmailInput = '#optionalEmail'
 
-/**
- * Creates and mounts a component, so that it can be tested.
- */
-function createComponent (): Wrapper<TransactionalFolioNumber> {
-  return mount(TransactionalFolioNumber, {
-    vuetify,
-    store
-  })
-}
-
-// TODO: implement
-xdescribe('Transactional Folio Number component', () => {
-  let wrapperFactory: any
-  beforeAll(() => {
-    store.state.stateModel.tombstone.keycloakRoles = ['staff']
-    store.state.stateModel.tombstone.userInfo = {
-      email: 'currentuser@mail.com',
-      contacts: [{ email: 'currentuser@mail.com' }]
-    }
-  })
-
-  it('mounts the document delivery component ', () => {
-    const wrapper: Wrapper<TransactionalFolioNumber> = createComponent()
-
-    expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
-    expect(wrapper.find('#document-delivery-section').exists()).toBe(true)
-  })
-
-  it('shows users email', () => {
-    const wrapper: Wrapper<TransactionalFolioNumber> = createComponent()
-
-    expect((wrapper.vm as any).getUserEmail).toBe('currentuser@mail.com')
-  })
-
-  it('validates a valid email', async () => {
-    const wrapper: Wrapper<TransactionalFolioNumber> = createComponent()
+describe('Transactional Folio Number component', () => {
+  it('initializes with default props', () => {
+    const wrapper = mount(TransactionalFolioNumber, {
+      vuetify,
+      store,
+      propsData: { }
+    })
     const vm: any = wrapper.vm
 
-    // Set Input field value
-    const input = wrapper.find(optionalEmailInput)
-    input.setValue('optional@mail.com')
+    // verify template
+    expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
+    expect(wrapper.find('#transactional-folio-number-section').exists()).toBe(true)
+    expect(wrapper.find('h2').text()).toBe('Folio or Reference Number for this Filing')
+    expect(wrapper.find('label').text()).toBe('Folio or ReferenceNumber') // no space between Reference and Number
+    expect(wrapper.find('#folio-number-input').exists()).toBe(true)
+
+    // verify props
+    expect(vm.sectionNumber).toBe('')
+    expect(vm.validate).toBe(false)
+
+    // verify local property and getter
+    expect(vm.folioNumber).toBe('')
+    expect(vm.sectionValid).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('displays section title using Section Number prop', () => {
+    const wrapper = mount(TransactionalFolioNumber, {
+      vuetify,
+      store,
+      propsData: { sectionNumber: '123.' }
+    })
+
+    // verify title
+    expect(wrapper.find('h2').text()).toBe('123. Folio or Reference Number for this Filing')
+
+    wrapper.destroy()
+  })
+
+  it('uses existing Folio Number when there is no Transactional Folio Number', () => {
+    store.state.stateModel.tombstone.folioNumber = 'A123'
+
+    const wrapper = mount(TransactionalFolioNumber, {
+      vuetify,
+      store,
+      propsData: { }
+    })
+    const vm: any = wrapper.vm
+
+    // verify Folio Number
+    expect(vm.folioNumber).toBe('A123')
+
+    // cleanup
+    store.state.stateModel.tombstone.folioNumber = ''
+
+    wrapper.destroy()
+  })
+
+  it('uses Transactional Folio Number if it exists', () => {
+    store.state.stateModel.tombstone.folioNumber = 'A123'
+    store.state.stateModel.tombstone.transactionalFolioNumber = 'B456'
+
+    const wrapper = mount(TransactionalFolioNumber, {
+      vuetify,
+      store,
+      propsData: { }
+    })
+    const vm: any = wrapper.vm
+
+    // verify Folio Number
+    expect(vm.folioNumber).toBe('B456')
+
+    // cleanup
+    store.state.stateModel.tombstone.folioNumber = ''
+    store.state.stateModel.tombstone.transactionalFolioNumber = ''
+
+    wrapper.destroy()
+  })
+
+  it('sets store values and no error styling when valid Transactional Folio Number is entered', async () => {
+    const wrapper = mount(TransactionalFolioNumber, {
+      vuetify,
+      store,
+      propsData: { validate: true }
+    })
+    const vm: any = wrapper.vm
+
+    // verify initial Folio Number and store
+    expect(vm.folioNumber).toBe('')
+    expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('')
+
+    // enter a valid folio number
+    const input = wrapper.find('#folio-number-input')
+    input.setValue('A123')
     input.trigger('change')
     await flushPromises()
 
-    // verify email is valid
-    expect(vm.validateEmailFormat).toBeTruthy()
+    // verify updated Folio Number and store
+    expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('A123')
+    expect(store.state.stateModel.newAlteration.flagsReviewCertify.isValidTransactionalFolioNumber).toBe(true)
+
+    // verify no error styling
+    expect(wrapper.find('.error-text').exists()).toBe(false)
+    expect(wrapper.find('label').classes('error-text')).toBe(false)
+
+    // cleanup
+    store.state.stateModel.tombstone.transactionalFolioNumber = ''
+
+    wrapper.destroy()
   })
 
-  it('validates an invalid email', async () => {
-    const wrapper: Wrapper<TransactionalFolioNumber> = createComponent()
+  it('sets store values and error styling when invalid Transactional Folio Number is entered', async () => {
+    const wrapper = mount(TransactionalFolioNumber, {
+      vuetify,
+      store,
+      propsData: { validate: true }
+    })
     const vm: any = wrapper.vm
 
-    // Set Input field values
-    vm.$el.querySelector(optionalEmailInput).textContent = '1212'
-    wrapper.find('.text-input-field').trigger('focus')
-    wrapper.find('.text-input-field').find('input').setValue('1212')
-    wrapper.find('.text-input-field').trigger('blur')
-    await Vue.nextTick()
+    // verify initial Folio Number and store
+    expect(vm.folioNumber).toBe('')
+    expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('')
 
-    expect(wrapper.find(optionalEmailInput).text()).toEqual('1212')
+    // enter a folio number that is too long
+    const input = wrapper.find('#folio-number-input')
+    input.setValue('1234567890123456789012345678901')
+    input.trigger('change')
+    await flushPromises()
 
-    // verify there is an error. Vue doesn't like the blur event with testing
-    expect(wrapper.findAll('.v-messages__message').length).toBe(1)
+    // verify updated Folio Number and store
+    expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('1234567890123456789012345678901')
+    expect(store.state.stateModel.newAlteration.flagsReviewCertify.isValidTransactionalFolioNumber).toBe(false)
+
+    // verify error styling
+    expect(wrapper.find('.error-text').exists()).toBe(true)
+    expect(wrapper.find('label').classes('error-text')).toBe(true)
+
+    // cleanup
+    store.state.stateModel.tombstone.transactionalFolioNumber = ''
+
+    wrapper.destroy()
   })
 })
