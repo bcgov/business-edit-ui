@@ -90,7 +90,7 @@ describe('Transactional Folio Number component', () => {
     wrapper.destroy()
   })
 
-  it('sets store values and styling when valid Transactional Folio Number is entered', async () => {
+  it('sets store values and no error styling when valid Transactional Folio Number is entered', async () => {
     const wrapper = mount(TransactionalFolioNumber, {
       vuetify,
       store,
@@ -122,7 +122,7 @@ describe('Transactional Folio Number component', () => {
     wrapper.destroy()
   })
 
-  it('sets store values and styling when invalid Transactional Folio Number is entered', async () => {
+  it('sets store values and error styling when invalid Transactional Folio Number is entered', async () => {
     const wrapper = mount(TransactionalFolioNumber, {
       vuetify,
       store,
