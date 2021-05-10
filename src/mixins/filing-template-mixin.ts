@@ -393,11 +393,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setBusinessSnapshot(businessSnapshot)
 
     // Restore current entity type
-    // TODO: should we omit this as it was set from business snapshot ???
     this.setEntityType(filing.alteration.business.legalType)
 
     // Restore business information
-    // TODO: should we omit this as it was set from business snapshot ???
     this.setBusinessInformation({
       ...filing.business,
       ...filing.alteration.business
@@ -468,7 +466,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       certifiedBy: filing.header.certifiedBy
     })
 
-    // NB: do not restore Folio Number - it was already set from business snapshot
+    // Restore Folio Number
+    this.setFolioNumber(businessSnapshot.authInfo.folioNumber || '')
 
     // If Transactional Folio Number was saved then restore it.
     if (filing.header.isTransactionalFolioNumber) {
