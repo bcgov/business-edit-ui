@@ -35,6 +35,7 @@ export default class FolioInformation extends Mixins(AuthApiMixin, CommonMixin) 
   @Action setFolioNumber!: ActionBindingIF
   @Action setEditingFolioNumber!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
+  @Action setTransactionalFolioNumber!: ActionBindingIF
 
   /** Whether to show invalid section styling. */
   @Prop({ default: false })
@@ -59,6 +60,7 @@ export default class FolioInformation extends Mixins(AuthApiMixin, CommonMixin) 
     try {
       if (this.isAlterationFiling) await this.updateFolioNumber(val)
       this.setFolioNumber(val)
+      this.setTransactionalFolioNumber(val)
     } catch (error) {
       console.log('Update folio number error =', error) // eslint-disable-line no-console
       this.$root.$emit('update-error-event', 'Failed to update Folio Number')

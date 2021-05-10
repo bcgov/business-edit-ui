@@ -56,7 +56,7 @@ export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
 
   // Global actions
-  @Action setTransactionalFolioNumber!: ActionBindingIF // TODO
+  @Action setTransactionalFolioNumber!: ActionBindingIF
   @Action setTransactionalFolioNumberValidity!: ActionBindingIF
 
   /** Prop to provide section number. */

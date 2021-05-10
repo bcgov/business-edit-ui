@@ -86,6 +86,7 @@ describe('Folio Information component', () => {
 
     expect(mockUpdateFolioNumber).not.toHaveBeenCalled()
     expect(store.state.stateModel.tombstone.folioNumber).toBe('A123')
+    expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('A123')
 
     wrapper.destroy()
   })
@@ -108,6 +109,7 @@ describe('Folio Information component', () => {
 
     expect(mockUpdateFolioNumber).toHaveBeenCalledWith('A123')
     expect(store.state.stateModel.tombstone.folioNumber).toBe('A123')
+    expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('A123')
 
     wrapper.destroy()
   })
