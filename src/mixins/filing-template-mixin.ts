@@ -64,6 +64,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getProvisionsRemoved!: boolean
   @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
+  @Getter isRoleStaff!: boolean
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -126,7 +127,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         name: FilingTypes.CORRECTION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // original folio number, unless overridden by staff payment below
+        folioNumber: this.getFolioNumber, // original folio number, unless overridden by staff payment below
+        isStaff: this.isRoleStaff
       },
       business: {
         legalType: this.getEntityType,
@@ -209,7 +211,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber
+        folioNumber: this.getFolioNumber,
+        isStaff: this.isRoleStaff
       },
       business: {
         foundingDate: this.getBusinessSnapshot.businessInfo.foundingDate,
