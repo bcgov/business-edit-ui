@@ -79,7 +79,7 @@
           <div class="pb-6" :class="{'invalid-section': invalidCourtOrder}">
             <CourtOrderPoa
               id="court-order"
-              :validate="getAppValidate"
+              :autoValidation="getAppValidate"
               :draftCourtOrderNumber="getFileNumber"
               :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
               :invalidSection="invalidCourtOrder"
