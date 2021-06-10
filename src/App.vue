@@ -67,7 +67,7 @@
     </transition>
 
     <SbcHeader />
-
+    <PaySystemAlert />
     <div class="app-body">
       <main v-if="!isErrorDialog">
         <EntityInfo />
@@ -135,6 +135,7 @@ import { PAYMENT_REQUIRED } from 'http-status-codes'
 import { getKeycloakRoles, updateLdUser } from '@/utils'
 
 // Components
+import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
@@ -154,6 +155,7 @@ import { ComponentsCompanyInfo, ComponentsReviewCertify, SummaryActions, RouteNa
     Actions,
     EntityInfo,
     FeeSummary,
+    PaySystemAlert,
     SbcHeader,
     SbcFooter,
     SbcFeeSummary,
