@@ -32,7 +32,7 @@ export default class DateMixin extends Mixins(CommonMixin) {
       // eslint-disable-next-line no-console
       console.warn('Unable to get server date - using browser date instead')
       // fall back to local date
-      // NB: filing  may contain invalid dates/times
+      // NB: filing may contain invalid dates/times
       return new Date()
     }
 
