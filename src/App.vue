@@ -494,7 +494,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     this.fileAndPayInvalidNameRequestDialog = false
     this.setHaveUnsavedChanges(false)
     // FUTURE: Manage Businesses URL should come from config
-    const manageBusinessUrl = `${sessionStorage.getItem('AUTH_URL')}business`
+    const manageBusinessUrl = `${sessionStorage.getItem('AUTH_WEB_URL')}business`
     window.location.assign(manageBusinessUrl)
   }
 
@@ -671,7 +671,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
         // if payment action is required, redirect to Pay URL
         if (isPaymentActionRequired) {
-          const authUrl = sessionStorage.getItem('AUTH_URL')
+          const authUrl = sessionStorage.getItem('AUTH_WEB_URL')
           const returnUrl = encodeURIComponent(dashboardUrl + this.getBusinessId)
           const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
           // assume Pay URL is always reachable

@@ -28,7 +28,7 @@ describe('Alteration component', () => {
 
   // Define Session
   sessionStorage.setItem('PAY_API_URL', `myhost/basePath/pay-api/`)
-  sessionStorage.setItem('AUTH_URL', `myhost/basePath/auth/`)
+  sessionStorage.setItem('AUTH_WEB_URL', `myhost/basePath/auth/`)
   sessionStorage.setItem('DASHBOARD_URL', `myhost/business/`)
   sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3' +
     'FQbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiIzZDQ3YjgwYy01MTAzLTRjMTYtOGNhZC0yMjU4NDMwZGYwZTciLCJle' +
