@@ -251,7 +251,7 @@ const nrData = {
 describe.skip('Numbered company setup', () => {
   let wrapper: any
   const { assign } = window.location
-  sessionStorage.setItem('AUTH_URL', `myhost/basePath/auth/`)
+  sessionStorage.setItem('AUTH_WEB_URL', `myhost/basePath/auth/`)
   sessionStorage.setItem('DASHBOARD_URL', `myhost/business/`)
 
   beforeEach(async () => {
@@ -368,7 +368,7 @@ describe.skip('Numbered company setup', () => {
 describe.skip('App component', () => {
   let wrapper: any
   const { assign } = window.location
-  sessionStorage.setItem('AUTH_URL', `myhost/basePath/auth/`)
+  sessionStorage.setItem('AUTH_WEB_URL', `myhost/basePath/auth/`)
   sessionStorage.setItem('DASHBOARD_URL', `myhost/business/`)
 
   beforeEach(async () => {

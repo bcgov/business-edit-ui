@@ -184,7 +184,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
 
       // if payment action is required, redirect to Pay URL
       if (isPaymentActionRequired) {
-        const authUrl = sessionStorage.getItem('AUTH_URL')
+        const authUrl = sessionStorage.getItem('AUTH_WEB_URL')
         const returnUrl = encodeURIComponent(dashboardUrl + this.getBusinessId)
         const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
         // assume Pay URL is always reachable

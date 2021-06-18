@@ -74,7 +74,7 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
       {
         text: this.isRoleStaff ? 'Staff Dashboard' : 'Manage Businesses Dashboard',
         disabled: false,
-        href: `${sessionStorage.getItem('AUTH_URL')}business`
+        href: `${sessionStorage.getItem('AUTH_WEB_URL')}business`
       },
       {
         text: this.getCurrentBusinessName || 'Numbered Benefit Company',
