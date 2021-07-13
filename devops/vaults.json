@@ -22,7 +22,7 @@
     {
         "vault": "launchdarkly",
         "application": [
-            "business-filings"
+            "business-edit"
         ]
     },
     {
