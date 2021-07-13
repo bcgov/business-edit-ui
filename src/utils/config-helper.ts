@@ -73,7 +73,7 @@ export async function fetchConfig (): Promise<any> {
     console.info('Set Address Complete Key.')
   }
 
-  const ldClientId: string = response.data['BUSINESS_FILING_LD_CLIENT_ID']
+  const ldClientId: string = response.data['BUSINESS_EDIT_LD_CLIENT_ID']
   if (ldClientId) {
     (<any>window).ldClientId = ldClientId
     console.info('Set Launch Darkly Client ID.')
