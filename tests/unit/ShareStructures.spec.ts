@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
+import flushPromises from 'flush-promises'
 
 // Utils
 import { createLocalVue, mount } from '@vue/test-utils'
@@ -60,7 +61,7 @@ describe('Share Structures component', () => {
       vuetify,
       store,
       propsData: {
-        isEditMode: false
+        isEditMode: true
       }
     })
   })
@@ -95,5 +96,32 @@ describe('Share Structures component', () => {
 
     // Verify valid share section
     expect(wrapper.vm.invalidShareSection).toBe(false)
+  })
+
+  it('stores shareClasses types as number', async () => {
+    store.state.stateModel.shareStructureStep.shareClasses = shareClasses
+    await Vue.nextTick()
+
+    // Click on the button to add class
+    wrapper.find('#btn-add-person').trigger('click')
+    await Vue.nextTick()
+    await flushPromises()
+
+    const textNameInput = wrapper.find('#txt-name')
+    const maxNumberOfSharesInput = wrapper.find('#txt-max-shares')
+    const parValueInput = wrapper.find('#class-par-value')
+
+    // Add new class
+    textNameInput.setValue('Test new class')
+    maxNumberOfSharesInput.setValue('1')
+    parValueInput.setValue('2')
+    wrapper.find('#done-btn').trigger('click')
+
+    await Vue.nextTick()
+    await flushPromises()
+
+    // maxNumberOfShares and parValue should be number
+    expect(store.state.stateModel.shareStructureStep.shareClasses[2].maxNumberOfShares).toBe(1)
+    expect(store.state.stateModel.shareStructureStep.shareClasses[2].parValue).toBe(2)
   })
 })

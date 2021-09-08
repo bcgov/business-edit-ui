@@ -26,7 +26,7 @@
     "@bcrs-shared-components/fee-summary": "1.1.1",
     "@bcrs-shared-components/folio-number": "1.0.0",
     "@bcrs-shared-components/interfaces": "1.0.19",
-    "@bcrs-shared-components/share-structure": "1.0.19",
+    "@bcrs-shared-components/share-structure": "1.0.20",
     "@bcrs-shared-components/staff-payment": "1.0.22",
     "@mdi/font": "^5.5.55",
     "@sentry/browser": "^5.23.0",
