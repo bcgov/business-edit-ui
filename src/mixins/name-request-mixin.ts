@@ -133,6 +133,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
     if (nr.names?.length > 0) {
       return nr.names.find(name => [NameRequestStates.APPROVED, NameRequestStates.CONDITION].includes(name.state)).name
     }
+    return '' // should never happen
   }
 
   /** Map the request type to a display description
