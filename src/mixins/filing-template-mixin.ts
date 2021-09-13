@@ -393,7 +393,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setBusinessSnapshot(businessSnapshot)
 
     // Restore current entity type
-    this.setEntityType(filing.alteration.business.legalType)
+    this.setEntityType(filing.alteration.business?.legalType || businessSnapshot.businessInfo.legalType)
 
     // Restore business information
     this.setBusinessInformation({
@@ -402,7 +402,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     })
 
     // Restore name request
-    this.setNameRequest(filing.alteration.nameRequest)
+    this.setNameRequest(filing.alteration.nameRequest || { legalName: businessSnapshot.businessInfo.legalName })
 
     // Restore name translations
     this.setNameTranslations(
@@ -449,15 +449,19 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     )
 
     // Restore share classes and resolution dates
-    const shareStructure = filing.alteration.shareStructure
+    const shareStructure = filing.alteration.shareStructure || businessSnapshot.shareStructure
     this.setShareClasses(shareStructure.shareClasses)
-    this.setResolutionDates(shareStructure.resolutionDates)
+    this.setResolutionDates(shareStructure.resolutionDates || [])
     this.setOriginalResolutionDates(businessSnapshot.resolutions)
 
     // Restore business contact
+    const contactPoint = filing.alteration.contactPoint
+      ? filing.alteration.contactPoint
+      : businessSnapshot.authInfo.contacts[0]
+
     this.setBusinessContact({
-      ...filing.alteration.contactPoint,
-      confirmEmail: filing.alteration.contactPoint.email
+      ...contactPoint,
+      confirmEmail: filing.alteration.contactPoint?.email || businessSnapshot.authInfo.contacts[0].email
     })
 
     // Restore certify state
