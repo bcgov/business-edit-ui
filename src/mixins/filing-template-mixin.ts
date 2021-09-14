@@ -42,6 +42,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getCorrectedFilingId!: number
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getDocumentOptionalEmail: string
+  @Getter hasBusinessNameChanged!: boolean
+  @Getter hasBusinessTypeChanged!: boolean
+  @Getter hasNameTranslationChanged!: boolean
+  @Getter hasShareStructureChanged!: boolean
+  @Getter hasNewResolutionDatesChanged!: boolean
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getFolioNumber!: string
@@ -58,7 +63,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getBusinessSnapshot!: BusinessSnapshotIF
   @Getter getNewResolutionDates!: string[]
   @Getter getSnapshotShareStructure!: ShareStructureIF
-  @Getter hasBusinessNameChanged!: boolean
   @Getter hasNewNr!: boolean
   @Getter getNewAlteration!: any // FUTURE AlterationFilingIF
   @Getter getProvisionsRemoved!: boolean
@@ -218,26 +222,38 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         legalName: this.getBusinessSnapshot.businessInfo.legalName
       },
       alteration: {
-        provisionsRemoved: this.getProvisionsRemoved,
         business: {
           identifier: this.getBusinessId,
           legalType: this.getEntityType
         },
-        nameRequest: {
-          legalType: this.getNameRequest.legalType,
-          legalName: this.getNameRequest.legalName,
-          nrNumber: this.getNameRequest.nrNumber
-        },
-        nameTranslations: nameTranslations,
-        shareStructure: {
-          resolutionDates: this.getNewResolutionDates,
-          shareClasses
-        },
+        provisionsRemoved: this.getProvisionsRemoved,
         contactPoint: {
           email: this.getBusinessContact.email,
           phone: this.getBusinessContact.phone,
           extension: this.getBusinessContact.extension
         }
+      }
+    }
+
+    // Apply business name and/or type changes to filing
+    if (this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
+      filing.alteration.nameRequest = {
+        legalType: this.getNameRequest.legalType,
+        legalName: this.getNameRequest.legalName,
+        nrNumber: this.getNameRequest.nrNumber
+      }
+    }
+
+    // Apply name translation changes to filing
+    if (this.hasNameTranslationChanged) {
+      filing.alteration.nameTranslations = nameTranslations
+    }
+
+    // Apply share structure changes to filing
+    if (this.hasShareStructureChanged) {
+      filing.alteration.shareStructure = {
+        resolutionDates: this.getNewResolutionDates,
+        shareClasses
       }
     }
 
@@ -393,7 +409,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setBusinessSnapshot(businessSnapshot)
 
     // Restore current entity type
-    this.setEntityType(filing.alteration.business.legalType)
+    this.setEntityType(filing.alteration.business?.legalType || businessSnapshot.businessInfo.legalType)
 
     // Restore business information
     this.setBusinessInformation({
@@ -402,7 +418,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     })
 
     // Restore name request
-    this.setNameRequest(filing.alteration.nameRequest)
+    this.setNameRequest(filing.alteration.nameRequest || { legalName: businessSnapshot.businessInfo.legalName })
 
     // Restore name translations
     this.setNameTranslations(
@@ -449,15 +465,19 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     )
 
     // Restore share classes and resolution dates
-    const shareStructure = filing.alteration.shareStructure
+    const shareStructure = filing.alteration.shareStructure || businessSnapshot.shareStructure
     this.setShareClasses(shareStructure.shareClasses)
-    this.setResolutionDates(shareStructure.resolutionDates)
+    this.setResolutionDates(shareStructure.resolutionDates || [])
     this.setOriginalResolutionDates(businessSnapshot.resolutions)
 
     // Restore business contact
+    const contactPoint = filing.alteration.contactPoint
+      ? filing.alteration.contactPoint
+      : businessSnapshot.authInfo.contacts[0]
+
     this.setBusinessContact({
-      ...filing.alteration.contactPoint,
-      confirmEmail: filing.alteration.contactPoint.email
+      ...contactPoint,
+      confirmEmail: filing.alteration.contactPoint?.email || businessSnapshot.authInfo.contacts[0].email
     })
 
     // Restore certify state
