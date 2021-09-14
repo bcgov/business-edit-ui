@@ -106,7 +106,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
     }
 
     // If the NR is expired, it is not consumable.
-    // This value is NOT always present.
+    // The expiration date value is NOT always present.
     if (nr.expirationDate) {
       const expireDays = this.daysFromToday(nr.expirationDate)
       if (isNaN(expireDays) || expireDays < 1) {
