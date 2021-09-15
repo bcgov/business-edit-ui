@@ -183,6 +183,7 @@ describe('CorrectNameRequest', () => {
             }],
             nrNum: 'NR 1234567',
             requestTypeCd: 'BC',
+            request_action_cd: 'CNV',
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@email.com'
