@@ -86,13 +86,13 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    * @param nr the name request response payload
    * */
   isNrValid (nr: any): boolean {
-    // TODO: implement check for supported entity types when namex supports BENEFIT_COMPANY
     return Boolean(nr &&
       nr.state &&
-      nr.expirationDate &&
       nr.names?.length > 0 &&
       nr.nrNum &&
-      nr.requestTypeCd)
+      nr.requestTypeCd &&
+      [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION].includes(nr.request_action_cd)
+    )
   }
 
   /**
@@ -145,6 +145,8 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
         return 'New Business'
       case NameRequestTypes.CHANGE_OF_NAME:
         return 'Change of Name'
+      case NameRequestTypes.CONVERSION:
+        return 'Conversion'
     }
   }
 }
