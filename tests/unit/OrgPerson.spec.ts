@@ -37,8 +37,8 @@ const validPersonData = {
     firstName: 'Adam',
     lastName: 'Smith',
     middleName: 'D',
-    orgName: '',
-    partyType: 'Person',
+    organizationName: '',
+    partyType: 'person',
     email: 'completing-party@example.com'
   },
   roles: [
@@ -69,8 +69,8 @@ const validIncorporator = {
     firstName: 'Adam',
     lastName: 'Smith',
     middleName: 'D',
-    orgName: '',
-    partyType: 'Person'
+    organizationName: '',
+    partyType: 'person'
   },
   roles: [
     { roleType: 'Incorporator', appointmentDate: '2020-03-30' }
@@ -99,8 +99,8 @@ const validOrgData = {
     firstName: '',
     lastName: '',
     middleName: '',
-    orgName: 'Test Org',
-    partyType: 'Org'
+    organizationName: 'Test Org',
+    partyType: 'organization'
   },
   roles: [
     { roleType: 'Incorporator', appointmentDate: '2020-03-30' }
@@ -121,8 +121,8 @@ const emptyPerson = {
     firstName: '',
     lastName: '',
     middleName: '',
-    orgName: '',
-    partyType: 'Person',
+    organizationName: '',
+    partyType: 'person',
     email: null as string
   },
   roles: [] as [],
@@ -242,7 +242,7 @@ describe('Org/Person component', () => {
 
     // verify org's name
     expect((wrapper.find(orgNameSelector).element as HTMLInputElement).value)
-      .toEqual(validOrgData['officer']['orgName'])
+      .toEqual(validOrgData['officer']['organizationName'])
 
     // verify role checkboxes
     expect(wrapper.find(completingPartyChkBoxSelector).exists()).toBe(false)
@@ -320,7 +320,7 @@ describe('Org/Person component', () => {
     button.trigger('click')
     await Vue.nextTick()
 
-    expect(getLastEvent(wrapper, addEditEvent).officer.orgName).toBe('Different Test Org')
+    expect(getLastEvent(wrapper, addEditEvent).officer.organizationName).toBe('Different Test Org')
 
     wrapper.destroy()
   })

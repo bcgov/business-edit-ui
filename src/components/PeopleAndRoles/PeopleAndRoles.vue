@@ -53,7 +53,7 @@
           color="primary"
           class="ml-2"
           :disabled="renderOrgPersonForm"
-          @click="initAdd([{ roleType: RoleTypes.INCORPORATOR }], IncorporatorTypes.CORPORATION)"
+          @click="initAdd([{ roleType: RoleTypes.INCORPORATOR }], IncorporatorTypes.ORGANIZATION)"
         >
           <v-icon>mdi-domain-plus</v-icon>
           <span>Add a Corporation or Firm</span>
@@ -136,7 +136,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
       firstName: '',
       lastName: '',
       middleName: '',
-      orgName: '',
+      organizationName: '',
       partyType: null,
       email: null
     },

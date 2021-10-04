@@ -19,10 +19,10 @@ const router = mockRouter.mock()
 const originalPersonCp = {
   officer: {
     id: '1',
-    partyType: 'Person',
+    partyType: 'person',
     firstName: 'Original',
     lastName: 'Person',
-    orgName: ''
+    organizationName: ''
   },
   roles: [
     { roleType: 'Completing Party' },
@@ -36,10 +36,10 @@ const originalPersonCp = {
 const originalPersonNotCp = {
   officer: {
     id: '1',
-    partyType: 'Person',
+    partyType: 'person',
     firstName: 'Original',
     lastName: 'Person',
-    orgName: ''
+    organizationName: ''
   },
   roles: [
     { roleType: 'Incorporator' },
@@ -53,10 +53,10 @@ const originalPersonNotCp = {
 const originalOrg = {
   officer: {
     id: '2',
-    partyType: 'Org',
+    partyType: 'organization',
     firstName: '',
     lastName: '',
-    orgName: 'Original Org Ltd'
+    organizationName: 'Original Org Ltd'
   },
   roles: [
     { roleType: 'Incorporator' }
@@ -68,10 +68,10 @@ const originalOrg = {
 const newPersonCp = {
   officer: {
     id: '3',
-    partyType: 'Person',
+    partyType: 'person',
     firstName: 'New',
     lastName: 'Person',
-    orgName: ''
+    organizationName: ''
   },
   roles: [
     { roleType: 'Completing Party' }

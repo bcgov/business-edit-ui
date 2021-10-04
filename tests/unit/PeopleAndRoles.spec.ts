@@ -44,8 +44,8 @@ function getPersonList (roles: Array<any> = []): Array<any> {
         firstName: 'Adam',
         lastName: 'Smith',
         middleName: 'D',
-        orgName: '',
-        partyType: 'Person'
+        organizationName: '',
+        partyType: 'person'
       },
       roles,
       mailingAddress: {

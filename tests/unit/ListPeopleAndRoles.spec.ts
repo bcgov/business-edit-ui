@@ -24,8 +24,8 @@ const peopleAndRoles = [
       firstName: 'Romeo',
       lastName: 'Whitehead',
       middleName: 'D',
-      orgName: '',
-      partyType: 'Person',
+      organizationName: '',
+      partyType: 'person',
       email: 'completing-party@example.com'
     },
     roles: [
@@ -57,8 +57,8 @@ const peopleAndRoles = [
       firstName: '',
       lastName: '',
       middleName: '',
-      orgName: 'Random Food Distributors',
-      partyType: 'Org'
+      organizationName: 'Random Food Distributors',
+      partyType: 'organization'
     },
     roles: [
       { roleType: 'Incorporator', appointmentDate: '2020-03-30' }
@@ -79,8 +79,8 @@ const peopleAndRoles = [
       firstName: 'Lawrence',
       lastName: 'Kavanagh',
       middleName: '',
-      orgName: '',
-      partyType: 'Person'
+      organizationName: '',
+      partyType: 'person'
     },
     // for testing "missing role":
     roles: [],
@@ -109,8 +109,8 @@ const peopleAndRoles = [
       firstName: 'Christy',
       lastName: 'Sawyer',
       middleName: '',
-      orgName: '',
-      partyType: 'Person'
+      organizationName: '',
+      partyType: 'person'
     },
     roles: [
       { roleType: 'Director', appointmentDate: '2020-03-30' }
@@ -142,8 +142,8 @@ const emptyPerson = {
     firstName: '',
     lastName: '',
     middleName: '',
-    orgName: '',
-    partyType: 'Person',
+    organizationName: '',
+    partyType: 'person',
     email: null as string
   },
   roles: [] as [],
@@ -165,8 +165,8 @@ const emptyOrg = {
     firstName: '',
     lastName: '',
     middleName: '',
-    orgName: '',
-    partyType: 'Org',
+    organizationName: '',
+    partyType: 'organization',
     email: null as string
   },
   roles: [] as [],
