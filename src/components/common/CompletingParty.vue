@@ -75,8 +75,8 @@ export default class CompletingParty extends Mixins(CommonMixin) {
    * @returns The formatted org/person name.
    */
   private formatName (filing: any): string {
-    if (filing?.officer?.orgName) {
-      return filing.officer.orgName
+    if (filing?.officer?.organizationName) {
+      return filing.officer.organizationName
     }
     if (filing?.officer) {
       return `${filing.officer.firstName} ${filing.officer.middleName || ''} ${filing.officer.lastName}`

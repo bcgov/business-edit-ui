@@ -67,7 +67,7 @@
                     class="item"
                     label="Full Legal Corporation or Firm Name"
                     id="firm-name"
-                    v-model="orgPerson.officer.orgName"
+                    v-model="orgPerson.officer.organizationName"
                     :rules="orgNameRules"
                   />
                 </div>
@@ -302,7 +302,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 
   /** True if current data object is an organization (corporation/firm). */
   private get isOrg (): boolean {
-    return (this.orgPerson?.officer.partyType === IncorporatorTypes.CORPORATION)
+    return (this.orgPerson?.officer.partyType === IncorporatorTypes.ORGANIZATION)
   }
 
   /**

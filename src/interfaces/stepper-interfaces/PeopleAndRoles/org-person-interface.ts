@@ -8,7 +8,7 @@ export interface OrgPersonIF {
     firstName: string
     middleName?: string
     lastName: string
-    orgName: string
+    organizationName: string
     email?: string
   }
   roles: RoleIF[]

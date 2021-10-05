@@ -234,8 +234,8 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
    * @returns the formatted name
    */
   private formatName (orgPerson: OrgPersonIF): string {
-    if (orgPerson?.officer?.orgName) {
-      return orgPerson.officer.orgName
+    if (orgPerson?.officer?.organizationName) {
+      return orgPerson.officer.organizationName
     }
     if (orgPerson?.officer) {
       return this.formatFullName(orgPerson.officer)
