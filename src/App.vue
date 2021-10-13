@@ -216,6 +216,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   @Action setUserInfo: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
   @Action setFilingType!: ActionBindingIF
+  @Action setFilingId!: ActionBindingIF
 
   // Local properties
   private accountAuthorizationDialog = false
@@ -339,8 +340,9 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
           // this.setHaveUnsavedChanges(false)
           this.paymentErrorDialog = true
         } else {
-          // changes are not saved and staff user keeps in the same page
-          this.setHaveUnsavedChanges(false)
+          if (error.response.data?.filing?.header?.filingId) {
+            this.setFilingId(error.response.data?.filing?.header?.filingId)
+          }
           this.staffPaymentErrorDialog = true
         }
       } else {
