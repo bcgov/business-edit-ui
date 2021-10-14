@@ -31,6 +31,15 @@
       @exit="goToDashboard()"
     />
 
+    <StaffPaymentErrorDialog
+      attach="#app"
+      filingName="Application"
+      :dialog="staffPaymentErrorDialog"
+      :errors="saveErrors"
+      :warnings="saveWarnings"
+      @close="staffPaymentErrorDialog = false"
+    />
+
     <!-- FUTURE: pass actual filing name -->
     <SaveErrorDialog
       attach="#app"
@@ -190,6 +199,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   @Getter hasBusinessTypeChanged!: boolean
   @Getter getComponentValidate!: boolean
   @Getter isConflictingLegalType!: boolean
+  @Getter isRoleStaff!: boolean
 
   // Global actions
   @Action setAccountInformation!: ActionBindingIF
@@ -206,11 +216,13 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   @Action setUserInfo: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
   @Action setFilingType!: ActionBindingIF
+  @Action setFilingId!: ActionBindingIF
 
   // Local properties
   private accountAuthorizationDialog = false
   private fetchErrorDialog = false
   private paymentErrorDialog = false
+  private staffPaymentErrorDialog = false
   private saveErrorDialog = false
   private nameRequestErrorDialog = false
   private nameRequestErrorType = ''
@@ -245,6 +257,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   private get isErrorDialog (): boolean {
     // NB: ignore nameRequestErrorDialog (to leave underlying components rendered)
     // NB: ignore confirmDeleteAllDialog (to leave underlying components rendered)
+    // NB: ignore staffPaymentErrorDialog (to leave underlying components rendered)
     return (
       this.accountAuthorizationDialog ||
       this.fetchErrorDialog ||
@@ -322,9 +335,16 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       this.saveWarnings = error?.response?.data?.warnings || []
 
       if (error?.response?.status === PAYMENT_REQUIRED) {
-        // changes were saved if a 402 is received, so clear flag
-        this.setHaveUnsavedChanges(false)
-        this.paymentErrorDialog = true
+        if (!this.isRoleStaff) {
+          // changes were saved if a 402 is received, so clear flag
+          // this.setHaveUnsavedChanges(false)
+          this.paymentErrorDialog = true
+        } else {
+          if (error.response.data?.filing?.header?.filingId) {
+            this.setFilingId(error.response.data?.filing?.header?.filingId)
+          }
+          this.staffPaymentErrorDialog = true
+        }
       } else {
         console.log('Save error =', error) // eslint-disable-line no-console
         this.saveErrorDialog = true
