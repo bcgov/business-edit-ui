@@ -1,15 +1,14 @@
 // Libraries
-import { axios } from '@/utils'
 import { Component, Mixins } from 'vue-property-decorator'
 import { CorpTypeCd, NameRequestStates, NameRequestTypes } from '@/enums'
-import { DateMixin } from '@/mixins'
+import { DateMixin, LegalApiMixin } from '@/mixins'
 import { NrResponseIF } from '@/interfaces'
 
 /**
  * Mixin for processing Name Request objects.
  */
 @Component({})
-export default class NameRequestMixin extends Mixins(DateMixin) {
+export default class NameRequestMixin extends Mixins(DateMixin, LegalApiMixin) {
   /**
    * Fetches an NR and validates it against the applicant's information.
    * Throws an error if there is a problem.
@@ -63,32 +62,14 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Fetches name request data.
-   * @param nrNumber the name request number (eg, NR 1234567)
-   * @returns a promise to return the NR data, or null if not found
-   */
-  private async fetchNameRequest (nrNumber: string): Promise<any> {
-    if (!nrNumber) throw new Error('Invalid parameter \'nrNumber\'')
-
-    const url = `nameRequests/${nrNumber}`
-    return axios.get(url)
-      .then(response => {
-        const data = response?.data
-        if (!data) {
-          throw new Error('Invalid API response')
-        }
-        return data
-      })
-  }
-
-  /**
    * Returns True if the Name Request data is valid.
    * @param nr the name request response payload
    * */
   isNrValid (nr: any): boolean {
     return Boolean(nr &&
       nr.state &&
-      nr.names?.length > 0 &&
+      nr.expirationDate &&
+      !!this.getNrApprovedName(nr) &&
       nr.nrNum &&
       nr.requestTypeCd &&
       [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION].includes(nr.request_action_cd)
@@ -126,17 +107,18 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Returns the Name Request's approved name.
+   * Returns the Name Request's approved name (or undefined or null if not found).
    * @param nr the name request response payload
    */
   getNrApprovedName (nr: any): string {
-    if (nr.names?.length > 0) {
-      return nr.names.find(name => [NameRequestStates.APPROVED, NameRequestStates.CONDITION].includes(name.state)).name
+    if (nr?.names?.length > 0) {
+      return nr.names
+        .find(name => [NameRequestStates.APPROVED, NameRequestStates.CONDITION].includes(name.state))?.name
     }
-    return '' // should never happen
+    return null // should never happen
   }
 
-  /** Map the request type to a display description
+  /** Map the request type to a display description.
    * @param nrRequestType The name request type code
    */
   getNrRequestDesc (nrRequestType: NameRequestTypes): string {

@@ -12,11 +12,15 @@
 
         <p v-else-if="type === NameRequestStates.CONSUMED">The specified name request has already been consumed.</p>
 
-        <template v-else-if="type === NameRequestStates.NOT_FOUND || type === NameRequestStates.INVALID ||
-                  type === NameRequestStates.INCORRECT_EMAIL || type === NameRequestStates.INCORRECT_PHONE">
-          <p>We could not find a match for the information you have entered.
-          Please verify the NR Number and the phone number or email address and try again.</p>
-        </template>
+        <p v-else-if="type === NameRequestStates.NOT_FOUND ||
+                      type === NameRequestStates.INCORRECT_EMAIL ||
+                      type === NameRequestStates.INCORRECT_PHONE"
+        >
+          We could not find a match for the information you have entered.
+          Please verify the NR Number and the phone number or email address and try again.
+        </p>
+
+        <p v-else-if="type === NameRequestStates.INVALID">The specified name request is not valid.</p>
 
         <p v-else>An unexpected error has occurred.</p>
       </v-card-text>

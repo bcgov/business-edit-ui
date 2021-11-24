@@ -1,7 +1,7 @@
 <template>
   <v-card flat id="articles">
     <div class="define-article-header">
-      <v-icon color="app-dk-blue">mdi-handshake</v-icon>
+      <v-icon color="appDkBlue">mdi-handshake</v-icon>
       <label class="define-article-title">Articles</label>
     </div>
 

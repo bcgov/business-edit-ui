@@ -6,7 +6,7 @@
     />
 
     <div class="define-company-header">
-      <v-icon color="app-dk-blue">mdi-domain</v-icon>
+      <v-icon color="appDkBlue">mdi-domain</v-icon>
       <label class="define-company-title">Your Company</label>
     </div>
 
@@ -381,7 +381,8 @@ export default class YourCompany extends Mixins(
 
   /** Name Request expiry */
   private get expiryDate (): string {
-    return this.formatDateString(this.getNameRequest.expiry)
+    const date = new Date(this.getNameRequest.expiry)
+    return this.dateToPacificDateTime(date)
   }
 
   /** Name Request phone number */

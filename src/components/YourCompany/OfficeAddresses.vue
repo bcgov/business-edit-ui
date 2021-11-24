@@ -12,7 +12,7 @@
           <label class="d-flex flex-wrap">
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
             <v-chip v-if="isCorrectionFiling && mailingChanged"
-              x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
+              x-small label color="primary" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
             v-if="!isEmpty(mailingAddress)"
@@ -26,7 +26,7 @@
           <label class="d-flex flex-wrap">
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
             <v-chip v-if="isCorrectionFiling && deliveryChanged"
-              x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
+              x-small label color="primary" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
             v-if="!isEmpty(deliveryAddress) && !inheritMailingAddress"
@@ -104,7 +104,7 @@
           <label class="d-flex flex-wrap">
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
             <v-chip v-if="isCorrectionFiling && recMailingChanged"
-              x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
+              x-small label color="primary" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
             v-if="!inheritRegisteredAddress && !isEmpty(recMailingAddress)"
@@ -119,7 +119,7 @@
           <label class="d-flex flex-wrap">
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
             <v-chip v-if="isCorrectionFiling && recDeliveryChanged"
-              x-small label color="#1669BB" text-color="white" class="mt-0">CORRECTED</v-chip>
+              x-small label color="primary" text-color="white" class="mt-0">CORRECTED</v-chip>
           </label>
           <base-address
             v-if="!inheritRecMailingAddress && !inheritRegisteredAddress && !isEmpty(recDeliveryAddress)"

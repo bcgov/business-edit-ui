@@ -63,11 +63,11 @@
             <br v-if="orgPerson.action">
 
             <v-chip v-if="wasAdded(orgPerson)"
-              x-small label color="#1669BB" text-color="white">ADDED</v-chip>
+              x-small label color="primary" text-color="white">ADDED</v-chip>
             <v-chip v-if="wasEdited(orgPerson)"
-              x-small label color="#1669BB" text-color="white">CORRECTED</v-chip>
+              x-small label color="primary" text-color="white">CORRECTED</v-chip>
             <v-chip v-if="wasRemoved(orgPerson)"
-              x-small label color="#E0E0E0" text-color="grey darken-1">REMOVED</v-chip>
+              x-small label color="#grey lighten-2" text-color="grey darken-1">REMOVED</v-chip>
           </v-col>
 
           <!-- Mailing Address -->

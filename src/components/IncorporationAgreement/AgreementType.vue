@@ -3,7 +3,7 @@
     <v-card flat>
       <!-- Summary Header -->
       <div class="agreement-summary-header">
-        <v-icon color="app-dk-blue">mdi-handshake</v-icon>
+        <v-icon color="appDkBlue">mdi-handshake</v-icon>
         <label class="agreement-summary-title font-weight-bold">
           Incorporation Agreement and Benefit Company Articles
         </label>
@@ -17,7 +17,7 @@
             {{ selectedAgreementDescription }}
           </div>
           <div v-if="hasAgreementTypeChange">
-            <v-chip x-small label color="#1669BB" text-color="white" id="corrected-lbl">
+            <v-chip x-small label color="primary" text-color="white" id="corrected-lbl">
               Corrected
             </v-chip>
           </div>
@@ -188,7 +188,7 @@ export default class AgreementType extends Vue {
 
   .v-btn[disabled] {
     color: white !important;
-    background-color: #1669BB !important;
+    background-color: $app-blue !important;
     opacity: 0.2;
   }
 }

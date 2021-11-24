@@ -1,18 +1,19 @@
-import Axios from 'axios'
+import axios from 'axios'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import * as Sentry from '@sentry/browser'
 
-const axios = Axios.create()
+const instance = axios.create()
 
-axios.interceptors.request.use(
+instance.interceptors.request.use(
   config => {
-    config.headers.common['Authorization'] = `Bearer ${sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)}`
+    const kcToken = sessionStorage.getItem(SessionStorageKeys.KeyCloakToken)
+    config.headers.common['Authorization'] = `Bearer ${kcToken}`
     return config
   },
   error => Promise.reject(error)
 )
 
-axios.interceptors.response.use(
+instance.interceptors.response.use(
   response => response,
   error => {
     Sentry.captureException(error)
@@ -20,4 +21,4 @@ axios.interceptors.response.use(
   }
 )
 
-export { axios }
+export { instance as axios }

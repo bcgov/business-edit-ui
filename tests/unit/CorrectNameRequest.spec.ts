@@ -172,7 +172,7 @@ describe('CorrectNameRequest', () => {
 
     // GET NR Data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data:
           {
             state: 'APPROVED',
@@ -189,7 +189,7 @@ describe('CorrectNameRequest', () => {
               emailAddress: 'mock@email.com'
             }
           }
-      })))
+      }))
 
     // Verify Invalid before input
     expect(wrapper.vm.isFormValid).toBe(false)
@@ -212,7 +212,7 @@ describe('CorrectNameRequest', () => {
 
     // GET NR Data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data:
           {
             state: 'APPROVED',
@@ -228,7 +228,7 @@ describe('CorrectNameRequest', () => {
               emailAddress: 'mock@email.com'
             }
           }
-      })))
+      }))
 
     // Verify Invalid before input
     wrapper.vm.nameRequestNumber = ''
@@ -254,7 +254,7 @@ describe('CorrectNameRequest', () => {
 
     // GET NR Data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data:
           {
             state: 'APPROVED',
@@ -270,7 +270,7 @@ describe('CorrectNameRequest', () => {
               emailAddress: 'mock@email.com'
             }
           }
-      })))
+      }))
 
     // Verify Invalid before input
     wrapper.vm.nameRequestNumber = ''

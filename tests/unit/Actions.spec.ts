@@ -247,9 +247,9 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise(resolve => resolve({
+      .returns(Promise.resolve({
         data: expiredNR
-      })))
+      }))
 
     // init store
     store.state.stateModel.tombstone.currentDate = '2020/01/29'
@@ -498,12 +498,12 @@ describe.skip('Actions component - Filing Functionality', () => {
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise(resolve => resolve({
+      .returns(Promise.resolve({
         data:
         {
           ...nrData
         }
-      })))
+      }))
 
     // init store
     store.state.stateModel.tombstone.currentDate = '2020/01/29'

@@ -100,6 +100,65 @@ export default class DateMixin extends Mixins(CommonMixin) {
   }
 
   /**
+   * Converts a Date object to a date string (Month Day, Year) in Pacific timezone.
+   * @example "2021-01-01 07:00:00 GMT" -> "Dec 31, 2020"
+   * @example "2021-01-01 08:00:00 GMT" -> "Jan 1, 2021"
+   */
+  dateToPacificDate (date: Date, longMonth = false): string {
+    // safety check
+    if (!isDate(date) || isNaN(date.getTime())) return null
+
+    let dateStr = date.toLocaleDateString('en-CA', {
+      timeZone: 'America/Vancouver',
+      month: longMonth ? 'long' : 'short', // December or Dec
+      day: 'numeric', // 31
+      year: 'numeric' // 2020
+    })
+
+    // remove period after month
+    dateStr = dateStr.replace('.', '')
+    return dateStr
+  }
+
+  /**
+   * Converts a Date object to a time string (HH:MM am/pm) in Pacific timezone.
+   * @example "2021-01-01 07:00:00 GMT" -> "11:00 pm"
+   * @example "2021-01-01 08:00:00 GMT" -> "12:00 am"
+   */
+  dateToPacificTime (date: Date): string {
+    // safety check
+    if (!isDate(date) || isNaN(date.getTime())) return null
+
+    let timeStr = date.toLocaleTimeString('en-CA', {
+      timeZone: 'America/Vancouver',
+      hour: 'numeric', // 11
+      minute: '2-digit', // 00
+      hour12: true // a.m./p.m.
+    })
+
+    // replace a.m. with am and p.m. with pm
+    timeStr = timeStr.replace('a.m.', 'am').replace('p.m.', 'pm')
+
+    return timeStr
+  }
+
+  /**
+   * Converts a Date object to a date and time string (Month Day, Year at HH:MM am/pm
+   * Pacific time).
+   * @example "2021-01-01 07:00:00 GMT" -> "Dec 31, 2020 at 11:00 pm Pacific time"
+   * @example "2021-01-01 08:00:00 GMT" -> "Jan 1, 2021 at 12:00 pm Pacific time"
+   */
+  dateToPacificDateTime (date: Date): string {
+    // safety check
+    if (!isDate(date) || isNaN(date.getTime())) return null
+
+    const dateStr = this.dateToPacificDate(date, true)
+    const timeStr = this.dateToPacificTime(date)
+
+    return `${dateStr} at ${timeStr} Pacific time`
+  }
+
+  /**
    * Converts a date string (YYYY-MM-DD) to a formatted date string (Month Day, Year).
    * @example "2020-01-01" -> "Jan 1, 2020"
    */

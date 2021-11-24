@@ -160,6 +160,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
       try {
         await this.validateNameRequest(this.getNameRequestNumber)
       } catch (error) {
+        // "validateNameRequest" handles its own errors
         this.setIsFilingPaying(false)
         return
       }

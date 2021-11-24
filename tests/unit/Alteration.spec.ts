@@ -63,7 +63,7 @@ describe('Alteration component', () => {
 
     // GET payment fee for immediate alteration
     get.withArgs('myhost/basePath/pay-api/fees/BEN/ALTER')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data: {
           'filingFees': 100.0,
           'filingType': 'Alteration',
@@ -78,11 +78,11 @@ describe('Alteration component', () => {
           },
           'total': 101.5
         }
-      })))
+      }))
 
     // GET payment fee for future alteration
     get.withArgs('myhost/basePath/pay-api/fees/BEN/ALTER?futureEffective=true')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data: {
           'filingFees': 100.0,
           'filingType': 'Alteration',
@@ -97,11 +97,11 @@ describe('Alteration component', () => {
           },
           'total': 201.5
         }
-      })))
+      }))
 
     // GET Base business
     get.withArgs('businesses/BC1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data: {
           business: {
             legalName: 'Mock Business Ltd.',
@@ -109,22 +109,22 @@ describe('Alteration component', () => {
             identifier: 'BC1234567'
           }
         }
-      })))
+      }))
 
     // GET business name translations
     get.withArgs('businesses/BC1234567/aliases')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data: {
           aliases: [{
             name: 'Mock Business French Ltd.',
             id: '12'
           }]
         }
-      })))
+      }))
 
     // GET business addresses
     get.withArgs('businesses/BC1234567/addresses')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data: {
           registeredOffice: {
             deliveryAddress: {
@@ -159,11 +159,11 @@ describe('Alteration component', () => {
             }
           }
         }
-      })))
+      }))
 
     // GET business directors
     get.withArgs('businesses/BC1234567/directors')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data: {
           directors: [
             {
@@ -195,11 +195,11 @@ describe('Alteration component', () => {
             }
           ]
         }
-      })))
+      }))
 
     // GET business directors
     get.withArgs('businesses/BC1234567/share-classes')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data: {
           shareClasses: [
             {
@@ -233,11 +233,11 @@ describe('Alteration component', () => {
             }
           ]
         }
-      })))
+      }))
 
     // GET contact info
     get.withArgs('entities/BC1234567')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data: {
           contacts: [
             {
@@ -246,11 +246,11 @@ describe('Alteration component', () => {
             }
           ]
         }
-      })))
+      }))
 
     // GET resolutions
     get.withArgs('businesses/BC1234567/resolutions')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data: {
           resolutions: [
             {
@@ -261,7 +261,7 @@ describe('Alteration component', () => {
             }
           ]
         }
-      })))
+      }))
 
     // FUTURE: mock GET alteration filing
 
