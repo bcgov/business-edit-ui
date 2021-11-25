@@ -475,7 +475,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
     // fetch and store today's date
     // NB: keep this here to reload date on retry
-    const currentDate = this.dateToDateString(this.getCurrentJsDate)
+    const currentDate = this.dateToYyyyMmDd(this.getCurrentJsDate)
     this.setCurrentDate(currentDate)
 
     // finally, let router views know they can load their data

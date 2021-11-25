@@ -12,8 +12,8 @@
         nudge-right="40"
         :inputRules="dateRules"
         :disablePicker="effectiveDateType !== EffectiveDateTypes.FUTUREEFFECTIVE"
-        :minDate="dateToDateString(minDate)"
-        :maxDate="dateToDateString(maxDate)"
+        :minDate="dateToYyyyMmDd(minDate)"
+        :maxDate="dateToYyyyMmDd(maxDate)"
         @emitDate="dateText = $event"
         @emitCancel="dateText = ''"
       />
@@ -61,10 +61,10 @@
       <v-row v-if="isFutureEffective && dateText && (selectHour.length > 0) && (selectMinute.length > 0)">
         <v-col class="validation-alert">
           <p class="validation-alert-msg" v-if="isUnderTime">
-            The time must be at least {{ dateToTimeString(minDate) }} for the selected date
+            The time must be at least {{ dateToPacificTime(minDate) }} for the selected date
           </p>
           <p class="validation-alert-msg" v-if="isOverTime">
-            The time must be at most {{ dateToTimeString(maxDate) }} for the selected date
+            The time must be at most {{ dateToPacificTime(maxDate) }} for the selected date
           </p>
         </v-col>
       </v-row>
@@ -143,8 +143,8 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
     // only apply rules when Future Effective is selected
     if (this.isFutureEffective && this.getAppValidate) {
       const expectedDateFormat = /^(19|20)\d\d[-.](0[1-9]|1[012])[-.](0[1-9]|[12][0-9]|3[01])$/
-      const minDateStr = this.dateToDateString(this.minDate)
-      const maxDateStr = this.dateToDateString(this.maxDate)
+      const minDateStr = this.dateToYyyyMmDd(this.minDate)
+      const maxDateStr = this.dateToYyyyMmDd(this.maxDate)
       return [
         (v: string) => !!v || 'Select date',
         (v: string) => expectedDateFormat.test(v) || 'Date format should be YYYY-MM-DD',
@@ -255,7 +255,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
       }
 
       // set model values
-      this.dateText = this.dateToDateString(date)
+      this.dateText = this.dateToYyyyMmDd(date)
       this.selectHour = [hour.toString()]
       this.selectMinute = [minute.toString().padStart(2, '0')]
       this.selectPeriod = period

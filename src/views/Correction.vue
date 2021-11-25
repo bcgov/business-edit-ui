@@ -104,7 +104,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
 
   /** The original filing datetime, in Pacific time. */
   get originalFilingDate (): string {
-    return this.apiToDateAndTimeString(this.getOriginalFilingDateTime)?.slice(0, 10)
+    return this.apiToPacificDateTime(this.getOriginalFilingDateTime)?.slice(0, 10)
   }
 
   /** True if user is authenticated. */

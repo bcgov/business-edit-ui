@@ -394,12 +394,12 @@ export default class YourCompany extends Mixins(
   private get recognitionDateTime (): string {
     if (this.isCorrectionFiling) {
       if (this.getOriginalEffectiveDateTime) {
-        return (this.apiToDateAndTimeString(this.getOriginalEffectiveDateTime) + ' Pacific time')
+        return (this.apiToPacificDateTime(this.getOriginalEffectiveDateTime) + ' Pacific time')
       }
     }
     if (this.isAlterationFiling) {
       if (this.getBusinessFoundingDate) {
-        return (this.apiToDateAndTimeString(this.getBusinessFoundingDate) + ' Pacific time')
+        return (this.apiToPacificDateTime(this.getBusinessFoundingDate) + ' Pacific time')
       }
     }
     return 'Unknown'

@@ -155,7 +155,7 @@ describe('Alteration Summary component', () => {
     const divs = wrapper.findAll('.alteration-date-time .v-card')
     expect(divs.length).toBe(2)
     expect(divs.at(1).text()).toContain('The alteration for this business will be effective as of:')
-    expect(divs.at(1).text()).toContain('Friday, March 5, 2021 at 8:30 am Pacific time')
+    expect(divs.at(1).text()).toContain('March 5, 2021 at 8:30 am Pacific time')
   })
 
   it('renders Alteration Notice Changes fees accordingly', async () => {

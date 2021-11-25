@@ -9,8 +9,6 @@ import { CommonMixin } from '@/mixins'
 @Component({})
 export default class DateMixin extends Mixins(CommonMixin) {
   @Getter getCurrentJsDate!: Date
-  @Getter getCurrentDate!: string
-  readonly MS_IN_A_DAY = (1000 * 60 * 60 * 24)
 
   /**
    * Fetches and returns the web server's current date (in UTC).
@@ -26,17 +24,17 @@ export default class DateMixin extends Mixins(CommonMixin) {
     // because it's not defined
     if (this.isJestRunning) return new Date()
 
-    const { headers, ok, statusText } = await fetch(input, init)
-
-    if (!ok) {
+    try {
+      const { headers, ok, statusText } = await fetch(input, init)
+      if (!ok) throw new Error(statusText)
+      return new Date(headers.get('Date'))
+    } catch (e) {
       // eslint-disable-next-line no-console
       console.warn('Unable to get server date - using browser date instead')
       // fall back to local date
-      // NB: filing may contain invalid dates/times
+      // NB: new filings may contain invalid date/time
       return new Date()
     }
-
-    return new Date(headers.get('Date'))
   }
 
   /**
@@ -61,55 +59,35 @@ export default class DateMixin extends Mixins(CommonMixin) {
    * Converts a Date object to a date string (YYYY-MM-DD) in Pacific timezone.
    * @example "2021-01-01 07:00:00 GMT" -> "2020-12-31"
    * @example "2021-01-01 08:00:00 GMT" -> "2021-01-01"
-   * @example "2021-01-01 00:00:00 PST" -> "2021-01-01"
-   * @example "2021-01-01 23:59:59 PST" -> "2021-01-01"
    */
-  dateToDateString (date: Date): string {
+  dateToYyyyMmDd (date: Date): string {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
     const dateStr = date.toLocaleDateString('en-CA', {
-      timeZone: 'America/Vancouver'
+      timeZone: 'America/Vancouver',
+      month: 'numeric', // 12
+      day: 'numeric', // 31
+      year: 'numeric' // 2020
     })
 
     return dateStr
   }
 
   /**
-   * Converts a Date object to a time string (HH:MM am/pm) in Pacific timezone.
-   * @example "2021-01-01 07:00:00 GMT" -> "11:00 pm"
-   * @example "2021-01-01 08:00:00 GMT" -> "12:00 am"
-   * @example "2021-01-01 00:00:00 PST" -> "12:00 am"
-   * @example "2021-01-01 23:59:59 PST" -> "11:59 pm"
-   */
-  dateToTimeString (date: Date): string {
-    // safety check
-    if (!isDate(date) || isNaN(date.getTime())) return null
-
-    let timeStr = date.toLocaleTimeString('en-CA', {
-      timeZone: 'America/Vancouver',
-      hour12: true,
-      hour: 'numeric',
-      minute: '2-digit'
-    })
-
-    // replace a.m./p.m. with am/pm
-    timeStr = timeStr.replace('a.m.', 'am').replace('p.m.', 'pm')
-
-    return timeStr
-  }
-
-  /**
    * Converts a Date object to a date string (Month Day, Year) in Pacific timezone.
+   * @param longMonth whether to show long month name (eg, December vs Dec)
+   * @param showWeekday whether to show the weekday name (eg, Thursday)
    * @example "2021-01-01 07:00:00 GMT" -> "Dec 31, 2020"
    * @example "2021-01-01 08:00:00 GMT" -> "Jan 1, 2021"
    */
-  dateToPacificDate (date: Date, longMonth = false): string {
+  dateToPacificDate (date: Date, longMonth = false, showWeekday = false): string {
     // safety check
     if (!isDate(date) || isNaN(date.getTime())) return null
 
     let dateStr = date.toLocaleDateString('en-CA', {
       timeZone: 'America/Vancouver',
+      weekday: showWeekday ? 'long' : undefined, // Thursday or nothing
       month: longMonth ? 'long' : 'short', // December or Dec
       day: 'numeric', // 31
       year: 'numeric' // 2020
@@ -117,6 +95,7 @@ export default class DateMixin extends Mixins(CommonMixin) {
 
     // remove period after month
     dateStr = dateStr.replace('.', '')
+
     return dateStr
   }
 
@@ -159,107 +138,43 @@ export default class DateMixin extends Mixins(CommonMixin) {
   }
 
   /**
-   * Converts a date string (YYYY-MM-DD) to a formatted date string (Month Day, Year).
-   * @example "2020-01-01" -> "Jan 1, 2020"
+   * Converts an API datetime string (in UTC) to a Date object.
+   * @example 2021-08-05T16:56:50.783101+00:00 -> 2021-08-05T16:56:50Z
    */
-  formatDateString (dateStr: string): string {
-    // safety check
-    if (!dateStr) return null
+  apiToDate (dateTimeString: string): Date {
+    if (!dateTimeString) return null // safety check
 
-    // create a Date object
-    // then split into its components (in "absolute" time)
-    // eg, "2020-01-01" -> "Wed, 01 Jan 2020 00:00:00 GMT"
-    const date = new Date(dateStr)
-    const [weekday, day, month, year, time, tz] = date.toUTCString().split(' ')
+    // chop off the milliseconds and UTC offset and append "Zulu" timezone abbreviation
+    dateTimeString = dateTimeString.slice(0, 19) + 'Z'
 
-    // convert day to number so that "01" -> "1"
-    return `${month} ${+day}, ${year}`
+    return new Date(dateTimeString)
   }
 
   /**
-   * Converts a Date object to a fully formatted data and time string
-   * (Weekday Month DD, YYYY at HH:MM am/pm Pacific time).
-   * @example "2020-10-27T18:45:00Z" -> "Tuesday, October 27, 2020 at 11:45 am Pacific time"
+   * Converts an API datetime string (in UTC) to a date and time string (Month Day, Year at HH:MM am/pm
+   * Pacific time).
+   * @example "2021-01-01T00:00:00.000000+00:00" -> "Dec 31, 2020 at 04:00 pm Pacific time" (PST example)
+   * @example "2021-07-01T00:00:00.000000+00:00" -> "Jun 30, 2021 at 05:00 pm Pacific time" (PDT example)
    */
-  fullFormatDate (date: Date): string {
-    // safety check
-    if (!isDate(date) || isNaN(date.getTime())) return null
+  apiToPacificDateTime (dateTimeString: string): string {
+    if (!dateTimeString) return null // safety check
 
-    let dateStr = date.toLocaleDateString('en-CA', {
-      timeZone: 'America/Vancouver',
-      weekday: 'long', // Tuesday
-      month: 'long', // October
-      day: 'numeric', // 27
-      year: 'numeric' // 2020
-    })
-
-    let timeStr = date.toLocaleTimeString('en-CA', {
-      timeZone: 'America/Vancouver',
-      hour: 'numeric', // 11
-      minute: '2-digit', // 45
-      hour12: true // a.m./p.m.
-    })
-
-    // replace a.m./p.m. with am/pm
-    timeStr = timeStr.replace('a.m.', 'am').replace('p.m.', 'pm')
+    const date = this.apiToDate(dateTimeString)
+    const dateStr = this.dateToPacificDate(date)
+    const timeStr = this.dateToPacificTime(date)
 
     return `${dateStr} at ${timeStr} Pacific time`
   }
 
   /**
-   * Converts an API datetime string to a date and time string (YYYY-MM-DD at HH:MM am/pm)
-   * in Pacific timezone.
-   * @example "2021-01-01T00:00:00.000000+00:00" -> "2020-12-31 at 04:00 pm" (PST example)
-   * @example "2021-07-01T00:00:00.000000+00:00" -> "2021-06-30 at 05:00 pm" (PDT example)
+   * Converts a Date object to an API datetime string.
+   * @example 2021-08-05T16:56:50Z -> 2021-08-05T16:56:50+00:00
    */
-  apiToDateAndTimeString (dateString: string): string {
-    if (!dateString) return null // safety check
-
-    // convert to ISO format
-    // then create a Date object
-    // eg, 2021-03-04T04:41:00Z
-    dateString = dateString.slice(0, 19) + 'Z'
-    const utc = new Date(dateString)
-
-    // build date string, eg, "2021-03-03"
-    const dateStr = this.dateToDateString(utc)
-
-    // build time string, eg, "8:41 pm"
-    const timeStr = this.dateToTimeString(utc)
-
-    return `${dateStr} at ${timeStr}`
-  }
-
-  /**
-   * Converts a date object to an ISO datetime string format that the API accepts (YYYY-MM-DDThh:mm:ss.sss+00:00)
-   # @example "2021-01-01 23:59:59 PST" -> "2021-01-02T07:59:59.000+00:00"
-   */
-  dateToApiIsoDateTimeString (date: Date): string {
-    if (!date) return null // safety check
-
-    // convert date object to ISO format that API accepts
-    // Note: the Z offset is not included as the API(Python)
-    // expects '+00:00' to be used for the offset
-    // eg, 2021-03-25T10:02:00.000+00:00
-    const dateStr = date.toISOString().slice(0, 23) + '+00:00'
-
-    return dateStr
-  }
-
-  /**
-   * The number of days that 'date' is from today.
-   * @returns -1 for yesterday
-   * @returns 0 for today
-   * @returns +1 for tomorrow
-   * @returns NaN in case of error
-   */
-  daysFromToday (date: string): number {
+  dateToApi (date: Date): string {
     // safety check
-    if (!date) return NaN
+    if (!isDate(date) || isNaN(date.getTime())) return null
 
-    // calculate difference between start of "today" and start of "date" (in local time)
-    const todayLocalMs = new Date(this.getCurrentDate).setHours(0, 0, 0, 0)
-    const dateLocalMs = new Date(date).setHours(0, 0, 0, 0)
-    return Math.round((dateLocalMs - todayLocalMs) / this.MS_IN_A_DAY)
+    // replace "Zulu" timezone abbreviation with UTC offset
+    return date.toISOString().replace('Z', '+00:00')
   }
 }

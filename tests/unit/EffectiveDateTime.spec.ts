@@ -214,7 +214,7 @@ describe('Effective Date Time component', () => {
     await radioIsFutureEffective.trigger('click')
 
     // set everything except hour
-    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToDateString(today))
+    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(today))
     wrapper.vm.$refs.minuteSelector.setValue(today.getMinutes().toString())
     await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
 
@@ -238,7 +238,7 @@ describe('Effective Date Time component', () => {
     await radioIsFutureEffective.trigger('click')
 
     // set everything except minute
-    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToDateString(today))
+    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(today))
     wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
     await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
 
@@ -263,7 +263,7 @@ describe('Effective Date Time component', () => {
     await radioIsFutureEffective.trigger('click')
 
     // set everything
-    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToDateString(today))
+    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(today))
     wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
     wrapper.vm.$refs.minuteSelector.setValue(today.getMinutes().toString())
     await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
@@ -312,8 +312,8 @@ describe('Effective Date Time component', () => {
     // wait a bit for validation to complete
     await flushPromises()
 
-    const minDate = wrapper.vm.dateToDateString(wrapper.vm.minDate)
-    const maxDate = wrapper.vm.dateToDateString((wrapper.vm.maxDate))
+    const minDate = wrapper.vm.dateToYyyyMmDd(wrapper.vm.minDate)
+    const maxDate = wrapper.vm.dateToYyyyMmDd((wrapper.vm.maxDate))
     expect(wrapper.vm.$el.querySelector('.date-time-selectors').textContent)
       .toContain(`Date must be between ${minDate} and ${maxDate}`)
 
@@ -333,17 +333,17 @@ describe('Effective Date Time component', () => {
     await radioIsFutureEffective.trigger('click')
 
     // set current date and time
-    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToDateString(today))
+    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(today))
     wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
     wrapper.vm.$refs.minuteSelector.setValue((today.getMinutes()).toString())
     await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
-    wrapper.vm.dateText = wrapper.vm.dateToDateString(today)
+    wrapper.vm.dateText = wrapper.vm.dateToYyyyMmDd(today)
 
     // wait a bit for validation to complete
     await flushPromises()
 
     // verify Min Time alert
-    const minTime = wrapper.vm.dateToTimeString(wrapper.vm.minDate)
+    const minTime = wrapper.vm.dateToPacificTime(wrapper.vm.minDate)
     expect(wrapper.vm.$el.querySelector('.validation-alert-msg').textContent)
       .toContain(`The time must be at least ${minTime} for the selected date`)
 
@@ -364,17 +364,17 @@ describe('Effective Date Time component', () => {
     await radioIsFutureEffective.trigger('click')
 
     // set current date + 11 days and time
-    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToDateString(futureInvalidDate))
+    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(futureInvalidDate))
     wrapper.vm.$refs.hourSelector.setValue((futureInvalidDate.getHours() % 12).toString())
     wrapper.vm.$refs.minuteSelector.setValue((futureInvalidDate.getMinutes()).toString())
     await wrapper.find('#period-selector').setValue(futureInvalidDate.getHours() >= 12 ? 'pm' : 'am')
-    wrapper.vm.dateText = wrapper.vm.dateToDateString(futureInvalidDate)
+    wrapper.vm.dateText = wrapper.vm.dateToYyyyMmDd(futureInvalidDate)
 
     // wait a bit for validation to complete
     await flushPromises()
 
     // verify Min Time alert
-    const maxTime = wrapper.vm.dateToTimeString(wrapper.vm.maxDate)
+    const maxTime = wrapper.vm.dateToPacificTime(wrapper.vm.maxDate)
 
     expect(wrapper.vm.$el.querySelector('.validation-alert-msg').textContent)
       .toContain(`The time must be at most ${maxTime} for the selected date`)
