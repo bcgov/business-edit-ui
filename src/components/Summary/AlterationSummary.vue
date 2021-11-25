@@ -255,7 +255,7 @@ export default class AlterationSummary extends Mixins(
 
   get effectiveDateTimeString (): string {
     const date = new Date(this.getEffectiveDateTime.dateTimeString)
-    return this.fullFormatDate(date)
+    return this.dateToPacificDateTime(date)
   }
 
   /** The company name (from NR, or incorporation number). */

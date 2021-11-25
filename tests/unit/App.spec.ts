@@ -263,27 +263,27 @@ describe.skip('Numbered company setup', () => {
 
     // GET current user
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data:
         {
           contacts: [{
             email: 'completing-party@example.com'
           }]
         }
-      })))
+      }))
 
     // GET authorizations (role)
     get.withArgs('entities/T7654321/authorizations')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data:
         {
           roles: ['edit', 'view']
         }
-      })))
+      }))
 
     // GET IA filing
     get.withArgs('businesses/T7654321/filings')
-      .returns(new Promise(resolve => resolve({
+      .returns(Promise.resolve({
         data:
         {
           filing: {
@@ -303,7 +303,7 @@ describe.skip('Numbered company setup', () => {
             }
           }
         }
-      })))
+      }))
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
@@ -380,43 +380,43 @@ describe.skip('App component', () => {
 
     // GET current user
     get.withArgs('users/@me')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data:
         {
           contacts: [{
             email: 'completing-party@example.com'
           }]
         }
-      })))
+      }))
 
     // GET authorizations (role)
     get.withArgs('entities/T1234567/authorizations')
-      .returns(new Promise((resolve) => resolve({
+      .returns(Promise.resolve({
         data:
         {
           roles: ['edit', 'view']
         }
-      })))
+      }))
 
     // GET NR data
     get.withArgs('nameRequests/NR 1234567')
-      .returns(new Promise(resolve => resolve({
+      .returns(Promise.resolve({
         data:
         {
           ...nrData
         }
-      })))
+      }))
 
     // GET IA filing
     get.withArgs('businesses/T1234567/filings')
-      .returns(new Promise(resolve => resolve({
+      .returns(Promise.resolve({
         data:
         {
           filing: {
             ...filingData
           }
         }
-      })))
+      }))
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()

@@ -29,11 +29,10 @@ export default class LegalApiMixin extends Vue {
       .then(response => {
         if (response && response.data) {
           return response.data.filing
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('fetchFilingById() error - invalid response =', response)
-          throw new Error('Invalid API response')
         }
+        // eslint-disable-next-line no-console
+        console.log('fetchFilingById() error - invalid response =', response)
+        throw new Error('Invalid API response')
       })
   }
 
@@ -118,11 +117,10 @@ export default class LegalApiMixin extends Vue {
       .then(response => {
         if (response?.data) {
           return response.data.business
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('fetchBusinessInfo() error - invalid response =', response)
-          throw new Error('Invalid API response')
         }
+        // eslint-disable-next-line no-console
+        console.log('fetchBusinessInfo() error - invalid response =', response)
+        throw new Error('Invalid API response')
       })
   }
 
@@ -139,11 +137,10 @@ export default class LegalApiMixin extends Vue {
       .then(response => {
         if (response?.data) {
           return response.data.aliases
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('fetchNameTranslations() error - invalid response =', response)
-          throw new Error('Invalid API response')
         }
+        // eslint-disable-next-line no-console
+        console.log('fetchNameTranslations() error - invalid response =', response)
+        throw new Error('Invalid API response')
       })
   }
 
@@ -160,11 +157,10 @@ export default class LegalApiMixin extends Vue {
       .then(response => {
         if (response?.data) {
           return response.data
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('fetchIncorporationAddress() error - invalid response =', response)
-          throw new Error('Invalid API response')
         }
+        // eslint-disable-next-line no-console
+        console.log('fetchIncorporationAddress() error - invalid response =', response)
+        throw new Error('Invalid API response')
       })
   }
 
@@ -181,11 +177,10 @@ export default class LegalApiMixin extends Vue {
       .then(response => {
         if (response?.data) {
           return response.data.directors
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('fetchOrgPersons() error - invalid response =', response)
-          throw new Error('Invalid API response')
         }
+        // eslint-disable-next-line no-console
+        console.log('fetchOrgPersons() error - invalid response =', response)
+        throw new Error('Invalid API response')
       })
   }
 
@@ -209,11 +204,10 @@ export default class LegalApiMixin extends Vue {
           })
 
           return shareStructure
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('fetchShareStructure() error - invalid response =', response)
-          throw new Error('Invalid API response')
         }
+        // eslint-disable-next-line no-console
+        console.log('fetchShareStructure() error - invalid response =', response)
+        throw new Error('Invalid API response')
       })
   }
 
@@ -230,11 +224,31 @@ export default class LegalApiMixin extends Vue {
       .then(response => {
         if (response?.data) {
           return response.data.resolutions
-        } else {
-          // eslint-disable-next-line no-console
-          console.log('fetchResolutions() error - invalid response =', response)
-          throw new Error('Invalid API response')
         }
+        // eslint-disable-next-line no-console
+        console.log('fetchResolutions() error - invalid response =', response)
+        throw new Error('Invalid API response')
+      })
+  }
+
+  /**
+   * Fetches name request data.
+   * @param nrNumber the name request number (eg, NR 1234567)
+   * @returns a promise to return the NR data, or null if not found
+   */
+  async fetchNameRequest (nrNumber: string): Promise<any> {
+    if (!nrNumber) throw new Error('Invalid parameter \'nrNumber\'')
+
+    const url = `nameRequests/${nrNumber}`
+
+    return axios.get(url)
+      .then(response => {
+        if (response?.data) {
+          return response.data
+        }
+        // eslint-disable-next-line no-console
+        console.log('fetchNameRequest() error - invalid response =', response)
+        throw new Error('Invalid API response')
       })
   }
 }

@@ -2,7 +2,7 @@
   <v-form id="correct-nr-form" ref="correctNrForm" v-model="formValid" lazy-validation>
     <v-row no-gutters>
       <v-col cols="1" class="mt-1">
-        <v-btn x-small fab outlined :ripple="false" color="#495057" class="step-icon">1</v-btn>
+        <v-btn x-small fab outlined :ripple="false" color="gray7" class="step-icon" tabindex="-1">1</v-btn>
       </v-col>
       <v-col>
         <v-text-field
@@ -21,7 +21,7 @@
 
     <v-row no-gutters class="mt-4 mb-n1">
       <v-col cols="1" class="mt-1">
-        <v-btn x-small fab outlined :ripple="false" color="#495057" class="step-icon">2</v-btn>
+        <v-btn x-small fab outlined :ripple="false" color="gray7" class="step-icon" tabindex="-1">2</v-btn>
       </v-col>
       <v-col cols="5">
         <v-text-field
@@ -154,7 +154,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
         const nrCorrection: NrCorrectionIF = {
           legalType: response.entity_type_cd,
           nrNumber: this.nameRequestNumber,
-          legalName: this.getNrApprovedName(response),
+          legalName: this.getNrApprovedName(response) || '',
           expiry: response.expirationDate,
           status: response.state,
           requestType: response.request_action_cd,
@@ -201,6 +201,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
 .step-icon {
   font-size: small;
   font-weight: bold;
+  pointer-events: none;
 }
 
 ::v-deep #nr-number {

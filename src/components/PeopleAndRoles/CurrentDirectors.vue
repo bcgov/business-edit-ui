@@ -4,7 +4,7 @@
     <v-card flat>
       <!-- Header -->
       <div class="header-container">
-        <v-icon color="app-dk-blue">mdi-account-multiple-plus</v-icon>
+        <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
         <label class="font-weight-bold pl-2">Directors</label>
       </div>
 

@@ -279,7 +279,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     if (this.getEffectiveDateTime.isFutureEffective) {
       filing.header.isFutureEffective = true
       const effectiveDate = new Date(this.getEffectiveDateTime.dateTimeString)
-      const effectiveDateIso = this.dateToApiIsoDateTimeString(effectiveDate)
+      const effectiveDateIso = this.dateToApi(effectiveDate)
       filing.header.effectiveDate = effectiveDateIso // in UTC
     }
 

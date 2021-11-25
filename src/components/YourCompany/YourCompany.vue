@@ -6,7 +6,7 @@
     />
 
     <div class="define-company-header">
-      <v-icon color="app-dk-blue">mdi-domain</v-icon>
+      <v-icon color="appDkBlue">mdi-domain</v-icon>
       <label class="define-company-title">Your Company</label>
     </div>
 
@@ -381,7 +381,8 @@ export default class YourCompany extends Mixins(
 
   /** Name Request expiry */
   private get expiryDate (): string {
-    return this.formatDateString(this.getNameRequest.expiry)
+    const date = new Date(this.getNameRequest.expiry)
+    return this.dateToPacificDateTime(date)
   }
 
   /** Name Request phone number */
@@ -393,12 +394,12 @@ export default class YourCompany extends Mixins(
   private get recognitionDateTime (): string {
     if (this.isCorrectionFiling) {
       if (this.getOriginalEffectiveDateTime) {
-        return (this.apiToDateAndTimeString(this.getOriginalEffectiveDateTime) + ' Pacific time')
+        return (this.apiToPacificDateTime(this.getOriginalEffectiveDateTime) + ' Pacific time')
       }
     }
     if (this.isAlterationFiling) {
       if (this.getBusinessFoundingDate) {
-        return (this.apiToDateAndTimeString(this.getBusinessFoundingDate) + ' Pacific time')
+        return (this.apiToPacificDateTime(this.getBusinessFoundingDate) + ' Pacific time')
       }
     }
     return 'Unknown'
