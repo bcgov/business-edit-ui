@@ -218,6 +218,205 @@ export default class Alteration extends Mixins(
   @Action setFeePrices!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
 
+  // private mockSnapShot = {
+  //   'businessInfo': {
+  //     'arMaxDate': '2021-12-06',
+  //     'arMinDate': '2022-11-24',
+  //     'fiscalYearEndDate': '2021-11-24',
+  //     'foundingDate': '2021-11-24T20:54:15.900818+00:00',
+  //     'goodStanding': true,
+  //     'hasRestrictions': false,
+  //     'identifier': 'BC0870863',
+  //     'lastAddressChangeDate': '2021-11-24',
+  //     'lastAnnualGeneralMeetingDate': '',
+  //     'lastAnnualReportDate': '',
+  //     'lastDirectorChangeDate': '2021-11-24',
+  //     'lastLedgerTimestamp': '2021-11-24T20:54:41.885213+00:00',
+  //     'lastModified': '2021-11-24T20:54:41.885184+00:00',
+  //     'legalName': 'TEST BEN COMP INC.',
+  //     'legalType': 'BEN',
+  //     'nextAnnualReport': '2022-11-24T08:00:00+00:00'
+  //   },
+  //   'authInfo': {
+  //     'contacts': [
+  //       {
+  //         'email': 'cameron@freshworks.io',
+  //         'phone': '(123) 456-7890',
+  //         'phoneExtension': ''
+  //       }
+  //     ]
+  //   },
+  //   'incorporationAddress': {
+  //     'recordsOffice': {
+  //       'deliveryAddress': {
+  //         'addressCity': 'North Saanich',
+  //         'addressCountry': 'CA',
+  //         'addressRegion': 'BC',
+  //         'addressType': 'delivery',
+  //         'deliveryInstructions': '',
+  //         'postalCode': 'V8L 5V4',
+  //         'streetAddress': '123-1640 Electra Blvd',
+  //         'streetAddressAdditional': ''
+  //       },
+  //       'mailingAddress': {
+  //         'addressCity': 'North Saanich',
+  //         'addressCountry': 'CA',
+  //         'addressRegion': 'BC',
+  //         'addressType': 'mailing',
+  //         'deliveryInstructions': '',
+  //         'postalCode': 'V8L 5V4',
+  //         'streetAddress': '123-1640 Electra Blvd',
+  //         'streetAddressAdditional': ''
+  //       }
+  //     },
+  //     'registeredOffice': {
+  //       'deliveryAddress': {
+  //         'addressCity': 'North Saanich',
+  //         'addressCountry': 'CA',
+  //         'addressRegion': 'BC',
+  //         'addressType': 'delivery',
+  //         'deliveryInstructions': '',
+  //         'postalCode': 'V8L 5V4',
+  //         'streetAddress': '123-1640 Electra Blvd',
+  //         'streetAddressAdditional': ''
+  //       },
+  //       'mailingAddress': {
+  //         'addressCity': 'North Saanich',
+  //         'addressCountry': 'CA',
+  //         'addressRegion': 'BC',
+  //         'addressType': 'mailing',
+  //         'deliveryInstructions': '',
+  //         'postalCode': 'V8L 5V4',
+  //         'streetAddress': '123-1640 Electra Blvd',
+  //         'streetAddressAdditional': ''
+  //       }
+  //     }
+  //   },
+  //   'nameTranslations': [
+  //     {
+  //       'id': '310',
+  //       'name': 'THIS IS A TRANSLATION',
+  //       'type': 'TRANSLATION'
+  //     }
+  //   ],
+  //   'orgPersons': [
+  //     {
+  //       'appointmentDate': '2021-11-24',
+  //       'cessationDate': null,
+  //       'deliveryAddress': {
+  //         'addressCity': 'North York',
+  //         'addressCountry': 'CA',
+  //         'addressRegion': 'ON',
+  //         'deliveryInstructions': null,
+  //         'postalCode': 'M6B 1W8',
+  //         'streetAddress': '123-160 Tycos Dr',
+  //         'streetAddressAdditional': ''
+  //       },
+  //       'mailingAddress': {
+  //         'addressCity': 'North York',
+  //         'addressCountry': 'CA',
+  //         'addressRegion': 'ON',
+  //         'deliveryInstructions': null,
+  //         'postalCode': 'M6B 1W8',
+  //         'streetAddress': '123-160 Tycos Dr',
+  //         'streetAddressAdditional': ''
+  //       },
+  //       'officer': {
+  //         'firstName': 'BCREGTEST DELPHIA',
+  //         'lastName': 'EIGHTEEN'
+  //       },
+  //       'role': 'director'
+  //     }
+  //   ],
+  //   'shareStructure': {
+  //     'shareClasses': [
+  //       {
+  //         'currency': 'CAD',
+  //         'hasMaximumShares': true,
+  //         'hasParValue': true,
+  //         'hasRightsOrRestrictions': true,
+  //         'id': 451370,
+  //         'maxNumberOfShares': 1000,
+  //         /* eslint-disable */
+  //         'name': 'Class A Common',
+  //         'parValue': 10,
+  //         'priority': 1,
+  //         'series': [
+  //
+  //         ],
+  //         'type': 'Class'
+  //       }
+  //     ]
+  //   },
+  //   'resolutions': [
+  //
+  //   ]
+  // }
+  //
+  // private mockDraft = {
+  //   'alteration': {
+  //     'business': {
+  //       'identifier': 'BC0870863',
+  //       'legalType': 'BEN'
+  //     },
+  //     'contactPoint': {
+  //       'email': 'cameron@freshworks.io',
+  //       'phone': '(123) 456-7890'
+  //     },
+  //     'provisionsRemoved': false,
+  //     'shareStructure': {
+  //       'shareClasses': [
+  //         {
+  //           'currency': 'CAD',
+  //           'hasMaximumShares': true,
+  //           'hasParValue': true,
+  //           'hasRightsOrRestrictions': true,
+  //           'id': 451370,
+  //           'maxNumberOfShares': 1000,
+  //           /* eslint-disable */
+  //           'name': 'Class A Common',
+  //           'parValue': 10,
+  //           'priority': 1,
+  //           'series': [
+  //
+  //           ],
+  //           'type': 'Class'
+  //         }
+  //       ]
+  //     }
+  //   },
+  //   'business': {
+  //     'foundingDate': '2021-11-24T20:54:15.900818+00:00',
+  //     'identifier': 'BC0870863',
+  //     'legalName': 'TEST BEN COMP INC.',
+  //     'legalType': 'BEN'
+  //   },
+  //   'header': {
+  //     'affectedFilings': [
+  //
+  //     ],
+  //     'availableOnPaperOnly': false,
+  //     'certifiedBy': '',
+  //     'colinIds': [
+  //
+  //     ],
+  //     'comments': [
+  //
+  //     ],
+  //     'date': '2021-12-06T16:27:26.381407+00:00',
+  //     'deletionLocked': false,
+  //     'effectiveDate': '2021-12-06T16:27:26.381428+00:00',
+  //     'filingId': 113506,
+  //     'folioNumber': '',
+  //     'inColinOnly': false,
+  //     'isCorrected': false,
+  //     'isCorrectionPending': false,
+  //     'name': 'alteration',
+  //     'status': 'DRAFT',
+  //     'submitter': 'bcsc/x5levvougen54gnvtvcyh7nrelqcyt4t'
+  //   }
+  // }
+
   /** Whether App is ready. */
   @Prop({ default: false })
   readonly appReady: boolean

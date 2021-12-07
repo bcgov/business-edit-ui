@@ -249,11 +249,15 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       filing.alteration.nameTranslations = nameTranslations
     }
 
-    // Apply share structure changes to filing
+    // Apply share structure changes to filing or apply new resolution dates
     if (this.hasShareStructureChanged) {
       filing.alteration.shareStructure = {
         resolutionDates: this.getNewResolutionDates,
         shareClasses
+      }
+    } else if (this.getNewResolutionDates) {
+      filing.alteration.shareStructure = {
+        resolutionDates: this.getNewResolutionDates
       }
     }
 
@@ -463,11 +467,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         }
       }) || []
     )
-
     // Restore share classes and resolution dates
-    const shareStructure = filing.alteration.shareStructure || businessSnapshot.shareStructure
-    this.setShareClasses(shareStructure.shareClasses)
-    this.setResolutionDates(shareStructure.resolutionDates || [])
+    this.setShareClasses(
+      filing.alteration.shareStructure?.shareClasses ||
+      businessSnapshot.shareStructure?.shareClasses
+    )
+    this.setResolutionDates(filing.alteration.shareStructure?.resolutionDates || [])
     this.setOriginalResolutionDates(businessSnapshot.resolutions)
 
     // Restore business contact

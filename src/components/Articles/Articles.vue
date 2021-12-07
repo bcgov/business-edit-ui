@@ -56,7 +56,7 @@ export default class Articles extends Mixins(CommonMixin) {
 
   // Global getters
   @Getter getBusinessInformation!: BusinessInformationIF
-  @Getter getNewResolutionDates!: string []
+  @Getter getNewResolutionDates!: string[]
   @Getter getProvisionsRemoved!: boolean
   @Getter getPreviousResolutionDates!: string[]
   @Getter getHasRightsOrRestrictions!: boolean

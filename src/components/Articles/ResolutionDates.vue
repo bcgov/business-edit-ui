@@ -184,15 +184,6 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
     this.emitAddRemoveDate(tempNewDates)
   }
 
-  /** Remove resolution date if rights or restrictions are removed from ShareStructure. */
-  @Watch('hasRightsOrRestrictions')
-  @Watch('hasShareStructureChanged')
-  private removeResolutionDate (): void {
-    if ((!this.getHasOriginalRightsOrRestrictions && !this.hasRightsOrRestrictions) || !this.hasShareStructureChanged) {
-      this.onRemove(0)
-    }
-  }
-
   /** Updates store when resolution dates validity changes. */
   @Watch('isAdding', { immediate: true })
   @Watch('getIsResolutionDatesValid', { immediate: true })

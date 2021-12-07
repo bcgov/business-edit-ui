@@ -56,6 +56,23 @@ export default class DateMixin extends Mixins(CommonMixin) {
   }
 
   /**
+   * Converts a date string (YYYY-MM-DD) to a Date object at 12:00:00 am Pacific time.
+   * @example 2021-11-22 -> 2021-11-22T08:00:00.00Z
+   */
+  yyyyMmDdToDate (dateStr: string): Date {
+    // safety checks
+    if (!dateStr) return null
+    if (dateStr.length !== 10) return null
+
+    const split = dateStr.split('-')
+    const year = +split[0]
+    const month = +split[1]
+    const day = +split[2]
+
+    return this.createUtcDate(year, (month - 1), day)
+  }
+
+  /**
    * Converts a Date object to a date string (YYYY-MM-DD) in Pacific timezone.
    * @example "2021-01-01 07:00:00 GMT" -> "2020-12-31"
    * @example "2021-01-01 08:00:00 GMT" -> "2021-01-01"
@@ -72,6 +89,16 @@ export default class DateMixin extends Mixins(CommonMixin) {
     })
 
     return dateStr
+  }
+
+  /**
+   * Converts a date string (YYYY-MM-DD) to a date string (Month Day, Year) in Pacific timezone.
+   * @param longMonth whether to show long month name (eg, December vs Dec)
+   * @param showWeekday whether to show the weekday name (eg, Thursday)
+   * @example "2021-01-01" -> "Thursday, December 31, 2020"
+   */
+  yyyyMmDdToPacificDate (dateStr: string, longMonth = false, showWeekday = false): string {
+    return this.dateToPacificDate(this.yyyyMmDdToDate(dateStr), longMonth, showWeekday)
   }
 
   /**
