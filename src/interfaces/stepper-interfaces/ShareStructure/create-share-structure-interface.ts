@@ -6,7 +6,7 @@ export interface ShareStructureIF {
   previousResolutionDates?: ResolutionsIF[]
   valid?: boolean
   changed?: boolean
-  shareClasses: ShareClassIF[]
+  shareClasses?: ShareClassIF[]
 }
 
 export interface ShareClassIF {
