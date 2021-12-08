@@ -492,7 +492,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       case SummaryActions.SAVE_RESUME_LATER:
         // Save filing and return to dashboard.
         await this.onClickSave()
-        // this.goToDashboard()
+        this.goToDashboard()
         break
       case SummaryActions.DELETE_ALL:
         this.$root.$emit('delete-all')
