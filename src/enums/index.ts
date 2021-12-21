@@ -17,4 +17,5 @@ export * from './roleTypes'
 export * from './routeNames'
 
 // external enums
-export { CorpTypeCd, CorpClass, SummaryActions } from '@bcrs-shared-components/enums'
+export { SummaryActions } from '@bcrs-shared-components/enums'
+export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'

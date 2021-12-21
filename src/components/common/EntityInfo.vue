@@ -1,12 +1,6 @@
 <template>
   <div id="entity-info">
     <v-container class="py-2 pb-6">
-      <v-breadcrumbs :items="breadcrumbs" divider=">" class="breadcrumb pa-0">
-        <v-breadcrumbs-item slot="item" slot-scope="{ item }" exact :href="item.href">
-          {{ item.text }}
-        </v-breadcrumbs-item>
-      </v-breadcrumbs>
-
       <div class="d-flex justify-space-between mt-5">
         <div class="left-column align-self-end">
           <div class="title-container">

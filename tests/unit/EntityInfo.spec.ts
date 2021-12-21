@@ -78,20 +78,6 @@ describe('Entity Info component in a Correction as a named company', () => {
     expect(wrapper.findComponent(EntityInfo).exists()).toBe(true)
   })
 
-  it('displays the breadcrumb correctly as a named benefit company', () => {
-    const breadcrumbs = wrapper.findAll('.v-breadcrumbs li')
-
-    const crumb1 = breadcrumbs.at(0)
-    const divider = breadcrumbs.at(1) // Divider is present every odd index
-    const crumb2 = breadcrumbs.at(2)
-    const crumb3 = breadcrumbs.at(4)
-
-    expect(crumb1.text()).toBe('Staff Dashboard')
-    expect(divider.text()).toBe('>')
-    expect(crumb2.text()).toBe('My Mock Name Inc.')
-    expect(crumb3.text()).toBe('Correction - Incorporation Application')
-  })
-
   it('renders the business name and numbers', () => {
     expect(wrapper.find('#entity-legal-name').text()).toBe('My Mock Name Inc.')
     expect(wrapper.find('#entity-business-number').text()).toBe('1234567')
@@ -157,20 +143,6 @@ describe('Entity Info component in a Correction as a numbered company', () => {
 
   it('renders the EntityInfo Component', () => {
     expect(wrapper.findComponent(EntityInfo).exists()).toBe(true)
-  })
-
-  it('displays the breadcrumb correctly as a named benefit company', () => {
-    const breadcrumbs = wrapper.findAll('.v-breadcrumbs li')
-
-    const crumb1 = breadcrumbs.at(0)
-    const divider = breadcrumbs.at(1) // Divider is present every odd index
-    const crumb2 = breadcrumbs.at(2)
-    const crumb3 = breadcrumbs.at(4)
-
-    expect(crumb1.text()).toBe('Staff Dashboard')
-    expect(divider.text()).toBe('>')
-    expect(crumb2.text()).toBe('Numbered Benefit Company')
-    expect(crumb3.text()).toBe('Correction - Incorporation Application')
   })
 
   it('renders the business name and numbers', () => {
