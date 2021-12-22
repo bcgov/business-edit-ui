@@ -254,9 +254,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
   /** The route breadcrumbs list. */
   private get breadcrumbs (): Array<BreadcrumbIF> {
-    return [
-      HomeBreadCrumb,
-      this.isRoleStaff ? StaffDashboardBreadcrumb : DashboardBreadcrumb,
+    const crumbs: Array<BreadcrumbIF> = [
       {
         text: this.getCurrentBusinessName || 'Numbered Benefit Company',
         href: `${sessionStorage.getItem('DASHBOARD_URL')}${this.getBusinessId}`
@@ -266,6 +264,14 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
         to: { name: this.isCorrectionFiling ? RouteNames.CORRECTION : RouteNames.ALTERATION }
       }
     ]
+
+    if (this.isRoleStaff) {
+      crumbs.unshift(StaffDashboardBreadcrumb)
+    } else {
+      crumbs.unshift(HomeBreadCrumb, DashboardBreadcrumb)
+    }
+
+    return crumbs
   }
 
   /** The URL of the Pay API. */
