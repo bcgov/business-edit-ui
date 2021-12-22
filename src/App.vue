@@ -159,7 +159,7 @@ import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixi
 import { FilingDataIF, ActionBindingIF, BreadcrumbIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify, SummaryActions, RouteNames } from '@/enums'
-import { dashboardBreadcrumb, staffDashboardBreadcrumb } from '@/resources'
+import { dashboardBreadcrumb, homeBreadCrumb, staffDashboardBreadcrumb } from '@/resources'
 
 @Component({
   components: {
@@ -255,6 +255,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   /** The route breadcrumbs list. */
   private get breadcrumbs (): Array<BreadcrumbIF> {
     return [
+      homeBreadCrumb,
       this.isRoleStaff ? staffDashboardBreadcrumb : dashboardBreadcrumb,
       {
         text: this.getCurrentBusinessName || 'Numbered Benefit Company',
@@ -262,7 +263,6 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       },
       {
         text: this.entityTitle,
-        disabled: true,
         to: { name: this.isCorrectionFiling ? RouteNames.CORRECTION : RouteNames.ALTERATION }
       }
     ]

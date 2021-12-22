@@ -61,26 +61,6 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
       : this.getBusinessSnapshot?.businessInfo?.legalType
     )
   }
-
-  /** The route breadcrumbs list. */
-  private get breadcrumbs (): Array<any> {
-    return [
-      {
-        text: this.isRoleStaff ? 'Staff Dashboard' : 'Manage Businesses Dashboard',
-        disabled: false,
-        href: `${sessionStorage.getItem('AUTH_WEB_URL')}business`
-      },
-      {
-        text: this.getCurrentBusinessName || 'Numbered Benefit Company',
-        disabled: false,
-        href: `${sessionStorage.getItem('DASHBOARD_URL')}${this.getBusinessId}`
-      },
-      {
-        text: this.entityTitle,
-        disabled: false
-      }
-    ]
-  }
 }
 </script>
 
