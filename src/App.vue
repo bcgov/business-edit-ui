@@ -263,7 +263,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       {
         text: this.entityTitle,
         disabled: true,
-        to: { name: !this.isCorrectionFiling ? 'alteration' : 'correction' }
+        to: { name: this.isCorrectionFiling ? RouteNames.CORRECTION : RouteNames.ALTERATION }
       }
     ]
   }
