@@ -5,7 +5,7 @@ import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import { getVuexStore } from '@/store'
-import { shallowMount, createLocalVue } from '@vue/test-utils'
+import { mount, shallowMount, createLocalVue } from '@vue/test-utils'
 import { axios } from '@/utils'
 
 // Components
@@ -14,7 +14,7 @@ import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { FeeSummary } from '@bcrs-shared-components/fee-summary'
-import { EntityInfo, Actions } from '@/components/common'
+import { Actions, BreadCrumb, EntityInfo } from '@/components/common'
 import {
   FileAndPayInvalidNameRequestDialog,
   AccountAuthorizationDialog,
@@ -538,7 +538,12 @@ describe('App component - other', () => {
   let wrapper: any
 
   beforeEach(async () => {
-    wrapper = shallowMount(App, { store, vuetify, stubs: { Affix: true } })
+    // create a Local Vue and install router on it
+    const localVue = createLocalVue()
+    localVue.use(VueRouter)
+    const router = mockRouter.mock()
+
+    wrapper = shallowMount(App, { localVue, store, router, vuetify, stubs: { Affix: true } })
   })
 
   afterEach(() => {

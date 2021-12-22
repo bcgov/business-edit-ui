@@ -1,12 +1,6 @@
 <template>
   <div id="entity-info">
     <v-container class="py-2 pb-6">
-      <v-breadcrumbs :items="breadcrumbs" divider=">" class="breadcrumb pa-0">
-        <v-breadcrumbs-item slot="item" slot-scope="{ item }" exact :href="item.href">
-          {{ item.text }}
-        </v-breadcrumbs-item>
-      </v-breadcrumbs>
-
       <div class="d-flex justify-space-between mt-5">
         <div class="left-column align-self-end">
           <div class="title-container">
@@ -66,26 +60,6 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
       ? this.getOriginalIA?.business?.legalType
       : this.getBusinessSnapshot?.businessInfo?.legalType
     )
-  }
-
-  /** The route breadcrumbs list. */
-  private get breadcrumbs (): Array<any> {
-    return [
-      {
-        text: this.isRoleStaff ? 'Staff Dashboard' : 'Manage Businesses Dashboard',
-        disabled: false,
-        href: `${sessionStorage.getItem('AUTH_WEB_URL')}business`
-      },
-      {
-        text: this.getCurrentBusinessName || 'Numbered Benefit Company',
-        disabled: false,
-        href: `${sessionStorage.getItem('DASHBOARD_URL')}${this.getBusinessId}`
-      },
-      {
-        text: this.entityTitle,
-        disabled: false
-      }
-    ]
   }
 }
 </script>

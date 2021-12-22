@@ -1,4 +1,5 @@
 export { default as Actions } from './Actions.vue'
+export { BreadCrumb } from '@bcrs-shared-components/bread-crumb'
 export { default as BcRegContacts } from './BcRegContacts.vue'
 export { default as CertifySection } from './CertifySection.vue'
 export { default as CompletingParty } from './CompletingParty.vue'

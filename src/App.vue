@@ -79,6 +79,7 @@
     <PaySystemAlert />
     <div class="app-body">
       <main v-if="!isErrorDialog">
+        <BreadCrumb :breadcrumbs="breadcrumbs" />
         <EntityInfo />
 
         <v-container class="view-container my-8 py-0">
@@ -149,19 +150,21 @@ import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { FeeSummary } from '@bcrs-shared-components/fee-summary'
-import { EntityInfo, Actions } from '@/components/common'
+import { Actions, BreadCrumb, EntityInfo } from '@/components/common'
 import * as Views from '@/views'
 import * as Dialogs from '@/components/dialogs'
 
 // Mixins, interfaces, etc
 import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { FilingDataIF, ActionBindingIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF } from '@/interfaces'
+import { FilingDataIF, ActionBindingIF, BreadcrumbIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify, SummaryActions, RouteNames } from '@/enums'
+import { DashboardBreadcrumb, HomeBreadCrumb, StaffDashboardBreadcrumb } from '@/resources'
 
 @Component({
   components: {
     Actions,
+    BreadCrumb,
     EntityInfo,
     FeeSummary,
     PaySystemAlert,
@@ -190,6 +193,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   @Getter showFeeSummary!: boolean
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
+  @Getter getCurrentBusinessName!: string
 
   // Alteration flag getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -247,6 +251,30 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
   /** The Update Current JS Date timer id. */
   private updateCurrentJsDateId = 0
+
+  /** The route breadcrumbs list. */
+  private get breadcrumbs (): Array<BreadcrumbIF> {
+    const crumbs: Array<BreadcrumbIF> = [
+      {
+        text: this.getCurrentBusinessName || 'Numbered Benefit Company',
+        href: `${sessionStorage.getItem('DASHBOARD_URL')}${this.getBusinessId}`
+      },
+      {
+        text: this.entityTitle,
+        to: { name: this.isCorrectionFiling ? RouteNames.CORRECTION : RouteNames.ALTERATION }
+      }
+    ]
+
+    // Set base crumbs based on user role
+    // Staff don't want the home landing page and they can't access the Manage Business Dashboard
+    if (this.isRoleStaff) {
+      crumbs.unshift(StaffDashboardBreadcrumb) // If staff, set StaffDashboard as home crumb
+    } else {
+      crumbs.unshift(HomeBreadCrumb, DashboardBreadcrumb) // For non-staff, set Home and Dashboard crumbs
+    }
+
+    return crumbs
+  }
 
   /** The URL of the Pay API. */
   private get payApiUrl (): string {
