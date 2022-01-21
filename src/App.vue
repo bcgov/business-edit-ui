@@ -159,7 +159,7 @@ import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixi
 import { FilingDataIF, ActionBindingIF, BreadcrumbIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify, SummaryActions, RouteNames } from '@/enums'
-import { DashboardBreadcrumb, HomeBreadCrumb, StaffDashboardBreadcrumb } from '@/resources'
+import { DashboardHomeBreadcrumb, RegistryTableBreadcrumb, StaffDashboardBreadcrumb } from '@/resources'
 
 @Component({
   components: {
@@ -270,7 +270,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     if (this.isRoleStaff) {
       crumbs.unshift(StaffDashboardBreadcrumb) // If staff, set StaffDashboard as home crumb
     } else {
-      crumbs.unshift(HomeBreadCrumb, DashboardBreadcrumb) // For non-staff, set Home and Dashboard crumbs
+      crumbs.unshift(DashboardHomeBreadcrumb, RegistryTableBreadcrumb) // For non-staff, set Home and Dashboard crumbs
     }
 
     return crumbs
