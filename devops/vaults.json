@@ -38,7 +38,8 @@
         "vault": "web-url",
         "application": [
             "auth-web",
-            "business"
+            "business",
+            "registry"
         ]
     },
     {
