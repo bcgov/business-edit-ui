@@ -159,7 +159,7 @@ import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixi
 import { FilingDataIF, ActionBindingIF, BreadcrumbIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify, SummaryActions, RouteNames } from '@/enums'
-import { DashboardHomeBreadcrumb, RegistryTableBreadcrumb, StaffDashboardBreadcrumb } from '@/resources'
+import { MyBusinessRegistryBreadcrumb, RegistryDashboardBreadcrumb, StaffDashboardBreadcrumb } from '@/resources'
 
 @Component({
   components: {
@@ -268,9 +268,11 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     // Set base crumbs based on user role
     // Staff don't want the home landing page and they can't access the Manage Business Dashboard
     if (this.isRoleStaff) {
-      crumbs.unshift(StaffDashboardBreadcrumb) // If staff, set StaffDashboard as home crumb
+      // If staff, set StaffDashboard as home crumb
+      crumbs.unshift(StaffDashboardBreadcrumb)
     } else {
-      crumbs.unshift(DashboardHomeBreadcrumb, RegistryTableBreadcrumb) // For non-staff, set Home and Dashboard crumbs
+      // For non-staff, set Home and Dashboard crumbs
+      crumbs.unshift(RegistryDashboardBreadcrumb, MyBusinessRegistryBreadcrumb)
     }
 
     return crumbs
