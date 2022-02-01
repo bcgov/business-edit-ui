@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "0.6.26",
+  "version": "0.6.27",
   "private": true,
   "appName": "Edit UI",
   "sbcName": "SBC Common Components",
@@ -39,7 +39,7 @@
     "launchdarkly-js-client-sdk": "^2.18.1",
     "lodash": "^4.17.20",
     "regenerator-runtime": "^0.13.7",
-    "sbc-common-components": "2.4.19",
+    "sbc-common-components": "2.4.37",
     "uuid": "^8.3.1",
     "vue": "^2.6.12",
     "vue-affix": "^0.5.2",
