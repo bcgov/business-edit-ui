@@ -88,7 +88,6 @@
               <router-view
                 :appReady=appReady
                 :isSummaryMode="isSummaryMode"
-                @profileReady="profileReady = true"
                 @fetchError="fetchErrorDialog = true"
                 @haveData="haveData = true"
               />
@@ -140,7 +139,6 @@
 // Libraries
 import { Component, Watch, Mixins, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
 import { getKeycloakRoles, updateLdUser } from '@/utils'
 
@@ -235,19 +233,13 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   private fileAndPayInvalidNameRequestDialog = false
   private confirmDeleteAllDialog = false
 
-  // FUTURE: change profileReady/appReady/haveData to a state machine?
-
-  /** Whether the user profile is ready (ie, auth is loaded) and we can init the app. */
-  private profileReady: boolean = false
+  // FUTURE: change appReady/haveData to a state machine?
 
   /** Whether the app is ready and the views can now load their data. */
   private appReady: boolean = false
 
   /** Whether the views have loaded their data and the spinner can be hidden. */
   private haveData: boolean = false
-
-  /** Whether the token refresh service is initialized. */
-  private tokenService: boolean = false
 
   /** The Update Current JS Date timer id. */
   private updateCurrentJsDateId = 0
@@ -338,6 +330,11 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     return this.getAppValidate && Object.values(this.getFlagsReviewCertify).some(val => val === false)
   }
 
+  /** Helper to check is the current route matches */
+  private isRouteName (routeName: RouteNames): boolean {
+    return (this.$route.name === routeName)
+  }
+
   /**
    * Called when component is created.
    * NB: User may not be authed yet.
@@ -406,10 +403,6 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     this.$root.$on('go-to-dashboard', () => {
       this.goToDashboard()
     })
-
-    // if we are already authenticated then go right to init
-    // (since we won't get the event from Signin component)
-    if (this.isAuthenticated) this.onProfileReady(true)
   }
 
   /** Fetches and stores the current JS date. */
@@ -431,20 +424,14 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     this.$root.$off('go-to-dashboard')
   }
 
-  /** Called when profile is ready -- we can now init app. */
-  @Watch('profileReady')
-  private async onProfileReady (val: boolean): Promise<void> {
-    //
-    // do the one-time things here
-    //
-
-    if (val) {
+  /** Called when $route property changes. Used to init app. */
+  @Watch('$route', { immediate: true })
+  private async onRouteChanged (): Promise<void> {
+    // init only if we are not on signin or signout route
+    if (!this.isRouteName(RouteNames.SIGN_IN) && !this.isRouteName(RouteNames.SIGN_OUT)) {
       // store current filing type
       const filingType = this.$route.matched[0]?.meta.filingType
       filingType && this.setFilingType(filingType)
-
-      // start KC token service
-      await this.startTokenService()
 
       // get and store business ID
       const businessId = sessionStorage.getItem('BUSINESS_ID')
@@ -454,15 +441,18 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       this.loadAccountInformation()
 
       // initialize app
-      await this.initApp()
+      await this.initApp(true)
     }
   }
 
+  //
+  // http://localhost:8080/basePath/BC0870829/alteration
+  //
+
   /** Initializes application. Also called for retry. */
-  private async initApp (): Promise<void> {
-    //
-    // do the repeatable things here
-    //
+  private async initApp (routeChanged: boolean = false): Promise<void> {
+    // only fetch data on first route change
+    if (routeChanged && this.haveData) return
 
     // reset errors in case of retry
     this.resetFlags()
@@ -565,30 +555,6 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     } else {
       // redirect to entity dashboard
       this.goToDashboard()
-    }
-  }
-
-  /** Starts token service that refreshes KC token periodically. */
-  private async startTokenService (): Promise<void> {
-    // only initialize once
-    // don't start during Jest tests as it messes up the test JWT
-    if (this.tokenService || this.isJestRunning) return
-
-    try {
-      console.info('Starting token refresh service...') // eslint-disable-line no-console
-      await KeycloakService.initializeToken()
-      this.tokenService = true
-    } catch (e) {
-      // this happens when the refresh token has expired
-      // 1. clear flags and keycloak data
-      this.tokenService = false
-      this.profileReady = false
-      sessionStorage.removeItem(SessionStorageKeys.KeyCloakToken)
-      sessionStorage.removeItem(SessionStorageKeys.KeyCloakRefreshToken)
-      sessionStorage.removeItem(SessionStorageKeys.KeyCloakIdToken)
-      sessionStorage.removeItem(SessionStorageKeys.CurrentAccount)
-      // 2. reload app to get new tokens
-      location.reload()
     }
   }
 
