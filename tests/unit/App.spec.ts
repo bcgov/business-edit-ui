@@ -268,8 +268,9 @@ const KEYCLOAK_TOKEN_USER = 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ
 describe.skip('Numbered company setup', () => {
   let wrapper: any
   const { assign } = window.location
-  sessionStorage.setItem('AUTH_WEB_URL', `myhost/basePath/auth/`)
-  sessionStorage.setItem('DASHBOARD_URL', `myhost/business/`)
+  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
+  sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
+  sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -385,8 +386,9 @@ describe.skip('Numbered company setup', () => {
 describe.skip('App component', () => {
   let wrapper: any
   const { assign } = window.location
-  sessionStorage.setItem('AUTH_WEB_URL', `myhost/basePath/auth/`)
-  sessionStorage.setItem('DASHBOARD_URL', `myhost/business/`)
+  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
+  sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
+  sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -556,11 +558,34 @@ describe('App component - other', () => {
 
   beforeAll(() => {
     sessionStorage.clear()
+    sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
   })
 
   beforeEach(async () => {
+    const get = sinon.stub(axios, 'get')
+
+    // GET current user
+    get.withArgs('users/@me')
+      .returns(Promise.resolve({
+        data:
+        {
+          contacts: [{
+            email: 'completing-party@example.com'
+          }]
+        }
+      }))
+
+    // GET authorizations (role)
+    get.withArgs('entities/BC0007291/authorizations')
+      .returns(Promise.resolve({
+        data:
+        {
+          roles: ['edit', 'view']
+        }
+      }))
+
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -570,6 +595,7 @@ describe('App component - other', () => {
   })
 
   afterEach(() => {
+    sinon.restore()
     wrapper.destroy()
   })
 

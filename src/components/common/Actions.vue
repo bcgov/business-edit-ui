@@ -55,6 +55,7 @@ import { CorpTypeCd } from '@/enums'
 
 // Mixins
 import { DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
+import { navigate } from '@/utils'
 
 /** This component is only implemented for Correction filings atm. */
 @Component({})
@@ -183,14 +184,14 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
       const isPaymentActionRequired: boolean = filingComplete.header?.isPaymentActionRequired
       const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
 
-      // if payment action is required, redirect to Pay URL
+      // if payment action is required, navigate to Pay URL
       if (isPaymentActionRequired) {
         const authUrl = sessionStorage.getItem('AUTH_WEB_URL')
         const returnUrl = encodeURIComponent(dashboardUrl + this.getBusinessId)
         const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
         // assume Pay URL is always reachable
         // otherwise user will have to retry payment later
-        window.location.assign(payUrl)
+        navigate(payUrl)
       } else {
         // otherwise go straight to dashboard
         this.$root.$emit('go-to-dashboard')

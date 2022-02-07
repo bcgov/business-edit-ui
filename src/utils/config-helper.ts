@@ -14,9 +14,17 @@ export async function fetchConfig (): Promise<any> {
   const processEnvBaseUrl = process.env.BASE_URL
   const windowLocationPathname = window.location.pathname // eg, /basePath/BC1218875/correction/
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
+  const windowLocationSearch = window.location.search // eg, ?accountid=2288
 
   if (!origin || !processEnvVueAppPath || !processEnvBaseUrl || !windowLocationPathname || !windowLocationOrigin) {
     return Promise.reject(new Error('Missing environment variables'))
+  }
+
+  // get and store account id, if present
+  const accountId = new URLSearchParams(windowLocationSearch).get('accountid')
+  if (accountId) {
+    sessionStorage.setItem('ACCOUNT_ID', accountId)
+    console.log('Set Account ID to: ' + accountId)
   }
 
   // fetch config from API
@@ -39,7 +47,7 @@ export async function fetchConfig (): Promise<any> {
 
   const registryHomeUrl = response.data['REGISTRY_HOME_URL']
   sessionStorage.setItem('REGISTRY_HOME_URL', registryHomeUrl)
-  console.info('Set REGISTRY HOME URL to: ' + registryHomeUrl)
+  console.info('Set Registry Home URL to: ' + registryHomeUrl)
 
   const businessesUrl: string = response.data['BUSINESSES_URL']
   sessionStorage.setItem('BUSINESSES_URL', businessesUrl)

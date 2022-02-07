@@ -27,9 +27,9 @@ describe('Alteration component', () => {
   const { assign } = window.location
 
   // Define Session
-  sessionStorage.setItem('PAY_API_URL', `myhost/basePath/pay-api/`)
-  sessionStorage.setItem('AUTH_WEB_URL', `myhost/basePath/auth/`)
-  sessionStorage.setItem('DASHBOARD_URL', `myhost/business/`)
+  sessionStorage.setItem('PAY_API_URL', 'https://pay.api.url/')
+  sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
+  sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
   sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3' +
     'FQbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiIzZDQ3YjgwYy01MTAzLTRjMTYtOGNhZC0yMjU4NDMwZGYwZTciLCJle' +
     'HAiOjE1Njg0ODk1NTksIm5iZiI6MCwiaWF0IjoxNTY4NDAzMTYwLCJpc3MiOiJodHRwczovL3Nzby1kZXYucGF0aGZpbmRlci5nb3YuYmMuY2' +
@@ -62,7 +62,7 @@ describe('Alteration component', () => {
     const get = sinon.stub(axios, 'get')
 
     // GET payment fee for immediate alteration
-    get.withArgs('myhost/basePath/pay-api/fees/BEN/ALTER')
+    get.withArgs('https://pay.api.url/fees/BEN/ALTER')
       .returns(Promise.resolve({
         data: {
           'filingFees': 100.0,
@@ -81,7 +81,7 @@ describe('Alteration component', () => {
       }))
 
     // GET payment fee for future alteration
-    get.withArgs('myhost/basePath/pay-api/fees/BEN/ALTER?futureEffective=true')
+    get.withArgs('https://pay.api.url/fees/BEN/ALTER?futureEffective=true')
       .returns(Promise.resolve({
         data: {
           'filingFees': 100.0,

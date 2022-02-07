@@ -140,7 +140,7 @@
 import { Component, Watch, Mixins, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
-import { getKeycloakRoles, updateLdUser } from '@/utils'
+import { getKeycloakRoles, navigate, updateLdUser } from '@/utils'
 
 // Components
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
@@ -157,7 +157,12 @@ import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixi
 import { FilingDataIF, ActionBindingIF, BreadcrumbIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF } from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify, SummaryActions, RouteNames } from '@/enums'
-import { MyBusinessRegistryBreadcrumb, RegistryDashboardBreadcrumb, StaffDashboardBreadcrumb } from '@/resources'
+import {
+  getEntityDashboardBreadcrumb,
+  getMyBusinessRegistryBreadcrumb,
+  getRegistryDashboardBreadcrumb,
+  getStaffDashboardBreadcrumb
+} from '@/resources'
 
 @Component({
   components: {
@@ -191,7 +196,6 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   @Getter showFeeSummary!: boolean
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
-  @Getter getCurrentBusinessName!: string
 
   // Alteration flag getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -247,10 +251,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   /** The route breadcrumbs list. */
   private get breadcrumbs (): Array<BreadcrumbIF> {
     const crumbs: Array<BreadcrumbIF> = [
-      {
-        text: this.getCurrentBusinessName || 'Numbered Benefit Company',
-        href: `${sessionStorage.getItem('DASHBOARD_URL')}${this.getBusinessId}`
-      },
+      getEntityDashboardBreadcrumb(),
       {
         text: this.entityTitle,
         to: { name: this.isCorrectionFiling ? RouteNames.CORRECTION : RouteNames.ALTERATION }
@@ -261,10 +262,10 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     // Staff don't want the home landing page and they can't access the Manage Business Dashboard
     if (this.isRoleStaff) {
       // If staff, set StaffDashboard as home crumb
-      crumbs.unshift(StaffDashboardBreadcrumb)
+      crumbs.unshift(getStaffDashboardBreadcrumb())
     } else {
       // For non-staff, set Home and Dashboard crumbs
-      crumbs.unshift(RegistryDashboardBreadcrumb, MyBusinessRegistryBreadcrumb)
+      crumbs.unshift(getRegistryDashboardBreadcrumb(), getMyBusinessRegistryBreadcrumb())
     }
 
     return crumbs
@@ -529,20 +530,20 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     }
   }
 
-  /** Redirects to Manage Businesses dashboard. */
+  /** Navigates to Manage Businesses dashboard. */
   private goToManageBusinessDashboard (): void {
     this.fileAndPayInvalidNameRequestDialog = false
     this.setHaveUnsavedChanges(false)
     // FUTURE: Manage Businesses URL should come from config
     const manageBusinessUrl = `${sessionStorage.getItem('AUTH_WEB_URL')}business`
-    window.location.assign(manageBusinessUrl)
+    navigate(manageBusinessUrl)
   }
 
-  /** Redirects to entity dashboard. */
+  /** Navigates to entity dashboard. */
   private goToDashboard (): void {
     // this.setHaveUnsavedChanges(false)
     const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-    window.location.assign(dashboardUrl + this.getBusinessId)
+    navigate(dashboardUrl + this.getBusinessId)
   }
 
   private async doDeleteAll (): Promise<void> {
@@ -685,17 +686,17 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
         const isPaymentActionRequired: boolean = filingComplete.header?.isPaymentActionRequired
         const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
 
-        // if payment action is required, redirect to Pay URL
+        // if payment action is required, navigate to Pay URL
         if (isPaymentActionRequired) {
           const authUrl = sessionStorage.getItem('AUTH_WEB_URL')
           const returnUrl = encodeURIComponent(dashboardUrl + this.getBusinessId)
           const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
           // assume Pay URL is always reachable
           // otherwise user will have to retry payment later
-          window.location.assign(payUrl)
+          navigate(payUrl)
         } else {
-          // redirect to Dashboard URL
-          window.location.assign(dashboardUrl + this.getBusinessId)
+          // navigate to Dashboard URL
+          navigate(dashboardUrl + this.getBusinessId)
         }
       } else {
         const error = new Error('Missing Payment Token')
