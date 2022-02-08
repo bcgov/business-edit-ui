@@ -11,14 +11,14 @@
       attach="#app"
       :dialog="accountAuthorizationDialog"
       @exit="goToDashboard()"
-      @retry="initApp()"
+      @retry="fetchData()"
     />
 
     <FetchErrorDialog
       attach="#app"
       :dialog="fetchErrorDialog"
       @exit="goToDashboard()"
-      @retry="initApp()"
+      @retry="fetchData()"
     />
 
     <!-- FUTURE: pass actual filing name -->
@@ -336,16 +336,13 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     return (this.$route.name === routeName)
   }
 
-  /**
-   * Called when component is created.
-   * NB: User may not be authed yet.
-   */
+  /** Called when component is created. */
   private async created (): Promise<void> {
     // update Current Js Date now and every 1 minute thereafter
     await this.updateCurrentJsDate()
     this.updateCurrentJsDateId = setInterval(this.updateCurrentJsDate, 60000)
 
-    // before unloading this page, if there are changes then prompt user
+    // add handler to prompt user if there are changes, before unloading this page
     window.onbeforeunload = (event: any) => {
       if (this.haveUnsavedChanges || this.isEditing) {
         // cancel closing the page
@@ -404,6 +401,9 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     this.$root.$on('go-to-dashboard', () => {
       this.goToDashboard()
     })
+
+    // init app
+    this.onRouteChanged()
   }
 
   /** Fetches and stores the current JS date. */
@@ -425,8 +425,8 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     this.$root.$off('go-to-dashboard')
   }
 
-  /** Called when $route property changes. Used to init app. */
-  @Watch('$route', { immediate: true })
+  /** Called when $route property changes. */
+  @Watch('$route', { immediate: false })
   private async onRouteChanged (): Promise<void> {
     // init only if we are not on signin or signout route
     if (!this.isRouteName(RouteNames.SIGN_IN) && !this.isRouteName(RouteNames.SIGN_OUT)) {
@@ -434,7 +434,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       const filingType = this.$route.matched[0]?.meta.filingType
       filingType && this.setFilingType(filingType)
 
-      // get and store business ID
+      // get and store Business ID
       const businessId = sessionStorage.getItem('BUSINESS_ID')
       this.setBusinessId(businessId)
 
@@ -442,7 +442,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       this.loadAccountInformation()
 
       // initialize app
-      await this.initApp(true)
+      await this.fetchData(true)
     }
   }
 
@@ -450,13 +450,16 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   // http://localhost:8080/basePath/BC0870829/alteration
   //
 
-  /** Initializes application. Also called for retry. */
-  private async initApp (routeChanged: boolean = false): Promise<void> {
+  /** Fetches app data. Also called for retry. */
+  private async fetchData (routeChanged: boolean = false): Promise<void> {
     // only fetch data on first route change
     if (routeChanged && this.haveData) return
 
     // reset errors in case of retry
     this.resetFlags()
+
+    // set current date from "real time" date from server
+    this.setCurrentDate(this.dateToYyyyMmDd(this.getCurrentJsDate))
 
     // get and store keycloak roles
     try {
@@ -493,11 +496,6 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       // just log the error -- no need to halt app
       console.log('Launch Darkly update error =', error) // eslint-disable-line no-console
     }
-
-    // fetch and store today's date
-    // NB: keep this here to reload date on retry
-    const currentDate = this.dateToYyyyMmDd(this.getCurrentJsDate)
-    this.setCurrentDate(currentDate)
 
     // finally, let router views know they can load their data
     this.appReady = true
