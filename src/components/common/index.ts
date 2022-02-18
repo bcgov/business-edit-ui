@@ -8,3 +8,11 @@ export { default as EffectiveDateTime } from './EffectiveDateTime.vue'
 export { default as EntityInfo } from './EntityInfo.vue'
 export { default as ErrorContact } from './ErrorContact.vue'
 export { default as StaffPayment } from './StaffPayment.vue'
+export * from './dialogs'
+export * from './YourCompany'
+export * from './PeopleAndRoles'
+export * from './ShareStructure'
+
+// Shared Components
+export { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
+export { ContactInfo } from '@bcrs-shared-components/contact-info'

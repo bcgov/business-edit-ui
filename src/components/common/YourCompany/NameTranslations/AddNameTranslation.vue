@@ -55,7 +55,7 @@
 import { Component, Emit, Prop, Mixins } from 'vue-property-decorator'
 
 // Components
-import { ConfirmDialog } from '@/components/dialogs'
+import { ConfirmDialog } from '@/components/common/dialogs'
 
 // Interfaces
 import { ConfirmDialogType, FormIF } from '@/interfaces'

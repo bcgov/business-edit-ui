@@ -26,6 +26,7 @@ export interface StateModelIF {
   originalIA: IncorporationFilingIF
   originalAlteration: AlterationFilingIF
   businessSnapshot: BusinessSnapshotIF
+  firmSnapshot: any
   staffPaymentStep: StaffPaymentStepIF
   filingData: FilingDataIF
   detail: DetailIF

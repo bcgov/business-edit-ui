@@ -13,7 +13,7 @@
 import { Component, Vue, Emit, Prop, Watch } from 'vue-property-decorator'
 
 // Components
-import { NameTranslation } from '.'
+import { NameTranslation } from './index'
 
 // Interfaces
 import { ActionBindingIF, NameTranslationIF } from '@/interfaces'

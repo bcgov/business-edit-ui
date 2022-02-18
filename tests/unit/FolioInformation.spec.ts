@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import { mount } from '@vue/test-utils'
 import { axios } from '@/utils'
 import { getVuexStore } from '@/store'
-import FolioInformation from '@/components/YourCompany/FolioInformation.vue'
+import FolioInformation from '@/components/common/YourCompany/FolioInformation.vue'
 import { FolioNumber } from '@bcrs-shared-components/folio-number'
 
 Vue.use(Vuetify)

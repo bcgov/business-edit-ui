@@ -34,7 +34,7 @@ import { Action, Getter } from 'vuex-class'
 
 // Components
 import { ShareStructure } from '@bcrs-shared-components/share-structure'
-import { ResolutionDateDialog } from '@/components/dialogs'
+import { ResolutionDateDialog } from '@/components/common/dialogs'
 import { CommonMixin } from '@/mixins'
 
 import {

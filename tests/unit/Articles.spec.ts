@@ -4,7 +4,7 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import { getVuexStore } from '@/store'
 import { mount } from '@vue/test-utils'
-import { Articles } from '@/components/Articles'
+import { Articles } from '@/components/Edit/Articles'
 import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)

@@ -109,10 +109,12 @@ export default class CommonMixin extends Vue {
   /** The entity title. */
   get entityTitle (): string {
     switch (this.$route.name) {
-      case RouteNames.CORRECTION:
-        return 'Correction - Incorporation Application'
       case RouteNames.ALTERATION:
         return 'Company Information'
+      case RouteNames.CHANGE:
+        return 'Business Information'
+      case RouteNames.CORRECTION:
+        return 'Correction - Incorporation Application'
       default:
         return ''
     }

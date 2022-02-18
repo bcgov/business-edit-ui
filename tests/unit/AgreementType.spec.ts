@@ -5,7 +5,7 @@ import flushPromises from 'flush-promises'
 import VueRouter from 'vue-router'
 import mockRouter from './MockRouter'
 
-import { AgreementType } from '@/components/IncorporationAgreement'
+import { AgreementType } from '@/components/Correction/IncorporationAgreement'
 
 // Store
 import { getVuexStore } from '@/store'

@@ -7,7 +7,7 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 
 // Components
-import { ListPeopleAndRoles } from '@/components/PeopleAndRoles'
+import { ListPeopleAndRoles } from '@/components/common'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)

@@ -138,8 +138,8 @@ import { Action } from 'vuex-class'
 import { ActionChip } from '@bcrs-shared-components/action-chip'
 
 // Components
-import { ConfirmDialog } from '@/components/dialogs'
-import { ListNameTranslation, AddNameTranslation } from '.'
+import { ConfirmDialog } from '@/components/common/dialogs'
+import { ListNameTranslation, AddNameTranslation } from './index'
 
 // Interfaces
 import { ActionBindingIF, ConfirmDialogType, NameTranslationIF } from '@/interfaces'

@@ -23,7 +23,7 @@ import {
   SaveErrorDialog,
   NameRequestErrorDialog,
   ConfirmDeleteAllDialog
-} from '@/components/dialogs'
+} from '@/components/common/dialogs'
 
 // Other
 import mockRouter from './MockRouter'

@@ -4,7 +4,6 @@ import {
   BusinessInformationIF,
   BusinessSnapshotIF,
   CertifyIF,
-  CertifyStatementIF,
   FilingDataIF,
   IncorporationAddressIf,
   IncorporationAgreementIF,
@@ -15,7 +14,8 @@ import {
   ResolutionsIF,
   ShareClassIF,
   StateIF,
-  FeesIF
+  FeesIF,
+  ResourceIF
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { CorpTypeCd, FilingTypes } from '@/enums'
@@ -24,8 +24,8 @@ export const mutateBusinessId = (state: StateIF, businessId: string) => {
   state.stateModel.tombstone.businessId = businessId
 }
 
-export const mutateCertifyStatementResource = (state: StateIF, certifyStatementResource: CertifyStatementIF) => {
-  state.resourceModel.certifyStatementResource = certifyStatementResource
+export const mutateResource = (state: StateIF, resource: ResourceIF) => {
+  state.resourceModel = resource
 }
 
 export const mutateKeycloakRoles = (state: StateIF, keyCloakRoles: Array<string>) => {
@@ -210,6 +210,10 @@ export const mutateOriginalIA = (state: StateIF, originalIA: IncorporationFiling
 
 export const mutateBusinessSnapshot = (state: StateIF, businessSnapshot: BusinessSnapshotIF) => {
   state.stateModel.businessSnapshot = businessSnapshot
+}
+
+export const mutateFirmSnapshot = (state: StateIF, firmSnapshot: any) => {
+  state.stateModel.firmSnapshot = firmSnapshot
 }
 
 export const mutateStaffPayment = (state: StateIF, staffPayment: StaffPaymentIF) => {

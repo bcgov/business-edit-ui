@@ -5,7 +5,8 @@
     <template v-if="!isEditing">
       <v-layout row id="summary-registered-address" class="mx-0">
         <v-flex xs3>
-          <label>Registered Office</label>
+          <label v-if="isChangeFiling">Business Addresses</label>
+          <label v-else>Registered Office</label>
         </v-flex>
 
         <v-flex xs4>
@@ -306,6 +307,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter getOfficeAddresses!: IncorporationAddressIf // NB: may be {}
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter isCorrectionFiling!: boolean
+  @Getter isChangeFiling!: boolean
 
   // Global actions
   @Action setOfficeAddresses!: ActionBindingIF
@@ -404,7 +406,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
-    if (this.getOfficeAddresses.registeredOffice) {
+    if (this.getOfficeAddresses?.registeredOffice) {
       this.mailingAddress = { ...this.getOfficeAddresses.registeredOffice.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses.registeredOffice.deliveryAddress }
 

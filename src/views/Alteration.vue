@@ -1,5 +1,5 @@
 <template>
-  <section class="pb-10">
+  <section class="pb-10" id="alteration-view">
     <!-- Company Information page-->
     <v-slide-x-transition hide-on-leave>
       <div v-if="!isSummaryMode">
@@ -19,10 +19,6 @@
         <ShareStructures class="mt-10" />
 
         <Articles class="mt-10" />
-
-        <AgreementType class="mt-10" v-if="false" />
-
-        <Detail class="mt-10" v-if="false" />
       </div>
     </v-slide-x-transition>
 
@@ -130,18 +126,20 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-
-// Components
-import { AlterationSummary, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Summary'
-import { YourCompany } from '@/components/YourCompany'
-import { AgreementType } from '@/components/IncorporationAgreement'
-import { CurrentDirectors } from '@/components/PeopleAndRoles'
-import { CertifySection, Detail, StaffPayment } from '@/components/common'
-import { ShareStructures } from '@/components/ShareStructure'
-import { Articles } from '@/components/Articles'
-import { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
-
-// Mixins, Interfaces, Enums, etc
+import {
+  Articles,
+  AlterationSummary,
+  DocumentsDelivery,
+  TransactionalFolioNumber
+} from '@/components/Edit'
+import {
+  CertifySection,
+  CurrentDirectors,
+  CourtOrderPoa,
+  ShareStructures,
+  StaffPayment,
+  YourCompany
+} from '@/components/common'
 import {
   AuthApiMixin,
   CommonMixin,
@@ -156,24 +154,21 @@ import {
   FilingDataIF,
   FlagsReviewCertifyIF,
   FeesIF,
-  EmptyFees
+  EmptyFees,
+  StaffPaymentIF
 } from '@/interfaces'
-import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
+import { CorpTypeCd, FilingCodes, FilingStatus, StaffPaymentOptions } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
-import { CertifyStatementResource } from '@/resources'
+import { AlterationResources } from '@/resources'
 
 @Component({
   components: {
-    AgreementType,
     AlterationSummary,
     Articles,
     CertifySection,
     CourtOrderPoa,
     CurrentDirectors,
-    Detail,
     DocumentsDelivery,
     ShareStructures,
     StaffPayment,
@@ -188,9 +183,6 @@ export default class Alteration extends Mixins(
   FilingTemplateMixin,
   PayApiMixin
 ) {
-  // Declarations for template
-  readonly CertifyStatementResource = CertifyStatementResource
-
   // Global getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getEntityType!: CorpTypeCd
@@ -216,7 +208,7 @@ export default class Alteration extends Mixins(
   @Action setValidCourtOrder!: ActionBindingIF
   @Action setCurrentFees!: ActionBindingIF
   @Action setFeePrices!: ActionBindingIF
-  @Action setCertifyStatementResource!: ActionBindingIF
+  @Action setResource!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -254,6 +246,16 @@ export default class Alteration extends Mixins(
       return `$${this.getFeePrices.futureEffectiveFees.toFixed(2)}`
     }
     return ''
+  }
+
+  /** The entity specific resource file for an Alteration filing. */
+  private get alterationResources (): any {
+    const resources = AlterationResources.find(x => x.entityType === this.getEntityType)
+    if (!resources) {
+      // go to catch()
+      throw new Error(`Invalid Alteration resources entity type = ${this.getEntityType}`)
+    }
+    return resources
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -301,12 +303,11 @@ export default class Alteration extends Mixins(
         await this.parseBusinessSnapshot(businessSnapshot)
       }
 
+      // Set the resources
+      this.setResource(this.alterationResources)
+
       // initialize Fee Summary data
-      this.setFilingData({
-        filingTypeCode: FilingCodes.ALTERATION,
-        entityType: this.getEntityType,
-        priority: false
-      })
+      this.setFilingData(this.alterationResources.filingData)
 
       // update the current fees for the Filing
       this.setCurrentFees(
@@ -321,10 +322,6 @@ export default class Alteration extends Mixins(
         ).catch(() => cloneDeep(EmptyFees))
       )
 
-      // Set the resources
-      this.setCertifyStatementResource(
-        CertifyStatementResource.find(x => x.entityType === this.getEntityType)
-      )
       // tell App that we're finished loading
       this.emitHaveData()
     } catch (err) {

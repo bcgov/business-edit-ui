@@ -1,4 +1,4 @@
-import { Signin, Signout, Alteration, Correction } from '@/views'
+import { Signin, Signout, Alteration, Change, Correction } from '@/views'
 import { FilingTypes, RouteNames } from '@/enums'
 
 export const routes = [
@@ -38,6 +38,16 @@ export const routes = [
       requiresAuth: true,
       isStaffOnly: false,
       filingType: FilingTypes.ALTERATION
+    }
+  },
+  {
+    path: '/change',
+    name: RouteNames.CHANGE,
+    component: Change,
+    meta: {
+      requiresAuth: true,
+      isStaffOnly: false,
+      filingType: FilingTypes.CHANGE_FIRM
     }
   },
   {

@@ -9,10 +9,8 @@ import { getVuexStore } from '@/store'
 
 // Components
 import { createLocalVue, createWrapper, mount } from '@vue/test-utils'
-import { AlterationSummary } from '@/components/Summary'
-import { EffectiveDateTime } from '@/components/common'
-import { ConfirmDialog } from '@/components/dialogs'
-import { NameTranslation } from '@/components/YourCompany/NameTranslations'
+import { AlterationSummary } from '@/components/Edit'
+import { ConfirmDialog, EffectiveDateTime, NameTranslation } from '@/components/common'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()

@@ -6,8 +6,6 @@ import { getVuexStore } from '@/store'
 import { CertifySection } from '@/components/common'
 import { Certify } from '@bcrs-shared-components/certify'
 
-import { CertifyStatementIF } from '@/interfaces'
-
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
@@ -15,18 +13,10 @@ const store = getVuexStore()
 
 const defaultDate = '2019-01-01'
 const certifyClause = 'Certify Clause'
-const certifyStatementHeader = 'Certify Statement Header'
-const certifyStatementLines = [
-  'Statement Line 1',
-  'Statement Line 2',
-  'Statement Line 3'
-]
 
-const certifyStatementResource: CertifyStatementIF = {
+const resource = {
   entityType: 'BEN',
   displayName: 'BC Benefit Company',
-  certifyStatementHeader: certifyStatementHeader,
-  certifyStatements: certifyStatementLines,
   certifyClause: certifyClause
 }
 
@@ -42,9 +32,9 @@ function createComponent (): Wrapper<CertifySection> {
 
 describe('Certify component', () => {
   beforeAll(() => {
-    store.state.resourceModel.certifyStatementResource = certifyStatementResource
+    store.state.resourceModel = resource
     store.state.stateModel.tombstone.currentDate = defaultDate
-    store.state.stateModel.tombstone.entityType = certifyStatementResource.entityType
+    store.state.stateModel.tombstone.entityType = resource.entityType
   })
 
   it('mounts the certify section and the imported certify component ', () => {

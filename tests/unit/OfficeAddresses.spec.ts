@@ -3,7 +3,7 @@ import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
 import { mount } from '@vue/test-utils'
-import { OfficeAddresses } from '@/components/YourCompany'
+import { OfficeAddresses } from '@/components/common'
 import { AddressIF, IncorporationAddressIf } from '@/interfaces'
 
 Vue.use(Vuetify)

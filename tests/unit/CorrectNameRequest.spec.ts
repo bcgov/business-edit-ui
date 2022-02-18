@@ -10,7 +10,7 @@ import { getVuexStore } from '@/store'
 
 // Components
 import { mount, Wrapper } from '@vue/test-utils'
-import { CorrectNameRequest } from '@/components/YourCompany/CompanyName'
+import { CorrectNameRequest } from '@/components/common/YourCompany/CompanyName'
 
 Vue.use(Vuetify)
 

@@ -97,8 +97,8 @@ import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF, ConfirmDialogType, IncorporationFilingIF, OrgPersonIF, RoleIF } from '@/interfaces'
 import { ActionTypes, IncorporatorTypes, CompareModes, RoleTypes } from '@/enums'
-import { ConfirmDialog } from '@/components/dialogs'
-import { ListPeopleAndRoles } from '.'
+import { ConfirmDialog } from '@/components/common/dialogs'
+import { ListPeopleAndRoles } from './index'
 import { CommonMixin } from '@/mixins'
 
 @Component({

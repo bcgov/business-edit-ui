@@ -14,7 +14,8 @@ export default class PayApiMixin extends Vue {
    * Fetches filing fees.
    * @returns a promise to return the fees for a filing
    */
-  async fetchFilingFees (filingCode: FilingCodes, entityType: CorpTypeCd, isFutureEffective: boolean): Promise<FeesIF> {
+  async fetchFilingFees (filingCode: FilingCodes, entityType: CorpTypeCd, isFutureEffective: boolean = false):
+    Promise<FeesIF> {
     let url = sessionStorage.getItem('PAY_API_URL') + 'fees/' + entityType + '/' + filingCode
     if (isFutureEffective) {
       url += '?futureEffective=true'

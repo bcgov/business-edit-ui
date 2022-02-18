@@ -7,16 +7,18 @@
 
     <div class="define-company-header">
       <v-icon color="appDkBlue">mdi-domain</v-icon>
-      <label class="define-company-title">Your Company</label>
+      <label class="define-company-title">Your {{ getResource.entityReference }}</label>
     </div>
 
     <div id="company-name-section" class="section-container" :class="{'invalid-section': invalidNameSection}">
       <!-- Company Name -->
       <v-row no-gutters class="mt-4">
         <v-col cols="3">
-          <label :class="{'error-text': invalidNameSection}"><strong>Company Name</strong></label>
+          <label :class="{'error-text': invalidNameSection}">
+            <strong>{{ getResource.entityReference }} Name</strong>
+          </label>
           <v-flex md1 class="mt-1">
-            <v-chip v-if="companyNameChanges || (isAlterationFiling && hasBusinessNameChanged)"
+            <v-chip v-if="companyNameChanges || (isEditFiling && hasBusinessNameChanged)"
                     id="corrected-lbl"
                     x-small label
                     color="primary"
@@ -33,7 +35,7 @@
             <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
 
             <!-- Business Type Info -->
-            <template v-if="(isAlterationFiling && hasBusinessNameChanged) && !hasNewNr">
+            <template v-if="(isEditFiling && hasBusinessNameChanged) && !hasNewNr">
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
                 <span class="info-text">{{getCorpTypeDescription(getEntityType)}}</span>
@@ -44,7 +46,7 @@
             </template>
 
             <!-- Name Request Info -->
-            <template v-if="isAlterationFiling && hasNewNr">
+            <template v-if="isEditFiling && hasNewNr">
               <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -86,7 +88,7 @@
             <div class="actions mr-4">
               <!-- TODO: only show buttons for named company -->
               <v-btn
-                v-if="companyNameChanges || (isAlterationFiling && hasBusinessNameChanged)"
+                v-if="companyNameChanges || (isEditFiling && hasBusinessNameChanged)"
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -104,7 +106,7 @@
                 <v-icon small>mdi-pencil</v-icon>
                 <span>{{editLabel}}</span>
               </v-btn>
-              <span class="more-actions" v-if="companyNameChanges || (isAlterationFiling && hasBusinessNameChanged)">
+              <span class="more-actions" v-if="companyNameChanges || (isEditFiling && hasBusinessNameChanged)">
                 <v-menu
                   offset-y left nudge-bottom="4"
                   v-model="dropdown"
@@ -147,7 +149,7 @@
       </v-row>
 
       <!-- Name Request Applicant -->
-      <v-row no-gutters v-if="isAlterationFiling && hasNewNr" class="sub-section">
+      <v-row no-gutters v-if="isEditFiling && hasNewNr" class="sub-section">
         <v-col cols="3">
           <v-layout column>
             <label><strong>Name Request Applicant</strong></label>
@@ -176,7 +178,7 @@
     </div>
 
     <!-- Business Type -->
-    <div v-if="isAlterationFiling"
+    <div v-if="isEditFiling"
          id="company-type-section"
          class="section-container"
          :class="{'invalid-section': invalidTypeSection}"
@@ -189,7 +191,12 @@
     </div>
 
     <!-- Name Translation(s) -->
-    <div id="name-translate-section" class="section-container" :class="{'invalid-section': invalidTranslationSection}">
+    <div
+      v-if="!isChangeFiling"
+      id="name-translate-section"
+      class="section-container"
+      :class="{'invalid-section': invalidTranslationSection}"
+    >
       <CorrectNameTranslation
         :invalidSection="invalidTranslationSection"
         @haveChanges="nameTranslationChanges = $event"
@@ -199,8 +206,37 @@
 
     <v-divider class="mx-4" />
 
+    <!-- Change Filing Section -->
+    <template v-if="isChangeFiling">
+      <div class="section-container">
+        <v-row no-gutters>
+          <v-col cols="3">
+            <label><strong>Business Start Date</strong></label>
+          </v-col>
+
+          <v-col cols="9">
+            <div class="info-text">{{ businessStartDate }}</div>
+          </v-col>
+        </v-row>
+      </div>
+
+      <v-divider class="mx-4" />
+
+      <div class="section-container">
+        <v-row no-gutters>
+          <v-col cols="3">
+            <label><strong>Nature of Business</strong></label>
+          </v-col>
+
+          <v-col cols="9">
+            <div class="info-text">Cookie and cracker manufacturing</div>
+          </v-col>
+        </v-row>
+      </div>
+    </template>
+
     <!-- Recognition Date and Time -->
-    <div class="section-container">
+    <div class="section-container" v-else>
       <v-row no-gutters>
         <v-col cols="3">
           <label><strong>Recognition Date and Time</strong></label>
@@ -214,7 +250,7 @@
 
     <v-divider class="mx-4" />
 
-    <!-- Registered Office and Records Office addresses -->
+    <!-- Office addresses -->
     <div class="section-container">
       <OfficeAddresses
         @haveChanges="officeAddressChanges = $event"
@@ -250,24 +286,24 @@ import {
   ActionBindingIF,
   BusinessSnapshotIF,
   ConfirmDialogType,
+  ContactPointIF,
   FlagsCompanyInfoIF,
   IncorporationFilingIF,
   NameRequestApplicantIF,
-  NameRequestIF
+  NameRequestIF,
+  ResourceIF
 } from '@/interfaces'
-// Shared Interfaces
-import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 import {
   BusinessContactInfo,
   ChangeBusinessType,
   FolioInformation,
   CorrectNameTranslation,
   OfficeAddresses
-} from './'
-import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
+} from './index'
+import { ConfirmDialog } from '@/components/common'
+import { CorrectNameOptions } from '@/components/common/YourCompany'
 import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
 import { CorrectionTypes, CorpTypeCd } from '@/enums'
-import { ConfirmDialog } from '@/components/dialogs'
 
 /** Note: this component is used by both corrections and alterations. */
 @Component({
@@ -310,6 +346,9 @@ export default class YourCompany extends Mixins(
   @Getter getBusinessContact!: ContactPointIF
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
+  @Getter isChangeFiling!: boolean
+  @Getter isEditFiling!: boolean
+  @Getter getResource!: ResourceIF
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -405,12 +444,17 @@ export default class YourCompany extends Mixins(
     return 'Unknown'
   }
 
+  /** The start date for a firm. */
+  private get businessStartDate (): string {
+    return 'Unknown'
+  }
+
   /** Compare names. */
   private get isNewName () {
     const correctedName = this.getApprovedName
     const currentName = this.isCorrectionFiling
-      ? this.getOriginalIA.incorporationApplication.nameRequest.legalName
-      : this.getBusinessSnapshot.businessInfo.legalName
+      ? this.getOriginalIA?.incorporationApplication?.nameRequest.legalName
+      : this.getBusinessSnapshot?.businessInfo?.legalName
 
     return correctedName !== currentName
   }
