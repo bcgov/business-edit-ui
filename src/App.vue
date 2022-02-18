@@ -106,9 +106,9 @@
                   />
                 </aside>
 
-                <!-- Alterations use the enhanced Fee Summary shared component -->
+                <!-- Alteration/Change filings use the enhanced Fee Summary shared component -->
                 <v-expand-transition>
-                  <FeeSummary v-if="isAlterationFiling || isChangeFiling"
+                  <FeeSummary v-if="isEditFiling"
                     :filingData="getFilingData"
                     :payApiUrl="payApiUrl"
                     :isLoading="isBusySaving"
@@ -195,8 +195,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   @Getter getCurrentJsDate!: Date
   @Getter showFeeSummary!: boolean
   @Getter isCorrectionFiling!: boolean
-  @Getter isAlterationFiling!: boolean
-  @Getter isChangeFiling!: boolean
+  @Getter isEditFiling!: boolean
 
   // Alteration flag getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
