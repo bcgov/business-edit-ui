@@ -194,7 +194,7 @@ export default class Change extends Mixins(
 
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
-    if (!this.isJestRunning && getFeatureFlag('change-ui-enabled')) {
+    if (!this.isJestRunning && !getFeatureFlag('change-ui-enabled')) {
       window.alert('Change filings are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard')
       return
