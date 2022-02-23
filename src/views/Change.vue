@@ -175,12 +175,7 @@ export default class Change extends Mixins(
 
   /** The entity specific resource file for a change filing. */
   private get changeFirmResources (): any {
-    const resources = ChangeFirmResources.find(x => x.entityType === this.getEntityType)
-    if (!resources) {
-      // go to catch()
-      throw new Error(`Invalid Change resources entity type = ${this.getEntityType}`)
-    }
-    return resources
+    return ChangeFirmResources.find(x => x.entityType === this.getEntityType)
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -228,11 +223,16 @@ export default class Change extends Mixins(
         await this.parseFirmSnapshot(firmSnapshot)
       }
 
-      // Set the resources
-      this.setResource(this.changeFirmResources)
+      if (this.changeFirmResources) {
+        // Set the resources
+        this.setResource(this.changeFirmResources)
 
-      // initialize Fee Summary data
-      this.setFilingData(this.changeFirmResources.filingData)
+        // initialize Fee Summary data
+        this.setFilingData(this.changeFirmResources.filingData)
+      } else {
+        // go to catch()
+        throw new Error(`Invalid Change resources entity type = ${this.getEntityType}`)
+      }
 
       // update the current fees for the Filing
       this.setCurrentFees(
@@ -281,7 +281,7 @@ export default class Change extends Mixins(
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: Boolean = true): void { }
+  private emitHaveData (haveData: boolean = true): void { }
 }
 </script>
 

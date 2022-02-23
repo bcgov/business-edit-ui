@@ -8,6 +8,7 @@ export const SoleProprietorshipResource: ResourceIF = {
   contactLabel: 'Business',
   displayName: GetCorpFullDescription(CorpTypeCd.SOLE_PROP),
   nameRequestType: NameRequestEntityTypes.FR,
+  addressLabel: 'Business Addresses',
   filingData: {
     entityType: CorpTypeCd.SOLE_PROP,
     filingTypeCode: null

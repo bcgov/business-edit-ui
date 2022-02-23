@@ -8,6 +8,7 @@ export const BenefitCompanyResource: ResourceIF = {
   contactLabel: 'Registered Office',
   displayName: GetCorpFullDescription(CorpTypeCd.BENEFIT_COMPANY),
   nameRequestType: NameRequestEntityTypes.BC,
+  addressLabel: 'Registered Office',
   filingData: {
     entityType: CorpTypeCd.BENEFIT_COMPANY,
     filingTypeCode: FilingCodes.ALTERATION,

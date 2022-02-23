@@ -18,7 +18,7 @@
             <strong>{{ getResource.entityReference }} Name</strong>
           </label>
           <v-flex md1 class="mt-1">
-            <v-chip v-if="companyNameChanges || (isEditFiling && hasBusinessNameChanged)"
+            <v-chip v-if="companyNameChanges || ((isAlterationFiling || isChangeFiling) && hasBusinessNameChanged)"
                     id="corrected-lbl"
                     x-small label
                     color="primary"
@@ -35,7 +35,7 @@
             <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
 
             <!-- Business Type Info -->
-            <template v-if="(isEditFiling && hasBusinessNameChanged) && !hasNewNr">
+            <template v-if="((isAlterationFiling || isChangeFiling) && hasBusinessNameChanged) && !hasNewNr">
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
                 <span class="info-text">{{getCorpTypeDescription(getEntityType)}}</span>
@@ -46,7 +46,7 @@
             </template>
 
             <!-- Name Request Info -->
-            <template v-if="isEditFiling && hasNewNr">
+            <template v-if="(isAlterationFiling || isChangeFiling) && hasNewNr">
               <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -88,7 +88,7 @@
             <div class="actions mr-4">
               <!-- TODO: only show buttons for named company -->
               <v-btn
-                v-if="companyNameChanges || (isEditFiling && hasBusinessNameChanged)"
+                v-if="companyNameChanges || ((isAlterationFiling || isChangeFiling) && hasBusinessNameChanged)"
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -106,7 +106,8 @@
                 <v-icon small>mdi-pencil</v-icon>
                 <span>{{editLabel}}</span>
               </v-btn>
-              <span class="more-actions" v-if="companyNameChanges || (isEditFiling && hasBusinessNameChanged)">
+              <span class="more-actions" v-if="companyNameChanges ||
+                ((isAlterationFiling || isChangeFiling) && hasBusinessNameChanged)">
                 <v-menu
                   offset-y left nudge-bottom="4"
                   v-model="dropdown"
@@ -149,7 +150,7 @@
       </v-row>
 
       <!-- Name Request Applicant -->
-      <v-row no-gutters v-if="isEditFiling && hasNewNr" class="sub-section">
+      <v-row no-gutters v-if="(isAlterationFiling || isChangeFiling) && hasNewNr" class="sub-section">
         <v-col cols="3">
           <v-layout column>
             <label><strong>Name Request Applicant</strong></label>
@@ -178,7 +179,7 @@
     </div>
 
     <!-- Business Type -->
-    <div v-if="isEditFiling"
+    <div v-if="isAlterationFiling || isChangeFiling"
          id="company-type-section"
          class="section-container"
          :class="{'invalid-section': invalidTypeSection}"
@@ -347,7 +348,6 @@ export default class YourCompany extends Mixins(
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
   @Getter isChangeFiling!: boolean
-  @Getter isEditFiling!: boolean
   @Getter getResource!: ResourceIF
 
   // Alteration flag getters
@@ -453,8 +453,8 @@ export default class YourCompany extends Mixins(
   private get isNewName () {
     const correctedName = this.getApprovedName
     const currentName = this.isCorrectionFiling
-      ? this.getOriginalIA?.incorporationApplication?.nameRequest.legalName
-      : this.getBusinessSnapshot?.businessInfo?.legalName
+      ? this.getOriginalIA.incorporationApplication.nameRequest.legalName
+      : this.getBusinessSnapshot.businessInfo.legalName
 
     return correctedName !== currentName
   }

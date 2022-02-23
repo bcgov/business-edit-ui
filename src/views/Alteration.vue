@@ -250,12 +250,7 @@ export default class Alteration extends Mixins(
 
   /** The entity specific resource file for an Alteration filing. */
   private get alterationResources (): any {
-    const resources = AlterationResources.find(x => x.entityType === this.getEntityType)
-    if (!resources) {
-      // go to catch()
-      throw new Error(`Invalid Alteration resources entity type = ${this.getEntityType}`)
-    }
-    return resources
+    return AlterationResources.find(x => x.entityType === this.getEntityType)
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -303,11 +298,16 @@ export default class Alteration extends Mixins(
         await this.parseBusinessSnapshot(businessSnapshot)
       }
 
-      // Set the resources
-      this.setResource(this.alterationResources)
+      if (this.alterationResources) {
+        // Set the resources
+        this.setResource(this.alterationResources)
 
-      // initialize Fee Summary data
-      this.setFilingData(this.alterationResources.filingData)
+        // initialize Fee Summary data
+        this.setFilingData(this.alterationResources.filingData)
+      } else {
+        // go to catch()
+        throw new Error(`Invalid Alteration resources entity type = ${this.getEntityType}`)
+      }
 
       // update the current fees for the Filing
       this.setCurrentFees(

@@ -8,6 +8,7 @@ export const GeneralPartnershipResource: ResourceIF = {
   contactLabel: 'Business',
   displayName: GetCorpFullDescription(CorpTypeCd.PARTNERSHIP),
   nameRequestType: NameRequestEntityTypes.GP,
+  addressLabel: 'Business Addresses',
   filingData: {
     entityType: CorpTypeCd.PARTNERSHIP,
     filingTypeCode: FilingCodes.CHANGE_FIRM

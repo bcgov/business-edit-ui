@@ -532,19 +532,19 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setFirmSnapshot(firmSnapshot)
 
     // Restore current entity type
-    this.setEntityType(filing.changeFirm.business?.legalType || firmSnapshot.businessInfo.legalType)
+    this.setEntityType(filing.business?.legalType || firmSnapshot.businessInfo.legalType)
 
     // Restore business information
     this.setBusinessInformation({
       ...filing.business,
-      ...filing.changeFirm.business
+      ...filing.changeOfRegistration.business
     })
 
     // Restore name request
-    this.setNameRequest(filing.changeFirm.nameRequest || { legalName: firmSnapshot.businessInfo.legalName })
+    this.setNameRequest(filing.changeOfRegistration.nameRequest || { legalName: firmSnapshot.businessInfo.legalName })
 
     // Store office addresses **from snapshot**
-    this.setOfficeAddresses(filing.changeFirm.businessAddresses || firmSnapshot.businessAddress)
+    this.setOfficeAddresses(filing.changeOfRegistration.businessAddress || firmSnapshot.businessAddress)
 
     // Store people and roles **from snapshot** (because we don't change people and roles in an alteration)
     this.setPeopleAndRoles(
@@ -573,13 +573,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     )
 
     // Restore business contact
-    const contactPoint = filing.changeFirm.contactPoint
-      ? filing.changeFirm.contactPoint
+    const contactPoint = filing.changeOfRegistration.contactPoint
+      ? filing.changeOfRegistration.contactPoint
       : firmSnapshot.authInfo.contacts[0]
 
     this.setBusinessContact({
       ...contactPoint,
-      confirmEmail: filing.changeFirm.contactPoint?.email || firmSnapshot.authInfo.contacts[0].email
+      confirmEmail: filing.changeOfRegistration.contactPoint?.email || firmSnapshot.authInfo.contacts[0].email
     })
 
     // Restore certify state

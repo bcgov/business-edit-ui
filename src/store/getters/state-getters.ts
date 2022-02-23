@@ -53,12 +53,6 @@ export const isChangeFiling = (state: StateIF): boolean => {
   return (state.stateModel.tombstone.filingType === FilingTypes.CHANGE_FIRM)
 }
 
-/** Whether the current filing is an Edit filing. */
-export const isEditFiling = (state: StateIF): boolean => {
-  return (state.stateModel.tombstone.filingType === FilingTypes.CHANGE_FIRM) ||
-    (state.stateModel.tombstone.filingType === FilingTypes.ALTERATION)
-}
-
 /** The entity type. */
 export const getEntityType = (state: StateIF): CorpTypeCd => {
   return state.stateModel.tombstone.entityType

@@ -60,7 +60,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 
 // Components
-import { FolioInformation, BusinessContactInfo, OfficeAddresses } from '@/components/common/YourCompany/index'
+import { BusinessContactInfo, FolioInformation, OfficeAddresses } from '@/components/common/YourCompany'
 import { CorrectNameOptions } from '@/components/common/YourCompany/CompanyName'
 
 // Mixins

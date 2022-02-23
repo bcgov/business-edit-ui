@@ -7,6 +7,7 @@ export interface ResourceIF {
   contactLabel?: string
   displayName: string
   nameRequestType: NameRequestEntityTypes
+  addressLabel: string
   filingData: {
     entityType: CorpTypeCd,
     filingTypeCode: FilingCodes,
