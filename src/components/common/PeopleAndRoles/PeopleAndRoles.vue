@@ -98,7 +98,7 @@ import { cloneDeep } from 'lodash'
 import { ActionBindingIF, ConfirmDialogType, IncorporationFilingIF, OrgPersonIF, RoleIF } from '@/interfaces'
 import { ActionTypes, IncorporatorTypes, CompareModes, RoleTypes } from '@/enums'
 import { ConfirmDialog } from '@/components/common/dialogs'
-import { ListPeopleAndRoles } from './index'
+import { ListPeopleAndRoles } from './'
 import { CommonMixin } from '@/mixins'
 
 @Component({

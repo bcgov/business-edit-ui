@@ -300,8 +300,8 @@ import {
   FolioInformation,
   CorrectNameTranslation,
   OfficeAddresses
-} from './index'
-import { ConfirmDialog } from '@/components/common'
+} from './'
+import { ConfirmDialog } from '@/components/common/dialogs'
 import { CorrectNameOptions } from '@/components/common/YourCompany'
 import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
 import { CorrectionTypes, CorpTypeCd } from '@/enums'
