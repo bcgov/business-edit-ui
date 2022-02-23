@@ -190,10 +190,8 @@ import {
 } from '@/interfaces'
 import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 import { CorpTypeCd } from '@/enums'
-import { EffectiveDateTime } from '@/components/common'
-import { ShareStructures } from '@/components/ShareStructure'
-import { ResolutionDates } from '@/components/Articles'
-import { NameTranslation } from '@/components/YourCompany/NameTranslations'
+import { ResolutionDates } from '@/components/Edit'
+import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common'
 
 @Component({
   components: {

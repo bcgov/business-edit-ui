@@ -8,7 +8,6 @@ import {
   NameRequestIF,
   BusinessInformationIF,
   CertifyIF,
-  CertifyStatementIF,
   NameTranslationIF,
   IncorporationAddressIf,
   FilingDataIF,
@@ -19,7 +18,7 @@ import {
   FlagsReviewCertifyIF,
   FlagsCompanyInfoIF,
   ResolutionsIF,
-  FeesIF
+  FeesIF, ResourceIF
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { isEqual } from 'lodash'
@@ -47,6 +46,11 @@ export const isCorrectionFiling = (state: StateIF): boolean => {
 /** Whether the current filing is an alteration. */
 export const isAlterationFiling = (state: StateIF): boolean => {
   return (state.stateModel.tombstone.filingType === FilingTypes.ALTERATION)
+}
+
+/** Whether the current filing is a change filing. */
+export const isChangeFiling = (state: StateIF): boolean => {
+  return (state.stateModel.tombstone.filingType === FilingTypes.CHANGE_FIRM)
 }
 
 /** The entity type. */
@@ -139,6 +143,11 @@ export const getOriginalIA = (state: StateIF): IncorporationFilingIF => {
 /** The original business snapshot. */
 export const getBusinessSnapshot = (state: StateIF): BusinessSnapshotIF => {
   return state.stateModel.businessSnapshot
+}
+
+/** The original firm snapshot. */
+export const getFirmSnapshot = (state: StateIF): any => {
+  return state.stateModel.firmSnapshot
 }
 
 /** The business number. */
@@ -424,8 +433,8 @@ export const getCertifyState = (state: StateIF): CertifyIF => {
   return state.stateModel.certifyState
 }
 
-export const getCertifyResource = (state: StateIF): CertifyStatementIF => {
-  return state.resourceModel.certifyStatementResource
+export const getResource = (state: StateIF): ResourceIF => {
+  return state.resourceModel
 }
 
 export const getDocumentOptionalEmail = (state: StateIF): string => {
@@ -563,7 +572,8 @@ export const showFeeSummary = (state: StateIF): boolean => {
   }
   const haveFilingChange = (
     (isCorrectionFiling(state) && hasCorrectionChanged(state)) ||
-    (isAlterationFiling(state) && hasAlterationChanged(state))
+    (isAlterationFiling(state) && hasAlterationChanged(state)) ||
+    (isChangeFiling(state))
   )
   return (haveFilingChange && !isEqual(getFilingData(state), defaultFilingData))
 }

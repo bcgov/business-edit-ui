@@ -10,11 +10,11 @@ import { createLocalVue, mount } from '@vue/test-utils'
 import {
   BusinessContactInfo,
   ChangeBusinessType,
+  CorrectNameOptions,
   FolioInformation,
   OfficeAddresses,
   YourCompany
-} from '@/components/YourCompany'
-import { CorrectNameOptions } from '@/components/YourCompany/CompanyName'
+} from '@/components/common'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()

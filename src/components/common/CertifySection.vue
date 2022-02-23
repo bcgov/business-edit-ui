@@ -32,7 +32,7 @@ import { Certify } from '@bcrs-shared-components/certify'
 import { DateMixin, EnumMixin } from '@/mixins'
 
 // Interfaces, Enums & Resources
-import { ActionBindingIF, CertifyIF, CertifyStatementIF } from '@/interfaces'
+import { ActionBindingIF, CertifyIF, ResourceIF } from '@/interfaces'
 import { CorpTypeCd } from '@/enums'
 
 @Component({
@@ -44,7 +44,7 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   @Getter getCertifyState!: CertifyIF
   @Getter getCurrentDate!: string
   @Getter getEntityType!: CorpTypeCd
-  @Getter getCertifyResource!: CertifyStatementIF
+  @Getter getResource!: ResourceIF
   @Getter isRoleStaff!: boolean
   @Getter getAppValidate!: boolean
 
@@ -74,7 +74,7 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
 
   /** Get the certify resource message */
   private get certifyMessage (): string {
-    return this.getCertifyResource?.certifyClause
+    return this.getResource?.certifyClause
   }
 
   /** Handler for Valid change event. */

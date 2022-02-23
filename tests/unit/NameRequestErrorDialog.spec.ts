@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import { NameRequestErrorDialog } from '@/components/dialogs'
+import NameRequestErrorDialog from '@/components/common/dialogs/NameRequestErrorDialog.vue'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})

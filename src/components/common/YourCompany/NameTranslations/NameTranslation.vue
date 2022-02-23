@@ -132,14 +132,14 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Vue, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash'
 import { Action } from 'vuex-class'
 import { ActionChip } from '@bcrs-shared-components/action-chip'
 
 // Components
-import { ConfirmDialog } from '@/components/dialogs'
-import { ListNameTranslation, AddNameTranslation } from '.'
+import { ConfirmDialog } from '@/components/common/dialogs'
+import { ListNameTranslation, AddNameTranslation } from './'
 
 // Interfaces
 import { ActionBindingIF, ConfirmDialogType, NameTranslationIF } from '@/interfaces'

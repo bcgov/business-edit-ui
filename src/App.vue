@@ -106,9 +106,9 @@
                   />
                 </aside>
 
-                <!-- Alterations use the enhanced Fee Summary shared component -->
+                <!-- Alteration/Change filings use the enhanced Fee Summary shared component -->
                 <v-expand-transition>
-                  <FeeSummary v-if="isAlterationFiling"
+                  <FeeSummary v-if="isAlterationFiling || isChangeFiling"
                     :filingData="getFilingData"
                     :payApiUrl="payApiUrl"
                     :isLoading="isBusySaving"
@@ -150,7 +150,7 @@ import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vu
 import { FeeSummary } from '@bcrs-shared-components/fee-summary'
 import { Actions, BreadCrumb, EntityInfo } from '@/components/common'
 import * as Views from '@/views'
-import * as Dialogs from '@/components/dialogs'
+import * as Dialogs from '@/components/common/dialogs'
 
 // Mixins, interfaces, etc
 import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
@@ -196,6 +196,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   @Getter showFeeSummary!: boolean
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
+  @Getter isChangeFiling!: boolean
 
   // Alteration flag getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -254,7 +255,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       getEntityDashboardBreadcrumb(),
       {
         text: this.entityTitle,
-        to: { name: this.isCorrectionFiling ? RouteNames.CORRECTION : RouteNames.ALTERATION }
+        to: { name: this.$route.name }
       }
     ]
 

@@ -8,7 +8,7 @@ import { getVuexStore } from '@/store'
 
 // Components
 import { mount, Wrapper } from '@vue/test-utils'
-import { CorrectNameToNumber } from '@/components/YourCompany/CompanyName'
+import { CorrectNameToNumber } from '@/components/common/YourCompany/CompanyName'
 
 Vue.use(Vuetify)
 

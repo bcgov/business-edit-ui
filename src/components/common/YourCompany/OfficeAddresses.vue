@@ -5,7 +5,7 @@
     <template v-if="!isEditing">
       <v-layout row id="summary-registered-address" class="mx-0">
         <v-flex xs3>
-          <label>Registered Office</label>
+          <label>{{ getResource.addressLabel }}</label>
         </v-flex>
 
         <v-flex xs4>
@@ -294,7 +294,7 @@ import { Action, Getter } from 'vuex-class'
 import { isEmpty } from 'lodash'
 import { OfficeAddressSchema } from '@/schemas'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-import { ActionBindingIF, AddressIF, IncorporationAddressIf, IncorporationFilingIF } from '@/interfaces'
+import { ActionBindingIF, AddressIF, IncorporationAddressIf, IncorporationFilingIF, ResourceIF } from '@/interfaces'
 import { AddressTypes, CorpTypeCd } from '@/enums'
 import { CommonMixin } from '@/mixins'
 
@@ -306,6 +306,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter getOfficeAddresses!: IncorporationAddressIf // NB: may be {}
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter isCorrectionFiling!: boolean
+  @Getter isChangeFiling!: boolean
+  @Getter getResource!: ResourceIF
 
   // Global actions
   @Action setOfficeAddresses!: ActionBindingIF

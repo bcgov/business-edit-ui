@@ -1,5 +1,6 @@
 <template>
   <ContactInfo
+    :contactLabel="getResource.contactLabel"
     :businessContact="getBusinessContact"
     :originalBusinessContact="originalContact"
     :hasBusinessContactInfoChange="hasBusinessContactInfoChange"
@@ -16,18 +17,9 @@
 // Libraries
 import { Component, Mixins, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-
-// Interfaces
-import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces'
-
-// Shared Interfaces
-import { ContactPointIF } from '@bcrs-shared-components/interfaces'
-
-// Mixins
-import { AuthApiMixin, CommonMixin } from '@/mixins'
-
-// Components
 import { ContactInfo } from '@bcrs-shared-components/contact-info'
+import { AuthApiMixin, CommonMixin } from '@/mixins'
+import { ActionBindingIF, ContactPointIF, IncorporationFilingIF, ResourceIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -41,6 +33,7 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
   @Getter getSnapshotBusinessContact!: ContactPointIF
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
+  @Getter getResource!: ResourceIF
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF

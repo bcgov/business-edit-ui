@@ -7,7 +7,7 @@ import { getVuexStore } from '@/store'
 
 // Components
 import { createLocalVue, mount } from '@vue/test-utils'
-import { ChangeBusinessType } from '@/components/YourCompany'
+import { ChangeBusinessType } from '@/components/common'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()

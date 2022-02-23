@@ -9,7 +9,7 @@ import flushPromises from 'flush-promises'
 import { createLocalVue, mount } from '@vue/test-utils'
 
 // Components
-import { ShareStructures } from '@/components/ShareStructure'
+import { ShareStructures } from '@/components/common/ShareStructure'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)

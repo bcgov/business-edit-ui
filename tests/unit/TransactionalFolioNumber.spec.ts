@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import { TransactionalFolioNumber } from '@/components/Summary'
+import { TransactionalFolioNumber } from '@/components/Edit'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})

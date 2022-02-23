@@ -165,7 +165,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins, Emit } from 'vue-property-decorator'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-import { OrgPerson } from '.'
+import { OrgPerson } from './'
 import { CommonMixin } from '@/mixins'
 import { OrgPersonIF } from '@/interfaces'
 import { ActionTypes } from '@/enums'

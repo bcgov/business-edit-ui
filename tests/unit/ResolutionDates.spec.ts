@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import { ResolutionDates } from '@/components/Articles'
+import { ResolutionDates } from '@/components/Edit/Articles'
 import { getVuexStore } from '@/store'
 
 Vue.use(Vuetify)

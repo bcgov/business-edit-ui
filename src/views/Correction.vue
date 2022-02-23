@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section id="correction-view">
     <header>
       <h1>Correction - Incorporation Application</h1>
     </header>
@@ -43,20 +43,21 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-import { YourCompany } from '@/components/YourCompany'
-import { PeopleAndRoles } from '@/components/PeopleAndRoles'
-import { AgreementType } from '@/components/IncorporationAgreement'
-import { CertifySection, CompletingParty, Detail, StaffPayment } from '@/components/common'
-import { ShareStructures } from '@/components/ShareStructure'
-
-// Mixins, Interfaces, Enums, etc
+import { AgreementType } from '@/components/Correction'
+import {
+  CertifySection,
+  CompletingParty,
+  Detail,
+  PeopleAndRoles,
+  ShareStructures,
+  StaffPayment,
+  YourCompany
+} from '@/components/common'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { ActionBindingIF, FilingDataIF } from '@/interfaces'
-import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
+import { ActionBindingIF, FilingDataIF, StaffPaymentIF } from '@/interfaces'
+import { CorpTypeCd, FilingCodes, FilingStatus, StaffPaymentOptions } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { BenefitCompanyStatementResource, CertifyStatementResource } from '@/resources'
+import { BenefitCompanyStatementResource, CorrectionResources } from '@/resources'
 
 @Component({
   components: {
@@ -73,7 +74,6 @@ import { BenefitCompanyStatementResource, CertifyStatementResource } from '@/res
 export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
   // Declarations for template
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
-  readonly CertifyStatementResource = CertifyStatementResource
 
   // Global getters
   @Getter getBusinessId!: string
@@ -92,6 +92,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   @Action setFilingData!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
+  @Action setResource!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -110,6 +111,15 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   /** True if user is authenticated. */
   private get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
+  }
+
+  private get correctionResources (): any {
+    const resources = CorrectionResources.find(x => x.entityType === this.getEntityType)
+    if (!resources) {
+      // go to catch()
+      throw new Error(`Invalid Correction resources entity type = ${this.getEntityType}`)
+    }
+    return resources
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -183,9 +193,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
       }
 
       // Set the resources
-      this.setCertifyStatementResource(
-        CertifyStatementResource.find(x => x.entityType === this.getEntityType)
-      )
+      this.setResource(this.correctionResources)
 
       // tell App that we're finished loading
       this.emitHaveData()

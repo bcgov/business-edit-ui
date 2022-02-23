@@ -3,8 +3,9 @@ import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
 import { mount } from '@vue/test-utils'
-import { OfficeAddresses } from '@/components/YourCompany'
+import { OfficeAddresses } from '@/components/common'
 import { AddressIF, IncorporationAddressIf } from '@/interfaces'
+import { BenefitCompanyResource } from '@/resources/Edit/Alteration'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -53,6 +54,7 @@ describe('summary mode', () => {
   beforeAll(() => {
     // init entity type
     store.state.stateModel.tombstone.entityType = 'BEN'
+    store.state.resourceModel = BenefitCompanyResource
   })
 
   it('displays the correct sections', () => {

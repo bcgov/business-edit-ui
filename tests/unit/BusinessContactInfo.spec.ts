@@ -9,7 +9,7 @@ import { getVuexStore } from '@/store'
 
 // Components
 import { createLocalVue, mount } from '@vue/test-utils'
-import { BusinessContactInfo } from '@/components/YourCompany'
+import { BusinessContactInfo } from '@/components/common'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()

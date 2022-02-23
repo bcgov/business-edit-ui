@@ -12,7 +12,7 @@ import { getVuexStore } from '@/store'
 import { createLocalVue, mount } from '@vue/test-utils'
 
 // Components
-import { NameTranslation } from '@/components/YourCompany'
+import { NameTranslation } from '@/components/common/YourCompany'
 import flushPromises from 'flush-promises'
 import { NameTranslationIF } from '@/interfaces'
 

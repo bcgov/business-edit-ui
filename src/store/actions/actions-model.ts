@@ -9,7 +9,8 @@ import {
   NameTranslationIF,
   OrgPersonIF,
   ShareClassIF,
-  FeesIF
+  FeesIF,
+  ResourceIF
 } from '@/interfaces'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 import { CorpTypeCd, FilingTypes } from '@/enums'
@@ -66,8 +67,8 @@ export const setEffectiveDateValid: ActionIF = ({ commit }, valid: boolean): voi
   commit('mutateEffectiveDateValid', valid)
 }
 
-export const setCertifyStatementResource: ActionIF = ({ commit }, certifyStatementResource): void => {
-  commit('mutateCertifyStatementResource', certifyStatementResource)
+export const setResource: ActionIF = ({ commit }, resource: ResourceIF): void => {
+  commit('mutateResource', resource)
 }
 
 export const setCertifyState: ActionIF = ({ commit }, certifyState: CertifyIF): void => {
@@ -184,6 +185,10 @@ export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
 
 export const setBusinessSnapshot: ActionIF = ({ commit }, businessSnapshot: BusinessSnapshotIF): void => {
   commit('mutateBusinessSnapshot', businessSnapshot)
+}
+
+export const setFirmSnapshot: ActionIF = ({ commit }, firmSnapshot: any): void => {
+  commit('mutateFirmSnapshot', firmSnapshot)
 }
 
 export const setStaffPayment: ActionIF = ({ commit }, staffPayment): void => {
