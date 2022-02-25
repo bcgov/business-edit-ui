@@ -35,8 +35,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { CommonMixin, EnumMixin } from '@/mixins'
-import { BusinessInformationIF, BusinessSnapshotIF, IncorporationFilingIF } from '@/interfaces'
-// Shared Interfaces
+import { BusinessInformationIF, EntitySnapshotIF, IncorporationFilingIF } from '@/interfaces'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 import { CorpTypeCd } from '@/enums'
 
@@ -51,14 +50,14 @@ export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
   @Getter getBusinessContact!: ContactPointIF
   @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getOriginalIA!: IncorporationFilingIF
-  @Getter getBusinessSnapshot!: BusinessSnapshotIF
+  @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter isCorrectionFiling!: boolean
 
   /** Get original entity type. */
   private get originalEntityType (): string {
     return this.getCorpTypeDescription(this.isCorrectionFiling
       ? this.getOriginalIA?.business?.legalType
-      : this.getBusinessSnapshot?.businessInfo?.legalType
+      : this.getEntitySnapshot?.businessInfo?.legalType
     )
   }
 }

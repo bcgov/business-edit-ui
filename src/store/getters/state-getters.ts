@@ -12,13 +12,14 @@ import {
   IncorporationAddressIf,
   FilingDataIF,
   StateIF,
-  BusinessSnapshotIF,
   EffectiveDateTimeIF,
   ShareStructureIF,
   FlagsReviewCertifyIF,
   FlagsCompanyInfoIF,
   ResolutionsIF,
-  FeesIF, ResourceIF
+  FeesIF,
+  ResourceIF,
+  EntitySnapshotIF
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { isEqual } from 'lodash'
@@ -141,13 +142,8 @@ export const getOriginalIA = (state: StateIF): IncorporationFilingIF => {
 }
 
 /** The original business snapshot. */
-export const getBusinessSnapshot = (state: StateIF): BusinessSnapshotIF => {
-  return state.stateModel.businessSnapshot
-}
-
-/** The original firm snapshot. */
-export const getFirmSnapshot = (state: StateIF): any => {
-  return state.stateModel.firmSnapshot
+export const getEntitySnapshot = (state: StateIF): EntitySnapshotIF => {
+  return state.stateModel.entitySnapshot
 }
 
 /** The business number. */
@@ -270,19 +266,19 @@ export const getBusinessContact = (state: StateIF): ContactPointIF => {
 }
 
 export const getSnapshotBusinessContact = (state: StateIF): ContactPointIF => {
-  return state.stateModel.businessSnapshot?.authInfo?.contacts[0]
+  return state.stateModel.entitySnapshot?.authInfo?.contacts[0]
 }
 
 export const getSnapshotFolioNumber = (state: StateIF): string => {
-  return state.stateModel.businessSnapshot?.authInfo?.folioNumber
+  return state.stateModel.entitySnapshot?.authInfo?.folioNumber
 }
 
 export const getSnapshotShareStructure = (state: StateIF): ShareStructureIF => {
-  return state.stateModel.businessSnapshot?.shareStructure
+  return state.stateModel.entitySnapshot?.shareStructure
 }
 
 export const getSnapshotBusinessInfo = (state: StateIF): BusinessInformationIF => {
-  return state.stateModel.businessSnapshot?.businessInfo
+  return state.stateModel.entitySnapshot?.businessInfo
 }
 
 /** Whether we are ignoring data changes. */

@@ -13,5 +13,6 @@ export interface ResourceIF {
     filingTypeCode: FilingCodes,
     priority?: boolean
   },
+  typeChangeInfo?: string
   certifyClause: string
 }

@@ -17,6 +17,21 @@
           <span class="info-text" :class="{ 'hasConflict': isConflictingLegalType && isNewName}">
             {{getCorpTypeDescription(getEntityType)}}
           </span>
+
+          <!-- Firm info tooltip -->
+          <v-tooltip v-if="isChangeFiling"
+                     top
+                     content-class="top-tooltip"
+                     transition="fade-transition"
+                     nudge-right="3"
+          >
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" color="primary" size="18px">mdi-information-outline</v-icon>
+            </template>
+            <span>{{ getResource.typeChangeInfo }}</span>
+          </v-tooltip>
+
+          <!-- Type mismatch tooltip -->
           <v-tooltip v-if="isConflictingLegalType && isNewName"
                      top
                      content-class="top-tooltip"
@@ -217,7 +232,7 @@ import { CommonMixin, EnumMixin } from '@/mixins'
 
 // Enums and Interfaces
 import { CorpTypeCd } from '@/enums'
-import { ActionBindingIF, BusinessSnapshotIF } from '@/interfaces'
+import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -231,16 +246,15 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {
   // Global getters
   @Getter getApprovedName!: string
   @Getter getEntityType!: CorpTypeCd
-  @Getter isConflictingLegalType!: boolean
-  @Getter getBusinessSnapshot!: BusinessSnapshotIF
-
-  // Alteration flag getters
+  @Getter getEntitySnapshot!: EntitySnapshotIF
+  @Getter getResource!: ResourceIF
   @Getter hasBusinessTypeChanged!: boolean
+  @Getter isChangeFiling!: boolean
+  @Getter isConflictingLegalType!: boolean
 
   @Action setEntityType!: ActionBindingIF
 
   readonly CorpTypeCd = CorpTypeCd
-
   private selectedEntityType: CorpTypeCd = null
   private confirmArticles: boolean = false
   private helpToggle: boolean = false
@@ -285,7 +299,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {
   /** Verify New Business name. */
   private get isNewName (): boolean {
     return this.getApprovedName &&
-      (this.getApprovedName !== this.getBusinessSnapshot?.businessInfo?.legalName)
+      (this.getApprovedName !== this.getEntitySnapshot?.businessInfo?.legalName)
   }
 
   /** Check is current entity selection is a Benefit Company */
@@ -295,7 +309,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {
 
   /** Reset company type values to original. */
   private resetType () {
-    this.setEntityType(this.getBusinessSnapshot?.businessInfo?.legalType)
+    this.setEntityType(this.getEntitySnapshot?.businessInfo?.legalType)
     this.emitHaveChanges(false)
     this.isEditingType = false
     this.confirmArticles = false

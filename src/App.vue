@@ -547,7 +547,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
   private async doDeleteAll (): Promise<void> {
     // Restore baseline data to original snapshot.
-    this.parseBusinessSnapshot()
+    this.parseEntitySnapshot()
     this.setHaveUnsavedChanges(false)
     if (this.isSummaryMode) {
       // just close the Delete All dialog

@@ -145,10 +145,10 @@ export default class LegalApiMixin extends Vue {
   }
 
   /**
-   * Fetches the incorporation address of the current business.
+   * Fetches the address of the current entity.
    * @returns a promise to return the data
    */
-  async fetchIncorporationAddress (): Promise<IncorporationAddressIf> {
+  async fetchAddresses (): Promise<IncorporationAddressIf> {
     if (!this.getBusinessId) throw new Error('Invalid business id')
 
     const url = `businesses/${this.getBusinessId}/addresses`
@@ -159,7 +159,7 @@ export default class LegalApiMixin extends Vue {
           return response.data
         }
         // eslint-disable-next-line no-console
-        console.log('fetchIncorporationAddress() error - invalid response =', response)
+        console.log('fetchAddresses() error - invalid response =', response)
         throw new Error('Invalid API response')
       })
   }

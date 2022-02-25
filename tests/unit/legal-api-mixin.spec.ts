@@ -145,7 +145,7 @@ describe('Legal API Mixin', () => {
       .returns(Promise.resolve({ data: ADDRESSES }))
 
     // call method
-    const response = await vm.fetchIncorporationAddress()
+    const response = await vm.fetchAddresses()
 
     // verify data
     expect(response).toEqual(ADDRESSES)
@@ -255,9 +255,9 @@ describe('Legal API Mixin', () => {
     get.withArgs('businesses/CP1234567/aliases').returns(Promise.resolve({}))
     await expect(vm.fetchNameTranslations()).rejects.toThrow('Invalid API response')
 
-    // verify fetchIncorporationAddress with no response.data
+    // verify fetchAddresses with no response.data
     get.withArgs('businesses/CP1234567/addresses').returns(Promise.resolve({}))
-    await expect(vm.fetchIncorporationAddress()).rejects.toThrow('Invalid API response')
+    await expect(vm.fetchAddresses()).rejects.toThrow('Invalid API response')
 
     // verify fetchOrgPersons with no response.data
     get.withArgs('businesses/CP1234567/directors').returns(Promise.resolve({}))
