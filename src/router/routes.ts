@@ -47,7 +47,7 @@ export const routes = [
     meta: {
       requiresAuth: true,
       isStaffOnly: false,
-      filingType: FilingTypes.CHANGE_FIRM
+      filingType: FilingTypes.CHANGE_OF_REGISTRATION
     }
   },
   {

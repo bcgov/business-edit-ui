@@ -512,7 +512,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       case SummaryActions.SAVE_RESUME_LATER:
         // Save filing and return to dashboard.
         await this.onClickSave()
-        this.goToDashboard()
+        // this.goToDashboard()
         break
       case SummaryActions.DELETE_ALL:
         this.$root.$emit('delete-all')
@@ -662,12 +662,14 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
     let filingComplete: any
     try {
-      const filing = await this.buildAlterationFiling(isDraft)
+      const filing = this.isAlterationFiling
+        ? await this.buildAlterationFiling(isDraft)
+        : await this.buildChangeFiling(isDraft)
 
       // Update or file the alteration if we have a filingId or create a draft if not.
       filingComplete = this.getFilingId
         ? await this.updateFiling(filing, isDraft)
-        : await this.createAlteration(filing, isDraft)
+        : await this.createFiling(filing, isDraft)
 
       // clear flag
       this.setHaveUnsavedChanges(false)

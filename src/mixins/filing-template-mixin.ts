@@ -303,6 +303,46 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     return filing
   }
 
+  /**
+   * Builds a change of registration filing from store data. Used when saving a filing.
+   * @param isDraft whether this is a draft
+   * @returns the change filing body
+   */
+  buildChangeFiling (isDraft: boolean): ChangeFirmIF {
+    // Build alteration filing
+    let filing: ChangeFirmIF = {
+      header: {
+        name: FilingTypes.CHANGE_OF_REGISTRATION,
+        certifiedBy: this.getCertifyState.certifiedBy,
+        date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
+        folioNumber: this.getFolioNumber
+      },
+      business: {
+        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
+        legalType: this.getEntitySnapshot.businessInfo.legalType,
+        identifier: this.getEntitySnapshot.businessInfo.identifier,
+        legalName: this.getEntitySnapshot.businessInfo.legalName
+      },
+      changeOfRegistration: {
+        business: {
+          natureOfBusiness: '',
+          naics: {
+            naicsCode: '',
+            naicsDescription: ''
+          },
+          identifier: this.getBusinessId
+        },
+        contactPoint: {
+          email: this.getBusinessContact.email,
+          phone: this.getBusinessContact.phone,
+          extension: this.getBusinessContact.extension
+        }
+      }
+    }
+
+    return filing
+  }
+
   // Filing handlers
   /**
    * Parses a draft correction filing into the store.
@@ -589,7 +629,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param entitySnapshot the latest entity snapshot
    */
   parseEntitySnapshot (entitySnapshot = this.getEntitySnapshot): void {
-    console.log(entitySnapshot)
     // Store business snapshot
     this.setEntitySnapshot(entitySnapshot)
 

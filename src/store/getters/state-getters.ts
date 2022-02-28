@@ -51,7 +51,7 @@ export const isAlterationFiling = (state: StateIF): boolean => {
 
 /** Whether the current filing is a change filing. */
 export const isChangeFiling = (state: StateIF): boolean => {
-  return (state.stateModel.tombstone.filingType === FilingTypes.CHANGE_FIRM)
+  return (state.stateModel.tombstone.filingType === FilingTypes.CHANGE_OF_REGISTRATION)
 }
 
 /** The entity type. */

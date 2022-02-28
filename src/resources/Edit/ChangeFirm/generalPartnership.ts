@@ -11,7 +11,7 @@ export const GeneralPartnershipResource: ResourceIF = {
   addressLabel: 'Business Addresses',
   filingData: {
     entityType: CorpTypeCd.PARTNERSHIP,
-    filingTypeCode: FilingCodes.CHANGE_FIRM
+    filingTypeCode: FilingCodes.CHANGE_OF_REGISTRATION
   },
   typeChangeInfo: 'General Partnership cannot be changed into a Sole Proprietorship. If this is necessary, a new ' +
     'Name Request Number and Statement of Registration (along with associated fees) will be required.',

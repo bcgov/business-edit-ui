@@ -63,7 +63,7 @@ describe('Folio Information component', () => {
 
   it('gets Original Folio Number for an alteration', () => {
     store.state.stateModel.tombstone.filingType = 'alteration'
-    store.state.stateModel.businessSnapshot = { authInfo: { folioNumber: 'A123' } }
+    store.state.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } }
 
     const wrapper = mount(FolioInformation, { vuetify, store })
     const vm: any = wrapper.vm

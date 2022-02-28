@@ -11,7 +11,7 @@ export const SoleProprietorshipResource: ResourceIF = {
   addressLabel: 'Business Addresses',
   filingData: {
     entityType: CorpTypeCd.SOLE_PROP,
-    filingTypeCode: FilingCodes.CHANGE_FIRM
+    filingTypeCode: FilingCodes.CHANGE_OF_REGISTRATION
   },
   typeChangeInfo: 'You can not change the business type of a Sole Proprietorship / DBA. You must form a new ' +
     'business and dissolve this business once the new business is registered.',

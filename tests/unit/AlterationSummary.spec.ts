@@ -20,7 +20,7 @@ describe('Alteration Summary component', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
-  const businessSnapshot = {
+  const entitySnapshot = {
     businessInfo: {
       legalName: 'Mock Original Name',
       legalType: 'BC'
@@ -37,15 +37,15 @@ describe('Alteration Summary component', () => {
     // init store
     store.state.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
     store.state.stateModel.tombstone.currentDate = '2021-03-01'
-    store.state.stateModel.businessSnapshot = businessSnapshot
+    store.state.stateModel.entitySnapshot = entitySnapshot
     store.state.stateModel.shareStructureStep.shareClasses = []
-    store.state.stateModel.businessSnapshot.shareStructure = { shareClasses: [] }
+    store.state.stateModel.entitySnapshot.shareStructure = { shareClasses: [] }
   })
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.stateModel.nameRequest.legalName = businessSnapshot.businessInfo.legalName
-    store.state.stateModel.tombstone.entityType = businessSnapshot.businessInfo.legalType
+    store.state.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
     store.state.stateModel.summaryMode = true
     store.state.stateModel.nameTranslations = nameTranslationsListChanged
 

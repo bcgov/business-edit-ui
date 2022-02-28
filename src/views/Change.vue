@@ -209,7 +209,7 @@ export default class Change extends Mixins(
         const changeFiling = await this.fetchFilingById(this.changeId)
 
         // do not proceed if this isn't a Change filing
-        if (!changeFiling.changeFirm) {
+        if (!changeFiling.changeOfRegistration) {
           throw new Error('Invalid Change filing')
         }
 
@@ -239,13 +239,13 @@ export default class Change extends Mixins(
       // update the current fees for the Filing
       this.setCurrentFees(
         await this.fetchFilingFees(
-          FilingCodes.CHANGE_FIRM, this.getEntityType
+          FilingCodes.CHANGE_OF_REGISTRATION, this.getEntityType
         ).catch(() => cloneDeep(EmptyFees))
       )
 
       // fetches the fee prices to display in the text
       this.setFeePrices(
-        await this.fetchFilingFees(FilingCodes.CHANGE_FIRM, this.getEntityType
+        await this.fetchFilingFees(FilingCodes.CHANGE_OF_REGISTRATION, this.getEntityType
         ).catch(() => cloneDeep(EmptyFees))
       )
 

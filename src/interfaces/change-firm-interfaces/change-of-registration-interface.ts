@@ -3,16 +3,16 @@ import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
 export interface ChangeOfRegistrationIF {
   business: {
-    natureOfBusiness: string,
-    naics: {
+    natureOfBusiness?: string,
+    naics?: {
       naicsCode: string,
       naicsDescription: string
     },
     identifier: string
   },
-  businessAddress: BaseAddressObjIF,
+  businessAddress?: BaseAddressObjIF,
   contactPoint: ContactPointIF,
-  nameRequest: NameRequestIF,
-  parties: Array<OrgPersonIF>
-  courtOrder: string
+  nameRequest?: NameRequestIF,
+  parties?: Array<OrgPersonIF>
+  courtOrder?: string
 }

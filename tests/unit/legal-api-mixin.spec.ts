@@ -92,7 +92,7 @@ describe('Legal API Mixin', () => {
       .returns(Promise.resolve({ data: { filing: ALTERATION } }))
 
     // call method
-    const response = await vm.createAlteration('CP1234567', ALTERATION, true)
+    const response = await vm.createFiling('CP1234567', ALTERATION, true)
 
     // verify data
     expect(response).toEqual(ALTERATION)
@@ -242,10 +242,10 @@ describe('Legal API Mixin', () => {
       .returns(Promise.resolve({ data: { filing: {} } }))
     await expect(vm.updateFiling('CP1234567', {}, 1234, true)).rejects.toThrow('Invalid API response')
 
-    // verify createAlteration with no response.data.filing.header.filingId
+    // verify createFiling with no response.data.filing.header.filingId
     post.withArgs('businesses/CP1234567/filings?draft=true')
       .returns(Promise.resolve({ data: { filing: { header: {} } } }))
-    await expect(vm.createAlteration('CP1234567', {}, true)).rejects.toThrow('Invalid API response')
+    await expect(vm.createFiling('CP1234567', {}, true)).rejects.toThrow('Invalid API response')
 
     // verify fetchBusinessInfo with no response.data
     get.withArgs('businesses/CP1234567').returns(Promise.resolve({}))
