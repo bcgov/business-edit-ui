@@ -28,7 +28,7 @@
             <template v-slot:activator="{ on }">
               <v-icon v-on="on" color="primary" size="18px">mdi-information-outline</v-icon>
             </template>
-            <span>{{ getResource.typeChangeInfo }}</span>
+            <span>{{ getResource.changeData.typeChangeInfo }}</span>
           </v-tooltip>
 
           <!-- Type mismatch tooltip -->

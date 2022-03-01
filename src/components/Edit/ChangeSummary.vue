@@ -99,9 +99,6 @@ export default class ChangeSummary extends Mixins(
   onDeleteClicked (): void {
     this.$root.$emit('delete-all')
   }
-
-  @Emit('haveChanges')
-  emitHaveChanges (): void {}
 }
 </script>
 

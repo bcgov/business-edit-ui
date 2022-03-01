@@ -13,8 +13,10 @@ export const GeneralPartnershipResource: ResourceIF = {
     entityType: CorpTypeCd.PARTNERSHIP,
     filingTypeCode: FilingCodes.CHANGE_OF_REGISTRATION
   },
-  typeChangeInfo: 'General Partnership cannot be changed into a Sole Proprietorship. If this is necessary, a new ' +
-    'Name Request Number and Statement of Registration (along with associated fees) will be required.',
+  changeData: {
+    typeChangeInfo: 'General Partnership cannot be changed into a Sole Proprietorship. If this is necessary, a new ' +
+      'Name Request Number and Statement of Registration (along with associated fees) will be required.'
+  },
   certifyClause: 'Note: It is an offence to make or assist in making a false or misleading statement in a record ' +
     'filed under the Partnership Act. A person who commits this offence is subject to a maximum fine of $5,000.'
 }
