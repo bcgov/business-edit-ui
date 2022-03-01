@@ -28,7 +28,7 @@
             <template v-slot:activator="{ on }">
               <v-icon v-on="on" color="primary" size="18px">mdi-information-outline</v-icon>
             </template>
-            <span>{{ getResource.changeData.typeChangeInfo }}</span>
+            <span>{{ typeChangeInfo }}</span>
           </v-tooltip>
 
           <!-- Type mismatch tooltip -->
@@ -305,6 +305,11 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {
   /** Check is current entity selection is a Benefit Company */
   private get isBenefit (): boolean {
     return (this.selectedEntityType === CorpTypeCd.BENEFIT_COMPANY)
+  }
+
+  /** Type change helper information */
+  private get typeChangeInfo (): string {
+    return this.getResource.changeData?.typeChangeInfo
   }
 
   /** Reset company type values to original. */
