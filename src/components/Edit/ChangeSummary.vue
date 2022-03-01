@@ -40,7 +40,7 @@
       <div class="section-container business-name-summary">
         <v-row no-gutters>
           <v-col cols="3">
-            <label><strong>Company Name</strong></label>
+            <label><strong>Business Name</strong></label>
           </v-col>
 
           <v-col cols="8" class="mt-n1">
