@@ -185,8 +185,7 @@ export const stateModel: StateModelIF = {
       }
     }
   },
-  businessSnapshot: null,
-  firmSnapshot: null,
+  entitySnapshot: null,
   staffPaymentStep: {
     valid: false,
     staffPayment: {

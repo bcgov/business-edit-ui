@@ -6,7 +6,7 @@ import { axios } from '@/utils'
 // Interfaces
 import {
   AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF, IncorporationAddressIf,
-  NameTranslationIF, GetOrgPersonIF, ShareStructureIF, ResolutionsIF
+  NameTranslationIF, GetOrgPersonIF, ShareStructureIF, ResolutionsIF, ChangeFirmIF
 } from '@/interfaces'
 
 /**
@@ -57,7 +57,7 @@ export default class LegalApiMixin extends Vue {
    * @param isDraft boolean indicating whether to save draft or complete the filing
    * @returns a promise to return the updated filing
    */
-  async updateFiling (filing: CorrectionFilingIF | AlterationFilingIF, isDraft: boolean): Promise<any> {
+  async updateFiling (filing: CorrectionFilingIF | AlterationFilingIF | ChangeFirmIF, isDraft: boolean): Promise<any> {
     if (!filing) throw new Error('updateFiling(), invalid filing')
     const filingId = this.getFilingId
     if (!filingId) throw new Error('updateFiling(), invalid filing id')
@@ -79,12 +79,12 @@ export default class LegalApiMixin extends Vue {
   }
 
   /**
-   * Creates an alteration filing.
+   * Creates a filing.
    * @param filing the object body of the request
    * @param isDraft boolean indicating whether to save draft or complete the filing
    * @returns a promise to return the updated filing
    */
-  async createAlteration (filing: AlterationFilingIF, isDraft: boolean): Promise<any> {
+  async createFiling (filing: AlterationFilingIF | ChangeFirmIF, isDraft: boolean): Promise<any> {
     if (!filing) throw new Error('updateFiling(), invalid filing')
 
     // put updated filing to filings endpoint
@@ -145,10 +145,10 @@ export default class LegalApiMixin extends Vue {
   }
 
   /**
-   * Fetches the incorporation address of the current business.
+   * Fetches the address of the current entity.
    * @returns a promise to return the data
    */
-  async fetchIncorporationAddress (): Promise<IncorporationAddressIf> {
+  async fetchAddresses (): Promise<IncorporationAddressIf> {
     if (!this.getBusinessId) throw new Error('Invalid business id')
 
     const url = `businesses/${this.getBusinessId}/addresses`
@@ -159,7 +159,7 @@ export default class LegalApiMixin extends Vue {
           return response.data
         }
         // eslint-disable-next-line no-console
-        console.log('fetchIncorporationAddress() error - invalid response =', response)
+        console.log('fetchAddresses() error - invalid response =', response)
         throw new Error('Invalid API response')
       })
   }

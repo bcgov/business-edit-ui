@@ -179,8 +179,8 @@ import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import {
   ActionBindingIF,
-  BusinessSnapshotIF,
   EffectiveDateTimeIF,
+  EntitySnapshotIF,
   NameRequestIF,
   ShareClassIF,
   ShareStructureIF,
@@ -217,7 +217,7 @@ export default class AlterationSummary extends Mixins(
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getSnapshotShareStructure!: ShareStructureIF
-  @Getter getBusinessSnapshot!: BusinessSnapshotIF
+  @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getNewResolutionDates!: string[]
   @Getter getPreviousResolutionDates!: string[]
   @Getter getNameTranslations!: NameTranslationIF[]
@@ -264,7 +264,7 @@ export default class AlterationSummary extends Mixins(
   }
 
   get originalEntityType (): string {
-    return this.getBusinessSnapshot?.businessInfo?.legalType
+    return this.getEntitySnapshot?.businessInfo?.legalType
   }
 
   /** True if invalid class should be set for Alteration Date-Time container. */

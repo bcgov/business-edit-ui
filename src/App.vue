@@ -547,7 +547,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
   private async doDeleteAll (): Promise<void> {
     // Restore baseline data to original snapshot.
-    this.parseBusinessSnapshot()
+    this.parseEntitySnapshot()
     this.setHaveUnsavedChanges(false)
     if (this.isSummaryMode) {
       // just close the Delete All dialog
@@ -662,12 +662,14 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
     let filingComplete: any
     try {
-      const filing = await this.buildAlterationFiling(isDraft)
+      const filing = this.isAlterationFiling
+        ? await this.buildAlterationFiling(isDraft)
+        : await this.buildChangeFiling(isDraft)
 
       // Update or file the alteration if we have a filingId or create a draft if not.
       filingComplete = this.getFilingId
         ? await this.updateFiling(filing, isDraft)
-        : await this.createAlteration(filing, isDraft)
+        : await this.createFiling(filing, isDraft)
 
       // clear flag
       this.setHaveUnsavedChanges(false)

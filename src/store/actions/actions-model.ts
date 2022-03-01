@@ -2,8 +2,8 @@ import {
   ActionIF,
   ActionKvIF,
   BusinessInformationIF,
-  BusinessSnapshotIF,
   CertifyIF,
+  EntitySnapshotIF,
   IncorporationAddressIf,
   NameRequestIF,
   NameTranslationIF,
@@ -183,12 +183,8 @@ export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
   commit('mutateOriginalIA', originalIA)
 }
 
-export const setBusinessSnapshot: ActionIF = ({ commit }, businessSnapshot: BusinessSnapshotIF): void => {
-  commit('mutateBusinessSnapshot', businessSnapshot)
-}
-
-export const setFirmSnapshot: ActionIF = ({ commit }, firmSnapshot: any): void => {
-  commit('mutateFirmSnapshot', firmSnapshot)
+export const setEntitySnapshot: ActionIF = ({ commit }, entitySnapshot: EntitySnapshotIF): void => {
+  commit('mutateEntitySnapshot', entitySnapshot)
 }
 
 export const setStaffPayment: ActionIF = ({ commit }, staffPayment): void => {

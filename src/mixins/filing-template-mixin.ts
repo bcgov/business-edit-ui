@@ -8,27 +8,26 @@ import { DateMixin } from '@/mixins'
 import {
   ActionBindingIF,
   AlterationFilingIF,
-  BusinessSnapshotIF,
   CertifyIF,
   ChangeFirmIF,
-  CorrectionFilingIF,
   ContactPointIF,
+  CorrectionFilingIF,
   EffectiveDateTimeIF,
+  EntitySnapshotIF,
   IncorporationAddressIf,
+  NameRequestIF,
+  NameTranslationIF,
   OrgPersonIF,
   ShareClassIF,
-  NameTranslationIF,
-  NameRequestIF,
   ShareStructureIF,
-  StaffPaymentIF, FirmSnapshotIF
+  StaffPaymentIF
 } from '@/interfaces'
 
 // Shared Interfaces
 import { EmptyContactPoint } from '@bcrs-shared-components/interfaces'
 
 // Constants
-import { ActionTypes, CorpTypeCd, FilingTypes, EffectOfOrders, RoleTypes } from '@/enums'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
+import { ActionTypes, CorpTypeCd, EffectOfOrders, FilingTypes, RoleTypes, StaffPaymentOptions } from '@/enums'
 
 /**
  * Mixin that provides the integration with the Legal API.
@@ -63,8 +62,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getOfficeAddresses!: IncorporationAddressIf | {}
   @Getter getBusinessContact!: ContactPointIF
   @Getter getAgreementType!: string
-  @Getter getBusinessSnapshot!: BusinessSnapshotIF
-  @Getter getFirmSnapshot!: any
+  @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getNewResolutionDates!: string[]
   @Getter getSnapshotShareStructure!: ShareStructureIF
   @Getter hasNewNr!: boolean
@@ -91,8 +89,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setIncorporationAgreementStepData!: ActionBindingIF
   @Action setStaffPayment!: ActionBindingIF
   @Action setDetailComment!: ActionBindingIF
-  @Action setBusinessSnapshot!: ActionBindingIF
-  @Action setFirmSnapshot!: ActionBindingIF
+  @Action setEntitySnapshot!: ActionBindingIF
   @Action setDocumentOptionalEmail!: ActionBindingIF
   @Action setProvisionsRemoved!: ActionBindingIF
   @Action setOriginalResolutionDates!: ActionBindingIF
@@ -100,6 +97,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setFileNumber: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
 
+  // Filing constructors
   /**
    * Builds an Incorporation Application correction filing from store data. Used when saving a filing.
    * @param isDraft whether this is a draft
@@ -221,10 +219,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         folioNumber: this.getFolioNumber
       },
       business: {
-        foundingDate: this.getBusinessSnapshot.businessInfo.foundingDate,
-        legalType: this.getBusinessSnapshot.businessInfo.legalType,
-        identifier: this.getBusinessSnapshot.businessInfo.identifier,
-        legalName: this.getBusinessSnapshot.businessInfo.legalName
+        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
+        legalType: this.getEntitySnapshot.businessInfo.legalType,
+        identifier: this.getEntitySnapshot.businessInfo.identifier,
+        legalName: this.getEntitySnapshot.businessInfo.legalName
       },
       alteration: {
         business: {
@@ -306,23 +304,46 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Prepares name translations for non-draft save.
-   * @returns the updated name translations array
+   * Builds a change of registration filing from store data. Used when saving a filing.
+   * @param isDraft whether this is a draft
+   * @returns the change filing body
    */
-  private prepareNameTranslations () : NameTranslationIF[] {
-    // Filter out and modify name translation to match schema
-    return this.getNameTranslations?.filter(x => x.action !== ActionTypes.REMOVED)
-      .map(x => {
-        let nameTranslation = {
-          name: x.name
+  buildChangeFiling (isDraft: boolean): ChangeFirmIF {
+    // Build alteration filing
+    let filing: ChangeFirmIF = {
+      header: {
+        name: FilingTypes.CHANGE_OF_REGISTRATION,
+        certifiedBy: this.getCertifyState.certifiedBy,
+        date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
+        folioNumber: this.getFolioNumber
+      },
+      business: {
+        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
+        legalType: this.getEntitySnapshot.businessInfo.legalType,
+        identifier: this.getEntitySnapshot.businessInfo.identifier,
+        legalName: this.getEntitySnapshot.businessInfo.legalName
+      },
+      changeOfRegistration: {
+        business: {
+          natureOfBusiness: '',
+          naics: {
+            naicsCode: '',
+            naicsDescription: ''
+          },
+          identifier: this.getBusinessId
+        },
+        contactPoint: {
+          email: this.getBusinessContact.email,
+          phone: this.getBusinessContact.phone,
+          extension: this.getBusinessContact.extension
         }
-        if (x.action !== ActionTypes.ADDED) {
-          nameTranslation['id'] = x.id
-        }
-        return nameTranslation
-      })
+      }
+    }
+
+    return filing
   }
 
+  // Filing handlers
   /**
    * Parses a draft correction filing into the store.
    * @param filing the correction filing
@@ -411,14 +432,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   /**
    * Parses a draft alteration filing into the store.
    * @param filing the alteration filing
-   * @param businessSnapshot the latest business snapshot
+   * @param entitySnapshot the latest entity snapshot
    */
-  parseAlteration (filing: AlterationFilingIF, businessSnapshot: BusinessSnapshotIF): void {
+  parseAlteration (filing: AlterationFilingIF, entitySnapshot: EntitySnapshotIF): void {
     // Store business snapshot
-    this.setBusinessSnapshot(businessSnapshot)
+    this.setEntitySnapshot(entitySnapshot)
 
     // Restore current entity type
-    this.setEntityType(filing.alteration.business?.legalType || businessSnapshot.businessInfo.legalType)
+    this.setEntityType(filing.alteration.business?.legalType || entitySnapshot.businessInfo.legalType)
 
     // Restore business information
     this.setBusinessInformation({
@@ -427,7 +448,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     })
 
     // Restore name request
-    this.setNameRequest(filing.alteration.nameRequest || { legalName: businessSnapshot.businessInfo.legalName })
+    this.setNameRequest(filing.alteration.nameRequest || { legalName: entitySnapshot.businessInfo.legalName })
 
     // Restore name translations
     this.setNameTranslations(
@@ -445,11 +466,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setProvisionsRemoved(filing.alteration.provisionsRemoved)
 
     // Store office addresses **from snapshot** (because we don't change office addresses in an alteration)
-    this.setOfficeAddresses(businessSnapshot.incorporationAddress)
+    this.setOfficeAddresses(entitySnapshot.incorporationAddress)
 
     // Store people and roles **from snapshot** (because we don't change people and roles in an alteration)
     this.setPeopleAndRoles(
-      businessSnapshot.orgPersons?.map(director => {
+      entitySnapshot.orgPersons?.map(director => {
         return {
           officer: {
             firstName: director.officer.firstName,
@@ -475,19 +496,19 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Restore share classes and resolution dates
     this.setShareClasses(
       filing.alteration.shareStructure?.shareClasses ||
-      businessSnapshot.shareStructure?.shareClasses
+      entitySnapshot.shareStructure?.shareClasses
     )
     this.setResolutionDates(filing.alteration.shareStructure?.resolutionDates || [])
-    this.setOriginalResolutionDates(businessSnapshot.resolutions)
+    this.setOriginalResolutionDates(entitySnapshot.resolutions)
 
     // Restore business contact
     const contactPoint = filing.alteration.contactPoint
       ? filing.alteration.contactPoint
-      : businessSnapshot.authInfo.contacts[0]
+      : entitySnapshot.authInfo.contacts[0]
 
     this.setBusinessContact({
       ...contactPoint,
-      confirmEmail: filing.alteration.contactPoint?.email || businessSnapshot.authInfo.contacts[0].email
+      confirmEmail: filing.alteration.contactPoint?.email || entitySnapshot.authInfo.contacts[0].email
     })
 
     // Restore certify state
@@ -497,7 +518,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     })
 
     // Restore Folio Number
-    this.setFolioNumber(businessSnapshot.authInfo.folioNumber || '')
+    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // If Transactional Folio Number was saved then restore it.
     if (filing.header.isTransactionalFolioNumber) {
@@ -525,14 +546,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   /**
    * Parses a draft change filing into the store.
    * @param filing the change filing
-   * @param firmSnapshot the latest business snapshot
+   * @param entitySnapshot the latest entity snapshot
    */
-  parseChangeFirm (filing: ChangeFirmIF, firmSnapshot: FirmSnapshotIF): void {
+  parseChangeFirm (filing: ChangeFirmIF, entitySnapshot: EntitySnapshotIF): void {
     // Store business snapshot
-    this.setFirmSnapshot(firmSnapshot)
+    this.setEntitySnapshot(entitySnapshot)
 
     // Restore current entity type
-    this.setEntityType(filing.business?.legalType || firmSnapshot.businessInfo.legalType)
+    this.setEntityType(filing.business?.legalType || entitySnapshot.businessInfo.legalType)
 
     // Restore business information
     this.setBusinessInformation({
@@ -541,14 +562,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     })
 
     // Restore name request
-    this.setNameRequest(filing.changeOfRegistration.nameRequest || { legalName: firmSnapshot.businessInfo.legalName })
+    this.setNameRequest(filing.changeOfRegistration.nameRequest || { legalName: entitySnapshot.businessInfo.legalName })
 
     // Store office addresses **from snapshot**
-    this.setOfficeAddresses(filing.changeOfRegistration.businessAddress || firmSnapshot.businessAddress)
+    this.setOfficeAddresses(filing.changeOfRegistration.businessAddress || entitySnapshot.businessAddress)
 
     // Store people and roles **from snapshot** (because we don't change people and roles in an alteration)
     this.setPeopleAndRoles(
-      firmSnapshot.orgPersons?.map(director => {
+      entitySnapshot.orgPersons?.map(director => {
         return {
           officer: {
             firstName: director.officer.firstName,
@@ -575,11 +596,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Restore business contact
     const contactPoint = filing.changeOfRegistration.contactPoint
       ? filing.changeOfRegistration.contactPoint
-      : firmSnapshot.authInfo.contacts[0]
+      : entitySnapshot.authInfo.contacts[0]
 
     this.setBusinessContact({
       ...contactPoint,
-      confirmEmail: filing.changeOfRegistration.contactPoint?.email || firmSnapshot.authInfo.contacts[0].email
+      confirmEmail: filing.changeOfRegistration.contactPoint?.email || entitySnapshot.authInfo.contacts[0].email
     })
 
     // Restore certify state
@@ -589,7 +610,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     })
 
     // Restore Folio Number
-    this.setFolioNumber(firmSnapshot.authInfo.folioNumber || '')
+    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // If Transactional Folio Number was saved then restore it.
     if (filing.header.isTransactionalFolioNumber) {
@@ -604,67 +625,49 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Parses a business snapshot into the store.
-   * @param businessSnapshot the latest business snapshot
+   * Parses an entity snapshot into the store.
+   * @param entitySnapshot the latest entity snapshot
    */
-  parseBusinessSnapshot (businessSnapshot = this.getBusinessSnapshot): void {
+  parseEntitySnapshot (entitySnapshot = this.getEntitySnapshot): void {
     // Store business snapshot
-    this.setBusinessSnapshot(businessSnapshot)
+    this.setEntitySnapshot(entitySnapshot)
 
     // Store folio number
-    this.setFolioNumber(businessSnapshot.authInfo.folioNumber || '')
+    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // Store current entity type
-    this.setEntityType(businessSnapshot.businessInfo.legalType)
+    this.setEntityType(entitySnapshot.businessInfo.legalType)
 
     // Store business information
-    this.setBusinessInformation(businessSnapshot.businessInfo)
+    this.setBusinessInformation(entitySnapshot.businessInfo)
 
     // Store name request
     this.setNameRequest({
-      legalType: businessSnapshot.businessInfo.legalType,
-      legalName: businessSnapshot.businessInfo.legalName,
+      legalType: entitySnapshot.businessInfo.legalType,
+      legalName: entitySnapshot.businessInfo.legalName,
       // *** TODO: Founding Date is not needed in Name Request object???
-      foundingDate: businessSnapshot.businessInfo.foundingDate
+      foundingDate: entitySnapshot.businessInfo.foundingDate
     })
-
-    // Store name translations
-    this.setNameTranslations(
-      businessSnapshot.nameTranslations?.map(x => {
-        return {
-          id: x.id,
-          name: x.name,
-          oldName: null,
-          action: null
-        }
-      }) || []
-    )
-
-    // Clear provisions removed
-    this.setProvisionsRemoved(null)
-
-    // Store office addresses
-    this.setOfficeAddresses(businessSnapshot.incorporationAddress)
 
     // Store people and roles
     this.setPeopleAndRoles(
-      businessSnapshot.orgPersons?.map(director => {
+      entitySnapshot.orgPersons?.map(orgPerson => {
         return {
           officer: {
-            firstName: director.officer.firstName,
-            lastName: director.officer.lastName
+            firstName: orgPerson.officer.firstName,
+            lastName: orgPerson.officer.lastName
           },
-          mailingAddress: director.deliveryAddress,
-          deliveryAddress: director.mailingAddress,
+          mailingAddress: orgPerson.deliveryAddress,
+          deliveryAddress: orgPerson.mailingAddress,
           roles: [
             {
-              roleType: director.role in RoleTypes ? director.role
+              roleType: orgPerson.role in RoleTypes ? orgPerson.role
                 : Object.values(RoleTypes).find(role => {
-                  if (role.toLocaleLowerCase() === director.role.toLocaleLowerCase()) {
+                  if (role.toLocaleLowerCase() === orgPerson.role.toLocaleLowerCase()) {
                     return role
                   }
                 }),
-              appointmentDate: director.appointmentDate,
+              appointmentDate: orgPerson.appointmentDate,
               cessationDate: null
             }
           ]
@@ -672,14 +675,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }) || []
     )
 
-    // Store share classes and resolution dates
-    this.setShareClasses(cloneDeep(businessSnapshot.shareStructure.shareClasses))
-    this.setResolutionDates([])
-    this.setOriginalResolutionDates(businessSnapshot.resolutions)
-
     // Store the first business contact
     let contactPoint = cloneDeep(EmptyContactPoint)
-    const contact = businessSnapshot.authInfo.contacts[0]
+    const contact = entitySnapshot.authInfo.contacts[0]
     if (contact) {
       contactPoint = {
         ...contact,
@@ -687,70 +685,58 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }
     }
     this.setBusinessContact(contactPoint)
+
+    // Handle entity specific values
+    switch (entitySnapshot.businessInfo.legalType) {
+      case CorpTypeCd.BENEFIT_COMPANY:
+        // Store name translations
+        this.setNameTranslations(
+          entitySnapshot.nameTranslations?.map(x => {
+            return {
+              id: x.id,
+              name: x.name,
+              oldName: null,
+              action: null
+            }
+          }) || []
+        )
+
+        // Clear provisions removed
+        this.setProvisionsRemoved(null)
+
+        // Store office addresses
+        this.setOfficeAddresses(entitySnapshot.incorporationAddress)
+
+        // Store share classes and resolution dates
+        this.setShareClasses(cloneDeep(entitySnapshot.shareStructure.shareClasses))
+        this.setResolutionDates([])
+        this.setOriginalResolutionDates(entitySnapshot.resolutions)
+        break
+      case CorpTypeCd.SOLE_PROP:
+      case CorpTypeCd.PARTNERSHIP:
+        // Store business addresses
+        this.setOfficeAddresses(entitySnapshot.businessAddress)
+        break
+    }
   }
 
+  // Helper Methods
   /**
-   * Parses a firm snapshot into the store.
-   * @param firmSnapshot the latest firm snapshot
+   * Prepares name translations for non-draft save.
+   * @returns the updated name translations array
    */
-  parseFirmSnapshot (firmSnapshot = this.getFirmSnapshot): void {
-    // Store business snapshot
-    this.setFirmSnapshot(firmSnapshot)
-
-    // Store folio number
-    this.setFolioNumber(firmSnapshot.authInfo.folioNumber || '')
-
-    // Store current entity type
-    this.setEntityType(firmSnapshot.businessInfo.legalType)
-
-    // Store business information
-    this.setBusinessInformation(firmSnapshot.businessInfo)
-
-    // Store name request
-    this.setNameRequest({
-      legalType: firmSnapshot.businessInfo.legalType,
-      legalName: firmSnapshot.businessInfo.legalName
-    })
-
-    // Store office addresses
-    this.setOfficeAddresses(firmSnapshot.incorporationAddress)
-
-    // Store people and roles
-    this.setPeopleAndRoles(
-      firmSnapshot.orgPersons?.map(director => { // ToDo: To be Proprietor or Partner
-        return {
-          officer: {
-            firstName: director.officer.firstName,
-            lastName: director.officer.lastName
-          },
-          mailingAddress: director.deliveryAddress,
-          deliveryAddress: director.mailingAddress,
-          roles: [
-            {
-              roleType: director.role in RoleTypes ? director.role
-                : Object.values(RoleTypes).find(role => {
-                  if (role.toLocaleLowerCase() === director.role.toLocaleLowerCase()) {
-                    return role
-                  }
-                }),
-              appointmentDate: director.appointmentDate,
-              cessationDate: null
-            }
-          ]
+  private prepareNameTranslations () : NameTranslationIF[] {
+    // Filter out and modify name translation to match schema
+    return this.getNameTranslations?.filter(x => x.action !== ActionTypes.REMOVED)
+      .map(x => {
+        let nameTranslation = {
+          name: x.name
         }
-      }) || []
-    )
-
-    // Store the first business contact
-    let contactPoint = cloneDeep(EmptyContactPoint)
-    const contact = firmSnapshot.authInfo.contacts[0]
-    if (contact) {
-      contactPoint = {
-        ...contact,
-        confirmEmail: contact.email
-      }
-    }
-    this.setBusinessContact(contactPoint)
+        if (x.action !== ActionTypes.ADDED) {
+          nameTranslation['id'] = x.id
+        }
+        return nameTranslation
+      })
   }
 
   /** Build Staff Payment data into the filing.

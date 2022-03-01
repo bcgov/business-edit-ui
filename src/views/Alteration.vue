@@ -149,8 +149,8 @@ import {
 } from '@/mixins'
 import {
   ActionBindingIF,
-  BusinessSnapshotIF,
   EffectiveDateTimeIF,
+  EntitySnapshotIF,
   FilingDataIF,
   FlagsReviewCertifyIF,
   FeesIF,
@@ -295,7 +295,7 @@ export default class Alteration extends Mixins(
         await this.parseAlteration(alterationFiling, businessSnapshot)
       } else {
         // parse business data into store
-        await this.parseBusinessSnapshot(businessSnapshot)
+        await this.parseEntitySnapshot(businessSnapshot)
       }
 
       if (this.alterationResources) {
@@ -334,18 +334,18 @@ export default class Alteration extends Mixins(
   }
 
   /** Fetches the business snapshot. */
-  private async fetchBusinessSnapshot (): Promise<BusinessSnapshotIF> {
+  private async fetchBusinessSnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
       this.fetchBusinessInfo(),
       this.fetchAuthInfo(),
-      this.fetchIncorporationAddress(),
+      this.fetchAddresses(),
       this.fetchNameTranslations(),
       this.fetchOrgPersons(),
       this.fetchShareStructure(),
       this.fetchResolutions()
     ])
 
-    if (items.length !== 7) throw new Error('Failed to fetch business snapshot')
+    if (items.length !== 7) throw new Error('Failed to fetch entity snapshot')
 
     return {
       businessInfo: items[0],

@@ -88,7 +88,7 @@ describe('CorrectBusinessContactInfo for an alteration', () => {
     sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
     store.state.stateModel.tombstone.businessId = 'BC1234567'
     store.state.stateModel.businessContact = contactInfo
-    store.state.stateModel.businessSnapshot = { authInfo: { contacts: [ originalAlterationContact ] } }
+    store.state.stateModel.entitySnapshot = { authInfo: { contacts: [ originalAlterationContact ] } }
   })
 
   beforeEach(async () => {

@@ -9,6 +9,7 @@ import { CorpTypeCd, RouteNames } from '@/enums'
 @Component({})
 export default class CommonMixin extends Vue {
   @Getter getEntityType!: CorpTypeCd
+  @Getter isChangeFiling!: boolean
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
 
@@ -95,14 +96,14 @@ export default class CommonMixin extends Vue {
   /** The appropriate edit label for corrections or alterations. */
   get editLabel (): string {
     if (this.isCorrectionFiling) return 'Correct'
-    if (this.isAlterationFiling) return 'Change'
+    if (this.isAlterationFiling || this.isChangeFiling) return 'Change'
     return 'Edit'
   }
 
   /** The appropriate edited label for corrections or alterations. */
   get editedLabel (): string {
     if (this.isCorrectionFiling) return 'Corrected'
-    if (this.isAlterationFiling) return 'Changed'
+    if (this.isAlterationFiling || this.isChangeFiling) return 'Changed'
     return 'Edited'
   }
 

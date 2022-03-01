@@ -2,7 +2,7 @@ import {
   AccountInformationIF,
   ActionKvIF,
   BusinessInformationIF,
-  BusinessSnapshotIF,
+  EntitySnapshotIF,
   CertifyIF,
   FilingDataIF,
   IncorporationAddressIf,
@@ -208,12 +208,8 @@ export const mutateOriginalIA = (state: StateIF, originalIA: IncorporationFiling
   state.stateModel.originalIA = originalIA
 }
 
-export const mutateBusinessSnapshot = (state: StateIF, businessSnapshot: BusinessSnapshotIF) => {
-  state.stateModel.businessSnapshot = businessSnapshot
-}
-
-export const mutateFirmSnapshot = (state: StateIF, firmSnapshot: any) => {
-  state.stateModel.firmSnapshot = firmSnapshot
+export const mutateEntitySnapshot = (state: StateIF, entitySnapshot: EntitySnapshotIF) => {
+  state.stateModel.entitySnapshot = entitySnapshot
 }
 
 export const mutateStaffPayment = (state: StateIF, staffPayment: StaffPaymentIF) => {

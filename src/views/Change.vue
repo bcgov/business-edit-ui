@@ -30,10 +30,10 @@
           </p>
         </section>
 
-<!--        <ChangeSummary-->
-<!--          class="mt-10"-->
-<!--          :validate="getAppValidate"-->
-<!--        />-->
+        <ChangeSummary
+          class="mt-10"
+          :validate="getAppValidate"
+        />
 
         <CertifySection
           class="mt-10"
@@ -76,6 +76,7 @@ import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorato
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
 import {
+  ChangeSummary,
   DocumentsDelivery,
   TransactionalFolioNumber
 } from '@/components/Edit'
@@ -94,8 +95,8 @@ import {
 import {
   ActionBindingIF,
   EffectiveDateTimeIF,
+  EntitySnapshotIF,
   FilingDataIF,
-  FirmSnapshotIF,
   FeesIF,
   EmptyFees,
   StaffPaymentIF
@@ -108,6 +109,7 @@ import { ChangeFirmResources } from '@/resources'
 @Component({
   components: {
     CertifySection,
+    ChangeSummary,
     DocumentsDelivery,
     StaffPayment,
     TransactionalFolioNumber,
@@ -207,7 +209,7 @@ export default class Change extends Mixins(
         const changeFiling = await this.fetchFilingById(this.changeId)
 
         // do not proceed if this isn't a Change filing
-        if (!changeFiling.changeFirm) {
+        if (!changeFiling.changeOfRegistration) {
           throw new Error('Invalid Change filing')
         }
 
@@ -220,7 +222,7 @@ export default class Change extends Mixins(
         await this.parseChangeFirm(changeFiling, firmSnapshot)
       } else {
         // parse business data into store
-        await this.parseFirmSnapshot(firmSnapshot)
+        await this.parseEntitySnapshot(firmSnapshot)
       }
 
       if (this.changeFirmResources) {
@@ -237,13 +239,13 @@ export default class Change extends Mixins(
       // update the current fees for the Filing
       this.setCurrentFees(
         await this.fetchFilingFees(
-          FilingCodes.CHANGE_FIRM, this.getEntityType
+          FilingCodes.CHANGE_OF_REGISTRATION, this.getEntityType
         ).catch(() => cloneDeep(EmptyFees))
       )
 
       // fetches the fee prices to display in the text
       this.setFeePrices(
-        await this.fetchFilingFees(FilingCodes.CHANGE_FIRM, this.getEntityType
+        await this.fetchFilingFees(FilingCodes.CHANGE_OF_REGISTRATION, this.getEntityType
         ).catch(() => cloneDeep(EmptyFees))
       )
 
@@ -259,19 +261,21 @@ export default class Change extends Mixins(
   }
 
   /** Fetches the business snapshot. */
-  private async fetchFirmSnapshot (): Promise<FirmSnapshotIF> {
+  private async fetchFirmSnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
       this.fetchBusinessInfo(),
       this.fetchAuthInfo(),
+      this.fetchAddresses(),
       this.fetchOrgPersons()
     ])
 
-    if (items.length !== 3) throw new Error('Failed to fetch business snapshot')
+    if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')
 
     return {
       businessInfo: items[0],
       authInfo: items[1],
-      orgPersons: items[2]
+      businessAddress: items[2],
+      orgPersons: items[3]
     }
   }
 

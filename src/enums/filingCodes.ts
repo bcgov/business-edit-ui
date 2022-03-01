@@ -3,5 +3,5 @@ export enum FilingCodes {
   INCORPORATION_BC = 'BCINC',
   CORRECTION = 'CRCTN',
   ALTERATION = 'ALTER',
-  CHANGE_FIRM = 'CHANGE' // ToDO: To be determined
+  CHANGE_OF_REGISTRATION = 'FMCHANGE'
 }

@@ -92,7 +92,7 @@ describe('Legal API Mixin', () => {
       .returns(Promise.resolve({ data: { filing: ALTERATION } }))
 
     // call method
-    const response = await vm.createAlteration('CP1234567', ALTERATION, true)
+    const response = await vm.createFiling('CP1234567', ALTERATION, true)
 
     // verify data
     expect(response).toEqual(ALTERATION)
@@ -145,7 +145,7 @@ describe('Legal API Mixin', () => {
       .returns(Promise.resolve({ data: ADDRESSES }))
 
     // call method
-    const response = await vm.fetchIncorporationAddress()
+    const response = await vm.fetchAddresses()
 
     // verify data
     expect(response).toEqual(ADDRESSES)
@@ -242,10 +242,10 @@ describe('Legal API Mixin', () => {
       .returns(Promise.resolve({ data: { filing: {} } }))
     await expect(vm.updateFiling('CP1234567', {}, 1234, true)).rejects.toThrow('Invalid API response')
 
-    // verify createAlteration with no response.data.filing.header.filingId
+    // verify createFiling with no response.data.filing.header.filingId
     post.withArgs('businesses/CP1234567/filings?draft=true')
       .returns(Promise.resolve({ data: { filing: { header: {} } } }))
-    await expect(vm.createAlteration('CP1234567', {}, true)).rejects.toThrow('Invalid API response')
+    await expect(vm.createFiling('CP1234567', {}, true)).rejects.toThrow('Invalid API response')
 
     // verify fetchBusinessInfo with no response.data
     get.withArgs('businesses/CP1234567').returns(Promise.resolve({}))
@@ -255,9 +255,9 @@ describe('Legal API Mixin', () => {
     get.withArgs('businesses/CP1234567/aliases').returns(Promise.resolve({}))
     await expect(vm.fetchNameTranslations()).rejects.toThrow('Invalid API response')
 
-    // verify fetchIncorporationAddress with no response.data
+    // verify fetchAddresses with no response.data
     get.withArgs('businesses/CP1234567/addresses').returns(Promise.resolve({}))
-    await expect(vm.fetchIncorporationAddress()).rejects.toThrow('Invalid API response')
+    await expect(vm.fetchAddresses()).rejects.toThrow('Invalid API response')
 
     // verify fetchOrgPersons with no response.data
     get.withArgs('businesses/CP1234567/directors').returns(Promise.resolve({}))

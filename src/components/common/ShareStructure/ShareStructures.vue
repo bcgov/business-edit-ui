@@ -39,7 +39,7 @@ import { CommonMixin } from '@/mixins'
 
 import {
   ActionBindingIF,
-  BusinessSnapshotIF,
+  EntitySnapshotIF,
   IncorporationFilingIF,
   ShareClassIF,
   ShareStructureIF,
@@ -62,7 +62,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Getter getNewResolutionDates!: string []
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getShareClasses!: ShareClassIF[]
-  @Getter getBusinessSnapshot!: BusinessSnapshotIF
+  @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getHasRightsOrRestrictions!: boolean
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
@@ -84,7 +84,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   }
 
   get originalShareStructure (): ShareStructureIF {
-    return this.getBusinessSnapshot?.shareStructure
+    return this.getEntitySnapshot?.shareStructure
   }
 
   /** Is true if changes to share structure rights will require a resolution date. */

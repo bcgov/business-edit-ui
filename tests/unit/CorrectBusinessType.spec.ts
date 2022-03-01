@@ -35,7 +35,7 @@ describe('ChangeBusinessType in an Alteration', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
-  const businessSnapshot = {
+  const entitySnapshot = {
     businessInfo: {
       legalName: 'Mock Original Name',
       legalType: 'BC'
@@ -44,9 +44,9 @@ describe('ChangeBusinessType in an Alteration', () => {
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.stateModel.nameRequest.legalName = businessSnapshot.businessInfo.legalName
-    store.state.stateModel.tombstone.entityType = businessSnapshot.businessInfo.legalType
-    store.state.stateModel.businessSnapshot = businessSnapshot
+    store.state.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
+    store.state.stateModel.entitySnapshot = entitySnapshot
     store.state.stateModel.tombstone.filingType = 'alteration'
 
     wrapper = mount(ChangeBusinessType, { vuetify, store, localVue })

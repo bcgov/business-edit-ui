@@ -3,21 +3,19 @@ import {
   NameTranslationIF, ShareStructureIF, ResolutionsIF, BaseAddressObjIF
 } from '@/interfaces'
 
-/** Business snapshot object. */
-export interface BusinessSnapshotIF {
+/** Entity snapshot object. */
+export interface EntitySnapshotIF {
   businessInfo: BusinessInformationIF
   authInfo: AuthInformationIF
-  incorporationAddress: IncorporationAddressIf
-  nameTranslations: NameTranslationIF[]
   orgPersons: GetOrgPersonIF[]
-  shareStructure: ShareStructureIF,
-  resolutions: ResolutionsIF[]
-}
 
-/** Business snapshot object. */
-export interface FirmSnapshotIF {
-  businessInfo: BusinessInformationIF
-  authInfo: AuthInformationIF
-  businessAddress?: BaseAddressObjIF
-  orgPersons: GetOrgPersonIF[]
+  // Properties exclusive to Companies
+  incorporationAddress?: IncorporationAddressIf
+  nameTranslations?: NameTranslationIF[]
+  shareStructure?: ShareStructureIF,
+  resolutions?: ResolutionsIF[]
+
+  // TODO: Api Response SHOULD NOT include Registered/Records: Will update following Api changes to BaseAddressObjIF
+  // Properties exclusive to Firms
+  businessAddress?: IncorporationAddressIf
 }

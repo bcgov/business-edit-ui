@@ -178,6 +178,8 @@
       </v-row>
     </div>
 
+    <v-divider v-if="isChangeFiling" class="mx-4 my-1" />
+
     <!-- Business Type -->
     <div v-if="isAlterationFiling || isChangeFiling"
          id="company-type-section"
@@ -205,7 +207,7 @@
       />
     </div>
 
-    <v-divider class="mx-4" />
+    <v-divider class="mx-4 my-1" />
 
     <!-- Change Filing Section -->
     <template v-if="isChangeFiling">
@@ -216,12 +218,22 @@
           </v-col>
 
           <v-col cols="9">
-            <div class="info-text">{{ businessStartDate }}</div>
+            <span class="info-text mr-1">{{ businessStartDate }}</span>
+            <v-tooltip top
+                       content-class="top-tooltip"
+                       transition="fade-transition"
+                       nudge-right="3"
+            >
+              <template v-slot:activator="{ on }">
+                <v-icon v-on="on" color="primary" size="18px">mdi-information-outline</v-icon>
+              </template>
+              <span>If the business start date is incorrect, it must be corrected through a correction filing.</span>
+            </v-tooltip>
           </v-col>
         </v-row>
       </div>
 
-      <v-divider class="mx-4" />
+      <v-divider class="mx-4 my-1" />
 
       <div class="section-container">
         <v-row no-gutters>
@@ -249,7 +261,7 @@
       </v-row>
     </div>
 
-    <v-divider class="mx-4" />
+    <v-divider class="mx-4 my-1" />
 
     <!-- Office addresses -->
     <div class="section-container">
@@ -258,7 +270,7 @@
       />
     </div>
 
-    <v-divider class="mx-4" />
+    <v-divider class="mx-4 my-1" />
 
     <!-- Registered Office Contact Information -->
     <div id="contact-info" class="section-container" :class="{'invalid-section': invalidContactSection}">
@@ -269,7 +281,7 @@
 
     <!-- Folio Information -->
     <template v-if="isPremiumAccount">
-      <v-divider class="mx-4" />
+      <v-divider class="mx-4 my-1" />
 
       <div id="folio-number" class="section-container" :class="{'invalid-section': invalidFolioSection}">
         <FolioInformation
@@ -285,9 +297,9 @@ import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import {
   ActionBindingIF,
-  BusinessSnapshotIF,
   ConfirmDialogType,
   ContactPointIF,
+  EntitySnapshotIF,
   FlagsCompanyInfoIF,
   IncorporationFilingIF,
   NameRequestApplicantIF,
@@ -343,7 +355,7 @@ export default class YourCompany extends Mixins(
   @Getter isNumberedCompany!: boolean
   @Getter isPremiumAccount!: boolean
   @Getter getOriginalIA!: IncorporationFilingIF
-  @Getter getBusinessSnapshot!: BusinessSnapshotIF
+  @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
@@ -454,7 +466,7 @@ export default class YourCompany extends Mixins(
     const correctedName = this.getApprovedName
     const currentName = this.isCorrectionFiling
       ? this.getOriginalIA.incorporationApplication.nameRequest.legalName
-      : this.getBusinessSnapshot.businessInfo.legalName
+      : this.getEntitySnapshot.businessInfo.legalName
 
     return correctedName !== currentName
   }
@@ -463,11 +475,11 @@ export default class YourCompany extends Mixins(
   private resetName () {
     this.setBusinessInformation(this.isCorrectionFiling
       ? this.getOriginalIA.business
-      : this.getBusinessSnapshot.businessInfo
+      : this.getEntitySnapshot.businessInfo
     )
     this.setNameRequest(this.isCorrectionFiling
       ? this.getOriginalIA.incorporationApplication.nameRequest
-      : this.getBusinessSnapshot.businessInfo
+      : this.getEntitySnapshot.businessInfo
     )
     this.companyNameChanges = false
   }
