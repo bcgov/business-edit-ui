@@ -493,6 +493,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         }
       }) || []
     )
+    // Store business contact info
+    this.setBusinessContact({
+      ...entitySnapshot.authInfo.contact
+    })
+
     // Restore share classes and resolution dates
     this.setShareClasses(
       filing.alteration.shareStructure?.shareClasses ||
@@ -500,16 +505,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     )
     this.setResolutionDates(filing.alteration.shareStructure?.resolutionDates || [])
     this.setOriginalResolutionDates(entitySnapshot.resolutions)
-
-    // Restore business contact
-    const contactPoint = filing.alteration.contactPoint
-      ? filing.alteration.contactPoint
-      : entitySnapshot.authInfo.contacts[0]
-
-    this.setBusinessContact({
-      ...contactPoint,
-      confirmEmail: filing.alteration.contactPoint?.email || entitySnapshot.authInfo.contacts[0].email
-    })
 
     // Restore certify state
     this.setCertifyState({
@@ -593,14 +588,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }) || []
     )
 
-    // Restore business contact
-    const contactPoint = filing.changeOfRegistration.contactPoint
-      ? filing.changeOfRegistration.contactPoint
-      : entitySnapshot.authInfo.contacts[0]
-
+    // Store business contact info
     this.setBusinessContact({
-      ...contactPoint,
-      confirmEmail: filing.changeOfRegistration.contactPoint?.email || entitySnapshot.authInfo.contacts[0].email
+      ...entitySnapshot.authInfo.contact
     })
 
     // Restore certify state
@@ -675,16 +665,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }) || []
     )
 
-    // Store the first business contact
-    let contactPoint = cloneDeep(EmptyContactPoint)
-    const contact = entitySnapshot.authInfo.contacts[0]
-    if (contact) {
-      contactPoint = {
-        ...contact,
-        confirmEmail: contact.email
-      }
-    }
-    this.setBusinessContact(contactPoint)
+    // Store the business contact
+    this.setBusinessContact({
+      ...entitySnapshot.authInfo.contact
+    })
 
     // Handle entity specific values
     switch (entitySnapshot.businessInfo.legalType) {

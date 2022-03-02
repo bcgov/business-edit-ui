@@ -177,7 +177,7 @@ export const stateModel: StateModelIF = {
       contactPoint: {
         email: '',
         phone: '',
-        extension: ','
+        extension: ''
       },
       courtOrder: {
         fileNumber: '',
