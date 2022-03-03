@@ -64,10 +64,6 @@ export default class ChangeSummary extends Mixins(
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
-
-  onDeleteClicked (): void {
-    this.$root.$emit('delete-all')
-  }
 }
 </script>
 
