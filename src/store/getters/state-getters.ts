@@ -266,7 +266,7 @@ export const getBusinessContact = (state: StateIF): ContactPointIF => {
 }
 
 export const getSnapshotBusinessContact = (state: StateIF): ContactPointIF => {
-  return state.stateModel.entitySnapshot?.authInfo?.contacts[0]
+  return state.stateModel.entitySnapshot?.authInfo?.contact
 }
 
 export const getSnapshotFolioNumber = (state: StateIF): string => {

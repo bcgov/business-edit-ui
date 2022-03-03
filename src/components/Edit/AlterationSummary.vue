@@ -4,7 +4,7 @@
     <div class="summary-header px-4 mb-2 rounded-t">
       <v-row no-gutters>
         <v-col cols="9">
-          <img  class="my-n1" src="@/assets/images/currency-usd-circle.svg">
+          <img  class="my-n1 header-icon" src="@/assets/images/currency-usd-circle.svg">
           <label class="summary-title">Alteration Notice Changes {{alterationFees}}</label>
         </v-col>
 

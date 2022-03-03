@@ -67,7 +67,7 @@ describe('BusinessContactInfo for a correction', () => {
   })
 })
 
-describe('CorrectBusinessContactInfo for an alteration', () => {
+describe('BusinessContactInfo for an alteration', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
@@ -88,7 +88,7 @@ describe('CorrectBusinessContactInfo for an alteration', () => {
     sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
     store.state.stateModel.tombstone.businessId = 'BC1234567'
     store.state.stateModel.businessContact = contactInfo
-    store.state.stateModel.entitySnapshot = { authInfo: { contacts: [ originalAlterationContact ] } }
+    store.state.stateModel.entitySnapshot = { authInfo: { contact: originalAlterationContact } }
   })
 
   beforeEach(async () => {
@@ -99,7 +99,7 @@ describe('CorrectBusinessContactInfo for an alteration', () => {
     wrapper.destroy()
   })
 
-  it('renders the CorrectBusinessContactInfo Component', async () => {
+  it('renders the BusinessContactInfo Component', async () => {
     expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
   })
 
@@ -114,6 +114,76 @@ describe('CorrectBusinessContactInfo for an alteration', () => {
 
     // Call the set Contact method and set the data back to it's original
     await wrapper.vm.onContactInfoChange(originalAlterationContact)
+
+    // Verify there is NO diff between current and original contact data
+    expect(wrapper.vm.hasBusinessContactInfoChange).toBe(false)
+  })
+
+  it('passes the correct label per filing type', async () => {
+    // Verify there is a diff between current and original contact data
+    expect(wrapper.vm.editSavedLabel).toBe('Changes Saved')
+
+    // Call the set Contact method and set the data back to it's original
+    await wrapper.vm.onContactInfoChange(originalAlterationContact)
+
+    // Verify there is NO diff between current and original contact data
+    expect(wrapper.vm.hasBusinessContactInfoChange).toBe(false)
+  })
+})
+
+describe('BusinessContactInfo for a Change of Registration', () => {
+  let wrapper: any
+  let store: any = getVuexStore()
+
+  const originalContact = {
+    email: 'mock@email.com',
+    confirmEmail: 'mock@email.com',
+    phone: '250-123-4567',
+    extension: '123'
+  }
+
+  beforeAll(async () => {
+    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
+    sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
+    store.state.stateModel.tombstone.businessId = 'BC1234567'
+    store.state.stateModel.businessContact = contactInfo
+    store.state.stateModel.entitySnapshot = { authInfo: { contact: originalContact } }
+  })
+
+  beforeEach(async () => {
+    wrapper = mount(BusinessContactInfo, { vuetify, store, localVue })
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('renders the BusinessContactInfo Component', async () => {
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
+  })
+
+  it('loads the correct original contact info for a change of registration', async () => {
+    expect(wrapper.vm.originalContact.email).toEqual(originalContact.email)
+    expect(wrapper.vm.originalContact.phone).toEqual(originalContact.phone)
+  })
+
+  it('watches for business contact info changes ', async () => {
+    // Verify there is a diff between current and original contact data
+    expect(wrapper.vm.hasBusinessContactInfoChange).toBe(true)
+
+    // Call the set Contact method and set the data back to it's original
+    await wrapper.vm.onContactInfoChange(originalContact)
+
+    // Verify there is NO diff between current and original contact data
+    expect(wrapper.vm.hasBusinessContactInfoChange).toBe(false)
+  })
+
+  it('passes the correct label per filing type', async () => {
+    // Verify there is a diff between current and original contact data
+    expect(wrapper.vm.editSavedLabel).toBe('Changes Saved')
+
+    // Call the set Contact method and set the data back to it's original
+    await wrapper.vm.onContactInfoChange(originalContact)
 
     // Verify there is NO diff between current and original contact data
     expect(wrapper.vm.hasBusinessContactInfoChange).toBe(false)

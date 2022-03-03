@@ -267,6 +267,19 @@ ul.list {
   color: $primary-blue;
 }
 
+// General icon styling
+.header-icon {
+  size: 25px !important;
+  color: $app-dk-blue !important;
+  vertical-align: top !important;
+}
+
+.info-icon {
+  size: 22px !important;
+  color: $app-blue !important;
+  vertical-align: top !important;
+}
+
 // No Results
 .no-results {
   text-align: center;

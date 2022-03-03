@@ -55,7 +55,11 @@ export default class AuthApiMixin extends Vue {
       .then(response => {
         if (response?.data) {
           return {
-            contacts: response.data.contacts,
+            contact: {
+              email: response.data.contacts[0].email,
+              phone: response.data.contacts[0].phone,
+              extension: response.data.contacts[0].phoneExtension
+            },
             folioNumber: response.data.folioNumber
           }
         } else {

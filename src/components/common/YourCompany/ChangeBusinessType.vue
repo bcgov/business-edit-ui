@@ -26,7 +26,7 @@
                      nudge-right="3"
           >
             <template v-slot:activator="{ on }">
-              <v-icon v-on="on" color="primary" size="18px">mdi-information-outline</v-icon>
+              <v-icon v-on="on" class="info-icon">mdi-information-outline</v-icon>
             </template>
             <span>{{ typeChangeInfo }}</span>
           </v-tooltip>

@@ -5,9 +5,11 @@
     :originalBusinessContact="originalContact"
     :hasBusinessContactInfoChange="hasBusinessContactInfoChange"
     :editLabel="editLabel"
-    :editedLabel="editedLabel"
+    :editedLabel="editSavedLabel"
     :disableActions="isCorrectionFiling"
+    :disableActionTooltip="isChangeFiling"
     :invalidSection="invalidSection"
+    :optionalPhone="isChangeFiling || isAlterationFiling"
     @isEditingContact="onIsEditingContact($event)"
     @contactInfoChange="onContactInfoChange($event)"
   />
@@ -31,6 +33,7 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
   @Getter getBusinessContact!: ContactPointIF
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getSnapshotBusinessContact!: ContactPointIF
+  @Getter isChangeFiling!: boolean
   @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
   @Getter getResource!: ResourceIF
@@ -46,7 +49,7 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
   /** Get the original Contact info dependant on filing type. */
   private get originalContact (): ContactPointIF {
     if (this.isCorrectionFiling) return this.getOriginalIA.incorporationApplication.contactPoint
-    if (this.isAlterationFiling) return this.getSnapshotBusinessContact
+    if (this.isAlterationFiling || this.isChangeFiling) return this.getSnapshotBusinessContact
     return null
   }
 
@@ -60,7 +63,7 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
   /** Update Contact info. */
   private async onContactInfoChange (contactInfo: ContactPointIF): Promise<void> {
     try {
-      if (this.isAlterationFiling) await this.updateContactInfo(contactInfo)
+      if (this.isAlterationFiling || this.isChangeFiling) await this.updateContactInfo(contactInfo)
       this.setBusinessContact(contactInfo)
     } catch (error) {
       console.log('Update contact info error =', error) // eslint-disable-line no-console
