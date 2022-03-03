@@ -48,7 +48,6 @@ export default class ChangeSummary extends Mixins(
   // Global getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
-  @Getter isBusySaving!: boolean
 
   // Change flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -64,12 +63,6 @@ export default class ChangeSummary extends Mixins(
     if (this.getApprovedName) return this.getApprovedName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
-  }
-
-  async onChangeClicked (): Promise<void> {
-    this.setSummaryMode(false)
-    // We don't change views just interchange components, so scroll to top for better UX.
-    await this.scrollToTop(document.getElementById('app'))
   }
 
   onDeleteClicked (): void {
