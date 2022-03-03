@@ -9,6 +9,7 @@
     :disableActions="isCorrectionFiling"
     :disableActionTooltip="isChangeFiling"
     :invalidSection="invalidSection"
+    :optionalPhone="true"
     @isEditingContact="onIsEditingContact($event)"
     @contactInfoChange="onContactInfoChange($event)"
   />

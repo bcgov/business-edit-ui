@@ -494,9 +494,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }) || []
     )
     // Store business contact info
-    this.setBusinessContact({
-      ...entitySnapshot.authInfo.contact
-    })
+    this.setBusinessContact(entitySnapshot.authInfo.contact)
 
     // Restore share classes and resolution dates
     this.setShareClasses(
@@ -589,9 +587,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     )
 
     // Store business contact info
-    this.setBusinessContact({
-      ...entitySnapshot.authInfo.contact
-    })
+    this.setBusinessContact(entitySnapshot.authInfo.contact)
 
     // Restore certify state
     this.setCertifyState({
@@ -666,9 +662,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     )
 
     // Store the business contact
-    this.setBusinessContact({
-      ...entitySnapshot.authInfo.contact
-    })
+    this.setBusinessContact(entitySnapshot.authInfo.contact)
 
     // Handle entity specific values
     switch (entitySnapshot.businessInfo.legalType) {

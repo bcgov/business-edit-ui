@@ -4,32 +4,8 @@
     <div class="summary-header px-4 mb-2 rounded-t">
       <v-row no-gutters>
         <v-col cols="9">
-          <v-icon color="primary">mdi-file-document-edit-outline</v-icon>
+          <v-icon class="header-icon">mdi-file-document-edit-outline</v-icon>
           <label class="summary-title">Summary of Changes to File</label>
-        </v-col>
-
-        <!-- Actions -->
-        <v-col cols="3" class="mt-n2">
-          <div class="actions mr-4">
-            <v-btn
-              text color="primary"
-              id="btn-change"
-              :disabled="isBusySaving"
-              @click="onChangeClicked()"
-            >
-              <v-icon small>mdi-pencil</v-icon>
-              <span>Change</span>
-            </v-btn>
-            <v-btn
-              text color="primary"
-              id="btn-delete"
-              :disabled="isBusySaving"
-              @click="onDeleteClicked()"
-            >
-              <v-icon small>mdi-delete</v-icon>
-              <span>Delete</span>
-            </v-btn>
-          </div>
         </v-col>
       </v-row>
     </div>
