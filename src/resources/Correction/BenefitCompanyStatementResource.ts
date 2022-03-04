@@ -1,6 +1,7 @@
 import { CorpTypeCd } from '@/enums'
 
 export const BenefitCompanyStatementResource = {
+  addressLabel: 'Registered Office',
   entityType: CorpTypeCd.BENEFIT_COMPANY,
   entityReference: 'Company',
   contactLabel: 'Registered Office',

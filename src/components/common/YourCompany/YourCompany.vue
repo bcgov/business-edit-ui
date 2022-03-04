@@ -1,12 +1,12 @@
 <template>
-  <v-card flat id="your-company">
+  <v-card flat id="your-company" class="pb-2">
     <ConfirmDialog
       ref="confirm"
       attach="#app"
     />
 
     <div class="define-company-header">
-      <v-icon color="appDkBlue">mdi-domain</v-icon>
+      <v-icon class="header-icon">mdi-domain</v-icon>
       <label class="define-company-title">Your {{ getResource.entityReference }}</label>
     </div>
 
@@ -272,7 +272,7 @@
 
     <v-divider class="mx-4 my-1" />
 
-    <!-- Registered Office Contact Information -->
+    <!-- Business Contact Information -->
     <div id="contact-info" class="section-container" :class="{'invalid-section': invalidContactSection}">
       <BusinessContactInfo
         :invalidSection="invalidContactSection"
