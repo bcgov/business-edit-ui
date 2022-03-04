@@ -269,13 +269,13 @@ ul.list {
 
 // General icon styling
 .header-icon {
-  size: 25px !important;
+  font-size: $px-25 !important;
   color: $app-dk-blue !important;
   vertical-align: top !important;
 }
 
 .info-icon {
-  size: 22px !important;
+  font-size: $px-22 !important;
   color: $app-blue !important;
   vertical-align: top !important;
 }
