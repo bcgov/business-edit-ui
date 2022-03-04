@@ -12,11 +12,7 @@ coverage:
   round: down
   range: "50...100"
   status:
-    project:
-      default:
-        target: auto
-        if_not_found: success
-        only_pulls: true
+    patch: false
 
 ignore:
   - "^/tests/**/*" # ignore test harness code
