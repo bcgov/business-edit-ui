@@ -5,7 +5,7 @@ import { axios } from '@/utils'
 
 // Interfaces
 import {
-  AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF, IncorporationAddressIf,
+  AddressesIF, AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF,
   NameTranslationIF, GetOrgPersonIF, ShareStructureIF, ResolutionsIF, ChangeFirmIF
 } from '@/interfaces'
 
@@ -148,7 +148,7 @@ export default class LegalApiMixin extends Vue {
    * Fetches the address of the current entity.
    * @returns a promise to return the data
    */
-  async fetchAddresses (): Promise<IncorporationAddressIf> {
+  async fetchAddresses (): Promise<AddressesIF> {
     if (!this.getBusinessId) throw new Error('Invalid business id')
 
     const url = `businesses/${this.getBusinessId}/addresses`

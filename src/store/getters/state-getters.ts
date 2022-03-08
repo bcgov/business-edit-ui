@@ -1,5 +1,6 @@
-import { AccountTypes, ActionTypes, CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
+import { AccountTypes, ActionTypes, CorpTypeCd, FilingCodes, FilingNames, FilingTypes } from '@/enums'
 import {
+  AddressesIF,
   IncorporationFilingIF,
   NameRequestDetailsIF,
   NameRequestApplicantIF,
@@ -9,7 +10,6 @@ import {
   BusinessInformationIF,
   CertifyIF,
   NameTranslationIF,
-  IncorporationAddressIf,
   FilingDataIF,
   StateIF,
   EffectiveDateTimeIF,
@@ -23,6 +23,7 @@ import {
 } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { isEqual } from 'lodash'
+import { isSame } from '@/utils/common-helper'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: StateIF): boolean => {
@@ -37,6 +38,11 @@ export const isAuthEdit = (state: StateIF): boolean => {
 /** Whether the user is authorized to view. */
 export const isAuthView = (state: StateIF): boolean => {
   return state.stateModel.tombstone.authRoles.includes('view')
+}
+
+/** Is True if entity is a Benefit Company. */
+export const isBComp = (state: StateIF): boolean => {
+  return (getEntityType(state) === CorpTypeCd.BENEFIT_COMPANY)
 }
 
 /** Whether the current filing is a correction. */
@@ -242,7 +248,7 @@ export const hasNameTranslationChanged = (state: StateIF): boolean => {
 }
 
 /** The office addresses. */
-export const getOfficeAddresses = (state: StateIF): IncorporationAddressIf | {} => {
+export const getOfficeAddresses = (state: StateIF): AddressesIF => {
   return state.stateModel.officeAddresses
 }
 
@@ -368,6 +374,21 @@ export const hasAlterationChanged = (state: StateIF): boolean => {
   )
 }
 
+/**
+ * Whether any change form data has changed (for the purpose of showing the
+ * fee summary), ie, does NOT include:
+ * - document delivery
+ * - certify
+ * - folio number
+ * - court order and POA
+ * - staff payment
+ */
+export const hasFirmChanged = (state: StateIF): boolean => {
+  return (
+    officeAddressesChanged(state)
+  )
+}
+
 /** Whether all correction/alteration sections are valid. */
 export const isFilingValid = (state: StateIF): boolean => {
   // NB: Define Company and Agreement Type don't have a "valid" state --
@@ -475,6 +496,45 @@ export const hasContactInfoChanged = (state: StateIF): boolean => {
   )
 }
 
+/** True if any office address has changed. Applies to corrections and change filings only. */
+export const officeAddressesChanged = (state: StateIF): boolean => {
+  return (isCorrectionFiling(state) || isChangeFiling(state)) &&
+    (mailingChanged(state) || deliveryChanged(state) ||
+      // Exclude Records Address conditions from Change filing
+      (!isChangeFiling(state) && (recMailingChanged(state) || recDeliveryChanged(state)))
+    )
+}
+
+/** The office addresses from the original IA. NB: may be {} */
+export const originalOfficeAddresses = (state: StateIF): AddressesIF => {
+  if (isCorrectionFiling(state)) return (getOriginalIA(state)?.incorporationApplication.offices as AddressesIF)
+  if (isChangeFiling(state)) return (getEntitySnapshot(state)?.addresses as AddressesIF)
+}
+
+/** True if (registered) mailing address has changed. */
+export const mailingChanged = (state: StateIF): boolean => {
+  return !isSame(getOfficeAddresses(state)?.registeredOffice?.mailingAddress,
+    originalOfficeAddresses(state)?.registeredOffice?.mailingAddress, ['addressCountryDescription'])
+}
+
+/** True if (registered) delivery address has changed. */
+export const deliveryChanged = (state: StateIF): boolean => {
+  return !isSame(getOfficeAddresses(state)?.registeredOffice?.deliveryAddress,
+    originalOfficeAddresses(state)?.registeredOffice?.deliveryAddress, ['addressCountryDescription'])
+}
+
+/** True if records mailing address has changed. */
+export const recMailingChanged = (state: StateIF): boolean => {
+  return !isSame(getOfficeAddresses(state)?.recordsOffice?.mailingAddress,
+    originalOfficeAddresses(state)?.recordsOffice?.mailingAddress, ['addressCountryDescription'])
+}
+
+/** True if records delivery address has changed. */
+export const recDeliveryChanged = (state: StateIF): boolean => {
+  return !isSame(getOfficeAddresses(state)?.recordsOffice?.deliveryAddress,
+    originalOfficeAddresses(state)?.recordsOffice?.deliveryAddress, ['addressCountryDescription'])
+}
+
 /** Whether share structure data has changed. */
 export const hasShareStructureChanged = (state: StateIF): boolean => {
   let currentShareClasses = getShareClasses(state)
@@ -569,7 +629,7 @@ export const showFeeSummary = (state: StateIF): boolean => {
   const haveFilingChange = (
     (isCorrectionFiling(state) && hasCorrectionChanged(state)) ||
     (isAlterationFiling(state) && hasAlterationChanged(state)) ||
-    (isChangeFiling(state))
+    (isChangeFiling(state) && hasFirmChanged(state))
   )
   return (haveFilingChange && !isEqual(getFilingData(state), defaultFilingData))
 }
@@ -597,4 +657,11 @@ export const invalidMinimumShareClass = (state: StateIF): boolean => {
 /** Get state of company provisions validity. */
 export const getIsCompanyProvisionsValid = (state: StateIF): boolean => {
   return state.stateModel.newAlteration.flagsCompanyInfo.isValidCompanyProvisions
+}
+
+/** The current filing name. */
+export const getFilingName = (state: StateIF): FilingNames => {
+  if (isCorrectionFiling(state)) return FilingNames.CORRECTION
+  if (isAlterationFiling(state)) return FilingNames.ALTERATION
+  if (isChangeFiling(state)) return FilingNames.CHANGE_OF_REGISTRATION
 }

@@ -23,6 +23,7 @@ function createComponent (): Wrapper<DocumentsDelivery> {
 
 describe('Document Delivery component', () => {
   beforeAll(() => {
+    store.state.stateModel.tombstone.filingType = 'alteration'
     store.state.stateModel.tombstone.keycloakRoles = ['staff']
     store.state.stateModel.tombstone.userInfo = {
       email: 'currentuser@mail.com',
@@ -35,6 +36,7 @@ describe('Document Delivery component', () => {
 
     expect(wrapper.findComponent(DocumentsDelivery).exists()).toBe(true)
     expect(wrapper.find('#document-delivery-section').exists()).toBe(true)
+    expect(wrapper.find('.document-info').text()).toContain('Copies of the alteration')
   })
 
   it('shows users email', () => {

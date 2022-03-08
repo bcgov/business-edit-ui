@@ -1,12 +1,12 @@
 <template>
   <div class="pb-6" id="document-delivery-section">
-    <h2>{{sectionNumber}} Alteration Documents Delivery</h2>
-    <div class="pt-4 pb-4">Copies of the alteration documents will be sent
+    <h2>{{sectionNumber}} Documents Delivery</h2>
+    <div class="document-info pt-4 pb-4">Copies of the {{ getFilingName.toLowerCase() }} documents will be sent
       to the following email address listed below.</div>
     <div :class="{ 'invalid-section': documentDeliveryInvalid }">
-      <v-card flat class="pt-4 pr-8">
+      <v-card flat class="section-container">
         <v-container>
-          <v-row class="pl-4">
+          <v-row>
             <v-col cols="3" class="px-0">
               <label><strong>Registered Office</strong></label>
             </v-col>
@@ -16,7 +16,7 @@
           </v-row>
         </v-container>
         <v-container v-if="isRoleStaff">
-          <v-row class="pl-4">
+          <v-row>
             <v-col cols="3" class="px-0">
               <label :class="{ 'error-text': documentDeliveryInvalid }"><strong>User Account</strong></label>
             </v-col>
@@ -36,7 +36,7 @@
           </v-row>
         </v-container>
         <v-container v-else>
-          <v-row class="pl-4">
+          <v-row>
             <v-col cols="3" class="px-0">
               <label><strong>User Account</strong></label>
             </v-col>
@@ -54,8 +54,8 @@
 import { Component, Mixins, Emit, Vue, Watch, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins'
+import { FilingNames } from '@/enums'
 import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces'
-// Shared Interfaces
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
 @Component({})
@@ -66,6 +66,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   @Getter isRoleStaff!: boolean
   @Getter getDocumentOptionalEmail!: string
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter getFilingName!: FilingNames
 
   // Global actions
   @Action setDocumentOptionalEmail!: ActionBindingIF

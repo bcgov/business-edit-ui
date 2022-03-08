@@ -35,6 +35,13 @@
           :validate="getAppValidate"
         />
 
+        <DocumentsDelivery
+          class="mt-10"
+          sectionNumber="1."
+          :validate="getAppValidate"
+          @valid="setDocumentOptionalEmailValidity($event)"
+        />
+
         <CertifySection
           class="mt-10"
           :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
@@ -274,7 +281,7 @@ export default class Change extends Mixins(
     return {
       businessInfo: items[0],
       authInfo: items[1],
-      businessAddress: items[2],
+      addresses: items[2],
       orgPersons: items[3]
     }
   }

@@ -18,18 +18,62 @@ describe('Change of Registration Filing', () => {
 
   it('correctly builds a registration filing', () => {
     store.state.stateModel.tombstone.businessId = 'BC1234567'
+    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.stateModel.entitySnapshot = {
       businessInfo: {
         foundingDate: 'Jan 01, 2000',
         legalType: '',
         identifier: 'BC1234567',
         legalName: 'SomeMockBusiness'
+      },
+      addresses: {
+        registeredOffice: {
+          mailingAddress: {
+            addressCity: 'Charlie',
+            addressCountry: 'CA',
+            addressRegion: 'BC',
+            deliveryInstructions: 'Mailing address',
+            postalCode: 'V2V 2V2',
+            streetAddress: '222 Second St',
+            streetAddressAdditional: 'Suite 2'
+          },
+          deliveryAddress: {
+            addressCity: 'Alpha',
+            addressCountry: 'CA',
+            addressRegion: 'BC',
+            deliveryInstructions: 'Delivery address',
+            postalCode: 'V1V 1V1',
+            streetAddress: '111 First St',
+            streetAddressAdditional: 'Suite 1'
+          }
+        }
+      }
+    }
+    store.state.stateModel.officeAddresses = {
+      registeredOffice: {
+        mailingAddress: {
+          addressCity: 'Bravo',
+          addressCountry: 'CA',
+          addressRegion: 'BC',
+          deliveryInstructions: 'Mailing address',
+          postalCode: 'V2V 2V2',
+          streetAddress: '222 Second St',
+          streetAddressAdditional: 'Suite 2'
+        },
+        deliveryAddress: {
+          addressCity: 'Alpha',
+          addressCountry: 'CA',
+          addressRegion: 'BC',
+          deliveryInstructions: 'Delivery address',
+          postalCode: 'V1V 1V1',
+          streetAddress: '111 First St',
+          streetAddressAdditional: 'Suite 1'
+        }
       }
     }
     const filing = wrapper.vm.buildChangeFiling(true)
 
     // FUTURE: check filing data...
-    // FUTURE: compare to "changeOfRegistration.json" (see below)
     expect(filing).toEqual(
       expect.objectContaining({
         'business': {
@@ -46,6 +90,26 @@ describe('Change of Registration Filing', () => {
               'naicsDescription': ''
             },
             'natureOfBusiness': ''
+          },
+          'businessAddress': {
+            'mailingAddress': {
+              'addressCity': 'Bravo',
+              'addressCountry': 'CA',
+              'addressRegion': 'BC',
+              'deliveryInstructions': 'Mailing address',
+              'postalCode': 'V2V 2V2',
+              'streetAddress': '222 Second St',
+              'streetAddressAdditional': 'Suite 2'
+            },
+            'deliveryAddress': {
+              'addressCity': 'Alpha',
+              'addressCountry': 'CA',
+              'addressRegion': 'BC',
+              'deliveryInstructions': 'Delivery address',
+              'postalCode': 'V1V 1V1',
+              'streetAddress': '111 First St',
+              'streetAddressAdditional': 'Suite 1'
+            }
           },
           'contactPoint': {
             'email': '',

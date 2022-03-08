@@ -26,17 +26,27 @@
         </v-row>
       </div>
     </template>
+
+    <template v-if="officeAddressesChanged">
+      <v-divider class="mx-4" />
+      <div class="section-container">
+        <OfficeAddresses :isSummaryView="true" />
+      </div>
+    </template>
   </v-card>
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+import { OfficeAddresses } from '@/components/common'
 import { ActionBindingIF } from '@/interfaces'
 import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 
 @Component({
-  components: {}
+  components: {
+    OfficeAddresses
+  }
 })
 export default class ChangeSummary extends Mixins(
   DateMixin,
@@ -48,6 +58,7 @@ export default class ChangeSummary extends Mixins(
   // Global getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
+  @Getter officeAddressesChanged!: boolean
 
   // Change flag getters
   @Getter hasBusinessNameChanged!: boolean

@@ -4,7 +4,7 @@ import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store'
 import { mount } from '@vue/test-utils'
 import { OfficeAddresses } from '@/components/common'
-import { AddressIF, IncorporationAddressIf } from '@/interfaces'
+import { AddressIF, AddressesIF } from '@/interfaces'
 import { BenefitCompanyResource } from '@/resources/Edit/Alteration'
 
 Vue.use(Vuetify)
@@ -37,7 +37,7 @@ function getAddressX (x: number): AddressIF {
  * @param a3 the number to customize the 3rd address (records-mailing)
  * @param a4 the number to customize the 4th address (records-delivery)
  */
-function getIncorporationAddress (a1: number, a2: number, a3: number, a4: number): IncorporationAddressIf {
+function getIncorporationAddress (a1: number, a2: number, a3: number, a4: number): AddressesIF {
   return {
     registeredOffice: {
       mailingAddress: getAddressX(a1),
@@ -81,20 +81,19 @@ describe('summary mode', () => {
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
 
-    const cols = wrapper.findAll('#summary-registered-address .flex')
+    const summaryRow = wrapper.find('#summary-registered-address')
 
-    // verify header
+    // verify labels
+    const labels = summaryRow.findAll('label')
+    expect(labels.at(0).text()).toBe('Registered Office')
+    expect(labels.at(1).text()).toBe('Mailing Address')
+    expect(labels.at(2).text()).toBe('Delivery Address')
+
+    // Verify mailing address
+    const mailingAddress = summaryRow.findAll('.base-address').at(0)
+    expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
+
     {
-      const label = cols.at(0).find('label')
-      expect(label.text()).toBe('Registered Office')
-    }
-
-    // verify mailing address
-    {
-      const mailingAddress = cols.at(1)
-      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
-      expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
-
       const rows = mailingAddress.findAll('.address-block__info-row')
       expect(rows.at(0).text()).toBe('streetAddress1')
       expect(rows.at(1).text()).toBe('streetAddressAdditional1')
@@ -105,12 +104,11 @@ describe('summary mode', () => {
       expect(rows.at(4).text()).toBe('deliveryInstructions1')
     }
 
-    // verify delivery address
-    {
-      const deliveryAddress = cols.at(2)
-      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
-      expect(deliveryAddress.find('label > .v-chip').exists()).toBe(false)
+    // Verify delivery address
+    const deliveryAddress = summaryRow.findAll('.base-address').at(1)
+    expect(deliveryAddress.find('label > .v-chip').exists()).toBe(false)
 
+    {
       const rows = deliveryAddress.findAll('.address-block__info-row')
       expect(rows.at(0).text()).toBe('streetAddress2')
       expect(rows.at(1).text()).toBe('streetAddressAdditional2')
@@ -122,11 +120,9 @@ describe('summary mode', () => {
     }
 
     // verify actions
-    {
-      const actions = cols.at(3)
-      const correctBtn = actions.find('.actions #btn-correct-office-addresses')
-      expect(correctBtn.find('span').text()).toBe('Correct')
-    }
+    const actions = summaryRow.find('.actions')
+    const correctBtn = actions.find('#btn-correct-office-addresses')
+    expect(correctBtn.find('span').text()).toBe('Correct')
 
     wrapper.destroy()
   })
@@ -142,20 +138,19 @@ describe('summary mode', () => {
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
     await Vue.nextTick()
 
-    const cols = wrapper.findAll('#summary-registered-address .flex')
+    const summaryRow = wrapper.find('#summary-registered-address')
 
-    // verify header
+    // verify labels
+    const labels = summaryRow.findAll('label')
+    expect(labels.at(0).text()).toBe('Registered Office')
+    expect(labels.at(1).text()).toBe('Mailing Address')
+    expect(labels.at(2).text()).toBe('Delivery Address')
+
+    // Verify mailing address
+    const mailingAddress = summaryRow.findAll('.base-address').at(0)
+    expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
+
     {
-      const label = cols.at(0).find('label')
-      expect(label.text()).toBe('Registered Office')
-    }
-
-    // verify mailing address
-    {
-      const mailingAddress = cols.at(1)
-      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
-      expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
-
       const rows = mailingAddress.findAll('.address-block__info-row')
       expect(rows.at(0).text()).toBe('streetAddress1')
       expect(rows.at(1).text()).toBe('streetAddressAdditional1')
@@ -166,20 +161,15 @@ describe('summary mode', () => {
       expect(rows.at(4).text()).toBe('deliveryInstructions1')
     }
 
-    // verify delivery address
-    {
-      const deliveryAddress = cols.at(2)
-      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
-      expect(deliveryAddress.find('label > .v-chip').exists()).toBe(false)
-      expect(deliveryAddress.find('label + div').text()).toBe('Same as Mailing Address')
-    }
+    // Verify delivery address
+    const deliveryAddress = summaryRow.findAll('.info-text').at(0)
+    expect(deliveryAddress.find('label > .v-chip').exists()).toBe(false)
+    expect(deliveryAddress.find('label + div').text()).toBe('Same as Mailing Address')
 
     // verify actions
-    {
-      const actions = cols.at(3)
-      const correctBtn = actions.find('.actions #btn-correct-office-addresses')
-      expect(correctBtn.find('span').text()).toBe('Correct')
-    }
+    const actions = summaryRow.find('.actions')
+    const correctBtn = actions.find('#btn-correct-office-addresses')
+    expect(correctBtn.find('span').text()).toBe('Correct')
 
     wrapper.destroy()
   })
@@ -195,20 +185,17 @@ describe('summary mode', () => {
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(4, 3, 2, 1))
     await Vue.nextTick()
 
-    const cols = wrapper.findAll('#summary-registered-address .flex')
+    const summaryRow = wrapper.find('#summary-registered-address')
 
-    // verify header
-    {
-      const label = cols.at(0).find('label')
-      expect(label.text()).toBe('Registered Office')
-    }
+    // verify labels
+    const labels = summaryRow.findAll('label')
+    expect(labels.at(0).text()).toBe('Registered Office')
+    expect(labels.at(1).text()).toBe('Mailing Address Corrected')
+    expect(labels.at(2).text()).toBe('Delivery Address Corrected')
 
     // verify mailing address
+    const mailingAddress = summaryRow.findAll('.base-address').at(0)
     {
-      const mailingAddress = cols.at(1)
-      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
-      expect(mailingAddress.find('label > .v-chip span').text()).toBe('CORRECTED')
-
       const rows = mailingAddress.findAll('.address-block__info-row')
       expect(rows.at(0).text()).toBe('streetAddress4')
       expect(rows.at(1).text()).toBe('streetAddressAdditional4')
@@ -220,11 +207,8 @@ describe('summary mode', () => {
     }
 
     // verify delivery address
+    const deliveryAddress = summaryRow.findAll('.base-address').at(1)
     {
-      const deliveryAddress = cols.at(2)
-      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
-      expect(deliveryAddress.find('label > .v-chip span').text()).toBe('CORRECTED')
-
       const rows = deliveryAddress.findAll('.address-block__info-row')
       expect(rows.at(0).text()).toBe('streetAddress3')
       expect(rows.at(1).text()).toBe('streetAddressAdditional3')
@@ -236,19 +220,19 @@ describe('summary mode', () => {
     }
 
     // verify actions
-    {
-      const actions = cols.at(3)
+    const actions = summaryRow.find('.actions')
 
-      const undoBtn = actions.find('.actions .edit-action #btn-undo-office-addresses')
-      expect(undoBtn.find('span').text()).toBe('Undo')
+    const undoBtn = actions.find('.edit-action #btn-undo-office-addresses')
+    expect(undoBtn.find('span').text()).toBe('Undo')
 
-      const moreBtn = actions.find('.actions .more-actions #btn-more-actions span')
-      expect(moreBtn.find('span').exists()).toBe(true)
-      moreBtn.trigger('click')
-      await Vue.nextTick()
-      const correctBtn = actions.find('.actions .more-actions #btn-more-actions-edit')
-      expect(correctBtn.find('span').text()).toBe('Correct')
-    }
+    const moreBtn = actions.find('.more-actions #btn-more-actions span')
+    expect(moreBtn.find('span').exists()).toBe(true)
+
+    moreBtn.trigger('click')
+    await Vue.nextTick()
+
+    const correctBtn = actions.find('.more-actions #btn-more-actions-edit')
+    expect(correctBtn.find('span').text()).toBe('Correct')
 
     wrapper.destroy()
   })
@@ -264,20 +248,19 @@ describe('summary mode', () => {
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
 
-    const cols = wrapper.findAll('#summary-records-address .flex')
+    const summaryRow = wrapper.find('#summary-records-address')
 
-    // verify header
+    // verify labels
+    const labels = summaryRow.findAll('label')
+    expect(labels.at(0).text()).toBe('Records Office')
+    expect(labels.at(1).text()).toBe('Mailing Address')
+    expect(labels.at(2).text()).toBe('Delivery Address')
+
+    // Verify mailing address
+    const mailingAddress = summaryRow.findAll('.base-address').at(0)
+    expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
+
     {
-      const label = cols.at(0).find('label')
-      expect(label.text()).toBe('Records Office')
-    }
-
-    // verify mailing address
-    {
-      const mailingAddress = cols.at(1)
-      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
-      expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
-
       const rows = mailingAddress.findAll('.address-block__info-row')
       expect(rows.at(0).text()).toBe('streetAddress3')
       expect(rows.at(1).text()).toBe('streetAddressAdditional3')
@@ -288,12 +271,11 @@ describe('summary mode', () => {
       expect(rows.at(4).text()).toBe('deliveryInstructions3')
     }
 
-    // verify delivery address
-    {
-      const deliveryAddress = cols.at(2)
-      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
-      expect(deliveryAddress.find('label > .v-chip').exists()).toBe(false)
+    // Verify delivery address
+    const deliveryAddress = summaryRow.findAll('.base-address').at(1)
+    expect(deliveryAddress.find('label > .v-chip').exists()).toBe(false)
 
+    {
       const rows = deliveryAddress.findAll('.address-block__info-row')
       expect(rows.at(0).text()).toBe('streetAddress4')
       expect(rows.at(1).text()).toBe('streetAddressAdditional4')
@@ -318,29 +300,21 @@ describe('summary mode', () => {
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
     await Vue.nextTick()
 
-    const cols = wrapper.findAll('#summary-records-address .flex')
+    const summaryRow = wrapper.find('#summary-records-address')
 
-    // verify header
-    {
-      const label = cols.at(0).find('label')
-      expect(label.text()).toBe('Records Office')
-    }
+    // verify labels
+    const labels = summaryRow.findAll('label')
+    expect(labels.at(0).text()).toBe('Records Office')
+    expect(labels.at(1).text()).toBe('Mailing Address')
+    expect(labels.at(2).text()).toBe('Delivery Address')
 
-    // verify mailing address
-    {
-      const mailingAddress = cols.at(1)
-      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
-      expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
-      expect(mailingAddress.find('label + div').text()).toBe('Same as Registered Office')
-    }
+    // Verify mailing address
+    const mailingAddress = summaryRow.findAll('.info-text').at(0)
+    expect(mailingAddress.find('label + div').text()).toBe('Same as Registered Office')
 
-    // verify delivery address
-    {
-      const deliveryAddress = cols.at(2)
-      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
-      expect(deliveryAddress.find('label > .v-chip').exists()).toBe(false)
-      expect(deliveryAddress.find('label + div').text()).toBe('Same as Registered Office')
-    }
+    // Verify delivery address
+    const deliveryAddress = summaryRow.findAll('.info-text').at(1)
+    expect(deliveryAddress.find('label + div').text()).toBe('Same as Registered Office')
 
     wrapper.destroy()
   })
@@ -356,20 +330,19 @@ describe('summary mode', () => {
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
     await Vue.nextTick()
 
-    const cols = wrapper.findAll('#summary-records-address .flex')
+    const summaryRow = wrapper.find('#summary-records-address')
 
-    // verify header
-    {
-      const label = cols.at(0).find('label')
-      expect(label.text()).toBe('Records Office')
-    }
+    // verify labels
+    const labels = summaryRow.findAll('label')
+    expect(labels.at(0).text()).toBe('Records Office')
+    expect(labels.at(1).text()).toBe('Mailing Address')
+    expect(labels.at(2).text()).toBe('Delivery Address')
 
     // verify mailing address
-    {
-      const mailingAddress = cols.at(1)
-      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
-      expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
+    const mailingAddress = summaryRow.findAll('.base-address').at(0)
+    expect(mailingAddress.find('label > .v-chip').exists()).toBe(false)
 
+    {
       const rows = mailingAddress.findAll('.address-block__info-row')
       expect(rows.at(0).text()).toBe('streetAddress3')
       expect(rows.at(1).text()).toBe('streetAddressAdditional3')
@@ -380,13 +353,9 @@ describe('summary mode', () => {
       expect(rows.at(4).text()).toBe('deliveryInstructions3')
     }
 
-    // verify delivery address
-    {
-      const deliveryAddress = cols.at(2)
-      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
-      expect(deliveryAddress.find('label > .v-chip').exists()).toBe(false)
-      expect(deliveryAddress.find('label + div').text()).toBe('Same as Mailing Address')
-    }
+    // Verify delivery address
+    const deliveryAddress = summaryRow.findAll('.info-text').at(0)
+    expect(deliveryAddress.find('label + div').text()).toBe('Same as Mailing Address')
 
     wrapper.destroy()
   })
@@ -402,20 +371,17 @@ describe('summary mode', () => {
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(4, 3, 2, 1))
     await Vue.nextTick()
 
-    const cols = wrapper.findAll('#summary-records-address .flex')
+    const summaryRow = wrapper.find('#summary-records-address')
 
-    // verify header
-    {
-      const label = cols.at(0).find('label')
-      expect(label.text()).toBe('Records Office')
-    }
+    // verify labels
+    const labels = summaryRow.findAll('label')
+    expect(labels.at(0).text()).toBe('Records Office')
+    expect(labels.at(1).text()).toBe('Mailing Address Corrected')
+    expect(labels.at(2).text()).toBe('Delivery Address Corrected')
 
     // verify mailing address
+    const mailingAddress = summaryRow.findAll('.base-address').at(0)
     {
-      const mailingAddress = cols.at(1)
-      expect(mailingAddress.find('label > span').text()).toBe('Mailing Address')
-      expect(mailingAddress.find('label > .v-chip span').text()).toBe('CORRECTED')
-
       const rows = mailingAddress.findAll('.address-block__info-row')
       expect(rows.at(0).text()).toBe('streetAddress2')
       expect(rows.at(1).text()).toBe('streetAddressAdditional2')
@@ -427,11 +393,8 @@ describe('summary mode', () => {
     }
 
     // verify delivery address
+    const deliveryAddress = summaryRow.findAll('.base-address').at(1)
     {
-      const deliveryAddress = cols.at(2)
-      expect(deliveryAddress.find('label > span').text()).toBe('Delivery Address')
-      expect(deliveryAddress.find('label > .v-chip span').text()).toBe('CORRECTED')
-
       const rows = deliveryAddress.findAll('.address-block__info-row')
       expect(rows.at(0).text()).toBe('streetAddress1')
       expect(rows.at(1).text()).toBe('streetAddressAdditional1')
@@ -990,12 +953,8 @@ describe('actions and events', () => {
     await Vue.nextTick()
 
     // verify that summary shows Correct button
-    {
-      const cols = wrapper.findAll('#summary-registered-address .flex')
-      const actions = cols.at(3)
-      const correctBtn = actions.find('.actions #btn-correct-office-addresses')
-      expect(correctBtn.find('span').text()).toBe('Correct')
-    }
+    const correctBtn = wrapper.find('#btn-correct-office-addresses')
+    expect(correctBtn.find('span').text()).toBe('Correct')
 
     // verify data
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
@@ -1019,12 +978,8 @@ describe('actions and events', () => {
     await Vue.nextTick()
 
     // verify that summary shows Correct button
-    {
-      const cols = wrapper.findAll('#summary-registered-address .flex')
-      const actions = cols.at(3)
-      const correctBtn = actions.find('.actions #btn-correct-office-addresses')
-      expect(correctBtn.find('span').text()).toBe('Correct')
-    }
+    const correctBtn = wrapper.find('#btn-correct-office-addresses')
+    expect(correctBtn.find('span').text()).toBe('Correct')
 
     // verify data
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
@@ -1046,12 +1001,9 @@ describe('actions and events', () => {
     await Vue.nextTick()
 
     // verify that summary shows Undo button
-    {
-      const cols = wrapper.findAll('#summary-registered-address .flex')
-      const actions = cols.at(3)
-      const undoBtn = actions.find('.actions .edit-action #btn-undo-office-addresses')
-      expect(undoBtn.find('span').text()).toBe('Undo')
-    }
+    // verify that summary shows Correct button
+    const undoBtn = wrapper.find('#btn-undo-office-addresses')
+    expect(undoBtn.find('span').text()).toBe('Undo')
 
     // verify data
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity5')
@@ -1073,21 +1025,13 @@ describe('actions and events', () => {
     await Vue.nextTick()
 
     // click Undo button
-    {
-      const cols = wrapper.findAll('#summary-registered-address .flex')
-      const actions = cols.at(3)
-      const undoBtn = actions.find('.actions .edit-action #btn-undo-office-addresses')
-      undoBtn.trigger('click')
-      await Vue.nextTick()
-    }
+    const undoBtn = wrapper.find('#btn-undo-office-addresses')
+    undoBtn.trigger('click')
+    await Vue.nextTick()
 
     // verify that summary shows Correct button
-    {
-      const cols = wrapper.findAll('#summary-registered-address .flex')
-      const actions = cols.at(3)
-      const correctBtn = actions.find('.actions #btn-correct-office-addresses')
-      expect(correctBtn.find('span').text()).toBe('Correct')
-    }
+    const correctBtn = wrapper.find('#btn-correct-office-addresses')
+    expect(correctBtn.find('span').text()).toBe('Correct')
 
     // verify data
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
@@ -1111,17 +1055,14 @@ describe('actions and events', () => {
     }
 
     // click Correct button
-    {
-      const cols = wrapper.findAll('#summary-registered-address .flex')
-      const actions = cols.at(3)
-      const moreBtn = actions.find('.actions .more-actions #btn-more-actions span')
-      expect(moreBtn.find('span').exists()).toBe(true)
-      moreBtn.trigger('click')
-      await Vue.nextTick()
-      const correctBtn = actions.find('.actions .more-actions #btn-more-actions-edit')
-      correctBtn.trigger('click')
-      await Vue.nextTick()
-    }
+    const moreBtn = wrapper.find('#btn-more-actions')
+    expect(moreBtn.find('span').exists()).toBe(true)
+    moreBtn.trigger('click')
+    await Vue.nextTick()
+
+    const correctBtn = wrapper.find('#btn-more-actions-edit')
+    correctBtn.trigger('click')
+    await Vue.nextTick()
 
     // make a change (and verify)
     await wrapper.setData({ mailingAddress: getAddressX(6) })

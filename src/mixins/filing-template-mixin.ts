@@ -7,6 +7,7 @@ import { DateMixin } from '@/mixins'
 // Interfaces
 import {
   ActionBindingIF,
+  AddressesIF,
   AlterationFilingIF,
   CertifyIF,
   ChangeFirmIF,
@@ -14,7 +15,6 @@ import {
   CorrectionFilingIF,
   EffectiveDateTimeIF,
   EntitySnapshotIF,
-  IncorporationAddressIf,
   NameRequestIF,
   NameTranslationIF,
   OrgPersonIF,
@@ -22,9 +22,6 @@ import {
   ShareStructureIF,
   StaffPaymentIF
 } from '@/interfaces'
-
-// Shared Interfaces
-import { EmptyContactPoint } from '@bcrs-shared-components/interfaces'
 
 // Constants
 import { ActionTypes, CorpTypeCd, EffectOfOrders, FilingTypes, RoleTypes, StaffPaymentOptions } from '@/enums'
@@ -59,7 +56,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getNameTranslations!: NameTranslationIF[]
   @Getter getNameRequest!: NameRequestIF
   @Getter getCertifyState!: CertifyIF
-  @Getter getOfficeAddresses!: IncorporationAddressIf | {}
+  @Getter getOfficeAddresses!: AddressesIF
   @Getter getBusinessContact!: ContactPointIF
   @Getter getAgreementType!: string
   @Getter getEntitySnapshot!: EntitySnapshotIF
@@ -70,6 +67,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getProvisionsRemoved!: boolean
   @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
+  @Getter officeAddressesChanged!: boolean
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -340,6 +338,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }
     }
 
+    // Apply business address changes to filing
+    if (this.officeAddressesChanged) {
+      filing.changeOfRegistration.businessAddress = {
+        mailingAddress: this.getOfficeAddresses.registeredOffice.mailingAddress,
+        deliveryAddress: this.getOfficeAddresses.registeredOffice.deliveryAddress
+      }
+    }
+
     return filing
   }
 
@@ -466,7 +472,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setProvisionsRemoved(filing.alteration.provisionsRemoved)
 
     // Store office addresses **from snapshot** (because we don't change office addresses in an alteration)
-    this.setOfficeAddresses(entitySnapshot.incorporationAddress)
+    this.setOfficeAddresses(entitySnapshot.addresses)
 
     // Store people and roles **from snapshot** (because we don't change people and roles in an alteration)
     this.setPeopleAndRoles(
@@ -557,10 +563,16 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Restore name request
     this.setNameRequest(filing.changeOfRegistration.nameRequest || { legalName: entitySnapshot.businessInfo.legalName })
 
-    // Store office addresses **from snapshot**
-    this.setOfficeAddresses(filing.changeOfRegistration.businessAddress || entitySnapshot.businessAddress)
+    // Store office addresses
+    this.setOfficeAddresses({
+      registeredOffice: {
+        mailingAddress: filing.changeOfRegistration.businessAddress.mailingAddress,
+        deliveryAddress: filing.changeOfRegistration.businessAddress.deliveryAddress
+      }
+    } || entitySnapshot.addresses
+    )
 
-    // Store people and roles **from snapshot** (because we don't change people and roles in an alteration)
+    // Store people and roles
     this.setPeopleAndRoles(
       entitySnapshot.orgPersons?.map(director => {
         return {
@@ -683,7 +695,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         this.setProvisionsRemoved(null)
 
         // Store office addresses
-        this.setOfficeAddresses(entitySnapshot.incorporationAddress)
+        this.setOfficeAddresses(entitySnapshot.addresses)
 
         // Store share classes and resolution dates
         this.setShareClasses(cloneDeep(entitySnapshot.shareStructure.shareClasses))
@@ -693,7 +705,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       case CorpTypeCd.SOLE_PROP:
       case CorpTypeCd.PARTNERSHIP:
         // Store business addresses
-        this.setOfficeAddresses(entitySnapshot.businessAddress)
+        this.setOfficeAddresses(entitySnapshot.addresses)
         break
     }
   }

@@ -1,10 +1,10 @@
 import {
   ActionIF,
   ActionKvIF,
+  AddressesIF,
   BusinessInformationIF,
   CertifyIF,
   EntitySnapshotIF,
-  IncorporationAddressIf,
   NameRequestIF,
   NameTranslationIF,
   OrgPersonIF,
@@ -103,7 +103,7 @@ export const setDefineCompanyStepChanged: ActionIF = ({ commit }, changed: boole
   commit('mutateDefineCompanyStepChanged', changed)
 }
 
-export const setOfficeAddresses: ActionIF = ({ commit }, address: IncorporationAddressIf): void => {
+export const setOfficeAddresses: ActionIF = ({ commit }, address: AddressesIF): void => {
   commit('mutateOfficeAddresses', address)
 }
 

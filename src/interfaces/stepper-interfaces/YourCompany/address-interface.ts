@@ -18,8 +18,8 @@ export interface BaseAddressObjIF {
   deliveryAddress?: AddressIF
 }
 
-/** Interface to define the incorporation addresses. */
-export interface IncorporationAddressIf {
+/** Interface to define the addresses. */
+export interface AddressesIF {
   registeredOffice: BaseAddressObjIF
   // Records Address is required for BCOMPs.
   // Records Address may be optional for other app types.

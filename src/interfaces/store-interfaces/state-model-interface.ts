@@ -1,6 +1,6 @@
 import {
-  AccountInformationIF, AlterationFilingIF, CertifyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF, ShareStructureIF,
-  EffectiveDateTimeIF, IncorporationAddressIf, IncorporationAgreementIF, BusinessInformationIF, IncorporationFilingIF,
+  AccountInformationIF, AddressesIF, AlterationFilingIF, CertifyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF,
+  ShareStructureIF, EffectiveDateTimeIF, IncorporationAgreementIF, BusinessInformationIF, IncorporationFilingIF,
   FilingDataIF, StaffPaymentStepIF, DetailIF, NameTranslationIF, EntitySnapshotIF, DocumentDeliveryIF, FeesIF,
   NewAlterationIF
 } from '@/interfaces'
@@ -18,7 +18,7 @@ export interface StateModelIF {
   nameTranslations: NameTranslationIF[]
   certifyState: CertifyIF
   documentDelivery: DocumentDeliveryIF
-  officeAddresses: IncorporationAddressIf | {}
+  officeAddresses: AddressesIF
   peopleAndRolesStep: PeopleAndRolesIF
   shareStructureStep: ShareStructureIF
   incorporationAgreementStep: IncorporationAgreementIF
