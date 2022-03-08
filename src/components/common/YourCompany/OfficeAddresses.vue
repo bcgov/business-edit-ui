@@ -843,7 +843,7 @@ ul {
 // Override font styling of base-address input fields
 ::v-deep {
   // italicize the delivery instructions in the base address component
-  .delivery-instructions {
+  .address-block .delivery-instructions {
     font-style: italic;
   }
 
