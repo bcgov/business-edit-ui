@@ -6,5 +6,5 @@ export * from './filingHeader-interface'
 export * from './incorporationApplication-interface'
 export * from './incorporationFiling-interface'
 
-// Proxy export for Shared Components which rely on IncorporationAddressIf
+// Alias export for Shared Components which rely on IncorporationAddressIf
 export { AddressesIF as IncorporationAddressIf } from '@/interfaces/stepper-interfaces/YourCompany/address-interface'

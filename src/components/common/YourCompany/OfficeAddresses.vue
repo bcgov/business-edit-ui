@@ -99,7 +99,7 @@
         </template>
       </v-row>
 
-      <v-row v-if="entityFilter(CorpTypeCd.BENEFIT_COMPANY)" id="summary-records-address" class="mt-4 mx-0" no-gutters>
+      <v-row v-if="isBComp" id="summary-records-address" class="mt-4 mx-0" no-gutters>
         <v-col cols="3">
           <label class>Records Office</label>
         </v-col>
@@ -290,7 +290,7 @@
           </li>
         </div>
 
-        <div id="edit-records-address" v-if="entityFilter(CorpTypeCd.BENEFIT_COMPANY)">
+        <div id="edit-records-address" v-if="isBComp">
           <div class="address-edit-header" :class="{'mt-8': inheritMailingAddress}">
             <label class="address-edit-title">Records Office</label>
             <v-checkbox
@@ -394,7 +394,7 @@ import { CommonMixin } from '@/mixins'
   components: { BaseAddress }
 })
 export default class OfficeAddresses extends Mixins(CommonMixin) {
-  /** Prop to set readonly state. */
+  /** Prop to set readonly state (ie disable form actions). */
   @Prop({ default: false })
   readonly isSummaryView: boolean
 
@@ -403,13 +403,13 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter isCorrectionFiling!: boolean
   @Getter isChangeFiling!: boolean
   @Getter getResource!: ResourceIF
-
   @Getter originalOfficeAddresses!: AddressesIF
   @Getter officeAddressesChanged!: boolean
   @Getter mailingChanged!: boolean
   @Getter deliveryChanged!: boolean
   @Getter recMailingChanged!: boolean
   @Getter recDeliveryChanged!: boolean
+  @Getter isBComp!: boolean
 
   // Global actions
   @Action setOfficeAddresses!: ActionBindingIF
@@ -487,7 +487,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       )
 
       // for BCOMPS, also set the Records Address
-      if (this.entityFilter(CorpTypeCd.BENEFIT_COMPANY)) {
+      if (this.isBComp) {
         this.recMailingAddress = { ...this.getOfficeAddresses.recordsOffice?.mailingAddress }
         this.recDeliveryAddress = { ...this.getOfficeAddresses.recordsOffice?.deliveryAddress }
 
@@ -629,7 +629,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets updated office addresses in store.
    */
   private storeAddresses (): void {
-    if (this.entityFilter(CorpTypeCd.BENEFIT_COMPANY)) {
+    if (this.isBComp) {
       this.setOfficeAddresses({
         registeredOffice: {
           deliveryAddress: this.deliveryAddress,
@@ -840,18 +840,18 @@ ul {
   }
 }
 
-// italicize the delivery instructions in the base address component
-::v-deep .address-block__info-row:last-of-type {
-  padding-top: 0.75rem;
-  font-style: italic;
-}
-
-::v-deep .address-block__info-row {
-  color: $gray7;
-  font-weight: normal;
-}
-
+// Override font styling of base-address input fields
 ::v-deep {
+  // italicize the delivery instructions in the base address component
+  .delivery-instructions {
+    font-style: italic;
+  }
+
+  .address-block__info-row {
+    color: $gray7;
+    font-weight: normal;
+  }
+
   .theme--light.v-label {
     color: $gray7;
     font-size: $px-16;

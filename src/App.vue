@@ -306,7 +306,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
   /** The fee summary confirm button label. */
   private get feeSummaryConfirmLabel (): string {
-    return (this.isSummaryMode ? 'File and Pay' : 'Review and Certify')
+    return (this.isSummaryMode ? 'File and Pay' : 'Review and Confirm')
   }
 
   /** Error text to display in the Fee Summary component. */

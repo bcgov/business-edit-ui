@@ -40,6 +40,11 @@ export const isAuthView = (state: StateIF): boolean => {
   return state.stateModel.tombstone.authRoles.includes('view')
 }
 
+/** Is True if entity is a Benefit Company. */
+export const isBComp = (state: StateIF): boolean => {
+  return (getEntityType(state) === CorpTypeCd.BENEFIT_COMPANY)
+}
+
 /** Whether the current filing is a correction. */
 export const isCorrectionFiling = (state: StateIF): boolean => {
   return (state.stateModel.tombstone.filingType === FilingTypes.CORRECTION)

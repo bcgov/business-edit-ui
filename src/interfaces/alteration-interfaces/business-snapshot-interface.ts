@@ -11,12 +11,7 @@ export interface EntitySnapshotIF {
   addresses: AddressesIF
 
   // Properties exclusive to Companies
-  // incorporationAddress?: AddressesIF
   nameTranslations?: NameTranslationIF[]
   shareStructure?: ShareStructureIF,
   resolutions?: ResolutionsIF[]
-
-  // TODO: Api Response SHOULD NOT include Registered/Records: Will update following Api changes to BaseAddressObjIF
-  // Properties exclusive to Firms
-  // businessAddress?: AddressesIF
 }

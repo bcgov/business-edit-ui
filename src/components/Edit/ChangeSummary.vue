@@ -27,7 +27,8 @@
       </div>
     </template>
 
-    <template>
+    <template v-if="officeAddressesChanged">
+      <v-divider class="mx-4" />
       <div class="section-container">
         <OfficeAddresses :isSummaryView="true" />
       </div>
@@ -57,6 +58,7 @@ export default class ChangeSummary extends Mixins(
   // Global getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
+  @Getter officeAddressesChanged!: boolean
 
   // Change flag getters
   @Getter hasBusinessNameChanged!: boolean
