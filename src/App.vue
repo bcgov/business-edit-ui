@@ -137,7 +137,7 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Watch, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
 import { getKeycloakRoles, navigate, updateLdUser } from '@/utils'
@@ -207,6 +207,9 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   @Getter getComponentValidate!: boolean
   @Getter isConflictingLegalType!: boolean
   @Getter isRoleStaff!: boolean
+
+  // Change flag getters
+  @Getter hasFirmChanged!: boolean
 
   // Global actions
   @Action setAccountInformation!: ActionBindingIF

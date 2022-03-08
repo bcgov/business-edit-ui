@@ -1,11 +1,11 @@
 import {
   AccountInformationIF,
   ActionKvIF,
+  AddressesIF,
   BusinessInformationIF,
   EntitySnapshotIF,
   CertifyIF,
   FilingDataIF,
-  IncorporationAddressIf,
   IncorporationAgreementIF,
   IncorporationFilingIF,
   NameRequestIF,
@@ -114,7 +114,7 @@ export const mutateDefineCompanyStepChanged = (state: StateIF, changed: boolean)
   state.stateModel.changedFlags.defineCompanyStep = changed
 }
 
-export const mutateOfficeAddresses = (state: StateIF, addresses: IncorporationAddressIf) => {
+export const mutateOfficeAddresses = (state: StateIF, addresses: AddressesIF) => {
   state.stateModel.officeAddresses = addresses
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }

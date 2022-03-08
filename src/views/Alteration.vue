@@ -350,7 +350,7 @@ export default class Alteration extends Mixins(
     return {
       businessInfo: items[0],
       authInfo: items[1],
-      incorporationAddress: items[2],
+      addresses: items[2],
       nameTranslations: items[3],
       orgPersons: items[4],
       shareStructure: items[5],

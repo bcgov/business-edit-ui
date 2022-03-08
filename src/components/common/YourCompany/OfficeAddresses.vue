@@ -3,16 +3,18 @@
 
     <!-- Addresses Summary -->
     <template v-if="!isEditing">
-      <v-layout row id="summary-registered-address" class="mx-0">
-        <v-flex xs3>
+      <v-row id="summary-registered-address" class="mx-0" no-gutters>
+        <v-col cols="3">
           <label>{{ getResource.addressLabel }}</label>
-        </v-flex>
+          <v-chip v-if="isChangeFiling && !isSummaryView && (mailingChanged || deliveryChanged)"
+                  x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
+        </v-col>
 
-        <v-flex xs4>
-          <label class="d-flex flex-wrap">
+        <v-col cols="4">
+          <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
             <v-chip v-if="isCorrectionFiling && mailingChanged"
-              x-small label color="primary" text-color="white" class="mt-0">CORRECTED</v-chip>
+              x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
           <base-address
             v-if="!isEmpty(mailingAddress)"
@@ -20,13 +22,13 @@
             :editing="false"
           />
           <div v-else class="info-text">(Not entered)</div>
-        </v-flex>
+        </v-col>
 
-        <v-flex xs4>
-          <label class="d-flex flex-wrap">
+        <v-col cols="4">
+          <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
             <v-chip v-if="isCorrectionFiling && deliveryChanged"
-              x-small label color="primary" text-color="white" class="mt-0">CORRECTED</v-chip>
+              x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
           <base-address
             v-if="!isEmpty(deliveryAddress) && !inheritMailingAddress"
@@ -35,76 +37,78 @@
           />
           <div v-else-if="isEmpty(deliveryAddress)" class="info-text">(Not entered)</div>
           <div v-else class="info-text">Same as Mailing Address</div>
-        </v-flex>
+        </v-col>
 
-        <v-flex xs1 v-if="isCorrectionFiling && officeAddressesChanged">
-          <div class="actions mr-4">
-            <span class="edit-action">
+        <template v-if="!isSummaryView">
+          <v-col cols="1" v-if="(isCorrectionFiling || isChangeFiling) && officeAddressesChanged">
+            <div class="actions mr-4">
+              <span class="edit-action">
+                <v-btn
+                  text color="primary"
+                  id="btn-undo-office-addresses"
+                  @click="resetOfficeAddresses(); dropdown = false"
+                >
+                  <v-icon small>mdi-undo</v-icon>
+                  <span>Undo</span>
+                </v-btn>
+              </span>
+              <span class="more-actions">
+                <v-menu
+                  offset-y left nudge-bottom="4"
+                  v-model="dropdown"
+                  attach="#office-addresses .more-actions"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      text small color="primary"
+                      id="btn-more-actions"
+                      v-on="on"
+                    >
+                      <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      class="v-list-item"
+                      id="btn-more-actions-edit"
+                      @click="isEditing = true; dropdown = false"
+                    >
+                      <v-list-item-subtitle>
+                        <v-icon small>mdi-pencil</v-icon>
+                        <span class="ml-1">{{ editLabel }}</span>
+                      </v-list-item-subtitle>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </span>
+            </div>
+          </v-col>
+
+          <v-col cols="1" v-else-if="isCorrectionFiling || isChangeFiling">
+            <div class="actions mr-4">
               <v-btn
                 text color="primary"
-                id="btn-undo-office-addresses"
-                @click="resetOfficeAddresses(); dropdown = false"
+                id="btn-correct-office-addresses"
+                @click="isEditing = true"
               >
-                <v-icon small>mdi-undo</v-icon>
-                <span>Undo</span>
+                <v-icon small>mdi-pencil</v-icon>
+                <span>{{ editLabel }}</span>
               </v-btn>
-            </span>
-            <span class="more-actions">
-              <v-menu
-                offset-y left nudge-bottom="4"
-                v-model="dropdown"
-                attach="#office-addresses .more-actions"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    text small color="primary"
-                    id="btn-more-actions"
-                    v-on="on"
-                  >
-                    <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
-                  </v-btn>
-                </template>
-                <v-list>
-                  <v-list-item
-                    class="v-list-item"
-                    id="btn-more-actions-edit"
-                    @click="isEditing = true; dropdown = false"
-                  >
-                    <v-list-item-subtitle>
-                      <v-icon small>mdi-pencil</v-icon>
-                      <span class="ml-1">Correct</span>
-                    </v-list-item-subtitle>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </span>
-          </div>
-        </v-flex>
+            </div>
+          </v-col>
+        </template>
+      </v-row>
 
-        <v-flex xs1 v-else-if="isCorrectionFiling">
-          <div class="actions mr-4">
-            <v-btn
-              text color="primary"
-              id="btn-correct-office-addresses"
-              @click="isEditing = true"
-            >
-              <v-icon small>mdi-pencil</v-icon>
-              <span>Correct</span>
-            </v-btn>
-          </div>
-        </v-flex>
-      </v-layout>
-
-      <v-layout row id="summary-records-address" class="mt-4 mx-0" v-if="entityFilter(CorpTypeCd.BENEFIT_COMPANY)">
-        <v-flex xs3>
+      <v-row v-if="entityFilter(CorpTypeCd.BENEFIT_COMPANY)" id="summary-records-address" class="mt-4 mx-0" no-gutters>
+        <v-col cols="3">
           <label class>Records Office</label>
-        </v-flex>
+        </v-col>
 
-        <v-flex xs4>
-          <label class="d-flex flex-wrap">
+        <v-col cols="4">
+          <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
             <v-chip v-if="isCorrectionFiling && recMailingChanged"
-              x-small label color="primary" text-color="white" class="mt-0">CORRECTED</v-chip>
+              x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
           <base-address
             v-if="!inheritRegisteredAddress && !isEmpty(recMailingAddress)"
@@ -113,13 +117,13 @@
           />
           <div v-else-if="isEmpty(recMailingAddress)" class="info-text">(Not entered)</div>
           <div v-else class="info-text">Same as Registered Office</div>
-        </v-flex>
+        </v-col>
 
-        <v-flex xs4>
-          <label class="d-flex flex-wrap">
+        <v-col cols="4">
+          <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
             <v-chip v-if="isCorrectionFiling && recDeliveryChanged"
-              x-small label color="primary" text-color="white" class="mt-0">CORRECTED</v-chip>
+              x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
           <base-address
             v-if="!inheritRecMailingAddress && !inheritRegisteredAddress && !isEmpty(recDeliveryAddress)"
@@ -129,15 +133,103 @@
           <div v-else-if="isEmpty(recDeliveryAddress)" class="info-text">(Not entered)</div>
           <div v-else-if="inheritRegisteredAddress" class="info-text">Same as Registered Office</div>
           <div v-else class="info-text">Same as Mailing Address</div>
-        </v-flex>
+        </v-col>
 
         <!-- empty column to force alignment with Registered Office section -->
-        <v-flex xs1>&nbsp;</v-flex>
-      </v-layout>
+        <v-col cols="1">&nbsp;</v-col>
+      </v-row>
     </template>
 
-    <!-- Addresses Edit -->
-    <v-card flat v-else>
+    <!-- Editing Change of Registration -->
+    <v-card flat v-else-if="isChangeFiling">
+      <v-row no-gutters>
+        <v-col cols="3">
+          <label>{{ getResource.addressLabel }}</label>
+        </v-col>
+        <v-col cols="9">
+          <label>Mailing Address</label>
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters class="pr-1">
+        <v-col cols="3"></v-col>
+        <v-col cols="9" class="pt-4">
+          <base-address
+            ref="mailingAddress"
+            id="address-mailing"
+            :address="mailingAddress"
+            :editing="true"
+            :schema="addressSchema"
+            @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, mailingAddress, $event)"
+            @valid="updateValidity(AddressTypes.MAILING_ADDRESS, $event)"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters>
+        <v-col cols="3"></v-col>
+        <v-col cols="9">
+          <v-checkbox
+            id="delivery-address-same-chkbx"
+            class="inherit-checkbox"
+            label="Delivery Address same as Mailing Address"
+            hide-details
+            v-model="inheritMailingAddress"
+            @change="setDeliveryAddressToMailingAddress()"
+          />
+        </v-col>
+      </v-row>
+
+      <template v-if="!inheritMailingAddress">
+        <v-row no-gutters class="pt-4">
+          <v-col cols="3"></v-col>
+          <v-col cols="9">
+            <label>Delivery Address</label>
+          </v-col>
+        </v-row>
+
+        <v-row no-gutters>
+          <v-col cols="3"></v-col>
+          <v-col cols="9" class="pt-4">
+            <base-address
+              ref="deliveryAddress"
+              id="address-delivery"
+              :address="deliveryAddress"
+              :editing="true"
+              :schema="addressSchema"
+              @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, deliveryAddress, $event)"
+              @valid="updateValidity(AddressTypes.DELIVERY_ADDRESS, $event)"
+            />
+          </v-col>
+        </v-row>
+      </template>
+
+      <!-- Actions -->
+      <v-row class="pt-4 pr-1">
+        <v-col cols="12">
+          <div class="action-btns">
+            <v-btn
+              id="address-done-btn"
+              large color="primary"
+              :disabled="!formValid"
+              @click="acceptChanges()"
+            >
+              <span>Done</span>
+            </v-btn>
+            <v-btn
+              id="address-cancel-btn"
+              large outlined color="primary"
+              @click="discardChanges()"
+            >
+              <span>Cancel</span>
+            </v-btn>
+          </div>
+        </v-col>
+      </v-row>
+    </v-card>
+
+    <!-- Editing Correction -->
+    <v-card flat v-else-if="isCorrectionFiling">
       <ul class="list address-list">
         <div id="edit-registered-address">
           <div class="address-edit-header">
@@ -289,12 +381,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { isEmpty } from 'lodash'
 import { OfficeAddressSchema } from '@/schemas'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-import { ActionBindingIF, AddressIF, IncorporationAddressIf, IncorporationFilingIF, ResourceIF } from '@/interfaces'
+import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces'
 import { AddressTypes, CorpTypeCd } from '@/enums'
 import { CommonMixin } from '@/mixins'
 
@@ -302,12 +394,22 @@ import { CommonMixin } from '@/mixins'
   components: { BaseAddress }
 })
 export default class OfficeAddresses extends Mixins(CommonMixin) {
+  /** Prop to set readonly state. */
+  @Prop({ default: false })
+  readonly isSummaryView: boolean
+
   // Global getters
-  @Getter getOfficeAddresses!: IncorporationAddressIf // NB: may be {}
-  @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter getOfficeAddresses!: AddressesIF // NB: may be {}
   @Getter isCorrectionFiling!: boolean
   @Getter isChangeFiling!: boolean
   @Getter getResource!: ResourceIF
+
+  @Getter originalOfficeAddresses!: AddressesIF
+  @Getter officeAddressesChanged!: boolean
+  @Getter mailingChanged!: boolean
+  @Getter deliveryChanged!: boolean
+  @Getter recMailingChanged!: boolean
+  @Getter recDeliveryChanged!: boolean
 
   // Global actions
   @Action setOfficeAddresses!: ActionBindingIF
@@ -356,41 +458,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Model value for "same as (records) mailing address" checkbox. */
   private inheritRecMailingAddress: boolean = true
 
-  /** The office addresses from the original IA. NB: may be {} */
-  private get originalOfficeAddresses (): IncorporationAddressIf {
-    return (this.getOriginalIA.incorporationApplication.offices as IncorporationAddressIf)
-  }
-
-  /** True if (registered) mailing address has changed. */
-  private get mailingChanged (): boolean {
-    return !this.isSame(this.getOfficeAddresses.registeredOffice?.mailingAddress,
-      this.originalOfficeAddresses.registeredOffice?.mailingAddress, ['addressCountryDescription'])
-  }
-
-  /** True if (registered) delivery address has changed. */
-  private get deliveryChanged (): boolean {
-    return !this.isSame(this.getOfficeAddresses.registeredOffice?.deliveryAddress,
-      this.originalOfficeAddresses.registeredOffice?.deliveryAddress, ['addressCountryDescription'])
-  }
-
-  /** True if records mailing address has changed. */
-  private get recMailingChanged (): boolean {
-    return !this.isSame(this.getOfficeAddresses.recordsOffice?.mailingAddress,
-      this.originalOfficeAddresses.recordsOffice?.mailingAddress, ['addressCountryDescription'])
-  }
-
-  /** True if records delivery address has changed. */
-  private get recDeliveryChanged (): boolean {
-    return !this.isSame(this.getOfficeAddresses.recordsOffice?.deliveryAddress,
-      this.originalOfficeAddresses.recordsOffice?.deliveryAddress, ['addressCountryDescription'])
-  }
-
-  /** True if any office address has changed. Applies to corrections only. */
-  private get officeAddressesChanged (): boolean {
-    return this.isCorrectionFiling &&
-      (this.mailingChanged || this.deliveryChanged || this.recMailingChanged || this.recDeliveryChanged)
-  }
-
   /** True if the address form is valid. */
   private get formValid (): boolean {
     const registeredOfficeValid = this.mailingAddressValid &&
@@ -406,7 +473,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
-    if (this.getOfficeAddresses.registeredOffice) {
+    if (this.getOfficeAddresses?.registeredOffice) {
       this.mailingAddress = { ...this.getOfficeAddresses.registeredOffice.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses.registeredOffice.deliveryAddress }
 
@@ -782,5 +849,13 @@ ul {
 ::v-deep .address-block__info-row {
   color: $gray7;
   font-weight: normal;
+}
+
+::v-deep {
+  .theme--light.v-label {
+    color: $gray7;
+    font-size: $px-16;
+    font-weight: normal;
+  }
 }
 </style>
