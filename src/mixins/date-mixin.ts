@@ -203,10 +203,8 @@ export default class DateMixin extends Mixins(CommonMixin) {
   }
 
   /**
-   * Converts an API datetime string (in UTC) to a date and time string (Month Day, Year at HH:MM am/pm
-   * Pacific time).
-   * @example "2021-01-01T00:00:00.000000+00:00" -> "December 31, 2020" (PST example)
-   * @example "2021-07-01T00:00:00.000000+00:00" -> "June 30, 2021" (PDT example)
+   * Converts an API datetime string (in UTC) to a date string (Month Day, Year).
+   * @example "2021-01-01T00:00:00.000000+00:00" -> "December 31, 2020"
    */
   apiToPacificDate (dateTimeString: string): string {
     if (!dateTimeString) return null // safety check
