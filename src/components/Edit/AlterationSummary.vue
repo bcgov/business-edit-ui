@@ -13,15 +13,6 @@
           <div class="actions mr-4">
             <v-btn
               text color="primary"
-              id="btn-change-alteration"
-              :disabled="isBusySaving"
-              @click="onChangeClicked()"
-            >
-              <v-icon small>mdi-pencil</v-icon>
-              <span>Change</span>
-            </v-btn>
-            <v-btn
-              text color="primary"
               id="btn-delete-alteration"
               :disabled="isBusySaving"
               @click="onDeleteClicked()"

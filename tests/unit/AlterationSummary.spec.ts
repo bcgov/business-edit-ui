@@ -64,25 +64,9 @@ describe('Alteration Summary component', () => {
     expect(wrapper.findComponent(NameTranslation).exists()).toBe(true)
   })
 
-  it('renders the Change and Remove actions', async () => {
-    const changeAction = wrapper.find('#btn-change-alteration').text()
-    expect(changeAction).toBe('Change')
-
+  it('renders the Remove actions', async () => {
     const removeAction = wrapper.find('#btn-delete-alteration').text()
     expect(removeAction).toBe('Delete')
-  })
-
-  it('reverts out of summaryMode when selecting the change action', async () => {
-    expect(store.state.stateModel.summaryMode).toBe(true)
-
-    // Select the Change action
-    const changeAction = wrapper.find('#btn-change-alteration')
-    changeAction.trigger('click')
-
-    await Vue.nextTick()
-
-    // Verify summaryMode state has changed
-    expect(store.state.stateModel.summaryMode).toBe(false)
   })
 
   it('displays the confirm dialog when selecting Remove action', () => {

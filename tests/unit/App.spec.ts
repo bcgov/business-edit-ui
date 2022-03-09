@@ -5,7 +5,7 @@ import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import { getVuexStore } from '@/store'
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { axios } from '@/utils'
 
 // Components
@@ -14,7 +14,7 @@ import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { FeeSummary } from '@bcrs-shared-components/fee-summary'
-import { Actions, BreadCrumb, EntityInfo } from '@/components/common'
+import { Actions, EntityInfo } from '@/components/common'
 import {
   FileAndPayInvalidNameRequestDialog,
   AccountAuthorizationDialog,
@@ -246,6 +246,33 @@ const nrData = {
   ],
   nrNum: 'NR 1234567',
   state: 'APPROVED'
+}
+
+const mockAddresses = {
+  registeredOffice: {
+    mailingAddress: {
+      addressCity: 'Vancouver',
+      addressCountry: 'Canada',
+      addressRegion: 'BC',
+      postalCode: 'V8V 8V8',
+      streetAddress: '321 Electra'
+    },
+    deliveryAddress: {
+      addressCity: 'Vancouver',
+      addressCountry: 'Canada',
+      addressRegion: 'BC',
+      postalCode: 'V8V 8V8',
+      streetAddress: '123 Electra'
+    }
+  }
+}
+
+const mockEntitySnapshot = {
+  businessInfo: {
+    legalName: 'Mock Original Name',
+    legalType: 'SP'
+  },
+  addresses: {}
 }
 
 // we need a token that can get parsed properly (will be expired but doesn't matter for tests)
@@ -631,5 +658,20 @@ describe('App component - other', () => {
     expect(vm.saveWarnings).toEqual([])
     expect(vm.fileAndPayInvalidNameRequestDialog).toBe(false)
     expect(vm.confirmDeleteAllDialog).toBe(false)
+  })
+
+  it.only('renders the fee summary properly following changes', async () => {
+    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
+    store.state.stateModel.entitySnapshot = mockEntitySnapshot
+    store.state.stateModel.officeAddresses = mockAddresses
+    store.state.stateModel.filingData = {
+      filingTypeCode: 'FMCHANGE',
+      entityType: 'SP',
+      priority: false,
+      waiveFees: false
+    }
+    await Vue.nextTick()
+
+    expect(wrapper.findComponent(FeeSummary).exists()).toBe(true) // not displayed initially
   })
 })
