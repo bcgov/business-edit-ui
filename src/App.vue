@@ -1,6 +1,11 @@
 <template>
   <v-app class="app-container" id="app">
     <!-- Dialogs -->
+    <ConfirmDialog
+      ref="confirm"
+      attach="#app"
+    />
+
     <FileAndPayInvalidNameRequestDialog
       attach="#app"
       :dialog="fileAndPayInvalidNameRequestDialog"
@@ -115,6 +120,7 @@
                     :hasConflicts="isConflictingLegalType && hasNewNr"
                     :confirmLabel="feeSummaryConfirmLabel"
                     :errorMessage="feeSummaryError"
+                    :isSummaryMode="isSummaryMode"
                     @action="handleFeeSummaryActions($event)"
                   />
                 </v-expand-transition>
@@ -154,9 +160,11 @@ import * as Dialogs from '@/components/common/dialogs'
 
 // Mixins, interfaces, etc
 import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { FilingDataIF, ActionBindingIF, BreadcrumbIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF } from '@/interfaces'
+import {
+  FilingDataIF, ActionBindingIF, BreadcrumbIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF
+} from '@/interfaces'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { ComponentsCompanyInfo, ComponentsReviewCertify, SummaryActions, RouteNames } from '@/enums'
+import { ComponentsCompanyInfo, ComponentsReviewCertify, FeeSummaryActions, RouteNames } from '@/enums'
 import {
   getEntityDashboardBreadcrumb,
   getMyBusinessRegistryBreadcrumb,
@@ -179,6 +187,11 @@ import {
   }
 })
 export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
+  // Refs
+  $refs!: {
+    confirm: ConfirmDialogType
+  }
+
   // Global getters
   @Getter getBusinessId!: string
   @Getter getUserEmail!: string
@@ -306,7 +319,16 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
   /** The fee summary confirm button label. */
   private get feeSummaryConfirmLabel (): string {
-    return (this.isSummaryMode ? 'File and Pay' : 'Review and Confirm')
+    let completeBtnLabel, reviewBtnLabel
+    if (this.isChangeFiling) {
+      completeBtnLabel = 'File Now (No Fee)'
+      reviewBtnLabel = 'Review and Confirm'
+    } else {
+      completeBtnLabel = 'File and Pay'
+      reviewBtnLabel = 'Review and Certify'
+    }
+
+    return (this.isSummaryMode ? completeBtnLabel : reviewBtnLabel)
   }
 
   /** Error text to display in the Fee Summary component. */
@@ -366,7 +388,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       if (error?.response?.status === PAYMENT_REQUIRED) {
         if (!this.isRoleStaff) {
           // changes were saved if a 402 is received, so clear flag
-          // this.setHaveUnsavedChanges(false)
+          this.setHaveUnsavedChanges(false)
           this.paymentErrorDialog = true
         } else {
           if (error.response.data?.filing?.header?.filingId) {
@@ -510,17 +532,21 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
    * NOTE: This is only implemented for Alteration filings atm.
    * @param action the emitted action
    */
-  private async handleFeeSummaryActions (action: SummaryActions): Promise<void> {
+  private async handleFeeSummaryActions (action: FeeSummaryActions): Promise<void> {
     switch (action) {
-      case SummaryActions.SAVE_RESUME_LATER:
+      case FeeSummaryActions.BACK:
+        this.setSummaryMode(false)
+        await this.scrollToTop(document.getElementById('app'))
+        break
+      case FeeSummaryActions.SAVE_RESUME_LATER:
         // Save filing and return to dashboard.
         await this.onClickSave()
         this.goToDashboard()
         break
-      case SummaryActions.DELETE_ALL:
-        this.$root.$emit('delete-all')
+      case FeeSummaryActions.CANCEL:
+        this.goToDashboard()
         break
-      case SummaryActions.CONFIRM:
+      case FeeSummaryActions.CONFIRM:
         if (this.isSummaryMode) {
           // Check validity, and if OK then save and file.
           await this.validateReviewCertifyPage()
@@ -541,11 +567,39 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     navigate(manageBusinessUrl)
   }
 
-  /** Navigates to entity dashboard. */
-  private goToDashboard (): void {
-    // this.setHaveUnsavedChanges(false)
-    const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-    navigate(dashboardUrl + this.getBusinessId)
+  /** Called to navigate to dashboard. */
+  private goToDashboard (force: boolean = false): void {
+    // check if there are no data changes
+    if (!this.haveUnsavedChanges || force) {
+      // navigate to dashboard
+      this.setHaveUnsavedChanges(false)
+      const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
+      navigate(dashboardUrl + this.getBusinessId)
+      return
+    }
+
+    // open confirmation dialog and wait for response
+    this.$refs.confirm.open(
+      'Unsaved Changes',
+      'You have unsaved changes. Do you want to exit?',
+      {
+        width: '45rem',
+        persistent: true,
+        yes: 'Return to my Filing',
+        no: null,
+        cancel: 'Exit Without Saving'
+      }
+    ).then(() => {
+      // if we get here, Yes was clicked
+      // nothing to do
+    }).catch(() => {
+      // if we get here, Cancel was clicked
+      // ignore changes
+      this.setHaveUnsavedChanges(false)
+      // navigate to dashboard
+      const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
+      navigate(dashboardUrl + this.getBusinessId)
+    })
   }
 
   private async doDeleteAll (): Promise<void> {

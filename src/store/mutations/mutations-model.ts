@@ -156,6 +156,7 @@ export const mutateNameRequest = (state: StateIF, nameRequest: NameRequestIF) =>
 
 export const mutateNameTranslations = (state: StateIF, nameTranslations: NameTranslationIF[]) => {
   state.stateModel.nameTranslations = nameTranslations
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutateFilingId = (state: StateIF, filingId: number) => {
@@ -280,6 +281,7 @@ export const mutateOriginalResolutionDates = (state: StateIF, resolutionDates: R
 
 export const mutateResolutionDates = (state: StateIF, resolutionDates: string[]) => {
   state.stateModel.shareStructureStep.resolutionDates = resolutionDates
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutateFileNumber = (state: StateIF, fileNumber: string) => {

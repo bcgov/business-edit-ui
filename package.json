@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "private": true,
   "appName": "Edit UI",
   "sbcName": "SBC Common Components",
@@ -23,8 +23,8 @@
     "@bcrs-shared-components/court-order-poa": "1.0.11",
     "@bcrs-shared-components/date-picker": "1.1.9",
     "@bcrs-shared-components/detail-comment": "1.0.4",
-    "@bcrs-shared-components/enums": "1.0.14",
-    "@bcrs-shared-components/fee-summary": "1.1.1",
+    "@bcrs-shared-components/enums": "1.0.17",
+    "@bcrs-shared-components/fee-summary": "1.1.13",
     "@bcrs-shared-components/folio-number": "1.0.0",
     "@bcrs-shared-components/interfaces": "1.0.28",
     "@bcrs-shared-components/share-structure": "1.0.20",

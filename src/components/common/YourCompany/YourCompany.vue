@@ -218,7 +218,7 @@
           </v-col>
 
           <v-col cols="9">
-            <span class="info-text mr-1">{{ businessStartDate }}</span>
+            <span class="info-text mr-1">{{ recognitionDateTime }}</span>
             <v-tooltip top
                        content-class="top-tooltip"
                        transition="fade-transition"
@@ -441,23 +441,18 @@ export default class YourCompany extends Mixins(
     return this.toDisplayPhone(this.nrApplicant.phoneNumber)
   }
 
-  /** The recognition/founding (aka effective) datetime. */
+  /** The recognition/founding (aka effective or start date) datetime. */
   private get recognitionDateTime (): string {
     if (this.isCorrectionFiling) {
       if (this.getOriginalEffectiveDateTime) {
-        return (this.apiToPacificDateTime(this.getOriginalEffectiveDateTime) + ' Pacific time')
+        return (this.apiToPacificDateLong(this.getOriginalEffectiveDateTime))
       }
     }
-    if (this.isAlterationFiling) {
+    if (this.isAlterationFiling || this.isChangeFiling) {
       if (this.getBusinessFoundingDate) {
-        return (this.apiToPacificDateTime(this.getBusinessFoundingDate) + ' Pacific time')
+        return (this.apiToPacificDateLong(this.getBusinessFoundingDate))
       }
     }
-    return 'Unknown'
-  }
-
-  /** The start date for a firm. */
-  private get businessStartDate (): string {
     return 'Unknown'
   }
 

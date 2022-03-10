@@ -13,15 +13,6 @@
           <div class="actions mr-4">
             <v-btn
               text color="primary"
-              id="btn-change-alteration"
-              :disabled="isBusySaving"
-              @click="onChangeClicked()"
-            >
-              <v-icon small>mdi-pencil</v-icon>
-              <span>Change</span>
-            </v-btn>
-            <v-btn
-              text color="primary"
               id="btn-delete-alteration"
               :disabled="isBusySaving"
               @click="onDeleteClicked()"
@@ -270,12 +261,6 @@ export default class AlterationSummary extends Mixins(
   /** True if invalid class should be set for Alteration Date-Time container. */
   get alterationDateTimeInvalid (): boolean {
     return (this.validate && !this.getFlagsReviewCertify.isValidEffectiveDate)
-  }
-
-  async onChangeClicked (): Promise<void> {
-    this.setSummaryMode(false)
-    // We don't change views just interchange components, so scroll to top for better UX.
-    await this.scrollToTop(document.getElementById('app'))
   }
 
   // sum of alteration fees
