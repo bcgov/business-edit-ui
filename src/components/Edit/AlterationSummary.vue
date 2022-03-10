@@ -263,12 +263,6 @@ export default class AlterationSummary extends Mixins(
     return (this.validate && !this.getFlagsReviewCertify.isValidEffectiveDate)
   }
 
-  async onChangeClicked (): Promise<void> {
-    this.setSummaryMode(false)
-    // We don't change views just interchange components, so scroll to top for better UX.
-    await this.scrollToTop(document.getElementById('app'))
-  }
-
   // sum of alteration fees
   get alterationFees (): string {
     if (this.getCurrentFees.filingFees !== null && this.getCurrentFees.futureEffectiveFees !== null) {

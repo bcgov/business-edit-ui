@@ -368,6 +368,17 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     await this.updateCurrentJsDate()
     this.updateCurrentJsDateId = setInterval(this.updateCurrentJsDate, 60000)
 
+    // add handler to prompt user if there are changes, before unloading this page
+    window.onbeforeunload = (event: any) => {
+      if (this.haveUnsavedChanges || this.isEditing) {
+        // cancel closing the page
+        event.preventDefault()
+        // pop up confirmation dialog
+        // NB: custom text is not supported in all browsers
+        event.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
+      }
+    }
+
     // listen for save error events
     this.$root.$on('save-error-event', (error: any) => {
       // save errors/warnings
@@ -530,7 +541,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       case FeeSummaryActions.SAVE_RESUME_LATER:
         // Save filing and return to dashboard.
         await this.onClickSave()
-        this.goToDashboard(true)
+        this.goToDashboard()
         break
       case FeeSummaryActions.CANCEL:
         this.goToDashboard()
