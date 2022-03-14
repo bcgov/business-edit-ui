@@ -113,7 +113,7 @@ describe('Change of Registration Filing', () => {
           },
           'contactPoint': {
             'email': '',
-            'extension': '',
+            'extension': null,
             'phone': ''
           }
         },
