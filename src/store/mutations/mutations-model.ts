@@ -8,6 +8,7 @@ import {
   FilingDataIF,
   IncorporationAgreementIF,
   IncorporationFilingIF,
+  NaicsIF,
   NameRequestIF,
   NameTranslationIF,
   OrgPersonIF,
@@ -314,4 +315,9 @@ export const mutateFeePrices = (state: StateIF, feePrices: FeesIF) => {
 
 export const mutateIsValidComponent = (state: StateIF, kv: ActionKvIF) => {
   state.stateModel.newAlteration.flagsCompanyInfo[kv.key] = kv.value
+}
+
+export const mutateNaics = (state: StateIF, naics: NaicsIF) => {
+  state.stateModel.businessInformation.naicsCode = naics.naicsCode
+  state.stateModel.businessInformation.naicsDescription = naics.naicsDescription
 }

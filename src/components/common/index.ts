@@ -16,3 +16,4 @@ export * from './ShareStructure'
 // Shared Components
 export { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
 export { ContactInfo } from '@bcrs-shared-components/contact-info'
+// export { NatureOfBusiness } from '@bcrs-shared-components/nature-of-business'

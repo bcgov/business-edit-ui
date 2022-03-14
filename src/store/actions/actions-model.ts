@@ -5,6 +5,7 @@ import {
   BusinessInformationIF,
   CertifyIF,
   EntitySnapshotIF,
+  NaicsIF,
   NameRequestIF,
   NameTranslationIF,
   OrgPersonIF,
@@ -184,6 +185,7 @@ export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
 }
 
 export const setEntitySnapshot: ActionIF = ({ commit }, entitySnapshot: EntitySnapshotIF): void => {
+  console.log('Snapshot updated')
   commit('mutateEntitySnapshot', entitySnapshot)
 }
 
@@ -285,4 +287,8 @@ export const setFeePrices: ActionIF = ({ commit }, feePrices: FeesIF): void => {
 
 export const setValidComponent: ActionIF = ({ commit }, kv: ActionKvIF): void => {
   commit('mutateIsValidComponent', kv)
+}
+
+export const setNaics: ActionIF = ({ commit }, naics: NaicsIF): void => {
+  commit('mutateNaics', naics)
 }

@@ -385,6 +385,7 @@ export const hasAlterationChanged = (state: StateIF): boolean => {
  */
 export const hasFirmChanged = (state: StateIF): boolean => {
   return (
+    hasNatureOfBusinessChanged(state),
     officeAddressesChanged(state)
   )
 }
@@ -554,6 +555,14 @@ export const hasShareStructureChanged = (state: StateIF): boolean => {
   originalShareClasses = originalShareClasses && removeNullProps(originalShareClasses)
 
   return (!isEqual(originalShareClasses, currentShareClasses))
+}
+
+/** Whether nature of business data has changed. */
+export const hasNatureOfBusinessChanged = (state: StateIF): boolean => {
+  let currentNatureOfBusiness = getBusinessInformation(state)?.naicsCode
+  let originalNatureOfBusiness = getEntitySnapshot(state)?.businessInfo.naicsCode
+
+  return (!isEqual(currentNatureOfBusiness, originalNatureOfBusiness))
 }
 
 /** The Provisions Removed state. */

@@ -5,7 +5,7 @@
       attach="#app"
     />
 
-    <div class="define-company-header">
+    <div class="define-company-header section-container">
       <v-icon class="header-icon">mdi-domain</v-icon>
       <label class="define-company-title">Your {{ getResource.entityReference }}</label>
     </div>
@@ -237,12 +237,8 @@
 
       <div class="section-container">
         <v-row no-gutters>
-          <v-col cols="3">
-            <label><strong>Nature of Business</strong></label>
-          </v-col>
-
-          <v-col cols="9">
-            <div class="info-text">Cookie and cracker manufacturing</div>
+          <v-col>
+            <NatureOfBusinessInfo />
           </v-col>
         </v-row>
       </div>
@@ -311,10 +307,11 @@ import {
   ChangeBusinessType,
   FolioInformation,
   CorrectNameTranslation,
+  CorrectNameOptions,
   OfficeAddresses
 } from './'
+import NatureOfBusinessInfo from '@/components/Edit/NatureOfBusinessInfo.vue'
 import { ConfirmDialog } from '@/components/common/dialogs'
-import { CorrectNameOptions } from '@/components/common/YourCompany'
 import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
 import { CorrectionTypes, CorpTypeCd } from '@/enums'
 
@@ -326,6 +323,7 @@ import { CorrectionTypes, CorpTypeCd } from '@/enums'
     ChangeBusinessType,
     CorrectNameOptions,
     CorrectNameTranslation,
+    NatureOfBusinessInfo,
     OfficeAddresses,
     FolioInformation
   }
@@ -580,7 +578,6 @@ export default class YourCompany extends Mixins(
 .define-company-header {
   display: flex;
   background-color: $BCgovBlue5O;
-  padding: 1.25rem;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }

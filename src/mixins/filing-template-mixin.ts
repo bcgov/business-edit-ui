@@ -632,7 +632,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    */
   parseEntitySnapshot (entitySnapshot = this.getEntitySnapshot): void {
     // Store business snapshot
-    this.setEntitySnapshot(entitySnapshot)
+    this.setEntitySnapshot(cloneDeep(entitySnapshot))
 
     // Store folio number
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
@@ -646,9 +646,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store name request
     this.setNameRequest({
       legalType: entitySnapshot.businessInfo.legalType,
-      legalName: entitySnapshot.businessInfo.legalName,
-      // *** TODO: Founding Date is not needed in Name Request object???
-      foundingDate: entitySnapshot.businessInfo.foundingDate
+      legalName: entitySnapshot.businessInfo.legalName
     })
 
     // Store people and roles
