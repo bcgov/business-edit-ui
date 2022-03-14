@@ -13,7 +13,7 @@ export interface IncorporationApplicationIF {
   contactPoint: {
     email: string
     phone: string
-    extension: string
+    extension?: number
   }
   parties: OrgPersonIF[]
   shareStructure: {
