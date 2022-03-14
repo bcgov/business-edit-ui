@@ -136,7 +136,7 @@ export const stateModel: StateModelIF = {
       contactPoint: {
         email: '',
         phone: '',
-        extension: ','
+        extension: null
       },
       parties: [],
       shareStructure: {
@@ -177,7 +177,7 @@ export const stateModel: StateModelIF = {
       contactPoint: {
         email: '',
         phone: '',
-        extension: ''
+        extension: null
       },
       courtOrder: {
         fileNumber: '',

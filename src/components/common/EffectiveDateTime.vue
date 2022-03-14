@@ -142,12 +142,10 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   get dateRules (): Array<Function> {
     // only apply rules when Future Effective is selected
     if (this.isFutureEffective && this.getAppValidate) {
-      const expectedDateFormat = /^(19|20)\d\d[-.](0[1-9]|1[012])[-.](0[1-9]|[12][0-9]|3[01])$/
       const minDateStr = this.dateToYyyyMmDd(this.minDate)
       const maxDateStr = this.dateToYyyyMmDd(this.maxDate)
       return [
         (v: string) => !!v || 'Select date',
-        (v: string) => expectedDateFormat.test(v) || 'Date format should be YYYY-MM-DD',
         (v: string) => this.isValidDateRange(v) || `Date must be between ${minDateStr} and ${maxDateStr}`
       ]
     }
