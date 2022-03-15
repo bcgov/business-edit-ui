@@ -27,6 +27,22 @@
       </div>
     </template>
 
+    <!-- Business Name -->
+    <template v-if="hasNatureOfBusinessChanged">
+      <v-divider class="mx-4" />
+      <div class="section-container">
+        <v-row no-gutters>
+          <v-col cols="3">
+            <label><strong>Nature of Business</strong></label>
+          </v-col>
+
+          <v-col cols="8">
+            <span class="info-text">{{getCurrentNaics.naicsCode}} - {{getCurrentNaics.naicsDescription}}</span>
+          </v-col>
+        </v-row>
+      </div>
+    </template>
+
     <template v-if="officeAddressesChanged">
       <v-divider class="mx-4" />
       <div class="section-container">
@@ -40,7 +56,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { OfficeAddresses } from '@/components/common'
-import { ActionBindingIF } from '@/interfaces'
+import { ActionBindingIF, NaicsIF } from '@/interfaces'
 import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 
 @Component({
@@ -58,10 +74,12 @@ export default class ChangeSummary extends Mixins(
   // Global getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
+  @Getter getCurrentNaics!: NaicsIF
   @Getter officeAddressesChanged!: boolean
 
   // Change flag getters
   @Getter hasBusinessNameChanged!: boolean
+  @Getter hasNatureOfBusinessChanged!: boolean
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF

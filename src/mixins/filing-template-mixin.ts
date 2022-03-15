@@ -6,7 +6,7 @@ import { DateMixin } from '@/mixins'
 
 // Interfaces
 import {
-  ActionBindingIF,
+  ActionBindingIF, ActionIF,
   AddressesIF,
   AlterationFilingIF,
   CertifyIF,
@@ -15,6 +15,7 @@ import {
   CorrectionFilingIF,
   EffectiveDateTimeIF,
   EntitySnapshotIF,
+  NaicsIF,
   NameRequestIF,
   NameTranslationIF,
   OrgPersonIF,
@@ -43,6 +44,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getDocumentOptionalEmail: string
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
+  @Getter hasNatureOfBusinessChanged!: boolean
   @Getter hasNameTranslationChanged!: boolean
   @Getter hasShareStructureChanged!: boolean
   @Getter hasNewResolutionDatesChanged!: boolean
@@ -53,6 +55,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getDetailComment!: string
   @Getter getDefaultCorrectionDetailComment!: string
+  @Getter getCurrentNaics!: NaicsIF
   @Getter getNameTranslations!: NameTranslationIF[]
   @Getter getNameRequest!: NameRequestIF
   @Getter getCertifyState!: CertifyIF
@@ -74,6 +77,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setBusinessInformation!: ActionBindingIF
   @Action setEntityType!: ActionBindingIF
   @Action setOfficeAddresses!: ActionBindingIF
+  @Action setNaics!: ActionBindingIF
   @Action setNameTranslations!: ActionBindingIF
   @Action setNameRequest!: ActionBindingIF
   @Action setPeopleAndRoles!: ActionBindingIF
@@ -328,10 +332,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       changeOfRegistration: {
         business: {
           natureOfBusiness: '',
-          naics: {
-            naicsCode: '',
-            naicsDescription: ''
-          },
           identifier: this.getBusinessId
         },
         contactPoint: {
@@ -347,6 +347,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       filing.changeOfRegistration.businessAddress = {
         mailingAddress: this.getOfficeAddresses.registeredOffice.mailingAddress,
         deliveryAddress: this.getOfficeAddresses.registeredOffice.deliveryAddress
+      }
+    }
+
+    if (this.hasNatureOfBusinessChanged) {
+      filing.changeOfRegistration.business.naics = {
+        naicsCode: this.getCurrentNaics.naicsCode,
+        naicsDescription: this.getCurrentNaics.naicsDescription
       }
     }
 
@@ -560,21 +567,28 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // Restore business information
     this.setBusinessInformation({
-      ...filing.business,
-      ...filing.changeOfRegistration.business
+      ...entitySnapshot.businessInfo
     })
+
+    // Restore Naics
+    if (filing.changeOfRegistration.business.naics) {
+      this.setNaics(filing.changeOfRegistration.business.naics)
+    }
 
     // Restore name request
     this.setNameRequest(filing.changeOfRegistration.nameRequest || { legalName: entitySnapshot.businessInfo.legalName })
 
     // Store office addresses
-    this.setOfficeAddresses({
-      registeredOffice: {
-        mailingAddress: filing.changeOfRegistration.businessAddress.mailingAddress,
-        deliveryAddress: filing.changeOfRegistration.businessAddress.deliveryAddress
+    let addresses
+    if (filing.changeOfRegistration.businessAddress) {
+      addresses = {
+        registeredOffice: {
+          mailingAddress: filing.changeOfRegistration.businessAddress.mailingAddress,
+          deliveryAddress: filing.changeOfRegistration.businessAddress.deliveryAddress
+        }
       }
-    } || entitySnapshot.addresses
-    )
+    }
+    this.setOfficeAddresses(addresses || entitySnapshot.addresses)
 
     // Store people and roles
     this.setPeopleAndRoles(

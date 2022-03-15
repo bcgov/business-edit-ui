@@ -185,7 +185,6 @@ export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
 }
 
 export const setEntitySnapshot: ActionIF = ({ commit }, entitySnapshot: EntitySnapshotIF): void => {
-  console.log('Snapshot updated')
   commit('mutateEntitySnapshot', entitySnapshot)
 }
 

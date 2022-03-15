@@ -3,7 +3,7 @@
     <NatureOfBusiness
       v-if="haveNaics"
       :showErrors="false"
-      :naics="currentNaics"
+      :naics="getCurrentNaics"
       :naics-services="naicsServices"
       :hasNaicsChanges="hasNatureOfBusinessChanged"
       @undoNaics="setNaics(originalNaics)"
@@ -17,7 +17,7 @@ import { Action, Getter } from 'vuex-class'
 import { Component, Vue } from 'vue-property-decorator'
 import { NatureOfBusiness } from '@bcrs-shared-components/nature-of-business'
 import { NaicsServices } from '@/services'
-import { ActionIF, BusinessInformationIF, EntitySnapshotIF, NaicsIF } from '@/interfaces'
+import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, NaicsIF } from '@/interfaces'
 
 @Component({
   components: {
@@ -28,17 +28,11 @@ export default class NatureOfBusinessInfo extends Vue {
   private naicsServices = NaicsServices
 
   @Getter getBusinessInformation!: BusinessInformationIF
+  @Getter getCurrentNaics!: NaicsIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter hasNatureOfBusinessChanged!: boolean
 
-  @Action setNaics!: ActionIF
-
-  private get currentNaics (): NaicsIF {
-    return {
-      naicsCode: this.getBusinessInformation.naicsCode,
-      naicsDescription: this.getBusinessInformation.naicsDescription
-    }
-  }
+  @Action setNaics!: ActionBindingIF
 
   private get originalNaics (): NaicsIF {
     return {
