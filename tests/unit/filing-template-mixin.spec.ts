@@ -24,7 +24,9 @@ describe('Change of Registration Filing', () => {
         foundingDate: 'Jan 01, 2000',
         legalType: '',
         identifier: 'BC1234567',
-        legalName: 'SomeMockBusiness'
+        legalName: 'SomeMockBusiness',
+        naicsCode: '',
+        naicsDescription: ''
       },
       addresses: {
         registeredOffice: {
@@ -71,6 +73,9 @@ describe('Change of Registration Filing', () => {
         }
       }
     }
+    store.state.stateModel.businessInformation.naicsCode = '123456'
+    store.state.stateModel.businessInformation.naicsDescription = 'Mock Description'
+
     const filing = wrapper.vm.buildChangeFiling(true)
 
     // FUTURE: check filing data...
@@ -86,8 +91,8 @@ describe('Change of Registration Filing', () => {
           'business': {
             'identifier': 'BC1234567',
             'naics': {
-              'naicsCode': '',
-              'naicsDescription': ''
+              'naicsCode': '123456',
+              'naicsDescription': 'Mock Description'
             },
             'natureOfBusiness': ''
           },
@@ -113,7 +118,6 @@ describe('Change of Registration Filing', () => {
           },
           'contactPoint': {
             'email': '',
-            'extension': null,
             'phone': ''
           }
         },

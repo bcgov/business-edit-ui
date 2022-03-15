@@ -10,6 +10,7 @@ import {
   BusinessInformationIF,
   CertifyIF,
   NameTranslationIF,
+  NaicsIF,
   FilingDataIF,
   StateIF,
   EffectiveDateTimeIF,
@@ -194,6 +195,14 @@ export const getFolioNumber = (state: StateIF): string => {
 /** The transactional folio number. */
 export const getTransactionalFolioNumber = (state: StateIF): string => {
   return state.stateModel.tombstone.transactionalFolioNumber
+}
+
+/** The current Naics code and description. */
+export const getCurrentNaics = (state: StateIF): NaicsIF => {
+  return {
+    naicsCode: getBusinessInformation(state).naicsCode,
+    naicsDescription: getBusinessInformation(state).naicsDescription
+  }
 }
 
 /** Whether this IA is for a named business. */
@@ -385,6 +394,7 @@ export const hasAlterationChanged = (state: StateIF): boolean => {
  */
 export const hasFirmChanged = (state: StateIF): boolean => {
   return (
+    hasNatureOfBusinessChanged(state) ||
     officeAddressesChanged(state)
   )
 }
@@ -554,6 +564,14 @@ export const hasShareStructureChanged = (state: StateIF): boolean => {
   originalShareClasses = originalShareClasses && removeNullProps(originalShareClasses)
 
   return (!isEqual(originalShareClasses, currentShareClasses))
+}
+
+/** Whether nature of business data has changed. */
+export const hasNatureOfBusinessChanged = (state: StateIF): boolean => {
+  let currentNatureOfBusiness = getBusinessInformation(state)?.naicsCode
+  let originalNatureOfBusiness = getEntitySnapshot(state)?.businessInfo.naicsCode
+
+  return (!isEqual(currentNatureOfBusiness, originalNatureOfBusiness))
 }
 
 /** The Provisions Removed state. */

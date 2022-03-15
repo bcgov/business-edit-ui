@@ -11,5 +11,7 @@ export * from './state-interface'
 export type {
   BreadcrumbIF,
   ContactPointIF,
+  NaicsIF,
+  NaicsResultIF,
   StaffPaymentIF
 } from '@bcrs-shared-components/interfaces'

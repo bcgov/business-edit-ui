@@ -7,4 +7,6 @@ export interface BusinessInformationIF {
   legalName?: string
   foundingDate?: string // actually date-time
   hasRestrictions?: boolean
+  naicsCode?: string
+  naicsDescription?: string
 }

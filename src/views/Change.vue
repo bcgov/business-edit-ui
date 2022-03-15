@@ -50,31 +50,6 @@
 
       </div>
     </v-slide-x-reverse-transition>
-
-    <!-- Done-->
-    <v-fade-transition>
-      <div v-if="isSummaryMode && !showFeeSummary">
-        <header>
-          <h1>Review and Certify</h1>
-        </header>
-
-        <section class="mt-6">
-          You have deleted all fee-based changes and your company information has reverted to its
-          original state. If you made any non-fee changes such as updates to your Registered
-          Office Contact Information, please note that these changes have already been saved.
-        </section>
-
-        <v-btn
-          large
-          color="primary"
-          id="done-button"
-          class="mt-8"
-          @click="$root.$emit('go-to-dashboard')"
-        >
-          <span>Done</span>
-        </v-btn>
-      </div>
-    </v-fade-transition>
   </section>
 </template>
 
@@ -298,8 +273,4 @@ export default class Change extends Mixins(
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-
-#done-button {
-  width: 10rem;
-}
 </style>

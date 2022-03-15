@@ -1,10 +1,10 @@
 <template>
   <v-card flat id="change-summary">
     <!-- Section Header -->
-    <div class="summary-header px-4 mb-2 rounded-t">
+    <div class="section-container summary-header mb-2 rounded-t">
       <v-row no-gutters>
-        <v-col cols="9">
-          <v-icon class="header-icon">mdi-file-document-edit-outline</v-icon>
+        <v-col>
+          <v-icon class="header-icon ml-n1">mdi-file-document-edit-outline</v-icon>
           <label class="summary-title">Summary of Changes to File</label>
         </v-col>
       </v-row>
@@ -13,13 +13,13 @@
     <!-- Business Name -->
     <template v-if="hasBusinessNameChanged">
       <v-divider class="mx-4" />
-      <div class="section-container business-name-summary">
+      <div id="business-name-summary-section" class="section-container">
         <v-row no-gutters>
-          <v-col cols="3">
+          <v-col cols="12" sm="3">
             <label><strong>Business Name</strong></label>
           </v-col>
 
-          <v-col cols="8" class="mt-n1">
+          <v-col cols="12" sm="8" class="mt-n1">
             <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
             <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
           </v-col>
@@ -27,9 +27,25 @@
       </div>
     </template>
 
+    <!-- Nature of Business -->
+    <template v-if="hasNatureOfBusinessChanged">
+      <v-divider class="mx-4" />
+      <div id="nob-summary-section" class="section-container">
+        <v-row no-gutters>
+          <v-col cols="12" sm="3">
+            <label><strong>Nature of Business</strong></label>
+          </v-col>
+
+          <v-col cols="12" sm="8">
+            <span class="info-text">{{getCurrentNaics.naicsCode}} - {{getCurrentNaics.naicsDescription}}</span>
+          </v-col>
+        </v-row>
+      </div>
+    </template>
+
     <template v-if="officeAddressesChanged">
       <v-divider class="mx-4" />
-      <div class="section-container">
+      <div id="address-summary-section" class="section-container">
         <OfficeAddresses :isSummaryView="true" />
       </div>
     </template>
@@ -40,7 +56,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { OfficeAddresses } from '@/components/common'
-import { ActionBindingIF } from '@/interfaces'
+import { ActionBindingIF, NaicsIF } from '@/interfaces'
 import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 
 @Component({
@@ -58,10 +74,12 @@ export default class ChangeSummary extends Mixins(
   // Global getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
+  @Getter getCurrentNaics!: NaicsIF
   @Getter officeAddressesChanged!: boolean
 
   // Change flag getters
   @Getter hasBusinessNameChanged!: boolean
+  @Getter hasNatureOfBusinessChanged!: boolean
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF
@@ -82,9 +100,7 @@ export default class ChangeSummary extends Mixins(
 @import '@/assets/styles/theme.scss';
 
 .summary-header {
-  display: flex;
   background-color: $BCgovBlue5O;
-  padding: 1.25rem;
 }
 
 .summary-title {
