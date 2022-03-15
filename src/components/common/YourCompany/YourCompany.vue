@@ -5,7 +5,7 @@
       attach="#app"
     />
 
-    <div class="define-company-header section-container">
+    <div class="section-container define-company-header">
       <v-icon class="header-icon">mdi-domain</v-icon>
       <label class="define-company-title">Your {{ getResource.entityReference }}</label>
     </div>
@@ -238,7 +238,7 @@
       <div class="section-container">
         <v-row no-gutters>
           <v-col>
-            <NatureOfBusinessInfo />
+            <NatureOfBusiness />
           </v-col>
         </v-row>
       </div>
@@ -310,7 +310,7 @@ import {
   CorrectNameOptions,
   OfficeAddresses
 } from './'
-import NatureOfBusinessInfo from '@/components/Edit/NatureOfBusinessInfo.vue'
+import NatureOfBusiness from '@/components/Edit/NatureOfBusiness.vue'
 import { ConfirmDialog } from '@/components/common/dialogs'
 import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
 import { CorrectionTypes, CorpTypeCd } from '@/enums'
@@ -323,7 +323,7 @@ import { CorrectionTypes, CorpTypeCd } from '@/enums'
     ChangeBusinessType,
     CorrectNameOptions,
     CorrectNameTranslation,
-    NatureOfBusinessInfo,
+    NatureOfBusiness,
     OfficeAddresses,
     FolioInformation
   }

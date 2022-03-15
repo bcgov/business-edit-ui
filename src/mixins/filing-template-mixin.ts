@@ -6,7 +6,7 @@ import { DateMixin } from '@/mixins'
 
 // Interfaces
 import {
-  ActionBindingIF, ActionIF,
+  ActionBindingIF,
   AddressesIF,
   AlterationFilingIF,
   CertifyIF,

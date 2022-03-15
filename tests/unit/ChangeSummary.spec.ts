@@ -8,7 +8,7 @@ import { getVuexStore } from '@/store'
 
 // Components
 import { createLocalVue, mount } from '@vue/test-utils'
-import { ChangeSummary } from '@/components/Edit'
+import { ChangeSummary, NatureOfBusiness } from '@/components/Edit'
 import { OfficeAddresses } from '@/components/common'
 
 Vue.use(Vuetify)
@@ -41,7 +41,9 @@ describe('Change Summary component', () => {
   const entitySnapshot = {
     businessInfo: {
       legalName: 'Mock Original Name',
-      legalType: 'SP'
+      legalType: 'SP',
+      naicsCode: '123456',
+      naicsDescription: 'Mock description'
     },
     addresses: addresses
   }
@@ -52,6 +54,7 @@ describe('Change Summary component', () => {
     store.state.stateModel.tombstone.currentDate = '2021-03-01'
     store.state.stateModel.entitySnapshot = entitySnapshot
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
+    store.state.stateModel.businessInformation = { ...entitySnapshot.businessInfo }
   })
 
   beforeEach(() => {
@@ -74,10 +77,18 @@ describe('Change Summary component', () => {
   })
 
   it('does not render the summary sections when no changes have been made', async () => {
-    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(false)
+    expect(wrapper.findComponent(NatureOfBusiness).exists()).toBe(false)
+    expect(wrapper.find('#nob-summary-section').exists()).toBe(false)
   })
 
-  it('renders the type summary section when changes have been made', async () => {
+  it('renders the Nature of Business summary section when changes have been made', async () => {
+    store.state.stateModel.businessInformation.naicsCode = '654321'
+    await Vue.nextTick()
+
+    expect(wrapper.find('#nob-summary-section').exists()).toBe(true)
+  })
+
+  it('renders the Address summary section when changes have been made', async () => {
     store.state.stateModel.officeAddresses = { }
     await Vue.nextTick()
 

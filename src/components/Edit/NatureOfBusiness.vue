@@ -1,6 +1,6 @@
 <template>
   <div id="nature-of-business-info">
-    <NatureOfBusiness
+    <NatureOfBusinessShared
       v-if="haveNaics"
       :showErrors="false"
       :naics="getCurrentNaics"
@@ -15,16 +15,16 @@
 <script lang="ts">
 import { Action, Getter } from 'vuex-class'
 import { Component, Vue } from 'vue-property-decorator'
-import { NatureOfBusiness } from '@bcrs-shared-components/nature-of-business'
 import { NaicsServices } from '@/services'
 import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, NaicsIF } from '@/interfaces'
+import { NatureOfBusiness as NatureOfBusinessShared } from '@bcrs-shared-components/nature-of-business'
 
 @Component({
   components: {
-    NatureOfBusiness
+    NatureOfBusinessShared
   }
 })
-export default class NatureOfBusinessInfo extends Vue {
+export default class NatureOfBusiness extends Vue {
   private naicsServices = NaicsServices
 
   @Getter getBusinessInformation!: BusinessInformationIF
@@ -34,6 +34,7 @@ export default class NatureOfBusinessInfo extends Vue {
 
   @Action setNaics!: ActionBindingIF
 
+  /** The naics data on record for the business. */
   private get originalNaics (): NaicsIF {
     return {
       naicsCode: this.getEntitySnapshot.businessInfo.naicsCode,

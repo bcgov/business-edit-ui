@@ -1,8 +1,8 @@
 <template>
   <v-card flat id="change-summary">
     <!-- Section Header -->
-    <div class="summary-header px-4 mb-2 rounded-t">
-      <v-row no-gutters>
+    <div class="section-container summary-header mb-2 rounded-t">
+      <v-row no-gutters class="ml-n1">
         <v-col cols="9">
           <v-icon class="header-icon">mdi-file-document-edit-outline</v-icon>
           <label class="summary-title">Summary of Changes to File</label>
@@ -13,7 +13,7 @@
     <!-- Business Name -->
     <template v-if="hasBusinessNameChanged">
       <v-divider class="mx-4" />
-      <div class="section-container business-name-summary">
+      <div id="business-name-summary-section" class="section-container">
         <v-row no-gutters>
           <v-col cols="3">
             <label><strong>Business Name</strong></label>
@@ -27,10 +27,10 @@
       </div>
     </template>
 
-    <!-- Business Name -->
+    <!-- Nature of Business -->
     <template v-if="hasNatureOfBusinessChanged">
       <v-divider class="mx-4" />
-      <div class="section-container">
+      <div id="nob-summary-section" class="section-container">
         <v-row no-gutters>
           <v-col cols="3">
             <label><strong>Nature of Business</strong></label>
@@ -45,7 +45,7 @@
 
     <template v-if="officeAddressesChanged">
       <v-divider class="mx-4" />
-      <div class="section-container">
+      <div id="address-summary-section" class="section-container">
         <OfficeAddresses :isSummaryView="true" />
       </div>
     </template>
@@ -100,9 +100,7 @@ export default class ChangeSummary extends Mixins(
 @import '@/assets/styles/theme.scss';
 
 .summary-header {
-  display: flex;
   background-color: $BCgovBlue5O;
-  padding: 1.25rem;
 }
 
 .summary-title {
