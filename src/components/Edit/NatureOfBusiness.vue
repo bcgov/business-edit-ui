@@ -4,7 +4,7 @@
       v-if="haveNaics"
       :showErrors="false"
       :naics="getCurrentNaics"
-      :naics-services="naicsServices"
+      :NaicsServices="NaicsServices"
       :hasNaicsChanges="hasNatureOfBusinessChanged"
       @undoNaics="setNaics(originalNaics)"
       @setNaics="setNaics($event)"
@@ -25,7 +25,7 @@ import { NatureOfBusiness as NatureOfBusinessShared } from '@bcrs-shared-compone
   }
 })
 export default class NatureOfBusiness extends Vue {
-  private naicsServices = NaicsServices
+  private NaicsServices = NaicsServices
 
   @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getCurrentNaics!: NaicsIF

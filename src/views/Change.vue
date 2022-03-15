@@ -273,8 +273,4 @@ export default class Change extends Mixins(
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-
-#done-button {
-  width: 10rem;
-}
 </style>

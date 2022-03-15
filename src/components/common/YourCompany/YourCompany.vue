@@ -211,6 +211,8 @@
 
     <!-- Change Filing Section -->
     <template v-if="isChangeFiling">
+
+      <!-- Business Start Date -->
       <div class="section-container">
         <v-row no-gutters>
           <v-col cols="3">
@@ -235,12 +237,9 @@
 
       <v-divider class="mx-4 my-1" />
 
+      <!-- Nature of Business -->
       <div class="section-container">
-        <v-row no-gutters>
-          <v-col>
-            <NatureOfBusiness />
-          </v-col>
-        </v-row>
+        <NatureOfBusiness />
       </div>
     </template>
 

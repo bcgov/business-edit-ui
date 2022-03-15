@@ -353,10 +353,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     if (this.hasNatureOfBusinessChanged) {
-      filing.changeOfRegistration.business.naics = {
-        naicsCode: this.getCurrentNaics.naicsCode,
-        naicsDescription: this.getCurrentNaics.naicsDescription
-      }
+      filing.changeOfRegistration.business.naics = this.getCurrentNaics
     }
 
     return filing
@@ -583,12 +580,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store office addresses
     let addresses
     if (filing.changeOfRegistration.businessAddress) {
-      addresses = {
-        registeredOffice: {
-          mailingAddress: filing.changeOfRegistration.businessAddress.mailingAddress,
-          deliveryAddress: filing.changeOfRegistration.businessAddress.deliveryAddress
-        }
-      }
+      addresses = { registeredOffice: filing.changeOfRegistration.businessAddress }
     }
     this.setOfficeAddresses(addresses || entitySnapshot.addresses)
 
