@@ -8,6 +8,8 @@ export enum ComponentsCompanyInfo {
   'company-name-section',
   'business-type',
   'name-translation',
+  'nature-of-business',
+  'business-addresses',
   'contact-info',
   'folio-number',
   'share-structures',

@@ -110,7 +110,7 @@ describe('Transactional Folio Number component', () => {
 
     // verify updated Folio Number and store
     expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('A123')
-    expect(store.state.stateModel.newAlteration.flagsReviewCertify.isValidTransactionalFolioNumber).toBe(true)
+    expect(store.state.stateModel.validationFlags.flagsReviewCertify.isValidTransactionalFolioNumber).toBe(true)
 
     // verify no error styling
     expect(wrapper.find('.error-text').exists()).toBe(false)
@@ -142,7 +142,7 @@ describe('Transactional Folio Number component', () => {
 
     // verify updated Folio Number and store
     expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('1234567890123456789012345678901')
-    expect(store.state.stateModel.newAlteration.flagsReviewCertify.isValidTransactionalFolioNumber).toBe(false)
+    expect(store.state.stateModel.validationFlags.flagsReviewCertify.isValidTransactionalFolioNumber).toBe(false)
 
     // verify error styling
     expect(wrapper.find('.error-text').exists()).toBe(true)

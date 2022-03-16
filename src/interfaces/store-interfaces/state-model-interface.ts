@@ -2,7 +2,7 @@ import {
   AccountInformationIF, AddressesIF, AlterationFilingIF, CertifyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF,
   ShareStructureIF, EffectiveDateTimeIF, IncorporationAgreementIF, BusinessInformationIF, IncorporationFilingIF,
   FilingDataIF, StaffPaymentStepIF, DetailIF, NameTranslationIF, EntitySnapshotIF, DocumentDeliveryIF, FeesIF,
-  NewAlterationIF
+  NewAlterationIF, ValidationFlagsIF
 } from '@/interfaces'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
@@ -42,6 +42,7 @@ export interface StateModelIF {
     shareStructure: boolean
     incorporationAgreement: boolean
   }
+  validationFlags: ValidationFlagsIF
   validFlags: {
     // FUTURE: move all flags here
     defineCompanyStep: boolean

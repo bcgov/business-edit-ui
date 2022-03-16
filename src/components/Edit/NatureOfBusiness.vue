@@ -1,11 +1,13 @@
 <template>
-  <div id="nature-of-business-info">
+  <div id="nature-of-business-shared">
     <NatureOfBusinessShared
       v-if="haveNaics"
-      :showErrors="false"
+      :showErrors="invalidSection"
       :naics="getCurrentNaics"
       :NaicsServices="NaicsServices"
       :hasNaicsChanges="hasNatureOfBusinessChanged"
+      :class="{'invalidSection': invalidSection}"
+      @valid="onEditingChanged($event)"
       @undoNaics="setNaics(originalNaics)"
       @setNaics="setNaics($event)"
     />
@@ -14,7 +16,7 @@
 
 <script lang="ts">
 import { Action, Getter } from 'vuex-class'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { NaicsServices } from '@/services'
 import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, NaicsIF } from '@/interfaces'
 import { NatureOfBusiness as NatureOfBusinessShared } from '@bcrs-shared-components/nature-of-business'
@@ -25,7 +27,11 @@ import { NatureOfBusiness as NatureOfBusinessShared } from '@bcrs-shared-compone
   }
 })
 export default class NatureOfBusiness extends Vue {
-  private NaicsServices = NaicsServices
+  /** Whether to show invalid section styling. */
+  @Prop({ default: false })
+  readonly invalidSection!: boolean
+
+  readonly NaicsServices = NaicsServices
 
   @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getCurrentNaics!: NaicsIF
@@ -33,17 +39,22 @@ export default class NatureOfBusiness extends Vue {
   @Getter hasNatureOfBusinessChanged!: boolean
 
   @Action setNaics!: ActionBindingIF
+  @Action setValidComponent!: ActionBindingIF
 
   /** The naics data on record for the business. */
-  private get originalNaics (): NaicsIF {
+  get originalNaics (): NaicsIF {
     return {
       naicsCode: this.getEntitySnapshot.businessInfo.naicsCode,
       naicsDescription: this.getEntitySnapshot.businessInfo.naicsDescription
     }
   }
 
-  private get haveNaics (): boolean {
+  get haveNaics (): boolean {
     return (!!this.getBusinessInformation.naicsCode && !!this.getBusinessInformation.naicsDescription)
+  }
+
+  onEditingChanged (event): void {
+    this.setValidComponent({ key: 'isValidNatureOfBusiness', value: event })
   }
 }
 </script>
@@ -51,6 +62,14 @@ export default class NatureOfBusiness extends Vue {
 @import '@/assets/styles/theme.scss';
 
 ::v-deep {
+  .invalidSection .col-sm-3:first-child label {
+    color: $app-red !important;
+  }
+
+  .v-input .v-label {
+    font-weight: normal;
+  }
+
   #nob-change-btn {
     padding-right: 2px;
   }

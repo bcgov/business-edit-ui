@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "private": true,
   "appName": "Edit UI",
   "sbcName": "SBC Common Components",
@@ -29,7 +29,7 @@
     "@bcrs-shared-components/interfaces": "1.0.33",
     "@bcrs-shared-components/nature-of-business": "1.0.2",
     "@bcrs-shared-components/share-structure": "1.0.20",
-    "@bcrs-shared-components/staff-payment": "1.0.22",
+    "@bcrs-shared-components/staff-payment": "1.0.35",
     "@mdi/font": "^5.5.55",
     "@sentry/browser": "^5.23.0",
     "@sentry/integrations": "^5.23.0",

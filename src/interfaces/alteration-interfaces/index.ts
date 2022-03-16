@@ -1,7 +1,5 @@
 export * from './alteration-interface'
 export * from './business-snapshot-interface'
 export * from './court-order-interface'
-export * from './flags-company-info-interface'
-export * from './flags-review-certify-interface'
 export * from './new-alteration-interface'
 export * from './resolutions-interface'

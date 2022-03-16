@@ -144,9 +144,12 @@
     <v-card flat v-else-if="isChangeFiling">
       <v-row no-gutters>
         <v-col cols="3">
-          <label>{{ getResource.addressLabel }}</label>
+          <label :class="{'error-text': invalidSection}">{{ getResource.addressLabel }}</label>
         </v-col>
         <v-col cols="9">
+          <p class="info-text">
+            Enter the business mailing and delivery addresses. The Delivery Address must be located in British Columbia.
+          </p>
           <label>Mailing Address</label>
         </v-col>
       </v-row>
@@ -159,7 +162,7 @@
             id="address-mailing"
             :address="mailingAddress"
             :editing="true"
-            :schema="addressSchema"
+            :schema="RegistrationMailingAddressSchema"
             @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, mailingAddress, $event)"
             @valid="updateValidity(AddressTypes.MAILING_ADDRESS, $event)"
           />
@@ -175,12 +178,13 @@
             label="Delivery Address same as Mailing Address"
             hide-details
             v-model="inheritMailingAddress"
+            :disabled="disableSameDeliveryAddress"
             @change="setDeliveryAddressToMailingAddress()"
           />
         </v-col>
       </v-row>
 
-      <template v-if="!inheritMailingAddress">
+      <template v-if="!inheritMailingAddress || disableSameDeliveryAddress">
         <v-row no-gutters class="pt-4">
           <v-col cols="3"></v-col>
           <v-col cols="9">
@@ -196,7 +200,8 @@
               id="address-delivery"
               :address="deliveryAddress"
               :editing="true"
-              :schema="addressSchema"
+              :schema="RegistrationDeliveryAddressSchema"
+              :noPoBox="true"
               @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, deliveryAddress, $event)"
               @valid="updateValidity(AddressTypes.DELIVERY_ADDRESS, $event)"
             />
@@ -211,7 +216,6 @@
             <v-btn
               id="address-done-btn"
               large color="primary"
-              :disabled="!formValid"
               @click="acceptChanges()"
             >
               <span>Done</span>
@@ -381,19 +385,32 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { isEmpty } from 'lodash'
-import { OfficeAddressSchema } from '@/schemas'
+import { OfficeAddressSchema, RegistrationMailingAddressSchema, RegistrationDeliveryAddressSchema } from '@/schemas'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces'
+import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF, FormIF } from '@/interfaces'
 import { AddressTypes, CorpTypeCd } from '@/enums'
 import { CommonMixin } from '@/mixins'
+
+const REGION_BC = 'BC'
+const COUNTRY_CA = 'CA'
 
 @Component({
   components: { BaseAddress }
 })
 export default class OfficeAddresses extends Mixins(CommonMixin) {
+  // Refs for BaseAddress components so we can access form validation
+  $refs!: {
+    mailingAddress: any
+    deliveryAddress: any
+  }
+
+  /** Whether to show invalid section styling. */
+  @Prop({ default: false })
+  readonly invalidSection!: boolean
+
   /** Prop to set readonly state (ie disable form actions). */
   @Prop({ default: false })
   readonly isSummaryView: boolean
@@ -414,12 +431,15 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   // Global actions
   @Action setOfficeAddresses!: ActionBindingIF
   @Action setEditingOfficeAddresses!: ActionBindingIF
+  @Action setValidComponent!: ActionBindingIF
 
   // Declarations for template
   readonly isEmpty = isEmpty
   readonly AddressTypes = AddressTypes
   readonly CorpTypeCd = CorpTypeCd
   readonly addressSchema = OfficeAddressSchema
+  readonly RegistrationMailingAddressSchema = RegistrationMailingAddressSchema
+  readonly RegistrationDeliveryAddressSchema = RegistrationDeliveryAddressSchema
 
   readonly defaultAddress: AddressIF = {
     addressCity: '',
@@ -457,6 +477,12 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 
   /** Model value for "same as (records) mailing address" checkbox. */
   private inheritRecMailingAddress: boolean = true
+
+  /** Is true when the mailing address is outside British Columbia. */
+  get disableSameDeliveryAddress (): boolean {
+    return (this.mailingAddress.addressRegion !== REGION_BC ||
+      this.mailingAddress.addressCountry !== COUNTRY_CA)
+  }
 
   /** True if the address form is valid. */
   private get formValid (): boolean {
@@ -654,13 +680,13 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * When Done is clicked, stores updated addresses.
    */
   private async acceptChanges (): Promise<void> {
-    // set store value
-    // NB: this will cause setLocalProperties() to be called to reset local properties
-    // NB: this will cause updateAddresses() to be called to update state
-    this.storeAddresses()
-
-    this.isEditing = false
-
+    if (this.formValid) {
+      // set store value
+      // NB: this will cause setLocalProperties() to be called to reset local properties
+      // NB: this will cause updateAddresses() to be called to update state
+      this.storeAddresses()
+      this.isEditing = false
+    }
     // as Vue has updated the visible sections, scroll back to the top of this component
     await this.scrollToTop(this.$el)
   }
@@ -688,6 +714,18 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     this.setOfficeAddresses(this.originalOfficeAddresses)
   }
 
+  /** Disable Same As feature and validate Delivery address for Change Filings. */
+  @Watch('disableSameDeliveryAddress')
+  private async updateDeliveryAddress (): Promise<void> {
+    if (this.isChangeFiling && this.disableSameDeliveryAddress) {
+      this.inheritMailingAddress = false
+      await Vue.nextTick() // Allow referenced form to open before validating
+
+      // validate delivery address
+      this.$refs.deliveryAddress.$refs.addressForm.validate()
+    }
+  }
+
   /**
    * When the component is mounted or stored office addresses change (ie, when data is loaded/updated/reset),
    * sets local properties and emits state events.
@@ -708,7 +746,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Updates store when local Editing property has changed. */
   @Watch('isEditing', { immediate: true })
   private onEditingChanged (val: boolean): void {
-    this.setEditingOfficeAddresses(val)
+    this.setEditingOfficeAddresses(val) // Used for Correction Flags
+    this.setValidComponent({ key: 'isValidAddress', value: !this.isEditing })
   }
 
   /** Emits the changed state of this component. */
@@ -856,6 +895,10 @@ ul {
     color: $gray7;
     font-size: $px-16;
     font-weight: normal;
+  }
+
+  .v-input input {
+    color: $gray9
   }
 }
 </style>
