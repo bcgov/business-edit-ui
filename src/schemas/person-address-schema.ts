@@ -28,5 +28,3 @@ export const PersonAddressSchema = {
     maxLength: maxLength(80)
   }
 }
-
-export const RegistrationMailingAddressSchema = PersonAddressSchema

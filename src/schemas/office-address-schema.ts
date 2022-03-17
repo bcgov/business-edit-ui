@@ -32,5 +32,3 @@ export const OfficeAddressSchema = {
     maxLength: maxLength(80)
   }
 }
-
-export const RegistrationDeliveryAddressSchema = OfficeAddressSchema

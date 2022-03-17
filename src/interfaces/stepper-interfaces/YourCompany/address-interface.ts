@@ -1,5 +1,6 @@
 /** Interface to define a base address. */
 export interface AddressIF {
+  id?: number
   addressCity: string
   addressCountry: string
   addressRegion: string

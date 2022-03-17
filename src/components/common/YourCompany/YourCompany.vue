@@ -238,11 +238,12 @@
       <v-divider class="mx-4 my-1" />
 
       <!-- Nature of Business -->
-      <div id='nature-of-business' class="section-container" :class="{'invalid-section': invalidNatureOfBusiness}">
-        <NatureOfBusiness
-          :invalidSection="invalidNatureOfBusiness"
-        />
-      </div>
+      <NatureOfBusiness
+        id="nature-of-business"
+        class="section-container"
+        :class="{'invalid-section': invalidNatureOfBusiness}"
+        :invalidSection="invalidNatureOfBusiness"
+      />
     </template>
 
     <!-- Recognition Date and Time -->

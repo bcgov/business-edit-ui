@@ -276,7 +276,7 @@
                 </div>
                 <div
                   class="address-wrapper pt-6"
-                  v-if="!isSame(mailingAddress, deliveryAddress, ['actions', 'addressType']) ||
+                  v-if="!isSame(mailingAddress, deliveryAddress, ['actions', 'addressType', 'id']) ||
                   !inheritMailingAddress"
                 >
                   <base-address ref="regDeliveryAddress"
@@ -344,7 +344,7 @@
                   </div>
                   <div
                     class="address-wrapper pt-6"
-                    v-if="!isSame(recMailingAddress, recDeliveryAddress, ['actions', 'addressType']) ||
+                    v-if="!isSame(recMailingAddress, recDeliveryAddress, ['actions', 'addressType', 'id']) ||
                     !inheritRecMailingAddress"
                   >
                     <base-address ref="recDeliveryAddress"
@@ -388,7 +388,7 @@
 import { Component, Emit, Mixins, Prop, Watch, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { isEmpty } from 'lodash'
-import { OfficeAddressSchema, RegistrationMailingAddressSchema, RegistrationDeliveryAddressSchema } from '@/schemas'
+import { OfficeAddressSchema, PersonAddressSchema } from '@/schemas'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF, FormIF } from '@/interfaces'
 import { AddressTypes, CorpTypeCd } from '@/enums'
@@ -438,8 +438,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   readonly AddressTypes = AddressTypes
   readonly CorpTypeCd = CorpTypeCd
   readonly addressSchema = OfficeAddressSchema
-  readonly RegistrationMailingAddressSchema = RegistrationMailingAddressSchema
-  readonly RegistrationDeliveryAddressSchema = RegistrationDeliveryAddressSchema
+  readonly RegistrationMailingAddressSchema = PersonAddressSchema
+  readonly RegistrationDeliveryAddressSchema = OfficeAddressSchema
 
   readonly defaultAddress: AddressIF = {
     addressCity: '',
@@ -509,7 +509,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       this.inheritMailingAddress = this.isSame(
         this.getOfficeAddresses.registeredOffice.mailingAddress,
         this.getOfficeAddresses.registeredOffice.deliveryAddress,
-        ['addressType', 'addressCountryDescription']
+        ['addressType', 'addressCountryDescription', 'id']
       )
 
       // for BCOMPS, also set the Records Address
@@ -523,11 +523,11 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
           this.isSame(
             this.getOfficeAddresses.registeredOffice.deliveryAddress,
             this.getOfficeAddresses.recordsOffice?.deliveryAddress,
-            ['addressCountryDescription']
+            ['addressCountryDescription', 'id']
           ) && this.isSame(
             this.getOfficeAddresses.registeredOffice.mailingAddress,
             this.getOfficeAddresses.recordsOffice?.mailingAddress,
-            ['addressCountryDescription']
+            ['addressCountryDescription', 'id']
           )
         )
 
@@ -537,7 +537,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         this.inheritRecMailingAddress = this.isSame(
           this.getOfficeAddresses.recordsOffice?.mailingAddress,
           this.getOfficeAddresses.recordsOffice?.deliveryAddress,
-          ['addressType', 'addressCountryDescription']
+          ['addressType', 'addressCountryDescription', 'id']
         )
       }
     }
@@ -549,7 +549,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    */
   private setDeliveryAddressToMailingAddress (): void {
     if (this.inheritMailingAddress) {
-      this.deliveryAddress = { ...this.mailingAddress, addressType: 'delivery' }
+      this.deliveryAddress = { ...this.mailingAddress, addressType: 'delivery', id: this.deliveryAddress.id }
     } else {
       // clear to default
       this.deliveryAddress = { ...this.defaultAddress, addressType: 'delivery' }
@@ -557,7 +557,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 
     // Records delivery address also needs to be updated if inherited
     if (this.inheritRegisteredAddress) {
-      this.recDeliveryAddress = { ...this.deliveryAddress }
+      this.recDeliveryAddress = { ...this.deliveryAddress, id: this.recDeliveryAddress.id }
     }
   }
 
@@ -567,13 +567,13 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    */
   private setRecordOfficeToRegisteredOffice (): void {
     if (this.inheritRegisteredAddress) {
-      this.recMailingAddress = { ...this.mailingAddress }
-      this.recDeliveryAddress = { ...this.deliveryAddress }
+      this.recMailingAddress = { ...this.mailingAddress, id: this.recMailingAddress.id }
+      this.recDeliveryAddress = { ...this.deliveryAddress, id: this.recDeliveryAddress.id }
     } else {
       this.inheritRecMailingAddress = this.inheritMailingAddress
       // clear to default
-      this.recMailingAddress = { ...this.defaultAddress, addressType: 'mailing' }
-      this.recDeliveryAddress = { ...this.defaultAddress, addressType: 'delivery' }
+      this.recMailingAddress = { ...this.defaultAddress, addressType: 'mailing', id: this.recMailingAddress.id }
+      this.recDeliveryAddress = { ...this.defaultAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
     }
   }
 
@@ -583,10 +583,10 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    */
   private setRecordDeliveryAddressToMailingAddress (): void {
     if (this.inheritRecMailingAddress) {
-      this.recDeliveryAddress = { ...this.recMailingAddress, addressType: 'delivery' }
+      this.recDeliveryAddress = { ...this.recMailingAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
     } else {
       // clear to default
-      this.recDeliveryAddress = { ...this.defaultAddress, addressType: 'delivery' }
+      this.recDeliveryAddress = { ...this.defaultAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
     }
   }
 
@@ -598,21 +598,21 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     switch (addressToUpdate) {
       case AddressTypes.MAILING_ADDRESS:
         if (this.inheritMailingAddress) {
-          this.deliveryAddress = { ...newAddress, addressType: 'delivery' }
+          this.deliveryAddress = { ...newAddress, addressType: 'delivery', id: this.deliveryAddress.id }
         }
         if (this.inheritRegisteredAddress) {
-          this.recMailingAddress = { ...newAddress, addressType: 'mailing' }
-          this.recDeliveryAddress = { ...this.deliveryAddress, addressType: 'delivery' }
+          this.recMailingAddress = { ...newAddress, addressType: 'mailing', id: this.recMailingAddress.id }
+          this.recDeliveryAddress = { ...this.deliveryAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
         }
         break
       case AddressTypes.DELIVERY_ADDRESS:
         if (this.inheritRegisteredAddress) {
-          this.recDeliveryAddress = { ...newAddress, addressType: 'delivery' }
+          this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
         }
         break
       case AddressTypes.REC_MAILING_ADDRESS:
         if (this.inheritRecMailingAddress) {
-          this.recDeliveryAddress = { ...newAddress, addressType: 'delivery' }
+          this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
         }
         break
       case AddressTypes.REC_DELIVERY_ADDRESS:

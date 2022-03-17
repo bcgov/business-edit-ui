@@ -1,5 +1,5 @@
 <template>
-  <div id="nature-of-business-shared">
+  <div>
     <NatureOfBusinessShared
       v-if="haveNaics"
       :showErrors="invalidSection"
@@ -64,10 +64,6 @@ export default class NatureOfBusiness extends Vue {
 ::v-deep {
   .invalidSection .col-sm-3:first-child label {
     color: $app-red !important;
-  }
-
-  .v-input .v-label {
-    font-weight: normal;
   }
 
   #nob-change-btn {
