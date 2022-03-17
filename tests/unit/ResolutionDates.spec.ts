@@ -274,7 +274,7 @@ describe('Resolution Dates component - edit mode', () => {
   it('sets component as invalid when editing', async () => {
     const wrapper = wrapperFactory()
     await Vue.nextTick()
-    expect(store.state.stateModel.newAlteration.flagsCompanyInfo.isValidResolutionDate).toBe(true)
+    expect(store.state.stateModel.validationFlags.flagsCompanyInfo.isValidResolutionDate).toBe(true)
 
     const rows = wrapper.findAll('.row')
     expect(rows.length).toBe(1)
@@ -285,7 +285,7 @@ describe('Resolution Dates component - edit mode', () => {
     const button = cols.at(2).find('.add-btn')
     button.trigger('click')
     await Vue.nextTick()
-    expect(store.state.stateModel.newAlteration.flagsCompanyInfo.isValidResolutionDate).toBe(false)
+    expect(store.state.stateModel.validationFlags.flagsCompanyInfo.isValidResolutionDate).toBe(false)
 
     wrapper.destroy()
   })

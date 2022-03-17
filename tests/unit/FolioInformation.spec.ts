@@ -132,7 +132,7 @@ describe('Folio Information component', () => {
     await vm.onIsEditing(true)
 
     expect(store.state.stateModel.editingFlags.folioNumber).toBe(true)
-    expect(store.state.stateModel.newAlteration.flagsCompanyInfo['isValidFolioInfo']).toBe(false)
+    expect(store.state.stateModel.validationFlags.flagsCompanyInfo['isValidFolioInfo']).toBe(false)
     expect(wrapper.emitted('isEditing')).toEqual([[true]])
 
     wrapper.destroy()

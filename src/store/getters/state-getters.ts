@@ -409,7 +409,7 @@ export const isFilingValid = (state: StateIF): boolean => {
     state.stateModel.staffPaymentStep.valid)
 }
 
-/** Whether any correction/alteration sections are in editing mode. */
+/** Whether any correction sections are in editing mode. */
 export const isEditing = (state: StateIF): boolean => {
   // NB: Detail, Certify and Staff Payment don't have an "editing" mode.
   return (state.stateModel.editingFlags.companyName ||
@@ -423,22 +423,22 @@ export const isEditing = (state: StateIF): boolean => {
 
 /** Flag to prompt app level validations. */
 export const getAppValidate = (state: StateIF): boolean => {
-  return state.stateModel.newAlteration.appValidate
+  return state.stateModel.validationFlags.appValidate
 }
 
 /** Flag to prompt component level validations. */
 export const getComponentValidate = (state: StateIF): boolean => {
-  return state.stateModel.newAlteration.componentValidate
+  return state.stateModel.validationFlags.componentValidate
 }
 
 /** The review and certify page validity flags. */
 export const getFlagsReviewCertify = (state: StateIF): FlagsReviewCertifyIF => {
-  return state.stateModel.newAlteration.flagsReviewCertify
+  return state.stateModel.validationFlags.flagsReviewCertify
 }
 
 /** The company info page validity flags. */
 export const getFlagsCompanyInfo = (state: StateIF): FlagsCompanyInfoIF => {
-  return state.stateModel.newAlteration.flagsCompanyInfo
+  return state.stateModel.validationFlags.flagsCompanyInfo
 }
 
 export const getDefaultCorrectionDetailComment = (state: StateIF): string => {
@@ -674,7 +674,7 @@ export const invalidMinimumShareClass = (state: StateIF): boolean => {
 
 /** Get state of company provisions validity. */
 export const getIsCompanyProvisionsValid = (state: StateIF): boolean => {
-  return state.stateModel.newAlteration.flagsCompanyInfo.isValidCompanyProvisions
+  return state.stateModel.validationFlags.flagsCompanyInfo.isValidCompanyProvisions
 }
 
 /** The current filing name. */

@@ -238,9 +238,11 @@
       <v-divider class="mx-4 my-1" />
 
       <!-- Nature of Business -->
-      <div class="section-container">
-        <NatureOfBusiness />
-      </div>
+      <NatureOfBusiness
+        class="section-container"
+        :class="{'invalid-section': invalidNatureOfBusiness}"
+        :invalidSection="invalidNatureOfBusiness"
+      />
     </template>
 
     <!-- Recognition Date and Time -->
@@ -259,11 +261,12 @@
     <v-divider class="mx-4 my-1" />
 
     <!-- Office addresses -->
-    <div class="section-container">
-      <OfficeAddresses
-        @haveChanges="officeAddressChanges = $event"
-      />
-    </div>
+    <OfficeAddresses
+      class="section-container"
+      :class="{'invalid-section': invalidAddressSection}"
+      :invalidSection="invalidAddressSection"
+      @haveChanges="officeAddressChanges = $event"
+    />
 
     <v-divider class="mx-4 my-1" />
 
@@ -403,6 +406,16 @@ export default class YourCompany extends Mixins(
   /** The translation section validity state (when prompted by app). */
   private get invalidTranslationSection (): boolean {
     return this.getComponentValidate && this.isEditingTranslations
+  }
+
+  /** The nature of business section validity state (when prompted by app). */
+  private get invalidNatureOfBusiness (): boolean {
+    return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidNatureOfBusiness
+  }
+
+  /** The address section validity state (when prompted by app). */
+  private get invalidAddressSection (): boolean {
+    return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidAddress
   }
 
   /** The contact section validity state (when prompted by app). */
@@ -607,6 +620,12 @@ export default class YourCompany extends Mixins(
 
   .v-btn {
     min-width: 0.5rem;
+  }
+}
+
+::v-deep {
+  .invalid-section .col-sm-3:first-child label {
+    color: $app-red !important;
   }
 }
 </style>

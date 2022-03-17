@@ -1,20 +1,19 @@
 <template>
-  <div id="nature-of-business-info">
-    <NatureOfBusinessShared
-      v-if="haveNaics"
-      :showErrors="false"
-      :naics="getCurrentNaics"
-      :NaicsServices="NaicsServices"
-      :hasNaicsChanges="hasNatureOfBusinessChanged"
-      @undoNaics="setNaics(originalNaics)"
-      @setNaics="setNaics($event)"
-    />
-  </div>
+  <NatureOfBusinessShared
+    v-if="haveNaics"
+    :showErrors="invalidSection"
+    :naics="getCurrentNaics"
+    :NaicsServices="NaicsServices"
+    :hasNaicsChanges="hasNatureOfBusinessChanged"
+    @valid="onEditingChanged($event)"
+    @undoNaics="setNaics(originalNaics)"
+    @setNaics="setNaics($event)"
+  />
 </template>
 
 <script lang="ts">
 import { Action, Getter } from 'vuex-class'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { NaicsServices } from '@/services'
 import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, NaicsIF } from '@/interfaces'
 import { NatureOfBusiness as NatureOfBusinessShared } from '@bcrs-shared-components/nature-of-business'
@@ -25,7 +24,11 @@ import { NatureOfBusiness as NatureOfBusinessShared } from '@bcrs-shared-compone
   }
 })
 export default class NatureOfBusiness extends Vue {
-  private NaicsServices = NaicsServices
+  /** Whether to show invalid section styling. */
+  @Prop({ default: false })
+  readonly invalidSection!: boolean
+
+  readonly NaicsServices = NaicsServices
 
   @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getCurrentNaics!: NaicsIF
@@ -33,17 +36,22 @@ export default class NatureOfBusiness extends Vue {
   @Getter hasNatureOfBusinessChanged!: boolean
 
   @Action setNaics!: ActionBindingIF
+  @Action setValidComponent!: ActionBindingIF
 
   /** The naics data on record for the business. */
-  private get originalNaics (): NaicsIF {
+  get originalNaics (): NaicsIF {
     return {
       naicsCode: this.getEntitySnapshot.businessInfo.naicsCode,
       naicsDescription: this.getEntitySnapshot.businessInfo.naicsDescription
     }
   }
 
-  private get haveNaics (): boolean {
+  get haveNaics (): boolean {
     return (!!this.getBusinessInformation.naicsCode && !!this.getBusinessInformation.naicsDescription)
+  }
+
+  onEditingChanged (event): void {
+    this.setValidComponent({ key: 'isValidNatureOfBusiness', value: event })
   }
 }
 </script>

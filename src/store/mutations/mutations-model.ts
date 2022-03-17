@@ -72,7 +72,7 @@ export const mutateEffectiveDateTimeString = (state: StateIF, dateTime: string) 
 }
 
 export const mutateEffectiveDateValid = (state: StateIF, valid: boolean) => {
-  state.stateModel.newAlteration.flagsReviewCertify.isValidEffectiveDate = valid
+  state.stateModel.validationFlags.flagsReviewCertify.isValidEffectiveDate = valid
 }
 
 export const mutateCertifyState = (state: StateIF, certifyState: CertifyIF) => {
@@ -81,7 +81,7 @@ export const mutateCertifyState = (state: StateIF, certifyState: CertifyIF) => {
 }
 
 export const mutateCertifyStateValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.newAlteration.flagsReviewCertify.isValidCertify = validity
+  state.stateModel.validationFlags.flagsReviewCertify.isValidCertify = validity
 }
 
 export const mutateDocumentOptionalEmail = (state: StateIF, documentOptionalEmail: string) => {
@@ -90,7 +90,7 @@ export const mutateDocumentOptionalEmail = (state: StateIF, documentOptionalEmai
 }
 
 export const mutateDocumentOptionalEmailValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.newAlteration.flagsReviewCertify.isValidDocumentOptionalEmail = validity
+  state.stateModel.validationFlags.flagsReviewCertify.isValidDocumentOptionalEmail = validity
 }
 
 export const mutateTransactionalFolioNumber = (state: StateIF, folioNumber: string) => {
@@ -99,7 +99,7 @@ export const mutateTransactionalFolioNumber = (state: StateIF, folioNumber: stri
 }
 
 export const mutateTransactionalFolioNumberValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.newAlteration.flagsReviewCertify.isValidTransactionalFolioNumber = validity
+  state.stateModel.validationFlags.flagsReviewCertify.isValidTransactionalFolioNumber = validity
 }
 
 export const mutateBusinessContact = (state: StateIF, businessContact: ContactPointIF) => {
@@ -221,7 +221,7 @@ export const mutateStaffPayment = (state: StateIF, staffPayment: StaffPaymentIF)
 
 export const mutateStaffPaymentValidity = (state: StateIF, validity: boolean) => {
   state.stateModel.staffPaymentStep.valid = validity
-  state.stateModel.newAlteration.flagsReviewCertify.isValidStaffPayment = validity
+  state.stateModel.validationFlags.flagsReviewCertify.isValidStaffPayment = validity
 }
 
 export const mutateFilingData = (state: StateIF, filingData: FilingDataIF) => {
@@ -294,15 +294,15 @@ export const mutateHasPlanOfArrangement = (state: StateIF, hasPoa: boolean) => {
 }
 
 export const mutateAppValidate = (state: StateIF, isValid: boolean) => {
-  state.stateModel.newAlteration.appValidate = isValid
+  state.stateModel.validationFlags.appValidate = isValid
 }
 
 export const mutateComponentValidate = (state: StateIF, isValid: boolean) => {
-  state.stateModel.newAlteration.componentValidate = isValid
+  state.stateModel.validationFlags.componentValidate = isValid
 }
 
 export const mutateValidCourtOrder = (state: StateIF, isValid: boolean) => {
-  state.stateModel.newAlteration.flagsReviewCertify.isValidCourtOrder = isValid
+  state.stateModel.validationFlags.flagsReviewCertify.isValidCourtOrder = isValid
 }
 
 export const mutateCurrentFees = (state: StateIF, fees: FeesIF) => {
@@ -314,7 +314,7 @@ export const mutateFeePrices = (state: StateIF, feePrices: FeesIF) => {
 }
 
 export const mutateIsValidComponent = (state: StateIF, kv: ActionKvIF) => {
-  state.stateModel.newAlteration.flagsCompanyInfo[kv.key] = kv.value
+  state.stateModel.validationFlags.flagsCompanyInfo[kv.key] = kv.value
 }
 
 export const mutateNaics = (state: StateIF, naics: NaicsIF) => {

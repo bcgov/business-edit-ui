@@ -660,7 +660,7 @@ describe('App component - other', () => {
     expect(vm.confirmDeleteAllDialog).toBe(false)
   })
 
-  it.only('renders the fee summary properly following changes', async () => {
+  it('renders the fee summary properly following changes', async () => {
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.stateModel.entitySnapshot = mockEntitySnapshot
     store.state.stateModel.officeAddresses = mockAddresses

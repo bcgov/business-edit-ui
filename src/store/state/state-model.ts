@@ -24,18 +24,22 @@ export const stateModel: StateModelIF = {
     transactionalFolioNumber: ''
   },
   newAlteration: {
-    appValidate: false,
-    componentValidate: false,
     provisionsRemoved: null,
     courtOrder: {
       fileNumber: '',
       hasPlanOfArrangement: false
-    },
+    }
+  },
+  validationFlags: {
+    appValidate: false,
+    componentValidate: false,
     flagsCompanyInfo: {
       // NB: this must be in same order as ComponentsCompanyInfo enum!
       isValidCompanyName: true,
       isValidBusinessType: true,
       isValidNameTranslation: true,
+      isValidNatureOfBusiness: true,
+      isValidAddress: true,
       isValidContactInfo: true,
       isValidFolioInfo: true,
       isValidShareStructure: true,

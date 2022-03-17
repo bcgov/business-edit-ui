@@ -79,7 +79,7 @@ describe('Share Structures component', () => {
     expect(wrapper.vm.invalidShareSection).toBe(false)
 
     // Promp the validations
-    store.state.stateModel.newAlteration.componentValidate = true
+    store.state.stateModel.validationFlags.componentValidate = true
     await Vue.nextTick()
 
     // Verify invalid share section
@@ -91,7 +91,7 @@ describe('Share Structures component', () => {
     store.state.stateModel.shareStructureStep.shareClasses = shareClasses
 
     // Promp the validations
-    store.state.stateModel.newAlteration.componentValidate = true
+    store.state.stateModel.validationFlags.componentValidate = true
     await Vue.nextTick()
 
     // Verify valid share section

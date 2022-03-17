@@ -23,6 +23,7 @@
       <v-col cols="2" class="align-right" v-if="!hasNameTranslationChange && !isSummaryMode">
         <v-btn
           id="correct-name-translation"
+          class="pr-0"
           text color="primary"
           @click="isEditing = true"
         >
