@@ -239,7 +239,6 @@
 
       <!-- Nature of Business -->
       <NatureOfBusiness
-        id="nature-of-business"
         class="section-container"
         :class="{'invalid-section': invalidNatureOfBusiness}"
         :invalidSection="invalidNatureOfBusiness"
@@ -262,12 +261,12 @@
     <v-divider class="mx-4 my-1" />
 
     <!-- Office addresses -->
-    <div id="business-addresses" class="section-container" :class="{'invalid-section': invalidAddressSection}">
-      <OfficeAddresses
-        :invalidSection="invalidAddressSection"
-        @haveChanges="officeAddressChanges = $event"
-      />
-    </div>
+    <OfficeAddresses
+      class="section-container"
+      :class="{'invalid-section': invalidAddressSection}"
+      :invalidSection="invalidAddressSection"
+      @haveChanges="officeAddressChanges = $event"
+    />
 
     <v-divider class="mx-4 my-1" />
 
@@ -621,6 +620,12 @@ export default class YourCompany extends Mixins(
 
   .v-btn {
     min-width: 0.5rem;
+  }
+}
+
+::v-deep {
+  .invalid-section .col-sm-3:first-child label {
+    color: $app-red !important;
   }
 }
 </style>

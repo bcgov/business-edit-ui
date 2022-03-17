@@ -1,17 +1,14 @@
 <template>
-  <div>
-    <NatureOfBusinessShared
-      v-if="haveNaics"
-      :showErrors="invalidSection"
-      :naics="getCurrentNaics"
-      :NaicsServices="NaicsServices"
-      :hasNaicsChanges="hasNatureOfBusinessChanged"
-      :class="{'invalidSection': invalidSection}"
-      @valid="onEditingChanged($event)"
-      @undoNaics="setNaics(originalNaics)"
-      @setNaics="setNaics($event)"
-    />
-  </div>
+  <NatureOfBusinessShared
+    v-if="haveNaics"
+    :showErrors="invalidSection"
+    :naics="getCurrentNaics"
+    :NaicsServices="NaicsServices"
+    :hasNaicsChanges="hasNatureOfBusinessChanged"
+    @valid="onEditingChanged($event)"
+    @undoNaics="setNaics(originalNaics)"
+    @setNaics="setNaics($event)"
+  />
 </template>
 
 <script lang="ts">
@@ -62,10 +59,6 @@ export default class NatureOfBusiness extends Vue {
 @import '@/assets/styles/theme.scss';
 
 ::v-deep {
-  .invalidSection .col-sm-3:first-child label {
-    color: $app-red !important;
-  }
-
   #nob-change-btn {
     padding-right: 2px;
   }

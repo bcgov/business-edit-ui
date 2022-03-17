@@ -9,7 +9,7 @@ export enum ComponentsCompanyInfo {
   'business-type',
   'name-translation',
   'nature-of-business',
-  'business-addresses',
+  'office-addresses',
   'contact-info',
   'folio-number',
   'share-structures',
