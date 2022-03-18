@@ -347,8 +347,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Apply business address changes to filing
     if (this.officeAddressesChanged) {
       filing.changeOfRegistration.businessAddress = {
-        mailingAddress: this.getOfficeAddresses.registeredOffice.mailingAddress,
-        deliveryAddress: this.getOfficeAddresses.registeredOffice.deliveryAddress
+        mailingAddress: this.getOfficeAddresses.businessOffice.mailingAddress,
+        deliveryAddress: this.getOfficeAddresses.businessOffice.deliveryAddress
       }
     }
 
@@ -580,7 +580,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store office addresses
     let addresses
     if (filing.changeOfRegistration.businessAddress) {
-      addresses = { registeredOffice: filing.changeOfRegistration.businessAddress }
+      addresses = { businessOffice: filing.changeOfRegistration.businessAddress }
     }
     this.setOfficeAddresses(addresses || entitySnapshot.addresses)
 
@@ -639,6 +639,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param entitySnapshot the latest entity snapshot
    */
   parseEntitySnapshot (entitySnapshot = this.getEntitySnapshot): void {
+    console.log(entitySnapshot)
     // Store business snapshot
     this.setEntitySnapshot(cloneDeep(entitySnapshot))
 

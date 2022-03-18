@@ -21,10 +21,12 @@ export interface BaseAddressObjIF {
 
 /** Interface to define the addresses. */
 export interface AddressesIF {
-  registeredOffice: BaseAddressObjIF
+  registeredOffice?: BaseAddressObjIF
   // Records Address is required for BCOMPs.
   // Records Address may be optional for other app types.
   recordsOffice?: BaseAddressObjIF
+  // Business Office is for required for Firms.
+  businessOffice?: BaseAddressObjIF
 }
 
 export interface BaseAddressType extends Vue {

@@ -14,6 +14,7 @@ export * from './filingTypes'
 export * from './incorporatorTypes'
 export * from './nameRequestStates'
 export * from './nameRequestTypes'
+export * from './officeTypes'
 export * from './roleTypes'
 export * from './routeNames'
 

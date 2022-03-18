@@ -249,7 +249,7 @@ const nrData = {
 }
 
 const mockAddresses = {
-  registeredOffice: {
+  businessOffice: {
     mailingAddress: {
       addressCity: 'Vancouver',
       addressCountry: 'Canada',

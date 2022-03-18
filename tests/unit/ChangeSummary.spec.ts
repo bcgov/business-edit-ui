@@ -20,7 +20,7 @@ describe('Change Summary component', () => {
   let store: any = getVuexStore()
 
   const addresses = {
-    registeredOffice: {
+    businessOffice: {
       mailingAddress: {
         addressCity: 'Vancouver',
         addressCountry: 'Canada',

@@ -390,8 +390,8 @@ import { Action, Getter } from 'vuex-class'
 import { isEmpty } from 'lodash'
 import { OfficeAddressSchema, PersonAddressSchema } from '@/schemas'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF, FormIF } from '@/interfaces'
-import { AddressTypes, CorpTypeCd } from '@/enums'
+import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces'
+import { AddressTypes, CorpTypeCd, OfficeTypes } from '@/enums'
 import { CommonMixin } from '@/mixins'
 
 const REGION_BC = 'BC'
@@ -427,6 +427,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter recMailingChanged!: boolean
   @Getter recDeliveryChanged!: boolean
   @Getter isBComp!: boolean
+  @Getter officeType!: OfficeTypes
 
   // Global actions
   @Action setOfficeAddresses!: ActionBindingIF
@@ -499,16 +500,16 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
-    if (this.getOfficeAddresses?.registeredOffice) {
-      this.mailingAddress = { ...this.getOfficeAddresses.registeredOffice.mailingAddress }
-      this.deliveryAddress = { ...this.getOfficeAddresses.registeredOffice.deliveryAddress }
+    if (this.getOfficeAddresses?.[this.officeType]) {
+      this.mailingAddress = { ...this.getOfficeAddresses[this.officeType].mailingAddress }
+      this.deliveryAddress = { ...this.getOfficeAddresses[this.officeType].deliveryAddress }
 
       // compare addresses to set the "inherit mailing" flag
       // ignore Address Type since it's different
       // ignore Address Country Description since it's not always present
       this.inheritMailingAddress = this.isSame(
-        this.getOfficeAddresses.registeredOffice.mailingAddress,
-        this.getOfficeAddresses.registeredOffice.deliveryAddress,
+        this.getOfficeAddresses[this.officeType].mailingAddress,
+        this.getOfficeAddresses[this.officeType].deliveryAddress,
         ['addressType', 'addressCountryDescription', 'id']
       )
 
@@ -668,7 +669,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       })
     } else {
       this.setOfficeAddresses({
-        registeredOffice: {
+        [this.officeType]: {
           deliveryAddress: this.deliveryAddress,
           mailingAddress: this.mailingAddress
         }
