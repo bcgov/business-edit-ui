@@ -639,7 +639,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param entitySnapshot the latest entity snapshot
    */
   parseEntitySnapshot (entitySnapshot = this.getEntitySnapshot): void {
-    console.log(entitySnapshot)
     // Store business snapshot
     this.setEntitySnapshot(cloneDeep(entitySnapshot))
 
