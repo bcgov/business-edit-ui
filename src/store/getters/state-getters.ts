@@ -1,4 +1,4 @@
-import { AccountTypes, ActionTypes, CorpTypeCd, FilingCodes, FilingNames, FilingTypes } from '@/enums'
+import { AccountTypes, ActionTypes, CorpTypeCd, FilingCodes, FilingNames, FilingTypes, OfficeTypes } from '@/enums'
 import {
   AddressesIF,
   IncorporationFilingIF,
@@ -506,6 +506,12 @@ export const hasContactInfoChanged = (state: StateIF): boolean => {
   )
 }
 
+/** The dynamic Office type based on the current filing. */
+export const officeType = (state: StateIF): OfficeTypes => {
+  if (isChangeFiling(state)) return OfficeTypes.BUSINESS_OFFICE
+  if (isAlterationFiling(state) || isCorrectionFiling(state)) return OfficeTypes.REGISTERED_OFFICE
+}
+
 /** True if any office address has changed. Applies to corrections and change filings only. */
 export const officeAddressesChanged = (state: StateIF): boolean => {
   return (isCorrectionFiling(state) || isChangeFiling(state)) &&
@@ -523,14 +529,14 @@ export const originalOfficeAddresses = (state: StateIF): AddressesIF => {
 
 /** True if (registered) mailing address has changed. */
 export const mailingChanged = (state: StateIF): boolean => {
-  return !isSame(getOfficeAddresses(state)?.registeredOffice?.mailingAddress,
-    originalOfficeAddresses(state)?.registeredOffice?.mailingAddress, ['addressCountryDescription'])
+  return !isSame(getOfficeAddresses(state)?.[officeType(state)]?.mailingAddress,
+    originalOfficeAddresses(state)?.[officeType(state)]?.mailingAddress, ['addressCountryDescription'])
 }
 
 /** True if (registered) delivery address has changed. */
 export const deliveryChanged = (state: StateIF): boolean => {
-  return !isSame(getOfficeAddresses(state)?.registeredOffice?.deliveryAddress,
-    originalOfficeAddresses(state)?.registeredOffice?.deliveryAddress, ['addressCountryDescription'])
+  return !isSame(getOfficeAddresses(state)?.[officeType(state)]?.deliveryAddress,
+    originalOfficeAddresses(state)?.[officeType(state)]?.deliveryAddress, ['addressCountryDescription'])
 }
 
 /** True if records mailing address has changed. */

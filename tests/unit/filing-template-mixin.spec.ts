@@ -29,7 +29,7 @@ describe('Change of Registration Filing', () => {
         naicsDescription: ''
       },
       addresses: {
-        registeredOffice: {
+        businessOffice: {
           mailingAddress: {
             addressCity: 'Charlie',
             addressCountry: 'CA',
@@ -52,7 +52,7 @@ describe('Change of Registration Filing', () => {
       }
     }
     store.state.stateModel.officeAddresses = {
-      registeredOffice: {
+      businessOffice: {
         mailingAddress: {
           addressCity: 'Bravo',
           addressCountry: 'CA',
