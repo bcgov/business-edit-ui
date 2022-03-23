@@ -129,15 +129,6 @@ export default class CommonMixin extends Vue {
   }
 
   /**
-   * Checks if the specified entity type matches the current entity's type.
-   * @param entityType the entity type to check
-   * @return True if the check passes, else False
-   */
-  entityFilter (entityType: CorpTypeCd): boolean {
-    return (this.getEntityType === entityType)
-  }
-
-  /**
    * Formats a phone number for display.
    * @param phoneNumber the phone number to format
    * @returns a formatted phone number

@@ -1,4 +1,4 @@
-import { CorpTypeCd, FilingCodes, NameRequestEntityTypes } from '@/enums'
+import { CorpTypeCd, CorrectionTypes, FilingCodes, NameRequestEntityTypes } from '@/enums'
 
 /** Interface to define the resource model example */
 export interface ResourceIF {
@@ -9,12 +9,13 @@ export interface ResourceIF {
   nameRequestType: NameRequestEntityTypes
   addressLabel: string
   filingData: {
-    entityType: CorpTypeCd,
-    filingTypeCode: FilingCodes,
+    entityType: CorpTypeCd
+    filingTypeCode: FilingCodes
     priority?: boolean
-  },
+  }
   changeData?: {
+    nameChangeOptions?: Array<CorrectionTypes>
     typeChangeInfo?: string
-  },
+  }
   certifyClause: string
 }

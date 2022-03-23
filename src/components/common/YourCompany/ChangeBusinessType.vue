@@ -177,7 +177,7 @@
             <span>Undo</span>
           </v-btn>
           <v-btn
-            v-else-if="entityFilter(CorpTypeCd.BC_COMPANY)"
+            v-else-if="isTypeBcCompany"
             text color="primary"
             id="btn-correct-business-type"
             @click="isEditingType = true"
@@ -251,6 +251,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {
   @Getter hasBusinessTypeChanged!: boolean
   @Getter isChangeFiling!: boolean
   @Getter isConflictingLegalType!: boolean
+  @Getter isTypeBcCompany!: boolean
 
   @Action setEntityType!: ActionBindingIF
 

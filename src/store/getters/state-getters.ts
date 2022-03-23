@@ -76,6 +76,11 @@ export const isTypeCoop = (state: StateIF): boolean => {
   return (getEntityType(state) === CorpTypeCd.COOP)
 }
 
+/** Whether the entity is a BC Company. */
+export const isTypeBcCompany = (state: StateIF): boolean => {
+  return (getEntityType(state) === CorpTypeCd.BC_COMPANY)
+}
+
 /** Whether the current account is a premium account. */
 export const isPremiumAccount = (state: StateIF): boolean => {
   return (state.stateModel.accountInformation.accountType === AccountTypes.PREMIUM)
@@ -394,6 +399,7 @@ export const hasAlterationChanged = (state: StateIF): boolean => {
  */
 export const hasFirmChanged = (state: StateIF): boolean => {
   return (
+    hasBusinessNameChanged(state) ||
     hasNatureOfBusinessChanged(state) ||
     officeAddressesChanged(state)
   )

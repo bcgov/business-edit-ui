@@ -428,6 +428,11 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       this.goToDashboard()
     })
 
+    // listen to confirm events
+    this.$root.$on('confirm-dialog', (title, message, action) => {
+      this.showConfirmDialog(title, message, action)
+    })
+
     // init app
     this.onRouteChanged()
   }
@@ -449,6 +454,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     this.$root.$off('invalid-name-request')
     this.$root.$off('delete-all')
     this.$root.$off('go-to-dashboard')
+    this.$root.$off('confirm')
   }
 
   /** Called when $route property changes. */
@@ -568,7 +574,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   }
 
   /** Called to navigate to dashboard. */
-  private goToDashboard (force: boolean = false): void {
+  private async goToDashboard (force: boolean = false): Promise<void> {
     // check if there are no data changes
     if (!this.haveUnsavedChanges || force) {
       // navigate to dashboard
@@ -578,28 +584,22 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       return
     }
 
-    // open confirmation dialog and wait for response
-    this.$refs.confirm.open(
+    // Prompt confirm dialog
+    const hasConfirmed = await this.showConfirmDialog(
       'Unsaved Changes',
       'You have unsaved changes. Do you want to exit?',
-      {
-        width: '45rem',
-        persistent: true,
-        yes: 'Return to my Filing',
-        no: null,
-        cancel: 'Exit Without Saving'
-      }
-    ).then(() => {
-      // if we get here, Yes was clicked
-      // nothing to do
-    }).catch(() => {
+      'Return to my Filing',
+      'Exit Without Saving'
+    )
+
+    if (!hasConfirmed) {
       // if we get here, Cancel was clicked
       // ignore changes
       this.setHaveUnsavedChanges(false)
       // navigate to dashboard
       const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
       navigate(dashboardUrl + this.getBusinessId)
-    })
+    }
   }
 
   private async doDeleteAll (): Promise<void> {
@@ -764,6 +764,25 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     }
 
     this.setIsSaving(false)
+  }
+
+  /**
+   * Helper to show the confirm dialogs.
+   * @param title The title content in dialog header
+   * @param message The content body
+   * @param action The action label
+   * @param cancel The cancel label
+   * */
+  async showConfirmDialog (title: string, message: string, action: string, cancel: string = null): Promise<boolean> {
+    const confirm = await this.$refs.confirm.open(title, message, {
+      width: '45rem',
+      persistent: true,
+      yes: action,
+      no: null,
+      cancel: cancel
+    }).catch(() => false)
+
+    return confirm
   }
 }
 </script>

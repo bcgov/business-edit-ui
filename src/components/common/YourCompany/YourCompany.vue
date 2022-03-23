@@ -121,7 +121,7 @@
                       <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
                     </v-btn>
                   </template>
-                  <v-list>
+                  <v-list class="pa-0">
                     <v-list-item
                       class="v-list-item"
                       id="btn-more-actions-edit"
@@ -142,7 +142,7 @@
         <!-- Editing Mode -->
         <v-col cols="9" v-else>
           <CorrectNameOptions
-            :correction-name-choices="correctNameChoices"
+            :correctionNameChoices="nameChangeOptions"
             @done="nameChangeHandler"
             @cancel="isEditingNames = false"
           />
@@ -152,9 +152,7 @@
       <!-- Name Request Applicant -->
       <v-row no-gutters v-if="(isAlterationFiling || isChangeFiling) && hasNewNr" class="sub-section">
         <v-col cols="3">
-          <v-layout column>
-            <label><strong>Name Request Applicant</strong></label>
-          </v-layout>
+          <label class="pr-4"><strong>Name Request Applicant</strong></label>
         </v-col>
 
         <v-col cols="7">
@@ -316,6 +314,7 @@ import NatureOfBusiness from '@/components/Edit/NatureOfBusiness.vue'
 import { ConfirmDialog } from '@/components/common/dialogs'
 import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
 import { CorrectionTypes, CorpTypeCd } from '@/enums'
+import { cloneDeep } from 'lodash'
 
 /** Note: this component is used by both corrections and alterations. */
 @Component({
@@ -389,9 +388,6 @@ export default class YourCompany extends Mixins(
   private isEditingNames = false
   private isEditingType = false
   private isEditingTranslations = false
-
-  /**  Initialize the name choices for alterations */
-  mounted () { this.onApprovedName() }
 
   /** The name section validity state (when prompted by app). */
   private get invalidNameSection (): boolean {
@@ -476,6 +472,15 @@ export default class YourCompany extends Mixins(
     return correctedName !== currentName
   }
 
+  /** The current options for change of name correction or edit. */
+  private get nameChangeOptions (): Array<CorrectionTypes> {
+    let nameChangeOptions = cloneDeep(this.getResource.changeData.nameChangeOptions)
+
+    // Remove name-to-numbered company option when already a numbered company
+    if (!this.getApprovedName) nameChangeOptions.splice(1, 1)
+    return nameChangeOptions
+  }
+
   /** Reset company name values to original. */
   private resetName () {
     this.setBusinessInformation(this.isCorrectionFiling
@@ -491,32 +496,9 @@ export default class YourCompany extends Mixins(
 
   /** Compare current to corrected data and update UI.  */
   @Watch('getApprovedName')
-  private nameChangeHandler (): void {
+  private nameChangeHandler (isSaved: boolean): void {
     this.companyNameChanges = this.isNewName
-    this.isEditingNames = false
-  }
-
-  @Watch('hasNewNr')
-  private openConflictWarning (): void {
-    if (this.isConflictingLegalType && !this.companyTypeChanges && this.isAlterationFiling) {
-      // open confirmation dialog and wait for response
-      this.$refs.confirm.open(
-        'Name Request Type Does Not Match Business Type',
-        `<p class="info-text">This ${this.getCorpTypeDescription(this.getNameRequest.legalType)} Name Request does ` +
-        `not match the current business type <b>${this.getCorpTypeDescription(this.getEntityType)}</b>.\n\n` +
-        `The Name Request type must match the business type before you can continue.</p>`,
-        {
-          width: '35rem',
-          persistent: true,
-          yes: 'OK',
-          no: null,
-          cancel: null
-        }
-      ).then(() => {
-        // if we get here, Yes was clicked
-        // nothing to do
-      })
-    }
+    if (isSaved) this.isEditingNames = false
   }
 
   // Watchers for component change flags (only used by corrections)
@@ -524,22 +506,6 @@ export default class YourCompany extends Mixins(
   @Watch('companyTypeChanges') private onCompanyTypeChanges ():void { this.setDataChanges() }
   @Watch('nameTranslationChanges') private onNameTranslationChanges ():void { this.setDataChanges() }
   @Watch('officeAddressChanges') private onOfficeAddressChanges ():void { this.setDataChanges() }
-
-  @Watch('getApprovedName')
-  private onApprovedName ():void {
-    if (this.getApprovedName && !this.isNumberedCompany) {
-      this.correctNameChoices = [
-        CorrectionTypes.CORRECT_NEW_NR,
-        CorrectionTypes.CORRECT_NAME_TO_NUMBER
-      ]
-      // Only allow editable name changes for Corrections
-      this.isCorrectionFiling && this.correctNameChoices.push(CorrectionTypes.CORRECT_NAME)
-    } else {
-      this.correctNameChoices = [
-        CorrectionTypes.CORRECT_NEW_NR
-      ]
-    }
-  }
 
   private setDataChanges (): void {
     const haveChanges = (

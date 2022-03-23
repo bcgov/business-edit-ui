@@ -4,6 +4,7 @@ export const resourceModel: ResourceIF = {
   entityType: null,
   entityReference: '',
   contactLabel: '',
+  changeData: null,
   displayName: '',
   nameRequestType: null,
   addressLabel: '',
