@@ -16,7 +16,7 @@ describe('Change of Registration Filing', () => {
     wrapper.destroy()
   })
 
-  it.only('correctly builds a registration filing', () => {
+  it('correctly builds a registration filing', () => {
     store.state.stateModel.tombstone.businessId = 'BC1234567'
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.stateModel.nameRequest.legalName = 'SomeMockBusiness'
