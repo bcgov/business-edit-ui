@@ -454,7 +454,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     this.$root.$off('invalid-name-request')
     this.$root.$off('delete-all')
     this.$root.$off('go-to-dashboard')
-    this.$root.$off('confirm')
+    this.$root.$off('confirm-dialog')
   }
 
   /** Called when $route property changes. */
