@@ -1,6 +1,6 @@
 // Libraries
 import { Component, Mixins } from 'vue-property-decorator'
-import { CorpTypeCd, NameRequestStates, NameRequestTypes } from '@/enums'
+import { NameRequestStates, NameRequestTypes } from '@/enums'
 import { DateMixin, LegalApiMixin } from '@/mixins'
 import { NrResponseIF } from '@/interfaces'
 
@@ -120,16 +120,6 @@ export default class NameRequestMixin extends Mixins(DateMixin, LegalApiMixin) {
         return 'Change of Name'
       case NameRequestTypes.CONVERSION:
         return 'Conversion'
-    }
-  }
-
-  /** Map Nr specific types to Lear recognized entity types. */
-  mapNameRequestType (nrType: CorpTypeCd): CorpTypeCd {
-    switch (nrType) {
-      case CorpTypeCd.BC_COMPANY: return CorpTypeCd.BENEFIT_COMPANY
-      case CorpTypeCd.BC_CORPORATION: return CorpTypeCd.BC_COMPANY
-      case CorpTypeCd.NR_SOLE_PROP: return CorpTypeCd.SOLE_PROP
-      default: return nrType
     }
   }
 }

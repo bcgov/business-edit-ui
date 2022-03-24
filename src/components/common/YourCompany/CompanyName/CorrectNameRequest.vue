@@ -162,7 +162,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, EnumMixin, N
           this.applicantEmail
         )
 
-        if (this.getEntityType !== this.mapNameRequestType(nr.entity_type_cd)) {
+        if (this.getEntityType !== nr.legalType) {
           // Invalid NR type, inform parent the process is done and prompt confirm dialog
           this.emitDone()
 
@@ -195,7 +195,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, EnumMixin, N
    */
   private parseNameRequest (nr: NrResponseIF): void {
     const nrCorrection: NrCorrectionIF = {
-      legalType: this.mapNameRequestType(nr.entity_type_cd),
+      legalType: nr.legalType,
       nrNumber: this.nameRequestNumber,
       legalName: this.getNrApprovedName(nr) || '',
       expiry: nr.expirationDate,

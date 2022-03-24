@@ -184,6 +184,7 @@ describe('CorrectNameRequest', () => {
             }],
             nrNum: 'NR 1234567',
             requestTypeCd: 'BC',
+            legalType: 'BC',
             request_action_cd: 'CNV',
             entity_type_cd: 'CR',
             applicants: {

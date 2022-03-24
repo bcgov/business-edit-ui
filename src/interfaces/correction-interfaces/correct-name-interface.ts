@@ -19,6 +19,7 @@ export interface NrCorrectionIF {
 }
 
 export interface NrResponseIF {
+  legalType: CorpTypeCd,
   // eslint-disable-next-line camelcase
   entity_type_cd: CorpTypeCd,
   expirationDate: string,
