@@ -1,5 +1,11 @@
 <template>
   <v-form id="correct-nr-form" ref="correctNrForm" v-model="formValid" lazy-validation>
+    <!-- Dialogs -->
+    <ConfirmDialog
+      ref="confirm"
+      attach="#app"
+    />
+
     <v-row no-gutters>
       <v-col cols="1" class="mt-1">
         <v-btn x-small fab outlined :ripple="false" color="gray7" class="step-icon" tabindex="-1">1</v-btn>
@@ -58,6 +64,7 @@
 // Libraries
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+import { ConfirmDialog } from '@bcrs-shared-components/confirm-dialog'
 
 // Mixins
 import { CommonMixin, EnumMixin, NameRequestMixin } from '@/mixins'
@@ -65,6 +72,7 @@ import { CommonMixin, EnumMixin, NameRequestMixin } from '@/mixins'
 // Interfaces & Enums
 import {
   ActionBindingIF,
+  ConfirmDialogType,
   NameRequestApplicantIF,
   NameRequestIF,
   NrCorrectionIF,
@@ -72,10 +80,15 @@ import {
 } from '@/interfaces'
 import { CorpTypeCd, CorrectionTypes } from '@/enums'
 
-@Component({})
+@Component({
+  components: {
+    ConfirmDialog
+  }
+})
 export default class CorrectNameRequest extends Mixins(CommonMixin, EnumMixin, NameRequestMixin) {
   // Refs
   $refs!: {
+    confirm: ConfirmDialogType
     correctNrForm: HTMLFormElement
   }
 
@@ -170,9 +183,9 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, EnumMixin, N
             `Name Request does not match the current business type ` +
             `<b>${this.getCorpTypeDescription(this.getEntityType)}</b>.\n\n` +
             `The Name Request type must match the business type before you can continue.</p>`
-
-          this.$root.$emit(
-            'confirm-dialog',
+          console.log('called')
+          await this.showConfirmDialog(
+            this.$refs.confirm,
             'Name Request Type Does Not Match Business Type',
             dialogContent,
             'OK'

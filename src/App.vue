@@ -428,11 +428,6 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       this.goToDashboard()
     })
 
-    // listen to confirm events
-    this.$root.$on('confirm-dialog', (title, message, yes, no) => {
-      this.showConfirmDialog(title, message, yes, no)
-    })
-
     // init app
     this.onRouteChanged()
   }
@@ -454,7 +449,6 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     this.$root.$off('invalid-name-request')
     this.$root.$off('delete-all')
     this.$root.$off('go-to-dashboard')
-    this.$root.$off('confirm-dialog')
   }
 
   /** Called when $route property changes. */
@@ -586,6 +580,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
     // Prompt confirm dialog
     const hasConfirmed = await this.showConfirmDialog(
+      this.$refs.confirm,
       'Unsaved Changes',
       'You have unsaved changes. Do you want to exit?',
       'Return to my Filing',
@@ -764,23 +759,6 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     }
 
     this.setIsSaving(false)
-  }
-
-  /**
-   * Helper to show the confirm dialogs.
-   * @param title The title content in dialog header
-   * @param message The content body
-   * @param yes The YES action label
-   * @param no The NO cancel label
-   * */
-  async showConfirmDialog (title: string, message: string, yes: string, no: string = null): Promise<any> {
-    return this.$refs.confirm.open(title, message, {
-      width: '45rem',
-      persistent: true,
-      yes: yes,
-      no: null,
-      cancel: no
-    }).catch(() => false)
   }
 }
 </script>

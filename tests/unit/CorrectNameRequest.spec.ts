@@ -9,8 +9,9 @@ import flushPromises from 'flush-promises'
 import { getVuexStore } from '@/store'
 
 // Components
-import { mount, Wrapper, createWrapper } from '@vue/test-utils'
+import { mount, Wrapper } from '@vue/test-utils'
 import { CorrectNameRequest } from '@/components/common/YourCompany/CompanyName'
+import { ConfirmDialog } from '@bcrs-shared-components/confirm-dialog'
 
 Vue.use(Vuetify)
 
@@ -296,7 +297,6 @@ describe('CorrectNameRequest', () => {
 
   it('emits done and prompts confirm dialog when the Name Request is a type mismatch', async () => {
     const wrapper = wrapperFactory()
-    const rootWrapper = createWrapper(wrapper.vm.$root)
     store.state.stateModel.tombstone.currentDate = '2021-01-20'
 
     // GET NR Data
@@ -333,7 +333,8 @@ describe('CorrectNameRequest', () => {
 
     expect(wrapper.vm.isFormValid).toBe(true)
 
-    // verify form emission
-    expect(getLastEvent(rootWrapper, 'confirm-dialog')).toContain('Name Request Type Does Not Match')
+    // verify Confirm Dialog
+    expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectNameRequest).text()).toContain('Name Request Type Does Not Match')
   })
 })
