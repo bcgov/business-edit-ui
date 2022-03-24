@@ -1,10 +1,5 @@
 <template>
   <v-card flat id="your-company" class="pb-2">
-    <ConfirmDialog
-      ref="confirm"
-      attach="#app"
-    />
-
     <div class="section-container define-company-header">
       <v-icon class="header-icon">mdi-domain</v-icon>
       <label class="define-company-title">Your {{ getResource.entityReference }}</label>
@@ -152,7 +147,7 @@
       <!-- Name Request Applicant -->
       <v-row no-gutters v-if="(isAlterationFiling || isChangeFiling) && hasNewNr" class="sub-section">
         <v-col cols="3">
-          <label class="pr-4"><strong>Name Request Applicant</strong></label>
+          <label class="pr-4">Name Request Applicant</label>
         </v-col>
 
         <v-col cols="7">
@@ -293,7 +288,6 @@ import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import {
   ActionBindingIF,
-  ConfirmDialogType,
   ContactPointIF,
   EntitySnapshotIF,
   FlagsCompanyInfoIF,
@@ -311,7 +305,6 @@ import {
   OfficeAddresses
 } from './'
 import NatureOfBusiness from '@/components/Edit/NatureOfBusiness.vue'
-import { ConfirmDialog } from '@/components/common/dialogs'
 import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
 import { CorrectionTypes, CorpTypeCd } from '@/enums'
 import { cloneDeep } from 'lodash'
@@ -319,7 +312,6 @@ import { cloneDeep } from 'lodash'
 /** Note: this component is used by both corrections and alterations. */
 @Component({
   components: {
-    ConfirmDialog,
     BusinessContactInfo,
     ChangeBusinessType,
     CorrectNameOptions,
@@ -336,11 +328,6 @@ export default class YourCompany extends Mixins(
   LegalApiMixin,
   NameRequestMixin
 ) {
-  // Refs
-  $refs!: {
-    confirm: ConfirmDialogType
-  }
-
   // Global getters
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string

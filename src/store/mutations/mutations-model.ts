@@ -320,4 +320,5 @@ export const mutateIsValidComponent = (state: StateIF, kv: ActionKvIF) => {
 export const mutateNaics = (state: StateIF, naics: NaicsIF) => {
   state.stateModel.businessInformation.naicsCode = naics.naicsCode
   state.stateModel.businessInformation.naicsDescription = naics.naicsDescription
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }

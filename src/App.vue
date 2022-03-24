@@ -429,8 +429,8 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     })
 
     // listen to confirm events
-    this.$root.$on('confirm-dialog', (title, message, action) => {
-      this.showConfirmDialog(title, message, action)
+    this.$root.$on('confirm-dialog', (title, message, yes, no) => {
+      this.showConfirmDialog(title, message, yes, no)
     })
 
     // init app
@@ -770,19 +770,17 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
    * Helper to show the confirm dialogs.
    * @param title The title content in dialog header
    * @param message The content body
-   * @param action The action label
-   * @param cancel The cancel label
+   * @param yes The YES action label
+   * @param no The NO cancel label
    * */
-  async showConfirmDialog (title: string, message: string, action: string, cancel: string = null): Promise<boolean> {
-    const confirm = await this.$refs.confirm.open(title, message, {
+  async showConfirmDialog (title: string, message: string, yes: string, no: string = null): Promise<any> {
+    return this.$refs.confirm.open(title, message, {
       width: '45rem',
       persistent: true,
-      yes: action,
+      yes: yes,
       no: null,
-      cancel: cancel
+      cancel: no
     }).catch(() => false)
-
-    return confirm
   }
 }
 </script>
