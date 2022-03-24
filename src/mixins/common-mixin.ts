@@ -2,6 +2,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { omit, isEqual } from 'lodash'
 import { CorpTypeCd, RouteNames } from '@/enums'
+import { ConfirmDialogType } from '@/interfaces'
 
 /**
  * Mixin that provides some useful common utilities.
@@ -129,15 +130,6 @@ export default class CommonMixin extends Vue {
   }
 
   /**
-   * Checks if the specified entity type matches the current entity's type.
-   * @param entityType the entity type to check
-   * @return True if the check passes, else False
-   */
-  entityFilter (entityType: CorpTypeCd): boolean {
-    return (this.getEntityType === entityType)
-  }
-
-  /**
    * Formats a phone number for display.
    * @param phoneNumber the phone number to format
    * @returns a formatted phone number
@@ -154,5 +146,24 @@ export default class CommonMixin extends Vue {
     }
 
     return null
+  }
+
+  /**
+   * Helper to show the confirm dialogs.
+   * @param ref The dialog reference
+   * @param title The title content in dialog header
+   * @param message The content body
+   * @param yes The YES action label
+   * @param no The NO cancel label
+   * */
+  async showConfirmDialog (ref: ConfirmDialogType, title: string, message: string, yes: string, no: string = null):
+    Promise<boolean> {
+    return ref.open(title, message, {
+      width: '45rem',
+      persistent: true,
+      yes: yes,
+      no: no,
+      cancel: null
+    }).catch(() => false)
   }
 }

@@ -12,7 +12,7 @@
         :disabled="isOneOption"
         @click="identifyForm(item.id)"
       >
-        <v-expansion-panel-header class="mb-n6" :class="{'name-options-header': isOneOption}">
+        <v-expansion-panel-header :class="{'name-options-header': isOneOption}">
           <span class="names-option-title">{{item.title}}</span>
           <template v-slot:actions>
             <v-icon color="primary">mdi-menu-down</v-icon>
@@ -25,6 +25,7 @@
             :is="item.component"
             :key="item.id"
             :formType="formType"
+            :validate="validateNameChange"
             @done="emitDone($event)"
             @isValid="isFormValid = $event"
           />
@@ -36,7 +37,6 @@
       <v-btn
         id="done-btn"
         large color="primary"
-        :disabled="!isFormValid"
         :loading="isLoading"
         @click="submitNameCorrection()"
       >
@@ -92,6 +92,7 @@ export default class CorrectNameOptions extends Vue {
   private currentFormType: CorrectionTypes = null
   private isLoading = false
   private isFormValid = false
+  private validateNameChange = false
   private correctionNameOptions: Array<CorrectNameOptionIF> = [
     {
       id: CorrectionTypes.CORRECT_NAME,
@@ -108,7 +109,7 @@ export default class CorrectNameOptions extends Vue {
     {
       id: CorrectionTypes.CORRECT_NEW_NR,
       title: 'Use a new name request number',
-      description: 'Enter the new Name Request Number (e.g., NR 1234567) and either the applicant phone number OR ' +
+      description: 'Enter the new Name Request Number (e.g., NR1234567) and either the applicant phone number OR ' +
         'the applicant email that was used when the name was requested.',
       component: CorrectNameRequest
     }
@@ -132,8 +133,10 @@ export default class CorrectNameOptions extends Vue {
 
   /** Trigger form submission */
   private submitNameCorrection (): void {
-    this.isLoading = true
-    this.formType = this.currentFormType
+    if (this.isFormValid) {
+      this.isLoading = true
+      this.formType = this.currentFormType
+    } else this.validateNameChange = true
   }
 
   /** Identify the current form */
@@ -144,10 +147,11 @@ export default class CorrectNameOptions extends Vue {
 
   /** Inform Parent name correction process is done. */
   @Emit('done')
-  private emitDone (isSaved: boolean): void {
+  private emitDone (isSaved: boolean): boolean {
     this.isLoading = false
     this.formType = null
     if (isSaved) this.panel = null
+    return isSaved
   }
 
   /** cancel name correction */

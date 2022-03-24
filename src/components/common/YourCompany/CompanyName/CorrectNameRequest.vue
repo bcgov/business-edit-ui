@@ -1,5 +1,11 @@
 <template>
   <v-form id="correct-nr-form" ref="correctNrForm" v-model="formValid" lazy-validation>
+    <!-- Dialogs -->
+    <ConfirmDialog
+      ref="confirm"
+      attach="#app"
+    />
+
     <v-row no-gutters>
       <v-col cols="1" class="mt-1">
         <v-btn x-small fab outlined :ripple="false" color="gray7" class="step-icon" tabindex="-1">1</v-btn>
@@ -58,31 +64,48 @@
 // Libraries
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+import { ConfirmDialog } from '@bcrs-shared-components/confirm-dialog'
 
 // Mixins
-import { CommonMixin, NameRequestMixin } from '@/mixins'
+import { CommonMixin, EnumMixin, NameRequestMixin } from '@/mixins'
 
 // Interfaces & Enums
 import {
   ActionBindingIF,
+  ConfirmDialogType,
   NameRequestApplicantIF,
   NameRequestIF,
   NrCorrectionIF,
   NrResponseIF
 } from '@/interfaces'
-import { CorrectionTypes } from '@/enums'
+import { CorpTypeCd, CorrectionTypes } from '@/enums'
 
-@Component({})
-export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestMixin) {
+@Component({
+  components: {
+    ConfirmDialog
+  }
+})
+export default class CorrectNameRequest extends Mixins(CommonMixin, EnumMixin, NameRequestMixin) {
+  // Refs
+  $refs!: {
+    confirm: ConfirmDialogType
+    correctNrForm: HTMLFormElement
+  }
+
   /** Form Submission Prop */
   @Prop({ default: null })
   readonly formType: CorrectionTypes
+
+  /** Form validation Prop */
+  @Prop({ default: false })
+  readonly validate: boolean
 
   @Action setNameRequest!: ActionBindingIF
 
   @Getter getNameRequest!: NameRequestIF
   @Getter getNameRequestNumber!: string
   @Getter getNameRequestApplicant!: NameRequestApplicantIF
+  @Getter getEntityType!: CorpTypeCd
 
   // V-model properties
   private formValid = false
@@ -92,9 +115,6 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
 
   // FUTURE: use this to turn on/off validations
   private done = true
-
-  // Form Ref
-  $refs: { correctNrForm: HTMLFormElement }
 
   // Rules
   nrNumRules = [
@@ -138,42 +158,71 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
     this.$refs.correctNrForm.resetValidation()
   }
 
+  @Watch('validate')
+  private onValidate (): void {
+    this.$refs.correctNrForm.validate()
+  }
+
   /** Watch for form submission and emit results. */
   @Watch('formType')
   private async onSubmit (): Promise<any> {
     if (this.formType === CorrectionTypes.CORRECT_NEW_NR) {
       try {
         // Validate and return the name request data
-        const response: NrResponseIF = await this.validateNameRequest(
+        const nr: NrResponseIF = await this.validateNameRequest(
           this.nameRequestNumber,
           this.applicantPhone,
           this.applicantEmail
         )
 
-        // Parse the name request data
-        const nrCorrection: NrCorrectionIF = {
-          legalType: response.entity_type_cd,
-          nrNumber: this.nameRequestNumber,
-          legalName: this.getNrApprovedName(response) || '',
-          expiry: response.expirationDate,
-          status: response.state,
-          requestType: response.request_action_cd,
-          applicant: {
-            fullName: this.formatFullName(response.applicants),
-            fullAddress: this.formatFullAddress(response.applicants),
-            phoneNumber: response.applicants.phoneNumber,
-            emailAddress: response.applicants.emailAddress
-          }
-        }
+        if (this.getEntityType !== nr.legalType) {
+          // Invalid NR type, inform parent the process is done and prompt confirm dialog
+          this.emitDone()
 
-        this.setNameRequest({ ...this.getNameRequest, ...nrCorrection })
-        this.emitDone(true)
+          const dialogContent = `<p class="info-text">This ${this.getCorpTypeDescription(nr.entity_type_cd)} ` +
+            `Name Request does not match the current business type ` +
+            `<b>${this.getCorpTypeDescription(this.getEntityType)}</b>.\n\n` +
+            `The Name Request type must match the business type before you can continue.</p>`
+          console.log('called')
+          await this.showConfirmDialog(
+            this.$refs.confirm,
+            'Name Request Type Does Not Match Business Type',
+            dialogContent,
+            'OK'
+          )
+        } else {
+          this.parseNameRequest(nr)
+          this.emitDone(true)
+        }
       } catch {
         // "validateNameRequest" handles its own errors
         // Inform parent process is complete
         this.emitDone()
       }
     }
+  }
+
+  /**
+   * Parse and Set the Name Request date to Store.
+   * @param nr The name request data
+   */
+  private parseNameRequest (nr: NrResponseIF): void {
+    const nrCorrection: NrCorrectionIF = {
+      legalType: nr.legalType,
+      nrNumber: this.nameRequestNumber,
+      legalName: this.getNrApprovedName(nr) || '',
+      expiry: nr.expirationDate,
+      status: nr.state,
+      requestType: nr.request_action_cd,
+      applicant: {
+        fullName: this.formatFullName(nr.applicants),
+        fullAddress: this.formatFullAddress(nr.applicants),
+        phoneNumber: nr.applicants.phoneNumber,
+        emailAddress: nr.applicants.emailAddress
+      }
+    }
+
+    this.setNameRequest({ ...this.getNameRequest, ...nrCorrection })
   }
 
   /** Inform parent the process is complete. */

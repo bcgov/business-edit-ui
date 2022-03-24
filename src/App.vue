@@ -568,7 +568,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   }
 
   /** Called to navigate to dashboard. */
-  private goToDashboard (force: boolean = false): void {
+  private async goToDashboard (force: boolean = false): Promise<void> {
     // check if there are no data changes
     if (!this.haveUnsavedChanges || force) {
       // navigate to dashboard
@@ -578,28 +578,23 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       return
     }
 
-    // open confirmation dialog and wait for response
-    this.$refs.confirm.open(
+    // Prompt confirm dialog
+    const hasConfirmed = await this.showConfirmDialog(
+      this.$refs.confirm,
       'Unsaved Changes',
       'You have unsaved changes. Do you want to exit?',
-      {
-        width: '45rem',
-        persistent: true,
-        yes: 'Return to my Filing',
-        no: null,
-        cancel: 'Exit Without Saving'
-      }
-    ).then(() => {
-      // if we get here, Yes was clicked
-      // nothing to do
-    }).catch(() => {
+      'Return to my Filing',
+      'Exit Without Saving'
+    )
+
+    if (!hasConfirmed) {
       // if we get here, Cancel was clicked
       // ignore changes
       this.setHaveUnsavedChanges(false)
       // navigate to dashboard
       const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
       navigate(dashboardUrl + this.getBusinessId)
-    })
+    }
   }
 
   private async doDeleteAll (): Promise<void> {

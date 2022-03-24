@@ -344,6 +344,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }
     }
 
+    // Include name request info when applicable
+    if (this.hasBusinessNameChanged) filing.changeOfRegistration.nameRequest = { ...this.getNameRequest }
+
     // Apply business address changes to filing
     if (this.officeAddressesChanged) {
       filing.changeOfRegistration.businessAddress = {

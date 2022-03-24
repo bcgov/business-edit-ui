@@ -19,6 +19,7 @@ describe('Change of Registration Filing', () => {
   it('correctly builds a registration filing', () => {
     store.state.stateModel.tombstone.businessId = 'BC1234567'
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
+    store.state.stateModel.nameRequest.legalName = 'SomeMockBusiness'
     store.state.stateModel.entitySnapshot = {
       businessInfo: {
         foundingDate: 'Jan 01, 2000',

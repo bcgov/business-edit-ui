@@ -11,10 +11,11 @@ import { getVuexStore } from '@/store'
 // Components
 import { mount, Wrapper } from '@vue/test-utils'
 import { CorrectNameRequest } from '@/components/common/YourCompany/CompanyName'
+import { ConfirmDialog } from '@bcrs-shared-components/confirm-dialog'
 
 Vue.use(Vuetify)
 
-function getLastEvent (wrapper: Wrapper<CorrectNameRequest>, name: string): any {
+function getLastEvent (wrapper: Wrapper<any>, name: string): any {
   const eventsList: Array<any> = wrapper.emitted(name)
   if (eventsList) {
     const events: Array<any> = eventsList[eventsList.length - 1]
@@ -31,6 +32,7 @@ describe('CorrectNameRequest', () => {
 
   beforeEach(() => {
     vuetify = new Vuetify({})
+    store.state.stateModel.tombstone.entityType = 'BC'
 
     wrapperFactory = (props: any) => {
       return mount(CorrectNameRequest, {
@@ -183,7 +185,9 @@ describe('CorrectNameRequest', () => {
             }],
             nrNum: 'NR 1234567',
             requestTypeCd: 'BC',
+            legalType: 'BC',
             request_action_cd: 'CNV',
+            entity_type_cd: 'CR',
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@email.com'
@@ -289,5 +293,48 @@ describe('CorrectNameRequest', () => {
 
     // verify form emission
     expect(getLastEvent(wrapper, 'done')).toBe(false)
+  })
+
+  it('emits done and prompts confirm dialog when the Name Request is a type mismatch', async () => {
+    const wrapper = wrapperFactory()
+    store.state.stateModel.tombstone.currentDate = '2021-01-20'
+
+    // GET NR Data
+    get.withArgs('nameRequests/NR 1234567')
+      .returns(Promise.resolve({
+        data:
+          {
+            state: 'APPROVED',
+            expirationDate: '2022-05-19',
+            names: [{
+              state: 'APPROVED',
+              name: 'Bobs Plumbing'
+            }],
+            nrNum: 'NR 1234567',
+            requestTypeCd: 'BC',
+            request_action_cd: 'CNV',
+            entity_type_cd: 'BC',
+            applicants: {
+              phoneNumber: '250 516 8257',
+              emailAddress: 'mock@email.com'
+            }
+          }
+      }))
+
+    // Verify Invalid before input
+    expect(wrapper.vm.isFormValid).toBe(false)
+
+    // Set values and submit form
+    wrapper.vm.nameRequestNumber = 'NR 1234567'
+    wrapper.vm.applicantPhone = '250 516 8257'
+    wrapper.vm.applicantEmail = ''
+    await wrapper.setProps({ formType: 'correct-new-nr' })
+    await flushPromises()
+
+    expect(wrapper.vm.isFormValid).toBe(true)
+
+    // verify Confirm Dialog
+    expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectNameRequest).text()).toContain('Name Request Type Does Not Match')
   })
 })

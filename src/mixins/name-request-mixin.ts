@@ -1,6 +1,6 @@
 // Libraries
 import { Component, Mixins } from 'vue-property-decorator'
-import { CorpTypeCd, NameRequestStates, NameRequestTypes } from '@/enums'
+import { NameRequestStates, NameRequestTypes } from '@/enums'
 import { DateMixin, LegalApiMixin } from '@/mixins'
 import { NrResponseIF } from '@/interfaces'
 
@@ -36,7 +36,8 @@ export default class NameRequestMixin extends Mixins(DateMixin, LegalApiMixin) {
     }
 
     // ensure NR is valid
-    if (!nrResponse || !this.isNrValid(nrResponse)) {
+    const isNrValid = this.isNrValid(nrResponse)
+    if (!nrResponse || !isNrValid) {
       this.$root.$emit('invalid-name-request', NameRequestStates.INVALID)
       throw new Error('Invalid Name Request')
     }
@@ -46,16 +47,6 @@ export default class NameRequestMixin extends Mixins(DateMixin, LegalApiMixin) {
     if (state !== NameRequestStates.APPROVED) {
       this.$root.$emit('invalid-name-request', state)
       throw new Error(`Invalid Name request state: ${state}`)
-    }
-
-    // Convert NR type of BC to BEN to align with COLIN
-    if (nrResponse.entity_type_cd === CorpTypeCd.BC_COMPANY) {
-      nrResponse.entity_type_cd = CorpTypeCd.BENEFIT_COMPANY
-    }
-
-    // Convert NR type of CR to BC to align with COLIN
-    if (nrResponse.entity_type_cd === CorpTypeCd.BC_CORPORATION) {
-      nrResponse.entity_type_cd = CorpTypeCd.BC_COMPANY
     }
 
     return nrResponse

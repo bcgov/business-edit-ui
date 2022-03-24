@@ -15,6 +15,8 @@ import {
   OfficeAddresses,
   YourCompany
 } from '@/components/common'
+import { BenefitCompanyStatementResource } from '@/resources/Correction'
+import { BenefitCompanyResource } from '@/resources/Edit/Alteration'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
@@ -27,6 +29,8 @@ describe('YourCompany in a Correction', () => {
 
   beforeEach(() => {
     store.state.stateModel.tombstone.filingType = 'correction'
+    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.state.resourceModel = BenefitCompanyStatementResource
     wrapper = mount(YourCompany, { vuetify, store, localVue })
   })
 
@@ -89,6 +93,7 @@ describe('YourCompany in an Alteration', () => {
     store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
     store.state.stateModel.entitySnapshot = entitySnapshot
     store.state.stateModel.tombstone.filingType = 'alteration'
+    store.state.resourceModel = BenefitCompanyResource
 
     wrapper = mount(YourCompany, { vuetify, store, localVue })
   })
