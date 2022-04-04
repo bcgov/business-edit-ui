@@ -401,7 +401,8 @@ export const hasFirmChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
     hasNatureOfBusinessChanged(state) ||
-    officeAddressesChanged(state)
+    officeAddressesChanged(state) ||
+    hasOrgPersonChanged(state)
   )
 }
 
@@ -555,6 +556,14 @@ export const recMailingChanged = (state: StateIF): boolean => {
 export const recDeliveryChanged = (state: StateIF): boolean => {
   return !isSame(getOfficeAddresses(state)?.recordsOffice?.deliveryAddress,
     originalOfficeAddresses(state)?.recordsOffice?.deliveryAddress, ['addressCountryDescription'])
+}
+
+/** Whether orgPerson data has changed. */
+export const hasOrgPersonChanged = (state: StateIF): boolean => {
+  let currentOrgPersons = getPeopleAndRoles(state)
+  let originalOrgPersons = getEntitySnapshot(state)?.orgPersons
+
+  return (!isSame(currentOrgPersons, originalOrgPersons, ['action']))
 }
 
 /** Whether share structure data has changed. */

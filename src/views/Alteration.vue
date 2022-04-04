@@ -126,38 +126,27 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-import {
-  Articles,
-  AlterationSummary,
-  DocumentsDelivery,
-  TransactionalFolioNumber
-} from '@/components/Edit'
+import { AlterationSummary, Articles, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Edit'
 import {
   CertifySection,
-  CurrentDirectors,
   CourtOrderPoa,
+  CurrentDirectors,
   ShareStructures,
   StaffPayment,
   YourCompany
 } from '@/components/common'
-import {
-  AuthApiMixin,
-  CommonMixin,
-  FilingTemplateMixin,
-  LegalApiMixin,
-  PayApiMixin
-} from '@/mixins'
+import { AuthApiMixin, CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 import {
   ActionBindingIF,
   EffectiveDateTimeIF,
+  EmptyFees,
   EntitySnapshotIF,
+  FeesIF,
   FilingDataIF,
   FlagsReviewCertifyIF,
-  FeesIF,
-  EmptyFees,
   StaffPaymentIF
 } from '@/interfaces'
-import { CorpTypeCd, FilingCodes, FilingStatus, StaffPaymentOptions } from '@/enums'
+import { CorpTypeCd, FilingCodes, FilingStatus, OrgPersonTypes, StaffPaymentOptions } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
 import { AlterationResources } from '@/resources'
@@ -340,7 +329,7 @@ export default class Alteration extends Mixins(
       this.fetchAuthInfo(),
       this.fetchAddresses(),
       this.fetchNameTranslations(),
-      this.fetchOrgPersons(),
+      this.fetchOrgPersons(OrgPersonTypes.DIRECTORS),
       this.fetchShareStructure(),
       this.fetchResolutions()
     ])

@@ -12,7 +12,7 @@
 
     <!-- Business Name -->
     <template v-if="hasBusinessNameChanged">
-      <v-divider class="mx-4" />
+      <v-divider class="mx-8" />
       <div id="business-name-summary-section" class="section-container">
         <v-row no-gutters>
           <v-col cols="12" sm="3">
@@ -29,7 +29,7 @@
 
     <!-- Nature of Business -->
     <template v-if="hasNatureOfBusinessChanged">
-      <v-divider class="mx-4" />
+      <v-divider class="mx-8" />
       <div id="nob-summary-section" class="section-container">
         <v-row no-gutters>
           <v-col cols="12" sm="3">
@@ -43,10 +43,28 @@
       </div>
     </template>
 
+    <!-- Office Addresses -->
     <template v-if="officeAddressesChanged">
-      <v-divider class="mx-4" />
+      <v-divider class="mx-8" />
       <div id="address-summary-section" class="section-container">
         <OfficeAddresses :isSummaryView="true" />
+      </div>
+    </template>
+
+    <!-- Org Persons -->
+    <template v-if="hasOrgPersonChanged">
+      <v-divider class="mx-8" />
+      <div id="org-person-summary-section" class="section-container">
+        <v-row no-gutters>
+          <v-col cols="12" sm="3">
+            <label><strong>Proprietor Information</strong></label>
+          </v-col>
+        </v-row>
+        <v-row no-gutters class="mt-4">
+          <v-col cols="12">
+            <ListPeopleAndRoles :peopleAndRoles="getPeopleAndRoles" :isSummaryView="true" />
+          </v-col>
+        </v-row>
       </div>
     </template>
   </v-card>
@@ -55,13 +73,14 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { OfficeAddresses } from '@/components/common'
-import { ActionBindingIF, NaicsIF } from '@/interfaces'
+import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common'
+import { ActionBindingIF, NaicsIF, OrgPersonIF } from '@/interfaces'
 import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 
 @Component({
   components: {
-    OfficeAddresses
+    OfficeAddresses,
+    ListPeopleAndRoles
   }
 })
 export default class ChangeSummary extends Mixins(
@@ -75,7 +94,9 @@ export default class ChangeSummary extends Mixins(
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
   @Getter getCurrentNaics!: NaicsIF
+  @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter officeAddressesChanged!: boolean
+  @Getter hasOrgPersonChanged!: boolean
 
   // Change flag getters
   @Getter hasBusinessNameChanged!: boolean

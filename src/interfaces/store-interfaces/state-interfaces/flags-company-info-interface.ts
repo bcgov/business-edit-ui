@@ -12,6 +12,7 @@ export interface FlagsCompanyInfoIF {
   isValidAddress: boolean
   isValidContactInfo: boolean
   isValidFolioInfo: boolean
+  isValidOrgPersons: boolean
   isValidShareStructure: boolean
   isValidCompanyProvisions: boolean
   isValidResolutionDate: boolean

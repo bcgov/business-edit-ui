@@ -81,7 +81,8 @@ async function start () {
             appDkBlue: '#38598a', // same as $app-dk-blue
             error: '#d3272c', // same as $app-red
             success: '#1a9031', // same as $app-green
-            gray7: '#495057' // same as $gray7
+            gray7: '#495057', // same as $gray7
+            gray9: '#212529' // Same as $gray9
           }
         }
       }

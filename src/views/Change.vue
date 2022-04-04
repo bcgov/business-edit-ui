@@ -13,6 +13,8 @@
         </section>
 
         <YourCompany class="mt-10" />
+
+        <PeopleAndRoles class="mt-10" />
       </div>
     </v-slide-x-transition>
 
@@ -57,33 +59,19 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-import {
-  ChangeSummary,
-  DocumentsDelivery,
-  TransactionalFolioNumber
-} from '@/components/Edit'
-import {
-  CertifySection,
-  StaffPayment,
-  YourCompany
-} from '@/components/common'
-import {
-  AuthApiMixin,
-  CommonMixin,
-  FilingTemplateMixin,
-  LegalApiMixin,
-  PayApiMixin
-} from '@/mixins'
+import { ChangeSummary, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Edit'
+import { CertifySection, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common'
+import { AuthApiMixin, CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 import {
   ActionBindingIF,
   EffectiveDateTimeIF,
-  EntitySnapshotIF,
-  FilingDataIF,
-  FeesIF,
   EmptyFees,
+  EntitySnapshotIF,
+  FeesIF,
+  FilingDataIF,
   StaffPaymentIF
 } from '@/interfaces'
-import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums'
+import { CorpTypeCd, FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
 import { ChangeFirmResources } from '@/resources'
@@ -93,6 +81,7 @@ import { ChangeFirmResources } from '@/resources'
     CertifySection,
     ChangeSummary,
     DocumentsDelivery,
+    PeopleAndRoles,
     StaffPayment,
     TransactionalFolioNumber,
     YourCompany
@@ -248,7 +237,7 @@ export default class Change extends Mixins(
       this.fetchBusinessInfo(),
       this.fetchAuthInfo(),
       this.fetchAddresses(),
-      this.fetchOrgPersons()
+      this.fetchOrgPersons(OrgPersonTypes.PARTIES)
     ])
 
     if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')

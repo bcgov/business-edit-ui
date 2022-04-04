@@ -589,26 +589,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // Store people and roles
     this.setPeopleAndRoles(
-      entitySnapshot.orgPersons?.map(director => {
+      entitySnapshot.orgPersons?.map(orgPerson => {
         return {
-          officer: {
-            firstName: director.officer.firstName,
-            lastName: director.officer.lastName
-          },
-          mailingAddress: director.deliveryAddress,
-          deliveryAddress: director.mailingAddress,
-          roles: [
-            {
-              roleType: director.role in RoleTypes ? director.role
-                : Object.values(RoleTypes).find(role => {
-                  if (role.toLocaleLowerCase() === director.role.toLocaleLowerCase()) {
-                    return role
-                  }
-                }),
-              appointmentDate: director.appointmentDate,
-              cessationDate: null
-            }
-          ]
+          officer: orgPerson.officer,
+          mailingAddress: orgPerson.deliveryAddress,
+          deliveryAddress: orgPerson.mailingAddress,
+          roles: orgPerson.roles,
+          appointmentDate: orgPerson.appointmentDate,
+          cessationDate: null
         }
       }) || []
     )
@@ -664,24 +652,21 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setPeopleAndRoles(
       entitySnapshot.orgPersons?.map(orgPerson => {
         return {
-          officer: {
-            firstName: orgPerson.officer.firstName,
-            lastName: orgPerson.officer.lastName
-          },
-          mailingAddress: orgPerson.deliveryAddress,
-          deliveryAddress: orgPerson.mailingAddress,
-          roles: [
+          officer: orgPerson.officer,
+          mailingAddress: orgPerson.mailingAddress,
+          deliveryAddress: orgPerson.deliveryAddress,
+          roles: orgPerson.roles || [
             {
               roleType: orgPerson.role in RoleTypes ? orgPerson.role
                 : Object.values(RoleTypes).find(role => {
                   if (role.toLocaleLowerCase() === orgPerson.role.toLocaleLowerCase()) {
                     return role
                   }
-                }),
-              appointmentDate: orgPerson.appointmentDate,
-              cessationDate: null
+                })
             }
-          ]
+          ],
+          appointmentDate: orgPerson.appointmentDate,
+          cessationDate: null
         }
       }) || []
     )
