@@ -5,7 +5,7 @@ import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import { OrgPerson } from '@/components/common'
 import { getVuexStore } from '@/store'
-import {FilingTypes} from "@/enums";
+import { FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
