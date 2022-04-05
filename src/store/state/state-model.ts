@@ -98,7 +98,7 @@ export const stateModel: StateModelIF = {
     documentOptionalEmail: ''
   },
   officeAddresses: null,
-  peopleAndRolesStep: {
+  peopleAndRoles: {
     valid: false,
     changed: false,
     orgPeople: []

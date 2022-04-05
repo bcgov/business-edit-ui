@@ -19,7 +19,7 @@ export interface StateModelIF {
   certifyState: CertifyIF
   documentDelivery: DocumentDeliveryIF
   officeAddresses: AddressesIF
-  peopleAndRolesStep: PeopleAndRolesIF
+  peopleAndRoles: PeopleAndRolesIF
   shareStructureStep: ShareStructureIF
   incorporationAgreementStep: IncorporationAgreementIF
   effectiveDateTime: EffectiveDateTimeIF

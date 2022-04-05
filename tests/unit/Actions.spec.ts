@@ -269,7 +269,7 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
     }
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.validFlags.defineCompanyStep = true
-    store.state.stateModel.peopleAndRolesStep = { valid: true }
+    store.state.stateModel.peopleAndRoles = { valid: true }
     store.state.stateModel.shareStructureStep = { valid: true }
     store.state.stateModel.incorporationAgreementStep = { valid: true }
     store.state.stateModel.effectiveDateTime = { valid: true }
@@ -528,7 +528,7 @@ describe.skip('Actions component - Filing Functionality', () => {
     }
     store.state.stateModel.officeAddresses = filing.filing.incorporationApplication.offices
     store.state.stateModel.tombstone.folioNumber = filing.filing.header.folioNumber
-    store.state.stateModel.peopleAndRolesStep.orgPeople = filing.filing.incorporationApplication.parties
+    store.state.stateModel.peopleAndRoles.orgPeople = filing.filing.incorporationApplication.parties
     store.state.stateModel.shareStructureStep.shareClasses = filing.filing.incorporationApplication.shareClasses
     store.state.stateModel.tombstone.filingId = 1234
     store.state.stateModel.tombstone.entityType = 'BEN'

@@ -71,6 +71,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
   @Getter officeAddressesChanged!: boolean
+  @Getter hasOrgPersonChanged!: boolean
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -315,6 +316,15 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @returns the change filing body
    */
   buildChangeFiling (isDraft: boolean): ChangeFirmIF {
+    let parties = this.getPeopleAndRoles
+
+    // if filing and paying, filter out removed entities and omit the 'action' properties
+    if (!isDraft) {
+      // Filter out parties actions
+      parties = parties.filter(x => x.action !== ActionTypes.REMOVED)
+        .map((x) => { const { action, ...rest } = x; return rest })
+    }
+
     // Build alteration filing
     let filing: ChangeFirmIF = {
       header: {
@@ -357,6 +367,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     if (this.hasNatureOfBusinessChanged) {
       filing.changeOfRegistration.business.naics = this.getCurrentNaics
+    }
+
+    if (this.hasOrgPersonChanged) {
+      filing.changeOfRegistration.parties = parties
     }
 
     return filing
@@ -587,10 +601,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
     this.setOfficeAddresses(addresses || entitySnapshot.addresses)
 
+    let parties = filing.changeOfRegistration.parties || entitySnapshot.orgPersons
+
     // Store people and roles
     this.setPeopleAndRoles(
-      entitySnapshot.orgPersons?.map(orgPerson => {
+      parties.map(orgPerson => {
         return {
+          action: orgPerson.action,
+          confirmNameChange: orgPerson.confirmNameChange,
           officer: orgPerson.officer,
           mailingAddress: orgPerson.deliveryAddress,
           deliveryAddress: orgPerson.mailingAddress,

@@ -106,7 +106,7 @@ describe('Completing Party', () => {
         ]
       }
     }
-    store.state.stateModel.peopleAndRolesStep = {
+    store.state.stateModel.peopleAndRoles = {
       orgPeople: [
         originalPersonCp,
         originalOrg
@@ -130,7 +130,7 @@ describe('Completing Party', () => {
         ]
       }
     }
-    store.state.stateModel.peopleAndRolesStep = {
+    store.state.stateModel.peopleAndRoles = {
       orgPeople: [
         originalPersonNotCp,
         originalOrg,

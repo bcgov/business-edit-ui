@@ -116,6 +116,7 @@
           :currentOrgPerson="currentOrgPerson"
           :activeIndex="activeIndex"
           :currentCompletingParty="currentCompletingParty"
+          :validate="getComponentValidate"
           @initEdit="initEdit($event)"
           @addEdit="addEdit($event)"
           @remove="remove($event)"
@@ -174,6 +175,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   @Getter isCorrectionFiling!: boolean
   @Getter isChangeFiling!: boolean
   @Getter getResource!: ResourceIF
+  @Getter getComponentValidate!: boolean
 
   // Global actions
   @Action setPeopleAndRoles!: ActionBindingIF

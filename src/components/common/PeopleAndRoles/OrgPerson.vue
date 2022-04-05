@@ -10,7 +10,7 @@
       <li class="add-person-container">
         <div class="meta-container">
 
-          <label class="add-org-header" v-if="isPerson">
+          <label class="add-person-header" v-if="isPerson">
             <span v-if="isNaN(activeIndex)">Add Person</span>
             <span v-else>Edit Person</span>
           </label>
@@ -154,7 +154,7 @@
                   <base-address
                     ref="mailingAddressNew"
                     :editing="true"
-                    :schema="PersonAddressSchema"
+                    :schema="isPerson ? PersonAddressSchema : OfficeAddressSchema"
                     :address="inProgressMailingAddress"
                     @update:address="inProgressMailingAddress = $event"
                     @valid="mailingAddressValid = $event"
@@ -174,7 +174,7 @@
                     <base-address
                       ref="deliveryAddressNew"
                       :editing="true"
-                      :schema="PersonAddressSchema"
+                      :schema="isPerson ? PersonAddressSchema : OfficeAddressSchema"
                       :address="inProgressDeliveryAddress"
                       @update:address="inProgressDeliveryAddress = $event"
                       @valid="deliveryAddressValid = $event"
@@ -210,7 +210,7 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ConfirmDialog } from '@/components/common/dialogs'
 import { CommonMixin } from '@/mixins'
 import { CorpTypeCd, RoleTypes, PartyTypes } from '@/enums'
-import { PersonAddressSchema } from '@/schemas'
+import { PersonAddressSchema, OfficeAddressSchema } from '@/schemas'
 import { Getter } from 'vuex-class'
 
 @Component({
@@ -233,6 +233,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   readonly RoleTypes = RoleTypes
   readonly PartyTypes = PartyTypes
   private PersonAddressSchema = {}
+  private OfficeAddressSchema = {}
 
   /** The current org/person to edit or add. */
   @Prop() private currentOrgPerson!: OrgPersonIF
@@ -476,7 +477,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 
   private setPersonDeliveryAddress (): AddressIF {
     if (this.inheritMailingAddress) {
-      this.inProgressDeliveryAddress = this.inProgressMailingAddress
+      this.inProgressDeliveryAddress = { ...this.inProgressMailingAddress, id: this.inProgressDeliveryAddress.id }
     }
     return { ...this.inProgressDeliveryAddress }
   }
@@ -523,7 +524,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   /** Apply input field validations. */
-  private applyValidation (): void {
+  applyValidation (): void {
     this.firstNameRules = [
       (v: string) => !!v || 'A first name is required',
       (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
@@ -562,6 +563,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
       : []
 
     this.PersonAddressSchema = PersonAddressSchema
+    this.OfficeAddressSchema = OfficeAddressSchema
   }
 
   /** Email validation method */

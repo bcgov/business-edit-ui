@@ -63,7 +63,7 @@
           <!-- Name + Badge -->
           <v-col class="pr-2" cols="12" sm="3">
             <!-- provide tooltip to display full name if name is longer than 25 chars -->
-            <v-tooltip top content-class="top-tooltip" :disabled="formatName(orgPerson).length < 25">
+            <v-tooltip top content-class="top-tooltip" :disabled="formatName(orgPerson).length < 22">
               <template v-slot:activator="{ on }">
                 <v-row no-gutters>
                   <v-col cols="1" class="ml-n1 mr-3">
@@ -78,11 +78,11 @@
 
                     <template v-if="!isSummaryView">
                       <v-chip v-if="wasAdded(orgPerson)"
-                              x-small label color="primary" text-color="white">ADDED</v-chip>
+                              x-small label color="primary" text-color="white">Added</v-chip>
                       <v-chip v-if="wasEdited(orgPerson)"
                               x-small label color="primary" text-color="white">{{ editedLabel }}</v-chip>
                       <v-chip v-if="wasRemoved(orgPerson)"
-                              x-small label color="#grey lighten-2" text-color="grey darken-1">REMOVED</v-chip>
+                              x-small label color="#grey lighten-2" text-color="grey darken-1">Removed</v-chip>
                     </template>
                   </v-col>
                 </v-row>
@@ -258,11 +258,12 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   @Prop({ default: false })
   readonly isSummaryView!: boolean
 
-  @Getter getComponentValidate!: boolean
+  @Prop({ default: false })
+  readonly validate!: boolean
 
   /** The name section validity state (when prompted by app). */
   private get invalidOrgPersons (): boolean {
-    return this.getComponentValidate && this.renderOrgPersonForm
+    return this.validate && this.renderOrgPersonForm
   }
 
   /** Headers for the person table. */
@@ -368,7 +369,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   @Emit('removeCpRole')
   private emitRemoveCpRole (): void {}
 
-  @Watch('peopleAndRoles')
+  @Watch('peopleAndRoles', { deep: true, immediate: true })
   private assignTableHeaders (): void {
     this.tableHeaders[3] = this.isCorrectionFiling ? 'Roles' : ''
   }
