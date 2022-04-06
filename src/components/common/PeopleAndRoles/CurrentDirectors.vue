@@ -3,15 +3,15 @@
 
     <v-card flat>
       <!-- Header -->
-      <div class="header-container section-container">
+      <article class="header-container section-container">
         <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
         <label class="font-weight-bold pl-2">Directors</label>
-      </div>
+      </article>
 
       <!-- Instructional Text -->
-      <div class="instructional-text section-container">
+      <article class="instructional-text section-container">
         To change directors, please use the Change feature in the Current Directors list on your business dashboard.
-      </div>
+      </article>
 
       <v-simple-table class="director-table section-container">
         <!-- List Display Section -->

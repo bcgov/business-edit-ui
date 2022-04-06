@@ -15,10 +15,7 @@ export const BenefitCompanyStatementResource = {
       CorrectionTypes.CORRECT_NAME
     ],
     orgPersonInfo: {
-      orgPersonLabel: 'People and Roles',
-      subtitle: 'You must have a minimum of two partners. You can add or remove partners (individual person or ' +
-        'business) as well as change the mailing and delivery addresses and email address of individual people and ' +
-        'business partners that were added manually during registration.'
+      orgPersonLabel: 'People and Roles'
     }
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +

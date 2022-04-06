@@ -330,6 +330,7 @@ describe('Org/Person component for Correction', () => {
   it('Emits "reset" event when clicking Cancel button', async () => {
     const wrapper = createComponent(validOrgData, 0, null)
     wrapper.vm.applyValidation()
+    await Vue.nextTick()
 
     wrapper.find(cancelButtonSelector).trigger('click')
     await Vue.nextTick()
@@ -358,6 +359,7 @@ describe('Org/Person component for Correction', () => {
   it('Displays error message when user enters invalid org name', async () => {
     const wrapper = createComponent(validOrgData, NaN, null)
     wrapper.vm.applyValidation()
+    await Vue.nextTick()
 
     const input = wrapper.find(orgNameSelector)
     input.setValue(' Invalid Org Name ')
@@ -395,6 +397,7 @@ describe('Org/Person component for Correction', () => {
   it('Displays error message when user does not enter person names', async () => {
     const wrapper = createComponent(validPersonData, NaN, null)
     wrapper.vm.applyValidation()
+    await Vue.nextTick()
 
     const input1 = wrapper.find(firstNameSelector)
     input1.setValue('')
@@ -421,6 +424,7 @@ describe('Org/Person component for Correction', () => {
   it('Displays error message when user enters person names that are too long', async () => {
     const wrapper = createComponent(validPersonData, NaN, null)
     wrapper.vm.applyValidation()
+    await Vue.nextTick()
 
     const input1 = wrapper.find(firstNameSelector)
     input1.setValue('1234567890123456789012345678901')
@@ -496,6 +500,8 @@ describe('Org/Person component for Correction', () => {
 
   it('Displays errors and does not submit form when clicking Done button and form is invalid', async () => {
     const wrapper = createComponent(emptyPerson, NaN, null)
+    wrapper.vm.applyValidation()
+    await Vue.nextTick()
 
     // verify that Done button is enabled, even for an empty person
     // then click it

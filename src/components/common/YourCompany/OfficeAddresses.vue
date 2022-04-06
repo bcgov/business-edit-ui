@@ -40,7 +40,7 @@
         </v-col>
 
         <template v-if="!isSummaryView">
-          <v-col cols="1" v-if="(isCorrectionFiling || isChangeFiling) && officeAddressesChanged">
+          <v-col cols="1" v-if="(isCorrectionFiling || isChangeFiling) && hasOfficeAddressesChanged">
             <div class="actions mr-4">
               <span class="edit-action">
                 <v-btn
@@ -421,7 +421,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter isChangeFiling!: boolean
   @Getter getResource!: ResourceIF
   @Getter originalOfficeAddresses!: AddressesIF
-  @Getter officeAddressesChanged!: boolean
+  @Getter hasOfficeAddressesChanged!: boolean
   @Getter mailingChanged!: boolean
   @Getter deliveryChanged!: boolean
   @Getter recMailingChanged!: boolean
@@ -754,7 +754,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Emits the changed state of this component. */
   @Emit('haveChanges')
   private emitHaveChanges (): boolean {
-    return this.officeAddressesChanged
+    return this.hasOfficeAddressesChanged
   }
 }
 </script>

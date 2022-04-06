@@ -401,8 +401,8 @@ export const hasFirmChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
     hasNatureOfBusinessChanged(state) ||
-    officeAddressesChanged(state) ||
-    hasOrgPersonChanged(state)
+    hasOfficeAddressesChanged(state) ||
+    hasPeopleAndRolesChanged(state)
   )
 }
 
@@ -520,7 +520,7 @@ export const officeType = (state: StateIF): OfficeTypes => {
 }
 
 /** True if any office address has changed. Applies to corrections and change filings only. */
-export const officeAddressesChanged = (state: StateIF): boolean => {
+export const hasOfficeAddressesChanged = (state: StateIF): boolean => {
   return (isCorrectionFiling(state) || isChangeFiling(state)) &&
     (mailingChanged(state) || deliveryChanged(state) ||
       // Exclude Records Address conditions from Change filing
@@ -559,7 +559,7 @@ export const recDeliveryChanged = (state: StateIF): boolean => {
 }
 
 /** Whether orgPerson data has changed. */
-export const hasOrgPersonChanged = (state: StateIF): boolean => {
+export const hasPeopleAndRolesChanged = (state: StateIF): boolean => {
   let currentOrgPersons = getPeopleAndRoles(state)
   let originalOrgPersons = getEntitySnapshot(state)?.orgPersons
 

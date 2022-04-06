@@ -1,22 +1,22 @@
 <template>
   <v-card flat id="change-summary">
     <!-- Section Header -->
-    <div class="section-container summary-header mb-2 rounded-t">
+    <article class="section-container summary-header mb-2 rounded-t">
       <v-row no-gutters>
         <v-col>
           <v-icon class="header-icon ml-n1">mdi-file-document-edit-outline</v-icon>
           <label class="summary-title">Summary of Changes to File</label>
         </v-col>
       </v-row>
-    </div>
+    </article>
 
     <!-- Business Name -->
     <template v-if="hasBusinessNameChanged">
       <v-divider class="mx-8" />
-      <div id="business-name-summary-section" class="section-container">
+      <article id="business-name-summary-section" class="section-container">
         <v-row no-gutters>
           <v-col cols="12" sm="3">
-            <label><strong>Business Name</strong></label>
+            <label>Business Name</label>
           </v-col>
 
           <v-col cols="12" sm="8" class="mt-n1">
@@ -24,40 +24,40 @@
             <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
           </v-col>
         </v-row>
-      </div>
+      </article>
     </template>
 
     <!-- Nature of Business -->
     <template v-if="hasNatureOfBusinessChanged">
       <v-divider class="mx-8" />
-      <div id="nob-summary-section" class="section-container">
+      <article id="nob-summary-section" class="section-container">
         <v-row no-gutters>
           <v-col cols="12" sm="3">
-            <label><strong>Nature of Business</strong></label>
+            <label>Nature of Business</label>
           </v-col>
 
           <v-col cols="12" sm="8">
             <span class="info-text">{{getCurrentNaics.naicsCode}} - {{getCurrentNaics.naicsDescription}}</span>
           </v-col>
         </v-row>
-      </div>
+      </article>
     </template>
 
     <!-- Office Addresses -->
-    <template v-if="officeAddressesChanged">
+    <template v-if="hasOfficeAddressesChanged">
       <v-divider class="mx-8" />
-      <div id="address-summary-section" class="section-container">
+      <article id="address-summary-section" class="section-container">
         <OfficeAddresses :isSummaryView="true" />
-      </div>
+      </article>
     </template>
 
     <!-- Org Persons -->
-    <template v-if="hasOrgPersonChanged">
+    <template v-if="hasPeopleAndRolesChanged">
       <v-divider class="mx-8" />
-      <div id="org-person-summary-section" class="section-container">
+      <article id="org-person-summary-section" class="section-container">
         <v-row no-gutters>
           <v-col cols="12" sm="3">
-            <label><strong>Proprietor Information</strong></label>
+            <label>Proprietor Information</label>
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-4">
@@ -65,7 +65,7 @@
             <ListPeopleAndRoles :peopleAndRoles="getPeopleAndRoles" :isSummaryView="true" />
           </v-col>
         </v-row>
-      </div>
+      </article>
     </template>
   </v-card>
 </template>
@@ -95,8 +95,8 @@ export default class ChangeSummary extends Mixins(
   @Getter getBusinessNumber!: string
   @Getter getCurrentNaics!: NaicsIF
   @Getter getPeopleAndRoles!: OrgPersonIF[]
-  @Getter officeAddressesChanged!: boolean
-  @Getter hasOrgPersonChanged!: boolean
+  @Getter hasOfficeAddressesChanged!: boolean
+  @Getter hasPeopleAndRolesChanged!: boolean
 
   // Change flag getters
   @Getter hasBusinessNameChanged!: boolean

@@ -70,8 +70,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getProvisionsRemoved!: boolean
   @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
-  @Getter officeAddressesChanged!: boolean
-  @Getter hasOrgPersonChanged!: boolean
+  @Getter hasOfficeAddressesChanged!: boolean
+  @Getter hasPeopleAndRolesChanged!: boolean
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -316,15 +316,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @returns the change filing body
    */
   buildChangeFiling (isDraft: boolean): ChangeFirmIF {
-    let parties = this.getPeopleAndRoles
-
-    // if filing and paying, filter out removed entities and omit the 'action' properties
-    if (!isDraft) {
-      // Filter out parties actions
-      parties = parties.filter(x => x.action !== ActionTypes.REMOVED)
-        .map((x) => { const { action, ...rest } = x; return rest })
-    }
-
     // Build alteration filing
     let filing: ChangeFirmIF = {
       header: {
@@ -358,7 +349,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     if (this.hasBusinessNameChanged) filing.changeOfRegistration.nameRequest = { ...this.getNameRequest }
 
     // Apply business address changes to filing
-    if (this.officeAddressesChanged) {
+    if (this.hasOfficeAddressesChanged) {
       filing.changeOfRegistration.businessAddress = {
         mailingAddress: this.getOfficeAddresses.businessOffice.mailingAddress,
         deliveryAddress: this.getOfficeAddresses.businessOffice.deliveryAddress
@@ -369,7 +360,16 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       filing.changeOfRegistration.business.naics = this.getCurrentNaics
     }
 
-    if (this.hasOrgPersonChanged) {
+    if (this.hasPeopleAndRolesChanged) {
+      let parties = this.getPeopleAndRoles
+
+      // if filing and paying, filter out removed entities and omit the 'action' properties
+      if (!isDraft) {
+        // Filter out parties actions
+        parties = parties.filter(x => x.action !== ActionTypes.REMOVED)
+          .map((x) => { const { action, ...rest } = x; return rest })
+      }
+
       filing.changeOfRegistration.parties = parties
     }
 

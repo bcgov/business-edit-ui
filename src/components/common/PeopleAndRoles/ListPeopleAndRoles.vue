@@ -1,5 +1,5 @@
 <template>
-  <div id="list-people-roles" class="mt-0">
+  <div id="list-people-roles">
 
     <!-- conditionally render add component -->
     <v-expand-transition>
@@ -467,7 +467,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   color: $BCgovInputError;
 }
 
-// italicize the delivery instructions in the base address component
 ::v-deep {
   .address-block {
     font-size: $px-14;

@@ -19,6 +19,7 @@
 
         <label>Hours of Operation:</label>
         <p>Monday to Friday, 8:30am - 4:30pm Pacific Time</p>
+        <div class="help-btn bottom" @click="helpToggle = !helpToggle">Hide Help</div>
       </section>
     </v-expand-transition>
   </div>
@@ -57,7 +58,6 @@ export default class HelpSection extends Vue {
   cursor: pointer;
   color: $app-blue;
   vertical-align: middle;
-  max-width: 15rem;
 }
 
 .v-icon {
@@ -74,5 +74,12 @@ export default class HelpSection extends Vue {
 .help-header {
   display: flex;
   justify-content: center;
+}
+
+.help-btn.bottom {
+  font-size: $px-13;
+  text-decoration: underline;
+  display: flex;
+  direction: rtl;
 }
 </style>

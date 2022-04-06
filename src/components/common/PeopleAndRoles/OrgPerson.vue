@@ -376,9 +376,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   /**
    * Called when user clicks Done button.
    */
-  private async validateOrgPersonForm (): Promise<void> {
+  private validateOrgPersonForm (): void {
     this.applyValidation()
-    await Vue.nextTick()
 
     // validate the main form and address form(s)
     this.$refs.orgPersonForm.validate()
@@ -402,7 +401,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
       }
     } else {
       // Scroll to top of form to present validations
-      await this.scrollToTop(document.getElementById('add-edit-org-person'))
+      this.scrollToTop(document.getElementById('add-edit-org-person'))
     }
   }
 
@@ -524,7 +523,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   /** Apply input field validations. */
-  applyValidation (): void {
+  async applyValidation (): Promise<void> {
     this.firstNameRules = [
       (v: string) => !!v || 'A first name is required',
       (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
@@ -564,6 +563,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 
     this.PersonAddressSchema = PersonAddressSchema
     this.OfficeAddressSchema = OfficeAddressSchema
+    await Vue.nextTick()
   }
 
   /** Email validation method */
@@ -757,6 +757,7 @@ li {
   display: none;
 }
 
+// Overrides for vuetify components (Checkbox alignment, inputField labels/text size/colour)
 ::v-deep {
   .v-input--selection-controls .v-input__slot, .v-input--selection-controls .v-radio {
     align-items: flex-start;
