@@ -376,8 +376,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   /**
    * Called when user clicks Done button.
    */
-  private validateOrgPersonForm (): void {
-    this.applyValidation()
+  private async validateOrgPersonForm (): Promise<void> {
+    await this.applyValidation()
 
     // validate the main form and address form(s)
     this.$refs.orgPersonForm.validate()
