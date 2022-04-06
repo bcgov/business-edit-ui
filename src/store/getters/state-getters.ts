@@ -268,7 +268,7 @@ export const getOfficeAddresses = (state: StateIF): AddressesIF => {
 
 /** The people and roles list. */
 export const getPeopleAndRoles = (state: StateIF): Array<OrgPersonIF> => {
-  return state.stateModel.peopleAndRolesStep.orgPeople
+  return state.stateModel.peopleAndRoles.orgPeople
 }
 
 /** The share classes list. */
@@ -323,7 +323,7 @@ export const getFilingData = (state: StateIF): FilingDataIF => {
 
 /** Whether People and Roles component is valid. */
 export const isPeopleAndRolesValid = (state: StateIF): boolean => {
-  return state.stateModel.peopleAndRolesStep.valid
+  return state.stateModel.peopleAndRoles.valid
 }
 
 /** Whether Define Company Step is valid. */
@@ -360,7 +360,7 @@ export const isFilingPaying = (state: StateIF): boolean => {
  */
 export const hasCorrectionChanged = (state: StateIF): boolean => {
   return (
-    state.stateModel.peopleAndRolesStep.changed ||
+    state.stateModel.peopleAndRoles.changed ||
     state.stateModel.changedFlags.defineCompanyStep ||
     state.stateModel.shareStructureStep.changed ||
     state.stateModel.incorporationAgreementStep.changed
@@ -401,7 +401,8 @@ export const hasFirmChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
     hasNatureOfBusinessChanged(state) ||
-    officeAddressesChanged(state)
+    hasOfficeAddressesChanged(state) ||
+    hasPeopleAndRolesChanged(state)
   )
 }
 
@@ -409,7 +410,7 @@ export const hasFirmChanged = (state: StateIF): boolean => {
 export const isFilingValid = (state: StateIF): boolean => {
   // NB: Define Company and Agreement Type don't have a "valid" state --
   //     they don't allow saving an invalid state to the store.
-  return (state.stateModel.peopleAndRolesStep.valid &&
+  return (state.stateModel.peopleAndRoles.valid &&
     state.stateModel.detail.valid &&
     state.stateModel.certifyState.valid &&
     state.stateModel.staffPaymentStep.valid)
@@ -519,7 +520,7 @@ export const officeType = (state: StateIF): OfficeTypes => {
 }
 
 /** True if any office address has changed. Applies to corrections and change filings only. */
-export const officeAddressesChanged = (state: StateIF): boolean => {
+export const hasOfficeAddressesChanged = (state: StateIF): boolean => {
   return (isCorrectionFiling(state) || isChangeFiling(state)) &&
     (mailingChanged(state) || deliveryChanged(state) ||
       // Exclude Records Address conditions from Change filing
@@ -555,6 +556,14 @@ export const recMailingChanged = (state: StateIF): boolean => {
 export const recDeliveryChanged = (state: StateIF): boolean => {
   return !isSame(getOfficeAddresses(state)?.recordsOffice?.deliveryAddress,
     originalOfficeAddresses(state)?.recordsOffice?.deliveryAddress, ['addressCountryDescription'])
+}
+
+/** Whether orgPerson data has changed. */
+export const hasPeopleAndRolesChanged = (state: StateIF): boolean => {
+  let currentOrgPersons = getPeopleAndRoles(state)
+  let originalOrgPersons = getEntitySnapshot(state)?.orgPersons
+
+  return (!isSame(currentOrgPersons, originalOrgPersons, ['action']))
 }
 
 /** Whether share structure data has changed. */

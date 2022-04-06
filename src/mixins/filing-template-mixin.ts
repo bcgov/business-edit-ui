@@ -70,7 +70,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getProvisionsRemoved!: boolean
   @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
-  @Getter officeAddressesChanged!: boolean
+  @Getter hasOfficeAddressesChanged!: boolean
+  @Getter hasPeopleAndRolesChanged!: boolean
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -348,7 +349,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     if (this.hasBusinessNameChanged) filing.changeOfRegistration.nameRequest = { ...this.getNameRequest }
 
     // Apply business address changes to filing
-    if (this.officeAddressesChanged) {
+    if (this.hasOfficeAddressesChanged) {
       filing.changeOfRegistration.businessAddress = {
         mailingAddress: this.getOfficeAddresses.businessOffice.mailingAddress,
         deliveryAddress: this.getOfficeAddresses.businessOffice.deliveryAddress
@@ -357,6 +358,19 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     if (this.hasNatureOfBusinessChanged) {
       filing.changeOfRegistration.business.naics = this.getCurrentNaics
+    }
+
+    if (this.hasPeopleAndRolesChanged) {
+      let parties = this.getPeopleAndRoles
+
+      // if filing and paying, filter out removed entities and omit the 'action' properties
+      if (!isDraft) {
+        // Filter out parties actions
+        parties = parties.filter(x => x.action !== ActionTypes.REMOVED)
+          .map((x) => { const { action, ...rest } = x; return rest })
+      }
+
+      filing.changeOfRegistration.parties = parties
     }
 
     return filing
@@ -587,28 +601,20 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
     this.setOfficeAddresses(addresses || entitySnapshot.addresses)
 
+    let parties = filing.changeOfRegistration.parties || entitySnapshot.orgPersons
+
     // Store people and roles
     this.setPeopleAndRoles(
-      entitySnapshot.orgPersons?.map(director => {
+      parties.map(orgPerson => {
         return {
-          officer: {
-            firstName: director.officer.firstName,
-            lastName: director.officer.lastName
-          },
-          mailingAddress: director.deliveryAddress,
-          deliveryAddress: director.mailingAddress,
-          roles: [
-            {
-              roleType: director.role in RoleTypes ? director.role
-                : Object.values(RoleTypes).find(role => {
-                  if (role.toLocaleLowerCase() === director.role.toLocaleLowerCase()) {
-                    return role
-                  }
-                }),
-              appointmentDate: director.appointmentDate,
-              cessationDate: null
-            }
-          ]
+          action: orgPerson.action,
+          confirmNameChange: orgPerson.confirmNameChange,
+          officer: orgPerson.officer,
+          mailingAddress: orgPerson.deliveryAddress,
+          deliveryAddress: orgPerson.mailingAddress,
+          roles: orgPerson.roles,
+          appointmentDate: orgPerson.appointmentDate,
+          cessationDate: null
         }
       }) || []
     )
@@ -664,24 +670,21 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setPeopleAndRoles(
       entitySnapshot.orgPersons?.map(orgPerson => {
         return {
-          officer: {
-            firstName: orgPerson.officer.firstName,
-            lastName: orgPerson.officer.lastName
-          },
-          mailingAddress: orgPerson.deliveryAddress,
-          deliveryAddress: orgPerson.mailingAddress,
-          roles: [
+          officer: orgPerson.officer,
+          mailingAddress: orgPerson.mailingAddress,
+          deliveryAddress: orgPerson.deliveryAddress,
+          roles: orgPerson.roles || [
             {
               roleType: orgPerson.role in RoleTypes ? orgPerson.role
                 : Object.values(RoleTypes).find(role => {
                   if (role.toLocaleLowerCase() === orgPerson.role.toLocaleLowerCase()) {
                     return role
                   }
-                }),
-              appointmentDate: orgPerson.appointmentDate,
-              cessationDate: null
+                })
             }
-          ]
+          ],
+          appointmentDate: orgPerson.appointmentDate,
+          cessationDate: null
         }
       }) || []
     )

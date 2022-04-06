@@ -505,7 +505,7 @@ describe.skip('App component', () => {
       .toStrictEqual(filingData.incorporationApplication.contactPoint)
 
     // Validate People And Roles
-    expect(store.state.stateModel.peopleAndRolesStep.orgPeople)
+    expect(store.state.stateModel.peopleAndRoles.orgPeople)
       .toStrictEqual(filingData.incorporationApplication.parties)
 
     // Validate Share Structure

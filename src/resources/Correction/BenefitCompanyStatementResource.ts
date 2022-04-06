@@ -13,7 +13,10 @@ export const BenefitCompanyStatementResource = {
       CorrectionTypes.CORRECT_NEW_NR,
       CorrectionTypes.CORRECT_NAME_TO_NUMBER,
       CorrectionTypes.CORRECT_NAME
-    ]
+    ],
+    orgPersonInfo: {
+      orgPersonLabel: 'People and Roles'
+    }
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +
     'of a material fact in a record submitted to the Corporate Registry for filing. ' +
