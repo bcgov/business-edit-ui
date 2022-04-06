@@ -467,6 +467,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   color: $BCgovInputError;
 }
 
+// Override base Address font style/colour
 ::v-deep {
   .address-block {
     font-size: $px-14;
