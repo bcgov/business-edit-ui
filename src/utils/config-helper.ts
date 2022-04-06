@@ -57,7 +57,7 @@ export async function fetchConfig (): Promise<any> {
   sessionStorage.setItem('DASHBOARD_URL', dashboardUrl)
   console.log('Set Dashboard URL to: ' + dashboardUrl)
 
-  const legalApiUrl: string = response.data['LEGAL_API_URL'] + response.data['LEGAL_API_VERSION'] + '/'
+  const legalApiUrl: string = response.data['LEGAL_API_URL'] + response.data['LEGAL_API_VERSION_2'] + '/'
   // set base URL for axios calls
   axios.defaults.baseURL = legalApiUrl
   console.log('Set Legal API URL to: ' + legalApiUrl)
