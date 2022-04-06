@@ -523,7 +523,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   /** Apply input field validations. */
-  async applyValidation (): Promise<void> {
+  applyValidation (): void {
     this.firstNameRules = [
       (v: string) => !!v || 'A first name is required',
       (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
@@ -563,7 +563,6 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 
     this.PersonAddressSchema = PersonAddressSchema
     this.OfficeAddressSchema = OfficeAddressSchema
-    await Vue.nextTick()
   }
 
   /** Email validation method */
