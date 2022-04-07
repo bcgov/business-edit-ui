@@ -42,6 +42,7 @@ export const stateModel: StateModelIF = {
       isValidAddress: true,
       isValidContactInfo: true,
       isValidFolioInfo: true,
+      isValidOrgPersons: true,
       isValidShareStructure: true,
       isValidCompanyProvisions: true,
       isValidResolutionDate: true
@@ -97,7 +98,7 @@ export const stateModel: StateModelIF = {
     documentOptionalEmail: ''
   },
   officeAddresses: null,
-  peopleAndRolesStep: {
+  peopleAndRoles: {
     valid: false,
     changed: false,
     orgPeople: []

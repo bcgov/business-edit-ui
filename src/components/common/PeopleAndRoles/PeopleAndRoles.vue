@@ -8,13 +8,13 @@
 
     <v-card flat>
       <!-- Header -->
-      <div class="header-container">
+      <div class="section-container header-container">
         <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
-        <label class="font-weight-bold pl-2">People and Roles</label>
+        <label class="font-weight-bold pl-2">{{ orgPersonLabel }}</label>
       </div>
 
-      <!-- Instructional Text -->
-      <div class="role-container pt-6 px-4">
+      <!-- Instructional people and roles Text -->
+      <div v-if="isCorrectionFiling" class="section-container">
         This application must include the following:
         <ul>
           <li>
@@ -35,14 +35,51 @@
         </ul>
       </div>
 
-      <!-- Add Buttons -->
-      <div class="btn-container py-6 px-4">
+      <!-- Instructional partner or proprietor Text -->
+      <div v-if="isChangeFiling" class="section-container">
+        <span class="info-text">{{ orgPersonSubtitle }}</span>
+
+        <!-- Sole Prop Help -->
+        <HelpSection
+          v-if="getResource.entityType === CorpTypeCd.SOLE_PROP"
+          class="mt-5"
+          :helpSection="orgPersonHelp"
+          />
+
+        <!-- Partnership Help -->
+        <div v-if="getResource.entityType === CorpTypeCd.PARTNERSHIP" class="mt-8">
+          <v-btn
+            id="gp-btn-add-person"
+            outlined
+            color="primary"
+            :disabled="isAddingEditingOrgPerson"
+            @click="initAdd([], PartyTypes.PERSON)"
+          >
+            <v-icon>mdi-account-plus</v-icon>
+            <span>Add a Person</span>
+          </v-btn>
+          <v-btn
+            id="gp-btn-add-corp"
+            outlined
+            color="primary"
+            class="ml-2"
+            :disabled="isAddingEditingOrgPerson"
+            @click="initAdd([{ roleType: RoleTypes.INCORPORATOR }], PartyTypes.ORGANIZATION)"
+          >
+            <v-icon>mdi-domain-plus</v-icon>
+            <span>Add a Corporation or Firm</span>
+          </v-btn>
+        </div>
+      </div>
+
+      <!-- Correction Add Buttons -->
+      <div v-if="isCorrectionFiling" class="section-container">
         <v-btn
           id="btn-add-person"
           outlined
           color="primary"
-          :disabled="renderOrgPersonForm"
-          @click="initAdd([], IncorporatorTypes.PERSON)"
+          :disabled="isAddingEditingOrgPerson"
+          @click="initAdd([], PartyTypes.PERSON)"
         >
           <v-icon>mdi-account-plus</v-icon>
           <span>Add a Person</span>
@@ -52,8 +89,8 @@
           outlined
           color="primary"
           class="ml-2"
-          :disabled="renderOrgPersonForm"
-          @click="initAdd([{ roleType: RoleTypes.INCORPORATOR }], IncorporatorTypes.ORGANIZATION)"
+          :disabled="isAddingEditingOrgPerson"
+          @click="initAdd([{ roleType: RoleTypes.INCORPORATOR }], PartyTypes.ORGANIZATION)"
         >
           <v-icon>mdi-domain-plus</v-icon>
           <span>Add a Corporation or Firm</span>
@@ -64,21 +101,22 @@
           outlined
           color="primary"
           class="ml-2"
-          :disabled="renderOrgPersonForm"
-          @click="initAdd([{ roleType: RoleTypes.COMPLETING_PARTY }], IncorporatorTypes.PERSON)"
+          :disabled="isAddingEditingOrgPerson"
+          @click="initAdd([{ roleType: RoleTypes.COMPLETING_PARTY }], PartyTypes.PERSON)"
         >
           <v-icon>mdi-account-plus-outline</v-icon>
           <span>Add the Completing Party</span>
         </v-btn>
       </div>
 
-      <div class="list-container px-4">
+      <div class="list-container">
         <list-people-and-roles
           :peopleAndRoles="getPeopleAndRoles"
-          :renderOrgPersonForm="renderOrgPersonForm"
+          :renderOrgPersonForm="isAddingEditingOrgPerson"
           :currentOrgPerson="currentOrgPerson"
           :activeIndex="activeIndex"
           :currentCompletingParty="currentCompletingParty"
+          :validate="getComponentValidate"
           @initEdit="initEdit($event)"
           @addEdit="addEdit($event)"
           @remove="remove($event)"
@@ -95,15 +133,26 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
-import { ActionBindingIF, ConfirmDialogType, IncorporationFilingIF, OrgPersonIF, RoleIF } from '@/interfaces'
-import { ActionTypes, IncorporatorTypes, CompareModes, RoleTypes } from '@/enums'
+import {
+  ActionBindingIF,
+  ConfirmDialogType,
+  EntitySnapshotIF,
+  HelpSectionIF,
+  IncorporationFilingIF,
+  OrgPersonIF,
+  ResourceIF,
+  RoleIF
+} from '@/interfaces'
+import { ActionTypes, CompareModes, CorpTypeCd, PartyTypes, RoleTypes } from '@/enums'
 import { ConfirmDialog } from '@/components/common/dialogs'
+import { HelpSection } from '@/components/common'
 import { ListPeopleAndRoles } from './'
 import { CommonMixin } from '@/mixins'
 
 @Component({
   components: {
     ConfirmDialog,
+    HelpSection,
     ListPeopleAndRoles
   }
 })
@@ -115,19 +164,25 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 
   // Declarations for template
   readonly RoleTypes = RoleTypes
-  readonly IncorporatorTypes = IncorporatorTypes
+  readonly PartyTypes = PartyTypes
 
   // Global getters
+  @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getUserEmail!: string
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter isRoleStaff!: boolean
+  @Getter isCorrectionFiling!: boolean
+  @Getter isChangeFiling!: boolean
+  @Getter getResource!: ResourceIF
+  @Getter getComponentValidate!: boolean
 
   // Global actions
   @Action setPeopleAndRoles!: ActionBindingIF
   @Action setPeopleAndRolesChanged!: ActionBindingIF
   @Action setPeopleAndRolesValidity!: ActionBindingIF
   @Action setEditingPeopleAndRoles!: ActionBindingIF
+  @Action setValidComponent!: ActionBindingIF
 
   /** Empty OrgPerson for adding a new one. */
   private emptyOrgPerson: OrgPersonIF = {
@@ -154,15 +209,22 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   }
 
   // Local properties
-  private renderOrgPersonForm = false
+  private isAddingEditingOrgPerson = false
   private activeIndex = NaN
   private currentOrgPerson: OrgPersonIF = null
   private currentCompletingParty: OrgPersonIF = null
   private originalCompletingParty: OrgPersonIF = null
+  private helpToggle: boolean = false
+
+  readonly CorpTypeCd = CorpTypeCd
 
   /** The list of original parties. */
   private get originalParties (): OrgPersonIF[] {
-    return (this.getOriginalIA?.incorporationApplication?.parties || [])
+    const parties = this.isCorrectionFiling
+      ? this.getOriginalIA?.incorporationApplication?.parties
+      : this.getEntitySnapshot?.orgPersons
+
+    return (parties)
   }
 
   /** True if we have a Completing Party. */
@@ -211,6 +273,18 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
       'This undo will restore the original Completing Party.'
   }
 
+  private get orgPersonLabel (): string {
+    return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
+  }
+
+  private get orgPersonSubtitle (): string {
+    return this.getResource.changeData?.orgPersonInfo.subtitle
+  }
+
+  private get orgPersonHelp (): HelpSectionIF {
+    return this.getResource.changeData?.orgPersonInfo.helpSection
+  }
+
   /**
    * Called when component is mounted.
    */
@@ -247,13 +321,13 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    * @param roles The roles of this item.
    * @param type The incorporator (party) type of this item.
    */
-  private initAdd (roles: RoleIF[], type: IncorporatorTypes): void {
+  private initAdd (roles: RoleIF[], type: PartyTypes): void {
     // make a copy so we don't change the original object
     this.currentOrgPerson = cloneDeep(this.emptyOrgPerson)
     this.currentOrgPerson.roles = roles
     this.currentOrgPerson.officer.partyType = type
     this.activeIndex = NaN
-    this.renderOrgPersonForm = true
+    this.isAddingEditingOrgPerson = true
   }
 
   /**
@@ -264,7 +338,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     // make a copy so we don't change the original object
     this.currentOrgPerson = cloneDeep(this.getPeopleAndRoles[index])
     this.activeIndex = index
-    this.renderOrgPersonForm = true
+    this.isAddingEditingOrgPerson = true
   }
 
   /**
@@ -273,7 +347,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   private async reset (): Promise<void> {
     this.currentOrgPerson = null
     this.activeIndex = NaN
-    this.renderOrgPersonForm = false
+    this.isAddingEditingOrgPerson = false
 
     // as Vue has updated the visible sections, scroll back to the top of this component
     await this.scrollToTop(this.$el)
@@ -512,9 +586,10 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   }
 
   /** Updates store when local Editing property has changed. */
-  @Watch('renderOrgPersonForm', { immediate: true })
+  @Watch('isAddingEditingOrgPerson', { immediate: true })
   private onEditingChanged (val: boolean): void {
     this.setEditingPeopleAndRoles(val)
+    this.setValidComponent({ key: 'isValidOrgPersons', value: !val })
   }
 }
 </script>
@@ -525,7 +600,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 .header-container {
   display: flex;
   background-color: $BCgovBlue5O;
-  padding: 1.25rem;
 }
 
 [class^="col"] {
@@ -542,12 +616,5 @@ ul {
 
 li {
   padding-top: 0.25rem;
-}
-
-.sub-header {
-  padding-bottom: 1.5rem;
-  font-size: 1rem;
-  font-weight: bold;
-  line-height: 1.5rem;
 }
 </style>

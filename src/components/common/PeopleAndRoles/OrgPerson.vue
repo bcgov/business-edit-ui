@@ -6,11 +6,11 @@
       attach="#add-edit-org-person"
     />
 
-    <ul class="list add-person">
+    <ul class="list add-person mt-2">
       <li class="add-person-container">
         <div class="meta-container">
 
-          <label class="add-org-header" v-if="isPerson">
+          <label class="add-person-header" v-if="isPerson">
             <span v-if="isNaN(activeIndex)">Add Person</span>
             <span v-else>Edit Person</span>
           </label>
@@ -30,6 +30,9 @@
               <!-- Person's Name -->
               <template v-if="isPerson">
                 <label class="sub-header">Person's Name</label>
+                <p v-if="isProprietor" class="info-text mb-0">
+                  If the proprietor has changed their legal name, enter their new legal name.
+                </p>
                 <div class="form__row three-column pt-6">
                   <v-text-field
                     filled
@@ -56,6 +59,31 @@
                     :rules="lastNameRules"
                   />
                 </div>
+                <div v-if="isProprietor" class="mt-0">
+                  <v-checkbox
+                    id="confirm-name-change-chkbx"
+                    class="mb-6"
+                    label="I confirm the proprietor has legally changed their name and that the proprietor remains the
+                   same person."
+                    :hide-details="true"
+                    :rules="confirmNameChangeRules"
+                    v-model="orgPerson.confirmNameChange"
+                  />
+
+                  <label class="sub-header">Email Address</label>
+                  <p class="info-text">
+                    Copies of the registration documents will be sent to this email address.
+                  </p>
+                  <v-text-field
+                    id="proprietor-email"
+                    label="Email Address"
+                    filled
+                    persistent-hint
+                    validate-on-blur
+                    v-model="orgPerson.officer.email"
+                    :rules="proprietorEmailRules"
+                  />
+                </div>
               </template>
 
               <!-- Org's Name -->
@@ -74,7 +102,7 @@
               </template>
 
               <!-- Roles -->
-              <template>
+              <template v-if="isCorrectionFiling">
                 <label class="sub-header">Roles</label>
                 <v-row class="roles-row my-6">
                   <v-col cols="4" class="mt-0" v-if="isPerson">
@@ -120,22 +148,22 @@
               </template>
 
               <!-- Mailing Address -->
-              <template>
+              <div class="mt-2">
                 <label class="sub-header">Mailing Address</label>
                 <div class="address-wrapper pt-6">
                   <base-address
                     ref="mailingAddressNew"
                     :editing="true"
-                    :schema="PersonAddressSchema"
+                    :schema="isPerson ? PersonAddressSchema : OfficeAddressSchema"
                     :address="inProgressMailingAddress"
                     @update:address="inProgressMailingAddress = $event"
                     @valid="mailingAddressValid = $event"
                   />
                 </div>
-              </template>
+              </div>
 
               <!-- Delivery Address (for directors only) -->
-              <div class="form__row" v-if="isDirector">
+              <div class="form__row" v-if="isDirector || isProprietor || isPartner">
                 <v-checkbox
                   label="Delivery Address same as Mailing Address"
                   v-model="inheritMailingAddress"
@@ -146,7 +174,7 @@
                     <base-address
                       ref="deliveryAddressNew"
                       :editing="true"
-                      :schema="PersonAddressSchema"
+                      :schema="isPerson ? PersonAddressSchema : OfficeAddressSchema"
                       :address="inProgressDeliveryAddress"
                       @update:address="inProgressDeliveryAddress = $event"
                       @valid="deliveryAddressValid = $event"
@@ -157,7 +185,7 @@
 
               <!-- Action Buttons -->
               <div class="form__row form__btns">
-                <v-btn id="btn-remove" large outlined color="error"
+                <v-btn v-if="!isProprietor" id="btn-remove" large outlined color="error"
                   :disabled="isNaN(activeIndex)"
                   @click="emitRemove(activeIndex)">Remove</v-btn>
                 <v-btn id="btn-done" large color="primary" class="ml-auto"
@@ -174,15 +202,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Emit, Mixins, Vue } from 'vue-property-decorator'
 import { cloneDeep, isEqual } from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
 import { OrgPersonIF, BaseAddressType, FormIF, AddressIF, ConfirmDialogType, RoleIF } from '@/interfaces'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ConfirmDialog } from '@/components/common/dialogs'
 import { CommonMixin } from '@/mixins'
-import { CorpTypeCd, RoleTypes, IncorporatorTypes } from '@/enums'
-import { PersonAddressSchema } from '@/schemas'
+import { CorpTypeCd, RoleTypes, PartyTypes } from '@/enums'
+import { PersonAddressSchema, OfficeAddressSchema } from '@/schemas'
 import { Getter } from 'vuex-class'
 
 @Component({
@@ -203,8 +231,9 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   // Declarations for template
   readonly CorpTypeCd = CorpTypeCd
   readonly RoleTypes = RoleTypes
-  readonly IncorporatorTypes = IncorporatorTypes
-  readonly PersonAddressSchema = PersonAddressSchema
+  readonly PartyTypes = PartyTypes
+  private PersonAddressSchema = {}
+  private OfficeAddressSchema = {}
 
   /** The current org/person to edit or add. */
   @Prop() private currentOrgPerson!: OrgPersonIF
@@ -217,6 +246,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 
   // Global getter
   @Getter getCurrentDate!: string
+  @Getter isCorrectionFiling!: boolean
 
   /** The current org/person being added/edited. */
   private orgPerson: OrgPersonIF = null
@@ -232,7 +262,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   private deliveryAddressValid = false
   private reassignCompletingParty = false
 
-  /** Model value for roles checboxes. */
+  /** Model value for roles checkboxes. */
   private selectedRoles: Array<RoleTypes> = []
 
   /** True if Completing Party is checked. */
@@ -250,59 +280,53 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     return this.selectedRoles.includes(RoleTypes.DIRECTOR)
   }
 
+  /** True if orgPerson has proprietor role. */
+  private get isProprietor (): boolean {
+    return this.currentOrgPerson.roles.includes(RoleTypes.PROPRIETOR)
+  }
+
+  /** True if orgPerson has partner role. */
+  private get isPartner (): boolean {
+    return this.currentOrgPerson.roles.includes(RoleTypes.PARTNER)
+  }
+
   /** The validation rules for the roles. */
   private get roleRules (): Array<Function> {
     return [ () => this.selectedRoles.length > 0 || 'A role is required' ]
   }
 
-  /** The validation rules for person first name. */
-  private readonly firstNameRules: Array<Function> = [
-    (v: string) => !!v || 'A first name is required',
-    (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-    (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    (v: string) => (v?.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
-  ]
-
-  /** The validation rules for person middle name. */
-  private readonly middleNameRules: Array<Function> = [
-    (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-    (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    (v: string) => (!v || v.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
-  ]
-
-  /** The validation rules for person last name. */
-  private readonly lastNameRules: Array<Function> = [
-    (v: string) => !!v || 'A last name is required',
-    (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-    (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    (v: string) => (v?.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
-  ]
-
-  /** The validation rules for org name. */
-  private readonly orgNameRules: Array<Function> = [
-    (v: string) => !!v || 'A firm name is required',
-    (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
-    (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-    (v: string) => (v?.length <= 155) || 'Cannot exceed 155 characters' // maximum character count
-  ]
+  /** The local validation rules. */
+  private firstNameRules: Array<Function> = []
+  private middleNameRules: Array<Function> = []
+  private lastNameRules: Array<Function> = []
+  private orgNameRules: Array<Function> = []
+  private proprietorEmailRules = []
+  private confirmNameChangeRules = []
 
   /** True if the form is valid. */
   private get isFormValid (): boolean {
     let isFormValid = (this.orgPersonFormValid && this.mailingAddressValid)
-    if (this.isDirector && !this.inheritMailingAddress) {
+    if ((this.isDirector || this.isProprietor || this.isPartner) && !this.inheritMailingAddress) {
       isFormValid = (isFormValid && this.deliveryAddressValid)
     }
+    if (this.isProprietor) {
+      isFormValid = (isFormValid && !!this.orgPerson.officer.email)
+      if (this.hasProprietorNameChanged(this.orgPerson)) {
+        isFormValid = isFormValid && this.orgPerson.confirmNameChange
+      }
+    }
+
     return isFormValid
   }
 
   /** True if current data object is a person. */
   private get isPerson (): boolean {
-    return (this.orgPerson?.officer.partyType === IncorporatorTypes.PERSON)
+    return (this.orgPerson?.officer.partyType === PartyTypes.PERSON)
   }
 
   /** True if current data object is an organization (corporation/firm). */
   private get isOrg (): boolean {
-    return (this.orgPerson?.officer.partyType === IncorporatorTypes.ORGANIZATION)
+    return (this.orgPerson?.officer.partyType === PartyTypes.ORGANIZATION)
   }
 
   /**
@@ -318,9 +342,11 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 
       // populate addresses as needed
       this.inProgressMailingAddress = { ...this.orgPerson.mailingAddress }
-      if (this.isDirector) {
+      if (this.isDirector || this.isProprietor || this.isPartner) {
         this.inProgressDeliveryAddress = { ...this.orgPerson.deliveryAddress }
-        this.inheritMailingAddress = this.isSame(this.inProgressMailingAddress, this.inProgressDeliveryAddress)
+        this.inheritMailingAddress = this.isSame(
+          this.inProgressMailingAddress, this.inProgressDeliveryAddress, ['id']
+        )
       }
     }
   }
@@ -350,7 +376,9 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   /**
    * Called when user clicks Done button.
    */
-  private validateOrgPersonForm (): void {
+  private async validateOrgPersonForm (): Promise<void> {
+    await this.applyValidation()
+
     // validate the main form and address form(s)
     this.$refs.orgPersonForm.validate()
     this.$refs.mailingAddressNew.$refs.addressForm.validate()
@@ -371,6 +399,9 @@ export default class OrgPerson extends Mixins(CommonMixin) {
       } else {
         this.resetAddPersonData(true)
       }
+    } else {
+      // Scroll to top of form to present validations
+      this.scrollToTop(document.getElementById('add-edit-org-person'))
     }
   }
 
@@ -379,13 +410,24 @@ export default class OrgPerson extends Mixins(CommonMixin) {
    */
   private hasPersonChanged (person: OrgPersonIF): boolean {
     const officer = !isEqual(person.officer, this.currentOrgPerson?.officer)
-    const mailing = !isEqual(person.mailingAddress, this.currentOrgPerson?.mailingAddress)
-    const delivery = !isEqual(person.deliveryAddress, this.currentOrgPerson?.deliveryAddress)
+    const mailing = !this.isSame(person.mailingAddress, this.currentOrgPerson?.mailingAddress, ['id'])
+    const delivery = !this.isSame(person.deliveryAddress, this.currentOrgPerson?.deliveryAddress, ['id'])
     // just look at role type (ignore role.appointmentDate and role.cessationDate,
     // which will have changed if the user toggled the checkboxes)
     const roleTypes = !isEqual(person.roles.map(r => r.roleType), this.currentOrgPerson?.roles.map(r => r.roleType))
     // NB: ignore actions
     return (officer || mailing || delivery || roleTypes)
+  }
+
+  /**
+   * Returns True if proprietor name has changed from its original properties.
+   */
+  private hasProprietorNameChanged (person: OrgPersonIF): boolean {
+    const firstName = !isEqual(person.officer.firstName, this.currentOrgPerson?.officer.firstName)
+    const lastName = !isEqual(person.officer.lastName, this.currentOrgPerson?.officer.lastName)
+    const middleName = !isEqual(person.officer.middleName, this.currentOrgPerson?.officer.middleName)
+
+    return (firstName || lastName || middleName)
   }
 
   /**
@@ -425,16 +467,16 @@ export default class OrgPerson extends Mixins(CommonMixin) {
       person.officer.id = uuidv4()
     }
     person.mailingAddress = { ...this.inProgressMailingAddress }
-    if (this.isDirector) {
+    if (this.isDirector || this.isProprietor || this.isPartner) {
       person.deliveryAddress = this.setPersonDeliveryAddress()
     }
-    person.roles = this.setPersonRoles(this.orgPerson)
+    person.roles = this.isCorrectionFiling ? this.setPersonRoles(this.orgPerson) : this.orgPerson.roles
     return person
   }
 
   private setPersonDeliveryAddress (): AddressIF {
     if (this.inheritMailingAddress) {
-      this.inProgressDeliveryAddress = this.inProgressMailingAddress
+      this.inProgressDeliveryAddress = { ...this.inProgressMailingAddress, id: this.inProgressDeliveryAddress.id }
     }
     return { ...this.inProgressDeliveryAddress }
   }
@@ -480,6 +522,55 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     }
   }
 
+  /** Apply input field validations. */
+  applyValidation (): void {
+    this.firstNameRules = [
+      (v: string) => !!v || 'A first name is required',
+      (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+      (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+      (v: string) => (v?.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
+    ]
+
+    this.middleNameRules = [
+      (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+      (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+      (v: string) => (!v || v.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
+    ]
+
+    this.lastNameRules = [
+      (v: string) => !!v || 'A last name is required',
+      (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+      (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+      (v: string) => (v?.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
+    ]
+
+    this.orgNameRules = [
+      (v: string) => !!v || 'A firm name is required',
+      (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+      (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+      (v: string) => (v?.length <= 155) || 'Cannot exceed 155 characters' // maximum character count
+    ]
+
+    this.proprietorEmailRules = [
+      (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
+      (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
+      (v: string) => this.validateEmailFormat(v) || 'Enter valid email address'
+    ]
+
+    this.confirmNameChangeRules = this.hasProprietorNameChanged(this.orgPerson)
+      ? [(v: string) => !!v]
+      : []
+
+    this.PersonAddressSchema = PersonAddressSchema
+    this.OfficeAddressSchema = OfficeAddressSchema
+  }
+
+  /** Email validation method */
+  validateEmailFormat (value: string): boolean {
+    const VALID_FORMAT = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+    return VALID_FORMAT.test(value)
+  }
+
   /** The Completing Party change message. */
   private get changeCpMessage (): string {
     const currentCpName = this.formatFullName(this.currentCompletingParty?.officer)
@@ -516,6 +607,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+
 [class^="col"] {
   padding-top: 0;
   padding-bottom: 0;
@@ -572,8 +665,6 @@ li {
 
 .add-person {
   .add-person-container {
-    padding: 1.25rem;
-
     .meta-container {
       > label:first-child {
         margin-bottom: 1.5rem;
@@ -663,5 +754,22 @@ li {
 // conditionally hide the v-messages (as we normally don't want their height)
 ::v-deep .v-input--checkbox .v-messages:not(.error--text) {
   display: none;
+}
+
+// Overrides for vuetify components (Checkbox alignment, inputField labels/text size/colour)
+::v-deep {
+  .v-input--selection-controls .v-input__slot, .v-input--selection-controls .v-radio {
+    align-items: flex-start;
+  }
+
+  .theme--light.v-label {
+    font-size: 1rem;
+    color: $gray7;
+    font-weight: normal;
+  }
+
+  .theme--light.v-input input, .theme--light.v-input textarea {
+    color: $gray9;
+  }
 }
 </style>

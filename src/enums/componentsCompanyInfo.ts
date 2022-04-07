@@ -12,6 +12,7 @@ export enum ComponentsCompanyInfo {
   'office-addresses',
   'contact-info',
   'folio-number',
+  'people-and-roles',
   'share-structures',
   'company-provisions',
   'resolution-dates'

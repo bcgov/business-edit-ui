@@ -580,5 +580,8 @@ export default class YourCompany extends Mixins(
   .invalid-section .col-sm-3:first-child label {
     color: $app-red !important;
   }
+  #contact-info-edit-btn {
+    padding-right: 4px;
+  }
 }
 </style>

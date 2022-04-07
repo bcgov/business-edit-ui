@@ -6,8 +6,9 @@ import { axios } from '@/utils'
 // Interfaces
 import {
   AddressesIF, AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF,
-  NameTranslationIF, GetOrgPersonIF, ShareStructureIF, ResolutionsIF, ChangeFirmIF
+  NameTranslationIF, OrgPersonIF, ShareStructureIF, ResolutionsIF, ChangeFirmIF
 } from '@/interfaces'
+import { OrgPersonTypes } from '@/enums'
 
 /**
  * Mixin that provides integration with the Legal API.
@@ -23,6 +24,8 @@ export default class LegalApiMixin extends Vue {
    * @returns a promise to return the filing of the specified type
    */
   async fetchFilingById (id: number): Promise<any> {
+    // Override api version for /filings requests as V2 is currently broken for Correction Filings
+    axios.defaults.baseURL = 'https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v1'
     const url = `businesses/${this.getBusinessId}/filings/${id}`
 
     return axios.get(url)
@@ -168,15 +171,15 @@ export default class LegalApiMixin extends Vue {
    * Fetches the org persons of the current business.
    * @returns a promise to return the data
    */
-  async fetchOrgPersons (): Promise<GetOrgPersonIF[]> {
+  async fetchOrgPersons (orgPersonType: OrgPersonTypes): Promise<OrgPersonIF[]> {
     if (!this.getBusinessId) throw new Error('Invalid business id')
 
-    const url = `businesses/${this.getBusinessId}/directors`
+    const url = `businesses/${this.getBusinessId}/${orgPersonType}`
 
     return axios.get(url)
       .then(response => {
         if (response?.data) {
-          return response.data.directors
+          return response.data[orgPersonType]
         }
         // eslint-disable-next-line no-console
         console.log('fetchOrgPersons() error - invalid response =', response)

@@ -3,22 +3,22 @@
 
     <v-card flat>
       <!-- Header -->
-      <div class="header-container">
+      <article class="header-container section-container">
         <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
         <label class="font-weight-bold pl-2">Directors</label>
-      </div>
+      </article>
 
       <!-- Instructional Text -->
-      <div class="instructional-text pt-10 px-4">
+      <article class="instructional-text section-container">
         To change directors, please use the Change feature in the Current Directors list on your business dashboard.
-      </div>
+      </article>
 
-      <v-simple-table class="director-table pt-15">
+      <v-simple-table class="director-table section-container">
         <!-- List Display Section -->
         <thead v-if="currentDirectors.length > 0">
           <!-- List Headers -->
           <tr class="director-list-header pb-3">
-            <th v-for="(title, index) in tableHeaders" :key="index">
+            <th v-for="(title, index) in tableHeaders" :key="index" class="px-0">
               <span class="directors-title">{{ title }}</span>
             </th>
           </tr>
@@ -31,7 +31,7 @@
             :key="`director:${index}`"
           >
             <!-- Name + Badge -->
-            <td class="text-truncate">
+            <td class="text-truncate px-0">
               <!-- provide tooltip to display full name if name is longer than 25 chars -->
               <v-tooltip top :disabled="formatFullName(orgPerson.officer).length < 25" color="primary">
                 <template v-slot:activator="{ on }">
@@ -42,20 +42,20 @@
             </td>
 
             <!-- Mailing Address -->
-            <td class="pr-5">
+            <td class="px-0">
               <base-address class="director-detail" :address="orgPerson.mailingAddress" />
             </td>
 
             <!-- Delivery Address -->
-            <td class="pr-5">
+            <td class="px-0">
               <p v-if="isSame(orgPerson.mailingAddress, orgPerson.deliveryAddress)"
                 class="director-detail">Same as Mailing Address
               </p>
               <base-address v-else class="director-detail" :address="orgPerson.deliveryAddress"/>
             </td>
 
-            <!-- Appoinment Date -->
-            <td class="pr-5">
+            <!-- Appointment Date -->
+            <td class="px-0">
               <span class="director-detail">{{ orgPerson.roles[0].appointmentDate }} to Current</span>
             </td>
           </tr>
@@ -110,7 +110,6 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
 .header-container {
   display: flex;
   background-color: $BCgovBlue5O;
-  padding: 1.25rem;
 }
 
 [class^="col"] {

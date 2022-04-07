@@ -1,13 +1,13 @@
 import {
-  AddressesIF, AuthInformationIF, BusinessInformationIF, GetOrgPersonIF,
-  NameTranslationIF, ShareStructureIF, ResolutionsIF
+  AddressesIF, AuthInformationIF, BusinessInformationIF,
+  NameTranslationIF, ShareStructureIF, ResolutionsIF, OrgPersonIF
 } from '@/interfaces'
 
 /** Entity snapshot object. */
 export interface EntitySnapshotIF {
   businessInfo: BusinessInformationIF
   authInfo: AuthInformationIF
-  orgPersons: GetOrgPersonIF[]
+  orgPersons: OrgPersonIF[]
   addresses: AddressesIF
 
   // Properties exclusive to Companies
