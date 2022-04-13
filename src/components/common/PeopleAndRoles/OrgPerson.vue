@@ -6,9 +6,9 @@
       attach="#add-edit-org-person"
     />
 
-    <ul class="list add-person mt-2">
+    <ul class="list add-person mt-4">
       <li class="add-person-container">
-        <div class="meta-container">
+        <section class="meta-container">
 
           <label class="add-person-header" v-if="isPerson">
             <span v-if="isNaN(activeIndex)">Add Person</span>
@@ -16,8 +16,8 @@
           </label>
 
           <label class="add-org-header" v-if="isOrg">
-            <span v-if="isNaN(activeIndex)">Add Corporation or Firm</span>
-            <span v-else>Edit Corporation or Firm</span>
+            <span v-if="isNaN(activeIndex)">Add {{ orgTypesLabel }}</span>
+            <span v-else>Edit {{ orgTypesLabel }}</span>
           </label>
 
           <div class="meta-container__inner">
@@ -33,7 +33,7 @@
                 <p v-if="isProprietor" class="info-text mb-0">
                   If the proprietor has changed their legal name, enter their new legal name.
                 </p>
-                <div class="form__row three-column pt-6">
+                <article class="form__row three-column pt-6">
                   <v-text-field
                     filled
                     class="item"
@@ -58,18 +58,79 @@
                     v-model="orgPerson.officer.lastName"
                     :rules="lastNameRules"
                   />
-                </div>
-                <div v-if="isProprietor" class="mt-0">
+                </article>
+              </template>
+
+              <!-- Org's Name -->
+              <template v-if="isOrg">
+
+                <!-- Orgs from BC -->
+                <article v-if="isChangeFiling && toggleBcLookUp && isNaN(activeIndex)">
+                  <label class="sub-header">{{ orgTypesLabel }} Look up</label>
+                  <span class="toggle-business-entry" @click="toggleBcLookUp = !toggleBcLookUp">
+                    {{ orgTypesLabel }} is Unregistered in B.C.
+                  </span>
+                  <p class="info-text mt-4">To add a registered B.C. business or corporation as the Proprietor, enter
+                    the name or incorporation number.</p>
+                  <p class="info-text">If you are a company that is not legally required to register in BC such as a
+                    bank or a railway, use the manual lookup. All other types of businesses cannot be a proprietor or
+                    partner.</p>
+                  <!-- FUTURE: Inject subcomponent here for business Look Up -->
+                </article>
+
+                <!-- Orgs from outside BC -->
+                <article v-else-if="isChangeFiling && !toggleBcLookUp && isNaN(activeIndex)">
+                  <label class="sub-header">{{ orgTypesLabel }} Unregistered in B.C.</label>
+                  <span class="toggle-business-entry" @click="toggleBcLookUp = !toggleBcLookUp">
+                    {{ orgTypesLabel }} Look up
+                  </span>
+                  <p class="info-text mt-4">Use this manual entry form to add a company that is not legally required to
+                    register in B.C. such as a bank or a railway as a partner. All other types of businesses not
+                    registered in B.C. cannot be a proprietor or partner.</p>
+                  <HelpSection :helpSection="getResource.changeData.orgPersonInfo.helpSection" />
+                </article>
+
+                <label v-else class="sub-header">{{ orgTypesLabel }} Name</label>
+                <article class="org-name-container pt-6">
                   <v-checkbox
-                    id="confirm-name-change-chkbx"
-                    class="mb-6"
-                    label="I confirm the proprietor has legally changed their name and that the proprietor remains the
-                   same person."
+                    v-if="!toggleBcLookUp"
+                    id="confirm-legal-business-name-chkbx"
+                    class="mt-0 mb-6"
+                    label="I confirm that the business partner being added is not legally required to register in B.C."
                     :hide-details="true"
                     :rules="confirmNameChangeRules"
                     v-model="orgPerson.confirmNameChange"
                   />
+                  <v-text-field
+                    filled
+                    class="item"
+                    :label="`${ orgTypesLabel } Name`"
+                    id="firm-name"
+                    v-if="isCorrectionFiling || !toggleBcLookUp || !isNaN(activeIndex)"
+                    v-model="orgPerson.officer.organizationName"
+                    :rules="orgNameRules"
+                  />
+                </article>
+              </template>
 
+              <!-- Firm Name Change confirmation -->
+              <template v-if="isProprietor || isPartner && !isNaN(activeIndex)">
+                <article class="mt-n4">
+                  <v-checkbox
+                    id="confirm-name-change-chkbx"
+                    class="mb-6"
+                    :label="`I confirm ${orgPersonLabel} has legally changed their name and that they remain the ` +
+                      `same person.`"
+                    :hide-details="true"
+                    :rules="confirmNameChangeRules"
+                    v-model="orgPerson.confirmNameChange"
+                  />
+                </article>
+              </template>
+
+              <!-- Firm email address (Alterations do not edit orgPersons) -->
+              <template v-if="isChangeFiling">
+                <article>
                   <label class="sub-header">Email Address</label>
                   <p class="info-text">
                     Copies of the registration documents will be sent to this email address.
@@ -83,22 +144,7 @@
                     v-model="orgPerson.officer.email"
                     :rules="proprietorEmailRules"
                   />
-                </div>
-              </template>
-
-              <!-- Org's Name -->
-              <template v-if="isOrg">
-                <label class="sub-header">Corporation or Firm Name</label>
-                <div class="org-name-container pt-6">
-                  <v-text-field
-                    filled
-                    class="item"
-                    label="Full Legal Corporation or Firm Name"
-                    id="firm-name"
-                    v-model="orgPerson.officer.organizationName"
-                    :rules="orgNameRules"
-                  />
-                </div>
+                </article>
               </template>
 
               <!-- Roles -->
@@ -147,44 +193,50 @@
                 </v-row>
               </template>
 
-              <!-- Mailing Address -->
-              <div class="mt-2">
-                <label class="sub-header">Mailing Address</label>
-                <div class="address-wrapper pt-6">
-                  <base-address
-                    ref="mailingAddressNew"
-                    :editing="true"
-                    :schema="isPerson ? PersonAddressSchema : OfficeAddressSchema"
-                    :address="inProgressMailingAddress"
-                    @update:address="inProgressMailingAddress = $event"
-                    @valid="mailingAddressValid = $event"
-                  />
-                </div>
-              </div>
-
-              <!-- Delivery Address (for directors only) -->
-              <div class="form__row" v-if="isDirector || isProprietor || isPartner">
-                <v-checkbox
-                  label="Delivery Address same as Mailing Address"
-                  v-model="inheritMailingAddress"
-                />
-                <div v-if="!inheritMailingAddress">
-                  <label class="sub-header">Delivery Address</label>
+              <!-- Addresses -->
+              <template v-if="isCorrectionFiling || isPerson || !toggleBcLookUp || !isNaN(activeIndex)">
+                <!-- Mailing Address -->
+                <div class="mt-2">
+                  <label class="sub-header">Mailing Address</label>
                   <div class="address-wrapper pt-6">
                     <base-address
-                      ref="deliveryAddressNew"
+                      ref="mailingAddressNew"
                       :editing="true"
                       :schema="isPerson ? PersonAddressSchema : OfficeAddressSchema"
-                      :address="inProgressDeliveryAddress"
-                      @update:address="inProgressDeliveryAddress = $event"
-                      @valid="deliveryAddressValid = $event"
+                      :address="inProgressMailingAddress"
+                      @update:address="inProgressMailingAddress = $event"
+                      @valid="mailingAddressValid = $event"
                     />
                   </div>
                 </div>
-              </div>
+
+                <!-- Delivery Address -->
+                <div
+                  class="form__row"
+                  v-if="isDirector || isProprietor || isPartner || (isChangeFiling && isNaN(activeIndex))"
+                >
+                  <v-checkbox
+                    label="Delivery Address same as Mailing Address"
+                    v-model="inheritMailingAddress"
+                  />
+                  <div v-if="!inheritMailingAddress" class="mt-6">
+                    <label class="sub-header">Delivery Address</label>
+                    <div class="address-wrapper pt-6">
+                      <base-address
+                        ref="deliveryAddressNew"
+                        :editing="true"
+                        :schema="isPerson ? PersonAddressSchema : OfficeAddressSchema"
+                        :address="inProgressDeliveryAddress"
+                        @update:address="inProgressDeliveryAddress = $event"
+                        @valid="deliveryAddressValid = $event"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </template>
 
               <!-- Action Buttons -->
-              <div class="form__row form__btns">
+              <div class="form__row form__btns my-6">
                 <v-btn v-if="!isProprietor" id="btn-remove" large outlined color="error"
                   :disabled="isNaN(activeIndex)"
                   @click="emitRemove(activeIndex)">Remove</v-btn>
@@ -195,7 +247,7 @@
               </div>
             </v-form>
           </div>
-        </div>
+        </section>
       </li>
     </ul>
   </div>
@@ -205,8 +257,9 @@
 import { Component, Prop, Emit, Mixins, Vue } from 'vue-property-decorator'
 import { cloneDeep, isEqual } from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
-import { OrgPersonIF, BaseAddressType, FormIF, AddressIF, ConfirmDialogType, RoleIF } from '@/interfaces'
+import { OrgPersonIF, BaseAddressType, FormIF, AddressIF, ConfirmDialogType, RoleIF, ResourceIF } from '@/interfaces'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
+import { HelpSection } from '@/components/common'
 import { ConfirmDialog } from '@/components/common/dialogs'
 import { CommonMixin } from '@/mixins'
 import { CorpTypeCd, RoleTypes, PartyTypes } from '@/enums'
@@ -216,7 +269,8 @@ import { Getter } from 'vuex-class'
 @Component({
   components: {
     BaseAddress,
-    ConfirmDialog
+    ConfirmDialog,
+    HelpSection
   }
 })
 export default class OrgPerson extends Mixins(CommonMixin) {
@@ -247,6 +301,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   // Global getter
   @Getter getCurrentDate!: string
   @Getter isCorrectionFiling!: boolean
+  @Getter getResource!: ResourceIF
 
   /** The current org/person being added/edited. */
   private orgPerson: OrgPersonIF = null
@@ -265,6 +320,17 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   /** Model value for roles checkboxes. */
   private selectedRoles: Array<RoleTypes> = []
 
+  /** Model for Organization look up. */
+  private toggleBcLookUp = true
+
+  /** The local validation rules. */
+  private firstNameRules: Array<Function> = []
+  private middleNameRules: Array<Function> = []
+  private lastNameRules: Array<Function> = []
+  private orgNameRules: Array<Function> = []
+  private proprietorEmailRules = []
+  private confirmNameChangeRules = []
+
   /** True if Completing Party is checked. */
   private get isCompletingParty (): boolean {
     return this.selectedRoles.includes(RoleTypes.COMPLETING_PARTY)
@@ -282,12 +348,12 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 
   /** True if orgPerson has proprietor role. */
   private get isProprietor (): boolean {
-    return this.currentOrgPerson.roles.includes(RoleTypes.PROPRIETOR)
+    return this.currentOrgPerson.roles.some(role => role.roleType === RoleTypes.PROPRIETOR)
   }
 
   /** True if orgPerson has partner role. */
   private get isPartner (): boolean {
-    return this.currentOrgPerson.roles.includes(RoleTypes.PARTNER)
+    return this.currentOrgPerson.roles.some(role => role.roleType === RoleTypes.PARTNER)
   }
 
   /** The validation rules for the roles. */
@@ -295,13 +361,10 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     return [ () => this.selectedRoles.length > 0 || 'A role is required' ]
   }
 
-  /** The local validation rules. */
-  private firstNameRules: Array<Function> = []
-  private middleNameRules: Array<Function> = []
-  private lastNameRules: Array<Function> = []
-  private orgNameRules: Array<Function> = []
-  private proprietorEmailRules = []
-  private confirmNameChangeRules = []
+  /** Text label for firm orgPerson. */
+  private get orgPersonLabel (): string {
+    return this.isProprietor ? 'the proprietor' : 'this partner'
+  }
 
   /** True if the form is valid. */
   private get isFormValid (): boolean {
@@ -311,7 +374,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     }
     if (this.isProprietor) {
       isFormValid = (isFormValid && !!this.orgPerson.officer.email)
-      if (this.hasProprietorNameChanged(this.orgPerson)) {
+      if (this.hasOrgPersonNameChanged(this.orgPerson)) {
         isFormValid = isFormValid && this.orgPerson.confirmNameChange
       }
     }
@@ -327,6 +390,10 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   /** True if current data object is an organization (corporation/firm). */
   private get isOrg (): boolean {
     return (this.orgPerson?.officer.partyType === PartyTypes.ORGANIZATION)
+  }
+
+  private get orgTypesLabel (): string {
+    return this.getResource.changeData.orgPersonInfo?.orgTypesLabel
   }
 
   /**
@@ -422,12 +489,15 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   /**
    * Returns True if proprietor name has changed from its original properties.
    */
-  private hasProprietorNameChanged (person: OrgPersonIF): boolean {
-    const firstName = !isEqual(person.officer.firstName, this.currentOrgPerson?.officer.firstName)
-    const lastName = !isEqual(person.officer.lastName, this.currentOrgPerson?.officer.lastName)
-    const middleName = !isEqual(person.officer.middleName, this.currentOrgPerson?.officer.middleName)
+  private hasOrgPersonNameChanged (orgPerson: OrgPersonIF): boolean {
+    if (this.isPerson) {
+      const firstName = !isEqual(orgPerson.officer.firstName, this.currentOrgPerson?.officer.firstName)
+      const lastName = !isEqual(orgPerson.officer.lastName, this.currentOrgPerson?.officer.lastName)
+      const middleName =
+        !isEqual((orgPerson.officer.middleName || ''), (this.currentOrgPerson?.officer.middleName || ''))
 
-    return (firstName || lastName || middleName)
+      return (firstName || lastName || middleName)
+    } else return !isEqual(orgPerson.officer.organizationName, this.currentOrgPerson?.officer.organizationName)
   }
 
   /**
@@ -467,7 +537,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
       person.officer.id = uuidv4()
     }
     person.mailingAddress = { ...this.inProgressMailingAddress }
-    if (this.isDirector || this.isProprietor || this.isPartner) {
+    if (this.isDirector || this.isProprietor || this.isPartner || isNaN(this.activeIndex)) {
       person.deliveryAddress = this.setPersonDeliveryAddress()
     }
     person.roles = this.isCorrectionFiling ? this.setPersonRoles(this.orgPerson) : this.orgPerson.roles
@@ -476,7 +546,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 
   private setPersonDeliveryAddress (): AddressIF {
     if (this.inheritMailingAddress) {
-      this.inProgressDeliveryAddress = { ...this.inProgressMailingAddress, id: this.inProgressDeliveryAddress.id }
+      this.inProgressDeliveryAddress = { ...this.inProgressMailingAddress, id: this.inProgressDeliveryAddress?.id }
     }
     return { ...this.inProgressDeliveryAddress }
   }
@@ -512,6 +582,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
    * Cancels an edit or resets the data after adding a person.
    */
   private resetAddPersonData (emitEvent: boolean): void {
+    if (this.toggleBcLookUp && emitEvent) return this.emitReset()
+
     this.$refs.orgPersonForm.reset()
     this.$refs.mailingAddressNew.$refs.addressForm.reset()
     if (this.$refs.deliveryAddressNew) {
@@ -557,7 +629,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
       (v: string) => this.validateEmailFormat(v) || 'Enter valid email address'
     ]
 
-    this.confirmNameChangeRules = this.hasProprietorNameChanged(this.orgPerson)
+    this.confirmNameChangeRules = this.hasOrgPersonNameChanged(this.orgPerson)
       ? [(v: string) => !!v]
       : []
 
@@ -614,18 +686,12 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   padding-bottom: 0;
 }
 
-.people-roles-container {
-  margin-top: 1rem;
-  padding: 1.25rem;
-}
-
 ul, p {
   padding-top: 0.5rem;
 }
 
 li {
   list-style: None;
-  padding-top: 0.25rem;
 }
 
 .btn-panel {
@@ -645,6 +711,15 @@ li {
     margin-right: 0.5rem;
     margin-left: 0.5rem;
   }
+}
+
+.toggle-business-entry {
+  cursor: pointer;
+  color: $app-blue;
+  text-decoration: underline;
+  float: right;
+  font-size: $px-14;
+  vertical-align: middle;
 }
 
 // Address Block Layout
@@ -758,6 +833,10 @@ li {
 
 // Overrides for vuetify components (Checkbox alignment, inputField labels/text size/colour)
 ::v-deep {
+  #btn-remove.v-btn.v-btn--disabled {
+    color: $app-red !important;
+    opacity: .4;
+  }
   .v-input--selection-controls .v-input__slot, .v-input--selection-controls .v-radio {
     align-items: flex-start;
   }

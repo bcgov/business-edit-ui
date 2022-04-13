@@ -10,12 +10,14 @@ export interface OrgPersonIF {
     lastName: string
     organizationName?: string
     email?: string
+    identifier?: string
+    taxId?: string
   }
   role?: RoleTypes
   roles: RoleIF[] | any
   mailingAddress: AddressIF
   deliveryAddress?: AddressIF
-  action?: ActionTypes
+  action?: ActionTypes[]
   appointmentDate?: string
   cessationDate?: string
   confirmNameChange?: boolean

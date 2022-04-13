@@ -6,6 +6,8 @@ import flushPromises from 'flush-promises'
 import { OrgPerson } from '@/components/common'
 import { getVuexStore } from '@/store'
 import { FilingTypes } from '@/enums'
+import { GeneralPartnershipResource } from '@/resources/Edit/ChangeFirm'
+import { BenefitCompanyStatementResource } from '@/resources'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -180,6 +182,7 @@ describe('Org/Person component for Correction', () => {
     store.state.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     store.state.stateModel.nameRequest.entityType = 'BEN'
     store.state.stateModel.tombstone.currentDate = '2020-03-30'
+    store.state.resourceModel = BenefitCompanyStatementResource
   })
 
   it('Loads the component and sets data for person', async () => {

@@ -24,14 +24,14 @@ export default class BcRegContacts extends Vue {
     {
       icon: 'mdi-phone',
       key: 'Canada &amp; U.S. Toll Free:',
-      val: '1-877-370-1033',
-      href: 'tel:+1-877-370-1033'
+      val: '1-877-526-1526',
+      href: 'tel:+1-877-526-1526'
     },
     {
       icon: 'mdi-phone',
       key: 'Victoria Office:',
-      val: '250-370-1033',
-      href: 'tel:+1-250-370-1033'
+      val: '250-387-7848',
+      href: 'tel:+1-250-387-7848'
     },
     {
       icon: 'mdi-email',

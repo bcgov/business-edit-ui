@@ -57,7 +57,7 @@
       <article id="org-person-summary-section" class="section-container">
         <v-row no-gutters>
           <v-col cols="12" sm="3">
-            <label>Proprietor Information</label>
+            <label>{{ firmLabel }} Information</label>
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-4">
@@ -74,7 +74,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common'
-import { ActionBindingIF, NaicsIF, OrgPersonIF } from '@/interfaces'
+import { ActionBindingIF, NaicsIF, OrgPersonIF, ResourceIF } from '@/interfaces'
 import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 
 @Component({
@@ -97,6 +97,7 @@ export default class ChangeSummary extends Mixins(
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter hasOfficeAddressesChanged!: boolean
   @Getter hasPeopleAndRolesChanged!: boolean
+  @Getter getResource!: ResourceIF
 
   // Change flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -113,6 +114,11 @@ export default class ChangeSummary extends Mixins(
     if (this.getApprovedName) return this.getApprovedName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
+  }
+
+  /** The firm type label. */
+  get firmLabel (): string {
+    return this.getResource.changeData.orgPersonInfo.orgPersonLabel
   }
 }
 </script>

@@ -563,7 +563,12 @@ export const hasPeopleAndRolesChanged = (state: StateIF): boolean => {
   let currentOrgPersons = getPeopleAndRoles(state)
   let originalOrgPersons = getEntitySnapshot(state)?.orgPersons
 
-  return (!isSame(currentOrgPersons, originalOrgPersons, ['action']))
+  return (!isSame(currentOrgPersons, originalOrgPersons, ['action', 'confirmNameChange']))
+}
+
+/** Is true when the minimum partners met. */
+export const hasMinimumPartners = (state: StateIF): boolean => {
+  return getPeopleAndRoles(state).filter(party => !party.action?.includes(ActionTypes.REMOVED)).length >= 2
 }
 
 /** Whether share structure data has changed. */

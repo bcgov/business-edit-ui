@@ -24,8 +24,6 @@ export default class LegalApiMixin extends Vue {
    * @returns a promise to return the filing of the specified type
    */
   async fetchFilingById (id: number): Promise<any> {
-    // Override api version for /filings requests as V2 is currently broken for Correction Filings
-    axios.defaults.baseURL = 'https://legal-api-dev.apps.silver.devops.gov.bc.ca/api/v1'
     const url = `businesses/${this.getBusinessId}/filings/${id}`
 
     return axios.get(url)

@@ -114,7 +114,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // if filing and paying, filter out removed entities and omit the 'action' properties
     if (!isDraft) {
       // Filter out parties actions
-      parties = parties.filter(x => x.action !== ActionTypes.REMOVED)
+      parties = parties.filter(x => !x.action.includes(ActionTypes.REMOVED))
         .map((x) => { const { action, ...rest } = x; return rest })
 
       // Filter out class actions
@@ -199,7 +199,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // if filing and paying, filter out removed entities and omit the 'action' properties
     if (!isDraft) {
       // Filter out parties actions
-      parties = parties.filter(x => x.action !== ActionTypes.REMOVED)
+      parties = parties.filter(x => !x.action.includes(ActionTypes.REMOVED))
         .map((x) => { const { action, ...rest } = x; return rest })
 
       // Filter out class actions
@@ -362,12 +362,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     if (this.hasPeopleAndRolesChanged) {
       let parties = this.getPeopleAndRoles
-
       // if filing and paying, filter out removed entities and omit the 'action' properties
       if (!isDraft) {
         // Filter out parties actions
-        parties = parties.filter(x => x.action !== ActionTypes.REMOVED)
-          .map((x) => { const { action, ...rest } = x; return rest })
+        parties = parties.filter(x => !x.action.includes(ActionTypes.REMOVED))
+          .map((x) => {
+            const { action, ...rest } = x
+            return rest
+          })
       }
 
       filing.changeOfRegistration.parties = parties
@@ -469,7 +471,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    */
   parseAlteration (filing: AlterationFilingIF, entitySnapshot: EntitySnapshotIF): void {
     // Store business snapshot
-    this.setEntitySnapshot(entitySnapshot)
+    this.setEntitySnapshot(cloneDeep(entitySnapshot))
 
     // Restore current entity type
     this.setEntityType(filing.alteration.business?.legalType || entitySnapshot.businessInfo.legalType)
@@ -576,7 +578,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    */
   parseChangeFirm (filing: ChangeFirmIF, entitySnapshot: EntitySnapshotIF): void {
     // Store business snapshot
-    this.setEntitySnapshot(entitySnapshot)
+    this.setEntitySnapshot(cloneDeep(entitySnapshot))
 
     // Restore current entity type
     this.setEntityType(filing.business?.legalType || entitySnapshot.businessInfo.legalType)
@@ -601,23 +603,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
     this.setOfficeAddresses(addresses || entitySnapshot.addresses)
 
-    let parties = filing.changeOfRegistration.parties || entitySnapshot.orgPersons
-
     // Store people and roles
-    this.setPeopleAndRoles(
-      parties.map(orgPerson => {
-        return {
-          action: orgPerson.action,
-          confirmNameChange: orgPerson.confirmNameChange,
-          officer: orgPerson.officer,
-          mailingAddress: orgPerson.deliveryAddress,
-          deliveryAddress: orgPerson.mailingAddress,
-          roles: orgPerson.roles,
-          appointmentDate: orgPerson.appointmentDate,
-          cessationDate: null
-        }
-      }) || []
-    )
+    let parties = filing.changeOfRegistration.parties || entitySnapshot.orgPersons
+    this.setPeopleAndRoles(parties)
 
     // Store business contact info
     this.setBusinessContact(entitySnapshot.authInfo.contact)
@@ -667,27 +655,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     })
 
     // Store people and roles
-    this.setPeopleAndRoles(
-      entitySnapshot.orgPersons?.map(orgPerson => {
-        return {
-          officer: orgPerson.officer,
-          mailingAddress: orgPerson.mailingAddress,
-          deliveryAddress: orgPerson.deliveryAddress,
-          roles: orgPerson.roles || [
-            {
-              roleType: orgPerson.role in RoleTypes ? orgPerson.role
-                : Object.values(RoleTypes).find(role => {
-                  if (role.toLocaleLowerCase() === orgPerson.role.toLocaleLowerCase()) {
-                    return role
-                  }
-                })
-            }
-          ],
-          appointmentDate: orgPerson.appointmentDate,
-          cessationDate: null
-        }
-      }) || []
-    )
+    this.setPeopleAndRoles(entitySnapshot.orgPersons || [])
 
     // Store the business contact
     this.setBusinessContact(entitySnapshot.authInfo.contact)

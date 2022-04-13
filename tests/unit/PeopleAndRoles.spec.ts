@@ -5,6 +5,7 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import mockRouter from './MockRouter'
 import { GeneralPartnershipResource } from '@/resources/Edit/ChangeFirm'
+import { BenefitCompanyStatementResource } from '@/resources'
 
 // Store
 import { getVuexStore } from '@/store'
@@ -111,6 +112,7 @@ describe('People And Roles component for Correction', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     store.state.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.state.resourceModel = BenefitCompanyStatementResource
 
     wrapperFactory = () => {
       return mount(PeopleAndRoles, {
@@ -404,7 +406,7 @@ describe('People And Roles component for Change of Registration', () => {
     wrapper.destroy()
   })
 
-  it.only('shows the add corporation form when Add Corporation button is clicked', async () => {
+  it('shows the add corporation form when Add Corporation button is clicked', async () => {
     store.state.stateModel.peopleAndRoles.orgPeople = getOrgList(['partner'])
     const wrapper = wrapperFactory()
     wrapper.find(gpAddCorp).trigger('click')
@@ -414,7 +416,7 @@ describe('People And Roles component for Change of Registration', () => {
     expect(wrapper.find(gpAddCorp).attributes('disabled')).toBe('disabled')
     // check form
     expect(wrapper.find(orgPersonForm).exists()).toBe(true)
-    expect(wrapper.find('.add-org-header').text()).toBe('Add Corporation or Firm')
+    expect(wrapper.find('.add-org-header').text()).toBe('Add Business or Corporation')
     wrapper.destroy()
   })
 })
