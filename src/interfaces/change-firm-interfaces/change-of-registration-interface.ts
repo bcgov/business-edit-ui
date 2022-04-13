@@ -10,7 +10,9 @@ export interface ChangeOfRegistrationIF {
     },
     identifier: string
   },
-  businessAddress?: BaseAddressObjIF,
+  offices?: {
+    businessOffice: BaseAddressObjIF
+  },
   contactPoint: ContactPointIF,
   nameRequest?: NameRequestIF,
   parties?: Array<OrgPersonIF>

@@ -97,24 +97,26 @@ describe('Change of Registration Filing', () => {
             },
             'natureOfBusiness': ''
           },
-          'businessAddress': {
-            'mailingAddress': {
-              'addressCity': 'Bravo',
-              'addressCountry': 'CA',
-              'addressRegion': 'BC',
-              'deliveryInstructions': 'Mailing address',
-              'postalCode': 'V2V 2V2',
-              'streetAddress': '222 Second St',
-              'streetAddressAdditional': 'Suite 2'
-            },
-            'deliveryAddress': {
-              'addressCity': 'Alpha',
-              'addressCountry': 'CA',
-              'addressRegion': 'BC',
-              'deliveryInstructions': 'Delivery address',
-              'postalCode': 'V1V 1V1',
-              'streetAddress': '111 First St',
-              'streetAddressAdditional': 'Suite 1'
+          'offices': {
+            'businessOffice': {
+              'mailingAddress': {
+                'addressCity': 'Bravo',
+                'addressCountry': 'CA',
+                'addressRegion': 'BC',
+                'deliveryInstructions': 'Mailing address',
+                'postalCode': 'V2V 2V2',
+                'streetAddress': '222 Second St',
+                'streetAddressAdditional': 'Suite 2'
+              },
+              'deliveryAddress': {
+                'addressCity': 'Alpha',
+                'addressCountry': 'CA',
+                'addressRegion': 'BC',
+                'deliveryInstructions': 'Delivery address',
+                'postalCode': 'V1V 1V1',
+                'streetAddress': '111 First St',
+                'streetAddressAdditional': 'Suite 1'
+              }
             }
           },
           'contactPoint': {
