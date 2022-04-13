@@ -568,6 +568,7 @@ export const hasPeopleAndRolesChanged = (state: StateIF): boolean => {
 
 /** Is true when the minimum partners met. */
 export const hasMinimumPartners = (state: StateIF): boolean => {
+  // REMOVED Parties are still in the parties array until FILING, so exclude them for component level validations.
   return getPeopleAndRoles(state).filter(party => !party.action?.includes(ActionTypes.REMOVED)).length >= 2
 }
 
