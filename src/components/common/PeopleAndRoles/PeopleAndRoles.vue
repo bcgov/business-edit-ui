@@ -1,5 +1,5 @@
 <template>
-  <div id="people-and-roles">
+  <section id="people-and-roles">
 
     <confirm-dialog
       ref="changeCpDialog"
@@ -14,7 +14,7 @@
       </div>
 
       <!-- Instructional people and roles Text -->
-      <div v-if="isCorrectionFiling" class="section-container">
+      <article v-if="isCorrectionFiling" class="section-container">
         This application must include the following:
         <ul>
           <li>
@@ -33,10 +33,10 @@
             <span class="ml-2">At least one Director</span>
           </li>
         </ul>
-      </div>
+      </article>
 
       <!-- Instructional partner or proprietor Text -->
-      <div v-if="isChangeFiling" class="section-container">
+      <article v-if="isChangeFiling" class="section-container">
         <span class="info-text">{{ orgPersonSubtitle }}</span>
 
         <!-- Sole Prop Help -->
@@ -46,14 +46,16 @@
           :helpSection="orgPersonHelp"
           />
 
-        <!-- Partnership Help -->
+        <!-- Partnership Help and Add Buttons -->
         <div v-if="getResource.entityType === CorpTypeCd.PARTNERSHIP" class="mt-8">
           <v-btn
             id="gp-btn-add-person"
             outlined
             color="primary"
             :disabled="isAddingEditingOrgPerson"
-            @click="initAdd([], PartyTypes.PERSON)"
+            @click="initAdd(
+              [{ roleType: RoleTypes.PARTNER, appointmentDate: newAppointmentDate}], PartyTypes.PERSON
+              )"
           >
             <v-icon>mdi-account-plus</v-icon>
             <span>Add a Person</span>
@@ -64,16 +66,21 @@
             color="primary"
             class="ml-2"
             :disabled="isAddingEditingOrgPerson"
-            @click="initAdd([{ roleType: RoleTypes.INCORPORATOR }], PartyTypes.ORGANIZATION)"
+            @click="initAdd(
+              [{ roleType: RoleTypes.PARTNER, appointmentDate: newAppointmentDate }], PartyTypes.ORGANIZATION
+              )"
           >
             <v-icon>mdi-domain-plus</v-icon>
-            <span>Add a Corporation or Firm</span>
+            <span>Add a {{ orgTypesLabel }}</span>
           </v-btn>
+          <p v-if="!hasMinimumPartners" class="error-text small-text mt-5 mb-0">
+            You must have at least two partners
+          </p>
         </div>
-      </div>
+      </article>
 
       <!-- Correction Add Buttons -->
-      <div v-if="isCorrectionFiling" class="section-container">
+      <article v-if="isCorrectionFiling" class="section-container">
         <v-btn
           id="btn-add-person"
           outlined
@@ -93,7 +100,7 @@
           @click="initAdd([{ roleType: RoleTypes.INCORPORATOR }], PartyTypes.ORGANIZATION)"
         >
           <v-icon>mdi-domain-plus</v-icon>
-          <span>Add a Corporation or Firm</span>
+          <span>Add a {{ orgTypesLabel }}</span>
         </v-btn>
         <v-btn
           v-if="!cpValid"
@@ -107,9 +114,9 @@
           <v-icon>mdi-account-plus-outline</v-icon>
           <span>Add the Completing Party</span>
         </v-btn>
-      </div>
+      </article>
 
-      <div class="list-container">
+      <article class="list-container mt-n2">
         <list-people-and-roles
           :peopleAndRoles="getPeopleAndRoles"
           :renderOrgPersonForm="isAddingEditingOrgPerson"
@@ -124,9 +131,9 @@
           @reset="reset()"
           @removeCpRole="removeCpRole()"
         />
-      </div>
+      </article>
     </v-card>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -147,7 +154,7 @@ import { ActionTypes, CompareModes, CorpTypeCd, PartyTypes, RoleTypes } from '@/
 import { ConfirmDialog } from '@/components/common/dialogs'
 import { HelpSection } from '@/components/common'
 import { ListPeopleAndRoles } from './'
-import { CommonMixin } from '@/mixins'
+import { CommonMixin, DateMixin } from '@/mixins'
 
 @Component({
   components: {
@@ -156,7 +163,7 @@ import { CommonMixin } from '@/mixins'
     ListPeopleAndRoles
   }
 })
-export default class PeopleAndRoles extends Mixins(CommonMixin) {
+export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   // Refs
   $refs!: {
     changeCpDialog: ConfirmDialogType
@@ -167,6 +174,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   readonly PartyTypes = PartyTypes
 
   // Global getters
+  @Getter getCurrentJsDate!: Date
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getUserEmail!: string
@@ -176,6 +184,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   @Getter isChangeFiling!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
+  @Getter hasMinimumPartners!: boolean
 
   // Global actions
   @Action setPeopleAndRoles!: ActionBindingIF
@@ -205,7 +214,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
       addressCountry: '',
       deliveryInstructions: ''
     },
-    action: null
+    actions: []
   }
 
   // Local properties
@@ -254,7 +263,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 
   /** True if we have any changes (from original IA). */
   private get hasChanges (): boolean {
-    return this.getPeopleAndRoles.some(x => x.action)
+    return this.getPeopleAndRoles.some(x => x.actions)
   }
 
   /** The user email to use for the Completing Party. */
@@ -273,6 +282,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
       'This undo will restore the original Completing Party.'
   }
 
+  /** Resource getters. */
   private get orgPersonLabel (): string {
     return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
   }
@@ -283,6 +293,15 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 
   private get orgPersonHelp (): HelpSectionIF {
     return this.getResource.changeData?.orgPersonInfo.helpSection
+  }
+
+  private get orgTypesLabel (): string {
+    return this.getResource.changeData?.orgPersonInfo?.orgTypesLabel
+  }
+
+  /** New server date in api expected format for Role Appointment dates. */
+  private get newAppointmentDate (): string {
+    return this.dateToYyyyMmDd(this.getCurrentJsDate)
   }
 
   /**
@@ -305,7 +324,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     // 1. filter out removed people
     // 2. filter in people with specified role
     const orgPersonWithSpecifiedRole = this.getPeopleAndRoles
-      .filter(people => people.action !== ActionTypes.REMOVED)
+      .filter(people => !people.actions?.includes(ActionTypes.REMOVED))
       .filter(people => people.roles.some(role => role.roleType === roleName))
 
     if (mode === CompareModes.EXACT) {
@@ -321,7 +340,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    * @param roles The roles of this item.
    * @param type The incorporator (party) type of this item.
    */
-  private initAdd (roles: RoleIF[], type: PartyTypes): void {
+  private initAdd (roles: RoleIF[] | RoleTypes[], type: PartyTypes): void {
     // make a copy so we don't change the original object
     this.currentOrgPerson = cloneDeep(this.emptyOrgPerson)
     this.currentOrgPerson.roles = roles
@@ -364,55 +383,50 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     // get org/person to undo
     const person = tempList[index]
 
-    switch (person.action) {
-      case ActionTypes.ADDED:
-        // splice out the person
-        tempList.splice(index, 1)
-        break
+    if (person.actions.includes(ActionTypes.ADDED)) {
+      // splice out the person
+      tempList.splice(index, 1)
+    } else {
+      // get ID of person to undo
+      const id = person?.officer?.id
 
-      case ActionTypes.EDITED:
-      case ActionTypes.REMOVED:
-        // get ID of person to undo
-        const id = person?.officer?.id
+      // get a copy of original person from original IA
+      const thisPerson = (id !== undefined) && cloneDeep(this.originalParties.find(x => x.officer.id === id))
 
-        // get a copy of original person from original IA
-        const thisPerson = (id !== undefined) && cloneDeep(this.originalParties.find(x => x.officer.id === id))
+      // safety check
+      if (!thisPerson) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to find original person with id =', id)
+        return
+      }
 
-        // safety check
-        if (!thisPerson) {
-          // eslint-disable-next-line no-console
-          console.log('Failed to find original person with id =', id)
-          return
-        }
+      // check if original person had CP role
+      const hadCp = thisPerson.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)
 
-        // check if original person had CP role
-        const hadCp = thisPerson.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)
+      // check if an other person has CP role right now
+      // NB: we will update this record right in the temp list - no need to splice
+      const otherPerson = this.getCompletingParty(tempList)
 
-        // check if an other person has CP role right now
-        // NB: we will update this record right in the temp list - no need to splice
-        const otherPerson = this.getCompletingParty(tempList)
+      // check if we would restore the original CP
+      if (hadCp && otherPerson && (thisPerson.officer.id !== otherPerson.officer.id)) {
+        // prompt user for confirmation
+        await this.confirmReassignCp().then(confirm => {
+          if (confirm) {
+            // remove the other person's CP role and their email
+            otherPerson.roles = otherPerson.roles.filter(r => r.roleType !== RoleTypes.COMPLETING_PARTY)
+            delete otherPerson.officer.email
+            otherPerson.actions = [this.computeAction(otherPerson)]
+          } else {
+            // remove this person's CP role and their email
+            thisPerson.roles = thisPerson.roles.filter(r => r.roleType !== RoleTypes.COMPLETING_PARTY)
+            delete thisPerson.officer.email
+            thisPerson.actions = [this.computeAction(thisPerson)]
+          }
+        })
+      }
 
-        // check if we would restore the original CP
-        if (hadCp && otherPerson && (thisPerson.officer.id !== otherPerson.officer.id)) {
-          // prompt user for confirmation
-          await this.confirmReassignCp().then(confirm => {
-            if (confirm) {
-              // remove the other person's CP role and their email
-              otherPerson.roles = otherPerson.roles.filter(r => r.roleType !== RoleTypes.COMPLETING_PARTY)
-              delete otherPerson.officer.email
-              otherPerson.action = this.computeAction(otherPerson)
-            } else {
-              // remove this person's CP role and their email
-              thisPerson.roles = thisPerson.roles.filter(r => r.roleType !== RoleTypes.COMPLETING_PARTY)
-              delete thisPerson.officer.email
-              thisPerson.action = this.computeAction(thisPerson)
-            }
-          })
-        }
-
-        // splice in the original person
-        tempList.splice(index, 1, thisPerson)
-        break
+      // splice in the original person
+      tempList.splice(index, 1, thisPerson)
     }
 
     // set updated list
@@ -436,31 +450,33 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     const original = this.originalParties.find(x => x.officer.id === person.officer.id)
     if (!original) return ActionTypes.ADDED
     // ignore "action" when comparing
-    if (!this.isSame(person, original, ['action'])) return ActionTypes.EDITED
-    return null // no action
+    if (!this.isSame(person, original, ['actions'])) return ActionTypes.EDITED
+    return null // no actions
   }
 
   /**
    * Adds/changes the specified org/person.
-   * @param person The data object of the org/person to change.
+   * @param orgPerson The data object of the org/person to change.
    */
-  private addEdit (person: OrgPersonIF): void {
+  private addEdit (orgPerson: OrgPersonIF): void {
     // make a copy so Vue reacts when we set the new list
     const tempList = cloneDeep(this.getPeopleAndRoles)
 
     // if this is the Completing Party, set email address from user profile
-    if (person.roles.find(role => role.roleType === RoleTypes.COMPLETING_PARTY)) {
-      person.officer.email = this.userEmail
+    if (orgPerson.roles.find(role => role.roleType === RoleTypes.COMPLETING_PARTY)) {
+      orgPerson.officer.email = this.userEmail
     }
 
     if (isNaN(this.activeIndex)) {
-      person.action = ActionTypes.ADDED
-      // add new person to list
-      tempList.push(person)
+      // add new person to list if not a current index
+      orgPerson.actions = [ActionTypes.ADDED]
+      tempList.push(orgPerson)
     } else {
-      person.action = ActionTypes.EDITED
+      // Assign actions
+      orgPerson = this.assignAction(orgPerson)
+
       // splice in the edited person
-      tempList.splice(this.activeIndex, 1, person)
+      tempList.splice(this.activeIndex, 1, orgPerson)
     }
 
     // set the new list
@@ -472,6 +488,70 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 
     // reset state properties
     this.reset()
+  }
+
+  /** Returns true if the orgPerson name has changed. */
+  private hasNameChanged (orgPerson: OrgPersonIF): boolean {
+    if (orgPerson.officer.firstName && orgPerson.officer.lastName) {
+      const firstName = orgPerson.officer.firstName !== this.originalParties[this.activeIndex].officer.firstName
+      // Provide fallback middle name as the api does not always provide it
+      const middleName =
+        (orgPerson.officer.middleName || '') !== (this.originalParties[this.activeIndex].officer.middleName || '')
+      const lastName = orgPerson.officer.lastName !== this.originalParties[this.activeIndex].officer.lastName
+
+      return firstName || middleName || lastName
+    } else {
+      return orgPerson.officer.organizationName !== this.originalParties[this.activeIndex].officer.organizationName
+    }
+  }
+
+  /** Returns true if the orgPerson email has changed. */
+  private hasEmailChanged (orgPerson: OrgPersonIF): boolean {
+    return orgPerson.officer.email !== this.originalParties[this.activeIndex].officer.email
+  }
+
+  /** Returns true if the orgPerson address has changed. */
+  private hasAddressChanged (orgPerson: OrgPersonIF): boolean {
+    const mailingAddress =
+      !this.isSame(orgPerson.mailingAddress, this.originalParties[this.activeIndex].mailingAddress, ['id'])
+    const deliveryAddress =
+      !this.isSame(orgPerson.deliveryAddress, this.originalParties[this.activeIndex].deliveryAddress, ['id'])
+
+    return mailingAddress || deliveryAddress
+  }
+
+  /** Assign action(s) to the orgPerson identifying changes. */
+  private assignAction (orgPerson: OrgPersonIF): OrgPersonIF {
+    // Return if orgPerson is new(ADDED)
+    if (orgPerson.actions?.includes(ActionTypes.ADDED)) return orgPerson
+
+    // If this is correction provide EDITED label and return
+    if (this.isCorrectionFiling) {
+      orgPerson.actions = [ActionTypes.CORRECTED]
+      return orgPerson
+    }
+
+    // Assign empty array for pre-existing orgPersons if not defined (ie from API)
+    if (!orgPerson.actions) orgPerson.actions = []
+
+    if (this.hasNameChanged(orgPerson)) {
+      !orgPerson.actions.includes(ActionTypes.NAME_CHANGED) && orgPerson.actions.push(ActionTypes.NAME_CHANGED)
+    } else orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.NAME_CHANGED)
+
+    if (this.hasEmailChanged(orgPerson)) {
+      !orgPerson.actions.includes(ActionTypes.EMAIL_CHANGED) && orgPerson.actions.push(ActionTypes.EMAIL_CHANGED)
+    } else orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.EMAIL_CHANGED)
+
+    if (this.hasAddressChanged(orgPerson)) {
+      !orgPerson.actions.includes(ActionTypes.ADDRESS_CHANGED) && orgPerson.actions.push(ActionTypes.ADDRESS_CHANGED)
+    } else orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.ADDRESS_CHANGED)
+
+    // Restore orgPerson when edits are undone manually through form entry
+    if (!this.hasNameChanged(orgPerson) && !this.hasEmailChanged(orgPerson) && !this.hasAddressChanged(orgPerson)) {
+      orgPerson = this.originalParties[this.activeIndex]
+    }
+
+    return orgPerson
   }
 
   /**
@@ -488,7 +568,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 
     // just set the action (ie, soft-delete)
     // person will be filtered out on file and pay
-    person.action = ActionTypes.REMOVED
+    person.actions = [ActionTypes.REMOVED]
 
     // set the new list
     this.setPeopleAndRoles(tempList)
@@ -521,8 +601,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 
       // identify that this person has been edited
       // (unless they were already added, edited or removed)
-      if (!person.action) {
-        person.action = ActionTypes.EDITED
+      if (!person.actions) {
+        person.actions = [ActionTypes.EDITED]
       }
 
       // remove email address that we got from user profile
@@ -561,7 +641,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    */
   private getCompletingParty (list: OrgPersonIF[]): OrgPersonIF {
     const i = list?.findIndex(orgPerson =>
-      (orgPerson.action !== ActionTypes.REMOVED) &&
+      (!orgPerson.actions?.includes(ActionTypes.REMOVED)) &&
         orgPerson.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)
     )
     return (i >= 0) ? list[i] : undefined
@@ -591,6 +671,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     this.setEditingPeopleAndRoles(val)
     this.setValidComponent({ key: 'isValidOrgPersons', value: !val })
   }
+
+  @Watch('hasMinimumPartners')
+  private onMinimumPartnersChanged (val: boolean): void {
+    this.setValidComponent({ key: 'isValidOrgPersons', value: val })
+  }
 }
 </script>
 
@@ -616,5 +701,15 @@ ul {
 
 li {
   padding-top: 0.25rem;
+}
+
+::v-deep {
+  .v-btn.v-btn--disabled:not(#btn-remove) {
+    opacity: .4;
+    color: $app-blue !important;
+    .v-icon {
+      color: $app-blue !important;
+    }
+  }
 }
 </style>

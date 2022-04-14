@@ -10,6 +10,7 @@ import { getVuexStore } from '@/store'
 import { createLocalVue, mount } from '@vue/test-utils'
 import { ChangeSummary, NatureOfBusiness } from '@/components/Edit'
 import { OfficeAddresses } from '@/components/common'
+import { GeneralPartnershipResource } from '@/resources/Edit/ChangeFirm'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()
@@ -55,6 +56,7 @@ describe('Change Summary component', () => {
     store.state.stateModel.entitySnapshot = entitySnapshot
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.stateModel.businessInformation = { ...entitySnapshot.businessInfo }
+    store.state.resourceModel = GeneralPartnershipResource
   })
 
   beforeEach(() => {

@@ -1,5 +1,9 @@
 export enum ActionTypes {
-  ADDED = 'added',
-  EDITED = 'edited',
-  REMOVED = 'removed'
+  ADDED = 'ADDED',
+  ADDRESS_CHANGED = 'ADDRESS CHANGED',
+  CORRECTED = 'CORRECTED',
+  EDITED = 'EDITED',
+  EMAIL_CHANGED = 'EMAIL CHANGED',
+  NAME_CHANGED = 'NAME CHANGED',
+  REMOVED = 'REMOVED'
 }

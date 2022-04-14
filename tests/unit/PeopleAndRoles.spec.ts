@@ -5,6 +5,7 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import mockRouter from './MockRouter'
 import { GeneralPartnershipResource } from '@/resources/Edit/ChangeFirm'
+import { BenefitCompanyStatementResource } from '@/resources'
 
 // Store
 import { getVuexStore } from '@/store'
@@ -111,6 +112,7 @@ describe('People And Roles component for Correction', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     store.state.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.state.resourceModel = BenefitCompanyStatementResource
 
     wrapperFactory = () => {
       return mount(PeopleAndRoles, {
@@ -295,7 +297,7 @@ describe('People And Roles component for Correction', () => {
       incorporatorRole,
       directorRole
     ])
-    store.state.stateModel.peopleAndRoles.orgPeople[0].action = 'edited'
+    store.state.stateModel.peopleAndRoles.orgPeople[0].actions = ['edited']
     const wrapper = wrapperFactory()
 
     expect(store.state.stateModel.peopleAndRoles.changed).toBe(true)
@@ -307,16 +309,16 @@ describe('People And Roles component for Correction', () => {
     // original IA containing original CP:
     const originalCp = getPersonList([completingPartyRole])[0]
     originalCp.officer.id = '1'
-    originalCp.action = undefined
+    originalCp.actions = undefined
     store.state.stateModel.originalIA.incorporationApplication.parties = [originalCp]
 
     // current orgPeople list containing edited CP and added CP:
     const editedCp = getPersonList([])[0]
     editedCp.officer.id = '1'
-    editedCp.action = 'edited'
+    editedCp.actions = ['edited']
     const addedCp = getPersonList([completingPartyRole])[0]
     addedCp.officer.id = '2'
-    addedCp.action = 'added'
+    addedCp.actions = ['added']
     store.state.stateModel.peopleAndRoles.orgPeople = [editedCp, addedCp]
 
     const wrapper = wrapperFactory()
@@ -404,7 +406,7 @@ describe('People And Roles component for Change of Registration', () => {
     wrapper.destroy()
   })
 
-  it.only('shows the add corporation form when Add Corporation button is clicked', async () => {
+  it('shows the add corporation form when Add Corporation button is clicked', async () => {
     store.state.stateModel.peopleAndRoles.orgPeople = getOrgList(['partner'])
     const wrapper = wrapperFactory()
     wrapper.find(gpAddCorp).trigger('click')
@@ -414,7 +416,7 @@ describe('People And Roles component for Change of Registration', () => {
     expect(wrapper.find(gpAddCorp).attributes('disabled')).toBe('disabled')
     // check form
     expect(wrapper.find(orgPersonForm).exists()).toBe(true)
-    expect(wrapper.find('.add-org-header').text()).toBe('Add Corporation or Firm')
+    expect(wrapper.find('.add-org-header').text()).toBe('Add Business or Corporation')
     wrapper.destroy()
   })
 })

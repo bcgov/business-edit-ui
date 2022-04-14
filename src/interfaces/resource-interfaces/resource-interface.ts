@@ -19,6 +19,7 @@ export interface ResourceIF {
     typeChangeInfo?: string
     orgPersonInfo?: {
       orgPersonLabel: string
+      orgTypesLabel?: string
       subtitle: string
       helpSection?: HelpSectionIF
     }

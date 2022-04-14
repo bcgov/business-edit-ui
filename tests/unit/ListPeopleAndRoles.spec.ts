@@ -2,15 +2,12 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-
-// Utils
 import { mount } from '@vue/test-utils'
-
-// Components
 import { ListPeopleAndRoles } from '@/components/common'
-// Store
 import { getVuexStore } from '@/store'
 import { FilingTypes } from '@/enums'
+import { GeneralPartnershipResource } from '@/resources/Edit/ChangeFirm'
+import { BenefitCompanyStatementResource } from '@/resources'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -75,7 +72,7 @@ const peopleAndRoles = [
       postalCode: 'H3C 5K4',
       addressCountry: 'CA'
     },
-    action: 'edited'
+    actions: ['CORRECTED']
   },
   {
     officer: {
@@ -105,7 +102,7 @@ const peopleAndRoles = [
       postalCode: 'P1B 2Y7',
       addressCountry: 'CA'
     },
-    action: 'added'
+    actions: ['ADDED']
   },
   {
     officer: {
@@ -136,7 +133,7 @@ const peopleAndRoles = [
       postalCode: 'C0A 1H8',
       addressCountry: 'CA'
     },
-    action: 'removed'
+    actions: ['REMOVED']
   }
 ]
 
@@ -151,7 +148,9 @@ const gpPeopleAndRoles = [
       partyType: 'person',
       email: 'completing-party@example.com'
     },
-    roles: ['partner'],
+    roles: [
+      { roleType: 'Partner', appointmentDate: '2020-03-30' }
+    ],
     mailingAddress: {
       streetAddress: '4219 St. John Street',
       streetAddressAdditional: '',
@@ -179,7 +178,9 @@ const gpPeopleAndRoles = [
       organizationName: 'Random Food Distributors',
       partyType: 'organization'
     },
-    roles: ['partner'],
+    roles: [
+      { roleType: 'Partner', appointmentDate: '2020-03-30' }
+    ],
     mailingAddress: {
       streetAddress: '1797 rue Levy',
       streetAddressAdditional: '',
@@ -188,7 +189,7 @@ const gpPeopleAndRoles = [
       postalCode: 'H3C 5K4',
       addressCountry: 'CA'
     },
-    action: 'edited'
+    actions: ['NAME CHANGED']
   },
   {
     officer: {
@@ -218,7 +219,7 @@ const gpPeopleAndRoles = [
       postalCode: 'P1B 2Y7',
       addressCountry: 'CA'
     },
-    action: 'added'
+    actions: ['ADDED']
   },
   {
     officer: {
@@ -229,7 +230,9 @@ const gpPeopleAndRoles = [
       organizationName: '',
       partyType: 'person'
     },
-    roles: ['partner'],
+    roles: [
+      { roleType: 'Partner', appointmentDate: '2020-03-30' }
+    ],
     mailingAddress: {
       streetAddress: '1179 A Avenue',
       streetAddressAdditional: '',
@@ -246,7 +249,7 @@ const gpPeopleAndRoles = [
       postalCode: 'C0A 1H8',
       addressCountry: 'CA'
     },
-    action: 'removed'
+    actions: ['REMOVED']
   }
 ]
 
@@ -270,7 +273,7 @@ const emptyPerson = {
     addressCountry: '',
     deliveryInstructions: ''
   },
-  action: null as string
+  actions: []
 }
 
 const emptyOrg = {
@@ -293,7 +296,7 @@ const emptyOrg = {
     addressCountry: '',
     deliveryInstructions: ''
   },
-  action: null as string
+  actions: []
 }
 
 describe('List People And Roles component for Corrections', () => {
@@ -301,6 +304,7 @@ describe('List People And Roles component for Corrections', () => {
 
   beforeAll(() => {
     store.state.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.state.resourceModel = BenefitCompanyStatementResource
     wrapperFactory = (propsData: any) => {
       return mount(ListPeopleAndRoles, { propsData: { ...propsData }, vuetify, store })
     }
@@ -333,11 +337,11 @@ describe('List People And Roles component for Corrections', () => {
     expect(rows.at(0).find('.people-roles-title').text()).toBe('Romeo D Whitehead')
     expect(rows.at(0).find('.v-chip').exists()).toBe(false)
     expect(rows.at(1).find('.people-roles-title').text()).toBe('Random Food Distributors')
-    expect(rows.at(1).find('.v-chip').text()).toBe('Corrected')
+    expect(rows.at(1).find('.v-chip').text()).toBe('CORRECTED')
     expect(rows.at(2).find('.people-roles-title').text()).toBe('Lawrence Kavanagh')
-    expect(rows.at(2).find('.v-chip').text()).toBe('Added')
+    expect(rows.at(2).find('.v-chip').text()).toBe('ADDED')
     expect(rows.at(3).find('.people-roles-title').text()).toBe('Christy Sawyer')
-    expect(rows.at(3).find('.v-chip').text()).toBe('Removed')
+    expect(rows.at(3).find('.v-chip').text()).toBe('REMOVED')
 
     wrapper.destroy()
   })
@@ -389,21 +393,25 @@ describe('List People And Roles component for Corrections', () => {
   it('displays the correct actions menus', () => {
     const wrapper = wrapperFactory({ peopleAndRoles })
 
+    // No action
     const item1 = wrapper.findAll('.people-roles-content').at(0)
     const button1 = item1.find('.actions .edit-action #officer-0-edit-btn')
     expect(button1.exists()).toBe(true)
     expect(button1.text()).toBe('Correct')
 
+    // CORRECTED
     const item2 = wrapper.findAll('.people-roles-content').at(1)
     const button2 = item2.find('.actions .undo-action #officer-1-undo-btn')
     expect(button2.exists()).toBe(true)
     expect(button2.text()).toBe('Undo')
 
+    // ADDED
     const item3 = wrapper.findAll('.people-roles-content').at(2)
-    const button3 = item3.find('.actions .undo-action #officer-2-undo-btn')
+    const button3 = item3.find('.actions .edit-action #officer-2-edit-btn')
     expect(button3.exists()).toBe(true)
-    expect(button3.text()).toBe('Undo')
+    expect(button3.text()).toBe('Edit')
 
+    // REMOVED
     const item4 = wrapper.findAll('.people-roles-content').at(3)
     const button4 = item4.find('.actions .undo-action #officer-3-undo-btn')
     expect(button4.exists()).toBe(true)
@@ -490,6 +498,7 @@ describe('List People And Roles component for Change of Registration', () => {
 
   beforeAll(() => {
     store.state.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
+    store.state.resourceModel = GeneralPartnershipResource
     wrapperFactory = (propsData: any) => {
       return mount(ListPeopleAndRoles, { propsData: { ...propsData }, vuetify, store })
     }
@@ -522,11 +531,11 @@ describe('List People And Roles component for Change of Registration', () => {
     expect(rows.at(0).find('.people-roles-title').text()).toBe('Romeo D Whitehead')
     expect(rows.at(0).find('.v-chip').exists()).toBe(false)
     expect(rows.at(1).find('.people-roles-title').text()).toBe('Random Food Distributors')
-    expect(rows.at(1).find('.v-chip').text()).toBe('Changed')
+    expect(rows.at(1).find('.v-chip').text()).toBe('NAME CHANGED')
     expect(rows.at(2).find('.people-roles-title').text()).toBe('Lawrence Kavanagh')
-    expect(rows.at(2).find('.v-chip').text()).toBe('Added')
+    expect(rows.at(2).find('.v-chip').text()).toBe('ADDED')
     expect(rows.at(3).find('.people-roles-title').text()).toBe('Christy Sawyer')
-    expect(rows.at(3).find('.v-chip').text()).toBe('Removed')
+    expect(rows.at(3).find('.v-chip').text()).toBe('REMOVED')
 
     wrapper.destroy()
   })
@@ -559,7 +568,7 @@ describe('List People And Roles component for Change of Registration', () => {
     const wrapper = wrapperFactory({ peopleAndRoles: gpPeopleAndRoles })
 
     const item1 = wrapper.findAll('.people-roles-content').at(0)
-    expect(item1.findAll('.col-roles').at(0).text()).toBe('')
+    expect(item1.findAll('.col-roles').exists()).toBe(false)
 
     wrapper.destroy()
   })
@@ -567,21 +576,25 @@ describe('List People And Roles component for Change of Registration', () => {
   it('displays the correct actions menus', () => {
     const wrapper = wrapperFactory({ peopleAndRoles: gpPeopleAndRoles })
 
+    // No action
     const item1 = wrapper.findAll('.people-roles-content').at(0)
     const button1 = item1.find('.actions .edit-action #officer-0-edit-btn')
     expect(button1.exists()).toBe(true)
     expect(button1.text()).toBe('Change')
 
+    // NAME CHANGED
     const item2 = wrapper.findAll('.people-roles-content').at(1)
     const button2 = item2.find('.actions .undo-action #officer-1-undo-btn')
     expect(button2.exists()).toBe(true)
     expect(button2.text()).toBe('Undo')
 
+    // ADDED
     const item3 = wrapper.findAll('.people-roles-content').at(2)
-    const button3 = item3.find('.actions .undo-action #officer-2-undo-btn')
+    const button3 = item3.find('.actions .edit-action #officer-2-edit-btn')
     expect(button3.exists()).toBe(true)
-    expect(button3.text()).toBe('Undo')
+    expect(button3.text()).toBe('Edit')
 
+    // REMOVED
     const item4 = wrapper.findAll('.people-roles-content').at(3)
     const button4 = item4.find('.actions .undo-action #officer-3-undo-btn')
     expect(button4.exists()).toBe(true)
@@ -620,7 +633,7 @@ describe('List People And Roles component for Change of Registration', () => {
     // verify that add component is at the top (above the list)
     const section = wrapper.find('#people-roles-add')
     expect(section.exists()).toBe(true)
-    expect(section.find('.add-org-header').text()).toBe('Add Corporation or Firm')
+    expect(section.find('.add-org-header').text()).toBe('Add Business or Corporation')
     expect(section.find('#org-person-form').exists()).toBe(true)
 
     wrapper.destroy()
@@ -656,7 +669,7 @@ describe('List People And Roles component for Change of Registration', () => {
     // verify that edit component is within the list (inline)
     const section = wrapper.find('#people-roles-list #people-roles-edit')
     expect(section.exists()).toBe(true)
-    expect(section.find('.add-org-header').text()).toBe('Edit Corporation or Firm')
+    expect(section.find('.add-org-header').text()).toBe('Edit Business or Corporation')
     expect(section.find('#org-person-form').exists()).toBe(true)
 
     wrapper.destroy()

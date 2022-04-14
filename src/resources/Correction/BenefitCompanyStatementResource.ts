@@ -15,7 +15,8 @@ export const BenefitCompanyStatementResource = {
       CorrectionTypes.CORRECT_NAME
     ],
     orgPersonInfo: {
-      orgPersonLabel: 'People and Roles'
+      orgPersonLabel: 'People and Roles',
+      orgTypesLabel: 'Corporation or Firm'
     }
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +
