@@ -111,11 +111,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     let shareClasses = this.getShareClasses
     let nameTranslations = this.getNameTranslations
 
-    // if filing and paying, filter out removed entities and omit the 'action' properties
+    // if filing and paying, filter out removed entities and omit the 'action(s)' properties
     if (!isDraft) {
       // Filter out parties actions
-      parties = parties.filter(x => !x.action.includes(ActionTypes.REMOVED))
-        .map((x) => { const { action, ...rest } = x; return rest })
+      parties = parties.filter(x => !x.actions.includes(ActionTypes.REMOVED))
+        .map((x) => { const { actions, ...rest } = x; return rest })
 
       // Filter out class actions
       shareClasses = shareClasses.filter(x => x.action !== ActionTypes.REMOVED)
@@ -192,16 +192,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @returns the alteration filing body
    */
   buildAlterationFiling (isDraft: boolean): AlterationFilingIF {
-    let parties = this.getPeopleAndRoles
     let shareClasses = this.getShareClasses
     let nameTranslations = this.getNameTranslations
 
     // if filing and paying, filter out removed entities and omit the 'action' properties
     if (!isDraft) {
-      // Filter out parties actions
-      parties = parties.filter(x => !x.action.includes(ActionTypes.REMOVED))
-        .map((x) => { const { action, ...rest } = x; return rest })
-
       // Filter out class actions
       shareClasses = shareClasses.filter(x => x.action !== ActionTypes.REMOVED)
         .map((x) => { const { action, ...rest } = x; return rest })
@@ -364,16 +359,24 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     if (this.hasPeopleAndRolesChanged) {
       let parties = this.getPeopleAndRoles
-      // if filing and paying, filter out removed entities and omit the 'action' properties
+      // if filing and paying, filter out removed entities and omit the 'actions' properties
       if (!isDraft) {
         // Filter out parties actions
-        parties = parties.filter(x => !x.action.includes(ActionTypes.REMOVED))
+        parties = parties.filter(x => !x.actions?.includes(ActionTypes.REMOVED))
           .map((x) => {
-            const { action, ...rest } = x
+            // Remove null or undefined properties to adhere to schema.
+            // ie taxId is an optional property but schema doesn't accept defined empty properties
+            Object.keys(x.officer).forEach(key => {
+              if (x.officer[key] === null || x.officer[key] === '') {
+                delete x.officer[key]
+              }
+            })
+
+            const { actions, ...rest } = x
             return rest
           })
       }
-
+      console.log(parties)
       filing.changeOfRegistration.parties = parties
     }
 

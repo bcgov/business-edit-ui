@@ -36,7 +36,7 @@
       </article>
 
       <!-- Instructional partner or proprietor Text -->
-      <article v-if="isChangeFiling" class="section-container pb-0">
+      <article v-if="isChangeFiling" class="section-container">
         <span class="info-text">{{ orgPersonSubtitle }}</span>
 
         <!-- Sole Prop Help -->
@@ -53,7 +53,9 @@
             outlined
             color="primary"
             :disabled="isAddingEditingOrgPerson"
-            @click="initAdd([{ roleType: RoleTypes.PARTNER }], PartyTypes.PERSON)"
+            @click="initAdd(
+              [{ roleType: RoleTypes.PARTNER, appointmentDate: newAppointmentDate}], PartyTypes.PERSON
+              )"
           >
             <v-icon>mdi-account-plus</v-icon>
             <span>Add a Person</span>
@@ -64,7 +66,9 @@
             color="primary"
             class="ml-2"
             :disabled="isAddingEditingOrgPerson"
-            @click="initAdd([{ roleType: RoleTypes.PARTNER }], PartyTypes.ORGANIZATION)"
+            @click="initAdd(
+              [{ roleType: RoleTypes.PARTNER, appointmentDate: newAppointmentDate }], PartyTypes.ORGANIZATION
+              )"
           >
             <v-icon>mdi-domain-plus</v-icon>
             <span>Add a {{ orgTypesLabel }}</span>
@@ -112,7 +116,7 @@
         </v-btn>
       </article>
 
-      <article class="list-container">
+      <article class="list-container mt-n2">
         <list-people-and-roles
           :peopleAndRoles="getPeopleAndRoles"
           :renderOrgPersonForm="isAddingEditingOrgPerson"
@@ -150,7 +154,7 @@ import { ActionTypes, CompareModes, CorpTypeCd, PartyTypes, RoleTypes } from '@/
 import { ConfirmDialog } from '@/components/common/dialogs'
 import { HelpSection } from '@/components/common'
 import { ListPeopleAndRoles } from './'
-import { CommonMixin } from '@/mixins'
+import { CommonMixin, DateMixin } from '@/mixins'
 
 @Component({
   components: {
@@ -159,7 +163,7 @@ import { CommonMixin } from '@/mixins'
     ListPeopleAndRoles
   }
 })
-export default class PeopleAndRoles extends Mixins(CommonMixin) {
+export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   // Refs
   $refs!: {
     changeCpDialog: ConfirmDialogType
@@ -170,6 +174,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   readonly PartyTypes = PartyTypes
 
   // Global getters
+  @Getter getCurrentJsDate!: Date
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getUserEmail!: string
@@ -209,7 +214,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
       addressCountry: '',
       deliveryInstructions: ''
     },
-    action: []
+    actions: []
   }
 
   // Local properties
@@ -258,7 +263,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 
   /** True if we have any changes (from original IA). */
   private get hasChanges (): boolean {
-    return this.getPeopleAndRoles.some(x => x.action)
+    return this.getPeopleAndRoles.some(x => x.actions)
   }
 
   /** The user email to use for the Completing Party. */
@@ -277,6 +282,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
       'This undo will restore the original Completing Party.'
   }
 
+  /** Resource getters. */
   private get orgPersonLabel (): string {
     return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
   }
@@ -291,6 +297,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 
   private get orgTypesLabel (): string {
     return this.getResource.changeData?.orgPersonInfo?.orgTypesLabel
+  }
+
+  /** New server date in api expected format for Role Appointment dates. */
+  private get newAppointmentDate (): string {
+    return this.dateToYyyyMmDd(this.getCurrentJsDate)
   }
 
   /**
@@ -313,7 +324,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     // 1. filter out removed people
     // 2. filter in people with specified role
     const orgPersonWithSpecifiedRole = this.getPeopleAndRoles
-      .filter(people => !people.action?.includes(ActionTypes.REMOVED))
+      .filter(people => !people.actions?.includes(ActionTypes.REMOVED))
       .filter(people => people.roles.some(role => role.roleType === roleName))
 
     if (mode === CompareModes.EXACT) {
@@ -372,7 +383,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     // get org/person to undo
     const person = tempList[index]
 
-    if (person.action.includes(ActionTypes.ADDED)) {
+    if (person.actions.includes(ActionTypes.ADDED)) {
       // splice out the person
       tempList.splice(index, 1)
     } else {
@@ -385,7 +396,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
       // safety check
       if (!thisPerson) {
         // eslint-disable-next-line no-console
-        console.log('Failed to find original person with id =', id)
+        console.error('Failed to find original person with id =', id)
         return
       }
 
@@ -404,12 +415,12 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
             // remove the other person's CP role and their email
             otherPerson.roles = otherPerson.roles.filter(r => r.roleType !== RoleTypes.COMPLETING_PARTY)
             delete otherPerson.officer.email
-            otherPerson.action = [this.computeAction(otherPerson)]
+            otherPerson.actions = [this.computeAction(otherPerson)]
           } else {
             // remove this person's CP role and their email
             thisPerson.roles = thisPerson.roles.filter(r => r.roleType !== RoleTypes.COMPLETING_PARTY)
             delete thisPerson.officer.email
-            thisPerson.action = [this.computeAction(thisPerson)]
+            thisPerson.actions = [this.computeAction(thisPerson)]
           }
         })
       }
@@ -439,13 +450,13 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
     const original = this.originalParties.find(x => x.officer.id === person.officer.id)
     if (!original) return ActionTypes.ADDED
     // ignore "action" when comparing
-    if (!this.isSame(person, original, ['action'])) return ActionTypes.EDITED
-    return null // no action
+    if (!this.isSame(person, original, ['actions'])) return ActionTypes.EDITED
+    return null // no actions
   }
 
   /**
    * Adds/changes the specified org/person.
-   * @param person The data object of the org/person to change.
+   * @param orgPerson The data object of the org/person to change.
    */
   private addEdit (orgPerson: OrgPersonIF): void {
     // make a copy so Vue reacts when we set the new list
@@ -458,10 +469,10 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 
     if (isNaN(this.activeIndex)) {
       // add new person to list if not a current index
-      orgPerson.action = [ActionTypes.ADDED]
+      orgPerson.actions = [ActionTypes.ADDED]
       tempList.push(orgPerson)
     } else {
-      // Assign action
+      // Assign actions
       orgPerson = this.assignAction(orgPerson)
 
       // splice in the edited person
@@ -481,13 +492,17 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 
   /** Returns true if the orgPerson name has changed. */
   private hasNameChanged (orgPerson: OrgPersonIF): boolean {
-    const firstName = orgPerson.officer.firstName !== this.originalParties[this.activeIndex].officer.firstName
-    // Provide fallback middle name as the api does not always provide it
-    const middleName =
-      (orgPerson.officer.middleName || '') !== (this.originalParties[this.activeIndex].officer.middleName || '')
-    const lastName = orgPerson.officer.lastName !== this.originalParties[this.activeIndex].officer.lastName
+    if (orgPerson.officer.firstName && orgPerson.officer.lastName) {
+      const firstName = orgPerson.officer.firstName !== this.originalParties[this.activeIndex].officer.firstName
+      // Provide fallback middle name as the api does not always provide it
+      const middleName =
+        (orgPerson.officer.middleName || '') !== (this.originalParties[this.activeIndex].officer.middleName || '')
+      const lastName = orgPerson.officer.lastName !== this.originalParties[this.activeIndex].officer.lastName
 
-    return firstName || middleName || lastName
+      return firstName || middleName || lastName
+    } else {
+      return orgPerson.officer.organizationName !== this.originalParties[this.activeIndex].officer.organizationName
+    }
   }
 
   /** Returns true if the orgPerson email has changed. */
@@ -508,28 +523,28 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
   /** Assign action(s) to the orgPerson identifying changes. */
   private assignAction (orgPerson: OrgPersonIF): OrgPersonIF {
     // Return if orgPerson is new(ADDED)
-    if (orgPerson.action?.includes(ActionTypes.ADDED)) return orgPerson
+    if (orgPerson.actions?.includes(ActionTypes.ADDED)) return orgPerson
 
     // If this is correction provide EDITED label and return
     if (this.isCorrectionFiling) {
-      orgPerson.action = [ActionTypes.CORRECTED]
+      orgPerson.actions = [ActionTypes.CORRECTED]
       return orgPerson
     }
 
     // Assign empty array for pre-existing orgPersons if not defined (ie from API)
-    if (!orgPerson.action) orgPerson.action = []
+    if (!orgPerson.actions) orgPerson.actions = []
 
     if (this.hasNameChanged(orgPerson)) {
-      !orgPerson.action.includes(ActionTypes.NAME_CHANGED) && orgPerson.action.push(ActionTypes.NAME_CHANGED)
-    } else orgPerson.action = orgPerson.action.filter(action => action !== ActionTypes.NAME_CHANGED)
+      !orgPerson.actions.includes(ActionTypes.NAME_CHANGED) && orgPerson.actions.push(ActionTypes.NAME_CHANGED)
+    } else orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.NAME_CHANGED)
 
     if (this.hasEmailChanged(orgPerson)) {
-      !orgPerson.action.includes(ActionTypes.EMAIL_CHANGED) && orgPerson.action.push(ActionTypes.EMAIL_CHANGED)
-    } else orgPerson.action = orgPerson.action.filter(action => action !== ActionTypes.EMAIL_CHANGED)
+      !orgPerson.actions.includes(ActionTypes.EMAIL_CHANGED) && orgPerson.actions.push(ActionTypes.EMAIL_CHANGED)
+    } else orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.EMAIL_CHANGED)
 
     if (this.hasAddressChanged(orgPerson)) {
-      !orgPerson.action.includes(ActionTypes.ADDRESS_CHANGED) && orgPerson.action.push(ActionTypes.ADDRESS_CHANGED)
-    } else orgPerson.action = orgPerson.action.filter(action => action !== ActionTypes.ADDRESS_CHANGED)
+      !orgPerson.actions.includes(ActionTypes.ADDRESS_CHANGED) && orgPerson.actions.push(ActionTypes.ADDRESS_CHANGED)
+    } else orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.ADDRESS_CHANGED)
 
     // Restore orgPerson when edits are undone manually through form entry
     if (!this.hasNameChanged(orgPerson) && !this.hasEmailChanged(orgPerson) && !this.hasAddressChanged(orgPerson)) {
@@ -553,7 +568,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 
     // just set the action (ie, soft-delete)
     // person will be filtered out on file and pay
-    person.action = [ActionTypes.REMOVED]
+    person.actions = [ActionTypes.REMOVED]
 
     // set the new list
     this.setPeopleAndRoles(tempList)
@@ -586,8 +601,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
 
       // identify that this person has been edited
       // (unless they were already added, edited or removed)
-      if (!person.action) {
-        person.action = [ActionTypes.EDITED]
+      if (!person.actions) {
+        person.actions = [ActionTypes.EDITED]
       }
 
       // remove email address that we got from user profile
@@ -626,7 +641,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin) {
    */
   private getCompletingParty (list: OrgPersonIF[]): OrgPersonIF {
     const i = list?.findIndex(orgPerson =>
-      (!orgPerson.action?.includes(ActionTypes.REMOVED)) &&
+      (!orgPerson.actions?.includes(ActionTypes.REMOVED)) &&
         orgPerson.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)
     )
     return (i >= 0) ? list[i] : undefined

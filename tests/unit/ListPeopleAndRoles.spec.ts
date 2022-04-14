@@ -72,7 +72,7 @@ const peopleAndRoles = [
       postalCode: 'H3C 5K4',
       addressCountry: 'CA'
     },
-    action: ['CORRECTED']
+    actions: ['CORRECTED']
   },
   {
     officer: {
@@ -102,7 +102,7 @@ const peopleAndRoles = [
       postalCode: 'P1B 2Y7',
       addressCountry: 'CA'
     },
-    action: ['ADDED']
+    actions: ['ADDED']
   },
   {
     officer: {
@@ -133,7 +133,7 @@ const peopleAndRoles = [
       postalCode: 'C0A 1H8',
       addressCountry: 'CA'
     },
-    action: ['REMOVED']
+    actions: ['REMOVED']
   }
 ]
 
@@ -189,7 +189,7 @@ const gpPeopleAndRoles = [
       postalCode: 'H3C 5K4',
       addressCountry: 'CA'
     },
-    action: ['NAME CHANGED']
+    actions: ['NAME CHANGED']
   },
   {
     officer: {
@@ -219,7 +219,7 @@ const gpPeopleAndRoles = [
       postalCode: 'P1B 2Y7',
       addressCountry: 'CA'
     },
-    action: ['ADDED']
+    actions: ['ADDED']
   },
   {
     officer: {
@@ -249,7 +249,7 @@ const gpPeopleAndRoles = [
       postalCode: 'C0A 1H8',
       addressCountry: 'CA'
     },
-    action: ['REMOVED']
+    actions: ['REMOVED']
   }
 ]
 
@@ -273,7 +273,7 @@ const emptyPerson = {
     addressCountry: '',
     deliveryInstructions: ''
   },
-  action: []
+  actions: []
 }
 
 const emptyOrg = {
@@ -296,7 +296,7 @@ const emptyOrg = {
     addressCountry: '',
     deliveryInstructions: ''
   },
-  action: []
+  actions: []
 }
 
 describe('List People And Roles component for Corrections', () => {

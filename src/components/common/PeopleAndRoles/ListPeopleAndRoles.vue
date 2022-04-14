@@ -82,13 +82,13 @@
                   Business Number: {{orgPerson.officer.taxId}}
                 </p>
 
-                <div v-if="!isSummaryView && orgPerson.action">
+                <div v-if="!isSummaryView && orgPerson.actions">
                   <v-chip v-if="wasRemoved(orgPerson)" x-small label color="#grey lighten-2">
-                    {{ orgPerson.action[0] }}
+                    {{ orgPerson.actions[0] }}
                   </v-chip>
                   <v-chip
                     v-else
-                    v-for="(action, i) in orgPerson.action"
+                    v-for="(action, i) in orgPerson.actions"
                     :key="`action-chip-${i}`"
                     x-small label color="primary" text-color="white">
                     {{ action }}
@@ -130,7 +130,7 @@
           <!-- Actions Buttons -->
           <v-col v-if="!isSummaryView" class="pr-0">
             <div
-              v-if="orgPerson.action &&  orgPerson.action.length > 0"
+              v-if="orgPerson.actions &&  orgPerson.actions.length > 0"
               class="actions" :class="{'pr-5': wasRemoved(orgPerson)}"
             >
               <span v-if="wasAdded(orgPerson)" class="edit-action">
@@ -311,7 +311,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
 
   /** Helper method to filter REMOVED orgPersons from PeopleAndRoles list. */
   private filterRemovedOrgPersons (peopleAndRoles: Array<OrgPersonIF>): Array<OrgPersonIF> {
-    return peopleAndRoles.filter(orgPerson => !orgPerson.action?.includes(ActionTypes.REMOVED))
+    return peopleAndRoles.filter(orgPerson => !orgPerson.actions?.includes(ActionTypes.REMOVED))
   }
 
   /** Headers for the person table. */
@@ -326,7 +326,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
    * @returns True if the org/person was added.
    */
   private wasAdded (person: OrgPersonIF): boolean {
-    return (person.action?.includes(ActionTypes.ADDED))
+    return (person.actions?.includes(ActionTypes.ADDED))
   }
 
   /**
@@ -335,7 +335,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
    * @returns True if the org/person was edited.
    */
   private wasEdited (person: OrgPersonIF): boolean {
-    return (person.action?.includes(ActionTypes.EDITED))
+    return (person.actions?.includes(ActionTypes.EDITED))
   }
 
   /**
@@ -344,7 +344,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
    * @returns True if the org/person was removed.
    */
   private wasRemoved (person: OrgPersonIF): boolean {
-    return (person.action?.includes(ActionTypes.REMOVED))
+    return (person.actions?.includes(ActionTypes.REMOVED))
   }
 
   /**

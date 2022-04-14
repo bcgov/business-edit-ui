@@ -17,7 +17,7 @@ export interface OrgPersonIF {
   roles: RoleIF[] | any
   mailingAddress: AddressIF
   deliveryAddress?: AddressIF
-  action?: ActionTypes[]
+  actions?: ActionTypes[]
   appointmentDate?: string
   cessationDate?: string
   confirmNameChange?: boolean

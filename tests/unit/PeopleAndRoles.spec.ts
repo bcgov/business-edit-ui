@@ -297,7 +297,7 @@ describe('People And Roles component for Correction', () => {
       incorporatorRole,
       directorRole
     ])
-    store.state.stateModel.peopleAndRoles.orgPeople[0].action = 'edited'
+    store.state.stateModel.peopleAndRoles.orgPeople[0].actions = ['edited']
     const wrapper = wrapperFactory()
 
     expect(store.state.stateModel.peopleAndRoles.changed).toBe(true)
@@ -309,16 +309,16 @@ describe('People And Roles component for Correction', () => {
     // original IA containing original CP:
     const originalCp = getPersonList([completingPartyRole])[0]
     originalCp.officer.id = '1'
-    originalCp.action = undefined
+    originalCp.actions = undefined
     store.state.stateModel.originalIA.incorporationApplication.parties = [originalCp]
 
     // current orgPeople list containing edited CP and added CP:
     const editedCp = getPersonList([])[0]
     editedCp.officer.id = '1'
-    editedCp.action = 'edited'
+    editedCp.actions = ['edited']
     const addedCp = getPersonList([completingPartyRole])[0]
     addedCp.officer.id = '2'
-    addedCp.action = 'added'
+    addedCp.actions = ['added']
     store.state.stateModel.peopleAndRoles.orgPeople = [editedCp, addedCp]
 
     const wrapper = wrapperFactory()
