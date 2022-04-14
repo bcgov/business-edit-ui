@@ -15,7 +15,7 @@
 
       <v-simple-table class="director-table section-container">
         <!-- List Display Section -->
-        <thead v-if="currentDirectors.length > 0">
+        <thead v-if="getPeopleAndRoles.length > 0">
           <!-- List Headers -->
           <tr class="director-list-header pb-3">
             <th v-for="(title, index) in tableHeaders" :key="index" class="px-0">
@@ -27,7 +27,7 @@
           <!-- List Content -->
           <tr
             class="director-content py-3"
-            v-for="(orgPerson, index) in currentDirectors"
+            v-for="(orgPerson, index) in getPeopleAndRoles"
             :key="`director:${index}`"
           >
             <!-- Name + Badge -->
@@ -56,7 +56,7 @@
 
             <!-- Appointment Date -->
             <td class="px-0">
-              <span class="director-detail">{{ orgPerson.roles[0].appointmentDate }} to Current</span>
+              <span class="director-detail">{{ orgPerson.appointmentDate }} to Current</span>
             </td>
           </tr>
         </tbody>
@@ -87,20 +87,6 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
 
   /** Headers for the person table. */
   readonly tableHeaders = ['Name', 'Mailing Address', 'Delivery Address', 'Effective Dates']
-
-  /**
-   * Returns the current directors from the people and roles.
-   * @returns array of directors
-   */
-  private get currentDirectors () : OrgPersonIF[] {
-    const directors = this.getPeopleAndRoles
-      .filter(people => people.roles.some(role =>
-        role.roleType === RoleTypes.DIRECTOR && !role.cessationDate))
-    for (const director of directors) {
-      director.roles = director.roles.filter(role => role.roleType === RoleTypes.DIRECTOR)
-    }
-    return directors
-  }
 }
 </script>
 
