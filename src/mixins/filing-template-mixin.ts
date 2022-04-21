@@ -376,7 +376,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
             return rest
           })
       }
-      console.log(parties)
+
       filing.changeOfRegistration.parties = parties
     }
 

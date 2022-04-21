@@ -44,6 +44,20 @@
           @valid="setDocumentOptionalEmailValidity($event)"
         />
 
+        <section id="completing-party-section">
+          <h2>2. Completing Party</h2>
+          <v-card flat>
+            <CompletingParty
+              class="mt-6 pb-0"
+              :currentCompletingParty="mockCompletingParty"
+              :enableAddEdit="isRoleStaff"
+              :addressSchema="PersonAddressSchema"
+              :validate="getAppValidate"
+              @addEditCompletingParty="addEditCompletingParty($event)"
+            />
+          </v-card>
+        </section>
+
         <CertifySection
           class="mt-10"
           :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
@@ -59,11 +73,11 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-import { ChangeSummary, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Edit'
+import { ChangeSummary, CompletingParty, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Edit'
 import { CertifySection, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common'
 import { AuthApiMixin, CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 import {
-  ActionBindingIF,
+  ActionBindingIF, CompletingPartyIF,
   EffectiveDateTimeIF,
   EmptyFees,
   EntitySnapshotIF,
@@ -75,11 +89,13 @@ import { CorpTypeCd, FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
 import { ChangeFirmResources } from '@/resources'
+import { PersonAddressSchema } from '@/schemas'
 
 @Component({
   components: {
     CertifySection,
     ChangeSummary,
+    CompletingParty,
     DocumentsDelivery,
     PeopleAndRoles,
     StaffPayment,
@@ -119,6 +135,24 @@ export default class Change extends Mixins(
   @Action setCurrentFees!: ActionBindingIF
   @Action setFeePrices!: ActionBindingIF
   @Action setResource!: ActionBindingIF
+
+  private PersonAddressSchema = PersonAddressSchema
+
+  // TODO: Remove/Replace with structured data from Account (ie First, middle, last name & Mailing Address)
+  private mockCompletingParty = {
+    firstName: 'Steve',
+    middleName: 'D',
+    lastName: 'Jobs',
+    mailingAddress: {
+      addressCity: 'Victoria',
+      addressCountry: 'Canada',
+      addressRegion: 'BC',
+      deliveryInstructions: 'Test test test',
+      postalCode: 'V8V 1s8',
+      streetAddress: '1234',
+      streetAddressAdditional: 'Test Street Additional'
+    }
+  }
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -248,6 +282,11 @@ export default class Change extends Mixins(
       addresses: items[2],
       orgPersons: items[3]
     }
+  }
+
+  private addEditCompletingParty (event: CompletingPartyIF): void {
+    // Apply new completing party to store.
+    // Will require formatting and adding to the peopleAndRoles, see 'OrgPersonIF'
   }
 
   /** Emits Fetch Error event. */
