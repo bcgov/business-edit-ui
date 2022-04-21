@@ -10,6 +10,7 @@ export * from './utils-interfaces'
 export * from './state-interface'
 export type {
   BreadcrumbIF,
+  CompletingPartyIF,
   ContactPointIF,
   NaicsIF,
   NaicsResultIF,
