@@ -34,9 +34,12 @@
         <!-- display warnings-->
         <div class="genErr mb-4" v-if="numWarnings > 0">
           <p>Please note the following warnings:</p>
-          <ul>
-            <li v-for="(warning, index) in warnings" :key="index">{{ warning.message }}</li>
-          </ul>
+          <div v-for="(warning, index) in warnings" :key="index" class="d-flex">
+            <span class="flex-shrink-0 error-bullet">
+              <v-icon class="error-circle">mdi-circle-medium</v-icon>
+            </span>
+            <span class="flex-grow-1" v-html="warning.message" />
+          </div>
         </div>
 
         <template v-if="!isRoleStaff">
