@@ -1,5 +1,5 @@
 <template>
-  <name-translation
+  <NameTranslation
     :invalidSection="invalidSection"
     :nameTranslations="getNameTranslations"
     @nameTranslationsChange="updateNameTranslations($event)"
@@ -9,17 +9,10 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Vue, Emit, Prop, Watch } from 'vue-property-decorator'
-
-// Components
-import { NameTranslation } from './'
-
-// Interfaces
-import { ActionBindingIF, NameTranslationIF } from '@/interfaces'
-
-// Mixins
 import { Action, Getter } from 'vuex-class'
+import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
+import { ActionBindingIF, NameTranslationIF } from '@/interfaces/'
 
 @Component({
   components: {

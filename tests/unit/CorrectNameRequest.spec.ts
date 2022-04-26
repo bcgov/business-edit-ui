@@ -1,17 +1,14 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { axios } from '@/utils'
 import sinon from 'sinon'
 import flushPromises from 'flush-promises'
-
-// Store
-import { getVuexStore } from '@/store'
-
-// Components
 import { mount, Wrapper } from '@vue/test-utils'
-import { CorrectNameRequest } from '@/components/common/YourCompany/CompanyName'
-import { ConfirmDialog } from '@bcrs-shared-components/confirm-dialog'
+import { axios } from '@/utils/'
+import { getVuexStore } from '@/store/'
+import CorrectNameRequest from '@/components/common/YourCompany/CompanyName/CorrectNameRequest.vue'
+
+// mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
+console.warn = jest.fn()
 
 Vue.use(Vuetify)
 

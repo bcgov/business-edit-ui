@@ -1,7 +1,5 @@
-import {
-  AddressesIF, AuthInformationIF, BusinessInformationIF,
-  NameTranslationIF, ShareStructureIF, ResolutionsIF, OrgPersonIF
-} from '@/interfaces'
+import { AddressesIF, AuthInformationIF, BusinessInformationIF, NameTranslationIF, ShareStructureIF,
+  ResolutionsIF, OrgPersonIF } from '@/interfaces/'
 
 /** Entity snapshot object. */
 export interface EntitySnapshotIF {

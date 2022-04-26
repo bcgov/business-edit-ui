@@ -1,4 +1,4 @@
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd } from '@/enums/'
 
 /** Data object used internally only (not to/from API). */
 export interface BusinessInformationIF {

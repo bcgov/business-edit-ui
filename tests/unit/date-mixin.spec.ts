@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
-import { ErrorContact } from '@/components/common'
-import { DateMixin } from '@/mixins'
+import { getVuexStore } from '@/store/'
+import ErrorContact from '@/components/common/ErrorContact.vue'
+import DateMixin from '@/mixins/date-mixin'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})

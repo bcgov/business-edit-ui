@@ -1,13 +1,5 @@
-import {
-  BusinessInformationIF,
-  CourtOrderIF,
-  NameRequestIF,
-  NameTranslationIF,
-  ShareStructureIF
-} from '@/interfaces'
-
-// Shared Interfaces
-import { ContactPointIF } from '@bcrs-shared-components/interfaces'
+import { BusinessInformationIF, ContactPointIF, CourtOrderIF, NameRequestIF, NameTranslationIF,
+  ShareStructureIF } from '@/interfaces/'
 
 export interface AlterationIF {
   provisionsRemoved?: boolean,

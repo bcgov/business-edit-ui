@@ -68,9 +68,10 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { OrgPersonIF } from '@/interfaces'
-import { RoleTypes } from '@/enums'
-import { CommonMixin } from '@/mixins'
+import { isSame } from '@/utils/'
+import { OrgPersonIF } from '@/interfaces/'
+import { RoleTypes } from '@/enums/'
+import { CommonMixin } from '@/mixins/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 
 @Component({
@@ -81,6 +82,7 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 export default class CurrentDirectors extends Mixins(CommonMixin) {
   // Declarations for template
   readonly RoleTypes = RoleTypes
+  readonly isSame = isSame
 
   // Global getters
   @Getter getPeopleAndRoles!: OrgPersonIF[]

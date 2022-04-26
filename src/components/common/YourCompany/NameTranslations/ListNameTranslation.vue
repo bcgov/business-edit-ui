@@ -117,17 +117,10 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
-
-// Interfaces
-import { NameTranslationIF } from '@/interfaces'
-
-// Enums
-import { ActionTypes } from '@/enums'
-
-import { CommonMixin } from '@/mixins'
+import { NameTranslationIF } from '@/interfaces/'
+import { ActionTypes } from '@/enums/'
+import { CommonMixin } from '@/mixins/'
 
 @Component({})
 export default class ListNameTranslation extends Mixins(CommonMixin) {
@@ -136,9 +129,6 @@ export default class ListNameTranslation extends Mixins(CommonMixin) {
 
   @Prop({ default: false })
   readonly isAddingNameTranslation: boolean
-
-  // Global getter
-  @Getter isCorrectionFiling!: boolean
 
   private ActionTypes = ActionTypes
 

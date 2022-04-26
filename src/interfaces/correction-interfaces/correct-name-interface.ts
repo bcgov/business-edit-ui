@@ -1,5 +1,5 @@
-import { NameRequestApplicantIF } from '@/interfaces'
-import { CorrectionTypes, CorpTypeCd, NameRequestStates, NameRequestTypes } from '@/enums'
+import { NameRequestApplicantIF } from '@/interfaces/'
+import { CorrectionTypes, CorpTypeCd, NameRequestStates, NameRequestTypes } from '@/enums/'
 
 export interface CorrectNameOptionIF {
   id: CorrectionTypes,

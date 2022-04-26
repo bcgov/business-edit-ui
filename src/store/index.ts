@@ -1,12 +1,9 @@
-// Libraries
 import Vue from 'vue'
 import Vuex from 'vuex'
-
-// Store modules
-import * as States from './state'
+import * as Actions from './actions'
 import * as Getters from './getters'
 import * as Mutations from './mutations'
-import * as Actions from './actions'
+import * as States from './state'
 
 /**
  * Configures and returns Vuex Store.
@@ -15,10 +12,10 @@ export function getVuexStore () {
   Vue.use(Vuex)
 
   const store = new Vuex.Store<any>({
-    state: { ...States },
+    actions: { ...Actions },
     getters: { ...Getters },
     mutations: { ...Mutations },
-    actions: { ...Actions }
+    state: { ...States }
   })
 
   return store

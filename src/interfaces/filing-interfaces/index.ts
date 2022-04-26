@@ -7,4 +7,5 @@ export * from './incorporationApplication-interface'
 export * from './incorporationFiling-interface'
 
 // Alias export for Shared Components which rely on IncorporationAddressIf
-export { AddressesIF as IncorporationAddressIf } from '@/interfaces/stepper-interfaces/YourCompany/address-interface'
+export { AddressesIF as IncorporationAddressIf }
+  from '@/interfaces/stepper-interfaces/YourCompany/address-interfaces'

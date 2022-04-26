@@ -1,11 +1,14 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store'
 import { mount } from '@vue/test-utils'
-import { OfficeAddresses } from '@/components/common'
-import { AddressIF, AddressesIF } from '@/interfaces'
-import { BenefitCompanyResource } from '@/resources/Edit/Alteration'
+import { getVuexStore } from '@/store/'
+import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
+import { AddressIF, AddressesIF } from '@/interfaces/stepper-interfaces/YourCompany/address-interfaces'
+import { BenefitCompanyResource } from '@/resources/Alteration/benefitCompany'
+
+// mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
+console.warn = jest.fn()
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)

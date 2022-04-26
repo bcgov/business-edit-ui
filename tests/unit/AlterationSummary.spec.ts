@@ -1,16 +1,13 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-
-// Store
-import { getVuexStore } from '@/store'
-
-// Components
 import { createLocalVue, createWrapper, mount } from '@vue/test-utils'
-import { AlterationSummary } from '@/components/Edit'
-import { ConfirmDialog, EffectiveDateTime, NameTranslation } from '@/components/common'
+import { getVuexStore } from '@/store/'
+import AlterationSummary from '@/components/Alteration/AlterationSummary.vue'
+import ConfirmDialog from '@bcrs-shared-components/confirm-dialog/ConfirmDialog.vue'
+import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
+import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()

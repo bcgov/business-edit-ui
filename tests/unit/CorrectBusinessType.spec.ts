@@ -1,13 +1,8 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-
-// Store
-import { getVuexStore } from '@/store'
-
-// Components
 import { createLocalVue, mount } from '@vue/test-utils'
-import { ChangeBusinessType } from '@/components/common'
+import { getVuexStore } from '@/store/'
+import ChangeBusinessType from '@/components/common/YourCompany/ChangeBusinessType.vue'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()

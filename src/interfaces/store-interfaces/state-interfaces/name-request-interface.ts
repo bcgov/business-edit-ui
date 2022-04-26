@@ -1,4 +1,4 @@
-import { CorpTypeCd, NameRequestStates, NameRequestTypes } from '@/enums'
+import { CorpTypeCd, NameRequestStates, NameRequestTypes } from '@/enums/'
 
 // Name Request State interface
 export interface NameRequestIF {

@@ -9,7 +9,7 @@
         <v-layout row>
           <v-flex xs3 md2>
             <label class="font-weight-bold">Legal Name</label>
-            <action-chip v-if="isChanged"
+            <ActionChipShared v-if="isChanged"
                          :actionable-item="{ action: ActionTypes.EDITED }"
                          :editedLabel="editedLabel" />
           </v-flex>
@@ -25,13 +25,15 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { ActionChip } from '@bcrs-shared-components/action-chip'
-import { CommonMixin } from '@/mixins'
-import { IncorporationFilingIF, OrgPersonIF } from '@/interfaces'
-import { ActionTypes, RoleTypes } from '@/enums'
+import { ActionChipShared } from '@/components/shared'
+import { CommonMixin } from '@/mixins/'
+import { IncorporationFilingIF, OrgPersonIF } from '@/interfaces/'
+import { ActionTypes, RoleTypes } from '@/enums/'
 
 @Component({
-  components: { ActionChip }
+  components: {
+    ActionChipShared
+  }
 })
 export default class CompletingParty extends Mixins(CommonMixin) {
   // Declaration for template

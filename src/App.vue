@@ -1,7 +1,7 @@
 <template>
   <v-app class="app-container" id="app">
     <!-- Dialogs -->
-    <ConfirmDialog
+    <ConfirmDialogShared
       ref="confirm"
       attach="#app"
     />
@@ -84,7 +84,7 @@
     <PaySystemAlert />
     <div class="app-body">
       <main v-if="!isErrorDialog">
-        <BreadCrumb :breadcrumbs="breadcrumbs" />
+        <BreadCrumbShared :breadcrumbs="breadcrumbs" />
         <EntityInfo />
 
         <v-container class="view-container my-8 py-0">
@@ -113,7 +113,8 @@
 
                 <!-- Alteration/Change filings use the enhanced Fee Summary shared component -->
                 <v-expand-transition>
-                  <FeeSummary v-if="isAlterationFiling || isChangeFiling"
+                  <FeeSummaryShared
+                    v-if="isAlterationFiling || isChangeFiling"
                     :filingData="getFilingData"
                     :payApiUrl="payApiUrl"
                     :isLoading="isBusySaving"
@@ -142,42 +143,32 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
-import { getKeycloakRoles, navigate, updateLdUser } from '@/utils'
-
-// Components
+import { getKeycloakRoles, navigate, updateLdUser } from '@/utils/'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { FeeSummary } from '@bcrs-shared-components/fee-summary'
-import { Actions, BreadCrumb, EntityInfo } from '@/components/common'
-import * as Views from '@/views'
-import * as Dialogs from '@/components/common/dialogs'
-
-// Mixins, interfaces, etc
-import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import {
-  FilingDataIF, ActionBindingIF, BreadcrumbIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF
-} from '@/interfaces'
+import { Actions, EntityInfo } from '@/components/common/'
+import { BreadCrumbShared, FeeSummaryShared } from '@/components/shared'
+import * as Views from '@/views/'
+import * as Dialogs from '@/dialogs/'
+import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
+import { FilingDataIF, ActionBindingIF, BreadcrumbIF, ConfirmDialogType, FlagsReviewCertifyIF,
+  FlagsCompanyInfoIF } from '@/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { ComponentsCompanyInfo, ComponentsReviewCertify, FeeSummaryActions, RouteNames } from '@/enums'
-import {
-  getEntityDashboardBreadcrumb,
-  getMyBusinessRegistryBreadcrumb,
-  getRegistryDashboardBreadcrumb,
-  getStaffDashboardBreadcrumb
-} from '@/resources'
+import { ComponentsCompanyInfo, ComponentsReviewCertify, FeeSummaryActions, RouteNames } from '@/enums/'
+import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
+  getStaffDashboardBreadcrumb } from '@/resources/'
 
 @Component({
   components: {
     Actions,
-    BreadCrumb,
+    BreadCrumbShared,
     EntityInfo,
-    FeeSummary,
+    FeeSummaryShared,
     PaySystemAlert,
     SbcHeader,
     SbcFooter,
@@ -193,7 +184,6 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   }
 
   // Global getters
-  @Getter getBusinessId!: string
   @Getter getUserEmail!: string
   @Getter getUserFirstName!: string
   @Getter getUserLastName!: string
@@ -201,22 +191,15 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   @Getter getUserUsername!: string
   @Getter getFilingData!: FilingDataIF
   @Getter haveUnsavedChanges!: boolean
-  @Getter hasNewNr!: boolean
   @Getter isBusySaving!: boolean
   @Getter isEditing!: boolean
   @Getter isSummaryMode!: boolean
-  @Getter getCurrentJsDate!: Date
   @Getter showFeeSummary!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isAlterationFiling!: boolean
-  @Getter isChangeFiling!: boolean
 
   // Alteration flag getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter getAppValidate!: boolean
-  @Getter hasBusinessNameChanged!: boolean
-  @Getter hasBusinessTypeChanged!: boolean
   @Getter getComponentValidate!: boolean
   @Getter isConflictingLegalType!: boolean
   @Getter isRoleStaff!: boolean

@@ -6,7 +6,7 @@
     </v-radio-group>
 
     <v-form ref="form" class="date-time-selectors">
-      <date-picker
+      <DatePickerShared
         ref="datePickerRef"
         title="Date"
         nudge-right="40"
@@ -75,10 +75,10 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { DatePicker } from '@bcrs-shared-components/date-picker'
-import { DateMixin } from '@/mixins'
-import { EffectiveDateTypes } from '@/enums'
-import { EffectiveDateTimeIF, FormFieldType, FormIF } from '@/interfaces'
+import { DatePickerShared } from '@/components/shared'
+import { DateMixin } from '@/mixins/'
+import { EffectiveDateTypes } from '@/enums/'
+import { EffectiveDateTimeIF, FormFieldType, FormIF } from '@/interfaces/'
 
 enum PeriodTypes {
   AM = 'am',
@@ -87,7 +87,7 @@ enum PeriodTypes {
 
 @Component({
   components: {
-    DatePicker
+    DatePickerShared
   }
 })
 export default class EffectiveDateTime extends Mixins(DateMixin) {
@@ -97,7 +97,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   // Add element types to refs
   $refs!: {
     form: FormIF,
-    datePickerRef: DatePicker,
+    datePickerRef: DatePickerShared,
     hourSelector: FormFieldType, // used in unit tests
     minuteSelector: FormFieldType // used in unit tests
   }

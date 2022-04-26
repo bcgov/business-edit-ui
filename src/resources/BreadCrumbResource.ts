@@ -1,5 +1,5 @@
-import { BreadcrumbIF } from '@/interfaces'
-import { getVuexStore } from '@/store'
+import { BreadcrumbIF } from '@/interfaces/'
+import { getVuexStore } from '@/store/'
 
 const store = getVuexStore()
 

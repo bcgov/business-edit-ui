@@ -1,4 +1,4 @@
-import { ContactPointIF } from '@bcrs-shared-components/interfaces'
+import { ContactPointIF } from '@/interfaces/'
 
 // Auth information interface
 export interface AuthInformationIF {

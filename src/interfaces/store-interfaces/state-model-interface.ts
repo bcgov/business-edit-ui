@@ -1,10 +1,7 @@
-import {
-  AccountInformationIF, AddressesIF, AlterationFilingIF, CertifyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF,
-  ShareStructureIF, EffectiveDateTimeIF, IncorporationAgreementIF, BusinessInformationIF, IncorporationFilingIF,
-  FilingDataIF, StaffPaymentStepIF, DetailIF, NameTranslationIF, EntitySnapshotIF, DocumentDeliveryIF, FeesIF,
-  NewAlterationIF, ValidationFlagsIF
-} from '@/interfaces'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces'
+import { AccountInformationIF, AddressesIF, AlterationFilingIF, CertifyIF, NameRequestIF, TombStoneIF,
+  PeopleAndRolesIF, ShareStructureIF, EffectiveDateTimeIF, IncorporationAgreementIF, BusinessInformationIF,
+  IncorporationFilingIF, FilingDataIF, StaffPaymentStepIF, DetailIF, NameTranslationIF, EntitySnapshotIF,
+  DocumentDeliveryIF, FeesIF, NewAlterationIF, ValidationFlagsIF, ContactPointIF } from '@/interfaces/'
 
 /** Data object used internally only (not to/from API). */
 export interface StateModelIF {

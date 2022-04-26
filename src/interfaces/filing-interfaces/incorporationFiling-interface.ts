@@ -1,5 +1,5 @@
-import { IncorporationApplicationIF } from '@/interfaces'
-import { CorpTypeCd } from '@/enums'
+import { IncorporationApplicationIF } from '@/interfaces/'
+import { CorpTypeCd } from '@/enums/'
 
 /** Incorporation Application filing loaded from / saved to the Legal API. */
 export interface IncorporationFilingIF {

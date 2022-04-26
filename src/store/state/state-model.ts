@@ -1,6 +1,6 @@
-import { EmptyNameRequest, StateModelIF, EmptyFees } from '@/interfaces'
-import { EmptyContactPoint } from '@bcrs-shared-components/interfaces'
 import { cloneDeep } from 'lodash'
+import { EmptyNameRequest, StateModelIF, EmptyFees } from '@/interfaces/'
+import { EmptyContactPoint } from '@bcrs-shared-components/interfaces/'
 
 export const stateModel: StateModelIF = {
   currentJsDate: null,

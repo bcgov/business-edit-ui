@@ -1,13 +1,13 @@
 <template>
   <div id="share-structures">
 
-    <resolution-date-dialog
+    <ResolutionDateDialog
       attach="#share-structures"
       :dialog="toggleResolutionDateDialog"
       @emitClose="toggleResolutionDateDialog = false"
     />
 
-    <share-structure
+    <ShareStructureShared
       :isEditMode="isEditMode"
       :isCorrection="isCorrectionFiling"
       :incorporationApplication="getOriginalIA"
@@ -28,27 +28,17 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-
-// Components
-import { ShareStructure } from '@bcrs-shared-components/share-structure'
-import { ResolutionDateDialog } from '@/components/common/dialogs'
-import { CommonMixin } from '@/mixins'
-
-import {
-  ActionBindingIF,
-  EntitySnapshotIF,
-  IncorporationFilingIF,
-  ShareClassIF,
-  ShareStructureIF,
-  FlagsCompanyInfoIF
-} from '@/interfaces'
+import { ShareStructureShared } from '@/components/shared'
+import { ResolutionDateDialog } from '@/dialogs/'
+import { CommonMixin } from '@/mixins/'
+import { ActionBindingIF, EntitySnapshotIF, IncorporationFilingIF, ShareClassIF, ShareStructureIF,
+  FlagsCompanyInfoIF } from '@/interfaces/'
 
 @Component({
   components: {
-    ShareStructure,
+    ShareStructureShared,
     ResolutionDateDialog
   }
 })
@@ -64,8 +54,6 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getHasRightsOrRestrictions!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isAlterationFiling!: boolean
   @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter invalidMinimumShareClass!: boolean
 

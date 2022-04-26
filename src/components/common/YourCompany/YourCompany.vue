@@ -286,28 +286,14 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import {
-  ActionBindingIF,
-  ContactPointIF,
-  EntitySnapshotIF,
-  FlagsCompanyInfoIF,
-  IncorporationFilingIF,
-  NameRequestApplicantIF,
-  NameRequestIF,
-  ResourceIF
-} from '@/interfaces'
-import {
-  BusinessContactInfo,
-  ChangeBusinessType,
-  FolioInformation,
-  CorrectNameTranslation,
-  CorrectNameOptions,
-  OfficeAddresses
-} from './'
-import NatureOfBusiness from '@/components/Edit/NatureOfBusiness.vue'
-import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
-import { CorrectionTypes, CorpTypeCd } from '@/enums'
 import { cloneDeep } from 'lodash'
+import { ActionBindingIF, ContactPointIF, EntitySnapshotIF, FlagsCompanyInfoIF, IncorporationFilingIF,
+  NameRequestApplicantIF, NameRequestIF, ResourceIF } from '@/interfaces/'
+import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation,
+  CorrectNameOptions, OfficeAddresses } from './'
+import NatureOfBusiness from '@/components/Alteration/NatureOfBusiness.vue'
+import { CommonMixin, SharedMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins/'
+import { CorrectionTypes, CorpTypeCd } from '@/enums/'
 
 /** Note: this component is used by both corrections and alterations. */
 @Component({
@@ -324,7 +310,7 @@ import { cloneDeep } from 'lodash'
 export default class YourCompany extends Mixins(
   CommonMixin,
   DateMixin,
-  EnumMixin,
+  SharedMixin,
   LegalApiMixin,
   NameRequestMixin
 ) {
@@ -332,7 +318,6 @@ export default class YourCompany extends Mixins(
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
   @Getter getComponentValidate!: boolean
-  @Getter getEntityType!: CorpTypeCd
   @Getter getNameRequest!: NameRequestIF
   @Getter hasNewNr!: boolean
   @Getter getOriginalEffectiveDateTime!: string
@@ -343,9 +328,6 @@ export default class YourCompany extends Mixins(
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
-  @Getter isCorrectionFiling!: boolean
-  @Getter isAlterationFiling!: boolean
-  @Getter isChangeFiling!: boolean
   @Getter getResource!: ResourceIF
 
   // Alteration flag getters

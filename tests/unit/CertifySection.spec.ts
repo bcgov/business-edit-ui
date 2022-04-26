@@ -1,10 +1,9 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount, Wrapper } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
-
-import { CertifySection } from '@/components/common'
-import { Certify } from '@bcrs-shared-components/certify'
+import { getVuexStore } from '@/store/'
+import CertifySection from '@/components/common/CertifySection.vue'
+import Certify from '@bcrs-shared-components/certify/Certify.vue'
 
 Vue.use(Vuetify)
 

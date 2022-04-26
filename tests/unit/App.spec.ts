@@ -1,29 +1,25 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-import { getVuexStore } from '@/store'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
-import { axios } from '@/utils'
-
-// Components
+import { getVuexStore } from '@/store/'
+import { axios } from '@/utils/'
 import App from '@/App.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { FeeSummary } from '@bcrs-shared-components/fee-summary'
-import { Actions, EntityInfo } from '@/components/common'
-import {
-  FileAndPayInvalidNameRequestDialog,
-  AccountAuthorizationDialog,
-  FetchErrorDialog,
-  PaymentErrorDialog,
-  SaveErrorDialog,
-  NameRequestErrorDialog,
-  ConfirmDeleteAllDialog
-} from '@/components/common/dialogs'
+import FeeSummary from '@bcrs-shared-components/fee-summary/FeeSummary.vue'
+import Actions from '@/components/common/Actions.vue'
+import EntityInfo from '@/components/common/EntityInfo.vue'
+import FileAndPayInvalidNameRequestDialog from '@/dialogs/FileAndPayInvalidNameRequestDialog.vue'
+import AccountAuthorizationDialog from '@/dialogs/AccountAuthorizationDialog.vue'
+import FetchErrorDialog from '@/dialogs/FetchErrorDialog.vue'
+import PaymentErrorDialog from '@/dialogs/PaymentErrorDialog.vue'
+import SaveErrorDialog from '@/dialogs/SaveErrorDialog.vue'
+import NameRequestErrorDialog from '@/dialogs/NameRequestErrorDialog.vue'
+import ConfirmDeleteAllDialog from '@/dialogs/ConfirmDeleteAllDialog.vue'
 
 // Other
 import mockRouter from './MockRouter'

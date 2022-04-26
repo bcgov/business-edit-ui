@@ -3,8 +3,8 @@
 </template>
 
 <script lang="ts">
-import { navigate } from '@/utils'
 import { Component, Vue } from 'vue-property-decorator'
+import { navigate } from '@/utils/'
 
 @Component({})
 export default class Signin extends Vue {

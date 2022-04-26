@@ -1,15 +1,10 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import sinon from 'sinon'
-import { axios } from '@/utils'
-
-// Store
-import { getVuexStore } from '@/store'
-
-// Components
 import { createLocalVue, mount } from '@vue/test-utils'
-import { BusinessContactInfo } from '@/components/common'
+import { axios } from '@/utils/'
+import { getVuexStore } from '@/store/'
+import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
 
 Vue.use(Vuetify)
 const localVue = createLocalVue()

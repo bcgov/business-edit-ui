@@ -1,7 +1,7 @@
 <template>
   <div id="add-edit-org-person">
 
-    <confirm-dialog
+    <ConfirmDialogShared
       ref="reassignCpDialog"
       attach="#add-edit-org-person"
     />
@@ -254,22 +254,24 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
 import { cloneDeep, isEqual } from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
-import { OrgPersonIF, BaseAddressType, FormIF, AddressIF, ConfirmDialogType, RoleIF, ResourceIF } from '@/interfaces'
+import { isSame } from '@/utils/'
+import { OrgPersonIF, BaseAddressType, FormIF, AddressIF, ConfirmDialogType, RoleIF, ResourceIF }
+  from '@/interfaces/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-import { HelpSection } from '@/components/common'
-import { ConfirmDialog } from '@/components/common/dialogs'
-import { CommonMixin } from '@/mixins'
-import { CorpTypeCd, RoleTypes, PartyTypes } from '@/enums'
-import { PersonAddressSchema, OfficeAddressSchema } from '@/schemas'
-import { Getter } from 'vuex-class'
+import { HelpSection } from '@/components/common/'
+import { ConfirmDialogShared } from '@/dialogs/'
+import { CommonMixin } from '@/mixins/'
+import { CorpTypeCd, RoleTypes, PartyTypes } from '@/enums/'
+import { PersonAddressSchema, OfficeAddressSchema } from '@/schemas/'
 
 @Component({
   components: {
     BaseAddress,
-    ConfirmDialog,
+    ConfirmDialogShared,
     HelpSection
   }
 })
@@ -290,17 +292,16 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   readonly OfficeAddressSchema = OfficeAddressSchema
 
   /** The current org/person to edit or add. */
-  @Prop() private currentOrgPerson!: OrgPersonIF
+  @Prop() readonly currentOrgPerson!: OrgPersonIF
 
   /** The index of the org/person to edit, or NaN to add. */
-  @Prop() private activeIndex: number
+  @Prop() readonly activeIndex: number
 
   /** The current Completing Party (or undefined). */
-  @Prop() private currentCompletingParty: OrgPersonIF
+  @Prop() readonly currentCompletingParty: OrgPersonIF
 
   // Global getter
   @Getter getCurrentDate!: string
-  @Getter isCorrectionFiling!: boolean
   @Getter getResource!: ResourceIF
 
   /** The current org/person being added/edited. */
@@ -332,42 +333,42 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   private confirmNameChangeRules = []
 
   /** True if Completing Party is checked. */
-  private get isCompletingParty (): boolean {
+  get isCompletingParty (): boolean {
     return this.selectedRoles.includes(RoleTypes.COMPLETING_PARTY)
   }
 
   /** True if Incorporator is checked. */
-  private get isIncorporator (): boolean {
+  get isIncorporator (): boolean {
     return this.selectedRoles.includes(RoleTypes.INCORPORATOR)
   }
 
   /** True if Director is checked. */
-  private get isDirector (): boolean {
+  get isDirector (): boolean {
     return this.selectedRoles.includes(RoleTypes.DIRECTOR)
   }
 
   /** True if orgPerson has proprietor role. */
-  private get isProprietor (): boolean {
+  get isProprietor (): boolean {
     return this.currentOrgPerson.roles.some(role => role.roleType === RoleTypes.PROPRIETOR)
   }
 
   /** True if orgPerson has partner role. */
-  private get isPartner (): boolean {
+  get isPartner (): boolean {
     return this.currentOrgPerson.roles.some(role => role.roleType === RoleTypes.PARTNER)
   }
 
   /** The validation rules for the roles. */
-  private get roleRules (): Array<Function> {
+  get roleRules (): Array<Function> {
     return [ () => this.selectedRoles.length > 0 || 'A role is required' ]
   }
 
   /** Text label for firm orgPerson. */
-  private get orgPersonLabel (): string {
+  get orgPersonLabel (): string {
     return this.isProprietor ? 'the proprietor' : 'this partner'
   }
 
   /** True if the form is valid. */
-  private get isFormValid (): boolean {
+  get isFormValid (): boolean {
     let isFormValid = (this.orgPersonFormValid && this.mailingAddressValid)
     if ((this.isDirector || this.isProprietor || this.isPartner) && !this.inheritMailingAddress) {
       isFormValid = (isFormValid && this.deliveryAddressValid)
@@ -383,16 +384,16 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   /** True if current data object is a person. */
-  private get isPerson (): boolean {
+  get isPerson (): boolean {
     return (this.orgPerson?.officer.partyType === PartyTypes.PERSON)
   }
 
   /** True if current data object is an organization (corporation/firm). */
-  private get isOrg (): boolean {
+  get isOrg (): boolean {
     return (this.orgPerson?.officer.partyType === PartyTypes.ORGANIZATION)
   }
 
-  private get orgTypesLabel (): string {
+  get orgTypesLabel (): string {
     return this.getResource.changeData.orgPersonInfo?.orgTypesLabel
   }
 
@@ -411,7 +412,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
       this.inProgressMailingAddress = { ...this.orgPerson.mailingAddress }
       if (this.isDirector || this.isProprietor || this.isPartner) {
         this.inProgressDeliveryAddress = { ...this.orgPerson.deliveryAddress }
-        this.inheritMailingAddress = this.isSame(
+        this.inheritMailingAddress = isSame(
           this.inProgressMailingAddress, this.inProgressDeliveryAddress, ['id']
         )
       }
@@ -477,8 +478,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
    */
   private hasPersonChanged (person: OrgPersonIF): boolean {
     const officer = !isEqual(person.officer, this.currentOrgPerson?.officer)
-    const mailing = !this.isSame(person.mailingAddress, this.currentOrgPerson?.mailingAddress, ['id'])
-    const delivery = !this.isSame(person.deliveryAddress, this.currentOrgPerson?.deliveryAddress, ['id'])
+    const mailing = !isSame(person.mailingAddress, this.currentOrgPerson?.mailingAddress, ['id'])
+    const delivery = !isSame(person.deliveryAddress, this.currentOrgPerson?.deliveryAddress, ['id'])
     // just look at role type (ignore role.appointmentDate and role.cessationDate,
     // which will have changed if the user toggled the checkboxes)
     const roleTypes = !isEqual(person.roles.map(r => r.roleType), this.currentOrgPerson?.roles.map(r => r.roleType))
@@ -786,10 +787,6 @@ li {
   line-height: 1.5rem;
 }
 
-.org-name-container {
-  padding-top: 1rem;
-}
-
 @media (min-width: 768px) {
   .meta-container {
     flex-flow: row nowrap;
@@ -834,6 +831,7 @@ li {
     color: $app-red !important;
     opacity: .4;
   }
+
   .v-input--selection-controls .v-input__slot, .v-input--selection-controls .v-radio {
     align-items: flex-start;
   }
@@ -846,6 +844,11 @@ li {
 
   .theme--light.v-input input, .theme--light.v-input textarea {
     color: $gray9;
+  }
+
+  // align checkbox icon with top of text
+  .v-input--checkbox .v-icon {
+    margin-top: -3px;
   }
 }
 </style>

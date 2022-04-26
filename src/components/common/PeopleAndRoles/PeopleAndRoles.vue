@@ -1,7 +1,6 @@
 <template>
   <section id="people-and-roles">
-
-    <confirm-dialog
+    <ConfirmDialogShared
       ref="changeCpDialog"
       attach="#people-and-roles"
     />
@@ -44,7 +43,7 @@
           v-if="getResource.entityType === CorpTypeCd.SOLE_PROP"
           class="mt-5"
           :helpSection="orgPersonHelp"
-          />
+        />
 
         <!-- Partnership Help and Add Buttons -->
         <div v-if="getResource.entityType === CorpTypeCd.PARTNERSHIP" class="mt-8">
@@ -117,7 +116,7 @@
       </article>
 
       <article class="list-container mt-n2">
-        <list-people-and-roles
+        <ListPeopleAndRoles
           :peopleAndRoles="getPeopleAndRoles"
           :renderOrgPersonForm="isAddingEditingOrgPerson"
           :currentOrgPerson="currentOrgPerson"
@@ -140,25 +139,18 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
-import {
-  ActionBindingIF,
-  ConfirmDialogType,
-  EntitySnapshotIF,
-  HelpSectionIF,
-  IncorporationFilingIF,
-  OrgPersonIF,
-  ResourceIF,
-  RoleIF
-} from '@/interfaces'
-import { ActionTypes, CompareModes, CorpTypeCd, PartyTypes, RoleTypes } from '@/enums'
-import { ConfirmDialog } from '@/components/common/dialogs'
-import { HelpSection } from '@/components/common'
+import { isSame } from '@/utils/'
+import { ActionBindingIF, ConfirmDialogType, EntitySnapshotIF, HelpSectionIF, IncorporationFilingIF,
+  OrgPersonIF, ResourceIF, RoleIF } from '@/interfaces/'
+import { ActionTypes, CompareModes, CorpTypeCd, PartyTypes, RoleTypes } from '@/enums/'
+import { ConfirmDialogShared } from '@/dialogs/'
+import HelpSection from '@/components/common/HelpSection.vue'
 import { ListPeopleAndRoles } from './'
-import { CommonMixin, DateMixin } from '@/mixins'
+import { CommonMixin, DateMixin } from '@/mixins/'
 
 @Component({
   components: {
-    ConfirmDialog,
+    ConfirmDialogShared,
     HelpSection,
     ListPeopleAndRoles
   }
@@ -174,14 +166,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   readonly PartyTypes = PartyTypes
 
   // Global getters
-  @Getter getCurrentJsDate!: Date
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getUserEmail!: string
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter isRoleStaff!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isChangeFiling!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
   @Getter hasMinimumPartners!: boolean
@@ -450,7 +439,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
     const original = this.originalParties.find(x => x.officer.id === person.officer.id)
     if (!original) return ActionTypes.ADDED
     // ignore "action" when comparing
-    if (!this.isSame(person, original, ['actions'])) return ActionTypes.EDITED
+    if (!isSame(person, original, ['actions'])) return ActionTypes.EDITED
     return null // no actions
   }
 
@@ -513,9 +502,9 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   /** Returns true if the orgPerson address has changed. */
   private hasAddressChanged (orgPerson: OrgPersonIF): boolean {
     const mailingAddress =
-      !this.isSame(orgPerson.mailingAddress, this.originalParties[this.activeIndex].mailingAddress, ['id'])
+      !isSame(orgPerson.mailingAddress, this.originalParties[this.activeIndex].mailingAddress, ['id'])
     const deliveryAddress =
-      !this.isSame(orgPerson.deliveryAddress, this.originalParties[this.activeIndex].deliveryAddress, ['id'])
+      !isSame(orgPerson.deliveryAddress, this.originalParties[this.activeIndex].deliveryAddress, ['id'])
 
     return mailingAddress || deliveryAddress
   }

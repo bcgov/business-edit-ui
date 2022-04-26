@@ -1,6 +1,6 @@
-import { CorpTypeCd, CorrectionTypes } from '@/enums'
+import { CorpTypeCd, CorrectionTypes } from '@/enums/'
 
-export const BenefitCompanyStatementResource = {
+export const BenefitCompanyStatementResource: any = {
   addressLabel: 'Registered Office',
   entityType: CorpTypeCd.BENEFIT_COMPANY,
   entityReference: 'Company',

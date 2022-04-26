@@ -1,5 +1,5 @@
 <template>
-  <FolioNumber
+  <FolioNumberShared
     :initialValue="getFolioNumber"
     :originalValue="originalFolioNumber"
     :editLabel="editLabel"
@@ -15,18 +15,16 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces'
-import { AuthApiMixin, CommonMixin } from '@/mixins'
-import { FolioNumber } from '@bcrs-shared-components/folio-number'
+import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces/'
+import { AuthApiMixin, CommonMixin } from '@/mixins/'
+import { FolioNumberShared } from '@/components/shared'
 
 @Component({
-  components: { FolioNumber }
+  components: { FolioNumberShared }
 })
 export default class FolioInformation extends Mixins(AuthApiMixin, CommonMixin) {
   // Global getters
   @Getter getFolioNumber!: string
-  @Getter isCorrectionFiling!: boolean
-  @Getter isAlterationFiling!: boolean
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getSnapshotFolioNumber!: string
   @Getter isRoleStaff!: boolean

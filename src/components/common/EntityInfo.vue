@@ -34,24 +34,20 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { CommonMixin, EnumMixin } from '@/mixins'
-import { BusinessInformationIF, EntitySnapshotIF, IncorporationFilingIF } from '@/interfaces'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces'
-import { CorpTypeCd } from '@/enums'
+import { CommonMixin, SharedMixin } from '@/mixins/'
+import { BusinessInformationIF, ContactPointIF, EntitySnapshotIF, IncorporationFilingIF } from '@/interfaces/'
 
 @Component({})
-export default class EntityInfo extends Mixins(CommonMixin, EnumMixin) {
+export default class EntityInfo extends Mixins(CommonMixin, SharedMixin) {
   // Global getters
   @Getter getBusinessId!: string
   @Getter getBusinessNumber!: string
   @Getter getCurrentBusinessName!: string
-  @Getter getEntityType!: CorpTypeCd
   @Getter isRoleStaff!: boolean
   @Getter getBusinessContact!: ContactPointIF
   @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter isCorrectionFiling!: boolean
 
   /** Get original entity type. */
   private get originalEntityType (): string {

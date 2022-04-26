@@ -14,13 +14,10 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Prop, Watch, Emit, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-
-// Interfaces && enums
-import { ActionBindingIF } from '@/interfaces'
-import { CorrectionTypes, CorpTypeCd } from '@/enums'
+import { ActionBindingIF } from '@/interfaces/'
+import { CorrectionTypes, CorpTypeCd } from '@/enums/'
 
 @Component({})
 export default class CorrectNameToNumber extends Vue {

@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
-import { getVuexStore } from '@/store'
 import { shallowMount, createLocalVue, createWrapper } from '@vue/test-utils'
 import sinon from 'sinon'
-import { axios } from '@/utils'
-import { Actions } from '@/components/common'
+import { getVuexStore } from '@/store/'
+import { axios } from '@/utils/'
+import { Actions } from '@/components/common/'
 import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)

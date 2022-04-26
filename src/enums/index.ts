@@ -11,14 +11,14 @@ export * from './filingCodes'
 export * from './filingNames'
 export * from './filingStatus'
 export * from './filingTypes'
-export * from './partyTypes'
 export * from './nameRequestStates'
 export * from './nameRequestTypes'
 export * from './officeTypes'
 export * from './orgPersonTypes'
+export * from './partyTypes'
 export * from './roleTypes'
 export * from './routeNames'
 
-// external enums
-export { StaffPaymentOptions, FeeSummaryActions } from '@bcrs-shared-components/enums'
-export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'
+// Shared Enums
+export { StaffPaymentOptions, FeeSummaryActions } from '@bcrs-shared-components/enums/'
+export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module/'

@@ -79,7 +79,7 @@
         </div>
 
         <!-- BC Registry Contacts -->
-        <BcRegContacts :direction="'col'"/>
+        <BcRegContacts :direction="'col'" />
 
         <template v-if="isBenefit">
           <div class="my-6">
@@ -220,36 +220,27 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-
-// Components
-import { BcRegContacts } from '@/components/common'
-
-// Mixins
-import { CommonMixin, EnumMixin } from '@/mixins'
-
-// Enums and Interfaces
-import { CorpTypeCd } from '@/enums'
-import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces'
+import { BcRegContacts } from '@/components/common/'
+import { CommonMixin, SharedMixin } from '@/mixins/'
+import { CorpTypeCd } from '@/enums/'
+import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 
 @Component({
   components: {
     BcRegContacts
   }
 })
-export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {
+export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin) {
   @Prop({ default: false })
   private invalidSection: boolean
 
   // Global getters
   @Getter getApprovedName!: string
-  @Getter getEntityType!: CorpTypeCd
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getResource!: ResourceIF
   @Getter hasBusinessTypeChanged!: boolean
-  @Getter isChangeFiling!: boolean
   @Getter isConflictingLegalType!: boolean
   @Getter isTypeBcCompany!: boolean
 

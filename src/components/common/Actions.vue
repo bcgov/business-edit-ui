@@ -45,30 +45,20 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter, Action } from 'vuex-class'
-
-// Interfaces and Enums
-import { ActionBindingIF } from '@/interfaces'
-import { CorpTypeCd } from '@/enums'
-
-// Mixins
-import { DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
-import { navigate } from '@/utils'
+import { ActionBindingIF } from '@/interfaces/'
+import { DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins/'
+import { navigate } from '@/utils/'
 
 /** This component is only implemented for Correction filings atm. */
 @Component({})
 export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin) {
   // Global getters
-  @Getter getEntityType!: CorpTypeCd
   @Getter isBusySaving!: boolean
-  @Getter isNamedBusiness!: boolean
-  @Getter getNameRequestNumber!: string
   @Getter hasCorrectionChanged!: boolean
   @Getter hasAlterationChanged!: boolean // for testing state-getters
   @Getter isFilingValid!: boolean
-  @Getter hasNewNr!: boolean
   @Getter isSaving!: boolean
   @Getter isSavingResuming!: boolean
   @Getter isFilingPaying!: boolean

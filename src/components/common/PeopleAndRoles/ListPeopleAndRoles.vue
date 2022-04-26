@@ -260,11 +260,12 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { isSame } from '@/utils/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { OrgPerson } from './'
-import { CommonMixin } from '@/mixins'
-import { OrgPersonIF, RoleIF } from '@/interfaces'
-import { ActionTypes, PartyTypes, RoleTypes } from '@/enums'
+import { CommonMixin } from '@/mixins/'
+import { OrgPersonIF, RoleIF } from '@/interfaces/'
+import { ActionTypes, PartyTypes, RoleTypes } from '@/enums/'
 
 @Component({
   components: {
@@ -276,6 +277,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   // Declaration for template
   readonly ActionTypes = ActionTypes
   readonly RoleTypes = RoleTypes
+  readonly isSame = isSame
 
   /** The current orgs/people list. */
   @Prop({ default: () => { return [] as [] } })

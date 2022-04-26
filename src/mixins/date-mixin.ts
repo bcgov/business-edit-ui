@@ -1,7 +1,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { isDate } from 'lodash'
-import { CommonMixin } from '@/mixins'
+import { CommonMixin } from '@/mixins/'
 
 /**
  * Mixin that provides some useful date utilities.
@@ -174,6 +174,18 @@ export default class DateMixin extends Mixins(CommonMixin) {
   }
 
   /**
+   * Converts a Date object to an API datetime string.
+   * @example 2021-08-05T16:56:50Z -> 2021-08-05T16:56:50+00:00
+   */
+  dateToApi (date: Date): string {
+    // safety check
+    if (!isDate(date) || isNaN(date.getTime())) return null
+
+    // replace "Zulu" timezone abbreviation with UTC offset
+    return date.toISOString().replace('Z', '+00:00')
+  }
+
+  /**
    * Converts an API datetime string (in UTC) to a Date object.
    * @example 2021-08-05T16:56:50.783101+00:00 -> 2021-08-05T16:56:50Z
    */
@@ -213,17 +225,5 @@ export default class DateMixin extends Mixins(CommonMixin) {
     const dateStr = this.dateToPacificDate(date, true)
 
     return dateStr
-  }
-
-  /**
-   * Converts a Date object to an API datetime string.
-   * @example 2021-08-05T16:56:50Z -> 2021-08-05T16:56:50+00:00
-   */
-  dateToApi (date: Date): string {
-    // safety check
-    if (!isDate(date) || isNaN(date.getTime())) return null
-
-    // replace "Zulu" timezone abbreviation with UTC offset
-    return date.toISOString().replace('Z', '+00:00')
   }
 }

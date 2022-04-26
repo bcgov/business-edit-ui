@@ -1,30 +1,10 @@
-import { AccountTypes, ActionTypes, CorpTypeCd, FilingCodes, FilingNames, FilingTypes, OfficeTypes } from '@/enums'
-import {
-  AddressesIF,
-  IncorporationFilingIF,
-  NameRequestDetailsIF,
-  NameRequestApplicantIF,
-  OrgPersonIF,
-  ShareClassIF,
-  NameRequestIF,
-  BusinessInformationIF,
-  CertifyIF,
-  NameTranslationIF,
-  NaicsIF,
-  FilingDataIF,
-  StateIF,
-  EffectiveDateTimeIF,
-  ShareStructureIF,
-  FlagsReviewCertifyIF,
-  FlagsCompanyInfoIF,
-  ResolutionsIF,
-  FeesIF,
-  ResourceIF,
-  EntitySnapshotIF
-} from '@/interfaces'
-import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+import { AccountTypes, ActionTypes, CorpTypeCd, FilingCodes, FilingNames, FilingTypes, OfficeTypes } from '@/enums/'
+import { AddressesIF, AddressIF, IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF,
+  ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF, NameTranslationIF, NaicsIF, FilingDataIF, StateIF,
+  EffectiveDateTimeIF, ShareStructureIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF, ResolutionsIF, FeesIF,
+  ResourceIF, EntitySnapshotIF, ContactPointIF, StaffPaymentIF } from '@/interfaces/'
 import { isEqual } from 'lodash'
-import { isSame } from '@/utils/common-helper'
+import { isSame } from '@/utils/'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: StateIF): boolean => {
@@ -190,6 +170,21 @@ export const getUserRoles = (state: StateIF): any => {
 /** The current user's username. */
 export const getUserUsername = (state: StateIF): string => {
   return state.stateModel.tombstone.userInfo?.username
+}
+
+/** The current users's address. */
+export const getUserAddress = (state: StateIF): AddressIF => {
+  const orgInfo = null // TODO: fetch this
+  // *** TODO: set this in App.vue?
+  const userAddress: AddressIF = {
+    addressCity: orgInfo.mailingAddress.city,
+    addressCountry: orgInfo.mailingAddress.country,
+    addressRegion: orgInfo.mailingAddress.region,
+    postalCode: orgInfo.mailingAddress.postalCode,
+    streetAddress: orgInfo.mailingAddress.street,
+    streetAddressAdditional: orgInfo.mailingAddress.streetAdditional
+  }
+  return userAddress
 }
 
 /** The folio number. */

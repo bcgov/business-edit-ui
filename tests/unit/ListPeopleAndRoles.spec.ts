@@ -1,13 +1,12 @@
-// Libraries
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import { ListPeopleAndRoles } from '@/components/common'
-import { getVuexStore } from '@/store'
-import { FilingTypes } from '@/enums'
-import { GeneralPartnershipResource } from '@/resources/Edit/ChangeFirm'
-import { BenefitCompanyStatementResource } from '@/resources'
+import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAndRoles.vue'
+import { getVuexStore } from '@/store/'
+import { FilingTypes } from '@/enums/filingTypes'
+import { GeneralPartnershipResource } from '@/resources/Change/generalPartnership'
+import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitCompanyStatementResource'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)

@@ -1,13 +1,15 @@
-export * from './alteration-interfaces'
-export * from './change-firm-interfaces'
-export * from './correction-interfaces'
-export * from './filing-interfaces'
-export * from './payment-interfaces'
-export * from './resource-interfaces'
-export * from './stepper-interfaces'
-export * from './store-interfaces'
-export * from './utils-interfaces'
-export * from './state-interface'
+export * from './alteration-interfaces/'
+export * from './change-firm-interfaces/'
+export * from './correction-interfaces/'
+export * from './filing-interfaces/'
+export * from './payment-interfaces/'
+export * from './resource-interfaces/'
+export * from './stepper-interfaces/'
+export * from './store-interfaces/'
+export * from './utils-interfaces/'
+export { StateIF } from './state-interface'
+
+// Shared Interfaces
 export type {
   BreadcrumbIF,
   CompletingPartyIF,
@@ -15,4 +17,4 @@ export type {
   NaicsIF,
   NaicsResultIF,
   StaffPaymentIF
-} from '@bcrs-shared-components/interfaces'
+} from '@bcrs-shared-components/interfaces/'

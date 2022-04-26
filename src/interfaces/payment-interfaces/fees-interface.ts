@@ -1,5 +1,5 @@
 /** Interface for Fees from Payment API. */
-import { TaxesIF } from '@/interfaces'
+import { TaxesIF } from '@/interfaces/'
 
 export interface FeesIF {
     filingFees: number

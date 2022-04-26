@@ -5,7 +5,7 @@
     </header>
 
     <div :class="{'invalid-section': invalidStaffPayment}">
-      <staff-payment-component
+      <StaffPaymentShared
         :staffPaymentData="getStaffPayment"
         :validate="validateStaffPayment"
         :invalidSection="invalidStaffPayment"
@@ -19,18 +19,13 @@
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-
-// Components
-import { StaffPayment as StaffPaymentComponent } from '@bcrs-shared-components/staff-payment'
-
-// Interfaces and Enums
-import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces'
-import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
+import { StaffPaymentShared } from '@/components/shared'
+import { ActionBindingIF, FlagsReviewCertifyIF, StaffPaymentIF } from '@/interfaces/'
+import { StaffPaymentOptions } from '@/enums/'
 
 @Component({
   components: {
-    StaffPaymentComponent
+    StaffPaymentShared
   }
 })
 export default class StaffPayment extends Vue {

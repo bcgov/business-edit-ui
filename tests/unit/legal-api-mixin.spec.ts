@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import sinon from 'sinon'
 import { shallowMount, Wrapper } from '@vue/test-utils'
-import { axios } from '@/utils'
+import { axios } from '@/utils/'
 import MixinTester from './mixin-tester.vue'
-import { getVuexStore } from '@/store'
-import { OrgPersonTypes } from '@/enums'
+import { getVuexStore } from '@/store/'
+import { OrgPersonTypes } from '@/enums/orgPersonTypes'
 
 const store = getVuexStore()
 

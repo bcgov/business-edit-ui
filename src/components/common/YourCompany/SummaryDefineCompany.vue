@@ -55,19 +55,12 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-
-// Components
-import { BusinessContactInfo, FolioInformation, OfficeAddresses } from '@/components/common/YourCompany'
-import { CorrectNameOptions } from '@/components/common/YourCompany/CompanyName'
-
-// Mixins
-import { CommonMixin } from '@/mixins'
-
-// Enums
-import { CorpTypeCd } from '@/enums'
+import { BusinessContactInfo, FolioInformation, OfficeAddresses } from '@/components/common/YourCompany/'
+import { CorrectNameOptions } from '@/components/common/YourCompany/CompanyName/'
+import { CommonMixin } from '@/mixins/'
+import { CorpTypeCd } from '@/enums/'
 
 @Component({
   components: {
@@ -84,7 +77,6 @@ export default class SummaryDefineCompany extends Mixins(CommonMixin) {
   @Getter isPremiumAccount!: boolean
   @Getter getNameTranslations!: Array<string>
   @Getter isDefineCompanyStepValid!: boolean
-  @Getter getEntityType!: CorpTypeCd
 
   @Prop({ default: false })
   readonly isSummary: boolean

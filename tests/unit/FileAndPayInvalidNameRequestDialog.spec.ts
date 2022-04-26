@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
-import FileAndPayInvalidNameRequestDialog from '@/components/common/dialogs/FileAndPayInvalidNameRequestDialog.vue'
+import { getVuexStore } from '@/store/'
+import FileAndPayInvalidNameRequestDialog from '@/dialogs/FileAndPayInvalidNameRequestDialog.vue'
+
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})

@@ -1,16 +1,19 @@
 <template>
   <div id="name-translation" v-if="!isSummaryMode || hasNameTranslationChange">
-    <confirm-dialog
+    <ConfirmDialogShared
       ref="confirmTranslationDialog"
       attach="#name-translation"
     />
+
     <v-row no-gutters v-if="!isEditing">
       <v-col cols="3">
         <label><strong>Name Translation(s)</strong></label>
           <v-col cols="1" class="pa-0">
-            <action-chip v-if="hasNameTranslationChange && !isSummaryMode"
-                      :actionable-item="{ action: ActionTypes.EDITED }"
-                      :editedLabel="editedLabel" />
+            <ActionChipShared
+              v-if="hasNameTranslationChange && !isSummaryMode"
+              :actionable-item="{ action: ActionTypes.EDITED }"
+              :editedLabel="editedLabel"
+            />
           </v-col>
       </v-col>
       <v-col cols="7" v-if="draftTranslations && translationsExceptRemoved.length">
@@ -43,9 +46,7 @@
 
         <!-- More Actions Menu -->
         <span class="more-actions">
-          <v-menu
-                offset-y left nudge-bottom="4"
-              >
+          <v-menu offset-y left nudge-bottom="4">
             <template v-slot:activator="{ on }">
               <v-btn
                 text small color="primary"
@@ -70,6 +71,7 @@
         </span>
       </v-col>
     </v-row>
+
     <v-row no-gutters v-else>
       <v-col cols="3">
         <label :class="{'error-text': invalidSection}"><strong>Name Translation(s)</strong></label>
@@ -88,7 +90,7 @@
         </v-row>
         <v-row>
           <v-col>
-            <add-name-translation
+            <AddNameTranslation
               v-if="isAddingNameTranslation"
               :editNameTranslation="editingNameTranslation"
               :editNameIndex="editIndex"
@@ -96,7 +98,7 @@
               @removeNameTranslation="removeNameTranslation($event)"
               @cancelTranslation="cancelOrResetEditing()"
             />
-            <list-name-translation
+            <ListNameTranslation
               v-if="draftTranslations && draftTranslations.length > 0"
               :isAddingNameTranslation="isAddingNameTranslation"
               :translationList="draftTranslations"
@@ -132,31 +134,22 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash'
 import { Action } from 'vuex-class'
-import { ActionChip } from '@bcrs-shared-components/action-chip'
-
-// Components
-import { ConfirmDialog } from '@/components/common/dialogs'
-import { ListNameTranslation, AddNameTranslation } from './'
-
-// Interfaces
-import { ActionBindingIF, ConfirmDialogType, NameTranslationIF } from '@/interfaces'
-
-// Enums
-import { ActionTypes } from '@/enums'
-
-// Mixins
-import { CommonMixin } from '@/mixins'
+import { ActionChipShared } from '@/components/shared'
+import { ConfirmDialogShared } from '@/dialogs/'
+import { ListNameTranslation, AddNameTranslation } from '@/components/common/'
+import { ActionBindingIF, ConfirmDialogType, NameTranslationIF } from '@/interfaces/'
+import { ActionTypes } from '@/enums/'
+import { CommonMixin } from '@/mixins/'
 
 @Component({
   components: {
     AddNameTranslation,
     ListNameTranslation,
-    ConfirmDialog,
-    ActionChip
+    ConfirmDialogShared,
+    ActionChipShared
   }
 })
 export default class NameTranslation extends Mixins(CommonMixin) {

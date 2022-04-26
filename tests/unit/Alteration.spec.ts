@@ -1,17 +1,12 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-import { getVuexStore } from '@/store'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
-import { axios } from '@/utils'
-
-// Components
-import { Alteration } from '@/views'
-
-// Other
+import { getVuexStore } from '@/store/'
+import { axios } from '@/utils/'
+import Alteration from '@/views/Alteration.vue'
 import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)

@@ -22,7 +22,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
-export default class ErrorContact extends Vue { }
+export default class ErrorContact extends Vue {}
 </script>
 
 <style lang="scss" scoped>

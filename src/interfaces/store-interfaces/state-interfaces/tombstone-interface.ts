@@ -1,4 +1,4 @@
-import { CorpTypeCd, FilingTypes } from '@/enums'
+import { CorpTypeCd, FilingTypes } from '@/enums/'
 
 /** Data object used internally only (not to/from API). */
 export interface TombStoneIF {

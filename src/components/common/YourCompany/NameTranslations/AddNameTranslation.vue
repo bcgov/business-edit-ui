@@ -1,6 +1,6 @@
 <template>
   <div id="add-name-translation">
-    <confirm-dialog
+    <ConfirmDialogShared
       ref="confirmTranslationDialog"
       attach="#add-name-translation"
     />
@@ -51,21 +51,14 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Emit, Prop, Mixins } from 'vue-property-decorator'
-
-// Components
-import { ConfirmDialog } from '@/components/common/dialogs'
-
-// Interfaces
-import { ConfirmDialogType, FormIF } from '@/interfaces'
-
-// Mixins
-import { CommonMixin } from '@/mixins'
+import { ConfirmDialogShared } from '@/dialogs/'
+import { ConfirmDialogType, FormIF } from '@/interfaces/'
+import { CommonMixin } from '@/mixins/'
 
 @Component({
   components: {
-    ConfirmDialog
+    ConfirmDialogShared
   }
 })
 export default class AddNameTranslation extends Mixins(CommonMixin) {

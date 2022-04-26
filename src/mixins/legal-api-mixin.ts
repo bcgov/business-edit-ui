@@ -1,14 +1,9 @@
-// Libraries
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { axios } from '@/utils'
-
-// Interfaces
-import {
-  AddressesIF, AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF,
-  NameTranslationIF, OrgPersonIF, ShareStructureIF, ResolutionsIF, ChangeFirmIF
-} from '@/interfaces'
-import { OrgPersonTypes } from '@/enums'
+import { axios } from '@/utils/'
+import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF, NameTranslationIF,
+  OrgPersonIF, ShareStructureIF, ResolutionsIF, ChangeFirmIF } from '@/interfaces/'
+import { OrgPersonTypes } from '@/enums/'
 
 /**
  * Mixin that provides integration with the Legal API.

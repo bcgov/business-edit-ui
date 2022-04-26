@@ -1,7 +1,7 @@
 <template>
   <v-form id="correct-nr-form" ref="correctNrForm" v-model="formValid" lazy-validation>
     <!-- Dialogs -->
-    <ConfirmDialog
+    <ConfirmDialogShared
       ref="confirm"
       attach="#app"
     />
@@ -61,31 +61,20 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ConfirmDialog } from '@bcrs-shared-components/confirm-dialog'
-
-// Mixins
-import { CommonMixin, EnumMixin, NameRequestMixin } from '@/mixins'
-
-// Interfaces & Enums
-import {
-  ActionBindingIF,
-  ConfirmDialogType,
-  NameRequestApplicantIF,
-  NameRequestIF,
-  NrCorrectionIF,
-  NrResponseIF
-} from '@/interfaces'
-import { CorpTypeCd, CorrectionTypes } from '@/enums'
+import { ConfirmDialogShared } from '@/dialogs/'
+import { CommonMixin, SharedMixin, NameRequestMixin } from '@/mixins/'
+import { ActionBindingIF, ConfirmDialogType, NameRequestApplicantIF, NameRequestIF, NrCorrectionIF,
+  NrResponseIF } from '@/interfaces/'
+import { CorrectionTypes } from '@/enums/'
 
 @Component({
   components: {
-    ConfirmDialog
+    ConfirmDialogShared
   }
 })
-export default class CorrectNameRequest extends Mixins(CommonMixin, EnumMixin, NameRequestMixin) {
+export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin, NameRequestMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -105,7 +94,6 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, EnumMixin, N
   @Getter getNameRequest!: NameRequestIF
   @Getter getNameRequestNumber!: string
   @Getter getNameRequestApplicant!: NameRequestApplicantIF
-  @Getter getEntityType!: CorpTypeCd
 
   // V-model properties
   private formValid = false
@@ -133,7 +121,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, EnumMixin, N
   ]
 
   // Validations
-  private get isFormValid (): boolean {
+  get isFormValid (): boolean {
     return this.formValid && !!this.nameRequestNumber &&
       (!!this.applicantPhone || !!this.applicantEmail)
   }
@@ -152,10 +140,6 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, EnumMixin, N
     // eslint-disable-next-line max-len
     const VALID_FORMAT = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
     return VALID_FORMAT.test(value)
-  }
-
-  private resetForm () {
-    this.$refs.correctNrForm.resetValidation()
   }
 
   @Watch('validate')
@@ -183,7 +167,6 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, EnumMixin, N
             `Name Request does not match the current business type ` +
             `<b>${this.getCorpTypeDescription(this.getEntityType)}</b>.\n\n` +
             `The Name Request type must match the business type before you can continue.</p>`
-          console.log('called')
           await this.showConfirmDialog(
             this.$refs.confirm,
             'Name Request Type Does Not Match Business Type',
@@ -228,7 +211,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, EnumMixin, N
   /** Inform parent the process is complete. */
   @Emit('done')
   private emitDone (isSaved: boolean = false): boolean {
-    if (!isSaved) this.resetForm()
+    if (!isSaved) this.$refs.correctNrForm.resetValidation()
     return isSaved
   }
 

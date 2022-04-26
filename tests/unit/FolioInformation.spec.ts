@@ -1,12 +1,11 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import sinon from 'sinon'
 import { mount } from '@vue/test-utils'
-import { axios } from '@/utils'
-import { getVuexStore } from '@/store'
+import { axios } from '@/utils/'
+import { getVuexStore } from '@/store/'
 import FolioInformation from '@/components/common/YourCompany/FolioInformation.vue'
-import { FolioNumber } from '@bcrs-shared-components/folio-number'
+import FolioNumber from '@bcrs-shared-components/folio-number/FolioNumber.vue'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -27,7 +26,7 @@ describe('Folio Information component', () => {
     const wrapper = mount(FolioInformation, {
       vuetify,
       store,
-      propsData: { }
+      propsData: {}
     })
     const vm: any = wrapper.vm
 

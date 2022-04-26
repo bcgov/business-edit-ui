@@ -1,8 +1,7 @@
-// Libraries
 import { Component, Mixins } from 'vue-property-decorator'
-import { NameRequestStates, NameRequestTypes } from '@/enums'
-import { DateMixin, LegalApiMixin } from '@/mixins'
-import { NrResponseIF } from '@/interfaces'
+import { NameRequestStates, NameRequestTypes } from '@/enums/'
+import { DateMixin, LegalApiMixin } from '@/mixins/'
+import { NrResponseIF } from '@/interfaces/'
 
 /**
  * Mixin for processing Name Request objects.

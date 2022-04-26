@@ -1,4 +1,4 @@
-import { ActionTypes } from '@/enums'
+import { ActionTypes } from '@/enums/'
 
 // Name translation interface
 export interface NameTranslationIF {

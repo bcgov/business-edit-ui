@@ -1,9 +1,9 @@
-import { BenefitCompanyStatementResource } from '@/resources/Correction'
-import { BenefitCompanyResource, CooperativeResource } from './Edit/Alteration'
-import { SoleProprietorshipResource, GeneralPartnershipResource } from './Edit/ChangeFirm'
-import { ResourceIF } from '@/interfaces'
+import { ResourceIF } from '@/interfaces/'
+import { BenefitCompanyResource, CooperativeResource } from './Alteration/'
+import { SoleProprietorshipResource, GeneralPartnershipResource } from './Change/'
+import { BenefitCompanyStatementResource } from './Correction/'
 
-export * from './Correction'
+export * from './Correction/'
 export * from './BreadCrumbResource'
 
 export const AlterationResources: Array<ResourceIF> = [

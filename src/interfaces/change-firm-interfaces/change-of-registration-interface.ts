@@ -1,5 +1,4 @@
-import { BaseAddressObjIF, NameRequestIF, OrgPersonIF } from '@/interfaces'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces'
+import { BaseAddressObjIF, ContactPointIF, NameRequestIF, OrgPersonIF } from '@/interfaces/'
 
 export interface ChangeOfRegistrationIF {
   business: {

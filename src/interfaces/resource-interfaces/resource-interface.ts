@@ -1,5 +1,5 @@
-import { CorpTypeCd, CorrectionTypes, FilingCodes, NameRequestEntityTypes } from '@/enums'
-import { HelpSectionIF } from '@/interfaces'
+import { CorpTypeCd, CorrectionTypes, FilingCodes, NameRequestEntityTypes } from '@/enums/'
+import { HelpSectionIF } from '@/interfaces/'
 
 /** Interface to define the resource model example */
 export interface ResourceIF {

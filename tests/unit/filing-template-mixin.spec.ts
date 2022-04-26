@@ -1,12 +1,11 @@
 import { shallowMount } from '@vue/test-utils'
+import { getVuexStore } from '@/store/'
 import MixinTester from './mixin-tester.vue'
-import { getVuexStore } from '@/store'
 
 const store = getVuexStore()
 
 describe('Change of Registration Filing', () => {
   let wrapper: any
-  let store: any = getVuexStore()
 
   beforeEach(() => {
     wrapper = shallowMount(MixinTester, { store })
