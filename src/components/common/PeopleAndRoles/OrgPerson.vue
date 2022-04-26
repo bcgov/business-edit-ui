@@ -286,8 +286,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   readonly CorpTypeCd = CorpTypeCd
   readonly RoleTypes = RoleTypes
   readonly PartyTypes = PartyTypes
-  private PersonAddressSchema = PersonAddressSchema
-  private OfficeAddressSchema = OfficeAddressSchema
+  readonly PersonAddressSchema = PersonAddressSchema
+  readonly OfficeAddressSchema = OfficeAddressSchema
 
   /** The current org/person to edit or add. */
   @Prop() private currentOrgPerson!: OrgPersonIF
