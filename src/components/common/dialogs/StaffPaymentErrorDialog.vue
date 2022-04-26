@@ -13,7 +13,7 @@
         <div class="genErr mb-4" v-else>
           <p>We were unable to process your payment due to the following error(s):</p>
           <ul>
-            <li v-for="(error, index) in errors[0].message.split('<br/>')" :key="index">{{ error }}</li>
+            <li v-for="(error, index) in errors" :key="index">{{ error.message }}</li>
           </ul>
         </div>
 
