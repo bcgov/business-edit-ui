@@ -87,7 +87,7 @@ describe('Payment Error Dialog', () => {
     wrapper.destroy()
   })
 
-  it('renders PAD error messages correctly when they are present', () => {
+  it('renders error messages correctly when they are present', () => {
     store.state.stateModel.tombstone.keycloakRoles = ['edit', 'view']
     const wrapper = shallowMount(PaymentErrorDialog,
       {
@@ -115,7 +115,7 @@ describe('Payment Error Dialog', () => {
     wrapper.destroy()
   })
 
-  it('renders PAD warning messages correctly when they are present', () => {
+  it('renders warning messages correctly when they are present', () => {
     store.state.stateModel.tombstone.authRoles = ['edit', 'view']
     const wrapper = shallowMount(PaymentErrorDialog,
       {
