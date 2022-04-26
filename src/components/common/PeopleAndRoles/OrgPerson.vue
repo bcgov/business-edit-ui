@@ -286,8 +286,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   readonly CorpTypeCd = CorpTypeCd
   readonly RoleTypes = RoleTypes
   readonly PartyTypes = PartyTypes
-  private PersonAddressSchema = {}
-  private OfficeAddressSchema = {}
+  private PersonAddressSchema = PersonAddressSchema
+  private OfficeAddressSchema = OfficeAddressSchema
 
   /** The current org/person to edit or add. */
   @Prop() private currentOrgPerson!: OrgPersonIF
@@ -632,9 +632,6 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     this.confirmNameChangeRules = this.hasOrgPersonNameChanged(this.orgPerson)
       ? [(v: string) => !!v]
       : []
-
-    this.PersonAddressSchema = PersonAddressSchema
-    this.OfficeAddressSchema = OfficeAddressSchema
   }
 
   /** Email validation method */
