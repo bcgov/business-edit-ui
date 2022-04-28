@@ -132,7 +132,7 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
 
   // Props
   @Prop({ default: false })
-  private provisionsRemoved!: boolean
+  readonly provisionsRemoved!: boolean
 
   // Emitters
   @Emit('isChanged')
@@ -177,11 +177,11 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
     }
   }
 
-  private get hasProvisionsRemovedPropsChanged (): boolean {
+  get hasProvisionsRemovedPropsChanged (): boolean {
     return this.provisionsRemoved !== this.originalProvisionsRemovedValue
   }
 
-  private get hasDraftProvisionsRemovedChanged (): boolean {
+  get hasDraftProvisionsRemovedChanged (): boolean {
     return this.draftProvisionsRemoved !== this.originalProvisionsRemovedValue
   }
 
@@ -243,7 +243,7 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
 
 ::v-deep .v-input--checkbox .theme--light.v-label {
   line-height: 1.375rem;
-  font-size: 0.875rem;
+  font-size: $px-14;
   font-weight: normal;
 }
 

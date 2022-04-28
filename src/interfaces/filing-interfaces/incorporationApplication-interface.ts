@@ -1,5 +1,4 @@
-import { AddressesIF, OrgPersonIF, ShareClassIF,
-  NameTranslationIF } from '@/interfaces'
+import { AddressesIF, OrgPersonIF, ShareClassIF, NameTranslationIF } from '@/interfaces'
 
 /** Incorporation Application filing loaded from / saved to the Legal API. */
 export interface IncorporationApplicationIF {

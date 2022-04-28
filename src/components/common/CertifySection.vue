@@ -3,7 +3,7 @@
     <h2>{{sectionNumber}} Certify</h2>
     <div class="pt-4">Enter the legal name of the person authorized to complete and submit these changes.</div>
     <div :class="{ 'invalid-section': certificationInvalid }">
-      <certify
+      <CertifyShared
         :currentDate="getCurrentDate"
         :certifiedBy="getCertifyState.certifiedBy"
         :isCertified="getCertifyState.valid"
@@ -22,28 +22,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-
-// Components
-import { Certify } from '@bcrs-shared-components/certify'
-
-// Mixins
-import { DateMixin, EnumMixin } from '@/mixins'
-
-// Interfaces, Enums & Resources
+import { Certify as CertifyShared } from '@bcrs-shared-components/certify'
+import { DateMixin, SharedMixin } from '@/mixins'
 import { ActionBindingIF, CertifyIF, ResourceIF } from '@/interfaces'
-import { CorpTypeCd } from '@/enums'
 
 @Component({
   components: {
-    Certify
+    CertifyShared
   }
 })
-export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
+export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
   @Getter getCertifyState!: CertifyIF
   @Getter getCurrentDate!: string
-  @Getter getEntityType!: CorpTypeCd
   @Getter getResource!: ResourceIF
   @Getter isRoleStaff!: boolean
   @Getter getAppValidate!: boolean
@@ -68,12 +60,12 @@ export default class CertifySection extends Mixins(DateMixin, EnumMixin) {
   }
 
   /** Get the entity type in readable format */
-  private get readableEntityType (): string {
+  get readableEntityType (): string {
     return this.getCorpTypeDescription(this.getEntityType)
   }
 
   /** Get the certify resource message */
-  private get certifyMessage (): string {
+  get certifyMessage (): string {
     return this.getResource?.certifyClause
   }
 

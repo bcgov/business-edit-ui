@@ -73,7 +73,7 @@
     <template v-if="hasNameTranslationChanged">
       <v-divider class="mx-4" />
       <div class="section-container name-translation-summary">
-        <name-translation
+        <NameTranslation
           :nameTranslations="getNameTranslations"
           :isSummaryMode="true"
         />
@@ -168,67 +168,36 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import {
-  ActionBindingIF,
-  EffectiveDateTimeIF,
-  EntitySnapshotIF,
-  NameRequestIF,
-  ShareClassIF,
-  ShareStructureIF,
-  FlagsReviewCertifyIF,
-  NameTranslationIF,
-  FeesIF
-} from '@/interfaces'
-import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
-import { CorpTypeCd } from '@/enums'
-import { ResolutionDates } from '@/components/Edit'
+import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF } from '@/interfaces'
+import { DateMixin, SharedMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common'
+import { ResolutionDates } from '@/components/Alteration'
 
 @Component({
   components: {
     EffectiveDateTime,
+    NameTranslation,
     ResolutionDates,
-    ShareStructures,
-    NameTranslation
+    ShareStructures
   }
 })
 export default class AlterationSummary extends Mixins(
   DateMixin,
-  EnumMixin,
+  SharedMixin,
   FilingTemplateMixin,
   LegalApiMixin,
   PayApiMixin
 ) {
   // Global getters
-  @Getter getCurrentJsDate!: Date
-  @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
-  @Getter getEntityType!: CorpTypeCd
-  @Getter getNameRequest!: NameRequestIF
-  @Getter getEffectiveDateTime!: EffectiveDateTimeIF
-  @Getter getShareClasses!: ShareClassIF[]
-  @Getter getSnapshotShareStructure!: ShareStructureIF
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getNewResolutionDates!: string[]
   @Getter getPreviousResolutionDates!: string[]
-  @Getter getNameTranslations!: NameTranslationIF[]
   @Getter getCurrentFees!: FeesIF
-  @Getter getProvisionsRemoved!: boolean
   @Getter isBusySaving!: boolean
   @Getter getFeePrices!: FeesIF
-
-  // Alteration flag getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter hasBusinessNameChanged!: boolean
-  @Getter hasBusinessTypeChanged!: boolean
-  @Getter hasNameTranslationChanged!: boolean
-  @Getter hasShareStructureChanged!: boolean
-  @Getter hasNewResolutionDatesChanged!: boolean
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF
-  @Action setEffectiveDateTimeString!: ActionBindingIF
-  @Action setIsFutureEffective!: ActionBindingIF
   @Action setEffectiveDateValid!: ActionBindingIF
 
   /** Prop to perform validation. */

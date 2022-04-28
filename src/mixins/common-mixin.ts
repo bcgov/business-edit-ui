@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { omit, isEqual } from 'lodash'
-import { CorpTypeCd, RouteNames } from '@/enums'
+import { RouteNames } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { ConfirmDialogType } from '@/interfaces'
 
 /**
@@ -17,17 +17,6 @@ export default class CommonMixin extends Vue {
   /** Is True if Jest is running the code. */
   get isJestRunning (): boolean {
     return (process.env.JEST_WORKER_ID !== undefined)
-  }
-
-  /**
-   * Compares two objects while omitting specified properties from the comparison.
-   * @param objA the first object to compare
-   * @param objB the second object to compare
-   * @param props an optional array of properties to omit during the comparison
-   * @return a boolean indicating a match of objects
-   */
-  isSame (objA: {}, objB: {}, props: string[] = []): boolean {
-    return isEqual({ ...omit(objA, props) }, { ...omit(objB, props) })
   }
 
   /**

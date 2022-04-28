@@ -117,16 +117,9 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
-
-// Interfaces
 import { NameTranslationIF } from '@/interfaces'
-
-// Enums
 import { ActionTypes } from '@/enums'
-
 import { CommonMixin } from '@/mixins'
 
 @Component({})
@@ -137,10 +130,8 @@ export default class ListNameTranslation extends Mixins(CommonMixin) {
   @Prop({ default: false })
   readonly isAddingNameTranslation: boolean
 
-  // Global getter
-  @Getter isCorrectionFiling!: boolean
-
-  private ActionTypes = ActionTypes
+  // declaration for template
+  readonly ActionTypes = ActionTypes
 
   /**
    * Emit an index and event to the parent to handle editing.
@@ -175,7 +166,7 @@ export default class ListNameTranslation extends Mixins(CommonMixin) {
       display: flex;
       background-color: $BCgovBlue5O;
       padding: .5rem 1.25rem .5rem 1.25rem;
-      font-size: 0.875rem;
+      font-size: $px-14;
       margin-top: 1rem;
     }
 

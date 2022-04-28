@@ -1,4 +1,4 @@
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 /** Data object used internally only (not to/from API). */
 export interface BusinessInformationIF {

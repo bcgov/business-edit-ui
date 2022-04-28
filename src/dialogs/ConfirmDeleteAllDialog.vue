@@ -33,10 +33,10 @@ export default class ConfirmDeleteAllDialog extends Vue {
   @Prop() readonly attach: string
 
   // Pass click event to parent.
-  @Emit() private confirm () { }
+  @Emit() protected confirm () {}
 
   // Pass click event to parent.
-  @Emit() private cancel () { }
+  @Emit() protected cancel () {}
 }
 </script>
 

@@ -9,7 +9,7 @@
           have passed a resolution or have a court order to change your share structure.</p>
           <p>Enter the date of the Resolution or Court Order here:</p>
         </div>
-        <date-picker
+        <DatePickerShared
           title="Resolution or Court Order Date"
           :error-msg="errors"
           nudge-right="100"
@@ -35,12 +35,12 @@
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { DatePicker } from '@bcrs-shared-components/date-picker'
+import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF } from '@/interfaces'
 
 @Component({
-  components: { DatePicker }
+  components: { DatePickerShared }
 })
 export default class ResolutionDateDialog extends Vue {
   /** Prop to provide attachment selector. */
@@ -88,7 +88,7 @@ export default class ResolutionDateDialog extends Vue {
   }
 
   // Pass click events to parent.
-  @Emit('emitClose') private exit () { this.clearLocal() }
+  @Emit('emitClose') protected exit () { this.clearLocal() }
 }
 </script>
 

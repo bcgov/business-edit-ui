@@ -9,9 +9,11 @@
         <v-layout row>
           <v-flex xs3 md2>
             <label class="font-weight-bold">Legal Name</label>
-            <action-chip v-if="isChanged"
-                         :actionable-item="{ action: ActionTypes.EDITED }"
-                         :editedLabel="editedLabel" />
+            <ActionChipShared
+              v-if="isChanged"
+              :actionable-item="{ action: ActionTypes.EDITED }"
+              :editedLabel="editedLabel"
+            />
           </v-flex>
           <v-flex xs9 md10>
             <span>{{formatName(completingParty) || "Unknown"}}</span>
@@ -25,13 +27,13 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { ActionChip } from '@bcrs-shared-components/action-chip'
+import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip'
 import { CommonMixin } from '@/mixins'
 import { IncorporationFilingIF, OrgPersonIF } from '@/interfaces'
 import { ActionTypes, RoleTypes } from '@/enums'
 
 @Component({
-  components: { ActionChip }
+  components: { ActionChipShared }
 })
 export default class CompletingParty extends Mixins(CommonMixin) {
   // Declaration for template
@@ -41,17 +43,17 @@ export default class CompletingParty extends Mixins(CommonMixin) {
   @Getter getOriginalIA!: IncorporationFilingIF
 
   /** The current Completing Party if found, otherwise undefined. */
-  private get completingParty () : OrgPersonIF {
+  get completingParty () : OrgPersonIF {
     return this.getCompletingParty(this.getPeopleAndRoles)
   }
 
   /** The original Completing Party if found, otherwise undefined. */
-  private get originalCompletingParty () : OrgPersonIF {
+  get originalCompletingParty () : OrgPersonIF {
     return this.getCompletingParty(this.getOriginalIA?.incorporationApplication?.parties)
   }
 
   /** True if the Completing Party has been changed. */
-  private get isChanged (): boolean {
+  get isChanged (): boolean {
     return (this.completingParty?.officer.id !== this.originalCompletingParty?.officer.id)
   }
 

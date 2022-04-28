@@ -3,11 +3,13 @@ import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
-import { OrgPerson } from '@/components/common'
+import OrgPerson from '@/components/common/PeopleAndRoles/OrgPerson.vue'
 import { getVuexStore } from '@/store'
 import { FilingTypes } from '@/enums'
-import { GeneralPartnershipResource } from '@/resources/Edit/ChangeFirm'
-import { BenefitCompanyStatementResource } from '@/resources'
+import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitCompanyStatementResource'
+
+// mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
+console.warn = jest.fn()
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -332,7 +334,8 @@ describe('Org/Person component for Correction', () => {
 
   it('Emits "reset" event when clicking Cancel button', async () => {
     const wrapper = createComponent(validOrgData, 0, null)
-    wrapper.vm.applyValidation()
+    const vm = wrapper.vm as any
+    vm.applyValidation()
     await Vue.nextTick()
 
     wrapper.find(cancelButtonSelector).trigger('click')
@@ -361,7 +364,8 @@ describe('Org/Person component for Correction', () => {
 
   it('Displays error message when user enters invalid org name', async () => {
     const wrapper = createComponent(validOrgData, NaN, null)
-    wrapper.vm.applyValidation()
+    const vm = wrapper.vm as any
+    vm.applyValidation()
     await Vue.nextTick()
 
     const input = wrapper.find(orgNameSelector)
@@ -399,7 +403,8 @@ describe('Org/Person component for Correction', () => {
 
   it('Displays error message when user does not enter person names', async () => {
     const wrapper = createComponent(validPersonData, NaN, null)
-    wrapper.vm.applyValidation()
+    const vm = wrapper.vm as any
+    vm.applyValidation()
     await Vue.nextTick()
 
     const input1 = wrapper.find(firstNameSelector)
@@ -426,7 +431,8 @@ describe('Org/Person component for Correction', () => {
 
   it('Displays error message when user enters person names that are too long', async () => {
     const wrapper = createComponent(validPersonData, NaN, null)
-    wrapper.vm.applyValidation()
+    const vm = wrapper.vm as any
+    vm.applyValidation()
     await Vue.nextTick()
 
     const input1 = wrapper.find(firstNameSelector)
@@ -503,7 +509,8 @@ describe('Org/Person component for Correction', () => {
 
   it('Displays errors and does not submit form when clicking Done button and form is invalid', async () => {
     const wrapper = createComponent(emptyPerson, NaN, null)
-    wrapper.vm.applyValidation()
+    const vm = wrapper.vm as any
+    vm.applyValidation()
     await Vue.nextTick()
 
     // verify that Done button is enabled, even for an empty person

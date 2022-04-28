@@ -15,7 +15,7 @@
         <p v-for="(item, index) in items" :key="index" class="mt-4 py-1" v-html="item" />
 
         <!-- BC Registry Contacts -->
-        <BcRegContacts class="mb-6" :direction="'col'"/>
+        <BcRegContacts class="mb-6" :direction="'col'" />
 
         <label>Hours of Operation:</label>
         <p>Monday to Friday, 8:30am - 4:30pm Pacific Time</p>

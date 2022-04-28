@@ -2,9 +2,10 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import { Actions } from '@/components/common'
+import Actions from '@/components/common/Actions.vue'
 
 Vue.use(Vuetify)
+
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 

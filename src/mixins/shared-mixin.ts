@@ -3,10 +3,10 @@ import { GetCorpInfoObject, GetCorpFullDescription, GetCorpNumberedDescription }
   from '@bcrs-shared-components/corp-type-module'
 
 /**
- * Mixin that provides some useful enum-related utilities.
+ * Mixin that provides access to shared functions.
  */
 @Component({})
-export default class EnumMixin extends Vue {
+export default class SharedMixin extends Vue {
   // from external module
   getCorpTypeInfo = GetCorpInfoObject
   getCorpTypeDescription = GetCorpFullDescription

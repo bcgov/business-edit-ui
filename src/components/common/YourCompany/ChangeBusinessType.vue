@@ -79,7 +79,7 @@
         </div>
 
         <!-- BC Registry Contacts -->
-        <BcRegContacts :direction="'col'"/>
+        <BcRegContacts :direction="'col'" />
 
         <template v-if="isBenefit">
           <div class="my-6">
@@ -220,18 +220,11 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-
-// Components
 import { BcRegContacts } from '@/components/common'
-
-// Mixins
-import { CommonMixin, EnumMixin } from '@/mixins'
-
-// Enums and Interfaces
-import { CorpTypeCd } from '@/enums'
+import { CommonMixin, SharedMixin } from '@/mixins'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces'
 
 @Component({
@@ -239,23 +232,23 @@ import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces'
     BcRegContacts
   }
 })
-export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {
+export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin) {
   @Prop({ default: false })
-  private invalidSection: boolean
+  readonly invalidSection: boolean
 
   // Global getters
   @Getter getApprovedName!: string
-  @Getter getEntityType!: CorpTypeCd
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getResource!: ResourceIF
   @Getter hasBusinessTypeChanged!: boolean
-  @Getter isChangeFiling!: boolean
   @Getter isConflictingLegalType!: boolean
   @Getter isTypeBcCompany!: boolean
 
   @Action setEntityType!: ActionBindingIF
 
+  // declaration for template
   readonly CorpTypeCd = CorpTypeCd
+
   private selectedEntityType: CorpTypeCd = null
   private confirmArticles: boolean = false
   private helpToggle: boolean = false
@@ -298,18 +291,18 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, EnumMixin) {
   ]
 
   /** Verify New Business name. */
-  private get isNewName (): boolean {
+  get isNewName (): boolean {
     return this.getApprovedName &&
       (this.getApprovedName !== this.getEntitySnapshot?.businessInfo?.legalName)
   }
 
   /** Check is current entity selection is a Benefit Company */
-  private get isBenefit (): boolean {
+  get isBenefit (): boolean {
     return (this.selectedEntityType === CorpTypeCd.BENEFIT_COMPANY)
   }
 
   /** Type change helper information */
-  private get typeChangeInfo (): string {
+  get typeChangeInfo (): string {
     return this.getResource.changeData?.typeChangeInfo
   }
 

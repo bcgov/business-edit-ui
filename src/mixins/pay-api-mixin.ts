@@ -1,10 +1,9 @@
-// Libraries
 import { Component, Vue } from 'vue-property-decorator'
 import { axios } from '@/utils'
-
-import { FilingCodes } from '@/enums/filingCodes'
-import { CorpTypeCd } from '@/enums'
+import { FilingCodes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FeesIF } from '@/interfaces'
+
 /**
  * Mixin that provides integration with the Auth API.
  */

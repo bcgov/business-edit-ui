@@ -16,7 +16,7 @@
               <strong>{{getDefaultCorrectionDetailComment}}</strong>
             </label>
             <div class="pt-2">
-              <detail-comment
+              <DetailCommentShared
                 v-model="comment"
                 placeholder="Add a Detail that will appear on the ledger for this entity."
                 :textAreaStyle="textAreaStyle"
@@ -34,12 +34,12 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { DetailComment } from '@bcrs-shared-components/detail-comment'
+import { DetailComment as DetailCommentShared } from '@bcrs-shared-components/detail-comment'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF } from '@/interfaces'
 
 @Component({
-  components: { DetailComment }
+  components: { DetailCommentShared }
 })
 export default class Detail extends Vue {
   @Getter getDetailComment!: string
@@ -51,7 +51,7 @@ export default class Detail extends Vue {
   private comment: string = null
   private textAreaStyle = 'filled'
 
-  private get maxLength (): number {
+  get maxLength (): number {
     // = (max size in db) - (default comment length) - (Carriage Return)
     return (4096 - this.getDefaultCorrectionDetailComment.length - 1)
   }

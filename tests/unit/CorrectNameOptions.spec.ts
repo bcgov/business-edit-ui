@@ -1,18 +1,11 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-
-// Store
 import { getVuexStore } from '@/store'
-
-// Components
 import { shallowMount } from '@vue/test-utils'
-import {
-  CorrectNameOptions,
-  CorrectCompanyName,
-  CorrectNameRequest,
-  CorrectNameToNumber
-} from '@/components/common/YourCompany/CompanyName'
+import CorrectNameOptions from '@/components/common/YourCompany/CompanyName/CorrectNameOptions.vue'
+import CorrectCompanyName from '@/components/common/YourCompany/CompanyName/CorrectCompanyName.vue'
+import CorrectNameRequest from '@/components/common/YourCompany/CompanyName/CorrectNameRequest.vue'
+import CorrectNameToNumber from '@/components/common/YourCompany/CompanyName/CorrectNameToNumber.vue'
 
 Vue.use(Vuetify)
 

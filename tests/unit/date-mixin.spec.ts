@@ -2,10 +2,11 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import { ErrorContact } from '@/components/common'
+import ErrorContact from '@/components/common/ErrorContact.vue'
 import { DateMixin } from '@/mixins'
 
 Vue.use(Vuetify)
+
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 

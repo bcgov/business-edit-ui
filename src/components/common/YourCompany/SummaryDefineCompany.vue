@@ -55,19 +55,11 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-
-// Components
-import { BusinessContactInfo, FolioInformation, OfficeAddresses } from '@/components/common/YourCompany'
-import { CorrectNameOptions } from '@/components/common/YourCompany/CompanyName'
-
-// Mixins
+import { BusinessContactInfo, CorrectNameOptions, FolioInformation, OfficeAddresses } from '@/components/common'
 import { CommonMixin } from '@/mixins'
-
-// Enums
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
   components: {
@@ -84,16 +76,15 @@ export default class SummaryDefineCompany extends Mixins(CommonMixin) {
   @Getter isPremiumAccount!: boolean
   @Getter getNameTranslations!: Array<string>
   @Getter isDefineCompanyStepValid!: boolean
-  @Getter getEntityType!: CorpTypeCd
 
   @Prop({ default: false })
   readonly isSummary: boolean
 
-  // Entity Enum
+  // declaration for template
   readonly CorpTypeCd = CorpTypeCd
 
   /** The company name (from NR, or incorporation number). */
-  private get companyName (): string {
+  get companyName (): string {
     if (this.getApprovedName) return this.getApprovedName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`

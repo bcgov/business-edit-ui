@@ -20,12 +20,13 @@ import { Action, Getter } from 'vuex-class'
 
 // Interfaces && enums
 import { ActionBindingIF } from '@/interfaces'
-import { CorrectionTypes, CorpTypeCd } from '@/enums'
+import { CorrectionTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 @Component({})
 export default class CorrectNameToNumber extends Vue {
   /** Form Submission Prop */
-  @Prop({ default: null }) formType: CorrectionTypes
+  @Prop({ default: null }) readonly formType: CorrectionTypes
 
   @Action setNameRequest!: ActionBindingIF
 

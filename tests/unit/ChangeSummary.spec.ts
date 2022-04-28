@@ -1,18 +1,15 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import sinon from 'sinon'
-
-// Store
 import { getVuexStore } from '@/store'
-
-// Components
 import { createLocalVue, mount } from '@vue/test-utils'
-import { ChangeSummary, NatureOfBusiness } from '@/components/Edit'
-import { OfficeAddresses } from '@/components/common'
-import { GeneralPartnershipResource } from '@/resources/Edit/ChangeFirm'
+import ChangeSummary from '@/components/Alteration/ChangeSummary.vue'
+import NatureOfBusiness from '@/components/Alteration/NatureOfBusiness.vue'
+import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
+import { GeneralPartnershipResource } from '@/resources/Change/GeneralPartnershipResource'
 
 Vue.use(Vuetify)
+
 const localVue = createLocalVue()
 const vuetify = new Vuetify({})
 
@@ -91,7 +88,7 @@ describe('Change Summary component', () => {
   })
 
   it('renders the Address summary section when changes have been made', async () => {
-    store.state.stateModel.officeAddresses = { }
+    store.state.stateModel.officeAddresses = {}
     await Vue.nextTick()
 
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)

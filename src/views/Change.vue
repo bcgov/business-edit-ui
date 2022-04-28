@@ -47,7 +47,7 @@
         <section id="completing-party-section">
           <h2>2. Completing Party</h2>
           <v-card flat>
-            <CompletingParty
+            <CompletingPartyShared
               class="mt-6 pb-0"
               :currentCompletingParty="mockCompletingParty"
               :enableAddEdit="isRoleStaff"
@@ -73,19 +73,12 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils'
-import { ChangeSummary, CompletingParty, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Edit'
+import { ChangeSummary, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Alteration'
 import { CertifySection, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common'
+import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party'
 import { AuthApiMixin, CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
-import {
-  ActionBindingIF, CompletingPartyIF,
-  EffectiveDateTimeIF,
-  EmptyFees,
-  EntitySnapshotIF,
-  FeesIF,
-  FilingDataIF,
-  StaffPaymentIF
-} from '@/interfaces'
-import { CorpTypeCd, FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums'
+import { ActionBindingIF, CompletingPartyIF, EmptyFees, EntitySnapshotIF, FilingDataIF } from '@/interfaces'
+import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
 import { ChangeFirmResources } from '@/resources'
@@ -95,7 +88,7 @@ import { PersonAddressSchema } from '@/schemas'
   components: {
     CertifySection,
     ChangeSummary,
-    CompletingParty,
+    CompletingPartyShared,
     DocumentsDelivery,
     PeopleAndRoles,
     StaffPayment,
@@ -111,32 +104,25 @@ export default class Change extends Mixins(
   PayApiMixin
 ) {
   // Global getters
-  @Getter getEntityType!: CorpTypeCd
   @Getter isSummaryMode!: boolean
   @Getter isRoleStaff!: boolean
   @Getter isPremiumAccount!: boolean
-  @Getter getEffectiveDateTime!: EffectiveDateTimeIF
-  @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
   @Getter getAppValidate!: boolean
-  @Getter getFileNumber!: string
-  @Getter getHasPlanOfArrangement!: boolean
   @Getter showFeeSummary!: boolean
-  @Getter getFeePrices!: FeesIF
 
   // Global actions
-  @Action setFileNumber!: ActionBindingIF
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
-  @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setValidCourtOrder!: ActionBindingIF
   @Action setCurrentFees!: ActionBindingIF
   @Action setFeePrices!: ActionBindingIF
   @Action setResource!: ActionBindingIF
 
-  private PersonAddressSchema = PersonAddressSchema
+  // declaration for template
+  readonly PersonAddressSchema = PersonAddressSchema
 
   // TODO: Remove/Replace with structured data from Account (ie First, middle, last name & Mailing Address)
   private mockCompletingParty = {
@@ -159,35 +145,28 @@ export default class Change extends Mixins(
   readonly appReady: boolean
 
   /** Whether to show the Transactional Folio Number section. */
-  private get showTransactionalFolioNumber (): boolean {
+  get showTransactionalFolioNumber (): boolean {
     return (this.isPremiumAccount && !this.isRoleStaff)
   }
 
   /** The id of the change filing being edited. */
-  private get changeId (): number {
+  get changeId (): number {
     return +this.$route.query['change-id'] || 0
   }
 
   /** True if user is authenticated. */
-  private get isAuthenticated (): boolean {
+  get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  private get filingFeesPrice (): string {
-    if (this.getFeePrices.filingFees !== null) {
-      return `$${this.getFeePrices.filingFees.toFixed(2)}`
-    }
-    return ''
-  }
-
   /** The entity specific resource file for a change filing. */
-  private get changeFirmResources (): any {
+  get changeFirmResources (): any {
     return ChangeFirmResources.find(x => x.entityType === this.getEntityType)
   }
 
   /** Called when App is ready and this component can load its data. */
   @Watch('appReady')
-  async onAppReady (val: boolean): Promise<void> {
+  private async onAppReady (val: boolean): Promise<void> {
     // do not proceed if app is not ready
     if (!val) return
 
@@ -250,7 +229,8 @@ export default class Change extends Mixins(
 
       // fetches the fee prices to display in the text
       this.setFeePrices(
-        await this.fetchFilingFees(FilingCodes.CHANGE_OF_REGISTRATION, this.getEntityType
+        await this.fetchFilingFees(
+          FilingCodes.CHANGE_OF_REGISTRATION, this.getEntityType
         ).catch(() => cloneDeep(EmptyFees))
       )
 
@@ -284,18 +264,18 @@ export default class Change extends Mixins(
     }
   }
 
-  private addEditCompletingParty (event: CompletingPartyIF): void {
+  protected addEditCompletingParty (event: CompletingPartyIF): void {
     // Apply new completing party to store.
     // Will require formatting and adding to the peopleAndRoles, see 'OrgPersonIF'
   }
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
-  private emitFetchError (message: string = ''): void { }
+  private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: boolean = true): void { }
+  private emitHaveData (haveData: boolean = true): void {}
 }
 </script>
 

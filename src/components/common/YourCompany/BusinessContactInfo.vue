@@ -1,5 +1,5 @@
 <template>
-  <ContactInfo
+  <ContactInfoShared
     :contactLabel="getResource.contactLabel"
     :businessContact="getBusinessContact"
     :originalBusinessContact="originalContact"
@@ -16,16 +16,15 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Mixins, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ContactInfo } from '@bcrs-shared-components/contact-info'
+import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info'
 import { AuthApiMixin, CommonMixin } from '@/mixins'
 import { ActionBindingIF, ContactPointIF, IncorporationFilingIF, ResourceIF } from '@/interfaces'
 
 @Component({
   components: {
-    ContactInfo
+    ContactInfoShared
   }
 })
 export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixin) {
@@ -33,9 +32,6 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
   @Getter getBusinessContact!: ContactPointIF
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getSnapshotBusinessContact!: ContactPointIF
-  @Getter isChangeFiling!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isAlterationFiling!: boolean
   @Getter getResource!: ResourceIF
 
   // Global setters
@@ -47,14 +43,14 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
   readonly invalidSection!: boolean
 
   /** Get the original Contact info dependant on filing type. */
-  private get originalContact (): ContactPointIF {
+  get originalContact (): ContactPointIF {
     if (this.isCorrectionFiling) return this.getOriginalIA.incorporationApplication.contactPoint
     if (this.isAlterationFiling || this.isChangeFiling) return this.getSnapshotBusinessContact
     return null
   }
 
   /** Check for changes between current contact and original contact. */
-  private get hasBusinessContactInfoChange (): boolean {
+  get hasBusinessContactInfoChange (): boolean {
     return this.getBusinessContact?.email !== this.originalContact?.email ||
       this.getBusinessContact?.phone !== this.originalContact?.phone ||
       this.getBusinessContact?.extension !== this.originalContact?.extension

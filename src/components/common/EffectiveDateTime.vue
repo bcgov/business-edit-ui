@@ -6,7 +6,7 @@
     </v-radio-group>
 
     <v-form ref="form" class="date-time-selectors">
-      <date-picker
+      <DatePickerShared
         ref="datePickerRef"
         title="Date"
         nudge-right="40"
@@ -75,7 +75,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { DatePicker } from '@bcrs-shared-components/date-picker'
+import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker'
 import { DateMixin } from '@/mixins'
 import { EffectiveDateTypes } from '@/enums'
 import { EffectiveDateTimeIF, FormFieldType, FormIF } from '@/interfaces'
@@ -87,7 +87,7 @@ enum PeriodTypes {
 
 @Component({
   components: {
-    DatePicker
+    DatePickerShared
   }
 })
 export default class EffectiveDateTime extends Mixins(DateMixin) {
@@ -97,7 +97,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   // Add element types to refs
   $refs!: {
     form: FormIF,
-    datePickerRef: DatePicker,
+    datePickerRef: DatePickerShared,
     hourSelector: FormFieldType, // used in unit tests
     minuteSelector: FormFieldType // used in unit tests
   }
@@ -193,7 +193,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
    * True if time is under the minimum (ie, for today).
    * This is a non-form validation - it needs to be checked for overall component validity.
    */
-  private get isUnderTime (): boolean {
+  get isUnderTime (): boolean {
     if (this.effectiveDateTime.dateTimeString) {
       const date = new Date(this.effectiveDateTime.dateTimeString)
       // use max seconds and milliseconds for comparison
@@ -207,7 +207,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
    * True if time is over the maximum (ie, for 10th day).
    * This is a non-form validation - it needs to be checked for overall component validity.
    */
-  private get isOverTime (): boolean {
+  get isOverTime (): boolean {
     if (this.effectiveDateTime.dateTimeString) {
       const date = new Date(this.effectiveDateTime.dateTimeString)
       // use min seconds and milliseconds for comparison

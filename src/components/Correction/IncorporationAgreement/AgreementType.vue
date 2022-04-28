@@ -71,11 +71,8 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-
-// Interfaces
 import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces'
 import { AgreementTypeResource } from '@/resources'
 
@@ -113,11 +110,11 @@ export default class AgreementType extends Vue {
     this.setAgreementType()
   }
 
-  private get hasAgreementTypeChange (): boolean {
+  get hasAgreementTypeChange (): boolean {
     return this.agreementType !== this.getOriginalIA.incorporationApplication.incorporationAgreement.agreementType
   }
 
-  private get selectedAgreementDescription () : string {
+  get selectedAgreementDescription () : string {
     if (this.getAgreementType) {
       return this.incorporationAgreementTypeResource.find(item => item.code === this.getAgreementType)
         .summaryDescription
@@ -154,7 +151,7 @@ export default class AgreementType extends Vue {
 
 .summary-desc {
   padding: 1rem;
-  font-size: 0.875rem;
+  font-size: $px-14;
   display: flex;
   justify-content: center;
 }

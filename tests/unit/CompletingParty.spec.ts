@@ -3,9 +3,8 @@ import Vuetify from 'vuetify'
 import { createLocalVue, mount } from '@vue/test-utils'
 import VueRouter from 'vue-router'
 import mockRouter from './MockRouter'
-
 import { getVuexStore } from '@/store'
-import { CompletingParty } from '@/components/common'
+import CompletingParty from '@/components/common/CompletingParty.vue'
 
 Vue.use(Vuetify)
 

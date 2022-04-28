@@ -71,6 +71,7 @@ import { Getter } from 'vuex-class'
 import { OrgPersonIF } from '@/interfaces'
 import { RoleTypes } from '@/enums'
 import { CommonMixin } from '@/mixins'
+import { isSame } from '@/utils'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 
 @Component({
@@ -84,6 +85,9 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
 
   // Global getters
   @Getter getPeopleAndRoles!: OrgPersonIF[]
+
+  // declaration for template
+  readonly isSame = isSame
 
   /** Headers for the person table. */
   readonly tableHeaders = ['Name', 'Mailing Address', 'Delivery Address', 'Effective Dates']
@@ -109,7 +113,7 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
 
 .director-list-header th {
   .directors-title {
-    font-size: 0.875rem;
+    font-size: $px-14;
     color: $gray9;
     font-weight: bold;
   }
@@ -126,7 +130,7 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
   }
 
   td:not(:first-child){
-    font-size: 0.875rem;
+    font-size: $px-14;
     color: $gray7;
     font-weight: normal;
   }

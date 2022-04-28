@@ -4,10 +4,7 @@ import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import VueRouter from 'vue-router'
 import mockRouter from './MockRouter'
-
-import { AgreementType } from '@/components/Correction/IncorporationAgreement'
-
-// Store
+import AgreementType from '@/components/Correction/IncorporationAgreement/AgreementType.vue'
 import { getVuexStore } from '@/store'
 
 Vue.use(Vuetify)

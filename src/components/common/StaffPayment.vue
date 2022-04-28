@@ -5,7 +5,7 @@
     </header>
 
     <div :class="{'invalid-section': invalidStaffPayment}">
-      <staff-payment-component
+      <StaffPaymentShared
         :staffPaymentData="getStaffPayment"
         :validate="validateStaffPayment"
         :invalidSection="invalidStaffPayment"
@@ -21,7 +21,7 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Components
-import { StaffPayment as StaffPaymentComponent } from '@bcrs-shared-components/staff-payment'
+import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment'
 
 // Interfaces and Enums
 import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces'
@@ -30,7 +30,7 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 @Component({
   components: {
-    StaffPaymentComponent
+    StaffPaymentShared
   }
 })
 export default class StaffPayment extends Vue {
@@ -47,12 +47,12 @@ export default class StaffPayment extends Vue {
   @Prop({ default: '' }) readonly sectionNumber: string
 
   /** Check validity state, only when prompted by app. */
-  private get invalidStaffPayment (): boolean {
+  get invalidStaffPayment (): boolean {
     return this.getAppValidate && !this.getFlagsReviewCertify.isValidStaffPayment
   }
 
   /** Is true when prompted by the app AND the user has selected an option. */
-  private get validateStaffPayment (): boolean {
+  get validateStaffPayment (): boolean {
     return this.getAppValidate && !!this.getStaffPayment?.option
   }
 

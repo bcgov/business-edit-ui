@@ -74,8 +74,8 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common'
-import { ActionBindingIF, NaicsIF, OrgPersonIF, ResourceIF } from '@/interfaces'
-import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
+import { ActionBindingIF, ResourceIF } from '@/interfaces'
+import { DateMixin, SharedMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
 
 @Component({
   components: {
@@ -85,23 +85,14 @@ import { DateMixin, EnumMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin }
 })
 export default class ChangeSummary extends Mixins(
   DateMixin,
-  EnumMixin,
+  SharedMixin,
   FilingTemplateMixin,
   LegalApiMixin,
   PayApiMixin
 ) {
   // Global getters
-  @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
-  @Getter getCurrentNaics!: NaicsIF
-  @Getter getPeopleAndRoles!: OrgPersonIF[]
-  @Getter hasOfficeAddressesChanged!: boolean
-  @Getter hasPeopleAndRolesChanged!: boolean
   @Getter getResource!: ResourceIF
-
-  // Change flag getters
-  @Getter hasBusinessNameChanged!: boolean
-  @Getter hasNatureOfBusinessChanged!: boolean
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF

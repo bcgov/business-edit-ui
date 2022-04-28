@@ -1,6 +1,7 @@
-import { CorpTypeCd, CorrectionTypes } from '@/enums'
+import { CorrectionTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
-export const BenefitCompanyStatementResource = {
+export const BenefitCompanyStatementResource: any = {
   addressLabel: 'Registered Office',
   entityType: CorpTypeCd.BENEFIT_COMPANY,
   entityReference: 'Company',

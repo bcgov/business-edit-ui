@@ -55,22 +55,18 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-
-// Components
-import CorrectCompanyName from '@/components/common/YourCompany/CompanyName/CorrectCompanyName.vue'
-import CorrectNameToNumber from '@/components/common/YourCompany/CompanyName/CorrectNameToNumber.vue'
-import CorrectNameRequest from '@/components/common/YourCompany/CompanyName/CorrectNameRequest.vue'
-
-// Interfaces & Enums
 import { CorrectNameOptionIF } from '@/interfaces'
 import { CorrectionTypes } from '@/enums'
+
+// for some reason, CorrectXXX cannot be imported from ./
+// (it breaks a bunch of unit tests)
+import { CorrectCompanyName, CorrectNameToNumber, CorrectNameRequest } from '@/components/common'
 
 /**
  * Operation:
  * 1. To initialize this component option list, pass in an array of id's of the components you want to display.
- *    ie..[''correct-new-nr', 'correct-name', 'correct-name-to-number']
+ *    I.e., ['correct-new-nr', 'correct-name', 'correct-name-to-number']
  * 2. If this options list is only passed one value the option panel will be open by default.
  * 3. The parent component will have to watch for the 'save' and 'cancel' events and handle them accordingly.
  */
@@ -83,7 +79,7 @@ import { CorrectionTypes } from '@/enums'
 })
 export default class CorrectNameOptions extends Vue {
   /** The options to display */
-  @Prop() correctionNameChoices: Array<string>
+  @Prop() readonly correctionNameChoices: Array<string>
 
   // local properties
   private displayedOptions: Array<CorrectNameOptionIF> = []
@@ -127,7 +123,7 @@ export default class CorrectNameOptions extends Vue {
     }
   }
 
-  private get isOneOption (): boolean {
+  get isOneOption (): boolean {
     return this.correctionNameChoices.length === 1
   }
 

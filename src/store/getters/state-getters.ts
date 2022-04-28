@@ -1,30 +1,12 @@
-import { AccountTypes, ActionTypes, CorpTypeCd, FilingCodes, FilingNames, FilingTypes, OfficeTypes } from '@/enums'
-import {
-  AddressesIF,
-  IncorporationFilingIF,
-  NameRequestDetailsIF,
-  NameRequestApplicantIF,
-  OrgPersonIF,
-  ShareClassIF,
-  NameRequestIF,
-  BusinessInformationIF,
-  CertifyIF,
-  NameTranslationIF,
-  NaicsIF,
-  FilingDataIF,
-  StateIF,
-  EffectiveDateTimeIF,
-  ShareStructureIF,
-  FlagsReviewCertifyIF,
-  FlagsCompanyInfoIF,
-  ResolutionsIF,
-  FeesIF,
-  ResourceIF,
-  EntitySnapshotIF
-} from '@/interfaces'
+import { AccountTypes, ActionTypes, FilingCodes, FilingNames, FilingTypes, OfficeTypes } from '@/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { AddressesIF, IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF,
+  ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF, NameTranslationIF, NaicsIF, FilingDataIF,
+  StateIF, EffectiveDateTimeIF, ShareStructureIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF, ResolutionsIF,
+  FeesIF, ResourceIF, EntitySnapshotIF } from '@/interfaces'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { isEqual } from 'lodash'
-import { isSame } from '@/utils/common-helper'
+import { isSame } from '@/utils'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: StateIF): boolean => {

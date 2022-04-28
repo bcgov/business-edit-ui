@@ -1,18 +1,11 @@
-// Libraries
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import mockRouter from './MockRouter'
-
-// Store
 import { getVuexStore } from '@/store'
-
-// Utils
 import { createLocalVue, mount } from '@vue/test-utils'
-
-// Components
-import { AddNameTranslation } from '@/components/common/YourCompany'
+import AddNameTranslation from '@/components/common/YourCompany/NameTranslations/AddNameTranslation.vue'
 import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)

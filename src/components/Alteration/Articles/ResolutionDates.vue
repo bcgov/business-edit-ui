@@ -74,7 +74,7 @@
     <v-row no-gutters v-if="isAdding" class="mt-4">
       <v-col cols="3"></v-col>
       <v-col cols="9" class="mb-n4 pr-3">
-        <DatePicker
+        <DatePickerShared
           title="Resolution or Court Order Date"
           nudge-right="80"
           nudge-top="15"
@@ -112,13 +112,13 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins'
-import { DatePicker } from '@bcrs-shared-components/date-picker'
+import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF } from '@/interfaces'
 
 @Component({
   components: {
-    DatePicker
+    DatePickerShared
   }
 })
 export default class ResolutionDates extends Mixins(CommonMixin) {

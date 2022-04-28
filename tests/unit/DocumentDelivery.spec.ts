@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import { mount, Wrapper } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
-import { DocumentsDelivery } from '@/components/Edit'
+import DocumentsDelivery from '@/components/Alteration/DocumentsDelivery.vue'
 
 Vue.use(Vuetify)
 

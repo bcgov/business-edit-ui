@@ -36,12 +36,9 @@
 <script lang="ts">
 import { Component, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-// Components
 import CompanyProvisions from './CompanyProvisions.vue'
 import ResolutionDates from './ResolutionDates.vue'
-// Mixins
 import { CommonMixin } from '@/mixins'
-// Interfaces
 import { ActionBindingIF, BusinessInformationIF } from '@/interfaces'
 
 @Component({
@@ -81,11 +78,11 @@ export default class Articles extends Mixins(CommonMixin) {
     this.isAddingResolutionDate = addingResolutionDate
   }
 
-  private get invalidCompanyProvisions (): boolean {
+  get invalidCompanyProvisions (): boolean {
     return this.getComponentValidate && this.isEditingCompanyProvisions
   }
 
-  private get invalidResolutionDates (): boolean {
+  get invalidResolutionDates (): boolean {
     return this.getComponentValidate && (this.isAddingResolutionDate || !this.getIsResolutionDatesValid)
   }
 }

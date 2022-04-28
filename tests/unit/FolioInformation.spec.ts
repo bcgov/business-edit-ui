@@ -1,4 +1,3 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import sinon from 'sinon'
@@ -6,11 +5,11 @@ import { mount } from '@vue/test-utils'
 import { axios } from '@/utils'
 import { getVuexStore } from '@/store'
 import FolioInformation from '@/components/common/YourCompany/FolioInformation.vue'
-import { FolioNumber } from '@bcrs-shared-components/folio-number'
+import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number'
 
 Vue.use(Vuetify)
-const vuetify = new Vuetify({})
 
+const vuetify = new Vuetify({})
 const store = getVuexStore()
 
 describe('Folio Information component', () => {
@@ -18,7 +17,7 @@ describe('Folio Information component', () => {
     const wrapper = mount(FolioInformation, { vuetify, store })
 
     expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
-    expect(wrapper.findComponent(FolioNumber).exists()).toBe(true)
+    expect(wrapper.findComponent(FolioNumberShared).exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -27,7 +26,7 @@ describe('Folio Information component', () => {
     const wrapper = mount(FolioInformation, {
       vuetify,
       store,
-      propsData: { }
+      propsData: {}
     })
     const vm: any = wrapper.vm
 

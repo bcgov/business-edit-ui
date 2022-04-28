@@ -1,5 +1,4 @@
 export { default as Actions } from './Actions.vue'
-export { BreadCrumb } from '@bcrs-shared-components/bread-crumb'
 export { default as BcRegContacts } from './BcRegContacts.vue'
 export { default as CertifySection } from './CertifySection.vue'
 export { default as CompletingParty } from './CompletingParty.vue'
@@ -9,11 +8,8 @@ export { default as EntityInfo } from './EntityInfo.vue'
 export { default as HelpSection } from './HelpSection.vue'
 export { default as ErrorContact } from './ErrorContact.vue'
 export { default as StaffPayment } from './StaffPayment.vue'
-export * from './dialogs'
-export * from './YourCompany'
+
+// these must come last as they depend on the above
 export * from './PeopleAndRoles'
 export * from './ShareStructure'
-
-// Shared Components
-export { CourtOrderPoa } from '@bcrs-shared-components/court-order-poa'
-export { ContactInfo } from '@bcrs-shared-components/contact-info'
+export * from './YourCompany'

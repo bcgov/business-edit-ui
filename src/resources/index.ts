@@ -1,6 +1,6 @@
-import { BenefitCompanyStatementResource } from '@/resources/Correction'
-import { BenefitCompanyResource, CooperativeResource } from './Edit/Alteration'
-import { SoleProprietorshipResource, GeneralPartnershipResource } from './Edit/ChangeFirm'
+import { BenefitCompanyStatementResource } from './Correction'
+import { BenefitCompanyResource, CooperativeResource } from './Alteration'
+import { SoleProprietorshipResource, GeneralPartnershipResource } from './Change'
 import { ResourceIF } from '@/interfaces'
 
 export * from './Correction'

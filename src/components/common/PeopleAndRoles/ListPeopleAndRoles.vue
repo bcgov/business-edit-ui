@@ -263,6 +263,7 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { OrgPerson } from './'
 import { CommonMixin } from '@/mixins'
+import { isSame } from '@/utils'
 import { OrgPersonIF, RoleIF } from '@/interfaces'
 import { ActionTypes, PartyTypes, RoleTypes } from '@/enums'
 
@@ -299,13 +300,16 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   @Prop({ default: false })
   readonly validate!: boolean
 
+  // declaration for template
+  readonly isSame = isSame
+
   /** The name section validity state (when prompted by app). */
-  private get invalidOrgPersons (): boolean {
+  get invalidOrgPersons (): boolean {
     return this.validate && this.renderOrgPersonForm
   }
 
   /** The current orgPersons list. */
-  private get currentPeopleAndRoles (): Array<OrgPersonIF> {
+  get currentPeopleAndRoles (): Array<OrgPersonIF> {
     return this.isSummaryView ? this.filterRemovedOrgPersons(this.peopleAndRoles) : this.peopleAndRoles
   }
 

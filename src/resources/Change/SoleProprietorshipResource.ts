@@ -1,5 +1,5 @@
-import { CorpTypeCd, CorrectionTypes, FilingCodes, NameRequestEntityTypes } from '@/enums'
-import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
+import { CorrectionTypes, FilingCodes, NameRequestEntityTypes } from '@/enums'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module'
 import { ResourceIF } from '@/interfaces'
 
 export const SoleProprietorshipResource: ResourceIF = {

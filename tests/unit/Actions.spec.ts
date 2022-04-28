@@ -5,7 +5,7 @@ import { getVuexStore } from '@/store'
 import { shallowMount, createLocalVue, createWrapper } from '@vue/test-utils'
 import sinon from 'sinon'
 import { axios } from '@/utils'
-import { Actions } from '@/components/common'
+import Actions from '@/components/common/Actions.vue'
 import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)
