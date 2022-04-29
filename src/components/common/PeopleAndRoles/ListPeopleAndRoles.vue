@@ -303,10 +303,11 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   @Prop({ default: false })
   readonly validate!: boolean
 
-  // declaration for template
-  readonly isSame = isSame
   @Prop({ default: true })
   readonly hasMinimumPartners: boolean
+
+  // declaration for template
+  readonly isSame = isSame
 
   /** The name section validity state (when prompted by app). */
   get invalidOrgPersons (): boolean {
