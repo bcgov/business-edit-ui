@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import sinon from 'sinon'
-import { axios } from '@/utils'
-import { getVuexStore } from '@/store'
+import { axios } from '@/utils/'
+import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
 

@@ -1,8 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { RouteNames } from '@/enums'
+import { RouteNames } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { ConfirmDialogType } from '@/interfaces'
+import { ConfirmDialogType } from '@/interfaces/'
 
 /**
  * Mixin that provides some useful common utilities.

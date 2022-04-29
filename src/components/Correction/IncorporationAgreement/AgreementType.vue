@@ -73,8 +73,8 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces'
-import { AgreementTypeResource } from '@/resources'
+import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces/'
+import { AgreementTypeResource } from '@/resources/'
 
 @Component
 export default class AgreementType extends Vue {

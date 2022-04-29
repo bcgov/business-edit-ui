@@ -57,8 +57,8 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { BusinessContactInfo, CorrectNameOptions, FolioInformation, OfficeAddresses } from '@/components/common'
-import { CommonMixin } from '@/mixins'
+import { BusinessContactInfo, CorrectNameOptions, FolioInformation, OfficeAddresses } from '@/components/common/'
+import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 @Component({

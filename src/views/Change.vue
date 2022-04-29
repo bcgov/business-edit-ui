@@ -72,17 +72,17 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils'
-import { ChangeSummary, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Alteration'
-import { CertifySection, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common'
+import { getFeatureFlag } from '@/utils/'
+import { ChangeSummary, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Alteration/'
+import { CertifySection, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common/'
 import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party'
-import { AuthApiMixin, CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
-import { ActionBindingIF, CompletingPartyIF, EmptyFees, EntitySnapshotIF, FilingDataIF } from '@/interfaces'
-import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums'
+import { AuthApiMixin, CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
+import { ActionBindingIF, CompletingPartyIF, EmptyFees, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
+import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
-import { ChangeFirmResources } from '@/resources'
-import { PersonAddressSchema } from '@/schemas'
+import { ChangeFirmResources } from '@/resources/'
+import { PersonAddressSchema } from '@/schemas/'
 
 @Component({
   components: {

@@ -40,8 +40,8 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { CommonMixin } from '@/mixins'
-import { ActionBindingIF, FlagsReviewCertifyIF, FormFieldType } from '@/interfaces'
+import { CommonMixin } from '@/mixins/'
+import { ActionBindingIF, FlagsReviewCertifyIF, FormFieldType } from '@/interfaces/'
 
 @Component({})
 export default class TransactionalFolioNumber extends Mixins(CommonMixin) {

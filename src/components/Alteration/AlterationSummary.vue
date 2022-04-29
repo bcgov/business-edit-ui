@@ -168,10 +168,10 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF } from '@/interfaces'
-import { DateMixin, SharedMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
-import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common'
-import { ResolutionDates } from '@/components/Alteration'
+import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF } from '@/interfaces/'
+import { DateMixin, SharedMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
+import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
+import { ResolutionDates } from '@/components/Alteration/'
 
 @Component({
   components: {

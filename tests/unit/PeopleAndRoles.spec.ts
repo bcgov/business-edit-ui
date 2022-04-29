@@ -5,10 +5,10 @@ import VueRouter from 'vue-router'
 import mockRouter from './MockRouter'
 import { GeneralPartnershipResource } from '@/resources/Change/GeneralPartnershipResource'
 import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitCompanyStatementResource'
-import { getVuexStore } from '@/store'
+import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import PeopleAndRoles from '@/components/common/PeopleAndRoles/PeopleAndRoles.vue'
-import { FilingTypes } from '@/enums'
+import { FilingTypes } from '@/enums/'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()

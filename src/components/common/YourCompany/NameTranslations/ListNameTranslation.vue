@@ -118,9 +118,9 @@
 
 <script lang="ts">
 import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
-import { NameTranslationIF } from '@/interfaces'
-import { ActionTypes } from '@/enums'
-import { CommonMixin } from '@/mixins'
+import { NameTranslationIF } from '@/interfaces/'
+import { ActionTypes } from '@/enums/'
+import { CommonMixin } from '@/mixins/'
 
 @Component({})
 export default class ListNameTranslation extends Mixins(CommonMixin) {

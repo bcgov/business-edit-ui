@@ -11,7 +11,7 @@
 <script lang="ts">
 import { Component, Vue, Emit, Prop, Watch } from 'vue-property-decorator'
 import { NameTranslation } from './'
-import { ActionBindingIF, NameTranslationIF } from '@/interfaces'
+import { ActionBindingIF, NameTranslationIF } from '@/interfaces/'
 import { Action, Getter } from 'vuex-class'
 
 @Component({

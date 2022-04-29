@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { NameRequestStates } from '@/enums'
+import { NameRequestStates } from '@/enums/'
 
 @Component({})
 export default class NameRequestErrorDialog extends Vue {

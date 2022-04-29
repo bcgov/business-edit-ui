@@ -119,7 +119,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Mixins, Watch } from 'vue-property-decorator'
-import { CommonMixin } from '@/mixins'
+import { CommonMixin } from '@/mixins/'
 
 @Component({})
 export default class CompanyProvisions extends Mixins(CommonMixin) {

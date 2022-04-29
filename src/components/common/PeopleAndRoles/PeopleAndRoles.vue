@@ -139,15 +139,15 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
-import { isSame } from '@/utils'
+import { isSame } from '@/utils/'
 import { ActionBindingIF, ConfirmDialogType, EntitySnapshotIF, HelpSectionIF, IncorporationFilingIF,
-  OrgPersonIF, ResourceIF, RoleIF } from '@/interfaces'
-import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums'
+  OrgPersonIF, ResourceIF, RoleIF } from '@/interfaces/'
+import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
-import { HelpSection } from '@/components/common'
+import { HelpSection } from '@/components/common/'
 import { ListPeopleAndRoles } from './'
-import { CommonMixin, DateMixin } from '@/mixins'
+import { CommonMixin, DateMixin } from '@/mixins/'
 
 @Component({
   components: {

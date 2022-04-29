@@ -68,10 +68,10 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { OrgPersonIF } from '@/interfaces'
-import { RoleTypes } from '@/enums'
-import { CommonMixin } from '@/mixins'
-import { isSame } from '@/utils'
+import { OrgPersonIF } from '@/interfaces/'
+import { RoleTypes } from '@/enums/'
+import { CommonMixin } from '@/mixins/'
+import { isSame } from '@/utils/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 
 @Component({

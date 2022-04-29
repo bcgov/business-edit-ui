@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store'
+import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
 

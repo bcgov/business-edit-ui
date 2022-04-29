@@ -15,8 +15,8 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces'
-import { AuthApiMixin, CommonMixin } from '@/mixins'
+import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces/'
+import { AuthApiMixin, CommonMixin } from '@/mixins/'
 import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number'
 
 @Component({

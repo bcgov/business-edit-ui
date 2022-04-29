@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store'
+import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import EntityInfo from '@/components/common/EntityInfo.vue'
 import mockRouter from './MockRouter'

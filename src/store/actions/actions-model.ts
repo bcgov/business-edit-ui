@@ -1,8 +1,8 @@
 import { ActionIF, ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, EntitySnapshotIF,
   NaicsIF, NameRequestIF, NameTranslationIF, OrgPersonIF, ShareClassIF, FeesIF, ResourceIF }
-  from '@/interfaces'
+  from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
-import { FilingTypes } from '@/enums'
+import { FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 export const setEntityType: ActionIF = ({ commit }, entityType: CorpTypeCd): void => {

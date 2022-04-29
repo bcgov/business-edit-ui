@@ -140,9 +140,9 @@ import { Action } from 'vuex-class'
 import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
 import { ListNameTranslation, AddNameTranslation } from './'
-import { ActionBindingIF, ConfirmDialogType, NameTranslationIF } from '@/interfaces'
-import { ActionTypes } from '@/enums'
-import { CommonMixin } from '@/mixins'
+import { ActionBindingIF, ConfirmDialogType, NameTranslationIF } from '@/interfaces/'
+import { ActionTypes } from '@/enums/'
+import { CommonMixin } from '@/mixins/'
 
 @Component({
   components: {

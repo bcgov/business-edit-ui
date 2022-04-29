@@ -4,8 +4,8 @@ import Vuelidate from 'vuelidate'
 import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import OrgPerson from '@/components/common/PeopleAndRoles/OrgPerson.vue'
-import { getVuexStore } from '@/store'
-import { FilingTypes } from '@/enums'
+import { getVuexStore } from '@/store/'
+import { FilingTypes } from '@/enums/'
 import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitCompanyStatementResource'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"

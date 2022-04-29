@@ -24,7 +24,7 @@ import { Action, Getter } from 'vuex-class'
 import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment'
 
 // Interfaces and Enums
-import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces'
+import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 

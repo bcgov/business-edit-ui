@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { axios } from '@/utils'
-import { AuthInformationIF } from '@/interfaces'
+import { axios } from '@/utils/'
+import { AuthInformationIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
 /**

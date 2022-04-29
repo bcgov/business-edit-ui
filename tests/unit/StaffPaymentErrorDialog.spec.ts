@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store'
+import { getVuexStore } from '@/store/'
 import { shallowMount, mount } from '@vue/test-utils'
 import StaffPaymentErrorDialog from '@/dialogs/StaffPaymentErrorDialog.vue'
 

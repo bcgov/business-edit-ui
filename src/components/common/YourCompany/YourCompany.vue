@@ -290,11 +290,11 @@
 import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, ContactPointIF, EntitySnapshotIF, FlagsCompanyInfoIF, IncorporationFilingIF,
-  NameRequestApplicantIF, NameRequestIF, ResourceIF } from '@/interfaces'
+  NameRequestApplicantIF, NameRequestIF, ResourceIF } from '@/interfaces/'
 import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
   OfficeAddresses } from './'
-import { CommonMixin, SharedMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
-import { CorrectionTypes } from '@/enums'
+import { CommonMixin, SharedMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins/'
+import { CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { cloneDeep } from 'lodash'
 

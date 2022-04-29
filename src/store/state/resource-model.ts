@@ -1,4 +1,4 @@
-import { ResourceIF } from '@/interfaces'
+import { ResourceIF } from '@/interfaces/'
 
 export const resourceModel: ResourceIF = {
   entityType: null,

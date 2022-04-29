@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { axios } from '@/utils'
+import { axios } from '@/utils/'
 import sinon from 'sinon'
 import flushPromises from 'flush-promises'
-import { getVuexStore } from '@/store'
+import { getVuexStore } from '@/store/'
 import { mount, Wrapper } from '@vue/test-utils'
 import CorrectNameRequest from '@/components/common/YourCompany/CompanyName/CorrectNameRequest.vue'
 

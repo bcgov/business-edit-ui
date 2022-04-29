@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store'
+import { getVuexStore } from '@/store/'
 import { mount } from '@vue/test-utils'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
 import { AddressIF, AddressesIF } from '@/interfaces/stepper-interfaces/YourCompany/address-interfaces'

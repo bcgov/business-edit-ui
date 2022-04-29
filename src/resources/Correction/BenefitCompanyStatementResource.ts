@@ -1,4 +1,4 @@
-import { CorrectionTypes } from '@/enums'
+import { CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 export const BenefitCompanyStatementResource: any = {

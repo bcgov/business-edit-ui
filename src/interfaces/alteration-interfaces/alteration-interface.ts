@@ -1,5 +1,5 @@
 import { BusinessInformationIF, CourtOrderIF, NameRequestIF, NameTranslationIF, ShareStructureIF }
-  from '@/interfaces'
+  from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
 export interface AlterationIF {

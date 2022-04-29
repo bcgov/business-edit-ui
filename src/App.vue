@@ -146,25 +146,25 @@
 import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
-import { getKeycloakRoles, navigate, updateLdUser } from '@/utils'
+import { getKeycloakRoles, navigate, updateLdUser } from '@/utils/'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary'
-import { Actions, EntityInfo } from '@/components/common'
+import { Actions, EntityInfo } from '@/components/common/'
 import { BreadCrumb as BreadCrumbShared } from '@bcrs-shared-components/bread-crumb'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
-import * as Views from '@/views'
-import * as Dialogs from '@/dialogs'
-import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
+import * as Views from '@/views/'
+import * as Dialogs from '@/dialogs/'
+import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, BreadcrumbIF, ConfirmDialogType, FlagsReviewCertifyIF,
-  FlagsCompanyInfoIF } from '@/interfaces'
+  FlagsCompanyInfoIF } from '@/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums'
+import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums/'
 import { FeeSummaryActions } from '@bcrs-shared-components/enums'
 import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
-  getStaffDashboardBreadcrumb } from '@/resources'
+  getStaffDashboardBreadcrumb } from '@/resources/'
 
 @Component({
   components: {

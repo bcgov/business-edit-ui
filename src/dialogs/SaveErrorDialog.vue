@@ -62,7 +62,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { ErrorContact } from '@/components/common'
+import { ErrorContact } from '@/components/common/'
 
 @Component({
   components: { ErrorContact }

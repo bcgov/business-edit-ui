@@ -1,10 +1,10 @@
 import { AccountInformationIF, ActionKvIF, AddressesIF, BusinessInformationIF, EntitySnapshotIF,
   CertifyIF, FilingDataIF, IncorporationAgreementIF, IncorporationFilingIF, NaicsIF, NameRequestIF,
   NameTranslationIF, OrgPersonIF, ResolutionsIF, ShareClassIF, StateIF, FeesIF, ResourceIF }
-  from '@/interfaces'
+  from '@/interfaces/'
 import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { FilingTypes } from '@/enums'
+import { FilingTypes } from '@/enums/'
 
 export const mutateBusinessId = (state: StateIF, businessId: string) => {
   state.stateModel.tombstone.businessId = businessId

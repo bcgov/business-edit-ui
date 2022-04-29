@@ -38,8 +38,8 @@ import { Component, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import CompanyProvisions from './CompanyProvisions.vue'
 import ResolutionDates from './ResolutionDates.vue'
-import { CommonMixin } from '@/mixins'
-import { ActionBindingIF, BusinessInformationIF } from '@/interfaces'
+import { CommonMixin } from '@/mixins/'
+import { ActionBindingIF, BusinessInformationIF } from '@/interfaces/'
 
 @Component({
   components: {

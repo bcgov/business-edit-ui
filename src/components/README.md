@@ -1,5 +1,12 @@
-# Warning!
+# LAYOUT
 
-Do not create an `index.ts` file here (to export all folder contents) as that will create circular
-dependencies/imports, which you may see as unit test failures (possible in unrelated components) or
-console errors at runtime.
+`components/Alteration/` contains components used only by alteration filings
+`components/Change/` contains components used only by change filings
+`components/common/` contains components used by multiple filing types
+`components/Correction/` contains components used only by correction filings
+
+# WARNING
+
+To prevent circular dependencies, do not create or use `index.ts` files for components
+in this folder or sub-folders, EXCEPT FOR `@/components/index.ts`, which is used
+exclusively by external components.

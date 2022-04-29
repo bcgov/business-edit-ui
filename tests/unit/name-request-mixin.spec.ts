@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import sinon from 'sinon'
 import { shallowMount, Wrapper } from '@vue/test-utils'
-import { axios } from '@/utils'
+import { axios } from '@/utils/'
 import MixinTester from './mixin-tester.vue'
 
 describe('Name Request Mixin', () => {

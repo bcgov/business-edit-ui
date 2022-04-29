@@ -33,11 +33,11 @@ import { Action, Getter } from 'vuex-class'
 
 // Components
 import { ShareStructure as ShareStructureShared } from '@bcrs-shared-components/share-structure'
-import { ResolutionDateDialog } from '@/dialogs'
-import { CommonMixin } from '@/mixins'
+import { ResolutionDateDialog } from '@/dialogs/'
+import { CommonMixin } from '@/mixins/'
 
 import { ActionBindingIF, EntitySnapshotIF, IncorporationFilingIF, ShareClassIF, ShareStructureIF,
-  FlagsCompanyInfoIF } from '@/interfaces'
+  FlagsCompanyInfoIF } from '@/interfaces/'
 
 @Component({
   components: {

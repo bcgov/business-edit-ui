@@ -17,9 +17,9 @@
 <script lang="ts">
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { CommonMixin } from '@/mixins'
-import { ActionBindingIF, NameRequestIF } from '@/interfaces'
-import { CorrectionTypes } from '@/enums'
+import { CommonMixin } from '@/mixins/'
+import { ActionBindingIF, NameRequestIF } from '@/interfaces/'
+import { CorrectionTypes } from '@/enums/'
 
 @Component({})
 export default class CorrectCompanyName extends Mixins(CommonMixin) {

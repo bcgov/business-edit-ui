@@ -10,8 +10,8 @@ import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
-import { getVueRouter } from '@/router'
-import { getVuexStore } from '@/store'
+import { getVueRouter } from '@/router/'
+import { getVuexStore } from '@/store/'
 
 // Styles
 // NB: order matters - do not change
@@ -24,7 +24,7 @@ import '@/assets/styles/overrides.scss'
 import App from './App.vue'
 
 // Helpers
-import { initLdClient, fetchConfig, navigate } from '@/utils'
+import { initLdClient, fetchConfig, navigate } from '@/utils/'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 
 // get rid of "element implicitly has an 'any' type..."

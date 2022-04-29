@@ -36,7 +36,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { DetailComment as DetailCommentShared } from '@bcrs-shared-components/detail-comment'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF } from '@/interfaces'
+import { ActionBindingIF } from '@/interfaces/'
 
 @Component({
   components: { DetailCommentShared }

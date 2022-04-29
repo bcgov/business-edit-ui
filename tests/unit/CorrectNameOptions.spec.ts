@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store'
+import { getVuexStore } from '@/store/'
 import { shallowMount } from '@vue/test-utils'
 import CorrectNameOptions from '@/components/common/YourCompany/CompanyName/CorrectNameOptions.vue'
 import CorrectCompanyName from '@/components/common/YourCompany/CompanyName/CorrectCompanyName.vue'

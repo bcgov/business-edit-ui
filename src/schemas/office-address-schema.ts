@@ -1,5 +1,5 @@
 import { required, maxLength } from 'vuelidate/lib/validators'
-import { AddressSchemaIF } from '@/interfaces'
+import { AddressSchemaIF } from '@/interfaces/'
 
 // The Office Address schema containing Vuelidate rules.
 // NB: This should match the subject JSON schema.

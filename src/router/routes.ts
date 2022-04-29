@@ -1,5 +1,5 @@
-import { Signin, Signout, Alteration, Change, Correction } from '@/views'
-import { FilingTypes, RouteNames } from '@/enums'
+import { Signin, Signout, Alteration, Change, Correction } from '@/views/'
+import { FilingTypes, RouteNames } from '@/enums/'
 
 export const routes = [
   {

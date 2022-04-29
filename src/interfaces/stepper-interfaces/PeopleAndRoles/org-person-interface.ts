@@ -1,5 +1,5 @@
-import { AddressIF, RoleIF } from '@/interfaces'
-import { ActionTypes, PartyTypes, RoleTypes } from '@/enums'
+import { AddressIF, RoleIF } from '@/interfaces/'
+import { ActionTypes, PartyTypes, RoleTypes } from '@/enums/'
 
 export interface OrgPersonIF {
   officer: {

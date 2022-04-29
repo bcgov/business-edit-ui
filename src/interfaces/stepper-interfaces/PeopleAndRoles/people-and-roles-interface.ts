@@ -1,4 +1,4 @@
-import { OrgPersonIF } from '@/interfaces'
+import { OrgPersonIF } from '@/interfaces/'
 
 export interface PeopleAndRolesIF {
   valid: boolean

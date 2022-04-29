@@ -42,17 +42,17 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils'
-import { AgreementType } from '@/components/Correction'
+import { getFeatureFlag } from '@/utils/'
+import { AgreementType } from '@/components/Correction/'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
-  from '@/components/common'
-import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { ActionBindingIF, FilingDataIF } from '@/interfaces'
-import { FilingCodes, FilingStatus } from '@/enums'
+  from '@/components/common/'
+import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
+import { ActionBindingIF, FilingDataIF } from '@/interfaces/'
+import { FilingCodes, FilingStatus } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { BenefitCompanyStatementResource, CorrectionResources } from '@/resources'
+import { BenefitCompanyStatementResource, CorrectionResources } from '@/resources/'
 
 @Component({
   components: {

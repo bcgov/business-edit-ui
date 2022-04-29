@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store'
+import { getVuexStore } from '@/store/'
 import flushPromises from 'flush-promises'
 import { createLocalVue, mount } from '@vue/test-utils'
 import ShareStructures from '@/components/common/ShareStructure/ShareStructures.vue'

@@ -25,8 +25,8 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { Certify as CertifyShared } from '@bcrs-shared-components/certify'
-import { DateMixin, SharedMixin } from '@/mixins'
-import { ActionBindingIF, CertifyIF, ResourceIF } from '@/interfaces'
+import { DateMixin, SharedMixin } from '@/mixins/'
+import { ActionBindingIF, CertifyIF, ResourceIF } from '@/interfaces/'
 
 @Component({
   components: {

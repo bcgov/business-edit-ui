@@ -27,8 +27,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { BcRegContacts } from '@/components/common'
-import { HelpSectionIF } from '@/interfaces'
+import { BcRegContacts } from '@/components/common/'
+import { HelpSectionIF } from '@/interfaces/'
 
 @Component({
   components: {

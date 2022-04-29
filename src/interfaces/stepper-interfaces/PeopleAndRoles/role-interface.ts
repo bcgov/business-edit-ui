@@ -1,4 +1,4 @@
-import { RoleTypes } from '@/enums'
+import { RoleTypes } from '@/enums/'
 
 export interface RoleIF {
   roleType?: RoleTypes;

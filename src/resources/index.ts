@@ -1,7 +1,7 @@
 import { BenefitCompanyStatementResource } from './Correction'
 import { BenefitCompanyResource, CooperativeResource } from './Alteration'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from './Change'
-import { ResourceIF } from '@/interfaces'
+import { ResourceIF } from '@/interfaces/'
 
 export * from './Correction'
 export * from './BreadCrumbResource'

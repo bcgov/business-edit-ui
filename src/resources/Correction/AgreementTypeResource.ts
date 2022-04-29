@@ -1,4 +1,4 @@
-import { IncorporationAgreementTypeIF } from '@/interfaces'
+import { IncorporationAgreementTypeIF } from '@/interfaces/'
 
 export const AgreementTypeResource: IncorporationAgreementTypeIF[] = [
   {

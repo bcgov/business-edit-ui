@@ -28,9 +28,9 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip'
-import { CommonMixin } from '@/mixins'
-import { IncorporationFilingIF, OrgPersonIF } from '@/interfaces'
-import { ActionTypes, RoleTypes } from '@/enums'
+import { CommonMixin } from '@/mixins/'
+import { IncorporationFilingIF, OrgPersonIF } from '@/interfaces/'
+import { ActionTypes, RoleTypes } from '@/enums/'
 
 @Component({
   components: { ActionChipShared }

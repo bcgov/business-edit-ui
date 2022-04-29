@@ -1,5 +1,5 @@
-import { ActionTypes } from '@/enums'
-import { ResolutionsIF } from '@/interfaces'
+import { ActionTypes } from '@/enums/'
+import { ResolutionsIF } from '@/interfaces/'
 
 export interface ShareStructureIF {
   resolutionDates?: string[]

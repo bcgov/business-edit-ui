@@ -50,11 +50,11 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { Getter, Action } from 'vuex-class'
 
 // Interfaces and Enums
-import { ActionBindingIF } from '@/interfaces'
+import { ActionBindingIF } from '@/interfaces/'
 
 // Mixins
-import { DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
-import { navigate } from '@/utils'
+import { DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins/'
+import { navigate } from '@/utils/'
 
 /** This component is only implemented for Correction filings atm. */
 @Component({})

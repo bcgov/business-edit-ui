@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import sinon from 'sinon'
-import { getVuexStore } from '@/store'
+import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import ChangeSummary from '@/components/Alteration/ChangeSummary.vue'
 import NatureOfBusiness from '@/components/Alteration/NatureOfBusiness.vue'

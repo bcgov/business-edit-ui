@@ -53,9 +53,9 @@
 <script lang="ts">
 import { Component, Mixins, Emit, Vue, Watch, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { CommonMixin } from '@/mixins'
-import { FilingNames } from '@/enums'
-import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces'
+import { CommonMixin } from '@/mixins/'
+import { FilingNames } from '@/enums/'
+import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
 @Component({})

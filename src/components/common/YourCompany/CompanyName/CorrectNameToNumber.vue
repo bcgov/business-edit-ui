@@ -19,8 +19,8 @@ import { Component, Prop, Watch, Emit, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Interfaces && enums
-import { ActionBindingIF } from '@/interfaces'
-import { CorrectionTypes } from '@/enums'
+import { ActionBindingIF } from '@/interfaces/'
+import { CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 @Component({})

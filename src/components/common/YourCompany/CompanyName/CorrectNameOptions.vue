@@ -56,12 +56,12 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { CorrectNameOptionIF } from '@/interfaces'
-import { CorrectionTypes } from '@/enums'
+import { CorrectNameOptionIF } from '@/interfaces/'
+import { CorrectionTypes } from '@/enums/'
 
 // for some reason, CorrectXXX cannot be imported from ./
 // (it breaks a bunch of unit tests)
-import { CorrectCompanyName, CorrectNameToNumber, CorrectNameRequest } from '@/components/common'
+import { CorrectCompanyName, CorrectNameToNumber, CorrectNameRequest } from '@/components/common/'
 
 /**
  * Operation:

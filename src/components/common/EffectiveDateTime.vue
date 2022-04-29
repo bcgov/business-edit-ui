@@ -76,9 +76,9 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker'
-import { DateMixin } from '@/mixins'
-import { EffectiveDateTypes } from '@/enums'
-import { EffectiveDateTimeIF, FormFieldType, FormIF } from '@/interfaces'
+import { DateMixin } from '@/mixins/'
+import { EffectiveDateTypes } from '@/enums/'
+import { EffectiveDateTimeIF, FormFieldType, FormIF } from '@/interfaces/'
 
 enum PeriodTypes {
   AM = 'am',

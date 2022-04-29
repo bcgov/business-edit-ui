@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils'
 import MixinTester from './mixin-tester.vue'
-import { getVuexStore } from '@/store'
+import { getVuexStore } from '@/store/'
 
 const store = getVuexStore()
 

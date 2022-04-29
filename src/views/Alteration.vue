@@ -125,19 +125,19 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils'
-import { AlterationSummary, Articles, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Alteration'
+import { getFeatureFlag } from '@/utils/'
+import { AlterationSummary, Articles, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Alteration/'
 import { CertifySection, CurrentDirectors, ShareStructures, StaffPayment, YourCompany }
-  from '@/components/common'
+  from '@/components/common/'
 import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa'
-import { AuthApiMixin, CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
+import { AuthApiMixin, CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FeesIF, FilingDataIF, FlagsReviewCertifyIF }
-  from '@/interfaces'
-import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums'
+  from '@/interfaces/'
+import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
-import { AlterationResources } from '@/resources'
+import { AlterationResources } from '@/resources/'
 
 @Component({
   components: {

@@ -111,10 +111,10 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { CommonMixin } from '@/mixins'
+import { CommonMixin } from '@/mixins/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker'
 import { cloneDeep } from 'lodash'
-import { ActionBindingIF } from '@/interfaces'
+import { ActionBindingIF } from '@/interfaces/'
 
 @Component({
   components: {

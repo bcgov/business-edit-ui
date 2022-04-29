@@ -222,10 +222,10 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { BcRegContacts } from '@/components/common'
-import { CommonMixin, SharedMixin } from '@/mixins'
+import { BcRegContacts } from '@/components/common/'
+import { CommonMixin, SharedMixin } from '@/mixins/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces'
+import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 
 @Component({
   components: {

@@ -14,8 +14,8 @@
 <script lang="ts">
 import { Action, Getter } from 'vuex-class'
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { NaicsServices } from '@/services'
-import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, NaicsIF } from '@/interfaces'
+import { NaicsServices } from '@/services/'
+import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, NaicsIF } from '@/interfaces/'
 import { NatureOfBusiness as NatureOfBusinessShared } from '@bcrs-shared-components/nature-of-business'
 
 @Component({

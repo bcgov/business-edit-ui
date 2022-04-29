@@ -19,8 +19,8 @@
 import { Component, Mixins, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info'
-import { AuthApiMixin, CommonMixin } from '@/mixins'
-import { ActionBindingIF, ContactPointIF, IncorporationFilingIF, ResourceIF } from '@/interfaces'
+import { AuthApiMixin, CommonMixin } from '@/mixins/'
+import { ActionBindingIF, ContactPointIF, IncorporationFilingIF, ResourceIF } from '@/interfaces/'
 
 @Component({
   components: {

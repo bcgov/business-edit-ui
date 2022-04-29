@@ -73,9 +73,9 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common'
-import { ActionBindingIF, ResourceIF } from '@/interfaces'
-import { DateMixin, SharedMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
+import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common/'
+import { ActionBindingIF, ResourceIF } from '@/interfaces/'
+import { DateMixin, SharedMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
 
 @Component({
   components: {

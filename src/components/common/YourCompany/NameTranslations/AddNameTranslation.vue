@@ -53,8 +53,8 @@
 <script lang="ts">
 import { Component, Emit, Prop, Mixins } from 'vue-property-decorator'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
-import { ConfirmDialogType, FormIF } from '@/interfaces'
-import { CommonMixin } from '@/mixins'
+import { ConfirmDialogType, FormIF } from '@/interfaces/'
+import { CommonMixin } from '@/mixins/'
 
 @Component({
   components: {

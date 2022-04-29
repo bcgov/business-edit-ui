@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
-import { getVuexStore } from '@/store'
+import { getVuexStore } from '@/store/'
 import { mount, Wrapper } from '@vue/test-utils'
 import CorrectCompanyName from '@/components/common/YourCompany/CompanyName/CorrectCompanyName.vue'
 

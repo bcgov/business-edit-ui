@@ -1,11 +1,11 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
-import { DateMixin } from '@/mixins'
+import { DateMixin } from '@/mixins/'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, ChangeFirmIF, ContactPointIF,
   CorrectionFilingIF, EffectiveDateTimeIF, EntitySnapshotIF, NaicsIF, NameRequestIF, NameTranslationIF,
-  OrgPersonIF, ShareClassIF, ShareStructureIF, StaffPaymentIF } from '@/interfaces'
-import { ActionTypes, EffectOfOrders, FilingTypes, RoleTypes } from '@/enums'
+  OrgPersonIF, ShareClassIF, ShareStructureIF, StaffPaymentIF } from '@/interfaces/'
+import { ActionTypes, EffectOfOrders, FilingTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
