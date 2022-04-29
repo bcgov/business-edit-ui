@@ -57,12 +57,16 @@
       <article id="org-person-summary-section" class="section-container">
         <v-row no-gutters>
           <v-col cols="12" sm="3">
-            <label>{{ firmLabel }} Information</label>
+            <label>{{ getResource.entityType === 'SP' ? 'Proprietor' : 'Partner' }} Information</label>
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-4">
           <v-col cols="12">
-            <ListPeopleAndRoles :peopleAndRoles="getPeopleAndRoles" :isSummaryView="true" />
+            <ListPeopleAndRoles
+              :peopleAndRoles="getPeopleAndRoles"
+              :isSummaryView="true"
+              :hasMinimumPartners="hasMinimumPartners"
+            />
           </v-col>
         </v-row>
       </article>
@@ -93,6 +97,7 @@ export default class ChangeSummary extends Mixins(
   // Global getters
   @Getter getBusinessNumber!: string
   @Getter getResource!: ResourceIF
+  @Getter hasMinimumPartners!: boolean
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF
@@ -105,11 +110,6 @@ export default class ChangeSummary extends Mixins(
     if (this.getApprovedName) return this.getApprovedName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
-  }
-
-  /** The firm type label. */
-  get firmLabel (): string {
-    return this.getResource.changeData.orgPersonInfo.orgPersonLabel
   }
 }
 </script>

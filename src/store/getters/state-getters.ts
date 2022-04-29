@@ -551,7 +551,8 @@ export const hasPeopleAndRolesChanged = (state: StateIF): boolean => {
 /** Is true when the minimum partners met. */
 export const hasMinimumPartners = (state: StateIF): boolean => {
   // REMOVED Parties are still in the parties array until FILING, so exclude them for component level validations.
-  return getPeopleAndRoles(state).filter(party => !party.actions?.includes(ActionTypes.REMOVED)).length >= 2
+  const isGP = state.resourceModel.entityType === 'GP'
+  return (!isGP || getPeopleAndRoles(state).filter(party => !party.actions?.includes(ActionTypes.REMOVED)).length >= 2)
 }
 
 /** Whether share structure data has changed. */

@@ -39,7 +39,10 @@
       <!-- List Content -->
       <v-row
         class="people-roles-content section-container"
-        :class="{'invalid-section': invalidOrgPersons, 'summary-view': isSummaryView}"
+        :class="{
+          'invalid-section': invalidOrgPersons || !hasMinimumPartners,
+          'summary-view': isSummaryView
+        }"
         v-for="(orgPerson, index) in currentPeopleAndRoles"
         :key="index"
         no-gutters
@@ -302,6 +305,8 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
 
   // declaration for template
   readonly isSame = isSame
+  @Prop({ default: true })
+  readonly hasMinimumPartners: boolean
 
   /** The name section validity state (when prompted by app). */
   get invalidOrgPersons (): boolean {
