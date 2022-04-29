@@ -39,7 +39,10 @@
       <!-- List Content -->
       <v-row
         class="people-roles-content section-container"
-        :class="{'invalid-section': invalidOrgPersons, 'summary-view': isSummaryView}"
+        :class="{
+          'invalid-section': invalidOrgPersons || !hasMinimumPartners,
+          'summary-view': isSummaryView
+        }"
         v-for="(orgPerson, index) in currentPeopleAndRoles"
         :key="index"
         no-gutters
@@ -299,6 +302,9 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
 
   @Prop({ default: false })
   readonly validate!: boolean
+
+  @Prop({ default: true })
+  readonly hasMinimumPartners: boolean
 
   // declaration for template
   readonly isSame = isSame

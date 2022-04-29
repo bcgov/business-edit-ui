@@ -30,7 +30,8 @@
               <template v-if="isPerson">
                 <label class="sub-header">Person's Name</label>
                 <p v-if="isProprietor" class="info-text mb-0">
-                  If the proprietor has changed their legal name, enter their new legal name.
+                  If the {{ isProprietor ? 'proprietor' : 'partner' }} has changed their legal name,
+                  enter their new legal name.
                 </p>
                 <article class="form__row three-column pt-6">
                   <v-text-field
@@ -44,7 +45,7 @@
                   <v-text-field
                     filled
                     class="item"
-                    label="Middle Name"
+                    label="Middle Name (Optional)"
                     id="person__middle-name"
                     v-model="orgPerson.officer.middleName"
                     :rules="middleNameRules"
@@ -65,15 +66,17 @@
 
                 <!-- Orgs from BC -->
                 <article v-if="isChangeFiling && toggleBcLookUp && isNaN(activeIndex)">
-                  <label class="sub-header">{{ orgTypesLabel }} Look up</label>
+                  <label class="sub-header">{{ orgTypesLabel }} Look Up</label>
                   <span class="toggle-business-entry" @click="toggleBcLookUp = !toggleBcLookUp">
                     {{ orgTypesLabel }} is Unregistered in B.C.
                   </span>
-                  <p class="info-text mt-4">To add a registered B.C. business or corporation as the Proprietor, enter
-                    the name or incorporation number.</p>
-                  <p class="info-text">If you are a company that is not legally required to register in BC such as a
-                    bank or a railway, use the manual lookup. All other types of businesses cannot be a proprietor or
-                    partner.</p>
+                  <p class="info-text mt-4">To add a registered B.C. business or corporation as the
+                    {{ isProprietor ? 'Proprietor' : 'Partner' }}, enter the name or incorporation number.
+                  </p>
+                  <p class="info-text">If you want to add a company that is not legally required to register in B.C.
+                    such as a bank or a railway, use the manual entry form. All other types of businesses cannot be
+                    a {{ isProprietor ? 'proprietor' : 'partner' }}.
+                  </p>
                   <!-- FUTURE: Inject subcomponent here for business Look Up -->
                 </article>
 
@@ -81,11 +84,12 @@
                 <article v-else-if="isChangeFiling && !toggleBcLookUp && isNaN(activeIndex)">
                   <label class="sub-header">{{ orgTypesLabel }} Unregistered in B.C.</label>
                   <span class="toggle-business-entry" @click="toggleBcLookUp = !toggleBcLookUp">
-                    {{ orgTypesLabel }} Look up
+                    {{ orgTypesLabel }} Look Up
                   </span>
-                  <p class="info-text mt-4">Use this manual entry form to add a company that is not legally required to
-                    register in B.C. such as a bank or a railway as a partner. All other types of businesses not
-                    registered in B.C. cannot be a proprietor or partner.</p>
+                  <p class="info-text mt-4">Use this form only if want to add a company that is not legally required to
+                    register in B.C. E.g. a bank, a railway, parishes, private acts, and credit unions. All other types
+                    of businesses not registered in B.C. cannot be a partner.
+                  </p>
                   <HelpSection :helpSection="getResource.changeData.orgPersonInfo.helpSection" />
                 </article>
 
@@ -115,13 +119,28 @@
               <template v-if="isProprietor || isPartner && !isNaN(activeIndex)">
                 <article class="mt-n4">
                   <v-checkbox
-                    class="confirm-proprietor-name-change-chkbx mb-6"
+                    class="confirm-proprietor-name-change-chkbx mb-8"
                     :label="`I confirm ${orgPersonLabel} has legally changed their name and that they remain the ` +
                       `same person.`"
                     :hide-details="true"
                     :rules="confirmNameChangeRules"
                     v-model="orgPerson.confirmNameChange"
                   />
+                </article>
+              </template>
+
+              <!-- FUTURE: Firm incorporation number -->
+              <!-- <template v-if="orgPerson.officer.?">
+                <article class="mb-8">
+                  <label class="sub-header">Incorporation Number:</label>
+                  <span class="sp-number-text">{{ 'orgPerson.officer.?' }}</span>
+                </article>
+              </template> -->
+
+              <template v-if="orgPerson.officer.taxId">
+                <article class="mb-8">
+                  <label class="sub-header">Business Number:</label>
+                  <span class="ml-2 sp-number-text">{{ 'orgPerson.officer.taxId' }}</span>
                 </article>
               </template>
 
@@ -838,6 +857,11 @@ li {
     font-weight: normal;
   }
 
+  // align/center text with checkbox
+  .v-input--checkbox .v-input__control .v-input__slot .v-label.theme--light {
+    padding-top: 2px;
+  }
+
   .theme--light.v-input input, .theme--light.v-input textarea {
     color: $gray9;
   }
@@ -848,5 +872,9 @@ li {
    {
     margin-top: -4px;
   }
+}
+
+.sp-number-text {
+  color: $gray7;
 }
 </style>

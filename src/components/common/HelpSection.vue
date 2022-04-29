@@ -18,7 +18,7 @@
         <BcRegContacts class="mb-6" :direction="'col'" />
 
         <label>Hours of Operation:</label>
-        <p>Monday to Friday, 8:30am - 4:30pm Pacific Time</p>
+        <p>Monday to Friday, 8:30am - 4:30pm Pacific time</p>
         <div class="help-btn bottom" @click="helpToggle = !helpToggle">Hide Help</div>
       </section>
     </v-expand-transition>
