@@ -50,25 +50,20 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { Getter, Action } from 'vuex-class'
 
 // Interfaces and Enums
-import { ActionBindingIF } from '@/interfaces'
-import { CorpTypeCd } from '@/enums'
+import { ActionBindingIF } from '@/interfaces/'
 
 // Mixins
-import { DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
-import { navigate } from '@/utils'
+import { DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins/'
+import { navigate } from '@/utils/'
 
 /** This component is only implemented for Correction filings atm. */
 @Component({})
 export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin) {
   // Global getters
-  @Getter getEntityType!: CorpTypeCd
   @Getter isBusySaving!: boolean
-  @Getter isNamedBusiness!: boolean
-  @Getter getNameRequestNumber!: string
   @Getter hasCorrectionChanged!: boolean
   @Getter hasAlterationChanged!: boolean // for testing state-getters
   @Getter isFilingValid!: boolean
-  @Getter hasNewNr!: boolean
   @Getter isSaving!: boolean
   @Getter isSavingResuming!: boolean
   @Getter isFilingPaying!: boolean
@@ -81,17 +76,17 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
   @Action setHaveUnsavedChanges!: ActionBindingIF
 
   /** True if the Save button should be disabled. */
-  private get isSaveButtonDisabled (): boolean {
+  get isSaveButtonDisabled (): boolean {
     return (this.isBusySaving || this.isEditing)
   }
 
   /** True if the Save and Resume button should be disabled. */
-  private get isSaveResumeButtonDisabled (): boolean {
+  get isSaveResumeButtonDisabled (): boolean {
     return (this.isBusySaving || this.isEditing)
   }
 
   /** True if the File and Pay button should be disabled. */
-  private get isFilePayButtonDisabled (): boolean {
+  get isFilePayButtonDisabled (): boolean {
     return (!this.hasCorrectionChanged || this.isBusySaving || !this.isFilingValid || this.isEditing)
   }
 

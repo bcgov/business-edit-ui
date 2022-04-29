@@ -1,7 +1,6 @@
 <template>
   <div id="add-edit-org-person">
-
-    <confirm-dialog
+    <ConfirmDialogShared
       ref="reassignCpDialog"
       attach="#add-edit-org-person"
     />
@@ -94,8 +93,7 @@
                 <article class="org-name-container pt-6">
                   <v-checkbox
                     v-if="!toggleBcLookUp"
-                    id="confirm-legal-business-name-chkbx"
-                    class="mt-0 mb-6"
+                    class="confirm-partner-name-change-chkbx mb-6"
                     label="I confirm that the business partner being added is not legally required to register in B.C."
                     :hide-details="true"
                     :rules="confirmNameChangeRules"
@@ -117,8 +115,7 @@
               <template v-if="isProprietor || isPartner && !isNaN(activeIndex)">
                 <article class="mt-n4">
                   <v-checkbox
-                    id="confirm-name-change-chkbx"
-                    class="mb-6"
+                    class="confirm-proprietor-name-change-chkbx mb-6"
                     :label="`I confirm ${orgPersonLabel} has legally changed their name and that they remain the ` +
                       `same person.`"
                     :hide-details="true"
@@ -254,22 +251,24 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit, Mixins, Vue } from 'vue-property-decorator'
+import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
 import { cloneDeep, isEqual } from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
-import { OrgPersonIF, BaseAddressType, FormIF, AddressIF, ConfirmDialogType, RoleIF, ResourceIF } from '@/interfaces'
+import { isSame } from '@/utils/'
+import { OrgPersonIF, BaseAddressType, FormIF, AddressIF, ConfirmDialogType, RoleIF, ResourceIF } from '@/interfaces/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-import { HelpSection } from '@/components/common'
-import { ConfirmDialog } from '@/components/common/dialogs'
-import { CommonMixin } from '@/mixins'
-import { CorpTypeCd, RoleTypes, PartyTypes } from '@/enums'
-import { PersonAddressSchema, OfficeAddressSchema } from '@/schemas'
+import { HelpSection } from '@/components/common/'
+import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
+import { CommonMixin } from '@/mixins/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { RoleTypes, PartyTypes } from '@/enums/'
+import { PersonAddressSchema, OfficeAddressSchema } from '@/schemas/'
 import { Getter } from 'vuex-class'
 
 @Component({
   components: {
     BaseAddress,
-    ConfirmDialog,
+    ConfirmDialogShared,
     HelpSection
   }
 })
@@ -290,17 +289,16 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   readonly OfficeAddressSchema = OfficeAddressSchema
 
   /** The current org/person to edit or add. */
-  @Prop() private currentOrgPerson!: OrgPersonIF
+  @Prop() readonly currentOrgPerson!: OrgPersonIF
 
   /** The index of the org/person to edit, or NaN to add. */
-  @Prop() private activeIndex: number
+  @Prop() readonly activeIndex: number
 
   /** The current Completing Party (or undefined). */
-  @Prop() private currentCompletingParty: OrgPersonIF
+  @Prop() readonly currentCompletingParty: OrgPersonIF
 
   // Global getter
   @Getter getCurrentDate!: string
-  @Getter isCorrectionFiling!: boolean
   @Getter getResource!: ResourceIF
 
   /** The current org/person being added/edited. */
@@ -332,42 +330,42 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   private confirmNameChangeRules = []
 
   /** True if Completing Party is checked. */
-  private get isCompletingParty (): boolean {
+  get isCompletingParty (): boolean {
     return this.selectedRoles.includes(RoleTypes.COMPLETING_PARTY)
   }
 
   /** True if Incorporator is checked. */
-  private get isIncorporator (): boolean {
+  get isIncorporator (): boolean {
     return this.selectedRoles.includes(RoleTypes.INCORPORATOR)
   }
 
   /** True if Director is checked. */
-  private get isDirector (): boolean {
+  get isDirector (): boolean {
     return this.selectedRoles.includes(RoleTypes.DIRECTOR)
   }
 
   /** True if orgPerson has proprietor role. */
-  private get isProprietor (): boolean {
+  get isProprietor (): boolean {
     return this.currentOrgPerson.roles.some(role => role.roleType === RoleTypes.PROPRIETOR)
   }
 
   /** True if orgPerson has partner role. */
-  private get isPartner (): boolean {
+  get isPartner (): boolean {
     return this.currentOrgPerson.roles.some(role => role.roleType === RoleTypes.PARTNER)
   }
 
   /** The validation rules for the roles. */
-  private get roleRules (): Array<Function> {
+  get roleRules (): Array<Function> {
     return [ () => this.selectedRoles.length > 0 || 'A role is required' ]
   }
 
   /** Text label for firm orgPerson. */
-  private get orgPersonLabel (): string {
+  get orgPersonLabel (): string {
     return this.isProprietor ? 'the proprietor' : 'this partner'
   }
 
   /** True if the form is valid. */
-  private get isFormValid (): boolean {
+  get isFormValid (): boolean {
     let isFormValid = (this.orgPersonFormValid && this.mailingAddressValid)
     if ((this.isDirector || this.isProprietor || this.isPartner) && !this.inheritMailingAddress) {
       isFormValid = (isFormValid && this.deliveryAddressValid)
@@ -383,16 +381,16 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   /** True if current data object is a person. */
-  private get isPerson (): boolean {
+  get isPerson (): boolean {
     return (this.orgPerson?.officer.partyType === PartyTypes.PERSON)
   }
 
   /** True if current data object is an organization (corporation/firm). */
-  private get isOrg (): boolean {
+  get isOrg (): boolean {
     return (this.orgPerson?.officer.partyType === PartyTypes.ORGANIZATION)
   }
 
-  private get orgTypesLabel (): string {
+  get orgTypesLabel (): string {
     return this.getResource.changeData.orgPersonInfo?.orgTypesLabel
   }
 
@@ -411,7 +409,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
       this.inProgressMailingAddress = { ...this.orgPerson.mailingAddress }
       if (this.isDirector || this.isProprietor || this.isPartner) {
         this.inProgressDeliveryAddress = { ...this.orgPerson.deliveryAddress }
-        this.inheritMailingAddress = this.isSame(
+        this.inheritMailingAddress = isSame(
           this.inProgressMailingAddress, this.inProgressDeliveryAddress, ['id']
         )
       }
@@ -477,8 +475,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
    */
   private hasPersonChanged (person: OrgPersonIF): boolean {
     const officer = !isEqual(person.officer, this.currentOrgPerson?.officer)
-    const mailing = !this.isSame(person.mailingAddress, this.currentOrgPerson?.mailingAddress, ['id'])
-    const delivery = !this.isSame(person.deliveryAddress, this.currentOrgPerson?.deliveryAddress, ['id'])
+    const mailing = !isSame(person.mailingAddress, this.currentOrgPerson?.mailingAddress, ['id'])
+    const delivery = !isSame(person.deliveryAddress, this.currentOrgPerson?.deliveryAddress, ['id'])
     // just look at role type (ignore role.appointmentDate and role.cessationDate,
     // which will have changed if the user toggled the checkboxes)
     const roleTypes = !isEqual(person.roles.map(r => r.roleType), this.currentOrgPerson?.roles.map(r => r.roleType))
@@ -641,7 +639,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   }
 
   /** The Completing Party change message. */
-  private get changeCpMessage (): string {
+  get changeCpMessage (): string {
     const currentCpName = this.formatFullName(this.currentCompletingParty?.officer)
     return `The Completing Party role is already assigned to ${currentCpName}.\n` +
       'Selecting "Completing Party" here will change the Completing Party.'
@@ -786,10 +784,6 @@ li {
   line-height: 1.5rem;
 }
 
-.org-name-container {
-  padding-top: 1rem;
-}
-
 @media (min-width: 768px) {
   .meta-container {
     flex-flow: row nowrap;
@@ -846,6 +840,13 @@ li {
 
   .theme--light.v-input input, .theme--light.v-input textarea {
     color: $gray9;
+  }
+
+  // align checkbox icons with top of text
+  .confirm-partner-name-change-chkbx .v-icon,
+  .confirm-proprietor-name-change-chkbx .v-icon
+   {
+    margin-top: -4px;
   }
 }
 </style>

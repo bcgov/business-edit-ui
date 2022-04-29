@@ -2,12 +2,12 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
-import { TransactionalFolioNumber } from '@/components/Edit'
+import { getVuexStore } from '@/store/'
+import TransactionalFolioNumber from '@/components/Alteration/TransactionalFolioNumber.vue'
 
 Vue.use(Vuetify)
-const vuetify = new Vuetify({})
 
+const vuetify = new Vuetify({})
 const store = getVuexStore()
 
 describe('Transactional Folio Number component', () => {
@@ -15,7 +15,7 @@ describe('Transactional Folio Number component', () => {
     const wrapper = mount(TransactionalFolioNumber, {
       vuetify,
       store,
-      propsData: { }
+      propsData: {}
     })
     const vm: any = wrapper.vm
 
@@ -56,7 +56,7 @@ describe('Transactional Folio Number component', () => {
     const wrapper = mount(TransactionalFolioNumber, {
       vuetify,
       store,
-      propsData: { }
+      propsData: {}
     })
     const vm: any = wrapper.vm
 
@@ -76,7 +76,7 @@ describe('Transactional Folio Number component', () => {
     const wrapper = mount(TransactionalFolioNumber, {
       vuetify,
       store,
-      propsData: { }
+      propsData: {}
     })
     const vm: any = wrapper.vm
 

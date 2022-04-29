@@ -1,31 +1,25 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-import { getVuexStore } from '@/store'
+import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
-import { axios } from '@/utils'
-
-// Components
+import { axios } from '@/utils/'
 import App from '@/App.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { FeeSummary } from '@bcrs-shared-components/fee-summary'
-import { Actions, EntityInfo } from '@/components/common'
-import {
-  FileAndPayInvalidNameRequestDialog,
-  AccountAuthorizationDialog,
-  FetchErrorDialog,
-  PaymentErrorDialog,
-  SaveErrorDialog,
-  NameRequestErrorDialog,
-  ConfirmDeleteAllDialog
-} from '@/components/common/dialogs'
-
-// Other
+import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary'
+import Actions from '@/components/common/Actions.vue'
+import EntityInfo from '@/components/common/EntityInfo.vue'
+import FileAndPayInvalidNameRequestDialog from '@/dialogs/FileAndPayInvalidNameRequestDialog.vue'
+import AccountAuthorizationDialog from '@/dialogs/AccountAuthorizationDialog.vue'
+import FetchErrorDialog from '@/dialogs/FetchErrorDialog.vue'
+import PaymentErrorDialog from '@/dialogs/PaymentErrorDialog.vue'
+import SaveErrorDialog from '@/dialogs/SaveErrorDialog.vue'
+import NameRequestErrorDialog from '@/dialogs/NameRequestErrorDialog.vue'
+import ConfirmDeleteAllDialog from '@/dialogs/ConfirmDeleteAllDialog.vue'
 import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)
@@ -640,7 +634,7 @@ describe('App component - other', () => {
     expect(wrapper.findComponent(SbcHeader).exists()).toBe(true)
     expect(wrapper.findComponent(SbcFooter).exists()).toBe(true)
     expect(wrapper.findComponent(SbcFeeSummary).exists()).toBe(false) // not used for alterations
-    expect(wrapper.findComponent(FeeSummary).exists()).toBe(false) // not displayed initially
+    expect(wrapper.findComponent(FeeSummaryShared).exists()).toBe(false) // not displayed initially
     expect(wrapper.findComponent(SbcFooter).exists()).toBe(true)
     expect(wrapper.findComponent(EntityInfo).exists()).toBe(true)
     expect(wrapper.findComponent(Actions).exists()).toBe(false) // not used for alterations
@@ -672,6 +666,6 @@ describe('App component - other', () => {
     }
     await Vue.nextTick()
 
-    expect(wrapper.findComponent(FeeSummary).exists()).toBe(true) // not displayed initially
+    expect(wrapper.findComponent(FeeSummaryShared).exists()).toBe(true) // not displayed initially
   })
 })

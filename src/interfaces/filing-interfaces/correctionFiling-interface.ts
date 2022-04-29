@@ -1,4 +1,4 @@
-import { FilingBusinessIF, FilingHeaderIF, IncorporationApplicationIF } from '@/interfaces'
+import { FilingBusinessIF, FilingHeaderIF, IncorporationApplicationIF } from '@/interfaces/'
 
 interface CorrectionIF {
   correctedFilingId: number

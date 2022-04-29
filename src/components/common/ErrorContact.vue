@@ -22,12 +22,12 @@
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
-export default class ErrorContact extends Vue { }
+export default class ErrorContact extends Vue {}
 </script>
 
 <style lang="scss" scoped>
 li {
-  font-size: 0.9rem;
+  font-size: 0.9rem; // 14.4 px
 }
 
 .contact-container {

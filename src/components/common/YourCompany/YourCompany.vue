@@ -13,11 +13,12 @@
             <strong>{{ getResource.entityReference }} Name</strong>
           </label>
           <v-flex md1 class="mt-1">
-            <v-chip v-if="companyNameChanges || ((isAlterationFiling || isChangeFiling) && hasBusinessNameChanged)"
-                    id="corrected-lbl"
-                    x-small label
-                    color="primary"
-                    text-color="white"
+            <v-chip
+              v-if="companyNameChanges || ((isAlterationFiling || isChangeFiling) && hasBusinessNameChanged)"
+              id="corrected-lbl"
+              x-small label
+              color="primary"
+              text-color="white"
             >
               {{editedLabel}}
             </v-chip>
@@ -48,11 +49,12 @@
                 <span :class="{ 'hasConflict': isConflictingLegalType}"
                       class="info-text">{{getCorpTypeDescription(getNameRequest.legalType)}}
                 </span>
-                <v-tooltip v-if="isConflictingLegalType"
-                           top
-                           content-class="top-tooltip"
-                           transition="fade-transition"
-                           nudge-right="3"
+                <v-tooltip
+                  v-if="isConflictingLegalType"
+                  top
+                  content-class="top-tooltip"
+                  transition="fade-transition"
+                  nudge-right="3"
                 >
                   <template v-slot:activator="{ on }">
                     <v-icon v-on="on" color="error" small>
@@ -174,10 +176,11 @@
     <v-divider v-if="isChangeFiling" class="mx-4 my-1" />
 
     <!-- Business Type -->
-    <div v-if="isAlterationFiling || isChangeFiling"
-         id="company-type-section"
-         class="section-container"
-         :class="{'invalid-section': invalidTypeSection}"
+    <div
+      v-if="isAlterationFiling || isChangeFiling"
+      id="company-type-section"
+      class="section-container"
+      :class="{'invalid-section': invalidTypeSection}"
     >
       <ChangeBusinessType
         :invalidSection="invalidTypeSection"
@@ -286,28 +289,17 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import {
-  ActionBindingIF,
-  ContactPointIF,
-  EntitySnapshotIF,
-  FlagsCompanyInfoIF,
-  IncorporationFilingIF,
-  NameRequestApplicantIF,
-  NameRequestIF,
-  ResourceIF
-} from '@/interfaces'
-import {
-  BusinessContactInfo,
-  ChangeBusinessType,
-  FolioInformation,
-  CorrectNameTranslation,
-  CorrectNameOptions,
-  OfficeAddresses
-} from './'
-import NatureOfBusiness from '@/components/Edit/NatureOfBusiness.vue'
-import { CommonMixin, EnumMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins'
-import { CorrectionTypes, CorpTypeCd } from '@/enums'
+import { ActionBindingIF, ContactPointIF, EntitySnapshotIF, FlagsCompanyInfoIF, IncorporationFilingIF,
+  NameRequestApplicantIF, NameRequestIF, ResourceIF } from '@/interfaces/'
+import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
+  OfficeAddresses } from './'
+import { CommonMixin, SharedMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins/'
+import { CorrectionTypes } from '@/enums/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { cloneDeep } from 'lodash'
+
+// for some reason, NatureOfBusiness cannot be imported from /components/Alteration
+import NatureOfBusiness from '@/components/Alteration/NatureOfBusiness.vue'
 
 /** Note: this component is used by both corrections and alterations. */
 @Component({
@@ -324,7 +316,7 @@ import { cloneDeep } from 'lodash'
 export default class YourCompany extends Mixins(
   CommonMixin,
   DateMixin,
-  EnumMixin,
+  SharedMixin,
   LegalApiMixin,
   NameRequestMixin
 ) {
@@ -332,7 +324,6 @@ export default class YourCompany extends Mixins(
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
   @Getter getComponentValidate!: boolean
-  @Getter getEntityType!: CorpTypeCd
   @Getter getNameRequest!: NameRequestIF
   @Getter hasNewNr!: boolean
   @Getter getOriginalEffectiveDateTime!: string
@@ -343,9 +334,6 @@ export default class YourCompany extends Mixins(
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
-  @Getter isCorrectionFiling!: boolean
-  @Getter isAlterationFiling!: boolean
-  @Getter isChangeFiling!: boolean
   @Getter getResource!: ResourceIF
 
   // Alteration flag getters
@@ -377,65 +365,65 @@ export default class YourCompany extends Mixins(
   private isEditingTranslations = false
 
   /** The name section validity state (when prompted by app). */
-  private get invalidNameSection (): boolean {
+  get invalidNameSection (): boolean {
     return this.getComponentValidate && this.isEditingNames
   }
 
   /** The type section validity state (when prompted by app). */
-  private get invalidTypeSection (): boolean {
+  get invalidTypeSection (): boolean {
     return this.getComponentValidate && this.isEditingType
   }
 
   /** The translation section validity state (when prompted by app). */
-  private get invalidTranslationSection (): boolean {
+  get invalidTranslationSection (): boolean {
     return this.getComponentValidate && this.isEditingTranslations
   }
 
   /** The nature of business section validity state (when prompted by app). */
-  private get invalidNatureOfBusiness (): boolean {
+  get invalidNatureOfBusiness (): boolean {
     return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidNatureOfBusiness
   }
 
   /** The address section validity state (when prompted by app). */
-  private get invalidAddressSection (): boolean {
+  get invalidAddressSection (): boolean {
     return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidAddress
   }
 
   /** The contact section validity state (when prompted by app). */
-  private get invalidContactSection (): boolean {
+  get invalidContactSection (): boolean {
     return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidContactInfo
   }
 
   /** The folio section validity state (when prompted by app). */
-  private get invalidFolioSection (): boolean {
+  get invalidFolioSection (): boolean {
     return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidFolioInfo
   }
 
   /** The company name (from NR, or incorporation number). */
-  private get companyName (): string {
+  get companyName (): string {
     if (this.getApprovedName) return this.getApprovedName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 
   /** Name Request applicant info */
-  private get nrApplicant (): NameRequestApplicantIF {
+  get nrApplicant (): NameRequestApplicantIF {
     return this.getNameRequest?.applicant
   }
 
   /** Name Request expiry */
-  private get expiryDate (): string {
+  get expiryDate (): string {
     const date = new Date(this.getNameRequest.expiry)
     return this.dateToPacificDateTime(date)
   }
 
   /** Name Request phone number */
-  private get phoneNumber (): string {
+  get phoneNumber (): string {
     return this.toDisplayPhone(this.nrApplicant.phoneNumber)
   }
 
   /** The recognition/founding (aka effective or start date) datetime. */
-  private get recognitionDateTime (): string {
+  get recognitionDateTime (): string {
     if (this.isCorrectionFiling) {
       if (this.getOriginalEffectiveDateTime) {
         return (this.apiToPacificDateLong(this.getOriginalEffectiveDateTime))
@@ -450,7 +438,7 @@ export default class YourCompany extends Mixins(
   }
 
   /** Compare names. */
-  private get isNewName () {
+  get isNewName () {
     const correctedName = this.getApprovedName
     const currentName = this.isCorrectionFiling
       ? this.getOriginalIA.incorporationApplication.nameRequest.legalName
@@ -460,7 +448,7 @@ export default class YourCompany extends Mixins(
   }
 
   /** The current options for change of name correction or edit. */
-  private get nameChangeOptions (): Array<CorrectionTypes> {
+  get nameChangeOptions (): Array<CorrectionTypes> {
     let nameChangeOptions = cloneDeep(this.getResource.changeData.nameChangeOptions)
 
     // Remove name-to-numbered company option when already a numbered company

@@ -15,21 +15,16 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-
-// Mixins
-import { CommonMixin } from '@/mixins'
-
-// Interfaces && enums
-import { ActionBindingIF, NameRequestIF } from '@/interfaces'
-import { CorrectionTypes } from '@/enums'
+import { CommonMixin } from '@/mixins/'
+import { ActionBindingIF, NameRequestIF } from '@/interfaces/'
+import { CorrectionTypes } from '@/enums/'
 
 @Component({})
 export default class CorrectCompanyName extends Mixins(CommonMixin) {
   /** Form Submission Prop */
-  @Prop({ default: null }) formType: CorrectionTypes
+  @Prop({ default: null }) readonly formType: CorrectionTypes
 
   @Action setNameRequest!: ActionBindingIF
 
@@ -55,7 +50,7 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
   }
 
   // Validations
-  private get isFormValid (): boolean {
+  get isFormValid (): boolean {
     return this.valid
   }
 

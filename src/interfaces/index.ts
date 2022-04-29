@@ -8,6 +8,8 @@ export * from './stepper-interfaces'
 export * from './store-interfaces'
 export * from './utils-interfaces'
 export * from './state-interface'
+
+// Shared interfaces
 export type {
   BreadcrumbIF,
   CompletingPartyIF,

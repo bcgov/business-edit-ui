@@ -1,14 +1,9 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
-
-// Store
-import { getVuexStore } from '@/store'
-
-// Components
+import { getVuexStore } from '@/store/'
 import { mount, Wrapper } from '@vue/test-utils'
-import { CorrectNameToNumber } from '@/components/common/YourCompany/CompanyName'
+import CorrectNameToNumber from '@/components/common/YourCompany/CompanyName/CorrectNameToNumber.vue'
 
 Vue.use(Vuetify)
 

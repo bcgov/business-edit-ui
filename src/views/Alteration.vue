@@ -73,7 +73,7 @@
           </p>
 
           <div class="pb-6" :class="{'invalid-section': invalidCourtOrder}">
-            <CourtOrderPoa
+            <CourtOrderPoaShared
               id="court-order"
               :autoValidation="getAppValidate"
               :draftCourtOrderNumber="getFileNumber"
@@ -125,38 +125,26 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils'
-import { AlterationSummary, Articles, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Edit'
-import {
-  CertifySection,
-  CourtOrderPoa,
-  CurrentDirectors,
-  ShareStructures,
-  StaffPayment,
-  YourCompany
-} from '@/components/common'
-import { AuthApiMixin, CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins'
-import {
-  ActionBindingIF,
-  EffectiveDateTimeIF,
-  EmptyFees,
-  EntitySnapshotIF,
-  FeesIF,
-  FilingDataIF,
-  FlagsReviewCertifyIF,
-  StaffPaymentIF
-} from '@/interfaces'
-import { CorpTypeCd, FilingCodes, FilingStatus, OrgPersonTypes, StaffPaymentOptions } from '@/enums'
+import { getFeatureFlag } from '@/utils/'
+import { AlterationSummary, Articles, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Alteration/'
+import { CertifySection, CurrentDirectors, ShareStructures, StaffPayment, YourCompany }
+  from '@/components/common/'
+import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa'
+import { AuthApiMixin, CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
+import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FeesIF, FilingDataIF, FlagsReviewCertifyIF }
+  from '@/interfaces/'
+import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
-import { AlterationResources } from '@/resources'
+import { AlterationResources } from '@/resources/'
 
 @Component({
   components: {
     AlterationSummary,
     Articles,
     CertifySection,
-    CourtOrderPoa,
+    CourtOrderPoaShared,
     CurrentDirectors,
     DocumentsDelivery,
     ShareStructures,
@@ -174,25 +162,18 @@ export default class Alteration extends Mixins(
 ) {
   // Global getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter getEntityType!: CorpTypeCd
   @Getter isSummaryMode!: boolean
   @Getter isRoleStaff!: boolean
   @Getter isPremiumAccount!: boolean
-  @Getter getEffectiveDateTime!: EffectiveDateTimeIF
-  @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
   @Getter getAppValidate!: boolean
-  @Getter getFileNumber!: string
-  @Getter getHasPlanOfArrangement!: boolean
   @Getter showFeeSummary!: boolean
   @Getter getFeePrices!: FeesIF
 
   // Global actions
-  @Action setFileNumber!: ActionBindingIF
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
-  @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setValidCourtOrder!: ActionBindingIF
   @Action setCurrentFees!: ActionBindingIF
@@ -204,33 +185,33 @@ export default class Alteration extends Mixins(
   readonly appReady: boolean
 
   /** Whether to show the Transactional Folio Number section. */
-  private get showTransactionalFolioNumber (): boolean {
+  get showTransactionalFolioNumber (): boolean {
     return (this.isPremiumAccount && !this.isRoleStaff)
   }
 
   /** The id of the alteration being edited. */
-  private get alterationId (): number {
+  get alterationId (): number {
     return +this.$route.query['alteration-id'] || 0
   }
 
   /** True if user is authenticated. */
-  private get isAuthenticated (): boolean {
+  get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
   /** Check validity state, only when prompted by app. */
-  private get invalidCourtOrder (): boolean {
+  get invalidCourtOrder (): boolean {
     return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
   }
 
-  private get filingFeesPrice (): string {
+  get filingFeesPrice (): string {
     if (this.getFeePrices.filingFees !== null) {
       return `$${this.getFeePrices.filingFees.toFixed(2)}`
     }
     return ''
   }
 
-  private get futureEffectiveFeesPrice (): string {
+  get futureEffectiveFeesPrice (): string {
     if (this.getFeePrices.futureEffectiveFees !== null) {
       return `$${this.getFeePrices.futureEffectiveFees.toFixed(2)}`
     }
@@ -238,13 +219,13 @@ export default class Alteration extends Mixins(
   }
 
   /** The entity specific resource file for an Alteration filing. */
-  private get alterationResources (): any {
+  get alterationResources (): any {
     return AlterationResources.find(x => x.entityType === this.getEntityType)
   }
 
   /** Called when App is ready and this component can load its data. */
   @Watch('appReady')
-  async onAppReady (val: boolean): Promise<void> {
+  private async onAppReady (val: boolean): Promise<void> {
     // do not proceed if app is not ready
     if (!val) return
 
@@ -307,7 +288,8 @@ export default class Alteration extends Mixins(
 
       // fetches the fee prices to display in the text
       this.setFeePrices(
-        await this.fetchFilingFees(FilingCodes.ALTERATION, this.getEntityType, true
+        await this.fetchFilingFees(
+          FilingCodes.ALTERATION, this.getEntityType, true
         ).catch(() => cloneDeep(EmptyFees))
       )
 
@@ -348,7 +330,7 @@ export default class Alteration extends Mixins(
   }
 
   /** Called when staff payment data has changed. */
-  onStaffPaymentChanges (): void {
+  protected onStaffPaymentChanges (): void {
     // update filing data with staff payment fields
     this.setFilingData({
       ...this.getFilingData,
@@ -358,7 +340,7 @@ export default class Alteration extends Mixins(
   }
 
   /** Called when alteration summary data has changed. */
-  async onAlterationSummaryChanges (): Promise<void> {
+  protected async onAlterationSummaryChanges (): Promise<void> {
     // update filing data with future effective field
     this.setFilingData({
       ...this.getFilingData,
@@ -372,11 +354,11 @@ export default class Alteration extends Mixins(
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
-  private emitFetchError (message: string = ''): void { }
+  private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: Boolean = true): void { }
+  private emitHaveData (haveData: Boolean = true): void {}
 }
 </script>
 

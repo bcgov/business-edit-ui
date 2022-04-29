@@ -1,10 +1,9 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount, Wrapper } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
-
-import { CertifySection } from '@/components/common'
-import { Certify } from '@bcrs-shared-components/certify'
+import { getVuexStore } from '@/store/'
+import CertifySection from '@/components/common/CertifySection.vue'
+import { Certify as CertifyShared } from '@bcrs-shared-components/certify'
 
 Vue.use(Vuetify)
 
@@ -41,7 +40,7 @@ describe('Certify component', () => {
     const wrapper: Wrapper<CertifySection> = createComponent()
 
     expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
-    expect(wrapper.findComponent(Certify).exists()).toBe(true)
+    expect(wrapper.findComponent(CertifyShared).exists()).toBe(true)
   })
 
   it('fetches date to pass to Certify and converts to a readable format', () => {

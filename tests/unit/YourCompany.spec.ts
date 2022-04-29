@@ -1,26 +1,24 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-
-// Store
-import { getVuexStore } from '@/store'
-
-// Components
+import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
-import {
-  BusinessContactInfo,
-  ChangeBusinessType,
-  CorrectNameOptions,
-  FolioInformation,
-  OfficeAddresses,
-  YourCompany
-} from '@/components/common'
-import { BenefitCompanyStatementResource } from '@/resources/Correction'
-import { BenefitCompanyResource } from '@/resources/Edit/Alteration'
+import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
+
+// for some reason, ChangeBusinessType cannot be imported by its filename
+// also, it needs to precede the other imports
+// (otherwise a bunch of tests in this file fail)
+import { ChangeBusinessType } from '@/components/common/YourCompany'
+
+import CorrectNameOptions from '@/components/common/YourCompany/CompanyName/CorrectNameOptions.vue'
+import FolioInformation from '@/components/common/YourCompany/FolioInformation.vue'
+import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
+import YourCompany from '@/components/common/YourCompany/YourCompany.vue'
+import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitCompanyStatementResource'
+import { BenefitCompanyResource } from '@/resources/Alteration/BenefitCompanyResource'
 
 Vue.use(Vuetify)
-const localVue = createLocalVue()
 
+const localVue = createLocalVue()
 const vuetify = new Vuetify({})
 
 describe('YourCompany in a Correction', () => {

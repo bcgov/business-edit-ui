@@ -1,4 +1,4 @@
-import { EmptyNameRequest, StateModelIF, EmptyFees } from '@/interfaces'
+import { EmptyNameRequest, StateModelIF, EmptyFees } from '@/interfaces/'
 import { EmptyContactPoint } from '@bcrs-shared-components/interfaces'
 import { cloneDeep } from 'lodash'
 

@@ -20,7 +20,7 @@ export default class BcRegContacts extends Vue {
   @Prop({ default: 'row' })
   readonly direction: string
 
-  private readonly contacts = [
+  readonly contacts = [
     {
       icon: 'mdi-phone',
       key: 'Canada &amp; U.S. Toll Free:',

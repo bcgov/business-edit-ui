@@ -1,19 +1,13 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-
-// Store
-import { getVuexStore } from '@/store'
-
-// Components
+import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
-import { EntityInfo } from '@/components/common'
-
-// Other
+import EntityInfo from '@/components/common/EntityInfo.vue'
 import mockRouter from './MockRouter'
 import VueRouter from 'vue-router'
 
 Vue.use(Vuetify)
+
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 let state = store.state.stateModel

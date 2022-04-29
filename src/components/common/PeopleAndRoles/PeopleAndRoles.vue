@@ -1,7 +1,6 @@
 <template>
   <section id="people-and-roles">
-
-    <confirm-dialog
+    <ConfirmDialogShared
       ref="changeCpDialog"
       attach="#people-and-roles"
     />
@@ -117,7 +116,7 @@
       </article>
 
       <article class="list-container mt-n2">
-        <list-people-and-roles
+        <ListPeopleAndRoles
           :peopleAndRoles="getPeopleAndRoles"
           :renderOrgPersonForm="isAddingEditingOrgPerson"
           :currentOrgPerson="currentOrgPerson"
@@ -140,25 +139,19 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
-import {
-  ActionBindingIF,
-  ConfirmDialogType,
-  EntitySnapshotIF,
-  HelpSectionIF,
-  IncorporationFilingIF,
-  OrgPersonIF,
-  ResourceIF,
-  RoleIF
-} from '@/interfaces'
-import { ActionTypes, CompareModes, CorpTypeCd, PartyTypes, RoleTypes } from '@/enums'
-import { ConfirmDialog } from '@/components/common/dialogs'
-import { HelpSection } from '@/components/common'
+import { isSame } from '@/utils/'
+import { ActionBindingIF, ConfirmDialogType, EntitySnapshotIF, HelpSectionIF, IncorporationFilingIF,
+  OrgPersonIF, ResourceIF, RoleIF } from '@/interfaces/'
+import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
+import { HelpSection } from '@/components/common/'
 import { ListPeopleAndRoles } from './'
-import { CommonMixin, DateMixin } from '@/mixins'
+import { CommonMixin, DateMixin } from '@/mixins/'
 
 @Component({
   components: {
-    ConfirmDialog,
+    ConfirmDialogShared,
     HelpSection,
     ListPeopleAndRoles
   }
@@ -174,14 +167,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   readonly PartyTypes = PartyTypes
 
   // Global getters
-  @Getter getCurrentJsDate!: Date
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getUserEmail!: string
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter isRoleStaff!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isChangeFiling!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
   @Getter hasMinimumPartners!: boolean
@@ -228,7 +218,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   readonly CorpTypeCd = CorpTypeCd
 
   /** The list of original parties. */
-  private get originalParties (): OrgPersonIF[] {
+  get originalParties (): OrgPersonIF[] {
     const parties = this.isCorrectionFiling
       ? this.getOriginalIA?.incorporationApplication?.parties
       : this.getEntitySnapshot?.orgPersons
@@ -237,37 +227,37 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   }
 
   /** True if we have a Completing Party. */
-  private get cpValid (): boolean {
+  get cpValid (): boolean {
     return this.hasRole(RoleTypes.COMPLETING_PARTY, 1, CompareModes.EXACT)
   }
 
   /** True if we have at least 1 Incorporator. */
-  private get incorpValid (): boolean {
+  get incorpValid (): boolean {
     return this.hasRole(RoleTypes.INCORPORATOR, 1, CompareModes.AT_LEAST)
   }
 
   /** True if we have at least 1 Director. */
-  private get dirValid (): boolean {
+  get dirValid (): boolean {
     return this.hasRole(RoleTypes.DIRECTOR, 1, CompareModes.AT_LEAST)
   }
 
   /** True if we have all valid roles. */
-  private get hasValidRoles (): boolean {
+  get hasValidRoles (): boolean {
     return (this.cpValid && this.incorpValid && this.dirValid)
   }
 
   /** True if there are no orgs/persons with missing roles. */
-  private get noMissingRoles (): boolean {
+  get noMissingRoles (): boolean {
     return this.getPeopleAndRoles.every(p => p.roles.length > 0)
   }
 
   /** True if we have any changes (from original IA). */
-  private get hasChanges (): boolean {
+  get hasChanges (): boolean {
     return this.getPeopleAndRoles.some(x => x.actions)
   }
 
   /** The user email to use for the Completing Party. */
-  private get userEmail (): string {
+  get userEmail (): string {
     // if we are staff, return the original CP's email
     // otherwise return the current user's email
     return this.isRoleStaff
@@ -276,31 +266,31 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   }
 
   /** The Completing Party change message. */
-  private get changeCpMessage (): string {
+  get changeCpMessage (): string {
     const currentCpName = this.formatFullName(this.currentCompletingParty?.officer)
     return `The Completing Party role was re-assigned to ${currentCpName}.\n` +
       'This undo will restore the original Completing Party.'
   }
 
   /** Resource getters. */
-  private get orgPersonLabel (): string {
+  get orgPersonLabel (): string {
     return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
   }
 
-  private get orgPersonSubtitle (): string {
+  get orgPersonSubtitle (): string {
     return this.getResource.changeData?.orgPersonInfo.subtitle
   }
 
-  private get orgPersonHelp (): HelpSectionIF {
+  get orgPersonHelp (): HelpSectionIF {
     return this.getResource.changeData?.orgPersonInfo.helpSection
   }
 
-  private get orgTypesLabel (): string {
+  get orgTypesLabel (): string {
     return this.getResource.changeData?.orgPersonInfo?.orgTypesLabel
   }
 
   /** New server date in api expected format for Role Appointment dates. */
-  private get newAppointmentDate (): string {
+  get newAppointmentDate (): string {
     return this.dateToYyyyMmDd(this.getCurrentJsDate)
   }
 
@@ -450,7 +440,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
     const original = this.originalParties.find(x => x.officer.id === person.officer.id)
     if (!original) return ActionTypes.ADDED
     // ignore "action" when comparing
-    if (!this.isSame(person, original, ['actions'])) return ActionTypes.EDITED
+    if (!isSame(person, original, ['actions'])) return ActionTypes.EDITED
     return null // no actions
   }
 
@@ -513,9 +503,9 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   /** Returns true if the orgPerson address has changed. */
   private hasAddressChanged (orgPerson: OrgPersonIF): boolean {
     const mailingAddress =
-      !this.isSame(orgPerson.mailingAddress, this.originalParties[this.activeIndex].mailingAddress, ['id'])
+      !isSame(orgPerson.mailingAddress, this.originalParties[this.activeIndex].mailingAddress, ['id'])
     const deliveryAddress =
-      !this.isSame(orgPerson.deliveryAddress, this.originalParties[this.activeIndex].deliveryAddress, ['id'])
+      !isSame(orgPerson.deliveryAddress, this.originalParties[this.activeIndex].deliveryAddress, ['id'])
 
     return mailingAddress || deliveryAddress
   }

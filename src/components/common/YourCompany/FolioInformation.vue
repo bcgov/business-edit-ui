@@ -1,5 +1,5 @@
 <template>
-  <FolioNumber
+  <FolioNumberShared
     :initialValue="getFolioNumber"
     :originalValue="originalFolioNumber"
     :editLabel="editLabel"
@@ -15,18 +15,16 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces'
-import { AuthApiMixin, CommonMixin } from '@/mixins'
-import { FolioNumber } from '@bcrs-shared-components/folio-number'
+import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces/'
+import { AuthApiMixin, CommonMixin } from '@/mixins/'
+import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number'
 
 @Component({
-  components: { FolioNumber }
+  components: { FolioNumberShared }
 })
 export default class FolioInformation extends Mixins(AuthApiMixin, CommonMixin) {
   // Global getters
   @Getter getFolioNumber!: string
-  @Getter isCorrectionFiling!: boolean
-  @Getter isAlterationFiling!: boolean
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getSnapshotFolioNumber!: string
   @Getter isRoleStaff!: boolean
@@ -42,14 +40,14 @@ export default class FolioInformation extends Mixins(AuthApiMixin, CommonMixin) 
   readonly invalidSection!: boolean
 
   /** The original folio number dependant on filing type. */
-  private get originalFolioNumber (): string {
+  get originalFolioNumber (): string {
     if (this.isCorrectionFiling) return this.getOriginalIA.header.folioNumber
     if (this.isAlterationFiling) return this.getSnapshotFolioNumber
     return null
   }
 
   /** Whether to hide the component's actions. */
-  private get hideActions (): boolean {
+  get hideActions (): boolean {
     // hide actions in a correction filing
     // hide actions from staff users
     return (this.isCorrectionFiling || this.isRoleStaff)

@@ -18,7 +18,3 @@ export * from './officeTypes'
 export * from './orgPersonTypes'
 export * from './roleTypes'
 export * from './routeNames'
-
-// external enums
-export { StaffPaymentOptions, FeeSummaryActions } from '@bcrs-shared-components/enums'
-export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'

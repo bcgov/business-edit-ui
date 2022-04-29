@@ -1,7 +1,7 @@
 <template>
   <v-app class="app-container" id="app">
     <!-- Dialogs -->
-    <ConfirmDialog
+    <ConfirmDialogShared
       ref="confirm"
       attach="#app"
     />
@@ -84,7 +84,7 @@
     <PaySystemAlert />
     <div class="app-body">
       <main v-if="!isErrorDialog">
-        <BreadCrumb :breadcrumbs="breadcrumbs" />
+        <BreadCrumbShared :breadcrumbs="breadcrumbs" />
         <EntityInfo />
 
         <v-container class="view-container my-8 py-0">
@@ -113,7 +113,8 @@
 
                 <!-- Alteration/Change filings use the enhanced Fee Summary shared component -->
                 <v-expand-transition>
-                  <FeeSummary v-if="isAlterationFiling || isChangeFiling"
+                  <FeeSummaryShared
+                    v-if="isAlterationFiling || isChangeFiling"
                     :filingData="getFilingData"
                     :payApiUrl="payApiUrl"
                     :isLoading="isBusySaving"
@@ -142,42 +143,36 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
-import { getKeycloakRoles, navigate, updateLdUser } from '@/utils'
-
-// Components
+import { getKeycloakRoles, navigate, updateLdUser } from '@/utils/'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { FeeSummary } from '@bcrs-shared-components/fee-summary'
-import { Actions, BreadCrumb, EntityInfo } from '@/components/common'
-import * as Views from '@/views'
-import * as Dialogs from '@/components/common/dialogs'
-
-// Mixins, interfaces, etc
-import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import {
-  FilingDataIF, ActionBindingIF, BreadcrumbIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF
-} from '@/interfaces'
+import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary'
+import { Actions, EntityInfo } from '@/components/common/'
+import { BreadCrumb as BreadCrumbShared } from '@bcrs-shared-components/bread-crumb'
+import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
+import * as Views from '@/views/'
+import * as Dialogs from '@/dialogs/'
+import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
+import { FilingDataIF, ActionBindingIF, BreadcrumbIF, ConfirmDialogType, FlagsReviewCertifyIF,
+  FlagsCompanyInfoIF } from '@/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { ComponentsCompanyInfo, ComponentsReviewCertify, FeeSummaryActions, RouteNames } from '@/enums'
-import {
-  getEntityDashboardBreadcrumb,
-  getMyBusinessRegistryBreadcrumb,
-  getRegistryDashboardBreadcrumb,
-  getStaffDashboardBreadcrumb
-} from '@/resources'
+import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums/'
+import { FeeSummaryActions } from '@bcrs-shared-components/enums'
+import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
+  getStaffDashboardBreadcrumb } from '@/resources/'
 
 @Component({
   components: {
     Actions,
-    BreadCrumb,
+    BreadCrumbShared,
+    ConfirmDialogShared,
     EntityInfo,
-    FeeSummary,
+    FeeSummaryShared,
     PaySystemAlert,
     SbcHeader,
     SbcFooter,
@@ -193,7 +188,6 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   }
 
   // Global getters
-  @Getter getBusinessId!: string
   @Getter getUserEmail!: string
   @Getter getUserFirstName!: string
   @Getter getUserLastName!: string
@@ -201,22 +195,15 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   @Getter getUserUsername!: string
   @Getter getFilingData!: FilingDataIF
   @Getter haveUnsavedChanges!: boolean
-  @Getter hasNewNr!: boolean
   @Getter isBusySaving!: boolean
   @Getter isEditing!: boolean
   @Getter isSummaryMode!: boolean
-  @Getter getCurrentJsDate!: Date
   @Getter showFeeSummary!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isAlterationFiling!: boolean
-  @Getter isChangeFiling!: boolean
 
   // Alteration flag getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter getAppValidate!: boolean
-  @Getter hasBusinessNameChanged!: boolean
-  @Getter hasBusinessTypeChanged!: boolean
   @Getter getComponentValidate!: boolean
   @Getter isConflictingLegalType!: boolean
   @Getter isRoleStaff!: boolean
@@ -266,7 +253,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   private updateCurrentJsDateId = 0
 
   /** The route breadcrumbs list. */
-  private get breadcrumbs (): Array<BreadcrumbIF> {
+  get breadcrumbs (): Array<BreadcrumbIF> {
     const crumbs: Array<BreadcrumbIF> = [
       getEntityDashboardBreadcrumb(),
       {
@@ -289,12 +276,12 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   }
 
   /** The URL of the Pay API. */
-  private get payApiUrl (): string {
+  get payApiUrl (): string {
     return sessionStorage.getItem('PAY_API_URL')
   }
 
   /** True if an error dialog is displayed. */
-  private get isErrorDialog (): boolean {
+  get isErrorDialog (): boolean {
     // NB: ignore nameRequestErrorDialog (to leave underlying components rendered)
     // NB: ignore confirmDeleteAllDialog (to leave underlying components rendered)
     // NB: ignore staffPaymentErrorDialog (to leave underlying components rendered)
@@ -308,17 +295,17 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   }
 
   /** The About text. */
-  private get aboutText (): string {
+  get aboutText (): string {
     return process.env.ABOUT_TEXT
   }
 
   /** Whether user is authenticated. */
-  private get isAuthenticated (): boolean {
+  get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
   /** The fee summary confirm button label. */
-  private get feeSummaryConfirmLabel (): string {
+  get feeSummaryConfirmLabel (): string {
     let completeBtnLabel, reviewBtnLabel
     if (this.isChangeFiling) {
       completeBtnLabel = 'File Now (No Fee)'
@@ -332,7 +319,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   }
 
   /** Error text to display in the Fee Summary component. */
-  private get feeSummaryError (): string {
+  get feeSummaryError (): string {
     let errorPrompt
     let errorMsg
 
@@ -348,12 +335,12 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   }
 
   /** Check for any invalid component sections. */
-  private get hasInvalidSections (): boolean {
+  get hasInvalidSections (): boolean {
     return this.getComponentValidate && Object.values(this.getFlagsCompanyInfo).some(val => val === false)
   }
 
   /** Check for any invalid review sections. */
-  private get hasInvalidReviewSections (): boolean {
+  get hasInvalidReviewSections (): boolean {
     return this.getAppValidate && Object.values(this.getFlagsReviewCertify).some(val => val === false)
   }
 

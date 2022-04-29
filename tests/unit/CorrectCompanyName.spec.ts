@@ -1,14 +1,9 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
-
-// Store
-import { getVuexStore } from '@/store'
-
-// Components
+import { getVuexStore } from '@/store/'
 import { mount, Wrapper } from '@vue/test-utils'
-import { CorrectCompanyName } from '@/components/common/YourCompany/CompanyName'
+import CorrectCompanyName from '@/components/common/YourCompany/CompanyName/CorrectCompanyName.vue'
 
 Vue.use(Vuetify)
 

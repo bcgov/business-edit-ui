@@ -42,22 +42,17 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils'
-import { AgreementType } from '@/components/Correction'
-import {
-  CertifySection,
-  CompletingParty,
-  Detail,
-  PeopleAndRoles,
-  ShareStructures,
-  StaffPayment,
-  YourCompany
-} from '@/components/common'
-import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins'
-import { ActionBindingIF, FilingDataIF, StaffPaymentIF } from '@/interfaces'
-import { CorpTypeCd, FilingCodes, FilingStatus, StaffPaymentOptions } from '@/enums'
+import { getFeatureFlag } from '@/utils/'
+import { AgreementType } from '@/components/Correction/'
+import { CertifySection, CompletingParty, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
+  from '@/components/common/'
+import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
+import { ActionBindingIF, FilingDataIF } from '@/interfaces/'
+import { FilingCodes, FilingStatus } from '@/enums/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { BenefitCompanyStatementResource, CorrectionResources } from '@/resources'
+import { BenefitCompanyStatementResource, CorrectionResources } from '@/resources/'
 
 @Component({
   components: {
@@ -76,17 +71,13 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
 
   // Global getters
-  @Getter getBusinessId!: string
   @Getter getOriginalFilingDateTime!: string
   @Getter isRoleStaff!: boolean
   @Getter isTypeBcomp!: boolean
-  @Getter getEntityType!: CorpTypeCd
-  @Getter getStaffPayment!: StaffPaymentIF
   @Getter getFilingData!: FilingDataIF
 
   // Global actions
   @Action setCorrectedFilingId!: ActionBindingIF
-  @Action setEntityType!: ActionBindingIF
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setOriginalIA!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
@@ -99,7 +90,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   readonly appReady: boolean
 
   /** The id of the correction being edited. */
-  private get correctionId (): number {
+  get correctionId (): number {
     return +this.$route.query['correction-id'] || 0
   }
 
@@ -109,11 +100,11 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   }
 
   /** True if user is authenticated. */
-  private get isAuthenticated (): boolean {
+  get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  private get correctionResources (): any {
+  get correctionResources (): any {
     const resources = CorrectionResources.find(x => x.entityType === this.getEntityType)
     if (!resources) {
       // go to catch()
@@ -124,7 +115,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
 
   /** Called when App is ready and this component can load its data. */
   @Watch('appReady')
-  async onAppReady (val: boolean): Promise<void> {
+  private async onAppReady (val: boolean): Promise<void> {
     // do not proceed if app is not ready
     if (!val) return
 
@@ -206,7 +197,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
     Vue.nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
-  onStaffPaymentChanges (): void {
+  protected onStaffPaymentChanges (): void {
     // update filing data with staff payment fields
     this.setFilingData({
       ...this.getFilingData,
@@ -217,7 +208,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
-  private emitFetchError (message: string = ''): void {}
+  private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')

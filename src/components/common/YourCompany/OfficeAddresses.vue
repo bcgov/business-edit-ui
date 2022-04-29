@@ -388,11 +388,13 @@
 import { Component, Emit, Mixins, Prop, Watch, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { isEmpty } from 'lodash'
-import { OfficeAddressSchema, PersonAddressSchema } from '@/schemas'
+import { OfficeAddressSchema, PersonAddressSchema } from '@/schemas/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces'
-import { AddressTypes, CorpTypeCd, OfficeTypes } from '@/enums'
-import { CommonMixin } from '@/mixins'
+import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces/'
+import { isSame } from '@/utils/'
+import { AddressTypes, OfficeTypes } from '@/enums/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CommonMixin } from '@/mixins/'
 
 const REGION_BC = 'BC'
 const COUNTRY_CA = 'CA'
@@ -417,8 +419,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 
   // Global getters
   @Getter getOfficeAddresses!: AddressesIF // NB: may be {}
-  @Getter isCorrectionFiling!: boolean
-  @Getter isChangeFiling!: boolean
   @Getter getResource!: ResourceIF
   @Getter originalOfficeAddresses!: AddressesIF
   @Getter hasOfficeAddressesChanged!: boolean
@@ -436,6 +436,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 
   // Declarations for template
   readonly isEmpty = isEmpty
+  readonly isSame = isSame
   readonly AddressTypes = AddressTypes
   readonly CorpTypeCd = CorpTypeCd
   readonly addressSchema = OfficeAddressSchema
@@ -486,7 +487,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   }
 
   /** True if the address form is valid. */
-  private get formValid (): boolean {
+  get formValid (): boolean {
     const registeredOfficeValid = this.mailingAddressValid &&
       (this.deliveryAddressValid || this.inheritMailingAddress)
 
@@ -507,7 +508,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       // compare addresses to set the "inherit mailing" flag
       // ignore Address Type since it's different
       // ignore Address Country Description since it's not always present
-      this.inheritMailingAddress = this.isSame(
+      this.inheritMailingAddress = isSame(
         this.getOfficeAddresses[this.officeType].mailingAddress,
         this.getOfficeAddresses[this.officeType].deliveryAddress,
         ['addressType', 'addressCountryDescription', 'id']
@@ -521,11 +522,11 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         // compare addresses to set the "inherit registered" flag
         // ignore Address Country Description since it's not always present
         this.inheritRegisteredAddress = (
-          this.isSame(
+          isSame(
             this.getOfficeAddresses.registeredOffice.deliveryAddress,
             this.getOfficeAddresses.recordsOffice?.deliveryAddress,
             ['addressCountryDescription', 'id']
-          ) && this.isSame(
+          ) && isSame(
             this.getOfficeAddresses.registeredOffice.mailingAddress,
             this.getOfficeAddresses.recordsOffice?.mailingAddress,
             ['addressCountryDescription', 'id']
@@ -535,7 +536,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         // compare addresses to set the "inherit records mailing" flag
         // ignore Address Type since it's different
         // ignore Address Country Description since it's not always present
-        this.inheritRecMailingAddress = this.isSame(
+        this.inheritRecMailingAddress = isSame(
           this.getOfficeAddresses.recordsOffice?.mailingAddress,
           this.getOfficeAddresses.recordsOffice?.deliveryAddress,
           ['addressType', 'addressCountryDescription', 'id']

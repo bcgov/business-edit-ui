@@ -1,18 +1,16 @@
-// Libraries
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-
-// Store
-import { getVuexStore } from '@/store'
-
-// Components
+import { getVuexStore } from '@/store/'
 import { createLocalVue, createWrapper, mount } from '@vue/test-utils'
-import { AlterationSummary } from '@/components/Edit'
-import { ConfirmDialog, EffectiveDateTime, NameTranslation } from '@/components/common'
+import AlterationSummary from '@/components/Alteration/AlterationSummary.vue'
+import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
+import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
+import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
 
 Vue.use(Vuetify)
+
 const localVue = createLocalVue()
 const vuetify = new Vuetify({})
 
@@ -60,7 +58,7 @@ describe('Alteration Summary component', () => {
   it('renders the components', async () => {
     expect(wrapper.findComponent(AlterationSummary).exists()).toBe(true)
     expect(wrapper.findComponent(EffectiveDateTime).exists()).toBe(true)
-    expect(wrapper.findComponent(ConfirmDialog).exists()).toBe(true)
+    expect(wrapper.findComponent(ConfirmDialogShared).exists()).toBe(true)
     expect(wrapper.findComponent(NameTranslation).exists()).toBe(true)
   })
 

@@ -3,17 +3,18 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Mixins } from 'vue-property-decorator'
-
-// Mixins
-import { AuthApiMixin, LegalApiMixin, FilingTemplateMixin, NameRequestMixin, PayApiMixin } from '@/mixins'
+import { AuthApiMixin, CommonMixin, DateMixin, SharedMixin, FilingTemplateMixin, LegalApiMixin,
+  NameRequestMixin, PayApiMixin } from '@/mixins/'
 
 @Component({})
 export default class MixinTester extends Mixins(
   AuthApiMixin,
-  LegalApiMixin,
+  CommonMixin,
+  DateMixin,
+  SharedMixin,
   FilingTemplateMixin,
+  LegalApiMixin,
   NameRequestMixin,
   PayApiMixin
 ) {}

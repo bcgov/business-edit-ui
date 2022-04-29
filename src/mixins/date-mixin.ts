@@ -1,7 +1,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { isDate } from 'lodash'
-import { CommonMixin } from '@/mixins'
+import { CommonMixin } from '@/mixins/'
 
 /**
  * Mixin that provides some useful date utilities.

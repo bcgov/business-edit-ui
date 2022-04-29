@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { navigate } from '@/utils'
+import { navigate } from '@/utils/'
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
