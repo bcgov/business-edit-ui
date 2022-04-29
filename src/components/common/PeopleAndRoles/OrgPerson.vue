@@ -119,7 +119,7 @@
               <template v-if="isProprietor || isPartner && !isNaN(activeIndex)">
                 <article class="mt-n4">
                   <v-checkbox
-                    class="confirm-proprietor-name-change-chkbx mb-6"
+                    class="confirm-proprietor-name-change-chkbx mb-8"
                     :label="`I confirm ${orgPersonLabel} has legally changed their name and that they remain the ` +
                       `same person.`"
                     :hide-details="true"
