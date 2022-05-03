@@ -541,7 +541,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
     opacity: 1 !important;
   }
 
-  // align person icon with text
+  // align badge icon with text
   .badges .v-icon{
     margin-top: 4px
   }
