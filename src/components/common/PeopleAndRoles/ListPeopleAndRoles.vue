@@ -20,7 +20,10 @@
     <div
       v-if="currentPeopleAndRoles.length > 0"
       id="people-roles-list"
-      :class="{'section-container': !isSummaryView}"
+      :class="{
+        'section-container': !isSummaryView,
+        'error-container': invalidOrgPersons || !hasMinimumPartners,
+      }"
     >
       <!-- List Headers -->
       <v-row class="people-roles-list-header list-item__subtitle pb-3" no-gutters>
@@ -40,8 +43,9 @@
       <v-row
         class="people-roles-content section-container"
         :class="{
+          'summary-view': isSummaryView,
           'invalid-section': invalidOrgPersons || !hasMinimumPartners,
-          'summary-view': isSummaryView
+          'last-section': index === currentPeopleAndRoles.length - 1
         }"
         v-for="(orgPerson, index) in currentPeopleAndRoles"
         :key="index"
@@ -488,11 +492,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   .dropdown-action {
     border-left: 1px solid $gray3;
   }
-
-  // Override section container to show error bar
-  .section-container {
-    padding: 1.25rem 1.875rem 2.5rem;
-  }
 }
 
 .summary-view {
@@ -547,8 +546,13 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   }
 }
 
-// Override section container to show error bar
-#people-roles-list.section-container {
+// adjust error container padding for last section
+.people-roles-content.last-section {
+  padding: 1.25rem 1.875rem 2.5rem;
+}
+
+// adjust error container padding for error bars
+#people-roles-list.error-container {
   padding: 1.25rem 1.875rem 0;
 }
 </style>
