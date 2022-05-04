@@ -44,8 +44,7 @@
         class="people-roles-content section-container"
         :class="{
           'summary-view': isSummaryView,
-          'invalid-section': invalidOrgPersons || !hasMinimumPartners,
-          'last-section': index === currentPeopleAndRoles.length - 1
+          'invalid-section': invalidOrgPersons || !hasMinimumPartners
         }"
         v-for="(orgPerson, index) in currentPeopleAndRoles"
         :key="index"
@@ -547,7 +546,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
 }
 
 // adjust error container padding for last section
-.people-roles-content.last-section {
+.people-roles-content.section-container.invalid-section:last-of-type {
   padding: 1.25rem 1.875rem 2.5rem;
 }
 
