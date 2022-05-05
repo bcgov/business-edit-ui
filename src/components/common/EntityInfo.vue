@@ -36,7 +36,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { CommonMixin, SharedMixin } from '@/mixins/'
 import { BusinessInformationIF, EntitySnapshotIF, IncorporationFilingIF } from '@/interfaces/'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces'
+import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 @Component({})
 export default class EntityInfo extends Mixins(CommonMixin, SharedMixin) {

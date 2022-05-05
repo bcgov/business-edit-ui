@@ -21,12 +21,12 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Components
-import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment'
+import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment/'
 
 // Interfaces and Enums
 import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
-import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
+import { StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 
 @Component({
   components: {
@@ -132,4 +132,16 @@ export default class StaffPayment extends Vue {
   }
 }
 
-</style>
+// fix hard-coded whitespace inside shared component
+// we want the same padding as "section-container py-6"
+::v-deep {
+  #staff-payment-container {
+    padding-top: 1.5rem !important;
+    padding-right: 1.875rem !important;
+    padding-bottom: 0 !important;
+    padding-left: 0.625rem !important;
+  }
+  .payment-group {
+    margin-bottom: -0.75rem !important;
+  }
+}</style>

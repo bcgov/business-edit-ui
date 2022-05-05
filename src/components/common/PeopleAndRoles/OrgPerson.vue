@@ -277,9 +277,9 @@ import { isSame } from '@/utils/'
 import { OrgPersonIF, BaseAddressType, FormIF, AddressIF, ConfirmDialogType, RoleIF, ResourceIF } from '@/interfaces/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { HelpSection } from '@/components/common/'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
+import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { CommonMixin } from '@/mixins/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { RoleTypes, PartyTypes } from '@/enums/'
 import { PersonAddressSchema, OfficeAddressSchema } from '@/schemas/'
 import { Getter } from 'vuex-class'
@@ -857,20 +857,13 @@ li {
     font-weight: normal;
   }
 
-  // align/center text with checkbox
-  .v-input--checkbox .v-input__control .v-input__slot .v-label.theme--light {
-    padding-top: 2px;
-  }
-
   .theme--light.v-input input, .theme--light.v-input textarea {
     color: $gray9;
   }
 
-  // align checkbox icons with top of text
-  .confirm-partner-name-change-chkbx .v-icon,
-  .confirm-proprietor-name-change-chkbx .v-icon
-   {
-    margin-top: -4px;
+  // align top of text with checkbox icons
+  .v-input--checkbox .v-label {
+    padding-top: 2px;
   }
 }
 

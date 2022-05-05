@@ -83,8 +83,7 @@ describe('company provisions', () => {
         propsData: { provisionsRemoved: false }
       })
 
-    wrapper.find(changeCompanyProvisionsButton).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(changeCompanyProvisionsButton).trigger('click')
 
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(false)
     expect(wrapper.find(userInstructionsText).exists()).toBe(true)
@@ -106,20 +105,17 @@ describe('company provisions', () => {
         propsData: { provisionsRemoved: false }
       })
 
-    wrapper.find(changeCompanyProvisionsButton).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(changeCompanyProvisionsButton).trigger('click')
 
     // Initial state (valid)
     expect(wrapper.find(companyProvisionsComponent).element.classList.value.includes(invalidClassName)).toBeFalsy()
 
-    wrapper.find(companyProvisionDoneButton).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(companyProvisionDoneButton).trigger('click')
 
     // Invalid state
     expect(wrapper.find(companyProvisionsComponent).element.classList.value.includes(invalidClassName)).toBeTruthy()
 
-    wrapper.find(companyProvisionsCheckbox).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(companyProvisionsCheckbox).trigger('click')
 
     // Valid state
     expect(wrapper.find(companyProvisionsComponent).element.classList.value.includes(invalidClassName)).toBeFalsy()
@@ -138,12 +134,9 @@ describe('company provisions', () => {
         store,
         propsData: { provisionsRemoved: false }
       })
-    wrapper.find(changeCompanyProvisionsButton).trigger('click')
-    await Vue.nextTick()
-
-    wrapper.find(companyProvisionsCheckbox).trigger('click')
-    wrapper.find(companyProvisionDoneButton).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(changeCompanyProvisionsButton).trigger('click')
+    await wrapper.find(companyProvisionsCheckbox).trigger('click')
+    await wrapper.find(companyProvisionDoneButton).trigger('click')
 
     let haveChanges = wrapper.emitted('haveChanges')
     expect(haveChanges.length).toBe(1)
@@ -172,8 +165,8 @@ describe('company provisions', () => {
       'Pre-existing Company Provisions are to apply to this company.')
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(false)
     expect(wrapper.find(undoCompanyProvisions).exists()).toBe(true)
-    wrapper.find(undoCompanyProvisions).trigger('click')
-    await Vue.nextTick()
+
+    await wrapper.find(undoCompanyProvisions).trigger('click')
 
     let haveChanges = wrapper.emitted('haveChanges')
     expect(haveChanges.length).toBe(1)

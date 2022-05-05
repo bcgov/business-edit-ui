@@ -91,8 +91,7 @@ describe('Name Request Error Dialog', () => {
     // verify and click OK button
     const okBtn = wrapper.find('button')
     expect(okBtn.text()).toBe('OK')
-    okBtn.trigger('click')
-    await Vue.nextTick()
+    await okBtn.trigger('click')
 
     expect(wrapper.emitted('close').length).toBe(1)
 

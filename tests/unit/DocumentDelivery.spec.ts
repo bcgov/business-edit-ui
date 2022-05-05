@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import flushPromises from 'flush-promises'
 import { mount, Wrapper } from '@vue/test-utils'
 import { getVuexStore } from '@/store/'
 import DocumentsDelivery from '@/components/Alteration/DocumentsDelivery.vue'
@@ -51,9 +50,8 @@ describe('Document Delivery component', () => {
 
     // Set Input field value
     const input = wrapper.find(optionalEmailInput)
-    input.setValue('optional@mail.com')
-    input.trigger('change')
-    await flushPromises()
+    await input.setValue('optional@mail.com')
+    await input.trigger('change')
 
     // verify email is valid
     expect(vm.validateEmailFormat).toBeTruthy()
@@ -65,10 +63,9 @@ describe('Document Delivery component', () => {
 
     // Set Input field values
     vm.$el.querySelector(optionalEmailInput).textContent = '1212'
-    wrapper.find('.text-input-field').trigger('focus')
-    wrapper.find('.text-input-field').find('input').setValue('1212')
-    wrapper.find('.text-input-field').trigger('blur')
-    await Vue.nextTick()
+    await wrapper.find('.email-input-field').trigger('focus')
+    await wrapper.find('.email-input-field').find('input').setValue('1212')
+    await wrapper.find('.email-input-field').trigger('blur')
 
     expect(wrapper.find(optionalEmailInput).text()).toEqual('1212')
 

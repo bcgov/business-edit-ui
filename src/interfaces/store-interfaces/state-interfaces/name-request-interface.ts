@@ -1,5 +1,5 @@
 import { NameRequestStates, NameRequestTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 // Name Request State interface
 export interface NameRequestIF {

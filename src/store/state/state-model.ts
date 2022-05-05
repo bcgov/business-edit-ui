@@ -1,5 +1,5 @@
 import { EmptyNameRequest, StateModelIF, EmptyFees } from '@/interfaces/'
-import { EmptyContactPoint } from '@bcrs-shared-components/interfaces'
+import { EmptyContactPoint } from '@bcrs-shared-components/interfaces/'
 import { cloneDeep } from 'lodash'
 
 export const stateModel: StateModelIF = {
@@ -9,6 +9,7 @@ export const stateModel: StateModelIF = {
     keycloakRoles: [],
     authRoles: [],
     userInfo: null,
+    orgInfo: null,
     businessId: '',
     entityType: null,
     currentDate: '',
@@ -23,6 +24,7 @@ export const stateModel: StateModelIF = {
     folioNumber: '',
     transactionalFolioNumber: ''
   },
+  completingParty: null,
   newAlteration: {
     provisionsRemoved: null,
     courtOrder: {
@@ -51,6 +53,7 @@ export const stateModel: StateModelIF = {
       // NB: this must be in same order as ComponentsReviewCertify enum!
       isValidEffectiveDate: true,
       isValidDocumentOptionalEmail: true,
+      isValidCompletingParty: true,
       isValidTransactionalFolioNumber: true,
       isValidCertify: false, // initially un-signed
       isValidCourtOrder: true,

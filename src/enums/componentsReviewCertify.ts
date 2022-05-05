@@ -7,6 +7,7 @@
 export enum ComponentsReviewCertify {
   'effective-date-time',
   'document-delivery-section',
+  'completing-party-section',
   'transactional-folio-number-section',
   'certify-section',
   'court-order',

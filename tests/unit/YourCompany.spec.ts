@@ -62,8 +62,7 @@ describe('YourCompany in a Correction', () => {
 
   it('renders the CorrectNameOptions component when correcting Company Name', async () => {
     // Click the `Correct` btn
-    wrapper.find('#btn-correct-company-name').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('#btn-correct-company-name').trigger('click')
 
     expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(true)
   })
@@ -117,8 +116,7 @@ describe('YourCompany in an Alteration', () => {
 
   it('renders the CorrectNameOptions when correcting Company Name', async () => {
     // Click the `Correct` btn
-    wrapper.find('#btn-correct-company-name').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('#btn-correct-company-name').trigger('click')
 
     expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(true)
   })

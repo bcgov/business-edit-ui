@@ -2,12 +2,13 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
-import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, ChangeFirmIF, ContactPointIF,
-  CorrectionFilingIF, EffectiveDateTimeIF, EntitySnapshotIF, NaicsIF, NameRequestIF, NameTranslationIF,
-  OrgPersonIF, ShareClassIF, ShareStructureIF, StaffPaymentIF } from '@/interfaces/'
-import { ActionTypes, EffectOfOrders, FilingTypes, RoleTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
+import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, ChangeFirmIF, CorrectionFilingIF,
+  EffectiveDateTimeIF, EntitySnapshotIF, NameRequestIF, NameTranslationIF, OrgPersonIF, ShareClassIF,
+  ShareStructureIF } from '@/interfaces/'
+import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
+import { ActionTypes, EffectOfOrders, FilingTypes, PartyTypes, RoleTypes } from '@/enums/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 
 /**
  * Mixin that provides the integration with the Legal API.
@@ -35,7 +36,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getTransactionalFolioNumber!: string
   @Getter getStaffPayment!: StaffPaymentIF
   @Getter getDetailComment!: string
-  @Getter getDefaultCorrectionDetailComment!: string
+  @Getter getOriginalFilingDateTime!: string
   @Getter getCurrentNaics!: NaicsIF
   @Getter getNameTranslations!: NameTranslationIF[]
   @Getter getNameRequest!: NameRequestIF
@@ -53,6 +54,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getHasPlanOfArrangement!: boolean
   @Getter hasOfficeAddressesChanged!: boolean
   @Getter hasPeopleAndRolesChanged!: boolean
+  @Getter getCompletingParty!: CompletingPartyIF
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -81,7 +83,16 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setFileNumber: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
 
-  // Filing constructors
+  get defaultCorrectionDetailComment (): string {
+    const date = this.apiToDate(this.getOriginalFilingDateTime)
+    const yyyyMmDd = this.dateToYyyyMmDd(date)
+    return `Correction for Incorporation Application filed on ${yyyyMmDd}.`
+  }
+
+  //
+  // Filing builders (for saving a filing)
+  //
+
   /**
    * Builds an Incorporation Application correction filing from store data. Used when saving a filing.
    * @param isDraft whether this is a draft
@@ -112,7 +123,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Build correction filing
-    let filing: CorrectionFilingIF = {
+    const filing: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
         certifiedBy: this.getCertifyState.certifiedBy,
@@ -128,7 +139,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         correctedFilingId: this.getCorrectedFilingId,
         correctedFilingType: FilingTypes.INCORPORATION_APPLICATION,
         correctedFilingDate: this.getCurrentDate,
-        comment: `${this.getDefaultCorrectionDetailComment}\n${this.getDetailComment}`
+        comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`
       },
       incorporationApplication: {
         nameRequest: {
@@ -192,7 +203,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Build alteration filing
-    let filing: AlterationFilingIF = {
+    const filing: AlterationFilingIF = {
       header: {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
@@ -248,7 +259,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // If a Transactional Folio Number was entered then override the folio number
-    // in the filing and save a flag to correctly restore a draft if needed.
+    // in the filing and save a flag to correctly load a draft if needed.
     const fn = this.getFolioNumber
     const tfn = this.getTransactionalFolioNumber
     if (tfn !== fn) {
@@ -292,8 +303,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @returns the change filing body
    */
   buildChangeFiling (isDraft: boolean): ChangeFirmIF {
-    // Build alteration filing
-    let filing: ChangeFirmIF = {
+    // Build change firm filing
+    const filing: ChangeFirmIF = {
       header: {
         name: FilingTypes.CHANGE_OF_REGISTRATION,
         certifiedBy: this.getCertifyState.certifiedBy,
@@ -321,8 +332,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }
     }
 
-    // Include name request info when applicable
-    if (this.hasBusinessNameChanged) filing.changeOfRegistration.nameRequest = { ...this.getNameRequest }
+    // Apply name request info to filing
+    if (this.hasBusinessNameChanged) {
+      filing.changeOfRegistration.nameRequest = { ...this.getNameRequest }
+    }
 
     // Apply business address changes to filing
     if (this.hasOfficeAddressesChanged) {
@@ -334,12 +347,27 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }
     }
 
+    // Apply NAICS change to filing
     if (this.hasNatureOfBusinessChanged) {
       filing.changeOfRegistration.business.naics = this.getCurrentNaics
     }
 
+    // Create parties list with completing party
+    // (assumes CP doesn't already exist in array)
+    let parties = cloneDeep(this.getPeopleAndRoles) // make a copy
+    parties.push({
+      officer: {
+        partyType: PartyTypes.PERSON,
+        firstName: this.getCompletingParty.firstName,
+        middleName: this.getCompletingParty.middleName,
+        lastName: this.getCompletingParty.lastName
+      },
+      roles: [{ roleType: RoleTypes.COMPLETING_PARTY }],
+      mailingAddress: this.getCompletingParty.mailingAddress
+    } as OrgPersonIF)
+
+    // Add changed parties
     if (this.hasPeopleAndRolesChanged) {
-      let parties = this.getPeopleAndRoles
       // if filing and paying, filter out removed entities and omit the 'actions' properties
       if (!isDraft) {
         // Filter out parties actions
@@ -357,14 +385,18 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
             return rest
           })
       }
-
-      filing.changeOfRegistration.parties = parties
     }
+
+    // Apply parties to filing
+    filing.changeOfRegistration.parties = parties
 
     return filing
   }
 
-  // Filing handlers
+  //
+  // Filing parsers (for loading a draft filing)
+  //
+
   /**
    * Parses a draft correction filing into the store.
    * @param filing the correction filing
@@ -446,7 +478,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setEffectiveDateTimeString(filing.header.effectiveDate)
     this.setIsFutureEffective(filing.header.isFutureEffective)
 
-    // Restore Staff Payment data
+    // Store Staff Payment data
     this.storeStaffPayment(filing)
   }
 
@@ -459,19 +491,19 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store business snapshot
     this.setEntitySnapshot(cloneDeep(entitySnapshot))
 
-    // Restore current entity type
+    // Store current entity type
     this.setEntityType(filing.alteration.business?.legalType || entitySnapshot.businessInfo.legalType)
 
-    // Restore business information
+    // Store business information
     this.setBusinessInformation({
       ...filing.business,
       ...filing.alteration.business
     })
 
-    // Restore name request
+    // Store name request
     this.setNameRequest(filing.alteration.nameRequest || { legalName: entitySnapshot.businessInfo.legalName })
 
-    // Restore name translations
+    // Store name translations
     this.setNameTranslations(
       filing.alteration.nameTranslations?.map(x => {
         return {
@@ -483,7 +515,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }) || []
     )
 
-    // Restore provisions removed
+    // Store provisions removed
     this.setProvisionsRemoved(filing.alteration.provisionsRemoved)
 
     // Store office addresses **from snapshot** (because we don't change office addresses in an alteration)
@@ -517,7 +549,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store business contact info
     this.setBusinessContact(entitySnapshot.authInfo.contact)
 
-    // Restore share classes and resolution dates
+    // Store share classes and resolution dates
     this.setShareClasses(
       filing.alteration.shareStructure?.shareClasses ||
       entitySnapshot.shareStructure?.shareClasses
@@ -525,35 +557,35 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setResolutionDates(filing.alteration.shareStructure?.resolutionDates || [])
     this.setOriginalResolutionDates(entitySnapshot.resolutions)
 
-    // Restore certify state
+    // Store certify state
     this.setCertifyState({
       valid: false,
       certifiedBy: filing.header.certifiedBy
     })
 
-    // Restore Folio Number
+    // Store Folio Number
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
-    // If Transactional Folio Number was saved then restore it.
+    // If Transactional Folio Number was saved then store it.
     if (filing.header.isTransactionalFolioNumber) {
       this.setTransactionalFolioNumber(filing.header.folioNumber)
     }
 
-    // Restore filing date
+    // Store filing date
     this.setFilingDateTime(filing.header.date)
 
-    // Restore document optional email
+    // Store document optional email
     this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
 
-    // Restore effective date
+    // Store effective date
     this.setEffectiveDateTimeString(filing.header.effectiveDate)
     this.setIsFutureEffective(filing.header.isFutureEffective)
 
-    // Restore Court Order date
+    // Store Court Order date
     this.setFileNumber(filing.alteration.courtOrder?.fileNumber)
     this.setHasPlanOfArrangement(filing.alteration.courtOrder?.hasPlanOfArrangement)
 
-    // Restore Staff Payment data
+    // Store Staff Payment data
     this.storeStaffPayment(filing)
   }
 
@@ -566,20 +598,20 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store business snapshot
     this.setEntitySnapshot(cloneDeep(entitySnapshot))
 
-    // Restore current entity type
+    // Store current entity type
     this.setEntityType(filing.business?.legalType || entitySnapshot.businessInfo.legalType)
 
-    // Restore business information
+    // Store business information
     this.setBusinessInformation({
       ...entitySnapshot.businessInfo
     })
 
-    // Restore Naics
+    // Store NAICS
     if (filing.changeOfRegistration.business.naics) {
       this.setNaics(filing.changeOfRegistration.business.naics)
     }
 
-    // Restore name request
+    // Store name request
     this.setNameRequest(filing.changeOfRegistration.nameRequest || { legalName: entitySnapshot.businessInfo.legalName })
 
     // Store office addresses
@@ -590,30 +622,32 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setOfficeAddresses(addresses || entitySnapshot.addresses)
 
     // Store people and roles
-    let parties = filing.changeOfRegistration.parties || entitySnapshot.orgPersons
-    this.setPeopleAndRoles(parties)
+    let orgPersons = filing.changeOfRegistration.parties || entitySnapshot.orgPersons
+    // exclude completing party
+    orgPersons = orgPersons.filter(party => !(party?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
+    this.setPeopleAndRoles(orgPersons)
 
     // Store business contact info
     this.setBusinessContact(entitySnapshot.authInfo.contact)
 
-    // Restore certify state
+    // Store certify state
     this.setCertifyState({
       valid: false,
       certifiedBy: filing.header.certifiedBy
     })
 
-    // Restore Folio Number
+    // Store Folio Number
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
-    // If Transactional Folio Number was saved then restore it.
+    // If Transactional Folio Number was saved then store it.
     if (filing.header.isTransactionalFolioNumber) {
       this.setTransactionalFolioNumber(filing.header.folioNumber)
     }
 
-    // Restore filing date
+    // Store filing date
     this.setFilingDateTime(filing.header.date)
 
-    // Restore document optional email
+    // Store document optional email
     this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
   }
 
@@ -680,7 +714,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
   }
 
-  // Helper Methods
+  //
+  // Helpers
+  //
+
   /**
    * Prepares name translations for non-draft save.
    * @returns the updated name translations array
@@ -699,7 +736,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       })
   }
 
-  /** Build Staff Payment data into the filing.
+  /**
+   * Build Staff Payment data into the filing.
    * @param filing The alteration or correction filing.
    */
   private buildStaffPayment (filing: AlterationFilingIF | CorrectionFilingIF): void {
@@ -727,7 +765,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
   }
 
-  /** Parse Staff Payment data into store.
+  /**
+   * Parse Staff Payment data into store.
    * @param filing The alteration or correction filing to parse.
    */
   private storeStaffPayment (filing: AlterationFilingIF | CorrectionFilingIF): void {

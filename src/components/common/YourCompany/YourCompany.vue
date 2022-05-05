@@ -289,13 +289,14 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, ContactPointIF, EntitySnapshotIF, FlagsCompanyInfoIF, IncorporationFilingIF,
-  NameRequestApplicantIF, NameRequestIF, ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, IncorporationFilingIF, NameRequestApplicantIF,
+  NameRequestIF, ResourceIF } from '@/interfaces/'
+import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
   OfficeAddresses } from './'
 import { CommonMixin, SharedMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins/'
 import { CorrectionTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { cloneDeep } from 'lodash'
 
 // for some reason, NatureOfBusiness cannot be imported from /components/Alteration

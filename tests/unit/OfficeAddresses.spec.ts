@@ -231,8 +231,7 @@ describe('summary mode', () => {
     const moreBtn = actions.find('.more-actions #btn-more-actions span')
     expect(moreBtn.find('span').exists()).toBe(true)
 
-    moreBtn.trigger('click')
-    await Vue.nextTick()
+    await moreBtn.trigger('click')
 
     const correctBtn = actions.find('.more-actions #btn-more-actions-edit')
     expect(correctBtn.find('span').text()).toBe('Correct')
@@ -431,8 +430,7 @@ describe('edit mode', () => {
 
     // change to edit mode
     const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    correctBtn.trigger('click')
-    await Vue.nextTick()
+    await correctBtn.trigger('click')
 
     expect(wrapper.find('#summary-registered-address').exists()).toBe(false)
     expect(wrapper.find('#summary-records-address').exists()).toBe(false)
@@ -456,8 +454,7 @@ describe('edit mode', () => {
 
     // change to edit mode
     const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    correctBtn.trigger('click')
-    await Vue.nextTick()
+    await correctBtn.trigger('click')
 
     const editRegisteredAddress = wrapper.find('#edit-registered-address')
 
@@ -498,8 +495,7 @@ describe('edit mode', () => {
 
     // change to edit mode
     const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    correctBtn.trigger('click')
-    await Vue.nextTick()
+    await correctBtn.trigger('click')
 
     const editRegisteredAddress = wrapper.find('#edit-registered-address')
 
@@ -541,8 +537,7 @@ describe('edit mode', () => {
 
     // change to edit mode
     const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    correctBtn.trigger('click')
-    await Vue.nextTick()
+    await correctBtn.trigger('click')
 
     const editRegisteredAddress = wrapper.find('#edit-registered-address')
 
@@ -576,8 +571,7 @@ describe('edit mode', () => {
 
     // change to edit mode
     const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    correctBtn.trigger('click')
-    await Vue.nextTick()
+    await correctBtn.trigger('click')
 
     const editRecordsAddress = wrapper.find('#edit-records-address')
     expect(editRecordsAddress.find('.records-inherit-checkbox').props('inputValue')).toBe(false)
@@ -619,8 +613,7 @@ describe('edit mode', () => {
 
     // change to edit mode
     const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    correctBtn.trigger('click')
-    await Vue.nextTick()
+    await correctBtn.trigger('click')
 
     const editRecordsAddress = wrapper.find('#edit-records-address')
     expect(editRecordsAddress.find('.records-inherit-checkbox').props('inputValue')).toBe(true)
@@ -653,8 +646,7 @@ describe('edit mode', () => {
 
     // change to edit mode
     const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    correctBtn.trigger('click')
-    await Vue.nextTick()
+    await correctBtn.trigger('click')
 
     const editRecordsAddress = wrapper.find('#edit-records-address')
 
@@ -696,8 +688,7 @@ describe('edit mode', () => {
 
     // change to edit mode
     const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    correctBtn.trigger('click')
-    await Vue.nextTick()
+    await correctBtn.trigger('click')
 
     const editRecordsAddress = wrapper.find('#edit-records-address')
 
@@ -740,8 +731,7 @@ describe('"same as" checkboxes', () => {
 
     // change to edit mode
     const correctBtn = wrapper.find('#btn-correct-office-addresses')
-    correctBtn.trigger('click')
-    await Vue.nextTick()
+    await correctBtn.trigger('click')
   })
 
   afterEach(() => {
@@ -760,8 +750,7 @@ describe('"same as" checkboxes', () => {
     expect(address.exists()).toBe(false)
 
     // uncheck and verify the checkbox
-    checkbox.trigger('click')
-    await Vue.nextTick()
+    await checkbox.trigger('click')
     expect(checkbox.attributes('aria-checked')).toBe('false')
 
     // verify the address data and elements
@@ -778,8 +767,7 @@ describe('"same as" checkboxes', () => {
     expect(address.find('.v-input.delivery-instructions').props('value')).toBe('')
 
     // re-check and verify the checkbox
-    checkbox.trigger('click')
-    await Vue.nextTick()
+    await checkbox.trigger('click')
     expect(checkbox.attributes('aria-checked')).toBe('true')
 
     // verify the address data and elements
@@ -801,8 +789,7 @@ describe('"same as" checkboxes', () => {
     expect(address.exists()).toBe(false)
 
     // uncheck and verify the checkbox
-    checkbox.trigger('click')
-    await Vue.nextTick()
+    await checkbox.trigger('click')
     expect(checkbox.attributes('aria-checked')).toBe('false')
 
     // verify the address data and elements
@@ -819,8 +806,7 @@ describe('"same as" checkboxes', () => {
     expect(address.find('.v-input.delivery-instructions').props('value')).toBe('')
 
     // re-check and verify the checkbox
-    checkbox.trigger('click')
-    await Vue.nextTick()
+    await checkbox.trigger('click')
     expect(checkbox.attributes('aria-checked')).toBe('true')
 
     // verify the address data and elements
@@ -842,8 +828,7 @@ describe('"same as" checkboxes', () => {
 
     // first make records office not the same as registered office
     const recordsCheckbox = wrapper.find('#records-mailing-same-chkbx')
-    recordsCheckbox.trigger('click')
-    await Vue.nextTick()
+    await recordsCheckbox.trigger('click')
 
     // the above assigned a default address to records mailing address so set a new one
     wrapper.vm.$data.recMailingAddress = getAddressX(3)
@@ -855,8 +840,7 @@ describe('"same as" checkboxes', () => {
     expect(address.exists()).toBe(false)
 
     // uncheck and verify the checkbox
-    checkbox.trigger('click')
-    await Vue.nextTick()
+    await checkbox.trigger('click')
     expect(checkbox.attributes('aria-checked')).toBe('false')
 
     // verify the address data and elements
@@ -873,8 +857,7 @@ describe('"same as" checkboxes', () => {
     expect(address.find('.v-input.delivery-instructions').props('value')).toBe('')
 
     // re-check and verify the checkbox
-    checkbox.trigger('click')
-    await Vue.nextTick()
+    await checkbox.trigger('click')
     expect(checkbox.attributes('aria-checked')).toBe('true')
 
     // verify the address data and elements
@@ -906,8 +889,7 @@ describe('actions and events', () => {
 
     // change to edit mode
     const correctBtn = wrapper.find('#btn-correct-office-addresses')
-    correctBtn.trigger('click')
-    await Vue.nextTick()
+    await correctBtn.trigger('click')
   })
 
   afterEach(() => {
@@ -952,8 +934,7 @@ describe('actions and events', () => {
 
     // click Cancel button
     const cancelBtn = wrapper.find('#cancel-btn')
-    cancelBtn.trigger('click')
-    await Vue.nextTick()
+    await cancelBtn.trigger('click')
 
     // verify that summary shows Correct button
     const correctBtn = wrapper.find('#btn-correct-office-addresses')
@@ -977,8 +958,7 @@ describe('actions and events', () => {
 
     // click Done button
     const doneBtn = wrapper.find('#done-btn')
-    doneBtn.trigger('click')
-    await Vue.nextTick()
+    await doneBtn.trigger('click')
 
     // verify that summary shows Correct button
     const correctBtn = wrapper.find('#btn-correct-office-addresses')
@@ -1000,8 +980,7 @@ describe('actions and events', () => {
 
     // click Done button
     const doneBtn = wrapper.find('#done-btn')
-    doneBtn.trigger('click')
-    await Vue.nextTick()
+    await doneBtn.trigger('click')
 
     // verify that summary shows Undo button
     // verify that summary shows Correct button
@@ -1024,13 +1003,11 @@ describe('actions and events', () => {
 
     // click Done button
     const doneBtn = wrapper.find('#done-btn')
-    doneBtn.trigger('click')
-    await Vue.nextTick()
+    await doneBtn.trigger('click')
 
     // click Undo button
     const undoBtn = wrapper.find('#btn-undo-office-addresses')
-    undoBtn.trigger('click')
-    await Vue.nextTick()
+    await undoBtn.trigger('click')
 
     // verify that summary shows Correct button
     const correctBtn = wrapper.find('#btn-correct-office-addresses')
@@ -1053,19 +1030,16 @@ describe('actions and events', () => {
     // click Done button
     {
       const doneBtn = wrapper.find('#done-btn')
-      doneBtn.trigger('click')
-      await Vue.nextTick()
+      await doneBtn.trigger('click')
     }
 
     // click Correct button
     const moreBtn = wrapper.find('#btn-more-actions')
     expect(moreBtn.find('span').exists()).toBe(true)
-    moreBtn.trigger('click')
-    await Vue.nextTick()
+    await moreBtn.trigger('click')
 
     const correctBtn = wrapper.find('#btn-more-actions-edit')
-    correctBtn.trigger('click')
-    await Vue.nextTick()
+    await correctBtn.trigger('click')
 
     // make a change (and verify)
     await wrapper.setData({ mailingAddress: getAddressX(6) })
@@ -1074,8 +1048,7 @@ describe('actions and events', () => {
     // click Done button
     {
       const doneBtn = wrapper.find('#done-btn')
-      doneBtn.trigger('click')
-      await Vue.nextTick()
+      await doneBtn.trigger('click')
     }
 
     // verify data

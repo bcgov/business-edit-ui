@@ -1,9 +1,8 @@
-import { ActionIF, ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, EntitySnapshotIF,
-  NaicsIF, NameRequestIF, NameTranslationIF, OrgPersonIF, ShareClassIF, FeesIF, ResourceIF }
-  from '@/interfaces/'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces'
+import { ActionIF, ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, EntitySnapshotIF, NameRequestIF,
+  NameTranslationIF, OrgPersonIF, ShareClassIF, FeesIF, ResourceIF } from '@/interfaces/'
+import { CompletingPartyIF, ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { FilingTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 export const setEntityType: ActionIF = ({ commit }, entityType: CorpTypeCd): void => {
   commit('mutateEntityType', entityType)
@@ -35,6 +34,10 @@ export const setAuthRoles: ActionIF = ({ commit }, authRoles): void => {
 
 export const setUserInfo: ActionIF = ({ commit }, userInfo): void => {
   commit('mutateUserInfo', userInfo)
+}
+
+export const setOrgInfo: ActionIF = ({ commit }, orgInfo): void => {
+  commit('mutateOrgInfo', orgInfo)
 }
 
 export const setCurrentDate: ActionIF = ({ commit }, dateString: string): void => {
@@ -75,6 +78,14 @@ export const setDocumentOptionalEmail: ActionIF = ({ commit }, documentOptionalE
 
 export const setDocumentOptionalEmailValidity: ActionIF = ({ commit }, validity): void => {
   commit('mutateDocumentOptionalEmailValidity', validity)
+}
+
+export const setCompletingParty: ActionIF = ({ commit }, cp: CompletingPartyIF): void => {
+  commit('mutateCompletingParty', cp)
+}
+
+export const setCompletingPartyValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateCompletingPartyValidity', validity)
 }
 
 export const setTransactionalFolioNumber: ActionIF = ({ commit }, folioNumber: string): void => {

@@ -15,8 +15,9 @@
 import { Action, Getter } from 'vuex-class'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { NaicsServices } from '@/services/'
-import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, NaicsIF } from '@/interfaces/'
-import { NatureOfBusiness as NatureOfBusinessShared } from '@bcrs-shared-components/nature-of-business'
+import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF } from '@/interfaces/'
+import { NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { NatureOfBusiness as NatureOfBusinessShared } from '@bcrs-shared-components/nature-of-business/'
 
 @Component({
   components: {
@@ -55,6 +56,7 @@ export default class NatureOfBusiness extends Vue {
   }
 }
 </script>
+
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 

@@ -16,18 +16,20 @@
 import { Component, Emit, Mixins, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces/'
-import { AuthApiMixin, CommonMixin } from '@/mixins/'
-import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number'
+import { AuthServices } from '@/services/'
+import { CommonMixin } from '@/mixins/'
+import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number/'
 
 @Component({
   components: { FolioNumberShared }
 })
-export default class FolioInformation extends Mixins(AuthApiMixin, CommonMixin) {
+export default class FolioInformation extends Mixins(CommonMixin) {
   // Global getters
   @Getter getFolioNumber!: string
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getSnapshotFolioNumber!: string
   @Getter isRoleStaff!: boolean
+  @Getter getBusinessId!: string
 
   // Global setters
   @Action setFolioNumber!: ActionBindingIF
@@ -56,7 +58,9 @@ export default class FolioInformation extends Mixins(AuthApiMixin, CommonMixin) 
   /** On new folio number, updates auth db and store. */
   async onNewFolioNumber (val: string): Promise<void> {
     try {
-      if (this.isAlterationFiling) await this.updateFolioNumber(val)
+      if (this.isAlterationFiling) {
+        await AuthServices.updateFolioNumber(val, this.getBusinessId)
+      }
       this.setFolioNumber(val)
       this.setTransactionalFolioNumber(val)
     } catch (error) {

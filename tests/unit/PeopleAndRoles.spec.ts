@@ -148,8 +148,7 @@ describe('People And Roles component for Correction', () => {
   it('sets the data attributes as expected when Add Person button is clicked', async () => {
     store.state.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
-    wrapper.find(btnAddPerson).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(btnAddPerson).trigger('click')
     expect(wrapper.vm.$data.isAddingEditingOrgPerson).toBe(true)
     wrapper.destroy()
   })
@@ -157,8 +156,7 @@ describe('People And Roles component for Correction', () => {
   it('sets the data attributes as expected when Add Corporation button is clicked', async () => {
     store.state.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
-    wrapper.find(btnAddCorp).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(btnAddCorp).trigger('click')
     expect(wrapper.vm.$data.isAddingEditingOrgPerson).toBe(true)
     wrapper.destroy()
   })
@@ -166,8 +164,7 @@ describe('People And Roles component for Correction', () => {
   it('shows the add person form when Add Person button is clicked', async () => {
     store.state.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
-    wrapper.find(btnAddPerson).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(btnAddPerson).trigger('click')
     // verify buttons are now disabled
     expect(wrapper.find(btnAddPerson).attributes('disabled')).toBe('disabled')
     expect(wrapper.find(btnAddCorp).attributes('disabled')).toBe('disabled')
@@ -180,8 +177,7 @@ describe('People And Roles component for Correction', () => {
   it('shows the add corporation form when Add Corporation button is clicked', async () => {
     store.state.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
-    wrapper.find(btnAddCorp).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(btnAddCorp).trigger('click')
     // verify buttons are now disabled
     expect(wrapper.find(btnAddPerson).attributes('disabled')).toBe('disabled')
     expect(wrapper.find(btnAddCorp).attributes('disabled')).toBe('disabled')
@@ -323,8 +319,7 @@ describe('People And Roles component for Correction', () => {
     expect(wrapper.find('.confirm-dialog').exists()).toBe(false)
 
     // click the first person's Undo button
-    wrapper.find('#officer-0-undo-btn').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('#officer-0-undo-btn').trigger('click')
 
     // verify that popup is now displayed
     expect(wrapper.find('.confirm-dialog').exists()).toBe(true)
@@ -373,8 +368,7 @@ describe('People And Roles component for Change of Registration', () => {
   it('sets the data attributes as expected when Add Person button is clicked', async () => {
     store.state.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
-    wrapper.find(gpAddPerson).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(gpAddPerson).trigger('click')
     expect(wrapper.vm.$data.isAddingEditingOrgPerson).toBe(true)
     wrapper.destroy()
   })
@@ -382,8 +376,7 @@ describe('People And Roles component for Change of Registration', () => {
   it('sets the data attributes as expected when Add Corporation button is clicked', async () => {
     store.state.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
-    wrapper.find(gpAddCorp).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(gpAddCorp).trigger('click')
     expect(wrapper.vm.$data.isAddingEditingOrgPerson).toBe(true)
     wrapper.destroy()
   })
@@ -391,8 +384,7 @@ describe('People And Roles component for Change of Registration', () => {
   it('shows the add person form when Add Person button is clicked', async () => {
     store.state.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
-    wrapper.find(gpAddPerson).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(gpAddPerson).trigger('click')
     // verify buttons are now disabled
     expect(wrapper.find(gpAddPerson).attributes('disabled')).toBe('disabled')
     expect(wrapper.find(gpAddCorp).attributes('disabled')).toBe('disabled')
@@ -405,8 +397,7 @@ describe('People And Roles component for Change of Registration', () => {
   it('shows the add corporation form when Add Corporation button is clicked', async () => {
     store.state.stateModel.peopleAndRoles.orgPeople = getOrgList(['partner'])
     const wrapper = wrapperFactory()
-    wrapper.find(gpAddCorp).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(gpAddCorp).trigger('click')
     // verify buttons are now disabled
     expect(wrapper.find(gpAddPerson).attributes('disabled')).toBe('disabled')
     expect(wrapper.find(gpAddCorp).attributes('disabled')).toBe('disabled')

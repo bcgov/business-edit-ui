@@ -70,8 +70,7 @@ describe('ChangeBusinessType in an Alteration', () => {
     expect(wrapper.find('#business-type-selector').exists()).toBe(false)
 
     // Click edit btn and open edit mode
-    wrapper.find('#btn-correct-business-type').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('#btn-correct-business-type').trigger('click')
 
     expect(wrapper.find('#business-type-selector').exists()).toBe(true)
   })
@@ -84,16 +83,14 @@ describe('ChangeBusinessType in an Alteration', () => {
     expect(wrapper.find('#confirm-articles-checkbox').exists()).toBe(false)
 
     // Click edit btn and open edit mode
-    wrapper.find('#btn-correct-business-type').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('#btn-correct-business-type').trigger('click')
 
     // Verify checkbox is displayed in edit mode and DONE btn is disabled
     expect(wrapper.find('#confirm-articles-checkbox').exists()).toBe(true)
     expect(wrapper.find('#done-btn').attributes('disabled')).toBeTruthy()
 
     // Select the Confirm Articles checkbox
-    wrapper.find('#confirm-articles-checkbox').trigger('click')
-    await Vue.nextTick()
+    await wrapper.find('#confirm-articles-checkbox').trigger('click')
 
     // Verify DONE btn is enabled after selecting the checkbox
     expect(wrapper.find('#done-btn').attributes('disabled')).toBeUndefined()

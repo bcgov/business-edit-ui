@@ -1,5 +1,5 @@
 import { IncorporationApplicationIF } from '@/interfaces/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 /** Incorporation Application filing loaded from / saved to the Legal API. */
 export interface IncorporationFilingIF {
