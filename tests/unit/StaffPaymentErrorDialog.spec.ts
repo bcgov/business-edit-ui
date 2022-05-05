@@ -50,8 +50,7 @@ describe('Staff Payment Error Dialog', () => {
     // verify and click Exit button
     const exitButton = wrapper.find('#dialog-exit-button')
     expect(exitButton.text()).toBe('OK')
-    exitButton.trigger('click')
-    await Vue.nextTick()
+    await exitButton.trigger('click')
 
     expect(wrapper.emitted('close').length).toBe(1)
 

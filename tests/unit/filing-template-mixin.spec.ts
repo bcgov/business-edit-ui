@@ -19,6 +19,18 @@ describe('Change of Registration Filing', () => {
   it('correctly builds a registration filing', () => {
     store.state.stateModel.tombstone.businessId = 'BC1234567'
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
+    store.state.stateModel.completingParty = {
+      firstName: 'First',
+      lastName: 'Last',
+      middleName: 'Middle',
+      mailingAddress: {
+        streetAddress: '123 Completing Ave',
+        addressCity: 'Party',
+        addressRegion: 'BC',
+        postalCode: 'V0V 0V0',
+        addressCountry: 'CA'
+      }
+    }
     store.state.stateModel.nameRequest.legalName = 'SomeMockBusiness'
     store.state.stateModel.entitySnapshot = {
       businessInfo: {
@@ -97,17 +109,12 @@ describe('Change of Registration Filing', () => {
             },
             'natureOfBusiness': ''
           },
+          'contactPoint': {
+            'email': '',
+            'phone': ''
+          },
           'offices': {
             'businessOffice': {
-              'mailingAddress': {
-                'addressCity': 'Bravo',
-                'addressCountry': 'CA',
-                'addressRegion': 'BC',
-                'deliveryInstructions': 'Mailing address',
-                'postalCode': 'V2V 2V2',
-                'streetAddress': '222 Second St',
-                'streetAddressAdditional': 'Suite 2'
-              },
               'deliveryAddress': {
                 'addressCity': 'Alpha',
                 'addressCountry': 'CA',
@@ -116,13 +123,40 @@ describe('Change of Registration Filing', () => {
                 'postalCode': 'V1V 1V1',
                 'streetAddress': '111 First St',
                 'streetAddressAdditional': 'Suite 1'
+              },
+              'mailingAddress': {
+                'addressCity': 'Bravo',
+                'addressCountry': 'CA',
+                'addressRegion': 'BC',
+                'deliveryInstructions': 'Mailing address',
+                'postalCode': 'V2V 2V2',
+                'streetAddress': '222 Second St',
+                'streetAddressAdditional': 'Suite 2'
               }
             }
           },
-          'contactPoint': {
-            'email': '',
-            'phone': ''
-          }
+          'parties': [
+            {
+              'mailingAddress': {
+                'addressCity': 'Party',
+                'addressCountry': 'CA',
+                'addressRegion': 'BC',
+                'postalCode': 'V0V 0V0',
+                'streetAddress': '123 Completing Ave'
+              },
+              'officer': {
+                'firstName': 'First',
+                'lastName': 'Last',
+                'middleName': 'Middle',
+                'partyType': 'person'
+              },
+              'roles': [
+                {
+                  'roleType': 'Completing Party'
+                }
+              ]
+            }
+          ]
         },
         'header': {
           'certifiedBy': '',

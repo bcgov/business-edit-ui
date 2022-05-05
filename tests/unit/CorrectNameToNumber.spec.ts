@@ -68,9 +68,7 @@ describe('CorrectNameToNumber', () => {
     expect(wrapper.emitted('isValid')).toBeUndefined()
 
     // Select Name to Number Checkbox
-    nameToNumberInput.trigger('click')
-
-    await Vue.nextTick()
+    await nameToNumberInput.trigger('click')
 
     // Verify local state change and event emission
     expect(nameToNumberInput.attributes('aria-checked')).toBe('true')
@@ -90,9 +88,7 @@ describe('CorrectNameToNumber', () => {
     expect(wrapper.emitted('isValid')).toBeUndefined()
 
     // Select Name to Number Checkbox
-    nameToNumberInput.trigger('click')
-
-    await Vue.nextTick()
+    await nameToNumberInput.trigger('click')
 
     // Verify local state change and event emission
     expect(nameToNumberInput.attributes('aria-checked')).toBe('true')

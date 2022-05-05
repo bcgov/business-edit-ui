@@ -284,8 +284,8 @@ describe('Resolution Dates component - edit mode', () => {
     expect(cols.length).toBe(3)
 
     const button = cols.at(2).find('.add-btn')
-    button.trigger('click')
-    await Vue.nextTick()
+    await button.trigger('click')
+
     expect(store.state.stateModel.validationFlags.flagsCompanyInfo.isValidResolutionDate).toBe(false)
 
     wrapper.destroy()

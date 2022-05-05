@@ -1,4 +1,4 @@
-import { BreadcrumbIF } from '@/interfaces/'
+import { BreadcrumbIF } from '@bcrs-shared-components/interfaces/'
 import { getVuexStore } from '@/store/'
 
 const store = getVuexStore()

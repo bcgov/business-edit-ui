@@ -1,10 +1,9 @@
 <template>
   <div id="list-people-roles">
-
     <!-- conditionally render add component -->
     <v-expand-transition>
       <div id="people-roles-add" v-if="renderOrgPersonForm && isNaN(activeIndex)" class="section-container">
-        <org-person
+        <OrgPerson
           :currentOrgPerson="currentOrgPerson"
           :activeIndex="activeIndex"
           :currentCompletingParty="currentCompletingParty"
@@ -49,7 +48,7 @@
       >
         <!-- conditionally render edit component instead of table row -->
         <div id="people-roles-edit" v-if="renderOrgPersonForm && (index === activeIndex)">
-          <org-person
+          <OrgPerson
             :currentOrgPerson="currentOrgPerson"
             :activeIndex="activeIndex"
             :currentCompletingParty="currentCompletingParty"
@@ -103,7 +102,7 @@
 
           <!-- Mailing Address -->
           <v-col cols="12" :sm="isSummaryView ? 4 : 3" :class="{ 'removed': wasRemoved(orgPerson)}">
-            <base-address class="peoples-roles-mailing-address" :address="orgPerson.mailingAddress" />
+            <BaseAddress class="peoples-roles-mailing-address" :address="orgPerson.mailingAddress" />
           </v-col>
 
           <!-- Delivery Address (for persons only) -->
@@ -111,7 +110,7 @@
             <p v-if="isSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])"
               class="peoples-roles-delivery-address info-text">Same as Mailing Address
             </p>
-            <base-address v-else class="peoples-roles-delivery-address" :address="orgPerson.deliveryAddress"/>
+            <BaseAddress v-else class="peoples-roles-delivery-address" :address="orgPerson.deliveryAddress"/>
           </v-col>
 
           <!-- Roles -->
@@ -492,7 +491,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
 
 .summary-view {
   margin: 0 !important;
-  padding: 1.25rem 0rem !important;
+  padding: 0.75rem 0rem 0.75rem !important;
 }
 
 .v-list-item {
@@ -526,12 +525,18 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   opacity: .4;
 }
 
-// Override base Address font style/colour
+// Override Base Address font style/colour
 ::v-deep {
+  // italicize the delivery instructions in the base address component
+  .address-block .delivery-instructions {
+    font-style: italic;
+  }
+
   .address-block {
     font-size: $px-14;
     color: $gray7;
   }
+
   .v-chip {
     opacity: 1 !important;
   }

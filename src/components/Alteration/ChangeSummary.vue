@@ -1,14 +1,14 @@
 <template>
   <v-card flat id="change-summary">
     <!-- Section Header -->
-    <article class="section-container summary-header mb-2 rounded-t">
+    <section class="section-container summary-header rounded-t">
       <v-row no-gutters>
         <v-col>
           <v-icon class="header-icon ml-n1">mdi-file-document-edit-outline</v-icon>
           <label class="summary-title">Summary of Changes to File</label>
         </v-col>
       </v-row>
-    </article>
+    </section>
 
     <!-- Business Name -->
     <template v-if="hasBusinessNameChanged">
@@ -43,7 +43,7 @@
       </article>
     </template>
 
-    <!-- Office Addresses -->
+    <!-- Business Addresses -->
     <template v-if="hasOfficeAddressesChanged">
       <v-divider class="mx-8" />
       <article id="address-summary-section" class="section-container">
@@ -54,7 +54,7 @@
     <!-- Org Persons -->
     <template v-if="hasPeopleAndRolesChanged">
       <v-divider class="mx-8" />
-      <article id="org-person-summary-section" class="section-container">
+      <article id="org-person-summary-section" class="section-container pb-0">
         <v-row no-gutters>
           <v-col cols="12" sm="3">
             <label>{{ getResource.entityType === 'SP' ? 'Proprietor' : 'Partner' }} Information</label>
@@ -102,7 +102,7 @@ export default class ChangeSummary extends Mixins(
   // Global actions
   @Action setSummaryMode!: ActionBindingIF
 
-  /** Prop to perform validation. */
+  /** Whether to perform validation. */
   @Prop() readonly validate: boolean
 
   /** The company name (from NR, or incorporation number). */
@@ -116,6 +116,15 @@ export default class ChangeSummary extends Mixins(
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
+article {
+  &:first-of-type {
+    padding-top: 24px;
+  }
+  &:last-of-type {
+    padding-bottom: 24px;
+  }
+}
 
 .summary-header {
   background-color: $BCgovBlue5O;

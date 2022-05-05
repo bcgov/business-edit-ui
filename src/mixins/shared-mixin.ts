@@ -1,6 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { GetCorpInfoObject, GetCorpFullDescription, GetCorpNumberedDescription }
-  from '@bcrs-shared-components/corp-type-module'
+  from '@bcrs-shared-components/corp-type-module/'
 
 /**
  * Mixin that provides access to shared functions.

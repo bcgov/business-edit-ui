@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store/'
-import flushPromises from 'flush-promises'
 import { createLocalVue, mount } from '@vue/test-utils'
 import ShareStructures from '@/components/common/ShareStructure/ShareStructures.vue'
 
@@ -99,22 +98,17 @@ describe('Share Structures component', () => {
     await Vue.nextTick()
 
     // Click on the button to add class
-    wrapper.find('#btn-add-person').trigger('click')
-    await Vue.nextTick()
-    await flushPromises()
+    await wrapper.find('#btn-add-person').trigger('click')
 
     const textNameInput = wrapper.find('#txt-name')
     const maxNumberOfSharesInput = wrapper.find('#txt-max-shares')
     const parValueInput = wrapper.find('#class-par-value')
 
     // Add new class
-    textNameInput.setValue('Test new class')
-    maxNumberOfSharesInput.setValue('1')
-    parValueInput.setValue('2')
-    wrapper.find('#done-btn').trigger('click')
-
-    await Vue.nextTick()
-    await flushPromises()
+    await textNameInput.setValue('Test new class')
+    await maxNumberOfSharesInput.setValue('1')
+    await parValueInput.setValue('2')
+    await wrapper.find('#done-btn').trigger('click')
 
     // maxNumberOfShares and parValue should be number
     expect(store.state.stateModel.shareStructureStep.shareClasses[2].maxNumberOfShares).toBe(1)

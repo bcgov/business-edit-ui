@@ -2,7 +2,7 @@
   <div class="pb-6" id="transactional-folio-number-section">
     <h2>{{sectionNumber}} Folio or Reference Number for this Filing</h2>
 
-    <div class="pt-4 pb-4">
+    <div class="py-4">
       Enter the folio or reference number you want to use for this filing for your own tracking purposes. The
       Business Folio or Reference Number is displayed below (if available). Entering a different value below
       will not change the Business Folio or Reference Number. Only the number below will appear on the transaction
@@ -62,7 +62,7 @@ export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber: string
 
-  /** Prop to perform validation. */
+  /** Whether to perform validation. */
   @Prop({ default: false }) readonly validate: boolean
 
   // Local properties

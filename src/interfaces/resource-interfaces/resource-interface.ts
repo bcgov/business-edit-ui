@@ -1,5 +1,5 @@
 import { CorrectionTypes, FilingCodes, NameRequestEntityTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { HelpSectionIF } from '@/interfaces/'
 
 /** Interface to define the resource model example */

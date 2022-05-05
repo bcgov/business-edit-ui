@@ -26,14 +26,15 @@
 
     <AgreementType class="mt-10" />
 
-    <CompletingParty class="mt-10" />
+    <CompletingParty class="mt-10" sectionNumber="1." />
 
-    <Detail class="mt-10" />
+    <Detail class="mt-10" sectionNumber="2." />
 
-    <CertifySection class="mt-10" />
+    <CertifySection class="mt-10" sectionNumber="3." />
 
     <StaffPayment
       class="mt-10"
+      sectionNumber="4."
       @haveChanges="onStaffPaymentChanges()"
     />
   </section>
@@ -43,14 +44,14 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
-import { AgreementType } from '@/components/Correction/'
-import { CertifySection, CompletingParty, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
+import { AgreementType, CompletingParty } from '@/components/Correction/'
+import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
 import { ActionBindingIF, FilingDataIF } from '@/interfaces/'
 import { FilingCodes, FilingStatus } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BenefitCompanyStatementResource, CorrectionResources } from '@/resources/'
 
@@ -71,7 +72,6 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
 
   // Global getters
-  @Getter getOriginalFilingDateTime!: string
   @Getter isRoleStaff!: boolean
   @Getter isTypeBcomp!: boolean
   @Getter getFilingData!: FilingDataIF
@@ -94,9 +94,9 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
     return +this.$route.query['correction-id'] || 0
   }
 
-  /** The original filing datetime, in Pacific time. */
+  /** The original filing date, in Pacific time. */
   get originalFilingDate (): string {
-    return this.apiToPacificDateTime(this.getOriginalFilingDateTime)?.slice(0, 10)
+    return this.apiToPacificDateLong(this.getOriginalFilingDateTime)
   }
 
   /** True if user is authenticated. */

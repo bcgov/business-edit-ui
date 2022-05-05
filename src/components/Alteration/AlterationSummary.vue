@@ -200,7 +200,7 @@ export default class AlterationSummary extends Mixins(
   @Action setSummaryMode!: ActionBindingIF
   @Action setEffectiveDateValid!: ActionBindingIF
 
-  /** Prop to perform validation. */
+  /** Whether to perform validation. */
   @Prop() readonly validate: boolean
 
   get isFutureEffective (): boolean {

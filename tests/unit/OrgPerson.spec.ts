@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
-import flushPromises from 'flush-promises'
 import OrgPerson from '@/components/common/PeopleAndRoles/OrgPerson.vue'
 import { getVuexStore } from '@/store/'
 import { FilingTypes } from '@/enums/'
@@ -286,8 +285,7 @@ describe('Org/Person component for Correction', () => {
   it('Emits "remove" event when clicking Remove button', async () => {
     const wrapper = createComponent(validOrgData, 0, null)
 
-    wrapper.find(removeButtonSelector).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(removeButtonSelector).trigger('click')
 
     expect(getLastEvent(wrapper, removeEvent)).toBe(0)
 
@@ -301,8 +299,7 @@ describe('Org/Person component for Correction', () => {
     // verify that button is not disabled, then click it
     const button = wrapper.find(doneButtonSelector)
     expect(button.attributes('disabled')).toBeUndefined()
-    button.trigger('click')
-    await Vue.nextTick()
+    await button.trigger('click')
 
     const emitted = wrapper.emitted(resetEvent)
     expect(emitted.length).toBe(1)
@@ -317,15 +314,13 @@ describe('Org/Person component for Correction', () => {
 
     // change org name
     const input = wrapper.find(orgNameSelector)
-    input.setValue('Different Test Org')
-    input.trigger('change')
-    await Vue.nextTick()
+    await input.setValue('Different Test Org')
+    await input.trigger('change')
 
     // verify that button is not disabled, then click it
     const button = wrapper.find(doneButtonSelector)
     expect(button.attributes('disabled')).toBeUndefined()
-    button.trigger('click')
-    await Vue.nextTick()
+    await button.trigger('click')
 
     expect(getLastEvent(wrapper, addEditEvent).officer.organizationName).toBe('Different Test Org')
 
@@ -338,8 +333,7 @@ describe('Org/Person component for Correction', () => {
     vm.applyValidation()
     await Vue.nextTick()
 
-    wrapper.find(cancelButtonSelector).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(cancelButtonSelector).trigger('click')
 
     const emitted = wrapper.emitted(resetEvent)
     expect(emitted.length).toBe(1)
@@ -352,9 +346,8 @@ describe('Org/Person component for Correction', () => {
     const wrapper = createComponent(validOrgData, NaN, null)
 
     const input = wrapper.find(orgNameSelector)
-    input.setValue('Valid Org Name')
-    input.trigger('change')
-    await flushPromises()
+    await input.setValue('Valid Org Name')
+    await input.trigger('change')
 
     expect(wrapper.find(orgPersonFormSelector).text()).not.toContain('Invalid spaces')
     expect(wrapper.vm.$data.orgPersonFormValid).toBe(true)
@@ -369,9 +362,8 @@ describe('Org/Person component for Correction', () => {
     await Vue.nextTick()
 
     const input = wrapper.find(orgNameSelector)
-    input.setValue(' Invalid Org Name ')
-    input.trigger('change')
-    await flushPromises()
+    await input.setValue(' Invalid Org Name ')
+    await input.trigger('change')
 
     expect(wrapper.find(orgPersonFormSelector).text()).toContain('Invalid spaces')
     expect(wrapper.vm.$data.orgPersonFormValid).toBe(false)
@@ -383,17 +375,16 @@ describe('Org/Person component for Correction', () => {
     const wrapper = createComponent(validPersonData, NaN, null)
 
     const input1 = wrapper.find(firstNameSelector)
-    input1.setValue('First')
-    input1.trigger('change')
+    await input1.setValue('First')
+    await input1.trigger('change')
 
     const input2 = wrapper.find(middleNameSelector)
-    input2.setValue('Middle')
-    input2.trigger('change')
+    await input2.setValue('Middle')
+    await input2.trigger('change')
 
     const input3 = wrapper.find(lastNameSelector)
-    input3.setValue('Last')
-    input3.trigger('change')
-    await flushPromises()
+    await input3.setValue('Last')
+    await input3.trigger('change')
 
     expect(wrapper.findAll('.v-messages__message').length).toBe(0)
     expect(wrapper.vm.$data.orgPersonFormValid).toBe(true)
@@ -408,17 +399,16 @@ describe('Org/Person component for Correction', () => {
     await Vue.nextTick()
 
     const input1 = wrapper.find(firstNameSelector)
-    input1.setValue('')
-    input1.trigger('change')
+    await input1.setValue('')
+    await input1.trigger('change')
 
     const input2 = wrapper.find(middleNameSelector)
-    input2.setValue('')
-    input2.trigger('change')
+    await input2.setValue('')
+    await input2.trigger('change')
 
     const input3 = wrapper.find(lastNameSelector)
-    input3.setValue('')
-    input3.trigger('change')
-    await flushPromises()
+    await input3.setValue('')
+    await input3.trigger('change')
 
     const messages = wrapper.findAll('.v-messages__message')
     expect(messages.length).toBe(2)
@@ -436,19 +426,16 @@ describe('Org/Person component for Correction', () => {
     await Vue.nextTick()
 
     const input1 = wrapper.find(firstNameSelector)
-    input1.setValue('1234567890123456789012345678901')
-    input1.trigger('change')
+    await input1.setValue('1234567890123456789012345678901')
+    await input1.trigger('change')
 
     const input2 = wrapper.find(middleNameSelector)
-    input2.setValue('1234567890123456789012345678901')
-    input2.trigger('change')
+    await input2.setValue('1234567890123456789012345678901')
+    await input2.trigger('change')
 
     const input3 = wrapper.find(lastNameSelector)
-    input3.setValue('1234567890123456789012345678901')
-    input3.trigger('change')
-    await Vue.nextTick()
-    await flushPromises()
-    await Vue.nextTick()
+    await input3.setValue('1234567890123456789012345678901')
+    await input3.trigger('change')
 
     const messages = wrapper.findAll('.v-messages__message')
     expect(messages.length).toBe(3)
@@ -468,8 +455,7 @@ describe('Org/Person component for Correction', () => {
 
     // check the Completing Party box
     const checkbox = wrapper.find(completingPartyChkBoxSelector)
-    checkbox.setChecked(true)
-    await Vue.nextTick()
+    await checkbox.setChecked(true)
 
     // verify that popup is now displayed
     expect(wrapper.find('.confirm-dialog').exists()).toBe(true)
@@ -482,21 +468,19 @@ describe('Org/Person component for Correction', () => {
 
     // add Completing Party role
     const checkbox = wrapper.find(completingPartyChkBoxSelector)
-    checkbox.setChecked(true)
-    await Vue.nextTick()
+    await checkbox.setChecked(true)
 
     // verify and accept reassign dialog
     const reassignDialog = wrapper.vm.$refs.reassignCpDialog as any
     expect(reassignDialog).toBeTruthy()
     await reassignDialog.onClickYes()
-    await flushPromises()
+    await Vue.nextTick()
 
     // verify flag
     expect(wrapper.vm.$data.reassignCompletingParty).toBe(true)
 
     // click the Done button
-    wrapper.find(doneButtonSelector).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(doneButtonSelector).trigger('click')
 
     expect(wrapper.emitted(removeCpRoleEvent).length).toBe(1)
     expect(wrapper.emitted(removeCpRoleEvent)[0]).toStrictEqual([]) // empty event
@@ -517,8 +501,7 @@ describe('Org/Person component for Correction', () => {
     // then click it
     const button = wrapper.find(doneButtonSelector)
     expect(button.attributes('disabled')).toBeUndefined()
-    button.trigger('click')
-    await Vue.nextTick()
+    await button.trigger('click')
 
     // get a list of validation messages
     const wrappers = wrapper.findAll('.v-messages__message')

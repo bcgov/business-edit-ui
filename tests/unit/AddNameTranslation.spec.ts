@@ -6,7 +6,6 @@ import mockRouter from './MockRouter'
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import AddNameTranslation from '@/components/common/YourCompany/NameTranslations/AddNameTranslation.vue'
-import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -71,11 +70,9 @@ describe('Add Name Translation component', () => {
 
     // Set Input field values
     vm.$el.querySelector(addTranslationInput).textContent = 'Mock Name Translation'
-    wrapper.find(addTranslationInput).setValue('MockNameTranslation')
-    wrapper.find(addTranslationInput).trigger('change')
-    await flushPromises()
-
-    wrapper.find(addTranslationInput).trigger('input')
+    await wrapper.find(addTranslationInput).setValue('MockNameTranslation')
+    await wrapper.find(addTranslationInput).trigger('change')
+    await wrapper.find(addTranslationInput).trigger('input')
     expect(wrapper.find(addTranslationInput).text()).toEqual('Mock Name Translation')
 
     // Verify Action btns and there states
@@ -100,11 +97,9 @@ describe('Add Name Translation component', () => {
 
     // Set Input field values
     vm.$el.querySelector(addTranslationInput).textContent = 'Nom commercial simulé'
-    wrapper.find(addTranslationInput).setValue('Nom commercial simulé')
-    wrapper.find(addTranslationInput).trigger('change')
-    await flushPromises()
-
-    wrapper.find(addTranslationInput).trigger('input')
+    await wrapper.find(addTranslationInput).setValue('Nom commercial simulé')
+    await wrapper.find(addTranslationInput).trigger('change')
+    await wrapper.find(addTranslationInput).trigger('input')
     expect(wrapper.find(addTranslationInput).text()).toEqual('Nom commercial simulé')
 
     // Verify Action btns and there states
@@ -126,11 +121,9 @@ describe('Add Name Translation component', () => {
 
     // Set Input field values
     vm.$el.querySelector(addTranslationInput).textContent = 'Mock Fail 1212'
-    wrapper.find(addTranslationInput).setValue('Mock Fail 1212')
-    wrapper.find(addTranslationInput).trigger('change')
-    await flushPromises()
-
-    wrapper.find(addTranslationInput).trigger('input')
+    await wrapper.find(addTranslationInput).setValue('Mock Fail 1212')
+    await wrapper.find(addTranslationInput).trigger('change')
+    await wrapper.find(addTranslationInput).trigger('input')
     expect(wrapper.find(addTranslationInput).text()).toEqual('Mock Fail 1212')
 
     // Verify Action btns and there states
@@ -153,7 +146,7 @@ describe('Add Name Translation component', () => {
   it('opens the Add Name Translation with the correct Name when Editing a Name Translation', async () => {
     const wrapper = wrapperFactory({ editNameTranslation: 'Mock Name Edit' })
     const vm: any = wrapper.vm
-    await flushPromises()
+    await Vue.nextTick()
 
     // Verify input field
     expect(wrapper.find(addTranslationInput).exists()).toBeTruthy()
@@ -175,16 +168,15 @@ describe('Add Name Translation component', () => {
   it('shows the validaton message when editing a name translation that does NOT meet validation', async () => {
     const wrapper = wrapperFactory({ editNameTranslation: 'Mock Name Edit' })
     const vm: any = wrapper.vm
-    await flushPromises()
+    await Vue.nextTick()
 
     // Verify input field
     expect(wrapper.find(addTranslationInput).exists()).toBeTruthy()
     expect(wrapper.find(addTranslationInput).element.value).toContain('Mock Name Edit')
 
     // Edit the name
-    wrapper.find(addTranslationInput).setValue('Mock edit fail 1212')
-    wrapper.find(addTranslationInput).trigger('change')
-    await flushPromises()
+    await wrapper.find(addTranslationInput).setValue('Mock edit fail 1212')
+    await wrapper.find(addTranslationInput).trigger('change')
 
     // Verify Action btns and there states
     expect(wrapper.find(okBtn).exists()).toBeTruthy()

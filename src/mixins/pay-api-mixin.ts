@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { axios } from '@/utils/'
 import { FilingCodes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { FeesIF } from '@/interfaces/'
 
 /**

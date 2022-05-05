@@ -77,20 +77,17 @@ describe('Articles component', () => {
     store.state.stateModel.newAlteration.provisionsRemoved = false
     const wrapper = mount(Articles, { router, store, vuetify })
 
-    wrapper.find(changeCompanyProvisionsButton).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(changeCompanyProvisionsButton).trigger('click')
 
     expect(wrapper.emitted('haveChanges')).toBeUndefined()
 
-    wrapper.find(companyProvisionDoneButton).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(companyProvisionDoneButton).trigger('click')
 
     // Should validate and not emit changes
     expect(wrapper.emitted('haveChanges')).toBeUndefined()
 
-    wrapper.find(companyProvisionsCheckbox).trigger('click')
-    wrapper.find(companyProvisionDoneButton).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(companyProvisionsCheckbox).trigger('click')
+    await wrapper.find(companyProvisionDoneButton).trigger('click')
 
     expect(wrapper.emitted('haveChanges').length).toEqual(1)
 
@@ -106,8 +103,8 @@ describe('Articles component', () => {
     await Vue.nextTick()
     expect(store.state.stateModel.validationFlags.flagsCompanyInfo.isValidCompanyProvisions).toBe(true)
 
-    wrapper.find(changeCompanyProvisionsButton).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(changeCompanyProvisionsButton).trigger('click')
+
     expect(store.state.stateModel.validationFlags.flagsCompanyInfo.isValidCompanyProvisions).toBe(false)
 
     wrapper.destroy()
@@ -120,12 +117,9 @@ describe('Articles component', () => {
     store.state.stateModel.newAlteration.provisionsRemoved = false
     const wrapper = mount(Articles, { router, store, vuetify })
 
-    wrapper.find(changeCompanyProvisionsButton).trigger('click')
-    await Vue.nextTick()
-
-    wrapper.find(companyProvisionsCheckbox).trigger('click')
-    wrapper.find(companyProvisionDoneButton).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(changeCompanyProvisionsButton).trigger('click')
+    await wrapper.find(companyProvisionsCheckbox).trigger('click')
+    await wrapper.find(companyProvisionDoneButton).trigger('click')
 
     expect(store.state.stateModel.newAlteration.provisionsRemoved).toBeTruthy()
 
@@ -140,18 +134,16 @@ describe('Articles component', () => {
     const wrapper = mount(Articles, { router, store, vuetify })
 
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(true)
-    wrapper.find(changeCompanyProvisionsButton).trigger('click')
-    await Vue.nextTick()
 
-    wrapper.find(companyProvisionsCheckbox).trigger('click')
-    wrapper.find(companyProvisionDoneButton).trigger('click')
-    await Vue.nextTick()
+    await wrapper.find(changeCompanyProvisionsButton).trigger('click')
+    await wrapper.find(companyProvisionsCheckbox).trigger('click')
+    await wrapper.find(companyProvisionDoneButton).trigger('click')
 
     expect(store.state.stateModel.newAlteration.provisionsRemoved).toBeTruthy()
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(false)
     expect(wrapper.find(undoCompanyProvisions).exists()).toBe(true)
-    wrapper.find(undoCompanyProvisions).trigger('click')
-    await Vue.nextTick()
+
+    await wrapper.find(undoCompanyProvisions).trigger('click')
 
     expect(store.state.stateModel.newAlteration.provisionsRemoved).toBeFalsy()
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(true)

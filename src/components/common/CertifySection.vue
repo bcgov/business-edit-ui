@@ -1,8 +1,12 @@
 <template>
-  <div class="pb-6" id="certify-section">
+  <section class="pb-6" id="certify-section">
     <h2>{{sectionNumber}} Certify</h2>
-    <div class="pt-4">Enter the legal name of the person authorized to complete and submit these changes.</div>
-    <div :class="{ 'invalid-section': certificationInvalid }">
+
+    <div class="py-4">
+      Enter the legal name of the person authorized to complete and submit these changes.
+    </div>
+
+    <div :class="{ 'invalid-section': invalidSection }">
       <CertifyShared
         :currentDate="getCurrentDate"
         :certifiedBy="getCertifyState.certifiedBy"
@@ -12,19 +16,19 @@
         :isStaff="isRoleStaff"
         :firstColumn="3"
         :secondColumn="9"
-        :validate="getAppValidate"
-        :invalidSection="certificationInvalid"
+        :validate="validate"
+        :invalidSection="invalidSection"
         @update:certifiedBy="onCertifiedBy($event)"
         @update:isCertified="onIsCertified($event)"
       />
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { Certify as CertifyShared } from '@bcrs-shared-components/certify'
+import { Certify as CertifyShared } from '@bcrs-shared-components/certify/'
 import { DateMixin, SharedMixin } from '@/mixins/'
 import { ActionBindingIF, CertifyIF, ResourceIF } from '@/interfaces/'
 
@@ -38,7 +42,6 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
   @Getter getCurrentDate!: string
   @Getter getResource!: ResourceIF
   @Getter isRoleStaff!: boolean
-  @Getter getAppValidate!: boolean
 
   @Action setCertifyState!: ActionBindingIF
   @Action setCertifyStateValidity!: ActionBindingIF
@@ -46,7 +49,7 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber: string
 
-  /** Prop to perform validation. */
+  /** Whether to perform validation. */
   @Prop({ default: false }) readonly validate: boolean
 
   /** Called when component is mounted. */
@@ -91,8 +94,8 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
     this.setCertifyStateValidity(Boolean(this.getCertifyState.valid && val))
   }
 
-  /** True if invalid class should be set for certify container. */
-  get certificationInvalid (): boolean {
+  /** True if invalid class should be set for certify section container. */
+  get invalidSection (): boolean {
     return (this.validate && !(this.getCertifyState.valid && this.getCertifyState.certifiedBy))
   }
 }
@@ -108,5 +111,21 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
 
 .invalid-label {
   color: $BCgovInputError;
+}
+
+// fix hard-coded whitespace inside shared component
+// we want the same padding as "section-container py-6"
+::v-deep {
+  #AR-step-4-container {
+    margin-top: 0 !important;
+    padding-top: 0.75rem !important;
+    padding-right: 1.125rem !important;
+    padding-bottom: 0 !important;
+    padding-left: 0.625rem !important;
+  }
+
+  #certify-form {
+    margin-top: 0 !important;
+  }
 }
 </style>
