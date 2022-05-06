@@ -44,7 +44,8 @@ const validPersonData = {
     middleName: 'D',
     organizationName: '',
     partyType: 'person',
-    email: 'completing-party@example.com'
+    email: 'completing-party@example.com',
+    taxId: '0000'
   },
   roles: [
     { roleType: 'Director', appointmentDate: '2020-03-30' },
@@ -105,7 +106,8 @@ const validOrgData = {
     lastName: '',
     middleName: '',
     organizationName: 'Test Org',
-    partyType: 'organization'
+    partyType: 'organization',
+    taxId: '1111'
   },
   roles: [
     { roleType: 'Incorporator', appointmentDate: '2020-03-30' }
@@ -239,6 +241,9 @@ describe('Org/Person component for Correction', () => {
     expect(wrapper.find(removeButtonSelector).attributes('disabled')).toBeUndefined()
     expect(wrapper.find(cancelButtonSelector).attributes('disabled')).toBeUndefined()
 
+    // verify business number
+    expect(wrapper.find('.sp-number-text').text()).toBe('0000')
+
     wrapper.destroy()
   })
 
@@ -263,6 +268,9 @@ describe('Org/Person component for Correction', () => {
     expect(wrapper.find(doneButtonSelector).attributes('disabled')).toBeUndefined()
     expect(wrapper.find(removeButtonSelector).attributes('disabled')).toBeDefined()
     expect(wrapper.find(cancelButtonSelector).attributes('disabled')).toBeUndefined()
+
+    // verify business number
+    expect(wrapper.find('.sp-number-text').text()).toBe('1111')
 
     wrapper.destroy()
   })

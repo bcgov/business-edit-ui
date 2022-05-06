@@ -145,7 +145,8 @@ const gpPeopleAndRoles = [
       middleName: 'D',
       organizationName: '',
       partyType: 'person',
-      email: 'completing-party@example.com'
+      email: 'completing-party@example.com',
+      taxId: '0000'
     },
     roles: [
       { roleType: 'Partner', appointmentDate: '2020-03-30' }
@@ -175,7 +176,9 @@ const gpPeopleAndRoles = [
       lastName: '',
       middleName: '',
       organizationName: 'Random Food Distributors',
-      partyType: 'organization'
+      partyType: 'organization',
+      email: 'random_food@example.com',
+      taxId: '1111'
     },
     roles: [
       { roleType: 'Partner', appointmentDate: '2020-03-30' }
@@ -670,6 +673,43 @@ describe('List People And Roles component for Change of Registration', () => {
     expect(section.exists()).toBe(true)
     expect(section.find('.add-org-header').text()).toBe('Edit Business or Corporation')
     expect(section.find('#org-person-form').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('correctly displays Business Number component', async () => {
+    const wrapper = wrapperFactory({
+      peopleAndRoles: gpPeopleAndRoles,
+      renderOrgPersonForm: false,
+      currentOrgPerson: peopleAndRoles[1],
+      activeIndex: 1,
+      currentCompletingParty: undefined,
+      isSummaryView: true
+    })
+
+    const vm = wrapper.vm as any
+    await Vue.nextTick()
+    // verify GP list rendered properly
+    const section = wrapper.find('#people-roles-list')
+    expect(section.exists()).toBe(true)
+
+    // Verify the title/name
+    expect(wrapper.findAll('.people-roles-content .people-roles-title').at(0).text()).toBe('Romeo D Whitehead')
+    expect(wrapper.findAll('.people-roles-content .people-roles-title').at(1).text()).toBe('Random Food Distributors')
+    expect(wrapper.findAll('.people-roles-content .people-roles-title').at(2).text()).toBe('Lawrence Kavanagh')
+
+    // Verify the email address
+    expect(wrapper.findAll('.people-roles-content .people-roles-email').at(0).text())
+      .toBe('completing-party@example.com')
+    expect(wrapper.findAll('.people-roles-content .people-roles-email').at(1).text()).toBe('random_food@example.com')
+    expect(wrapper.findAll('.people-roles-content .people-roles-email').at(2).text()).toBe('')
+
+    // Verify the incorporation number component is null
+    expect(vm.$el.querySelector('#people-roles-list .people-roles-content .people-roles-inc-number')).toBeNull()
+
+    // Verify the first two business number
+    expect(wrapper.findAll('.people-roles-content .people-roles-bus-number').at(0).text()).toContain('0000')
+    expect(wrapper.findAll('.people-roles-content .people-roles-bus-number').at(1).text()).toContain('1111')
 
     wrapper.destroy()
   })

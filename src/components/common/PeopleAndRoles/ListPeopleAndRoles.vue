@@ -75,16 +75,19 @@
                 <p class="people-roles-title mb-1" :class="{ 'removed': wasRemoved(orgPerson)}">
                   {{ formatName(orgPerson) }}
                 </p>
-                <p class="info-text mb-1" :class="{ 'removed': wasRemoved(orgPerson)}">
+                <p class="info-text mb-1 people-roles-email" :class="{ 'removed': wasRemoved(orgPerson)}">
                   {{ orgPerson.officer.email }}
                 </p>
                 <p
                   v-if="orgPerson.officer.identifier"
-                  class="info-text mb-1"
+                  class="info-text mb-1 people-roles-inc-number"
                   :class="{ 'removed': wasRemoved(orgPerson)}">
                   Incorporation Number: {{orgPerson.officer.identifier}}
                 </p>
-                <p v-if="orgPerson.officer.taxId" class="info-text mb-1" :class="{ 'removed': wasRemoved(orgPerson)}">
+                <p
+                  v-if="orgPerson.officer.taxId"
+                  class="info-text mb-1 people-roles-bus-number"
+                  :class="{ 'removed': wasRemoved(orgPerson)}">
                   Business Number: {{orgPerson.officer.taxId}}
                 </p>
 
