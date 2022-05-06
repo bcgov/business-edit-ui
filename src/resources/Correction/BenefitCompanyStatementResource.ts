@@ -1,5 +1,5 @@
 import { CorrectionTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 export const BenefitCompanyStatementResource: any = {
   addressLabel: 'Registered Office',

@@ -278,9 +278,9 @@ import { isSame } from '@/utils/'
 import { OrgPersonIF, BaseAddressType, FormIF, AddressIF, ConfirmDialogType, RoleIF, ResourceIF } from '@/interfaces/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { HelpSection } from '@/components/common/'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
+import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { CommonMixin } from '@/mixins/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { RoleTypes, PartyTypes } from '@/enums/'
 import { PersonAddressSchema, OfficeAddressSchema, OutOfBCAddressSchema } from '@/schemas/'
 import { Getter } from 'vuex-class'
@@ -857,11 +857,6 @@ li {
     font-size: 1rem;
     color: $gray7;
     font-weight: normal;
-  }
-
-  // align/center text with checkbox
-  .v-input--checkbox .v-input__control .v-input__slot .v-label.theme--light {
-    padding-top: 2px;
   }
 
   .theme--light.v-input input, .theme--light.v-input textarea {

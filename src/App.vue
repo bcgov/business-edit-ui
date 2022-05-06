@@ -82,9 +82,10 @@
 
     <SbcHeader />
     <PaySystemAlert />
+
     <div class="app-body">
       <main v-if="!isErrorDialog">
-        <BreadCrumbShared :breadcrumbs="breadcrumbs" />
+        <BreadcrumbShared :breadcrumbs="breadcrumbs" />
         <EntityInfo />
 
         <v-container class="view-container my-8 py-0">
@@ -146,30 +147,32 @@
 import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
-import { getKeycloakRoles, navigate, updateLdUser } from '@/utils/'
+import { getKeycloakRoles, navigate, updateLdUser, sleep } from '@/utils/'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary'
+import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
 import { Actions, EntityInfo } from '@/components/common/'
-import { BreadCrumb as BreadCrumbShared } from '@bcrs-shared-components/bread-crumb'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
+import { Breadcrumb as BreadcrumbShared } from '@bcrs-shared-components/breadcrumb/'
+import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
-import { AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
-import { FilingDataIF, ActionBindingIF, BreadcrumbIF, ConfirmDialogType, FlagsReviewCertifyIF,
-  FlagsCompanyInfoIF } from '@/interfaces/'
+import { AuthServices } from '@/services/'
+import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
+import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF }
+  from '@/interfaces/'
+import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums/'
-import { FeeSummaryActions } from '@bcrs-shared-components/enums'
+import { FeeSummaryActions } from '@bcrs-shared-components/enums/'
 import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
   getStaffDashboardBreadcrumb } from '@/resources/'
 
 @Component({
   components: {
     Actions,
-    BreadCrumbShared,
+    BreadcrumbShared,
     ConfirmDialogShared,
     EntityInfo,
     FeeSummaryShared,
@@ -181,7 +184,7 @@ import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegis
     ...Views
   }
 })
-export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
+export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -189,10 +192,12 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
   // Global getters
   @Getter getUserEmail!: string
+  @Getter getUserPhone!: string
   @Getter getUserFirstName!: string
   @Getter getUserLastName!: string
   @Getter getUserRoles!: string
   @Getter getUserUsername!: string
+  @Getter getOrgInfo!: any
   @Getter getFilingData!: FilingDataIF
   @Getter haveUnsavedChanges!: boolean
   @Getter isBusySaving!: boolean
@@ -224,6 +229,8 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   @Action setIsSaving!: ActionBindingIF
   @Action setKeycloakRoles!: ActionBindingIF
   @Action setUserInfo: ActionBindingIF
+  @Action setOrgInfo!: ActionBindingIF
+  @Action setCompletingParty!: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
   @Action setFilingType!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
@@ -242,7 +249,6 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   private confirmDeleteAllDialog = false
 
   // FUTURE: change appReady/haveData to a state machine?
-
   /** Whether the app is ready and the views can now load their data. */
   private appReady: boolean = false
 
@@ -306,42 +312,36 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
 
   /** The fee summary confirm button label. */
   get feeSummaryConfirmLabel (): string {
-    let completeBtnLabel, reviewBtnLabel
-    if (this.isChangeFiling) {
-      completeBtnLabel = 'File Now (No Fee)'
-      reviewBtnLabel = 'Review and Confirm'
+    if (this.isSummaryMode) {
+      return this.isChangeFiling ? 'File Now (No Fee)' : 'File and Pay'
     } else {
-      completeBtnLabel = 'File and Pay'
-      reviewBtnLabel = 'Review and Certify'
+      return this.isChangeFiling ? 'Review and Confirm' : 'Review and Certify'
     }
-
-    return (this.isSummaryMode ? completeBtnLabel : reviewBtnLabel)
   }
 
   /** Error text to display in the Fee Summary component. */
   get feeSummaryError (): string {
-    let errorPrompt
-    let errorMsg
-
     if (this.isSummaryMode) {
-      errorPrompt = this.hasInvalidReviewSections
-      errorMsg = '&lt; Please complete required information'
+      return this.hasInvalidReviewSections ? '&lt; Please complete required information' : ''
     } else {
-      errorPrompt = this.hasInvalidSections
-      errorMsg = '&lt; You have unfinished changes'
+      return this.hasInvalidSections ? '&lt; You have unfinished changes' : ''
     }
-
-    return errorPrompt ? errorMsg : ''
   }
 
-  /** Check for any invalid component sections. */
+  /** True is there are any invalid component sections. */
   get hasInvalidSections (): boolean {
-    return this.getComponentValidate && Object.values(this.getFlagsCompanyInfo).some(val => val === false)
+    return (
+      this.getComponentValidate &&
+      Object.values(this.getFlagsCompanyInfo).some(val => val === false)
+    )
   }
 
-  /** Check for any invalid review sections. */
+  /** True if there are any invalid review sections. */
   get hasInvalidReviewSections (): boolean {
-    return this.getAppValidate && Object.values(this.getFlagsReviewCertify).some(val => val === false)
+    return (
+      this.getAppValidate &&
+      Object.values(this.getFlagsReviewCertify).some(val => val === false)
+    )
   }
 
   /** Helper to check is the current route matches */
@@ -350,7 +350,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   }
 
   /** Called when component is created. */
-  private async created (): Promise<void> {
+  protected async created (): Promise<void> {
     // update Current Js Date now and every 1 minute thereafter
     await this.updateCurrentJsDate()
     this.updateCurrentJsDateId = setInterval(this.updateCurrentJsDate, 60000)
@@ -426,7 +426,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   }
 
   /** Called when component is destroyed. */
-  private destroyed (): void {
+  protected destroyed (): void {
     // stop Update Current Js Date timer
     clearInterval(this.updateCurrentJsDateId)
 
@@ -451,17 +451,10 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       const businessId = sessionStorage.getItem('BUSINESS_ID')
       this.setBusinessId(businessId)
 
-      // load account information
-      this.loadAccountInformation()
-
       // initialize app
       await this.fetchData(true)
     }
   }
-
-  //
-  // http://localhost:8080/basePath/BC0870829/alteration
-  //
 
   /** Fetches app data. Also called for retry. */
   private async fetchData (routeChanged: boolean = false): Promise<void> {
@@ -484,6 +477,15 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       return
     }
 
+    // load account information
+    try {
+      await this.loadAccountInformation()
+    } catch (error) {
+      console.log('Account info error =', error) // eslint-disable-line no-console
+      this.accountAuthorizationDialog = true
+      return
+    }
+
     // ensure user is authorized to access this business
     try {
       await this.loadAuth()
@@ -502,6 +504,23 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
       return
     }
 
+    // now that we have user info and org info, store the completing party
+    this.setCompletingParty({
+      firstName: this.getUserFirstName,
+      middleName: '',
+      lastName: this.getUserLastName,
+      mailingAddress: {
+        addressCity: this.getOrgInfo?.mailingAddress.city,
+        addressCountry: this.getOrgInfo?.mailingAddress.country,
+        addressRegion: this.getOrgInfo?.mailingAddress.region,
+        postalCode: this.getOrgInfo?.mailingAddress.postalCode,
+        streetAddress: this.getOrgInfo?.mailingAddress.street,
+        streetAddressAdditional: this.getOrgInfo?.mailingAddress.streetAdditional
+      },
+      email: this.getUserEmail,
+      phone: this.getUserPhone
+    } as CompletingPartyIF)
+
     // update Launch Darkly
     try {
       await this.updateLaunchDarkly()
@@ -519,7 +538,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
    * NOTE: This is only implemented for Alteration filings atm.
    * @param action the emitted action
    */
-  private async handleFeeSummaryActions (action: FeeSummaryActions): Promise<void> {
+  protected async handleFeeSummaryActions (action: FeeSummaryActions): Promise<void> {
     switch (action) {
       case FeeSummaryActions.BACK:
         this.setSummaryMode(false)
@@ -546,7 +565,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   }
 
   /** Navigates to Manage Businesses dashboard. */
-  private goToManageBusinessDashboard (): void {
+  protected goToManageBusinessDashboard (): void {
     this.fileAndPayInvalidNameRequestDialog = false
     this.setHaveUnsavedChanges(false)
     // FUTURE: Manage Businesses URL should come from config
@@ -584,7 +603,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     }
   }
 
-  private async doDeleteAll (): Promise<void> {
+  protected async doDeleteAll (): Promise<void> {
     // Restore baseline data to original snapshot.
     this.parseEntitySnapshot()
     this.setHaveUnsavedChanges(false)
@@ -612,10 +631,30 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     this.saveWarnings = []
   }
 
+  /** Gets account and org information and stores it. */
+  private async loadAccountInformation (): Promise<void> {
+    // NB: staff don't have current account (but SBC Staff do)
+    if (!this.isRoleStaff) {
+      const currentAccount = await this.getCurrentAccount().catch(() => null)
+      if (currentAccount) {
+        this.setAccountInformation(currentAccount)
+      } else {
+        throw new Error('Invalid current account')
+      }
+
+      const orgInfo = await AuthServices.fetchOrgInfo(currentAccount?.id).catch(() => null)
+      if (orgInfo) {
+        this.setOrgInfo(orgInfo)
+      } else {
+        throw new Error('Invalid org info')
+      }
+    }
+  }
+
   /** Fetches authorizations and verifies and stores roles. */
   private async loadAuth (): Promise<any> {
     // NB: will throw if API error
-    const response = await this.fetchAuthorizations(this.getBusinessId)
+    const response = await AuthServices.fetchAuthorizations(this.getBusinessId)
     // NB: roles array may contain 'view', 'edit', 'staff' or nothing
     const authRoles = response?.data?.roles
     if (authRoles && authRoles.length > 0) {
@@ -628,7 +667,7 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
   /** Fetches current user info and stores it. */
   private async loadUserInfo (): Promise<any> {
     // NB: will throw if API error
-    const response = await this.fetchCurrentUser()
+    const response = await AuthServices.fetchUserInfo()
     const userInfo = response?.data
     if (userInfo) {
       this.setUserInfo(userInfo)
@@ -637,13 +676,19 @@ export default class App extends Mixins(AuthApiMixin, CommonMixin, DateMixin, Fi
     }
   }
 
-  /** Gets account information (e.g. Premium account) and stores it. */
-  private loadAccountInformation (): void {
-    const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
-    if (currentAccount) {
-      const accountInfo = JSON.parse(currentAccount)
-      this.setAccountInformation(accountInfo)
+  /**
+   * Gets current account from object in session storage.
+   * Waits up to 10 sec for current account to be synced (typically by SbcHeader).
+   */
+  private async getCurrentAccount (): Promise<any> {
+    let account: any
+    for (let i = 0; i < 100; i++) {
+      const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount) // may be null
+      account = JSON.parse(currentAccount) // may be null
+      if (account) break
+      await sleep(100)
     }
+    return account
   }
 
   /** Updates Launch Darkly with user info. */

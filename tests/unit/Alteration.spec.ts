@@ -23,6 +23,7 @@ describe('Alteration component', () => {
 
   // Define Session
   sessionStorage.setItem('PAY_API_URL', 'https://pay.api.url/')
+  sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
   sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
   sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3' +
@@ -94,7 +95,7 @@ describe('Alteration component', () => {
         }
       }))
 
-    // GET Base business
+    // GET business
     get.withArgs('businesses/BC1234567')
       .returns(Promise.resolve({
         data: {
@@ -230,8 +231,8 @@ describe('Alteration component', () => {
         }
       }))
 
-    // GET contact info
-    get.withArgs('entities/BC1234567')
+    // GET auth info
+    get.withArgs('https://auth.api.url/entities/BC1234567')
       .returns(Promise.resolve({
         data: {
           contacts: [
@@ -333,10 +334,12 @@ describe('Alteration component', () => {
   it('display the fee prices properly', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
+
     store.state.stateModel.summaryMode = true
     store.state.stateModel.tombstone.filingType = 'alteration'
     store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
     await Vue.nextTick()
+
     expect(
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
     ).toContain('Certain changes require an Alteration Notice which will incur a $100.00 fee.')
@@ -358,8 +361,8 @@ describe('Alteration component', () => {
       },
       total: null
     }
-
     await flushPromises()
+
     expect(
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
     ).toContain('Certain changes require an Alteration Notice which will incur a fee.')

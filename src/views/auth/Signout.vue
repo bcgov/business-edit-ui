@@ -18,6 +18,3 @@ export default class Signout extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

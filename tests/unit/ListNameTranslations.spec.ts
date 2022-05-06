@@ -74,9 +74,7 @@ describe('List Name Translation component', () => {
 
     // Verify more actions drop down
     expect(wrapper.find('.actions__more-actions__btn').exists()).toBeTruthy()
-    wrapper.find('.actions__more-actions__btn').trigger('click')
-
-    await Vue.nextTick()
+    await wrapper.find('.actions__more-actions__btn').trigger('click')
 
     // Verify 'Remove' btn
     expect(wrapper.find('.actions__more-actions').exists()).toBeTruthy()
@@ -95,9 +93,7 @@ describe('List Name Translation component', () => {
     // Verify more actions drop down
     expect(wrapper.find('.actions__more-actions__btn').exists()).toBeTruthy()
     expect(wrapper.find('.actions__more-actions__btn').attributes('disabled')).toBeTruthy()
-    wrapper.find('.actions__more-actions__btn').trigger('click')
-
-    await Vue.nextTick()
+    await wrapper.find('.actions__more-actions__btn').trigger('click')
 
     // Verify 'Remove' btn
     expect(wrapper.find('.actions__more-actions').exists()).toBeFalsy()
@@ -118,11 +114,11 @@ describe('List Name Translation component', () => {
     const editBtns = wrapper.findAll('.edit-action .v-btn')
 
     // Select the first name to edit
-    editBtns.at(0).trigger('click')
+    await editBtns.at(0).trigger('click')
     expect(wrapper.emitted('editNameTranslation').pop()).toEqual([0])
 
     // Select the third name to edit
-    editBtns.at(2).trigger('click')
+    await editBtns.at(2).trigger('click')
     expect(wrapper.emitted('editNameTranslation').pop()).toEqual([2])
 
     wrapper.destroy()
@@ -140,15 +136,13 @@ describe('List Name Translation component', () => {
 
     // Open the first list item dropdown
     const actionsDropdown = wrapper.findAll('.actions__more-actions__btn')
-    actionsDropdown.at(0).trigger('click')
-
-    await Vue.nextTick()
+    await actionsDropdown.at(0).trigger('click')
 
     // Select the first item for removal
     const removeBtns = wrapper.findAll('.actions__more-actions .v-list-item')
     expect(removeBtns.at(0).exists()).toBeTruthy()
     expect(removeBtns.at(0).attributes('disabled')).toBeUndefined()
-    removeBtns.at(0).trigger('click')
+    await removeBtns.at(0).trigger('click')
 
     expect(wrapper.emitted('removeNameTranslation').pop()).toEqual([0])
 

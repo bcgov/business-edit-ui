@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { RouteNames } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ConfirmDialogType } from '@/interfaces/'
 
 /**

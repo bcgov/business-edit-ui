@@ -5,7 +5,7 @@ import sinon from 'sinon'
 import { getVuexStore } from '@/store/'
 import { createLocalVue, createWrapper, mount } from '@vue/test-utils'
 import AlterationSummary from '@/components/Alteration/AlterationSummary.vue'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
+import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
 import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
 
@@ -67,7 +67,7 @@ describe('Alteration Summary component', () => {
     expect(removeAction).toBe('Delete')
   })
 
-  it('displays the confirm dialog when selecting Remove action', () => {
+  it('displays the confirm dialog when selecting Remove action', async () => {
     const mock = jest.spyOn(wrapper.vm, 'onDeleteClicked')
     expect(mock).not.toHaveBeenCalled()
 
@@ -76,7 +76,7 @@ describe('Alteration Summary component', () => {
 
     // Select the remove action
     const removeAction = wrapper.find('#btn-delete-alteration')
-    removeAction.trigger('click')
+    await removeAction.trigger('click')
 
     expect(mock).toHaveBeenCalled()
     expect(rootWrapper.emitted('delete-all').length).toBe(1)

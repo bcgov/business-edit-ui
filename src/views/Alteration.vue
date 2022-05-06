@@ -66,13 +66,13 @@
         <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
         <template v-if="isRoleStaff">
           <h2 class="mt-10">{{showTransactionalFolioNumber ? '4.' : '3.'}} Court Order and Plan of Arrangement</h2>
-          <p class="my-3 pb-2">
+          <div class="py-4">
             If this filing is pursuant to a court order, enter the court order number. If this
             filing is pursuant to a plan of arrangement, enter the court order number and select
             Plan of Arrangement.
-          </p>
+          </div>
 
-          <div class="pb-6" :class="{'invalid-section': invalidCourtOrder}">
+          <div :class="{'invalid-section': invalidCourtOrder}">
             <CourtOrderPoaShared
               id="court-order"
               :autoValidation="getAppValidate"
@@ -86,7 +86,7 @@
           </div>
 
           <StaffPayment
-            class="mt-10 pb-6"
+            class="mt-10"
             :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
             :validate="getAppValidate"
             @haveChanges="onStaffPaymentChanges()"
@@ -129,12 +129,13 @@ import { getFeatureFlag } from '@/utils/'
 import { AlterationSummary, Articles, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Alteration/'
 import { CertifySection, CurrentDirectors, ShareStructures, StaffPayment, YourCompany }
   from '@/components/common/'
-import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa'
-import { AuthApiMixin, CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
+import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
+import { AuthServices } from '@/services/'
+import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FeesIF, FilingDataIF, FlagsReviewCertifyIF }
   from '@/interfaces/'
 import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
 import { AlterationResources } from '@/resources/'
@@ -154,7 +155,6 @@ import { AlterationResources } from '@/resources/'
   }
 })
 export default class Alteration extends Mixins(
-  AuthApiMixin,
   CommonMixin,
   LegalApiMixin,
   FilingTemplateMixin,
@@ -308,7 +308,7 @@ export default class Alteration extends Mixins(
   private async fetchBusinessSnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
       this.fetchBusinessInfo(),
-      this.fetchAuthInfo(),
+      AuthServices.fetchAuthInfo(this.getBusinessId),
       this.fetchAddresses(),
       this.fetchNameTranslations(),
       this.fetchOrgPersons(OrgPersonTypes.DIRECTORS),
@@ -363,9 +363,17 @@ export default class Alteration extends Mixins(
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/theme.scss';
-
 #done-button {
   width: 10rem;
+}
+
+// fix hard-coded whitespace inside shared component
+// we want the same padding as "section-container py-6"
+::v-deep #court-order {
+  margin-top: 0 !important;
+  padding-top: 0.5rem !important;
+  padding-right: 1.875rem !important;
+  padding-bottom: 1.5rem !important;
+  padding-left: 0.375rem !important;
 }
 </style>

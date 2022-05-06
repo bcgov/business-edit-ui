@@ -1,7 +1,7 @@
 <template>
   <section id="completing-party-section">
     <header>
-      <h2>Original Completing Party</h2>
+      <h2>{{sectionNumber}} Original Completing Party</h2>
     </header>
 
     <v-card flat class="mt-4">
@@ -25,9 +25,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip'
+import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip/'
 import { CommonMixin } from '@/mixins/'
 import { IncorporationFilingIF, OrgPersonIF } from '@/interfaces/'
 import { ActionTypes, RoleTypes } from '@/enums/'
@@ -38,6 +38,9 @@ import { ActionTypes, RoleTypes } from '@/enums/'
 export default class CompletingParty extends Mixins(CommonMixin) {
   // Declaration for template
   readonly ActionTypes = ActionTypes
+
+  /** Prop to provide section number. */
+  @Prop({ default: '' }) readonly sectionNumber: string
 
   @Getter getPeopleAndRoles!: Array<OrgPersonIF>
   @Getter getOriginalIA!: IncorporationFilingIF
@@ -87,6 +90,3 @@ export default class CompletingParty extends Mixins(CommonMixin) {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

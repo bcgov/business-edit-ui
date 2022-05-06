@@ -63,7 +63,7 @@
 <script lang="ts">
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
+import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { CommonMixin, SharedMixin, NameRequestMixin } from '@/mixins/'
 import { ActionBindingIF, ConfirmDialogType, NameRequestApplicantIF, NameRequestIF, NrCorrectionIF,
   NrResponseIF } from '@/interfaces/'

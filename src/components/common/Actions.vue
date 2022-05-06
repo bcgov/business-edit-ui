@@ -12,7 +12,6 @@
           <span>Save</span>
         </v-btn>
 
-        <!-- disable Save and Resume Later button for now -->
         <v-btn id="save-resume-btn" large
           :disabled="isSaveResumeButtonDisabled"
           :loading="isSavingResuming"

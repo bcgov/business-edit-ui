@@ -12,7 +12,7 @@
         <label class="font-weight-bold pl-2">{{ orgPersonLabel }}</label>
       </div>
 
-      <!-- Instructional people and roles Text -->
+      <!-- Instructional people and roles text -->
       <article v-if="isCorrectionFiling" class="section-container">
         This application must include the following:
         <ul>
@@ -34,7 +34,7 @@
         </ul>
       </article>
 
-      <!-- Instructional partner or proprietor Text -->
+      <!-- Proprietor or partners section -->
       <article v-if="isChangeFiling" class="section-container">
         <span class="info-text">{{ orgPersonSubtitle }}</span>
 
@@ -53,8 +53,9 @@
             color="primary"
             :disabled="isAddingEditingOrgPerson"
             @click="initAdd(
-              [{ roleType: RoleTypes.PARTNER, appointmentDate: newAppointmentDate}], PartyTypes.PERSON
-              )"
+              [{ roleType: RoleTypes.PARTNER, appointmentDate: newAppointmentDate}],
+              PartyTypes.PERSON
+            )"
           >
             <v-icon>mdi-account-plus</v-icon>
             <span>Add a Person</span>
@@ -66,8 +67,9 @@
             class="ml-2"
             :disabled="isAddingEditingOrgPerson"
             @click="initAdd(
-              [{ roleType: RoleTypes.PARTNER, appointmentDate: newAppointmentDate }], PartyTypes.ORGANIZATION
-              )"
+              [{ roleType: RoleTypes.PARTNER, appointmentDate: newAppointmentDate }],
+              PartyTypes.ORGANIZATION
+            )"
           >
             <v-icon>mdi-domain-plus</v-icon>
             <span>Add a {{ orgTypesLabel }}</span>
@@ -144,8 +146,8 @@ import { isSame } from '@/utils/'
 import { ActionBindingIF, ConfirmDialogType, EntitySnapshotIF, HelpSectionIF, IncorporationFilingIF,
   OrgPersonIF, ResourceIF, RoleIF } from '@/interfaces/'
 import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { HelpSection } from '@/components/common/'
 import { ListPeopleAndRoles } from './'
 import { CommonMixin, DateMixin } from '@/mixins/'

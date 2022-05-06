@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import flushPromises from 'flush-promises'
 import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store/'
 import TransactionalFolioNumber from '@/components/Alteration/TransactionalFolioNumber.vue'
@@ -104,9 +103,8 @@ describe('Transactional Folio Number component', () => {
 
     // enter a valid folio number
     const input = wrapper.find('#folio-number-input')
-    input.setValue('A123')
-    input.trigger('change')
-    await flushPromises()
+    await input.setValue('A123')
+    await input.trigger('change')
 
     // verify updated Folio Number and store
     expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('A123')
@@ -136,9 +134,8 @@ describe('Transactional Folio Number component', () => {
 
     // enter a folio number that is too long
     const input = wrapper.find('#folio-number-input')
-    input.setValue('1234567890123456789012345678901')
-    input.trigger('change')
-    await flushPromises()
+    await input.setValue('1234567890123456789012345678901')
+    await input.trigger('change')
 
     // verify updated Folio Number and store
     expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('1234567890123456789012345678901')

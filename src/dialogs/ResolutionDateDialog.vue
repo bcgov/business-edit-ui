@@ -35,7 +35,7 @@
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker'
+import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF } from '@/interfaces/'
 

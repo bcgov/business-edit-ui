@@ -4,7 +4,7 @@ import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import VueRouter from 'vue-router'
 import mockRouter from './MockRouter'
-import AgreementType from '@/components/Correction/IncorporationAgreement/AgreementType.vue'
+import AgreementType from '@/components/Correction/AgreementType.vue'
 import { getVuexStore } from '@/store/'
 
 Vue.use(Vuetify)
@@ -26,15 +26,6 @@ const sampleAgreementText = 'The sample Incorporation Agreement and Benefit Comp
   'provision have been completed and a copy added to the company\'s record book.'
 const customAgreementText = 'A custom Incorporation Agreement and custom Benefit Company Articles containing ' +
   'a benefit provision have been completed and a copy added to the company\'s record book.'
-
-/**
- * Utility method to get around with the timing issues
- */
-async function waitForUpdate (wrapper: Wrapper<Vue>) {
-  await Vue.nextTick()
-  await flushPromises()
-  await Vue.nextTick()
-}
 
 /**
  * Creates and mounts a component, so that it can be tested.
@@ -69,7 +60,7 @@ store.state.stateModel.originalIA = {
 describe('Incorporation Agreement component', () => {
   it('Displays the summary text for sample agreement type', async () => {
     const wrapper: Wrapper<AgreementType> = createComponent()
-    await waitForUpdate(wrapper)
+    await Vue.nextTick()
     expect(wrapper.find(summaryTextSelector).text()).toContain(sampleAgreementText)
     wrapper.destroy()
   })
@@ -77,7 +68,7 @@ describe('Incorporation Agreement component', () => {
   it('Displays the summary text for custom agreement type', async () => {
     store.state.stateModel.incorporationAgreementStep.agreementType = 'custom'
     const wrapper: Wrapper<AgreementType> = createComponent()
-    await waitForUpdate(wrapper)
+    await Vue.nextTick()
     expect(wrapper.find(summaryTextSelector).text()).toContain(customAgreementText)
     wrapper.destroy()
   })
@@ -86,7 +77,7 @@ describe('Incorporation Agreement component', () => {
     async () => {
       store.state.stateModel.incorporationAgreementStep.agreementType = 'sample'
       const wrapper: Wrapper<AgreementType> = createComponent()
-      await waitForUpdate(wrapper)
+      await Vue.nextTick()
       expect(wrapper.find(correctButtonSelector).exists()).toBe(true)
       wrapper.destroy()
     })
@@ -95,7 +86,7 @@ describe('Incorporation Agreement component', () => {
     async () => {
       store.state.stateModel.incorporationAgreementStep.agreementType = 'custom'
       const wrapper: Wrapper<AgreementType> = createComponent()
-      await waitForUpdate(wrapper)
+      await Vue.nextTick()
       expect(wrapper.find(correctButtonSelector).exists()).toBe(false)
       expect(wrapper.find(undoButtonSelector).exists()).toBe(true)
       wrapper.destroy()
@@ -105,10 +96,9 @@ describe('Incorporation Agreement component', () => {
     async () => {
       store.state.stateModel.incorporationAgreementStep.agreementType = 'sample'
       const wrapper: Wrapper<AgreementType> = createComponent()
-      await waitForUpdate(wrapper)
+      await Vue.nextTick()
       expect(wrapper.find(correctButtonSelector).exists()).toBe(true)
-      wrapper.find(correctButtonSelector).trigger('click')
-      await waitForUpdate(wrapper)
+      await wrapper.find(correctButtonSelector).trigger('click')
       expect(wrapper.find(agreementTypeSelector).exists()).toBe(true)
       expect(wrapper.find(sampleTypeSelector).attributes('aria-checked')).toBe('true')
       expect(wrapper.find(customTypeSelector).attributes('aria-checked')).toBe('false')
@@ -119,10 +109,9 @@ describe('Incorporation Agreement component', () => {
     async () => {
       store.state.stateModel.incorporationAgreementStep.agreementType = 'custom'
       const wrapper: Wrapper<AgreementType> = createComponent()
-      await waitForUpdate(wrapper)
+      await Vue.nextTick()
       expect(wrapper.find(undoButtonSelector).exists()).toBe(true)
-      wrapper.find(undoButtonSelector).trigger('click')
-      await waitForUpdate(wrapper)
+      await wrapper.find(undoButtonSelector).trigger('click')
       expect(wrapper.find(agreementTypeSelector).exists()).toBe(false)
       expect(wrapper.find(summaryTextSelector).text()).toContain(sampleAgreementText)
       expect(store.state.stateModel.incorporationAgreementStep.agreementType).toEqual('sample')
@@ -133,16 +122,14 @@ describe('Incorporation Agreement component', () => {
     async () => {
       store.state.stateModel.incorporationAgreementStep.agreementType = 'sample'
       const wrapper: Wrapper<AgreementType> = createComponent()
-      await waitForUpdate(wrapper)
+      await Vue.nextTick()
       expect(wrapper.find(correctButtonSelector).exists()).toBe(true)
-      wrapper.find(correctButtonSelector).trigger('click')
-      await waitForUpdate(wrapper)
+      await wrapper.find(correctButtonSelector).trigger('click')
       expect(wrapper.find(agreementTypeSelector).exists()).toBe(true)
       expect(wrapper.find(sampleTypeSelector).attributes('aria-checked')).toBe('true')
       expect(wrapper.find(customTypeSelector).attributes('aria-checked')).toBe('false')
-      wrapper.find(customTypeSelector).trigger('click')
-      wrapper.find(doneButtonSelector).trigger('click')
-      await waitForUpdate(wrapper)
+      await wrapper.find(customTypeSelector).trigger('click')
+      await wrapper.find(doneButtonSelector).trigger('click')
       expect(wrapper.find(agreementTypeSelector).exists()).toBe(false)
       expect(wrapper.find(summaryTextSelector).text()).toContain(customAgreementText)
       expect(store.state.stateModel.incorporationAgreementStep.agreementType).toEqual('custom')
@@ -155,16 +142,14 @@ describe('Incorporation Agreement component', () => {
     async () => {
       store.state.stateModel.incorporationAgreementStep.agreementType = 'sample'
       const wrapper: Wrapper<AgreementType> = createComponent()
-      await waitForUpdate(wrapper)
+      await Vue.nextTick()
       expect(wrapper.find(correctButtonSelector).exists()).toBe(true)
-      wrapper.find(correctButtonSelector).trigger('click')
-      await waitForUpdate(wrapper)
+      await wrapper.find(correctButtonSelector).trigger('click')
       expect(wrapper.find(agreementTypeSelector).exists()).toBe(true)
       expect(wrapper.find(sampleTypeSelector).attributes('aria-checked')).toBe('true')
       expect(wrapper.find(customTypeSelector).attributes('aria-checked')).toBe('false')
-      wrapper.find(customTypeSelector).trigger('click')
-      wrapper.find(cancelBtnSelector).trigger('click')
-      await waitForUpdate(wrapper)
+      await wrapper.find(customTypeSelector).trigger('click')
+      await wrapper.find(cancelBtnSelector).trigger('click')
       expect(wrapper.find(agreementTypeSelector).exists()).toBe(false)
       expect(wrapper.find(summaryTextSelector).text()).toContain(sampleAgreementText)
       expect(store.state.stateModel.incorporationAgreementStep.agreementType).toEqual('sample')

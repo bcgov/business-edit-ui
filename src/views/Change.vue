@@ -18,7 +18,7 @@
       </div>
     </v-slide-x-transition>
 
-    <!-- Review and Certify page -->
+    <!-- Review and Confirmm page -->
     <v-slide-x-reverse-transition hide-on-leave>
       <div v-if="isSummaryMode && showFeeSummary">
         <header>
@@ -44,26 +44,17 @@
           @valid="setDocumentOptionalEmailValidity($event)"
         />
 
-        <section id="completing-party-section">
-          <h2>2. Completing Party</h2>
-          <v-card flat>
-            <CompletingPartyShared
-              class="mt-6 pb-0"
-              :currentCompletingParty="mockCompletingParty"
-              :enableAddEdit="isRoleStaff"
-              :addressSchema="PersonAddressSchema"
-              :validate="getAppValidate"
-              @addEditCompletingParty="addEditCompletingParty($event)"
-            />
-          </v-card>
-        </section>
-
-        <CertifySection
+        <CompletingParty
           class="mt-10"
-          :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
+          sectionNumber="2."
           :validate="getAppValidate"
         />
 
+        <CertifySection
+          class="mt-10"
+          sectionNumber="3."
+          :validate="getAppValidate"
+        />
       </div>
     </v-slide-x-reverse-transition>
   </section>
@@ -74,21 +65,21 @@ import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorato
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
 import { ChangeSummary, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Alteration/'
+import CompletingParty from '@/components/Change/CompletingParty.vue'
 import { CertifySection, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common/'
-import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party'
-import { AuthApiMixin, CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
-import { ActionBindingIF, CompletingPartyIF, EmptyFees, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
+import { AuthServices } from '@/services/'
+import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
+import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
 import { ChangeFirmResources } from '@/resources/'
-import { PersonAddressSchema } from '@/schemas/'
 
 @Component({
   components: {
     CertifySection,
     ChangeSummary,
-    CompletingPartyShared,
+    CompletingParty,
     DocumentsDelivery,
     PeopleAndRoles,
     StaffPayment,
@@ -97,7 +88,6 @@ import { PersonAddressSchema } from '@/schemas/'
   }
 })
 export default class Change extends Mixins(
-  AuthApiMixin,
   CommonMixin,
   LegalApiMixin,
   FilingTemplateMixin,
@@ -105,8 +95,6 @@ export default class Change extends Mixins(
 ) {
   // Global getters
   @Getter isSummaryMode!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter isPremiumAccount!: boolean
   @Getter getFilingData!: FilingDataIF
   @Getter getAppValidate!: boolean
   @Getter showFeeSummary!: boolean
@@ -121,33 +109,9 @@ export default class Change extends Mixins(
   @Action setFeePrices!: ActionBindingIF
   @Action setResource!: ActionBindingIF
 
-  // declaration for template
-  readonly PersonAddressSchema = PersonAddressSchema
-
-  // TODO: Remove/Replace with structured data from Account (ie First, middle, last name & Mailing Address)
-  private mockCompletingParty = {
-    firstName: 'Steve',
-    middleName: 'D',
-    lastName: 'Jobs',
-    mailingAddress: {
-      addressCity: 'Victoria',
-      addressCountry: 'Canada',
-      addressRegion: 'BC',
-      deliveryInstructions: 'Test test test',
-      postalCode: 'V8V 1s8',
-      streetAddress: '1234',
-      streetAddressAdditional: 'Test Street Additional'
-    }
-  }
-
   /** Whether App is ready. */
   @Prop({ default: false })
   readonly appReady: boolean
-
-  /** Whether to show the Transactional Folio Number section. */
-  get showTransactionalFolioNumber (): boolean {
-    return (this.isPremiumAccount && !this.isRoleStaff)
-  }
 
   /** The id of the change filing being edited. */
   get changeId (): number {
@@ -249,7 +213,7 @@ export default class Change extends Mixins(
   private async fetchFirmSnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
       this.fetchBusinessInfo(),
-      this.fetchAuthInfo(),
+      AuthServices.fetchAuthInfo(this.getBusinessId),
       this.fetchAddresses(),
       this.fetchOrgPersons(OrgPersonTypes.PARTIES)
     ])
@@ -264,11 +228,6 @@ export default class Change extends Mixins(
     }
   }
 
-  protected addEditCompletingParty (event: CompletingPartyIF): void {
-    // Apply new completing party to store.
-    // Will require formatting and adding to the peopleAndRoles, see 'OrgPersonIF'
-  }
-
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   private emitFetchError (err: unknown = null): void {}
@@ -278,7 +237,3 @@ export default class Change extends Mixins(
   private emitHaveData (haveData: boolean = true): void {}
 }
 </script>
-
-<style lang="scss" scoped>
-@import '@/assets/styles/theme.scss';
-</style>

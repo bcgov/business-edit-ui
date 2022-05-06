@@ -1,10 +1,10 @@
 import { AccountTypes, ActionTypes, FilingCodes, FilingNames, FilingTypes, OfficeTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { AddressesIF, IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF,
-  ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF, NameTranslationIF, NaicsIF, FilingDataIF,
-  StateIF, EffectiveDateTimeIF, ShareStructureIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF, ResolutionsIF,
-  FeesIF, ResourceIF, EntitySnapshotIF } from '@/interfaces/'
-import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+  ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF, NameTranslationIF, FilingDataIF, StateIF,
+  EffectiveDateTimeIF, ShareStructureIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF, ResolutionsIF, FeesIF,
+  ResourceIF, EntitySnapshotIF } from '@/interfaces/'
+import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 import { isSame } from '@/utils/'
 
@@ -21,11 +21,6 @@ export const isAuthEdit = (state: StateIF): boolean => {
 /** Whether the user is authorized to view. */
 export const isAuthView = (state: StateIF): boolean => {
   return state.stateModel.tombstone.authRoles.includes('view')
-}
-
-/** Is True if entity is a Benefit Company. */
-export const isBComp = (state: StateIF): boolean => {
-  return (getEntityType(state) === CorpTypeCd.BENEFIT_COMPANY)
 }
 
 /** Whether the current filing is a correction. */
@@ -63,6 +58,16 @@ export const isTypeBcCompany = (state: StateIF): boolean => {
   return (getEntityType(state) === CorpTypeCd.BC_COMPANY)
 }
 
+/** Whether the entity is a Sole Proprietorship. */
+export const isTypeSoleProp = (state: StateIF): boolean => {
+  return (getEntityType(state) === CorpTypeCd.SOLE_PROP)
+}
+
+/** Whether the entity is a Partnership. */
+export const isTypePartnership = (state: StateIF): boolean => {
+  return (getEntityType(state) === CorpTypeCd.PARTNERSHIP)
+}
+
 /** Whether the current account is a premium account. */
 export const isPremiumAccount = (state: StateIF): boolean => {
   return (state.stateModel.accountInformation.accountType === AccountTypes.PREMIUM)
@@ -80,12 +85,12 @@ export const getBusinessFoundingDate = (state: StateIF): string => {
 
 /** The filing's original effective date-time. */
 export const getOriginalFilingDateTime = (state: StateIF): string => {
-  return state.stateModel.originalIA.header.date
+  return getOriginalIA(state).header.date
 }
 
 /** The filing's original effective date-time. */
 export const getOriginalEffectiveDateTime = (state: StateIF): string => {
-  return state.stateModel.originalIA.header.effectiveDate
+  return getOriginalIA(state).header.effectiveDate
 }
 
 /** The current account id. */
@@ -126,8 +131,10 @@ export const getBusinessId = (state: StateIF): string => {
 /** The business identifier (aka incorporation number). */
 export const getCurrentBusinessName = (state: StateIF): string => {
   // Return the legal name from an IA for Corrections or the legal name of the business for Alterations
-  return state.stateModel.originalIA.incorporationApplication.nameRequest.legalName ||
+  return (
+    state.stateModel.originalIA.incorporationApplication.nameRequest.legalName ||
     state.stateModel.businessInformation.legalName
+  )
 }
 
 /** The original Incorporation Application filing( or the filing being corrected). */
@@ -146,32 +153,48 @@ export const getBusinessNumber = (state: StateIF): string => {
   return state.stateModel.tombstone.businessId?.substring(2)
 }
 
-/** The current user's email. */
+/** The current user's info. (May be null.) */
+export const getUserInfo = (state: StateIF): any => {
+  return state.stateModel.tombstone.userInfo
+}
+
+/** The org info. (May be null.) */
+export const getOrgInfo = (state: StateIF): any => {
+  return state.stateModel.tombstone.orgInfo
+}
+
+/** The current user's email. (May be undefined.) */
 export const getUserEmail = (state: StateIF): string => {
-  const userInfo = state.stateModel.tombstone.userInfo
   // get email from contacts[0] if it exists (ie, for BCSC users)
   // else get email from root object
-  return userInfo?.contacts[0]?.email || userInfo?.email
+  return getUserInfo(state)?.contacts[0]?.email || getUserInfo(state)?.email
 }
 
-/** The current user's first name. */
+/** The current user's phone. (May be undefined.) */
+export const getUserPhone = (state: StateIF): string => {
+  // get phone from contacts[0] if it exists (ie, for BCSC users)
+  // else get phone from root object
+  return getUserInfo(state)?.contacts[0]?.phone || getUserInfo(state)?.phone
+}
+
+/** The current user's first name. (May be undefined.) */
 export const getUserFirstName = (state: StateIF): string => {
-  return state.stateModel.tombstone.userInfo?.firstname
+  return getUserInfo(state)?.firstname
 }
 
-/** The current user's last name. */
+/** The current user's last name. (May be undefined.) */
 export const getUserLastName = (state: StateIF): string => {
-  return state.stateModel.tombstone.userInfo?.lastname
+  return getUserInfo(state)?.lastname
 }
 
-/** The current user's roles. */
+/** The current user's roles. (May be undefined.) */
 export const getUserRoles = (state: StateIF): any => {
-  return state.stateModel.tombstone.userInfo?.roles
+  return getUserInfo(state)?.roles
 }
 
-/** The current user's username. */
+/** The current user's username. (May be undefined.) */
 export const getUserUsername = (state: StateIF): string => {
-  return state.stateModel.tombstone.userInfo?.username
+  return getUserInfo(state)?.username
 }
 
 /** The folio number. */
@@ -211,7 +234,7 @@ export const getNameRequestNumber = (state: StateIF): string => {
 /** Identify if changes were made to the NrNumber */
 export const hasNewNr = (state: StateIF): boolean => {
   const newNr = state.stateModel.nameRequest?.nrNumber
-  const originalNr = state.stateModel.originalIA.incorporationApplication.nameRequest?.nrNumber ||
+  const originalNr = getOriginalIA(state).incorporationApplication.nameRequest?.nrNumber ||
     state.stateModel.originalAlteration.alteration.nameRequest.nrNumber
 
   // Evaluate only if a new NR exists.
@@ -430,12 +453,6 @@ export const getFlagsCompanyInfo = (state: StateIF): FlagsCompanyInfoIF => {
   return state.stateModel.validationFlags.flagsCompanyInfo
 }
 
-export const getDefaultCorrectionDetailComment = (state: StateIF): string => {
-  // *** TODO: fix this, since header.data is UTC
-  const filingDate = state.stateModel.originalIA.header.date.split('T')[0] || ''
-  return `Correction for Incorporation Application filed on ${filingDate}.`
-}
-
 export const getDetailComment = (state: StateIF): string => {
   return state.stateModel.detail.comment
 }
@@ -518,26 +535,34 @@ export const originalOfficeAddresses = (state: StateIF): AddressesIF => {
 
 /** True if (registered) mailing address has changed. */
 export const mailingChanged = (state: StateIF): boolean => {
-  return !isSame(getOfficeAddresses(state)?.[officeType(state)]?.mailingAddress,
+  return (
+    !isSame(getOfficeAddresses(state)?.[officeType(state)]?.mailingAddress,
     originalOfficeAddresses(state)?.[officeType(state)]?.mailingAddress, ['addressCountryDescription'])
+  )
 }
 
 /** True if (registered) delivery address has changed. */
 export const deliveryChanged = (state: StateIF): boolean => {
-  return !isSame(getOfficeAddresses(state)?.[officeType(state)]?.deliveryAddress,
+  return (
+    !isSame(getOfficeAddresses(state)?.[officeType(state)]?.deliveryAddress,
     originalOfficeAddresses(state)?.[officeType(state)]?.deliveryAddress, ['addressCountryDescription'])
+  )
 }
 
 /** True if records mailing address has changed. */
 export const recMailingChanged = (state: StateIF): boolean => {
-  return !isSame(getOfficeAddresses(state)?.recordsOffice?.mailingAddress,
+  return (
+    !isSame(getOfficeAddresses(state)?.recordsOffice?.mailingAddress,
     originalOfficeAddresses(state)?.recordsOffice?.mailingAddress, ['addressCountryDescription'])
+  )
 }
 
 /** True if records delivery address has changed. */
 export const recDeliveryChanged = (state: StateIF): boolean => {
-  return !isSame(getOfficeAddresses(state)?.recordsOffice?.deliveryAddress,
+  return (
+    !isSame(getOfficeAddresses(state)?.recordsOffice?.deliveryAddress,
     originalOfficeAddresses(state)?.recordsOffice?.deliveryAddress, ['addressCountryDescription'])
+  )
 }
 
 /** Whether orgPerson data has changed. */
@@ -545,7 +570,7 @@ export const hasPeopleAndRolesChanged = (state: StateIF): boolean => {
   let currentOrgPersons = getPeopleAndRoles(state)
   let originalOrgPersons = getEntitySnapshot(state)?.orgPersons
 
-  return (!isSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange']))
+  return !isSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange'])
 }
 
 /** Is true when the minimum partners met. */
@@ -573,15 +598,15 @@ export const hasShareStructureChanged = (state: StateIF): boolean => {
   currentShareClasses = currentShareClasses && removeNullProps(currentShareClasses)
   originalShareClasses = originalShareClasses && removeNullProps(originalShareClasses)
 
-  return (!isEqual(originalShareClasses, currentShareClasses))
+  return !isEqual(originalShareClasses, currentShareClasses)
 }
 
 /** Whether nature of business data has changed. */
 export const hasNatureOfBusinessChanged = (state: StateIF): boolean => {
-  let currentNatureOfBusiness = getBusinessInformation(state)?.naicsCode
-  let originalNatureOfBusiness = getEntitySnapshot(state)?.businessInfo.naicsCode
+  const currentNatureOfBusiness = getBusinessInformation(state)?.naicsCode
+  const originalNatureOfBusiness = getEntitySnapshot(state)?.businessInfo.naicsCode
 
-  return (!isEqual(currentNatureOfBusiness, originalNatureOfBusiness))
+  return !isEqual(currentNatureOfBusiness, originalNatureOfBusiness)
 }
 
 /** The Provisions Removed state. */
@@ -692,4 +717,10 @@ export const getFilingName = (state: StateIF): FilingNames => {
   if (isCorrectionFiling(state)) return FilingNames.CORRECTION
   if (isAlterationFiling(state)) return FilingNames.ALTERATION
   if (isChangeFiling(state)) return FilingNames.CHANGE_OF_REGISTRATION
+  return null
+}
+
+/** The completing party data. */
+export const getCompletingParty = (state: StateIF): CompletingPartyIF => {
+  return state.stateModel.completingParty
 }

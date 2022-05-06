@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import { mount, Wrapper } from '@vue/test-utils'
 import { getVuexStore } from '@/store/'
 import CertifySection from '@/components/common/CertifySection.vue'
-import { Certify as CertifyShared } from '@bcrs-shared-components/certify'
+import { Certify as CertifyShared } from '@bcrs-shared-components/certify/'
 
 Vue.use(Vuetify)
 

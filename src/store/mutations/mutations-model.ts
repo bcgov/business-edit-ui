@@ -1,9 +1,8 @@
-import { AccountInformationIF, ActionKvIF, AddressesIF, BusinessInformationIF, EntitySnapshotIF,
-  CertifyIF, FilingDataIF, IncorporationAgreementIF, IncorporationFilingIF, NaicsIF, NameRequestIF,
-  NameTranslationIF, OrgPersonIF, ResolutionsIF, ShareClassIF, StateIF, FeesIF, ResourceIF }
-  from '@/interfaces/'
-import { ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { AccountInformationIF, ActionKvIF, AddressesIF, BusinessInformationIF, EntitySnapshotIF, CertifyIF,
+  FilingDataIF, IncorporationAgreementIF, IncorporationFilingIF, NameRequestIF, NameTranslationIF,
+  OrgPersonIF, ResolutionsIF, ShareClassIF, StateIF, FeesIF, ResourceIF } from '@/interfaces/'
+import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { FilingTypes } from '@/enums/'
 
 export const mutateBusinessId = (state: StateIF, businessId: string) => {
@@ -24,6 +23,10 @@ export const mutateAuthRoles = (state: StateIF, authRoles: Array<string>) => {
 
 export const mutateUserInfo = (state: StateIF, userInfo: any) => {
   state.stateModel.tombstone.userInfo = userInfo
+}
+
+export const mutateOrgInfo = (state: StateIF, orgInfo: any) => {
+  state.stateModel.tombstone.orgInfo = orgInfo
 }
 
 export const mutateIsSaving = (state: StateIF, isSaving: boolean) => {
@@ -76,6 +79,15 @@ export const mutateDocumentOptionalEmail = (state: StateIF, documentOptionalEmai
 
 export const mutateDocumentOptionalEmailValidity = (state: StateIF, validity: boolean) => {
   state.stateModel.validationFlags.flagsReviewCertify.isValidDocumentOptionalEmail = validity
+}
+
+export const mutateCompletingParty = (state: StateIF, cp: CompletingPartyIF) => {
+  state.stateModel.completingParty = cp
+  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
+}
+
+export const mutateCompletingPartyValidity = (state: StateIF, validity: boolean) => {
+  state.stateModel.validationFlags.flagsReviewCertify.isValidCompletingParty = validity
 }
 
 export const mutateTransactionalFolioNumber = (state: StateIF, folioNumber: string) => {

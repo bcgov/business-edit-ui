@@ -1,6 +1,5 @@
 <template>
   <div id="office-addresses">
-
     <!-- Addresses Summary -->
     <template v-if="!isEditing">
       <v-row id="summary-registered-address" class="mx-0" no-gutters>
@@ -99,7 +98,7 @@
         </template>
       </v-row>
 
-      <v-row v-if="isBComp" id="summary-records-address" class="mt-4 mx-0" no-gutters>
+      <v-row v-if="isTypeBcomp" id="summary-records-address" class="mt-4 mx-0" no-gutters>
         <v-col cols="3">
           <label class>Records Office</label>
         </v-col>
@@ -294,7 +293,7 @@
           </li>
         </div>
 
-        <div id="edit-records-address" v-if="isBComp">
+        <div id="edit-records-address" v-if="isTypeBcomp">
           <div class="address-edit-header" :class="{'mt-8': inheritMailingAddress}">
             <label class="address-edit-title">Records Office</label>
             <v-checkbox
@@ -393,7 +392,7 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces/'
 import { isSame } from '@/utils/'
 import { AddressTypes, OfficeTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { CommonMixin } from '@/mixins/'
 
 const REGION_BC = 'BC'
@@ -426,7 +425,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter deliveryChanged!: boolean
   @Getter recMailingChanged!: boolean
   @Getter recDeliveryChanged!: boolean
-  @Getter isBComp!: boolean
+  @Getter isTypeBcomp!: boolean
   @Getter officeType!: OfficeTypes
 
   // Global actions
@@ -515,7 +514,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       )
 
       // for BCOMPS, also set the Records Address
-      if (this.isBComp) {
+      if (this.isTypeBcomp) {
         this.recMailingAddress = { ...this.getOfficeAddresses.recordsOffice?.mailingAddress }
         this.recDeliveryAddress = { ...this.getOfficeAddresses.recordsOffice?.deliveryAddress }
 
@@ -657,7 +656,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets updated office addresses in store.
    */
   private storeAddresses (): void {
-    if (this.isBComp) {
+    if (this.isTypeBcomp) {
       this.setOfficeAddresses({
         registeredOffice: {
           deliveryAddress: this.deliveryAddress,
@@ -881,7 +880,7 @@ ul {
   }
 }
 
-// Override font styling of base-address input fields
+// Override Base Address font styling
 ::v-deep {
   // italicize the delivery instructions in the base address component
   .address-block .delivery-instructions {

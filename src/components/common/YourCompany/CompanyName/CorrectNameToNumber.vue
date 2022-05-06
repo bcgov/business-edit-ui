@@ -21,7 +21,7 @@ import { Action, Getter } from 'vuex-class'
 // Interfaces && enums
 import { ActionBindingIF } from '@/interfaces/'
 import { CorrectionTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 @Component({})
 export default class CorrectNameToNumber extends Vue {

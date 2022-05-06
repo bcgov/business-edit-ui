@@ -154,8 +154,7 @@ describe('Save Error Dialog', () => {
     // verify and click Exit button
     const exitButton = wrapper.find('#dialog-exit-button')
     expect(exitButton.text()).toBe('Exit without saving')
-    exitButton.trigger('click')
-    await Vue.nextTick()
+    await exitButton.trigger('click')
 
     expect(wrapper.emitted('exit').length).toBe(1)
 
@@ -175,8 +174,7 @@ describe('Save Error Dialog', () => {
     // verify and click OK button
     const okayButton = wrapper.find('#dialog-okay-button')
     expect(okayButton.text()).toBe('OK')
-    okayButton.trigger('click')
-    await Vue.nextTick()
+    await okayButton.trigger('click')
 
     expect(wrapper.emitted('okay').length).toBe(1)
 

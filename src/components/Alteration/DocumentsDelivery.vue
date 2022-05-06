@@ -1,53 +1,53 @@
 <template>
-  <div class="pb-6" id="document-delivery-section">
+  <section id="document-delivery-section">
     <h2>{{sectionNumber}} Documents Delivery</h2>
-    <div class="document-info pt-4 pb-4">Copies of the {{ getFilingName.toLowerCase() }} documents will be sent
-      to the following email address listed below.</div>
+
+    <div class="document-info py-4">
+      Copies of the {{ getFilingName.toLowerCase() }} documents will be sent
+      to the following email address listed below.
+    </div>
+
     <div :class="{ 'invalid-section': documentDeliveryInvalid }">
-      <v-card flat class="section-container">
-        <v-container>
-          <v-row>
-            <v-col cols="3" class="px-0">
-              <label><strong>Registered Office</strong></label>
-            </v-col>
-            <v-col cols="9" class="px-0">
-              <span class="info-text">{{getBusinessContact.email || '(Not entered)'}}</span>
-            </v-col>
-          </v-row>
-        </v-container>
-        <v-container v-if="isRoleStaff">
-          <v-row>
-            <v-col cols="3" class="px-0">
-              <label :class="{ 'error-text': documentDeliveryInvalid }"><strong>User Account</strong></label>
-            </v-col>
-            <v-col cols="9" class="px-0">
-              <v-text-field
-                v-model="optionalEmail"
-                id="optionalEmail"
-                class="text-input-field"
-                filled
-                label="Client Email Address (Optional)"
-                hint="Example: name@email.com"
-                persistent-hint
-                validate-on-blur
-                :rules="entityEmailRules"
-              />
-            </v-col>
-          </v-row>
-        </v-container>
-        <v-container v-else>
-          <v-row>
-            <v-col cols="3" class="px-0">
-              <label><strong>User Account</strong></label>
-            </v-col>
-            <v-col cols="9" class="px-0">
-              <span class="info-text">{{ getUserEmail }}</span>
-            </v-col>
-          </v-row>
-        </v-container>
+      <v-card flat class="section-container py-6">
+        <v-row no-gutters>
+          <v-col cols="3" class="px-0">
+            <label><strong>Registered Office</strong></label>
+          </v-col>
+          <v-col cols="9" class="px-0">
+            <span class="info-text">{{getBusinessContact.email || '(Not entered)'}}</span>
+          </v-col>
+        </v-row>
+
+        <v-row v-if="isRoleStaff" no-gutters class="mt-6">
+          <v-col cols="3" class="px-0">
+            <label :class="{ 'error-text': documentDeliveryInvalid }"><strong>User Account</strong></label>
+          </v-col>
+          <v-col cols="9" class="px-0">
+            <v-text-field
+              v-model="optionalEmail"
+              id="optionalEmail"
+              class="email-input-field mb-n2"
+              filled
+              label="Client Email Address (Optional)"
+              hint="Example: name@email.com"
+              persistent-hint
+              validate-on-blur
+              :rules="entityEmailRules"
+            />
+          </v-col>
+        </v-row>
+
+        <v-row v-else no-gutters class="mt-6">
+          <v-col cols="3" class="px-0">
+            <label><strong>User Account</strong></label>
+          </v-col>
+          <v-col cols="9" class="px-0">
+            <span class="info-text">{{ getUserEmail }}</span>
+          </v-col>
+        </v-row>
       </v-card>
     </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -56,7 +56,9 @@ import { Action, Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins/'
 import { FilingNames } from '@/enums/'
 import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces'
+import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
+
+// FUTURE: update this component so it doesn't set changes flag initially
 
 @Component({})
 export default class DocumentsDelivery extends Mixins(CommonMixin) {
@@ -75,7 +77,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber: string
 
-  /** Prop to perform validation. */
+  /** Whether to perform validation. */
   @Prop({ default: false }) readonly validate: boolean
 
   // Local properties
@@ -129,10 +131,6 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
 @import '@/assets/styles/theme.scss';
 
 ::v-deep {
-  .container {
-    padding-bottom: 0px;
-    padding-top: 0px;
-  }
   .v-label {
     font-weight: normal;
   }

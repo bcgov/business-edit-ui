@@ -18,21 +18,24 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info'
-import { AuthApiMixin, CommonMixin } from '@/mixins/'
-import { ActionBindingIF, ContactPointIF, IncorporationFilingIF, ResourceIF } from '@/interfaces/'
+import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info/'
+import { AuthServices } from '@/services/'
+import { CommonMixin } from '@/mixins/'
+import { ActionBindingIF, IncorporationFilingIF, ResourceIF } from '@/interfaces/'
+import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 @Component({
   components: {
     ContactInfoShared
   }
 })
-export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixin) {
+export default class BusinessContactInfo extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessContact!: ContactPointIF
   @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getSnapshotBusinessContact!: ContactPointIF
   @Getter getResource!: ResourceIF
+  @Getter getBusinessId!: string
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -59,7 +62,9 @@ export default class BusinessContactInfo extends Mixins(AuthApiMixin, CommonMixi
   /** Update Contact info. */
   private async onContactInfoChange (contactInfo: ContactPointIF): Promise<void> {
     try {
-      if (this.isAlterationFiling || this.isChangeFiling) await this.updateContactInfo(contactInfo)
+      if (this.isAlterationFiling || this.isChangeFiling) {
+        await AuthServices.updateContactInfo(contactInfo, this.getBusinessId)
+      }
       this.setBusinessContact(contactInfo)
     } catch (error) {
       console.log('Update contact info error =', error) // eslint-disable-line no-console

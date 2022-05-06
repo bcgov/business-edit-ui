@@ -5,7 +5,8 @@ import { mount } from '@vue/test-utils'
 import { axios } from '@/utils/'
 import { getVuexStore } from '@/store/'
 import FolioInformation from '@/components/common/YourCompany/FolioInformation.vue'
-import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number'
+import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number/'
+import AuthServices from '@/services/auth-services'
 
 Vue.use(Vuetify)
 
@@ -79,7 +80,7 @@ describe('Folio Information component', () => {
     const wrapper = mount(FolioInformation, { vuetify, store })
     const vm: any = wrapper.vm
 
-    const mockUpdateFolioNumber = jest.spyOn(vm, 'updateFolioNumber')
+    const mockUpdateFolioNumber = jest.spyOn((AuthServices as any), 'updateFolioNumber')
 
     await vm.onNewFolioNumber('A123')
 
@@ -102,11 +103,11 @@ describe('Folio Information component', () => {
     const wrapper = mount(FolioInformation, { vuetify, store })
     const vm: any = wrapper.vm
 
-    const mockUpdateFolioNumber = jest.spyOn(vm, 'updateFolioNumber')
+    const mockUpdateFolioNumber = jest.spyOn((AuthServices as any), 'updateFolioNumber')
 
     await vm.onNewFolioNumber('A123')
 
-    expect(mockUpdateFolioNumber).toHaveBeenCalledWith('A123')
+    expect(mockUpdateFolioNumber).toHaveBeenCalledWith('A123', 'BC1234567')
     expect(store.state.stateModel.tombstone.folioNumber).toBe('A123')
     expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('A123')
 

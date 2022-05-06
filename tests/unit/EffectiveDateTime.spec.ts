@@ -125,7 +125,6 @@ describe('Effective Date Time component', () => {
     const radioIsFutureEffective = radioInput.at(1)
 
     await radioIsFutureEffective.trigger('click')
-    await Vue.nextTick()
 
     expect(wrapper.vm.dateText).toBe('') // No need to have a selected date
     expect(wrapper.find('#date-text-field').attributes('disabled')).toBeUndefined()
@@ -145,8 +144,6 @@ describe('Effective Date Time component', () => {
     const radioIsFutureEffective = radioInput.at(1)
 
     await radioIsFutureEffective.trigger('click')
-
-    await Vue.nextTick()
 
     expect(wrapper.find('#date-text-field').attributes('disabled')).toBeUndefined()
     expect(wrapper.find('#hour-selector').attributes('disabled')).toBeUndefined()
@@ -173,6 +170,8 @@ describe('Effective Date Time component', () => {
     const radioInput = wrapper.findAll('input[type="radio"]')
     const radioIsImmediate = radioInput.at(0)
     await radioIsImmediate.trigger('click')
+
+    // wait a bit for validation to complete
     await flushPromises()
 
     // Verify the last Valid event is true
@@ -191,12 +190,9 @@ describe('Effective Date Time component', () => {
     await radioIsFutureEffective.trigger('click')
 
     // set everything except date
-    wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
-    wrapper.vm.$refs.minuteSelector.setValue(today.getMinutes().toString())
+    await wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
+    await wrapper.vm.$refs.minuteSelector.setValue(today.getMinutes().toString())
     await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
-
-    // wait a bit for validation to complete
-    await flushPromises()
 
     // Verify the last Valid event is false
     // Note that it is important to test 'event === false' to check it is not 0 (zero) or other falsy evaluation
@@ -216,11 +212,8 @@ describe('Effective Date Time component', () => {
 
     // set everything except hour
     await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(today))
-    wrapper.vm.$refs.minuteSelector.setValue(today.getMinutes().toString())
+    await wrapper.vm.$refs.minuteSelector.setValue(today.getMinutes().toString())
     await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
-
-    // wait a bit for validation to complete
-    await flushPromises()
 
     // Verify the last Valid event is false
     // Note that it is important to test 'event === false' to check it is not 0 (zero) or other falsy evaluation
@@ -240,11 +233,8 @@ describe('Effective Date Time component', () => {
 
     // set everything except minute
     await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(today))
-    wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
+    await wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
     await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
-
-    // wait a bit for validation to complete
-    await flushPromises()
 
     // Verify the last Valid event is false
     // Note that it is important to test 'event === false' to check it is not 0 (zero) or other falsy evaluation
@@ -265,12 +255,9 @@ describe('Effective Date Time component', () => {
 
     // set everything
     await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(today))
-    wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
-    wrapper.vm.$refs.minuteSelector.setValue(today.getMinutes().toString())
+    await wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
+    await wrapper.vm.$refs.minuteSelector.setValue(today.getMinutes().toString())
     await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
-
-    // wait a bit for validation to complete
-    await flushPromises()
 
     // Verify the last Valid event is true
     expect(getLastEvent(wrapper, 'valid')).toEqual(true)
@@ -335,8 +322,8 @@ describe('Effective Date Time component', () => {
 
     // set current date and time
     await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(today))
-    wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
-    wrapper.vm.$refs.minuteSelector.setValue((today.getMinutes()).toString())
+    await wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
+    await wrapper.vm.$refs.minuteSelector.setValue((today.getMinutes()).toString())
     await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
     wrapper.vm.dateText = wrapper.vm.dateToYyyyMmDd(today)
 
