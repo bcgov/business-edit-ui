@@ -97,7 +97,7 @@
                 <article class="org-name-container pt-6">
                   <v-checkbox
                     v-if="!toggleBcLookUp"
-                    class="confirm-partner-name-change-chkbx mb-6"
+                    class="mb-6"
                     label="I confirm that the business partner being added is not legally required to register in B.C."
                     :hide-details="true"
                     :rules="confirmNameChangeRules"
@@ -119,9 +119,9 @@
               <template v-if="isProprietor || isPartner && !isNaN(activeIndex)">
                 <article class="mt-n4">
                   <v-checkbox
-                    class="confirm-proprietor-name-change-chkbx mb-8"
+                    class="mb-8"
                     :label="`I confirm ${orgPersonLabel} has legally changed their name and that they remain the ` +
-                      `same person.`"
+                      `same business.`"
                     :hide-details="true"
                     :rules="confirmNameChangeRules"
                     v-model="orgPerson.confirmNameChange"
@@ -140,7 +140,7 @@
               <template v-if="orgPerson.officer.taxId">
                 <article class="mb-8">
                   <label class="sub-header">Business Number:</label>
-                  <span class="ml-2 sp-number-text">{{ 'orgPerson.officer.taxId' }}</span>
+                  <span class="ml-2 sp-number-text">{{ orgPerson.officer.taxId }}</span>
                 </article>
               </template>
 
@@ -218,7 +218,8 @@
                     <base-address
                       ref="mailingAddressNew"
                       :editing="true"
-                      :schema="isPerson ? PersonAddressSchema : OfficeAddressSchema"
+                      :schema="isPerson ? PersonAddressSchema :
+                        isChangeFiling ? outOfBCAddressSchema : OfficeAddressSchema"
                       :address="inProgressMailingAddress"
                       @update:address="inProgressMailingAddress = $event"
                       @valid="mailingAddressValid = $event"
@@ -281,7 +282,7 @@ import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/co
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { RoleTypes, PartyTypes } from '@/enums/'
-import { PersonAddressSchema, OfficeAddressSchema } from '@/schemas/'
+import { PersonAddressSchema, OfficeAddressSchema, OutOfBCAddressSchema } from '@/schemas/'
 import { Getter } from 'vuex-class'
 
 @Component({
@@ -306,6 +307,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   readonly PartyTypes = PartyTypes
   readonly PersonAddressSchema = PersonAddressSchema
   readonly OfficeAddressSchema = OfficeAddressSchema
+  readonly OutOfBCAddressSchema = OutOfBCAddressSchema
 
   /** The current org/person to edit or add. */
   @Prop() readonly currentOrgPerson!: OrgPersonIF
@@ -859,11 +861,6 @@ li {
 
   .theme--light.v-input input, .theme--light.v-input textarea {
     color: $gray9;
-  }
-
-  // align top of text with checkbox icons
-  .v-input--checkbox .v-label {
-    padding-top: 2px;
   }
 }
 

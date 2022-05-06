@@ -19,7 +19,10 @@
     <div
       v-if="currentPeopleAndRoles.length > 0"
       id="people-roles-list"
-      :class="{'section-container': !isSummaryView}"
+      :class="{
+        'section-container': !isSummaryView,
+        'error-container': invalidOrgPersons || !hasMinimumPartners,
+      }"
     >
       <!-- List Headers -->
       <v-row class="people-roles-list-header list-item__subtitle pb-3" no-gutters>
@@ -39,8 +42,8 @@
       <v-row
         class="people-roles-content section-container"
         :class="{
-          'invalid-section': invalidOrgPersons || !hasMinimumPartners,
-          'summary-view': isSummaryView
+          'summary-view': isSummaryView,
+          'invalid-section': invalidOrgPersons || !hasMinimumPartners
         }"
         v-for="(orgPerson, index) in currentPeopleAndRoles"
         :key="index"
@@ -63,7 +66,7 @@
           <!-- Name + Badge -->
           <v-col class="pr-2" cols="12" sm="3">
             <v-row no-gutters>
-              <v-col cols="1" class="mt-n1 ml-n1 mr-3" :class="{ 'removed': wasRemoved(orgPerson)}">
+              <v-col cols="1" class="mt-n1 ml-n1 mr-3 badges" :class="{ 'removed': wasRemoved(orgPerson)}">
                 <v-icon color="gray9" v-if="isPerson(orgPerson)">mdi-account</v-icon>
                 <v-icon color="gray9" v-if="isOrg(orgPerson)">mdi-domain</v-icon>
               </v-col>
@@ -71,16 +74,19 @@
                 <p class="people-roles-title mb-1" :class="{ 'removed': wasRemoved(orgPerson)}">
                   {{ formatName(orgPerson) }}
                 </p>
-                <p class="info-text mb-1" :class="{ 'removed': wasRemoved(orgPerson)}">
+                <p class="info-text mb-1 people-roles-email" :class="{ 'removed': wasRemoved(orgPerson)}">
                   {{ orgPerson.officer.email }}
                 </p>
                 <p
                   v-if="orgPerson.officer.identifier"
-                  class="info-text mb-1"
+                  class="info-text mb-1 people-roles-inc-number"
                   :class="{ 'removed': wasRemoved(orgPerson)}">
                   Incorporation Number: {{orgPerson.officer.identifier}}
                 </p>
-                <p v-if="orgPerson.officer.taxId" class="info-text mb-1" :class="{ 'removed': wasRemoved(orgPerson)}">
+                <p
+                  v-if="orgPerson.officer.taxId"
+                  class="info-text mb-1 people-roles-bus-number"
+                  :class="{ 'removed': wasRemoved(orgPerson)}">
                   Business Number: {{orgPerson.officer.taxId}}
                 </p>
 
@@ -540,5 +546,20 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   .v-chip {
     opacity: 1 !important;
   }
+
+  // align badge icon with text
+  .badges .v-icon{
+    margin-top: 4px
+  }
+}
+
+// adjust error container padding for last section
+.people-roles-content.section-container.invalid-section:last-of-type {
+  padding: 1.25rem 1.875rem 2.5rem;
+}
+
+// adjust error container padding for error bars
+#people-roles-list.error-container {
+  padding: 1.25rem 1.875rem 0;
 }
 </style>
