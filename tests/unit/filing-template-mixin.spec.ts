@@ -152,6 +152,7 @@ describe('Change of Registration Filing', () => {
               },
               'roles': [
                 {
+                  'appointmentDate': '', // no date in this test
                   'roleType': 'Completing Party'
                 }
               ]

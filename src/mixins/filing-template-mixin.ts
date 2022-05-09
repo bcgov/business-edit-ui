@@ -103,17 +103,17 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     let shareClasses = this.getShareClasses
     let nameTranslations = this.getNameTranslations
 
-    // if filing and paying, filter out removed entities and omit the 'action(s)' properties
+    // if filing...
     if (!isDraft) {
-      // Filter out parties actions
+      // Filter out removed parties and delete "actions" property
       parties = parties.filter(x => !x.actions.includes(ActionTypes.REMOVED))
         .map((x) => { const { actions, ...rest } = x; return rest })
 
-      // Filter out class actions
+      // Filter out removed classes and delete "action" property
       shareClasses = shareClasses.filter(x => x.action !== ActionTypes.REMOVED)
         .map((x) => { const { action, ...rest } = x; return rest })
 
-      // Filter out series actions
+      // Filter out removed series and delete "action" property
       for (const [index, share] of shareClasses.entries()) {
         shareClasses[index].series = share.series?.filter(x => x.action !== ActionTypes.REMOVED)
           .map((x) => { const { action, ...rest } = x; return rest })
@@ -187,13 +187,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     let shareClasses = this.getShareClasses
     let nameTranslations = this.getNameTranslations
 
-    // if filing and paying, filter out removed entities and omit the 'action' properties
+    // if filing...
     if (!isDraft) {
-      // Filter out class actions
+      // Filter out removed classes and delete "action" property
       shareClasses = shareClasses.filter(x => x.action !== ActionTypes.REMOVED)
         .map((x) => { const { action, ...rest } = x; return rest })
 
-      // Filter out series actions
+      // Filter out removed series and delete "action" property
       for (const [index, share] of shareClasses.entries()) {
         shareClasses[index].series = share.series?.filter(x => x.action !== ActionTypes.REMOVED)
           .map((x) => { const { action, ...rest } = x; return rest })
@@ -352,43 +352,57 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       filing.changeOfRegistration.business.naics = this.getCurrentNaics
     }
 
-    // Create parties list with completing party
-    // (assumes CP doesn't already exist in array)
-    let parties = cloneDeep(this.getPeopleAndRoles) // make a copy
-    parties.push({
-      officer: {
-        partyType: PartyTypes.PERSON,
-        firstName: this.getCompletingParty.firstName,
-        middleName: this.getCompletingParty.middleName,
-        lastName: this.getCompletingParty.lastName
-      },
-      roles: [{ roleType: RoleTypes.COMPLETING_PARTY }],
-      mailingAddress: this.getCompletingParty.mailingAddress
-    } as OrgPersonIF)
-
-    // Add changed parties
-    if (this.hasPeopleAndRolesChanged) {
-      // if filing and paying, filter out removed entities and omit the 'actions' properties
-      if (!isDraft) {
-        // Filter out parties actions
-        parties = parties.filter(x => !x.actions?.includes(ActionTypes.REMOVED))
-          .map((x) => {
-            // Remove null or undefined properties to adhere to schema.
-            // ie taxId is an optional property but schema doesn't accept defined empty properties
-            Object.keys(x.officer).forEach(key => {
-              if (x.officer[key] === null || x.officer[key] === '') {
-                delete x.officer[key]
-              }
-            })
-
-            const { actions, ...rest } = x
-            return rest
-          })
-      }
-    }
-
     // Apply parties to filing
-    filing.changeOfRegistration.parties = parties
+    {
+      let parties = cloneDeep(this.getPeopleAndRoles) // make a copy
+
+      // Add completing party
+      // (assumes CP doesn't already exist in array)
+      parties.push({
+        officer: {
+          partyType: PartyTypes.PERSON,
+          firstName: this.getCompletingParty.firstName,
+          middleName: this.getCompletingParty.middleName,
+          lastName: this.getCompletingParty.lastName
+        },
+        roles: [{
+          roleType: RoleTypes.COMPLETING_PARTY,
+          appointmentDate: this.getCurrentDate
+        }],
+        mailingAddress: this.getCompletingParty.mailingAddress
+      } as OrgPersonIF)
+
+      // if filing...
+      if (!isDraft) {
+        // Filter out removed parties and delete "actions" property
+        parties = parties.filter(x => !x.actions?.includes(ActionTypes.REMOVED))
+          .map((x) => { const { actions, ...rest } = x; return rest })
+      }
+
+      // fix schema issues
+      parties = parties.map(party => {
+        // remove empty Officer properties -- schema doesn't accept None (null) properties
+        Object.keys(party.officer).forEach(key => {
+          if (!party.officer[key]) delete party.officer[key]
+        })
+
+        // remove empty Delivery Address and Mailing Address properties
+        if (party.deliveryAddress) {
+          if (!party.deliveryAddress.streetAddressAdditional) delete party.deliveryAddress.streetAddressAdditional
+          if (!party.deliveryAddress.deliveryInstructions) delete party.deliveryAddress.deliveryInstructions
+        }
+        if (party.mailingAddress) {
+          if (!party.mailingAddress.streetAddressAdditional) delete party.mailingAddress.streetAddressAdditional
+          if (!party.mailingAddress.deliveryInstructions) delete party.mailingAddress.deliveryInstructions
+        }
+
+        // NB: at this time, do not convert party from "middleName" to "middleInitial"
+
+        return party
+      })
+
+      filing.changeOfRegistration.parties = parties
+    }
 
     return filing
   }
@@ -624,6 +638,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store people and roles
     let orgPersons = filing.changeOfRegistration.parties || entitySnapshot.orgPersons
     // exclude completing party
+    // (it is managed separately and added to the filing in buildChangeFiling())
     orgPersons = orgPersons.filter(party => !(party?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(orgPersons)
 
