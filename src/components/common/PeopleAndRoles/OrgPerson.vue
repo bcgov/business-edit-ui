@@ -864,6 +864,7 @@ li {
     font-size: 1rem;
     color: $gray7;
     font-weight: normal;
+    padding-top: 2px; // label align with checkbox
   }
 
   .theme--light.v-input input, .theme--light.v-input textarea {
