@@ -504,11 +504,11 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       return
     }
 
-    // now that we have user info and org info, store the completing party
+    // now that we have user info and org info, populate the completing party
+    // NB: these are all empty for staff
     this.setCompletingParty({
-      firstName: this.getUserFirstName,
-      middleName: '',
-      lastName: this.getUserLastName,
+      firstName: this.isRoleStaff ? '' : this.getUserFirstName,
+      lastName: this.isRoleStaff ? '' : this.getUserLastName,
       mailingAddress: {
         addressCity: this.getOrgInfo?.mailingAddress.city,
         addressCountry: this.getOrgInfo?.mailingAddress.country,
@@ -516,9 +516,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
         postalCode: this.getOrgInfo?.mailingAddress.postalCode,
         streetAddress: this.getOrgInfo?.mailingAddress.street,
         streetAddressAdditional: this.getOrgInfo?.mailingAddress.streetAdditional
-      },
-      email: this.getUserEmail,
-      phone: this.getUserPhone
+      }
     } as CompletingPartyIF)
 
     // update Launch Darkly
