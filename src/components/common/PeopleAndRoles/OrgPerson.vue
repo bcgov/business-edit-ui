@@ -408,9 +408,9 @@ export default class OrgPerson extends Mixins(CommonMixin) {
 
   /** Text same target */
   get orgTargetType (): string {
-    if (this.isProprietor) return this.isPerson ? 'person' : 'business'
-    if (this.isPartner) return 'business'
-    return 'business'
+    let target = 'business'
+    if (this.isProprietor) target = this.isPerson ? 'person' : 'business'
+    return target
   }
 
   /** True if current data object is an organization (corporation/firm). */
