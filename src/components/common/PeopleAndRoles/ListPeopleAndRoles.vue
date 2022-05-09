@@ -553,6 +553,11 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   }
 }
 
+// adjust error bar left spacing
+.people-roles-content.section-container.invalid-section {
+  margin-left: -30px
+}
+
 // adjust error container padding for last section
 .people-roles-content.section-container.invalid-section:last-of-type {
   padding: 1.25rem 1.875rem 2.5rem;

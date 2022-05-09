@@ -121,7 +121,7 @@
                   <v-checkbox
                     class="mb-8"
                     :label="`I confirm ${orgPersonLabel} has legally changed their name and that they remain the ` +
-                      `same business.`"
+                      `same ${orgTargetType}.`"
                     :hide-details="true"
                     :rules="confirmNameChangeRules"
                     v-model="orgPerson.confirmNameChange"
@@ -404,6 +404,13 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   /** True if current data object is a person. */
   get isPerson (): boolean {
     return (this.orgPerson?.officer.partyType === PartyTypes.PERSON)
+  }
+
+  /** Text same target */
+  get orgTargetType (): string {
+    if (this.isProprietor) return this.isPerson ? 'person' : 'business'
+    if (this.isPartner) return 'business'
+    return 'business'
   }
 
   /** True if current data object is an organization (corporation/firm). */
