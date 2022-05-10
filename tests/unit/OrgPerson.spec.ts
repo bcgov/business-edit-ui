@@ -556,8 +556,8 @@ describe('Org/Person component for Correction', () => {
         currentOrgPerson: validProprietorData,
         activeIndex: 0,
         currentCompletingParty: null,
-        isProprietor: true,
-      },
+        isProprietor: true
+      }
     })
     expect(wrapper.findAll('.legal-confirm-label').at(0).text()).toContain('the same person')
 
@@ -588,8 +588,8 @@ describe('Org/Person component for Correction', () => {
         currentOrgPerson: validProprietorData,
         activeIndex: 0,
         currentCompletingParty: null,
-        isProprietor: true,
-      },
+        isProprietor: true
+      }
     })
     expect(wrapper.findAll('.legal-confirm-label').at(0).text()).toContain('the same business')
 
@@ -620,8 +620,8 @@ describe('Org/Person component for Correction', () => {
         currentOrgPerson: validPartnerData,
         activeIndex: 0,
         currentCompletingParty: null,
-        isProprietor: true,
-      },
+        isProprietor: true
+      }
     })
     expect(wrapper.findAll('.legal-confirm-label').at(0).text()).toContain('the same business')
 
