@@ -493,6 +493,11 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   .dropdown-action {
     border-left: 1px solid $gray3;
   }
+
+  // adjust error bar left spacing
+  &.invalid-section {
+    margin-left: -30px;
+  }
 }
 
 .summary-view {
@@ -551,11 +556,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   .badges .v-icon{
     margin-top: 4px
   }
-}
-
-// adjust error bar left spacing
-.people-roles-content.section-container.invalid-section {
-  margin-left: -30px
 }
 
 // adjust error container padding for last section

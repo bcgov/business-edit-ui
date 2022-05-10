@@ -531,4 +531,100 @@ describe('Org/Person component for Correction', () => {
 
     wrapper.destroy()
   })
+
+  it('Displays label "person" for SP (person)', async () => {
+    const validProprietorData = {
+      officer: {
+        id: '2',
+        firstName: '',
+        lastName: '',
+        middleName: '',
+        organizationName: 'Test Org',
+        partyType: 'person',
+        taxId: '1111'
+      },
+      roles: [
+        { roleType: 'Proprietor', appointmentDate: '2020-03-30' }
+      ],
+      mailingAddress: null
+    }
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson: validProprietorData,
+        activeIndex: 0,
+        currentCompletingParty: null,
+        isProprietor: true,
+      },
+    })
+    expect(wrapper.findAll('.legal-confirm-label').at(0).text()).toContain('the same person')
+
+    wrapper.destroy()
+  })
+
+  it('Displays label "business" for SP (organization)', async () => {
+    const validProprietorData = {
+      officer: {
+        id: '2',
+        firstName: '',
+        lastName: '',
+        middleName: '',
+        organizationName: 'Test Org',
+        partyType: 'organization',
+        taxId: '1111'
+      },
+      roles: [
+        { roleType: 'Proprietor', appointmentDate: '2020-03-30' }
+      ],
+      mailingAddress: null
+    }
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson: validProprietorData,
+        activeIndex: 0,
+        currentCompletingParty: null,
+        isProprietor: true,
+      },
+    })
+    expect(wrapper.findAll('.legal-confirm-label').at(0).text()).toContain('the same business')
+
+    wrapper.destroy()
+  })
+
+  it('Displays label "business" for GP (organization)', async () => {
+    const validPartnerData = {
+      officer: {
+        id: '2',
+        firstName: '',
+        lastName: '',
+        middleName: '',
+        organizationName: 'Test Org',
+        partyType: 'organization',
+        taxId: '1111'
+      },
+      roles: [
+        { roleType: 'Partner', appointmentDate: '2020-03-30' }
+      ],
+      mailingAddress: null
+    }
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson: validPartnerData,
+        activeIndex: 0,
+        currentCompletingParty: null,
+        isProprietor: true,
+      },
+    })
+    expect(wrapper.findAll('.legal-confirm-label').at(0).text()).toContain('the same business')
+
+    wrapper.destroy()
+  })
 })

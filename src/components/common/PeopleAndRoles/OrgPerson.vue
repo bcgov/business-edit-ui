@@ -119,9 +119,9 @@
               <template v-if="isProprietor || isPartner && !isNaN(activeIndex)">
                 <article class="mt-n4">
                   <v-checkbox
-                    class="mb-8"
+                    class="mb-8 legal-confirm-label"
                     :label="`I confirm ${orgPersonLabel} has legally changed their name and that they remain the ` +
-                      `same ${orgTargetType}.`"
+                      `same ${orgConfirmLabel}.`"
                     :hide-details="true"
                     :rules="confirmNameChangeRules"
                     v-model="orgPerson.confirmNameChange"
@@ -385,6 +385,11 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     return this.isProprietor ? 'the proprietor' : 'this partner'
   }
 
+  /** Text confirm label for firm orgPerson */
+  get orgConfirmLabel (): string {
+    return this.isProprietor && this.isPerson ? 'person' : 'business'
+  }
+
   /** True if the form is valid. */
   get isFormValid (): boolean {
     let isFormValid = (this.orgPersonFormValid && this.mailingAddressValid)
@@ -404,13 +409,6 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   /** True if current data object is a person. */
   get isPerson (): boolean {
     return (this.orgPerson?.officer.partyType === PartyTypes.PERSON)
-  }
-
-  /** Text same target */
-  get orgTargetType (): string {
-    let target = 'business'
-    if (this.isProprietor) target = this.isPerson ? 'person' : 'business'
-    return target
   }
 
   /** True if current data object is an organization (corporation/firm). */
