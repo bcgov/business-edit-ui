@@ -493,6 +493,11 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   .dropdown-action {
     border-left: 1px solid $gray3;
   }
+
+  // adjust error bar left spacing
+  &.invalid-section {
+    margin-left: -30px;
+  }
 }
 
 .summary-view {

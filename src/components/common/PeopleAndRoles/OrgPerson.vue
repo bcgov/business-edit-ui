@@ -119,9 +119,9 @@
               <template v-if="isProprietor || isPartner && !isNaN(activeIndex)">
                 <article class="mt-n4">
                   <v-checkbox
-                    class="mb-8"
+                    class="mb-8 legal-confirm-label"
                     :label="`I confirm ${orgPersonLabel} has legally changed their name and that they remain the ` +
-                      `same business.`"
+                      `same ${orgConfirmLabel}.`"
                     :hide-details="true"
                     :rules="confirmNameChangeRules"
                     v-model="orgPerson.confirmNameChange"
@@ -383,6 +383,11 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   /** Text label for firm orgPerson. */
   get orgPersonLabel (): string {
     return this.isProprietor ? 'the proprietor' : 'this partner'
+  }
+
+  /** Text confirm label for firm orgPerson */
+  get orgConfirmLabel (): string {
+    return this.isProprietor && this.isPerson ? 'person' : 'business'
   }
 
   /** True if the form is valid. */
@@ -857,6 +862,7 @@ li {
     font-size: 1rem;
     color: $gray7;
     font-weight: normal;
+    padding-top: 2px; // label align with checkbox
   }
 
   .theme--light.v-input input, .theme--light.v-input textarea {
