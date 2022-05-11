@@ -132,13 +132,13 @@ import { CertifySection, CurrentDirectors, ShareStructures, StaffPayment, YourCo
 import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
-import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FeesIF, FilingDataIF, FlagsReviewCertifyIF }
+import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FeesIF, FilingDataIF, FlagsReviewCertifyIF, ResourceIF }
   from '@/interfaces/'
 import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
-import { AlterationResources } from '@/resources/'
+import { BenefitCompanyResource, CooperativeResource } from '@/resources/Alteration/'
 
 @Component({
   components: {
@@ -169,6 +169,8 @@ export default class Alteration extends Mixins(
   @Getter getAppValidate!: boolean
   @Getter showFeeSummary!: boolean
   @Getter getFeePrices!: FeesIF
+  @Getter isTypeBcomp!: boolean
+  @Getter isTypeCoop!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -218,9 +220,11 @@ export default class Alteration extends Mixins(
     return ''
   }
 
-  /** The entity specific resource file for an Alteration filing. */
-  get alterationResources (): any {
-    return AlterationResources.find(x => x.entityType === this.getEntityType)
+  /** The resource file for an alteration filing. */
+  get alterationResources (): ResourceIF {
+    if (this.isTypeBcomp) return BenefitCompanyResource
+    if (this.isTypeCoop) return CooperativeResource
+    return null
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -269,7 +273,7 @@ export default class Alteration extends Mixins(
       }
 
       if (this.alterationResources) {
-        // Set the resources
+        // set the specific resource
         this.setResource(this.alterationResources)
 
         // initialize Fee Summary data

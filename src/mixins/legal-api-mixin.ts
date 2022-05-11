@@ -1,10 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { axios } from '@/utils/'
-import {
-  AddressesIF, AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF,
-  NameTranslationIF, OrgPersonIF, ShareStructureIF, ResolutionsIF, ChangeFirmIF
-} from '@/interfaces/'
+import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF, NameTranslationIF,
+  OrgPersonIF, ShareStructureIF, ResolutionsIF, FirmChangeIF, FirmConversionIF } from '@/interfaces/'
 import { OrgPersonTypes } from '@/enums/'
 
 /**
@@ -55,7 +53,10 @@ export default class LegalApiMixin extends Vue {
    * @param isDraft boolean indicating whether to save draft or complete the filing
    * @returns a promise to return the updated filing
    */
-  async updateFiling (filing: CorrectionFilingIF | AlterationFilingIF | ChangeFirmIF, isDraft: boolean): Promise<any> {
+  async updateFiling (
+    filing: CorrectionFilingIF | AlterationFilingIF | FirmChangeIF | FirmConversionIF,
+    isDraft: boolean
+  ): Promise<any> {
     if (!filing) throw new Error('updateFiling(), invalid filing')
     const filingId = this.getFilingId
     if (!filingId) throw new Error('updateFiling(), invalid filing id')
@@ -77,12 +78,15 @@ export default class LegalApiMixin extends Vue {
   }
 
   /**
-   * Creates a filing.
+   * Creates a new filing.
    * @param filing the object body of the request
    * @param isDraft boolean indicating whether to save draft or complete the filing
    * @returns a promise to return the updated filing
    */
-  async createFiling (filing: AlterationFilingIF | ChangeFirmIF, isDraft: boolean): Promise<any> {
+  async createFiling (
+    filing: AlterationFilingIF | FirmChangeIF | FirmConversionIF,
+    isDraft: boolean
+  ): Promise<any> {
     if (!filing) throw new Error('updateFiling(), invalid filing')
 
     // put updated filing to filings endpoint

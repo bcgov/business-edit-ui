@@ -2,9 +2,9 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
-import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, ChangeFirmIF, CorrectionFilingIF,
-  EffectiveDateTimeIF, EntitySnapshotIF, NameRequestIF, NameTranslationIF, OrgPersonIF, ShareClassIF,
-  ShareStructureIF } from '@/interfaces/'
+import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
+  EffectiveDateTimeIF, EntitySnapshotIF, FirmChangeIF, FirmConversionIF, NameRequestIF,
+  NameTranslationIF, OrgPersonIF, ShareClassIF, ShareStructureIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, EffectOfOrders, FilingTypes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -94,7 +94,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   //
 
   /**
-   * Builds an Incorporation Application correction filing from store data. Used when saving a filing.
+   * Builds an Incorporation Application correction filing from store data.
    * @param isDraft whether this is a draft
    * @returns the incorporation application filing body
    */
@@ -179,7 +179,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Builds an alteration filing from store data. Used when saving a filing.
+   * Builds an alteration filing from store data.
    * @param isDraft whether this is a draft
    * @returns the alteration filing body
    */
@@ -298,13 +298,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Builds a change of registration filing from store data. Used when saving a filing.
+   * Builds a firm change of registration filing from store data.
    * @param isDraft whether this is a draft
-   * @returns the change filing body
+   * @returns the firm change filing body
    */
-  buildChangeFiling (isDraft: boolean): ChangeFirmIF {
+  buildFirmChangeFiling (isDraft: boolean): FirmChangeIF {
     // Build change firm filing
-    const filing: ChangeFirmIF = {
+    const filing: FirmChangeIF = {
       header: {
         name: FilingTypes.CHANGE_OF_REGISTRATION,
         certifiedBy: this.getCertifyState.certifiedBy,
@@ -402,6 +402,116 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       })
 
       filing.changeOfRegistration.parties = parties
+    }
+
+    return filing
+  }
+
+  /**
+   * Builds a firm conversion filing from store data.
+   * @param isDraft whether this is a draft
+   * @returns the firm conversion filing body
+   */
+  buildFirmConversionFiling (isDraft: boolean): FirmConversionIF {
+    // Build change firm filing
+    const filing: FirmConversionIF = {
+      header: {
+        name: FilingTypes.CONVERSION,
+        certifiedBy: this.getCertifyState.certifiedBy,
+        date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
+        folioNumber: this.getFolioNumber
+      },
+      business: {
+        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
+        legalType: this.getEntitySnapshot.businessInfo.legalType,
+        identifier: this.getEntitySnapshot.businessInfo.identifier,
+        legalName: this.getEntitySnapshot.businessInfo.legalName
+      },
+      conversion: {
+        business: {
+          natureOfBusiness: '',
+          identifier: this.getBusinessId
+        },
+        contactPoint: {
+          email: this.getBusinessContact.email,
+          phone: this.getBusinessContact.phone,
+          ...this.getBusinessContact.extension
+            ? { extension: +this.getBusinessContact.extension }
+            : {}
+        }
+      }
+    }
+
+    // Apply name request info to filing
+    if (this.hasBusinessNameChanged) {
+      filing.conversion.nameRequest = { ...this.getNameRequest }
+    }
+
+    // Apply business address changes to filing
+    if (this.hasOfficeAddressesChanged) {
+      filing.conversion.offices = {
+        businessOffice: {
+          mailingAddress: this.getOfficeAddresses.businessOffice.mailingAddress,
+          deliveryAddress: this.getOfficeAddresses.businessOffice.deliveryAddress
+        }
+      }
+    }
+
+    // Apply NAICS change to filing
+    if (this.hasNatureOfBusinessChanged) {
+      filing.conversion.business.naics = this.getCurrentNaics
+    }
+
+    // Apply parties to filing
+    {
+      let parties = cloneDeep(this.getPeopleAndRoles) // make a copy
+
+      // Add completing party
+      // (assumes CP doesn't already exist in array)
+      parties.push({
+        officer: {
+          partyType: PartyTypes.PERSON,
+          firstName: this.getCompletingParty.firstName,
+          middleName: this.getCompletingParty.middleName,
+          lastName: this.getCompletingParty.lastName
+        },
+        roles: [{
+          roleType: RoleTypes.COMPLETING_PARTY,
+          appointmentDate: this.getCurrentDate
+        }],
+        mailingAddress: this.getCompletingParty.mailingAddress
+      } as OrgPersonIF)
+
+      // if filing...
+      if (!isDraft) {
+        // Filter out removed parties and delete "actions" property
+        parties = parties.filter(x => !x.actions?.includes(ActionTypes.REMOVED))
+          .map((x) => { const { actions, ...rest } = x; return rest })
+      }
+
+      // fix schema issues
+      parties = parties.map(party => {
+        // remove empty Officer properties -- schema doesn't accept None (null) properties
+        Object.keys(party.officer).forEach(key => {
+          if (!party.officer[key]) delete party.officer[key]
+        })
+
+        // remove empty Delivery Address and Mailing Address properties
+        if (party.deliveryAddress) {
+          if (!party.deliveryAddress.streetAddressAdditional) delete party.deliveryAddress.streetAddressAdditional
+          if (!party.deliveryAddress.deliveryInstructions) delete party.deliveryAddress.deliveryInstructions
+        }
+        if (party.mailingAddress) {
+          if (!party.mailingAddress.streetAddressAdditional) delete party.mailingAddress.streetAddressAdditional
+          if (!party.mailingAddress.deliveryInstructions) delete party.mailingAddress.deliveryInstructions
+        }
+
+        // NB: at this time, do not convert party from "middleName" to "middleInitial"
+
+        return party
+      })
+
+      filing.conversion.parties = parties
     }
 
     return filing
@@ -604,11 +714,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Parses a draft change filing into the store.
-   * @param filing the change filing
+   * Parses a draft firm change filing into the store.
+   * @param filing the firm change filing
    * @param entitySnapshot the latest entity snapshot
    */
-  parseChangeFirm (filing: ChangeFirmIF, entitySnapshot: EntitySnapshotIF): void {
+  parseFirmChange (filing: FirmChangeIF, entitySnapshot: EntitySnapshotIF): void {
     // Store business snapshot
     this.setEntitySnapshot(cloneDeep(entitySnapshot))
 
@@ -638,7 +748,70 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store people and roles
     let orgPersons = filing.changeOfRegistration.parties || entitySnapshot.orgPersons
     // exclude completing party
-    // (it is managed separately and added to the filing in buildChangeFiling())
+    // (it is managed separately and added to the filing in buildFirmChangeFiling())
+    orgPersons = orgPersons.filter(party => !(party?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
+    this.setPeopleAndRoles(orgPersons)
+
+    // Store business contact info
+    this.setBusinessContact(entitySnapshot.authInfo.contact)
+
+    // Store certify state
+    this.setCertifyState({
+      valid: false,
+      certifiedBy: filing.header.certifiedBy
+    })
+
+    // Store Folio Number
+    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
+
+    // If Transactional Folio Number was saved then store it.
+    if (filing.header.isTransactionalFolioNumber) {
+      this.setTransactionalFolioNumber(filing.header.folioNumber)
+    }
+
+    // Store filing date
+    this.setFilingDateTime(filing.header.date)
+
+    // Store document optional email
+    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
+  }
+
+  /**
+   * Parses a draft firm conversion filing into the store.
+   * @param filing the firm conversion filing
+   * @param entitySnapshot the latest entity snapshot
+   */
+  parseFirmConversion (filing: FirmConversionIF, entitySnapshot: EntitySnapshotIF): void {
+    // Store business snapshot
+    this.setEntitySnapshot(cloneDeep(entitySnapshot))
+
+    // Store current entity type
+    this.setEntityType(filing.business?.legalType || entitySnapshot.businessInfo.legalType)
+
+    // Store business information
+    this.setBusinessInformation({
+      ...entitySnapshot.businessInfo
+    })
+
+    // Store NAICS
+    if (filing.conversion.business.naics) {
+      this.setNaics(filing.conversion.business.naics)
+    }
+
+    // Store name request
+    this.setNameRequest(filing.conversion.nameRequest || { legalName: entitySnapshot.businessInfo.legalName })
+
+    // Store office addresses
+    let addresses
+    if (filing.conversion.offices?.businessOffice) {
+      addresses = { businessOffice: filing.conversion.offices.businessOffice }
+    }
+    this.setOfficeAddresses(addresses || entitySnapshot.addresses)
+
+    // Store people and roles
+    let orgPersons = filing.conversion.parties || entitySnapshot.orgPersons
+    // exclude completing party
+    // (it is managed separately and added to the filing in buildFirmChangeFiling())
     orgPersons = orgPersons.filter(party => !(party?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(orgPersons)
 

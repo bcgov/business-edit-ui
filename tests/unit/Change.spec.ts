@@ -6,7 +6,7 @@ import sinon from 'sinon'
 import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { axios } from '@/utils/'
-import Alteration from '@/views/Alteration.vue'
+import Change from '@/views/Change.vue'
 import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)
@@ -17,7 +17,7 @@ const store = getVuexStore()
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
-describe('Alteration component', () => {
+describe('Change component', () => {
   let wrapper: any
   const { assign } = window.location
 
@@ -57,13 +57,13 @@ describe('Alteration component', () => {
 
     const get = sinon.stub(axios, 'get')
 
-    // GET payment fee for immediate alteration
-    get.withArgs('https://pay.api.url/fees/BEN/ALTER')
+    // GET payment fee for immediate change
+    get.withArgs('https://pay.api.url/fees/FM/CHANGE')
       .returns(Promise.resolve({
         data: {
           'filingFees': 100.0,
-          'filingType': 'Alteration',
-          'filingTypeCode': 'ALTER',
+          'filingType': 'Change',
+          'filingTypeCode': 'CHANGE',
           'futureEffectiveFees': 0,
           'priorityFees': 0,
           'processingFees': 0,
@@ -76,13 +76,13 @@ describe('Alteration component', () => {
         }
       }))
 
-    // GET payment fee for future alteration
-    get.withArgs('https://pay.api.url/fees/BEN/ALTER?futureEffective=true')
+    // GET payment fee for future change
+    get.withArgs('https://pay.api.url/fees/FM/CHANGE?futureEffective=true')
       .returns(Promise.resolve({
         data: {
           'filingFees': 100.0,
-          'filingType': 'Alteration',
-          'filingTypeCode': 'ALTER',
+          'filingType': 'Change',
+          'filingTypeCode': 'CHANGE',
           'futureEffectiveFees': 100.0,
           'priorityFees': 0,
           'processingFees': 0,
@@ -259,14 +259,14 @@ describe('Alteration component', () => {
         }
       }))
 
-    // FUTURE: mock GET alteration filing
+    // FUTURE: mock GET change filing
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    await router.push({ name: 'alteration' })
-    wrapper = shallowMount(Alteration, { localVue, store, router, vuetify })
+    await router.push({ name: 'change' })
+    wrapper = shallowMount(Change, { localVue, store, router, vuetify })
 
     // wait for all queries to complete
     await flushPromises()
@@ -278,11 +278,12 @@ describe('Alteration component', () => {
     wrapper.destroy()
   })
 
-  it('renders Alteration view', () => {
-    expect(wrapper.findComponent(Alteration).exists()).toBe(true)
+  it('renders Change view', () => {
+    expect(wrapper.findComponent(Change).exists()).toBe(true)
   })
 
-  it('loads the business snapshot into the store', async () => {
+  // FUTURE
+  xit('loads the business snapshot into the store', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
     const state = store.state.stateModel
@@ -324,14 +325,16 @@ describe('Alteration component', () => {
     expect(store.state.stateModel.currentFees.futureEffectiveFees).toBe(0)
   })
 
-  it('fetches the fee prices after loading', async () => {
+  // FUTURE
+  xit('fetches the fee prices after loading', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
     expect(store.state.stateModel.feePrices.filingFees).toBe(100)
     expect(store.state.stateModel.feePrices.futureEffectiveFees).toBe(100)
   })
 
-  it('display the fee prices properly', async () => {
+  // FUTURE
+  xit('display the fee prices properly', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
@@ -371,7 +374,8 @@ describe('Alteration component', () => {
     ).toContain('Choosing an alteration date and time in the future will incur an additional fee.')
   })
 
-  it('updates the current fees when AlterationSummary changes', async () => {
+  // FUTURE
+  xit('updates the current fees when AlterationSummary changes', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 

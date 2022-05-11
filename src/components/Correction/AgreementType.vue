@@ -47,7 +47,7 @@
         <v-card flat>
           <v-radio-group v-model="agreementType" class="agreement-option-list">
             <v-radio
-              v-for="(item, index) in incorporationAgreementTypeResource"
+              v-for="(item, index) in AgreementTypeResource"
               :key="index"
               :value="item.code"
               :id="`agreement-type-${item.code}`">
@@ -74,11 +74,12 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces/'
-import { AgreementTypeResource } from '@/resources/'
+import { AgreementTypeResource } from '@/resources/Correction/'
 
 @Component
 export default class AgreementType extends Vue {
-  private incorporationAgreementTypeResource = AgreementTypeResource
+  // declaration for template
+  readonly AgreementTypeResource = AgreementTypeResource
 
   // Global getters
   @Getter getAgreementType!: string
@@ -116,7 +117,7 @@ export default class AgreementType extends Vue {
 
   get selectedAgreementDescription () : string {
     if (this.getAgreementType) {
-      return this.incorporationAgreementTypeResource.find(item => item.code === this.getAgreementType)
+      return AgreementTypeResource.find(item => item.code === this.getAgreementType)
         .summaryDescription
     }
     return ''

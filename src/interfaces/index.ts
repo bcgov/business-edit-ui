@@ -1,5 +1,6 @@
 export * from './alteration-interfaces'
-export * from './change-firm-interfaces'
+export * from './change-interfaces'
+export * from './conversion-interfaces'
 export * from './correction-interfaces'
 export * from './filing-interfaces'
 export * from './payment-interfaces'
