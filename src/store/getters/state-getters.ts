@@ -38,6 +38,11 @@ export const isChangeFiling = (state: StateIF): boolean => {
   return (state.stateModel.tombstone.filingType === FilingTypes.CHANGE_OF_REGISTRATION)
 }
 
+/** Whether the current filing is a conversion filing. */
+export const isConversionFiling = (state: StateIF): boolean => {
+  return (state.stateModel.tombstone.filingType === FilingTypes.CONVERSION)
+}
+
 /** The entity type. */
 export const getEntityType = (state: StateIF): CorpTypeCd => {
   return state.stateModel.tombstone.entityType
@@ -512,25 +517,31 @@ export const hasContactInfoChanged = (state: StateIF): boolean => {
   )
 }
 
-/** The dynamic Office type based on the current filing. */
+/** The dynamic Office Type based on the current filing. */
 export const officeType = (state: StateIF): OfficeTypes => {
-  if (isChangeFiling(state)) return OfficeTypes.BUSINESS_OFFICE
+  if (isChangeFiling(state) || isConversionFiling(state)) return OfficeTypes.BUSINESS_OFFICE
   if (isAlterationFiling(state) || isCorrectionFiling(state)) return OfficeTypes.REGISTERED_OFFICE
 }
 
-/** True if any office address has changed. Applies to corrections and change filings only. */
+/** True if any office address has changed. Applies to corrections, change and conversion filings only. */
 export const hasOfficeAddressesChanged = (state: StateIF): boolean => {
-  return (isCorrectionFiling(state) || isChangeFiling(state)) &&
-    (mailingChanged(state) || deliveryChanged(state) ||
-      // Exclude Records Address conditions from Change filing
-      (!isChangeFiling(state) && (recMailingChanged(state) || recDeliveryChanged(state)))
-    )
+  const isExpectedFiling = isCorrectionFiling(state) || isChangeFiling(state) || isConversionFiling(state)
+  const isAddressChanged = (mailingChanged(state) || deliveryChanged(state) ||
+    // exclude Records Address conditions from Change or Conversion filing
+    (!isChangeFiling(state) && !isConversionFiling(state) && (recMailingChanged(state) || recDeliveryChanged(state)))
+  )
+
+  return (isExpectedFiling && isAddressChanged)
 }
 
 /** The office addresses from the original IA. NB: may be {} */
 export const originalOfficeAddresses = (state: StateIF): AddressesIF => {
-  if (isCorrectionFiling(state)) return (getOriginalIA(state)?.incorporationApplication.offices as AddressesIF)
-  if (isChangeFiling(state)) return (getEntitySnapshot(state)?.addresses as AddressesIF)
+  if (isCorrectionFiling(state)) {
+    return (getOriginalIA(state)?.incorporationApplication.offices as AddressesIF)
+  }
+  if (isChangeFiling(state) || isConversionFiling(state)) {
+    return (getEntitySnapshot(state)?.addresses as AddressesIF)
+  }
 }
 
 /** True if (registered) mailing address has changed. */
@@ -682,7 +693,8 @@ export const showFeeSummary = (state: StateIF): boolean => {
   const haveFilingChange = (
     (isCorrectionFiling(state) && hasCorrectionChanged(state)) ||
     (isAlterationFiling(state) && hasAlterationChanged(state)) ||
-    (isChangeFiling(state) && hasFirmChanged(state))
+    (isChangeFiling(state) && hasFirmChanged(state)) ||
+    (isConversionFiling(state) && hasFirmChanged(state))
   )
   return (haveFilingChange && !isEqual(getFilingData(state), defaultFilingData))
 }
@@ -717,6 +729,7 @@ export const getFilingName = (state: StateIF): FilingNames => {
   if (isCorrectionFiling(state)) return FilingNames.CORRECTION
   if (isAlterationFiling(state)) return FilingNames.ALTERATION
   if (isChangeFiling(state)) return FilingNames.CHANGE_OF_REGISTRATION
+  if (isConversionFiling(state)) return FilingNames.CONVERSION
   return null
 }
 

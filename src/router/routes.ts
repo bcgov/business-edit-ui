@@ -1,35 +1,7 @@
-import { Signin, Signout, Alteration, Change, Correction } from '@/views/'
+import { Signin, Signout, Alteration, Change, Conversion, Correction } from '@/views/'
 import { FilingTypes, RouteNames } from '@/enums/'
 
 export const routes = [
-  {
-    // router.beforeEach() routes here:
-    path: '/signin',
-    name: RouteNames.SIGN_IN,
-    component: Signin,
-    meta: {
-      requiresAuth: false
-    }
-  },
-  {
-    // SbcHeader.logout() redirects here:
-    path: '/signout',
-    name: RouteNames.SIGN_OUT,
-    component: Signout,
-    meta: {
-      requiresAuth: false
-    }
-  },
-  {
-    path: '/correction',
-    name: RouteNames.CORRECTION,
-    component: Correction,
-    meta: {
-      requiresAuth: true,
-      isStaffOnly: true,
-      filingType: FilingTypes.CORRECTION
-    }
-  },
   {
     path: '/alteration',
     name: RouteNames.ALTERATION,
@@ -51,9 +23,47 @@ export const routes = [
     }
   },
   {
-    // default/fallback route
+    path: '/conversion',
+    name: RouteNames.CONVERSION,
+    component: Conversion,
+    meta: {
+      requiresAuth: true,
+      isStaffOnly: true,
+      filingType: FilingTypes.CONVERSION
+    }
+  },
+  {
+    path: '/correction',
+    name: RouteNames.CORRECTION,
+    component: Correction,
+    meta: {
+      requiresAuth: true,
+      isStaffOnly: true,
+      filingType: FilingTypes.CORRECTION
+    }
+  },
+  {
+    // router.beforeEach() routes here:
+    path: '/signin',
+    name: RouteNames.SIGN_IN,
+    component: Signin,
+    meta: {
+      requiresAuth: false
+    }
+  },
+  {
+    // SbcHeader.logout() redirects here:
+    path: '/signout',
+    name: RouteNames.SIGN_OUT,
+    component: Signout,
+    meta: {
+      requiresAuth: false
+    }
+  },
+  {
+    // fallback route
     // must be last
     path: '*',
-    redirect: '/correction'
+    redirect: '/correction' // arbitrary default route
   }
 ]

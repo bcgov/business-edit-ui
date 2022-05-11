@@ -33,25 +33,33 @@ import { PersonAddressSchema } from '@/schemas/'
 export default class CompletingParty extends Vue {
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber: string
+
   /** Whether to perform validation. */
   @Prop({ default: false }) readonly validate!: boolean
+
   // store getters
   @Getter getCompletingParty!: CompletingPartyIF
   @Getter isRoleStaff!: boolean
+
   // store actions
   @Action setCompletingParty!: ActionBindingIF
   @Action setCompletingPartyValidity!: ActionBindingIF
+
   // declaration for template
   readonly PersonAddressSchema = PersonAddressSchema
+
   // local variable
   private completingPartyValid = true
+
   /** True if invalid class should be set for completing party container. */
   get invalidSection (): boolean {
     return (this.validate && !this.completingPartyValid)
   }
+
   protected onUpdate (cp: CompletingPartyIF): void {
     this.setCompletingParty(cp)
   }
+
   protected onValid (valid: boolean): void {
     this.completingPartyValid = valid
     this.setCompletingPartyValidity(valid)

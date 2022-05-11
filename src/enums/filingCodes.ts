@@ -1,7 +1,8 @@
 export enum FilingCodes {
-  INCORPORATION_CP = 'OTINC',
-  INCORPORATION_BC = 'BCINC',
-  CORRECTION = 'CRCTN',
   ALTERATION = 'ALTER',
-  CHANGE_OF_REGISTRATION = 'FMCHANGE'
+  CHANGE_OF_REGISTRATION = 'FMCHANGE', // *** verify: may be wrong
+  CORRECTION = 'CRCTN',
+  CONVERSION = 'CONVERSION', // *** verify and update if needed
+  INCORPORATION_BC = 'BCINC',
+  INCORPORATION_CP = 'OTINC'
 }

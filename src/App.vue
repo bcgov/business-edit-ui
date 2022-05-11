@@ -115,7 +115,7 @@
                 <!-- Alteration/Change filings use the enhanced Fee Summary shared component -->
                 <v-expand-transition>
                   <FeeSummaryShared
-                    v-if="isAlterationFiling || isChangeFiling"
+                    v-if="isAlterationFiling || isChangeFiling || isConversionFiling"
                     :filingData="getFilingData"
                     :payApiUrl="payApiUrl"
                     :isLoading="isBusySaving"
@@ -160,14 +160,14 @@ import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
-import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF }
-  from '@/interfaces/'
+import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
+  AlterationFilingIF, FirmChangeIF, FirmConversionIF } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums/'
 import { FeeSummaryActions } from '@bcrs-shared-components/enums/'
 import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
-  getStaffDashboardBreadcrumb } from '@/resources/'
+  getStaffDashboardBreadcrumb } from '@/resources/BreadCrumbResources'
 
 @Component({
   components: {
@@ -312,10 +312,11 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
   /** The fee summary confirm button label. */
   get feeSummaryConfirmLabel (): string {
+    const isNoFee = this.isChangeFiling || this.isConversionFiling
     if (this.isSummaryMode) {
-      return this.isChangeFiling ? 'File Now (No Fee)' : 'File and Pay'
+      return isNoFee ? 'File Now (No Fee)' : 'File and Pay'
     } else {
-      return this.isChangeFiling ? 'Review and Confirm' : 'Review and Certify'
+      return isNoFee ? 'Review and Confirm' : 'Review and Certify'
     }
   }
 
@@ -744,11 +745,12 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     let filingComplete: any
     try {
-      const filing = this.isAlterationFiling
-        ? await this.buildAlterationFiling(isDraft)
-        : await this.buildChangeFiling(isDraft)
+      let filing: AlterationFilingIF | FirmChangeIF | FirmConversionIF
+      if (this.isAlterationFiling) filing = await this.buildAlterationFiling(isDraft)
+      if (this.isChangeFiling) filing = await this.buildFirmChangeFiling(isDraft)
+      if (this.isConversionFiling) filing = await this.buildFirmConversionFiling(isDraft)
 
-      // Update or file the alteration if we have a filingId or create a draft if not.
+      // update the filing if we have a filingId, otherwise create a draft
       filingComplete = this.getFilingId
         ? await this.updateFiling(filing, isDraft)
         : await this.createFiling(filing, isDraft)
@@ -761,7 +763,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       return
     }
 
-    // If filing is not a draft, proceed with payment
+    // if filing is not a draft, proceed with payment
     if (!isDraft && filingComplete) {
       this.setIsFilingPaying(true)
       const paymentToken = filingComplete?.header?.paymentToken

@@ -14,7 +14,8 @@
           </label>
           <v-flex md1 class="mt-1">
             <v-chip
-              v-if="companyNameChanges || ((isAlterationFiling || isChangeFiling) && hasBusinessNameChanged)"
+              v-if="companyNameChanges ||
+                (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling || isConversionFiling))"
               id="corrected-lbl"
               x-small label
               color="primary"
@@ -31,7 +32,9 @@
             <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
 
             <!-- Business Type Info -->
-            <template v-if="((isAlterationFiling || isChangeFiling) && hasBusinessNameChanged) && !hasNewNr">
+            <template v-if="!hasNewNr &&
+              (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling || isConversionFiling))"
+            >
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
                 <span class="info-text">{{getCorpTypeDescription(getEntityType)}}</span>
@@ -42,7 +45,7 @@
             </template>
 
             <!-- Name Request Info -->
-            <template v-if="(isAlterationFiling || isChangeFiling) && hasNewNr">
+            <template v-if="hasNewNr && (isAlterationFiling || isChangeFiling || isConversionFiling)">
               <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -85,7 +88,8 @@
             <div class="actions mr-4">
               <!-- TODO: only show buttons for named company -->
               <v-btn
-                v-if="companyNameChanges || ((isAlterationFiling || isChangeFiling) && hasBusinessNameChanged)"
+                v-if="companyNameChanges ||
+                  (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling || isConversionFiling))"
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -104,7 +108,8 @@
                 <span>{{editLabel}}</span>
               </v-btn>
               <span class="more-actions" v-if="companyNameChanges ||
-                ((isAlterationFiling || isChangeFiling) && hasBusinessNameChanged)">
+                (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling || isConversionFiling))"
+              >
                 <v-menu
                   offset-y left nudge-bottom="4"
                   v-model="dropdown"
@@ -147,7 +152,9 @@
       </v-row>
 
       <!-- Name Request Applicant -->
-      <v-row no-gutters v-if="(isAlterationFiling || isChangeFiling) && hasNewNr" class="sub-section">
+      <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isChangeFiling || isConversionFiling)"
+        class="sub-section"
+      >
         <v-col cols="3">
           <label class="pr-4">Name Request Applicant</label>
         </v-col>
@@ -173,11 +180,11 @@
       </v-row>
     </div>
 
-    <v-divider v-if="isChangeFiling" class="mx-4 my-1" />
+    <v-divider v-if="isChangeFiling || isConversionFiling" class="mx-4 my-1" />
 
     <!-- Business Type -->
     <div
-      v-if="isAlterationFiling || isChangeFiling"
+      v-if="isAlterationFiling || isChangeFiling || isConversionFiling"
       id="company-type-section"
       class="section-container"
       :class="{'invalid-section': invalidTypeSection}"
@@ -191,7 +198,7 @@
 
     <!-- Name Translation(s) -->
     <div
-      v-if="!isChangeFiling"
+      v-if="!isChangeFiling && !isConversionFiling"
       id="name-translate-section"
       class="section-container"
       :class="{'invalid-section': invalidTranslationSection}"
@@ -206,7 +213,7 @@
     <v-divider class="mx-4 my-1" />
 
     <!-- Change Filing Section -->
-    <template v-if="isChangeFiling">
+    <template v-if="isChangeFiling || isConversionFiling">
 
       <!-- Business Start Date -->
       <div class="section-container">
@@ -430,7 +437,7 @@ export default class YourCompany extends Mixins(
         return (this.apiToPacificDateLong(this.getOriginalEffectiveDateTime))
       }
     }
-    if (this.isAlterationFiling || this.isChangeFiling) {
+    if (this.isAlterationFiling || this.isChangeFiling || this.isConversionFiling) {
       if (this.getBusinessFoundingDate) {
         return (this.apiToPacificDateLong(this.getBusinessFoundingDate))
       }

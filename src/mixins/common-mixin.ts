@@ -10,9 +10,10 @@ import { ConfirmDialogType } from '@/interfaces/'
 @Component({})
 export default class CommonMixin extends Vue {
   @Getter getEntityType!: CorpTypeCd
-  @Getter isChangeFiling!: boolean
-  @Getter isCorrectionFiling!: boolean
   @Getter isAlterationFiling!: boolean
+  @Getter isChangeFiling!: boolean
+  @Getter isConversionFiling!: boolean
+  @Getter isCorrectionFiling!: boolean
 
   /** Is True if Jest is running the code. */
   get isJestRunning (): boolean {
@@ -83,25 +84,55 @@ export default class CommonMixin extends Vue {
     this[prop] = this[prop]?.toUpperCase()
   }
 
-  /** The appropriate edit label for corrections, alterations or change filings. */
+  /** The appropriate edit label for corrections, alterations, change or conversion filings. */
   get editLabel (): string {
-    if (this.isCorrectionFiling) return 'Correct'
-    if (this.isAlterationFiling || this.isChangeFiling) return 'Change'
-    return 'Edit'
+    // if (this.isCorrectionFiling) return 'Correct'
+    // if (this.isAlterationFiling || this.isChangeFiling || this.isConversionFiling) return 'Change'
+    // return 'Edit'
+    switch (true) {
+      case this.isCorrectionFiling:
+        return 'Correct'
+      case this.isAlterationFiling:
+      case this.isChangeFiling:
+      case this.isConversionFiling:
+        return 'Change'
+      default:
+        return 'Edit'
+    }
   }
 
-  /** The appropriate edited label for corrections, alterations or change filings. */
+  /** The appropriate edited label for corrections, alterations, change or conversion filings. */
   get editedLabel (): string {
-    if (this.isCorrectionFiling) return 'Corrected'
-    if (this.isAlterationFiling || this.isChangeFiling) return 'Changed'
-    return 'Edited'
+    // if (this.isCorrectionFiling) return 'Corrected'
+    // if (this.isAlterationFiling || this.isChangeFiling || this.isConversionFiling) return 'Changed'
+    // return 'Edited'
+    switch (true) {
+      case this.isCorrectionFiling:
+        return 'Corrected'
+      case this.isAlterationFiling:
+      case this.isChangeFiling:
+      case this.isConversionFiling:
+        return 'Changed'
+      default:
+        return 'Edited'
+    }
   }
 
-  /** The appropriate edits saved label for corrections, alterations or change filings. */
+  /** The appropriate edits saved label for corrections, alterations, change or conversion filings. */
   get editSavedLabel (): string {
-    if (this.isCorrectionFiling) return 'Corrections Saved'
-    if (this.isAlterationFiling || this.isChangeFiling) return 'Changes Saved'
-    return 'Edits Saved'
+    // if (this.isCorrectionFiling) return 'Corrections Saved'
+    // if (this.isAlterationFiling || this.isChangeFiling || this.isConversionFiling) return 'Changes Saved'
+    // return 'Edits Saved'
+    switch (true) {
+      case this.isCorrectionFiling:
+        return 'Corrections Saved'
+      case this.isAlterationFiling:
+      case this.isChangeFiling:
+      case this.isConversionFiling:
+        return 'Changes Saved'
+      default:
+        return 'Edits Saved'
+    }
   }
 
   /** The entity title. */
@@ -110,6 +141,7 @@ export default class CommonMixin extends Vue {
       case RouteNames.ALTERATION:
         return 'Company Information'
       case RouteNames.CHANGE:
+      case RouteNames.CONVERSION:
         return 'Business Information'
       case RouteNames.CORRECTION:
         return 'Correction - Incorporation Application'

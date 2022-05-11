@@ -1,10 +1,10 @@
 <template>
-  <section class="pb-10" id="change-view">
+  <section class="pb-10" id="conversion-view">
     <!-- Business Information page-->
     <v-slide-x-transition hide-on-leave>
       <div v-if="!isSummaryMode || !showFeeSummary">
         <header>
-          <h1>Business Information</h1>
+          <h1>Record Conversion</h1>
         </header>
 
         <section class="mt-6">
@@ -69,11 +69,11 @@ import CompletingParty from '@/components/Change/CompletingParty.vue'
 import { CertifySection, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
-import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
-import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Change/'
+import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Conversion/'
 
 @Component({
   components: {
@@ -87,7 +87,7 @@ import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resour
     YourCompany
   }
 })
-export default class Change extends Mixins(
+export default class Conversion extends Mixins(
   CommonMixin,
   LegalApiMixin,
   FilingTemplateMixin,
@@ -115,7 +115,7 @@ export default class Change extends Mixins(
   @Prop({ default: false })
   readonly appReady: boolean
 
-  /** The id of the change filing being edited. */
+  /** The id of the conversion filing being edited. */
   get changeId (): number {
     return +this.$route.query['change-id'] || 0
   }
@@ -125,8 +125,8 @@ export default class Change extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The resource file for a firm change filing. */
-  get firmChangeResource (): ResourceIF {
+  /** The resource file for a firm conversion filing. */
+  get firmConversionResource (): any {
     if (this.isTypeSoleProp) return SoleProprietorshipResource
     if (this.isTypePartnership) return GeneralPartnershipResource
     return null
@@ -143,8 +143,8 @@ export default class Change extends Mixins(
 
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
-    if (!this.isJestRunning && !getFeatureFlag('change-ui-enabled')) {
-      window.alert('Change filings are not available at the moment. Please check again later.')
+    if (!this.isJestRunning && !getFeatureFlag('conversion-ui-enabled')) {
+      window.alert('Conversion filings are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard')
       return
     }
@@ -157,48 +157,48 @@ export default class Change extends Mixins(
         // store the filing ID
         this.setFilingId(this.changeId)
 
-        // fetch draft change filing to resume
+        // fetch draft conversion filing to resume
         const changeFiling = await this.fetchFilingById(this.changeId)
 
-        // do not proceed if this isn't a change filing
-        if (!changeFiling.changeOfRegistration) {
-          throw new Error('Invalid change filing')
+        // do not proceed if this isn't a conversion  filing
+        if (!changeFiling.conversion) {
+          throw new Error('Invalid conversion filing')
         }
 
         // do not proceed if this isn't a DRAFT filing
         if (changeFiling.header.status !== FilingStatus.DRAFT) {
-          throw new Error('Invalid change status')
+          throw new Error('Invalid conversion status')
         }
 
-        // parse firm change filing and original business snapshot into store
-        await this.parseFirmChange(changeFiling, firmSnapshot)
+        // parse firm conversion filing and original business snapshot into store
+        await this.parseFirmConversion(changeFiling, firmSnapshot)
       } else {
         // parse business data into store
         await this.parseEntitySnapshot(firmSnapshot)
       }
 
-      if (this.firmChangeResource) {
+      if (this.firmConversionResource) {
         // set the specific resource
-        this.setResource(this.firmChangeResource)
+        this.setResource(this.firmConversionResource)
 
         // initialize Fee Summary data
-        this.setFilingData(this.firmChangeResource.filingData)
+        this.setFilingData(this.firmConversionResource.filingData)
       } else {
         // go to catch()
-        throw new Error(`Invalid change resource entity type = ${this.getEntityType}`)
+        throw new Error(`Invalid conversion resource entity type = ${this.getEntityType}`)
       }
 
       // update the current fees for the Filing
       this.setCurrentFees(
         await this.fetchFilingFees(
-          FilingCodes.CHANGE_OF_REGISTRATION, this.getEntityType
+          FilingCodes.CONVERSION, this.getEntityType
         ).catch(() => cloneDeep(EmptyFees))
       )
 
       // fetches the fee prices to display in the text
       this.setFeePrices(
         await this.fetchFilingFees(
-          FilingCodes.CHANGE_OF_REGISTRATION, this.getEntityType
+          FilingCodes.CONVERSION, this.getEntityType
         ).catch(() => cloneDeep(EmptyFees))
       )
 

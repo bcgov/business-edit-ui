@@ -48,12 +48,12 @@ import { AgreementType, CompletingParty } from '@/components/Correction/'
 import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
-import { ActionBindingIF, FilingDataIF } from '@/interfaces/'
+import { ActionBindingIF, FilingDataIF, ResourceIF } from '@/interfaces/'
 import { FilingCodes, FilingStatus } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { BenefitCompanyStatementResource, CorrectionResources } from '@/resources/'
+import { BenefitCompanyStatementResource } from '@/resources/Correction/'
 
 @Component({
   components: {
@@ -104,13 +104,14 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  get correctionResources (): any {
-    const resources = CorrectionResources.find(x => x.entityType === this.getEntityType)
-    if (!resources) {
-      // go to catch()
-      throw new Error(`Invalid Correction resources entity type = ${this.getEntityType}`)
+  /** The resource file for a correction filing. */
+  get correctionResource (): any {
+    let resource: ResourceIF
+    if (this.isTypeBcomp) resource = BenefitCompanyStatementResource
+    if (!resource) {
+      throw new Error(`Invalid Correction Resource entity type = ${this.getEntityType}`)
     }
-    return resources
+    return resource
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -184,7 +185,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
       }
 
       // Set the resources
-      this.setResource(this.correctionResources)
+      this.setResource(this.correctionResource)
 
       // tell App that we're finished loading
       this.emitHaveData()
