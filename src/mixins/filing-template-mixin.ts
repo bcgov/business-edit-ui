@@ -438,7 +438,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           ...this.getBusinessContact.extension
             ? { extension: +this.getBusinessContact.extension }
             : {}
-        }
+        },
+        offices: null, // applied below
+        parties: null // applied below
       }
     }
 
@@ -448,6 +450,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Apply business address changes to filing
+    // *** TODO: are these mandatory (ie, include even if not changed)?
+    //           if so then move this to line 442
     if (this.hasOfficeAddressesChanged) {
       filing.conversion.offices = {
         businessOffice: {

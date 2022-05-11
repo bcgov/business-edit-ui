@@ -28,7 +28,7 @@ export const routes = [
     component: Conversion,
     meta: {
       requiresAuth: true,
-      isStaffOnly: false,
+      isStaffOnly: true,
       filingType: FilingTypes.CONVERSION
     }
   },

@@ -4,7 +4,7 @@
     <v-slide-x-transition hide-on-leave>
       <div v-if="!isSummaryMode || !showFeeSummary">
         <header>
-          <h1>Business Information</h1>
+          <h1>Record Conversion</h1>
         </header>
 
         <section class="mt-6">
@@ -27,8 +27,8 @@
 
         <section class="mt-6">
           <p id="intro-text">
-            Changes were made to your business information that require a filing. Review and certify the changes you are
-            about the make to your business.
+            Changes were made to your business information that require a filing. Review and certify the changes you
+            are about the make to your business.
           </p>
         </section>
 

@@ -1,20 +1,26 @@
-import { BaseAddressObjIF, NameRequestIF, OrgPersonIF } from '@/interfaces/'
+import { AddressesIF, NameRequestIF, OrgPersonIF, ShareStructureIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
+//
+// Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/conversion.json
+//
 export interface ConversionIF {
   business: {
-    natureOfBusiness?: string,
+    natureOfBusiness?: string
     naics?: {
-      naicsCode: string,
+      naicsCode: string
       naicsDescription: string
-    },
+    }
     identifier: string
-  },
-  offices?: {
-    businessOffice: BaseAddressObjIF
-  },
-  contactPoint: ContactPointIF,
-  nameRequest?: NameRequestIF,
-  parties?: Array<OrgPersonIF>
+  }
+  startDate?: string
+  nameRequest?: NameRequestIF
+  offices: AddressesIF
+  parties: Array<OrgPersonIF>
+  shareStructure?: ShareStructureIF
+  contactPoint: ContactPointIF
+  incorporationAgreement?: {
+    agreementType: string
+  }
   courtOrder?: string
 }

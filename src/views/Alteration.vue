@@ -221,7 +221,7 @@ export default class Alteration extends Mixins(
   }
 
   /** The resource file for an alteration filing. */
-  get alterationResources (): ResourceIF {
+  get alterationResource (): ResourceIF {
     if (this.isTypeBcomp) return BenefitCompanyResource
     if (this.isTypeCoop) return CooperativeResource
     return null
@@ -272,12 +272,12 @@ export default class Alteration extends Mixins(
         await this.parseEntitySnapshot(businessSnapshot)
       }
 
-      if (this.alterationResources) {
+      if (this.alterationResource) {
         // set the specific resource
-        this.setResource(this.alterationResources)
+        this.setResource(this.alterationResource)
 
         // initialize Fee Summary data
-        this.setFilingData(this.alterationResources.filingData)
+        this.setFilingData(this.alterationResource.filingData)
       } else {
         // go to catch()
         throw new Error(`Invalid Alteration resources entity type = ${this.getEntityType}`)
