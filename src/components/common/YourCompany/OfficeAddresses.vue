@@ -15,7 +15,7 @@
             <v-chip v-if="isCorrectionFiling && mailingChanged"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
-          <base-address
+          <BaseAddress
             v-if="!isEmpty(mailingAddress)"
             :address="mailingAddress"
             :editing="false"
@@ -29,7 +29,7 @@
             <v-chip v-if="isCorrectionFiling && deliveryChanged"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
-          <base-address
+          <BaseAddress
             v-if="!isEmpty(deliveryAddress) && !inheritMailingAddress"
             :address="deliveryAddress"
             :editing="false"
@@ -109,7 +109,7 @@
             <v-chip v-if="isCorrectionFiling && recMailingChanged"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
-          <base-address
+          <BaseAddress
             v-if="!inheritRegisteredAddress && !isEmpty(recMailingAddress)"
             :address="recMailingAddress"
             :editing="false"
@@ -124,7 +124,7 @@
             <v-chip v-if="isCorrectionFiling && recDeliveryChanged"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
-          <base-address
+          <BaseAddress
             v-if="!inheritRecMailingAddress && !inheritRegisteredAddress && !isEmpty(recDeliveryAddress)"
             :address="recDeliveryAddress"
             :editing="false"
@@ -156,7 +156,7 @@
       <v-row no-gutters class="pr-1">
         <v-col cols="3"></v-col>
         <v-col cols="9" class="pt-4">
-          <base-address
+          <BaseAddress
             ref="mailingAddress"
             id="address-mailing"
             :address="mailingAddress"
@@ -194,7 +194,7 @@
         <v-row no-gutters>
           <v-col cols="3"></v-col>
           <v-col cols="9" class="pt-4">
-            <base-address
+            <BaseAddress
               ref="deliveryAddress"
               id="address-delivery"
               :address="deliveryAddress"
@@ -245,7 +245,7 @@
               <label>Mailing Address</label>
               <div class="meta-container__inner">
                 <div class="address-wrapper">
-                  <base-address ref="regMailingAddress"
+                  <BaseAddress ref="regMailingAddress"
                     id="address-registered-mailing"
                     :address="mailingAddress"
                     :editing="true"
@@ -278,7 +278,7 @@
                   v-if="!isSame(mailingAddress, deliveryAddress, ['actions', 'addressType', 'id']) ||
                   !inheritMailingAddress"
                 >
-                  <base-address ref="regDeliveryAddress"
+                  <BaseAddress ref="regDeliveryAddress"
                     id="address-registered-delivery"
                     v-if="!inheritMailingAddress"
                     :address="deliveryAddress"
@@ -313,7 +313,7 @@
                 <label>Mailing Address</label>
                 <div class="meta-container__inner">
                   <div class="address-wrapper">
-                    <base-address ref="recMailingAddress"
+                    <BaseAddress ref="recMailingAddress"
                       id="address-records-mailing"
                       :address="recMailingAddress"
                       :editing="true"
@@ -346,7 +346,7 @@
                     v-if="!isSame(recMailingAddress, recDeliveryAddress, ['actions', 'addressType', 'id']) ||
                     !inheritRecMailingAddress"
                   >
-                    <base-address ref="recDeliveryAddress"
+                    <BaseAddress ref="recDeliveryAddress"
                       id="address-records-delivery"
                       :address="recDeliveryAddress"
                       :editing="true"

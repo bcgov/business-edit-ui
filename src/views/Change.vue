@@ -64,9 +64,9 @@
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
-import { ChangeSummary, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Alteration/'
-import CompletingParty from '@/components/Change/CompletingParty.vue'
-import { CertifySection, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common/'
+import { ChangeSummary } from '@/components/Change/'
+import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, YourCompany }
+  from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
@@ -82,8 +82,6 @@ import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resour
     CompletingParty,
     DocumentsDelivery,
     PeopleAndRoles,
-    StaffPayment,
-    TransactionalFolioNumber,
     YourCompany
   }
 })
