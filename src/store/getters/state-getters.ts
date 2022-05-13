@@ -1,4 +1,4 @@
-import { AccountTypes, ActionTypes, FilingCodes, FilingNames, FilingTypes, OfficeTypes } from '@/enums/'
+import { AccountTypes, ActionTypes, FilingCodes, FilingNames, FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { AddressesIF, IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF,
   ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF, NameTranslationIF, FilingDataIF, StateIF,
@@ -517,62 +517,84 @@ export const hasContactInfoChanged = (state: StateIF): boolean => {
   )
 }
 
-/** The dynamic Office Type based on the current filing. */
-export const officeType = (state: StateIF): OfficeTypes => {
-  if (isChangeFiling(state) || isConversionFiling(state)) return OfficeTypes.BUSINESS_OFFICE
-  if (isAlterationFiling(state) || isCorrectionFiling(state)) return OfficeTypes.REGISTERED_OFFICE
-}
-
 /** True if any office address has changed. Applies to corrections, change and conversion filings only. */
 export const hasOfficeAddressesChanged = (state: StateIF): boolean => {
   const isExpectedFiling = isCorrectionFiling(state) || isChangeFiling(state) || isConversionFiling(state)
-  const isAddressChanged = (mailingChanged(state) || deliveryChanged(state) ||
+  const hasMailingDeliveryChanged = hasMailingChanged(state) || hasDeliveryChanged(state)
+  const isChangeOrConversionFiling = isChangeFiling(state) || isConversionFiling(state)
+  const hasRecMailingDeliveryChanged = hasRecMailingChanged(state) || hasRecDeliveryChanged(state)
+  const hasAddressChanged = (
+    hasMailingDeliveryChanged ||
     // exclude Records Address conditions from Change or Conversion filing
-    (!isChangeFiling(state) && !isConversionFiling(state) && (recMailingChanged(state) || recDeliveryChanged(state)))
+    (!isChangeOrConversionFiling && hasRecMailingDeliveryChanged)
   )
 
-  return (isExpectedFiling && isAddressChanged)
+  return (isExpectedFiling && hasAddressChanged)
 }
 
 /** The office addresses from the original IA. NB: may be {} */
-export const originalOfficeAddresses = (state: StateIF): AddressesIF => {
+export const getOriginalOfficeAddresses = (state: StateIF): AddressesIF => {
   if (isCorrectionFiling(state)) {
     return (getOriginalIA(state)?.incorporationApplication.offices as AddressesIF)
   }
   if (isChangeFiling(state) || isConversionFiling(state)) {
-    return (getEntitySnapshot(state)?.addresses as AddressesIF)
+    return (getEntitySnapshot(state)?.addresses)
   }
 }
 
 /** True if (registered) mailing address has changed. */
-export const mailingChanged = (state: StateIF): boolean => {
-  return (
-    !isSame(getOfficeAddresses(state)?.[officeType(state)]?.mailingAddress,
-    originalOfficeAddresses(state)?.[officeType(state)]?.mailingAddress, ['addressCountryDescription'])
-  )
+export const hasMailingChanged = (state: StateIF): boolean => {
+  if (isAlterationFiling(state) || isCorrectionFiling(state)) {
+    return !isSame(
+      getOfficeAddresses(state)?.registeredOffice?.mailingAddress,
+      getOriginalOfficeAddresses(state)?.registeredOffice?.mailingAddress,
+      ['addressCountryDescription']
+    )
+  }
+  if (isChangeFiling(state) || isConversionFiling(state)) {
+    return !isSame(
+      getOfficeAddresses(state)?.businessOffice?.mailingAddress,
+      getOriginalOfficeAddresses(state)?.businessOffice?.mailingAddress,
+      ['addressCountryDescription']
+    )
+  }
+  return false // should never happen
 }
 
 /** True if (registered) delivery address has changed. */
-export const deliveryChanged = (state: StateIF): boolean => {
-  return (
-    !isSame(getOfficeAddresses(state)?.[officeType(state)]?.deliveryAddress,
-    originalOfficeAddresses(state)?.[officeType(state)]?.deliveryAddress, ['addressCountryDescription'])
-  )
+export const hasDeliveryChanged = (state: StateIF): boolean => {
+  if (isAlterationFiling(state) || isCorrectionFiling(state)) {
+    return !isSame(
+      getOfficeAddresses(state)?.registeredOffice?.deliveryAddress,
+      getOriginalOfficeAddresses(state)?.registeredOffice?.deliveryAddress,
+      ['addressCountryDescription']
+    )
+  }
+  if (isChangeFiling(state) || isConversionFiling(state)) {
+    return !isSame(
+      getOfficeAddresses(state)?.businessOffice?.deliveryAddress,
+      getOriginalOfficeAddresses(state)?.businessOffice?.deliveryAddress,
+      ['addressCountryDescription']
+    )
+  }
+  return false // should never happen
 }
 
 /** True if records mailing address has changed. */
-export const recMailingChanged = (state: StateIF): boolean => {
-  return (
-    !isSame(getOfficeAddresses(state)?.recordsOffice?.mailingAddress,
-    originalOfficeAddresses(state)?.recordsOffice?.mailingAddress, ['addressCountryDescription'])
+export const hasRecMailingChanged = (state: StateIF): boolean => {
+  return !isSame(
+    getOfficeAddresses(state)?.recordsOffice?.mailingAddress,
+    getOriginalOfficeAddresses(state)?.recordsOffice?.mailingAddress,
+    ['addressCountryDescription']
   )
 }
 
 /** True if records delivery address has changed. */
-export const recDeliveryChanged = (state: StateIF): boolean => {
-  return (
-    !isSame(getOfficeAddresses(state)?.recordsOffice?.deliveryAddress,
-    originalOfficeAddresses(state)?.recordsOffice?.deliveryAddress, ['addressCountryDescription'])
+export const hasRecDeliveryChanged = (state: StateIF): boolean => {
+  return !isSame(
+    getOfficeAddresses(state)?.recordsOffice?.deliveryAddress,
+    getOriginalOfficeAddresses(state)?.recordsOffice?.deliveryAddress,
+    ['addressCountryDescription']
   )
 }
 

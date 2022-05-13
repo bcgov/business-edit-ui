@@ -5,14 +5,14 @@
       <v-row id="summary-registered-address" class="mx-0" no-gutters>
         <v-col cols="3">
           <label>{{ getResource.addressLabel }}</label>
-          <v-chip v-if="isChangeFiling && !isSummaryView && (mailingChanged || deliveryChanged)"
+          <v-chip v-if="isChangeFiling && !isSummaryView && (hasMailingChanged || hasDeliveryChanged)"
                   x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
         </v-col>
 
         <v-col cols="4">
           <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
-            <v-chip v-if="isCorrectionFiling && mailingChanged"
+            <v-chip v-if="isCorrectionFiling && hasMailingChanged"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
           <BaseAddress
@@ -26,7 +26,7 @@
         <v-col cols="4">
           <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
-            <v-chip v-if="isCorrectionFiling && deliveryChanged"
+            <v-chip v-if="isCorrectionFiling && hasDeliveryChanged"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
           <BaseAddress
@@ -106,7 +106,7 @@
         <v-col cols="4">
           <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
-            <v-chip v-if="isCorrectionFiling && recMailingChanged"
+            <v-chip v-if="isCorrectionFiling && hasRecMailingChanged"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
           <BaseAddress
@@ -121,7 +121,7 @@
         <v-col cols="4">
           <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
-            <v-chip v-if="isCorrectionFiling && recDeliveryChanged"
+            <v-chip v-if="isCorrectionFiling && hasRecDeliveryChanged"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
           <BaseAddress
@@ -153,6 +153,7 @@
         </v-col>
       </v-row>
 
+      <!-- Business Mailing Address -->
       <v-row no-gutters class="pr-1">
         <v-col cols="3"></v-col>
         <v-col cols="9" class="pt-4">
@@ -191,6 +192,7 @@
           </v-col>
         </v-row>
 
+        <!-- Business Delivery Address -->
         <v-row no-gutters>
           <v-col cols="3"></v-col>
           <v-col cols="9" class="pt-4">
@@ -391,7 +393,7 @@ import { OfficeAddressSchema, PersonAddressSchema } from '@/schemas/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces/'
 import { isSame } from '@/utils/'
-import { AddressTypes, OfficeTypes } from '@/enums/'
+import { AddressTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { CommonMixin } from '@/mixins/'
 
@@ -419,14 +421,15 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   // Global getters
   @Getter getOfficeAddresses!: AddressesIF // NB: may be {}
   @Getter getResource!: ResourceIF
-  @Getter originalOfficeAddresses!: AddressesIF
+  @Getter getOriginalOfficeAddresses!: AddressesIF
   @Getter hasOfficeAddressesChanged!: boolean
-  @Getter mailingChanged!: boolean
-  @Getter deliveryChanged!: boolean
-  @Getter recMailingChanged!: boolean
-  @Getter recDeliveryChanged!: boolean
+  @Getter hasMailingChanged!: boolean
+  @Getter hasDeliveryChanged!: boolean
+  @Getter hasRecMailingChanged!: boolean
+  @Getter hasRecDeliveryChanged!: boolean
   @Getter isTypeBcomp!: boolean
-  @Getter officeType!: OfficeTypes
+  @Getter isTypeSoleProp!: boolean
+  @Getter isTypePartnership!: boolean
 
   // Global actions
   @Action setOfficeAddresses!: ActionBindingIF
@@ -500,21 +503,22 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
-    if (this.getOfficeAddresses?.[this.officeType]) {
-      this.mailingAddress = { ...this.getOfficeAddresses[this.officeType].mailingAddress }
-      this.deliveryAddress = { ...this.getOfficeAddresses[this.officeType].deliveryAddress }
+    if (this.isCorrectionFiling || this.isAlterationFiling) {
+      if (this.getOfficeAddresses?.registeredOffice) {
+        this.mailingAddress = { ...this.getOfficeAddresses.registeredOffice.mailingAddress }
+        this.deliveryAddress = { ...this.getOfficeAddresses.registeredOffice.deliveryAddress }
 
-      // compare addresses to set the "inherit mailing" flag
-      // ignore Address Type since it's different
-      // ignore Address Country Description since it's not always present
-      this.inheritMailingAddress = isSame(
-        this.getOfficeAddresses[this.officeType].mailingAddress,
-        this.getOfficeAddresses[this.officeType].deliveryAddress,
-        ['addressType', 'addressCountryDescription', 'id']
-      )
+        // compare addresses to set the "inherit mailing" flag
+        // ignore Address Type since it's different
+        // ignore Address Country Description since it's not always present
+        this.inheritMailingAddress = isSame(
+          this.getOfficeAddresses.registeredOffice.mailingAddress,
+          this.getOfficeAddresses.registeredOffice.deliveryAddress,
+          ['addressType', 'addressCountryDescription', 'id']
+        )
+      }
 
-      // for BCOMPS, also set the Records Address
-      if (this.isTypeBcomp) {
+      if (this.getOfficeAddresses?.recordsOffice) {
         this.recMailingAddress = { ...this.getOfficeAddresses.recordsOffice?.mailingAddress }
         this.recDeliveryAddress = { ...this.getOfficeAddresses.recordsOffice?.deliveryAddress }
 
@@ -542,18 +546,34 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         )
       }
     }
+
+    if (this.isChangeFiling || this.isConversionFiling) {
+      if (this.getOfficeAddresses?.businessOffice) {
+        this.mailingAddress = { ...this.getOfficeAddresses.businessOffice.mailingAddress }
+        this.deliveryAddress = { ...this.getOfficeAddresses.businessOffice.deliveryAddress }
+
+        // compare addresses to set the "inherit mailing" flag
+        // ignore Address Type since it's different
+        // ignore Address Country Description since it's not always present
+        this.inheritMailingAddress = isSame(
+          this.getOfficeAddresses.businessOffice.mailingAddress,
+          this.getOfficeAddresses.businessOffice.deliveryAddress,
+          ['addressType', 'addressCountryDescription', 'id']
+        )
+      }
+    }
   }
 
   /**
    * When "same as (registry) mailing address" checkbox is changed,
    * sets the Registered Delivery Address to the Registered Mailing Address.
    */
-  private setDeliveryAddressToMailingAddress (): void {
+  protected setDeliveryAddressToMailingAddress (): void {
     if (this.inheritMailingAddress) {
       this.deliveryAddress = { ...this.mailingAddress, addressType: 'delivery', id: this.deliveryAddress.id }
     } else {
       // clear to default
-      this.deliveryAddress = { ...this.defaultAddress, addressType: 'delivery' }
+      this.deliveryAddress = { ...this.defaultAddress, addressType: 'delivery', id: this.deliveryAddress.id }
     }
 
     // Records delivery address also needs to be updated if inherited
@@ -566,7 +586,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * When "same as registered address" checkbox is changed,
    * sets the Records office addresses to the Registered office addresses.
    */
-  private setRecordOfficeToRegisteredOffice (): void {
+  protected setRecordOfficeToRegisteredOffice (): void {
     if (this.inheritRegisteredAddress) {
       this.recMailingAddress = { ...this.mailingAddress, id: this.recMailingAddress.id }
       this.recDeliveryAddress = { ...this.deliveryAddress, id: this.recDeliveryAddress.id }
@@ -582,7 +602,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * When "same as (records) mailing address" checkbox is changed,
    * sets the Records Delivery Address to Records Mailing Address.
    */
-  private setRecordDeliveryAddressToMailingAddress (): void {
+  protected setRecordDeliveryAddressToMailingAddress (): void {
     if (this.inheritRecMailingAddress) {
       this.recDeliveryAddress = { ...this.recMailingAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
     } else {
@@ -594,7 +614,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /**
    * Handles update events from address sub-components.
    */
-  private updateAddress (addressToUpdate: AddressTypes, baseAddress: AddressIF, newAddress: AddressIF): void {
+  protected updateAddress (addressToUpdate: AddressTypes, baseAddress: AddressIF, newAddress: AddressIF): void {
     Object.assign(baseAddress, newAddress)
     switch (addressToUpdate) {
       case AddressTypes.MAILING_ADDRESS:
@@ -631,7 +651,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * @param addressToValidate the address to set the validity of
    * @param isValid whether the address is valid
    */
-  private updateValidity (addressToValidate: AddressTypes, isValid: boolean): void {
+  protected updateValidity (addressToValidate: AddressTypes, isValid: boolean): void {
     switch (addressToValidate) {
       case AddressTypes.MAILING_ADDRESS:
         this.mailingAddressValid = isValid
@@ -656,31 +676,39 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets updated office addresses in store.
    */
   private storeAddresses (): void {
-    if (this.isTypeBcomp) {
-      this.setOfficeAddresses({
-        registeredOffice: {
-          deliveryAddress: this.deliveryAddress,
-          mailingAddress: this.mailingAddress
-        },
-        recordsOffice: {
-          deliveryAddress: this.recDeliveryAddress,
-          mailingAddress: this.recMailingAddress
-        }
-      })
-    } else {
-      this.setOfficeAddresses({
-        [this.officeType]: {
-          deliveryAddress: this.deliveryAddress,
-          mailingAddress: this.mailingAddress
-        }
-      })
+    if (this.isCorrectionFiling) {
+      // at the moment, only BEN IA corrections are supported
+      if (this.isTypeBcomp) {
+        this.setOfficeAddresses({
+          registeredOffice: {
+            deliveryAddress: this.deliveryAddress,
+            mailingAddress: this.mailingAddress
+          },
+          recordsOffice: {
+            deliveryAddress: this.recDeliveryAddress,
+            mailingAddress: this.recMailingAddress
+          }
+        })
+      }
+    }
+
+    if (this.isChangeFiling) {
+      // at the moment, only SP and GP changes and conversion are supported
+      if (this.isTypeSoleProp || this.isTypePartnership) {
+        this.setOfficeAddresses({
+          businessOffice: {
+            deliveryAddress: this.deliveryAddress,
+            mailingAddress: this.mailingAddress
+          }
+        })
+      }
     }
   }
 
   /**
    * When Done is clicked, stores updated addresses.
    */
-  private async acceptChanges (): Promise<void> {
+  protected async acceptChanges (): Promise<void> {
     if (this.formValid) {
       // set store value
       // NB: this will cause setLocalProperties() to be called to reset local properties
@@ -695,7 +723,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /**
    * When Cancel is clicked, discards changes.
    */
-  private async discardChanges (): Promise<void> {
+  protected async discardChanges (): Promise<void> {
     // reset local properties from store
     this.setLocalProperties()
 
@@ -708,11 +736,11 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /**
    * When Undo is clicked, resets original addresses from original IA filing.
    */
-  private resetOfficeAddresses (): void {
+  protected resetOfficeAddresses (): void {
     // reset store value
     // NB: this will cause setLocalProperties() to be called to reset local properties
     // NB: this will cause updateAddresses() to be called to update state
-    this.setOfficeAddresses(this.originalOfficeAddresses)
+    this.setOfficeAddresses(this.getOriginalOfficeAddresses)
   }
 
   /** Disable Same As feature and validate Delivery address for Change Filings. */
