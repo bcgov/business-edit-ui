@@ -104,8 +104,8 @@ export const setDefineCompanyStepChanged: ActionIF = ({ commit }, changed: boole
   commit('mutateDefineCompanyStepChanged', changed)
 }
 
-export const setOfficeAddresses: ActionIF = ({ commit }, address: AddressesIF): void => {
-  commit('mutateOfficeAddresses', address)
+export const setOfficeAddresses: ActionIF = ({ commit }, addresses: AddressesIF): void => {
+  commit('mutateOfficeAddresses', addresses)
 }
 
 export const setFolioNumber: ActionIF = ({ commit }, folioNumber: string): void => {

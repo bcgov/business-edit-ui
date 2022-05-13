@@ -4,12 +4,12 @@ import { ActionTypes, PartyTypes, RoleTypes } from '@/enums/'
 export interface ApiPersonIF {
   id?: string // used by UI only
   partyType: PartyTypes
-  firstName: string
+  firstName?: string // required when partyType="person"
   middleName?: string
-  lastName: string
-  organizationName: string
+  lastName?: string // required when partyType="person"
+  organizationName?: string // required when partyType="organization"
   email?: string
-  identifier?: string // used by API only ???
+  identifier?: string // may not be used
   taxId?: string // aka Business Number
 }
 

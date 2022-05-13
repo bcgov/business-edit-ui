@@ -3,7 +3,7 @@
  * Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/address.json
  */
 export interface AddressIF {
-  id?: number
+  id?: number // from API
   addressCity: string
   addressCountry: string
   addressRegion: string
