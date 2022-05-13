@@ -141,8 +141,9 @@ export default class CommonMixin extends Vue {
       case RouteNames.ALTERATION:
         return 'Company Information'
       case RouteNames.CHANGE:
-      case RouteNames.CONVERSION:
         return 'Business Information'
+      case RouteNames.CONVERSION:
+        return 'Record Conversion'
       case RouteNames.CORRECTION:
         return 'Correction - Incorporation Application'
       default:

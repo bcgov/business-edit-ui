@@ -32,28 +32,22 @@
           </p>
         </section>
 
-        <ChangeSummary
+        <ConversionSummary
           class="mt-10"
           :validate="getAppValidate"
-        />
-
-        <DocumentsDelivery
-          class="mt-10"
-          sectionNumber="1."
-          :validate="getAppValidate"
-          @valid="setDocumentOptionalEmailValidity($event)"
         />
 
         <CompletingParty
           class="mt-10"
-          sectionNumber="2."
+          sectionNumber="1."
           :validate="getAppValidate"
         />
 
-        <CertifySection
+        <StaffPayment
           class="mt-10"
-          sectionNumber="3."
+          sectionNumber="2."
           :validate="getAppValidate"
+          @haveChanges="onStaffPaymentChanges()"
         />
       </div>
     </v-slide-x-reverse-transition>
@@ -63,27 +57,24 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+import { cloneDeep } from 'lodash'
 import { getFeatureFlag } from '@/utils/'
-import { ChangeSummary, DocumentsDelivery, TransactionalFolioNumber } from '@/components/Alteration/'
-import CompletingParty from '@/components/Change/CompletingParty.vue'
-import { CertifySection, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common/'
+import { ConversionSummary } from '@/components/Conversion/'
+import { PeopleAndRoles, CompletingParty, StaffPayment, YourCompany } from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { cloneDeep } from 'lodash'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Conversion/'
 
 @Component({
   components: {
-    CertifySection,
-    ChangeSummary,
+    ConversionSummary,
     CompletingParty,
-    DocumentsDelivery,
     PeopleAndRoles,
     StaffPayment,
-    TransactionalFolioNumber,
     YourCompany
   }
 })
@@ -94,6 +85,7 @@ export default class Conversion extends Mixins(
   PayApiMixin
 ) {
   // Global getters
+  @Getter isRoleStaff!: boolean
   @Getter isSummaryMode!: boolean
   @Getter getFilingData!: FilingDataIF
   @Getter getAppValidate!: boolean
@@ -105,7 +97,6 @@ export default class Conversion extends Mixins(
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
-  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setValidCourtOrder!: ActionBindingIF
   @Action setCurrentFees!: ActionBindingIF
   @Action setFeePrices!: ActionBindingIF
@@ -145,6 +136,14 @@ export default class Conversion extends Mixins(
     // bypass this when Jest is running as FF are not fetched
     if (!this.isJestRunning && !getFeatureFlag('conversion-ui-enabled')) {
       window.alert('Conversion filings are not available at the moment. Please check again later.')
+      this.$root.$emit('go-to-dashboard')
+      return
+    }
+
+    // do not proceed if user is not staff
+    const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
+    if (isStaffOnly && !this.isRoleStaff) {
+      window.alert('Only staff can convert a record.')
       this.$root.$emit('go-to-dashboard')
       return
     }
@@ -241,6 +240,16 @@ export default class Conversion extends Mixins(
       addresses: items[2],
       orgPersons
     }
+  }
+
+  /** Called when staff payment data has changed. */
+  protected onStaffPaymentChanges (): void {
+    // update filing data with staff payment fields
+    this.setFilingData({
+      ...this.getFilingData,
+      priority: this.getStaffPayment.isPriority,
+      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
+    })
   }
 
   /** Emits Fetch Error event. */

@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import sinon from 'sinon'
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
-import ChangeSummary from '@/components/Change/ChangeSummary.vue'
+import ConversionSummary from '@/components/Conversion/ConversionSummary.vue'
 import NatureOfBusiness from '@/components/common/YourCompany/NatureOfBusiness.vue'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
 import { GeneralPartnershipResource } from '@/resources/Change/GeneralPartnershipResource'
@@ -13,7 +13,7 @@ Vue.use(Vuetify)
 const localVue = createLocalVue()
 const vuetify = new Vuetify({})
 
-describe('Change Summary component', () => {
+describe('Conversion Summary component', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
@@ -63,7 +63,7 @@ describe('Change Summary component', () => {
     store.state.stateModel.officeAddresses = addresses
     store.state.stateModel.summaryMode = true
 
-    wrapper = mount(ChangeSummary, { vuetify, store, localVue })
+    wrapper = mount(ConversionSummary, { vuetify, store, localVue })
   })
 
   afterEach(() => {
@@ -72,7 +72,7 @@ describe('Change Summary component', () => {
   })
 
   it('renders the components', async () => {
-    expect(wrapper.findComponent(ChangeSummary).exists()).toBe(true)
+    expect(wrapper.findComponent(ConversionSummary).exists()).toBe(true)
   })
 
   it('does not render the summary sections when no changes have been made', async () => {

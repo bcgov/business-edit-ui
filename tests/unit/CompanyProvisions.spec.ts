@@ -30,6 +30,7 @@ const companyProvisionsComponent = '#checkbox-div .v-input--selection-controls.v
 // CSS Classes
 const infoTextClassName = 'info-text'
 const invalidClassName = 'invalid'
+
 describe('company provisions', () => {
   it('renders the component properly', () => {
     const router = mockRouter.mock()

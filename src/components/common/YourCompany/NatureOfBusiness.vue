@@ -1,4 +1,5 @@
 <template>
+  <!-- FUTURE: add Conversion version of NOB here (ticket 11960) -->
   <NatureOfBusinessShared
     v-if="haveNaics"
     :showErrors="invalidSection"

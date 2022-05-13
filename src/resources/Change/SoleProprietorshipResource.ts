@@ -17,7 +17,7 @@ export const SoleProprietorshipResource: ResourceIF = {
     nameChangeOptions: [
       CorrectionTypes.CORRECT_NEW_NR
     ],
-    typeChangeInfo: 'You can not change the business type of a Sole Proprietorship / DBA. You must form a new ' +
+    typeChangeInfo: 'You cannot change the business type of a Sole Proprietorship / DBA. You must form a new ' +
       'business and dissolve this business once the new business is registered.',
     orgPersonInfo: {
       orgPersonLabel: 'Proprietor',

@@ -6,7 +6,7 @@
     </div>
 
     <div id="company-name-section" class="section-container" :class="{'invalid-section': invalidNameSection}">
-      <!-- Company Name -->
+      <!-- Business/Company Name -->
       <v-row no-gutters class="mt-4">
         <v-col cols="3">
           <label :class="{'error-text': invalidNameSection}">
@@ -45,7 +45,7 @@
             </template>
 
             <!-- Name Request Info -->
-            <template v-if="hasNewNr && (isAlterationFiling || isChangeFiling || isConversionFiling)">
+            <template v-if="hasNewNr && (isAlterationFiling || isChangeFiling)">
               <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -89,7 +89,7 @@
               <!-- TODO: only show buttons for named company -->
               <v-btn
                 v-if="companyNameChanges ||
-                  (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling || isConversionFiling))"
+                  (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling))"
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -99,7 +99,7 @@
                 <span>Undo</span>
               </v-btn>
               <v-btn
-                v-else
+                v-else-if="!isConversionFiling"
                 text color="primary"
                 id="btn-correct-company-name"
                 @click="isEditingNames = true"
@@ -108,7 +108,7 @@
                 <span>{{editLabel}}</span>
               </v-btn>
               <span class="more-actions" v-if="companyNameChanges ||
-                (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling || isConversionFiling))"
+                (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling))"
               >
                 <v-menu
                   offset-y left nudge-bottom="4"
@@ -212,7 +212,7 @@
 
     <v-divider class="mx-4 my-1" />
 
-    <!-- Change Filing Section -->
+    <!-- Change + Conversion Filing Section -->
     <template v-if="isChangeFiling || isConversionFiling">
 
       <!-- Business Start Date -->
@@ -300,14 +300,11 @@ import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, IncorporationFil
   NameRequestIF, ResourceIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
-  OfficeAddresses } from './'
+  NatureOfBusiness, OfficeAddresses } from './'
 import { CommonMixin, SharedMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins/'
 import { CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { cloneDeep } from 'lodash'
-
-// for some reason, NatureOfBusiness cannot be imported from /components/Alteration
-import NatureOfBusiness from '@/components/Alteration/NatureOfBusiness.vue'
 
 /** Note: this component is used by both corrections and alterations. */
 @Component({

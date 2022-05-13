@@ -22,18 +22,9 @@ export const GeneralPartnershipResource: ResourceIF = {
     orgPersonInfo: {
       orgPersonLabel: 'Partners',
       orgTypesLabel: 'Business or Corporation',
-      subtitle: 'You must have a minimum of two partners. You can add or remove partners (individual person or ' +
-        'business) as well as change the mailing and delivery addresses and email address of individual people and ' +
-        'business partners.',
-      helpSection: {
-        header: 'Need Help? Contact Us',
-        helpText: [
-          'If your require assistance with adding a business partner please contact us.'
-        ]
-      }
+      subtitle: null,
+      helpSection: null
     }
   },
-  certifyClause: 'Note: It is an offence to make or assist in making a false or misleading statement in a record ' +
-    'filed under section 90.4 of the Partnership Act. A person who commits this offence is subject to a maximum ' +
-    'fine of $5,000.'
+  certifyClause: null
 }
