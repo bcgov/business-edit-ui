@@ -240,12 +240,23 @@
 
       <v-divider class="mx-4 my-1" />
 
-      <!-- Nature of Business -->
-      <NatureOfBusiness
-        class="section-container"
-        :class="{'invalid-section': invalidNatureOfBusiness}"
-        :invalidSection="invalidNatureOfBusiness"
-      />
+      <!-- Nature of Business Change Filing -->
+      <template v-if="isChangeFiling">
+        <NatureOfBusiness
+          class="section-container"
+          :class="{'invalid-section': invalidNatureOfBusiness}"
+          :invalidSection="invalidNatureOfBusiness"
+        />
+      </template>
+
+      <!-- Nature of Business Conversion Filing -->
+      <template v-if="isConversionFiling">
+        <NOBConversion
+          class="section-container"
+          :class="{'invalid-section': invalidNatureOfBusiness}"
+          :invalidSection="invalidNatureOfBusiness"
+        />
+      </template>
     </template>
 
     <!-- Recognition Date and Time -->
@@ -305,6 +316,7 @@ import { CommonMixin, SharedMixin, DateMixin, LegalApiMixin, NameRequestMixin } 
 import { CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { cloneDeep } from 'lodash'
+import NOBConversion from '../../Conversion/NatureOfBusiness.vue'
 
 /** Note: this component is used by both corrections and alterations. */
 @Component({
@@ -315,7 +327,8 @@ import { cloneDeep } from 'lodash'
     CorrectNameTranslation,
     NatureOfBusiness,
     OfficeAddresses,
-    FolioInformation
+    FolioInformation,
+    NOBConversion
   }
 })
 export default class YourCompany extends Mixins(

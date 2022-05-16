@@ -59,7 +59,7 @@ import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorato
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { getFeatureFlag } from '@/utils/'
-import { ConversionSummary } from '@/components/Conversion/'
+import { ConversionSummary, ChangeSummary } from '@/components/Conversion/'
 import { PeopleAndRoles, CompletingParty, StaffPayment, YourCompany } from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
