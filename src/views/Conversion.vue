@@ -59,7 +59,6 @@ import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorato
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { getFeatureFlag } from '@/utils/'
-import { ConversionSummary, ChangeSummary } from '@/components/Conversion/'
 import { PeopleAndRoles, CompletingParty, StaffPayment, YourCompany } from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
@@ -68,6 +67,7 @@ import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Conversion/'
+import ConversionSummary from '@/components/Conversion/ConversionSummary.vue'
 
 @Component({
   components: {

@@ -27,7 +27,7 @@
             autocomplete="chrome-off"
             label="Enter Nature of Business"
             v-model="naicsText"
-            counter="1000"
+            counter="300"
             :rules="naicsRules"
             @change="onChangeNaics($event)"
           >
@@ -38,7 +38,7 @@
             >
               <span>Done</span>
             </v-btn>
-            <v-btn large outlined color="primary" id="nob-cancel1-btn"
+            <v-btn large outlined color="primary" id="nob-cancel-btn"
               @click="onCancelClicked()"
             >
               <span>Cancel</span>
@@ -47,7 +47,7 @@
         </div>
 
         <div v-if="!onEditMode" class="summary-block d-flex justify-space-between align-center">
-          <span>{{ hasNatureOfBusinessChanged ? naicsText : naicsSummary }}</span>
+          <span id="naics-summary">{{ naicsSummary }}</span>
           <v-btn text color="primary" id="nob-change-btn" @click="onChangeClicked()">
             <v-icon small>mdi-pencil</v-icon>
             <span>Change</span>
@@ -63,7 +63,7 @@ import { Action, Getter } from 'vuex-class'
 import { Component, Vue } from 'vue-property-decorator'
 import { ActionBindingIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
-import { isEmpty, isEqual } from 'lodash'
+import { isEqual } from 'lodash'
 
 @Component({})
 export default class NatureOfBusiness extends Vue {
@@ -77,16 +77,16 @@ export default class NatureOfBusiness extends Vue {
   private naicsRules = []
   private naicsText = ''
 
-  /** Show naics value, description or (Not Entered) */
+  /** Show naics value, description or (Not Entered) upon first render */
   get naicsSummary (): string {
     const code = this.getCurrentNaics.naicsCode
     const desc = this.getCurrentNaics.naicsDescription
     let summary = '(Not Entered)'
     if (code && desc) {
-      if (!this.hasNatureOfBusinessChanged) this.naicsText = `${code} - ${desc}`
+      this.naicsText = this.hasNatureOfBusinessChanged ? this.naicsText : `${code} - ${desc}`
       summary = `${code} - ${desc}`
     } else if (desc) {
-      if (!this.hasNatureOfBusinessChanged) this.naicsText = desc
+      this.naicsText = desc
       summary = desc
     }
     return summary
@@ -102,13 +102,7 @@ export default class NatureOfBusiness extends Vue {
 
   /** Monitor naics text change */
   private onChangeNaics (naicsText:string): void {
-    if (isEmpty(naicsText)) {
-      this.naicsRules = ['Text input can not be empty']
-    } else if (naicsText.length > 1000) {
-      this.naicsRules = ['Text input must not exceed 1000 characters']
-    } else {
-      this.naicsRules = []
-    }
+    this.naicsRules = naicsText.length > 300 ? ['Maximum 300 characters reached'] : []
   }
 
   /** Called when user has clicked the Change button. */
@@ -118,8 +112,8 @@ export default class NatureOfBusiness extends Vue {
 
   /** Submited when user has clicked the Done button. */
   onSubmitClicked (): void {
-    if (isEmpty(this.naicsText)) {
-      this.naicsRules = ['Text input cannot be empty.']
+    if (this.naicsText.length > 300) {
+      this.naicsRules = ['Maximum 300 characters reached']
     } else {
       if (!isEqual(this.naicsText, this.naicsSummary)) {
         this.setNaics({
