@@ -55,13 +55,34 @@
           sectionNumber="3."
           :validate="getAppValidate"
         />
+        <template v-if="isRoleStaff">
+          <h2 class="mt-10">{{'4.'}} Court Order and Plan of Arrangement</h2>
+          <div class="py-4">
+            If this filing is pursuant to a court order, enter the court order number. If this
+            filing is pursuant to a plan of arrangement, enter the court order number and select
+            Plan of Arrangement.
+          </div>
 
-        <StaffPayment
-        v-if="isRoleStaff"
-        class="mt-10"
-        sectionNumber="4."
-        :validate="getAppValidate"
-        />
+          <div :class="{'invalid-section': invalidCourtOrder}">
+            <CourtOrderPoaShared
+              id="court-order"
+              :autoValidation="getAppValidate"
+              :draftCourtOrderNumber="getFileNumber"
+              :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
+              :invalidSection="invalidCourtOrder"
+              @emitCourtNumber="setFileNumber($event)"
+              @emitPoa="setHasPlanOfArrangement($event)"
+              @emitValid="setValidCourtOrder($event)"
+            />
+          </div>
+
+          <StaffPayment
+            class="mt-10"
+            sectionNumber="5."
+            :validate="getAppValidate"
+            @haveChanges="onStaffPaymentChanges()"
+          />
+        </template>
       </div>
     </v-slide-x-reverse-transition>
   </section>
@@ -76,21 +97,25 @@ import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, You
   from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
-import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF, FlagsReviewCertifyIF }
+  from '@/interfaces/'
 import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Change/'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
+import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
 
 @Component({
   components: {
     CertifySection,
     ChangeSummary,
     CompletingParty,
+    CourtOrderPoaShared,
     DocumentsDelivery,
     PeopleAndRoles,
-    YourCompany,
-    StaffPayment
+    StaffPayment,
+    YourCompany
   }
 })
 export default class Change extends Mixins(
@@ -107,6 +132,7 @@ export default class Change extends Mixins(
   @Getter isTypeSoleProp!: boolean
   @Getter isTypePartnership!: boolean
   @Getter isRoleStaff!: boolean
+  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -137,6 +163,10 @@ export default class Change extends Mixins(
     if (this.isTypeSoleProp) return SoleProprietorshipResource
     if (this.isTypePartnership) return GeneralPartnershipResource
     return null
+  }
+
+  get invalidCourtOrder (): boolean {
+    return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -218,6 +248,16 @@ export default class Change extends Mixins(
 
     // now that all data is loaded, wait for things to stabilize and reset flag
     Vue.nextTick(() => this.setHaveUnsavedChanges(false))
+  }
+
+  /** Called when staff payment data has changed. */
+  protected onStaffPaymentChanges (): void {
+    // update filing data with staff payment fields
+    this.setFilingData({
+      ...this.getFilingData,
+      priority: this.getStaffPayment.isPriority,
+      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
+    })
   }
 
   /** Fetches the business snapshot. */
