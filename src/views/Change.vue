@@ -55,6 +55,13 @@
           sectionNumber="3."
           :validate="getAppValidate"
         />
+
+        <StaffPayment
+        v-if="isRoleStaff"
+        class="mt-10"
+        sectionNumber="4."
+        :validate="getAppValidate"
+        />
       </div>
     </v-slide-x-reverse-transition>
   </section>
@@ -65,7 +72,7 @@ import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorato
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
-import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, YourCompany }
+import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, YourCompany, StaffPayment }
   from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
@@ -82,7 +89,8 @@ import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resour
     CompletingParty,
     DocumentsDelivery,
     PeopleAndRoles,
-    YourCompany
+    YourCompany,
+    StaffPayment
   }
 })
 export default class Change extends Mixins(
@@ -98,6 +106,7 @@ export default class Change extends Mixins(
   @Getter showFeeSummary!: boolean
   @Getter isTypeSoleProp!: boolean
   @Getter isTypePartnership!: boolean
+  @Getter isRoleStaff!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF

@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
   EffectiveDateTimeIF, EntitySnapshotIF, FirmChangeIF, FirmConversionIF, NameRequestIF,
-  NameTranslationIF, OrgPersonIF, ShareClassIF, ShareStructureIF } from '@/interfaces/'
+  NameTranslationIF, OrgPersonIF, ShareClassIF, ShareStructureIF, StaffPaymentStepIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, EffectOfOrders, FilingTypes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -17,6 +17,8 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 export default class FilingTemplateMixin extends Mixins(DateMixin) {
   // Global getters
   @Getter isNamedBusiness!: boolean
+  @Getter isTypeCoop!: boolean
+  @Getter getStaffPaymentStep!: StaffPaymentStepIF
   @Getter getNameRequestNumber!: string
   @Getter getApprovedName!: string
   @Getter getBusinessId!: string
