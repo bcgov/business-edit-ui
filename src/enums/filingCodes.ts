@@ -4,6 +4,5 @@ export enum FilingCodes {
   CORRECTION = 'CRCTN',
   CONVERSION = 'CONVERSION', // *** verify and update if needed
   INCORPORATION_BC = 'BCINC',
-  INCORPORATION_CP = 'OTINC',
-  SPECIAL_RESOLUTION = 'SPRLN'
+  INCORPORATION_CP = 'OTINC'
 }

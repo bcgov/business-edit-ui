@@ -107,7 +107,7 @@
                 <!-- Corrections still use the basic Fee Summary component -->
                 <aside v-if="isCorrectionFiling">
                   <SbcFeeSummary
-                    :filingData="[...getFilingData]"
+                    :filingData="getFilingData"
                     :payURL="payApiUrl"
                   />
                 </aside>
@@ -115,8 +115,7 @@
                 <!-- Alteration/Change filings use the enhanced Fee Summary shared component -->
                 <v-expand-transition>
                   <FeeSummaryShared
-                    v-if="isAlterationFiling || isChangeFiling || isConversionFiling"
-                    :filingData="feeFilingData"
+                    :filingData="getFilingData"
                     :payApiUrl="payApiUrl"
                     :isLoading="isBusySaving"
                     :hasConflicts="isConflictingLegalType && hasNewNr"
@@ -144,10 +143,6 @@
 </template>
 
 <script lang="ts">
-// Libraries
-import { cloneDeep } from 'lodash'
-
-// Componenets, dialogs and views
 import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { PAYMENT_REQUIRED } from 'http-status-codes'
@@ -162,20 +157,16 @@ import { Breadcrumb as BreadcrumbShared } from '@bcrs-shared-components/breadcru
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
-import { AuthServices, PayServices } from '@/services/'
+import { AuthServices } from '@/services/'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
-  AlterationFilingIF, FirmChangeIF, FirmConversionIF, EmptyFees } from '@/interfaces/'
+  AlterationFilingIF, FirmChangeIF, FirmConversionIF } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames, FilingCodes } from '@/enums/'
+import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums/'
 import { FeeSummaryActions } from '@bcrs-shared-components/enums/'
 import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
   getStaffDashboardBreadcrumb } from '@/resources/BreadCrumbResources'
-
-import {
-  StaffPaymentOptions
-} from '@bcrs-shared-components/enums'
 
 @Component({
   components: {
@@ -206,13 +197,15 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getUserRoles!: string
   @Getter getUserUsername!: string
   @Getter getOrgInfo!: any
-  @Getter getFilingData!: Array<FilingDataIF>
+  @Getter getFee: string
+  @Getter getFilingData!: FilingDataIF
   @Getter haveUnsavedChanges!: boolean
   @Getter isBusySaving!: boolean
   @Getter isEditing!: boolean
   @Getter isSummaryMode!: boolean
   @Getter showFeeSummary!: boolean
   @Getter isPriority!: boolean
+  @Getter totalFilingFee: number
 
   // Alteration flag getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -289,37 +282,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     }
 
     return crumbs
-  }
-
-  /** Data for fee summary component. */
-  private get feeFilingData (): Array<FilingDataIF> {
-    let filingData: Array<FilingDataIF> = []
-    if (this.getFilingData) {
-      filingData = cloneDeep(this.getFilingData)
-      if (this.isTypeCoop && this.getFilingData.length > 0) {
-        // Only set Future Effective and Priority to Special Resolution Fee
-        const specialResolutionFilingData = filingData.find(x => x.filingTypeCode === FilingCodes.SPECIAL_RESOLUTION)
-        if (specialResolutionFilingData) {
-          if (this.getStaffPaymentStep.staffPayment.option === StaffPaymentOptions.NO_FEE) {
-            filingData.forEach(x => {
-              x.waiveFees = true
-            })
-          } else {
-            specialResolutionFilingData.futureEffective = this.getEffectiveDateTime.isFutureEffective
-            specialResolutionFilingData.priority = this.getStaffPaymentStep.staffPayment.isPriority
-          }
-        }
-      } else if (this.getFilingData[0]) {
-        // Avoid waiveFee with priority or futureEffective in the same request
-        if (this.getStaffPaymentStep.staffPayment.option === StaffPaymentOptions.NO_FEE) {
-          filingData[0].waiveFees = true
-        } else {
-          filingData[0].futureEffective = this.getEffectiveDateTime.isFutureEffective
-          filingData[0].priority = this.getStaffPaymentStep.staffPayment.isPriority
-        }
-      }
-    }
-    return filingData
   }
 
   /** The URL of the Pay API. */
@@ -571,19 +533,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     // finally, let router views know they can load their data
     this.appReady = true
-
-    // fetch and set the fee prices to display in the text
-    const filingFees = []
-    for (const filingData of this.getFilingData) {
-      await PayServices.fetchFilingFees(filingData.filingTypeCode, filingData.entityType, true)
-        .then(res => filingFees.push(res))
-        .catch(error => {
-          console.log('Failed to fetch filing fees, error =', error) // eslint-disable-line no-console
-          // return a valid fees structure
-          filingFees.push(cloneDeep(EmptyFees))
-        })
-    }
-    this.setFeePrices(filingFees)
   }
 
   /**
@@ -611,7 +560,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
           await this.validateReviewCertifyPage()
         } else {
           // Check validity, and if OK then go to summary page.
-          await this.validateCompanyInfoPage()
+          await this.onClickSave()
         }
         break
     }
