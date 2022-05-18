@@ -115,6 +115,7 @@
                 <!-- Alteration/Change filings use the enhanced Fee Summary shared component -->
                 <v-expand-transition>
                   <FeeSummaryShared
+                    v-if="isAlterationFiling || isChangeFiling || isConversionFiling"
                     :filingData="getFilingData"
                     :payApiUrl="payApiUrl"
                     :isLoading="isBusySaving"
@@ -197,15 +198,12 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getUserRoles!: string
   @Getter getUserUsername!: string
   @Getter getOrgInfo!: any
-  @Getter getFee: string
   @Getter getFilingData!: FilingDataIF
   @Getter haveUnsavedChanges!: boolean
   @Getter isBusySaving!: boolean
   @Getter isEditing!: boolean
   @Getter isSummaryMode!: boolean
   @Getter showFeeSummary!: boolean
-  @Getter isPriority!: boolean
-  @Getter totalFilingFee: number
 
   // Alteration flag getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -560,7 +558,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
           await this.validateReviewCertifyPage()
         } else {
           // Check validity, and if OK then go to summary page.
-          await this.onClickSave()
+          await this.validateCompanyInfoPage()
         }
         break
     }

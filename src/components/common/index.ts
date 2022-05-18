@@ -9,6 +9,7 @@ export { default as EntityInfo } from './EntityInfo.vue'
 export { default as HelpSection } from './HelpSection.vue'
 export { default as ErrorContact } from './ErrorContact.vue'
 export { default as StaffPayment } from './StaffPayment.vue'
+export { default as CourtOrderPoa } from './CourtOrderPoa.vue'
 
 // these must come last as they depend on the above
 export * from './PeopleAndRoles'

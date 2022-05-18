@@ -56,25 +56,14 @@
           :validate="getAppValidate"
         />
         <template v-if="isRoleStaff">
-          <h2 class="mt-10">{{'4.'}} Court Order and Plan of Arrangement</h2>
-          <div class="py-4">
-            If this filing is pursuant to a court order, enter the court order number. If this
-            filing is pursuant to a plan of arrangement, enter the court order number and select
-            Plan of Arrangement.
-          </div>
-
-          <div :class="{'invalid-section': invalidCourtOrder}">
-            <CourtOrderPoaShared
-              id="court-order"
-              :autoValidation="getAppValidate"
-              :draftCourtOrderNumber="getFileNumber"
-              :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
-              :invalidSection="invalidCourtOrder"
-              @emitCourtNumber="setFileNumber($event)"
-              @emitPoa="setHasPlanOfArrangement($event)"
-              @emitValid="setValidCourtOrder($event)"
-            />
-          </div>
+          <CourtOrderPoa
+            class="'mt-10"
+            sectionNumber="4."
+            :autoValidation="getAppValidate"
+            :draftCourtOrderNumber="getFileNumber"
+            :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
+            :invalidSection="invalidCourtOrder"
+          />
 
           <StaffPayment
             class="mt-10"
@@ -93,8 +82,8 @@ import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorato
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
-import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, YourCompany, StaffPayment }
-  from '@/components/common/'
+import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, YourCompany, StaffPayment,
+  CourtOrderPoa } from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF, FlagsReviewCertifyIF }
@@ -104,14 +93,13 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Change/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
-import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
 
 @Component({
   components: {
     CertifySection,
     ChangeSummary,
     CompletingParty,
-    CourtOrderPoaShared,
+    CourtOrderPoa,
     DocumentsDelivery,
     PeopleAndRoles,
     StaffPayment,
@@ -133,6 +121,7 @@ export default class Change extends Mixins(
   @Getter isTypePartnership!: boolean
   @Getter isRoleStaff!: boolean
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter getInvalidCourtOrder!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -163,10 +152,6 @@ export default class Change extends Mixins(
     if (this.isTypeSoleProp) return SoleProprietorshipResource
     if (this.isTypePartnership) return GeneralPartnershipResource
     return null
-  }
-
-  get invalidCourtOrder (): boolean {
-    return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
   }
 
   /** Called when App is ready and this component can load its data. */
