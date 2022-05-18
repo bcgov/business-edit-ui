@@ -17,7 +17,6 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 export default class FilingTemplateMixin extends Mixins(DateMixin) {
   // Global getters
   @Getter isNamedBusiness!: boolean
-  @Getter isTypeCoop!: boolean
   @Getter getNameRequestNumber!: string
   @Getter getApprovedName!: string
   @Getter getBusinessId!: string

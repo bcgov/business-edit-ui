@@ -18,6 +18,3 @@ export enum NameRequestEntityTypes {
   FR = CorpTypeCd.NR_SOLE_PROP,
   GP = CorpTypeCd.PARTNERSHIP
 }
-
-// external enums
-export { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
