@@ -12,8 +12,7 @@
       <CourtOrderPoaShared
         id="court-order"
         :autoValidation="getAppValidate"
-        :draftCourtOrderNumber="getFileNumber"
-        :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
+        :hasDraftPlanOfArrangement="hasDraftPlanOfArrangement"
         :invalidSection="invalidCourtOrder"
         @emitCourtNumber="setFileNumber($event)"
         @emitPoa="setHasPlanOfArrangement($event)"
@@ -27,7 +26,7 @@
 import { Action, Getter } from 'vuex-class'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa'
-import { FlagsReviewCertifyIF } from '@/interfaces/'
+import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
 
 @Component({
   components: {
@@ -37,11 +36,29 @@ import { FlagsReviewCertifyIF } from '@/interfaces/'
 export default class CourtOrderPoa extends Vue {
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber: string
-  // Store getters
+
+  /** Store getters */
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getAppValidate!: boolean
+  @Getter hasDraftPlanOfArrangement!: boolean
 
-  // True if is a valid court order
+  /** Global actions */
+  @Action setValidCourtOrder!: ActionBindingIF
+
+  /** LocalProperties */
+  private courtOrderNumber: string = null
+  private planOfArrangement: boolean = false
+
+  /** Flags to enable validation */
+  private setFileNumber (courtOrderNumber: string): void {
+    this.courtOrderNumber = courtOrderNumber
+  }
+
+  private setHasPlanOfArrangement (planOfArrangement: boolean): void {
+    this.planOfArrangement = planOfArrangement
+  }
+
+  /** True if is a valid court order */
   get invalidCourtOrder (): boolean {
     return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
   }

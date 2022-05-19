@@ -60,9 +60,6 @@
             class="'mt-10"
             sectionNumber="4."
             :autoValidation="getAppValidate"
-            :draftCourtOrderNumber="getFileNumber"
-            :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
-            :invalidSection="invalidCourtOrder"
           />
 
           <StaffPayment

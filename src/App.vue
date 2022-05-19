@@ -315,7 +315,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   get feeSummaryConfirmLabel (): string {
     const isNoFee = this.isChangeFiling || this.isConversionFiling
     if (this.isSummaryMode) {
-      return isNoFee ? 'File Now (No Fee)' : 'File and Pay'
+      return isNoFee && !this.getFilingData.priority ? 'File Now (No Fee)' : 'File and Pay'
     } else {
       return isNoFee ? 'Review and Confirm' : 'Review and Certify'
     }
