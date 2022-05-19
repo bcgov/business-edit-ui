@@ -117,8 +117,6 @@ export default class Change extends Mixins(
   @Getter isTypeSoleProp!: boolean
   @Getter isTypePartnership!: boolean
   @Getter isRoleStaff!: boolean
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter getInvalidCourtOrder!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF

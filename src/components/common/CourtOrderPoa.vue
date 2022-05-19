@@ -44,6 +44,8 @@ export default class CourtOrderPoa extends Vue {
 
   /** Global actions */
   @Action setValidCourtOrder!: ActionBindingIF
+  @Action setHasPlanOfArrangement!: ActionBindingIF
+  @Action invalidCourtOrder!: ActionBindingIF
 
   /** LocalProperties */
   private courtOrderNumber: string = null
@@ -52,15 +54,6 @@ export default class CourtOrderPoa extends Vue {
   /** Flags to enable validation */
   private setFileNumber (courtOrderNumber: string): void {
     this.courtOrderNumber = courtOrderNumber
-  }
-
-  private setHasPlanOfArrangement (planOfArrangement: boolean): void {
-    this.planOfArrangement = planOfArrangement
-  }
-
-  /** True if is a valid court order */
-  get invalidCourtOrder (): boolean {
-    return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
   }
 }
 </script>
