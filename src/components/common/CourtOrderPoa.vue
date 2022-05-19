@@ -41,11 +41,11 @@ export default class CourtOrderPoa extends Vue {
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getAppValidate!: boolean
   @Getter getHasPlanOfArrangement!: boolean
+  @Getter invalidCourtOrder!: boolean
 
   /** Global actions */
   @Action setValidCourtOrder!: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
-  @Action invalidCourtOrder!: ActionBindingIF
 
   /** LocalProperties */
   private courtOrderNumber: string = null
