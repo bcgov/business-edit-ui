@@ -254,7 +254,7 @@
         <ConversionNOB
           class="section-container"
           :class="{'invalid-section': invalidNatureOfBusiness}"
-          :invalidSection="invalidNatureOfBusiness"
+          @haveChanges="conversionNOBChanges = $event"
         />
       </template>
     </template>
@@ -316,7 +316,7 @@ import { CommonMixin, SharedMixin, DateMixin, LegalApiMixin, NameRequestMixin } 
 import { CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { cloneDeep } from 'lodash'
-import { ConversionNOB } from '../../Conversion'
+import { ConversionNOB } from '@/components/Conversion'
 
 /** Note: this component is used by both corrections and alterations. */
 @Component({
@@ -376,6 +376,7 @@ export default class YourCompany extends Mixins(
   private companyTypeChanges = false
   private nameTranslationChanges = false
   private officeAddressChanges = false
+  private conversionNOBChanges = false
 
   private correctNameChoices: Array<string> = []
   private isEditingNames = false
@@ -499,13 +500,15 @@ export default class YourCompany extends Mixins(
   @Watch('companyTypeChanges') private onCompanyTypeChanges ():void { this.setDataChanges() }
   @Watch('nameTranslationChanges') private onNameTranslationChanges ():void { this.setDataChanges() }
   @Watch('officeAddressChanges') private onOfficeAddressChanges ():void { this.setDataChanges() }
+  @Watch('conversionNOBChanges') private onconversionNOBChanges ():void { this.setDataChanges() }
 
   private setDataChanges (): void {
     const haveChanges = (
       this.companyNameChanges ||
       this.companyTypeChanges ||
       this.nameTranslationChanges ||
-      this.officeAddressChanges
+      this.officeAddressChanges ||
+      this.conversionNOBChanges
     )
     this.setDefineCompanyStepChanged(haveChanges)
     this.emitHaveChanges(haveChanges)

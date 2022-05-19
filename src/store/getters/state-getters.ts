@@ -220,6 +220,14 @@ export const getCurrentNaics = (state: StateIF): NaicsIF => {
   }
 }
 
+/** The EntitySnapshot Naics */
+export const getEntityNaics = (state: StateIF): NaicsIF => {
+  return {
+    naicsCode: getEntitySnapshot(state)?.businessInfo?.naicsCode || '',
+    naicsDescription: getEntitySnapshot(state)?.businessInfo?.naicsDescription || ''
+  }
+}
+
 /** Whether this IA is for a named business. */
 export const isNamedBusiness = (state: StateIF): boolean => {
   // a named business has a NR number

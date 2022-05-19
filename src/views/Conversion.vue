@@ -67,7 +67,7 @@ import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Conversion/'
-import ConversionSummary from '@/components/Conversion/ConversionSummary.vue'
+import { ConversionSummary } from '@/components/Conversion'
 
 @Component({
   components: {

@@ -5,8 +5,10 @@ import { mount } from '@vue/test-utils'
 import ConversionNOB from '@/components/Conversion/ConversionNOB.vue'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
+document.body.setAttribute('data-app', 'true')
 
 const businessInformation = {
   legalType: 'SP',
@@ -18,6 +20,8 @@ const businessInformation = {
   naicsDescription: 'food'
 }
 
+const updatedBusinessInfo = { ...businessInformation, naicsCode: '', naicsDescription: '100001 - cake' }
+
 const entitySnapShot = {
   businessInfo: businessInformation,
   authInfo: null,
@@ -28,16 +32,26 @@ const entitySnapShot = {
   resolutions: null
 }
 
+// const updatedEntitySnapShot = { ...entitySnapShot, businessInfo: updatedBusinessInfo }
+
 const initialProps = {
   onEditMode: false,
   naicsText: ''
 }
 
-describe('ConversionNatureOfBusiness', () => {
+const updatedProps = {
+  onEditMode: false,
+  dropdown: false
+}
+
+describe('ConversionNatureOfBusiness without update', () => {
   let wrapperFactory: any
+  let wrapper: any
   let store: any = getVuexStore()
 
   beforeEach(() => {
+    store.state.stateModel.businessInformation = businessInformation
+    store.state.stateModel.entitySnapshot = entitySnapShot
     wrapperFactory = (propsData: any) => {
       return mount(ConversionNOB, {
         propsData: {
@@ -47,22 +61,19 @@ describe('ConversionNatureOfBusiness', () => {
         vuetify
       })
     }
+    wrapper = wrapperFactory(initialProps)
   })
-  store.state.stateModel.businessInformation = businessInformation
-  store.state.stateModel.entitySnapshot = entitySnapShot
 
-  it('renders the naicsSummary text', async () => {
-    const wrapper = wrapperFactory(initialProps)
-
-    expect(wrapper.findComponent(ConversionNOB).exists()).toBe(true)
-    expect(wrapper.find('#naics-summary').text()).toBe('100000 - food')
-
+  afterEach(() => {
     wrapper.destroy()
   })
 
-  it('renders the text field and texts', async () => {
-    const wrapper = wrapperFactory(initialProps)
+  it('renders the naicsSummary text', async () => {
+    expect(wrapper.findComponent(ConversionNOB).exists()).toBe(true)
+    expect(wrapper.find('#naics-summary').text()).toBe('100000 - food')
+  })
 
+  it('renders the text field and texts', async () => {
     const changeBtn = wrapper.find('#nob-change-btn')
     await changeBtn.trigger('click')
 
@@ -72,13 +83,9 @@ describe('ConversionNatureOfBusiness', () => {
     expect(wrapper.vm.$data.naicsText).toBe('100000 - food')
     expect(wrapper.vm.$data.onEditMode).toBeTruthy()
     expect(wrapper.find('#naics-summary').exists()).toBeFalsy()
-
-    wrapper.destroy()
   })
 
   it('simulates input text and the cancel button', async () => {
-    const wrapper = wrapperFactory(initialProps)
-
     const changeBtn = wrapper.find('#nob-change-btn')
     await changeBtn.trigger('click')
 
@@ -94,44 +101,10 @@ describe('ConversionNatureOfBusiness', () => {
     expect(wrapper.vm.$data.onEditMode).toBeFalsy()
     expect(wrapper.find('#naics-summary').exists()).toBeTruthy()
     expect(wrapper.find('#naics-summary').text()).toBe('100000 - food')
-    expect(wrapper.vm.$data.hasConversionNOBChanged).toBeFalsy()
-
-    wrapper.destroy()
-  })
-
-  it('simulates input text and the done button', async () => {
-    const updatedBusinessInfo = { ...businessInformation, naicsCode: '', naicsDescription: '100001 - cake' }
-    store.state.stateModel.businessInformation = updatedBusinessInfo
-    store.state.stateModel.entitySnapshot = entitySnapShot
-
-    const wrapper = wrapperFactory(initialProps)
-
-    const changeBtn = wrapper.find('#nob-change-btn')
-    await changeBtn.trigger('click')
-
-    expect(wrapper.vm.$data.onEditMode).toBeTruthy()
-
-    const input = wrapper.find('textarea')
-    await input.setValue('100001 - cake')
-
-    const doneBtn = wrapper.find('#nob-done-btn')
-    await doneBtn.trigger('click')
-
-    expect(wrapper.vm.$data.naicsText).toBe('100001 - cake')
-    expect(wrapper.vm.$data.onEditMode).toBeFalsy()
-    expect(wrapper.find('#naics-summary').exists()).toBeTruthy()
-    expect(wrapper.find('#naics-summary').text()).toBe('100001 - cake')
-    expect(wrapper.find('#changed-chip').exists()).toBeTruthy()
-
-    wrapper.destroy()
+    expect(wrapper.vm.$data.hasNatureOfBusinessChanged).toBeFalsy()
   })
 
   it('simulates error for 0 characters length', async () => {
-    store.state.stateModel.businessInformation = businessInformation
-    store.state.stateModel.entitySnapshot = entitySnapShot
-
-    const wrapper = wrapperFactory(initialProps)
-
     const changeBtn = wrapper.find('#nob-change-btn')
     await changeBtn.trigger('click')
 
@@ -147,8 +120,6 @@ describe('ConversionNatureOfBusiness', () => {
     expect(wrapper.vm.$data.onEditMode).toBeFalsy()
     expect(wrapper.find('#naics-summary').exists()).toBeTruthy()
     expect(wrapper.find('#naics-summary').text()).toBe('(Not Entered)')
-
-    wrapper.destroy()
   })
 
   it('simulates error for over 300 characters length', async () => {
@@ -177,7 +148,67 @@ describe('ConversionNatureOfBusiness', () => {
     expect(wrapper.find('.v-counter').text()).toBe('311 / 300')
     expect(wrapper.find('.v-messages').text()).toBe('Maximum 300 characters reached')
     expect(wrapper.find('#naics-summary').exists()).toBeFalsy()
+  })
+})
 
+describe('ConversionNatureOfBusiness after the update', () => {
+  let wrapperFactory: any
+  let wrapper: any
+  let store: any = getVuexStore()
+
+  beforeEach(() => {
+    store.state.stateModel.businessInformation = updatedBusinessInfo
+    store.state.stateModel.entitySnapshot = entitySnapShot
+
+    wrapperFactory = (propsData: any) => {
+      return mount(ConversionNOB, {
+        propsData: {
+          ...propsData
+        },
+        store,
+        vuetify
+      })
+    }
+    wrapper = wrapperFactory(updatedProps)
+  })
+
+  afterEach(() => {
     wrapper.destroy()
+  })
+
+  it('renders the updated naicsSummary text', async () => {
+    expect(wrapper.findComponent(ConversionNOB).exists()).toBe(true)
+    expect(wrapper.find('#naics-summary').text()).toBe('100001 - cake')
+  })
+
+  it('renders the text field and texts', async () => {
+    const changeBtn = wrapper.find('#nob-change-btn')
+    await changeBtn.trigger('click')
+
+    expect(wrapper.vm.$data.onEditMode).toBeTruthy()
+    expect(wrapper.find('p').text()).toContain('Provide a brief description')
+    expect(wrapper.find('.v-text-field label').text()).toContain('Enter Nature of Business')
+    expect(wrapper.find('.v-counter').text()).toBe('13 / 300')
+    expect(wrapper.vm.$data.naicsText).toBe('100001 - cake')
+    expect(wrapper.vm.$data.onEditMode).toBeTruthy()
+    expect(wrapper.find('#naics-summary').exists()).toBeFalsy()
+  })
+
+  it('simulates input text and the done button', async () => {
+    const changeBtn = wrapper.find('#nob-change-btn')
+    await changeBtn.trigger('click')
+
+    expect(wrapper.vm.$data.onEditMode).toBeTruthy()
+
+    const input = wrapper.find('textarea')
+    await input.setValue('no code coke')
+
+    const doneBtn = wrapper.find('#nob-done-btn')
+    await doneBtn.trigger('click')
+
+    expect(wrapper.vm.$data.naicsText).toBe('no code coke')
+    expect(wrapper.vm.$data.onEditMode).toBeFalsy()
+    expect(wrapper.find('#naics-summary').exists()).toBeTruthy()
+    expect(wrapper.find('#naics-summary').text()).toBe('no code coke')
   })
 })
