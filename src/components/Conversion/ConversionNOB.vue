@@ -20,30 +20,33 @@
             Provide a brief description of the nature of business (e.g., corner grocery store,
             automotive repair service, landscaping, etc.).
           </p>
-          <v-text-field
-            filled
-            persistent-hint
-            class="mt-5"
-            autocomplete="chrome-off"
-            label="Enter Nature of Business"
-            v-model="naicsText"
-            counter="300"
-            :rules="naicsRules"
-            @change="onChangeNaics($event)"
-          >
-          </v-text-field>
-          <div id="nob-confirm-container" class="mb-2">
-            <v-btn large color="primary" id="nob-done-btn" class="mr-2"
-              @click="onSubmitClicked()"
+          <v-form ref="form" lazy-validation>
+            <v-textarea
+              filled
+              persistent-hint
+              class="mt-5"
+              autocomplete="chrome-off"
+              label="Enter Nature of Business"
+              rows="3"
+              v-model="naicsText"
+              :counter="maxLength"
+              :rules="naicsRules"
+              validate-on-blur
             >
-              <span>Done</span>
-            </v-btn>
-            <v-btn large outlined color="primary" id="nob-cancel-btn"
-              @click="onCancelClicked()"
-            >
-              <span>Cancel</span>
-            </v-btn>
-          </div>
+            </v-textarea>
+            <div id="nob-confirm-container" class="mb-2">
+              <v-btn large color="primary" id="nob-done-btn" class="mr-2"
+                @click="onSubmitClicked()"
+              >
+                <span>Done</span>
+              </v-btn>
+              <v-btn large outlined color="primary" id="nob-cancel-btn"
+                @click="onCancelClicked()"
+              >
+                <span>Cancel</span>
+              </v-btn>
+            </div>
+          </v-form>
         </div>
 
         <div v-if="!onEditMode" class="summary-block d-flex justify-space-between align-center">
@@ -74,8 +77,11 @@ export default class NatureOfBusiness extends Vue {
 
   // local variables
   private onEditMode = false
-  private naicsRules = []
+  private maxLength = 300
   private naicsText = ''
+  private naicsRules = [
+    (v: string) => (v?.length <= this.maxLength) || 'Maximum 300 characters reached'
+  ]
 
   /** Show naics value, description or (Not Entered) upon first render */
   get naicsSummary (): string {
@@ -100,11 +106,6 @@ export default class NatureOfBusiness extends Vue {
     }
   }
 
-  /** Monitor naics text change */
-  private onChangeNaics (naicsText:string): void {
-    this.naicsRules = naicsText.length > 300 ? ['Maximum 300 characters reached'] : []
-  }
-
   /** Called when user has clicked the Change button. */
   onChangeClicked (): void {
     this.onEditMode = true
@@ -112,9 +113,8 @@ export default class NatureOfBusiness extends Vue {
 
   /** Submited when user has clicked the Done button. */
   onSubmitClicked (): void {
-    if (this.naicsText.length > 300) {
-      this.naicsRules = ['Maximum 300 characters reached']
-    } else {
+    let validForm = (this.$refs.form as Vue & { validate: () => boolean }).validate()
+    if (validForm) {
       if (!isEqual(this.naicsText, this.naicsSummary)) {
         this.setNaics({
           naicsCode: '',
@@ -122,7 +122,6 @@ export default class NatureOfBusiness extends Vue {
         })
       }
       this.onEditMode = false
-      this.naicsRules = []
     }
   }
 
@@ -130,7 +129,6 @@ export default class NatureOfBusiness extends Vue {
   onCancelClicked (): void {
     this.setNaics(this.originalNaics)
     this.onEditMode = false
-    this.naicsRules = []
   }
 }
 </script>
