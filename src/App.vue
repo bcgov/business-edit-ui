@@ -107,7 +107,7 @@
                 <!-- Corrections still use the basic Fee Summary component -->
                 <aside v-if="isCorrectionFiling">
                   <SbcFeeSummary
-                    :filingData=[...getFilingData]
+                    :filingData="[...getFilingData]"
                     :payURL="payApiUrl"
                   />
                 </aside>
