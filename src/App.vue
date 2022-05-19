@@ -234,7 +234,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Action setSummaryMode!: ActionBindingIF
   @Action setFilingType!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
-  @Action setFeePrices!: ActionBindingIF
 
   // Local properties
   private accountAuthorizationDialog = false
@@ -315,7 +314,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   get feeSummaryConfirmLabel (): string {
     const isNoFee = this.isChangeFiling || this.isConversionFiling
     if (this.isSummaryMode) {
-      return isNoFee && !this.getFilingData.priority ? 'File Now (No Fee)' : 'File and Pay'
+      return (isNoFee && !this.getFilingData.priority) ? 'File Now (No Fee)' : 'File and Pay'
     } else {
       return isNoFee ? 'Review and Confirm' : 'Review and Certify'
     }

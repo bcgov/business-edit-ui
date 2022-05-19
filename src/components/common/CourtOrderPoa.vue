@@ -40,7 +40,7 @@ export default class CourtOrderPoa extends Vue {
   /** Store getters */
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getAppValidate!: boolean
-  @Getter hasDraftPlanOfArrangement!: boolean
+  @Getter getHasPlanOfArrangement!: boolean
 
   /** Global actions */
   @Action setValidCourtOrder!: ActionBindingIF
