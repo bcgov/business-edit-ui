@@ -15,7 +15,7 @@
         :hasDraftPlanOfArrangement="hasDraftPlanOfArrangement"
         :invalidSection="invalidCourtOrder"
         @emitCourtNumber="setFileNumber($event)"
-        @emitPoa="setHasPlanOfArrangement($event)"
+        @emitPoa="hasDraftPlanOfArrangement($event)"
         @emitValid="setValidCourtOrder($event)"
       />
     </div>
@@ -40,20 +40,16 @@ export default class CourtOrderPoa extends Vue {
   /** Store getters */
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getAppValidate!: boolean
-  @Getter getHasPlanOfArrangement!: boolean
-  @Getter invalidCourtOrder!: boolean
+  @Getter getDraftPlanOfArrangement!: boolean
 
   /** Global actions */
   @Action setValidCourtOrder!: ActionBindingIF
-  @Action setHasPlanOfArrangement!: ActionBindingIF
+  @Action hasDraftPlanOfArrangement!: ActionBindingIF
+  @Action setFileNumber!: ActionBindingIF
 
-  /** LocalProperties */
-  private courtOrderNumber: string = null
-  private planOfArrangement: boolean = false
-
-  /** Flags to enable validation */
-  private setFileNumber (courtOrderNumber: string): void {
-    this.courtOrderNumber = courtOrderNumber
+  /** Local getters */
+  get invalidCourtOrder (): boolean {
+    return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
   }
 }
 </script>
