@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
-
+import ConversionNOB from '@/components/Conversion/ConversionNOB.vue'
 // for some reason, ChangeBusinessType cannot be imported by its filename
 // also, it needs to precede the other imports
 // (otherwise a bunch of tests in this file fail)
@@ -194,5 +194,76 @@ describe('YourCompany in an Alteration', () => {
     await Vue.nextTick()
 
     expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  N/A')
+  })
+})
+
+describe('YourCompany in an Conversion', () => {
+  let wrapper: any
+  let store: any = getVuexStore()
+
+  const businessInformation = {
+    legalType: 'SP',
+    identifier: '',
+    legalName: 'Mock Original Name',
+    foundingDate: '',
+    hasRestrictions: false,
+    naicsCode: '100000',
+    naicsDescription: 'food'
+  }
+
+  const entitySnapshot = {
+    businessInfo: businessInformation,
+    authInfo: null,
+    orgPersons: null,
+    addresses: null,
+    nameTranslations: null,
+    shareStructure: null,
+    resolutions: null
+  }
+
+  const flagsCompanyInfo = {
+    isValidCompanyName: false,
+    isValidBusinessType: false,
+    isValidNameTranslation: false,
+    isValidNatureOfBusiness: false,
+    isValidAddress: false,
+    isValidContactInfo: false,
+    isValidFolioInfo: false,
+    isValidOrgPersons: false,
+    isValidShareStructure: false,
+    isValidCompanyProvisions: false,
+    isValidResolutionDate: false
+  }
+
+  beforeEach(() => {
+    // Set Original business Data
+    store.state.stateModel.summaryMode = false
+    store.state.stateModel.tombstone.filingType = 'conversion'
+    store.state.resourceModel = BenefitCompanyResource
+    store.state.stateModel.validationFlags.componentValidate = true
+    store.state.stateModel.validationFlags.flagsCompanyInfo = flagsCompanyInfo
+    wrapper = mount(YourCompany, { vuetify, store, localVue })
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('renders the YourCompany Component and default subcomponents', async () => {
+    expect(wrapper.findComponent(YourCompany).exists()).toBeTruthy()
+    expect(wrapper.findComponent(ChangeBusinessType).exists()).toBeTruthy()
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBeTruthy()
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBeTruthy()
+    expect(wrapper.findComponent(ConversionNOB).exists()).toBeTruthy()
+    // Not currently editing Company Name
+    expect(wrapper.findComponent(CorrectNameOptions).exists()).toBeFalsy()
+  })
+
+  it('renders the Nature of Business with invalid section', async () => {
+    store.state.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
+    store.state.stateModel.entitySnapshot = entitySnapshot
+    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    expect(wrapper.find('#nature-of-business.invalid-section').exists()).toBeTruthy()
   })
 })

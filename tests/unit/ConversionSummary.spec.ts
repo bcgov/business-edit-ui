@@ -85,6 +85,8 @@ describe('Conversion Summary component', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('#nob-summary-section').exists()).toBe(true)
+    expect(wrapper.find('#nob-summary-section label').text()).toBe('Nature of Business')
+    expect(wrapper.find('#nob-summary-section span').text()).toBe('654321 - Mock description')
   })
 
   it('renders the Address summary section when changes have been made', async () => {
