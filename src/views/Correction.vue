@@ -127,7 +127,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
     // bypass this when Jest is running as FF are not fetched
     if (!this.isJestRunning && !getFeatureFlag('correction-ui-enabled')) {
       window.alert('Corrections are not available at the moment. Please check again later.')
-      this.$root.$emit('go-to-dashboard')
+      this.$root.$emit('go-to-dashboard', true)
       return
     }
 
@@ -135,7 +135,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
     const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
     if (isStaffOnly && !this.isRoleStaff) {
       window.alert('Only staff can correct an Incorporation Application.')
-      this.$root.$emit('go-to-dashboard')
+      this.$root.$emit('go-to-dashboard', true)
       return
     }
 

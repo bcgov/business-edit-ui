@@ -213,9 +213,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter isConflictingLegalType!: boolean
   @Getter isRoleStaff!: boolean
 
-  // Change flag getters
-  @Getter hasFirmChanged!: boolean
-
   // Global actions
   @Action setAccountInformation!: ActionBindingIF
   @Action setAppValidate!: ActionBindingIF
@@ -412,8 +409,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     })
 
     // listen for go to dashboard events
-    this.$root.$on('go-to-dashboard', () => {
-      this.goToDashboard()
+    this.$root.$on('go-to-dashboard', (force = false) => {
+      this.goToDashboard(force)
     })
 
     // init app

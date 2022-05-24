@@ -55,7 +55,7 @@ export const stateModel: StateModelIF = {
       isValidDocumentOptionalEmail: true,
       isValidCompletingParty: true,
       isValidTransactionalFolioNumber: true,
-      isValidCertify: false, // initially un-signed
+      isValidCertify: false, // initially un-certified
       isValidCourtOrder: true,
       isValidStaffPayment: true
     }

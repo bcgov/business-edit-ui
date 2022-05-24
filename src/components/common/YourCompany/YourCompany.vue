@@ -88,8 +88,7 @@
             <div class="actions mr-4">
               <!-- TODO: only show buttons for named company -->
               <v-btn
-                v-if="companyNameChanges ||
-                  (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling))"
+                v-if="companyNameChanges || (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling))"
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -212,11 +211,9 @@
 
     <v-divider class="mx-4 my-1" />
 
-    <!-- Change + Conversion Filing Section -->
+    <!-- Business Start Date -->
     <template v-if="isChangeFiling || isConversionFiling">
-
-      <!-- Business Start Date -->
-      <div class="section-container">
+      <section class="section-container">
         <v-row no-gutters>
           <v-col cols="3">
             <label><strong>Business Start Date</strong></label>
@@ -236,31 +233,33 @@
             </v-tooltip>
           </v-col>
         </v-row>
-      </div>
+      </section>
+    </template>
 
+    <!-- Nature of Business (change filing) -->
+    <template v-if="isChangeFiling">
       <v-divider class="mx-4 my-1" />
 
-      <!-- Nature of Business Change Filing -->
-      <template v-if="isChangeFiling">
-        <NatureOfBusiness
-          class="section-container"
-          :class="{'invalid-section': invalidNatureOfBusiness}"
-          :invalidSection="invalidNatureOfBusiness"
-        />
-      </template>
+      <NatureOfBusiness
+        class="section-container"
+        :class="{'invalid-section': invalidNatureOfBusiness}"
+        :invalidSection="invalidNatureOfBusiness"
+      />
+    </template>
 
-      <!-- Nature of Business Conversion Filing -->
-      <template v-if="isConversionFiling">
-        <ConversionNOB
-          class="section-container"
-          :class="{'invalid-section': invalidNatureOfBusiness}"
-          @haveChanges="conversionNOBChanges = $event"
-        />
-      </template>
+    <!-- Nature of Business (conversion filing) -->
+    <template v-if="isConversionFiling">
+      <v-divider class="mx-4 my-1" />
+
+      <ConversionNOB
+        class="section-container"
+        :class="{'invalid-section': invalidNatureOfBusiness}"
+        @haveChanges="conversionNOBChanges = $event"
+      />
     </template>
 
     <!-- Recognition Date and Time -->
-    <div class="section-container" v-else>
+    <div class="section-container" v-if="!isChangeFiling && !isConversionFiling">
       <v-row no-gutters>
         <v-col cols="3">
           <label><strong>Recognition Date and Time</strong></label>
@@ -291,8 +290,8 @@
       />
     </div>
 
-    <!-- Folio Information -->
-    <template v-if="isPremiumAccount">
+    <!-- Folio Information (not SP or GP) -->
+    <template v-if="isPremiumAccount && !isTypeFirm">
       <v-divider class="mx-4 my-1" />
 
       <div id="folio-number" class="section-container" :class="{'invalid-section': invalidFolioSection}">
@@ -353,6 +352,7 @@ export default class YourCompany extends Mixins(
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
   @Getter getResource!: ResourceIF
+  @Getter isTypeFirm!: boolean
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
