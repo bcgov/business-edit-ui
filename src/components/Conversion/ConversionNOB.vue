@@ -119,8 +119,8 @@ export default class NatureOfBusiness extends Vue {
   /** The naics data on record for the business. */
   get originalNaics (): NaicsIF {
     return {
-      naicsCode: this.getEntitySnapshot.businessInfo?.naicsCode || '',
-      naicsDescription: this.getEntitySnapshot.businessInfo?.naicsDescription || ''
+      naicsCode: this.getEntitySnapshot.businessInfo?.naicsCode,
+      naicsDescription: this.getEntitySnapshot.businessInfo?.naicsDescription
     }
   }
 
@@ -152,7 +152,7 @@ export default class NatureOfBusiness extends Vue {
   emitUndo (): void {
     let code = this.originalNaics.naicsCode
     let desc = this.originalNaics.naicsDescription
-    this.naicsText = '(Not Entered)'
+    this.naicsText = null
     if (code && desc) {
       this.naicsText = this.hasNatureOfBusinessChanged ? this.naicsText : `${code} - ${desc}`
     } else if (desc) {
