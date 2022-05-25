@@ -89,7 +89,7 @@ describe('Change of Registration Filing', () => {
     store.state.stateModel.businessInformation.naicsCode = '123456'
     store.state.stateModel.businessInformation.naicsDescription = 'Mock Description'
 
-    const filing = wrapper.vm.buildFirmChangeFiling(true)
+    const filing = wrapper.vm.buildChangeFiling(true)
 
     // FUTURE: check filing data...
     expect(filing).toEqual(

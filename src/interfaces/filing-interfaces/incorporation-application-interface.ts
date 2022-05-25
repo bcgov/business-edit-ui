@@ -1,6 +1,8 @@
 import { AddressesIF, OrgPersonIF, ShareClassIF, NameTranslationIF } from '@/interfaces/'
 
-/** Incorporation Application filing loaded from / saved to the Legal API. */
+//
+// Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/incorporation_application.json
+//
 export interface IncorporationApplicationIF {
   nameRequest: {
     legalType: string

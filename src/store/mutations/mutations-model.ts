@@ -135,10 +135,6 @@ export const mutateFolioNumber = (state: StateIF, folioNumber: string) => {
   // NB: folio number was changed immediately in auth db - do not set unsaved Changes flag
 }
 
-export const mutateFilingDateTime = (state: StateIF, dateTime: string) => {
-  state.stateModel.tombstone.filingDateTime = dateTime
-}
-
 export const mutateAccountInformation = (state: StateIF, accountInformation: AccountInformationIF) => {
   state.stateModel.accountInformation = accountInformation
 }

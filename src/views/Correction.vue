@@ -145,7 +145,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
       this.setEntityType(CorpTypeCd.BENEFIT_COMPANY)
 
       // initialize Fee Summary data
-      // TODO: Set/Clear Data according to filing type / entity type
+      // FUTURE: Set/Clear Data according to filing type / entity type
       this.setFilingData({
         filingTypeCode: FilingCodes.CORRECTION,
         entityType: CorpTypeCd.BENEFIT_COMPANY,
@@ -178,7 +178,7 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
         this.setOriginalIA(originalIa)
 
         // parse correction filing into store
-        this.parseCorrection(correctionFiling)
+        this.parseCorrectionFiling(correctionFiling)
       } else {
         // as we don't have the necessary query params, do not proceed
         throw new Error('Invalid correction filing ID')

@@ -118,11 +118,6 @@ export const getCurrentJsDate = (state: StateIF): Date => {
   return state.stateModel.currentJsDate
 }
 
-/** The filing date. */
-export const getFilingDateTime = (state: StateIF): string => {
-  return state.stateModel.tombstone.filingDateTime
-}
-
 /** The filing id. */
 export const getFilingId = (state: StateIF): number => {
   return state.stateModel.tombstone.filingId

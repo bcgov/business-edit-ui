@@ -171,7 +171,7 @@ export default class Conversion extends Mixins(
         }
 
         // parse firm conversion filing and original business snapshot into store
-        await this.parseFirmConversion(changeFiling, firmSnapshot)
+        await this.parseConversionFiling(changeFiling, firmSnapshot)
       } else {
         // parse business data into store
         await this.parseEntitySnapshot(firmSnapshot)

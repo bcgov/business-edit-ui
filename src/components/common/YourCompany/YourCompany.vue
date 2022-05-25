@@ -86,7 +86,7 @@
           <!-- Actions -->
           <v-col cols="2" class="mt-n2">
             <div class="actions mr-4">
-              <!-- TODO: only show buttons for named company -->
+              <!-- FUTURE: only show buttons for named company -->
               <v-btn
                 v-if="companyNameChanges || (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling))"
                 text color="primary"

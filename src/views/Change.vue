@@ -169,7 +169,7 @@ export default class Change extends Mixins(
         }
 
         // parse firm change filing and original business snapshot into store
-        await this.parseFirmChange(changeFiling, firmSnapshot)
+        await this.parseChangeFiling(changeFiling, firmSnapshot)
       } else {
         // parse business data into store
         await this.parseEntitySnapshot(firmSnapshot)

@@ -1,10 +1,12 @@
-export * from './alterationFiling-interface'
-export * from './correctionFiling-interface'
-export * from './filingBusiness-interface'
-export * from './filingData-interface'
-export * from './filingHeader-interface'
-export * from './incorporationApplication-interface'
-export * from './incorporationFiling-interface'
+export * from './alteration-filing-interface'
+export * from './change-filing-interface'
+export * from './conversion-filing-interfaces'
+export * from './correction-filing-interface'
+export * from './filing-business-interface'
+export * from './filing-data-interface'
+export * from './filing-header-interface'
+export * from './incorporation-application-interface'
+export * from './incorporation-filing-interface'
 
 // Alias for Shared Components that import IncorporationAddressIf
 export { AddressesIF as IncorporationAddressIf }

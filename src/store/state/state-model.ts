@@ -13,7 +13,6 @@ export const stateModel: StateModelIF = {
     businessId: '',
     entityType: null,
     currentDate: '',
-    filingDateTime: '',
     filingId: 0,
     correctedFilingId: null,
     isSaving: false,
