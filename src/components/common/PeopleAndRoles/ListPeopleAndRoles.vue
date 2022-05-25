@@ -269,7 +269,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-import { OrgPerson } from './'
+import OrgPerson from './OrgPerson.vue'
 import { CommonMixin } from '@/mixins/'
 import { isSame } from '@/utils/'
 import { OrgPersonIF, RoleIF } from '@/interfaces/'

@@ -37,7 +37,7 @@
           </v-col>
 
           <v-col cols="12" sm="8">
-            <span class="info-text">{{getCurrentNaics.naicsCode}} - {{getCurrentNaics.naicsDescription}}</span>
+            <span class="info-text">{{ naicsSummary }}</span>
           </v-col>
         </v-row>
       </article>
@@ -110,6 +110,17 @@ export default class ConversionSummary extends Mixins(
     if (this.getApprovedName) return this.getApprovedName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
+  }
+
+  /** Show naics value, description or (Not Entered) */
+  get naicsSummary (): string {
+    const naics = this.getCurrentNaics
+    if (naics.naicsCode && naics.naicsDescription) {
+      return `${naics.naicsCode} - ${naics.naicsDescription}`
+    } else if (naics.naicsDescription) {
+      return naics.naicsDescription
+    }
+    return '(Not Entered)'
   }
 }
 </script>
