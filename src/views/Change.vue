@@ -55,6 +55,20 @@
           sectionNumber="3."
           :validate="getAppValidate"
         />
+        <template v-if="isRoleStaff">
+          <CourtOrderPoa
+            class="'mt-10"
+            sectionNumber="4."
+            :autoValidation="getAppValidate"
+          />
+
+          <StaffPayment
+            class="mt-10"
+            sectionNumber="5."
+            :validate="getAppValidate"
+            @haveChanges="onStaffPaymentChanges()"
+          />
+        </template>
       </div>
     </v-slide-x-reverse-transition>
   </section>
@@ -65,23 +79,27 @@ import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorato
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
-import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, YourCompany }
-  from '@/components/common/'
+import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, YourCompany, StaffPayment,
+  CourtOrderPoa } from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
-import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF, FlagsReviewCertifyIF }
+  from '@/interfaces/'
 import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Change/'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 @Component({
   components: {
     CertifySection,
     ChangeSummary,
     CompletingParty,
+    CourtOrderPoa,
     DocumentsDelivery,
     PeopleAndRoles,
+    StaffPayment,
     YourCompany
   }
 })
@@ -98,6 +116,7 @@ export default class Change extends Mixins(
   @Getter showFeeSummary!: boolean
   @Getter isTypeSoleProp!: boolean
   @Getter isTypePartnership!: boolean
+  @Getter isRoleStaff!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -209,6 +228,16 @@ export default class Change extends Mixins(
 
     // now that all data is loaded, wait for things to stabilize and reset flag
     Vue.nextTick(() => this.setHaveUnsavedChanges(false))
+  }
+
+  /** Called when staff payment data has changed. */
+  protected onStaffPaymentChanges (): void {
+    // update filing data with staff payment fields
+    this.setFilingData({
+      ...this.getFilingData,
+      priority: this.getStaffPayment.isPriority,
+      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
+    })
   }
 
   /** Fetches the business snapshot. */
