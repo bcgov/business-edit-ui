@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import { Action, Getter } from 'vuex-class'
-import { Component, Vue, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Emit, Watch } from 'vue-property-decorator'
 import { ActionBindingIF, EntitySnapshotIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'

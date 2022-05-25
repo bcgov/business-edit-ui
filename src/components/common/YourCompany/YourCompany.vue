@@ -197,7 +197,7 @@
 
     <!-- Name Translation(s) -->
     <div
-      v-if="!isChangeFiling && !isConversionFiling"
+      v-if="isAlterationFiling || isCorrectionFiling"
       id="name-translate-section"
       class="section-container"
       :class="{'invalid-section': invalidTranslationSection}"
@@ -259,7 +259,7 @@
     </template>
 
     <!-- Recognition Date and Time -->
-    <div class="section-container" v-if="!isChangeFiling && !isConversionFiling">
+    <div class="section-container" v-if="isAlterationFiling || isCorrectionFiling">
       <v-row no-gutters>
         <v-col cols="3">
           <label><strong>Recognition Date and Time</strong></label>

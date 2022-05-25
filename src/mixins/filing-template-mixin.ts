@@ -877,7 +877,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   //
-  // Helpers
+  // Local helper methods
   //
 
   /**

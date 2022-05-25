@@ -1,15 +1,17 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import sinon from 'sinon'
-import { axios } from '@/utils/'
 import { getVuexStore } from '@/store/'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
+import AuthServices from '@/services/auth-services'
 
 Vue.use(Vuetify)
 
-const localVue = createLocalVue()
 const vuetify = new Vuetify({})
+const store = getVuexStore()
+
+// mock services function
+const mockUpdateContactInfo = jest.spyOn((AuthServices as any), 'updateContactInfo').mockImplementation()
 
 const contactInfo = {
   email: 'mock@email.com',
@@ -17,9 +19,8 @@ const contactInfo = {
   phone: '250-123-4567'
 }
 
-describe('BusinessContactInfo for a correction', () => {
+describe('BusinessContactInfo for a Correction', () => {
   let wrapper: any
-  let store: any = getVuexStore()
 
   const originalCorrectionContact = {
     email: 'mockCorrection@email.com',
@@ -34,7 +35,7 @@ describe('BusinessContactInfo for a correction', () => {
   })
 
   beforeEach(async () => {
-    wrapper = mount(BusinessContactInfo, { vuetify, store, localVue })
+    wrapper = mount(BusinessContactInfo, { vuetify, store })
   })
 
   afterEach(() => {
@@ -63,14 +64,8 @@ describe('BusinessContactInfo for a correction', () => {
   })
 })
 
-describe('BusinessContactInfo for an alteration', () => {
+describe('BusinessContactInfo for an Alteration', () => {
   let wrapper: any
-  let store: any = getVuexStore()
-
-  const put = sinon.stub(axios, 'put')
-
-  // Update Contact Info
-  put.withArgs('myhost/basePath/auth/entities/BC1234567/contacts', contactInfo)
 
   const originalAlterationContact = {
     email: 'mockAlteration@email.com',
@@ -88,7 +83,7 @@ describe('BusinessContactInfo for an alteration', () => {
   })
 
   beforeEach(async () => {
-    wrapper = mount(BusinessContactInfo, { vuetify, store, localVue })
+    wrapper = mount(BusinessContactInfo, { vuetify, store })
   })
 
   afterEach(() => {
@@ -99,7 +94,7 @@ describe('BusinessContactInfo for an alteration', () => {
     expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
   })
 
-  it('loads the correct original contact info for an alteration', async () => {
+  it('loads the correct original contact info', async () => {
     expect(wrapper.vm.originalContact.email).toEqual(originalAlterationContact.email)
     expect(wrapper.vm.originalContact.phone).toEqual(originalAlterationContact.phone)
   })
@@ -129,7 +124,6 @@ describe('BusinessContactInfo for an alteration', () => {
 
 describe('BusinessContactInfo for a Change of Registration', () => {
   let wrapper: any
-  let store: any = getVuexStore()
 
   const originalContact = {
     email: 'mock@email.com',
@@ -147,7 +141,7 @@ describe('BusinessContactInfo for a Change of Registration', () => {
   })
 
   beforeEach(async () => {
-    wrapper = mount(BusinessContactInfo, { vuetify, store, localVue })
+    wrapper = mount(BusinessContactInfo, { vuetify, store })
   })
 
   afterEach(() => {
@@ -158,7 +152,7 @@ describe('BusinessContactInfo for a Change of Registration', () => {
     expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
   })
 
-  it('loads the correct original contact info for a change of registration', async () => {
+  it('loads the correct original contact info', async () => {
     expect(wrapper.vm.originalContact.email).toEqual(originalContact.email)
     expect(wrapper.vm.originalContact.phone).toEqual(originalContact.phone)
   })
