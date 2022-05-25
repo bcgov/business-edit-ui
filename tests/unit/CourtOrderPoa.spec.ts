@@ -15,7 +15,6 @@ const courtOrderNumber = '#court-order-number-input'
 
 localVue.use(VueRouter)
 
-
 describe('CourtOrderPoa component', () => {
   let store: any = getVuexStore()
   let wrapper: Wrapper<CourtOrderPoa>
@@ -23,7 +22,7 @@ describe('CourtOrderPoa component', () => {
   beforeEach(() => {
     wrapper = mount(CourtOrderPoa, { store, vuetify })
   })
-  
+
   afterEach(() => {
     wrapper.destroy()
   })
