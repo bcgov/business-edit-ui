@@ -230,7 +230,9 @@ export default class Conversion extends Mixins(
 
     const addresses = await this.fetchAddresses()
       .catch(reason => {
-        if (reason.response?.status === NOT_FOUND) return { businessOffice: null }
+        // error message for business address has the pattern "FMXXXXXXX address not found"
+        if (reason.response?.status === NOT_FOUND &&
+          reason.response?.data.message.includes('address')) return { businessOffice: null }
         throw new Error('Failed to fetch entity addresses')
       })
 
