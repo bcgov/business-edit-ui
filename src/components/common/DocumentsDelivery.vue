@@ -20,7 +20,7 @@
 
         <v-row v-if="isRoleStaff" no-gutters class="mt-6">
           <v-col cols="3" class="px-0">
-            <label :class="{ 'error-text': documentDeliveryInvalid }"><strong>User Account</strong></label>
+            <label :class="{ 'error-text': documentDeliveryInvalid }"><strong>Completing Party</strong></label>
           </v-col>
           <v-col cols="9" class="px-0">
             <v-text-field
