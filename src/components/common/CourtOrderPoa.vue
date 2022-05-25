@@ -12,10 +12,10 @@
       <CourtOrderPoaShared
         id="court-order"
         :autoValidation="getAppValidate"
-        :hasDraftPlanOfArrangement="hasDraftPlanOfArrangement"
+        :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
         :invalidSection="invalidCourtOrder"
         @emitCourtNumber="setFileNumber($event)"
-        @emitPoa="hasDraftPlanOfArrangement($event)"
+        @emitPoa="setHasPlanOfArrangement($event)"
         @emitValid="setValidCourtOrder($event)"
       />
     </div>
@@ -40,11 +40,11 @@ export default class CourtOrderPoa extends Vue {
   /** Store getters */
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getAppValidate!: boolean
-  @Getter getDraftPlanOfArrangement!: boolean
+  @Getter getHasPlanOfArrangement!: boolean
 
   /** Global actions */
   @Action setValidCourtOrder!: ActionBindingIF
-  @Action hasDraftPlanOfArrangement!: ActionBindingIF
+  @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setFileNumber!: ActionBindingIF
 
   /** Local getters */

@@ -1,6 +1,5 @@
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
-/** Data object used internally only (not to/from API). */
 export interface BusinessInformationIF {
   legalType: CorpTypeCd
   identifier: string
@@ -9,4 +8,5 @@ export interface BusinessInformationIF {
   hasRestrictions?: boolean
   naicsCode?: string
   naicsDescription?: string
+  naicsKey?: string // from API
 }

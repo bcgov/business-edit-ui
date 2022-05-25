@@ -1,6 +1,7 @@
 import { axios } from '@/utils/'
 import { AuthInformationIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
+import { NOT_FOUND } from 'http-status-codes'
 
 /**
  * Class that provides integration with the Auth API.
@@ -63,9 +64,10 @@ export default class AuthServices {
       if (response?.data) {
         return {
           contact: {
-            email: response.data.contacts[0].email,
-            phone: response.data.contacts[0].phone,
-            extension: response.data.contacts[0].phoneExtension
+            // NB: some businesses don't have contacts
+            email: response.data.contacts[0]?.email,
+            phone: response.data.contacts[0]?.phone,
+            extension: response.data.contacts[0]?.phoneExtension
           },
           folioNumber: response.data.folioNumber
         }
@@ -78,7 +80,7 @@ export default class AuthServices {
   }
 
   /**
-   * Updates the businesses contact information.
+   * Updates (or creates) the businesses contact information.
    * @param contactInfo the contact information object
    */
   static async updateContactInfo (contactInfo: ContactPointIF, businessId: string): Promise<any> {
@@ -92,7 +94,15 @@ export default class AuthServices {
       phoneExtension: contactInfo.extension
     }
 
+    // if put fails because there is no existing contacts record
+    // then try posting a new contacts record
     return axios.put(url, data)
+      .catch(reason => {
+        if (reason?.response?.status === NOT_FOUND) {
+          return axios.post(url, data)
+        }
+        throw reason
+      })
   }
 
   /**
