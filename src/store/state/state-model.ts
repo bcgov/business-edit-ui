@@ -13,7 +13,6 @@ export const stateModel: StateModelIF = {
     businessId: '',
     entityType: null,
     currentDate: '',
-    filingDateTime: '',
     filingId: 0,
     correctedFilingId: null,
     isSaving: false,
@@ -55,7 +54,7 @@ export const stateModel: StateModelIF = {
       isValidDocumentOptionalEmail: true,
       isValidCompletingParty: true,
       isValidTransactionalFolioNumber: true,
-      isValidCertify: false, // initially un-signed
+      isValidCertify: false, // initially un-certified
       isValidCourtOrder: true,
       isValidStaffPayment: true
     }

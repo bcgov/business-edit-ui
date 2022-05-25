@@ -162,7 +162,7 @@ export default class Change extends Mixins(
     // bypass this when Jest is running as FF are not fetched
     if (!this.isJestRunning && !getFeatureFlag('change-ui-enabled')) {
       window.alert('Change filings are not available at the moment. Please check again later.')
-      this.$root.$emit('go-to-dashboard')
+      this.$root.$emit('go-to-dashboard', true)
       return
     }
 
@@ -188,7 +188,7 @@ export default class Change extends Mixins(
         }
 
         // parse firm change filing and original business snapshot into store
-        await this.parseFirmChange(changeFiling, firmSnapshot)
+        await this.parseChangeFiling(changeFiling, firmSnapshot)
       } else {
         // parse business data into store
         await this.parseEntitySnapshot(firmSnapshot)
@@ -267,7 +267,7 @@ export default class Change extends Mixins(
       authInfo: items[1],
       addresses: items[2],
       orgPersons
-    }
+    } as EntitySnapshotIF
   }
 
   /** Emits Fetch Error event. */

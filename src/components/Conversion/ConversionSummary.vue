@@ -10,23 +10,6 @@
       </v-row>
     </section>
 
-    <!-- Business Name -->
-    <template v-if="hasBusinessNameChanged">
-      <v-divider class="mx-8" />
-      <article id="business-name-summary-section" class="section-container">
-        <v-row no-gutters>
-          <v-col cols="12" sm="3">
-            <label>Business Name</label>
-          </v-col>
-
-          <v-col cols="12" sm="8" class="mt-n1">
-            <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
-            <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
-          </v-col>
-        </v-row>
-      </article>
-    </template>
-
     <!-- Nature of Business -->
     <template v-if="hasNatureOfBusinessChanged">
       <v-divider class="mx-8" />
@@ -51,7 +34,7 @@
       </article>
     </template>
 
-    <!-- Org Persons -->
+    <!-- Proprietor/Partner Information -->
     <template v-if="hasPeopleAndRolesChanged">
       <v-divider class="mx-8" />
       <article id="org-person-summary-section" class="section-container pb-0">
@@ -75,11 +58,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common/'
-import { ActionBindingIF, ResourceIF } from '@/interfaces/'
-import { DateMixin, SharedMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
+import { ListPeopleAndRoles } from '@/components/common/'
+import { OfficeAddresses } from '@/components/common/YourCompany'
+import { ActionBindingIF, OrgPersonIF, ResourceIF } from '@/interfaces/'
+import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 
 @Component({
   components: {
@@ -87,30 +71,21 @@ import { DateMixin, SharedMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin
     ListPeopleAndRoles
   }
 })
-export default class ConversionSummary extends Mixins(
-  DateMixin,
-  SharedMixin,
-  FilingTemplateMixin,
-  LegalApiMixin,
-  PayApiMixin
-) {
+export default class ConversionSummary extends Vue {
   // Global getters
-  @Getter getBusinessNumber!: string
+  @Getter hasNatureOfBusinessChanged!: boolean
+  @Getter hasOfficeAddressesChanged!: boolean
+  @Getter hasPeopleAndRolesChanged!: boolean
   @Getter getResource!: ResourceIF
+  @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter hasMinimumPartners!: boolean
+  @Getter getCurrentNaics!: NaicsIF
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF
 
   /** Whether to perform validation. */
   @Prop() readonly validate: boolean
-
-  /** The company name (from NR, or incorporation number). */
-  get companyName (): string {
-    if (this.getApprovedName) return this.getApprovedName
-
-    return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
-  }
 
   /** Show naics value, description or (Not Entered) */
   get naicsSummary (): string {

@@ -161,7 +161,7 @@ import * as Dialogs from '@/dialogs/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
-  AlterationFilingIF, FirmChangeIF, FirmConversionIF } from '@/interfaces/'
+  AlterationFilingIF, ChangeFilingIF, ConversionFilingIF } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums/'
@@ -212,9 +212,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getComponentValidate!: boolean
   @Getter isConflictingLegalType!: boolean
   @Getter isRoleStaff!: boolean
-
-  // Change flag getters
-  @Getter hasFirmChanged!: boolean
 
   // Global actions
   @Action setAccountInformation!: ActionBindingIF
@@ -412,8 +409,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     })
 
     // listen for go to dashboard events
-    this.$root.$on('go-to-dashboard', () => {
-      this.goToDashboard()
+    this.$root.$on('go-to-dashboard', (force = false) => {
+      this.goToDashboard(force)
     })
 
     // init app
@@ -745,10 +742,10 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     let filingComplete: any
     try {
-      let filing: AlterationFilingIF | FirmChangeIF | FirmConversionIF
+      let filing: AlterationFilingIF | ChangeFilingIF | ConversionFilingIF
       if (this.isAlterationFiling) filing = await this.buildAlterationFiling(isDraft)
-      if (this.isChangeFiling) filing = await this.buildFirmChangeFiling(isDraft)
-      if (this.isConversionFiling) filing = await this.buildFirmConversionFiling(isDraft)
+      if (this.isChangeFiling) filing = await this.buildChangeFiling(isDraft)
+      if (this.isConversionFiling) filing = await this.buildConversionFiling(isDraft)
 
       // update the filing if we have a filingId, otherwise create a draft
       filingComplete = this.getFilingId

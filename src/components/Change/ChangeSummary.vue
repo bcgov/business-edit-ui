@@ -75,11 +75,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common/'
-import { ActionBindingIF, ResourceIF } from '@/interfaces/'
-import { DateMixin, SharedMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
+import { ActionBindingIF, NameRequestIF, OrgPersonIF, ResourceIF } from '@/interfaces/'
+import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 
 @Component({
   components: {
@@ -87,17 +87,19 @@ import { DateMixin, SharedMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin
     ListPeopleAndRoles
   }
 })
-export default class ChangeSummary extends Mixins(
-  DateMixin,
-  SharedMixin,
-  FilingTemplateMixin,
-  LegalApiMixin,
-  PayApiMixin
-) {
+export default class ChangeSummary extends Vue {
   // Global getters
-  @Getter getBusinessNumber!: string
+  @Getter hasBusinessNameChanged!: boolean
+  @Getter getNameRequest!: NameRequestIF
+  @Getter hasNatureOfBusinessChanged!: boolean
+  @Getter getCurrentNaics!: NaicsIF
+  @Getter hasOfficeAddressesChanged!: boolean
+  @Getter hasPeopleAndRolesChanged!: boolean
   @Getter getResource!: ResourceIF
+  @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter hasMinimumPartners!: boolean
+  @Getter getApprovedName!: string
+  @Getter getBusinessNumber!: string
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF

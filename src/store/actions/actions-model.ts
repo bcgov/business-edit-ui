@@ -112,10 +112,6 @@ export const setFolioNumber: ActionIF = ({ commit }, folioNumber: string): void 
   commit('mutateFolioNumber', folioNumber)
 }
 
-export const setFilingDateTime: ActionIF = ({ commit }, dateTime: string): void => {
-  commit('mutateFilingDateTime', dateTime)
-}
-
 export const setAccountInformation: ActionIF = ({ commit }, accountInformation): void => {
   commit('mutateAccountInformation', accountInformation)
 }

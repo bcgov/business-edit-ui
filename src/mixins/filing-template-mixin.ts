@@ -3,7 +3,7 @@ import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
-  EffectiveDateTimeIF, EntitySnapshotIF, FirmChangeIF, FirmConversionIF, NameRequestIF,
+  EffectiveDateTimeIF, EntitySnapshotIF, ChangeFilingIF, ConversionFilingIF, NameRequestIF,
   NameTranslationIF, OrgPersonIF, ShareClassIF, ShareStructureIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, EffectOfOrders, FilingTypes, PartyTypes, RoleTypes } from '@/enums/'
@@ -71,7 +71,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setIsFutureEffective!: ActionBindingIF
   @Action setFolioNumber!: ActionBindingIF
   @Action setTransactionalFolioNumber!: ActionBindingIF
-  @Action setFilingDateTime!: ActionBindingIF
   @Action setIncorporationAgreementStepData!: ActionBindingIF
   @Action setStaffPayment!: ActionBindingIF
   @Action setDetailComment!: ActionBindingIF
@@ -94,11 +93,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   //
 
   /**
-   * Builds an Incorporation Application correction filing from store data.
+   * Builds a correction filing from store data.
    * @param isDraft whether this is a draft
-   * @returns the incorporation application filing body
+   * @returns the correction filing body
    */
-  buildIaCorrectionFiling (isDraft: boolean): CorrectionFilingIF {
+  buildCorrectionFiling (isDraft: boolean): CorrectionFilingIF {
     let parties = this.getPeopleAndRoles
     let shareClasses = this.getShareClasses
     let nameTranslations = this.getNameTranslations
@@ -298,13 +297,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Builds a firm change of registration filing from store data.
+   * Builds a change of registration filing from store data.
    * @param isDraft whether this is a draft
-   * @returns the firm change filing body
+   * @returns the change filing body
    */
-  buildFirmChangeFiling (isDraft: boolean): FirmChangeIF {
-    // Build change firm filing
-    const filing: FirmChangeIF = {
+  buildChangeFiling (isDraft: boolean): ChangeFilingIF {
+    // Build change filing
+    const filing: ChangeFilingIF = {
       header: {
         name: FilingTypes.CHANGE_OF_REGISTRATION,
         certifiedBy: this.getCertifyState.certifiedBy,
@@ -408,18 +407,18 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Builds a firm conversion filing from store data.
+   * Builds a conversion filing from store data.
    * @param isDraft whether this is a draft
-   * @returns the firm conversion filing body
+   * @returns the conversion filing body
    */
-  buildFirmConversionFiling (isDraft: boolean): FirmConversionIF {
-    // Build change firm filing
-    const filing: FirmConversionIF = {
+  buildConversionFiling (isDraft: boolean): ConversionFilingIF {
+    // Build conversion filing
+    const filing: ConversionFilingIF = {
       header: {
         name: FilingTypes.CONVERSION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber
+        folioNumber: '' // not applicable to SP/GP
       },
       business: {
         foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
@@ -439,25 +438,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
             ? { extension: +this.getBusinessContact.extension }
             : {}
         },
-        offices: null, // applied below
+        offices: {
+          businessOffice: {
+            mailingAddress: this.getOfficeAddresses.businessOffice.mailingAddress,
+            deliveryAddress: this.getOfficeAddresses.businessOffice.deliveryAddress
+          }
+        },
         parties: null // applied below
-      }
-    }
-
-    // Apply name request info to filing
-    if (this.hasBusinessNameChanged) {
-      filing.conversion.nameRequest = { ...this.getNameRequest }
-    }
-
-    // Apply business address changes to filing
-    // *** TODO: are these mandatory (ie, include even if not changed)?
-    //           if so then move this to line 442
-    if (this.hasOfficeAddressesChanged) {
-      filing.conversion.offices = {
-        businessOffice: {
-          mailingAddress: this.getOfficeAddresses.businessOffice.mailingAddress,
-          deliveryAddress: this.getOfficeAddresses.businessOffice.deliveryAddress
-        }
       }
     }
 
@@ -518,6 +505,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       filing.conversion.parties = parties
     }
 
+    // Include Staff Payment into the Conversion filing
+    this.buildStaffPayment(filing)
+
     return filing
   }
 
@@ -529,7 +519,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * Parses a draft correction filing into the store.
    * @param filing the correction filing
    */
-  parseCorrection (filing: CorrectionFilingIF): void {
+  parseCorrectionFiling (filing: CorrectionFilingIF): void {
     // Store business information
     this.setBusinessInformation(filing.business)
 
@@ -599,9 +589,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store folio number
     this.setFolioNumber(filing.header.folioNumber)
 
-    // Store filing date-time
-    this.setFilingDateTime(filing.header.date)
-
     // Store effective date
     this.setEffectiveDateTimeString(filing.header.effectiveDate)
     this.setIsFutureEffective(filing.header.isFutureEffective)
@@ -615,7 +602,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param filing the alteration filing
    * @param entitySnapshot the latest entity snapshot
    */
-  parseAlteration (filing: AlterationFilingIF, entitySnapshot: EntitySnapshotIF): void {
+  parseAlterationFiling (filing: AlterationFilingIF, entitySnapshot: EntitySnapshotIF): void {
     // Store business snapshot
     this.setEntitySnapshot(cloneDeep(entitySnapshot))
 
@@ -699,9 +686,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       this.setTransactionalFolioNumber(filing.header.folioNumber)
     }
 
-    // Store filing date
-    this.setFilingDateTime(filing.header.date)
-
     // Store document optional email
     this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
 
@@ -718,11 +702,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Parses a draft firm change filing into the store.
-   * @param filing the firm change filing
+   * Parses a draft change filing into the store.
+   * @param filing the change filing
    * @param entitySnapshot the latest entity snapshot
    */
-  parseFirmChange (filing: FirmChangeIF, entitySnapshot: EntitySnapshotIF): void {
+  parseChangeFiling (filing: ChangeFilingIF, entitySnapshot: EntitySnapshotIF): void {
     // Store business snapshot
     this.setEntitySnapshot(cloneDeep(entitySnapshot))
 
@@ -752,7 +736,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store people and roles
     let orgPersons = filing.changeOfRegistration.parties || entitySnapshot.orgPersons
     // exclude completing party
-    // (it is managed separately and added to the filing in buildFirmChangeFiling())
+    // (it is managed separately and added to the filing in buildChangeFiling())
     orgPersons = orgPersons.filter(party => !(party?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(orgPersons)
 
@@ -773,19 +757,16 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       this.setTransactionalFolioNumber(filing.header.folioNumber)
     }
 
-    // Store filing date
-    this.setFilingDateTime(filing.header.date)
-
     // Store document optional email
     this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
   }
 
   /**
-   * Parses a draft firm conversion filing into the store.
-   * @param filing the firm conversion filing
+   * Parses a draft conversion filing into the store.
+   * @param filing the conversion filing
    * @param entitySnapshot the latest entity snapshot
    */
-  parseFirmConversion (filing: FirmConversionIF, entitySnapshot: EntitySnapshotIF): void {
+  parseConversionFiling (filing: ConversionFilingIF, entitySnapshot: EntitySnapshotIF): void {
     // Store business snapshot
     this.setEntitySnapshot(cloneDeep(entitySnapshot))
 
@@ -802,8 +783,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       this.setNaics(filing.conversion.business.naics)
     }
 
-    // Store name request
-    this.setNameRequest(filing.conversion.nameRequest || { legalName: entitySnapshot.businessInfo.legalName })
+    // Store legal name (in name request object)
+    this.setNameRequest({ legalName: filing.business.legalName || entitySnapshot.businessInfo.legalName })
 
     // Store office addresses
     let addresses
@@ -815,7 +796,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store people and roles
     let orgPersons = filing.conversion.parties || entitySnapshot.orgPersons
     // exclude completing party
-    // (it is managed separately and added to the filing in buildFirmChangeFiling())
+    // (it is managed separately and added to the filing in buildChangeFiling())
     orgPersons = orgPersons.filter(party => !(party?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(orgPersons)
 
@@ -828,19 +809,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       certifiedBy: filing.header.certifiedBy
     })
 
-    // Store Folio Number
-    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
-
-    // If Transactional Folio Number was saved then store it.
-    if (filing.header.isTransactionalFolioNumber) {
-      this.setTransactionalFolioNumber(filing.header.folioNumber)
-    }
-
-    // Store filing date
-    this.setFilingDateTime(filing.header.date)
-
-    // Store document optional email
-    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
+    // Store Staff Payment data
+    this.storeStaffPayment(filing)
   }
 
   /**
@@ -932,7 +902,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * Build Staff Payment data into the filing.
    * @param filing The alteration or correction filing.
    */
-  private buildStaffPayment (filing: AlterationFilingIF | CorrectionFilingIF): void {
+  private buildStaffPayment (filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF): void {
     // Populate Staff Payment according to payment option
     switch (this.getStaffPayment.option) {
       case StaffPaymentOptions.FAS:
@@ -961,7 +931,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * Parse Staff Payment data into store.
    * @param filing The alteration or correction filing to parse.
    */
-  private storeStaffPayment (filing: AlterationFilingIF | CorrectionFilingIF): void {
+  private storeStaffPayment (filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF): void {
     // Parse staff payment
     if (filing.header.routingSlipNumber) {
       this.setStaffPayment({

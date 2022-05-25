@@ -240,7 +240,7 @@ export default class Alteration extends Mixins(
     // bypass this when Jest is running as FF are not fetched
     if (!this.isJestRunning && !getFeatureFlag('alteration-ui-enabled')) {
       window.alert('Alterations are not available at the moment. Please check again later.')
-      this.$root.$emit('go-to-dashboard')
+      this.$root.$emit('go-to-dashboard', true)
       return
     }
 
@@ -266,7 +266,7 @@ export default class Alteration extends Mixins(
         }
 
         // parse alteration filing and original business snapshot into store
-        await this.parseAlteration(alterationFiling, businessSnapshot)
+        await this.parseAlterationFiling(alterationFiling, businessSnapshot)
       } else {
         // parse business data into store
         await this.parseEntitySnapshot(businessSnapshot)
@@ -330,7 +330,7 @@ export default class Alteration extends Mixins(
       orgPersons: items[4],
       shareStructure: items[5],
       resolutions: items[6]
-    }
+    } as EntitySnapshotIF
   }
 
   /** Called when staff payment data has changed. */

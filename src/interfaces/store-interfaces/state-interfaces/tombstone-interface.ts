@@ -11,7 +11,6 @@ export interface TombStoneIF {
   businessId: string
   entityType: CorpTypeCd
   currentDate: string // YYYY-MM-DD
-  filingDateTime: string
   filingId: number
   correctedFilingId: number
   isSaving: boolean

@@ -73,6 +73,11 @@ export const isTypePartnership = (state: StateIF): boolean => {
   return (getEntityType(state) === CorpTypeCd.PARTNERSHIP)
 }
 
+/** Whether the entity is a Firm (SP or GP). */
+export const isTypeFirm = (state: StateIF): boolean => {
+  return (isTypeSoleProp(state) || isTypePartnership(state))
+}
+
 /** Whether the current account is a premium account. */
 export const isPremiumAccount = (state: StateIF): boolean => {
   return (state.stateModel.accountInformation.accountType === AccountTypes.PREMIUM)
@@ -111,11 +116,6 @@ export const getCurrentDate = (state: StateIF): string => {
 /** The current JS Date object, which is refreshed every minute. */
 export const getCurrentJsDate = (state: StateIF): Date => {
   return state.stateModel.currentJsDate
-}
-
-/** The filing date. */
-export const getFilingDateTime = (state: StateIF): string => {
-  return state.stateModel.tombstone.filingDateTime
 }
 
 /** The filing id. */
@@ -407,7 +407,7 @@ export const hasAlterationChanged = (state: StateIF): boolean => {
 }
 
 /**
- * Whether any change form data has changed (for the purpose of showing the
+ * Whether any firm change data has changed (for the purpose of showing the
  * fee summary), ie, does NOT include:
  * - document delivery
  * - certify
@@ -418,6 +418,23 @@ export const hasAlterationChanged = (state: StateIF): boolean => {
 export const hasFirmChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
+    hasNatureOfBusinessChanged(state) ||
+    hasOfficeAddressesChanged(state) ||
+    hasPeopleAndRolesChanged(state)
+  )
+}
+
+/**
+ * Whether any firm conversion data has changed (for the purpose of showing the
+ * fee summary), ie, does NOT include:
+ * - document delivery
+ * - certify
+ * - folio number
+ * - court order and POA
+ * - staff payment
+ */
+export const hasConversionChanged = (state: StateIF): boolean => {
+  return (
     hasNatureOfBusinessChanged(state) ||
     hasOfficeAddressesChanged(state) ||
     hasPeopleAndRolesChanged(state)
@@ -527,17 +544,17 @@ export const hasContactInfoChanged = (state: StateIF): boolean => {
 
 /** True if any office address has changed. Applies to corrections, change and conversion filings only. */
 export const hasOfficeAddressesChanged = (state: StateIF): boolean => {
-  const isExpectedFiling = isCorrectionFiling(state) || isChangeFiling(state) || isConversionFiling(state)
-  const hasMailingDeliveryChanged = hasMailingChanged(state) || hasDeliveryChanged(state)
-  const isChangeOrConversionFiling = isChangeFiling(state) || isConversionFiling(state)
-  const hasRecMailingDeliveryChanged = hasRecMailingChanged(state) || hasRecDeliveryChanged(state)
-  const hasAddressChanged = (
-    hasMailingDeliveryChanged ||
-    // exclude Records Address conditions from Change or Conversion filing
-    (!isChangeOrConversionFiling && hasRecMailingDeliveryChanged)
-  )
-
-  return (isExpectedFiling && hasAddressChanged)
+  if (isCorrectionFiling(state) || isChangeFiling(state) || isConversionFiling(state)) {
+    const hasMailingDeliveryChanged = hasMailingChanged(state) || hasDeliveryChanged(state)
+    const isChangeOrConversionFiling = isChangeFiling(state) || isConversionFiling(state)
+    const hasRecMailingDeliveryChanged = hasRecMailingChanged(state) || hasRecDeliveryChanged(state)
+    return (
+      hasMailingDeliveryChanged ||
+      // exclude Records Address conditions from Change or Conversion filing
+      (!isChangeOrConversionFiling && hasRecMailingDeliveryChanged)
+    )
+  }
+  return false
 }
 
 /** The office addresses from the original IA. NB: may be {} */
@@ -724,7 +741,7 @@ export const showFeeSummary = (state: StateIF): boolean => {
     (isCorrectionFiling(state) && hasCorrectionChanged(state)) ||
     (isAlterationFiling(state) && hasAlterationChanged(state)) ||
     (isChangeFiling(state) && hasFirmChanged(state)) ||
-    (isConversionFiling(state) && hasFirmChanged(state))
+    (isConversionFiling(state) && hasConversionChanged(state))
   )
   return (haveFilingChange && !isEqual(getFilingData(state), defaultFilingData))
 }

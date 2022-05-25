@@ -1,5 +1,8 @@
 import { FilingBusinessIF, FilingHeaderIF, IncorporationApplicationIF } from '@/interfaces/'
 
+//
+// Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/correction.json
+//
 interface CorrectionIF {
   correctedFilingId: number
   correctedFilingType: string

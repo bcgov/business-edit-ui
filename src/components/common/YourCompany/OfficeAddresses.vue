@@ -5,7 +5,8 @@
       <v-row id="summary-registered-address" class="mx-0" no-gutters>
         <v-col cols="3">
           <label>{{ getResource.addressLabel }}</label>
-          <v-chip v-if="isChangeFiling && !isSummaryView && (hasMailingChanged || hasDeliveryChanged)"
+          <v-chip v-if="(isChangeFiling || isConversionFiling) && !isSummaryView
+                  && (hasMailingChanged || hasDeliveryChanged)"
                   x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
         </v-col>
 
@@ -39,7 +40,9 @@
         </v-col>
 
         <template v-if="!isSummaryView">
-          <v-col cols="1" v-if="(isCorrectionFiling || isChangeFiling) && hasOfficeAddressesChanged">
+          <v-col cols="1" v-if="(isCorrectionFiling || isChangeFiling || isConversionFiling)
+            && hasOfficeAddressesChanged"
+          >
             <div class="actions mr-4">
               <span class="edit-action">
                 <v-btn
@@ -83,7 +86,7 @@
             </div>
           </v-col>
 
-          <v-col cols="1" v-else-if="isCorrectionFiling || isChangeFiling">
+          <v-col cols="1" v-else-if="isCorrectionFiling || isChangeFiling || isConversionFiling">
             <div class="actions mr-4">
               <v-btn
                 text color="primary"
@@ -98,6 +101,7 @@
         </template>
       </v-row>
 
+      <!-- Records Office (BComp only) -->
       <v-row v-if="isTypeBcomp" id="summary-records-address" class="mt-4 mx-0" no-gutters>
         <v-col cols="3">
           <label class>Records Office</label>
@@ -139,8 +143,8 @@
       </v-row>
     </template>
 
-    <!-- Editing Change of Registration -->
-    <v-card flat v-else-if="isChangeFiling">
+    <!-- Editing Change of Registration or Conversion-->
+    <v-card flat v-else-if="isChangeFiling || isConversionFiling">
       <v-row no-gutters>
         <v-col cols="3">
           <label :class="{'error-text': invalidSection}">{{ getResource.addressLabel }}</label>
@@ -428,8 +432,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter hasRecMailingChanged!: boolean
   @Getter hasRecDeliveryChanged!: boolean
   @Getter isTypeBcomp!: boolean
-  @Getter isTypeSoleProp!: boolean
-  @Getter isTypePartnership!: boolean
+  @Getter isTypeFirm!: boolean
 
   // Global actions
   @Action setOfficeAddresses!: ActionBindingIF
@@ -692,9 +695,9 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       }
     }
 
-    if (this.isChangeFiling) {
+    if (this.isChangeFiling || this.isConversionFiling) {
       // at the moment, only SP and GP changes and conversion are supported
-      if (this.isTypeSoleProp || this.isTypePartnership) {
+      if (this.isTypeFirm) {
         this.setOfficeAddresses({
           businessOffice: {
             deliveryAddress: this.deliveryAddress,
@@ -746,7 +749,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Disable Same As feature and validate Delivery address for Change Filings. */
   @Watch('disableSameDeliveryAddress')
   private async updateDeliveryAddress (): Promise<void> {
-    if (this.isChangeFiling && this.disableSameDeliveryAddress) {
+    if ((this.isChangeFiling || this.isConversionFiling) && this.disableSameDeliveryAddress) {
       this.inheritMailingAddress = false
       await Vue.nextTick() // Allow referenced form to open before validating
 

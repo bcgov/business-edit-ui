@@ -101,14 +101,15 @@ export default class Conversion extends Mixins(
   @Action setCurrentFees!: ActionBindingIF
   @Action setFeePrices!: ActionBindingIF
   @Action setResource!: ActionBindingIF
+  @Action setCertifyStateValidity!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
   readonly appReady: boolean
 
   /** The id of the conversion filing being edited. */
-  get changeId (): number {
-    return +this.$route.query['change-id'] || 0
+  get conversionId (): number {
+    return +this.$route.query['conversion-id'] || 0
   }
 
   /** True if user is authenticated. */
@@ -136,7 +137,7 @@ export default class Conversion extends Mixins(
     // bypass this when Jest is running as FF are not fetched
     if (!this.isJestRunning && !getFeatureFlag('conversion-ui-enabled')) {
       window.alert('Conversion filings are not available at the moment. Please check again later.')
-      this.$root.$emit('go-to-dashboard')
+      this.$root.$emit('go-to-dashboard', true)
       return
     }
 
@@ -144,7 +145,7 @@ export default class Conversion extends Mixins(
     const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
     if (isStaffOnly && !this.isRoleStaff) {
       window.alert('Only staff can convert a record.')
-      this.$root.$emit('go-to-dashboard')
+      this.$root.$emit('go-to-dashboard', true)
       return
     }
 
@@ -152,12 +153,12 @@ export default class Conversion extends Mixins(
     try {
       const firmSnapshot = await this.fetchFirmSnapshot()
 
-      if (this.changeId) {
+      if (this.conversionId) {
         // store the filing ID
-        this.setFilingId(this.changeId)
+        this.setFilingId(this.conversionId)
 
         // fetch draft conversion filing to resume
-        const changeFiling = await this.fetchFilingById(this.changeId)
+        const changeFiling = await this.fetchFilingById(this.conversionId)
 
         // do not proceed if this isn't a conversion  filing
         if (!changeFiling.conversion) {
@@ -170,7 +171,7 @@ export default class Conversion extends Mixins(
         }
 
         // parse firm conversion filing and original business snapshot into store
-        await this.parseFirmConversion(changeFiling, firmSnapshot)
+        await this.parseConversionFiling(changeFiling, firmSnapshot)
       } else {
         // parse business data into store
         await this.parseEntitySnapshot(firmSnapshot)
@@ -208,6 +209,10 @@ export default class Conversion extends Mixins(
       this.emitFetchError(err)
     }
 
+    // since this filing type has no Certify component,
+    // just set its validity to True
+    this.setCertifyStateValidity(true)
+
     // now that all data is loaded, wait for things to stabilize and reset flag
     Vue.nextTick(() => this.setHaveUnsavedChanges(false))
   }
@@ -239,7 +244,7 @@ export default class Conversion extends Mixins(
       authInfo: items[1],
       addresses: items[2],
       orgPersons
-    }
+    } as EntitySnapshotIF
   }
 
   /** Called when staff payment data has changed. */

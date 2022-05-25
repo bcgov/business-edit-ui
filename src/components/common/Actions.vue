@@ -100,7 +100,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
 
     let filingComplete: any
     try {
-      const filing = await this.buildIaCorrectionFiling(true)
+      const filing = await this.buildCorrectionFiling(true)
       filingComplete = await this.updateFiling(filing, true)
       // clear flag
       this.setHaveUnsavedChanges(false)
@@ -124,7 +124,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
 
     let filingComplete: any
     try {
-      const filing = await this.buildIaCorrectionFiling(true)
+      const filing = await this.buildCorrectionFiling(true)
       filingComplete = await this.updateFiling(filing, true)
       // clear flag
       this.setHaveUnsavedChanges(false)
@@ -163,7 +163,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
 
     let filingComplete: any
     try {
-      const filing = await this.buildIaCorrectionFiling(false)
+      const filing = await this.buildCorrectionFiling(false)
       filingComplete = await this.updateFiling(filing, false)
       // clear flag
       this.setHaveUnsavedChanges(false)
