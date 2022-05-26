@@ -450,7 +450,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // Apply NAICS change to filing
     if (this.hasNatureOfBusinessChanged) {
-      filing.conversion.business.naics = this.getCurrentNaics
+      filing.conversion.business.naics = {
+        naicsCode: this.getCurrentNaics.naicsCode || undefined, // don't include if falsy
+        naicsDescription: this.getCurrentNaics.naicsDescription
+      }
     }
 
     // Apply parties to filing

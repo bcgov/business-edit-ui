@@ -212,7 +212,7 @@ export const getTransactionalFolioNumber = (state: StateIF): string => {
   return state.stateModel.tombstone.transactionalFolioNumber
 }
 
-/** The current Naics code and description. */
+/** The current NAICS object. */
 export const getCurrentNaics = (state: StateIF): NaicsIF => {
   return {
     naicsCode: getBusinessInformation(state).naicsCode,
@@ -220,11 +220,11 @@ export const getCurrentNaics = (state: StateIF): NaicsIF => {
   }
 }
 
-/** The EntitySnapshot Naics */
-export const getEntityNaics = (state: StateIF): NaicsIF => {
+/** The snapshot NAICS object. */
+export const getSnapshotNaics = (state: StateIF): NaicsIF => {
   return {
-    naicsCode: getEntitySnapshot(state)?.businessInfo?.naicsCode || '',
-    naicsDescription: getEntitySnapshot(state)?.businessInfo?.naicsDescription || ''
+    naicsCode: getEntitySnapshot(state)?.businessInfo?.naicsCode,
+    naicsDescription: getEntitySnapshot(state)?.businessInfo?.naicsDescription
   }
 }
 
