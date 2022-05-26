@@ -68,6 +68,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Conversion/'
 import { ConversionSummary } from '@/components/Conversion'
+import { NOT_FOUND } from 'http-status-codes'
 
 @Component({
   components: {
@@ -222,15 +223,22 @@ export default class Conversion extends Mixins(
     const items = await Promise.all([
       this.fetchBusinessInfo(),
       AuthServices.fetchAuthInfo(this.getBusinessId),
-      this.fetchAddresses(),
       this.fetchOrgPersons(OrgPersonTypes.PARTIES)
     ])
 
-    if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 3) throw new Error('Failed to fetch entity snapshot')
+
+    const addresses = await this.fetchAddresses()
+      .catch(reason => {
+        // error message for business address has the pattern "FMXXXXXXX address not found"
+        if (reason.response?.status === NOT_FOUND &&
+          reason.response?.data.message.includes('address')) return { businessOffice: null }
+        throw new Error('Failed to fetch entity addresses')
+      })
 
     // WORK-AROUND WARNING !!!
     // convert orgPersons from "middleInitial" to "middleName"
-    const orgPersons = items[3].map(orgPerson => {
+    const orgPersons = items[2].map(orgPerson => {
       const middleInitial = orgPerson.officer['middleInitial']
       if (middleInitial !== undefined) {
         orgPerson.officer.middleName = middleInitial
@@ -242,7 +250,7 @@ export default class Conversion extends Mixins(
     return {
       businessInfo: items[0],
       authInfo: items[1],
-      addresses: items[2],
+      addresses,
       orgPersons
     } as EntitySnapshotIF
   }
