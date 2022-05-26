@@ -590,7 +590,7 @@ export default class YourCompany extends Mixins(
     color: $app-red !important;
   }
   #contact-info-edit-btn {
-    padding-right: 4px;
+    margin-right: -14px;
   }
 }
 </style>

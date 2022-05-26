@@ -101,7 +101,7 @@ export default class NatureOfBusiness extends Vue {
     (v: string) => (v?.length <= 300) || 'Maximum 300 characters reached'
   ]
 
-  /** The NAICS code, description or (Not Entered). */
+  /** The NAICS code, description or (Not entered). */
   get naicsSummary (): string {
     const code = this.getCurrentNaics.naicsCode
     const desc = this.getCurrentNaics.naicsDescription
@@ -113,7 +113,7 @@ export default class NatureOfBusiness extends Vue {
       this.naicsText = desc
       return desc
     } else {
-      return '(Not Entered)'
+      return '(Not entered)'
     }
   }
 

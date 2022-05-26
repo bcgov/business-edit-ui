@@ -119,7 +119,7 @@ describe('ConversionNatureOfBusiness without update', () => {
     expect(wrapper.vm.$data.naicsText).toBe('')
     expect(wrapper.vm.$data.onEditMode).toBeFalsy()
     expect(wrapper.find('#naics-summary').exists()).toBeTruthy()
-    expect(wrapper.find('#naics-summary').text()).toBe('(Not Entered)')
+    expect(wrapper.find('#naics-summary').text()).toBe('(Not entered)')
   })
 
   it('simulates error for over 300 characters length', async () => {
