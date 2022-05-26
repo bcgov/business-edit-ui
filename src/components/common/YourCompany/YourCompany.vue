@@ -496,11 +496,11 @@ export default class YourCompany extends Mixins(
   }
 
   // Watchers for component change flags (only used by corrections)
-  @Watch('companyNameChanges') private onCompanyNameChanges ():void { this.setDataChanges() }
-  @Watch('companyTypeChanges') private onCompanyTypeChanges ():void { this.setDataChanges() }
-  @Watch('nameTranslationChanges') private onNameTranslationChanges ():void { this.setDataChanges() }
-  @Watch('officeAddressChanges') private onOfficeAddressChanges ():void { this.setDataChanges() }
-  @Watch('conversionNOBChanges') private onconversionNOBChanges ():void { this.setDataChanges() }
+  @Watch('companyNameChanges') private onCompanyNameChanges (): void { this.setDataChanges() }
+  @Watch('companyTypeChanges') private onCompanyTypeChanges (): void { this.setDataChanges() }
+  @Watch('nameTranslationChanges') private onNameTranslationChanges (): void { this.setDataChanges() }
+  @Watch('officeAddressChanges') private onOfficeAddressChanges (): void { this.setDataChanges() }
+  @Watch('conversionNOBChanges') private onconversionNOBChanges (): void { this.setDataChanges() }
 
   private setDataChanges (): void {
     const haveChanges = (
@@ -590,7 +590,7 @@ export default class YourCompany extends Mixins(
     color: $app-red !important;
   }
   #contact-info-edit-btn {
-    padding-right: 4px;
+    margin-right: -14px;
   }
 }
 </style>

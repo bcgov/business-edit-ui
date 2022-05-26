@@ -34,7 +34,7 @@
               validate-on-blur
             />
             <div class="float-right mb-2">
-              <v-btn large color="primary" id="nob-done-btn" class="mr-2" @click="onSubmitClicked()">
+              <v-btn large color="primary" id="nob-done-btn" class="mr-2" @click="onDoneClicked()">
                 <span>Done</span>
               </v-btn>
               <v-btn large outlined color="primary" id="nob-cancel-btn" @click="onCancelClicked()">
@@ -55,7 +55,7 @@
           </div>
 
           <div v-else id="nob-more-actions" class="mt-n2 mr-n3">
-            <v-btn text color="primary" id="nob-undo-btn" @click="emitUndo()">
+            <v-btn text color="primary" id="nob-undo-btn" @click="onUndoClicked()">
               <v-icon small>mdi-undo</v-icon>
               <span>Undo</span>
             </v-btn>
@@ -80,57 +80,50 @@
 <script lang="ts">
 import { Action, Getter } from 'vuex-class'
 import { Component, Vue, Emit, Watch } from 'vue-property-decorator'
-import { ActionBindingIF, EntitySnapshotIF } from '@/interfaces/'
+import { ActionBindingIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 
 @Component({})
 export default class NatureOfBusiness extends Vue {
   @Getter getCurrentNaics!: NaicsIF
-  @Getter getEntitySnapshot!: EntitySnapshotIF
+  @Getter getSnapshotNaics!: NaicsIF
   @Getter hasNatureOfBusinessChanged!: boolean
 
   @Action setNaics!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
 
   // local variables
-  private dropdown: boolean = null
-  private onEditMode = false
-  private naicsText = ''
-  private naicsRules = [
+  protected dropdown = false
+  protected onEditMode = false
+  protected naicsText = ''
+  protected naicsRules = [
     (v: string) => (v?.length <= 300) || 'Maximum 300 characters reached'
   ]
 
-  /** Show naics value, description or (Not Entered) upon first render */
+  /** The NAICS code, description or (Not entered). */
   get naicsSummary (): string {
     const code = this.getCurrentNaics.naicsCode
     const desc = this.getCurrentNaics.naicsDescription
-    let summary = '(Not Entered)'
+
     if (code && desc) {
       this.naicsText = this.hasNatureOfBusinessChanged ? this.naicsText : `${code} - ${desc}`
-      summary = `${code} - ${desc}`
+      return `${code} - ${desc}`
     } else if (desc) {
       this.naicsText = desc
-      summary = desc
-    }
-    return summary
-  }
-
-  /** The naics data on record for the business. */
-  get originalNaics (): NaicsIF {
-    return {
-      naicsCode: this.getEntitySnapshot.businessInfo?.naicsCode,
-      naicsDescription: this.getEntitySnapshot.businessInfo?.naicsDescription
+      return desc
+    } else {
+      return '(Not entered)'
     }
   }
 
   /** Called when user has clicked the Change button. */
-  onChangeClicked (): void {
+  protected onChangeClicked (): void {
     this.onEditMode = true
   }
 
   /** Submited when user has clicked the Done button. */
-  onSubmitClicked (): void {
+  protected onDoneClicked (): void {
     let validForm = (this.$refs.form as Vue & { validate: () => boolean }).validate()
     if (validForm) {
       if (!isEqual(this.naicsText, this.naicsSummary)) {
@@ -144,21 +137,22 @@ export default class NatureOfBusiness extends Vue {
   }
 
   /** Called when user has clicked the Cancel button. */
-  onCancelClicked (): void {
-    this.setNaics(this.originalNaics)
+  protected onCancelClicked (): void {
+    this.setNaics(this.getSnapshotNaics)
     this.onEditMode = false
   }
 
-  emitUndo (): void {
-    let code = this.originalNaics.naicsCode
-    let desc = this.originalNaics.naicsDescription
+  /** Called when user has clicked the Undo button. */
+  protected onUndoClicked (): void {
+    const code = this.getSnapshotNaics.naicsCode
+    const desc = this.getSnapshotNaics.naicsDescription
     this.naicsText = null
     if (code && desc) {
       this.naicsText = this.hasNatureOfBusinessChanged ? this.naicsText : `${code} - ${desc}`
     } else if (desc) {
       this.naicsText = desc
     }
-    this.setNaics(this.originalNaics)
+    this.setNaics(this.getSnapshotNaics)
   }
 
   /** Called when this edit mode has changed. */

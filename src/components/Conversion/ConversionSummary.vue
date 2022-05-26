@@ -87,7 +87,7 @@ export default class ConversionSummary extends Vue {
   /** Whether to perform validation. */
   @Prop() readonly validate: boolean
 
-  /** Show naics value, description or (Not Entered) */
+  /** Show naics value, description or (Not entered) */
   get naicsSummary (): string {
     const naics = this.getCurrentNaics
     if (naics.naicsCode && naics.naicsDescription) {
@@ -95,7 +95,7 @@ export default class ConversionSummary extends Vue {
     } else if (naics.naicsDescription) {
       return naics.naicsDescription
     }
-    return '(Not Entered)'
+    return '(Not entered)'
   }
 }
 </script>
