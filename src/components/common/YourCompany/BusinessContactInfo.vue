@@ -23,6 +23,7 @@ import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, IncorporationFilingIF, ResourceIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
+import { isEqual } from 'lodash'
 
 @Component({
   components: {
@@ -65,6 +66,9 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 
   /** Update Contact info. */
   private async onContactInfoChange (contactInfo: ContactPointIF): Promise<void> {
+    // do nothing if contact info was not changed
+    if (isEqual(contactInfo, this.getBusinessContact)) return
+
     try {
       if (this.isAlterationFiling || this.isChangeFiling || this.isConversionFiling) {
         await AuthServices.updateContactInfo(contactInfo, this.getBusinessId)

@@ -101,7 +101,7 @@ export const mutateTransactionalFolioNumberValidity = (state: StateIF, validity:
 
 export const mutateBusinessContact = (state: StateIF, businessContact: ContactPointIF) => {
   state.stateModel.businessContact = businessContact
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
+  // don't set Have Changes flag for business contact since it's changed directly in Auth API
 }
 
 export const mutateDefineCompanyStepValidity = (state: StateIF, validity: boolean) => {
