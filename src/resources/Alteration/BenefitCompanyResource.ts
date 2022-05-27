@@ -3,7 +3,6 @@ import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp
 import { ResourceIF } from '@/interfaces/'
 
 export const BenefitCompanyResource: ResourceIF = {
-  entityType: CorpTypeCd.BENEFIT_COMPANY,
   entityReference: 'Company',
   contactLabel: 'Registered Office',
   displayName: GetCorpFullDescription(CorpTypeCd.BENEFIT_COMPANY),

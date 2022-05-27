@@ -3,7 +3,6 @@ import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp
 import { ResourceIF } from '@/interfaces/'
 
 export const SoleProprietorshipResource: ResourceIF = {
-  entityType: CorpTypeCd.SOLE_PROP,
   entityReference: 'Business',
   contactLabel: 'Business',
   displayName: GetCorpFullDescription(CorpTypeCd.SOLE_PROP),
@@ -22,8 +21,15 @@ export const SoleProprietorshipResource: ResourceIF = {
     orgPersonInfo: {
       orgPersonLabel: 'Proprietor',
       orgTypesLabel: 'Business or Corporation',
-      subtitle: null,
-      helpSection: null
+      subtitle: 'You can change the legal name, mailing and delivery addresses and the email address of the ' +
+        'proprietor. To change to a different proprietor, you must form a new business with that proprietor ' +
+        'and dissolve this registration.',
+      helpSection: {
+        header: 'Need Help? Contact Us',
+        helpText: [
+          'If your require assistance with changes to the business proprietor please contact us.'
+        ]
+      }
     }
   },
   certifyClause: null

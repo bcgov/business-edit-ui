@@ -4,7 +4,6 @@ import { HelpSectionIF } from '@/interfaces/'
 
 /** Interface to define the resource model example */
 export interface ResourceIF {
-  entityType: CorpTypeCd
   entityReference: string
   contactLabel?: string
   displayName: string

@@ -3,7 +3,6 @@ import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp
 import { ResourceIF } from '@/interfaces/'
 
 export const GeneralPartnershipResource: ResourceIF = {
-  entityType: CorpTypeCd.PARTNERSHIP,
   entityReference: 'Business',
   contactLabel: 'Business',
   displayName: GetCorpFullDescription(CorpTypeCd.PARTNERSHIP),
@@ -22,7 +21,9 @@ export const GeneralPartnershipResource: ResourceIF = {
     orgPersonInfo: {
       orgPersonLabel: 'Partners',
       orgTypesLabel: 'Business or Corporation',
-      subtitle: null,
+      subtitle: 'You must have a minimum of two partners. You can add or remove partners (individual person or ' +
+        'business) as well as change the mailing and delivery addresses and email address of individual people and ' +
+        'business partners.',
       helpSection: null
     }
   },

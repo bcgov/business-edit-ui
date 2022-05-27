@@ -1,7 +1,7 @@
 import { ResourceIF } from '@/interfaces/'
 
+/** Default resource model. */
 export const resourceModel: ResourceIF = {
-  entityType: null,
   entityReference: '',
   contactLabel: '',
   changeData: null,
