@@ -34,19 +34,52 @@
         </ul>
       </article>
 
-      <!-- Proprietor or partners section -->
-      <article v-if="isChangeFiling" class="section-container">
+      <!-- Change or conversion section -->
+      <article v-if="isChangeFiling || isConversionFiling" class="section-container">
         <span class="info-text">{{ orgPersonSubtitle }}</span>
 
-        <!-- Sole Prop Help -->
         <HelpSection
-          v-if="getResource.entityType === CorpTypeCd.SOLE_PROP"
+          v-if="orgPersonHelp"
           class="mt-5"
           :helpSection="orgPersonHelp"
           />
 
-        <!-- Partnership Help and Add Buttons -->
-        <div v-if="getResource.entityType === CorpTypeCd.PARTNERSHIP" class="mt-8">
+        <!-- SP add buttons (conversion filing only) -->
+        <div v-if="isTypeSoleProp && isConversionFiling" class="mt-8">
+          <v-btn
+            id="sp-btn-add-person"
+            outlined
+            color="primary"
+            :disabled="isAddingEditingOrgPerson"
+            @click="initAdd(
+              [{ roleType: RoleTypes.PROPRIETOR, appointmentDate: newAppointmentDate}],
+              PartyTypes.PERSON
+            )"
+          >
+            <v-icon>mdi-account-plus</v-icon>
+            <span>Add a Person</span>
+          </v-btn>
+          <v-btn
+            id="sp-btn-add-corp"
+            outlined
+            color="primary"
+            class="ml-2"
+            :disabled="isAddingEditingOrgPerson"
+            @click="initAdd(
+              [{ roleType: RoleTypes.PROPRIETOR, appointmentDate: newAppointmentDate }],
+              PartyTypes.ORGANIZATION
+            )"
+          >
+            <v-icon>mdi-domain-plus</v-icon>
+            <span>Add a {{ orgTypesLabel }}</span>
+          </v-btn>
+          <p v-if="!hasMinimumProprietor" class="error-text small-text mt-5 mb-0">
+            You must have a proprietor (an individual or a business)
+          </p>
+        </div>
+
+        <!-- GP add buttons (change or conversion filing)-->
+        <div v-if="isTypePartnership" class="mt-8">
           <v-btn
             id="gp-btn-add-person"
             outlined
@@ -80,7 +113,7 @@
         </div>
       </article>
 
-      <!-- Correction Add Buttons -->
+      <!-- Correction section -->
       <article v-if="isCorrectionFiling" class="section-container">
         <v-btn
           id="btn-add-person"
@@ -177,7 +210,10 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   @Getter isRoleStaff!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
+  @Getter hasMinimumProprietor!: boolean
   @Getter hasMinimumPartners!: boolean
+  @Getter isTypeSoleProp!: boolean
+  @Getter isTypePartnership!: boolean
 
   // Global actions
   @Action setPeopleAndRoles!: ActionBindingIF

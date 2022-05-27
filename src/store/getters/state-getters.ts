@@ -631,11 +631,22 @@ export const hasPeopleAndRolesChanged = (state: StateIF): boolean => {
   return !isSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange'])
 }
 
+/** Is true when the minimum proprietors is met. */
+export const hasMinimumProprietor = (state: StateIF): boolean => {
+  // REMOVED parties are still in the parties array until FILING, so exclude them for component level validations
+  return (
+    !isTypeSoleProp(state) ||
+    getPeopleAndRoles(state).filter(party => !party.actions?.includes(ActionTypes.REMOVED)).length === 1
+  )
+}
+
 /** Is true when the minimum partners met. */
 export const hasMinimumPartners = (state: StateIF): boolean => {
-  // REMOVED Parties are still in the parties array until FILING, so exclude them for component level validations.
-  const isGP = state.resourceModel.entityType === 'GP'
-  return (!isGP || getPeopleAndRoles(state).filter(party => !party.actions?.includes(ActionTypes.REMOVED)).length >= 2)
+  // REMOVED parties are still in the parties array until FILING, so exclude them for component level validations
+  return (
+    !isTypePartnership(state) ||
+    getPeopleAndRoles(state).filter(party => !party.actions?.includes(ActionTypes.REMOVED)).length >= 2
+  )
 }
 
 /** Whether share structure data has changed. */
