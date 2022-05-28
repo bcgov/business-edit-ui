@@ -80,7 +80,7 @@ export default class AddNameTranslation extends Mixins(CommonMixin) {
   private nameIndex: number = -1
 
   // Validation Rules
-  private readonly nameTranslationRules: Array<Function> = [
+  readonly nameTranslationRules: Array<Function> = [
     (v: string) => !!v || 'A name translation is required', // is not empty
     (v: string) => /^[A-Za-zÀ-ÿ_@./#’&+-]+(?: [A-Za-zÀ-ÿ_@./#’&+-]+)*$/.test(v) || 'Invalid character', // English, French and single spaces
     (v: string) => (!v || v.length <= 150) || 'Cannot exceed 150 characters' // maximum character count

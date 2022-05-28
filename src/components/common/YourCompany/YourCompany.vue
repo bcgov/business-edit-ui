@@ -5,8 +5,8 @@
       <label class="define-company-title">Your {{ getResource.entityReference }}</label>
     </div>
 
+    <!-- Business/Company Name + Name Request Applicant -->
     <div id="company-name-section" class="section-container" :class="{'invalid-section': invalidNameSection}">
-      <!-- Business/Company Name -->
       <v-row no-gutters class="mt-4">
         <v-col cols="3">
           <label :class="{'error-text': invalidNameSection}">
@@ -150,7 +150,6 @@
         </v-col>
       </v-row>
 
-      <!-- Name Request Applicant -->
       <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isChangeFiling || isConversionFiling)"
         class="sub-section"
       >
@@ -254,7 +253,7 @@
       <ConversionNOB
         class="section-container"
         :class="{'invalid-section': invalidNatureOfBusiness}"
-        @haveChanges="conversionNOBChanges = $event"
+        :invalidSection="invalidNatureOfBusiness"
       />
     </template>
 
@@ -304,7 +303,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, IncorporationFilingIF, NameRequestApplicantIF,
   NameRequestIF, ResourceIF } from '@/interfaces/'
@@ -376,7 +375,6 @@ export default class YourCompany extends Mixins(
   private companyTypeChanges = false
   private nameTranslationChanges = false
   private officeAddressChanges = false
-  private conversionNOBChanges = false
 
   private correctNameChoices: Array<string> = []
   private isEditingNames = false
@@ -500,23 +498,16 @@ export default class YourCompany extends Mixins(
   @Watch('companyTypeChanges') private onCompanyTypeChanges (): void { this.setDataChanges() }
   @Watch('nameTranslationChanges') private onNameTranslationChanges (): void { this.setDataChanges() }
   @Watch('officeAddressChanges') private onOfficeAddressChanges (): void { this.setDataChanges() }
-  @Watch('conversionNOBChanges') private onconversionNOBChanges (): void { this.setDataChanges() }
 
   private setDataChanges (): void {
     const haveChanges = (
       this.companyNameChanges ||
       this.companyTypeChanges ||
       this.nameTranslationChanges ||
-      this.officeAddressChanges ||
-      this.conversionNOBChanges
+      this.officeAddressChanges
     )
     this.setDefineCompanyStepChanged(haveChanges)
-    this.emitHaveChanges(haveChanges)
   }
-
-  /** Emits Have Changes event (only used by corrections). */
-  @Emit('haveChanges')
-  private emitHaveChanges (val: boolean): void {}
 
   /** Updates store initially and when isEditingName property has changed. */
   @Watch('isEditingNames', { immediate: true })
@@ -582,15 +573,6 @@ export default class YourCompany extends Mixins(
 
   .v-btn {
     min-width: 0.5rem;
-  }
-}
-
-::v-deep {
-  .invalid-section .col-sm-3:first-child label {
-    color: $app-red !important;
-  }
-  #contact-info-edit-btn {
-    margin-right: -14px;
   }
 }
 </style>

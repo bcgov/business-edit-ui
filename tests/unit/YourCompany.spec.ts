@@ -249,7 +249,7 @@ describe('YourCompany in an Conversion', () => {
     wrapper.destroy()
   })
 
-  it('renders the YourCompany Component and default subcomponents', async () => {
+  it('renders the YourCompany component and default subcomponents', async () => {
     expect(wrapper.findComponent(YourCompany).exists()).toBeTruthy()
     expect(wrapper.findComponent(ChangeBusinessType).exists()).toBeTruthy()
     expect(wrapper.findComponent(BusinessContactInfo).exists()).toBeTruthy()
@@ -259,10 +259,8 @@ describe('YourCompany in an Conversion', () => {
     expect(wrapper.findComponent(CorrectNameOptions).exists()).toBeFalsy()
   })
 
-  it('renders the Nature of Business with invalid section', async () => {
-    store.state.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
-    store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
-    store.state.stateModel.entitySnapshot = entitySnapshot
+  it('renders the NatureOfBusiness component with invalid styling', async () => {
+    store.state.stateModel.validationFlags.flagsCompanyInfo.isValidNatureOfBusiness = false
     wrapper = mount(YourCompany, { vuetify, store, localVue })
     expect(wrapper.find('#nature-of-business.invalid-section').exists()).toBeTruthy()
   })

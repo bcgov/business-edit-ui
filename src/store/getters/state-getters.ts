@@ -376,7 +376,7 @@ export const isFilingPaying = (state: StateIF): boolean => {
  * - certify
  * - staff payment
  */
-export const hasCorrectionChanged = (state: StateIF): boolean => {
+export const hasCorrectionDataChanged = (state: StateIF): boolean => {
   return (
     state.stateModel.peopleAndRoles.changed ||
     state.stateModel.changedFlags.defineCompanyStep ||
@@ -395,7 +395,7 @@ export const hasCorrectionChanged = (state: StateIF): boolean => {
  * - court order and POA
  * - staff payment
  */
-export const hasAlterationChanged = (state: StateIF): boolean => {
+export const hasAlterationDataChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
     hasBusinessTypeChanged(state) ||
@@ -415,7 +415,7 @@ export const hasAlterationChanged = (state: StateIF): boolean => {
  * - court order and POA
  * - staff payment
  */
-export const hasFirmChanged = (state: StateIF): boolean => {
+export const hasChangeDataChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
     hasNatureOfBusinessChanged(state) ||
@@ -433,7 +433,7 @@ export const hasFirmChanged = (state: StateIF): boolean => {
  * - court order and POA
  * - staff payment
  */
-export const hasConversionChanged = (state: StateIF): boolean => {
+export const hasConversionDataChanged = (state: StateIF): boolean => {
   return (
     hasNatureOfBusinessChanged(state) ||
     hasOfficeAddressesChanged(state) ||
@@ -749,10 +749,10 @@ export const showFeeSummary = (state: StateIF): boolean => {
     waiveFees: false
   }
   const haveFilingChange = (
-    (isCorrectionFiling(state) && hasCorrectionChanged(state)) ||
-    (isAlterationFiling(state) && hasAlterationChanged(state)) ||
-    (isChangeFiling(state) && hasFirmChanged(state)) ||
-    (isConversionFiling(state) && hasConversionChanged(state))
+    (isCorrectionFiling(state) && hasCorrectionDataChanged(state)) ||
+    (isAlterationFiling(state) && hasAlterationDataChanged(state)) ||
+    (isChangeFiling(state) && hasChangeDataChanged(state)) ||
+    (isConversionFiling(state) && hasConversionDataChanged(state))
   )
   return (haveFilingChange && !isEqual(getFilingData(state), defaultFilingData))
 }

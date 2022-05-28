@@ -69,7 +69,7 @@ export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
   private folioNumber = ''
 
   // Validation rules
-  private readonly rules: Array<Function> = [
+  readonly rules: Array<Function> = [
     (v: string) => (!v || v.length <= 30) || 'Maximum 30 characters reached'
   ]
 

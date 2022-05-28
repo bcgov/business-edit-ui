@@ -60,8 +60,8 @@ import { navigate } from '@/utils/'
 export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin) {
   // Global getters
   @Getter isBusySaving!: boolean
-  @Getter hasCorrectionChanged!: boolean
-  @Getter hasAlterationChanged!: boolean // for testing state-getters
+  @Getter hasCorrectionDataChanged!: boolean
+  @Getter hasAlterationDataChanged!: boolean // for testing state-getters
   @Getter isFilingValid!: boolean
   @Getter isSaving!: boolean
   @Getter isSavingResuming!: boolean
@@ -86,7 +86,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
 
   /** True if the File and Pay button should be disabled. */
   get isFilePayButtonDisabled (): boolean {
-    return (!this.hasCorrectionChanged || this.isBusySaving || !this.isFilingValid || this.isEditing)
+    return (!this.hasCorrectionDataChanged || this.isBusySaving || !this.isFilingValid || this.isEditing)
   }
 
   /**
