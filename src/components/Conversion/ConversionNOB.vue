@@ -105,6 +105,7 @@ export default class NatureOfBusiness extends Vue {
   protected naicsText = ''
 
   readonly naicsRules = [
+    (v: string) => !!v || 'A NAICS description is required',
     (v: string) => (v?.length <= 300) || 'Maximum 300 characters reached'
   ]
 
@@ -145,7 +146,6 @@ export default class NatureOfBusiness extends Vue {
 
   /** Called when user has clicked the Cancel button. */
   protected onCancelClicked (): void {
-    this.setNaics(this.getSnapshotNaics)
     this.onEditMode = false
   }
 
@@ -165,7 +165,18 @@ export default class NatureOfBusiness extends Vue {
   /** Called when this edit mode has changed. */
   @Watch('onEditMode', { immediate: true })
   private onIsEditModeChanged (): void {
-    this.setValidComponent({ key: 'isValidNatureOfBusiness', value: !this.onEditMode })
+    this.updateValidity()
+  }
+
+  /** Called when NAICS Description has changed. */
+  @Watch('getCurrentNaics.naicsDescription', { immediate: true })
+  private onNaicsDescriptionChanged (): void {
+    this.updateValidity()
+  }
+
+  private updateValidity (): void {
+    const isValid = !this.onEditMode && !!this.getCurrentNaics.naicsDescription
+    this.setValidComponent({ key: 'isValidNatureOfBusiness', value: isValid })
   }
 }
 </script>

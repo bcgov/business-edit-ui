@@ -20,7 +20,11 @@ const businessInformation = {
   naicsDescription: 'food'
 }
 
-const updatedBusinessInfo = { ...businessInformation, naicsCode: '', naicsDescription: '100001 - cake' }
+const updatedBusinessInfo = {
+  ...businessInformation,
+  naicsCode: null,
+  naicsDescription: '100001 - cake'
+}
 
 const entitySnapShot = {
   businessInfo: businessInformation,
@@ -32,16 +36,9 @@ const entitySnapShot = {
   resolutions: null
 }
 
-// const updatedEntitySnapShot = { ...entitySnapShot, businessInfo: updatedBusinessInfo }
-
 const initialProps = {
   onEditMode: false,
   naicsText: ''
-}
-
-const updatedProps = {
-  onEditMode: false,
-  dropdown: false
 }
 
 describe('ConversionNatureOfBusiness without update', () => {
@@ -117,9 +114,9 @@ describe('ConversionNatureOfBusiness without update', () => {
     await doneBtn.trigger('click')
 
     expect(wrapper.vm.$data.naicsText).toBe('')
-    expect(wrapper.vm.$data.onEditMode).toBeFalsy()
-    expect(wrapper.find('#naics-summary').exists()).toBeTruthy()
-    expect(wrapper.find('#naics-summary').text()).toBe('(Not entered)')
+    expect(wrapper.vm.$data.onEditMode).toBe(true)
+    expect(wrapper.find('#naics-summary').exists()).toBe(false)
+    expect(wrapper.find('.v-textarea').text()).toContain('A NAICS description is required')
   })
 
   it('simulates error for over 300 characters length', async () => {
@@ -169,7 +166,10 @@ describe('ConversionNatureOfBusiness after the update', () => {
         vuetify
       })
     }
-    wrapper = wrapperFactory(updatedProps)
+    wrapper = wrapperFactory({
+      onEditMode: false,
+      dropdown: false
+    })
   })
 
   afterEach(() => {
@@ -182,8 +182,8 @@ describe('ConversionNatureOfBusiness after the update', () => {
   })
 
   it('renders the text field and texts', async () => {
-    const changeBtn = wrapper.find('#nob-change-btn')
-    await changeBtn.trigger('click')
+    await wrapper.find('#nob-menu-btn').trigger('click')
+    await wrapper.find('#more-changes-btn').trigger('click')
 
     expect(wrapper.vm.$data.onEditMode).toBeTruthy()
     expect(wrapper.find('p').text()).toContain('Provide a brief description')
@@ -195,8 +195,8 @@ describe('ConversionNatureOfBusiness after the update', () => {
   })
 
   it('simulates input text and the done button', async () => {
-    const changeBtn = wrapper.find('#nob-change-btn')
-    await changeBtn.trigger('click')
+    await wrapper.find('#nob-menu-btn').trigger('click')
+    await wrapper.find('#more-changes-btn').trigger('click')
 
     expect(wrapper.vm.$data.onEditMode).toBeTruthy()
 

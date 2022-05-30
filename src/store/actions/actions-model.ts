@@ -1,5 +1,5 @@
 import { ActionIF, ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, EntitySnapshotIF, NameRequestIF,
-  NameTranslationIF, OrgPersonIF, ShareClassIF, FeesIF, ResourceIF } from '@/interfaces/'
+  NameTranslationIF, OrgPersonIF, ShareClassIF, FeesIF, ResourceIF, FilingDataIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -192,7 +192,7 @@ export const setStaffPaymentValidity: ActionIF = ({ commit }, validity: boolean)
   commit('mutateStaffPaymentValidity', validity)
 }
 
-export const setFilingData: ActionIF = ({ commit }, filingData): void => {
+export const setFilingData: ActionIF = ({ commit }, filingData: FilingDataIF): void => {
   commit('mutateFilingData', filingData)
 }
 
