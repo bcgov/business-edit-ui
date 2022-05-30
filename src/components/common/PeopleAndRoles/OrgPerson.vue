@@ -116,7 +116,7 @@
               </template>
 
               <!-- Firm Name Change confirmation -->
-              <template v-if="isProprietor || isPartner && !isNaN(activeIndex)">
+              <template v-if="(isProprietor || isPartner) && !isNaN(activeIndex) && !isConversionFiling">
                 <article class="mt-4">
                   <v-checkbox
                     class="legal-confirm-label"
