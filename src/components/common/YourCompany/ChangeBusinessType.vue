@@ -257,7 +257,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   /** V-model for dropdown menu. */
   private dropdown: boolean = null
 
-  private readonly confirmLabel: string = `The company has completed a set Benefit Company Articles containing a benefit
+  readonly confirmLabel: string = `The company has completed a set Benefit Company Articles containing a benefit
     provision, and a copy of these articles has been added to company's record book.`
 
   mounted () {

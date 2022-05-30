@@ -33,10 +33,10 @@
                   If the {{ isProprietor ? 'proprietor' : 'partner' }} has changed their legal name,
                   enter their new legal name.
                 </p>
-                <article class="form__row three-column pt-6">
+                <article class="form__row three-column pt-4">
                   <v-text-field
                     filled
-                    class="item"
+                    class="item mx-2 mb-n6"
                     label="First Name"
                     id="person__first-name"
                     v-model="orgPerson.officer.firstName"
@@ -44,7 +44,7 @@
                   />
                   <v-text-field
                     filled
-                    class="item"
+                    class="item mx-2 mb-n6"
                     label="Middle Name (Optional)"
                     id="person__middle-name"
                     v-model="orgPerson.officer.middleName"
@@ -52,7 +52,7 @@
                   />
                   <v-text-field
                     filled
-                    class="item"
+                    class="item mx-2 mb-n6"
                     label="Last Name"
                     id="person__last-name"
                     v-model="orgPerson.officer.lastName"
@@ -63,7 +63,6 @@
 
               <!-- Org's Name -->
               <template v-if="isOrg">
-
                 <!-- Orgs from BC -->
                 <article v-if="isChangeFiling && toggleBcLookUp && isNaN(activeIndex)">
                   <label class="sub-header">{{ orgTypesLabel }} Look Up</label>
@@ -94,18 +93,19 @@
                 </article>
 
                 <label v-else class="sub-header">{{ orgTypesLabel }} Name</label>
-                <article class="org-name-container pt-6">
+
+                <article class="org-name-container mt-4">
                   <v-checkbox
                     v-if="!toggleBcLookUp"
-                    class="mb-6"
+                    class="mt-0 pt-0 mb-4"
                     label="I confirm that the business partner being added is not legally required to register in B.C."
-                    :hide-details="true"
+                    hide-details
                     :rules="confirmNameChangeRules"
                     v-model="orgPerson.confirmNameChange"
                   />
                   <v-text-field
                     filled
-                    class="item"
+                    class="mb-n6"
                     :label="`${ orgTypesLabel } Name`"
                     id="firm-name"
                     v-if="isCorrectionFiling || !toggleBcLookUp || !isNaN(activeIndex)"
@@ -117,9 +117,9 @@
 
               <!-- Firm Name Change confirmation -->
               <template v-if="isProprietor || isPartner && !isNaN(activeIndex)">
-                <article class="mt-n4">
+                <article class="mt-4">
                   <v-checkbox
-                    class="mb-8 legal-confirm-label"
+                    class="legal-confirm-label"
                     :label="`I confirm ${orgPersonLabel} has legally changed their name and that they remain the ` +
                       `same ${orgConfirmLabel}.`"
                     :hide-details="true"
@@ -129,24 +129,25 @@
                 </article>
               </template>
 
-              <!-- FUTURE: Firm incorporation number -->
-              <!-- <template v-if="orgPerson.officer.?">
-                <article class="mb-8">
-                  <label class="sub-header">Incorporation Number:</label>
-                  <span class="sp-number-text">{{ 'orgPerson.officer.?' }}</span>
+              <!-- FUTURE: Incorporation/Registration Number -->
+              <!-- <template v-if="orgPerson.officer.incorporationNumber">
+                <article class="mt-6">
+                  <label class="sub-header">Incorporation/Registration Number:</label>
+                  <span class="sub-header-text">{{ orgPerson.officer.incorporationNumber }}</span>
                 </article>
               </template> -->
 
+              <!-- Business Number -->
               <template v-if="orgPerson.officer.taxId">
-                <article class="mb-8">
+                <article class="mt-6">
                   <label class="sub-header">Business Number:</label>
-                  <span class="ml-2 sp-number-text">{{ orgPerson.officer.taxId }}</span>
+                  <span class="sub-header-text">{{ orgPerson.officer.taxId }}</span>
                 </article>
               </template>
 
               <!-- Firm email address (Alterations do not edit orgPersons) -->
-              <template v-if="isChangeFiling">
-                <article>
+              <template v-if="isChangeFiling || isConversionFiling">
+                <article class="mt-6">
                   <label class="sub-header">Email Address</label>
                   <p class="info-text">
                     Copies of the registration documents will be sent to this email address.
@@ -155,6 +156,7 @@
                     id="proprietor-email"
                     label="Email Address"
                     filled
+                    class="mb-n6"
                     persistent-hint
                     validate-on-blur
                     v-model="orgPerson.officer.email"
@@ -165,61 +167,63 @@
 
               <!-- Roles -->
               <template v-if="isCorrectionFiling">
-                <label class="sub-header">Roles</label>
-                <v-row class="roles-row my-6">
-                  <v-col cols="4" class="mt-0" v-if="isPerson">
-                    <div class="pa-1">
-                      <v-checkbox
-                        id="cp-checkbox"
-                        class="mt-1"
-                        v-model="selectedRoles"
-                        :value="RoleTypes.COMPLETING_PARTY"
-                        :label="RoleTypes.COMPLETING_PARTY"
-                        :rules="roleRules"
-                        @change="assignCompletingPartyRole()"
+                <article class="mt-6">
+                  <label class="sub-header">Roles</label>
+                  <v-row class="roles-row mt-4">
+                    <v-col cols="4" class="mt-0" v-if="isPerson">
+                      <div class="pa-1">
+                        <v-checkbox
+                          id="cp-checkbox"
+                          class="mt-1"
+                          v-model="selectedRoles"
+                          :value="RoleTypes.COMPLETING_PARTY"
+                          :label="RoleTypes.COMPLETING_PARTY"
+                          :rules="roleRules"
+                          @change="assignCompletingPartyRole()"
+                        />
+                      </div>
+                    </v-col>
+                    <v-col cols="4" class="mt-0">
+                      <div class="pa-1" :class="{ 'highlightedRole': isOrg }">
+                        <v-checkbox
+                          id="incorp-checkbox"
+                          class="mt-1"
+                          v-model="selectedRoles"
+                          :value="RoleTypes.INCORPORATOR"
+                          :label="RoleTypes.INCORPORATOR"
+                          :disabled="isOrg"
+                          :rules="roleRules"
                       />
-                    </div>
-                  </v-col>
-                  <v-col cols="4" class="mt-0">
-                    <div class="pa-1" :class="{ 'highlightedRole': isOrg }">
-                      <v-checkbox
-                        id="incorp-checkbox"
-                        class="mt-1"
-                        v-model="selectedRoles"
-                        :value="RoleTypes.INCORPORATOR"
-                        :label="RoleTypes.INCORPORATOR"
-                        :disabled="isOrg"
-                        :rules="roleRules"
-                    />
-                    </div>
-                  </v-col>
-                  <v-col cols="4" class="mt-0" v-if="isPerson">
-                    <div class="pa-1">
-                      <v-checkbox
-                        id="dir-checkbox"
-                        class="mt-1"
-                        v-model="selectedRoles"
-                        :value="RoleTypes.DIRECTOR"
-                        :label="RoleTypes.DIRECTOR"
-                        :rules="roleRules"
-                        @change="assignDirectorRole()"
-                      />
-                    </div>
-                  </v-col>
-                </v-row>
+                      </div>
+                    </v-col>
+                    <v-col cols="4" class="mt-0" v-if="isPerson">
+                      <div class="pa-1">
+                        <v-checkbox
+                          id="dir-checkbox"
+                          class="mt-1"
+                          v-model="selectedRoles"
+                          :value="RoleTypes.DIRECTOR"
+                          :label="RoleTypes.DIRECTOR"
+                          :rules="roleRules"
+                          @change="assignDirectorRole()"
+                        />
+                      </div>
+                    </v-col>
+                  </v-row>
+                </article>
               </template>
 
               <!-- Addresses -->
               <template v-if="isCorrectionFiling || isPerson || !toggleBcLookUp || !isNaN(activeIndex)">
                 <!-- Mailing Address -->
-                <div class="mt-2">
+                <div class="mt-6">
                   <label class="sub-header">Mailing Address</label>
-                  <div class="address-wrapper pt-6">
+                  <div class="address-wrapper pt-4">
                     <base-address
                       ref="mailingAddressNew"
                       :editing="true"
                       :schema="isPerson ? PersonAddressSchema :
-                        isChangeFiling ? outOfBCAddressSchema : OfficeAddressSchema"
+                        isChangeFiling ? OutOfBCAddressSchema : OfficeAddressSchema"
                       :address="inProgressMailingAddress"
                       @update:address="inProgressMailingAddress = $event"
                       @valid="mailingAddressValid = $event"
@@ -235,10 +239,11 @@
                   <v-checkbox
                     label="Delivery Address same as Mailing Address"
                     v-model="inheritMailingAddress"
+                    class="mt-0"
                   />
-                  <div v-if="!inheritMailingAddress" class="mt-6">
+                  <div v-if="!inheritMailingAddress" class="mt-4">
                     <label class="sub-header">Delivery Address</label>
-                    <div class="address-wrapper pt-6">
+                    <div class="address-wrapper pt-4">
                       <base-address
                         ref="deliveryAddressNew"
                         :editing="true"
@@ -729,8 +734,6 @@ li {
   .item {
     flex: 1 1 auto;
     flex-basis: 0;
-    margin-right: 0.5rem;
-    margin-left: 0.5rem;
   }
 }
 
@@ -804,7 +807,6 @@ li {
 }
 
 .sub-header {
-  padding-bottom: 1.5rem;
   font-size: 1rem;
   font-weight: bold;
   line-height: 1.5rem;
@@ -870,7 +872,8 @@ li {
   }
 }
 
-.sp-number-text {
+.sub-header-text {
   color: $gray7;
+  margin-left: 0.5rem;
 }
 </style>

@@ -91,3 +91,11 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+::v-deep {
+  #contact-info-edit-btn {
+    margin-right: -14px;
+  }
+}
+</style>

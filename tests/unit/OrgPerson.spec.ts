@@ -241,7 +241,7 @@ describe('Org/Person component for Correction', () => {
     expect(wrapper.find(cancelButtonSelector).attributes('disabled')).toBeUndefined()
 
     // verify business number
-    expect(wrapper.find('.sp-number-text').text()).toBe('0000')
+    expect(wrapper.find('.sub-header-text').text()).toBe('0000')
 
     wrapper.destroy()
   })
@@ -269,7 +269,7 @@ describe('Org/Person component for Correction', () => {
     expect(wrapper.find(cancelButtonSelector).attributes('disabled')).toBeUndefined()
 
     // verify business number
-    expect(wrapper.find('.sp-number-text').text()).toBe('1111')
+    expect(wrapper.find('.sub-header-text').text()).toBe('1111')
 
     wrapper.destroy()
   })

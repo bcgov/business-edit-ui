@@ -2,7 +2,7 @@
   <section id="nature-of-business">
     <v-row no-gutters>
       <v-col cols="12" sm="3" class="pr-4">
-        <label>Nature of Business</label>
+        <label :class="{'error-text': invalidSection}">Nature of Business</label>
         <v-chip
           v-if="hasNatureOfBusinessChanged"
           id="changed-chip"
@@ -10,11 +10,12 @@
           color="primary"
           text-color="white"
         >
-          Changed
+          <span>Changed</span>
         </v-chip>
       </v-col>
 
       <v-col cols="12" sm="9">
+        <!-- Edit mode -->
         <template v-if="onEditMode">
           <p class="ma-0">
             Provide a brief description of the nature of business (e.g., corner grocery store,
@@ -44,6 +45,7 @@
           </v-form>
         </template>
 
+        <!-- Display mode -->
         <div v-if="!onEditMode" class="d-flex justify-space-between align-start">
           <span id="naics-summary">{{ naicsSummary }}</span>
 
@@ -79,13 +81,17 @@
 
 <script lang="ts">
 import { Action, Getter } from 'vuex-class'
-import { Component, Vue, Emit, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { ActionBindingIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 
 @Component({})
 export default class NatureOfBusiness extends Vue {
+  /** Whether to show invalid section styling. */
+  @Prop({ default: false })
+  readonly invalidSection!: boolean
+
   @Getter getCurrentNaics!: NaicsIF
   @Getter getSnapshotNaics!: NaicsIF
   @Getter hasNatureOfBusinessChanged!: boolean
@@ -97,7 +103,8 @@ export default class NatureOfBusiness extends Vue {
   protected dropdown = false
   protected onEditMode = false
   protected naicsText = ''
-  protected naicsRules = [
+
+  readonly naicsRules = [
     (v: string) => (v?.length <= 300) || 'Maximum 300 characters reached'
   ]
 
@@ -122,7 +129,7 @@ export default class NatureOfBusiness extends Vue {
     this.onEditMode = true
   }
 
-  /** Submited when user has clicked the Done button. */
+  /** Called when user has clicked the Done button. */
   protected onDoneClicked (): void {
     let validForm = (this.$refs.form as Vue & { validate: () => boolean }).validate()
     if (validForm) {
@@ -156,16 +163,9 @@ export default class NatureOfBusiness extends Vue {
   }
 
   /** Called when this edit mode has changed. */
-  @Watch('onEditMode')
+  @Watch('onEditMode', { immediate: true })
   private onIsEditModeChanged (): void {
     this.setValidComponent({ key: 'isValidNatureOfBusiness', value: !this.onEditMode })
-    this.emitHaveChanges()
-  }
-
-  /** Emits the changed state of this component. */
-  @Emit('haveChanges')
-  private emitHaveChanges (): boolean {
-    return this.hasNatureOfBusinessChanged
   }
 }
 </script>
@@ -173,6 +173,7 @@ export default class NatureOfBusiness extends Vue {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
+// prevent buttons from wrapping
 #nob-more-actions {
   min-width: 140px;
 }
