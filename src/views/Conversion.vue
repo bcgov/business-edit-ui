@@ -42,13 +42,6 @@
           sectionNumber="1."
           :validate="getAppValidate"
         />
-
-        <StaffPayment
-          class="mt-10"
-          sectionNumber="2."
-          :validate="getAppValidate"
-          @haveChanges="onStaffPaymentChanges()"
-        />
       </div>
     </v-slide-x-reverse-transition>
   </section>
@@ -65,7 +58,6 @@ import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Conversion/'
 import { ConversionSummary } from '@/components/Conversion'
 import { NOT_FOUND } from 'http-status-codes'
@@ -75,7 +67,6 @@ import { NOT_FOUND } from 'http-status-codes'
     ConversionSummary,
     CompletingParty,
     PeopleAndRoles,
-    StaffPayment,
     YourCompany
   }
 })
@@ -254,17 +245,6 @@ export default class Conversion extends Mixins(
       orgPersons
     } as EntitySnapshotIF
   }
-
-  /** Called when staff payment data has changed. */
-  protected onStaffPaymentChanges (): void {
-    // update filing data with staff payment fields
-    this.setFilingData({
-      ...this.getFilingData,
-      priority: this.getStaffPayment.isPriority,
-      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
-    })
-  }
-
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   private emitFetchError (err: unknown = null): void {}
