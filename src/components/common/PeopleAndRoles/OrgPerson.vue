@@ -122,7 +122,7 @@
                     class="legal-confirm-label"
                     :label="`I confirm ${orgPersonLabel} has legally changed their name and that they remain the ` +
                       `same ${orgConfirmLabel}.`"
-                    :hide-details="true"
+                    hide-details
                     :rules="confirmNameChangeRules"
                     v-model="orgPerson.confirmNameChange"
                   />
@@ -154,7 +154,7 @@
                   </p>
                   <v-text-field
                     id="proprietor-email"
-                    label="Email Address"
+                    :label="isEmailOptional ? 'Email Address (Optional)' : 'Email Address' "
                     filled
                     class="mb-n6"
                     persistent-hint
@@ -425,6 +425,11 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     return this.getResource.changeData.orgPersonInfo?.orgTypesLabel
   }
 
+  /** Whether the org-person email is optional. */
+  get isEmailOptional (): boolean {
+    return this.isConversionFiling
+  }
+
   /**
    * Called when component is created, to set local properties.
    */
@@ -655,7 +660,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     this.proprietorEmailRules = [
       (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
       (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
-      (v: string) => this.validateEmailFormat(v) || 'Enter valid email address'
+      (v: string) => (this.isEmailOptional && !v) || this.validateEmailFormat(v) || 'Enter valid email address'
     ]
 
     this.confirmNameChangeRules = this.hasOrgPersonNameChanged(this.orgPerson)
