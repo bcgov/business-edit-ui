@@ -116,7 +116,7 @@
               </template>
 
               <!-- Firm Name Change confirmation -->
-              <template v-if="(isProprietor || isPartner) && !isNaN(activeIndex) && !isConversionFiling">
+              <template v-if="isChangeFiling && (isProprietor || isPartner) && !isNaN(activeIndex)">
                 <article class="mt-4">
                   <v-checkbox
                     class="legal-confirm-label"
@@ -398,13 +398,14 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   /** True if the form is valid. */
   get isFormValid (): boolean {
     let isFormValid = (this.orgPersonFormValid && this.mailingAddressValid)
+
     if ((this.isDirector || this.isProprietor || this.isPartner) && !this.inheritMailingAddress) {
       isFormValid = (isFormValid && this.deliveryAddressValid)
     }
-    if (this.isProprietor) {
-      isFormValid = (isFormValid && !!this.orgPerson.officer.email)
+
+    if (this.isChangeFiling && (this.isProprietor || this.isPartner)) {
       if (this.hasOrgPersonNameChanged(this.orgPerson)) {
-        isFormValid = isFormValid && this.orgPerson.confirmNameChange
+        isFormValid = (isFormValid && this.orgPerson.confirmNameChange)
       }
     }
 
@@ -478,7 +479,7 @@ export default class OrgPerson extends Mixins(CommonMixin) {
    * Called when user clicks Done button.
    */
   private async validateOrgPersonForm (): Promise<void> {
-    await this.applyValidation()
+    this.applyRules()
 
     // validate the main form and address form(s)
     this.$refs.orgPersonForm.validate()
@@ -628,8 +629,8 @@ export default class OrgPerson extends Mixins(CommonMixin) {
     }
   }
 
-  /** Apply input field validations. */
-  applyValidation (): void {
+  /** Apply input field rules. */
+  applyRules (): void {
     this.firstNameRules = [
       (v: string) => !!v || 'A first name is required',
       (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces

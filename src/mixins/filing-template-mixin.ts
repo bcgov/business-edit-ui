@@ -432,11 +432,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           identifier: this.getBusinessId
         },
         contactPoint: {
-          email: this.getBusinessContact.email || 'unknown@example.com',
-          phone: this.getBusinessContact.phone || '',
-          ...this.getBusinessContact.extension
-            ? { extension: +this.getBusinessContact.extension }
-            : {}
+          email: this.getBusinessContact.email || undefined, // don't include if empty
+          phone: this.getBusinessContact.phone || undefined, // don't include if empty
+          extension: +this.getBusinessContact.extension || undefined // don't include if empty
         },
         offices: {
           businessOffice: {
@@ -451,7 +449,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Apply NAICS change to filing
     if (this.hasNatureOfBusinessChanged) {
       filing.conversion.business.naics = {
-        naicsCode: this.getCurrentNaics.naicsCode || undefined, // don't include if falsy
+        naicsCode: this.getCurrentNaics.naicsCode || undefined, // don't include if empty
         naicsDescription: this.getCurrentNaics.naicsDescription
       }
     }

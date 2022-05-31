@@ -21,7 +21,7 @@
       id="people-roles-list"
       :class="{
         'section-container': !isSummaryView,
-        'error-container': invalidOrgPersons || !hasMinimumPartners,
+        'error-container': invalidOrgPersons
       }"
     >
       <!-- List Headers -->
@@ -43,7 +43,7 @@
         class="people-roles-content section-container"
         :class="{
           'summary-view': isSummaryView,
-          'invalid-section': invalidOrgPersons || !hasMinimumPartners
+          'invalid-section': invalidOrgPersons
         }"
         v-for="(orgPerson, index) in currentPeopleAndRoles"
         :key="index"
@@ -308,15 +308,16 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   @Prop({ default: false })
   readonly validate!: boolean
 
+  /** Whether we have all required parties. */
   @Prop({ default: true })
-  readonly hasMinimumPartners: boolean
+  readonly haveRequiredParties: boolean
 
   // declaration for template
   readonly isSame = isSame
 
   /** The name section validity state (when prompted by app). */
   get invalidOrgPersons (): boolean {
-    return this.validate && this.renderOrgPersonForm
+    return (this.validate && this.renderOrgPersonForm) || !this.haveRequiredParties
   }
 
   /** The current orgPersons list. */
