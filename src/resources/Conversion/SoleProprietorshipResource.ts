@@ -8,12 +8,12 @@ export const SoleProprietorshipResource: ResourceIF = {
   displayName: GetCorpFullDescription(CorpTypeCd.SOLE_PROP),
   nameRequestType: NameRequestEntityTypes.FR,
   addressLabel: 'Business Addresses',
-  filingData: [{
+  filingData: {
     filingTypeCode: FilingCodes.CONVERSION,
-    entityType: CorpTypeCd.PARTNERSHIP,
+    entityType: CorpTypeCd.SOLE_PROP,
     priority: false,
     waiveFees: true
-  }],
+  },
   changeData: {
     nameChangeOptions: [
       CorrectionTypes.CORRECT_NEW_NR

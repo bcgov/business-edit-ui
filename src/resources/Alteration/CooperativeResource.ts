@@ -8,11 +8,11 @@ export const CooperativeResource: ResourceIF = {
   displayName: GetCorpFullDescription(CorpTypeCd.COOP),
   nameRequestType: NameRequestEntityTypes.CP,
   addressLabel: 'Registered Office',
-  filingData: [{
-    filingTypeCode: FilingCodes.CONVERSION,
-    entityType: CorpTypeCd.PARTNERSHIP,
+  filingData: {
+    filingTypeCode: FilingCodes.ALTERATION,
+    entityType: CorpTypeCd.COOP,
     priority: false
-  }],
+  },
   changeData: {
     nameChangeOptions: [
       CorrectionTypes.CORRECT_NEW_NR,

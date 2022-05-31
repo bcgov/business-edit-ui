@@ -8,7 +8,7 @@ export interface ResourceIF {
   displayName: string
   nameRequestType: NameRequestEntityTypes
   addressLabel: string
-  filingData: Array<FilingDataIF>
+  filingData: FilingDataIF
   changeData?: {
     nameChangeOptions?: Array<CorrectionTypes>
     typeChangeInfo?: string
