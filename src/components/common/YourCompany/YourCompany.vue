@@ -383,37 +383,37 @@ export default class YourCompany extends Mixins(
 
   /** The name section validity state (when prompted by app). */
   get invalidNameSection (): boolean {
-    return this.getComponentValidate && this.isEditingNames
+    return (this.getComponentValidate && this.isEditingNames)
   }
 
   /** The type section validity state (when prompted by app). */
   get invalidTypeSection (): boolean {
-    return this.getComponentValidate && this.isEditingType
+    return (this.getComponentValidate && this.isEditingType)
   }
 
   /** The translation section validity state (when prompted by app). */
   get invalidTranslationSection (): boolean {
-    return this.getComponentValidate && this.isEditingTranslations
+    return (this.getComponentValidate && this.isEditingTranslations)
   }
 
   /** The nature of business section validity state (when prompted by app). */
   get invalidNatureOfBusiness (): boolean {
-    return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidNatureOfBusiness
+    return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidNatureOfBusiness)
   }
 
   /** The address section validity state (when prompted by app). */
   get invalidAddressSection (): boolean {
-    return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidAddress
+    return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidAddress)
   }
 
   /** The contact section validity state (when prompted by app). */
   get invalidContactSection (): boolean {
-    return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidContactInfo
+    return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidContactInfo)
   }
 
   /** The folio section validity state (when prompted by app). */
   get invalidFolioSection (): boolean {
-    return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidFolioInfo
+    return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidFolioInfo)
   }
 
   /** The company name (from NR, or incorporation number). */

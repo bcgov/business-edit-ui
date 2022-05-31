@@ -48,7 +48,6 @@
             <ListPeopleAndRoles
               :peopleAndRoles="getPeopleAndRoles"
               :isSummaryView="true"
-              :hasMinimumPartners="hasMinimumPartners"
             />
           </v-col>
         </v-row>
@@ -78,7 +77,6 @@ export default class ConversionSummary extends Vue {
   @Getter hasPeopleAndRolesChanged!: boolean
   @Getter getResource!: ResourceIF
   @Getter getPeopleAndRoles!: OrgPersonIF[]
-  @Getter hasMinimumPartners!: boolean
   @Getter getCurrentNaics!: NaicsIF
   @Getter isTypeSoleProp!: boolean
 

@@ -168,7 +168,7 @@
             :editing="true"
             :schema="RegistrationMailingAddressSchema"
             @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, mailingAddress, $event)"
-            @valid="updateValidity(AddressTypes.MAILING_ADDRESS, $event)"
+            @valid="onAddressValid(AddressTypes.MAILING_ADDRESS, $event)"
           />
         </v-col>
       </v-row>
@@ -208,7 +208,7 @@
               :schema="RegistrationDeliveryAddressSchema"
               :noPoBox="true"
               @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, deliveryAddress, $event)"
-              @valid="updateValidity(AddressTypes.DELIVERY_ADDRESS, $event)"
+              @valid="onAddressValid(AddressTypes.DELIVERY_ADDRESS, $event)"
             />
           </v-col>
         </v-row>
@@ -257,7 +257,7 @@
                     :editing="true"
                     :schema="addressSchema"
                     @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, mailingAddress, $event)"
-                    @valid="updateValidity(AddressTypes.MAILING_ADDRESS, $event)"
+                    @valid="onAddressValid(AddressTypes.MAILING_ADDRESS, $event)"
                   />
                 </div>
               </div>
@@ -291,7 +291,7 @@
                     :editing="true"
                     :schema="addressSchema"
                     @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, deliveryAddress, $event)"
-                    @valid="updateValidity(AddressTypes.DELIVERY_ADDRESS, $event)"
+                    @valid="onAddressValid(AddressTypes.DELIVERY_ADDRESS, $event)"
                   />
                 </div>
               </div>
@@ -325,7 +325,7 @@
                       :editing="true"
                       :schema="addressSchema"
                       @update:address="updateAddress(AddressTypes.REC_MAILING_ADDRESS, recMailingAddress, $event)"
-                      @valid="updateValidity(AddressTypes.REC_MAILING_ADDRESS, $event)"
+                      @valid="onAddressValid(AddressTypes.REC_MAILING_ADDRESS, $event)"
                     />
                   </div>
                 </div>
@@ -358,7 +358,7 @@
                       :editing="true"
                       :schema="addressSchema"
                       @update:address="updateAddress(AddressTypes.REC_DELIVERY_ADDRESS, recDeliveryAddress, $event)"
-                      @valid="updateValidity(AddressTypes.REC_DELIVERY_ADDRESS, $event)"
+                      @valid="onAddressValid(AddressTypes.REC_DELIVERY_ADDRESS, $event)"
                     />
                   </div>
                 </div>
@@ -459,10 +459,10 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   }
 
   /** Whether to show the editable forms for the addresses (true) or the static display addresses (false). */
-  private isEditing: boolean = false
+  private isEditing = false
 
   /** V-model for dropdown menu. */
-  private dropdown: boolean = null
+  protected dropdown = false
 
   // The 4 addresses that are the current state of the BaseAddress sub-components:
   private mailingAddress = {} as AddressIF
@@ -471,19 +471,19 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   private recDeliveryAddress = {} as AddressIF
 
   // The 4 validation events from each BaseAddress sub-component:
-  private mailingAddressValid: boolean = true
-  private deliveryAddressValid: boolean = true
-  private recMailingAddressValid: boolean = true
-  private recDeliveryAddressValid: boolean = true
+  private mailingAddressValid = true
+  private deliveryAddressValid = true
+  private recMailingAddressValid = true
+  private recDeliveryAddressValid = true
 
   /** Model value for "same as (registered) mailing address" checkbox. */
-  private inheritMailingAddress: boolean = true
+  private inheritMailingAddress = true
 
   /** Model value for "same as registered address" checkbox. */
-  private inheritRegisteredAddress: boolean = true
+  private inheritRegisteredAddress = true
 
   /** Model value for "same as (records) mailing address" checkbox. */
-  private inheritRecMailingAddress: boolean = true
+  private inheritRecMailingAddress = true
 
   /** Is true when the mailing address is outside British Columbia. */
   get disableSameDeliveryAddress (): boolean {
@@ -510,61 +510,75 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       if (this.getOfficeAddresses?.registeredOffice) {
         this.mailingAddress = { ...this.getOfficeAddresses.registeredOffice.mailingAddress }
         this.deliveryAddress = { ...this.getOfficeAddresses.registeredOffice.deliveryAddress }
-
-        // compare addresses to set the "inherit mailing" flag
-        // ignore Address Type since it's different
-        // ignore Address Country Description since it's not always present
-        this.inheritMailingAddress = isSame(
-          this.getOfficeAddresses.registeredOffice.mailingAddress,
-          this.getOfficeAddresses.registeredOffice.deliveryAddress,
-          ['addressType', 'addressCountryDescription', 'id']
-        )
       }
+
+      // set initial validity states
+      // these will be updated by the BaseAddress sub-components
+      this.mailingAddressValid = !isEmpty(this.mailingAddress)
+      this.deliveryAddressValid = !isEmpty(this.deliveryAddress)
+
+      // compare valid addresses to set the "inherit mailing" flag
+      // ignore Address Type since it's different
+      // ignore Address Country Description since it's not always present
+      this.inheritMailingAddress = (
+        this.mailingAddressValid &&
+        this.deliveryAddressValid &&
+        isSame(this.mailingAddress, this.deliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
+      )
 
       if (this.getOfficeAddresses?.recordsOffice) {
-        this.recMailingAddress = { ...this.getOfficeAddresses.recordsOffice?.mailingAddress }
-        this.recDeliveryAddress = { ...this.getOfficeAddresses.recordsOffice?.deliveryAddress }
-
-        // compare addresses to set the "inherit registered" flag
-        // ignore Address Country Description since it's not always present
-        this.inheritRegisteredAddress = (
-          isSame(
-            this.getOfficeAddresses.registeredOffice.deliveryAddress,
-            this.getOfficeAddresses.recordsOffice?.deliveryAddress,
-            ['addressCountryDescription', 'id']
-          ) && isSame(
-            this.getOfficeAddresses.registeredOffice.mailingAddress,
-            this.getOfficeAddresses.recordsOffice?.mailingAddress,
-            ['addressCountryDescription', 'id']
-          )
-        )
-
-        // compare addresses to set the "inherit records mailing" flag
-        // ignore Address Type since it's different
-        // ignore Address Country Description since it's not always present
-        this.inheritRecMailingAddress = isSame(
-          this.getOfficeAddresses.recordsOffice?.mailingAddress,
-          this.getOfficeAddresses.recordsOffice?.deliveryAddress,
-          ['addressType', 'addressCountryDescription', 'id']
-        )
+        this.recMailingAddress = { ...this.getOfficeAddresses.recordsOffice.mailingAddress }
+        this.recDeliveryAddress = { ...this.getOfficeAddresses.recordsOffice.deliveryAddress }
       }
+
+      // set initial validity states
+      // these will be updated by the BaseAddress sub-components
+      this.recMailingAddressValid = !isEmpty(this.recMailingAddress)
+      this.recDeliveryAddressValid = !isEmpty(this.recDeliveryAddress)
+
+      // compare valid addresses to set the "inherit registered" flag
+      // ignore Address Country Description since it's not always present
+      this.inheritRegisteredAddress = (
+        this.mailingAddressValid &&
+        this.deliveryAddressValid &&
+        this.recMailingAddressValid &&
+        this.recDeliveryAddressValid &&
+        isSame(this.mailingAddress, this.recMailingAddress, ['addressCountryDescription', 'id']) &&
+        isSame(this.deliveryAddress, this.recDeliveryAddress, ['addressCountryDescription', 'id'])
+      )
+
+      // compare addresses to set the "inherit records mailing" flag
+      // ignore Address Type since it's different
+      // ignore Address Country Description since it's not always present
+      this.inheritRecMailingAddress = (
+        this.recMailingAddressValid &&
+        this.recDeliveryAddressValid &&
+        isSame(this.recMailingAddress, this.recDeliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
+      )
     }
 
     if (this.isChangeFiling || this.isConversionFiling) {
       if (this.getOfficeAddresses?.businessOffice) {
         this.mailingAddress = { ...this.getOfficeAddresses.businessOffice.mailingAddress }
         this.deliveryAddress = { ...this.getOfficeAddresses.businessOffice.deliveryAddress }
-
-        // compare addresses to set the "inherit mailing" flag
-        // ignore Address Type since it's different
-        // ignore Address Country Description since it's not always present
-        this.inheritMailingAddress = isSame(
-          this.getOfficeAddresses.businessOffice.mailingAddress,
-          this.getOfficeAddresses.businessOffice.deliveryAddress,
-          ['addressType', 'addressCountryDescription', 'id']
-        )
       }
+
+      // set initial validity states
+      // these will be updated by the BaseAddress sub-components
+      this.mailingAddressValid = !isEmpty(this.mailingAddress)
+      this.deliveryAddressValid = !isEmpty(this.deliveryAddress)
+
+      // compare valid addresses to set the "inherit mailing" flag
+      // ignore Address Type since it's different
+      // ignore Address Country Description since it's not always present
+      this.inheritMailingAddress = (
+        this.mailingAddressValid &&
+        this.deliveryAddressValid &&
+        isSame(this.mailingAddress, this.deliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
+      )
     }
+
+    this.updateValidity()
   }
 
   /**
@@ -650,11 +664,11 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   }
 
   /**
-   * Handles validity events from address sub-components.
+   * Handles valid events from the BaseAddress sub-components.
    * @param addressToValidate the address to set the validity of
    * @param isValid whether the address is valid
    */
-  protected updateValidity (addressToValidate: AddressTypes, isValid: boolean): void {
+  protected onAddressValid (addressToValidate: AddressTypes, isValid: boolean): void {
     switch (addressToValidate) {
       case AddressTypes.MAILING_ADDRESS:
         this.mailingAddressValid = isValid
@@ -746,7 +760,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     this.setOfficeAddresses(this.getOriginalOfficeAddresses)
   }
 
-  /** Disable Same As feature and validate Delivery address for Change Filings. */
+  /** Disable Same As feature and validate Delivery address for Change and Conversion filings. */
   @Watch('disableSameDeliveryAddress')
   private async updateDeliveryAddress (): Promise<void> {
     if ((this.isChangeFiling || this.isConversionFiling) && this.disableSameDeliveryAddress) {
@@ -754,7 +768,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       await Vue.nextTick() // Allow referenced form to open before validating
 
       // validate delivery address
-      this.$refs.deliveryAddress.$refs.addressForm.validate()
+      this.$refs.deliveryAddress && this.$refs.deliveryAddress.$refs.addressForm.validate()
     }
   }
 
@@ -779,7 +793,26 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Watch('isEditing', { immediate: true })
   private onEditingChanged (val: boolean): void {
     this.setEditingOfficeAddresses(val) // Used for Correction Flags
-    this.setValidComponent({ key: 'isValidAddress', value: !this.isEditing })
+    this.updateValidity()
+  }
+
+  /**
+   * Updates component validity when any address validity has changed.
+   * Also called when addresses are set/reset.
+   */
+  @Watch('mailingAddressValid')
+  @Watch('deliveryAddressValid')
+  @Watch('recMailingAddressValid')
+  @Watch('recDeliveryAddressValid')
+  private updateValidity (): void {
+    const isValid = (
+      !this.isEditing &&
+      this.mailingAddressValid &&
+      this.deliveryAddressValid &&
+      this.recMailingAddressValid &&
+      this.recDeliveryAddressValid
+    )
+    this.setValidComponent({ key: 'isValidAddress', value: isValid })
   }
 
   /** Emits the changed state of this component. */

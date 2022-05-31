@@ -24,10 +24,9 @@
           <v-form ref="form" lazy-validation>
             <v-textarea
               filled
-              persistent-hint
               class="mt-5"
               autocomplete="chrome-off"
-              label="Enter Nature of Business"
+              placeholder="Enter Nature of Business"
               rows="3"
               v-model="naicsText"
               counter="300"
@@ -105,7 +104,7 @@ export default class NatureOfBusiness extends Vue {
   protected naicsText = ''
 
   readonly naicsRules = [
-    (v: string) => !!v || 'A NAICS description is required',
+    (v: string) => !!v || 'Nature of Business is required',
     (v: string) => (v?.length <= 300) || 'Maximum 300 characters reached'
   ]
 
@@ -175,7 +174,7 @@ export default class NatureOfBusiness extends Vue {
   }
 
   private updateValidity (): void {
-    const isValid = !this.onEditMode && !!this.getCurrentNaics.naicsDescription
+    const isValid = (!this.onEditMode && !!this.getCurrentNaics.naicsDescription)
     this.setValidComponent({ key: 'isValidNatureOfBusiness', value: isValid })
   }
 }

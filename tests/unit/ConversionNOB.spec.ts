@@ -75,7 +75,6 @@ describe('ConversionNatureOfBusiness without update', () => {
     await changeBtn.trigger('click')
 
     expect(wrapper.find('p').text()).toContain('Provide a brief description')
-    expect(wrapper.find('.v-text-field label').text()).toContain('Enter Nature of Business')
     expect(wrapper.find('.v-counter').text()).toBe('13 / 300')
     expect(wrapper.vm.$data.naicsText).toBe('100000 - food')
     expect(wrapper.vm.$data.onEditMode).toBeTruthy()
@@ -116,7 +115,7 @@ describe('ConversionNatureOfBusiness without update', () => {
     expect(wrapper.vm.$data.naicsText).toBe('')
     expect(wrapper.vm.$data.onEditMode).toBe(true)
     expect(wrapper.find('#naics-summary').exists()).toBe(false)
-    expect(wrapper.find('.v-textarea').text()).toContain('A NAICS description is required')
+    expect(wrapper.find('.v-textarea').text()).toContain('Nature of Business is required')
   })
 
   it('simulates error for over 300 characters length', async () => {
@@ -187,7 +186,6 @@ describe('ConversionNatureOfBusiness after the update', () => {
 
     expect(wrapper.vm.$data.onEditMode).toBeTruthy()
     expect(wrapper.find('p').text()).toContain('Provide a brief description')
-    expect(wrapper.find('.v-text-field label').text()).toContain('Enter Nature of Business')
     expect(wrapper.find('.v-counter').text()).toBe('13 / 300')
     expect(wrapper.vm.$data.naicsText).toBe('100001 - cake')
     expect(wrapper.vm.$data.onEditMode).toBeTruthy()
