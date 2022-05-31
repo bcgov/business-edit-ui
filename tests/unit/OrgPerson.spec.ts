@@ -5,7 +5,10 @@ import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
 import OrgPerson from '@/components/common/PeopleAndRoles/OrgPerson.vue'
 import { getVuexStore } from '@/store/'
 import { FilingTypes } from '@/enums/'
-import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitCompanyStatementResource'
+import { BenefitCompanyStatementResource as CorrectionBenefitCompanyResource }
+  from '@/resources/Correction/BenefitCompanyStatementResource'
+import { SoleProprietorshipResource as ChangeSolePropResource } from '@/resources/Change/SoleProprietorshipResource'
+import { GeneralPartnershipResource as ChangePartnershipResource } from '@/resources/Change/GeneralPartnershipResource'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()
@@ -185,7 +188,7 @@ describe('Org/Person component for Correction', () => {
     store.state.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     store.state.stateModel.nameRequest.entityType = 'BEN'
     store.state.stateModel.tombstone.currentDate = '2020-03-30'
-    store.state.resourceModel = BenefitCompanyStatementResource
+    store.state.resourceModel = CorrectionBenefitCompanyResource
   })
 
   it('Loads the component and sets data for person', async () => {
@@ -338,7 +341,7 @@ describe('Org/Person component for Correction', () => {
   it('Emits "reset" event when clicking Cancel button', async () => {
     const wrapper = createComponent(validOrgData, 0, null)
     const vm = wrapper.vm as any
-    vm.applyValidation()
+    vm.applyRules()
     await Vue.nextTick()
 
     await wrapper.find(cancelButtonSelector).trigger('click')
@@ -366,7 +369,7 @@ describe('Org/Person component for Correction', () => {
   it('Displays error message when user enters invalid org name', async () => {
     const wrapper = createComponent(validOrgData, NaN, null)
     const vm = wrapper.vm as any
-    vm.applyValidation()
+    vm.applyRules()
     await Vue.nextTick()
 
     const input = wrapper.find(orgNameSelector)
@@ -403,7 +406,7 @@ describe('Org/Person component for Correction', () => {
   it('Displays error message when user does not enter person names', async () => {
     const wrapper = createComponent(validPersonData, NaN, null)
     const vm = wrapper.vm as any
-    vm.applyValidation()
+    vm.applyRules()
     await Vue.nextTick()
 
     const input1 = wrapper.find(firstNameSelector)
@@ -430,7 +433,7 @@ describe('Org/Person component for Correction', () => {
   it('Displays error message when user enters person names that are too long', async () => {
     const wrapper = createComponent(validPersonData, NaN, null)
     const vm = wrapper.vm as any
-    vm.applyValidation()
+    vm.applyRules()
     await Vue.nextTick()
 
     const input1 = wrapper.find(firstNameSelector)
@@ -502,7 +505,7 @@ describe('Org/Person component for Correction', () => {
   it('Displays errors and does not submit form when clicking Done button and form is invalid', async () => {
     const wrapper = createComponent(emptyPerson, NaN, null)
     const vm = wrapper.vm as any
-    vm.applyValidation()
+    vm.applyRules()
     await Vue.nextTick()
 
     // verify that Done button is enabled, even for an empty person
@@ -531,8 +534,18 @@ describe('Org/Person component for Correction', () => {
 
     wrapper.destroy()
   })
+})
+
+describe('Org/Person component for Change of Registration', () => {
+  beforeAll(() => {
+    store.state.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
+    store.state.stateModel.tombstone.currentDate = '2020-03-30'
+  })
 
   it('Displays label "person" for SP (person)', async () => {
+    store.state.stateModel.nameRequest.entityType = 'SP'
+    store.state.resourceModel = ChangeSolePropResource
+
     const validProprietorData = {
       officer: {
         id: '2',
@@ -565,6 +578,9 @@ describe('Org/Person component for Correction', () => {
   })
 
   it('Displays label "business" for SP (organization)', async () => {
+    store.state.stateModel.nameRequest.entityType = 'SP'
+    store.state.resourceModel = ChangeSolePropResource
+
     const validProprietorData = {
       officer: {
         id: '2',
@@ -597,6 +613,9 @@ describe('Org/Person component for Correction', () => {
   })
 
   it('Displays label "business" for GP (organization)', async () => {
+    store.state.stateModel.nameRequest.entityType = 'GP'
+    store.state.resourceModel = ChangePartnershipResource
+
     const validPartnerData = {
       officer: {
         id: '2',
