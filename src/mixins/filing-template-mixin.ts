@@ -432,7 +432,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           identifier: this.getBusinessId
         },
         contactPoint: {
-          email: this.getBusinessContact.email || undefined, // don't include if empty
+          email: this.getBusinessContact.email || 'unknown@example.com',
           phone: this.getBusinessContact.phone || undefined, // don't include if empty
           extension: +this.getBusinessContact.extension || undefined // don't include if empty
         },

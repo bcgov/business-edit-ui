@@ -5,7 +5,8 @@ import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
 import OrgPerson from '@/components/common/PeopleAndRoles/OrgPerson.vue'
 import { getVuexStore } from '@/store/'
 import { FilingTypes } from '@/enums/'
-import { BenefitCompanyStatementResource as CorrectionBenefitCompanyResource } from '@/resources/Correction/BenefitCompanyStatementResource'
+import { BenefitCompanyStatementResource as CorrectionBenefitCompanyResource }
+  from '@/resources/Correction/BenefitCompanyStatementResource'
 import { SoleProprietorshipResource as ChangeSolePropResource } from '@/resources/Change/SoleProprietorshipResource'
 import { GeneralPartnershipResource as ChangePartnershipResource } from '@/resources/Change/GeneralPartnershipResource'
 
