@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
-import flushPromises from 'flush-promises'
 import VueRouter from 'vue-router'
 import mockRouter from './MockRouter'
 import AgreementType from '@/components/Correction/AgreementType.vue'
