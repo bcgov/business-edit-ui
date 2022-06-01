@@ -54,7 +54,6 @@
           class="mt-10"
           sectionNumber="3."
           :validate="getAppValidate"
-          :invalidSection="isCertifyInvalid"
           :disableEdit="!isRoleStaff"
         />
         <template v-if="isRoleStaff">
@@ -85,8 +84,8 @@ import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, You
   CourtOrderPoa } from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
-import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF, FlagsReviewCertifyIF }
-  from '@/interfaces/'
+import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF,
+  ResourceIF } from '@/interfaces/'
 import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
@@ -132,7 +131,6 @@ export default class Change extends Mixins(
   @Action setCurrentFees!: ActionBindingIF
   @Action setFeePrices!: ActionBindingIF
   @Action setResource!: ActionBindingIF
-  @Action setCertifyStateValidity!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })

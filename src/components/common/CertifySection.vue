@@ -56,7 +56,7 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
   @Prop({ default: false }) readonly validate: boolean
 
   /** To determine whether user input is enabled. */
-  @Prop({ required: false }) readonly disableEdit: boolean
+  @Prop({ required: true }) readonly disableEdit!: boolean
 
   /** To determine if user is staff. */
   @Prop({ required: true }) readonly isStaff!: boolean
