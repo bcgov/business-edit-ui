@@ -9,8 +9,10 @@ export const GeneralPartnershipResource: ResourceIF = {
   nameRequestType: NameRequestEntityTypes.GP,
   addressLabel: 'Business Addresses',
   filingData: {
+    filingTypeCode: FilingCodes.CONVERSION,
     entityType: CorpTypeCd.PARTNERSHIP,
-    filingTypeCode: FilingCodes.CONVERSION
+    priority: false,
+    waiveFees: true
   },
   changeData: {
     nameChangeOptions: [

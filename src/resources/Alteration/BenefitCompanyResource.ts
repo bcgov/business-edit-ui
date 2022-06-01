@@ -9,8 +9,8 @@ export const BenefitCompanyResource: ResourceIF = {
   nameRequestType: NameRequestEntityTypes.BC,
   addressLabel: 'Registered Office',
   filingData: {
-    entityType: CorpTypeCd.BENEFIT_COMPANY,
     filingTypeCode: FilingCodes.ALTERATION,
+    entityType: CorpTypeCd.BENEFIT_COMPANY,
     priority: false
   },
   changeData: {

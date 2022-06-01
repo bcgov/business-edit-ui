@@ -9,8 +9,8 @@ export const CooperativeResource: ResourceIF = {
   nameRequestType: NameRequestEntityTypes.CP,
   addressLabel: 'Registered Office',
   filingData: {
-    entityType: CorpTypeCd.COOP,
     filingTypeCode: FilingCodes.ALTERATION,
+    entityType: CorpTypeCd.COOP,
     priority: false
   },
   changeData: {
