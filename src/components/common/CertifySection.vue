@@ -44,8 +44,6 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
   @Getter getCertifyState!: CertifyIF
   @Getter getCurrentDate!: string
   @Getter getResource!: ResourceIF
-  @Getter getUserFirstName!: string
-  @Getter getUserLastName!: string
   @Getter isRoleStaff!: boolean
 
   @Action setCertifyState!: ActionBindingIF
@@ -81,11 +79,6 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
   /** Get the certify resource message */
   get certifyMessage (): string {
     return this.getResource?.certifyClause
-  }
-
-  /** Get if the user is not staff and is doing a change filing */
-  get notStaffChange (): boolean {
-    return (!this.isRoleStaff && this.isChangeFiling)
   }
 
   /** Handler for Valid change event. */

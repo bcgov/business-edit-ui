@@ -253,17 +253,6 @@ export default class Change extends Mixins(
     Vue.nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
-  /** Handler for Valid change event. */
-  protected onIsCertified (val: boolean): void {
-    this.setCertifyState(
-      {
-        valid: val,
-        certifiedBy: this.getCertifyState.certifiedBy
-      }
-    )
-    this.setCertifyStateValidity(Boolean(val && this.getCertifyState.certifiedBy))
-  }
-
   /** Called when staff payment data has changed. */
   protected onStaffPaymentChanges (): void {
     // update filing data with staff payment fields
