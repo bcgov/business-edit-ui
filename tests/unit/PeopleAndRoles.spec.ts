@@ -299,18 +299,18 @@ describe('People And Roles component for Correction', () => {
 
   it('shows popup when undoing an edit would change the Completing Party', async () => {
     // original IA containing original CP:
-    const originalCp = getPersonList([completingPartyRole])[0]
+    const originalCp = getPersonList([directorRole, completingPartyRole])[0]
     originalCp.officer.id = '1'
-    originalCp.actions = undefined
+    originalCp.actions = []
     store.state.stateModel.originalIA.incorporationApplication.parties = [originalCp]
 
     // current orgPeople list containing edited CP and added CP:
-    const editedCp = getPersonList([])[0]
+    const editedCp = getPersonList([directorRole])[0]
     editedCp.officer.id = '1'
-    editedCp.actions = ['edited']
+    editedCp.actions = ['EDITED']
     const addedCp = getPersonList([completingPartyRole])[0]
     addedCp.officer.id = '2'
-    addedCp.actions = ['added']
+    addedCp.actions = ['ADDED']
     store.state.stateModel.peopleAndRoles.orgPeople = [editedCp, addedCp]
 
     const wrapper = wrapperFactory()

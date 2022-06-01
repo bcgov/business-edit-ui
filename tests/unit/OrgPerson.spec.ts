@@ -572,7 +572,7 @@ describe('Org/Person component for Change of Registration', () => {
         isProprietor: true
       }
     })
-    expect(wrapper.findAll('.legal-confirm-label').at(0).text()).toContain('the same person')
+    expect(wrapper.findAll('.confirm-name-change-checkbox').at(0).text()).toContain('the same person')
 
     wrapper.destroy()
   })
@@ -607,7 +607,7 @@ describe('Org/Person component for Change of Registration', () => {
         isProprietor: true
       }
     })
-    expect(wrapper.findAll('.legal-confirm-label').at(0).text()).toContain('the same business')
+    expect(wrapper.findAll('.confirm-name-change-checkbox').at(0).text()).toContain('the same business')
 
     wrapper.destroy()
   })
@@ -642,7 +642,7 @@ describe('Org/Person component for Change of Registration', () => {
         isProprietor: true
       }
     })
-    expect(wrapper.findAll('.legal-confirm-label').at(0).text()).toContain('the same business')
+    expect(wrapper.findAll('.confirm-name-change-checkbox').at(0).text()).toContain('the same business')
 
     wrapper.destroy()
   })

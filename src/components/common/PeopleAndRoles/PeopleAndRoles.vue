@@ -35,11 +35,11 @@
       </article>
 
       <!-- Change or conversion section -->
-      <article v-if="isChangeFiling || isConversionFiling" class="section-container">
+      <article v-if="isChangeRegFiling || isConversionFiling" class="section-container">
         <span class="info-text">{{ orgPersonSubtitle }}</span>
 
         <HelpSection
-          v-if="orgPersonHelp"
+          v-if="!isRoleStaff && orgPersonHelp"
           class="mt-5"
           :helpSection="orgPersonHelp"
           />
@@ -52,7 +52,7 @@
             color="primary"
             :disabled="isAddingEditingOrgPerson"
             @click="initAdd(
-              [{ roleType: RoleTypes.PROPRIETOR, appointmentDate: newAppointmentDate}],
+              [{ roleType: RoleTypes.PROPRIETOR, appointmentDate: appointmentDate}],
               PartyTypes.PERSON
             )"
           >
@@ -66,7 +66,7 @@
             class="ml-2"
             :disabled="isAddingEditingOrgPerson"
             @click="initAdd(
-              [{ roleType: RoleTypes.PROPRIETOR, appointmentDate: newAppointmentDate }],
+              [{ roleType: RoleTypes.PROPRIETOR, appointmentDate: appointmentDate }],
               PartyTypes.ORGANIZATION
             )"
           >
@@ -76,17 +76,20 @@
           <p v-if="!hasMinimumProprietor" class="error-text small-text mt-5 mb-0">
             You must have a proprietor (an individual or a business)
           </p>
+          <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
+            A proprietor address is missing or incorrect
+          </p>
         </div>
 
         <!-- GP add buttons (change or conversion filing)-->
-        <div v-if="isTypePartnership && !hasMinimumPartners" class="mt-8">
+        <div v-if="isTypePartnership" class="mt-8">
           <v-btn
             id="gp-btn-add-person"
             outlined
             color="primary"
             :disabled="isAddingEditingOrgPerson"
             @click="initAdd(
-              [{ roleType: RoleTypes.PARTNER, appointmentDate: newAppointmentDate}],
+              [{ roleType: RoleTypes.PARTNER, appointmentDate: appointmentDate}],
               PartyTypes.PERSON
             )"
           >
@@ -100,7 +103,7 @@
             class="ml-2"
             :disabled="isAddingEditingOrgPerson"
             @click="initAdd(
-              [{ roleType: RoleTypes.PARTNER, appointmentDate: newAppointmentDate }],
+              [{ roleType: RoleTypes.PARTNER, appointmentDate: appointmentDate }],
               PartyTypes.ORGANIZATION
             )"
           >
@@ -109,6 +112,9 @@
           </v-btn>
           <p v-if="!hasMinimumPartners" class="error-text small-text mt-5 mb-0">
             You must have at least two partners
+          </p>
+          <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
+            A partner address is missing or incorrect
           </p>
         </div>
       </article>
@@ -152,13 +158,12 @@
 
       <article class="list-container mt-n2">
         <ListPeopleAndRoles
-          :peopleAndRoles="getPeopleAndRoles"
           :renderOrgPersonForm="isAddingEditingOrgPerson"
           :currentOrgPerson="currentOrgPerson"
           :activeIndex="activeIndex"
           :currentCompletingParty="currentCompletingParty"
           :validate="getComponentValidate"
-          :haveRequiredParties="haveRequiredParties"
+          :validOrgPersons="validOrgPersons"
           @initEdit="initEdit($event)"
           @addEdit="addEdit($event)"
           @remove="remove($event)"
@@ -174,16 +179,19 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
 import { isSame } from '@/utils/'
-import { ActionBindingIF, ConfirmDialogType, EntitySnapshotIF, HelpSectionIF, IncorporationFilingIF,
-  OrgPersonIF, ResourceIF, RoleIF } from '@/interfaces/'
+import { ActionBindingIF, ConfirmDialogType, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF,
+  IncorporationFilingIF, OrgPersonIF, ResourceIF, RoleIF } from '@/interfaces/'
 import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { HelpSection } from '@/components/common/'
 import { ListPeopleAndRoles } from './'
-import { CommonMixin, DateMixin } from '@/mixins/'
+import { CommonMixin, DateMixin, OrgPersonMixin } from '@/mixins/'
+
+const REGION_BC = 'BC'
+const COUNTRY_CA = 'CA'
 
 @Component({
   components: {
@@ -192,7 +200,7 @@ import { CommonMixin, DateMixin } from '@/mixins/'
     ListPeopleAndRoles
   }
 })
-export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
+export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPersonMixin) {
   // Refs
   $refs!: {
     changeCpDialog: ConfirmDialogType
@@ -203,6 +211,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   readonly PartyTypes = PartyTypes
 
   // Global getters
+  @Getter getCurrentJsDate!: Date
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getUserEmail!: string
@@ -212,6 +221,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   @Getter getComponentValidate!: boolean
   @Getter hasMinimumProprietor!: boolean
   @Getter hasMinimumPartners!: boolean
+  @Getter isTypeBcomp!: boolean
   @Getter isTypeSoleProp!: boolean
   @Getter isTypePartnership!: boolean
 
@@ -221,30 +231,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   @Action setPeopleAndRolesValidity!: ActionBindingIF
   @Action setEditingPeopleAndRoles!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
-
-  /** Empty OrgPerson for adding a new one. */
-  private emptyOrgPerson: OrgPersonIF = {
-    officer: {
-      id: null,
-      firstName: '',
-      lastName: '',
-      middleName: '',
-      organizationName: '',
-      partyType: null,
-      email: null
-    },
-    roles: [],
-    mailingAddress: {
-      streetAddress: '',
-      streetAddressAdditional: '',
-      addressCity: '',
-      addressRegion: '',
-      postalCode: '',
-      addressCountry: '',
-      deliveryInstructions: ''
-    },
-    actions: []
-  }
 
   // Local properties
   private isAddingEditingOrgPerson = false
@@ -282,22 +268,83 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
 
   /** True if we have all required parties. */
   get haveRequiredParties (): boolean {
-    if (this.isCorrectionFiling) {
-      return (this.cpValid && this.incorpValid && this.dirValid)
+    switch (true) {
+      case (this.isAlterationFiling): {
+        // alterations don't use this component
+        return false
+      }
+      case (this.isChangeRegFiling): {
+        if (this.isTypeSoleProp) return this.hasMinimumProprietor
+        if (this.isTypePartnership) return this.hasMinimumPartners
+        return false
+      }
+      case (this.isConversionFiling): {
+        if (this.isTypeSoleProp) return this.hasMinimumProprietor
+        if (this.isTypePartnership) return this.hasMinimumPartners
+        return false
+      }
+      case (this.isCorrectionFiling): {
+        if (this.isTypeBcomp) return (this.cpValid && this.incorpValid && this.dirValid)
+        return false
+      }
     }
-    if (this.isAlterationFiling) {
-      return true // can't change parties in alteration filing
-    }
-    if (this.isChangeFiling || this.isConversionFiling) {
-      if (this.isTypeSoleProp) return this.hasMinimumProprietor
-      if (this.isTypePartnership) return this.hasMinimumPartners
-    }
-    return false // should never get here
+    return false // should never happen
   }
 
-  /** True if there are no orgs/persons with missing roles. */
+  /**
+   * True if all parties have the required addresses.
+   * See also OrgPerson.vue::mailingAddressSchema and deliveryAddressSchema.
+   */
+  get haveRequiredAddresses (): boolean {
+    return this.getPeopleAndRoles.every(party => {
+      // NB: some parties have multiple roles, so order matters below
+      //     (most restrictive to least restrictive)
+
+      // proprietor/partner must have a mailing address and a delivery address
+      // delivery address must be in BC, Canada
+      if (this.hasRoleProprietor(party) || this.hasRolePartner(party)) {
+        return (
+          !isEmpty(party.mailingAddress) &&
+          !isEmpty(party.deliveryAddress) &&
+          (party.deliveryAddress.addressRegion === REGION_BC) &&
+          (party.deliveryAddress.addressCountry === COUNTRY_CA)
+        )
+      }
+
+      // director must have a mailing address and a delivery address
+      if (this.hasRoleDirector(party)) {
+        return (
+          !isEmpty(party.mailingAddress) &&
+          !isEmpty(party.deliveryAddress)
+        )
+      }
+
+      // completing party must have just a mailing address
+      if (this.hasRoleCompletingParty(party)) {
+        return !isEmpty(party.mailingAddress)
+      }
+
+      // incorporators must have just a mailing address
+      if (this.hasRoleIncorporator(party)) {
+        return !isEmpty(party.mailingAddress)
+      }
+    })
+  }
+
+  /** True if all orgs/persons have a role. */
   get noMissingRoles (): boolean {
     return this.getPeopleAndRoles.every(p => p.roles.length > 0)
+  }
+
+  /** True if OrgPersons list is valid. */
+  get validOrgPersons (): boolean {
+    // not in editing mode and all requirements are met
+    return (
+      !this.isAddingEditingOrgPerson &&
+      this.haveRequiredParties &&
+      this.haveRequiredAddresses &&
+      this.noMissingRoles
+    )
   }
 
   /** True if we have any changes (from original IA). */
@@ -338,8 +385,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
     return this.getResource.changeData?.orgPersonInfo?.orgTypesLabel
   }
 
-  /** New server date in api expected format for Role Appointment dates. */
-  get newAppointmentDate (): string {
+  /** Appointment date in YYYY-MM-DD format. */
+  get appointmentDate (): string {
     return this.dateToYyyyMmDd(this.getCurrentJsDate)
   }
 
@@ -348,7 +395,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
    */
   mounted (): void {
     // initialize this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValidity(this.haveRequiredParties && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.validOrgPersons)
     this.setPeopleAndRolesChanged(this.hasChanges)
   }
 
@@ -379,9 +426,9 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
    * @param roles The roles of this item.
    * @param type The incorporator (party) type of this item.
    */
-  private initAdd (roles: RoleIF[] | RoleTypes[], type: PartyTypes): void {
+  private initAdd (roles: RoleIF[], type: PartyTypes): void {
     // make a copy so we don't change the original object
-    this.currentOrgPerson = cloneDeep(this.emptyOrgPerson)
+    this.currentOrgPerson = cloneDeep(EmptyOrgPerson)
     this.currentOrgPerson.roles = roles
     this.currentOrgPerson.officer.partyType = type
     this.activeIndex = NaN
@@ -472,7 +519,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
     this.setPeopleAndRoles(tempList)
 
     // update this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValidity(this.haveRequiredParties && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.validOrgPersons)
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
@@ -522,41 +569,43 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
     this.setPeopleAndRoles(tempList)
 
     // update this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValidity(this.haveRequiredParties && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.validOrgPersons)
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
     this.reset()
   }
 
-  /** Returns true if the orgPerson name has changed. */
+  /** Returns True if the orgPerson's name has changed. */
   private hasNameChanged (orgPerson: OrgPersonIF): boolean {
     if (orgPerson.officer.firstName && orgPerson.officer.lastName) {
-      const firstName = orgPerson.officer.firstName !== this.originalParties[this.activeIndex].officer.firstName
-      // Provide fallback middle name as the api does not always provide it
+      const firstName =
+        orgPerson.officer.firstName !== this.originalParties[this.activeIndex].officer.firstName
+      // use fallback middle name as the API does not always provide it
       const middleName =
         (orgPerson.officer.middleName || '') !== (this.originalParties[this.activeIndex].officer.middleName || '')
-      const lastName = orgPerson.officer.lastName !== this.originalParties[this.activeIndex].officer.lastName
+      const lastName =
+        orgPerson.officer.lastName !== this.originalParties[this.activeIndex].officer.lastName
 
-      return firstName || middleName || lastName
+      return (firstName || middleName || lastName)
     } else {
-      return orgPerson.officer.organizationName !== this.originalParties[this.activeIndex].officer.organizationName
+      return (orgPerson.officer.organizationName !== this.originalParties[this.activeIndex].officer.organizationName)
     }
   }
 
-  /** Returns true if the orgPerson email has changed. */
+  /** Returns True if the orgPerson's email has changed. */
   private hasEmailChanged (orgPerson: OrgPersonIF): boolean {
-    return orgPerson.officer.email !== this.originalParties[this.activeIndex].officer.email
+    return (orgPerson.officer.email !== this.originalParties[this.activeIndex].officer.email)
   }
 
-  /** Returns true if the orgPerson address has changed. */
+  /** Returns True if the orgPerson's address has changed. */
   private hasAddressChanged (orgPerson: OrgPersonIF): boolean {
     const mailingAddress =
       !isSame(orgPerson.mailingAddress, this.originalParties[this.activeIndex].mailingAddress, ['id'])
     const deliveryAddress =
       !isSame(orgPerson.deliveryAddress, this.originalParties[this.activeIndex].deliveryAddress, ['id'])
 
-    return mailingAddress || deliveryAddress
+    return (mailingAddress || deliveryAddress)
   }
 
   /** Assign action(s) to the orgPerson identifying changes. */
@@ -605,15 +654,20 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
     // (we update this record right in the temp list)
     const person = tempList[index]
 
-    // just set the action (ie, soft-delete)
-    // person will be filtered out on file and pay
-    person.actions = [ActionTypes.REMOVED]
+    if (person.actions?.includes(ActionTypes.ADDED)) {
+      // splice out the person
+      tempList.splice(index, 1)
+    } else {
+      // just set the action (ie, soft-delete)
+      // person will be filtered out on file and pay
+      person.actions = [ActionTypes.REMOVED]
+    }
 
     // set the new list
     this.setPeopleAndRoles(tempList)
 
     // update this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValidity(this.haveRequiredParties && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.validOrgPersons)
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
@@ -696,30 +750,29 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
 
   /**
    * On initial load and when user has made changes, sets the current
-   * Completing Party (if any) and the component 'valid' flag.
+   * Completing Party (if any) and the component validity flag.
    */
   @Watch('getPeopleAndRoles', { deep: true })
   private onPeopleAndRolesChanged (): void {
     this.currentCompletingParty = this.getCompletingParty(this.getPeopleAndRoles)
     // FUTURE: combine this component's two validity mechanisms
     //         see setValidComponent() below
-    this.setPeopleAndRolesValidity(this.haveRequiredParties && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.validOrgPersons)
   }
 
-  /** Updates store when local Editing property has changed. */
+  /** Updates store when component editing state has changed. */
   @Watch('isAddingEditingOrgPerson', { immediate: true })
   private onEditingChanged (val: boolean): void {
     this.setEditingPeopleAndRoles(val)
-    this.setValidComponent({ key: 'isValidOrgPersons', value: !val })
   }
 
-  @Watch('hasMinimumProprietor')
-  @Watch('hasMinimumPartners')
-  private onMinimumPartnersChanged (val: boolean): void {
+  /** Updates store when component validity has changed. */
+  @Watch('validOrgPersons')
+  private onValidOrgPersonsChanged (val: boolean): void {
     const isValid = (this.hasMinimumProprietor && this.hasMinimumPartners)
     // FUTURE: combine this component's two validity mechanisms
     //         see setPeopleAndRolesValidity() above
-    this.setValidComponent({ key: 'isValidOrgPersons', value: isValid })
+    this.setValidComponent({ key: 'isValidOrgPersons', value: this.validOrgPersons })
   }
 }
 </script>

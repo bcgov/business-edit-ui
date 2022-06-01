@@ -4,19 +4,20 @@
     <template v-if="!isEditing">
       <v-row id="summary-registered-address" class="mx-0" no-gutters>
         <v-col cols="3">
-          <label>{{ getResource.addressLabel }}</label>
-          <v-chip v-if="(isChangeFiling || isConversionFiling) && !isSummaryView
+          <label :class="{'error-text': invalidSection}">{{ getResource.addressLabel }}</label>
+          <v-chip v-if="(isChangeRegFiling || isConversionFiling) && !isSummaryView
                   && (hasMailingChanged || hasDeliveryChanged)"
                   x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
         </v-col>
 
+        <!-- Mailing address -->
         <v-col cols="4">
           <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
             <v-chip v-if="isCorrectionFiling && hasMailingChanged"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
-          <BaseAddress
+          <MailingAddress
             v-if="!isEmpty(mailingAddress)"
             :address="mailingAddress"
             :editing="false"
@@ -24,13 +25,14 @@
           <div v-else class="info-text">(Not entered)</div>
         </v-col>
 
+        <!-- Delivery address -->
         <v-col cols="4">
           <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
             <v-chip v-if="isCorrectionFiling && hasDeliveryChanged"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
-          <BaseAddress
+          <DeliveryAddress
             v-if="!isEmpty(deliveryAddress) && !inheritMailingAddress"
             :address="deliveryAddress"
             :editing="false"
@@ -40,7 +42,7 @@
         </v-col>
 
         <template v-if="!isSummaryView">
-          <v-col cols="1" v-if="(isCorrectionFiling || isChangeFiling || isConversionFiling)
+          <v-col cols="1" v-if="(isCorrectionFiling || isChangeRegFiling || isConversionFiling)
             && hasOfficeAddressesChanged"
           >
             <div class="actions mr-4">
@@ -86,7 +88,7 @@
             </div>
           </v-col>
 
-          <v-col cols="1" v-else-if="isCorrectionFiling || isChangeFiling || isConversionFiling">
+          <v-col cols="1" v-else-if="(isCorrectionFiling || isChangeRegFiling || isConversionFiling)">
             <div class="actions mr-4">
               <v-btn
                 text color="primary"
@@ -101,19 +103,20 @@
         </template>
       </v-row>
 
-      <!-- Records Office (BComp only) -->
+      <!-- Records office (BComp only) -->
       <v-row v-if="isTypeBcomp" id="summary-records-address" class="mt-4 mx-0" no-gutters>
         <v-col cols="3">
           <label class>Records Office</label>
         </v-col>
 
+        <!-- Records mailing address -->
         <v-col cols="4">
           <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
             <v-chip v-if="isCorrectionFiling && hasRecMailingChanged"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
-          <BaseAddress
+          <RecMailingAddress
             v-if="!inheritRegisteredAddress && !isEmpty(recMailingAddress)"
             :address="recMailingAddress"
             :editing="false"
@@ -122,13 +125,14 @@
           <div v-else class="info-text">Same as Registered Office</div>
         </v-col>
 
+        <!-- Records delivery address -->
         <v-col cols="4">
           <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
             <v-chip v-if="isCorrectionFiling && hasRecDeliveryChanged"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
-          <BaseAddress
+          <RecDeliveryAddress
             v-if="!inheritRecMailingAddress && !inheritRegisteredAddress && !isEmpty(recDeliveryAddress)"
             :address="recDeliveryAddress"
             :editing="false"
@@ -143,8 +147,8 @@
       </v-row>
     </template>
 
-    <!-- Editing Change of Registration or Conversion-->
-    <v-card flat v-else-if="isChangeFiling || isConversionFiling">
+    <!-- Editing a change of registration filing or conversion filing -->
+    <v-card flat v-else-if="isChangeRegFiling || isConversionFiling">
       <v-row no-gutters>
         <v-col cols="3">
           <label :class="{'error-text': invalidSection}">{{ getResource.addressLabel }}</label>
@@ -157,11 +161,11 @@
         </v-col>
       </v-row>
 
-      <!-- Business Mailing Address -->
+      <!-- Business mailing address -->
       <v-row no-gutters class="pr-1">
         <v-col cols="3"></v-col>
         <v-col cols="9" class="pt-4">
-          <BaseAddress
+          <MailingAddress
             ref="mailingAddress"
             id="address-mailing"
             :address="mailingAddress"
@@ -188,6 +192,7 @@
         </v-col>
       </v-row>
 
+      <!-- Business delivery address -->
       <template v-if="!inheritMailingAddress || disableSameDeliveryAddress">
         <v-row no-gutters class="pt-4">
           <v-col cols="3"></v-col>
@@ -196,11 +201,10 @@
           </v-col>
         </v-row>
 
-        <!-- Business Delivery Address -->
         <v-row no-gutters>
           <v-col cols="3"></v-col>
           <v-col cols="9" class="pt-4">
-            <BaseAddress
+            <DeliveryAddress
               ref="deliveryAddress"
               id="address-delivery"
               :address="deliveryAddress"
@@ -237,7 +241,7 @@
       </v-row>
     </v-card>
 
-    <!-- Editing Correction -->
+    <!-- Editing a correction filing -->
     <v-card flat v-else-if="isCorrectionFiling">
       <ul class="list address-list">
         <div id="edit-registered-address">
@@ -245,14 +249,14 @@
             <label class="address-edit-title">Registered Office</label>
           </div>
 
-          <!-- Registered Mailing Address -->
+          <!-- Registered mailing address -->
           <li class="ma-5">
             <div class="meta-container">
               <label>Mailing Address</label>
               <div class="meta-container__inner">
                 <div class="address-wrapper">
-                  <BaseAddress ref="regMailingAddress"
-                    id="address-registered-mailing"
+                  <RegMailingAddress
+                    id="registered-mailing-address"
                     :address="mailingAddress"
                     :editing="true"
                     :schema="InBcCanadaAddressSchema"
@@ -264,7 +268,7 @@
             </div>
           </li>
 
-          <!-- Registered Delivery Address -->
+          <!-- Registered delivery address -->
           <li class="ma-5">
             <div class="meta-container">
               <label>Delivery Address</label>
@@ -284,8 +288,8 @@
                   v-if="!isSame(mailingAddress, deliveryAddress, ['actions', 'addressType', 'id']) ||
                   !inheritMailingAddress"
                 >
-                  <BaseAddress ref="regDeliveryAddress"
-                    id="address-registered-delivery"
+                  <RegDeliveryAddress
+                    id="registered-delivery-address"
                     v-if="!inheritMailingAddress"
                     :address="deliveryAddress"
                     :editing="true"
@@ -312,15 +316,15 @@
             />
           </div>
 
+          <!-- Records mailing address -->
           <template v-if="!inheritRegisteredAddress">
-            <!-- Records Mailing Address -->
             <li class="ma-5">
               <div class="meta-container">
                 <label>Mailing Address</label>
                 <div class="meta-container__inner">
                   <div class="address-wrapper">
-                    <BaseAddress ref="recMailingAddress"
-                      id="address-records-mailing"
+                    <RecMailingAddress
+                      id="records-mailing-address"
                       :address="recMailingAddress"
                       :editing="true"
                       :schema="InBcCanadaAddressSchema"
@@ -332,7 +336,7 @@
               </div>
             </li>
 
-            <!-- Records Delivery Address -->
+            <!-- Records delivery address -->
             <li class="ma-5">
               <div class="meta-container">
                 <label>Delivery Address</label>
@@ -352,8 +356,8 @@
                     v-if="!isSame(recMailingAddress, recDeliveryAddress, ['actions', 'addressType', 'id']) ||
                     !inheritRecMailingAddress"
                   >
-                    <BaseAddress ref="recDeliveryAddress"
-                      id="address-records-delivery"
+                    <RecDeliveryAddress
+                      id="records-delivery-address"
                       :address="recDeliveryAddress"
                       :editing="true"
                       :schema="InBcCanadaAddressSchema"
@@ -405,7 +409,14 @@ const REGION_BC = 'BC'
 const COUNTRY_CA = 'CA'
 
 @Component({
-  components: { BaseAddress }
+  components: {
+    MailingAddress: BaseAddress,
+    DeliveryAddress: BaseAddress,
+    RecMailingAddress: BaseAddress,
+    RecDeliveryAddress: BaseAddress,
+    RegMailingAddress: BaseAddress,
+    RegDeliveryAddress: BaseAddress
+  }
 })
 export default class OfficeAddresses extends Mixins(CommonMixin) {
   // Refs for BaseAddress components so we can access form validation
@@ -484,10 +495,12 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Model value for "same as (records) mailing address" checkbox. */
   private inheritRecMailingAddress = true
 
-  /** Is true when the mailing address is outside British Columbia. */
+  /** Is true when the mailing address is not in BC, Canada. */
   get disableSameDeliveryAddress (): boolean {
-    return (this.mailingAddress.addressRegion !== REGION_BC ||
-      this.mailingAddress.addressCountry !== COUNTRY_CA)
+    return (
+      this.mailingAddress.addressRegion !== REGION_BC ||
+      this.mailingAddress.addressCountry !== COUNTRY_CA
+    )
   }
 
   /** True if the address form is valid. */
@@ -506,10 +519,9 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    */
   private setLocalProperties (): void {
     if (this.isCorrectionFiling || this.isAlterationFiling) {
-      if (this.getOfficeAddresses?.registeredOffice) {
-        this.mailingAddress = { ...this.getOfficeAddresses.registeredOffice.mailingAddress }
-        this.deliveryAddress = { ...this.getOfficeAddresses.registeredOffice.deliveryAddress }
-      }
+      // assign registered office addresses (may be {})
+      this.mailingAddress = { ...this.getOfficeAddresses?.registeredOffice?.mailingAddress }
+      this.deliveryAddress = { ...this.getOfficeAddresses?.registeredOffice?.deliveryAddress }
 
       // set initial validity states
       // these will be updated by the BaseAddress sub-components
@@ -525,10 +537,9 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         isSame(this.mailingAddress, this.deliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
       )
 
-      if (this.getOfficeAddresses?.recordsOffice) {
-        this.recMailingAddress = { ...this.getOfficeAddresses.recordsOffice.mailingAddress }
-        this.recDeliveryAddress = { ...this.getOfficeAddresses.recordsOffice.deliveryAddress }
-      }
+      // assign records office addresses (may be {})
+      this.recMailingAddress = { ...this.getOfficeAddresses?.recordsOffice?.mailingAddress }
+      this.recDeliveryAddress = { ...this.getOfficeAddresses?.recordsOffice?.deliveryAddress }
 
       // set initial validity states
       // these will be updated by the BaseAddress sub-components
@@ -556,11 +567,10 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       )
     }
 
-    if (this.isChangeFiling || this.isConversionFiling) {
-      if (this.getOfficeAddresses?.businessOffice) {
-        this.mailingAddress = { ...this.getOfficeAddresses.businessOffice.mailingAddress }
-        this.deliveryAddress = { ...this.getOfficeAddresses.businessOffice.deliveryAddress }
-      }
+    if (this.isChangeRegFiling || this.isConversionFiling) {
+      // assign business office addresses (may be {})
+      this.mailingAddress = { ...this.getOfficeAddresses?.businessOffice?.mailingAddress }
+      this.deliveryAddress = { ...this.getOfficeAddresses?.businessOffice?.deliveryAddress }
 
       // set initial validity states
       // these will be updated by the BaseAddress sub-components
@@ -708,7 +718,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       }
     }
 
-    if (this.isChangeFiling || this.isConversionFiling) {
+    if (this.isChangeRegFiling || this.isConversionFiling) {
       // at the moment, only SP and GP changes and conversion are supported
       if (this.isTypeFirm) {
         this.setOfficeAddresses({
@@ -759,12 +769,16 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     this.setOfficeAddresses(this.getOriginalOfficeAddresses)
   }
 
-  /** Disable Same As feature and validate Delivery address for Change and Conversion filings. */
+  /**
+   * Disables Same As checkbox when the delivery address is not in BC, Canada,
+   * and validates Delivery address for Change and Conversion filings.
+   */
   @Watch('disableSameDeliveryAddress')
   private async updateDeliveryAddress (): Promise<void> {
-    if ((this.isChangeFiling || this.isConversionFiling) && this.disableSameDeliveryAddress) {
+    if ((this.isChangeRegFiling || this.isConversionFiling) && this.disableSameDeliveryAddress) {
       this.inheritMailingAddress = false
-      await this.$nextTick() // Allow referenced form to open before validating
+      // allow form to open before validating
+      await this.$nextTick()
 
       // validate delivery address
       this.$refs.deliveryAddress && this.$refs.deliveryAddress.$refs.addressForm.validate()
@@ -784,7 +798,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     this.setLocalProperties()
 
     // update external state
-    // Will emit on component mount and subsequent changes
+    // will emit on component mount and subsequent changes
     this.emitHaveChanges()
   }
 

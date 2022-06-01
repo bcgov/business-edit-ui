@@ -153,8 +153,12 @@ describe('Legal API Mixin', () => {
 
   it('fetches org persons correctly', async () => {
     const DIRECTORS = [
-      { name: 'one' },
-      { name: 'two' }
+      { appointmentDate: '2022-04-01' },
+      { appointmentDate: '2022-05-01' }
+    ]
+    const ORGPERSONS = [
+      { roles: [{ appointmentDate: '2022-04-01', roleType: 'Director' }] },
+      { roles: [{ appointmentDate: '2022-05-01', roleType: 'Director' }] }
     ]
 
     // mock endpoint
@@ -162,10 +166,10 @@ describe('Legal API Mixin', () => {
       .returns(Promise.resolve({ data: { directors: DIRECTORS } }))
 
     // call method
-    const response = await vm.fetchOrgPersons('directors')
+    const response = await vm.fetchDirectors()
 
     // verify data
-    expect(response).toEqual(DIRECTORS)
+    expect(response).toEqual(ORGPERSONS)
   })
 
   it('fetches share structure correctly', async () => {
@@ -261,7 +265,7 @@ describe('Legal API Mixin', () => {
 
     // verify fetchOrgPersons with no response.data
     get.withArgs('businesses/CP1234567/directors').returns(Promise.resolve({}))
-    await expect(vm.fetchOrgPersons('directors')).rejects.toThrow('Invalid API response')
+    await expect(vm.fetchDirectors()).rejects.toThrow('Invalid API response')
 
     // verify fetchShareStructure with no response.data
     get.withArgs('businesses/CP1234567/share-classes').returns(Promise.resolve({}))

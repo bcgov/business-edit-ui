@@ -115,7 +115,7 @@
                 <!-- Alteration/Change filings use the enhanced Fee Summary shared component -->
                 <v-expand-transition>
                   <FeeSummaryShared
-                    v-if="isAlterationFiling || isChangeFiling || isConversionFiling"
+                    v-if="isAlterationFiling || isChangeRegFiling || isConversionFiling"
                     :filingData="getFilingData"
                     :payApiUrl="payApiUrl"
                     :isLoading="isBusySaving"
@@ -204,6 +204,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter isEditing!: boolean
   @Getter isSummaryMode!: boolean
   @Getter showFeeSummary!: boolean
+  @Getter getCurrentJsDate!: Date
 
   // Alteration flag getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -309,7 +310,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
   /** The fee summary confirm button label. */
   get feeSummaryConfirmLabel (): string {
-    const isNoFee = this.isChangeFiling || this.isConversionFiling
+    const isNoFee = this.isChangeRegFiling || this.isConversionFiling
     if (this.isSummaryMode) {
       return (isNoFee && !this.getFilingData.priority) ? 'File Now (No Fee)' : 'File and Pay'
     } else {
@@ -523,6 +524,13 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     } catch (error) {
       // just log the error -- no need to halt app
       console.log('Launch Darkly update error =', error) // eslint-disable-line no-console
+    }
+
+    // since correction is a single page, enable component validation right away
+    // FUTURE: remove this when correction filing becomes 2 pages like the others
+    if (this.isCorrectionFiling) {
+      this.setComponentValidate(true)
+      this.setAppValidate(true)
     }
 
     // finally, let router views know they can load their data
@@ -744,7 +752,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     try {
       let filing: AlterationFilingIF | ChangeFilingIF | ConversionFilingIF
       if (this.isAlterationFiling) filing = await this.buildAlterationFiling(isDraft)
-      if (this.isChangeFiling) filing = await this.buildChangeFiling(isDraft)
+      if (this.isChangeRegFiling) filing = await this.buildChangeRegFiling(isDraft)
       if (this.isConversionFiling) filing = await this.buildConversionFiling(isDraft)
 
       // update the filing if we have a filingId, otherwise create a draft

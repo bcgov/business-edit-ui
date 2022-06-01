@@ -400,7 +400,6 @@ describe.skip('Actions component - Filing Functionality', () => {
               postalCode: 'H0H0H0',
               addressRegion: 'BC'
             },
-            appointmentDate: '2018-01-01',
             roles: [
               {
                 roleType: 'CompletingParty',
@@ -429,7 +428,6 @@ describe.skip('Actions component - Filing Functionality', () => {
               postalCode: 'H0H0H0',
               addressRegion: 'BC'
             },
-            appointmentDate: '2018-01-01',
             roles: [
               {
                 roleType: 'Incorporator',

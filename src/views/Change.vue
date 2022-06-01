@@ -85,9 +85,8 @@ import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, You
   CourtOrderPoa } from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
-import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF,
-  ResourceIF } from '@/interfaces/'
-import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
+import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
+import { FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Change/'
@@ -262,7 +261,7 @@ export default class Change extends Mixins(
       this.fetchBusinessInfo(),
       AuthServices.fetchAuthInfo(this.getBusinessId),
       this.fetchAddresses(),
-      this.fetchOrgPersons(OrgPersonTypes.PARTIES)
+      this.fetchParties()
     ])
 
     if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')

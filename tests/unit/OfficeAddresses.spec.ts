@@ -469,7 +469,7 @@ describe('edit mode', () => {
       const block = editRegisteredAddress.findAll('li').at(0)
       expect(block.find('label').text()).toBe('Mailing Address')
 
-      const address = block.find('#address-registered-mailing')
+      const address = block.find('#registered-mailing-address')
       expect(address.find('.v-input.street-address').props('value')).toBe('streetAddress1')
       expect(address.find('.v-input.street-address-additional').props('value')).toBe('streetAddressAdditional1')
       expect(address.find('.v-input.address-city').props('value')).toBe('addressCity1')
@@ -511,7 +511,7 @@ describe('edit mode', () => {
       expect(block.find('label').text()).toBe('Delivery Address')
       expect(block.find('.inherit-checkbox').props('inputValue')).toBe(false)
 
-      const address = block.find('#address-registered-delivery')
+      const address = block.find('#registered-delivery-address')
       expect(address.find('.v-input.street-address').props('value')).toBe('streetAddress2')
       expect(address.find('.v-input.street-address-additional').props('value')).toBe('streetAddressAdditional2')
       expect(address.find('.v-input.address-city').props('value')).toBe('addressCity2')
@@ -552,7 +552,7 @@ describe('edit mode', () => {
       const block = editRegisteredAddress.findAll('li').at(1)
       expect(block.find('label').text()).toBe('Delivery Address')
       expect(block.find('.inherit-checkbox').props('inputValue')).toBe(true)
-      expect(block.find('#address-registered-delivery').exists()).toBe(false)
+      expect(block.find('#registered-delivery-address').exists()).toBe(false)
     }
 
     wrapper.destroy()
@@ -587,7 +587,7 @@ describe('edit mode', () => {
       const block = editRecordsAddress.findAll('li').at(0)
       expect(block.find('label').text()).toBe('Mailing Address')
 
-      const address = block.find('#address-records-mailing')
+      const address = block.find('#records-mailing-address')
       expect(address.find('.v-input.street-address').props('value')).toBe('streetAddress3')
       expect(address.find('.v-input.street-address-additional').props('value')).toBe('streetAddressAdditional3')
       expect(address.find('.v-input.address-city').props('value')).toBe('addressCity3')
@@ -662,7 +662,7 @@ describe('edit mode', () => {
       expect(block.find('label').text()).toBe('Delivery Address')
       expect(block.find('.inherit-checkbox').props('inputValue')).toBe(false)
 
-      const address = block.find('#address-records-delivery')
+      const address = block.find('#records-delivery-address')
       expect(address.find('.v-input.street-address').props('value')).toBe('streetAddress4')
       expect(address.find('.v-input.street-address-additional').props('value')).toBe('streetAddressAdditional4')
       expect(address.find('.v-input.address-city').props('value')).toBe('addressCity4')
@@ -703,7 +703,7 @@ describe('edit mode', () => {
       const block = editRecordsAddress.findAll('li').at(1)
       expect(block.find('label').text()).toBe('Delivery Address')
       expect(block.find('.inherit-checkbox').props('inputValue')).toBe(true)
-      expect(block.find('#address-records-delivery').exists()).toBe(false)
+      expect(block.find('#records-delivery-address').exists()).toBe(false)
     }
 
     wrapper.destroy()
@@ -746,7 +746,7 @@ describe('"same as" checkboxes', () => {
     // verify that checkbox is checked and that address doesn't exist
     const checkbox = wrapper.find('#registered-mailing-same-chkbx')
     expect(checkbox.attributes('aria-checked')).toBe('true')
-    let address = wrapper.find('#address-registered-delivery')
+    let address = wrapper.find('#registered-delivery-address')
     expect(address.exists()).toBe(false)
 
     // uncheck and verify the checkbox
@@ -756,7 +756,7 @@ describe('"same as" checkboxes', () => {
     // verify the address data and elements
     expect(wrapper.vm.$data.deliveryAddress.addressCity).toBe('')
     // NB: since the address didn't exist previously, we need to find it again
-    address = wrapper.find('#address-registered-delivery')
+    address = wrapper.find('#registered-delivery-address')
     expect(address.exists()).toBe(true)
     expect(address.find('.v-input.street-address').props('value')).toBe('')
     expect(address.find('.v-input.street-address-additional').props('value')).toBe('')
@@ -773,7 +773,7 @@ describe('"same as" checkboxes', () => {
     // verify the address data and elements
     expect(wrapper.vm.$data.deliveryAddress.addressCity).toBe('addressCity1')
     // NB: since the address existed previously, we need to find it again
-    address = wrapper.find('#address-registered-delivery')
+    address = wrapper.find('#registered-delivery-address')
     expect(address.exists()).toBe(false)
   })
 
@@ -785,7 +785,7 @@ describe('"same as" checkboxes', () => {
     // verify that checkbox is checked and that address doesn't exist
     const checkbox = wrapper.find('#records-mailing-same-chkbx')
     expect(checkbox.attributes('aria-checked')).toBe('true')
-    let address = wrapper.find('#address-records-mailing')
+    let address = wrapper.find('#records-mailing-address')
     expect(address.exists()).toBe(false)
 
     // uncheck and verify the checkbox
@@ -795,7 +795,7 @@ describe('"same as" checkboxes', () => {
     // verify the address data and elements
     expect(wrapper.vm.$data.recMailingAddress.addressCity).toBe('')
     // NB: since the address didn't exist previously, we need to find it again
-    address = wrapper.find('#address-records-mailing')
+    address = wrapper.find('#records-mailing-address')
     expect(address.exists()).toBe(true)
     expect(address.find('.v-input.street-address').props('value')).toBe('')
     expect(address.find('.v-input.street-address-additional').props('value')).toBe('')
@@ -812,7 +812,7 @@ describe('"same as" checkboxes', () => {
     // verify the address data and elements
     expect(wrapper.vm.$data.recMailingAddress.addressCity).toBe('addressCity1')
     // NB: since the address existed previously, we need to find it again
-    address = wrapper.find('#address-records-mailing')
+    address = wrapper.find('#records-mailing-address')
     expect(address.exists()).toBe(false)
   })
 
@@ -823,8 +823,8 @@ describe('"same as" checkboxes', () => {
 
     // verify that checkbox is checked and that records addresses don't exist
     expect(wrapper.find('#records-mailing-same-chkbx').attributes('aria-checked')).toBe('true')
-    expect(wrapper.find('#address-records-mailing').exists()).toBe(false)
-    expect(wrapper.find('#address-records-delivery').exists()).toBe(false)
+    expect(wrapper.find('#records-mailing-address').exists()).toBe(false)
+    expect(wrapper.find('#records-delivery-address').exists()).toBe(false)
 
     // first make records office not the same as registered office
     const recordsCheckbox = wrapper.find('#records-mailing-same-chkbx')
@@ -836,7 +836,7 @@ describe('"same as" checkboxes', () => {
     // verify that checkbox is checked and that address doesn't exist
     const checkbox = wrapper.find('#records-delivery-same-chkbx')
     expect(checkbox.attributes('aria-checked')).toBe('true')
-    let address = wrapper.find('#address-records-delivery')
+    let address = wrapper.find('#records-delivery-address')
     expect(address.exists()).toBe(false)
 
     // uncheck and verify the checkbox
@@ -846,7 +846,7 @@ describe('"same as" checkboxes', () => {
     // verify the address data and elements
     expect(wrapper.vm.$data.recDeliveryAddress.addressCity).toBe('')
     // NB: since the address didn't exist previously, we need to find it again
-    address = wrapper.find('#address-records-delivery')
+    address = wrapper.find('#records-delivery-address')
     expect(address.exists()).toBe(true)
     expect(address.find('.v-input.street-address').props('value')).toBe('')
     expect(address.find('.v-input.street-address-additional').props('value')).toBe('')
@@ -863,7 +863,7 @@ describe('"same as" checkboxes', () => {
     // verify the address data and elements
     expect(wrapper.vm.$data.recDeliveryAddress.addressCity).toBe('addressCity3')
     // NB: since the address existed previously, we need to find it again
-    address = wrapper.find('#address-records-delivery')
+    address = wrapper.find('#records-delivery-address')
     expect(address.exists()).toBe(false)
   })
 })

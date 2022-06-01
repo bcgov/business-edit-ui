@@ -15,7 +15,7 @@
           <v-flex md1 class="mt-1">
             <v-chip
               v-if="companyNameChanges ||
-                (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling || isConversionFiling))"
+                (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling || isConversionFiling))"
               id="corrected-lbl"
               x-small label
               color="primary"
@@ -33,7 +33,7 @@
 
             <!-- Business Type Info -->
             <template v-if="!hasNewNr &&
-              (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling || isConversionFiling))"
+              (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling || isConversionFiling))"
             >
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -45,7 +45,7 @@
             </template>
 
             <!-- Name Request Info -->
-            <template v-if="hasNewNr && (isAlterationFiling || isChangeFiling)">
+            <template v-if="hasNewNr && (isAlterationFiling || isChangeRegFiling)">
               <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -88,7 +88,7 @@
             <div class="actions mr-4">
               <!-- FUTURE: only show buttons for named company -->
               <v-btn
-                v-if="companyNameChanges || (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling))"
+                v-if="companyNameChanges || (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling))"
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -107,7 +107,7 @@
                 <span>{{editLabel}}</span>
               </v-btn>
               <span class="more-actions" v-if="companyNameChanges ||
-                (hasBusinessNameChanged && (isAlterationFiling || isChangeFiling))"
+                (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling))"
               >
                 <v-menu
                   offset-y left nudge-bottom="4"
@@ -150,7 +150,7 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isChangeFiling || isConversionFiling)"
+      <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isChangeRegFiling || isConversionFiling)"
         class="sub-section"
       >
         <v-col cols="3">
@@ -178,11 +178,11 @@
       </v-row>
     </div>
 
-    <v-divider v-if="isChangeFiling || isConversionFiling" class="mx-4 my-1" />
+    <v-divider v-if="isChangeRegFiling || isConversionFiling" class="mx-4 my-1" />
 
     <!-- Business Type -->
     <div
-      v-if="isAlterationFiling || isChangeFiling || isConversionFiling"
+      v-if="isAlterationFiling || isChangeRegFiling || isConversionFiling"
       id="company-type-section"
       class="section-container"
       :class="{'invalid-section': invalidTypeSection}"
@@ -211,7 +211,7 @@
     <v-divider class="mx-4 my-1" />
 
     <!-- Business Start Date -->
-    <template v-if="isChangeFiling || isConversionFiling">
+    <template v-if="isChangeRegFiling || isConversionFiling">
       <section class="section-container">
         <v-row no-gutters>
           <v-col cols="3">
@@ -236,7 +236,7 @@
     </template>
 
     <!-- Nature of Business (change filing) -->
-    <template v-if="isChangeFiling">
+    <template v-if="isChangeRegFiling">
       <v-divider class="mx-4 my-1" />
 
       <NatureOfBusiness
@@ -446,7 +446,7 @@ export default class YourCompany extends Mixins(
         return (this.apiToPacificDateLong(this.getOriginalEffectiveDateTime))
       }
     }
-    if (this.isAlterationFiling || this.isChangeFiling || this.isConversionFiling) {
+    if (this.isAlterationFiling || this.isChangeRegFiling || this.isConversionFiling) {
       if (this.getBusinessFoundingDate) {
         return (this.apiToPacificDateLong(this.getBusinessFoundingDate))
       }

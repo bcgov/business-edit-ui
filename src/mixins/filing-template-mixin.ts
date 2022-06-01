@@ -301,7 +301,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param isDraft whether this is a draft
    * @returns the change filing body
    */
-  buildChangeFiling (isDraft: boolean): ChangeFilingIF {
+  buildChangeRegFiling (isDraft: boolean): ChangeFilingIF {
     // Build change filing
     const filing: ChangeFilingIF = {
       header: {
@@ -638,30 +638,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setOfficeAddresses(entitySnapshot.addresses)
 
     // Store people and roles **from snapshot** (because we don't change people and roles in an alteration)
-    this.setPeopleAndRoles(
-      entitySnapshot.orgPersons?.map(director => {
-        return {
-          officer: {
-            firstName: director.officer.firstName,
-            lastName: director.officer.lastName
-          },
-          mailingAddress: director.deliveryAddress,
-          deliveryAddress: director.mailingAddress,
-          roles: [
-            {
-              roleType: director.role in RoleTypes ? director.role
-                : Object.values(RoleTypes).find(role => {
-                  if (role.toLocaleLowerCase() === director.role.toLocaleLowerCase()) {
-                    return role
-                  }
-                }),
-              appointmentDate: director.appointmentDate,
-              cessationDate: null
-            }
-          ]
-        }
-      }) || []
-    )
+    this.setPeopleAndRoles(entitySnapshot.orgPersons)
+
     // Store business contact info
     this.setBusinessContact(entitySnapshot.authInfo.contact)
 
@@ -737,7 +715,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store people and roles
     let orgPersons = filing.changeOfRegistration.parties || entitySnapshot.orgPersons
     // exclude completing party
-    // (it is managed separately and added to the filing in buildChangeFiling())
+    // (it is managed separately and added to the filing in buildChangeRegFiling())
     orgPersons = orgPersons.filter(party => !(party?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(orgPersons)
 
@@ -797,7 +775,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // Store people and roles
     let orgPersons = filing.conversion.parties || entitySnapshot.orgPersons
     // exclude completing party
-    // (it is managed separately and added to the filing in buildChangeFiling())
+    // (it is managed separately and added to the filing in buildChangeRegFiling())
     orgPersons = orgPersons.filter(party => !(party?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(orgPersons)
 

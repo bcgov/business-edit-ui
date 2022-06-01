@@ -1,9 +1,10 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { axios } from '@/utils/'
-import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF, NameTranslationIF,
-  OrgPersonIF, ShareStructureIF, ResolutionsIF, ChangeFilingIF, ConversionFilingIF } from '@/interfaces/'
-import { OrgPersonTypes } from '@/enums/'
+import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF,
+  NameTranslationIF, OrgPersonIF, ShareStructureIF, ResolutionsIF, ChangeFilingIF,
+  ConversionFilingIF } from '@/interfaces/'
+import { RoleTypes } from '@/enums'
 
 /**
  * Mixin that provides integration with the Legal API.
@@ -167,21 +168,57 @@ export default class LegalApiMixin extends Vue {
   }
 
   /**
-   * Fetches the org persons of the current business.
+   * Fetches the directors of the current business.
    * @returns a promise to return the data
    */
-  async fetchOrgPersons (orgPersonType: OrgPersonTypes): Promise<OrgPersonIF[]> {
+  async fetchDirectors (): Promise<OrgPersonIF[]> {
     if (!this.getBusinessId) throw new Error('Invalid business id')
 
-    const url = `businesses/${this.getBusinessId}/${orgPersonType}`
+    const url = `businesses/${this.getBusinessId}/directors`
 
     return axios.get(url)
       .then(response => {
-        if (response?.data) {
-          return response.data[orgPersonType]
+        const directors = response?.data?.directors
+        if (directors) {
+          // convert director list to org-person list
+          return directors.map(director => {
+            const orgPerson: OrgPersonIF = {
+              deliveryAddress: director.deliveryAddress,
+              mailingAddress: director.mailingAddress,
+              officer: director.officer,
+              roles: [
+                {
+                  appointmentDate: director.appointmentDate,
+                  cessationDate: director.cessationDate,
+                  roleType: RoleTypes.DIRECTOR
+                }
+              ],
+              isBusinessLookup: null
+            }
+            return orgPerson
+          })
         }
         // eslint-disable-next-line no-console
-        console.log('fetchOrgPersons() error - invalid response =', response)
+        console.log('fetchDirectors() error - invalid response =', response)
+        throw new Error('Invalid API response')
+      })
+  }
+
+  /**
+   * Fetches the parties of the current business.
+   * @returns a promise to return the data
+   */
+  async fetchParties (): Promise<OrgPersonIF[]> {
+    if (!this.getBusinessId) throw new Error('Invalid business id')
+
+    const url = `businesses/${this.getBusinessId}/parties`
+
+    return axios.get(url)
+      .then(response => {
+        const parties = response?.data?.parties
+        if (parties) return parties
+        // eslint-disable-next-line no-console
+        console.log('fetchParties() error - invalid response =', response)
         throw new Error('Invalid API response')
       })
   }

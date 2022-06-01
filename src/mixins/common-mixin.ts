@@ -11,7 +11,7 @@ import { ConfirmDialogType } from '@/interfaces/'
 export default class CommonMixin extends Vue {
   @Getter getEntityType!: CorpTypeCd
   @Getter isAlterationFiling!: boolean
-  @Getter isChangeFiling!: boolean
+  @Getter isChangeRegFiling!: boolean
   @Getter isConversionFiling!: boolean
   @Getter isCorrectionFiling!: boolean
 
@@ -86,23 +86,38 @@ export default class CommonMixin extends Vue {
 
   /** The appropriate edit label for corrections, alterations, change or conversion filings. */
   get editLabel (): string {
-    if (this.isCorrectionFiling) return 'Correct'
-    if (this.isAlterationFiling || this.isChangeFiling || this.isConversionFiling) return 'Change'
-    return 'Edit'
+    switch (true) {
+      case this.isCorrectionFiling: return 'Correct'
+
+      case this.isAlterationFiling:
+      case this.isChangeRegFiling:
+      case this.isConversionFiling: return 'Change'
+    }
+    return 'Edit' // should never happen
   }
 
   /** The appropriate edited label for corrections, alterations, change or conversion filings. */
   get editedLabel (): string {
-    if (this.isCorrectionFiling) return 'Corrected'
-    if (this.isAlterationFiling || this.isChangeFiling || this.isConversionFiling) return 'Changed'
-    return 'Edited'
+    switch (true) {
+      case this.isCorrectionFiling: return 'Corrected'
+
+      case this.isAlterationFiling:
+      case this.isChangeRegFiling:
+      case this.isConversionFiling: return 'Changed'
+    }
+    return 'Edited' // should never happen
   }
 
   /** The appropriate edits saved label for corrections, alterations, change or conversion filings. */
   get editSavedLabel (): string {
-    if (this.isCorrectionFiling) return 'Corrections Saved'
-    if (this.isAlterationFiling || this.isChangeFiling || this.isConversionFiling) return 'Changes Saved'
-    return 'Edits Saved'
+    switch (true) {
+      case this.isCorrectionFiling: return 'Corrections Saved'
+
+      case this.isAlterationFiling:
+      case this.isChangeRegFiling:
+      case this.isConversionFiling: return 'Changes Saved'
+    }
+    return 'Edits Saved' // should never happen
   }
 
   /** The entity title. */

@@ -24,8 +24,8 @@ export const SoleProprietorshipResource: ResourceIF = {
       orgPersonLabel: 'Proprietor',
       orgTypesLabel: 'Business or Corporation',
       subtitle: 'You can change the legal name, mailing and delivery addresses and the email address of the ' +
-        'proprietor. To change to a different proprietor, you must form a new business with that proprietor ' +
-        'and dissolve this registration.',
+        'individual proprietor. To change to a different proprietor, you must form a new business with that ' +
+        'proprietor and dissolve this registration.',
       helpSection: null
     }
   },

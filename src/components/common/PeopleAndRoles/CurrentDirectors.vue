@@ -48,15 +48,18 @@
 
             <!-- Delivery Address -->
             <td class="px-0">
-              <p v-if="isSame(orgPerson.mailingAddress, orgPerson.deliveryAddress)"
-                class="director-detail">Same as Mailing Address
+              <p
+                v-if="isSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])"
+                class="director-detail"
+              >
+                Same as Mailing Address
               </p>
               <DeliveryAddress v-else class="director-detail" :address="orgPerson.deliveryAddress"/>
             </td>
 
             <!-- Appointment Date -->
             <td class="px-0">
-              <span class="director-detail">{{ orgPerson.appointmentDate }} to Current</span>
+              <span class="director-detail">{{ orgPerson.roles[0].appointmentDate }} to Current</span>
             </td>
           </tr>
         </tbody>

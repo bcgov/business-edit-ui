@@ -19,7 +19,7 @@
           </span>
 
           <!-- Firm info tooltip -->
-          <v-tooltip v-if="isChangeFiling || isConversionFiling"
+          <v-tooltip v-if="isChangeRegFiling || isConversionFiling"
                      top
                      content-class="top-tooltip"
                      transition="fade-transition"

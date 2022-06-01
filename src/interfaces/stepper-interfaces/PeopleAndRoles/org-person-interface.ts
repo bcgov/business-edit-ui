@@ -1,5 +1,5 @@
 import { AddressIF, RoleIF } from '@/interfaces/'
-import { ActionTypes, PartyTypes, RoleTypes } from '@/enums/'
+import { ActionTypes, PartyTypes } from '@/enums/'
 
 export interface ApiPersonIF {
   id?: string // used by UI only
@@ -15,12 +15,39 @@ export interface ApiPersonIF {
 
 export interface OrgPersonIF {
   officer: ApiPersonIF
-  role?: RoleTypes
-  roles: RoleIF[] | any
+  roles: RoleIF[]
   mailingAddress: AddressIF
   deliveryAddress?: AddressIF
   actions?: ActionTypes[]
-  appointmentDate?: string
-  cessationDate?: string
-  confirmNameChange?: boolean
+  confirmNameChange?: boolean // for UI use only
+  confirmBusiness?: boolean // for UI use only
+  isBusinessLookup: boolean // for firms only
+}
+
+/**
+ * Empty OrgPerson for adding a new one.
+ * Must use `cloneDeep()` to assign it.
+ */
+export const EmptyOrgPerson: OrgPersonIF = {
+  officer: {
+    id: null,
+    firstName: '',
+    lastName: '',
+    middleName: '',
+    organizationName: '',
+    partyType: null,
+    email: null
+  },
+  roles: [],
+  mailingAddress: {
+    streetAddress: '',
+    streetAddressAdditional: '',
+    addressCity: '',
+    addressRegion: '',
+    postalCode: '',
+    addressCountry: '',
+    deliveryInstructions: ''
+  },
+  actions: [],
+  isBusinessLookup: null // can't be undefined
 }
