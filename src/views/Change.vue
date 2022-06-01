@@ -54,6 +54,8 @@
           class="mt-10"
           sectionNumber="3."
           :validate="getAppValidate"
+          :invalidSection="isCertifyInvalid"
+          :disableEdit="!isRoleStaff"
         />
         <template v-if="isRoleStaff">
           <CourtOrderPoa
@@ -113,6 +115,9 @@ export default class Change extends Mixins(
   @Getter isSummaryMode!: boolean
   @Getter getFilingData!: FilingDataIF
   @Getter getAppValidate!: boolean
+  @Getter getUserFirstName!: string
+  @Getter getUserLastName!: string
+  @Getter getValidateSteps!: boolean
   @Getter showFeeSummary!: boolean
   @Getter isTypeSoleProp!: boolean
   @Getter isTypePartnership!: boolean
@@ -127,6 +132,7 @@ export default class Change extends Mixins(
   @Action setCurrentFees!: ActionBindingIF
   @Action setFeePrices!: ActionBindingIF
   @Action setResource!: ActionBindingIF
+  @Action setCertifyStateValidity!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false })
@@ -147,6 +153,11 @@ export default class Change extends Mixins(
     if (this.isTypeSoleProp) return SoleProprietorshipResource
     if (this.isTypePartnership) return GeneralPartnershipResource
     return null
+  }
+
+  /** Is true when the certify conditions are not met. */
+  get isCertifyInvalid (): boolean {
+    return this.getValidateSteps && !(this.getCertifyState.certifiedBy && this.getCertifyState.valid)
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -219,6 +230,18 @@ export default class Change extends Mixins(
         ).catch(() => cloneDeep(EmptyFees))
       )
 
+      // set current profile name to store for field pre population
+      // do this only if we are not staff
+      if (!this.isRoleStaff) {
+        // pre-populate Certified By name
+        this.setCertifyState(
+          {
+            valid: this.getCertifyState.valid,
+            certifiedBy: `${this.getUserFirstName} ${this.getUserLastName}`
+          }
+        )
+      }
+
       // tell App that we're finished loading
       this.emitHaveData()
     } catch (err) {
@@ -228,6 +251,17 @@ export default class Change extends Mixins(
 
     // now that all data is loaded, wait for things to stabilize and reset flag
     Vue.nextTick(() => this.setHaveUnsavedChanges(false))
+  }
+
+  /** Handler for Valid change event. */
+  protected onIsCertified (val: boolean): void {
+    this.setCertifyState(
+      {
+        valid: val,
+        certifiedBy: this.getCertifyState.certifiedBy
+      }
+    )
+    this.setCertifyStateValidity(Boolean(val && this.getCertifyState.certifiedBy))
   }
 
   /** Called when staff payment data has changed. */
