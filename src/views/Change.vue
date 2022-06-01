@@ -153,11 +153,6 @@ export default class Change extends Mixins(
     return null
   }
 
-  /** Is true when the certify conditions are not met. */
-  get isCertifyInvalid (): boolean {
-    return this.getValidateSteps && !(this.getCertifyState.certifiedBy && this.getCertifyState.valid)
-  }
-
   /** Called when App is ready and this component can load its data. */
   @Watch('appReady')
   private async onAppReady (val: boolean): Promise<void> {
