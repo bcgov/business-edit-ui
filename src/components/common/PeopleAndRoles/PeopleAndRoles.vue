@@ -45,7 +45,7 @@
           />
 
         <!-- SP add buttons (conversion filing only) -->
-        <div v-if="isTypeSoleProp && isConversionFiling" class="mt-8">
+        <div v-if="isTypeSoleProp && isConversionFiling && !hasMinimumProprietor" class="mt-8">
           <v-btn
             id="sp-btn-add-person"
             outlined
@@ -79,7 +79,7 @@
         </div>
 
         <!-- GP add buttons (change or conversion filing)-->
-        <div v-if="isTypePartnership" class="mt-8">
+        <div v-if="isTypePartnership && !hasMinimumPartners" class="mt-8">
           <v-btn
             id="gp-btn-add-person"
             outlined
@@ -158,7 +158,7 @@
           :activeIndex="activeIndex"
           :currentCompletingParty="currentCompletingParty"
           :validate="getComponentValidate"
-          :hasMinimumPartners="hasMinimumPartners"
+          :haveRequiredParties="haveRequiredParties"
           @initEdit="initEdit($event)"
           @addEdit="addEdit($event)"
           @remove="remove($event)"
@@ -280,9 +280,19 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
     return this.hasRole(RoleTypes.DIRECTOR, 1, CompareModes.AT_LEAST)
   }
 
-  /** True if we have all valid roles. */
-  get hasValidRoles (): boolean {
-    return (this.cpValid && this.incorpValid && this.dirValid)
+  /** True if we have all required parties. */
+  get haveRequiredParties (): boolean {
+    if (this.isCorrectionFiling) {
+      return (this.cpValid && this.incorpValid && this.dirValid)
+    }
+    if (this.isAlterationFiling) {
+      return true // can't change parties in alteration filing
+    }
+    if (this.isChangeFiling || this.isConversionFiling) {
+      if (this.isTypeSoleProp) return this.hasMinimumProprietor
+      if (this.isTypePartnership) return this.hasMinimumPartners
+    }
+    return false // should never get here
   }
 
   /** True if there are no orgs/persons with missing roles. */
@@ -338,7 +348,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
    */
   mounted (): void {
     // initialize this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValidity(this.hasValidRoles && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.haveRequiredParties && this.noMissingRoles)
     this.setPeopleAndRolesChanged(this.hasChanges)
   }
 
@@ -462,7 +472,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
     this.setPeopleAndRoles(tempList)
 
     // update this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValidity(this.hasValidRoles && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.haveRequiredParties && this.noMissingRoles)
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
@@ -512,7 +522,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
     this.setPeopleAndRoles(tempList)
 
     // update this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValidity(this.hasValidRoles && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.haveRequiredParties && this.noMissingRoles)
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
@@ -603,7 +613,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
     this.setPeopleAndRoles(tempList)
 
     // update this component's 'valid' and 'changed' flags
-    this.setPeopleAndRolesValidity(this.hasValidRoles && this.noMissingRoles)
+    this.setPeopleAndRolesValidity(this.haveRequiredParties && this.noMissingRoles)
     this.setPeopleAndRolesChanged(this.hasChanges)
 
     // reset state properties
@@ -691,7 +701,9 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
   @Watch('getPeopleAndRoles', { deep: true })
   private onPeopleAndRolesChanged (): void {
     this.currentCompletingParty = this.getCompletingParty(this.getPeopleAndRoles)
-    this.setPeopleAndRolesValidity(this.hasValidRoles && this.noMissingRoles)
+    // FUTURE: combine this component's two validity mechanisms
+    //         see setValidComponent() below
+    this.setPeopleAndRolesValidity(this.haveRequiredParties && this.noMissingRoles)
   }
 
   /** Updates store when local Editing property has changed. */
@@ -701,9 +713,13 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin) {
     this.setValidComponent({ key: 'isValidOrgPersons', value: !val })
   }
 
+  @Watch('hasMinimumProprietor')
   @Watch('hasMinimumPartners')
   private onMinimumPartnersChanged (val: boolean): void {
-    this.setValidComponent({ key: 'isValidOrgPersons', value: val })
+    const isValid = (this.hasMinimumProprietor && this.hasMinimumPartners)
+    // FUTURE: combine this component's two validity mechanisms
+    //         see setPeopleAndRolesValidity() above
+    this.setValidComponent({ key: 'isValidOrgPersons', value: isValid })
   }
 }
 </script>
