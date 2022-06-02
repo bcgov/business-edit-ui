@@ -7,20 +7,23 @@
     </div>
 
     <div :class="{ 'invalid-section': invalidSection }">
-      <CertifyShared
-        :currentDate="getCurrentDate"
-        :certifiedBy="getCertifyState.certifiedBy"
-        :isCertified="getCertifyState.valid"
-        :entityDisplay="readableEntityType"
-        :message="certifyMessage"
-        :isStaff="isRoleStaff"
-        :firstColumn="3"
-        :secondColumn="9"
-        :validate="validate"
-        :invalidSection="invalidSection"
-        @update:certifiedBy="onCertifiedBy($event)"
-        @update:isCertified="onIsCertified($event)"
-      />
+      <v-card flat class="section-container py-6">
+        <CertifyShared
+          :currentDate="getCurrentDate"
+          :certifiedBy="getCertifyState.certifiedBy"
+          :isCertified="getCertifyState.valid"
+          :entityDisplay="readableEntityType"
+          :message="certifyMessage"
+          :isStaff="isRoleStaff"
+          :firstColumn="3"
+          :secondColumn="9"
+          :validate="validate"
+          :invalidSection="invalidSection"
+          :disableEdit="disableEdit"
+          @update:certifiedBy="onCertifiedBy($event)"
+          @update:isCertified="onIsCertified($event)"
+        />
+      </v-card>
     </div>
   </section>
 </template>
@@ -52,6 +55,9 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
   /** Whether to perform validation. */
   @Prop({ default: false }) readonly validate: boolean
 
+  /** To determine whether user input is enabled. */
+  @Prop({ default: false }) readonly disableEdit: boolean
+
   /** Called when component is mounted. */
   mounted (): void {
     this.setCertifyState(
@@ -73,7 +79,7 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
   }
 
   /** Handler for Valid change event. */
-  private onIsCertified (val: boolean): void {
+  protected onIsCertified (val: boolean): void {
     this.setCertifyState(
       {
         valid: val,
@@ -84,7 +90,7 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
   }
 
   /** Handler for CertifiedBy change event. */
-  private onCertifiedBy (val: string): void {
+  protected onCertifiedBy (val: string): void {
     this.setCertifyState(
       {
         valid: this.getCertifyState.valid,
@@ -111,21 +117,5 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
 
 .invalid-label {
   color: $BCgovInputError;
-}
-
-// fix hard-coded whitespace inside shared component
-// we want the same padding as "section-container py-6"
-::v-deep {
-  #AR-step-4-container {
-    margin-top: 0 !important;
-    padding-top: 0.75rem !important;
-    padding-right: 1.125rem !important;
-    padding-bottom: 0 !important;
-    padding-left: 0.625rem !important;
-  }
-
-  #certify-form {
-    margin-top: 0 !important;
-  }
 }
 </style>

@@ -54,6 +54,7 @@
           class="mt-10"
           sectionNumber="3."
           :validate="getAppValidate"
+          :disableEdit="!isRoleStaff"
         />
         <template v-if="isRoleStaff">
           <CourtOrderPoa
@@ -83,8 +84,8 @@ import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, You
   CourtOrderPoa } from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
-import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF, FlagsReviewCertifyIF }
-  from '@/interfaces/'
+import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF,
+  ResourceIF } from '@/interfaces/'
 import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
@@ -113,6 +114,8 @@ export default class Change extends Mixins(
   @Getter isSummaryMode!: boolean
   @Getter getFilingData!: FilingDataIF
   @Getter getAppValidate!: boolean
+  @Getter getUserFirstName!: string
+  @Getter getUserLastName!: string
   @Getter showFeeSummary!: boolean
   @Getter isTypeSoleProp!: boolean
   @Getter isTypePartnership!: boolean
@@ -218,6 +221,18 @@ export default class Change extends Mixins(
           FilingCodes.CHANGE_OF_REGISTRATION, this.getEntityType
         ).catch(() => cloneDeep(EmptyFees))
       )
+
+      // set current profile name to store for field pre population
+      // do this only if we are not staff
+      if (!this.isRoleStaff) {
+        // pre-populate Certified By name
+        this.setCertifyState(
+          {
+            valid: this.getCertifyState.valid,
+            certifiedBy: `${this.getUserFirstName} ${this.getUserLastName}`
+          }
+        )
+      }
 
       // tell App that we're finished loading
       this.emitHaveData()
