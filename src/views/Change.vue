@@ -116,7 +116,6 @@ export default class Change extends Mixins(
   @Getter getAppValidate!: boolean
   @Getter getUserFirstName!: string
   @Getter getUserLastName!: string
-  @Getter getValidateSteps!: boolean
   @Getter showFeeSummary!: boolean
   @Getter isTypeSoleProp!: boolean
   @Getter isTypePartnership!: boolean
