@@ -56,7 +56,7 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
   @Prop({ default: false }) readonly validate: boolean
 
   /** To determine whether user input is enabled. */
-  @Prop({ default: true }) readonly disableEdit: boolean
+  @Prop({ default: false }) readonly disableEdit: boolean
 
   /** Called when component is mounted. */
   mounted (): void {
