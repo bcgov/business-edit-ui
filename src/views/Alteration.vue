@@ -61,6 +61,7 @@
           class="mt-10"
           :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
           :validate="getAppValidate"
+          :disableEdit="!isRoleStaff"
         />
 
         <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
@@ -162,6 +163,8 @@ export default class Alteration extends Mixins(
 ) {
   // Global getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter getUserFirstName!: string
+  @Getter getUserLastName!: string
   @Getter isSummaryMode!: boolean
   @Getter isRoleStaff!: boolean
   @Getter isPremiumAccount!: boolean
@@ -302,6 +305,18 @@ export default class Alteration extends Mixins(
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
       this.emitFetchError(err)
+    }
+
+    // set current profile name to store for field pre population
+    // do this only if we are not staff
+    if (!this.isRoleStaff) {
+      // pre-populate Certified By name
+      this.setCertifyState(
+        {
+          valid: this.getCertifyState.valid,
+          certifiedBy: `${this.getUserFirstName} ${this.getUserLastName}`
+        }
+      )
     }
 
     // now that all data is loaded, wait for things to stabilize and reset flag
