@@ -1,8 +1,9 @@
 import { required, maxLength } from 'vuelidate/lib/validators'
+import { AddressSchemaIF } from '@/interfaces/'
 
-// The Person Address schema containing Vuelidate rules.
+// The schema containing Vuelidate rules.
 // NB: This should match the subject JSON schema.
-export const PersonAddressSchema = {
+export const InCanadaAddressSchema: AddressSchemaIF = {
   streetAddress: {
     required,
     maxLength: maxLength(50)
@@ -15,7 +16,9 @@ export const PersonAddressSchema = {
     maxLength: maxLength(40)
   },
   addressCountry: {
-    required
+    required,
+    // FUTURE: create new validation function isCountry('CA')
+    isCanada: (val: string) => Boolean(val === 'CA')
   },
   addressRegion: {
     maxLength: maxLength(2)

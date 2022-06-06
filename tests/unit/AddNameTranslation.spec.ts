@@ -82,8 +82,8 @@ describe('Add Name Translation component', () => {
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
 
-    // Verify that is adding function returns true
-    expect(vm.isAddingTranslation).toBeTruthy()
+    // Verify that is adding function returns True
+    expect(vm.isAddingTranslation).toBe(true)
 
     wrapper.destroy()
   })
@@ -159,8 +159,8 @@ describe('Add Name Translation component', () => {
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
 
-    // Verify that is adding functions returns false
-    expect(vm.isAddingTranslation).toBeFalsy()
+    // Verify that is adding functions returns False
+    expect(vm.isAddingTranslation).toBe(false)
 
     wrapper.destroy()
   })

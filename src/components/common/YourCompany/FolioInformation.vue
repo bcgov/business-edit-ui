@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Vue } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces/'
 import { AuthServices } from '@/services/'
@@ -39,7 +39,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
 
   /** Whether to show invalid section styling. */
   @Prop({ default: false })
-  readonly invalidSection!: boolean
+  readonly invalidSection: boolean
 
   /** The original folio number dependant on filing type. */
   get originalFolioNumber (): string {
@@ -70,7 +70,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
       const prev = this.getFolioNumber
       // toggle for reactivity
       this.setFolioNumber(undefined)
-      Vue.nextTick(() => this.setFolioNumber(prev))
+      this.$nextTick(() => this.setFolioNumber(prev))
     }
   }
 

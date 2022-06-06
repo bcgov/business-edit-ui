@@ -132,7 +132,7 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
 
   // Props
   @Prop({ default: false })
-  readonly provisionsRemoved!: boolean
+  readonly provisionsRemoved: boolean
 
   // Emitters
   @Emit('isChanged')

@@ -123,7 +123,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
 import { AlterationSummary, Articles, TransactionalFolioNumber } from '@/components/Alteration/'
@@ -305,7 +305,7 @@ export default class Alteration extends Mixins(
     }
 
     // now that all data is loaded, wait for things to stabilize and reset flag
-    Vue.nextTick(() => this.setHaveUnsavedChanges(false))
+    this.$nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
   /** Fetches the business snapshot. */

@@ -166,7 +166,7 @@
             id="address-mailing"
             :address="mailingAddress"
             :editing="true"
-            :schema="RegistrationMailingAddressSchema"
+            :schema="DefaultAddressSchema"
             @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, mailingAddress, $event)"
             @valid="onAddressValid(AddressTypes.MAILING_ADDRESS, $event)"
           />
@@ -205,7 +205,7 @@
               id="address-delivery"
               :address="deliveryAddress"
               :editing="true"
-              :schema="RegistrationDeliveryAddressSchema"
+              :schema="InBcCanadaAddressSchema"
               :noPoBox="true"
               @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, deliveryAddress, $event)"
               @valid="onAddressValid(AddressTypes.DELIVERY_ADDRESS, $event)"
@@ -255,7 +255,7 @@
                     id="address-registered-mailing"
                     :address="mailingAddress"
                     :editing="true"
-                    :schema="addressSchema"
+                    :schema="InBcCanadaAddressSchema"
                     @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, mailingAddress, $event)"
                     @valid="onAddressValid(AddressTypes.MAILING_ADDRESS, $event)"
                   />
@@ -289,7 +289,7 @@
                     v-if="!inheritMailingAddress"
                     :address="deliveryAddress"
                     :editing="true"
-                    :schema="addressSchema"
+                    :schema="InBcCanadaAddressSchema"
                     @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, deliveryAddress, $event)"
                     @valid="onAddressValid(AddressTypes.DELIVERY_ADDRESS, $event)"
                   />
@@ -323,7 +323,7 @@
                       id="address-records-mailing"
                       :address="recMailingAddress"
                       :editing="true"
-                      :schema="addressSchema"
+                      :schema="InBcCanadaAddressSchema"
                       @update:address="updateAddress(AddressTypes.REC_MAILING_ADDRESS, recMailingAddress, $event)"
                       @valid="onAddressValid(AddressTypes.REC_MAILING_ADDRESS, $event)"
                     />
@@ -356,7 +356,7 @@
                       id="address-records-delivery"
                       :address="recDeliveryAddress"
                       :editing="true"
-                      :schema="addressSchema"
+                      :schema="InBcCanadaAddressSchema"
                       @update:address="updateAddress(AddressTypes.REC_DELIVERY_ADDRESS, recDeliveryAddress, $event)"
                       @valid="onAddressValid(AddressTypes.REC_DELIVERY_ADDRESS, $event)"
                     />
@@ -390,10 +390,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch, Vue } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { isEmpty } from 'lodash'
-import { OfficeAddressSchema, PersonAddressSchema } from '@/schemas/'
+import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces/'
 import { isSame } from '@/utils/'
@@ -416,7 +416,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 
   /** Whether to show invalid section styling. */
   @Prop({ default: false })
-  readonly invalidSection!: boolean
+  readonly invalidSection: boolean
 
   /** Prop to set readonly state (ie disable form actions). */
   @Prop({ default: false })
@@ -444,14 +444,13 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   readonly isSame = isSame
   readonly AddressTypes = AddressTypes
   readonly CorpTypeCd = CorpTypeCd
-  readonly addressSchema = OfficeAddressSchema
-  readonly RegistrationMailingAddressSchema = PersonAddressSchema
-  readonly RegistrationDeliveryAddressSchema = OfficeAddressSchema
+  readonly DefaultAddressSchema = DefaultAddressSchema
+  readonly InBcCanadaAddressSchema = InBcCanadaAddressSchema
 
   readonly defaultAddress: AddressIF = {
     addressCity: '',
-    addressCountry: 'CA',
-    addressRegion: 'BC',
+    addressCountry: COUNTRY_CA,
+    addressRegion: REGION_BC,
     deliveryInstructions: '',
     postalCode: '',
     streetAddress: '',
@@ -765,7 +764,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   private async updateDeliveryAddress (): Promise<void> {
     if ((this.isChangeFiling || this.isConversionFiling) && this.disableSameDeliveryAddress) {
       this.inheritMailingAddress = false
-      await Vue.nextTick() // Allow referenced form to open before validating
+      await this.$nextTick() // Allow referenced form to open before validating
 
       // validate delivery address
       this.$refs.deliveryAddress && this.$refs.deliveryAddress.$refs.addressForm.validate()
@@ -792,7 +791,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Updates store when local Editing property has changed. */
   @Watch('isEditing', { immediate: true })
   private onEditingChanged (val: boolean): void {
-    this.setEditingOfficeAddresses(val) // Used for Correction Flags
+    this.setEditingOfficeAddresses(val) // used for Correction Flags
     this.updateValidity()
   }
 

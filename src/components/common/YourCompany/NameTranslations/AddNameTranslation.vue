@@ -125,14 +125,14 @@ export default class AddNameTranslation extends Mixins(CommonMixin) {
   }
 
   /**
-   * Returns true if we are adding, false if editing
+   * Returns True if we are adding, False if editing.
    */
   get isAddingTranslation (): boolean {
-    return this.editNameTranslation === ''
+    return (this.editNameTranslation === '')
   }
 
   /**
-   * Trigger validation before add in case of blank name
+   * Trigger validation before add in case of blank name.
    */
   private validateAddTranslation (): void {
     if (this.$refs.nameTranslationForm.validate()) {

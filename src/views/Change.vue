@@ -56,6 +56,7 @@
           :validate="getAppValidate"
           :disableEdit="!isRoleStaff"
         />
+
         <template v-if="isRoleStaff">
           <CourtOrderPoa
             class="'mt-10"
@@ -76,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
@@ -211,14 +212,14 @@ export default class Change extends Mixins(
       // update the current fees for the Filing
       this.setCurrentFees(
         await this.fetchFilingFees(
-          FilingCodes.CHANGE_OF_REGISTRATION, this.getEntityType
+          FilingCodes.FM_CHANGE, this.getEntityType
         ).catch(() => cloneDeep(EmptyFees))
       )
 
       // fetches the fee prices to display in the text
       this.setFeePrices(
         await this.fetchFilingFees(
-          FilingCodes.CHANGE_OF_REGISTRATION, this.getEntityType
+          FilingCodes.FM_CHANGE, this.getEntityType
         ).catch(() => cloneDeep(EmptyFees))
       )
 
@@ -242,7 +243,7 @@ export default class Change extends Mixins(
     }
 
     // now that all data is loaded, wait for things to stabilize and reset flag
-    Vue.nextTick(() => this.setHaveUnsavedChanges(false))
+    this.$nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
   /** Called when staff payment data has changed. */

@@ -108,7 +108,7 @@
 
           <!-- Mailing Address -->
           <v-col cols="12" :sm="isSummaryView ? 4 : 3" :class="{ 'removed': wasRemoved(orgPerson)}">
-            <BaseAddress class="peoples-roles-mailing-address" :address="orgPerson.mailingAddress" />
+            <MailingAddress class="peoples-roles-mailing-address" :address="orgPerson.mailingAddress" />
           </v-col>
 
           <!-- Delivery Address (for persons only) -->
@@ -116,7 +116,7 @@
             <p v-if="isSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])"
               class="peoples-roles-delivery-address info-text">Same as Mailing Address
             </p>
-            <BaseAddress v-else class="peoples-roles-delivery-address" :address="orgPerson.deliveryAddress"/>
+            <DeliveryAddress v-else class="peoples-roles-delivery-address" :address="orgPerson.deliveryAddress"/>
           </v-col>
 
           <!-- Roles -->
@@ -277,7 +277,8 @@ import { ActionTypes, PartyTypes, RoleTypes } from '@/enums/'
 
 @Component({
   components: {
-    BaseAddress,
+    DeliveryAddress: BaseAddress,
+    MailingAddress: BaseAddress,
     OrgPerson
   }
 })

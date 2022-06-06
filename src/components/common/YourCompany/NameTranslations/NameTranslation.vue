@@ -161,8 +161,8 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   @Prop({ default: false })
   readonly invalidSection: boolean
 
-  @Prop({ default: () => { return [] as [] } })
-  readonly nameTranslations!: NameTranslationIF[]
+  @Prop({ default: () => [] })
+  readonly nameTranslations: NameTranslationIF[]
 
   @Prop({ default: false })
   readonly isSummaryMode: boolean

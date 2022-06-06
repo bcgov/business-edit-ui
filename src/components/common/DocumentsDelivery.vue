@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Emit, Vue, Watch, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Emit, Watch, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins/'
 import { FilingNames } from '@/enums/'
@@ -121,7 +121,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   @Emit('valid')
   private async emitValid (): Promise<boolean> {
     // wait for form to update itself before checking validity
-    await Vue.nextTick()
+    await this.$nextTick()
     return (this.validateEmailFormat(this.optionalEmail))
   }
 }
