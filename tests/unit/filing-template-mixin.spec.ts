@@ -94,76 +94,76 @@ describe('Change of Registration Filing', () => {
     // FUTURE: check filing data...
     expect(filing).toEqual(
       expect.objectContaining({
-        'business': {
-          'foundingDate': 'Jan 01, 2000',
-          'identifier': 'BC1234567',
-          'legalName': 'SomeMockBusiness',
-          'legalType': ''
+        business: {
+          foundingDate: 'Jan 01, 2000',
+          identifier: 'BC1234567',
+          legalName: 'SomeMockBusiness',
+          legalType: ''
         },
-        'changeOfRegistration': {
-          'business': {
-            'identifier': 'BC1234567',
-            'naics': {
-              'naicsCode': '123456',
-              'naicsDescription': 'Mock Description'
+        changeOfRegistration: {
+          business: {
+            identifier: 'BC1234567',
+            naics: {
+              naicsCode: '123456',
+              naicsDescription: 'Mock Description'
             },
-            'natureOfBusiness': ''
+            natureOfBusiness: ''
           },
-          'contactPoint': {
-            'email': '',
-            'phone': ''
+          contactPoint: {
+            email: '',
+            phone: ''
           },
-          'offices': {
-            'businessOffice': {
-              'deliveryAddress': {
-                'addressCity': 'Alpha',
-                'addressCountry': 'CA',
-                'addressRegion': 'BC',
-                'deliveryInstructions': 'Delivery address',
-                'postalCode': 'V1V 1V1',
-                'streetAddress': '111 First St',
-                'streetAddressAdditional': 'Suite 1'
+          offices: {
+            businessOffice: {
+              deliveryAddress: {
+                addressCity: 'Alpha',
+                addressCountry: 'CA',
+                addressRegion: 'BC',
+                deliveryInstructions: 'Delivery address',
+                postalCode: 'V1V 1V1',
+                streetAddress: '111 First St',
+                streetAddressAdditional: 'Suite 1'
               },
-              'mailingAddress': {
-                'addressCity': 'Bravo',
-                'addressCountry': 'CA',
-                'addressRegion': 'BC',
-                'deliveryInstructions': 'Mailing address',
-                'postalCode': 'V2V 2V2',
-                'streetAddress': '222 Second St',
-                'streetAddressAdditional': 'Suite 2'
+              mailingAddress: {
+                addressCity: 'Bravo',
+                addressCountry: 'CA',
+                addressRegion: 'BC',
+                deliveryInstructions: 'Mailing address',
+                postalCode: 'V2V 2V2',
+                streetAddress: '222 Second St',
+                streetAddressAdditional: 'Suite 2'
               }
             }
           },
-          'parties': [
+          parties: [
             {
-              'mailingAddress': {
-                'addressCity': 'Party',
-                'addressCountry': 'CA',
-                'addressRegion': 'BC',
-                'postalCode': 'V0V 0V0',
-                'streetAddress': '123 Completing Ave'
+              mailingAddress: {
+                addressCity: 'Party',
+                addressCountry: 'CA',
+                addressRegion: 'BC',
+                postalCode: 'V0V 0V0',
+                streetAddress: '123 Completing Ave'
               },
-              'officer': {
-                'firstName': 'First',
-                'lastName': 'Last',
-                'middleName': 'Middle',
-                'partyType': 'person'
+              officer: {
+                firstName: 'First',
+                lastName: 'Last',
+                middleName: 'Middle',
+                partyType: 'person'
               },
-              'roles': [
+              roles: [
                 {
-                  'appointmentDate': '', // no date in this test
-                  'roleType': 'Completing Party'
+                  appointmentDate: '', // no date in this test
+                  roleType: 'Completing Party'
                 }
               ]
             }
           ]
         },
-        'header': {
-          'certifiedBy': '',
-          'date': '',
-          'folioNumber': '',
-          'name': 'changeOfRegistration'
+        header: {
+          certifiedBy: '',
+          date: '',
+          folioNumber: '',
+          name: 'changeOfRegistration'
         }
       })
     )

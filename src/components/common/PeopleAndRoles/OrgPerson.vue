@@ -219,11 +219,11 @@
                 <div class="mt-6">
                   <label class="sub-header">Mailing Address</label>
                   <div class="address-wrapper pt-4">
-                    <base-address
+                    <MailingAddress
                       ref="mailingAddressNew"
                       :editing="true"
-                      :schema="isPerson ? PersonAddressSchema :
-                        isChangeFiling ? OutOfBCAddressSchema : OfficeAddressSchema"
+                      :schema="isPerson ? DefaultAddressSchema :
+                        isChangeFiling ? InCanadaAddressSchema : InBcCanadaAddressSchema"
                       :address="inProgressMailingAddress"
                       @update:address="inProgressMailingAddress = $event"
                       @valid="mailingAddressValid = $event"
@@ -244,10 +244,10 @@
                   <div v-if="!inheritMailingAddress" class="mt-4">
                     <label class="sub-header">Delivery Address</label>
                     <div class="address-wrapper pt-4">
-                      <base-address
+                      <DeliveryAddress
                         ref="deliveryAddressNew"
                         :editing="true"
-                        :schema="isPerson ? PersonAddressSchema : OfficeAddressSchema"
+                        :schema="isPerson ? DefaultAddressSchema : InBcCanadaAddressSchema"
                         :address="inProgressDeliveryAddress"
                         @update:address="inProgressDeliveryAddress = $event"
                         @valid="deliveryAddressValid = $event"
@@ -287,12 +287,13 @@ import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/co
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { RoleTypes, PartyTypes } from '@/enums/'
-import { PersonAddressSchema, OfficeAddressSchema, OutOfBCAddressSchema } from '@/schemas/'
+import { DefaultAddressSchema, InBcCanadaAddressSchema, InCanadaAddressSchema } from '@/schemas/'
 import { Getter } from 'vuex-class'
 
 @Component({
   components: {
-    BaseAddress,
+    DeliveryAddress: BaseAddress,
+    MailingAddress: BaseAddress,
     ConfirmDialogShared,
     HelpSection
   }
@@ -310,9 +311,9 @@ export default class OrgPerson extends Mixins(CommonMixin) {
   readonly CorpTypeCd = CorpTypeCd
   readonly RoleTypes = RoleTypes
   readonly PartyTypes = PartyTypes
-  readonly PersonAddressSchema = PersonAddressSchema
-  readonly OfficeAddressSchema = OfficeAddressSchema
-  readonly OutOfBCAddressSchema = OutOfBCAddressSchema
+  readonly DefaultAddressSchema = DefaultAddressSchema
+  readonly InBcCanadaAddressSchema = InBcCanadaAddressSchema
+  readonly InCanadaAddressSchema = InCanadaAddressSchema
 
   /** The current org/person to edit or add. */
   @Prop() readonly currentOrgPerson!: OrgPersonIF

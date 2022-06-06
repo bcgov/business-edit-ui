@@ -4,7 +4,6 @@ import { shallowMount, Wrapper } from '@vue/test-utils'
 import { axios } from '@/utils/'
 import MixinTester from './mixin-tester.vue'
 import { getVuexStore } from '@/store/'
-import { OrgPersonTypes } from '@/enums/'
 
 const store = getVuexStore()
 
@@ -163,7 +162,7 @@ describe('Legal API Mixin', () => {
       .returns(Promise.resolve({ data: { directors: DIRECTORS } }))
 
     // call method
-    const response = await vm.fetchOrgPersons(OrgPersonTypes.DIRECTORS)
+    const response = await vm.fetchOrgPersons('directors')
 
     // verify data
     expect(response).toEqual(DIRECTORS)
@@ -262,7 +261,7 @@ describe('Legal API Mixin', () => {
 
     // verify fetchOrgPersons with no response.data
     get.withArgs('businesses/CP1234567/directors').returns(Promise.resolve({}))
-    await expect(vm.fetchOrgPersons(OrgPersonTypes.DIRECTORS)).rejects.toThrow('Invalid API response')
+    await expect(vm.fetchOrgPersons('directors')).rejects.toThrow('Invalid API response')
 
     // verify fetchShareStructure with no response.data
     get.withArgs('businesses/CP1234567/share-classes').returns(Promise.resolve({}))

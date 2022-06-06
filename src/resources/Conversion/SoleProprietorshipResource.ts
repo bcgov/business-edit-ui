@@ -9,7 +9,7 @@ export const SoleProprietorshipResource: ResourceIF = {
   nameRequestType: NameRequestEntityTypes.FR,
   addressLabel: 'Business Addresses',
   filingData: {
-    filingTypeCode: FilingCodes.CONVERSION,
+    filingTypeCode: FilingCodes.FM_CONVERSION,
     entityType: CorpTypeCd.SOLE_PROP,
     priority: false,
     waiveFees: true

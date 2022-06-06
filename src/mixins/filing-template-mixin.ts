@@ -438,8 +438,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         },
         offices: {
           businessOffice: {
-            mailingAddress: this.getOfficeAddresses.businessOffice.mailingAddress,
-            deliveryAddress: this.getOfficeAddresses.businessOffice.deliveryAddress
+            mailingAddress: this.getOfficeAddresses.businessOffice?.mailingAddress,
+            deliveryAddress: this.getOfficeAddresses.businessOffice?.deliveryAddress
           }
         },
         parties: null // applied below

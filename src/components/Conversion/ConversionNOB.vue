@@ -24,6 +24,7 @@
           <v-form ref="form" lazy-validation>
             <v-textarea
               filled
+              auto-grow
               class="mt-5"
               autocomplete="chrome-off"
               placeholder="Enter Nature of Business"
@@ -89,7 +90,7 @@ import { isEqual } from 'lodash'
 export default class NatureOfBusiness extends Vue {
   /** Whether to show invalid section styling. */
   @Prop({ default: false })
-  readonly invalidSection!: boolean
+  readonly invalidSection: boolean
 
   @Getter getCurrentNaics!: NaicsIF
   @Getter getSnapshotNaics!: NaicsIF

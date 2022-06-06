@@ -26,7 +26,7 @@ import { NatureOfBusiness as NatureOfBusinessShared } from '@bcrs-shared-compone
 export default class NatureOfBusiness extends Vue {
   /** Whether to show invalid section styling. */
   @Prop({ default: false })
-  readonly invalidSection!: boolean
+  readonly invalidSection: boolean
 
   readonly NaicsServices = NaicsServices
 

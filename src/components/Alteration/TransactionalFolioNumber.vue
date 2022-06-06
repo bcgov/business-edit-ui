@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, FlagsReviewCertifyIF, FormFieldType } from '@/interfaces/'
@@ -88,7 +88,7 @@ export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
   private async onFolioNumberChanged (val: string): Promise<void> {
     this.setTransactionalFolioNumber(val)
     // wait for form field to update itself before checking validity
-    await Vue.nextTick()
+    await this.$nextTick()
     this.setTransactionalFolioNumberValidity(this.$refs.folioNumberInput.valid)
   }
 }

@@ -81,11 +81,11 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
     correctNrForm: HTMLFormElement
   }
 
-  /** Form Submission Prop */
+  /** The form type. */
   @Prop({ default: null })
   readonly formType: CorrectionTypes
 
-  /** Form validation Prop */
+  /** Whether to perform validation. */
   @Prop({ default: false })
   readonly validate: boolean
 

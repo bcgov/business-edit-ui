@@ -1,3 +1,3 @@
-export * from './office-address-schema'
-export * from './person-address-schema'
-export * from './out-of-bc-address-schema'
+export * from './default-address-schema'
+export * from './in-bc-canada-address-schema'
+export * from './in-canada-address-schema'

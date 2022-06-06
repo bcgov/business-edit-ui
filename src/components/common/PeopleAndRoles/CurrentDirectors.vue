@@ -43,7 +43,7 @@
 
             <!-- Mailing Address -->
             <td class="px-0">
-              <base-address class="director-detail" :address="orgPerson.mailingAddress" />
+              <MailingAddress class="director-detail" :address="orgPerson.mailingAddress" />
             </td>
 
             <!-- Delivery Address -->
@@ -51,7 +51,7 @@
               <p v-if="isSame(orgPerson.mailingAddress, orgPerson.deliveryAddress)"
                 class="director-detail">Same as Mailing Address
               </p>
-              <base-address v-else class="director-detail" :address="orgPerson.deliveryAddress"/>
+              <DeliveryAddress v-else class="director-detail" :address="orgPerson.deliveryAddress"/>
             </td>
 
             <!-- Appointment Date -->
@@ -76,18 +76,17 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 
 @Component({
   components: {
-    BaseAddress
+    DeliveryAddress: BaseAddress,
+    MailingAddress: BaseAddress
   }
 })
 export default class CurrentDirectors extends Mixins(CommonMixin) {
   // Declarations for template
   readonly RoleTypes = RoleTypes
+  readonly isSame = isSame
 
   // Global getters
   @Getter getPeopleAndRoles!: OrgPersonIF[]
-
-  // declaration for template
-  readonly isSame = isSame
 
   /** Headers for the person table. */
   readonly tableHeaders = ['Name', 'Mailing Address', 'Delivery Address', 'Effective Dates']

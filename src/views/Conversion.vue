@@ -48,11 +48,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { getFeatureFlag } from '@/utils/'
-import { PeopleAndRoles, CompletingParty, StaffPayment, YourCompany } from '@/components/common/'
+import { PeopleAndRoles, CompletingParty, YourCompany } from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
@@ -183,14 +183,14 @@ export default class Conversion extends Mixins(
       // update the current fees for the Filing
       this.setCurrentFees(
         await this.fetchFilingFees(
-          FilingCodes.CONVERSION, this.getEntityType
+          FilingCodes.FM_CONVERSION, this.getEntityType
         ).catch(() => cloneDeep(EmptyFees))
       )
 
       // fetches the fee prices to display in the text
       this.setFeePrices(
         await this.fetchFilingFees(
-          FilingCodes.CONVERSION, this.getEntityType
+          FilingCodes.FM_CONVERSION, this.getEntityType
         ).catch(() => cloneDeep(EmptyFees))
       )
 
@@ -206,7 +206,7 @@ export default class Conversion extends Mixins(
     this.setCertifyStateValidity(true)
 
     // now that all data is loaded, wait for things to stabilize and reset flag
-    Vue.nextTick(() => this.setHaveUnsavedChanges(false))
+    this.$nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
   /** Fetches the business snapshot. */

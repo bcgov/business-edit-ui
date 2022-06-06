@@ -124,7 +124,7 @@ import { CommonMixin } from '@/mixins/'
 
 @Component({})
 export default class ListNameTranslation extends Mixins(CommonMixin) {
-  @Prop({ default: () => { return [] as [] } })
+  @Prop({ default: () => [] })
   readonly translationList: NameTranslationIF[]
 
   @Prop({ default: false })

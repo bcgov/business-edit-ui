@@ -60,7 +60,7 @@ export default class CommonMixin extends Vue {
     if (officer?.firstName) fullName += officer.firstName + ' '
     if (officer?.middleName) fullName += officer.middleName + ' '
     if (officer?.lastName) fullName += officer.lastName
-    return fullName.trimRight()
+    return fullName.trimEnd()
   }
 
   /**
@@ -76,7 +76,7 @@ export default class CommonMixin extends Vue {
     if (addressData?.postalCd) fullAddress += addressData.postalCd + ', '
     if (addressData?.countryTypeCd) fullAddress += addressData.countryTypeCd
 
-    return fullAddress.trimRight()
+    return fullAddress.trimEnd()
   }
 
   /** Changes the specified prop to uppercase. */

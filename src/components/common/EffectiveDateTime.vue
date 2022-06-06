@@ -73,7 +73,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { DateMixin } from '@/mixins/'
@@ -263,7 +263,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   /** Constructs the effective date and updates the parent. */
   private async constructAndUpdate (): Promise<void> {
     // wait for form to update itself before checking validity
-    await Vue.nextTick()
+    await this.$nextTick()
 
     const isDateValid = this.$refs.datePickerRef.validateForm()
     const isTimeValid = this.$refs.form.validate()
@@ -387,7 +387,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
     const validDateText = this.isFutureEffective ? !!this.dateText : true
 
     // wait for form to update itself before checking validity
-    await Vue.nextTick()
+    await this.$nextTick()
     const isDateValid = this.$refs.datePickerRef.validateForm()
     const isTimeValid = this.$refs.form.validate()
     return this.isImmediate || (!!this.effectiveDateType &&

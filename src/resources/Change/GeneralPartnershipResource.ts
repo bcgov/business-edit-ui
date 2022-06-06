@@ -9,7 +9,7 @@ export const GeneralPartnershipResource: ResourceIF = {
   nameRequestType: NameRequestEntityTypes.GP,
   addressLabel: 'Business Addresses',
   filingData: {
-    filingTypeCode: FilingCodes.CHANGE_OF_REGISTRATION,
+    filingTypeCode: FilingCodes.FM_CHANGE,
     entityType: CorpTypeCd.PARTNERSHIP,
     priority: false
   },

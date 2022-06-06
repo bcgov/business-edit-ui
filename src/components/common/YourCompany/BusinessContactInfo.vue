@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Vue } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info/'
 import { AuthServices } from '@/services/'
@@ -44,7 +44,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 
   /** Whether to show invalid section styling. */
   @Prop({ default: false })
-  readonly invalidSection!: boolean
+  readonly invalidSection: boolean
 
   /** Get the original Contact info dependant on filing type. */
   get originalContact (): ContactPointIF {
@@ -81,7 +81,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
       const prev = this.getBusinessContact
       // toggle for reactivity
       this.setBusinessContact({})
-      Vue.nextTick(() => this.setBusinessContact(prev))
+      this.$nextTick(() => this.setBusinessContact(prev))
     }
   }
 
