@@ -403,7 +403,7 @@ describe('Alteration component', () => {
     }
     await wrapper.setProps({ appReady: true })
     await flushPromises()
-  
+
     expect(store.state.stateModel.certifyState.certifiedBy).toBe('Jon Doe')
   })
 
