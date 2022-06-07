@@ -383,19 +383,6 @@ describe('Alteration component', () => {
     expect(store.state.stateModel.currentFees.futureEffectiveFees).toBe(100)
   })
 
-  it.only('certify text is prefilled/uneditable for non-staff user', async () => {
-    store.state.stateModel.tombstone.keycloakRoles = []
-    store.state.stateModel.tombstone.userInfo = {
-      firstname: 'Jon',
-      lastname: 'Doe'
-    }
-    await wrapper.setProps({ appReady: true })
-    await flushPromises()
-  
-    expect(store.state.stateModel.certifyState.valid).toBe(true)
-    expect(store.state.stateModel.certifyState.certifiedBy).toBe('Jon Doe')
-  })
-
   it('certify text is not prefilled/editable for staff user', async () => {
     store.state.stateModel.tombstone.keycloakRoles = ['staff']
     store.state.stateModel.tombstone.userInfo = {
@@ -405,8 +392,19 @@ describe('Alteration component', () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
-    expect(store.state.stateModel.certifyState.valid).toBe(false)
     expect(store.state.stateModel.certifyState.certifiedBy).toBe('undefined undefined')
+  })
+
+  it('certify text is prefilled/uneditable for non-staff user', async () => {
+    store.state.stateModel.tombstone.keycloakRoles = []
+    store.state.stateModel.tombstone.userInfo = {
+      firstname: 'Jon',
+      lastname: 'Doe'
+    }
+    await wrapper.setProps({ appReady: true })
+    await flushPromises()
+  
+    expect(store.state.stateModel.certifyState.certifiedBy).toBe('Jon Doe')
   })
 
   // FUTURE

@@ -300,23 +300,23 @@ export default class Alteration extends Mixins(
         ).catch(() => cloneDeep(EmptyFees))
       )
 
+      // set current profile name to store for field pre population
+      // do this only if we are not staff
+      if (!this.isRoleStaff) {
+        // pre-populate Certified By name
+        this.setCertifyState(
+          {
+            valid: this.getCertifyState.valid,
+            certifiedBy: `${this.getUserFirstName} ${this.getUserLastName}`
+          }
+        )
+      }
+
       // tell App that we're finished loading
       this.emitHaveData()
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
       this.emitFetchError(err)
-    }
-
-    // set current profile name to store for field pre population
-    // do this only if we are not staff
-    if (!this.isRoleStaff) {
-      // pre-populate Certified By name
-      this.setCertifyState(
-        {
-          valid: this.getCertifyState.valid,
-          certifiedBy: `${this.getUserFirstName} ${this.getUserLastName}`
-        }
-      )
     }
 
     // now that all data is loaded, wait for things to stabilize and reset flag
