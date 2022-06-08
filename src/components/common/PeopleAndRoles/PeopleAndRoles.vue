@@ -42,7 +42,7 @@
           v-if="!isRoleStaff && orgPersonHelp"
           class="mt-5"
           :helpSection="orgPersonHelp"
-          />
+        />
 
         <!-- SP add buttons (conversion filing only) -->
         <div v-if="isTypeSoleProp && isConversionFiling && !hasMinimumProprietor" class="mt-8">

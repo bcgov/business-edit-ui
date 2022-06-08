@@ -8,7 +8,6 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitC
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import PeopleAndRoles from '@/components/common/PeopleAndRoles/PeopleAndRoles.vue'
-import { FilingTypes } from '@/enums/'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()
@@ -107,7 +106,8 @@ describe('People And Roles component for Correction', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    store.state.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.state.stateModel.tombstone.filingType = 'correction'
     store.state.resourceModel = BenefitCompanyStatementResource
 
     wrapperFactory = () => {
@@ -334,8 +334,8 @@ describe('People And Roles component for Change of Registration', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    store.state.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.state.stateModel.tombstone.entityType = 'GP'
+    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.resourceModel = GeneralPartnershipResource
 
     wrapperFactory = () => {
