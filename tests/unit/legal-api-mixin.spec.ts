@@ -169,7 +169,8 @@ describe('Legal API Mixin', () => {
     const response = await vm.fetchDirectors()
 
     // verify data
-    expect(response).toEqual(ORGPERSONS)
+    expect(response[0]).toEqual(expect.objectContaining(ORGPERSONS[0]))
+    expect(response[1]).toEqual(expect.objectContaining(ORGPERSONS[1]))
   })
 
   it('fetches share structure correctly', async () => {
