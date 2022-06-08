@@ -323,7 +323,7 @@ describe('List People And Roles component for Corrections', () => {
     wrapper.destroy()
   })
 
-  it('displays the correct number of items when data is present', async () => {
+  it('displays the correct number of items when data is present', () => {
     const wrapper = wrapperFactory(peopleAndRoles)
 
     expect(wrapper.find('#people-roles-list').exists()).toBe(true)
