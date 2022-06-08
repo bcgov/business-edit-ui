@@ -33,8 +33,8 @@ export const isAlterationFiling = (state: StateIF): boolean => {
   return (state.stateModel.tombstone.filingType === FilingTypes.ALTERATION)
 }
 
-/** Whether the current filing is a change filing. */
-export const isChangeFiling = (state: StateIF): boolean => {
+/** Whether the current filing is a change of registration filing. */
+export const isChangeRegFiling = (state: StateIF): boolean => {
   return (state.stateModel.tombstone.filingType === FilingTypes.CHANGE_OF_REGISTRATION)
 }
 
@@ -441,7 +441,7 @@ export const hasConversionDataChanged = (state: StateIF): boolean => {
   )
 }
 
-/** Whether all correction/alteration sections are valid. */
+/** Whether all correction sections are valid. */
 export const isFilingValid = (state: StateIF): boolean => {
   // NB: Define Company and Agreement Type don't have a "valid" state --
   //     they don't allow saving an invalid state to the store.
@@ -544,9 +544,9 @@ export const hasContactInfoChanged = (state: StateIF): boolean => {
 
 /** True if any office address has changed. Applies to corrections, change and conversion filings only. */
 export const hasOfficeAddressesChanged = (state: StateIF): boolean => {
-  if (isCorrectionFiling(state) || isChangeFiling(state) || isConversionFiling(state)) {
+  if (isCorrectionFiling(state) || isChangeRegFiling(state) || isConversionFiling(state)) {
     const hasMailingDeliveryChanged = hasMailingChanged(state) || hasDeliveryChanged(state)
-    const isChangeOrConversionFiling = isChangeFiling(state) || isConversionFiling(state)
+    const isChangeOrConversionFiling = isChangeRegFiling(state) || isConversionFiling(state)
     const hasRecMailingDeliveryChanged = hasRecMailingChanged(state) || hasRecDeliveryChanged(state)
     return (
       hasMailingDeliveryChanged ||
@@ -562,7 +562,7 @@ export const getOriginalOfficeAddresses = (state: StateIF): AddressesIF => {
   if (isCorrectionFiling(state)) {
     return (getOriginalIA(state)?.incorporationApplication.offices as AddressesIF)
   }
-  if (isChangeFiling(state) || isConversionFiling(state)) {
+  if (isChangeRegFiling(state) || isConversionFiling(state)) {
     return (getEntitySnapshot(state)?.addresses)
   }
 }
@@ -576,7 +576,7 @@ export const hasMailingChanged = (state: StateIF): boolean => {
       ['addressCountryDescription']
     )
   }
-  if (isChangeFiling(state) || isConversionFiling(state)) {
+  if (isChangeRegFiling(state) || isConversionFiling(state)) {
     return !isSame(
       getOfficeAddresses(state)?.businessOffice?.mailingAddress,
       getOriginalOfficeAddresses(state)?.businessOffice?.mailingAddress,
@@ -595,7 +595,7 @@ export const hasDeliveryChanged = (state: StateIF): boolean => {
       ['addressCountryDescription']
     )
   }
-  if (isChangeFiling(state) || isConversionFiling(state)) {
+  if (isChangeRegFiling(state) || isConversionFiling(state)) {
     return !isSame(
       getOfficeAddresses(state)?.businessOffice?.deliveryAddress,
       getOriginalOfficeAddresses(state)?.businessOffice?.deliveryAddress,
@@ -751,7 +751,7 @@ export const showFeeSummary = (state: StateIF): boolean => {
   const haveFilingChange = (
     (isCorrectionFiling(state) && hasCorrectionDataChanged(state)) ||
     (isAlterationFiling(state) && hasAlterationDataChanged(state)) ||
-    (isChangeFiling(state) && hasChangeDataChanged(state)) ||
+    (isChangeRegFiling(state) && hasChangeDataChanged(state)) ||
     (isConversionFiling(state) && hasConversionDataChanged(state))
   )
   return (haveFilingChange && !isEqual(getFilingData(state), defaultFilingData))
@@ -786,7 +786,7 @@ export const getIsCompanyProvisionsValid = (state: StateIF): boolean => {
 export const getFilingName = (state: StateIF): FilingNames => {
   if (isCorrectionFiling(state)) return FilingNames.CORRECTION
   if (isAlterationFiling(state)) return FilingNames.ALTERATION
-  if (isChangeFiling(state)) return FilingNames.CHANGE_OF_REGISTRATION
+  if (isChangeRegFiling(state)) return FilingNames.CHANGE_OF_REGISTRATION
   if (isConversionFiling(state)) return FilingNames.CONVERSION
   return null
 }

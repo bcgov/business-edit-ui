@@ -7,9 +7,9 @@
     :editLabel="editLabel"
     :editedLabel="editSavedLabel"
     :disableActions="isCorrectionFiling"
-    :disableActionTooltip="isChangeFiling || isConversionFiling"
+    :disableActionTooltip="isChangeRegFiling || isConversionFiling"
     :invalidSection="invalidSection"
-    :optionalPhone="isAlterationFiling || isChangeFiling || isConversionFiling"
+    :optionalPhone="isAlterationFiling || isChangeRegFiling || isConversionFiling"
     @isEditingContact="onIsEditingContact($event)"
     @contactInfoChange="onContactInfoChange($event)"
   />
@@ -51,7 +51,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
     if (this.isCorrectionFiling) {
       return this.getOriginalIA.incorporationApplication.contactPoint
     }
-    if (this.isAlterationFiling || this.isChangeFiling || this.isConversionFiling) {
+    if (this.isAlterationFiling || this.isChangeRegFiling || this.isConversionFiling) {
       return this.getSnapshotBusinessContact
     }
     return null
@@ -70,7 +70,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
     if (isEqual(contactInfo, this.getBusinessContact)) return
 
     try {
-      if (this.isAlterationFiling || this.isChangeFiling || this.isConversionFiling) {
+      if (this.isAlterationFiling || this.isChangeRegFiling || this.isConversionFiling) {
         await AuthServices.updateContactInfo(contactInfo, this.getBusinessId)
       }
       this.setBusinessContact(contactInfo)

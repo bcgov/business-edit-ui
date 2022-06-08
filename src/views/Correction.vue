@@ -28,9 +28,9 @@
 
     <CompletingParty class="mt-10" sectionNumber="1." />
 
-    <Detail class="mt-10" sectionNumber="2." />
+    <Detail class="mt-10" sectionNumber="2." validate="true" />
 
-    <CertifySection class="mt-10" sectionNumber="3." />
+    <CertifySection class="mt-10" sectionNumber="3." validate="true" />
 
     <StaffPayment
       class="mt-10"

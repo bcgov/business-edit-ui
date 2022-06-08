@@ -1,3 +1,4 @@
+/* eslint max-len: 0 */
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
@@ -22,12 +23,16 @@ describe('Date Mixin', () => {
   })
 
   // FUTURE: this works locally but not in GHA; fix later
-  xit('returns correct values for createUtcDate()', () => {
-    // init store
-    store.state.stateModel.currentJsDate = new Date()
+  it('returns correct values for createUtcDate()', () => {
+    expect(vm.createUtcDate(2021, 0, 1, 0, 0).toISOString()).toBe('2021-01-01T08:00:00.000Z') // PST
+    expect(vm.createUtcDate(2021, 6, 1, 0, 0).toISOString()).toBe('2021-07-01T07:00:00.000Z') // PDT
+  })
 
-    expect(vm.createUtcDate(2021, 0, 1, 0, 0).toISOString()).toBe('2021-01-01T08:00:00.000Z')
-    expect(vm.createUtcDate(2021, 6, 1, 0, 0).toISOString()).toBe('2021-07-01T07:00:00.000Z')
+  it('returns correct values for yyyyMmDdToDate()', () => {
+    expect(vm.yyyyMmDdToDate(null)).toBeNull()
+    expect(vm.yyyyMmDdToDate('12345678901')).toBeNull()
+    expect(vm.yyyyMmDdToDate('2021-01-01').toISOString()).toEqual('2021-01-01T08:00:00.000Z') // PST
+    expect(vm.yyyyMmDdToDate('2021-07-01').toISOString()).toEqual('2021-07-01T07:00:00.000Z') // PDT
   })
 
   // FUTURE: this works locally but not in GHA; fix later
@@ -79,15 +84,11 @@ describe('Date Mixin', () => {
     expect(vm.dateToPacificDateTime(null)).toBeNull()
     expect(vm.dateToPacificDateTime(new Date('not a date'))).toBeNull()
     // verify some Standard times
-    expect(vm.dateToPacificDateTime(new Date('2021-01-01 07:00:00 GMT')))
-      .toBe('December 31, 2020 at 11:00 pm Pacific time')
-    expect(vm.dateToPacificDateTime(new Date('2021-01-01 08:00:00 GMT')))
-      .toBe('January 1, 2021 at 12:00 am Pacific time')
-      // verify some Daylight times
-    expect(vm.dateToPacificDateTime(new Date('2021-07-01 06:00:00 GMT')))
-      .toBe('June 30, 2021 at 11:00 pm Pacific time')
-    expect(vm.dateToPacificDateTime(new Date('2021-07-01 07:00:00 GMT')))
-      .toBe('July 1, 2021 at 12:00 am Pacific time')
+    expect(vm.dateToPacificDateTime(new Date('2021-01-01 07:00:00 GMT'))).toBe('December 31, 2020 at 11:00 pm Pacific time')
+    expect(vm.dateToPacificDateTime(new Date('2021-01-01 08:00:00 GMT'))).toBe('January 1, 2021 at 12:00 am Pacific time')
+    // verify some Daylight times
+    expect(vm.dateToPacificDateTime(new Date('2021-07-01 06:00:00 GMT'))).toBe('June 30, 2021 at 11:00 pm Pacific time')
+    expect(vm.dateToPacificDateTime(new Date('2021-07-01 07:00:00 GMT'))).toBe('July 1, 2021 at 12:00 am Pacific time')
   })
 
   xit('returns correct values for apiToDate()', () => {

@@ -307,23 +307,24 @@ describe('List People And Roles component for Corrections', () => {
   beforeAll(() => {
     store.state.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     store.state.resourceModel = BenefitCompanyStatementResource
-    wrapperFactory = (propsData: any) => {
+    wrapperFactory = (orgPeople, propsData: any) => {
+      store.state.stateModel.peopleAndRoles.orgPeople = orgPeople
       return mount(ListPeopleAndRoles, { propsData: { ...propsData }, vuetify, store })
     }
   })
 
   it('does not show the list if there is no data to display', () => {
-    const wrapper = wrapperFactory()
+    const wrapper = wrapperFactory([])
 
+    expect(wrapper.find('#people-roles-list').exists()).toBe(false)
     const rows = wrapper.findAll('.people-roles-content')
     expect(rows.length).toEqual(0)
-    expect(wrapper.find('#people-roles-list').exists()).toBe(false)
 
     wrapper.destroy()
   })
 
   it('displays the correct number of items when data is present', () => {
-    const wrapper = wrapperFactory({ peopleAndRoles })
+    const wrapper = wrapperFactory(peopleAndRoles)
 
     expect(wrapper.find('#people-roles-list').exists()).toBe(true)
     const rows = wrapper.findAll('.people-roles-content')
@@ -333,7 +334,7 @@ describe('List People And Roles component for Corrections', () => {
   })
 
   it('displays the correct names and badges in the list', () => {
-    const wrapper = wrapperFactory({ peopleAndRoles })
+    const wrapper = wrapperFactory(peopleAndRoles)
 
     const rows = wrapper.findAll('.people-roles-content')
     expect(rows.at(0).find('.people-roles-title').text()).toBe('Romeo D Whitehead')
@@ -349,7 +350,7 @@ describe('List People And Roles component for Corrections', () => {
   })
 
   it('displays the correct mailing addresses in the list', () => {
-    const wrapper = wrapperFactory({ peopleAndRoles })
+    const wrapper = wrapperFactory(peopleAndRoles)
 
     const rows = wrapper.findAll('.people-roles-content')
     expect(rows.at(0).find('.peoples-roles-mailing-address').text()).toContain('4219 St. John Street')
@@ -361,19 +362,19 @@ describe('List People And Roles component for Corrections', () => {
   })
 
   it('displays the correct delivery addresses in the list', () => {
-    const wrapper = wrapperFactory({ peopleAndRoles })
+    const wrapper = wrapperFactory(peopleAndRoles)
 
     const rows = wrapper.findAll('.people-roles-content')
     expect(rows.at(0).find('.peoples-roles-delivery-address').text()).toBe('Same as Mailing Address')
-    expect(rows.at(1).find('.peoples-roles-delivery-address').text()).toBe('')
-    expect(rows.at(2).find('.peoples-roles-delivery-address').text()).toContain('4434 Cassells St')
+    expect(rows.at(1).find('.peoples-roles-delivery-address').exists()).toBe(false)
+    expect(rows.at(2).find('.peoples-roles-delivery-address').exists()).toBe(false)
     expect(rows.at(3).find('.peoples-roles-delivery-address').text()).toContain('433 Ferry Road')
 
     wrapper.destroy()
   })
 
   it('displays the correct roles', () => {
-    const wrapper = wrapperFactory({ peopleAndRoles })
+    const wrapper = wrapperFactory(peopleAndRoles)
 
     const item1 = wrapper.findAll('.people-roles-content').at(0)
     expect(item1.findAll('.col-roles').at(0).text()).toBe('Completing Party')
@@ -393,7 +394,7 @@ describe('List People And Roles component for Corrections', () => {
   })
 
   it('displays the correct actions menus', () => {
-    const wrapper = wrapperFactory({ peopleAndRoles })
+    const wrapper = wrapperFactory(peopleAndRoles)
 
     // No action
     const item1 = wrapper.findAll('.people-roles-content').at(0)
@@ -423,8 +424,7 @@ describe('List People And Roles component for Corrections', () => {
   })
 
   it('correctly displays Add Person component', () => {
-    const wrapper = wrapperFactory({
-      peopleAndRoles,
+    const wrapper = wrapperFactory(peopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: emptyPerson,
       activeIndex: NaN,
@@ -441,8 +441,7 @@ describe('List People And Roles component for Corrections', () => {
   })
 
   it('correctly displays Add Corporation component', () => {
-    const wrapper = wrapperFactory({
-      peopleAndRoles,
+    const wrapper = wrapperFactory(peopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: emptyOrg,
       activeIndex: NaN,
@@ -459,8 +458,7 @@ describe('List People And Roles component for Corrections', () => {
   })
 
   it('correctly displays Edit Person component', () => {
-    const wrapper = wrapperFactory({
-      peopleAndRoles,
+    const wrapper = wrapperFactory(peopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: peopleAndRoles[0],
       activeIndex: 0,
@@ -477,8 +475,7 @@ describe('List People And Roles component for Corrections', () => {
   })
 
   it('correctly displays Edit Corporation component', () => {
-    const wrapper = wrapperFactory({
-      peopleAndRoles,
+    const wrapper = wrapperFactory(peopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: peopleAndRoles[1],
       activeIndex: 0,
@@ -501,13 +498,14 @@ describe('List People And Roles component for Change of Registration', () => {
   beforeAll(() => {
     store.state.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.state.resourceModel = GeneralPartnershipResource
-    wrapperFactory = (propsData: any) => {
+    wrapperFactory = (orgPeople, propsData: any) => {
+      store.state.stateModel.peopleAndRoles.orgPeople = orgPeople
       return mount(ListPeopleAndRoles, { propsData: { ...propsData }, vuetify, store })
     }
   })
 
   it('does not show the list if there is no data to display', () => {
-    const wrapper = wrapperFactory()
+    const wrapper = wrapperFactory([])
 
     const rows = wrapper.findAll('.people-roles-content')
     expect(rows.length).toEqual(0)
@@ -517,7 +515,7 @@ describe('List People And Roles component for Change of Registration', () => {
   })
 
   it('displays the correct number of items when data is present', () => {
-    const wrapper = wrapperFactory({ peopleAndRoles: gpPeopleAndRoles })
+    const wrapper = wrapperFactory(gpPeopleAndRoles)
 
     expect(wrapper.find('#people-roles-list').exists()).toBe(true)
     const rows = wrapper.findAll('.people-roles-content')
@@ -527,7 +525,7 @@ describe('List People And Roles component for Change of Registration', () => {
   })
 
   it('displays the correct names and badges in the list', () => {
-    const wrapper = wrapperFactory({ peopleAndRoles: gpPeopleAndRoles })
+    const wrapper = wrapperFactory(gpPeopleAndRoles)
 
     const rows = wrapper.findAll('.people-roles-content')
     expect(rows.at(0).find('.people-roles-title').text()).toBe('Romeo D Whitehead')
@@ -543,7 +541,7 @@ describe('List People And Roles component for Change of Registration', () => {
   })
 
   it('displays the correct mailing addresses in the list', () => {
-    const wrapper = wrapperFactory({ peopleAndRoles: gpPeopleAndRoles })
+    const wrapper = wrapperFactory(gpPeopleAndRoles)
 
     const rows = wrapper.findAll('.people-roles-content')
     expect(rows.at(0).find('.peoples-roles-mailing-address').text()).toContain('4219 St. John Street')
@@ -555,19 +553,19 @@ describe('List People And Roles component for Change of Registration', () => {
   })
 
   it('displays the correct delivery addresses in the list', () => {
-    const wrapper = wrapperFactory({ peopleAndRoles: gpPeopleAndRoles })
+    const wrapper = wrapperFactory(gpPeopleAndRoles)
 
     const rows = wrapper.findAll('.people-roles-content')
     expect(rows.at(0).find('.peoples-roles-delivery-address').text()).toBe('Same as Mailing Address')
     expect(rows.at(1).find('.peoples-roles-delivery-address').text()).toBe('')
-    expect(rows.at(2).find('.peoples-roles-delivery-address').text()).toContain('4434 Cassells St')
+    expect(rows.at(2).find('.peoples-roles-delivery-address').exists()).toBe(false)
     expect(rows.at(3).find('.peoples-roles-delivery-address').text()).toContain('433 Ferry Road')
 
     wrapper.destroy()
   })
 
   it('does not display the roles', () => {
-    const wrapper = wrapperFactory({ peopleAndRoles: gpPeopleAndRoles })
+    const wrapper = wrapperFactory(gpPeopleAndRoles)
 
     const item1 = wrapper.findAll('.people-roles-content').at(0)
     expect(item1.findAll('.col-roles').exists()).toBe(false)
@@ -576,7 +574,7 @@ describe('List People And Roles component for Change of Registration', () => {
   })
 
   it('displays the correct actions menus', () => {
-    const wrapper = wrapperFactory({ peopleAndRoles: gpPeopleAndRoles })
+    const wrapper = wrapperFactory(gpPeopleAndRoles)
 
     // No action
     const item1 = wrapper.findAll('.people-roles-content').at(0)
@@ -606,8 +604,7 @@ describe('List People And Roles component for Change of Registration', () => {
   })
 
   it('correctly displays Add Person component', () => {
-    const wrapper = wrapperFactory({
-      peopleAndRoles: gpPeopleAndRoles,
+    const wrapper = wrapperFactory(gpPeopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: emptyPerson,
       activeIndex: NaN,
@@ -624,8 +621,7 @@ describe('List People And Roles component for Change of Registration', () => {
   })
 
   it('correctly displays Add Corporation component', () => {
-    const wrapper = wrapperFactory({
-      peopleAndRoles: gpPeopleAndRoles,
+    const wrapper = wrapperFactory(gpPeopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: emptyOrg,
       activeIndex: NaN,
@@ -642,8 +638,7 @@ describe('List People And Roles component for Change of Registration', () => {
   })
 
   it('correctly displays Edit Person component', () => {
-    const wrapper = wrapperFactory({
-      peopleAndRoles: gpPeopleAndRoles,
+    const wrapper = wrapperFactory(gpPeopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: peopleAndRoles[0],
       activeIndex: 0,
@@ -660,8 +655,7 @@ describe('List People And Roles component for Change of Registration', () => {
   })
 
   it('correctly displays Edit Corporation component', () => {
-    const wrapper = wrapperFactory({
-      peopleAndRoles: gpPeopleAndRoles,
+    const wrapper = wrapperFactory(gpPeopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: peopleAndRoles[1],
       activeIndex: 0,
@@ -678,8 +672,7 @@ describe('List People And Roles component for Change of Registration', () => {
   })
 
   it('correctly displays Business Number component', async () => {
-    const wrapper = wrapperFactory({
-      peopleAndRoles: gpPeopleAndRoles,
+    const wrapper = wrapperFactory(gpPeopleAndRoles, {
       renderOrgPersonForm: false,
       currentOrgPerson: peopleAndRoles[1],
       activeIndex: 1,

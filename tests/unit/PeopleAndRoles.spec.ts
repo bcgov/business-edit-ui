@@ -8,7 +8,6 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitC
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import PeopleAndRoles from '@/components/common/PeopleAndRoles/PeopleAndRoles.vue'
-import { FilingTypes } from '@/enums/'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()
@@ -107,7 +106,8 @@ describe('People And Roles component for Correction', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    store.state.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.state.stateModel.tombstone.filingType = 'correction'
     store.state.resourceModel = BenefitCompanyStatementResource
 
     wrapperFactory = () => {
@@ -299,18 +299,18 @@ describe('People And Roles component for Correction', () => {
 
   it('shows popup when undoing an edit would change the Completing Party', async () => {
     // original IA containing original CP:
-    const originalCp = getPersonList([completingPartyRole])[0]
+    const originalCp = getPersonList([directorRole, completingPartyRole])[0]
     originalCp.officer.id = '1'
-    originalCp.actions = undefined
+    originalCp.actions = []
     store.state.stateModel.originalIA.incorporationApplication.parties = [originalCp]
 
     // current orgPeople list containing edited CP and added CP:
-    const editedCp = getPersonList([])[0]
+    const editedCp = getPersonList([directorRole])[0]
     editedCp.officer.id = '1'
-    editedCp.actions = ['edited']
+    editedCp.actions = ['EDITED']
     const addedCp = getPersonList([completingPartyRole])[0]
     addedCp.officer.id = '2'
-    addedCp.actions = ['added']
+    addedCp.actions = ['ADDED']
     store.state.stateModel.peopleAndRoles.orgPeople = [editedCp, addedCp]
 
     const wrapper = wrapperFactory()
@@ -334,8 +334,8 @@ describe('People And Roles component for Change of Registration', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    store.state.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.state.stateModel.tombstone.entityType = 'GP'
+    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.resourceModel = GeneralPartnershipResource
 
     wrapperFactory = () => {

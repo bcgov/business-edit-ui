@@ -62,10 +62,7 @@
         </v-row>
         <v-row no-gutters class="mt-4">
           <v-col cols="12">
-            <ListPeopleAndRoles
-              :peopleAndRoles="getPeopleAndRoles"
-              :isSummaryView="true"
-            />
+            <ListPeopleAndRoles :isSummaryView="true" />
           </v-col>
         </v-row>
       </article>
@@ -77,7 +74,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common/'
-import { ActionBindingIF, NameRequestIF, OrgPersonIF, ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, NameRequestIF, ResourceIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 
 @Component({
@@ -95,7 +92,6 @@ export default class ChangeSummary extends Vue {
   @Getter hasOfficeAddressesChanged!: boolean
   @Getter hasPeopleAndRolesChanged!: boolean
   @Getter getResource!: ResourceIF
-  @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string
   @Getter isTypeSoleProp!: boolean

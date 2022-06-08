@@ -135,7 +135,7 @@ import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FeesIF, FilingDataIF, FlagsReviewCertifyIF, ResourceIF }
   from '@/interfaces/'
-import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
+import { FilingCodes, FilingStatus } from '@/enums/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
@@ -330,7 +330,7 @@ export default class Alteration extends Mixins(
       AuthServices.fetchAuthInfo(this.getBusinessId),
       this.fetchAddresses(),
       this.fetchNameTranslations(),
-      this.fetchOrgPersons(OrgPersonTypes.DIRECTORS),
+      this.fetchDirectors(),
       this.fetchShareStructure(),
       this.fetchResolutions()
     ])

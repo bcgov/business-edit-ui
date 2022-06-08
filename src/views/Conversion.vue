@@ -56,7 +56,7 @@ import { PeopleAndRoles, CompletingParty, YourCompany } from '@/components/commo
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
-import { FilingCodes, FilingStatus, OrgPersonTypes } from '@/enums/'
+import { FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Conversion/'
 import { ConversionSummary } from '@/components/Conversion'
@@ -214,7 +214,7 @@ export default class Conversion extends Mixins(
     const items = await Promise.all([
       this.fetchBusinessInfo(),
       AuthServices.fetchAuthInfo(this.getBusinessId),
-      this.fetchOrgPersons(OrgPersonTypes.PARTIES)
+      this.fetchParties()
     ])
 
     if (items.length !== 3) throw new Error('Failed to fetch entity snapshot')

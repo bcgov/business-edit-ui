@@ -2,7 +2,15 @@
   <div id="list-people-roles">
     <!-- conditionally render add component -->
     <v-expand-transition>
-      <div id="people-roles-add" v-if="renderOrgPersonForm && isNaN(activeIndex)" class="section-container">
+      <div
+        v-if="renderOrgPersonForm && isNaN(activeIndex)"
+        id="people-roles-add"
+        class="section-container"
+        :class="{
+          'section-container': !isSummaryView,
+          'invalid-section': isComponentInvalid
+        }"
+      >
         <OrgPerson
           :currentOrgPerson="currentOrgPerson"
           :activeIndex="activeIndex"
@@ -21,7 +29,7 @@
       id="people-roles-list"
       :class="{
         'section-container': !isSummaryView,
-        'error-container': invalidOrgPersons
+        'invalid-section': isComponentInvalid
       }"
     >
       <!-- List Headers -->
@@ -41,34 +49,34 @@
       <!-- List Content -->
       <v-row
         class="people-roles-content section-container"
-        :class="{
-          'summary-view': isSummaryView,
-          'invalid-section': invalidOrgPersons
-        }"
+        :class="{ 'summary-view': isSummaryView, }"
         v-for="(orgPerson, index) in currentPeopleAndRoles"
         :key="index"
         no-gutters
       >
         <!-- conditionally render edit component instead of table row -->
-        <div id="people-roles-edit" v-if="renderOrgPersonForm && (index === activeIndex)">
-          <OrgPerson
-            :currentOrgPerson="currentOrgPerson"
-            :activeIndex="activeIndex"
-            :currentCompletingParty="currentCompletingParty"
-            @addEdit="emitAddEdit($event)"
-            @remove="emitRemove($event)"
-            @reset="emitReset()"
-            @removeCpRole="emitRemoveCpRole()"
-          />
-        </div>
+        <v-expand-transition>
+          <div id="people-roles-edit" v-if="renderOrgPersonForm && (index === activeIndex)">
+            <OrgPerson
+              :currentOrgPerson="currentOrgPerson"
+              :activeIndex="activeIndex"
+              :currentCompletingParty="currentCompletingParty"
+              @addEdit="emitAddEdit($event)"
+              @remove="emitRemove($event)"
+              @reset="emitReset()"
+              @removeCpRole="emitRemoveCpRole()"
+            />
+          </div>
+        </v-expand-transition>
 
-        <template v-else>
+        <!-- normal table row -->
+        <template v-if="!renderOrgPersonForm || (index != activeIndex)">
           <!-- Name + Badge -->
           <v-col class="pr-2" cols="12" sm="3">
             <v-row no-gutters>
               <v-col cols="1" class="mt-n1 ml-n1 mr-3 badges" :class="{ 'removed': wasRemoved(orgPerson)}">
-                <v-icon color="gray9" v-if="isPerson(orgPerson)">mdi-account</v-icon>
-                <v-icon color="gray9" v-if="isOrg(orgPerson)">mdi-domain</v-icon>
+                <v-icon color="gray9" v-if="isPartyTypePerson(orgPerson)">mdi-account</v-icon>
+                <v-icon color="gray9" v-if="isPartyTypeOrg(orgPerson)">mdi-domain</v-icon>
               </v-col>
               <v-col class="overflow-hidden">
                 <p class="people-roles-title mb-1" :class="{ 'removed': wasRemoved(orgPerson)}">
@@ -111,12 +119,19 @@
             <MailingAddress class="peoples-roles-mailing-address" :address="orgPerson.mailingAddress" />
           </v-col>
 
-          <!-- Delivery Address (for persons only) -->
+          <!-- Delivery Address -->
           <v-col cols="12" sm="3" :class="{ 'removed': wasRemoved(orgPerson)}">
-            <p v-if="isSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])"
-              class="peoples-roles-delivery-address info-text">Same as Mailing Address
-            </p>
-            <DeliveryAddress v-else class="peoples-roles-delivery-address" :address="orgPerson.deliveryAddress"/>
+            <template
+              v-if="hasRoleDirector(orgPerson) || hasRoleProprietor(orgPerson) || hasRolePartner(orgPerson)"
+            >
+              <p
+                v-if="isSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])"
+                class="peoples-roles-delivery-address info-text"
+              >
+                Same as Mailing Address
+              </p>
+              <DeliveryAddress v-else class="peoples-roles-delivery-address" :address="orgPerson.deliveryAddress"/>
+            </template>
           </v-col>
 
           <!-- Roles -->
@@ -137,8 +152,9 @@
 
           <!-- Actions Buttons -->
           <v-col v-if="!isSummaryView" class="pr-0">
+            <!-- orgPerson we have added/edited/removed: -->
             <div
-              v-if="orgPerson.actions &&  orgPerson.actions.length > 0"
+              v-if="orgPerson.actions && orgPerson.actions.length > 0"
               class="actions" :class="{'pr-5': wasRemoved(orgPerson)}"
             >
               <span v-if="wasAdded(orgPerson)" class="edit-action">
@@ -164,8 +180,8 @@
                 </v-btn>
               </span>
 
-              <!-- More Actions Menu -->
-              <span v-if="!wasRemoved(orgPerson)" :class="`more-actions-${index}`" class="dropdown-action mr-4">
+              <!-- More Actions Menu (Edit/Change + Remove actions) -->
+              <span v-if="!wasRemoved(orgPerson)" class="dropdown-action mr-4" :class="`more-actions-${index}`">
                 <v-menu
                   offset-y left nudge-bottom="4"
                   v-model="dropdown[index]"
@@ -181,6 +197,7 @@
                       <v-icon>{{dropdown[index] ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
                     </v-btn>
                   </template>
+
                   <v-list>
                     <v-list-item
                       v-if="!wasAdded(orgPerson)"
@@ -194,10 +211,10 @@
                       </v-list-item-subtitle>
                     </v-list-item>
                     <v-list-item
-                      v-if="!isProprietor(orgPerson.roles)"
+                      v-if="canRemove(orgPerson)"
                       class="actions-dropdown_item"
                       :id="`officer-${index}-remove-btn`"
-                      @click="emitUndo(index); dropdown[index]=false"
+                      @click="emitRemove(index); dropdown[index]=false"
                     >
                       <v-list-item-subtitle>
                         <v-icon small>mdi-delete</v-icon>
@@ -209,8 +226,9 @@
               </span>
             </div>
 
+            <!-- orgPerson we haven't touched: -->
             <div v-else class="actions">
-              <span class="edit-action" :class="{'pr-4': isProprietor(orgPerson.roles)}">
+              <span class="edit-action" :class="{'pr-4': hasRoleProprietor(orgPerson)}">
                 <v-btn
                   text color="primary"
                   :id="`officer-${index}-edit-btn`"
@@ -222,12 +240,8 @@
                 </v-btn>
               </span>
 
-              <!-- More Actions Menu -->
-              <span
-                v-if="!isProprietor(orgPerson.roles)"
-                :class="`more-actions-${index}`"
-                class="dropdown-action mr-4"
-              >
+              <!-- More Actions Menu (Remove action) -->
+              <span v-if="canRemove(orgPerson)" class="dropdown-action mr-4" :class="`more-actions-${index}`">
                 <v-menu
                   offset-y left nudge-bottom="4"
                   v-model="dropdown[index]"
@@ -243,6 +257,7 @@
                       <v-icon>{{dropdown[index] ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
                     </v-btn>
                   </template>
+
                   <v-list>
                     <v-list-item
                       class="actions-dropdown_item"
@@ -268,12 +283,13 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import OrgPerson from './OrgPerson.vue'
-import { CommonMixin } from '@/mixins/'
+import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { isSame } from '@/utils/'
-import { OrgPersonIF, RoleIF } from '@/interfaces/'
-import { ActionTypes, PartyTypes, RoleTypes } from '@/enums/'
+import { OrgPersonIF } from '@/interfaces/'
+import { ActionTypes } from '@/enums/'
 
 @Component({
   components: {
@@ -282,14 +298,9 @@ import { ActionTypes, PartyTypes, RoleTypes } from '@/enums/'
     OrgPerson
   }
 })
-export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
+export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMixin) {
   // Declaration for template
   readonly ActionTypes = ActionTypes
-  readonly RoleTypes = RoleTypes
-
-  /** The current orgs/people list. */
-  @Prop({ default: () => { return [] as [] } })
-  readonly peopleAndRoles!: Array<OrgPersonIF>
 
   /** Whether to render the OrgPersonForm (for edit or add). */
   @Prop() readonly renderOrgPersonForm: boolean
@@ -304,64 +315,64 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   @Prop() readonly currentCompletingParty: OrgPersonIF
 
   @Prop({ default: false })
-  readonly isSummaryView!: boolean
+  readonly isSummaryView: boolean
 
+  /** Whether to perform validation. */
   @Prop({ default: false })
-  readonly validate!: boolean
+  readonly validate: boolean
 
-  /** Whether we have all required parties. */
+  /** Whether OrgPersons list is valid. */
   @Prop({ default: true })
-  readonly haveRequiredParties: boolean
+  readonly validOrgPersons: boolean
+
+  // Store getter
+  @Getter getPeopleAndRoles!: OrgPersonIF[]
 
   // declaration for template
   readonly isSame = isSame
-
-  /** The name section validity state (when prompted by app). */
-  get invalidOrgPersons (): boolean {
-    return (this.validate && this.renderOrgPersonForm) || !this.haveRequiredParties
-  }
-
-  /** The current orgPersons list. */
-  get currentPeopleAndRoles (): Array<OrgPersonIF> {
-    return this.isSummaryView ? this.filterRemovedOrgPersons(this.peopleAndRoles) : this.peopleAndRoles
-  }
-
-  /** Helper method to filter REMOVED orgPersons from PeopleAndRoles list. */
-  private filterRemovedOrgPersons (peopleAndRoles: Array<OrgPersonIF>): Array<OrgPersonIF> {
-    return peopleAndRoles.filter(orgPerson => !orgPerson.actions?.includes(ActionTypes.REMOVED))
-  }
 
   /** Headers for the person table. */
   readonly tableHeaders = ['Name', 'Mailing Address', 'Delivery Address', '']
 
   /** V-model for dropdown menus. */
-  private dropdown: Array<boolean> = []
+  protected dropdown: Array<boolean> = []
 
-  /**
-   * Checks if specified org/person was added.
-   * @param person The org/person to check.
-   * @returns True if the org/person was added.
-   */
-  private wasAdded (person: OrgPersonIF): boolean {
-    return (person.actions?.includes(ActionTypes.ADDED))
+  /** This component's validity state (for error styling). */
+  get isComponentInvalid (): boolean {
+    // if prompted by app or if this is a single-page correction filing
+    // and
+    // if form is open or if list is invalid
+    return (this.validate || this.isCorrectionFiling) && (this.renderOrgPersonForm || !this.validOrgPersons)
   }
 
-  /**
-   * Checks if specified org/person was edited.
-   * @param person The org/person to check.
-   * @returns True if the org/person was edited.
-   */
-  private wasEdited (person: OrgPersonIF): boolean {
-    return (person.actions?.includes(ActionTypes.EDITED))
+  /** The current orgPersons list. */
+  get currentPeopleAndRoles (): Array<OrgPersonIF> {
+    if (this.isSummaryView) {
+      // return list without REMOVED org-persons
+      return this.getPeopleAndRoles.filter(orgPerson => !orgPerson.actions?.includes(ActionTypes.REMOVED))
+    }
+    return this.getPeopleAndRoles
   }
 
-  /**
-   * Checks if specified org/person was removed.
-   * @param person The org/person to check.
-   * @returns True if the org/person was removed.
-   */
-  private wasRemoved (person: OrgPersonIF): boolean {
-    return (person.actions?.includes(ActionTypes.REMOVED))
+  /** Returns True if the specified org-person can be removed. */
+  protected canRemove (orgPerson: OrgPersonIF): boolean {
+    switch (true) {
+      case (this.isAlterationFiling): {
+        // alterations don't use this component
+        return false
+      }
+      case (this.isChangeRegFiling): {
+        // can only remove partner in a change filing
+        return this.hasRolePartner(orgPerson)
+      }
+      case (this.isConversionFiling): {
+        return true
+      }
+      case (this.isCorrectionFiling): {
+        return true
+      }
+    }
+    return false // should never happen
   }
 
   /**
@@ -369,7 +380,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
    * @param orgPerson the org/person object
    * @returns the formatted name
    */
-  private formatName (orgPerson: OrgPersonIF): string {
+  protected formatName (orgPerson: OrgPersonIF): string {
     if (orgPerson?.officer?.organizationName) {
       return orgPerson.officer.organizationName
     }
@@ -379,62 +390,47 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
     return ''
   }
 
-  /** Returns true if the current orgPerson has the proprietor role. */
-  private isProprietor (roles: RoleIF[]): boolean {
-    return roles.some(role => role.roleType === RoleTypes.PROPRIETOR)
-  }
-
-  /** True if current data object is a person. */
-  private isPerson (orgPerson: OrgPersonIF): boolean {
-    return (orgPerson?.officer.partyType === PartyTypes.PERSON)
-  }
-
-  /** True if current data object is an organization (corporation/firm). */
-  private isOrg (orgPerson: OrgPersonIF): boolean {
-    return (orgPerson?.officer.partyType === PartyTypes.ORGANIZATION)
-  }
-
   /**
    * Emits an event and index to the parent to handle undoing.
    * @param index the index of the org/person to undo
    */
   @Emit('undo')
-  private emitUndo (index: number): void {}
+  protected emitUndo (index: number): void {}
 
   /**
    * Emits an event and index to the parent to start editing.
    * @param index the index of the org/person to edit
    */
   @Emit('initEdit')
-  private emitInitEdit (index: number): void {}
+  protected emitInitEdit (index: number): void {}
 
   /**
    * Emits an event and index to the parent to handle removal.
    * @param index the index of the org/person to remove
    */
   @Emit('remove')
-  private emitRemove (index: number): void {}
+  protected emitRemove (index: number): void {}
 
   /**
    * Emits an event and org/person object to the parent handle adding or editing.
    * @param person the data object of the org/person to add or edit
    */
   @Emit('addEdit')
-  private emitAddEdit (person: OrgPersonIF): void {}
+  protected emitAddEdit (person: OrgPersonIF): void {}
 
   /**
    * Emits an event to the parent to reset the state.
    */
   @Emit('reset')
-  private emitReset (): void {}
+  protected emitReset (): void {}
 
   /**
    * Emits an event to the parent to remove the Completing Party role.
    */
   @Emit('removeCpRole')
-  private emitRemoveCpRole (): void {}
+  protected emitRemoveCpRole (): void {}
 
-  @Watch('peopleAndRoles', { deep: true, immediate: true })
+  @Watch('getPeopleAndRoles', { deep: true, immediate: true })
   private assignTableHeaders (): void {
     this.tableHeaders[3] = this.isCorrectionFiling ? 'Roles' : ''
   }
@@ -494,11 +490,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
 
   .dropdown-action {
     border-left: 1px solid $gray3;
-  }
-
-  // adjust error bar left spacing
-  &.invalid-section {
-    margin-left: -30px;
   }
 }
 
@@ -560,13 +551,9 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin) {
   }
 }
 
-// adjust error container padding for last section
-.people-roles-content.section-container.invalid-section:last-of-type {
-  padding: 1.25rem 1.875rem 2.5rem;
-}
-
 // adjust error container padding for error bars
-#people-roles-list.error-container {
+#people-roles-add.invalid-section,
+#people-roles-list.invalid-section {
   padding: 1.25rem 1.875rem 0;
 }
 </style>
