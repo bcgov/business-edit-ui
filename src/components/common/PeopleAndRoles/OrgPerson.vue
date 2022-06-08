@@ -426,12 +426,12 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
   /** True if org-person is a person. */
   get isPerson (): boolean {
-    return this.isTypePerson(this.orgPerson)
+    return this.isPartyTypePerson(this.orgPerson)
   }
 
   /** True if org-person is an organization. */
   get isOrg (): boolean {
-    return this.isTypeOrg(this.orgPerson)
+    return this.isPartyTypeOrg(this.orgPerson)
   }
 
   /** The validation rules for the roles. */

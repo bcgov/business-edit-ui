@@ -50,12 +50,12 @@ export default class OrgPersonMixin extends Vue {
   //
 
   /** True if the specified orgPerson is a person. */
-  isTypePerson (orgPerson: OrgPersonIF): boolean {
+  isPartyTypePerson (orgPerson: OrgPersonIF): boolean {
     return (orgPerson?.officer.partyType === PartyTypes.PERSON)
   }
 
   /** True if the specified orgPerson is an organization (corporations/firms only). */
-  isTypeOrg (orgPerson: OrgPersonIF): boolean {
+  isPartyTypeOrg (orgPerson: OrgPersonIF): boolean {
     return (orgPerson?.officer.partyType === PartyTypes.ORGANIZATION)
   }
 

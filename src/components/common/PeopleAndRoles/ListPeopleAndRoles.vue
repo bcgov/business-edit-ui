@@ -75,8 +75,8 @@
           <v-col class="pr-2" cols="12" sm="3">
             <v-row no-gutters>
               <v-col cols="1" class="mt-n1 ml-n1 mr-3 badges" :class="{ 'removed': wasRemoved(orgPerson)}">
-                <v-icon color="gray9" v-if="isTypePerson(orgPerson)">mdi-account</v-icon>
-                <v-icon color="gray9" v-if="isTypeOrg(orgPerson)">mdi-domain</v-icon>
+                <v-icon color="gray9" v-if="isPartyTypePerson(orgPerson)">mdi-account</v-icon>
+                <v-icon color="gray9" v-if="isPartyTypeOrg(orgPerson)">mdi-domain</v-icon>
               </v-col>
               <v-col class="overflow-hidden">
                 <p class="people-roles-title mb-1" :class="{ 'removed': wasRemoved(orgPerson)}">
