@@ -622,8 +622,10 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     await this.applyRules()
 
     // validate the main form and address form(s)
-    // NB: address forms might not be rendered
-    this.$refs.orgPersonForm.validate()
+    // NB: forms might not be rendered
+    if (this.$refs.orgPersonForm) {
+      this.$refs.orgPersonForm.validate()
+    }
     if (this.$refs.mailingAddress?.$refs.addressForm) {
       this.$refs.mailingAddress.$refs.addressForm.validate()
     }

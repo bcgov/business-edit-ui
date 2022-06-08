@@ -4,7 +4,6 @@ import Vuelidate from 'vuelidate'
 import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
 import OrgPerson from '@/components/common/PeopleAndRoles/OrgPerson.vue'
 import { getVuexStore } from '@/store/'
-import { FilingTypes } from '@/enums/'
 import { BenefitCompanyStatementResource as CorrectionBenefitCompanyResource }
   from '@/resources/Correction/BenefitCompanyStatementResource'
 import { SoleProprietorshipResource as ChangeSolePropResource } from '@/resources/Change/SoleProprietorshipResource'
@@ -46,8 +45,7 @@ const validPersonData = {
     middleName: 'D',
     organizationName: '',
     partyType: 'person',
-    email: 'completing-party@example.com',
-    taxId: '0000'
+    email: 'completing-party@example.com'
   },
   roles: [
     { roleType: 'Director', appointmentDate: '2020-03-30' },
@@ -108,8 +106,7 @@ const validOrgData = {
     lastName: '',
     middleName: '',
     organizationName: 'Test Org',
-    partyType: 'organization',
-    taxId: '1111'
+    partyType: 'organization'
   },
   roles: [
     { roleType: 'Incorporator', appointmentDate: '2020-03-30' }
@@ -120,7 +117,8 @@ const validOrgData = {
     addressCity: 'Victoria',
     addressRegion: 'BC',
     postalCode: 'V8Z 5C6',
-    addressCountry: 'CA'
+    addressCountry: 'CA',
+    deliveryInstructions: null
   }
 }
 
@@ -183,9 +181,9 @@ function createComponent (
   })
 }
 
-describe('Org/Person component for Correction', () => {
+describe('Org/Person component for a Correction filing', () => {
   beforeAll(() => {
-    store.state.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.nameRequest.entityType = 'BEN'
     store.state.stateModel.tombstone.currentDate = '2020-03-30'
     store.state.resourceModel = CorrectionBenefitCompanyResource
@@ -243,9 +241,6 @@ describe('Org/Person component for Correction', () => {
     expect(wrapper.find(removeButtonSelector).attributes('disabled')).toBeUndefined()
     expect(wrapper.find(cancelButtonSelector).attributes('disabled')).toBeUndefined()
 
-    // verify business number
-    expect(wrapper.find('.sub-header-text').text()).toBe('0000')
-
     wrapper.destroy()
   })
 
@@ -270,9 +265,6 @@ describe('Org/Person component for Correction', () => {
     expect(wrapper.find(doneButtonSelector).attributes('disabled')).toBeUndefined()
     expect(wrapper.find(removeButtonSelector).attributes('disabled')).toBeDefined()
     expect(wrapper.find(cancelButtonSelector).attributes('disabled')).toBeUndefined()
-
-    // verify business number
-    expect(wrapper.find('.sub-header-text').text()).toBe('1111')
 
     wrapper.destroy()
   })
@@ -311,6 +303,7 @@ describe('Org/Person component for Correction', () => {
     const button = wrapper.find(doneButtonSelector)
     expect(button.attributes('disabled')).toBeUndefined()
     await button.trigger('click')
+    await Vue.nextTick()
 
     const emitted = wrapper.emitted(resetEvent)
     expect(emitted.length).toBe(1)
@@ -332,6 +325,7 @@ describe('Org/Person component for Correction', () => {
     const button = wrapper.find(doneButtonSelector)
     expect(button.attributes('disabled')).toBeUndefined()
     await button.trigger('click')
+    await Vue.nextTick()
 
     expect(getLastEvent(wrapper, addEditEvent).officer.organizationName).toBe('Different Test Org')
 
@@ -492,6 +486,7 @@ describe('Org/Person component for Correction', () => {
 
     // click the Done button
     await wrapper.find(doneButtonSelector).trigger('click')
+    await Vue.nextTick()
 
     expect(wrapper.emitted(removeCpRoleEvent).length).toBe(1)
     expect(wrapper.emitted(removeCpRoleEvent)[0]).toStrictEqual([]) // empty event
@@ -536,9 +531,9 @@ describe('Org/Person component for Correction', () => {
   })
 })
 
-describe('Org/Person component for Change of Registration', () => {
+describe('Org/Person component for Firm Change filing', () => {
   beforeAll(() => {
-    store.state.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
+    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.stateModel.tombstone.currentDate = '2020-03-30'
   })
 
@@ -572,7 +567,8 @@ describe('Org/Person component for Change of Registration', () => {
         isProprietor: true
       }
     })
-    expect(wrapper.findAll('.confirm-name-change-checkbox').at(0).text()).toContain('the same person')
+
+    expect(wrapper.findAll('.sub-header').at(0).text()).toBe('Person\'s Name')
 
     wrapper.destroy()
   })
@@ -603,11 +599,11 @@ describe('Org/Person component for Change of Registration', () => {
       propsData: {
         currentOrgPerson: validProprietorData,
         activeIndex: 0,
-        currentCompletingParty: null,
-        isProprietor: true
+        currentCompletingParty: null
       }
     })
-    expect(wrapper.findAll('.confirm-name-change-checkbox').at(0).text()).toContain('the same business')
+
+    expect(wrapper.findAll('.sub-header').at(0).text()).toBe('Business or Corporation Name')
 
     wrapper.destroy()
   })
@@ -638,11 +634,11 @@ describe('Org/Person component for Change of Registration', () => {
       propsData: {
         currentOrgPerson: validPartnerData,
         activeIndex: 0,
-        currentCompletingParty: null,
-        isProprietor: true
+        currentCompletingParty: null
       }
     })
-    expect(wrapper.findAll('.confirm-name-change-checkbox').at(0).text()).toContain('the same business')
+
+    expect(wrapper.findAll('.sub-header').at(0).text()).toBe('Business or Corporation Name')
 
     wrapper.destroy()
   })
