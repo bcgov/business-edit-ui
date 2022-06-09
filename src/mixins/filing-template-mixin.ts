@@ -105,7 +105,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // if filing...
     if (!isDraft) {
       // Filter out removed parties and delete "actions" property
-      parties = parties.filter(x => !x.actions.includes(ActionTypes.REMOVED))
+      parties = parties.filter(x => !x.actions?.includes(ActionTypes.REMOVED))
         .map((x) => { const { actions, ...rest } = x; return rest })
 
       // Filter out removed classes and delete "action" property
@@ -432,7 +432,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           identifier: this.getBusinessId
         },
         contactPoint: {
-          email: this.getBusinessContact.email || 'unknown@example.com',
+          email: this.getBusinessContact.email,
           phone: this.getBusinessContact.phone || undefined, // don't include if empty
           extension: +this.getBusinessContact.extension || undefined // don't include if empty
         },

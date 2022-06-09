@@ -11,7 +11,7 @@ export interface AddressIF {
   postalCode: string
   streetAddress: string
   streetAddressAdditional?: string
-  addressType?: string
+  addressType?: string // 'mailing' or 'delivery'
 }
 
 /**

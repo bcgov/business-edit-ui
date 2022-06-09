@@ -161,7 +161,7 @@
         </v-col>
       </v-row>
 
-      <!-- Business mailing address -->
+      <!-- Mailing address -->
       <v-row no-gutters class="pr-1">
         <v-col cols="3"></v-col>
         <v-col cols="9" class="pt-4">
@@ -171,12 +171,13 @@
             :address="mailingAddress"
             :editing="true"
             :schema="DefaultAddressSchema"
-            @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, mailingAddress, $event)"
+            @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, $event)"
             @valid="onAddressValid(AddressTypes.MAILING_ADDRESS, $event)"
           />
         </v-col>
       </v-row>
 
+      <!-- "Same as" checkbox -->
       <v-row no-gutters>
         <v-col cols="3"></v-col>
         <v-col cols="9">
@@ -192,7 +193,7 @@
         </v-col>
       </v-row>
 
-      <!-- Business delivery address -->
+      <!-- Delivery address -->
       <template v-if="!inheritMailingAddress || disableSameDeliveryAddress">
         <v-row no-gutters class="pt-4">
           <v-col cols="3"></v-col>
@@ -211,7 +212,7 @@
               :editing="true"
               :schema="InBcCanadaAddressSchema"
               :noPoBox="true"
-              @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, deliveryAddress, $event)"
+              @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, $event)"
               @valid="onAddressValid(AddressTypes.DELIVERY_ADDRESS, $event)"
             />
           </v-col>
@@ -260,7 +261,7 @@
                     :address="mailingAddress"
                     :editing="true"
                     :schema="InBcCanadaAddressSchema"
-                    @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, mailingAddress, $event)"
+                    @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, $event)"
                     @valid="onAddressValid(AddressTypes.MAILING_ADDRESS, $event)"
                   />
                 </div>
@@ -294,7 +295,7 @@
                     :address="deliveryAddress"
                     :editing="true"
                     :schema="InBcCanadaAddressSchema"
-                    @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, deliveryAddress, $event)"
+                    @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, $event)"
                     @valid="onAddressValid(AddressTypes.DELIVERY_ADDRESS, $event)"
                   />
                 </div>
@@ -303,6 +304,7 @@
           </li>
         </div>
 
+        <!-- "Same as" checkbox -->
         <div id="edit-records-address" v-if="isTypeBcomp">
           <div class="address-edit-header" :class="{'mt-8': inheritMailingAddress}">
             <label class="address-edit-title">Records Office</label>
@@ -328,7 +330,7 @@
                       :address="recMailingAddress"
                       :editing="true"
                       :schema="InBcCanadaAddressSchema"
-                      @update:address="updateAddress(AddressTypes.REC_MAILING_ADDRESS, recMailingAddress, $event)"
+                      @update:address="updateAddress(AddressTypes.REC_MAILING_ADDRESS, $event)"
                       @valid="onAddressValid(AddressTypes.REC_MAILING_ADDRESS, $event)"
                     />
                   </div>
@@ -348,7 +350,7 @@
                       label="Same as Mailing Address"
                       hide-details
                       v-model="inheritRecMailingAddress"
-                      v-on:change="setRecordDeliveryAddressToMailingAddress()"
+                      @change="setRecordDeliveryAddressToMailingAddress()"
                     />
                   </div>
                   <div
@@ -396,7 +398,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { isEmpty } from 'lodash'
+import { isEmpty, isEqual } from 'lodash'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces/'
@@ -495,8 +497,10 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Model value for "same as (records) mailing address" checkbox. */
   private inheritRecMailingAddress = true
 
-  /** Is true when the mailing address is not in BC, Canada. */
+  /** Whether to disable "same as" checkbox. */
   get disableSameDeliveryAddress (): boolean {
+    // cannot make delivery address same as mailing address
+    // if mailing address is not in BC, Canada
     return (
       this.mailingAddress.addressRegion !== REGION_BC ||
       this.mailingAddress.addressCountry !== COUNTRY_CA
@@ -640,31 +644,50 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /**
    * Handles update events from address sub-components.
    */
-  protected updateAddress (addressToUpdate: AddressTypes, baseAddress: AddressIF, newAddress: AddressIF): void {
-    Object.assign(baseAddress, newAddress)
+  protected updateAddress (addressToUpdate: AddressTypes, newAddress: AddressIF): void {
     switch (addressToUpdate) {
       case AddressTypes.MAILING_ADDRESS:
-        if (this.inheritMailingAddress) {
-          this.deliveryAddress = { ...newAddress, addressType: 'delivery', id: this.deliveryAddress.id }
-        }
-        if (this.inheritRegisteredAddress) {
-          this.recMailingAddress = { ...newAddress, addressType: 'mailing', id: this.recMailingAddress.id }
-          this.recDeliveryAddress = { ...this.deliveryAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
+        // only update if not equal
+        if (!isEqual(this.mailingAddress, newAddress)) {
+          this.mailingAddress = { ...newAddress }
+          if (this.inheritMailingAddress) {
+            this.deliveryAddress = { ...newAddress, addressType: 'delivery', id: this.deliveryAddress.id }
+          }
+          if (this.inheritRegisteredAddress) {
+            this.recMailingAddress = { ...newAddress, addressType: 'mailing', id: this.recMailingAddress.id }
+            this.recDeliveryAddress =
+              { ...this.deliveryAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
+          }
         }
         break
+
       case AddressTypes.DELIVERY_ADDRESS:
-        if (this.inheritRegisteredAddress) {
-          this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
+        // only update if not equal
+        if (!isEqual(this.deliveryAddress, newAddress)) {
+          this.deliveryAddress = { ...newAddress }
+          if (this.inheritRegisteredAddress) {
+            this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
+          }
         }
         break
+
       case AddressTypes.REC_MAILING_ADDRESS:
-        if (this.inheritRecMailingAddress) {
-          this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
+        // only update if not equal
+        if (!isEqual(this.recMailingAddress, newAddress)) {
+          this.recMailingAddress = { ...newAddress }
+          if (this.inheritRecMailingAddress) {
+            this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
+          }
         }
         break
+
       case AddressTypes.REC_DELIVERY_ADDRESS:
-        // nothing to do
+        // only update if not equal
+        if (!isEqual(this.recDeliveryAddress, newAddress)) {
+          this.recDeliveryAddress = { ...newAddress }
+        }
         break
+
       default:
         // should never happen
         // eslint-disable-next-line no-console
