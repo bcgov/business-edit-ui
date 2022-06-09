@@ -93,6 +93,20 @@ export default class AgreementType extends Vue {
   private agreementType: string = null
   private showAgreementTypeForm = false
 
+  get hasAgreementTypeChange (): boolean {
+    return (
+      this.agreementType !== this.getOriginalIA?.incorporationApplication?.incorporationAgreement.agreementType
+    )
+  }
+
+  get selectedAgreementDescription () : string {
+    if (this.getAgreementType) {
+      return AgreementTypeResource.find(item => item.code === this.getAgreementType)
+        .summaryDescription
+    }
+    return ''
+  }
+
   private setAgreementType (): void {
     this.setIncorporationAgreementData()
     this.showAgreementTypeForm = false
@@ -109,18 +123,6 @@ export default class AgreementType extends Vue {
   private resetAgreementType (): void {
     this.agreementType = this.getOriginalIA.incorporationApplication.incorporationAgreement.agreementType
     this.setAgreementType()
-  }
-
-  get hasAgreementTypeChange (): boolean {
-    return this.agreementType !== this.getOriginalIA.incorporationApplication.incorporationAgreement.agreementType
-  }
-
-  get selectedAgreementDescription () : string {
-    if (this.getAgreementType) {
-      return AgreementTypeResource.find(item => item.code === this.getAgreementType)
-        .summaryDescription
-    }
-    return ''
   }
 
   @Watch('getAgreementType', { immediate: true })

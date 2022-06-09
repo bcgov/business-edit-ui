@@ -48,7 +48,7 @@ function createComponent (): Wrapper<AgreementType> {
 store.state.stateModel.nameRequest.entityType = 'BEN'
 store.state.stateModel.tombstone.currentDate = '2020-03-30'
 store.state.stateModel.incorporationAgreementStep.agreementType = 'sample'
-store.state.stateModel.originalIA = {
+store.state.stateModel.correctedFiling = {
   incorporationApplication: {
     incorporationAgreement: {
       agreementType: 'sample'

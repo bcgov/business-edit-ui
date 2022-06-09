@@ -1,9 +1,9 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { axios } from '@/utils/'
-import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF,
-  NameTranslationIF, OrgPersonIF, ShareStructureIF, ResolutionsIF, ChangeFilingIF,
-  ConversionFilingIF } from '@/interfaces/'
+import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF, NameTranslationIF,
+  OrgPersonIF, ShareStructureIF, ResolutionsIF, ChgRegistrationFilingIF, ConversionFilingIF }
+  from '@/interfaces/'
 import { RoleTypes } from '@/enums'
 
 /**
@@ -55,7 +55,7 @@ export default class LegalApiMixin extends Vue {
    * @returns a promise to return the updated filing
    */
   async updateFiling (
-    filing: CorrectionFilingIF | AlterationFilingIF | ChangeFilingIF | ConversionFilingIF,
+    filing: CorrectionFilingIF | AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF,
     isDraft: boolean
   ): Promise<any> {
     if (!filing) throw new Error('updateFiling(), invalid filing')
@@ -85,7 +85,7 @@ export default class LegalApiMixin extends Vue {
    * @returns a promise to return the updated filing
    */
   async createFiling (
-    filing: AlterationFilingIF | ChangeFilingIF | ConversionFilingIF,
+    filing: AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF,
     isDraft: boolean
   ): Promise<any> {
     if (!filing) throw new Error('updateFiling(), invalid filing')

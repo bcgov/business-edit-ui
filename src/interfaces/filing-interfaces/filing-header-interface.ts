@@ -3,7 +3,10 @@ export interface FilingHeaderIF {
   name: string
   certifiedBy: string
   date: string
-  folioNumber: string
+  folioNumber?: string
+  filingId?: number
+  status?: string
+  isTransactionalFolioNumber?: boolean
 
   // future effective properties:
   effectiveDate?: string
@@ -18,6 +21,4 @@ export interface FilingHeaderIF {
   datNumber?: string
   waiveFees?: boolean
   priority?: boolean
-
-  [propName: string]: any; // excess properties
 }

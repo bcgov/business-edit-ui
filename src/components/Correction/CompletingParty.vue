@@ -29,7 +29,8 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip/'
 import { CommonMixin } from '@/mixins/'
-import { IncorporationFilingIF, OrgPersonIF } from '@/interfaces/'
+import { ChgRegistrationFilingIF, IncorporationFilingIF, OrgPersonIF, RegistrationFilingIF }
+  from '@/interfaces/'
 import { ActionTypes, RoleTypes } from '@/enums/'
 
 @Component({
@@ -44,6 +45,8 @@ export default class CompletingParty extends Mixins(CommonMixin) {
 
   @Getter getPeopleAndRoles!: Array<OrgPersonIF>
   @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter getOriginalChgRegistration!: ChgRegistrationFilingIF
+  @Getter getOriginalRegistration!: RegistrationFilingIF
 
   /** The current Completing Party if found, otherwise undefined. */
   get completingParty () : OrgPersonIF {
@@ -52,7 +55,15 @@ export default class CompletingParty extends Mixins(CommonMixin) {
 
   /** The original Completing Party if found, otherwise undefined. */
   get originalCompletingParty () : OrgPersonIF {
-    return this.getCompletingParty(this.getOriginalIA?.incorporationApplication?.parties)
+    if (this.isCorrectionFiling && this.getOriginalIA?.incorporationApplication) {
+      return this.getCompletingParty(this.getOriginalIA.incorporationApplication.parties)
+    } else if (this.isCorrectionFiling && this.getOriginalChgRegistration?.changeOfRegistration) {
+      return this.getCompletingParty(this.getOriginalChgRegistration.changeOfRegistration.parties)
+    } else if (this.isCorrectionFiling && this.getOriginalRegistration?.registration) {
+      return this.getCompletingParty(this.getOriginalRegistration.registration.parties)
+    } else {
+      return null
+    }
   }
 
   /** True if the Completing Party has been changed. */

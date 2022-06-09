@@ -117,8 +117,6 @@ export default class Change extends Mixins(
   @Getter getUserFirstName!: string
   @Getter getUserLastName!: string
   @Getter showFeeSummary!: boolean
-  @Getter isTypeSoleProp!: boolean
-  @Getter isTypePartnership!: boolean
   @Getter isRoleStaff!: boolean
 
   // Global actions

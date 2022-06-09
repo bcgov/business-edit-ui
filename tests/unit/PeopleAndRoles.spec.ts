@@ -302,7 +302,11 @@ describe('People And Roles component for Correction', () => {
     const originalCp = getPersonList([directorRole, completingPartyRole])[0]
     originalCp.officer.id = '1'
     originalCp.actions = []
-    store.state.stateModel.originalIA.incorporationApplication.parties = [originalCp]
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        parties: [originalCp]
+      }
+    }
 
     // current orgPeople list containing edited CP and added CP:
     const editedCp = getPersonList([directorRole])[0]

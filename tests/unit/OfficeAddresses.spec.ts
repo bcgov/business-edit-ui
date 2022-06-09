@@ -75,7 +75,11 @@ describe('summary mode', () => {
 
   it('displays the registered office row - not same as mailing address', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 2, 3, 4)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -132,7 +136,11 @@ describe('summary mode', () => {
 
   it('displays the registered office row - same as mailing address', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 1, 1, 1)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -179,7 +187,11 @@ describe('summary mode', () => {
 
   it('displays the registered office row - changed addresses', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 2, 3, 4)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -241,7 +253,11 @@ describe('summary mode', () => {
 
   it('displays the records office row - not same as registered office', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 2, 3, 4)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -293,7 +309,11 @@ describe('summary mode', () => {
 
   it('displays the records office row - same as registered office', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 1, 1, 1)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -323,7 +343,11 @@ describe('summary mode', () => {
 
   it('displays the records office row - same as mailing address', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 3, 3)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 1, 3, 3)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -364,7 +388,11 @@ describe('summary mode', () => {
 
   it('displays the records office row - changed addresses', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 2, 3, 4)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -419,7 +447,11 @@ describe('edit mode', () => {
 
   it('displays the correct sections', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 2, 3, 4)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -443,7 +475,11 @@ describe('edit mode', () => {
 
   it('displays the registered office mailing address', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 2, 3, 4)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -484,7 +520,11 @@ describe('edit mode', () => {
 
   it('displays the registered office delivery address - not same as mailing address', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 2, 3, 4)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -526,7 +566,11 @@ describe('edit mode', () => {
 
   it('displays the registered office delivery address - same as mailing address', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 3, 3)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 1, 3, 3)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -560,7 +604,11 @@ describe('edit mode', () => {
 
   it('displays the records office mailing - not same as registered office', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 2, 3, 4)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -602,7 +650,11 @@ describe('edit mode', () => {
 
   it('displays the records office mailing address - same as registered office', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 1, 1, 1)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -635,7 +687,11 @@ describe('edit mode', () => {
 
   it('displays the records office delivery address - not same same as mailing address', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 2, 3, 4)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -677,7 +733,11 @@ describe('edit mode', () => {
 
   it('displays the records office delivery address - same as mailing address', async () => {
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 3, 3)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 1, 3, 3)
+      }
+    }
 
     store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
@@ -718,7 +778,11 @@ describe('"same as" checkboxes', () => {
     store.state.stateModel.tombstone.entityType = 'BEN'
 
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 1, 1, 1)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 1, 1, 1)
+      }
+    }
   })
 
   beforeEach(async () => {
@@ -876,7 +940,11 @@ describe('actions and events', () => {
     store.state.stateModel.tombstone.entityType = 'BEN'
 
     // init original offices
-    store.state.stateModel.originalIA.incorporationApplication.offices = getIncorporationAddress(1, 2, 3, 4)
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 2, 3, 4)
+      }
+    }
   })
 
   beforeEach(async () => {

@@ -1,6 +1,7 @@
 export * from './accountTypes'
 export * from './actionTypes'
 export * from './addressTypes'
+export * from './businessTypes'
 export * from './compareModes'
 export * from './componentsCompanyInfo'
 export * from './componentsReviewCertify'

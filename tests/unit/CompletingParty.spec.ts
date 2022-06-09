@@ -81,6 +81,7 @@ const newPersonCp = {
 
 describe('Completing Party', () => {
   beforeAll(async () => {
+    store.state.stateModel.tombstone.filingType = 'correction'
     await router.push({ name: 'correction' })
     await Vue.nextTick()
   })
@@ -97,7 +98,7 @@ describe('Completing Party', () => {
   })
 
   it('displays original person and no badge if CP is unchanged', () => {
-    store.state.stateModel.originalIA = {
+    store.state.stateModel.correctedFiling = {
       incorporationApplication: {
         parties: [
           originalPersonCp,
@@ -121,7 +122,7 @@ describe('Completing Party', () => {
   })
 
   it('displays new person and Corrected badge if CP has changed', () => {
-    store.state.stateModel.originalIA = {
+    store.state.stateModel.correctedFiling = {
       incorporationApplication: {
         parties: [
           originalPersonCp,

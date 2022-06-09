@@ -1,6 +1,6 @@
 import { AccountInformationIF, ActionKvIF, AddressesIF, BusinessInformationIF, EntitySnapshotIF, CertifyIF,
-  FilingDataIF, IncorporationAgreementIF, IncorporationFilingIF, NameRequestIF, NameTranslationIF,
-  OrgPersonIF, ResolutionsIF, ShareClassIF, StateIF, FeesIF, ResourceIF } from '@/interfaces/'
+  FilingDataIF, IncorporationAgreementIF, CorrectedFilingIF, NameRequestIF, NameTranslationIF, OrgPersonIF,
+  ResolutionsIF, ShareClassIF, StateIF, FeesIF, ResourceIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { FilingTypes } from '@/enums/'
@@ -199,8 +199,8 @@ export const mutateEntityType = (state: StateIF, entityType: CorpTypeCd) => {
   state.stateModel.tombstone.entityType = entityType
 }
 
-export const mutateOriginalIA = (state: StateIF, originalIA: IncorporationFilingIF) => {
-  state.stateModel.originalIA = originalIA
+export const mutateCorrectedFiling = (state: StateIF, filing: CorrectedFilingIF) => {
+  state.stateModel.correctedFiling = filing
 }
 
 export const mutateEntitySnapshot = (state: StateIF, entitySnapshot: EntitySnapshotIF) => {
