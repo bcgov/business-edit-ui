@@ -171,7 +171,7 @@
             :address="mailingAddress"
             :editing="true"
             :schema="DefaultAddressSchema"
-            @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, mailingAddress, $event)"
+            @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, $event)"
             @valid="onAddressValid(AddressTypes.MAILING_ADDRESS, $event)"
           />
         </v-col>
@@ -212,7 +212,7 @@
               :editing="true"
               :schema="InBcCanadaAddressSchema"
               :noPoBox="true"
-              @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, deliveryAddress, $event)"
+              @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, $event)"
               @valid="onAddressValid(AddressTypes.DELIVERY_ADDRESS, $event)"
             />
           </v-col>
@@ -261,7 +261,7 @@
                     :address="mailingAddress"
                     :editing="true"
                     :schema="InBcCanadaAddressSchema"
-                    @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, mailingAddress, $event)"
+                    @update:address="updateAddress(AddressTypes.MAILING_ADDRESS, $event)"
                     @valid="onAddressValid(AddressTypes.MAILING_ADDRESS, $event)"
                   />
                 </div>
@@ -295,7 +295,7 @@
                     :address="deliveryAddress"
                     :editing="true"
                     :schema="InBcCanadaAddressSchema"
-                    @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, deliveryAddress, $event)"
+                    @update:address="updateAddress(AddressTypes.DELIVERY_ADDRESS, $event)"
                     @valid="onAddressValid(AddressTypes.DELIVERY_ADDRESS, $event)"
                   />
                 </div>
@@ -330,7 +330,7 @@
                       :address="recMailingAddress"
                       :editing="true"
                       :schema="InBcCanadaAddressSchema"
-                      @update:address="updateAddress(AddressTypes.REC_MAILING_ADDRESS, recMailingAddress, $event)"
+                      @update:address="updateAddress(AddressTypes.REC_MAILING_ADDRESS, $event)"
                       @valid="onAddressValid(AddressTypes.REC_MAILING_ADDRESS, $event)"
                     />
                   </div>
@@ -350,7 +350,7 @@
                       label="Same as Mailing Address"
                       hide-details
                       v-model="inheritRecMailingAddress"
-                      v-on:change="setRecordDeliveryAddressToMailingAddress()"
+                      @change="setRecordDeliveryAddressToMailingAddress()"
                     />
                   </div>
                   <div
@@ -398,7 +398,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { isEmpty } from 'lodash'
+import { isEmpty, isEqual } from 'lodash'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces/'
@@ -488,9 +488,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   private recMailingAddressValid = true
   private recDeliveryAddressValid = true
 
-  /** Whether to disable "same as" checkbox. */
-  private disableSameDeliveryAddress = false
-
   /** Model value for "same as (registered) mailing address" checkbox. */
   private inheritMailingAddress = true
 
@@ -500,14 +497,11 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Model value for "same as (records) mailing address" checkbox. */
   private inheritRecMailingAddress = true
 
-  /**
-   * Sets the "disableSameDeliveryAddress" flag.
-   * Needed because "this.mailingAddress" doesn't seem to be reactive.
-   */
-  private setDisableSameAsFlag (): void {
+  /** Whether to disable "same as" checkbox. */
+  get disableSameDeliveryAddress (): boolean {
     // cannot make delivery address same as mailing address
     // if mailing address is not in BC, Canada
-    this.disableSameDeliveryAddress = (
+    return (
       this.mailingAddress.addressRegion !== REGION_BC ||
       this.mailingAddress.addressCountry !== COUNTRY_CA
     )
@@ -532,8 +526,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       // assign registered office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.registeredOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.registeredOffice?.deliveryAddress }
-
-      this.setDisableSameAsFlag()
 
       // set initial validity states
       // these will be updated by the BaseAddress sub-components
@@ -583,8 +575,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       // assign business office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.businessOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.businessOffice?.deliveryAddress }
-
-      this.setDisableSameAsFlag()
 
       // set initial validity states
       // these will be updated by the BaseAddress sub-components
@@ -654,33 +644,50 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /**
    * Handles update events from address sub-components.
    */
-  protected updateAddress (addressToUpdate: AddressTypes, baseAddress: AddressIF, newAddress: AddressIF): void {
-    Object.assign(baseAddress, newAddress)
+  protected updateAddress (addressToUpdate: AddressTypes, newAddress: AddressIF): void {
     switch (addressToUpdate) {
       case AddressTypes.MAILING_ADDRESS:
-        this.setDisableSameAsFlag()
+        // only update if not equal
+        if (!isEqual(this.mailingAddress, newAddress)) {
+          this.mailingAddress = { ...newAddress }
+          if (this.inheritMailingAddress) {
+            this.deliveryAddress = { ...newAddress, addressType: 'delivery', id: this.deliveryAddress.id }
+          }
+          if (this.inheritRegisteredAddress) {
+            this.recMailingAddress = { ...newAddress, addressType: 'mailing', id: this.recMailingAddress.id }
+            this.recDeliveryAddress =
+              { ...this.deliveryAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
+          }
+        }
+        break
 
-        if (this.inheritMailingAddress) {
-          this.deliveryAddress = { ...newAddress, addressType: 'delivery', id: this.deliveryAddress.id }
-        }
-        if (this.inheritRegisteredAddress) {
-          this.recMailingAddress = { ...newAddress, addressType: 'mailing', id: this.recMailingAddress.id }
-          this.recDeliveryAddress = { ...this.deliveryAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
-        }
-        break
       case AddressTypes.DELIVERY_ADDRESS:
-        if (this.inheritRegisteredAddress) {
-          this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
+        // only update if not equal
+        if (!isEqual(this.deliveryAddress, newAddress)) {
+          this.deliveryAddress = { ...newAddress }
+          if (this.inheritRegisteredAddress) {
+            this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
+          }
         }
         break
+
       case AddressTypes.REC_MAILING_ADDRESS:
-        if (this.inheritRecMailingAddress) {
-          this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
+        // only update if not equal
+        if (!isEqual(this.recMailingAddress, newAddress)) {
+          this.recMailingAddress = { ...newAddress }
+          if (this.inheritRecMailingAddress) {
+            this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
+          }
         }
         break
+
       case AddressTypes.REC_DELIVERY_ADDRESS:
-        // nothing to do
+        // only update if not equal
+        if (!isEqual(this.recDeliveryAddress, newAddress)) {
+          this.recDeliveryAddress = { ...newAddress }
+        }
         break
+
       default:
         // should never happen
         // eslint-disable-next-line no-console
