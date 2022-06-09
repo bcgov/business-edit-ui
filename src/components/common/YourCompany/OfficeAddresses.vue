@@ -161,7 +161,7 @@
         </v-col>
       </v-row>
 
-      <!-- Business mailing address -->
+      <!-- Mailing address -->
       <v-row no-gutters class="pr-1">
         <v-col cols="3"></v-col>
         <v-col cols="9" class="pt-4">
@@ -177,6 +177,7 @@
         </v-col>
       </v-row>
 
+      <!-- "Same as" checkbox -->
       <v-row no-gutters>
         <v-col cols="3"></v-col>
         <v-col cols="9">
@@ -192,7 +193,7 @@
         </v-col>
       </v-row>
 
-      <!-- Business delivery address -->
+      <!-- Delivery address -->
       <template v-if="!inheritMailingAddress || disableSameDeliveryAddress">
         <v-row no-gutters class="pt-4">
           <v-col cols="3"></v-col>
@@ -303,6 +304,7 @@
           </li>
         </div>
 
+        <!-- "Same as" checkbox -->
         <div id="edit-records-address" v-if="isTypeBcomp">
           <div class="address-edit-header" :class="{'mt-8': inheritMailingAddress}">
             <label class="address-edit-title">Records Office</label>
@@ -486,6 +488,9 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   private recMailingAddressValid = true
   private recDeliveryAddressValid = true
 
+  /** Whether to disable "same as" checkbox. */
+  private disableSameDeliveryAddress = false
+
   /** Model value for "same as (registered) mailing address" checkbox. */
   private inheritMailingAddress = true
 
@@ -495,9 +500,14 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /** Model value for "same as (records) mailing address" checkbox. */
   private inheritRecMailingAddress = true
 
-  /** Is true when the mailing address is not in BC, Canada. */
-  get disableSameDeliveryAddress (): boolean {
-    return (
+  /**
+   * Sets the "disableSameDeliveryAddress" flag.
+   * Needed because "this.mailingAddress" doesn't seem to be reactive.
+   */
+  private setDisableSameAsFlag (): void {
+    // cannot make delivery address same as mailing address
+    // if mailing address is not in BC, Canada
+    this.disableSameDeliveryAddress = (
       this.mailingAddress.addressRegion !== REGION_BC ||
       this.mailingAddress.addressCountry !== COUNTRY_CA
     )
@@ -522,6 +532,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       // assign registered office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.registeredOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.registeredOffice?.deliveryAddress }
+
+      this.setDisableSameAsFlag()
 
       // set initial validity states
       // these will be updated by the BaseAddress sub-components
@@ -571,6 +583,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       // assign business office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.businessOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.businessOffice?.deliveryAddress }
+
+      this.setDisableSameAsFlag()
 
       // set initial validity states
       // these will be updated by the BaseAddress sub-components
@@ -644,6 +658,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     Object.assign(baseAddress, newAddress)
     switch (addressToUpdate) {
       case AddressTypes.MAILING_ADDRESS:
+        this.setDisableSameAsFlag()
+
         if (this.inheritMailingAddress) {
           this.deliveryAddress = { ...newAddress, addressType: 'delivery', id: this.deliveryAddress.id }
         }

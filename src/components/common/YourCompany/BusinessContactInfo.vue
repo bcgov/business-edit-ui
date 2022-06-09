@@ -10,13 +10,13 @@
     :disableActionTooltip="isChangeRegFiling || isConversionFiling"
     :invalidSection="invalidSection"
     :optionalPhone="isAlterationFiling || isChangeRegFiling || isConversionFiling"
-    @isEditingContact="onIsEditingContact($event)"
+    @isEditingContact="isEditingContact = $event"
     @contactInfoChange="onContactInfoChange($event)"
   />
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info/'
 import { AuthServices } from '@/services/'
@@ -45,6 +45,8 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   /** Whether to show invalid section styling. */
   @Prop({ default: false })
   readonly invalidSection: boolean
+
+  private isEditingContact = null as boolean
 
   /** Get the original Contact info dependant on filing type. */
   get originalContact (): ContactPointIF {
@@ -85,9 +87,17 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
     }
   }
 
-  /** Keep the store in sync with components state of validity. */
-  private onIsEditingContact (isEditing: boolean): void {
-    this.setValidComponent({ key: 'isValidContactInfo', value: !isEditing })
+  /**
+   * Keep the store in sync with this component's state of validity.
+   * Use "immediate" to pick up all validity conditions
+   */
+  @Watch('isEditingContact', { immediate: true })
+  private onIsEditingContact (): void {
+    const isValid = (
+      !this.isEditingContact &&
+      this.getBusinessContact?.email
+    )
+    this.setValidComponent({ key: 'isValidContactInfo', value: isValid })
   }
 }
 </script>
