@@ -266,7 +266,6 @@
                       :editing="!orgPerson.isBusinessLookup"
                       :schema="mailingAddressSchema"
                       :address="inProgressMailingAddress"
-                      :noPoBox="(isProprietor || isPartner) && isPerson"
                       @update:address="updateAddress(inProgressMailingAddress, $event)"
                       @valid="mailingAddressValid = $event"
                     />
@@ -290,7 +289,7 @@
                         :editing="!orgPerson.isBusinessLookup"
                         :schema="deliveryAddressSchema"
                         :address="inProgressDeliveryAddress"
-                        :noPoBox="isDirector"
+                        :noPoBox="noPoBoxDelivery"
                         @update:address="updateAddress(inProgressDeliveryAddress, $event)"
                         @valid="deliveryAddressValid = $event"
                       />
@@ -449,7 +448,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
    * See also PeopleAndRoles.vue::haveRequiredAddresses.
    */
   get mailingAddressSchema (): AddressSchemaIF {
-    // atm, all orgs/persons mailing address can be anywhere in the world
+    // all orgs/persons mailing address can be anywhere in the world
     return DefaultAddressSchema
   }
 
@@ -458,8 +457,8 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
    * See also PeopleAndRoles.vue::haveRequiredAddresses.
    */
   get deliveryAddressSchema (): AddressSchemaIF {
-    // proprietor/partner delivery address must be in BC, Canada
-    if (this.isProprietor || this.isPartner) return InBcCanadaAddressSchema
+    // proprietor/partner delivery address can be anywhere in the world
+    if (this.isProprietor || this.isPartner) return DefaultAddressSchema
 
     // directors delivery address can be anywhere in the world
     if (this.isDirector) return DefaultAddressSchema
@@ -469,6 +468,14 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
     // other orgs delivery address must be in BC, Canada
     return InBcCanadaAddressSchema
+  }
+
+  /** Whether to show the "Address cannot be a PO Box" hint. */
+  get noPoBoxDelivery (): boolean {
+    if (this.isDirector) return true
+    if (this.isProprietor && this.isPerson) return true
+    if (this.isPartner && this.isPerson) return true
+    return false
   }
 
   /** Whether to disable the "same as" checkbox (to force entry of delivery address). */
@@ -1033,10 +1040,11 @@ li {
   background-color: rgb(55, 164, 71);
   color: rgb(255, 255, 255) !important;
   font-weight: bold;
-}
 
-::v-deep .theme--light.v-label--is-disabled {
-  color: white !important;
+  // make label visible on background color
+  ::v-deep .theme--light.v-label--is-disabled {
+    color: white !important;
+  }
 }
 
 .roles-row {

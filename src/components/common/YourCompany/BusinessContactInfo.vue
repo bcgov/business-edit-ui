@@ -92,10 +92,11 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
    * Use "immediate" to pick up all validity conditions
    */
   @Watch('isEditingContact', { immediate: true })
-  private onIsEditingContact (): void {
+  @Watch('getBusinessContact.email', { immediate: true })
+  private syncValidity (): void {
     const isValid = (
       !this.isEditingContact &&
-      this.getBusinessContact?.email
+      !!this.getBusinessContact?.email
     )
     this.setValidComponent({ key: 'isValidContactInfo', value: isValid })
   }
