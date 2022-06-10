@@ -1,5 +1,5 @@
 <template>
-  <div class="contact-info" :class="{ 'flex-column': direction === 'col' }">
+  <div id="bc-reg-contacts" :class="{ 'flex-column': direction === 'col' }">
     <div
       class="contact-container" :class="{ 'justify-center': direction === 'row' }"
       v-for="(contact, i) in contacts" :key="i"
@@ -46,7 +46,7 @@ export default class BcRegContacts extends Vue {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-.contact-info {
+#bc-reg-contacts {
   display: flex;
   justify-content: space-between;
   row-gap: 0.25rem; /* in case direction = row */

@@ -283,7 +283,7 @@
     <v-divider class="mx-4 my-1" />
 
     <!-- Business Contact Information -->
-    <div id="contact-info" class="section-container" :class="{'invalid-section': invalidContactSection}">
+    <div id="contact-info-section" class="section-container" :class="{'invalid-section': invalidContactSection}">
       <BusinessContactInfo
         :invalidSection="invalidContactSection"
       />
@@ -293,7 +293,7 @@
     <template v-if="isPremiumAccount && !isTypeFirm">
       <v-divider class="mx-4 my-1" />
 
-      <div id="folio-number" class="section-container" :class="{'invalid-section': invalidFolioSection}">
+      <div id="folio-number-section" class="section-container" :class="{'invalid-section': invalidFolioSection}">
         <FolioInformation
           :invalidSection="invalidFolioSection"
         />
@@ -574,5 +574,9 @@ export default class YourCompany extends Mixins(
   .v-btn {
     min-width: 0.5rem;
   }
+}
+
+#contact-info-section {
+  border-bottom-left-radius: 0 !important;
 }
 </style>
