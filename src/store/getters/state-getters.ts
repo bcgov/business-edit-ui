@@ -3,7 +3,7 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { AddressesIF, IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF,
   ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF, NameTranslationIF, FilingDataIF, StateIF,
   EffectiveDateTimeIF, ShareStructureIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF, ResolutionsIF, FeesIF,
-  ResourceIF, EntitySnapshotIF } from '@/interfaces/'
+  ResourceIF, EntitySnapshotIF, ValidationFlagsIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 import { isSame } from '@/utils/'
@@ -463,24 +463,29 @@ export const isEditing = (state: StateIF): boolean => {
     state.stateModel.editingFlags.incorporationAgreement)
 }
 
+/** The validation flags. */
+export const getValidationFlags = (state: StateIF): ValidationFlagsIF => {
+  return state.stateModel.validationFlags
+}
+
 /** Flag to prompt app level validations. */
 export const getAppValidate = (state: StateIF): boolean => {
-  return state.stateModel.validationFlags.appValidate
+  return getValidationFlags(state).appValidate
 }
 
 /** Flag to prompt component level validations. */
 export const getComponentValidate = (state: StateIF): boolean => {
-  return state.stateModel.validationFlags.componentValidate
+  return getValidationFlags(state).componentValidate
 }
 
 /** The review and certify page validity flags. */
 export const getFlagsReviewCertify = (state: StateIF): FlagsReviewCertifyIF => {
-  return state.stateModel.validationFlags.flagsReviewCertify
+  return getValidationFlags(state).flagsReviewCertify
 }
 
 /** The company info page validity flags. */
 export const getFlagsCompanyInfo = (state: StateIF): FlagsCompanyInfoIF => {
-  return state.stateModel.validationFlags.flagsCompanyInfo
+  return getValidationFlags(state).flagsCompanyInfo
 }
 
 export const getDetailComment = (state: StateIF): string => {
@@ -775,11 +780,6 @@ export const invalidMinimumShareClass = (state: StateIF): boolean => {
   const currentShareClasses = shareClasses.filter(x => x.action !== ActionTypes.REMOVED)
 
   return (currentShareClasses.length < 1)
-}
-
-/** Get state of company provisions validity. */
-export const getIsCompanyProvisionsValid = (state: StateIF): boolean => {
-  return state.stateModel.validationFlags.flagsCompanyInfo.isValidCompanyProvisions
 }
 
 /** The current filing name. */

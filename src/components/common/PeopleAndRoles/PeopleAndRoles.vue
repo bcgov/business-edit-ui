@@ -301,17 +301,18 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       //     (most restrictive to least restrictive)
 
       // proprietor/partner must have a mailing address and a delivery address
-      // delivery address must be in BC, Canada
+      // mailing address can be anywhere in the world
+      // delivery address can be anywhere in the world
       if (this.hasRoleProprietor(party) || this.hasRolePartner(party)) {
         return (
           !isEmpty(party.mailingAddress) &&
-          !isEmpty(party.deliveryAddress) &&
-          (party.deliveryAddress.addressRegion === REGION_BC) &&
-          (party.deliveryAddress.addressCountry === COUNTRY_CA)
+          !isEmpty(party.deliveryAddress)
         )
       }
 
       // director must have a mailing address and a delivery address
+      // mailing address can be anywhere in the world
+      // delivery address can be anywhere in the world
       if (this.hasRoleDirector(party)) {
         return (
           !isEmpty(party.mailingAddress) &&
@@ -320,11 +321,13 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       }
 
       // completing party must have just a mailing address
+      // mailing address can be anywhere in the world
       if (this.hasRoleCompletingParty(party)) {
         return !isEmpty(party.mailingAddress)
       }
 
       // incorporators must have just a mailing address
+      // mailing address can be anywhere in the world
       if (this.hasRoleIncorporator(party)) {
         return !isEmpty(party.mailingAddress)
       }
