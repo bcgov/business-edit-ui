@@ -366,7 +366,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   // Global getter
   @Getter getCurrentDate!: string
   @Getter getResource!: ResourceIF
-  @Getter isTypeBcomp!: boolean
   @Getter isTypeSoleProp!: boolean
   @Getter isTypePartnership!: boolean
   @Getter isRoleStaff!: boolean

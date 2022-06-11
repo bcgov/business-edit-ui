@@ -40,8 +40,6 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   @Getter getSnapshotBusinessContact!: ContactPointIF
   @Getter getResource!: ResourceIF
   @Getter getBusinessId!: string
-  @Getter isTypeBcomp!: boolean
-  @Getter isTypeFirm!: boolean
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF

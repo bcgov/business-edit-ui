@@ -205,7 +205,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter isSummaryMode!: boolean
   @Getter showFeeSummary!: boolean
   @Getter getCurrentJsDate!: Date
-  // @Getter isTypeFirm!: boolean // *** TODO: delete when no longer needed
 
   // Alteration flag getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -533,9 +532,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       this.setComponentValidate(true)
       this.setAppValidate(true)
     }
-
-    // console.log('*** isTypeBcomp =', this.isTypeBcomp)
-    // console.log('*** isTypeFirm =', this.isTypeFirm)
 
     // finally, let router views know they can load their data
     this.appReady = true

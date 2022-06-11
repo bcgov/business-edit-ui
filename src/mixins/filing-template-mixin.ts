@@ -56,8 +56,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter hasPeopleAndRolesChanged!: boolean
   @Getter getCompletingParty!: CompletingPartyIF
   @Getter isTypeBcomp!: boolean
+  @Getter isTypeCoop!: boolean
   @Getter isTypeSoleProp!: boolean
   @Getter isTypePartnership!: boolean
+  @Getter getCorrectedFilingType!: FilingTypes
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -139,7 +141,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       },
       correction: {
         correctedFilingId: this.getCorrectedFilingId,
-        correctedFilingType: FilingTypes.INCORPORATION_APPLICATION,
+        correctedFilingType: this.getCorrectedFilingType,
         correctedFilingDate: this.getCurrentDate,
         comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`
       },
@@ -524,8 +526,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param filing the correction filing
    */
   parseCorrectionFiling (filing: CorrectionFilingIF): void {
-    // console.log('*** correction filing =', filing)
-
     // Store business information
     this.setBusinessInformation(filing.business)
 

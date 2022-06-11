@@ -196,7 +196,7 @@
 
     <!-- Name Translation(s) -->
     <div
-      v-if="isAlterationFiling || isCorrectionFiling"
+      v-if="isAlterationFiling || (isCorrectionFiling && !isTypeFirm)"
       id="name-translate-section"
       class="section-container"
       :class="{'invalid-section': invalidTranslationSection}"

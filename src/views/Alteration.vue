@@ -172,8 +172,6 @@ export default class Alteration extends Mixins(
   @Getter getAppValidate!: boolean
   @Getter showFeeSummary!: boolean
   @Getter getFeePrices!: FeesIF
-  @Getter isTypeBcomp!: boolean
-  @Getter isTypeCoop!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF

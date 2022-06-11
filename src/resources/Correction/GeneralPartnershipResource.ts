@@ -4,14 +4,11 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 export const GeneralPartnershipResource: any = {
   addressLabel: 'Business Office',
   entityType: CorpTypeCd.PARTNERSHIP,
-  entityReference: 'Company',
+  entityReference: 'Business',
   contactLabel: 'Business Office',
-  title: 'General Partnership Statement',
-  description: 'See designs.',
   changeData: {
     nameChangeOptions: [
-      CorrectionTypes.CORRECT_NEW_NR,
-      CorrectionTypes.CORRECT_NAME
+      CorrectionTypes.CORRECT_NEW_NR
     ],
     orgPersonInfo: {
       orgPersonLabel: 'Partners',

@@ -4,14 +4,11 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 export const SoleProprietorshipResource: any = {
   addressLabel: 'Business Office',
   entityType: CorpTypeCd.SOLE_PROP,
-  entityReference: 'Company',
+  entityReference: 'Business',
   contactLabel: 'Business Office',
-  title: 'Sole Proprietorship Statement',
-  description: 'See designs.',
   changeData: {
     nameChangeOptions: [
-      CorrectionTypes.CORRECT_NEW_NR,
-      CorrectionTypes.CORRECT_NAME
+      CorrectionTypes.CORRECT_NEW_NR
     ],
     orgPersonInfo: {
       orgPersonLabel: 'Proprietor',

@@ -94,12 +94,26 @@ export const getBusinessFoundingDate = (state: StateIF): string => {
   return getBusinessInformation(state).foundingDate
 }
 
-/** The filing's original effective date-time. */
+/** The original filing's name. */
+export const getOriginalFilingName = (state: StateIF): string => {
+  if (getOriginalIA(state)?.incorporationApplication) {
+    return FilingNames.INCORPORATION_APPLICATION
+  }
+  if (getOriginalChgRegistration(state)?.changeOfRegistration) {
+    return FilingNames.CHANGE_OF_REGISTRATION
+  }
+  if (getOriginalRegistration(state)?.registration) {
+    return FilingNames.REGISTRATION
+  }
+  return null
+}
+
+/** The original filing's filing date-time. */
 export const getOriginalFilingDateTime = (state: StateIF): string => {
   return getCorrectedFiling(state)?.header.date
 }
 
-/** The filing's original effective date-time. */
+/** The original filing's effective date-time. */
 export const getOriginalEffectiveDateTime = (state: StateIF): string => {
   return getCorrectedFiling(state)?.header.effectiveDate
 }
@@ -127,6 +141,11 @@ export const getFilingId = (state: StateIF): number => {
 /** The corrected filing id. */
 export const getCorrectedFilingId = (state: StateIF): number => {
   return state.stateModel.tombstone.correctedFilingId
+}
+
+/** The corrected filing type. */
+export const getCorrectedFilingType = (state: StateIF): string => {
+  return getCorrectedFiling(state).header.name
 }
 
 /** The business identifier (aka incorporation number). */

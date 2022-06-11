@@ -491,11 +491,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       const thisPerson = (id !== undefined) && cloneDeep(this.originalParties.find(x => x.officer.id === id))
 
       // safety check
-      if (!thisPerson) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to find original person with id =', id)
-        return
-      }
+      if (!thisPerson) throw new Error(`Failed to find original person with id = ${id}`)
 
       // check if original person had CP role
       const hadCp = thisPerson.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)
