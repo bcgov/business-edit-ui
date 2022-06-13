@@ -6,7 +6,7 @@ import sinon from 'sinon'
 import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { axios } from '@/utils/'
-import Correction from '@/views/Correction.vue'
+import BenCorrection from '@/views/Correction/BenCorrection.vue'
 import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)
@@ -17,7 +17,7 @@ const store = getVuexStore()
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
-describe('Correction component', () => {
+describe('Benefit Company Correction component', () => {
   let wrapper: any
   const { assign } = window.location
 
@@ -48,6 +48,7 @@ describe('Correction component', () => {
     'JiIUlDmKZ2ow7GmmDabic8igHnEDYD6sI7OFYnCJhRdgVEHN-_4KUk2YsAVl5XUr6blJKMuYDPeMyNreGTXU7foE4AT-93FwlyTyFzQGddrDv' +
     'c6kkQr7mgJNTtgg87DdYbVGbEtIetyVfvwEF0rU8JH2N-j36XIebo33FU3-gJ5Y5S69EHPqQ37R9H4d8WUrHO-4QzJQih3Yaea820XBplJeo0' +
     'DO3hQoVtPD42j0p3aIy10cnW2g')
+  store.state.stateModel.tombstone.entityType = 'BEN'
   store.state.stateModel.tombstone.businessId = 'BC1234567'
 
   beforeEach(async () => {
@@ -95,170 +96,6 @@ describe('Correction component', () => {
         }
       }))
 
-    // GET business
-    get.withArgs('businesses/BC1234567')
-      .returns(Promise.resolve({
-        data: {
-          business: {
-            legalName: 'Mock Business Ltd.',
-            legalType: 'BEN',
-            identifier: 'BC1234567'
-          }
-        }
-      }))
-
-    // GET business name translations
-    get.withArgs('businesses/BC1234567/aliases')
-      .returns(Promise.resolve({
-        data: {
-          aliases: [{
-            name: 'Mock Business French Ltd.',
-            id: '12'
-          }]
-        }
-      }))
-
-    // GET business addresses
-    get.withArgs('businesses/BC1234567/addresses')
-      .returns(Promise.resolve({
-        data: {
-          registeredOffice: {
-            deliveryAddress: {
-              streetAddress: 'reg delivery_address - address line one',
-              addressCity: 'delivery_address city',
-              addressCountry: 'delivery_address country',
-              postalCode: 'H0H0H0',
-              addressRegion: 'BC'
-            },
-            mailingAddress: {
-              streetAddress: 'reg mailing_address - address line two',
-              addressCity: 'mailing_address city',
-              addressCountry: 'mailing_address country',
-              postalCode: 'H0H0H0',
-              addressRegion: 'BC'
-            }
-          },
-          recordsOffice: {
-            deliveryAddress: {
-              streetAddress: 'rec delivery_address - address line one',
-              addressCity: 'delivery_address city',
-              addressCountry: 'delivery_address country',
-              postalCode: 'H0H0H0',
-              addressRegion: 'BC'
-            },
-            mailingAddress: {
-              streetAddress: 'rec mailing_address - address line two',
-              addressCity: 'mailing_address city',
-              addressCountry: 'mailing_address country',
-              postalCode: 'H0H0H0',
-              addressRegion: 'BC'
-            }
-          }
-        }
-      }))
-
-    // GET business directors
-    get.withArgs('businesses/BC1234567/directors')
-      .returns(Promise.resolve({
-        data: {
-          directors: [
-            {
-              appointmentDate: '2020-09-30',
-              cessationDate: null,
-              deliveryAddress: {
-                addressCity: 'Victoria',
-                addressCountry: 'CA',
-                addressRegion: 'BC',
-                deliveryInstructions: '',
-                postalCode: 'V8P 1S8',
-                streetAddress: '1284 Derby Rd',
-                streetAddressAdditional: ''
-              },
-              mailingAddress: {
-                addressCity: 'Victoria',
-                addressCountry: 'CA',
-                addressRegion: 'BC',
-                deliveryInstructions: '',
-                postalCode: 'V8P 1S8',
-                streetAddress: '1284 Derby Rd',
-                streetAddressAdditional: ''
-              },
-              officer: {
-                firstName: 'CAMERON',
-                lastName: 'BOWLER'
-              },
-              role: 'director'
-            }
-          ]
-        }
-      }))
-
-    // GET business share classes
-    get.withArgs('businesses/BC1234567/share-classes')
-      .returns(Promise.resolve({
-        data: {
-          shareClasses: [
-            {
-              currency: 'CAD',
-              hasMaximumShares: true,
-              hasParValue: true,
-              hasRightsOrRestrictions: true,
-              id: '605',
-              maxNumberOfShares: 300,
-              name: 'Class A Shares',
-              parValue: 1,
-              priority: 1,
-              series: [
-                {
-                  hasMaximumShares: true,
-                  hasRightsOrRestrictions: false,
-                  id: '100',
-                  maxNumberOfShares: 150,
-                  name: 'Series A Shares',
-                  priority: 1
-                },
-                {
-                  hasMaximumShares: true,
-                  hasRightsOrRestrictions: false,
-                  id: 101,
-                  maxNumberOfShares: 10,
-                  name: 'Series 2 Shares',
-                  priority: 2
-                }
-              ]
-            }
-          ]
-        }
-      }))
-
-    // GET auth info
-    get.withArgs('https://auth.api.url/entities/BC1234567')
-      .returns(Promise.resolve({
-        data: {
-          contacts: [
-            {
-              email: 'mock@email.com',
-              phone: '123-456-7890'
-            }
-          ]
-        }
-      }))
-
-    // GET resolutions
-    get.withArgs('businesses/BC1234567/resolutions')
-      .returns(Promise.resolve({
-        data: {
-          resolutions: [
-            {
-              date: '2021-05-05'
-            },
-            {
-              date: '2021-07-05'
-            }
-          ]
-        }
-      }))
-
     // FUTURE: mock GET correction filing
 
     // create a Local Vue and install router on it
@@ -266,7 +103,7 @@ describe('Correction component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'correction' })
-    wrapper = shallowMount(Correction, { localVue, store, router, vuetify })
+    wrapper = shallowMount(BenCorrection, { localVue, store, router, vuetify })
 
     // wait for all queries to complete
     await flushPromises()
@@ -278,8 +115,8 @@ describe('Correction component', () => {
     wrapper.destroy()
   })
 
-  it('renders Correction view', () => {
-    expect(wrapper.findComponent(Correction).exists()).toBe(true)
+  it('renders Benefit Company Correction view', () => {
+    expect(wrapper.findComponent(BenCorrection).exists()).toBe(true)
   })
 
   // FUTURE
@@ -339,16 +176,16 @@ describe('Correction component', () => {
     await flushPromises()
 
     store.state.stateModel.summaryMode = true
-    store.state.stateModel.tombstone.filingType = 'alteration'
+    store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
     await Vue.nextTick()
 
     expect(
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Certain changes require an Alteration Notice which will incur a $100.00 fee.')
+    ).toContain('Certain changes require a Correction Notice which will incur a $100.00 fee.')
     expect(
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Choosing an alteration date and time in the future will incur an additional $100.00 fee.')
+    ).toContain('Choosing a correction date and time in the future will incur an additional $100.00 fee.')
 
     store.state.stateModel.feePrices = {
       filingFees: null,
@@ -368,14 +205,14 @@ describe('Correction component', () => {
 
     expect(
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Certain changes require an Alteration Notice which will incur a fee.')
+    ).toContain('Certain changes require a Correction Notice which will incur a fee.')
     expect(
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Choosing an alteration date and time in the future will incur an additional fee.')
+    ).toContain('Choosing a correction date and time in the future will incur an additional fee.')
   })
 
   // FUTURE
-  xit('updates the current fees when AlterationSummary changes', async () => {
+  xit('updates the current fees when CorrectionSummary changes', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
@@ -388,7 +225,7 @@ describe('Correction component', () => {
   })
 
   // FUTURE
-  xit('loads a draft alteration into the store', async () => {
+  xit('loads a draft correction into the store', async () => {
     // Validate Effective Date-Time
     expect(store.state.stateModel.effectiveDateTime.isFutureEffective).toBe(true)
     expect(store.state.stateModel.effectiveDateTime.dateTimeString).toBe('2021-03-22T18:00:00.000Z')

@@ -35,7 +35,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { CommonMixin, SharedMixin } from '@/mixins/'
-import { BusinessInformationIF, EntitySnapshotIF, IncorporationFilingIF } from '@/interfaces/'
+import { BusinessInformationIF, EntitySnapshotIF, CorrectedFilingIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 @Component({})
@@ -47,15 +47,16 @@ export default class EntityInfo extends Mixins(CommonMixin, SharedMixin) {
   @Getter isRoleStaff!: boolean
   @Getter getBusinessContact!: ContactPointIF
   @Getter getBusinessInformation!: BusinessInformationIF
-  @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter getCorrectedFiling!: CorrectedFilingIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
 
   /** Get original entity type. */
   get originalEntityType (): string {
-    return this.getCorpTypeDescription(this.isCorrectionFiling
-      ? this.getOriginalIA?.business?.legalType
-      : this.getEntitySnapshot?.businessInfo?.legalType
-    )
+    if (this.isCorrectionFiling && this.getCorrectedFiling?.business) {
+      return this.getCorpTypeDescription(this.getCorrectedFiling.business.legalType)
+    } else {
+      return this.getCorpTypeDescription(this.getEntitySnapshot?.businessInfo?.legalType)
+    }
   }
 }
 </script>

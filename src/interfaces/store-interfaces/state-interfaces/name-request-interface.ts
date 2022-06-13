@@ -3,15 +3,15 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 // Name Request State interface
 export interface NameRequestIF {
-  legalType: CorpTypeCd
-  legalName: string
-  nrNumber?: string
+  applicant?: NameRequestApplicantIF
+  details?: NameRequestDetailsIF | {}
   expiry?: string
+  filingId?: number
+  legalName: string
+  legalType: CorpTypeCd
+  nrNumber?: string
   requestType?: NameRequestTypes
   status?: NameRequestStates
-  details?: NameRequestDetailsIF | {}
-  applicant?: NameRequestApplicantIF
-  filingId?: number
 }
 
 // Name request response details interface

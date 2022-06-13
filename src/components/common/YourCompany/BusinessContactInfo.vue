@@ -21,7 +21,8 @@ import { Action, Getter } from 'vuex-class'
 import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
-import { ActionBindingIF, IncorporationFilingIF, ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, ChgRegistrationFilingIF, IncorporationFilingIF, RegistrationFilingIF,
+  ResourceIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 
@@ -34,6 +35,8 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessContact!: ContactPointIF
   @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter getOriginalChgRegistration!: ChgRegistrationFilingIF
+  @Getter getOriginalRegistration!: RegistrationFilingIF
   @Getter getSnapshotBusinessContact!: ContactPointIF
   @Getter getResource!: ResourceIF
   @Getter getBusinessId!: string
@@ -50,13 +53,17 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 
   /** Get the original Contact info dependant on filing type. */
   get originalContact (): ContactPointIF {
-    if (this.isCorrectionFiling) {
+    if (this.isCorrectionFiling && this.getOriginalIA?.incorporationApplication) {
       return this.getOriginalIA.incorporationApplication.contactPoint
-    }
-    if (this.isAlterationFiling || this.isChangeRegFiling || this.isConversionFiling) {
+    } else if (this.isCorrectionFiling && this.getOriginalChgRegistration?.changeOfRegistration) {
+      return this.getOriginalChgRegistration.changeOfRegistration.contactPoint
+    } else if (this.isCorrectionFiling && this.getOriginalRegistration?.registration) {
+      return this.getOriginalRegistration.registration.contactPoint
+    } else if (this.isAlterationFiling || this.isChangeRegFiling || this.isConversionFiling) {
       return this.getSnapshotBusinessContact
+    } else {
+      return null
     }
-    return null
   }
 
   /** Check for changes between current contact and original contact. */

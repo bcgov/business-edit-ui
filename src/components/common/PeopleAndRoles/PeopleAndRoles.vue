@@ -182,7 +182,8 @@ import { Action, Getter } from 'vuex-class'
 import { cloneDeep, isEmpty } from 'lodash'
 import { isSame } from '@/utils/'
 import { ActionBindingIF, ConfirmDialogType, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF,
-  IncorporationFilingIF, OrgPersonIF, ResourceIF, RoleIF } from '@/interfaces/'
+  OrgPersonIF, ResourceIF, RoleIF, IncorporationFilingIF, ChgRegistrationFilingIF, RegistrationFilingIF,
+  CorrectedFilingIF } from '@/interfaces/'
 import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
@@ -215,7 +216,10 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getUserEmail!: string
+  @Getter getCorrectedFiling!: CorrectedFilingIF
   @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter getOriginalChgRegistration!: ChgRegistrationFilingIF
+  @Getter getOriginalRegistration!: RegistrationFilingIF
   @Getter isRoleStaff!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
@@ -244,11 +248,15 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 
   /** The list of original parties. */
   get originalParties (): OrgPersonIF[] {
-    const parties = this.isCorrectionFiling
-      ? this.getOriginalIA?.incorporationApplication?.parties
-      : this.getEntitySnapshot?.orgPersons
-
-    return (parties)
+    if (this.isCorrectionFiling && this.getOriginalIA?.incorporationApplication) {
+      return this.getOriginalIA.incorporationApplication.parties
+    } else if (this.isCorrectionFiling && this.getOriginalChgRegistration?.changeOfRegistration) {
+      return this.getOriginalChgRegistration.changeOfRegistration.parties
+    } else if (this.isCorrectionFiling && this.getOriginalRegistration?.registration) {
+      return this.getOriginalRegistration.registration.parties
+    } else {
+      return this.getEntitySnapshot?.orgPersons || []
+    }
   }
 
   /** True if we have a Completing Party. */
@@ -483,11 +491,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       const thisPerson = (id !== undefined) && cloneDeep(this.originalParties.find(x => x.officer.id === id))
 
       // safety check
-      if (!thisPerson) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to find original person with id =', id)
-        return
-      }
+      if (!thisPerson) throw new Error(`Failed to find original person with id = ${id}`)
 
       // check if original person had CP role
       const hadCp = thisPerson.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)
@@ -746,8 +750,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   /**
    * On initial load, sets the Original Completing Party (if any).
    */
-  @Watch('getOriginalIA', { deep: true })
-  private onOriginalIAChanged (): void {
+  @Watch('getCorrectedFiling', { deep: true })
+  private onCorrectedFilingChanged (): void {
     this.originalCompletingParty = this.getCompletingParty(this.originalParties)
   }
 

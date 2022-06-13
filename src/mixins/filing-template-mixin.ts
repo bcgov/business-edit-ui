@@ -2,9 +2,9 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
-import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
-  EffectiveDateTimeIF, EntitySnapshotIF, ChangeFilingIF, ConversionFilingIF, NameRequestIF,
-  NameTranslationIF, OrgPersonIF, ShareClassIF, ShareStructureIF } from '@/interfaces/'
+import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF, EffectiveDateTimeIF,
+  EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF, NameTranslationIF,
+  OrgPersonIF, ShareClassIF, ShareStructureIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, EffectOfOrders, FilingTypes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -55,6 +55,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter hasOfficeAddressesChanged!: boolean
   @Getter hasPeopleAndRolesChanged!: boolean
   @Getter getCompletingParty!: CompletingPartyIF
+  @Getter isTypeBcomp!: boolean
+  @Getter isTypeCoop!: boolean
+  @Getter isTypeSoleProp!: boolean
+  @Getter isTypePartnership!: boolean
+  @Getter getCorrectedFilingType!: FilingTypes
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -136,7 +141,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       },
       correction: {
         correctedFilingId: this.getCorrectedFilingId,
-        correctedFilingType: FilingTypes.INCORPORATION_APPLICATION,
+        correctedFilingType: this.getCorrectedFilingType,
         correctedFilingDate: this.getCurrentDate,
         comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`
       },
@@ -301,9 +306,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param isDraft whether this is a draft
    * @returns the change filing body
    */
-  buildChangeRegFiling (isDraft: boolean): ChangeFilingIF {
+  buildChangeRegFiling (isDraft: boolean): ChgRegistrationFilingIF {
     // Build change filing
-    const filing: ChangeFilingIF = {
+    const filing: ChgRegistrationFilingIF = {
       header: {
         name: FilingTypes.CHANGE_OF_REGISTRATION,
         certifiedBy: this.getCertifyState.certifiedBy,
@@ -525,7 +530,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setBusinessInformation(filing.business)
 
     // Store name request
-    this.setNameRequest(filing.incorporationApplication.nameRequest)
+    if (filing.incorporationApplication) this.setNameRequest(filing.incorporationApplication.nameRequest)
+    if (filing.changeofRegistration) this.setNameRequest(filing.changeofRegistration.nameRequest)
+    if (filing.registration) this.setNameRequest(filing.registration.nameRequest)
 
     // Store name translations
     // NB: The first time (when we initiate a correction), the `oldName` and `action` props are not
@@ -533,47 +540,59 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     //     Due to missing props, change event was not triggering if the action value is changed (at
     //     the time of Delete there is no other prop change except action). To handle this scenario,
     //     this structure needs to be kept.
-    this.setNameTranslations(
-      filing.incorporationApplication.nameTranslations?.map(x => {
-        return {
-          id: x.id,
-          name: x.name,
-          oldName: x.oldName || null,
-          action: x.action || null
-        }
-      }) || []
-    )
+    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+      this.setNameTranslations(
+        filing.incorporationApplication.nameTranslations?.map(x => {
+          return {
+            id: x.id,
+            name: x.name,
+            oldName: x.oldName || null,
+            action: x.action || null
+          }
+        }) || []
+      )
+    }
 
     // Store office addresses
-    this.setOfficeAddresses(filing.incorporationApplication.offices)
+    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+      this.setOfficeAddresses(filing.incorporationApplication.offices)
+    }
 
     // Store business contact
-    this.setBusinessContact({
-      ...filing.incorporationApplication.contactPoint,
-      confirmEmail: filing.incorporationApplication.contactPoint.email
-    })
+    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+      this.setBusinessContact({
+        ...filing.incorporationApplication.contactPoint,
+        confirmEmail: filing.incorporationApplication.contactPoint.email
+      })
+    }
 
     // Store people and roles
-    this.setPeopleAndRoles(filing.incorporationApplication.parties || [])
+    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+      this.setPeopleAndRoles(filing.incorporationApplication.parties || [])
+    }
 
     // Store share classes
-    if (filing.incorporationApplication.shareStructure) {
-      this.setShareClasses(filing.incorporationApplication.shareStructure.shareClasses)
-    } else {
-      // if it exists, load data from old schema
-      const incorporationApplication = filing.incorporationApplication as any
-      const shareClasses = incorporationApplication.shareClasses as ShareClassIF[]
-      if (shareClasses) {
-        this.setShareClasses(shareClasses)
+    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+      if (filing.incorporationApplication.shareStructure) {
+        this.setShareClasses(filing.incorporationApplication.shareStructure.shareClasses)
       } else {
-        this.setShareClasses([])
+        // if it exists, load data from old schema
+        const incorporationApplication = filing.incorporationApplication as any
+        const shareClasses = incorporationApplication.shareClasses as ShareClassIF[]
+        if (shareClasses) {
+          this.setShareClasses(shareClasses)
+        } else {
+          this.setShareClasses([])
+        }
       }
     }
 
     // Store incorporation agreement type
-    this.setIncorporationAgreementStepData({
-      agreementType: filing.incorporationApplication.incorporationAgreement?.agreementType
-    })
+    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+      this.setIncorporationAgreementStepData({
+        agreementType: filing.incorporationApplication.incorporationAgreement?.agreementType
+      })
+    }
 
     // Store certify state
     this.setCertifyState({
@@ -685,7 +704,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param filing the change filing
    * @param entitySnapshot the latest entity snapshot
    */
-  parseChangeFiling (filing: ChangeFilingIF, entitySnapshot: EntitySnapshotIF): void {
+  parseChangeFiling (filing: ChgRegistrationFilingIF, entitySnapshot: EntitySnapshotIF): void {
     // Store business snapshot
     this.setEntitySnapshot(cloneDeep(entitySnapshot))
 

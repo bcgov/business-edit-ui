@@ -1,120 +1,63 @@
 <template>
-  <section id="correction-view">
-    <header>
-      <h1>Correction - Incorporation Application</h1>
-    </header>
-
-    <section id="original-filing-date" class="mt-6">
-      <p>
-        <span id="original-filing-date-label">Original Filing Date:</span>
-        {{ originalFilingDate }}
-      </p>
-    </section>
-
-    <section id="benefit-company-statement" class="mt-6" v-if="isTypeBcomp">
-      <p>
-        <span id="benefit-company-statement-label">{{ BenefitCompanyStatementResource.title }}:</span>
-        {{ BenefitCompanyStatementResource.description }}
-      </p>
-    </section>
-
-    <YourCompany class="mt-10" />
-
-    <PeopleAndRoles class="mt-10" />
-
-    <ShareStructures class="mt-10" />
-
-    <AgreementType class="mt-10" />
-
-    <CompletingParty class="mt-10" sectionNumber="1." />
-
-    <Detail class="mt-10" sectionNumber="2." validate="true" />
-
-    <CertifySection class="mt-10" sectionNumber="3." validate="true" />
-
-    <StaffPayment
-      class="mt-10"
-      sectionNumber="4."
-      @haveChanges="onStaffPaymentChanges()"
+  <div>
+    <BenCorrection
+      v-if="isTypeBcomp"
+      :correctionFiling="correctionFiling"
+      @fetchError="emitFetchError($event)"
+      @haveData="emitHaveData($event)"
     />
-  </section>
+    <FmCorrection
+      v-if="isTypeFirm"
+      :correctionFiling="correctionFiling"
+      @fetchError="emitFetchError($event)"
+      @haveData="emitHaveData($event)"
+    />
+  </div>
 </template>
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
-import { AgreementType, CompletingParty } from '@/components/Correction/'
-import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
-  from '@/components/common/'
-import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
-import { ActionBindingIF, FilingDataIF, ResourceIF } from '@/interfaces/'
-import { FilingCodes, FilingStatus } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { CommonMixin, LegalApiMixin } from '@/mixins/'
+import { ActionBindingIF, CorrectionFilingIF } from '@/interfaces/'
+import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { BenefitCompanyStatementResource } from '@/resources/Correction/'
+import BenCorrection from '@/views/Correction/BenCorrection.vue'
+import FmCorrection from '@/views/Correction/FmCorrection.vue'
 
 @Component({
   components: {
-    AgreementType,
-    CertifySection,
-    CompletingParty,
-    Detail,
-    PeopleAndRoles,
-    ShareStructures,
-    StaffPayment,
-    YourCompany
+    BenCorrection,
+    FmCorrection
   }
 })
-export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
-  // Declarations for template
-  readonly BenefitCompanyStatementResource = BenefitCompanyStatementResource
-
-  // Global getters
-  @Getter isRoleStaff!: boolean
-  @Getter isTypeBcomp!: boolean
-  @Getter getFilingData!: FilingDataIF
-
-  // Global actions
-  @Action setCorrectedFilingId!: ActionBindingIF
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setOriginalIA!: ActionBindingIF
-  @Action setFilingData!: ActionBindingIF
-  @Action setCertifyStatementResource!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
-  @Action setResource!: ActionBindingIF
-
+export default class Correction extends Mixins(CommonMixin, LegalApiMixin) {
   /** Whether App is ready. */
   @Prop({ default: false })
   readonly appReady: boolean
 
-  /** The id of the correction being edited. */
-  get correctionId (): number {
-    return +this.$route.query['correction-id'] || 0
-  }
+  // Global getters
+  @Getter isRoleStaff!: boolean
+  @Getter isTypeBcomp!: boolean
+  @Getter isTypeFirm!: boolean
 
-  /** The original filing date, in Pacific time. */
-  get originalFilingDate (): string {
-    return this.apiToPacificDateLong(this.getOriginalFilingDateTime)
-  }
+  // Global actions
+  @Action setFilingId!: ActionBindingIF
+  @Action setEntityType!: ActionBindingIF
+
+  protected correctionFiling: CorrectionFilingIF = null
 
   /** True if user is authenticated. */
   get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The resource file for a correction filing. */
-  get correctionResource (): any {
-    let resource: ResourceIF
-    if (this.isTypeBcomp) resource = BenefitCompanyStatementResource
-    if (!resource) {
-      throw new Error(`Invalid Correction Resource entity type = ${this.getEntityType}`)
-    }
-    return resource
+  /** The id of the correction being edited. */
+  get correctionId (): number {
+    return +this.$route.query['correction-id'] || 0
   }
 
-  /** Called when App is ready and this component can load its data. */
   @Watch('appReady')
   private async onAppReady (val: boolean): Promise<void> {
     // do not proceed if app is not ready
@@ -139,72 +82,41 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
       return
     }
 
-    // try to fetch data
+    // do not proceed if we don't have the necessary query param
+    if (!this.correctionId) {
+      throw new Error('Invalid correction filing ID')
+    }
+
+    // fetch the correction filing
     try {
-      // set current entity type
-      this.setEntityType(CorpTypeCd.BENEFIT_COMPANY)
+      // store the filing ID
+      this.setFilingId(this.correctionId)
 
-      // initialize Fee Summary data
-      // FUTURE: Set/Clear Data according to filing type / entity type
-      this.setFilingData({
-        filingTypeCode: FilingCodes.CORRECTION,
-        entityType: CorpTypeCd.BENEFIT_COMPANY,
-        priority: false
-      })
+      // fetch draft correction to resume
+      const filing = await this.fetchFilingById(this.correctionId) as CorrectionFilingIF
 
-      if (this.correctionId) {
-        // store the filing ID
-        this.setFilingId(this.correctionId)
-
-        // fetch draft correction to resume
-        const correctionFiling = await this.fetchFilingById(this.correctionId)
-
-        // do not proceed if this isn't a CORRECTION filing
-        if (!correctionFiling.correction) {
-          throw new Error('Invalid Correction filing')
-        }
-
-        // do not proceed if this isn't a DRAFT filing
-        if (correctionFiling.header.status !== FilingStatus.DRAFT) {
-          throw new Error('Invalid Correction status')
-        }
-
-        // get and store ID of filing that is being corrected (ie, original IA)
-        const correctedFilingId: number = +correctionFiling.correction?.correctedFilingId
-        this.setCorrectedFilingId(correctedFilingId)
-
-        // fetch and store original IA
-        const originalIa = await this.fetchFilingById(correctedFilingId)
-        this.setOriginalIA(originalIa)
-
-        // parse correction filing into store
-        this.parseCorrectionFiling(correctionFiling)
-      } else {
-        // as we don't have the necessary query params, do not proceed
-        throw new Error('Invalid correction filing ID')
+      // do not proceed if this isn't a CORRECTION filing
+      if (!filing.correction) {
+        throw new Error('Invalid correction filing')
       }
 
-      // Set the resources
-      this.setResource(this.correctionResource)
+      // do not proceed if this isn't a BEN or SP/GP correction
+      this.setEntityType(filing.business?.legalType)
+      if (!this.isTypeBcomp && !this.isTypeFirm) {
+        throw new Error('Invalid correction type')
+      }
 
-      // tell App that we're finished loading
-      this.emitHaveData()
+      // do not proceed if this isn't a DRAFT filing
+      if (filing.header?.status !== FilingStatus.DRAFT) {
+        throw new Error('Invalid correction status')
+      }
+
+      // assign prop to trigger sub-components
+      this.correctionFiling = filing
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
       this.emitFetchError(err)
     }
-
-    // now that all data is loaded, wait for things to stabilize and reset flag
-    this.$nextTick(() => this.setHaveUnsavedChanges(false))
-  }
-
-  protected onStaffPaymentChanges (): void {
-    // update filing data with staff payment fields
-    this.setFilingData({
-      ...this.getFilingData,
-      priority: this.getStaffPayment.isPriority,
-      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
-    })
   }
 
   /** Emits Fetch Error event. */
@@ -216,11 +128,3 @@ export default class Correction extends Mixins(CommonMixin, DateMixin, FilingTem
   private emitHaveData (haveData: Boolean = true): void {}
 }
 </script>
-
-<style lang="scss" scoped>
-#original-filing-date-label,
-#benefit-company-statement-label {
-  letter-spacing: -0.04rem;
-  font-weight: bold;
-}
-</style>

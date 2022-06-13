@@ -31,7 +31,11 @@ describe('BusinessContactInfo for a Correction', () => {
   beforeAll(async () => {
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.businessContact = contactInfo
-    store.state.stateModel.originalIA.incorporationApplication.contactPoint = originalCorrectionContact
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        contactPoint: originalCorrectionContact
+      }
+    }
   })
 
   beforeEach(async () => {

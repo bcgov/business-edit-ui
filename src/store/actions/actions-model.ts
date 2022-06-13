@@ -1,5 +1,6 @@
 import { ActionIF, ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, EntitySnapshotIF, NameRequestIF,
-  NameTranslationIF, OrgPersonIF, ShareClassIF, FeesIF, ResourceIF, FilingDataIF } from '@/interfaces/'
+  NameTranslationIF, OrgPersonIF, ShareClassIF, FeesIF, ResourceIF, FilingDataIF, CorrectedFilingIF }
+  from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -176,8 +177,8 @@ export const setHaveUnsavedChanges: ActionIF = ({ commit }, haveUnsavedChanges: 
   commit('mutateHaveUnsavedChanges', haveUnsavedChanges)
 }
 
-export const setOriginalIA: ActionIF = ({ commit }, originalIA): void => {
-  commit('mutateOriginalIA', originalIA)
+export const setCorrectedFiling: ActionIF = ({ commit }, filing: CorrectedFilingIF): void => {
+  commit('mutateCorrectedFiling', filing)
 }
 
 export const setEntitySnapshot: ActionIF = ({ commit }, entitySnapshot: EntitySnapshotIF): void => {

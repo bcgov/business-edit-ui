@@ -1,4 +1,5 @@
-import { FilingBusinessIF, FilingHeaderIF, IncorporationApplicationIF } from '@/interfaces/'
+import { ChgRegistrationIF, FilingBusinessIF, FilingHeaderIF, IncorporationApplicationIF, RegistrationIF }
+  from '@/interfaces/'
 
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/correction.json
@@ -16,4 +17,6 @@ export interface CorrectionFilingIF {
   business: FilingBusinessIF
   correction: CorrectionIF
   incorporationApplication?: IncorporationApplicationIF
+  changeofRegistration?: ChgRegistrationIF
+  registration?: RegistrationIF
 }

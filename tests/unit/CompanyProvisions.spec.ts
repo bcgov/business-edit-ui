@@ -127,7 +127,6 @@ describe('company provisions', () => {
   it('should emit changes for company provisions', async () => {
     const router = mockRouter.mock()
     router.push({ name: alterationRouterName })
-    store.state.stateModel.originalAlteration.alteration.provisionsRemoved = false
     const wrapper = mount(CompanyProvisions,
       {
         router,

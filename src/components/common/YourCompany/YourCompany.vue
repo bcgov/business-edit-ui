@@ -196,7 +196,7 @@
 
     <!-- Name Translation(s) -->
     <div
-      v-if="isAlterationFiling || isCorrectionFiling"
+      v-if="isAlterationFiling || (isCorrectionFiling && !isTypeFirm)"
       id="name-translate-section"
       class="section-container"
       :class="{'invalid-section': invalidTranslationSection}"
@@ -305,8 +305,9 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, IncorporationFilingIF, NameRequestApplicantIF,
-  NameRequestIF, ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF,
+  ResourceIF, CorrectedFilingIF, IncorporationFilingIF, ChgRegistrationFilingIF, RegistrationFilingIF }
+  from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
   NatureOfBusiness, OfficeAddresses } from './'
@@ -348,6 +349,9 @@ export default class YourCompany extends Mixins(
   @Getter isNumberedCompany!: boolean
   @Getter isPremiumAccount!: boolean
   @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter getCorrectedFiling!: CorrectedFilingIF
+  @Getter getOriginalChgRegistration!: ChgRegistrationFilingIF
+  @Getter getOriginalRegistration!: RegistrationFilingIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
   @Getter getResource!: ResourceIF
@@ -456,12 +460,18 @@ export default class YourCompany extends Mixins(
 
   /** Compare names. */
   get isNewName () {
-    const correctedName = this.getApprovedName
-    const currentName = this.isCorrectionFiling
-      ? this.getOriginalIA.incorporationApplication.nameRequest.legalName
-      : this.getEntitySnapshot.businessInfo.legalName
+    let currentName
 
-    return correctedName !== currentName
+    if (this.isCorrectionFiling && this.getOriginalIA?.incorporationApplication) {
+      currentName = this.getOriginalIA.incorporationApplication.nameRequest.legalName
+    } else if (this.isCorrectionFiling && this.getOriginalChgRegistration?.changeOfRegistration) {
+      currentName = this.getOriginalChgRegistration.changeOfRegistration.nameRequest.legalName
+    } else if (this.isCorrectionFiling && this.getOriginalRegistration?.registration) {
+      currentName = this.getOriginalRegistration.registration.nameRequest.legalName
+    } else {
+      currentName = this.getEntitySnapshot.businessInfo.legalName
+    }
+    return (this.getApprovedName !== currentName)
   }
 
   /** The current options for change of name correction or edit. */
@@ -475,14 +485,24 @@ export default class YourCompany extends Mixins(
 
   /** Reset company name values to original. */
   private resetName () {
+    // reset business information
     this.setBusinessInformation(this.isCorrectionFiling
-      ? this.getOriginalIA.business
+      ? this.getCorrectedFiling.business
       : this.getEntitySnapshot.businessInfo
     )
-    this.setNameRequest(this.isCorrectionFiling
-      ? this.getOriginalIA.incorporationApplication.nameRequest
-      : this.getEntitySnapshot.businessInfo
-    )
+
+    // reset name request
+    if (this.isCorrectionFiling && this.getOriginalIA?.incorporationApplication) {
+      this.setNameRequest(this.getOriginalIA.incorporationApplication.nameRequest)
+    } else if (this.isCorrectionFiling && this.getOriginalChgRegistration?.changeOfRegistration) {
+      this.setNameRequest(this.getOriginalChgRegistration.changeOfRegistration.nameRequest)
+    } else if (this.isCorrectionFiling && this.getOriginalRegistration?.registration) {
+      this.setNameRequest(this.getOriginalRegistration.registration.nameRequest)
+    } else {
+      this.setNameRequest(this.getEntitySnapshot.businessInfo)
+    }
+
+    // reset flag
     this.companyNameChanges = false
   }
 

@@ -1,7 +1,9 @@
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+
 /** Interface for filing business object UI sends to API. */
 export interface FilingBusinessIF {
   foundingDate?: string // not present in all cases
-  legalType: string
+  legalType: CorpTypeCd
   legalName: string
   identifier: string
 }

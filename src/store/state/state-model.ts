@@ -121,77 +121,7 @@ export const stateModel: StateModelIF = {
     isFutureEffective: null,
     dateTimeString: ''
   },
-  originalIA: {
-    header: {
-      name: '',
-      certifiedBy: '',
-      date: '',
-      folioNumber: '',
-      effectiveDate: '',
-      isFutureEffective: null
-    },
-    business: {
-      legalType: null,
-      identifier: ''
-    },
-    incorporationApplication: {
-      nameRequest: {
-        legalType: ''
-      },
-      nameTranslations: [],
-      offices: {},
-      contactPoint: {
-        email: '',
-        phone: '',
-        extension: null
-      },
-      parties: [],
-      shareStructure: {
-        shareClasses: []
-      },
-      incorporationAgreement: {
-        agreementType: ''
-      }
-    }
-  },
-  originalAlteration: {
-    header: {
-      name: '',
-      certifiedBy: '',
-      date: '',
-      folioNumber: '',
-      effectiveDate: '',
-      isFutureEffective: null
-    },
-    business: {
-      foundingDate: '',
-      legalName: '',
-      legalType: '',
-      identifier: ''
-    },
-    alteration: {
-      provisionsRemoved: null,
-      business: {
-        legalType: null,
-        identifier: ''
-      },
-      nameRequest: { ...EmptyNameRequest },
-      nameTranslations: [],
-      shareStructure: {
-        resolutionDates: [],
-        shareClasses: []
-      },
-      contactPoint: {
-        email: '',
-        phone: '',
-        extension: null
-      },
-      courtOrder: {
-        fileNumber: '',
-        hasPlanOfArrangement: false
-      }
-    }
-  },
+  correctedFiling: null,
   entitySnapshot: null,
   staffPaymentStep: {
     valid: false,
