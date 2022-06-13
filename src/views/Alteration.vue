@@ -223,8 +223,8 @@ export default class Alteration extends Mixins(
 
   /** The resource file for an alteration filing. */
   get alterationResource (): ResourceIF {
-    if (this.isTypeBcomp) return BenefitCompanyResource
-    if (this.isTypeCoop) return CooperativeResource
+    if (this.isEntityTypeBEN) return BenefitCompanyResource
+    if (this.isEntityTypeCP) return CooperativeResource
     return null
   }
 

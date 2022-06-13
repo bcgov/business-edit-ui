@@ -98,8 +98,8 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
 
   /** The resource file for a correction filing. */
   get correctionResource (): any {
-    if (this.isTypeSoleProp) return SoleProprietorshipResource
-    if (this.isTypePartnership) return GeneralPartnershipResource
+    if (this.isEntityTypeSP) return SoleProprietorshipResource
+    if (this.isEntityTypeGP) return GeneralPartnershipResource
     throw new Error(`Invalid Correction Resource entity type = ${this.getEntityType}`)
   }
 

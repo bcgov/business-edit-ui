@@ -118,6 +118,8 @@ describe('Completing Party', () => {
     expect(wrapper.findAll('.flex').at(0).find('.v-chip').exists()).toBe(false)
     expect(wrapper.findAll('.flex').at(1).find('span').text()).toBe('Original  Person')
 
+    // cleanup
+    store.state.stateModel.correctedFiling = null
     wrapper.destroy()
   })
 
@@ -143,6 +145,8 @@ describe('Completing Party', () => {
     expect(wrapper.findAll('.flex').at(0).find('.v-chip').exists()).toBe(true)
     expect(wrapper.findAll('.flex').at(1).find('span').text()).toBe('New  Person')
 
+    // cleanup
+    store.state.stateModel.correctedFiling = null
     wrapper.destroy()
   })
 })

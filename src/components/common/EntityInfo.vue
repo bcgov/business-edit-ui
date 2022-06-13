@@ -52,10 +52,12 @@ export default class EntityInfo extends Mixins(CommonMixin, SharedMixin) {
 
   /** Get original entity type. */
   get originalEntityType (): string {
-    if (this.isCorrectionFiling && this.getCorrectedFiling?.business) {
+    if (this.getCorrectedFiling?.business) {
       return this.getCorpTypeDescription(this.getCorrectedFiling.business.legalType)
+    } else if (this.getEntitySnapshot?.businessInfo) {
+      return this.getCorpTypeDescription(this.getEntitySnapshot.businessInfo.legalType)
     } else {
-      return this.getCorpTypeDescription(this.getEntitySnapshot?.businessInfo?.legalType)
+      return 'Unknown'
     }
   }
 }

@@ -1,13 +1,13 @@
 <template>
   <div>
     <BenCorrection
-      v-if="isTypeBcomp"
+      v-if="isEntityTypeBEN"
       :correctionFiling="correctionFiling"
       @fetchError="emitFetchError($event)"
       @haveData="emitHaveData($event)"
     />
     <FmCorrection
-      v-if="isTypeFirm"
+      v-if="isEntityTypeFirm"
       :correctionFiling="correctionFiling"
       @fetchError="emitFetchError($event)"
       @haveData="emitHaveData($event)"
@@ -39,8 +39,8 @@ export default class Correction extends Mixins(CommonMixin, LegalApiMixin) {
 
   // Global getters
   @Getter isRoleStaff!: boolean
-  @Getter isTypeBcomp!: boolean
-  @Getter isTypeFirm!: boolean
+  @Getter isEntityTypeBEN!: boolean
+  @Getter isEntityTypeFirm!: boolean
 
   // Global actions
   @Action setFilingId!: ActionBindingIF
@@ -102,7 +102,7 @@ export default class Correction extends Mixins(CommonMixin, LegalApiMixin) {
 
       // do not proceed if this isn't a BEN or SP/GP correction
       this.setEntityType(filing.business?.legalType)
-      if (!this.isTypeBcomp && !this.isTypeFirm) {
+      if (!this.isEntityTypeBEN && !this.isEntityTypeFirm) {
         throw new Error('Invalid correction type')
       }
 

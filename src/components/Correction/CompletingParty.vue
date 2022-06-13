@@ -55,11 +55,11 @@ export default class CompletingParty extends Mixins(CommonMixin) {
 
   /** The original Completing Party if found, otherwise undefined. */
   get originalCompletingParty () : OrgPersonIF {
-    if (this.isCorrectionFiling && this.getOriginalIA?.incorporationApplication) {
+    if (this.getOriginalIA?.incorporationApplication) {
       return this.getCompletingParty(this.getOriginalIA.incorporationApplication.parties)
-    } else if (this.isCorrectionFiling && this.getOriginalChgRegistration?.changeOfRegistration) {
+    } else if (this.getOriginalChgRegistration?.changeOfRegistration) {
       return this.getCompletingParty(this.getOriginalChgRegistration.changeOfRegistration.parties)
-    } else if (this.isCorrectionFiling && this.getOriginalRegistration?.registration) {
+    } else if (this.getOriginalRegistration?.registration) {
       return this.getCompletingParty(this.getOriginalRegistration.registration.parties)
     } else {
       return null

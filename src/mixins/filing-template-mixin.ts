@@ -55,10 +55,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter hasOfficeAddressesChanged!: boolean
   @Getter hasPeopleAndRolesChanged!: boolean
   @Getter getCompletingParty!: CompletingPartyIF
-  @Getter isTypeBcomp!: boolean
-  @Getter isTypeCoop!: boolean
-  @Getter isTypeSoleProp!: boolean
-  @Getter isTypePartnership!: boolean
+  @Getter isEntityTypeBEN!: boolean
+  @Getter isEntityTypeCP!: boolean
+  @Getter isEntityTypeSP!: boolean
+  @Getter isEntityTypeGP!: boolean
   @Getter getCorrectedFilingType!: FilingTypes
 
   // Global actions

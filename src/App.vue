@@ -526,8 +526,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       console.log('Launch Darkly update error =', error) // eslint-disable-line no-console
     }
 
-    // since correction is a single page, enable component validation right away
-    // FUTURE: remove this when correction filing becomes 2 pages like the others
+    // since corrections are a single page, enable component validation right away
+    // FUTURE: remove this when correction filings becomes 2 pages like the others
     if (this.isCorrectionFiling) {
       this.setComponentValidate(true)
       this.setAppValidate(true)

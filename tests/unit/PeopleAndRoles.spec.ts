@@ -108,6 +108,7 @@ describe('People And Roles component for Correction', () => {
     const router = mockRouter.mock()
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.filingType = 'correction'
+    store.state.stateModel.correctedFiling = {}
     store.state.resourceModel = BenefitCompanyStatementResource
 
     wrapperFactory = () => {
@@ -118,6 +119,10 @@ describe('People And Roles component for Correction', () => {
         vuetify
       })
     }
+  })
+
+  afterAll(() => {
+    store.state.stateModel.correctedFiling = null
   })
 
   it('shows all 3 add buttons when people list is empty', () => {
@@ -328,6 +333,8 @@ describe('People And Roles component for Correction', () => {
     // verify that popup is now displayed
     expect(wrapper.find('.confirm-dialog').exists()).toBe(true)
 
+    // cleanup
+    store.state.stateModel.correctedFiling = null
     wrapper.destroy()
   })
 })

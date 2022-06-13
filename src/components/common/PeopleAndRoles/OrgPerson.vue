@@ -207,7 +207,7 @@
               </template>
 
               <!-- Roles (BEN corrections only) -->
-              <template v-if="isCorrectionFiling && isTypeBcomp">
+              <template v-if="isBenIaCorrectionFiling">
                 <article class="mt-6">
                   <label class="sub-header">Roles</label>
                   <v-row class="roles-row mt-4">
@@ -366,9 +366,8 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   // Global getter
   @Getter getCurrentDate!: string
   @Getter getResource!: ResourceIF
-  @Getter isTypeBcomp!: boolean
-  @Getter isTypeSoleProp!: boolean
-  @Getter isTypePartnership!: boolean
+  @Getter isBenIaCorrectionFiling!: boolean
+  @Getter isEntityTypeFirm!: boolean
   @Getter isRoleStaff!: boolean
 
   /** The current org/person being added/edited. */
@@ -745,7 +744,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     if (this.isDirector || this.isProprietor || this.isPartner || isNaN(this.activeIndex)) {
       person.deliveryAddress = this.setPersonDeliveryAddress()
     }
-    if (this.isCorrectionFiling && this.isTypeBcomp) {
+    if (this.isBenIaCorrectionFiling) {
       person.roles = this.setPersonRoles(this.orgPerson)
     } else {
       person.roles = this.orgPerson.roles
@@ -849,14 +848,14 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     ]
 
     // NB: this only applies to firm orgs
-    if ((this.isTypeSoleProp || this.isTypePartnership) && this.isOrg) {
+    if ((this.isEntityTypeFirm) && this.isOrg) {
       this.confirmBusinessRules = [(v: string) => !!v]
     } else {
       this.confirmBusinessRules = []
     }
 
     // NB: this only applies to firm orgs/persons
-    if ((this.isTypeSoleProp || this.isTypePartnership) && this.hasOrgPersonNameChanged(this.orgPerson)) {
+    if ((this.isEntityTypeFirm) && this.hasOrgPersonNameChanged(this.orgPerson)) {
       this.confirmNameChangeRules = [(v: string) => !!v]
     } else {
       this.confirmNameChangeRules = []

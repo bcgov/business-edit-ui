@@ -4,7 +4,6 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAndRoles.vue'
 import { getVuexStore } from '@/store/'
-import { FilingTypes } from '@/enums/'
 import { GeneralPartnershipResource } from '@/resources/Change/GeneralPartnershipResource'
 import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitCompanyStatementResource'
 
@@ -305,8 +304,9 @@ describe('List People And Roles component for Corrections', () => {
   let wrapperFactory: any
 
   beforeAll(() => {
-    store.state.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.tombstone.entityType = 'BEN'
+    store.state.stateModel.correctedFiling = {}
     store.state.resourceModel = BenefitCompanyStatementResource
     wrapperFactory = (orgPeople, propsData: any) => {
       store.state.stateModel.peopleAndRoles.orgPeople = orgPeople
@@ -497,7 +497,7 @@ describe('List People And Roles component for Change of Registration', () => {
   let wrapperFactory: any
 
   beforeAll(() => {
-    store.state.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
+    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.resourceModel = GeneralPartnershipResource
     wrapperFactory = (orgPeople, propsData: any) => {
       store.state.stateModel.peopleAndRoles.orgPeople = orgPeople

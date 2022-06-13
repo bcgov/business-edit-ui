@@ -194,7 +194,7 @@
     </div>
 
     <!-- Business Type (firm corrections only) -->
-    <template v-if="isCorrectionFiling && isTypeFirm">
+    <template v-if="isFirmCorrectionFiling">
       <v-divider class="mx-4 my-1" />
 
       <div class="section-container">
@@ -211,7 +211,7 @@
     </template>
 
     <!-- Name Translation(s) (alterations and BEN corrections only)-->
-    <div v-if="isAlterationFiling || (isCorrectionFiling && isTypeBcomp)"
+    <div v-if="isAlterationFiling || isBenIaCorrectionFiling"
       id="name-translate-section"
       class="section-container"
       :class="{'invalid-section': invalidTranslationSection}"
@@ -225,8 +225,8 @@
 
     <v-divider class="mx-4 my-1" />
 
-    <!-- Business Start Date -->
-    <template v-if="isChangeRegFiling || isConversionFiling || (isCorrectionFiling && isTypeFirm)">
+    <!-- Business Start Date (changes, conversions and firm corrections only -->
+    <template v-if="isChangeRegFiling || isConversionFiling || isFirmCorrectionFiling">
       <section class="section-container">
         <v-row no-gutters>
           <v-col cols="3">
@@ -251,7 +251,7 @@
     </template>
 
     <!-- Nature of Business (firm change filings only) -->
-    <template v-if="isTypeFirm && isChangeRegFiling">
+    <template v-if="isEntityTypeFirm && isChangeRegFiling">
       <v-divider class="mx-4 my-1" />
 
       <NatureOfBusiness
@@ -262,7 +262,7 @@
     </template>
 
     <!-- Nature of Business (firm conversion and correction filings only) -->
-    <template v-if="isTypeFirm && (isConversionFiling || isCorrectionFiling)">
+    <template v-if="isEntityTypeFirm && (isConversionFiling || isCorrectionFiling)">
       <v-divider class="mx-4 my-1" />
 
       <ConversionNOB
@@ -273,7 +273,7 @@
     </template>
 
     <!-- Recognition Date and Time (alterations and BEN corrections only) -->
-    <div class="section-container" v-if="isAlterationFiling || (isCorrectionFiling && isTypeBcomp)">
+    <div class="section-container" v-if="isAlterationFiling || isBenIaCorrectionFiling">
       <v-row no-gutters>
         <v-col cols="3">
           <label><strong>Recognition Date and Time</strong></label>
@@ -305,7 +305,7 @@
     </div>
 
     <!-- Folio Information (all except SP or GP) -->
-    <template v-if="isPremiumAccount && !isTypeFirm">
+    <template v-if="isPremiumAccount && !isEntityTypeFirm">
       <v-divider class="mx-4 my-1" />
 
       <div id="folio-number-section" class="section-container" :class="{'invalid-section': invalidFolioSection}">
@@ -370,8 +370,10 @@ export default class YourCompany extends Mixins(
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
   @Getter getResource!: ResourceIF
-  @Getter isTypeBcomp!: boolean
-  @Getter isTypeFirm!: boolean
+  @Getter isEntityTypeBEN!: boolean
+  @Getter isEntityTypeFirm!: boolean
+  @Getter isBenIaCorrectionFiling!: boolean
+  @Getter isFirmCorrectionFiling!: boolean
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -461,12 +463,12 @@ export default class YourCompany extends Mixins(
 
   /** The recognition/founding (aka effective or start date) datetime. */
   get recognitionDateTime (): string {
-    if (this.isCorrectionFiling && this.isTypeBcomp) {
+    if (this.isBenIaCorrectionFiling) {
       if (this.getOriginalEffectiveDateTime) {
         return (this.apiToPacificDateLong(this.getOriginalEffectiveDateTime))
       }
     }
-    if (this.isCorrectionFiling && this.isTypeFirm) {
+    if (this.isFirmCorrectionFiling) {
       if (this.getBusinessFoundingDate) {
         return (this.apiToPacificDateLong(this.getBusinessFoundingDate))
       }
@@ -483,11 +485,11 @@ export default class YourCompany extends Mixins(
   get isNewName () {
     let currentName
 
-    if (this.isCorrectionFiling && this.getOriginalIA?.incorporationApplication) {
+    if (this.getOriginalIA?.incorporationApplication) {
       currentName = this.getOriginalIA.incorporationApplication.nameRequest.legalName
-    } else if (this.isCorrectionFiling && this.getOriginalChgRegistration?.changeOfRegistration) {
+    } else if (this.getOriginalChgRegistration?.changeOfRegistration) {
       currentName = this.getOriginalChgRegistration.changeOfRegistration.nameRequest.legalName
-    } else if (this.isCorrectionFiling && this.getOriginalRegistration?.registration) {
+    } else if (this.getOriginalRegistration?.registration) {
       currentName = this.getOriginalRegistration.registration.nameRequest.legalName
     } else {
       currentName = this.getEntitySnapshot.businessInfo.legalName
@@ -513,11 +515,11 @@ export default class YourCompany extends Mixins(
     )
 
     // reset name request
-    if (this.isCorrectionFiling && this.getOriginalIA?.incorporationApplication) {
+    if (this.getOriginalIA?.incorporationApplication) {
       this.setNameRequest(this.getOriginalIA.incorporationApplication.nameRequest)
-    } else if (this.isCorrectionFiling && this.getOriginalChgRegistration?.changeOfRegistration) {
+    } else if (this.getOriginalChgRegistration?.changeOfRegistration) {
       this.setNameRequest(this.getOriginalChgRegistration.changeOfRegistration.nameRequest)
-    } else if (this.isCorrectionFiling && this.getOriginalRegistration?.registration) {
+    } else if (this.getOriginalRegistration?.registration) {
       this.setNameRequest(this.getOriginalRegistration.registration.nameRequest)
     } else {
       this.setNameRequest(this.getEntitySnapshot.businessInfo)

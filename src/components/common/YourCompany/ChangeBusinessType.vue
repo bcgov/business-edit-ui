@@ -175,7 +175,7 @@
             <span>Undo</span>
           </v-btn>
           <v-btn
-            v-else-if="isTypeBcCompany"
+            v-else-if="isEntityTypeBC"
             text color="primary"
             id="btn-correct-business-type"
             @click="isEditingType = true"
@@ -240,7 +240,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   @Getter getResource!: ResourceIF
   @Getter hasBusinessTypeChanged!: boolean
   @Getter isConflictingLegalType!: boolean
-  @Getter isTypeBcCompany!: boolean
+  @Getter isEntityTypeBC!: boolean
 
   @Action setEntityType!: ActionBindingIF
 
