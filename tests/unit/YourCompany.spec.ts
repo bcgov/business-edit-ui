@@ -21,7 +21,7 @@ Vue.use(Vuetify)
 const localVue = createLocalVue()
 const vuetify = new Vuetify({})
 
-describe('YourCompany in a Correction', () => {
+describe('YourCompany in a BEN correction', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
@@ -72,14 +72,14 @@ describe('YourCompany in a Correction', () => {
   })
 })
 
-describe('YourCompany in an Alteration', () => {
+describe('YourCompany in a SP alteration', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
   const entitySnapshot = {
     businessInfo: {
       legalName: 'Mock Original Name',
-      legalType: 'BEN'
+      legalType: 'SP'
     }
   }
 
@@ -90,6 +90,7 @@ describe('YourCompany in an Alteration', () => {
     store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
     store.state.stateModel.entitySnapshot = entitySnapshot
     store.state.stateModel.tombstone.filingType = 'alteration'
+    store.state.stateModel.tombstone.entityType = 'SP'
     store.state.resourceModel = BenefitCompanyResource
 
     wrapper = mount(YourCompany, { vuetify, store, localVue })
@@ -125,13 +126,13 @@ describe('YourCompany in an Alteration', () => {
     expect(wrapper.find('.company-name').text()).toBe('Mock Original Name')
 
     // Set new Name
-    store.state.stateModel.nameRequest.legalName = 'BC1234567 B.C. Ltd.'
+    store.state.stateModel.nameRequest.legalName = 'My Sole Prop'
     await Vue.nextTick()
 
     const companyInfo = wrapper.findAll('.info-text')
 
-    expect(wrapper.find('.company-name').text()).toBe('BC1234567 B.C. Ltd.')
-    expect(companyInfo.at(0).text()).toBe('BC Benefit Company')
+    expect(wrapper.find('.company-name').text()).toBe('My Sole Prop')
+    expect(companyInfo.at(0).text()).toBe('BC Sole Proprietorship')
     expect(companyInfo.at(1).text()).toBe('The name of this business will be the current Incorporation ' +
       'Number followed by "B.C. Ltd."')
   })
@@ -197,7 +198,7 @@ describe('YourCompany in an Alteration', () => {
   })
 })
 
-describe('YourCompany in an Conversion', () => {
+describe('YourCompany in a SP conversion', () => {
   let wrapper: any
   let store: any = getVuexStore()
 
@@ -238,6 +239,7 @@ describe('YourCompany in an Conversion', () => {
   beforeEach(() => {
     // Set Original business Data
     store.state.stateModel.summaryMode = false
+    store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.tombstone.filingType = 'conversion'
     store.state.resourceModel = BenefitCompanyResource
     store.state.stateModel.validationFlags.componentValidate = true

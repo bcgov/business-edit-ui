@@ -14,8 +14,8 @@ const store = getVuexStore()
 const mockUpdateContactInfo = jest.spyOn((AuthServices as any), 'updateContactInfo').mockImplementation()
 
 const contactInfo = {
-  email: 'mock@email.com',
-  confirmEmail: 'mock@email.com',
+  email: 'mock@example.com',
+  confirmEmail: 'mock@example.com',
   phone: '250-123-4567'
 }
 
@@ -130,8 +130,8 @@ describe('BusinessContactInfo for a Change of Registration', () => {
   let wrapper: any
 
   const originalContact = {
-    email: 'mock@email.com',
-    confirmEmail: 'mock@email.com',
+    email: 'mock@example.com',
+    confirmEmail: 'mock@example.com',
     phone: '250-123-4567',
     extension: '123'
   }

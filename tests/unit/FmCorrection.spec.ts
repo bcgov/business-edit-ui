@@ -58,22 +58,35 @@ describe('Firm Correction component', () => {
 
     const get = sinon.stub(axios, 'get')
 
+    // GET auth info
+    get.withArgs('https://auth.api.url/entities/FM1234567')
+      .returns(Promise.resolve({
+        data: {
+          contacts: [
+            {
+              email: 'mock@example.com',
+              phone: '123-456-7890'
+            }
+          ]
+        }
+      }))
+
     // GET payment fee for immediate correction
     get.withArgs('https://pay.api.url/fees/SP/CORRECTION')
       .returns(Promise.resolve({
         data: {
-          'filingFees': 100.0,
-          'filingType': 'Correction',
-          'filingTypeCode': 'CORRECTION',
-          'futureEffectiveFees': 0,
-          'priorityFees': 0,
-          'processingFees': 0,
-          'serviceFees': 1.5,
-          'tax': {
-            'gst': 0,
-            'pst': 0
+          filingFees: 100.0,
+          filingType: 'Correction',
+          filingTypeCode: 'CORRECTION',
+          futureEffectiveFees: 0,
+          priorityFees: 0,
+          processingFees: 0,
+          serviceFees: 1.5,
+          tax: {
+            gst: 0,
+            pst: 0
           },
-          'total': 101.5
+          total: 101.5
         }
       }))
 
@@ -81,29 +94,65 @@ describe('Firm Correction component', () => {
     get.withArgs('https://pay.api.url/fees/SP/CORRECTION?futureEffective=true')
       .returns(Promise.resolve({
         data: {
-          'filingFees': 100.0,
-          'filingType': 'Correction',
-          'filingTypeCode': 'CORRECTION',
-          'futureEffectiveFees': 100.0,
-          'priorityFees': 0,
-          'processingFees': 0,
-          'serviceFees': 1.5,
-          'tax': {
-            'gst': 0,
-            'pst': 0
+          filingFees: 100.0,
+          filingType: 'Correction',
+          filingTypeCode: 'CORRECTION',
+          futureEffectiveFees: 100.0,
+          priorityFees: 0,
+          processingFees: 0,
+          serviceFees: 1.5,
+          tax: {
+            gst: 0,
+            pst: 0
           },
-          'total': 201.5
+          total: 201.5
         }
       }))
 
-    // FUTURE: mock GET correction filing
+    // GET corrected filing
+    get.withArgs('businesses/FM1234567/filings/123')
+      .returns(Promise.resolve({
+        data: {
+          business: {},
+          header: {},
+          incorporationApplication: {}
+        }
+      }))
+
+    // GET business info
+    get.withArgs('businesses/FM1234567')
+      .returns(Promise.resolve({
+        data: { business: { legalType: 'SP' } }
+      }))
+
+    // GET addresses
+    get.withArgs('businesses/FM1234567/addresses')
+      .returns(Promise.resolve({
+        data: {}
+      }))
+
+    // GET parties
+    get.withArgs('businesses/FM1234567/parties')
+      .returns(Promise.resolve({
+        data: { parties: [] }
+      }))
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'correction' })
-    wrapper = shallowMount(FmCorrection, { localVue, store, router, vuetify })
+    wrapper = shallowMount(FmCorrection, { localVue,
+      store,
+      router,
+      vuetify,
+      propsData: {
+        correctionFiling: {
+          business: {},
+          correction: { correctedFilingId: 123 },
+          header: {}
+        }
+      } })
 
     // wait for all queries to complete
     await flushPromises()
@@ -148,7 +197,7 @@ describe('Firm Correction component', () => {
     expect(store.state.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Proprietor')
 
     // Validate Contact Info
-    expect(store.state.stateModel.businessContact.email).toBe('mock@email.com')
+    expect(store.state.stateModel.businessContact.email).toBe('mock@example.com')
     expect(store.state.stateModel.businessContact.phone).toBe('123-456-7890')
 
     expect(store.state.stateModel.currentFees.filingFees).toBe(100)

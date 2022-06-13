@@ -306,6 +306,7 @@ describe('List People And Roles component for Corrections', () => {
 
   beforeAll(() => {
     store.state.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.resourceModel = BenefitCompanyStatementResource
     wrapperFactory = (orgPeople, propsData: any) => {
       store.state.stateModel.peopleAndRoles.orgPeople = orgPeople

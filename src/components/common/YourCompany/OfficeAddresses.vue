@@ -522,7 +522,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
-    if (this.isCorrectionFiling || this.isAlterationFiling) {
+    if ((this.isCorrectionFiling && this.isTypeBcomp) || this.isAlterationFiling) {
       // assign registered office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.registeredOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.registeredOffice?.deliveryAddress }
@@ -571,7 +571,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       )
     }
 
-    if (this.isChangeRegFiling || this.isConversionFiling) {
+    if (this.isChangeRegFiling || this.isConversionFiling || (this.isCorrectionFiling && this.isTypeFirm)) {
       // assign business office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.businessOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.businessOffice?.deliveryAddress }

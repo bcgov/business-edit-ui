@@ -40,6 +40,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   @Getter getSnapshotBusinessContact!: ContactPointIF
   @Getter getResource!: ResourceIF
   @Getter getBusinessId!: string
+  @Getter isTypeFirm!: boolean
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -68,6 +69,9 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 
   /** Check for changes between current contact and original contact. */
   get hasBusinessContactInfoChange (): boolean {
+    // cannot change business contact info in firm corrections
+    if (this.isCorrectionFiling && this.isTypeFirm) return false
+
     return this.getBusinessContact?.email !== this.originalContact?.email ||
       this.getBusinessContact?.phone !== this.originalContact?.phone ||
       this.getBusinessContact?.extension !== this.originalContact?.extension

@@ -6,7 +6,7 @@
  */
 export enum ComponentsCompanyInfo {
   'company-name-section',
-  'business-type',
+  'change-business-type',
   'name-translation',
   'nature-of-business',
   'office-addresses',

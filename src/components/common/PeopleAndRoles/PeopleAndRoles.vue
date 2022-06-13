@@ -12,8 +12,8 @@
         <label class="font-weight-bold pl-2">{{ orgPersonLabel }}</label>
       </div>
 
-      <!-- Instructional people and roles text -->
-      <article v-if="isCorrectionFiling" class="section-container">
+      <!-- Instructional people and roles text (BEN corrections only)-->
+      <article v-if="isCorrectionFiling && isTypeBcomp" class="section-container">
         This application must include the following:
         <ul>
           <li>
@@ -34,18 +34,24 @@
         </ul>
       </article>
 
-      <!-- Change or conversion section -->
-      <article v-if="isChangeRegFiling || isConversionFiling" class="section-container">
-        <span class="info-text">{{ orgPersonSubtitle }}</span>
+      <!-- Change or conversion or firm correction section -->
+      <article
+        v-if="isChangeRegFiling || isConversionFiling || (isCorrectionFiling && isTypeFirm)"
+        class="section-container pb-0"
+      >
+        <p v-if="orgPersonSubtitle" class="info-text mt-2">{{ orgPersonSubtitle }}</p>
 
         <HelpSection
           v-if="!isRoleStaff && orgPersonHelp"
-          class="mt-5"
+          class="my-5"
           :helpSection="orgPersonHelp"
         />
 
-        <!-- SP add buttons (conversion filing only) -->
-        <div v-if="isTypeSoleProp && isConversionFiling && !hasMinimumProprietor" class="mt-8">
+        <!-- SP add buttons (conversion or correction filing only) -->
+        <div
+          v-if="isTypeSoleProp && (isConversionFiling || isCorrectionFiling) && !hasMinimumProprietor"
+          class="mt-8"
+        >
           <v-btn
             id="sp-btn-add-person"
             outlined
@@ -81,7 +87,7 @@
           </p>
         </div>
 
-        <!-- GP add buttons (change or conversion filing)-->
+        <!-- GP add buttons (change or conversion or correction filing)-->
         <div v-if="isTypePartnership" class="mt-8">
           <v-btn
             id="gp-btn-add-person"
@@ -119,8 +125,8 @@
         </div>
       </article>
 
-      <!-- Correction section -->
-      <article v-if="isCorrectionFiling" class="section-container">
+      <!-- Correction section (BEN corrections only) -->
+      <article v-if="isCorrectionFiling && isTypeBcomp" class="section-container">
         <v-btn
           id="btn-add-person"
           outlined
@@ -228,6 +234,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter isTypeBcomp!: boolean
   @Getter isTypeSoleProp!: boolean
   @Getter isTypePartnership!: boolean
+  @Getter isTypeFirm!: boolean
 
   // Global actions
   @Action setPeopleAndRoles!: ActionBindingIF
@@ -293,6 +300,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       }
       case (this.isCorrectionFiling): {
         if (this.isTypeBcomp) return (this.cpValid && this.incorpValid && this.dirValid)
+        if (this.isTypeSoleProp) return this.hasMinimumProprietor
+        if (this.isTypePartnership) return this.hasMinimumPartners
         return false
       }
     }

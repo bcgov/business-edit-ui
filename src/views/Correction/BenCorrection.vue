@@ -99,6 +99,9 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
   private async onCorrectionFiling (): Promise<void> {
     // fetch the rest of the data
     try {
+      // safety check
+      if (!this.correctionFiling) throw (new Error('Missing correction filing'))
+
       // parse correction filing into store
       this.parseCorrectionFiling(this.correctionFiling)
 

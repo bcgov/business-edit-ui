@@ -69,7 +69,7 @@ describe('CorrectNameRequest', () => {
 
     wrapper.vm.nameRequestNumber = 'NR 1234567'
     wrapper.vm.applicantPhone = '123 456 7890'
-    wrapper.vm.applicantEmail = 'mock@email.com'
+    wrapper.vm.applicantEmail = 'mock@example.com'
 
     await flushPromises()
 
@@ -83,7 +83,7 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(false)
 
     wrapper.vm.nameRequestNumber = '123123NR'
-    wrapper.vm.applicantEmail = 'mock@email.com'
+    wrapper.vm.applicantEmail = 'mock@example.com'
 
     await flushPromises()
 
@@ -187,7 +187,7 @@ describe('CorrectNameRequest', () => {
             entity_type_cd: 'CR',
             applicants: {
               phoneNumber: '250 516 8257',
-              emailAddress: 'mock@email.com'
+              emailAddress: 'mock@example.com'
             }
           }
       }))
@@ -226,7 +226,7 @@ describe('CorrectNameRequest', () => {
             requestTypeCd: 'BC',
             applicants: {
               phoneNumber: '250 516 8257',
-              emailAddress: 'mock@email.com'
+              emailAddress: 'mock@example.com'
             }
           }
       }))
@@ -268,7 +268,7 @@ describe('CorrectNameRequest', () => {
             requestTypeCd: 'BC',
             applicants: {
               phoneNumber: '250 516 8257',
-              emailAddress: 'mock@email.com'
+              emailAddress: 'mock@example.com'
             }
           }
       }))
@@ -313,7 +313,7 @@ describe('CorrectNameRequest', () => {
             entity_type_cd: 'BC',
             applicants: {
               phoneNumber: '250 516 8257',
-              emailAddress: 'mock@email.com'
+              emailAddress: 'mock@example.com'
             }
           }
       }))

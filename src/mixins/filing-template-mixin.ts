@@ -526,6 +526,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param filing the correction filing
    */
   parseCorrectionFiling (filing: CorrectionFilingIF): void {
+    // console.log('*** correction filing =', filing)
+
     // Store business information
     this.setBusinessInformation(filing.business)
 
@@ -834,7 +836,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       legalName: entitySnapshot.businessInfo.legalName
     })
 
-    // Store people and roles
+    // Store people and roles (aka parties)
     this.setPeopleAndRoles(entitySnapshot.orgPersons || [])
 
     // Store the business contact
@@ -842,7 +844,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // Handle entity specific values
     switch (entitySnapshot.businessInfo.legalType) {
-      case CorpTypeCd.BENEFIT_COMPANY:
+      case CorpTypeCd.BENEFIT_COMPANY: {
         // Store name translations
         this.setNameTranslations(
           entitySnapshot.nameTranslations?.map(x => {
@@ -866,11 +868,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         this.setResolutionDates([])
         this.setOriginalResolutionDates(entitySnapshot.resolutions)
         break
+      }
+
       case CorpTypeCd.SOLE_PROP:
-      case CorpTypeCd.PARTNERSHIP:
+      case CorpTypeCd.PARTNERSHIP: {
         // Store business addresses
         this.setOfficeAddresses(entitySnapshot.addresses)
         break
+      }
     }
   }
 

@@ -96,14 +96,32 @@ describe('Benefit Company Correction component', () => {
         }
       }))
 
-    // FUTURE: mock GET correction filing
+    // GET corrected filing
+    get.withArgs('businesses/BC1234567/filings/123')
+      .returns(Promise.resolve({
+        data: {
+          business: {},
+          header: {},
+          incorporationApplication: {}
+        }
+      }))
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'correction' })
-    wrapper = shallowMount(BenCorrection, { localVue, store, router, vuetify })
+    wrapper = shallowMount(BenCorrection, { localVue,
+      store,
+      router,
+      vuetify,
+      propsData: {
+        correctionFiling: {
+          business: {},
+          correction: { correctedFilingId: 123 },
+          header: {}
+        }
+      } })
 
     // wait for all queries to complete
     await flushPromises()
@@ -155,7 +173,7 @@ describe('Benefit Company Correction component', () => {
       .toBe('Series 2 Shares')
 
     // Validate Contact Info
-    expect(store.state.stateModel.businessContact.email).toBe('mock@email.com')
+    expect(store.state.stateModel.businessContact.email).toBe('mock@example.com')
     expect(store.state.stateModel.businessContact.phone).toBe('123-456-7890')
 
     expect(store.state.stateModel.currentFees.filingFees).toBe(100)

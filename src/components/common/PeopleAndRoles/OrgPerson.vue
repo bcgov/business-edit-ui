@@ -206,8 +206,8 @@
                 </article>
               </template>
 
-              <!-- Roles -->
-              <template v-if="isCorrectionFiling">
+              <!-- Roles (BEN corrections only) -->
+              <template v-if="isCorrectionFiling && isTypeBcomp">
                 <article class="mt-6">
                   <label class="sub-header">Roles</label>
                   <v-row class="roles-row mt-4">
@@ -366,6 +366,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   // Global getter
   @Getter getCurrentDate!: string
   @Getter getResource!: ResourceIF
+  @Getter isTypeBcomp!: boolean
   @Getter isTypeSoleProp!: boolean
   @Getter isTypePartnership!: boolean
   @Getter isRoleStaff!: boolean
@@ -744,7 +745,11 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     if (this.isDirector || this.isProprietor || this.isPartner || isNaN(this.activeIndex)) {
       person.deliveryAddress = this.setPersonDeliveryAddress()
     }
-    person.roles = this.isCorrectionFiling ? this.setPersonRoles(this.orgPerson) : this.orgPerson.roles
+    if (this.isCorrectionFiling && this.isTypeBcomp) {
+      person.roles = this.setPersonRoles(this.orgPerson)
+    } else {
+      person.roles = this.orgPerson.roles
+    }
     return person
   }
 
