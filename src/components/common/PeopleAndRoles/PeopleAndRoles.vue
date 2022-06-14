@@ -188,7 +188,7 @@ import { Action, Getter } from 'vuex-class'
 import { cloneDeep, isEmpty } from 'lodash'
 import { isSame } from '@/utils/'
 import { ActionBindingIF, ConfirmDialogType, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF,
-  OrgPersonIF, ResourceIF, RoleIF, IncorporationFilingIF, ChgRegistrationFilingIF, RegistrationFilingIF,
+  OrgPersonIF, ResourceIF, RoleIF, IncorporationApplicationIF, ChgRegistrationIF, RegistrationIF,
   CorrectedFilingIF } from '@/interfaces/'
 import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -223,9 +223,9 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getUserEmail!: string
   @Getter getCorrectedFiling!: CorrectedFilingIF
-  @Getter getOriginalIA!: IncorporationFilingIF
-  @Getter getOriginalChgRegistration!: ChgRegistrationFilingIF
-  @Getter getOriginalRegistration!: RegistrationFilingIF
+  @Getter getOriginalIA!: IncorporationApplicationIF
+  @Getter getOriginalChgRegistration!: ChgRegistrationIF
+  @Getter getOriginalRegistration!: RegistrationIF
   @Getter isRoleStaff!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
@@ -257,12 +257,12 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 
   /** The list of original parties. */
   get originalParties (): OrgPersonIF[] {
-    if (this.getOriginalIA?.incorporationApplication) {
-      return this.getOriginalIA.incorporationApplication.parties
-    } else if (this.getOriginalChgRegistration?.changeOfRegistration) {
-      return this.getOriginalChgRegistration.changeOfRegistration.parties
-    } else if (this.getOriginalRegistration?.registration) {
-      return this.getOriginalRegistration.registration.parties
+    if (this.getOriginalIA) {
+      return this.getOriginalIA.parties
+    } else if (this.getOriginalChgRegistration) {
+      return this.getOriginalChgRegistration.parties
+    } else if (this.getOriginalRegistration) {
+      return this.getOriginalRegistration.parties
     } else {
       return this.getEntitySnapshot?.orgPersons || []
     }

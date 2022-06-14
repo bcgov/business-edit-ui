@@ -1,7 +1,8 @@
 export enum FilingTypes {
   ALTERATION = 'alteration',
+  CHANGE_OF_REGISTRATION = 'changeOfRegistration',
+  CONVERSION = 'conversion',
   CORRECTION = 'correction',
   INCORPORATION_APPLICATION = 'incorporationApplication',
-  CHANGE_OF_REGISTRATION = 'changeOfRegistration',
-  CONVERSION = 'conversion'
+  REGISTRATION = 'registration',
 }

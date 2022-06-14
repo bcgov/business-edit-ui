@@ -11,7 +11,7 @@ export interface RegistrationIF {
     naics?: NaicsIF
     natureOfBusiness?: string
   }
-  businessType?: BusinessTypes
+  businessType?: BusinessTypes // SP only
   contactPoint: ContactPointIF
   nameRequest: NameRequestIF
   offices: AddressesIF

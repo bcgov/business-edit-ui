@@ -73,7 +73,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, IncorporationFilingIF } from '@/interfaces/'
+import { ActionBindingIF, IncorporationApplicationIF } from '@/interfaces/'
 import { AgreementTypeResource } from '@/resources/Correction/'
 
 @Component
@@ -83,7 +83,7 @@ export default class AgreementType extends Vue {
 
   // Global getters
   @Getter getAgreementType!: string
-  @Getter getOriginalIA!: IncorporationFilingIF
+  @Getter getOriginalIA!: IncorporationApplicationIF
 
   // Global actions
   @Action setIncorporationAgreementStepData!: ActionBindingIF
@@ -95,7 +95,7 @@ export default class AgreementType extends Vue {
 
   get hasAgreementTypeChange (): boolean {
     return (
-      this.agreementType !== this.getOriginalIA?.incorporationApplication?.incorporationAgreement.agreementType
+      this.agreementType !== this.getOriginalIA?.incorporationAgreement.agreementType
     )
   }
 
@@ -121,7 +121,7 @@ export default class AgreementType extends Vue {
   }
 
   private resetAgreementType (): void {
-    this.agreementType = this.getOriginalIA.incorporationApplication.incorporationAgreement.agreementType
+    this.agreementType = this.getOriginalIA?.incorporationAgreement.agreementType
     this.setAgreementType()
   }
 

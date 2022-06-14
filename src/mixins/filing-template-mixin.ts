@@ -103,6 +103,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @returns the correction filing body
    */
   buildCorrectionFiling (isDraft: boolean): CorrectionFilingIF {
+    const isIncorporationApplication = (this.getCorrectedFilingType === FilingTypes.INCORPORATION_APPLICATION)
+    const isChangeReg = (this.getCorrectedFilingType === FilingTypes.CHANGE_OF_REGISTRATION)
+    const isRegistration = (this.getCorrectedFilingType === FilingTypes.REGISTRATION)
+
     let parties = this.getPeopleAndRoles
     let shareClasses = this.getShareClasses
     let nameTranslations = this.getNameTranslations
@@ -145,7 +149,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         correctedFilingDate: this.getCurrentDate,
         comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`
       },
-      incorporationApplication: {
+      incorporationApplication: !isIncorporationApplication ? undefined : {
         nameRequest: {
           legalType: this.getEntityType,
           legalName: this.getApprovedName,
@@ -167,7 +171,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         incorporationAgreement: {
           agreementType: this.getAgreementType
         }
-      }
+      },
+      // *** FUTURE: implement these:
+      changeofRegistration: undefined,
+      registration: undefined
     }
 
     // If this is a named IA then save Name Request Number and Approved Name.

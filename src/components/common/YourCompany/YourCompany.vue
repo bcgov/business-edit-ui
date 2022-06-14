@@ -321,7 +321,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF,
-  ResourceIF, CorrectedFilingIF, IncorporationFilingIF, ChgRegistrationFilingIF, RegistrationFilingIF }
+  ResourceIF, CorrectedFilingIF, IncorporationApplicationIF, ChgRegistrationIF, RegistrationIF }
   from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
@@ -363,10 +363,10 @@ export default class YourCompany extends Mixins(
   @Getter isConflictingLegalType!: boolean
   @Getter isNumberedCompany!: boolean
   @Getter isPremiumAccount!: boolean
-  @Getter getOriginalIA!: IncorporationFilingIF
   @Getter getCorrectedFiling!: CorrectedFilingIF
-  @Getter getOriginalChgRegistration!: ChgRegistrationFilingIF
-  @Getter getOriginalRegistration!: RegistrationFilingIF
+  @Getter getOriginalIA!: IncorporationApplicationIF
+  @Getter getOriginalChgRegistration!: ChgRegistrationIF
+  @Getter getOriginalRegistration!: RegistrationIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
   @Getter getResource!: ResourceIF
@@ -485,12 +485,12 @@ export default class YourCompany extends Mixins(
   get isNewName () {
     let currentName
 
-    if (this.getOriginalIA?.incorporationApplication) {
-      currentName = this.getOriginalIA.incorporationApplication.nameRequest.legalName
-    } else if (this.getOriginalChgRegistration?.changeOfRegistration) {
-      currentName = this.getOriginalChgRegistration.changeOfRegistration.nameRequest.legalName
-    } else if (this.getOriginalRegistration?.registration) {
-      currentName = this.getOriginalRegistration.registration.nameRequest.legalName
+    if (this.getOriginalIA) {
+      currentName = this.getOriginalIA.nameRequest.legalName
+    } else if (this.getOriginalChgRegistration) {
+      currentName = this.getOriginalChgRegistration.nameRequest.legalName
+    } else if (this.getOriginalRegistration) {
+      currentName = this.getOriginalRegistration.nameRequest.legalName
     } else {
       currentName = this.getEntitySnapshot.businessInfo.legalName
     }
@@ -515,12 +515,12 @@ export default class YourCompany extends Mixins(
     )
 
     // reset name request
-    if (this.getOriginalIA?.incorporationApplication) {
-      this.setNameRequest(this.getOriginalIA.incorporationApplication.nameRequest)
-    } else if (this.getOriginalChgRegistration?.changeOfRegistration) {
-      this.setNameRequest(this.getOriginalChgRegistration.changeOfRegistration.nameRequest)
-    } else if (this.getOriginalRegistration?.registration) {
-      this.setNameRequest(this.getOriginalRegistration.registration.nameRequest)
+    if (this.getOriginalIA) {
+      this.setNameRequest(this.getOriginalIA.nameRequest)
+    } else if (this.getOriginalChgRegistration) {
+      this.setNameRequest(this.getOriginalChgRegistration.nameRequest)
+    } else if (this.getOriginalRegistration) {
+      this.setNameRequest(this.getOriginalRegistration.nameRequest)
     } else {
       this.setNameRequest(this.getEntitySnapshot.businessInfo)
     }

@@ -16,7 +16,7 @@ describe('State Getters', () => {
     // initialize store
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.correctedFiling = {}
+    store.state.stateModel.correctedFiling = { incorporationApplication: {} }
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)

@@ -52,6 +52,7 @@ describe('Folio Information component', () => {
   it('gets Original Folio Number for a correction', () => {
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.correctedFiling = {
+      incorporationApplication: {},
       header: {
         folioNumber: 'A123'
       }
@@ -80,6 +81,7 @@ describe('Folio Information component', () => {
   it('does not update folio number for a correction', async () => {
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.correctedFiling = {
+      incorporationApplication: {},
       header: {
         folioNumber: ''
       }
@@ -104,6 +106,7 @@ describe('Folio Information component', () => {
     store.state.stateModel.tombstone.businessId = 'BC1234567'
     store.state.stateModel.tombstone.filingType = 'alteration'
     store.state.stateModel.correctedFiling = {
+      incorporationApplication: {},
       header: {
         folioNumber: ''
       }
