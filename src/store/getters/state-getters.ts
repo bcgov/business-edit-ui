@@ -436,12 +436,18 @@ export const isFilingPaying = (state: StateIF): boolean => {
  * - staff payment
  */
 export const hasCorrectionDataChanged = (state: StateIF): boolean => {
-  return (
-    state.stateModel.peopleAndRoles.changed ||
-    state.stateModel.changedFlags.defineCompanyStep ||
-    state.stateModel.shareStructureStep.changed ||
-    state.stateModel.incorporationAgreementStep.changed
-  )
+  if (isBenIaCorrectionFiling(state)) {
+    return (
+      state.stateModel.peopleAndRoles.changed ||
+      state.stateModel.changedFlags.defineCompanyStep ||
+      state.stateModel.shareStructureStep.changed ||
+      state.stateModel.incorporationAgreementStep.changed
+    )
+  }
+  if (isFirmCorrectionFiling(state)) {
+    return true // *** FUTURE: implement as needed
+  }
+  return false // should never happen
 }
 
 /**
@@ -502,12 +508,34 @@ export const hasConversionDataChanged = (state: StateIF): boolean => {
 
 /** Whether all correction sections are valid. */
 export const isFilingValid = (state: StateIF): boolean => {
-  // NB: Define Company and Agreement Type don't have a "valid" state --
-  //     they don't allow saving an invalid state to the store.
-  return (state.stateModel.peopleAndRoles.valid &&
-    state.stateModel.detail.valid &&
-    state.stateModel.certifyState.valid &&
-    state.stateModel.staffPaymentStep.valid)
+  if (isBenIaCorrectionFiling(state)) {
+    // NB: Define Company and Agreement Type don't have a "valid" state --
+    //     they don't allow saving an invalid state to the store.
+    return (
+      state.stateModel.peopleAndRoles.valid &&
+      state.stateModel.detail.valid &&
+      state.stateModel.certifyState.valid &&
+      state.stateModel.staffPaymentStep.valid
+    )
+  }
+  if (isFirmCorrectionFiling(state)) {
+    // *** FUTURE: should check the following:
+    // business name
+    // nature of business
+    // business addresses
+    // proprietor / partners
+    // completing party (client error correction only)
+    // detail
+    // certify (client error correction only)
+    // staff payment
+    return (
+      state.stateModel.peopleAndRoles.valid &&
+      state.stateModel.detail.valid &&
+      state.stateModel.certifyState.valid &&
+      state.stateModel.staffPaymentStep.valid
+    )
+  }
+  return false // should never happen
 }
 
 /** Whether any correction sections are in editing mode. */

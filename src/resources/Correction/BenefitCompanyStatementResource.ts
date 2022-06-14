@@ -1,4 +1,4 @@
-import { CorrectionTypes } from '@/enums/'
+import { CorrectionTypes, FilingCodes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 export const BenefitCompanyStatementResource: any = {
@@ -9,6 +9,11 @@ export const BenefitCompanyStatementResource: any = {
   title: 'Benefit Company Statement',
   description: 'This company is a benefit company and, as such, has purposes that include conducting its business in' +
                ' a responsible and sustainable manner and promoting one or more public benefits.',
+  filingData: {
+    filingTypeCode: FilingCodes.CORRECTION,
+    entityType: CorpTypeCd.BENEFIT_COMPANY,
+    priority: false
+  },
   changeData: {
     nameChangeOptions: [
       CorrectionTypes.CORRECT_NEW_NR,

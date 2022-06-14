@@ -48,7 +48,6 @@ import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, 
   from '@/components/common/'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
 import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
-import { FilingCodes } from '@/enums/'
 import { AuthServices } from '@/services/'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
@@ -131,12 +130,7 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
       this.setResource(this.correctionResource)
 
       // initialize Fee Summary data
-      // FUTURE: set/clear Data according to filing type / entity type
-      this.setFilingData({
-        filingTypeCode: FilingCodes.CORRECTION,
-        entityType: this.getEntityType,
-        priority: false
-      })
+      this.setFilingData(this.correctionResource.filingData)
 
       // tell App that we're finished loading
       this.emitHaveData()

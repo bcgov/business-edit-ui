@@ -1,4 +1,4 @@
-import { CorrectionTypes } from '@/enums/'
+import { CorrectionTypes, FilingCodes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 export const GeneralPartnershipResource: any = {
@@ -6,6 +6,11 @@ export const GeneralPartnershipResource: any = {
   entityType: CorpTypeCd.PARTNERSHIP,
   entityReference: 'Business',
   contactLabel: 'Business',
+  filingData: {
+    filingTypeCode: FilingCodes.FM_CORRECTION,
+    entityType: CorpTypeCd.PARTNERSHIP,
+    priority: false
+  },
   changeData: {
     nameChangeOptions: [
       CorrectionTypes.CORRECT_NEW_NR
