@@ -12,7 +12,7 @@
           <label :class="{'error-text': invalidNameSection}">
             <strong>{{ getResource.entityReference }} Name</strong>
           </label>
-          <v-flex md1 class="mt-1">
+          <v-flex md1>
             <v-chip
               v-if="companyNameChanges ||
                 (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling || isConversionFiling))"

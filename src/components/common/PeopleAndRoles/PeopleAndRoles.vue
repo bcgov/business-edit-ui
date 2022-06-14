@@ -37,7 +37,7 @@
       <!-- Change or conversion or firm correction section -->
       <article
         v-if="isChangeRegFiling || isConversionFiling || isFirmCorrectionFiling"
-        class="section-container pb-0"
+        class="section-container"
       >
         <p v-if="orgPersonSubtitle" class="info-text mt-2">{{ orgPersonSubtitle }}</p>
 
