@@ -70,6 +70,7 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
   // Global actions
   @Action setCorrectedFilingId!: ActionBindingIF
   @Action setHaveUnsavedChanges!: ActionBindingIF
+  @Action setCorrectedFiling!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
   @Action setResource!: ActionBindingIF
@@ -121,8 +122,11 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
       const correctedFilingId: number = +this.correctionFiling.correction?.correctedFilingId
       this.setCorrectedFilingId(correctedFilingId)
 
-      // we don't care about the original filing
-      // instead, fetch and store business snapshot
+      // fetch and store original IA
+      const correctedFiling = await this.fetchFilingById(correctedFilingId)
+      this.setCorrectedFiling(correctedFiling)
+
+      // fetch and store business snapshot
       const businessSnapshot = await this.fetchBusinessSnapshot()
       await this.parseEntitySnapshot(businessSnapshot)
 
