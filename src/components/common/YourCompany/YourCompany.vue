@@ -321,8 +321,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF,
-  ResourceIF, CorrectedFilingIF, IncorporationApplicationIF, ChgRegistrationIF, RegistrationIF }
-  from '@/interfaces/'
+  ResourceIF, CorrectedFilingIF, IncorporationApplicationIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
   NatureOfBusiness, OfficeAddresses } from './'
@@ -365,8 +364,6 @@ export default class YourCompany extends Mixins(
   @Getter isPremiumAccount!: boolean
   @Getter getCorrectedFiling!: CorrectedFilingIF
   @Getter getOriginalIA!: IncorporationApplicationIF
-  @Getter getOriginalChgRegistration!: ChgRegistrationIF
-  @Getter getOriginalRegistration!: RegistrationIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
   @Getter getResource!: ResourceIF
@@ -487,10 +484,6 @@ export default class YourCompany extends Mixins(
 
     if (this.getOriginalIA) {
       currentName = this.getOriginalIA.nameRequest.legalName
-    } else if (this.getOriginalChgRegistration) {
-      currentName = this.getOriginalChgRegistration.nameRequest.legalName
-    } else if (this.getOriginalRegistration) {
-      currentName = this.getOriginalRegistration.nameRequest.legalName
     } else {
       currentName = this.getEntitySnapshot.businessInfo.legalName
     }
@@ -517,10 +510,6 @@ export default class YourCompany extends Mixins(
     // reset name request
     if (this.getOriginalIA) {
       this.setNameRequest(this.getOriginalIA.nameRequest)
-    } else if (this.getOriginalChgRegistration) {
-      this.setNameRequest(this.getOriginalChgRegistration.nameRequest)
-    } else if (this.getOriginalRegistration) {
-      this.setNameRequest(this.getOriginalRegistration.nameRequest)
     } else {
       this.setNameRequest(this.getEntitySnapshot.businessInfo)
     }

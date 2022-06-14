@@ -188,8 +188,7 @@ import { Action, Getter } from 'vuex-class'
 import { cloneDeep, isEmpty } from 'lodash'
 import { isSame } from '@/utils/'
 import { ActionBindingIF, ConfirmDialogType, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF,
-  OrgPersonIF, ResourceIF, RoleIF, IncorporationApplicationIF, ChgRegistrationIF, RegistrationIF,
-  CorrectedFilingIF } from '@/interfaces/'
+  OrgPersonIF, ResourceIF, RoleIF, IncorporationApplicationIF, CorrectedFilingIF } from '@/interfaces/'
 import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
@@ -224,8 +223,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter getUserEmail!: string
   @Getter getCorrectedFiling!: CorrectedFilingIF
   @Getter getOriginalIA!: IncorporationApplicationIF
-  @Getter getOriginalChgRegistration!: ChgRegistrationIF
-  @Getter getOriginalRegistration!: RegistrationIF
   @Getter isRoleStaff!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
@@ -259,10 +256,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   get originalParties (): OrgPersonIF[] {
     if (this.getOriginalIA) {
       return this.getOriginalIA.parties
-    } else if (this.getOriginalChgRegistration) {
-      return this.getOriginalChgRegistration.parties
-    } else if (this.getOriginalRegistration) {
-      return this.getOriginalRegistration.parties
     } else {
       return this.getEntitySnapshot?.orgPersons || []
     }
