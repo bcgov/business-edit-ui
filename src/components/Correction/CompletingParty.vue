@@ -29,7 +29,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip/'
 import { CommonMixin } from '@/mixins/'
-import { ChgRegistrationFilingIF, IncorporationFilingIF, OrgPersonIF, RegistrationFilingIF }
+import { ChgRegistrationIF, IncorporationApplicationIF, OrgPersonIF, RegistrationIF }
   from '@/interfaces/'
 import { ActionTypes, RoleTypes } from '@/enums/'
 
@@ -44,9 +44,9 @@ export default class CompletingParty extends Mixins(CommonMixin) {
   @Prop({ default: '' }) readonly sectionNumber: string
 
   @Getter getPeopleAndRoles!: Array<OrgPersonIF>
-  @Getter getOriginalIA!: IncorporationFilingIF
-  @Getter getOriginalChgRegistration!: ChgRegistrationFilingIF
-  @Getter getOriginalRegistration!: RegistrationFilingIF
+  @Getter getOriginalIA!: IncorporationApplicationIF
+  @Getter getOriginalChgRegistration!: ChgRegistrationIF
+  @Getter getOriginalRegistration!: RegistrationIF
 
   /** The current Completing Party if found, otherwise undefined. */
   get completingParty () : OrgPersonIF {
@@ -55,12 +55,12 @@ export default class CompletingParty extends Mixins(CommonMixin) {
 
   /** The original Completing Party if found, otherwise undefined. */
   get originalCompletingParty () : OrgPersonIF {
-    if (this.getOriginalIA?.incorporationApplication) {
-      return this.getCompletingParty(this.getOriginalIA.incorporationApplication.parties)
-    } else if (this.getOriginalChgRegistration?.changeOfRegistration) {
-      return this.getCompletingParty(this.getOriginalChgRegistration.changeOfRegistration.parties)
-    } else if (this.getOriginalRegistration?.registration) {
-      return this.getCompletingParty(this.getOriginalRegistration.registration.parties)
+    if (this.getOriginalIA) {
+      return this.getCompletingParty(this.getOriginalIA.parties)
+    } else if (this.getOriginalChgRegistration) {
+      return this.getCompletingParty(this.getOriginalChgRegistration.parties)
+    } else if (this.getOriginalRegistration) {
+      return this.getCompletingParty(this.getOriginalRegistration.parties)
     } else {
       return null
     }

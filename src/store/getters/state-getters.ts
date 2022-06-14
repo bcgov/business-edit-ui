@@ -4,7 +4,7 @@ import { AddressesIF, IncorporationFilingIF, NameRequestDetailsIF, NameRequestAp
   ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF, NameTranslationIF, FilingDataIF, StateIF,
   EffectiveDateTimeIF, ShareStructureIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF, ResolutionsIF, FeesIF,
   ResourceIF, EntitySnapshotIF, ChgRegistrationFilingIF, RegistrationFilingIF, CorrectedFilingIF,
-  ValidationFlagsIF } from '@/interfaces/'
+  ValidationFlagsIF, IncorporationApplicationIF, ChgRegistrationIF, RegistrationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 import { isSame } from '@/utils/'
@@ -31,7 +31,13 @@ export const isBenIaCorrectionFiling = (state: StateIF): boolean => {
 
 /** Whether the current filing is a Firm correction. */
 export const isFirmCorrectionFiling = (state: StateIF): boolean => {
-  return (isCorrectionFiling(state) && isEntityTypeFirm(state))
+  if (isCorrectionFiling(state) && isEntityTypeFirm(state) && !!getOriginalChgRegistration(state)) {
+    return true
+  }
+  if (isCorrectionFiling(state) && isEntityTypeFirm(state) && !!getOriginalRegistration(state)) {
+    return true
+  }
+  return false
 }
 
 /** Whether the current filing is a correction. */
@@ -106,13 +112,13 @@ export const getBusinessFoundingDate = (state: StateIF): string => {
 
 /** The original filing's name. */
 export const getOriginalFilingName = (state: StateIF): string => {
-  if (getOriginalIA(state)?.incorporationApplication) {
+  if (getOriginalIA(state)) {
     return FilingNames.INCORPORATION_APPLICATION
   }
-  if (getOriginalChgRegistration(state)?.changeOfRegistration) {
+  if (getOriginalChgRegistration(state)) {
     return FilingNames.CHANGE_OF_REGISTRATION
   }
-  if (getOriginalRegistration(state)?.registration) {
+  if (getOriginalRegistration(state)) {
     return FilingNames.REGISTRATION
   }
   return null
@@ -168,9 +174,9 @@ export const getCurrentBusinessName = (state: StateIF): string => {
   // return the legal name from the name request for Corrections
   // or the legal name of the business for others
   return (
-    getOriginalIA(state)?.incorporationApplication?.nameRequest.legalName ||
-    getOriginalChgRegistration(state)?.changeOfRegistration?.nameRequest.legalName ||
-    getOriginalRegistration(state)?.registration?.nameRequest.legalName ||
+    getOriginalIA(state)?.nameRequest?.legalName ||
+    getOriginalChgRegistration(state)?.nameRequest?.legalName ||
+    getOriginalRegistration(state)?.nameRequest?.legalName ||
     getBusinessInformation(state).legalName
   )
 }
@@ -181,18 +187,21 @@ export const getCorrectedFiling = (state: StateIF): CorrectedFilingIF => {
 }
 
 /** The original IA being corrected. Only exists for corrections. */
-export const getOriginalIA = (state: StateIF): IncorporationFilingIF => {
-  return state.stateModel.correctedFiling as unknown as IncorporationFilingIF
+export const getOriginalIA = (state: StateIF): IncorporationApplicationIF => {
+  const filing = getCorrectedFiling(state) as unknown as IncorporationFilingIF
+  return filing?.incorporationApplication
 }
 
 /** The original Change of Registration being corrected. Only exists for corrections. */
-export const getOriginalChgRegistration = (state: StateIF): ChgRegistrationFilingIF => {
-  return state.stateModel.correctedFiling as unknown as ChgRegistrationFilingIF
+export const getOriginalChgRegistration = (state: StateIF): ChgRegistrationIF => {
+  const filing = getCorrectedFiling(state) as unknown as ChgRegistrationFilingIF
+  return filing?.changeOfRegistration
 }
 
 /** The original Registration being corrected. Only exists for corrections. */
-export const getOriginalRegistration = (state: StateIF): RegistrationFilingIF => {
-  return state.stateModel.correctedFiling as unknown as RegistrationFilingIF
+export const getOriginalRegistration = (state: StateIF): RegistrationIF => {
+  const filing = getCorrectedFiling(state) as unknown as RegistrationFilingIF
+  return filing?.registration
 }
 
 /** The original business snapshot. */
@@ -300,12 +309,12 @@ export const hasNewNr = (state: StateIF): boolean => {
   if (newNr) {
     let originalNr = null
 
-    if (getOriginalIA(state)?.incorporationApplication) {
-      originalNr = getOriginalIA(state).incorporationApplication.nameRequest?.nrNumber
-    } else if (getOriginalChgRegistration(state)?.changeOfRegistration) {
-      originalNr = getOriginalChgRegistration(state).changeOfRegistration.nameRequest?.nrNumber
-    } else if (getOriginalRegistration(state)?.registration) {
-      originalNr = getOriginalRegistration(state).registration.nameRequest?.nrNumber
+    if (getOriginalIA(state)) {
+      originalNr = getOriginalIA(state).nameRequest?.nrNumber
+    } else if (getOriginalChgRegistration(state)) {
+      originalNr = getOriginalChgRegistration(state).nameRequest?.nrNumber
+    } else if (getOriginalRegistration(state)) {
+      originalNr = getOriginalRegistration(state).nameRequest?.nrNumber
     }
 
     return (newNr !== originalNr)
@@ -651,12 +660,12 @@ export const hasOfficeAddressesChanged = (state: StateIF): boolean => {
 
 /** The office addresses from the original filing. NB: may be {} */
 export const getOriginalOfficeAddresses = (state: StateIF): AddressesIF => {
-  if (getOriginalIA(state)?.incorporationApplication) {
-    return getOriginalIA(state).incorporationApplication.offices as AddressesIF
-  } else if (getOriginalChgRegistration(state)?.changeOfRegistration) {
-    return getOriginalChgRegistration(state).changeOfRegistration.offices
-  } else if (getOriginalRegistration(state)?.registration) {
-    return getOriginalRegistration(state).registration.offices
+  if (getOriginalIA(state)) {
+    return getOriginalIA(state).offices as AddressesIF
+  } else if (getOriginalChgRegistration(state)) {
+    return getOriginalChgRegistration(state).offices
+  } else if (getOriginalRegistration(state)) {
+    return getOriginalRegistration(state).offices
   } else if (isEntityTypeFirm(state)) {
     return getEntitySnapshot(state)?.addresses
   } else {

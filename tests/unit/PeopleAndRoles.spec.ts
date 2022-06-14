@@ -108,7 +108,7 @@ describe('People And Roles component for Correction', () => {
     const router = mockRouter.mock()
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.correctedFiling = {}
+    store.state.stateModel.correctedFiling = { incorporationApplication: {} }
     store.state.resourceModel = BenefitCompanyStatementResource
 
     wrapperFactory = () => {
