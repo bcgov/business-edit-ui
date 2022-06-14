@@ -61,6 +61,10 @@ describe('Action button states', () => {
   let setEditing: Function
 
   beforeAll(async () => {
+    // initialize store
+    store.state.stateModel.tombstone.filingType = 'correction'
+    store.state.stateModel.correctedFiling = {}
+
     wrapper = shallowMount(Actions, { store, vuetify })
     await Vue.nextTick()
 

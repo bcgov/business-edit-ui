@@ -48,7 +48,6 @@ import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, 
   from '@/components/common/'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
 import { ActionBindingIF, CorrectionFilingIF, FilingDataIF } from '@/interfaces/'
-import { FilingCodes } from '@/enums/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { BenefitCompanyStatementResource } from '@/resources/Correction/'
 
@@ -117,12 +116,7 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
       this.setResource(this.correctionResource)
 
       // initialize Fee Summary data
-      // FUTURE: set/clear data according to filing type / entity type
-      this.setFilingData({
-        filingTypeCode: FilingCodes.CORRECTION,
-        entityType: this.getEntityType,
-        priority: false
-      })
+      this.setFilingData(this.correctionResource.filingData)
 
       // tell App that we're finished loading
       this.emitHaveData()
