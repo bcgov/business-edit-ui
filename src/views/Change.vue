@@ -145,8 +145,8 @@ export default class Change extends Mixins(
 
   /** The resource file for a firm change filing. */
   get firmChangeResource (): ResourceIF {
-    if (this.isTypeSoleProp) return SoleProprietorshipResource
-    if (this.isTypePartnership) return GeneralPartnershipResource
+    if (this.isEntityTypeSP) return SoleProprietorshipResource
+    if (this.isEntityTypeGP) return GeneralPartnershipResource
     return null
   }
 

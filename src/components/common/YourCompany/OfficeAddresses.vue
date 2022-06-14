@@ -103,8 +103,8 @@
         </template>
       </v-row>
 
-      <!-- Records office (BComp only) -->
-      <v-row v-if="isTypeBcomp" id="summary-records-address" class="mt-4 mx-0" no-gutters>
+      <!-- Records office (BEN only) -->
+      <v-row v-if="isEntityTypeBEN" id="summary-records-address" class="mt-4 mx-0" no-gutters>
         <v-col cols="3">
           <label class>Records Office</label>
         </v-col>
@@ -305,7 +305,7 @@
         </div>
 
         <!-- "Same as" checkbox -->
-        <div id="edit-records-address" v-if="isTypeBcomp">
+        <div id="edit-records-address" v-if="isEntityTypeBEN">
           <div class="address-edit-header" :class="{'mt-8': inheritMailingAddress}">
             <label class="address-edit-title">Records Office</label>
             <v-checkbox
@@ -444,8 +444,10 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter hasDeliveryChanged!: boolean
   @Getter hasRecMailingChanged!: boolean
   @Getter hasRecDeliveryChanged!: boolean
-  @Getter isTypeBcomp!: boolean
-  @Getter isTypeFirm!: boolean
+  @Getter isEntityTypeBEN!: boolean
+  @Getter isEntityTypeFirm!: boolean
+  @Getter isBenIaCorrectionFiling!: boolean
+  @Getter isFirmCorrectionFiling!: boolean
 
   // Global actions
   @Action setOfficeAddresses!: ActionBindingIF
@@ -522,7 +524,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
-    if (this.isCorrectionFiling || this.isAlterationFiling) {
+    if (this.isBenIaCorrectionFiling || this.isAlterationFiling) {
       // assign registered office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.registeredOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.registeredOffice?.deliveryAddress }
@@ -571,7 +573,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       )
     }
 
-    if (this.isChangeRegFiling || this.isConversionFiling) {
+    if (this.isChangeRegFiling || this.isConversionFiling || this.isFirmCorrectionFiling) {
       // assign business office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.businessOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.businessOffice?.deliveryAddress }
@@ -725,25 +727,23 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets updated office addresses in store.
    */
   private storeAddresses (): void {
-    if (this.isCorrectionFiling) {
+    if (this.isBenIaCorrectionFiling) {
       // at the moment, only BEN IA corrections are supported
-      if (this.isTypeBcomp) {
-        this.setOfficeAddresses({
-          registeredOffice: {
-            deliveryAddress: this.deliveryAddress,
-            mailingAddress: this.mailingAddress
-          },
-          recordsOffice: {
-            deliveryAddress: this.recDeliveryAddress,
-            mailingAddress: this.recMailingAddress
-          }
-        })
-      }
+      this.setOfficeAddresses({
+        registeredOffice: {
+          deliveryAddress: this.deliveryAddress,
+          mailingAddress: this.mailingAddress
+        },
+        recordsOffice: {
+          deliveryAddress: this.recDeliveryAddress,
+          mailingAddress: this.recMailingAddress
+        }
+      })
     }
 
-    if (this.isChangeRegFiling || this.isConversionFiling) {
-      // at the moment, only SP and GP changes and conversion are supported
-      if (this.isTypeFirm) {
+    if (this.isEntityTypeFirm) {
+      if (this.isChangeRegFiling || this.isConversionFiling || this.isCorrectionFiling) {
+      // at the moment, only firm changes, conversions and corrections are supported
         this.setOfficeAddresses({
           businessOffice: {
             deliveryAddress: this.deliveryAddress,
@@ -812,10 +812,13 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * When the component is mounted or stored office addresses change (ie, when data is loaded/updated/reset),
    * sets local properties and emits state events.
    *
-   * Called on mount to init data in the event the component is destroyed and there is no changes to trigger the Watcher
-   * This happens in Alterations when navigating between views and where office addresses are not editable.
+   * Called immediately to init data when office addresses are not editable.
+   *
+   * Also called when we know what kind of correction this is.
    */
   @Watch('getOfficeAddresses', { deep: true, immediate: true })
+  @Watch('isBenIaCorrectionFiling')
+  @Watch('isFirmCorrectionFiling')
   private updateAddresses (): void {
     // set local properties from store
     this.setLocalProperties()

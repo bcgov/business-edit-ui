@@ -1,5 +1,5 @@
 <template>
-  <div id="business-type">
+  <div id="change-business-type">
     <v-row no-gutters>
       <!-- Row Title -->
       <v-col cols="3">
@@ -13,48 +13,46 @@
 
       <!-- Display Mode -->
       <v-col cols="7" v-if="!isEditingType">
-        <template>
-          <span class="info-text" :class="{ 'hasConflict': isConflictingLegalType && isNewName}">
-            {{getCorpTypeDescription(getEntityType)}}
-          </span>
+        <span class="info-text" :class="{ 'has-conflict': isConflictingLegalType && isNewName}">
+          {{getCorpTypeDescription(getEntityType)}}
+        </span>
 
-          <!-- Firm info tooltip -->
-          <v-tooltip v-if="isChangeRegFiling || isConversionFiling"
-                     top
-                     content-class="top-tooltip"
-                     transition="fade-transition"
-                     nudge-right="3"
-          >
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" class="info-icon">mdi-information-outline</v-icon>
-            </template>
-            <span>{{ typeChangeInfo }}</span>
-          </v-tooltip>
-
-          <!-- Type mismatch tooltip -->
-          <v-tooltip v-if="isConflictingLegalType && isNewName"
-                     top
-                     content-class="top-tooltip"
-                     transition="fade-transition"
-                     nudge-right="3"
-          >
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" color="error" small>mdi-alert</v-icon>
-            </template>
-            <span>
-              Business Types do not match. The Name Request type must match the business type before you can continue.
-            </span>
-          </v-tooltip>
-          <template v-if="hasBusinessTypeChanged">
-            <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
-            <div class="confirmed-msg">
-              <v-icon color="success" class="confirmed-icon">mdi-check</v-icon>
-              <span class="info-text text-body-3 confirmed-icon ml-2">
-              The company has completed a set Benefit Company Articles containing a benefit provision, and a copy of
-              these articles has been added to the company's record book.
-              </span>
-            </div>
+        <!-- Firm info tooltip -->
+        <v-tooltip v-if="isChangeRegFiling || isConversionFiling"
+                    top
+                    content-class="top-tooltip"
+                    transition="fade-transition"
+                    nudge-right="3"
+        >
+          <template v-slot:activator="{ on }">
+            <v-icon v-on="on" class="info-icon">mdi-information-outline</v-icon>
           </template>
+          <span>{{ typeChangeInfo }}</span>
+        </v-tooltip>
+
+        <!-- Type mismatch tooltip -->
+        <v-tooltip v-if="isConflictingLegalType && isNewName"
+                    top
+                    content-class="top-tooltip"
+                    transition="fade-transition"
+                    nudge-right="3"
+        >
+          <template v-slot:activator="{ on }">
+            <v-icon v-on="on" color="error" small>mdi-alert</v-icon>
+          </template>
+          <span>
+            Business Types do not match. The Name Request type must match the business type before you can continue.
+          </span>
+        </v-tooltip>
+        <template v-if="hasBusinessTypeChanged">
+          <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
+          <div class="confirmed-msg">
+            <v-icon color="success" class="confirmed-icon">mdi-check</v-icon>
+            <span class="info-text text-body-3 confirmed-icon ml-2">
+            The company has completed a set Benefit Company Articles containing a benefit provision, and a copy of
+            these articles has been added to the company's record book.
+            </span>
+          </div>
         </template>
       </v-col>
 
@@ -177,7 +175,7 @@
             <span>Undo</span>
           </v-btn>
           <v-btn
-            v-else-if="isTypeBcCompany"
+            v-else-if="isEntityTypeBC"
             text color="primary"
             id="btn-correct-business-type"
             @click="isEditingType = true"
@@ -242,7 +240,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   @Getter getResource!: ResourceIF
   @Getter hasBusinessTypeChanged!: boolean
   @Getter isConflictingLegalType!: boolean
-  @Getter isTypeBcCompany!: boolean
+  @Getter isEntityTypeBC!: boolean
 
   @Action setEntityType!: ActionBindingIF
 

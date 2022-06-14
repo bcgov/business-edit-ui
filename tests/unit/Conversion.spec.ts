@@ -201,7 +201,7 @@ describe('Conversion component', () => {
         data: {
           contacts: [
             {
-              email: 'mock@email.com',
+              email: 'mock@example.com',
               phone: '123-456-7890'
             }
           ]
@@ -282,7 +282,7 @@ describe('Conversion component', () => {
       .toBe('Series 2 Shares')
 
     // Validate Contact Info
-    expect(store.state.stateModel.businessContact.email).toBe('mock@email.com')
+    expect(store.state.stateModel.businessContact.email).toBe('mock@example.com')
     expect(store.state.stateModel.businessContact.phone).toBe('123-456-7890')
 
     expect(store.state.stateModel.currentFees.filingFees).toBe(100)

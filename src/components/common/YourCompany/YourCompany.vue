@@ -12,7 +12,7 @@
           <label :class="{'error-text': invalidNameSection}">
             <strong>{{ getResource.entityReference }} Name</strong>
           </label>
-          <v-flex md1 class="mt-1">
+          <v-flex md1>
             <v-chip
               v-if="companyNameChanges ||
                 (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling || isConversionFiling))"
@@ -49,7 +49,7 @@
               <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
-                <span :class="{ 'hasConflict': isConflictingLegalType}"
+                <span :class="{ 'has-conflict': isConflictingLegalType}"
                       class="info-text">{{getCorpTypeDescription(getNameRequest.legalType)}}
                 </span>
                 <v-tooltip
@@ -180,9 +180,8 @@
 
     <v-divider v-if="isChangeRegFiling || isConversionFiling" class="mx-4 my-1" />
 
-    <!-- Business Type -->
-    <div
-      v-if="isAlterationFiling || isChangeRegFiling || isConversionFiling"
+    <!-- Business Type (alterations, changes and conversions only) -->
+    <div v-if="isAlterationFiling || isChangeRegFiling || isConversionFiling"
       id="company-type-section"
       class="section-container"
       :class="{'invalid-section': invalidTypeSection}"
@@ -194,9 +193,25 @@
       />
     </div>
 
-    <!-- Name Translation(s) -->
-    <div
-      v-if="isAlterationFiling || (isCorrectionFiling && !isTypeFirm)"
+    <!-- Business Type (firm corrections only) -->
+    <template v-if="isFirmCorrectionFiling">
+      <v-divider class="mx-4 my-1" />
+
+      <div class="section-container">
+        <v-row no-gutters>
+          <v-col cols="3">
+            <label><strong>Business Type</strong></label>
+          </v-col>
+
+          <v-col cols="9">
+            <div class="info-text">{{getCorpTypeDescription(getEntityType)}}</div>
+          </v-col>
+        </v-row>
+      </div>
+    </template>
+
+    <!-- Name Translation(s) (alterations and BEN corrections only)-->
+    <div v-if="isAlterationFiling || isBenIaCorrectionFiling"
       id="name-translate-section"
       class="section-container"
       :class="{'invalid-section': invalidTranslationSection}"
@@ -210,8 +225,8 @@
 
     <v-divider class="mx-4 my-1" />
 
-    <!-- Business Start Date -->
-    <template v-if="isChangeRegFiling || isConversionFiling">
+    <!-- Business Start Date (changes, conversions and firm corrections only -->
+    <template v-if="isChangeRegFiling || isConversionFiling || isFirmCorrectionFiling">
       <section class="section-container">
         <v-row no-gutters>
           <v-col cols="3">
@@ -235,8 +250,8 @@
       </section>
     </template>
 
-    <!-- Nature of Business (change filing) -->
-    <template v-if="isChangeRegFiling">
+    <!-- Nature of Business (firm change filings only) -->
+    <template v-if="isEntityTypeFirm && isChangeRegFiling">
       <v-divider class="mx-4 my-1" />
 
       <NatureOfBusiness
@@ -246,8 +261,8 @@
       />
     </template>
 
-    <!-- Nature of Business (conversion filing) -->
-    <template v-if="isConversionFiling">
+    <!-- Nature of Business (firm conversion and correction filings only) -->
+    <template v-if="isEntityTypeFirm && (isConversionFiling || isCorrectionFiling)">
       <v-divider class="mx-4 my-1" />
 
       <ConversionNOB
@@ -257,8 +272,8 @@
       />
     </template>
 
-    <!-- Recognition Date and Time -->
-    <div class="section-container" v-if="isAlterationFiling || isCorrectionFiling">
+    <!-- Recognition Date and Time (alterations and BEN corrections only) -->
+    <div class="section-container" v-if="isAlterationFiling || isBenIaCorrectionFiling">
       <v-row no-gutters>
         <v-col cols="3">
           <label><strong>Recognition Date and Time</strong></label>
@@ -273,12 +288,12 @@
     <v-divider class="mx-4 my-1" />
 
     <!-- Office addresses -->
-    <OfficeAddresses
-      class="section-container"
-      :class="{'invalid-section': invalidAddressSection}"
-      :invalidSection="invalidAddressSection"
-      @haveChanges="officeAddressChanges = $event"
-    />
+    <div class="section-container" :class="{'invalid-section': invalidAddressSection}">
+      <OfficeAddresses
+        :invalidSection="invalidAddressSection"
+        @haveChanges="officeAddressChanges = $event"
+      />
+    </div>
 
     <v-divider class="mx-4 my-1" />
 
@@ -289,8 +304,8 @@
       />
     </div>
 
-    <!-- Folio Information (not SP or GP) -->
-    <template v-if="isPremiumAccount && !isTypeFirm">
+    <!-- Folio Information (all except SP or GP) -->
+    <template v-if="isPremiumAccount && !isEntityTypeFirm">
       <v-divider class="mx-4 my-1" />
 
       <div id="folio-number-section" class="section-container" :class="{'invalid-section': invalidFolioSection}">
@@ -355,7 +370,10 @@ export default class YourCompany extends Mixins(
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
   @Getter getResource!: ResourceIF
-  @Getter isTypeFirm!: boolean
+  @Getter isEntityTypeBEN!: boolean
+  @Getter isEntityTypeFirm!: boolean
+  @Getter isBenIaCorrectionFiling!: boolean
+  @Getter isFirmCorrectionFiling!: boolean
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -445,9 +463,14 @@ export default class YourCompany extends Mixins(
 
   /** The recognition/founding (aka effective or start date) datetime. */
   get recognitionDateTime (): string {
-    if (this.isCorrectionFiling) {
+    if (this.isBenIaCorrectionFiling) {
       if (this.getOriginalEffectiveDateTime) {
         return (this.apiToPacificDateLong(this.getOriginalEffectiveDateTime))
+      }
+    }
+    if (this.isFirmCorrectionFiling) {
+      if (this.getBusinessFoundingDate) {
+        return (this.apiToPacificDateLong(this.getBusinessFoundingDate))
       }
     }
     if (this.isAlterationFiling || this.isChangeRegFiling || this.isConversionFiling) {
@@ -462,11 +485,11 @@ export default class YourCompany extends Mixins(
   get isNewName () {
     let currentName
 
-    if (this.isCorrectionFiling && this.getOriginalIA?.incorporationApplication) {
+    if (this.getOriginalIA?.incorporationApplication) {
       currentName = this.getOriginalIA.incorporationApplication.nameRequest.legalName
-    } else if (this.isCorrectionFiling && this.getOriginalChgRegistration?.changeOfRegistration) {
+    } else if (this.getOriginalChgRegistration?.changeOfRegistration) {
       currentName = this.getOriginalChgRegistration.changeOfRegistration.nameRequest.legalName
-    } else if (this.isCorrectionFiling && this.getOriginalRegistration?.registration) {
+    } else if (this.getOriginalRegistration?.registration) {
       currentName = this.getOriginalRegistration.registration.nameRequest.legalName
     } else {
       currentName = this.getEntitySnapshot.businessInfo.legalName
@@ -492,11 +515,11 @@ export default class YourCompany extends Mixins(
     )
 
     // reset name request
-    if (this.isCorrectionFiling && this.getOriginalIA?.incorporationApplication) {
+    if (this.getOriginalIA?.incorporationApplication) {
       this.setNameRequest(this.getOriginalIA.incorporationApplication.nameRequest)
-    } else if (this.isCorrectionFiling && this.getOriginalChgRegistration?.changeOfRegistration) {
+    } else if (this.getOriginalChgRegistration?.changeOfRegistration) {
       this.setNameRequest(this.getOriginalChgRegistration.changeOfRegistration.nameRequest)
-    } else if (this.isCorrectionFiling && this.getOriginalRegistration?.registration) {
+    } else if (this.getOriginalRegistration?.registration) {
       this.setNameRequest(this.getOriginalRegistration.registration.nameRequest)
     } else {
       this.setNameRequest(this.getEntitySnapshot.businessInfo)

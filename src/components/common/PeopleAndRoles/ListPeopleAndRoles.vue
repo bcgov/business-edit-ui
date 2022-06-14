@@ -136,7 +136,7 @@
 
           <!-- Roles -->
           <v-col cols="12" sm="2" :class="{ 'removed': wasRemoved(orgPerson)}">
-            <template v-if="isCorrectionFiling">
+            <template v-if="isBenIaCorrectionFiling">
               <!-- Warning if orgPerson has no roles -->
               <div v-if="orgPerson.roles.length > 0">
                 <v-col v-for="(role, index) in orgPerson.roles" :key="index" class="col-roles">
@@ -327,6 +327,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
 
   // Store getter
   @Getter getPeopleAndRoles!: OrgPersonIF[]
+  @Getter isBenIaCorrectionFiling!: boolean
 
   // declaration for template
   readonly isSame = isSame

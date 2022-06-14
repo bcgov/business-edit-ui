@@ -15,15 +15,27 @@
 
     <PeopleAndRoles class="mt-10" />
 
-    <CompletingParty class="mt-10" sectionNumber="1." />
+    <template v-if="isClientErrorCorrection">
+      <CompletingParty class="mt-10" sectionNumber="1." validate="true" />
+    </template>
 
-    <Detail class="mt-10" sectionNumber="2." validate="true" />
+    <Detail
+      class="mt-10"
+      :sectionNumber="isClientErrorCorrection ? '2.' : '1.'"
+      validate="true"
+    />
 
-    <CertifySection class="mt-10" sectionNumber="3." validate="true" />
+    <template v-if="isClientErrorCorrection">
+      <CertifySection
+        class="mt-10"
+        :sectionNumber="isClientErrorCorrection ? '3.' : '2.'"
+        validate="true"
+      />
+    </template>
 
     <StaffPayment
       class="mt-10"
-      sectionNumber="4."
+      :sectionNumber="isClientErrorCorrection ? '4.' : '2.'"
       @haveChanges="onStaffPaymentChanges()"
     />
   </section>
@@ -32,8 +44,8 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { CompletingParty } from '@/components/Correction/'
-import { CertifySection, Detail, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common/'
+import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany }
+  from '@/components/common/'
 import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
 import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { FilingCodes } from '@/enums/'
@@ -55,12 +67,10 @@ import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resour
 export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
   // Global getters
   @Getter getFilingData!: FilingDataIF
-  @Getter getOriginalFilingName!: string
 
   // Global actions
   @Action setCorrectedFilingId!: ActionBindingIF
   @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setCorrectedFiling!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
   @Action setResource!: ActionBindingIF
@@ -71,9 +81,14 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
 
   readonly getCorpTypeDescription = GetCorpFullDescription
 
+  /** Whether this is a client error correction (vs. a staff error correction). */
+  get isClientErrorCorrection (): boolean {
+    return true // FUTURE: implement this according to schema changes
+  }
+
   /** The original filing name. */
   get originalFilingName (): string {
-    return `${this.getCorpTypeDescription(this.getEntityType)} ${this.getOriginalFilingName}`
+    return `${this.getCorpTypeDescription(this.getEntityType)} Registration`
   }
 
   /** The original filing date, in Pacific time. */
@@ -83,8 +98,8 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
 
   /** The resource file for a correction filing. */
   get correctionResource (): any {
-    if (this.isTypeSoleProp) return SoleProprietorshipResource
-    if (this.isTypePartnership) return GeneralPartnershipResource
+    if (this.isEntityTypeSP) return SoleProprietorshipResource
+    if (this.isEntityTypeGP) return GeneralPartnershipResource
     throw new Error(`Invalid Correction Resource entity type = ${this.getEntityType}`)
   }
 
@@ -94,10 +109,11 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
    */
   @Watch('correctionFiling', { immediate: true })
   private async onCorrectionFiling (): Promise<void> {
-    // console.log('*** correctionFiling =', this.correctionFiling)
-
     // fetch the rest of the data
     try {
+      // safety check
+      if (!this.correctionFiling) throw (new Error('Missing correction filing'))
+
       // parse correction filing into store
       this.parseCorrectionFiling(this.correctionFiling)
 
@@ -106,16 +122,9 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
       const correctedFilingId: number = +this.correctionFiling.correction?.correctedFilingId
       this.setCorrectedFilingId(correctedFilingId)
 
-      // *** TODO: remove this if not needed
-      // fetch and store original filing
-      const correctedFiling = await this.fetchFilingById(correctedFilingId)
-      this.setCorrectedFiling(correctedFiling)
-      // console.log('*** correctedFiling', correctedFiling)
-
-      // fetch and store business snapshot
+      // we don't care about the original filing
+      // instead, fetch and store business snapshot
       const businessSnapshot = await this.fetchBusinessSnapshot()
-      // console.log('*** businessSnapshot', businessSnapshot)
-      // parse business data into store
       await this.parseEntitySnapshot(businessSnapshot)
 
       // set the resources
@@ -146,22 +155,16 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
       this.fetchBusinessInfo(),
       AuthServices.fetchAuthInfo(this.getBusinessId),
       this.fetchAddresses(),
-      this.fetchNameTranslations(),
-      this.fetchDirectors(),
-      this.fetchShareStructure(),
-      this.fetchResolutions()
+      this.fetchParties()
     ])
 
-    if (items.length !== 7) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')
 
     return {
       businessInfo: items[0],
       authInfo: items[1],
       addresses: items[2],
-      nameTranslations: items[3],
-      orgPersons: items[4],
-      shareStructure: items[5],
-      resolutions: items[6]
+      orgPersons: items[3]
     } as EntitySnapshotIF
   }
 

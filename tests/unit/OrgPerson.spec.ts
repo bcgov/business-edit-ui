@@ -184,9 +184,14 @@ function createComponent (
 describe('Org/Person component for a Correction filing', () => {
   beforeAll(() => {
     store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.nameRequest.entityType = 'BEN'
+    store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.currentDate = '2020-03-30'
+    store.state.stateModel.correctedFiling = {}
     store.state.resourceModel = CorrectionBenefitCompanyResource
+  })
+
+  afterAll(() => {
+    store.state.stateModel.correctedFiling = null
   })
 
   it('Loads the component and sets data for person', async () => {

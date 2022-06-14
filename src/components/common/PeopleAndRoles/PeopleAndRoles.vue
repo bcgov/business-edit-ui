@@ -12,8 +12,8 @@
         <label class="font-weight-bold pl-2">{{ orgPersonLabel }}</label>
       </div>
 
-      <!-- Instructional people and roles text -->
-      <article v-if="isCorrectionFiling" class="section-container">
+      <!-- Instructional people and roles text (BEN corrections only)-->
+      <article v-if="isBenIaCorrectionFiling" class="section-container">
         This application must include the following:
         <ul>
           <li>
@@ -34,18 +34,24 @@
         </ul>
       </article>
 
-      <!-- Change or conversion section -->
-      <article v-if="isChangeRegFiling || isConversionFiling" class="section-container">
-        <span class="info-text">{{ orgPersonSubtitle }}</span>
+      <!-- Change or conversion or firm correction section -->
+      <article
+        v-if="isChangeRegFiling || isConversionFiling || isFirmCorrectionFiling"
+        class="section-container"
+      >
+        <p v-if="orgPersonSubtitle" class="info-text mt-2">{{ orgPersonSubtitle }}</p>
 
         <HelpSection
           v-if="!isRoleStaff && orgPersonHelp"
-          class="mt-5"
+          class="my-5"
           :helpSection="orgPersonHelp"
         />
 
-        <!-- SP add buttons (conversion filing only) -->
-        <div v-if="isTypeSoleProp && isConversionFiling && !hasMinimumProprietor" class="mt-8">
+        <!-- SP add buttons (conversion or correction filing only) -->
+        <div
+          v-if="isEntityTypeSP && (isConversionFiling || isCorrectionFiling) && !hasMinimumProprietor"
+          class="mt-8"
+        >
           <v-btn
             id="sp-btn-add-person"
             outlined
@@ -81,8 +87,8 @@
           </p>
         </div>
 
-        <!-- GP add buttons (change or conversion filing)-->
-        <div v-if="isTypePartnership" class="mt-8">
+        <!-- GP add buttons (change or conversion or correction filing)-->
+        <div v-if="isEntityTypeGP" class="mt-8">
           <v-btn
             id="gp-btn-add-person"
             outlined
@@ -119,8 +125,8 @@
         </div>
       </article>
 
-      <!-- Correction section -->
-      <article v-if="isCorrectionFiling" class="section-container">
+      <!-- Correction section (BEN corrections only) -->
+      <article v-if="isBenIaCorrectionFiling" class="section-container">
         <v-btn
           id="btn-add-person"
           outlined
@@ -225,9 +231,12 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter getComponentValidate!: boolean
   @Getter hasMinimumProprietor!: boolean
   @Getter hasMinimumPartners!: boolean
-  @Getter isTypeBcomp!: boolean
-  @Getter isTypeSoleProp!: boolean
-  @Getter isTypePartnership!: boolean
+  @Getter isBenIaCorrectionFiling!: boolean
+  @Getter isFirmCorrectionFiling!: boolean
+  @Getter isEntityTypeBEN!: boolean
+  @Getter isEntityTypeSP!: boolean
+  @Getter isEntityTypeGP!: boolean
+  @Getter isEntityTypeFirm!: boolean
 
   // Global actions
   @Action setPeopleAndRoles!: ActionBindingIF
@@ -248,11 +257,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 
   /** The list of original parties. */
   get originalParties (): OrgPersonIF[] {
-    if (this.isCorrectionFiling && this.getOriginalIA?.incorporationApplication) {
+    if (this.getOriginalIA?.incorporationApplication) {
       return this.getOriginalIA.incorporationApplication.parties
-    } else if (this.isCorrectionFiling && this.getOriginalChgRegistration?.changeOfRegistration) {
+    } else if (this.getOriginalChgRegistration?.changeOfRegistration) {
       return this.getOriginalChgRegistration.changeOfRegistration.parties
-    } else if (this.isCorrectionFiling && this.getOriginalRegistration?.registration) {
+    } else if (this.getOriginalRegistration?.registration) {
       return this.getOriginalRegistration.registration.parties
     } else {
       return this.getEntitySnapshot?.orgPersons || []
@@ -282,17 +291,19 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
         return false
       }
       case (this.isChangeRegFiling): {
-        if (this.isTypeSoleProp) return this.hasMinimumProprietor
-        if (this.isTypePartnership) return this.hasMinimumPartners
+        if (this.isEntityTypeSP) return this.hasMinimumProprietor
+        if (this.isEntityTypeGP) return this.hasMinimumPartners
         return false
       }
       case (this.isConversionFiling): {
-        if (this.isTypeSoleProp) return this.hasMinimumProprietor
-        if (this.isTypePartnership) return this.hasMinimumPartners
+        if (this.isEntityTypeSP) return this.hasMinimumProprietor
+        if (this.isEntityTypeGP) return this.hasMinimumPartners
         return false
       }
       case (this.isCorrectionFiling): {
-        if (this.isTypeBcomp) return (this.cpValid && this.incorpValid && this.dirValid)
+        if (this.isEntityTypeBEN) return (this.cpValid && this.incorpValid && this.dirValid)
+        if (this.isEntityTypeSP) return this.hasMinimumProprietor
+        if (this.isEntityTypeGP) return this.hasMinimumPartners
         return false
       }
     }

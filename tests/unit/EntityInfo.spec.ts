@@ -27,7 +27,7 @@ describe('Entity Info component in a Correction as a named company', () => {
     },
     incorporationApplication: {
       contactPoint: {
-        email: 'mock@email.com',
+        email: 'mock@example.com',
         phone: '123-456-7890'
       },
       nameRequest: {
@@ -83,7 +83,7 @@ describe('Entity Info component in a Correction as a named company', () => {
   })
 
   it('renders the business contact information', () => {
-    expect(wrapper.find('#entity-business-email').text()).toBe('mock@email.com')
+    expect(wrapper.find('#entity-business-email').text()).toBe('mock@example.com')
     expect(wrapper.find('#entity-business-phone').text()).toBe('123-456-7890')
   })
 })
@@ -102,7 +102,7 @@ describe('Entity Info component in a Correction as a numbered company', () => {
     },
     incorporationApplication: {
       contactPoint: {
-        email: 'mock@email.com',
+        email: 'mock@example.com',
         phone: '321-456-7890'
       },
       nameRequest: {},
@@ -154,7 +154,7 @@ describe('Entity Info component in a Correction as a numbered company', () => {
   })
 
   it('renders the business contact information', () => {
-    expect(wrapper.find('#entity-business-email').text()).toBe('mock@email.com')
+    expect(wrapper.find('#entity-business-email').text()).toBe('mock@example.com')
     expect(wrapper.find('#entity-business-phone').text()).toBe('321-456-7890')
   })
 })

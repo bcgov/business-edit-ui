@@ -82,8 +82,6 @@ export default class Conversion extends Mixins(
   @Getter getFilingData!: FilingDataIF
   @Getter getAppValidate!: boolean
   @Getter showFeeSummary!: boolean
-  @Getter isTypeSoleProp!: boolean
-  @Getter isTypePartnership!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -111,8 +109,8 @@ export default class Conversion extends Mixins(
 
   /** The resource file for a firm conversion filing. */
   get firmConversionResource (): any {
-    if (this.isTypeSoleProp) return SoleProprietorshipResource
-    if (this.isTypePartnership) return GeneralPartnershipResource
+    if (this.isEntityTypeSP) return SoleProprietorshipResource
+    if (this.isEntityTypeGP) return GeneralPartnershipResource
     return null
   }
 

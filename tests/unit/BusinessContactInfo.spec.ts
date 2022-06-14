@@ -14,12 +14,12 @@ const store = getVuexStore()
 const mockUpdateContactInfo = jest.spyOn((AuthServices as any), 'updateContactInfo').mockImplementation()
 
 const contactInfo = {
-  email: 'mock@email.com',
-  confirmEmail: 'mock@email.com',
+  email: 'mock@example.com',
+  confirmEmail: 'mock@example.com',
   phone: '250-123-4567'
 }
 
-describe('BusinessContactInfo for a Correction', () => {
+describe('Business Contact Info for a Correction', () => {
   let wrapper: any
 
   const originalCorrectionContact = {
@@ -28,7 +28,7 @@ describe('BusinessContactInfo for a Correction', () => {
     phone: '250-123-4567'
   }
 
-  beforeAll(async () => {
+  beforeAll(() => {
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.businessContact = contactInfo
     store.state.stateModel.correctedFiling = {
@@ -36,6 +36,10 @@ describe('BusinessContactInfo for a Correction', () => {
         contactPoint: originalCorrectionContact
       }
     }
+  })
+
+  afterAll(() => {
+    store.state.stateModel.correctedFiling = null
   })
 
   beforeEach(async () => {
@@ -46,7 +50,7 @@ describe('BusinessContactInfo for a Correction', () => {
     wrapper.destroy()
   })
 
-  it('renders the CorrectBusinessContactInfo Component', async () => {
+  it('renders the CorrectBusinessContactInfo component', async () => {
     expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
   })
 
@@ -68,7 +72,7 @@ describe('BusinessContactInfo for a Correction', () => {
   })
 })
 
-describe('BusinessContactInfo for an Alteration', () => {
+describe('Business Contact Info for an Alteration', () => {
   let wrapper: any
 
   const originalAlterationContact = {
@@ -94,7 +98,7 @@ describe('BusinessContactInfo for an Alteration', () => {
     wrapper.destroy()
   })
 
-  it('renders the BusinessContactInfo Component', async () => {
+  it('renders the BusinessContactInfo component', async () => {
     expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
   })
 
@@ -126,12 +130,12 @@ describe('BusinessContactInfo for an Alteration', () => {
   })
 })
 
-describe('BusinessContactInfo for a Change of Registration', () => {
+describe('Business Contact Info for a Change of Registration', () => {
   let wrapper: any
 
   const originalContact = {
-    email: 'mock@email.com',
-    confirmEmail: 'mock@email.com',
+    email: 'mock@example.com',
+    confirmEmail: 'mock@example.com',
     phone: '250-123-4567',
     extension: '123'
   }
@@ -152,7 +156,7 @@ describe('BusinessContactInfo for a Change of Registration', () => {
     wrapper.destroy()
   })
 
-  it('renders the BusinessContactInfo Component', async () => {
+  it('renders the BusinessContactInfo component', async () => {
     expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
   })
 

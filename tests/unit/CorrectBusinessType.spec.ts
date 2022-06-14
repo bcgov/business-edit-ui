@@ -57,7 +57,7 @@ describe('ChangeBusinessType in an Alteration', () => {
   })
 
   it('displays the Business Type row for Alterations', async () => {
-    expect(wrapper.find('#business-type').exists()).toBe(true)
+    expect(wrapper.find('#change-business-type').exists()).toBe(true)
   })
 
   it('displays the title and entity type in display mode', async () => {

@@ -40,6 +40,8 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   @Getter getSnapshotBusinessContact!: ContactPointIF
   @Getter getResource!: ResourceIF
   @Getter getBusinessId!: string
+  @Getter isEntityTypeFirm!: boolean
+  @Getter isFirmCorrectionFiling!: boolean
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -53,16 +55,14 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 
   /** Get the original Contact info dependant on filing type. */
   get originalContact (): ContactPointIF {
-    if (this.isCorrectionFiling && this.getOriginalIA?.incorporationApplication) {
+    if (this.getOriginalIA?.incorporationApplication) {
       return this.getOriginalIA.incorporationApplication.contactPoint
-    } else if (this.isCorrectionFiling && this.getOriginalChgRegistration?.changeOfRegistration) {
+    } else if (this.getOriginalChgRegistration?.changeOfRegistration) {
       return this.getOriginalChgRegistration.changeOfRegistration.contactPoint
-    } else if (this.isCorrectionFiling && this.getOriginalRegistration?.registration) {
+    } else if (this.getOriginalRegistration?.registration) {
       return this.getOriginalRegistration.registration.contactPoint
-    } else if (this.isAlterationFiling || this.isChangeRegFiling || this.isConversionFiling) {
-      return this.getSnapshotBusinessContact
     } else {
-      return null
+      return this.getSnapshotBusinessContact
     }
   }
 

@@ -55,10 +55,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter hasOfficeAddressesChanged!: boolean
   @Getter hasPeopleAndRolesChanged!: boolean
   @Getter getCompletingParty!: CompletingPartyIF
-  @Getter isTypeBcomp!: boolean
-  @Getter isTypeCoop!: boolean
-  @Getter isTypeSoleProp!: boolean
-  @Getter isTypePartnership!: boolean
+  @Getter isEntityTypeBEN!: boolean
+  @Getter isEntityTypeCP!: boolean
+  @Getter isEntityTypeSP!: boolean
+  @Getter isEntityTypeGP!: boolean
   @Getter getCorrectedFilingType!: FilingTypes
 
   // Global actions
@@ -540,7 +540,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     //     Due to missing props, change event was not triggering if the action value is changed (at
     //     the time of Delete there is no other prop change except action). To handle this scenario,
     //     this structure needs to be kept.
-    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+    if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
       this.setNameTranslations(
         filing.incorporationApplication.nameTranslations?.map(x => {
           return {
@@ -554,12 +554,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Store office addresses
-    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+    if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
       this.setOfficeAddresses(filing.incorporationApplication.offices)
     }
 
     // Store business contact
-    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+    if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
       this.setBusinessContact({
         ...filing.incorporationApplication.contactPoint,
         confirmEmail: filing.incorporationApplication.contactPoint.email
@@ -567,12 +567,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Store people and roles
-    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+    if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
       this.setPeopleAndRoles(filing.incorporationApplication.parties || [])
     }
 
     // Store share classes
-    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+    if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
       if (filing.incorporationApplication.shareStructure) {
         this.setShareClasses(filing.incorporationApplication.shareStructure.shareClasses)
       } else {
@@ -588,7 +588,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Store incorporation agreement type
-    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+    if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
       this.setIncorporationAgreementStepData({
         agreementType: filing.incorporationApplication.incorporationAgreement?.agreementType
       })
@@ -834,7 +834,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       legalName: entitySnapshot.businessInfo.legalName
     })
 
-    // Store people and roles
+    // Store people and roles (aka parties)
     this.setPeopleAndRoles(entitySnapshot.orgPersons || [])
 
     // Store the business contact
@@ -842,7 +842,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // Handle entity specific values
     switch (entitySnapshot.businessInfo.legalType) {
-      case CorpTypeCd.BENEFIT_COMPANY:
+      case CorpTypeCd.BENEFIT_COMPANY: {
         // Store name translations
         this.setNameTranslations(
           entitySnapshot.nameTranslations?.map(x => {
@@ -866,11 +866,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         this.setResolutionDates([])
         this.setOriginalResolutionDates(entitySnapshot.resolutions)
         break
+      }
+
       case CorpTypeCd.SOLE_PROP:
-      case CorpTypeCd.PARTNERSHIP:
+      case CorpTypeCd.PARTNERSHIP: {
         // Store business addresses
         this.setOfficeAddresses(entitySnapshot.addresses)
         break
+      }
     }
   }
 
