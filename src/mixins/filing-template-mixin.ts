@@ -526,8 +526,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param filing the correction filing
    */
   parseCorrectionFiling (filing: CorrectionFilingIF): void {
-    // console.log('*** correction filing =', filing)
-
     // Store business information
     this.setBusinessInformation(filing.business)
 
@@ -542,7 +540,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     //     Due to missing props, change event was not triggering if the action value is changed (at
     //     the time of Delete there is no other prop change except action). To handle this scenario,
     //     this structure needs to be kept.
-    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+    if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
       this.setNameTranslations(
         filing.incorporationApplication.nameTranslations?.map(x => {
           return {
@@ -556,12 +554,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Store office addresses
-    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+    if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
       this.setOfficeAddresses(filing.incorporationApplication.offices)
     }
 
     // Store business contact
-    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+    if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
       this.setBusinessContact({
         ...filing.incorporationApplication.contactPoint,
         confirmEmail: filing.incorporationApplication.contactPoint.email
@@ -569,12 +567,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Store people and roles
-    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+    if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
       this.setPeopleAndRoles(filing.incorporationApplication.parties || [])
     }
 
     // Store share classes
-    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+    if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
       if (filing.incorporationApplication.shareStructure) {
         this.setShareClasses(filing.incorporationApplication.shareStructure.shareClasses)
       } else {
@@ -590,7 +588,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Store incorporation agreement type
-    if (filing.incorporationApplication) { // *** TODO: expand for other filing types
+    if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
       this.setIncorporationAgreementStepData({
         agreementType: filing.incorporationApplication.incorporationAgreement?.agreementType
       })
