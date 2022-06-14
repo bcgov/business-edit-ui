@@ -123,6 +123,7 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
       this.setCorrectedFilingId(correctedFilingId)
 
       // fetch and store original IA
+      // (needed to know what we're correcting)
       const correctedFiling = await this.fetchFilingById(correctedFilingId)
       this.setCorrectedFiling(correctedFiling)
 

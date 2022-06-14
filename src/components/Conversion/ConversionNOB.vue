@@ -10,7 +10,7 @@
           color="primary"
           text-color="white"
         >
-          <span>Changed</span>
+          <span>{{ editedLabel }}</span>
         </v-chip>
       </v-col>
 
@@ -52,7 +52,7 @@
           <div v-if="!hasNatureOfBusinessChanged" class="mt-n2 mr-n3">
             <v-btn text color="primary" id="nob-change-btn" @click="onChangeClicked()">
               <v-icon small>mdi-pencil</v-icon>
-              <span>Change</span>
+              <span>{{ editLabel }}</span>
             </v-btn>
           </div>
 
@@ -69,7 +69,8 @@
               </template>
               <v-btn text color="primary" id="more-changes-btn" class="py-5"
                 @click="onChangeClicked(); dropdown = false">
-                <v-icon small color="primary">mdi-pencil</v-icon>Change
+                <v-icon small color="primary">mdi-pencil</v-icon>
+                <span>{{ editLabel }}</span>
               </v-btn>
             </v-menu>
           </div>
@@ -81,13 +82,14 @@
 
 <script lang="ts">
 import { Action, Getter } from 'vuex-class'
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 
 @Component({})
-export default class NatureOfBusiness extends Vue {
+export default class NatureOfBusiness extends Mixins(CommonMixin) {
   /** Whether to show invalid section styling. */
   @Prop({ default: false })
   readonly invalidSection: boolean

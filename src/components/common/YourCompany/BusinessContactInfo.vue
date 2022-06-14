@@ -21,8 +21,7 @@ import { Action, Getter } from 'vuex-class'
 import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
-import { ActionBindingIF, ChgRegistrationIF, IncorporationApplicationIF, RegistrationIF,
-  ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, IncorporationApplicationIF, ResourceIF, EntitySnapshotIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 
@@ -35,13 +34,9 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessContact!: ContactPointIF
   @Getter getOriginalIA!: IncorporationApplicationIF
-  @Getter getOriginalChgRegistration!: ChgRegistrationIF
-  @Getter getOriginalRegistration!: RegistrationIF
-  @Getter getSnapshotBusinessContact!: ContactPointIF
+  @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getResource!: ResourceIF
   @Getter getBusinessId!: string
-  @Getter isEntityTypeFirm!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -53,16 +48,12 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 
   private isEditingContact = null as boolean
 
-  /** Get the original Contact info dependant on filing type. */
+  /** Get the original Contact data dependant on filing type. */
   get originalContact (): ContactPointIF {
     if (this.getOriginalIA) {
       return this.getOriginalIA.contactPoint
-    } else if (this.getOriginalChgRegistration) {
-      return this.getOriginalChgRegistration.contactPoint
-    } else if (this.getOriginalRegistration) {
-      return this.getOriginalRegistration.contactPoint
     } else {
-      return this.getSnapshotBusinessContact
+      return this.getEntitySnapshot?.authInfo?.contact
     }
   }
 

@@ -2,7 +2,7 @@ import { AccountTypes, ActionTypes, FilingCodes, FilingNames, FilingTypes } from
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { AddressesIF, IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF,
   ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF, NameTranslationIF, FilingDataIF, StateIF,
-  EffectiveDateTimeIF, ShareStructureIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF, ResolutionsIF, FeesIF,
+  EffectiveDateTimeIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF, ResolutionsIF, FeesIF,
   ResourceIF, EntitySnapshotIF, ChgRegistrationFilingIF, RegistrationFilingIF, CorrectedFilingIF,
   ValidationFlagsIF, IncorporationApplicationIF, ChgRegistrationIF, RegistrationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
@@ -171,12 +171,10 @@ export const getBusinessId = (state: StateIF): string => {
 
 /** The business identifier (aka incorporation number). */
 export const getCurrentBusinessName = (state: StateIF): string => {
-  // return the legal name from the name request for Corrections
+  // return the legal name from the name request for BEN IA corrections
   // or the legal name of the business for others
   return (
     getOriginalIA(state)?.nameRequest?.legalName ||
-    getOriginalChgRegistration(state)?.nameRequest?.legalName ||
-    getOriginalRegistration(state)?.nameRequest?.legalName ||
     getBusinessInformation(state).legalName
   )
 }
@@ -301,23 +299,27 @@ export const getNameRequestNumber = (state: StateIF): string => {
   return state.stateModel.nameRequest.nrNumber
 }
 
-/** Identify if changes were made to the NrNumber */
+/** Identify if changes were made to the NR number. */
 export const hasNewNr = (state: StateIF): boolean => {
-  const newNr = state.stateModel.nameRequest?.nrNumber
+  const newNrNumber = state.stateModel.nameRequest?.nrNumber
 
   // evaluate only if a new NR exists
-  if (newNr) {
-    let originalNr = null
+  if (newNrNumber) {
+    let originalNrNumber = null
 
     if (getOriginalIA(state)) {
-      originalNr = getOriginalIA(state).nameRequest?.nrNumber
+      originalNrNumber = getOriginalIA(state).nameRequest?.nrNumber
     } else if (getOriginalChgRegistration(state)) {
-      originalNr = getOriginalChgRegistration(state).nameRequest?.nrNumber
+      // *** FUTURE: since we may or may not be correcting the latest filing,
+      // does it make sense to get the NR number from this change of registration filing?
+      originalNrNumber = getOriginalChgRegistration(state).nameRequest?.nrNumber
     } else if (getOriginalRegistration(state)) {
-      originalNr = getOriginalRegistration(state).nameRequest?.nrNumber
+      // *** FUTURE: since we may or may not be correcting the latest filing,
+      // does it make sense to get the NR number from the registration filing?
+      originalNrNumber = getOriginalRegistration(state).nameRequest?.nrNumber
     }
 
-    return (newNr !== originalNr)
+    return (newNrNumber !== originalNrNumber)
   }
   return false
 }
@@ -369,22 +371,6 @@ export const getAgreementType = (state: StateIF): string => {
 /** The business contact object. */
 export const getBusinessContact = (state: StateIF): ContactPointIF => {
   return state.stateModel.businessContact
-}
-
-export const getSnapshotBusinessContact = (state: StateIF): ContactPointIF => {
-  return state.stateModel.entitySnapshot?.authInfo?.contact
-}
-
-export const getSnapshotFolioNumber = (state: StateIF): string => {
-  return state.stateModel.entitySnapshot?.authInfo?.folioNumber
-}
-
-export const getSnapshotShareStructure = (state: StateIF): ShareStructureIF => {
-  return state.stateModel.entitySnapshot?.shareStructure
-}
-
-export const getSnapshotBusinessInfo = (state: StateIF): BusinessInformationIF => {
-  return state.stateModel.entitySnapshot?.businessInfo
 }
 
 /** Whether we are ignoring data changes. */
@@ -622,24 +608,25 @@ export const isSummaryMode = (state: StateIF): boolean => {
 
 /** Whether business name has changed. */
 export const hasBusinessNameChanged = (state: StateIF): boolean => {
-  const originalLegalName = getSnapshotBusinessInfo(state)?.legalName
+  const originalLegalName = getEntitySnapshot(state)?.businessInfo?.legalName
   return (state.stateModel.nameRequest?.legalName !== originalLegalName)
 }
 
 /** Whether business type has changed. */
 export const hasBusinessTypeChanged = (state: StateIF): boolean => {
-  const originalLegalType = getSnapshotBusinessInfo(state)?.legalType
+  const originalLegalType = getEntitySnapshot(state)?.businessInfo?.legalType
   return (getEntityType(state) !== originalLegalType)
 }
 
 /** Whether contact info data has changed. */
 export const hasContactInfoChanged = (state: StateIF): boolean => {
   const businessContact = getBusinessContact(state)
+  const snapshotContact = getEntitySnapshot(state)?.authInfo?.contact
 
   return (
-    (businessContact?.email !== getSnapshotBusinessContact(state)?.email) ||
-    (businessContact?.phone !== getSnapshotBusinessContact(state)?.phone) ||
-    (businessContact?.extension !== getSnapshotBusinessContact(state)?.extension)
+    (businessContact?.email !== snapshotContact?.email) ||
+    (businessContact?.phone !== snapshotContact?.phone) ||
+    (businessContact?.extension !== snapshotContact?.extension)
   )
 }
 
@@ -662,14 +649,8 @@ export const hasOfficeAddressesChanged = (state: StateIF): boolean => {
 export const getOriginalOfficeAddresses = (state: StateIF): AddressesIF => {
   if (getOriginalIA(state)) {
     return getOriginalIA(state).offices as AddressesIF
-  } else if (getOriginalChgRegistration(state)) {
-    return getOriginalChgRegistration(state).offices
-  } else if (getOriginalRegistration(state)) {
-    return getOriginalRegistration(state).offices
-  } else if (isEntityTypeFirm(state)) {
-    return getEntitySnapshot(state)?.addresses
   } else {
-    return null
+    return getEntitySnapshot(state)?.addresses
   }
 }
 
@@ -758,7 +739,7 @@ export const hasMinimumPartners = (state: StateIF): boolean => {
 /** Whether share structure data has changed. */
 export const hasShareStructureChanged = (state: StateIF): boolean => {
   let currentShareClasses = getShareClasses(state)
-  let originalShareClasses = getSnapshotShareStructure(state)?.shareClasses
+  let originalShareClasses = getEntitySnapshot(state)?.shareStructure?.shareClasses
 
   // Null action properties can be assigned to the ShareClasses when cancelling edits
   // This is fail safe to ensure null actions are not included in the comparison
@@ -825,7 +806,7 @@ export const getHasRightsOrRestrictions = (state: StateIF): any => {
 
 /** True if the share structure contains any special rights of restrictions. */
 export const getHasOriginalRightsOrRestrictions = (state: StateIF): any => {
-  const shareClasses = getSnapshotShareStructure(state)?.shareClasses
+  const shareClasses = getEntitySnapshot(state)?.shareStructure?.shareClasses
 
   // Search and return on the first match
   // Don't need to search Series, as they can't exist on a parent without rights or restrictions

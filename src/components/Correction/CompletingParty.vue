@@ -29,8 +29,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip/'
 import { CommonMixin } from '@/mixins/'
-import { ChgRegistrationIF, IncorporationApplicationIF, OrgPersonIF, RegistrationIF }
-  from '@/interfaces/'
+import { EntitySnapshotIF, IncorporationApplicationIF, OrgPersonIF } from '@/interfaces/'
 import { ActionTypes, RoleTypes } from '@/enums/'
 
 @Component({
@@ -45,8 +44,7 @@ export default class CompletingParty extends Mixins(CommonMixin) {
 
   @Getter getPeopleAndRoles!: Array<OrgPersonIF>
   @Getter getOriginalIA!: IncorporationApplicationIF
-  @Getter getOriginalChgRegistration!: ChgRegistrationIF
-  @Getter getOriginalRegistration!: RegistrationIF
+  @Getter getEntitySnapshot!: EntitySnapshotIF
 
   /** The current Completing Party if found, otherwise undefined. */
   get completingParty () : OrgPersonIF {
@@ -57,12 +55,8 @@ export default class CompletingParty extends Mixins(CommonMixin) {
   get originalCompletingParty () : OrgPersonIF {
     if (this.getOriginalIA) {
       return this.getCompletingParty(this.getOriginalIA.parties)
-    } else if (this.getOriginalChgRegistration) {
-      return this.getCompletingParty(this.getOriginalChgRegistration.parties)
-    } else if (this.getOriginalRegistration) {
-      return this.getCompletingParty(this.getOriginalRegistration.parties)
     } else {
-      return null
+      return this.getCompletingParty(this.getEntitySnapshot?.orgPersons)
     }
   }
 

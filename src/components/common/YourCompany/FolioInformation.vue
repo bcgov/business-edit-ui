@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, CorrectedFilingIF } from '@/interfaces/'
+import { ActionBindingIF, CorrectedFilingIF, EntitySnapshotIF } from '@/interfaces/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number/'
@@ -27,7 +27,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
   // Global getters
   @Getter getFolioNumber!: string
   @Getter getCorrectedFiling!: CorrectedFilingIF
-  @Getter getSnapshotFolioNumber!: string
+  @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter isRoleStaff!: boolean
   @Getter getBusinessId!: string
 
@@ -46,7 +46,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
     if (this.isCorrectionFiling && this.getCorrectedFiling?.header) {
       return this.getCorrectedFiling.header.folioNumber
     } else if (this.isAlterationFiling) {
-      return this.getSnapshotFolioNumber
+      return this.getEntitySnapshot?.authInfo?.folioNumber
     } else {
       return null
     }
