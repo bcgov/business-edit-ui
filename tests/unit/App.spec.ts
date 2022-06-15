@@ -567,7 +567,7 @@ describe.skip('App component', () => {
     expect(dialog.exists()).toBe(false)
 
     // verify redirection
-    const baseUrl = 'myhost/business/T1234567'
+    const baseUrl = 'myhost/business/T1234567?accountid=668'
     expect(window.location.assign).toHaveBeenCalledWith(baseUrl)
   })
 })
@@ -580,6 +580,7 @@ describe('App component - other', () => {
     sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
     sessionStorage.setItem('KEYCLOAK_TOKEN', KEYCLOAK_TOKEN_USER)
     sessionStorage.setItem('BUSINESS_ID', 'BC0007291')
+    sessionStorage.setItem('CURRENT_ACCOUNT', '{ "id": 668 }')
   })
 
   beforeEach(async () => {
