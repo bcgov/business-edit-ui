@@ -14,3 +14,10 @@ export * from './state-interface'
 export interface ActionableItemIF {
   action: ActionTypes
 }
+
+// External interfaces
+export {
+  BusinessLookupIF,
+  BusinessLookupResultIF,
+  EmptyBusinessLookup
+} from '@bcrs-shared-components/interfaces'

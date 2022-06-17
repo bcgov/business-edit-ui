@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "3.2.5",
+  "version": "3.2.6",
   "private": true,
   "appName": "Edit UI",
   "sbcName": "SBC Common Components",
@@ -16,6 +16,7 @@
     "@babel/compat-data": "^7.11.0",
     "@bcrs-shared-components/action-chip": "1.0.6",
     "@bcrs-shared-components/breadcrumb": "2.0.1",
+    "@bcrs-shared-components/business-lookup": "1.0.2",
     "@bcrs-shared-components/certify": "2.0.4",
     "@bcrs-shared-components/completing-party": "2.0.0",
     "@bcrs-shared-components/confirm-dialog": "1.1.0",
@@ -24,10 +25,11 @@
     "@bcrs-shared-components/court-order-poa": "1.0.11",
     "@bcrs-shared-components/date-picker": "1.1.9",
     "@bcrs-shared-components/detail-comment": "1.0.4",
-    "@bcrs-shared-components/enums": "1.0.18",
+    "@bcrs-shared-components/enums": "1.0.19",
     "@bcrs-shared-components/fee-summary": "1.1.15",
     "@bcrs-shared-components/folio-number": "1.0.0",
-    "@bcrs-shared-components/interfaces": "1.0.36",
+    "@bcrs-shared-components/help-business-number": "1.0.0",
+    "@bcrs-shared-components/interfaces": "1.0.39",
     "@bcrs-shared-components/nature-of-business": "1.0.8",
     "@bcrs-shared-components/share-structure": "1.0.20",
     "@bcrs-shared-components/staff-payment": "1.0.35",
@@ -50,7 +52,8 @@
     "vue2-filters": "^0.10.0",
     "vuelidate": "^0.7.5",
     "vuetify": "^2.3.10",
-    "vuex": "^3.5.1"
+    "vuex": "^3.5.1",
+    "vue-debounce-decorator": "^1.0.1"
   },
   "devDependencies": {
     "@types/jest": "^25.2.3",

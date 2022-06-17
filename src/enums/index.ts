@@ -17,3 +17,7 @@ export * from './nameRequestStates'
 export * from './nameRequestTypes'
 export * from './roleTypes'
 export * from './routeNames'
+
+// external enum
+export { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+export { EntityStates } from '@bcrs-shared-components/enums'
