@@ -72,23 +72,24 @@
                     {{ orgTypesLabel }} is Unregistered in B.C.
                   </span>
 
-                  <p class="info-text mt-6 pt-0">To add a registered B.C. business or corporation as the
-                    {{ isProprietor ? 'Proprietor' : 'Partner' }}, enter the name or incorporation number.
+                  <p class="info-text mt-6 pt-0">
+                    To add a registered B.C. business or corporation as
+                    {{ isProprietor ? 'the Proprietor' : 'a Partner' }}, enter the name or
+                    incorporation number.
                   </p>
 
-                  <p class="info-text">If you want to add a company that is not legally required to register
-                    in B.C. such as a bank or a railway, use the manual entry form. All other types of businesses
-                    cannot be a {{ isProprietor ? 'proprietor' : 'partner' }}.
+                  <p class="info-text">
+                    If you are adding a company that is not legally required to register in B.C. such as
+                    a bank or a railway, use the manual entry form. All other types of businesses cannot
+                    be {{ isProprietor ? 'the Proprietor' : 'a partner' }}.
                   </p>
 
-                  <!-- FUTURE: insert business lookup component here -->
-                  <v-text-field
-                    filled
-                    persistent-hint
-                    class="mt-4 mb-n2"
-                    label="Business or Corporation Name or Incorporation Number"
-                    hint="Enter at least the first 3 characters"
-                    :rules="businessLookupRules"
+                  <BusinessLookupShared
+                    :showErrors="enableRules"
+                    :businessLookup="inProgressBusinessLookup"
+                    :BusinessLookupServices="BusinessLookupService"
+                    @setBusiness="updateBusinessDetails($event)"
+                    @undoBusiness="resetBusinessDetails($event)"
                   />
 
                   <v-divider class="mt-6" />
@@ -321,15 +322,17 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { cloneDeep, isEqual } from 'lodash'
 import { v4 as uuidv4 } from 'uuid'
 import { isSame } from '@/utils/'
-import { OrgPersonIF, FormIF, AddressIF, ConfirmDialogType, AddressSchemaIF, RoleIF, ResourceIF }
-  from '@/interfaces/'
+import { OrgPersonIF, FormIF, AddressIF, ConfirmDialogType, AddressSchemaIF, RoleIF, ResourceIF,
+  EmptyBusinessLookup, BusinessLookupIF } from '@/interfaces/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { HelpSection } from '@/components/common/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
+import { BusinessLookup as BusinessLookupShared } from '@bcrs-shared-components/business-lookup'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { RoleTypes } from '@/enums/'
-import { DefaultAddressSchema, InBcCanadaAddressSchema, InCanadaAddressSchema } from '@/schemas/'
+import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
 import { Getter } from 'vuex-class'
+import { BusinessLookupService } from '@/services/'
 
 const REGION_BC = 'BC'
 const COUNTRY_CA = 'CA'
@@ -338,6 +341,7 @@ const COUNTRY_CA = 'CA'
   components: {
     DeliveryAddress: BaseAddress,
     MailingAddress: BaseAddress,
+    BusinessLookupShared,
     ConfirmDialogShared,
     HelpSection
   }
@@ -351,8 +355,10 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     reassignCpDialog: ConfirmDialogType
   }
 
-  // Declaration for template
+  // Declarations for template
   readonly RoleTypes = RoleTypes
+  readonly BusinessLookupService = BusinessLookupService
+  readonly EmptyBusinessLookup = EmptyBusinessLookup
 
   /** The current org/person to edit or add. */
   @Prop() readonly currentOrgPerson: OrgPersonIF
@@ -370,32 +376,25 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   @Getter isEntityTypeFirm!: boolean
   @Getter isRoleStaff!: boolean
 
-  /** The current org/person being added/edited. */
-  private orgPerson: OrgPersonIF = null
-
-  /** Model value for org/person form validity. */
-  private orgPersonFormValid = true
-
-  // Address related properties
-  private inProgressMailingAddress = {} as AddressIF
-  private inProgressDeliveryAddress = {} as AddressIF
-  private inheritMailingAddress = true
-  private mailingAddressValid = false
-  private deliveryAddressValid = false
-  private reassignCompletingParty = false
-
-  /** Model value for roles checkboxes. */
-  private selectedRoles: Array<RoleTypes> = []
-
-  /** The local validation rules. */
-  private firstNameRules: Array<Function> = []
-  private middleNameRules: Array<Function> = []
-  private lastNameRules: Array<Function> = []
-  private businessLookupRules: Array<Function> = []
-  private orgNameRules: Array<Function> = []
-  private proprietorEmailRules = []
-  private confirmBusinessRules = []
-  private confirmNameChangeRules = []
+  // Local variables
+  protected orgPerson: OrgPersonIF = null // current org/person being added/edited
+  protected orgPersonFormValid = true // model value for org/person form validity
+  protected inProgressMailingAddress = {} as AddressIF
+  protected inProgressDeliveryAddress = {} as AddressIF
+  protected inheritMailingAddress = true
+  protected mailingAddressValid = false
+  protected deliveryAddressValid = false
+  protected reassignCompletingParty = false
+  protected selectedRoles: Array<RoleTypes> = [] // model value for roles checkboxes
+  protected firstNameRules: Array<Function> = []
+  protected middleNameRules: Array<Function> = []
+  protected lastNameRules: Array<Function> = []
+  protected orgNameRules: Array<Function> = []
+  protected proprietorEmailRules = []
+  protected confirmBusinessRules = []
+  protected confirmNameChangeRules = []
+  protected enableRules = false // *** WIP
+  protected inProgressBusinessLookup: BusinessLookupIF = EmptyBusinessLookup
 
   /** True if Completing Party is checked. */
   get isCompletingParty (): boolean {
@@ -806,6 +805,49 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     }
   }
 
+  /**
+   * BusinessLookup component event handler - called when it is rendered and when
+   * the user has selected a business.
+   */
+  protected async updateBusinessDetails (businessLookup: BusinessLookupIF): Promise<void> {
+    // *** WIP
+    // this.orgPerson.officer.organizationName = businessLookup.name
+    // this.orgPerson.officer.identifier = businessLookup.identifier
+    // businessLookup.bn = businessLookup.bn?.length > 9
+    //   ? businessLookup.bn.slice(0, 9)
+    //   : businessLookup.bn
+    // this.orgPerson.officer.businessNumber = businessLookup.bn
+    // this.orgPerson.showOptionalBN = !businessLookup.bn
+
+    // this.inProgressBusinessLookup = { ...businessLookup }
+    // if (businessLookup.identifier) {
+    //   const addresses = await LegalServices.fetchAddresses(businessLookup.identifier)
+    //   const registeredOffice = addresses?.registeredOffice
+    //   if (registeredOffice) {
+    //     this.inProgressMailingAddress = { ...registeredOffice.mailingAddress }
+    //     this.inProgressDeliveryAddress = { ...registeredOffice.deliveryAddress }
+    //   }
+    // }
+  }
+
+  /**
+   * BusinessLookup component event handler - called when it is rendered and when
+   * the user undo selected business.
+   */
+  protected resetBusinessDetails (): void {
+    // *** WIP
+    // this.updateBusinessDetails(EmptyBusinessLookup)
+    // this.inProgressMailingAddress = {} as AddressIF
+    // this.inProgressDeliveryAddress = {} as AddressIF
+    // this.orgPerson.officer.email = ''
+    // if (!this.enableRules) {
+    //   this.$refs.mailingAddressNew.$refs.addressForm.reset()
+    //   if (this.$refs.deliveryAddressNew) {
+    //     this.$refs.deliveryAddressNew.$refs.addressForm.reset()
+    //   }
+    // }
+  }
+
   /** Apply input field rules. */
   private async applyRules (): Promise<void> {
     this.firstNameRules = [
@@ -826,12 +868,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
       (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
       (v: string) => (v?.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
-    ]
-
-    // FUTURE: replace this or implement something equivalent so component shows
-    //         validation error if lookup isn't complete
-    this.businessLookupRules = [
-      (v: string) => 'Business must be looked up'
     ]
 
     this.orgNameRules = [
