@@ -181,7 +181,7 @@ export default class LegalServices {
                   roleType: RoleTypes.DIRECTOR
                 }
               ],
-              isBusinessLookup: null
+              isLookupBusiness: null
             }
             return orgPerson
           })

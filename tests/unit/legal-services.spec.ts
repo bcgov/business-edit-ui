@@ -162,7 +162,8 @@ describe('Legal Services', () => {
 
   it('fetches parties correctly', async () => {
     const PARTIES = [
-      { roles: [{ appointmentDate: '2022-04-01', roleType: 'Director' }] },
+      { roles: [{ appointmentDate: '2022-04-01', roleType: 'Completing Party' }] },
+      { roles: [{ appointmentDate: '2022-04-01', roleType: 'Incorporator' }] },
       { roles: [{ appointmentDate: '2022-05-01', roleType: 'Director' }] }
     ]
 

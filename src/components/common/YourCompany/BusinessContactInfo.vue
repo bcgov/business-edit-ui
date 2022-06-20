@@ -7,9 +7,9 @@
     :editLabel="editLabel"
     :editedLabel="editSavedLabel"
     :disableActions="isCorrectionFiling"
-    :disableActionTooltip="isChangeRegFiling || isConversionFiling"
+    :disableActionTooltip="isChangeRegFiling || isFirmConversionFiling"
     :invalidSection="invalidSection"
-    :optionalPhone="isAlterationFiling || isChangeRegFiling || isConversionFiling"
+    :optionalPhone="isAlterationFiling || isChangeRegFiling || isFirmConversionFiling"
     @isEditingContact="isEditingContact = $event"
     @contactInfoChange="onContactInfoChange($event)"
   />
@@ -70,7 +70,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
     if (isEqual(contactInfo, this.getBusinessContact)) return
 
     try {
-      if (this.isAlterationFiling || this.isChangeRegFiling || this.isConversionFiling) {
+      if (this.isAlterationFiling || this.isChangeRegFiling || this.isFirmConversionFiling) {
         await AuthServices.updateContactInfo(contactInfo, this.getBusinessId)
       }
       this.setBusinessContact(contactInfo)

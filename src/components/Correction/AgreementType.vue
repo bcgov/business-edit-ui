@@ -78,7 +78,7 @@ import { AgreementTypeResource } from '@/resources/Correction/'
 
 @Component
 export default class AgreementType extends Vue {
-  // declaration for template
+  // Declaration for template
   readonly AgreementTypeResource = AgreementTypeResource
 
   // Global getters

@@ -97,7 +97,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   //
 
   /**
-   * Builds a correction filing from store data.
+   * Builds an IA/change/registration correction filing from store data.
    * @param isDraft whether this is a draft
    * @returns the correction filing body
    */
@@ -418,11 +418,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Builds a conversion filing from store data.
+   * Builds a firm conversion filing from store data.
    * @param isDraft whether this is a draft
    * @returns the conversion filing body
    */
-  buildConversionFiling (isDraft: boolean): ConversionFilingIF {
+  buildFirmConversionFiling (isDraft: boolean): ConversionFilingIF {
     // Build conversion filing
     const filing: ConversionFilingIF = {
       header: {
@@ -528,7 +528,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   //
 
   /**
-   * Parses a draft correction filing into the store.
+   * Parses a draft IA/change/registration correction filing into the store.
    * @param filing the correction filing
    */
   parseCorrectionFiling (filing: CorrectionFilingIF): void {
@@ -706,11 +706,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Parses a draft change filing into the store.
+   * Parses a draft change of registration filing into the store.
    * @param filing the change filing
    * @param entitySnapshot the latest entity snapshot
    */
-  parseChangeFiling (filing: ChgRegistrationFilingIF, entitySnapshot: EntitySnapshotIF): void {
+  parseChangeRegFiling (filing: ChgRegistrationFilingIF, entitySnapshot: EntitySnapshotIF): void {
     // Store business snapshot
     this.setEntitySnapshot(cloneDeep(entitySnapshot))
 
@@ -766,11 +766,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Parses a draft conversion filing into the store.
+   * Parses a draft firm conversion filing into the store.
    * @param filing the conversion filing
    * @param entitySnapshot the latest entity snapshot
    */
-  parseConversionFiling (filing: ConversionFilingIF, entitySnapshot: EntitySnapshotIF): void {
+  parseFirmConversionFiling (filing: ConversionFilingIF, entitySnapshot: EntitySnapshotIF): void {
     // Store business snapshot
     this.setEntitySnapshot(cloneDeep(entitySnapshot))
 

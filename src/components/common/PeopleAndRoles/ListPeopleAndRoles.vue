@@ -227,8 +227,8 @@
             </div>
 
             <!-- orgPerson we haven't touched: -->
-            <div v-else class="actions">
-              <span class="edit-action" :class="{'pr-4': hasRoleProprietor(orgPerson)}">
+            <div v-else class="actions mr-4">
+              <span class="edit-action" :class="{'pr-4': canRemove(orgPerson)}">
                 <v-btn
                   text color="primary"
                   :id="`officer-${index}-edit-btn`"
@@ -241,7 +241,7 @@
               </span>
 
               <!-- More Actions Menu (Remove action) -->
-              <span v-if="canRemove(orgPerson)" class="dropdown-action mr-4" :class="`more-actions-${index}`">
+              <span v-if="canRemove(orgPerson)" class="dropdown-action" :class="`more-actions-${index}`">
                 <v-menu
                   offset-y left nudge-bottom="4"
                   v-model="dropdown[index]"
@@ -282,7 +282,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import OrgPerson from './OrgPerson.vue'
@@ -300,6 +300,7 @@ import { ActionTypes } from '@/enums/'
 })
 export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMixin) {
   // Declaration for template
+  readonly isSame = isSame
   readonly ActionTypes = ActionTypes
 
   /** Whether to render the OrgPersonForm (for edit or add). */
@@ -328,15 +329,20 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   // Store getter
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter isBenIaCorrectionFiling!: boolean
-
-  // declaration for template
-  readonly isSame = isSame
-
-  /** Headers for the person table. */
-  readonly tableHeaders = ['Name', 'Mailing Address', 'Delivery Address', '']
+  @Getter isFirmCorrectionFiling!: boolean
 
   /** V-model for dropdown menus. */
   protected dropdown: Array<boolean> = []
+
+  /** Headers for the person table. */
+  get tableHeaders () {
+    return [
+      'Name',
+      'Mailing Address',
+      'Delivery Address',
+      this.isBenIaCorrectionFiling ? 'Roles' : ''
+    ]
+  }
 
   /** This component's validity state (for error styling). */
   get isComponentInvalid (): boolean {
@@ -350,28 +356,30 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   get currentPeopleAndRoles (): Array<OrgPersonIF> {
     if (this.isSummaryView) {
       // return list without REMOVED org-persons
-      return this.getPeopleAndRoles.filter(orgPerson => !orgPerson.actions?.includes(ActionTypes.REMOVED))
+      return this.getPeopleAndRoles.filter(orgPerson => !this.wasRemoved(orgPerson))
     }
     return this.getPeopleAndRoles
   }
 
   /** Returns True if the specified org-person can be removed. */
   protected canRemove (orgPerson: OrgPersonIF): boolean {
-    switch (true) {
-      case (this.isAlterationFiling): {
-        // alterations don't use this component
-        return false
-      }
-      case (this.isChangeRegFiling): {
-        // can only remove partner in a change filing
-        return this.hasRolePartner(orgPerson)
-      }
-      case (this.isConversionFiling): {
-        return true
-      }
-      case (this.isCorrectionFiling): {
-        return true
-      }
+    if (this.isAlterationFiling) {
+      // alterations don't use this component
+      return false
+    }
+    if (this.isChangeRegFiling) {
+      // can only remove partner
+      return this.hasRolePartner(orgPerson)
+    }
+    if (this.isFirmConversionFiling) {
+      return true
+    }
+    if (this.isBenIaCorrectionFiling) {
+      return true
+    }
+    if (this.isFirmCorrectionFiling) {
+      // cannot remove proprietor/partner
+      return false
     }
     return false // should never happen
   }
@@ -430,11 +438,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
    */
   @Emit('removeCpRole')
   protected emitRemoveCpRole (): void {}
-
-  @Watch('getPeopleAndRoles', { deep: true, immediate: true })
-  private assignTableHeaders (): void {
-    this.tableHeaders[3] = this.isCorrectionFiling ? 'Roles' : ''
-  }
 }
 </script>
 

@@ -28,7 +28,8 @@ const removeCpRoleEvent = 'removeCpRole'
 const firstNameSelector = '#person__first-name'
 const middleNameSelector = '#person__middle-name'
 const lastNameSelector = '#person__last-name'
-const orgNameSelector = '#firm-name'
+const orgNameSelector = '#organization-name'
+const confirmNameChangeSelector = '#confirm-name-change-checkbox'
 const completingPartyChkBoxSelector = '#cp-checkbox'
 const incorporatorChkBoxSelector = '#incorp-checkbox'
 const directorChkBoxSelector = '#dir-checkbox'
@@ -325,6 +326,11 @@ describe('Org/Person component for a Correction filing', () => {
     const input = wrapper.find(orgNameSelector)
     await input.setValue('Different Test Org')
     await input.trigger('change')
+
+    // verify that checkbox isn't checked and then check it
+    const chkbox = wrapper.find(confirmNameChangeSelector)
+    expect(chkbox.attributes('aria-checked')).toBe('false')
+    await chkbox.trigger('click')
 
     // verify that button is not disabled, then click it
     const button = wrapper.find(doneButtonSelector)

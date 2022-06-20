@@ -266,10 +266,10 @@ export default class Alteration extends Mixins(
         }
 
         // parse alteration filing and original business snapshot into store
-        await this.parseAlterationFiling(alterationFiling, businessSnapshot)
+        this.parseAlterationFiling(alterationFiling, businessSnapshot)
       } else {
         // parse business data into store
-        await this.parseEntitySnapshot(businessSnapshot)
+        this.parseEntitySnapshot(businessSnapshot)
       }
 
       if (this.alterationResource) {
