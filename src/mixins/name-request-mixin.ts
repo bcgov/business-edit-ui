@@ -1,13 +1,14 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { NameRequestStates, NameRequestTypes } from '@/enums/'
-import { DateMixin, LegalApiMixin } from '@/mixins/'
+import { DateMixin } from '@/mixins/'
+import { LegalServices } from '@/services/'
 import { NrResponseIF } from '@/interfaces/'
 
 /**
  * Mixin for processing Name Request objects.
  */
 @Component({})
-export default class NameRequestMixin extends Mixins(DateMixin, LegalApiMixin) {
+export default class NameRequestMixin extends Mixins(DateMixin) {
   /**
    * Fetches an NR and validates it against the applicant's information.
    * Throws an error if there is a problem.
@@ -17,7 +18,7 @@ export default class NameRequestMixin extends Mixins(DateMixin, LegalApiMixin) {
    * @returns the name request response payload
    */
   async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<NrResponseIF> {
-    const nrResponse: NrResponseIF = await this.fetchNameRequest(nrNumber).catch(error => {
+    const nrResponse: NrResponseIF = await LegalServices.fetchNameRequest(nrNumber).catch(error => {
       this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
       throw new Error(`Fetch Name Request error: ${error}`)
     })

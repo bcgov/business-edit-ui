@@ -46,7 +46,8 @@ import { Action, Getter } from 'vuex-class'
 import { AgreementType, CompletingParty } from '@/components/Correction/'
 import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
   from '@/components/common/'
-import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
+import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
+import { LegalServices } from '@/services/'
 import { ActionBindingIF, CorrectionFilingIF, FilingDataIF } from '@/interfaces/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { BenefitCompanyStatementResource } from '@/resources/Correction/'
@@ -63,7 +64,7 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/'
     YourCompany
   }
 })
-export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
+export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin) {
   // Global getters
   @Getter getFilingData!: FilingDataIF
   @Getter getOriginalFilingName!: string
@@ -109,7 +110,7 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
       this.setCorrectedFilingId(correctedFilingId)
 
       // fetch and store original IA
-      const correctedFiling = await this.fetchFilingById(correctedFilingId)
+      const correctedFiling = await LegalServices.fetchFilingById(this.getBusinessId, correctedFilingId)
       this.setCorrectedFiling(correctedFiling)
 
       // set the resources

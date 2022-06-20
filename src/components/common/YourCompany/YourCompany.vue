@@ -325,7 +325,7 @@ import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestAppli
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
   NatureOfBusiness, OfficeAddresses } from './'
-import { CommonMixin, SharedMixin, DateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins/'
+import { CommonMixin, SharedMixin, DateMixin, NameRequestMixin } from '@/mixins/'
 import { CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { cloneDeep } from 'lodash'
@@ -348,7 +348,6 @@ export default class YourCompany extends Mixins(
   CommonMixin,
   DateMixin,
   SharedMixin,
-  LegalApiMixin,
   NameRequestMixin
 ) {
   // Global getters

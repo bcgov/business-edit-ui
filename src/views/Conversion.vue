@@ -53,8 +53,8 @@ import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { getFeatureFlag } from '@/utils/'
 import { PeopleAndRoles, CompletingParty, YourCompany } from '@/components/common/'
-import { AuthServices } from '@/services/'
-import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
+import { AuthServices, LegalServices } from '@/services/'
+import { CommonMixin, FilingTemplateMixin, PayApiMixin } from '@/mixins/'
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -72,7 +72,6 @@ import { NOT_FOUND } from 'http-status-codes'
 })
 export default class Conversion extends Mixins(
   CommonMixin,
-  LegalApiMixin,
   FilingTemplateMixin,
   PayApiMixin
 ) {
@@ -148,7 +147,7 @@ export default class Conversion extends Mixins(
         this.setFilingId(this.conversionId)
 
         // fetch draft conversion filing to resume
-        const changeFiling = await this.fetchFilingById(this.conversionId)
+        const changeFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.conversionId)
 
         // do not proceed if this isn't a conversion  filing
         if (!changeFiling.conversion) {
@@ -210,14 +209,14 @@ export default class Conversion extends Mixins(
   /** Fetches the business snapshot. */
   private async fetchFirmSnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
-      this.fetchBusinessInfo(),
+      LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),
-      this.fetchParties()
+      LegalServices.fetchParties(this.getBusinessId)
     ])
 
     if (items.length !== 3) throw new Error('Failed to fetch entity snapshot')
 
-    const addresses = await this.fetchAddresses()
+    const addresses = await LegalServices.fetchAddresses(this.getBusinessId)
       .catch(reason => {
         // error message for business address has the pattern "FMXXXXXXX address not found"
         if (reason.response?.status === NOT_FOUND &&
