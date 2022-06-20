@@ -46,9 +46,9 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany }
   from '@/components/common/'
-import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
+import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
-import { AuthServices } from '@/services/'
+import { AuthServices, LegalServices } from '@/services/'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resources/Correction/'
@@ -63,7 +63,7 @@ import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resour
     YourCompany
   }
 })
-export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
+export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin) {
   // Global getters
   @Getter getFilingData!: FilingDataIF
 
@@ -124,7 +124,7 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
 
       // fetch and store original IA
       // (needed to know what we're correcting)
-      const correctedFiling = await this.fetchFilingById(correctedFilingId)
+      const correctedFiling = await LegalServices.fetchFilingById(this.getBusinessId, correctedFilingId)
       this.setCorrectedFiling(correctedFiling)
 
       // fetch and store business snapshot
@@ -151,10 +151,10 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
   /** Fetches the business snapshot. */
   private async fetchBusinessSnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
-      this.fetchBusinessInfo(),
+      LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),
-      this.fetchAddresses(),
-      this.fetchParties()
+      LegalServices.fetchAddresses(this.getBusinessId),
+      LegalServices.fetchParties(this.getBusinessId)
     ])
 
     if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')

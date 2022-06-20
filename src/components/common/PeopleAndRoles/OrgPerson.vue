@@ -87,7 +87,7 @@
                   <BusinessLookupShared
                     :showErrors="enableRules"
                     :businessLookup="inProgressBusinessLookup"
-                    :BusinessLookupServices="BusinessLookupService"
+                    :BusinessLookupServices="BusinessLookupServices"
                     @setBusiness="updateBusinessDetails($event)"
                     @undoBusiness="resetBusinessDetails($event)"
                   />
@@ -332,7 +332,7 @@ import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { RoleTypes } from '@/enums/'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
 import { Getter } from 'vuex-class'
-import { BusinessLookupService } from '@/services/'
+import { BusinessLookupServices } from '@/services/'
 
 const REGION_BC = 'BC'
 const COUNTRY_CA = 'CA'
@@ -357,7 +357,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
   // Declarations for template
   readonly RoleTypes = RoleTypes
-  readonly BusinessLookupService = BusinessLookupService
+  readonly BusinessLookupServices = BusinessLookupServices
   readonly EmptyBusinessLookup = EmptyBusinessLookup
 
   /** The current org/person to edit or add. */

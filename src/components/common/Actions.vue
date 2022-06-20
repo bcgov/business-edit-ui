@@ -44,20 +44,16 @@
 </template>
 
 <script lang="ts">
-// Libraries
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter, Action } from 'vuex-class'
-
-// Interfaces and Enums
 import { ActionBindingIF } from '@/interfaces/'
-
-// Mixins
-import { DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin } from '@/mixins/'
+import { DateMixin, FilingTemplateMixin, NameRequestMixin } from '@/mixins/'
+import { LegalServices } from '@/services/'
 import { navigate } from '@/utils/'
 
 /** This component is only implemented for Correction filings atm. */
 @Component({})
-export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, LegalApiMixin, NameRequestMixin) {
+export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, NameRequestMixin) {
   // Global getters
   @Getter isBusySaving!: boolean
   @Getter hasCorrectionDataChanged!: boolean
@@ -67,6 +63,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
   @Getter isSavingResuming!: boolean
   @Getter isFilingPaying!: boolean
   @Getter isEditing!: boolean
+  @Getter getFilingId!: number
 
   // Global actions
   @Action setIsSaving!: ActionBindingIF
@@ -101,7 +98,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     let filingComplete: any
     try {
       const filing = await this.buildCorrectionFiling(true)
-      filingComplete = await this.updateFiling(filing, true)
+      filingComplete = await LegalServices.updateFiling(this.getBusinessId, this.getFilingId, filing, true)
       // clear flag
       this.setHaveUnsavedChanges(false)
     } catch (error) {
@@ -125,7 +122,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     let filingComplete: any
     try {
       const filing = await this.buildCorrectionFiling(true)
-      filingComplete = await this.updateFiling(filing, true)
+      filingComplete = await LegalServices.updateFiling(this.getBusinessId, this.getFilingId, filing, true)
       // clear flag
       this.setHaveUnsavedChanges(false)
     } catch (error) {
@@ -164,7 +161,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Lega
     let filingComplete: any
     try {
       const filing = await this.buildCorrectionFiling(false)
-      filingComplete = await this.updateFiling(filing, false)
+      filingComplete = await LegalServices.updateFiling(this.getBusinessId, this.getFilingId, filing, false)
       // clear flag
       this.setHaveUnsavedChanges(false)
     } catch (error) {

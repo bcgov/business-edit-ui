@@ -158,8 +158,8 @@ import { Breadcrumb as BreadcrumbShared } from '@bcrs-shared-components/breadcru
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
-import { AuthServices } from '@/services/'
-import { CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin } from '@/mixins/'
+import { AuthServices, LegalServices } from '@/services/'
+import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
   AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
@@ -184,7 +184,7 @@ import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegis
     ...Views
   }
 })
-export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin, LegalApiMixin) {
+export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -205,6 +205,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter isSummaryMode!: boolean
   @Getter showFeeSummary!: boolean
   @Getter getCurrentJsDate!: Date
+  @Getter getFilingId!: number
 
   // Alteration flag getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -757,8 +758,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
       // update the filing if we have a filingId, otherwise create a draft
       filingComplete = this.getFilingId
-        ? await this.updateFiling(filing, isDraft)
-        : await this.createFiling(filing, isDraft)
+        ? await LegalServices.updateFiling(this.getBusinessId, this.getFilingId, filing, isDraft)
+        : await LegalServices.createFiling(this.getBusinessId, filing, isDraft)
 
       // clear flag
       this.setHaveUnsavedChanges(false)
