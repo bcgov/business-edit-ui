@@ -572,18 +572,18 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       // populate mailing address
       // NB: add optional fields for later comparison
       this.inProgressMailingAddress = {
-        ...this.orgPerson.mailingAddress,
         deliveryInstructions: null,
-        streetAddressAdditional: ''
+        streetAddressAdditional: '',
+        ...this.orgPerson.mailingAddress
       }
 
       // optionally populate delivery address
       // NB: add optional fields for later comparison
       if (this.isDirector || this.isProprietor || this.isPartner) {
         this.inProgressDeliveryAddress = {
-          ...this.orgPerson.deliveryAddress,
           deliveryInstructions: null,
-          streetAddressAdditional: ''
+          streetAddressAdditional: '',
+          ...this.orgPerson.deliveryAddress
         }
         this.inheritMailingAddress = isSame(
           this.inProgressMailingAddress, this.inProgressDeliveryAddress, ['id']
