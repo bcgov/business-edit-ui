@@ -19,7 +19,8 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
-import { CommonMixin, LegalApiMixin } from '@/mixins/'
+import { CommonMixin } from '@/mixins/'
+import { LegalServices } from '@/services/'
 import { ActionBindingIF, CorrectionFilingIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -32,12 +33,13 @@ import FmCorrection from '@/views/Correction/FmCorrection.vue'
     FmCorrection
   }
 })
-export default class Correction extends Mixins(CommonMixin, LegalApiMixin) {
+export default class Correction extends Mixins(CommonMixin) {
   /** Whether App is ready. */
   @Prop({ default: false })
   readonly appReady: boolean
 
   // Global getters
+  @Getter getBusinessId!: string
   @Getter isRoleStaff!: boolean
   @Getter isEntityTypeBEN!: boolean
   @Getter isEntityTypeFirm!: boolean
@@ -93,7 +95,7 @@ export default class Correction extends Mixins(CommonMixin, LegalApiMixin) {
       this.setFilingId(this.correctionId)
 
       // fetch draft correction to resume
-      const filing = await this.fetchFilingById(this.correctionId) as CorrectionFilingIF
+      const filing = await LegalServices.fetchFilingById(this.getBusinessId, this.correctionId) as CorrectionFilingIF
 
       // do not proceed if this isn't a CORRECTION filing
       if (!filing.correction) {

@@ -83,8 +83,8 @@ import { getFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
 import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, YourCompany, StaffPayment,
   CourtOrderPoa } from '@/components/common/'
-import { AuthServices } from '@/services/'
-import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
+import { AuthServices, LegalServices } from '@/services/'
+import { CommonMixin, FilingTemplateMixin, PayApiMixin } from '@/mixins/'
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
 import { FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -106,7 +106,6 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 })
 export default class Change extends Mixins(
   CommonMixin,
-  LegalApiMixin,
   FilingTemplateMixin,
   PayApiMixin
 ) {
@@ -176,7 +175,7 @@ export default class Change extends Mixins(
         this.setFilingId(this.changeId)
 
         // fetch draft change filing to resume
-        const changeFiling = await this.fetchFilingById(this.changeId)
+        const changeFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.changeId)
 
         // do not proceed if this isn't a change filing
         if (!changeFiling.changeOfRegistration) {
@@ -256,10 +255,10 @@ export default class Change extends Mixins(
   /** Fetches the business snapshot. */
   private async fetchFirmSnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
-      this.fetchBusinessInfo(),
+      LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),
-      this.fetchAddresses(),
-      this.fetchParties()
+      LegalServices.fetchAddresses(this.getBusinessId),
+      LegalServices.fetchParties(this.getBusinessId)
     ])
 
     if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')

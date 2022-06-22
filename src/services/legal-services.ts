@@ -1,26 +1,18 @@
-import { Component, Vue } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
 import { axios } from '@/utils/'
-import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CorrectionFilingIF, NameTranslationIF,
-  OrgPersonIF, ShareStructureIF, ResolutionsIF, ChgRegistrationFilingIF, ConversionFilingIF }
-  from '@/interfaces/'
+import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistrationFilingIF, ConversionFilingIF,
+  CorrectionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF, ShareStructureIF } from '@/interfaces/'
 import { RoleTypes } from '@/enums'
 
 /**
- * Mixin that provides integration with the Legal API.
+ * Class that provides integration with the Legal API.
  */
-@Component({})
-export default class LegalApiMixin extends Vue {
-  // Global getters
-  @Getter getFilingId!: number
-  @Getter getBusinessId!: string
-
+export default class LegalServices {
   /**
    * Fetches a filing by its id.
    * @returns a promise to return the filing of the specified type
    */
-  async fetchFilingById (id: number): Promise<any> {
-    const url = `businesses/${this.getBusinessId}/filings/${id}`
+  static async fetchFilingById (businessId: string, filingId: number): Promise<any> {
+    const url = `businesses/${businessId}/filings/${filingId}`
 
     return axios.get(url)
       .then(response => {
@@ -37,8 +29,8 @@ export default class LegalApiMixin extends Vue {
    * Deletes a filing by its id.
    * @returns a promise to delete the filing or return a failure.
    */
-  async deleteFilingById (id: number): Promise<any> {
-    const url = `businesses/${this.getBusinessId}/filings/${id}`
+  static async deleteFilingById (businessId: string, filingId: number): Promise<any> {
+    const url = `businesses/${businessId}/filings/${filingId}`
 
     return axios.delete(url)
       .catch(error => {
@@ -50,48 +42,50 @@ export default class LegalApiMixin extends Vue {
 
   /**
    * Updates an existing filing.
-   * @param filing the object body of the request
+   * @param businessId the id of the business to update
+   * @param filingId the id of the filing to update
+   * @param filing the object body of the filing
    * @param isDraft boolean indicating whether to save draft or complete the filing
    * @returns a promise to return the updated filing
    */
-  async updateFiling (
+  static async updateFiling (
+    businessId: string,
+    filingId: number,
     filing: CorrectionFilingIF | AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF,
     isDraft: boolean
   ): Promise<any> {
-    if (!filing) throw new Error('updateFiling(), invalid filing')
-    const filingId = this.getFilingId
-    if (!filingId) throw new Error('updateFiling(), invalid filing id')
-
     // put updated filing to filings endpoint
-    let url = `businesses/${this.getBusinessId}/filings/${filingId}`
+    let url = `businesses/${businessId}/filings/${filingId}`
     if (isDraft) {
       url += '?draft=true'
     }
     return axios.put(url, { filing }).then(response => {
       const filing = response?.data?.filing
       const filingId = +filing?.header?.filingId
-      if (!filing || !filingId) {
-        throw new Error('Invalid API response')
+      if (filing && filingId) {
+        return filing
       }
-      return filing
+      // eslint-disable-next-line no-console
+      console.log('updateFiling() error - invalid response =', response)
+      throw new Error('Invalid API response')
     })
     // NB: for error handling, see "save-error-event"
   }
 
   /**
    * Creates a new filing.
-   * @param filing the object body of the request
+   * @param businessId the id of the business to update
+   * @param filing the object body of the filing
    * @param isDraft boolean indicating whether to save draft or complete the filing
    * @returns a promise to return the updated filing
    */
-  async createFiling (
+  static async createFiling (
+    businessId: string,
     filing: AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF,
     isDraft: boolean
   ): Promise<any> {
-    if (!filing) throw new Error('updateFiling(), invalid filing')
-
     // put updated filing to filings endpoint
-    let url = `businesses/${this.getBusinessId}/filings`
+    let url = `businesses/${businessId}/filings`
     if (isDraft) {
       url += '?draft=true'
     }
@@ -99,10 +93,12 @@ export default class LegalApiMixin extends Vue {
     return axios.post(url, { filing }).then(response => {
       const filing = response?.data?.filing
       const filingId = +filing?.header?.filingId
-      if (!filing || !filingId) {
-        throw new Error('Invalid API response')
+      if (filing && filingId) {
+        return filing
       }
-      return filing
+      // eslint-disable-next-line no-console
+      console.log('createFiling() error - invalid response =', response)
+      throw new Error('Invalid API response')
     })
     // NB: for error handling, see "save-error-event"
   }
@@ -111,10 +107,8 @@ export default class LegalApiMixin extends Vue {
    * Fetches the business info of the current business.
    * @returns a promise to return the data
    */
-  async fetchBusinessInfo (): Promise<BusinessInformationIF> {
-    if (!this.getBusinessId) throw new Error('Invalid business id')
-
-    const url = `businesses/${this.getBusinessId}`
+  static async fetchBusinessInfo (businessId: string): Promise<BusinessInformationIF> {
+    const url = `businesses/${businessId}`
 
     return axios.get(url)
       .then(response => {
@@ -131,10 +125,8 @@ export default class LegalApiMixin extends Vue {
    * Fetches the name translations of the current business.
    * @returns a promise to return the data
    */
-  async fetchNameTranslations (): Promise<NameTranslationIF[]> {
-    if (!this.getBusinessId) throw new Error('Invalid business id')
-
-    const url = `businesses/${this.getBusinessId}/aliases`
+  static async fetchNameTranslations (businessId: string): Promise<NameTranslationIF[]> {
+    const url = `businesses/${businessId}/aliases`
 
     return axios.get(url)
       .then(response => {
@@ -151,10 +143,8 @@ export default class LegalApiMixin extends Vue {
    * Fetches the address of the current entity.
    * @returns a promise to return the data
    */
-  async fetchAddresses (): Promise<AddressesIF> {
-    if (!this.getBusinessId) throw new Error('Invalid business id')
-
-    const url = `businesses/${this.getBusinessId}/addresses`
+  static async fetchAddresses (businessId: string): Promise<AddressesIF> {
+    const url = `businesses/${businessId}/addresses`
 
     return axios.get(url)
       .then(response => {
@@ -171,10 +161,8 @@ export default class LegalApiMixin extends Vue {
    * Fetches the directors of the current business.
    * @returns a promise to return the data
    */
-  async fetchDirectors (): Promise<OrgPersonIF[]> {
-    if (!this.getBusinessId) throw new Error('Invalid business id')
-
-    const url = `businesses/${this.getBusinessId}/directors`
+  static async fetchDirectors (businessId: string): Promise<OrgPersonIF[]> {
+    const url = `businesses/${businessId}/directors`
 
     return axios.get(url)
       .then(response => {
@@ -208,15 +196,15 @@ export default class LegalApiMixin extends Vue {
    * Fetches the parties of the current business.
    * @returns a promise to return the data
    */
-  async fetchParties (): Promise<OrgPersonIF[]> {
-    if (!this.getBusinessId) throw new Error('Invalid business id')
-
-    const url = `businesses/${this.getBusinessId}/parties`
+  static async fetchParties (businessId: string): Promise<OrgPersonIF[]> {
+    const url = `businesses/${businessId}/parties`
 
     return axios.get(url)
       .then(response => {
         const parties = response?.data?.parties
-        if (parties) return parties
+        if (parties) {
+          return parties
+        }
         // eslint-disable-next-line no-console
         console.log('fetchParties() error - invalid response =', response)
         throw new Error('Invalid API response')
@@ -227,10 +215,8 @@ export default class LegalApiMixin extends Vue {
    * Fetch the share structure of the current business.
    * @returns a promise to return the data
    */
-  async fetchShareStructure (): Promise<ShareStructureIF> {
-    if (!this.getBusinessId) throw new Error('Invalid business id')
-
-    const url = `businesses/${this.getBusinessId}/share-classes`
+  static async fetchShareStructure (businessId: string): Promise<ShareStructureIF> {
+    const url = `businesses/${businessId}/share-classes`
 
     return axios.get(url)
       .then(response => {
@@ -254,10 +240,8 @@ export default class LegalApiMixin extends Vue {
    * Fetch the resolutions of the current business.
    * @returns a promise to return the data
    */
-  async fetchResolutions (): Promise<ResolutionsIF[]> {
-    if (!this.getBusinessId) throw new Error('Invalid business id')
-
-    const url = `businesses/${this.getBusinessId}/resolutions`
+  static async fetchResolutions (businessId: string): Promise<ResolutionsIF[]> {
+    const url = `businesses/${businessId}/resolutions`
 
     return axios.get(url)
       .then(response => {
@@ -272,12 +256,10 @@ export default class LegalApiMixin extends Vue {
 
   /**
    * Fetches name request data.
-   * @param nrNumber the name request number (eg, NR 1234567)
+   * @param nrNumber the name request number (eg, NR 1234567) to fetch
    * @returns a promise to return the NR data, or null if not found
    */
-  async fetchNameRequest (nrNumber: string): Promise<any> {
-    if (!nrNumber) throw new Error('Invalid parameter \'nrNumber\'')
-
+  static async fetchNameRequest (nrNumber: string): Promise<any> {
     const url = `nameRequests/${nrNumber}`
 
     return axios.get(url)

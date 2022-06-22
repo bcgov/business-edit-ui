@@ -598,12 +598,18 @@ describe('App component - other', () => {
       }))
 
     // GET authorizations (role)
-    get.withArgs('entities/BC0007291/authorizations')
+    get.withArgs('https://auth.api.url/entities/BC0007291/authorizations')
       .returns(Promise.resolve({
         data:
         {
           roles: ['edit', 'view']
         }
+      }))
+
+    // GET org info
+    get.withArgs('https://auth.api.url/orgs/668')
+      .returns(Promise.resolve({
+        data: {}
       }))
 
     // create a Local Vue and install router on it

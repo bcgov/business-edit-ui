@@ -131,8 +131,8 @@ import { AlterationSummary, Articles, TransactionalFolioNumber } from '@/compone
 import { CertifySection, CurrentDirectors, DocumentsDelivery, ShareStructures, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
-import { AuthServices } from '@/services/'
-import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
+import { AuthServices, LegalServices } from '@/services/'
+import { CommonMixin, FilingTemplateMixin, PayApiMixin } from '@/mixins/'
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FeesIF, FilingDataIF, FlagsReviewCertifyIF, ResourceIF }
   from '@/interfaces/'
 import { FilingCodes, FilingStatus } from '@/enums/'
@@ -157,7 +157,6 @@ import { BenefitCompanyResource, CooperativeResource } from '@/resources/Alterat
 })
 export default class Alteration extends Mixins(
   CommonMixin,
-  LegalApiMixin,
   FilingTemplateMixin,
   PayApiMixin
 ) {
@@ -254,7 +253,7 @@ export default class Alteration extends Mixins(
         this.setFilingId(this.alterationId)
 
         // fetch draft alteration to resume
-        const alterationFiling = await this.fetchFilingById(this.alterationId)
+        const alterationFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.alterationId)
 
         // do not proceed if this isn't an ALTERATION filing
         if (!alterationFiling.alteration) {
@@ -324,13 +323,13 @@ export default class Alteration extends Mixins(
   /** Fetches the business snapshot. */
   private async fetchBusinessSnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
-      this.fetchBusinessInfo(),
+      LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),
-      this.fetchAddresses(),
-      this.fetchNameTranslations(),
-      this.fetchDirectors(),
-      this.fetchShareStructure(),
-      this.fetchResolutions()
+      LegalServices.fetchAddresses(this.getBusinessId),
+      LegalServices.fetchNameTranslations(this.getBusinessId),
+      LegalServices.fetchDirectors(this.getBusinessId),
+      LegalServices.fetchShareStructure(this.getBusinessId),
+      LegalServices.fetchResolutions(this.getBusinessId)
     ])
 
     if (items.length !== 7) throw new Error('Failed to fetch entity snapshot')
