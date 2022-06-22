@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store/'
-import TransactionalFolioNumber from '@/components/common/TransactionalFolioNumber.vue'
+import TransactionalFolioNumber from '@/components/Alteration/TransactionalFolioNumber.vue'
 
 Vue.use(Vuetify)
 

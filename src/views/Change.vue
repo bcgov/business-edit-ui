@@ -50,16 +50,9 @@
           :validate="getAppValidate"
         />
 
-        <TransactionalFolioNumber
-          v-if="showTransactionalFolioNumber"
-          class="mt-10"
-          sectionNumber="2."
-          :validate="getAppValidate"
-        />
-
         <CertifySection
           class="mt-10"
-          :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
+          sectionNumber="3."
           :validate="getAppValidate"
           :disableEdit="!isRoleStaff"
         />
@@ -67,13 +60,13 @@
         <template v-if="isRoleStaff">
           <CourtOrderPoa
             class="'mt-10"
-            :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
+            sectionNumber="4."
             :autoValidation="getAppValidate"
           />
 
           <StaffPayment
             class="mt-10"
-            :sectionNumber="showTransactionalFolioNumber ? '6.' : '5.'"
+            sectionNumber="5."
             :validate="getAppValidate"
             @haveChanges="onStaffPaymentChanges()"
           />
@@ -89,7 +82,7 @@ import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
 import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, YourCompany, StaffPayment,
-  CourtOrderPoa, TransactionalFolioNumber } from '@/components/common/'
+  CourtOrderPoa } from '@/components/common/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin, LegalApiMixin, PayApiMixin } from '@/mixins/'
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
@@ -108,7 +101,6 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
     DocumentsDelivery,
     PeopleAndRoles,
     StaffPayment,
-    TransactionalFolioNumber,
     YourCompany
   }
 })
@@ -126,7 +118,6 @@ export default class Change extends Mixins(
   @Getter getUserLastName!: string
   @Getter showFeeSummary!: boolean
   @Getter isRoleStaff!: boolean
-  @Getter isPremiumAccount!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -141,11 +132,6 @@ export default class Change extends Mixins(
   /** Whether App is ready. */
   @Prop({ default: false })
   readonly appReady: boolean
-
-  /** Whether the Transactional Folio Number section is shown. */
-  get showTransactionalFolioNumber (): boolean {
-    return (this.isPremiumAccount && !this.isRoleStaff)
-  }
 
   /** The id of the change filing being edited. */
   get changeId (): number {

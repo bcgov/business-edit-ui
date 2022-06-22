@@ -268,6 +268,15 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }
     }
 
+    // If a Transactional Folio Number was entered then override the folio number
+    // in the filing and save a flag to correctly load a draft if needed.
+    const fn = this.getFolioNumber
+    const tfn = this.getTransactionalFolioNumber
+    if (tfn !== fn) {
+      filing.header.folioNumber = tfn
+      filing.header.isTransactionalFolioNumber = true
+    }
+
     // Apply Court Order ONLY when it is required and applied
     if (this.getHasPlanOfArrangement || this.getFileNumber) {
       filing.alteration.courtOrder = {
@@ -294,9 +303,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // Include Staff Payment into the Alteration filing
     this.buildStaffPayment(filing)
-
-    // Sets Folio number if a transactional folio number was entered
-    this.buildFolioNumber(filing)
 
     return filing
   }
@@ -407,9 +413,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
       filing.changeOfRegistration.parties = parties
     }
-
-    // Sets Folio number if a transactional folio number was entered
-    this.buildFolioNumber(filing)
 
     return filing
   }
@@ -900,18 +903,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         }
         return nameTranslation
       })
-  }
-
-  /** If a Transactional Folio number was entered then override the Folio number
-   * @param filing The alteration, correction, or  filing.
-   */
-  private buildFolioNumber (filing: AlterationFilingIF | ChgRegistrationFilingIF): void {
-    const fn = this.getFolioNumber
-    const tfn = this.getTransactionalFolioNumber
-    if (tfn !== fn) {
-      filing.header.folioNumber = tfn
-      filing.header.isTransactionalFolioNumber = true
-    }
   }
 
   /**
