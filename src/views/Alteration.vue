@@ -128,7 +128,8 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
-import { CertifySection, CurrentDirectors, DocumentsDelivery, ShareStructures, StaffPayment, TransactionalFolioNumber, YourCompany }
+import { CertifySection, CurrentDirectors, DocumentsDelivery,
+  ShareStructures, StaffPayment, TransactionalFolioNumber, YourCompany }
   from '@/components/common/'
 import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
 import { AuthServices, LegalServices } from '@/services/'

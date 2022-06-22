@@ -912,7 +912,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       filing.header.folioNumber = tfn
       filing.header.isTransactionalFolioNumber = true
     }
-  }  
+  }
 
   /**
    * Build Staff Payment data into the filing.

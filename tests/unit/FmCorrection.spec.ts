@@ -8,6 +8,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { axios } from '@/utils/'
 import FmCorrection from '@/views/Correction/FmCorrection.vue'
 import mockRouter from './MockRouter'
+import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common'
 
 Vue.use(Vuetify)
 
@@ -142,17 +143,34 @@ describe('Firm Correction component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'correction' })
-    wrapper = shallowMount(FmCorrection, { localVue,
-      store,
-      router,
-      vuetify,
-      propsData: {
-        correctionFiling: {
-          business: {},
-          correction: { correctedFilingId: 123 },
-          header: {}
+    wrapper = shallowMount(
+      FmCorrection,
+      {
+        localVue,
+        store,
+        router,
+        vuetify,
+        propsData: {
+          correctionFiling: {
+            business: {},
+            correction: { correctedFilingId: 123 },
+            header: {}
+          }
+        },
+        data () {
+          return { clientError: false }
+        },
+        computed: {
+          isClientErrorCorrection: {
+            get (): boolean {
+              return this.clientError
+            },
+            set (val: boolean) {
+              this.clientError = val
+            }
+          }
         }
-      } })
+      })
 
     // wait for all queries to complete
     await flushPromises()
@@ -164,8 +182,27 @@ describe('Firm Correction component', () => {
     wrapper.destroy()
   })
 
-  it('renders Firm Correction view', () => {
+  it('renders Firm Correction view and default components', () => {
     expect(wrapper.findComponent(FmCorrection).exists()).toBe(true)
+
+    // Default components
+    expect(wrapper.findComponent(YourCompany).exists()).toBe(true)
+    expect(wrapper.findComponent(PeopleAndRoles).exists()).toBe(true)
+    expect(wrapper.findComponent(Detail).exists()).toBe(true)
+    expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
+
+    // Components that are only visable for client Error Corrections
+    expect(wrapper.findComponent(CompletingParty).exists()).toBe(false)
+    expect(wrapper.findComponent(CertifySection).exists()).toBe(false)
+  })
+
+  it('renders Firm Correction view and client error components', async () => {
+    wrapper.vm.clientError = true
+    await Vue.nextTick()
+
+    expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
+    expect(wrapper.findComponent(CompletingParty).exists()).toBe(true)
+    wrapper.vm.clientError = false
   })
 
   // FUTURE
