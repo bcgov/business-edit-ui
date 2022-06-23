@@ -132,12 +132,6 @@ describe('Firm Correction component', () => {
         data: {}
       }))
 
-    // GET parties
-    get.withArgs('businesses/FM1234567/parties')
-      .returns(Promise.resolve({
-        data: { parties: [] }
-      }))
-
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
@@ -157,16 +151,16 @@ describe('Firm Correction component', () => {
             header: {}
           }
         },
-        data () {
-          return { clientError: false }
-        },
+        data: () => ({
+          clientError: false
+        }),
         computed: {
           isClientErrorCorrection: {
             get (): boolean {
-              return this.clientError
+              return this.$data.clientError
             },
             set (val: boolean) {
-              this.clientError = val
+              this.$data.clientError = val
             }
           }
         }
@@ -198,6 +192,7 @@ describe('Firm Correction component', () => {
 
   it('renders Firm Correction view and client error components', async () => {
     wrapper.vm.clientError = true
+    // a wait needed as change to computed value triggers a re-rendering
     await Vue.nextTick()
 
     expect(wrapper.findComponent(CertifySection).exists()).toBe(true)

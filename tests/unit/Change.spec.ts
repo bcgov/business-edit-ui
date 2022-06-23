@@ -111,91 +111,24 @@ describe('Change component', () => {
         }
       }))
 
-    // GET business name translations
-    get.withArgs('businesses/FM1234567/aliases')
-      .returns(Promise.resolve({
-        data: {
-          aliases: [{
-            name: 'Mock Business French Ltd.',
-            id: '12'
-          }]
-        }
-      }))
-
     // GET business addresses
     get.withArgs('businesses/FM1234567/addresses')
       .returns(Promise.resolve({
         data: {
-          registeredOffice: {
-            deliveryAddress: {
-              streetAddress: 'reg delivery_address - address line one',
-              addressCity: 'delivery_address city',
-              addressCountry: 'delivery_address country',
-              postalCode: 'H0H0H0',
-              addressRegion: 'BC'
-            },
-            mailingAddress: {
-              streetAddress: 'reg mailing_address - address line two',
-              addressCity: 'mailing_address city',
-              addressCountry: 'mailing_address country',
-              postalCode: 'H0H0H0',
-              addressRegion: 'BC'
-            }
+          deliveryAddress: {
+            streetAddress: 'reg delivery_address - address line one',
+            addressCity: 'delivery_address city',
+            addressCountry: 'delivery_address country',
+            postalCode: 'H0H0H0',
+            addressRegion: 'BC'
           },
-          recordsOffice: {
-            deliveryAddress: {
-              streetAddress: 'rec delivery_address - address line one',
-              addressCity: 'delivery_address city',
-              addressCountry: 'delivery_address country',
-              postalCode: 'H0H0H0',
-              addressRegion: 'BC'
-            },
-            mailingAddress: {
-              streetAddress: 'rec mailing_address - address line two',
-              addressCity: 'mailing_address city',
-              addressCountry: 'mailing_address country',
-              postalCode: 'H0H0H0',
-              addressRegion: 'BC'
-            }
+          mailingAddress: {
+            streetAddress: 'reg mailing_address - address line two',
+            addressCity: 'mailing_address city',
+            addressCountry: 'mailing_address country',
+            postalCode: 'H0H0H0',
+            addressRegion: 'BC'
           }
-        }
-      }))
-
-    // GET business share classes
-    get.withArgs('businesses/FM1234567/share-classes')
-      .returns(Promise.resolve({
-        data: {
-          shareClasses: [
-            {
-              currency: 'CAD',
-              hasMaximumShares: true,
-              hasParValue: true,
-              hasRightsOrRestrictions: true,
-              id: '605',
-              maxNumberOfShares: 300,
-              name: 'Class A Shares',
-              parValue: 1,
-              priority: 1,
-              series: [
-                {
-                  hasMaximumShares: true,
-                  hasRightsOrRestrictions: false,
-                  id: '100',
-                  maxNumberOfShares: 150,
-                  name: 'Series A Shares',
-                  priority: 1
-                },
-                {
-                  hasMaximumShares: true,
-                  hasRightsOrRestrictions: false,
-                  id: 101,
-                  maxNumberOfShares: 10,
-                  name: 'Series 2 Shares',
-                  priority: 2
-                }
-              ]
-            }
-          ]
         }
       }))
 
@@ -212,21 +145,6 @@ describe('Change component', () => {
         }
       }))
 
-    // GET resolutions
-    get.withArgs('businesses/FM1234567/resolutions')
-      .returns(Promise.resolve({
-        data: {
-          resolutions: [
-            {
-              date: '2021-05-05'
-            },
-            {
-              date: '2021-07-05'
-            }
-          ]
-        }
-      }))
-
     // FUTURE: mock GET change filing
 
     // create a Local Vue and install router on it
@@ -238,16 +156,16 @@ describe('Change component', () => {
       store,
       router,
       vuetify,
-      data () {
-        return { showFee: false }
-      },
+      data: () => ({
+        showFee: false
+      }),
       computed: {
         showFeeSummary: {
           get (): boolean {
-            return this.showFee
+            return this.$data.showFee
           },
           set (val: boolean) {
-            this.showFee = val
+            this.$data.showFee = val
           }
         }
       }
@@ -302,6 +220,7 @@ describe('Change component', () => {
     store.state.stateModel.accountInformation.accountType = 'PREMIUM'
     store.state.stateModel.summaryMode = true
     wrapper.vm.showFee = true
+    // a wait needed as change to computed value triggers a re-rendering
     await Vue.nextTick()
 
     expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
@@ -316,6 +235,7 @@ describe('Change component', () => {
     store.state.stateModel.tombstone.keycloakRoles = ['staff']
     store.state.stateModel.summaryMode = true
     wrapper.vm.showFee = true
+    // a wait needed as change to computed value triggers a re-rendering
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
@@ -339,26 +259,16 @@ describe('Change component', () => {
     expect(state.businessInformation.legalName).toBe('Mock Business Ltd.')
     expect(state.businessInformation.identifier).toBe('FM1234567')
 
-    // Validate Name Translations
-    expect(state.nameTranslations[0].name).toBe('Mock Business French Ltd.')
-
     // Validate Office Addresses
-    expect(state.officeAddresses.registeredOffice.deliveryAddress.streetAddress)
+    expect(state.officeAddresses.deliveryAddress.streetAddress)
       .toBe('reg delivery_address - address line one')
-    expect(state.officeAddresses.recordsOffice.mailingAddress.streetAddress)
+    expect(state.officeAddresses.mailingAddress.streetAddress)
       .toBe('rec mailing_address - address line two')
 
     // Validate People And Roles
     expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('CAMERON')
     expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.lastName).toBe('BOWLER')
     expect(store.state.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Director')
-
-    // Validate Share Structure
-    expect(store.state.stateModel.shareStructureStep.shareClasses[0].name).toBe('Class A Shares')
-    expect(store.state.stateModel.shareStructureStep.shareClasses[0].series[0].name)
-      .toBe('Series A Shares')
-    expect(store.state.stateModel.shareStructureStep.shareClasses[0].series[1].name)
-      .toBe('Series 2 Shares')
 
     // Validate Contact Info
     expect(store.state.stateModel.businessContact.email).toBe('mock@example.com')
