@@ -160,10 +160,10 @@ export default class Conversion extends Mixins(
         }
 
         // parse firm conversion filing and original business snapshot into store
-        await this.parseConversionFiling(changeFiling, firmSnapshot)
+        this.parseFirmConversionFiling(changeFiling, firmSnapshot)
       } else {
         // parse business data into store
-        await this.parseEntitySnapshot(firmSnapshot)
+        this.parseEntitySnapshot(firmSnapshot)
       }
 
       if (this.firmConversionResource) {

@@ -18,7 +18,7 @@
         </span>
 
         <!-- Firm info tooltip -->
-        <v-tooltip v-if="isChangeRegFiling || isConversionFiling"
+        <v-tooltip v-if="isChangeRegFiling || isFirmConversionFiling"
                     top
                     content-class="top-tooltip"
                     transition="fade-transition"
@@ -244,7 +244,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
 
   @Action setEntityType!: ActionBindingIF
 
-  // declaration for template
+  // Declaration for template
   readonly CorpTypeCd = CorpTypeCd
 
   private selectedEntityType: CorpTypeCd = null

@@ -129,7 +129,7 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
 
       // fetch and store business snapshot
       const businessSnapshot = await this.fetchBusinessSnapshot()
-      await this.parseEntitySnapshot(businessSnapshot)
+      this.parseEntitySnapshot(businessSnapshot)
 
       // set the resources
       this.setResource(this.correctionResource)

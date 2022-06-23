@@ -130,7 +130,7 @@ export default class ListNameTranslation extends Mixins(CommonMixin) {
   @Prop({ default: false })
   readonly isAddingNameTranslation: boolean
 
-  // declaration for template
+  // Declaration for template
   readonly ActionTypes = ActionTypes
 
   /**

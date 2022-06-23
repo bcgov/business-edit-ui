@@ -12,7 +12,7 @@ export default class CommonMixin extends Vue {
   @Getter getEntityType!: CorpTypeCd
   @Getter isAlterationFiling!: boolean
   @Getter isChangeRegFiling!: boolean
-  @Getter isConversionFiling!: boolean
+  @Getter isFirmConversionFiling!: boolean
   @Getter isCorrectionFiling!: boolean
 
   /** Is True if Jest is running the code. */
@@ -86,37 +86,22 @@ export default class CommonMixin extends Vue {
 
   /** The appropriate edit label for corrections, alterations, change or conversion filings. */
   get editLabel (): string {
-    switch (true) {
-      case this.isCorrectionFiling: return 'Correct'
-
-      case this.isAlterationFiling:
-      case this.isChangeRegFiling:
-      case this.isConversionFiling: return 'Change'
-    }
+    if (this.isCorrectionFiling) return 'Correct'
+    if (this.isAlterationFiling || this.isChangeRegFiling || this.isFirmConversionFiling) return 'Change'
     return 'Edit' // should never happen
   }
 
   /** The appropriate edited label for corrections, alterations, change or conversion filings. */
   get editedLabel (): string {
-    switch (true) {
-      case this.isCorrectionFiling: return 'Corrected'
-
-      case this.isAlterationFiling:
-      case this.isChangeRegFiling:
-      case this.isConversionFiling: return 'Changed'
-    }
+    if (this.isCorrectionFiling) return 'Corrected'
+    if (this.isAlterationFiling || this.isChangeRegFiling || this.isFirmConversionFiling) return 'Changed'
     return 'Edited' // should never happen
   }
 
   /** The appropriate edits saved label for corrections, alterations, change or conversion filings. */
   get editSavedLabel (): string {
-    switch (true) {
-      case this.isCorrectionFiling: return 'Corrections Saved'
-
-      case this.isAlterationFiling:
-      case this.isChangeRegFiling:
-      case this.isConversionFiling: return 'Changes Saved'
-    }
+    if (this.isCorrectionFiling) return 'Corrections Saved'
+    if (this.isAlterationFiling || this.isChangeRegFiling || this.isFirmConversionFiling) return 'Changes Saved'
     return 'Edits Saved' // should never happen
   }
 

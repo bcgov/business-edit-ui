@@ -15,7 +15,7 @@
           <v-flex md1>
             <v-chip
               v-if="companyNameChanges ||
-                (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling || isConversionFiling))"
+                (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling || isFirmConversionFiling))"
               id="corrected-lbl"
               x-small label
               color="primary"
@@ -33,7 +33,7 @@
 
             <!-- Business Type Info -->
             <template v-if="!hasNewNr &&
-              (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling || isConversionFiling))"
+              (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling || isFirmConversionFiling))"
             >
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -98,7 +98,7 @@
                 <span>Undo</span>
               </v-btn>
               <v-btn
-                v-else-if="!isConversionFiling"
+                v-else-if="!isFirmConversionFiling"
                 text color="primary"
                 id="btn-correct-company-name"
                 @click="isEditingNames = true"
@@ -150,7 +150,7 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isChangeRegFiling || isConversionFiling)"
+      <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isChangeRegFiling || isFirmConversionFiling)"
         class="sub-section"
       >
         <v-col cols="3">
@@ -178,10 +178,10 @@
       </v-row>
     </div>
 
-    <v-divider v-if="isChangeRegFiling || isConversionFiling" class="mx-4 my-1" />
+    <v-divider v-if="isChangeRegFiling || isFirmConversionFiling" class="mx-4 my-1" />
 
     <!-- Business Type (alterations, changes and conversions only) -->
-    <div v-if="isAlterationFiling || isChangeRegFiling || isConversionFiling"
+    <div v-if="isAlterationFiling || isChangeRegFiling || isFirmConversionFiling"
       id="company-type-section"
       class="section-container"
       :class="{'invalid-section': invalidTypeSection}"
@@ -226,7 +226,7 @@
     <v-divider class="mx-4 my-1" />
 
     <!-- Business Start Date (changes, conversions and firm corrections only -->
-    <template v-if="isChangeRegFiling || isConversionFiling || isFirmCorrectionFiling">
+    <template v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling">
       <section class="section-container">
         <v-row no-gutters>
           <v-col cols="3">
@@ -262,7 +262,7 @@
     </template>
 
     <!-- Nature of Business (firm conversion and correction filings only) -->
-    <template v-if="isEntityTypeFirm && (isConversionFiling || isCorrectionFiling)">
+    <template v-if="isEntityTypeFirm && (isFirmConversionFiling || isCorrectionFiling)">
       <v-divider class="mx-4 my-1" />
 
       <ConversionNOB
@@ -469,7 +469,7 @@ export default class YourCompany extends Mixins(
         return (this.apiToPacificDateLong(this.getBusinessFoundingDate))
       }
     }
-    if (this.isAlterationFiling || this.isChangeRegFiling || this.isConversionFiling) {
+    if (this.isAlterationFiling || this.isChangeRegFiling || this.isFirmConversionFiling) {
       if (this.getBusinessFoundingDate) {
         return (this.apiToPacificDateLong(this.getBusinessFoundingDate))
       }
