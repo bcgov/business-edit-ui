@@ -567,7 +567,27 @@ describe('Org/Person component for a BEN Correction filing', () => {
   })
 })
 
-const ProprietorPersonData = {
+const NewPersonPartner = {
+  ...EmptyPerson,
+  roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
+}
+
+const NewOrgPartner = {
+  ...EmptyOrg,
+  roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
+}
+
+const NewPersonProprietor = {
+  ...EmptyPerson,
+  roles: [{ roleType: 'Proprietor', appointmentDate: '2020-03-30' }]
+}
+
+const NewOrgProprietor = {
+  ...EmptyOrg,
+  roles: [{ roleType: 'Proprietor', appointmentDate: '2020-03-30' }]
+}
+
+const ExistingProprietorPersonData = {
   officer: {
     id: '2',
     firstName: 'First',
@@ -584,7 +604,7 @@ const ProprietorPersonData = {
   mailingAddress: null
 }
 
-const ProprietorOrgData = {
+const ExistingProprietorOrgData = {
   officer: {
     id: '2',
     firstName: null,
@@ -601,7 +621,7 @@ const ProprietorOrgData = {
   mailingAddress: null
 }
 
-const PartnerPersonData = {
+const ExistingPartnerPersonData = {
   officer: {
     id: '2',
     firstName: 'First',
@@ -619,7 +639,7 @@ const PartnerPersonData = {
   mailingAddress: null
 }
 
-const PartnerOrgData = {
+const ExistingPartnerOrgData = {
   officer: {
     id: '2',
     firstName: null,
@@ -637,409 +657,439 @@ const PartnerOrgData = {
   mailingAddress: null
 }
 
-describe('Org/Person component for a firm Change or Registration filing', () => {
+describe('Org/Person component for SP/GP filings', () => {
   beforeAll(() => {
-    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.stateModel.tombstone.currentDate = '2020-03-30'
   })
 
-  it('Adds new GP partner - person)', () => {
-    store.state.stateModel.tombstone.entityType = 'GP'
-    store.state.resourceModel = ChangeSolePropResource
-
-    const currentOrgPerson = {
-      ...EmptyPerson,
-      roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
+  const tests = [
+    {
+      filingType: 'changeOfRegistration',
+      name: 'adds new GP partner-person',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: NewPersonPartner,
+      activeIndex: NaN,
+      addPersonHeader: 'Add Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: false,
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'changeOfRegistration',
+      name: 'adds new GP partner-organization',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: NewOrgPartner,
+      activeIndex: NaN,
+      addPersonHeader: false,
+      addOrgHeader: 'Add Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: 'Business or Corporation Unregistered in B.C.',
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'changeOfRegistration',
+      name: 'changes existing SP proprietor-person',
+      entityType: 'SP',
+      resourceModel: ChangeSolePropResource,
+      currentOrgPerson: ExistingProprietorPersonData,
+      activeIndex: 0,
+      addPersonHeader: 'Edit Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: false,
+      showBusinessNumber: 'Business Number',
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: false
+    },
+    {
+      filingType: 'changeOfRegistration',
+      name: 'changes existing SP proprietor-organization',
+      entityType: 'SP',
+      resourceModel: ChangeSolePropResource,
+      currentOrgPerson: ExistingProprietorOrgData,
+      activeIndex: 0,
+      addPersonHeader: false,
+      addOrgHeader: 'Edit Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: false,
+      showBusinessNumber: 'Business Number:',
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: 'Business or Corporation Name',
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: false
+    },
+    {
+      filingType: 'changeOfRegistration',
+      name: 'changes existing GP partner-person',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: ExistingPartnerPersonData,
+      activeIndex: 0,
+      addPersonHeader: 'Edit Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: false,
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'changeOfRegistration',
+      name: 'changes existing GP partner - organization',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: ExistingPartnerOrgData,
+      activeIndex: 0,
+      addPersonHeader: false,
+      addOrgHeader: 'Edit Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: false,
+      showBusinessNumber: 'Business Number:',
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: 'Business or Corporation Name',
+      incorporationNumber: 'Incorporation/Registration Number:',
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'adds new SP proprietor-person',
+      entityType: 'SP',
+      resourceModel: ChangeSolePropResource,
+      currentOrgPerson: NewPersonProprietor,
+      activeIndex: NaN,
+      addPersonHeader: 'Add Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'adds new SP proprietor-organization',
+      entityType: 'SP',
+      resourceModel: ChangeSolePropResource,
+      currentOrgPerson: NewOrgProprietor,
+      activeIndex: NaN,
+      addPersonHeader: false,
+      addOrgHeader: 'Add Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: 'Business or Corporation Unregistered in B.C.',
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'adds new GP partner-person',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: NewPersonProprietor,
+      activeIndex: NaN,
+      addPersonHeader: 'Add Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'adds new GP partner-organization',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: NewOrgProprietor,
+      activeIndex: NaN,
+      addPersonHeader: false,
+      addOrgHeader: 'Add Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: 'Business or Corporation Unregistered in B.C.',
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'changes existing SP proprietor - person',
+      entityType: 'SP',
+      resourceModel: ChangeSolePropResource,
+      currentOrgPerson: ExistingProprietorPersonData,
+      activeIndex: 0,
+      addPersonHeader: 'Edit Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'changes existing SP proprietor-organization',
+      entityType: 'SP',
+      resourceModel: ChangeSolePropResource,
+      currentOrgPerson: ExistingProprietorOrgData,
+      activeIndex: 0,
+      addPersonHeader: false,
+      addOrgHeader: 'Edit Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: 'Business or Corporation Name',
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'changes existing GP partner-person',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: ExistingPartnerPersonData,
+      activeIndex: 0,
+      addPersonHeader: 'Edit Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: false,
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'changes existing GP partner-organization',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: ExistingPartnerOrgData,
+      activeIndex: 0,
+      addPersonHeader: false,
+      addOrgHeader: 'Edit Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: 'Business or Corporation Name',
+      incorporationNumber: 'Incorporation/Registration Number:',
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
     }
+  ]
 
-    const wrapper = createComponent(currentOrgPerson, NaN, null)
+  tests.forEach((test, index) => {
+    it(`${index + 1}. ${test.filingType} - ${test.name}`, () => {
+      store.state.stateModel.tombstone.filingType = test.filingType
+      store.state.stateModel.tombstone.entityType = test.entityType
+      store.state.resourceModel = test.resourceModel
 
-    expect(wrapper.find('.add-person-header').text()).toBe('Add Person')
-    expect(wrapper.find('.add-org-header').exists()).toBe(false)
-    expect(wrapper.find('.person-name .sub-header').text()).toBe('Person\'s Name')
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
-    expect(wrapper.find('.show-business-number').exists()).toBe(false)
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
-    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address label').text()).toBe('Delivery Address same as Mailing Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
+      const wrapper = createComponent(test.currentOrgPerson, test.activeIndex, null)
 
-    wrapper.destroy()
-  })
+      if (test.addPersonHeader) {
+        expect(wrapper.find('.add-person-header').text()).toBe(test.addPersonHeader)
+      } else {
+        expect(wrapper.find('.add-person-header').exists()).toBe(false)
+      }
 
-  it('Adds new GP partner - organization', () => {
-    store.state.stateModel.tombstone.entityType = 'GP'
-    store.state.resourceModel = ChangePartnershipResource
+      if (test.addOrgHeader) {
+        expect(wrapper.find('.add-org-header').text()).toBe(test.addOrgHeader)
+      } else {
+        expect(wrapper.find('.add-org-header').exists()).toBe(false)
+      }
 
-    const currentOrgPerson = {
-      ...EmptyOrg,
-      roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
-    }
+      if (test.personName) {
+        expect(wrapper.find('.person-name .sub-header').text()).toBe(test.personName)
+      } else {
+        expect(wrapper.find('.person-name').exists()).toBe(false)
+      }
 
-    const wrapper = createComponent(currentOrgPerson, NaN, null)
+      if (!test.confirmNameChange) {
+        expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+      }
 
-    expect(wrapper.find('.add-person-header').exists()).toBe(false)
-    expect(wrapper.find('.add-org-header').text()).toBe('Add Business or Corporation')
-    expect(wrapper.find('.person-name label').exists()).toBe(false)
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
-    expect(wrapper.find('.show-business-number').exists()).toBe(false)
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry .sub-header').text()).toBe('Business or Corporation Unregistered in B.C.')
-    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
-    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
+      if (test.editBusinessNumber) {
+        expect(wrapper.find('.edit-business-number .sub-header').text()).toBe(test.editBusinessNumber)
+      } else {
+        expect(wrapper.find('.edit-business-number').exists()).toBe(false)
+      }
 
-    wrapper.destroy()
-  })
+      if (!test.showBusinessNumber) {
+        expect(wrapper.find('.show-business-number').exists()).toBe(false)
+      }
 
-  it('Changes existing SP proprietor - person)', () => {
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel = ChangeSolePropResource
+      if (!test.orgLookUp) {
+        expect(wrapper.find('.org-look-up').exists()).toBe(false)
+      }
 
-    const wrapper = createComponent(ProprietorPersonData, 0, null)
+      if (test.orgManualEntry) {
+        expect(wrapper.find('.org-manual-entry .sub-header').text()).toBe(test.orgManualEntry)
+      } else {
+        expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+      }
 
-    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
-    expect(wrapper.find('.add-org-header').exists()).toBe(false)
-    expect(wrapper.find('.person-name .sub-header').text()).toBe('Person\'s Name')
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
-    expect(wrapper.find('.show-business-number .sub-header').text()).toBe('Business Number:')
-    expect(wrapper.find('.show-business-number .sub-header-text').text()).toBe('123456789')
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
-    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('proprietor@example.com')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(false)
+      if (!test.otherEditOrg) {
+        expect(wrapper.find('.other-edit-org').exists()).toBe(false)
+      }
 
-    wrapper.destroy()
-  })
+      if (!test.incorporationNumber) {
+        expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+      }
 
-  it('Changes existing SP proprietor - organization)', () => {
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel = ChangeSolePropResource
+      if (test.emailAddress) {
+        expect(wrapper.find('.email-address .sub-header').text()).toBe(test.emailAddress)
+      } else {
+        expect(wrapper.find('.email-address').exists()).toBe(false)
+      }
 
-    const wrapper = createComponent(ProprietorOrgData, 0, null)
+      if (!test.roles) {
+        expect(wrapper.find('.roles').exists()).toBe(false)
+      }
 
-    expect(wrapper.find('.add-person-header').exists()).toBe(false)
-    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
-    expect(wrapper.find('.person-name label').exists()).toBe(false)
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
-    expect(wrapper.find('.show-business-number .sub-header').text()).toBe('Business Number:')
-    expect(wrapper.find('.show-business-number .sub-header-text').text()).toBe('123456789')
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
-    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('proprietor@example.com')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(false)
+      if (test.mailingAddress) {
+        expect(wrapper.find('.mailing-address .sub-header').text()).toBe(test.mailingAddress)
+      } else {
+        expect(wrapper.find('.mailing-address').exists()).toBe(false)
+      }
 
-    wrapper.destroy()
-  })
+      if (test.deliveryAddressLabel) {
+        expect(wrapper.find('.delivery-address label').text()).toBe(test.deliveryAddressLabel)
+      } else {
+        expect(wrapper.find('.delivery-address').exists()).toBe(false)
+      }
 
-  it('Changes existing GP partner - person', () => {
-    store.state.stateModel.tombstone.entityType = 'GP'
-    store.state.resourceModel = ChangeSolePropResource
+      if (test.deliveryAddressSubHeader) {
+        expect(wrapper.find('.delivery-address .sub-header').text()).toBe(test.deliveryAddressSubHeader)
+      } else {
+        expect(wrapper.find('.delivery-address .sub-header').exists()).toBe(false)
+      }
 
-    const wrapper = createComponent(PartnerPersonData, 0, null)
+      expect(wrapper.find(removeButtonSelector).exists()).toBe(test.removeButton)
 
-    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
-    expect(wrapper.find('.add-org-header').exists()).toBe(false)
-    expect(wrapper.find('.person-name label').text()).toBe('Person\'s Name')
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
-    expect(wrapper.find('.show-business-number').exists()).toBe(false)
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
-    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('partner@example.com')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('Changes existing GP partner - organization', () => {
-    store.state.stateModel.tombstone.entityType = 'GP'
-    store.state.resourceModel = ChangePartnershipResource
-
-    const wrapper = createComponent(PartnerOrgData, 0, null)
-
-    expect(wrapper.find('.add-person-header').exists()).toBe(false)
-    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
-    expect(wrapper.find('.person-name label').exists()).toBe(false)
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
-    expect(wrapper.find('.show-business-number .sub-header').text()).toBe('Business Number:')
-    expect(wrapper.find('.show-business-number .sub-header-text').text()).toBe('123456789')
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
-    expect(wrapper.find('.incorporation-number .sub-header').text()).toBe('Incorporation/Registration Number:')
-    expect(wrapper.find('.incorporation-number .sub-header-text').text()).toBe('FM1234567')
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('partner@example.com')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-})
-
-describe('Org/Person component for a firm Conversion filing', () => {
-  beforeAll(() => {
-    store.state.stateModel.tombstone.filingType = 'conversion'
-    store.state.stateModel.tombstone.currentDate = '2020-03-30'
-  })
-
-  it('Adds new SP proprietor - person)', () => {
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel = ChangeSolePropResource
-
-    const currentOrgPerson = {
-      ...EmptyPerson,
-      roles: [{ roleType: 'Proprietor', appointmentDate: '2020-03-30' }]
-    }
-
-    const wrapper = createComponent(currentOrgPerson, NaN, null)
-
-    expect(wrapper.find('.add-person-header').text()).toBe('Add Person')
-    expect(wrapper.find('.add-org-header').exists()).toBe(false)
-    expect(wrapper.find('.person-name .sub-header').text()).toBe('Person\'s Name')
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
-    expect(wrapper.find('.show-business-number').exists()).toBe(false)
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
-    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address label').text()).toBe('Delivery Address same as Mailing Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('Adds new SP proprietor - organization', () => {
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel = ChangePartnershipResource
-
-    const currentOrgPerson = {
-      ...EmptyOrg,
-      roles: [{ roleType: 'Proprietor', appointmentDate: '2020-03-30' }]
-    }
-
-    const wrapper = createComponent(currentOrgPerson, NaN, null)
-
-    expect(wrapper.find('.add-person-header').exists()).toBe(false)
-    expect(wrapper.find('.add-org-header').text()).toBe('Add Business or Corporation')
-    expect(wrapper.find('.person-name label').exists()).toBe(false)
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
-    expect(wrapper.find('.show-business-number').exists()).toBe(false)
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry .sub-header').text()).toBe('Business or Corporation Unregistered in B.C.')
-    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
-    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('Adds new GP partner - person)', () => {
-    store.state.stateModel.tombstone.entityType = 'GP'
-    store.state.resourceModel = ChangeSolePropResource
-
-    const currentOrgPerson = {
-      ...EmptyPerson,
-      roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
-    }
-
-    const wrapper = createComponent(currentOrgPerson, NaN, null)
-
-    expect(wrapper.find('.add-person-header').text()).toBe('Add Person')
-    expect(wrapper.find('.add-org-header').exists()).toBe(false)
-    expect(wrapper.find('.person-name .sub-header').text()).toBe('Person\'s Name')
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
-    expect(wrapper.find('.show-business-number').exists()).toBe(false)
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
-    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address label').text()).toBe('Delivery Address same as Mailing Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('Adds new GP partner - organization', () => {
-    store.state.stateModel.tombstone.entityType = 'GP'
-    store.state.resourceModel = ChangePartnershipResource
-
-    const currentOrgPerson = {
-      ...EmptyOrg,
-      roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
-    }
-
-    const wrapper = createComponent(currentOrgPerson, NaN, null)
-
-    expect(wrapper.find('.add-person-header').exists()).toBe(false)
-    expect(wrapper.find('.add-org-header').text()).toBe('Add Business or Corporation')
-    expect(wrapper.find('.person-name label').exists()).toBe(false)
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
-    expect(wrapper.find('.show-business-number').exists()).toBe(false)
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry .sub-header').text()).toBe('Business or Corporation Unregistered in B.C.')
-    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
-    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('Changes existing SP proprietor - person)', () => {
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel = ChangeSolePropResource
-
-    const wrapper = createComponent(ProprietorPersonData, 0, null)
-
-    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
-    expect(wrapper.find('.add-org-header').exists()).toBe(false)
-    expect(wrapper.find('.person-name .sub-header').text()).toBe('Person\'s Name')
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
-    expect(wrapper.find('.show-business-number').exists()).toBe(false)
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
-    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('proprietor@example.com')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('Changes existing SP proprietor - organization)', () => {
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel = ChangeSolePropResource
-
-    const wrapper = createComponent(ProprietorOrgData, 0, null)
-
-    expect(wrapper.find('.add-person-header').exists()).toBe(false)
-    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
-    expect(wrapper.find('.person-name label').exists()).toBe(false)
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
-    expect(wrapper.find('.show-business-number').exists()).toBe(false)
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
-    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('proprietor@example.com')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('Changes existing GP partner - person', () => {
-    store.state.stateModel.tombstone.entityType = 'GP'
-    store.state.resourceModel = ChangeSolePropResource
-
-    const wrapper = createComponent(PartnerPersonData, 0, null)
-
-    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
-    expect(wrapper.find('.add-org-header').exists()).toBe(false)
-    expect(wrapper.find('.person-name label').text()).toBe('Person\'s Name')
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
-    expect(wrapper.find('.show-business-number').exists()).toBe(false)
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
-    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('partner@example.com')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('Changes existing GP partner - organization', () => {
-    store.state.stateModel.tombstone.entityType = 'GP'
-    store.state.resourceModel = ChangePartnershipResource
-
-    const wrapper = createComponent(PartnerOrgData, 0, null)
-
-    expect(wrapper.find('.add-person-header').exists()).toBe(false)
-    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
-    expect(wrapper.find('.person-name label').exists()).toBe(false)
-    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
-    expect(wrapper.find('.show-business-number').exists()).toBe(false)
-    expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
-    expect(wrapper.find('.incorporation-number .sub-header').text()).toBe('Incorporation/Registration Number:')
-    expect(wrapper.find('.incorporation-number .sub-header-text').text()).toBe('FM1234567')
-    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
-    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('partner@example.com')
-    expect(wrapper.find('.roles').exists()).toBe(false)
-    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
-    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
-    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
-
-    wrapper.destroy()
+      wrapper.destroy()
+    })
   })
 })
