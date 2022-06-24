@@ -652,17 +652,9 @@ describe('Org/Person component for a firm Change or Registration filing', () => 
       roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
     }
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson,
-        activeIndex: -1,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(currentOrgPerson, NaN, null)
 
-    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
+    expect(wrapper.find('.add-person-header').text()).toBe('Add Person')
     expect(wrapper.find('.add-org-header').exists()).toBe(false)
     expect(wrapper.find('.person-name .sub-header').text()).toBe('Person\'s Name')
     expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
@@ -690,26 +682,17 @@ describe('Org/Person component for a firm Change or Registration filing', () => 
       roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
     }
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson,
-        activeIndex: -1,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(currentOrgPerson, NaN, null)
 
     expect(wrapper.find('.add-person-header').exists()).toBe(false)
-    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
+    expect(wrapper.find('.add-org-header').text()).toBe('Add Business or Corporation')
     expect(wrapper.find('.person-name label').exists()).toBe(false)
     expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
-    expect(wrapper.find('.show-business-number .sub-header').text()).toBe('Business Number:')
-    expect(wrapper.find('.show-business-number .sub-header-text').text()).toBe('Not entered')
+    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
+    expect(wrapper.find('.show-business-number').exists()).toBe(false)
     expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
+    expect(wrapper.find('.org-manual-entry .sub-header').text()).toBe('Business or Corporation Unregistered in B.C.')
+    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
     expect(wrapper.find('.incorporation-number').exists()).toBe(false)
     expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
     expect(wrapper.find('.roles').exists()).toBe(false)
@@ -724,15 +707,7 @@ describe('Org/Person component for a firm Change or Registration filing', () => 
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.resourceModel = ChangeSolePropResource
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson: ProprietorPersonData,
-        activeIndex: 0,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(ProprietorPersonData, 0, null)
 
     expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
     expect(wrapper.find('.add-org-header').exists()).toBe(false)
@@ -759,15 +734,7 @@ describe('Org/Person component for a firm Change or Registration filing', () => 
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.resourceModel = ChangeSolePropResource
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson: ProprietorOrgData,
-        activeIndex: 0,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(ProprietorOrgData, 0, null)
 
     expect(wrapper.find('.add-person-header').exists()).toBe(false)
     expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
@@ -794,15 +761,7 @@ describe('Org/Person component for a firm Change or Registration filing', () => 
     store.state.stateModel.tombstone.entityType = 'GP'
     store.state.resourceModel = ChangeSolePropResource
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson: PartnerPersonData,
-        activeIndex: 0,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(PartnerPersonData, 0, null)
 
     expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
     expect(wrapper.find('.add-org-header').exists()).toBe(false)
@@ -828,15 +787,7 @@ describe('Org/Person component for a firm Change or Registration filing', () => 
     store.state.stateModel.tombstone.entityType = 'GP'
     store.state.resourceModel = ChangePartnershipResource
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson: PartnerOrgData,
-        activeIndex: 0,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(PartnerOrgData, 0, null)
 
     expect(wrapper.find('.add-person-header').exists()).toBe(false)
     expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
@@ -876,17 +827,9 @@ describe('Org/Person component for a firm Conversion filing', () => {
       roles: [{ roleType: 'Proprietor', appointmentDate: '2020-03-30' }]
     }
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson,
-        activeIndex: -1,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(currentOrgPerson, NaN, null)
 
-    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
+    expect(wrapper.find('.add-person-header').text()).toBe('Add Person')
     expect(wrapper.find('.add-org-header').exists()).toBe(false)
     expect(wrapper.find('.person-name .sub-header').text()).toBe('Person\'s Name')
     expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
@@ -914,25 +857,17 @@ describe('Org/Person component for a firm Conversion filing', () => {
       roles: [{ roleType: 'Proprietor', appointmentDate: '2020-03-30' }]
     }
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson,
-        activeIndex: -1,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(currentOrgPerson, NaN, null)
 
     expect(wrapper.find('.add-person-header').exists()).toBe(false)
-    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
+    expect(wrapper.find('.add-org-header').text()).toBe('Add Business or Corporation')
     expect(wrapper.find('.person-name label').exists()).toBe(false)
     expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
     expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
     expect(wrapper.find('.show-business-number').exists()).toBe(false)
     expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
+    expect(wrapper.find('.org-manual-entry .sub-header').text()).toBe('Business or Corporation Unregistered in B.C.')
+    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
     expect(wrapper.find('.incorporation-number').exists()).toBe(false)
     expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
     expect(wrapper.find('.roles').exists()).toBe(false)
@@ -952,17 +887,9 @@ describe('Org/Person component for a firm Conversion filing', () => {
       roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
     }
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson,
-        activeIndex: -1,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(currentOrgPerson, NaN, null)
 
-    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
+    expect(wrapper.find('.add-person-header').text()).toBe('Add Person')
     expect(wrapper.find('.add-org-header').exists()).toBe(false)
     expect(wrapper.find('.person-name .sub-header').text()).toBe('Person\'s Name')
     expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
@@ -990,25 +917,17 @@ describe('Org/Person component for a firm Conversion filing', () => {
       roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
     }
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson,
-        activeIndex: -1,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(currentOrgPerson, NaN, null)
 
     expect(wrapper.find('.add-person-header').exists()).toBe(false)
-    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
+    expect(wrapper.find('.add-org-header').text()).toBe('Add Business or Corporation')
     expect(wrapper.find('.person-name label').exists()).toBe(false)
     expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
     expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
     expect(wrapper.find('.show-business-number').exists()).toBe(false)
     expect(wrapper.find('.org-look-up').exists()).toBe(false)
-    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
-    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
+    expect(wrapper.find('.org-manual-entry .sub-header').text()).toBe('Business or Corporation Unregistered in B.C.')
+    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
     expect(wrapper.find('.incorporation-number').exists()).toBe(false)
     expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
     expect(wrapper.find('.roles').exists()).toBe(false)
@@ -1023,15 +942,7 @@ describe('Org/Person component for a firm Conversion filing', () => {
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.resourceModel = ChangeSolePropResource
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson: ProprietorPersonData,
-        activeIndex: 0,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(ProprietorPersonData, 0, null)
 
     expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
     expect(wrapper.find('.add-org-header').exists()).toBe(false)
@@ -1057,15 +968,7 @@ describe('Org/Person component for a firm Conversion filing', () => {
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.resourceModel = ChangeSolePropResource
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson: ProprietorOrgData,
-        activeIndex: 0,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(ProprietorOrgData, 0, null)
 
     expect(wrapper.find('.add-person-header').exists()).toBe(false)
     expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
@@ -1091,15 +994,7 @@ describe('Org/Person component for a firm Conversion filing', () => {
     store.state.stateModel.tombstone.entityType = 'GP'
     store.state.resourceModel = ChangeSolePropResource
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson: PartnerPersonData,
-        activeIndex: 0,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(PartnerPersonData, 0, null)
 
     expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
     expect(wrapper.find('.add-org-header').exists()).toBe(false)
@@ -1125,15 +1020,7 @@ describe('Org/Person component for a firm Conversion filing', () => {
     store.state.stateModel.tombstone.entityType = 'GP'
     store.state.resourceModel = ChangePartnershipResource
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson: PartnerOrgData,
-        activeIndex: 0,
-        currentCompletingParty: null
-      }
-    })
+    const wrapper = createComponent(PartnerOrgData, 0, null)
 
     expect(wrapper.find('.add-person-header').exists()).toBe(false)
     expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
