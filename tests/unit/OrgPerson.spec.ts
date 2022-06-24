@@ -123,17 +123,17 @@ const validOrgData = {
   }
 }
 
-const emptyPerson = {
+const EmptyPerson = {
   officer: {
-    id: null as string,
+    id: null,
     firstName: '',
     lastName: '',
     middleName: '',
     organizationName: '',
     partyType: 'person',
-    email: null as string
+    email: null
   },
-  roles: [] as [],
+  roles: [],
   mailingAddress: {
     streetAddress: '',
     streetAddressAdditional: '',
@@ -143,7 +143,32 @@ const emptyPerson = {
     addressCountry: '',
     deliveryInstructions: ''
   },
-  action: null as string
+  actions: [],
+  isLookupBusiness: null
+}
+
+const EmptyOrg = {
+  officer: {
+    id: null,
+    firstName: '',
+    lastName: '',
+    middleName: '',
+    organizationName: '',
+    partyType: 'organization',
+    email: null
+  },
+  roles: [],
+  mailingAddress: {
+    streetAddress: '',
+    streetAddressAdditional: '',
+    addressCity: '',
+    addressRegion: '',
+    postalCode: '',
+    addressCountry: '',
+    deliveryInstructions: ''
+  },
+  actions: [],
+  isLookupBusiness: null
 }
 
 /**
@@ -182,7 +207,7 @@ function createComponent (
   })
 }
 
-describe('Org/Person component for a Correction filing', () => {
+describe('Org/Person component for a BEN Correction filing', () => {
   beforeAll(() => {
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.tombstone.entityType = 'BEN'
@@ -509,7 +534,7 @@ describe('Org/Person component for a Correction filing', () => {
   })
 
   it('Displays errors and does not submit form when clicking Done button and form is invalid', async () => {
-    const wrapper = createComponent(emptyPerson, NaN, null)
+    const wrapper = createComponent(EmptyPerson, NaN, null)
     const vm = wrapper.vm as any
     vm.applyRules()
     await Vue.nextTick()
@@ -542,114 +567,591 @@ describe('Org/Person component for a Correction filing', () => {
   })
 })
 
-describe('Org/Person component for Firm Change filing', () => {
+const ProprietorPersonData = {
+  officer: {
+    id: '2',
+    firstName: 'First',
+    lastName: 'Last',
+    middleName: 'M',
+    organizationName: null,
+    partyType: 'person',
+    taxId: '123456789',
+    email: 'proprietor@example.com'
+  },
+  roles: [
+    { roleType: 'Proprietor', appointmentDate: '2020-03-30' }
+  ],
+  mailingAddress: null
+}
+
+const ProprietorOrgData = {
+  officer: {
+    id: '2',
+    firstName: null,
+    lastName: null,
+    middleName: null,
+    organizationName: 'Test Org',
+    partyType: 'organization',
+    taxId: '123456789',
+    email: 'proprietor@example.com'
+  },
+  roles: [
+    { roleType: 'Proprietor', appointmentDate: '2020-03-30' }
+  ],
+  mailingAddress: null
+}
+
+const PartnerPersonData = {
+  officer: {
+    id: '2',
+    firstName: 'First',
+    lastName: 'Last',
+    middleName: 'M',
+    organizationName: null,
+    partyType: 'person',
+    identifier: null,
+    taxId: null,
+    email: 'partner@example.com'
+  },
+  roles: [
+    { roleType: 'Partner', appointmentDate: '2020-03-30' }
+  ],
+  mailingAddress: null
+}
+
+const PartnerOrgData = {
+  officer: {
+    id: '2',
+    firstName: null,
+    lastName: null,
+    middleName: null,
+    organizationName: 'Test Org',
+    partyType: 'organization',
+    identifier: 'FM1234567',
+    taxId: '123456789',
+    email: 'partner@example.com'
+  },
+  roles: [
+    { roleType: 'Partner', appointmentDate: '2020-03-30' }
+  ],
+  mailingAddress: null
+}
+
+describe('Org/Person component for a firm Change or Registration filing', () => {
   beforeAll(() => {
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.stateModel.tombstone.currentDate = '2020-03-30'
   })
 
-  it('Displays label "person" for SP (person)', async () => {
-    store.state.stateModel.nameRequest.entityType = 'SP'
+  it('Adds new GP partner - person)', () => {
+    store.state.stateModel.tombstone.entityType = 'GP'
     store.state.resourceModel = ChangeSolePropResource
 
-    const validProprietorData = {
-      officer: {
-        id: '2',
-        firstName: '',
-        lastName: '',
-        middleName: '',
-        organizationName: 'Test Org',
-        partyType: 'person',
-        taxId: '1111'
-      },
-      roles: [
-        { roleType: 'Proprietor', appointmentDate: '2020-03-30' }
-      ],
-      mailingAddress: null
+    const currentOrgPerson = {
+      ...EmptyPerson,
+      roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
     }
 
     const wrapper = mount(OrgPerson, {
       store,
       vuetify,
       propsData: {
-        currentOrgPerson: validProprietorData,
-        activeIndex: 0,
-        currentCompletingParty: null,
-        isProprietor: true
-      }
-    })
-
-    expect(wrapper.findAll('.sub-header').at(0).text()).toBe('Person\'s Name')
-
-    wrapper.destroy()
-  })
-
-  it('Displays label "business" for SP (organization)', async () => {
-    store.state.stateModel.nameRequest.entityType = 'SP'
-    store.state.resourceModel = ChangeSolePropResource
-
-    const validProprietorData = {
-      officer: {
-        id: '2',
-        firstName: '',
-        lastName: '',
-        middleName: '',
-        organizationName: 'Test Org',
-        partyType: 'organization',
-        taxId: '1111'
-      },
-      roles: [
-        { roleType: 'Proprietor', appointmentDate: '2020-03-30' }
-      ],
-      mailingAddress: null
-    }
-
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson: validProprietorData,
-        activeIndex: 0,
+        currentOrgPerson,
+        activeIndex: -1,
         currentCompletingParty: null
       }
     })
 
-    expect(wrapper.findAll('.sub-header').at(0).text()).toBe('Business or Corporation Name')
+    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
+    expect(wrapper.find('.add-org-header').exists()).toBe(false)
+    expect(wrapper.find('.person-name .sub-header').text()).toBe('Person\'s Name')
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
+    expect(wrapper.find('.show-business-number').exists()).toBe(false)
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
+    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address label').text()).toBe('Delivery Address same as Mailing Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
 
     wrapper.destroy()
   })
 
-  it('Displays label "business" for GP (organization)', async () => {
-    store.state.stateModel.nameRequest.entityType = 'GP'
+  it('Adds new GP partner - organization', () => {
+    store.state.stateModel.tombstone.entityType = 'GP'
     store.state.resourceModel = ChangePartnershipResource
 
-    const validPartnerData = {
-      officer: {
-        id: '2',
-        firstName: '',
-        lastName: '',
-        middleName: '',
-        organizationName: 'Test Org',
-        partyType: 'organization',
-        taxId: '1111'
-      },
-      roles: [
-        { roleType: 'Partner', appointmentDate: '2020-03-30' }
-      ],
-      mailingAddress: null
+    const currentOrgPerson = {
+      ...EmptyOrg,
+      roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
     }
 
     const wrapper = mount(OrgPerson, {
       store,
       vuetify,
       propsData: {
-        currentOrgPerson: validPartnerData,
+        currentOrgPerson,
+        activeIndex: -1,
+        currentCompletingParty: null
+      }
+    })
+
+    expect(wrapper.find('.add-person-header').exists()).toBe(false)
+    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
+    expect(wrapper.find('.person-name label').exists()).toBe(false)
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
+    expect(wrapper.find('.show-business-number .sub-header').text()).toBe('Business Number:')
+    expect(wrapper.find('.show-business-number .sub-header-text').text()).toBe('Not entered')
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
+    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('Changes existing SP proprietor - person)', () => {
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.resourceModel = ChangeSolePropResource
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson: ProprietorPersonData,
         activeIndex: 0,
         currentCompletingParty: null
       }
     })
 
-    expect(wrapper.findAll('.sub-header').at(0).text()).toBe('Business or Corporation Name')
+    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
+    expect(wrapper.find('.add-org-header').exists()).toBe(false)
+    expect(wrapper.find('.person-name .sub-header').text()).toBe('Person\'s Name')
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
+    expect(wrapper.find('.show-business-number .sub-header').text()).toBe('Business Number:')
+    expect(wrapper.find('.show-business-number .sub-header-text').text()).toBe('123456789')
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
+    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('proprietor@example.com')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('Changes existing SP proprietor - organization)', () => {
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.resourceModel = ChangeSolePropResource
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson: ProprietorOrgData,
+        activeIndex: 0,
+        currentCompletingParty: null
+      }
+    })
+
+    expect(wrapper.find('.add-person-header').exists()).toBe(false)
+    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
+    expect(wrapper.find('.person-name label').exists()).toBe(false)
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
+    expect(wrapper.find('.show-business-number .sub-header').text()).toBe('Business Number:')
+    expect(wrapper.find('.show-business-number .sub-header-text').text()).toBe('123456789')
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
+    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('proprietor@example.com')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('Changes existing GP partner - person', () => {
+    store.state.stateModel.tombstone.entityType = 'GP'
+    store.state.resourceModel = ChangeSolePropResource
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson: PartnerPersonData,
+        activeIndex: 0,
+        currentCompletingParty: null
+      }
+    })
+
+    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
+    expect(wrapper.find('.add-org-header').exists()).toBe(false)
+    expect(wrapper.find('.person-name label').text()).toBe('Person\'s Name')
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
+    expect(wrapper.find('.show-business-number').exists()).toBe(false)
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
+    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('partner@example.com')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('Changes existing GP partner - organization', () => {
+    store.state.stateModel.tombstone.entityType = 'GP'
+    store.state.resourceModel = ChangePartnershipResource
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson: PartnerOrgData,
+        activeIndex: 0,
+        currentCompletingParty: null
+      }
+    })
+
+    expect(wrapper.find('.add-person-header').exists()).toBe(false)
+    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
+    expect(wrapper.find('.person-name label').exists()).toBe(false)
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
+    expect(wrapper.find('.show-business-number .sub-header').text()).toBe('Business Number:')
+    expect(wrapper.find('.show-business-number .sub-header-text').text()).toBe('123456789')
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
+    expect(wrapper.find('.incorporation-number .sub-header').text()).toBe('Incorporation/Registration Number:')
+    expect(wrapper.find('.incorporation-number .sub-header-text').text()).toBe('FM1234567')
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('partner@example.com')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+})
+
+describe('Org/Person component for a firm Conversion filing', () => {
+  beforeAll(() => {
+    store.state.stateModel.tombstone.filingType = 'conversion'
+    store.state.stateModel.tombstone.currentDate = '2020-03-30'
+  })
+
+  it('Adds new SP proprietor - person)', () => {
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.resourceModel = ChangeSolePropResource
+
+    const currentOrgPerson = {
+      ...EmptyPerson,
+      roles: [{ roleType: 'Proprietor', appointmentDate: '2020-03-30' }]
+    }
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson,
+        activeIndex: -1,
+        currentCompletingParty: null
+      }
+    })
+
+    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
+    expect(wrapper.find('.add-org-header').exists()).toBe(false)
+    expect(wrapper.find('.person-name .sub-header').text()).toBe('Person\'s Name')
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
+    expect(wrapper.find('.show-business-number').exists()).toBe(false)
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
+    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address label').text()).toBe('Delivery Address same as Mailing Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('Adds new SP proprietor - organization', () => {
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.resourceModel = ChangePartnershipResource
+
+    const currentOrgPerson = {
+      ...EmptyOrg,
+      roles: [{ roleType: 'Proprietor', appointmentDate: '2020-03-30' }]
+    }
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson,
+        activeIndex: -1,
+        currentCompletingParty: null
+      }
+    })
+
+    expect(wrapper.find('.add-person-header').exists()).toBe(false)
+    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
+    expect(wrapper.find('.person-name label').exists()).toBe(false)
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
+    expect(wrapper.find('.show-business-number').exists()).toBe(false)
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
+    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('Adds new GP partner - person)', () => {
+    store.state.stateModel.tombstone.entityType = 'GP'
+    store.state.resourceModel = ChangeSolePropResource
+
+    const currentOrgPerson = {
+      ...EmptyPerson,
+      roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
+    }
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson,
+        activeIndex: -1,
+        currentCompletingParty: null
+      }
+    })
+
+    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
+    expect(wrapper.find('.add-org-header').exists()).toBe(false)
+    expect(wrapper.find('.person-name .sub-header').text()).toBe('Person\'s Name')
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
+    expect(wrapper.find('.show-business-number').exists()).toBe(false)
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
+    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address label').text()).toBe('Delivery Address same as Mailing Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('Adds new GP partner - organization', () => {
+    store.state.stateModel.tombstone.entityType = 'GP'
+    store.state.resourceModel = ChangePartnershipResource
+
+    const currentOrgPerson = {
+      ...EmptyOrg,
+      roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
+    }
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson,
+        activeIndex: -1,
+        currentCompletingParty: null
+      }
+    })
+
+    expect(wrapper.find('.add-person-header').exists()).toBe(false)
+    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
+    expect(wrapper.find('.person-name label').exists()).toBe(false)
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
+    expect(wrapper.find('.show-business-number').exists()).toBe(false)
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
+    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('Changes existing SP proprietor - person)', () => {
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.resourceModel = ChangeSolePropResource
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson: ProprietorPersonData,
+        activeIndex: 0,
+        currentCompletingParty: null
+      }
+    })
+
+    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
+    expect(wrapper.find('.add-org-header').exists()).toBe(false)
+    expect(wrapper.find('.person-name .sub-header').text()).toBe('Person\'s Name')
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
+    expect(wrapper.find('.show-business-number').exists()).toBe(false)
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
+    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('proprietor@example.com')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('Changes existing SP proprietor - organization)', () => {
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.resourceModel = ChangeSolePropResource
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson: ProprietorOrgData,
+        activeIndex: 0,
+        currentCompletingParty: null
+      }
+    })
+
+    expect(wrapper.find('.add-person-header').exists()).toBe(false)
+    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
+    expect(wrapper.find('.person-name label').exists()).toBe(false)
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
+    expect(wrapper.find('.show-business-number').exists()).toBe(false)
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
+    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('proprietor@example.com')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('Changes existing GP partner - person', () => {
+    store.state.stateModel.tombstone.entityType = 'GP'
+    store.state.resourceModel = ChangeSolePropResource
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson: PartnerPersonData,
+        activeIndex: 0,
+        currentCompletingParty: null
+      }
+    })
+
+    expect(wrapper.find('.add-person-header').text()).toBe('Edit Person')
+    expect(wrapper.find('.add-org-header').exists()).toBe(false)
+    expect(wrapper.find('.person-name label').text()).toBe('Person\'s Name')
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number').exists()).toBe(false)
+    expect(wrapper.find('.show-business-number').exists()).toBe(false)
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org').exists()).toBe(false)
+    expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('partner@example.com')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('Changes existing GP partner - organization', () => {
+    store.state.stateModel.tombstone.entityType = 'GP'
+    store.state.resourceModel = ChangePartnershipResource
+
+    const wrapper = mount(OrgPerson, {
+      store,
+      vuetify,
+      propsData: {
+        currentOrgPerson: PartnerOrgData,
+        activeIndex: 0,
+        currentCompletingParty: null
+      }
+    })
+
+    expect(wrapper.find('.add-person-header').exists()).toBe(false)
+    expect(wrapper.find('.add-org-header').text()).toBe('Edit Business or Corporation')
+    expect(wrapper.find('.person-name label').exists()).toBe(false)
+    expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+    expect(wrapper.find('.edit-business-number .sub-header').text()).toBe('Business Number')
+    expect(wrapper.find('.show-business-number').exists()).toBe(false)
+    expect(wrapper.find('.org-look-up').exists()).toBe(false)
+    expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+    expect(wrapper.find('.other-edit-org .sub-header').text()).toBe('Business or Corporation Name')
+    expect(wrapper.find('.incorporation-number .sub-header').text()).toBe('Incorporation/Registration Number:')
+    expect(wrapper.find('.incorporation-number .sub-header-text').text()).toBe('FM1234567')
+    expect(wrapper.find('.email-address .sub-header').text()).toBe('Email Address')
+    expect(wrapper.find('#proprietor-partner-email').element['value']).toBe('partner@example.com')
+    expect(wrapper.find('.roles').exists()).toBe(false)
+    expect(wrapper.find('.mailing-address .sub-header').text()).toBe('Mailing Address')
+    expect(wrapper.find('.delivery-address .sub-header').text()).toBe('Delivery Address')
+    expect(wrapper.find(removeButtonSelector).exists()).toBe(true)
 
     wrapper.destroy()
   })
