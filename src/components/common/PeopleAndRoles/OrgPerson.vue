@@ -26,7 +26,7 @@
               <!-- Person info -->
               <template v-if="isPerson">
                 <!-- Name -->
-                <article>
+                <article class="person-name">
                   <label class="sub-header">Person's Name</label>
 
                   <p v-if="(isExisting && isProprietor)" class="info-text mb-0">
@@ -67,7 +67,7 @@
 
                 <!-- Confirm name change -->
                 <v-expand-transition>
-                  <article v-if="hasNameChanged(orgPerson)" class="mt-6">
+                  <article v-if="hasNameChanged(orgPerson)" class="confirm-name-change mt-6">
                     <v-checkbox
                       class="mt-0 pt-0"
                       id="confirm-name-change-checkbox"
@@ -85,7 +85,7 @@
                 </v-expand-transition>
 
                 <!-- Edit business number -->
-                <article v-if="showPersonEditBusNum" class="mt-6">
+                <article v-if="showPersonEditBusNum" class="edit-business-number mt-6">
                   <label class="sub-header">Business Number</label>
                   <p class="info-text">
                     If you have an existing business number, enter it below and we will contact the Canada
@@ -93,7 +93,7 @@
                   </p>
                   <v-text-field
                     filled persistent-hint
-                    class="business-number mt-4 mb-n2"
+                    class="mt-4 mb-n2"
                     label="Business Number (Optional)"
                     hint="First 9 digits of the CRA Business Number"
                     v-model.trim="orgPerson.officer.taxId"
@@ -103,7 +103,7 @@
                 </article>
 
                 <!-- Show business number -->
-                <article v-if="showPersonShowBusNum" class="mt-6">
+                <article v-if="showPersonShowBusNum" class="show-business-number mt-6">
                   <label class="sub-header">Business Number:</label>
                   <span class="sub-header-text">{{ orgPerson.officer.taxId || 'Not entered' }}</span>
                 </article>
@@ -112,7 +112,7 @@
               <!-- Business or corporation info -->
               <template v-if="isOrg">
                 <!-- Add firm org using look-up -->
-                <article v-if="showAddFirmOrgComponents && orgPerson.isLookupBusiness">
+                <article v-if="showAddFirmOrgComponents && orgPerson.isLookupBusiness" class="org-look-up">
                   <label class="sub-header">Business or Corporation Look Up</label>
 
                   <a class="lookup-toggle float-right" @click="toggleLookup()">
@@ -159,7 +159,7 @@
 
                 <!-- Add firm org manually (ie, unregistered in BC) -->
                 <template v-else-if="showAddFirmOrgComponents && !orgPerson.isLookupBusiness">
-                  <article>
+                  <article class="org-manual-entry">
                     <label class="sub-header">Business or Corporation Unregistered in B.C.</label>
 
                     <a class="lookup-toggle float-right" @click="toggleLookup()">
@@ -206,7 +206,7 @@
                   </article>
 
                   <!-- Business Number -->
-                  <article class="mt-6">
+                  <article class="edit-business-number mt-6">
                     <label class="sub-header">Business Number</label>
                     <p class="info-text">
                       If you have an existing business number, enter it below and we will contact
@@ -214,7 +214,7 @@
                     </p>
                     <v-text-field
                       filled persistent-hint
-                      class="business-number mt-4 mb-n2"
+                      class="mt-4 mb-n2"
                       label="Business Number (Optional)"
                       hint="First 9 digits of the CRA Business Number"
                       v-model.trim="orgPerson.officer.taxId"
@@ -226,7 +226,7 @@
 
                 <!-- Add non-firms + edit org -->
                 <template v-else>
-                  <article>
+                  <article class="other-edit-org">
                     <label class="sub-header">{{ orgTypesLabel }} Name</label>
                     <v-text-field
                       filled
@@ -258,13 +258,13 @@
                   </article>
 
                   <!-- Show incorporation number -->
-                  <article v-if="orgPerson.officer.identifier" class="mt-6">
+                  <article v-if="orgPerson.officer.identifier" class="incorporation-number mt-6">
                     <label class="sub-header">Incorporation/Registration Number:</label>
                     <span class="sub-header-text">{{ orgPerson.officer.identifier || 'Not entered' }}</span>
                   </article>
 
                   <!-- Edit business number -->
-                  <article v-if="showOrgEditBusNum" class="mt-6">
+                  <article v-if="showOrgEditBusNum" class="edit-business-number mt-6">
                     <label class="sub-header">Business Number</label>
                     <p class="info-text">
                       If an existing business number for this business or corporation is available, enter it
@@ -273,7 +273,7 @@
                     </p>
                     <v-text-field
                       filled persistent-hint
-                      class="business-number mt-4 mb-n2"
+                      class="mt-4 mb-n2"
                       label="Business Number (Optional)"
                       hint="First 9 digits of the CRA Business Number"
                       v-model.trim="orgPerson.officer.taxId"
@@ -283,7 +283,7 @@
                   </article>
 
                   <!-- Show business number (edit proprietor only) -->
-                  <article v-if="showOrgShowBusNum" class="mt-6">
+                  <article v-if="showOrgShowBusNum" class="show-business-number mt-6">
                     <label class="sub-header">Business Number:</label>
                     <span class="sub-header-text">{{ orgPerson.officer.taxId || 'Not entered' }}</span>
                   </article>
@@ -291,13 +291,13 @@
               </template>
 
               <!-- Email Address (proprietor/partner only) -->
-              <article v-if="(isProprietor || isPartner)" class="mt-6">
+              <article v-if="(isProprietor || isPartner)" class="email-address mt-6">
                 <label class="sub-header">Email Address</label>
                 <p class="info-text">
                   Copies of the registration documents will be sent to this email address.
                 </p>
                 <v-text-field
-                  id="proprietor-email"
+                  id="proprietor-partner-email"
                   :label="isEmailOptional ? 'Email Address (Optional)' : 'Email Address' "
                   filled
                   class="mb-n6"
@@ -309,7 +309,7 @@
               </article>
 
               <!-- Roles (BEN corrections only) -->
-              <article v-if="isBenIaCorrectionFiling" class="mt-6">
+              <article v-if="isBenIaCorrectionFiling" class="roles mt-6">
                 <label class="sub-header">Roles</label>
                 <v-row class="roles-row mt-4">
                   <v-col cols="4" class="mt-0" v-if="isPerson">
@@ -355,7 +355,7 @@
               </article>
 
               <!-- Mailing address -->
-              <article class="mt-6 mb-n6">
+              <article class="mailing-address mt-6 mb-n6">
                 <label class="sub-header">Mailing Address</label>
                 <div class="address-wrapper pt-4">
                   <!-- NB: prevent edit when business was looked up -->
@@ -371,7 +371,7 @@
               </article>
 
               <!-- Delivery address (director/proprietor/partner only) -->
-              <article v-if="isDirector || isProprietor || isPartner" class="mt-6">
+              <article v-if="isDirector || isProprietor || isPartner" class="delivery-address mt-6">
                 <v-checkbox
                   class="mt-0 pt-0 mb-n2"
                   label="Delivery Address same as Mailing Address"
@@ -398,7 +398,7 @@
               </article>
 
               <!-- Action buttons -->
-              <div class="form__btns mt-10 mb-6">
+              <div class="action-btns mt-10 mb-6">
                 <v-btn
                   v-if="showRemoveBtn"
                   id="btn-remove"
@@ -1294,5 +1294,21 @@ li {
 .sub-header-text {
   color: $gray7;
   margin-left: 0.5rem;
+}
+
+.action-btns {
+  display: flex;
+
+  .v-btn {
+    margin: 0;
+
+    + .v-btn {
+      margin-left: 0.5rem;
+    }
+
+    &.form-primary-btn {
+      margin-left: auto;
+    }
+  }
 }
 </style>

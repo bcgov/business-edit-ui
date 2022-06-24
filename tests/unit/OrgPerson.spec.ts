@@ -123,17 +123,17 @@ const validOrgData = {
   }
 }
 
-const emptyPerson = {
+const EmptyPerson = {
   officer: {
-    id: null as string,
+    id: null,
     firstName: '',
     lastName: '',
     middleName: '',
     organizationName: '',
     partyType: 'person',
-    email: null as string
+    email: null
   },
-  roles: [] as [],
+  roles: [],
   mailingAddress: {
     streetAddress: '',
     streetAddressAdditional: '',
@@ -143,7 +143,32 @@ const emptyPerson = {
     addressCountry: '',
     deliveryInstructions: ''
   },
-  action: null as string
+  actions: [],
+  isLookupBusiness: null
+}
+
+const EmptyOrg = {
+  officer: {
+    id: null,
+    firstName: '',
+    lastName: '',
+    middleName: '',
+    organizationName: '',
+    partyType: 'organization',
+    email: null
+  },
+  roles: [],
+  mailingAddress: {
+    streetAddress: '',
+    streetAddressAdditional: '',
+    addressCity: '',
+    addressRegion: '',
+    postalCode: '',
+    addressCountry: '',
+    deliveryInstructions: ''
+  },
+  actions: [],
+  isLookupBusiness: null
 }
 
 /**
@@ -182,7 +207,7 @@ function createComponent (
   })
 }
 
-describe('Org/Person component for a Correction filing', () => {
+describe('Org/Person component for a BEN Correction filing', () => {
   beforeAll(() => {
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.tombstone.entityType = 'BEN'
@@ -509,7 +534,7 @@ describe('Org/Person component for a Correction filing', () => {
   })
 
   it('Displays errors and does not submit form when clicking Done button and form is invalid', async () => {
-    const wrapper = createComponent(emptyPerson, NaN, null)
+    const wrapper = createComponent(EmptyPerson, NaN, null)
     const vm = wrapper.vm as any
     vm.applyRules()
     await Vue.nextTick()
@@ -542,115 +567,529 @@ describe('Org/Person component for a Correction filing', () => {
   })
 })
 
-describe('Org/Person component for Firm Change filing', () => {
+const NewPersonPartner = {
+  ...EmptyPerson,
+  roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
+}
+
+const NewOrgPartner = {
+  ...EmptyOrg,
+  roles: [{ roleType: 'Partner', appointmentDate: '2020-03-30' }]
+}
+
+const NewPersonProprietor = {
+  ...EmptyPerson,
+  roles: [{ roleType: 'Proprietor', appointmentDate: '2020-03-30' }]
+}
+
+const NewOrgProprietor = {
+  ...EmptyOrg,
+  roles: [{ roleType: 'Proprietor', appointmentDate: '2020-03-30' }]
+}
+
+const ExistingProprietorPersonData = {
+  officer: {
+    id: '2',
+    firstName: 'First',
+    lastName: 'Last',
+    middleName: 'M',
+    organizationName: null,
+    partyType: 'person',
+    taxId: '123456789',
+    email: 'proprietor@example.com'
+  },
+  roles: [
+    { roleType: 'Proprietor', appointmentDate: '2020-03-30' }
+  ],
+  mailingAddress: null
+}
+
+const ExistingProprietorOrgData = {
+  officer: {
+    id: '2',
+    firstName: null,
+    lastName: null,
+    middleName: null,
+    organizationName: 'Test Org',
+    partyType: 'organization',
+    taxId: '123456789',
+    email: 'proprietor@example.com'
+  },
+  roles: [
+    { roleType: 'Proprietor', appointmentDate: '2020-03-30' }
+  ],
+  mailingAddress: null
+}
+
+const ExistingPartnerPersonData = {
+  officer: {
+    id: '2',
+    firstName: 'First',
+    lastName: 'Last',
+    middleName: 'M',
+    organizationName: null,
+    partyType: 'person',
+    identifier: null,
+    taxId: null,
+    email: 'partner@example.com'
+  },
+  roles: [
+    { roleType: 'Partner', appointmentDate: '2020-03-30' }
+  ],
+  mailingAddress: null
+}
+
+const ExistingPartnerOrgData = {
+  officer: {
+    id: '2',
+    firstName: null,
+    lastName: null,
+    middleName: null,
+    organizationName: 'Test Org',
+    partyType: 'organization',
+    identifier: 'FM1234567',
+    taxId: '123456789',
+    email: 'partner@example.com'
+  },
+  roles: [
+    { roleType: 'Partner', appointmentDate: '2020-03-30' }
+  ],
+  mailingAddress: null
+}
+
+describe('Org/Person component for SP/GP filings', () => {
   beforeAll(() => {
-    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.stateModel.tombstone.currentDate = '2020-03-30'
   })
 
-  it('Displays label "person" for SP (person)', async () => {
-    store.state.stateModel.nameRequest.entityType = 'SP'
-    store.state.resourceModel = ChangeSolePropResource
-
-    const validProprietorData = {
-      officer: {
-        id: '2',
-        firstName: '',
-        lastName: '',
-        middleName: '',
-        organizationName: 'Test Org',
-        partyType: 'person',
-        taxId: '1111'
-      },
-      roles: [
-        { roleType: 'Proprietor', appointmentDate: '2020-03-30' }
-      ],
-      mailingAddress: null
+  const tests = [
+    {
+      filingType: 'changeOfRegistration',
+      name: 'adds new GP partner-person',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: NewPersonPartner,
+      activeIndex: NaN,
+      addPersonHeader: 'Add Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: false,
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'changeOfRegistration',
+      name: 'adds new GP partner-organization',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: NewOrgPartner,
+      activeIndex: NaN,
+      addPersonHeader: false,
+      addOrgHeader: 'Add Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: 'Business or Corporation Unregistered in B.C.',
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'changeOfRegistration',
+      name: 'changes existing SP proprietor-person',
+      entityType: 'SP',
+      resourceModel: ChangeSolePropResource,
+      currentOrgPerson: ExistingProprietorPersonData,
+      activeIndex: 0,
+      addPersonHeader: 'Edit Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: false,
+      showBusinessNumber: 'Business Number',
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: false
+    },
+    {
+      filingType: 'changeOfRegistration',
+      name: 'changes existing SP proprietor-organization',
+      entityType: 'SP',
+      resourceModel: ChangeSolePropResource,
+      currentOrgPerson: ExistingProprietorOrgData,
+      activeIndex: 0,
+      addPersonHeader: false,
+      addOrgHeader: 'Edit Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: false,
+      showBusinessNumber: 'Business Number:',
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: 'Business or Corporation Name',
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: false
+    },
+    {
+      filingType: 'changeOfRegistration',
+      name: 'changes existing GP partner-person',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: ExistingPartnerPersonData,
+      activeIndex: 0,
+      addPersonHeader: 'Edit Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: false,
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'changeOfRegistration',
+      name: 'changes existing GP partner - organization',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: ExistingPartnerOrgData,
+      activeIndex: 0,
+      addPersonHeader: false,
+      addOrgHeader: 'Edit Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: false,
+      showBusinessNumber: 'Business Number:',
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: 'Business or Corporation Name',
+      incorporationNumber: 'Incorporation/Registration Number:',
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'adds new SP proprietor-person',
+      entityType: 'SP',
+      resourceModel: ChangeSolePropResource,
+      currentOrgPerson: NewPersonProprietor,
+      activeIndex: NaN,
+      addPersonHeader: 'Add Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'adds new SP proprietor-organization',
+      entityType: 'SP',
+      resourceModel: ChangeSolePropResource,
+      currentOrgPerson: NewOrgProprietor,
+      activeIndex: NaN,
+      addPersonHeader: false,
+      addOrgHeader: 'Add Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: 'Business or Corporation Unregistered in B.C.',
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'adds new GP partner-person',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: NewPersonProprietor,
+      activeIndex: NaN,
+      addPersonHeader: 'Add Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'adds new GP partner-organization',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: NewOrgProprietor,
+      activeIndex: NaN,
+      addPersonHeader: false,
+      addOrgHeader: 'Add Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: 'Business or Corporation Unregistered in B.C.',
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'changes existing SP proprietor - person',
+      entityType: 'SP',
+      resourceModel: ChangeSolePropResource,
+      currentOrgPerson: ExistingProprietorPersonData,
+      activeIndex: 0,
+      addPersonHeader: 'Edit Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'changes existing SP proprietor-organization',
+      entityType: 'SP',
+      resourceModel: ChangeSolePropResource,
+      currentOrgPerson: ExistingProprietorOrgData,
+      activeIndex: 0,
+      addPersonHeader: false,
+      addOrgHeader: 'Edit Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: 'Business or Corporation Name',
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'changes existing GP partner-person',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: ExistingPartnerPersonData,
+      activeIndex: 0,
+      addPersonHeader: 'Edit Person',
+      addOrgHeader: false,
+      personName: 'Person\'s Name',
+      confirmNameChange: false,
+      editBusinessNumber: false,
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: false,
+      incorporationNumber: false,
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
+    },
+    {
+      filingType: 'conversion',
+      name: 'changes existing GP partner-organization',
+      entityType: 'GP',
+      resourceModel: ChangePartnershipResource,
+      currentOrgPerson: ExistingPartnerOrgData,
+      activeIndex: 0,
+      addPersonHeader: false,
+      addOrgHeader: 'Edit Business or Corporation',
+      personName: false,
+      confirmNameChange: false,
+      editBusinessNumber: 'Business Number',
+      showBusinessNumber: false,
+      orgLookUp: false,
+      orgManualEntry: false,
+      otherEditOrg: 'Business or Corporation Name',
+      incorporationNumber: 'Incorporation/Registration Number:',
+      emailAddress: 'Email Address',
+      roles: false,
+      mailingAddress: 'Mailing Address',
+      deliveryAddressLabel: 'Delivery Address same as Mailing Address',
+      deliveryAddressSubHeader: 'Delivery Address',
+      removeButton: true
     }
+  ]
 
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson: validProprietorData,
-        activeIndex: 0,
-        currentCompletingParty: null,
-        isProprietor: true
+  tests.forEach((test, index) => {
+    it(`${index + 1}. ${test.filingType} - ${test.name}`, () => {
+      store.state.stateModel.tombstone.filingType = test.filingType
+      store.state.stateModel.tombstone.entityType = test.entityType
+      store.state.resourceModel = test.resourceModel
+
+      const wrapper = createComponent(test.currentOrgPerson, test.activeIndex, null)
+
+      if (test.addPersonHeader) {
+        expect(wrapper.find('.add-person-header').text()).toBe(test.addPersonHeader)
+      } else {
+        expect(wrapper.find('.add-person-header').exists()).toBe(false)
       }
-    })
 
-    expect(wrapper.findAll('.sub-header').at(0).text()).toBe('Person\'s Name')
-
-    wrapper.destroy()
-  })
-
-  it('Displays label "business" for SP (organization)', async () => {
-    store.state.stateModel.nameRequest.entityType = 'SP'
-    store.state.resourceModel = ChangeSolePropResource
-
-    const validProprietorData = {
-      officer: {
-        id: '2',
-        firstName: '',
-        lastName: '',
-        middleName: '',
-        organizationName: 'Test Org',
-        partyType: 'organization',
-        taxId: '1111'
-      },
-      roles: [
-        { roleType: 'Proprietor', appointmentDate: '2020-03-30' }
-      ],
-      mailingAddress: null
-    }
-
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson: validProprietorData,
-        activeIndex: 0,
-        currentCompletingParty: null
+      if (test.addOrgHeader) {
+        expect(wrapper.find('.add-org-header').text()).toBe(test.addOrgHeader)
+      } else {
+        expect(wrapper.find('.add-org-header').exists()).toBe(false)
       }
-    })
 
-    expect(wrapper.findAll('.sub-header').at(0).text()).toBe('Business or Corporation Name')
-
-    wrapper.destroy()
-  })
-
-  it('Displays label "business" for GP (organization)', async () => {
-    store.state.stateModel.nameRequest.entityType = 'GP'
-    store.state.resourceModel = ChangePartnershipResource
-
-    const validPartnerData = {
-      officer: {
-        id: '2',
-        firstName: '',
-        lastName: '',
-        middleName: '',
-        organizationName: 'Test Org',
-        partyType: 'organization',
-        taxId: '1111'
-      },
-      roles: [
-        { roleType: 'Partner', appointmentDate: '2020-03-30' }
-      ],
-      mailingAddress: null
-    }
-
-    const wrapper = mount(OrgPerson, {
-      store,
-      vuetify,
-      propsData: {
-        currentOrgPerson: validPartnerData,
-        activeIndex: 0,
-        currentCompletingParty: null
+      if (test.personName) {
+        expect(wrapper.find('.person-name .sub-header').text()).toBe(test.personName)
+      } else {
+        expect(wrapper.find('.person-name').exists()).toBe(false)
       }
+
+      if (!test.confirmNameChange) {
+        expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
+      }
+
+      if (test.editBusinessNumber) {
+        expect(wrapper.find('.edit-business-number .sub-header').text()).toBe(test.editBusinessNumber)
+      } else {
+        expect(wrapper.find('.edit-business-number').exists()).toBe(false)
+      }
+
+      if (!test.showBusinessNumber) {
+        expect(wrapper.find('.show-business-number').exists()).toBe(false)
+      }
+
+      if (!test.orgLookUp) {
+        expect(wrapper.find('.org-look-up').exists()).toBe(false)
+      }
+
+      if (test.orgManualEntry) {
+        expect(wrapper.find('.org-manual-entry .sub-header').text()).toBe(test.orgManualEntry)
+      } else {
+        expect(wrapper.find('.org-manual-entry').exists()).toBe(false)
+      }
+
+      if (!test.otherEditOrg) {
+        expect(wrapper.find('.other-edit-org').exists()).toBe(false)
+      }
+
+      if (!test.incorporationNumber) {
+        expect(wrapper.find('.incorporation-number').exists()).toBe(false)
+      }
+
+      if (test.emailAddress) {
+        expect(wrapper.find('.email-address .sub-header').text()).toBe(test.emailAddress)
+      } else {
+        expect(wrapper.find('.email-address').exists()).toBe(false)
+      }
+
+      if (!test.roles) {
+        expect(wrapper.find('.roles').exists()).toBe(false)
+      }
+
+      if (test.mailingAddress) {
+        expect(wrapper.find('.mailing-address .sub-header').text()).toBe(test.mailingAddress)
+      } else {
+        expect(wrapper.find('.mailing-address').exists()).toBe(false)
+      }
+
+      if (test.deliveryAddressLabel) {
+        expect(wrapper.find('.delivery-address label').text()).toBe(test.deliveryAddressLabel)
+      } else {
+        expect(wrapper.find('.delivery-address').exists()).toBe(false)
+      }
+
+      if (test.deliveryAddressSubHeader) {
+        expect(wrapper.find('.delivery-address .sub-header').text()).toBe(test.deliveryAddressSubHeader)
+      } else {
+        expect(wrapper.find('.delivery-address .sub-header').exists()).toBe(false)
+      }
+
+      expect(wrapper.find(removeButtonSelector).exists()).toBe(test.removeButton)
+
+      wrapper.destroy()
     })
-
-    expect(wrapper.findAll('.sub-header').at(0).text()).toBe('Business or Corporation Name')
-
-    wrapper.destroy()
   })
 })

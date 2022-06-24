@@ -59,19 +59,6 @@ describe('Firm Correction component', () => {
 
     const get = sinon.stub(axios, 'get')
 
-    // GET auth info
-    get.withArgs('https://auth.api.url/entities/FM1234567')
-      .returns(Promise.resolve({
-        data: {
-          contacts: [
-            {
-              email: 'mock@example.com',
-              phone: '123-456-7890'
-            }
-          ]
-        }
-      }))
-
     // GET payment fee for immediate correction
     get.withArgs('https://pay.api.url/fees/SP/CORRECTION')
       .returns(Promise.resolve({
@@ -114,9 +101,11 @@ describe('Firm Correction component', () => {
     get.withArgs('businesses/FM1234567/filings/123')
       .returns(Promise.resolve({
         data: {
-          business: {},
-          header: {},
-          incorporationApplication: {}
+          filing: {
+            business: {},
+            header: {},
+            registration: {}
+          }
         }
       }))
 
@@ -126,10 +115,29 @@ describe('Firm Correction component', () => {
         data: { business: { legalType: 'SP' } }
       }))
 
+    // GET auth info
+    get.withArgs('https://auth.api.url/entities/FM1234567')
+      .returns(Promise.resolve({
+        data: {
+          contacts: [
+            {
+              email: 'mock@example.com',
+              phone: '123-456-7890'
+            }
+          ]
+        }
+      }))
+
     // GET addresses
     get.withArgs('businesses/FM1234567/addresses')
       .returns(Promise.resolve({
         data: {}
+      }))
+
+    // GET parties
+    get.withArgs('businesses/FM1234567/parties')
+      .returns(Promise.resolve({
+        data: { parties: [] }
       }))
 
     // create a Local Vue and install router on it
