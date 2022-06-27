@@ -46,7 +46,7 @@ export default class CompletingParty extends Vue {
   @Action setCompletingParty!: ActionBindingIF
   @Action setCompletingPartyValidity!: ActionBindingIF
 
-  // declaration for template
+  // Declaration for template
   readonly DefaultAddressSchema = DefaultAddressSchema
 
   // local variable

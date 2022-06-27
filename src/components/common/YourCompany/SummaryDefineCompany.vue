@@ -80,7 +80,7 @@ export default class SummaryDefineCompany extends Mixins(CommonMixin) {
   @Prop({ default: false })
   readonly isSummary: boolean
 
-  // declaration for template
+  // Declaration for template
   readonly CorpTypeCd = CorpTypeCd
 
   /** The company name (from NR, or incorporation number). */

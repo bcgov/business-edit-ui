@@ -9,7 +9,7 @@ export interface ApiPersonIF {
   lastName?: string // required when partyType="person"
   organizationName?: string // required when partyType="organization"
   email?: string
-  identifier?: string // may not be used
+  identifier?: string // aka Incorporation/Registration number
   taxId?: string // aka Business Number
 }
 
@@ -20,9 +20,8 @@ export interface OrgPersonIF {
   deliveryAddress?: AddressIF
   actions?: ActionTypes[]
   confirmNameChange?: boolean // for UI use only
-  confirmBusiness?: boolean // for UI use only
-  isBusinessLookup: boolean // for firms only
-  showOptionalBN?: boolean // for firms only // for UI use only
+  confirmBusiness?: boolean // for firms only // for UI use only
+  isLookupBusiness: boolean // for firms only // for UI use only
 }
 
 /**
@@ -50,5 +49,5 @@ export const EmptyOrgPerson: OrgPersonIF = {
     deliveryInstructions: ''
   },
   actions: [],
-  isBusinessLookup: null // can't be undefined
+  isLookupBusiness: null // can't be undefined
 }

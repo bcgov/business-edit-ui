@@ -112,10 +112,10 @@
                   />
                 </aside>
 
-                <!-- Alteration/Change filings use the enhanced Fee Summary shared component -->
+                <!-- Alteration/Change/Conversion filings use the enhanced Fee Summary shared component -->
                 <v-expand-transition>
                   <FeeSummaryShared
-                    v-if="isAlterationFiling || isChangeRegFiling || isConversionFiling"
+                    v-if="isAlterationFiling || isChangeRegFiling || isFirmConversionFiling"
                     :filingData="getFilingData"
                     :payApiUrl="payApiUrl"
                     :isLoading="isBusySaving"
@@ -311,7 +311,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
   /** The fee summary confirm button label. */
   get feeSummaryConfirmLabel (): string {
-    const isNoFee = this.isChangeRegFiling || this.isConversionFiling
+    const isNoFee = this.isChangeRegFiling || this.isFirmConversionFiling
     if (this.isSummaryMode) {
       return (isNoFee && !this.getFilingData.priority) ? 'File Now (No Fee)' : 'File and Pay'
     } else {
@@ -752,9 +752,9 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     let filingComplete: any
     try {
       let filing: AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF
-      if (this.isAlterationFiling) filing = await this.buildAlterationFiling(isDraft)
-      if (this.isChangeRegFiling) filing = await this.buildChangeRegFiling(isDraft)
-      if (this.isConversionFiling) filing = await this.buildConversionFiling(isDraft)
+      if (this.isAlterationFiling) filing = this.buildAlterationFiling(isDraft)
+      if (this.isChangeRegFiling) filing = this.buildChangeRegFiling(isDraft)
+      if (this.isFirmConversionFiling) filing = this.buildFirmConversionFiling(isDraft)
 
       // update the filing if we have a filingId, otherwise create a draft
       filingComplete = this.getFilingId

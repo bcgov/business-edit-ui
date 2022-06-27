@@ -97,7 +97,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
 
     let filingComplete: any
     try {
-      const filing = await this.buildCorrectionFiling(true)
+      const filing = this.buildCorrectionFiling(true)
       filingComplete = await LegalServices.updateFiling(this.getBusinessId, this.getFilingId, filing, true)
       // clear flag
       this.setHaveUnsavedChanges(false)
@@ -121,7 +121,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
 
     let filingComplete: any
     try {
-      const filing = await this.buildCorrectionFiling(true)
+      const filing = this.buildCorrectionFiling(true)
       filingComplete = await LegalServices.updateFiling(this.getBusinessId, this.getFilingId, filing, true)
       // clear flag
       this.setHaveUnsavedChanges(false)
@@ -160,7 +160,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
 
     let filingComplete: any
     try {
-      const filing = await this.buildCorrectionFiling(false)
+      const filing = this.buildCorrectionFiling(false)
       filingComplete = await LegalServices.updateFiling(this.getBusinessId, this.getFilingId, filing, false)
       // clear flag
       this.setHaveUnsavedChanges(false)

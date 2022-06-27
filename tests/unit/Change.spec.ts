@@ -8,6 +8,10 @@ import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { axios } from '@/utils/'
 import Change from '@/views/Change.vue'
 import mockRouter from './MockRouter'
+import { CertifySection, CompletingParty, CourtOrderPoa, DocumentsDelivery,
+  PeopleAndRoles, StaffPayment, TransactionalFolioNumber, YourCompany }
+  from '@/components/common'
+import { ChangeSummary } from '@/components/Change'
 
 Vue.use(Vuetify)
 
@@ -48,7 +52,7 @@ describe('Change component', () => {
     'JiIUlDmKZ2ow7GmmDabic8igHnEDYD6sI7OFYnCJhRdgVEHN-_4KUk2YsAVl5XUr6blJKMuYDPeMyNreGTXU7foE4AT-93FwlyTyFzQGddrDv' +
     'c6kkQr7mgJNTtgg87DdYbVGbEtIetyVfvwEF0rU8JH2N-j36XIebo33FU3-gJ5Y5S69EHPqQ37R9H4d8WUrHO-4QzJQih3Yaea820XBplJeo0' +
     'DO3hQoVtPD42j0p3aIy10cnW2g')
-  store.state.stateModel.tombstone.businessId = 'BC1234567'
+  store.state.stateModel.tombstone.businessId = 'FM1234567'
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -96,128 +100,46 @@ describe('Change component', () => {
       }))
 
     // GET business
-    get.withArgs('businesses/BC1234567')
+    get.withArgs('businesses/FM1234567')
       .returns(Promise.resolve({
         data: {
           business: {
             legalName: 'Mock Business Ltd.',
-            legalType: 'BEN',
-            identifier: 'BC1234567'
+            legalType: 'SP',
+            identifier: 'FM1234567'
           }
-        }
-      }))
-
-    // GET business name translations
-    get.withArgs('businesses/BC1234567/aliases')
-      .returns(Promise.resolve({
-        data: {
-          aliases: [{
-            name: 'Mock Business French Ltd.',
-            id: '12'
-          }]
         }
       }))
 
     // GET business addresses
-    get.withArgs('businesses/BC1234567/addresses')
+    get.withArgs('businesses/FM1234567/addresses')
       .returns(Promise.resolve({
         data: {
-          registeredOffice: {
-            deliveryAddress: {
-              streetAddress: 'reg delivery_address - address line one',
-              addressCity: 'delivery_address city',
-              addressCountry: 'delivery_address country',
-              postalCode: 'H0H0H0',
-              addressRegion: 'BC'
-            },
-            mailingAddress: {
-              streetAddress: 'reg mailing_address - address line two',
-              addressCity: 'mailing_address city',
-              addressCountry: 'mailing_address country',
-              postalCode: 'H0H0H0',
-              addressRegion: 'BC'
-            }
+          deliveryAddress: {
+            streetAddress: 'reg delivery_address - address line one',
+            addressCity: 'delivery_address city',
+            addressCountry: 'delivery_address country',
+            postalCode: 'H0H0H0',
+            addressRegion: 'BC'
           },
-          recordsOffice: {
-            deliveryAddress: {
-              streetAddress: 'rec delivery_address - address line one',
-              addressCity: 'delivery_address city',
-              addressCountry: 'delivery_address country',
-              postalCode: 'H0H0H0',
-              addressRegion: 'BC'
-            },
-            mailingAddress: {
-              streetAddress: 'rec mailing_address - address line two',
-              addressCity: 'mailing_address city',
-              addressCountry: 'mailing_address country',
-              postalCode: 'H0H0H0',
-              addressRegion: 'BC'
-            }
+          mailingAddress: {
+            streetAddress: 'reg mailing_address - address line two',
+            addressCity: 'mailing_address city',
+            addressCountry: 'mailing_address country',
+            postalCode: 'H0H0H0',
+            addressRegion: 'BC'
           }
         }
       }))
 
-    // GET business share classes
-    get.withArgs('businesses/BC1234567/share-classes')
-      .returns(Promise.resolve({
-        data: {
-          shareClasses: [
-            {
-              currency: 'CAD',
-              hasMaximumShares: true,
-              hasParValue: true,
-              hasRightsOrRestrictions: true,
-              id: '605',
-              maxNumberOfShares: 300,
-              name: 'Class A Shares',
-              parValue: 1,
-              priority: 1,
-              series: [
-                {
-                  hasMaximumShares: true,
-                  hasRightsOrRestrictions: false,
-                  id: '100',
-                  maxNumberOfShares: 150,
-                  name: 'Series A Shares',
-                  priority: 1
-                },
-                {
-                  hasMaximumShares: true,
-                  hasRightsOrRestrictions: false,
-                  id: 101,
-                  maxNumberOfShares: 10,
-                  name: 'Series 2 Shares',
-                  priority: 2
-                }
-              ]
-            }
-          ]
-        }
-      }))
-
     // GET auth info
-    get.withArgs('https://auth.api.url/entities/BC1234567')
+    get.withArgs('https://auth.api.url/entities/FM1234567')
       .returns(Promise.resolve({
         data: {
           contacts: [
             {
               email: 'mock@example.com',
               phone: '123-456-7890'
-            }
-          ]
-        }
-      }))
-
-    // GET resolutions
-    get.withArgs('businesses/BC1234567/resolutions')
-      .returns(Promise.resolve({
-        data: {
-          resolutions: [
-            {
-              date: '2021-05-05'
-            },
-            {
-              date: '2021-07-05'
             }
           ]
         }
@@ -230,7 +152,24 @@ describe('Change component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'change' })
-    wrapper = shallowMount(Change, { localVue, store, router, vuetify })
+    wrapper = shallowMount(Change, { localVue,
+      store,
+      router,
+      vuetify,
+      data: () => ({
+        showFee: false
+      }),
+      computed: {
+        showFeeSummary: {
+          get (): boolean {
+            return this.$data.showFee
+          },
+          set (val: boolean) {
+            this.$data.showFee = val
+          }
+        }
+      }
+    })
 
     // wait for all queries to complete
     await flushPromises()
@@ -242,8 +181,68 @@ describe('Change component', () => {
     wrapper.destroy()
   })
 
-  it('renders Change view', () => {
+  it('renders Change view business information page', () => {
     expect(wrapper.findComponent(Change).exists()).toBe(true)
+
+    // Business information page components
+    expect(wrapper.findComponent(YourCompany).exists()).toBe(true)
+    expect(wrapper.findComponent(PeopleAndRoles).exists()).toBe(true)
+
+    // Review and confirm page components
+    expect(wrapper.findComponent(ChangeSummary).exists()).toBe(false)
+    expect(wrapper.findComponent(DocumentsDelivery).exists()).toBe(false)
+    expect(wrapper.findComponent(CompletingParty).exists()).toBe(false)
+    expect(wrapper.findComponent(CertifySection).exists()).toBe(false)
+  })
+
+  it('renders Change view review and confirm page', async () => {
+    expect(wrapper.findComponent(Change).exists()).toBe(true)
+    store.state.stateModel.summaryMode = true
+    wrapper.vm.showFee = true
+    await Vue.nextTick()
+
+    // Review and confirm page components
+    expect(wrapper.findComponent(ChangeSummary).exists()).toBe(true)
+    expect(wrapper.findComponent(DocumentsDelivery).exists()).toBe(true)
+    expect(wrapper.findComponent(CompletingParty).exists()).toBe(true)
+    expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
+
+    // Business information page components
+    expect(wrapper.findComponent(YourCompany).exists()).toBe(false)
+    expect(wrapper.findComponent(PeopleAndRoles).exists()).toBe(false)
+
+    store.state.stateModel.summaryMode = false
+    wrapper.vm.showFee = false
+  })
+
+  it('transactional folio number component renders for only premium accounts', async () => {
+    expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(false)
+    store.state.stateModel.accountInformation.accountType = 'PREMIUM'
+    store.state.stateModel.summaryMode = true
+    wrapper.vm.showFee = true
+    // a wait needed as change to computed value triggers a re-rendering
+    await Vue.nextTick()
+
+    expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
+    store.state.stateModel.accountInformation.accountType = ''
+    store.state.stateModel.summaryMode = false
+    wrapper.vm.showFee = false
+  })
+
+  it('Staff Payment, Court Order POA components display only for staff', async () => {
+    expect(wrapper.findComponent(StaffPayment).exists()).toBe(false)
+    expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(false)
+    store.state.stateModel.tombstone.keycloakRoles = ['staff']
+    store.state.stateModel.summaryMode = true
+    wrapper.vm.showFee = true
+    // a wait needed as change to computed value triggers a re-rendering
+    await Vue.nextTick()
+
+    expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
+    expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
+    store.state.stateModel.tombstone.keycloakRoles = []
+    store.state.stateModel.summaryMode = false
+    wrapper.vm.showFee = true
   })
 
   // FUTURE
@@ -253,33 +252,23 @@ describe('Change component', () => {
     const state = store.state.stateModel
 
     // Validate business identifier
-    expect(state.tombstone.businessId).toBe('BC1234567')
+    expect(state.tombstone.businessId).toBe('FM1234567')
 
     // Validate Business
-    expect(state.businessInformation.legalType).toBe('BEN')
+    expect(state.businessInformation.legalType).toBe('SP')
     expect(state.businessInformation.legalName).toBe('Mock Business Ltd.')
-    expect(state.businessInformation.identifier).toBe('BC1234567')
-
-    // Validate Name Translations
-    expect(state.nameTranslations[0].name).toBe('Mock Business French Ltd.')
+    expect(state.businessInformation.identifier).toBe('FM1234567')
 
     // Validate Office Addresses
-    expect(state.officeAddresses.registeredOffice.deliveryAddress.streetAddress)
+    expect(state.officeAddresses.deliveryAddress.streetAddress)
       .toBe('reg delivery_address - address line one')
-    expect(state.officeAddresses.recordsOffice.mailingAddress.streetAddress)
+    expect(state.officeAddresses.mailingAddress.streetAddress)
       .toBe('rec mailing_address - address line two')
 
     // Validate People And Roles
     expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('CAMERON')
     expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.lastName).toBe('BOWLER')
     expect(store.state.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Director')
-
-    // Validate Share Structure
-    expect(store.state.stateModel.shareStructureStep.shareClasses[0].name).toBe('Class A Shares')
-    expect(store.state.stateModel.shareStructureStep.shareClasses[0].series[0].name)
-      .toBe('Series A Shares')
-    expect(store.state.stateModel.shareStructureStep.shareClasses[0].series[1].name)
-      .toBe('Series 2 Shares')
 
     // Validate Contact Info
     expect(store.state.stateModel.businessContact.email).toBe('mock@example.com')

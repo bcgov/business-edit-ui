@@ -127,8 +127,9 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
-import { AlterationSummary, Articles, TransactionalFolioNumber } from '@/components/Alteration/'
-import { CertifySection, CurrentDirectors, DocumentsDelivery, ShareStructures, StaffPayment, YourCompany }
+import { AlterationSummary, Articles } from '@/components/Alteration/'
+import { CertifySection, CurrentDirectors, DocumentsDelivery,
+  ShareStructures, StaffPayment, TransactionalFolioNumber, YourCompany }
   from '@/components/common/'
 import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
 import { AuthServices, LegalServices } from '@/services/'
@@ -266,10 +267,10 @@ export default class Alteration extends Mixins(
         }
 
         // parse alteration filing and original business snapshot into store
-        await this.parseAlterationFiling(alterationFiling, businessSnapshot)
+        this.parseAlterationFiling(alterationFiling, businessSnapshot)
       } else {
         // parse business data into store
-        await this.parseEntitySnapshot(businessSnapshot)
+        this.parseEntitySnapshot(businessSnapshot)
       }
 
       if (this.alterationResource) {

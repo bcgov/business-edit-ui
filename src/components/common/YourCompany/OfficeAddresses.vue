@@ -5,7 +5,7 @@
       <v-row id="summary-registered-address" class="mx-0" no-gutters>
         <v-col cols="3">
           <label :class="{'error-text': invalidSection}">{{ getResource.addressLabel }}</label>
-          <v-chip v-if="(isChangeRegFiling || isConversionFiling) && !isSummaryView
+          <v-chip v-if="(isChangeRegFiling || isFirmConversionFiling) && !isSummaryView
                   && (hasMailingChanged || hasDeliveryChanged)"
                   x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
         </v-col>
@@ -42,7 +42,7 @@
         </v-col>
 
         <template v-if="!isSummaryView">
-          <v-col cols="1" v-if="(isCorrectionFiling || isChangeRegFiling || isConversionFiling)
+          <v-col cols="1" v-if="(isCorrectionFiling || isChangeRegFiling || isFirmConversionFiling)
             && hasOfficeAddressesChanged"
           >
             <div class="actions mr-4">
@@ -88,7 +88,7 @@
             </div>
           </v-col>
 
-          <v-col cols="1" v-else-if="(isCorrectionFiling || isChangeRegFiling || isConversionFiling)">
+          <v-col cols="1" v-else-if="(isCorrectionFiling || isChangeRegFiling || isFirmConversionFiling)">
             <div class="actions mr-4">
               <v-btn
                 text color="primary"
@@ -148,7 +148,7 @@
     </template>
 
     <!-- Editing a change of registration filing or conversion filing -->
-    <v-card flat v-else-if="isChangeRegFiling || isConversionFiling">
+    <v-card flat v-else-if="isChangeRegFiling || isFirmConversionFiling">
       <v-row no-gutters>
         <v-col cols="3">
           <label :class="{'error-text': invalidSection}">{{ getResource.addressLabel }}</label>
@@ -274,7 +274,7 @@
             <div class="meta-container">
               <label>Delivery Address</label>
               <div class="meta-container__inner">
-                <div class="form__row">
+                <div class="form-row">
                   <v-checkbox
                     id="registered-mailing-same-chkbx"
                     class="inherit-checkbox"
@@ -343,7 +343,7 @@
               <div class="meta-container">
                 <label>Delivery Address</label>
                 <div class="meta-container__inner">
-                  <div class="form__row">
+                  <div class="form-row">
                     <v-checkbox
                       id="records-delivery-same-chkbx"
                       class="inherit-checkbox"
@@ -573,7 +573,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       )
     }
 
-    if (this.isChangeRegFiling || this.isConversionFiling || this.isFirmCorrectionFiling) {
+    if (this.isChangeRegFiling || this.isFirmConversionFiling || this.isFirmCorrectionFiling) {
       // assign business office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.businessOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.businessOffice?.deliveryAddress }
@@ -742,7 +742,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     }
 
     if (this.isEntityTypeFirm) {
-      if (this.isChangeRegFiling || this.isConversionFiling || this.isCorrectionFiling) {
+      if (this.isChangeRegFiling || this.isFirmConversionFiling || this.isCorrectionFiling) {
       // at the moment, only firm changes, conversions and corrections are supported
         this.setOfficeAddresses({
           businessOffice: {
@@ -798,7 +798,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    */
   @Watch('disableSameDeliveryAddress')
   private async updateDeliveryAddress (): Promise<void> {
-    if ((this.isChangeRegFiling || this.isConversionFiling) && this.disableSameDeliveryAddress) {
+    if ((this.isChangeRegFiling || this.isFirmConversionFiling) && this.disableSameDeliveryAddress) {
       this.inheritMailingAddress = false
       // allow form to open before validating
       await this.$nextTick()

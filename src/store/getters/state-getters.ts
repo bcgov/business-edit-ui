@@ -24,22 +24,6 @@ export const isAuthView = (state: StateIF): boolean => {
   return state.stateModel.tombstone.authRoles.includes('view')
 }
 
-/** Whether the current filing is a Benefit Company IA correction. */
-export const isBenIaCorrectionFiling = (state: StateIF): boolean => {
-  return (isCorrectionFiling(state) && isEntityTypeBEN(state) && !!getOriginalIA(state))
-}
-
-/** Whether the current filing is a Firm correction. */
-export const isFirmCorrectionFiling = (state: StateIF): boolean => {
-  if (isCorrectionFiling(state) && isEntityTypeFirm(state) && !!getOriginalChgRegistration(state)) {
-    return true
-  }
-  if (isCorrectionFiling(state) && isEntityTypeFirm(state) && !!getOriginalRegistration(state)) {
-    return true
-  }
-  return false
-}
-
 /** Whether the current filing is a correction. */
 export const isCorrectionFiling = (state: StateIF): boolean => {
   return (state.stateModel.tombstone.filingType === FilingTypes.CORRECTION)
@@ -58,6 +42,22 @@ export const isChangeRegFiling = (state: StateIF): boolean => {
 /** Whether the current filing is a conversion filing. */
 export const isConversionFiling = (state: StateIF): boolean => {
   return (state.stateModel.tombstone.filingType === FilingTypes.CONVERSION)
+}
+
+/** Whether the current filing is a Benefit Company IA correction. */
+export const isBenIaCorrectionFiling = (state: StateIF): boolean => {
+  return (isCorrectionFiling(state) && isEntityTypeBEN(state))
+}
+
+/** Whether the current filing is a Firm correction. */
+export const isFirmCorrectionFiling = (state: StateIF): boolean => {
+  if (isCorrectionFiling(state) && isEntityTypeFirm(state)) return true
+  return false
+}
+
+/** Whether the current filing is a firm conversion filing. */
+export const isFirmConversionFiling = (state: StateIF): boolean => {
+  return (isEntityTypeFirm(state) && isConversionFiling(state))
 }
 
 /** The entity type. */
@@ -112,15 +112,9 @@ export const getBusinessFoundingDate = (state: StateIF): string => {
 
 /** The original filing's name. */
 export const getOriginalFilingName = (state: StateIF): string => {
-  if (getOriginalIA(state)) {
-    return FilingNames.INCORPORATION_APPLICATION
-  }
-  if (getOriginalChgRegistration(state)) {
-    return FilingNames.CHANGE_OF_REGISTRATION
-  }
-  if (getOriginalRegistration(state)) {
-    return FilingNames.REGISTRATION
-  }
+  if (getOriginalIA(state)) return FilingNames.INCORPORATION_APPLICATION
+  if (getOriginalChgRegistration(state)) return FilingNames.CHANGE_OF_REGISTRATION
+  if (getOriginalRegistration(state)) return FilingNames.REGISTRATION
   return null
 }
 
@@ -632,9 +626,9 @@ export const hasContactInfoChanged = (state: StateIF): boolean => {
 
 /** True if any office address has changed. Applies to corrections, change and conversion filings only. */
 export const hasOfficeAddressesChanged = (state: StateIF): boolean => {
-  if (isCorrectionFiling(state) || isChangeRegFiling(state) || isConversionFiling(state)) {
+  if (isCorrectionFiling(state) || isChangeRegFiling(state) || isFirmConversionFiling(state)) {
     const hasMailingDeliveryChanged = hasMailingChanged(state) || hasDeliveryChanged(state)
-    const isChangeOrConversionFiling = isChangeRegFiling(state) || isConversionFiling(state)
+    const isChangeOrConversionFiling = isChangeRegFiling(state) || isFirmConversionFiling(state)
     const hasRecMailingDeliveryChanged = hasRecMailingChanged(state) || hasRecDeliveryChanged(state)
     return (
       hasMailingDeliveryChanged ||
@@ -663,7 +657,7 @@ export const hasMailingChanged = (state: StateIF): boolean => {
       ['addressCountryDescription']
     )
   }
-  if (isChangeRegFiling(state) || isConversionFiling(state) || isFirmCorrectionFiling(state)) {
+  if (isChangeRegFiling(state) || isFirmConversionFiling(state) || isFirmCorrectionFiling(state)) {
     return !isSame(
       getOfficeAddresses(state)?.businessOffice?.mailingAddress,
       getOriginalOfficeAddresses(state)?.businessOffice?.mailingAddress,
@@ -682,7 +676,7 @@ export const hasDeliveryChanged = (state: StateIF): boolean => {
       ['addressCountryDescription']
     )
   }
-  if (isChangeRegFiling(state) || isConversionFiling(state) || isFirmCorrectionFiling(state)) {
+  if (isChangeRegFiling(state) || isFirmConversionFiling(state) || isFirmCorrectionFiling(state)) {
     return !isSame(
       getOfficeAddresses(state)?.businessOffice?.deliveryAddress,
       getOriginalOfficeAddresses(state)?.businessOffice?.deliveryAddress,
@@ -839,7 +833,7 @@ export const showFeeSummary = (state: StateIF): boolean => {
     (isCorrectionFiling(state) && hasCorrectionDataChanged(state)) ||
     (isAlterationFiling(state) && hasAlterationDataChanged(state)) ||
     (isChangeRegFiling(state) && hasChangeDataChanged(state)) ||
-    (isConversionFiling(state) && hasConversionDataChanged(state))
+    (isFirmConversionFiling(state) && hasConversionDataChanged(state))
   )
   return (haveFilingChange && !isEqual(getFilingData(state), defaultFilingData))
 }
@@ -869,7 +863,7 @@ export const getFilingName = (state: StateIF): FilingNames => {
   if (isCorrectionFiling(state)) return FilingNames.CORRECTION
   if (isAlterationFiling(state)) return FilingNames.ALTERATION
   if (isChangeRegFiling(state)) return FilingNames.CHANGE_OF_REGISTRATION
-  if (isConversionFiling(state)) return FilingNames.CONVERSION
+  if (isFirmConversionFiling(state)) return FilingNames.CONVERSION
   return null
 }
 
