@@ -994,10 +994,9 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
   /** Updates the business details when the user has selected a business (or by reset, below). */
   protected async updateBusinessDetails (businessLookup: BusinessLookupIF): Promise<void> {
-    // convert BN15 to BN9
-    businessLookup.bn = businessLookup.bn?.length > 9
-      ? businessLookup.bn.slice(0, 9)
-      : businessLookup.bn
+    // convert BN15 to BN9 or null
+    businessLookup.bn = (businessLookup.bn?.length === 9) ? businessLookup.bn
+      : (businessLookup.bn?.length > 9) ? businessLookup.bn.slice(0, 9) : null
 
     // save working data
     this.inProgressBusinessLookup = { ...businessLookup }
@@ -1010,6 +1009,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     // fetch and update the business addresses
     if (businessLookup.identifier) {
       const addresses = await LegalServices.fetchAddresses(businessLookup.identifier)
+        .catch(() => ({ registeredOffice: undefined }))
       const registeredOffice = addresses?.registeredOffice
       if (registeredOffice) {
         this.inProgressMailingAddress = { ...registeredOffice.mailingAddress }
