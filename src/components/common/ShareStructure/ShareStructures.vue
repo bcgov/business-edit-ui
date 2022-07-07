@@ -109,5 +109,20 @@ export default class ShareStructures extends Mixins(CommonMixin) {
     padding-left: 0.625rem !important;
     padding-right: 0.625rem !important;
   }
+  .form__btns {
+    display: flex;
+
+    .v-btn {
+      margin: 0;
+
+      + .v-btn {
+        margin-left: 0.5rem;
+      }
+
+      &.form-primary-btn {
+        margin-left: auto;
+      }
+    }
+  }
 }
 </style>
