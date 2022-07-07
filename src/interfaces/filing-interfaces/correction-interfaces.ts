@@ -9,6 +9,7 @@ interface CorrectionIF {
   correctedFilingType: string
   correctedFilingDate: string
   comment: string
+  type: string
 }
 
 /** Interface for data object UI sends to API. */

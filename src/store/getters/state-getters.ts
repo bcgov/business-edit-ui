@@ -158,6 +158,11 @@ export const getCorrectedFilingType = (state: StateIF): string => {
   return getCorrectedFiling(state).header.name
 }
 
+/** get error correction type (client or a staff error correction). */
+export const getErrorCorrectionType = (state: StateIF): string => {
+  return state.stateModel.tombstone.type
+}
+
 /** The business identifier (aka incorporation number). */
 export const getBusinessId = (state: StateIF): string => {
   return state.stateModel.tombstone.businessId

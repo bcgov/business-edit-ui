@@ -20,4 +20,5 @@ export interface TombStoneIF {
   haveUnsavedChanges: boolean
   folioNumber: string
   transactionalFolioNumber: string
+  type: string
 }

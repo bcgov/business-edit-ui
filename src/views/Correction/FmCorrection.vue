@@ -83,7 +83,7 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
 
   /** Whether this is a client error correction (vs. a staff error correction). */
   get isClientErrorCorrection (): boolean {
-    return true // FUTURE: implement this according to schema changes
+    return this.getClientErrorCorrection === 'CLIENT'
   }
 
   /** The original filing name. */

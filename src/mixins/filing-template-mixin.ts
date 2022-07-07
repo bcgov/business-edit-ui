@@ -59,6 +59,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter isEntityTypeSP!: boolean
   @Getter isEntityTypeGP!: boolean
   @Getter getCorrectedFilingType!: FilingTypes
+  @Getter getClientErrorCorrection!: string
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -146,7 +147,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         correctedFilingId: this.getCorrectedFilingId,
         correctedFilingType: this.getCorrectedFilingType,
         correctedFilingDate: this.getCurrentDate,
-        comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`
+        comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`,
+        type: this.getClientErrorCorrection
       },
       incorporationApplication: !isIncorporationApplication ? undefined : {
         nameRequest: {
