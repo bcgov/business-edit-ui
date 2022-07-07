@@ -83,7 +83,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setProvisionsRemoved!: ActionBindingIF
   @Action setOriginalResolutionDates!: ActionBindingIF
   @Action setResolutionDates!: ActionBindingIF
-  @Action setFileNumber: ActionBindingIF
+  @Action setFileNumber!: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
 
   get defaultCorrectionDetailComment (): string {
