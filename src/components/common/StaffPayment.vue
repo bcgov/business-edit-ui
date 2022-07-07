@@ -56,7 +56,7 @@ export default class StaffPayment extends Vue {
     return this.getAppValidate && !!this.getStaffPayment?.option
   }
 
-  onStaffPaymentDataUpdate (event: any) {
+  protected onStaffPaymentDataUpdate (event: any) {
     let staffPaymentData: StaffPaymentIF = { ...this.getStaffPayment, ...event }
 
     switch (staffPaymentData.option) {

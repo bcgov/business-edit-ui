@@ -53,10 +53,10 @@ export default class Detail extends Mixins(DateMixin) {
   @Getter getDetailComment!: string
   @Getter getOriginalFilingDateTime!: string
 
-  @Action setDetailComment: ActionBindingIF
-  @Action setDetailValidity: ActionBindingIF
+  @Action setDetailComment!: ActionBindingIF
+  @Action setDetailValidity!: ActionBindingIF
 
-  private comment: string = null
+  protected comment: string = null
 
   get defaultCorrectionDetailComment (): string {
     const date = this.apiToDate(this.getOriginalFilingDateTime)
@@ -78,7 +78,7 @@ export default class Detail extends Mixins(DateMixin) {
     return (this.validate && !this.isValid)
   }
 
-  private onValidityChange (valid: boolean): void {
+  protected onValidityChange (valid: boolean): void {
     this.setDetailValidity(valid)
   }
 
@@ -88,7 +88,7 @@ export default class Detail extends Mixins(DateMixin) {
     this.setDetailValidity(this.isValid)
   }
 
-  @Watch('getDetailComment')
+  @Watch('getDetailComment', { immediate: true })
   private onCommentStateChange (): void {
     this.comment = this.getDetailComment
   }

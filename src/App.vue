@@ -16,14 +16,14 @@
       attach="#app"
       :dialog="accountAuthorizationDialog"
       @exit="goToDashboard()"
-      @retry="fetchData()"
+      @retry="reload()"
     />
 
     <FetchErrorDialog
       attach="#app"
       :dialog="fetchErrorDialog"
       @exit="goToDashboard()"
-      @retry="fetchData()"
+      @retry="reload()"
     />
 
     <!-- FUTURE: pass actual filing name -->
@@ -105,7 +105,7 @@
                 :offset="{ top: 86, bottom: 12 }"
               >
                 <!-- Corrections still use the basic Fee Summary component -->
-                <aside v-if="isCorrectionFiling">
+                <aside v-if="isCorrectionFiling && getFilingData.filingTypeCode && getFilingData.entityType">
                   <SbcFeeSummary
                     :filingData="[...getFilingData]"
                     :payURL="payApiUrl"
@@ -218,7 +218,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   // Global actions
   @Action setAccountInformation!: ActionBindingIF
   @Action setAppValidate!: ActionBindingIF
-  @Action setAuthRoles: ActionBindingIF
+  @Action setAuthRoles!: ActionBindingIF
   @Action setBusinessId!: ActionBindingIF
   @Action setComponentValidate!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
@@ -227,7 +227,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Action setIsFilingPaying!: ActionBindingIF
   @Action setIsSaving!: ActionBindingIF
   @Action setKeycloakRoles!: ActionBindingIF
-  @Action setUserInfo: ActionBindingIF
+  @Action setUserInfo!: ActionBindingIF
   @Action setOrgInfo!: ActionBindingIF
   @Action setCompletingParty!: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
@@ -438,6 +438,12 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     this.$root.$off('go-to-dashboard')
   }
 
+  /** Navigates to current location, refreshing the page. */
+  protected reload (): void {
+    this.setHaveUnsavedChanges(false)
+    this.$router.go(0)
+  }
+
   /** Called when $route property changes. */
   @Watch('$route', { immediate: false })
   private async onRouteChanged (): Promise<void> {
@@ -456,7 +462,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     }
   }
 
-  /** Fetches app data. Also called for retry. */
+  /** Fetches app data. */
   private async fetchData (routeChanged: boolean = false): Promise<void> {
     // only fetch data on first route change
     if (routeChanged && this.haveData) return
