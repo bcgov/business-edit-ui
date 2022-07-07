@@ -168,7 +168,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   readonly isSummaryMode: boolean
 
   // Global action
-  @Action setEditingNameTranslations: ActionBindingIF
+  @Action setEditingNameTranslations!: ActionBindingIF
 
   // Declaration for template
   readonly ActionTypes = ActionTypes
