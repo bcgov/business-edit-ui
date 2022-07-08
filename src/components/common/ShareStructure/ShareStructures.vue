@@ -2,8 +2,8 @@
   <div id="share-structures">
     <ResolutionDateDialog
       attach="#share-structures"
-      :dialog="toggleResolutionDateDialog"
-      @emitClose="toggleResolutionDateDialog = false"
+      :dialog="showResolutionDateDialog"
+      @emitClose="showResolutionDateDialog = false"
     />
 
     <ShareStructureShared
@@ -17,11 +17,11 @@
       :editedLabel="editedLabel"
       :hasRightsOrRestrictions="getHasRightsOrRestrictions"
       :invalidSection="invalidShareSection"
-      :invalidMinimumShareClass="invalidMinimumShareClass"
+      :invalidMinimumShareClass="!hasMinimumShareClass"
       @emitShareClasses="setShareClasses($event)"
       @emitShareStructureChanged="setShareStructureChanged($event)"
-      @emitEditingShareStructure="setShareStructureValidity($event)"
-      @emitResolutionPrompt="toggleResolutionDateDialog = $event"
+      @emitEditingShareStructure="isEditing = $event"
+      @emitResolutionPrompt="showResolutionDateDialog = $event"
     />
   </div>
 </template>
@@ -52,13 +52,13 @@ export default class ShareStructures extends Mixins(CommonMixin) {
 
   // Global getters
   @Getter getComponentValidate!: boolean
-  @Getter getNewResolutionDates!: string []
+  @Getter getNewResolutionDates!: string[]
   @Getter getCorrectedFiling!: CorrectedFilingIF
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getHasRightsOrRestrictions!: boolean
   @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
-  @Getter invalidMinimumShareClass!: boolean
+  @Getter hasMinimumShareClass!: boolean
 
   // Global actions
   @Action setShareClasses!: ActionBindingIF
@@ -66,10 +66,11 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Action setEditingShareStructure!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
 
-  // Local property
-  toggleResolutionDateDialog = false
+  // Local propertiues
+  protected isEditing = false
+  protected showResolutionDateDialog = false
 
-  /** Check validity state, only when prompted by app. */
+  /** Whether share section is invalid, only when prompted by app. */
   get invalidShareSection (): boolean {
     return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidShareStructure
   }
@@ -78,18 +79,19 @@ export default class ShareStructures extends Mixins(CommonMixin) {
     return this.getEntitySnapshot?.shareStructure
   }
 
-  /** Is true if changes to share structure rights will require a resolution date. */
+  /** True if changes to share structure rights will require a resolution date. */
   get resolutionsRequired (): boolean {
     return (this.getNewResolutionDates.length === 0) && this.isAlterationFiling
   }
 
   /** Keep the store in sync with components state of validity. */
-  @Watch('invalidMinimumShareClass')
-  private setShareStructureValidity (isEditing: boolean): void {
+  @Watch('isEditing')
+  @Watch('hasMinimumShareClass')
+  private setShareStructureValidity (): void {
     // Check valid conditions
-    const isValid = !isEditing && !this.invalidMinimumShareClass
+    const isValid = !this.isEditing && this.hasMinimumShareClass
 
-    this.setEditingShareStructure(isEditing)
+    this.setEditingShareStructure(this.isEditing)
     this.setValidComponent({ key: 'isValidShareStructure', value: isValid })
   }
 }

@@ -94,7 +94,7 @@
     </template>
 
     <!-- Pre-existing Company Provisions -->
-    <template v-if="getProvisionsRemoved">
+    <template v-if="areProvisionsRemoved">
       <v-divider class="mx-4" />
       <div class="section-container provisions-removed-summary">
         <v-row no-gutters>
@@ -112,7 +112,7 @@
     </template>
 
     <!-- Resolution or Court Order Dates -->
-    <template v-if="hasNewResolutionDatesChanged">
+    <template v-if="haveNewResolutionDates">
       <v-divider class="mx-4" />
       <div class="section-container new-resolution-dates-summary">
         <resolution-dates
@@ -194,6 +194,7 @@ export default class AlterationSummary extends Mixins(
   @Getter isBusySaving!: boolean
   @Getter getFeePrices!: FeesIF
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter haveNewResolutionDates!: boolean
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF

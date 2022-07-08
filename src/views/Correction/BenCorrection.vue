@@ -47,8 +47,8 @@ import { AgreementType, CompletingParty } from '@/components/Correction/'
 import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
-import { LegalServices } from '@/services/'
-import { ActionBindingIF, CorrectionFilingIF, FilingDataIF } from '@/interfaces/'
+import { AuthServices, LegalServices } from '@/services/'
+import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { BenefitCompanyStatementResource } from '@/resources/Correction/'
 
@@ -113,6 +113,11 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
       const correctedFiling = await LegalServices.fetchFilingById(this.getBusinessId, correctedFilingId)
       this.setCorrectedFiling(correctedFiling)
 
+      // *** FUTURE: use this
+      // fetch and store business snapshot
+      // const businessSnapshot = await this.fetchBusinessSnapshot()
+      // this.parseEntitySnapshot(businessSnapshot)
+
       // set the resources
       this.setResource(this.correctionResource)
 
@@ -128,6 +133,23 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
 
     // now that all data is loaded, wait for things to stabilize and reset flag
     this.$nextTick(() => this.setHaveUnsavedChanges(false))
+  }
+
+  /** Fetches the business snapshot. */
+  private async fetchBusinessSnapshot (): Promise<EntitySnapshotIF> {
+    const items = await Promise.all([
+      LegalServices.fetchBusinessInfo(this.getBusinessId),
+      AuthServices.fetchAuthInfo(this.getBusinessId),
+      LegalServices.fetchAddresses(this.getBusinessId),
+      LegalServices.fetchParties(this.getBusinessId)
+    ])
+    if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')
+    return {
+      businessInfo: items[0],
+      authInfo: items[1],
+      addresses: items[2],
+      orgPersons: items[3]
+    } as EntitySnapshotIF
   }
 
   protected onStaffPaymentChanges (): void {

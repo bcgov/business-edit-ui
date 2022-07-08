@@ -28,10 +28,6 @@ export interface StateModelIF {
   staffPaymentStep: StaffPaymentStepIF
   filingData: FilingDataIF
   detail: DetailIF
-  changedFlags: {
-    // FUTURE: move all flags here
-    defineCompanyStep: boolean
-  }
   editingFlags: {
     companyName: boolean
     nameTranslations: boolean

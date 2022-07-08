@@ -9,4 +9,5 @@ export interface BusinessInformationIF {
   naicsCode?: string
   naicsDescription?: string
   naicsKey?: string // from API
+  incorporationAgreementType?: string // BENs only
 }

@@ -57,43 +57,6 @@ describe('State Getters', () => {
     expect(vm.isBusySaving).toBe(false)
   })
 
-  it('returns correct values for "Has Correction Changed" getter', async () => {
-    // initially, this getter should be false
-    expect(vm.hasCorrectionDataChanged).toBe(false)
-
-    // verify that the People and Roles Changed flag works
-    await vm.$store.commit('mutatePeopleAndRolesChanged', true)
-    expect(vm.hasCorrectionDataChanged).toBe(true)
-    await vm.$store.commit('mutatePeopleAndRolesChanged', false)
-    expect(vm.hasCorrectionDataChanged).toBe(false)
-
-    // verify that the Define Company Changed flag works
-    await vm.$store.commit('mutateDefineCompanyStepChanged', true)
-    expect(vm.hasCorrectionDataChanged).toBe(true)
-    await vm.$store.commit('mutateDefineCompanyStepChanged', false)
-    expect(vm.hasCorrectionDataChanged).toBe(false)
-
-    // verify that the Share Structure Changed flag works
-    await vm.$store.commit('mutateShareStructureChanged', true)
-    expect(vm.hasCorrectionDataChanged).toBe(true)
-    await vm.$store.commit('mutateShareStructureChanged', false)
-    expect(vm.hasCorrectionDataChanged).toBe(false)
-
-    // verify that the Incorporation Agreement Changed flag works
-    await vm.$store.commit('mutateIncorporationAgreementChanged', true)
-    expect(vm.hasCorrectionDataChanged).toBe(true)
-    await vm.$store.commit('mutateIncorporationAgreementChanged', false)
-    expect(vm.hasCorrectionDataChanged).toBe(false)
-  })
-
-  //
-  // FUTURE: implement this
-  //
-  xit('returns correct values for "Has Alteration Changed" getter', async () => {
-    // initially, this getter should be false
-    expect(vm.hasAlterationDataChanged).toBe(false)
-  })
-
   it('returns correct values for "Is Filing Valid" getter', async () => {
     // initially, this getter should be false
     expect(vm.isFilingValid).toBe(false)
@@ -178,5 +141,159 @@ describe('State Getters', () => {
     expect(vm.isEditing).toBe(true)
     await vm.$store.commit('mutateEditingIncorporationAgreement', false)
     expect(vm.isEditing).toBe(false)
+  })
+})
+
+describe('Alteration getters', () => {
+  let vm: any
+
+  beforeAll(async () => {
+    // initialize store
+    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.state.stateModel.tombstone.filingType = 'alteration'
+    store.state.stateModel.correctedFiling = { registration: {} }
+
+    // mount the component and wait for everything to stabilize
+    // (this can be any component since we are not really using it)
+    const wrapper = shallowMount(Actions, { store, vuetify })
+    vm = wrapper.vm
+    await Vue.nextTick()
+  })
+
+  //
+  // FUTURE: implement this
+  //
+  xit('returns correct values for "Has Alteration Changed" getter', async () => {
+    // initially, this getter should be false
+    expect(vm.hasAlterationDataChanged).toBe(false)
+
+    // verify that business name changes are detected
+    // verify that business type changes are detected
+    // verify that name translation changes are detected
+    // verify that share structure changes are detected
+    // verify that provisions removed is detected
+    // verify that new resolution dates are detected
+  })
+})
+
+describe('BEN IA correction getters', () => {
+  let vm: any
+
+  beforeAll(async () => {
+    // initialize store
+    store.state.stateModel.tombstone.entityType = null
+    store.state.stateModel.tombstone.filingType = 'correction'
+    store.state.stateModel.correctedFiling = {
+      business: {
+        legalName: 'MyLegalName',
+        legalType: 'BEN'
+      },
+      incorporationApplication: {
+        incorporationAgreement: {
+          agreementType: 'sample'
+        },
+        shareStructure: {
+          shareClasses: []
+        }
+      }
+    }
+
+    // mount the component and wait for everything to stabilize
+    // (this can be any component since we are not really using it)
+    const wrapper = shallowMount(Actions, { store, vuetify })
+    vm = wrapper.vm
+    await Vue.nextTick()
+  })
+
+  it('returns correct values for "Has Correction Changed" getter', async () => {
+    // initially, this getter should be false (default value)
+    expect(vm.hasCorrectionDataChanged).toBe(false)
+
+    // verify that business name changes are detected
+    store.state.stateModel.nameRequest.legalName = 'MyLegalName2'
+    expect(vm.hasBusinessNameChanged).toBe(true)
+    store.state.stateModel.nameRequest.legalName = 'MyLegalName'
+    expect(vm.hasBusinessNameChanged).toBe(false)
+
+    // verify that business type changes are detected
+    store.state.stateModel.tombstone.entityType = 'BEN2'
+    expect(vm.hasBusinessTypeChanged).toBe(true)
+    store.state.stateModel.tombstone.entityType = 'BEN'
+    expect(vm.hasBusinessTypeChanged).toBe(false)
+
+    // verify that name translation changes are detected
+    store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
+    expect(vm.hasNameTranslationChanged).toBe(true)
+    store.state.stateModel.nameTranslations = []
+    expect(vm.hasNameTranslationChanged).toBe(false)
+
+    // verify that registered mailing address changes are detected
+    store.state.stateModel.officeAddresses = { registeredOffice: { mailingAddress: { postalCode: 'V8V 8V8' } } }
+    expect(vm.haveOfficeAddressesChanged).toBe(true)
+    store.state.stateModel.officeAddresses = null
+    expect(vm.haveOfficeAddressesChanged).toBe(false)
+
+    // verify that registered delivery address changes are detected
+    store.state.stateModel.officeAddresses = { registeredOffice: { deliveryAddress: { postalCode: 'V8V 8V8' } } }
+    expect(vm.haveOfficeAddressesChanged).toBe(true)
+    store.state.stateModel.officeAddresses = null
+    expect(vm.haveOfficeAddressesChanged).toBe(false)
+
+    // verify that records mailing address changes are detected
+    store.state.stateModel.officeAddresses = { recordsOffice: { mailingAddress: { postalCode: 'V8V 8V8' } } }
+    expect(vm.haveOfficeAddressesChanged).toBe(true)
+    store.state.stateModel.officeAddresses = null
+    expect(vm.haveOfficeAddressesChanged).toBe(false)
+
+    // verify that records delivery address changes are detected
+    store.state.stateModel.officeAddresses = { recordsOffice: { deliveryAddress: { postalCode: 'V8V 8V8' } } }
+    expect(vm.haveOfficeAddressesChanged).toBe(true)
+    store.state.stateModel.officeAddresses = null
+    expect(vm.haveOfficeAddressesChanged).toBe(false)
+
+    // verify that people and roles changes are detected
+    store.state.stateModel.peopleAndRoles.orgPeople = [{}]
+    expect(vm.havePeopleAndRolesChanged).toBe(true)
+    store.state.stateModel.peopleAndRoles.orgPeople = []
+    expect(vm.havePeopleAndRolesChanged).toBe(false)
+
+    // verify that share structure changes are detected
+    store.state.stateModel.shareStructureStep.shareClasses = [{}]
+    expect(vm.hasShareStructureChanged).toBe(true)
+    store.state.stateModel.shareStructureStep.shareClasses = []
+    expect(vm.hasShareStructureChanged).toBe(false)
+
+    // verify that incorporation agreement changes are detected
+    store.state.stateModel.incorporationAgreementStep.agreementType = 'custom'
+    expect(vm.hasIncorporationAgreementChanged).toBe(true)
+    store.state.stateModel.incorporationAgreementStep.agreementType = 'sample'
+    expect(vm.hasIncorporationAgreementChanged).toBe(false)
+
+    // finally, this getter should be false
+    expect(vm.hasCorrectionDataChanged).toBe(false)
+  })
+})
+
+describe('SP/GP correction getters', () => {
+  let vm: any
+
+  beforeAll(async () => {
+    // initialize store
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.stateModel.tombstone.filingType = 'correction'
+    store.state.stateModel.correctedFiling = { registration: {} }
+
+    // mount the component and wait for everything to stabilize
+    // (this can be any component since we are not really using it)
+    const wrapper = shallowMount(Actions, { store, vuetify })
+    vm = wrapper.vm
+    await Vue.nextTick()
+  })
+
+  //
+  // FUTURE: implement this
+  //
+  it('returns correct values for "Has Correction Changed" getter', async () => {
+    expect(vm.hasCorrectionDataChanged).toBe(true)
   })
 })

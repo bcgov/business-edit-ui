@@ -307,7 +307,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   /** Reset company type values to original. */
   private resetType () {
     this.setEntityType(this.getEntitySnapshot?.businessInfo?.legalType)
-    this.emitHaveChanges(false)
     this.isEditingType = false
     this.confirmArticles = false
   }
@@ -315,12 +314,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   /** Reset company type values to original. */
   private submitTypeChange () {
     this.setEntityType(this.selectedEntityType)
-    this.emitHaveChanges(true)
     this.isEditingType = false
   }
-
-  @Emit('haveChanges')
-  private emitHaveChanges (haveChanges: boolean): void {}
 
   @Watch('isEditingType')
   @Emit('isEditingBusinessType')

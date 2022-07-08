@@ -973,10 +973,8 @@ describe('actions and events', () => {
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
     expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity1')
 
-    // verify initial events
-    const haveChanges = wrapper.emitted('haveChanges')
-    expect(haveChanges.length).toBe(2)
-    expect(haveChanges.pop()).toEqual([false])
+    // verify initial state
+    expect(wrapper.vm.haveOfficeAddressesChanged).toEqual(false)
   })
 
   it('handles an invalid address', async () => {
@@ -991,8 +989,8 @@ describe('actions and events', () => {
     // verify data
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
 
-    // verify there are no new events
-    expect(wrapper.emitted('haveChanges').length).toEqual(2)
+    // verify state
+    expect(wrapper.vm.haveOfficeAddressesChanged).toEqual(false)
   })
 
   it('ignores a canceled change', async () => {
@@ -1011,8 +1009,8 @@ describe('actions and events', () => {
     // verify data
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
 
-    // verify there are no new events
-    expect(wrapper.emitted('haveChanges').length).toEqual(2)
+    // verify state
+    expect(wrapper.vm.haveOfficeAddressesChanged).toEqual(false)
   })
 
   it('ignores a null change', async () => {
@@ -1035,10 +1033,8 @@ describe('actions and events', () => {
     // verify data
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
 
-    // verify new events
-    const haveChanges = wrapper.emitted('haveChanges')
-    expect(haveChanges.length).toBe(3)
-    expect(haveChanges.pop()).toEqual([false])
+    // verify state
+    expect(wrapper.vm.haveOfficeAddressesChanged).toEqual(false)
   })
 
   it('accepts a valid change', async () => {
@@ -1058,10 +1054,8 @@ describe('actions and events', () => {
     // verify data
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity5')
 
-    // verify new events
-    const haveChanges = wrapper.emitted('haveChanges')
-    expect(haveChanges.length).toBe(3)
-    expect(haveChanges.pop()).toEqual([true])
+    // verify state
+    expect(wrapper.vm.haveOfficeAddressesChanged).toEqual(true)
   })
 
   it('handles undo action', async () => {
@@ -1084,10 +1078,8 @@ describe('actions and events', () => {
     // verify data
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity1')
 
-    // verify new events
-    const haveChanges = wrapper.emitted('haveChanges')
-    expect(haveChanges.length).toBe(4)
-    expect(haveChanges.pop()).toEqual([false])
+    // verify state
+    expect(wrapper.vm.haveOfficeAddressesChanged).toEqual(false)
   })
 
   it('handles re-correct action', async () => {
@@ -1122,9 +1114,7 @@ describe('actions and events', () => {
     // verify data
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity6')
 
-    // verify new events
-    const haveChanges = wrapper.emitted('haveChanges')
-    expect(haveChanges.length).toBe(4)
-    expect(haveChanges.pop()).toEqual([true])
+    // verify state
+    expect(wrapper.vm.haveOfficeAddressesChanged).toEqual(true)
   })
 })
