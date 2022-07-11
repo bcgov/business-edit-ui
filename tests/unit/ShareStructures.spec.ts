@@ -69,25 +69,27 @@ describe('Share Structures component', () => {
     expect(wrapper.findComponent(ShareStructures).exists()).toBe(true)
   })
 
-  it('is invalid when the minimum share class requirements are not met', async () => {
-    // Verify validations default value before prompt
+  it('is invalid when the minimum share class requirements are not met', () => {
+    // Assign empty share classes
+    store.state.stateModel.shareStructureStep.shareClasses = []
     expect(wrapper.vm.invalidShareSection).toBe(false)
 
-    // Promp the validations
+    // Prompt the validations
     store.state.stateModel.validationFlags.componentValidate = true
-    await Vue.nextTick()
+    wrapper.vm.setShareStructureValidity()
 
     // Verify invalid share section
     expect(wrapper.vm.invalidShareSection).toBe(true)
   })
 
-  it('is valid when the minimum share class requirements are met', async () => {
-    // Assign store values
+  it('is valid when the minimum share class requirements are met', () => {
+    // Assign valid share classes
     store.state.stateModel.shareStructureStep.shareClasses = shareClasses
+    expect(wrapper.vm.hasMinimumShareClass).toBe(true)
 
-    // Promp the validations
+    // Prompt the validations
     store.state.stateModel.validationFlags.componentValidate = true
-    await Vue.nextTick()
+    wrapper.vm.setShareStructureValidity()
 
     // Verify valid share section
     expect(wrapper.vm.invalidShareSection).toBe(false)

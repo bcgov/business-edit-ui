@@ -58,6 +58,8 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
   @Getter isBusySaving!: boolean
   @Getter hasCorrectionDataChanged!: boolean
   @Getter hasAlterationDataChanged!: boolean // for testing state-getters
+  @Getter havePeopleAndRolesChanged!: boolean // for testing state-getters
+  @Getter hasIncorporationAgreementChanged!: boolean // for testing state-getters
   @Getter isFilingValid!: boolean
   @Getter isSaving!: boolean
   @Getter isSavingResuming!: boolean
