@@ -79,7 +79,7 @@ export default class Correction extends Mixins(CommonMixin) {
     // do not proceed if user is not staff
     const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
     if (isStaffOnly && !this.isRoleStaff) {
-      window.alert('Only staff can correct an Incorporation Application.')
+      window.alert('Only staff can correct a filing.')
       this.$root.$emit('go-to-dashboard', true)
       return
     }
