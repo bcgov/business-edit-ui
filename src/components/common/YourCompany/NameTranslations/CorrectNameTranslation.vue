@@ -3,7 +3,6 @@
     :invalidSection="invalidSection"
     :nameTranslations="getNameTranslations"
     @nameTranslationsChange="updateNameTranslations($event)"
-    @haveChanges="emitHaveChanges($event)"
     @isEditingTranslations="isEditingTranslations = $event"
   />
 </template>
@@ -35,15 +34,8 @@ export default class CorrectNameTranslation extends Vue {
     this.setNameTranslations(nameTranslations)
   }
 
-  @Emit('haveChanges')
-  private emitHaveChanges (haveChanges: boolean): void {}
-
   @Watch('isEditingTranslations')
   @Emit('isEditingTranslations')
   private emitIsEditingTranslations (isEditing: boolean): void {}
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>
