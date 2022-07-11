@@ -46,12 +46,12 @@ export default class StaffPayment extends Vue {
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber: string
 
-  /** Check validity state, only when prompted by app. */
+  /** Whether staff payment is invalid, only when prompted by app. */
   get invalidStaffPayment (): boolean {
     return this.getAppValidate && !this.getFlagsReviewCertify.isValidStaffPayment
   }
 
-  /** Is true when prompted by the app AND the user has selected an option. */
+  /** True when prompted by the app AND the user has selected an option. */
   get validateStaffPayment (): boolean {
     return this.getAppValidate && !!this.getStaffPayment?.option
   }

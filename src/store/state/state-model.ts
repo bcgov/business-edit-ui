@@ -145,9 +145,6 @@ export const stateModel: StateModelIF = {
     valid: false,
     comment: ''
   },
-  changedFlags: {
-    defineCompanyStep: false
-  },
   editingFlags: {
     companyName: false,
     nameTranslations: false,

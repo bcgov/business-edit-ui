@@ -44,7 +44,7 @@
     </template>
 
     <!-- Business Addresses -->
-    <template v-if="hasOfficeAddressesChanged">
+    <template v-if="haveOfficeAddressesChanged">
       <v-divider class="mx-8" />
       <article id="address-summary-section" class="section-container">
         <OfficeAddresses :isSummaryView="true" />
@@ -52,7 +52,7 @@
     </template>
 
     <!-- Org Persons -->
-    <template v-if="hasPeopleAndRolesChanged">
+    <template v-if="havePeopleAndRolesChanged">
       <v-divider class="mx-8" />
       <article id="org-person-summary-section" class="section-container pb-0">
         <v-row no-gutters>
@@ -89,8 +89,8 @@ export default class ChangeSummary extends Vue {
   @Getter getNameRequest!: NameRequestIF
   @Getter hasNatureOfBusinessChanged!: boolean
   @Getter getCurrentNaics!: NaicsIF
-  @Getter hasOfficeAddressesChanged!: boolean
-  @Getter hasPeopleAndRolesChanged!: boolean
+  @Getter haveOfficeAddressesChanged!: boolean
+  @Getter havePeopleAndRolesChanged!: boolean
   @Getter getResource!: ResourceIF
   @Getter getApprovedName!: string
   @Getter getBusinessNumber!: string

@@ -23,52 +23,56 @@
       <v-col cols="7" class="info-text" v-else>
         No name translations
       </v-col>
-      <v-col cols="2" class="align-right" v-if="!hasNameTranslationChange && !isSummaryMode">
-        <v-btn
-          id="correct-name-translation"
-          class="pr-0"
-          text color="primary"
-          @click="isEditing = true"
-        >
-          <v-icon small>mdi-pencil</v-icon>
-          <span>{{editLabel}}</span>
-        </v-btn>
+      <!-- Actions -->
+      <v-col cols="2" class="mt-n2" v-if="!hasNameTranslationChange && !isSummaryMode">
+        <div class="actions mr-4">
+          <v-btn
+            class="correct-name-translation"
+            text color="primary"
+            @click="isEditing = true"
+          >
+            <v-icon small>mdi-pencil</v-icon>
+            <span>{{editLabel}}</span>
+          </v-btn>
+        </div>
       </v-col>
-      <v-col cols="2" class="align-right" v-else-if="hasNameTranslationChange && !isSummaryMode">
-        <v-btn
-          id="undo-name-translation"
-          text color="primary" class="undo-name-translation"
-          @click="resetNameTranslations"
-        >
-          <v-icon small>mdi-undo</v-icon>
-          <span>Undo</span>
-        </v-btn>
+      <v-col cols="2" class="mt-n2" v-else-if="hasNameTranslationChange && !isSummaryMode">
+        <div class="actions mr-4">
+          <v-btn
+            class="undo-name-translation"
+            text color="primary"
+            @click="resetNameTranslations()"
+          >
+            <v-icon small>mdi-undo</v-icon>
+            <span>Undo</span>
+          </v-btn>
 
-        <!-- More Actions Menu -->
-        <span class="more-actions">
-          <v-menu offset-y left nudge-bottom="4">
-            <template v-slot:activator="{ on }">
-              <v-btn
-                text small color="primary"
-                class="more-actions-btn"
-                v-on="on"
-              >
-                <v-icon>mdi-menu-down</v-icon>
-              </v-btn>
-            </template>
-            <v-list class="actions__more-actions">
-              <v-list-item
-                class="actions-dropdown_item"
-                @click="isEditing = true"
-              >
-                <v-list-item-subtitle>
-                  <v-icon small>mdi-pencil</v-icon>
-                  <span class="ml-1">{{editLabel}}</span>
-                </v-list-item-subtitle>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </span>
+          <!-- More Actions Menu -->
+          <span class="more-actions">
+            <v-menu offset-y left nudge-bottom="4">
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  text small color="primary"
+                  class="more-actions-btn"
+                  v-on="on"
+                >
+                  <v-icon>mdi-menu-down</v-icon>
+                </v-btn>
+              </template>
+              <v-list class="actions__more-actions">
+                <v-list-item
+                  class="actions-dropdown_item"
+                  @click="isEditing = true"
+                >
+                  <v-list-item-subtitle>
+                    <v-icon small>mdi-pencil</v-icon>
+                    <span class="ml-1">{{editLabel}}</span>
+                  </v-list-item-subtitle>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </span>
+        </div>
       </v-col>
     </v-row>
 
@@ -203,7 +207,6 @@ export default class NameTranslation extends Mixins(CommonMixin) {
 
   private setNameTranslations (): void {
     this.emitNameTranslations(this.draftTranslations)
-    this.emitHaveChanges(this.hasNameTranslationChange)
     this.isEditing = false
   }
 
@@ -218,7 +221,6 @@ export default class NameTranslation extends Mixins(CommonMixin) {
         return translation
       })
     this.emitNameTranslations(this.draftTranslations)
-    this.emitHaveChanges(false)
     this.isEditing = false
   }
 
@@ -337,7 +339,6 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   @Watch('nameTranslations', { deep: true, immediate: true })
   private onNameTranslationsPropValueChanged (): void {
     this.draftTranslations = this.nameTranslations ? cloneDeep(this.nameTranslations) : []
-    this.emitHaveChanges(this.hasNameTranslationChange)
   }
 
   /** Updates store when local Editing property has changed. */
@@ -349,9 +350,6 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   // Emitters
   @Emit('nameTranslationsChange')
   private emitNameTranslations (translations: NameTranslationIF[]): void {}
-
-  @Emit('haveChanges')
-  private emitHaveChanges (haveChanges: boolean): void {}
 
   @Watch('isEditing')
   @Emit('isEditingTranslations')
@@ -391,7 +389,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
 
   .v-list-item {
     min-height: 0;
-    padding: 0 1rem 0 0.5rem;
+    padding: 0.5rem 1rem;
   }
   .v-list-item__subtitle {
     color: $app-blue !important;

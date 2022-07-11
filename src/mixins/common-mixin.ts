@@ -15,7 +15,7 @@ export default class CommonMixin extends Vue {
   @Getter isFirmConversionFiling!: boolean
   @Getter isCorrectionFiling!: boolean
 
-  /** Is True if Jest is running the code. */
+  /** True if Jest is running the code. */
   get isJestRunning (): boolean {
     return (process.env.JEST_WORKER_ID !== undefined)
   }

@@ -168,12 +168,14 @@ export const getBusinessId = (state: StateIF): string => {
   return state.stateModel.tombstone.businessId
 }
 
-/** The business identifier (aka incorporation number). */
-export const getCurrentBusinessName = (state: StateIF): string => {
-  // return the legal name from the name request for BEN IA corrections
-  // or the legal name of the business for others
+/** The original business identifier (aka incorporation number). */
+export const getOriginalBusinessName = (state: StateIF): string => {
+  // try to return the legal name from an IA's name request object
+  // try to return the legal name from the corrected filing's business object
+  // otherwise return the current legal name
   return (
     getOriginalIA(state)?.nameRequest?.legalName ||
+    getCorrectedFiling(state)?.business?.legalName ||
     getBusinessInformation(state).legalName
   )
 }
@@ -432,10 +434,13 @@ export const isFilingPaying = (state: StateIF): boolean => {
 export const hasCorrectionDataChanged = (state: StateIF): boolean => {
   if (isBenIaCorrectionFiling(state)) {
     return (
-      state.stateModel.peopleAndRoles.changed ||
-      state.stateModel.changedFlags.defineCompanyStep ||
-      state.stateModel.shareStructureStep.changed ||
-      state.stateModel.incorporationAgreementStep.changed
+      hasBusinessNameChanged(state) ||
+      hasBusinessTypeChanged(state) ||
+      hasNameTranslationChanged(state) ||
+      haveOfficeAddressesChanged(state) ||
+      havePeopleAndRolesChanged(state) ||
+      hasShareStructureChanged(state) ||
+      hasIncorporationAgreementChanged(state)
     )
   }
   if (isFirmCorrectionFiling(state)) {
@@ -460,8 +465,8 @@ export const hasAlterationDataChanged = (state: StateIF): boolean => {
     hasBusinessTypeChanged(state) ||
     hasNameTranslationChanged(state) ||
     hasShareStructureChanged(state) ||
-    getProvisionsRemoved(state) ||
-    hasNewResolutionDatesChanged(state)
+    areProvisionsRemoved(state) ||
+    haveNewResolutionDates(state)
   )
 }
 
@@ -478,8 +483,8 @@ export const hasChangeDataChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
     hasNatureOfBusinessChanged(state) ||
-    hasOfficeAddressesChanged(state) ||
-    hasPeopleAndRolesChanged(state)
+    haveOfficeAddressesChanged(state) ||
+    havePeopleAndRolesChanged(state)
   )
 }
 
@@ -495,8 +500,8 @@ export const hasChangeDataChanged = (state: StateIF): boolean => {
 export const hasConversionDataChanged = (state: StateIF): boolean => {
   return (
     hasNatureOfBusinessChanged(state) ||
-    hasOfficeAddressesChanged(state) ||
-    hasPeopleAndRolesChanged(state)
+    haveOfficeAddressesChanged(state) ||
+    havePeopleAndRolesChanged(state)
   )
 }
 
@@ -549,12 +554,12 @@ export const getValidationFlags = (state: StateIF): ValidationFlagsIF => {
   return state.stateModel.validationFlags
 }
 
-/** Flag to prompt app level validations. */
+/** True if app level validation is enabled. */
 export const getAppValidate = (state: StateIF): boolean => {
   return getValidationFlags(state).appValidate
 }
 
-/** Flag to prompt component level validations. */
+/** True if component level validation is enabled. */
 export const getComponentValidate = (state: StateIF): boolean => {
   return getValidationFlags(state).componentValidate
 }
@@ -607,14 +612,21 @@ export const isSummaryMode = (state: StateIF): boolean => {
 
 /** Whether business name has changed. */
 export const hasBusinessNameChanged = (state: StateIF): boolean => {
-  const originalLegalName = getEntitySnapshot(state)?.businessInfo?.legalName
-  return (state.stateModel.nameRequest?.legalName !== originalLegalName)
+  const currentLegalName = state.stateModel.nameRequest.legalName ||
+    getBusinessInformation(state).legalName
+  const originalLegalName = getEntitySnapshot(state)?.businessInfo?.legalName ||
+    getCorrectedFiling(state)?.business?.legalName
+
+  return (currentLegalName !== originalLegalName)
 }
 
 /** Whether business type has changed. */
 export const hasBusinessTypeChanged = (state: StateIF): boolean => {
-  const originalLegalType = getEntitySnapshot(state)?.businessInfo?.legalType
-  return (getEntityType(state) !== originalLegalType)
+  const currentEntityType = getEntityType(state)
+  const originalLegalType = getEntitySnapshot(state)?.businessInfo?.legalType ||
+    getCorrectedFiling(state)?.business?.legalType
+
+  return (currentEntityType !== originalLegalType)
 }
 
 /** Whether contact info data has changed. */
@@ -630,11 +642,12 @@ export const hasContactInfoChanged = (state: StateIF): boolean => {
 }
 
 /** True if any office address has changed. Applies to corrections, change and conversion filings only. */
-export const hasOfficeAddressesChanged = (state: StateIF): boolean => {
+export const haveOfficeAddressesChanged = (state: StateIF): boolean => {
   if (isCorrectionFiling(state) || isChangeRegFiling(state) || isFirmConversionFiling(state)) {
     const hasMailingDeliveryChanged = hasMailingChanged(state) || hasDeliveryChanged(state)
     const isChangeOrConversionFiling = isChangeRegFiling(state) || isFirmConversionFiling(state)
     const hasRecMailingDeliveryChanged = hasRecMailingChanged(state) || hasRecDeliveryChanged(state)
+
     return (
       hasMailingDeliveryChanged ||
       // exclude Records Address conditions from Change or Conversion filing
@@ -709,15 +722,16 @@ export const hasRecDeliveryChanged = (state: StateIF): boolean => {
   )
 }
 
-/** Whether orgPerson data has changed. */
-export const hasPeopleAndRolesChanged = (state: StateIF): boolean => {
-  let currentOrgPersons = getPeopleAndRoles(state)
-  let originalOrgPersons = getEntitySnapshot(state)?.orgPersons
+/** True if any people/roles have changed. */
+export const havePeopleAndRolesChanged = (state: StateIF): boolean => {
+  const currentOrgPersons = getPeopleAndRoles(state)
+  const originalOrgPersons = getEntitySnapshot(state)?.orgPersons ||
+    getOriginalIA(state)?.parties
 
   return !isSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange'])
 }
 
-/** Is true when the minimum proprietors is met. */
+/** True when the minimum proprietors is met. */
 export const hasMinimumProprietor = (state: StateIF): boolean => {
   // REMOVED parties are still in the parties array until FILING, so exclude them for component level validations
   return (
@@ -726,7 +740,7 @@ export const hasMinimumProprietor = (state: StateIF): boolean => {
   )
 }
 
-/** Is true when the minimum partners met. */
+/** True when the minimum partners met. */
 export const hasMinimumPartners = (state: StateIF): boolean => {
   // REMOVED parties are still in the parties array until FILING, so exclude them for component level validations
   return (
@@ -738,7 +752,8 @@ export const hasMinimumPartners = (state: StateIF): boolean => {
 /** Whether share structure data has changed. */
 export const hasShareStructureChanged = (state: StateIF): boolean => {
   let currentShareClasses = getShareClasses(state)
-  let originalShareClasses = getEntitySnapshot(state)?.shareStructure?.shareClasses
+  let originalShareClasses = getEntitySnapshot(state)?.shareStructure?.shareClasses ||
+    getOriginalIA(state)?.shareStructure?.shareClasses
 
   // Null action properties can be assigned to the ShareClasses when cancelling edits
   // This is fail safe to ensure null actions are not included in the comparison
@@ -756,20 +771,29 @@ export const hasShareStructureChanged = (state: StateIF): boolean => {
   return !isEqual(originalShareClasses, currentShareClasses)
 }
 
+/** Whether incorporation agreement has changed. */
+export const hasIncorporationAgreementChanged = (state: StateIF): boolean => {
+  const currentAgreementType = getAgreementType(state)
+  const originalAgreementType = getEntitySnapshot(state)?.businessInfo.incorporationAgreementType ||
+    getOriginalIA(state)?.incorporationAgreement.agreementType
+
+  return (currentAgreementType !== originalAgreementType)
+}
+
 /** Whether nature of business data has changed. */
 export const hasNatureOfBusinessChanged = (state: StateIF): boolean => {
   const currentNatureOfBusiness = getBusinessInformation(state)?.naicsCode
   const originalNatureOfBusiness = getEntitySnapshot(state)?.businessInfo.naicsCode
 
-  return !isEqual(currentNatureOfBusiness, originalNatureOfBusiness)
+  return (currentNatureOfBusiness !== originalNatureOfBusiness)
 }
 
-/** The Provisions Removed state. */
-export const getProvisionsRemoved = (state: StateIF): boolean => {
+/** Whether the provisions are removed. */
+export const areProvisionsRemoved = (state: StateIF): boolean => {
   return (state.stateModel.newAlteration.provisionsRemoved === true)
 }
 
-/** Tee original resolution dates. */
+/** The original resolution dates. */
 export const getPreviousResolutionDates = (state: StateIF): ResolutionsIF[] => {
   return state.stateModel.shareStructureStep.previousResolutionDates
 }
@@ -779,8 +803,8 @@ export const getNewResolutionDates = (state: StateIF): string[] => {
   return state.stateModel.shareStructureStep.resolutionDates
 }
 
-/** Whether new resolution dates has changed. */
-export const hasNewResolutionDatesChanged = (state: StateIF): boolean => {
+/** Whether there are any new resolution dates. */
+export const haveNewResolutionDates = (state: StateIF): boolean => {
   return (getNewResolutionDates(state)?.length > 0)
 }
 
@@ -814,7 +838,8 @@ export const getHasOriginalRightsOrRestrictions = (state: StateIF): any => {
 
 /** True if resolution dates are valid. */
 export const getIsResolutionDatesValid = (state: StateIF): boolean => {
-  if (hasShareStructureChanged(state) &&
+  if (
+    hasShareStructureChanged(state) &&
     (getHasOriginalRightsOrRestrictions(state) || getHasRightsOrRestrictions(state))
   ) {
     return (getNewResolutionDates(state).length >= 1)
@@ -853,14 +878,14 @@ export const getFeePrices = (state: StateIF): FeesIF => {
   return state.stateModel.feePrices
 }
 
-/** True if the minimum share classes requirements are not met. */
-export const invalidMinimumShareClass = (state: StateIF): boolean => {
+/** True when the minimum share classes requirements are met. */
+export const hasMinimumShareClass = (state: StateIF): boolean => {
   const shareClasses = state.stateModel.shareStructureStep.shareClasses
 
   // Filter out REMOVED class actions
   const currentShareClasses = shareClasses.filter(x => x.action !== ActionTypes.REMOVED)
 
-  return (currentShareClasses.length < 1)
+  return (currentShareClasses.length > 0)
 }
 
 /** The current filing name. */
