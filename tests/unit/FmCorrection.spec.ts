@@ -9,6 +9,7 @@ import { axios } from '@/utils/'
 import FmCorrection from '@/views/Correction/FmCorrection.vue'
 import mockRouter from './MockRouter'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 Vue.use(Vuetify)
 
@@ -206,6 +207,11 @@ describe('Firm Correction component', () => {
     expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
     expect(wrapper.findComponent(CompletingParty).exists()).toBe(true)
     wrapper.vm.clientError = false
+  })
+
+  it('staff payment is defaulted to no fee', () => {
+    // Staff payment No Fee button needs option to be set to NO_FEE enum for the no fee button to be selected in staff payment component
+    expect(store.state.stateModel.staffPaymentStep.staffPayment.option).toBe(0)
   })
 
   // FUTURE
