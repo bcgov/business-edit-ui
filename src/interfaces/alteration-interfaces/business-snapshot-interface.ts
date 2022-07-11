@@ -1,7 +1,5 @@
-import {
-  AddressesIF, AuthInformationIF, BusinessInformationIF,
-  NameTranslationIF, ShareStructureIF, ResolutionsIF, OrgPersonIF
-} from '@/interfaces/'
+import { AddressesIF, AuthInformationIF, BusinessInformationIF, NameTranslationIF,
+  OrgPersonIF, ResolutionsIF, ShareStructureIF } from '@/interfaces/'
 
 /** Entity snapshot object. */
 export interface EntitySnapshotIF {
@@ -12,6 +10,6 @@ export interface EntitySnapshotIF {
 
   // Properties exclusive to Companies
   nameTranslations?: NameTranslationIF[]
-  shareStructure?: ShareStructureIF,
+  shareStructure?: ShareStructureIF
   resolutions?: ResolutionsIF[]
 }

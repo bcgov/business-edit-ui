@@ -108,10 +108,6 @@ export const mutateDefineCompanyStepValidity = (state: StateIF, validity: boolea
   state.stateModel.validFlags.defineCompanyStep = validity
 }
 
-export const mutateDefineCompanyStepChanged = (state: StateIF, changed: boolean) => {
-  state.stateModel.changedFlags.defineCompanyStep = changed
-}
-
 export const mutateOfficeAddresses = (state: StateIF, addresses: AddressesIF) => {
   state.stateModel.officeAddresses = addresses
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)

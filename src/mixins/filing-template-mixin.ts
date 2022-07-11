@@ -29,7 +29,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter hasNatureOfBusinessChanged!: boolean
   @Getter hasNameTranslationChanged!: boolean
   @Getter hasShareStructureChanged!: boolean
-  @Getter hasNewResolutionDatesChanged!: boolean
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getFolioNumber!: string
@@ -48,11 +47,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getNewResolutionDates!: string[]
   @Getter hasNewNr!: boolean
   @Getter getNewAlteration!: any // FUTURE AlterationFilingIF
-  @Getter getProvisionsRemoved!: boolean
+  @Getter areProvisionsRemoved!: boolean
   @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
-  @Getter hasOfficeAddressesChanged!: boolean
-  @Getter hasPeopleAndRolesChanged!: boolean
+  @Getter haveOfficeAddressesChanged!: boolean
   @Getter getCompletingParty!: CompletingPartyIF
   @Getter isEntityTypeBEN!: boolean
   @Getter isEntityTypeCP!: boolean
@@ -231,7 +229,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           identifier: this.getBusinessId,
           legalType: this.getEntityType
         },
-        provisionsRemoved: this.getProvisionsRemoved,
+        provisionsRemoved: this.areProvisionsRemoved,
         contactPoint: {
           email: this.getBusinessContact.email,
           phone: this.getBusinessContact.phone,
@@ -342,7 +340,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Apply business address changes to filing
-    if (this.hasOfficeAddressesChanged) {
+    if (this.haveOfficeAddressesChanged) {
       filing.changeOfRegistration.offices = {
         businessOffice: {
           mailingAddress: this.getOfficeAddresses.businessOffice.mailingAddress,
@@ -868,6 +866,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         this.setShareClasses(cloneDeep(entitySnapshot.shareStructure.shareClasses))
         this.setResolutionDates([])
         this.setOriginalResolutionDates(entitySnapshot.resolutions)
+
+        // Store incorporation agreement type
+        this.setIncorporationAgreementStepData({
+          agreementType: entitySnapshot.businessInfo.incorporationAgreementType
+        })
+
         break
       }
 

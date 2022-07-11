@@ -28,7 +28,7 @@
 
         <!-- Display Mode -->
         <template v-if="!isEditingNames">
-          <v-col cols="7" class="mt-n1">
+          <v-col cols="7">
             <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
 
             <!-- Business Type Info -->
@@ -150,6 +150,7 @@
         </v-col>
       </v-row>
 
+      <!-- Name Request Applicant -->
       <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isChangeRegFiling || isFirmConversionFiling)"
         class="sub-section"
       >
@@ -188,7 +189,6 @@
     >
       <ChangeBusinessType
         :invalidSection="invalidTypeSection"
-        @haveChanges="companyTypeChanges = $event"
         @isEditingBusinessType="isEditingType = $event"
       />
     </div>
@@ -218,7 +218,6 @@
     >
       <CorrectNameTranslation
         :invalidSection="invalidTranslationSection"
-        @haveChanges="nameTranslationChanges = $event"
         @isEditingTranslations="isEditingTranslations = $event"
       />
     </div>
@@ -289,10 +288,7 @@
 
     <!-- Office addresses -->
     <div class="section-container" :class="{'invalid-section': invalidAddressSection}">
-      <OfficeAddresses
-        :invalidSection="invalidAddressSection"
-        @haveChanges="officeAddressChanges = $event"
-      />
+      <OfficeAddresses :invalidSection="invalidAddressSection" />
     </div>
 
     <v-divider class="mx-4 my-1" />
@@ -331,7 +327,6 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { cloneDeep } from 'lodash'
 import { ConversionNOB } from '@/components/Conversion'
 
-/** Note: this component is used by both corrections and alterations. */
 @Component({
   components: {
     BusinessContactInfo,
@@ -376,7 +371,6 @@ export default class YourCompany extends Mixins(
   @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
 
   // Global actions
-  @Action setDefineCompanyStepChanged!: ActionBindingIF
   @Action setEditingCompanyName!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
   @Action setBusinessInformation!: ActionBindingIF
@@ -390,9 +384,6 @@ export default class YourCompany extends Mixins(
 
   // Whether components have changes (only used by corrections)
   private companyNameChanges = false
-  private companyTypeChanges = false
-  private nameTranslationChanges = false
-  private officeAddressChanges = false
 
   private correctNameChoices: Array<string> = []
   private isEditingNames = false
@@ -522,22 +513,6 @@ export default class YourCompany extends Mixins(
   private nameChangeHandler (isSaved: boolean): void {
     this.companyNameChanges = this.isNewName
     if (isSaved) this.isEditingNames = false
-  }
-
-  // Watchers for component change flags (only used by corrections)
-  @Watch('companyNameChanges') private onCompanyNameChanges (): void { this.setDataChanges() }
-  @Watch('companyTypeChanges') private onCompanyTypeChanges (): void { this.setDataChanges() }
-  @Watch('nameTranslationChanges') private onNameTranslationChanges (): void { this.setDataChanges() }
-  @Watch('officeAddressChanges') private onOfficeAddressChanges (): void { this.setDataChanges() }
-
-  private setDataChanges (): void {
-    const haveChanges = (
-      this.companyNameChanges ||
-      this.companyTypeChanges ||
-      this.nameTranslationChanges ||
-      this.officeAddressChanges
-    )
-    this.setDefineCompanyStepChanged(haveChanges)
   }
 
   /** Updates store initially and when isEditingName property has changed. */

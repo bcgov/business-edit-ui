@@ -11,7 +11,7 @@
       :class="{'invalid-section': invalidCompanyProvisions}">
       <CompanyProvisions
         class="sub-section"
-        :provisionsRemoved="getProvisionsRemoved"
+        :provisionsRemoved="areProvisionsRemoved"
         @isChanged="setProvisionsRemoved($event)"
         @haveChanges="emitHaveChanges($event)"
         @isEditing="setEditingCompanyProvisions($event)"
@@ -54,7 +54,7 @@ export default class Articles extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getNewResolutionDates!: string[]
-  @Getter getProvisionsRemoved!: boolean
+  @Getter areProvisionsRemoved!: boolean
   @Getter getPreviousResolutionDates!: string[]
   @Getter getHasRightsOrRestrictions!: boolean
   @Getter getIsResolutionDatesValid!: boolean

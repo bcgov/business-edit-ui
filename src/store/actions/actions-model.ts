@@ -101,10 +101,6 @@ export const setBusinessContact: ActionIF = ({ commit }, businessContact: Contac
   commit('mutateBusinessContact', businessContact)
 }
 
-export const setDefineCompanyStepChanged: ActionIF = ({ commit }, changed: boolean): void => {
-  commit('mutateDefineCompanyStepChanged', changed)
-}
-
 export const setOfficeAddresses: ActionIF = ({ commit }, addresses: AddressesIF): void => {
   commit('mutateOfficeAddresses', addresses)
 }

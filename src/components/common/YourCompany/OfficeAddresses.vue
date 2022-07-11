@@ -43,7 +43,7 @@
 
         <template v-if="!isSummaryView">
           <v-col cols="1" v-if="(isCorrectionFiling || isChangeRegFiling || isFirmConversionFiling)
-            && hasOfficeAddressesChanged"
+            && haveOfficeAddressesChanged"
           >
             <div class="actions mr-4">
               <span class="edit-action">
@@ -396,7 +396,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { isEmpty, isEqual } from 'lodash'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
@@ -439,7 +439,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter getOfficeAddresses!: AddressesIF // NB: may be {}
   @Getter getResource!: ResourceIF
   @Getter getOriginalOfficeAddresses!: AddressesIF
-  @Getter hasOfficeAddressesChanged!: boolean
+  @Getter haveOfficeAddressesChanged!: boolean
   @Getter hasMailingChanged!: boolean
   @Getter hasDeliveryChanged!: boolean
   @Getter hasRecMailingChanged!: boolean
@@ -822,10 +822,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   private updateAddresses (): void {
     // set local properties from store
     this.setLocalProperties()
-
-    // update external state
-    // will emit on component mount and subsequent changes
-    this.emitHaveChanges()
   }
 
   /** Updates store when local Editing property has changed. */
@@ -852,12 +848,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       this.recDeliveryAddressValid
     )
     this.setValidComponent({ key: 'isValidAddress', value: isValid })
-  }
-
-  /** Emits the changed state of this component. */
-  @Emit('haveChanges')
-  private emitHaveChanges (): boolean {
-    return this.hasOfficeAddressesChanged
   }
 }
 </script>
