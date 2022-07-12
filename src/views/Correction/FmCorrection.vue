@@ -13,7 +13,7 @@
 
     <YourCompany class="mt-10" />
 
-    <PeopleAndRoles class="mt-10" />
+    <PeopleAndRoles class="mt-10"/>
 
     <template v-if="isClientErrorCorrection">
       <CompletingParty class="mt-10" sectionNumber="1." validate="true" />
@@ -47,11 +47,12 @@ import { Action, Getter } from 'vuex-class'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
+import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF, OrgPersonIF } from '@/interfaces/'
 import { AuthServices, LegalServices } from '@/services/'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resources/Correction/'
+import { CorrectionErrorTypes } from '@/enums'
 
 @Component({
   components: {
@@ -83,7 +84,7 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
 
   /** Whether this is a client error correction (vs. a staff error correction). */
   get isClientErrorCorrection (): boolean {
-    return this.getClientErrorCorrection === 'CLIENT'
+    return this.getCorrectionType === CorrectionErrorTypes.CLIENT
   }
 
   /** The original filing name. */

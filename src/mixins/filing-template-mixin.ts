@@ -6,7 +6,7 @@ import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, Correction
   EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF, NameTranslationIF,
   OrgPersonIF, ShareClassIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
-import { ActionTypes, EffectOfOrders, FilingTypes, PartyTypes, RoleTypes } from '@/enums/'
+import { ActionTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 
@@ -57,7 +57,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter isEntityTypeSP!: boolean
   @Getter isEntityTypeGP!: boolean
   @Getter getCorrectedFilingType!: FilingTypes
-  @Getter getClientErrorCorrection!: string
+  @Getter getCorrectionType!: CorrectionErrorTypes
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -146,7 +146,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         correctedFilingType: this.getCorrectedFilingType,
         correctedFilingDate: this.getCurrentDate,
         comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`,
-        type: this.getClientErrorCorrection
+        type: this.getCorrectionType
       },
       incorporationApplication: !isIncorporationApplication ? undefined : {
         nameRequest: {

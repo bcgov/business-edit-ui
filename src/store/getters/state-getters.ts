@@ -1,4 +1,4 @@
-import { AccountTypes, ActionTypes, FilingCodes, FilingNames, FilingTypes } from '@/enums/'
+import { AccountTypes, ActionTypes, CorrectionErrorTypes, FilingCodes, FilingNames, FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { AddressesIF, IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF,
   ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF, NameTranslationIF, FilingDataIF, StateIF,
@@ -159,8 +159,8 @@ export const getCorrectedFilingType = (state: StateIF): string => {
 }
 
 /** get error correction type (client or a staff error correction). */
-export const getErrorCorrectionType = (state: StateIF): string => {
-  return state.stateModel.tombstone.type
+export const getCorrectionType = (state: StateIF): CorrectionErrorTypes => {
+  return state.stateModel.tombstone.correctionType
 }
 
 /** The business identifier (aka incorporation number). */

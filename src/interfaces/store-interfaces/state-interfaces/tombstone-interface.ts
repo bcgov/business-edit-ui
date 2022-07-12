@@ -1,4 +1,4 @@
-import { FilingTypes } from '@/enums/'
+import { CorrectionErrorTypes, FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 /** Data object used internally only (not to/from API). */
@@ -20,5 +20,5 @@ export interface TombStoneIF {
   haveUnsavedChanges: boolean
   folioNumber: string
   transactionalFolioNumber: string
-  type: string
+  correctionType: CorrectionErrorTypes
 }
