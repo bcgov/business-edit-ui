@@ -138,6 +138,9 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
       // initialize Fee Summary data
       this.setFilingData(this.correctionResource.filingData)
 
+      // initialize the No Fee as pre-selected
+      this.setStaffPayment({ option: StaffPaymentOptions.NO_FEE })
+
       // tell App that we're finished loading
       this.emitHaveData()
     } catch (err) {
