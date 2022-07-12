@@ -43,6 +43,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
 
   /** The original folio number dependant on filing type. */
   get originalFolioNumber (): string {
+    // *** TODO: remove ref to correction filing; use snapshot instead
     if (this.isCorrectionFiling && this.getCorrectedFiling?.header) {
       return this.getCorrectedFiling.header.folioNumber
     } else if (this.isAlterationFiling) {

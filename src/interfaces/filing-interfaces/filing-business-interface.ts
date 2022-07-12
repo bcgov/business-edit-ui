@@ -6,4 +6,6 @@ export interface FilingBusinessIF {
   legalType: CorpTypeCd
   legalName: string
   identifier: string
+  naicsCode?: string
+  naicsDescription?: string
 }

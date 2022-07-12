@@ -147,9 +147,8 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
     this.setIsFilingPaying(true)
 
     // If this is a named company IA, validate NR before filing submission. This method is different
-    // from the processNameRequest method in App.vue. This method shows a generic message if
-    // the Name Request is not valid and clicking ok in the pop up redirects to the Manage Businesses
-    // dashboard.
+    // from processNameRequest() in App.vue. This method shows a generic message if the Name
+    // Request is not valid and clicking OK in the pop up redirects to My Business Registry.
     if (this.isNamedBusiness && this.hasNewNr) {
       try {
         await this.validateNameRequest(this.getNameRequestNumber)

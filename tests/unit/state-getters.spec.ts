@@ -83,6 +83,8 @@ describe('State Getters', () => {
 
     // verify that all flags works
     await vm.$store.commit('mutatePeopleAndRolesValidity', true)
+    await vm.$store.commit('mutateCreateShareStructureStepValidity', true)
+    await vm.$store.commit('mutateIncorporationAgreementValidity', true)
     await vm.$store.commit('mutateDetailValidity', true)
     await vm.$store.commit('mutateCertifyState', {
       valid: true,
@@ -188,13 +190,14 @@ describe('BEN IA correction getters', () => {
         legalName: 'MyLegalName',
         legalType: 'BEN'
       },
-      incorporationApplication: {
-        incorporationAgreement: {
-          agreementType: 'sample'
-        },
-        shareStructure: {
-          shareClasses: []
-        }
+      incorporationApplication: {}
+    }
+    store.state.stateModel.entitySnapshot = {
+      businessInfo: {
+        incorporationAgreementType: 'sample'
+      },
+      shareStructure: {
+        shareClasses: []
       }
     }
 

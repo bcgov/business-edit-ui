@@ -1,6 +1,6 @@
 import { AccountInformationIF, ActionKvIF, AddressesIF, BusinessInformationIF, EntitySnapshotIF, CertifyIF,
   FilingDataIF, IncorporationAgreementIF, CorrectedFilingIF, NameRequestIF, NameTranslationIF, OrgPersonIF,
-  ResolutionsIF, ShareClassIF, StateIF, FeesIF, ResourceIF } from '@/interfaces/'
+  ResolutionsIF, ShareClassIF, StateIF, FeesIF, ResourceIF, CorrectionInformationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { FilingTypes } from '@/enums/'
@@ -139,6 +139,10 @@ export const mutateBusinessInformation = (state: StateIF, businessInformation: B
   state.stateModel.businessInformation = businessInformation
 }
 
+export const mutateCorrectionInformation = (state: StateIF, correctionInformation: CorrectionInformationIF) => {
+  state.stateModel.correctionInformation = correctionInformation
+}
+
 export const mutateNameRequest = (state: StateIF, nameRequest: NameRequestIF) => {
   state.stateModel.nameRequest = nameRequest
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
@@ -151,10 +155,6 @@ export const mutateNameTranslations = (state: StateIF, nameTranslations: NameTra
 
 export const mutateFilingId = (state: StateIF, filingId: number) => {
   state.stateModel.tombstone.filingId = filingId
-}
-
-export const mutateCorrectedFilingId = (state: StateIF, correctedFilingId: number) => {
-  state.stateModel.tombstone.correctedFilingId = correctedFilingId
 }
 
 export const mutateShareClasses = (state: StateIF, shareClasses: ShareClassIF[]) => {

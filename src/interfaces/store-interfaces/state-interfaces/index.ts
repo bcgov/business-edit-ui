@@ -1,6 +1,7 @@
 export * from './account-information-interface'
 export * from './auth-information-interface'
 export * from './business-information-interface'
+export * from './correction-information-interface'
 export * from './flags-company-info-interface'
 export * from './flags-review-certify-interface'
 export * from './name-request-interface'

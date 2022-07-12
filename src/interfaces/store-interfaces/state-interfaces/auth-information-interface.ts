@@ -1,6 +1,6 @@
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
-// Auth information interface
+/** Interface for auth information object in store. */
 export interface AuthInformationIF {
   contact: ContactPointIF
   folioNumber: string

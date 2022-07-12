@@ -182,6 +182,7 @@ export default class Change extends Mixins(
 
     // try to fetch data
     try {
+      // fetch business snapshot
       const firmSnapshot = await this.fetchFirmSnapshot()
 
       if (this.changeId) {
@@ -201,10 +202,10 @@ export default class Change extends Mixins(
           throw new Error('Invalid change status')
         }
 
-        // parse firm change filing and original business snapshot into store
+        // parse draft change filing and business snapshot into store
         this.parseChangeRegFiling(changeFiling, firmSnapshot)
       } else {
-        // parse business data into store
+        // parse just the business snapshot into store
         this.parseEntitySnapshot(firmSnapshot)
       }
 

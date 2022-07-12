@@ -14,15 +14,13 @@ export const stateModel: StateModelIF = {
     entityType: null,
     currentDate: '',
     filingId: 0,
-    correctedFilingId: null,
     isSaving: false,
     isSavingResuming: false,
     isFilingPaying: false,
     ignoreChanges: false,
     haveUnsavedChanges: false,
     folioNumber: '',
-    transactionalFolioNumber: '',
-    correctionType: null
+    transactionalFolioNumber: ''
   },
   completingParty: null,
   newAlteration: {
@@ -70,6 +68,13 @@ export const stateModel: StateModelIF = {
   businessInformation: {
     legalType: null,
     identifier: ''
+  },
+  correctionInformation: {
+    comment: '',
+    correctedFilingDate: null,
+    correctedFilingId: null,
+    correctedFilingType: null,
+    type: null
   },
   nameRequest: {
     legalType: null,

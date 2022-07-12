@@ -52,7 +52,7 @@
           </v-col>
 
           <v-col cols="8">
-            <span class="info-text">Changing from a {{ getCorpTypeDescription(originalEntityType) }}</span>
+            <span class="info-text">Changing from a {{ getCorpTypeDescription(originalLegalType) }}</span>
             &nbsp;
             <span class="info-text">to a {{getCorpTypeDescription(getEntityType)}}</span>
 
@@ -223,7 +223,7 @@ export default class AlterationSummary extends Mixins(
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 
-  get originalEntityType (): string {
+  get originalLegalType (): string {
     return this.getEntitySnapshot?.businessInfo?.legalType
   }
 

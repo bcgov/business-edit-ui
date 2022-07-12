@@ -2,7 +2,7 @@ import {
   AccountInformationIF, AddressesIF, CertifyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF, ShareStructureIF,
   EffectiveDateTimeIF, IncorporationAgreementIF, BusinessInformationIF, CorrectedFilingIF, FilingDataIF,
   StaffPaymentStepIF, DetailIF, NameTranslationIF, EntitySnapshotIF, DocumentDeliveryIF, FeesIF, NewAlterationIF,
-  ValidationFlagsIF } from '@/interfaces/'
+  ValidationFlagsIF, CorrectionInformationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 /** Data object used internally only (not to/from API). */
@@ -14,6 +14,7 @@ export interface StateModelIF {
   accountInformation: AccountInformationIF
   businessContact: ContactPointIF
   businessInformation: BusinessInformationIF
+  correctionInformation: CorrectionInformationIF
   nameRequest: NameRequestIF
   nameTranslations: NameTranslationIF[]
   certifyState: CertifyIF

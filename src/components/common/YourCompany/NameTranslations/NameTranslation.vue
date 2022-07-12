@@ -6,15 +6,13 @@
     />
 
     <v-row no-gutters v-if="!isEditing">
-      <v-col cols="3">
+      <v-col cols="3" class="pr-2">
         <label><strong>Name Translation(s)</strong></label>
-          <v-col cols="1" class="pa-0">
-            <ActionChipShared
-              v-if="hasNameTranslationChange && !isSummaryMode"
-              :actionable-item="{ action: ActionTypes.EDITED }"
-              :editedLabel="editedLabel"
-            />
-          </v-col>
+        <ActionChipShared
+          v-if="hasNameTranslationChange && !isSummaryMode"
+          :actionable-item="{ action: ActionTypes.EDITED }"
+          :editedLabel="editedLabel"
+        />
       </v-col>
       <v-col cols="7" v-if="draftTranslations && translationsExceptRemoved.length">
         <div class="info-text text-uppercase" v-for="(translation, index) in translationsExceptRemoved"

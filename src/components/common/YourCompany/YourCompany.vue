@@ -8,7 +8,7 @@
     <!-- Business/Company Name + Name Request Applicant -->
     <div id="company-name-section" class="section-container" :class="{'invalid-section': invalidNameSection}">
       <v-row no-gutters class="mt-4">
-        <v-col cols="3">
+        <v-col cols="3" class="pr-2">
           <label :class="{'error-text': invalidNameSection}">
             <strong>{{ getResource.entityReference }} Name</strong>
           </label>
@@ -144,7 +144,7 @@
         <v-col cols="9" v-else>
           <CorrectNameOptions
             :correctionNameChoices="nameChangeOptions"
-            @done="nameChangeHandler"
+            @done="nameChangeHandler($event)"
             @cancel="isEditingNames = false"
           />
         </v-col>
@@ -199,7 +199,7 @@
 
       <div class="section-container">
         <v-row no-gutters>
-          <v-col cols="3">
+          <v-col cols="3" class="pr-2">
             <label><strong>Business Type</strong></label>
           </v-col>
 
@@ -228,7 +228,7 @@
     <template v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling">
       <section class="section-container">
         <v-row no-gutters>
-          <v-col cols="3">
+          <v-col cols="3" class="pr-2">
             <label><strong>Business Start Date</strong></label>
           </v-col>
 
@@ -274,7 +274,7 @@
     <!-- Recognition Date and Time (alterations and BEN corrections only) -->
     <div class="section-container" v-if="isAlterationFiling || isBenIaCorrectionFiling">
       <v-row no-gutters>
-        <v-col cols="3">
+        <v-col cols="3" class="pr-2">
           <label><strong>Recognition Date and Time</strong></label>
         </v-col>
 
@@ -317,7 +317,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF,
-  ResourceIF, CorrectedFilingIF, IncorporationApplicationIF } from '@/interfaces/'
+  ResourceIF, CorrectedFilingIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
   NatureOfBusiness, OfficeAddresses } from './'
@@ -351,13 +351,12 @@ export default class YourCompany extends Mixins(
   @Getter getComponentValidate!: boolean
   @Getter getNameRequest!: NameRequestIF
   @Getter hasNewNr!: boolean
-  @Getter getOriginalEffectiveDateTime!: string
+  @Getter getCorrectedFilingDate!: string
   @Getter getBusinessFoundingDate!: string // actually date-time
   @Getter isConflictingLegalType!: boolean
   @Getter isNumberedCompany!: boolean
   @Getter isPremiumAccount!: boolean
   @Getter getCorrectedFiling!: CorrectedFilingIF
-  @Getter getOriginalIA!: IncorporationApplicationIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
   @Getter getResource!: ResourceIF
@@ -451,18 +450,18 @@ export default class YourCompany extends Mixins(
   /** The recognition/founding (aka effective or start date) datetime. */
   get recognitionDateTime (): string {
     if (this.isBenIaCorrectionFiling) {
-      if (this.getOriginalEffectiveDateTime) {
-        return (this.apiToPacificDateLong(this.getOriginalEffectiveDateTime))
+      if (this.getCorrectedFilingDate) {
+        return this.apiToPacificDateTime(this.getCorrectedFilingDate)
       }
     }
     if (this.isFirmCorrectionFiling) {
       if (this.getBusinessFoundingDate) {
-        return (this.apiToPacificDateLong(this.getBusinessFoundingDate))
+        return this.apiToPacificDateTime(this.getBusinessFoundingDate)
       }
     }
     if (this.isAlterationFiling || this.isChangeRegFiling || this.isFirmConversionFiling) {
       if (this.getBusinessFoundingDate) {
-        return (this.apiToPacificDateLong(this.getBusinessFoundingDate))
+        return this.apiToPacificDateLong(this.getBusinessFoundingDate)
       }
     }
     return 'Unknown'
@@ -470,13 +469,7 @@ export default class YourCompany extends Mixins(
 
   /** Compare names. */
   get isNewName () {
-    let currentName
-
-    if (this.getOriginalIA) {
-      currentName = this.getOriginalIA.nameRequest.legalName
-    } else {
-      currentName = this.getEntitySnapshot.businessInfo.legalName
-    }
+    const currentName = this.getEntitySnapshot.businessInfo.legalName
     return (this.getApprovedName !== currentName)
   }
 
@@ -492,17 +485,15 @@ export default class YourCompany extends Mixins(
   /** Reset company name values to original. */
   private resetName () {
     // reset business information
+    // *** TODO: refactor this to not use corrected filing
+    //           since this is "reset", how was this initially set?
     this.setBusinessInformation(this.isCorrectionFiling
       ? this.getCorrectedFiling.business
       : this.getEntitySnapshot.businessInfo
     )
 
     // reset name request
-    if (this.getOriginalIA) {
-      this.setNameRequest(this.getOriginalIA.nameRequest)
-    } else {
-      this.setNameRequest(this.getEntitySnapshot.businessInfo)
-    }
+    this.setNameRequest(this.getEntitySnapshot.businessInfo)
 
     // reset flag
     this.companyNameChanges = false

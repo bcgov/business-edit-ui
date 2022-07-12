@@ -1,7 +1,7 @@
 <template>
   <section id="ben-correction-view">
     <header>
-      <h1>Correction - {{ getOriginalFilingName }}</h1>
+      <h1>{{ entityTitle }}</h1>
     </header>
 
     <section id="original-filing-date" class="mt-6">
@@ -67,10 +67,8 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/'
 export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin) {
   // Global getters
   @Getter getFilingData!: FilingDataIF
-  @Getter getOriginalFilingName!: string
 
   // Global actions
-  @Action setCorrectedFilingId!: ActionBindingIF
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setCorrectedFiling!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
@@ -83,7 +81,7 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
 
   /** The original filing date, in Pacific time. */
   get originalFilingDate (): string {
-    return this.apiToPacificDateLong(this.getOriginalFilingDateTime)
+    return this.apiToPacificDateLong(this.getCorrectedFilingDate)
   }
 
   /** The resource object for a correction filing. */
@@ -102,21 +100,21 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
       // safety check
       if (!this.correctionFiling) throw (new Error('Missing correction filing'))
 
-      // parse correction filing into store
-      this.parseCorrectionFiling(this.correctionFiling)
+      // fetch business snapshot
+      const businessSnapshot = await this.fetchBusinessSnapshot()
 
-      // get and store ID of filing that is being corrected (ie, original IA)
-      const correctedFilingId: number = +this.correctionFiling.correction?.correctedFilingId
-      this.setCorrectedFilingId(correctedFilingId)
+      // parse draft correction filing and business snapshot into store
+      this.parseCorrectionFiling(this.correctionFiling, businessSnapshot)
 
-      // fetch and store original IA
-      const correctedFiling = await LegalServices.fetchFilingById(this.getBusinessId, correctedFilingId)
+      // work-around until API returns Agreement Type in business info
+      if (!businessSnapshot.businessInfo.incorporationAgreementType) {
+        businessSnapshot.businessInfo.incorporationAgreementType =
+          this.correctionFiling.incorporationApplication.incorporationAgreement.agreementType
+      }
+
+      // fetch and store corrected filing
+      const correctedFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.getCorrectedFilingId)
       this.setCorrectedFiling(correctedFiling)
-
-      // *** FUTURE: use this
-      // fetch and store business snapshot
-      // const businessSnapshot = await this.fetchBusinessSnapshot()
-      // this.parseEntitySnapshot(businessSnapshot)
 
       // set the resources
       this.setResource(this.correctionResource)
@@ -141,14 +139,20 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
       LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),
       LegalServices.fetchAddresses(this.getBusinessId),
-      LegalServices.fetchParties(this.getBusinessId)
+      LegalServices.fetchParties(this.getBusinessId),
+      LegalServices.fetchShareStructure(this.getBusinessId),
+      LegalServices.fetchNameTranslations(this.getBusinessId),
+      LegalServices.fetchResolutions(this.getBusinessId)
     ])
-    if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 7) throw new Error('Failed to fetch entity snapshot')
     return {
       businessInfo: items[0],
       authInfo: items[1],
       addresses: items[2],
-      orgPersons: items[3]
+      orgPersons: items[3],
+      shareStructure: items[4],
+      nameTranslations: items[5],
+      nameResolutions: items[6]
     } as EntitySnapshotIF
   }
 
