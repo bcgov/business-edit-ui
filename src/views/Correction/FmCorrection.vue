@@ -13,7 +13,7 @@
 
     <YourCompany class="mt-10" />
 
-    <PeopleAndRoles class="mt-10"/>
+    <PeopleAndRoles class="mt-10" />
 
     <template v-if="isClientErrorCorrection">
       <CompletingParty class="mt-10" sectionNumber="1." validate="true" />
@@ -84,7 +84,7 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
 
   /** Whether this is a client error correction (vs. a staff error correction). */
   get isClientErrorCorrection (): boolean {
-    return this.getCorrectionType === CorrectionErrorTypes.CLIENT
+    return this.getCorrectionErrorType === CorrectionErrorTypes.CLIENT
   }
 
   /** The original filing name. */

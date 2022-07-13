@@ -159,7 +159,7 @@ export const getCorrectedFilingType = (state: StateIF): string => {
 }
 
 /** get error correction type (client or a staff error correction). */
-export const getCorrectionType = (state: StateIF): CorrectionErrorTypes => {
+export const getCorrectionErrorType = (state: StateIF): CorrectionErrorTypes => {
   return state.stateModel.tombstone.correctionType
 }
 

@@ -161,7 +161,7 @@ import * as Dialogs from '@/dialogs/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
-  AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, CorrectionFilingIF } from '@/interfaces/'
+  AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums/'
