@@ -66,6 +66,7 @@ import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resour
 export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin) {
   // Global getters
   @Getter getFilingData!: FilingDataIF
+  @Getter isClientErrorCorrection!: boolean
 
   // Global actions
   @Action setCorrectedFilingId!: ActionBindingIF
@@ -80,11 +81,6 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
   readonly correctionFiling: CorrectionFilingIF
 
   readonly getCorpTypeDescription = GetCorpFullDescription
-
-  /** Whether this is a client error correction (vs. a staff error correction). */
-  get isClientErrorCorrection (): boolean {
-    return true // FUTURE: implement this according to schema changes
-  }
 
   /** The original filing name. */
   get originalFilingName (): string {
@@ -114,6 +110,10 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
       // safety check
       if (!this.correctionFiling) throw (new Error('Missing correction filing'))
 
+      // fetch and store business snapshot
+      const businessSnapshot = await this.fetchBusinessSnapshot()
+      this.parseEntitySnapshot(businessSnapshot)
+
       // parse correction filing into store
       this.parseCorrectionFiling(this.correctionFiling)
 
@@ -126,10 +126,6 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
       // (needed to know what we're correcting)
       const correctedFiling = await LegalServices.fetchFilingById(this.getBusinessId, correctedFilingId)
       this.setCorrectedFiling(correctedFiling)
-
-      // fetch and store business snapshot
-      const businessSnapshot = await this.fetchBusinessSnapshot()
-      this.parseEntitySnapshot(businessSnapshot)
 
       // set the resources
       this.setResource(this.correctionResource)

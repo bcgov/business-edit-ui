@@ -4,9 +4,9 @@ import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF, EffectiveDateTimeIF,
   EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF, NameTranslationIF,
-  OrgPersonIF, ShareClassIF } from '@/interfaces/'
+  OrgPersonIF, ShareClassIF, ChgRegistrationIF, RegistrationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
-import { ActionTypes, EffectOfOrders, FilingTypes, PartyTypes, RoleTypes } from '@/enums/'
+import { ActionTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 
@@ -57,6 +57,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter isEntityTypeSP!: boolean
   @Getter isEntityTypeGP!: boolean
   @Getter getCorrectedFilingType!: FilingTypes
+  @Getter getCorrectionErrorType!: CorrectionErrorTypes
+  @Getter getOriginalRegistration!: RegistrationIF
+  @Getter getOriginalChgRegistration!: ChgRegistrationIF
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -144,7 +147,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         correctedFilingId: this.getCorrectedFilingId,
         correctedFilingType: this.getCorrectedFilingType,
         correctedFilingDate: this.getCurrentDate,
-        comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`
+        comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`,
+        type: this.getCorrectionErrorType
       },
       incorporationApplication: !isIncorporationApplication ? undefined : {
         nameRequest: {
@@ -169,9 +173,41 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           agreementType: this.getAgreementType
         }
       },
-      // *** FUTURE: implement these:
-      changeofRegistration: undefined,
-      registration: undefined
+      changeofRegistration: !isChangeReg ? undefined : {
+        business: {
+          identifier: this.getBusinessId,
+          naics: this.getCurrentNaics
+        },
+        offices: this.getOfficeAddresses,
+        contactPoint: {
+          email: this.getBusinessContact.email,
+          phone: this.getBusinessContact.phone,
+          ...this.getBusinessContact.extension
+            ? { extension: +this.getBusinessContact.extension }
+            : {}
+        },
+        parties: this.getPeopleAndRoles
+      },
+      registration: !isRegistration ? undefined : {
+        business: {
+          identifier: this.getBusinessId,
+          naics: this.getCurrentNaics
+        },
+        contactPoint: {
+          email: this.getBusinessContact.email,
+          phone: this.getBusinessContact.phone,
+          ...this.getBusinessContact.extension
+            ? { extension: +this.getBusinessContact.extension }
+            : {}
+        },
+        nameRequest: {
+          legalType: this.getEntityType,
+          legalName: this.getApprovedName,
+          nrNumber: this.getNameRequestNumber
+        },
+        offices: this.getOfficeAddresses,
+        parties: this.getPeopleAndRoles
+      }
     }
 
     // If this is a named IA then save Name Request Number and Approved Name.
@@ -567,9 +603,15 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       })
     }
 
-    // Store people and roles
-    if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
+    // Store people and roles *** FUTURE: expand for other filing types
+    if (filing.incorporationApplication) {
       this.setPeopleAndRoles(filing.incorporationApplication.parties || [])
+    }
+    if (filing.registration) {
+      this.setPeopleAndRoles(filing.registration.parties || [])
+    }
+    if (filing.changeofRegistration) {
+      this.setPeopleAndRoles(filing.changeofRegistration.parties || [])
     }
 
     // Store share classes

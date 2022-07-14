@@ -1,4 +1,4 @@
-import { AccountTypes, ActionTypes, FilingCodes, FilingNames, FilingTypes } from '@/enums/'
+import { AccountTypes, ActionTypes, CorrectionErrorTypes, FilingCodes, FilingNames, FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { AddressesIF, IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF,
   ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF, NameTranslationIF, FilingDataIF, StateIF,
@@ -156,6 +156,16 @@ export const getCorrectedFilingId = (state: StateIF): number => {
 /** The corrected filing type. */
 export const getCorrectedFilingType = (state: StateIF): string => {
   return getCorrectedFiling(state).header.name
+}
+
+/** get error correction type (client or a staff error correction). */
+export const getCorrectionErrorType = (state: StateIF): CorrectionErrorTypes => {
+  return state.stateModel.tombstone.correctionType
+}
+
+/** get if the correction is a client error (vs. a staff error correction) */
+export const isClientErrorCorrection = (state: StateIF): boolean => {
+  return getCorrectionErrorType(state) === CorrectionErrorTypes.CLIENT
 }
 
 /** The business identifier (aka incorporation number). */
@@ -522,12 +532,20 @@ export const isFilingValid = (state: StateIF): boolean => {
     // detail
     // certify (client error correction only)
     // staff payment
-    return (
-      state.stateModel.peopleAndRoles.valid &&
-      state.stateModel.detail.valid &&
-      state.stateModel.certifyState.valid &&
-      state.stateModel.staffPaymentStep.valid
-    )
+    if (state.stateModel.tombstone.correctionType === CorrectionErrorTypes.CLIENT) {
+      return (
+        state.stateModel.peopleAndRoles.valid &&
+        state.stateModel.detail.valid &&
+        state.stateModel.certifyState.valid &&
+        state.stateModel.staffPaymentStep.valid
+      )
+    } else {
+      return (
+        state.stateModel.peopleAndRoles.valid &&
+        state.stateModel.detail.valid &&
+        state.stateModel.staffPaymentStep.valid
+      )
+    }
   }
   return false // should never happen
 }

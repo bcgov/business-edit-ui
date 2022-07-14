@@ -21,7 +21,8 @@ export const stateModel: StateModelIF = {
     ignoreChanges: false,
     haveUnsavedChanges: false,
     folioNumber: '',
-    transactionalFolioNumber: ''
+    transactionalFolioNumber: '',
+    correctionType: null
   },
   completingParty: null,
   newAlteration: {
