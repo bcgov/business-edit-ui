@@ -47,7 +47,7 @@ import { Action, Getter } from 'vuex-class'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF, OrgPersonIF } from '@/interfaces/'
+import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { AuthServices, LegalServices } from '@/services/'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
@@ -115,6 +115,10 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
       // safety check
       if (!this.correctionFiling) throw (new Error('Missing correction filing'))
 
+      // fetch and store business snapshot
+      const businessSnapshot = await this.fetchBusinessSnapshot()
+      this.parseEntitySnapshot(businessSnapshot)
+
       // parse correction filing into store
       this.parseCorrectionFiling(this.correctionFiling)
 
@@ -127,10 +131,6 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
       // (needed to know what we're correcting)
       const correctedFiling = await LegalServices.fetchFilingById(this.getBusinessId, correctedFilingId)
       this.setCorrectedFiling(correctedFiling)
-
-      // fetch and store business snapshot
-      const businessSnapshot = await this.fetchBusinessSnapshot()
-      this.parseEntitySnapshot(businessSnapshot)
 
       // set the resources
       this.setResource(this.correctionResource)

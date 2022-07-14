@@ -604,8 +604,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Store people and roles *** FUTURE: expand for other filing types
-    if (filing.incorporationApplication) this.setPeopleAndRoles(filing.incorporationApplication.parties || [])
-    if (filing.registration) this.setPeopleAndRoles(filing.registration.parties || [])
+    if (filing.incorporationApplication) {
+      this.setPeopleAndRoles(filing.incorporationApplication.parties || [])
+    }
+    if (filing.registration) {
+      this.setPeopleAndRoles(filing.registration.parties || [])
+    }
 
     // Store share classes
     if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types
@@ -869,6 +873,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       legalType: entitySnapshot.businessInfo.legalType,
       legalName: entitySnapshot.businessInfo.legalName
     })
+
+    // Store people and roles (aka parties)
+    this.setPeopleAndRoles(entitySnapshot.orgPersons || [])
 
     // Store the business contact
     this.setBusinessContact(entitySnapshot.authInfo.contact)

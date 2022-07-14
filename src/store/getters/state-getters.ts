@@ -527,12 +527,20 @@ export const isFilingValid = (state: StateIF): boolean => {
     // detail
     // certify (client error correction only)
     // staff payment
-    return (
-      state.stateModel.peopleAndRoles.valid &&
-      state.stateModel.detail.valid &&
-      state.stateModel.certifyState.valid &&
-      state.stateModel.staffPaymentStep.valid
-    )
+    if (state.stateModel.tombstone.correctionType === CorrectionErrorTypes.CLIENT) {
+      return (
+        state.stateModel.peopleAndRoles.valid &&
+        state.stateModel.detail.valid &&
+        state.stateModel.certifyState.valid &&
+        state.stateModel.staffPaymentStep.valid
+      )
+    } else {
+      return (
+        state.stateModel.peopleAndRoles.valid &&
+        state.stateModel.detail.valid &&
+        state.stateModel.staffPaymentStep.valid
+      )
+    }
   }
   return false // should never happen
 }
