@@ -610,6 +610,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     if (filing.registration) {
       this.setPeopleAndRoles(filing.registration.parties || [])
     }
+    if (filing.changeofRegistration) {
+      this.setPeopleAndRoles(filing.changeofRegistration.parties || [])
+    }
 
     // Store share classes
     if (filing.incorporationApplication) { // *** FUTURE: expand for other filing types

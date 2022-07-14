@@ -163,6 +163,11 @@ export const getCorrectionErrorType = (state: StateIF): CorrectionErrorTypes => 
   return state.stateModel.tombstone.correctionType
 }
 
+/** get if the correction is a client error (vs. a staff error correction) */
+export const isClientErrorCorrection = (state: StateIF): boolean => {
+  return getCorrectionErrorType(state) === CorrectionErrorTypes.CLIENT
+}
+
 /** The business identifier (aka incorporation number). */
 export const getBusinessId = (state: StateIF): string => {
   return state.stateModel.tombstone.businessId

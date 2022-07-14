@@ -52,7 +52,6 @@ import { AuthServices, LegalServices } from '@/services/'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resources/Correction/'
-import { CorrectionErrorTypes } from '@/enums'
 
 @Component({
   components: {
@@ -67,6 +66,7 @@ import { CorrectionErrorTypes } from '@/enums'
 export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin) {
   // Global getters
   @Getter getFilingData!: FilingDataIF
+  @Getter isClientErrorCorrection!: boolean
 
   // Global actions
   @Action setCorrectedFilingId!: ActionBindingIF
@@ -81,11 +81,6 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
   readonly correctionFiling: CorrectionFilingIF
 
   readonly getCorpTypeDescription = GetCorpFullDescription
-
-  /** Whether this is a client error correction (vs. a staff error correction). */
-  get isClientErrorCorrection (): boolean {
-    return this.getCorrectionErrorType === CorrectionErrorTypes.CLIENT
-  }
 
   /** The original filing name. */
   get originalFilingName (): string {
