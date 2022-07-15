@@ -9,7 +9,6 @@ import { axios } from '@/utils/'
 import FmCorrection from '@/views/Correction/FmCorrection.vue'
 import mockRouter from './MockRouter'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 Vue.use(Vuetify)
 
@@ -210,7 +209,7 @@ describe('Firm Correction component', () => {
   })
 
   it('staff payment is defaulted to no fee', () => {
-    // Staff payment No Fee button needs option to be set to NO_FEE enum for the no fee button to be selected in staff payment component
+    // Staff payment No Fee button needs to be set to NO_FEE enum for the no fee button to be selected
     expect(store.state.stateModel.staffPaymentStep.staffPayment.option).toBe(0)
   })
 
