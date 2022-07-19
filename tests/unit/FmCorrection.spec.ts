@@ -9,7 +9,6 @@ import { axios } from '@/utils/'
 import FmCorrection from '@/views/Correction/FmCorrection.vue'
 import mockRouter from './MockRouter'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 Vue.use(Vuetify)
 
