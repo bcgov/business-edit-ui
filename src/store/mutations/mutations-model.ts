@@ -1,6 +1,6 @@
 import { AccountInformationIF, ActionKvIF, AddressesIF, BusinessInformationIF, EntitySnapshotIF, CertifyIF,
-  FilingDataIF, CorrectionInformationIF, CorrectedFilingIF, NameRequestIF, NameTranslationIF, OrgPersonIF,
-  ResolutionsIF, ShareClassIF, StateIF, FeesIF, ResourceIF } from '@/interfaces/'
+  FilingDataIF, CorrectionInformationIF, NameRequestIF, NameTranslationIF, OrgPersonIF, ShareClassIF, StateIF,
+  FeesIF, ResourceIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { FilingTypes } from '@/enums/'
@@ -182,10 +182,6 @@ export const mutateEntityType = (state: StateIF, entityType: CorpTypeCd) => {
   state.stateModel.tombstone.entityType = entityType
 }
 
-export const mutateCorrectedFiling = (state: StateIF, filing: CorrectedFilingIF) => {
-  state.stateModel.correctedFiling = filing
-}
-
 export const mutateEntitySnapshot = (state: StateIF, entitySnapshot: EntitySnapshotIF) => {
   state.stateModel.entitySnapshot = entitySnapshot
 }
@@ -248,11 +244,7 @@ export const mutateProvisionsRemoved = (state: StateIF, provisionsRemoved: boole
   state.stateModel.newAlteration.provisionsRemoved = provisionsRemoved
 }
 
-export const mutateOriginalResolutionDates = (state: StateIF, resolutionDates: ResolutionsIF[]) => {
-  state.stateModel.shareStructureStep.previousResolutionDates = resolutionDates
-}
-
-export const mutateResolutionDates = (state: StateIF, resolutionDates: string[]) => {
+export const mutateNewResolutionDates = (state: StateIF, resolutionDates: string[]) => {
   state.stateModel.shareStructureStep.resolutionDates = resolutionDates
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }

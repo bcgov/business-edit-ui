@@ -235,7 +235,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   readonly invalidSection: boolean
 
   // Global getters
-  @Getter getNameRequestApprovedName!: string
+  @Getter getNameRequestLegalName!: string
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getResource!: ResourceIF
   @Getter hasBusinessTypeChanged!: boolean
@@ -247,13 +247,11 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   // Declaration for template
   readonly CorpTypeCd = CorpTypeCd
 
-  private selectedEntityType: CorpTypeCd = null
-  private confirmArticles: boolean = false
-  private helpToggle: boolean = false
-  private isEditingType = false
-
-  /** V-model for dropdown menu. */
-  private dropdown: boolean = null
+  protected selectedEntityType = null as CorpTypeCd
+  protected confirmArticles = false
+  protected helpToggle = false
+  protected isEditingType = false
+  protected dropdown = null as boolean
 
   readonly confirmLabel: string = `The company has completed a set Benefit Company Articles containing a benefit
     provision, and a copy of these articles has been added to company's record book.`
@@ -275,7 +273,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   }
 
   /** Entity Options. */
-  private entityTypeOptions = [
+  readonly entityTypeOptions = [
     {
       value: 'BC',
       SHORT_DESC: 'BC Limited Company',
@@ -290,8 +288,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
 
   /** Verify New Business name. */
   get isNewName (): boolean {
-    return this.getNameRequestApprovedName &&
-      (this.getNameRequestApprovedName !== this.getEntitySnapshot?.businessInfo?.legalName)
+    return this.getNameRequestLegalName &&
+      (this.getNameRequestLegalName !== this.getEntitySnapshot?.businessInfo?.legalName)
   }
 
   /** Check is current entity selection is a Benefit Company */

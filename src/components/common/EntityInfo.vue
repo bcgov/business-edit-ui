@@ -4,7 +4,7 @@
       <div class="d-flex justify-space-between mt-5">
         <div class="left-column align-self-end">
           <div class="title-container">
-            <span id="entity-legal-name">{{ getOriginalBusinessName || 'Numbered Benefit Company' }}</span>
+            <span id="entity-legal-name">{{ getOriginalLegalName || 'Numbered Benefit Company' }}</span>
           </div>
 
           <dl class="business-info">
@@ -43,7 +43,7 @@ export default class EntityInfo extends Mixins(CommonMixin, SharedMixin) {
   // Global getters
   @Getter getBusinessId!: string
   @Getter getBusinessNumber!: string
-  @Getter getOriginalBusinessName!: string
+  @Getter getOriginalLegalName!: string
   @Getter isRoleStaff!: boolean
   @Getter getBusinessContact!: ContactPointIF
   @Getter getEntitySnapshot!: EntitySnapshotIF

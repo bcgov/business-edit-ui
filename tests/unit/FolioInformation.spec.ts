@@ -51,12 +51,12 @@ describe('Folio Information component', () => {
 
   it('gets Original Folio Number for a correction', () => {
     store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.correctedFiling = {
-      incorporationApplication: {},
-      header: {
-        folioNumber: 'A123'
-      }
-    }
+    // store.state.stateModel.correctedFiling = {
+    //   incorporationApplication: {},
+    //   header: {
+    //     folioNumber: 'A123'
+    //   }
+    // }
 
     const wrapper = mount(FolioInformation, { vuetify, store })
     const vm: any = wrapper.vm
@@ -80,12 +80,12 @@ describe('Folio Information component', () => {
 
   it('does not update folio number for a correction', async () => {
     store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.correctedFiling = {
-      incorporationApplication: {},
-      header: {
-        folioNumber: ''
-      }
-    }
+    // store.state.stateModel.correctedFiling = {
+    //   incorporationApplication: {},
+    //   header: {
+    //     folioNumber: ''
+    //   }
+    // }
 
     const wrapper = mount(FolioInformation, { vuetify, store })
     const vm: any = wrapper.vm
@@ -105,12 +105,12 @@ describe('Folio Information component', () => {
     sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
     store.state.stateModel.tombstone.businessId = 'BC1234567'
     store.state.stateModel.tombstone.filingType = 'alteration'
-    store.state.stateModel.correctedFiling = {
-      incorporationApplication: {},
-      header: {
-        folioNumber: ''
-      }
-    }
+    // store.state.stateModel.correctedFiling = {
+    //   incorporationApplication: {},
+    //   header: {
+    //     folioNumber: ''
+    //   }
+    // }
 
     // mock auth "patch business" endpoint
     sinon.stub(axios, 'patch').withArgs('myhost/basePath/auth/entities/BC1234567')

@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, CorrectedFilingIF, EntitySnapshotIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF } from '@/interfaces/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number/'
@@ -26,7 +26,6 @@ import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-
 export default class FolioInformation extends Mixins(CommonMixin) {
   // Global getters
   @Getter getFolioNumber!: string
-  @Getter getCorrectedFiling!: CorrectedFilingIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter isRoleStaff!: boolean
   @Getter getBusinessId!: string
@@ -41,16 +40,9 @@ export default class FolioInformation extends Mixins(CommonMixin) {
   @Prop({ default: false })
   readonly invalidSection: boolean
 
-  /** The original folio number dependant on filing type. */
+  /** The original Folio Number. */
   get originalFolioNumber (): string {
-    // *** TODO: remove ref to correction filing; use snapshot instead
-    if (this.isCorrectionFiling && this.getCorrectedFiling?.header) {
-      return this.getCorrectedFiling.header.folioNumber
-    } else if (this.isAlterationFiling) {
-      return this.getEntitySnapshot?.authInfo?.folioNumber
-    } else {
-      return null
-    }
+    return this.getEntitySnapshot?.authInfo?.folioNumber
   }
 
   /** Whether to hide the component's actions. */
@@ -60,14 +52,17 @@ export default class FolioInformation extends Mixins(CommonMixin) {
     return (this.isCorrectionFiling || this.isRoleStaff)
   }
 
-  /** On new folio number, updates auth db and store. */
-  async onNewFolioNumber (val: string): Promise<void> {
+  /** On New Folio Number event, updates auth db and store. */
+  protected async onNewFolioNumber (folioNumber: string): Promise<void> {
+    // do nothing if folio number was not changed
+    if (folioNumber === this.getFolioNumber) return
+
     try {
       if (this.isAlterationFiling) {
-        await AuthServices.updateFolioNumber(val, this.getBusinessId)
+        await AuthServices.updateFolioNumber(folioNumber, this.getBusinessId)
       }
-      this.setFolioNumber(val)
-      this.setTransactionalFolioNumber(val)
+      this.setFolioNumber(folioNumber)
+      this.setTransactionalFolioNumber(folioNumber)
     } catch (error) {
       console.log('Update folio number error =', error) // eslint-disable-line no-console
       this.$root.$emit('update-error-event', 'Failed to update Folio Number')
@@ -81,11 +76,11 @@ export default class FolioInformation extends Mixins(CommonMixin) {
 
   /** On Have Changes event, emits event. */
   @Emit('haveChanges')
-  onHaveChanges (val: boolean): void {}
+  protected onHaveChanges (val: boolean): void {}
 
   /** On Is Editing event, updates store and emits event. */
   @Emit('isEditing')
-  onIsEditing (val: boolean): void {
+  protected onIsEditing (val: boolean): void {
     this.setEditingFolioNumber(val)
     this.setValidComponent({ key: 'isValidFolioInfo', value: !val })
   }

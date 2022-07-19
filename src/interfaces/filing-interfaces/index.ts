@@ -1,7 +1,6 @@
 export * from './alteration-filing-interface'
 export * from './chg-registration-interfaces'
 export * from './conversion-interfaces'
-export * from './corrected-filing-interface'
 export * from './correction-filing-interface'
 export * from './filing-business-interface'
 export * from './filing-data-interface'

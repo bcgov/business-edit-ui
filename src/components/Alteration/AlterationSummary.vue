@@ -89,7 +89,7 @@
             <label><strong>Share Structure</strong></label>
           </v-col>
         </v-row>
-        <share-structures class="mt-6" :is-edit-mode="false" />
+        <ShareStructures class="mt-6" :is-edit-mode="false" />
       </div>
     </template>
 
@@ -115,9 +115,9 @@
     <template v-if="haveNewResolutionDates">
       <v-divider class="mx-4" />
       <div class="section-container new-resolution-dates-summary">
-        <resolution-dates
+        <ResolutionDates
           :added-dates="getNewResolutionDates"
-          :previous-dates="getPreviousResolutionDates"
+          :previous-dates="getOriginalResolutions"
           :isEditMode="false"
         />
       </div>
@@ -142,7 +142,7 @@
               businesses select an immediate Alteration Date and Time.
             </p>
 
-            <effective-date-time
+            <EffectiveDateTime
               :currentJsDate="getCurrentJsDate"
               :effectiveDateTime="getEffectiveDateTime"
               @dateTimeString="setEffectiveDateTimeString($event)"
@@ -168,7 +168,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF } from '@/interfaces/'
+import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
 import { DateMixin, SharedMixin, FilingTemplateMixin, PayApiMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
@@ -189,7 +189,7 @@ export default class AlterationSummary extends Mixins(
 ) {
   // Global getters
   @Getter getBusinessNumber!: string
-  @Getter getPreviousResolutionDates!: string[]
+  @Getter getOriginalResolutions!: ResolutionsIF[]
   @Getter getCurrentFees!: FeesIF
   @Getter isBusySaving!: boolean
   @Getter getFeePrices!: FeesIF
@@ -219,7 +219,7 @@ export default class AlterationSummary extends Mixins(
 
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
-    if (this.getNameRequestApprovedName) return this.getNameRequestApprovedName
+    if (this.getNameRequestLegalName) return this.getNameRequestLegalName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }

@@ -98,14 +98,14 @@ describe('Completing Party', () => {
   })
 
   it('displays original person and no badge if CP is unchanged', () => {
-    store.state.stateModel.correctedFiling = {
-      incorporationApplication: {
-        parties: [
-          originalPersonCp,
-          originalOrg
-        ]
-      }
-    }
+    // store.state.stateModel.correctedFiling = {
+    //   incorporationApplication: {
+    //     parties: [
+    //       originalPersonCp,
+    //       originalOrg
+    //     ]
+    //   }
+    // }
     store.state.stateModel.peopleAndRoles = {
       orgPeople: [
         originalPersonCp,
@@ -119,19 +119,19 @@ describe('Completing Party', () => {
     expect(wrapper.findAll('.flex').at(1).find('span').text()).toBe('Original  Person')
 
     // cleanup
-    store.state.stateModel.correctedFiling = null
+    // store.state.stateModel.correctedFiling = null
     wrapper.destroy()
   })
 
   it('displays new person and Corrected badge if CP has changed', () => {
-    store.state.stateModel.correctedFiling = {
-      incorporationApplication: {
-        parties: [
-          originalPersonCp,
-          originalOrg
-        ]
-      }
-    }
+    // store.state.stateModel.correctedFiling = {
+    //   incorporationApplication: {
+    //     parties: [
+    //       originalPersonCp,
+    //       originalOrg
+    //     ]
+    //   }
+    // }
     store.state.stateModel.peopleAndRoles = {
       orgPeople: [
         originalPersonNotCp,
@@ -146,7 +146,7 @@ describe('Completing Party', () => {
     expect(wrapper.findAll('.flex').at(1).find('span').text()).toBe('New  Person')
 
     // cleanup
-    store.state.stateModel.correctedFiling = null
+    // store.state.stateModel.correctedFiling = null
     wrapper.destroy()
   })
 })

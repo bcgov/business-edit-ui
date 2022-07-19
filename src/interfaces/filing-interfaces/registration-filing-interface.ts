@@ -1,4 +1,4 @@
-import { AddressesIF, FilingBusinessIF, FilingHeaderIF, NameRequestIF, OrgPersonIF } from '@/interfaces/'
+import { AddressesIF, NameRequestIF, OrgPersonIF } from '@/interfaces/'
 import { ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { BusinessTypes } from '@/enums'
 
@@ -18,11 +18,4 @@ export interface RegistrationIF {
   parties: Array<OrgPersonIF>
   courtOrder?: string
   startDate?: string
-}
-
-/** Interface for data object UI sends to API. */
-export interface RegistrationFilingIF {
-  header: FilingHeaderIF
-  business: FilingBusinessIF
-  registration: RegistrationIF
 }

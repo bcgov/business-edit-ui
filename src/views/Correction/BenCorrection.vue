@@ -67,7 +67,6 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setCorrectedFiling!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
   @Action setResource!: ActionBindingIF
@@ -100,18 +99,8 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
       // fetch business snapshot
       const businessSnapshot = await this.fetchBusinessSnapshot()
 
-      // *** FUTURE: remove this workaround
-      // set NR Number in snapshot since API doesn't return it yet and we need to
-      // know if this is a named company -- see ticket #13022
-      businessSnapshot.businessInfo.nrNumber =
-        this.correctionFiling.incorporationApplication.nameRequest.nrNumber
-
       // parse draft correction filing and business snapshot into store
       this.parseCorrectionFiling(this.correctionFiling, businessSnapshot)
-
-      // fetch and store corrected filing
-      const correctedFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.getCorrectedFilingId)
-      this.setCorrectedFiling(correctedFiling)
 
       // set the resources
       this.setResource(this.correctionResource)

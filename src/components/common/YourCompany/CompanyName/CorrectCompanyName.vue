@@ -28,30 +28,26 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
 
   @Action setNameRequest!: ActionBindingIF
 
-  @Getter getNameRequestApprovedName!: string
+  @Getter getNameRequestLegalName!: string
   @Getter getNameRequest!: NameRequestIF
 
-  private valid = false
-  private companyName = ''
+  // Local properties
+  protected valid = false
+  protected companyName = ''
 
   // Form Ref
   $refs: { correctNameForm: HTMLFormElement }
 
   // Rules
-  private companyNameRules = [
+  readonly companyNameRules = [
     (v: string) => !!v || ' A company name is required'
   ]
 
   mounted (): void {
     // Set the current company name to the form
-    if (this.getNameRequestApprovedName) {
-      this.companyName = this.getNameRequestApprovedName
+    if (this.getNameRequestLegalName) {
+      this.companyName = this.getNameRequestLegalName
     }
-  }
-
-  // Validations
-  get isFormValid (): boolean {
-    return this.valid
   }
 
   /** Watch for form submission and emit results. */
@@ -75,7 +71,7 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
   @Watch('valid')
   @Emit('isValid')
   private emitValid (): boolean {
-    return this.isFormValid
+    return this.valid
   }
 }
 </script>

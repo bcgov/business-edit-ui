@@ -13,7 +13,8 @@ export const SoleProprietorshipResource: any = {
   },
   changeData: {
     nameChangeOptions: [
-      CorrectionTypes.CORRECT_NEW_NR
+      CorrectionTypes.CORRECT_NEW_NR,
+      CorrectionTypes.CORRECT_NAME
     ],
     orgPersonInfo: {
       orgPersonLabel: 'Proprietor',

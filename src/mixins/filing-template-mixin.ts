@@ -17,7 +17,7 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 export default class FilingTemplateMixin extends Mixins(DateMixin) {
   // Global getters
   @Getter getNameRequestNumber!: string
-  @Getter getNameRequestApprovedName!: string
+  @Getter getNameRequestLegalName!: string
   @Getter getBusinessId!: string
   @Getter getCurrentDate!: string
   @Getter getCorrectedFilingDate!: string
@@ -45,8 +45,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getBusinessContact!: ContactPointIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getNewResolutionDates!: string[]
-  @Getter hasNewNr!: boolean
-  @Getter getNewAlteration!: any // FUTURE AlterationFilingIF
+  @Getter getNewAlteration!: any // *** FUTURE: use type AlterationFilingIF
   @Getter areProvisionsRemoved!: boolean
   @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
@@ -78,8 +77,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setEntitySnapshot!: ActionBindingIF
   @Action setDocumentOptionalEmail!: ActionBindingIF
   @Action setProvisionsRemoved!: ActionBindingIF
-  @Action setOriginalResolutionDates!: ActionBindingIF
-  @Action setResolutionDates!: ActionBindingIF
+  @Action setNewResolutionDates!: ActionBindingIF
   @Action setFileNumber!: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
 
@@ -140,7 +138,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       },
       business: {
         identifier: this.getBusinessId,
-        legalName: this.getNameRequestApprovedName,
+        legalName: this.getNameRequestLegalName,
         legalType: this.getEntityType,
         nrNumber: this.getNameRequestNumber
       },
@@ -168,7 +166,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         contactPoint: this.getContactPoint,
         nameRequest: {
           legalType: this.getEntityType,
-          legalName: this.getNameRequestApprovedName,
+          legalName: this.getNameRequestLegalName,
           nrNumber: this.getNameRequestNumber
         },
         nameTranslations: nameTranslations,
@@ -180,15 +178,19 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // add in Registration data
     if (this.isCorrectedRegistration) {
-      filing.correction.business.naicsCode = this.getCurrentNaics.naicsCode
-      filing.correction.business.naicsDescription = this.getCurrentNaics.naicsDescription
+      filing.correction.business = {
+        naicsCode: this.getCurrentNaics.naicsCode,
+        naicsDescription: this.getCurrentNaics.naicsDescription
+      }
       // filing.correction.startDate = ... // *** FUTURE: implement
     }
 
     // add in Change Of Registration data
     if (this.isCorrectedChangeReg) {
-      filing.correction.business.naicsCode = this.getCurrentNaics.naicsCode
-      filing.correction.business.naicsDescription = this.getCurrentNaics.naicsDescription
+      filing.correction.business = {
+        naicsCode: this.getCurrentNaics.naicsCode,
+        naicsDescription: this.getCurrentNaics.naicsDescription
+      }
       // filing.correction.startDate = ... // *** FUTURE: implement
     }
 
@@ -247,13 +249,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }
     }
 
-    // Apply business name and/or type changes to filing
-    if (this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
-      filing.alteration.nameRequest = {
-        legalType: this.getNameRequest.legalType,
-        legalName: this.getNameRequest.legalName,
-        nrNumber: this.getNameRequest.nrNumber
-      }
+    // Apply name request info to filing
+    if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
+      filing.alteration.nameRequest = { ...this.getNameRequest }
     }
 
     // Apply name translation changes to filing
@@ -292,11 +290,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     if (this.getDocumentOptionalEmail) {
       filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
-    }
-
-    // Include name request info if applicable
-    if (this.hasNewNr || this.hasBusinessNameChanged) {
-      filing.alteration.nameRequest = { ...this.getNameRequest }
     }
 
     // Include Staff Payment into the Alteration filing
@@ -417,11 +410,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
-   * Builds a firm conversion filing from store data.
+   * Builds a conversion filing from store data.
    * @param isDraft whether this is a draft
    * @returns the conversion filing body
    */
-  buildFirmConversionFiling (isDraft: boolean): ConversionFilingIF {
+  buildConversionFiling (isDraft: boolean): ConversionFilingIF {
     // Build conversion filing
     const filing: ConversionFilingIF = {
       header: {
@@ -553,7 +546,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // store Name Request
-    this.setNameRequest(filing.correction.nameRequest ||
+    this.setNameRequest(
+      filing.correction.nameRequest ||
       {
         legalType: entitySnapshot.businessInfo.legalType,
         legalName: entitySnapshot.businessInfo.legalName,
@@ -562,21 +556,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     )
 
     // store Name Translations
-    if (filing.incorporationApplication) {
-      // The first time (when we initiate a correction), the `oldName` and `action` props are not
-      // available in the API response, which creates the issue of not having these props in store.
-      // Due to missing props, change event was not triggering if the action value is changed (at
-      // the time of Delete there is no other prop change except action). To handle this scenario,
-      // this structure needs to be kept.
+    if (this.isCorrectedIncorporationApplication) {
       this.setNameTranslations(
-        filing.incorporationApplication.nameTranslations?.map(x => {
-          return {
-            id: x.id,
-            name: x.name,
-            oldName: x.oldName || null,
-            action: x.action || null
-          }
-        }) || []
+        this.mapNameTranslations(filing.correction.nameTranslations) ||
+        this.mapNameTranslations(entitySnapshot.nameTranslations) ||
+        []
       )
     }
 
@@ -590,9 +574,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setPeopleAndRoles(filing.correction.parties || entitySnapshot.orgPersons)
 
     // store Share Classes
-    if (filing.incorporationApplication) {
-      this.setShareClasses(filing.correction.shareStructure?.shareClasses ||
-        entitySnapshot.shareStructure.shareClasses)
+    if (this.isCorrectedIncorporationApplication) {
+      this.setShareClasses(
+        filing.correction.shareStructure?.shareClasses ||
+        entitySnapshot.shareStructure.shareClasses
+      )
     }
 
     // store Certify State
@@ -610,7 +596,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // store Folio Number
-    this.setFolioNumber(filing.header.folioNumber)
+    // *** FUTURE: should we store correction.folioNumber instead?
+    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // store Effective Date
     this.setEffectiveDateTimeString(filing.header.effectiveDate)
@@ -639,7 +626,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     })
 
     // store Name Request data
-    this.setNameRequest(filing.alteration.nameRequest ||
+    this.setNameRequest(
+      filing.alteration.nameRequest ||
       {
         legalType: entitySnapshot.businessInfo.legalType,
         legalName: entitySnapshot.businessInfo.legalName,
@@ -649,14 +637,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // store Name Translations
     this.setNameTranslations(
-      filing.alteration.nameTranslations?.map(x => {
-        return {
-          id: x.id,
-          name: x.name,
-          oldName: x.oldName || null,
-          action: x.action || null
-        }
-      }) || []
+      this.mapNameTranslations(filing.alteration.nameTranslations) ||
+      this.mapNameTranslations(entitySnapshot.nameTranslations) ||
+      []
     )
 
     // store Provisions Removed
@@ -676,8 +659,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       filing.alteration.shareStructure?.shareClasses ||
       entitySnapshot.shareStructure?.shareClasses
     )
-    this.setResolutionDates(filing.alteration.shareStructure?.resolutionDates || [])
-    this.setOriginalResolutionDates(entitySnapshot.resolutions)
+    this.setNewResolutionDates(filing.alteration.shareStructure?.resolutionDates || [])
 
     // store Certify State
     this.setCertifyState({
@@ -686,6 +668,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     })
 
     // store Folio Number
+    // *** FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
@@ -729,7 +712,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // store Name Request data
-    this.setNameRequest(filing.changeOfRegistration.nameRequest ||
+    this.setNameRequest(
+      filing.changeOfRegistration.nameRequest ||
       {
         legalType: entitySnapshot.businessInfo.legalType,
         legalName: entitySnapshot.businessInfo.legalName,
@@ -761,6 +745,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     })
 
     // store Folio Number
+    // *** FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
@@ -793,7 +778,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // store Name Request data
-    this.setNameRequest(filing.conversion.nameRequest ||
+    this.setNameRequest(
+      filing.conversion.nameRequest ||
       {
         legalType: entitySnapshot.businessInfo.legalType,
         legalName: entitySnapshot.businessInfo.legalName,
@@ -837,7 +823,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setEntitySnapshot(entitySnapshot)
 
     // store Folio Number
-    this.setFolioNumber(entitySnapshot.authInfo.folioNumber)
+    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // store Entity Type
     this.setEntityType(entitySnapshot.businessInfo.legalType)
@@ -865,24 +851,16 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     switch (entitySnapshot.businessInfo.legalType) {
       case CorpTypeCd.BENEFIT_COMPANY: {
         // store Name Translations
-        this.setNameTranslations(
-          entitySnapshot.nameTranslations?.map(x => {
-            return {
-              id: x.id,
-              name: x.name,
-              oldName: null,
-              action: null
-            }
-          }) || []
-        )
+        if (entitySnapshot.nameTranslations) {
+          this.setNameTranslations(this.mapNameTranslations(entitySnapshot.nameTranslations))
+        }
 
         // clear Provisions Removed
         this.setProvisionsRemoved(null)
 
-        // store Share Classes and Resolution Dates
+        // store Share Classes and clear New Resolution Dates
         this.setShareClasses(entitySnapshot.shareStructure.shareClasses)
-        this.setResolutionDates([])
-        this.setOriginalResolutionDates(entitySnapshot.resolutions)
+        this.setNewResolutionDates([])
 
         break
       }
@@ -905,16 +883,29 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    */
   private prepareNameTranslations () : NameTranslationIF[] {
     // Filter out and modify name translation to match schema
-    return this.getNameTranslations?.filter(x => x.action !== ActionTypes.REMOVED)
-      .map(x => {
-        let nameTranslation = {
-          name: x.name
-        }
-        if (x.action !== ActionTypes.ADDED) {
-          nameTranslation['id'] = x.id
-        }
-        return nameTranslation
-      })
+    return this.getNameTranslations?.filter(x => x.action !== ActionTypes.REMOVED).map(x => {
+      const nameTranslation: any = {
+        name: x.name
+      }
+      if (x.action !== ActionTypes.ADDED) {
+        nameTranslation.id = x.id
+      }
+      return nameTranslation
+    })
+  }
+
+  // The first time (when we initiate a correction), the `oldName` and `action` props are not
+  // available in the API response, which creates the issue of not having these props in store.
+  // Due to missing props, the change event was not triggering if the action value is changed
+  // (at // the time of Delete there is no other prop change except action). To handle this
+  // scenario, this structure needs to be kept.
+  private mapNameTranslations (nameTranslations: any): NameTranslationIF[] {
+    return nameTranslations?.map(x => ({
+      id: x.id,
+      name: x.name,
+      oldName: x.oldName || null,
+      action: x.action || null
+    }))
   }
 
   /** If a Transactional Folio number was entered then override the Folio number
