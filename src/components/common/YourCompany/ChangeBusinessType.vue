@@ -18,7 +18,7 @@
         </span>
 
         <!-- Firm info tooltip -->
-        <v-tooltip v-if="isChangeRegFiling || isFirmConversionFiling || isCorrectionFiling"
+        <v-tooltip v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling"
                     top
                     content-class="top-tooltip"
                     transition="fade-transition"
@@ -241,6 +241,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   @Getter hasBusinessTypeChanged!: boolean
   @Getter isConflictingLegalType!: boolean
   @Getter isEntityTypeBC!: boolean
+  @Getter isFirmCorrectionFiling!: boolean
 
   @Action setEntityType!: ActionBindingIF
 
@@ -301,7 +302,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
 
   /** Type change helper information */
   get typeChangeInfo (): string {
-    console.info('this.getResource.changeData: ', this.getResource.changeData)
     return this.getResource.changeData?.typeChangeInfo
   }
 
