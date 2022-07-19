@@ -185,7 +185,7 @@ import { Action, Getter } from 'vuex-class'
 import { cloneDeep, isEmpty } from 'lodash'
 import { isSame } from '@/utils/'
 import { ActionBindingIF, ConfirmDialogType, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF,
-  OrgPersonIF, ResourceIF, RoleIF, IncorporationApplicationIF, CorrectedFilingIF } from '@/interfaces/'
+  OrgPersonIF, ResourceIF, RoleIF } from '@/interfaces/'
 import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
@@ -219,8 +219,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getPeopleAndRoles!: OrgPersonIF[]
   @Getter getUserEmail!: string
-  @Getter getCorrectedFiling!: CorrectedFilingIF
-  @Getter getOriginalIA!: IncorporationApplicationIF
   @Getter isRoleStaff!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
@@ -250,11 +248,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 
   /** The list of original parties. */
   get originalParties (): OrgPersonIF[] {
-    if (this.getOriginalIA) {
-      return this.getOriginalIA.parties
-    } else {
-      return this.getEntitySnapshot?.orgPersons || []
-    }
+    return this.getEntitySnapshot?.orgPersons || []
   }
 
   /** True if we have a Completing Party. */
@@ -491,7 +485,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       const id = person?.officer?.id
 
       // get a copy of original person from original IA
-      const thisPerson = (id !== undefined) && cloneDeep(this.originalParties.find(x => x.officer.id === id))
+      const thisPerson = (id !== undefined) && cloneDeep(this.originalParties.find(x => +x.officer.id === +id))
 
       // safety check
       if (!thisPerson) throw new Error(`Failed to find original person with id = ${id}`)
@@ -767,7 +761,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   /**
    * On initial load, sets the Original Completing Party (if any).
    */
-  @Watch('getCorrectedFiling', { deep: true })
+  @Watch('originalParties', { deep: true })
   private onCorrectedFilingChanged (): void {
     this.originalCompletingParty = this.getCompletingParty(this.originalParties)
   }

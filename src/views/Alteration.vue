@@ -247,6 +247,7 @@ export default class Alteration extends Mixins(
 
     // try to fetch data
     try {
+      // fetch business snapshot
       const businessSnapshot = await this.fetchBusinessSnapshot()
 
       if (this.alterationId) {
@@ -266,10 +267,10 @@ export default class Alteration extends Mixins(
           throw new Error('Invalid Alteration status')
         }
 
-        // parse alteration filing and original business snapshot into store
+        // parse draft alteration filing and business snapshot into store
         this.parseAlterationFiling(alterationFiling, businessSnapshot)
       } else {
-        // parse business data into store
+        // parse just the business snapshot into store
         this.parseEntitySnapshot(businessSnapshot)
       }
 

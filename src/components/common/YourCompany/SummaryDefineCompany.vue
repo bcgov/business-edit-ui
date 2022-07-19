@@ -71,7 +71,7 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 })
 export default class SummaryDefineCompany extends Mixins(CommonMixin) {
   // Getters
-  @Getter getApprovedName!: string
+  @Getter getNameRequestApprovedName!: string
   @Getter getBusinessNumber!: string
   @Getter isPremiumAccount!: boolean
   @Getter getNameTranslations!: Array<string>
@@ -85,7 +85,7 @@ export default class SummaryDefineCompany extends Mixins(CommonMixin) {
 
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
-    if (this.getApprovedName) return this.getApprovedName
+    if (this.getNameRequestApprovedName) return this.getNameRequestApprovedName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }

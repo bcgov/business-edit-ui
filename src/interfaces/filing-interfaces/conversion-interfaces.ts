@@ -20,9 +20,6 @@ interface ConversionIF {
   parties: Array<OrgPersonIF>
   shareStructure?: ShareStructureIF
   contactPoint: ContactPointIF
-  incorporationAgreement?: {
-    agreementType: string
-  }
   courtOrder?: string
 }
 

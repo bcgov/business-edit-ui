@@ -1,10 +1,9 @@
 import { AccountTypes, ActionTypes, CorrectionErrorTypes, FilingCodes, FilingNames, FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { AddressesIF, IncorporationFilingIF, NameRequestDetailsIF, NameRequestApplicantIF, OrgPersonIF,
-  ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF, NameTranslationIF, FilingDataIF, StateIF,
-  EffectiveDateTimeIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF, ResolutionsIF, FeesIF,
-  ResourceIF, EntitySnapshotIF, ChgRegistrationFilingIF, RegistrationFilingIF, CorrectedFilingIF,
-  ValidationFlagsIF, IncorporationApplicationIF, ChgRegistrationIF, RegistrationIF } from '@/interfaces/'
+import { AddressesIF, IncorporationFilingIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF,
+  CertifyIF, NameTranslationIF, FilingDataIF, StateIF, EffectiveDateTimeIF, FlagsReviewCertifyIF,
+  FlagsCompanyInfoIF, ResolutionsIF, FeesIF, ResourceIF, EntitySnapshotIF, CorrectedFilingIF, ValidationFlagsIF,
+  IncorporationApplicationIF, CorrectionInformationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 import { isSame } from '@/utils/'
@@ -60,6 +59,21 @@ export const isFirmConversionFiling = (state: StateIF): boolean => {
   return (isEntityTypeFirm(state) && isConversionFiling(state))
 }
 
+/** Whether the current corrected filing is an Incorporation Application. */
+export const isCorrectedIncorporationApplication = (state: StateIF): boolean => {
+  return (getCorrectedFilingType(state) === FilingTypes.INCORPORATION_APPLICATION)
+}
+
+/** Whether the current corrected filing is a Registration. */
+export const isCorrectedRegistration = (state: StateIF): boolean => {
+  return (getCorrectedFilingType(state) === FilingTypes.REGISTRATION)
+}
+
+/** Whether the current corrected filing is a Change of Registration. */
+export const isCorrectedChangeReg = (state: StateIF): boolean => {
+  return (getCorrectedFilingType(state) === FilingTypes.CHANGE_OF_REGISTRATION)
+}
+
 /** The entity type. */
 export const getEntityType = (state: StateIF): CorpTypeCd => {
   return state.stateModel.tombstone.entityType
@@ -110,24 +124,6 @@ export const getBusinessFoundingDate = (state: StateIF): string => {
   return getBusinessInformation(state).foundingDate
 }
 
-/** The original filing's name. */
-export const getOriginalFilingName = (state: StateIF): string => {
-  if (getOriginalIA(state)) return FilingNames.INCORPORATION_APPLICATION
-  if (getOriginalChgRegistration(state)) return FilingNames.CHANGE_OF_REGISTRATION
-  if (getOriginalRegistration(state)) return FilingNames.REGISTRATION
-  return null
-}
-
-/** The original filing's filing date-time. */
-export const getOriginalFilingDateTime = (state: StateIF): string => {
-  return getCorrectedFiling(state)?.header.date
-}
-
-/** The original filing's effective date-time. */
-export const getOriginalEffectiveDateTime = (state: StateIF): string => {
-  return getCorrectedFiling(state)?.header.effectiveDate
-}
-
 /** The current account id. */
 export const getAccountId = (state: StateIF): number => {
   return state.stateModel.accountInformation.id
@@ -148,24 +144,29 @@ export const getFilingId = (state: StateIF): number => {
   return state.stateModel.tombstone.filingId
 }
 
-/** The corrected filing id. */
+/** The corrected filing's date (API format). */
+export const getCorrectedFilingDate = (state: StateIF): string => {
+  return getCorrectionInformation(state).correctedFilingDate
+}
+
+/** The corrected filing's id. */
 export const getCorrectedFilingId = (state: StateIF): number => {
-  return state.stateModel.tombstone.correctedFilingId
+  return getCorrectionInformation(state).correctedFilingId
 }
 
-/** The corrected filing type. */
-export const getCorrectedFilingType = (state: StateIF): string => {
-  return getCorrectedFiling(state).header.name
+/** The corrected filing's type. */
+export const getCorrectedFilingType = (state: StateIF): FilingTypes => {
+  return getCorrectionInformation(state).correctedFilingType
 }
 
-/** get error correction type (client or a staff error correction). */
+/** The correction error type. */
 export const getCorrectionErrorType = (state: StateIF): CorrectionErrorTypes => {
-  return state.stateModel.tombstone.correctionType
+  return getCorrectionInformation(state).type
 }
 
-/** get if the correction is a client error (vs. a staff error correction) */
+/** True if the correction is due to a client error. */
 export const isClientErrorCorrection = (state: StateIF): boolean => {
-  return getCorrectionErrorType(state) === CorrectionErrorTypes.CLIENT
+  return (getCorrectionErrorType(state) === CorrectionErrorTypes.CLIENT)
 }
 
 /** The business identifier (aka incorporation number). */
@@ -175,37 +176,27 @@ export const getBusinessId = (state: StateIF): string => {
 
 /** The original business identifier (aka incorporation number). */
 export const getOriginalBusinessName = (state: StateIF): string => {
-  // try to return the legal name from an IA's name request object
+  // *** TODO: stop using corrected filing
   // try to return the legal name from the corrected filing's business object
   // otherwise return the current legal name
   return (
-    getOriginalIA(state)?.nameRequest?.legalName ||
     getCorrectedFiling(state)?.business?.legalName ||
     getBusinessInformation(state).legalName
   )
 }
 
 /** The original filing being corrected. */
+// *** TODO: can we obsolete this?
 export const getCorrectedFiling = (state: StateIF): CorrectedFilingIF => {
   return state.stateModel.correctedFiling
 }
 
 /** The original IA being corrected. Only exists for corrections. */
+// *** TODO: can we obsolete this?
 export const getOriginalIA = (state: StateIF): IncorporationApplicationIF => {
+  // *** TODO: stop using corrected filing
   const filing = getCorrectedFiling(state) as unknown as IncorporationFilingIF
   return filing?.incorporationApplication
-}
-
-/** The original Change of Registration being corrected. Only exists for corrections. */
-export const getOriginalChgRegistration = (state: StateIF): ChgRegistrationIF => {
-  const filing = getCorrectedFiling(state) as unknown as ChgRegistrationFilingIF
-  return filing?.changeOfRegistration
-}
-
-/** The original Registration being corrected. Only exists for corrections. */
-export const getOriginalRegistration = (state: StateIF): RegistrationIF => {
-  const filing = getCorrectedFiling(state) as unknown as RegistrationFilingIF
-  return filing?.registration
 }
 
 /** The original business snapshot. */
@@ -289,12 +280,6 @@ export const getSnapshotNaics = (state: StateIF): NaicsIF => {
   }
 }
 
-/** Whether this IA is for a named business. */
-export const isNamedBusiness = (state: StateIF): boolean => {
-  // a named business has a NR number
-  return !!state.stateModel.nameRequest.nrNumber
-}
-
 /** The Name request state. */
 export const getNameRequest = (state: StateIF): NameRequestIF => {
   return state.stateModel.nameRequest
@@ -302,47 +287,17 @@ export const getNameRequest = (state: StateIF): NameRequestIF => {
 
 /** The NR number of a name request. */
 export const getNameRequestNumber = (state: StateIF): string => {
-  return state.stateModel.nameRequest.nrNumber
+  return getNameRequest(state).nrNumber
 }
 
 /** Identify if changes were made to the NR number. */
 export const hasNewNr = (state: StateIF): boolean => {
-  const newNrNumber = state.stateModel.nameRequest?.nrNumber
-
-  // evaluate only if a new NR exists
-  if (newNrNumber) {
-    let originalNrNumber = null
-
-    if (getOriginalIA(state)) {
-      originalNrNumber = getOriginalIA(state).nameRequest?.nrNumber
-    } else if (getOriginalChgRegistration(state)) {
-      // *** FUTURE: since we may or may not be correcting the latest filing,
-      // does it make sense to get the NR number from this change of registration filing?
-      originalNrNumber = getOriginalChgRegistration(state).nameRequest?.nrNumber
-    } else if (getOriginalRegistration(state)) {
-      // *** FUTURE: since we may or may not be correcting the latest filing,
-      // does it make sense to get the NR number from the registration filing?
-      originalNrNumber = getOriginalRegistration(state).nameRequest?.nrNumber
-    }
-
-    return (newNrNumber !== originalNrNumber)
-  }
-  return false
+  return !!getNameRequestNumber(state)
 }
 
 /** The approved name of a name request. */
-export const getApprovedName = (state: StateIF): string => {
-  return state.stateModel.nameRequest.legalName
-}
-
-/** The name request details. */
-export const getNameRequestDetails = (state: StateIF): NameRequestDetailsIF | {} => {
-  return state.stateModel.nameRequest.details
-}
-
-/** The name request applicant information. */
-export const getNameRequestApplicant = (state: StateIF): NameRequestApplicantIF | {} => {
-  return state.stateModel.nameRequest.applicant
+export const getNameRequestApprovedName = (state: StateIF): string => {
+  return getNameRequest(state).legalName
 }
 
 /** The name translations. */
@@ -368,10 +323,6 @@ export const getPeopleAndRoles = (state: StateIF): Array<OrgPersonIF> => {
 /** The share classes list. */
 export const getShareClasses = (state: StateIF): Array<ShareClassIF> => {
   return state.stateModel.shareStructureStep.shareClasses
-}
-
-export const getAgreementType = (state: StateIF): string => {
-  return state.stateModel.incorporationAgreementStep.agreementType
 }
 
 /** The business contact object. */
@@ -444,12 +395,15 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
       hasNameTranslationChanged(state) ||
       haveOfficeAddressesChanged(state) ||
       havePeopleAndRolesChanged(state) ||
-      hasShareStructureChanged(state) ||
-      hasIncorporationAgreementChanged(state)
+      hasShareStructureChanged(state)
     )
   }
   if (isFirmCorrectionFiling(state)) {
-    return true // *** FUTURE: implement as needed
+    // *** FUTURE: expand here as needed
+    return (
+      haveOfficeAddressesChanged(state) ||
+      havePeopleAndRolesChanged(state)
+    )
   }
   return false // should never happen
 }
@@ -517,22 +471,23 @@ export const isFilingValid = (state: StateIF): boolean => {
     //     they don't allow saving an invalid state to the store.
     return (
       state.stateModel.peopleAndRoles.valid &&
+      state.stateModel.shareStructureStep.valid &&
       state.stateModel.detail.valid &&
       state.stateModel.certifyState.valid &&
       state.stateModel.staffPaymentStep.valid
     )
   }
   if (isFirmCorrectionFiling(state)) {
-    // *** FUTURE: should check the following:
-    // business name
-    // nature of business
-    // business addresses
-    // proprietor / partners
-    // completing party (client error correction only)
-    // detail
-    // certify (client error correction only)
-    // staff payment
-    if (state.stateModel.tombstone.correctionType === CorrectionErrorTypes.CLIENT) {
+    if (isClientErrorCorrection(state)) {
+      // *** FUTURE: should check the following:
+      // business name
+      // nature of business
+      // business addresses
+      // proprietor / partners
+      // completing party (client error correction only)
+      // detail
+      // certify (client error correction only)
+      // staff payment
       return (
         state.stateModel.peopleAndRoles.valid &&
         state.stateModel.detail.valid &&
@@ -540,6 +495,13 @@ export const isFilingValid = (state: StateIF): boolean => {
         state.stateModel.staffPaymentStep.valid
       )
     } else {
+      // *** FUTURE: should check the following:
+      // business name
+      // nature of business
+      // business addresses
+      // proprietor / partners
+      // detail
+      // staff payment
       return (
         state.stateModel.peopleAndRoles.valid &&
         state.stateModel.detail.valid &&
@@ -558,8 +520,7 @@ export const isEditing = (state: StateIF): boolean => {
     state.stateModel.editingFlags.officeAddresses ||
     state.stateModel.editingFlags.folioNumber ||
     state.stateModel.editingFlags.peopleAndRoles ||
-    state.stateModel.editingFlags.shareStructure ||
-    state.stateModel.editingFlags.incorporationAgreement)
+    state.stateModel.editingFlags.shareStructure)
 }
 
 /** The validation flags. */
@@ -596,6 +557,11 @@ export const getBusinessInformation = (state: StateIF): BusinessInformationIF =>
   return state.stateModel.businessInformation
 }
 
+/** The correction information object. */
+export const getCorrectionInformation = (state: StateIF): CorrectionInformationIF => {
+  return state.stateModel.correctionInformation
+}
+
 export const getCertifyState = (state: StateIF): CertifyIF => {
   return state.stateModel.certifyState
 }
@@ -625,10 +591,8 @@ export const isSummaryMode = (state: StateIF): boolean => {
 
 /** Whether business name has changed. */
 export const hasBusinessNameChanged = (state: StateIF): boolean => {
-  const currentLegalName = state.stateModel.nameRequest.legalName ||
-    getBusinessInformation(state).legalName
-  const originalLegalName = getEntitySnapshot(state)?.businessInfo?.legalName ||
-    getCorrectedFiling(state)?.business?.legalName
+  const currentLegalName = getNameRequestApprovedName(state)
+  const originalLegalName = getEntitySnapshot(state)?.businessInfo?.legalName
 
   return (currentLegalName !== originalLegalName)
 }
@@ -636,6 +600,7 @@ export const hasBusinessNameChanged = (state: StateIF): boolean => {
 /** Whether business type has changed. */
 export const hasBusinessTypeChanged = (state: StateIF): boolean => {
   const currentEntityType = getEntityType(state)
+  // *** TODO: stop using corrected filing
   const originalLegalType = getEntitySnapshot(state)?.businessInfo?.legalType ||
     getCorrectedFiling(state)?.business?.legalType
 
@@ -672,11 +637,7 @@ export const haveOfficeAddressesChanged = (state: StateIF): boolean => {
 
 /** The office addresses from the original filing. NB: may be {} */
 export const getOriginalOfficeAddresses = (state: StateIF): AddressesIF => {
-  if (getOriginalIA(state)) {
-    return getOriginalIA(state).offices as AddressesIF
-  } else {
-    return getEntitySnapshot(state)?.addresses
-  }
+  return getEntitySnapshot(state)?.addresses
 }
 
 /** True if (registered) mailing address has changed. */
@@ -685,14 +646,14 @@ export const hasMailingChanged = (state: StateIF): boolean => {
     return !isSame(
       getOfficeAddresses(state)?.registeredOffice?.mailingAddress,
       getOriginalOfficeAddresses(state)?.registeredOffice?.mailingAddress,
-      ['addressCountryDescription']
+      ['addressCountryDescription', 'id']
     )
   }
   if (isChangeRegFiling(state) || isFirmConversionFiling(state) || isFirmCorrectionFiling(state)) {
     return !isSame(
       getOfficeAddresses(state)?.businessOffice?.mailingAddress,
       getOriginalOfficeAddresses(state)?.businessOffice?.mailingAddress,
-      ['addressCountryDescription']
+      ['addressCountryDescription', 'id']
     )
   }
   return false // should never happen
@@ -704,14 +665,14 @@ export const hasDeliveryChanged = (state: StateIF): boolean => {
     return !isSame(
       getOfficeAddresses(state)?.registeredOffice?.deliveryAddress,
       getOriginalOfficeAddresses(state)?.registeredOffice?.deliveryAddress,
-      ['addressCountryDescription']
+      ['addressCountryDescription', 'id']
     )
   }
   if (isChangeRegFiling(state) || isFirmConversionFiling(state) || isFirmCorrectionFiling(state)) {
     return !isSame(
       getOfficeAddresses(state)?.businessOffice?.deliveryAddress,
       getOriginalOfficeAddresses(state)?.businessOffice?.deliveryAddress,
-      ['addressCountryDescription']
+      ['addressCountryDescription', 'id']
     )
   }
   return false // should never happen
@@ -722,7 +683,7 @@ export const hasRecMailingChanged = (state: StateIF): boolean => {
   return !isSame(
     getOfficeAddresses(state)?.recordsOffice?.mailingAddress,
     getOriginalOfficeAddresses(state)?.recordsOffice?.mailingAddress,
-    ['addressCountryDescription']
+    ['addressCountryDescription', 'id']
   )
 }
 
@@ -731,15 +692,14 @@ export const hasRecDeliveryChanged = (state: StateIF): boolean => {
   return !isSame(
     getOfficeAddresses(state)?.recordsOffice?.deliveryAddress,
     getOriginalOfficeAddresses(state)?.recordsOffice?.deliveryAddress,
-    ['addressCountryDescription']
+    ['addressCountryDescription', 'id']
   )
 }
 
 /** True if any people/roles have changed. */
 export const havePeopleAndRolesChanged = (state: StateIF): boolean => {
   const currentOrgPersons = getPeopleAndRoles(state)
-  const originalOrgPersons = getEntitySnapshot(state)?.orgPersons ||
-    getOriginalIA(state)?.parties
+  const originalOrgPersons = getEntitySnapshot(state)?.orgPersons
 
   return !isSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange'])
 }
@@ -765,8 +725,7 @@ export const hasMinimumPartners = (state: StateIF): boolean => {
 /** Whether share structure data has changed. */
 export const hasShareStructureChanged = (state: StateIF): boolean => {
   let currentShareClasses = getShareClasses(state)
-  let originalShareClasses = getEntitySnapshot(state)?.shareStructure?.shareClasses ||
-    getOriginalIA(state)?.shareStructure?.shareClasses
+  let originalShareClasses = getEntitySnapshot(state)?.shareStructure?.shareClasses
 
   // Null action properties can be assigned to the ShareClasses when cancelling edits
   // This is fail safe to ensure null actions are not included in the comparison
@@ -782,15 +741,6 @@ export const hasShareStructureChanged = (state: StateIF): boolean => {
   originalShareClasses = originalShareClasses && removeNullProps(originalShareClasses)
 
   return !isEqual(originalShareClasses, currentShareClasses)
-}
-
-/** Whether incorporation agreement has changed. */
-export const hasIncorporationAgreementChanged = (state: StateIF): boolean => {
-  const currentAgreementType = getAgreementType(state)
-  const originalAgreementType = getEntitySnapshot(state)?.businessInfo.incorporationAgreementType ||
-    getOriginalIA(state)?.incorporationAgreement.agreementType
-
-  return (currentAgreementType !== originalAgreementType)
 }
 
 /** Whether nature of business data has changed. */

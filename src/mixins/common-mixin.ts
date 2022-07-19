@@ -14,6 +14,9 @@ export default class CommonMixin extends Vue {
   @Getter isChangeRegFiling!: boolean
   @Getter isFirmConversionFiling!: boolean
   @Getter isCorrectionFiling!: boolean
+  @Getter isCorrectedIncorporationApplication!: boolean
+  @Getter isCorrectedRegistration!: boolean
+  @Getter isCorrectedChangeReg!: boolean
 
   /** True if Jest is running the code. */
   get isJestRunning (): boolean {
@@ -115,7 +118,10 @@ export default class CommonMixin extends Vue {
       case RouteNames.CONVERSION:
         return 'Record Conversion'
       case RouteNames.CORRECTION:
-        return 'Correction - Incorporation Application'
+        if (this.isCorrectedIncorporationApplication) {
+          return 'Correction - Incorporation Application'
+        }
+        return 'Correction'
       default:
         return ''
     }

@@ -43,7 +43,6 @@ export default class CompletingParty extends Mixins(CommonMixin) {
   @Prop({ default: '' }) readonly sectionNumber: string
 
   @Getter getPeopleAndRoles!: Array<OrgPersonIF>
-  @Getter getOriginalIA!: IncorporationApplicationIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
 
   /** The current Completing Party if found, otherwise undefined. */
@@ -53,11 +52,7 @@ export default class CompletingParty extends Mixins(CommonMixin) {
 
   /** The original Completing Party if found, otherwise undefined. */
   get originalCompletingParty () : OrgPersonIF {
-    if (this.getOriginalIA) {
-      return this.getCompletingParty(this.getOriginalIA.parties)
-    } else {
-      return this.getCompletingParty(this.getEntitySnapshot?.orgPersons)
-    }
+    return this.getCompletingParty(this.getEntitySnapshot?.orgPersons)
   }
 
   /** True if the Completing Party has been changed. */

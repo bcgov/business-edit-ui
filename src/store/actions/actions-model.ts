@@ -1,6 +1,6 @@
-import { ActionIF, ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, EntitySnapshotIF, NameRequestIF,
-  NameTranslationIF, OrgPersonIF, ShareClassIF, FeesIF, ResourceIF, FilingDataIF, CorrectedFilingIF }
-  from '@/interfaces/'
+import { ActionIF, ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, EntitySnapshotIF,
+  NameRequestIF, NameTranslationIF, OrgPersonIF, ShareClassIF, FeesIF, ResourceIF, FilingDataIF,
+  CorrectedFilingIF, CorrectionInformationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -117,6 +117,11 @@ export const setBusinessInformation: ActionIF = ({ commit }, businessInformation
   commit('mutateBusinessInformation', businessInformation)
 }
 
+export const setCorrectionInformation: ActionIF =
+  ({ commit }, correctionInformation: CorrectionInformationIF): void => {
+    commit('mutateCorrectionInformation', correctionInformation)
+  }
+
 export const setNameRequest: ActionIF = ({ commit }, nameRequest: NameRequestIF): void => {
   commit('mutateNameRequest', nameRequest)
 }
@@ -127,10 +132,6 @@ export const setNameTranslations: ActionIF = ({ commit }, nameTranslations: Name
 
 export const setFilingId: ActionIF = ({ commit }, filingId: number): void => {
   commit('mutateFilingId', filingId)
-}
-
-export const setCorrectedFilingId: ActionIF = ({ commit }, correctedFilingId: number): void => {
-  commit('mutateCorrectedFilingId', correctedFilingId)
 }
 
 export const setPeopleAndRoles: ActionIF = ({ commit }, peopleAndRoles: OrgPersonIF[]) => {
@@ -155,14 +156,6 @@ export const setShareStructureChanged: ActionIF = ({ commit }, changed: boolean)
 
 export const setCreateShareStructureStepValidity: ActionIF = ({ commit }, validity: boolean) => {
   commit('mutateCreateShareStructureStepValidity', validity)
-}
-
-export const setIncorporationAgreementStepData: ActionIF = ({ commit }, stepData): void => {
-  commit('mutateIncorporationAgreementStepData', stepData)
-}
-
-export const setIncorporationAgreementValidity: ActionIF = ({ commit }, validity: boolean): void => {
-  commit('mutateIncorporationAgreementValidity', validity)
 }
 
 export const setIgnoreChanges: ActionIF = ({ commit }, ignoreChanges: boolean): void => {
@@ -223,10 +216,6 @@ export const setEditingPeopleAndRoles: ActionIF = ({ commit }, editing: boolean)
 
 export const setEditingShareStructure: ActionIF = ({ commit }, editing: boolean): void => {
   commit('mutateEditingShareStructure', editing)
-}
-
-export const setEditingIncorporationAgreement: ActionIF = ({ commit }, editing: boolean): void => {
-  commit('mutateEditingIncorporationAgreement', editing)
 }
 
 export const setSummaryMode: ActionIF = ({ commit }, summaryMode: boolean): void => {

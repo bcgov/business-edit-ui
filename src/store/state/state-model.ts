@@ -14,15 +14,13 @@ export const stateModel: StateModelIF = {
     entityType: null,
     currentDate: '',
     filingId: 0,
-    correctedFilingId: null,
     isSaving: false,
     isSavingResuming: false,
     isFilingPaying: false,
     ignoreChanges: false,
     haveUnsavedChanges: false,
     folioNumber: '',
-    transactionalFolioNumber: '',
-    correctionType: null
+    transactionalFolioNumber: ''
   },
   completingParty: null,
   newAlteration: {
@@ -66,32 +64,19 @@ export const stateModel: StateModelIF = {
     label: '',
     type: ''
   },
-  businessContact: cloneDeep(EmptyContactPoint),
+  businessContact: { ...EmptyContactPoint },
   businessInformation: {
     legalType: null,
     identifier: ''
   },
-  nameRequest: {
-    legalType: null,
-    legalName: '',
-    nrNumber: '',
-    details: {},
-    applicant: {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      emailAddress: '',
-      phoneNumber: '',
-      addressLine1: '',
-      addressLine2: '',
-      addressLine3: '',
-      city: '',
-      countryTypeCode: '',
-      postalCode: '',
-      stateProvinceCode: ''
-    },
-    filingId: null
+  correctionInformation: {
+    comment: '',
+    correctedFilingDate: null,
+    correctedFilingId: null,
+    correctedFilingType: null,
+    type: null
   },
+  nameRequest: { ...EmptyNameRequest },
   nameTranslations: [],
   certifyState: {
     valid: false,
@@ -112,11 +97,6 @@ export const stateModel: StateModelIF = {
     resolutionDates: [],
     previousResolutionDates: [],
     shareClasses: []
-  },
-  incorporationAgreementStep: {
-    valid: false,
-    changed: false,
-    agreementType: null
   },
   effectiveDateTime: {
     isFutureEffective: null,
@@ -151,8 +131,7 @@ export const stateModel: StateModelIF = {
     officeAddresses: false,
     folioNumber: false,
     peopleAndRoles: false,
-    shareStructure: false,
-    incorporationAgreement: false
+    shareStructure: false
   },
   validFlags: {
     defineCompanyStep: false
