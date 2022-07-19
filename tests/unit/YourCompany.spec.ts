@@ -15,11 +15,26 @@ import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue
 import YourCompany from '@/components/common/YourCompany/YourCompany.vue'
 import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitCompanyStatementResource'
 import { BenefitCompanyResource } from '@/resources/Alteration/BenefitCompanyResource'
+import { SoleProprietorshipResource } from '@/resources/Correction/SoleProprietorshipResource'
 
 Vue.use(Vuetify)
 
 const localVue = createLocalVue()
 const vuetify = new Vuetify({})
+
+const flagsCompanyInfo = {
+  isValidCompanyName: false,
+  isValidBusinessType: false,
+  isValidNameTranslation: false,
+  isValidNatureOfBusiness: false,
+  isValidAddress: false,
+  isValidContactInfo: false,
+  isValidFolioInfo: false,
+  isValidOrgPersons: false,
+  isValidShareStructure: false,
+  isValidCompanyProvisions: false,
+  isValidResolutionDate: false
+}
 
 describe('YourCompany in a BEN correction', () => {
   let wrapper: any
@@ -143,9 +158,11 @@ describe('YourCompany in a SP alteration', () => {
     store.state.stateModel.nameRequest.expiry = 'Wed, 10 Mar 2021 08:00:00 GMT'
     store.state.stateModel.nameRequest.status = 'APPROVED'
     store.state.stateModel.nameRequest.requestType = 'NEW'
-    store.state.stateModel.nameRequest.applicant.fullName = 'Mock Full Name'
-    store.state.stateModel.nameRequest.applicant.fullAddress = '123 Mock Lane, Victoria, BC, 1t2 3t4, CA'
-    store.state.stateModel.nameRequest.applicant.phoneNumber = '2501234567'
+    store.state.stateModel.nameRequest.applicant = {
+      fullName: 'Mock Full Name',
+      fullAddress: '123 Mock Lane, Victoria, BC, 1t2 3t4, CA',
+      phoneNumber: '2501234567'
+    }
     await Vue.nextTick()
 
     const companyInfo = wrapper.findAll('.company-info')
@@ -165,76 +182,42 @@ describe('YourCompany in a SP alteration', () => {
     expect(nameRequestApplicantInfo.at(2).text()).toBe('Email:  N/A')
     expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  (250) 123-4567')
   })
+})
 
-  it('formats multiple phone numbers correctly', async () => {
-    const nameRequestApplicantInfo = wrapper.findAll('.name-request-applicant-info')
+describe('YourCompany in a SP alteration: formats multiple phone numbers correctly', () => {
+  const phoneNumbers = ['123 456 7890', '0987654321', '123 456 7890', '123-456-7890', '456 7890', null]
+  const outPuts = ['(123) 456-7890', '(098) 765-4321', '(123) 456-7890', '(123) 456-7890', 'N/A', 'N/A']
 
-    store.state.stateModel.nameRequest.applicant.phoneNumber = '123 456 7890'
-    await Vue.nextTick()
+  phoneNumbers.forEach((phoneNumber, index) => {
+    let wrapper: any
+    let store: any = getVuexStore()
+    beforeEach(() => {
+      store.state.stateModel.nameRequest.applicant = {
+        fullName: 'Mock Full Name',
+        fullAddress: '123 Mock Lane, Victoria, BC, 1t2 3t4, CA',
+        phoneNumber: phoneNumber
+      }
+      store.state.stateModel.nameRequest.nrNumber = 'NR1234567'
+      store.state.stateModel.tombstone.filingType = 'alteration'
+      wrapper = mount(YourCompany, { vuetify, store, localVue })
+    })
 
-    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  (123) 456-7890')
+    afterEach(() => {
+      wrapper.destroy()
+    })
 
-    store.state.stateModel.nameRequest.applicant.phoneNumber = '0987654321'
-    await Vue.nextTick()
-
-    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  (098) 765-4321')
-
-    store.state.stateModel.nameRequest.applicant.phoneNumber = '123-456-7890'
-    await Vue.nextTick()
-
-    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  (123) 456-7890')
-
-    // Verify an incomplete phone number
-    store.state.stateModel.nameRequest.applicant.phoneNumber = '456 7890'
-    await Vue.nextTick()
-
-    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  N/A')
-
-    // Verify an empty phone number
-    store.state.stateModel.nameRequest.applicant.phoneNumber = null
-    await Vue.nextTick()
-
-    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  N/A')
+    it('formats something', async () => {
+      store.state.stateModel.nameRequest.applicant.phoneNumber = phoneNumber
+      await Vue.nextTick()
+      const nameRequestApplicantInfo = wrapper.findAll('.name-request-applicant-info')
+      expect(nameRequestApplicantInfo.at(3).text()).toBe(`Phone:  ${outPuts[index]}`)
+    })
   })
 })
 
 describe('YourCompany in a SP conversion', () => {
   let wrapper: any
   let store: any = getVuexStore()
-
-  const businessInformation = {
-    legalType: 'SP',
-    identifier: '',
-    legalName: 'Mock Original Name',
-    foundingDate: '',
-    hasRestrictions: false,
-    naicsCode: '100000',
-    naicsDescription: 'food'
-  }
-
-  const entitySnapshot = {
-    businessInfo: businessInformation,
-    authInfo: null,
-    orgPersons: null,
-    addresses: null,
-    nameTranslations: null,
-    shareStructure: null,
-    resolutions: null
-  }
-
-  const flagsCompanyInfo = {
-    isValidCompanyName: false,
-    isValidBusinessType: false,
-    isValidNameTranslation: false,
-    isValidNatureOfBusiness: false,
-    isValidAddress: false,
-    isValidContactInfo: false,
-    isValidFolioInfo: false,
-    isValidOrgPersons: false,
-    isValidShareStructure: false,
-    isValidCompanyProvisions: false,
-    isValidResolutionDate: false
-  }
 
   beforeEach(() => {
     // Set Original business Data
@@ -265,5 +248,87 @@ describe('YourCompany in a SP conversion', () => {
     store.state.stateModel.validationFlags.flagsCompanyInfo.isValidNatureOfBusiness = false
     wrapper = mount(YourCompany, { vuetify, store, localVue })
     expect(wrapper.find('#nature-of-business.invalid-section').exists()).toBeTruthy()
+  })
+})
+
+describe('YourCompany in a SP correction', () => {
+  let wrapper: any
+  let store: any = getVuexStore()
+
+  beforeEach(() => {
+    // Set Original business Data
+    store.state.stateModel.summaryMode = false
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.stateModel.tombstone.filingType = 'correction'
+    store.state.resourceModel = SoleProprietorshipResource
+    store.state.stateModel.validationFlags.componentValidate = true
+    store.state.stateModel.validationFlags.flagsCompanyInfo = flagsCompanyInfo
+    store.state.stateModel.businessInformation.foundingDate = '2021-04-13T00:00:00+00:00'
+    wrapper = mount(YourCompany, { vuetify, store, localVue })
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('renders the YourCompany component and default subcomponents', async () => {
+    expect(wrapper.findComponent(YourCompany).exists()).toBeTruthy()
+    expect(wrapper.findComponent(ChangeBusinessType).exists()).toBeTruthy()
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBeTruthy()
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBeTruthy()
+    expect(wrapper.findComponent(ConversionNOB).exists()).toBeTruthy()
+    expect(wrapper.findComponent(CorrectNameOptions).exists()).toBeFalsy()
+    expect(wrapper.find('.business-start-date').exists()).toBeTruthy()
+  })
+
+  it('renders the editing component for Business Name', async () => {
+    // verify the correct button is available
+    const correctBtn = wrapper.find('#btn-correct-company-name')
+    await correctBtn.trigger('click')
+    expect(wrapper.findComponent(CorrectNameOptions).exists()).toBeTruthy()
+  })
+
+  it('renders the non-editing component for Business Type', async () => {
+    // verify the correct button is not available
+    expect(wrapper.find('#btn-correct-business-type').exists()).toBeFalsy()
+    const infoText = wrapper.findAll('#change-business-type .info-text')
+    expect(infoText.at(0).text()).toBe('BC Sole Proprietorship')
+  })
+
+  it('renders the editing component for Business Start Date', async () => {
+    const businessSD = wrapper.find('.business-start-date')
+    expect(businessSD.exists()).toBeTruthy()
+    expect(businessSD.findAll('label').at(0).text()).toBe('Business Start Date')
+    expect(businessSD.findAll('span').at(0).text()).toBe('April 12, 2021 at 5:00 pm Pacific time')
+  })
+
+  it('renders the editing component for Nature of Business', async () => {
+    // verify the correct button is available
+    expect(wrapper.find('#nob-change-btn').exists()).toBeTruthy()
+    expect(wrapper.find('#naics-summary').text()).toBe('(Not entered)')
+    const correctBtn = wrapper.find('#nob-change-btn')
+    await correctBtn.trigger('click')
+    const textField = wrapper.find('#nature-of-business').findAll('p')
+    expect(textField.at(0).text()).toContain('Provide a brief description')
+  })
+
+  it('renders the editing component for Business Address', async () => {
+    // verify the correct button is available
+    expect(wrapper.find('#btn-correct-office-addresses').exists()).toBeTruthy()
+    const officeAddresses = wrapper.find('#office-addresses')
+    expect(officeAddresses.findAll('.info-text').exists()).toBeTruthy()
+    expect(officeAddresses.findAll('.info-text').at(0).text()).toBe('(Not entered)')
+    expect(officeAddresses.findAll('.info-text').at(1).text()).toBe('(Not entered)')
+  })
+
+  it('renders the editing component for Business Contact Information', async () => {
+    // verify the correct button is not available
+    expect(wrapper.find('#contact-info-edit-btn').exists()).toBeFalsy()
+    const contactInfo = wrapper.find('#contact-info')
+    expect(contactInfo.findAll('label').exists()).toBeTruthy()
+    expect(contactInfo.findAll('label').at(1).text()).toBe('Email Address')
+    expect(contactInfo.findAll('label').at(2).text()).toBe('Phone Number')
+    expect(contactInfo.find('#lbl-email').text()).toBe('(Not entered)')
+    expect(contactInfo.find('#lbl-no-phone').text()).toBe('(Not entered)')
   })
 })
