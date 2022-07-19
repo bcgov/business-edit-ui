@@ -1,5 +1,5 @@
 import { AccountInformationIF, ActionKvIF, AddressesIF, BusinessInformationIF, EntitySnapshotIF, CertifyIF,
-  FilingDataIF, IncorporationAgreementIF, CorrectedFilingIF, NameRequestIF, NameTranslationIF, OrgPersonIF,
+  FilingDataIF, CorrectionInformationIF, CorrectedFilingIF, NameRequestIF, NameTranslationIF, OrgPersonIF,
   ResolutionsIF, ShareClassIF, StateIF, FeesIF, ResourceIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -139,6 +139,10 @@ export const mutateBusinessInformation = (state: StateIF, businessInformation: B
   state.stateModel.businessInformation = businessInformation
 }
 
+export const mutateCorrectionInformation = (state: StateIF, correctionInformation: CorrectionInformationIF) => {
+  state.stateModel.correctionInformation = correctionInformation
+}
+
 export const mutateNameRequest = (state: StateIF, nameRequest: NameRequestIF) => {
   state.stateModel.nameRequest = nameRequest
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
@@ -153,10 +157,6 @@ export const mutateFilingId = (state: StateIF, filingId: number) => {
   state.stateModel.tombstone.filingId = filingId
 }
 
-export const mutateCorrectedFilingId = (state: StateIF, correctedFilingId: number) => {
-  state.stateModel.tombstone.correctedFilingId = correctedFilingId
-}
-
 export const mutateShareClasses = (state: StateIF, shareClasses: ShareClassIF[]) => {
   state.stateModel.shareStructureStep.shareClasses = shareClasses
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
@@ -168,19 +168,6 @@ export const mutateShareStructureChanged = (state: StateIF, changed: boolean) =>
 
 export const mutateCreateShareStructureStepValidity = (state: StateIF, validity: boolean) => {
   state.stateModel.shareStructureStep.valid = validity
-}
-
-export const mutateIncorporationAgreementStepData = (state: StateIF, stepData: IncorporationAgreementIF) => {
-  state.stateModel.incorporationAgreementStep = stepData
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
-}
-
-export const mutateIncorporationAgreementChanged = (state: StateIF, changed: boolean) => {
-  state.stateModel.incorporationAgreementStep.changed = changed
-}
-
-export const mutateIncorporationAgreementValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.incorporationAgreementStep.valid = validity
 }
 
 export const mutateIgnoreChanges = (state: StateIF, ignoreChanges: boolean) => {
@@ -247,10 +234,6 @@ export const mutateEditingPeopleAndRoles = (state: StateIF, editing: boolean) =>
 
 export const mutateEditingShareStructure = (state: StateIF, editing: boolean) => {
   state.stateModel.editingFlags.shareStructure = editing
-}
-
-export const mutateEditingIncorporationAgreement = (state: StateIF, editing: boolean) => {
-  state.stateModel.editingFlags.incorporationAgreement = editing
 }
 
 export const mutateSummaryMode = (state: StateIF, summaryMode: boolean) => {

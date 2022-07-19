@@ -1,7 +1,7 @@
-import { CorrectionErrorTypes, FilingTypes } from '@/enums/'
+import { FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
-/** Data object used internally only (not to/from API). */
+/** Interface for tombstone object in store (not to/from API). */
 export interface TombStoneIF {
   filingType: FilingTypes
   keycloakRoles: Array<string>
@@ -12,7 +12,6 @@ export interface TombStoneIF {
   entityType: CorpTypeCd
   currentDate: string // YYYY-MM-DD
   filingId: number
-  correctedFilingId: number
   isSaving: boolean
   isSavingResuming: boolean
   isFilingPaying: boolean
@@ -20,5 +19,4 @@ export interface TombStoneIF {
   haveUnsavedChanges: boolean
   folioNumber: string
   transactionalFolioNumber: string
-  correctionType: CorrectionErrorTypes
 }

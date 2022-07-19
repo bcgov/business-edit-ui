@@ -52,7 +52,7 @@
           </v-col>
 
           <v-col cols="8">
-            <span class="info-text">Changing from a {{ getCorpTypeDescription(originalEntityType) }}</span>
+            <span class="info-text">Changing from a {{ getCorpTypeDescription(originalLegalType) }}</span>
             &nbsp;
             <span class="info-text">to a {{getCorpTypeDescription(getEntityType)}}</span>
 
@@ -195,6 +195,7 @@ export default class AlterationSummary extends Mixins(
   @Getter getFeePrices!: FeesIF
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter haveNewResolutionDates!: boolean
+  @Getter getCurrentJsDate!: Date
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF
@@ -218,12 +219,12 @@ export default class AlterationSummary extends Mixins(
 
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
-    if (this.getApprovedName) return this.getApprovedName
+    if (this.getNameRequestApprovedName) return this.getNameRequestApprovedName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 
-  get originalEntityType (): string {
+  get originalLegalType (): string {
     return this.getEntitySnapshot?.businessInfo?.legalType
   }
 

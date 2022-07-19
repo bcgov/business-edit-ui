@@ -140,6 +140,7 @@ export default class Conversion extends Mixins(
 
     // try to fetch data
     try {
+      // fetch business snapshot
       const firmSnapshot = await this.fetchFirmSnapshot()
 
       if (this.conversionId) {
@@ -147,22 +148,22 @@ export default class Conversion extends Mixins(
         this.setFilingId(this.conversionId)
 
         // fetch draft conversion filing to resume
-        const changeFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.conversionId)
+        const conversionFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.conversionId)
 
         // do not proceed if this isn't a conversion  filing
-        if (!changeFiling.conversion) {
+        if (!conversionFiling.conversion) {
           throw new Error('Invalid conversion filing')
         }
 
         // do not proceed if this isn't a DRAFT filing
-        if (changeFiling.header.status !== FilingStatus.DRAFT) {
+        if (conversionFiling.header.status !== FilingStatus.DRAFT) {
           throw new Error('Invalid conversion status')
         }
 
-        // parse firm conversion filing and original business snapshot into store
-        this.parseFirmConversionFiling(changeFiling, firmSnapshot)
+        // parse draft conversion filing and business snapshot into store
+        this.parseFirmConversionFiling(conversionFiling, firmSnapshot)
       } else {
-        // parse business data into store
+        // parse just the business snapshot into store
         this.parseEntitySnapshot(firmSnapshot)
       }
 

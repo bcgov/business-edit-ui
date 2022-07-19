@@ -13,6 +13,7 @@ export interface FeesIF {
   total?: number
 }
 
+/** NB: use cloneDeep() to copy this as this has a nested object. */
 export const EmptyFees: FeesIF = {
   filingFees: null,
   filingType: null,

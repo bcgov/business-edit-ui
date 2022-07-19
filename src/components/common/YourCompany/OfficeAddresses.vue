@@ -3,7 +3,7 @@
     <!-- Addresses Summary -->
     <template v-if="!isEditing">
       <v-row id="summary-registered-address" class="mx-0" no-gutters>
-        <v-col cols="3">
+        <v-col cols="3" class="pr-2">
           <label :class="{'error-text': invalidSection}">{{ getResource.addressLabel }}</label>
           <v-chip v-if="(isChangeRegFiling || isFirmConversionFiling) && !isSummaryView
                   && (hasMailingChanged || hasDeliveryChanged)"
@@ -11,7 +11,7 @@
         </v-col>
 
         <!-- Mailing address -->
-        <v-col cols="4">
+        <v-col cols="4" class="pr-2">
           <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
             <v-chip v-if="isCorrectionFiling && hasMailingChanged"
@@ -26,7 +26,7 @@
         </v-col>
 
         <!-- Delivery address -->
-        <v-col cols="4">
+        <v-col cols="4" class="pr-2">
           <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
             <v-chip v-if="isCorrectionFiling && hasDeliveryChanged"
@@ -105,12 +105,12 @@
 
       <!-- Records office (BEN only) -->
       <v-row v-if="isEntityTypeBEN" id="summary-records-address" class="mt-4 mx-0" no-gutters>
-        <v-col cols="3">
+        <v-col cols="3" class="pr-2">
           <label class>Records Office</label>
         </v-col>
 
         <!-- Records mailing address -->
-        <v-col cols="4">
+        <v-col cols="4" class="pr-2">
           <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
             <v-chip v-if="isCorrectionFiling && hasRecMailingChanged"
@@ -126,7 +126,7 @@
         </v-col>
 
         <!-- Records delivery address -->
-        <v-col cols="4">
+        <v-col cols="4" class="pr-2">
           <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
             <v-chip v-if="isCorrectionFiling && hasRecDeliveryChanged"

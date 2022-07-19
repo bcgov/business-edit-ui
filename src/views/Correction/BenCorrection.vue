@@ -1,7 +1,7 @@
 <template>
   <section id="ben-correction-view">
     <header>
-      <h1>Correction - {{ getOriginalFilingName }}</h1>
+      <h1>{{ entityTitle }}</h1>
     </header>
 
     <section id="original-filing-date" class="mt-6">
@@ -24,8 +24,6 @@
 
     <ShareStructures class="mt-10" />
 
-    <AgreementType class="mt-10" />
-
     <CompletingParty class="mt-10" sectionNumber="1." />
 
     <Detail class="mt-10" sectionNumber="2." validate="true" />
@@ -43,7 +41,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { AgreementType, CompletingParty } from '@/components/Correction/'
+import { CompletingParty } from '@/components/Correction/'
 import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
@@ -54,7 +52,6 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/'
 
 @Component({
   components: {
-    AgreementType,
     CertifySection,
     CompletingParty,
     Detail,
@@ -67,10 +64,8 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/'
 export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin) {
   // Global getters
   @Getter getFilingData!: FilingDataIF
-  @Getter getOriginalFilingName!: string
 
   // Global actions
-  @Action setCorrectedFilingId!: ActionBindingIF
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setCorrectedFiling!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
@@ -83,7 +78,7 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
 
   /** The original filing date, in Pacific time. */
   get originalFilingDate (): string {
-    return this.apiToPacificDateLong(this.getOriginalFilingDateTime)
+    return this.apiToPacificDateLong(this.getCorrectedFilingDate)
   }
 
   /** The resource object for a correction filing. */
@@ -102,21 +97,21 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
       // safety check
       if (!this.correctionFiling) throw (new Error('Missing correction filing'))
 
-      // parse correction filing into store
-      this.parseCorrectionFiling(this.correctionFiling)
+      // fetch business snapshot
+      const businessSnapshot = await this.fetchBusinessSnapshot()
 
-      // get and store ID of filing that is being corrected (ie, original IA)
-      const correctedFilingId: number = +this.correctionFiling.correction?.correctedFilingId
-      this.setCorrectedFilingId(correctedFilingId)
+      // *** FUTURE: remove this workaround
+      // set NR Number in snapshot since API doesn't return it yet and we need to
+      // know if this is a named company -- see ticket #13022
+      businessSnapshot.businessInfo.nrNumber =
+        this.correctionFiling.incorporationApplication.nameRequest.nrNumber
 
-      // fetch and store original IA
-      const correctedFiling = await LegalServices.fetchFilingById(this.getBusinessId, correctedFilingId)
+      // parse draft correction filing and business snapshot into store
+      this.parseCorrectionFiling(this.correctionFiling, businessSnapshot)
+
+      // fetch and store corrected filing
+      const correctedFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.getCorrectedFilingId)
       this.setCorrectedFiling(correctedFiling)
-
-      // *** FUTURE: use this
-      // fetch and store business snapshot
-      // const businessSnapshot = await this.fetchBusinessSnapshot()
-      // this.parseEntitySnapshot(businessSnapshot)
 
       // set the resources
       this.setResource(this.correctionResource)
@@ -141,14 +136,20 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
       LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),
       LegalServices.fetchAddresses(this.getBusinessId),
-      LegalServices.fetchParties(this.getBusinessId)
+      LegalServices.fetchParties(this.getBusinessId),
+      LegalServices.fetchShareStructure(this.getBusinessId),
+      LegalServices.fetchNameTranslations(this.getBusinessId),
+      LegalServices.fetchResolutions(this.getBusinessId)
     ])
-    if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 7) throw new Error('Failed to fetch entity snapshot')
     return {
       businessInfo: items[0],
       authInfo: items[1],
       addresses: items[2],
-      orgPersons: items[3]
+      orgPersons: items[3],
+      shareStructure: items[4],
+      nameTranslations: items[5],
+      nameResolutions: items[6]
     } as EntitySnapshotIF
   }
 

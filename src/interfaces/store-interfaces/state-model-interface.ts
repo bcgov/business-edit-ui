@@ -1,6 +1,6 @@
 import {
   AccountInformationIF, AddressesIF, CertifyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF, ShareStructureIF,
-  EffectiveDateTimeIF, IncorporationAgreementIF, BusinessInformationIF, CorrectedFilingIF, FilingDataIF,
+  EffectiveDateTimeIF, CorrectionInformationIF, BusinessInformationIF, CorrectedFilingIF, FilingDataIF,
   StaffPaymentStepIF, DetailIF, NameTranslationIF, EntitySnapshotIF, DocumentDeliveryIF, FeesIF, NewAlterationIF,
   ValidationFlagsIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF } from '@bcrs-shared-components/interfaces/'
@@ -14,6 +14,7 @@ export interface StateModelIF {
   accountInformation: AccountInformationIF
   businessContact: ContactPointIF
   businessInformation: BusinessInformationIF
+  correctionInformation: CorrectionInformationIF
   nameRequest: NameRequestIF
   nameTranslations: NameTranslationIF[]
   certifyState: CertifyIF
@@ -21,7 +22,6 @@ export interface StateModelIF {
   officeAddresses: AddressesIF
   peopleAndRoles: PeopleAndRolesIF
   shareStructureStep: ShareStructureIF
-  incorporationAgreementStep: IncorporationAgreementIF
   effectiveDateTime: EffectiveDateTimeIF
   correctedFiling: CorrectedFilingIF
   entitySnapshot: EntitySnapshotIF
@@ -35,7 +35,6 @@ export interface StateModelIF {
     folioNumber: boolean
     peopleAndRoles: boolean
     shareStructure: boolean
-    incorporationAgreement: boolean
   }
   validationFlags: ValidationFlagsIF
   validFlags: {

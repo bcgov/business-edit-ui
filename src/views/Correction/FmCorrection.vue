@@ -1,15 +1,8 @@
 <template>
   <section id="firm-correction-view">
     <header>
-      <h1>Correction - {{ originalFilingName }}</h1>
+      <h1>{{ entityTitle }}</h1>
     </header>
-
-    <section id="original-filing-date" class="mt-6">
-      <p>
-        <span id="original-filing-date-label">Original Filing Date:</span>
-        {{ originalFilingDate }}
-      </p>
-    </section>
 
     <YourCompany class="mt-10" />
 
@@ -46,7 +39,7 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany }
   from '@/components/common/'
-import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
+import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { AuthServices, LegalServices } from '@/services/'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
@@ -63,13 +56,12 @@ import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resour
     YourCompany
   }
 })
-export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin) {
+export default class FmCorrection extends Mixins(CommonMixin, FilingTemplateMixin) {
   // Global getters
   @Getter getFilingData!: FilingDataIF
   @Getter isClientErrorCorrection!: boolean
 
   // Global actions
-  @Action setCorrectedFilingId!: ActionBindingIF
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setCorrectedFiling!: ActionBindingIF
   @Action setFilingData!: ActionBindingIF
@@ -81,16 +73,6 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
   readonly correctionFiling: CorrectionFilingIF
 
   readonly getCorpTypeDescription = GetCorpFullDescription
-
-  /** The original filing name. */
-  get originalFilingName (): string {
-    return `${this.getCorpTypeDescription(this.getEntityType)} Registration`
-  }
-
-  /** The original filing date, in Pacific time. */
-  get originalFilingDate (): string {
-    return this.apiToPacificDateLong(this.getOriginalFilingDateTime)
-  }
 
   /** The resource file for a correction filing. */
   get correctionResource (): any {
@@ -110,21 +92,21 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
       // safety check
       if (!this.correctionFiling) throw (new Error('Missing correction filing'))
 
-      // fetch and store business snapshot
+      // fetch business snapshot
       const businessSnapshot = await this.fetchBusinessSnapshot()
-      this.parseEntitySnapshot(businessSnapshot)
 
-      // parse correction filing into store
-      this.parseCorrectionFiling(this.correctionFiling)
+      // *** FUTURE: remove this workaround
+      // set NR Number in snapshot since API doesn't return it yet and we need to
+      // know if this is a named company -- see ticket #13022
+      businessSnapshot.businessInfo.nrNumber =
+        this.correctionFiling.registration?.nameRequest?.nrNumber ||
+        this.correctionFiling.changeofRegistration?.nameRequest?.nrNumber
 
-      // get and store ID of filing that is being corrected
-      // NB: we don't care about this but it's needed in the correction filing object
-      const correctedFilingId: number = +this.correctionFiling.correction?.correctedFilingId
-      this.setCorrectedFilingId(correctedFilingId)
+      // parse draft correction filing and business snapshot into store
+      this.parseCorrectionFiling(this.correctionFiling, businessSnapshot)
 
-      // fetch and store original IA
-      // (needed to know what we're correcting)
-      const correctedFiling = await LegalServices.fetchFilingById(this.getBusinessId, correctedFilingId)
+      // fetch and store corrected filing
+      const correctedFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.getCorrectedFilingId)
       this.setCorrectedFiling(correctedFiling)
 
       // set the resources
@@ -133,7 +115,7 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
       // initialize Fee Summary data
       this.setFilingData(this.correctionResource.filingData)
 
-      // initialize the No Fee as pre-selected
+      // pre-select No Fee option
       this.setStaffPayment({ option: StaffPaymentOptions.NO_FEE })
 
       // tell App that we're finished loading
@@ -184,10 +166,3 @@ export default class FmCorrection extends Mixins(CommonMixin, DateMixin, FilingT
   private emitHaveData (haveData: Boolean = true): void {}
 }
 </script>
-
-<style lang="scss" scoped>
-#original-filing-date-label {
-  letter-spacing: -0.04rem;
-  font-weight: bold;
-}
-</style>

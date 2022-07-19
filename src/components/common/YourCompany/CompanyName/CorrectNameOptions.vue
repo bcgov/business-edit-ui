@@ -26,7 +26,7 @@
             :key="item.id"
             :formType="formType"
             :validate="validateNameChange"
-            @done="emitDone($event)"
+            @isSaved="emitIsSaved($event)"
             @isValid="isFormValid = $event"
           />
         </v-expansion-panel-content>
@@ -105,8 +105,8 @@ export default class CorrectNameOptions extends Vue {
     {
       id: CorrectionTypes.CORRECT_NEW_NR,
       title: 'Use a new name request number',
-      description: 'Enter the new Name Request Number (e.g., NR1234567) and either the applicant phone number OR ' +
-        'the applicant email that was used when the name was requested.',
+      description: 'Enter the new Name Request Number (e.g., NR 1234567) and either the applicant phone number ' +
+        'OR the applicant email that was used when the name was requested.',
       component: CorrectNameRequest
     }
   ]
@@ -124,7 +124,7 @@ export default class CorrectNameOptions extends Vue {
   }
 
   get isOneOption (): boolean {
-    return this.correctionNameChoices.length === 1
+    return (this.correctionNameChoices.length === 1)
   }
 
   /** Trigger form submission */
@@ -142,8 +142,8 @@ export default class CorrectNameOptions extends Vue {
   }
 
   /** Inform Parent name correction process is done. */
-  @Emit('done')
-  private emitDone (isSaved: boolean): boolean {
+  @Emit('isSaved')
+  private emitIsSaved (isSaved: boolean): boolean {
     this.isLoading = false
     this.formType = null
     if (isSaved) this.panel = null

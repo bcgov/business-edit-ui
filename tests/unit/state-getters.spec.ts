@@ -83,6 +83,7 @@ describe('State Getters', () => {
 
     // verify that all flags works
     await vm.$store.commit('mutatePeopleAndRolesValidity', true)
+    await vm.$store.commit('mutateCreateShareStructureStepValidity', true)
     await vm.$store.commit('mutateDetailValidity', true)
     await vm.$store.commit('mutateCertifyState', {
       valid: true,
@@ -135,12 +136,6 @@ describe('State Getters', () => {
     expect(vm.isEditing).toBe(true)
     await vm.$store.commit('mutateEditingShareStructure', false)
     expect(vm.isEditing).toBe(false)
-
-    // verify that the Incorporation Agreement Editing flag works
-    await vm.$store.commit('mutateEditingIncorporationAgreement', true)
-    expect(vm.isEditing).toBe(true)
-    await vm.$store.commit('mutateEditingIncorporationAgreement', false)
-    expect(vm.isEditing).toBe(false)
   })
 })
 
@@ -188,13 +183,12 @@ describe('BEN IA correction getters', () => {
         legalName: 'MyLegalName',
         legalType: 'BEN'
       },
-      incorporationApplication: {
-        incorporationAgreement: {
-          agreementType: 'sample'
-        },
-        shareStructure: {
-          shareClasses: []
-        }
+      incorporationApplication: {}
+    }
+    store.state.stateModel.entitySnapshot = {
+      businessInfo: {},
+      shareStructure: {
+        shareClasses: []
       }
     }
 
@@ -262,12 +256,6 @@ describe('BEN IA correction getters', () => {
     expect(vm.hasShareStructureChanged).toBe(true)
     store.state.stateModel.shareStructureStep.shareClasses = []
     expect(vm.hasShareStructureChanged).toBe(false)
-
-    // verify that incorporation agreement changes are detected
-    store.state.stateModel.incorporationAgreementStep.agreementType = 'custom'
-    expect(vm.hasIncorporationAgreementChanged).toBe(true)
-    store.state.stateModel.incorporationAgreementStep.agreementType = 'sample'
-    expect(vm.hasIncorporationAgreementChanged).toBe(false)
 
     // finally, this getter should be false
     expect(vm.hasCorrectionDataChanged).toBe(false)

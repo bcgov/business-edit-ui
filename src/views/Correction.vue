@@ -22,7 +22,7 @@ import { getFeatureFlag } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { ActionBindingIF, CorrectionFilingIF } from '@/interfaces/'
-import { FilingStatus } from '@/enums/'
+import { FilingStatus, FilingTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import BenCorrection from '@/views/Correction/BenCorrection.vue'
 import FmCorrection from '@/views/Correction/FmCorrection.vue'
@@ -95,13 +95,26 @@ export default class Correction extends Mixins(CommonMixin) {
       this.setFilingId(this.correctionId)
 
       // fetch draft correction to resume
-      const filing = await LegalServices.fetchFilingById(this.getBusinessId, this.correctionId) as CorrectionFilingIF
+      const filing =
+        await LegalServices.fetchFilingById(this.getBusinessId, this.correctionId) as CorrectionFilingIF
 
-      // do not proceed if this isn't a CORRECTION filing
-      if (!filing.correction) {
-        throw new Error('Invalid correction filing')
+      // do not proceed if header object is missing
+      // or this isn't a correction filing
+      if (!filing.header || (filing.header?.name !== FilingTypes.CORRECTION)) {
+        throw new Error('Invalid header info')
       }
 
+      // do not proceed if business object is missing
+      if (!filing.business) {
+        throw new Error('Invalid business info')
+      }
+
+      // do not proceed if correction object is missing
+      if (!filing.correction) {
+        throw new Error('Invalid correction info')
+      }
+
+      // set entity type for misc functionality to work
       // do not proceed if this isn't a BEN or SP/GP correction
       this.setEntityType(filing.business?.legalType)
       if (!this.isEntityTypeBEN && !this.isEntityTypeFirm) {

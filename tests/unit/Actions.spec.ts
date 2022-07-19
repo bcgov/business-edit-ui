@@ -275,7 +275,6 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
     store.state.stateModel.validFlags.defineCompanyStep = true
     store.state.stateModel.peopleAndRoles = { valid: true }
     store.state.stateModel.shareStructureStep = { valid: true }
-    store.state.stateModel.incorporationAgreementStep = { valid: true }
     store.state.stateModel.effectiveDateTime = { valid: true }
 
     const localVue = createLocalVue()
@@ -484,10 +483,7 @@ describe.skip('Actions component - Filing Functionality', () => {
 
             ]
           }
-        ],
-        incorporationAgreement: {
-          agreementType: 'sample'
-        }
+        ]
       }
     }
   }
@@ -536,8 +532,6 @@ describe.skip('Actions component - Filing Functionality', () => {
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.businessId = 'T1234567'
     store.state.stateModel.effectiveDateTime.isFutureEffective = filing.filing.header.isFutureEffective
-    store.state.stateModel.incorporationAgreementStep.agreementType =
-      filing.filing.incorporationApplication.incorporationAgreement.agreementType
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)

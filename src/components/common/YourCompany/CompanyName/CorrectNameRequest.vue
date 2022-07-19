@@ -65,8 +65,7 @@ import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { CommonMixin, SharedMixin, NameRequestMixin } from '@/mixins/'
-import { ActionBindingIF, ConfirmDialogType, NameRequestApplicantIF, NameRequestIF, NrCorrectionIF,
-  NrResponseIF } from '@/interfaces/'
+import { ActionBindingIF, ConfirmDialogType, NameRequestIF, NrCorrectionIF, NrResponseIF } from '@/interfaces/'
 import { CorrectionTypes } from '@/enums/'
 
 @Component({
@@ -92,8 +91,6 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
   @Action setNameRequest!: ActionBindingIF
 
   @Getter getNameRequest!: NameRequestIF
-  @Getter getNameRequestNumber!: string
-  @Getter getNameRequestApplicant!: NameRequestApplicantIF
 
   // V-model properties
   private formValid = false
@@ -161,7 +158,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
 
         if (this.getEntityType !== nr.legalType) {
           // Invalid NR type, inform parent the process is done and prompt confirm dialog
-          this.emitDone()
+          this.emitIsSaved()
 
           const dialogContent = `<p class="info-text">This ${this.getCorpTypeDescription(nr.entity_type_cd)} ` +
             `Name Request does not match the current business type ` +
@@ -175,12 +172,12 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
           )
         } else {
           this.parseNameRequest(nr)
-          this.emitDone(true)
+          this.emitIsSaved(true)
         }
       } catch {
         // "validateNameRequest" handles its own errors
         // Inform parent process is complete
-        this.emitDone()
+        this.emitIsSaved()
       }
     }
   }
@@ -205,12 +202,13 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
       }
     }
 
+    // set the new correction NR data
     this.setNameRequest({ ...this.getNameRequest, ...nrCorrection })
   }
 
   /** Inform parent the process is complete. */
-  @Emit('done')
-  private emitDone (isSaved: boolean = false): boolean {
+  @Emit('isSaved')
+  private emitIsSaved (isSaved: boolean = false): boolean {
     if (!isSaved) this.$refs.correctNrForm.resetValidation()
     return isSaved
   }

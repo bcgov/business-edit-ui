@@ -1,6 +1,6 @@
 import { ActionTypes } from '@/enums/'
 
-// Name translation interface
+/** Interface for name translation object in store. */
 export interface NameTranslationIF {
   id?: string
   name: string

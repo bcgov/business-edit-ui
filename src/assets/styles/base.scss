@@ -172,7 +172,9 @@ p {
 
 // Error Border
 .invalid-section {
-  border-left: 3px solid $app-red;
+  border-left: 3px solid $app-red !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
 }
 
 // Loading Indicator

@@ -53,6 +53,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   // Global getters
   @Getter getComponentValidate!: boolean
   @Getter getNewResolutionDates!: string[]
+  // *** TODO: refactor shared component to use original shares instead of original IA
   @Getter getCorrectedFiling!: CorrectedFilingIF
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getEntitySnapshot!: EntitySnapshotIF
@@ -63,6 +64,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   // Global actions
   @Action setShareClasses!: ActionBindingIF
   @Action setShareStructureChanged!: ActionBindingIF
+  @Action setCreateShareStructureStepValidity!: ActionBindingIF
   @Action setEditingShareStructure!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
 
@@ -72,7 +74,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
 
   /** Whether share section is invalid, only when prompted by app. */
   get invalidShareSection (): boolean {
-    return this.getComponentValidate && !this.getFlagsCompanyInfo.isValidShareStructure
+    return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidShareStructure)
   }
 
   get originalShareStructure (): ShareStructureIF {
@@ -84,8 +86,11 @@ export default class ShareStructures extends Mixins(CommonMixin) {
     return (this.getNewResolutionDates.length === 0) && this.isAlterationFiling
   }
 
-  /** Keep the store in sync with components state of validity. */
-  @Watch('isEditing')
+  /**
+   * Keep the store in sync with components state of validity.
+   * Run this "immediately" to set initial state.
+   */
+  @Watch('isEditing', { immediate: true })
   @Watch('hasMinimumShareClass')
   private setShareStructureValidity (): void {
     // Check valid conditions
@@ -93,6 +98,7 @@ export default class ShareStructures extends Mixins(CommonMixin) {
 
     this.setEditingShareStructure(this.isEditing)
     this.setValidComponent({ key: 'isValidShareStructure', value: isValid })
+    this.setCreateShareStructureStepValidity(isValid)
   }
 }
 </script>
