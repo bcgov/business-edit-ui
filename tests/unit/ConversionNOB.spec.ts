@@ -181,20 +181,27 @@ describe('ConversionNatureOfBusiness after the update', () => {
   })
 
   it('renders the text field and texts', async () => {
-    await wrapper.find('#nob-menu-btn').trigger('click')
-    await wrapper.find('#more-changes-btn').trigger('click')
+    expect(wrapper.vm.$data.onEditMode).toBeFalsy()
+
+    expect(wrapper.find('#naics-summary').exists()).toBeTruthy()
+    expect(wrapper.find('#naics-summary').text()).toBe('100001 - cake')
+    expect(wrapper.vm.$data.hasEdited).toBeFalsy()
+
+    expect(wrapper.find('#more-menu-btn').exists()).toBeFalsy()
+    expect(wrapper.find('#more-changes-btn').exists()).toBeFalsy()
+    expect(wrapper.find('#nob-change-btn').exists()).toBeTruthy()
+    await wrapper.find('#nob-change-btn').trigger('click')
 
     expect(wrapper.vm.$data.onEditMode).toBeTruthy()
+    expect(wrapper.vm.$data.naicsText).toBe('100001 - cake')
     expect(wrapper.find('p').text()).toContain('Provide a brief description')
     expect(wrapper.find('.v-counter').text()).toBe('13 / 300')
-    expect(wrapper.vm.$data.naicsText).toBe('100001 - cake')
-    expect(wrapper.vm.$data.onEditMode).toBeTruthy()
     expect(wrapper.find('#naics-summary').exists()).toBeFalsy()
   })
 
   it('simulates input text and the done button', async () => {
-    await wrapper.find('#nob-menu-btn').trigger('click')
-    await wrapper.find('#more-changes-btn').trigger('click')
+    const changeBtn = wrapper.find('#nob-change-btn')
+    await changeBtn.trigger('click')
 
     expect(wrapper.vm.$data.onEditMode).toBeTruthy()
 

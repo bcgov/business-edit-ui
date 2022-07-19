@@ -1,7 +1,7 @@
 import { AddressesIF, FilingBusinessIF, FilingHeaderIF, NameTranslationIF, OrgPersonIF, ShareClassIF }
   from '@/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-
+import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/incorporation_application.json
 //
@@ -13,11 +13,7 @@ export interface IncorporationApplicationIF {
   }
   nameTranslations: NameTranslationIF[]
   offices: AddressesIF | {}
-  contactPoint: {
-    email: string
-    phone: string
-    extension?: number
-  }
+  contactPoint: ContactPointIF
   parties: OrgPersonIF[]
   shareStructure: {
     shareClasses: ShareClassIF[]

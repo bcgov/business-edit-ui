@@ -182,7 +182,7 @@
     <v-divider v-if="isChangeRegFiling || isFirmConversionFiling" class="mx-4 my-1" />
 
     <!-- Business Type (alterations, changes and conversions only) -->
-    <div v-if="isAlterationFiling || isChangeRegFiling || isFirmConversionFiling"
+    <div v-if="isAlterationFiling || isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling"
       id="company-type-section"
       class="section-container"
       :class="{'invalid-section': invalidTypeSection}"
@@ -194,7 +194,7 @@
     </div>
 
     <!-- Business Type (firm corrections only) -->
-    <template v-if="isFirmCorrectionFiling">
+    <!-- <template v-if="isFirmCorrectionFiling">
       <v-divider class="mx-4 my-1" />
 
       <div class="section-container">
@@ -208,7 +208,7 @@
           </v-col>
         </v-row>
       </div>
-    </template>
+    </template> -->
 
     <!-- Name Translation(s) (alterations and BEN corrections only)-->
     <div v-if="isAlterationFiling || isBenIaCorrectionFiling"
