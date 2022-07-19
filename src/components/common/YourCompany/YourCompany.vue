@@ -182,7 +182,7 @@
     <v-divider v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling" class="mx-4 my-1" />
 
     <!-- Business Type (alterations, changes, conversions and corrections) -->
-    <div v-if="isAlterationFiling || isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling"
+    <div v-if="isAlterationFiling || isChangeRegFiling || isEntityTypeFirm"
       id="company-type-section"
       class="section-container"
       :class="{'invalid-section': invalidTypeSection}"
@@ -209,7 +209,7 @@
 
     <!-- Business Start Date (changes, conversions and firm corrections only -->
     <template v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling">
-      <section class="section-container business-start-date">
+      <section id="business-start-date" class="section-container">
         <v-row no-gutters>
           <v-col cols="3" class="pr-2">
             <label><strong>Business Start Date</strong></label>

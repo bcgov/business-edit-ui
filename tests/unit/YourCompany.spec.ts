@@ -30,10 +30,7 @@ const flagsCompanyInfo = {
   isValidAddress: false,
   isValidContactInfo: false,
   isValidFolioInfo: false,
-  isValidOrgPersons: false,
-  isValidShareStructure: false,
-  isValidCompanyProvisions: false,
-  isValidResolutionDate: false
+  isValidOrgPersons: false
 }
 
 describe('YourCompany in a BEN correction', () => {
@@ -278,7 +275,7 @@ describe('YourCompany in a SP correction', () => {
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBeTruthy()
     expect(wrapper.findComponent(ConversionNOB).exists()).toBeTruthy()
     expect(wrapper.findComponent(CorrectNameOptions).exists()).toBeFalsy()
-    expect(wrapper.find('.business-start-date').exists()).toBeTruthy()
+    expect(wrapper.find('#business-start-date').exists()).toBeTruthy()
   })
 
   it('renders the editing component for Business Name', async () => {
@@ -296,7 +293,7 @@ describe('YourCompany in a SP correction', () => {
   })
 
   it('renders the editing component for Business Start Date', async () => {
-    const businessSD = wrapper.find('.business-start-date')
+    const businessSD = wrapper.find('#business-start-date')
     expect(businessSD.exists()).toBeTruthy()
     expect(businessSD.findAll('label').at(0).text()).toBe('Business Start Date')
     expect(businessSD.findAll('span').at(0).text()).toBe('April 12, 2021 at 5:00 pm Pacific time')
