@@ -144,7 +144,7 @@
         <v-col cols="9" v-else>
           <CorrectNameOptions
             :correctionNameChoices="nameChangeOptions"
-            @done="nameChangeHandler($event)"
+            @isSaved="nameChangeHandler($event)"
             @cancel="isEditingNames = false"
           />
         </v-col>
@@ -346,7 +346,8 @@ export default class YourCompany extends Mixins(
   NameRequestMixin
 ) {
   // Global getters
-  @Getter getApprovedName!: string
+  @Getter getNameRequestApprovedName!: string
+  @Getter getNameRequestNumber!: string
   @Getter getBusinessNumber!: string
   @Getter getComponentValidate!: boolean
   @Getter getNameRequest!: NameRequestIF
@@ -426,7 +427,7 @@ export default class YourCompany extends Mixins(
 
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
-    if (this.getApprovedName) return this.getApprovedName
+    if (this.getNameRequestApprovedName) return this.getNameRequestApprovedName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
@@ -454,14 +455,14 @@ export default class YourCompany extends Mixins(
         return this.apiToPacificDateTime(this.getCorrectedFilingDate)
       }
     }
-    if (this.isFirmCorrectionFiling) {
+    if (
+      this.isFirmCorrectionFiling ||
+      this.isAlterationFiling ||
+      this.isChangeRegFiling ||
+      this.isFirmConversionFiling
+    ) {
       if (this.getBusinessFoundingDate) {
         return this.apiToPacificDateTime(this.getBusinessFoundingDate)
-      }
-    }
-    if (this.isAlterationFiling || this.isChangeRegFiling || this.isFirmConversionFiling) {
-      if (this.getBusinessFoundingDate) {
-        return this.apiToPacificDateLong(this.getBusinessFoundingDate)
       }
     }
     return 'Unknown'
@@ -469,16 +470,18 @@ export default class YourCompany extends Mixins(
 
   /** Compare names. */
   get isNewName () {
-    const currentName = this.getEntitySnapshot.businessInfo.legalName
-    return (this.getApprovedName !== currentName)
+    const currentName = this.getEntitySnapshot?.businessInfo.legalName
+    return (this.getNameRequestApprovedName !== currentName)
   }
 
   /** The current options for change of name correction or edit. */
   get nameChangeOptions (): Array<CorrectionTypes> {
-    let nameChangeOptions = cloneDeep(this.getResource.changeData.nameChangeOptions)
+    // make a copy so we don't change the original resource data
+    const nameChangeOptions = cloneDeep(this.getResource.changeData.nameChangeOptions)
 
     // Remove name-to-numbered company option when already a numbered company
-    if (!this.getApprovedName) nameChangeOptions.splice(1, 1)
+    if (!this.getNameRequestNumber) nameChangeOptions.splice(1, 1)
+
     return nameChangeOptions
   }
 
@@ -493,15 +496,24 @@ export default class YourCompany extends Mixins(
     )
 
     // reset name request
-    this.setNameRequest(this.getEntitySnapshot.businessInfo)
+    this.setNameRequest({
+      legalType: this.getEntitySnapshot.businessInfo.legalType,
+      legalName: this.getEntitySnapshot.businessInfo.legalName,
+      nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
+    })
 
     // reset flag
     this.companyNameChanges = false
   }
 
-  /** Compare current to corrected data and update UI.  */
-  @Watch('getApprovedName')
-  private nameChangeHandler (isSaved: boolean): void {
+  /** Updates UI when Name Request is updated (ie, on resume draft). */
+  @Watch('getNameRequest')
+  private onNameRequestChange (): void {
+    this.nameChangeHandler()
+  }
+
+  /** Updates UI when correct name options are done.  */
+  private nameChangeHandler (isSaved: boolean = false): void {
     this.companyNameChanges = this.isNewName
     if (isSaved) this.isEditingNames = false
   }

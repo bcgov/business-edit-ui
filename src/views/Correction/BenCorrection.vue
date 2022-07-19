@@ -24,8 +24,6 @@
 
     <ShareStructures class="mt-10" />
 
-    <AgreementType class="mt-10" />
-
     <CompletingParty class="mt-10" sectionNumber="1." />
 
     <Detail class="mt-10" sectionNumber="2." validate="true" />
@@ -43,7 +41,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { AgreementType, CompletingParty } from '@/components/Correction/'
+import { CompletingParty } from '@/components/Correction/'
 import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
@@ -54,7 +52,6 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/'
 
 @Component({
   components: {
-    AgreementType,
     CertifySection,
     CompletingParty,
     Detail,
@@ -103,14 +100,14 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
       // fetch business snapshot
       const businessSnapshot = await this.fetchBusinessSnapshot()
 
+      // *** FUTURE: remove this workaround
+      // set NR Number in snapshot since API doesn't return it yet and we need to
+      // know if this is a named company -- see ticket #13022
+      businessSnapshot.businessInfo.nrNumber =
+        this.correctionFiling.incorporationApplication.nameRequest.nrNumber
+
       // parse draft correction filing and business snapshot into store
       this.parseCorrectionFiling(this.correctionFiling, businessSnapshot)
-
-      // work-around until API returns Agreement Type in business info
-      if (!businessSnapshot.businessInfo.incorporationAgreementType) {
-        businessSnapshot.businessInfo.incorporationAgreementType =
-          this.correctionFiling.incorporationApplication.incorporationAgreement.agreementType
-      }
 
       // fetch and store corrected filing
       const correctedFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.getCorrectedFilingId)

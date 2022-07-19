@@ -1,6 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { FilingTypes, RouteNames } from '@/enums/'
+import { RouteNames } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ConfirmDialogType } from '@/interfaces/'
 
@@ -14,7 +14,9 @@ export default class CommonMixin extends Vue {
   @Getter isChangeRegFiling!: boolean
   @Getter isFirmConversionFiling!: boolean
   @Getter isCorrectionFiling!: boolean
-  @Getter getCorrectedFilingType!: FilingTypes
+  @Getter isCorrectedIncorporationApplication!: boolean
+  @Getter isCorrectedRegistration!: boolean
+  @Getter isCorrectedChangeReg!: boolean
 
   /** True if Jest is running the code. */
   get isJestRunning (): boolean {
@@ -116,7 +118,7 @@ export default class CommonMixin extends Vue {
       case RouteNames.CONVERSION:
         return 'Record Conversion'
       case RouteNames.CORRECTION:
-        if (this.getCorrectedFilingType === FilingTypes.INCORPORATION_APPLICATION) {
+        if (this.isCorrectedIncorporationApplication) {
           return 'Correction - Incorporation Application'
         }
         return 'Correction'

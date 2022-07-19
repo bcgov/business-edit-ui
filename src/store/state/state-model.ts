@@ -64,7 +64,7 @@ export const stateModel: StateModelIF = {
     label: '',
     type: ''
   },
-  businessContact: cloneDeep(EmptyContactPoint),
+  businessContact: { ...EmptyContactPoint },
   businessInformation: {
     legalType: null,
     identifier: ''
@@ -76,27 +76,7 @@ export const stateModel: StateModelIF = {
     correctedFilingType: null,
     type: null
   },
-  nameRequest: {
-    legalType: null,
-    legalName: '',
-    nrNumber: '',
-    details: {},
-    applicant: {
-      firstName: '',
-      middleName: '',
-      lastName: '',
-      emailAddress: '',
-      phoneNumber: '',
-      addressLine1: '',
-      addressLine2: '',
-      addressLine3: '',
-      city: '',
-      countryTypeCode: '',
-      postalCode: '',
-      stateProvinceCode: ''
-    },
-    filingId: null
-  },
+  nameRequest: { ...EmptyNameRequest },
   nameTranslations: [],
   certifyState: {
     valid: false,
@@ -117,11 +97,6 @@ export const stateModel: StateModelIF = {
     resolutionDates: [],
     previousResolutionDates: [],
     shareClasses: []
-  },
-  incorporationAgreementStep: {
-    valid: false,
-    changed: false,
-    agreementType: null
   },
   effectiveDateTime: {
     isFutureEffective: null,
@@ -156,8 +131,7 @@ export const stateModel: StateModelIF = {
     officeAddresses: false,
     folioNumber: false,
     peopleAndRoles: false,
-    shareStructure: false,
-    incorporationAgreement: false
+    shareStructure: false
   },
   validFlags: {
     defineCompanyStep: false

@@ -22,9 +22,6 @@ export interface IncorporationApplicationIF {
   shareStructure: {
     shareClasses: ShareClassIF[]
   }
-  incorporationAgreement: {
-    agreementType: string
-  }
   shareClasses?: ShareClassIF[] // old schema; only use for loading old filings!
 }
 

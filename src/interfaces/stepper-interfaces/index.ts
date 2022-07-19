@@ -1,4 +1,3 @@
-export * from './IncorporationAgreement'
 export * from './PeopleAndRoles'
 export * from './common'
 export * from './ShareStructure'

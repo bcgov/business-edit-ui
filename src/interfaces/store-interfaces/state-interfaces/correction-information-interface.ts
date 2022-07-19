@@ -14,9 +14,11 @@ export interface CorrectionInformationIF {
 
   // optional objects with new correction data:
   business?: any // ** FUTURE: implement this
-  offices?: any // ** FUTURE: implement this
   contactPoint?: any // ** FUTURE: implement this
-  startDate?: any // ** FUTURE: implement this
   nameRequest?: any // ** FUTURE: implement this
+  nameTranslations?: any // ** FUTURE: implement this
+  offices?: any // ** FUTURE: implement this
   parties?: any // ** FUTURE: implement this
+  shareStructure?: any // ** FUTURE: implement this
+  startDate?: any // ** FUTURE: implement this
 }

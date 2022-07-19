@@ -16,13 +16,13 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 @Component({})
 export default class FilingTemplateMixin extends Mixins(DateMixin) {
   // Global getters
-  @Getter isNamedBusiness!: boolean
   @Getter getNameRequestNumber!: string
-  @Getter getApprovedName!: string
+  @Getter getNameRequestApprovedName!: string
   @Getter getBusinessId!: string
   @Getter getCurrentDate!: string
   @Getter getCorrectedFilingDate!: string
   @Getter getCorrectedFilingId!: number
+  @Getter getCorrectedFilingType!: FilingTypes
   @Getter getCorrectionErrorType!: CorrectionErrorTypes
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getDocumentOptionalEmail: string
@@ -43,7 +43,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter getCertifyState!: CertifyIF
   @Getter getOfficeAddresses!: AddressesIF
   @Getter getBusinessContact!: ContactPointIF
-  @Getter getAgreementType!: string
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getNewResolutionDates!: string[]
   @Getter hasNewNr!: boolean
@@ -74,7 +73,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setIsFutureEffective!: ActionBindingIF
   @Action setFolioNumber!: ActionBindingIF
   @Action setTransactionalFolioNumber!: ActionBindingIF
-  @Action setIncorporationAgreementStepData!: ActionBindingIF
   @Action setStaffPayment!: ActionBindingIF
   @Action setDetailComment!: ActionBindingIF
   @Action setEntitySnapshot!: ActionBindingIF
@@ -89,6 +87,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     const date = this.apiToDate(this.getCorrectedFilingDate)
     const yyyyMmDd = this.dateToYyyyMmDd(date)
     return `Correction for Incorporation Application filed on ${yyyyMmDd}.`
+  }
+
+  get getContactPoint (): ContactPointIF {
+    return {
+      email: this.getBusinessContact.email,
+      phone: this.getBusinessContact.phone || undefined, // don't include if empty
+      extension: +this.getBusinessContact.extension || undefined // don't include if empty
+    }
   }
 
   //
@@ -133,96 +139,57 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         folioNumber: this.getFolioNumber // original folio number, unless overridden by staff payment below
       },
       business: {
-        legalType: this.getEntityType,
         identifier: this.getBusinessId,
-        legalName: this.getApprovedName
+        legalName: this.getNameRequestApprovedName,
+        legalType: this.getEntityType,
+        nrNumber: this.getNameRequestNumber
       },
       correction: {
         correctedFilingId: this.getCorrectedFilingId,
         correctedFilingType: this.getCorrectedFilingType,
         correctedFilingDate: this.getCorrectedFilingDate,
         comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`,
+        contactPoint: this.getContactPoint,
+        nameRequest: this.getNameRequest,
+        offices: this.getOfficeAddresses,
+        parties: parties,
         type: this.getCorrectionErrorType
       }
     }
 
     // add in Incorporation Application data
-    if (this.getCorrectedFilingType === FilingTypes.INCORPORATION_APPLICATION) {
+    if (this.isCorrectedIncorporationApplication) {
+      filing.correction.nameTranslations = nameTranslations
+      filing.correction.shareStructure = { shareClasses }
+
+      // *** FUTURE: remove this temporary code
+      // populate the incorporation application object (for the Filer to process)
       filing.incorporationApplication = {
+        contactPoint: this.getContactPoint,
         nameRequest: {
           legalType: this.getEntityType,
-          legalName: this.getApprovedName,
+          legalName: this.getNameRequestApprovedName,
           nrNumber: this.getNameRequestNumber
         },
         nameTranslations: nameTranslations,
         offices: this.getOfficeAddresses,
-        contactPoint: {
-          email: this.getBusinessContact.email,
-          phone: this.getBusinessContact.phone,
-          ...this.getBusinessContact.extension
-            ? { extension: +this.getBusinessContact.extension }
-            : {}
-        },
         parties,
-        shareStructure: {
-          shareClasses
-        },
-        incorporationAgreement: {
-          agreementType: this.getAgreementType
-        }
-      }
-
-      // if this is a named IA then save Name Request Number and Approved Name
-      if (this.isNamedBusiness) {
-        filing.incorporationApplication.nameRequest.nrNumber = this.getNameRequestNumber
-        filing.incorporationApplication.nameRequest.legalName = this.getApprovedName
+        shareStructure: { shareClasses }
       }
     }
 
     // add in Registration data
-    if (this.getCorrectedFilingType === FilingTypes.REGISTRATION) {
-      filing.correction.business = {
-        // natureOfBusiness: ... // *** FUTURE: implement
-        naicsCode: this.getCurrentNaics.naicsCode,
-        naicsDescription: this.getCurrentNaics.naicsDescription,
-        // taxId: ... // *** FUTURE: implement
-        identifier: this.getBusinessId,
-        legalName: this.getApprovedName
-      }
-      filing.correction.offices = this.getOfficeAddresses
-      filing.correction.contactPoint = {
-        email: this.getBusinessContact.email,
-        phone: this.getBusinessContact.phone,
-        ...this.getBusinessContact.extension
-          ? { extension: +this.getBusinessContact.extension }
-          : {}
-      }
+    if (this.isCorrectedRegistration) {
+      filing.correction.business.naicsCode = this.getCurrentNaics.naicsCode
+      filing.correction.business.naicsDescription = this.getCurrentNaics.naicsDescription
       // filing.correction.startDate = ... // *** FUTURE: implement
-      filing.correction.nameRequest = this.getNameRequest
-      filing.correction.parties = this.getPeopleAndRoles
     }
 
     // add in Change Of Registration data
-    if (this.getCorrectedFilingType === FilingTypes.CHANGE_OF_REGISTRATION) {
-      filing.correction.business = {
-        // natureOfBusiness: ... // *** FUTURE: implement
-        naicsCode: this.getCurrentNaics.naicsCode,
-        naicsDescription: this.getCurrentNaics.naicsDescription,
-        // taxId: ... // *** FUTURE: implement
-        identifier: this.getBusinessId,
-        legalName: this.getApprovedName
-      }
-      filing.correction.offices = this.getOfficeAddresses
-      filing.correction.contactPoint = {
-        email: this.getBusinessContact.email,
-        phone: this.getBusinessContact.phone,
-        ...this.getBusinessContact.extension
-          ? { extension: +this.getBusinessContact.extension }
-          : {}
-      }
+    if (this.isCorrectedChangeReg) {
+      filing.correction.business.naicsCode = this.getCurrentNaics.naicsCode
+      filing.correction.business.naicsDescription = this.getCurrentNaics.naicsDescription
       // filing.correction.startDate = ... // *** FUTURE: implement
-      filing.correction.nameRequest = this.getNameRequest
-      filing.correction.parties = this.getPeopleAndRoles
     }
 
     // Include Staff Payment into the Correction filing
@@ -265,9 +232,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       },
       business: {
         foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
         identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName
+        legalName: this.getEntitySnapshot.businessInfo.legalName,
+        legalType: this.getEntitySnapshot.businessInfo.legalType,
+        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
       },
       alteration: {
         business: {
@@ -275,13 +243,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
           legalType: this.getEntityType
         },
         provisionsRemoved: this.areProvisionsRemoved,
-        contactPoint: {
-          email: this.getBusinessContact.email,
-          phone: this.getBusinessContact.phone,
-          ...this.getBusinessContact.extension
-            ? { extension: +this.getBusinessContact.extension }
-            : {}
-        }
+        contactPoint: this.getContactPoint
       }
     }
 
@@ -333,7 +295,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // Include name request info if applicable
-    if (this.hasNewNr || this.hasBusinessNameChanged) filing.alteration.nameRequest = { ...this.getNameRequest }
+    if (this.hasNewNr || this.hasBusinessNameChanged) {
+      filing.alteration.nameRequest = { ...this.getNameRequest }
+    }
 
     // Include Staff Payment into the Alteration filing
     this.buildStaffPayment(filing)
@@ -360,22 +324,17 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       },
       business: {
         foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
         identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName
+        legalName: this.getEntitySnapshot.businessInfo.legalName,
+        legalType: this.getEntitySnapshot.businessInfo.legalType,
+        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
       },
       changeOfRegistration: {
         business: {
           natureOfBusiness: '',
           identifier: this.getBusinessId
         },
-        contactPoint: {
-          email: this.getBusinessContact.email,
-          phone: this.getBusinessContact.phone,
-          ...this.getBusinessContact.extension
-            ? { extension: +this.getBusinessContact.extension }
-            : {}
-        }
+        contactPoint: this.getContactPoint
       }
     }
 
@@ -473,20 +432,17 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       },
       business: {
         foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
         identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName
+        legalName: this.getEntitySnapshot.businessInfo.legalName,
+        legalType: this.getEntitySnapshot.businessInfo.legalType,
+        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
       },
       conversion: {
         business: {
           natureOfBusiness: '',
           identifier: this.getBusinessId
         },
-        contactPoint: {
-          email: this.getBusinessContact.email,
-          phone: this.getBusinessContact.phone || undefined, // don't include if empty
-          extension: +this.getBusinessContact.extension || undefined // don't include if empty
-        },
+        contactPoint: this.getContactPoint,
         offices: {
           businessOffice: {
             mailingAddress: this.getOfficeAddresses.businessOffice?.mailingAddress,
@@ -573,50 +529,37 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param entitySnapshot the latest entity snapshot
    */
   parseCorrectionFiling (filing: CorrectionFilingIF, entitySnapshot: EntitySnapshotIF = null): void {
-    function isIncorporationApplication (): boolean {
-      return (filing.correction.correctedFilingType === FilingTypes.INCORPORATION_APPLICATION)
-    }
-    function isRegistration (): boolean {
-      return (filing.correction.correctedFilingType === FilingTypes.REGISTRATION)
-    }
-    function isChangeOfRegistration (): boolean {
-      return (filing.correction.correctedFilingType === FilingTypes.CHANGE_OF_REGISTRATION)
-    }
-
     // store Entity Snapshot
     this.setEntitySnapshot(entitySnapshot)
-
-    // store Business Information
-    if (isIncorporationApplication()) {
-      this.setBusinessInformation(filing.business)
-    }
-    if (isRegistration() || isChangeOfRegistration()) {
-      this.setBusinessInformation({
-        naicsCode: entitySnapshot.businessInfo.naicsCode,
-        naicsDescription: entitySnapshot.businessInfo.naicsDescription,
-        identifier: entitySnapshot.businessInfo.identifier,
-        legalName: entitySnapshot.businessInfo.legalName,
-        foundingDate: entitySnapshot.businessInfo.foundingDate,
-        ...filing.correction.business
-      })
-    }
 
     // store Correction Information
     this.setCorrectionInformation(filing.correction)
 
+    // store Business Information
+    if (this.isCorrectedIncorporationApplication) {
+      this.setBusinessInformation(filing.business)
+    }
+    if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
+      this.setBusinessInformation({
+        foundingDate: entitySnapshot.businessInfo.foundingDate,
+        identifier: entitySnapshot.businessInfo.identifier,
+        legalName: entitySnapshot.businessInfo.legalName,
+        legalType: entitySnapshot.businessInfo.legalType,
+        naicsCode: entitySnapshot.businessInfo.naicsCode,
+        naicsDescription: entitySnapshot.businessInfo.naicsDescription,
+        nrNumber: entitySnapshot.businessInfo.nrNumber,
+        ...filing.correction.business
+      })
+    }
+
     // store Name Request
-    if (filing.incorporationApplication) {
-      // *** FUTURE: provide fallback
-      this.setNameRequest(filing.incorporationApplication.nameRequest)
-    }
-    if (isRegistration()) {
-      // *** FUTURE: provide correct fallback
-      this.setNameRequest(filing.correction.nameRequest || filing.registration.nameRequest)
-    }
-    if (isChangeOfRegistration()) {
-      // *** FUTURE: provide correct fallback
-      this.setNameRequest(filing.correction.nameRequest || filing.changeofRegistration.nameRequest)
-    }
+    this.setNameRequest(filing.correction.nameRequest ||
+      {
+        legalType: entitySnapshot.businessInfo.legalType,
+        legalName: entitySnapshot.businessInfo.legalName,
+        nrNumber: entitySnapshot.businessInfo.nrNumber
+      }
+    )
 
     // store Name Translations
     if (filing.incorporationApplication) {
@@ -638,46 +581,18 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     }
 
     // store Office Addresses
-    if (filing.incorporationApplication) {
-      // *** FUTURE: provide fallback
-      this.setOfficeAddresses(filing.incorporationApplication.offices)
-    }
-    if (isRegistration() || isChangeOfRegistration()) {
-      this.setOfficeAddresses(filing.correction.offices || entitySnapshot.addresses)
-    }
+    this.setOfficeAddresses(filing.correction.offices || entitySnapshot.addresses)
 
     // store current Business Contact
     this.setBusinessContact(entitySnapshot.authInfo.contact)
 
     // store People And Roles
-    if (filing.incorporationApplication) {
-      // *** FUTURE: provide correct fallback
-      this.setPeopleAndRoles(filing.incorporationApplication.parties || [])
-    }
-    if (isRegistration() || isChangeOfRegistration()) {
-      this.setPeopleAndRoles(filing.correction.parties || entitySnapshot.orgPersons)
-    }
+    this.setPeopleAndRoles(filing.correction.parties || entitySnapshot.orgPersons)
 
     // store Share Classes
     if (filing.incorporationApplication) {
-      if (filing.incorporationApplication.shareStructure?.shareClasses) {
-        // load data from new schema
-        this.setShareClasses(filing.incorporationApplication.shareStructure.shareClasses)
-      } else if (filing.incorporationApplication.shareClasses) {
-        // load data from old schema
-        this.setShareClasses(filing.incorporationApplication.shareClasses)
-      } else {
-        // *** FUTURE: provide fallback
-        this.setShareClasses([])
-      }
-    }
-
-    // store Incorporation Agreement Type
-    if (filing.incorporationApplication) {
-      this.setIncorporationAgreementStepData({
-        // *** FUTURE: provide fallback
-        agreementType: filing.incorporationApplication.incorporationAgreement?.agreementType
-      })
+      this.setShareClasses(filing.correction.shareStructure?.shareClasses ||
+        entitySnapshot.shareStructure.shareClasses)
     }
 
     // store Certify State
@@ -723,8 +638,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       ...filing.alteration.business
     })
 
-    // store Name Request
-    this.setNameRequest(filing.alteration.nameRequest || { legalName: entitySnapshot.businessInfo.legalName })
+    // store Name Request data
+    this.setNameRequest(filing.alteration.nameRequest ||
+      {
+        legalType: entitySnapshot.businessInfo.legalType,
+        legalName: entitySnapshot.businessInfo.legalName,
+        nrNumber: entitySnapshot.businessInfo.nrNumber
+      }
+    )
 
     // store Name Translations
     this.setNameTranslations(
@@ -807,8 +728,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       this.setNaics(filing.changeOfRegistration.business.naics)
     }
 
-    // store Name Request
-    this.setNameRequest(filing.changeOfRegistration.nameRequest || { legalName: entitySnapshot.businessInfo.legalName })
+    // store Name Request data
+    this.setNameRequest(filing.changeOfRegistration.nameRequest ||
+      {
+        legalType: entitySnapshot.businessInfo.legalType,
+        legalName: entitySnapshot.businessInfo.legalName,
+        nrNumber: entitySnapshot.businessInfo.nrNumber
+      }
+    )
 
     // store Office Addresses
     let addresses
@@ -865,8 +792,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       this.setNaics(filing.conversion.business.naics)
     }
 
-    // store Name Request (specifically, legal name)
-    this.setNameRequest({ legalName: filing.business.legalName || entitySnapshot.businessInfo.legalName })
+    // store Name Request data
+    this.setNameRequest(filing.conversion.nameRequest ||
+      {
+        legalType: entitySnapshot.businessInfo.legalType,
+        legalName: entitySnapshot.businessInfo.legalName,
+        nrNumber: entitySnapshot.businessInfo.nrNumber
+      }
+    )
 
     // store Office Addresses
     let addresses
@@ -912,10 +845,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // store Business Information
     this.setBusinessInformation(entitySnapshot.businessInfo)
 
-    // store Name Request
+    // store Name Request data
     this.setNameRequest({
       legalType: entitySnapshot.businessInfo.legalType,
-      legalName: entitySnapshot.businessInfo.legalName
+      legalName: entitySnapshot.businessInfo.legalName,
+      nrNumber: entitySnapshot.businessInfo.nrNumber
     })
 
     // store People and Roles
@@ -949,11 +883,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         this.setShareClasses(entitySnapshot.shareStructure.shareClasses)
         this.setResolutionDates([])
         this.setOriginalResolutionDates(entitySnapshot.resolutions)
-
-        // store Incorporation Agreement Type
-        this.setIncorporationAgreementStepData({
-          agreementType: entitySnapshot.businessInfo.incorporationAgreementType
-        })
 
         break
       }

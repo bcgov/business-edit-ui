@@ -12,7 +12,7 @@
             <dt class="mr-2">Business No:</dt>
             <dd id="entity-business-number">{{ getBusinessNumber || 'Not Available' }}</dd>
             <dt class="mr-2">Incorporation No:</dt>
-            <dd id="entity-incorp-number">{{ getBusinessInformation.identifier }}</dd>
+            <dd id="entity-incorp-number">{{ getBusinessId }}</dd>
           </dl>
         </div>
 
@@ -35,7 +35,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { CommonMixin, SharedMixin } from '@/mixins/'
-import { BusinessInformationIF, EntitySnapshotIF } from '@/interfaces/'
+import { EntitySnapshotIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 @Component({})
@@ -46,7 +46,6 @@ export default class EntityInfo extends Mixins(CommonMixin, SharedMixin) {
   @Getter getOriginalBusinessName!: string
   @Getter isRoleStaff!: boolean
   @Getter getBusinessContact!: ContactPointIF
-  @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
 
   /** Get original entity type. */
@@ -107,5 +106,14 @@ dd + dt:before {
   display: inline-block;
   margin-right: 0.75rem;
   margin-left: 0.75rem;
+}
+
+#entity-legal-name,
+#entity-legal-type,
+#entity-business-number,
+#entity-incorp-number,
+#entity-business-email,
+#entity-business-phone {
+  user-select: all;
 }
 </style>

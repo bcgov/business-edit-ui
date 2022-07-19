@@ -235,7 +235,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   readonly invalidSection: boolean
 
   // Global getters
-  @Getter getApprovedName!: string
+  @Getter getNameRequestApprovedName!: string
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getResource!: ResourceIF
   @Getter hasBusinessTypeChanged!: boolean
@@ -290,8 +290,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
 
   /** Verify New Business name. */
   get isNewName (): boolean {
-    return this.getApprovedName &&
-      (this.getApprovedName !== this.getEntitySnapshot?.businessInfo?.legalName)
+    return this.getNameRequestApprovedName &&
+      (this.getNameRequestApprovedName !== this.getEntitySnapshot?.businessInfo?.legalName)
   }
 
   /** Check is current entity selection is a Benefit Company */

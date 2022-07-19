@@ -28,7 +28,7 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
 
   @Action setNameRequest!: ActionBindingIF
 
-  @Getter getApprovedName!: string
+  @Getter getNameRequestApprovedName!: string
   @Getter getNameRequest!: NameRequestIF
 
   private valid = false
@@ -44,8 +44,8 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
 
   mounted (): void {
     // Set the current company name to the form
-    if (this.getApprovedName) {
-      this.companyName = this.getApprovedName
+    if (this.getNameRequestApprovedName) {
+      this.companyName = this.getNameRequestApprovedName
     }
   }
 
@@ -58,15 +58,18 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
   @Watch('formType')
   private async onSubmit (): Promise<any> {
     if (this.formType === CorrectionTypes.CORRECT_NAME) {
-      const correctedCompanyName = { legalName: this.companyName }
-      this.setNameRequest({ ...this.getNameRequest, ...correctedCompanyName })
-      this.emitDone(true)
+      // set the new company name
+      this.setNameRequest({
+        ...this.getNameRequest,
+        legalName: this.companyName
+      })
+      this.emitIsSaved(true)
     }
   }
 
   /** Inform parent the process is complete. */
-  @Emit('done')
-  private emitDone (isSaved: boolean): void {}
+  @Emit('isSaved')
+  private emitIsSaved (isSaved: boolean): void {}
 
   /** Inform parent when form is valid and ready for submission. */
   @Watch('valid')

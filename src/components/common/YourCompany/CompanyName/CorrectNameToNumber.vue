@@ -6,7 +6,7 @@
           v-model="correctToNumbered"
           id="correct-name-to-number-checkbox"
           class="mb-n5"
-          :label="`Change the company name to ${getBusinessId} B.C. Ltd.`"
+          :label="`Change the company name to ${businessId} B.C. Ltd.`"
         />
       </v-col>
     </v-row>
@@ -19,9 +19,8 @@ import { Component, Prop, Watch, Emit, Vue } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Interfaces && enums
-import { ActionBindingIF } from '@/interfaces/'
+import { ActionBindingIF, NameRequestIF } from '@/interfaces/'
 import { CorrectionTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 @Component({})
 export default class CorrectNameToNumber extends Vue {
@@ -30,26 +29,33 @@ export default class CorrectNameToNumber extends Vue {
 
   @Action setNameRequest!: ActionBindingIF
 
-  @Getter getApprovedName!: string
-  @Getter getEntityType!: CorpTypeCd
+  @Getter getNameRequest!: NameRequestIF
   @Getter getBusinessId!: string
 
   // Local properties
   private correctToNumbered = false
 
+  get businessId (): string {
+    return this.getBusinessId && this.getBusinessId.substring(2)
+  }
+
   /** Watch for form submission and emit results. */
   @Watch('formType')
   private async onSubmit (): Promise<any> {
     if (this.formType === CorrectionTypes.CORRECT_NAME_TO_NUMBER) {
-      const correctedNameToNumber = { legalType: this.getEntityType }
-      this.setNameRequest(correctedNameToNumber)
-      this.emitDone(true)
+      // delete the current legal name and NR number
+      this.setNameRequest({
+        ...this.getNameRequest,
+        legalName: '',
+        nrNumber: null
+      })
+      this.emitIsSaved(true)
     }
   }
 
   /** Inform parent the process is complete. */
-  @Emit('done')
-  private emitDone (isSaved: boolean): void {}
+  @Emit('isSaved')
+  private emitIsSaved (isSaved: boolean): void {}
 
   /** Inform parent when form is valid and ready for submission. */
   @Watch('correctToNumbered')

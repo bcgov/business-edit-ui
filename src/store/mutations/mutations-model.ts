@@ -1,6 +1,6 @@
 import { AccountInformationIF, ActionKvIF, AddressesIF, BusinessInformationIF, EntitySnapshotIF, CertifyIF,
-  FilingDataIF, IncorporationAgreementIF, CorrectedFilingIF, NameRequestIF, NameTranslationIF, OrgPersonIF,
-  ResolutionsIF, ShareClassIF, StateIF, FeesIF, ResourceIF, CorrectionInformationIF } from '@/interfaces/'
+  FilingDataIF, CorrectionInformationIF, CorrectedFilingIF, NameRequestIF, NameTranslationIF, OrgPersonIF,
+  ResolutionsIF, ShareClassIF, StateIF, FeesIF, ResourceIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { FilingTypes } from '@/enums/'
@@ -170,19 +170,6 @@ export const mutateCreateShareStructureStepValidity = (state: StateIF, validity:
   state.stateModel.shareStructureStep.valid = validity
 }
 
-export const mutateIncorporationAgreementStepData = (state: StateIF, stepData: IncorporationAgreementIF) => {
-  state.stateModel.incorporationAgreementStep = stepData
-  if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
-}
-
-export const mutateIncorporationAgreementChanged = (state: StateIF, changed: boolean) => {
-  state.stateModel.incorporationAgreementStep.changed = changed
-}
-
-export const mutateIncorporationAgreementValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.incorporationAgreementStep.valid = validity
-}
-
 export const mutateIgnoreChanges = (state: StateIF, ignoreChanges: boolean) => {
   state.stateModel.tombstone.ignoreChanges = ignoreChanges
 }
@@ -247,10 +234,6 @@ export const mutateEditingPeopleAndRoles = (state: StateIF, editing: boolean) =>
 
 export const mutateEditingShareStructure = (state: StateIF, editing: boolean) => {
   state.stateModel.editingFlags.shareStructure = editing
-}
-
-export const mutateEditingIncorporationAgreement = (state: StateIF, editing: boolean) => {
-  state.stateModel.editingFlags.incorporationAgreement = editing
 }
 
 export const mutateSummaryMode = (state: StateIF, summaryMode: boolean) => {

@@ -158,14 +158,6 @@ export const setCreateShareStructureStepValidity: ActionIF = ({ commit }, validi
   commit('mutateCreateShareStructureStepValidity', validity)
 }
 
-export const setIncorporationAgreementStepData: ActionIF = ({ commit }, stepData): void => {
-  commit('mutateIncorporationAgreementStepData', stepData)
-}
-
-export const setIncorporationAgreementValidity: ActionIF = ({ commit }, validity: boolean): void => {
-  commit('mutateIncorporationAgreementValidity', validity)
-}
-
 export const setIgnoreChanges: ActionIF = ({ commit }, ignoreChanges: boolean): void => {
   commit('mutateIgnoreChanges', ignoreChanges)
 }
@@ -224,10 +216,6 @@ export const setEditingPeopleAndRoles: ActionIF = ({ commit }, editing: boolean)
 
 export const setEditingShareStructure: ActionIF = ({ commit }, editing: boolean): void => {
   commit('mutateEditingShareStructure', editing)
-}
-
-export const setEditingIncorporationAgreement: ActionIF = ({ commit }, editing: boolean): void => {
-  commit('mutateEditingIncorporationAgreement', editing)
 }
 
 export const setSummaryMode: ActionIF = ({ commit }, summaryMode: boolean): void => {

@@ -37,8 +37,7 @@ describe('Entity Info component in a Correction as a named company', () => {
       },
       offices: {},
       parties: [] as [],
-      shareClasses: [] as [],
-      incorporationAgreement: {}
+      shareClasses: [] as []
     }
   }
 
@@ -108,8 +107,7 @@ describe('Entity Info component in a Correction as a numbered company', () => {
       nameRequest: {},
       offices: {},
       parties: [] as [],
-      shareClasses: [] as [],
-      incorporationAgreement: {}
+      shareClasses: [] as []
     }
   }
 

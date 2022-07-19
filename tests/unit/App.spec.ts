@@ -193,10 +193,7 @@ const filingData = {
 
         ]
       }
-    ],
-    incorporationAgreement: {
-      agreementType: 'sample'
-    }
+    ]
   }
 }
 
@@ -503,10 +500,6 @@ describe.skip('App component', () => {
     // Validate Share Structure
     expect(store.state.stateModel.shareStructureStep.shareClasses)
       .toStrictEqual(filingData.incorporationApplication.shareClasses)
-
-    // Validate Incorporation Agreement
-    expect(store.state.stateModel.incorporationAgreementStep.agreementType)
-      .toStrictEqual(filingData.incorporationApplication.incorporationAgreement.agreementType)
   })
 
   it('loads a name request into the store', () => {
