@@ -267,9 +267,24 @@ describe('SP/GP correction getters', () => {
 
   beforeAll(async () => {
     // initialize store
+    store.state.stateModel.tombstone.userInfo = {
+      contacts: [{
+        email: 'sp@sp.com',
+        phone: '1234567890'
+      }],
+      firstname: 'SP',
+      lastname: 'SP',
+      roles: 'STAFF',
+      username: 'username'
+    }
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.tombstone.filingType = 'correction'
-    // store.state.stateModel.correctedFiling = { registration: {} }
+    store.state.stateModel.correctedFiling = { registration: {} }
+    store.state.stateModel.filingData = {
+      filingTypeCode: 'FMCORR',
+      entityType: 'SP',
+      priority: false
+    }
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
@@ -281,6 +296,24 @@ describe('SP/GP correction getters', () => {
   //
   // FUTURE: implement this
   //
+  it('renders correct initial global getters for App.vue', async () => {
+    expect(vm.getUserEmail).toBe('')
+    expect(vm.getUserEmail).toBe('')
+    expect(vm.getUserPhone).toBe('')
+    expect(vm.getUserFirstName).toBe('')
+    expect(vm.getUserLastName).toBe('')
+    expect(vm.getUserRoles).toBe('')
+    expect(vm.getUserUsername).toBe('')
+    expect(vm.getOrgInfo).toBe('')
+    expect(vm.getFilingData).toBe('')
+    expect(vm.haveUnsavedChanges).toBe('')
+    expect(vm.isBusySaving).toBe('')
+    expect(vm.isEditing).toBe('')
+    expect(vm.isSummaryMode).toBe('')
+    expect(vm.showFeeSummary).toBe('')
+    expect(vm.getCurrentJsDate).toBe('')
+    expect(vm.getFilingId).toBe('')
+  })
   it('returns correct values for "Has Correction Changed" getter', async () => {
     expect(vm.hasCorrectionDataChanged).toBe(true)
   })
