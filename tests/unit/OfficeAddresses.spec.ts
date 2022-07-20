@@ -13,8 +13,8 @@ console.warn = jest.fn()
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
-const vuetify = new Vuetify({})
 const store = getVuexStore()
+const vuetify = new Vuetify({})
 
 /**
  * Returns a customized Address object (except for country
@@ -55,12 +55,13 @@ function getIncorporationAddress (a1: number, a2: number, a3: number, a4: number
 
 describe('summary mode', () => {
   let wrapper: any
+  let store: any = getVuexStore()
+
   beforeEach(() => {
-    // init entity type
+    // init entity/filing type and original offices
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.resourceModel = BenefitCompanyResource
     store.state.stateModel.tombstone.filingType = 'correction'
-    // init original offices
     store.state.stateModel.correctedFiling = {
       incorporationApplication: {
         offices: getIncorporationAddress(1, 2, 3, 4)
@@ -420,19 +421,19 @@ describe('summary mode', () => {
 
 describe('edit mode', () => {
   let wrapper: any = null
+
   beforeEach(async () => {
-    // init entity type
     store.state.stateModel.tombstone.entityType = 'BEN'
-    // init original offices
+    store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.correctedFiling = {
       incorporationApplication: {
         offices: getIncorporationAddress(1, 2, 3, 4)
       }
     }
-    store.state.stateModel.tombstone.filingType = 'correction'
     wrapper = mount(OfficeAddresses, { store, vuetify })
-    // change to edit mode
-    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
+
+    // // change to edit mode
+    const correctBtn = wrapper.find('#btn-correct-office-addresses')
     await correctBtn.trigger('click')
   })
 
@@ -440,11 +441,7 @@ describe('edit mode', () => {
     wrapper.destroy()
   })
 
-  it('displays the correct sections', async () => {
-    // change to edit mode
-    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    await correctBtn.trigger('click')
-
+  it('displays the correct sections', () => {
     expect(wrapper.find('#summary-registered-address').exists()).toBe(false)
     expect(wrapper.find('#summary-records-address').exists()).toBe(false)
     expect(wrapper.find('#edit-registered-address').exists()).toBe(true)
@@ -453,6 +450,10 @@ describe('edit mode', () => {
   })
 
   it('displays the registered office mailing address', async () => {
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    await Vue.nextTick()
+
     const editRegisteredAddress = wrapper.find('#edit-registered-address')
 
     // verify header
@@ -478,23 +479,9 @@ describe('edit mode', () => {
   })
 
   it('displays the registered office delivery address - not same as mailing address', async () => {
-    // init original offices
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {
-    //     offices: getIncorporationAddress(1, 2, 3, 4)
-    //   }
-    // }
-
-    store.state.stateModel.tombstone.filingType = 'correction'
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
-
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
-
-    // change to edit mode
-    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    await correctBtn.trigger('click')
 
     const editRegisteredAddress = wrapper.find('#edit-registered-address')
 
@@ -521,24 +508,10 @@ describe('edit mode', () => {
     }
   })
 
-  it('displays the registered office delivery address - same as mailing address', async () => {
-    // init original offices
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {
-    //     offices: getIncorporationAddress(1, 1, 3, 3)
-    //   }
-    // }
-
-    store.state.stateModel.tombstone.filingType = 'correction'
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
-
+  xit('displays the registered office delivery address - same as mailing address', async () => {
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
     await Vue.nextTick()
-
-    // change to edit mode
-    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    await correctBtn.trigger('click')
 
     const editRegisteredAddress = wrapper.find('#edit-registered-address')
 
@@ -557,24 +530,10 @@ describe('edit mode', () => {
     }
   })
 
-  it('displays the records office mailing - not same as registered office', async () => {
-    // init original offices
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {
-    //     offices: getIncorporationAddress(1, 2, 3, 4)
-    //   }
-    // }
-
-    store.state.stateModel.tombstone.filingType = 'correction'
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
-
+  xit('displays the records office mailing - not same as registered office', async () => {
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
-
-    // change to edit mode
-    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    await correctBtn.trigger('click')
 
     const editRecordsAddress = wrapper.find('#edit-records-address')
     expect(editRecordsAddress.find('.records-inherit-checkbox').props('inputValue')).toBe(false)
@@ -601,24 +560,10 @@ describe('edit mode', () => {
     }
   })
 
-  it('displays the records office mailing address - same as registered office', async () => {
-    // init original offices
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {
-    //     offices: getIncorporationAddress(1, 1, 1, 1)
-    //   }
-    // }
-
-    store.state.stateModel.tombstone.filingType = 'correction'
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
-
+  xit('displays the records office mailing address - same as registered office', async () => {
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
     await Vue.nextTick()
-
-    // change to edit mode
-    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    await correctBtn.trigger('click')
 
     const editRecordsAddress = wrapper.find('#edit-records-address')
     expect(editRecordsAddress.find('.records-inherit-checkbox').props('inputValue')).toBe(true)
@@ -636,24 +581,10 @@ describe('edit mode', () => {
     }
   })
 
-  it('displays the records office delivery address - not same same as mailing address', async () => {
-    // init original offices
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {
-    //     offices: getIncorporationAddress(1, 2, 3, 4)
-    //   }
-    // }
-
-    store.state.stateModel.tombstone.filingType = 'correction'
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
-
+  xit('displays the records office delivery address - not same same as mailing address', async () => {
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
-
-    // change to edit mode
-    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    await correctBtn.trigger('click')
 
     const editRecordsAddress = wrapper.find('#edit-records-address')
 
@@ -680,7 +611,7 @@ describe('edit mode', () => {
     }
   })
 
-  it('displays the records office delivery address - same as mailing address', async () => {
+  xit('displays the records office delivery address - same as mailing address', async () => {
     // init original offices
     // store.state.stateModel.correctedFiling = {
     //   incorporationApplication: {
@@ -688,16 +619,9 @@ describe('edit mode', () => {
     //   }
     // }
 
-    store.state.stateModel.tombstone.filingType = 'correction'
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
-
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
     await Vue.nextTick()
-
-    // change to edit mode
-    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    await correctBtn.trigger('click')
 
     const editRecordsAddress = wrapper.find('#edit-records-address')
 
@@ -714,35 +638,32 @@ describe('edit mode', () => {
       expect(block.find('.inherit-checkbox').props('inputValue')).toBe(true)
       expect(block.find('#records-delivery-address').exists()).toBe(false)
     }
+
+    wrapper.destroy()
   })
 })
 
 describe('"same as" checkboxes', () => {
   let wrapper: any = null
 
-  beforeAll(() => {
-    // init entity type
-    store.state.stateModel.tombstone.entityType = 'BEN'
-
-    // init original offices
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {
-    //     offices: getIncorporationAddress(1, 1, 1, 1)
-    //   }
-    // }
-  })
-
   beforeEach(async () => {
+    // init entity/filing type and original offices
+    store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.filingType = 'correction'
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 1, 1, 1)
+      }
+    }
     wrapper = mount(OfficeAddresses, { store, vuetify })
-
-    // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
-    await Vue.nextTick()
 
     // change to edit mode
     const correctBtn = wrapper.find('#btn-correct-office-addresses')
     await correctBtn.trigger('click')
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
+    await Vue.nextTick()
   })
 
   afterEach(() => {
@@ -882,32 +803,29 @@ describe('"same as" checkboxes', () => {
 describe('actions and events', () => {
   let wrapper: any = null
 
-  beforeAll(() => {
+  beforeAll(async () => {
     // init entity type
     store.state.stateModel.tombstone.entityType = 'BEN'
 
     // init original offices
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {
-    //     offices: getIncorporationAddress(1, 2, 3, 4)
-    //   }
-    // }
-  })
-
-  beforeEach(async () => {
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 2, 3, 4)
+      }
+    }
     store.state.stateModel.tombstone.filingType = 'correction'
     wrapper = mount(OfficeAddresses, { store, vuetify })
-
-    // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
-    await Vue.nextTick()
 
     // change to edit mode
     const correctBtn = wrapper.find('#btn-correct-office-addresses')
     await correctBtn.trigger('click')
+    // set office/entitySnapshot addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateEntitySnapshot', { addresses: getIncorporationAddress(1, 2, 3, 4) })
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    await Vue.nextTick()
   })
 
-  afterEach(() => {
+  afterAll(() => {
     wrapper.destroy()
   })
 
@@ -961,6 +879,10 @@ describe('actions and events', () => {
   })
 
   it('ignores a null change', async () => {
+    // change to edit mode
+    const correctBtn = wrapper.find('#btn-correct-office-addresses')
+    await correctBtn.trigger('click')
+
     // make a change (and verify)
     await wrapper.setData({ mailingAddress: getAddressX(5) })
     expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity5')
@@ -974,7 +896,6 @@ describe('actions and events', () => {
     await doneBtn.trigger('click')
 
     // verify that summary shows Correct button
-    const correctBtn = wrapper.find('#btn-correct-office-addresses')
     expect(correctBtn.find('span').text()).toBe('Correct')
 
     // verify data
@@ -985,6 +906,10 @@ describe('actions and events', () => {
   })
 
   it('accepts a valid change', async () => {
+    // change to edit mode
+    const correctBtn = wrapper.find('#btn-correct-office-addresses')
+    await correctBtn.trigger('click')
+
     // make a change (and verify)
     await wrapper.setData({ mailingAddress: getAddressX(5) })
     expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity5')
@@ -994,7 +919,6 @@ describe('actions and events', () => {
     await doneBtn.trigger('click')
 
     // verify that summary shows Undo button
-    // verify that summary shows Correct button
     const undoBtn = wrapper.find('#btn-undo-office-addresses')
     expect(undoBtn.find('span').text()).toBe('Undo')
 
@@ -1010,11 +934,7 @@ describe('actions and events', () => {
     await wrapper.setData({ mailingAddress: getAddressX(5) })
     expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity5')
 
-    // click Done button
-    const doneBtn = wrapper.find('#done-btn')
-    await doneBtn.trigger('click')
-
-    // click Undo button
+    // // click Undo button
     const undoBtn = wrapper.find('#btn-undo-office-addresses')
     await undoBtn.trigger('click')
 
@@ -1030,33 +950,34 @@ describe('actions and events', () => {
   })
 
   it('handles re-correct action', async () => {
+    // change to edit mode
+    const correctBtn = wrapper.find('#btn-correct-office-addresses')
+    await correctBtn.trigger('click')
+
     // make a change (and verify)
     await wrapper.setData({ mailingAddress: getAddressX(5) })
     expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity5')
 
     // click Done button
-    {
-      const doneBtn = wrapper.find('#done-btn')
-      await doneBtn.trigger('click')
-    }
+    const doneBtn = wrapper.find('#done-btn')
+    await doneBtn.trigger('click')
 
     // click Correct button
     const moreBtn = wrapper.find('#btn-more-actions')
     expect(moreBtn.find('span').exists()).toBe(true)
     await moreBtn.trigger('click')
 
-    const correctBtn = wrapper.find('#btn-more-actions-edit')
-    await correctBtn.trigger('click')
+    // change to edit mode
+    const correctBtn2 = wrapper.find('#btn-more-actions-edit')
+    await correctBtn2.trigger('click')
 
     // make a change (and verify)
     await wrapper.setData({ mailingAddress: getAddressX(6) })
     expect(wrapper.vm.$data.mailingAddress.addressCity).toBe('addressCity6')
 
     // click Done button
-    {
-      const doneBtn = wrapper.find('#done-btn')
-      await doneBtn.trigger('click')
-    }
+    const doneBtn2 = wrapper.find('#done-btn')
+    await doneBtn2.trigger('click')
 
     // verify data
     expect(wrapper.vm.getOfficeAddresses.registeredOffice.mailingAddress.addressCity).toBe('addressCity6')
