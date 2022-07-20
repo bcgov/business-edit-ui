@@ -146,7 +146,33 @@ describe('Alteration getters', () => {
     // initialize store
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.filingType = 'alteration'
-    // store.state.stateModel.correctedFiling = { registration: {} }
+    store.state.stateModel.newAlteration.provisionsRemoved = false
+    store.state.stateModel.shareStructureStep = {
+      resolutionDates: [],
+      shareClasses: []
+    }
+    store.state.stateModel.nameRequest = {
+      legalName: 'MyLegalName',
+      business: {
+        legalName: 'MyLegalName',
+        legalType: 'BEN'
+      },
+      incorporationApplication: {},
+      registration: {}
+    }
+    store.state.stateModel.entitySnapshot = {
+      businessInfo: {
+        legalName: 'MyLegalName',
+        legalType: 'BEN',
+        naicsCode: '100000'
+      },
+      shareStructure: {
+        shareClasses: []
+      },
+      addresses: {
+        businessOffice: null
+      }
+    }
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
@@ -155,24 +181,58 @@ describe('Alteration getters', () => {
     await Vue.nextTick()
   })
 
-  //
-  // FUTURE: implement this
-  //
-  xit('returns correct values for "Has Alteration Changed" getter', async () => {
+  it('returns correct values for "Has Alteration Changed" getter', async () => {
     // initially, this getter should be false
     expect(vm.hasAlterationDataChanged).toBe(false)
 
     // verify that business name changes are detected
+    store.state.stateModel.nameRequest.legalName = 'MyLegalName2'
+    expect(vm.hasBusinessNameChanged).toBe(true)
+    store.state.stateModel.nameRequest.legalName = 'MyLegalName'
+    expect(vm.hasBusinessNameChanged).toBe(false)
+
     // verify that business type changes are detected
+    store.state.stateModel.tombstone.entityType = 'BEN2'
+    expect(vm.hasBusinessTypeChanged).toBe(true)
+    store.state.stateModel.tombstone.entityType = 'BEN'
+    expect(vm.hasBusinessTypeChanged).toBe(false)
+
     // verify that name translation changes are detected
+    store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
+    expect(vm.hasNameTranslationChanged).toBe(true)
+    store.state.stateModel.nameTranslations = []
+    expect(vm.hasNameTranslationChanged).toBe(false)
+
     // verify that share structure changes are detected
+    store.state.stateModel.shareStructureStep.shareClasses = [{}]
+    expect(vm.hasShareStructureChanged).toBe(true)
+    store.state.stateModel.shareStructureStep.shareClasses = []
+    expect(vm.hasShareStructureChanged).toBe(false)
+
     // verify that provisions removed is detected
+    store.state.stateModel.newAlteration.provisionsRemoved = true
+    expect(vm.areProvisionsRemoved).toBe(true)
+    store.state.stateModel.newAlteration.provisionsRemoved = false
+    expect(vm.areProvisionsRemoved).toBe(false)
+
     // verify that new resolution dates are detected
+    // store.state.stateModel.shareStructureStep.resolutionDates = ['s']
+    // expect(vm.haveNewResolutionDates).toBe(true)
+    // store.state.stateModel.shareStructureStep.resolutionDates = []
+    // expect(vm.haveNewResolutionDates).toBe(false)
+
+    // finally, this getter should be false
+    expect(vm.hasAlterationDataChanged).toBe(false)
   })
 })
 
 describe('BEN IA correction getters', () => {
   let vm: any
+
+  const newAddress = {
+    deliveryAddress: { postalCode: 'V8V 8V8' },
+    mailingAddress: { postalCode: 'V8V 8V8' }
+  }
 
   beforeAll(async () => {
     // initialize store
@@ -186,7 +246,9 @@ describe('BEN IA correction getters', () => {
     //   incorporationApplication: {}
     // }
     store.state.stateModel.entitySnapshot = {
-      businessInfo: {},
+      businessInfo: {
+        legalName: 'MyLegalName'
+      },
       shareStructure: {
         shareClasses: []
       }
@@ -222,25 +284,25 @@ describe('BEN IA correction getters', () => {
     expect(vm.hasNameTranslationChanged).toBe(false)
 
     // verify that registered mailing address changes are detected
-    store.state.stateModel.officeAddresses = { registeredOffice: { mailingAddress: { postalCode: 'V8V 8V8' } } }
+    store.state.stateModel.officeAddresses = { registeredOffice: newAddress }
     expect(vm.haveOfficeAddressesChanged).toBe(true)
     store.state.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that registered delivery address changes are detected
-    store.state.stateModel.officeAddresses = { registeredOffice: { deliveryAddress: { postalCode: 'V8V 8V8' } } }
+    store.state.stateModel.officeAddresses = { registeredOffice: newAddress }
     expect(vm.haveOfficeAddressesChanged).toBe(true)
     store.state.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that records mailing address changes are detected
-    store.state.stateModel.officeAddresses = { recordsOffice: { mailingAddress: { postalCode: 'V8V 8V8' } } }
+    store.state.stateModel.officeAddresses = { recordsOffice: newAddress }
     expect(vm.haveOfficeAddressesChanged).toBe(true)
     store.state.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that records delivery address changes are detected
-    store.state.stateModel.officeAddresses = { recordsOffice: { deliveryAddress: { postalCode: 'V8V 8V8' } } }
+    store.state.stateModel.officeAddresses = { recordsOffice: newAddress }
     expect(vm.haveOfficeAddressesChanged).toBe(true)
     store.state.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
@@ -265,26 +327,41 @@ describe('BEN IA correction getters', () => {
 describe('SP/GP correction getters', () => {
   let vm: any
 
+  const naics = {
+    naicsCode: '100000',
+    naicsDescription: 'NAICS description'
+  }
+  const newAddress = {
+    deliveryAddress: { postalCode: 'V8V 8V8' },
+    mailingAddress: { postalCode: 'V8V 8V8' }
+  }
   beforeAll(async () => {
     // initialize store
-    store.state.stateModel.tombstone.userInfo = {
-      contacts: [{
-        email: 'sp@sp.com',
-        phone: '1234567890'
-      }],
-      firstname: 'SP',
-      lastname: 'SP',
-      roles: 'STAFF',
-      username: 'username'
-    }
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.correctedFiling = { registration: {} }
-    store.state.stateModel.filingData = {
-      filingTypeCode: 'FMCORR',
-      entityType: 'SP',
-      priority: false
+    store.state.stateModel.correctedFiling = {
+      business: {
+        legalName: 'MyLegalName',
+        legalType: 'SP'
+      },
+      incorporationApplication: {},
+      registration: {}
     }
+    store.state.stateModel.entitySnapshot = {
+      businessInfo: {
+        legalName: 'MyLegalName',
+        naicsCode: '100000',
+        naicsDescription: 'NAICS description'
+      },
+      shareStructure: {
+        shareClasses: []
+      },
+      addresses: {
+        businessOffice: null
+      }
+    }
+    store.state.stateModel.officeAddresses = null
+    store.state.stateModel.businessInformation = naics
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
@@ -293,28 +370,74 @@ describe('SP/GP correction getters', () => {
     await Vue.nextTick()
   })
 
-  //
-  // FUTURE: implement this
-  //
-  it('renders correct initial global getters for App.vue', async () => {
-    expect(vm.getUserEmail).toBe('')
-    expect(vm.getUserEmail).toBe('')
-    expect(vm.getUserPhone).toBe('')
-    expect(vm.getUserFirstName).toBe('')
-    expect(vm.getUserLastName).toBe('')
-    expect(vm.getUserRoles).toBe('')
-    expect(vm.getUserUsername).toBe('')
-    expect(vm.getOrgInfo).toBe('')
-    expect(vm.getFilingData).toBe('')
-    expect(vm.haveUnsavedChanges).toBe('')
-    expect(vm.isBusySaving).toBe('')
-    expect(vm.isEditing).toBe('')
-    expect(vm.isSummaryMode).toBe('')
-    expect(vm.showFeeSummary).toBe('')
-    expect(vm.getCurrentJsDate).toBe('')
-    expect(vm.getFilingId).toBe('')
-  })
   it('returns correct values for "Has Correction Changed" getter', async () => {
-    expect(vm.hasCorrectionDataChanged).toBe(true)
+    // initially, this getter should be false (default value)
+    expect(vm.hasCorrectionDataChanged).toBe(false)
+
+    // verify that business name changes are detected
+    store.state.stateModel.nameRequest.legalName = 'MyLegalName2'
+    expect(vm.hasBusinessNameChanged).toBe(true)
+    store.state.stateModel.nameRequest.legalName = 'MyLegalName'
+    expect(vm.hasBusinessNameChanged).toBe(false)
+
+    // verify that business type changes are detected
+    store.state.stateModel.tombstone.entityType = 'SP2'
+    expect(vm.hasBusinessTypeChanged).toBe(true)
+    store.state.stateModel.tombstone.entityType = 'SP'
+    expect(vm.hasBusinessTypeChanged).toBe(false)
+
+    // verify that name translation changes are detected
+    store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
+    expect(vm.hasNameTranslationChanged).toBe(true)
+    store.state.stateModel.nameTranslations = []
+    expect(vm.hasNameTranslationChanged).toBe(false)
+
+    // verify that registered mailing address changes are detected
+    store.state.stateModel.officeAddresses = { businessOffice: newAddress }
+    expect(vm.haveOfficeAddressesChanged).toBe(true)
+    store.state.stateModel.officeAddresses = null
+    expect(vm.haveOfficeAddressesChanged).toBe(false)
+
+    // verify that registered delivery address changes are detected
+    store.state.stateModel.officeAddresses = { businessOffice: newAddress }
+    expect(vm.haveOfficeAddressesChanged).toBe(true)
+    store.state.stateModel.officeAddresses = null
+    expect(vm.haveOfficeAddressesChanged).toBe(false)
+
+    // verify that records mailing address changes are detected
+    store.state.stateModel.officeAddresses = { businessOffice: newAddress }
+    expect(vm.haveOfficeAddressesChanged).toBe(true)
+    store.state.stateModel.officeAddresses = null
+    expect(vm.haveOfficeAddressesChanged).toBe(false)
+
+    // verify that records delivery address changes are detected
+    store.state.stateModel.officeAddresses = { businessOffice: newAddress }
+    expect(vm.haveOfficeAddressesChanged).toBe(true)
+    store.state.stateModel.officeAddresses = null
+    expect(vm.haveOfficeAddressesChanged).toBe(false)
+
+    // verify that people and roles changes are detected
+    store.state.stateModel.peopleAndRoles.orgPeople = [{}]
+    expect(vm.havePeopleAndRolesChanged).toBe(true)
+    store.state.stateModel.peopleAndRoles.orgPeople = []
+    expect(vm.havePeopleAndRolesChanged).toBe(false)
+
+    // verify that share structure changes are detected
+    store.state.stateModel.shareStructureStep.shareClasses = [{}]
+    expect(vm.hasShareStructureChanged).toBe(true)
+    store.state.stateModel.shareStructureStep.shareClasses = []
+    expect(vm.hasShareStructureChanged).toBe(false)
+
+    // verify that the nature of business are detected
+    store.state.stateModel.businessInformation = {
+      naicsCode: '',
+      naicsDescription: 'NAICS description 2'
+    }
+    expect(vm.hasNatureOfBusinessChanged).toBe(true)
+    store.state.stateModel.businessInformation = naics
+    expect(vm.hasNatureOfBusinessChanged).toBe(false)
+
+    // finally, this getter should be false
+    expect(vm.hasCorrectionDataChanged).toBe(false)
   })
 })
