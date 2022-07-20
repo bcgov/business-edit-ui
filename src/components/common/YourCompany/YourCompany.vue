@@ -179,10 +179,10 @@
       </v-row>
     </div>
 
-    <v-divider v-if="isChangeRegFiling || isFirmConversionFiling" class="mx-4 my-1" />
+    <v-divider v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling" class="mx-4 my-1" />
 
-    <!-- Business Type (alterations, changes and conversions only) -->
-    <div v-if="isAlterationFiling || isChangeRegFiling || isFirmConversionFiling"
+    <!-- Business Type (alterations, changes, conversions and firm corrections) -->
+    <div v-if="isAlterationFiling || isChangeRegFiling || isEntityTypeFirm"
       id="company-type-section"
       class="section-container"
       :class="{'invalid-section': invalidTypeSection}"
@@ -192,23 +192,6 @@
         @isEditingBusinessType="isEditingType = $event"
       />
     </div>
-
-    <!-- Business Type (firm corrections only) -->
-    <template v-if="isFirmCorrectionFiling">
-      <v-divider class="mx-4 my-1" />
-
-      <div class="section-container">
-        <v-row no-gutters>
-          <v-col cols="3" class="pr-2">
-            <label><strong>Business Type</strong></label>
-          </v-col>
-
-          <v-col cols="9">
-            <div class="info-text">{{getCorpTypeDescription(getEntityType)}}</div>
-          </v-col>
-        </v-row>
-      </div>
-    </template>
 
     <!-- Name Translation(s) (alterations and BEN corrections only)-->
     <div v-if="isAlterationFiling || isBenIaCorrectionFiling"
@@ -226,7 +209,7 @@
 
     <!-- Business Start Date (changes, conversions and firm corrections only -->
     <template v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling">
-      <section class="section-container">
+      <section id="business-start-date" class="section-container">
         <v-row no-gutters>
           <v-col cols="3" class="pr-2">
             <label><strong>Business Start Date</strong></label>
