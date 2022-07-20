@@ -15,8 +15,8 @@ export const GeneralPartnershipResource: any = {
     nameChangeOptions: [
       CorrectionTypes.CORRECT_NEW_NR
     ],
-    typeChangeInfo: 'You cannot change the business type of a Sole Proprietorship / DBA. You must form a new ' +
-      'business and dissolve this business once the new business is registered.',
+    typeChangeInfo: 'General Partnership cannot be changed into a Sole Proprietorship. If this is necessary, a new ' +
+    'Name Request Number and Statement of Registration (along with associated fees) will be required.',
     orgPersonInfo: {
       orgPersonLabel: 'Partners',
       orgTypesLabel: 'Business or Corporation',

@@ -181,7 +181,7 @@
 
     <v-divider v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling" class="mx-4 my-1" />
 
-    <!-- Business Type (alterations, changes, conversions and corrections) -->
+    <!-- Business Type (alterations, changes, conversions and firm corrections) -->
     <div v-if="isAlterationFiling || isChangeRegFiling || isEntityTypeFirm"
       id="company-type-section"
       class="section-container"
