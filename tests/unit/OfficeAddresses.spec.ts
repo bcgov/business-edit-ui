@@ -54,36 +54,34 @@ function getIncorporationAddress (a1: number, a2: number, a3: number, a4: number
 }
 
 describe('summary mode', () => {
-  beforeAll(() => {
+  let wrapper: any
+  beforeEach(() => {
     // init entity type
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.resourceModel = BenefitCompanyResource
+    store.state.stateModel.tombstone.filingType = 'correction'
+    // init original offices
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 2, 3, 4)
+      }
+    }
+    wrapper = mount(OfficeAddresses, { store, vuetify })
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
   })
 
   it('displays the correct sections', () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
-
     expect(wrapper.find('#summary-registered-address').exists()).toBe(true)
     expect(wrapper.find('#summary-records-address').exists()).toBe(true)
     expect(wrapper.find('#edit-registered-address').exists()).toBe(false)
     expect(wrapper.find('#edit-records-address').exists()).toBe(false)
     expect(wrapper.find('.action-btns').exists()).toBe(false)
-
-    wrapper.destroy()
   })
 
   it('displays the registered office row - not same as mailing address', async () => {
-    // init original offices
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {
-    //     offices: getIncorporationAddress(1, 2, 3, 4)
-    //   }
-    // }
-
-    store.state.stateModel.tombstone.filingType = 'correction'
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
-
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
@@ -93,8 +91,8 @@ describe('summary mode', () => {
     // verify labels
     const labels = summaryRow.findAll('label')
     expect(labels.at(0).text()).toBe('Registered Office')
-    expect(labels.at(1).text()).toBe('Mailing Address')
-    expect(labels.at(2).text()).toBe('Delivery Address')
+    expect(labels.at(1).find('span').text()).toBe('Mailing Address')
+    expect(labels.at(2).find('span').text()).toBe('Delivery Address')
 
     // Verify mailing address
     const mailingAddress = summaryRow.findAll('.base-address').at(0)
@@ -128,10 +126,11 @@ describe('summary mode', () => {
 
     // verify actions
     const actions = summaryRow.find('.actions')
+    const undoBtn = actions.find('#btn-undo-office-addresses')
+    expect(undoBtn.find('span').text()).toBe('Undo')
+    await undoBtn.trigger('click')
     const correctBtn = actions.find('#btn-correct-office-addresses')
     expect(correctBtn.find('span').text()).toBe('Correct')
-
-    wrapper.destroy()
   })
 
   it('displays the registered office row - same as mailing address', async () => {
@@ -142,7 +141,6 @@ describe('summary mode', () => {
     //   }
     // }
 
-    store.state.stateModel.tombstone.filingType = 'correction'
     const wrapper = mount(OfficeAddresses, { store, vuetify })
 
     // set office addresses to trigger watcher
@@ -154,8 +152,8 @@ describe('summary mode', () => {
     // verify labels
     const labels = summaryRow.findAll('label')
     expect(labels.at(0).text()).toBe('Registered Office')
-    expect(labels.at(1).text()).toBe('Mailing Address')
-    expect(labels.at(2).text()).toBe('Delivery Address')
+    expect(labels.at(1).find('span').text()).toBe('Mailing Address')
+    expect(labels.at(2).find('span').text()).toBe('Delivery Address')
 
     // Verify mailing address
     const mailingAddress = summaryRow.findAll('.base-address').at(0)
@@ -179,23 +177,14 @@ describe('summary mode', () => {
 
     // verify actions
     const actions = summaryRow.find('.actions')
+    const undoBtn = actions.find('#btn-undo-office-addresses')
+    expect(undoBtn.find('span').text()).toBe('Undo')
+    await undoBtn.trigger('click')
     const correctBtn = actions.find('#btn-correct-office-addresses')
     expect(correctBtn.find('span').text()).toBe('Correct')
-
-    wrapper.destroy()
   })
 
   it('displays the registered office row - changed addresses', async () => {
-    // init original offices
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {
-    //     offices: getIncorporationAddress(1, 2, 3, 4)
-    //   }
-    // }
-
-    store.state.stateModel.tombstone.filingType = 'correction'
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
-
     // set office addresses to trigger watcher
     wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(4, 3, 2, 1))
     await Vue.nextTick()
@@ -247,8 +236,6 @@ describe('summary mode', () => {
 
     const correctBtn = actions.find('.more-actions #btn-more-actions-edit')
     expect(correctBtn.find('span').text()).toBe('Correct')
-
-    wrapper.destroy()
   })
 
   it('displays the records office row - not same as registered office', async () => {
@@ -271,8 +258,8 @@ describe('summary mode', () => {
     // verify labels
     const labels = summaryRow.findAll('label')
     expect(labels.at(0).text()).toBe('Records Office')
-    expect(labels.at(1).text()).toBe('Mailing Address')
-    expect(labels.at(2).text()).toBe('Delivery Address')
+    expect(labels.at(1).find('span').text()).toBe('Mailing Address')
+    expect(labels.at(2).find('span').text()).toBe('Delivery Address')
 
     // Verify mailing address
     const mailingAddress = summaryRow.findAll('.base-address').at(0)
@@ -303,8 +290,6 @@ describe('summary mode', () => {
       expect(rows.at(3).text()).toBe('Canada')
       expect(rows.at(4).text()).toBe('deliveryInstructions4')
     }
-
-    wrapper.destroy()
   })
 
   it('displays the records office row - same as registered office', async () => {
@@ -327,8 +312,8 @@ describe('summary mode', () => {
     // verify labels
     const labels = summaryRow.findAll('label')
     expect(labels.at(0).text()).toBe('Records Office')
-    expect(labels.at(1).text()).toBe('Mailing Address')
-    expect(labels.at(2).text()).toBe('Delivery Address')
+    expect(labels.at(1).find('span').text()).toBe('Mailing Address')
+    expect(labels.at(2).find('span').text()).toBe('Delivery Address')
 
     // Verify mailing address
     const mailingAddress = summaryRow.findAll('.info-text').at(0)
@@ -337,8 +322,6 @@ describe('summary mode', () => {
     // Verify delivery address
     const deliveryAddress = summaryRow.findAll('.info-text').at(1)
     expect(deliveryAddress.find('label + div').text()).toBe('Same as Registered Office')
-
-    wrapper.destroy()
   })
 
   it('displays the records office row - same as mailing address', async () => {
@@ -361,8 +344,8 @@ describe('summary mode', () => {
     // verify labels
     const labels = summaryRow.findAll('label')
     expect(labels.at(0).text()).toBe('Records Office')
-    expect(labels.at(1).text()).toBe('Mailing Address')
-    expect(labels.at(2).text()).toBe('Delivery Address')
+    expect(labels.at(1).find('span').text()).toBe('Mailing Address')
+    expect(labels.at(2).find('span').text()).toBe('Delivery Address')
 
     // verify mailing address
     const mailingAddress = summaryRow.findAll('.base-address').at(0)
@@ -382,8 +365,6 @@ describe('summary mode', () => {
     // Verify delivery address
     const deliveryAddress = summaryRow.findAll('.info-text').at(0)
     expect(deliveryAddress.find('label + div').text()).toBe('Same as Mailing Address')
-
-    wrapper.destroy()
   })
 
   it('displays the records office row - changed addresses', async () => {
@@ -406,8 +387,8 @@ describe('summary mode', () => {
     // verify labels
     const labels = summaryRow.findAll('label')
     expect(labels.at(0).text()).toBe('Records Office')
-    expect(labels.at(1).text()).toBe('Mailing Address Corrected')
-    expect(labels.at(2).text()).toBe('Delivery Address Corrected')
+    expect(labels.at(1).find('span').text()).toBe('Mailing Address')
+    expect(labels.at(2).find('span').text()).toBe('Delivery Address')
 
     // verify mailing address
     const mailingAddress = summaryRow.findAll('.base-address').at(0)
@@ -434,32 +415,32 @@ describe('summary mode', () => {
       expect(rows.at(3).text()).toBe('Canada')
       expect(rows.at(4).text()).toBe('deliveryInstructions1')
     }
-
-    wrapper.destroy()
   })
 })
 
 describe('edit mode', () => {
-  beforeAll(() => {
+  let wrapper: any = null
+  beforeEach(async () => {
     // init entity type
     store.state.stateModel.tombstone.entityType = 'BEN'
+    // init original offices
+    store.state.stateModel.correctedFiling = {
+      incorporationApplication: {
+        offices: getIncorporationAddress(1, 2, 3, 4)
+      }
+    }
+    store.state.stateModel.tombstone.filingType = 'correction'
+    wrapper = mount(OfficeAddresses, { store, vuetify })
+    // change to edit mode
+    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
+    await correctBtn.trigger('click')
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
   })
 
   it('displays the correct sections', async () => {
-    // init original offices
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {
-    //     offices: getIncorporationAddress(1, 2, 3, 4)
-    //   }
-    // }
-
-    store.state.stateModel.tombstone.filingType = 'correction'
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
-
-    // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
-    await Vue.nextTick()
-
     // change to edit mode
     const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
     await correctBtn.trigger('click')
@@ -469,29 +450,9 @@ describe('edit mode', () => {
     expect(wrapper.find('#edit-registered-address').exists()).toBe(true)
     expect(wrapper.find('#edit-records-address').exists()).toBe(true)
     expect(wrapper.find('.action-btns').exists()).toBe(true)
-
-    wrapper.destroy()
   })
 
   it('displays the registered office mailing address', async () => {
-    // init original offices
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {
-    //     offices: getIncorporationAddress(1, 2, 3, 4)
-    //   }
-    // }
-
-    store.state.stateModel.tombstone.filingType = 'correction'
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
-
-    // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
-    await Vue.nextTick()
-
-    // change to edit mode
-    const correctBtn = wrapper.find('.actions #btn-correct-office-addresses')
-    await correctBtn.trigger('click')
-
     const editRegisteredAddress = wrapper.find('#edit-registered-address')
 
     // verify header
@@ -514,8 +475,6 @@ describe('edit mode', () => {
       expect(address.find('.v-input.address-country').props('value')).toBe('CA')
       expect(address.find('.v-input.delivery-instructions').props('value')).toBe('deliveryInstructions1')
     }
-
-    wrapper.destroy()
   })
 
   it('displays the registered office delivery address - not same as mailing address', async () => {
@@ -560,8 +519,6 @@ describe('edit mode', () => {
       expect(address.find('.v-input.address-country').props('value')).toBe('CA')
       expect(address.find('.v-input.delivery-instructions').props('value')).toBe('deliveryInstructions2')
     }
-
-    wrapper.destroy()
   })
 
   it('displays the registered office delivery address - same as mailing address', async () => {
@@ -598,8 +555,6 @@ describe('edit mode', () => {
       expect(block.find('.inherit-checkbox').props('inputValue')).toBe(true)
       expect(block.find('#registered-delivery-address').exists()).toBe(false)
     }
-
-    wrapper.destroy()
   })
 
   it('displays the records office mailing - not same as registered office', async () => {
@@ -644,8 +599,6 @@ describe('edit mode', () => {
       expect(address.find('.v-input.address-country').props('value')).toBe('CA')
       expect(address.find('.v-input.delivery-instructions').props('value')).toBe('deliveryInstructions3')
     }
-
-    wrapper.destroy()
   })
 
   it('displays the records office mailing address - same as registered office', async () => {
@@ -681,8 +634,6 @@ describe('edit mode', () => {
       const blocks = editRecordsAddress.findAll('li')
       expect(blocks.length).toBe(0)
     }
-
-    wrapper.destroy()
   })
 
   it('displays the records office delivery address - not same same as mailing address', async () => {
@@ -727,8 +678,6 @@ describe('edit mode', () => {
       expect(address.find('.v-input.address-country').props('value')).toBe('CA')
       expect(address.find('.v-input.delivery-instructions').props('value')).toBe('deliveryInstructions4')
     }
-
-    wrapper.destroy()
   })
 
   it('displays the records office delivery address - same as mailing address', async () => {
@@ -765,8 +714,6 @@ describe('edit mode', () => {
       expect(block.find('.inherit-checkbox').props('inputValue')).toBe(true)
       expect(block.find('#records-delivery-address').exists()).toBe(false)
     }
-
-    wrapper.destroy()
   })
 })
 
