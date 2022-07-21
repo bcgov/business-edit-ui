@@ -28,8 +28,6 @@ const peopleAndRoles = [
       email: 'completing-party@example.com'
     },
     roles: [
-      { roleType: 'Completing Party', appointmentDate: '2020-03-30' },
-      { roleType: 'Incorporator', appointmentDate: '2020-03-30' },
       { roleType: 'Director', appointmentDate: '2020-03-30' }
     ],
     mailingAddress: {
@@ -60,7 +58,7 @@ const peopleAndRoles = [
       partyType: 'organization'
     },
     roles: [
-      { roleType: 'Incorporator', appointmentDate: '2020-03-30' }
+      { roleType: 'Director', appointmentDate: '2020-03-30' }
     ],
     mailingAddress: {
       streetAddress: '1797 rue Levy',
@@ -366,7 +364,7 @@ describe('List People And Roles component for Corrections', () => {
 
     const rows = wrapper.findAll('.people-roles-content')
     expect(rows.at(0).find('.peoples-roles-delivery-address').text()).toBe('Same as Mailing Address')
-    expect(rows.at(1).find('.peoples-roles-delivery-address').exists()).toBe(false)
+    expect(rows.at(1).find('.peoples-roles-delivery-address').exists()).toBe(true)
     expect(rows.at(2).find('.peoples-roles-delivery-address').exists()).toBe(false)
     expect(rows.at(3).find('.peoples-roles-delivery-address').text()).toContain('433 Ferry Road')
 
@@ -377,12 +375,10 @@ describe('List People And Roles component for Corrections', () => {
     const wrapper = wrapperFactory(peopleAndRoles)
 
     const item1 = wrapper.findAll('.people-roles-content').at(0)
-    expect(item1.findAll('.col-roles').at(0).text()).toBe('Completing Party')
-    expect(item1.findAll('.col-roles').at(1).text()).toBe('Incorporator')
-    expect(item1.findAll('.col-roles').at(2).text()).toBe('Director')
+    expect(item1.find('.col-roles').text()).toBe('Director')
 
     const item2 = wrapper.findAll('.people-roles-content').at(1)
-    expect(item2.find('.col-roles').text()).toBe('Incorporator')
+    expect(item2.find('.col-roles').text()).toBe('Director')
 
     const item3 = wrapper.findAll('.people-roles-content').at(2)
     expect(item3.text()).toContain('Missing Role')
@@ -427,8 +423,7 @@ describe('List People And Roles component for Corrections', () => {
     const wrapper = wrapperFactory(peopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: emptyPerson,
-      activeIndex: NaN,
-      currentCompletingParty: undefined
+      activeIndex: NaN
     })
 
     // verify that add component is at the top (above the list)
@@ -440,52 +435,17 @@ describe('List People And Roles component for Corrections', () => {
     wrapper.destroy()
   })
 
-  it('correctly displays Add Corporation component', () => {
-    const wrapper = wrapperFactory(peopleAndRoles, {
-      renderOrgPersonForm: true,
-      currentOrgPerson: emptyOrg,
-      activeIndex: NaN,
-      currentCompletingParty: undefined
-    })
-
-    // verify that add component is at the top (above the list)
-    const section = wrapper.find('#people-roles-add')
-    expect(section.exists()).toBe(true)
-    expect(section.find('.add-org-header').text()).toBe('Add Corporation or Firm')
-    expect(section.find('#org-person-form').exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
   it('correctly displays Edit Person component', () => {
     const wrapper = wrapperFactory(peopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: peopleAndRoles[0],
-      activeIndex: 0,
-      currentCompletingParty: undefined
+      activeIndex: 0
     })
 
     // verify that edit component is within the list (inline)
     const section = wrapper.find('#people-roles-list #people-roles-edit')
     expect(section.exists()).toBe(true)
     expect(section.find('.add-person-header').text()).toBe('Edit Person')
-    expect(section.find('#org-person-form').exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('correctly displays Edit Corporation component', () => {
-    const wrapper = wrapperFactory(peopleAndRoles, {
-      renderOrgPersonForm: true,
-      currentOrgPerson: peopleAndRoles[1],
-      activeIndex: 0,
-      currentCompletingParty: undefined
-    })
-
-    // verify that edit component is within the list (inline)
-    const section = wrapper.find('#people-roles-list #people-roles-edit')
-    expect(section.exists()).toBe(true)
-    expect(section.find('.add-org-header').text()).toBe('Edit Corporation or Firm')
     expect(section.find('#org-person-form').exists()).toBe(true)
 
     wrapper.destroy()
@@ -607,8 +567,7 @@ describe('List People And Roles component for Change of Registration', () => {
     const wrapper = wrapperFactory(gpPeopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: emptyPerson,
-      activeIndex: NaN,
-      currentCompletingParty: undefined
+      activeIndex: NaN
     })
 
     // verify that add component is at the top (above the list)
@@ -624,8 +583,7 @@ describe('List People And Roles component for Change of Registration', () => {
     const wrapper = wrapperFactory(gpPeopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: emptyOrg,
-      activeIndex: NaN,
-      currentCompletingParty: undefined
+      activeIndex: NaN
     })
 
     // verify that add component is at the top (above the list)
@@ -641,8 +599,7 @@ describe('List People And Roles component for Change of Registration', () => {
     const wrapper = wrapperFactory(gpPeopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: peopleAndRoles[0],
-      activeIndex: 0,
-      currentCompletingParty: undefined
+      activeIndex: 0
     })
 
     // verify that edit component is within the list (inline)
@@ -658,8 +615,7 @@ describe('List People And Roles component for Change of Registration', () => {
     const wrapper = wrapperFactory(gpPeopleAndRoles, {
       renderOrgPersonForm: true,
       currentOrgPerson: peopleAndRoles[1],
-      activeIndex: 0,
-      currentCompletingParty: undefined
+      activeIndex: 0
     })
 
     // verify that edit component is within the list (inline)
@@ -676,7 +632,6 @@ describe('List People And Roles component for Change of Registration', () => {
       renderOrgPersonForm: false,
       currentOrgPerson: peopleAndRoles[1],
       activeIndex: 1,
-      currentCompletingParty: undefined,
       isSummaryView: true
     })
 
