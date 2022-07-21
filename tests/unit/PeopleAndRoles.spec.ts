@@ -22,20 +22,13 @@ const store = getVuexStore()
 const orgPersonForm = '#org-person-form'
 const btnAddPerson = '#btn-add-person'
 const gpAddPerson = '#gp-btn-add-person'
-const btnAddCorp = '#btn-add-corp'
 const gpAddCorp = '#gp-btn-add-corp'
-const btnAddCompletingParty = '#btn-add-cp'
-const closeCompletingParty = '.cp-invalid'
-const closeIncorporator = '.incorp-invalid'
 const closeDirector = '.dir-invalid'
-const checkCompletingParty = '.cp-valid'
-const checkIncorporator = '.incorp-valid'
 const checkDirector = '.dir-valid'
 
-const completingPartyRole = { roleType: 'Completing Party', appointmentDate: '2020-03-30' }
-const incorporatorRole = { roleType: 'Incorporator', appointmentDate: '2020-03-30' }
 const directorRole = { roleType: 'Director', appointmentDate: '2020-03-30' }
 
+/** Returns a single-element array with a person having the specified role. */
 function getPersonList (roles: Array<any> = []): Array<any> {
   return [
     {
@@ -121,28 +114,10 @@ describe('People And Roles component for Correction', () => {
     }
   })
 
-  it('shows all 3 add buttons when people list is empty', () => {
+  it('shows 1 add button when people list is empty', () => {
     store.state.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
     expect(wrapper.find(btnAddPerson).exists()).toBe(true)
-    expect(wrapper.find(btnAddCorp).exists()).toBe(true)
-    expect(wrapper.find(btnAddCompletingParty).exists()).toBe(true)
-    wrapper.destroy()
-  })
-
-  it('shows only Add Person and Add Corporation buttons when people list has a Completing Party', () => {
-    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([completingPartyRole])
-    const wrapper = wrapperFactory()
-    expect(wrapper.find(btnAddPerson).exists()).toBe(true)
-    expect(wrapper.find(btnAddCorp).exists()).toBe(true)
-    expect(wrapper.find(btnAddCompletingParty).exists()).toBe(false)
-    wrapper.destroy()
-  })
-
-  it('shows Add Completing Party button when people list has no Completing Party', () => {
-    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([incorporatorRole, directorRole])
-    const wrapper = wrapperFactory()
-    expect(wrapper.find(btnAddCompletingParty).exists()).toBe(true)
     wrapper.destroy()
   })
 
@@ -154,91 +129,34 @@ describe('People And Roles component for Correction', () => {
     wrapper.destroy()
   })
 
-  it('sets the data attributes as expected when Add Corporation button is clicked', async () => {
-    store.state.stateModel.peopleAndRoles.orgPeople = []
-    const wrapper = wrapperFactory()
-    await wrapper.find(btnAddCorp).trigger('click')
-    expect(wrapper.vm.$data.isAddingEditingOrgPerson).toBe(true)
-    wrapper.destroy()
-  })
-
   it('shows the add person form when Add Person button is clicked', async () => {
     store.state.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
     await wrapper.find(btnAddPerson).trigger('click')
-    // verify buttons are now disabled
+    // verify button is now disabled
     expect(wrapper.find(btnAddPerson).attributes('disabled')).toBe('disabled')
-    expect(wrapper.find(btnAddCorp).attributes('disabled')).toBe('disabled')
     // check form
     expect(wrapper.find(orgPersonForm).exists()).toBe(true)
     expect(wrapper.find('.add-person-header').text()).toBe('Add Person')
     wrapper.destroy()
   })
 
-  it('shows the add corporation form when Add Corporation button is clicked', async () => {
-    store.state.stateModel.peopleAndRoles.orgPeople = []
+  it('shows check icons next to the director role when people list is complete', () => {
+    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([ directorRole ])
     const wrapper = wrapperFactory()
-    await wrapper.find(btnAddCorp).trigger('click')
-    // verify buttons are now disabled
-    expect(wrapper.find(btnAddPerson).attributes('disabled')).toBe('disabled')
-    expect(wrapper.find(btnAddCorp).attributes('disabled')).toBe('disabled')
-    // check form
-    expect(wrapper.find(orgPersonForm).exists()).toBe(true)
-    expect(wrapper.find('.add-org-header').text()).toBe('Add Corporation or Firm')
-    wrapper.destroy()
-  })
-
-  it('shows check icons next to all 3 roles when people list is complete', () => {
-    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([
-      completingPartyRole,
-      incorporatorRole,
-      directorRole
-    ])
-    const wrapper = wrapperFactory()
-    expect(wrapper.find(checkIncorporator).exists()).toBe(true)
     expect(wrapper.find(checkDirector).exists()).toBe(true)
-    expect(wrapper.find(checkCompletingParty).exists()).toBe(true)
     wrapper.destroy()
   })
 
-  it('shows close icons next to all 3 roles when people list is empty', () => {
+  it('shows close icons next to the director role when people list is empty', () => {
     store.state.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
-    expect(wrapper.find(closeCompletingParty).exists()).toBe(true)
-    expect(wrapper.find(closeIncorporator).exists()).toBe(true)
     expect(wrapper.find(closeDirector).exists()).toBe(true)
     wrapper.destroy()
   })
 
-  it('sets Valid flag to False when Completing Party role is missing', () => {
-    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([
-      incorporatorRole,
-      directorRole
-    ])
-    const wrapper = wrapperFactory()
-
-    expect(store.state.stateModel.peopleAndRoles.valid).toBe(false)
-
-    wrapper.destroy()
-  })
-
-  it('sets Valid flag to False when Incorporator role is missing', () => {
-    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([
-      completingPartyRole,
-      directorRole
-    ])
-    const wrapper = wrapperFactory()
-
-    expect(store.state.stateModel.peopleAndRoles.valid).toBe(false)
-
-    wrapper.destroy()
-  })
-
   it('sets Valid flag to False when Director role is missing', () => {
-    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([
-      completingPartyRole,
-      incorporatorRole
-    ])
+    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([])
     const wrapper = wrapperFactory()
 
     expect(store.state.stateModel.peopleAndRoles.valid).toBe(false)
@@ -259,11 +177,7 @@ describe('People And Roles component for Correction', () => {
   })
 
   it('sets Valid flag to True when the component is valid', () => {
-    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([
-      completingPartyRole,
-      incorporatorRole,
-      directorRole
-    ])
+    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([ directorRole ])
     const wrapper = wrapperFactory()
 
     expect(store.state.stateModel.peopleAndRoles.valid).toBe(true)
@@ -272,11 +186,7 @@ describe('People And Roles component for Correction', () => {
   })
 
   it('sets Changed flag to False when component has no changes', () => {
-    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([
-      completingPartyRole,
-      incorporatorRole,
-      directorRole
-    ])
+    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([ directorRole ])
     const wrapper = wrapperFactory()
 
     expect(store.state.stateModel.peopleAndRoles.changed).toBe(false)
@@ -285,47 +195,12 @@ describe('People And Roles component for Correction', () => {
   })
 
   it('sets Changed flag to True when component has changes', () => {
-    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([
-      completingPartyRole,
-      incorporatorRole,
-      directorRole
-    ])
+    store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([ directorRole ])
     store.state.stateModel.peopleAndRoles.orgPeople[0].actions = ['EDITED']
     const wrapper = wrapperFactory()
 
     expect(store.state.stateModel.peopleAndRoles.changed).toBe(true)
 
-    wrapper.destroy()
-  })
-
-  it('shows popup when undoing an edit would not change the Completing Party', async () => {
-    // original IA containing original CP:
-    const originalCp = getPersonList([directorRole, completingPartyRole])[0]
-    originalCp.officer.id = '1'
-    originalCp.actions = []
-
-    // current orgPeople list containing edited CP and added CP:
-    const editedCp = getPersonList([directorRole])[0]
-    editedCp.officer.id = '1'
-    editedCp.actions = ['EDITED']
-    const addedCp = getPersonList([completingPartyRole])[0]
-    addedCp.officer.id = '2'
-    addedCp.actions = ['ADDED']
-    store.state.stateModel.peopleAndRoles.orgPeople = [editedCp, addedCp]
-    store.state.stateModel.entitySnapshot.orgPersons = [originalCp]
-
-    const wrapper = wrapperFactory()
-
-    // verify that popup is not yet displayed
-    expect(wrapper.find('.confirm-dialog').exists()).toBe(false)
-
-    // click the first person's Undo button
-    await wrapper.find('#officer-0-undo-btn').trigger('click')
-
-    // verify that popup is now displayed
-    expect(wrapper.find('.confirm-dialog').exists()).toBe(true)
-
-    // cleanup
     wrapper.destroy()
   })
 })
@@ -363,7 +238,6 @@ describe('People And Roles component for Change of Registration', () => {
     const wrapper = wrapperFactory()
     expect(wrapper.find(gpAddPerson).exists()).toBe(true)
     expect(wrapper.find(gpAddCorp).exists()).toBe(true)
-    expect(wrapper.find(btnAddCompletingParty).exists()).toBe(false)
     wrapper.destroy()
   })
 
