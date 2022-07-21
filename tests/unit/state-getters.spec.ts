@@ -238,16 +238,17 @@ describe('BEN IA correction getters', () => {
     // initialize store
     store.state.stateModel.tombstone.entityType = null
     store.state.stateModel.tombstone.filingType = 'correction'
-    // store.state.stateModel.correctedFiling = {
-    //   business: {
-    //     legalName: 'MyLegalName',
-    //     legalType: 'BEN'
-    //   },
-    //   incorporationApplication: {}
-    // }
+    store.state.stateModel.correctedFiling = {
+      business: {
+        legalName: 'MyLegalName',
+        legalType: 'BEN'
+      },
+      incorporationApplication: {}
+    }
     store.state.stateModel.entitySnapshot = {
       businessInfo: {
-        legalName: 'MyLegalName'
+        legalName: 'MyLegalName',
+        legalType: 'BEN'
       },
       shareStructure: {
         shareClasses: []
@@ -339,10 +340,18 @@ describe('SP/GP correction getters', () => {
     // initialize store
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.correctedFiling = {
+    store.state.stateModel.nameRequest = {
+      legalName: 'MyLegalName',
       business: {
         legalName: 'MyLegalName',
-        legalType: 'SP'
+        legalType: 'BEN'
+      },
+      incorporationApplication: {},
+      registration: {}
+    }
+    store.state.stateModel.correctedFiling = {
+      business: {
+        legalName: 'MyLegalName'
       },
       incorporationApplication: {},
       registration: {}
@@ -350,6 +359,7 @@ describe('SP/GP correction getters', () => {
     store.state.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: 'MyLegalName',
+        legalType: 'SP',
         naicsCode: '100000',
         naicsDescription: 'NAICS description'
       },
