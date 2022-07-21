@@ -46,11 +46,11 @@ describe('Entity Info component in a Correction as a named company', () => {
     state.businessInformation = mockFiling.business
     state.tombstone.businessId = mockFiling.business.identifier
     state.businessContact = mockFiling.incorporationApplication.contactPoint
-    // state.correctedFiling = {
-    //   incorporationApplication: {
-    //     nameRequest: mockFiling.incorporationApplication.nameRequest
-    //   }
-    // }
+    store.state.stateModel.entitySnapshot = {
+      businessInfo: {
+        legalName: 'My Mock Name Inc.'
+      }
+    }
   })
 
   beforeEach(() => {
@@ -116,11 +116,11 @@ describe('Entity Info component in a Correction as a numbered company', () => {
     state.businessInformation = mockFiling.business
     state.tombstone.businessId = mockFiling.business.identifier
     state.businessContact = mockFiling.incorporationApplication.contactPoint
-    // state.correctedFiling = {
-    //   incorporationApplication: {
-    //     nameRequest: mockFiling.incorporationApplication.nameRequest
-    //   }
-    // }
+    store.state.stateModel.entitySnapshot = {
+      businessInfo: {
+        legalName: null
+      }
+    }
   })
 
   beforeEach(() => {

@@ -205,7 +205,7 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(true)
 
     // verify form emission
-    expect(getLastEvent(wrapper, 'done')).toBe(true)
+    expect(getLastEvent(wrapper, 'isSaved')).toBe(true)
   })
 
   it('emits done and false when the process is done but Name Request phone is rejected', async () => {
@@ -247,7 +247,7 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(true)
 
     // verify form emission
-    expect(getLastEvent(wrapper, 'done')).toBe(false)
+    expect(getLastEvent(wrapper, 'isSaved')).toBe(false)
   })
 
   it('emits done and false when the process is done but Name Request email is rejected', async () => {
@@ -289,7 +289,7 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(true)
 
     // verify form emission
-    expect(getLastEvent(wrapper, 'done')).toBe(false)
+    expect(getLastEvent(wrapper, 'isSaved')).toBe(false)
   })
 
   it('emits done and prompts confirm dialog when the Name Request is a type mismatch', async () => {

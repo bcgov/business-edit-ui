@@ -81,7 +81,7 @@ describe('CorrectCompanyName', () => {
     await wrapper.setProps({ formType: 'correct-name' })
     await flushPromises()
 
-    expect(getLastEvent(wrapper, 'done')).toBe(true)
+    expect(getLastEvent(wrapper, 'isSaved')).toBe(true)
 
     // Verify Data change in store
     expect(store.state.stateModel.nameRequest.legalName).toBe('Bob\'s Plumbing Ltd.')
