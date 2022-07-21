@@ -31,15 +31,11 @@ describe('Business Contact Info for a Correction', () => {
   beforeAll(() => {
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.businessContact = contactInfo
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {
-    //     contactPoint: originalCorrectionContact
-    //   }
-    // }
-  })
-
-  afterAll(() => {
-    // store.state.stateModel.correctedFiling = null
+    store.state.stateModel.entitySnapshot = {
+      authInfo: {
+        contact: originalCorrectionContact
+      }
+    }
   })
 
   beforeEach(async () => {

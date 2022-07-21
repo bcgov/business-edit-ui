@@ -51,12 +51,7 @@ describe('Folio Information component', () => {
 
   it('gets Original Folio Number for a correction', () => {
     store.state.stateModel.tombstone.filingType = 'correction'
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {},
-    //   header: {
-    //     folioNumber: 'A123'
-    //   }
-    // }
+    store.state.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } }
 
     const wrapper = mount(FolioInformation, { vuetify, store })
     const vm: any = wrapper.vm
@@ -80,12 +75,7 @@ describe('Folio Information component', () => {
 
   it('does not update folio number for a correction', async () => {
     store.state.stateModel.tombstone.filingType = 'correction'
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {},
-    //   header: {
-    //     folioNumber: ''
-    //   }
-    // }
+    store.state.stateModel.entitySnapshot = { authInfo: { folioNumber: null } }
 
     const wrapper = mount(FolioInformation, { vuetify, store })
     const vm: any = wrapper.vm
@@ -105,12 +95,7 @@ describe('Folio Information component', () => {
     sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
     store.state.stateModel.tombstone.businessId = 'BC1234567'
     store.state.stateModel.tombstone.filingType = 'alteration'
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {},
-    //   header: {
-    //     folioNumber: ''
-    //   }
-    // }
+    store.state.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } }
 
     // mock auth "patch business" endpoint
     sinon.stub(axios, 'patch').withArgs('myhost/basePath/auth/entities/BC1234567')
@@ -120,11 +105,11 @@ describe('Folio Information component', () => {
 
     const mockUpdateFolioNumber = jest.spyOn((AuthServices as any), 'updateFolioNumber')
 
-    await vm.onNewFolioNumber('A123')
+    await vm.onNewFolioNumber('A321')
 
-    expect(mockUpdateFolioNumber).toHaveBeenCalledWith('A123', 'BC1234567')
-    expect(store.state.stateModel.tombstone.folioNumber).toBe('A123')
-    expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('A123')
+    expect(mockUpdateFolioNumber).toHaveBeenCalledWith('A321', 'BC1234567')
+    expect(store.state.stateModel.tombstone.folioNumber).toBe('A321')
+    expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('A321')
 
     wrapper.destroy()
   })

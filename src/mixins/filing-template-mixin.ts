@@ -90,7 +90,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   get getContactPoint (): ContactPointIF {
     return {
       email: this.getBusinessContact.email,
-      phone: this.getBusinessContact.phone || undefined, // don't include if empty
+      phone: this.getBusinessContact.phone || '',
       extension: +this.getBusinessContact.extension || undefined // don't include if empty
     }
   }

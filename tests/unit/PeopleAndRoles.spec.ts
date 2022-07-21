@@ -109,7 +109,6 @@ describe('People And Roles component for Correction', () => {
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.entitySnapshot = {}
-    store.state.stateModel.correctedFiling = { incorporationApplication: {} }
     store.state.resourceModel = BenefitCompanyStatementResource
 
     wrapperFactory = () => {
@@ -120,10 +119,6 @@ describe('People And Roles component for Correction', () => {
         vuetify
       })
     }
-  })
-
-  afterAll(() => {
-    // store.state.stateModel.correctedFiling = null
   })
 
   it('shows all 3 add buttons when people list is empty', () => {
@@ -308,11 +303,6 @@ describe('People And Roles component for Correction', () => {
     const originalCp = getPersonList([directorRole, completingPartyRole])[0]
     originalCp.officer.id = '1'
     originalCp.actions = []
-    // store.state.stateModel.correctedFiling = {
-    //   incorporationApplication: {
-    //     parties: [originalCp]
-    //   }
-    // }
 
     // current orgPeople list containing edited CP and added CP:
     const editedCp = getPersonList([directorRole])[0]
@@ -336,7 +326,6 @@ describe('People And Roles component for Correction', () => {
     expect(wrapper.find('.confirm-dialog').exists()).toBe(true)
 
     // cleanup
-    // store.state.stateModel.correctedFiling = null
     wrapper.destroy()
   })
 })

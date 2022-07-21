@@ -16,7 +16,6 @@ describe('State Getters', () => {
     // initialize store
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.filingType = 'correction'
-    // store.state.stateModel.correctedFiling = { incorporationApplication: {} }
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
@@ -238,13 +237,6 @@ describe('BEN IA correction getters', () => {
     // initialize store
     store.state.stateModel.tombstone.entityType = null
     store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.correctedFiling = {
-      business: {
-        legalName: 'MyLegalName',
-        legalType: 'BEN'
-      },
-      incorporationApplication: {}
-    }
     store.state.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: 'MyLegalName',
@@ -349,13 +341,6 @@ describe('SP/GP correction getters', () => {
       incorporationApplication: {},
       registration: {}
     }
-    store.state.stateModel.correctedFiling = {
-      business: {
-        legalName: 'MyLegalName'
-      },
-      incorporationApplication: {},
-      registration: {}
-    }
     store.state.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: 'MyLegalName',
@@ -365,9 +350,6 @@ describe('SP/GP correction getters', () => {
       },
       shareStructure: {
         shareClasses: []
-      },
-      addresses: {
-        businessOffice: null
       }
     }
     store.state.stateModel.officeAddresses = null

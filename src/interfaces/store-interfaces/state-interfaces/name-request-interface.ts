@@ -42,6 +42,6 @@ export interface NameRequestApplicantIF {
 
 export const EmptyNameRequest: NameRequestIF = {
   legalType: null,
-  legalName: '',
-  nrNumber: ''
+  legalName: null,
+  nrNumber: null
 }

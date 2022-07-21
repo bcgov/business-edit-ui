@@ -96,8 +96,8 @@ describe('Date Mixin', () => {
   })
 
   it('returns correct values for apiToPacificDateTime()', () => {
-    expect(vm.apiToPacificDateTime('2021-01-01T00:00:00+00:00')).toBe('Dec 31, 2020 at 4:00 pm Pacific time') // PST
-    expect(vm.apiToPacificDateTime('2021-07-01T00:00:00+00:00')).toBe('Jun 30, 2021 at 5:00 pm Pacific time') // PDT
+    expect(vm.apiToPacificDateTime('2021-01-01T00:00:00+00:00')).toBe('December 31, 2020 at 4:00 pm Pacific time') // PST
+    expect(vm.apiToPacificDateTime('2021-07-01T00:00:00+00:00')).toBe('June 30, 2021 at 5:00 pm Pacific time') // PDT
   })
 
   it('returns correct values for dateToApi()', () => {
