@@ -1,6 +1,7 @@
 import { AddressesIF, NameTranslationIF, OrgPersonIF, ShareClassIF } from '@/interfaces/'
 import { CorrectionErrorTypes, FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/correction.json
@@ -24,11 +25,7 @@ export interface CorrectionInformationIF {
     naicsCode: string
     naicsDescription: string
   }
-  contactPoint?: {
-    email: string
-    phone: string
-    extension?: number
-  }
+  contactPoint?: ContactPointIF
   nameRequest?: {
     legalType: CorpTypeCd
     nrNumber?: string // only set when there is an NR
