@@ -108,7 +108,8 @@ describe('People And Roles component for Correction', () => {
     const router = mockRouter.mock()
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.filingType = 'correction'
-    // store.state.stateModel.correctedFiling = { incorporationApplication: {} }
+    store.state.stateModel.entitySnapshot = {}
+    store.state.stateModel.correctedFiling = { incorporationApplication: {} }
     store.state.resourceModel = BenefitCompanyStatementResource
 
     wrapperFactory = () => {
@@ -294,7 +295,7 @@ describe('People And Roles component for Correction', () => {
       incorporatorRole,
       directorRole
     ])
-    store.state.stateModel.peopleAndRoles.orgPeople[0].actions = ['edited']
+    store.state.stateModel.peopleAndRoles.orgPeople[0].actions = ['EDITED']
     const wrapper = wrapperFactory()
 
     expect(store.state.stateModel.peopleAndRoles.changed).toBe(true)
@@ -302,7 +303,7 @@ describe('People And Roles component for Correction', () => {
     wrapper.destroy()
   })
 
-  it('shows popup when undoing an edit would change the Completing Party', async () => {
+  it('shows popup when undoing an edit would not change the Completing Party', async () => {
     // original IA containing original CP:
     const originalCp = getPersonList([directorRole, completingPartyRole])[0]
     originalCp.officer.id = '1'
@@ -321,6 +322,7 @@ describe('People And Roles component for Correction', () => {
     addedCp.officer.id = '2'
     addedCp.actions = ['ADDED']
     store.state.stateModel.peopleAndRoles.orgPeople = [editedCp, addedCp]
+    store.state.stateModel.entitySnapshot.orgPersons = [originalCp]
 
     const wrapper = wrapperFactory()
 
