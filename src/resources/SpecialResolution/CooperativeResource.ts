@@ -9,14 +9,13 @@ export const CooperativeResource: ResourceIF = {
   nameRequestType: NameRequestEntityTypes.CP,
   addressLabel: 'Registered Office',
   filingData: {
-    filingTypeCode: FilingCodes.SPECIAL_RESOLUTION, // update this to FilingCodes.SPECIAL_RESOLUTION new fee code
+    filingTypeCode: FilingCodes.SPECIAL_RESOLUTION,
     entityType: CorpTypeCd.COOP,
     priority: false
   },
   changeData: {
     nameChangeOptions: [
       CorrectionTypes.CORRECT_NEW_NR
-      // CorrectionTypes.CORRECT_NAME_TO_NUMBER
     ]
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +
