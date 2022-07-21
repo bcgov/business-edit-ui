@@ -115,7 +115,7 @@ export async function fetchConfig (): Promise<any> {
   // it should be first token after Base URL in Pathname
   // FUTURE: improve Business ID validation
   const id = windowLocationPathname.replace(processEnvBaseUrl, '').split('/', 1)[0]
-  if (id?.startsWith('BC') || id?.startsWith('FM')) { // Allow corps and firms
+  if (['CP', 'BC', 'FM'].some(type => id?.includes(type))) { // Allow corps and firms
     sessionStorage.setItem('BUSINESS_ID', id)
   } else {
     return Promise.reject(new Error('Missing or invalid Business ID.'))

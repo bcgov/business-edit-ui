@@ -16,9 +16,6 @@
 
         <CurrentDirectors class="mt-10" />
 
-        <ShareStructures class="mt-10" />
-
-        <Articles class="mt-10" />
       </div>
     </v-slide-x-transition>
 
@@ -127,9 +124,9 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
-import { AlterationSummary, Articles } from '@/components/Alteration/'
+import { AlterationSummary } from '@/components/Alteration/'
 import { CertifySection, CurrentDirectors, DocumentsDelivery,
-  ShareStructures, StaffPayment, TransactionalFolioNumber, YourCompany }
+  StaffPayment, TransactionalFolioNumber, YourCompany }
   from '@/components/common/'
 import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
 import { AuthServices, LegalServices } from '@/services/'
@@ -140,23 +137,21 @@ import { FilingCodes, FilingStatus } from '@/enums/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { cloneDeep } from 'lodash'
-import { BenefitCompanyResource } from '@/resources/Alteration/'
+import { CooperativeResource } from '@/resources/SpecialResolution/'
 
 @Component({
   components: {
     AlterationSummary,
-    Articles,
     CertifySection,
     CourtOrderPoaShared,
     CurrentDirectors,
     DocumentsDelivery,
-    ShareStructures,
     StaffPayment,
     TransactionalFolioNumber,
     YourCompany
   }
 })
-export default class Alteration extends Mixins(
+export default class SpecialResolution extends Mixins(
   CommonMixin,
   FilingTemplateMixin,
   PayApiMixin
@@ -193,8 +188,8 @@ export default class Alteration extends Mixins(
   }
 
   /** The id of the alteration being edited. */
-  get alterationId (): number {
-    return +this.$route.query['alteration-id'] || 0
+  get specialResolutionId (): number {
+    return +this.$route.query['special-resolution-id'] || 0
   }
 
   /** True if user is authenticated. */
@@ -221,10 +216,9 @@ export default class Alteration extends Mixins(
     return ''
   }
 
-  /** The resource file for an alteration filing. */
-  get alterationResource (): ResourceIF {
-    if (this.isEntityTypeBEN) return BenefitCompanyResource
-    // if (this.isEntityTypeCP) return CooperativeResource
+  /** The resource file for an SpecialResolution filing. */
+  get specialResolutionResource (): ResourceIF {
+    if (this.isEntityTypeCP) return CooperativeResource
     return null
   }
 
@@ -247,15 +241,15 @@ export default class Alteration extends Mixins(
 
     // try to fetch data
     try {
-      // fetch business snapshot
       const businessSnapshot = await this.fetchBusinessSnapshot()
 
-      if (this.alterationId) {
+      // update later with resolution-id and parse it once it saved
+      if (this.specialResolutionId) {
         // store the filing ID
-        this.setFilingId(this.alterationId)
+        this.setFilingId(this.specialResolutionId)
 
         // fetch draft alteration to resume
-        const alterationFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.alterationId)
+        const alterationFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.specialResolutionId)
 
         // do not proceed if this isn't an ALTERATION filing
         if (!alterationFiling.alteration) {
@@ -267,19 +261,19 @@ export default class Alteration extends Mixins(
           throw new Error('Invalid Alteration status')
         }
 
-        // parse draft alteration filing and business snapshot into store
+        // parse alteration filing and original business snapshot into store
         this.parseAlterationFiling(alterationFiling, businessSnapshot)
       } else {
-        // parse just the business snapshot into store
+        // parse business data into store
         this.parseEntitySnapshot(businessSnapshot)
       }
 
-      if (this.alterationResource) {
+      if (this.specialResolutionResource) {
         // set the specific resource
-        this.setResource(this.alterationResource)
+        this.setResource(this.specialResolutionResource)
 
         // initialize Fee Summary data
-        this.setFilingData(this.alterationResource.filingData)
+        this.setFilingData(this.specialResolutionResource.filingData)
       } else {
         // go to catch()
         throw new Error(`Invalid Alteration resources entity type = ${this.getEntityType}`)
@@ -288,14 +282,14 @@ export default class Alteration extends Mixins(
       // update the current fees for the Filing
       this.setCurrentFees(
         await this.fetchFilingFees(
-          FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
+          FilingCodes.SPECIAL_RESOLUTION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
         ).catch(() => cloneDeep(EmptyFees))
       )
 
       // fetches the fee prices to display in the text
       this.setFeePrices(
         await this.fetchFilingFees(
-          FilingCodes.ALTERATION, this.getEntityType, true
+          FilingCodes.SPECIAL_RESOLUTION, this.getEntityType, true
         ).catch(() => cloneDeep(EmptyFees))
       )
 
@@ -330,11 +324,10 @@ export default class Alteration extends Mixins(
       LegalServices.fetchAddresses(this.getBusinessId),
       LegalServices.fetchNameTranslations(this.getBusinessId),
       LegalServices.fetchDirectors(this.getBusinessId),
-      LegalServices.fetchShareStructure(this.getBusinessId),
       LegalServices.fetchResolutions(this.getBusinessId)
     ])
 
-    if (items.length !== 7) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 6) throw new Error('Failed to fetch entity snapshot')
 
     return {
       businessInfo: items[0],
@@ -342,8 +335,7 @@ export default class Alteration extends Mixins(
       addresses: items[2],
       nameTranslations: items[3],
       orgPersons: items[4],
-      shareStructure: items[5],
-      resolutions: items[6]
+      resolutions: items[5]
     } as EntitySnapshotIF
   }
 
@@ -366,7 +358,7 @@ export default class Alteration extends Mixins(
     })
     // update the current fees for the filing
     this.setCurrentFees(await this.fetchFilingFees(
-      FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
+      FilingCodes.SPECIAL_RESOLUTION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
     ))
   }
 

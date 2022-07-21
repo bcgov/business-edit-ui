@@ -17,6 +17,7 @@ export default class CommonMixin extends Vue {
   @Getter isCorrectedIncorporationApplication!: boolean
   @Getter isCorrectedRegistration!: boolean
   @Getter isCorrectedChangeReg!: boolean
+  @Getter isSpecialResolutionFiling!: boolean
 
   /** True if Jest is running the code. */
   get isJestRunning (): boolean {
@@ -90,21 +91,30 @@ export default class CommonMixin extends Vue {
   /** The appropriate edit label for corrections, alterations, change or conversion filings. */
   get editLabel (): string {
     if (this.isCorrectionFiling) return 'Correct'
-    if (this.isAlterationFiling || this.isChangeRegFiling || this.isFirmConversionFiling) return 'Change'
+    if (this.isAlterationFiling || this.isChangeRegFiling ||
+      this.isFirmConversionFiling || this.isSpecialResolutionFiling) {
+      return 'Change'
+    }
     return 'Edit' // should never happen
   }
 
   /** The appropriate edited label for corrections, alterations, change or conversion filings. */
   get editedLabel (): string {
     if (this.isCorrectionFiling) return 'Corrected'
-    if (this.isAlterationFiling || this.isChangeRegFiling || this.isFirmConversionFiling) return 'Changed'
+    if (this.isAlterationFiling || this.isChangeRegFiling ||
+      this.isFirmConversionFiling || this.isSpecialResolutionFiling) {
+      return 'Changed'
+    }
     return 'Edited' // should never happen
   }
 
   /** The appropriate edits saved label for corrections, alterations, change or conversion filings. */
   get editSavedLabel (): string {
     if (this.isCorrectionFiling) return 'Corrections Saved'
-    if (this.isAlterationFiling || this.isChangeRegFiling || this.isFirmConversionFiling) return 'Changes Saved'
+    if (this.isAlterationFiling || this.isChangeRegFiling ||
+      this.isFirmConversionFiling || this.isSpecialResolutionFiling) {
+      return 'Changes Saved'
+    }
     return 'Edits Saved' // should never happen
   }
 
