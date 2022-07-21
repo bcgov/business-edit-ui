@@ -14,11 +14,9 @@
         <OrgPerson
           :currentOrgPerson="currentOrgPerson"
           :activeIndex="activeIndex"
-          :currentCompletingParty="currentCompletingParty"
           @addEdit="emitAddEdit($event)"
           @remove="emitRemove($event)"
           @reset="emitReset()"
-          @removeCpRole="emitRemoveCpRole()"
         />
       </div>
     </v-expand-transition>
@@ -60,11 +58,9 @@
             <OrgPerson
               :currentOrgPerson="currentOrgPerson"
               :activeIndex="activeIndex"
-              :currentCompletingParty="currentCompletingParty"
               @addEdit="emitAddEdit($event)"
               @remove="emitRemove($event)"
               @reset="emitReset()"
-              @removeCpRole="emitRemoveCpRole()"
             />
           </div>
         </v-expand-transition>
@@ -312,9 +308,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   /** The index of the org/person to edit, or NaN to add. */
   @Prop() readonly activeIndex: number
 
-  /** The current completing party (or undefined). */
-  @Prop() readonly currentCompletingParty: OrgPersonIF
-
   @Prop({ default: false })
   readonly isSummaryView: boolean
 
@@ -432,12 +425,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
    */
   @Emit('reset')
   protected emitReset (): void {}
-
-  /**
-   * Emits an event to the parent to remove the Completing Party role.
-   */
-  @Emit('removeCpRole')
-  protected emitRemoveCpRole (): void {}
 }
 </script>
 

@@ -22,7 +22,6 @@ const store = getVuexStore()
 const addEditEvent = 'addEdit'
 const removeEvent = 'remove'
 const resetEvent = 'reset'
-const removeCpRoleEvent = 'removeCpRole'
 
 // Input field selectors to test changes to the DOM elements.
 const firstNameSelector = '#person__first-name'
@@ -30,8 +29,6 @@ const middleNameSelector = '#person__middle-name'
 const lastNameSelector = '#person__last-name'
 const orgNameSelector = '#organization-name'
 const confirmNameChangeSelector = '#confirm-name-change-checkbox'
-const completingPartyChkBoxSelector = '#cp-checkbox'
-const incorporatorChkBoxSelector = '#incorp-checkbox'
 const directorChkBoxSelector = '#dir-checkbox'
 const removeButtonSelector = '#btn-remove'
 const doneButtonSelector = '#btn-done'
@@ -49,8 +46,7 @@ const validPersonData = {
     email: 'completing-party@example.com'
   },
   roles: [
-    { roleType: 'Director', appointmentDate: '2020-03-30' },
-    { roleType: 'Completing Party', appointmentDate: '2020-03-30' }
+    { roleType: 'Director', appointmentDate: '2020-03-30' }
   ],
   mailingAddress: {
     streetAddress: '123 Fake Street',
@@ -192,8 +188,7 @@ function getLastEvent (wrapper: Wrapper<OrgPerson>, name: string): any {
  */
 function createComponent (
   currentOrgPerson: any,
-  activeIndex: number = NaN,
-  currentCompletingParty: any
+  activeIndex: number = NaN
 ): Wrapper<OrgPerson> {
   const localVue = createLocalVue()
   localVue.use(Vuetify)
@@ -201,7 +196,7 @@ function createComponent (
 
   return mount(OrgPerson, {
     localVue,
-    propsData: { currentOrgPerson, activeIndex, currentCompletingParty },
+    propsData: { currentOrgPerson, activeIndex },
     store,
     vuetify
   })
@@ -216,32 +211,28 @@ describe('Org/Person component for a BEN Correction filing', () => {
   })
 
   it('Loads the component and sets data for person', async () => {
-    const wrapper = createComponent(validPersonData, NaN, null)
+    const wrapper = createComponent(validPersonData, NaN)
     await Vue.nextTick()
 
     expect(wrapper.vm.$data.orgPerson).toStrictEqual(validPersonData)
-    expect((wrapper.vm as any).isIncorporator).toBe(false)
     expect((wrapper.vm as any).isDirector).toBe(true)
-    expect((wrapper.vm as any).isCompletingParty).toBe(true)
 
     wrapper.destroy()
   })
 
   it('Loads the component and sets data for org', async () => {
-    const wrapper = createComponent(validOrgData, NaN, null)
+    const wrapper = createComponent(validOrgData, NaN)
     await Vue.nextTick()
 
     expect(wrapper.vm.$data.orgPerson).toStrictEqual(validOrgData)
-    expect((wrapper.vm as any).isIncorporator).toBe(true)
     expect((wrapper.vm as any).isDirector).toBe(false)
-    expect((wrapper.vm as any).isCompletingParty).toBe(false)
 
     wrapper.destroy()
   })
 
   // NB: edit functions the same as add for a person
   it('Displays edit form for person', async () => {
-    const wrapper = createComponent(validPersonData, 0, null)
+    const wrapper = createComponent(validPersonData, 0)
     await Vue.nextTick()
 
     // verify person's name
@@ -252,15 +243,11 @@ describe('Org/Person component for a BEN Correction filing', () => {
     expect((wrapper.find(lastNameSelector).element as HTMLInputElement).value)
       .toEqual(validPersonData['officer']['lastName'])
 
-    // verify role checkboxes
-    expect(wrapper.find(completingPartyChkBoxSelector).attributes('aria-checked')).toBe('true')
-    expect(wrapper.find(incorporatorChkBoxSelector).attributes('aria-checked')).toBe('false')
+    // verify role checkbox
     expect(wrapper.find(directorChkBoxSelector).attributes('aria-checked')).toBe('true')
 
-    // verify that all role checkboxes are enabled
-    expect(wrapper.find(completingPartyChkBoxSelector).attributes('disabled')).toBeUndefined()
-    expect(wrapper.find(incorporatorChkBoxSelector).attributes('disabled')).toBeUndefined()
-    expect(wrapper.find(directorChkBoxSelector).attributes('disabled')).toBeUndefined()
+    // verify that role checkbox is disabled
+    expect(wrapper.find(directorChkBoxSelector).attributes('disabled')).toBeDefined()
 
     // verify action buttons
     expect(wrapper.find(doneButtonSelector).attributes('disabled')).toBeUndefined()
@@ -270,33 +257,8 @@ describe('Org/Person component for a BEN Correction filing', () => {
     wrapper.destroy()
   })
 
-  // NB: add functions the same as edit for an org
-  it('Displays add form for org', async () => {
-    const wrapper = createComponent(validOrgData, NaN, null)
-    await Vue.nextTick()
-
-    // verify org's name
-    expect((wrapper.find(orgNameSelector).element as HTMLInputElement).value)
-      .toEqual(validOrgData['officer']['organizationName'])
-
-    // verify role checkboxes
-    expect(wrapper.find(completingPartyChkBoxSelector).exists()).toBe(false)
-    expect(wrapper.find(incorporatorChkBoxSelector).attributes('aria-checked')).toBe('true')
-    expect(wrapper.find(directorChkBoxSelector).exists()).toBe(false)
-
-    // verify that role checkbox is disabled (ie, role is locked)
-    expect(wrapper.find(incorporatorChkBoxSelector).attributes('disabled')).toBe('disabled')
-
-    // verify action buttons
-    expect(wrapper.find(doneButtonSelector).attributes('disabled')).toBeUndefined()
-    expect(wrapper.find(removeButtonSelector).attributes('disabled')).toBeDefined()
-    expect(wrapper.find(cancelButtonSelector).attributes('disabled')).toBeUndefined()
-
-    wrapper.destroy()
-  })
-
   it('Enables Remove button in edit mode', async () => {
-    const wrapper = createComponent(validOrgData, 0, null)
+    const wrapper = createComponent(validOrgData, 0)
 
     expect(wrapper.find(removeButtonSelector).attributes('disabled')).toBeUndefined()
 
@@ -304,7 +266,7 @@ describe('Org/Person component for a BEN Correction filing', () => {
   })
 
   it('Disables Remove button in create mode', async () => {
-    const wrapper = createComponent(validOrgData, NaN, null)
+    const wrapper = createComponent(validOrgData, NaN)
 
     expect(wrapper.find(removeButtonSelector).attributes('disabled')).toBeDefined()
 
@@ -312,7 +274,7 @@ describe('Org/Person component for a BEN Correction filing', () => {
   })
 
   it('Emits "remove" event when clicking Remove button', async () => {
-    const wrapper = createComponent(validOrgData, 0, null)
+    const wrapper = createComponent(validOrgData, 0)
 
     await wrapper.find(removeButtonSelector).trigger('click')
 
@@ -321,8 +283,8 @@ describe('Org/Person component for a BEN Correction filing', () => {
     wrapper.destroy()
   })
 
-  it('Emits "reset" event when clicking Done button and org has not changed', async () => {
-    const wrapper = createComponent(validOrgData, 0, null)
+  it('Does not emit "reset" event when clicking Done button and org has not changed', async () => {
+    const wrapper = createComponent(validOrgData, 0)
     await Vue.nextTick()
 
     // verify that button is not disabled, then click it
@@ -331,15 +293,13 @@ describe('Org/Person component for a BEN Correction filing', () => {
     await button.trigger('click')
     await Vue.nextTick()
 
-    const emitted = wrapper.emitted(resetEvent)
-    expect(emitted.length).toBe(1)
-    expect(emitted[0]).toStrictEqual([]) // empty event
+    expect(wrapper.emitted(resetEvent)).toBeUndefined()
 
     wrapper.destroy()
   })
 
   it('Emits "addEdit" event when clicking Done button and org has changed', async () => {
-    const wrapper = createComponent(validOrgData, 0, null)
+    const wrapper = createComponent(validOrgData, 0)
     await Vue.nextTick()
 
     // change org name
@@ -364,7 +324,7 @@ describe('Org/Person component for a BEN Correction filing', () => {
   })
 
   it('Emits "reset" event when clicking Cancel button', async () => {
-    const wrapper = createComponent(validOrgData, 0, null)
+    const wrapper = createComponent(validOrgData, 0)
     const vm = wrapper.vm as any
     vm.applyRules()
     await Vue.nextTick()
@@ -379,7 +339,7 @@ describe('Org/Person component for a BEN Correction filing', () => {
   })
 
   it('Does not display error message when user enters valid org name', async () => {
-    const wrapper = createComponent(validOrgData, NaN, null)
+    const wrapper = createComponent(validOrgData, NaN)
 
     const input = wrapper.find(orgNameSelector)
     await input.setValue('Valid Org Name')
@@ -392,7 +352,7 @@ describe('Org/Person component for a BEN Correction filing', () => {
   })
 
   it('Displays error message when user enters invalid org name', async () => {
-    const wrapper = createComponent(validOrgData, NaN, null)
+    const wrapper = createComponent(validOrgData, NaN)
     const vm = wrapper.vm as any
     vm.applyRules()
     await Vue.nextTick()
@@ -408,7 +368,7 @@ describe('Org/Person component for a BEN Correction filing', () => {
   })
 
   it('Does not display error message when user enters valid person names', async () => {
-    const wrapper = createComponent(validPersonData, NaN, null)
+    const wrapper = createComponent(validPersonData, NaN)
 
     const input1 = wrapper.find(firstNameSelector)
     await input1.setValue('First')
@@ -429,7 +389,7 @@ describe('Org/Person component for a BEN Correction filing', () => {
   })
 
   it('Displays error message when user does not enter person names', async () => {
-    const wrapper = createComponent(validPersonData, NaN, null)
+    const wrapper = createComponent(validPersonData, NaN)
     const vm = wrapper.vm as any
     vm.applyRules()
     await Vue.nextTick()
@@ -456,7 +416,7 @@ describe('Org/Person component for a BEN Correction filing', () => {
   })
 
   it('Displays error message when user enters person names that are too long', async () => {
-    const wrapper = createComponent(validPersonData, NaN, null)
+    const wrapper = createComponent(validPersonData, NaN)
     const vm = wrapper.vm as any
     vm.applyRules()
     await Vue.nextTick()
@@ -483,53 +443,8 @@ describe('Org/Person component for a BEN Correction filing', () => {
     wrapper.destroy()
   })
 
-  it('Shows popup if there is an existing completing party', async () => {
-    const wrapper = createComponent(validIncorporator, NaN, validPersonData)
-
-    // verify that popup is not yet displayed
-    expect(wrapper.find('.confirm-dialog').exists()).toBe(false)
-
-    // check the Completing Party box
-    const checkbox = wrapper.find(completingPartyChkBoxSelector)
-    await checkbox.setChecked(true)
-
-    // verify that popup is now displayed
-    expect(wrapper.find('.confirm-dialog').exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('Emits "removeCpRole" and "addEdit" events on reassigning the Completing Party', async () => {
-    const wrapper = createComponent(validIncorporator, NaN, validPersonData)
-
-    // add Completing Party role
-    const checkbox = wrapper.find(completingPartyChkBoxSelector)
-    await checkbox.setChecked(true)
-
-    // verify and accept reassign dialog
-    const reassignDialog = wrapper.vm.$refs.reassignCpDialog as any
-    expect(reassignDialog).toBeTruthy()
-    await reassignDialog.onClickYes()
-    await Vue.nextTick()
-
-    // verify flag
-    expect(wrapper.vm.$data.reassignCompletingParty).toBe(true)
-
-    // click the Done button
-    await wrapper.find(doneButtonSelector).trigger('click')
-    await Vue.nextTick()
-
-    expect(wrapper.emitted(removeCpRoleEvent).length).toBe(1)
-    expect(wrapper.emitted(removeCpRoleEvent)[0]).toStrictEqual([]) // empty event
-
-    expect(getLastEvent(wrapper, addEditEvent).roles[0])
-      .toStrictEqual({ roleType: 'Completing Party', appointmentDate: '2020-03-30' })
-
-    wrapper.destroy()
-  })
-
   it('Displays errors and does not submit form when clicking Done button and form is invalid', async () => {
-    const wrapper = createComponent(EmptyPerson, NaN, null)
+    const wrapper = createComponent(EmptyPerson, NaN)
     const vm = wrapper.vm as any
     vm.applyRules()
     await Vue.nextTick()
@@ -554,7 +469,6 @@ describe('Org/Person component for a BEN Correction filing', () => {
     expect(messages.includes('This field is required'))
 
     // verify that no events were emitted
-    expect(wrapper.emitted(removeCpRoleEvent)).toBeUndefined()
     expect(wrapper.emitted(addEditEvent)).toBeUndefined()
     expect(wrapper.emitted(resetEvent)).toBeUndefined()
 
@@ -1002,7 +916,7 @@ describe('Org/Person component for SP/GP filings', () => {
       store.state.stateModel.tombstone.entityType = test.entityType
       store.state.resourceModel = test.resourceModel
 
-      const wrapper = createComponent(test.currentOrgPerson, test.activeIndex, null)
+      const wrapper = createComponent(test.currentOrgPerson, test.activeIndex)
 
       if (test.addPersonHeader) {
         expect(wrapper.find('.add-person-header').text()).toBe(test.addPersonHeader)
