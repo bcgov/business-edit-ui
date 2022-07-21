@@ -119,7 +119,7 @@
                     :filingData="getFilingData"
                     :payApiUrl="payApiUrl"
                     :isLoading="isBusySaving"
-                    :hasConflicts="isConflictingLegalType && hasNewNr"
+                    :hasConflicts="isConflictingLegalType && getNameRequestNumber"
                     :confirmLabel="feeSummaryConfirmLabel"
                     :errorMessage="feeSummaryError"
                     :isSummaryMode="isSummaryMode"
@@ -201,7 +201,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getFilingData!: FilingDataIF
   @Getter haveUnsavedChanges!: boolean
   @Getter isBusySaving!: boolean
-  @Getter isEditing!: boolean
+  @Getter isCorrectionEditing!: boolean
   @Getter isSummaryMode!: boolean
   @Getter showFeeSummary!: boolean
   @Getter getCurrentJsDate!: Date
@@ -357,7 +357,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     // add handler to prompt user if there are changes, before unloading this page
     window.onbeforeunload = (event: any) => {
-      if (this.haveUnsavedChanges || this.isEditing) {
+      if (this.haveUnsavedChanges || this.isCorrectionEditing) {
         // cancel closing the page
         event.preventDefault()
         // pop up confirmation dialog
@@ -760,7 +760,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       let filing: AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF
       if (this.isAlterationFiling) filing = this.buildAlterationFiling(isDraft)
       if (this.isChangeRegFiling) filing = this.buildChangeRegFiling(isDraft)
-      if (this.isFirmConversionFiling) filing = this.buildFirmConversionFiling(isDraft)
+      if (this.isFirmConversionFiling) filing = this.buildConversionFiling(isDraft)
 
       // update the filing if we have a filingId, otherwise create a draft
       filingComplete = this.getFilingId

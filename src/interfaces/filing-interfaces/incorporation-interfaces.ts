@@ -1,5 +1,4 @@
-import { AddressesIF, FilingBusinessIF, FilingHeaderIF, NameTranslationIF, OrgPersonIF, ShareClassIF }
-  from '@/interfaces/'
+import { AddressesIF, NameTranslationIF, OrgPersonIF, ShareClassIF } from '@/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 //
@@ -19,11 +18,4 @@ export interface IncorporationApplicationIF {
     shareClasses: ShareClassIF[]
   }
   shareClasses?: ShareClassIF[] // old schema; only use for loading old filings!
-}
-
-/** Incorporation Application filing loaded from / saved to the Legal API. */
-export interface IncorporationFilingIF {
-  header: FilingHeaderIF
-  business: FilingBusinessIF
-  incorporationApplication: IncorporationApplicationIF
 }

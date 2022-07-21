@@ -1,10 +1,12 @@
-import { AccountTypes, ActionTypes, CorrectionErrorTypes, FilingCodes, FilingNames, FilingTypes } from '@/enums/'
+import { AccountTypes, ActionTypes, CorrectionErrorTypes, FilingCodes, FilingNames, FilingTypes }
+  from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { AddressesIF, IncorporationFilingIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF,
-  CertifyIF, NameTranslationIF, FilingDataIF, StateIF, EffectiveDateTimeIF, FlagsReviewCertifyIF,
-  FlagsCompanyInfoIF, ResolutionsIF, FeesIF, ResourceIF, EntitySnapshotIF, CorrectedFilingIF, ValidationFlagsIF,
-  IncorporationApplicationIF, CorrectionInformationIF } from '@/interfaces/'
-import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
+import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF,
+  NameTranslationIF, FilingDataIF, StateIF, EffectiveDateTimeIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
+  ResolutionsIF, FeesIF, ResourceIF, EntitySnapshotIF, ValidationFlagsIF, CorrectionInformationIF }
+  from '@/interfaces/'
+import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF }
+  from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 import { isSame } from '@/utils/'
 
@@ -174,29 +176,9 @@ export const getBusinessId = (state: StateIF): string => {
   return state.stateModel.tombstone.businessId
 }
 
-/** The original business identifier (aka incorporation number). */
-export const getOriginalBusinessName = (state: StateIF): string => {
-  // *** TODO: stop using corrected filing
-  // try to return the legal name from the corrected filing's business object
-  // otherwise return the current legal name
-  return (
-    getCorrectedFiling(state)?.business?.legalName ||
-    getBusinessInformation(state).legalName
-  )
-}
-
-/** The original filing being corrected. */
-// *** TODO: can we obsolete this?
-export const getCorrectedFiling = (state: StateIF): CorrectedFilingIF => {
-  return state.stateModel.correctedFiling
-}
-
-/** The original IA being corrected. Only exists for corrections. */
-// *** TODO: can we obsolete this?
-export const getOriginalIA = (state: StateIF): IncorporationApplicationIF => {
-  // *** TODO: stop using corrected filing
-  const filing = getCorrectedFiling(state) as unknown as IncorporationFilingIF
-  return filing?.incorporationApplication
+/** The original legal name. */
+export const getOriginalLegalName = (state: StateIF): string => {
+  return getEntitySnapshot(state)?.businessInfo?.legalName
 }
 
 /** The original business snapshot. */
@@ -280,23 +262,18 @@ export const getSnapshotNaics = (state: StateIF): NaicsIF => {
   }
 }
 
-/** The Name request state. */
+/** The Name Request object. */
 export const getNameRequest = (state: StateIF): NameRequestIF => {
   return state.stateModel.nameRequest
 }
 
-/** The NR number of a name request. */
+/** The Name Request Number. */
 export const getNameRequestNumber = (state: StateIF): string => {
   return getNameRequest(state).nrNumber
 }
 
-/** Identify if changes were made to the NR number. */
-export const hasNewNr = (state: StateIF): boolean => {
-  return !!getNameRequestNumber(state)
-}
-
-/** The approved name of a name request. */
-export const getNameRequestApprovedName = (state: StateIF): string => {
+/** The Name Request Legal Name (approved name). */
+export const getNameRequestLegalName = (state: StateIF): string => {
   return getNameRequest(state).legalName
 }
 
@@ -399,8 +376,9 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
     )
   }
   if (isFirmCorrectionFiling(state)) {
-    // *** FUTURE: expand here as needed
     return (
+      hasBusinessNameChanged(state) ||
+      hasNatureOfBusinessChanged(state) ||
       haveOfficeAddressesChanged(state) ||
       havePeopleAndRolesChanged(state)
     )
@@ -464,8 +442,8 @@ export const hasConversionDataChanged = (state: StateIF): boolean => {
   )
 }
 
-/** Whether all correction sections are valid. */
-export const isFilingValid = (state: StateIF): boolean => {
+/** Whether the subject correction filing is valid. */
+export const isCorrectionValid = (state: StateIF): boolean => {
   if (isBenIaCorrectionFiling(state)) {
     // NB: Define Company and Agreement Type don't have a "valid" state --
     //     they don't allow saving an invalid state to the store.
@@ -512,8 +490,8 @@ export const isFilingValid = (state: StateIF): boolean => {
   return false // should never happen
 }
 
-/** Whether any correction sections are in editing mode. */
-export const isEditing = (state: StateIF): boolean => {
+/** Whether the subject correction filing has any sections in editing mode. */
+export const isCorrectionEditing = (state: StateIF): boolean => {
   // NB: Detail, Certify and Staff Payment don't have an "editing" mode.
   return (state.stateModel.editingFlags.companyName ||
     state.stateModel.editingFlags.nameTranslations ||
@@ -574,9 +552,9 @@ export const getDocumentOptionalEmail = (state: StateIF): string => {
   return state.stateModel.documentDelivery.documentOptionalEmail
 }
 
-/** Check for a 7 digit pattern to identify a Numbered company from the legal name. */
+/** Checks for a 7 digit pattern to identify a numbered company from the Legal Name. */
 export const isNumberedCompany = (state: StateIF): boolean => {
-  return RegExp('^\\d{7}$').test(getBusinessInformation(state)?.legalName?.split(' ')[0])
+  return RegExp('^\\d{7}$').test(getOriginalLegalName(state)?.split(' ')[0])
 }
 
 /** Check for conflicting legal types between current type and altered type. */
@@ -591,8 +569,8 @@ export const isSummaryMode = (state: StateIF): boolean => {
 
 /** Whether business name has changed. */
 export const hasBusinessNameChanged = (state: StateIF): boolean => {
-  const currentLegalName = getNameRequestApprovedName(state)
-  const originalLegalName = getEntitySnapshot(state)?.businessInfo?.legalName
+  const currentLegalName = getNameRequestLegalName(state) // may be empty
+  const originalLegalName = getOriginalLegalName(state)
 
   return (currentLegalName !== originalLegalName)
 }
@@ -600,9 +578,7 @@ export const hasBusinessNameChanged = (state: StateIF): boolean => {
 /** Whether business type has changed. */
 export const hasBusinessTypeChanged = (state: StateIF): boolean => {
   const currentEntityType = getEntityType(state)
-  // *** TODO: stop using corrected filing
-  const originalLegalType = getEntitySnapshot(state)?.businessInfo?.legalType ||
-    getCorrectedFiling(state)?.business?.legalType
+  const originalLegalType = getEntitySnapshot(state)?.businessInfo?.legalType
 
   return (currentEntityType !== originalLegalType)
 }
@@ -706,7 +682,8 @@ export const havePeopleAndRolesChanged = (state: StateIF): boolean => {
 
 /** True when the minimum proprietors is met. */
 export const hasMinimumProprietor = (state: StateIF): boolean => {
-  // REMOVED parties are still in the parties array until FILING, so exclude them for component level validations
+  // REMOVED parties are still in the parties array until FILING, so exclude them for component level
+  // validations
   return (
     !isEntityTypeSP(state) ||
     getPeopleAndRoles(state).filter(party => !party.actions?.includes(ActionTypes.REMOVED)).length === 1
@@ -715,7 +692,8 @@ export const hasMinimumProprietor = (state: StateIF): boolean => {
 
 /** True when the minimum partners met. */
 export const hasMinimumPartners = (state: StateIF): boolean => {
-  // REMOVED parties are still in the parties array until FILING, so exclude them for component level validations
+  // REMOVED parties are still in the parties array until FILING, so exclude them for component level
+  // validations
   return (
     !isEntityTypeGP(state) ||
     getPeopleAndRoles(state).filter(party => !party.actions?.includes(ActionTypes.REMOVED)).length >= 2
@@ -746,7 +724,7 @@ export const hasShareStructureChanged = (state: StateIF): boolean => {
 /** Whether nature of business data has changed. */
 export const hasNatureOfBusinessChanged = (state: StateIF): boolean => {
   const currentNatureOfBusiness = getBusinessInformation(state)?.naicsCode
-  const originalNatureOfBusiness = getEntitySnapshot(state)?.businessInfo.naicsCode
+  const originalNatureOfBusiness = getEntitySnapshot(state)?.businessInfo?.naicsCode
 
   return (currentNatureOfBusiness !== originalNatureOfBusiness)
 }
@@ -757,8 +735,8 @@ export const areProvisionsRemoved = (state: StateIF): boolean => {
 }
 
 /** The original resolution dates. */
-export const getPreviousResolutionDates = (state: StateIF): ResolutionsIF[] => {
-  return state.stateModel.shareStructureStep.previousResolutionDates
+export const getOriginalResolutions = (state: StateIF): ResolutionsIF[] => {
+  return getEntitySnapshot(state)?.resolutions
 }
 
 /** The new resolution dates. */

@@ -8,8 +8,6 @@
 
     <ShareStructureShared
       :isEditMode="isEditMode"
-      :isCorrection="isCorrectionFiling"
-      :incorporationApplication="getCorrectedFiling"
       :shareClasses="getShareClasses"
       :originalShareStructure="originalShareStructure"
       :resolutionRequired="resolutionsRequired"
@@ -36,8 +34,8 @@ import { ShareStructure as ShareStructureShared } from '@bcrs-shared-components/
 import { ResolutionDateDialog } from '@/dialogs/'
 import { CommonMixin } from '@/mixins/'
 
-import { ActionBindingIF, EntitySnapshotIF, CorrectedFilingIF, ShareClassIF, ShareStructureIF,
-  FlagsCompanyInfoIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, ShareClassIF, ShareStructureIF, FlagsCompanyInfoIF }
+  from '@/interfaces/'
 
 @Component({
   components: {
@@ -53,8 +51,6 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   // Global getters
   @Getter getComponentValidate!: boolean
   @Getter getNewResolutionDates!: string[]
-  // *** TODO: refactor shared component to use original shares instead of original IA
-  @Getter getCorrectedFiling!: CorrectedFilingIF
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getHasRightsOrRestrictions!: boolean

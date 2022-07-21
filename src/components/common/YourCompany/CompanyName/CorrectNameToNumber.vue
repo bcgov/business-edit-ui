@@ -33,7 +33,7 @@ export default class CorrectNameToNumber extends Vue {
   @Getter getBusinessId!: string
 
   // Local properties
-  private correctToNumbered = false
+  protected correctToNumbered = false
 
   get businessId (): string {
     return this.getBusinessId && this.getBusinessId.substring(2)

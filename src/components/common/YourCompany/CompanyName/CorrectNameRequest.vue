@@ -93,25 +93,25 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
   @Getter getNameRequest!: NameRequestIF
 
   // V-model properties
-  private formValid = false
-  private nameRequestNumber = ''
-  private applicantPhone = ''
-  private applicantEmail = ''
+  protected formValid = false
+  protected nameRequestNumber = ''
+  protected applicantPhone = ''
+  protected applicantEmail = ''
 
-  // FUTURE: use this to turn on/off validations
-  private done = true
+  // *** FUTURE: use this to turn on/off validations
+  protected done = true
 
   // Rules
-  nrNumRules = [
+  readonly nrNumRules = [
     (v: string) => !!v || 'Name Request Number is required',
     (v: string) => this.isValidNrNumber(v) || 'Name Request Number is invalid'
   ]
-  phoneRules = [
+  readonly phoneRules = [
     (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
     (v: string) => !(v?.length > 12) || 'Phone number is invalid'
   ]
-  emailRules = [
+  readonly emailRules = [
     (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
     (v: string) => this.isValidEmail(v) || 'Email is invalid'
