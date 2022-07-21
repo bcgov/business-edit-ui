@@ -153,7 +153,8 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
         const nr: NrResponseIF = await this.validateNameRequest(
           this.nameRequestNumber,
           this.applicantPhone,
-          this.applicantEmail
+          this.applicantEmail,
+          this.formType
         )
 
         if (this.getEntityType !== nr.legalType) {

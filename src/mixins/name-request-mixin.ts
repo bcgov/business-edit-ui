@@ -1,5 +1,5 @@
 import { Component, Mixins } from 'vue-property-decorator'
-import { NameRequestStates, NameRequestTypes } from '@/enums/'
+import { CorrectionTypes, NameRequestStates, NameRequestTypes } from '@/enums/'
 import { DateMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { NrResponseIF } from '@/interfaces/'
@@ -17,7 +17,12 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    * @param email the applicant's email address
    * @returns the name request response payload
    */
-  async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<NrResponseIF> {
+  async validateNameRequest (
+    nrNumber: string,
+    phone?: string,
+    email?: string,
+    nrType?: CorrectionTypes
+  ): Promise<NrResponseIF> {
     const nrResponse: NrResponseIF = await LegalServices.fetchNameRequest(nrNumber).catch(error => {
       this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
       throw new Error(`Fetch Name Request error: ${error}`)
@@ -37,7 +42,14 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
 
     // ensure NR is valid
     const isNrValid = this.isNrValid(nrResponse)
-    if (!nrResponse || !isNrValid) {
+    const isNewNr = nrType === CorrectionTypes.CORRECT_NEW_NR || false
+    if (!isNewNr && (!nrResponse || !isNrValid)) {
+      this.$root.$emit('invalid-name-request', NameRequestStates.INVALID)
+      throw new Error('Invalid Name Request')
+    }
+
+    const isNewNrValid = this.isNewNrValid(nrResponse)
+    if (isNewNr && (!nrResponse || !isNewNrValid)) {
       this.$root.$emit('invalid-name-request', NameRequestStates.INVALID)
       throw new Error('Invalid Name Request')
     }
@@ -64,6 +76,21 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
       nr.nrNum &&
       nr.requestTypeCd &&
       [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION].includes(nr.request_action_cd)
+    )
+  }
+
+  /**
+  * Returns True if the Name Request data is valid for New NR.
+  * @param nr the name request response payload
+  * */
+  isNewNrValid (nr: any): boolean {
+    return Boolean(nr &&
+      nr.state &&
+      nr.expirationDate &&
+      !!this.getNrApprovedName(nr) &&
+      nr.nrNum &&
+      nr.requestTypeCd &&
+      [NameRequestTypes.NEW].includes(nr.request_action_cd)
     )
   }
 

@@ -183,7 +183,7 @@ describe('CorrectNameRequest', () => {
             nrNum: 'NR 1234567',
             requestTypeCd: 'BC',
             legalType: 'BC',
-            request_action_cd: 'CNV',
+            request_action_cd: 'NEW',
             entity_type_cd: 'CR',
             applicants: {
               phoneNumber: '250 516 8257',
@@ -309,12 +309,13 @@ describe('CorrectNameRequest', () => {
             }],
             nrNum: 'NR 1234567',
             requestTypeCd: 'BC',
-            request_action_cd: 'CNV',
+            request_action_cd: 'NEW',
             entity_type_cd: 'BC',
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@example.com'
-            }
+            },
+            legalType: 'GP'
           }
       }))
 
