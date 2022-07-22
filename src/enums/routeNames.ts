@@ -6,4 +6,5 @@ export enum RouteNames {
   CORRECTION = 'correction',
   SIGN_IN = 'signin',
   SIGN_OUT = 'signout',
+  SPECIAL_RESOLUTION = 'special-resolution'
 }

@@ -1,10 +1,5 @@
 <template>
   <div id="add-edit-org-person">
-    <ConfirmDialogShared
-      ref="reassignCpDialog"
-      attach="#add-edit-org-person"
-    />
-
     <ul class="list add-person mt-4">
       <li class="add-person-container">
         <section class="meta-container">
@@ -315,38 +310,12 @@
                   <v-col cols="4" class="mt-0" v-if="isPerson">
                     <div class="pa-1">
                       <v-checkbox
-                        id="cp-checkbox"
-                        class="mt-1"
-                        v-model="selectedRoles"
-                        :value="RoleTypes.COMPLETING_PARTY"
-                        :label="RoleTypes.COMPLETING_PARTY"
-                        :rules="roleRules"
-                        @change="assignCompletingPartyRole()"
-                      />
-                    </div>
-                  </v-col>
-                  <v-col cols="4" class="mt-0">
-                    <div class="pa-1" :class="{ 'highlightedRole': isOrg }">
-                      <v-checkbox
-                        id="incorp-checkbox"
-                        class="mt-1"
-                        v-model="selectedRoles"
-                        :value="RoleTypes.INCORPORATOR"
-                        :label="RoleTypes.INCORPORATOR"
-                        :disabled="isOrg"
-                        :rules="roleRules"
-                    />
-                    </div>
-                  </v-col>
-                  <v-col cols="4" class="mt-0" v-if="isPerson">
-                    <div class="pa-1">
-                      <v-checkbox
                         id="dir-checkbox"
-                        class="mt-1"
+                        class="mt-1 highlighted-role"
                         v-model="selectedRoles"
                         :value="RoleTypes.DIRECTOR"
                         :label="RoleTypes.DIRECTOR"
-                        :rules="roleRules"
+                        :disabled=true
                         @change="assignDirectorRole()"
                       />
                     </div>
@@ -429,11 +398,10 @@ import { cloneDeep, isEqual } from 'lodash'
 import { mask } from 'vue-the-mask'
 import { v4 as uuidv4 } from 'uuid'
 import { isSame } from '@/utils/'
-import { OrgPersonIF, FormIF, AddressIF, ConfirmDialogType, AddressSchemaIF, RoleIF, ResourceIF,
-  EmptyBusinessLookup, BusinessLookupIF } from '@/interfaces/'
+import { OrgPersonIF, FormIF, AddressIF, AddressSchemaIF, RoleIF, ResourceIF, EmptyBusinessLookup,
+  BusinessLookupIF } from '@/interfaces/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { HelpSection } from '@/components/common/'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { BusinessLookup as BusinessLookupShared } from '@bcrs-shared-components/business-lookup'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { RoleTypes } from '@/enums/'
@@ -449,7 +417,6 @@ const COUNTRY_CA = 'CA'
     DeliveryAddress: BaseAddress,
     MailingAddress: BaseAddress,
     BusinessLookupShared,
-    ConfirmDialogShared,
     HelpSection
   },
   directives: { mask }
@@ -459,8 +426,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   $refs!: {
     orgPersonForm: FormIF,
     mailingAddress: FormIF,
-    deliveryAddress: FormIF,
-    reassignCpDialog: ConfirmDialogType
+    deliveryAddress: FormIF
   }
 
   // Declarations for template
@@ -473,9 +439,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
   /** The index of the org/person to edit, or NaN to add. */
   @Prop() readonly activeIndex: number
-
-  /** The current Completing Party (or undefined). */
-  @Prop() readonly currentCompletingParty: OrgPersonIF
 
   // Global getter
   @Getter getCurrentDate!: string
@@ -493,7 +456,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   protected inheritMailingAddress = true
   protected mailingAddressValid = false
   protected deliveryAddressValid = false
-  protected reassignCompletingParty = false
   protected selectedRoles: Array<RoleTypes> = [] // model value for roles checkboxes
   protected firstNameRules: Array<Function> = []
   protected middleNameRules: Array<Function> = []
@@ -505,16 +467,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   protected confirmNameChangeRules: Array<Function> = []
   protected inProgressBusinessLookup: BusinessLookupIF = EmptyBusinessLookup
   protected showErrors = false
-
-  /** True if Completing Party is checked. */
-  get isCompletingParty (): boolean {
-    return this.selectedRoles.includes(RoleTypes.COMPLETING_PARTY)
-  }
-
-  /** True if Incorporator is checked. */
-  get isIncorporator (): boolean {
-    return this.selectedRoles.includes(RoleTypes.INCORPORATOR)
-  }
 
   /** True if Director is checked. */
   get isDirector (): boolean {
@@ -625,11 +577,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       return !this.showOrgEditBusNum
     }
     return false
-  }
-
-  /** The validation rules for the roles. */
-  get roleRules (): Array<Function> {
-    return [ () => this.selectedRoles.length > 0 || 'A role is required' ]
   }
 
   /** Text label for org type. */
@@ -788,17 +735,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   }
 
   /**
-   * Called when Completing Party checkbox is changed.
-   */
-  protected assignCompletingPartyRole (): void {
-    if (this.orgPerson && this.isCompletingParty && this.currentCompletingParty &&
-      (this.orgPerson.officer.id !== this.currentCompletingParty.officer.id)
-    ) {
-      this.confirmReassignPerson()
-    }
-  }
-
-  /**
    * Called when Director checkbox is changed.
    */
   protected assignDirectorRole (): void {
@@ -846,9 +782,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       const person = this.addPerson()
       // only process if org/person has actually changed
       if (this.hasPersonChanged(person)) {
-        if (this.reassignCompletingParty) {
-          this.emitRemoveCpRole()
-        }
         this.emitAddEdit(person)
         this.resetAddPersonData(false) // don't emit event
       } else {
@@ -890,34 +823,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     return false // should never happen
   }
 
-  /** Displays dialog to prompt user whether to change the Completing Party. */
-  private confirmReassignPerson () {
-    const currentCpName = this.formatFullName(this.currentCompletingParty?.officer)
-    const changeCpMessage = `The Completing Party role is already assigned to ${currentCpName}.\n` +
-      'Selecting "Completing Party" here will change the Completing Party.'
-
-    // open confirmation dialog and wait for response
-    this.$refs.reassignCpDialog.open(
-      'Change Completing Party?',
-      changeCpMessage,
-      {
-        width: '45rem',
-        persistent: true,
-        yes: 'Change Completing Party',
-        no: 'Cancel',
-        cancel: null
-      }
-    ).then(confirm => {
-      if (confirm) {
-        // set flag to reassign CP when Done is clicked
-        this.reassignCompletingParty = true
-      } else {
-        // remove the role
-        this.selectedRoles = this.selectedRoles.filter(r => r !== RoleTypes.COMPLETING_PARTY)
-      }
-    })
-  }
-
   /** Returns a new data object from current local properties. */
   private addPerson (): OrgPersonIF {
     const person = cloneDeep(this.orgPerson)
@@ -943,20 +848,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   private setPersonRoles (orgPerson: OrgPersonIF): RoleIF[] {
     // NB: if roles previously existed, retain old appointment dates
     let roles: Array<RoleIF> = []
-    if (this.isCompletingParty) {
-      const role = orgPerson.roles.find(r => r.roleType === RoleTypes.COMPLETING_PARTY)
-      roles.push({
-        roleType: RoleTypes.COMPLETING_PARTY,
-        appointmentDate: role?.appointmentDate || this.getCurrentDate
-      })
-    }
-    if (this.isIncorporator) {
-      const role = orgPerson.roles.find(r => r.roleType === RoleTypes.INCORPORATOR)
-      roles.push({
-        roleType: RoleTypes.INCORPORATOR,
-        appointmentDate: role?.appointmentDate || this.getCurrentDate
-      })
-    }
     if (this.isDirector) {
       const role = orgPerson.roles.find(r => r.roleType === RoleTypes.DIRECTOR)
       roles.push({
@@ -1136,10 +1027,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   /** Emits an event to the parent to reset the state. */
   @Emit('reset')
   private emitReset (): void {}
-
-  /** Emits an event to the parent to remove the Completing Party role. */
-  @Emit('removeCpRole')
-  private emitRemoveCpRole (): void {}
 }
 </script>
 
@@ -1242,7 +1129,7 @@ li {
   }
 }
 
-.highlightedRole {
+.highlighted-role {
   opacity: 0.5;
   mix-blend-mode: normal;
   border-radius: 2px;

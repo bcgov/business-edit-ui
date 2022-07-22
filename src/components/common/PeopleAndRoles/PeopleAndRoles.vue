@@ -1,10 +1,5 @@
 <template>
   <section id="people-and-roles">
-    <ConfirmDialogShared
-      ref="changeCpDialog"
-      attach="#people-and-roles"
-    />
-
     <v-card flat>
       <!-- Header -->
       <div class="section-container header-container">
@@ -16,16 +11,6 @@
       <article v-if="isBenIaCorrectionFiling" class="section-container">
         This application must include the following:
         <ul>
-          <li>
-            <v-icon v-if="cpValid" color="green darken-2" class="cp-valid">mdi-check</v-icon>
-            <v-icon v-else color="red" class="cp-invalid">mdi-close</v-icon>
-            <span class="ml-2">The Completing Party</span>
-          </li>
-          <li>
-            <v-icon v-if="incorpValid" color="green darken-2" class="incorp-valid">mdi-check</v-icon>
-            <v-icon v-else color="red" class="incorp-invalid">mdi-close</v-icon>
-            <span class="ml-2">At least one Incorporator</span>
-          </li>
           <li>
             <v-icon v-if="dirValid" color="green darken-2" class="dir-valid">mdi-check</v-icon>
             <v-icon v-else color="red" class="dir-invalid">mdi-close</v-icon>
@@ -41,33 +26,10 @@
           outlined
           color="primary"
           :disabled="isAddingEditingOrgPerson"
-          @click="initAdd([], PartyTypes.PERSON)"
+          @click="initAdd([{ roleType: RoleTypes.DIRECTOR }], PartyTypes.PERSON)"
         >
           <v-icon>mdi-account-plus</v-icon>
           <span>Add a Person</span>
-        </v-btn>
-        <v-btn
-          id="btn-add-corp"
-          outlined
-          color="primary"
-          class="ml-2"
-          :disabled="isAddingEditingOrgPerson"
-          @click="initAdd([{ roleType: RoleTypes.INCORPORATOR }], PartyTypes.ORGANIZATION)"
-        >
-          <v-icon>mdi-domain-plus</v-icon>
-          <span>Add a {{ orgTypesLabel }}</span>
-        </v-btn>
-        <v-btn
-          v-if="!cpValid"
-          id="btn-add-cp"
-          outlined
-          color="primary"
-          class="ml-2"
-          :disabled="isAddingEditingOrgPerson"
-          @click="initAdd([{ roleType: RoleTypes.COMPLETING_PARTY }], PartyTypes.PERSON)"
-        >
-          <v-icon>mdi-account-plus-outline</v-icon>
-          <span>Add the Completing Party</span>
         </v-btn>
       </article>
 
@@ -164,7 +126,6 @@
           :renderOrgPersonForm="isAddingEditingOrgPerson"
           :currentOrgPerson="currentOrgPerson"
           :activeIndex="activeIndex"
-          :currentCompletingParty="currentCompletingParty"
           :validate="getComponentValidate"
           :validOrgPersons="validOrgPersons"
           @initEdit="initEdit($event)"
@@ -172,7 +133,6 @@
           @remove="remove($event)"
           @undo="undo($event)"
           @reset="reset()"
-          @removeCpRole="removeCpRole()"
         />
       </article>
     </v-card>
@@ -184,31 +144,21 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep, isEmpty } from 'lodash'
 import { isSame } from '@/utils/'
-import { ActionBindingIF, ConfirmDialogType, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF,
-  OrgPersonIF, ResourceIF, RoleIF } from '@/interfaces/'
+import { ActionBindingIF, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF, OrgPersonIF, ResourceIF,
+  RoleIF } from '@/interfaces/'
 import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { HelpSection } from '@/components/common/'
 import { ListPeopleAndRoles } from './'
 import { CommonMixin, DateMixin, OrgPersonMixin } from '@/mixins/'
 
-const REGION_BC = 'BC'
-const COUNTRY_CA = 'CA'
-
 @Component({
   components: {
-    ConfirmDialogShared,
     HelpSection,
     ListPeopleAndRoles
   }
 })
 export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPersonMixin) {
-  // Refs
-  $refs!: {
-    changeCpDialog: ConfirmDialogType
-  }
-
   // Declarations for template
   readonly RoleTypes = RoleTypes
   readonly PartyTypes = PartyTypes
@@ -218,7 +168,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter getCurrentJsDate!: Date
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getPeopleAndRoles!: OrgPersonIF[]
-  @Getter getUserEmail!: string
   @Getter isRoleStaff!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
@@ -242,23 +191,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   protected isAddingEditingOrgPerson = false
   protected activeIndex = NaN
   protected currentOrgPerson: OrgPersonIF = null
-  protected currentCompletingParty: OrgPersonIF = null
-  protected originalCompletingParty: OrgPersonIF = null
   protected helpToggle: boolean = false
 
   /** The list of original parties. */
   get originalParties (): OrgPersonIF[] {
     return this.getEntitySnapshot?.orgPersons || []
-  }
-
-  /** True if we have a Completing Party. */
-  get cpValid (): boolean {
-    return this.hasRole(RoleTypes.COMPLETING_PARTY, 1, CompareModes.EXACT)
-  }
-
-  /** True if we have at least 1 Incorporator. */
-  get incorpValid (): boolean {
-    return this.hasRole(RoleTypes.INCORPORATOR, 1, CompareModes.AT_LEAST)
   }
 
   /** True if we have at least 1 Director. */
@@ -283,7 +220,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       return false
     }
     if (this.isCorrectionFiling) {
-      if (this.isEntityTypeBEN) return (this.cpValid && this.incorpValid && this.dirValid)
+      if (this.isEntityTypeBEN) return this.dirValid
       if (this.isEntityTypeSP) return this.hasMinimumProprietor
       if (this.isEntityTypeGP) return this.hasMinimumPartners
       return false
@@ -353,22 +290,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   /** True if we have any changes (from original IA). */
   get hasChanges (): boolean {
     return this.getPeopleAndRoles.some(x => x.actions)
-  }
-
-  /** The user email to use for the Completing Party. */
-  get userEmail (): string {
-    // if we are staff, return the original CP's email
-    // otherwise return the current user's email
-    return this.isRoleStaff
-      ? this.originalCompletingParty?.officer.email
-      : this.getUserEmail
-  }
-
-  /** The Completing Party change message. */
-  get changeCpMessage (): string {
-    const currentCpName = this.formatFullName(this.currentCompletingParty?.officer)
-    return `The Completing Party role was re-assigned to ${currentCpName}.\n` +
-      'This undo will restore the original Completing Party.'
   }
 
   /** Resource getters. */
@@ -490,31 +411,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       // safety check
       if (!thisPerson) throw new Error(`Failed to find original person with id = ${id}`)
 
-      // check if original person had CP role
-      const hadCp = thisPerson.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)
-
-      // check if an other person has CP role right now
-      // NB: we will update this record right in the temp list - no need to splice
-      const otherPerson = this.getCompletingParty(tempList)
-
-      // check if we would restore the original CP
-      if (hadCp && otherPerson && (thisPerson.officer.id !== otherPerson.officer.id)) {
-        // prompt user for confirmation
-        await this.confirmReassignCp().then(confirm => {
-          if (confirm) {
-            // remove the other person's CP role and their email
-            otherPerson.roles = otherPerson.roles.filter(r => r.roleType !== RoleTypes.COMPLETING_PARTY)
-            delete otherPerson.officer.email
-            otherPerson.actions = [this.computeAction(otherPerson)]
-          } else {
-            // remove this person's CP role and their email
-            thisPerson.roles = thisPerson.roles.filter(r => r.roleType !== RoleTypes.COMPLETING_PARTY)
-            delete thisPerson.officer.email
-            thisPerson.actions = [this.computeAction(thisPerson)]
-          }
-        })
-      }
-
       // splice in the original person
       tempList.splice(index, 1, thisPerson)
     }
@@ -551,11 +447,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   private addEdit (orgPerson: OrgPersonIF): void {
     // make a copy so Vue reacts when we set the new list
     const tempList = cloneDeep(this.getPeopleAndRoles)
-
-    // if this is the Completing Party, set email address from user profile
-    if (orgPerson.roles.find(role => role.roleType === RoleTypes.COMPLETING_PARTY)) {
-      orgPerson.officer.email = this.userEmail
-    }
 
     if (isNaN(this.activeIndex)) {
       // add new person to list if not a current index
@@ -692,87 +583,9 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     this.reset()
   }
 
-  /**
-   * Removes the Completing Party role from whichever person has it.
-   * Also removes their email address.
-   */
-  private removeCpRole (): void {
-    // make a copy so Vue reacts when we set the new list
-    const tempList = cloneDeep(this.getPeopleAndRoles)
-
-    // get the Completing Party
-    // (we update this record right in the temp list)
-    const person = this.getCompletingParty(tempList)
-
-    if (person) {
-      // remove the Completing Party role
-      person.roles = person.roles.filter(role =>
-        role.roleType !== RoleTypes.COMPLETING_PARTY
-      )
-
-      // identify that this person has been edited
-      // (unless they were already added, edited or removed)
-      if (!person.actions) {
-        person.actions = [ActionTypes.EDITED]
-      }
-
-      // remove email address that we got from user profile
-      person.officer.email = null
-
-      // set the new list
-      this.setPeopleAndRoles(tempList)
-
-      // don't need to update component flags since calling method will do it
-    }
-  }
-
-  /**
-   * Displays dialog to prompt user whether to change the Completing Party.
-   * @returns a promise that is resolved when the user responds
-   */
-  private async confirmReassignCp (): Promise<any> {
-    // open confirmation dialog and wait for response
-    return this.$refs.changeCpDialog.open(
-      'Change Completing Party?',
-      this.changeCpMessage,
-      {
-        width: '45rem',
-        persistent: true,
-        yes: 'Restore original Completing Party',
-        no: 'Cancel',
-        cancel: null
-      }
-    )
-  }
-
-  /**
-   * Gets the Completing Party in a specified org/person list.
-   * @param list The list to search.
-   * @returns The Completing Party if found, otherwise undefined.
-   */
-  private getCompletingParty (list: OrgPersonIF[]): OrgPersonIF {
-    const i = list?.findIndex(orgPerson =>
-      (!this.wasRemoved(orgPerson)) &&
-        orgPerson.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)
-    )
-    return (i >= 0) ? list[i] : undefined
-  }
-
-  /**
-   * On initial load, sets the Original Completing Party (if any).
-   */
-  @Watch('originalParties', { deep: true })
-  private onCorrectedFilingChanged (): void {
-    this.originalCompletingParty = this.getCompletingParty(this.originalParties)
-  }
-
-  /**
-   * On initial load and when user has made changes, sets the current
-   * Completing Party (if any) and the component validity flag.
-   */
+  /** On initial load and when user has made changes, sets the component validity flag. */
   @Watch('getPeopleAndRoles', { deep: true })
   private onPeopleAndRolesChanged (): void {
-    this.currentCompletingParty = this.getCompletingParty(this.getPeopleAndRoles)
     // FUTURE: combine this component's two validity mechanisms
     //         see setValidComponent() below
     this.setPeopleAndRolesValidity(this.validOrgPersons)
