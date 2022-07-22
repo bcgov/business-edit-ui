@@ -401,7 +401,7 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
  * - court order and POA
  * - staff payment
  */
-export const hasAlterationDataChanged = (state: StateIF): boolean => { // SB TO create new for special resolution
+export const hasAlterationDataChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
     hasBusinessTypeChanged(state) ||
@@ -409,6 +409,24 @@ export const hasAlterationDataChanged = (state: StateIF): boolean => { // SB TO 
     hasShareStructureChanged(state) ||
     areProvisionsRemoved(state) ||
     haveNewResolutionDates(state)
+  )
+}
+
+/**
+ * Whether any special resolution data has changed (for the purpose of showing the
+ * fee summary), ie, does NOT include:
+ * - alteration date and time
+ * - alteration documents delivery
+ * - certify
+ * - folio number
+ * - court order and POA
+ * - staff payment
+ */
+// more to add while adding components
+export const hasSpecialResolutionDataChanged = (state: StateIF): boolean => {
+  return (
+    hasBusinessNameChanged(state) ||
+    hasBusinessTypeChanged(state)
   )
 }
 
@@ -809,7 +827,8 @@ export const showFeeSummary = (state: StateIF): boolean => {
     (isCorrectionFiling(state) && hasCorrectionDataChanged(state)) ||
     (isAlterationFiling(state) && hasAlterationDataChanged(state)) ||
     (isChangeRegFiling(state) && hasChangeDataChanged(state)) ||
-    (isFirmConversionFiling(state) && hasConversionDataChanged(state))
+    (isFirmConversionFiling(state) && hasConversionDataChanged(state)) ||
+    (isSpecialResolutionFiling(state) && hasSpecialResolutionDataChanged(state))
   )
   return (haveFilingChange && !isEqual(getFilingData(state), defaultFilingData))
 }

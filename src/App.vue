@@ -115,7 +115,7 @@
                 <!-- Alteration/Change/Conversion filings use the enhanced Fee Summary shared component -->
                 <v-expand-transition>
                   <FeeSummaryShared
-                    v-if="isAlterationFiling || isChangeRegFiling || isFirmConversionFiling"
+                    v-if="isSpecialResolutionFiling || isAlterationFiling || isChangeRegFiling || isFirmConversionFiling"
                     :filingData="getFilingData"
                     :payApiUrl="payApiUrl"
                     :isLoading="isBusySaving"

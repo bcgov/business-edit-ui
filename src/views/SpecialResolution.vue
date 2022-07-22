@@ -37,7 +37,7 @@
         <AlterationSummary
           class="mt-10"
           :validate="getAppValidate"
-          @haveChanges="onAlterationSummaryChanges()"
+          @haveChanges="onSpecialResolutionSummaryChanges()"
         />
 
         <DocumentsDelivery
@@ -350,7 +350,7 @@ export default class SpecialResolution extends Mixins(
   }
 
   /** Called when alteration summary data has changed. */
-  protected async onAlterationSummaryChanges (): Promise<void> {
+  async onSpecialResolutionSummaryChanges (): Promise<void> {
     // update filing data with future effective field
     this.setFilingData({
       ...this.getFilingData,
