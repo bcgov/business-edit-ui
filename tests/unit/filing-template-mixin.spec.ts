@@ -4,6 +4,14 @@ import { getVuexStore } from '@/store/'
 
 const store = getVuexStore()
 
+// FUTURE
+describe('Correction Filing', () => {
+})
+
+// FUTURE
+describe('Alteration Filing', () => {
+})
+
 describe('Change of Registration Filing', () => {
   let wrapper: any
   let store: any = getVuexStore()
@@ -168,4 +176,8 @@ describe('Change of Registration Filing', () => {
       })
     )
   })
+})
+
+// FUTURE
+describe('Conversion Filing', () => {
 })

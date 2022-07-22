@@ -1,6 +1,6 @@
 import { ActionIF, ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, EntitySnapshotIF,
   NameRequestIF, NameTranslationIF, OrgPersonIF, ShareClassIF, FeesIF, ResourceIF, FilingDataIF,
-  CorrectedFilingIF, CorrectionInformationIF } from '@/interfaces/'
+  CorrectionInformationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -166,10 +166,6 @@ export const setHaveUnsavedChanges: ActionIF = ({ commit }, haveUnsavedChanges: 
   commit('mutateHaveUnsavedChanges', haveUnsavedChanges)
 }
 
-export const setCorrectedFiling: ActionIF = ({ commit }, filing: CorrectedFilingIF): void => {
-  commit('mutateCorrectedFiling', filing)
-}
-
 export const setEntitySnapshot: ActionIF = ({ commit }, entitySnapshot: EntitySnapshotIF): void => {
   commit('mutateEntitySnapshot', entitySnapshot)
 }
@@ -230,12 +226,8 @@ export const setProvisionsRemoved: ActionIF = ({ commit }, provisionsRemoved: bo
   commit('mutateProvisionsRemoved', provisionsRemoved)
 }
 
-export const setOriginalResolutionDates: ActionIF = ({ commit }, resolutionDates: string[]): void => {
-  commit('mutateOriginalResolutionDates', resolutionDates)
-}
-
-export const setResolutionDates: ActionIF = ({ commit }, resolutionDates: string[]): void => {
-  commit('mutateResolutionDates', resolutionDates)
+export const setNewResolutionDates: ActionIF = ({ commit }, resolutionDates: string[]): void => {
+  commit('mutateNewResolutionDates', resolutionDates)
 }
 
 export const setFileNumber: ActionIF = ({ commit }, courtOrderNumber: string): void => {

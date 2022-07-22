@@ -26,28 +26,6 @@ describe('Benefit Company Correction component', () => {
   sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
   sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
-  sessionStorage.setItem('KEYCLOAK_TOKEN', 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJUbWdtZUk0MnVsdUZ0N3' +
-    'FQbmUtcTEzdDUwa0JDbjF3bHF6dHN0UGdUM1dFIn0.eyJqdGkiOiIzZDQ3YjgwYy01MTAzLTRjMTYtOGNhZC0yMjU4NDMwZGYwZTciLCJle' +
-    'HAiOjE1Njg0ODk1NTksIm5iZiI6MCwiaWF0IjoxNTY4NDAzMTYwLCJpc3MiOiJodHRwczovL3Nzby1kZXYucGF0aGZpbmRlci5nb3YuYmMuY2' +
-    'EvYXV0aC9yZWFsbXMvZmNmMGtwcXIiLCJhdWQiOlsic2JjLWF1dGgtd2ViIiwicmVhbG0tbWFuYWdlbWVudCIsImJyb2tlciIsImFjY291bnQ' +
-    'iXSwic3ViIjoiZDRjNTBiZTAtYWM2OC00MDIyLTkxMGQtMzE2NzQ4NGFkOWU0IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoic2JjLWF1dGgtd2Vi' +
-    'Iiwibm9uY2UiOiJkMjljZTZlNS0xNzZhLTRkMTUtODUzZS05NWUzZmUwZmYwZjgiLCJhdXRoX3RpbWUiOjE1Njg0MDMxNTksInNlc3Npb25fc' +
-    '3RhdGUiOiJiOTEwMzQxZi0xNzVjLTRkMTktYWI1Yy1iM2QxNTBiYjk0NjYiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbImh0dHA6Ly' +
-    '8xOTIuMTY4LjAuMTM6ODA4MC8iLCIxOTIuMTY4LjAuMTMiLCIqIiwiaHR0cDovLzE5Mi4xNjguMC4xMzo4MDgwIl0sInJlYWxtX2FjY2VzcyI' +
-    '6eyJyb2xlcyI6WyJ2aWV3IiwiZWRpdCIsIm9mZmxpbmVfYWNjZXNzIiwic3RhZmYiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImJhc2ljIl19LCJy' +
-    'ZXNvdXJjZV9hY2Nlc3MiOnsicmVhbG0tbWFuYWdlbWVudCI6eyJyb2xlcyI6WyJ2aWV3LWlkZW50aXR5LXByb3ZpZGVycyIsInZpZXctcmVhb' +
-    'G0iLCJtYW5hZ2UtaWRlbnRpdHktcHJvdmlkZXJzIiwiaW1wZXJzb25hdGlvbiIsInJlYWxtLWFkbWluIiwiY3JlYXRlLWNsaWVudCIsIm1hbm' +
-    'FnZS11c2VycyIsInF1ZXJ5LXJlYWxtcyIsInZpZXctYXV0aG9yaXphdGlvbiIsInF1ZXJ5LWNsaWVudHMiLCJxdWVyeS11c2VycyIsIm1hbmF' +
-    'nZS1ldmVudHMiLCJtYW5hZ2UtcmVhbG0iLCJ2aWV3LWV2ZW50cyIsInZpZXctdXNlcnMiLCJ2aWV3LWNsaWVudHMiLCJtYW5hZ2UtYXV0aG9y' +
-    'aXphdGlvbiIsIm1hbmFnZS1jbGllbnRzIiwicXVlcnktZ3JvdXBzIl19LCJicm9rZXIiOnsicm9sZXMiOlsicmVhZC10b2tlbiJdfSwiYWNjb' +
-    '3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOi' +
-    'JvcGVuaWQiLCJmaXJzdG5hbWUiOiJTdW1lc2giLCJyb2xlcyI6WyJ2aWV3IiwiZWRpdCIsIm9mZmxpbmVfYWNjZXNzIiwic3RhZmYiLCJ1bWF' +
-    'fYXV0aG9yaXphdGlvbiIsImJhc2ljIl0sIm5hbWUiOiJTdW1lc2ggS2FyaXlpbCIsInByZWZlcnJlZF91c2VybmFtZSI6InNrYXJpeWlsQGlk' +
-    'aXIiLCJlbWFpbCI6InN1bWVzaC5wLmthcml5aWxAZ292LmJjLmNhIiwibGFzdG5hbWUiOiJLYXJpeWlsIiwidXNlcm5hbWUiOiJza2FyaXlpb' +
-    'EBpZGlyIn0.MSPSakOnCUia4qd-fUpvP2PB3k977Eyhjxn-ykjadsUTEK4f2R3c8vozxaIIMH0-qUwduyQmdZCl3tQnXYQ9Ttf1PE9eMLS4sX' +
-    'JiIUlDmKZ2ow7GmmDabic8igHnEDYD6sI7OFYnCJhRdgVEHN-_4KUk2YsAVl5XUr6blJKMuYDPeMyNreGTXU7foE4AT-93FwlyTyFzQGddrDv' +
-    'c6kkQr7mgJNTtgg87DdYbVGbEtIetyVfvwEF0rU8JH2N-j36XIebo33FU3-gJ5Y5S69EHPqQ37R9H4d8WUrHO-4QzJQih3Yaea820XBplJeo0' +
-    'DO3hQoVtPD42j0p3aIy10cnW2g')
   store.state.stateModel.tombstone.entityType = 'BEN'
   store.state.stateModel.tombstone.businessId = 'BC1234567'
 
@@ -58,52 +36,93 @@ describe('Benefit Company Correction component', () => {
 
     const get = sinon.stub(axios, 'get')
 
+    // FUTURE
     // GET payment fee for immediate correction
-    get.withArgs('https://pay.api.url/fees/BEN/CORRECTION')
-      .returns(Promise.resolve({
-        data: {
-          'filingFees': 100.0,
-          'filingType': 'Correction',
-          'filingTypeCode': 'CORRECTION',
-          'futureEffectiveFees': 0,
-          'priorityFees': 0,
-          'processingFees': 0,
-          'serviceFees': 1.5,
-          'tax': {
-            'gst': 0,
-            'pst': 0
-          },
-          'total': 101.5
-        }
-      }))
+    // get.withArgs('https://pay.api.url/fees/BEN/CORRECTION')
+    //   .returns(Promise.resolve({
+    //     data: {
+    //       'filingFees': 100.0,
+    //       'filingType': 'Correction',
+    //       'filingTypeCode': 'CORRECTION',
+    //       'futureEffectiveFees': 0,
+    //       'priorityFees': 0,
+    //       'processingFees': 0,
+    //       'serviceFees': 1.5,
+    //       'tax': {
+    //         'gst': 0,
+    //         'pst': 0
+    //       },
+    //       'total': 101.5
+    //     }
+    //   }))
 
+    // FUTURE
     // GET payment fee for future correction
-    get.withArgs('https://pay.api.url/fees/BEN/CORRECTION?futureEffective=true')
+    // get.withArgs('https://pay.api.url/fees/BEN/CORRECTION?futureEffective=true')
+    //   .returns(Promise.resolve({
+    //     data: {
+    //       'filingFees': 100.0,
+    //       'filingType': 'Correction',
+    //       'filingTypeCode': 'CORRECTION',
+    //       'futureEffectiveFees': 100.0,
+    //       'priorityFees': 0,
+    //       'processingFees': 0,
+    //       'serviceFees': 1.5,
+    //       'tax': {
+    //         'gst': 0,
+    //         'pst': 0
+    //       },
+    //       'total': 201.5
+    //     }
+    //   }))
+
+    // GET business info
+    get.withArgs('businesses/BC1234567')
+      .returns(Promise.resolve({
+        data: { business: { legalType: 'BC' } }
+      }))
+
+    // GET auth info
+    get.withArgs('https://auth.api.url/entities/BC1234567')
       .returns(Promise.resolve({
         data: {
-          'filingFees': 100.0,
-          'filingType': 'Correction',
-          'filingTypeCode': 'CORRECTION',
-          'futureEffectiveFees': 100.0,
-          'priorityFees': 0,
-          'processingFees': 0,
-          'serviceFees': 1.5,
-          'tax': {
-            'gst': 0,
-            'pst': 0
-          },
-          'total': 201.5
+          contacts: [
+            {
+              email: 'mock@example.com',
+              phone: '123-456-7890'
+            }
+          ]
         }
       }))
 
-    // GET corrected filing
-    get.withArgs('businesses/BC1234567/filings/123')
+    // GET addresses
+    get.withArgs('businesses/BC1234567/addresses')
       .returns(Promise.resolve({
-        data: {
-          business: {},
-          header: {},
-          incorporationApplication: {}
-        }
+        data: {}
+      }))
+
+    // GET parties
+    get.withArgs('businesses/BC1234567/parties')
+      .returns(Promise.resolve({
+        data: { parties: [] }
+      }))
+
+    // GET share structure
+    get.withArgs('businesses/BC1234567/share-classes')
+      .returns(Promise.resolve({
+        data: { shareClasses: [] }
+      }))
+
+    // GET name translations
+    get.withArgs('businesses/BC1234567/aliases')
+      .returns(Promise.resolve({
+        data: { aliases: [] }
+      }))
+
+    // GET resolutions
+    get.withArgs('businesses/BC1234567/resolutions')
+      .returns(Promise.resolve({
+        data: { resolutions: [] }
       }))
 
     // create a Local Vue and install router on it
@@ -189,7 +208,7 @@ describe('Benefit Company Correction component', () => {
   })
 
   // FUTURE
-  xit('display the fee prices properly', async () => {
+  xit('displays the fee prices properly', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 

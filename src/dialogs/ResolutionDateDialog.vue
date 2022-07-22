@@ -55,7 +55,7 @@ export default class ResolutionDateDialog extends Vue {
   @Getter getNewResolutionDates!: string []
 
   // Global action
-  @Action setResolutionDates!: ActionBindingIF
+  @Action setNewResolutionDates!: ActionBindingIF
 
   // Local properties
   private date = ''
@@ -80,7 +80,7 @@ export default class ResolutionDateDialog extends Vue {
       tempNewDates.push(date)
 
       // Emit to parent the new store value
-      this.setResolutionDates(tempNewDates)
+      this.setNewResolutionDates(tempNewDates)
 
       this.exit()
       this.clearLocal()

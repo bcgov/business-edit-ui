@@ -92,7 +92,7 @@ export default class ChangeSummary extends Vue {
   @Getter haveOfficeAddressesChanged!: boolean
   @Getter havePeopleAndRolesChanged!: boolean
   @Getter getResource!: ResourceIF
-  @Getter getNameRequestApprovedName!: string
+  @Getter getNameRequestLegalName!: string
   @Getter getBusinessNumber!: string
   @Getter isEntityTypeSP!: boolean
 
@@ -104,7 +104,7 @@ export default class ChangeSummary extends Vue {
 
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
-    if (this.getNameRequestApprovedName) return this.getNameRequestApprovedName
+    if (this.getNameRequestLegalName) return this.getNameRequestLegalName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }

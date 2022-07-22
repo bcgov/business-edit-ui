@@ -24,9 +24,10 @@ describe('CorrectNameToNumber', () => {
   beforeEach(() => {
     vuetify = new Vuetify({})
 
-    store.state.stateModel.nameRequest.legalName = 'Bobs Plumbing'
-    store.state.stateModel.tombstone.businessId = 'BC 1234567'
-    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.state.stateModel.nameRequest = {
+      legalName: 'Bobs Plumbing',
+      legalType: 'BEN'
+    }
 
     wrapperFactory = (props: any) => {
       return mount(CorrectNameToNumber, {
@@ -73,7 +74,7 @@ describe('CorrectNameToNumber', () => {
     // Verify local state change and event emission
     expect(nameToNumberInput.attributes('aria-checked')).toBe('true')
     expect(getLastEvent(wrapper, 'isValid')).toBe(true)
-    expect(store.state.stateModel.nameRequest.legalType).toBeNull()
+    expect(store.state.stateModel.nameRequest.legalType).toBe('BEN')
     expect(store.state.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
   })
 
@@ -99,10 +100,10 @@ describe('CorrectNameToNumber', () => {
     await wrapper.setProps({ formType: 'correct-name-to-number' })
     await flushPromises()
 
-    expect(getLastEvent(wrapper, 'done')).toBe(true)
+    expect(getLastEvent(wrapper, 'isSaved')).toBe(true)
 
     // Verify Data change in store
     expect(store.state.stateModel.nameRequest.legalType).toBe('BEN')
-    expect(store.state.stateModel.nameRequest.legalName).toBeUndefined()
+    expect(store.state.stateModel.nameRequest.legalName).toBeNull()
   })
 })

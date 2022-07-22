@@ -1,9 +1,7 @@
 import { ActionTypes } from '@/enums/'
-import { ResolutionsIF } from '@/interfaces/'
 
 export interface ShareStructureIF {
   resolutionDates?: string[]
-  previousResolutionDates?: ResolutionsIF[]
   valid?: boolean
   changed?: boolean
   shareClasses?: ShareClassIF[]

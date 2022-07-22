@@ -23,10 +23,10 @@
       :class="{'invalid-section': invalidResolutionDates}">
       <ResolutionDates
         :addedDates="getNewResolutionDates"
-        :previousDates="getPreviousResolutionDates"
+        :previousDates="getOriginalResolutions"
         :isEditMode="true"
         :hasRightsOrRestrictions="getHasRightsOrRestrictions"
-        @addRemoveDate="setResolutionDates($event)"
+        @addRemoveDate="setNewResolutionDates($event)"
         @isEditing="setIsAddingResolutionDate($event)"
       />
     </div>
@@ -39,7 +39,7 @@ import { Action, Getter } from 'vuex-class'
 import CompanyProvisions from './CompanyProvisions.vue'
 import ResolutionDates from './ResolutionDates.vue'
 import { CommonMixin } from '@/mixins/'
-import { ActionBindingIF, BusinessInformationIF } from '@/interfaces/'
+import { ActionBindingIF, BusinessInformationIF, ResolutionsIF } from '@/interfaces/'
 
 @Component({
   components: {
@@ -55,14 +55,14 @@ export default class Articles extends Mixins(CommonMixin) {
   @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getNewResolutionDates!: string[]
   @Getter areProvisionsRemoved!: boolean
-  @Getter getPreviousResolutionDates!: string[]
+  @Getter getOriginalResolutions!: ResolutionsIF[]
   @Getter getHasRightsOrRestrictions!: boolean
   @Getter getIsResolutionDatesValid!: boolean
   @Getter getComponentValidate!: boolean
 
   // Global actions
   @Action setProvisionsRemoved!: ActionBindingIF
-  @Action setResolutionDates!: ActionBindingIF
+  @Action setNewResolutionDates!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
 
   /** Emits Have Changes event. */

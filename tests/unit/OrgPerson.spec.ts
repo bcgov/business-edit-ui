@@ -212,12 +212,7 @@ describe('Org/Person component for a BEN Correction filing', () => {
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.currentDate = '2020-03-30'
-    store.state.stateModel.correctedFiling = { incorporationApplication: {} }
     store.state.resourceModel = CorrectionBenefitCompanyResource
-  })
-
-  afterAll(() => {
-    store.state.stateModel.correctedFiling = null
   })
 
   it('Loads the component and sets data for person', async () => {

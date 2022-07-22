@@ -59,11 +59,11 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
   @Getter hasCorrectionDataChanged!: boolean
   @Getter hasAlterationDataChanged!: boolean // for testing state-getters
   @Getter havePeopleAndRolesChanged!: boolean // for testing state-getters
-  @Getter isFilingValid!: boolean
+  @Getter isCorrectionValid!: boolean
   @Getter isSaving!: boolean
   @Getter isSavingResuming!: boolean
   @Getter isFilingPaying!: boolean
-  @Getter isEditing!: boolean
+  @Getter isCorrectionEditing!: boolean
   @Getter getFilingId!: number
 
   // Global actions
@@ -74,17 +74,17 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
 
   /** True if the Save button should be disabled. */
   get isSaveButtonDisabled (): boolean {
-    return (this.isBusySaving || this.isEditing)
+    return (this.isBusySaving || this.isCorrectionEditing)
   }
 
   /** True if the Save and Resume button should be disabled. */
   get isSaveResumeButtonDisabled (): boolean {
-    return (this.isBusySaving || this.isEditing)
+    return (this.isBusySaving || this.isCorrectionEditing)
   }
 
   /** True if the File and Pay button should be disabled. */
   get isFilePayButtonDisabled (): boolean {
-    return (!this.hasCorrectionDataChanged || this.isBusySaving || !this.isFilingValid || this.isEditing)
+    return (!this.hasCorrectionDataChanged || this.isBusySaving || !this.isCorrectionValid || this.isCorrectionEditing)
   }
 
   /**
@@ -145,10 +145,10 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
     if (this.isBusySaving) return
     this.setIsFilingPaying(true)
 
-    // If this is a named company IA, validate NR before filing submission. This method is different
+    // If we have a (new) NR, validate it before filing submission. This method is different
     // from processNameRequest() in App.vue. This method shows a generic message if the Name
-    // Request is not valid and clicking OK in the pop up redirects to My Business Registry.
-    if (this.getNameRequestNumber && this.hasNewNr) {
+    // Request is invalid, and clicking OK in the pop up redirects to My Business Registry.
+    if (this.getNameRequestNumber) {
       try {
         await this.validateNameRequest(this.getNameRequestNumber)
       } catch (error) {

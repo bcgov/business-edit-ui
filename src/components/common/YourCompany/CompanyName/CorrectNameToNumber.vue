@@ -33,7 +33,7 @@ export default class CorrectNameToNumber extends Vue {
   @Getter getBusinessId!: string
 
   // Local properties
-  private correctToNumbered = false
+  protected correctToNumbered = false
 
   get businessId (): string {
     return this.getBusinessId && this.getBusinessId.substring(2)
@@ -46,7 +46,7 @@ export default class CorrectNameToNumber extends Vue {
       // delete the current legal name and NR number
       this.setNameRequest({
         ...this.getNameRequest,
-        legalName: '',
+        legalName: null,
         nrNumber: null
       })
       this.emitIsSaved(true)

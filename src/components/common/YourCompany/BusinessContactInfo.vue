@@ -45,22 +45,22 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   @Prop({ default: false })
   readonly invalidSection: boolean
 
-  private isEditingContact = null as boolean
+  protected isEditingContact = null as boolean
 
-  /** Get the original Contact data dependant on filing type. */
+  /** The original Contact data. */
   get originalContact (): ContactPointIF {
     return this.getEntitySnapshot?.authInfo?.contact
   }
 
-  /** Check for changes between current contact and original contact. */
+  /** True if there are changes between current Contact and original Contact Info. */
   get hasBusinessContactInfoChange (): boolean {
     return this.getBusinessContact?.email !== this.originalContact?.email ||
       this.getBusinessContact?.phone !== this.originalContact?.phone ||
       this.getBusinessContact?.extension !== this.originalContact?.extension
   }
 
-  /** Update Contact info. */
-  private async onContactInfoChange (contactInfo: ContactPointIF): Promise<void> {
+  /** On Contact Info Change event, updates auth db and store. */
+  protected async onContactInfoChange (contactInfo: ContactPointIF): Promise<void> {
     // do nothing if contact info was not changed
     if (isEqual(contactInfo, this.getBusinessContact)) return
 
@@ -82,7 +82,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 
   /**
    * Keep the store in sync with this component's state of validity.
-   * Use "immediate" to pick up all validity conditions
+   * Use "immediate" to pick up all validity conditions.
    */
   @Watch('isEditingContact', { immediate: true })
   @Watch('getBusinessContact.email', { immediate: true })

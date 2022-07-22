@@ -1,6 +1,5 @@
 <template>
   <div id="resolution-dates">
-
     <!-- Base Display -->
     <v-row no-gutters>
       <v-col cols="3">

@@ -57,21 +57,20 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { BusinessContactInfo, CorrectNameOptions, FolioInformation, OfficeAddresses } from '@/components/common/'
+import { BusinessContactInfo, FolioInformation, OfficeAddresses } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 @Component({
   components: {
     BusinessContactInfo,
-    CorrectNameOptions,
     OfficeAddresses,
     FolioInformation
   }
 })
 export default class SummaryDefineCompany extends Mixins(CommonMixin) {
   // Getters
-  @Getter getNameRequestApprovedName!: string
+  @Getter getNameRequestLegalName!: string
   @Getter getBusinessNumber!: string
   @Getter isPremiumAccount!: boolean
   @Getter getNameTranslations!: Array<string>
@@ -85,7 +84,7 @@ export default class SummaryDefineCompany extends Mixins(CommonMixin) {
 
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
-    if (this.getNameRequestApprovedName) return this.getNameRequestApprovedName
+    if (this.getNameRequestLegalName) return this.getNameRequestLegalName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }

@@ -14,7 +14,7 @@
           </label>
           <v-flex md1>
             <v-chip
-              v-if="companyNameChanges ||
+              v-if="hasCompanyNameChanged ||
                 (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling || isFirmConversionFiling))"
               id="corrected-lbl"
               x-small label
@@ -88,7 +88,7 @@
             <div class="actions mr-4">
               <!-- FUTURE: only show buttons for named company -->
               <v-btn
-                v-if="companyNameChanges || (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling))"
+                v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling))"
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -106,8 +106,8 @@
                 <v-icon small>mdi-pencil</v-icon>
                 <span>{{editLabel}}</span>
               </v-btn>
-              <span class="more-actions" v-if="companyNameChanges ||
-                (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling))"
+              <span class="more-actions"
+                v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling))"
               >
                 <v-menu
                   offset-y left nudge-bottom="4"
@@ -179,10 +179,10 @@
       </v-row>
     </div>
 
-    <v-divider v-if="isChangeRegFiling || isFirmConversionFiling" class="mx-4 my-1" />
+    <v-divider v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling" class="mx-4 my-1" />
 
-    <!-- Business Type (alterations, changes and conversions only) -->
-    <div v-if="isAlterationFiling || isChangeRegFiling || isFirmConversionFiling"
+    <!-- Business Type (alterations, changes, conversions and firm corrections) -->
+    <div v-if="isAlterationFiling || isChangeRegFiling || isEntityTypeFirm"
       id="company-type-section"
       class="section-container"
       :class="{'invalid-section': invalidTypeSection}"
@@ -192,23 +192,6 @@
         @isEditingBusinessType="isEditingType = $event"
       />
     </div>
-
-    <!-- Business Type (firm corrections only) -->
-    <template v-if="isFirmCorrectionFiling">
-      <v-divider class="mx-4 my-1" />
-
-      <div class="section-container">
-        <v-row no-gutters>
-          <v-col cols="3" class="pr-2">
-            <label><strong>Business Type</strong></label>
-          </v-col>
-
-          <v-col cols="9">
-            <div class="info-text">{{getCorpTypeDescription(getEntityType)}}</div>
-          </v-col>
-        </v-row>
-      </div>
-    </template>
 
     <!-- Name Translation(s) (alterations and BEN corrections only)-->
     <div v-if="isAlterationFiling || isBenIaCorrectionFiling"
@@ -224,9 +207,9 @@
 
     <v-divider class="mx-4 my-1" />
 
-    <!-- Business Start Date (changes, conversions and firm corrections only -->
+    <!-- Business Start Date (changes, conversions and firm corrections only) -->
     <template v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling">
-      <section class="section-container">
+      <section id="business-start-date" class="section-container">
         <v-row no-gutters>
           <v-col cols="3" class="pr-2">
             <label><strong>Business Start Date</strong></label>
@@ -317,14 +300,13 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF,
-  ResourceIF, CorrectedFilingIF } from '@/interfaces/'
+  ResourceIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
   NatureOfBusiness, OfficeAddresses } from './'
 import { CommonMixin, SharedMixin, DateMixin, NameRequestMixin } from '@/mixins/'
 import { CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { cloneDeep } from 'lodash'
 import { ConversionNOB } from '@/components/Conversion'
 
 @Component({
@@ -346,18 +328,16 @@ export default class YourCompany extends Mixins(
   NameRequestMixin
 ) {
   // Global getters
-  @Getter getNameRequestApprovedName!: string
+  @Getter getNameRequestLegalName!: string
   @Getter getNameRequestNumber!: string
   @Getter getBusinessNumber!: string
   @Getter getComponentValidate!: boolean
   @Getter getNameRequest!: NameRequestIF
-  @Getter hasNewNr!: boolean
   @Getter getCorrectedFilingDate!: string
   @Getter getBusinessFoundingDate!: string // actually date-time
   @Getter isConflictingLegalType!: boolean
   @Getter isNumberedCompany!: boolean
   @Getter isPremiumAccount!: boolean
-  @Getter getCorrectedFiling!: CorrectedFilingIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
   @Getter getResource!: ResourceIF
@@ -380,15 +360,20 @@ export default class YourCompany extends Mixins(
   readonly CorpTypeCd = CorpTypeCd
 
   /** V-model for dropdown menu. */
-  private dropdown: boolean = null
+  protected dropdown: boolean = null
 
-  // Whether components have changes (only used by corrections)
-  private companyNameChanges = false
+  /** Whether company name has changed (only used by corrections). */
+  protected hasCompanyNameChanged = false
 
-  private correctNameChoices: Array<string> = []
-  private isEditingNames = false
-  private isEditingType = false
-  private isEditingTranslations = false
+  protected correctNameChoices: Array<string> = []
+  protected isEditingNames = false
+  protected isEditingType = false
+  protected isEditingTranslations = false
+
+  /** True if a new NR number has been entered. */
+  get hasNewNr (): boolean {
+    return !!this.getNameRequestNumber
+  }
 
   /** The name section validity state (when prompted by app). */
   get invalidNameSection (): boolean {
@@ -427,7 +412,7 @@ export default class YourCompany extends Mixins(
 
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
-    if (this.getNameRequestApprovedName) return this.getNameRequestApprovedName
+    if (this.getNameRequestLegalName) return this.getNameRequestLegalName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
@@ -448,7 +433,7 @@ export default class YourCompany extends Mixins(
     return this.toDisplayPhone(this.nrApplicant.phoneNumber)
   }
 
-  /** The recognition/founding (aka effective or start date) datetime. */
+  /** The recognition date or business start date-time string. */
   get recognitionDateTime (): string {
     if (this.isBenIaCorrectionFiling) {
       if (this.getCorrectedFilingDate) {
@@ -468,32 +453,28 @@ export default class YourCompany extends Mixins(
     return 'Unknown'
   }
 
-  /** Compare names. */
+  /** Whether a new business legal name was entered.. */
   get isNewName () {
+    const originalName = this.getNameRequestLegalName
     const currentName = this.getEntitySnapshot?.businessInfo.legalName
-    return (this.getNameRequestApprovedName !== currentName)
+    return (originalName !== currentName)
   }
 
   /** The current options for change of name correction or edit. */
   get nameChangeOptions (): Array<CorrectionTypes> {
-    // make a copy so we don't change the original resource data
-    const nameChangeOptions = cloneDeep(this.getResource.changeData.nameChangeOptions)
+    // remove name-to-numbered-company option when already a numbered company
+    if (this.isNumberedCompany) {
+      return this.getResource.changeData.nameChangeOptions
+        .filter(option => option !== CorrectionTypes.CORRECT_NAME_TO_NUMBER)
+    }
 
-    // Remove name-to-numbered company option when already a numbered company
-    if (!this.getNameRequestNumber) nameChangeOptions.splice(1, 1)
-
-    return nameChangeOptions
+    return this.getResource.changeData.nameChangeOptions
   }
 
   /** Reset company name values to original. */
-  private resetName () {
+  protected resetName () {
     // reset business information
-    // *** TODO: refactor this to not use corrected filing
-    //           since this is "reset", how was this initially set?
-    this.setBusinessInformation(this.isCorrectionFiling
-      ? this.getCorrectedFiling.business
-      : this.getEntitySnapshot.businessInfo
-    )
+    this.setBusinessInformation(this.getEntitySnapshot.businessInfo)
 
     // reset name request
     this.setNameRequest({
@@ -503,7 +484,7 @@ export default class YourCompany extends Mixins(
     })
 
     // reset flag
-    this.companyNameChanges = false
+    this.hasCompanyNameChanged = false
   }
 
   /** Updates UI when Name Request is updated (ie, on resume draft). */
@@ -514,7 +495,7 @@ export default class YourCompany extends Mixins(
 
   /** Updates UI when correct name options are done.  */
   private nameChangeHandler (isSaved: boolean = false): void {
-    this.companyNameChanges = this.isNewName
+    this.hasCompanyNameChanged = this.isNewName
     if (isSaved) this.isEditingNames = false
   }
 

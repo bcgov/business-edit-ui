@@ -95,14 +95,12 @@ export const stateModel: StateModelIF = {
     valid: false,
     changed: false,
     resolutionDates: [],
-    previousResolutionDates: [],
     shareClasses: []
   },
   effectiveDateTime: {
     isFutureEffective: null,
     dateTimeString: ''
   },
-  correctedFiling: null,
   entitySnapshot: null,
   staffPaymentStep: {
     valid: false,
