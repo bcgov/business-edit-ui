@@ -321,40 +321,6 @@ describe('SpecialResolution component', () => {
     expect(store.state.stateModel.feePrices.futureEffectiveFees).toBe(0)
   })
 
-  it('display the fee prices properly', async () => {
-    await wrapper.setProps({ appReady: true })
-    await flushPromises()
-
-    store.state.stateModel.summaryMode = true
-    store.state.stateModel.tombstone.filingType = 'specialResolution'
-    store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
-    await Vue.nextTick()
-
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Certain changes require an Alteration Notice which will incur a $70.00 fee.')
-
-    store.state.stateModel.feePrices = {
-      filingFees: null,
-      filingType: null,
-      filingTypeCode: null,
-      futureEffectiveFees: null,
-      priorityFees: null,
-      processingFees: null,
-      serviceFees: null,
-      tax: {
-        pst: null,
-        gst: null
-      },
-      total: null
-    }
-    await flushPromises()
-
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Certain changes require an Alteration Notice which will incur a fee.')
-  })
-
   it('updates the current fees when SpecialResolutionSummary changes', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
