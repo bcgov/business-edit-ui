@@ -1,4 +1,4 @@
-import { Signin, Signout, Alteration, Change, Conversion, Correction } from '@/views/'
+import { Signin, Signout, Alteration, Change, Conversion, Correction, SpecialResolution } from '@/views/'
 import { FilingTypes, RouteNames } from '@/enums/'
 
 export const routes = [
@@ -40,6 +40,16 @@ export const routes = [
       requiresAuth: true,
       isStaffOnly: true,
       filingType: FilingTypes.CORRECTION
+    }
+  },
+  {
+    path: '/special-resolution',
+    name: RouteNames.SPECIAL_RESOLUTION,
+    component: SpecialResolution,
+    meta: {
+      requiresAuth: true,
+      isStaffOnly: false,
+      filingType: FilingTypes.SPECIAL_RESOLUTION
     }
   },
   {

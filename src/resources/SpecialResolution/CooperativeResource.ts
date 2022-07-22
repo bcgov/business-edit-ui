@@ -3,20 +3,19 @@ import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp
 import { ResourceIF } from '@/interfaces/'
 
 export const CooperativeResource: ResourceIF = {
-  entityReference: 'Company',
+  entityReference: 'Business',
   contactLabel: 'Registered Office',
   displayName: GetCorpFullDescription(CorpTypeCd.COOP),
   nameRequestType: NameRequestEntityTypes.CP,
   addressLabel: 'Registered Office',
   filingData: {
-    filingTypeCode: FilingCodes.ALTERATION,
+    filingTypeCode: FilingCodes.SPECIAL_RESOLUTION,
     entityType: CorpTypeCd.COOP,
     priority: false
   },
   changeData: {
     nameChangeOptions: [
-      CorrectionTypes.CORRECT_NEW_NR,
-      CorrectionTypes.CORRECT_NAME_TO_NUMBER
+      CorrectionTypes.CORRECT_NEW_NR
     ]
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +

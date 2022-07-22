@@ -35,6 +35,11 @@ export const isAlterationFiling = (state: StateIF): boolean => {
   return (state.stateModel.tombstone.filingType === FilingTypes.ALTERATION)
 }
 
+/** Whether the current filing is an alteration. */
+export const isSpecialResolutionFiling = (state: StateIF): boolean => {
+  return (state.stateModel.tombstone.filingType === FilingTypes.SPECIAL_RESOLUTION)
+}
+
 /** Whether the current filing is a change of registration filing. */
 export const isChangeRegFiling = (state: StateIF): boolean => {
   return (state.stateModel.tombstone.filingType === FilingTypes.CHANGE_OF_REGISTRATION)
@@ -396,7 +401,7 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
  * - court order and POA
  * - staff payment
  */
-export const hasAlterationDataChanged = (state: StateIF): boolean => {
+export const hasAlterationDataChanged = (state: StateIF): boolean => { // SB TO create new for special resolution
   return (
     hasBusinessNameChanged(state) ||
     hasBusinessTypeChanged(state) ||
