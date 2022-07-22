@@ -5,4 +5,5 @@ export enum FilingTypes {
   CORRECTION = 'correction',
   INCORPORATION_APPLICATION = 'incorporationApplication',
   REGISTRATION = 'registration',
+  SPECIAL_RESOLUTION = 'specialResolution'
 }
