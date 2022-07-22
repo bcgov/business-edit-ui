@@ -179,7 +179,9 @@
       </v-row>
     </div>
 
-    <v-divider v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling || isSpecialResolutionFiling" class="mx-4 my-1" />
+    <v-divider
+      v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling || isSpecialResolutionFiling"
+      class="mx-4 my-1" />
 
     <!-- Business Type (alterations, changes, conversions and firm corrections) -->
     <div v-if=" isAlterationFiling || isChangeRegFiling || isEntityTypeFirm || isSpecialResolutionFiling"
