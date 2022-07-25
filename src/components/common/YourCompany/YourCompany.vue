@@ -472,7 +472,9 @@ export default class YourCompany extends Mixins(
 
     return this.getResource.changeData.nameChangeOptions
   }
-  /** show change business for Business Type (alterations, special resolution,changes, conversions and firm corrections). */
+  /** show change business for Business Type
+   * (alterations, special resolution,changes, conversions and firm corrections).
+   **/
   get showChangeBusinessType ():boolean {
     return this.isAlterationFiling ||
       this.isChangeRegFiling ||
