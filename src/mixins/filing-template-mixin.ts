@@ -303,6 +303,69 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   }
 
   /**
+   * Builds an special resolution filing from store data.
+   * @param isDraft whether this is a draft
+   * @returns the resolution filing body
+   */
+  buildSpecialResolutionFiling (isDraft: boolean): SpecialResolutionFilingIF {
+    // if filing...
+    if (!isDraft) {
+      // to add in future
+    }
+
+    // Build alteration filing
+    const filing: SpecialResolutionFilingIF = {
+      header: {
+        name: FilingTypes.SPECIAL_RESOLUTION,
+        certifiedBy: this.getCertifyState.certifiedBy,
+        date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
+        folioNumber: this.getFolioNumber
+      },
+      business: {
+        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
+        identifier: this.getEntitySnapshot.businessInfo.identifier,
+        legalName: this.getEntitySnapshot.businessInfo.legalName,
+        legalType: this.getEntitySnapshot.businessInfo.legalType,
+        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
+      },
+      alteration: {
+        business: {
+          identifier: this.getBusinessId,
+          legalType: this.getEntityType
+        },
+        provisionsRemoved: this.areProvisionsRemoved,
+        contactPoint: this.getContactPoint
+      }
+    }
+
+    // Apply name request info to filing
+    if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
+      filing.alteration.nameRequest = { ...this.getNameRequest }
+    }
+
+    // Apply Court Order ONLY when it is required and applied
+    if (this.getHasPlanOfArrangement || this.getFileNumber) {
+      filing.alteration.courtOrder = {
+        fileNumber: this.getFileNumber,
+        effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : null,
+        hasPlanOfArrangement: this.getHasPlanOfArrangement
+      }
+    }
+
+    if (this.getDocumentOptionalEmail) {
+      filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
+    }
+
+    // Include Staff Payment into the Alteration filing
+    this.buildStaffPayment(filing)
+
+    // Sets Folio number if a transactional folio number was entered
+    this.buildFolioNumber(filing)
+
+    return filing
+  }
+
+  /**
    * Builds a change of registration filing from store data.
    * @param isDraft whether this is a draft
    * @returns the change filing body
@@ -697,7 +760,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param filing the special resolution filing
    * @param entitySnapshot the latest entity snapshot
    */
-  parseSpecialResolutionnFiling (filing: SpecialResolutionFilingIF, entitySnapshot: EntitySnapshotIF): void {
+  parseSpecialResolutionFiling (filing: SpecialResolutionFilingIF, entitySnapshot: EntitySnapshotIF): void {
     // store Entity Snapshot
     this.setEntitySnapshot(entitySnapshot)
 
@@ -719,25 +782,18 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         nrNumber: entitySnapshot.businessInfo.nrNumber
       }
     )
-
+    //  add more components later
     // store Provisions Removed
     this.setProvisionsRemoved(filing.alteration.provisionsRemoved)
 
-    // store Office Addresses **from snapshot** (because we don't change office addresses in an alteration)
+    // store Office Addresses **from snapshot** (because we don't change office addresses in an special resolution)
     this.setOfficeAddresses(entitySnapshot.addresses)
 
-    // store People And Roles **from snapshot** (because we don't change people and roles in an alteration)
+    // store People And Roles **from snapshot** (because we don't change people and roles in an special resolution)
     this.setPeopleAndRoles(entitySnapshot.orgPersons)
 
     // store Business Contact
     this.setBusinessContact(entitySnapshot.authInfo.contact)
-
-    // store Share Classes and Resolution Dates
-    this.setShareClasses(
-      filing.alteration.shareStructure?.shareClasses ||
-      entitySnapshot.shareStructure?.shareClasses
-    )
-    this.setNewResolutionDates(filing.alteration.shareStructure?.resolutionDates || [])
 
     // store Certify State
     this.setCertifyState({
@@ -756,10 +812,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // store Document Optional Email
     this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
-
-    // store Effective Date
-    this.setEffectiveDateTimeString(filing.header.effectiveDate)
-    this.setIsFutureEffective(filing.header.isFutureEffective)
 
     // store File Number and POA
     this.setFileNumber(filing.alteration.courtOrder?.fileNumber)

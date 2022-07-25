@@ -123,45 +123,6 @@
       </div>
     </template>
 
-    <!-- Alteration Date and Time -->
-    <div class="ma-6 pb-6">
-      <v-container
-        id="effective-date-time"
-        class="alteration-date-time"
-        :class="{ 'invalid': alterationDateTimeInvalid }">
-        <v-row no-gutters>
-          <v-col cols="3" class="inner-col-1">
-            <label><strong>Alteration Date<br>and Time</strong></label>
-          </v-col>
-
-          <v-col cols="9" class="inner-col-2">
-            <p id="effective-date-time-instructions" class="info-text">
-              Select the date and time of alteration of your business. You may select a date and time up to 10 days in
-              the future (note: there is an <strong>additional fee {{futureEffectiveFeePrice}}</strong> to
-              enter an alteration date and time in the future). Unless a business has special requirements, most
-              businesses select an immediate Alteration Date and Time.
-            </p>
-
-            <EffectiveDateTime
-              :currentJsDate="getCurrentJsDate"
-              :effectiveDateTime="getEffectiveDateTime"
-              @dateTimeString="setEffectiveDateTimeString($event)"
-              @isFutureEffective="setIsFutureEffective($event); emitHaveChanges()"
-              @valid="setEffectiveDateValid($event)"
-            />
-
-            <v-card
-              flat
-              class="px-16 pb-8 mt-n12"
-              id="effective-date-text"
-              v-if="isFutureEffective && isEffectiveDateTimeValid">
-              The alteration for this business will be effective as of:<br>
-              <strong>{{effectiveDateTimeString}}</strong>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-    </div>
   </v-card>
 </template>
 
@@ -229,22 +190,10 @@ export default class SpecialResolutionSummary extends Mixins(
     return this.getEntitySnapshot?.businessInfo?.legalType
   }
 
-  /** True if invalid class should be set for Alteration Date-Time container. */
-  get alterationDateTimeInvalid (): boolean {
-    return (this.validate && !this.getFlagsReviewCertify.isValidEffectiveDate)
-  }
-
   // sum of alteration fees
   get alterationFees (): string {
     if (this.getCurrentFees.filingFees !== null && this.getCurrentFees.futureEffectiveFees !== null) {
       return `($${(this.getCurrentFees.filingFees + this.getCurrentFees.futureEffectiveFees).toFixed(2)} Fee)`
-    }
-    return ''
-  }
-
-  get futureEffectiveFeePrice (): string {
-    if (this.getFeePrices.futureEffectiveFees !== null) {
-      return `of $${this.getFeePrices.futureEffectiveFees.toFixed(2)}`
     }
     return ''
   }

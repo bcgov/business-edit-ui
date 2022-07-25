@@ -768,6 +768,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       if (this.isAlterationFiling) filing = this.buildAlterationFiling(isDraft)
       if (this.isChangeRegFiling) filing = this.buildChangeRegFiling(isDraft)
       if (this.isFirmConversionFiling) filing = this.buildConversionFiling(isDraft)
+      if (this.isSpecialResolutionFiling) filing = this.buildSpecialResolutionFiling(isDraft)
 
       // update the filing if we have a filingId, otherwise create a draft
       filingComplete = this.getFilingId
