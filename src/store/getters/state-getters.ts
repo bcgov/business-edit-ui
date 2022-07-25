@@ -415,8 +415,6 @@ export const hasAlterationDataChanged = (state: StateIF): boolean => {
 /**
  * Whether any special resolution data has changed (for the purpose of showing the
  * fee summary), ie, does NOT include:
- * - alteration date and time
- * - alteration documents delivery
  * - certify
  * - folio number
  * - court order and POA

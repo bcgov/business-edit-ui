@@ -34,7 +34,7 @@
           </p>
         </section>
 
-        <AlterationSummary
+        <SpecialResolutionSummary
           class="mt-10"
           :validate="getAppValidate"
           @haveChanges="onSpecialResolutionSummaryChanges()"
@@ -124,7 +124,7 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
-import { AlterationSummary } from '@/components/Alteration/'
+import { SpecialResolutionSummary } from '@/components/SpecialResolution'
 import { CertifySection, CurrentDirectors, DocumentsDelivery,
   StaffPayment, TransactionalFolioNumber, YourCompany }
   from '@/components/common/'
@@ -141,7 +141,7 @@ import { CooperativeResource } from '@/resources/SpecialResolution/'
 
 @Component({
   components: {
-    AlterationSummary,
+    SpecialResolutionSummary,
     CertifySection,
     CourtOrderPoaShared,
     CurrentDirectors,

@@ -183,8 +183,8 @@
       v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling || isSpecialResolutionFiling"
       class="mx-4 my-1" />
 
-    <!-- Business Type (alterations, changes, conversions and firm corrections) -->
-    <div v-if=" isAlterationFiling || isChangeRegFiling || isEntityTypeFirm || isSpecialResolutionFiling"
+    <!-- Business Type (alterations, special resolution,changes, conversions and firm corrections) -->
+    <div v-if="showChangeBusinessType"
       id="company-type-section"
       class="section-container"
       :class="{'invalid-section': invalidTypeSection}"
@@ -471,6 +471,13 @@ export default class YourCompany extends Mixins(
     }
 
     return this.getResource.changeData.nameChangeOptions
+  }
+  /** show change business for Business Type (alterations, special resolution,changes, conversions and firm corrections). */
+  get showChangeBusinessType ():boolean {
+    return this.isAlterationFiling ||
+      this.isChangeRegFiling ||
+      this.isEntityTypeFirm ||
+      this.isSpecialResolutionFiling
   }
 
   /** Reset company name values to original. */
