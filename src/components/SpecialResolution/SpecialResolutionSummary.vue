@@ -166,19 +166,6 @@ export default class SpecialResolutionSummary extends Mixins(
   /** Whether to perform validation. */
   @Prop() readonly validate: boolean
 
-  get isFutureEffective (): boolean {
-    return this.getEffectiveDateTime.isFutureEffective
-  }
-
-  get isEffectiveDateTimeValid (): boolean {
-    return this.getFlagsReviewCertify.isValidEffectiveDate
-  }
-
-  get effectiveDateTimeString (): string {
-    const date = new Date(this.getEffectiveDateTime.dateTimeString)
-    return this.dateToPacificDateTime(date)
-  }
-
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
     if (this.getNameRequestLegalName) return this.getNameRequestLegalName
