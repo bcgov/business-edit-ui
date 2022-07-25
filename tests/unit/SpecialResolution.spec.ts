@@ -75,23 +75,6 @@ describe('SpecialResolution component', () => {
         }
       }))
 
-    // GET payment fee for future alteration
-    get.withArgs('https://pay.api.url/fees/CP/SPRLN?futureEffective=true')
-      .returns(Promise.resolve({
-        data: { 'filingFees': 70.0,
-          'filingType': 'Special resolution',
-          'filingTypeCode': 'SPRLN',
-          'futureEffectiveFees': 0,
-          'priorityFees': 0,
-          'processingFees': 0,
-          'serviceFees': 0,
-          'tax': {
-            'gst': 0,
-            'pst': 0
-          },
-          'total': 70.0 }
-      }))
-
     // GET business
     get.withArgs('businesses/CP1234567')
       .returns(Promise.resolve({
@@ -311,14 +294,6 @@ describe('SpecialResolution component', () => {
     expect(store.state.stateModel.businessContact.phone).toBe('123-456-7890')
 
     expect(store.state.stateModel.currentFees.filingFees).toBe(70)
-    expect(store.state.stateModel.currentFees.futureEffectiveFees).toBe(0)
-  })
-
-  it('fetches the fee prices after loading', async () => {
-    await wrapper.setProps({ appReady: true })
-    await flushPromises()
-    expect(store.state.stateModel.feePrices.filingFees).toBe(70)
-    expect(store.state.stateModel.feePrices.futureEffectiveFees).toBe(0)
   })
 
   it('updates the current fees when SpecialResolutionSummary changes', async () => {
@@ -326,11 +301,8 @@ describe('SpecialResolution component', () => {
     await flushPromises()
 
     const state = store.state.stateModel
-    state.effectiveDateTime.isFutureEffective = true
 
-    await wrapper.vm.onSpecialResolutionSummaryChanges()
     expect(store.state.stateModel.currentFees.filingFees).toBe(70)
-    expect(store.state.stateModel.currentFees.futureEffectiveFees).toBe(0)
   })
 
   it('certify text is not prefilled/editable for staff user', async () => {

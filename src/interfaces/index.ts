@@ -9,6 +9,7 @@ export * from './stepper-interfaces'
 export * from './store-interfaces'
 export * from './utils-interfaces'
 export * from './state-interface'
+export * from './special-resolution-interfaces'
 
 // this export is needed for some of the shared components
 export interface ActionableItemIF {

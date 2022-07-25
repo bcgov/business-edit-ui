@@ -9,6 +9,7 @@ import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcr
 import { ActionTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { SpecialResolutionFilingIF } from '@/interfaces/filing-interfaces/special-resolution-filing-interface'
 
 /**
  * Mixin that provides the integration with the Legal API.
@@ -613,6 +614,90 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param entitySnapshot the latest entity snapshot
    */
   parseAlterationFiling (filing: AlterationFilingIF, entitySnapshot: EntitySnapshotIF): void {
+    // store Entity Snapshot
+    this.setEntitySnapshot(entitySnapshot)
+
+    // store Entity Type
+    this.setEntityType(filing.alteration.business?.legalType || entitySnapshot.businessInfo.legalType)
+
+    // store Business Information
+    this.setBusinessInformation({
+      ...filing.business,
+      ...filing.alteration.business
+    })
+
+    // store Name Request data
+    this.setNameRequest(
+      filing.alteration.nameRequest ||
+      {
+        legalType: entitySnapshot.businessInfo.legalType,
+        legalName: entitySnapshot.businessInfo.legalName,
+        nrNumber: entitySnapshot.businessInfo.nrNumber
+      }
+    )
+
+    // store Name Translations
+    this.setNameTranslations(
+      this.mapNameTranslations(filing.alteration.nameTranslations) ||
+      this.mapNameTranslations(entitySnapshot.nameTranslations) ||
+      []
+    )
+
+    // store Provisions Removed
+    this.setProvisionsRemoved(filing.alteration.provisionsRemoved)
+
+    // store Office Addresses **from snapshot** (because we don't change office addresses in an alteration)
+    this.setOfficeAddresses(entitySnapshot.addresses)
+
+    // store People And Roles **from snapshot** (because we don't change people and roles in an alteration)
+    this.setPeopleAndRoles(entitySnapshot.orgPersons)
+
+    // store Business Contact
+    this.setBusinessContact(entitySnapshot.authInfo.contact)
+
+    // store Share Classes and Resolution Dates
+    this.setShareClasses(
+      filing.alteration.shareStructure?.shareClasses ||
+      entitySnapshot.shareStructure?.shareClasses
+    )
+    this.setNewResolutionDates(filing.alteration.shareStructure?.resolutionDates || [])
+
+    // store Certify State
+    this.setCertifyState({
+      valid: false,
+      certifiedBy: filing.header.certifiedBy
+    })
+
+    // store Folio Number
+    // *** FUTURE: should we store correction.folioNumber instead?
+    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
+
+    // if Transactional Folio Number was saved then store it
+    if (filing.header.isTransactionalFolioNumber) {
+      this.setTransactionalFolioNumber(filing.header.folioNumber)
+    }
+
+    // store Document Optional Email
+    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
+
+    // store Effective Date
+    this.setEffectiveDateTimeString(filing.header.effectiveDate)
+    this.setIsFutureEffective(filing.header.isFutureEffective)
+
+    // store File Number and POA
+    this.setFileNumber(filing.alteration.courtOrder?.fileNumber)
+    this.setHasPlanOfArrangement(filing.alteration.courtOrder?.hasPlanOfArrangement)
+
+    // store Staff Payment
+    this.storeStaffPayment(filing)
+  }
+
+  /**
+   * Parses a draft special resolution filing into the store.
+   * @param filing the special resolution filing
+   * @param entitySnapshot the latest entity snapshot
+   */
+  parseSpecialResolutionnFiling (filing: SpecialResolutionFilingIF, entitySnapshot: EntitySnapshotIF): void {
     // store Entity Snapshot
     this.setEntitySnapshot(entitySnapshot)
 

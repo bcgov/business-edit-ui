@@ -262,7 +262,7 @@ export default class SpecialResolution extends Mixins(
         }
 
         // parse alteration filing and original business snapshot into store
-        this.parseAlterationFiling(alterationFiling, businessSnapshot)
+        this.parseSpecialResolutionnFiling(alterationFiling, businessSnapshot)
       } else {
         // parse business data into store
         this.parseEntitySnapshot(businessSnapshot)

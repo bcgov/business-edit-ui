@@ -1,1 +1,1 @@
-export { default as SpecialResolution } from './SpecialResolutionSummary.vue'
+export { default as SpecialResolutionSummary } from './SpecialResolutionSummary.vue'
