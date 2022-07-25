@@ -783,8 +783,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }
     )
     //  add more components later
-    // store Provisions Removed
-    this.setProvisionsRemoved(filing.alteration.provisionsRemoved)
 
     // store Office Addresses **from snapshot** (because we don't change office addresses in an special resolution)
     this.setOfficeAddresses(entitySnapshot.addresses)
