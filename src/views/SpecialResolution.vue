@@ -322,20 +322,18 @@ export default class SpecialResolution extends Mixins(
       LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),
       LegalServices.fetchAddresses(this.getBusinessId),
-      LegalServices.fetchNameTranslations(this.getBusinessId),
       LegalServices.fetchDirectors(this.getBusinessId),
       LegalServices.fetchResolutions(this.getBusinessId)
     ])
 
-    if (items.length !== 6) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 5) throw new Error('Failed to fetch entity snapshot')
 
     return {
       businessInfo: items[0],
       authInfo: items[1],
       addresses: items[2],
-      nameTranslations: items[3],
-      orgPersons: items[4],
-      resolutions: items[5]
+      orgPersons: items[3],
+      resolutions: items[4]
     } as EntitySnapshotIF
   }
 

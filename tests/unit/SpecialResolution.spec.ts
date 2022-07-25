@@ -87,17 +87,6 @@ describe('SpecialResolution component', () => {
         }
       }))
 
-    // GET business name translations
-    get.withArgs('businesses/CP1234567/aliases')
-      .returns(Promise.resolve({
-        data: {
-          aliases: [{
-            name: 'Mock Business French Ltd.',
-            id: '12'
-          }]
-        }
-      }))
-
     // GET business addresses
     get.withArgs('businesses/CP1234567/addresses')
       .returns(Promise.resolve({

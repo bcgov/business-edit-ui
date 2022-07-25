@@ -720,13 +720,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       }
     )
 
-    // store Name Translations
-    this.setNameTranslations(
-      this.mapNameTranslations(filing.alteration.nameTranslations) ||
-      this.mapNameTranslations(entitySnapshot.nameTranslations) ||
-      []
-    )
-
     // store Provisions Removed
     this.setProvisionsRemoved(filing.alteration.provisionsRemoved)
 
