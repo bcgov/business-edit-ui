@@ -347,9 +347,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
     }
 
-    // Include Staff Payment into the Alteration filing
-    this.buildStaffPayment(filing)
-
     // Sets Folio number if a transactional folio number was entered
     this.buildFolioNumber(filing)
 
