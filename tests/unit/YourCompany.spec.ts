@@ -296,7 +296,7 @@ describe('YourCompany in a SP correction', () => {
     const businessSD = wrapper.find('#business-start-date')
     expect(businessSD.exists()).toBeTruthy()
     expect(businessSD.findAll('label').at(0).text()).toBe('Business Start Date')
-    expect(businessSD.findAll('span').at(0).text()).toBe('April 12, 2021 at 5:00 pm Pacific time')
+    expect(businessSD.findAll('span').at(0).text()).toBe('April 12, 2021')
   })
 
   it('renders the editing component for Nature of Business', async () => {
