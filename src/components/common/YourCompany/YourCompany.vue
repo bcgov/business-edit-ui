@@ -207,30 +207,11 @@
 
     <v-divider class="mx-4 my-1" />
 
-    <!-- Business Start Date (changes, conversions and firm corrections only) -->
-    <template v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling">
-      <section id="business-start-date" class="section-container">
-        <v-row no-gutters>
-          <v-col cols="3" class="pr-2">
-            <label><strong>Business Start Date</strong></label>
-          </v-col>
-
-          <v-col cols="9">
-            <span class="info-text mr-1">{{ recognitionDateTime }}</span>
-            <v-tooltip top
-                       content-class="top-tooltip"
-                       transition="fade-transition"
-                       nudge-right="3"
-            >
-              <template v-slot:activator="{ on }">
-                <v-icon v-on="on" class="info-icon">mdi-information-outline</v-icon>
-              </template>
-              <span>If the business start date is incorrect, it must be corrected through a correction filing.</span>
-            </v-tooltip>
-          </v-col>
-        </v-row>
-      </section>
-    </template>
+    <StartDate
+      class="section-container"
+      :class="{'invalid-section': invalidStartDate}"
+      :invalidSection="invalidStartDate"
+    />
 
     <!-- Nature of Business (firm change filings only) -->
     <template v-if="isEntityTypeFirm && isChangeRegFiling">
@@ -303,7 +284,7 @@ import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestAppli
   ResourceIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
-  NatureOfBusiness, OfficeAddresses } from './'
+  NatureOfBusiness, OfficeAddresses, StartDate } from './'
 import { CommonMixin, SharedMixin, DateMixin, NameRequestMixin } from '@/mixins/'
 import { CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -318,7 +299,8 @@ import { ConversionNOB } from '@/components/Conversion'
     NatureOfBusiness,
     OfficeAddresses,
     FolioInformation,
-    ConversionNOB
+    ConversionNOB,
+    StartDate
   }
 })
 export default class YourCompany extends Mixins(
@@ -333,7 +315,6 @@ export default class YourCompany extends Mixins(
   @Getter getBusinessNumber!: string
   @Getter getComponentValidate!: boolean
   @Getter getNameRequest!: NameRequestIF
-  @Getter getCorrectedFilingDate!: string
   @Getter getBusinessFoundingDate!: string // actually date-time
   @Getter isConflictingLegalType!: boolean
   @Getter isNumberedCompany!: boolean
@@ -390,6 +371,10 @@ export default class YourCompany extends Mixins(
     return (this.getComponentValidate && this.isEditingTranslations)
   }
 
+  get invalidStartDate (): boolean {
+    return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidStartDate)
+  }
+
   /** The nature of business section validity state (when prompted by app). */
   get invalidNatureOfBusiness (): boolean {
     return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidNatureOfBusiness)
@@ -431,26 +416,6 @@ export default class YourCompany extends Mixins(
   /** Name Request phone number */
   get phoneNumber (): string {
     return this.toDisplayPhone(this.nrApplicant.phoneNumber)
-  }
-
-  /** The recognition date or business start date-time string. */
-  get recognitionDateTime (): string {
-    if (this.isBenIaCorrectionFiling) {
-      if (this.getCorrectedFilingDate) {
-        return this.apiToPacificDateTime(this.getCorrectedFilingDate)
-      }
-    }
-    if (
-      this.isFirmCorrectionFiling ||
-      this.isAlterationFiling ||
-      this.isChangeRegFiling ||
-      this.isFirmConversionFiling
-    ) {
-      if (this.getBusinessFoundingDate) {
-        return this.apiToPacificDateTime(this.getBusinessFoundingDate)
-      }
-    }
-    return 'Unknown'
   }
 
   /** Whether a new business legal name was entered.. */

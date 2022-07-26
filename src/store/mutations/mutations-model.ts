@@ -143,6 +143,10 @@ export const mutateCorrectionInformation = (state: StateIF, correctionInformatio
   state.stateModel.correctionInformation = correctionInformation
 }
 
+export const mutateCorrectionFilingDate = (state: StateIF, correctedFilingDate: string) => {
+  state.stateModel.correctionInformation.correctedFilingDate = correctedFilingDate
+}
+
 export const mutateNameRequest = (state: StateIF, nameRequest: NameRequestIF) => {
   state.stateModel.nameRequest = nameRequest
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
