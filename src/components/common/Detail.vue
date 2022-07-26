@@ -54,7 +54,10 @@ export default class Detail extends Mixins(FilingTemplateMixin) {
 
   protected comment: string = null
 
-  protected maxLength: number = 1000
+  get maxLength (): number {
+    // = (max size in db) - (default comment length - (Carriage Return)
+    return (2000 - this.defaultCorrectionDetailComment.length - 1)
+  }
 
   get isValid (): boolean {
     return !!this.comment
