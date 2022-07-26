@@ -1,4 +1,4 @@
-import { CorrectionTypes, NameRequestEntityTypes } from '@/enums/'
+import { CorrectionTypes, NameRequestEntityTypes, NameRequestTypes } from '@/enums/'
 import { HelpSectionIF, FilingDataIF } from '@/interfaces/'
 
 /** Interface to define the resource model example */
@@ -18,6 +18,7 @@ export interface ResourceIF {
       subtitle: string
       helpSection?: HelpSectionIF
     }
+    nameRequestTypes?: Array<NameRequestTypes>
   }
   certifyClause: string
 }

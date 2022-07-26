@@ -342,8 +342,6 @@ export default class YourCompany extends Mixins(
   @Getter isPremiumAccount!: boolean
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
-  @Getter getResource!: ResourceIF
-  @Getter isEntityTypeBEN!: boolean
   @Getter isEntityTypeFirm!: boolean
   @Getter isBenIaCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
@@ -469,7 +467,6 @@ export default class YourCompany extends Mixins(
       return this.getResource.changeData.nameChangeOptions
         .filter(option => option !== CorrectionTypes.CORRECT_NAME_TO_NUMBER)
     }
-
     return this.getResource.changeData.nameChangeOptions
   }
   /** show change business for Business Type
