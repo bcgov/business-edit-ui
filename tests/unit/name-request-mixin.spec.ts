@@ -2,16 +2,30 @@ import Vue from 'vue'
 import sinon from 'sinon'
 import { shallowMount, Wrapper } from '@vue/test-utils'
 import { axios } from '@/utils/'
+import { getVuexStore } from '@/store/'
 import MixinTester from './mixin-tester.vue'
 
 describe('Name Request Mixin', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let get: any
+  let store: any = getVuexStore()
 
   beforeEach(async () => {
+    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.state.resourceModel = {
+      entityReference: '',
+      displayName: '',
+      nameRequestType: '',
+      addressLabel: '',
+      filingData: '',
+      changeData: {
+        nameRequestTypes: ['CHG', 'CNV']
+      },
+      certifyClause: ''
+    }
     get = sinon.stub(axios, 'get')
-    wrapper = shallowMount(MixinTester)
+    wrapper = shallowMount(MixinTester, { store })
     vm = wrapper.vm
     await Vue.nextTick()
   })
@@ -138,10 +152,48 @@ describe('Name Request Mixin', () => {
     nr.requestTypeCd = 'CR'
     expect(vm.isNrValid(nr)).toBe(false)
 
+    nr.request_action_cd = 'NEW'
+    expect(vm.isNrValid(nr)).toBe(false)
+
     nr.request_action_cd = 'CHG'
     expect(vm.isNrValid(nr)).toBe(true)
 
     nr.request_action_cd = 'CNV'
+    expect(vm.isNrValid(nr)).toBe(true)
+  })
+
+  it('identifies valid and invalid NRs for firms', async () => {
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.resourceModel.changeData.nameRequestTypes = ['CHG']
+
+    let nr = null
+    expect(vm.isNrValid(nr)).toBe(false)
+
+    nr = {}
+    expect(vm.isNrValid(nr)).toBe(false)
+
+    nr.state = 'APPROVED'
+    expect(vm.isNrValid(nr)).toBe(false)
+
+    nr.expirationDate = '2021-11-05T07:01:00+00:00'
+    expect(vm.isNrValid(nr)).toBe(false)
+
+    nr.names = [{ state: 'APPROVED', name: 'name' }]
+    expect(vm.isNrValid(nr)).toBe(false)
+
+    nr.nrNum = 'NR 1234567'
+    expect(vm.isNrValid(nr)).toBe(false)
+
+    nr.requestTypeCd = 'CR'
+    expect(vm.isNrValid(nr)).toBe(false)
+
+    nr.request_action_cd = 'NEW'
+    expect(vm.isNrValid(nr)).toBe(false)
+
+    nr.request_action_cd = 'CNV'
+    expect(vm.isNrValid(nr)).toBe(false)
+
+    nr.request_action_cd = 'CHG'
     expect(vm.isNrValid(nr)).toBe(true)
   })
 

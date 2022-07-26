@@ -1,15 +1,15 @@
 import { Component, Mixins } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
 import { NameRequestStates, NameRequestTypes } from '@/enums/'
 import { DateMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
-import { NrResponseIF } from '@/interfaces/'
-import { Getter } from 'vuex-class'
+import { NrResponseIF, ResourceIF } from '@/interfaces/'
 /**
  * Mixin for processing Name Request objects.
  */
 @Component({})
 export default class NameRequestMixin extends Mixins(DateMixin) {
-  @Getter isEntityTypeFirm!: boolean
+  @Getter getResource!: ResourceIF
 
   /**
    * Fetches an NR and validates it against the applicant's information.
@@ -59,15 +59,15 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    * @param nr the name request response payload
    * */
   isNrValid (nr: any): boolean {
-    let checkRequestActionCDList = [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION]
-    if (this.isEntityTypeFirm) checkRequestActionCDList.push(NameRequestTypes.NEW)
+    let requestActionCDList = [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION]
+    if (this.getResource.changeData) requestActionCDList = this.getResource.changeData.nameRequestTypes
     return Boolean(nr &&
       nr.state &&
       nr.expirationDate &&
       !!this.getNrApprovedName(nr) &&
       nr.nrNum &&
       nr.requestTypeCd &&
-      checkRequestActionCDList.includes(nr.request_action_cd)
+      requestActionCDList.includes(nr.request_action_cd)
     )
   }
 

@@ -1,4 +1,4 @@
-import { CorrectionTypes, FilingCodes } from '@/enums/'
+import { CorrectionTypes, FilingCodes, NameRequestTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 export const GeneralPartnershipResource: any = {
@@ -13,8 +13,7 @@ export const GeneralPartnershipResource: any = {
   },
   changeData: {
     nameChangeOptions: [
-      CorrectionTypes.CORRECT_NEW_NR,
-      CorrectionTypes.CORRECT_NAME
+      CorrectionTypes.CORRECT_NEW_NR
     ],
     typeChangeInfo: 'General Partnership cannot be changed into a Sole Proprietorship. If this is necessary, a new ' +
     'Name Request Number and Statement of Registration (along with associated fees) will be required.',
@@ -25,7 +24,10 @@ export const GeneralPartnershipResource: any = {
         'business) as well as change the mailing and delivery addresses and email address of individual people and ' +
         'business partners.',
       helpSection: null
-    }
+    },
+    nameRequestTypes: [
+      NameRequestTypes.CHANGE_OF_NAME
+    ]
   },
   certifyClause: 'Note: It is an offence to make or assist in making a false or misleading statement in a record ' +
     'filed under section 90.4 of the Partnership Act. A person who commits this offence is subject to a maximum ' +

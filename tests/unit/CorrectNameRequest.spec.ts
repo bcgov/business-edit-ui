@@ -353,7 +353,7 @@ describe('CorrectNameRequest', () => {
             nrNum: 'NR 1234567',
             requestTypeCd: 'GP',
             legalType: 'GP',
-            request_action_cd: 'NEW',
+            request_action_cd: 'CHG',
             entity_type_cd: 'GP',
             applicants: {
               phoneNumber: '250 516 8257',
@@ -378,7 +378,7 @@ describe('CorrectNameRequest', () => {
     expect(getLastEvent(wrapper, 'isSaved')).toBe(true)
   })
 
-  it('emits done and verify Name Request is a type mismatch for NEW GP filing', async () => {
+  it('emits done and verify Name Request is a type mismatch for NEW SP filing', async () => {
     const wrapper = wrapperFactory()
     store.state.stateModel.tombstone.currentDate = '2021-01-20'
     store.state.stateModel.tombstone.entityType = 'SP'
@@ -395,9 +395,9 @@ describe('CorrectNameRequest', () => {
               name: 'Bobs Plumbing'
             }],
             nrNum: 'NR 1234567',
-            requestTypeCd: 'GP',
-            request_action_cd: 'NEW',
-            entity_type_cd: 'GP',
+            requestTypeCd: 'SP',
+            request_action_cd: 'CHG',
+            entity_type_cd: 'SP',
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@example.com'
