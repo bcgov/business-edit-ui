@@ -322,18 +322,16 @@ export default class SpecialResolution extends Mixins(
       LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),
       LegalServices.fetchAddresses(this.getBusinessId),
-      LegalServices.fetchDirectors(this.getBusinessId),
-      LegalServices.fetchResolutions(this.getBusinessId)
+      LegalServices.fetchDirectors(this.getBusinessId)
     ])
 
-    if (items.length !== 5) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')
 
     return {
       businessInfo: items[0],
       authInfo: items[1],
       addresses: items[2],
-      orgPersons: items[3],
-      resolutions: items[4]
+      orgPersons: items[3]
     } as EntitySnapshotIF
   }
 
@@ -347,8 +345,8 @@ export default class SpecialResolution extends Mixins(
     })
   }
 
-  /** Called when alteration summary data has changed. */
-  async onSpecialResolutionSummaryChanges (): Promise<void> {
+  /** Called when resolution summary data has changed. */
+  protected async onSpecialResolutionSummaryChanges (): Promise<void> {
     // update filing data with future effective field
     this.setFilingData({
       ...this.getFilingData,

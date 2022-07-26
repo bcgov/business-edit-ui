@@ -141,44 +141,6 @@ describe('SpecialResolution component', () => {
         }
       }))
 
-    // GET business share classes
-    get.withArgs('businesses/CP1234567/share-classes')
-      .returns(Promise.resolve({
-        data: {
-          shareClasses: [
-            {
-              currency: 'CAD',
-              hasMaximumShares: true,
-              hasParValue: true,
-              hasRightsOrRestrictions: true,
-              id: '605',
-              maxNumberOfShares: 300,
-              name: 'Class A Shares',
-              parValue: 1,
-              priority: 1,
-              series: [
-                {
-                  hasMaximumShares: true,
-                  hasRightsOrRestrictions: false,
-                  id: '100',
-                  maxNumberOfShares: 150,
-                  name: 'Series A Shares',
-                  priority: 1
-                },
-                {
-                  hasMaximumShares: true,
-                  hasRightsOrRestrictions: false,
-                  id: 101,
-                  maxNumberOfShares: 10,
-                  name: 'Series 2 Shares',
-                  priority: 2
-                }
-              ]
-            }
-          ]
-        }
-      }))
-
     // GET auth info
     get.withArgs('https://auth.api.url/entities/CP1234567')
       .returns(Promise.resolve({
@@ -187,21 +149,6 @@ describe('SpecialResolution component', () => {
             {
               email: 'mock@example.com',
               phone: '123-456-7890'
-            }
-          ]
-        }
-      }))
-
-    // GET resolutions
-    get.withArgs('businesses/CP1234567/resolutions')
-      .returns(Promise.resolve({
-        data: {
-          resolutions: [
-            {
-              date: '2021-05-05'
-            },
-            {
-              date: '2021-07-05'
             }
           ]
         }
@@ -268,8 +215,6 @@ describe('SpecialResolution component', () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
-    const state = store.state.stateModel
-
     expect(store.state.stateModel.currentFees.filingFees).toBe(70)
   })
 
@@ -295,13 +240,5 @@ describe('SpecialResolution component', () => {
     await flushPromises()
 
     expect(store.state.stateModel.certifyState.certifiedBy).toBe('Jon Doe')
-  })
-
-  // FUTURE
-  xit('loads a draft alteration into the store', async () => {
-    // Validate Effective Date-Time
-    expect(store.state.stateModel.effectiveDateTime.isFutureEffective).toBe(true)
-    expect(store.state.stateModel.effectiveDateTime.dateTimeString).toBe('2021-03-22T18:00:00.000Z')
-    expect(store.state.stateModel.validationFlags.flagsReviewCertify.isValidEffectiveDate).toBe(true)
   })
 })
