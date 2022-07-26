@@ -84,7 +84,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   get defaultCorrectionDetailComment (): string {
     const date = this.apiToDate(this.getCorrectedFilingDate)
     const yyyyMmDd = this.dateToYyyyMmDd(date)
-    return `Correction for Incorporation Application filed on ${yyyyMmDd}.`
+    return `Correction for Incorporation Application filed on ${yyyyMmDd}`
   }
 
   get getContactPoint (): ContactPointIF {
