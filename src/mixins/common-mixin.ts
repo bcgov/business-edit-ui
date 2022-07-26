@@ -128,10 +128,7 @@ export default class CommonMixin extends Vue {
       case RouteNames.CONVERSION:
         return 'Record Conversion'
       case RouteNames.CORRECTION:
-        if (this.isCorrectedIncorporationApplication) {
-          return 'Correction - Incorporation Application'
-        }
-        return 'Correction'
+        return 'Register Correction'
       default:
         return ''
     }
