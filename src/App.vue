@@ -115,7 +115,7 @@
                 <!-- Alteration/Change/Conversion filings use the enhanced Fee Summary shared component -->
                 <v-expand-transition>
                   <FeeSummaryShared
-                    v-if="isAlterationFiling || isChangeRegFiling || isFirmConversionFiling"
+                    v-if="showFeesummaryShared"
                     :filingData="getFilingData"
                     :payApiUrl="payApiUrl"
                     :isLoading="isBusySaving"
@@ -342,6 +342,13 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       this.getAppValidate &&
       Object.values(this.getFlagsReviewCertify).some(val => val === false)
     )
+  }
+  /** Show fee summery only allowed filing types */
+  get showFeesummaryShared (): boolean {
+    return this.isSpecialResolutionFiling ||
+      this.isAlterationFiling ||
+      this.isChangeRegFiling ||
+      this.isFirmConversionFiling
   }
 
   /** Helper to check is the current route matches */
@@ -761,6 +768,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       if (this.isAlterationFiling) filing = this.buildAlterationFiling(isDraft)
       if (this.isChangeRegFiling) filing = this.buildChangeRegFiling(isDraft)
       if (this.isFirmConversionFiling) filing = this.buildConversionFiling(isDraft)
+      if (this.isSpecialResolutionFiling) filing = this.buildSpecialResolutionFiling(isDraft)
 
       // update the filing if we have a filingId, otherwise create a draft
       filingComplete = this.getFilingId

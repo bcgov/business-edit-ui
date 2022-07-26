@@ -9,6 +9,7 @@ import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcr
 import { ActionTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { SpecialResolutionFilingIF } from '@/interfaces/filing-interfaces/special-resolution-filing-interface'
 
 /**
  * Mixin that provides the integration with the Legal API.
@@ -294,6 +295,57 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // Include Staff Payment into the Alteration filing
     this.buildStaffPayment(filing)
+
+    // Sets Folio number if a transactional folio number was entered
+    this.buildFolioNumber(filing)
+
+    return filing
+  }
+
+  /**
+   * Builds an special resolution filing from store data.
+   * @param isDraft whether this is a draft
+   * @returns the resolution filing body
+   */
+  buildSpecialResolutionFiling (isDraft: boolean): SpecialResolutionFilingIF {
+    // if filing...
+    if (!isDraft) {
+      // to add in future
+    }
+
+    // Build alteration filing
+    const filing: SpecialResolutionFilingIF = {
+      header: {
+        name: FilingTypes.SPECIAL_RESOLUTION,
+        certifiedBy: this.getCertifyState.certifiedBy,
+        date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
+        folioNumber: this.getFolioNumber
+      },
+      business: {
+        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
+        identifier: this.getEntitySnapshot.businessInfo.identifier,
+        legalName: this.getEntitySnapshot.businessInfo.legalName,
+        legalType: this.getEntitySnapshot.businessInfo.legalType,
+        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
+      },
+      alteration: {
+        business: {
+          identifier: this.getBusinessId,
+          legalType: this.getEntityType
+        },
+        provisionsRemoved: this.areProvisionsRemoved,
+        contactPoint: this.getContactPoint
+      }
+    }
+
+    // Apply name request info to filing
+    if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
+      filing.alteration.nameRequest = { ...this.getNameRequest }
+    }
+
+    if (this.getDocumentOptionalEmail) {
+      filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
+    }
 
     // Sets Folio number if a transactional folio number was entered
     this.buildFolioNumber(filing)
@@ -689,6 +741,63 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // store Staff Payment
     this.storeStaffPayment(filing)
+  }
+
+  /**
+   * Parses a draft special resolution filing into the store.
+   * @param filing the special resolution filing
+   * @param entitySnapshot the latest entity snapshot
+   */
+  parseSpecialResolutionFiling (filing: SpecialResolutionFilingIF, entitySnapshot: EntitySnapshotIF): void {
+    // store Entity Snapshot
+    this.setEntitySnapshot(entitySnapshot)
+
+    // store Entity Type
+    this.setEntityType(filing.alteration.business?.legalType || entitySnapshot.businessInfo.legalType)
+
+    // store Business Information
+    this.setBusinessInformation({
+      ...filing.business,
+      ...filing.alteration.business
+    })
+
+    // store Name Request data
+    this.setNameRequest(
+      filing.alteration.nameRequest ||
+      {
+        legalType: entitySnapshot.businessInfo.legalType,
+        legalName: entitySnapshot.businessInfo.legalName,
+        nrNumber: entitySnapshot.businessInfo.nrNumber
+      }
+    )
+    //  add more components later
+
+    // store Office Addresses **from snapshot** (because we don't change office addresses in an special resolution)
+    this.setOfficeAddresses(entitySnapshot.addresses)
+
+    // store People And Roles **from snapshot** (because we don't change people and roles in an special resolution)
+    this.setPeopleAndRoles(entitySnapshot.orgPersons)
+
+    // store Business Contact
+    this.setBusinessContact(entitySnapshot.authInfo.contact)
+
+    // store Certify State
+    this.setCertifyState({
+      valid: false,
+      certifiedBy: filing.header.certifiedBy
+    })
+
+    // store Folio Number
+    // *** FUTURE: should we store correction.folioNumber instead?
+    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
+
+    // if Transactional Folio Number was saved then store it
+    if (filing.header.isTransactionalFolioNumber) {
+      this.setTransactionalFolioNumber(filing.header.folioNumber)
+    }
+
+    // store Document Optional Email
+    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
   }
 
   /**

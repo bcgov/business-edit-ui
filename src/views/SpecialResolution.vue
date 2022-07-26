@@ -34,10 +34,10 @@
           </p>
         </section>
 
-        <AlterationSummary
+        <SpecialResolutionSummary
           class="mt-10"
           :validate="getAppValidate"
-          @haveChanges="onAlterationSummaryChanges()"
+          @haveChanges="onSpecialResolutionSummaryChanges()"
         />
 
         <DocumentsDelivery
@@ -61,35 +61,6 @@
           :disableEdit="!isRoleStaff"
         />
 
-        <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
-        <template v-if="isRoleStaff">
-          <h2 class="mt-10">{{showTransactionalFolioNumber ? '4.' : '3.'}} Court Order and Plan of Arrangement</h2>
-          <div class="py-4">
-            If this filing is pursuant to a court order, enter the court order number. If this
-            filing is pursuant to a plan of arrangement, enter the court order number and select
-            Plan of Arrangement.
-          </div>
-
-          <div :class="{'invalid-section': invalidCourtOrder}">
-            <CourtOrderPoaShared
-              id="court-order"
-              :autoValidation="getAppValidate"
-              :draftCourtOrderNumber="getFileNumber"
-              :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
-              :invalidSection="invalidCourtOrder"
-              @emitCourtNumber="setFileNumber($event)"
-              @emitPoa="setHasPlanOfArrangement($event)"
-              @emitValid="setValidCourtOrder($event)"
-            />
-          </div>
-
-          <StaffPayment
-            class="mt-10"
-            :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
-            :validate="getAppValidate"
-            @haveChanges="onStaffPaymentChanges()"
-          />
-        </template>
       </div>
     </v-slide-x-reverse-transition>
 
@@ -124,7 +95,7 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
-import { AlterationSummary } from '@/components/Alteration/'
+import { SpecialResolutionSummary } from '@/components/SpecialResolution'
 import { CertifySection, CurrentDirectors, DocumentsDelivery,
   StaffPayment, TransactionalFolioNumber, YourCompany }
   from '@/components/common/'
@@ -141,7 +112,7 @@ import { CooperativeResource } from '@/resources/SpecialResolution/'
 
 @Component({
   components: {
-    AlterationSummary,
+    SpecialResolutionSummary,
     CertifySection,
     CourtOrderPoaShared,
     CurrentDirectors,
@@ -173,7 +144,6 @@ export default class SpecialResolution extends Mixins(
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action setValidCourtOrder!: ActionBindingIF
   @Action setCurrentFees!: ActionBindingIF
   @Action setFeePrices!: ActionBindingIF
   @Action setResource!: ActionBindingIF
@@ -262,7 +232,7 @@ export default class SpecialResolution extends Mixins(
         }
 
         // parse alteration filing and original business snapshot into store
-        this.parseAlterationFiling(alterationFiling, businessSnapshot)
+        this.parseSpecialResolutionFiling(alterationFiling, businessSnapshot)
       } else {
         // parse business data into store
         this.parseEntitySnapshot(businessSnapshot)
@@ -322,35 +292,21 @@ export default class SpecialResolution extends Mixins(
       LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),
       LegalServices.fetchAddresses(this.getBusinessId),
-      LegalServices.fetchNameTranslations(this.getBusinessId),
-      LegalServices.fetchDirectors(this.getBusinessId),
-      LegalServices.fetchResolutions(this.getBusinessId)
+      LegalServices.fetchDirectors(this.getBusinessId)
     ])
 
-    if (items.length !== 6) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')
 
     return {
       businessInfo: items[0],
       authInfo: items[1],
       addresses: items[2],
-      nameTranslations: items[3],
-      orgPersons: items[4],
-      resolutions: items[5]
+      orgPersons: items[3]
     } as EntitySnapshotIF
   }
 
-  /** Called when staff payment data has changed. */
-  protected onStaffPaymentChanges (): void {
-    // update filing data with staff payment fields
-    this.setFilingData({
-      ...this.getFilingData,
-      priority: this.getStaffPayment.isPriority,
-      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
-    })
-  }
-
-  /** Called when alteration summary data has changed. */
-  protected async onAlterationSummaryChanges (): Promise<void> {
+  /** Called when resolution summary data has changed. */
+  protected async onSpecialResolutionSummaryChanges (): Promise<void> {
     // update filing data with future effective field
     this.setFilingData({
       ...this.getFilingData,
