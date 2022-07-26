@@ -69,60 +69,6 @@
       </div>
     </template>
 
-    <!-- Name Translation -->
-    <template v-if="hasNameTranslationChanged">
-      <v-divider class="mx-4" />
-      <div class="section-container name-translation-summary">
-        <NameTranslation
-          :nameTranslations="getNameTranslations"
-          :isSummaryMode="true"
-        />
-      </div>
-    </template>
-
-    <!-- Share Structure -->
-    <template v-if="hasShareStructureChanged">
-      <v-divider class="mx-4" />
-      <div class="section-container share-structure-summary">
-        <v-row no-gutters>
-          <v-col cols="3">
-            <label><strong>Share Structure</strong></label>
-          </v-col>
-        </v-row>
-        <ShareStructures class="mt-6" :is-edit-mode="false" />
-      </div>
-    </template>
-
-    <!-- Pre-existing Company Provisions -->
-    <template v-if="areProvisionsRemoved">
-      <v-divider class="mx-4" />
-      <div class="section-container provisions-removed-summary">
-        <v-row no-gutters>
-          <v-col cols="3">
-            <label><strong>Pre-existing<br>Company Provisions</strong></label>
-          </v-col>
-
-          <v-col cols="8">
-            <span class="info-text">
-              The company has resolved that none of the Pre-existing Company Provisions are to apply to this company.
-            </span>
-          </v-col>
-        </v-row>
-      </div>
-    </template>
-
-    <!-- Resolution or Court Order Dates -->
-    <template v-if="haveNewResolutionDates">
-      <v-divider class="mx-4" />
-      <div class="section-container new-resolution-dates-summary">
-        <ResolutionDates
-          :added-dates="getNewResolutionDates"
-          :previous-dates="getOriginalResolutions"
-          :isEditMode="false"
-        />
-      </div>
-    </template>
-
   </v-card>
 </template>
 
@@ -151,17 +97,13 @@ export default class SpecialResolutionSummary extends Mixins(
 ) {
   // Global getters
   @Getter getBusinessNumber!: string
-  @Getter getOriginalResolutions!: ResolutionsIF[]
   @Getter getCurrentFees!: FeesIF
   @Getter isBusySaving!: boolean
   @Getter getFeePrices!: FeesIF
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter haveNewResolutionDates!: boolean
   @Getter getCurrentJsDate!: Date
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF
-  @Action setEffectiveDateValid!: ActionBindingIF
 
   /** Whether to perform validation. */
   @Prop() readonly validate: boolean

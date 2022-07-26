@@ -61,35 +61,6 @@
           :disableEdit="!isRoleStaff"
         />
 
-        <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
-        <template v-if="isRoleStaff">
-          <h2 class="mt-10">{{showTransactionalFolioNumber ? '4.' : '3.'}} Court Order and Plan of Arrangement</h2>
-          <div class="py-4">
-            If this filing is pursuant to a court order, enter the court order number. If this
-            filing is pursuant to a plan of arrangement, enter the court order number and select
-            Plan of Arrangement.
-          </div>
-
-          <div :class="{'invalid-section': invalidCourtOrder}">
-            <CourtOrderPoaShared
-              id="court-order"
-              :autoValidation="getAppValidate"
-              :draftCourtOrderNumber="getFileNumber"
-              :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
-              :invalidSection="invalidCourtOrder"
-              @emitCourtNumber="setFileNumber($event)"
-              @emitPoa="setHasPlanOfArrangement($event)"
-              @emitValid="setValidCourtOrder($event)"
-            />
-          </div>
-
-          <StaffPayment
-            class="mt-10"
-            :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
-            :validate="getAppValidate"
-            @haveChanges="onStaffPaymentChanges()"
-          />
-        </template>
       </div>
     </v-slide-x-reverse-transition>
 
@@ -173,7 +144,6 @@ export default class SpecialResolution extends Mixins(
   @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action setValidCourtOrder!: ActionBindingIF
   @Action setCurrentFees!: ActionBindingIF
   @Action setFeePrices!: ActionBindingIF
   @Action setResource!: ActionBindingIF
@@ -333,16 +303,6 @@ export default class SpecialResolution extends Mixins(
       addresses: items[2],
       orgPersons: items[3]
     } as EntitySnapshotIF
-  }
-
-  /** Called when staff payment data has changed. */
-  protected onStaffPaymentChanges (): void {
-    // update filing data with staff payment fields
-    this.setFilingData({
-      ...this.getFilingData,
-      priority: this.getStaffPayment.isPriority,
-      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
-    })
   }
 
   /** Called when resolution summary data has changed. */

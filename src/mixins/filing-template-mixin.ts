@@ -343,15 +343,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       filing.alteration.nameRequest = { ...this.getNameRequest }
     }
 
-    // Apply Court Order ONLY when it is required and applied
-    if (this.getHasPlanOfArrangement || this.getFileNumber) {
-      filing.alteration.courtOrder = {
-        fileNumber: this.getFileNumber,
-        effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : null,
-        hasPlanOfArrangement: this.getHasPlanOfArrangement
-      }
-    }
-
     if (this.getDocumentOptionalEmail) {
       filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
     }
@@ -810,13 +801,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
 
     // store Document Optional Email
     this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
-
-    // store File Number and POA
-    this.setFileNumber(filing.alteration.courtOrder?.fileNumber)
-    this.setHasPlanOfArrangement(filing.alteration.courtOrder?.hasPlanOfArrangement)
-
-    // store Staff Payment
-    this.storeStaffPayment(filing)
   }
 
   /**
