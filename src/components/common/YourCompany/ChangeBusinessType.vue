@@ -18,7 +18,7 @@
         </span>
 
         <!-- Firm info tooltip -->
-        <v-tooltip v-if="isChangeRegFiling || isEntityTypeFirm || isEntityTypeCP"
+        <v-tooltip v-if="showChangeInfoTooltip"
                     top
                     content-class="top-tooltip"
                     transition="fade-transition"
@@ -302,6 +302,11 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   /** Type change helper information */
   get typeChangeInfo (): string {
     return this.getResource.changeData?.typeChangeInfo
+  }
+
+  /** v-if for tooltip (change firm and coop)  */
+  get showChangeInfoTooltip ():boolean {
+    return this.isChangeRegFiling || this.isEntityTypeFirm || this.isEntityTypeCP
   }
 
   /** Reset company type values to original. */

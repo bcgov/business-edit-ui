@@ -13,7 +13,8 @@ export const CooperativeResource: ResourceIF = {
     entityType: CorpTypeCd.COOP,
     priority: false
   },
-  addressChangeInfo: 'To change addresses, please use the Change feature in the Office Addresses list on your business dashboard.',
+  addressChangeInfo: 'To change addresses, please use the Change feature in the' +
+  ' Office Addresses list on your business dashboard.',
   changeData: {
     nameChangeOptions: [
       CorrectionTypes.CORRECT_NEW_NR
