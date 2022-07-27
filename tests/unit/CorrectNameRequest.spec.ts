@@ -334,4 +334,91 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
     expect(wrapper.findComponent(CorrectNameRequest).text()).toContain('Name Request Type Does Not Match')
   })
+
+  it('emits done and verify Name Request accepted for NEW GP filing', async () => {
+    const wrapper = wrapperFactory()
+    store.state.stateModel.tombstone.currentDate = '2021-01-20'
+    store.state.stateModel.tombstone.entityType = 'GP'
+    // GET NR Data
+    get.withArgs('nameRequests/NR 1234567')
+      .returns(Promise.resolve({
+        data:
+          {
+            state: 'APPROVED',
+            expirationDate: '2022-05-19',
+            names: [{
+              state: 'APPROVED',
+              name: 'Bobs Plumbing'
+            }],
+            nrNum: 'NR 1234567',
+            requestTypeCd: 'GP',
+            legalType: 'GP',
+            request_action_cd: 'CHG',
+            entity_type_cd: 'GP',
+            applicants: {
+              phoneNumber: '250 516 8257',
+              emailAddress: 'mock@example.com'
+            }
+          }
+      }))
+
+    // Verify Invalid before input
+    expect(wrapper.vm.isFormValid).toBe(false)
+
+    // Set values and submit form
+    wrapper.vm.nameRequestNumber = 'NR 1234567'
+    wrapper.vm.applicantPhone = '250 516 8257'
+    wrapper.vm.applicantEmail = ''
+    await wrapper.setProps({ formType: 'correct-new-nr' })
+    await flushPromises()
+
+    expect(wrapper.vm.isFormValid).toBe(true)
+
+    // verify form emission
+    expect(getLastEvent(wrapper, 'isSaved')).toBe(true)
+  })
+
+  it('emits done and verify Name Request is a type mismatch for NEW SP filing', async () => {
+    const wrapper = wrapperFactory()
+    store.state.stateModel.tombstone.currentDate = '2021-01-20'
+    store.state.stateModel.tombstone.entityType = 'SP'
+
+    // GET NR Data
+    get.withArgs('nameRequests/NR 1234567')
+      .returns(Promise.resolve({
+        data:
+          {
+            state: 'APPROVED',
+            expirationDate: '2022-05-19',
+            names: [{
+              state: 'APPROVED',
+              name: 'Bobs Plumbing'
+            }],
+            nrNum: 'NR 1234567',
+            requestTypeCd: 'SP',
+            request_action_cd: 'CHG',
+            entity_type_cd: 'SP',
+            applicants: {
+              phoneNumber: '250 516 8257',
+              emailAddress: 'mock@example.com'
+            }
+          }
+      }))
+
+    // Verify Invalid before input
+    expect(wrapper.vm.isFormValid).toBe(false)
+
+    // Set values and submit form
+    wrapper.vm.nameRequestNumber = 'NR 1234567'
+    wrapper.vm.applicantPhone = '250 516 8257'
+    wrapper.vm.applicantEmail = ''
+    await wrapper.setProps({ formType: 'correct-new-nr' })
+    await flushPromises()
+
+    expect(wrapper.vm.isFormValid).toBe(true)
+
+    // verify Confirm Dialog
+    expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectNameRequest).text()).toContain('Name Request Type Does Not Match')
+  })
 })

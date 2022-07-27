@@ -1,4 +1,4 @@
-import { CorrectionTypes, FilingCodes } from '@/enums/'
+import { CorrectionTypes, FilingCodes, NameRequestTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 export const BenefitCompanyStatementResource: any = {
@@ -22,7 +22,11 @@ export const BenefitCompanyStatementResource: any = {
     ],
     orgPersonInfo: {
       orgPersonLabel: 'Directors'
-    }
+    },
+    nameRequestTypes: [
+      NameRequestTypes.CHANGE_OF_NAME,
+      NameRequestTypes.CONVERSION
+    ]
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +
     'of a material fact in a record submitted to the Corporate Registry for filing. ' +
