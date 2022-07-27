@@ -9,6 +9,7 @@ export interface ResourceIF {
   nameRequestType: NameRequestEntityTypes
   addressLabel: string
   filingData: FilingDataIF
+  addressChangeInfo?: string
   changeData?: {
     nameChangeOptions?: Array<CorrectionTypes>
     typeChangeInfo?: string

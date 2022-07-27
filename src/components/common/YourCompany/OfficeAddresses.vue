@@ -100,6 +100,21 @@
               </v-btn>
             </div>
           </v-col>
+          <v-col cols="1" v-else-if="(isSpecialResolutionFiling)">
+            <div class="d-flex justify-end align-end align-sm-start">
+             <v-tooltip
+                    top
+                    content-class="top-tooltip"
+                    transition="fade-transition"
+                    nudge-right="3"
+        >
+          <template v-slot:activator="{ on }">
+            <v-icon v-on="on" class="info-icon">mdi-information-outline</v-icon>
+          </template>
+          <span>{{ addressChangeInfo }}</span>
+        </v-tooltip>
+            </div>
+          </v-col>
         </template>
       </v-row>
 
@@ -518,6 +533,11 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       (this.recMailingAddressValid && (this.inheritRecMailingAddress || this.recDeliveryAddressValid))
 
     return (registeredOfficeValid && recordsOfficeValid)
+  }
+
+  /** Type change helper information */
+  get addressChangeInfo (): string {
+    return this.getResource?.addressChangeInfo
   }
 
   /**

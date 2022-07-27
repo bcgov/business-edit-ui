@@ -18,7 +18,7 @@
         </span>
 
         <!-- Firm info tooltip -->
-        <v-tooltip v-if="isChangeRegFiling || isEntityTypeFirm"
+        <v-tooltip v-if="isChangeRegFiling || isEntityTypeFirm || isEntityTypeCP"
                     top
                     content-class="top-tooltip"
                     transition="fade-transition"
@@ -242,6 +242,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   @Getter isConflictingLegalType!: boolean
   @Getter isEntityTypeBC!: boolean
   @Getter isEntityTypeFirm!: boolean
+  @Getter isEntityTypeCP!: boolean
 
   @Action setEntityType!: ActionBindingIF
 
