@@ -17,8 +17,8 @@
 
       <!-- Info tooltip-->
       <v-col cols="9">
-        <span v-if="!onEditMode" class="info-text mr-1">{{ recognitionDateTime }}</span>
-        <v-tooltip v-if="!isCorrectionFiling"
+        <span v-if="!onEditMode" class="info-text mr-1">{{ businessStartDate }}</span>
+        <v-tooltip v-if="isChangeRegFiling || isFirmConversionFiling"
                     top
                     content-class="top-tooltip"
                     transition="fade-transition"
@@ -31,25 +31,39 @@
         </v-tooltip>
 
         <!-- Edit mode -->
-        <div v-if="onEditMode" cols="12" sm="3" class="pr-4">
-          <label class="start-date-title title-label">Start Date</label>
-          <DatePickerShared
-            title="Start Date"
-            nudge-right="80"
-            nudge-top="15"
-            :minDate="startDateMinStr"
-            :maxDate="startDateMaxStr"
-            @emitDate="onOkClicked($event)"
-          />
-        </div>
-        <div v-if="onEditMode" class="float-right mb-2">
-          <v-btn large color="primary" id="start-done-btn" class="mr-2" @click="onDoneClicked()">
-            <span>Done</span>
-          </v-btn>
-          <v-btn large outlined color="primary" id="start-cancel-btn" @click="onCancelClicked()">
-            <span>Cancel</span>
-          </v-btn>
-        </div>
+        <template v-if="onEditMode">
+          <div cols="12" sm="3" class="pr-4">
+            <label class="start-date-title title-label">Start Date</label>
+            <p class="mt-4">
+              Enter the start date of the business. The start date can be
+              <v-tooltip top max-width="20rem" content-class="top-tooltip" transition="fade-transition">
+                <template v-slot:activator="{ on }">
+                  <span v-on="on" class="tool-tip dotted-underline">no more than 2 years in the past</span>
+                </template>
+                <span>Choose the oldest date possible even if the actual start date is older than 2 years in the
+                  past.</span>
+              </v-tooltip>
+              and 90 days in the future. Make certain that this is the correct date as it cannot be easily
+              corrected afterwards.
+            </p>
+            <DatePickerShared
+              title="Start Date"
+              nudge-right="80"
+              nudge-top="15"
+              :minDate="startDateMinStr"
+              :maxDate="startDateMaxStr"
+              @emitDate="onOkClicked($event)"
+            />
+          </div>
+          <div class="float-right mb-2">
+            <v-btn large color="primary" id="start-done-btn" class="mr-2" @click="onDoneClicked()">
+              <span>Done</span>
+            </v-btn>
+            <v-btn large outlined color="primary" id="start-cancel-btn" @click="onCancelClicked()">
+              <span>Cancel</span>
+            </v-btn>
+          </div>
+        </template>
 
         <span class="mt-n2 mr-n3 float-right">
           <!-- Correct changes button -->
@@ -144,21 +158,15 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
     return this.dateToYyyyMmDd(this.startDateMax)
   }
 
-  /** The recognition date or business start date-time string. */
-  protected get recognitionDateTime (): string {
-    if (this.isBenIaCorrectionFiling) {
-      if (this.getCorrectedFilingDate) {
-        return this.yyyyMmDdToPacificDate(this.getCorrectedFilingDate, true)
-      }
-    }
+  /** The business date or business start date string. */
+  protected get businessStartDate (): string {
     if (
       this.isFirmCorrectionFiling ||
-      this.isAlterationFiling ||
       this.isChangeRegFiling ||
       this.isFirmConversionFiling
     ) {
-      if (this.getCorrectedFilingDate) {
-        return this.yyyyMmDdToPacificDate(this.getCorrectedFilingDate, true)
+      if (this.getCorrectedFilingDate && this.isCorrected) {
+        return this.yyyyMmDdToPacificDate(this.getCorrectedFilingDate)
       } else if (this.getBusinessFoundingDate) {
         return this.apiToPacificDateLong(this.getBusinessFoundingDate)
       }
@@ -210,5 +218,9 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
+.dotted-underline {
+  border-bottom: 1px dotted;
+}
 
 </style>

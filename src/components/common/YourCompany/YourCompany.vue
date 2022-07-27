@@ -205,13 +205,16 @@
       />
     </div>
 
-    <v-divider class="mx-4 my-1" />
+    <!-- Business Start Date (changes, conversions and firm corrections only) -->
+    <template v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling">
+      <v-divider class="mx-4 my-1" />
 
-    <StartDate
-      class="section-container"
-      :class="{'invalid-section': invalidStartDate}"
-      :invalidSection="invalidStartDate"
-    />
+      <StartDate
+        class="section-container"
+        :class="{'invalid-section': invalidStartDate}"
+        :invalidSection="invalidStartDate"
+      />
+    </template>
 
     <!-- Nature of Business (firm change filings only) -->
     <template v-if="isEntityTypeFirm && isChangeRegFiling">
@@ -237,13 +240,14 @@
 
     <!-- Recognition Date and Time (alterations and BEN corrections only) -->
     <div class="section-container" v-if="isAlterationFiling || isBenIaCorrectionFiling">
+      <v-divider class="mx-4 my-1" />
       <v-row no-gutters>
         <v-col cols="3" class="pr-2">
           <label><strong>Recognition Date and Time</strong></label>
         </v-col>
 
         <v-col cols="9">
-          <div class="info-text">{{ recognitionDateTime }}</div>
+          <div class="info-text">{{ recognitionDate }}</div>
         </v-col>
       </v-row>
     </div>
@@ -315,6 +319,7 @@ export default class YourCompany extends Mixins(
   @Getter getBusinessNumber!: string
   @Getter getComponentValidate!: boolean
   @Getter getNameRequest!: NameRequestIF
+  @Getter getCorrectedFilingDate!: string
   @Getter getBusinessFoundingDate!: string // actually date-time
   @Getter isConflictingLegalType!: boolean
   @Getter isNumberedCompany!: boolean
@@ -416,6 +421,21 @@ export default class YourCompany extends Mixins(
   /** Name Request phone number */
   get phoneNumber (): string {
     return this.toDisplayPhone(this.nrApplicant.phoneNumber)
+  }
+
+  /** The recognition date or business start date string. */
+  protected get recognitionDate (): string {
+    if (this.isBenIaCorrectionFiling) {
+      if (this.getCorrectedFilingDate) {
+        return this.yyyyMmDdToPacificDate(this.getCorrectedFilingDate) as string
+      }
+    }
+    if (this.isAlterationFiling) {
+      if (this.getBusinessFoundingDate) {
+        return this.apiToPacificDateLong(this.getBusinessFoundingDate)
+      }
+    }
+    return 'Unknown'
   }
 
   /** Whether a new business legal name was entered.. */
