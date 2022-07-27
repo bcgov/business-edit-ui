@@ -301,7 +301,14 @@ describe('BEN IA correction getters', () => {
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that people and roles changes are detected
-    store.state.stateModel.peopleAndRoles.orgPeople = [{}]
+    store.state.stateModel.peopleAndRoles.orgPeople = [
+      {
+        deliveryAddress: {},
+        mailingAddress: {},
+        officer: {},
+        roles: []
+      }
+    ]
     expect(vm.havePeopleAndRolesChanged).toBe(true)
     store.state.stateModel.peopleAndRoles.orgPeople = []
     expect(vm.havePeopleAndRolesChanged).toBe(false)
@@ -409,7 +416,14 @@ describe('SP/GP correction getters', () => {
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that people and roles changes are detected
-    store.state.stateModel.peopleAndRoles.orgPeople = [{}]
+    store.state.stateModel.peopleAndRoles.orgPeople = [
+      {
+        deliveryAddress: {},
+        mailingAddress: {},
+        officer: {},
+        roles: []
+      }
+    ]
     expect(vm.havePeopleAndRolesChanged).toBe(true)
     store.state.stateModel.peopleAndRoles.orgPeople = []
     expect(vm.havePeopleAndRolesChanged).toBe(false)
@@ -420,14 +434,14 @@ describe('SP/GP correction getters', () => {
     store.state.stateModel.shareStructureStep.shareClasses = []
     expect(vm.hasShareStructureChanged).toBe(false)
 
-    // verify that the nature of business are detected
+    // verify that the nature of business changes are detected
     store.state.stateModel.businessInformation = {
       naicsCode: '',
       naicsDescription: 'NAICS description 2'
     }
-    expect(vm.hasNatureOfBusinessChanged).toBe(true)
+    expect(vm.hasNaicsChanged).toBe(true)
     store.state.stateModel.businessInformation = naics
-    expect(vm.hasNatureOfBusinessChanged).toBe(false)
+    expect(vm.hasNaicsChanged).toBe(false)
 
     // finally, this getter should be false
     expect(vm.hasCorrectionDataChanged).toBe(false)

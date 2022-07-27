@@ -7,8 +7,8 @@
         <div class="genErr mb-4">
           <p>
             <b>
-              The Name Request {{ getNameRequestNumber }} and the Incorporation Application for
-              {{ getNameRequestLegalName }} are no longer valid.
+              The Name Request {{getNameRequestNumber || 'Unknown'}} and the Incorporation Application for
+              {{getNameRequestLegalName || 'Unknown'}} are no longer valid.
             </b>
           </p>
           <p>If you still wish to incorporate a Benefit Company, please contact Registry Staff as soon as possible.</p>

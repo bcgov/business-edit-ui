@@ -5,6 +5,6 @@ import { SpecialResolutionIF, FilingBusinessIF, FilingHeaderIF, AlterationIF } f
 export interface SpecialResolutionFilingIF {
   header: FilingHeaderIF
   business: FilingBusinessIF
-  alteration: AlterationIF
+  alteration?: AlterationIF
   specialResolution?: SpecialResolutionIF
 }

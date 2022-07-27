@@ -9,13 +9,12 @@ export interface RegistrationIF {
   business: {
     identifier: string
     naics?: NaicsIF
-    natureOfBusiness?: string
   }
   businessType?: BusinessTypes // SP only
   contactPoint: ContactPointIF
+  courtOrder?: string
   nameRequest: NameRequestIF
   offices: AddressesIF
   parties: Array<OrgPersonIF>
-  courtOrder?: string
-  startDate?: string
+  startDate?: string // YYYY-MM-DD
 }
