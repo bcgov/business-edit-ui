@@ -100,7 +100,7 @@
               </v-btn>
             </div>
           </v-col>
-          <v-col cols="1" v-else-if="(isSpecialResolutionFiling)">
+          <v-col cols="1" v-else-if="isSpecialResolutionFiling">
             <div class="d-flex justify-end align-end align-sm-start">
              <v-tooltip
                     top
