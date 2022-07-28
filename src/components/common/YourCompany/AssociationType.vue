@@ -102,13 +102,13 @@ import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF } from '@/inte
 export default class AssociationType extends Mixins(CommonMixin, EnumMixin) {
   @Prop({ default: false })
   readonly invalidSection: boolean
-  // Global getters
+  /** Global getters */
   @Getter getAssociationType!: AssociationTypes
   @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter hasAssociationTypeChanged!: boolean
 
-  // Global actions
+  /** Global actions */
   @Action setBusinessInformation!: ActionBindingIF
 
   /** Select options */
