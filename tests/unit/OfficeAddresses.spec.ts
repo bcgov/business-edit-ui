@@ -1114,7 +1114,7 @@ describe('For Special resolution', () => {
 
   it('tooltip exist for COOP', () => {
     // verify initial state
-    expect(wrapper.find('.tooltip-info').exists()).toBe(true)
+    expect(wrapper.find('.v-tooltip').exists()).toBe(true)
     expect(wrapper.find('.actions').exists()).toBe(false)
   })
 })

@@ -52,8 +52,8 @@ describe('Change Business Type component', () => {
     store.state.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } }
 
     const wrapper = mount(ChangeBusinessType, { vuetify, store })
-
-    expect(wrapper.find('.tooltip-info').exists()).toBe(true)
+    console.log('wrapper', wrapper.html())
+    expect(wrapper.find('.v-tooltip').exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -66,7 +66,7 @@ describe('Change Business Type component', () => {
     store.state.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } }
 
     const wrapper = mount(ChangeBusinessType, { vuetify, store })
-    expect(wrapper.find('.tooltip-info').exists()).toBe(false)
+    expect(wrapper.find('.v-tooltip').exists()).toBe(false)
 
     wrapper.destroy()
   })

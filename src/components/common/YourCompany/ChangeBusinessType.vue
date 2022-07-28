@@ -22,7 +22,6 @@
                     content-class="top-tooltip"
                     transition="fade-transition"
                     nudge-right="3"
-                    class="tooltip-info"
         >
           <template v-slot:activator="{ on }">
             <v-icon v-on="on" class="info-icon">mdi-information-outline</v-icon>
