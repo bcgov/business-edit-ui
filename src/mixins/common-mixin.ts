@@ -9,14 +9,10 @@ import { ConfirmDialogType } from '@/interfaces/'
  */
 @Component({})
 export default class CommonMixin extends Vue {
-  @Getter getEntityType!: CorpTypeCd
   @Getter isAlterationFiling!: boolean
   @Getter isChangeRegFiling!: boolean
   @Getter isFirmConversionFiling!: boolean
   @Getter isCorrectionFiling!: boolean
-  @Getter isCorrectedIncorporationApplication!: boolean
-  @Getter isCorrectedRegistration!: boolean
-  @Getter isCorrectedChangeReg!: boolean
   @Getter isSpecialResolutionFiling!: boolean
 
   /** True if Jest is running the code. */

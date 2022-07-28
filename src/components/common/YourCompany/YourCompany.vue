@@ -46,7 +46,7 @@
 
             <!-- Name Request Info -->
             <template v-if="hasNewNr && (isAlterationFiling || isChangeRegFiling)">
-              <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
+              <div class="company-name mt-2">{{getNameRequestNumber || 'Unknown'}}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
                 <span :class="{ 'has-conflict': isConflictingLegalType}"
@@ -74,7 +74,7 @@
               </div>
               <div class="company-info">
                 <span class="subtitle">Expiry Date: </span>
-                <span class="info-text">{{expiryDate}}</span>
+                <span class="info-text">{{expiryDate || 'Unknown'}}</span>
               </div>
               <div class="company-info">
                 <span class="subtitle">Status: </span>
@@ -218,7 +218,7 @@
           </v-col>
 
           <v-col cols="9">
-            <span class="info-text mr-1">{{ recognitionDateTime }}</span>
+            <span class="info-text mr-1">{{recognitionDateTime || 'Unknown'}}</span>
             <v-tooltip top
                        content-class="top-tooltip"
                        transition="fade-transition"
@@ -264,7 +264,7 @@
         </v-col>
 
         <v-col cols="9">
-          <div class="info-text">{{ recognitionDateTime }}</div>
+          <div class="info-text">{{recognitionDateTime || 'Unknown'}}</div>
         </v-col>
       </v-row>
     </div>
@@ -301,8 +301,8 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF,
-  ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF }
+  from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
   NatureOfBusiness, OfficeAddresses } from './'
@@ -345,6 +345,7 @@ export default class YourCompany extends Mixins(
   @Getter isEntityTypeFirm!: boolean
   @Getter isBenIaCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
+  @Getter getEntityType!: CorpTypeCd
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -424,8 +425,13 @@ export default class YourCompany extends Mixins(
 
   /** Name Request expiry */
   get expiryDate (): string {
-    const date = new Date(this.getNameRequest.expiry)
-    return this.dateToPacificDateTime(date)
+    const expiry = this.getNameRequest?.expiry
+    if (expiry) {
+      // FUTURE: use date mixin method to create date
+      const date = new Date(expiry)
+      return this.dateToPacificDateTime(date)
+    }
+    return null
   }
 
   /** Name Request phone number */
@@ -450,7 +456,7 @@ export default class YourCompany extends Mixins(
         return this.apiToPacificDateTime(this.getBusinessFoundingDate)
       }
     }
-    return 'Unknown'
+    return null
   }
 
   /** Whether a new business legal name was entered.. */

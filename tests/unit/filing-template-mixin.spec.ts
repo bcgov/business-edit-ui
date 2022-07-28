@@ -24,9 +24,10 @@ describe('Change of Registration Filing', () => {
     wrapper.destroy()
   })
 
-  it('correctly builds a registration filing', () => {
+  it('correctly builds a change of registration filing', () => {
     store.state.stateModel.tombstone.businessId = 'BC1234567'
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
+    store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.completingParty = {
       firstName: 'First',
       lastName: 'Last',
@@ -43,7 +44,7 @@ describe('Change of Registration Filing', () => {
     store.state.stateModel.entitySnapshot = {
       businessInfo: {
         foundingDate: 'Jan 01, 2000',
-        legalType: '',
+        legalType: 'SP',
         identifier: 'BC1234567',
         legalName: 'SomeMockBusiness',
         naicsCode: '',
@@ -106,7 +107,7 @@ describe('Change of Registration Filing', () => {
           foundingDate: 'Jan 01, 2000',
           identifier: 'BC1234567',
           legalName: 'SomeMockBusiness',
-          legalType: ''
+          legalType: 'SP'
         },
         changeOfRegistration: {
           business: {
@@ -114,8 +115,7 @@ describe('Change of Registration Filing', () => {
             naics: {
               naicsCode: '123456',
               naicsDescription: 'Mock Description'
-            },
-            natureOfBusiness: ''
+            }
           },
           contactPoint: {
             email: '',

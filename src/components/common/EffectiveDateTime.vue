@@ -97,7 +97,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   // Add element types to refs
   $refs!: {
     form: FormIF,
-    datePickerRef: DatePickerShared,
+    datePickerRef: any, // should be DatePickerShared but public methods can't be found
     hourSelector: FormFieldType, // used in unit tests
     minuteSelector: FormFieldType // used in unit tests
   }

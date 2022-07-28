@@ -106,7 +106,7 @@
       <!-- Records office (BEN only) -->
       <v-row v-if="isEntityTypeBEN" id="summary-records-address" class="mt-4 mx-0" no-gutters>
         <v-col cols="3" class="pr-2">
-          <label class>Records Office</label>
+          <label :class="{'error-text': invalidSection}">Records Office</label>
         </v-col>
 
         <!-- Records mailing address -->

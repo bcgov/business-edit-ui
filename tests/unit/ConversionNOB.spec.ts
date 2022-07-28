@@ -97,7 +97,7 @@ describe('ConversionNatureOfBusiness without update', () => {
     expect(wrapper.vm.$data.onEditMode).toBeFalsy()
     expect(wrapper.find('#naics-summary').exists()).toBeTruthy()
     expect(wrapper.find('#naics-summary').text()).toBe('100000 - food')
-    expect(wrapper.vm.$data.hasNatureOfBusinessChanged).toBeFalsy()
+    expect(wrapper.vm.$data.hasNaicsChanged).toBeFalsy()
   })
 
   it('simulates error for 0 characters length', async () => {
