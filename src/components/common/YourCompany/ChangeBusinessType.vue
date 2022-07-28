@@ -243,6 +243,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   @Getter isEntityTypeBC!: boolean
   @Getter isEntityTypeFirm!: boolean
   @Getter isEntityTypeCP!: boolean
+  @Getter getEntityType!: CorpTypeCd
 
   @Action setEntityType!: ActionBindingIF
 

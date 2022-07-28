@@ -11,7 +11,7 @@
     </section>
 
     <!-- Nature of Business -->
-    <template v-if="hasNatureOfBusinessChanged">
+    <template v-if="hasNaicsChanged">
       <v-divider class="mx-8" />
       <article id="nob-summary-section" class="section-container">
         <v-row no-gutters>
@@ -20,7 +20,7 @@
           </v-col>
 
           <v-col cols="12" sm="8">
-            <span class="info-text">{{ naicsSummary }}</span>
+            <span class="info-text">{{naicsSummary || '(Not entered)'}}</span>
           </v-col>
         </v-row>
       </article>
@@ -69,7 +69,7 @@ import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 })
 export default class ConversionSummary extends Vue {
   // Global getters
-  @Getter hasNatureOfBusinessChanged!: boolean
+  @Getter hasNaicsChanged!: boolean
   @Getter haveOfficeAddressesChanged!: boolean
   @Getter havePeopleAndRolesChanged!: boolean
   @Getter getResource!: ResourceIF
@@ -82,7 +82,7 @@ export default class ConversionSummary extends Vue {
   /** Whether to perform validation. */
   @Prop() readonly validate: boolean
 
-  /** Show naics value, description or (Not entered) */
+  /** The NAICS code, description or null. */
   get naicsSummary (): string {
     const naics = this.getCurrentNaics
     if (naics.naicsCode && naics.naicsDescription) {
@@ -90,7 +90,7 @@ export default class ConversionSummary extends Vue {
     } else if (naics.naicsDescription) {
       return naics.naicsDescription
     }
-    return '(Not entered)'
+    return null
   }
 }
 </script>

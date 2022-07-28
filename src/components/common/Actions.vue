@@ -91,15 +91,14 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
    * Called when Save button is clicked.
    * @returns a promise (ie, this is an async method)
    */
-  private async onClickSave (): Promise<void> {
+  protected async onClickSave (): Promise<void> {
     // prevent double saving
     if (this.isBusySaving) return
     this.setIsSaving(true)
 
-    let filingComplete: any
     try {
       const filing = this.buildCorrectionFiling(true)
-      filingComplete = await LegalServices.updateFiling(this.getBusinessId, this.getFilingId, filing, true)
+      await LegalServices.updateFiling(this.getBusinessId, this.getFilingId, filing, true)
       // clear flag
       this.setHaveUnsavedChanges(false)
     } catch (error) {
@@ -115,15 +114,14 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
    * Called when Save and Resume Later button is clicked.
    * @returns a promise (ie, this is an async method)
    */
-  private async onClickSaveResume (): Promise<void> {
+  protected async onClickSaveResume (): Promise<void> {
     // prevent double saving
     if (this.isBusySaving) return
     this.setIsSavingResuming(true)
 
-    let filingComplete: any
     try {
       const filing = this.buildCorrectionFiling(true)
-      filingComplete = await LegalServices.updateFiling(this.getBusinessId, this.getFilingId, filing, true)
+      await LegalServices.updateFiling(this.getBusinessId, this.getFilingId, filing, true)
       // clear flag
       this.setHaveUnsavedChanges(false)
     } catch (error) {
@@ -140,7 +138,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
    * Called when File and Pay button is clicked.
    * @returns a promise (ie, this is an async method)
    */
-  private async onClickFilePay (): Promise<void> {
+  protected async onClickFilePay (): Promise<void> {
     // prevent double saving
     if (this.isBusySaving) return
     this.setIsFilingPaying(true)
@@ -195,7 +193,7 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
   }
 
   /** Called when Cancel button is clicked. */
-  private onClickCancel (): void {
+  protected onClickCancel (): void {
     this.$root.$emit('go-to-dashboard')
   }
 }

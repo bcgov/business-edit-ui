@@ -16,12 +16,13 @@ export interface CorrectionInformationIF {
   correctedFilingId: number
   correctedFilingDate: string // API format
   correctedFilingType: FilingTypes
-  type?: CorrectionErrorTypes
+  type: CorrectionErrorTypes
 
   //
   // optional objects with new correction data:
   //
   business?: {
+    identifier: string
     naicsCode: string
     naicsDescription: string
   }
@@ -38,5 +39,5 @@ export interface CorrectionInformationIF {
     shareClasses: ShareClassIF[]
     resolutionDates?: string[]
   }
-  startDate?: string // API format
+  startDate?: string // YYYY-MM-DD
 }

@@ -4,7 +4,7 @@
       <v-col cols="12" sm="3" class="pr-4">
         <label :class="{'error-text': invalidSection}">Nature of Business</label>
         <v-chip
-          v-if="hasNatureOfBusinessChanged"
+          v-if="hasNaicsChanged"
           id="changed-chip"
           x-small label
           color="primary"
@@ -49,7 +49,7 @@
         <div v-if="!onEditMode" class="d-flex justify-space-between align-start">
           <span id="naics-summary">{{ naicsSummary }}</span>
 
-          <div v-if="!hasNatureOfBusinessChanged" class="mt-n2 mr-n3">
+          <div v-if="!hasNaicsChanged" class="mt-n2 mr-n3">
             <v-btn text color="primary" id="nob-change-btn" @click="onChangeClicked()">
               <v-icon small>mdi-pencil</v-icon>
               <span>{{ editLabel }}</span>
@@ -89,14 +89,14 @@ import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 
 @Component({})
-export default class NatureOfBusiness extends Mixins(CommonMixin) {
+export default class ConversionNOB extends Mixins(CommonMixin) {
   /** Whether to show invalid section styling. */
   @Prop({ default: false })
   readonly invalidSection: boolean
 
   @Getter getCurrentNaics!: NaicsIF
   @Getter getSnapshotNaics!: NaicsIF
-  @Getter hasNatureOfBusinessChanged!: boolean
+  @Getter hasNaicsChanged!: boolean
 
   @Action setNaics!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
@@ -117,7 +117,7 @@ export default class NatureOfBusiness extends Mixins(CommonMixin) {
     const desc = this.getCurrentNaics.naicsDescription
 
     if (code && desc) {
-      this.naicsText = this.hasNatureOfBusinessChanged ? this.naicsText : `${code} - ${desc}`
+      this.naicsText = this.hasNaicsChanged ? this.naicsText : `${code} - ${desc}`
       return `${code} - ${desc}`
     } else if (desc) {
       this.naicsText = desc
@@ -157,7 +157,7 @@ export default class NatureOfBusiness extends Mixins(CommonMixin) {
     const desc = this.getSnapshotNaics.naicsDescription
     this.naicsText = null
     if (code && desc) {
-      this.naicsText = this.hasNatureOfBusinessChanged ? this.naicsText : `${code} - ${desc}`
+      this.naicsText = this.hasNaicsChanged ? this.naicsText : `${code} - ${desc}`
     } else if (desc) {
       this.naicsText = desc
     }

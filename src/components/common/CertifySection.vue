@@ -34,6 +34,7 @@ import { Action, Getter } from 'vuex-class'
 import { Certify as CertifyShared } from '@bcrs-shared-components/certify/'
 import { DateMixin, SharedMixin } from '@/mixins/'
 import { ActionBindingIF, CertifyIF, ResourceIF } from '@/interfaces/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 @Component({
   components: {
@@ -45,6 +46,7 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
   @Getter getCurrentDate!: string
   @Getter getResource!: ResourceIF
   @Getter isRoleStaff!: boolean
+  @Getter getEntityType!: CorpTypeCd
 
   @Action setCertifyState!: ActionBindingIF
   @Action setCertifyStateValidity!: ActionBindingIF
