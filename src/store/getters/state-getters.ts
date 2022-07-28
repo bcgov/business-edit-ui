@@ -39,7 +39,7 @@ export const isSpecialResolutionFiling = (state: StateIF): boolean => {
   return (state.stateModel.tombstone.filingType === FilingTypes.SPECIAL_RESOLUTION)
 }
 
-/** Whether the current filing is a firm Change of Registration filing. */
+/** Whether the current filing is a firm Change of Registration. */
 export const isFirmChangeFiling = (state: StateIF): boolean => {
   return (
     isEntityTypeFirm(state) &&
@@ -57,7 +57,7 @@ export const isFirmCorrectionFiling = (state: StateIF): boolean => {
   return (isEntityTypeFirm(state) && isCorrectionFiling(state))
 }
 
-/** Whether the current filing is a firm Conversion filing. */
+/** Whether the current filing is a firm Conversion. */
 export const isFirmConversionFiling = (state: StateIF): boolean => {
   return (
     isEntityTypeFirm(state) &&
