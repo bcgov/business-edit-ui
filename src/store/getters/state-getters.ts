@@ -1,5 +1,5 @@
-import { AccountTypes, ActionTypes, AssociationTypes, CorrectionErrorTypes, FilingCodes, FilingNames, FilingTypes }
-  from '@/enums/'
+import { AccountTypes, ActionTypes, AssociationTypes, CorrectionErrorTypes, FilingCodes, FilingNames,
+  FilingTypes, PartyTypes }  from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF,
   NameTranslationIF, FilingDataIF, StateIF, EffectiveDateTimeIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
@@ -7,7 +7,6 @@ import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformat
   from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF }
   from '@bcrs-shared-components/interfaces/'
-import { isEqual } from 'lodash'
 import { isSame } from '@/utils/'
 
 /** Whether the user has "staff" keycloak role. */
@@ -171,6 +170,11 @@ export const getCorrectionErrorType = (state: StateIF): CorrectionErrorTypes => 
   return getCorrectionInformation(state).type
 }
 
+/** The correction (business) start date. */
+export const getCorrectionStartDate = (state: StateIF): string => {
+  return getCorrectionInformation(state).startDate
+}
+
 /** True if the correction is due to a client error. */
 export const isClientErrorCorrection = (state: StateIF): boolean => {
   return (getCorrectionErrorType(state) === CorrectionErrorTypes.CLIENT)
@@ -279,12 +283,12 @@ export const getNameRequest = (state: StateIF): NameRequestIF => {
 
 /** The Name Request Number. */
 export const getNameRequestNumber = (state: StateIF): string => {
-  return getNameRequest(state).nrNumber
+  return getNameRequest(state)?.nrNumber
 }
 
 /** The Name Request Legal Name (approved name). */
 export const getNameRequestLegalName = (state: StateIF): string => {
-  return getNameRequest(state).legalName
+  return getNameRequest(state)?.legalName
 }
 
 /** The name translations. */
@@ -388,7 +392,7 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
   if (isFirmCorrectionFiling(state)) {
     return (
       hasBusinessNameChanged(state) ||
-      hasNatureOfBusinessChanged(state) ||
+      hasNaicsChanged(state) ||
       haveOfficeAddressesChanged(state) ||
       havePeopleAndRolesChanged(state)
     )
@@ -445,7 +449,7 @@ export const hasSpecialResolutionDataChanged = (state: StateIF): boolean => {
 export const hasChangeDataChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
-    hasNatureOfBusinessChanged(state) ||
+    hasNaicsChanged(state) ||
     haveOfficeAddressesChanged(state) ||
     havePeopleAndRolesChanged(state)
   )
@@ -462,7 +466,7 @@ export const hasChangeDataChanged = (state: StateIF): boolean => {
  */
 export const hasConversionDataChanged = (state: StateIF): boolean => {
   return (
-    hasNatureOfBusinessChanged(state) ||
+    hasNaicsChanged(state) ||
     haveOfficeAddressesChanged(state) ||
     havePeopleAndRolesChanged(state)
   )
@@ -708,7 +712,17 @@ export const hasRecDeliveryChanged = (state: StateIF): boolean => {
 
 /** True if any people/roles have changed. */
 export const havePeopleAndRolesChanged = (state: StateIF): boolean => {
-  const currentOrgPersons = getPeopleAndRoles(state)
+  const currentOrgPersons = getPeopleAndRoles(state)?.map(op => {
+    const isOrg = (op.officer.partyType === PartyTypes.ORGANIZATION)
+
+    // add fields that are not in the snapshot
+    return {
+      deliveryAddress: { deliveryInstructions: null, streetAddressAdditional: null, ...op.deliveryAddress },
+      mailingAddress: { deliveryInstructions: null, streetAddressAdditional: null, ...op.mailingAddress },
+      officer: isOrg ? { identifier: null, taxId: null, ...op.officer } : { ...op.officer },
+      roles: [ ...op.roles ]
+    }
+  })
   const originalOrgPersons = getEntitySnapshot(state)?.orgPersons
 
   return !isSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange'])
@@ -752,15 +766,28 @@ export const hasShareStructureChanged = (state: StateIF): boolean => {
   currentShareClasses = currentShareClasses && removeNullProps(currentShareClasses)
   originalShareClasses = originalShareClasses && removeNullProps(originalShareClasses)
 
-  return !isEqual(originalShareClasses, currentShareClasses)
+  return !isSame(originalShareClasses, currentShareClasses)
 }
 
-/** Whether nature of business data has changed. */
-export const hasNatureOfBusinessChanged = (state: StateIF): boolean => {
-  const currentNatureOfBusiness = getBusinessInformation(state)?.naicsCode
-  const originalNatureOfBusiness = getEntitySnapshot(state)?.businessInfo?.naicsCode
+/** Whether NAICS data has changed. */
+export const hasNaicsChanged = (state: StateIF): boolean => {
+  const currentNaicsCode = getBusinessInformation(state)?.naicsCode
+  const originalNaicsCode = getEntitySnapshot(state)?.businessInfo?.naicsCode
 
-  return (currentNatureOfBusiness !== originalNatureOfBusiness)
+  // first try to compare codes
+  if (currentNaicsCode || originalNaicsCode) {
+    return (currentNaicsCode !== originalNaicsCode)
+  }
+
+  const currentNaicsDescription = getBusinessInformation(state)?.naicsDescription
+  const originalNaicsDescription = getEntitySnapshot(state)?.businessInfo?.naicsDescription
+
+  // then try to compare descriptions
+  if (currentNaicsDescription || originalNaicsDescription) {
+    return (currentNaicsDescription !== originalNaicsDescription)
+  }
+
+  return false
 }
 
 /** Whether the provisions are removed. */
@@ -841,7 +868,7 @@ export const showFeeSummary = (state: StateIF): boolean => {
     (isFirmConversionFiling(state) && hasConversionDataChanged(state)) ||
     (isSpecialResolutionFiling(state) && hasSpecialResolutionDataChanged(state))
   )
-  return (haveFilingChange && !isEqual(getFilingData(state), defaultFilingData))
+  return (haveFilingChange && !isSame(getFilingData(state), defaultFilingData))
 }
 
 /** The current fees. */

@@ -8,13 +8,12 @@ export interface ChgRegistrationIF {
   business: {
     identifier: string
     naics?: NaicsIF
-    natureOfBusiness?: string
   }
-  offices?: AddressesIF
+  courtOrder?: string
   contactPoint: ContactPointIF
   nameRequest?: NameRequestIF
+  offices?: AddressesIF
   parties?: Array<OrgPersonIF>
-  courtOrder?: string
 }
 
 /** Interface for data object UI sends to API. */

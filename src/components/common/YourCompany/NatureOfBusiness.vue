@@ -3,7 +3,7 @@
     :showErrors="invalidSection"
     :naics="getCurrentNaics"
     :NaicsServices="NaicsServices"
-    :hasNaicsChanges="hasNatureOfBusinessChanged"
+    :hasNaicsChanges="hasNaicsChanged"
     @valid="onValidChanged($event)"
     @undoNaics="setNaics(getSnapshotNaics)"
     @setNaics="setNaics($event)"
@@ -32,7 +32,7 @@ export default class NatureOfBusiness extends Vue {
 
   @Getter getCurrentNaics!: NaicsIF
   @Getter getSnapshotNaics!: NaicsIF
-  @Getter hasNatureOfBusinessChanged!: boolean
+  @Getter hasNaicsChanged!: boolean
 
   @Action setNaics!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF

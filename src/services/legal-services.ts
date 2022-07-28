@@ -1,6 +1,7 @@
 import { axios } from '@/utils/'
 import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistrationFilingIF, ConversionFilingIF,
-  CorrectionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF, ShareStructureIF } from '@/interfaces/'
+  CorrectionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF, ShareStructureIF, SpecialResolutionFilingIF }
+  from '@/interfaces/'
 import { RoleTypes } from '@/enums'
 
 /**
@@ -51,7 +52,8 @@ export default class LegalServices {
   static async updateFiling (
     businessId: string,
     filingId: number,
-    filing: CorrectionFilingIF | AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF,
+    // eslint-disable-next-line max-len
+    filing: CorrectionFilingIF | AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF | SpecialResolutionFilingIF,
     isDraft: boolean
   ): Promise<any> {
     // put updated filing to filings endpoint
@@ -81,7 +83,7 @@ export default class LegalServices {
    */
   static async createFiling (
     businessId: string,
-    filing: AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF,
+    filing: AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF | SpecialResolutionFilingIF,
     isDraft: boolean
   ): Promise<any> {
     // put updated filing to filings endpoint

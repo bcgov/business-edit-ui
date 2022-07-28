@@ -67,6 +67,7 @@ import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/co
 import { CommonMixin, SharedMixin, NameRequestMixin } from '@/mixins/'
 import { ActionBindingIF, ConfirmDialogType, NameRequestIF, NrCorrectionIF, NrResponseIF } from '@/interfaces/'
 import { CorrectionTypes } from '@/enums/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 @Component({
   components: {
@@ -91,6 +92,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
   @Action setNameRequest!: ActionBindingIF
 
   @Getter getNameRequest!: NameRequestIF
+  @Getter getEntityType!: CorpTypeCd
 
   // V-model properties
   protected formValid = false
