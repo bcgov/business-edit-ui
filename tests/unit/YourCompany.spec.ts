@@ -7,7 +7,7 @@ import ConversionNOB from '@/components/Conversion/ConversionNOB.vue'
 // for some reason, ChangeBusinessType cannot be imported by its filename
 // also, it needs to precede the other imports
 // (otherwise a bunch of tests in this file fail)
-import { ChangeBusinessType } from '@/components/common/YourCompany'
+import { AssociationType, ChangeBusinessType } from '@/components/common/YourCompany'
 
 import CorrectNameOptions from '@/components/common/YourCompany/CompanyName/CorrectNameOptions.vue'
 import FolioInformation from '@/components/common/YourCompany/FolioInformation.vue'
@@ -117,6 +117,8 @@ describe('YourCompany in a SP alteration', () => {
     expect(wrapper.findComponent(ChangeBusinessType).exists()).toBe(true)
     expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
+    // Only shows on CP.
+    expect(wrapper.findComponent(AssociationType).exists()).toBe(false)
 
     // Not currently editing Company Name
     expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(false)
@@ -328,4 +330,11 @@ describe('YourCompany in a SP correction', () => {
     expect(contactInfo.find('#lbl-email').text()).toBe('(Not entered)')
     expect(contactInfo.find('#lbl-no-phone').text()).toBe('(Not entered)')
   })
+
+  it('renders association type for CP', async () => {
+    store.state.stateModel.tombstone.entityType = 'CP'
+    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    expect(wrapper.findComponent(YourCompany).exists()).toBeTruthy()
+    expect(wrapper.findComponent(AssociationType).exists()).toBeTruthy()
+  }
 })
