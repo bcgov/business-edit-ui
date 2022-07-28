@@ -114,7 +114,7 @@ export default class AuthServices {
 
     const authApiUrl = sessionStorage.getItem('AUTH_API_URL')
     const url = `${authApiUrl}entities/${businessId}`
-    const data = { businessId, folioNumber }
+    const data = { businessIdentifier: businessId, folioNumber: folioNumber ?? '' }
 
     return axios.patch(url, data)
   }
