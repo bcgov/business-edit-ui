@@ -16,13 +16,13 @@
         <span class="info-text" :class="{ 'has-conflict': isConflictingLegalType && isNewName}">
           {{getCorpTypeDescription(getEntityType)}}
         </span>
-
         <!-- Firm info tooltip -->
         <v-tooltip v-if="showChangeInfoTooltip"
                     top
                     content-class="top-tooltip"
                     transition="fade-transition"
                     nudge-right="3"
+                    class="tooltip-info"
         >
           <template v-slot:activator="{ on }">
             <v-icon v-on="on" class="info-icon">mdi-information-outline</v-icon>

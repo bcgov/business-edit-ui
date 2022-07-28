@@ -101,7 +101,7 @@
             </div>
           </v-col>
           <v-col cols="1" v-else-if="isSpecialResolutionFiling">
-            <div class="d-flex justify-end align-end align-sm-start">
+            <div class="d-flex justify-end align-end align-sm-start tooltip-info">
              <v-tooltip
                     top
                     content-class="top-tooltip"
@@ -537,7 +537,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 
   /** Type change helper information */
   get addressChangeInfo (): string {
-    return this.getResource?.addressChangeInfo
+    return this.getResource.changeData?.addressChangeInfo
   }
 
   /**
