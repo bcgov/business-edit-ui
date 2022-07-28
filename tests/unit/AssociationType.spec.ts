@@ -5,7 +5,6 @@ import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import { getVuexStore } from '@/store/'
 import { shallowMount, mount, createLocalVue } from '@vue/test-utils'
-import { axios } from '@/utils/'
 import mockRouter from './MockRouter'
 import { AssociationType } from '@/components/common'
 
@@ -68,10 +67,9 @@ describe('AssociationType component', () => {
     wrapper.vm.selectedAssociationType = 'AAAA'
     wrapper.vm.submitAssociationTypeChange()
     expect(store.state.stateModel.businessInformation.associationType).toBe('AAAA')
-    
-    wrapper.vm.selectedAssociationType = 'AAAA'
+
     store.state.stateModel.entitySnapshot = { businessInfo: { associationType: 'NO' } }
     wrapper.vm.resetAssociationType()
     expect(store.state.stateModel.businessInformation.associationType).toBe('NO')
-  }
+  })
 })

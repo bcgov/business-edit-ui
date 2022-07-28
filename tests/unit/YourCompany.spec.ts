@@ -336,5 +336,5 @@ describe('YourCompany in a SP correction', () => {
     wrapper = mount(YourCompany, { vuetify, store, localVue })
     expect(wrapper.findComponent(YourCompany).exists()).toBeTruthy()
     expect(wrapper.findComponent(AssociationType).exists()).toBeTruthy()
-  }
+  })
 })

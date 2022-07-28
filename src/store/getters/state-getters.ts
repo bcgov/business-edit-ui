@@ -433,7 +433,8 @@ export const hasAlterationDataChanged = (state: StateIF): boolean => {
 export const hasSpecialResolutionDataChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
-    hasBusinessTypeChanged(state)
+    hasBusinessTypeChanged(state) ||
+    hasAssociationTypeChanged(state)
   )
 }
 
