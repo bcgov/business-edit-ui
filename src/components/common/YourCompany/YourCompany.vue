@@ -5,8 +5,6 @@
       <label class="define-company-title">Your {{ getResource.entityReference }}</label>
     </div>
 
-    <!-- Travis Semple - This div should be refactored into a component.
-         Faiz is working on this part, I've asked him to refactor into a component. -->
     <!-- Business/Company Name + Name Request Applicant -->
     <div id="company-name-section" class="section-container" :class="{'invalid-section': invalidNameSection}">
       <v-row no-gutters class="mt-4">
