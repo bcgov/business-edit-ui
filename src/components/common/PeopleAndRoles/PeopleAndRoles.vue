@@ -34,7 +34,7 @@
       </article>
 
       <!-- Change or conversion or firm correction section -->
-      <article v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling"
+      <article v-if="isFirmChangeFiling || isFirmConversionFiling || isFirmCorrectionFiling"
         class="section-container"
       >
         <p v-if="orgPersonSubtitle" class="info-text mt-2">{{ orgPersonSubtitle }}</p>
@@ -83,7 +83,7 @@
         </div>
 
         <!-- GP add buttons (change or conversion filing only)-->
-        <div v-if="isEntityTypeGP && (isChangeRegFiling || isFirmConversionFiling)" class="mt-8">
+        <div v-if="isEntityTypeGP && (isFirmChangeFiling || isFirmConversionFiling)" class="mt-8">
           <v-btn
             id="gp-btn-add-person"
             outlined
@@ -209,7 +209,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       // alterations don't use this component
       return false
     }
-    if (this.isChangeRegFiling) {
+    if (this.isFirmChangeFiling) {
       if (this.isEntityTypeSP) return this.hasMinimumProprietor
       if (this.isEntityTypeGP) return this.hasMinimumPartners
       return false

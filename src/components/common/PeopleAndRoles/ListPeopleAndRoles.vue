@@ -360,7 +360,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
       // alterations don't use this component
       return false
     }
-    if (this.isChangeRegFiling) {
+    if (this.isFirmChangeFiling) {
       // can only remove partner
       return this.hasRolePartner(orgPerson)
     }

@@ -294,7 +294,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
       (this.getNameRequestLegalName !== this.getEntitySnapshot?.businessInfo?.legalName)
   }
 
-  /** Check is current entity selection is a Benefit Company */
+  /** Check if current entity selection is a Benefit Company */
   get isBenefit (): boolean {
     return (this.selectedEntityType === CorpTypeCd.BENEFIT_COMPANY)
   }
@@ -304,9 +304,9 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
     return this.getResource.changeData?.typeChangeInfo
   }
 
-  /** only applies to firm and coop filings  */
+  /** Whether to show the Change Info tooltip (firm and coop filings only). */
   get showChangeInfoTooltip ():boolean {
-    return this.isEntityTypeFirm || this.isEntityTypeCP
+    return (this.isEntityTypeFirm || this.isEntityTypeCP)
   }
 
   /** Reset company type values to original. */

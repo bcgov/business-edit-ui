@@ -312,7 +312,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
   /** The fee summary confirm button label. */
   get feeSummaryConfirmLabel (): string {
-    const isNoFee = this.isChangeRegFiling || this.isFirmConversionFiling
+    const isNoFee = this.isFirmChangeFiling || this.isFirmConversionFiling
     if (this.isSummaryMode) {
       return (isNoFee && !this.getFilingData.priority) ? 'File Now (No Fee)' : 'File and Pay'
     } else {
@@ -346,10 +346,12 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   }
   /** Show fee summery only allowed filing types */
   get showFeesummaryShared (): boolean {
-    return this.isSpecialResolutionFiling ||
+    return (
+      this.isSpecialResolutionFiling ||
       this.isAlterationFiling ||
-      this.isChangeRegFiling ||
+      this.isFirmChangeFiling ||
       this.isFirmConversionFiling
+    )
   }
 
   /** Helper to check is the current route matches */
@@ -767,7 +769,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     try {
       let filing: AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF | SpecialResolutionFilingIF
       if (this.isAlterationFiling) filing = this.buildAlterationFiling(isDraft)
-      if (this.isChangeRegFiling) filing = this.buildChangeRegFiling(isDraft)
+      if (this.isFirmChangeFiling) filing = this.buildChangeRegFiling(isDraft)
       if (this.isFirmConversionFiling) filing = this.buildConversionFiling(isDraft)
       if (this.isSpecialResolutionFiling) filing = this.buildSpecialResolutionFiling(isDraft)
 
