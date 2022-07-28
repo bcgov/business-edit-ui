@@ -211,11 +211,14 @@
 
     <v-divider class="mx-4 my-1" />
 
-    <!--- Association Type (Coop only) -->
+    <!--- Association Type (coop only) -->
     <div v-if="isEntityTypeCP"
         id="association-type-section"
         class="section-container">
-        <AssociationType />
+        <AssociationType
+          :invalidSection="invalidAssociationTypeSection"
+          @isEditingAssociationType="isEditingAssociationType = $event"
+        />
     </div>
 
     <!-- Business Start Date (changes, conversions and firm corrections only) -->
@@ -376,6 +379,7 @@ export default class YourCompany extends Mixins(
   protected hasCompanyNameChanged = false
 
   protected correctNameChoices: Array<string> = []
+  protected isEditingAssociationType = false
   protected isEditingNames = false
   protected isEditingType = false
   protected isEditingTranslations = false
@@ -393,6 +397,11 @@ export default class YourCompany extends Mixins(
   /** The type section validity state (when prompted by app). */
   get invalidTypeSection (): boolean {
     return (this.getComponentValidate && this.isEditingType)
+  }
+
+  /** The translation section validity state (when prompted by app). */
+  get invalidAssociationTypeSection (): boolean {
+    return (this.getComponentValidate && this.isEditingAssociationType)
   }
 
   /** The translation section validity state (when prompted by app). */

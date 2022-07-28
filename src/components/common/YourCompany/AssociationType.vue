@@ -3,7 +3,7 @@
     <v-row no-gutters>
       <!-- Row Title -->
       <v-col cols="3">
-        <label><strong>Cooperative Association Type</strong></label>
+        <label :class="{'error-text': invalidSection}"><strong>Cooperative Association Type</strong></label>
         <v-flex md1>
           <v-chip v-if="hasAssociationTypeChanged" x-small label color="primary" text-color="white">
             {{ editedLabel }}
@@ -90,7 +90,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { AssociationTypes } from '@/enums'
 import { CommonMixin, EnumMixin } from '@/mixins'
@@ -98,6 +98,8 @@ import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF } from '@/inte
 
 @Component({})
 export default class AssociationType extends Mixins(CommonMixin, EnumMixin) {
+  @Prop({ default: false })
+  readonly invalidSection: boolean
   // Global getters
   @Getter getAssociationType!: AssociationTypes
   @Getter getBusinessInformation!: BusinessInformationIF
