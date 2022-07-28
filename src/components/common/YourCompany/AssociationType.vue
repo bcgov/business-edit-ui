@@ -3,7 +3,9 @@
     <v-row no-gutters>
       <!-- Row Title -->
       <v-col cols="3">
-        <label :class="{'error-text': invalidSection}"><strong>Cooperative Association Type</strong></label>
+        <label :class="{'error-text': invalidSection}">
+          <strong>Cooperative Association Type</strong>
+        </label>
         <v-flex md1>
           <v-chip v-if="hasAssociationTypeChanged" x-small label color="primary" text-color="white">
             {{ editedLabel }}
