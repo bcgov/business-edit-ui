@@ -44,7 +44,7 @@ describe('Change Business Type component', () => {
     wrapper.destroy()
   })
 
-  it('Should have tool for Cooperative', () => {
+  it('Should have tooltip for Cooperative', () => {
     // init entity type
     store.state.stateModel.tombstone.entityType = 'CP'
 
@@ -58,7 +58,7 @@ describe('Change Business Type component', () => {
     wrapper.destroy()
   })
 
-  it('Should not have tool for Benifit company', () => {
+  it('Should not have tool for benefit company', () => {
     // init entity type
     store.state.stateModel.tombstone.entityType = 'BEN'
 

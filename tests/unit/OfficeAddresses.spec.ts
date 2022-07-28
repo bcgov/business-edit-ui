@@ -1086,7 +1086,7 @@ describe('actions and events', () => {
   })
 })
 
-describe('For Special rsolution', () => {
+describe('For Special resolution', () => {
   let wrapper: any = null
 
   beforeAll(() => {
