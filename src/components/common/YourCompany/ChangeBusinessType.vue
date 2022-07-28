@@ -310,7 +310,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
     this.confirmArticles = false
   }
 
-  /** Reset company type values to original. */
+  /** Submit new company type. */
   private submitTypeChange () {
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false

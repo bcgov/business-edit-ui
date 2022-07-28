@@ -1,4 +1,4 @@
-import { AccountTypes, ActionTypes, CorrectionErrorTypes, FilingCodes, FilingNames, FilingTypes }
+import { AccountTypes, ActionTypes, AssociationTypes, CorrectionErrorTypes, FilingCodes, FilingNames, FilingTypes }
   from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF,
@@ -265,6 +265,11 @@ export const getSnapshotNaics = (state: StateIF): NaicsIF => {
     naicsCode: getEntitySnapshot(state)?.businessInfo?.naicsCode,
     naicsDescription: getEntitySnapshot(state)?.businessInfo?.naicsDescription
   }
+}
+
+/** The association type. */
+export const getAssociationType = (state: StateIF): AssociationTypes => {
+  return getBusinessInformation(state).associationType
 }
 
 /** The Name Request object. */
@@ -602,6 +607,14 @@ export const hasBusinessTypeChanged = (state: StateIF): boolean => {
   const originalLegalType = getEntitySnapshot(state)?.businessInfo?.legalType
 
   return (currentEntityType !== originalLegalType)
+}
+
+/** Whether association type has changed. */
+export const hasAssociationTypeChanged = (state: StateIF): boolean => {
+  const currentAssociationType = getAssociationType(state)
+  const originalAssociationType = getEntitySnapshot(state)?.businessInfo?.associationType
+
+  return (currentAssociationType !== originalAssociationType)
 }
 
 /** Whether contact info data has changed. */

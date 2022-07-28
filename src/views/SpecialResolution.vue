@@ -4,12 +4,12 @@
     <v-slide-x-transition hide-on-leave>
       <div v-if="!isSummaryMode">
         <header>
-          <h1>Company Information</h1>
+          <h1>Business Information</h1>
         </header>
 
         <section class="mt-6">
-          You are legally obligated to keep your company information up to date. Necessary fees
-          will be applied as updates are made.
+          You must keep your business information up to date. Some changes require a Special Resolution.
+          Necessary fees will be applied as updates are made.
         </section>
 
         <YourCompany class="mt-10" />

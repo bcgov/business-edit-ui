@@ -5,6 +5,8 @@
       <label class="define-company-title">Your {{ getResource.entityReference }}</label>
     </div>
 
+    <!-- Travis Semple - This div should be refactored into a component.
+         Faiz is working on this part, I've asked him to refactor into a component. -->
     <!-- Business/Company Name + Name Request Applicant -->
     <div id="company-name-section" class="section-container" :class="{'invalid-section': invalidNameSection}">
       <v-row no-gutters class="mt-4">
@@ -183,7 +185,7 @@
       v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling || isSpecialResolutionFiling"
       class="mx-4 my-1" />
 
-    <!-- Business Type (alterations, special resolution,changes, conversions and firm corrections) -->
+    <!-- Business Type (alterations, special resolution, changes, conversions and firm corrections) -->
     <div v-if="showChangeBusinessType"
       id="company-type-section"
       class="section-container"
@@ -208,6 +210,13 @@
     </div>
 
     <v-divider class="mx-4 my-1" />
+
+    <!--- Association Type (Coop only) -->
+    <div v-if="isEntityTypeCP"
+        id="association-type-section"
+        class="section-container">
+        <AssociationType />
+    </div>
 
     <!-- Business Start Date (changes, conversions and firm corrections only) -->
     <template v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling">
@@ -301,10 +310,9 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF,
-  ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
-import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
+import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
   NatureOfBusiness, OfficeAddresses } from './'
 import { CommonMixin, SharedMixin, DateMixin, NameRequestMixin } from '@/mixins/'
 import { CorrectionTypes } from '@/enums/'
@@ -313,6 +321,7 @@ import { ConversionNOB } from '@/components/Conversion'
 
 @Component({
   components: {
+    AssociationType,
     BusinessContactInfo,
     ChangeBusinessType,
     CorrectNameOptions,
@@ -343,6 +352,7 @@ export default class YourCompany extends Mixins(
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
   @Getter isEntityTypeFirm!: boolean
+  @Getter isEntityTypeCP!: boolean
   @Getter isBenIaCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
 
