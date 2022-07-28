@@ -19,6 +19,7 @@ export interface ResourceIF {
       helpSection?: HelpSectionIF
     }
     nameRequestTypes?: Array<NameRequestTypes>
+    addressChangeInfo?: string
   }
   certifyClause: string
 }

@@ -1085,3 +1085,36 @@ describe('actions and events', () => {
     expect(wrapper.vm.haveOfficeAddressesChanged).toEqual(true)
   })
 })
+
+describe('For Special resolution', () => {
+  let wrapper: any = null
+
+  beforeAll(() => {
+    // init entity type
+    store.state.stateModel.tombstone.entityType = 'CP'
+
+    // init original offices
+    store.state.stateModel.entitySnapshot = {
+      addresses: getIncorporationAddress(1, 2, 3, 4)
+    }
+  })
+
+  beforeEach(async () => {
+    store.state.stateModel.tombstone.filingType = 'specialResolution'
+    wrapper = mount(OfficeAddresses, { store, vuetify, propsData: { isSummaryView: false } })
+
+    // set office addresses to trigger watcher
+    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    await Vue.nextTick()
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('tooltip exist for COOP', () => {
+    // verify initial state
+    expect(wrapper.find('.v-tooltip').exists()).toBe(true)
+    expect(wrapper.find('.actions').exists()).toBe(false)
+  })
+})

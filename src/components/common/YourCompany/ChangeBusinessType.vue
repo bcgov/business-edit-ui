@@ -16,9 +16,8 @@
         <span class="info-text" :class="{ 'has-conflict': isConflictingLegalType && isNewName}">
           {{getCorpTypeDescription(getEntityType)}}
         </span>
-
         <!-- Firm info tooltip -->
-        <v-tooltip v-if="isChangeRegFiling || isEntityTypeFirm"
+        <v-tooltip v-if="showChangeInfoTooltip"
                     top
                     content-class="top-tooltip"
                     transition="fade-transition"
@@ -242,6 +241,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   @Getter isConflictingLegalType!: boolean
   @Getter isEntityTypeBC!: boolean
   @Getter isEntityTypeFirm!: boolean
+  @Getter isEntityTypeCP!: boolean
   @Getter getEntityType!: CorpTypeCd
 
   @Action setEntityType!: ActionBindingIF
@@ -302,6 +302,11 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   /** Type change helper information */
   get typeChangeInfo (): string {
     return this.getResource.changeData?.typeChangeInfo
+  }
+
+  /** only applies to firm and coop filings  */
+  get showChangeInfoTooltip ():boolean {
+    return this.isEntityTypeFirm || this.isEntityTypeCP
   }
 
   /** Reset company type values to original. */
