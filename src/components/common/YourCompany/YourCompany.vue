@@ -15,7 +15,7 @@
           <v-flex md1>
             <v-chip
               v-if="hasCompanyNameChanged ||
-                (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling || isFirmConversionFiling))"
+                (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling || isFirmConversionFiling))"
               id="corrected-lbl"
               x-small label
               color="primary"
@@ -33,7 +33,7 @@
 
             <!-- Business Type Info -->
             <template v-if="!hasNewNr &&
-              (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling || isFirmConversionFiling))"
+              (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling || isFirmConversionFiling))"
             >
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -45,7 +45,7 @@
             </template>
 
             <!-- Name Request Info -->
-            <template v-if="hasNewNr && (isAlterationFiling || isChangeRegFiling)">
+            <template v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling)">
               <div class="company-name mt-2">{{getNameRequestNumber || 'Unknown'}}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -64,8 +64,8 @@
                       mdi-alert
                     </v-icon>
                   </template>
-                  <span>Business Types do not match. The Name Request type must match the business type before you can
-                    continue.</span>
+                  <span>Business Types do not match. The Name Request type must match the business type before
+                    you can continue.</span>
                 </v-tooltip>
               </div>
               <div class="company-info">
@@ -87,8 +87,9 @@
           <v-col cols="2" class="mt-n2">
             <div class="actions mr-4">
               <!-- FUTURE: only show buttons for named company -->
-              <v-btn
-                v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling))"
+              <v-btn v-if="
+                  hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling))
+                "
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -106,9 +107,9 @@
                 <v-icon small>mdi-pencil</v-icon>
                 <span>{{editLabel}}</span>
               </v-btn>
-              <span class="more-actions"
-                v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isChangeRegFiling))"
-              >
+              <span class="more-actions" v-if="
+                hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling))
+              ">
                 <v-menu
                   offset-y left nudge-bottom="4"
                   v-model="dropdown"
@@ -151,7 +152,7 @@
       </v-row>
 
       <!-- Name Request Applicant -->
-      <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isChangeRegFiling || isFirmConversionFiling)"
+      <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling || isFirmConversionFiling)"
         class="sub-section"
       >
         <v-col cols="3">
@@ -180,10 +181,12 @@
     </div>
 
     <v-divider
-      v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling || isSpecialResolutionFiling"
+    v-if="
+        isFirmChangeFiling || isFirmConversionFiling || isFirmCorrectionFiling || isSpecialResolutionFiling
+      "
       class="mx-4 my-1" />
 
-    <!-- Business Type (alterations, special resolution,changes, conversions and firm corrections) -->
+    <!-- Business Type -->
     <div v-if="showChangeBusinessType"
       id="company-type-section"
       class="section-container"
@@ -195,7 +198,7 @@
       />
     </div>
 
-    <!-- Name Translation(s) (alterations and BEN corrections only)-->
+    <!-- Name Translation(s) (alterations and BEN corrections only) -->
     <div v-if="isAlterationFiling || isBenIaCorrectionFiling"
       id="name-translate-section"
       class="section-container"
@@ -209,8 +212,8 @@
 
     <v-divider class="mx-4 my-1" />
 
-    <!-- Business Start Date (changes, conversions and firm corrections only) -->
-    <template v-if="isChangeRegFiling || isFirmConversionFiling || isFirmCorrectionFiling">
+    <!-- Business Start Date (firm changes, conversions and corrections only) -->
+    <template v-if="isFirmChangeFiling || isFirmConversionFiling || isFirmCorrectionFiling">
       <section id="business-start-date" class="section-container">
         <v-row no-gutters>
           <v-col cols="3" class="pr-2">
@@ -235,7 +238,7 @@
     </template>
 
     <!-- Nature of Business (firm change filings only) -->
-    <template v-if="isEntityTypeFirm && isChangeRegFiling">
+    <template v-if="isFirmChangeFiling">
       <v-divider class="mx-4 my-1" />
 
       <NatureOfBusiness
@@ -246,7 +249,7 @@
     </template>
 
     <!-- Nature of Business (firm conversion and correction filings only) -->
-    <template v-if="isEntityTypeFirm && (isFirmConversionFiling || isCorrectionFiling)">
+    <template v-if="isFirmConversionFiling || isFirmCorrectionFiling">
       <v-divider class="mx-4 my-1" />
 
       <ConversionNOB
@@ -447,9 +450,9 @@ export default class YourCompany extends Mixins(
       }
     }
     if (
-      this.isFirmCorrectionFiling ||
       this.isAlterationFiling ||
-      this.isChangeRegFiling ||
+      this.isFirmCorrectionFiling ||
+      this.isFirmChangeFiling ||
       this.isFirmConversionFiling
     ) {
       if (this.getBusinessFoundingDate) {
@@ -475,14 +478,19 @@ export default class YourCompany extends Mixins(
     }
     return this.getResource.changeData.nameChangeOptions
   }
-  /** show change business for Business Type
-   * (alterations, special resolution,changes, conversions and firm corrections).
-   **/
+
+  /**
+   * Whether to show Business Type section.
+   * (Alterations, all firm filings, and Special Resolutions only)
+   */
   get showChangeBusinessType ():boolean {
-    return this.isAlterationFiling ||
-      this.isChangeRegFiling ||
-      this.isEntityTypeFirm ||
+    return (
+      this.isAlterationFiling ||
+      this.isFirmCorrectionFiling ||
+      this.isFirmChangeFiling ||
+      this.isFirmConversionFiling ||
       this.isSpecialResolutionFiling
+    )
   }
 
   /** Reset company name values to original. */

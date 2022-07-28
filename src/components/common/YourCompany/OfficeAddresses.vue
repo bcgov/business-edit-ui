@@ -5,7 +5,7 @@
       <v-row id="summary-registered-address" class="mx-0" no-gutters>
         <v-col cols="3" class="pr-2">
           <label :class="{'error-text': invalidSection}">{{ getResource.addressLabel }}</label>
-          <v-chip v-if="(isChangeRegFiling || isFirmConversionFiling) && !isSummaryView
+          <v-chip v-if="(isFirmChangeFiling || isFirmConversionFiling) && !isSummaryView
                   && (hasMailingChanged || hasDeliveryChanged)"
                   x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
         </v-col>
@@ -42,9 +42,9 @@
         </v-col>
 
         <template v-if="!isSummaryView">
-          <v-col cols="1" v-if="(isCorrectionFiling || isChangeRegFiling || isFirmConversionFiling)
-            && haveOfficeAddressesChanged"
-          >
+          <v-col cols="1" v-if="
+            (isCorrectionFiling || isFirmChangeFiling || isFirmConversionFiling) && haveOfficeAddressesChanged
+          ">
             <div class="actions mr-4">
               <span class="edit-action">
                 <v-btn
@@ -88,7 +88,7 @@
             </div>
           </v-col>
 
-          <v-col cols="1" v-else-if="(isCorrectionFiling || isChangeRegFiling || isFirmConversionFiling)">
+          <v-col cols="1" v-else-if="(isCorrectionFiling || isFirmChangeFiling || isFirmConversionFiling)">
             <div class="actions mr-4">
               <v-btn
                 text color="primary"
@@ -163,7 +163,7 @@
     </template>
 
     <!-- Editing a change of registration filing or conversion filing -->
-    <v-card flat v-else-if="isChangeRegFiling || isFirmConversionFiling">
+    <v-card flat v-else-if="isFirmChangeFiling || isFirmConversionFiling">
       <v-row no-gutters>
         <v-col cols="3">
           <label :class="{'error-text': invalidSection}">{{ getResource.addressLabel }}</label>
@@ -593,7 +593,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       )
     }
 
-    if (this.isChangeRegFiling || this.isFirmConversionFiling || this.isFirmCorrectionFiling) {
+    if (this.isFirmChangeFiling || this.isFirmConversionFiling || this.isFirmCorrectionFiling) {
       // assign business office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.businessOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.businessOffice?.deliveryAddress }
@@ -762,7 +762,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     }
 
     if (this.isEntityTypeFirm) {
-      if (this.isChangeRegFiling || this.isFirmConversionFiling || this.isCorrectionFiling) {
+      if (this.isFirmChangeFiling || this.isFirmConversionFiling || this.isCorrectionFiling) {
       // at the moment, only firm changes, conversions and corrections are supported
         this.setOfficeAddresses({
           businessOffice: {
@@ -818,7 +818,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    */
   @Watch('disableSameDeliveryAddress')
   private async updateDeliveryAddress (): Promise<void> {
-    if ((this.isChangeRegFiling || this.isFirmConversionFiling) && this.disableSameDeliveryAddress) {
+    if ((this.isFirmChangeFiling || this.isFirmConversionFiling) && this.disableSameDeliveryAddress) {
       this.inheritMailingAddress = false
       // allow form to open before validating
       await this.$nextTick()

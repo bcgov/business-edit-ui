@@ -456,6 +456,7 @@ describe('List People And Roles component for Change of Registration', () => {
   let wrapperFactory: any
 
   beforeAll(() => {
+    store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.resourceModel = GeneralPartnershipResource
     wrapperFactory = (orgPeople, propsData: any) => {
