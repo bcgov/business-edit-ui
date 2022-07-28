@@ -305,7 +305,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
     return this.getResource.changeData?.typeChangeInfo
   }
 
-  /** v-if for tooltip (shoe only firm and coop)  */
+  /** only applies to firm and coop filings  */
   get showChangeInfoTooltip ():boolean {
     return this.isEntityTypeFirm || this.isEntityTypeCP
   }

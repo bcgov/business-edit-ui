@@ -58,7 +58,7 @@ describe('Change Business Type component', () => {
     wrapper.destroy()
   })
 
-  it('Should not have tool for benefit company', () => {
+  it('Should not have tooltip for benefit company', () => {
     // init entity type
     store.state.stateModel.tombstone.entityType = 'BEN'
 
