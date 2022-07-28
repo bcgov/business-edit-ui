@@ -305,9 +305,9 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
     return this.getResource.changeData?.typeChangeInfo
   }
 
-  /** v-if for tooltip (change firm and coop)  */
+  /** v-if for tooltip (shoe only firm and coop)  */
   get showChangeInfoTooltip ():boolean {
-    return this.isChangeRegFiling || this.isEntityTypeFirm || this.isEntityTypeCP
+    return this.isEntityTypeFirm || this.isEntityTypeCP
   }
 
   /** Reset company type values to original. */
