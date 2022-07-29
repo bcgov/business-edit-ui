@@ -898,6 +898,7 @@ export const getFilingName = (state: StateIF): FilingNames => {
   if (isAlterationFiling(state)) return FilingNames.ALTERATION
   if (isFirmChangeFiling(state)) return FilingNames.CHANGE_OF_REGISTRATION
   if (isFirmConversionFiling(state)) return FilingNames.CONVERSION
+  if (isSpecialResolutionFiling(state)) return FilingNames.SPECIAL_RESOLUTION
   return null
 }
 
