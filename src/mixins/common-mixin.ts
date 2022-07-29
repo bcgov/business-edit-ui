@@ -1,7 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { RouteNames } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ConfirmDialogType } from '@/interfaces/'
 
 /**
@@ -10,7 +9,7 @@ import { ConfirmDialogType } from '@/interfaces/'
 @Component({})
 export default class CommonMixin extends Vue {
   @Getter isAlterationFiling!: boolean
-  @Getter isChangeRegFiling!: boolean
+  @Getter isFirmChangeFiling!: boolean
   @Getter isFirmConversionFiling!: boolean
   @Getter isCorrectionFiling!: boolean
   @Getter isSpecialResolutionFiling!: boolean
@@ -87,30 +86,48 @@ export default class CommonMixin extends Vue {
   /** The appropriate edit label for corrections, alterations, change or conversion filings. */
   get editLabel (): string {
     if (this.isCorrectionFiling) return 'Correct'
-    if (this.isAlterationFiling || this.isChangeRegFiling ||
-      this.isFirmConversionFiling || this.isSpecialResolutionFiling) {
+
+    if (
+      this.isAlterationFiling ||
+      this.isFirmChangeFiling ||
+      this.isFirmConversionFiling ||
+      this.isSpecialResolutionFiling
+    ) {
       return 'Change'
     }
+
     return 'Edit' // should never happen
   }
 
   /** The appropriate edited label for corrections, alterations, change or conversion filings. */
   get editedLabel (): string {
     if (this.isCorrectionFiling) return 'Corrected'
-    if (this.isAlterationFiling || this.isChangeRegFiling ||
-      this.isFirmConversionFiling || this.isSpecialResolutionFiling) {
+
+    if (
+      this.isAlterationFiling ||
+      this.isFirmChangeFiling ||
+      this.isFirmConversionFiling ||
+      this.isSpecialResolutionFiling
+    ) {
       return 'Changed'
     }
+
     return 'Edited' // should never happen
   }
 
   /** The appropriate edits saved label for corrections, alterations, change or conversion filings. */
   get editSavedLabel (): string {
     if (this.isCorrectionFiling) return 'Corrections Saved'
-    if (this.isAlterationFiling || this.isChangeRegFiling ||
-      this.isFirmConversionFiling || this.isSpecialResolutionFiling) {
+
+    if (
+      this.isAlterationFiling ||
+      this.isFirmChangeFiling ||
+      this.isFirmConversionFiling ||
+      this.isSpecialResolutionFiling
+    ) {
       return 'Changes Saved'
     }
+
     return 'Edits Saved' // should never happen
   }
 

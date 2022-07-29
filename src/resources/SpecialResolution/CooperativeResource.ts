@@ -16,7 +16,11 @@ export const CooperativeResource: ResourceIF = {
   changeData: {
     nameChangeOptions: [
       CorrectionTypes.CORRECT_NEW_NR
-    ]
+    ],
+    typeChangeInfo: 'You cannot change the business type of a Cooperative Association. You must form a new' +
+    'business and dissolve this business once the new business is registered.',
+    addressChangeInfo: 'To change addresses, please use the Change feature in the' +
+    ' Office Addresses list on your business dashboard.'
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +
     'of a material fact in a record submitted to the Corporate Registry for filing. ' +

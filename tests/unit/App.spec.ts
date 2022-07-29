@@ -653,6 +653,7 @@ describe('App component - other', () => {
   })
 
   it('renders the fee summary properly following changes', async () => {
+    store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.stateModel.entitySnapshot = mockEntitySnapshot
     store.state.stateModel.officeAddresses = mockAddresses

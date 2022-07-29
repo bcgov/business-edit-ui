@@ -137,6 +137,7 @@ describe('Business Contact Info for a Change of Registration', () => {
   }
 
   beforeAll(async () => {
+    store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
     store.state.stateModel.tombstone.businessId = 'BC1234567'
