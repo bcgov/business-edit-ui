@@ -331,6 +331,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
+.v-icon {
+  line-height: 1.5rem
+}
+
 ol {
   counter-reset: item;
 

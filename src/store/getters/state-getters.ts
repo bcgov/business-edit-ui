@@ -428,6 +428,7 @@ export const hasAlterationDataChanged = (state: StateIF): boolean => {
  * - folio number
  * - court order and POA
  * - staff payment
+ * - address (read only)
  */
 // more to add while adding components
 export const hasSpecialResolutionDataChanged = (state: StateIF): boolean => {
@@ -435,6 +436,22 @@ export const hasSpecialResolutionDataChanged = (state: StateIF): boolean => {
     hasBusinessNameChanged(state) ||
     hasBusinessTypeChanged(state) ||
     hasAssociationTypeChanged(state)
+  )
+}
+
+/** Whether the special resolution filing is valid.
+ *  does NOT include:
+ * - address (read only)
+ * NOTE THIS IS INCOMPLETE - not entirely sure where to use this.
+ * isCorrectionValid seems to disable the File and Pay button.
+ */
+export const isSpecialResolutionValid = (state: StateIF): boolean => {
+  return (
+    state.stateModel.peopleAndRoles.valid &&
+    state.stateModel.shareStructureStep.valid &&
+    state.stateModel.detail.valid &&
+    state.stateModel.certifyState.valid &&
+    state.stateModel.staffPaymentStep.valid
   )
 }
 

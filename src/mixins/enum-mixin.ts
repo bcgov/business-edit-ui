@@ -1,9 +1,4 @@
 import { Component, Vue } from 'vue-property-decorator'
-import {
-  GetCorpFullDescription,
-  GetCorpInfoObject,
-  GetCorpNumberedDescription
-} from '@bcrs-shared-components/corp-type-module'
 import { AssociationTypes } from '@/enums'
 
 /**
@@ -11,11 +6,6 @@ import { AssociationTypes } from '@/enums'
  */
 @Component({})
 export default class EnumMixin extends Vue {
-  // from external module
-  getCorpTypeInfo = GetCorpInfoObject
-  getCorpTypeDescription = GetCorpFullDescription
-  getCorpTypeNumberedDescription = GetCorpNumberedDescription
-
   /**
    * Converts the association type to a description.
    * @param type the association type

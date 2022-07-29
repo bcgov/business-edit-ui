@@ -215,7 +215,8 @@
     <!--- Association Type (coop only) -->
     <div v-if="isEntityTypeCP"
         id="association-type-section"
-        class="section-container">
+        class="section-container"
+    >
         <AssociationType
           :invalidSection="invalidAssociationTypeSection"
           @isEditingAssociationType="isEditingAssociationType = $event"
