@@ -18,7 +18,7 @@
       <!-- Info tooltip-->
       <v-col cols="9">
         <span v-if="!onEditMode" class="info-text mr-1">{{ businessStartDate }}</span>
-        <v-tooltip v-if="isChangeRegFiling || isFirmConversionFiling"
+        <v-tooltip v-if="isFirmChangeFiling || isFirmConversionFiling"
                     top
                     content-class="top-tooltip"
                     transition="fade-transition"
@@ -162,7 +162,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   protected get businessStartDate (): string {
     if (
       this.isFirmCorrectionFiling ||
-      this.isChangeRegFiling ||
+      this.isFirmChangeFiling ||
       this.isFirmConversionFiling
     ) {
       if (this.getCorrectedFilingDate && this.isCorrected) {

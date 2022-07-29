@@ -483,74 +483,71 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param entitySnapshot the latest entity snapshot
    */
   parseCorrectionFiling (filing: CorrectionFilingIF, entitySnapshot: EntitySnapshotIF = null): void {
-    // make a copy so snapshot objects are different from objects below
-    entitySnapshot = cloneDeep(entitySnapshot)
-
     // store Entity Snapshot
     this.setEntitySnapshot(entitySnapshot)
 
     // store Correction Information
-    this.setCorrectionInformation(filing.correction)
+    this.setCorrectionInformation(cloneDeep(filing.correction))
 
     // store Business Information for corrected Incorporation Application
     // *** FUTURE: change this to "if BEN correction"
     if (this.isCorrectedIncorporationApplication) {
-      this.setBusinessInformation(filing.business)
+      this.setBusinessInformation({ ...filing.business })
     }
 
     // store Business Information for corrected Registration or Change of Registration
     // *** FUTURE: change this to "if firm correction"
     if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
       this.setBusinessInformation({
-        foundingDate: entitySnapshot.businessInfo.foundingDate,
-        identifier: entitySnapshot.businessInfo.identifier,
-        legalName: entitySnapshot.businessInfo.legalName,
-        legalType: entitySnapshot.businessInfo.legalType,
-        naicsCode: entitySnapshot.businessInfo.naicsCode,
-        naicsDescription: entitySnapshot.businessInfo.naicsDescription,
-        nrNumber: entitySnapshot.businessInfo.nrNumber,
+        ...entitySnapshot.businessInfo,
         ...filing.correction.business
       })
     }
 
     // store Name Request
-    this.setNameRequest(
+    this.setNameRequest(cloneDeep(
       filing.correction.nameRequest ||
       {
         legalType: entitySnapshot.businessInfo.legalType,
         legalName: entitySnapshot.businessInfo.legalName,
         nrNumber: entitySnapshot.businessInfo.nrNumber
       }
-    )
+    ))
 
     // store Name Translations
     if (this.isCorrectedIncorporationApplication) {
-      this.setNameTranslations(
+      this.setNameTranslations(cloneDeep(
         this.mapNameTranslations(filing.correction.nameTranslations) ||
         this.mapNameTranslations(entitySnapshot.nameTranslations) ||
         []
-      )
+      ))
     }
 
     // store Office Addresses
-    this.setOfficeAddresses(filing.correction.offices || entitySnapshot.addresses)
+    this.setOfficeAddresses(cloneDeep(
+      filing.correction.offices ||
+      entitySnapshot.addresses
+    ))
 
     // store current Business Contact
-    this.setBusinessContact(entitySnapshot.authInfo.contact)
+    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
 
     // store People And Roles
     let orgPersons = filing.correction.parties || entitySnapshot.orgPersons
     // exclude Completing Party
     // (it is managed separately and added to the filing in buildCorrectionFiling())
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
-    this.setPeopleAndRoles(orgPersons)
+    this.setPeopleAndRoles(cloneDeep(orgPersons))
 
-    // store Share Classes
+    // store Share Classes and Resolution Dates
     if (this.isCorrectedIncorporationApplication) {
-      this.setShareClasses(
+      this.setShareClasses(cloneDeep(
         filing.correction.shareStructure?.shareClasses ||
         entitySnapshot.shareStructure.shareClasses
-      )
+      ))
+      this.setNewResolutionDates(cloneDeep(
+        filing.correction.shareStructure?.resolutionDates || []
+      ))
     }
 
     // store Certify State
@@ -585,9 +582,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param entitySnapshot the latest entity snapshot
    */
   parseAlterationFiling (filing: AlterationFilingIF, entitySnapshot: EntitySnapshotIF): void {
-    // make a copy so snapshot objects are different from objects below
-    entitySnapshot = cloneDeep(entitySnapshot)
-
     // store Entity Snapshot
     this.setEntitySnapshot(entitySnapshot)
 
@@ -601,40 +595,42 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     })
 
     // store Name Request data
-    this.setNameRequest(
+    this.setNameRequest(cloneDeep(
       filing.alteration.nameRequest ||
       {
         legalType: entitySnapshot.businessInfo.legalType,
         legalName: entitySnapshot.businessInfo.legalName,
         nrNumber: entitySnapshot.businessInfo.nrNumber
       }
-    )
+    ))
 
     // store Name Translations
-    this.setNameTranslations(
+    this.setNameTranslations(cloneDeep(
       this.mapNameTranslations(filing.alteration.nameTranslations) ||
       this.mapNameTranslations(entitySnapshot.nameTranslations) ||
       []
-    )
+    ))
 
     // store Provisions Removed
     this.setProvisionsRemoved(filing.alteration.provisionsRemoved)
 
     // store Office Addresses **from snapshot** (because we don't change office addresses in an alteration)
-    this.setOfficeAddresses(entitySnapshot.addresses)
+    this.setOfficeAddresses(cloneDeep(entitySnapshot.addresses))
 
     // store People And Roles **from snapshot** (because we don't change people and roles in an alteration)
-    this.setPeopleAndRoles(entitySnapshot.orgPersons)
+    this.setPeopleAndRoles(cloneDeep(entitySnapshot.orgPersons))
 
-    // store Business Contact
-    this.setBusinessContact(entitySnapshot.authInfo.contact)
+    // store current Business Contact
+    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
 
     // store Share Classes and Resolution Dates
-    this.setShareClasses(
+    this.setShareClasses(cloneDeep(
       filing.alteration.shareStructure?.shareClasses ||
       entitySnapshot.shareStructure?.shareClasses
-    )
-    this.setNewResolutionDates(filing.alteration.shareStructure?.resolutionDates || [])
+    ))
+    this.setNewResolutionDates(cloneDeep(
+      filing.alteration.shareStructure?.resolutionDates || []
+    ))
 
     // store Certify State
     this.setCertifyState({
@@ -672,9 +668,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param entitySnapshot the latest entity snapshot
    */
   parseSpecialResolutionFiling (filing: SpecialResolutionFilingIF, entitySnapshot: EntitySnapshotIF): void {
-    // make a copy so snapshot objects are different from objects below
-    entitySnapshot = cloneDeep(entitySnapshot)
-
     // store Entity Snapshot
     this.setEntitySnapshot(entitySnapshot)
 
@@ -688,24 +681,25 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     })
 
     // store Name Request data
-    this.setNameRequest(
+    this.setNameRequest(cloneDeep(
       filing.alteration.nameRequest ||
       {
         legalType: entitySnapshot.businessInfo.legalType,
         legalName: entitySnapshot.businessInfo.legalName,
         nrNumber: entitySnapshot.businessInfo.nrNumber
       }
-    )
+    ))
+
     //  add more components later
 
     // store Office Addresses **from snapshot** (because we don't change office addresses in an special resolution)
-    this.setOfficeAddresses(entitySnapshot.addresses)
+    this.setOfficeAddresses(cloneDeep(entitySnapshot.addresses))
 
     // store People And Roles **from snapshot** (because we don't change people and roles in an special resolution)
-    this.setPeopleAndRoles(entitySnapshot.orgPersons)
+    this.setPeopleAndRoles(cloneDeep(entitySnapshot.orgPersons))
 
-    // store Business Contact
-    this.setBusinessContact(entitySnapshot.authInfo.contact)
+    // store current Business Contact
+    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
 
     // store Certify State
     this.setCertifyState({
@@ -732,9 +726,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param entitySnapshot the latest entity snapshot
    */
   parseChangeRegFiling (filing: ChgRegistrationFilingIF, entitySnapshot: EntitySnapshotIF): void {
-    // make a copy so snapshot objects are different from objects below
-    entitySnapshot = cloneDeep(entitySnapshot)
-
     // store Entity Snapshot
     this.setEntitySnapshot(entitySnapshot)
 
@@ -750,35 +741,38 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // store NAICS
     // must come after business information
     if (filing.changeOfRegistration.business.naics) {
-      this.setNaics(filing.changeOfRegistration.business.naics)
+      this.setNaics({ ...filing.changeOfRegistration.business.naics })
     }
 
     // store Name Request data
-    this.setNameRequest(
+    this.setNameRequest(cloneDeep(
       filing.changeOfRegistration.nameRequest ||
       {
         legalType: entitySnapshot.businessInfo.legalType,
         legalName: entitySnapshot.businessInfo.legalName,
         nrNumber: entitySnapshot.businessInfo.nrNumber
       }
-    )
+    ))
 
     // store Office Addresses
     let addresses
     if (filing.changeOfRegistration.offices?.businessOffice) {
       addresses = { businessOffice: filing.changeOfRegistration.offices.businessOffice }
     }
-    this.setOfficeAddresses(addresses || entitySnapshot.addresses)
+    this.setOfficeAddresses(cloneDeep(
+      addresses ||
+      entitySnapshot.addresses
+    ))
 
     // store People And Roles
     let orgPersons = filing.changeOfRegistration.parties || entitySnapshot.orgPersons
     // exclude Completing Party
     // (it is managed separately and added to the filing in buildChangeRegFiling())
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
-    this.setPeopleAndRoles(orgPersons)
+    this.setPeopleAndRoles(cloneDeep(orgPersons))
 
-    // store Business Contact
-    this.setBusinessContact(entitySnapshot.authInfo.contact)
+    // store current Business Contact
+    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
 
     // store Certify State
     this.setCertifyState({
@@ -805,9 +799,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param entitySnapshot the latest entity snapshot
    */
   parseFirmConversionFiling (filing: ConversionFilingIF, entitySnapshot: EntitySnapshotIF): void {
-    // make a copy so snapshot objects are different from objects below
-    entitySnapshot = cloneDeep(entitySnapshot)
-
     // store Entity Snapshot
     // make a copy so snapshot objects are different from objects below
     this.setEntitySnapshot(entitySnapshot)
@@ -824,35 +815,38 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // store NAICS
     // must come after business information
     if (filing.conversion.business.naics) {
-      this.setNaics(filing.conversion.business.naics)
+      this.setNaics({ ...filing.conversion.business.naics })
     }
 
     // store Name Request data
-    this.setNameRequest(
+    this.setNameRequest(cloneDeep(
       filing.conversion.nameRequest ||
       {
         legalType: entitySnapshot.businessInfo.legalType,
         legalName: entitySnapshot.businessInfo.legalName,
         nrNumber: entitySnapshot.businessInfo.nrNumber
       }
-    )
+    ))
 
     // store Office Addresses
     let addresses
     if (filing.conversion.offices?.businessOffice) {
       addresses = { businessOffice: filing.conversion.offices.businessOffice }
     }
-    this.setOfficeAddresses(addresses || entitySnapshot.addresses)
+    this.setOfficeAddresses(cloneDeep(
+      addresses ||
+      entitySnapshot.addresses
+    ))
 
     // store People And Roles
     let orgPersons = filing.conversion.parties || entitySnapshot.orgPersons
     // exclude Completing Party
     // (it is managed separately and added to the filing in buildConversionFiling())
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
-    this.setPeopleAndRoles(orgPersons)
+    this.setPeopleAndRoles(cloneDeep(orgPersons))
 
-    // store Business Contact
-    this.setBusinessContact(entitySnapshot.authInfo.contact)
+    // store current Business Contact
+    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
 
     // store Certify State
     this.setCertifyState({
@@ -869,9 +863,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    * @param entitySnapshot the latest entity snapshot
    */
   parseEntitySnapshot (entitySnapshot = this.getEntitySnapshot): void {
-    // make a copy so snapshot objects are different from objects below
-    entitySnapshot = cloneDeep(entitySnapshot)
-
     // store Entity Snapshot
     this.setEntitySnapshot(entitySnapshot)
 
@@ -882,7 +873,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setEntityType(entitySnapshot.businessInfo.legalType)
 
     // store Business Information
-    this.setBusinessInformation(entitySnapshot.businessInfo)
+    this.setBusinessInformation({ ...entitySnapshot.businessInfo })
 
     // store Name Request data
     this.setNameRequest({
@@ -892,19 +883,20 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     })
 
     // store People and Roles
-    this.setPeopleAndRoles(entitySnapshot.orgPersons)
+    this.setPeopleAndRoles(cloneDeep(entitySnapshot.orgPersons))
 
-    // store Business Contact
-    this.setBusinessContact(entitySnapshot.authInfo.contact)
+    // store current Business Contact
+    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
 
     // store Office Addresses
-    this.setOfficeAddresses(entitySnapshot.addresses)
+    this.setOfficeAddresses(cloneDeep(entitySnapshot.addresses))
 
     // handle entity-specific values
     switch (entitySnapshot.businessInfo.legalType) {
       case CorpTypeCd.BENEFIT_COMPANY: {
         // store Name Translations
         if (entitySnapshot.nameTranslations) {
+          // don't need cloneDeep because mapNameTranslations already returns new array
           this.setNameTranslations(this.mapNameTranslations(entitySnapshot.nameTranslations))
         }
 
@@ -912,7 +904,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         this.setProvisionsRemoved(null)
 
         // store Share Classes and clear New Resolution Dates
-        this.setShareClasses(entitySnapshot.shareStructure.shareClasses)
+        this.setShareClasses(cloneDeep(entitySnapshot.shareStructure.shareClasses))
         this.setNewResolutionDates([])
 
         break
@@ -1007,12 +999,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    */
   private prepareShareClasses () : ShareClassIF[] {
     // filter out removed classes and delete "action" property
-    const shareClasses = this.getShareClasses.filter(x => x.action !== ActionTypes.REMOVED)
+    const shareClasses = this.getShareClasses
+      .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
       .map((x) => { const { action, ...rest } = x; return rest })
 
     // filter out removed series and delete "action" property
     for (const [index, share] of shareClasses.entries()) {
-      shareClasses[index].series = share.series?.filter(x => x.action !== ActionTypes.REMOVED)
+      shareClasses[index].series = share.series
+        .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
         .map((x) => { const { action, ...rest } = x; return rest })
     }
 

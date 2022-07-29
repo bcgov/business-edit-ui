@@ -510,7 +510,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
   /** Whether to render the "person edit business number" block. */
   get showPersonEditBusNum (): boolean {
-    if (this.isChangeRegFiling) {
+    if (this.isFirmChangeFiling) {
       // never show for change reg filing
       return false
     }
@@ -527,7 +527,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
   /** Whether to render the "person show business number" block. */
   get showPersonShowBusNum (): boolean {
-    if (this.isChangeRegFiling) {
+    if (this.isFirmChangeFiling) {
       // show only for change person-proprietor
       return (this.isPreExisting && this.isProprietor)
     }
@@ -544,7 +544,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
   /** Whether to render the "org edit business number" block. */
   get showOrgEditBusNum (): boolean {
-    if (this.isChangeRegFiling) {
+    if (this.isFirmChangeFiling) {
       // show only for add org-partner manual entry
       return (this.isNew && this.isPartner && !this.orgPerson.isLookupBusiness)
     }
@@ -564,7 +564,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
   /** Whether to render the "org show business number" block. */
   get showOrgShowBusNum (): boolean {
-    if (this.isChangeRegFiling) {
+    if (this.isFirmChangeFiling) {
       // show for all except where edit block is shown
       return !this.showOrgEditBusNum
     }
@@ -648,7 +648,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       // alterations don't use this component
       return false
     }
-    if (this.isChangeRegFiling) {
+    if (this.isFirmChangeFiling) {
       // can only remove partner
       return this.isPartner
     }
@@ -667,7 +667,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
   /** Whether the org-person email is optional. */
   get isEmailOptional (): boolean {
-    return (this.isChangeRegFiling || this.isFirmConversionFiling)
+    return (this.isFirmChangeFiling || this.isFirmConversionFiling)
   }
 
   /** Whether to render the add firm org components. */
@@ -676,7 +676,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       // alterations don't use this component
       return false
     }
-    if (this.isChangeRegFiling) {
+    if (this.isFirmChangeFiling) {
       // can only add partner (cannot add proprietor)
       return (this.isNew && this.isPartner)
     }
