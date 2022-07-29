@@ -402,7 +402,7 @@ export default class YourCompany extends Mixins(
     return (this.getComponentValidate && this.isEditingType)
   }
 
-  /** The translation section validity state (when prompted by app). */
+  /** The association type section validity state (when prompted by app). */
   get invalidAssociationTypeSection (): boolean {
     return (this.getComponentValidate && this.isEditingAssociationType)
   }
