@@ -504,6 +504,26 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       })
     }
 
+    // store NAICS for corrected Registration or Change of Registration
+    // must come after business information
+    // *** FUTURE: change this to "if firm correction"
+    if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
+      let naics: NaicsIF
+      // just check description since code may be undefined
+      if (filing.correction.business.naicsDescription) {
+        naics = {
+          naicsCode: filing.correction.business.naicsCode,
+          naicsDescription: filing.correction.business.naicsDescription
+        }
+      } else {
+        naics = {
+          naicsCode: entitySnapshot.businessInfo.naicsCode,
+          naicsDescription: entitySnapshot.businessInfo.naicsDescription
+        }
+      }
+      this.setNaics(naics)
+    }
+
     // store Name Request
     this.setNameRequest(cloneDeep(
       filing.correction.nameRequest ||
