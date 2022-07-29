@@ -122,9 +122,9 @@ export const setCorrectionInformation: ActionIF =
     commit('mutateCorrectionInformation', correctionInformation)
   }
 
-export const setCorrectionFilingDate: ActionIF =
-({ commit }, correctedFilingDate: string): void => {
-  commit('mutateCorrectionFilingDate', correctedFilingDate)
+export const setCorrectionStartDate: ActionIF =
+({ commit }, startDate: string): void => {
+  commit('mutateCorrectionStartDate', startDate)
 }
 
 export const setNameRequest: ActionIF = ({ commit }, nameRequest: NameRequestIF): void => {

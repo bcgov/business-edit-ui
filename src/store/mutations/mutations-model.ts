@@ -143,8 +143,8 @@ export const mutateCorrectionInformation = (state: StateIF, correctionInformatio
   state.stateModel.correctionInformation = correctionInformation
 }
 
-export const mutateCorrectionFilingDate = (state: StateIF, correctedFilingDate: string) => {
-  state.stateModel.correctionInformation.correctedFilingDate = correctedFilingDate
+export const mutateCorrectionStartDate = (state: StateIF, startDate: string) => {
+  state.stateModel.correctionInformation.startDate = startDate
 }
 
 export const mutateNameRequest = (state: StateIF, nameRequest: NameRequestIF) => {

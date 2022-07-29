@@ -115,13 +115,13 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   // Global getters
   @Getter isBenIaCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
-  @Getter getCorrectedFilingDate!: string
+  @Getter getCorrectionStartDate!: string
   @Getter getBusinessFoundingDate!: string // actually date-time
   @Getter getCurrentDate!: string
   @Getter getCurrentJsDate!: Date
 
   // Global setter
-  @Action setCorrectionFilingDate!: ActionBindingIF
+  @Action setCorrectionStartDate!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
 
   /** Whether to show invalid section styling. */
@@ -129,7 +129,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   readonly invalidSection: boolean
 
   protected onEditMode = false
-  protected isCorrected = !!this.getCorrectedFilingDate
+  protected isCorrected = !!this.getCorrectionStartDate
   protected newCorrectedStartDate = undefined // date is "Month Day, Year"
 
   /** The minimum start date that can be entered (Up to 2 years ago today). */
@@ -165,8 +165,8 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling
     ) {
-      if (this.getCorrectedFilingDate && this.isCorrected) {
-        return this.yyyyMmDdToPacificDate(this.getCorrectedFilingDate)
+      if (this.getCorrectionStartDate && this.isCorrected) {
+        return this.yyyyMmDdToPacificDate(this.getCorrectionStartDate)
       } else if (this.getBusinessFoundingDate) {
         return this.apiToPacificDateLong(this.getBusinessFoundingDate)
       }
@@ -189,7 +189,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
     if (this.newCorrectedStartDate) {
       if (this.yyyyMmDdToPacificDate(this.newCorrectedStartDate, true) !==
         this.apiToPacificDateLong(this.getBusinessFoundingDate)) {
-        this.setCorrectionFilingDate(this.newCorrectedStartDate)
+        this.setCorrectionStartDate(this.newCorrectedStartDate)
         this.isCorrected = true
       } else {
         this.newCorrectedStartDate = undefined
@@ -203,7 +203,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   }
 
   protected onUndoClicked (): void {
-    this.setCorrectionFilingDate(undefined)
+    this.setCorrectionStartDate(undefined)
     this.newCorrectedStartDate = undefined
     this.isCorrected = false
   }
