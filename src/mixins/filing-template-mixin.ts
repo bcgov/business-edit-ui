@@ -999,12 +999,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
    */
   private prepareShareClasses () : ShareClassIF[] {
     // filter out removed classes and delete "action" property
-    const shareClasses = this.getShareClasses.filter(x => x.action !== ActionTypes.REMOVED)
+    const shareClasses = this.getShareClasses
+      .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
       .map((x) => { const { action, ...rest } = x; return rest })
 
     // filter out removed series and delete "action" property
     for (const [index, share] of shareClasses.entries()) {
-      shareClasses[index].series = share.series?.filter(x => x.action !== ActionTypes.REMOVED)
+      shareClasses[index].series = share.series
+        .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
         .map((x) => { const { action, ...rest } = x; return rest })
     }
 
