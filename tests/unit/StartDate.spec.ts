@@ -14,14 +14,13 @@ const vuetify = new Vuetify({})
 const localVue = createLocalVue()
 localVue.use(VueRouter)
 
-let router: any = mockRouter.mock()
-let store: any = getVuexStore()
-
+const router: any = mockRouter.mock()
+const store: any = getVuexStore()
 
 describe('Start Date', () => {
   let wrapper: any
 
-  let correctionInformation = {
+  const correctionInformation = {
     comment: 'Test',
     correctedFilingId: 1,
     correctedFilingDate: '2021-01-01T00:00:00.000000+00:00',
@@ -59,7 +58,7 @@ describe('Start Date', () => {
   it('startDate component displays/hides date picker', async () => {
     const correctBtn = wrapper.find('#start-changes-btn')
     await correctBtn.trigger('click')
-    
+
     const cancelBtn = wrapper.find('#start-cancel-btn')
     expect(cancelBtn.text()).toBe('Cancel')
     expect(wrapper.find('#start-done-btn').text()).toBe('Done')
@@ -74,7 +73,7 @@ describe('Start Date', () => {
   it('component to display corrected badge and undo btn for corrected filings', async () => {
     await wrapper.setData({ isCorrected: true }) // setting the correction flag
     await Vue.nextTick()
-    
+
     expect(wrapper.find('.v-chip__content').text()).toBe('Corrected')
     expect(wrapper.find('#start-undo-btn').text()).toBe('Undo')
   })
