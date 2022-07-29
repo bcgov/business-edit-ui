@@ -86,9 +86,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setHasPlanOfArrangement!: ActionBindingIF
 
   public get defaultCorrectionDetailComment (): string {
-    const date = this.apiToDate(this.getCorrectedFilingDate)
-    const yyyyMmDd = this.dateToYyyyMmDd(date)
-    return `Correction for Incorporation Application filed on ${yyyyMmDd}`
+    return `Correction for Incorporation Application filed on ${this.correctedFilingDate}`
   }
 
   //
@@ -118,7 +116,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       correction: {
         correctedFilingId: this.getCorrectedFilingId,
         correctedFilingType: this.getCorrectedFilingType,
-        correctedFilingDate: this.getCorrectedFilingDate,
+        correctedFilingDate: this.correctedFilingDate,
         comment: `${this.defaultCorrectionDetailComment}\n${this.getDetailComment}`,
         contactPoint: this.getContactPoint,
         nameRequest: this.getNameRequest,
@@ -486,6 +484,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     // store Entity Snapshot
     this.setEntitySnapshot(entitySnapshot)
 
+    // *** FUTURE: remove this fallback when Filings UI provides this value
+    if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.STAFF
+
     // store Correction Information
     this.setCorrectionInformation(cloneDeep(filing.correction))
 
@@ -510,7 +511,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
       let naics: NaicsIF
       // just check description since code may be undefined
-      if (filing.correction.business.naicsDescription) {
+      if (filing.correction.business?.naicsDescription) {
         naics = {
           naicsCode: filing.correction.business.naicsCode,
           naicsDescription: filing.correction.business.naicsDescription
@@ -941,6 +942,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   //
   // Local helper methods
   //
+
+  /** The corrected filing date as YYYY-MM-DD. */
+  private get correctedFilingDate (): string {
+    const date = this.apiToDate(this.getCorrectedFilingDate)
+    return this.dateToYyyyMmDd(date)
+  }
 
   /** The Contact Point object. */
   private get getContactPoint (): ContactPointIF {
