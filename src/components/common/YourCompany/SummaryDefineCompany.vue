@@ -75,6 +75,7 @@ export default class SummaryDefineCompany extends Mixins(CommonMixin) {
   @Getter isPremiumAccount!: boolean
   @Getter getNameTranslations!: Array<string>
   @Getter isDefineCompanyStepValid!: boolean
+  @Getter getEntityType!: CorpTypeCd
 
   @Prop({ default: false })
   readonly isSummary: boolean

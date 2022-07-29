@@ -28,7 +28,7 @@
     </template>
 
     <!-- Nature of Business -->
-    <template v-if="hasNatureOfBusinessChanged">
+    <template v-if="hasNaicsChanged">
       <v-divider class="mx-8" />
       <article id="nob-summary-section" class="section-container">
         <v-row no-gutters>
@@ -87,7 +87,7 @@ export default class ChangeSummary extends Vue {
   // Global getters
   @Getter hasBusinessNameChanged!: boolean
   @Getter getNameRequest!: NameRequestIF
-  @Getter hasNatureOfBusinessChanged!: boolean
+  @Getter hasNaicsChanged!: boolean
   @Getter getCurrentNaics!: NaicsIF
   @Getter haveOfficeAddressesChanged!: boolean
   @Getter havePeopleAndRolesChanged!: boolean

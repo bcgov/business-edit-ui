@@ -161,7 +161,8 @@ import * as Dialogs from '@/dialogs/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
-  AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF } from '@/interfaces/'
+  AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, SpecialResolutionFilingIF }
+  from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums/'
@@ -764,7 +765,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     let filingComplete: any
     try {
-      let filing: AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF
+      let filing: AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF | SpecialResolutionFilingIF
       if (this.isAlterationFiling) filing = this.buildAlterationFiling(isDraft)
       if (this.isChangeRegFiling) filing = this.buildChangeRegFiling(isDraft)
       if (this.isFirmConversionFiling) filing = this.buildConversionFiling(isDraft)

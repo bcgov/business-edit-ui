@@ -1,26 +1,20 @@
-import { AddressesIF, FilingBusinessIF, FilingHeaderIF, NameRequestIF, OrgPersonIF, ShareStructureIF }
-  from '@/interfaces/'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
+import { AddressesIF, FilingBusinessIF, FilingHeaderIF, NameRequestIF, OrgPersonIF } from '@/interfaces/'
+import { ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
 
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/conversion.json
 //
 interface ConversionIF {
   business: {
-    natureOfBusiness?: string
-    naics?: {
-      naicsCode: string
-      naicsDescription: string
-    }
     identifier: string
+    naics?: NaicsIF
   }
-  startDate?: string
+  contactPoint: ContactPointIF
+  courtOrder?: string
   nameRequest?: NameRequestIF
   offices: AddressesIF
   parties: Array<OrgPersonIF>
-  shareStructure?: ShareStructureIF
-  contactPoint: ContactPointIF
-  courtOrder?: string
+  startDate?: string // YYYY-MM-DD
 }
 
 /** Interface for data object UI sends to API. */
