@@ -567,10 +567,11 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       this.recMailingAddress = { ...this.getOfficeAddresses?.recordsOffice?.mailingAddress }
       this.recDeliveryAddress = { ...this.getOfficeAddresses?.recordsOffice?.deliveryAddress }
 
+      const hasNoRecAddress = this.isSpecialResolutionFiling
       // set initial validity states
       // these will be updated by the BaseAddress sub-components
-      this.recMailingAddressValid = !isEmpty(this.recMailingAddress)
-      this.recDeliveryAddressValid = !isEmpty(this.recDeliveryAddress)
+      this.recMailingAddressValid = hasNoRecAddress || !isEmpty(this.recMailingAddress)
+      this.recDeliveryAddressValid = hasNoRecAddress || !isEmpty(this.recDeliveryAddress)
 
       // compare valid addresses to set the "inherit registered" flag
       // ignore Address Country Description since it's not always present
