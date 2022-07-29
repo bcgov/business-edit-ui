@@ -89,7 +89,7 @@ export default class FmCorrection extends Mixins(CommonMixin, FilingTemplateMixi
     // fetch the rest of the data
     try {
       // safety check
-      if (!this.correctionFiling) throw (new Error('Missing correction filing'))
+      if (!this.correctionFiling) throw (new Error('Missing correction filing. Try reloading the page.'))
 
       // fetch business snapshot
       const businessSnapshot = await this.fetchBusinessSnapshot()

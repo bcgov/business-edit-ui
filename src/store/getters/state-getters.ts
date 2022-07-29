@@ -170,7 +170,7 @@ export const getCorrectionErrorType = (state: StateIF): CorrectionErrorTypes => 
   return getCorrectionInformation(state).type
 }
 
-/** The correction (business) start date. */
+/** The correction (business) start date (YYYY-MM-DD). */
 export const getCorrectionStartDate = (state: StateIF): string => {
   return getCorrectionInformation(state).startDate
 }
