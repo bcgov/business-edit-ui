@@ -83,7 +83,7 @@
             offset-y left nudge-bottom="4" v-model="dropdown">
             <template v-slot:activator="{ on }">
               <v-btn text small color="primary" id="start-menu-btn" v-on="on">
-                <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                <v-icon id="start-menu">{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
               </v-btn>
             </template>
             <v-btn text color="primary" id="more-changes-btn"
@@ -128,9 +128,10 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   @Prop({ default: false })
   readonly invalidSection: boolean
 
+  protected dropdown = false
   protected onEditMode = false
   protected isCorrected = !!this.getCorrectionStartDate
-  protected newCorrectedStartDate = undefined // date is "Month Day, Year"
+  protected newCorrectedStartDate = null as string // date is "Month Day, Year"
 
   /** The minimum start date that can be entered (Up to 2 years ago today). */
   protected get startDateMin (): Date {
@@ -192,7 +193,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
         this.setCorrectionStartDate(this.newCorrectedStartDate)
         this.isCorrected = true
       } else {
-        this.newCorrectedStartDate = undefined
+        this.newCorrectedStartDate = null
       }
     }
     this.onEditMode = false
@@ -203,8 +204,8 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   }
 
   protected onUndoClicked (): void {
-    this.setCorrectionStartDate(undefined)
-    this.newCorrectedStartDate = undefined
+    this.setCorrectionStartDate(null)
+    this.newCorrectedStartDate = null
     this.isCorrected = false
   }
 

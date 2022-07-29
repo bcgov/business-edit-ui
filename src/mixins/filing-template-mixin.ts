@@ -123,7 +123,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         contactPoint: this.getContactPoint,
         nameRequest: this.getNameRequest,
         offices: this.getOfficeAddresses,
-        type: this.getCorrectionErrorType
+        type: this.getCorrectionErrorType,
+        startDate: this.getCorrectionStartDate
       }
     }
 
