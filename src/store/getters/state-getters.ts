@@ -390,6 +390,8 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
     )
   }
   if (isFirmCorrectionFiling(state)) {
+    // *** FUTURE: should check the following:
+    // completing party (client error correction only)
     return (
       hasBusinessNameChanged(state) ||
       hasNaicsChanged(state) ||
