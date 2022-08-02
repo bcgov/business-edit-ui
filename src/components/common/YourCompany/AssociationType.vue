@@ -34,7 +34,7 @@
             <span>Undo</span>
           </v-btn>
           <v-tooltip
-              top
+              v-else top
               content-class="top-tooltip"
               transition="fade-transition"
               nudge-right="3"
@@ -55,6 +55,36 @@
                 Refer to section 68 "Amendment of memorandum and rules" in the Cooperative Associations Act.
               </span>
             </v-tooltip>
+
+            <!-- Drop Down Actions -->
+            <span class="more-actions" v-if="hasAssociationTypeChanged">
+              <v-menu
+                offset-y left nudge-bottom="4"
+                v-model="dropdown"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    text small color="primary"
+                    id="btn-more-actions"
+                    v-on="on"
+                  >
+                    <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item
+                    id="btn-more-actions-edit"
+                    class="v-list-item"
+                    @click="isEditingAssociationType = true; dropdown = false"
+                  >
+                    <v-list-item-subtitle>
+                      <v-icon small color="primary">mdi-pencil</v-icon>
+                      <span class="drop-down-action ml-1">Change</span>
+                    </v-list-item-subtitle>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </span>
         </div>
       </v-col>
 
@@ -129,6 +159,9 @@ export default class AssociationType extends Mixins(CommonMixin, EnumMixin) {
 
   protected selectedAssociationType = null as AssociationTypes
   protected isEditingAssociationType = false
+
+  /** V-model for dropdown menu. */
+  protected dropdown: boolean = null
 
   /** Validation rules. */
   readonly AssociationTypeRules: Array<Function> = [
