@@ -419,7 +419,6 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces/'
 import { isSame } from '@/utils/'
 import { AddressTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { CommonMixin } from '@/mixins/'
 
 const REGION_BC = 'BC'
@@ -473,7 +472,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   readonly isEmpty = isEmpty
   readonly isSame = isSame
   readonly AddressTypes = AddressTypes
-  readonly CorpTypeCd = CorpTypeCd
   readonly DefaultAddressSchema = DefaultAddressSchema
   readonly InBcCanadaAddressSchema = InBcCanadaAddressSchema
 

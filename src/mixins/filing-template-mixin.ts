@@ -1,7 +1,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
-import { DateMixin } from '@/mixins/'
+import { DateMixin, EnumMixin } from '@/mixins/'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF, EffectiveDateTimeIF,
   EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF, NameTranslationIF,
   OrgPersonIF, ShareClassIF, SpecialResolutionFilingIF } from '@/interfaces/'
@@ -15,7 +15,7 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
  * Mixin that provides the integration with the Legal API.
  */
 @Component({})
-export default class FilingTemplateMixin extends Mixins(DateMixin) {
+export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   // Global getters
   @Getter getEntityType!: CorpTypeCd
   @Getter getNameRequestNumber!: string
@@ -89,7 +89,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setHasPlanOfArrangement!: ActionBindingIF
 
   public get defaultCorrectionDetailComment (): string {
-    return `Correction for Incorporation Application filed on ${this.correctedFilingDate}`
+    const correctedFilingName = this.filingTypeToName(this.getCorrectedFilingType)
+    return `Correction for ${correctedFilingName} filed on ${this.correctedFilingDate}`
   }
 
   //

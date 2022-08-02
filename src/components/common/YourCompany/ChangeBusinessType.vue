@@ -246,9 +246,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
 
   @Action setEntityType!: ActionBindingIF
 
-  // Declaration for template
-  readonly CorpTypeCd = CorpTypeCd
-
   protected selectedEntityType = null as CorpTypeCd
   protected confirmArticles = false
   protected helpToggle = false

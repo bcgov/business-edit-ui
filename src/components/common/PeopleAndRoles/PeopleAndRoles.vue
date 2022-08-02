@@ -147,7 +147,6 @@ import { isSame } from '@/utils/'
 import { ActionBindingIF, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF, OrgPersonIF, ResourceIF,
   RoleIF } from '@/interfaces/'
 import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { HelpSection } from '@/components/common/'
 import { ListPeopleAndRoles } from './'
 import { CommonMixin, DateMixin, OrgPersonMixin } from '@/mixins/'
@@ -162,7 +161,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   // Declarations for template
   readonly RoleTypes = RoleTypes
   readonly PartyTypes = PartyTypes
-  readonly CorpTypeCd = CorpTypeCd
 
   // Global getters
   @Getter getCurrentJsDate!: Date
