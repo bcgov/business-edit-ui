@@ -491,7 +491,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     this.setEntitySnapshot(entitySnapshot)
 
     // *** FUTURE: remove this fallback when Filings UI provides this value
-    if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.STAFF
+    if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.CLIENT
 
     // store Correction Information
     this.setCorrectionInformation(cloneDeep(filing.correction))
