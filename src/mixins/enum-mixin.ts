@@ -17,7 +17,8 @@ export default class EnumMixin extends Vue {
       case AssociationTypes.HOUSING_COOPERATIVE: return 'Housing Cooperative'
       default: return type
     }
- /**
+  }
+  /**
    * Converts the filing type to a filing name.
    * @param type the filing type to convert
    * @param agmYear the AGM Year to be appended to the filing name (optional)
