@@ -4,12 +4,12 @@
     <v-slide-x-transition hide-on-leave>
       <div v-if="!isSummaryMode">
         <header>
-          <h1>Company Information</h1>
+          <h1>Business Information</h1>
         </header>
 
         <section class="mt-6">
-          You are legally obligated to keep your company information up to date. Necessary fees
-          will be applied as updates are made.
+          You must keep your business information up to date. Some changes require a Special Resolution.
+          Necessary fees will be applied as updates are made.
         </section>
 
         <YourCompany class="mt-10" />
@@ -218,21 +218,21 @@ export default class SpecialResolution extends Mixins(
         // store the filing ID
         this.setFilingId(this.specialResolutionId)
 
-        // fetch draft alteration to resume
-        const alterationFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.specialResolutionId)
+        // fetch draft special resolution to resume
+        const filing = await LegalServices.fetchFilingById(this.getBusinessId, this.specialResolutionId)
 
-        // do not proceed if this isn't an ALTERATION filing
-        if (!alterationFiling.alteration) {
-          throw new Error('Invalid Alteration filing')
+        // do not proceed if this isn't an Special Resolution filing
+        if (!filing.specialResolution) {
+          throw new Error('Invalid Special Resolution filing')
         }
 
         // do not proceed if this isn't a DRAFT filing
-        if (alterationFiling.header.status !== FilingStatus.DRAFT) {
-          throw new Error('Invalid Alteration status')
+        if (filing.header.status !== FilingStatus.DRAFT) {
+          throw new Error('Invalid Special Resolution status')
         }
 
-        // parse alteration filing and original business snapshot into store
-        this.parseSpecialResolutionFiling(alterationFiling, businessSnapshot)
+        // parse special resolution filing and original business snapshot into store
+        this.parseSpecialResolutionFiling(filing, businessSnapshot)
       } else {
         // parse business data into store
         this.parseEntitySnapshot(businessSnapshot)
@@ -246,7 +246,7 @@ export default class SpecialResolution extends Mixins(
         this.setFilingData(this.specialResolutionResource.filingData)
       } else {
         // go to catch()
-        throw new Error(`Invalid Alteration resources entity type = ${this.getEntityType}`)
+        throw new Error(`Invalid Special Resolution resources entity type = ${this.getEntityType}`)
       }
 
       // update the current fees for the Filing

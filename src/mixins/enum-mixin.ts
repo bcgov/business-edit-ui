@@ -1,11 +1,23 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { FilingNames, FilingTypes } from '@/enums'
+import { AssociationTypes, FilingNames, FilingTypes } from '@/enums'
 
 /**
- * Mixin that provides some useful enum-related utilities.
- */
+ * Mixin that provides some useful enum-related utilities. */
 @Component({})
 export default class EnumMixin extends Vue {
+  /**
+   * Converts the association type to a description.
+   * @param type the association type
+   * @returns the description
+   */
+  associationTypeToDescription (type: AssociationTypes): string {
+    switch (type) {
+      case AssociationTypes.COMMUNITY_SERVICE_COOPERATIVE: return 'Community Service Cooperative'
+      case AssociationTypes.ORDINARY_COOPERATIVE: return 'Ordinary Cooperative'
+      case AssociationTypes.HOUSING_COOPERATIVE: return 'Housing Cooperative'
+      default: return type
+    }
+  }
   /**
    * Converts the filing type to a filing name.
    * @param type the filing type to convert

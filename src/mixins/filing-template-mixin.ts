@@ -6,7 +6,8 @@ import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, Correction
   EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF, NameTranslationIF,
   OrgPersonIF, ShareClassIF, SpecialResolutionFilingIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
-import { ActionTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes, RoleTypes } from '@/enums/'
+import { ActionTypes, AssociationTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
+  RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 
@@ -59,6 +60,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter isCorrectedIncorporationApplication!: boolean
   @Getter isCorrectedRegistration!: boolean
   @Getter isCorrectedChangeReg!: boolean
+  @Getter getAssociationType!: AssociationTypes
+  @Getter hasAssociationTypeChanged!: boolean
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -300,13 +303,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         legalType: this.getEntitySnapshot.businessInfo.legalType,
         nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
       },
-      alteration: {
+      specialResolution: {
         business: {
           identifier: this.getBusinessId,
-          legalType: this.getEntityType
-        },
-        provisionsRemoved: this.areProvisionsRemoved,
-        contactPoint: this.getContactPoint
+          legalType: this.getEntityType,
+          associationType: this.getAssociationType
+        }
       }
     }
 
