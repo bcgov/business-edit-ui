@@ -360,9 +360,6 @@ export default class YourCompany extends Mixins(
   @Action setBusinessInformation!: ActionBindingIF
   @Action setNameRequest!: ActionBindingIF
 
-  // Declaration for template
-  readonly CorpTypeCd = CorpTypeCd
-
   /** V-model for dropdown menu. */
   protected dropdown: boolean = null
 
