@@ -58,7 +58,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
     if (folioNumber === this.getFolioNumber) return
 
     try {
-      if (this.isAlterationFiling) {
+      if (this.isAlterationFiling || this.isSpecialResolutionFiling) {
         await AuthServices.updateFolioNumber(folioNumber, this.getBusinessId)
       }
       this.setFolioNumber(folioNumber)
