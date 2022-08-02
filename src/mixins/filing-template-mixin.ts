@@ -60,6 +60,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter isCorrectedIncorporationApplication!: boolean
   @Getter isCorrectedRegistration!: boolean
   @Getter isCorrectedChangeReg!: boolean
+  @Getter isClientErrorCorrection!: boolean
   @Getter getAssociationType!: AssociationTypes
   @Getter hasAssociationTypeChanged!: boolean
 
@@ -107,7 +108,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     let filing: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
-        certifiedBy: this.getCertifyState.certifiedBy,
+        certifiedBy: this.getCertifyState.certifiedBy || '',
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: this.getFolioNumber // original folio number, unless overridden by staff payment below
       },
@@ -134,8 +135,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       // make a copy so we don't change original array
       let parties = cloneDeep(this.getPeopleAndRoles)
 
-      // add completing party
-      parties = this.addCompletingParty(parties)
+      // add completing party (client error correction only)
+      if (this.isClientErrorCorrection) {
+        parties = this.addCompletingParty(parties)
+      }
 
       // fix schema issues
       parties = this.fixPartySchemaIssues(parties)

@@ -59,7 +59,6 @@ import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resour
 export default class FmCorrection extends Mixins(CommonMixin, FilingTemplateMixin) {
   // Global getters
   @Getter getFilingData!: FilingDataIF
-  @Getter isClientErrorCorrection!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
