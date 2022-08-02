@@ -419,7 +419,6 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces/'
 import { isSame } from '@/utils/'
 import { AddressTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { CommonMixin } from '@/mixins/'
 
 const REGION_BC = 'BC'
@@ -473,7 +472,6 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   readonly isEmpty = isEmpty
   readonly isSame = isSame
   readonly AddressTypes = AddressTypes
-  readonly CorpTypeCd = CorpTypeCd
   readonly DefaultAddressSchema = DefaultAddressSchema
   readonly InBcCanadaAddressSchema = InBcCanadaAddressSchema
 
@@ -544,24 +542,12 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
-    if (this.isBenIaCorrectionFiling || this.isAlterationFiling || this.isSpecialResolutionFiling) {
+    if (this.isBenIaCorrectionFiling || this.isAlterationFiling) {
       // assign registered office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.registeredOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.registeredOffice?.deliveryAddress }
 
-      // set initial validity states
-      // these will be updated by the BaseAddress sub-components
-      this.mailingAddressValid = !isEmpty(this.mailingAddress)
-      this.deliveryAddressValid = !isEmpty(this.deliveryAddress)
-
-      // compare valid addresses to set the "inherit mailing" flag
-      // ignore Address Type since it's different
-      // ignore Address Country Description since it's not always present
-      this.inheritMailingAddress = (
-        this.mailingAddressValid &&
-        this.deliveryAddressValid &&
-        isSame(this.mailingAddress, this.deliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
-      )
+      this.initializeNonRecordsAddressValidation()
 
       // assign records office addresses (may be {})
       this.recMailingAddress = { ...this.getOfficeAddresses?.recordsOffice?.mailingAddress }
@@ -597,23 +583,36 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       // assign business office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.businessOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.businessOffice?.deliveryAddress }
+      this.initializeNonRecordsAddressValidation()
+    }
 
-      // set initial validity states
-      // these will be updated by the BaseAddress sub-components
-      this.mailingAddressValid = !isEmpty(this.mailingAddress)
-      this.deliveryAddressValid = !isEmpty(this.deliveryAddress)
-
-      // compare valid addresses to set the "inherit mailing" flag
-      // ignore Address Type since it's different
-      // ignore Address Country Description since it's not always present
-      this.inheritMailingAddress = (
-        this.mailingAddressValid &&
-        this.deliveryAddressValid &&
-        isSame(this.mailingAddress, this.deliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
-      )
+    if (this.isSpecialResolutionFiling) {
+      // assign registered office addresses (may be {})
+      this.mailingAddress = { ...this.getOfficeAddresses?.registeredOffice?.mailingAddress }
+      this.deliveryAddress = { ...this.getOfficeAddresses?.registeredOffice?.deliveryAddress }
+      this.initializeNonRecordsAddressValidation()
     }
 
     this.updateValidity()
+  }
+
+  /**
+   *  Initializes mailing and delivery address validation and initializes inherit mailing address (checkbox).
+   */
+  private initializeNonRecordsAddressValidation (): void {
+    // set initial validity states
+    // these will be updated by the BaseAddress sub-components
+    this.mailingAddressValid = !isEmpty(this.mailingAddress)
+    this.deliveryAddressValid = !isEmpty(this.deliveryAddress)
+
+    // compare valid addresses to set the "inherit mailing" flag
+    // ignore Address Type since it's different
+    // ignore Address Country Description since it's not always present
+    this.inheritMailingAddress = (
+      this.mailingAddressValid &&
+      this.deliveryAddressValid &&
+      isSame(this.mailingAddress, this.deliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
+    )
   }
 
   /**

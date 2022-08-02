@@ -5,7 +5,7 @@
       <v-row no-gutters>
         <v-col cols="9">
           <img  class="my-n1 header-icon" src="@/assets/images/currency-usd-circle.svg">
-          <label class="summary-title">Alteration Notice Changes {{alterationFees}}</label>
+          <label class="summary-title">Special Resolution Notice Changes {{alterationFees}}</label>
         </v-col>
 
         <!-- Actions -->
@@ -69,6 +69,24 @@
       </div>
     </template>
 
+    <!-- Association Type -->
+    <template v-if="hasAssociationTypeChanged">
+      <v-divider class="mx-4" />
+      <div class="section-container association-type-summary">
+        <v-row no-gutters>
+          <v-col cols="3">
+            <label><strong>Cooperative Association Type</strong></label>
+          </v-col>
+
+          <v-col cols="8">
+            <span class="info-text">Changing from a {{ associationTypeToDescription(originalAssociationType) }}</span>
+            &nbsp;
+            <span class="info-text">to a {{ associationTypeToDescription(getAssociationType) }}</span>
+          </v-col>
+        </v-row>
+      </div>
+    </template>
+
   </v-card>
 </template>
 
@@ -77,7 +95,7 @@
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
-import { DateMixin, SharedMixin, FilingTemplateMixin, PayApiMixin } from '@/mixins/'
+import { DateMixin, SharedMixin, FilingTemplateMixin, PayApiMixin, EnumMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
 
@@ -93,7 +111,8 @@ export default class SpecialResolutionSummary extends Mixins(
   DateMixin,
   SharedMixin,
   FilingTemplateMixin,
-  PayApiMixin
+  PayApiMixin,
+  EnumMixin
 ) {
   // Global getters
   @Getter getBusinessNumber!: string
@@ -117,6 +136,10 @@ export default class SpecialResolutionSummary extends Mixins(
 
   get originalLegalType (): string {
     return this.getEntitySnapshot?.businessInfo?.legalType
+  }
+
+  get originalAssociationType (): string {
+    return this.getEntitySnapshot?.businessInfo?.associationType
   }
 
   // sum of alteration fees
