@@ -29,7 +29,7 @@ for (const test of firmTestCases) {
   const type = test.isPremium ? 'premium' : test.isStaff ? 'staff' : 'regular'
 
   // FUTURE: Fix BaseAddress in sbc-common this.emitValid(!this.$v.$invalid) first
-  xdescribe(`Dissolution Firm view for a ${test.entityType} as a ${type} user`, () => {
+  xdescribe(`Completing Party view for a ${test.entityType} as a ${type} user`, () => {
     let wrapper: any
 
     beforeAll(() => {
@@ -85,7 +85,7 @@ for (const test of firmTestCases) {
       await input2.setValue('Name length is over 20')
       await input3.setValue('Name length is over 30 with many characters')
       const errorMessages = wrapper.findAll('#completing-party .v-messages__message')
-      expect(errorMessages.length).toBe(3) // length should be 3 theoretically
+      expect(errorMessages.length).toBe(3)
       expect(errorMessages.at(0).text()).toBe('Cannot exceed 20 characters')
       expect(errorMessages.at(1).text()).toBe('Cannot exceed 20 characters')
       expect(errorMessages.at(2).text()).toBe('Cannot exceed 20 characters')
