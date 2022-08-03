@@ -119,6 +119,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         nrNumber: this.getNameRequestNumber
       },
       correction: {
+        business: {
+          identifier: this.getBusinessId
+        },
         correctedFilingId: this.getCorrectedFilingId,
         correctedFilingType: this.getCorrectedFilingType,
         correctedFilingDate: this.correctedFilingDate,
@@ -177,8 +180,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // add in Registration / Change of Registration data
     // *** FUTURE: change this to "if firm correction"
     if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
-      filing.correction.business = {
-        identifier: this.getBusinessId,
+      filing.correction.business.naics = {
         naicsCode: this.getCurrentNaics.naicsCode || undefined, // don't include if empty
         naicsDescription: this.getCurrentNaics.naicsDescription
       }
@@ -491,7 +493,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     this.setEntitySnapshot(entitySnapshot)
 
     // *** FUTURE: remove this fallback when Filings UI provides this value
-    if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.CLIENT
+    if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.STAFF
 
     // store Correction Information
     this.setCorrectionInformation(cloneDeep(filing.correction))
@@ -515,20 +517,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // must come after business information
     // *** FUTURE: change this to "if firm correction"
     if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
-      let naics: NaicsIF
-      // just check description since code may be undefined
-      if (filing.correction.business?.naicsDescription) {
-        naics = {
-          naicsCode: filing.correction.business.naicsCode,
-          naicsDescription: filing.correction.business.naicsDescription
-        }
+      if (filing.correction.business?.naics) {
+        this.setNaics({ ...filing.correction.business.naics })
       } else {
-        naics = {
+        this.setNaics({
           naicsCode: entitySnapshot.businessInfo.naicsCode,
           naicsDescription: entitySnapshot.businessInfo.naicsDescription
-        }
+        })
       }
-      this.setNaics(naics)
     }
 
     // store Name Request
