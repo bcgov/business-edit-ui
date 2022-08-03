@@ -1,12 +1,13 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
-import { DateMixin } from '@/mixins/'
+import { DateMixin, EnumMixin } from '@/mixins/'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF, EffectiveDateTimeIF,
   EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF, NameTranslationIF,
   OrgPersonIF, ShareClassIF, SpecialResolutionFilingIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
-import { ActionTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes, RoleTypes } from '@/enums/'
+import { ActionTypes, AssociationTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
+  RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 
@@ -14,7 +15,7 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
  * Mixin that provides the integration with the Legal API.
  */
 @Component({})
-export default class FilingTemplateMixin extends Mixins(DateMixin) {
+export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   // Global getters
   @Getter getEntityType!: CorpTypeCd
   @Getter getNameRequestNumber!: string
@@ -59,6 +60,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Getter isCorrectedIncorporationApplication!: boolean
   @Getter isCorrectedRegistration!: boolean
   @Getter isCorrectedChangeReg!: boolean
+  @Getter isClientErrorCorrection!: boolean
+  @Getter getAssociationType!: AssociationTypes
+  @Getter hasAssociationTypeChanged!: boolean
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -86,7 +90,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
   @Action setHasPlanOfArrangement!: ActionBindingIF
 
   public get defaultCorrectionDetailComment (): string {
-    return `Correction for Incorporation Application filed on ${this.correctedFilingDate}`
+    const correctedFilingName = this.filingTypeToName(this.getCorrectedFilingType)
+    return `Correction for ${correctedFilingName} filed on ${this.correctedFilingDate}`
   }
 
   //
@@ -103,7 +108,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     let filing: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
-        certifiedBy: this.getCertifyState.certifiedBy,
+        certifiedBy: this.getCertifyState.certifiedBy || '',
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: this.getFolioNumber // original folio number, unless overridden by staff payment below
       },
@@ -131,8 +136,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
       // make a copy so we don't change original array
       let parties = cloneDeep(this.getPeopleAndRoles)
 
-      // add completing party
-      parties = this.addCompletingParty(parties)
+      // add completing party (client error correction only)
+      if (this.isClientErrorCorrection) {
+        parties = this.addCompletingParty(parties)
+      }
 
       // fix schema issues
       parties = this.fixPartySchemaIssues(parties)
@@ -300,13 +307,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
         legalType: this.getEntitySnapshot.businessInfo.legalType,
         nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
       },
-      alteration: {
+      specialResolution: {
         business: {
           identifier: this.getBusinessId,
-          legalType: this.getEntityType
-        },
-        provisionsRemoved: this.areProvisionsRemoved,
-        contactPoint: this.getContactPoint
+          legalType: this.getEntityType,
+          associationType: this.getAssociationType
+        }
       }
     }
 
@@ -486,7 +492,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin) {
     this.setEntitySnapshot(entitySnapshot)
 
     // *** FUTURE: remove this fallback when Filings UI provides this value
-    if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.STAFF
+    if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.CLIENT
 
     // store Correction Information
     this.setCorrectionInformation(cloneDeep(filing.correction))

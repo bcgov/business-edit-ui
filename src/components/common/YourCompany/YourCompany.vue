@@ -210,6 +210,18 @@
       />
     </div>
 
+    <!--- Association Type (coop only) -->
+    <div v-if="isEntityTypeCP"
+        id="association-type-section"
+        class="section-container"
+    >
+      <v-divider class="mx-4 my-1" />
+        <AssociationType
+          :invalidSection="invalidAssociationTypeSection"
+          @isEditingAssociationType="isEditingAssociationType = $event"
+        />
+    </div>
+
     <!-- Business Start Date (changes, conversions and firm corrections only) -->
     <template v-if="isFirmChangeFiling || isFirmConversionFiling || isFirmCorrectionFiling">
       <v-divider class="mx-4 my-1" />
@@ -295,8 +307,8 @@ import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF }
   from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
-import { BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation, CorrectNameOptions,
-  NatureOfBusiness, OfficeAddresses, StartDate } from './'
+import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation,
+  CorrectNameOptions, NatureOfBusiness, OfficeAddresses, StartDate } from './'
 import { CommonMixin, SharedMixin, DateMixin, NameRequestMixin } from '@/mixins/'
 import { CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -304,6 +316,7 @@ import { ConversionNOB } from '@/components/Conversion'
 
 @Component({
   components: {
+    AssociationType,
     BusinessContactInfo,
     ChangeBusinessType,
     CorrectNameOptions,
@@ -335,9 +348,11 @@ export default class YourCompany extends Mixins(
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
   @Getter isEntityTypeFirm!: boolean
+  @Getter isEntityTypeCP!: boolean
   @Getter isBenIaCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
+  @Getter getCorrectedStartDate!: string
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -348,9 +363,7 @@ export default class YourCompany extends Mixins(
   @Action setValidComponent!: ActionBindingIF
   @Action setBusinessInformation!: ActionBindingIF
   @Action setNameRequest!: ActionBindingIF
-
-  // Declaration for template
-  readonly CorpTypeCd = CorpTypeCd
+  @Action setCorrectionStartDate!: ActionBindingIF
 
   /** V-model for dropdown menu. */
   protected dropdown: boolean = null
@@ -359,6 +372,7 @@ export default class YourCompany extends Mixins(
   protected hasCompanyNameChanged = false
 
   protected correctNameChoices: Array<string> = []
+  protected isEditingAssociationType = false
   protected isEditingNames = false
   protected isEditingType = false
   protected isEditingTranslations = false
@@ -376,6 +390,11 @@ export default class YourCompany extends Mixins(
   /** The type section validity state (when prompted by app). */
   get invalidTypeSection (): boolean {
     return (this.getComponentValidate && this.isEditingType)
+  }
+
+  /** The association type section validity state (when prompted by app). */
+  get invalidAssociationTypeSection (): boolean {
+    return (this.getComponentValidate && this.isEditingAssociationType)
   }
 
   /** The translation section validity state (when prompted by app). */

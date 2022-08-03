@@ -1,5 +1,5 @@
-import { AccountTypes, ActionTypes, CorrectionErrorTypes, FilingCodes, FilingNames, FilingTypes,
-  PartyTypes } from '@/enums/'
+import { AccountTypes, ActionTypes, AssociationTypes, CorrectionErrorTypes, FilingCodes, FilingNames,
+  FilingTypes, PartyTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF,
   NameTranslationIF, FilingDataIF, StateIF, EffectiveDateTimeIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
@@ -171,7 +171,7 @@ export const getCorrectionErrorType = (state: StateIF): CorrectionErrorTypes => 
 }
 
 /** The correction (business) start date (YYYY-MM-DD). */
-export const getCorrectionStartDate = (state: StateIF): string => {
+export const getCorrectedStartDate = (state: StateIF): string => {
   return getCorrectionInformation(state).startDate
 }
 
@@ -269,6 +269,11 @@ export const getSnapshotNaics = (state: StateIF): NaicsIF => {
     naicsCode: getEntitySnapshot(state)?.businessInfo?.naicsCode,
     naicsDescription: getEntitySnapshot(state)?.businessInfo?.naicsDescription
   }
+}
+
+/** The association type. */
+export const getAssociationType = (state: StateIF): AssociationTypes => {
+  return getBusinessInformation(state).associationType
 }
 
 /** The Name Request object. */
@@ -385,6 +390,8 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
     )
   }
   if (isFirmCorrectionFiling(state)) {
+    // *** FUTURE: should check the following:
+    // completing party (client error correction only)
     return (
       hasBusinessNameChanged(state) ||
       hasNaicsChanged(state) ||
@@ -423,12 +430,30 @@ export const hasAlterationDataChanged = (state: StateIF): boolean => {
  * - folio number
  * - court order and POA
  * - staff payment
+ * - address (read only)
  */
 // more to add while adding components
 export const hasSpecialResolutionDataChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
-    hasBusinessTypeChanged(state)
+    hasBusinessTypeChanged(state) ||
+    hasAssociationTypeChanged(state)
+  )
+}
+
+/** Whether the special resolution filing is valid.
+ *  does NOT include:
+ * - address (read only)
+ * NOTE THIS IS INCOMPLETE - not entirely sure where to use this.
+ * isCorrectionValid seems to disable the File and Pay button.
+ */
+export const isSpecialResolutionValid = (state: StateIF): boolean => {
+  return (
+    state.stateModel.peopleAndRoles.valid &&
+    state.stateModel.shareStructureStep.valid &&
+    state.stateModel.detail.valid &&
+    state.stateModel.certifyState.valid &&
+    state.stateModel.staffPaymentStep.valid
   )
 }
 
@@ -606,6 +631,14 @@ export const hasBusinessTypeChanged = (state: StateIF): boolean => {
   const originalLegalType = getEntitySnapshot(state)?.businessInfo?.legalType
 
   return (currentEntityType !== originalLegalType)
+}
+
+/** Whether association type has changed. */
+export const hasAssociationTypeChanged = (state: StateIF): boolean => {
+  const currentAssociationType = getAssociationType(state)
+  const originalAssociationType = getEntitySnapshot(state)?.businessInfo?.associationType
+
+  return (currentAssociationType !== originalAssociationType)
 }
 
 /** Whether contact info data has changed. */
@@ -884,6 +917,7 @@ export const getFilingName = (state: StateIF): FilingNames => {
   if (isAlterationFiling(state)) return FilingNames.ALTERATION
   if (isFirmChangeFiling(state)) return FilingNames.CHANGE_OF_REGISTRATION
   if (isFirmConversionFiling(state)) return FilingNames.CONVERSION
+  if (isSpecialResolutionFiling(state)) return FilingNames.SPECIAL_RESOLUTION
   return null
 }
 

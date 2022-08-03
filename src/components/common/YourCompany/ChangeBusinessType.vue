@@ -246,9 +246,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
 
   @Action setEntityType!: ActionBindingIF
 
-  // Declaration for template
-  readonly CorpTypeCd = CorpTypeCd
-
   protected selectedEntityType = null as CorpTypeCd
   protected confirmArticles = false
   protected helpToggle = false
@@ -316,7 +313,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
     this.confirmArticles = false
   }
 
-  /** Reset company type values to original. */
+  /** Submit new company type. */
   private submitTypeChange () {
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
@@ -330,6 +327,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
+
+.v-icon {
+  line-height: 1.5rem
+}
 
 ol {
   counter-reset: item;

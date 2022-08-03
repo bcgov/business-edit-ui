@@ -1,3 +1,4 @@
+import { AssociationTypes } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 /** Interface for business information object in store. */
@@ -11,4 +12,5 @@ export interface BusinessInformationIF {
   naicsDescription?: string
   naicsKey?: string // from API
   nrNumber?: string
+  associationType?: AssociationTypes // from API
 }

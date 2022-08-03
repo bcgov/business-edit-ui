@@ -115,7 +115,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   // Global getters
   @Getter isBenIaCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
-  @Getter getCorrectionStartDate!: string
+  @Getter getCorrectedStartDate!: string
   @Getter getBusinessFoundingDate!: string // actually date-time
   @Getter getCurrentDate!: string
   @Getter getCurrentJsDate!: Date
@@ -130,7 +130,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
 
   protected dropdown = false
   protected onEditMode = false
-  protected isCorrected = !!this.getCorrectionStartDate
+  protected isCorrected = !!this.getCorrectedStartDate
   protected newCorrectedStartDate = null as string // date is "Month Day, Year"
 
   /** The minimum start date that can be entered (Up to 2 years ago today). */
@@ -166,8 +166,8 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling
     ) {
-      if (this.getCorrectionStartDate && this.isCorrected) {
-        return this.yyyyMmDdToPacificDate(this.getCorrectionStartDate)
+      if (this.getCorrectedStartDate && this.isCorrected) {
+        return this.yyyyMmDdToPacificDate(this.getCorrectedStartDate)
       } else if (this.getBusinessFoundingDate) {
         return this.apiToPacificDateLong(this.getBusinessFoundingDate)
       }
