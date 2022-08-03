@@ -28,7 +28,7 @@ const firmTestCases = [
 for (const test of firmTestCases) {
   const type = test.isPremium ? 'premium' : test.isStaff ? 'staff' : 'regular'
 
-  // FUTURE: Fix BaseAddress in sbc-common this.emitValid(!this.$v.$invalid) first
+  // FUTURE: Fix the error in BaseAddress in sbc-common
   xdescribe(`Completing Party view for a ${test.entityType} as a ${type} user`, () => {
     let wrapper: any
 
