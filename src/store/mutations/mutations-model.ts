@@ -144,6 +144,7 @@ export const mutateCorrectionInformation = (state: StateIF, correctionInformatio
 }
 
 export const mutateCorrectionStartDate = (state: StateIF, startDate: string) => {
+  console.log('*** mutateCorrectionStartDate: ', startDate)
   state.stateModel.correctionInformation.startDate = startDate
 }
 

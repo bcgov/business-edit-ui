@@ -167,8 +167,10 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
       this.isFirmConversionFiling
     ) {
       if (this.getCorrectedStartDate && this.isCorrected) {
+        console.log('*** businessStartDate, getCorrectedStartDate =', this.getCorrectedStartDate)
         return this.yyyyMmDdToPacificDate(this.getCorrectedStartDate)
       } else if (this.getBusinessFoundingDate) {
+        console.log('*** businessStartDate, getBusinessFoundingDate =', this.getBusinessFoundingDate)
         return this.apiToPacificDateLong(this.getBusinessFoundingDate)
       }
     }
@@ -188,8 +190,10 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
 
   protected onDoneClicked (): void {
     if (this.newCorrectedStartDate) {
-      if (this.yyyyMmDdToPacificDate(this.newCorrectedStartDate, true) !==
-        this.apiToPacificDateLong(this.getBusinessFoundingDate)) {
+      if (
+        this.yyyyMmDdToPacificDate(this.newCorrectedStartDate, true) !==
+        this.apiToPacificDateLong(this.getBusinessFoundingDate)
+      ) {
         this.setCorrectionStartDate(this.newCorrectedStartDate)
         this.isCorrected = true
       } else {
@@ -197,6 +201,8 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
       }
     }
     this.onEditMode = false
+    console.log('*** onDoneClicked, getBusinessFoundingDate =', this.getBusinessFoundingDate)
+    console.log('*** onDoneClicked, newCorrectedStartDate =', this.newCorrectedStartDate)
   }
 
   protected onCancelClicked (): void {
