@@ -191,10 +191,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   protected onDoneClicked (): void {
     if (this.newCorrectedStartDate) {
       // For firms only the date is valid
-      if (
-        this.newCorrectedStartDate !==
-        this.getBusinessFoundingDate.slice(0, 10)
-      ) {
+      if (this.newCorrectedStartDate !== this.getBusinessFoundingDate.slice(0, 10)) {
         this.setCorrectionStartDate(this.newCorrectedStartDate)
         this.isCorrected = true
       } else {
