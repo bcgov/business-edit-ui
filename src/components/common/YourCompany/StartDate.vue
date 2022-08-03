@@ -169,7 +169,9 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
       if (this.getCorrectedStartDate && this.isCorrected) {
         return this.yyyyMmDdToPacificDate(this.getCorrectedStartDate)
       } else if (this.getBusinessFoundingDate) {
-        return this.apiToPacificDateLong(this.getBusinessFoundingDate)
+        // getBusinessFoundingDate is is stored in utc time for BEN's and COOP's
+        // For firms only the date is valid and it is in pacific time.
+        return this.yyyyMmDdToPacificDate(this.getBusinessFoundingDate.slice(0, 10))
       }
     }
     return 'Unknown'
@@ -188,8 +190,11 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
 
   protected onDoneClicked (): void {
     if (this.newCorrectedStartDate) {
-      if (this.yyyyMmDdToPacificDate(this.newCorrectedStartDate, true) !==
-        this.apiToPacificDateLong(this.getBusinessFoundingDate)) {
+      // For firms only the date is valid
+      if (
+        this.newCorrectedStartDate !==
+        this.getBusinessFoundingDate.slice(0, 10)
+      ) {
         this.setCorrectionStartDate(this.newCorrectedStartDate)
         this.isCorrected = true
       } else {

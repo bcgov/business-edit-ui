@@ -180,6 +180,11 @@ export const isClientErrorCorrection = (state: StateIF): boolean => {
   return (getCorrectionErrorType(state) === CorrectionErrorTypes.CLIENT)
 }
 
+/** True if the correctedStartDate exists */
+export const hasStartDateChanged = (state: StateIF): boolean => {
+  return !!getCorrectedStartDate(state)
+}
+
 /** The business identifier (aka incorporation number). */
 export const getBusinessId = (state: StateIF): string => {
   return state.stateModel.tombstone.businessId
@@ -395,6 +400,7 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
     return (
       hasBusinessNameChanged(state) ||
       hasNaicsChanged(state) ||
+      hasStartDateChanged(state) ||
       haveOfficeAddressesChanged(state) ||
       havePeopleAndRolesChanged(state)
     )
