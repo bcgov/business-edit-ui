@@ -426,6 +426,7 @@ export const hasAlterationDataChanged = (state: StateIF): boolean => {
  * - court order and POA
  * - staff payment
  * - address (read only)
+ * - contact info
  */
 // more to add while adding components
 export const hasSpecialResolutionDataChanged = (state: StateIF): boolean => {

@@ -215,6 +215,7 @@
     <div v-if="isEntityTypeCP"
         id="association-type-section"
         class="section-container"
+        :class="{'invalid-section': invalidAssociationTypeSection}"
     >
         <AssociationType
           :invalidSection="invalidAssociationTypeSection"
@@ -553,6 +554,12 @@ export default class YourCompany extends Mixins(
   @Watch('isEditingTranslations', { immediate: true })
   private onEditingTranslationChanged (val: boolean): void {
     this.setValidComponent({ key: 'isValidNameTranslation', value: !val })
+  }
+
+  /** Updates store initially and when isEditingAssociationType property has changed. */
+  @Watch('isEditingAssociationType', { immediate: true })
+  private onEditingAssociationTypeChanged (isEditing: boolean): void {
+    this.setValidComponent({ key: 'isValidAssociationType', value: !isEditing })
   }
 }
 </script>

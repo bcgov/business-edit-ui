@@ -3,7 +3,7 @@
     :initialValue="getFolioNumber"
     :originalValue="originalFolioNumber"
     :editLabel="editLabel"
-    :editedLabel="editedLabel"
+    :editedLabel="editedLabelExtended"
     :hideActions="hideActions"
     :invalidSection="invalidSection"
     @newFolioNumber="onNewFolioNumber($event)"
@@ -52,13 +52,23 @@ export default class FolioInformation extends Mixins(CommonMixin) {
     return (this.isCorrectionFiling || this.isRoleStaff)
   }
 
+  /** Helps builds edit label and determine if folio number update should be instant. */
+  get isInstantUpdate (): boolean {
+    return this.isAlterationFiling || this.isSpecialResolutionFiling
+  }
+
+  /** Modifies label for instant update of folio number. */
+  get editedLabelExtended (): string {
+    return this.isInstantUpdate ? 'Changes Saved' : this.editedLabel
+  }
+
   /** On New Folio Number event, updates auth db and store. */
   protected async onNewFolioNumber (folioNumber: string): Promise<void> {
     // do nothing if folio number was not changed
     if (folioNumber === this.getFolioNumber) return
 
     try {
-      if (this.isAlterationFiling || this.isSpecialResolutionFiling) {
+      if (this.isInstantUpdate) {
         await AuthServices.updateFolioNumber(folioNumber, this.getBusinessId)
       }
       this.setFolioNumber(folioNumber)
