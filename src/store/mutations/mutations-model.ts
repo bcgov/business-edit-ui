@@ -119,7 +119,7 @@ export const mutatePeopleAndRolesChanged = (state: StateIF, changed: boolean) =>
 }
 
 export const mutatePeopleAndRolesValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.peopleAndRoles.valid = validity
+  state.stateModel.validationFlags.flagsCompanyInfo.isValidOrgPersons = validity
 }
 
 export const mutateFolioNumber = (state: StateIF, folioNumber: string) => {
@@ -163,7 +163,7 @@ export const mutateShareStructureChanged = (state: StateIF, changed: boolean) =>
 }
 
 export const mutateCreateShareStructureStepValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.shareStructureStep.valid = validity
+  state.stateModel.validationFlags.flagsCompanyInfo.isValidShareStructure = validity
 }
 
 export const mutateIgnoreChanges = (state: StateIF, ignoreChanges: boolean) => {
@@ -183,12 +183,11 @@ export const mutateEntitySnapshot = (state: StateIF, entitySnapshot: EntitySnaps
 }
 
 export const mutateStaffPayment = (state: StateIF, staffPayment: StaffPaymentIF) => {
-  state.stateModel.staffPaymentStep.staffPayment = staffPayment
+  state.stateModel.staffPayment = staffPayment
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
 export const mutateStaffPaymentValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.staffPaymentStep.valid = validity
   state.stateModel.validationFlags.flagsReviewCertify.isValidStaffPayment = validity
 }
 
@@ -197,11 +196,11 @@ export const mutateFilingData = (state: StateIF, filingData: FilingDataIF) => {
 }
 
 export const mutateDetailValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.detail.valid = validity
+  state.stateModel.validationFlags.flagsReviewCertify.isValidDetailComment = validity
 }
 
 export const mutateDetailComment = (state: StateIF, comment: string) => {
-  state.stateModel.detail.comment = comment
+  state.stateModel.detailComment = comment
 }
 
 export const mutateEditingCompanyName = (state: StateIF, editing: boolean) => {

@@ -9,6 +9,7 @@ export interface FlagsReviewCertifyIF {
   isValidDocumentOptionalEmail?: boolean // staff only
   isValidCompletingParty: boolean
   isValidTransactionalFolioNumber?: boolean // not staff
+  isValidDetailComment?: boolean // corrections only
   isValidCertify: boolean
   isValidCourtOrder?: boolean // staff only
   isValidStaffPayment?: boolean // staff only

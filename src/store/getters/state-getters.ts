@@ -333,17 +333,12 @@ export const haveUnsavedChanges = (state: StateIF): boolean => {
 
 /** The staff payment. */
 export const getStaffPayment = (state: StateIF): StaffPaymentIF => {
-  return state.stateModel.staffPaymentStep.staffPayment
+  return state.stateModel.staffPayment
 }
 
 /** The filing data. */
 export const getFilingData = (state: StateIF): FilingDataIF => {
   return state.stateModel.filingData
-}
-
-/** Whether People and Roles component is valid. */
-export const isPeopleAndRolesValid = (state: StateIF): boolean => {
-  return state.stateModel.peopleAndRoles.valid
 }
 
 /** Whether app is busy saving/saving and resuming/filing and paying. */
@@ -369,6 +364,7 @@ export const isFilingPaying = (state: StateIF): boolean => {
 /**
  * Whether any correction data has changed (for the purpose of showing the
  * fee summary), ie, does not include:
+ * - completing party
  * - detail
  * - certify
  * - staff payment
@@ -384,16 +380,17 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
       hasShareStructureChanged(state)
     )
   }
+
   if (isFirmCorrectionFiling(state)) {
-    // *** FUTURE: should check the following:
-    // completing party (client error correction only)
     return (
       hasBusinessNameChanged(state) ||
+      hasBusinessStartDateChanged(state) ||
       hasNaicsChanged(state) ||
       haveOfficeAddressesChanged(state) ||
       havePeopleAndRolesChanged(state)
     )
   }
+
   return false // should never happen
 }
 
@@ -436,19 +433,18 @@ export const hasSpecialResolutionDataChanged = (state: StateIF): boolean => {
   )
 }
 
-/** Whether the special resolution filing is valid.
- *  does NOT include:
+/** Whether the special resolution filing is valid. Does NOT include:
  * - address (read only)
  * NOTE THIS IS INCOMPLETE - not entirely sure where to use this.
  * isCorrectionValid seems to disable the File and Pay button.
  */
 export const isSpecialResolutionValid = (state: StateIF): boolean => {
   return (
-    state.stateModel.peopleAndRoles.valid &&
-    state.stateModel.shareStructureStep.valid &&
-    state.stateModel.detail.valid &&
-    state.stateModel.certifyState.valid &&
-    state.stateModel.staffPaymentStep.valid
+    getFlagsCompanyInfo(state).isValidOrgPersons &&
+    getFlagsCompanyInfo(state).isValidShareStructure &&
+    getFlagsReviewCertify(state).isValidDetailComment &&
+    getFlagsReviewCertify(state).isValidCertify &&
+    getFlagsReviewCertify(state).isValidStaffPayment
   )
 }
 
@@ -490,48 +486,43 @@ export const hasConversionDataChanged = (state: StateIF): boolean => {
 /** Whether the subject correction filing is valid. */
 export const isCorrectionValid = (state: StateIF): boolean => {
   if (isBenIaCorrectionFiling(state)) {
-    // NB: Define Company and Agreement Type don't have a "valid" state --
-    //     they don't allow saving an invalid state to the store.
     return (
-      state.stateModel.peopleAndRoles.valid &&
-      state.stateModel.shareStructureStep.valid &&
-      state.stateModel.detail.valid &&
-      state.stateModel.certifyState.valid &&
-      state.stateModel.staffPaymentStep.valid
+      getFlagsCompanyInfo(state).isValidCompanyName &&
+      getFlagsCompanyInfo(state).isValidNameTranslation &&
+      getFlagsCompanyInfo(state).isValidOrgPersons &&
+      getFlagsCompanyInfo(state).isValidShareStructure &&
+      getFlagsReviewCertify(state).isValidDetailComment &&
+      getFlagsReviewCertify(state).isValidCertify &&
+      getFlagsReviewCertify(state).isValidStaffPayment
     )
   }
+
   if (isFirmCorrectionFiling(state)) {
     if (isClientErrorCorrection(state)) {
-      // *** FUTURE: should check the following:
-      // business name
-      // nature of business
-      // business addresses
-      // proprietor / partners
-      // completing party (client error correction only)
-      // detail
-      // certify (client error correction only)
-      // staff payment
       return (
-        state.stateModel.peopleAndRoles.valid &&
-        state.stateModel.detail.valid &&
-        state.stateModel.certifyState.valid &&
-        state.stateModel.staffPaymentStep.valid
+        getFlagsCompanyInfo(state).isValidCompanyName &&
+        // business start date || // *** FUTURE: implement this
+        getFlagsCompanyInfo(state).isValidNatureOfBusiness &&
+        getFlagsCompanyInfo(state).isValidAddress &&
+        getFlagsCompanyInfo(state).isValidOrgPersons &&
+        getFlagsReviewCertify(state).isValidCompletingParty &&
+        getFlagsReviewCertify(state).isValidDetailComment &&
+        getFlagsReviewCertify(state).isValidCertify &&
+        getFlagsReviewCertify(state).isValidStaffPayment
       )
     } else {
-      // *** FUTURE: should check the following:
-      // business name
-      // nature of business
-      // business addresses
-      // proprietor / partners
-      // detail
-      // staff payment
       return (
-        state.stateModel.peopleAndRoles.valid &&
-        state.stateModel.detail.valid &&
-        state.stateModel.staffPaymentStep.valid
+        getFlagsCompanyInfo(state).isValidCompanyName &&
+        // business start date || // *** FUTURE: implement this
+        getFlagsCompanyInfo(state).isValidNatureOfBusiness &&
+        getFlagsCompanyInfo(state).isValidAddress &&
+        getFlagsCompanyInfo(state).isValidOrgPersons &&
+        getFlagsReviewCertify(state).isValidDetailComment &&
+        getFlagsReviewCertify(state).isValidStaffPayment
       )
     }
   }
+
   return false // should never happen
 }
 
@@ -572,7 +563,7 @@ export const getFlagsCompanyInfo = (state: StateIF): FlagsCompanyInfoIF => {
 }
 
 export const getDetailComment = (state: StateIF): string => {
-  return state.stateModel.detail.comment
+  return state.stateModel.detailComment
 }
 
 /** The business information object. */
@@ -626,6 +617,12 @@ export const hasBusinessTypeChanged = (state: StateIF): boolean => {
   const originalLegalType = getEntitySnapshot(state)?.businessInfo?.legalType
 
   return (currentEntityType !== originalLegalType)
+}
+
+/** Whether business start date has changed. */
+export const hasBusinessStartDateChanged = (state: StateIF): boolean => {
+  // *** FUTURE: implement this
+  return false
 }
 
 /** Whether association type has changed. */

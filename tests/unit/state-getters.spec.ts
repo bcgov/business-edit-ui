@@ -359,6 +359,9 @@ describe('SP/GP correction getters', () => {
         shareClasses: []
       }
     }
+    store.state.stateModel.correctionInformation = {
+      startDate: ''
+    }
     store.state.stateModel.officeAddresses = null
     store.state.stateModel.businessInformation = naics
 
@@ -384,6 +387,13 @@ describe('SP/GP correction getters', () => {
     expect(vm.hasBusinessTypeChanged).toBe(true)
     store.state.stateModel.tombstone.entityType = 'SP'
     expect(vm.hasBusinessTypeChanged).toBe(false)
+
+    // *** FUTURE: implement this
+    // verify that business start date changes are detected
+    // store.state.stateModel.correctionInformation.startDate = '2022-08-03'
+    // expect(vm.hasBusinessTypeChanged).toBe(true)
+    // store.state.stateModel.correctionInformation.startDate = ''
+    // expect(vm.hasBusinessTypeChanged).toBe(false)
 
     // verify that name translation changes are detected
     store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
