@@ -63,6 +63,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter isClientErrorCorrection!: boolean
   @Getter getAssociationType!: AssociationTypes
   @Getter hasAssociationTypeChanged!: boolean
+  @Getter isEntityTypeFirm!: boolean
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -119,6 +120,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         nrNumber: this.getNameRequestNumber
       },
       correction: {
+        business: {
+          identifier: this.getBusinessId
+        },
         correctedFilingId: this.getCorrectedFilingId,
         correctedFilingType: this.getCorrectedFilingType,
         correctedFilingDate: this.correctedFilingDate,
@@ -127,7 +131,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         nameRequest: this.getNameRequest,
         offices: this.getOfficeAddresses,
         type: this.getCorrectionErrorType,
-        startDate: this.getCorrectionStartDate
+        ...(this.isEntityTypeFirm && { startDate: this.getCorrectionStartDate })
       }
     }
 
@@ -178,14 +182,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // add in Registration / Change of Registration data
     // *** FUTURE: change this to "if firm correction"
     if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
-      filing.correction.business = {
-        identifier: this.getBusinessId,
+      filing.correction.business.naics = {
         naicsCode: this.getCurrentNaics.naicsCode || undefined, // don't include if empty
         naicsDescription: this.getCurrentNaics.naicsDescription
       }
 
       // *** FUTURE: update logic as needed (eg, only save if changed)
-      if (filing.correction.startDate) {
+      if (filing.correction.startDate && this.isEntityTypeFirm) {
         filing.correction.startDate = this.getCorrectionStartDate
       }
     }
@@ -492,7 +495,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     this.setEntitySnapshot(entitySnapshot)
 
     // *** FUTURE: remove this fallback when Filings UI provides this value
-    if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.CLIENT
+    if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.STAFF
 
     // store Correction Information
     if (
@@ -524,20 +527,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // must come after business information
     // *** FUTURE: change this to "if firm correction"
     if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
-      let naics: NaicsIF
-      // just check description since code may be undefined
-      if (filing.correction.business?.naicsDescription) {
-        naics = {
-          naicsCode: filing.correction.business.naicsCode,
-          naicsDescription: filing.correction.business.naicsDescription
-        }
+      if (filing.correction.business?.naics) {
+        this.setNaics({ ...filing.correction.business.naics })
       } else {
-        naics = {
+        this.setNaics({
           naicsCode: entitySnapshot.businessInfo.naicsCode,
           naicsDescription: entitySnapshot.businessInfo.naicsDescription
-        }
+        })
       }
-      this.setNaics(naics)
     }
 
     // store Name Request
