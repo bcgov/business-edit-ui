@@ -159,7 +159,7 @@ describe('People And Roles component for Correction', () => {
     store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([])
     const wrapper = wrapperFactory()
 
-    expect(store.state.stateModel.peopleAndRoles.valid).toBe(false)
+    expect(store.state.stateModel.validationFlags.flagsCompanyInfo.isValidOrgPersons).toBe(false)
 
     wrapper.destroy()
   })
@@ -171,7 +171,7 @@ describe('People And Roles component for Correction', () => {
     // verify warning text
     expect(wrapper.find('.warning-text').text()).toBe('Missing Role')
     // verify flag
-    expect(store.state.stateModel.peopleAndRoles.valid).toBe(false)
+    expect(store.state.stateModel.validationFlags.flagsCompanyInfo.isValidOrgPersons).toBe(false)
 
     wrapper.destroy()
   })
@@ -180,7 +180,7 @@ describe('People And Roles component for Correction', () => {
     store.state.stateModel.peopleAndRoles.orgPeople = getPersonList([ directorRole ])
     const wrapper = wrapperFactory()
 
-    expect(store.state.stateModel.peopleAndRoles.valid).toBe(true)
+    expect(store.state.stateModel.validationFlags.flagsCompanyInfo.isValidOrgPersons).toBe(true)
 
     wrapper.destroy()
   })
