@@ -131,7 +131,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         nameRequest: this.getNameRequest,
         offices: this.getOfficeAddresses,
         type: this.getCorrectionErrorType,
-        ...(this.isEntityTypeFirm && { startDate: this.getCorrectionStartDate })
+        startDate: this.getCorrectionStartDate
       }
     }
 
@@ -188,7 +188,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       }
 
       // *** FUTURE: update logic as needed (eg, only save if changed)
-      if (filing.correction.startDate && this.isEntityTypeFirm) {
+      if (filing.correction.startDate) {
         filing.correction.startDate = this.getCorrectionStartDate
       }
     }
@@ -498,11 +498,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.STAFF
 
     // store Correction Information
-    if (
-      this.isCorrectedRegistration ||
-      this.isCorrectedChangeReg ||
-      this.isCorrectionFiling
-    ) {
+    if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
       // Ensures startDate isn't undefined, otherwise its getter is not reactive
       filing.correction.startDate = null
     }

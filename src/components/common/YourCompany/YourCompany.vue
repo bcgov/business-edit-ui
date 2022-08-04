@@ -259,17 +259,17 @@
     <template v-if="isAlterationFiling || isBenIaCorrectionFiling">
 
     <v-divider class="mx-4 my-1" />
-    <div class="section-container">
-      <v-row no-gutters>
-        <v-col cols="3" class="pr-2">
-          <label><strong>Recognition Date and Time</strong></label>
-        </v-col>
+      <div class="section-container">
+        <v-row no-gutters>
+          <v-col cols="3" class="pr-2">
+            <label><strong>Recognition Date and Time</strong></label>
+          </v-col>
 
-        <v-col cols="9">
-            <span class="info-text mr-1">{{recognitionDateTime || 'Unknown'}}</span>
-        </v-col>
-      </v-row>
-    </div>
+          <v-col cols="9">
+              <span class="info-text mr-1">{{recognitionDateTime || 'Unknown'}}</span>
+          </v-col>
+        </v-row>
+      </div>
     </template>
 
     <v-divider class="mx-4 my-1" />
@@ -455,7 +455,7 @@ export default class YourCompany extends Mixins(
   }
 
   /** The recognition date or business start date string. */
-  protected get recognitionDateTime (): string {
+  get recognitionDateTime (): string {
     if (this.isBenIaCorrectionFiling) {
       if (this.getCorrectedFilingDate) {
         return this.apiToPacificDateTime(this.getCorrectedFilingDate)
