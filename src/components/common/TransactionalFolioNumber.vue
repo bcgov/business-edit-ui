@@ -74,7 +74,7 @@ export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
   ]
 
   /** Called when component is mounted. */
-  mounted (): void {
+  protected mounted (): void {
     // assign transactional FN if it exists, otherwise business FN
     this.folioNumber = this.getTransactionalFolioNumber || this.getFolioNumber
   }

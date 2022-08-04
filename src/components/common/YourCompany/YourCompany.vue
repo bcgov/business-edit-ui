@@ -14,8 +14,8 @@
           </label>
           <v-flex md1>
             <v-chip
-              v-if="hasCompanyNameChanged ||
-                (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling || isFirmConversionFiling))"
+              v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling ||
+                isFirmConversionFiling))"
               id="corrected-lbl"
               x-small label
               color="primary"
@@ -32,8 +32,8 @@
             <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
 
             <!-- Business Type Info -->
-            <template v-if="!hasNewNr &&
-              (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling || isFirmConversionFiling))"
+            <template v-if="!hasNewNr && (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling
+              || isFirmConversionFiling))"
             >
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -87,9 +87,9 @@
           <v-col cols="2" class="mt-n2">
             <div class="actions mr-4">
               <!-- FUTURE: only show buttons for named company -->
-              <v-btn v-if="
-                  hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling))
-                "
+              <v-btn
+                v-if=" hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling ||
+                  isFirmChangeFiling))"
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -107,9 +107,9 @@
                 <v-icon small>mdi-pencil</v-icon>
                 <span>{{editLabel}}</span>
               </v-btn>
-              <span class="more-actions" v-if="
-                hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling))
-              ">
+              <span class="more-actions" v-if=" hasCompanyNameChanged || (hasBusinessNameChanged &&
+                (isAlterationFiling || isFirmChangeFiling))"
+              >
                 <v-menu
                   offset-y left nudge-bottom="4"
                   v-model="dropdown"
@@ -181,10 +181,9 @@
     </div>
 
     <v-divider
-    v-if="
-        isFirmChangeFiling || isFirmConversionFiling || isFirmCorrectionFiling || isSpecialResolutionFiling
-      "
-      class="mx-4 my-1" />
+      v-if="isFirmChangeFiling || isFirmConversionFiling || isFirmCorrectionFiling || isSpecialResolutionFiling"
+      class="mx-4 my-1"
+    />
 
     <!-- Business Type -->
     <div v-if="showChangeBusinessType"

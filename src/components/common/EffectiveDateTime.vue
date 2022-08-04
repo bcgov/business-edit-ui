@@ -217,48 +217,48 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
     return false
   }
 
-  /** Called when component is mounted. */
-  mounted (): void {
-    /** It was decided not doing it for now */
-    // this.parseInitialEffectiveDateTime()
-  }
+  // FOR FUTURE USE? IT WAS DECIDED TO NOT LOAD FED WHEN RESUMING A DRAFT
+  // /** Called when component is mounted. */
+  // protected mounted (): void {
+  //   this.parseInitialEffectiveDateTime()
+  // }
 
-  /** Parses initial Effective Date Time and sets state. */
-  private parseInitialEffectiveDateTime (): void {
-    // set the chosen effective date option
-    this.isFutureEffective = this.effectiveDateTime.isFutureEffective
-    if (this.isFutureEffective === true) {
-      this.effectiveDateType = EffectiveDateTypes.FUTUREEFFECTIVE
-    } else if (this.isFutureEffective === false) {
-      this.effectiveDateType = EffectiveDateTypes.IMMEDIATE
-    } else {
-      this.effectiveDateType = null
-    }
+  // /** Parses initial Effective Date Time and sets state. */
+  // private parseInitialEffectiveDateTime (): void {
+  //   // set the chosen effective date option
+  //   this.isFutureEffective = this.effectiveDateTime.isFutureEffective
+  //   if (this.isFutureEffective === true) {
+  //     this.effectiveDateType = EffectiveDateTypes.FUTUREEFFECTIVE
+  //   } else if (this.isFutureEffective === false) {
+  //     this.effectiveDateType = EffectiveDateTypes.IMMEDIATE
+  //   } else {
+  //     this.effectiveDateType = null
+  //   }
 
-    // try to create Date object
-    const dateTimeString = this.effectiveDateTime.dateTimeString
-    const date = dateTimeString && new Date(dateTimeString)
+  //   // try to create Date object
+  //   const dateTimeString = this.effectiveDateTime.dateTimeString
+  //   const date = dateTimeString && new Date(dateTimeString)
 
-    if (date) {
-      // set model properties
-      let hour = date.getHours()
-      const minute = date.getMinutes()
-      const period = hour < 12 ? PeriodTypes.AM : PeriodTypes.PM
+  //   if (date) {
+  //     // set model properties
+  //     let hour = date.getHours()
+  //     const minute = date.getMinutes()
+  //     const period = hour < 12 ? PeriodTypes.AM : PeriodTypes.PM
 
-      // convert 24h -> 12h and 0h -> 12h
-      if (hour > 12) {
-        hour -= 12
-      } else if (hour === 0) {
-        hour = 12
-      }
+  //     // convert 24h -> 12h and 0h -> 12h
+  //     if (hour > 12) {
+  //       hour -= 12
+  //     } else if (hour === 0) {
+  //       hour = 12
+  //     }
 
-      // set model values
-      this.dateText = this.dateToYyyyMmDd(date)
-      this.selectHour = [hour.toString()]
-      this.selectMinute = [minute.toString().padStart(2, '0')]
-      this.selectPeriod = period
-    }
-  }
+  //     // set model values
+  //     this.dateText = this.dateToYyyyMmDd(date)
+  //     this.selectHour = [hour.toString()]
+  //     this.selectMinute = [minute.toString().padStart(2, '0')]
+  //     this.selectPeriod = period
+  //   }
+  // }
 
   /** Constructs the effective date and updates the parent. */
   private async constructAndUpdate (): Promise<void> {

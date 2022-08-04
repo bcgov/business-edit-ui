@@ -306,8 +306,8 @@ export const getOfficeAddresses = (state: StateIF): AddressesIF => {
   return state.stateModel.officeAddresses
 }
 
-/** The people and roles list. */
-export const getPeopleAndRoles = (state: StateIF): Array<OrgPersonIF> => {
+/** The org-people list. */
+export const getOrgPeople = (state: StateIF): Array<OrgPersonIF> => {
   return state.stateModel.peopleAndRoles.orgPeople
 }
 
@@ -344,11 +344,6 @@ export const getFilingData = (state: StateIF): FilingDataIF => {
 /** Whether People and Roles component is valid. */
 export const isPeopleAndRolesValid = (state: StateIF): boolean => {
   return state.stateModel.peopleAndRoles.valid
-}
-
-/** Whether Define Company Step is valid. */
-export const isDefineCompanyStepValid = (state: StateIF): boolean => {
-  return state.stateModel.validFlags.defineCompanyStep
 }
 
 /** Whether app is busy saving/saving and resuming/filing and paying. */
@@ -732,7 +727,7 @@ export const hasRecDeliveryChanged = (state: StateIF): boolean => {
 
 /** True if any people/roles have changed. */
 export const havePeopleAndRolesChanged = (state: StateIF): boolean => {
-  const currentOrgPersons = getPeopleAndRoles(state)?.map(op => {
+  const currentOrgPersons = getOrgPeople(state)?.map(op => {
     const isOrg = (op.officer.partyType === PartyTypes.ORGANIZATION)
 
     // add fields that are not in the snapshot
@@ -754,7 +749,7 @@ export const hasMinimumProprietor = (state: StateIF): boolean => {
   // validations
   return (
     !isEntityTypeSP(state) ||
-    getPeopleAndRoles(state).filter(party => !party.actions?.includes(ActionTypes.REMOVED)).length === 1
+    getOrgPeople(state).filter(party => !party.actions?.includes(ActionTypes.REMOVED)).length === 1
   )
 }
 
@@ -764,7 +759,7 @@ export const hasMinimumPartners = (state: StateIF): boolean => {
   // validations
   return (
     !isEntityTypeGP(state) ||
-    getPeopleAndRoles(state).filter(party => !party.actions?.includes(ActionTypes.REMOVED)).length >= 2
+    getOrgPeople(state).filter(party => !party.actions?.includes(ActionTypes.REMOVED)).length >= 2
   )
 }
 

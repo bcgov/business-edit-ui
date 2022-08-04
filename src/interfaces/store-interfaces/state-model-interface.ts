@@ -36,10 +36,6 @@ export interface StateModelIF {
     shareStructure: boolean
   }
   validationFlags: ValidationFlagsIF
-  validFlags: {
-    // FUTURE: move all flags here
-    defineCompanyStep: boolean
-  }
   summaryMode: boolean,
   currentFees: FeesIF,
   feePrices: FeesIF

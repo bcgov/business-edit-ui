@@ -168,7 +168,7 @@ export default class AssociationType extends Mixins(CommonMixin, EnumMixin) {
     v => !!v || 'This field is required' // is not empty
   ]
 
-  mounted () {
+  protected mounted (): void {
     this.initializeAssociationType()
   }
 
