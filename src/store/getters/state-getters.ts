@@ -1,9 +1,11 @@
 import { AccountTypes, ActionTypes, AssociationTypes, CorrectionErrorTypes, FilingCodes, FilingNames,
   FilingTypes, PartyTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF,
-  NameTranslationIF, FilingDataIF, StateIF, EffectiveDateTimeIF, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
-  ResolutionsIF, FeesIF, ResourceIF, EntitySnapshotIF, ValidationFlagsIF, CorrectionInformationIF }
+import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF,
+  CertifyIF,
+  NameTranslationIF, FilingDataIF, StateIF, EffectiveDateTimeIF, FlagsReviewCertifyIF,
+  FlagsCompanyInfoIF, ResolutionsIF, FeesIF, ResourceIF, EntitySnapshotIF, ValidationFlagsIF,
+  CorrectionInformationIF, CreateResolutionIF }
   from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF }
   from '@bcrs-shared-components/interfaces/'
@@ -920,4 +922,9 @@ export const getFilingName = (state: StateIF): FilingNames => {
 /** The completing party data. */
 export const getCompletingParty = (state: StateIF): CompletingPartyIF => {
   return state.stateModel.completingParty
+}
+
+/** The Create Special Resolution object. */
+export const getCreateResolutionStep = (state: StateIF): CreateResolutionIF => {
+  return state.stateModel.createResolutionStep
 }

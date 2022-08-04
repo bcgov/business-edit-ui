@@ -135,5 +135,9 @@ export const stateModel: StateModelIF = {
   },
   summaryMode: false,
   currentFees: cloneDeep(EmptyFees),
-  feePrices: cloneDeep(EmptyFees)
+  feePrices: cloneDeep(EmptyFees),
+  createResolutionStep: {
+
+    resolutionConfirmed: false
+  }
 }

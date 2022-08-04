@@ -15,7 +15,8 @@
         <YourCompany class="mt-10" />
 
         <CurrentDirectors class="mt-10" />
-
+          <!-- more component comes here -->
+        <SpecialResolutionForm class="mt-10" />
       </div>
     </v-slide-x-transition>
 
@@ -95,7 +96,7 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
-import { SpecialResolutionSummary } from '@/components/SpecialResolution'
+import { SpecialResolutionSummary, SpecialResolutionForm } from '@/components/SpecialResolution'
 import { CertifySection, CurrentDirectors, DocumentsDelivery,
   StaffPayment, TransactionalFolioNumber, YourCompany }
   from '@/components/common/'
@@ -119,7 +120,8 @@ import { CooperativeResource } from '@/resources/SpecialResolution/'
     DocumentsDelivery,
     StaffPayment,
     TransactionalFolioNumber,
-    YourCompany
+    YourCompany,
+    SpecialResolutionForm
   }
 })
 export default class SpecialResolution extends Mixins(
