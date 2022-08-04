@@ -99,8 +99,10 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 
 <style lang="scss" scoped>
 ::v-deep {
-  #contact-info-edit-btn {
-    margin-right: -14px;
+  .align-end {
+    position: absolute;
+    right: 0;
+    margin-right: 16px;
   }
 }
 </style>
