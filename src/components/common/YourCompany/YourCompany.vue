@@ -45,7 +45,7 @@
             </template>
 
             <!-- Name Request Info -->
-            <template v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling)">
+            <template v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling || isSpecialResolutionFiling)">
               <div class="company-name mt-2">{{getNameRequestNumber || 'Unknown'}}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -152,7 +152,8 @@
       </v-row>
 
       <!-- Name Request Applicant -->
-      <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling || isFirmConversionFiling)"
+      <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling || isFirmConversionFiling ||
+          isSpecialResolutionFiling)"
         class="sub-section"
       >
         <v-col cols="3">
