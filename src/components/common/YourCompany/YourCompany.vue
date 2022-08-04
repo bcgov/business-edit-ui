@@ -559,7 +559,7 @@ export default class YourCompany extends Mixins(
 
   /** Updates store initially and when isEditingAssociationType property has changed. */
   @Watch('isEditingAssociationType', { immediate: true })
-  private isEditingAssociationTypeChange (isEditing: boolean): void {
+  private onEditingAssociationTypeChanged (isEditing: boolean): void {
     this.setValidComponent({ key: 'isValidAssociationType', value: !isEditing })
   }
 }
