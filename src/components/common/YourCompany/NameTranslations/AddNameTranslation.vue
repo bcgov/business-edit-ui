@@ -75,9 +75,9 @@ export default class AddNameTranslation extends Mixins(CommonMixin) {
   readonly editNameIndex: number
 
   // Local Properties
-  private nameTranslationForm: boolean = false
-  private nameTranslation: string = ''
-  private nameIndex: number = -1
+  protected nameTranslationForm: boolean = false
+  protected nameTranslation: string = ''
+  protected nameIndex: number = -1
 
   // Validation Rules
   readonly nameTranslationRules: Array<Function> = [
@@ -86,7 +86,7 @@ export default class AddNameTranslation extends Mixins(CommonMixin) {
     (v: string) => (!v || v.length <= 150) || 'Cannot exceed 150 characters' // maximum character count
   ]
 
-  mounted () {
+  protected mounted (): void {
     // Editing an existing name translation
     if (this.editNameTranslation) {
       this.nameTranslation = this.editNameTranslation
@@ -94,7 +94,7 @@ export default class AddNameTranslation extends Mixins(CommonMixin) {
     }
   }
 
-  private cancelNameTranslation () {
+  protected cancelNameTranslation () {
     const hasUnsavedData = this.nameTranslation !== this.editNameTranslation
     if (hasUnsavedData) {
       this.confirmUnsavedChanges()
@@ -134,7 +134,7 @@ export default class AddNameTranslation extends Mixins(CommonMixin) {
   /**
    * Trigger validation before add in case of blank name.
    */
-  private validateAddTranslation (): void {
+  protected validateAddTranslation (): void {
     if (this.$refs.nameTranslationForm.validate()) {
       this.addTranslation()
     }

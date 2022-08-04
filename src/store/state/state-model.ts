@@ -46,7 +46,8 @@ export const stateModel: StateModelIF = {
       isValidShareStructure: true,
       isValidCompanyProvisions: true,
       isValidResolutionDate: true,
-      isValidStartDate: true
+      isValidStartDate: true,
+      isValidAssociationType: true
     },
     flagsReviewCertify: {
       // NB: this must be in same order as ComponentsReviewCertify enum!
@@ -133,9 +134,6 @@ export const stateModel: StateModelIF = {
     folioNumber: false,
     peopleAndRoles: false,
     shareStructure: false
-  },
-  validFlags: {
-    defineCompanyStep: false
   },
   summaryMode: false,
   currentFees: cloneDeep(EmptyFees),

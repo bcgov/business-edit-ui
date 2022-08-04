@@ -104,10 +104,6 @@ export const mutateBusinessContact = (state: StateIF, businessContact: ContactPo
   // don't set Have Changes flag for business contact since it's changed directly in Auth API
 }
 
-export const mutateDefineCompanyStepValidity = (state: StateIF, validity: boolean) => {
-  state.stateModel.validFlags.defineCompanyStep = validity
-}
-
 export const mutateOfficeAddresses = (state: StateIF, addresses: AddressesIF) => {
   state.stateModel.officeAddresses = addresses
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)

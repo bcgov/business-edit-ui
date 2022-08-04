@@ -89,7 +89,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
     (v: string) => this.validateEmailFormat(v) || 'Enter valid email address'
   ]
 
-  mounted () {
+  protected mounted (): void {
     this.optionalEmail = this.getDocumentOptionalEmail
   }
 

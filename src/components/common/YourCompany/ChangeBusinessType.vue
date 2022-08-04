@@ -255,19 +255,19 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
   readonly confirmLabel: string = `The company has completed a set Benefit Company Articles containing a benefit
     provision, and a copy of these articles has been added to company's record book.`
 
-  mounted () {
+  protected mounted (): void {
     this.initializeEntityType()
   }
 
   /** Define the entity type locally once the value has been populated in the store. */
   @Watch('getEntityType')
-  private initializeEntityType () {
+  private initializeEntityType (): void {
     this.selectedEntityType = this.getEntityType
   }
 
   /** Clear the articles confirm checkbox whenever the selected entity type changes. */
   @Watch('selectedEntityType')
-  private clearConfirmArticles () {
+  private clearConfirmArticles (): void {
     this.confirmArticles = false
   }
 

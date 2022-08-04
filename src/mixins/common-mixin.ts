@@ -30,13 +30,13 @@ export default class CommonMixin extends Vue {
 
   /**
    * Identifies the first invalid flag and scrolls to the component.
-   * @param validFlags list of current component validity flags
+   * @param flags list of current component validity flags
    * @param components list of current component IDs
    * @return whether all components are valid
    */
-  async validateAndScroll (validFlags: object, components: object): Promise<boolean> {
+  async validateAndScroll (flags: object, components: object): Promise<boolean> {
     // Create an array of the _ordered_ validity flags
-    const validFlagArray = Object.keys(validFlags).map(key => validFlags[key])
+    const validFlagArray = Object.keys(flags).map(key => flags[key])
 
     // Find the _first_ corresponding component that is invalid
     const component = document.getElementById(components[validFlagArray.indexOf(false)])

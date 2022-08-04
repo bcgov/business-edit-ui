@@ -42,12 +42,12 @@ export default class CompletingParty extends Mixins(CommonMixin) {
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber: string
 
-  @Getter getPeopleAndRoles!: Array<OrgPersonIF>
+  @Getter getOrgPeople!: Array<OrgPersonIF>
   @Getter getEntitySnapshot!: EntitySnapshotIF
 
   /** The current Completing Party if found, otherwise undefined. */
   get completingParty () : OrgPersonIF {
-    return this.getCompletingParty(this.getPeopleAndRoles)
+    return this.getCompletingParty(this.getOrgPeople)
   }
 
   /** The original Completing Party if found, otherwise undefined. */

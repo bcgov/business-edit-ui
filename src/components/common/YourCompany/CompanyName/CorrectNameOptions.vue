@@ -82,14 +82,15 @@ export default class CorrectNameOptions extends Vue {
   @Prop() readonly correctionNameChoices: Array<string>
 
   // local properties
-  private displayedOptions: Array<CorrectNameOptionIF> = []
-  private panel: number = null
-  private formType: CorrectionTypes = null
-  private currentFormType: CorrectionTypes = null
-  private isLoading = false
-  private isFormValid = false
-  private validateNameChange = false
-  private correctionNameOptions: Array<CorrectNameOptionIF> = [
+  protected displayedOptions: Array<CorrectNameOptionIF> = []
+  protected panel: number = null
+  protected formType: CorrectionTypes = null
+  protected currentFormType: CorrectionTypes = null
+  protected isLoading = false
+  protected isFormValid = false
+  protected validateNameChange = false
+
+  readonly correctionNameOptions: Array<CorrectNameOptionIF> = [
     {
       id: CorrectionTypes.CORRECT_NAME,
       title: 'Edit the company name',
@@ -111,7 +112,7 @@ export default class CorrectNameOptions extends Vue {
     }
   ]
 
-  mounted () {
+  protected mounted (): void {
     // Filter the options to be displayed by what id's were passed from the parent component
     this.displayedOptions = this.correctionNameOptions.filter(
       option => this.correctionNameChoices.includes(option.id)
@@ -128,7 +129,7 @@ export default class CorrectNameOptions extends Vue {
   }
 
   /** Trigger form submission */
-  private submitNameCorrection (): void {
+  protected submitNameCorrection (): void {
     if (this.isFormValid) {
       this.isLoading = true
       this.formType = this.currentFormType
@@ -136,14 +137,14 @@ export default class CorrectNameOptions extends Vue {
   }
 
   /** Identify the current form */
-  private identifyForm (type: CorrectionTypes) {
+  protected identifyForm (type: CorrectionTypes) {
     this.currentFormType = type
     this.isFormValid = false
   }
 
   /** Inform Parent name correction process is done. */
   @Emit('isSaved')
-  private emitIsSaved (isSaved: boolean): boolean {
+  protected emitIsSaved (isSaved: boolean): boolean {
     this.isLoading = false
     this.formType = null
     if (isSaved) this.panel = null
@@ -152,7 +153,7 @@ export default class CorrectNameOptions extends Vue {
 
   /** cancel name correction */
   @Emit('cancel')
-  private emitCancel (): void {
+  protected emitCancel (): void {
     this.panel = null
   }
 }

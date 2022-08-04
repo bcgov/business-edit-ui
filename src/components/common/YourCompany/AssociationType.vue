@@ -122,7 +122,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { AssociationTypes } from '@/enums'
 import { CommonMixin, EnumMixin } from '@/mixins'
@@ -168,7 +168,7 @@ export default class AssociationType extends Mixins(CommonMixin, EnumMixin) {
     v => !!v || 'This field is required' // is not empty
   ]
 
-  mounted () {
+  protected mounted (): void {
     this.initializeAssociationType()
   }
 
@@ -188,6 +188,11 @@ export default class AssociationType extends Mixins(CommonMixin, EnumMixin) {
   private submitAssociationTypeChange () {
     this.setBusinessInformation({ ...this.getBusinessInformation, associationType: this.selectedAssociationType })
     this.isEditingAssociationType = false
+  }
+
+  @Emit('isEditingAssociationType')
+  @Watch('isEditingAssociationType', { immediate: true })
+  private isEditingAssociationTypeChange (isEditing: boolean): void {
   }
 }
 </script>

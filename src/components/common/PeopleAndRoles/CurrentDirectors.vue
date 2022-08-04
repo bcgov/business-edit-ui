@@ -15,7 +15,7 @@
 
       <v-simple-table class="director-table section-container">
         <!-- List Display Section -->
-        <thead v-if="getPeopleAndRoles.length > 0">
+        <thead v-if="getOrgPeople.length > 0">
           <!-- List Headers -->
           <tr class="director-list-header pb-3">
             <th v-for="(title, index) in tableHeaders" :key="index" class="px-0">
@@ -27,7 +27,7 @@
           <!-- List Content -->
           <tr
             class="director-content py-3"
-            v-for="(orgPerson, index) in getPeopleAndRoles"
+            v-for="(orgPerson, index) in getOrgPeople"
             :key="`director:${index}`"
           >
             <!-- Name + Badge -->
@@ -89,7 +89,7 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
   readonly isSame = isSame
 
   // Global getters
-  @Getter getPeopleAndRoles!: OrgPersonIF[]
+  @Getter getOrgPeople!: OrgPersonIF[]
 
   /** Headers for the person table. */
   readonly tableHeaders = ['Name', 'Mailing Address', 'Delivery Address', 'Effective Dates']

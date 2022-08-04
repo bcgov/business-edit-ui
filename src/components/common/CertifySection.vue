@@ -61,7 +61,7 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
   @Prop({ default: false }) readonly disableEdit: boolean
 
   /** Called when component is mounted. */
-  mounted (): void {
+  protected mounted (): void {
     this.setCertifyState(
       {
         valid: this.getCertifyState.valid,
