@@ -296,8 +296,8 @@ export const getNameTranslations = (state: StateIF): NameTranslationIF[] => {
   return state.stateModel.nameTranslations
 }
 
-/** Whether name translations data has changed. */
-export const hasNameTranslationChanged = (state: StateIF): boolean => {
+/** Whether name translations have changed. */
+export const haveNameTranslationsChanged = (state: StateIF): boolean => {
   return (getNameTranslations(state).filter(x => x.action).length > 0)
 }
 
@@ -333,17 +333,12 @@ export const haveUnsavedChanges = (state: StateIF): boolean => {
 
 /** The staff payment. */
 export const getStaffPayment = (state: StateIF): StaffPaymentIF => {
-  return state.stateModel.staffPaymentStep.staffPayment
+  return state.stateModel.staffPayment
 }
 
 /** The filing data. */
 export const getFilingData = (state: StateIF): FilingDataIF => {
   return state.stateModel.filingData
-}
-
-/** Whether People and Roles component is valid. */
-export const isPeopleAndRolesValid = (state: StateIF): boolean => {
-  return state.stateModel.peopleAndRoles.valid
 }
 
 /** Whether app is busy saving/saving and resuming/filing and paying. */
@@ -369,6 +364,7 @@ export const isFilingPaying = (state: StateIF): boolean => {
 /**
  * Whether any correction data has changed (for the purpose of showing the
  * fee summary), ie, does not include:
+ * - completing party
  * - detail
  * - certify
  * - staff payment
@@ -378,22 +374,23 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
     return (
       hasBusinessNameChanged(state) ||
       hasBusinessTypeChanged(state) ||
-      hasNameTranslationChanged(state) ||
+      haveNameTranslationsChanged(state) ||
       haveOfficeAddressesChanged(state) ||
       havePeopleAndRolesChanged(state) ||
       hasShareStructureChanged(state)
     )
   }
+
   if (isFirmCorrectionFiling(state)) {
-    // *** FUTURE: should check the following:
-    // completing party (client error correction only)
     return (
       hasBusinessNameChanged(state) ||
+      hasBusinessStartDateChanged(state) ||
       hasNaicsChanged(state) ||
       haveOfficeAddressesChanged(state) ||
       havePeopleAndRolesChanged(state)
     )
   }
+
   return false // should never happen
 }
 
@@ -411,7 +408,7 @@ export const hasAlterationDataChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
     hasBusinessTypeChanged(state) ||
-    hasNameTranslationChanged(state) ||
+    haveNameTranslationsChanged(state) ||
     hasShareStructureChanged(state) ||
     areProvisionsRemoved(state) ||
     haveNewResolutionDates(state)
@@ -437,19 +434,18 @@ export const hasSpecialResolutionDataChanged = (state: StateIF): boolean => {
   )
 }
 
-/** Whether the special resolution filing is valid.
- *  does NOT include:
+/** Whether the special resolution filing is valid. Does NOT include:
  * - address (read only)
  * NOTE THIS IS INCOMPLETE - not entirely sure where to use this.
  * isCorrectionValid seems to disable the File and Pay button.
  */
 export const isSpecialResolutionValid = (state: StateIF): boolean => {
   return (
-    state.stateModel.peopleAndRoles.valid &&
-    state.stateModel.shareStructureStep.valid &&
-    state.stateModel.detail.valid &&
-    state.stateModel.certifyState.valid &&
-    state.stateModel.staffPaymentStep.valid
+    getFlagsCompanyInfo(state).isValidOrgPersons &&
+    getFlagsCompanyInfo(state).isValidShareStructure &&
+    getFlagsReviewCertify(state).isValidDetailComment &&
+    getFlagsReviewCertify(state).isValidCertify &&
+    getFlagsReviewCertify(state).isValidStaffPayment
   )
 }
 
@@ -491,48 +487,43 @@ export const hasConversionDataChanged = (state: StateIF): boolean => {
 /** Whether the subject correction filing is valid. */
 export const isCorrectionValid = (state: StateIF): boolean => {
   if (isBenIaCorrectionFiling(state)) {
-    // NB: Define Company and Agreement Type don't have a "valid" state --
-    //     they don't allow saving an invalid state to the store.
     return (
-      state.stateModel.peopleAndRoles.valid &&
-      state.stateModel.shareStructureStep.valid &&
-      state.stateModel.detail.valid &&
-      state.stateModel.certifyState.valid &&
-      state.stateModel.staffPaymentStep.valid
+      getFlagsCompanyInfo(state).isValidCompanyName &&
+      getFlagsCompanyInfo(state).isValidNameTranslation &&
+      getFlagsCompanyInfo(state).isValidOrgPersons &&
+      getFlagsCompanyInfo(state).isValidShareStructure &&
+      getFlagsReviewCertify(state).isValidDetailComment &&
+      getFlagsReviewCertify(state).isValidCertify &&
+      getFlagsReviewCertify(state).isValidStaffPayment
     )
   }
+
   if (isFirmCorrectionFiling(state)) {
     if (isClientErrorCorrection(state)) {
-      // *** FUTURE: should check the following:
-      // business name
-      // nature of business
-      // business addresses
-      // proprietor / partners
-      // completing party (client error correction only)
-      // detail
-      // certify (client error correction only)
-      // staff payment
       return (
-        state.stateModel.peopleAndRoles.valid &&
-        state.stateModel.detail.valid &&
-        state.stateModel.certifyState.valid &&
-        state.stateModel.staffPaymentStep.valid
+        getFlagsCompanyInfo(state).isValidCompanyName &&
+        // business start date || // *** FUTURE: implement this
+        getFlagsCompanyInfo(state).isValidNatureOfBusiness &&
+        getFlagsCompanyInfo(state).isValidAddress &&
+        getFlagsCompanyInfo(state).isValidOrgPersons &&
+        getFlagsReviewCertify(state).isValidCompletingParty &&
+        getFlagsReviewCertify(state).isValidDetailComment &&
+        getFlagsReviewCertify(state).isValidCertify &&
+        getFlagsReviewCertify(state).isValidStaffPayment
       )
     } else {
-      // *** FUTURE: should check the following:
-      // business name
-      // nature of business
-      // business addresses
-      // proprietor / partners
-      // detail
-      // staff payment
       return (
-        state.stateModel.peopleAndRoles.valid &&
-        state.stateModel.detail.valid &&
-        state.stateModel.staffPaymentStep.valid
+        getFlagsCompanyInfo(state).isValidCompanyName &&
+        // business start date || // *** FUTURE: implement this
+        getFlagsCompanyInfo(state).isValidNatureOfBusiness &&
+        getFlagsCompanyInfo(state).isValidAddress &&
+        getFlagsCompanyInfo(state).isValidOrgPersons &&
+        getFlagsReviewCertify(state).isValidDetailComment &&
+        getFlagsReviewCertify(state).isValidStaffPayment
       )
     }
   }
+
   return false // should never happen
 }
 
@@ -573,7 +564,7 @@ export const getFlagsCompanyInfo = (state: StateIF): FlagsCompanyInfoIF => {
 }
 
 export const getDetailComment = (state: StateIF): string => {
-  return state.stateModel.detail.comment
+  return state.stateModel.detailComment
 }
 
 /** The business information object. */
@@ -627,6 +618,12 @@ export const hasBusinessTypeChanged = (state: StateIF): boolean => {
   const originalLegalType = getEntitySnapshot(state)?.businessInfo?.legalType
 
   return (currentEntityType !== originalLegalType)
+}
+
+/** Whether business start date has changed. */
+export const hasBusinessStartDateChanged = (state: StateIF): boolean => {
+  // *** FUTURE: implement this
+  return false
 }
 
 /** Whether association type has changed. */
@@ -728,18 +725,24 @@ export const hasRecDeliveryChanged = (state: StateIF): boolean => {
 
 /** True if any people/roles have changed. */
 export const havePeopleAndRolesChanged = (state: StateIF): boolean => {
-  const currentOrgPersons = getOrgPeople(state)?.map(op => {
-    const isOrg = (op.officer.partyType === PartyTypes.ORGANIZATION)
+  /** Normalizes fields that may be empty, null or undefined. */
+  function normalize (op: OrgPersonIF): OrgPersonIF {
+    if (!op.deliveryAddress.deliveryInstructions) op.deliveryAddress.deliveryInstructions = ''
+    if (!op.deliveryAddress.streetAddressAdditional) op.deliveryAddress.streetAddressAdditional = ''
+    if (!op.mailingAddress.deliveryInstructions) op.mailingAddress.deliveryInstructions = ''
+    if (!op.mailingAddress.streetAddressAdditional) op.mailingAddress.streetAddressAdditional = ''
+    if (!op.officer.email) op.officer.email = null
 
-    // add fields that are not in the snapshot
-    return {
-      deliveryAddress: { deliveryInstructions: null, streetAddressAdditional: null, ...op.deliveryAddress },
-      mailingAddress: { deliveryInstructions: null, streetAddressAdditional: null, ...op.mailingAddress },
-      officer: isOrg ? { identifier: null, taxId: null, ...op.officer } : { ...op.officer },
-      roles: [ ...op.roles ]
+    if (op.officer.partyType === PartyTypes.ORGANIZATION) {
+      if (!op.officer.identifier) op.officer.identifier = null
+      if (!op.officer.taxId) op.officer.taxId = null
     }
-  })
-  const originalOrgPersons = getEntitySnapshot(state)?.orgPersons
+
+    return op
+  }
+
+  const currentOrgPersons = getOrgPeople(state)?.map(op => normalize(op))
+  const originalOrgPersons = getEntitySnapshot(state)?.orgPersons?.map(op => normalize(op))
 
   return !isSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange'])
 }
