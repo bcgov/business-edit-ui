@@ -296,8 +296,8 @@ export const getNameTranslations = (state: StateIF): NameTranslationIF[] => {
   return state.stateModel.nameTranslations
 }
 
-/** Whether name translations data has changed. */
-export const hasNameTranslationChanged = (state: StateIF): boolean => {
+/** Whether name translations have changed. */
+export const haveNameTranslationsChanged = (state: StateIF): boolean => {
   return (getNameTranslations(state).filter(x => x.action).length > 0)
 }
 
@@ -374,7 +374,7 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
     return (
       hasBusinessNameChanged(state) ||
       hasBusinessTypeChanged(state) ||
-      hasNameTranslationChanged(state) ||
+      haveNameTranslationsChanged(state) ||
       haveOfficeAddressesChanged(state) ||
       havePeopleAndRolesChanged(state) ||
       hasShareStructureChanged(state)
@@ -408,7 +408,7 @@ export const hasAlterationDataChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
     hasBusinessTypeChanged(state) ||
-    hasNameTranslationChanged(state) ||
+    haveNameTranslationsChanged(state) ||
     hasShareStructureChanged(state) ||
     areProvisionsRemoved(state) ||
     haveNewResolutionDates(state)
@@ -724,18 +724,24 @@ export const hasRecDeliveryChanged = (state: StateIF): boolean => {
 
 /** True if any people/roles have changed. */
 export const havePeopleAndRolesChanged = (state: StateIF): boolean => {
-  const currentOrgPersons = getOrgPeople(state)?.map(op => {
-    const isOrg = (op.officer.partyType === PartyTypes.ORGANIZATION)
+  /** Normalizes fields that may be empty, null or undefined. */
+  function normalize (op: OrgPersonIF): OrgPersonIF {
+    if (!op.deliveryAddress.deliveryInstructions) op.deliveryAddress.deliveryInstructions = ''
+    if (!op.deliveryAddress.streetAddressAdditional) op.deliveryAddress.streetAddressAdditional = ''
+    if (!op.mailingAddress.deliveryInstructions) op.mailingAddress.deliveryInstructions = ''
+    if (!op.mailingAddress.streetAddressAdditional) op.mailingAddress.streetAddressAdditional = ''
+    if (!op.officer.email) op.officer.email = null
 
-    // add fields that are not in the snapshot
-    return {
-      deliveryAddress: { deliveryInstructions: null, streetAddressAdditional: null, ...op.deliveryAddress },
-      mailingAddress: { deliveryInstructions: null, streetAddressAdditional: null, ...op.mailingAddress },
-      officer: isOrg ? { identifier: null, taxId: null, ...op.officer } : { ...op.officer },
-      roles: [ ...op.roles ]
+    if (op.officer.partyType === PartyTypes.ORGANIZATION) {
+      if (!op.officer.identifier) op.officer.identifier = null
+      if (!op.officer.taxId) op.officer.taxId = null
     }
-  })
-  const originalOrgPersons = getEntitySnapshot(state)?.orgPersons
+
+    return op
+  }
+
+  const currentOrgPersons = getOrgPeople(state)?.map(op => normalize(op))
+  const originalOrgPersons = getEntitySnapshot(state)?.orgPersons?.map(op => normalize(op))
 
   return !isSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange'])
 }
