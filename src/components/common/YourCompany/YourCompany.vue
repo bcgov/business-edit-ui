@@ -78,7 +78,7 @@
               </div>
               <div class="company-info">
                 <span class="subtitle">Status: </span>
-                <span class="info-text">{{getNameRequest.status}}</span>
+                <span class="info-text capitalize">{{nrStatus}}</span>
               </div>
             </template>
           </v-col>
@@ -443,6 +443,11 @@ export default class YourCompany extends Mixins(
     return this.getNameRequest?.applicant
   }
 
+  /** Name Request status */
+  get nrStatus (): string {
+    return (this.getNameRequest.status || '').toLowerCase()
+  }
+
   /** Name Request expiry */
   get expiryDate (): string {
     const expiry = this.getNameRequest?.expiry
@@ -613,5 +618,9 @@ export default class YourCompany extends Mixins(
 
 #contact-info-section {
   border-bottom-left-radius: 0 !important;
+}
+
+.capitalize {
+  text-transform: capitalize;
 }
 </style>
