@@ -30,7 +30,8 @@ const flagsCompanyInfo = {
   isValidAddress: false,
   isValidContactInfo: false,
   isValidFolioInfo: false,
-  isValidOrgPersons: false
+  isValidOrgPersons: false,
+  isValidAssociationType: false
 }
 
 describe('YourCompany in a BEN correction', () => {

@@ -16,4 +16,5 @@ export interface FlagsCompanyInfoIF {
   isValidShareStructure: boolean
   isValidCompanyProvisions: boolean
   isValidResolutionDate: boolean
+  isValidAssociationType: boolean
 }

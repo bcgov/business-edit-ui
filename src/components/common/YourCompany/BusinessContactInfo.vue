@@ -65,7 +65,8 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
     if (isEqual(contactInfo, this.getBusinessContact)) return
 
     try {
-      if (this.isAlterationFiling || this.isFirmChangeFiling || this.isFirmConversionFiling) {
+      if (this.isAlterationFiling || this.isFirmChangeFiling || this.isFirmConversionFiling ||
+          this.isSpecialResolutionFiling) {
         await AuthServices.updateContactInfo(contactInfo, this.getBusinessId)
       }
       this.setBusinessContact(contactInfo)
