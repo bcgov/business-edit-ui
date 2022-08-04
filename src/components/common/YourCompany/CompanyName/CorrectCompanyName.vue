@@ -43,7 +43,7 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
     (v: string) => !!v || ' A company name is required'
   ]
 
-  mounted (): void {
+  protected mounted (): void {
     // Set the current company name to the form
     if (this.getNameRequestLegalName) {
       this.companyName = this.getNameRequestLegalName
@@ -52,7 +52,7 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
 
   /** Watch for form submission and emit results. */
   @Watch('formType')
-  private async onSubmit (): Promise<any> {
+  private onSubmit (): void {
     if (this.formType === CorrectionTypes.CORRECT_NAME) {
       // set the new company name
       this.setNameRequest({

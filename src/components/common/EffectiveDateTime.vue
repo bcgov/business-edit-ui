@@ -218,7 +218,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   }
 
   /** Called when component is mounted. */
-  mounted (): void {
+  protected mounted (): void {
     /** It was decided not doing it for now */
     // this.parseInitialEffectiveDateTime()
   }

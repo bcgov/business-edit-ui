@@ -34,7 +34,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter hasNaicsChanged!: boolean
   @Getter hasNameTranslationChanged!: boolean
   @Getter hasShareStructureChanged!: boolean
-  @Getter getPeopleAndRoles!: OrgPersonIF[]
+  @Getter getOrgPeople!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
   @Getter getFolioNumber!: string
   @Getter getTransactionalFolioNumber!: string
@@ -136,7 +136,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // apply parties to filing
     {
       // make a copy so we don't change original array
-      let parties = cloneDeep(this.getPeopleAndRoles)
+      let parties = cloneDeep(this.getOrgPeople)
 
       // add completing party (client error correction only)
       if (this.isClientErrorCorrection) {
@@ -154,7 +154,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     if (this.isCorrectedIncorporationApplication) {
       const nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
       const shareClasses = isDraft ? this.getShareClasses : this.prepareShareClasses()
-      const parties = isDraft ? this.getPeopleAndRoles : this.prepareParties()
+      const parties = isDraft ? this.getOrgPeople : this.prepareParties()
 
       filing.correction.nameTranslations = nameTranslations
       filing.correction.shareStructure = { shareClasses }
@@ -289,7 +289,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    */
   buildSpecialResolutionFiling (isDraft: boolean): SpecialResolutionFilingIF {
     // *** FUTURE: add in as needed - see buildAlterationFiling()
-    // const parties = isDraft ? this.getPeopleAndRoles : this.prepareParties()
+    // const parties = isDraft ? this.getOrgPeople : this.prepareParties()
     // const shareClasses = isDraft ? this.getShareClasses : this.prepareShareClasses()
     // const nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
 
@@ -387,7 +387,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // Apply parties to filing
     {
       // make a copy so we don't change original array
-      let parties = cloneDeep(this.getPeopleAndRoles)
+      let parties = cloneDeep(this.getOrgPeople)
 
       // add completing party
       parties = this.addCompletingParty(parties)
@@ -459,7 +459,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // Apply parties to filing
     {
       // make a copy so we don't change original array
-      let parties = cloneDeep(this.getPeopleAndRoles)
+      let parties = cloneDeep(this.getOrgPeople)
 
       // add completing party
       parties = this.addCompletingParty(parties)
@@ -1016,7 +1016,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    * Prepares parties for non-draft save.
    * @returns the updated share classes array
    */
-  private prepareParties (parties = this.getPeopleAndRoles) : OrgPersonIF[] {
+  private prepareParties (parties = this.getOrgPeople) : OrgPersonIF[] {
     // filter out removed parties and delete "actions" property
     return parties.filter(x => !x.actions?.includes(ActionTypes.REMOVED))
       .map((x) => { const { actions, ...rest } = x; return rest })

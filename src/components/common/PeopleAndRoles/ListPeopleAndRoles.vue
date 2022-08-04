@@ -320,7 +320,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   readonly validOrgPersons: boolean
 
   // Store getter
-  @Getter getPeopleAndRoles!: OrgPersonIF[]
+  @Getter getOrgPeople!: OrgPersonIF[]
   @Getter isBenIaCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
 
@@ -349,9 +349,9 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   get currentPeopleAndRoles (): Array<OrgPersonIF> {
     if (this.isSummaryView) {
       // return list without REMOVED org-persons
-      return this.getPeopleAndRoles.filter(orgPerson => !this.wasRemoved(orgPerson))
+      return this.getOrgPeople.filter(orgPerson => !this.wasRemoved(orgPerson))
     }
-    return this.getPeopleAndRoles
+    return this.getOrgPeople
   }
 
   /** Returns True if the specified org-person can be removed. */

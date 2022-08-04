@@ -165,7 +165,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   // Global getters
   @Getter getCurrentJsDate!: Date
   @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getPeopleAndRoles!: OrgPersonIF[]
+  @Getter getOrgPeople!: OrgPersonIF[]
   @Getter isRoleStaff!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
@@ -231,7 +231,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    * See also OrgPerson.vue::mailingAddressSchema and deliveryAddressSchema.
    */
   get haveRequiredAddresses (): boolean {
-    return this.getPeopleAndRoles.every(party => {
+    return this.getOrgPeople.every(party => {
       // NB: some parties have multiple roles, so order matters below
       //     (most restrictive to least restrictive)
 
@@ -271,7 +271,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 
   /** True if all orgs/persons have a role. */
   get noMissingRoles (): boolean {
-    return this.getPeopleAndRoles.every(p => p.roles.length > 0)
+    return this.getOrgPeople.every(p => p.roles.length > 0)
   }
 
   /** True if OrgPersons list is valid. */
@@ -287,7 +287,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 
   /** True if we have any changes (from original IA). */
   get hasChanges (): boolean {
-    return this.getPeopleAndRoles.some(x => x.actions)
+    return this.getOrgPeople.some(x => x.actions)
   }
 
   /** Resource getters. */
@@ -315,7 +315,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   /**
    * Called when component is mounted.
    */
-  mounted (): void {
+  protected mounted (): void {
     // initialize this component's 'valid' and 'changed' flags
     this.setPeopleAndRolesValidity(this.validOrgPersons)
     this.setPeopleAndRolesChanged(this.hasChanges)
@@ -331,7 +331,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   private hasRole (roleName: RoleTypes, count: number, mode: CompareModes): boolean {
     // 1. filter out removed people
     // 2. filter in people with specified role
-    const orgPersonWithSpecifiedRole = this.getPeopleAndRoles
+    const orgPersonWithSpecifiedRole = this.getOrgPeople
       .filter(people => !this.wasRemoved(people))
       .filter(people => people.roles.some(role => role.roleType === roleName))
 
@@ -368,7 +368,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    */
   private initEdit (index: number): void {
     // make a copy so we don't change the original object
-    this.currentOrgPerson = cloneDeep(this.getPeopleAndRoles[index])
+    this.currentOrgPerson = cloneDeep(this.getOrgPeople[index])
     this.activeIndex = index
     this.isAddingEditingOrgPerson = true
   }
@@ -391,7 +391,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    */
   private async undo (index: number): Promise<void> {
     // make a copy so Vue reacts when we set the updated list
-    const tempList = cloneDeep(this.getPeopleAndRoles)
+    const tempList = cloneDeep(this.getOrgPeople)
 
     // get org/person to undo
     const person = tempList[index]
@@ -444,7 +444,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    */
   private addEdit (orgPerson: OrgPersonIF): void {
     // make a copy so Vue reacts when we set the new list
-    const tempList = cloneDeep(this.getPeopleAndRoles)
+    const tempList = cloneDeep(this.getOrgPeople)
 
     if (isNaN(this.activeIndex)) {
       // add new person to list if not a current index
@@ -555,7 +555,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    */
   private remove (index: number): void {
     // make a copy so Vue reacts when we set the new list
-    const tempList = cloneDeep(this.getPeopleAndRoles)
+    const tempList = cloneDeep(this.getOrgPeople)
 
     // get org/person to remove
     // (we update this record right in the temp list)
@@ -582,7 +582,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   }
 
   /** On initial load and when user has made changes, sets the component validity flag. */
-  @Watch('getPeopleAndRoles', { deep: true })
+  @Watch('getOrgPeople', { deep: true })
   private onPeopleAndRolesChanged (): void {
     // FUTURE: combine this component's two validity mechanisms
     //         see setValidComponent() below

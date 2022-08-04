@@ -265,7 +265,6 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
       certifiedBy: 'Some certifier'
     }
     store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.stateModel.validFlags.defineCompanyStep = true
     store.state.stateModel.peopleAndRoles = { valid: true }
     store.state.stateModel.shareStructureStep = { valid: true }
     store.state.stateModel.effectiveDateTime = { valid: true }

@@ -132,9 +132,6 @@ export const stateModel: StateModelIF = {
     peopleAndRoles: false,
     shareStructure: false
   },
-  validFlags: {
-    defineCompanyStep: false
-  },
   summaryMode: false,
   currentFees: cloneDeep(EmptyFees),
   feePrices: cloneDeep(EmptyFees)
