@@ -445,7 +445,7 @@ export default class YourCompany extends Mixins(
 
   /** Name Request status */
   get nrStatus (): string {
-    return (this.getNameRequest.status || '').toLowerCase()
+    return (this.getNameRequest?.status || '').toLowerCase()
   }
 
   /** Name Request expiry */

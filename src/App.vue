@@ -344,7 +344,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       Object.values(this.getFlagsReviewCertify).some(val => val === false)
     )
   }
-  /** Show fee summery only allowed filing types */
+  /** Show fee summary only allowed filing types */
   get showFeesummaryShared (): boolean {
     return (
       this.isSpecialResolutionFiling ||
