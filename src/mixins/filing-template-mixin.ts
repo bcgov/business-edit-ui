@@ -319,7 +319,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
 
     // Apply NR / business name / business type change to filing
     if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
-      filing.alteration.nameRequest = this.getNameRequest
+      filing.specialResolution.nameRequest = this.getNameRequest
     }
 
     if (this.getDocumentOptionalEmail) {
@@ -695,12 +695,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     this.setEntitySnapshot(entitySnapshot)
 
     // store Entity Type
-    this.setEntityType(filing.alteration.business?.legalType || entitySnapshot.businessInfo.legalType)
+    this.setEntityType(filing.specialResolution.business?.legalType || entitySnapshot.businessInfo.legalType)
 
     // store Business Information
     this.setBusinessInformation({
       ...filing.business,
-      ...filing.alteration.business
+      ...filing.specialResolution.business
     })
 
     // store Name Request data
