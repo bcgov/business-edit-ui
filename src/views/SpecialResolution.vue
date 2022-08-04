@@ -16,7 +16,7 @@
 
         <CurrentDirectors class="mt-10" />
           <!-- more component comes here -->
-        <SpecialResolutionForm class="mt-10" />
+        <SpecialResolutionForm class="mt-10" v-if="showSpecialResolutionForm" />
       </div>
     </v-slide-x-transition>
 
@@ -192,6 +192,13 @@ export default class SpecialResolution extends Mixins(
   get specialResolutionResource (): ResourceIF {
     if (this.isEntityTypeCP) return CooperativeResource
     return null
+  }
+
+  /** show special resolution form component.
+   * (Business name change, association type change)
+   * to add : memorandum, rules */
+  get showSpecialResolutionForm (): boolean {
+    return (this.hasBusinessNameChanged || this.hasAssociationTypeChanged)
   }
 
   /** Called when App is ready and this component can load its data. */
