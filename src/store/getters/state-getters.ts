@@ -928,6 +928,6 @@ export const getCompletingParty = (state: StateIF): CompletingPartyIF => {
 }
 
 /** The Create Special Resolution object. */
-export const getCreateResolutionStep = (state: StateIF): CreateResolutionIF => {
-  return state.stateModel.createResolutionStep
+export const getcreateResolution = (state: StateIF): CreateResolutionIF => {
+  return state.stateModel.createResolution
 }

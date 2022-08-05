@@ -16,7 +16,8 @@
 
         <CurrentDirectors class="mt-10" />
           <!-- more component comes here -->
-        <SpecialResolutionForm class="mt-10" v-if="showSpecialResolutionForm" />
+          <!-- v-if="showSpecialResolutionForm" -->
+        <SpecialResolutionForm class="mt-10"  />
       </div>
     </v-slide-x-transition>
 

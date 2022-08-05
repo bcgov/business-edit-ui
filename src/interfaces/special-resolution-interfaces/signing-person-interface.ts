@@ -1,11 +1,11 @@
-export interface PersonIF {
+export interface SigningPersonIF {
   givenName: string
   additionalName?: string
   familyName: string
   email?: string
 }
 
-export const EmptyPerson: PersonIF = {
+export const EmptySigningPersonIF: SigningPersonIF = {
   givenName: '',
   familyName: '',
   additionalName: ''

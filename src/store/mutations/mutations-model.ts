@@ -283,5 +283,5 @@ export const mutateNaics = (state: StateIF, naics: NaicsIF) => {
 }
 
 export const mutateResolution = (state: StateIF, resolution: CreateResolutionIF) => {
-  state.stateModel.createResolutionStep = resolution
+  state.stateModel.createResolution = resolution
 }

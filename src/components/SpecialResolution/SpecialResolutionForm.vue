@@ -1,7 +1,5 @@
 <template>
   <v-card flat id="special-resolution-summary">
-
-    <v-card flat>
       <!-- Header -->
       <article class="header-container section-container">
         <v-icon color="appDkBlue">mdi-handshake</v-icon>
@@ -35,23 +33,23 @@
       <!-- Special Resolution Form -->
         <section id="sample-resolution-section" class="section-container mt-10">
           <header id="sample-resolution-header">
-            <h2>{{getCreateResolutionResource && getCreateResolutionResource.header}}</h2>
+            <h2>{{ getCreateResolutionResource.header}}</h2>
           </header>
 
           <p class="section-description mt-2"
-            v-html="getCreateResolutionResource && getCreateResolutionResource.text"></p>
+            v-html="getCreateResolutionResource.text"></p>
 
           <div class="mt-4">
             <v-card flat class="py-8 px-6">
               <div class="d-flex flex-column flex-sm-row justify-center align-center">
-                <img :src="previewImageSource"
-                  :alt="getCreateResolutionResource && getCreateResolutionResource.downloadDocLabel"
+                <img src="@/assets/images/BCRegistries_CoopSpecialResolution-x2.png"
+                  :alt="getCreateResolutionResource.downloadDocLabel"
                   slot-scope="" class="preview-image" />
                 <div class="px-8" />
                 <div class="download-link-container py-5">
                   <v-icon color="primary" class="mt-n1">mdi-file-pdf-outline</v-icon>
                   <a :href="documentURL" download class="ml-1">
-                    {{getCreateResolutionResource && getCreateResolutionResource.downloadDocLabel}}
+                    {{getCreateResolutionResource.downloadDocLabel}}
                   </a>
                 </div>
               </div>
@@ -70,7 +68,7 @@
           </p>
 
           <div class="mt-4" >
-            <v-card flat id="resolution-date-card" class="py-8 px-6">
+            <v-card flat id="resolution-date-card" class="py-8">
               <v-row no-gutters>
                 <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block">
                   <label class="resolution-date-vcard-title mt-4">
@@ -116,7 +114,7 @@
             </v-card>
           </div>
 
-    <!-- Resolution Signature -->
+          <!-- Resolution Signature -->
 
           <header id="resolution-signature-info-header">
             <h2> Resolution signature</h2>
@@ -126,7 +124,7 @@
             Enter the full name of the person who signed the special resolution and the date they signed it.
             </p>
 
-            <v-card flat id="resolution-signature-card" class="py-8 px-6">
+            <v-card flat id="resolution-signature-card" class="py-8">
               <v-row no-gutters>
                 <v-col cols="12" sm="3" class="pr-4">
                   <label class="resolution-signature-vcard-title">Signing Party</label>
@@ -187,17 +185,15 @@
 
         </section>
       </v-card>
-    </v-card>
   </v-card>
 </template>
 
 <script lang="ts">
-// this is a placceholder copied from AlterationSummary, Will add component when working on this page
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, HelpSectionIF, ResourceIF,
-  FormIF, PersonIF, EmptyPerson, CreateResolutionIF } from '@/interfaces/'
-import { DateMixin, SharedMixin, FilingTemplateMixin, CommonMixin } from '@/mixins/'
+  FormIF, SigningPersonIF, EmptySigningPersonIF, CreateResolutionIF } from '@/interfaces/'
+import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 
@@ -207,15 +203,12 @@ import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-pic
     DatePickerShared
   }
 })
-export default class SpecialResolutionForm extends Mixins(
-  DateMixin
-
-) {
+export default class SpecialResolutionForm extends Mixins(DateMixin) {
   @Getter getResource!: ResourceIF
   @Getter getBusinessFoundingDate!: Date
 
   @Action setResolution!: ActionBindingIF
-  @Getter getCreateResolutionStep!: CreateResolutionIF
+  @Getter getcreateResolution!: CreateResolutionIF
   @Getter getComponentValidate!: boolean
 
   // Refs
@@ -226,20 +219,20 @@ export default class SpecialResolutionForm extends Mixins(
   }
 
   // Date properties
-  protected resolutionDateText: string = ''
-  protected signatureDateText: string = ''
+  protected resolutionDateText = ''
+  protected signatureDateText = ''
 
-  protected MAX_RESOLUTION_TEXT_LENGTH: number = 1000
-  protected resolutionText: string = ''
+  readonly MAX_RESOLUTION_TEXT_LENGTH = 1000
+  protected resolutionText = ''
 
-  protected signingPerson: PersonIF = null
+  protected signingPerson: SigningPersonIF = null
 
   get helpSection (): HelpSectionIF {
     return this.getResource.changeData?.specialSpecialResolution?.helpSection
   }
 
   get getCreateResolutionResource (): any {
-    return this.getResource.changeData?.specialSpecialResolution?.sampleFormSection || null
+    return this.getResource.changeData?.specialSpecialResolution?.sampleFormSection || {}
   }
 
   get documentURL (): string {
@@ -248,15 +241,15 @@ export default class SpecialResolutionForm extends Mixins(
     return docUrl
   }
 
-  get previewImageSource (): string {
-    // Note: the image file path did not resolve correctly when using the require function directly.  In order
-    // to get the image path resolving correctly, needed to get the image context first and use that to build
-    // the final image file path
+  // get previewImageSource (): string {
+  //   // Note: the image file path did not resolve correctly when using the require function directly.  In order
+  //   // to get the image path resolving correctly, needed to get the image context first and use that to build
+  //   // the final image file path
 
-    if (this.isJestRunning || !this.getCreateResolutionResource?.previewImagePath) { return '' }
-    const images = require.context('@/assets/images/', false, /\.png$/)
-    return images('./' + this.getCreateResolutionResource?.previewImagePath)
-  }
+  //   if (this.isJestRunning || !this.getCreateResolutionResource?.previewImagePath) { return '' }
+  //   const images = require.context('@/assets/images/', false, /\.png$/)
+  //   return images('./' + this.getCreateResolutionResource?.previewImagePath)
+  // }
 
   /** The name section validity state (when prompted by app). */
   get invalidNameSection (): boolean {
@@ -321,14 +314,15 @@ export default class SpecialResolutionForm extends Mixins(
     await this.$nextTick()
     this.resolutionDateText = val
     this.setResolution({
-      ...this.getCreateResolutionStep,
+      ...this.getcreateResolution,
       resolutionDate: val
     })
   }
   /** called to add new resolutionDateText. */
   protected onResolutionTextChanged (val: string) {
+    console.log('this.getcreateResolution', this.getcreateResolution)
     this.setResolution({
-      ...this.getCreateResolutionStep,
+      ...this.getcreateResolution,
       resolutionText: val
     })
   }
@@ -392,7 +386,7 @@ export default class SpecialResolutionForm extends Mixins(
     await this.$nextTick()
     this.signatureDateText = val
     this.setResolution({
-      ...this.getCreateResolutionStep,
+      ...this.getcreateResolution,
       signingDate: val
     })
   }
@@ -401,16 +395,16 @@ export default class SpecialResolutionForm extends Mixins(
   protected async onSigningPersonChanged (): Promise<void> {
     await this.$nextTick()
     this.setResolution({
-      ...this.getCreateResolutionStep,
+      ...this.getcreateResolution,
       signingPerson: this.signingPerson
     })
   }
    /** Set values if exist */
    created () {
-     this.resolutionDateText = this.getCreateResolutionStep.resolutionDate
-     this.resolutionText = this.getCreateResolutionStep.resolutionText
-     this.signingPerson = this.getCreateResolutionStep.signingPerson || { ...EmptyPerson }
-     this.signatureDateText = this.getCreateResolutionStep.signingDate
+     this.resolutionDateText = this.getcreateResolution.resolutionDate
+     this.resolutionText = this.getcreateResolution.resolutionText
+     this.signingPerson = this.getcreateResolution.signingPerson || { ...EmptySigningPersonIF }
+     this.signatureDateText = this.getcreateResolution.signingDate
    }
 }
 </script>

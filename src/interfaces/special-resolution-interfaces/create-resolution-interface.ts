@@ -1,10 +1,9 @@
-import { PersonIF } from '@/interfaces'
+import { SigningPersonIF } from '@/interfaces'
 
 export interface CreateResolutionIF {
-  // validationDetail: ValidationDetailIF
   resolutionConfirmed: boolean
-  resolutionDate?: string
+  resolutionDate?: string // YYYY-MM-DD
   resolutionText?: string
-  signingPerson?: PersonIF
-  signingDate?: string
+  signingPerson?: SigningPersonIF
+  signingDate?: string // YYYY-MM-DD
 }

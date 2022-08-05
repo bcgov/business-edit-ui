@@ -39,5 +39,5 @@ export interface StateModelIF {
   summaryMode: boolean,
   currentFees: FeesIF,
   feePrices: FeesIF,
-  createResolutionStep: CreateResolutionIF
+  createResolution: CreateResolutionIF
 }
