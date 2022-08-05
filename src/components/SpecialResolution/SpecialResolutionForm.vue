@@ -241,16 +241,6 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
     return docUrl
   }
 
-  // get previewImageSource (): string {
-  //   // Note: the image file path did not resolve correctly when using the require function directly.  In order
-  //   // to get the image path resolving correctly, needed to get the image context first and use that to build
-  //   // the final image file path
-
-  //   if (this.isJestRunning || !this.getCreateResolutionResource?.previewImagePath) { return '' }
-  //   const images = require.context('@/assets/images/', false, /\.png$/)
-  //   return images('./' + this.getCreateResolutionResource?.previewImagePath)
-  // }
-
   /** The name section validity state (when prompted by app). */
   get invalidNameSection (): boolean {
     // add more state here
