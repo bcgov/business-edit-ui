@@ -61,4 +61,42 @@ describe('Special Resolution Form component', () => {
     const instructional = wrapper.find('#sample-resolution-header').text()
     expect(instructional).toContain('Special Resolution (Form 06 COO)')
   })
+
+  it('displays the correct help text', async () => {
+    wrapper.find('.help-btn').trigger('click')
+    await Vue.nextTick()
+
+    const helpHeader = wrapper.find('.help-header h2')
+
+    expect(helpHeader.exists()).toBe(true)
+  })
+
+  it('renders the sample resolution section', async () => {
+    expect(wrapper.find('#sample-resolution-section').exists()).toBe(true)
+  })
+
+  it('renders the correct sample resolution text', async () => {
+    const descText = wrapper.find('#sample-resolution-section .section-description')
+
+    expect(descText.exists()).toBe(true)
+    expect(descText.text()).toContain(CooperativeResource.changeData.specialSpecialResolution.sampleFormSection.text)
+  })
+
+  it('renders the form input', async () => {
+    const resolutionDate = wrapper.find('#resolution-date-card .resolution-date-vcard-title')
+
+    expect(resolutionDate.exists()).toBe(true)
+    expect(resolutionDate.text()).toContain('Resolution Date')
+
+    const resolutionText = wrapper.find('#resolution-date-card .resolution-text-vcard-title')
+
+    expect(resolutionText.exists()).toBe(true)
+    expect(resolutionText.text()).toContain('Resolution Text')
+  })
+
+  it('renders the signature form section', async () => {
+    const resolutionDate = wrapper.find('#resolution-signature-card .resolution-signature-vcard-title')
+    expect(resolutionDate.exists()).toBe(true)
+    expect(resolutionDate.text()).toContain('Signing Party')
+  })
 })
