@@ -498,11 +498,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.STAFF
 
     // store Correction Information
-    if (
-      this.isCorrectedRegistration ||
-      this.isCorrectedChangeReg ||
-      this.isCorrectionFiling
-    ) {
+    if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
       // Ensures startDate isn't undefined, otherwise its getter is not reactive
       filing.correction.startDate = null
     }

@@ -455,7 +455,7 @@ export default class YourCompany extends Mixins(
   }
 
   /** The recognition date or business start date string. */
-  protected get recognitionDateTime (): string {
+  get recognitionDateTime (): string {
     if (this.isBenIaCorrectionFiling) {
       if (this.getBusinessFoundingDate) {
         return this.apiToPacificDateTime(this.getBusinessFoundingDate)
