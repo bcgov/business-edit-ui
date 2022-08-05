@@ -87,12 +87,6 @@
                   :class="{ 'removed': wasRemoved(orgPerson)}">
                   Incorporation Number: {{orgPerson.officer.identifier}}
                 </p>
-                <p
-                  v-if="orgPerson.officer.taxId"
-                  class="info-text mb-1 people-roles-bus-number"
-                  :class="{ 'removed': wasRemoved(orgPerson)}">
-                  Business Number: {{orgPerson.officer.taxId}}
-                </p>
 
                 <div v-if="!isSummaryView && orgPerson.actions">
                   <v-chip v-if="wasRemoved(orgPerson)" x-small label color="#grey lighten-2">
