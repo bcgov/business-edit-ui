@@ -205,7 +205,9 @@ import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-pic
 })
 export default class SpecialResolutionForm extends Mixins(DateMixin) {
   @Getter getResource!: ResourceIF
-  @Getter getBusinessFoundingDate!: Date
+  @Getter getBusinessFoundingDate!: string
+  @Getter getCurrentDate!: string
+  @Getter getCurrentJsDate!: string
 
   @Action setResolution!: ActionBindingIF
   @Getter getcreateResolution!: CreateResolutionIF
@@ -226,6 +228,11 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   protected resolutionText = ''
 
   protected signingPerson: SigningPersonIF = null
+
+  /** Validation rule for individual name fields */
+  readonly firstNameRules = this.nameRules('First Name')
+  readonly middleNameRules = this.nameRules('Middle Name', false)
+  readonly lastNameRules = this.nameRules('Last Name')
 
   get helpSection (): HelpSectionIF {
     return this.getResource.changeData?.specialSpecialResolution?.helpSection
@@ -249,17 +256,16 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
 
   /** The minimum date that can be entered (can't be earlier than incorporation date ). */
   get resolutionDateMinStr (): string {
-    return this.dateToYyyyMmDd(new Date(this.getBusinessFoundingDate))
+    return this.dateToYyyyMmDd(this.apiToDate(this.getBusinessFoundingDate))
   }
 
   /** The minimum date that can be entered (can't be earlier than incorporation date ). */
   get resolutionDateMin (): Date {
-    return this.getBusinessFoundingDate
+    return this.apiToDate(this.getBusinessFoundingDate)
   }
   /** The maximum date that can be entered (today). */
   get resolutionDateMax (): Date {
-    const date = new Date()
-    return date
+    return this.apiToDate(this.getCurrentDate)
   }
 
   get resolutionTextRules (): Array<Function> {
@@ -272,8 +278,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
 
   /** The maximum date that can be entered (today). */
   get resolutionDateMaxStr (): string {
-    const date = new Date()
-    return this.dateToYyyyMmDd(date)
+    return this.getCurrentDate
   }
 
   /** Validations rules for resolution date field. */
@@ -294,14 +299,12 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
    * True if date is >= the minimum (ie, today) and <= the maximum (ie, the 10th day).
    * This is used for Vue form validation (in Date Rules above).
    */
-  // private isBetweenDates (v: string): boolean {
   isBetweenDates (minDate: string, maxDate: string, dateStrToValidate: string): boolean {
     if (!dateStrToValidate) { return true }
     return (new Date(dateStrToValidate) >= new Date(minDate)) && (new Date(dateStrToValidate) <= new Date(maxDate))
   }
-  /** Called to add a new date. */
+  /** Called to update resolution date. */
   async onResolutionDateSync (val: string): Promise<void> {
-    await this.$nextTick()
     this.resolutionDateText = val
     this.setResolution({
       ...this.getcreateResolution,
@@ -310,7 +313,6 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   }
   /** called to add new resolutionDateText. */
   protected onResolutionTextChanged (val: string) {
-    console.log('this.getcreateResolution', this.getcreateResolution)
     this.setResolution({
       ...this.getcreateResolution,
       resolutionText: val
@@ -318,17 +320,12 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   }
 
   /** Validation rule for name */
-  nameRules (label, isRequired = true): Array<Function> {
+  private nameRules (label, isRequired = true): Array<Function> {
     return [
       v => isRequired ? (!!v?.trim() || `${label} is required`) : true,
       v => (v?.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
     ]
   }
-
-  /** Validation rule for individual name fields */
-  firstNameRules = this.nameRules('First Name');
-  middleNameRules = this.nameRules('Middle Name', false);
-  lastNameRules = this.nameRules('Last Name');
 
   /** The minimum date that can be entered (resolution date). */
   get signatureDateMinStr (): string {
@@ -341,22 +338,17 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
       const resolutionDate = this.yyyyMmDdToDate(this.resolutionDateText)
       return resolutionDate
     }
-    const date = new Date()
-    date.setHours(0, 0, 0, 0)
-    return date
+    return this.apiToDate(this.getCurrentDate)
   }
 
   /** The maximum date that can be entered (today). */
   get signatureDateMaxStr (): string {
-    const date = this.signatureDateMax
-    const dateStr = this.dateToYyyyMmDd(date)
-    return dateStr
+    return this.dateToYyyyMmDd(this.signatureDateMax)
   }
 
   /** The maximum date that can be entered (today). */
   private get signatureDateMax (): Date {
-    const date = new Date()
-    return date
+    return this.apiToDate(this.getCurrentDate)
   }
 
   /** Validations rules for signing date field. */
@@ -373,17 +365,14 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   }
   /** called to add new signature date  */
   async onSigningDateSync (val: string): Promise<void> {
-    await this.$nextTick()
-    this.signatureDateText = val
     this.setResolution({
       ...this.getcreateResolution,
       signingDate: val
     })
   }
-  /** called to store sining party. */
+  /** called to store signing party. */
    @Watch('signingPerson', { deep: true })
   protected async onSigningPersonChanged (): Promise<void> {
-    await this.$nextTick()
     this.setResolution({
       ...this.getcreateResolution,
       signingPerson: this.signingPerson
