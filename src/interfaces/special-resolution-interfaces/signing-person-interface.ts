@@ -8,5 +8,5 @@ export interface SigningPersonIF {
 export const EmptySigningPersonIF: SigningPersonIF = {
   givenName: '',
   familyName: '',
-  additionalName: ''
+  additionalName: null
 }
