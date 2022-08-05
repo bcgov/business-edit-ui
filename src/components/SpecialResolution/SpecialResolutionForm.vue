@@ -378,13 +378,6 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
       signingPerson: this.signingPerson
     })
   }
-   /** Set values if exist */
-   created () {
-     this.resolutionDateText = this.getcreateResolution.resolutionDate
-     this.resolutionText = this.getcreateResolution.resolutionText
-     this.signingPerson = this.getcreateResolution.signingPerson || { ...EmptySigningPersonIF }
-     this.signatureDateText = this.getcreateResolution.signingDate
-   }
 }
 </script>
 
