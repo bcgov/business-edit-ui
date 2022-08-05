@@ -64,6 +64,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter getAssociationType!: AssociationTypes
   @Getter hasAssociationTypeChanged!: boolean
   @Getter isEntityTypeFirm!: boolean
+  @Getter hasBusinessStartDateChanged!: boolean
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -130,8 +131,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         contactPoint: this.getContactPoint,
         nameRequest: this.getNameRequest,
         offices: this.getOfficeAddresses,
-        type: this.getCorrectionErrorType,
-        ...(this.isEntityTypeFirm && { startDate: this.getCorrectionStartDate })
+        type: this.getCorrectionErrorType
       }
     }
 
@@ -186,9 +186,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         naicsCode: this.getCurrentNaics.naicsCode || undefined, // don't include if empty
         naicsDescription: this.getCurrentNaics.naicsDescription
       }
-
-      // *** FUTURE: update logic as needed (eg, only save if changed)
-      if (filing.correction.startDate && this.isEntityTypeFirm) {
+      if (this.hasBusinessStartDateChanged) {
         filing.correction.startDate = this.getCorrectionStartDate
       }
     }
@@ -492,6 +490,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    */
   parseCorrectionFiling (filing: CorrectionFilingIF, entitySnapshot: EntitySnapshotIF = null): void {
     // store Entity Snapshot
+    console.log('this', this)
+    console.log('filing', filing)
     this.setEntitySnapshot(entitySnapshot)
 
     // *** FUTURE: remove this fallback when Filings UI provides this value
