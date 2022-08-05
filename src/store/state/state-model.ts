@@ -55,6 +55,7 @@ export const stateModel: StateModelIF = {
       isValidDocumentOptionalEmail: true,
       isValidCompletingParty: true,
       isValidTransactionalFolioNumber: true,
+      isValidDetailComment: true,
       isValidCertify: false, // initially un-certified
       isValidCourtOrder: true,
       isValidStaffPayment: true
@@ -91,12 +92,10 @@ export const stateModel: StateModelIF = {
   },
   officeAddresses: null,
   peopleAndRoles: {
-    valid: false,
     changed: false,
     orgPeople: []
   },
   shareStructureStep: {
-    valid: false,
     changed: false,
     resolutionDates: [],
     shareClasses: []
@@ -106,16 +105,13 @@ export const stateModel: StateModelIF = {
     dateTimeString: ''
   },
   entitySnapshot: null,
-  staffPaymentStep: {
-    valid: false,
-    staffPayment: {
-      option: NaN,
-      routingSlipNumber: '',
-      bcolAccountNumber: '',
-      datNumber: '',
-      folioNumber: '',
-      isPriority: false
-    }
+  staffPayment: {
+    option: NaN,
+    routingSlipNumber: '',
+    bcolAccountNumber: '',
+    datNumber: '',
+    folioNumber: '',
+    isPriority: false
   },
   filingData: {
     filingTypeCode: null,
@@ -123,10 +119,7 @@ export const stateModel: StateModelIF = {
     priority: false,
     waiveFees: false
   },
-  detail: {
-    valid: false,
-    comment: ''
-  },
+  detailComment: '',
   editingFlags: {
     companyName: false,
     nameTranslations: false,

@@ -32,7 +32,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
   @Getter hasNaicsChanged!: boolean
-  @Getter hasNameTranslationChanged!: boolean
+  @Getter haveNameTranslationsChanged!: boolean
   @Getter hasShareStructureChanged!: boolean
   @Getter getOrgPeople!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
@@ -236,7 +236,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     }
 
     // Apply name translation changes to filing
-    if (this.hasNameTranslationChanged) {
+    if (this.haveNameTranslationsChanged) {
       const nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
       filing.alteration.nameTranslations = nameTranslations
     }

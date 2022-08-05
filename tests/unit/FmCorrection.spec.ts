@@ -179,7 +179,7 @@ describe('Firm Correction component', () => {
   it('staff payment is defaulted to no fee', () => {
     // Staff payment No Fee button needs option to be set to NO_FEE enum for the no fee button
     // to be selected in staff payment component
-    expect(store.state.stateModel.staffPaymentStep.staffPayment.option).toBe(0)
+    expect(store.state.stateModel.staffPayment.option).toBe(0)
   })
 
   // FUTURE
