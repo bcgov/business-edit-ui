@@ -10,7 +10,21 @@
       <v-card flat :class="{'invalid-section': invalidNameSection}">
         <!-- Instructional Text -->
         <article class="instructional-text section-container">
-          Before submitting this filing, you must pass a special resolution for this amendment
+          Before submitting this filing, you must pass a
+            <v-tooltip  top
+                    content-class="top-tooltip"
+                    transition="fade-transition"
+                    nudge-right="3">
+            <template v-slot:activator="{ on, attrs }">
+              <span
+                v-bind="attrs"
+                v-on="on"
+                class="tool-tip-text"
+              >special resolution</span>
+            </template>
+            <span>Special Resolution -  A decision voted on by the voting members of a Cooperative Association.</span>
+          </v-tooltip>
+        for this amendment
         </article>
 
         <HelpSection
@@ -44,7 +58,7 @@
             </v-card>
           </div>
         </section>
-        <hr class="my-5" />
+        <v-divider class="mx-4" />
 
         <section id="resolution-date-section" class="section-container mt-10">
           <header id="resolution-date-header">
@@ -442,5 +456,8 @@ export default class SpecialResolutionForm extends Mixins(
 ::v-deep label.v-label.theme--light {
   color: $gray7 !important;
   font-weight: normal;
+}
+.tool-tip-text{
+   border-bottom: 1px dashed $gray6;
 }
 </style>
