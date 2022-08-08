@@ -6,7 +6,6 @@ import { createLocalVue, mount } from '@vue/test-utils'
 import SpecialResolutionForm from '@/components/SpecialResolution/SpecialResolutionForm.vue'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { HelpSection } from '@/components/common/'
-import { EmptySigningPersonIF } from '@/interfaces'
 import { CooperativeResource } from '@/resources/SpecialResolution/CooperativeResource'
 
 Vue.use(Vuetify)
@@ -25,6 +24,12 @@ describe('Special Resolution Form component', () => {
     }
   }
 
+  const emptyPerson = {
+    givenName: '',
+    familyName: '',
+    additionalName: null
+  }
+
   beforeAll(() => {
     // init store
     store.state.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
@@ -32,7 +37,7 @@ describe('Special Resolution Form component', () => {
     store.state.stateModel.entitySnapshot = entitySnapshot
     store.state.stateModel.createResolution = {
       resolutionText: '',
-      signingPerson: { ...EmptySigningPersonIF },
+      signingPerson: { ...emptyPerson },
       resolutionConfirmed: false
     }
   })

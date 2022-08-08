@@ -192,7 +192,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, HelpSectionIF, ResourceIF,
-  FormIF, SigningPersonIF, EmptySigningPersonIF, CreateResolutionIF } from '@/interfaces/'
+  FormIF, SigningPersonIF, EmptySigningPerson, CreateResolutionIF } from '@/interfaces/'
 import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
@@ -235,7 +235,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   readonly lastNameRules = this.nameRules('Last Name')
 
   get helpSection (): HelpSectionIF {
-    return this.getResource.changeData?.specialSpecialResolution?.helpSection
+    return this.getResource.changeData?.specialSpecialResolution?.helpSection || {}
   }
 
   get getCreateResolutionResource (): any {
@@ -379,7 +379,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   }
   /** Set values if exist */
    protected created () {
-     this.signingPerson = this.getcreateResolution.signingPerson || { ...EmptySigningPersonIF }
+     this.signingPerson = this.getcreateResolution.signingPerson || { ...EmptySigningPerson }
    }
 }
 </script>

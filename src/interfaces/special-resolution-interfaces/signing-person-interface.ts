@@ -5,7 +5,7 @@ export interface SigningPersonIF {
   email?: string
 }
 
-export const EmptySigningPersonIF: SigningPersonIF = {
+export const EmptySigningPerson: SigningPersonIF = {
   givenName: '',
   familyName: '',
   additionalName: null
