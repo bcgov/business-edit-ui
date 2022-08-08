@@ -504,7 +504,6 @@ const ExistingProprietorPersonData = {
     middleName: 'M',
     organizationName: null,
     partyType: 'person',
-    taxId: '123456789',
     email: 'proprietor@example.com'
   },
   roles: [
@@ -521,7 +520,6 @@ const ExistingProprietorOrgData = {
     middleName: null,
     organizationName: 'Test Org',
     partyType: 'organization',
-    taxId: '123456789',
     email: 'proprietor@example.com'
   },
   roles: [
@@ -539,7 +537,6 @@ const ExistingPartnerPersonData = {
     organizationName: null,
     partyType: 'person',
     identifier: null,
-    taxId: null,
     email: 'partner@example.com'
   },
   roles: [
@@ -557,7 +554,6 @@ const ExistingPartnerOrgData = {
     organizationName: 'Test Org',
     partyType: 'organization',
     identifier: 'FM1234567',
-    taxId: '123456789',
     email: 'partner@example.com'
   },
   roles: [
@@ -583,8 +579,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: false,
       personName: 'Person\'s Name',
       confirmNameChange: false,
-      editBusinessNumber: false,
-      showBusinessNumber: false,
       orgLookUp: false,
       orgManualEntry: false,
       otherEditOrg: false,
@@ -607,8 +601,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: 'Add Business or Corporation',
       personName: false,
       confirmNameChange: false,
-      editBusinessNumber: 'Business Number',
-      showBusinessNumber: false,
       orgLookUp: false,
       orgManualEntry: 'Business or Corporation Unregistered in B.C.',
       otherEditOrg: false,
@@ -631,8 +623,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: false,
       personName: 'Person\'s Name',
       confirmNameChange: false,
-      editBusinessNumber: false,
-      showBusinessNumber: 'Business Number',
       orgLookUp: false,
       orgManualEntry: false,
       otherEditOrg: false,
@@ -655,8 +645,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: 'Edit Business or Corporation',
       personName: false,
       confirmNameChange: false,
-      editBusinessNumber: false,
-      showBusinessNumber: 'Business Number:',
       orgLookUp: false,
       orgManualEntry: false,
       otherEditOrg: 'Business or Corporation Name',
@@ -679,8 +667,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: false,
       personName: 'Person\'s Name',
       confirmNameChange: false,
-      editBusinessNumber: false,
-      showBusinessNumber: false,
       orgLookUp: false,
       orgManualEntry: false,
       otherEditOrg: false,
@@ -703,8 +689,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: 'Edit Business or Corporation',
       personName: false,
       confirmNameChange: false,
-      editBusinessNumber: false,
-      showBusinessNumber: 'Business Number:',
       orgLookUp: false,
       orgManualEntry: false,
       otherEditOrg: 'Business or Corporation Name',
@@ -727,8 +711,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: false,
       personName: 'Person\'s Name',
       confirmNameChange: false,
-      editBusinessNumber: 'Business Number',
-      showBusinessNumber: false,
       orgLookUp: false,
       orgManualEntry: false,
       otherEditOrg: false,
@@ -751,8 +733,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: 'Add Business or Corporation',
       personName: false,
       confirmNameChange: false,
-      editBusinessNumber: 'Business Number',
-      showBusinessNumber: false,
       orgLookUp: false,
       orgManualEntry: 'Business or Corporation Unregistered in B.C.',
       otherEditOrg: false,
@@ -775,8 +755,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: false,
       personName: 'Person\'s Name',
       confirmNameChange: false,
-      editBusinessNumber: 'Business Number',
-      showBusinessNumber: false,
       orgLookUp: false,
       orgManualEntry: false,
       otherEditOrg: false,
@@ -799,8 +777,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: 'Add Business or Corporation',
       personName: false,
       confirmNameChange: false,
-      editBusinessNumber: 'Business Number',
-      showBusinessNumber: false,
       orgLookUp: false,
       orgManualEntry: 'Business or Corporation Unregistered in B.C.',
       otherEditOrg: false,
@@ -823,8 +799,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: false,
       personName: 'Person\'s Name',
       confirmNameChange: false,
-      editBusinessNumber: 'Business Number',
-      showBusinessNumber: false,
       orgLookUp: false,
       orgManualEntry: false,
       otherEditOrg: false,
@@ -847,8 +821,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: 'Edit Business or Corporation',
       personName: false,
       confirmNameChange: false,
-      editBusinessNumber: 'Business Number',
-      showBusinessNumber: false,
       orgLookUp: false,
       orgManualEntry: false,
       otherEditOrg: 'Business or Corporation Name',
@@ -871,8 +843,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: false,
       personName: 'Person\'s Name',
       confirmNameChange: false,
-      editBusinessNumber: false,
-      showBusinessNumber: false,
       orgLookUp: false,
       orgManualEntry: false,
       otherEditOrg: false,
@@ -895,8 +865,6 @@ describe('Org/Person component for SP/GP filings', () => {
       addOrgHeader: 'Edit Business or Corporation',
       personName: false,
       confirmNameChange: false,
-      editBusinessNumber: 'Business Number',
-      showBusinessNumber: false,
       orgLookUp: false,
       orgManualEntry: false,
       otherEditOrg: 'Business or Corporation Name',
@@ -938,16 +906,6 @@ describe('Org/Person component for SP/GP filings', () => {
 
       if (!test.confirmNameChange) {
         expect(wrapper.find('.confirm-name-change').exists()).toBe(false)
-      }
-
-      if (test.editBusinessNumber) {
-        expect(wrapper.find('.edit-business-number .sub-header').text()).toBe(test.editBusinessNumber)
-      } else {
-        expect(wrapper.find('.edit-business-number').exists()).toBe(false)
-      }
-
-      if (!test.showBusinessNumber) {
-        expect(wrapper.find('.show-business-number').exists()).toBe(false)
       }
 
       if (!test.orgLookUp) {

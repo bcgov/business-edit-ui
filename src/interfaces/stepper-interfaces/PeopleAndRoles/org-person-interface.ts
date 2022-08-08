@@ -10,7 +10,6 @@ export interface ApiPersonIF {
   organizationName?: string // required when partyType="organization"
   email?: string
   identifier?: string // aka Incorporation/Registration number
-  taxId?: string // aka Business Number
 }
 
 export interface OrgPersonIF {

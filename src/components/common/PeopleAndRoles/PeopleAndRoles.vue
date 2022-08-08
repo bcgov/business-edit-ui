@@ -112,7 +112,8 @@
             <span>Add a {{ orgTypesLabel }}</span>
           </v-btn>
           <p v-if="!hasMinimumPartners" class="error-text small-text mt-5 mb-0">
-            You must have at least two partners
+            You must have at least two partners on a general partnership. Optionally, you may dissolve
+            the partnership and register a sole proprietorship to continue the business.
           </p>
           <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
             A partner address is missing or incorrect
@@ -486,11 +487,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     }
   }
 
-  /** Returns True if the orgPerson's Business Number has changed. */
-  private hasBnChanged (orgPerson: OrgPersonIF): boolean {
-    return (orgPerson.officer.taxId !== this.originalParties[this.activeIndex].officer.taxId)
-  }
-
   /** Returns True if the orgPerson's email has changed. */
   private hasEmailChanged (orgPerson: OrgPersonIF): boolean {
     return (orgPerson.officer.email !== this.originalParties[this.activeIndex].officer.email)
@@ -524,10 +520,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       !orgPerson.actions.includes(ActionTypes.NAME_CHANGED) && orgPerson.actions.push(ActionTypes.NAME_CHANGED)
     } else orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.NAME_CHANGED)
 
-    if (this.hasBnChanged(orgPerson)) {
-      !orgPerson.actions.includes(ActionTypes.BN_CHANGED) && orgPerson.actions.push(ActionTypes.BN_CHANGED)
-    } else orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.BN_CHANGED)
-
     if (this.hasEmailChanged(orgPerson)) {
       !orgPerson.actions.includes(ActionTypes.EMAIL_CHANGED) && orgPerson.actions.push(ActionTypes.EMAIL_CHANGED)
     } else orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.EMAIL_CHANGED)
@@ -539,7 +531,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     // Restore orgPerson when edits are undone manually through form entry
     if (
       !this.hasNameChanged(orgPerson) &&
-      !this.hasBnChanged(orgPerson) &&
       !this.hasEmailChanged(orgPerson) &&
       !this.hasAddressChanged(orgPerson)
     ) {

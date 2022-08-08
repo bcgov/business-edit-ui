@@ -737,7 +737,6 @@ export const havePeopleAndRolesChanged = (state: StateIF): boolean => {
 
     if (op.officer.partyType === PartyTypes.ORGANIZATION) {
       if (!op.officer.identifier) op.officer.identifier = null
-      if (!op.officer.taxId) op.officer.taxId = null
     }
 
     return op
