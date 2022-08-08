@@ -25,7 +25,7 @@ export const CooperativeResource: ResourceIF = {
       helpSection: {
         header: 'Help with Special Resolution',
         helpText: [
-          'If your require assistance with adding a business partner please contact us.'
+          'If you require assistance with adding a business partner please contact us.'
         ]
       },
       sampleFormSection: {
