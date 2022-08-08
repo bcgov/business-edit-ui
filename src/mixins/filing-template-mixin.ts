@@ -495,14 +495,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // *** FUTURE: remove this fallback when Filings UI provides this value
     if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.STAFF
 
+    // Ensures startDate isn't undefined, otherwise its getter is not reactive
+    if (!filing.correction.startDate) {
+      filing.correction.startDate = null
+    }
+
     // store Correction Information
     this.setCorrectionInformation(cloneDeep(filing.correction))
-    if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
-      // Ensures startDate isn't undefined, otherwise its getter is not reactive
-      if (!filing.correction.startDate) {
-        filing.correction.startDate = null
-      }
-    }
 
     // store Business Information for corrected Incorporation Application
     // *** FUTURE: change this to "if BEN correction"

@@ -352,7 +352,6 @@ export default class YourCompany extends Mixins(
   @Getter isBenIaCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
-  @Getter getCorrectionStartDate!: string
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -363,7 +362,6 @@ export default class YourCompany extends Mixins(
   @Action setValidComponent!: ActionBindingIF
   @Action setBusinessInformation!: ActionBindingIF
   @Action setNameRequest!: ActionBindingIF
-  @Action setCorrectionStartDate!: ActionBindingIF
 
   /** V-model for dropdown menu. */
   protected dropdown: boolean = null

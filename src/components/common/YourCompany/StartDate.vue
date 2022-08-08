@@ -131,7 +131,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
 
   protected dropdown = false
   protected onEditMode = false
-  protected isCorrected = !!this.getCorrectionStartDate
+  protected isCorrected = null
   protected newCorrectedStartDate = null as string // date is "Month Day, Year"
 
   /** The minimum start date that can be entered (Up to 2 years ago today). */
