@@ -1,6 +1,6 @@
 import { AccountInformationIF, ActionKvIF, AddressesIF, BusinessInformationIF, EntitySnapshotIF, CertifyIF,
   FilingDataIF, CorrectionInformationIF, NameRequestIF, NameTranslationIF, OrgPersonIF, ShareClassIF, StateIF,
-  FeesIF, ResourceIF } from '@/interfaces/'
+  FeesIF, ResourceIF, CreateResolutionIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { FilingTypes } from '@/enums/'
@@ -284,4 +284,8 @@ export const mutateNaics = (state: StateIF, naics: NaicsIF) => {
   state.stateModel.businessInformation.naicsCode = naics.naicsCode
   state.stateModel.businessInformation.naicsDescription = naics.naicsDescription
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
+}
+
+export const mutateResolution = (state: StateIF, resolution: CreateResolutionIF) => {
+  state.stateModel.createResolution = resolution
 }

@@ -1,7 +1,7 @@
 import {
   AccountInformationIF, AddressesIF, CertifyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF, ShareStructureIF,
   EffectiveDateTimeIF, CorrectionInformationIF, BusinessInformationIF, FilingDataIF, NameTranslationIF,
-  EntitySnapshotIF, DocumentDeliveryIF, FeesIF, NewAlterationIF, ValidationFlagsIF
+  EntitySnapshotIF, DocumentDeliveryIF, FeesIF, NewAlterationIF, ValidationFlagsIF, CreateResolutionIF
 } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 
@@ -38,5 +38,6 @@ export interface StateModelIF {
   validationFlags: ValidationFlagsIF
   summaryMode: boolean,
   currentFees: FeesIF,
-  feePrices: FeesIF
+  feePrices: FeesIF,
+  createResolution: CreateResolutionIF
 }

@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash'
 import { DateMixin, EnumMixin } from '@/mixins/'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF, EffectiveDateTimeIF,
   EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF, NameTranslationIF,
-  OrgPersonIF, ShareClassIF, SpecialResolutionFilingIF } from '@/interfaces/'
+  OrgPersonIF, ShareClassIF, SpecialResolutionFilingIF, CreateResolutionIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, AssociationTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
   RoleTypes } from '@/enums/'
@@ -63,6 +63,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter isClientErrorCorrection!: boolean
   @Getter getAssociationType!: AssociationTypes
   @Getter hasAssociationTypeChanged!: boolean
+  @Getter getcreateResolution!: CreateResolutionIF
   @Getter isEntityTypeFirm!: boolean
   @Getter hasBusinessStartDateChanged!: boolean
 
@@ -306,15 +307,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         identifier: this.getEntitySnapshot.businessInfo.identifier,
         legalName: this.getEntitySnapshot.businessInfo.legalName,
         legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
+        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber,
+        associationType: this.getAssociationType
       },
       specialResolution: {
-        business: {
-          identifier: this.getBusinessId,
-          legalType: this.getEntityType,
-          associationType: this.getAssociationType
-        }
+        ...this.getcreateResolution
       }
+
     }
 
     // Apply NR / business name / business type change to filing

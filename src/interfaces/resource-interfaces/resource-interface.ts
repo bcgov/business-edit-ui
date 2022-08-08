@@ -18,6 +18,10 @@ export interface ResourceIF {
       subtitle: string
       helpSection?: HelpSectionIF
     }
+    specialSpecialResolution?:{
+      helpSection?: HelpSectionIF,
+      sampleFormSection?: any
+    }
     nameRequestTypes?: Array<NameRequestTypes>
     addressChangeInfo?: string
   }
