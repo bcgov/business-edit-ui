@@ -69,7 +69,7 @@ describe('Special Resolution Form component', () => {
 
   it('displays the correct help text', async () => {
     wrapper.find('.help-btn').trigger('click')
-    // wait untill next render to reflect click changes
+    // wait until next render to reflect click changes
     await Vue.nextTick()
 
     const helpHeader = wrapper.find('.help-header h2')
