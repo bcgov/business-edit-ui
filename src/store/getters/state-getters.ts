@@ -386,6 +386,7 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
       hasBusinessNameChanged(state) ||
       hasBusinessStartDateChanged(state) ||
       hasNaicsChanged(state) ||
+      hasBusinessStartDateChanged(state) ||
       haveOfficeAddressesChanged(state) ||
       havePeopleAndRolesChanged(state)
     )
@@ -502,7 +503,7 @@ export const isCorrectionValid = (state: StateIF): boolean => {
     if (isClientErrorCorrection(state)) {
       return (
         getFlagsCompanyInfo(state).isValidCompanyName &&
-        // business start date || // *** FUTURE: implement this
+        getFlagsCompanyInfo(state).isValidStartDate &&
         getFlagsCompanyInfo(state).isValidNatureOfBusiness &&
         getFlagsCompanyInfo(state).isValidAddress &&
         getFlagsCompanyInfo(state).isValidOrgPersons &&
@@ -514,7 +515,7 @@ export const isCorrectionValid = (state: StateIF): boolean => {
     } else {
       return (
         getFlagsCompanyInfo(state).isValidCompanyName &&
-        // business start date || // *** FUTURE: implement this
+        getFlagsCompanyInfo(state).isValidStartDate &&
         getFlagsCompanyInfo(state).isValidNatureOfBusiness &&
         getFlagsCompanyInfo(state).isValidAddress &&
         getFlagsCompanyInfo(state).isValidOrgPersons &&
@@ -622,8 +623,7 @@ export const hasBusinessTypeChanged = (state: StateIF): boolean => {
 
 /** Whether business start date has changed. */
 export const hasBusinessStartDateChanged = (state: StateIF): boolean => {
-  // *** FUTURE: implement this
-  return false
+  return !!getCorrectionStartDate(state)
 }
 
 /** Whether association type has changed. */

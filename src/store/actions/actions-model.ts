@@ -117,10 +117,14 @@ export const setBusinessInformation: ActionIF = ({ commit }, businessInformation
   commit('mutateBusinessInformation', businessInformation)
 }
 
-export const setCorrectionInformation: ActionIF =
-  ({ commit }, correctionInformation: CorrectionInformationIF): void => {
-    commit('mutateCorrectionInformation', correctionInformation)
-  }
+export const setCorrectionInformation: ActionIF = ({ commit }, correctionInformation: CorrectionInformationIF)
+: void => {
+  commit('mutateCorrectionInformation', correctionInformation)
+}
+
+export const setCorrectionStartDate: ActionIF = ({ commit }, startDate: string): void => {
+  commit('mutateCorrectionStartDate', startDate)
+}
 
 export const setNameRequest: ActionIF = ({ commit }, nameRequest: NameRequestIF): void => {
   commit('mutateNameRequest', nameRequest)

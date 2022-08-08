@@ -46,6 +46,7 @@ export const stateModel: StateModelIF = {
       isValidShareStructure: true,
       isValidCompanyProvisions: true,
       isValidResolutionDate: true,
+      isValidStartDate: true,
       isValidAssociationType: true
     },
     flagsReviewCertify: {
@@ -77,7 +78,8 @@ export const stateModel: StateModelIF = {
     correctedFilingDate: null,
     correctedFilingId: null,
     correctedFilingType: null,
-    type: null
+    type: null,
+    startDate: null
   },
   nameRequest: { ...EmptyNameRequest },
   nameTranslations: [],
