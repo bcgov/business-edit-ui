@@ -112,7 +112,8 @@
             <span>Add a {{ orgTypesLabel }}</span>
           </v-btn>
           <p v-if="!hasMinimumPartners" class="error-text small-text mt-5 mb-0">
-            You must have at least two partners
+            You must have at least two partners on a general partnership. Optionally, you may dissolve
+            the partnership and register a sole proprietorship to continue the business.
           </p>
           <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
             A partner address is missing or incorrect
