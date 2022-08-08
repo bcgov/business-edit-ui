@@ -26,7 +26,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter getCorrectedFilingId!: number
   @Getter getCorrectedFilingType!: FilingTypes
   @Getter getCorrectionErrorType!: CorrectionErrorTypes
-  @Getter getCorrectedStartDate!: string
+  @Getter getCorrectionStartDate!: string
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getDocumentOptionalEmail: string
   @Getter hasBusinessNameChanged!: boolean
@@ -181,17 +181,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
 
     // add in Registration / Change of Registration data
     // *** FUTURE: change this to "if firm correction"
-    if (
-      this.isCorrectedRegistration ||
-      this.isCorrectedChangeReg ||
-      this.isCorrectionFiling
-    ) {
+    if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
       filing.correction.business.naics = {
         naicsCode: this.getCurrentNaics.naicsCode || undefined, // don't include if empty
         naicsDescription: this.getCurrentNaics.naicsDescription
       }
       if (this.hasBusinessStartDateChanged) {
-        filing.correction.startDate = this.getCorrectedStartDate
+        filing.correction.startDate = this.getCorrectionStartDate
       }
     }
 
@@ -500,17 +496,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.STAFF
 
     // store Correction Information
-    if (
-      this.isCorrectedRegistration ||
-      this.isCorrectedChangeReg ||
-      this.isCorrectionFiling
-    ) {
+    this.setCorrectionInformation(cloneDeep(filing.correction))
+    if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
       // Ensures startDate isn't undefined, otherwise its getter is not reactive
       if (!filing.correction.startDate) {
         filing.correction.startDate = null
       }
     }
-    this.setCorrectionInformation(cloneDeep(filing.correction))
 
     // store Business Information for corrected Incorporation Application
     // *** FUTURE: change this to "if BEN correction"

@@ -171,7 +171,7 @@ export const getCorrectionErrorType = (state: StateIF): CorrectionErrorTypes => 
 }
 
 /** The correction (business) start date (YYYY-MM-DD). */
-export const getCorrectedStartDate = (state: StateIF): string => {
+export const getCorrectionStartDate = (state: StateIF): string => {
   return getCorrectionInformation(state).startDate
 }
 
@@ -623,7 +623,7 @@ export const hasBusinessTypeChanged = (state: StateIF): boolean => {
 
 /** Whether business start date has changed. */
 export const hasBusinessStartDateChanged = (state: StateIF): boolean => {
-  return !!getCorrectedStartDate(state)
+  return !!getCorrectionStartDate(state)
 }
 
 /** Whether association type has changed. */

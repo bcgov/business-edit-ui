@@ -216,10 +216,10 @@
         :class="{'invalid-section': invalidAssociationTypeSection}"
     >
       <v-divider class="mx-4 my-1" />
-        <AssociationType
-          :invalidSection="invalidAssociationTypeSection"
-          @isEditingAssociationType="isEditingAssociationType = $event"
-        />
+      <AssociationType
+        :invalidSection="invalidAssociationTypeSection"
+        @isEditingAssociationType="isEditingAssociationType = $event"
+      />
     </div>
 
     <!-- Business Start Date (changes, conversions and firm corrections only) -->
@@ -352,7 +352,7 @@ export default class YourCompany extends Mixins(
   @Getter isBenIaCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
-  @Getter getCorrectedStartDate!: string
+  @Getter getCorrectionStartDate!: string
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
