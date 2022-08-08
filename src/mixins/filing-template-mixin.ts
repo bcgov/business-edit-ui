@@ -10,6 +10,7 @@ import { ActionTypes, AssociationTypes, CorrectionErrorTypes, EffectOfOrders, Fi
   RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { StartDate } from '@/components/common'
 
 /**
  * Mixin that provides the integration with the Legal API.
@@ -490,8 +491,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    */
   parseCorrectionFiling (filing: CorrectionFilingIF, entitySnapshot: EntitySnapshotIF = null): void {
     // store Entity Snapshot
-    console.log('this', this)
-    console.log('filing', filing)
     this.setEntitySnapshot(entitySnapshot)
 
     // *** FUTURE: remove this fallback when Filings UI provides this value
