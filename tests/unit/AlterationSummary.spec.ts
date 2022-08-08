@@ -8,6 +8,7 @@ import AlterationSummary from '@/components/Alteration/AlterationSummary.vue'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
 import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
+import { FeesIF } from '@/interfaces'
 
 Vue.use(Vuetify)
 
@@ -139,7 +140,7 @@ describe('Alteration Summary component', () => {
   })
 
   it('renders Alteration Notice Changes fees accordingly', async () => {
-    store.state.stateModel.currentFees = {
+    store.state.stateModel.currentFees = [{
       'filingFees': 100.0,
       'filingType': 'Alteration',
       'filingTypeCode': 'ALTER',
@@ -152,11 +153,11 @@ describe('Alteration Summary component', () => {
         'pst': 0
       },
       'total': 101.5
-    }
+    }]
     await Vue.nextTick()
     expect(wrapper.find('.summary-title').text()).toBe('Alteration Notice Changes ($100.00 Fee)')
 
-    store.state.stateModel.currentFees = {
+    store.state.stateModel.currentFees = [{
       'filingFees': 100.0,
       'filingType': 'Alteration',
       'filingTypeCode': 'ALTER',
@@ -169,11 +170,11 @@ describe('Alteration Summary component', () => {
         'pst': 0
       },
       'total': 201.5
-    }
+    }]
     await Vue.nextTick()
     expect(wrapper.find('.summary-title').text()).toBe('Alteration Notice Changes ($200.00 Fee)')
 
-    store.state.stateModel.currentFees = {
+    store.state.stateModel.currentFees = [{
       filingFees: null,
       filingType: null,
       filingTypeCode: null,
@@ -186,14 +187,14 @@ describe('Alteration Summary component', () => {
         gst: null
       },
       total: null
-    }
+    }]
 
     await Vue.nextTick()
     expect(wrapper.find('.summary-title').text()).toBe('Alteration Notice Changes')
   })
 
   it('renders the futureEffective fee correctly', async () => {
-    store.state.stateModel.feePrices = {
+    store.state.stateModel.feePrices = [{
       'filingFees': 100.0,
       'filingType': 'Alteration',
       'filingTypeCode': 'ALTER',
@@ -206,7 +207,7 @@ describe('Alteration Summary component', () => {
         'pst': 0
       },
       'total': 201.5
-    }
+    }] as FeesIF[]
     await Vue.nextTick()
     await flushPromises()
     await Vue.nextTick()
@@ -214,7 +215,7 @@ describe('Alteration Summary component', () => {
       wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' ')
     ).toContain('additional fee of $100.00 to enter an alteration date and time in the future).')
 
-    store.state.stateModel.feePrices = {
+    store.state.stateModel.feePrices = [{
       filingFees: null,
       filingType: null,
       filingTypeCode: null,
@@ -227,7 +228,7 @@ describe('Alteration Summary component', () => {
         gst: null
       },
       total: null
-    }
+    }] as FeesIF[]
 
     await flushPromises()
     expect(

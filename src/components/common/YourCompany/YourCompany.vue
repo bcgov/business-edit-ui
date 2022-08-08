@@ -15,7 +15,7 @@
           <v-flex md1>
             <v-chip
               v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling ||
-                isFirmConversionFiling))"
+                isFirmConversionFiling || isSpecialResolutionFiling))"
               id="corrected-lbl"
               x-small label
               color="primary"
@@ -89,7 +89,7 @@
               <!-- FUTURE: only show buttons for named company -->
               <v-btn
                 v-if=" hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling ||
-                  isFirmChangeFiling))"
+                  isFirmChangeFiling || isSpecialResolutionFiling))"
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -108,7 +108,7 @@
                 <span>{{editLabel}}</span>
               </v-btn>
               <span class="more-actions" v-if=" hasCompanyNameChanged || (hasBusinessNameChanged &&
-                (isAlterationFiling || isFirmChangeFiling))"
+                (isAlterationFiling || isFirmChangeFiling || isSpecialResolutionFiling))"
               >
                 <v-menu
                   offset-y left nudge-bottom="4"
@@ -322,7 +322,7 @@ import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation,
   CorrectNameOptions, NatureOfBusiness, OfficeAddresses } from './'
 import { CommonMixin, SharedMixin, DateMixin, NameRequestMixin } from '@/mixins/'
-import { CorrectionTypes } from '@/enums/'
+import { AssociationTypes, CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ConversionNOB } from '@/components/Conversion'
 
@@ -363,6 +363,7 @@ export default class YourCompany extends Mixins(
   @Getter isBenIaCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
+  @Getter getAssociationType!: AssociationTypes
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -505,7 +506,7 @@ export default class YourCompany extends Mixins(
    * Whether to show Business Type section.
    * (Alterations, all firm filings, and Special Resolutions only)
    */
-  get showChangeBusinessType ():boolean {
+  get showChangeBusinessType (): boolean {
     return (
       this.isAlterationFiling ||
       this.isFirmCorrectionFiling ||
@@ -517,8 +518,9 @@ export default class YourCompany extends Mixins(
 
   /** Reset company name values to original. */
   protected resetName () {
-    // reset business information
-    this.setBusinessInformation(this.getEntitySnapshot.businessInfo)
+    // reset business information, except for association type.
+    const businessInfo = { ...this.getEntitySnapshot.businessInfo, associationType: this.getAssociationType }
+    this.setBusinessInformation(businessInfo)
 
     // reset name request
     this.setNameRequest({

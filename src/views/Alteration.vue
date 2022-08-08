@@ -133,8 +133,8 @@ import { CertifySection, CurrentDirectors, DocumentsDelivery,
   from '@/components/common/'
 import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
 import { AuthServices, LegalServices } from '@/services/'
-import { CommonMixin, FilingTemplateMixin, PayApiMixin } from '@/mixins/'
-import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FeesIF, FilingDataIF, FlagsReviewCertifyIF, ResourceIF }
+import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
+import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF }
   from '@/interfaces/'
 import { FilingCodes, FilingStatus } from '@/enums/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
@@ -158,8 +158,8 @@ import { BenefitCompanyResource } from '@/resources/Alteration/'
 })
 export default class Alteration extends Mixins(
   CommonMixin,
-  FilingTemplateMixin,
-  PayApiMixin
+  FeeMixin,
+  FilingTemplateMixin
 ) {
   // Global getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -168,19 +168,14 @@ export default class Alteration extends Mixins(
   @Getter isSummaryMode!: boolean
   @Getter isRoleStaff!: boolean
   @Getter isPremiumAccount!: boolean
-  @Getter getFilingData!: FilingDataIF
   @Getter getAppValidate!: boolean
   @Getter showFeeSummary!: boolean
-  @Getter getFeePrices!: FeesIF
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setValidCourtOrder!: ActionBindingIF
-  @Action setCurrentFees!: ActionBindingIF
-  @Action setFeePrices!: ActionBindingIF
   @Action setResource!: ActionBindingIF
 
   /** Whether App is ready. */
@@ -205,20 +200,6 @@ export default class Alteration extends Mixins(
   /** Check validity state, only when prompted by app. */
   get invalidCourtOrder (): boolean {
     return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
-  }
-
-  get filingFeesPrice (): string {
-    if (this.getFeePrices.filingFees !== null) {
-      return `$${this.getFeePrices.filingFees.toFixed(2)}`
-    }
-    return ''
-  }
-
-  get futureEffectiveFeesPrice (): string {
-    if (this.getFeePrices.futureEffectiveFees !== null) {
-      return `$${this.getFeePrices.futureEffectiveFees.toFixed(2)}`
-    }
-    return ''
   }
 
   /** The resource file for an alteration filing. */
@@ -278,25 +259,17 @@ export default class Alteration extends Mixins(
         this.setResource(this.alterationResource)
 
         // initialize Fee Summary data
-        this.setFilingData(this.alterationResource.filingData)
+        this.setFilingData([this.alterationResource.filingData])
       } else {
         // go to catch()
         throw new Error(`Invalid Alteration resources entity type = ${this.getEntityType}`)
       }
 
       // update the current fees for the Filing
-      this.setCurrentFees(
-        await this.fetchFilingFees(
-          FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
-        ).catch(() => cloneDeep(EmptyFees))
-      )
+      await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
 
       // fetches the fee prices to display in the text
-      this.setFeePrices(
-        await this.fetchFilingFees(
-          FilingCodes.ALTERATION, this.getEntityType, true
-        ).catch(() => cloneDeep(EmptyFees))
-      )
+      await this.setFeePricesFromFilingData(true)
 
       // set current profile name to store for field pre population
       // do this only if we are not staff
@@ -346,27 +319,17 @@ export default class Alteration extends Mixins(
     } as EntitySnapshotIF
   }
 
-  /** Called when staff payment data has changed. */
-  protected onStaffPaymentChanges (): void {
-    // update filing data with staff payment fields
-    this.setFilingData({
-      ...this.getFilingData,
-      priority: this.getStaffPayment.isPriority,
-      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
-    })
-  }
-
   /** Called when alteration summary data has changed. */
   protected async onAlterationSummaryChanges (): Promise<void> {
     // update filing data with future effective field
-    this.setFilingData({
-      ...this.getFilingData,
-      futureEffective: this.getEffectiveDateTime.isFutureEffective
+    const filingData = this.getFilingData
+    filingData.forEach(fd => {
+      fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
     })
+    this.setFilingData(filingData)
+    debugger
     // update the current fees for the filing
-    this.setCurrentFees(await this.fetchFilingFees(
-      FilingCodes.ALTERATION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
-    ))
+    await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
   }
 
   /** Emits Fetch Error event. */

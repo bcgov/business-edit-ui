@@ -311,9 +311,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       specialResolution: {
         business: {
           identifier: this.getBusinessId,
-          legalType: this.getEntityType,
-          associationType: this.getAssociationType
-        }
+          legalType: this.getEntityType
+        },
+        cooperativeAssociationType: this.getAssociationType
       }
     }
 

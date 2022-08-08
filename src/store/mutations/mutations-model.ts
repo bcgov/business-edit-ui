@@ -192,7 +192,7 @@ export const mutateStaffPaymentValidity = (state: StateIF, validity: boolean) =>
   state.stateModel.validationFlags.flagsReviewCertify.isValidStaffPayment = validity
 }
 
-export const mutateFilingData = (state: StateIF, filingData: FilingDataIF) => {
+export const mutateFilingData = (state: StateIF, filingData: FilingDataIF[]) => {
   state.stateModel.filingData = filingData
 }
 
@@ -265,11 +265,11 @@ export const mutateValidCourtOrder = (state: StateIF, isValid: boolean) => {
   state.stateModel.validationFlags.flagsReviewCertify.isValidCourtOrder = isValid
 }
 
-export const mutateCurrentFees = (state: StateIF, fees: FeesIF) => {
+export const mutateCurrentFees = (state: StateIF, fees: FeesIF[]) => {
   state.stateModel.currentFees = fees
 }
 
-export const mutateFeePrices = (state: StateIF, feePrices: FeesIF) => {
+export const mutateFeePrices = (state: StateIF, feePrices: FeesIF[]) => {
   state.stateModel.feePrices = feePrices
 }
 

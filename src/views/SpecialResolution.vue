@@ -61,6 +61,14 @@
           :disableEdit="!isRoleStaff"
         />
 
+        <template v-if="isRoleStaff">
+          <StaffPayment
+            class="mt-10"
+            sectionNumber="4."
+            @haveChanges="onStaffPaymentChanges()"
+          />
+        </template>
+
       </div>
     </v-slide-x-reverse-transition>
 
@@ -101,13 +109,11 @@ import { CertifySection, CurrentDirectors, DocumentsDelivery,
   from '@/components/common/'
 import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
 import { AuthServices, LegalServices } from '@/services/'
-import { CommonMixin, FilingTemplateMixin, PayApiMixin } from '@/mixins/'
-import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FeesIF, FilingDataIF, FlagsReviewCertifyIF, ResourceIF }
+import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
+import { ActionBindingIF, EntitySnapshotIF, FeesIF, FilingDataIF, FlagsReviewCertifyIF, ResourceIF }
   from '@/interfaces/'
-import { FilingCodes, FilingStatus } from '@/enums/'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { cloneDeep } from 'lodash'
 import { CooperativeResource } from '@/resources/SpecialResolution/'
 
 @Component({
@@ -124,8 +130,8 @@ import { CooperativeResource } from '@/resources/SpecialResolution/'
 })
 export default class SpecialResolution extends Mixins(
   CommonMixin,
-  FilingTemplateMixin,
-  PayApiMixin
+  FeeMixin,
+  FilingTemplateMixin
 ) {
   // Global getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -134,18 +140,13 @@ export default class SpecialResolution extends Mixins(
   @Getter isSummaryMode!: boolean
   @Getter isRoleStaff!: boolean
   @Getter isPremiumAccount!: boolean
-  @Getter getFilingData!: FilingDataIF
   @Getter getAppValidate!: boolean
   @Getter showFeeSummary!: boolean
-  @Getter getFeePrices!: FeesIF
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action setCurrentFees!: ActionBindingIF
-  @Action setFeePrices!: ActionBindingIF
   @Action setResource!: ActionBindingIF
 
   /** Whether App is ready. */
@@ -170,20 +171,6 @@ export default class SpecialResolution extends Mixins(
   /** Check validity state, only when prompted by app. */
   get invalidCourtOrder (): boolean {
     return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
-  }
-
-  get filingFeesPrice (): string {
-    if (this.getFeePrices.filingFees !== null) {
-      return `$${this.getFeePrices.filingFees.toFixed(2)}`
-    }
-    return ''
-  }
-
-  get futureEffectiveFeesPrice (): string {
-    if (this.getFeePrices.futureEffectiveFees !== null) {
-      return `$${this.getFeePrices.futureEffectiveFees.toFixed(2)}`
-    }
-    return ''
   }
 
   /** The resource file for an SpecialResolution filing. */
@@ -243,25 +230,25 @@ export default class SpecialResolution extends Mixins(
         this.setResource(this.specialResolutionResource)
 
         // initialize Fee Summary data
-        this.setFilingData(this.specialResolutionResource.filingData)
+        let filingData = [this.specialResolutionResource.filingData]
+        if (this.hasBusinessNameChanged) {
+          filingData.push({
+            filingTypeCode: FilingCodes.SPECIAL_RESOLUTION_NAME_CHANGE,
+            entityType: CorpTypeCd.COOP,
+            priority: false
+          })
+        }
+        this.setFilingData(filingData)
       } else {
         // go to catch()
         throw new Error(`Invalid Special Resolution resources entity type = ${this.getEntityType}`)
       }
 
       // update the current fees for the Filing
-      this.setCurrentFees(
-        await this.fetchFilingFees(
-          FilingCodes.SPECIAL_RESOLUTION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
-        ).catch(() => cloneDeep(EmptyFees))
-      )
+      await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
 
       // fetches the fee prices to display in the text
-      this.setFeePrices(
-        await this.fetchFilingFees(
-          FilingCodes.SPECIAL_RESOLUTION, this.getEntityType, true
-        ).catch(() => cloneDeep(EmptyFees))
-      )
+      await this.setFeePricesFromFilingData(true)
 
       // set current profile name to store for field pre population
       // do this only if we are not staff
@@ -308,14 +295,29 @@ export default class SpecialResolution extends Mixins(
   /** Called when resolution summary data has changed. */
   protected async onSpecialResolutionSummaryChanges (): Promise<void> {
     // update filing data with future effective field
-    this.setFilingData({
-      ...this.getFilingData,
-      futureEffective: this.getEffectiveDateTime.isFutureEffective
+    const filingData = this.getFilingData
+    filingData.forEach(fd => {
+      fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
     })
+    this.setFilingData(filingData)
     // update the current fees for the filing
-    this.setCurrentFees(await this.fetchFilingFees(
-      FilingCodes.SPECIAL_RESOLUTION, this.getEntityType, this.getEffectiveDateTime.isFutureEffective
-    ))
+    await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
+  }
+
+  /** Updates fees depending on business name change. */
+  @Watch('hasBusinessNameChanged', { immediate: true })
+  private businessNameChanged (hasBusinessNameChanged: boolean): void {
+    if (this.specialResolutionResource) {
+      let filingData = [this.specialResolutionResource.filingData]
+      if (hasBusinessNameChanged) {
+        filingData.push({
+          filingTypeCode: FilingCodes.SPECIAL_RESOLUTION_NAME_CHANGE,
+          entityType: CorpTypeCd.COOP,
+          priority: false
+        })
+      }
+      this.setFilingData(filingData)
+    }
   }
 
   /** Emits Fetch Error event. */

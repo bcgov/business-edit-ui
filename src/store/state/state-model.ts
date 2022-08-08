@@ -115,12 +115,12 @@ export const stateModel: StateModelIF = {
       isPriority: false
     }
   },
-  filingData: {
+  filingData: [{
     filingTypeCode: null,
     entityType: null,
     priority: false,
     waiveFees: false
-  },
+  }],
   detail: {
     valid: false,
     comment: ''
@@ -134,6 +134,6 @@ export const stateModel: StateModelIF = {
     shareStructure: false
   },
   summaryMode: false,
-  currentFees: cloneDeep(EmptyFees),
-  feePrices: cloneDeep(EmptyFees)
+  currentFees: [cloneDeep(EmptyFees)],
+  feePrices: [cloneDeep(EmptyFees)]
 }

@@ -5,7 +5,7 @@
       <v-row no-gutters>
         <v-col cols="9">
           <img  class="my-n1 header-icon" src="@/assets/images/currency-usd-circle.svg">
-          <label class="summary-title">Special Resolution Notice Changes {{alterationFees}}</label>
+          <label class="summary-title">Special Resolution Changes {{specialResolutionFees}}</label>
         </v-col>
 
         <!-- Actions -->
@@ -95,7 +95,7 @@
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
-import { DateMixin, SharedMixin, FilingTemplateMixin, PayApiMixin, EnumMixin } from '@/mixins/'
+import { DateMixin, SharedMixin, FeeMixin, FilingTemplateMixin, EnumMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
 
@@ -110,15 +110,14 @@ import { ResolutionDates } from '@/components/Alteration/'
 export default class SpecialResolutionSummary extends Mixins(
   DateMixin,
   SharedMixin,
+  FeeMixin,
   FilingTemplateMixin,
-  PayApiMixin,
   EnumMixin
 ) {
   // Global getters
   @Getter getBusinessNumber!: string
-  @Getter getCurrentFees!: FeesIF
+  @Getter getCurrentFees!: FeesIF[]
   @Getter isBusySaving!: boolean
-  @Getter getFeePrices!: FeesIF
   @Getter getCurrentJsDate!: Date
 
   // Global actions
@@ -134,20 +133,25 @@ export default class SpecialResolutionSummary extends Mixins(
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 
+  /** The legal type before changes. */
   get originalLegalType (): string {
     return this.getEntitySnapshot?.businessInfo?.legalType
   }
 
+  /** The association type before changes. */
   get originalAssociationType (): string {
     return this.getEntitySnapshot?.businessInfo?.associationType
   }
 
-  // sum of alteration fees
-  get alterationFees (): string {
-    if (this.getCurrentFees.filingFees !== null && this.getCurrentFees.futureEffectiveFees !== null) {
-      return `($${(this.getCurrentFees.filingFees + this.getCurrentFees.futureEffectiveFees).toFixed(2)} Fee)`
+  // sum of special resolution fees
+  get specialResolutionFees (): string {
+    const validFees = this.getCurrentFees.filter(f => f.filingFees !== null && f.futureEffectiveFees !== null)
+    if (validFees.length === 0) {
+      return ''
     }
-    return ''
+    const filingFeesSum = validFees.map(f => f.filingFees).reduce((a, b) => a + b, 0)
+    const futureEffectiveFeesSum = validFees.map(f => f.futureEffectiveFees).reduce((a, b) => a + b, 0)
+    return `($${(filingFeesSum + futureEffectiveFeesSum).toFixed(2)} Fee)`
   }
 
   onDeleteClicked (): void {

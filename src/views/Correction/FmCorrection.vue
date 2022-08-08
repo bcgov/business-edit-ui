@@ -58,7 +58,7 @@ import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resour
 })
 export default class FmCorrection extends Mixins(CommonMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter getFilingData!: FilingDataIF
+  @Getter getFilingData!: FilingDataIF[]
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -100,7 +100,7 @@ export default class FmCorrection extends Mixins(CommonMixin, FilingTemplateMixi
       this.setResource(this.correctionResource)
 
       // initialize Fee Summary data
-      this.setFilingData(this.correctionResource.filingData)
+      this.setFilingData([this.correctionResource.filingData])
 
       // pre-select No Fee option
       this.setStaffPayment({ option: StaffPaymentOptions.NO_FEE })
@@ -135,13 +135,15 @@ export default class FmCorrection extends Mixins(CommonMixin, FilingTemplateMixi
     } as EntitySnapshotIF
   }
 
+  /** Called when staff payment data has changed. */
   protected onStaffPaymentChanges (): void {
     // update filing data with staff payment fields
-    this.setFilingData({
-      ...this.getFilingData,
-      priority: this.getStaffPayment.isPriority,
-      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
+    const filingData = this.getFilingData
+    filingData.forEach(fd => {
+      fd.priority = this.getStaffPayment.isPriority
+      fd.waiveFees = (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
     })
+    this.setFilingData(filingData)
   }
 
   /** Emits Fetch Error event. */

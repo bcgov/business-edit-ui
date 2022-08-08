@@ -64,7 +64,7 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/'
 })
 export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter getFilingData!: FilingDataIF
+  @Getter getFilingData!: FilingDataIF[]
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -107,7 +107,7 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
       this.setResource(this.correctionResource)
 
       // initialize Fee Summary data
-      this.setFilingData(this.correctionResource.filingData)
+      this.setFilingData([this.correctionResource.filingData])
 
       // tell App that we're finished loading
       this.emitHaveData()
@@ -143,13 +143,15 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
     } as EntitySnapshotIF
   }
 
+  /** Called when staff payment data has changed. */
   protected onStaffPaymentChanges (): void {
     // update filing data with staff payment fields
-    this.setFilingData({
-      ...this.getFilingData,
-      priority: this.getStaffPayment.isPriority,
-      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
+    const filingData = this.getFilingData
+    filingData.forEach(fd => {
+      fd.priority = this.getStaffPayment.isPriority
+      fd.waiveFees = (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
     })
+    this.setFilingData(filingData)
   }
 
   /** Emits Fetch Error event. */
