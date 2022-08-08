@@ -255,17 +255,16 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   }
 
   /** The minimum date that can be entered (can't be earlier than incorporation date ). */
-  get resolutionDateMinStr (): string {
-    return this.dateToYyyyMmDd(this.apiToDate(this.getBusinessFoundingDate))
-  }
-
-  /** The minimum date that can be entered (can't be earlier than incorporation date ). */
   get resolutionDateMin (): Date {
     return this.apiToDate(this.getBusinessFoundingDate)
   }
+  /** The minimum date that can be entered (can't be earlier than incorporation date ). */
+  get resolutionDateMinStr (): string {
+    return this.dateToYyyyMmDd(this.resolutionDateMin)
+  }
   /** The maximum date that can be entered (today). */
   get resolutionDateMax (): Date {
-    return this.apiToDate(this.getCurrentDate)
+    return this.yyyyMmDdToDate(this.getCurrentDate)
   }
 
   get resolutionTextRules (): Array<Function> {
@@ -338,7 +337,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
       const resolutionDate = this.yyyyMmDdToDate(this.resolutionDateText)
       return resolutionDate
     }
-    return this.apiToDate(this.getCurrentDate)
+    return this.yyyyMmDdToDate(this.getCurrentDate)
   }
 
   /** The maximum date that can be entered (today). */
@@ -348,7 +347,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
 
   /** The maximum date that can be entered (today). */
   private get signatureDateMax (): Date {
-    return this.apiToDate(this.getCurrentDate)
+    return this.yyyyMmDdToDate(this.getCurrentDate)
   }
 
   /** Validations rules for signing date field. */
