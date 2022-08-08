@@ -166,7 +166,9 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling
     ) {
-      if (this.getCorrectedStartDate && this.isCorrected) {
+      if (this.getCorrectedStartDate) {
+        // Sets the Corrected flag when reloading from a saved filing.
+        this.isCorrected = true
         return this.yyyyMmDdToPacificDate(this.getCorrectedStartDate, true)
       } else if (this.getBusinessFoundingDate) {
         // getBusinessFoundingDate is is stored in utc time for BEN's and COOP's

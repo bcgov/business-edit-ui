@@ -10,7 +10,6 @@ import { ActionTypes, AssociationTypes, CorrectionErrorTypes, EffectOfOrders, Fi
   RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
-import { StartDate } from '@/components/common'
 
 /**
  * Mixin that provides the integration with the Legal API.
@@ -27,7 +26,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter getCorrectedFilingId!: number
   @Getter getCorrectedFilingType!: FilingTypes
   @Getter getCorrectionErrorType!: CorrectionErrorTypes
-  @Getter getCorrectionStartDate!: string
+  @Getter getCorrectedStartDate!: string
   @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getDocumentOptionalEmail: string
   @Getter hasBusinessNameChanged!: boolean
@@ -182,13 +181,17 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
 
     // add in Registration / Change of Registration data
     // *** FUTURE: change this to "if firm correction"
-    if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
+    if (
+      this.isCorrectedRegistration ||
+      this.isCorrectedChangeReg ||
+      this.isCorrectionFiling
+    ) {
       filing.correction.business.naics = {
         naicsCode: this.getCurrentNaics.naicsCode || undefined, // don't include if empty
         naicsDescription: this.getCurrentNaics.naicsDescription
       }
       if (this.hasBusinessStartDateChanged) {
-        filing.correction.startDate = this.getCorrectionStartDate
+        filing.correction.startDate = this.getCorrectedStartDate
       }
     }
 
@@ -497,9 +500,15 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.STAFF
 
     // store Correction Information
-    if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
+    if (
+      this.isCorrectedRegistration ||
+      this.isCorrectedChangeReg ||
+      this.isCorrectionFiling
+    ) {
       // Ensures startDate isn't undefined, otherwise its getter is not reactive
-      filing.correction.startDate = null
+      if (!filing.correction.startDate) {
+        filing.correction.startDate = null
+      }
     }
     this.setCorrectionInformation(cloneDeep(filing.correction))
 
