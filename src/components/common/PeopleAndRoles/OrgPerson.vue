@@ -78,30 +78,6 @@
                     </v-checkbox>
                   </article>
                 </v-expand-transition>
-
-                <!-- Edit business number -->
-                <article v-if="showPersonEditBusNum" class="edit-business-number mt-6">
-                  <label class="sub-header">Business Number</label>
-                  <p class="info-text">
-                    If you have an existing business number, enter it below and we will contact the Canada
-                    Revenue Agency and ask them to link it to this registration.
-                  </p>
-                  <v-text-field
-                    filled persistent-hint
-                    class="mt-4 mb-n2"
-                    label="Business Number (Optional)"
-                    hint="First 9 digits of the CRA Business Number"
-                    v-model.trim="orgPerson.officer.taxId"
-                    v-mask="['#########']"
-                    :rules="businessNumberRules"
-                  />
-                </article>
-
-                <!-- Show business number -->
-                <article v-if="showPersonShowBusNum" class="show-business-number mt-6">
-                  <label class="sub-header">Business Number:</label>
-                  <span class="sub-header-text">{{ orgPerson.officer.taxId || 'Not entered' }}</span>
-                </article>
               </template>
 
               <!-- Business or corporation info -->
@@ -199,24 +175,6 @@
                       :rules="orgNameRules"
                     />
                   </article>
-
-                  <!-- Business Number -->
-                  <article class="edit-business-number mt-6">
-                    <label class="sub-header">Business Number</label>
-                    <p class="info-text">
-                      If you have an existing business number, enter it below and we will contact
-                      the Canada Revenue Agency and ask them to link it to this registration.
-                    </p>
-                    <v-text-field
-                      filled persistent-hint
-                      class="mt-4 mb-n2"
-                      label="Business Number (Optional)"
-                      hint="First 9 digits of the CRA Business Number"
-                      v-model.trim="orgPerson.officer.taxId"
-                      v-mask="['#########']"
-                      :rules="businessNumberRules"
-                    />
-                  </article>
                 </template>
 
                 <!-- Add non-firms + edit org -->
@@ -256,31 +214,6 @@
                   <article v-if="orgPerson.officer.identifier" class="incorporation-number mt-6">
                     <label class="sub-header">Incorporation/Registration Number:</label>
                     <span class="sub-header-text">{{ orgPerson.officer.identifier || 'Not entered' }}</span>
-                  </article>
-
-                  <!-- Edit business number -->
-                  <article v-if="showOrgEditBusNum" class="edit-business-number mt-6">
-                    <label class="sub-header">Business Number</label>
-                    <p class="info-text">
-                      If an existing business number for this business or corporation is available, enter it
-                      below. We will contact the Canada Revenue Agency and ask them to link it to this
-                      registration.
-                    </p>
-                    <v-text-field
-                      filled persistent-hint
-                      class="mt-4 mb-n2"
-                      label="Business Number (Optional)"
-                      hint="First 9 digits of the CRA Business Number"
-                      v-model.trim="orgPerson.officer.taxId"
-                      v-mask="['#########']"
-                      :rules="businessNumberRules"
-                    />
-                  </article>
-
-                  <!-- Show business number (edit proprietor only) -->
-                  <article v-if="showOrgShowBusNum" class="show-business-number mt-6">
-                    <label class="sub-header">Business Number:</label>
-                    <span class="sub-header-text">{{ orgPerson.officer.taxId || 'Not entered' }}</span>
                   </article>
                 </template>
               </template>
@@ -461,7 +394,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   protected middleNameRules: Array<Function> = []
   protected lastNameRules: Array<Function> = []
   protected orgNameRules: Array<Function> = []
-  protected businessNumberRules: Array<Function> = []
   protected proprietorEmailRules: Array<Function> = []
   protected confirmBusinessRules: Array<Function> = []
   protected confirmNameChangeRules: Array<Function> = []
@@ -506,77 +438,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   /** Whether the org-person is pre-existing (ie, not added in this filing). */
   get isPreExisting (): boolean {
     return (this.isExisting && !this.wasAdded(this.orgPerson))
-  }
-
-  /** Whether to render the "person edit business number" block. */
-  get showPersonEditBusNum (): boolean {
-    if (this.isFirmChangeFiling) {
-      // never show for change reg filing
-      return false
-    }
-    if (this.isFirmCorrectionFiling) {
-      // show only for person-proprietor correct
-      return (this.isPreExisting && this.isProprietor)
-    }
-    if (this.isFirmConversionFiling) {
-      // show only for person-proprietor change/add/edit
-      return this.isProprietor
-    }
-    return false
-  }
-
-  /** Whether to render the "person show business number" block. */
-  get showPersonShowBusNum (): boolean {
-    if (this.isFirmChangeFiling) {
-      // show only for change person-proprietor
-      return (this.isPreExisting && this.isProprietor)
-    }
-    if (this.isFirmCorrectionFiling) {
-      // never show for firm correction filing
-      return false
-    }
-    if (this.isFirmConversionFiling) {
-      // never show for conversion filing
-      return false
-    }
-    return false
-  }
-
-  /** Whether to render the "org edit business number" block. */
-  get showOrgEditBusNum (): boolean {
-    if (this.isFirmChangeFiling) {
-      // show only for add org-partner manual entry
-      return (this.isNew && this.isPartner && !this.orgPerson.isLookupBusiness)
-    }
-    if (this.isFirmCorrectionFiling) {
-      // show only for org-proprietor correct
-      return (this.isPreExisting && this.isProprietor)
-    }
-    if (this.isFirmConversionFiling) {
-      // show for org-proprietor/org-partner change
-      if (this.isPreExisting) return true
-      // show for org-proprietor/org-partner add
-      if (this.isNew) return true
-      return false
-    }
-    return false
-  }
-
-  /** Whether to render the "org show business number" block. */
-  get showOrgShowBusNum (): boolean {
-    if (this.isFirmChangeFiling) {
-      // show for all except where edit block is shown
-      return !this.showOrgEditBusNum
-    }
-    if (this.isFirmCorrectionFiling) {
-      // show only for org-partner correct
-      return (this.isPreExisting && this.isPartner)
-    }
-    if (this.isFirmConversionFiling) {
-      // show for all except where edit block is shown
-      return !this.showOrgEditBusNum
-    }
-    return false
   }
 
   /** Text label for org type. */
@@ -895,7 +756,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     // update officer details
     this.orgPerson.officer.organizationName = businessLookup.name
     this.orgPerson.officer.identifier = businessLookup.identifier
-    this.orgPerson.officer.taxId = businessLookup.bn
 
     // fetch and update the business addresses
     if (businessLookup.identifier) {
@@ -966,13 +826,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
         (v: string) => (v?.length <= 155) || 'Cannot exceed 155 characters' // maximum character count
       ]
     }
-
-    this.businessNumberRules = [
-      (v: string) => {
-        const pattern = /^[0-9]{9}$/
-        return (!v || pattern.test(v)) || 'Invalid business number'
-      }
-    ]
 
     this.proprietorEmailRules = [
       (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces

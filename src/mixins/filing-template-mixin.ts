@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash'
 import { DateMixin, EnumMixin } from '@/mixins/'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF, EffectiveDateTimeIF,
   EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF, NameTranslationIF,
-  OrgPersonIF, ShareClassIF, SpecialResolutionFilingIF } from '@/interfaces/'
+  OrgPersonIF, ShareClassIF, SpecialResolutionFilingIF, CreateResolutionIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, AssociationTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
   RoleTypes } from '@/enums/'
@@ -32,7 +32,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter hasBusinessNameChanged!: boolean
   @Getter hasBusinessTypeChanged!: boolean
   @Getter hasNaicsChanged!: boolean
-  @Getter hasNameTranslationChanged!: boolean
+  @Getter haveNameTranslationsChanged!: boolean
   @Getter hasShareStructureChanged!: boolean
   @Getter getOrgPeople!: OrgPersonIF[]
   @Getter getShareClasses!: ShareClassIF[]
@@ -63,6 +63,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter isClientErrorCorrection!: boolean
   @Getter getAssociationType!: AssociationTypes
   @Getter hasAssociationTypeChanged!: boolean
+  @Getter getcreateResolution!: CreateResolutionIF
+  @Getter isEntityTypeFirm!: boolean
+  @Getter hasBusinessStartDateChanged!: boolean
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -184,9 +187,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         naicsCode: this.getCurrentNaics.naicsCode || undefined, // don't include if empty
         naicsDescription: this.getCurrentNaics.naicsDescription
       }
-
-      // *** FUTURE: update logic as needed (eg, only save if changed)
-      if (filing.correction.startDate) {
+      if (this.hasBusinessStartDateChanged) {
         filing.correction.startDate = this.getCorrectionStartDate
       }
     }
@@ -234,7 +235,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     }
 
     // Apply name translation changes to filing
-    if (this.hasNameTranslationChanged) {
+    if (this.haveNameTranslationsChanged) {
       const nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
       filing.alteration.nameTranslations = nameTranslations
     }
@@ -306,20 +307,18 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         identifier: this.getEntitySnapshot.businessInfo.identifier,
         legalName: this.getEntitySnapshot.businessInfo.legalName,
         legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
+        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber,
+        associationType: this.getAssociationType
       },
       specialResolution: {
-        business: {
-          identifier: this.getBusinessId,
-          legalType: this.getEntityType
-        },
-        cooperativeAssociationType: this.getAssociationType
+        ...this.getcreateResolution
       }
+
     }
 
     // Apply NR / business name / business type change to filing
     if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
-      filing.specialResolution.nameRequest = this.getNameRequest
+      filing.alteration.nameRequest = this.getNameRequest
     }
 
     if (this.getDocumentOptionalEmail) {
@@ -494,6 +493,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
 
     // *** FUTURE: remove this fallback when Filings UI provides this value
     if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.STAFF
+
+    // Ensures startDate isn't undefined, otherwise its getter is not reactive
+    if (!filing.correction.startDate) {
+      filing.correction.startDate = null
+    }
 
     // store Correction Information
     this.setCorrectionInformation(cloneDeep(filing.correction))

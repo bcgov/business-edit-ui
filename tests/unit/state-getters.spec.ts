@@ -198,9 +198,9 @@ describe('Alteration getters', () => {
 
     // verify that name translation changes are detected
     store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
-    expect(vm.hasNameTranslationChanged).toBe(true)
+    expect(vm.haveNameTranslationsChanged).toBe(true)
     store.state.stateModel.nameTranslations = []
-    expect(vm.hasNameTranslationChanged).toBe(false)
+    expect(vm.haveNameTranslationsChanged).toBe(false)
 
     // verify that share structure changes are detected
     store.state.stateModel.shareStructureStep.shareClasses = [{}]
@@ -272,9 +272,9 @@ describe('BEN IA correction getters', () => {
 
     // verify that name translation changes are detected
     store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
-    expect(vm.hasNameTranslationChanged).toBe(true)
+    expect(vm.haveNameTranslationsChanged).toBe(true)
     store.state.stateModel.nameTranslations = []
-    expect(vm.hasNameTranslationChanged).toBe(false)
+    expect(vm.haveNameTranslationsChanged).toBe(false)
 
     // verify that registered mailing address changes are detected
     store.state.stateModel.officeAddresses = { registeredOffice: newAddress }
@@ -359,6 +359,9 @@ describe('SP/GP correction getters', () => {
         shareClasses: []
       }
     }
+    store.state.stateModel.correctionInformation = {
+      startDate: ''
+    }
     store.state.stateModel.officeAddresses = null
     store.state.stateModel.businessInformation = naics
 
@@ -385,11 +388,17 @@ describe('SP/GP correction getters', () => {
     store.state.stateModel.tombstone.entityType = 'SP'
     expect(vm.hasBusinessTypeChanged).toBe(false)
 
+    // verify that business start date changes are detected
+    store.state.stateModel.correctionInformation.startDate = '2022-08-03'
+    expect(vm.hasBusinessStartDateChanged).toBe(true)
+    store.state.stateModel.correctionInformation.startDate = ''
+    expect(vm.hasBusinessStartDateChanged).toBe(false)
+
     // verify that name translation changes are detected
     store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
-    expect(vm.hasNameTranslationChanged).toBe(true)
+    expect(vm.haveNameTranslationsChanged).toBe(true)
     store.state.stateModel.nameTranslations = []
-    expect(vm.hasNameTranslationChanged).toBe(false)
+    expect(vm.haveNameTranslationsChanged).toBe(false)
 
     // verify that registered mailing address changes are detected
     store.state.stateModel.officeAddresses = { businessOffice: newAddress }

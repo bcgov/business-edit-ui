@@ -28,7 +28,7 @@ export const SoleProprietorshipResource: ResourceIF = {
       helpSection: {
         header: 'Need Help? Contact Us',
         helpText: [
-          'If your require assistance with changes to the business proprietor please contact us.'
+          'If you require assistance with changes to the business proprietor please contact us.'
         ]
       }
     }

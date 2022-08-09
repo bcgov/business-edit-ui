@@ -210,7 +210,7 @@
       />
     </div>
 
-    <v-divider class="mx-4 my-1" />
+    <v-divider v-if="isEntityTypeCP" class="mx-4 my-1" />
 
     <!--- Association Type (coop only) -->
     <div v-if="isEntityTypeCP"
@@ -218,35 +218,21 @@
         class="section-container"
         :class="{'invalid-section': invalidAssociationTypeSection}"
     >
-        <AssociationType
-          :invalidSection="invalidAssociationTypeSection"
-          @isEditingAssociationType="isEditingAssociationType = $event"
-        />
+      <AssociationType
+        :invalidSection="invalidAssociationTypeSection"
+        @isEditingAssociationType="isEditingAssociationType = $event"
+      />
     </div>
 
-    <!-- Business Start Date (firm changes, conversions and corrections only) -->
+    <!-- Business Start Date (changes, conversions and firm corrections only) -->
     <template v-if="isFirmChangeFiling || isFirmConversionFiling || isFirmCorrectionFiling">
-      <section id="business-start-date" class="section-container">
-        <v-row no-gutters>
-          <v-col cols="3" class="pr-2">
-            <label><strong>Business Start Date</strong></label>
-          </v-col>
+      <v-divider class="mx-4 my-1" />
 
-          <v-col cols="9">
-            <span class="info-text mr-1">{{recognitionDateTime || 'Unknown'}}</span>
-            <v-tooltip top
-                       content-class="top-tooltip"
-                       transition="fade-transition"
-                       nudge-right="3"
-            >
-              <template v-slot:activator="{ on }">
-                <v-icon v-on="on" class="info-icon">mdi-information-outline</v-icon>
-              </template>
-              <span>If the business start date is incorrect, it must be corrected through a correction filing.</span>
-            </v-tooltip>
-          </v-col>
-        </v-row>
-      </section>
+      <StartDate
+        class="section-container"
+        :class="{'invalid-section': invalidStartDate}"
+        :invalidSection="invalidStartDate"
+      />
     </template>
 
     <!-- Nature of Business (firm change filings only) -->
@@ -272,17 +258,21 @@
     </template>
 
     <!-- Recognition Date and Time (alterations and BEN corrections only) -->
-    <div class="section-container" v-if="isAlterationFiling || isBenIaCorrectionFiling">
-      <v-row no-gutters>
-        <v-col cols="3" class="pr-2">
-          <label><strong>Recognition Date and Time</strong></label>
-        </v-col>
+    <template v-if="isAlterationFiling || isBenIaCorrectionFiling">
+      <v-divider class="mx-4 my-1" />
 
-        <v-col cols="9">
-          <div class="info-text">{{recognitionDateTime || 'Unknown'}}</div>
-        </v-col>
-      </v-row>
-    </div>
+      <div class="section-container">
+        <v-row no-gutters>
+          <v-col cols="3" class="pr-2">
+            <label><strong>Recognition Date and Time</strong></label>
+          </v-col>
+
+          <v-col cols="9">
+              <span class="info-text mr-1">{{recognitionDateTime || 'Unknown'}}</span>
+          </v-col>
+        </v-row>
+      </div>
+    </template>
 
     <v-divider class="mx-4 my-1" />
 
@@ -320,7 +310,7 @@ import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestAppli
   from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation,
-  CorrectNameOptions, NatureOfBusiness, OfficeAddresses } from './'
+  CorrectNameOptions, NatureOfBusiness, OfficeAddresses, StartDate } from './'
 import { CommonMixin, SharedMixin, DateMixin, NameRequestMixin } from '@/mixins/'
 import { AssociationTypes, CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -336,7 +326,8 @@ import { ConversionNOB } from '@/components/Conversion'
     NatureOfBusiness,
     OfficeAddresses,
     FolioInformation,
-    ConversionNOB
+    ConversionNOB,
+    StartDate
   }
 })
 export default class YourCompany extends Mixins(
@@ -412,6 +403,10 @@ export default class YourCompany extends Mixins(
     return (this.getComponentValidate && this.isEditingTranslations)
   }
 
+  get invalidStartDate (): boolean {
+    return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidStartDate)
+  }
+
   /** The nature of business section validity state (when prompted by app). */
   get invalidNatureOfBusiness (): boolean {
     return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidNatureOfBusiness)
@@ -465,19 +460,16 @@ export default class YourCompany extends Mixins(
     return this.toDisplayPhone(this.nrApplicant.phoneNumber)
   }
 
-  /** The recognition date or business start date-time string. */
+  /** The recognition date or business start date string. */
   get recognitionDateTime (): string {
     if (this.isBenIaCorrectionFiling) {
-      if (this.getCorrectedFilingDate) {
+      if (this.getBusinessFoundingDate) {
+        return this.apiToPacificDateTime(this.getBusinessFoundingDate)
+      } else if (this.getCorrectedFilingDate) {
         return this.apiToPacificDateTime(this.getCorrectedFilingDate)
       }
     }
-    if (
-      this.isAlterationFiling ||
-      this.isFirmCorrectionFiling ||
-      this.isFirmChangeFiling ||
-      this.isFirmConversionFiling
-    ) {
+    if (this.isAlterationFiling) {
       if (this.getBusinessFoundingDate) {
         return this.apiToPacificDateTime(this.getBusinessFoundingDate)
       }

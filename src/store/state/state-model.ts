@@ -1,4 +1,4 @@
-import { EmptyNameRequest, StateModelIF, EmptyFees } from '@/interfaces/'
+import { EmptyNameRequest, StateModelIF, EmptyFees, EmptySigningPerson } from '@/interfaces/'
 import { EmptyContactPoint } from '@bcrs-shared-components/interfaces/'
 import { cloneDeep } from 'lodash'
 
@@ -46,6 +46,7 @@ export const stateModel: StateModelIF = {
       isValidShareStructure: true,
       isValidCompanyProvisions: true,
       isValidResolutionDate: true,
+      isValidStartDate: true,
       isValidAssociationType: true
     },
     flagsReviewCertify: {
@@ -54,6 +55,7 @@ export const stateModel: StateModelIF = {
       isValidDocumentOptionalEmail: true,
       isValidCompletingParty: true,
       isValidTransactionalFolioNumber: true,
+      isValidDetailComment: true,
       isValidCertify: false, // initially un-certified
       isValidCourtOrder: true,
       isValidStaffPayment: true
@@ -76,7 +78,8 @@ export const stateModel: StateModelIF = {
     correctedFilingDate: null,
     correctedFilingId: null,
     correctedFilingType: null,
-    type: null
+    type: null,
+    startDate: null
   },
   nameRequest: { ...EmptyNameRequest },
   nameTranslations: [],
@@ -89,12 +92,10 @@ export const stateModel: StateModelIF = {
   },
   officeAddresses: null,
   peopleAndRoles: {
-    valid: false,
     changed: false,
     orgPeople: []
   },
   shareStructureStep: {
-    valid: false,
     changed: false,
     resolutionDates: [],
     shareClasses: []
@@ -104,16 +105,13 @@ export const stateModel: StateModelIF = {
     dateTimeString: ''
   },
   entitySnapshot: null,
-  staffPaymentStep: {
-    valid: false,
-    staffPayment: {
-      option: NaN,
-      routingSlipNumber: '',
-      bcolAccountNumber: '',
-      datNumber: '',
-      folioNumber: '',
-      isPriority: false
-    }
+  staffPayment: {
+    option: NaN,
+    routingSlipNumber: '',
+    bcolAccountNumber: '',
+    datNumber: '',
+    folioNumber: '',
+    isPriority: false
   },
   filingData: [{
     filingTypeCode: null,
@@ -121,10 +119,7 @@ export const stateModel: StateModelIF = {
     priority: false,
     waiveFees: false
   }],
-  detail: {
-    valid: false,
-    comment: ''
-  },
+  detailComment: '',
   editingFlags: {
     companyName: false,
     nameTranslations: false,
@@ -135,5 +130,10 @@ export const stateModel: StateModelIF = {
   },
   summaryMode: false,
   currentFees: [cloneDeep(EmptyFees)],
-  feePrices: [cloneDeep(EmptyFees)]
+  feePrices: [cloneDeep(EmptyFees)],
+  createResolution: {
+    resolutionText: '',
+    signingPerson: { ...EmptySigningPerson },
+    resolutionConfirmed: false
+  }
 }

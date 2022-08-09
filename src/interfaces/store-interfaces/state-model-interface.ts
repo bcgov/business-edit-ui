@@ -1,9 +1,9 @@
 import {
   AccountInformationIF, AddressesIF, CertifyIF, NameRequestIF, TombStoneIF, PeopleAndRolesIF, ShareStructureIF,
-  EffectiveDateTimeIF, CorrectionInformationIF, BusinessInformationIF, FilingDataIF, StaffPaymentStepIF,
-  DetailIF, NameTranslationIF, EntitySnapshotIF, DocumentDeliveryIF, FeesIF, NewAlterationIF, ValidationFlagsIF
+  EffectiveDateTimeIF, CorrectionInformationIF, BusinessInformationIF, FilingDataIF, NameTranslationIF,
+  EntitySnapshotIF, DocumentDeliveryIF, FeesIF, NewAlterationIF, ValidationFlagsIF, CreateResolutionIF
 } from '@/interfaces/'
-import { CompletingPartyIF, ContactPointIF } from '@bcrs-shared-components/interfaces/'
+import { CompletingPartyIF, ContactPointIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 
 /** Data object used internally only (not to/from API). */
 export interface StateModelIF {
@@ -24,9 +24,9 @@ export interface StateModelIF {
   shareStructureStep: ShareStructureIF
   effectiveDateTime: EffectiveDateTimeIF
   entitySnapshot: EntitySnapshotIF
-  staffPaymentStep: StaffPaymentStepIF
+  staffPayment: StaffPaymentIF
   filingData: FilingDataIF[]
-  detail: DetailIF
+  detailComment: string
   editingFlags: {
     companyName: boolean
     nameTranslations: boolean
@@ -38,5 +38,6 @@ export interface StateModelIF {
   validationFlags: ValidationFlagsIF
   summaryMode: boolean,
   currentFees: FeesIF[],
-  feePrices: FeesIF[]
+  feePrices: FeesIF[],
+  createResolution: CreateResolutionIF
 }

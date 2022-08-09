@@ -28,7 +28,7 @@ export const GeneralPartnershipResource: ResourceIF = {
       helpSection: {
         header: 'Need Help? Contact Us',
         helpText: [
-          'If your require assistance with adding a business partner please contact us.'
+          'If you require assistance with adding a business partner please contact us.'
         ]
       }
     }

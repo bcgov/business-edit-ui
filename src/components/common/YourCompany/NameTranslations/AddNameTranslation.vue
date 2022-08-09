@@ -154,7 +154,7 @@ export default class AddNameTranslation extends Mixins(CommonMixin) {
    * @param index The active index which is subject to removal.
    */
   @Emit('removeNameTranslation')
-  private emitRemoveName (index: number): void {}
+  protected emitRemoveName (index: number): void {}
 }
 </script>
 

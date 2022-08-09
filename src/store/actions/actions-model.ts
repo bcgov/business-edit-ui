@@ -1,6 +1,6 @@
 import { ActionIF, ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, EntitySnapshotIF,
   NameRequestIF, NameTranslationIF, OrgPersonIF, ShareClassIF, FeesIF, ResourceIF, FilingDataIF,
-  CorrectionInformationIF } from '@/interfaces/'
+  CorrectionInformationIF, CreateResolutionIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -117,10 +117,14 @@ export const setBusinessInformation: ActionIF = ({ commit }, businessInformation
   commit('mutateBusinessInformation', businessInformation)
 }
 
-export const setCorrectionInformation: ActionIF =
-  ({ commit }, correctionInformation: CorrectionInformationIF): void => {
-    commit('mutateCorrectionInformation', correctionInformation)
-  }
+export const setCorrectionInformation: ActionIF = ({ commit }, correctionInformation: CorrectionInformationIF)
+: void => {
+  commit('mutateCorrectionInformation', correctionInformation)
+}
+
+export const setCorrectionStartDate: ActionIF = ({ commit }, startDate: string): void => {
+  commit('mutateCorrectionStartDate', startDate)
+}
 
 export const setNameRequest: ActionIF = ({ commit }, nameRequest: NameRequestIF): void => {
   commit('mutateNameRequest', nameRequest)
@@ -264,4 +268,8 @@ export const setValidComponent: ActionIF = ({ commit }, kv: ActionKvIF): void =>
 
 export const setNaics: ActionIF = ({ commit }, naics: NaicsIF): void => {
   commit('mutateNaics', naics)
+}
+
+export const setResolution = ({ commit }, resolution: CreateResolutionIF) => {
+  commit('mutateResolution', resolution)
 }

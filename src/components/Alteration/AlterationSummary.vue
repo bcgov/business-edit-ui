@@ -70,7 +70,7 @@
     </template>
 
     <!-- Name Translation -->
-    <template v-if="hasNameTranslationChanged">
+    <template v-if="haveNameTranslationsChanged">
       <v-divider class="mx-4" />
       <div class="section-container name-translation-summary">
         <NameTranslation
