@@ -63,12 +63,8 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/'
   }
 })
 export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
-  // Global getters
-  @Getter getFilingData!: FilingDataIF[]
-
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingData!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
   @Action setResource!: ActionBindingIF
 

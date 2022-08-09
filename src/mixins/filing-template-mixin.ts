@@ -699,12 +699,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     this.setEntitySnapshot(entitySnapshot)
 
     // store Entity Type
-    this.setEntityType(filing.specialResolution.business?.legalType || entitySnapshot.businessInfo.legalType)
+    this.setEntityType(filing.alteration.business?.legalType || entitySnapshot.businessInfo.legalType)
 
     // store Business Information
     this.setBusinessInformation({
       ...filing.business,
-      ...filing.specialResolution.business
+      ...filing.alteration.business
     })
 
     // store Name Request data
