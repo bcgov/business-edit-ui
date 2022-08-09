@@ -411,7 +411,7 @@ describe('Alteration component', () => {
   })
 
   it('updates the fees with priority and waive fees for staff payment changes', async () => {
-    store.state.stateModel.staffPaymentStep.staffPayment = {
+    store.state.stateModel.staffPayment = {
       option: StaffPaymentOptions.NO_FEE,
       isPriority: true
     } as StaffPaymentIF

@@ -45,7 +45,7 @@ import { Action, Getter } from 'vuex-class'
 import { CompletingParty } from '@/components/Correction/'
 import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
   from '@/components/common/'
-import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
+import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { AuthServices, LegalServices } from '@/services/'
 import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
@@ -62,7 +62,7 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/'
     YourCompany
   }
 })
-export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin) {
+export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
   @Getter getFilingData!: FilingDataIF[]
 
@@ -141,17 +141,6 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
       nameTranslations: items[5],
       nameResolutions: items[6]
     } as EntitySnapshotIF
-  }
-
-  /** Called when staff payment data has changed. */
-  protected onStaffPaymentChanges (): void {
-    // update filing data with staff payment fields
-    const filingData = this.getFilingData
-    filingData.forEach(fd => {
-      fd.priority = this.getStaffPayment.isPriority
-      fd.waiveFees = (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
-    })
-    this.setFilingData(filingData)
   }
 
   /** Emits Fetch Error event. */

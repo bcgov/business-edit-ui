@@ -315,7 +315,7 @@ export default class SpecialResolution extends Mixins(
 
   /** Updates fees depending on business name change. */
   @Watch('hasBusinessNameChanged', { immediate: true })
-  private async businessNameChanged (hasBusinessNameChanged: boolean): void {
+  private async businessNameChanged (hasBusinessNameChanged: boolean): Promise<void> {
     if (this.specialResolutionResource) {
       let filingData = [this.specialResolutionResource.filingData]
       if (hasBusinessNameChanged) {
