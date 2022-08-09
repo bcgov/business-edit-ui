@@ -329,6 +329,8 @@ export default class Alteration extends Mixins(
     this.setFilingData(filingData)
     // update the current fees for the filing
     await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
+    // update the fee prices to display in the text
+    await this.setFeePricesFromFilingData(true)
   }
 
   /** Emits Fetch Error event. */
