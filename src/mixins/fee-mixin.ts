@@ -44,7 +44,7 @@ export default class FeeMixin extends Vue {
   /** Called when staff payment data has changed. */
   protected onStaffPaymentChanges (): void {
     // update filing data with staff payment fields
-    const filingData = this.getFilingData
+    const filingData = [...this.getFilingData]
     filingData.forEach(fd => {
       fd.priority = this.getStaffPayment.isPriority
       fd.waiveFees = (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
@@ -87,7 +87,7 @@ export default class FeeMixin extends Vue {
     return axios.get(url)
       .then(response => {
         const fees = response?.data
-        if (!fees.filingFees) {
+        if (fees.filingFees == null) {
           throw new Error('Invalid API response')
         }
         return fees

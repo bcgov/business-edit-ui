@@ -304,7 +304,7 @@ export default class SpecialResolution extends Mixins(
   /** Called when resolution summary data has changed. */
   protected async onSpecialResolutionSummaryChanges (): Promise<void> {
     // update filing data with future effective field
-    const filingData = this.getFilingData
+    const filingData = [...this.getFilingData]
     filingData.forEach(fd => {
       fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
     })

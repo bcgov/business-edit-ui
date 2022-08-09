@@ -24,7 +24,6 @@ export const CooperativeResource: ResourceIF = {
     nameRequestTypes: [
       NameRequestTypes.CHANGE_OF_NAME
     ],
-
     specialSpecialResolution: {
       helpSection: {
         header: 'Help with Special Resolution',
@@ -35,8 +34,8 @@ export const CooperativeResource: ResourceIF = {
       sampleFormSection: {
         header: 'Special Resolution (Form 06 COO)',
         text: `For your convenience, we have provided the special resolution form (Form 06 COO).  This form should be
-          completed, signed and a printed copy retained with your other Cooperative Association records.  
-          Do not mail the paper form to BC Registries.  Once you have completed this form, enter the details 
+          completed, signed and a printed copy retained with your other Cooperative Association records.
+          Do not mail the paper form to BC Registries.  Once you have completed this form, enter the details
           from the paper form into this filing.`,
         downloadDocLabel: 'Download the Special Resolution Form 06 COO',
         downloadDocPath: 'files/cooperative_sample_special_resolution_form_06.pdf'

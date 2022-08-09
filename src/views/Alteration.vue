@@ -322,7 +322,7 @@ export default class Alteration extends Mixins(
   /** Called when alteration summary data has changed. */
   protected async onAlterationSummaryChanges (): Promise<void> {
     // update filing data with future effective field
-    const filingData = this.getFilingData
+    const filingData = [...this.getFilingData]
     filingData.forEach(fd => {
       fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
     })

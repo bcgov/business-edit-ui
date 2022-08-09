@@ -7,21 +7,6 @@
           <img  class="my-n1 header-icon" src="@/assets/images/currency-usd-circle.svg">
           <label class="summary-title">Special Resolution Changes {{specialResolutionFees}}</label>
         </v-col>
-
-        <!-- Actions -->
-        <v-col cols="3" class="mt-n2">
-          <div class="actions mr-4">
-            <v-btn
-              text color="primary"
-              id="btn-delete-alteration"
-              :disabled="isBusySaving"
-              @click="onDeleteClicked()"
-            >
-              <v-icon small>mdi-delete</v-icon>
-              <span>Delete</span>
-            </v-btn>
-          </div>
-        </v-col>
       </v-row>
     </div>
 
