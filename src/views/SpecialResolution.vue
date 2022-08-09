@@ -311,6 +311,8 @@ export default class SpecialResolution extends Mixins(
     this.setFilingData(filingData)
     // update the current fees for the filing
     await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
+    // update the fee prices to display in the text
+    await this.setFeePricesFromFilingData(true)
   }
 
   /** Updates fees depending on business name change. */
@@ -328,6 +330,8 @@ export default class SpecialResolution extends Mixins(
       this.setFilingData(filingData)
       // update the current fees for the filing
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
+      // update the fee prices to display in the text
+      await this.setFeePricesFromFilingData(true)
     }
   }
 
