@@ -239,7 +239,7 @@ export default class SpecialResolution extends Mixins(
         this.setResource(this.specialResolutionResource)
 
         // initialize Fee Summary data
-        let filingData = [this.specialResolutionResource.filingData]
+        const filingData = [this.specialResolutionResource.filingData]
         if (this.hasBusinessNameChanged) {
           filingData.push({
             filingTypeCode: FilingCodes.SPECIAL_RESOLUTION_NAME_CHANGE,
@@ -247,6 +247,11 @@ export default class SpecialResolution extends Mixins(
             priority: false
           })
         }
+        filingData.forEach(fd => {
+          fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
+        })
+        this.setFilingData(filingData)
+
         this.setFilingData(filingData)
       } else {
         // go to catch()
@@ -257,7 +262,7 @@ export default class SpecialResolution extends Mixins(
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
 
       // fetches the fee prices to display in the text
-      await this.setFeePricesFromFilingData(true)
+      await this.setFeePricesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
 
       // set current profile name to store for field pre population
       // do this only if we are not staff

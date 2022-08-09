@@ -259,7 +259,11 @@ export default class Alteration extends Mixins(
         this.setResource(this.alterationResource)
 
         // initialize Fee Summary data
-        this.setFilingData([this.alterationResource.filingData])
+        const filingData = [this.alterationResource.filingData]
+        filingData.forEach(fd => {
+          fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
+        })
+        this.setFilingData(filingData)
       } else {
         // go to catch()
         throw new Error(`Invalid Alteration resources entity type = ${this.getEntityType}`)
@@ -268,8 +272,8 @@ export default class Alteration extends Mixins(
       // update the current fees for the Filing
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
 
-      // fetches the fee prices to display in the text
-      await this.setFeePricesFromFilingData(true)
+      // fetches the fee prices to display in the summary text
+      await this.setFeePricesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
 
       // set current profile name to store for field pre population
       // do this only if we are not staff
