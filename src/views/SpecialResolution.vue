@@ -262,7 +262,7 @@ export default class SpecialResolution extends Mixins(
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
 
       // fetches the fee prices to display in the text
-      await this.setFeePricesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
+      await this.setFeePricesFromFilingData(true)
 
       // set current profile name to store for field pre population
       // do this only if we are not staff
