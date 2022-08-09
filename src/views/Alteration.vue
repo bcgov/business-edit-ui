@@ -327,7 +327,6 @@ export default class Alteration extends Mixins(
       fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
     })
     this.setFilingData(filingData)
-    debugger
     // update the current fees for the filing
     await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
   }
