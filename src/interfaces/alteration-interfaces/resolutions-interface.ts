@@ -2,5 +2,6 @@
 export interface ResolutionsIF {
   date: string,
   id: number,
-  type: string
+  type: string,
+  confirmed:boolean,
 }
