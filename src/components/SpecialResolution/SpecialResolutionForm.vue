@@ -326,7 +326,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   private nameRules (label, isRequired = true): Array<Function> {
     return [
       v => isRequired ? (!!v?.trim() || `${label} is required`) : true,
-      v => v?.trim() ? (v?.length <= 30) || 'Cannot exceed 30 characters' : true // maximum character count
+      v => v ? (v?.length <= 30) || 'Cannot exceed 30 characters' : true // maximum character count
     ]
   }
 
