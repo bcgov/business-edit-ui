@@ -18,5 +18,5 @@ export enum ComponentsCompanyInfo {
   'company-provisions',
   'resolution-dates',
   'association-type',
-  'create-special-resolution-form'
+  'create-special-resolution'
 }

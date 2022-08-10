@@ -932,6 +932,6 @@ export const getcreateResolution = (state: StateIF): CreateResolutionIF => {
 }
 
 /** The company info page validity flags. */
-export const getCreateResolutionFromValid = (state: StateIF): boolean => {
+export const getCreateResolutionFormValid = (state: StateIF): boolean => {
   return getValidationFlags(state).flagsCompanyInfo.isValidCreateSpecialResolutionForm
 }

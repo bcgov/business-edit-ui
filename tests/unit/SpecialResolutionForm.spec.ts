@@ -107,4 +107,14 @@ describe('Special Resolution Form component', () => {
     expect(resolutionDate.exists()).toBe(true)
     expect(resolutionDate.text()).toContain('Signing Party')
   })
+
+  it('renders the Special Resolution form  component with invalid styling', async () => {
+    expect(wrapper.find('#create-special-resolution .invalid-section').exists()).toBeFalsy()
+    store.state.stateModel.validationFlags.flagsCompanyInfo.isValidCreateSpecialResolutionForm = false
+    store.state.stateModel.validationFlags.componentValidate = true
+
+    await Vue.nextTick()
+
+    expect(wrapper.find('#create-special-resolution .invalid-section').exists()).toBeTruthy()
+  })
 })

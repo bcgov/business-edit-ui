@@ -1,5 +1,5 @@
 <template>
-  <v-card flat id="create-special-resolution-form">
+  <v-card flat id="create-special-resolution">
       <!-- Header -->
       <article class="header-container section-container">
         <v-icon color="appDkBlue">mdi-handshake</v-icon>
@@ -66,7 +66,7 @@
           <p class="section-description mt-2">
             Enter the date the special resolution passed and the text as it appears on your printed form.
           </p>
-          <v-form ref="specialResolutionFrom" v-model="formValid">
+          <v-form v-model="formValid">
           <div class="mt-4" >
             <v-card flat id="resolution-date-card" class="py-8">
               <v-row no-gutters>
@@ -96,7 +96,7 @@
                   </label>
                 </v-col>
                 <v-col cols="12" sm="9">
-                  <v-textarea ref="resolutionTextRef"
+                  <v-textarea
                               auto-grow
                               filled
                               label="Resolution Text"
@@ -129,7 +129,6 @@
                 <v-col cols="12" sm="9" class="pt-4 pt-sm-0">
                   <div class="form__row three-column">
                     <v-text-field
-                      ref="signingPersonGivenNameRef"
                       filled
                       class="item"
                       label="First Name"
@@ -138,7 +137,6 @@
                       :rules="firstNameRules"
                     />
                     <v-text-field
-                      ref="signingPersonMiddleNameRef"
                       filled
                       class="item"
                       label="Middle Name (Optional)"
@@ -147,7 +145,6 @@
                       :rules="middleNameRules"
                     />
                     <v-text-field
-                      ref="signingPersonFamilyNameRef"
                       filled
                       class="item"
                       label="Last Name"
@@ -206,7 +203,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   @Getter getCurrentJsDate!: string
   @Getter getcreateResolution!: CreateResolutionIF
   @Getter getComponentValidate!: boolean
-  @Getter getCreateResolutionFromValid!: boolean
+  @Getter getCreateResolutionFormValid!: boolean
 
   @Action setResolution!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
@@ -215,8 +212,6 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   $refs!: {
     resolutionDatePickerRef: DatePickerShared,
     signatureDatePickerRef: DatePickerShared,
-    signingPersonFormRef: FormIF,
-    specialResolutionFrom: FormIF,
   }
 
   // Date properties
@@ -261,7 +256,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   /** The name section validity state (when prompted by app). */
   get invalidSpecialResolutionFormSection (): boolean {
     // add more state here
-    return (this.getComponentValidate && !this.getCreateResolutionFromValid)
+    return (this.getComponentValidate && !this.getCreateResolutionFormValid)
   }
 
   /** The minimum date that can be entered (can't be earlier than incorporation date ). */
