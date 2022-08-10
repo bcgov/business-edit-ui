@@ -243,11 +243,19 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   get getCreateResolutionResource (): any {
     return this.getResource.changeData?.specialSpecialResolution?.sampleFormSection || {}
   }
-
+  /** download URL fot pdf file */
   get documentURL (): string {
-    const docUrl = sessionStorage.getItem('BASE_URL') +
+    /**
+     * In session is stored the BASE_URL with business ID
+     * Here to acccess asset folder, need to remove business ID from URL
+     */
+    const baseUrlwithId = sessionStorage.getItem('BASE_URL')
+    const businessId = sessionStorage.getItem('BUSINESS_ID')
+
+    const baseUrlwithoutId = baseUrlwithId.replace(new RegExp(`${businessId}/?`), '')
+
+    return baseUrlwithoutId +
       this.getCreateResolutionResource?.downloadDocPath
-    return docUrl
   }
 
   /** The name section validity state (when prompted by app). */
