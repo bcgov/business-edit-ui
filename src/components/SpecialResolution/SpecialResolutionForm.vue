@@ -156,7 +156,6 @@
                         :rules="lastNameRules"
                         />
                     </div>
-
                 </v-col>
               </v-row>
 
