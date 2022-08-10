@@ -1,5 +1,5 @@
 <template>
-  <v-card flat id="special-resolution-form">
+  <v-card flat id="create-special-resolution-form">
       <!-- Header -->
       <article class="header-container section-container">
         <v-icon color="appDkBlue">mdi-handshake</v-icon>
@@ -382,7 +382,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
       ...this.getcreateResolution,
       signingPerson: this.signingPerson
     })
-
+    await this.$nextTick()
     this.validate()
   }
    /** called to store component validity to store. */
@@ -395,7 +395,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
 
      const isFormValid = this.formValid && isResolutionDateValid && isSignatureDateValid
      // settign component validity flag
-     this.setValidComponent({ key: 'isValidSpecialResolutionForm', value: isFormValid })
+     this.setValidComponent({ key: 'isValidCreateSpecialResolutionForm', value: isFormValid })
    }
 
    /** Set values if exist
