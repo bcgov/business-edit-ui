@@ -226,7 +226,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
 
   readonly MAX_RESOLUTION_TEXT_LENGTH = 1000
   protected resolutionText = ''
-  protected formValid: boolean = false
+  protected formValid = false
 
   protected signingPerson: SigningPersonIF = null
 
