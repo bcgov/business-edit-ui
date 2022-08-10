@@ -5,7 +5,7 @@
         <v-icon color="appDkBlue">mdi-handshake</v-icon>
         <label class="font-weight-bold pl-2">Special Resolution</label>
       </article>
-      <v-card flat :class="{'invalid-section': invalidSpecialResolutionFormSection}">
+      <v-card flat :class="{'invalid-section': invalidCreateSpecialResolutionSection}">
         <!-- Instructional Text -->
         <article class="instructional-text section-container">
           Before submitting this filing, you must pass a
@@ -196,7 +196,7 @@ import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-pic
     DatePickerShared
   }
 })
-export default class SpecialResolutionForm extends Mixins(DateMixin) {
+export default class CreateSpecialResolution extends Mixins(DateMixin) {
   @Getter getResource!: ResourceIF
   @Getter getBusinessFoundingDate!: string
   @Getter getCurrentDate!: string
@@ -254,7 +254,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   }
 
   /** The name section validity state (when prompted by app). */
-  get invalidSpecialResolutionFormSection (): boolean {
+  get invalidCreateSpecialResolutionSection (): boolean {
     // add more state here
     return (this.getComponentValidate && !this.getCreateResolutionFormValid)
   }
@@ -397,7 +397,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
 
      const isFormValid = this.formValid && isResolutionDateValid && isSignatureDateValid
      // settign component validity flag
-     this.setValidComponent({ key: 'isValidCreateSpecialResolutionForm', value: isFormValid })
+     this.setValidComponent({ key: 'isValidCreateSpecialResolution', value: isFormValid })
    }
 
    /** Set values if exist

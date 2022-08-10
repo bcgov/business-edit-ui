@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
-import SpecialResolutionForm from '@/components/SpecialResolution/SpecialResolutionForm.vue'
+import CreateSpecialResolution from '@/components/SpecialResolution/CreateSpecialResolution.vue'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { HelpSection } from '@/components/common/'
 import { CooperativeResource } from '@/resources/SpecialResolution/CooperativeResource'
@@ -51,7 +51,7 @@ describe('Special Resolution Form component', () => {
     store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
     store.state.stateModel.summaryMode = false
 
-    wrapper = mount(SpecialResolutionForm, { vuetify, store, localVue })
+    wrapper = mount(CreateSpecialResolution, { vuetify, store, localVue })
   })
 
   afterEach(() => {
@@ -59,7 +59,7 @@ describe('Special Resolution Form component', () => {
   })
 
   it('renders the components', async () => {
-    expect(wrapper.findComponent(SpecialResolutionForm).exists()).toBe(true)
+    expect(wrapper.findComponent(CreateSpecialResolution).exists()).toBe(true)
     expect(wrapper.findComponent(DatePickerShared).exists()).toBe(true)
     expect(wrapper.findComponent(HelpSection).exists()).toBe(true)
   })
@@ -110,7 +110,7 @@ describe('Special Resolution Form component', () => {
 
   it('renders the Special Resolution form  component with invalid styling', async () => {
     expect(wrapper.find('#create-special-resolution .invalid-section').exists()).toBeFalsy()
-    store.state.stateModel.validationFlags.flagsCompanyInfo.isValidCreateSpecialResolutionForm = false
+    store.state.stateModel.validationFlags.flagsCompanyInfo.isValidCreateCreateSpecialResolution = false
     store.state.stateModel.validationFlags.componentValidate = true
 
     await Vue.nextTick()

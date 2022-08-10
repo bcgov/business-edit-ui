@@ -16,7 +16,7 @@
 
         <CurrentDirectors class="mt-10" />
           <!-- more component comes here -->
-        <SpecialResolutionForm class="mt-10" v-if="showSpecialResolutionForm" />
+        <CreateSpecialResolution class="mt-10" v-if="showCreateSpecialResolution" />
       </div>
     </v-slide-x-transition>
 
@@ -96,7 +96,7 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
-import { SpecialResolutionSummary, SpecialResolutionForm } from '@/components/SpecialResolution'
+import { SpecialResolutionSummary, CreateSpecialResolution } from '@/components/SpecialResolution'
 import { CertifySection, CurrentDirectors, DocumentsDelivery,
   StaffPayment, TransactionalFolioNumber, YourCompany }
   from '@/components/common/'
@@ -121,7 +121,7 @@ import { CooperativeResource } from '@/resources/SpecialResolution/'
     StaffPayment,
     TransactionalFolioNumber,
     YourCompany,
-    SpecialResolutionForm
+    CreateSpecialResolution
   }
 })
 export default class SpecialResolution extends Mixins(
@@ -197,7 +197,7 @@ export default class SpecialResolution extends Mixins(
   /** show special resolution form component.
    * (Business name change, association type change)
    * to add : memorandum, rules */
-  get showSpecialResolutionForm (): boolean {
+  get showCreateSpecialResolution (): boolean {
     return (this.hasBusinessNameChanged || this.hasAssociationTypeChanged)
   }
 

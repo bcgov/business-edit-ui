@@ -48,7 +48,7 @@ export const stateModel: StateModelIF = {
       isValidResolutionDate: true,
       isValidStartDate: true,
       isValidAssociationType: true,
-      isValidCreateSpecialResolutionForm: true
+      isValidCreateSpecialResolution: true
     },
     flagsReviewCertify: {
       // NB: this must be in same order as ComponentsReviewCertify enum!
