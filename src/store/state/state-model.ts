@@ -133,8 +133,8 @@ export const stateModel: StateModelIF = {
   currentFees: cloneDeep(EmptyFees),
   feePrices: cloneDeep(EmptyFees),
   createResolution: {
-    resolutionText: '',
-    signingPerson: { ...EmptySigningPerson },
+    resolution: '',
+    signatory: { ...EmptySigningPerson },
     resolutionConfirmed: false
   }
 }

@@ -102,9 +102,9 @@
                               label="Resolution Text"
                               rows="6"
                               :counter="MAX_RESOLUTION_TEXT_LENGTH"
-                              v-model="resolutionText"
-                              :rules="resolutionTextRules"
-                              @change="onResolutionTextChanged"
+                              v-model="resolution"
+                              :rules="resolutionRules"
+                              @change="onresolutionChanged"
                   />
                 </v-col>
               </v-row>
@@ -133,7 +133,7 @@
                       class="item"
                       label="First Name"
                       id="person__first-name"
-                      v-model="signingPerson.givenName"
+                      v-model="signatory.givenName"
                       :rules="firstNameRules"
                     />
                     <v-text-field
@@ -141,7 +141,7 @@
                       class="item"
                       label="Middle Name (Optional)"
                       id="person__middle-name"
-                      v-model="signingPerson.additionalName"
+                      v-model="signatory.additionalName"
                       :rules="middleNameRules"
                     />
                     <v-text-field
@@ -149,7 +149,7 @@
                       class="item"
                       label="Last Name"
                       id="person__last-name"
-                      v-model="signingPerson.familyName"
+                      v-model="signatory.familyName"
                       :rules="lastNameRules"
                       />
                   </div>
@@ -219,10 +219,10 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   protected signatureDateText = ''
 
   readonly MAX_RESOLUTION_TEXT_LENGTH = 1000
-  protected resolutionText = ''
+  protected resolution = ''
   protected formValid = false
 
-  protected signingPerson: SigningPersonIF = null
+  protected signatory: SigningPersonIF = null
 
   protected signingDate = ''
 
@@ -272,7 +272,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
     return this.yyyyMmDdToDate(this.getCurrentDate)
   }
 
-  get resolutionTextRules (): Array<Function> {
+  get resolutionRules (): Array<Function> {
     return [
       v => (v && v.trim().length > 0) || 'Resolution text is required',
       v => (v && v.length <= this.MAX_RESOLUTION_TEXT_LENGTH) || 'Maximum characters exceeded',
@@ -317,10 +317,10 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
     this.validate()
   }
   /** called to add new resolutionDateText. */
-  protected onResolutionTextChanged (val: string) {
+  protected onresolutionChanged (val: string) {
     this.setResolution({
       ...this.getcreateResolution,
-      resolutionText: val
+      resolution: val
     })
     this.validate()
   }
@@ -378,11 +378,11 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
     this.validate()
   }
   /** called to store signing party. */
-   @Watch('signingPerson', { deep: true })
-  protected async onSigningPersonChanged (): Promise<void> {
+   @Watch('signatory', { deep: true })
+  protected async onsignatoryChanged (): Promise<void> {
     this.setResolution({
       ...this.getcreateResolution,
-      signingPerson: this.signingPerson
+      signatory: this.signatory
     })
     await this.$nextTick()
     this.validate()
@@ -404,8 +404,8 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
     * while coming back from summary page this form need to show existign values.
    */
    protected created () {
-     this.signingPerson = this.getcreateResolution.signingPerson || { ...EmptySigningPerson }
-     this.resolutionText = this.getcreateResolution.resolutionText || ''
+     this.signatory = this.getcreateResolution.signatory || { ...EmptySigningPerson }
+     this.resolution = this.getcreateResolution.resolution || ''
      this.resolutionDateText = this.getcreateResolution.resolutionDate || ''
      this.signingDate = this.getcreateResolution.signingDate || ''
    }

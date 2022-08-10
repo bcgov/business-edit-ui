@@ -38,8 +38,8 @@ describe('Special Resolution Form component', () => {
     store.state.stateModel.tombstone.currentDate = '2021-03-01'
     store.state.stateModel.entitySnapshot = entitySnapshot
     store.state.stateModel.createResolution = {
-      resolutionText: '',
-      signingPerson: { ...emptyPerson },
+      resolution: '',
+      signatory: { ...emptyPerson },
       resolutionConfirmed: false
     }
   })
@@ -96,10 +96,10 @@ describe('Special Resolution Form component', () => {
     expect(resolutionDate.exists()).toBe(true)
     expect(resolutionDate.text()).toContain('Resolution Date')
 
-    const resolutionText = wrapper.find('#resolution-date-card .resolution-text-vcard-title')
+    const resolution = wrapper.find('#resolution-date-card .resolution-text-vcard-title')
 
-    expect(resolutionText.exists()).toBe(true)
-    expect(resolutionText.text()).toContain('Resolution Text')
+    expect(resolution.exists()).toBe(true)
+    expect(resolution.text()).toContain('Resolution Text')
   })
 
   it('renders the signature form section', async () => {
