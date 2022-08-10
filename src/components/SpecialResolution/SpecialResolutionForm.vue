@@ -1,11 +1,11 @@
 <template>
-  <v-card flat id="special-resolution-summary">
+  <v-card flat id="special-resolution-form">
       <!-- Header -->
       <article class="header-container section-container">
         <v-icon color="appDkBlue">mdi-handshake</v-icon>
         <label class="font-weight-bold pl-2">Special Resolution</label>
       </article>
-      <v-card flat :class="{'invalid-section': invalidNameSection}">
+      <v-card flat :class="{'invalid-section': invalidSpecialResolutionFormSection}">
         <!-- Instructional Text -->
         <article class="instructional-text section-container">
           Before submitting this filing, you must pass a
@@ -66,7 +66,7 @@
           <p class="section-description mt-2">
             Enter the date the special resolution passed and the text as it appears on your printed form.
           </p>
-
+          <v-form ref="specialResolutionFrom" v-model="formValid">
           <div class="mt-4" >
             <v-card flat id="resolution-date-card" class="py-8">
               <v-row no-gutters>
@@ -96,7 +96,6 @@
                   </label>
                 </v-col>
                 <v-col cols="12" sm="9">
-                  <v-form ref="resolutionTextFormRef">
                     <v-textarea ref="resolutionTextRef"
                                 auto-grow
                                 filled
@@ -107,8 +106,6 @@
                                 :rules="resolutionTextRules"
                                 @change="onResolutionTextChanged"
                     />
-
-                  </v-form>
                 </v-col>
               </v-row>
             </v-card>
@@ -130,7 +127,6 @@
                   <label class="resolution-signature-vcard-title">Signing Party</label>
                 </v-col>
                 <v-col cols="12" sm="9" class="pt-4 pt-sm-0">
-                  <v-form ref="signingPersonFormRef">
                     <div class="form__row three-column">
                       <v-text-field
                         ref="signingPersonGivenNameRef"
@@ -160,7 +156,7 @@
                         :rules="lastNameRules"
                         />
                     </div>
-                  </v-form>
+
                 </v-col>
               </v-row>
 
@@ -174,6 +170,7 @@
                     title="Date Signed"
                     :nudgeRight="40"
                     :nudgeTop="85"
+                    :initialValue="signingDate"
                     :minDate="signatureDateMinStr"
                     :maxDate="signatureDateMaxStr"
                     :inputRules="signatureDateRules"
@@ -182,7 +179,7 @@
                 </v-col>
               </v-row>
             </v-card>
-
+          </v-form>
         </section>
       </v-card>
   </v-card>
@@ -208,16 +205,19 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   @Getter getBusinessFoundingDate!: string
   @Getter getCurrentDate!: string
   @Getter getCurrentJsDate!: string
-
-  @Action setResolution!: ActionBindingIF
   @Getter getcreateResolution!: CreateResolutionIF
   @Getter getComponentValidate!: boolean
+  @Getter getCreateResolutionFromValid!: boolean
+
+  @Action setResolution!: ActionBindingIF
+  @Action setValidComponent!: ActionBindingIF
 
   // Refs
   $refs!: {
     resolutionDatePickerRef: DatePickerShared,
     signatureDatePickerRef: DatePickerShared,
     signingPersonFormRef: FormIF,
+    specialResolutionFrom: FormIF,
   }
 
   // Date properties
@@ -226,8 +226,11 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
 
   readonly MAX_RESOLUTION_TEXT_LENGTH = 1000
   protected resolutionText = ''
+  protected formValid: boolean = false
 
   protected signingPerson: SigningPersonIF = null
+
+  protected signingDate = ''
 
   /** Validation rule for individual name fields */
   readonly firstNameRules = this.nameRules('First Name')
@@ -249,9 +252,9 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
   }
 
   /** The name section validity state (when prompted by app). */
-  get invalidNameSection (): boolean {
+  get invalidSpecialResolutionFormSection (): boolean {
     // add more state here
-    return (this.getComponentValidate)
+    return (this.getComponentValidate && !this.getCreateResolutionFromValid)
   }
 
   /** The minimum date that can be entered (can't be earlier than incorporation date ). */
@@ -309,6 +312,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
       ...this.getcreateResolution,
       resolutionDate: val
     })
+    this.validate()
   }
   /** called to add new resolutionDateText. */
   protected onResolutionTextChanged (val: string) {
@@ -316,13 +320,14 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
       ...this.getcreateResolution,
       resolutionText: val
     })
+    this.validate()
   }
 
   /** Validation rule for name */
   private nameRules (label, isRequired = true): Array<Function> {
     return [
       v => isRequired ? (!!v?.trim() || `${label} is required`) : true,
-      v => (v?.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
+      v => v?.trim() ? (v?.length <= 30) || 'Cannot exceed 30 characters' : true // maximum character count
     ]
   }
 
@@ -368,6 +373,7 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
       ...this.getcreateResolution,
       signingDate: val
     })
+    this.validate()
   }
   /** called to store signing party. */
    @Watch('signingPerson', { deep: true })
@@ -376,10 +382,30 @@ export default class SpecialResolutionForm extends Mixins(DateMixin) {
       ...this.getcreateResolution,
       signingPerson: this.signingPerson
     })
+
+    this.validate()
   }
-  /** Set values if exist */
+   /** called to store component validity to store. */
+   protected async validate () {
+     // wait to reflect validation state
+     await this.$nextTick()
+     // date validation
+     const isResolutionDateValid = this.$refs?.resolutionDatePickerRef?.isDateValid()
+     const isSignatureDateValid = this.$refs?.signatureDatePickerRef?.isDateValid()
+
+     const isFormValid = this.formValid && isResolutionDateValid && isSignatureDateValid
+     // settign component validity flag
+     this.setValidComponent({ key: 'isValidSpecialResolutionForm', value: isFormValid })
+   }
+
+   /** Set values if exist
+    * while coming back from summary page this form need to show existign values.
+   */
    protected created () {
      this.signingPerson = this.getcreateResolution.signingPerson || { ...EmptySigningPerson }
+     this.resolutionText = this.getcreateResolution.resolutionText || ''
+     this.resolutionDateText = this.getcreateResolution.resolutionDate || ''
+     this.signingDate = this.getcreateResolution.signingDate || ''
    }
 }
 </script>
