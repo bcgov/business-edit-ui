@@ -16,6 +16,8 @@ const vuetify = new Vuetify({})
 describe('Special Resolution Form component', () => {
   let wrapper: any
   let store: any = getVuexStore()
+  sessionStorage.setItem('BASE_URL', 'http://localhost:8080/basePath/CP1002551/')
+  sessionStorage.setItem('BUSINESS_ID', 'CP1002551')
 
   const entitySnapshot = {
     businessInfo: {

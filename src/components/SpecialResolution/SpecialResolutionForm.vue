@@ -96,16 +96,16 @@
                   </label>
                 </v-col>
                 <v-col cols="12" sm="9">
-                    <v-textarea ref="resolutionTextRef"
-                                auto-grow
-                                filled
-                                label="Resolution Text"
-                                rows="6"
-                                :counter="MAX_RESOLUTION_TEXT_LENGTH"
-                                v-model="resolutionText"
-                                :rules="resolutionTextRules"
-                                @change="onResolutionTextChanged"
-                    />
+                  <v-textarea ref="resolutionTextRef"
+                              auto-grow
+                              filled
+                              label="Resolution Text"
+                              rows="6"
+                              :counter="MAX_RESOLUTION_TEXT_LENGTH"
+                              v-model="resolutionText"
+                              :rules="resolutionTextRules"
+                              @change="onResolutionTextChanged"
+                  />
                 </v-col>
               </v-row>
             </v-card>
@@ -127,35 +127,35 @@
                   <label class="resolution-signature-vcard-title">Signing Party</label>
                 </v-col>
                 <v-col cols="12" sm="9" class="pt-4 pt-sm-0">
-                    <div class="form__row three-column">
-                      <v-text-field
-                        ref="signingPersonGivenNameRef"
-                        filled
-                        class="item"
-                        label="First Name"
-                        id="person__first-name"
-                        v-model="signingPerson.givenName"
-                        :rules="firstNameRules"
+                  <div class="form__row three-column">
+                    <v-text-field
+                      ref="signingPersonGivenNameRef"
+                      filled
+                      class="item"
+                      label="First Name"
+                      id="person__first-name"
+                      v-model="signingPerson.givenName"
+                      :rules="firstNameRules"
+                    />
+                    <v-text-field
+                      ref="signingPersonMiddleNameRef"
+                      filled
+                      class="item"
+                      label="Middle Name (Optional)"
+                      id="person__middle-name"
+                      v-model="signingPerson.additionalName"
+                      :rules="middleNameRules"
+                    />
+                    <v-text-field
+                      ref="signingPersonFamilyNameRef"
+                      filled
+                      class="item"
+                      label="Last Name"
+                      id="person__last-name"
+                      v-model="signingPerson.familyName"
+                      :rules="lastNameRules"
                       />
-                      <v-text-field
-                        ref="signingPersonMiddleNameRef"
-                        filled
-                        class="item"
-                        label="Middle Name (Optional)"
-                        id="person__middle-name"
-                        v-model="signingPerson.additionalName"
-                        :rules="middleNameRules"
-                      />
-                      <v-text-field
-                        ref="signingPersonFamilyNameRef"
-                        filled
-                        class="item"
-                        label="Last Name"
-                        id="person__last-name"
-                        v-model="signingPerson.familyName"
-                        :rules="lastNameRules"
-                        />
-                    </div>
+                  </div>
                 </v-col>
               </v-row>
 
