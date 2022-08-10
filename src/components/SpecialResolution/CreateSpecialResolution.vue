@@ -242,14 +242,10 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   get documentURL (): string {
     /**
      * In session is stored the BASE_URL with business ID
-     * Here to acccess asset folder, need to remove business ID from URL
+     * So we are taking from process.env.BASE_URL
      */
-    const baseUrlwithId = sessionStorage.getItem('BASE_URL')
-    const businessId = sessionStorage.getItem('BUSINESS_ID')
 
-    const baseUrlwithoutId = baseUrlwithId.replace(new RegExp(`${businessId}/?`), '')
-
-    return baseUrlwithoutId +
+    return process.env.BASE_URL +
       this.getCreateResolutionResource?.downloadDocPath
   }
 
