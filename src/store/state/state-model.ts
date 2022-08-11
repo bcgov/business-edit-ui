@@ -47,7 +47,8 @@ export const stateModel: StateModelIF = {
       isValidCompanyProvisions: true,
       isValidResolutionDate: true,
       isValidStartDate: true,
-      isValidAssociationType: true
+      isValidAssociationType: true,
+      isValidCreateSpecialResolution: true
     },
     flagsReviewCertify: {
       // NB: this must be in same order as ComponentsReviewCertify enum!
@@ -132,8 +133,8 @@ export const stateModel: StateModelIF = {
   currentFees: [cloneDeep(EmptyFees)],
   feePrices: [cloneDeep(EmptyFees)],
   createResolution: {
-    resolutionText: '',
-    signingPerson: { ...EmptySigningPerson },
+    resolution: '',
+    signatory: { ...EmptySigningPerson },
     resolutionConfirmed: false
   }
 }

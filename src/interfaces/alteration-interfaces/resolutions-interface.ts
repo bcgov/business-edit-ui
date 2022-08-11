@@ -1,6 +1,6 @@
 /** Resolutions object. */
 export interface ResolutionsIF {
-  date: string,
-  id: number,
+  date: string
+  id: number
   type: string
 }

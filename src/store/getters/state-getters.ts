@@ -930,3 +930,8 @@ export const getCompletingParty = (state: StateIF): CompletingPartyIF => {
 export const getcreateResolution = (state: StateIF): CreateResolutionIF => {
   return state.stateModel.createResolution
 }
+
+/** The company info page validity flags. */
+export const getCreateResolutionFormValid = (state: StateIF): boolean => {
+  return getValidationFlags(state).flagsCompanyInfo.isValidCreateSpecialResolution
+}
