@@ -208,14 +208,14 @@ describe('SpecialResolution component', () => {
     expect(store.state.stateModel.businessContact.email).toBe('mock@example.com')
     expect(store.state.stateModel.businessContact.phone).toBe('123-456-7890')
 
-    expect(store.state.stateModel.currentFees.filingFees).toBe(70)
+    expect(store.state.stateModel.currentFees[0].filingFees).toBe(70)
   })
 
   it('updates the current fees when SpecialResolutionSummary changes', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
-    expect(store.state.stateModel.currentFees.filingFees).toBe(70)
+    expect(store.state.stateModel.currentFees[0].filingFees).toBe(70)
   })
 
   it('certify text is not prefilled/editable for staff user', async () => {

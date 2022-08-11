@@ -1,4 +1,4 @@
-import { CorrectionTypes, FilingCodes, NameRequestEntityTypes } from '@/enums/'
+import { CorrectionTypes, FilingCodes, NameRequestEntityTypes, NameRequestTypes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
@@ -21,6 +21,9 @@ export const CooperativeResource: ResourceIF = {
     'business and dissolve this business once the new business is registered.',
     addressChangeInfo: 'To change addresses, please use the Change feature in the' +
     ' Office Addresses list on your business dashboard.',
+    nameRequestTypes: [
+      NameRequestTypes.CHANGE_OF_NAME
+    ],
     specialSpecialResolution: {
       helpSection: {
         header: 'Help with Special Resolution',
@@ -31,8 +34,8 @@ export const CooperativeResource: ResourceIF = {
       sampleFormSection: {
         header: 'Special Resolution (Form 06 COO)',
         text: `For your convenience, we have provided the special resolution form (Form 06 COO).  This form should be
-          completed, signed and a printed copy retained with your other Cooperative Association records.  
-          Do not mail the paper form to BC Registries.  Once you have completed this form, enter the details 
+          completed, signed and a printed copy retained with your other Cooperative Association records.
+          Do not mail the paper form to BC Registries.  Once you have completed this form, enter the details
           from the paper form into this filing.`,
         downloadDocLabel: 'Download the Special Resolution Form 06 COO',
         downloadDocPath: 'files/cooperative_sample_special_resolution_form_06.pdf'

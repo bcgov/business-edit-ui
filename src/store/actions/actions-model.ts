@@ -182,7 +182,7 @@ export const setStaffPaymentValidity: ActionIF = ({ commit }, validity: boolean)
   commit('mutateStaffPaymentValidity', validity)
 }
 
-export const setFilingData: ActionIF = ({ commit }, filingData: FilingDataIF): void => {
+export const setFilingData: ActionIF = ({ commit }, filingData: FilingDataIF[]): void => {
   commit('mutateFilingData', filingData)
 }
 
@@ -254,11 +254,11 @@ export const setValidCourtOrder: ActionIF = ({ commit }, isValid: boolean): void
   commit('mutateValidCourtOrder', isValid)
 }
 
-export const setCurrentFees: ActionIF = ({ commit }, fees: FeesIF): void => {
+export const setCurrentFees: ActionIF = ({ commit }, fees: FeesIF[]): void => {
   commit('mutateCurrentFees', fees)
 }
 
-export const setFeePrices: ActionIF = ({ commit }, feePrices: FeesIF): void => {
+export const setFeePrices: ActionIF = ({ commit }, feePrices: FeesIF[]): void => {
   commit('mutateFeePrices', feePrices)
 }
 

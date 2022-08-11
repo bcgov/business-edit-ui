@@ -25,7 +25,7 @@ export interface StateModelIF {
   effectiveDateTime: EffectiveDateTimeIF
   entitySnapshot: EntitySnapshotIF
   staffPayment: StaffPaymentIF
-  filingData: FilingDataIF
+  filingData: FilingDataIF[]
   detailComment: string
   editingFlags: {
     companyName: boolean
@@ -37,7 +37,7 @@ export interface StateModelIF {
   }
   validationFlags: ValidationFlagsIF
   summaryMode: boolean,
-  currentFees: FeesIF,
-  feePrices: FeesIF,
+  currentFees: FeesIF[],
+  feePrices: FeesIF[],
   createResolution: CreateResolutionIF
 }

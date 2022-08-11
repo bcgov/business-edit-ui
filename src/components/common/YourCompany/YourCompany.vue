@@ -15,7 +15,7 @@
           <v-flex md1>
             <v-chip
               v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling ||
-                isFirmConversionFiling))"
+                isFirmConversionFiling || isSpecialResolutionFiling))"
               id="corrected-lbl"
               x-small label
               color="primary"
@@ -45,7 +45,7 @@
             </template>
 
             <!-- Name Request Info -->
-            <template v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling)">
+            <template v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling || isSpecialResolutionFiling)">
               <div class="company-name mt-2">{{getNameRequestNumber || 'Unknown'}}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -78,7 +78,7 @@
               </div>
               <div class="company-info">
                 <span class="subtitle">Status: </span>
-                <span class="info-text">{{getNameRequest.status}}</span>
+                <span class="info-text text-capitalize">{{nrStatus}}</span>
               </div>
             </template>
           </v-col>
@@ -89,7 +89,7 @@
               <!-- FUTURE: only show buttons for named company -->
               <v-btn
                 v-if=" hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling ||
-                  isFirmChangeFiling))"
+                  isFirmChangeFiling || isSpecialResolutionFiling))"
                 text color="primary"
                 id="btn-undo-company-name"
                 class="undo-action"
@@ -108,7 +108,7 @@
                 <span>{{editLabel}}</span>
               </v-btn>
               <span class="more-actions" v-if=" hasCompanyNameChanged || (hasBusinessNameChanged &&
-                (isAlterationFiling || isFirmChangeFiling))"
+                (isAlterationFiling || isFirmChangeFiling || isSpecialResolutionFiling))"
               >
                 <v-menu
                   offset-y left nudge-bottom="4"
@@ -152,7 +152,8 @@
       </v-row>
 
       <!-- Name Request Applicant -->
-      <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling || isFirmConversionFiling)"
+      <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling || isFirmConversionFiling ||
+          isSpecialResolutionFiling)"
         class="sub-section"
       >
         <v-col cols="3">
@@ -209,13 +210,14 @@
       />
     </div>
 
+    <v-divider v-if="isEntityTypeCP" class="mx-4 my-1" />
+
     <!--- Association Type (coop only) -->
     <div v-if="isEntityTypeCP"
         id="association-type-section"
         class="section-container"
         :class="{'invalid-section': invalidAssociationTypeSection}"
     >
-      <v-divider class="mx-4 my-1" />
       <AssociationType
         :invalidSection="invalidAssociationTypeSection"
         @isEditingAssociationType="isEditingAssociationType = $event"
@@ -310,7 +312,7 @@ import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation,
   CorrectNameOptions, NatureOfBusiness, OfficeAddresses, StartDate } from './'
 import { CommonMixin, SharedMixin, DateMixin, NameRequestMixin } from '@/mixins/'
-import { CorrectionTypes } from '@/enums/'
+import { AssociationTypes, CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ConversionNOB } from '@/components/Conversion'
 
@@ -352,6 +354,7 @@ export default class YourCompany extends Mixins(
   @Getter isBenIaCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
+  @Getter getAssociationType!: AssociationTypes
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -436,6 +439,11 @@ export default class YourCompany extends Mixins(
     return this.getNameRequest?.applicant
   }
 
+  /** Name Request status */
+  get nrStatus (): string {
+    return (this.getNameRequest?.status || '').toLowerCase()
+  }
+
   /** Name Request expiry */
   get expiryDate (): string {
     const expiry = this.getNameRequest?.expiry
@@ -490,7 +498,7 @@ export default class YourCompany extends Mixins(
    * Whether to show Business Type section.
    * (Alterations, all firm filings, and Special Resolutions only)
    */
-  get showChangeBusinessType ():boolean {
+  get showChangeBusinessType (): boolean {
     return (
       this.isAlterationFiling ||
       this.isFirmCorrectionFiling ||
@@ -502,8 +510,9 @@ export default class YourCompany extends Mixins(
 
   /** Reset company name values to original. */
   protected resetName () {
-    // reset business information
-    this.setBusinessInformation(this.getEntitySnapshot.businessInfo)
+    // reset business information, except for association type.
+    const businessInfo = { ...this.getEntitySnapshot.businessInfo, associationType: this.getAssociationType }
+    this.setBusinessInformation(businessInfo)
 
     // reset name request
     this.setNameRequest({
@@ -604,4 +613,5 @@ export default class YourCompany extends Mixins(
 #contact-info-section {
   border-bottom-left-radius: 0 !important;
 }
+
 </style>

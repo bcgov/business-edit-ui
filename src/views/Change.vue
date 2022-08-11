@@ -91,13 +91,11 @@ import { ChangeSummary } from '@/components/Change/'
 import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, YourCompany, StaffPayment,
   CourtOrderPoa, TransactionalFolioNumber } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
-import { CommonMixin, FilingTemplateMixin, PayApiMixin } from '@/mixins/'
+import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
-import { FilingCodes, FilingStatus } from '@/enums/'
+import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { cloneDeep } from 'lodash'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Change/'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 @Component({
   components: {
@@ -114,12 +112,11 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 })
 export default class Change extends Mixins(
   CommonMixin,
-  FilingTemplateMixin,
-  PayApiMixin
+  FeeMixin,
+  FilingTemplateMixin
 ) {
   // Global getters
   @Getter isSummaryMode!: boolean
-  @Getter getFilingData!: FilingDataIF
   @Getter getAppValidate!: boolean
   @Getter getUserFirstName!: string
   @Getter getUserLastName!: string
@@ -129,12 +126,10 @@ export default class Change extends Mixins(
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setValidCourtOrder!: ActionBindingIF
-  @Action setCurrentFees!: ActionBindingIF
-  @Action setFeePrices!: ActionBindingIF
+
   @Action setResource!: ActionBindingIF
 
   /** Whether App is ready. */
@@ -214,25 +209,17 @@ export default class Change extends Mixins(
         this.setResource(this.firmChangeResource)
 
         // initialize Fee Summary data
-        this.setFilingData(this.firmChangeResource.filingData)
+        this.setFilingData([this.firmChangeResource.filingData])
       } else {
         // go to catch()
         throw new Error(`Invalid change resource entity type = ${this.getEntityType}`)
       }
 
       // update the current fees for the Filing
-      this.setCurrentFees(
-        await this.fetchFilingFees(
-          FilingCodes.FM_CHANGE, this.getEntityType
-        ).catch(() => cloneDeep(EmptyFees))
-      )
+      await this.setCurrentFeesFromFilingData()
 
       // fetches the fee prices to display in the text
-      this.setFeePrices(
-        await this.fetchFilingFees(
-          FilingCodes.FM_CHANGE, this.getEntityType
-        ).catch(() => cloneDeep(EmptyFees))
-      )
+      await this.setFeePricesFromFilingData()
 
       // set current profile name to store for field pre population
       // do this only if we are not staff
@@ -255,16 +242,6 @@ export default class Change extends Mixins(
 
     // now that all data is loaded, wait for things to stabilize and reset flag
     this.$nextTick(() => this.setHaveUnsavedChanges(false))
-  }
-
-  /** Called when staff payment data has changed. */
-  protected onStaffPaymentChanges (): void {
-    // update filing data with staff payment fields
-    this.setFilingData({
-      ...this.getFilingData,
-      priority: this.getStaffPayment.isPriority,
-      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
-    })
   }
 
   /** Fetches the business snapshot. */

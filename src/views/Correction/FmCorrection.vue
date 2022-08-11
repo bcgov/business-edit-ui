@@ -39,7 +39,7 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany }
   from '@/components/common/'
-import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
+import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { AuthServices, LegalServices } from '@/services/'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
@@ -56,13 +56,9 @@ import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resour
     YourCompany
   }
 })
-export default class FmCorrection extends Mixins(CommonMixin, FilingTemplateMixin) {
-  // Global getters
-  @Getter getFilingData!: FilingDataIF
-
+export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingData!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
   @Action setResource!: ActionBindingIF
 
@@ -100,7 +96,7 @@ export default class FmCorrection extends Mixins(CommonMixin, FilingTemplateMixi
       this.setResource(this.correctionResource)
 
       // initialize Fee Summary data
-      this.setFilingData(this.correctionResource.filingData)
+      this.setFilingData([this.correctionResource.filingData])
 
       // pre-select No Fee option
       this.setStaffPayment({ option: StaffPaymentOptions.NO_FEE })
@@ -133,15 +129,6 @@ export default class FmCorrection extends Mixins(CommonMixin, FilingTemplateMixi
       addresses: items[2],
       orgPersons: items[3]
     } as EntitySnapshotIF
-  }
-
-  protected onStaffPaymentChanges (): void {
-    // update filing data with staff payment fields
-    this.setFilingData({
-      ...this.getFilingData,
-      priority: this.getStaffPayment.isPriority,
-      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
-    })
   }
 
   /** Emits Fetch Error event. */

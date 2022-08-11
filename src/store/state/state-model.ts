@@ -114,12 +114,12 @@ export const stateModel: StateModelIF = {
     folioNumber: '',
     isPriority: false
   },
-  filingData: {
+  filingData: [{
     filingTypeCode: null,
     entityType: null,
     priority: false,
     waiveFees: false
-  },
+  }],
   detailComment: '',
   editingFlags: {
     companyName: false,
@@ -130,8 +130,8 @@ export const stateModel: StateModelIF = {
     shareStructure: false
   },
   summaryMode: false,
-  currentFees: cloneDeep(EmptyFees),
-  feePrices: cloneDeep(EmptyFees),
+  currentFees: [cloneDeep(EmptyFees)],
+  feePrices: [cloneDeep(EmptyFees)],
   createResolution: {
     resolution: '',
     signatory: { ...EmptySigningPerson },

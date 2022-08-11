@@ -173,7 +173,7 @@ describe('YourCompany in a SP alteration', () => {
     expect(companyInfo.at(0).text()).toBe('Business Type:  BC Company')
     expect(companyInfo.at(1).text()).toBe('Request Type:  New Business')
     expect(companyInfo.at(2).text()).toBe('Expiry Date:  March 10, 2021 at 12:00 am Pacific time')
-    expect(companyInfo.at(3).text()).toBe('Status:  APPROVED')
+    expect(companyInfo.at(3).text()).toBe('Status:  approved')
 
     const nameRequestApplicantInfo = wrapper.findAll('.name-request-applicant-info')
 

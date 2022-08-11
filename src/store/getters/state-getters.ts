@@ -339,7 +339,7 @@ export const getStaffPayment = (state: StateIF): StaffPaymentIF => {
 }
 
 /** The filing data. */
-export const getFilingData = (state: StateIF): FilingDataIF => {
+export const getFilingData = (state: StateIF): FilingDataIF[] => {
   return state.stateModel.filingData
 }
 
@@ -875,12 +875,12 @@ export const getIsResolutionDatesValid = (state: StateIF): boolean => {
  * until there is a valid filing type and entity code.
  */
 export const showFeeSummary = (state: StateIF): boolean => {
-  const defaultFilingData = {
+  const defaultFilingData = [{
     filingTypeCode: null as FilingCodes,
     entityType: null as CorpTypeCd,
     priority: false,
     waiveFees: false
-  }
+  }]
   const haveFilingChange = (
     (isCorrectionFiling(state) && hasCorrectionDataChanged(state)) ||
     (isAlterationFiling(state) && hasAlterationDataChanged(state)) ||
@@ -892,12 +892,12 @@ export const showFeeSummary = (state: StateIF): boolean => {
 }
 
 /** The current fees. */
-export const getCurrentFees = (state: StateIF): FeesIF => {
+export const getCurrentFees = (state: StateIF): FeesIF[] => {
   return state.stateModel.currentFees
 }
 
 /** The fee prices. */
-export const getFeePrices = (state: StateIF): FeesIF => {
+export const getFeePrices = (state: StateIF): FeesIF[] => {
   return state.stateModel.feePrices
 }
 

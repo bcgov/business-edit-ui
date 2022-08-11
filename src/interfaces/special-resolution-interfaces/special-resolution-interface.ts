@@ -1,3 +1,4 @@
+import { AssociationTypes } from '@/enums'
 import { BusinessInformationIF, CourtOrderIF, NameRequestIF }
   from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
@@ -9,4 +10,5 @@ export interface SpecialResolutionIF {
   nameRequest?: NameRequestIF,
   contactPoint?: ContactPointIF,
   courtOrder?: CourtOrderIF
+  cooperativeAssociationType: AssociationTypes
 }

@@ -50,13 +50,12 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { cloneDeep } from 'lodash'
 import { getFeatureFlag } from '@/utils/'
 import { PeopleAndRoles, CompletingParty, YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
-import { CommonMixin, FilingTemplateMixin, PayApiMixin } from '@/mixins/'
-import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
-import { FilingCodes, FilingStatus } from '@/enums/'
+import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
+import { ActionBindingIF, EntitySnapshotIF } from '@/interfaces/'
+import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Conversion/'
 import { ConversionSummary } from '@/components/Conversion'
@@ -72,23 +71,19 @@ import { NOT_FOUND } from 'http-status-codes'
 })
 export default class Conversion extends Mixins(
   CommonMixin,
-  FilingTemplateMixin,
-  PayApiMixin
+  FeeMixin,
+  FilingTemplateMixin
 ) {
   // Global getters
   @Getter isRoleStaff!: boolean
   @Getter isSummaryMode!: boolean
-  @Getter getFilingData!: FilingDataIF
   @Getter getAppValidate!: boolean
   @Getter showFeeSummary!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingData!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setValidCourtOrder!: ActionBindingIF
-  @Action setCurrentFees!: ActionBindingIF
-  @Action setFeePrices!: ActionBindingIF
   @Action setResource!: ActionBindingIF
   @Action setCertifyStateValidity!: ActionBindingIF
 
@@ -172,25 +167,17 @@ export default class Conversion extends Mixins(
         this.setResource(this.firmConversionResource)
 
         // initialize Fee Summary data
-        this.setFilingData(this.firmConversionResource.filingData)
+        this.setFilingData([this.firmConversionResource.filingData])
       } else {
         // go to catch()
         throw new Error(`Invalid conversion resource entity type = ${this.getEntityType}`)
       }
 
       // update the current fees for the Filing
-      this.setCurrentFees(
-        await this.fetchFilingFees(
-          FilingCodes.FM_CONVERSION, this.getEntityType
-        ).catch(() => cloneDeep(EmptyFees))
-      )
+      await this.setCurrentFeesFromFilingData()
 
       // fetches the fee prices to display in the text
-      this.setFeePrices(
-        await this.fetchFilingFees(
-          FilingCodes.FM_CONVERSION, this.getEntityType
-        ).catch(() => cloneDeep(EmptyFees))
-      )
+      await this.setFeePricesFromFilingData()
 
       // tell App that we're finished loading
       this.emitHaveData()

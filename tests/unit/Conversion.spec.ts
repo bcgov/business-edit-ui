@@ -285,8 +285,8 @@ describe('Conversion component', () => {
     expect(store.state.stateModel.businessContact.email).toBe('mock@example.com')
     expect(store.state.stateModel.businessContact.phone).toBe('123-456-7890')
 
-    expect(store.state.stateModel.currentFees.filingFees).toBe(100)
-    expect(store.state.stateModel.currentFees.futureEffectiveFees).toBe(0)
+    expect(store.state.stateModel.currentFees[0].filingFees).toBe(100)
+    expect(store.state.stateModel.currentFees[0].futureEffectiveFees).toBe(0)
   })
 
   // FUTURE
@@ -314,7 +314,7 @@ describe('Conversion component', () => {
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
     ).toContain('Choosing an alteration date and time in the future will incur an additional $100.00 fee.')
 
-    store.state.stateModel.feePrices = {
+    store.state.stateModel.feePrices = [{
       filingFees: null,
       filingType: null,
       filingTypeCode: null,
@@ -327,7 +327,7 @@ describe('Conversion component', () => {
         gst: null
       },
       total: null
-    }
+    }]
     await flushPromises()
 
     expect(
@@ -347,8 +347,8 @@ describe('Conversion component', () => {
     state.effectiveDateTime.isFutureEffective = true
 
     await wrapper.vm.onAlterationSummaryChanges()
-    expect(store.state.stateModel.currentFees.filingFees).toBe(100)
-    expect(store.state.stateModel.currentFees.futureEffectiveFees).toBe(100)
+    expect(store.state.stateModel.currentFees[0].filingFees).toBe(100)
+    expect(store.state.stateModel.currentFees[0].futureEffectiveFees).toBe(100)
   })
 
   // FUTURE

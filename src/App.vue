@@ -105,7 +105,7 @@
                 :offset="{ top: 86, bottom: 12 }"
               >
                 <!-- Corrections still use the basic Fee Summary component -->
-                <aside v-if="isCorrectionFiling && getFilingData.filingTypeCode && getFilingData.entityType">
+                <aside v-if="isCorrectionFiling && correctionHasFilingData">
                   <SbcFeeSummary
                     :filingData="[...getFilingData]"
                     :payURL="payApiUrl"
@@ -199,7 +199,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getUserRoles!: string
   @Getter getUserUsername!: string
   @Getter getOrgInfo!: any
-  @Getter getFilingData!: FilingDataIF
+  @Getter getFilingData!: FilingDataIF[]
   @Getter haveUnsavedChanges!: boolean
   @Getter isBusySaving!: boolean
   @Getter isCorrectionEditing!: boolean
@@ -314,7 +314,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   get feeSummaryConfirmLabel (): string {
     const isNoFee = this.isFirmChangeFiling || this.isFirmConversionFiling
     if (this.isSummaryMode) {
-      return (isNoFee && !this.getFilingData.priority) ? 'File Now (No Fee)' : 'File and Pay'
+      return (isNoFee && !this.getFilingData.some(fd => fd.priority)) ? 'File Now (No Fee)' : 'File and Pay'
     } else {
       return isNoFee ? 'Review and Confirm' : 'Review and Certify'
     }
@@ -344,13 +344,22 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       Object.values(this.getFlagsReviewCertify).some(val => val === false)
     )
   }
-  /** Show fee summery only allowed filing types */
+  /** Show fee summary only allowed filing types */
   get showFeesummaryShared (): boolean {
     return (
       this.isSpecialResolutionFiling ||
       this.isAlterationFiling ||
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling
+    )
+  }
+
+  /** True if there is filing data for corrections - corrections has a single filing schedule. */
+  get correctionHasFilingData () : boolean {
+    return Boolean(
+      this.getFilingData?.length > 0 &&
+      this.getFilingData[0].filingTypeCode &&
+      this.getFilingData[0].entityType
     )
   }
 

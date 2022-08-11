@@ -45,7 +45,7 @@ import { Action, Getter } from 'vuex-class'
 import { CompletingParty } from '@/components/Correction/'
 import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
   from '@/components/common/'
-import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
+import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { AuthServices, LegalServices } from '@/services/'
 import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
@@ -62,13 +62,9 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/'
     YourCompany
   }
 })
-export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin) {
-  // Global getters
-  @Getter getFilingData!: FilingDataIF
-
+export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingData!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
   @Action setResource!: ActionBindingIF
 
@@ -107,7 +103,7 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
       this.setResource(this.correctionResource)
 
       // initialize Fee Summary data
-      this.setFilingData(this.correctionResource.filingData)
+      this.setFilingData([this.correctionResource.filingData])
 
       // tell App that we're finished loading
       this.emitHaveData()
@@ -141,15 +137,6 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, Filing
       nameTranslations: items[5],
       nameResolutions: items[6]
     } as EntitySnapshotIF
-  }
-
-  protected onStaffPaymentChanges (): void {
-    // update filing data with staff payment fields
-    this.setFilingData({
-      ...this.getFilingData,
-      priority: this.getStaffPayment.isPriority,
-      waiveFees: (this.getStaffPayment.option === StaffPaymentOptions.NO_FEE)
-    })
   }
 
   /** Emits Fetch Error event. */

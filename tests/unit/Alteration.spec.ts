@@ -8,6 +8,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { axios } from '@/utils/'
 import Alteration from '@/views/Alteration.vue'
 import mockRouter from './MockRouter'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 Vue.use(Vuetify)
 
@@ -320,15 +321,15 @@ describe('Alteration component', () => {
     expect(store.state.stateModel.businessContact.email).toBe('mock@example.com')
     expect(store.state.stateModel.businessContact.phone).toBe('123-456-7890')
 
-    expect(store.state.stateModel.currentFees.filingFees).toBe(100)
-    expect(store.state.stateModel.currentFees.futureEffectiveFees).toBe(0)
+    expect(store.state.stateModel.currentFees[0].filingFees).toBe(100)
+    expect(store.state.stateModel.currentFees[0].futureEffectiveFees).toBe(0)
   })
 
   it('fetches the fee prices after loading', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
-    expect(store.state.stateModel.feePrices.filingFees).toBe(100)
-    expect(store.state.stateModel.feePrices.futureEffectiveFees).toBe(100)
+    expect(store.state.stateModel.feePrices[0].filingFees).toBe(100)
+    expect(store.state.stateModel.feePrices[0].futureEffectiveFees).toBe(100)
   })
 
   it('display the fee prices properly', async () => {
@@ -347,7 +348,7 @@ describe('Alteration component', () => {
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
     ).toContain('Choosing an alteration date and time in the future will incur an additional $100.00 fee.')
 
-    store.state.stateModel.feePrices = {
+    store.state.stateModel.feePrices = [{
       filingFees: null,
       filingType: null,
       filingTypeCode: null,
@@ -360,7 +361,7 @@ describe('Alteration component', () => {
         gst: null
       },
       total: null
-    }
+    }]
     await flushPromises()
 
     expect(
@@ -379,8 +380,8 @@ describe('Alteration component', () => {
     state.effectiveDateTime.isFutureEffective = true
 
     await wrapper.vm.onAlterationSummaryChanges()
-    expect(store.state.stateModel.currentFees.filingFees).toBe(100)
-    expect(store.state.stateModel.currentFees.futureEffectiveFees).toBe(100)
+    expect(store.state.stateModel.currentFees[0].filingFees).toBe(100)
+    expect(store.state.stateModel.currentFees[0].futureEffectiveFees).toBe(100)
   })
 
   it('certify text is not prefilled/editable for staff user', async () => {
@@ -405,6 +406,32 @@ describe('Alteration component', () => {
     await flushPromises()
 
     expect(store.state.stateModel.certifyState.certifiedBy).toBe('Jon Doe')
+  })
+
+  it('updates the fees with priority and waive fees for staff payment changes', async () => {
+    store.state.stateModel.staffPayment = {
+      option: StaffPaymentOptions.NO_FEE,
+      isPriority: true
+    }
+
+    store.state.stateModel.feePrices = [{
+      filingFees: null,
+      filingType: null,
+      filingTypeCode: null,
+      futureEffectiveFees: null,
+      priorityFees: null,
+      processingFees: null,
+      serviceFees: null,
+      tax: {
+        pst: null,
+        gst: null
+      },
+      total: null
+    }]
+
+    wrapper.vm.onStaffPaymentChanges()
+    expect(store.state.stateModel.filingData[0].priority).toBe(true)
+    expect(store.state.stateModel.filingData[0].waiveFees).toBe(true)
   })
 
   // FUTURE
