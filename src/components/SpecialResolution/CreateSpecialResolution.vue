@@ -238,7 +238,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   get getCreateResolutionResource (): any {
     return this.getResource.changeData?.specialSpecialResolution?.sampleFormSection || {}
   }
-  /** download URL fot pdf file */
+  /** download URL for pdf file */
   get documentURL (): string {
     /**
      * In session is stored the BASE_URL with business ID
@@ -395,12 +395,12 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
      const isSignatureDateValid = this.$refs?.signatureDatePickerRef?.isDateValid()
 
      const isFormValid = this.formValid && isResolutionDateValid && isSignatureDateValid
-     // settign component validity flag
+     // setting component validity flag
      this.setValidComponent({ key: 'isValidCreateSpecialResolution', value: isFormValid })
    }
 
    /** Set values if exist
-    * while coming back from summary page this form need to show existign values.
+    * while coming back from summary page this form need to show existing values.
    */
    protected created () {
      this.signatory = this.getcreateResolution.signatory || { ...EmptySigningPerson }
