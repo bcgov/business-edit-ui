@@ -251,8 +251,6 @@ export default class SpecialResolution extends Mixins(
           fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
         })
         this.setFilingData(filingData)
-
-        this.setFilingData(filingData)
       } else {
         // go to catch()
         throw new Error(`Invalid Special Resolution resources entity type = ${this.getEntityType}`)

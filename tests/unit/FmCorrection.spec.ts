@@ -9,7 +9,6 @@ import { axios } from '@/utils/'
 import FmCorrection from '@/views/Correction/FmCorrection.vue'
 import mockRouter from './MockRouter'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common'
-import { FeesIF } from '@/interfaces'
 
 Vue.use(Vuetify)
 
@@ -257,7 +256,7 @@ describe('Firm Correction component', () => {
         gst: null
       },
       total: null
-    }] as FeesIF[]
+    }]
     await flushPromises()
 
     expect(

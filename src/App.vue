@@ -105,7 +105,7 @@
                 :offset="{ top: 86, bottom: 12 }"
               >
                 <!-- Corrections still use the basic Fee Summary component -->
-                <aside v-if="isCorrectionFiling && correctionHasFilingData ">
+                <aside v-if="isCorrectionFiling && correctionHasFilingData">
                   <SbcFeeSummary
                     :filingData="[...getFilingData]"
                     :payURL="payApiUrl"

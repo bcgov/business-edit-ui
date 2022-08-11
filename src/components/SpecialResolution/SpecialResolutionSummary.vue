@@ -128,13 +128,15 @@ export default class SpecialResolutionSummary extends Mixins(
     return this.getEntitySnapshot?.businessInfo?.associationType
   }
 
-  // sum of special resolution fees
+  /** Calculates the sum of special resolution fees. */
   get specialResolutionFees (): string {
     const validFees = this.getCurrentFees.filter(f => f.filingFees !== null && f.futureEffectiveFees !== null)
     if (validFees.length === 0) {
       return ''
     }
+    /** Calculates the sum of filing fees. */
     const filingFeesSum = validFees.map(f => f.filingFees).reduce((a, b) => a + b, 0)
+    /** Calculates the sum of future effective fees. */
     const futureEffectiveFeesSum = validFees.map(f => f.futureEffectiveFees).reduce((a, b) => a + b, 0)
     return `($${(filingFeesSum + futureEffectiveFeesSum).toFixed(2)} Fee)`
   }

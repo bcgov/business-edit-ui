@@ -8,9 +8,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { axios } from '@/utils/'
 import Alteration from '@/views/Alteration.vue'
 import mockRouter from './MockRouter'
-import { FeesIF } from '@/interfaces'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
-import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
 Vue.use(Vuetify)
 
@@ -363,7 +361,7 @@ describe('Alteration component', () => {
         gst: null
       },
       total: null
-    }] as FeesIF[]
+    }]
     await flushPromises()
 
     expect(
@@ -414,7 +412,7 @@ describe('Alteration component', () => {
     store.state.stateModel.staffPayment = {
       option: StaffPaymentOptions.NO_FEE,
       isPriority: true
-    } as StaffPaymentIF
+    }
 
     store.state.stateModel.feePrices = [{
       filingFees: null,
@@ -429,7 +427,7 @@ describe('Alteration component', () => {
         gst: null
       },
       total: null
-    }] as FeesIF[]
+    }]
 
     wrapper.vm.onStaffPaymentChanges()
     expect(store.state.stateModel.filingData[0].priority).toBe(true)

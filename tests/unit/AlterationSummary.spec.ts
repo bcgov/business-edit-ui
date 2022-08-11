@@ -8,7 +8,6 @@ import AlterationSummary from '@/components/Alteration/AlterationSummary.vue'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
 import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
-import { FeesIF } from '@/interfaces'
 
 Vue.use(Vuetify)
 
@@ -207,7 +206,7 @@ describe('Alteration Summary component', () => {
         'pst': 0
       },
       'total': 201.5
-    }] as FeesIF[]
+    }]
     await Vue.nextTick()
     await flushPromises()
     await Vue.nextTick()
@@ -228,7 +227,7 @@ describe('Alteration Summary component', () => {
         gst: null
       },
       total: null
-    }] as FeesIF[]
+    }]
 
     await flushPromises()
     expect(

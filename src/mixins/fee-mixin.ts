@@ -27,6 +27,7 @@ export default class FeeMixin extends Vue {
     if (validFilingFeesPrices.length === 0) {
       return ''
     }
+    /** Calculate the sum of filing fees. */
     const filingFeesSum = validFilingFeesPrices.map(f => f.filingFees).reduce((a, b) => a + b, 0)
     return `$${filingFeesSum.toFixed(2)}`
   }
@@ -37,6 +38,7 @@ export default class FeeMixin extends Vue {
     if (validFutureFeePrices.length === 0) {
       return ''
     }
+    /** Calculates the sum of future effective fees. */
     const futureEffectiveFeesSum = validFutureFeePrices.map(f => f.futureEffectiveFees).reduce((a, b) => a + b, 0)
     return `$${futureEffectiveFeesSum.toFixed(2)}`
   }
@@ -70,7 +72,7 @@ export default class FeeMixin extends Vue {
       return await Promise.all(feePromises)
     } catch (error) {
       console.log(error)
-      return this.getFilingData.map(fd => cloneDeep(EmptyFees))
+      return this.getFilingData.map(() => cloneDeep(EmptyFees))
     }
   }
 

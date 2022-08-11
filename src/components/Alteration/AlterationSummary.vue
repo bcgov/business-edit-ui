@@ -232,13 +232,15 @@ export default class AlterationSummary extends Mixins(
     return (this.validate && !this.getFlagsReviewCertify.isValidEffectiveDate)
   }
 
-  // sum of alteration fees
+  /** Calculates the sum of alteration fees. */
   get alterationFees (): string {
     const validFees = this.getCurrentFees.filter(f => f.filingFees !== null && f.futureEffectiveFees !== null)
     if (validFees.length === 0) {
       return ''
     }
+    /** Calculates the sum of filing fees. */
     const filingFeesSum = validFees.map(f => f.filingFees).reduce((a, b) => a + b, 0)
+    /** Calculates the sum of future effective fees. */
     const futureEffectiveFeesSum = validFees.map(f => f.futureEffectiveFees).reduce((a, b) => a + b, 0)
     return `($${(filingFeesSum + futureEffectiveFeesSum).toFixed(2)} Fee)`
   }
@@ -248,6 +250,7 @@ export default class AlterationSummary extends Mixins(
     if (validFees.length === 0) {
       return ''
     }
+    /** Calculates the sum of future effective fees. */
     const futureEffectiveFeesSum = validFees.map(f => f.futureEffectiveFees).reduce((a, b) => a + b, 0)
     return `of $${futureEffectiveFeesSum.toFixed(2)}`
   }

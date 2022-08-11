@@ -78,7 +78,7 @@
               </div>
               <div class="company-info">
                 <span class="subtitle">Status: </span>
-                <span class="info-text capitalize">{{nrStatus}}</span>
+                <span class="info-text text-capitalize">{{nrStatus}}</span>
               </div>
             </template>
           </v-col>
@@ -614,7 +614,4 @@ export default class YourCompany extends Mixins(
   border-bottom-left-radius: 0 !important;
 }
 
-.capitalize {
-  text-transform: capitalize;
-}
 </style>

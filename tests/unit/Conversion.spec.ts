@@ -8,7 +8,6 @@ import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { axios } from '@/utils/'
 import Conversion from '@/views/Conversion.vue'
 import mockRouter from './MockRouter'
-import { FeesIF } from '@/interfaces'
 
 Vue.use(Vuetify)
 
@@ -328,7 +327,7 @@ describe('Conversion component', () => {
         gst: null
       },
       total: null
-    }] as FeesIF[]
+    }]
     await flushPromises()
 
     expect(

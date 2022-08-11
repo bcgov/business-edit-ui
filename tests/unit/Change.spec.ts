@@ -12,7 +12,6 @@ import { CertifySection, CompletingParty, CourtOrderPoa, DocumentsDelivery,
   PeopleAndRoles, StaffPayment, TransactionalFolioNumber, YourCompany }
   from '@/components/common'
 import { ChangeSummary } from '@/components/Change'
-import { FeesIF } from '@/interfaces'
 
 Vue.use(Vuetify)
 
@@ -317,7 +316,7 @@ describe('Change component', () => {
         gst: null
       },
       total: null
-    }] as FeesIF[]
+    }]
     await flushPromises()
 
     expect(

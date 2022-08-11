@@ -3,7 +3,6 @@ import Vuetify from 'vuetify'
 import { SpecialResolutionSummary } from '@/components/SpecialResolution'
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
-import { FeesIF } from '@/interfaces'
 
 Vue.use(Vuetify)
 
@@ -50,7 +49,8 @@ describe('Special Resolution Review', () => {
         'pst': 0
       },
       'total': 70.0
-    }] as FeesIF[]
+    }]
+    // Next tick is needed here, because the data wont update in component until next tick.
     await Vue.nextTick()
     expect(wrapper.find('.summary-title').text()).toBe('Special Resolution Changes ($140.00 Fee)')
 
@@ -67,8 +67,8 @@ describe('Special Resolution Review', () => {
         gst: null
       },
       total: null
-    }] as FeesIF[]
-
+    }]
+    // Next tick is needed here, because the data wont update in component until next tick.
     await Vue.nextTick()
     expect(wrapper.find('.summary-title').text()).toBe('Special Resolution Changes')
   })
