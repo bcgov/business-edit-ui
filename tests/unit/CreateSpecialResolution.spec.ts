@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
-import SpecialResolutionForm from '@/components/SpecialResolution/SpecialResolutionForm.vue'
+import CreateSpecialResolution from '@/components/SpecialResolution/CreateSpecialResolution.vue'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { HelpSection } from '@/components/common/'
 import { CooperativeResource } from '@/resources/SpecialResolution/CooperativeResource'
@@ -16,6 +16,8 @@ const vuetify = new Vuetify({})
 describe('Special Resolution Form component', () => {
   let wrapper: any
   let store: any = getVuexStore()
+  sessionStorage.setItem('BASE_URL', 'http://localhost:8080/basePath/CP1002551/')
+  sessionStorage.setItem('BUSINESS_ID', 'CP1002551')
 
   const entitySnapshot = {
     businessInfo: {
@@ -36,8 +38,8 @@ describe('Special Resolution Form component', () => {
     store.state.stateModel.tombstone.currentDate = '2021-03-01'
     store.state.stateModel.entitySnapshot = entitySnapshot
     store.state.stateModel.createResolution = {
-      resolutionText: '',
-      signingPerson: { ...emptyPerson },
+      resolution: '',
+      signatory: { ...emptyPerson },
       resolutionConfirmed: false
     }
   })
@@ -49,7 +51,7 @@ describe('Special Resolution Form component', () => {
     store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
     store.state.stateModel.summaryMode = false
 
-    wrapper = mount(SpecialResolutionForm, { vuetify, store, localVue })
+    wrapper = mount(CreateSpecialResolution, { vuetify, store, localVue })
   })
 
   afterEach(() => {
@@ -57,7 +59,7 @@ describe('Special Resolution Form component', () => {
   })
 
   it('renders the components', async () => {
-    expect(wrapper.findComponent(SpecialResolutionForm).exists()).toBe(true)
+    expect(wrapper.findComponent(CreateSpecialResolution).exists()).toBe(true)
     expect(wrapper.findComponent(DatePickerShared).exists()).toBe(true)
     expect(wrapper.findComponent(HelpSection).exists()).toBe(true)
   })
@@ -94,15 +96,25 @@ describe('Special Resolution Form component', () => {
     expect(resolutionDate.exists()).toBe(true)
     expect(resolutionDate.text()).toContain('Resolution Date')
 
-    const resolutionText = wrapper.find('#resolution-date-card .resolution-text-vcard-title')
+    const resolution = wrapper.find('#resolution-date-card .resolution-text-vcard-title')
 
-    expect(resolutionText.exists()).toBe(true)
-    expect(resolutionText.text()).toContain('Resolution Text')
+    expect(resolution.exists()).toBe(true)
+    expect(resolution.text()).toContain('Resolution Text')
   })
 
   it('renders the signature form section', async () => {
     const resolutionDate = wrapper.find('#resolution-signature-card .resolution-signature-vcard-title')
     expect(resolutionDate.exists()).toBe(true)
     expect(resolutionDate.text()).toContain('Signing Party')
+  })
+
+  it('renders the Special Resolution form  component with invalid styling', async () => {
+    expect(wrapper.find('#create-special-resolution .invalid-section').exists()).toBeFalsy()
+    store.state.stateModel.validationFlags.flagsCompanyInfo.isValidCreateCreateSpecialResolution = false
+    store.state.stateModel.validationFlags.componentValidate = true
+
+    await Vue.nextTick()
+
+    expect(wrapper.find('#create-special-resolution .invalid-section').exists()).toBeTruthy()
   })
 })

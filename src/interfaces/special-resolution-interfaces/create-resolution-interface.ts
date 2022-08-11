@@ -2,9 +2,9 @@ import { SigningPersonIF } from '@/interfaces'
 
 // specical resolution form inrterface
 export interface CreateResolutionIF {
-  resolutionConfirmed: boolean
+  resolutionConfirmed?: boolean
   resolutionDate?: string // YYYY-MM-DD
-  resolutionText?: string
-  signingPerson?: SigningPersonIF
+  resolution?: string
+  signatory?: SigningPersonIF
   signingDate?: string // YYYY-MM-DD
 }
