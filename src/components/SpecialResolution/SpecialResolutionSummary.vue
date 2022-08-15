@@ -64,18 +64,15 @@
           </v-col>
 
           <v-col cols="8">
-            <span class="info-text">Changing from a {{ associationTypeToDescription(originalAssociationType) }}</span>
-            &nbsp;
-            <span class="info-text">to a {{ associationTypeToDescription(getAssociationType) }}</span>
+            <span class="info-text">{{ associationTypeToDescription(getAssociationType) }}</span>
           </v-col>
         </v-row>
       </div>
     </template>
 
+    <!-- Resolution summary section -->
     <template>
-
        <CreateSpecialResolutionSummary />
-
     </template>
 
   </v-card>
@@ -85,7 +82,7 @@
 // this is a placceholder copied from AlterationSummary, Will add component when working on this page
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
+import { ActionBindingIF, FeesIF } from '@/interfaces/'
 import { DateMixin, SharedMixin, FeeMixin, FilingTemplateMixin, EnumMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation } from '@/components/common/'
 import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'

@@ -72,7 +72,7 @@
               </v-checkbox>
               <ul>
                 <li class="mt-4">
-                  The special resolution was passed by "COOP Name" and authorizes the dissolution.
+                  The special resolution was passed by <strong>{{companyName}}</strong> and authorizes the dissolution.
                 </li>
                 <li class="mt-4">
                   A printed copy of the signed special resolution (Form 06 COO) has been retained with the Cooperative
@@ -92,12 +92,10 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import {
   ActionBindingIF,
-  HelpSectionIF,
   ResourceIF,
   FormIF,
-  SigningPersonIF,
-  EmptySigningPerson,
-  CreateResolutionIF
+  CreateResolutionIF,
+  EntitySnapshotIF
 } from '@/interfaces/'
 import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
@@ -110,13 +108,10 @@ import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-pic
   }
 })
 export default class CreateSpecialResolutionSummary extends Mixins(DateMixin) {
-  @Getter getResource!: ResourceIF;
-  @Getter getBusinessFoundingDate!: string;
-  @Getter getCurrentDate!: string;
-  @Getter getCurrentJsDate!: string;
   @Getter getcreateResolution!: CreateResolutionIF;
   @Getter getAppValidate!: boolean;
   @Getter getSpecialResolutionConfirmValid!: boolean;
+  @Getter getEntitySnapshot!: EntitySnapshotIF
 
   @Action setResolution!: ActionBindingIF;
   @Action setSpecialResolutionConfirmStateValidity!: ActionBindingIF;
@@ -128,6 +123,7 @@ export default class CreateSpecialResolutionSummary extends Mixins(DateMixin) {
 
   protected resolutionConfirmed = false;
 
+  /** Validation rule for checkbox. */
   protected confirmCompletionResolution = [
     v => {
       return !!v
@@ -168,6 +164,12 @@ export default class CreateSpecialResolutionSummary extends Mixins(DateMixin) {
       return `${givenName} ${additionalName || ''} ${familyName}`
     }
     return ''
+  }
+
+  /** The company name. */
+  get companyName (): string {
+    // Hope this will be old company name even they change it
+    return this.getEntitySnapshot?.businessInfo?.legalName || ''
   }
 
   /** Set validate on file and pay click. */
