@@ -178,9 +178,7 @@ export default class CreateSpecialResolutionSummary extends Mixins(DateMixin) {
     this.$refs.confirmResolutionChkFormRef.validate()
   }
 
-  /** Set values if exist
-   * while coming back from summary page this form need to show existing values.
-   */
+  /** Set values if exist */
   protected mounted () {
     this.resolutionConfirmed = this.getcreateResolution.resolutionConfirmed || false
   }
