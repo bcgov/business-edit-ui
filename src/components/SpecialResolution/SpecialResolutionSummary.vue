@@ -4,8 +4,8 @@
     <div class="summary-header px-4 mb-2 rounded-t">
       <v-row no-gutters>
         <v-col cols="9">
-          <img  class="my-n1 header-icon" src="@/assets/images/currency-usd-circle.svg">
-          <label class="summary-title">Special Resolution Changes {{specialResolutionFees}}</label>
+          <v-icon class="header-icon ml-n1">mdi-file-document-edit-outline</v-icon>
+          <label class="summary-title">Summary of Changes to File</label>
         </v-col>
       </v-row>
     </div>
@@ -72,6 +72,12 @@
       </div>
     </template>
 
+    <template>
+
+       <CreateSpecialResolutionSummary />
+
+    </template>
+
   </v-card>
 </template>
 
@@ -81,15 +87,15 @@ import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
 import { DateMixin, SharedMixin, FeeMixin, FilingTemplateMixin, EnumMixin } from '@/mixins/'
-import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
-import { ResolutionDates } from '@/components/Alteration/'
+import { EffectiveDateTime, NameTranslation } from '@/components/common/'
+import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
 
 @Component({
   components: {
     EffectiveDateTime,
     NameTranslation,
-    ResolutionDates,
-    ShareStructures
+    CreateSpecialResolutionSummary
+
   }
 })
 export default class SpecialResolutionSummary extends Mixins(

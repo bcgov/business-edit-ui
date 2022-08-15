@@ -29,9 +29,8 @@
 
         <section class="mt-6">
           <p id="intro-text">
-            Review and certify the changes you are about to make to your company. Certain changes require an Alteration
-            Notice which will incur a {{filingFeesPrice}} fee. Choosing an alteration date and time in the future will
-            incur an additional {{futureEffectiveFeesPrice}} fee.
+            Changes were made to your business information that require a filing.
+            Review and certify the changes you are about the make to your business.
           </p>
         </section>
 
@@ -55,9 +54,15 @@
           :validate="getAppValidate"
         />
 
-        <CertifySection
+        <CompletingParty
           class="mt-10"
           :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
+          :validate="getAppValidate"
+        />
+
+        <CertifySection
+          class="mt-10"
+          :sectionNumber="showTransactionalFolioNumber ? '4.' : '3.'"
           :validate="getAppValidate"
           :disableEdit="!isRoleStaff"
         />
@@ -106,7 +111,7 @@ import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
 import { SpecialResolutionSummary, CreateSpecialResolution } from '@/components/SpecialResolution'
 import { CertifySection, CurrentDirectors, DocumentsDelivery,
-  StaffPayment, TransactionalFolioNumber, YourCompany }
+  StaffPayment, TransactionalFolioNumber, YourCompany, CompletingParty }
   from '@/components/common/'
 import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
 import { AuthServices, LegalServices } from '@/services/'
@@ -127,7 +132,8 @@ import { CooperativeResource } from '@/resources/SpecialResolution/'
     StaffPayment,
     TransactionalFolioNumber,
     YourCompany,
-    CreateSpecialResolution
+    CreateSpecialResolution,
+    CompletingParty
   }
 })
 export default class SpecialResolution extends Mixins(

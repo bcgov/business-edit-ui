@@ -273,3 +273,7 @@ export const setNaics: ActionIF = ({ commit }, naics: NaicsIF): void => {
 export const setResolution = ({ commit }, resolution: CreateResolutionIF) => {
   commit('mutateResolution', resolution)
 }
+
+export const setSpecialResolutionConfirmStateValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateSpecialResolutionConfirmStateValidity', validity)
+}

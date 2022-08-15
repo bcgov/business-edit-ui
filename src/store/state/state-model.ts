@@ -59,7 +59,8 @@ export const stateModel: StateModelIF = {
       isValidDetailComment: true,
       isValidCertify: false, // initially un-certified
       isValidCourtOrder: true,
-      isValidStaffPayment: true
+      isValidStaffPayment: true,
+      isValidSpecialResolutionConfirm: false
     }
   },
   accountInformation: {

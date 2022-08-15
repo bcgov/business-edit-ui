@@ -10,6 +10,7 @@ export enum ComponentsReviewCertify {
   'completing-party-section',
   'transactional-folio-number-section',
   'detail-section',
+  'special-resolution-confirm',
   'certify-section',
   'court-order',
   'staff-payment'
