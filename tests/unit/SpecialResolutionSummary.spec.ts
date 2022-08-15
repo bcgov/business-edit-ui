@@ -52,7 +52,7 @@ describe('Special Resolution Review', () => {
     }]
     // Next tick is needed here, because the data wont update in component until next tick.
     await Vue.nextTick()
-    expect(wrapper.find('.summary-title').text()).toBe('Special Resolution Changes ($140.00 Fee)')
+    expect(wrapper.find('.summary-title').text()).toBe('Summary of Changes to File')
 
     store.state.stateModel.currentFees = [{
       filingFees: null,
@@ -70,6 +70,6 @@ describe('Special Resolution Review', () => {
     }]
     // Next tick is needed here, because the data wont update in component until next tick.
     await Vue.nextTick()
-    expect(wrapper.find('.summary-title').text()).toBe('Special Resolution Changes')
+    expect(wrapper.find('.summary-title').text()).toBe('Summary of Changes to File')
   })
 })
