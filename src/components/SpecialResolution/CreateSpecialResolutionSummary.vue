@@ -8,39 +8,39 @@
 
       <div class="mt-4">
         <v-row no-gutters class="mt-6">
-          <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block">
+          <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block resolution-date-label">
             <label><strong> Resolution Date</strong></label>
           </v-col>
-          <v-col cols="12" sm="9">
+          <v-col cols="12" sm="9" class="resolution-date">
             {{ resolutionDateText }}
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-6">
-          <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block">
+          <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block resolution-text-label">
             <label
               ><strong>
                 Resolution Text
               </strong></label
             >
           </v-col>
-          <v-col cols="12" sm="9">
+          <v-col cols="12" sm="9" class="resolution-text">
             {{ getcreateResolution && getcreateResolution.resolution }}
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-6">
-          <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block">
+          <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block siging-party-label">
             <label><strong> Signing Party</strong></label>
           </v-col>
-          <v-col cols="12" sm="9">
+          <v-col cols="12" sm="9" class="siging-party">
             {{ signingParty }}
           </v-col>
         </v-row>
 
         <v-row no-gutters class="mt-6">
-          <v-col cols="12" sm="3" class="pr-4">
+          <v-col cols="12" sm="3" class="pr-4 siging-date-label">
             <label><strong> Date Signed</strong></label>
           </v-col>
-          <v-col cols="12" sm="9" class="pt-4 pt-sm-0">
+          <v-col cols="12" sm="9" class="pt-4 pt-sm-0 siging-date">
             {{ signingDate }}
           </v-col>
         </v-row>
@@ -97,7 +97,7 @@ import {
   CreateResolutionIF,
   EntitySnapshotIF
 } from '@/interfaces/'
-import { DateMixin } from '@/mixins/'
+import { CommonMixin, DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 
@@ -107,7 +107,7 @@ import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-pic
     DatePickerShared
   }
 })
-export default class CreateSpecialResolutionSummary extends Mixins(DateMixin) {
+export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, DateMixin) {
   @Getter getcreateResolution!: CreateResolutionIF;
   @Getter getAppValidate!: boolean;
   @Getter getSpecialResolutionConfirmValid!: boolean;
@@ -175,7 +175,7 @@ export default class CreateSpecialResolutionSummary extends Mixins(DateMixin) {
   /** Set validate on file and pay click. */
   @Watch('getAppValidate')
   protected updateResolutionStepValidationDetail (): void {
-    this.$refs.confirmResolutionChkFormRef.validate()
+    !this.isJestRunning && this.$refs.confirmResolutionChkFormRef.validate()
   }
 
   /** Set values if exist */
