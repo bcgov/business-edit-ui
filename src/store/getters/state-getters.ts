@@ -192,7 +192,7 @@ export const getOriginalLegalName = (state: StateIF): string => {
   return getEntitySnapshot(state)?.businessInfo?.legalName
 }
 
-/** The original business snapshot. */
+/** The original entity snapshot. */
 export const getEntitySnapshot = (state: StateIF): EntitySnapshotIF => {
   return state.stateModel.entitySnapshot
 }

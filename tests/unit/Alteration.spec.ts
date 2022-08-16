@@ -283,7 +283,7 @@ describe('Alteration component', () => {
     expect(wrapper.findComponent(Alteration).exists()).toBe(true)
   })
 
-  it('loads the business snapshot into the store', async () => {
+  it('loads the entity snapshot into the store', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
     const state = store.state.stateModel

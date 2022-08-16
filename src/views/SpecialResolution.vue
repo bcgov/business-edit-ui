@@ -207,7 +207,8 @@ export default class SpecialResolution extends Mixins(
 
     // try to fetch data
     try {
-      const businessSnapshot = await this.fetchBusinessSnapshot()
+      // fetch entity snapshot
+      const entitySnapshot = await this.fetchEntitySnapshot()
 
       // update later with resolution-id and parse it once it saved
       if (this.specialResolutionId) {
@@ -227,11 +228,11 @@ export default class SpecialResolution extends Mixins(
           throw new Error('Invalid Special Resolution status')
         }
 
-        // parse special resolution filing and original business snapshot into store
-        this.parseSpecialResolutionFiling(filing, businessSnapshot)
+        // parse special resolution filing and original entity snapshot into store
+        this.parseSpecialResolutionFiling(filing, entitySnapshot)
       } else {
-        // parse business data into store
-        this.parseEntitySnapshot(businessSnapshot)
+        // parse just the entity snapshot into store
+        this.parseEntitySnapshot(entitySnapshot)
       }
 
       if (this.specialResolutionResource) {
@@ -285,8 +286,8 @@ export default class SpecialResolution extends Mixins(
     this.$nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
-  /** Fetches the business snapshot. */
-  private async fetchBusinessSnapshot (): Promise<EntitySnapshotIF> {
+  /** Fetches the entity snapshot. */
+  private async fetchEntitySnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
       LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),

@@ -247,7 +247,7 @@ describe('Conversion component', () => {
   })
 
   // FUTURE
-  xit('loads the business snapshot into the store', async () => {
+  xit('loads the entity snapshot into the store', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
     const state = store.state.stateModel

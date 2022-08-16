@@ -177,8 +177,8 @@ export default class Change extends Mixins(
 
     // try to fetch data
     try {
-      // fetch business snapshot
-      const firmSnapshot = await this.fetchFirmSnapshot()
+      // fetch entity snapshot
+      const entitySnapshot = await this.fetchEntitySnapshot()
 
       if (this.changeId) {
         // store the filing ID
@@ -197,11 +197,11 @@ export default class Change extends Mixins(
           throw new Error('Invalid change status')
         }
 
-        // parse draft change filing and business snapshot into store
-        this.parseChangeRegFiling(changeFiling, firmSnapshot)
+        // parse draft change filing and entity snapshot into store
+        this.parseChangeRegFiling(changeFiling, entitySnapshot)
       } else {
-        // parse just the business snapshot into store
-        this.parseEntitySnapshot(firmSnapshot)
+        // parse just the entity snapshot into store
+        this.parseEntitySnapshot(entitySnapshot)
       }
 
       if (this.firmChangeResource) {
@@ -244,8 +244,8 @@ export default class Change extends Mixins(
     this.$nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
-  /** Fetches the business snapshot. */
-  private async fetchFirmSnapshot (): Promise<EntitySnapshotIF> {
+  /** Fetches the entity snapshot. */
+  private async fetchEntitySnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
       LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),
