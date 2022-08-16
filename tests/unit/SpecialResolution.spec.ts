@@ -36,7 +36,7 @@ describe('SpecialResolution component', () => {
 
     const get = sinon.stub(axios, 'get')
 
-    // GET payment fee for immediate alteration
+    // GET payment fees for immediate alteration
     get.withArgs('https://pay.api.url/fees/CP/SPRLN')
       .returns(Promise.resolve({
         data: { 'filingFees': 70.0,
@@ -51,6 +51,24 @@ describe('SpecialResolution component', () => {
             'pst': 0
           },
           'total': 70.0
+        }
+      }))
+
+    // GET payment fees for future effective alteration
+    get.withArgs('https://pay.api.url/fees/CP/SPRLN?futureEffective=true')
+      .returns(Promise.resolve({
+        data: { 'filingFees': 70.0,
+          'filingType': 'Special resolution',
+          'filingTypeCode': 'SPRLN',
+          'futureEffectiveFees': 100.0,
+          'priorityFees': 0,
+          'processingFees': 0,
+          'serviceFees': 0,
+          'tax': {
+            'gst': 0,
+            'pst': 0
+          },
+          'total': 170.0
         }
       }))
 
@@ -177,7 +195,7 @@ describe('SpecialResolution component', () => {
     expect(wrapper.findComponent(SpecialResolution).exists()).toBe(true)
   })
 
-  it('loads the entity snapshot into the store', async () => {
+  it.only('loads the entity snapshot into the store', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
     const state = store.state.stateModel
