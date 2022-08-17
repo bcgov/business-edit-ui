@@ -86,11 +86,11 @@ export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTe
       // safety check
       if (!this.correctionFiling) throw (new Error('Missing correction filing. Try reloading the page.'))
 
-      // fetch business snapshot
-      const businessSnapshot = await this.fetchBusinessSnapshot()
+      // fetch entity snapshot
+      const entitySnapshot = await this.fetchEntitySnapshot()
 
-      // parse draft correction filing and business snapshot into store
-      this.parseCorrectionFiling(this.correctionFiling, businessSnapshot)
+      // parse draft correction filing and entity snapshot into store
+      this.parseCorrectionFiling(this.correctionFiling, entitySnapshot)
 
       // set the resources
       this.setResource(this.correctionResource)
@@ -112,8 +112,8 @@ export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTe
     this.$nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
-  /** Fetches the business snapshot. */
-  private async fetchBusinessSnapshot (): Promise<EntitySnapshotIF> {
+  /** Fetches the entity snapshot. */
+  private async fetchEntitySnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
       LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),

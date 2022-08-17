@@ -460,7 +460,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter hasRecDeliveryChanged!: boolean
   @Getter isEntityTypeBEN!: boolean
   @Getter isEntityTypeFirm!: boolean
-  @Getter isBenIaCorrectionFiling!: boolean
+  @Getter isBenCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
 
   // Global actions
@@ -542,7 +542,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
-    if (this.isBenIaCorrectionFiling || this.isAlterationFiling) {
+    if (this.isBenCorrectionFiling || this.isAlterationFiling) {
       // assign registered office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.registeredOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.registeredOffice?.deliveryAddress }
@@ -746,8 +746,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets updated office addresses in store.
    */
   private storeAddresses (): void {
-    if (this.isBenIaCorrectionFiling) {
-      // at the moment, only BEN IA corrections are supported
+    if (this.isBenCorrectionFiling) {
+      // at the moment, only BEN corrections are supported
       this.setOfficeAddresses({
         registeredOffice: {
           deliveryAddress: this.deliveryAddress,
@@ -760,16 +760,14 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       })
     }
 
-    if (this.isEntityTypeFirm) {
-      if (this.isFirmChangeFiling || this.isFirmConversionFiling || this.isCorrectionFiling) {
+    if (this.isFirmChangeFiling || this.isFirmConversionFiling || this.isFirmCorrectionFiling) {
       // at the moment, only firm changes, conversions and corrections are supported
-        this.setOfficeAddresses({
-          businessOffice: {
-            deliveryAddress: this.deliveryAddress,
-            mailingAddress: this.mailingAddress
-          }
-        })
-      }
+      this.setOfficeAddresses({
+        businessOffice: {
+          deliveryAddress: this.deliveryAddress,
+          mailingAddress: this.mailingAddress
+        }
+      })
     }
   }
 
@@ -836,7 +834,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Also called when we know what kind of correction this is.
    */
   @Watch('getOfficeAddresses', { deep: true, immediate: true })
-  @Watch('isBenIaCorrectionFiling')
+  @Watch('isBenCorrectionFiling')
   @Watch('isFirmCorrectionFiling')
   private updateAddresses (): void {
     // set local properties from store

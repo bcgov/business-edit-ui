@@ -227,8 +227,8 @@ export default class Alteration extends Mixins(
 
     // try to fetch data
     try {
-      // fetch business snapshot
-      const businessSnapshot = await this.fetchBusinessSnapshot()
+      // fetch entity snapshot
+      const entitySnapshot = await this.fetchEntitySnapshot()
 
       if (this.alterationId) {
         // store the filing ID
@@ -247,11 +247,11 @@ export default class Alteration extends Mixins(
           throw new Error('Invalid Alteration status')
         }
 
-        // parse draft alteration filing and business snapshot into store
-        this.parseAlterationFiling(alterationFiling, businessSnapshot)
+        // parse draft alteration filing and entity snapshot into store
+        this.parseAlterationFiling(alterationFiling, entitySnapshot)
       } else {
-        // parse just the business snapshot into store
-        this.parseEntitySnapshot(businessSnapshot)
+        // parse just the entity snapshot into store
+        this.parseEntitySnapshot(entitySnapshot)
       }
 
       if (this.alterationResource) {
@@ -298,8 +298,8 @@ export default class Alteration extends Mixins(
     this.$nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
-  /** Fetches the business snapshot. */
-  private async fetchBusinessSnapshot (): Promise<EntitySnapshotIF> {
+  /** Fetches the entity snapshot. */
+  private async fetchEntitySnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
       LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),

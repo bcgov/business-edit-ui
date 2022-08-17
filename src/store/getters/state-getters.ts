@@ -49,9 +49,9 @@ export const isFirmChangeFiling = (state: StateIF): boolean => {
   )
 }
 
-/** Whether the current filing is a Benefit Company IA Correction. */
-export const isBenIaCorrectionFiling = (state: StateIF): boolean => {
-  return (isCorrectionFiling(state) && isEntityTypeBEN(state))
+/** Whether the current filing is a Benefit Company Correction. */
+export const isBenCorrectionFiling = (state: StateIF): boolean => {
+  return (isEntityTypeBEN(state) && isCorrectionFiling(state))
 }
 
 /** Whether the current filing is a firm Correction. */
@@ -192,7 +192,7 @@ export const getOriginalLegalName = (state: StateIF): string => {
   return getEntitySnapshot(state)?.businessInfo?.legalName
 }
 
-/** The original business snapshot. */
+/** The original entity snapshot. */
 export const getEntitySnapshot = (state: StateIF): EntitySnapshotIF => {
   return state.stateModel.entitySnapshot
 }
@@ -372,7 +372,7 @@ export const isFilingPaying = (state: StateIF): boolean => {
  * - staff payment
  */
 export const hasCorrectionDataChanged = (state: StateIF): boolean => {
-  if (isBenIaCorrectionFiling(state)) {
+  if (isBenCorrectionFiling(state)) {
     return (
       hasBusinessNameChanged(state) ||
       hasBusinessTypeChanged(state) ||
@@ -489,7 +489,7 @@ export const hasConversionDataChanged = (state: StateIF): boolean => {
 
 /** Whether the subject correction filing is valid. */
 export const isCorrectionValid = (state: StateIF): boolean => {
-  if (isBenIaCorrectionFiling(state)) {
+  if (isBenCorrectionFiling(state)) {
     return (
       getFlagsCompanyInfo(state).isValidCompanyName &&
       getFlagsCompanyInfo(state).isValidNameTranslation &&
@@ -671,7 +671,7 @@ export const getOriginalOfficeAddresses = (state: StateIF): AddressesIF => {
 
 /** True if (registered) mailing address has changed. */
 export const hasMailingChanged = (state: StateIF): boolean => {
-  if (isAlterationFiling(state) || isBenIaCorrectionFiling(state)) {
+  if (isAlterationFiling(state) || isBenCorrectionFiling(state)) {
     return !isSame(
       getOfficeAddresses(state)?.registeredOffice?.mailingAddress,
       getOriginalOfficeAddresses(state)?.registeredOffice?.mailingAddress,
@@ -690,7 +690,7 @@ export const hasMailingChanged = (state: StateIF): boolean => {
 
 /** True if (registered) delivery address has changed. */
 export const hasDeliveryChanged = (state: StateIF): boolean => {
-  if (isAlterationFiling(state) || isBenIaCorrectionFiling(state)) {
+  if (isAlterationFiling(state) || isBenCorrectionFiling(state)) {
     return !isSame(
       getOfficeAddresses(state)?.registeredOffice?.deliveryAddress,
       getOriginalOfficeAddresses(state)?.registeredOffice?.deliveryAddress,

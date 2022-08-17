@@ -8,7 +8,7 @@
       </div>
 
       <!-- Instructional people and roles text (BEN corrections only)-->
-      <article v-if="isBenIaCorrectionFiling" class="section-container">
+      <article v-if="isBenCorrectionFiling" class="section-container">
         This application must include the following:
         <ul>
           <li>
@@ -20,7 +20,7 @@
       </article>
 
       <!-- Correction section (BEN corrections only) -->
-      <article v-if="isBenIaCorrectionFiling" class="section-container">
+      <article v-if="isBenCorrectionFiling" class="section-container">
         <v-btn
           id="btn-add-person"
           outlined
@@ -172,7 +172,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter getComponentValidate!: boolean
   @Getter hasMinimumProprietor!: boolean
   @Getter hasMinimumPartners!: boolean
-  @Getter isBenIaCorrectionFiling!: boolean
+  @Getter isBenCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter isEntityTypeBEN!: boolean
   @Getter isEntityTypeSP!: boolean
