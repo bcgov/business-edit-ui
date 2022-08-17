@@ -4,8 +4,8 @@
     <div class="summary-header px-4 mb-2 rounded-t">
       <v-row no-gutters>
         <v-col cols="9">
-          <img  class="my-n1 header-icon" src="@/assets/images/currency-usd-circle.svg">
-          <label class="summary-title">Special Resolution Changes {{specialResolutionFees}}</label>
+          <v-icon class="header-icon ml-n1">mdi-file-document-edit-outline</v-icon>
+          <label class="summary-title">Summary of Changes to File</label>
         </v-col>
       </v-row>
     </div>
@@ -27,33 +27,6 @@
       </div>
     </template>
 
-    <!-- Business Type -->
-    <template v-if="hasBusinessTypeChanged">
-      <v-divider class="mx-4" />
-      <div class="section-container business-type-summary">
-        <v-row no-gutters>
-          <v-col cols="3">
-            <label><strong>Business Type</strong></label>
-          </v-col>
-
-          <v-col cols="8">
-            <span class="info-text">Changing from a {{ getCorpTypeDescription(originalLegalType) }}</span>
-            &nbsp;
-            <span class="info-text">to a {{getCorpTypeDescription(getEntityType)}}</span>
-
-            <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
-            <div class="confirmed-msg">
-              <v-icon color="success" class="confirmed-icon">mdi-check</v-icon>
-              <span class="info-text text-body-3 confirmed-icon ml-2">
-                The company has completed a set Benefit Company Articles containing a benefit provision, and a copy
-                of these articles has been added to the company's record book.
-              </span>
-            </div>
-          </v-col>
-        </v-row>
-      </div>
-    </template>
-
     <!-- Association Type -->
     <template v-if="hasAssociationTypeChanged">
       <v-divider class="mx-4" />
@@ -64,14 +37,16 @@
           </v-col>
 
           <v-col cols="8">
-            <span class="info-text">Changing from a {{ associationTypeToDescription(originalAssociationType) }}</span>
-            &nbsp;
-            <span class="info-text">to a {{ associationTypeToDescription(getAssociationType) }}</span>
+            <span class="info-text">{{ associationTypeToDescription(getAssociationType) }}</span>
           </v-col>
         </v-row>
       </div>
     </template>
 
+    <!-- Rules and Memorandum file name add here-->
+
+    <!-- Resolution summary section -->
+    <CreateSpecialResolutionSummary />
   </v-card>
 </template>
 
@@ -79,17 +54,17 @@
 // this is a placceholder copied from AlterationSummary, Will add component when working on this page
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
+import { ActionBindingIF, FeesIF } from '@/interfaces/'
 import { DateMixin, SharedMixin, FeeMixin, FilingTemplateMixin, EnumMixin } from '@/mixins/'
-import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
-import { ResolutionDates } from '@/components/Alteration/'
+import { EffectiveDateTime, NameTranslation } from '@/components/common/'
+import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
 
 @Component({
   components: {
     EffectiveDateTime,
     NameTranslation,
-    ResolutionDates,
-    ShareStructures
+    CreateSpecialResolutionSummary
+
   }
 })
 export default class SpecialResolutionSummary extends Mixins(

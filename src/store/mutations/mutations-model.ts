@@ -289,3 +289,7 @@ export const mutateNaics = (state: StateIF, naics: NaicsIF) => {
 export const mutateResolution = (state: StateIF, resolution: CreateResolutionIF) => {
   state.stateModel.createResolution = resolution
 }
+
+export const mutateSpecialResolutionConfirmStateValidity = (state: StateIF, validity: boolean) => {
+  state.stateModel.validationFlags.flagsReviewCertify.isValidSpecialResolutionConfirm = validity
+}
