@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="special-resolution-summary">
     <v-divider class="mx-4" />
     <section id="resolution-date-section" class="section-container">
       <header id="resolution-date-header" class="mt-3">
@@ -150,7 +150,7 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
   get signingParty (): string {
     if (this.getcreateResolution.signatory) {
       const { givenName, additionalName = '', familyName } = this.getcreateResolution.signatory
-      if (additionalName !== '') {
+      if (additionalName !== null && additionalName !== '') {
         return `${givenName} ${additionalName} ${familyName}`
       }
       return `${givenName} ${familyName}`
@@ -197,6 +197,7 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
 ::v-deep .chk-resolution {
   label {
     font-weight: normal;
+    color: $gray9;
   }
 }
 </style>

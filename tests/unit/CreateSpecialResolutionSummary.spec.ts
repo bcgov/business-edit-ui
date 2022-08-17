@@ -67,7 +67,7 @@ describe('Special Resolution Summary component', () => {
   it('renders the Resolution Values from store', async () => {
     expect(wrapper.find('.resolution-date').text()).toContain('August 2, 2022')
     expect(wrapper.find('.resolution-text').text()).toContain('Test Resolution')
-    expect(wrapper.find('.siging-party').text()).toContain('User  One')
+    expect(wrapper.find('.siging-party').text()).toContain('User One')
     expect(wrapper.find('.siging-date').text()).toContain('August 4, 2022')
   })
 
