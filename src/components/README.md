@@ -3,7 +3,6 @@
 `components/Alteration/` contains components used only by alteration filings
 `components/Change/` contains components used only by change filings
 `components/common/` contains components used by multiple filing types
-`components/Correction/` contains components used only by correction filings
 
 # WARNING
 

@@ -199,7 +199,7 @@
     </div>
 
     <!-- Name Translation(s) (alterations and BEN corrections only) -->
-    <div v-if="isAlterationFiling || isBenIaCorrectionFiling"
+    <div v-if="isAlterationFiling || isBenCorrectionFiling"
       id="name-translate-section"
       class="section-container"
       :class="{'invalid-section': invalidTranslationSection}"
@@ -258,7 +258,7 @@
     </template>
 
     <!-- Recognition Date and Time (alterations and BEN corrections only) -->
-    <template v-if="isAlterationFiling || isBenIaCorrectionFiling">
+    <template v-if="isAlterationFiling || isBenCorrectionFiling">
       <v-divider class="mx-4 my-1" />
 
       <div class="section-container">
@@ -351,7 +351,7 @@ export default class YourCompany extends Mixins(
   @Getter getBusinessContact!: ContactPointIF
   @Getter isEntityTypeFirm!: boolean
   @Getter isEntityTypeCP!: boolean
-  @Getter isBenIaCorrectionFiling!: boolean
+  @Getter isBenCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
   @Getter getAssociationType!: AssociationTypes
@@ -462,7 +462,7 @@ export default class YourCompany extends Mixins(
 
   /** The recognition date or business start date string. */
   get recognitionDateTime (): string {
-    if (this.isBenIaCorrectionFiling) {
+    if (this.isBenCorrectionFiling) {
       if (this.getBusinessFoundingDate) {
         return this.apiToPacificDateTime(this.getBusinessFoundingDate)
       } else if (this.getCorrectedFilingDate) {

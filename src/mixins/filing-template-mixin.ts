@@ -57,9 +57,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter isEntityTypeCP!: boolean
   @Getter isEntityTypeSP!: boolean
   @Getter isEntityTypeGP!: boolean
-  @Getter isCorrectedIncorporationApplication!: boolean
-  @Getter isCorrectedRegistration!: boolean
-  @Getter isCorrectedChangeReg!: boolean
+  @Getter isBenCorrectionFiling!: boolean
+  @Getter isFirmCorrectionFiling!: boolean
   @Getter isClientErrorCorrection!: boolean
   @Getter getAssociationType!: AssociationTypes
   @Getter hasAssociationTypeChanged!: boolean
@@ -92,6 +91,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Action setFileNumber!: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
 
+  /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
     const correctedFilingName = this.filingTypeToName(this.getCorrectedFilingType)
     return `Correction for ${correctedFilingName} filed on ${this.correctedFilingDate}`
@@ -107,7 +107,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    * @returns the correction filing body
    */
   buildCorrectionFiling (isDraft: boolean): CorrectionFilingIF {
-    // Build correction filing (common data)
+    // build correction filing (common data)
     let filing: CorrectionFilingIF = {
       header: {
         name: FilingTypes.CORRECTION,
@@ -141,10 +141,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       // make a copy so we don't change original array
       let parties = cloneDeep(this.getOrgPeople)
 
-      // add completing party (client error correction only)
+      // add completing party (client error corrections only)
       if (this.isClientErrorCorrection) {
         parties = this.addCompletingParty(parties)
       }
+
+      // prepare parties
+      parties = isDraft ? parties : this.prepareParties(parties)
 
       // fix schema issues
       parties = this.fixPartySchemaIssues(parties)
@@ -152,37 +155,16 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       filing.correction.parties = parties
     }
 
-    // add in Incorporation Application data
-    // *** FUTURE: change this to "if BEN correction"
-    if (this.isCorrectedIncorporationApplication) {
-      const nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
-      const shareClasses = isDraft ? this.getShareClasses : this.prepareShareClasses()
-      const parties = isDraft ? this.getOrgPeople : this.prepareParties()
-
-      filing.correction.nameTranslations = nameTranslations
-      filing.correction.shareStructure = { shareClasses }
-
-      // *** FUTURE: save this data in correction object instead
-      // populate the incorporation application object (for the Filer to process)
-      filing.incorporationApplication = {
-        contactPoint: this.getContactPoint,
-        nameRequest: {
-          legalType: this.getEntityType,
-          legalName: this.getNameRequestLegalName,
-          nrNumber: this.getNameRequestNumber
-        },
-        nameTranslations: nameTranslations,
-        offices: this.getOfficeAddresses,
-        parties,
-        shareStructure: { shareClasses }
+    // add in data specific to BEN corrections
+    if (this.isBenCorrectionFiling) {
+      filing.correction.nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
+      filing.correction.shareStructure = {
+        shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses()
       }
-
-      // *** FUTURE: do we need a correction business object here?
     }
 
-    // add in Registration / Change of Registration data
-    // *** FUTURE: change this to "if firm correction"
-    if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
+    // add in data specific to firm corrections
+    if (this.isFirmCorrectionFiling) {
       filing.correction.business.naics = {
         naicsCode: this.getCurrentNaics.naicsCode || undefined, // don't include if empty
         naicsDescription: this.getCurrentNaics.naicsDescription
@@ -192,7 +174,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       }
     }
 
-    // Include Staff Payment into the Correction filing
+    // build Staff Payment into the Correction filing
     filing = this.buildStaffPayment(filing)
 
     return filing
@@ -274,10 +256,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
     }
 
-    // Include Staff Payment into the Alteration filing
+    // Build Staff Payment into the Alteration filing
     filing = this.buildStaffPayment(filing)
 
-    // Sets Folio number if a transactional folio number was entered
+    // Build Folio number if a transactional folio number was entered
     filing = this.buildFolioNumber(filing)
 
     return filing
@@ -472,7 +454,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       filing.conversion.parties = parties
     }
 
-    // Include Staff Payment into the Conversion filing
+    // Build Staff Payment into the Conversion filing
     filing = this.buildStaffPayment(filing)
 
     return filing
@@ -491,10 +473,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // store Entity Snapshot
     this.setEntitySnapshot(entitySnapshot)
 
-    // *** FUTURE: remove this fallback when Filings UI provides this value
-    if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.STAFF
+    // safety check (should never happen)
+    // this is a good fallback as it shows a more complete filing than STAFF
+    // if this is wrong then staff can delete and recreate this filing
+    if (!filing.correction.type) filing.correction.type = CorrectionErrorTypes.CLIENT
 
-    // Ensures startDate isn't undefined, otherwise its getter is not reactive
+    // ensure Start Date isn't undefined, otherwise its getter will not be reactive
     if (!filing.correction.startDate) {
       filing.correction.startDate = null
     }
@@ -502,25 +486,22 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // store Correction Information
     this.setCorrectionInformation(cloneDeep(filing.correction))
 
-    // store Business Information for corrected Incorporation Application
-    // *** FUTURE: change this to "if BEN correction"
-    if (this.isCorrectedIncorporationApplication) {
+    // store Business Information for BEN corrections
+    if (this.isBenCorrectionFiling) {
       this.setBusinessInformation({ ...filing.business })
     }
 
-    // store Business Information for corrected Registration or Change of Registration
-    // *** FUTURE: change this to "if firm correction"
-    if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
+    // store Business Information for firm corrections
+    if (this.isFirmCorrectionFiling) {
       this.setBusinessInformation({
         ...entitySnapshot.businessInfo,
         ...filing.correction.business
       })
     }
 
-    // store NAICS for corrected Registration or Change of Registration
-    // must come after business information
-    // *** FUTURE: change this to "if firm correction"
-    if (this.isCorrectedRegistration || this.isCorrectedChangeReg) {
+    // store NAICS for firm corrections
+    // NB: must come after business information
+    if (this.isFirmCorrectionFiling) {
       if (filing.correction.business?.naics) {
         this.setNaics({ ...filing.correction.business.naics })
       } else {
@@ -541,8 +522,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       }
     ))
 
-    // store Name Translations
-    if (this.isCorrectedIncorporationApplication) {
+    // store Name Translations (BEN corrections only)
+    if (this.isBenCorrectionFiling) {
       this.setNameTranslations(cloneDeep(
         this.mapNameTranslations(filing.correction.nameTranslations) ||
         this.mapNameTranslations(entitySnapshot.nameTranslations) ||
@@ -566,8 +547,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(cloneDeep(orgPersons))
 
-    // store Share Classes and Resolution Dates
-    if (this.isCorrectedIncorporationApplication) {
+    // store Share Classes and Resolution Dates (BEN corrections only)
+    if (this.isBenCorrectionFiling) {
       this.setShareClasses(cloneDeep(
         filing.correction.shareStructure?.shareClasses ||
         entitySnapshot.shareStructure.shareClasses
@@ -766,7 +747,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     })
 
     // store NAICS
-    // must come after business information
+    // NB: must come after business information
     if (filing.changeOfRegistration.business.naics) {
       this.setNaics({ ...filing.changeOfRegistration.business.naics })
     }
@@ -840,7 +821,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     })
 
     // store NAICS
-    // must come after business information
+    // NB: must come after business information
     if (filing.conversion.business.naics) {
       this.setNaics({ ...filing.conversion.business.naics })
     }

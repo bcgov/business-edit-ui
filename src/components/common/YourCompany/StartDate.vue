@@ -113,12 +113,10 @@ import { ActionBindingIF } from '@/interfaces'
 })
 export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   // Global getters
-  @Getter isBenIaCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter hasBusinessStartDateChanged!: boolean
   @Getter getCorrectionStartDate!: string
   @Getter getBusinessFoundingDate!: string // actually date-time
-  @Getter getCurrentDate!: string
   @Getter getCurrentJsDate!: Date
 
   // Global setter

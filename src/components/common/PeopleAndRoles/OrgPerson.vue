@@ -237,7 +237,7 @@
               </article>
 
               <!-- Roles (BEN corrections only) -->
-              <article v-if="isBenIaCorrectionFiling" class="roles mt-6">
+              <article v-if="isBenCorrectionFiling" class="roles mt-6">
                 <label class="sub-header">Roles</label>
                 <v-row class="roles-row mt-4">
                   <v-col cols="4" class="mt-0" v-if="isPerson">
@@ -376,7 +376,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   // Global getter
   @Getter getCurrentDate!: string
   @Getter getResource!: ResourceIF
-  @Getter isBenIaCorrectionFiling!: boolean
+  @Getter isBenCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter isEntityTypeFirm!: boolean
   @Getter isRoleStaff!: boolean
@@ -516,7 +516,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     if (this.isFirmConversionFiling) {
       return true
     }
-    if (this.isBenIaCorrectionFiling) {
+    if (this.isBenCorrectionFiling) {
       return true
     }
     if (this.isFirmCorrectionFiling) {
@@ -545,8 +545,8 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       // can add proprietor or partner
       return (this.isNew && (this.isProprietor || this.isPartner))
     }
-    if (this.isBenIaCorrectionFiling) {
-      // BEN IA corrections don't use this component
+    if (this.isBenCorrectionFiling) {
+      // BEN corrections don't use this component
       return false
     }
     if (this.isFirmCorrectionFiling) {
@@ -698,7 +698,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       }
       person.deliveryAddress = { ...this.inProgressDeliveryAddress }
     }
-    if (this.isBenIaCorrectionFiling) {
+    if (this.isBenCorrectionFiling) {
       person.roles = this.setPersonRoles(this.orgPerson)
     } else {
       person.roles = this.orgPerson.roles

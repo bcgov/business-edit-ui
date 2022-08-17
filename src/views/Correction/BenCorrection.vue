@@ -25,15 +25,21 @@
 
     <ShareStructures class="mt-10" />
 
-    <CompletingParty class="mt-10" sectionNumber="1." />
+    <Detail
+      class="mt-10"
+      sectionNumber="1."
+      validate="true"
+    />
 
-    <Detail class="mt-10" sectionNumber="2." validate="true" />
-
-    <CertifySection class="mt-10" sectionNumber="3." validate="true" />
+    <CertifySection
+      class="mt-10"
+      sectionNumber="2."
+      validate="true"
+    />
 
     <StaffPayment
       class="mt-10"
-      sectionNumber="4."
+      sectionNumber="3."
       @haveChanges="onStaffPaymentChanges()"
     />
   </section>
@@ -41,20 +47,17 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
-import { CompletingParty } from '@/components/Correction/'
+import { Action } from 'vuex-class'
 import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { AuthServices, LegalServices } from '@/services/'
-import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF } from '@/interfaces/'
 import { BenefitCompanyStatementResource } from '@/resources/Correction/'
 
 @Component({
   components: {
     CertifySection,
-    CompletingParty,
     Detail,
     PeopleAndRoles,
     ShareStructures,
@@ -93,11 +96,11 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMix
       // safety check
       if (!this.correctionFiling) throw (new Error('Missing correction filing. Try reloading the page.'))
 
-      // fetch business snapshot
-      const businessSnapshot = await this.fetchBusinessSnapshot()
+      // fetch entity snapshot
+      const entitySnapshot = await this.fetchEntitySnapshot()
 
-      // parse draft correction filing and business snapshot into store
-      this.parseCorrectionFiling(this.correctionFiling, businessSnapshot)
+      // parse draft correction filing and entity snapshot into store
+      this.parseCorrectionFiling(this.correctionFiling, entitySnapshot)
 
       // set the resources
       this.setResource(this.correctionResource)
@@ -116,8 +119,8 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMix
     this.$nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
-  /** Fetches the business snapshot. */
-  private async fetchBusinessSnapshot (): Promise<EntitySnapshotIF> {
+  /** Fetches the entity snapshot. */
+  private async fetchEntitySnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
       LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),

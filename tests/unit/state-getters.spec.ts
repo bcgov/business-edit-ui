@@ -225,7 +225,7 @@ describe('Alteration getters', () => {
   })
 })
 
-describe('BEN IA correction getters', () => {
+describe('BEN correction getters', () => {
   let vm: any
 
   const newAddress = {
