@@ -274,6 +274,6 @@ export const setResolution = ({ commit }, resolution: CreateResolutionIF) => {
   commit('mutateResolution', resolution)
 }
 
-export const setSpecialResolutionConfirmStateValidity: ActionIF = ({ commit }, validity): void => {
+export const setSpecialResolutionConfirmStateValidity: ActionIF = ({ commit }, validity: boolean): void => {
   commit('mutateSpecialResolutionConfirmStateValidity', validity)
 }
