@@ -30,7 +30,7 @@
         <section class="mt-6">
           <p id="intro-text">
             Changes were made to your business information that require a filing.
-            Review and certify the changes you are about the make to your business.
+            Review and certify the changes you are about to make to your business.
           </p>
         </section>
 
