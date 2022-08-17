@@ -46,10 +46,7 @@
     <!-- Rules and Memorandum file name add here-->
 
     <!-- Resolution summary section -->
-    <template>
-       <CreateSpecialResolutionSummary />
-    </template>
-
+    <CreateSpecialResolutionSummary />
   </v-card>
 </template>
 

@@ -13,8 +13,6 @@ const vuetify = new Vuetify({})
 describe('Special Resolution Summary component', () => {
   let wrapper: any
   let store: any = getVuexStore()
-  //   sessionStorage.setItem('BASE_URL', 'http://localhost:8080/basePath/CP1002551/')
-  //   sessionStorage.setItem('BUSINESS_ID', 'CP1002551')
 
   const entitySnapshot = {
     businessInfo: {
@@ -31,8 +29,6 @@ describe('Special Resolution Summary component', () => {
 
   beforeAll(() => {
     // init store
-    // store.state.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
-    // store.state.stateModel.tombstone.currentDate = '2021-03-01'
     store.state.stateModel.entitySnapshot = entitySnapshot
     store.state.stateModel.createResolution = {
       resolution: 'Test Resolution',
@@ -45,7 +41,6 @@ describe('Special Resolution Summary component', () => {
 
   beforeEach(() => {
     // Set Original business Data
-    // store.state.resourceModel = CooperativeResource
     store.state.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
     store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
     store.state.stateModel.summaryMode = false
