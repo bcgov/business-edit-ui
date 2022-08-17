@@ -174,7 +174,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       }
     }
 
-    // build Staff Payment into the Correction filing
+    // build Staff Payment into the filing
     filing = this.buildStaffPayment(filing)
 
     return filing
@@ -252,11 +252,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       filing.header.effectiveDate = effectiveDateApi // in UTC
     }
 
+    // Set Document Optional Email if there is one
     if (this.getDocumentOptionalEmail) {
       filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
     }
 
-    // Build Staff Payment into the Alteration filing
+    // Build Staff Payment into the filing
     filing = this.buildStaffPayment(filing)
 
     // Build Folio number if a transactional folio number was entered
@@ -382,6 +383,23 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       filing.changeOfRegistration.parties = parties
     }
 
+    // Apply Court Order ONLY when it is required and applied
+    if (this.getHasPlanOfArrangement || this.getFileNumber) {
+      filing.changeOfRegistration.courtOrder = {
+        fileNumber: this.getFileNumber,
+        effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : null,
+        hasPlanOfArrangement: this.getHasPlanOfArrangement
+      }
+    }
+
+    // Set Document Optional Email if there is one
+    if (this.getDocumentOptionalEmail) {
+      filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
+    }
+
+    // Build Staff Payment into the filing
+    filing = this.buildStaffPayment(filing)
+
     // Sets Folio number if a transactional folio number was entered
     filing = this.buildFolioNumber(filing)
 
@@ -454,7 +472,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       filing.conversion.parties = parties
     }
 
-    // Build Staff Payment into the Conversion filing
+    // Build Staff Payment into the filing
     filing = this.buildStaffPayment(filing)
 
     return filing
@@ -656,7 +674,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     }
 
     // store Document Optional Email
-    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
+    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail || '')
 
     // store Effective Date
     this.setEffectiveDateTimeString(filing.header.effectiveDate)
@@ -725,7 +743,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     }
 
     // store Document Optional Email
-    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
+    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail || '')
   }
 
   /**
@@ -798,7 +816,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     }
 
     // store Document Optional Email
-    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail)
+    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail || '')
+
+    // store File Number and POA
+    this.setFileNumber(filing.changeOfRegistration.courtOrder?.fileNumber)
+    this.setHasPlanOfArrangement(filing.changeOfRegistration.courtOrder?.hasPlanOfArrangement)
+
+    // store Staff Payment
+    this.storeStaffPayment(filing)
   }
 
   /**
@@ -1080,7 +1105,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    * Builds Staff Payment data into the filing.
    * @param filing the filing
    */
-  private buildStaffPayment (filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF): any {
+  private buildStaffPayment (
+    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF | ChgRegistrationFilingIF
+  ): any {
     // Populate Staff Payment according to payment option
     switch (this.getStaffPayment.option) {
       case StaffPaymentOptions.FAS:
@@ -1111,7 +1138,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    * Parses Staff Payment data into store.
    * @param filing the filing to parse
    */
-  private storeStaffPayment (filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF): void {
+  private storeStaffPayment (
+    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF | ChgRegistrationFilingIF
+  ): void {
     // Parse staff payment
     if (filing.header.routingSlipNumber) {
       this.setStaffPayment({

@@ -110,14 +110,11 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
 import { SpecialResolutionSummary, CreateSpecialResolution } from '@/components/SpecialResolution'
-import { CertifySection, CurrentDirectors, DocumentsDelivery,
-  StaffPayment, TransactionalFolioNumber, YourCompany, CompletingParty }
-  from '@/components/common/'
-import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
+import { CertifySection, CurrentDirectors, DocumentsDelivery, StaffPayment, TransactionalFolioNumber,
+  YourCompany, CompletingParty } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, EntitySnapshotIF, FeesIF, FilingDataIF, FlagsReviewCertifyIF, ResourceIF }
-  from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF } from '@/interfaces/'
 import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { CooperativeResource } from '@/resources/SpecialResolution/'
@@ -126,7 +123,6 @@ import { CooperativeResource } from '@/resources/SpecialResolution/'
   components: {
     SpecialResolutionSummary,
     CertifySection,
-    CourtOrderPoaShared,
     CurrentDirectors,
     DocumentsDelivery,
     StaffPayment,
@@ -358,15 +354,5 @@ export default class SpecialResolution extends Mixins(
 <style lang="scss" scoped>
 #done-button {
   width: 10rem;
-}
-
-// fix hard-coded whitespace inside shared component
-// we want the same padding as "section-container py-6"
-::v-deep #court-order {
-  margin-top: 0 !important;
-  padding-top: 0.5rem !important;
-  padding-right: 1.875rem !important;
-  padding-bottom: 1.5rem !important;
-  padding-left: 0.375rem !important;
 }
 </style>

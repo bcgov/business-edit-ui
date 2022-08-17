@@ -11,7 +11,6 @@ Vue.use(Vuetify)
 let vuetify = new Vuetify({})
 
 const localVue = createLocalVue()
-const courtOrderNumber = '#court-order-number-input'
 
 localVue.use(VueRouter)
 
