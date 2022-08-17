@@ -8,8 +8,8 @@
         </header>
 
         <section class="mt-6">
-          You are legally obligated to keep your company information up to date. Necessary fees
-          will be applied as updates are made.
+          You are legally obligated to keep your company information up to date. Necessary fees will be
+          applied as updates are made.
         </section>
 
         <YourCompany class="mt-10" />
@@ -31,9 +31,9 @@
 
         <section class="mt-6">
           <p id="intro-text">
-            Review and certify the changes you are about to make to your company. Certain changes require an Alteration
-            Notice which will incur a {{filingFeesPrice}} fee. Choosing an alteration date and time in the future will
-            incur an additional {{futureEffectiveFeesPrice}} fee.
+            Review and certify the changes you are about to make to your company. Certain changes require
+            an Alteration Notice which will incur a {{filingFeesPrice}} fee. Choosing an alteration date
+            and time in the future will incur an additional {{futureEffectiveFeesPrice}} fee.
           </p>
         </section>
 
@@ -64,27 +64,13 @@
           :disableEdit="!isRoleStaff"
         />
 
-        <!-- STAFF ONLY: Court Order and Plan of Arrangement -->
+        <!-- STAFF ONLY: Court Order/Plan of Arrangement and Staff Payment -->
         <template v-if="isRoleStaff">
-          <h2 class="mt-10">{{showTransactionalFolioNumber ? '4.' : '3.'}} Court Order and Plan of Arrangement</h2>
-          <div class="py-4">
-            If this filing is pursuant to a court order, enter the court order number. If this
-            filing is pursuant to a plan of arrangement, enter the court order number and select
-            Plan of Arrangement.
-          </div>
-
-          <div :class="{'invalid-section': invalidCourtOrder}">
-            <CourtOrderPoaShared
-              id="court-order"
-              :autoValidation="getAppValidate"
-              :draftCourtOrderNumber="getFileNumber"
-              :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
-              :invalidSection="invalidCourtOrder"
-              @emitCourtNumber="setFileNumber($event)"
-              @emitPoa="setHasPlanOfArrangement($event)"
-              @emitValid="setValidCourtOrder($event)"
-            />
-          </div>
+          <CourtOrderPoa
+            class="mt-10"
+            :sectionNumber="showTransactionalFolioNumber ? '4.' : '3.'"
+            :autoValidation="getAppValidate"
+          />
 
           <StaffPayment
             class="mt-10"
@@ -128,18 +114,14 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
-import { CertifySection, CurrentDirectors, DocumentsDelivery,
-  ShareStructures, StaffPayment, TransactionalFolioNumber, YourCompany }
-  from '@/components/common/'
-import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
+import { CertifySection, CourtOrderPoa, CurrentDirectors, DocumentsDelivery, ShareStructures, StaffPayment,
+  TransactionalFolioNumber, YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF }
   from '@/interfaces/'
-import { FilingCodes, FilingStatus } from '@/enums/'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { cloneDeep } from 'lodash'
 import { BenefitCompanyResource } from '@/resources/Alteration/'
 
 @Component({
@@ -147,7 +129,7 @@ import { BenefitCompanyResource } from '@/resources/Alteration/'
     AlterationSummary,
     Articles,
     CertifySection,
-    CourtOrderPoaShared,
+    CourtOrderPoa,
     CurrentDirectors,
     DocumentsDelivery,
     ShareStructures,
@@ -175,7 +157,6 @@ export default class Alteration extends Mixins(
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action setValidCourtOrder!: ActionBindingIF
   @Action setResource!: ActionBindingIF
 
   /** Whether App is ready. */
@@ -195,11 +176,6 @@ export default class Alteration extends Mixins(
   /** True if user is authenticated. */
   get isAuthenticated (): boolean {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
-  }
-
-  /** Check validity state, only when prompted by app. */
-  get invalidCourtOrder (): boolean {
-    return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
   }
 
   /** The resource file for an alteration filing. */
@@ -350,15 +326,5 @@ export default class Alteration extends Mixins(
 <style lang="scss" scoped>
 #done-button {
   width: 10rem;
-}
-
-// fix hard-coded whitespace inside shared component
-// we want the same padding as "section-container py-6"
-::v-deep #court-order {
-  margin-top: 0 !important;
-  padding-top: 0.5rem !important;
-  padding-right: 1.875rem !important;
-  padding-bottom: 1.5rem !important;
-  padding-left: 0.375rem !important;
 }
 </style>

@@ -8,8 +8,8 @@
         </header>
 
         <section class="mt-6">
-          You must promptly file updates to your business information. Necessary fees will be applied as updates are
-          made.
+          You must promptly file updates to your business information. Necessary fees will be applied as
+          updates are made.
         </section>
 
         <YourCompany class="mt-10" />
@@ -27,8 +27,8 @@
 
         <section class="mt-6">
           <p id="intro-text">
-            Changes were made to your business information that require a filing. Review and certify the changes you
-            are about the make to your business.
+            Changes were made to your business information that require a filing. Review and certify the
+            changes you are about the make to your business.
           </p>
         </section>
 
@@ -64,9 +64,10 @@
           :disableEdit="!isRoleStaff"
         />
 
+        <!-- STAFF ONLY: Court Order/Plan of Arrangement and Staff Payment -->
         <template v-if="isRoleStaff">
           <CourtOrderPoa
-            class="'mt-10"
+            class="mt-10"
             :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
             :autoValidation="getAppValidate"
           />
@@ -88,11 +89,11 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { getFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
-import { CertifySection, CompletingParty, DocumentsDelivery, PeopleAndRoles, YourCompany, StaffPayment,
-  CourtOrderPoa, TransactionalFolioNumber } from '@/components/common/'
+import { CertifySection, CompletingParty, CourtOrderPoa, DocumentsDelivery, PeopleAndRoles, StaffPayment,
+  TransactionalFolioNumber, YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, EmptyFees, EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Change/'

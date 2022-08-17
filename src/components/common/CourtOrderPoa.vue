@@ -12,6 +12,7 @@
       <CourtOrderPoaShared
         id="court-order"
         :autoValidation="getAppValidate"
+        :draftCourtOrderNumber="getFileNumber"
         :hasDraftPlanOfArrangement="getHasPlanOfArrangement"
         :invalidSection="invalidCourtOrder"
         @emitCourtNumber="setFileNumber($event)"
@@ -40,6 +41,7 @@ export default class CourtOrderPoa extends Vue {
   /** Store getters */
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getAppValidate!: boolean
+  @Getter getFileNumber!: string
   @Getter getHasPlanOfArrangement!: boolean
 
   /** Global actions */
@@ -53,3 +55,15 @@ export default class CourtOrderPoa extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+// fix hard-coded whitespace inside shared component
+// we want the same padding as "section-container py-6"
+#court-order {
+  margin-top: 0 !important;
+  padding-top: 0.5rem !important;
+  padding-right: 1.875rem !important;
+  padding-bottom: 1.5rem !important;
+  padding-left: 0.375rem !important;
+}
+</style>

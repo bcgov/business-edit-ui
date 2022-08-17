@@ -1,4 +1,5 @@
-import { AddressesIF, FilingBusinessIF, FilingHeaderIF, NameRequestIF, OrgPersonIF } from '@/interfaces/'
+import { AddressesIF, CourtOrderIF, FilingBusinessIF, FilingHeaderIF, NameRequestIF, OrgPersonIF }
+  from '@/interfaces/'
 import { ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
 
 //
@@ -9,7 +10,7 @@ export interface ChgRegistrationIF {
     identifier: string
     naics?: NaicsIF
   }
-  courtOrder?: string
+  courtOrder?: CourtOrderIF
   contactPoint: ContactPointIF
   nameRequest?: NameRequestIF
   offices?: AddressesIF
