@@ -604,13 +604,14 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   }
 
   /** Called to navigate to dashboard. */
-  private async goToDashboard (force: boolean = false): Promise<void> {
+  private async goToDashboard (force = false): Promise<void> {
+    const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL') + this.getBusinessId
+
     // check if there are no data changes
     if (!this.haveUnsavedChanges || force) {
       // navigate to dashboard
       this.setHaveUnsavedChanges(false)
-      const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-      navigate(dashboardUrl + this.getBusinessId)
+      navigate(dashboardUrl)
       return
     }
 
@@ -628,8 +629,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       // ignore changes
       this.setHaveUnsavedChanges(false)
       // navigate to dashboard
-      const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
-      navigate(dashboardUrl + this.getBusinessId)
+      navigate(dashboardUrl)
     }
   }
 
@@ -798,25 +798,27 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     // if filing is not a draft, proceed with payment
     if (!isDraft && filingComplete) {
       this.setIsFilingPaying(true)
-      const paymentToken = filingComplete?.header?.paymentToken
-      if (paymentToken) {
+      const paymentToken = filingComplete.header?.paymentToken
+      const filingId = filingComplete.header?.filingId
+
+      if (paymentToken && filingId) {
         const isPaymentActionRequired: boolean = filingComplete.header?.isPaymentActionRequired
-        const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL')
+        const returnUrl = sessionStorage.getItem('DASHBOARD_URL') + this.getBusinessId +
+          `?filing_id=${filingId}`
 
         // if payment action is required, navigate to Pay URL
         if (isPaymentActionRequired) {
           const authUrl = sessionStorage.getItem('AUTH_WEB_URL')
-          const returnUrl = encodeURIComponent(dashboardUrl + this.getBusinessId)
-          const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + returnUrl
+          const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + encodeURIComponent(returnUrl)
           // assume Pay URL is always reachable
           // otherwise user will have to retry payment later
           navigate(payUrl)
         } else {
-          // navigate to Dashboard URL
-          navigate(dashboardUrl + this.getBusinessId)
+          // otherwise go straight to dashboard
+          navigate(returnUrl)
         }
       } else {
-        const error = new Error('Missing Payment Token')
+        const error = new Error('Missing Payment Token or Filing ID')
         this.$root.$emit('save-error-event', error)
       }
       this.setIsFilingPaying(false)
