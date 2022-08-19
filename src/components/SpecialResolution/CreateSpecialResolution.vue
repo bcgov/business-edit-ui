@@ -66,7 +66,7 @@
           <p class="section-description mt-2">
             Enter the date the special resolution passed and the text as it appears on your printed form.
           </p>
-          <v-form v-model="formValid">
+          <v-form v-model="formValid" ref="createSpecialResolutionRef">
           <div class="mt-4" >
             <v-card flat id="resolution-date-card" class="py-8">
               <v-row no-gutters>
@@ -212,6 +212,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   $refs!: {
     resolutionDatePickerRef: DatePickerShared,
     signatureDatePickerRef: DatePickerShared,
+    createSpecialResolutionRef:FormIF
   }
 
   // Date properties
@@ -373,6 +374,15 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     })
     await this.validate()
   }
+
+  /** Set validate on file and pay click. */
+  @Watch('getComponentValidate')
+  protected updateResolutionValidationDetail (): void {
+    this.$refs.createSpecialResolutionRef.validate()
+    this.$refs.resolutionDatePickerRef.validateForm()
+    this.$refs.signatureDatePickerRef.validateForm()
+  }
+
   /** called to store signing party. */
    @Watch('signatory', { deep: true })
   protected async onsignatoryChanged (): Promise<void> {
@@ -455,5 +465,10 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
 }
 .tool-tip-text{
    border-bottom: 1px dashed $gray6;
+}
+
+// this is to show error color for label and placeholder
+::v-deep .invalid-section label.v-label.error--text , .invalid-section label {
+    color: $BCgovInputError !important;
 }
 </style>

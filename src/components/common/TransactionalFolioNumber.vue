@@ -12,7 +12,7 @@
     <div :class="{ 'invalid-section': !sectionValid }">
       <v-card flat class="pt-4 pr-8">
         <v-container>
-          <v-row class="pl-4">
+          <v-row class="ml-5">
             <v-col cols="3" class="px-0">
               <label :class="{ 'error-text': !sectionValid }">
                 <strong>Folio or Reference<br>Number</strong>
