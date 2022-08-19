@@ -378,12 +378,9 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   /** Set validate on file and pay click. */
   @Watch('getComponentValidate')
   protected updateResolutionValidationDetail (): void {
-    // don't call validation during Jest tests because we are setting app valid
-    if (!this.isJestRunning) {
-      this.$refs.createSpecialResolutionRef.validate()
-      this.$refs.resolutionDatePickerRef.validateForm()
-      this.$refs.signatureDatePickerRef.validateForm()
-    }
+    this.$refs.createSpecialResolutionRef.validate()
+    this.$refs.resolutionDatePickerRef.validateForm()
+    this.$refs.signatureDatePickerRef.validateForm()
   }
 
   /** called to store signing party. */
@@ -470,12 +467,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
    border-bottom: 1px dashed $gray6;
 }
 
-#create-special-resolution{
-.invalid-section{
-  ::v-deep label.v-label.error--text.theme--light ,label {
+::v-deep .invalid-section label.v-label.error--text ,.invalid-section label{
     color: $BCgovInputError !important;
-  }
-
-  }
 }
 </style>
