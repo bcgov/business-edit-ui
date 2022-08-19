@@ -467,7 +467,8 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
    border-bottom: 1px dashed $gray6;
 }
 
-::v-deep .invalid-section label.v-label.error--text ,.invalid-section label{
+// this is to show error color for label and placeholder
+::v-deep .invalid-section label.v-label.error--text , .invalid-section label {
     color: $BCgovInputError !important;
 }
 </style>
