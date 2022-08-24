@@ -7,7 +7,7 @@ import ConversionNOB from '@/components/Conversion/ConversionNOB.vue'
 // for some reason, ChangeBusinessType cannot be imported by its filename
 // also, it needs to precede the other imports
 // (otherwise a bunch of tests in this file fail)
-import { AssociationType, ChangeBusinessType } from '@/components/common/YourCompany'
+import { AssociationType, ChangeBusinessType, NatureOfBusiness } from '@/components/common/YourCompany'
 
 import CorrectNameOptions from '@/components/common/YourCompany/CompanyName/CorrectNameOptions.vue'
 import FolioInformation from '@/components/common/YourCompany/FolioInformation.vue'
@@ -276,7 +276,7 @@ describe('YourCompany in a SP correction', () => {
     expect(wrapper.findComponent(ChangeBusinessType).exists()).toBeTruthy()
     expect(wrapper.findComponent(BusinessContactInfo).exists()).toBeTruthy()
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBeTruthy()
-    expect(wrapper.findComponent(ConversionNOB).exists()).toBeTruthy()
+    expect(wrapper.findComponent(NatureOfBusiness).exists()).toBeTruthy()
     expect(wrapper.findComponent(CorrectNameOptions).exists()).toBeFalsy()
     expect(wrapper.find('#business-start-date').exists()).toBeTruthy()
   })
@@ -304,12 +304,13 @@ describe('YourCompany in a SP correction', () => {
 
   it('renders the editing component for Nature of Business', async () => {
     // verify the correct button is available
-    expect(wrapper.find('#nob-change-btn').exists()).toBeTruthy()
-    expect(wrapper.find('#naics-summary').text()).toBe('(Not entered)')
-    const correctBtn = wrapper.find('#nob-change-btn')
-    await correctBtn.trigger('click')
+    const natureOfBusiness = wrapper.find('#nature-of-business')
+    expect(natureOfBusiness.exists()).toBeTruthy()
+    expect(natureOfBusiness.findAll('label').at(0).text()).toBe('Nature of Business')
+    expect(natureOfBusiness.findAll('span').at(0).text()).toBe('Statistics Canada website')
+
     const textField = wrapper.find('#nature-of-business').findAll('p')
-    expect(textField.at(0).text()).toContain('Provide a brief description')
+    expect(textField.at(0).text()).toContain('Enter one or more keywords')
   })
 
   it('renders the editing component for Business Address', async () => {
