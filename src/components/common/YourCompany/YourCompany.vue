@@ -300,6 +300,17 @@
         />
       </div>
     </template>
+
+    <!-- Business Start Date (changes, conversions and firm corrections only) -->
+    <template v-if="isBenCorrectionFiling">
+      <v-divider class="mx-4 my-1" />
+
+      <ResolutionDate
+        class="section-container"
+        :class="{'invalid-section': invalidResolutionDate}"
+        :invalidSection="invalidResolutionDate"
+      />
+    </template>
   </v-card>
 </template>
 
@@ -310,7 +321,7 @@ import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestAppli
   from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation,
-  CorrectNameOptions, NatureOfBusiness, OfficeAddresses, StartDate } from './'
+  CorrectNameOptions, NatureOfBusiness, OfficeAddresses, StartDate, ResolutionDate } from './'
 import { CommonMixin, SharedMixin, DateMixin, NameRequestMixin } from '@/mixins/'
 import { AssociationTypes, CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -327,7 +338,8 @@ import { ConversionNOB } from '@/components/Conversion'
     OfficeAddresses,
     FolioInformation,
     ConversionNOB,
-    StartDate
+    StartDate,
+    ResolutionDate
   }
 })
 export default class YourCompany extends Mixins(
@@ -405,6 +417,10 @@ export default class YourCompany extends Mixins(
 
   get invalidStartDate (): boolean {
     return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidStartDate)
+  }
+
+  get invalidResolutionDate (): boolean {
+    return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidResolutionDate)
   }
 
   /** The nature of business section validity state (when prompted by app). */

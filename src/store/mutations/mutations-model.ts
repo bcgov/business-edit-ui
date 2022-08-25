@@ -293,3 +293,7 @@ export const mutateResolution = (state: StateIF, resolution: CreateResolutionIF)
 export const mutateSpecialResolutionConfirmStateValidity = (state: StateIF, validity: boolean) => {
   state.stateModel.validationFlags.flagsReviewCertify.isValidSpecialResolutionConfirm = validity
 }
+
+export const mutateCorrectionResolutionDate = (state: StateIF, resolutionDate: string) => {
+  state.stateModel.correctionInformation.startDate = resolutionDate
+}
