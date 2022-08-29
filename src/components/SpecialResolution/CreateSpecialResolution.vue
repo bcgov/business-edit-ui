@@ -219,8 +219,6 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   // Date properties
   protected resolutionDateText = ''
   protected signingDate = ''
-  protected resolutionDateKey = 1
-  protected signingDateKey = 1
 
   readonly MAX_RESOLUTION_TEXT_LENGTH = 1000
   protected resolution = ''
@@ -398,18 +396,6 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     await this.$nextTick()
     await this.validate()
   }
-
-  // /** Define the create resolution locally once the value has been populated in the store */
-  // @Watch('getCreateResolution', { deep: true, immediate: true })
-  // private initializeCreateResolution (newValue: SpecialResolutionIF, oldValue: SpecialResolutionIF) {
-  //   if (!isEqual(newValue, oldValue)) {
-  //     this.signatory = newValue.signatory || { ...EmptyPersonIF }
-  //     this.resolution = newValue.resolution || ''
-  //     this.resolutionDateText = newValue.resolutionDate || ''
-  //     this.signingDate = newValue.signingDate || ''
-  //     console.log('data load')
-  //   }
-  // }
 
   /** called to store component validity to store. */
   protected async validate () {

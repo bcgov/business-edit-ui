@@ -1,13 +1,12 @@
 import { FilingHeaderIF, AlterationIF, BusinessInformationIF, NameRequestIF } from '@/interfaces/'
 import { SpecialResolutionIF } from '@bcrs-shared-components/interfaces'
 
-// Override what's in BCRS Shared Components, no easy way to have them work together unfortunately.
+/** Override what's in BCRS Shared Components, needs to be refactored in the future. */
 export interface ChangeOfNameIF {
   nameRequest: NameRequestIF
 }
 
 /** Interface for data object UI sends to API. */
-// this is may change , it may use alteration name change and special resolution together
 export interface SpecialResolutionFilingIF {
   header: FilingHeaderIF
   business: BusinessInformationIF
