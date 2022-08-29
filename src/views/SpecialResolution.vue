@@ -1,5 +1,5 @@
 <template>
-  <section class="pb-10" id="alteration-view">
+  <section class="pb-10" id="special-resolution-view">
     <!-- Company Information page-->
     <v-slide-x-transition hide-on-leave>
       <div v-if="!isSummaryMode">
@@ -157,6 +157,8 @@ export default class SpecialResolution extends Mixins(
   @Prop({ default: false })
   readonly appReady: boolean
 
+  /** Determines if data is loaded, will trigger loading certain components. */
+  protected loadedData = false
   /** Whether to show the Transactional Folio Number section. */
   get showTransactionalFolioNumber (): boolean {
     return (this.isPremiumAccount && !this.isRoleStaff)
@@ -187,7 +189,7 @@ export default class SpecialResolution extends Mixins(
    * (Business name change, association type change)
    * to add : memorandum, rules */
   get showCreateSpecialResolution (): boolean {
-    return (this.hasBusinessNameChanged || this.hasAssociationTypeChanged)
+    return this.loadedData && (this.hasBusinessNameChanged || this.hasAssociationTypeChanged)
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -347,7 +349,9 @@ export default class SpecialResolution extends Mixins(
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: Boolean = true): void {}
+  private emitHaveData (haveData: Boolean = true): void {
+    this.loadedData = true
+  }
 }
 </script>
 

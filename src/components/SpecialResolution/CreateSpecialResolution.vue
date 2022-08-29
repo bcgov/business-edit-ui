@@ -82,8 +82,8 @@
                     :nudgeRight="40"
                     :nudgeTop="85"
                     :initialValue="resolutionDateText"
-                    :minDate="resolutionDateMinStr"
-                    :maxDate="resolutionDateMaxStr"
+                    :minDate="dateToYyyyMmDd(resolutionDateMin)"
+                    :maxDate="dateToYyyyMmDd(resolutionDateMax)"
                     :inputRules="resolutionDateRules"
                     @emitDateSync="onResolutionDateSync"
                   />
@@ -104,7 +104,7 @@
                               :counter="MAX_RESOLUTION_TEXT_LENGTH"
                               v-model="resolution"
                               :rules="resolutionRules"
-                              @change="onresolutionChanged"
+                              @change="onResolutionChanged"
                   />
                 </v-col>
               </v-row>
@@ -167,8 +167,8 @@
                     :nudgeRight="40"
                     :nudgeTop="85"
                     :initialValue="signingDate"
-                    :minDate="signatureDateMinStr"
-                    :maxDate="signatureDateMaxStr"
+                    :minDate="dateToYyyyMmDd(signatureDateMin)"
+                    :maxDate="dateToYyyyMmDd(signatureDateMax)"
                     :inputRules="signatureDateRules"
                     @emitDateSync="onSigningDateSync"
                   />
@@ -184,11 +184,12 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, HelpSectionIF, ResourceIF,
-  FormIF, SigningPersonIF, EmptySigningPerson, CreateResolutionIF } from '@/interfaces/'
+import { ActionBindingIF, HelpSectionIF, ResourceIF, FormIF, SampleFormIF } from '@/interfaces/'
 import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
+import { SpecialResolutionIF, PersonIF, EmptyPersonIF } from '@bcrs-shared-components/interfaces/'
+import { isEqual } from 'lodash'
 
 @Component({
   components: {
@@ -201,7 +202,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   @Getter getBusinessFoundingDate!: string
   @Getter getCurrentDate!: string
   @Getter getCurrentJsDate!: string
-  @Getter getcreateResolution!: CreateResolutionIF
+  @Getter getCreateResolution!: SpecialResolutionIF
   @Getter getComponentValidate!: boolean
   @Getter getCreateResolutionFormValid!: boolean
 
@@ -212,20 +213,20 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   $refs!: {
     resolutionDatePickerRef: DatePickerShared,
     signatureDatePickerRef: DatePickerShared,
-    createSpecialResolutionRef:FormIF
+    createSpecialResolutionRef: FormIF
   }
 
   // Date properties
   protected resolutionDateText = ''
-  protected signatureDateText = ''
+  protected signingDate = ''
+  protected resolutionDateKey = 1
+  protected signingDateKey = 1
 
   readonly MAX_RESOLUTION_TEXT_LENGTH = 1000
   protected resolution = ''
   protected formValid = false
 
-  protected signatory: SigningPersonIF = null
-
-  protected signingDate = ''
+  protected signatory: PersonIF = EmptyPersonIF
 
   /** Validation rule for individual name fields */
   readonly firstNameRules = this.nameRules('First Name')
@@ -236,9 +237,10 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     return this.getResource.changeData?.specialSpecialResolution?.helpSection || {}
   }
 
-  get getCreateResolutionResource (): any {
+  get getCreateResolutionResource (): SampleFormIF {
     return this.getResource.changeData?.specialSpecialResolution?.sampleFormSection || {}
   }
+
   /** download URL for pdf file */
   get documentURL (): string {
     /**
@@ -258,12 +260,16 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
 
   /** The minimum date that can be entered (can't be earlier than incorporation date ). */
   get resolutionDateMin (): Date {
+    /** TODO: Needs to be after the most recent filing date, I don't think the business founding date is correct
+     * Will be fixed in 13231 */
     return this.apiToDate(this.getBusinessFoundingDate)
   }
+
   /** The minimum date that can be entered (can't be earlier than incorporation date ). */
   get resolutionDateMinStr (): string {
     return this.dateToYyyyMmDd(this.resolutionDateMin)
   }
+
   /** The maximum date that can be entered (today). */
   get resolutionDateMax (): Date {
     return this.yyyyMmDdToDate(this.getCurrentDate)
@@ -288,8 +294,8 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
       (v: string) => !!v || 'Resolution date is required',
       (v: string) =>
 
-        this.isBetweenDates(this.resolutionDateMinStr,
-          this.resolutionDateMaxStr,
+        this.isValidDateRange(this.resolutionDateMin,
+          this.resolutionDateMax,
           v) ||
         `Date should be between ${this.dateToPacificDate(this.resolutionDateMin, true)} and
          ${this.dateToPacificDate(this.resolutionDateMax, true)}`
@@ -300,23 +306,30 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
    * True if date is >= the minimum (ie, today) and <= the maximum (ie, the 10th day).
    * This is used for Vue form validation (in Date Rules above).
    */
-  isBetweenDates (minDate: string, maxDate: string, dateStrToValidate: string): boolean {
+  private isValidDateRange (minDate: Date, maxDate: Date, dateStrToValidate: string): boolean {
     if (!dateStrToValidate) { return true }
-    return (new Date(dateStrToValidate) >= new Date(minDate)) && (new Date(dateStrToValidate) <= new Date(maxDate))
+    // only compare year/month/day (ignore time)
+    let date = new Date(dateStrToValidate)
+    date = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
+    const minDay = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate())
+    const maxDay = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate())
+    return (date >= minDay && date <= maxDay)
   }
+
   /** Called to update resolution date. */
   async onResolutionDateSync (val: string): Promise<void> {
     this.resolutionDateText = val
     this.setResolution({
-      ...this.getcreateResolution,
+      ...this.getCreateResolution,
       resolutionDate: val
     })
     await this.validate()
   }
+
   /** called to add new resolutionDateText. */
-  protected async onresolutionChanged (val: string) {
+  protected async onResolutionChanged (val: string) {
     this.setResolution({
-      ...this.getcreateResolution,
+      ...this.getCreateResolution,
       resolution: val
     })
     await this.validate()
@@ -331,22 +344,12 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   }
 
   /** The minimum date that can be entered (resolution date). */
-  get signatureDateMinStr (): string {
-    return this.dateToYyyyMmDd(this.signatureDateMin)
-  }
-
-  /** The minimum date that can be entered (resolution date). */
   get signatureDateMin (): Date {
     if (this.resolutionDateText) {
       const resolutionDate = this.yyyyMmDdToDate(this.resolutionDateText)
       return resolutionDate
     }
     return this.yyyyMmDdToDate(this.getCurrentDate)
-  }
-
-  /** The maximum date that can be entered (today). */
-  get signatureDateMaxStr (): string {
-    return this.dateToYyyyMmDd(this.signatureDateMax)
   }
 
   /** The maximum date that can be entered (today). */
@@ -359,17 +362,18 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     return [
       (v: string) => !!v || 'Signature date is required',
       (v: string) =>
-        this.isBetweenDates(this.signatureDateMinStr,
-          this.signatureDateMaxStr,
+        this.isValidDateRange(this.signatureDateMin,
+          this.signatureDateMax,
           v) ||
         `Date should be between ${this.dateToPacificDate(this.signatureDateMin, true)} and
          ${this.dateToPacificDate(this.signatureDateMax, true)}`
     ]
   }
+
   /** called to add new signature date  */
   async onSigningDateSync (val: string): Promise<void> {
     this.setResolution({
-      ...this.getcreateResolution,
+      ...this.getCreateResolution,
       signingDate: val
     })
     await this.validate()
@@ -384,10 +388,10 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   }
 
   /** called to store signing party. */
-   @Watch('signatory', { deep: true })
-  protected async onsignatoryChanged (): Promise<void> {
+  @Watch('signatory', { deep: true })
+  protected async onSignatoryChanged (): Promise<void> {
     this.setResolution({
-      ...this.getcreateResolution,
+      ...this.getCreateResolution,
       signatory: this.signatory
     })
     // wait for store update
@@ -395,29 +399,41 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     await this.validate()
   }
 
-   /** called to store component validity to store. */
-   protected async validate () {
-     // wait to reflect validation state
-     await this.$nextTick()
+  // /** Define the create resolution locally once the value has been populated in the store */
+  // @Watch('getCreateResolution', { deep: true, immediate: true })
+  // private initializeCreateResolution (newValue: SpecialResolutionIF, oldValue: SpecialResolutionIF) {
+  //   if (!isEqual(newValue, oldValue)) {
+  //     this.signatory = newValue.signatory || { ...EmptyPersonIF }
+  //     this.resolution = newValue.resolution || ''
+  //     this.resolutionDateText = newValue.resolutionDate || ''
+  //     this.signingDate = newValue.signingDate || ''
+  //     console.log('data load')
+  //   }
+  // }
 
-     // date validation
-     const isResolutionDateValid = this.$refs?.resolutionDatePickerRef?.isDateValid()
-     const isSignatureDateValid = this.$refs?.signatureDatePickerRef?.isDateValid()
+  /** called to store component validity to store. */
+  protected async validate () {
+    // wait to reflect validation state
+    await this.$nextTick()
 
-     const isFormValid = this.formValid && isResolutionDateValid && isSignatureDateValid
-     // setting component validity flag
-     this.setValidComponent({ key: 'isValidCreateSpecialResolution', value: isFormValid })
-   }
+    // date validation
+    const isResolutionDateValid = this.$refs?.resolutionDatePickerRef?.isDateValid()
+    const isSignatureDateValid = this.$refs?.signatureDatePickerRef?.isDateValid()
 
-   /** Set values if exist
-    * while coming back from summary page this form need to show existing values.
-   */
-   protected created () {
-     this.signatory = this.getcreateResolution.signatory || { ...EmptySigningPerson }
-     this.resolution = this.getcreateResolution.resolution || ''
-     this.resolutionDateText = this.getcreateResolution.resolutionDate || ''
-     this.signingDate = this.getcreateResolution.signingDate || ''
-   }
+    const isFormValid = this.formValid && isResolutionDateValid && isSignatureDateValid
+    // setting component validity flag
+    this.setValidComponent({ key: 'isValidCreateSpecialResolution', value: isFormValid })
+  }
+
+  /** Set values if exist
+   * while coming back from summary page this form need to show existing values.
+  */
+  protected created () {
+    this.signatory = this.getCreateResolution.signatory || { ...EmptyPersonIF }
+    this.resolution = this.getCreateResolution.resolution || ''
+    this.resolutionDateText = this.getCreateResolution.resolutionDate || ''
+    this.signingDate = this.getCreateResolution.signingDate || ''
+  }
 }
 </script>
 

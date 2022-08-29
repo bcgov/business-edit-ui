@@ -1,5 +1,5 @@
-import { EmptyNameRequest, StateModelIF, EmptyFees, EmptySigningPerson } from '@/interfaces/'
-import { EmptyContactPoint } from '@bcrs-shared-components/interfaces/'
+import { EmptyNameRequest, StateModelIF, EmptyFees } from '@/interfaces/'
+import { EmptyContactPoint, EmptyPersonIF } from '@bcrs-shared-components/interfaces/'
 import { cloneDeep } from 'lodash'
 
 export const stateModel: StateModelIF = {
@@ -135,7 +135,7 @@ export const stateModel: StateModelIF = {
   feePrices: [cloneDeep(EmptyFees)],
   createResolution: {
     resolution: '',
-    signatory: { ...EmptySigningPerson },
+    signatory: { ...EmptyPersonIF },
     resolutionConfirmed: false
   }
 }

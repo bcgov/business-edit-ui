@@ -1,5 +1,5 @@
 import { CorrectionTypes, NameRequestEntityTypes, NameRequestTypes } from '@/enums/'
-import { HelpSectionIF, FilingDataIF } from '@/interfaces/'
+import { HelpSectionIF, FilingDataIF, SampleFormIF } from '@/interfaces/'
 
 /** Interface to define the resource model example */
 export interface ResourceIF {
@@ -18,9 +18,9 @@ export interface ResourceIF {
       subtitle: string
       helpSection?: HelpSectionIF
     }
-    specialSpecialResolution?:{
+    specialSpecialResolution?: {
       helpSection?: HelpSectionIF,
-      sampleFormSection?: any
+      sampleFormSection?: SampleFormIF
     }
     nameRequestTypes?: Array<NameRequestTypes>
     addressChangeInfo?: string
