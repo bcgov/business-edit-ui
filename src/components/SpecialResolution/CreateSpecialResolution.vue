@@ -188,7 +188,7 @@ import { ActionBindingIF, HelpSectionIF, ResourceIF, FormIF, SampleFormIF } from
 import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
-import { SpecialResolutionIF, PersonIF, EmptyPersonIF } from '@bcrs-shared-components/interfaces/'
+import { SpecialResolutionIF, PersonIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 
 @Component({
@@ -224,7 +224,11 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   protected resolution = ''
   protected formValid = false
 
-  protected signatory: PersonIF = EmptyPersonIF
+  protected signatory: PersonIF = {
+    givenName: '',
+    familyName: '',
+    additionalName: null
+  }
 
   /** Validation rule for individual name fields */
   readonly firstNameRules = this.nameRules('First Name')
@@ -415,7 +419,12 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
    * while coming back from summary page this form need to show existing values.
   */
   protected created () {
-    this.signatory = this.getCreateResolution.signatory || { ...EmptyPersonIF }
+    this.signatory = this.getCreateResolution.signatory ||
+      {
+        givenName: '',
+        familyName: '',
+        additionalName: null
+      }
     this.resolution = this.getCreateResolution.resolution || ''
     this.resolutionDateText = this.getCreateResolution.resolutionDate || ''
     this.signingDate = this.getCreateResolution.signingDate || ''
