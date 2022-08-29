@@ -1,5 +1,5 @@
 <template>
-  <section id="business-start-date">
+  <section id="resolution-date">
     <v-row no-gutters>
       <v-col cols="3" class="pr-2">
         <label :class="{'error-text': invalidSection}">
@@ -27,13 +27,13 @@
           <template v-slot:activator="{ on }">
             <v-icon v-on="on" class="info-icon">mdi-information-outline</v-icon>
           </template>
-          <span>If the business start date is incorrect, it must be corrected through a correction filing.</span>
+          <span>If the resolution date is incorrect, it must be corrected through a correction filing.</span>
         </v-tooltip>
 
         <!-- Edit mode -->
         <template v-if="onEditMode">
           <div cols="12" sm="3" class="pr-4">
-            <label class="start-date-title title-label">Start Date</label>
+            <label class="start-date-title title-label">Special Resolution Date</label>
             <p class="mt-4">
               Enter the start date of the business. The start date can be
               <v-tooltip top max-width="20rem" content-class="top-tooltip" transition="fade-transition">
@@ -47,7 +47,7 @@
               corrected afterwards.
             </p>
             <DatePickerShared
-              title="Start Date"
+              title="Resolution Date"
               nudge-right="80"
               nudge-top="15"
               :minDate="startDateMinStr"
@@ -111,7 +111,7 @@ import { ActionBindingIF } from '@/interfaces'
     DatePickerShared
   }
 })
-export default class StartDate extends Mixins(CommonMixin, DateMixin) {
+export default class ResolutionDate extends Mixins(CommonMixin, DateMixin) {
   // Global getters
   @Getter isBenCorrectionFiling!: boolean
   @Getter hasResolutionDateChanged!: boolean
