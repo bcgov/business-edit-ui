@@ -302,7 +302,6 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     // Input is in the format of MM dd, yyyy - only compare year/month/day (ignore time)
     const utcDateStr = new Date(dateStrToValidate + ' 00:00 UTC').toISOString().split('T')[0]
     const pstDate = this.yyyyMmDdToDate(utcDateStr)
-    console.log(pstDate)
     return (pstDate >= minDate && pstDate <= maxDate)
   }
 
