@@ -85,7 +85,7 @@
                     :minDate="dateToYyyyMmDd(resolutionDateMin)"
                     :maxDate="dateToYyyyMmDd(resolutionDateMax)"
                     :inputRules="resolutionDateRules"
-                    @emitDateSync="onResolutionDateSync"
+                    @emitDateSync="onResolutionDateSync($event)"
                   />
                 </v-col>
               </v-row>
@@ -104,7 +104,7 @@
                               :counter="MAX_RESOLUTION_TEXT_LENGTH"
                               v-model="resolution"
                               :rules="resolutionRules"
-                              @change="onResolutionChanged"
+                              @change="onResolutionChanged($event)"
                   />
                 </v-col>
               </v-row>
@@ -170,7 +170,7 @@
                     :minDate="dateToYyyyMmDd(signatureDateMin)"
                     :maxDate="dateToYyyyMmDd(signatureDateMax)"
                     :inputRules="signatureDateRules"
-                    @emitDateSync="onSigningDateSync"
+                    @emitDateSync="onSigningDateSync($event)"
                   />
                 </v-col>
               </v-row>
