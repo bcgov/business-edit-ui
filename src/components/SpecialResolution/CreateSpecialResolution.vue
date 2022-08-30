@@ -43,13 +43,13 @@
             <v-card flat class="py-8 px-6">
               <div class="d-flex flex-column flex-sm-row justify-center align-center">
                 <img src="@/assets/images/BCRegistries_CoopSpecialResolution-x2.png"
-                  :alt="getSpecialResolutionResource.downloadSampleSpecialResolutionLabel"
+                  :alt="getSpecialResolutionResource.label"
                   slot-scope="" class="preview-image" />
                 <div class="px-8" />
                 <div class="download-link-container py-5">
                   <v-icon color="primary" class="mt-n1">mdi-file-pdf-outline</v-icon>
                   <a :href="documentURL" download class="ml-1">
-                    {{getSpecialResolutionResource.downloadSampleSpecialResolutionLabel}}
+                    {{getSpecialResolutionResource.label}}
                   </a>
                 </div>
               </div>
@@ -184,7 +184,7 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, HelpSectionIF, ResourceIF, FormIF, SampleFormIF } from '@/interfaces/'
+import { ActionBindingIF, HelpSectionIF, ResourceIF, FormIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
 import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
@@ -235,11 +235,11 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   readonly lastNameRules = this.nameRules('Last Name')
 
   get helpSection (): HelpSectionIF {
-    return this.getResource.changeData?.specialSpecialResolution?.helpSection || {}
+    return this.getResource.changeData?.specialResolution?.helpSection || {}
   }
 
-  get getSpecialResolutionResource (): SampleFormIF {
-    return this.getResource.changeData?.specialSpecialResolution?.sampleFormSection || {}
+  get getSpecialResolutionResource (): SpecialResolutionSampleFormIF {
+    return this.getResource.changeData?.specialResolution?.sampleFormSection || {}
   }
 
   /** download URL for pdf file */
@@ -250,7 +250,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
      */
 
     return process.env.BASE_URL +
-      this.getSpecialResolutionResource?.downloadSampleSpecialResolutionPath
+      this.getSpecialResolutionResource?.path
   }
 
   /** The name section validity state (when prompted by app). */
@@ -299,9 +299,11 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
    */
   private isValidDateRange (minDate: Date, maxDate: Date, dateStrToValidate: string): boolean {
     if (!dateStrToValidate) { return true }
-    // only compare year/month/day (ignore time)
-    const date = new Date(dateStrToValidate) // Input is in the format of MM dd, yyyy
-    return (date >= minDate && date <= maxDate)
+    // Input is in the format of MM dd, yyyy - only compare year/month/day (ignore time)
+    const utcDateStr = new Date(dateStrToValidate + ' 00:00 UTC').toISOString().split('T')[0]
+    const pstDate = this.yyyyMmDdToDate(utcDateStr)
+    console.log(pstDate)
+    return (pstDate >= minDate && pstDate <= maxDate)
   }
 
   /** Called to update resolution date. */

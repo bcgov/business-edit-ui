@@ -87,7 +87,7 @@ describe('Special Resolution Form component', () => {
     const descText = wrapper.find('#sample-resolution-section .section-description')
 
     expect(descText.exists()).toBe(true)
-    expect(descText.text()).toContain(CooperativeResource.changeData.specialSpecialResolution.sampleFormSection.text)
+    expect(descText.text()).toContain(CooperativeResource.changeData.specialResolution.sampleFormSection.text)
   })
 
   it('renders the form input', async () => {
