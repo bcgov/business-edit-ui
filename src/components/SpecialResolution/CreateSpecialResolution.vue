@@ -43,13 +43,13 @@
             <v-card flat class="py-8 px-6">
               <div class="d-flex flex-column flex-sm-row justify-center align-center">
                 <img src="@/assets/images/BCRegistries_CoopSpecialResolution-x2.png"
-                  :alt="getSpecialResolutionResource.downloadDocLabel"
+                  :alt="getSpecialResolutionResource.downloadSampleSpecialResolutionLabel"
                   slot-scope="" class="preview-image" />
                 <div class="px-8" />
                 <div class="download-link-container py-5">
                   <v-icon color="primary" class="mt-n1">mdi-file-pdf-outline</v-icon>
                   <a :href="documentURL" download class="ml-1">
-                    {{getSpecialResolutionResource.downloadDocLabel}}
+                    {{getSpecialResolutionResource.downloadSampleSpecialResolutionLabel}}
                   </a>
                 </div>
               </div>

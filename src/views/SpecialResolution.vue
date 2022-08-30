@@ -37,7 +37,7 @@
         <SpecialResolutionSummary
           class="mt-10"
           :validate="getAppValidate"
-          @haveChanges="onSpecialResolutionSummaryChanges()"
+          @haveChanges="onSpecialResolutionSummaryChanges($event)"
         />
 
         <DocumentsDelivery
@@ -71,7 +71,7 @@
           <StaffPayment
             class="mt-10"
             sectionNumber="4."
-            @haveChanges="onStaffPaymentChanges()"
+            @haveChanges="onStaffPaymentChanges($event)"
           />
         </template>
 
