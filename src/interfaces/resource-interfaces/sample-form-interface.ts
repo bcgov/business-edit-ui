@@ -3,6 +3,6 @@
 export interface SampleFormIF {
     header?: string
     text?: string
-    downloadDocLabel?: string
-    downloadDocPath?: string
+    downloadSampleSpecialResolutionLabel?: string
+    downloadSampleSpecialResolutionPath?: string
 }

@@ -244,8 +244,8 @@ export const mutateProvisionsRemoved = (state: StateIF, provisionsRemoved: boole
   state.stateModel.newAlteration.provisionsRemoved = provisionsRemoved
 }
 
-export const mutateNewResolutionDates = (state: StateIF, resolutionDates: string[]) => {
-  state.stateModel.shareStructureStep.resolutionDates = resolutionDates
+export const mutateSpecialResolutionDates = (state: StateIF, specialResolutionDates: string[]) => {
+  state.stateModel.shareStructureStep.resolutionDates = specialResolutionDates
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
@@ -287,8 +287,8 @@ export const mutateNaics = (state: StateIF, naics: NaicsIF) => {
   if (!state.stateModel.tombstone.ignoreChanges) mutateHaveUnsavedChanges(state, true)
 }
 
-export const mutateResolution = (state: StateIF, resolution: SpecialResolutionIF) => {
-  state.stateModel.createResolution = resolution
+export const mutateSpecialResolution = (state: StateIF, specialResolution: SpecialResolutionIF) => {
+  state.stateModel.specialResolution = specialResolution
 }
 
 export const mutateSpecialResolutionConfirmStateValidity = (state: StateIF, validity: boolean) => {

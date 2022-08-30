@@ -33,23 +33,23 @@
       <!-- Special Resolution Form -->
         <section id="sample-resolution-section" class="section-container mt-10">
           <header id="sample-resolution-header">
-            <h2>{{ getCreateResolutionResource.header}}</h2>
+            <h2>{{ getSpecialResolutionResource.header}}</h2>
           </header>
 
           <p class="section-description mt-2"
-            v-html="getCreateResolutionResource.text"></p>
+            v-html="getSpecialResolutionResource.text"></p>
 
           <div class="mt-4">
             <v-card flat class="py-8 px-6">
               <div class="d-flex flex-column flex-sm-row justify-center align-center">
                 <img src="@/assets/images/BCRegistries_CoopSpecialResolution-x2.png"
-                  :alt="getCreateResolutionResource.downloadDocLabel"
+                  :alt="getSpecialResolutionResource.downloadDocLabel"
                   slot-scope="" class="preview-image" />
                 <div class="px-8" />
                 <div class="download-link-container py-5">
                   <v-icon color="primary" class="mt-n1">mdi-file-pdf-outline</v-icon>
                   <a :href="documentURL" download class="ml-1">
-                    {{getCreateResolutionResource.downloadDocLabel}}
+                    {{getSpecialResolutionResource.downloadDocLabel}}
                   </a>
                 </div>
               </div>
@@ -189,7 +189,6 @@ import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { SpecialResolutionIF, PersonIF } from '@bcrs-shared-components/interfaces/'
-import { isEqual } from 'lodash'
 
 @Component({
   components: {
@@ -202,11 +201,11 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   @Getter getBusinessFoundingDate!: string
   @Getter getCurrentDate!: string
   @Getter getCurrentJsDate!: string
-  @Getter getCreateResolution!: SpecialResolutionIF
+  @Getter getSpecialResolution!: SpecialResolutionIF
   @Getter getComponentValidate!: boolean
-  @Getter getCreateResolutionFormValid!: boolean
+  @Getter getSpecialResolutionFormValid!: boolean
 
-  @Action setResolution!: ActionBindingIF
+  @Action setSpecialResolution!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
 
   // Refs
@@ -239,7 +238,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     return this.getResource.changeData?.specialSpecialResolution?.helpSection || {}
   }
 
-  get getCreateResolutionResource (): SampleFormIF {
+  get getSpecialResolutionResource (): SampleFormIF {
     return this.getResource.changeData?.specialSpecialResolution?.sampleFormSection || {}
   }
 
@@ -251,13 +250,13 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
      */
 
     return process.env.BASE_URL +
-      this.getCreateResolutionResource?.downloadDocPath
+      this.getSpecialResolutionResource?.downloadSampleSpecialResolutionPath
   }
 
   /** The name section validity state (when prompted by app). */
   get invalidCreateSpecialResolutionSection (): boolean {
     // add more state here
-    return (this.getComponentValidate && !this.getCreateResolutionFormValid)
+    return (this.getComponentValidate && !this.getSpecialResolutionFormValid)
   }
 
   /** The minimum date that can be entered (can't be earlier than incorporation date ). */
@@ -265,11 +264,6 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     /** TODO: Needs to be after the most recent filing date, I don't think the business founding date is correct
      * Will be fixed in 13231 */
     return this.apiToDate(this.getBusinessFoundingDate)
-  }
-
-  /** The minimum date that can be entered (can't be earlier than incorporation date ). */
-  get resolutionDateMinStr (): string {
-    return this.dateToYyyyMmDd(this.resolutionDateMin)
   }
 
   /** The maximum date that can be entered (today). */
@@ -283,11 +277,6 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
       v => (v && v.length <= this.MAX_RESOLUTION_TEXT_LENGTH) || 'Maximum characters exceeded',
       v => (v && /^([\w\s$&+,:;=?@#|'<>.^*()%!-\\"]*)$/g.test(v)) || 'Invalid characters'
     ]
-  }
-
-  /** The maximum date that can be entered (today). */
-  get resolutionDateMaxStr (): string {
-    return this.getCurrentDate
   }
 
   /** Validations rules for resolution date field. */
@@ -311,18 +300,15 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   private isValidDateRange (minDate: Date, maxDate: Date, dateStrToValidate: string): boolean {
     if (!dateStrToValidate) { return true }
     // only compare year/month/day (ignore time)
-    let date = new Date(dateStrToValidate)
-    date = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate())
-    const minDay = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate())
-    const maxDay = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate())
-    return (date >= minDay && date <= maxDay)
+    const date = new Date(dateStrToValidate) // Input is in the format of MM dd, yyyy
+    return (date >= minDate && date <= maxDate)
   }
 
   /** Called to update resolution date. */
   async onResolutionDateSync (val: string): Promise<void> {
     this.resolutionDateText = val
-    this.setResolution({
-      ...this.getCreateResolution,
+    this.setSpecialResolution({
+      ...this.getSpecialResolution,
       resolutionDate: val
     })
     await this.validate()
@@ -330,8 +316,8 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
 
   /** called to add new resolutionDateText. */
   protected async onResolutionChanged (val: string) {
-    this.setResolution({
-      ...this.getCreateResolution,
+    this.setSpecialResolution({
+      ...this.getSpecialResolution,
       resolution: val
     })
     await this.validate()
@@ -374,8 +360,8 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
 
   /** called to add new signature date  */
   async onSigningDateSync (val: string): Promise<void> {
-    this.setResolution({
-      ...this.getCreateResolution,
+    this.setSpecialResolution({
+      ...this.getSpecialResolution,
       signingDate: val
     })
     await this.validate()
@@ -392,8 +378,8 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   /** called to store signing party. */
   @Watch('signatory', { deep: true })
   protected async onSignatoryChanged (): Promise<void> {
-    this.setResolution({
-      ...this.getCreateResolution,
+    this.setSpecialResolution({
+      ...this.getSpecialResolution,
       signatory: this.signatory
     })
     // wait for store update
@@ -417,17 +403,18 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
 
   /** Set values if exist
    * while coming back from summary page this form need to show existing values.
+   * Note: The data is loaded before the component is created.
   */
   protected created () {
-    this.signatory = this.getCreateResolution.signatory ||
+    this.signatory = this.getSpecialResolution.signatory ||
       {
         givenName: '',
         familyName: '',
         additionalName: null
       }
-    this.resolution = this.getCreateResolution.resolution || ''
-    this.resolutionDateText = this.getCreateResolution.resolutionDate || ''
-    this.signingDate = this.getCreateResolution.signingDate || ''
+    this.resolution = this.getSpecialResolution.resolution || ''
+    this.resolutionDateText = this.getSpecialResolution.resolutionDate || ''
+    this.signingDate = this.getSpecialResolution.signingDate || ''
   }
 }
 </script>

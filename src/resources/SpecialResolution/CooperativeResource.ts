@@ -37,8 +37,8 @@ export const CooperativeResource: ResourceIF = {
           completed, signed and a printed copy retained with your other Cooperative Association records.
           Do not mail the paper form to BC Registries.  Once you have completed this form, enter the details
           from the paper form into this filing.`,
-        downloadDocLabel: 'Download the Special Resolution Form 06 COO',
-        downloadDocPath: 'files/cooperative_sample_special_resolution_form_06.pdf'
+        downloadSampleSpecialResolutionLabel: 'Download the Special Resolution Form 06 COO',
+        downloadSampleSpecialResolutionPath: 'files/cooperative_sample_special_resolution_form_06.pdf'
       }
     }
   },

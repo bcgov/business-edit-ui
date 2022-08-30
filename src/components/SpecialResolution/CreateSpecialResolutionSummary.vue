@@ -20,7 +20,7 @@
             <label><strong>Resolution Text</strong></label>
           </v-col>
           <v-col cols="12" sm="9" class="resolution-text">
-            {{ getCreateResolution && getCreateResolution.resolution }}
+            {{ getSpecialResolution && getSpecialResolution.resolution }}
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-6">
@@ -99,12 +99,12 @@ import { SpecialResolutionIF } from '@bcrs-shared-components/interfaces'
   }
 })
 export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, DateMixin) {
-  @Getter getCreateResolution!: SpecialResolutionIF
+  @Getter getSpecialResolution!: SpecialResolutionIF
   @Getter getAppValidate!: boolean
   @Getter getSpecialResolutionConfirmValid!: boolean
   @Getter getEntitySnapshot!: EntitySnapshotIF
 
-  @Action setResolution!: ActionBindingIF
+  @Action setSpecialResolution!: ActionBindingIF
   @Action setSpecialResolutionConfirmStateValidity!: ActionBindingIF
 
   // Refs
@@ -126,8 +126,8 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
     // component.  The CompleteResolutionSummary isn't always able to detect that the confirm checkbox
     // value has changed without using nextTick()
     await this.$nextTick()
-    this.setResolution({
-      ...this.getCreateResolution,
+    this.setSpecialResolution({
+      ...this.getSpecialResolution,
       resolutionConfirmed: resolutionConfirmed
     })
     this.setSpecialResolutionConfirmStateValidity(resolutionConfirmed)
@@ -139,18 +139,18 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
   }
   /** The resolution date in readable. */
   get resolutionDateText (): string {
-    return this.yyyyMmDdToPacificDate(this.getCreateResolution.resolutionDate, true)
+    return this.yyyyMmDdToPacificDate(this.getSpecialResolution.resolutionDate, true)
   }
 
   /** The signing date in readable. */
   get signingDate (): string {
-    return this.yyyyMmDdToPacificDate(this.getCreateResolution.signingDate, true)
+    return this.yyyyMmDdToPacificDate(this.getSpecialResolution.signingDate, true)
   }
 
   /** The signing person details. */
   get signingParty (): string {
-    if (this.getCreateResolution.signatory) {
-      const { givenName, additionalName = '', familyName } = this.getCreateResolution.signatory
+    if (this.getSpecialResolution.signatory) {
+      const { givenName, additionalName = '', familyName } = this.getSpecialResolution.signatory
       if (additionalName !== null && additionalName !== '') {
         return `${givenName} ${additionalName} ${familyName}`
       }
@@ -174,7 +174,7 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
 
   /** Set values if exist */
   protected mounted () {
-    this.resolutionConfirmed = this.getCreateResolution.resolutionConfirmed || false
+    this.resolutionConfirmed = this.getSpecialResolution.resolutionConfirmed || false
   }
 }
 </script>

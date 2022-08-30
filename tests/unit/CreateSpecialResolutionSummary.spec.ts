@@ -30,7 +30,7 @@ describe('Special Resolution Summary component', () => {
   beforeAll(() => {
     // init store
     store.state.stateModel.entitySnapshot = entitySnapshot
-    store.state.stateModel.createResolution = {
+    store.state.stateModel.specialResolution = {
       resolution: 'Test Resolution',
       resolutionDate: '2022-08-02',
       signatory: { ...signatory },

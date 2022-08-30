@@ -63,7 +63,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter isClientErrorCorrection!: boolean
   @Getter getAssociationType!: AssociationTypes
   @Getter hasAssociationTypeChanged!: boolean
-  @Getter getCreateResolution!: SpecialResolutionIF
+  @Getter getSpecialResolution!: SpecialResolutionIF
   @Getter isEntityTypeFirm!: boolean
   @Getter hasBusinessStartDateChanged!: boolean
 
@@ -91,7 +91,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Action setNewResolutionDates!: ActionBindingIF
   @Action setFileNumber!: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
-  @Action setResolution!: ActionBindingIF
+  @Action setSpecialResolution!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -295,7 +295,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
       },
       specialResolution: {
-        ...this.getCreateResolution
+        ...this.getSpecialResolution
       },
       alteration: {
         business: {
@@ -318,6 +318,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     if (this.getDocumentOptionalEmail) {
       filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
     }
+
+    // Build Staff Payment into the filing
+    filing = this.buildStaffPayment(filing)
 
     // Sets Folio number if a transactional folio number was entered
     filing = this.buildFolioNumber(filing)
@@ -628,7 +631,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // store Business Information
     this.setBusinessInformation({
       ...filing.business,
-      ...filing.alteration.business
+      ...filing.alteration?.business
     })
 
     // store Name Request data
@@ -714,7 +717,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // store Business Information
     this.setBusinessInformation({
       ...filing.business,
-      ...filing.alteration.business,
+      ...filing.alteration?.business,
       associationType: filing.alteration?.cooperativeAssociationType || entitySnapshot.businessInfo.associationType
     })
 
@@ -729,7 +732,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     ))
 
     // store Special Resolution
-    this.setResolution(cloneDeep(filing.specialResolution))
+    this.setSpecialResolution(cloneDeep(filing.specialResolution))
 
     // store Office Addresses **from snapshot** (because we don't change office addresses in an special resolution)
     this.setOfficeAddresses(cloneDeep(entitySnapshot.addresses))
@@ -1122,7 +1125,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    * @param filing the filing
    */
   private buildStaffPayment (
-    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF | ChgRegistrationFilingIF
+    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF |
+            ChgRegistrationFilingIF | SpecialResolutionFilingIF
   ): any {
     // Populate Staff Payment according to payment option
     switch (this.getStaffPayment.option) {

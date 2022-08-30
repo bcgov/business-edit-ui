@@ -926,13 +926,13 @@ export const getCompletingParty = (state: StateIF): CompletingPartyIF => {
   return state.stateModel.completingParty
 }
 
-/** The Create Special Resolution object. */
-export const getCreateResolution = (state: StateIF): SpecialResolutionIF => {
-  return state.stateModel.createResolution
+/** The special resolution object. */
+export const getSpecialResolution = (state: StateIF): SpecialResolutionIF => {
+  return state.stateModel.specialResolution
 }
 
-/** The company info page validity flags. */
-export const getCreateResolutionFormValid = (state: StateIF): boolean => {
+/** The special resolution validity flags. */
+export const getSpecialResolutionFormValid = (state: StateIF): boolean => {
   return getValidationFlags(state).flagsCompanyInfo.isValidCreateSpecialResolution
 }
 

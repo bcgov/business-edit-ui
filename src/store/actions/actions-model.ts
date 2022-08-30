@@ -232,7 +232,7 @@ export const setProvisionsRemoved: ActionIF = ({ commit }, provisionsRemoved: bo
 }
 
 export const setNewResolutionDates: ActionIF = ({ commit }, resolutionDates: string[]): void => {
-  commit('mutateNewResolutionDates', resolutionDates)
+  commit('mutateSpecialResolutionDates', resolutionDates)
 }
 
 export const setFileNumber: ActionIF = ({ commit }, courtOrderNumber: string): void => {
@@ -271,8 +271,8 @@ export const setNaics: ActionIF = ({ commit }, naics: NaicsIF): void => {
   commit('mutateNaics', naics)
 }
 
-export const setResolution = ({ commit }, resolution: SpecialResolutionIF) => {
-  commit('mutateResolution', resolution)
+export const setSpecialResolution = ({ commit }, specialResolution: SpecialResolutionIF) => {
+  commit('mutateSpecialResolution', specialResolution)
 }
 
 export const setSpecialResolutionConfirmStateValidity: ActionIF = ({ commit }, validity: boolean): void => {
