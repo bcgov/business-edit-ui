@@ -278,7 +278,3 @@ export const setSpecialResolution = ({ commit }, specialResolution: SpecialResol
 export const setSpecialResolutionConfirmStateValidity: ActionIF = ({ commit }, validity: boolean): void => {
   commit('mutateSpecialResolutionConfirmStateValidity', validity)
 }
-
-export const setAssociationType = ({ commit }, associationType: string): void => {
-  commit('mutateAssociationType', associationType)
-}
