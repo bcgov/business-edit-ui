@@ -235,8 +235,8 @@
       />
     </template>
 
-    <!-- Nature of Business (firm change filings only) -->
-    <template v-if="isFirmChangeFiling">
+    <!-- Nature of Business (firm change and corrections filings only) -->
+    <template v-if="isFirmChangeFiling || isFirmCorrectionFiling">
       <v-divider class="mx-4 my-1" />
 
       <NatureOfBusiness
@@ -246,8 +246,8 @@
       />
     </template>
 
-    <!-- Nature of Business (firm conversion and correction filings only) -->
-    <template v-if="isFirmConversionFiling || isFirmCorrectionFiling">
+    <!-- Nature of Business (firm conversions only) -->
+    <template v-if="isFirmConversionFiling">
       <v-divider class="mx-4 my-1" />
 
       <ConversionNOB
