@@ -296,8 +296,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       },
       specialResolution: {
         ...this.getSpecialResolution
-      },
-      alteration: {
+      }
+    }
+    // Future: || this.hasRulesChanged || this.hasMemorandumChanged
+    if (this.hasAssociationTypeChanged) {
+      filing.alteration = {
         business: {
           identifier: this.getBusinessId,
           legalType: this.getEntityType
