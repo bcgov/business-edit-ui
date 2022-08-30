@@ -299,7 +299,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       }
     }
     /* Only add alteration if the association type has changed,
-     * rules and memorandum don't show up unless the association type changes. */
+     * rules and memorandum only show up if the association type changes. */
     if (this.hasAssociationTypeChanged) {
       filing.alteration = {
         business: {
