@@ -1,17 +1,19 @@
 <template>
-  <section id="staff-payment">
+  <section class="pb-6" id="staff-payment">
     <header>
       <h2>{{sectionNumber}} Staff Payment</h2>
     </header>
 
-    <div :class="{'invalid-section': invalidStaffPayment}">
-      <StaffPaymentShared
-        :staffPaymentData="getStaffPayment"
-        :validate="validateStaffPayment"
-        :invalidSection="invalidStaffPayment"
-        @update:staffPaymentData="onStaffPaymentDataUpdate($event)"
-        @valid="setStaffPaymentValidity($event)"
-      />
+    <div :class="{'invalid-section': invalidStaffPayment}" class="mt-4">
+      <v-card flat class="section-container py-6">
+        <StaffPaymentShared
+          :staffPaymentData="getStaffPayment"
+          :validate="validateStaffPayment"
+          :invalidSection="invalidStaffPayment"
+          @update:staffPaymentData="onStaffPaymentDataUpdate($event)"
+          @valid="setStaffPaymentValidity($event)"
+        />
+      </v-card>
     </div>
   </section>
 </template>
@@ -132,16 +134,4 @@ export default class StaffPayment extends Vue {
   }
 }
 
-// fix hard-coded whitespace inside shared component
-// we want the same padding as "section-container py-6"
-::v-deep {
-  #staff-payment-container {
-    padding-top: 1.5rem !important;
-    padding-right: 1.875rem !important;
-    padding-bottom: 0 !important;
-    padding-left: 0.625rem !important;
-  }
-  .payment-group {
-    margin-bottom: -0.75rem !important;
-  }
-}</style>
+</style>
