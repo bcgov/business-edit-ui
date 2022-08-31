@@ -1,5 +1,4 @@
 export * from './accountTypes'
-export * from './actionTypes'
 export * from './addressTypes'
 export * from './associationTypes'
 export * from './businessTypes'
@@ -22,4 +21,4 @@ export * from './routeNames'
 
 // external enum
 export { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-export { EntityStates } from '@bcrs-shared-components/enums'
+export { ActionTypes, EntityStates } from '@bcrs-shared-components/enums'

@@ -279,7 +279,6 @@ import OrgPerson from './OrgPerson.vue'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { isSame } from '@/utils/'
 import { OrgPersonIF } from '@/interfaces/'
-import { ActionTypes } from '@/enums/'
 
 @Component({
   components: {
@@ -291,7 +290,6 @@ import { ActionTypes } from '@/enums/'
 export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMixin) {
   // Declaration for template
   readonly isSame = isSame
-  readonly ActionTypes = ActionTypes
 
   /** Whether to render the OrgPersonForm (for edit or add). */
   @Prop() readonly renderOrgPersonForm: boolean
