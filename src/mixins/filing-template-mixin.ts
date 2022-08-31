@@ -4,8 +4,9 @@ import { cloneDeep } from 'lodash'
 import { DateMixin, EnumMixin } from '@/mixins/'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF, EffectiveDateTimeIF,
   EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF, NameTranslationIF,
-  OrgPersonIF, ShareClassIF, SpecialResolutionFilingIF, CreateResolutionIF } from '@/interfaces/'
-import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
+  OrgPersonIF, SpecialResolutionFilingIF } from '@/interfaces/'
+import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
+  StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, AssociationTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
   RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -62,7 +63,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter isClientErrorCorrection!: boolean
   @Getter getAssociationType!: AssociationTypes
   @Getter hasAssociationTypeChanged!: boolean
-  @Getter getcreateResolution!: CreateResolutionIF
+  @Getter getSpecialResolution!: SpecialResolutionIF
   @Getter isEntityTypeFirm!: boolean
   @Getter hasBusinessStartDateChanged!: boolean
 
@@ -90,6 +91,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Action setNewResolutionDates!: ActionBindingIF
   @Action setFileNumber!: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
+  @Action setSpecialResolution!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -290,23 +292,39 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         identifier: this.getEntitySnapshot.businessInfo.identifier,
         legalName: this.getEntitySnapshot.businessInfo.legalName,
         legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber,
-        associationType: this.getAssociationType
+        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
       },
       specialResolution: {
-        ...this.getcreateResolution
+        ...this.getSpecialResolution
       }
-
+    }
+    /* Only add alteration if the association type has changed,
+     * rules and memorandum only show up if the association type changes. */
+    if (this.hasAssociationTypeChanged) {
+      filing.alteration = {
+        business: {
+          identifier: this.getBusinessId,
+          legalType: this.getEntityType
+        },
+        cooperativeAssociationType: this.getAssociationType,
+        rulesFileKey: 'test',
+        rulesFileName: 'testUrl',
+        memorandumFileKey: 'test',
+        memorandumFileName: 'test'
+      }
     }
 
     // Apply NR / business name / business type change to filing
     if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
-      filing.alteration.nameRequest = this.getNameRequest
+      filing.changeOfName = { nameRequest: this.getNameRequest }
     }
 
     if (this.getDocumentOptionalEmail) {
       filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
     }
+
+    // Build Staff Payment into the filing
+    filing = this.buildStaffPayment(filing)
 
     // Sets Folio number if a transactional folio number was entered
     filing = this.buildFolioNumber(filing)
@@ -617,7 +635,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // store Business Information
     this.setBusinessInformation({
       ...filing.business,
-      ...filing.alteration.business
+      ...filing.alteration?.business
     })
 
     // store Name Request data
@@ -698,17 +716,18 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     this.setEntitySnapshot(entitySnapshot)
 
     // store Entity Type
-    this.setEntityType(filing.alteration.business?.legalType || entitySnapshot.businessInfo.legalType)
+    this.setEntityType(filing.alteration?.business?.legalType || entitySnapshot.businessInfo.legalType)
 
     // store Business Information
     this.setBusinessInformation({
       ...filing.business,
-      ...filing.alteration.business
+      ...filing.alteration?.business,
+      associationType: filing.alteration?.cooperativeAssociationType || entitySnapshot.businessInfo.associationType
     })
 
     // store Name Request data
     this.setNameRequest(cloneDeep(
-      filing.alteration.nameRequest ||
+      filing.changeOfName?.nameRequest ||
       {
         legalType: entitySnapshot.businessInfo.legalType,
         legalName: entitySnapshot.businessInfo.legalName,
@@ -716,7 +735,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       }
     ))
 
-    //  add more components later
+    // store Special Resolution
+    this.setSpecialResolution(cloneDeep(filing.specialResolution))
 
     // store Office Addresses **from snapshot** (because we don't change office addresses in an special resolution)
     this.setOfficeAddresses(cloneDeep(entitySnapshot.addresses))
@@ -744,6 +764,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
 
     // store Document Optional Email
     this.setDocumentOptionalEmail(filing.header.documentOptionalEmail || '')
+
+    // store Staff Payment
+    this.storeStaffPayment(filing)
   }
 
   /**
@@ -1106,7 +1129,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    * @param filing the filing
    */
   private buildStaffPayment (
-    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF | ChgRegistrationFilingIF
+    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF |
+            ChgRegistrationFilingIF | SpecialResolutionFilingIF
   ): any {
     // Populate Staff Payment according to payment option
     switch (this.getStaffPayment.option) {
@@ -1139,7 +1163,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    * @param filing the filing to parse
    */
   private storeStaffPayment (
-    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF | ChgRegistrationFilingIF
+    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF |
+            ChgRegistrationFilingIF | SpecialResolutionFilingIF
   ): void {
     // Parse staff payment
     if (filing.header.routingSlipNumber) {

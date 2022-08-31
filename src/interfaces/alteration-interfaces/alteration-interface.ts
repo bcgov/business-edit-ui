@@ -1,5 +1,6 @@
 import { BusinessInformationIF, CourtOrderIF, NameRequestIF, NameTranslationIF, ShareStructureIF }
   from '@/interfaces/'
+import { AssociationTypes } from '@bcrs-shared-components/enums'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 //
@@ -8,9 +9,16 @@ import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 export interface AlterationIF {
   provisionsRemoved?: boolean
   business?: BusinessInformationIF
+  /** This is different from bcrs-shared-components/interfaces/name-request-interface.ts
+   * and should be refactored in the future. */
   nameRequest?: NameRequestIF
   nameTranslations?: NameTranslationIF[]
   shareStructure?: ShareStructureIF
   contactPoint?: ContactPointIF
   courtOrder?: CourtOrderIF
+  cooperativeAssociationType?: AssociationTypes
+  rulesFileKey?: string
+  rulesFileName?: string
+  memorandumFileKey?: string
+  memorandumFileName?: string
 }

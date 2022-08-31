@@ -5,9 +5,9 @@ import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformat
   CertifyIF,
   NameTranslationIF, FilingDataIF, StateIF, EffectiveDateTimeIF, FlagsReviewCertifyIF,
   FlagsCompanyInfoIF, ResolutionsIF, FeesIF, ResourceIF, EntitySnapshotIF, ValidationFlagsIF,
-  CorrectionInformationIF, CreateResolutionIF }
+  CorrectionInformationIF }
   from '@/interfaces/'
-import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF }
+import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF, SpecialResolutionIF }
   from '@bcrs-shared-components/interfaces/'
 import { isSame } from '@/utils/'
 
@@ -926,13 +926,13 @@ export const getCompletingParty = (state: StateIF): CompletingPartyIF => {
   return state.stateModel.completingParty
 }
 
-/** The Create Special Resolution object. */
-export const getcreateResolution = (state: StateIF): CreateResolutionIF => {
-  return state.stateModel.createResolution
+/** The special resolution object. */
+export const getSpecialResolution = (state: StateIF): SpecialResolutionIF => {
+  return state.stateModel.specialResolution
 }
 
-/** The company info page validity flags. */
-export const getCreateResolutionFormValid = (state: StateIF): boolean => {
+/** The special resolution validity flags. */
+export const getSpecialResolutionFormValid = (state: StateIF): boolean => {
   return getValidationFlags(state).flagsCompanyInfo.isValidCreateSpecialResolution
 }
 

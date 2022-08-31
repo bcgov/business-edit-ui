@@ -37,7 +37,7 @@ describe('Special Resolution Form component', () => {
     store.state.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
     store.state.stateModel.tombstone.currentDate = '2021-03-01'
     store.state.stateModel.entitySnapshot = entitySnapshot
-    store.state.stateModel.createResolution = {
+    store.state.stateModel.specialResolution = {
       resolution: '',
       signatory: { ...emptyPerson },
       resolutionConfirmed: false
@@ -87,7 +87,7 @@ describe('Special Resolution Form component', () => {
     const descText = wrapper.find('#sample-resolution-section .section-description')
 
     expect(descText.exists()).toBe(true)
-    expect(descText.text()).toContain(CooperativeResource.changeData.specialSpecialResolution.sampleFormSection.text)
+    expect(descText.text()).toContain(CooperativeResource.changeData.specialResolution.sampleFormSection.text)
   })
 
   it('renders the form input', async () => {

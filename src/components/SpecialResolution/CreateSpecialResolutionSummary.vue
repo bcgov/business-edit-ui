@@ -20,7 +20,7 @@
             <label><strong>Resolution Text</strong></label>
           </v-col>
           <v-col cols="12" sm="9" class="resolution-text">
-            {{ getcreateResolution && getcreateResolution.resolution }}
+            {{ getSpecialResolution && getSpecialResolution.resolution }}
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-6">
@@ -86,10 +86,11 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, ResourceIF, FormIF, CreateResolutionIF, EntitySnapshotIF } from '@/interfaces/'
+import { ActionBindingIF, FormIF, EntitySnapshotIF } from '@/interfaces/'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
+import { SpecialResolutionIF } from '@bcrs-shared-components/interfaces'
 
 @Component({
   components: {
@@ -98,20 +99,20 @@ import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-pic
   }
 })
 export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, DateMixin) {
-  @Getter getcreateResolution!: CreateResolutionIF;
-  @Getter getAppValidate!: boolean;
-  @Getter getSpecialResolutionConfirmValid!: boolean;
-  @Getter getEntitySnapshot!: EntitySnapshotIF;
+  @Getter getSpecialResolution!: SpecialResolutionIF
+  @Getter getAppValidate!: boolean
+  @Getter getSpecialResolutionConfirmValid!: boolean
+  @Getter getEntitySnapshot!: EntitySnapshotIF
 
-  @Action setResolution!: ActionBindingIF;
-  @Action setSpecialResolutionConfirmStateValidity!: ActionBindingIF;
+  @Action setSpecialResolution!: ActionBindingIF
+  @Action setSpecialResolutionConfirmStateValidity!: ActionBindingIF
 
   // Refs
   $refs!: {
-    confirmResolutionChkFormRef: FormIF;
+    confirmResolutionChkFormRef: FormIF
   };
 
-  protected resolutionConfirmed = false;
+  protected resolutionConfirmed = false
 
   /** Validation rule for checkbox. */
   protected confirmCompletionResolution = [
@@ -125,8 +126,8 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
     // component.  The CompleteResolutionSummary isn't always able to detect that the confirm checkbox
     // value has changed without using nextTick()
     await this.$nextTick()
-    this.setResolution({
-      ...this.getcreateResolution,
+    this.setSpecialResolution({
+      ...this.getSpecialResolution,
       resolutionConfirmed: resolutionConfirmed
     })
     this.setSpecialResolutionConfirmStateValidity(resolutionConfirmed)
@@ -138,18 +139,18 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
   }
   /** The resolution date in readable. */
   get resolutionDateText (): string {
-    return this.yyyyMmDdToPacificDate(this.getcreateResolution.resolutionDate, true)
+    return this.yyyyMmDdToPacificDate(this.getSpecialResolution.resolutionDate, true)
   }
 
   /** The signing date in readable. */
   get signingDate (): string {
-    return this.yyyyMmDdToPacificDate(this.getcreateResolution.signingDate, true)
+    return this.yyyyMmDdToPacificDate(this.getSpecialResolution.signingDate, true)
   }
 
   /** The signing person details. */
   get signingParty (): string {
-    if (this.getcreateResolution.signatory) {
-      const { givenName, additionalName = '', familyName } = this.getcreateResolution.signatory
+    if (this.getSpecialResolution.signatory) {
+      const { givenName, additionalName = '', familyName } = this.getSpecialResolution.signatory
       if (additionalName !== null && additionalName !== '') {
         return `${givenName} ${additionalName} ${familyName}`
       }
@@ -173,7 +174,7 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
 
   /** Set values if exist */
   protected mounted () {
-    this.resolutionConfirmed = this.getcreateResolution.resolutionConfirmed || false
+    this.resolutionConfirmed = this.getSpecialResolution.resolutionConfirmed || false
   }
 }
 </script>
