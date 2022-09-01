@@ -39,8 +39,8 @@
           :disabled="haveAddedDates"
           @click="isAdding = true"
         >
-          <v-icon small>{{addBtnIcon}}</v-icon>
-          <span>{{addBtnLabel}}</span>
+          <v-icon small>{{ addBtnIcon }}</v-icon>
+          <span>{{ addBtnLabel }}</span>
         </v-btn>
       </v-col>
       <v-col cols="2" class="align-right" v-else-if="isAdding">
@@ -70,8 +70,8 @@
               text color="primary"
               @click="onRemove(index)"
             >
-              <v-icon small>{{removeBtnIcon}}</v-icon>
-              <span>{{removeBtnLabel}}</span>
+              <v-icon small>{{ removeBtnIcon }}</v-icon>
+              <span>{{ removeBtnLabel }}</span>
             </v-btn>
           </li>
         </ul>
@@ -172,6 +172,7 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   get addBtnIcon (): string {
     return this.isBenCorrectionFiling ? 'mdi-pencil' : 'mdi-plus'
   }
+
   get addBtnLabel (): string {
     return this.isBenCorrectionFiling ? 'Correct' : 'Add'
   }
