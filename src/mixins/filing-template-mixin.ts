@@ -161,7 +161,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     if (this.isBenCorrectionFiling) {
       filing.correction.nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
       filing.correction.shareStructure = {
-        shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses()
+        shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses(),
+        resolutionDates: this.getNewResolutionDates
       }
     }
 

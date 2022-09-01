@@ -6,6 +6,15 @@
         <label>
           <span :class="{'error-text': !getIsResolutionDatesValid}">Resolution or<br>Court Order Dates</span>
         </label>
+        <v-chip
+          v-if="haveNewResolutionDates && isBenCorrectionFiling"
+          id="corrected-lbl"
+          x-small label
+          color="primary"
+          text-color="white"
+        >
+          Corrected
+        </v-chip>
       </v-col>
 
       <v-col :cols="isEditMode ? '7' : '8'">
@@ -25,20 +34,20 @@
 
       <v-col cols="2" class="align-right" v-if="isEditMode && !isAdding">
         <v-btn id="add-resolution-date"
-               class="add-btn"
-               text color="primary"
-               :disabled="haveAddedDates"
-               @click="isAdding = true"
+          class="add-btn"
+          text color="primary"
+          :disabled="haveAddedDates"
+          @click="isAdding = true"
         >
-          <v-icon small>mdi-plus</v-icon>
-          <span>Add</span>
+          <v-icon small>{{addBtnIcon}}</v-icon>
+          <span>{{addBtnLabel}}</span>
         </v-btn>
       </v-col>
       <v-col cols="2" class="align-right" v-else-if="isAdding">
         <v-btn id="close-resolution-date"
-               class="close-btn"
-               text color="primary"
-               @click="isAdding = false"
+          class="close-btn"
+          text color="primary"
+          @click="isAdding = false"
         >
           <v-icon small>mdi-close</v-icon>
           <span>Cancel</span>
@@ -56,13 +65,13 @@
           >
             <strong class="mr-2">{{date}}</strong>
             <v-btn v-if="isEditMode"
-                   id="remove-resolution-date"
-                   class="remove-btn mt-n1"
-                   text color="primary"
-                   @click="onRemove(index)"
+              id="remove-resolution-date"
+              class="remove-btn mt-n1"
+              text color="primary"
+              @click="onRemove(index)"
             >
-              <v-icon small>mdi-delete</v-icon>
-              <span>Remove</span>
+              <v-icon small>{{removeBtnIcon}}</v-icon>
+              <span>{{removeBtnLabel}}</span>
             </v-btn>
           </li>
         </ul>
@@ -140,10 +149,10 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessFoundingDate!: string
   @Getter getCurrentDate!: string
-  @Getter hasShareStructureChanged!: boolean
-  @Getter getHasOriginalRightsOrRestrictions!: boolean
+  @Getter haveNewResolutionDates!: boolean
   @Getter getIsResolutionDatesValid!: boolean
   @Getter isSummaryMode!: boolean
+  @Getter isBenCorrectionFiling!: boolean
 
   // Global setter
   @Action setValidComponent!: ActionBindingIF
@@ -158,6 +167,21 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
 
   get havePreviousDates (): boolean {
     return (this.previousDates?.length > 0)
+  }
+
+  get addBtnIcon (): string {
+    return this.isBenCorrectionFiling ? 'mdi-pencil' : 'mdi-plus'
+  }
+  get addBtnLabel (): string {
+    return this.isBenCorrectionFiling ? 'Correct' : 'Add'
+  }
+
+  get removeBtnIcon (): string {
+    return this.isBenCorrectionFiling ? 'mdi-undo' : 'mdi-delete'
+  }
+
+  get removeBtnLabel (): string {
+    return this.isBenCorrectionFiling ? 'Undo' : 'Remove'
   }
 
   /** Called to add a new date. */

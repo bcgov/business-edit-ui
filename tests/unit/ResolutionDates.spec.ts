@@ -300,6 +300,38 @@ describe('Resolution Dates component - edit mode', () => {
 
     wrapper.destroy()
   })
+
+  it('displays the Correct button for correction filings', () => {
+    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.state.stateModel.tombstone.filingType = 'correction'
+    store.state.stateModel.shareStructureStep.shareClasses = shareClasses
+    store.state.stateModel.shareStructureStep.resolutionDates = addedDates
+
+    const wrapper = wrapperFactory()
+
+    const addBtn = wrapper.find('#add-resolution-date')
+    expect(addBtn.exists()).toBe(true)
+    expect(addBtn.text()).toBe('Correct')
+    expect(addBtn.find('.v-icon.mdi-pencil').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('displays the Undo button for correction filings', async () => {
+    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.state.stateModel.tombstone.filingType = 'correction'
+    store.state.stateModel.shareStructureStep.shareClasses = shareClasses
+    store.state.stateModel.shareStructureStep.resolutionDates = addedDates
+
+    const wrapper = wrapperFactory({ addedDates: ['2021-03-17'] })
+
+    const removeBtn = wrapper.find('#remove-resolution-date')
+    expect(removeBtn.exists()).toBe(true)
+    expect(removeBtn.text()).toBe('Undo')
+    expect(removeBtn.find('.v-icon.mdi-undo').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
 })
 
 describe('Resolution Dates component - review mode', () => {

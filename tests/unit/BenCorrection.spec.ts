@@ -6,6 +6,9 @@ import sinon from 'sinon'
 import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { axios } from '@/utils/'
+import { Articles } from '@/components/Alteration/'
+import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
+  from '@/components/common/'
 import BenCorrection from '@/views/Correction/BenCorrection.vue'
 import mockRouter from './MockRouter'
 
@@ -154,6 +157,16 @@ describe('Benefit Company Correction component', () => {
 
   it('renders Benefit Company Correction view', () => {
     expect(wrapper.findComponent(BenCorrection).exists()).toBe(true)
+  })
+
+  it('loads each component', async () => {
+    expect(wrapper.findComponent(YourCompany).exists()).toBe(true)
+    expect(wrapper.findComponent(PeopleAndRoles).exists()).toBe(true)
+    expect(wrapper.findComponent(ShareStructures).exists()).toBe(true)
+    expect(wrapper.findComponent(Articles).exists()).toBe(true)
+    expect(wrapper.findComponent(Detail).exists()).toBe(true)
+    expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
+    expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
   })
 
   // FUTURE
