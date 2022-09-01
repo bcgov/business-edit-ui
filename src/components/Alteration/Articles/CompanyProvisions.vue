@@ -5,7 +5,7 @@
         <v-col class="pr-0 pl-0 pt-0" cols="3">
           <label class="define-company-provisions-title">Pre-existing<br>Company Provisions</label>
           <v-chip v-if="hasProvisionsRemovedPropsChanged" x-small label color="primary" text-color="white">
-            CHANGED
+            {{ editedLabel }}
           </v-chip>
         </v-col>
         <v-col id="none-of-provisions-apply-text" cols="7" class="pt-0 pl-0 info-text" v-if="provisionsRemoved">

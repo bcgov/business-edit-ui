@@ -164,6 +164,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses(),
         resolutionDates: this.getNewResolutionDates
       }
+      filing.correction.provisionsRemoved = this.areProvisionsRemoved
     }
 
     // add in data specific to firm corrections
@@ -593,6 +594,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       this.setNewResolutionDates(cloneDeep(
         filing.correction.shareStructure?.resolutionDates || []
       ))
+      // store Provisions Removed
+      this.setProvisionsRemoved(filing.correction.provisionsRemoved || null)
     }
 
     // store Certify State

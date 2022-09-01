@@ -175,4 +175,26 @@ describe('company provisions', () => {
 
     wrapper.destroy()
   })
+
+  it('displays the Correct button for correction filings', () => {
+    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.state.stateModel.tombstone.filingType = 'correction'
+
+    const router = mockRouter.mock()
+    router.push({ name: alterationRouterName })
+    const wrapper = mount(CompanyProvisions,
+      {
+        router,
+        vuetify,
+        store,
+        propsData: { provisionsRemoved: false }
+      })
+
+    const addBtn = wrapper.find('#change-company-provisions')
+    expect(addBtn.exists()).toBe(true)
+    expect(addBtn.text()).toBe('Correct')
+    expect(addBtn.find('.v-icon.mdi-pencil').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
 })
