@@ -25,6 +25,8 @@
 
     <ShareStructures class="mt-10" />
 
+    <Articles class="mt-10" />
+
     <Detail
       class="mt-10"
       sectionNumber="1."
@@ -48,6 +50,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action } from 'vuex-class'
+import { Articles } from '@/components/Alteration/'
 import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
@@ -62,7 +65,8 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/'
     PeopleAndRoles,
     ShareStructures,
     StaffPayment,
-    YourCompany
+    YourCompany,
+    Articles
   }
 })
 export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {

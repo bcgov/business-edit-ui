@@ -39,4 +39,5 @@ export interface CorrectionInformationIF {
     resolutionDates?: string[]
   }
   startDate?: string // YYYY-MM-DD
+  provisionsRemoved?: boolean
 }
