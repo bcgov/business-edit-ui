@@ -9,5 +9,4 @@ export interface CorrectionFilingIF {
   header: FilingHeaderIF
   business: FilingBusinessIF
   correction: CorrectionInformationIF
-  provisionsRemoved?: boolean
 }
