@@ -595,7 +595,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         filing.correction.shareStructure?.resolutionDates || []
       ))
       // store Provisions Removed
-      this.setProvisionsRemoved(filing.correction.provisionsRemoved || null)
+      this.setProvisionsRemoved(filing.correction.provisionsRemoved || false)
     }
 
     // store Certify State
