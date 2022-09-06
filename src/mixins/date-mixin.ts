@@ -37,15 +37,17 @@ export default class DateMixin extends Mixins(CommonMixin) {
   /**
    * Creates and returns a new Date object in UTC, given parameters in Pacific timezone.
    * (This works regardless of user's local clock/timezone.)
-   * @example "2021, 0, 1, 0, 0" -> "2021-01-01T08:00:00.000Z"
-   * @example "2021, 6, 1, 0, 0" -> "2021-07-01T07:00:00.000Z"
+   * @example "2021, 0, 1, 0, 0" -> "2021-01-01T08:00:00.000Z" (Pacific Standard Time)
+   * @example "2021, 6, 1, 0, 0" -> "2021-07-01T07:00:00.000Z" (Pacific Daylight Time)
    */
-  createUtcDate (year: number, month: number, day: number, hours: number = 0, minutes: number = 0): Date {
+  createUtcDate (
+    year: number, month: number, day: number, hours = 0, minutes = 0, milliseconds = 0
+  ): Date {
     // 1. create the new date in UTC
     // 2. compute the offset between UTC and Pacific timezone
     // 3. add the offset to convert the date to Pacific timezone
     // Ref: https://stackoverflow.com/questions/15141762/
-    const date = new Date(Date.UTC(year, month, day, hours, minutes))
+    const date = new Date(Date.UTC(year, month, day, hours, minutes, milliseconds))
     const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }))
     const tzDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/Vancouver' }))
     const offset = utcDate.getTime() - tzDate.getTime()
@@ -68,7 +70,23 @@ export default class DateMixin extends Mixins(CommonMixin) {
     const month = +split[1]
     const day = +split[2]
 
+    // use the date fields to create date object
     return this.createUtcDate(year, (month - 1), day)
+  }
+
+  /**
+   * Converts a date string (MMM dd, yyyy) to a Date object at 12:00:00 am Pacific time.
+   * @example September 5, 2022 -> 2022-09-05T07:00:00.00Z
+   */
+  mmmDdYyyyToDate (dateStr: string): Date {
+    // safety check
+    if (!dateStr) return null
+
+    // build date as 00:00 UTC
+    const utcDate = new Date(dateStr + ' 00:00 UTC')
+
+    // use the UTC date fields to create date object
+    return this.createUtcDate(utcDate.getUTCFullYear(), utcDate.getUTCMonth(), utcDate.getUTCDate())
   }
 
   /**
@@ -173,16 +191,24 @@ export default class DateMixin extends Mixins(CommonMixin) {
   }
 
   /**
+   * Converts an API datetime string (in UTC) to an ISO datetime string.
+   * @example 2021-08-05T16:56:50+00:00 -> 2021-08-05T16:56:50Z
+   */
+  apiToIso (dateTimeString: string): string {
+    if (!dateTimeString) return null // safety check
+
+    // chop off the milliseconds and UTC offset and append "Zulu" timezone abbreviation
+    return dateTimeString.slice(0, 19) + 'Z'
+  }
+
+  /**
    * Converts an API datetime string (in UTC) to a Date object.
    * @example 2021-08-05T16:56:50.783101+00:00 -> 2021-08-05T16:56:50Z
    */
   apiToDate (dateTimeString: string): Date {
     if (!dateTimeString) return null // safety check
 
-    // chop off the milliseconds and UTC offset and append "Zulu" timezone abbreviation
-    dateTimeString = dateTimeString.slice(0, 19) + 'Z'
-
-    return new Date(dateTimeString)
+    return new Date(this.apiToIso(dateTimeString))
   }
 
   /**
@@ -213,7 +239,7 @@ export default class DateMixin extends Mixins(CommonMixin) {
   }
 
   /**
-   * Converts a Date object to an API datetime string.
+   * Converts a Date object to an API datetime string (in UTC).
    * @example 2021-08-05T16:56:50Z -> 2021-08-05T16:56:50+00:00
    */
   dateToApi (date: Date): string {

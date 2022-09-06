@@ -143,8 +143,6 @@
             </p>
 
             <EffectiveDateTime
-              :currentJsDate="getCurrentJsDate"
-              :effectiveDateTime="getEffectiveDateTime"
               @dateTimeString="setEffectiveDateTimeString($event)"
               @isFutureEffective="setIsFutureEffective($event); emitHaveChanges()"
               @valid="setEffectiveDateValid($event)"
@@ -194,7 +192,6 @@ export default class AlterationSummary extends Mixins(
   @Getter isBusySaving!: boolean
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter haveNewResolutionDates!: boolean
-  @Getter getCurrentJsDate!: Date
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF

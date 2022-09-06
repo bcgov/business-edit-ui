@@ -50,7 +50,7 @@ export default class ResolutionDateDialog extends Vue {
   @Prop() readonly dialog: boolean
 
   // Global getter
-  @Getter getBusinessFoundingDate!: string
+  @Getter getBusinessFoundingDate!: string // actually date-time
   @Getter getCurrentDate!: string
   @Getter getNewResolutionDates!: string []
 

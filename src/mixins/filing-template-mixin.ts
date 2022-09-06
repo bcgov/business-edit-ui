@@ -251,9 +251,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // If FED then set header fields
     if (this.getEffectiveDateTime.isFutureEffective) {
       filing.header.isFutureEffective = true
-      const effectiveDate = new Date(this.getEffectiveDateTime.dateTimeString)
-      const effectiveDateApi = this.dateToApi(effectiveDate)
-      filing.header.effectiveDate = effectiveDateApi // in UTC
+      const effectiveDate = new Date(this.getEffectiveDateTime.dateTimeString) // ISO format
+      filing.header.effectiveDate = this.dateToApi(effectiveDate) // in UTC
     }
 
     // Set Document Optional Email if there is one
@@ -617,7 +616,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // store Effective Date
-    this.setEffectiveDateTimeString(filing.header.effectiveDate)
+    const effectiveDate = this.apiToIso(filing.header.effectiveDate)
+    this.setEffectiveDateTimeString(effectiveDate)
     this.setIsFutureEffective(filing.header.isFutureEffective)
 
     // store Staff Payment
@@ -699,7 +699,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     this.setDocumentOptionalEmail(filing.header.documentOptionalEmail || '')
 
     // store Effective Date
-    this.setEffectiveDateTimeString(filing.header.effectiveDate)
+    const effectiveDate = this.apiToIso(filing.header.effectiveDate)
+    this.setEffectiveDateTimeString(effectiveDate)
     this.setIsFutureEffective(filing.header.isFutureEffective)
 
     // store File Number and POA

@@ -56,13 +56,10 @@ import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, FeesIF } from '@/interfaces/'
 import { DateMixin, SharedMixin, FeeMixin, FilingTemplateMixin, EnumMixin } from '@/mixins/'
-import { EffectiveDateTime, NameTranslation } from '@/components/common/'
 import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
 
 @Component({
   components: {
-    EffectiveDateTime,
-    NameTranslation,
     CreateSpecialResolutionSummary
 
   }

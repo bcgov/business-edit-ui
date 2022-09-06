@@ -30,10 +30,10 @@ function getLastEvent (wrapper: Wrapper<EffectiveDateTime>, name: string): any {
 
 describe('Effective Date Time component', () => {
   let wrapperFactory: any
-  const today = new Date()
+  const now = new Date()
 
   // invalid future effective date is more than 10 days from now
-  const futureInvalidDate = new Date(today.getTime() + 11 * 24 * 60 * 60 * 1000)
+  const futureInvalidDate = new Date(now.getTime() + 11 * 24 * 60 * 60 * 1000)
 
   const dateTimeDefault = {
     valid: false,
@@ -45,14 +45,14 @@ describe('Effective Date Time component', () => {
     valid: false,
     isFutureEffective: true,
     // effective date is 5 days from now
-    dateTimeString: new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000).toISOString()
+    dateTimeString: new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000).toISOString()
   }
 
   const dateTimeUnder = {
     valid: false,
     isFutureEffective: true,
     // effective date is less than 3 minutes from now
-    dateTimeString: new Date(today.getTime()).toISOString()
+    dateTimeString: new Date(now.getTime()).toISOString()
   }
 
   const dateTimeOver = {
@@ -63,28 +63,24 @@ describe('Effective Date Time component', () => {
 
   beforeAll(() => {
     // init store
-    store.state.stateModel.currentJsDate = today
+    store.state.stateModel.currentJsDate = now
   })
 
   beforeEach(() => {
     const localVue = createLocalVue()
 
-    wrapperFactory = (propsData) => {
-      return mount(EffectiveDateTime, {
-        propsData: { ...propsData },
-        localVue,
-        store,
-        vuetify
+    wrapperFactory = (stateValues) => {
+      // apply state values
+      Object.keys(stateValues).forEach((key) => {
+        store.state.stateModel[key] = stateValues[key]
       })
+      return mount(EffectiveDateTime, { localVue, store, vuetify })
     }
-  })
-
-  afterEach(async () => {
   })
 
   it('confirms no default Date-Time Selection', () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeDefault
     })
 
@@ -100,7 +96,7 @@ describe('Effective Date Time component', () => {
 
   it('confirms the selector fields are disabled if future effective is NOT selected', async () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeDefault
     })
 
@@ -117,7 +113,7 @@ describe('Effective Date Time component', () => {
 
   it('confirms the selector fields are NOT disabled if future effective is selected', async () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeDefault
     })
 
@@ -135,7 +131,7 @@ describe('Effective Date Time component', () => {
 
   it('confirms the selector fields are toggled to disabled if Immediate Filing is selected', async () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeDefault
     })
 
@@ -162,7 +158,7 @@ describe('Effective Date Time component', () => {
 
   it('emits a valid state when Immediate is selected', async () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeDefault
     })
 
@@ -180,7 +176,7 @@ describe('Effective Date Time component', () => {
 
   it('emits an invalid state when Future Effective is selected and no date is entered', async () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeDefault
     })
 
@@ -190,9 +186,9 @@ describe('Effective Date Time component', () => {
     await radioIsFutureEffective.trigger('click')
 
     // set everything except date
-    await wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
-    await wrapper.vm.$refs.minuteSelector.setValue(today.getMinutes().toString())
-    await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
+    await wrapper.vm.$refs.hourSelector.setValue((now.getHours() % 12).toString())
+    await wrapper.vm.$refs.minuteSelector.setValue(now.getMinutes().toString())
+    await wrapper.find('#period-selector').setValue(now.getHours() >= 12 ? 'pm' : 'am')
 
     // Verify the last Valid event is false
     // Note that it is important to test 'event === false' to check it is not 0 (zero) or other falsy evaluation
@@ -201,7 +197,7 @@ describe('Effective Date Time component', () => {
 
   it('emits a invalid state when Future Effective is selected and no hour is entered', async () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeDefault
     })
 
@@ -211,9 +207,9 @@ describe('Effective Date Time component', () => {
     await radioIsFutureEffective.trigger('click')
 
     // set everything except hour
-    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(today))
-    await wrapper.vm.$refs.minuteSelector.setValue(today.getMinutes().toString())
-    await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
+    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(now))
+    await wrapper.vm.$refs.minuteSelector.setValue(now.getMinutes().toString())
+    await wrapper.find('#period-selector').setValue(now.getHours() >= 12 ? 'pm' : 'am')
 
     // Verify the last Valid event is false
     // Note that it is important to test 'event === false' to check it is not 0 (zero) or other falsy evaluation
@@ -222,7 +218,7 @@ describe('Effective Date Time component', () => {
 
   it('emits a invalid state when Future Effective is selected and no minute is entered', async () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeDefault
     })
 
@@ -232,9 +228,9 @@ describe('Effective Date Time component', () => {
     await radioIsFutureEffective.trigger('click')
 
     // set everything except minute
-    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(today))
-    await wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
-    await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
+    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(now))
+    await wrapper.vm.$refs.hourSelector.setValue((now.getHours() % 12).toString())
+    await wrapper.find('#period-selector').setValue(now.getHours() >= 12 ? 'pm' : 'am')
 
     // Verify the last Valid event is false
     // Note that it is important to test 'event === false' to check it is not 0 (zero) or other falsy evaluation
@@ -244,7 +240,7 @@ describe('Effective Date Time component', () => {
   // FUTURE: this works locally but not in GHA; fix later
   xit('emits a valid state when Future Effective is selected and valid date and time are entered', async () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeDefault
     })
 
@@ -254,10 +250,10 @@ describe('Effective Date Time component', () => {
     await radioIsFutureEffective.trigger('click')
 
     // set everything
-    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(today))
-    await wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
-    await wrapper.vm.$refs.minuteSelector.setValue(today.getMinutes().toString())
-    await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
+    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(now))
+    await wrapper.vm.$refs.hourSelector.setValue((now.getHours() % 12).toString())
+    await wrapper.vm.$refs.minuteSelector.setValue(now.getMinutes().toString())
+    await wrapper.find('#period-selector').setValue(now.getHours() >= 12 ? 'pm' : 'am')
 
     // Verify the last Valid event is true
     expect(getLastEvent(wrapper, 'valid')).toEqual(true)
@@ -266,7 +262,7 @@ describe('Effective Date Time component', () => {
   // FUTURE: It was decided not to load FED from draft for now
   xit('emits a valid state when component mounts with valid Effective Date Time', async () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeValid
     })
 
@@ -279,7 +275,7 @@ describe('Effective Date Time component', () => {
 
   it('emits a invalid state when component mounts with invalid Effective Date ', async () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeOver
     })
 
@@ -293,7 +289,7 @@ describe('Effective Date Time component', () => {
   // FUTURE: this works locally but not in GHA; fix later
   xit('displays an invalid Date Alert when the date is invalid', async () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeOver
     })
 
@@ -311,7 +307,7 @@ describe('Effective Date Time component', () => {
 
   it('displays a validation error when the effective time is less than 3 minutes from now', async () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeUnder
     })
 
@@ -321,11 +317,11 @@ describe('Effective Date Time component', () => {
     await radioIsFutureEffective.trigger('click')
 
     // set current date and time
-    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(today))
-    await wrapper.vm.$refs.hourSelector.setValue((today.getHours() % 12).toString())
-    await wrapper.vm.$refs.minuteSelector.setValue((today.getMinutes()).toString())
-    await wrapper.find('#period-selector').setValue(today.getHours() >= 12 ? 'pm' : 'am')
-    wrapper.vm.dateText = wrapper.vm.dateToYyyyMmDd(today)
+    await wrapper.find('#date-text-field').setValue(wrapper.vm.dateToYyyyMmDd(now))
+    await wrapper.vm.$refs.hourSelector.setValue((now.getHours() % 12).toString())
+    await wrapper.vm.$refs.minuteSelector.setValue((now.getMinutes()).toString())
+    await wrapper.find('#period-selector').setValue(now.getHours() >= 12 ? 'pm' : 'am')
+    wrapper.vm.dateText = wrapper.vm.dateToYyyyMmDd(now)
 
     // wait a bit for validation to complete
     await flushPromises()
@@ -342,7 +338,7 @@ describe('Effective Date Time component', () => {
 
   it('displays a validation error when the effective time is more than 10 days from now', async () => {
     const wrapper = wrapperFactory({
-      currentJsDate: today,
+      currentJsDate: now,
       effectiveDateTime: dateTimeOver
     })
 

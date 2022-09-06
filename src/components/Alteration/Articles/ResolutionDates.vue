@@ -147,7 +147,7 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   readonly hasRightsOrRestrictions: boolean
 
   // Global getters
-  @Getter getBusinessFoundingDate!: string
+  @Getter getBusinessFoundingDate!: string // actually date-time
   @Getter getCurrentDate!: string
   @Getter haveNewResolutionDates!: boolean
   @Getter getIsResolutionDatesValid!: boolean

@@ -73,7 +73,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { DateMixin } from '@/mixins/'
@@ -102,12 +102,8 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
     minuteSelector: FormFieldType // used in unit tests
   }
 
-  /** Current JS date, expected to be passed in periodically. */
-  @Prop() readonly currentJsDate: Date
-
-  /** Effective Date Time object, for initial config. */
-  @Prop() readonly effectiveDateTime: EffectiveDateTimeIF
-
+  @Getter getCurrentJsDate!: Date
+  @Getter getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter getAppValidate!: boolean
 
   // Declaration for template
@@ -194,8 +190,8 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
    * This is a non-form validation - it needs to be checked for overall component validity.
    */
   get isUnderTime (): boolean {
-    if (this.effectiveDateTime.dateTimeString) {
-      const date = new Date(this.effectiveDateTime.dateTimeString)
+    if (this.getEffectiveDateTime.dateTimeString) {
+      const date = new Date(this.getEffectiveDateTime.dateTimeString)
       // use max seconds and milliseconds for comparison
       date.setSeconds(59, 999)
       return (date.getTime() < this.minDate.getTime())
@@ -208,8 +204,8 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
    * This is a non-form validation - it needs to be checked for overall component validity.
    */
   get isOverTime (): boolean {
-    if (this.effectiveDateTime.dateTimeString) {
-      const date = new Date(this.effectiveDateTime.dateTimeString)
+    if (this.getEffectiveDateTime.dateTimeString) {
+      const date = new Date(this.getEffectiveDateTime.dateTimeString)
       // use min seconds and milliseconds for comparison
       date.setSeconds(0, 0)
       return (date.getTime() > this.maxDate.getTime())
@@ -295,18 +291,18 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
     this.emitValid()
   }
 
-  @Watch('currentJsDate', { immediate: true })
+  @Watch('getCurrentJsDate', { immediate: true })
   onCurrentJsDateChanged (val: Date) {
     // safety check (val may be null)
     if (val) {
       // set new min date
-      const minDate = new Date()
+      const minDate = new Date(val) // make a copy
       // add 3 minutes
       minDate.setTime(val.getTime() + this.MIN_DIFF_MINUTES * 60 * 1000)
       this.minDate = minDate
 
       // set new max date
-      const maxDate = new Date()
+      const maxDate = new Date(val) // make a copy
       // add 10 days
       maxDate.setTime(val.getTime() + this.MAX_DIFF_DAYS * 24 * 60 * 60 * 1000)
       this.maxDate = maxDate
