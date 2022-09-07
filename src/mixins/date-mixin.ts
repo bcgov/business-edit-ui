@@ -49,7 +49,7 @@ export default class DateMixin extends Mixins(CommonMixin) {
     // Ref: https://stackoverflow.com/questions/15141762/
     const date = new Date(Date.UTC(year, month, day, hours, minutes, milliseconds))
     const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }))
-    const tzDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/Vancouver' }))
+    const tzDate = new Date(date.toLocaleString('en-US', { timeZone: 'US/Pacific' }))
     const offset = utcDate.getTime() - tzDate.getTime()
     date.setTime(date.getTime() + offset)
 
@@ -101,7 +101,7 @@ export default class DateMixin extends Mixins(CommonMixin) {
     // NB: some versions of Node have only en-US locale
     // so use that and convert results accordingly
     const dateStr = date.toLocaleDateString('en-US', {
-      timeZone: 'America/Vancouver',
+      timeZone: 'US/Pacific',
       month: 'numeric', // 12
       day: 'numeric', // 31
       year: 'numeric' // 2020
@@ -137,7 +137,7 @@ export default class DateMixin extends Mixins(CommonMixin) {
     // NB: some versions of Node have only en-US locale
     // so use that and convert results accordingly
     let dateStr = date.toLocaleDateString('en-US', {
-      timeZone: 'America/Vancouver',
+      timeZone: 'US/Pacific',
       weekday: showWeekday ? 'long' : undefined, // Thursday or nothing
       month: longMonth ? 'long' : 'short', // December or Dec
       day: 'numeric', // 31
@@ -162,7 +162,7 @@ export default class DateMixin extends Mixins(CommonMixin) {
     // NB: some versions of Node have only en-US locale
     // so use that and convert results accordingly
     let timeStr = date.toLocaleTimeString('en-US', {
-      timeZone: 'America/Vancouver',
+      timeZone: 'US/Pacific',
       hour: 'numeric', // 11
       minute: '2-digit', // 00
       hour12: true // a.m./p.m.
