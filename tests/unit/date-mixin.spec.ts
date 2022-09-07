@@ -1,7 +1,6 @@
 /* eslint max-len: 0 */
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { register, unregister, options, _Date } from 'timezone-mock'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store/'
 import ErrorContact from '@/components/common/ErrorContact.vue'
@@ -11,9 +10,6 @@ Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
-
-// fallback for timezone-mock
-// options({ fallbackFn: date => new _Date(date) })
 
 describe('Date Mixin', () => {
   let vm: any
@@ -32,23 +28,11 @@ describe('Date Mixin', () => {
     expect(vm.createUtcDate(2021, 6, 1, 0, 0).toISOString()).toBe('2021-07-01T07:00:00.000Z') // PDT
   })
 
-  it.only('returns correct values for yyyyMmDdToDate()', () => {
+  it('returns correct values for yyyyMmDdToDate()', () => {
     expect(vm.yyyyMmDdToDate(null)).toBeNull()
-
-    // verify conversions from Eastern timezone
-    register('US/Eastern')
-    expect(vm.yyyyMmDdToDate('12345678901')).toBeNull()
-    expect(vm.yyyyMmDdToDate('2021-01-01').toISOString()).toEqual('2021-01-01T05:00:00.000Z') // EST
-    expect(vm.yyyyMmDdToDate('2021-07-01').toISOString()).toEqual('2021-07-01T04:00:00.000Z') // EDT
-
-    // verify conversions from Pacific timezone
-    register('US/Pacific')
     expect(vm.yyyyMmDdToDate('12345678901')).toBeNull()
     expect(vm.yyyyMmDdToDate('2021-01-01').toISOString()).toEqual('2021-01-01T08:00:00.000Z') // PST
     expect(vm.yyyyMmDdToDate('2021-07-01').toISOString()).toEqual('2021-07-01T07:00:00.000Z') // PDT
-
-    // return to normal Date object behaviour
-    unregister()
   })
 
   it('returns correct values for mmmDdYyyyToDate()', () => {
