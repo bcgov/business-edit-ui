@@ -450,7 +450,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         business: {
           identifier: this.getBusinessId
         },
-        contactPoint: this.getContactPoint,
         offices: {
           businessOffice: {
             mailingAddress: this.getOfficeAddresses.businessOffice?.mailingAddress,

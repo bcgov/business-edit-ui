@@ -9,7 +9,6 @@ interface ConversionIF {
     identifier: string
     naics?: NaicsIF
   }
-  contactPoint: ContactPointIF
   courtOrder?: string
   nameRequest?: NameRequestIF
   offices: AddressesIF
