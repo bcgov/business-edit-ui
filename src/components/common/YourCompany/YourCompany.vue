@@ -448,9 +448,7 @@ export default class YourCompany extends Mixins(
   get expiryDate (): string {
     const expiry = this.getNameRequest?.expiry
     if (expiry) {
-      // FUTURE: use date mixin method to create date
-      const date = new Date(expiry)
-      return this.dateToPacificDateTime(date)
+      return this.apiToPacificDateTime(expiry)
     }
     return null
   }

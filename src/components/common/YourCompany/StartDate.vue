@@ -134,10 +134,9 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
 
   /** The minimum start date that can be entered (Up to 2 years ago today). */
   protected get startDateMin (): Date {
-    const startDateMin = new Date(this.getCurrentJsDate)
+    const startDateMin = new Date(this.getCurrentJsDate) // make a copy
     startDateMin.setFullYear(startDateMin.getUTCFullYear() - 2)
     startDateMin.setHours(0, 0, 0) // Set time to 0 for accurate Date Rules comparison
-
     return startDateMin
   }
 
@@ -148,7 +147,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
 
   /** The maximum start date that can be entered (Up to 90 days from today). */
   protected get startDateMax (): Date {
-    const startDateMax = new Date(this.getCurrentJsDate)
+    const startDateMax = new Date(this.getCurrentJsDate) // make a copy
     startDateMax.setDate(startDateMax.getUTCDate() + 90)
     return startDateMax
   }
@@ -170,8 +169,8 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
         this.isCorrected = true
         return this.yyyyMmDdToPacificDate(this.getCorrectionStartDate, true)
       } else if (this.getBusinessFoundingDate) {
-        // getBusinessFoundingDate is is stored in utc time for BEN's and COOP's
-        // For firms only the date is valid and it is in pacific time.
+        // Business Founding Date is is stored in UTC time for BENs and COOPs.
+        // For firms only, the date is valid and is in Pacific Time.
         return this.yyyyMmDdToPacificDate(this.getBusinessFoundingDate.slice(0, 10), true)
       }
     }

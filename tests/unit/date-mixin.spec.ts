@@ -35,6 +35,12 @@ describe('Date Mixin', () => {
     expect(vm.yyyyMmDdToDate('2021-07-01').toISOString()).toEqual('2021-07-01T07:00:00.000Z') // PDT
   })
 
+  it('returns correct values for mmmDdYyyyToDate()', () => {
+    expect(vm.mmmDdYyyyToDate(null)).toBeNull()
+    expect(vm.mmmDdYyyyToDate('January 1, 2021').toISOString()).toEqual('2021-01-01T08:00:00.000Z') // PST
+    expect(vm.mmmDdYyyyToDate('July 1, 2021').toISOString()).toEqual('2021-07-01T07:00:00.000Z') // PDT
+  })
+
   // FUTURE: this works locally but not in GHA; fix later
   xit('returns correct values for dateToYyyyMmDd()', () => {
     expect(vm.dateToYyyyMmDd(null)).toBeNull()
