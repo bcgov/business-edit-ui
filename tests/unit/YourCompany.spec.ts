@@ -237,7 +237,7 @@ describe('YourCompany in a SP conversion', () => {
   it('renders the YourCompany component and default subcomponents', async () => {
     expect(wrapper.findComponent(YourCompany).exists()).toBeTruthy()
     expect(wrapper.findComponent(ChangeBusinessType).exists()).toBeTruthy()
-    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBeTruthy()
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBeFalsy()
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBeTruthy()
     expect(wrapper.findComponent(ConversionNOB).exists()).toBeTruthy()
     // Not currently editing Company Name

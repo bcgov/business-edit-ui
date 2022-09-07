@@ -905,9 +905,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(cloneDeep(orgPersons))
 
-    // store current Business Contact
-    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
-
     // store Certify State
     this.setCertifyState({
       valid: false,
