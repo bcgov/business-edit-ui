@@ -1,16 +1,5 @@
 <template>
   <section id="business-start-date">
-    <!-- <v-row no-gutters class="mb-6">
-      <v-col cols="3" class="pr-2">
-        <label :class="{'error-text': invalidSection}">
-          <strong>Registration Date</strong>
-        </label>
-      </v-col>
-      <v-col cols="9">
-        <span class="info-text mr-1">{{ businessFoundingDate }}</span>
-      </v-col>
-    </v-row> -->
-
     <v-row no-gutters>
       <v-col cols="3" class="pr-2">
         <label :class="{'error-text': invalidSection}">
@@ -148,12 +137,6 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   protected onEditMode = false
   protected isCorrected = null
   protected newCorrectedStartDate = null as string // date is "Month Day, Year"
-
-  // /** The business founding date. */
-  // get businessFoundingDate (): string {
-  //   const date = this.apiToDate(this.getBusinessFoundingDateTime)
-  //   return this.dateToPacificDate(date, true)
-  // }
 
   /** The minimum start date that can be entered (up to 2 years before reg date). */
   get minDate (): string {
