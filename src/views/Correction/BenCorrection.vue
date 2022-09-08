@@ -134,7 +134,9 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMix
       LegalServices.fetchNameTranslations(this.getBusinessId),
       LegalServices.fetchResolutions(this.getBusinessId)
     ])
+
     if (items.length !== 7) throw new Error('Failed to fetch entity snapshot')
+
     return {
       businessInfo: items[0],
       authInfo: items[1],

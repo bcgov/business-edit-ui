@@ -86,8 +86,8 @@
           title="Resolution or Court Order Date"
           nudge-right="80"
           nudge-top="15"
-          :minDate="getBusinessFoundingDate"
-          :maxDate="getCurrentDate"
+          :minDate="minDate"
+          :maxDate="maxDate"
           @emitDate="onDateEmitted($event)"
           @emitCancel="isAdding = false"
         />
@@ -119,7 +119,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { CommonMixin } from '@/mixins/'
+import { CommonMixin, DateMixin } from '@/mixins/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF } from '@/interfaces/'
@@ -129,7 +129,7 @@ import { ActionBindingIF } from '@/interfaces/'
     DatePickerShared
   }
 })
-export default class ResolutionDates extends Mixins(CommonMixin) {
+export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   /** New resolution dates. */
   @Prop({ default: () => [] })
   readonly addedDates: string[]
@@ -147,7 +147,7 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   readonly hasRightsOrRestrictions: boolean
 
   // Global getters
-  @Getter getBusinessFoundingDate!: string // actually date-time
+  @Getter getBusinessFoundingDateTime!: string
   @Getter getCurrentDate!: string
   @Getter haveNewResolutionDates!: boolean
   @Getter getIsResolutionDatesValid!: boolean
@@ -160,6 +160,17 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   // Local properties
   displayPreviousDates = false
   isAdding = false
+
+  /** The minimum date that can be entered (business founding date). */
+  get minDate (): string {
+    const date = this.apiToDate(this.getBusinessFoundingDateTime)
+    return this.dateToYyyyMmDd(date)
+  }
+
+  /** The maximum date that can be entered (today). */
+  get maxDate (): string {
+    return this.getCurrentDate
+  }
 
   get haveAddedDates (): boolean {
     return (this.addedDates?.length > 0)

@@ -524,7 +524,10 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
 
     // store Business Information for BEN corrections
     if (this.isBenCorrectionFiling) {
-      this.setBusinessInformation({ ...filing.business })
+      this.setBusinessInformation({
+        ...entitySnapshot.businessInfo,
+        ...filing.business
+      })
     }
 
     // store Business Information for firm corrections

@@ -264,6 +264,7 @@ describe('YourCompany in a SP correction', () => {
     store.state.stateModel.validationFlags.componentValidate = true
     store.state.stateModel.validationFlags.flagsCompanyInfo = flagsCompanyInfo
     store.state.stateModel.businessInformation.foundingDate = '2021-04-13T00:00:00+00:00'
+    store.state.stateModel.businessInformation.startDate = '2021-04-13'
     wrapper = mount(YourCompany, { vuetify, store, localVue })
   })
 

@@ -88,8 +88,8 @@
                     :nudgeRight="40"
                     :nudgeTop="85"
                     :initialValue="resolutionDateText"
-                    :minDate="dateToYyyyMmDd(resolutionDateMin)"
-                    :maxDate="dateToYyyyMmDd(resolutionDateMax)"
+                    :minDate="resolutionDateMin"
+                    :maxDate="resolutionDateMax"
                     :inputRules="resolutionDateRules"
                     @emitDateSync="onResolutionDateSync($event)"
                   />
@@ -176,8 +176,8 @@
                   :nudgeRight="40"
                   :nudgeTop="85"
                   :initialValue="signingDate"
-                  :minDate="dateToYyyyMmDd(signatureDateMin)"
-                  :maxDate="dateToYyyyMmDd(signatureDateMax)"
+                  :minDate="signatureDateMin"
+                  :maxDate="signatureDateMax"
                   :inputRules="signatureDateRules"
                   @emitDateSync="onSigningDateSync($event)"
                 />
@@ -207,9 +207,8 @@ import { SpecialResolutionIF, PersonIF } from '@bcrs-shared-components/interface
 })
 export default class CreateSpecialResolution extends Mixins(DateMixin) {
   @Getter getResource!: ResourceIF
-  @Getter getBusinessFoundingDate!: string // actually date-time
+  @Getter getBusinessFoundingDateTime!: string
   @Getter getCurrentDate!: string
-  @Getter getCurrentJsDate!: string
   @Getter getSpecialResolution!: SpecialResolutionIF
   @Getter getComponentValidate!: boolean
   @Getter getSpecialResolutionFormValid!: boolean
@@ -243,6 +242,16 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   readonly middleNameRules = this.nameRules('Middle Name', false)
   readonly lastNameRules = this.nameRules('Last Name')
 
+  /** Validations rules for resolution date field. */
+  readonly resolutionDateRules = [
+    (v: string) => !!v || 'Resolution date is required'
+  ]
+
+  /** Validations rules for signing date field. */
+  readonly signatureDateRules = [
+    (v: string) => !!v || 'Signature date is required'
+  ]
+
   get helpSection (): HelpSectionIF {
     return this.getResource.changeData?.specialResolution?.helpSection || {}
   }
@@ -267,51 +276,19 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     return (this.getComponentValidate && !this.getSpecialResolutionFormValid)
   }
 
-  /**
-   * The minimum date that can be entered.
-   * Can't be earlier than incorporation date.
-   * Date only - time is 12:00 am Pacific.
-   */
-  get resolutionDateMin (): Date {
-    /** TODO: Needs to be after the most recent filing date, I don't think the business founding date is correct
-     * Will be fixed in 13231 */
-
-    // convert date to YYYY-MM-DD and back to date
-    // to set time to 12:00 am Pacific time
-    const date = this.apiToDate(this.getBusinessFoundingDate)
-    const yyyyMmDd = this.dateToYyyyMmDd(date)
-    return this.yyyyMmDdToDate(yyyyMmDd)
+  /** The minimum resolution date that can be entered (incorporation date). */
+  get resolutionDateMin (): string {
+    /**
+     * TODO: Needs to be after the most recent filing date, I don't think the business founding date is correct
+     * Will be fixed in 13231
+     */
+    const date = this.apiToDate(this.getBusinessFoundingDateTime)
+    return this.dateToYyyyMmDd(date)
   }
 
-  /**
-   * The maximum date that can be entered (today).
-   * Date only - time is 12:00 am Pacific.
-   */
-  get resolutionDateMax (): Date {
-    return this.yyyyMmDdToDate(this.getCurrentDate)
-  }
-
-  /** Validations rules for resolution date field. */
-  get resolutionDateRules (): Array<Function> {
-    return [
-      (v: string) => !!v || 'Resolution date is required',
-      (v: string) =>
-        this.isValidDateRange(this.resolutionDateMin,
-          this.resolutionDateMax,
-          v) ||
-        `Date should be between ${this.dateToPacificDate(this.resolutionDateMin, true)} and
-         ${this.dateToPacificDate(this.resolutionDateMax, true)}`
-    ]
-  }
-
-  /**
-   * True if date is >= the minimum (ie, today) and <= the maximum (ie, the 10th day).
-   * This is used for Vue form validation (in date rules above).
-   */
-  private isValidDateRange (minDate: Date, maxDate: Date, dateStrToValidate: string): boolean {
-    if (!dateStrToValidate) return true
-    const date = this.mmmDdYyyyToDate(dateStrToValidate)
-    return (date >= minDate && date <= maxDate)
+  /** The maximum resolution date that can be entered (today). */
+  get resolutionDateMax (): string {
+    return this.getCurrentDate
   }
 
   get resolutionTextRules (): Array<Function> {
@@ -349,37 +326,14 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     ]
   }
 
-  /**
-   * The minimum date that can be entered (resolution date).
-   * Date only - time is 12:00 am Pacific.
-   */
-  get signatureDateMin (): Date {
-    if (this.resolutionDateText) {
-      const resolutionDate = this.yyyyMmDdToDate(this.resolutionDateText)
-      return resolutionDate
-    }
-    return this.yyyyMmDdToDate(this.getCurrentDate)
+  /** The minimum signature date that can be entered (resolution date or today). */
+  get signatureDateMin (): string {
+    return this.resolutionDateText || this.getCurrentDate
   }
 
-  /**
-   * The maximum date that can be entered (today).
-   * Date only - time is 12:00 am Pacific.
-   */
-  get signatureDateMax (): Date {
-    return this.yyyyMmDdToDate(this.getCurrentDate)
-  }
-
-  /** Validations rules for signing date field. */
-  get signatureDateRules (): Array<Function> {
-    return [
-      (v: string) => !!v || 'Signature date is required',
-      (v: string) =>
-        this.isValidDateRange(this.signatureDateMin,
-          this.signatureDateMax,
-          v) ||
-        `Date should be between ${this.dateToPacificDate(this.signatureDateMin, true)} and
-         ${this.dateToPacificDate(this.signatureDateMax, true)}`
-    ]
+  /** The maximum signature date that can be entered (today). */
+  get signatureDateMax (): string {
+    return this.getCurrentDate
   }
 
   /** Called to update signing date. */
