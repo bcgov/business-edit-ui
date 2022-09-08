@@ -17,35 +17,41 @@ localVue.use(VueRouter)
 const router: any = mockRouter.mock()
 const store: any = getVuexStore()
 
-describe('Start Date', () => {
+describe('Business Start Date', () => {
   let wrapper: any
-
-  const correctionInformation = {
-    comment: 'Test',
-    correctedFilingId: 1,
-    correctedFilingDate: '2021-01-01T00:00:00.000000+00:00',
-    correctedFilingType: 'correction',
-    type: 'STAFF',
-    startDate: ''
-  }
 
   beforeEach(async () => {
     store.state.stateModel.businessInformation.foundingDate = '2021-07-01T00:00:00.000000+00:00'
+    store.state.stateModel.tombstone.entityType = 'SP'
     wrapper = mount(BusinessStartDate, { store, vuetify, localVue, router })
     await flushPromises()
   })
 
-  it('render the component correctly for change filings', async () => {
-    store.state.stateModel.tombstone.filingType = 'change'
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('render the component correctly for firm change filings', async () => {
+    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     await router.push({ name: 'change' })
     await Vue.nextTick()
 
     expect(wrapper.find('.pr-2').text()).toBe('Business Start Date')
     expect(wrapper.find('.info-text').text()).toBe('Unknown')
-    expect(wrapper.find('#start-changes-btn').exists()).toBe(false)
+    expect(wrapper.find('#start-changes-btn').text()).toBe('Change')
   })
 
-  it('renders the component correctly for correction filings', async () => {
+  it('render the component correctly for firm conversion filings', async () => {
+    store.state.stateModel.tombstone.filingType = 'conversion'
+    await router.push({ name: 'conversion' })
+    await Vue.nextTick()
+
+    expect(wrapper.find('.pr-2').text()).toBe('Business Start Date')
+    expect(wrapper.find('.info-text').text()).toBe('Unknown')
+    expect(wrapper.find('#start-changes-btn').text()).toBe('Change')
+  })
+
+  it('renders the component correctly for firm correction filings', async () => {
     store.state.stateModel.tombstone.filingType = 'correction'
     await router.push({ name: 'correction' })
     await Vue.nextTick()
@@ -76,9 +82,5 @@ describe('Start Date', () => {
 
     expect(wrapper.find('.v-chip__content').text()).toBe('Corrected')
     expect(wrapper.find('#start-undo-btn').text()).toBe('Undo')
-  })
-
-  afterEach(() => {
-    wrapper.destroy()
   })
 })

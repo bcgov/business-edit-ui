@@ -64,13 +64,13 @@
             <v-menu offset-y left nudge-bottom="4" v-model="dropdown">
               <template v-slot:activator="{ on }">
                 <v-btn text small color="primary" id="nob-menu-btn" v-on="on">
-                  <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                  <v-icon>{{ dropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                 </v-btn>
               </template>
               <v-btn text color="primary" id="more-changes-btn" class="py-5"
                 @click="onChangeClicked(); dropdown = false">
                 <v-icon small color="primary">mdi-pencil</v-icon>
-                <span>{{ editLabel }}</span>
+                <span>Change</span>
               </v-btn>
             </v-menu>
           </div>

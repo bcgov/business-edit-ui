@@ -241,7 +241,7 @@ describe('summary mode', () => {
     await moreBtn.trigger('click')
 
     const correctBtn = actions.find('.more-actions #btn-more-actions-edit')
-    expect(correctBtn.find('span').text()).toBe('Correct')
+    expect(correctBtn.find('span').text()).toBe('Change')
 
     wrapper.destroy()
   })

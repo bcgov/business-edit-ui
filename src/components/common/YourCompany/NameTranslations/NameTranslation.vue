@@ -16,11 +16,12 @@
       </v-col>
       <v-col cols="7" v-if="draftTranslations && translationsExceptRemoved.length">
         <div class="info-text text-uppercase" v-for="(translation, index) in translationsExceptRemoved"
-          :key="`name_translation_${index}`">{{translation.name}}</div>
+          :key="`name_translation_${index}`">{{ translation.name }}</div>
       </v-col>
       <v-col cols="7" class="info-text" v-else>
         No name translations
       </v-col>
+
       <!-- Actions -->
       <v-col cols="2" class="mt-n2" v-if="!hasNameTranslationChange && !isSummaryMode">
         <div class="actions mr-4">
@@ -30,7 +31,7 @@
             @click="isEditing = true"
           >
             <v-icon small>mdi-pencil</v-icon>
-            <span>{{editLabel}}</span>
+            <span>{{ editLabel }}</span>
           </v-btn>
         </div>
       </v-col>
@@ -64,7 +65,7 @@
                 >
                   <v-list-item-subtitle>
                     <v-icon small>mdi-pencil</v-icon>
-                    <span class="ml-1">{{editLabel}}</span>
+                    <span class="ml-1">Change</span>
                   </v-list-item-subtitle>
                 </v-list-item>
               </v-list>
