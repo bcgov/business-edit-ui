@@ -282,7 +282,7 @@
     </div>
 
     <!-- Business Contact Information -->
-    <template v-if="!isFirmConversionFiling">
+    <template v-if="showBusinessContactInformation">
       <v-divider class="mx-4 my-1" />
 
       <div id="contact-info-section" class="section-container" :class="{'invalid-section': invalidContactSection}">
@@ -505,6 +505,20 @@ export default class YourCompany extends Mixins(
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling ||
       this.isSpecialResolutionFiling
+    )
+  }
+
+  /**
+   * Whether to show Business Contact Information section.
+   * Currently excluding isFirmConversionFiling
+   */
+  get showBusinessContactInformation (): boolean {
+    return (
+      this.isAlterationFiling ||
+      this.isFirmChangeFiling ||
+      this.isFirmCorrectionFiling ||
+      this.isSpecialResolutionFiling ||
+      this.isBenCorrectionFiling
     )
   }
 
