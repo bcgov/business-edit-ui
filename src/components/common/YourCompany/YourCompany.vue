@@ -281,14 +281,16 @@
       <OfficeAddresses :invalidSection="invalidAddressSection" />
     </div>
 
-    <v-divider class="mx-4 my-1" />
-
     <!-- Business Contact Information -->
-    <div id="contact-info-section" class="section-container" :class="{'invalid-section': invalidContactSection}">
-      <BusinessContactInfo
-        :invalidSection="invalidContactSection"
-      />
-    </div>
+    <template v-if="showBusinessContactInformation">
+      <v-divider class="mx-4 my-1" />
+
+      <div id="contact-info-section" class="section-container" :class="{'invalid-section': invalidContactSection}">
+        <BusinessContactInfo
+          :invalidSection="invalidContactSection"
+        />
+      </div>
+    </template>
 
     <!-- Folio Information (all except SP or GP) -->
     <template v-if="isPremiumAccount && !isEntityTypeFirm">
@@ -503,6 +505,20 @@ export default class YourCompany extends Mixins(
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling ||
       this.isSpecialResolutionFiling
+    )
+  }
+
+  /**
+   * Whether to show Business Contact Information section.
+   * Currently excluding isFirmConversionFiling
+   */
+  get showBusinessContactInformation (): boolean {
+    return (
+      this.isAlterationFiling ||
+      this.isFirmChangeFiling ||
+      this.isFirmCorrectionFiling ||
+      this.isSpecialResolutionFiling ||
+      this.isBenCorrectionFiling
     )
   }
 

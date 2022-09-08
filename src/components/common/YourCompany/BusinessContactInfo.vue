@@ -7,9 +7,9 @@
     :editLabel="editLabel"
     :editedLabel="editSavedLabel"
     :disableActions="isCorrectionFiling"
-    :disableActionTooltip="isFirmChangeFiling || isFirmConversionFiling"
+    :disableActionTooltip="isFirmChangeFiling"
     :invalidSection="invalidSection"
-    :optionalPhone="isAlterationFiling || isFirmChangeFiling || isFirmConversionFiling"
+    :optionalPhone="isAlterationFiling || isFirmChangeFiling"
     @isEditingContact="isEditingContact = $event"
     @contactInfoChange="onContactInfoChange($event)"
   />
@@ -68,7 +68,6 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
       if (
         this.isAlterationFiling ||
         this.isFirmChangeFiling ||
-        this.isFirmConversionFiling ||
         this.isSpecialResolutionFiling
       ) {
         await AuthServices.updateContactInfo(contactInfo, this.getBusinessId)

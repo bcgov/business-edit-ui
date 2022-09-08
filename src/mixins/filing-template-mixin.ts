@@ -450,7 +450,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         business: {
           identifier: this.getBusinessId
         },
-        contactPoint: this.getContactPoint,
         offices: {
           businessOffice: {
             mailingAddress: this.getOfficeAddresses.businessOffice?.mailingAddress,
@@ -905,9 +904,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // (it is managed separately and added to the filing in buildConversionFiling())
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(cloneDeep(orgPersons))
-
-    // store current Business Contact
-    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
 
     // store Certify State
     this.setCertifyState({
