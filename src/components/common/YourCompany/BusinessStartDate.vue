@@ -15,14 +15,14 @@
         </v-chip>
       </v-col>
 
-      <!-- Info tooltip-->
       <v-col cols="9">
+        <!-- display mode + optional tooltip -->
         <span v-if="!onEditMode" class="info-text mr-1">{{ businessStartDate }}</span>
         <v-tooltip v-if="isFirmChangeFiling || isFirmConversionFiling"
-                    top
-                    content-class="top-tooltip"
-                    transition="fade-transition"
-                    nudge-right="3"
+                   top
+                   content-class="top-tooltip"
+                   transition="fade-transition"
+                   nudge-right="3"
         >
           <template v-slot:activator="{ on }">
             <v-icon v-on="on" class="info-icon">mdi-information-outline</v-icon>
@@ -30,7 +30,7 @@
           <span>If the business start date is incorrect, it must be corrected through a correction filing.</span>
         </v-tooltip>
 
-        <!-- Edit mode -->
+        <!-- edit mode -->
         <template v-if="onEditMode">
           <div cols="12" sm="3" class="pr-4">
             <label class="start-date-title title-label">Start Date</label>
@@ -38,23 +38,25 @@
               Enter the start date of the business. The start date can be
               <v-tooltip top max-width="20rem" content-class="top-tooltip" transition="fade-transition">
                 <template v-slot:activator="{ on }">
-                  <span v-on="on" class="tool-tip dotted-underline">no more than 2 years in the past</span>
+                  <span v-on="on" class="tool-tip dotted-underline">up to 2 years before the Registration Date</span>
                 </template>
-                <span>Choose the oldest date possible even if the actual start date is older than 2 years in the
-                  past.</span>
+                <span>Choose the oldest date possible even if the actual start date is older than 2 years before
+                  the Registration Date.</span>
               </v-tooltip>
-              and 90 days in the future. Make certain that this is the correct date as it cannot be easily
-              corrected afterwards.
+              and up 90 days after the Registration Date. Make certain that this is the correct date as it cannot be
+              easily corrected afterwards.
             </p>
             <DatePickerShared
               title="Start Date"
               nudge-right="80"
               nudge-top="15"
-              :minDate="startDateMinStr"
-              :maxDate="startDateMaxStr"
+              :minDate="minDate"
+              :maxDate="maxDate"
               @emitDate="onOkClicked($event)"
             />
           </div>
+
+          <!-- inner buttons -->
           <div class="float-right mb-2">
             <v-btn large color="primary" id="start-done-btn" class="mr-2" @click="onDoneClicked()">
               <span>Done</span>
@@ -65,35 +67,38 @@
           </div>
         </template>
 
+        <!-- outer buttons -->
         <span class="mt-n2 mr-n3 float-right">
-          <!-- Correct changes button -->
+          <!-- Correct Changes button -->
           <v-btn v-if="isCorrectionFiling && !onEditMode && !isCorrected" text color="primary"
-            id="start-changes-btn" @click="onChangeClicked()">
+            id="start-changes-btn" @click="onChangeClicked()"
+          >
             <v-icon small color="primary">mdi-pencil</v-icon>
             <span>{{ editLabel }}</span>
           </v-btn>
 
-          <!-- Undo changes buttons -->
-          <v-btn v-if="isCorrectionFiling && !onEditMode && isCorrected"
-          text color="primary" id="start-undo-btn" @click="onUndoClicked()">
+          <!-- Undo Changes buttons -->
+          <v-btn v-if="isCorrectionFiling && !onEditMode && isCorrected" text color="primary"
+            id="start-undo-btn" @click="onUndoClicked()"
+          >
             <v-icon small>mdi-undo</v-icon>
             <span>Undo</span>
           </v-btn>
+
+          <!-- Drop-down menu and More Changes button -->
           <v-menu v-if="isCorrectionFiling && !onEditMode && isCorrected"
             offset-y left nudge-bottom="4" v-model="dropdown">
             <template v-slot:activator="{ on }">
               <v-btn text small color="primary" id="start-menu-btn" v-on="on">
-                <v-icon id="start-menu">{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                <v-icon id="start-menu">{{ dropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
               </v-btn>
             </template>
-            <v-btn text color="primary" id="more-changes-btn"
-              @click="onChangeClicked(); dropdown = false">
+            <v-btn text color="primary" id="more-changes-btn" @click="onChangeClicked(); dropdown = false">
               <v-icon small color="primary">mdi-pencil</v-icon>
               <span>{{ editLabel }}</span>
             </v-btn>
           </v-menu>
         </span>
-
       </v-col>
     </v-row>
   </section>
@@ -116,7 +121,8 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   @Getter isFirmCorrectionFiling!: boolean
   @Getter hasBusinessStartDateChanged!: boolean
   @Getter getCorrectionStartDate!: string
-  @Getter getBusinessFoundingDate!: string // actually date-time
+  @Getter getBusinessFoundingDateTime!: string
+  @Getter getBusinessStartDate!: string
   @Getter getCurrentJsDate!: Date
 
   // Global setter
@@ -132,46 +138,35 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   protected isCorrected = null
   protected newCorrectedStartDate = null as string // date is "Month Day, Year"
 
-  /** The minimum start date that can be entered (Up to 2 years ago today). */
-  protected get startDateMin (): Date {
-    const startDateMin = new Date(this.getCurrentJsDate) // make a copy
-    startDateMin.setFullYear(startDateMin.getUTCFullYear() - 2)
-    startDateMin.setHours(0, 0, 0) // Set time to 0 for accurate Date Rules comparison
-    return startDateMin
+  /** The minimum start date that can be entered (up to 2 years before reg date). */
+  get minDate (): string {
+    const date = this.apiToDate(this.getBusinessFoundingDateTime)
+    date.setFullYear(date.getUTCFullYear() - 2)
+    return this.dateToYyyyMmDd(date)
   }
 
-  /** The minimum start date string. */
-  protected get startDateMinStr (): string {
-    return this.dateToYyyyMmDd(this.startDateMin)
-  }
-
-  /** The maximum start date that can be entered (Up to 90 days from today). */
-  protected get startDateMax (): Date {
-    const startDateMax = new Date(this.getCurrentJsDate) // make a copy
-    startDateMax.setDate(startDateMax.getUTCDate() + 90)
-    return startDateMax
-  }
-
-  /** The maximum start date string. */
-  protected get startDateMaxStr (): string {
-    return this.dateToYyyyMmDd(this.startDateMax)
+  /** The maximum start date that can be entered (up to 90 days after reg date). */
+  get maxDate (): string {
+    const date = this.apiToDate(this.getBusinessFoundingDateTime)
+    date.setDate(date.getUTCDate() + 90)
+    return this.dateToYyyyMmDd(date)
   }
 
   /** The business date or business start date string. */
-  protected get businessStartDate (): string {
+  get businessStartDate (): string {
+    // safety check
     if (
       this.isFirmCorrectionFiling ||
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling
     ) {
       if (this.hasBusinessStartDateChanged) {
-        // Sets the Corrected flag when reloading from a saved filing.
+        // set the Corrected flag when reloading from a saved filing
         this.isCorrected = true
         return this.yyyyMmDdToPacificDate(this.getCorrectionStartDate, true)
-      } else if (this.getBusinessFoundingDate) {
-        // Business Founding Date is is stored in UTC time for BENs and COOPs.
-        // For firms only, the date is valid and is in Pacific Time.
-        return this.yyyyMmDdToPacificDate(this.getBusinessFoundingDate.slice(0, 10), true)
+      }
+      if (this.getBusinessStartDate) {
+        return this.yyyyMmDdToPacificDate(this.getBusinessStartDate, true)
       }
     }
     return 'Unknown'
@@ -191,7 +186,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   protected onDoneClicked (): void {
     if (this.newCorrectedStartDate) {
       // For firms only the date is valid
-      if (this.newCorrectedStartDate !== this.getBusinessFoundingDate.slice(0, 10)) {
+      if (this.newCorrectedStartDate !== this.getBusinessStartDate) {
         this.setCorrectionStartDate(this.newCorrectedStartDate)
         this.isCorrected = true
       } else {
@@ -212,7 +207,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   }
 
   @Watch('onEditMode', { immediate: true })
-  protected syncValidity (): void {
+  private syncValidity (): void {
     const isValid = !this.onEditMode
     this.setValidComponent({ key: 'isValidStartDate', value: isValid })
   }

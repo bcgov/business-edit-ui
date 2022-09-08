@@ -13,8 +13,8 @@
           title="Resolution or Court Order Date"
           :error-msg="errors"
           nudge-right="100"
-          :minDate="getBusinessFoundingDate"
-          :maxDate="getCurrentDate"
+          :minDate="minDate"
+          :maxDate="maxDate"
           @emitDate="onDateEmitted($event)"
           @emitCancel="exit()"
           @emitDateSync="date = $event"
@@ -33,16 +33,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
+import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF } from '@/interfaces/'
+import { DateMixin } from '@/mixins/'
 
 @Component({
   components: { DatePickerShared }
 })
-export default class ResolutionDateDialog extends Vue {
+export default class ResolutionDateDialog extends Mixins(DateMixin) {
   /** Prop to provide attachment selector. */
   @Prop() readonly attach: string
 
@@ -50,7 +51,7 @@ export default class ResolutionDateDialog extends Vue {
   @Prop() readonly dialog: boolean
 
   // Global getter
-  @Getter getBusinessFoundingDate!: string // actually date-time
+  @Getter getBusinessFoundingDateTime!: string
   @Getter getCurrentDate!: string
   @Getter getNewResolutionDates!: string []
 
@@ -60,6 +61,17 @@ export default class ResolutionDateDialog extends Vue {
   // Local properties
   private date = ''
   private errorMsg = ''
+
+  /** The minimum date that can be entered (business founding date). */
+  get minDate (): string {
+    const date = this.apiToDate(this.getBusinessFoundingDateTime)
+    return this.dateToYyyyMmDd(date)
+  }
+
+  /** The maximum date that can be entered (today). */
+  get maxDate (): string {
+    return this.getCurrentDate
+  }
 
   /** Return an error msg if there is no date at Done. */
   get errors (): string {

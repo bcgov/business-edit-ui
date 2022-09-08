@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { createLocalVue, createWrapper, mount } from '@vue/test-utils'
+import { createLocalVue, mount } from '@vue/test-utils'
 import VueRouter from 'vue-router'
 import mockRouter from './MockRouter'
 import { getVuexStore } from '@/store/'
-import { StartDate } from '@/components/common/YourCompany'
+import { BusinessStartDate } from '@/components/common/YourCompany'
 import { DatePicker } from '@bcrs-shared-components/date-picker'
 import flushPromises from 'flush-promises'
 
@@ -31,7 +31,7 @@ describe('Start Date', () => {
 
   beforeEach(async () => {
     store.state.stateModel.businessInformation.foundingDate = '2021-07-01T00:00:00.000000+00:00'
-    wrapper = mount(StartDate, { store, vuetify, localVue, router })
+    wrapper = mount(BusinessStartDate, { store, vuetify, localVue, router })
     await flushPromises()
   })
 
@@ -63,7 +63,7 @@ describe('Start Date', () => {
     expect(cancelBtn.text()).toBe('Cancel')
     expect(wrapper.find('#start-done-btn').text()).toBe('Done')
     expect(wrapper.find('.start-date-title').text()).toBe('Start Date')
-    expect(wrapper.find('.dotted-underline').text()).toBe('no more than 2 years in the past')
+    expect(wrapper.find('.dotted-underline').text()).toBe('up to 2 years before the Registration Date')
     expect(wrapper.findComponent(DatePicker).exists()).toBe(true)
     await cancelBtn.trigger('click')
 

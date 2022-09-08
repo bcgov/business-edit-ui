@@ -127,9 +127,14 @@ export const getEffectiveDateTime = (state: StateIF): EffectiveDateTimeIF => {
   return state.stateModel.effectiveDateTime
 }
 
-/** The business' founding date (actually date-time). */
-export const getBusinessFoundingDate = (state: StateIF): string => {
+/** The business' founding date (API format). */
+export const getBusinessFoundingDateTime = (state: StateIF): string => {
   return getBusinessInformation(state).foundingDate
+}
+
+/** The business' start date (YYYY-MM-DD). */
+export const getBusinessStartDate = (state: StateIF): string => {
+  return getBusinessInformation(state).startDate
 }
 
 /** The current account id. */

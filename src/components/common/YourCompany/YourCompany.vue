@@ -228,14 +228,14 @@
     <template v-if="isFirmChangeFiling || isFirmConversionFiling || isFirmCorrectionFiling">
       <v-divider class="mx-4 my-1" />
 
-      <StartDate
+      <BusinessStartDate
         class="section-container"
         :class="{'invalid-section': invalidStartDate}"
         :invalidSection="invalidStartDate"
       />
     </template>
 
-    <!-- Nature of Business (firm change and corrections filings only) -->
+    <!-- Nature of Business (firm changes and corrections only) -->
     <template v-if="isFirmChangeFiling || isFirmCorrectionFiling">
       <v-divider class="mx-4 my-1" />
 
@@ -312,7 +312,7 @@ import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestAppli
   from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation,
-  CorrectNameOptions, NatureOfBusiness, OfficeAddresses, StartDate } from './'
+  CorrectNameOptions, NatureOfBusiness, OfficeAddresses, BusinessStartDate } from './'
 import { CommonMixin, SharedMixin, DateMixin, NameRequestMixin } from '@/mixins/'
 import { AssociationTypes, CorrectionTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -329,7 +329,7 @@ import { ConversionNOB } from '@/components/Conversion'
     OfficeAddresses,
     FolioInformation,
     ConversionNOB,
-    StartDate
+    BusinessStartDate
   }
 })
 export default class YourCompany extends Mixins(
@@ -345,7 +345,7 @@ export default class YourCompany extends Mixins(
   @Getter getComponentValidate!: boolean
   @Getter getNameRequest!: NameRequestIF
   @Getter getCorrectedFilingDate!: string
-  @Getter getBusinessFoundingDate!: string // actually date-time
+  @Getter getBusinessFoundingDateTime!: string
   @Getter isConflictingLegalType!: boolean
   @Getter isNumberedCompany!: boolean
   @Getter isPremiumAccount!: boolean
@@ -463,15 +463,16 @@ export default class YourCompany extends Mixins(
   /** The recognition date or business start date string. */
   get recognitionDateTime (): string {
     if (this.isBenCorrectionFiling) {
-      if (this.getBusinessFoundingDate) {
-        return this.apiToPacificDateTime(this.getBusinessFoundingDate)
-      } else if (this.getCorrectedFilingDate) {
+      if (this.getBusinessFoundingDateTime) {
+        return this.apiToPacificDateTime(this.getBusinessFoundingDateTime)
+      }
+      if (this.getCorrectedFilingDate) {
         return this.apiToPacificDateTime(this.getCorrectedFilingDate)
       }
     }
     if (this.isAlterationFiling) {
-      if (this.getBusinessFoundingDate) {
-        return this.apiToPacificDateTime(this.getBusinessFoundingDate)
+      if (this.getBusinessFoundingDateTime) {
+        return this.apiToPacificDateTime(this.getBusinessFoundingDateTime)
       }
     }
     return null
