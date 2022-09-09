@@ -197,7 +197,7 @@
                     >
                       <v-list-item-subtitle>
                         <v-icon small>mdi-pencil</v-icon>
-                        <span class="ml-1">{{ editLabel }}</span>
+                        <span class="ml-1">Change</span>
                       </v-list-item-subtitle>
                     </v-list-item>
                     <v-list-item

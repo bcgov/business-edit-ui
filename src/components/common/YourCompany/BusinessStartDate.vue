@@ -16,19 +16,8 @@
       </v-col>
 
       <v-col cols="9">
-        <!-- display mode + optional tooltip -->
+        <!-- display mode -->
         <span v-if="!onEditMode" class="info-text mr-1">{{ businessStartDate }}</span>
-        <v-tooltip v-if="isFirmChangeFiling || isFirmConversionFiling"
-                   top
-                   content-class="top-tooltip"
-                   transition="fade-transition"
-                   nudge-right="3"
-        >
-          <template v-slot:activator="{ on }">
-            <v-icon v-on="on" class="info-icon">mdi-information-outline</v-icon>
-          </template>
-          <span>If the business start date is incorrect, it must be corrected through a correction filing.</span>
-        </v-tooltip>
 
         <!-- edit mode -->
         <template v-if="onEditMode">
@@ -52,6 +41,8 @@
               nudge-top="15"
               :minDate="minDate"
               :maxDate="maxDate"
+              :editLabel="editLabel"
+              :editedLabel="editedLabel"
               @emitDate="onOkClicked($event)"
             />
           </div>
@@ -68,9 +59,9 @@
         </template>
 
         <!-- outer buttons -->
-        <span class="mt-n2 mr-n3 float-right">
+        <span v-if="isApplicableFiling" class="mt-n2 mr-n3 float-right">
           <!-- Correct Changes button -->
-          <v-btn v-if="isCorrectionFiling && !onEditMode && !isCorrected" text color="primary"
+          <v-btn v-if="!onEditMode && !isCorrected" text color="primary"
             id="start-changes-btn" @click="onChangeClicked()"
           >
             <v-icon small color="primary">mdi-pencil</v-icon>
@@ -78,7 +69,7 @@
           </v-btn>
 
           <!-- Undo Changes buttons -->
-          <v-btn v-if="isCorrectionFiling && !onEditMode && isCorrected" text color="primary"
+          <v-btn v-if="!onEditMode && isCorrected" text color="primary"
             id="start-undo-btn" @click="onUndoClicked()"
           >
             <v-icon small>mdi-undo</v-icon>
@@ -86,7 +77,7 @@
           </v-btn>
 
           <!-- Drop-down menu and More Changes button -->
-          <v-menu v-if="isCorrectionFiling && !onEditMode && isCorrected"
+          <v-menu v-if="!onEditMode && isCorrected"
             offset-y left nudge-bottom="4" v-model="dropdown">
             <template v-slot:activator="{ on }">
               <v-btn text small color="primary" id="start-menu-btn" v-on="on">
@@ -95,7 +86,7 @@
             </template>
             <v-btn text color="primary" id="more-changes-btn" @click="onChangeClicked(); dropdown = false">
               <v-icon small color="primary">mdi-pencil</v-icon>
-              <span>{{ editLabel }}</span>
+              <span>Change</span>
             </v-btn>
           </v-menu>
         </span>
@@ -138,6 +129,10 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   protected isCorrected = null
   protected newCorrectedStartDate = null as string // date is "Month Day, Year"
 
+  get isApplicableFiling (): boolean {
+    return (this.isFirmCorrectionFiling || this.isFirmChangeFiling || this.isFirmConversionFiling)
+  }
+
   /** The minimum start date that can be entered (up to 2 years before reg date). */
   get minDate (): string {
     const date = this.apiToDate(this.getBusinessFoundingDateTime)
@@ -155,11 +150,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   /** The business date or business start date string. */
   get businessStartDate (): string {
     // safety check
-    if (
-      this.isFirmCorrectionFiling ||
-      this.isFirmChangeFiling ||
-      this.isFirmConversionFiling
-    ) {
+    if (this.isApplicableFiling) {
       if (this.hasBusinessStartDateChanged) {
         // set the Corrected flag when reloading from a saved filing
         this.isCorrected = true

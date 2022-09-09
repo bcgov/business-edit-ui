@@ -15,6 +15,7 @@ export interface ChgRegistrationIF {
   nameRequest?: NameRequestIF
   offices?: AddressesIF
   parties?: Array<OrgPersonIF>
+  startDate?: string // YYYY-MM-DD
 }
 
 /** Interface for data object UI sends to API. */

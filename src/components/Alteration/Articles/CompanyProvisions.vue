@@ -54,7 +54,7 @@
                 >
                   <v-list-item-subtitle>
                     <v-icon small color="primary">mdi-pencil</v-icon>
-                    <span class="drop-down-action ml-1">{{ editLabel }}</span>
+                    <span class="drop-down-action ml-1">Change</span>
                   </v-list-item-subtitle>
                 </v-list-item>
               </v-list>

@@ -80,10 +80,10 @@
                 text
                 color="primary"
                 :disabled="isAddingNameTranslation"
-                @click="emitNameEdit(index)">
+                @click="emitNameEdit(index)"
+              >
                   <v-icon small>mdi-pencil</v-icon>
-                  <span v-if="isCorrectionFiling">Correct</span>
-                  <span v-else>Edit</span>
+                  <span>Change</span>
               </v-btn>
             </span>
             <!-- more actions menu -->

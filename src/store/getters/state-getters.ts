@@ -471,6 +471,7 @@ export const isSpecialResolutionValid = (state: StateIF): boolean => {
 export const hasChangeDataChanged = (state: StateIF): boolean => {
   return (
     hasBusinessNameChanged(state) ||
+    hasBusinessStartDateChanged(state) ||
     hasNaicsChanged(state) ||
     haveOfficeAddressesChanged(state) ||
     havePeopleAndRolesChanged(state)
@@ -488,6 +489,7 @@ export const hasChangeDataChanged = (state: StateIF): boolean => {
  */
 export const hasConversionDataChanged = (state: StateIF): boolean => {
   return (
+    hasBusinessStartDateChanged(state) ||
     hasNaicsChanged(state) ||
     haveOfficeAddressesChanged(state) ||
     havePeopleAndRolesChanged(state)
