@@ -38,6 +38,6 @@ export interface CorrectionInformationIF {
     shareClasses: ShareClassIF[]
     resolutionDates?: string[]
   }
-  startDate?: string // YYYY-MM-DD
+  startDate?: string // YYYY-MM-DD (firms only)
   provisionsRemoved?: boolean
 }

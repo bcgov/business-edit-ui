@@ -92,6 +92,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Action setFileNumber!: ActionBindingIF
   @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setSpecialResolution!: ActionBindingIF
+  @Action setCorrectionStartDate!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -416,6 +417,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
     }
 
+    // Apply Business Start Date to filing
+    if (this.hasBusinessStartDateChanged) {
+      filing.changeOfRegistration.startDate = this.getCorrectionStartDate
+    }
+
     // Build Staff Payment into the filing
     filing = this.buildStaffPayment(filing)
 
@@ -488,6 +494,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       parties = this.fixPartySchemaIssues(parties)
 
       filing.conversion.parties = parties
+    }
+
+    // Apply Business Start Date to filing
+    if (this.hasBusinessStartDateChanged) {
+      filing.conversion.startDate = this.getCorrectionStartDate
     }
 
     // Build Staff Payment into the filing
@@ -852,6 +863,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     this.setFileNumber(filing.changeOfRegistration.courtOrder?.fileNumber)
     this.setHasPlanOfArrangement(filing.changeOfRegistration.courtOrder?.hasPlanOfArrangement)
 
+    // store Business Start Date
+    this.setCorrectionStartDate(filing.changeOfRegistration.startDate || null)
+
     // store Staff Payment
     this.storeStaffPayment(filing)
   }
@@ -907,6 +921,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // (it is managed separately and added to the filing in buildConversionFiling())
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(cloneDeep(orgPersons))
+
+    // store Business Start Date
+    this.setCorrectionStartDate(filing.conversion.startDate || null)
 
     // store Certify State
     this.setCertifyState({
