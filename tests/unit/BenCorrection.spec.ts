@@ -7,7 +7,7 @@ import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { axios } from '@/utils/'
 import { Articles } from '@/components/Alteration/'
-import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
+import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany, CompletingParty }
   from '@/components/common/'
 import BenCorrection from '@/views/Correction/BenCorrection.vue'
 import mockRouter from './MockRouter'
@@ -167,6 +167,7 @@ describe('Benefit Company Correction component', () => {
     expect(wrapper.findComponent(Detail).exists()).toBe(true)
     expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
     expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
+    expect(wrapper.findComponent(CompletingParty).exists()).toBe(true)
   })
 
   // FUTURE
