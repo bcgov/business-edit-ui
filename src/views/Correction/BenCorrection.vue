@@ -33,19 +33,19 @@
 
     <Detail
       class="mt-10"
-      sectionNumber="1."
+      :sectionNumber="isClientErrorCorrection ? '2.' : '1.'"
       validate="true"
     />
 
     <CertifySection
       class="mt-10"
-      sectionNumber="2."
+      :sectionNumber="isClientErrorCorrection ? '3.' : '2.'"
       validate="true"
     />
 
     <StaffPayment
       class="mt-10"
-      sectionNumber="3."
+      :sectionNumber="isClientErrorCorrection ? '4.' : '3.'"
       @haveChanges="onStaffPaymentChanges()"
     />
   </section>
