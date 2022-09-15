@@ -37,15 +37,17 @@
       validate="true"
     />
 
-    <CertifySection
-      class="mt-10"
-      :sectionNumber="isClientErrorCorrection ? '3.' : '2.'"
-      validate="true"
-    />
+    <template v-if="isClientErrorCorrection">
+      <CertifySection
+        class="mt-10"
+        :sectionNumber="isClientErrorCorrection ? '3.' : '2.'"
+        validate="true"
+      />
+    </template>
 
     <StaffPayment
       class="mt-10"
-      :sectionNumber="isClientErrorCorrection ? '4.' : '3.'"
+      :sectionNumber="isClientErrorCorrection ? '4.' : '2.'"
       @haveChanges="onStaffPaymentChanges()"
     />
   </section>
