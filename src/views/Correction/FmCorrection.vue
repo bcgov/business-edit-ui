@@ -28,7 +28,7 @@
 
     <StaffPayment
       class="mt-10"
-      :sectionNumber="isClientErrorCorrection ? '4.' : '3.'"
+      :sectionNumber="isClientErrorCorrection ? '4.' : '2.'"
       @haveChanges="onStaffPaymentChanges()"
     />
   </section>
