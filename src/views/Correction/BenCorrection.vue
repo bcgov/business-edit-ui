@@ -27,21 +27,27 @@
 
     <Articles class="mt-10" />
 
+    <template v-if="isClientErrorCorrection">
+      <CompletingParty class="mt-10" sectionNumber="1." validate="true" />
+    </template>
+
     <Detail
       class="mt-10"
-      sectionNumber="1."
+      :sectionNumber="isClientErrorCorrection ? '2.' : '1.'"
       validate="true"
     />
 
-    <CertifySection
-      class="mt-10"
-      sectionNumber="2."
-      validate="true"
-    />
+    <template v-if="isClientErrorCorrection">
+      <CertifySection
+        class="mt-10"
+        :sectionNumber="isClientErrorCorrection ? '3.' : '2.'"
+        validate="true"
+      />
+    </template>
 
     <StaffPayment
       class="mt-10"
-      sectionNumber="3."
+      :sectionNumber="isClientErrorCorrection ? '4.' : '2.'"
       @haveChanges="onStaffPaymentChanges()"
     />
   </section>
@@ -51,7 +57,7 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action } from 'vuex-class'
 import { Articles } from '@/components/Alteration/'
-import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany }
+import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany, CompletingParty }
   from '@/components/common/'
 import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { AuthServices, LegalServices } from '@/services/'
@@ -66,7 +72,8 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/'
     ShareStructures,
     StaffPayment,
     YourCompany,
-    Articles
+    Articles,
+    CompletingParty
   }
 })
 export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {

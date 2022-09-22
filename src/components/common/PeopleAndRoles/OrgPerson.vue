@@ -244,7 +244,7 @@
                     <div class="pa-1">
                       <v-checkbox
                         id="dir-checkbox"
-                        class="mt-1 highlighted-role"
+                        class="mt-1"
                         v-model="selectedRoles"
                         :value="RoleTypes.DIRECTOR"
                         :label="RoleTypes.DIRECTOR"
