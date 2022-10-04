@@ -4,7 +4,7 @@ import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, EmptyFees, FeesIF } from '@/interfaces'
 import { CorpTypeCd, FilingCodes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { FilingDataIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { axios } from '@/utils/'
+import { AxiosInstance as axios } from '@/utils/'
 import { cloneDeep } from 'lodash'
 
 /**

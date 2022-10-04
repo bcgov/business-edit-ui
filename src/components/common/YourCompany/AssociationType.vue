@@ -94,8 +94,7 @@
           :items="associationTypeOptions"
           v-model="selectedAssociationType"
           :rules="AssociationTypeRules"
-        >
-        </v-select>
+        />
 
         <!-- Done Actions -->
         <div class="action-btns">
@@ -122,18 +121,18 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { AssociationTypes } from '@/enums'
+import { CoopTypes } from '@/enums'
 import { CommonMixin } from '@/mixins'
 import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF } from '@/interfaces'
 import { VuetifyRuleFunction } from '@/types'
-import { AssociationTypeToDescription } from '@/utils'
+import { CoopTypeToDescription } from '@/utils'
 
 @Component({})
 export default class AssociationType extends Mixins(CommonMixin) {
   @Prop({ default: false }) readonly invalidSection!: boolean
 
   /** Global getters */
-  @Getter getAssociationType!: AssociationTypes
+  @Getter getAssociationType!: CoopTypes
   @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter hasAssociationTypeChanged!: boolean
@@ -144,20 +143,20 @@ export default class AssociationType extends Mixins(CommonMixin) {
   /** Select options */
   readonly associationTypeOptions: Array<any> = [
     {
-      value: AssociationTypes.COMMUNITY_SERVICE_COOPERATIVE,
-      text: AssociationTypeToDescription(AssociationTypes.COMMUNITY_SERVICE_COOPERATIVE)
+      value: CoopTypes.COMMUNITY_SERVICE_COOPERATIVE,
+      text: CoopTypeToDescription(CoopTypes.COMMUNITY_SERVICE_COOPERATIVE)
     },
     {
-      value: AssociationTypes.ORDINARY_COOPERATIVE,
-      text: AssociationTypeToDescription(AssociationTypes.ORDINARY_COOPERATIVE)
+      value: CoopTypes.ORDINARY_COOPERATIVE,
+      text: CoopTypeToDescription(CoopTypes.ORDINARY_COOPERATIVE)
     },
     {
-      value: AssociationTypes.HOUSING_COOPERATIVE,
-      text: AssociationTypeToDescription(AssociationTypes.HOUSING_COOPERATIVE)
+      value: CoopTypes.HOUSING_COOPERATIVE,
+      text: CoopTypeToDescription(CoopTypes.HOUSING_COOPERATIVE)
     }
   ]
 
-  protected selectedAssociationType: AssociationTypes = null
+  protected selectedAssociationType: CoopTypes = null
   protected isEditingAssociationType = false
 
   /** V-model for dropdown menu. */
@@ -169,7 +168,7 @@ export default class AssociationType extends Mixins(CommonMixin) {
   ]
 
   get associationDescription (): string {
-    return AssociationTypeToDescription(this.getAssociationType)
+    return CoopTypeToDescription(this.getAssociationType)
   }
 
   /** Called when component is mounted. */
@@ -238,6 +237,11 @@ export default class AssociationType extends Mixins(CommonMixin) {
   }
 }
 
+// allow selection to be full height so tail of "g" is visible
+:deep(.v-select__selections) {
+  line-height: unset;
+}
+
 // remove extra space taken by error message
 :deep(.v-text-field__details) {
   margin-bottom: -8px !important;
@@ -245,8 +249,7 @@ export default class AssociationType extends Mixins(CommonMixin) {
 
 // Vuetify Overrides
 :deep() {
-  .v-list-item .v-list-item__title,
-  .v-list-item .v-list-item__subtitle { // *** TODO: test this one
+  .v-list-item .v-list-item__title {
     color: $gray7;
   }
 
@@ -256,8 +259,7 @@ export default class AssociationType extends Mixins(CommonMixin) {
   }
 
   .v-list-item:hover .v-list-item__title,
-  .v-list-item--active .v-list-item__title,
-  .v-list-item .v-list-item__subtitle { // *** TODO: test this one
+  .v-list-item--active .v-list-item__title {
     color: $app-blue !important;
   }
 }

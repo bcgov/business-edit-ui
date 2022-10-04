@@ -7,7 +7,7 @@ import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, Correction
   NameTranslationIF, OrgPersonIF, SpecialResolutionFilingIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
-import { ActionTypes, AssociationTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
+import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
   RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
@@ -62,7 +62,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter isBenCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter isClientErrorCorrection!: boolean
-  @Getter getAssociationType!: AssociationTypes
+  @Getter getAssociationType!: CoopTypes
   @Getter hasAssociationTypeChanged!: boolean
   @Getter getSpecialResolution!: SpecialResolutionIF
   @Getter isEntityTypeFirm!: boolean
@@ -277,7 +277,7 @@ export default class FilingTemplateMixin extends DateMixin {
    * @returns the resolution filing body
    */
   buildSpecialResolutionFiling (isDraft: boolean): SpecialResolutionFilingIF {
-    // *** FUTURE: add in as needed - see buildAlterationFiling()
+    // FUTURE: add in as needed - see buildAlterationFiling()
     // const parties = isDraft ? this.getOrgPeople : this.prepareParties()
     // const shareClasses = isDraft ? this.getShareClasses : this.prepareShareClasses()
     // const nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
@@ -626,7 +626,7 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // store Folio Number
-    // *** FUTURE: should we store correction.folioNumber instead?
+    // FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // store Effective Date
@@ -701,7 +701,7 @@ export default class FilingTemplateMixin extends DateMixin {
     })
 
     // store Folio Number
-    // *** FUTURE: should we store correction.folioNumber instead?
+    // FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
@@ -773,7 +773,7 @@ export default class FilingTemplateMixin extends DateMixin {
     })
 
     // store Folio Number
-    // *** FUTURE: should we store correction.folioNumber instead?
+    // FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
@@ -849,7 +849,7 @@ export default class FilingTemplateMixin extends DateMixin {
     })
 
     // store Folio Number
-    // *** FUTURE: should we store correction.folioNumber instead?
+    // FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
@@ -990,7 +990,7 @@ export default class FilingTemplateMixin extends DateMixin {
 
       case CorpTypeCd.SOLE_PROP:
       case CorpTypeCd.PARTNERSHIP: {
-        // *** FUTURE: expand here as needed
+        // FUTURE: expand here as needed
         break
       }
     }

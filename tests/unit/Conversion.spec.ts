@@ -5,7 +5,7 @@ import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
-import { axios } from '@/utils/'
+import { AxiosInstance as axios } from '@/utils/'
 import Conversion from '@/views/Conversion.vue'
 import mockRouter from './MockRouter'
 

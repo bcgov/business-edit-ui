@@ -55,19 +55,17 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, FeesIF } from '@/interfaces/'
-import { DateMixin, SharedMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
+import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
-import { AssociationTypeToDescription } from '@/utils'
+import { CoopTypeToDescription } from '@/utils'
 
 @Component({
   components: {
     CreateSpecialResolutionSummary
-
   }
 })
 export default class SpecialResolutionSummary extends Mixins(
   DateMixin,
-  SharedMixin,
   FeeMixin,
   FilingTemplateMixin
 ) {
@@ -84,7 +82,7 @@ export default class SpecialResolutionSummary extends Mixins(
   @Prop() readonly validate!: boolean
 
   get associationDescription (): string {
-    return AssociationTypeToDescription(this.getAssociationType)
+    return CoopTypeToDescription(this.getAssociationType)
   }
 
   /** The company name (from NR, or incorporation number). */

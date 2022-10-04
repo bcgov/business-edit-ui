@@ -4,7 +4,6 @@
       <h1>{{ entityTitle }}</h1>
     </header>
 
-    <!-- *** FUTURE: delete this when BEN corrections are not IA-centric -->
     <section id="original-filing-date" class="mt-6">
       <p>
         <span id="original-filing-date-label">Original Filing Date:</span>

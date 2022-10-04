@@ -9,6 +9,6 @@ describe('Enum Mixin', () => {
     expect(FilingTypeToName('correction' as any)).toBe('Correction')
     expect(FilingTypeToName('incorporationApplication' as any)).toBe('Incorporation Application')
     expect(FilingTypeToName('registration' as any)).toBe('Registration')
-    expect(FilingTypeToName('other type' as any)).toBe('Other Type')
+    expect(FilingTypeToName('other type' as any)).toBe('Other type')
   })
 })

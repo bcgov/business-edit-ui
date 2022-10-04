@@ -157,7 +157,6 @@
                       v-model="orgPerson.confirmBusiness"
                       :rules="confirmBusinessRules"
                     >
-                      <!-- *** TODO: test this -->
                       <template v-if="isProprietor" v-slot:label>
                         I confirm that the business proprietor being added is not legally required to register in B.C.
                       </template>

@@ -1,4 +1,4 @@
-import { axios } from '@/utils/'
+import { AxiosInstance as axios } from '@/utils/'
 import { AuthInformationIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { StatusCodes } from 'http-status-codes'

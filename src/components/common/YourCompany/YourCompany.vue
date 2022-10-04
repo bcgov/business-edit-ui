@@ -314,7 +314,7 @@ import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation,
   CorrectNameOptions, NatureOfBusiness, OfficeAddresses, BusinessStartDate } from './'
 import { CommonMixin, DateMixin, NameRequestMixin } from '@/mixins/'
-import { AssociationTypes, CorrectionTypes } from '@/enums/'
+import { CoopTypes, CorrectionTypes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ConversionNOB } from '@/components/Conversion'
 
@@ -358,7 +358,7 @@ export default class YourCompany extends Mixins(
   @Getter isBenCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
-  @Getter getAssociationType!: AssociationTypes
+  @Getter getAssociationType!: CoopTypes
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean

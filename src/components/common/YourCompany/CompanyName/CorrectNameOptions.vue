@@ -183,7 +183,7 @@ export default class CorrectNameOptions extends Vue {
 }
 
 .v-expansion-panel-content {
-  :deep(.v-expansion-panel-content__wrap) { // *** TODO: test this one
+  :deep(.v-expansion-panel-content__wrap) {
     padding: 0;
   }
 }

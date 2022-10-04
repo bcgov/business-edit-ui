@@ -1,4 +1,4 @@
-import { AccountTypes, ActionTypes, AssociationTypes, CorrectionErrorTypes, FilingCodes, FilingNames,
+import { AccountTypes, ActionTypes, CoopTypes, CorrectionErrorTypes, FilingCodes, FilingNames,
   FilingTypes, PartyTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF,
@@ -278,8 +278,8 @@ export const getSnapshotNaics = (state: StateIF): NaicsIF => {
   }
 }
 
-/** The association type. */
-export const getAssociationType = (state: StateIF): AssociationTypes => {
+/** The association (coop) type. */
+export const getAssociationType = (state: StateIF): CoopTypes => {
   return getBusinessInformation(state).associationType
 }
 

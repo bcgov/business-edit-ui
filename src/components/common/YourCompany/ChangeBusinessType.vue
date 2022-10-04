@@ -64,11 +64,8 @@
                   persistent-hint
                   filled
         >
-          <!-- *** TODO: test this -->
           <template v-slot:item="data">
-          <span class="list-item">
-            {{ data.item.text }}
-          </span>
+            <span class="list-item">{{ data.item.text }}</span>
           </template>
         </v-select>
         <div class="my-6">

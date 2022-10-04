@@ -98,7 +98,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   protected applicantPhone = ''
   protected applicantEmail = ''
 
-  // *** FUTURE: use this to turn on/off validations
+  // FUTURE: use this to turn on/off validations
   protected done = true
 
   // Rules

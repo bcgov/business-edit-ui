@@ -101,7 +101,6 @@ export default class ShareStructures extends Mixins(CommonMixin) {
 <style lang="scss" scoped>
 // fix hard-coded whitespace inside shared component
 // we want the same padding as "section-container py-6"
-// *** TODO: check if some of these these can be removed
 :deep() {
   .share-info-container,
   .btn-container,
