@@ -16,7 +16,7 @@ export async function fetchConfig (): Promise<any> {
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
 
   if (!origin || !processEnvVueAppPath || !processEnvBaseUrl || !windowLocationPathname || !windowLocationOrigin) {
-    return Promise.reject(new Error('Missing environment variables'))
+    return Promise.reject(new Error('Missing environment variables.'))
   }
 
   // fetch config from API
@@ -35,7 +35,7 @@ export async function fetchConfig (): Promise<any> {
 
   const authWebUrl: string = response.data['AUTH_WEB_URL']
   sessionStorage.setItem('AUTH_WEB_URL', authWebUrl)
-  console.log('Set Auth Web URL to: ' + authWebUrl)
+  console.info('Set Auth Web URL to: ' + authWebUrl)
 
   const registryHomeUrl = response.data['REGISTRY_HOME_URL']
   sessionStorage.setItem('REGISTRY_HOME_URL', registryHomeUrl)
@@ -43,25 +43,25 @@ export async function fetchConfig (): Promise<any> {
 
   const businessesUrl: string = response.data['BUSINESSES_URL']
   sessionStorage.setItem('BUSINESSES_URL', businessesUrl)
-  console.log('Set Businesses URL to: ' + businessesUrl)
+  console.info('Set Businesses URL to: ' + businessesUrl)
 
   const dashboardUrl: string = response.data['DASHBOARD_URL']
   sessionStorage.setItem('DASHBOARD_URL', dashboardUrl)
-  console.log('Set Dashboard URL to: ' + dashboardUrl)
+  console.info('Set Dashboard URL to: ' + dashboardUrl)
 
   const legalApiUrl: string = response.data['LEGAL_API_URL'] + response.data['LEGAL_API_VERSION_2'] + '/'
   // set base URL for axios calls
   axios.defaults.baseURL = legalApiUrl
-  console.log('Set Legal API URL to: ' + legalApiUrl)
+  console.info('Set Legal API URL to: ' + legalApiUrl)
 
   const naicsUrl: string = response.data['NAICS_API_URL'] + response.data['NAICS_API_VERSION'] + '/'
   sessionStorage.setItem('NAICS_URL', naicsUrl)
-  console.log('Set NAICS URL to: ' + naicsUrl)
+  console.info('Set NAICS URL to: ' + naicsUrl)
 
   const registriesSearchUrl: string = response.data['REGISTRIES_SEARCH_API_URL'] +
     response.data['REGISTRIES_SEARCH_API_VERSION'] + '/'
   sessionStorage.setItem('REGISTRIES_SEARCH_API_URL', registriesSearchUrl)
-  console.log('Set Registries Search API URL to: ' + registriesSearchUrl)
+  console.info('Set Registries Search API URL to: ' + registriesSearchUrl)
 
   const businessApiKey: string = response.data['BUSINESS_API_KEY']
   sessionStorage.setItem('BUSINESS_API_KEY', businessApiKey)
@@ -69,16 +69,16 @@ export async function fetchConfig (): Promise<any> {
 
   const authApiUrl: string = response.data['AUTH_API_URL'] + response.data['AUTH_API_VERSION'] + '/'
   sessionStorage.setItem('AUTH_API_URL', authApiUrl)
-  console.log('Set Auth API URL to: ' + authApiUrl)
+  console.info('Set Auth API URL to: ' + authApiUrl)
 
   const payApiUrl: string = response.data['PAY_API_URL'] + response.data['PAY_API_VERSION'] + '/'
   sessionStorage.setItem('PAY_API_URL', payApiUrl)
-  console.log('Set Pay API URL to: ' + payApiUrl)
+  console.info('Set Pay API URL to: ' + payApiUrl)
 
   // for system alert banner (sbc-common-components)
   const statusApiUrl: string = response.data['STATUS_API_URL'] + response.data['STATUS_API_VERSION']
   sessionStorage.setItem('STATUS_API_URL', statusApiUrl)
-  console.log('Set Status API URL to: ' + statusApiUrl)
+  console.info('Set Status API URL to: ' + statusApiUrl)
 
   const keycloakConfigPath: string = response.data['KEYCLOAK_CONFIG_PATH']
   sessionStorage.setItem('KEYCLOAK_CONFIG_PATH', keycloakConfigPath)
@@ -108,14 +108,15 @@ export async function fetchConfig (): Promise<any> {
   const sentryDsn = response.data['SENTRY_DSN']
   if (sentryDsn) {
     (<any>window).sentryDsn = sentryDsn
-    console.log('Set Sentry DSN.')
+    console.info('Set Sentry DSN.')
   }
 
   // get Business ID and validate that it looks OK
   // it should be first token after Base URL in Pathname
   // FUTURE: improve Business ID validation
   const id = windowLocationPathname.replace(processEnvBaseUrl, '').split('/', 1)[0]
-  if (['CP', 'BC', 'FM'].some(type => id?.includes(type))) { // Allow corps/firms/coop
+  const businessIdRegex = /^(BC|C|CP|FM)\d{7}$/
+  if (businessIdRegex.test(id)) { // Allow corps/firms/coop
     sessionStorage.setItem('BUSINESS_ID', id)
   } else {
     return Promise.reject(new Error('Missing or invalid Business ID.'))
