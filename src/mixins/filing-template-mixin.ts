@@ -93,6 +93,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setSpecialResolution!: ActionBindingIF
   @Action setCorrectionStartDate!: ActionBindingIF
+  @Action setSpecialResolutionConfirmStateValidity!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -865,6 +866,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
 
     // store Business Start Date
     this.setCorrectionStartDate(filing.changeOfRegistration.startDate || null)
+
+    // default this flag to true for change filing
+    this.setSpecialResolutionConfirmStateValidity(true)
 
     // store Staff Payment
     this.storeStaffPayment(filing)
