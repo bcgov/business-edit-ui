@@ -15,9 +15,7 @@
 
       <!-- Display Mode -->
       <v-col cols="7" v-if="!isEditingAssociationType">
-        <span class="info-text">
-          {{ associationTypeToDescription(getAssociationType) }}
-        </span>
+        <span class="info-text">{{ associationDescription }}</span>
       </v-col>
 
       <!-- Actions -->
@@ -125,13 +123,15 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { AssociationTypes } from '@/enums'
-import { CommonMixin, EnumMixin } from '@/mixins'
+import { CommonMixin } from '@/mixins'
 import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF } from '@/interfaces'
+import { VuetifyRuleFunction } from '@/types'
+import { AssociationTypeToDescription } from '@/utils'
 
 @Component({})
-export default class AssociationType extends Mixins(CommonMixin, EnumMixin) {
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+export default class AssociationType extends Mixins(CommonMixin) {
+  @Prop({ default: false }) readonly invalidSection!: boolean
+
   /** Global getters */
   @Getter getAssociationType!: AssociationTypes
   @Getter getBusinessInformation!: BusinessInformationIF
@@ -145,30 +145,35 @@ export default class AssociationType extends Mixins(CommonMixin, EnumMixin) {
   readonly associationTypeOptions: Array<any> = [
     {
       value: AssociationTypes.COMMUNITY_SERVICE_COOPERATIVE,
-      text: this.associationTypeToDescription(AssociationTypes.COMMUNITY_SERVICE_COOPERATIVE)
+      text: AssociationTypeToDescription(AssociationTypes.COMMUNITY_SERVICE_COOPERATIVE)
     },
     {
       value: AssociationTypes.ORDINARY_COOPERATIVE,
-      text: this.associationTypeToDescription(AssociationTypes.ORDINARY_COOPERATIVE)
+      text: AssociationTypeToDescription(AssociationTypes.ORDINARY_COOPERATIVE)
     },
     {
       value: AssociationTypes.HOUSING_COOPERATIVE,
-      text: this.associationTypeToDescription(AssociationTypes.HOUSING_COOPERATIVE)
+      text: AssociationTypeToDescription(AssociationTypes.HOUSING_COOPERATIVE)
     }
   ]
 
-  protected selectedAssociationType = null as AssociationTypes
+  protected selectedAssociationType: AssociationTypes = null
   protected isEditingAssociationType = false
 
   /** V-model for dropdown menu. */
   protected dropdown: boolean = null
 
   /** Validation rules. */
-  readonly AssociationTypeRules: Array<Function> = [
+  readonly AssociationTypeRules: Array<VuetifyRuleFunction> = [
     v => !!v || 'This field is required' // is not empty
   ]
 
-  protected mounted (): void {
+  get associationDescription (): string {
+    return AssociationTypeToDescription(this.getAssociationType)
+  }
+
+  /** Called when component is mounted. */
+  mounted (): void {
     this.initializeAssociationType()
   }
 
@@ -192,8 +197,8 @@ export default class AssociationType extends Mixins(CommonMixin, EnumMixin) {
 
   @Emit('isEditingAssociationType')
   @Watch('isEditingAssociationType', { immediate: true })
-  private isEditingAssociationTypeChange (isEditing: boolean): void {
-  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private isEditingAssociationTypeChange (isEditing: boolean): void {}
 }
 </script>
 
@@ -233,29 +238,27 @@ export default class AssociationType extends Mixins(CommonMixin, EnumMixin) {
   }
 }
 
-/** Below brought over from business-create-ui.
-    remove extra space taken by error message */
-::v-deep .v-text-field__details {
+// remove extra space taken by error message
+:deep(.v-text-field__details) {
   margin-bottom: -8px !important;
 }
 
 // Vuetify Overrides
-::v-deep .v-list-item .v-list-item__title, .v-list-item .v-list-item__subtitle {
-  color: $gray7;
-}
+:deep() {
+  .v-list-item .v-list-item__title,
+  .v-list-item .v-list-item__subtitle { // *** TODO: test this one
+    color: $gray7;
+  }
 
-::v-deep .v-list-item--link:hover:not(.v-list-item--active) {
-  background-color: $gray1;
-  color: $app-blue !important;
-}
-
-::v-deep .v-list-item:hover {
-  .v-list-item__title {
+  .v-list-item--link:hover:not(.v-list-item--active) {
+    background-color: $gray1;
     color: $app-blue !important;
   }
-}
 
-::v-deep .v-list-item--active .v-list-item__title, .v-list-item .v-list-item__subtitle {
-  color: $app-blue !important;
+  .v-list-item:hover .v-list-item__title,
+  .v-list-item--active .v-list-item__title,
+  .v-list-item .v-list-item__subtitle { // *** TODO: test this one
+    color: $app-blue !important;
+  }
 }
 </style>

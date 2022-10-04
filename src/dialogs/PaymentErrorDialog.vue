@@ -55,7 +55,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { ErrorContact } from '@/components/common/'
 
@@ -66,31 +67,31 @@ export default class PaymentErrorDialog extends Vue {
   @Getter isRoleStaff!: boolean
 
   /** Prop containing filing name. */
-  @Prop({ default: 'Filing' }) readonly filingName: string
+  @Prop({ default: 'Filing' }) readonly filingName!: string
 
   /** Prop to display the dialog. */
-  @Prop() readonly dialog: boolean
+  @Prop() readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop() readonly attach: string
+  @Prop() readonly attach!: string
 
   /** Prop containing error messages. */
-  @Prop({ default: () => [] }) readonly errors: object[]
+  @Prop({ default: () => [] }) readonly errors!: object[]
 
   /** Prop containing warning messages. */
-  @Prop({ default: () => [] }) readonly warnings: object[]
+  @Prop({ default: () => [] }) readonly warnings!: object[]
 
   /** Pass click event to parent. */
-  @Emit() protected exit () {}
+  @Emit() protected exit (): void {}
 
   /** The number of errors in the passed-in array. */
   get numErrors (): number {
-    return this.errors?.length || 0
+    return (this.errors?.length || 0)
   }
 
   /** The number of warnings in the passed-in array. */
   get numWarnings (): number {
-    return this.warnings?.length || 0
+    return (this.warnings?.length || 0)
   }
 }
 </script>

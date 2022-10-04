@@ -1,4 +1,5 @@
-import { Component, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import { OrgPersonIF } from '@/interfaces'
 import { ActionTypes, PartyTypes, RoleTypes } from '@/enums/'
 

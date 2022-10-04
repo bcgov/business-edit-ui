@@ -68,14 +68,15 @@ export default class Articles extends Mixins(CommonMixin) {
 
   /** Emits Have Changes event. */
   @Emit('haveChanges')
-  emitHaveChanges (haveChanges: boolean): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected emitHaveChanges (haveChanges: boolean): void {}
 
-  setEditingCompanyProvisions (editing: boolean) {
+  protected setEditingCompanyProvisions (editing: boolean) {
     this.isEditingCompanyProvisions = editing
     this.setValidComponent({ key: 'isValidCompanyProvisions', value: !editing })
   }
 
-  setIsAddingResolutionDate (addingResolutionDate: boolean) {
+  protected setIsAddingResolutionDate (addingResolutionDate: boolean) {
     this.isAddingResolutionDate = addingResolutionDate
   }
 

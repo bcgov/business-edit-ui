@@ -91,8 +91,7 @@ import { isEqual } from 'lodash'
 @Component({})
 export default class ConversionNOB extends Mixins(CommonMixin) {
   /** Whether to show invalid section styling. */
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+  @Prop({ default: false }) readonly invalidSection!: boolean
 
   @Getter getCurrentNaics!: NaicsIF
   @Getter getSnapshotNaics!: NaicsIF

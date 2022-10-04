@@ -7,6 +7,6 @@ import { isEqual, omit } from 'lodash'
  * @param props an optional array of properties to omit during the comparison
  * @return a boolean indicating a match of objects
  */
-export function isSame (objA: {}, objB: {}, props: string[] = []): boolean {
+export function IsSame (objA: object, objB: object, props: string[] = []): boolean {
   return isEqual({ ...omit(objA, props) }, { ...omit(objB, props) })
 }

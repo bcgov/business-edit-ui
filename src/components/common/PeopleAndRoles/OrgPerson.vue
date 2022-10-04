@@ -70,7 +70,7 @@
                       :rules="confirmNameChangeRules"
                       v-model="orgPerson.confirmNameChange"
                     >
-                      <template slot="label">
+                      <template v-slot:label>
                         I confirm {{isProprietor ? 'the proprietor' : isPartner ? 'this partner' :
                         'this person'}} has legally changed their name and that they remain the same
                         person.
@@ -157,10 +157,11 @@
                       v-model="orgPerson.confirmBusiness"
                       :rules="confirmBusinessRules"
                     >
-                      <template v-if="isProprietor" slot="label">
+                      <!-- *** TODO: test this -->
+                      <template v-if="isProprietor" v-slot:label>
                         I confirm that the business proprietor being added is not legally required to register in B.C.
                       </template>
-                      <template v-if="isPartner" slot="label">
+                      <template v-else-if="isPartner" v-slot:label>
                         I confirm that the business partner being added is not legally required to register in B.C.
                       </template>
                     </v-checkbox>
@@ -201,7 +202,7 @@
                         :rules="confirmNameChangeRules"
                         v-model="orgPerson.confirmNameChange"
                       >
-                        <template slot="label">
+                        <template v-slot:label>
                           I confirm {{isProprietor ? 'the proprietor' : isPartner ? 'this partner' :
                           'this corporation or firm'}} has legally changed their name and that they remain
                           the same business.
@@ -330,7 +331,7 @@ import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { cloneDeep, isEqual } from 'lodash'
 import { mask } from 'vue-the-mask'
 import { v4 as uuidv4 } from 'uuid'
-import { isSame } from '@/utils/'
+import { IsSame } from '@/utils/'
 import { OrgPersonIF, FormIF, AddressIF, AddressSchemaIF, RoleIF, ResourceIF, EmptyBusinessLookup,
   BusinessLookupIF } from '@/interfaces/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
@@ -341,6 +342,7 @@ import { RoleTypes } from '@/enums/'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
 import { Getter } from 'vuex-class'
 import { BusinessLookupServices, LegalServices } from '@/services/'
+import { VuetifyRuleFunction } from '@/types'
 
 const REGION_BC = 'BC'
 const COUNTRY_CA = 'CA'
@@ -368,10 +370,10 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   readonly EmptyBusinessLookup = EmptyBusinessLookup
 
   /** The current org/person to edit or add. */
-  @Prop() readonly currentOrgPerson: OrgPersonIF
+  @Prop() readonly currentOrgPerson!: OrgPersonIF
 
   /** The index of the org/person to edit, or NaN to add. */
-  @Prop() readonly activeIndex: number
+  @Prop() readonly activeIndex!: number
 
   // Global getter
   @Getter getCurrentDate!: string
@@ -384,19 +386,19 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   // Local variables
   protected orgPerson: OrgPersonIF = null // current org/person being added/edited
   protected orgPersonFormValid = true // model value for org/person form validity
-  protected inProgressMailingAddress = {} as AddressIF
-  protected inProgressDeliveryAddress = {} as AddressIF
+  protected inProgressMailingAddress: AddressIF = {}
+  protected inProgressDeliveryAddress: AddressIF = {}
   protected inheritMailingAddress = true
   protected mailingAddressValid = false
   protected deliveryAddressValid = false
   protected selectedRoles: Array<RoleTypes> = [] // model value for roles checkboxes
-  protected firstNameRules: Array<Function> = []
-  protected middleNameRules: Array<Function> = []
-  protected lastNameRules: Array<Function> = []
-  protected orgNameRules: Array<Function> = []
-  protected proprietorEmailRules: Array<Function> = []
-  protected confirmBusinessRules: Array<Function> = []
-  protected confirmNameChangeRules: Array<Function> = []
+  protected firstNameRules: Array<VuetifyRuleFunction> = []
+  protected middleNameRules: Array<VuetifyRuleFunction> = []
+  protected lastNameRules: Array<VuetifyRuleFunction> = []
+  protected orgNameRules: Array<VuetifyRuleFunction> = []
+  protected proprietorEmailRules: Array<VuetifyRuleFunction> = []
+  protected confirmBusinessRules: Array<VuetifyRuleFunction> = []
+  protected confirmNameChangeRules: Array<VuetifyRuleFunction> = []
   protected inProgressBusinessLookup: BusinessLookupIF = EmptyBusinessLookup
   protected showErrors = false
 
@@ -562,9 +564,10 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   }
 
   /**
-   * Called when component is created, to set local properties.
+   * Called when component is created.
+   * Sets local properties.
    */
-  protected created (): void {
+  created (): void {
     // safety check
     if (this.currentOrgPerson) {
       this.orgPerson = cloneDeep(this.currentOrgPerson)
@@ -588,7 +591,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
           streetAddressAdditional: '',
           ...this.orgPerson.deliveryAddress
         }
-        this.inheritMailingAddress = isSame(
+        this.inheritMailingAddress = IsSame(
           this.inProgressMailingAddress, this.inProgressDeliveryAddress, ['id']
         )
       }
@@ -657,8 +660,8 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   /** Returns True if person has changed from its original properties. */
   private hasPersonChanged (person: OrgPersonIF): boolean {
     const officer = !isEqual(person.officer, this.currentOrgPerson?.officer)
-    const mailing = !isSame(person.mailingAddress, this.currentOrgPerson?.mailingAddress, ['id'])
-    const delivery = !isSame(person.deliveryAddress, this.currentOrgPerson?.deliveryAddress, ['id'])
+    const mailing = !IsSame(person.mailingAddress, this.currentOrgPerson?.mailingAddress, ['id'])
+    const delivery = !IsSame(person.deliveryAddress, this.currentOrgPerson?.deliveryAddress, ['id'])
     // just look at role type (ignore role.appointmentDate and role.cessationDate,
     // which will have changed if the user toggled the checkboxes)
     const roleTypes = !isEqual(person.roles.map(r => r.roleType), this.currentOrgPerson?.roles.map(r => r.roleType))
@@ -765,7 +768,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       if (registeredOffice) {
         this.inProgressMailingAddress = { ...registeredOffice.mailingAddress }
         this.inProgressDeliveryAddress = { ...registeredOffice.deliveryAddress }
-        this.inheritMailingAddress = isSame(
+        this.inheritMailingAddress = IsSame(
           this.inProgressMailingAddress, this.inProgressDeliveryAddress, ['addressType', 'id']
         )
       }
@@ -868,6 +871,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
    * @param person The data object of the org/person to add or edit.
    */
   @Emit('addEdit')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitAddEdit (person: OrgPersonIF): void {}
 
   /**
@@ -875,6 +879,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
    * @param index The index of the org/person to remove.
    */
   @Emit('remove')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitRemove (index: number): void {}
 
   /** Emits an event to the parent to reset the state. */
@@ -992,7 +997,7 @@ li {
   font-weight: bold;
 
   // make label visible on background color
-  ::v-deep .theme--light.v-label--is-disabled {
+  :deep(.theme--light.v-label--is-disabled) {
     color: white !important;
   }
 }
@@ -1005,12 +1010,12 @@ li {
 }
 
 // conditionally hide the v-messages (as we normally don't want their height)
-::v-deep .v-input--checkbox .v-messages:not(.error--text) {
+:deep(.v-input--checkbox .v-messages:not(.error--text)) {
   display: none;
 }
 
 // Overrides for vuetify components (Checkbox alignment, inputField labels/text size/colour)
-::v-deep {
+:deep() {
   #btn-remove.v-btn.v-btn--disabled {
     color: $app-red !important;
     opacity: .4;

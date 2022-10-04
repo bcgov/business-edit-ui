@@ -45,8 +45,7 @@ import { ActionBindingIF, EntitySnapshotIF, ShareClassIF, ShareStructureIF, Flag
 })
 export default class ShareStructures extends Mixins(CommonMixin) {
   /** Whether this component should be in edit mode or review mode. */
-  @Prop({ default: true })
-  readonly isEditMode: boolean
+  @Prop({ default: true }) readonly isEditMode!: boolean
 
   // Global getters
   @Getter getComponentValidate!: boolean
@@ -102,17 +101,20 @@ export default class ShareStructures extends Mixins(CommonMixin) {
 <style lang="scss" scoped>
 // fix hard-coded whitespace inside shared component
 // we want the same padding as "section-container py-6"
-::v-deep {
+// *** TODO: check if some of these these can be removed
+:deep() {
   .share-info-container,
   .btn-container,
   .share-structure-table {
     padding-left: 1.875rem !important;
     padding-right: 1.875rem !important;
   }
+
   .v-card.add-share-structure-container {
     padding-left: 0.625rem !important;
     padding-right: 0.625rem !important;
   }
+
   .form__btns {
     display: flex;
 

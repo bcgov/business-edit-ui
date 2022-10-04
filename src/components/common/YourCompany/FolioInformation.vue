@@ -37,8 +37,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
   @Action setTransactionalFolioNumber!: ActionBindingIF
 
   /** Whether to show invalid section styling. */
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+  @Prop({ default: false }) readonly invalidSection!: boolean
 
   /** The original Folio Number. */
   get originalFolioNumber (): string {
@@ -86,6 +85,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
 
   /** On Have Changes event, emits event. */
   @Emit('haveChanges')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected onHaveChanges (val: boolean): void {}
 
   /** On Is Editing event, updates store and emits event. */

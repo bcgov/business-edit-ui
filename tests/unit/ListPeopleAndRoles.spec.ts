@@ -252,15 +252,15 @@ const gpPeopleAndRoles = [
 
 const emptyPerson = {
   officer: {
-    id: null as string,
+    id: null,
     firstName: '',
     lastName: '',
     middleName: '',
     organizationName: '',
     partyType: 'person',
-    email: null as string
+    email: null
   },
-  roles: [] as [],
+  roles: [],
   mailingAddress: {
     streetAddress: '',
     streetAddressAdditional: '',
@@ -275,15 +275,15 @@ const emptyPerson = {
 
 const emptyOrg = {
   officer: {
-    id: null as string,
+    id: null,
     firstName: '',
     lastName: '',
     middleName: '',
     organizationName: '',
     partyType: 'organization',
-    email: null as string
+    email: null
   },
-  roles: [] as [],
+  roles: [],
   mailingAddress: {
     streetAddress: '',
     streetAddressAdditional: '',

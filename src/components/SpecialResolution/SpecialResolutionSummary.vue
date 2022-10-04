@@ -37,7 +37,7 @@
           </v-col>
 
           <v-col cols="8">
-            <span class="info-text">{{ associationTypeToDescription(getAssociationType) }}</span>
+            <span class="info-text">{{ associationDescription }}</span>
           </v-col>
         </v-row>
       </div>
@@ -52,11 +52,12 @@
 
 <script lang="ts">
 // this is a placceholder copied from AlterationSummary, Will add component when working on this page
-import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, FeesIF } from '@/interfaces/'
-import { DateMixin, SharedMixin, FeeMixin, FilingTemplateMixin, EnumMixin } from '@/mixins/'
+import { DateMixin, SharedMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
+import { AssociationTypeToDescription } from '@/utils'
 
 @Component({
   components: {
@@ -68,8 +69,7 @@ export default class SpecialResolutionSummary extends Mixins(
   DateMixin,
   SharedMixin,
   FeeMixin,
-  FilingTemplateMixin,
-  EnumMixin
+  FilingTemplateMixin
 ) {
   // Global getters
   @Getter getBusinessNumber!: string
@@ -81,7 +81,11 @@ export default class SpecialResolutionSummary extends Mixins(
   @Action setSummaryMode!: ActionBindingIF
 
   /** Whether to perform validation. */
-  @Prop() readonly validate: boolean
+  @Prop() readonly validate!: boolean
+
+  get associationDescription (): string {
+    return AssociationTypeToDescription(this.getAssociationType)
+  }
 
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
@@ -112,13 +116,6 @@ export default class SpecialResolutionSummary extends Mixins(
     const futureEffectiveFeesSum = validFees.map(f => f.futureEffectiveFees).reduce((a, b) => a + b, 0)
     return `($${(filingFeesSum + futureEffectiveFeesSum).toFixed(2)} Fee)`
   }
-
-  onDeleteClicked (): void {
-    this.$root.$emit('delete-all')
-  }
-
-  @Emit('haveChanges')
-  emitHaveChanges (): void {}
 }
 </script>
 

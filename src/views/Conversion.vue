@@ -50,7 +50,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils/'
+import { GetFeatureFlag } from '@/utils/'
 import { PeopleAndRoles, CompletingParty, YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
@@ -59,7 +59,7 @@ import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Conversion/'
 import { ConversionSummary } from '@/components/Conversion'
-import { NOT_FOUND } from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
 @Component({
   components: {
@@ -88,8 +88,7 @@ export default class Conversion extends Mixins(
   @Action setCertifyStateValidity!: ActionBindingIF
 
   /** Whether App is ready. */
-  @Prop({ default: false })
-  readonly appReady: boolean
+  @Prop({ default: false }) readonly appReady!: boolean
 
   /** The id of the conversion filing being edited. */
   get conversionId (): number {
@@ -119,7 +118,7 @@ export default class Conversion extends Mixins(
 
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
-    if (!this.isJestRunning && !getFeatureFlag('conversion-ui-enabled')) {
+    if (!this.isJestRunning && !GetFeatureFlag('conversion-ui-enabled')) {
       window.alert('Conversion filings are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard', true)
       return
@@ -207,7 +206,7 @@ export default class Conversion extends Mixins(
     const addresses = await LegalServices.fetchAddresses(this.getBusinessId)
       .catch(reason => {
         // error message for business address has the pattern "FMXXXXXXX address not found"
-        if (reason.response?.status === NOT_FOUND &&
+        if (reason.response?.status === StatusCodes.NOT_FOUND &&
           reason.response?.data.message.includes('address')) return { businessOffice: null }
         throw new Error('Failed to fetch entity addresses')
       })
@@ -232,10 +231,12 @@ export default class Conversion extends Mixins(
   }
   /** Emits Fetch Error event. */
   @Emit('fetchError')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: boolean = true): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitHaveData (haveData = true): void {}
 }
 </script>

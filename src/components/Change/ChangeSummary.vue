@@ -71,7 +71,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common/'
 import { ActionBindingIF, NameRequestIF, ResourceIF } from '@/interfaces/'
@@ -100,7 +101,7 @@ export default class ChangeSummary extends Vue {
   @Action setSummaryMode!: ActionBindingIF
 
   /** Whether to perform validation. */
-  @Prop() readonly validate: boolean
+  @Prop() readonly validate!: boolean
 
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {

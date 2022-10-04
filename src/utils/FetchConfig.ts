@@ -7,11 +7,11 @@ import { axios } from '@/utils/'
  * Also identifies Business ID from initial route.
  * @returns A promise to get & set session storage keys with appropriate values.
  */
-export async function fetchConfig (): Promise<any> {
+export async function FetchConfig (): Promise<any> {
   // get config from environment
-  const origin: string = window.location.origin
+  const origin = window.location.origin
   const processEnvVueAppPath: string = process.env.VUE_APP_PATH
-  const processEnvBaseUrl = process.env.BASE_URL
+  const processEnvBaseUrl: string = process.env.BASE_URL
   const windowLocationPathname = window.location.pathname // eg, /basePath/BC1218875/correction/
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
 
@@ -37,7 +37,7 @@ export async function fetchConfig (): Promise<any> {
   sessionStorage.setItem('AUTH_WEB_URL', authWebUrl)
   console.info('Set Auth Web URL to: ' + authWebUrl)
 
-  const registryHomeUrl = response.data['REGISTRY_HOME_URL']
+  const registryHomeUrl: string = response.data['REGISTRY_HOME_URL']
   sessionStorage.setItem('REGISTRY_HOME_URL', registryHomeUrl)
   console.info('Set Registry Home URL to: ' + registryHomeUrl)
 
@@ -102,10 +102,10 @@ export async function fetchConfig (): Promise<any> {
     console.info('Set Launch Darkly Client ID.')
   }
 
-  const sentryEnable = response.data['SENTRY_ENABLE'];
+  const sentryEnable: string = response.data['SENTRY_ENABLE'];
   (<any>window).sentryEnable = sentryEnable
 
-  const sentryDsn = response.data['SENTRY_DSN']
+  const sentryDsn: string = response.data['SENTRY_DSN']
   if (sentryDsn) {
     (<any>window).sentryDsn = sentryDsn
     console.info('Set Sentry DSN.')

@@ -28,8 +28,7 @@ import { CommonMixin } from '@/mixins'
 })
 export default class NatureOfBusiness extends Mixins(CommonMixin) {
   /** Whether to show invalid section styling. */
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+  @Prop({ default: false }) readonly invalidSection!: boolean
 
   readonly NaicsServices = NaicsServices
 

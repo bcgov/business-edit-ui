@@ -121,13 +121,12 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   @Action setValidComponent!: ActionBindingIF
 
   /** Whether to show invalid section styling. */
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+  @Prop({ default: false }) readonly invalidSection!: boolean
 
   protected dropdown = false
   protected onEditMode = false
   protected isCorrected = null
-  protected newCorrectedStartDate = null as string // date is "Month Day, Year"
+  protected newCorrectedStartDate: string = null // date is "Month Day, Year"
 
   get isApplicableFiling (): boolean {
     return (this.isFirmCorrectionFiling || this.isFirmChangeFiling || this.isFirmConversionFiling)

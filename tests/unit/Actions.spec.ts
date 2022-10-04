@@ -30,14 +30,14 @@ const nrData = {
     stateProvinceCd: 'BC'
   },
   consentFlag: 'R',
-  corpNum: null as string,
+  corpNum: null,
   expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
   requestTypeCd: 'BC',
   names: [
     {
       choice: 1,
-      consumptionDate: null as string,
-      corpNum: null as string,
+      consumptionDate: null,
+      corpNum: null,
       name: 'ABC 1234',
       state: 'APPROVED'
     },
@@ -55,10 +55,10 @@ const nrData = {
 
 describe('Action button states', () => {
   let wrapper: any
-  let setEntityType: Function
-  let setChanged: Function
-  let setValidity: Function
-  let setEditing: Function
+  let setEntityType: any
+  let setChanged: any
+  let setValidity: any
+  let setEditing: any
 
   beforeAll(async () => {
     // initialize store
@@ -319,7 +319,7 @@ describe.skip('Actions component - Filing Functionality', () => {
         certifiedBy: 'Certified By',
         date: '2020/01/29',
         effectiveDate: formattedEffectiveDate,
-        folioNumber: null as string,
+        folioNumber: null,
         isFutureEffective: false
       },
       business: {
@@ -333,7 +333,7 @@ describe.skip('Actions component - Filing Functionality', () => {
           legalName: 'My Name Request Inc.'
         },
         nameTranslations: {
-          new: [] as string[]
+          new: []
         },
         offices: {
           registeredOffice: {

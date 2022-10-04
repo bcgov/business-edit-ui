@@ -301,7 +301,7 @@
                 </div>
                 <div
                   class="address-wrapper pt-6"
-                  v-if="!isSame(mailingAddress, deliveryAddress, ['actions', 'addressType', 'id']) ||
+                  v-if="!IsSame(mailingAddress, deliveryAddress, ['actions', 'addressType', 'id']) ||
                   !inheritMailingAddress"
                 >
                   <RegDeliveryAddress
@@ -370,7 +370,7 @@
                   </div>
                   <div
                     class="address-wrapper pt-6"
-                    v-if="!isSame(recMailingAddress, recDeliveryAddress, ['actions', 'addressType', 'id']) ||
+                    v-if="!IsSame(recMailingAddress, recDeliveryAddress, ['actions', 'addressType', 'id']) ||
                     !inheritRecMailingAddress"
                   >
                     <RecDeliveryAddress
@@ -417,7 +417,7 @@ import { isEmpty, isEqual } from 'lodash'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces/'
-import { isSame } from '@/utils/'
+import { IsSame } from '@/utils/'
 import { AddressTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
 
@@ -442,12 +442,10 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   }
 
   /** Whether to show invalid section styling. */
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+  @Prop({ default: false }) readonly invalidSection!: boolean
 
   /** Prop to set readonly state (ie disable form actions). */
-  @Prop({ default: false })
-  readonly isSummaryView: boolean
+  @Prop({ default: false }) readonly isSummaryView!: boolean
 
   // Global getters
   @Getter getOfficeAddresses!: AddressesIF // NB: may be {}
@@ -470,7 +468,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 
   // Declarations for template
   readonly isEmpty = isEmpty
-  readonly isSame = isSame
+  readonly IsSame = IsSame
   readonly AddressTypes = AddressTypes
   readonly DefaultAddressSchema = DefaultAddressSchema
   readonly InBcCanadaAddressSchema = InBcCanadaAddressSchema
@@ -492,10 +490,10 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   protected dropdown = false
 
   // The 4 addresses that are the current state of the BaseAddress sub-components:
-  private mailingAddress = {} as AddressIF
-  private deliveryAddress = {} as AddressIF
-  private recMailingAddress = {} as AddressIF
-  private recDeliveryAddress = {} as AddressIF
+  private mailingAddress: AddressIF = {}
+  private deliveryAddress: AddressIF = {}
+  private recMailingAddress: AddressIF = {}
+  private recDeliveryAddress: AddressIF = {}
 
   // The 4 validation events from each BaseAddress sub-component:
   private mailingAddressValid = true
@@ -565,8 +563,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         this.deliveryAddressValid &&
         this.recMailingAddressValid &&
         this.recDeliveryAddressValid &&
-        isSame(this.mailingAddress, this.recMailingAddress, ['addressCountryDescription', 'id']) &&
-        isSame(this.deliveryAddress, this.recDeliveryAddress, ['addressCountryDescription', 'id'])
+        IsSame(this.mailingAddress, this.recMailingAddress, ['addressCountryDescription', 'id']) &&
+        IsSame(this.deliveryAddress, this.recDeliveryAddress, ['addressCountryDescription', 'id'])
       )
 
       // compare addresses to set the "inherit records mailing" flag
@@ -575,7 +573,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       this.inheritRecMailingAddress = (
         this.recMailingAddressValid &&
         this.recDeliveryAddressValid &&
-        isSame(this.recMailingAddress, this.recDeliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
+        IsSame(this.recMailingAddress, this.recDeliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
       )
     }
 
@@ -611,7 +609,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     this.inheritMailingAddress = (
       this.mailingAddressValid &&
       this.deliveryAddressValid &&
-      isSame(this.mailingAddress, this.deliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
+      IsSame(this.mailingAddress, this.deliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
     )
   }
 
@@ -987,29 +985,6 @@ ul {
 
   .v-btn {
     min-width: 6.5rem;
-  }
-}
-
-// Override Base Address font styling
-::v-deep {
-  // italicize the delivery instructions in the base address component
-  .address-block .delivery-instructions {
-    font-style: italic;
-  }
-
-  .address-block__info-row {
-    color: $gray7;
-    font-weight: normal;
-  }
-
-  .theme--light.v-label {
-    color: $gray7;
-    font-size: $px-16;
-    font-weight: normal;
-  }
-
-  .v-input input {
-    color: $gray9
   }
 }
 </style>

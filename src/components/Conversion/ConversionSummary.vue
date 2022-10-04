@@ -54,7 +54,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ListPeopleAndRoles } from '@/components/common/'
 import { OfficeAddresses } from '@/components/common/YourCompany'
@@ -80,7 +81,7 @@ export default class ConversionSummary extends Vue {
   @Action setSummaryMode!: ActionBindingIF
 
   /** Whether to perform validation. */
-  @Prop() readonly validate: boolean
+  @Prop() readonly validate!: boolean
 
   /** The NAICS code, description or null. */
   get naicsSummary (): string {

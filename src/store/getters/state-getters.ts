@@ -9,7 +9,7 @@ import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformat
   from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF, SpecialResolutionIF }
   from '@bcrs-shared-components/interfaces/'
-import { isSame } from '@/utils/'
+import { IsSame } from '@/utils/'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: StateIF): boolean => {
@@ -681,14 +681,14 @@ export const getOriginalOfficeAddresses = (state: StateIF): AddressesIF => {
 /** True if (registered) mailing address has changed. */
 export const hasMailingChanged = (state: StateIF): boolean => {
   if (isAlterationFiling(state) || isBenCorrectionFiling(state)) {
-    return !isSame(
+    return !IsSame(
       getOfficeAddresses(state)?.registeredOffice?.mailingAddress,
       getOriginalOfficeAddresses(state)?.registeredOffice?.mailingAddress,
       ['addressCountryDescription', 'id']
     )
   }
   if (isFirmChangeFiling(state) || isFirmConversionFiling(state) || isFirmCorrectionFiling(state)) {
-    return !isSame(
+    return !IsSame(
       getOfficeAddresses(state)?.businessOffice?.mailingAddress,
       getOriginalOfficeAddresses(state)?.businessOffice?.mailingAddress,
       ['addressCountryDescription', 'id']
@@ -700,14 +700,14 @@ export const hasMailingChanged = (state: StateIF): boolean => {
 /** True if (registered) delivery address has changed. */
 export const hasDeliveryChanged = (state: StateIF): boolean => {
   if (isAlterationFiling(state) || isBenCorrectionFiling(state)) {
-    return !isSame(
+    return !IsSame(
       getOfficeAddresses(state)?.registeredOffice?.deliveryAddress,
       getOriginalOfficeAddresses(state)?.registeredOffice?.deliveryAddress,
       ['addressCountryDescription', 'id']
     )
   }
   if (isFirmChangeFiling(state) || isFirmConversionFiling(state) || isFirmCorrectionFiling(state)) {
-    return !isSame(
+    return !IsSame(
       getOfficeAddresses(state)?.businessOffice?.deliveryAddress,
       getOriginalOfficeAddresses(state)?.businessOffice?.deliveryAddress,
       ['addressCountryDescription', 'id']
@@ -718,7 +718,7 @@ export const hasDeliveryChanged = (state: StateIF): boolean => {
 
 /** True if records mailing address has changed. */
 export const hasRecMailingChanged = (state: StateIF): boolean => {
-  return !isSame(
+  return !IsSame(
     getOfficeAddresses(state)?.recordsOffice?.mailingAddress,
     getOriginalOfficeAddresses(state)?.recordsOffice?.mailingAddress,
     ['addressCountryDescription', 'id']
@@ -727,7 +727,7 @@ export const hasRecMailingChanged = (state: StateIF): boolean => {
 
 /** True if records delivery address has changed. */
 export const hasRecDeliveryChanged = (state: StateIF): boolean => {
-  return !isSame(
+  return !IsSame(
     getOfficeAddresses(state)?.recordsOffice?.deliveryAddress,
     getOriginalOfficeAddresses(state)?.recordsOffice?.deliveryAddress,
     ['addressCountryDescription', 'id']
@@ -754,7 +754,7 @@ export const havePeopleAndRolesChanged = (state: StateIF): boolean => {
   const currentOrgPersons = getOrgPeople(state)?.map(op => normalize(op))
   const originalOrgPersons = getEntitySnapshot(state)?.orgPersons?.map(op => normalize(op))
 
-  return !isSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange'])
+  return !IsSame(currentOrgPersons, originalOrgPersons, ['actions', 'confirmNameChange'])
 }
 
 /** True when the minimum proprietors is met. */
@@ -795,7 +795,7 @@ export const hasShareStructureChanged = (state: StateIF): boolean => {
   currentShareClasses = currentShareClasses && removeNullProps(currentShareClasses)
   originalShareClasses = originalShareClasses && removeNullProps(originalShareClasses)
 
-  return !isSame(originalShareClasses, currentShareClasses)
+  return !IsSame(originalShareClasses, currentShareClasses)
 }
 
 /** Whether NAICS data has changed. */
@@ -884,9 +884,9 @@ export const getIsResolutionDatesValid = (state: StateIF): boolean => {
  * until there is a valid filing type and entity code.
  */
 export const showFeeSummary = (state: StateIF): boolean => {
-  const defaultFilingData = [{
-    filingTypeCode: null as FilingCodes,
-    entityType: null as CorpTypeCd,
+  const defaultFilingData: FilingDataIF[] = [{
+    filingTypeCode: null,
+    entityType: null,
     priority: false,
     waiveFees: false
   }]
@@ -897,7 +897,7 @@ export const showFeeSummary = (state: StateIF): boolean => {
     (isFirmConversionFiling(state) && hasConversionDataChanged(state)) ||
     (isSpecialResolutionFiling(state) && hasSpecialResolutionDataChanged(state))
   )
-  return (haveFilingChange && !isSame(getFilingData(state), defaultFilingData))
+  return (haveFilingChange && !IsSame(getFilingData(state), defaultFilingData))
 }
 
 /** The current fees. */

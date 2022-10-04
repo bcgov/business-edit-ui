@@ -131,11 +131,11 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   private dropdown = false
 
   // Props
-  @Prop({ default: false })
-  readonly provisionsRemoved: boolean
+  @Prop({ default: false }) readonly provisionsRemoved!: boolean
 
   // Emitters
   @Emit('isChanged')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitIsChanged (provisionsremoved: boolean): void {}
 
   @Watch('isEditing')
@@ -145,6 +145,7 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   }
 
   @Emit('haveChanges')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitHaveChanges (haveChanges: boolean): void {}
 
   // Watchers
@@ -230,35 +231,37 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   border-right: 1px solid $gray1;
 }
 
-::v-deep .v-input--checkbox .theme--light.v-icon {
-  margin-top: 0;
-  margin-left: 0;
-}
+:deep() {
+  .v-input--checkbox .theme--light.v-icon {
+    margin-top: 0;
+    margin-left: 0;
+  }
 
-::v-deep .invalid.v-input--checkbox .theme--light.v-icon {
-  color: $app-red;
-  margin-top: 0;
-  margin-left: 0;
-}
+  .invalid.v-input--checkbox .theme--light.v-icon {
+    color: $app-red;
+    margin-top: 0;
+    margin-left: 0;
+  }
 
-::v-deep .v-input--checkbox .theme--light.v-label {
-  line-height: 1.375rem;
-  font-size: $px-14;
-  font-weight: normal;
-}
+  .v-input--checkbox .theme--light.v-label {
+    line-height: 1.375rem;
+    font-size: $px-14;
+    font-weight: normal;
+  }
 
-::v-deep .invalid.v-input--checkbox .theme--light.v-label {
-  color: $app-red;
-}
+  .invalid.v-input--checkbox .theme--light.v-label {
+    color: $app-red;
+  }
 
-::v-deep #checkbox-div .v-input__slot {
-  align-items: start;
-  justify-content: start;
-}
+  #checkbox-div .v-input__slot {
+    align-items: start;
+    justify-content: start;
+  }
 
-::v-deep .v-input--selection-controls {
-  margin-top: 1.875rem;
-  padding: 0;
+  .v-input--selection-controls {
+    margin-top: 1.875rem;
+    padding: 0;
+  }
 }
 
 .invalid {

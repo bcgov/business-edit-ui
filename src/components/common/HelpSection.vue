@@ -26,7 +26,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { BcRegContacts } from '@/components/common/'
 import { HelpSectionIF } from '@/interfaces/'
 
@@ -36,8 +37,7 @@ import { HelpSectionIF } from '@/interfaces/'
   }
 })
 export default class HelpSection extends Vue {
-  @Prop({ default: () => {} })
-  readonly helpSection: HelpSectionIF
+  @Prop({ default: () => {} }) readonly helpSection!: HelpSectionIF
 
   helpToggle = false
 
