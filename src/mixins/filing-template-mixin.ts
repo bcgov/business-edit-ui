@@ -93,7 +93,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setSpecialResolution!: ActionBindingIF
   @Action setCorrectionStartDate!: ActionBindingIF
-  @Action setSpecialResolutionConfirmStateValidity!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
