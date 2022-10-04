@@ -867,9 +867,6 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // store Business Start Date
     this.setCorrectionStartDate(filing.changeOfRegistration.startDate || null)
 
-    // default this flag to true for change filing
-    this.setSpecialResolutionConfirmStateValidity(true)
-
     // store Staff Payment
     this.storeStaffPayment(filing)
   }
