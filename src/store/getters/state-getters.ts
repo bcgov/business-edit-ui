@@ -386,7 +386,8 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
       havePeopleAndRolesChanged(state) ||
       hasShareStructureChanged(state) ||
       areProvisionsRemoved(state) ||
-      haveNewResolutionDates(state)
+      haveNewResolutionDates(state) ||
+      hasContactInfoChanged(state)
     )
   }
 
@@ -395,9 +396,9 @@ export const hasCorrectionDataChanged = (state: StateIF): boolean => {
       hasBusinessNameChanged(state) ||
       hasBusinessStartDateChanged(state) ||
       hasNaicsChanged(state) ||
-      hasBusinessStartDateChanged(state) ||
       haveOfficeAddressesChanged(state) ||
-      havePeopleAndRolesChanged(state)
+      havePeopleAndRolesChanged(state) ||
+      hasContactInfoChanged(state)
     )
   }
 

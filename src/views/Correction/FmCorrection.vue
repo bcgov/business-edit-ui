@@ -36,11 +36,11 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
+import { ActionBindingIF, AddressesIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resources/Correction/'
@@ -56,10 +56,16 @@ import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resour
   }
 })
 export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
+  // Global getters
+  @Getter getUserFirstName!: string
+  @Getter getUserLastName!: string
+  @Getter getOriginalOfficeAddresses!: AddressesIF
+
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
   @Action setResource!: ActionBindingIF
+  @Action setCompletingParty!: ActionBindingIF
 
   /** The draft correction filing to process. */
   @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF
@@ -96,6 +102,20 @@ export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTe
 
       // pre-select No Fee option
       this.setStaffPayment({ option: StaffPaymentOptions.NO_FEE })
+
+      const mailingAddress = this.getOriginalOfficeAddresses.businessOffice?.mailingAddress
+      this.setCompletingParty({
+        firstName: this.getUserFirstName,
+        lastName: this.getUserLastName,
+        mailingAddress: {
+          addressCity: mailingAddress?.addressCity,
+          addressCountry: mailingAddress?.addressCountry,
+          addressRegion: mailingAddress?.addressRegion,
+          postalCode: mailingAddress?.postalCode,
+          streetAddress: mailingAddress?.streetAddress,
+          streetAddressAdditional: mailingAddress?.streetAddressAdditional
+        }
+      } as CompletingPartyIF)
 
       // tell App that we're finished loading
       this.emitHaveData()

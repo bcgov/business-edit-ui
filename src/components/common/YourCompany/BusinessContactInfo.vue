@@ -3,10 +3,9 @@
     :contactLabel="getResource.contactLabel"
     :businessContact="getBusinessContact"
     :originalBusinessContact="originalContact"
-    :hasBusinessContactInfoChange="hasBusinessContactInfoChange"
+    :hasBusinessContactInfoChange="hasContactInfoChanged"
     :editLabel="editLabel"
     :editedLabel="editSavedLabel"
-    :disableActions="isCorrectionFiling"
     :disableActionTooltip="isFirmChangeFiling"
     :invalidSection="invalidSection"
     :optionalPhone="isAlterationFiling || isFirmChangeFiling"
@@ -36,6 +35,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getResource!: ResourceIF
   @Getter getBusinessId!: string
+  @Getter hasContactInfoChanged!: boolean
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -49,13 +49,6 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   /** The original Contact data. */
   get originalContact (): ContactPointIF {
     return this.getEntitySnapshot?.authInfo?.contact
-  }
-
-  /** True if there are changes between current Contact and original Contact Info. */
-  get hasBusinessContactInfoChange (): boolean {
-    return this.getBusinessContact?.email !== this.originalContact?.email ||
-      this.getBusinessContact?.phone !== this.originalContact?.phone ||
-      this.getBusinessContact?.extension !== this.originalContact?.extension
   }
 
   /** On Contact Info Change event, updates auth db and store. */
