@@ -188,7 +188,7 @@ function getLastEvent (wrapper: Wrapper<OrgPerson>, name: string): any {
  */
 function createComponent (
   currentOrgPerson: any,
-  activeIndex: number = NaN
+  activeIndex = NaN
 ): Wrapper<OrgPerson> {
   const localVue = createLocalVue()
   localVue.use(Vuetify)
@@ -325,7 +325,8 @@ describe('Org/Person component for a BEN Correction filing', () => {
 
   it('Emits "reset" event when clicking Cancel button', async () => {
     const wrapper = createComponent(validOrgData, 0)
-    const vm = wrapper.vm as any
+    const vm: any = wrapper.vm
+
     vm.applyRules()
     await Vue.nextTick()
 
@@ -353,7 +354,8 @@ describe('Org/Person component for a BEN Correction filing', () => {
 
   it('Displays error message when user enters invalid org name', async () => {
     const wrapper = createComponent(validOrgData, NaN)
-    const vm = wrapper.vm as any
+    const vm: any = wrapper.vm
+
     vm.applyRules()
     await Vue.nextTick()
 
@@ -390,7 +392,8 @@ describe('Org/Person component for a BEN Correction filing', () => {
 
   it('Displays error message when user does not enter person names', async () => {
     const wrapper = createComponent(validPersonData, NaN)
-    const vm = wrapper.vm as any
+    const vm: any = wrapper.vm
+
     vm.applyRules()
     await Vue.nextTick()
 
@@ -417,7 +420,8 @@ describe('Org/Person component for a BEN Correction filing', () => {
 
   it('Displays error message when user enters person names that are too long', async () => {
     const wrapper = createComponent(validPersonData, NaN)
-    const vm = wrapper.vm as any
+    const vm: any = wrapper.vm
+
     vm.applyRules()
     await Vue.nextTick()
 
@@ -445,7 +449,8 @@ describe('Org/Person component for a BEN Correction filing', () => {
 
   it('Displays errors and does not submit form when clicking Done button and form is invalid', async () => {
     const wrapper = createComponent(EmptyPerson, NaN)
-    const vm = wrapper.vm as any
+    const vm: any = wrapper.vm
+
     vm.applyRules()
     await Vue.nextTick()
 

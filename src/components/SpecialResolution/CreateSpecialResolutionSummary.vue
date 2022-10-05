@@ -63,7 +63,9 @@
                 :rules="confirmCompletionResolution"
                 @change="onResolutionConfirmedChange($event)"
               >
-                <div slot="label">I confirm the following:</div>
+                <template v-slot:label>
+                  <div>I confirm the following:</div>
+                </template>
               </v-checkbox>
               <ul>
                 <li class="mt-4">
@@ -172,8 +174,9 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
     !this.isJestRunning && this.$refs.confirmResolutionChkFormRef.validate()
   }
 
-  /** Set values if exist */
-  protected mounted () {
+  /** Called when component is mounted. */
+  mounted () {
+    // set values if exist
     this.resolutionConfirmed = this.getSpecialResolution.resolutionConfirmed || false
   }
 }
@@ -195,7 +198,8 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
     }
   }
 }
-::v-deep .chk-resolution {
+
+:deep(.chk-resolution) {
   label {
     font-weight: normal;
     color: $gray9;

@@ -1,10 +1,11 @@
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
+import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, EmptyFees, FeesIF } from '@/interfaces'
 import { CorpTypeCd, FilingCodes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { FilingDataIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { axios } from '@/utils/'
+import { AxiosInstance as axios } from '@/utils/'
 import { cloneDeep } from 'lodash'
-import { Component, Vue } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
 
 /**
  * Mixin that provides common functions also provides integration with PAY API.
@@ -55,17 +56,17 @@ export default class FeeMixin extends Vue {
   }
 
   /** Sets the current fees by fetching fee using filing data. */
-  protected async setCurrentFeesFromFilingData (isFutureEffective: boolean = false): Promise<void> {
+  protected async setCurrentFeesFromFilingData (isFutureEffective = false): Promise<void> {
     this.setCurrentFees(await this.getFilingFeesFromFilingData(isFutureEffective))
   }
 
   /** Sets the fee prices by fetching fee using filing data. */
-  protected async setFeePricesFromFilingData (isFutureEffective: boolean = false): Promise<void> {
+  protected async setFeePricesFromFilingData (isFutureEffective = false): Promise<void> {
     this.setFeePrices(await this.getFilingFeesFromFilingData(isFutureEffective))
   }
 
   /** Lines up promises to fetch for filing fees, falls back to empty fees.  */
-  protected async getFilingFeesFromFilingData (isFutureEffective: boolean = false): Promise<FeesIF[]> {
+  protected async getFilingFeesFromFilingData (isFutureEffective = false): Promise<FeesIF[]> {
     try {
       const feePromises = this.getFilingData
         .map(fd => this.fetchFilingFees(fd.filingTypeCode, fd.entityType, isFutureEffective))
@@ -80,7 +81,7 @@ export default class FeeMixin extends Vue {
    * Fetches filing fees.
    * @returns a promise to return the fees for a filing
    */
-  protected async fetchFilingFees (filingCode: FilingCodes, entityType: CorpTypeCd, isFutureEffective: boolean = false):
+  protected async fetchFilingFees (filingCode: FilingCodes, entityType: CorpTypeCd, isFutureEffective = false):
     Promise<FeesIF> {
     let url = sessionStorage.getItem('PAY_API_URL') + 'fees/' + entityType + '/' + filingCode
     if (isFutureEffective) {

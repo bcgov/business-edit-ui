@@ -144,7 +144,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep, isEmpty } from 'lodash'
-import { isSame } from '@/utils/'
+import { IsSame } from '@/utils/'
 import { ActionBindingIF, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF, OrgPersonIF, ResourceIF,
   RoleIF } from '@/interfaces/'
 import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
@@ -190,7 +190,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   protected isAddingEditingOrgPerson = false
   protected activeIndex = NaN
   protected currentOrgPerson: OrgPersonIF = null
-  protected helpToggle: boolean = false
+  protected helpToggle = false
 
   /** The list of original parties. */
   get originalParties (): OrgPersonIF[] {
@@ -313,10 +313,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     return this.dateToYyyyMmDd(this.getCurrentJsDate)
   }
 
-  /**
-   * Called when component is mounted.
-   */
-  protected mounted (): void {
+  /** Called when component is mounted. */
+  mounted (): void {
     // initialize this component's 'valid' and 'changed' flags
     this.setPeopleAndRolesValidity(this.validOrgPersons)
     this.setPeopleAndRolesChanged(this.hasChanges)
@@ -435,7 +433,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     const original = this.originalParties.find(x => x.officer.id === person.officer.id)
     if (!original) return ActionTypes.ADDED
     // ignore "action" when comparing
-    if (!isSame(person, original, ['actions'])) return ActionTypes.EDITED
+    if (!IsSame(person, original, ['actions'])) return ActionTypes.EDITED
     return null // no actions
   }
 
@@ -495,9 +493,9 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   /** Returns True if the orgPerson's address has changed. */
   private hasAddressChanged (orgPerson: OrgPersonIF): boolean {
     const mailingAddress =
-      !isSame(orgPerson.mailingAddress, this.originalParties[this.activeIndex].mailingAddress, ['id'])
+      !IsSame(orgPerson.mailingAddress, this.originalParties[this.activeIndex].mailingAddress, ['id'])
     const deliveryAddress =
-      !isSame(orgPerson.deliveryAddress, this.originalParties[this.activeIndex].deliveryAddress, ['id'])
+      !IsSame(orgPerson.deliveryAddress, this.originalParties[this.activeIndex].deliveryAddress, ['id'])
 
     return (mailingAddress || deliveryAddress)
   }
@@ -621,10 +619,11 @@ li {
   padding-top: 0.25rem;
 }
 
-::v-deep {
+:deep() {
   .v-btn.v-btn--disabled:not(#btn-remove) {
     opacity: .4;
     color: $app-blue !important;
+
     .v-icon {
       color: $app-blue !important;
     }

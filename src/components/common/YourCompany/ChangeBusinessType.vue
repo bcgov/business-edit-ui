@@ -14,7 +14,7 @@
       <!-- Display Mode -->
       <v-col cols="7" v-if="!isEditingType">
         <span class="info-text" :class="{ 'has-conflict': isConflictingLegalType && isNewName}">
-          {{getCorpTypeDescription(getEntityType)}}
+          {{GetCorpFullDescription(getEntityType)}}
         </span>
         <!-- Firm info tooltip -->
         <v-tooltip v-if="showChangeInfoTooltip"
@@ -64,10 +64,8 @@
                   persistent-hint
                   filled
         >
-          <template slot="item" slot-scope="data">
-          <span class="list-item">
-            {{ data.item.text }}
-          </span>
+          <template v-slot:item="data">
+            <span class="list-item">{{ data.item.text }}</span>
           </template>
         </v-select>
         <div class="my-6">
@@ -220,8 +218,8 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { BcRegContacts } from '@/components/common/'
-import { CommonMixin, SharedMixin } from '@/mixins/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { CommonMixin } from '@/mixins/'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 
 @Component({
@@ -229,9 +227,11 @@ import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
     BcRegContacts
   }
 })
-export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin) {
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+export default class ChangeBusinessType extends Mixins(CommonMixin) {
+  // for template
+  readonly GetCorpFullDescription = GetCorpFullDescription
+
+  @Prop({ default: false }) readonly invalidSection!: boolean
 
   // Global getters
   @Getter getNameRequestLegalName!: string
@@ -246,16 +246,17 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
 
   @Action setEntityType!: ActionBindingIF
 
-  protected selectedEntityType = null as CorpTypeCd
+  protected selectedEntityType: CorpTypeCd = null
   protected confirmArticles = false
   protected helpToggle = false
   protected isEditingType = false
-  protected dropdown = null as boolean
+  protected dropdown: boolean = null
 
-  readonly confirmLabel: string = `The company has completed a set Benefit Company Articles containing a benefit
+  readonly confirmLabel = `The company has completed a set Benefit Company Articles containing a benefit
     provision, and a copy of these articles has been added to company's record book.`
 
-  protected mounted (): void {
+  /** Called when component is mounted. */
+  mounted (): void {
     this.initializeEntityType()
   }
 
@@ -321,6 +322,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, SharedMixin)
 
   @Watch('isEditingType')
   @Emit('isEditingBusinessType')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitIsEditingType (isEditing: boolean): void {}
 }
 </script>
@@ -402,13 +404,13 @@ ol {
   }
 }
 
-::v-deep .theme--light.v-label {
+:deep(.theme--light.v-label) {
   font-size: .875rem;
   color: $gray7;
   font-weight: normal;
 }
 
-::v-deep .v-input__slot {
+:deep(.v-input__slot) {
   align-items: flex-start;
 }
 </style>

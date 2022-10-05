@@ -26,8 +26,9 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { Component, Prop, Vue } from 'vue-property-decorator'
 import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa'
 import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
 
@@ -38,7 +39,7 @@ import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
 })
 export default class CourtOrderPoa extends Vue {
   /** Prop to provide section number. */
-  @Prop({ default: '' }) readonly sectionNumber: string
+  @Prop({ default: '' }) readonly sectionNumber!: string
 
   /** Store getters */
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -57,6 +58,3 @@ export default class CourtOrderPoa extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

@@ -19,8 +19,9 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ActionBindingIF } from '@/interfaces/'
 import { CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party/'
@@ -33,10 +34,10 @@ import { DefaultAddressSchema } from '@/schemas/'
 })
 export default class CompletingParty extends Vue {
   /** Prop to provide section number. */
-  @Prop({ default: '' }) readonly sectionNumber: string
+  @Prop({ default: '' }) readonly sectionNumber!: string
 
   /** Whether to perform validation. */
-  @Prop({ default: false }) readonly validate: boolean
+  @Prop({ default: false }) readonly validate!: boolean
 
   // store getters
   @Getter getCompletingParty!: CompletingPartyIF

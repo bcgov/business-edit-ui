@@ -79,6 +79,7 @@ import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-pic
 import { DateMixin } from '@/mixins/'
 import { EffectiveDateTypes } from '@/enums/'
 import { EffectiveDateTimeIF, FormFieldType, FormIF } from '@/interfaces/'
+import { VuetifyRuleFunction } from '@/types'
 
 enum PeriodTypes {
   AM = 'am',
@@ -122,20 +123,20 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   private maxDate: Date = null
 
   // V-model values
-  private effectiveDateType: EffectiveDateTypes = null
-  private datePicker: string = ''
-  private dateText: string = ''
-  private selectHour: string[] = []
-  private selectMinute: string[] = []
-  private selectPeriod = PeriodTypes.AM
+  protected effectiveDateType: EffectiveDateTypes = null
+  protected datePicker = ''
+  protected dateText = ''
+  protected selectHour: string[] = []
+  protected selectMinute: string[] = []
+  protected selectPeriod = PeriodTypes.AM
 
   // Combobox items
-  private hours = [...Array(12).keys()].map(num => (num + 1).toString())
-  private minutes = [...Array(60).keys()].map(num => num.toString().padStart(2, '0'))
-  private timePeriod = [PeriodTypes.AM, PeriodTypes.PM]
+  readonly hours = [...Array(12).keys()].map(num => (num + 1).toString())
+  readonly minutes = [...Array(60).keys()].map(num => num.toString().padStart(2, '0'))
+  readonly timePeriod = [PeriodTypes.AM, PeriodTypes.PM]
 
   /** Validations rules for date text field. */
-  get dateRules (): Array<Function> {
+  get dateRules (): Array<VuetifyRuleFunction> {
     // only apply rules when Future Effective is selected
     if (this.isFutureEffective && this.getAppValidate) {
       const minDateStr = this.dateToYyyyMmDd(this.minDate)
@@ -162,7 +163,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   }
 
   /** Validations rules for hour selector. */
-  get hourRules (): Array<Function> {
+  get hourRules (): Array<VuetifyRuleFunction> {
     // only apply rules when Future Effective is selected
     if (this.isFutureEffective && this.getAppValidate) {
       return [
@@ -174,7 +175,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   }
 
   /** Validations rules for minute selector. */
-  get minuteRules (): Array<Function> {
+  get minuteRules (): Array<VuetifyRuleFunction> {
     // only apply rules when Future Effective is selected
     if (this.isFutureEffective && this.getAppValidate) {
       return [
@@ -215,7 +216,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
 
   // FOR FUTURE USE? IT WAS DECIDED TO NOT LOAD FED WHEN RESUMING A DRAFT
   // /** Called when component is mounted. */
-  // protected mounted (): void {
+  // mounted (): void {
   //   this.parseInitialEffectiveDateTime()
   // }
 
@@ -405,7 +406,7 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   line-height: 1.2rem;
 }
 
-::v-deep .v-label {
+:deep(.v-label) {
   color: $gray7;
   font-weight: normal;
 }
@@ -459,7 +460,8 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
     color: $BCgovInputError !important;
   }
 }
-::v-deep {
+
+:deep() {
   .v-icon.v-icon.v-icon--disabled {
     color: $app-blue !important;
   }

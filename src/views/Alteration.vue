@@ -112,7 +112,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils/'
+import { GetFeatureFlag } from '@/utils/'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
 import { CertifySection, CourtOrderPoa, CurrentDirectors, DocumentsDelivery, ShareStructures, StaffPayment,
   TransactionalFolioNumber, YourCompany } from '@/components/common/'
@@ -160,8 +160,7 @@ export default class Alteration extends Mixins(
   @Action setResource!: ActionBindingIF
 
   /** Whether App is ready. */
-  @Prop({ default: false })
-  readonly appReady: boolean
+  @Prop({ default: false }) readonly appReady!: boolean
 
   /** Whether to show the Transactional Folio Number section. */
   get showTransactionalFolioNumber (): boolean {
@@ -195,7 +194,7 @@ export default class Alteration extends Mixins(
 
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
-    if (!this.isJestRunning && !getFeatureFlag('alteration-ui-enabled')) {
+    if (!this.isJestRunning && !GetFeatureFlag('alteration-ui-enabled')) {
       window.alert('Alterations are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard', true)
       return
@@ -315,11 +314,13 @@ export default class Alteration extends Mixins(
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: Boolean = true): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitHaveData (haveData = true): void {}
 }
 </script>
 

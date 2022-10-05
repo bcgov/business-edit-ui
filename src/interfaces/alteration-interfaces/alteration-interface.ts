@@ -1,6 +1,6 @@
 import { BusinessInformationIF, CourtOrderIF, NameRequestIF, NameTranslationIF, ShareStructureIF }
   from '@/interfaces/'
-import { AssociationTypes } from '@bcrs-shared-components/enums'
+import { CoopTypes } from '@/enums'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 //
@@ -16,7 +16,7 @@ export interface AlterationIF {
   shareStructure?: ShareStructureIF
   contactPoint?: ContactPointIF
   courtOrder?: CourtOrderIF
-  cooperativeAssociationType?: AssociationTypes
+  cooperativeAssociationType?: CoopTypes
   rulesFileKey?: string
   rulesFileName?: string
   memorandumFileKey?: string

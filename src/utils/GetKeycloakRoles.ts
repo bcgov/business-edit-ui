@@ -23,7 +23,7 @@ function parseToken (token: string): any {
 }
 
 /** Gets Keycloak roles from JWT. */
-export function getKeycloakRoles (): Array<string> {
+export function GetKeycloakRoles (): Array<string> {
   const jwt = getJWT()
   const keycloakRoles = jwt.roles
   if (keycloakRoles && keycloakRoles.length > 0) {

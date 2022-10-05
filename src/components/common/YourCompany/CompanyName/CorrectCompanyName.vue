@@ -24,7 +24,7 @@ import { CorrectionTypes } from '@/enums/'
 @Component({})
 export default class CorrectCompanyName extends Mixins(CommonMixin) {
   /** Form Submission Prop */
-  @Prop({ default: null }) readonly formType: CorrectionTypes
+  @Prop({ default: null }) readonly formType!: CorrectionTypes
 
   @Action setNameRequest!: ActionBindingIF
 
@@ -43,7 +43,8 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
     (v: string) => !!v || ' A company name is required'
   ]
 
-  protected mounted (): void {
+  /** Called when component is mounted. */
+  mounted (): void {
     // Set the current company name to the form
     if (this.getNameRequestLegalName) {
       this.companyName = this.getNameRequestLegalName
@@ -65,6 +66,7 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
 
   /** Inform parent the process is complete. */
   @Emit('isSaved')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitIsSaved (isSaved: boolean): void {}
 
   /** Inform parent when form is valid and ready for submission. */

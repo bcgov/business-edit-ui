@@ -1,14 +1,15 @@
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { NameRequestStates, NameRequestTypes } from '@/enums/'
 import { DateMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { NrResponseIF, ResourceIF } from '@/interfaces/'
+
 /**
  * Mixin for processing Name Request objects.
  */
 @Component({})
-export default class NameRequestMixin extends Mixins(DateMixin) {
+export default class NameRequestMixin extends DateMixin {
   @Getter getResource!: ResourceIF
 
   /**

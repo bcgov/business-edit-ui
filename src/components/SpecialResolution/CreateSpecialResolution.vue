@@ -198,6 +198,7 @@ import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { SpecialResolutionIF, PersonIF } from '@bcrs-shared-components/interfaces/'
+import { VuetifyRuleFunction } from '@/types'
 
 @Component({
   components: {
@@ -291,7 +292,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     return this.getCurrentDate
   }
 
-  get resolutionTextRules (): Array<Function> {
+  get resolutionTextRules (): Array<VuetifyRuleFunction> {
     return [
       v => (v && v.trim().length > 0) || 'Resolution text is required',
       v => (v && v.length <= this.MAX_RESOLUTION_TEXT_LENGTH) || 'Maximum characters exceeded',
@@ -319,7 +320,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   }
 
   /** Validation rule for name. */
-  private nameRules (label, isRequired = true): Array<Function> {
+  private nameRules (label, isRequired = true): Array<VuetifyRuleFunction> {
     return [
       v => isRequired ? (!!v?.trim() || `${label} is required`) : true,
       v => v ? (v?.length <= 30) || 'Cannot exceed 30 characters' : true // maximum character count
@@ -379,11 +380,12 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     this.setValidComponent({ key: 'isValidCreateSpecialResolution', value: isFormValid })
   }
 
-  /** Set values if exist
-   * while coming back from summary page this form need to show existing values.
+  /**
+   * Called when component is created.
+   * While coming back from summary page, this form need to show existing values.
    * Note: The data is loaded before the component is created.
-  */
-  protected created () {
+   */
+  created () {
     this.signatory = this.getSpecialResolution.signatory ||
       {
         givenName: '',
@@ -437,17 +439,20 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   }
 }
 
-::v-deep label.v-label.theme--light {
+:deep(label.v-label.theme--light) {
   color: $gray7 !important;
   font-weight: normal;
 }
 
-.tool-tip-text{
+.tool-tip-text {
    border-bottom: 1px dashed $gray6;
 }
 
-// this is to show error color for label and placeholder
-::v-deep .invalid-section label.v-label.error--text , .invalid-section label {
-  color: $BCgovInputError !important;
+// show error color for label and placeholder
+:deep() {
+  .invalid-section label,
+  .invalid-section label.v-label.error--text {
+    color: $BCgovInputError !important;
+  }
 }
 </style>

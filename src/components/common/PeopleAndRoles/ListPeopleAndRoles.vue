@@ -115,7 +115,7 @@
               v-if="hasRoleDirector(orgPerson) || hasRoleProprietor(orgPerson) || hasRolePartner(orgPerson)"
             >
               <p
-                v-if="isSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])"
+                v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])"
                 class="peoples-roles-delivery-address info-text"
               >
                 Same as Mailing Address
@@ -277,7 +277,7 @@ import { Getter } from 'vuex-class'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import OrgPerson from './OrgPerson.vue'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
-import { isSame } from '@/utils/'
+import { IsSame } from '@/utils/'
 import { OrgPersonIF } from '@/interfaces/'
 
 @Component({
@@ -289,27 +289,24 @@ import { OrgPersonIF } from '@/interfaces/'
 })
 export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMixin) {
   // Declaration for template
-  readonly isSame = isSame
+  readonly IsSame = IsSame
 
   /** Whether to render the OrgPersonForm (for edit or add). */
-  @Prop() readonly renderOrgPersonForm: boolean
+  @Prop() readonly renderOrgPersonForm!: boolean
 
   /** The current org/person to edit or add. */
-  @Prop() readonly currentOrgPerson: OrgPersonIF
+  @Prop() readonly currentOrgPerson!: OrgPersonIF
 
   /** The index of the org/person to edit, or NaN to add. */
-  @Prop() readonly activeIndex: number
+  @Prop() readonly activeIndex!: number
 
-  @Prop({ default: false })
-  readonly isSummaryView: boolean
+  @Prop({ default: false }) readonly isSummaryView!: boolean
 
   /** Whether to perform validation. */
-  @Prop({ default: false })
-  readonly validate: boolean
+  @Prop({ default: false }) readonly validate!: boolean
 
   /** Whether OrgPersons list is valid. */
-  @Prop({ default: true })
-  readonly validOrgPersons: boolean
+  @Prop({ default: true }) readonly validOrgPersons!: boolean
 
   // Store getter
   @Getter getOrgPeople!: OrgPersonIF[]
@@ -389,6 +386,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
    * @param index the index of the org/person to undo
    */
   @Emit('undo')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected emitUndo (index: number): void {}
 
   /**
@@ -396,6 +394,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
    * @param index the index of the org/person to edit
    */
   @Emit('initEdit')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected emitInitEdit (index: number): void {}
 
   /**
@@ -403,6 +402,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
    * @param index the index of the org/person to remove
    */
   @Emit('remove')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected emitRemove (index: number): void {}
 
   /**
@@ -410,6 +410,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
    * @param person the data object of the org/person to add or edit
    */
   @Emit('addEdit')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected emitAddEdit (person: OrgPersonIF): void {}
 
   /**
@@ -512,25 +513,14 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   opacity: .4;
 }
 
-// Override Base Address font style/colour
-::v-deep {
-  // italicize the delivery instructions in the base address component
-  .address-block .delivery-instructions {
-    font-style: italic;
-  }
-
-  .address-block {
-    font-size: $px-14;
-    color: $gray7;
-  }
-
+:deep() {
   .v-chip {
     opacity: 1 !important;
   }
 
   // align badge icon with text
-  .badges .v-icon{
-    margin-top: 4px
+  .badges .v-icon {
+    margin-top: 4px;
   }
 }
 

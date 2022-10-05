@@ -45,10 +45,10 @@ import { FilingTemplateMixin } from '@/mixins'
 })
 export default class Detail extends Mixins(FilingTemplateMixin) {
   /** Prop to provide section number. */
-  @Prop({ default: '' }) readonly sectionNumber: string
+  @Prop({ default: '' }) readonly sectionNumber!: string
 
   /** Whether to perform validation. */
-  @Prop({ default: false }) readonly validate: boolean
+  @Prop({ default: false }) readonly validate!: boolean
 
   @Action setDetailValidity!: ActionBindingIF
 

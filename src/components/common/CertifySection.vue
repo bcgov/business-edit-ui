@@ -32,16 +32,15 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { Certify as CertifyShared } from '@bcrs-shared-components/certify/'
-import { DateMixin, SharedMixin } from '@/mixins/'
+import { DateMixin } from '@/mixins/'
 import { ActionBindingIF, CertifyIF, ResourceIF } from '@/interfaces/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 @Component({
   components: {
     CertifyShared
   }
 })
-export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
+export default class CertifySection extends Mixins(DateMixin) {
   @Getter getCertifyState!: CertifyIF
   @Getter getCurrentDate!: string
   @Getter getResource!: ResourceIF
@@ -52,16 +51,16 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
   @Action setCertifyStateValidity!: ActionBindingIF
 
   /** Prop to provide section number. */
-  @Prop({ default: '' }) readonly sectionNumber: string
+  @Prop({ default: '' }) readonly sectionNumber!: string
 
   /** Whether to perform validation. */
-  @Prop({ default: false }) readonly validate: boolean
+  @Prop({ default: false }) readonly validate!: boolean
 
   /** To determine whether user input is enabled. */
-  @Prop({ default: false }) readonly disableEdit: boolean
+  @Prop({ default: false }) readonly disableEdit!: boolean
 
   /** Called when component is mounted. */
-  protected mounted (): void {
+  mounted (): void {
     this.setCertifyState(
       {
         valid: this.getCertifyState.valid,
@@ -72,7 +71,7 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
 
   /** Get the entity type in readable format */
   get readableEntityType (): string {
-    return this.getCorpTypeDescription(this.getEntityType)
+    return GetCorpFullDescription(this.getEntityType)
   }
 
   /** Get the certify resource message */

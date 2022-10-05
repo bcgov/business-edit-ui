@@ -131,20 +131,16 @@ import { ActionBindingIF } from '@/interfaces/'
 })
 export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   /** New resolution dates. */
-  @Prop({ default: () => [] })
-  readonly addedDates: string[]
+  @Prop({ default: () => [] }) readonly addedDates!: string[]
 
   /** Previously existing resolution dates. */
-  @Prop({ default: () => [] })
-  readonly previousDates: string[]
+  @Prop({ default: () => [] }) readonly previousDates!: string[]
 
   /** Whether this component should be in edit mode or review mode. */
-  @Prop({ default: true })
-  readonly isEditMode: boolean
+  @Prop({ default: true }) readonly isEditMode!: boolean
 
   /** Boolean indicating rights or restrictions in ShareStructure. */
-  @Prop({ default: false })
-  readonly hasRightsOrRestrictions: boolean
+  @Prop({ default: false }) readonly hasRightsOrRestrictions!: boolean
 
   // Global getters
   @Getter getBusinessFoundingDateTime!: string
@@ -232,6 +228,7 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
 
   /** Emit updated list of dates. */
   @Emit('addRemoveDate')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitAddRemoveDate (dates: string[]): void {}
 
   @Watch('isAdding', { immediate: true })
@@ -262,7 +259,7 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   opacity: 0.4;
 }
 
-::v-deep .theme--light.v-btn.v-btn--disabled .v-icon {
+:deep(.theme--light.v-btn.v-btn--disabled .v-icon) {
   color: $app-blue !important;
   opacity: 0.4;
 }

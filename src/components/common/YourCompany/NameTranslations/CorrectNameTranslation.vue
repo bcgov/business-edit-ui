@@ -8,7 +8,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Emit, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { NameTranslation } from './'
 import { ActionBindingIF, NameTranslationIF } from '@/interfaces/'
 import { Action, Getter } from 'vuex-class'
@@ -19,8 +20,7 @@ import { Action, Getter } from 'vuex-class'
   }
 })
 export default class CorrectNameTranslation extends Vue {
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+  @Prop({ default: false }) readonly invalidSection!: boolean
 
   // Global getter
   @Getter getNameTranslations!: NameTranslationIF[]
@@ -36,6 +36,7 @@ export default class CorrectNameTranslation extends Vue {
 
   @Watch('isEditingTranslations')
   @Emit('isEditingTranslations')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitIsEditingTranslations (isEditing: boolean): void {}
 }
 </script>

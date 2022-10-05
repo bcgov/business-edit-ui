@@ -24,7 +24,7 @@ import '@/assets/styles/overrides.scss'
 import App from './App.vue'
 
 // Helpers
-import { initLdClient, fetchConfig, navigate } from '@/utils/'
+import { InitLdClient, FetchConfig, Navigate } from '@/utils/'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 
 // get rid of "element implicitly has an 'any' type..."
@@ -42,7 +42,7 @@ Vue.use(Vue2Filters)
 async function start () {
   // fetch config from environment and API
   // must come first as inits below depend on config
-  await fetchConfig()
+  await FetchConfig()
 
   if (window['sentryEnable'] === 'true') {
     // initialize Sentry
@@ -55,7 +55,7 @@ async function start () {
 
   // initialize Launch Darkly
   if (window['ldClientId']) {
-    await initLdClient()
+    await InitLdClient()
   }
 
   // configure KeyCloak Service
@@ -99,5 +99,5 @@ start().catch(error => {
   window.alert('There was an error starting this page. (See console for details.)\n' +
     'Please try again later.')
   // try to navigate to Business Registry home page
-  navigate(sessionStorage.getItem('BUSINESSES_URL'))
+  Navigate(sessionStorage.getItem('BUSINESSES_URL'))
 })

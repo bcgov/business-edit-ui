@@ -1,4 +1,4 @@
-import { axios } from '@/utils/'
+import { AxiosInstance as axios } from '@/utils/'
 import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistrationFilingIF, ConversionFilingIF,
   CorrectionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF, SpecialResolutionFilingIF }
   from '@/interfaces/'

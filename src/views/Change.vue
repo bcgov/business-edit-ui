@@ -87,7 +87,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils/'
+import { GetFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
 import { CertifySection, CompletingParty, CourtOrderPoa, DocumentsDelivery, PeopleAndRoles, StaffPayment,
   TransactionalFolioNumber, YourCompany } from '@/components/common/'
@@ -134,8 +134,7 @@ export default class Change extends Mixins(
   @Action setResource!: ActionBindingIF
 
   /** Whether App is ready. */
-  @Prop({ default: false })
-  readonly appReady: boolean
+  @Prop({ default: false }) readonly appReady!: boolean
 
   /** Whether the Transactional Folio Number section is shown. */
   get showTransactionalFolioNumber (): boolean {
@@ -170,7 +169,7 @@ export default class Change extends Mixins(
 
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
-    if (!this.isJestRunning && !getFeatureFlag('change-ui-enabled')) {
+    if (!this.isJestRunning && !GetFeatureFlag('change-ui-enabled')) {
       window.alert('Change filings are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard', true)
       return
@@ -277,10 +276,12 @@ export default class Change extends Mixins(
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: boolean = true): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitHaveData (haveData = true): void {}
 }
 </script>
