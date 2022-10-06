@@ -3,7 +3,7 @@ import sinon from 'sinon'
 import { shallowMount, Wrapper } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import { getVuexStore } from '@/store/'
-import MixinTester from './mixin-tester.vue'
+import MixinTester from '@/mixin-tester.vue'
 
 describe('Name Request Mixin', () => {
   let wrapper: Wrapper<Vue>
