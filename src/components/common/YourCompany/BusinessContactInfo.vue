@@ -6,7 +6,6 @@
     :hasBusinessContactInfoChange="hasBusinessContactInfoChange"
     :editLabel="editLabel"
     :editedLabel="editSavedLabel"
-    :disableActions="isCorrectionFiling"
     :disableActionTooltip="isFirmChangeFiling"
     :invalidSection="invalidSection"
     :optionalPhone="isAlterationFiling || isFirmChangeFiling"
