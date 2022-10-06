@@ -4,7 +4,6 @@
       <h1>{{ entityTitle }}</h1>
     </header>
 
-    <!-- *** FUTURE: delete this when BEN corrections are not IA-centric -->
     <section id="original-filing-date" class="mt-6">
       <p>
         <span id="original-filing-date-label">Original Filing Date:</span>
@@ -83,8 +82,7 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMix
   @Action setResource!: ActionBindingIF
 
   /** The draft correction filing to process. */
-  @Prop({ default: () => null })
-  readonly correctionFiling: CorrectionFilingIF
+  @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF
 
   /** The original filing date, in Pacific time. */
   get originalFilingDate (): string {
@@ -157,11 +155,13 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMix
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: Boolean = true): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitHaveData (haveData = true): void {}
 }
 </script>
 

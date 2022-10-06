@@ -36,19 +36,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop } from 'vue-property-decorator'
 import { NameRequestStates } from '@/enums/'
 
 @Component({})
 export default class NameRequestErrorDialog extends Vue {
   /** Prop to display the dialog. */
-  @Prop() readonly dialog: boolean
+  @Prop() readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop() readonly attach: string
+  @Prop() readonly attach!: string
 
   /** Prop to provide message type. */
-  @Prop({ default: null }) readonly type: NameRequestStates
+  @Prop({ default: null }) readonly type!: NameRequestStates
 
   /** Enum definition for use in template. */
   readonly NameRequestStates = NameRequestStates

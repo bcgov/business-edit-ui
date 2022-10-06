@@ -15,7 +15,8 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Prop, Watch, Emit, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Interfaces && enums
@@ -25,7 +26,7 @@ import { CorrectionTypes } from '@/enums/'
 @Component({})
 export default class CorrectNameToNumber extends Vue {
   /** Form Submission Prop */
-  @Prop({ default: null }) readonly formType: CorrectionTypes
+  @Prop({ default: null }) readonly formType!: CorrectionTypes
 
   @Action setNameRequest!: ActionBindingIF
 
@@ -55,6 +56,7 @@ export default class CorrectNameToNumber extends Vue {
 
   /** Inform parent the process is complete. */
   @Emit('isSaved')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitIsSaved (isSaved: boolean): void {}
 
   /** Inform parent when form is valid and ready for submission. */
@@ -73,7 +75,8 @@ export default class CorrectNameToNumber extends Vue {
   padding: 0;
   margin: 0;
 }
-::v-deep .theme--light.v-label {
+
+:deep(.theme--light.v-label) {
   font-size: 1rem;
   color: $gray7;
   font-weight: normal;

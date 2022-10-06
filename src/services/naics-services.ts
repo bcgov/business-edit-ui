@@ -1,5 +1,5 @@
 import { NaicsResultIF } from '@bcrs-shared-components/interfaces/'
-import { axios } from '@/utils/'
+import { AxiosInstance as axios } from '@/utils/'
 
 /**
  * Class that provides integration with the NAICS API.

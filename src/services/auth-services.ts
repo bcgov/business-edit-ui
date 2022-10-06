@@ -1,7 +1,7 @@
-import { axios } from '@/utils/'
+import { AxiosInstance as axios } from '@/utils/'
 import { AuthInformationIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
-import { NOT_FOUND } from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
 /**
  * Class that provides integration with the Auth API.
@@ -98,7 +98,7 @@ export default class AuthServices {
     // then try posting a new contacts record
     return axios.put(url, data)
       .catch(reason => {
-        if (reason?.response?.status === NOT_FOUND) {
+        if (reason?.response?.status === StatusCodes.NOT_FOUND) {
           return axios.post(url, data)
         }
         throw reason

@@ -18,7 +18,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils/'
+import { GetFeatureFlag } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { ActionBindingIF, CorrectionFilingIF } from '@/interfaces/'
@@ -35,8 +35,7 @@ import FmCorrection from '@/views/Correction/FmCorrection.vue'
 })
 export default class Correction extends Mixins(CommonMixin) {
   /** Whether App is ready. */
-  @Prop({ default: false })
-  readonly appReady: boolean
+  @Prop({ default: false }) readonly appReady!: boolean
 
   // Global getters
   @Getter getBusinessId!: string
@@ -70,7 +69,7 @@ export default class Correction extends Mixins(CommonMixin) {
 
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
-    if (!this.isJestRunning && !getFeatureFlag('correction-ui-enabled')) {
+    if (!this.isJestRunning && !GetFeatureFlag('correction-ui-enabled')) {
       window.alert('Corrections are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard', true)
       return
@@ -136,10 +135,12 @@ export default class Correction extends Mixins(CommonMixin) {
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: Boolean = true): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitHaveData (haveData = true): void {}
 }
 </script>

@@ -42,10 +42,9 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   @Action setValidComponent!: ActionBindingIF
 
   /** Whether to show invalid section styling. */
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+  @Prop({ default: false }) readonly invalidSection!: boolean
 
-  protected isEditingContact = null as boolean
+  protected isEditingContact: boolean = null
 
   /** The original Contact data. */
   get originalContact (): ContactPointIF {
@@ -101,11 +100,9 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 </script>
 
 <style lang="scss" scoped>
-::v-deep {
-  .align-end {
-    position: absolute;
-    right: 0;
-    margin-right: 16px;
-  }
+:deep(.align-end) {
+  position: absolute;
+  right: 0;
+  margin-right: 16px;
 }
 </style>

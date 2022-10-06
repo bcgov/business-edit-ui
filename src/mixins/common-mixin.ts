@@ -1,4 +1,5 @@
-import { Component, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { RouteNames } from '@/enums/'
 import { ConfirmDialogType } from '@/interfaces/'
@@ -55,7 +56,7 @@ export default class CommonMixin extends Vue {
    * @returns the formatted full name string
    */
   formatFullName (officer: any): string {
-    let fullName: string = ''
+    let fullName = ''
     if (officer?.firstName) fullName += officer.firstName + ' '
     if (officer?.middleName) fullName += officer.middleName + ' '
     if (officer?.lastName) fullName += officer.lastName
@@ -68,7 +69,7 @@ export default class CommonMixin extends Vue {
    * @returns the formatted full address string
    */
   formatFullAddress (addressData: any): string {
-    let fullAddress: string = ''
+    let fullAddress = ''
     if (addressData?.addrLine1) fullAddress += addressData.addrLine1 + ', '
     if (addressData?.city) fullAddress += addressData.city + ', '
     if (addressData?.stateProvinceCd) fullAddress += addressData.stateProvinceCd + ', '

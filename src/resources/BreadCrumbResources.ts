@@ -10,8 +10,8 @@ function getParams (): string {
 }
 
 export function getEntityDashboardBreadcrumb (): BreadcrumbIF {
-  const getOriginalLegalName = store.getters.getOriginalLegalName as string
-  const getBusinessId = store.getters.getBusinessId as string
+  const getOriginalLegalName: string = store.getters.getOriginalLegalName
+  const getBusinessId:string = store.getters.getBusinessId
   return {
     text: getOriginalLegalName || 'Numbered Benefit Company',
     href: `${sessionStorage.getItem('DASHBOARD_URL')}${getBusinessId}/${getParams()}`

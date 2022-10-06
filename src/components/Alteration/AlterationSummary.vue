@@ -52,9 +52,9 @@
           </v-col>
 
           <v-col cols="8">
-            <span class="info-text">Changing from a {{ getCorpTypeDescription(originalLegalType) }}</span>
+            <span class="info-text">Changing from a {{ GetCorpFullDescription(originalLegalType) }}</span>
             &nbsp;
-            <span class="info-text">to a {{getCorpTypeDescription(getEntityType)}}</span>
+            <span class="info-text">to a {{ GetCorpFullDescription(getEntityType) }}</span>
 
             <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
             <div class="confirmed-msg">
@@ -167,9 +167,10 @@
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
-import { DateMixin, SharedMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
+import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
+import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 
 @Component({
   components: {
@@ -181,10 +182,12 @@ import { ResolutionDates } from '@/components/Alteration/'
 })
 export default class AlterationSummary extends Mixins(
   DateMixin,
-  SharedMixin,
   FeeMixin,
   FilingTemplateMixin
 ) {
+  // for template
+  readonly GetCorpFullDescription = GetCorpFullDescription
+
   // Global getters
   @Getter getBusinessNumber!: string
   @Getter getOriginalResolutions!: ResolutionsIF[]
@@ -198,7 +201,7 @@ export default class AlterationSummary extends Mixins(
   @Action setEffectiveDateValid!: ActionBindingIF
 
   /** Whether to perform validation. */
-  @Prop() readonly validate: boolean
+  @Prop() readonly validate!: boolean
 
   get isFutureEffective (): boolean {
     return this.getEffectiveDateTime.isFutureEffective
@@ -252,12 +255,12 @@ export default class AlterationSummary extends Mixins(
     return `of $${futureEffectiveFeesSum.toFixed(2)}`
   }
 
-  onDeleteClicked (): void {
+  protected onDeleteClicked (): void {
     this.$root.$emit('delete-all')
   }
 
   @Emit('haveChanges')
-  emitHaveChanges (): void {}
+  protected emitHaveChanges (): void {}
 }
 </script>
 

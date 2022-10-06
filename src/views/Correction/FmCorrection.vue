@@ -42,7 +42,6 @@ import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, 
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
 import { AuthServices, LegalServices } from '@/services/'
-import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resources/Correction/'
 
@@ -63,10 +62,7 @@ export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTe
   @Action setResource!: ActionBindingIF
 
   /** The draft correction filing to process. */
-  @Prop({ default: () => null })
-  readonly correctionFiling: CorrectionFilingIF
-
-  readonly getCorpTypeDescription = GetCorpFullDescription
+  @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF
 
   /** The resource file for a correction filing. */
   get correctionResource (): any {
@@ -133,10 +129,12 @@ export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTe
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: Boolean = true): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitHaveData (haveData = true): void {}
 }
 </script>

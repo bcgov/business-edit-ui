@@ -21,4 +21,4 @@ instance.interceptors.response.use(
   }
 )
 
-export { instance as axios }
+export { instance as AxiosInstance }

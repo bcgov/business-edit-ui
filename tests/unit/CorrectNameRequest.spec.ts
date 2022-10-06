@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { axios } from '@/utils/'
+import { AxiosInstance as axios } from '@/utils/'
 import sinon from 'sinon'
 import flushPromises from 'flush-promises'
 import { getVuexStore } from '@/store/'

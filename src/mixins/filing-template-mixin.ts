@@ -1,22 +1,23 @@
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
-import { DateMixin, EnumMixin } from '@/mixins/'
-import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF, EffectiveDateTimeIF,
-  EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF, NameTranslationIF,
-  OrgPersonIF, SpecialResolutionFilingIF } from '@/interfaces/'
+import { DateMixin } from '@/mixins/'
+import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
+  EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF,
+  NameTranslationIF, OrgPersonIF, SpecialResolutionFilingIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
-import { ActionTypes, AssociationTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
+import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
   RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { FilingTypeToName } from '@/utils'
 
 /**
  * Mixin that provides the integration with the Legal API.
  */
 @Component({})
-export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
+export default class FilingTemplateMixin extends DateMixin {
   // Global getters
   @Getter getEntityType!: CorpTypeCd
   @Getter getNameRequestNumber!: string
@@ -61,7 +62,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   @Getter isBenCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter isClientErrorCorrection!: boolean
-  @Getter getAssociationType!: AssociationTypes
+  @Getter getAssociationType!: CoopTypes
   @Getter hasAssociationTypeChanged!: boolean
   @Getter getSpecialResolution!: SpecialResolutionIF
   @Getter isEntityTypeFirm!: boolean
@@ -96,7 +97,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
-    const correctedFilingName = this.filingTypeToName(this.getCorrectedFilingType)
+    const correctedFilingName = FilingTypeToName(this.getCorrectedFilingType)
     return `Correction for ${correctedFilingName} filed on ${this.correctedFilingDate}`
   }
 
@@ -276,7 +277,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    * @returns the resolution filing body
    */
   buildSpecialResolutionFiling (isDraft: boolean): SpecialResolutionFilingIF {
-    // *** FUTURE: add in as needed - see buildAlterationFiling()
+    // FUTURE: add in as needed - see buildAlterationFiling()
     // const parties = isDraft ? this.getOrgPeople : this.prepareParties()
     // const shareClasses = isDraft ? this.getShareClasses : this.prepareShareClasses()
     // const nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
@@ -619,13 +620,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // store Detail Comment
     if (filing.correction.comment) {
       // NB: remove the first line (default comment)
-      const comment: string = filing.correction.comment
+      const comment = filing.correction.comment
       const detailComment = comment.split('\n').slice(1).join('\n')
       this.setDetailComment(detailComment)
     }
 
     // store Folio Number
-    // *** FUTURE: should we store correction.folioNumber instead?
+    // FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // store Effective Date
@@ -700,7 +701,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     })
 
     // store Folio Number
-    // *** FUTURE: should we store correction.folioNumber instead?
+    // FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
@@ -772,7 +773,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     })
 
     // store Folio Number
-    // *** FUTURE: should we store correction.folioNumber instead?
+    // FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
@@ -848,7 +849,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     })
 
     // store Folio Number
-    // *** FUTURE: should we store correction.folioNumber instead?
+    // FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
@@ -989,7 +990,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
 
       case CorpTypeCd.SOLE_PROP:
       case CorpTypeCd.PARTNERSHIP: {
-        // *** FUTURE: expand here as needed
+        // FUTURE: expand here as needed
         break
       }
     }

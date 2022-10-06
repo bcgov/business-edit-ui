@@ -12,13 +12,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class BcRegContacts extends Vue {
   /** Can be "row" (default) or "col". */
-  @Prop({ default: 'row' })
-  readonly direction: string
+  @Prop({ default: 'row' }) readonly direction!: string
 
   readonly contacts = [
     {

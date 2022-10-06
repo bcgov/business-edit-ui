@@ -55,6 +55,7 @@ import { Component, Emit, Prop, Mixins } from 'vue-property-decorator'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { ConfirmDialogType, FormIF } from '@/interfaces/'
 import { CommonMixin } from '@/mixins/'
+import { VuetifyRuleFunction } from '@/types'
 
 @Component({
   components: {
@@ -68,25 +69,24 @@ export default class AddNameTranslation extends Mixins(CommonMixin) {
     nameTranslationForm: FormIF
   }
 
-  @Prop({ default: '' })
-  readonly editNameTranslation: string
+  @Prop({ default: '' }) readonly editNameTranslation!: string
 
-  @Prop({ default: -1 })
-  readonly editNameIndex: number
+  @Prop({ default: -1 }) readonly editNameIndex!: number
 
   // Local Properties
-  protected nameTranslationForm: boolean = false
-  protected nameTranslation: string = ''
-  protected nameIndex: number = -1
+  protected nameTranslationForm = false
+  protected nameTranslation = ''
+  protected nameIndex = -1
 
   // Validation Rules
-  readonly nameTranslationRules: Array<Function> = [
+  readonly nameTranslationRules: Array<VuetifyRuleFunction> = [
     (v: string) => !!v || 'A name translation is required', // is not empty
     (v: string) => /^[A-Za-zÀ-ÿ_@./#’&+-]+(?: [A-Za-zÀ-ÿ_@./#’&+-]+)*$/.test(v) || 'Invalid character', // English, French and single spaces
     (v: string) => (!v || v.length <= 150) || 'Cannot exceed 150 characters' // maximum character count
   ]
 
-  protected mounted (): void {
+  /** Called when component is mounted. */
+  mounted (): void {
     // Editing an existing name translation
     if (this.editNameTranslation) {
       this.nameTranslation = this.editNameTranslation
@@ -154,6 +154,7 @@ export default class AddNameTranslation extends Mixins(CommonMixin) {
    * @param index The active index which is subject to removal.
    */
   @Emit('removeNameTranslation')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected emitRemoveName (index: number): void {}
 }
 </script>
@@ -161,31 +162,32 @@ export default class AddNameTranslation extends Mixins(CommonMixin) {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-  .name-translation-form {
-    padding-right: 0.5rem;
+.name-translation-form {
+  padding-right: 0.5rem;
 
-    .action-btns {
-      display: flex;
-      justify-content: flex-end;
-      padding-bottom: 1rem;
+  .action-btns {
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 1rem;
 
-      .v-btn + .v-btn {
-        margin-left: 0.5rem;
-      }
+    .v-btn + .v-btn {
+      margin-left: 0.5rem;
+    }
 
-      .v-btn {
-        min-width: 6.5rem;
-      }
+    .v-btn {
+      min-width: 6.5rem;
+    }
 
-      .v-btn[disabled] {
-        color: white !important;
-        background-color: $app-blue !important;
-        opacity: 0.2;
-      }
+    .v-btn[disabled] {
+      color: white !important;
+      background-color: $app-blue !important;
+      opacity: 0.2;
     }
   }
-  ::v-deep .v-label {
-      color: $gray7;
-      font-weight: normal;
-    }
+}
+
+:deep(.v-label) {
+  color: $gray7;
+  font-weight: normal;
+}
 </style>

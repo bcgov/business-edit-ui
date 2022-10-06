@@ -49,7 +49,7 @@ import { Getter, Action } from 'vuex-class'
 import { ActionBindingIF } from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, NameRequestMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
-import { navigate } from '@/utils/'
+import { Navigate } from '@/utils/'
 
 /** This component is only implemented for Correction filings atm. */
 @Component({})
@@ -180,10 +180,10 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
         const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + encodeURIComponent(returnUrl)
         // assume Pay URL is always reachable
         // otherwise user will have to retry payment later
-        navigate(payUrl)
+        Navigate(payUrl)
       } else {
         // otherwise go straight to dashboard
-        navigate(returnUrl)
+        Navigate(returnUrl)
       }
     } else {
       const error = new Error('Missing Payment Token')

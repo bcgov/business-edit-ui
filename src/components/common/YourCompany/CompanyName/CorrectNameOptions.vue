@@ -55,7 +55,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop } from 'vue-property-decorator'
 import { CorrectNameOptionIF } from '@/interfaces/'
 import { CorrectionTypes } from '@/enums/'
 
@@ -79,7 +80,7 @@ import { CorrectCompanyName, CorrectNameToNumber, CorrectNameRequest } from '@/c
 })
 export default class CorrectNameOptions extends Vue {
   /** The options to display */
-  @Prop() readonly correctionNameChoices: Array<string>
+  @Prop() readonly correctionNameChoices!: Array<string>
 
   // local properties
   protected displayedOptions: Array<CorrectNameOptionIF> = []
@@ -112,7 +113,8 @@ export default class CorrectNameOptions extends Vue {
     }
   ]
 
-  protected mounted (): void {
+  /** Called when component is mounted. */
+  mounted (): void {
     // Filter the options to be displayed by what id's were passed from the parent component
     this.displayedOptions = this.correctionNameOptions.filter(
       option => this.correctionNameChoices.includes(option.id)
@@ -180,8 +182,10 @@ export default class CorrectNameOptions extends Vue {
   color: $app-blue;
 }
 
-.v-expansion-panel-content ::v-deep .v-expansion-panel-content__wrap {
-  padding: 0;
+.v-expansion-panel-content {
+  :deep(.v-expansion-panel-content__wrap) {
+    padding: 0;
+  }
 }
 
 .v-expansion-panel-header {

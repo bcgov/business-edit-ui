@@ -75,13 +75,13 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
 
   /** Prop to provide section number. */
-  @Prop({ default: '' }) readonly sectionNumber: string
+  @Prop({ default: '' }) readonly sectionNumber!: string
 
   /** Whether to perform validation. */
-  @Prop({ default: false }) readonly validate: boolean
+  @Prop({ default: false }) readonly validate!: boolean
 
   // Local properties
-  private optionalEmail: string = ''
+  private optionalEmail = ''
 
   private entityEmailRules = [
     (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
@@ -89,6 +89,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
     (v: string) => this.validateEmailFormat(v) || 'Enter valid email address'
   ]
 
+  /** Called when component is mounted. */
   protected mounted (): void {
     this.optionalEmail = this.getDocumentOptionalEmail
   }
@@ -130,10 +131,8 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-::v-deep {
-  .v-label {
-    font-weight: normal;
-  }
+:deep(.v-label) {
+  font-weight: normal;
 }
 
 #document-delivery-section {

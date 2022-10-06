@@ -37,7 +37,7 @@
             >
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
-                <span class="info-text">{{getCorpTypeDescription(getEntityType)}}</span>
+                <span class="info-text">{{GetCorpFullDescription(getEntityType)}}</span>
               </div>
               <div class="info-text pt-3">
                 <span>The name of this business will be the current Incorporation Number followed by "B.C. Ltd."</span>
@@ -50,7 +50,7 @@
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
                 <span :class="{ 'has-conflict': isConflictingLegalType}"
-                      class="info-text">{{getCorpTypeDescription(getNameRequest.legalType)}}
+                      class="info-text">{{GetCorpFullDescription(getNameRequest.legalType)}}
                 </span>
                 <v-tooltip
                   v-if="isConflictingLegalType"
@@ -313,9 +313,9 @@ import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestAppli
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation,
   CorrectNameOptions, NatureOfBusiness, OfficeAddresses, BusinessStartDate } from './'
-import { CommonMixin, SharedMixin, DateMixin, NameRequestMixin } from '@/mixins/'
-import { AssociationTypes, CorrectionTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { CommonMixin, DateMixin, NameRequestMixin } from '@/mixins/'
+import { CoopTypes, CorrectionTypes } from '@/enums/'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ConversionNOB } from '@/components/Conversion'
 
 @Component({
@@ -335,9 +335,11 @@ import { ConversionNOB } from '@/components/Conversion'
 export default class YourCompany extends Mixins(
   CommonMixin,
   DateMixin,
-  SharedMixin,
   NameRequestMixin
 ) {
+  // for template
+  readonly GetCorpFullDescription = GetCorpFullDescription
+
   // Global getters
   @Getter getNameRequestLegalName!: string
   @Getter getNameRequestNumber!: string
@@ -356,7 +358,7 @@ export default class YourCompany extends Mixins(
   @Getter isBenCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
-  @Getter getAssociationType!: AssociationTypes
+  @Getter getAssociationType!: CoopTypes
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -547,7 +549,7 @@ export default class YourCompany extends Mixins(
   }
 
   /** Updates UI when correct name options are done.  */
-  private nameChangeHandler (isSaved: boolean = false): void {
+  private nameChangeHandler (isSaved = false): void {
     this.hasCompanyNameChanged = this.isNewName
     if (isSaved) this.isEditingNames = false
   }

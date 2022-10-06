@@ -19,7 +19,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 
 // Components
@@ -46,7 +47,7 @@ export default class StaffPayment extends Vue {
   @Action setStaffPaymentValidity!: ActionBindingIF
 
   /** Prop to provide section number. */
-  @Prop({ default: '' }) readonly sectionNumber: string
+  @Prop({ default: '' }) readonly sectionNumber!: string
 
   /** Whether staff payment is invalid, only when prompted by app. */
   get invalidStaffPayment (): boolean {
@@ -107,31 +108,3 @@ export default class StaffPayment extends Vue {
   private emitHaveChanges (): void {}
 }
 </script>
-
-<style lang="scss" scoped>
-@import '@/assets/styles/theme.scss';
-
-::v-deep .v-input .v-label {
-  font-weight: normal;
-}
-
-::v-deep .v-input--radio-group__input {
-  .v-radio:not(:first-child) {
-    padding-top: 2rem;
-  }
-  .v-input--checkbox {
-    padding-top: 2rem;
-  }
-}
-
-::v-deep .v-input--selection-controls__ripple {
-  color: $gray7;
-}
-
-::v-deep .v-text-field__slot {
-  .v-label {
-    color: $gray7;
-  }
-}
-
-</style>

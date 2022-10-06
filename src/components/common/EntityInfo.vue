@@ -34,12 +34,13 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { CommonMixin, SharedMixin } from '@/mixins/'
+import { CommonMixin } from '@/mixins/'
 import { EntitySnapshotIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
+import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 
 @Component({})
-export default class EntityInfo extends Mixins(CommonMixin, SharedMixin) {
+export default class EntityInfo extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessId!: string
   @Getter getBusinessNumber!: string
@@ -51,7 +52,7 @@ export default class EntityInfo extends Mixins(CommonMixin, SharedMixin) {
   /** Get original entity type. */
   get originalEntityType (): string {
     if (this.getEntitySnapshot?.businessInfo) {
-      return this.getCorpTypeDescription(this.getEntitySnapshot.businessInfo.legalType)
+      return GetCorpFullDescription(this.getEntitySnapshot.businessInfo.legalType)
     } else {
       return 'Unknown'
     }
@@ -70,7 +71,7 @@ export default class EntityInfo extends Mixins(CommonMixin, SharedMixin) {
   font-size: $px-12;
 }
 
-::v-deep {
+:deep() {
   .v-breadcrumbs a {
     color: $gray8 !important;
   }

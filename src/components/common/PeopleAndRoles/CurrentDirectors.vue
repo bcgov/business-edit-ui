@@ -49,7 +49,7 @@
             <!-- Delivery Address -->
             <td class="px-0">
               <p
-                v-if="isSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])"
+                v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])"
                 class="director-detail"
               >
                 Same as Mailing Address
@@ -74,7 +74,7 @@ import { Getter } from 'vuex-class'
 import { OrgPersonIF } from '@/interfaces/'
 import { RoleTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
-import { isSame } from '@/utils/'
+import { IsSame } from '@/utils/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 
 @Component({
@@ -86,7 +86,7 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 export default class CurrentDirectors extends Mixins(CommonMixin) {
   // Declarations for template
   readonly RoleTypes = RoleTypes
-  readonly isSame = isSame
+  readonly IsSame = IsSame
 
   // Global getters
   @Getter getOrgPeople!: OrgPersonIF[]

@@ -124,11 +124,9 @@ import { CommonMixin } from '@/mixins/'
 
 @Component({})
 export default class ListNameTranslation extends Mixins(CommonMixin) {
-  @Prop({ default: () => [] })
-  readonly translationList: NameTranslationIF[]
+  @Prop({ default: () => [] }) readonly translationList!: NameTranslationIF[]
 
-  @Prop({ default: false })
-  readonly isAddingNameTranslation: boolean
+  @Prop({ default: false }) readonly isAddingNameTranslation!: boolean
 
   // Declaration for template
   readonly ActionTypes = ActionTypes
@@ -138,6 +136,7 @@ export default class ListNameTranslation extends Mixins(CommonMixin) {
    * @param index The active index which is subject to change.
    */
   @Emit('editNameTranslation')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitNameEdit (index: number): void {}
 
   /**
@@ -145,6 +144,7 @@ export default class ListNameTranslation extends Mixins(CommonMixin) {
    * @param index The active index which is subject to undo.
    */
   @Emit('nameUndo')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitNameUndo (index: number): void {}
 
   /**
@@ -152,6 +152,7 @@ export default class ListNameTranslation extends Mixins(CommonMixin) {
    * @param index The active index which is subject to removal.
    */
   @Emit('removeNameTranslation')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitRemoveName (index: number): void {}
 }
 </script>

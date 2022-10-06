@@ -80,7 +80,7 @@
       </div>
     </transition>
 
-    <SbcHeader />
+    <SbcHeader class="d-flex" />
     <PaySystemAlert />
 
     <div class="app-body">
@@ -146,8 +146,8 @@
 <script lang="ts">
 import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { PAYMENT_REQUIRED } from 'http-status-codes'
-import { getKeycloakRoles, navigate, updateLdUser, sleep } from '@/utils/'
+import { StatusCodes } from 'http-status-codes'
+import { GetKeycloakRoles, Navigate, UpdateLdUser, Sleep } from '@/utils/'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
@@ -236,24 +236,24 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Action setFilingId!: ActionBindingIF
 
   // Local properties
-  private accountAuthorizationDialog = false
-  private fetchErrorDialog = false
-  private paymentErrorDialog = false
-  private staffPaymentErrorDialog = false
-  private saveErrorDialog = false
-  private nameRequestErrorDialog = false
-  private nameRequestErrorType = ''
-  private saveErrors: Array<object> = []
-  private saveWarnings: Array<object> = []
-  private fileAndPayInvalidNameRequestDialog = false
-  private confirmDeleteAllDialog = false
+  protected accountAuthorizationDialog = false
+  protected fetchErrorDialog = false
+  protected paymentErrorDialog = false
+  protected staffPaymentErrorDialog = false
+  protected saveErrorDialog = false
+  protected nameRequestErrorDialog = false
+  protected nameRequestErrorType = ''
+  protected saveErrors: Array<object> = []
+  protected saveWarnings: Array<object> = []
+  protected fileAndPayInvalidNameRequestDialog = false
+  protected confirmDeleteAllDialog = false
 
   // FUTURE: change appReady/haveData to a state machine?
   /** Whether the app is ready and the views can now load their data. */
-  private appReady: boolean = false
+  protected appReady = false
 
   /** Whether the views have loaded their data and the spinner can be hidden. */
-  private haveData: boolean = false
+  protected haveData = false
 
   /** The Update Current JS Date timer id. */
   private updateCurrentJsDateId = 0
@@ -369,7 +369,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   }
 
   /** Called when component is created. */
-  protected async created (): Promise<void> {
+  async created (): Promise<void> {
     // update Current Js Date now and every 1 minute thereafter
     await this.updateCurrentJsDate()
     this.updateCurrentJsDateId = setInterval(this.updateCurrentJsDate, 60000)
@@ -391,7 +391,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       this.saveErrors = error?.response?.data?.errors || []
       this.saveWarnings = error?.response?.data?.warnings || []
 
-      if (error?.response?.status === PAYMENT_REQUIRED) {
+      if (error?.response?.status === StatusCodes.PAYMENT_REQUIRED) {
         if (!this.isRoleStaff) {
           // changes were saved if a 402 is received, so clear flag
           this.setHaveUnsavedChanges(false)
@@ -444,8 +444,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     this.setCurrentJsDate(jsDate)
   }
 
-  /** Called when component is destroyed. */
-  protected destroyed (): void {
+  /** Called before component is destroyed. */
+  beforeDestroy (): void {
     // stop Update Current Js Date timer
     clearInterval(this.updateCurrentJsDateId)
 
@@ -482,7 +482,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   }
 
   /** Fetches app data. */
-  private async fetchData (routeChanged: boolean = false): Promise<void> {
+  private async fetchData (routeChanged = false): Promise<void> {
     // only fetch data on first route change
     if (routeChanged && this.haveData) return
 
@@ -494,7 +494,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     // get and store keycloak roles
     try {
-      const keycloakRoles = getKeycloakRoles()
+      const keycloakRoles = GetKeycloakRoles()
       this.setKeycloakRoles(keycloakRoles)
     } catch (error) {
       console.log('Keycloak error =', error) // eslint-disable-line no-console
@@ -600,7 +600,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     this.setHaveUnsavedChanges(false)
     // FUTURE: Manage Businesses URL should come from config
     const manageBusinessUrl = `${sessionStorage.getItem('AUTH_WEB_URL')}business`
-    navigate(manageBusinessUrl)
+    Navigate(manageBusinessUrl)
   }
 
   /** Called to navigate to dashboard. */
@@ -611,7 +611,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     if (!this.haveUnsavedChanges || force) {
       // navigate to dashboard
       this.setHaveUnsavedChanges(false)
-      navigate(dashboardUrl)
+      Navigate(dashboardUrl)
       return
     }
 
@@ -629,7 +629,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       // ignore changes
       this.setHaveUnsavedChanges(false)
       // navigate to dashboard
-      navigate(dashboardUrl)
+      Navigate(dashboardUrl)
     }
   }
 
@@ -716,7 +716,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount) // may be null
       account = JSON.parse(currentAccount) // may be null
       if (account) break
-      await sleep(100)
+      await Sleep(100)
     }
     return account
   }
@@ -724,14 +724,14 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   /** Updates Launch Darkly with user info. */
   private async updateLaunchDarkly (): Promise<any> {
     // since username is unique, use it as the user key
-    const key: string = this.getUserUsername
-    const email: string = this.getUserEmail
-    const firstName: string = this.getUserFirstName
-    const lastName: string = this.getUserLastName
+    const key = this.getUserUsername
+    const email = this.getUserEmail
+    const firstName = this.getUserFirstName
+    const lastName = this.getUserLastName
     // remove leading { and trailing } and tokenize string
     const custom: any = { roles: this.getUserRoles?.slice(1, -1).split(',') }
 
-    await updateLdUser(key, email, firstName, lastName, custom)
+    await UpdateLdUser(key, email, firstName, lastName, custom)
   }
 
   /** Perform high level component validations before proceeding to summary page. */
@@ -769,7 +769,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
    * Will create/update a draft alteration or file and pay.
    * @returns a promise (ie, this is an async method).
    */
-  private async onClickSave (isDraft: boolean = true): Promise<void> {
+  private async onClickSave (isDraft = true): Promise<void> {
     // prevent double saving
     if (this.isBusySaving) return
     this.setIsSaving(true)
@@ -812,10 +812,10 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
           const payUrl = authUrl + 'makepayment/' + paymentToken + '/' + encodeURIComponent(returnUrl)
           // assume Pay URL is always reachable
           // otherwise user will have to retry payment later
-          navigate(payUrl)
+          Navigate(payUrl)
         } else {
           // otherwise go straight to dashboard
-          navigate(returnUrl)
+          Navigate(returnUrl)
         }
       } else {
         const error = new Error('Missing Payment Token or Filing ID')

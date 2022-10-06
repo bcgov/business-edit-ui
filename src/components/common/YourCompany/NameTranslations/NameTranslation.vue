@@ -161,14 +161,11 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     confirmTranslationDialog: ConfirmDialogType
   }
 
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+  @Prop({ default: false }) readonly invalidSection!: boolean
 
-  @Prop({ default: () => [] })
-  readonly nameTranslations: NameTranslationIF[]
+  @Prop({ default: () => [] }) readonly nameTranslations!: NameTranslationIF[]
 
-  @Prop({ default: false })
-  readonly isSummaryMode: boolean
+  @Prop({ default: false }) readonly isSummaryMode!: boolean
 
   // Global action
   @Action setEditingNameTranslations!: ActionBindingIF
@@ -348,10 +345,12 @@ export default class NameTranslation extends Mixins(CommonMixin) {
 
   // Emitters
   @Emit('nameTranslationsChange')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitNameTranslations (translations: NameTranslationIF[]): void {}
 
   @Watch('isEditing')
   @Emit('isEditingTranslations')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitIsEditingTranslations (isEditing: boolean): void {}
 }
 </script>
@@ -390,6 +389,7 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     min-height: 0;
     padding: 0.5rem 1rem;
   }
+
   .v-list-item__subtitle {
     color: $app-blue !important;
   }
@@ -411,14 +411,15 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     }
   }
 
-  ::v-deep {
+  :deep() {
     .theme--light.v-btn.v-btn--disabled,
     .theme--light.v-btn.v-btn--disabled .v-icon {
-        color: $app-blue !important;
-        opacity: 0.4;
+      color: $app-blue !important;
+      opacity: 0.4;
     }
   }
-  ::v-deep #correct-name-translation {
+
+  :deep(#correct-name-translation) {
     align-items: flex-start;
   }
 </style>
