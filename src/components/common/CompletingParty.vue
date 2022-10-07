@@ -44,6 +44,7 @@ export default class CompletingParty extends Vue {
   // store getters
   @Getter getCompletingParty!: CompletingPartyIF
   @Getter isRoleStaff!: boolean
+  @Getter isSbcStaff!: boolean
 
   // store actions
   @Action setCompletingParty!: ActionBindingIF
@@ -58,18 +59,6 @@ export default class CompletingParty extends Vue {
   /** True if invalid class should be set for completing party container. */
   get invalidSection (): boolean {
     return (this.validate && !this.completingPartyValid)
-  }
-
-  // FUTURE: pull this from shared auth composable (after vue3 upgrade)
-  get isSbcStaff (): boolean {
-    const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
-    if (!currentAccount) return false
-    try {
-      return JSON.parse(currentAccount).accountType === AccountTypes.STAFF_SBC
-    } catch (error) {
-      console.log('Error parsing current account =', error)
-      return false
-    }
   }
 
   protected onUpdate (cp: CompletingPartyIF): void {
