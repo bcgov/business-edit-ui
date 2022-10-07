@@ -22,11 +22,9 @@
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { AccountTypes } from '@/enums'
 import { ActionBindingIF } from '@/interfaces/'
 import { CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party/'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { DefaultAddressSchema } from '@/schemas/'
 
 @Component({
