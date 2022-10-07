@@ -16,6 +16,11 @@ export const isRoleStaff = (state: StateIF): boolean => {
   return state.stateModel.tombstone.keycloakRoles.includes('staff')
 }
 
+/** Whether the current account is SBC Staff. */
+export const isSbcStaff = (state: StateIF): boolean => {
+  return state.stateModel.accountInformation?.accountType === AccountTypes.SBC_STAFF
+}
+
 /** Whether the user is authorized to edit. */
 export const isAuthEdit = (state: StateIF): boolean => {
   return state.stateModel.tombstone.authRoles.includes('edit')

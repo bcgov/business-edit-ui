@@ -7,7 +7,7 @@
       <CompletingPartyShared
         class="section-container py-6"
         :completingParty="getCompletingParty"
-        :enableAddEdit="isRoleStaff"
+        :enableAddEdit="isRoleStaff || isSbcStaff"
         :addressSchema="DefaultAddressSchema"
         :validate="validate"
         :invalidSection="invalidSection"
@@ -42,6 +42,7 @@ export default class CompletingParty extends Vue {
   // store getters
   @Getter getCompletingParty!: CompletingPartyIF
   @Getter isRoleStaff!: boolean
+  @Getter isSbcStaff!: boolean
 
   // store actions
   @Action setCompletingParty!: ActionBindingIF
