@@ -237,7 +237,6 @@ describe('BEN correction getters', () => {
     // initialize store
     store.state.stateModel.tombstone.entityType = null
     store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.businessContact = {}
     store.state.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: 'MyLegalName',
@@ -245,10 +244,6 @@ describe('BEN correction getters', () => {
       },
       shareStructure: {
         shareClasses: []
-      },
-      authInfo: {
-        contact: {},
-        folioNumber: ''
       }
     }
 
@@ -344,7 +339,6 @@ describe('SP/GP correction getters', () => {
     // initialize store
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.businessContact = {}
     store.state.stateModel.nameRequest = {
       legalName: 'MyLegalName',
       business: {
@@ -363,10 +357,6 @@ describe('SP/GP correction getters', () => {
       },
       shareStructure: {
         shareClasses: []
-      },
-      authInfo: {
-        contact: {},
-        folioNumber: ''
       }
     }
     store.state.stateModel.correctionInformation = {
