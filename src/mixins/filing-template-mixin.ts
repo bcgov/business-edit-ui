@@ -126,6 +126,7 @@ export default class FilingTemplateMixin extends DateMixin {
         nrNumber: this.getNameRequestNumber
       },
       correction: {
+        legalType: this.getEntityType,
         business: {
           identifier: this.getBusinessId
         },

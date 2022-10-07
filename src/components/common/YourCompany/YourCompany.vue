@@ -519,9 +519,8 @@ export default class YourCompany extends Mixins(
     return (
       this.isAlterationFiling ||
       this.isFirmChangeFiling ||
-      this.isFirmCorrectionFiling ||
-      this.isSpecialResolutionFiling ||
-      this.isBenCorrectionFiling
+      this.isCorrectionFiling ||
+      this.isSpecialResolutionFiling
     )
   }
 

@@ -6,7 +6,6 @@
     :hasBusinessContactInfoChange="hasBusinessContactInfoChange"
     :editLabel="editLabel"
     :editedLabel="editSavedLabel"
-    :disableActions="isCorrectionFiling"
     :disableActionTooltip="isFirmChangeFiling"
     :invalidSection="invalidSection"
     :optionalPhone="isAlterationFiling || isFirmChangeFiling"
@@ -67,6 +66,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
       if (
         this.isAlterationFiling ||
         this.isFirmChangeFiling ||
+        this.isCorrectionFiling ||
         this.isSpecialResolutionFiling
       ) {
         await AuthServices.updateContactInfo(contactInfo, this.getBusinessId)

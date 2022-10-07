@@ -17,6 +17,7 @@ export interface CorrectionInformationIF {
   correctedFilingDate: string // API format
   correctedFilingType: FilingTypes
   type: CorrectionErrorTypes
+  legalType?: CorpTypeCd
 
   //
   // optional objects with new correction data:
