@@ -7,7 +7,7 @@
       <CompletingPartyShared
         class="section-container py-6"
         :completingParty="getCompletingParty"
-        :enableAddEdit="isRoleStaff"
+        :enableAddEdit="isRoleStaff || isSbcStaff"
         :addressSchema="DefaultAddressSchema"
         :validate="validate"
         :invalidSection="invalidSection"
@@ -22,9 +22,11 @@
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+import { AccountTypes } from '@/enums'
 import { ActionBindingIF } from '@/interfaces/'
 import { CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party/'
+import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { DefaultAddressSchema } from '@/schemas/'
 
 @Component({
@@ -56,6 +58,18 @@ export default class CompletingParty extends Vue {
   /** True if invalid class should be set for completing party container. */
   get invalidSection (): boolean {
     return (this.validate && !this.completingPartyValid)
+  }
+
+  // FUTURE: pull this from shared auth composable (after vue3 upgrade)
+  get isSbcStaff (): boolean {
+    const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount)
+    if (!currentAccount) return false
+    try {
+      return JSON.parse(currentAccount).accountType === AccountTypes.STAFF_SBC
+    } catch (error) {
+      console.log('Error parsing current account =', error)
+      return false
+    }
   }
 
   protected onUpdate (cp: CompletingPartyIF): void {
