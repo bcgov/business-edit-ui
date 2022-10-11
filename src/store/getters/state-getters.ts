@@ -742,10 +742,14 @@ export const hasRecDeliveryChanged = (state: StateIF): boolean => {
 export const havePeopleAndRolesChanged = (state: StateIF): boolean => {
   /** Normalizes fields that may be empty, null or undefined. */
   function normalize (op: OrgPersonIF): OrgPersonIF {
-    if (!op.deliveryAddress.deliveryInstructions) op.deliveryAddress.deliveryInstructions = ''
-    if (!op.deliveryAddress.streetAddressAdditional) op.deliveryAddress.streetAddressAdditional = ''
-    if (!op.mailingAddress.deliveryInstructions) op.mailingAddress.deliveryInstructions = ''
-    if (!op.mailingAddress.streetAddressAdditional) op.mailingAddress.streetAddressAdditional = ''
+    if (op.deliveryAddress) {
+      if (!op.deliveryAddress.deliveryInstructions) op.deliveryAddress.deliveryInstructions = ''
+      if (!op.deliveryAddress.streetAddressAdditional) op.deliveryAddress.streetAddressAdditional = ''
+    }
+    if (op.mailingAddress) {
+      if (!op.mailingAddress.deliveryInstructions) op.mailingAddress.deliveryInstructions = ''
+      if (!op.mailingAddress.streetAddressAdditional) op.mailingAddress.streetAddressAdditional = ''
+    }
     if (!op.officer.email) op.officer.email = null
 
     if (op.officer.partyType === PartyTypes.ORGANIZATION) {
