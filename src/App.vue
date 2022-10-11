@@ -80,7 +80,7 @@
       </div>
     </transition>
 
-    <SbcHeader class="d-flex" />
+    <SbcHeader />
     <PaySystemAlert />
 
     <div class="app-body">
