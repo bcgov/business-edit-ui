@@ -37,7 +37,7 @@ describe('Business Start Date', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('.pr-2').text()).toBe('Business Start Date')
-    expect(wrapper.find('.info-text').text()).toBe('Unknown')
+    expect(wrapper.find('.info-text').text()).toBe('(Not entered)')
     expect(wrapper.find('#start-changes-btn').text()).toBe('Change')
   })
 
@@ -47,7 +47,7 @@ describe('Business Start Date', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('.pr-2').text()).toBe('Business Start Date')
-    expect(wrapper.find('.info-text').text()).toBe('Unknown')
+    expect(wrapper.find('.info-text').text()).toBe('(Not entered)')
     expect(wrapper.find('#start-changes-btn').text()).toBe('Change')
   })
 
@@ -57,7 +57,7 @@ describe('Business Start Date', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('.pr-2').text()).toBe('Business Start Date')
-    expect(wrapper.find('.info-text').text()).toBe('Unknown')
+    expect(wrapper.find('.info-text').text()).toBe('(Not entered)')
     expect(wrapper.find('#start-changes-btn').text()).toBe('Correct')
   })
 

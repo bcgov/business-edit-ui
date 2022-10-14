@@ -115,6 +115,7 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   @Getter getBusinessFoundingDateTime!: string
   @Getter getBusinessStartDate!: string
   @Getter getCurrentJsDate!: Date
+  @Getter isFirmConversionFiling!: boolean
 
   // Global setter
   @Action setCorrectionStartDate!: ActionBindingIF
@@ -134,6 +135,9 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
 
   /** The minimum start date that can be entered (up to 2 years before reg date). */
   get minDate (): string {
+    // no min date for conversion
+    if (this.isFirmConversionFiling) return null
+
     const date = this.apiToDate(this.getBusinessFoundingDateTime)
     date.setFullYear(date.getUTCFullYear() - 2)
     return this.dateToYyyyMmDd(date)
@@ -141,6 +145,9 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
 
   /** The maximum start date that can be entered (up to 90 days after reg date). */
   get maxDate (): string {
+    // no max date for conversion
+    if (this.isFirmConversionFiling) return null
+
     const date = this.apiToDate(this.getBusinessFoundingDateTime)
     date.setDate(date.getUTCDate() + 90)
     return this.dateToYyyyMmDd(date)
@@ -159,7 +166,12 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
         return this.yyyyMmDdToPacificDate(this.getBusinessStartDate, true)
       }
     }
-    return 'Unknown'
+    return '(Not entered)'
+  }
+
+  /** Whether this component is valid. */
+  get isValid (): boolean {
+    return (!this.onEditMode && !!this.getCorrectionStartDate)
   }
 
   protected onChangeClicked (): void {
@@ -196,19 +208,15 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
     this.isCorrected = false
   }
 
-  @Watch('onEditMode', { immediate: true })
+  @Watch('isValid', { immediate: true })
   private syncValidity (): void {
-    const isValid = !this.onEditMode
-    this.setValidComponent({ key: 'isValidStartDate', value: isValid })
+    this.setValidComponent({ key: 'isValidStartDate', value: this.isValid })
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/theme.scss';
-
 .dotted-underline {
   border-bottom: 1px dotted;
 }
-
 </style>
