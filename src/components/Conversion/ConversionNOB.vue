@@ -49,14 +49,14 @@
         <div v-if="!onEditMode" class="d-flex justify-space-between align-start">
           <span id="naics-summary">{{ naicsSummary }}</span>
 
-          <div v-if="!hasNaicsChanged" class="mt-n2 mr-n3">
+          <div v-if="!hasNaicsChanged" class="my-n2 mr-n3">
             <v-btn text color="primary" id="nob-change-btn" @click="onChangeClicked()">
               <v-icon small>mdi-pencil</v-icon>
               <span>{{ editLabel }}</span>
             </v-btn>
           </div>
 
-          <div v-else id="nob-more-actions" class="mt-n2 mr-n3">
+          <div v-else id="nob-more-actions" class="my-n2 mr-n3">
             <v-btn text color="primary" id="nob-undo-btn" @click="onUndoClicked()">
               <v-icon small>mdi-undo</v-icon>
               <span>Undo</span>

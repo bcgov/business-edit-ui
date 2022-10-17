@@ -59,7 +59,7 @@
         </template>
 
         <!-- outer buttons -->
-        <span v-if="isApplicableFiling" class="mt-n2 mr-n3 float-right">
+        <span v-if="isApplicableFiling" class="my-n2 mr-n3 float-right">
           <!-- Correct Changes button -->
           <v-btn v-if="!onEditMode && !isCorrected" text color="primary"
             id="start-changes-btn" @click="onChangeClicked()"
@@ -126,11 +126,12 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
 
   protected dropdown = false
   protected onEditMode = false
-  protected isCorrected = null
+  protected isCorrected: boolean = null
   protected newCorrectedStartDate: string = null // date is "Month Day, Year"
 
   get isApplicableFiling (): boolean {
-    return (this.isFirmCorrectionFiling || this.isFirmChangeFiling || this.isFirmConversionFiling)
+    // can change Business Start Date in firm corrections and firm conversions only
+    return (this.isFirmCorrectionFiling || this.isFirmConversionFiling)
   }
 
   /** The minimum start date that can be entered (up to 2 years before reg date). */
@@ -155,23 +156,20 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
 
   /** The business date or business start date string. */
   get businessStartDate (): string {
-    // safety check
-    if (this.isApplicableFiling) {
-      if (this.hasBusinessStartDateChanged) {
-        // set the Corrected flag when reloading from a saved filing
-        this.isCorrected = true
-        return this.yyyyMmDdToPacificDate(this.getCorrectionStartDate, true)
-      }
-      if (this.getBusinessStartDate) {
-        return this.yyyyMmDdToPacificDate(this.getBusinessStartDate, true)
-      }
+    if (this.hasBusinessStartDateChanged) {
+      // set the Corrected flag when reloading from a saved filing
+      this.isCorrected = true
+      return this.yyyyMmDdToPacificDate(this.getCorrectionStartDate, true)
+    }
+    if (this.getBusinessStartDate) {
+      return this.yyyyMmDdToPacificDate(this.getBusinessStartDate, true)
     }
     return '(Not entered)'
   }
 
   /** Whether this component is valid. */
   get isValid (): boolean {
-    return (!this.onEditMode && !!this.getCorrectionStartDate)
+    return (!this.onEditMode && (!!this.getCorrectionStartDate || !!this.getBusinessStartDate))
   }
 
   protected onChangeClicked (): void {

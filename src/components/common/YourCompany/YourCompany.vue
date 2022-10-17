@@ -84,7 +84,7 @@
           </v-col>
 
           <!-- Actions -->
-          <v-col cols="2" class="mt-n2">
+          <v-col cols="2" class="my-n2">
             <div class="actions mr-4">
               <!-- FUTURE: only show buttons for named company -->
               <v-btn
@@ -629,5 +629,4 @@ export default class YourCompany extends Mixins(
 #contact-info-section {
   border-bottom-left-radius: 0 !important;
 }
-
 </style>
