@@ -8,6 +8,7 @@ export interface FlagsCompanyInfoIF {
   isValidCompanyName: boolean
   isValidBusinessType: boolean
   isValidNameTranslation: boolean
+  isValidStartDate: boolean
   isValidNatureOfBusiness: boolean
   isValidAddress: boolean
   isValidContactInfo: boolean
@@ -16,7 +17,6 @@ export interface FlagsCompanyInfoIF {
   isValidShareStructure: boolean
   isValidCompanyProvisions: boolean
   isValidResolutionDate: boolean
-  isValidStartDate: boolean
   isValidAssociationType: boolean
   isValidCreateSpecialResolution: boolean
 }

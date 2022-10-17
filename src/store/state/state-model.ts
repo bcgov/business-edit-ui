@@ -38,6 +38,7 @@ export const stateModel: StateModelIF = {
       isValidCompanyName: true,
       isValidBusinessType: true,
       isValidNameTranslation: true,
+      isValidStartDate: true,
       isValidNatureOfBusiness: true,
       isValidAddress: true,
       isValidContactInfo: true,
@@ -46,7 +47,6 @@ export const stateModel: StateModelIF = {
       isValidShareStructure: true,
       isValidCompanyProvisions: true,
       isValidResolutionDate: true,
-      isValidStartDate: true,
       isValidAssociationType: true,
       isValidCreateSpecialResolution: true
     },

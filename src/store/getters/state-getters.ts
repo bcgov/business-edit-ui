@@ -746,11 +746,14 @@ export const havePeopleAndRolesChanged = (state: StateIF): boolean => {
       if (!op.deliveryAddress.deliveryInstructions) op.deliveryAddress.deliveryInstructions = ''
       if (!op.deliveryAddress.streetAddressAdditional) op.deliveryAddress.streetAddressAdditional = ''
     }
+
     if (op.mailingAddress) {
       if (!op.mailingAddress.deliveryInstructions) op.mailingAddress.deliveryInstructions = ''
       if (!op.mailingAddress.streetAddressAdditional) op.mailingAddress.streetAddressAdditional = ''
     }
+
     if (!op.officer.email) op.officer.email = null
+    if (!op.officer.taxId) op.officer.taxId = null
 
     if (op.officer.partyType === PartyTypes.ORGANIZATION) {
       if (!op.officer.identifier) op.officer.identifier = null

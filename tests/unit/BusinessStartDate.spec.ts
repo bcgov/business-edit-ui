@@ -31,17 +31,17 @@ describe('Business Start Date', () => {
     wrapper.destroy()
   })
 
-  it('render the component correctly for firm change filings', async () => {
+  it('renders the component correctly for firm change filings', async () => {
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     await router.push({ name: 'change' })
     await Vue.nextTick()
 
     expect(wrapper.find('.pr-2').text()).toBe('Business Start Date')
     expect(wrapper.find('.info-text').text()).toBe('(Not entered)')
-    expect(wrapper.find('#start-changes-btn').text()).toBe('Change')
+    expect(wrapper.find('#start-changes-btn').exists()).toBe(false)
   })
 
-  it('render the component correctly for firm conversion filings', async () => {
+  it('renders the component correctly for firm conversion filings', async () => {
     store.state.stateModel.tombstone.filingType = 'conversion'
     await router.push({ name: 'conversion' })
     await Vue.nextTick()
