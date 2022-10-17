@@ -48,13 +48,12 @@
 
             <!-- Delivery Address -->
             <td class="px-0">
-              <p
-                v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])"
-                class="director-detail"
-              >
-                Same as Mailing Address
-              </p>
-              <DeliveryAddress v-else class="director-detail" :address="orgPerson.deliveryAddress"/>
+              <template v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])">
+                <span class="director-detail">Same as Mailing Address</span>
+              </template>
+              <template v-else>
+                <DeliveryAddress class="director-detail" :address="orgPerson.deliveryAddress"/>
+              </template>
             </td>
 
             <!-- Appointment Date -->
@@ -131,7 +130,7 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
     vertical-align: text-top;
   }
 
-  td:not(:first-child){
+  .director-detail {
     font-size: $px-14;
     color: $gray7;
     font-weight: normal;

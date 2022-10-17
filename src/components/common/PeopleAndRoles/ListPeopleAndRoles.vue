@@ -114,13 +114,12 @@
             <template
               v-if="hasRoleDirector(orgPerson) || hasRoleProprietor(orgPerson) || hasRolePartner(orgPerson)"
             >
-              <p
-                v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])"
-                class="peoples-roles-delivery-address info-text"
-              >
-                Same as Mailing Address
-              </p>
-              <DeliveryAddress v-else class="peoples-roles-delivery-address" :address="orgPerson.deliveryAddress"/>
+              <template v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])">
+                <span class="peoples-roles-delivery-address info-text">Same as Mailing Address</span>
+              </template>
+              <template v-else>
+                <DeliveryAddress class="peoples-roles-delivery-address" :address="orgPerson.deliveryAddress" />
+              </template>
             </template>
           </v-col>
 
@@ -456,6 +455,11 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   .people-roles-title {
     color: $gray9;
     font-weight: bold;
+  }
+
+  .peoples-roles-mailing-address,
+  .peoples-roles-delivery-address {
+    font-size: $px-15;
   }
 
   .actions {
