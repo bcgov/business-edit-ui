@@ -16,6 +16,7 @@ describe('State Getters', () => {
     // initialize store
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.filingType = 'correction'
+    store.state.stateModel.correctionInformation.type = 'CLIENT'
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
@@ -56,7 +57,8 @@ describe('State Getters', () => {
     expect(vm.isBusySaving).toBe(false)
   })
 
-  it('returns correct values for "Is Filing Valid" getter', async () => {
+  // FUTURE: fix this to work for non-correction filing
+  xit('returns correct values for "Is Filing Valid" getter', async () => {
     // initially, this getter should be false
     expect(vm.isCorrectionValid).toBe(false)
 
@@ -102,35 +104,107 @@ describe('State Getters', () => {
     expect(vm.isCorrectionValid).toBe(false)
   })
 
+  it('returns correct values for "Is Correction  Valid" getter', async () => {
+    function mutateIsValidComponent (key: string, value: any): Promise<void> {
+      return vm.$store.commit('mutateIsValidComponent', { key, value })
+    }
+
+    // initially, this getter should be false
+    // (because certify state is initially invalid)
+    expect(vm.isCorrectionValid).toBe(false)
+
+    // set all flags to valid
+    await mutateIsValidComponent('isValidCompanyName', true)
+    await mutateIsValidComponent('isValidNameTranslation', true)
+    await mutateIsValidComponent('isValidAddress', true)
+    await mutateIsValidComponent('isValidOrgPersons', true)
+    await mutateIsValidComponent('isValidShareStructure', true)
+    await vm.$store.commit('mutateDetailValidity', true)
+    await vm.$store.commit('mutateCertifyStateValidity', true)
+    await vm.$store.commit('mutateStaffPaymentValidity', true)
+
+    // now, this getter should be true
+    expect(vm.isCorrectionValid).toBe(true)
+
+    // verify that the Valid Company Name flag alone affects validity
+    await mutateIsValidComponent('isValidCompanyName', false)
+    expect(vm.isCorrectionValid).toBe(false)
+    await mutateIsValidComponent('isValidCompanyName', true)
+
+    // verify that the Valid Name Translation flag alone affects validity
+    await mutateIsValidComponent('isValidNameTranslation', false)
+    expect(vm.isCorrectionValid).toBe(false)
+    await mutateIsValidComponent('isValidNameTranslation', true)
+
+    // verify that the Valid Address flag alone affects validity
+    await mutateIsValidComponent('isValidAddress', false)
+    expect(vm.isCorrectionValid).toBe(false)
+    await mutateIsValidComponent('isValidAddress', true)
+
+    // verify that the Valid Org Persons flag alone affects validity
+    await mutateIsValidComponent('isValidOrgPersons', false)
+    expect(vm.isCorrectionValid).toBe(false)
+    await mutateIsValidComponent('isValidOrgPersons', true)
+
+    // verify that the Valid Share Structure flag alone affects validity
+    await mutateIsValidComponent('isValidShareStructure', false)
+    expect(vm.isCorrectionValid).toBe(false)
+    await mutateIsValidComponent('isValidShareStructure', true)
+
+    // verify that the Valid Detail Comment flag alone affects validity
+    await vm.$store.commit('mutateDetailValidity', false)
+    expect(vm.isCorrectionValid).toBe(false)
+    await vm.$store.commit('mutateDetailValidity', true)
+
+    // verify that the Valid Certify flag alone affects validity
+    await vm.$store.commit('mutateCertifyStateValidity', false)
+    expect(vm.isCorrectionValid).toBe(false)
+    await vm.$store.commit('mutateCertifyStateValidity', true)
+
+    // verify that the Valid Staff Payment flag alone affects validity
+    await vm.$store.commit('mutateStaffPaymentValidity', false)
+    expect(vm.isCorrectionValid).toBe(false)
+    await vm.$store.commit('mutateStaffPaymentValidity', true)
+
+    // this getter should be true again
+    expect(vm.isCorrectionValid).toBe(true)
+  })
+
   it('returns correct values for "Is Editing" getter', async () => {
     // initially, this getter should be false
     expect(vm.isCorrectionEditing).toBe(false)
 
-    // verify that the Company Name Editing flag works
+    // verify that the Editing Company Name flag works
     await vm.$store.commit('mutateEditingCompanyName', true)
     expect(vm.isCorrectionEditing).toBe(true)
     await vm.$store.commit('mutateEditingCompanyName', false)
     expect(vm.isCorrectionEditing).toBe(false)
 
-    // verify that the Name Translations Editing flag works
+    // verify that the Editing Name Translations flag works
     await vm.$store.commit('mutateEditingNameTranslations', true)
     expect(vm.isCorrectionEditing).toBe(true)
     await vm.$store.commit('mutateEditingNameTranslations', false)
     expect(vm.isCorrectionEditing).toBe(false)
 
-    // verify that the Office Addresses Editing flag works
+    // verify that the Editing Office Addresses flag works
     await vm.$store.commit('mutateEditingOfficeAddresses', true)
     expect(vm.isCorrectionEditing).toBe(true)
     await vm.$store.commit('mutateEditingOfficeAddresses', false)
     expect(vm.isCorrectionEditing).toBe(false)
 
-    // verify that the People And Roles Editing flag works
+    // verify that the Editing Folio Number flag works
+    await vm.$store.commit('mutateEditingFolioNumber', true)
+    expect(vm.isCorrectionEditing).toBe(true)
+    await vm.$store.commit('mutateEditingFolioNumber', false)
+    expect(vm.isCorrectionEditing).toBe(false)
+
+    // verify that the Editing People And Roles flag works
     await vm.$store.commit('mutateEditingPeopleAndRoles', true)
     expect(vm.isCorrectionEditing).toBe(true)
     await vm.$store.commit('mutateEditingPeopleAndRoles', false)
     expect(vm.isCorrectionEditing).toBe(false)
 
-    // verify that the Company Share Structure flag works
+    // verify that the Editing Share Structure flag works
     await vm.$store.commit('mutateEditingShareStructure', true)
     expect(vm.isCorrectionEditing).toBe(true)
     await vm.$store.commit('mutateEditingShareStructure', false)

@@ -503,15 +503,29 @@ export const hasConversionDataChanged = (state: StateIF): boolean => {
 /** Whether the subject correction filing is valid. */
 export const isCorrectionValid = (state: StateIF): boolean => {
   if (isBenCorrectionFiling(state)) {
-    return (
-      getFlagsCompanyInfo(state).isValidCompanyName &&
-      getFlagsCompanyInfo(state).isValidNameTranslation &&
-      getFlagsCompanyInfo(state).isValidOrgPersons &&
-      getFlagsCompanyInfo(state).isValidShareStructure &&
-      getFlagsReviewCertify(state).isValidDetailComment &&
-      getFlagsReviewCertify(state).isValidCertify &&
-      getFlagsReviewCertify(state).isValidStaffPayment
-    )
+    if (isClientErrorCorrection(state)) {
+      return (
+        getFlagsCompanyInfo(state).isValidCompanyName &&
+        getFlagsCompanyInfo(state).isValidNameTranslation &&
+        getFlagsCompanyInfo(state).isValidAddress &&
+        getFlagsCompanyInfo(state).isValidOrgPersons &&
+        getFlagsCompanyInfo(state).isValidShareStructure &&
+        getFlagsReviewCertify(state).isValidDetailComment &&
+        getFlagsReviewCertify(state).isValidCertify &&
+        getFlagsReviewCertify(state).isValidStaffPayment
+      )
+    } else {
+      return (
+        getFlagsCompanyInfo(state).isValidCompanyName &&
+        getFlagsCompanyInfo(state).isValidNameTranslation &&
+        getFlagsCompanyInfo(state).isValidOrgPersons &&
+        getFlagsCompanyInfo(state).isValidAddress &&
+        getFlagsCompanyInfo(state).isValidShareStructure &&
+        getFlagsReviewCertify(state).isValidDetailComment &&
+        // don't check certify for staff correction
+        getFlagsReviewCertify(state).isValidStaffPayment
+      )
+    }
   }
 
   if (isFirmCorrectionFiling(state)) {
@@ -534,7 +548,9 @@ export const isCorrectionValid = (state: StateIF): boolean => {
         getFlagsCompanyInfo(state).isValidNatureOfBusiness &&
         getFlagsCompanyInfo(state).isValidAddress &&
         getFlagsCompanyInfo(state).isValidOrgPersons &&
+        // don't check completing party for staff correction
         getFlagsReviewCertify(state).isValidDetailComment &&
+        // don't check certify for staff correction
         getFlagsReviewCertify(state).isValidStaffPayment
       )
     }
