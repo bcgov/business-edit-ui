@@ -63,6 +63,7 @@ describe('Action button states', () => {
   beforeAll(async () => {
     // initialize store
     store.state.stateModel.tombstone.filingType = 'correction'
+    store.state.stateModel.correctionInformation.type = 'CLIENT'
 
     wrapper = shallowMount(Actions, { store, vuetify })
     await Vue.nextTick()
@@ -77,16 +78,8 @@ describe('Action button states', () => {
     }
 
     setValidity = async (val: boolean) => {
-      // set all validity flags
-      await wrapper.vm.$store.commit('mutatePeopleAndRolesValidity', val)
-      await wrapper.vm.$store.commit('mutateCreateShareStructureStepValidity', val)
-      await wrapper.vm.$store.commit('mutateDetailValidity', val)
-      await wrapper.vm.$store.commit('mutateCertifyState', {
-        valid: val,
-        certifiedBy: val ? 'user' : ''
-      })
+      // set certify state flag since it's initially false
       await wrapper.vm.$store.commit('mutateCertifyStateValidity', val)
-      await wrapper.vm.$store.commit('mutateStaffPaymentValidity', val)
     }
 
     setEditing = async (val: boolean) => {
@@ -110,6 +103,7 @@ describe('Action button states', () => {
 
   it('renders buttons once Entity Type is known', async () => {
     await setEntityType('BEN')
+
     // all buttons are rendered
     expect(wrapper.find('#action-buttons-container').exists()).toBe(true)
     expect(wrapper.find('#save-btn').exists()).toBe(true)
@@ -120,8 +114,9 @@ describe('Action button states', () => {
 
   it('shows initial enabled buttons', async () => {
     await setEntityType('BEN')
+
     // only the File and Pay button should be disabled
-    // (because the filing has not changed and is invalid)
+    // (because the filing has not changed and is initially invalid due to certify)
     expect(wrapper.find('#save-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
@@ -133,6 +128,7 @@ describe('Action button states', () => {
     await setChanged(true)
     await setValidity(true)
     await wrapper.vm.setIsSaving(true)
+
     // all buttons should be disabled
     // Save button should be loading
     expect(wrapper.find('#save-btn').props('disabled')).toBe(true)
@@ -140,6 +136,7 @@ describe('Action button states', () => {
     expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(true)
+
     // reset
     await setChanged(false)
     await setValidity(false)
@@ -151,6 +148,7 @@ describe('Action button states', () => {
     await setChanged(true)
     await setValidity(true)
     await wrapper.vm.setIsSavingResuming(true)
+
     // all buttons should be disabled
     // Save and Resume button should be loading
     expect(wrapper.find('#save-btn').props('disabled')).toBe(true)
@@ -158,6 +156,7 @@ describe('Action button states', () => {
     expect(wrapper.find('#save-resume-btn').props('loading')).toBe(true)
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(true)
+
     // reset
     await setChanged(false)
     await setValidity(false)
@@ -169,6 +168,7 @@ describe('Action button states', () => {
     await setChanged(true)
     await setValidity(true)
     await wrapper.vm.setIsFilingPaying(true)
+
     // all buttons should be disabled
     // File and Pay button should be loading
     expect(wrapper.find('#save-btn').props('disabled')).toBe(true)
@@ -176,6 +176,7 @@ describe('Action button states', () => {
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#file-pay-btn').props('loading')).toBe(true)
     expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(true)
+
     // reset
     await setChanged(false)
     await setValidity(false)
@@ -187,11 +188,13 @@ describe('Action button states', () => {
     await setChanged(true)
     await setValidity(true)
     await setEditing(true)
+
     // all buttons should be disabled except Cancel
     expect(wrapper.find('#save-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(false)
+
     // reset
     await setChanged(false)
     await setValidity(false)
@@ -201,11 +204,13 @@ describe('Action button states', () => {
   it('disables File and Pay button when filing is changed but not valid', async () => {
     await setEntityType('BEN')
     await setChanged(true)
+
     // only the File and Pay button should be disabled
     expect(wrapper.find('#save-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(false)
+
     // reset
     await setChanged(false)
   })
@@ -214,11 +219,13 @@ describe('Action button states', () => {
     await setEntityType('BEN')
     await setChanged(true)
     await setValidity(true)
+
     // all buttons should be enabled
     expect(wrapper.find('#save-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(false)
+
     // reset
     await setChanged(false)
     await setValidity(false)
