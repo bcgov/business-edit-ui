@@ -1,4 +1,5 @@
 export { default as AuthServices } from './auth-services'
 export { default as BusinessLookupServices } from './business-lookup-services'
+export { default as EmailVerificationService } from './email-verification-service'
 export { default as LegalServices } from './legal-services'
 export { default as NaicsServices } from './naics-services'
