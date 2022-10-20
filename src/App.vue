@@ -112,7 +112,7 @@
                   />
                 </aside>
 
-                <!-- Alteration/Change/Conversion filings use the enhanced Fee Summary shared component -->
+                <!-- Alteration/Change/Conversion/SpecialResolution use the enhanced Fee Summary shared component -->
                 <v-expand-transition>
                   <FeeSummaryShared
                     v-if="showFeesummaryShared"
@@ -160,7 +160,8 @@ import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
-import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
+import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsCompanyInfoIF, AlterationFlagsReviewCertifyIF,
+  ChangeFlagsReviewCertifyIF, ConversionFlagsReviewCertifyIF, SpecialResolutionFlagsReviewCertifyIF,
   AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, SpecialResolutionFilingIF }
   from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
@@ -207,9 +208,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter showFeeSummary!: boolean
   @Getter getCurrentJsDate!: Date
   @Getter getFilingId!: number
-
-  // Alteration flag getters
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter getAppValidate!: boolean
   @Getter getComponentValidate!: boolean
@@ -339,11 +337,27 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
   /** True if there are any invalid review sections. */
   get hasInvalidReviewSections (): boolean {
-    return (
-      this.getAppValidate &&
-      Object.values(this.getFlagsReviewCertify).some(val => val === false)
-    )
+    if (this.isAlterationFiling) {
+      return (
+        this.getAppValidate && Object.values(this.getAlterationFlagsReviewCertify).some(val => val === false))
+    }
+
+    if (this.isFirmChangeFiling) {
+      return (
+        this.getAppValidate && Object.values(this.getChangeFlagsReviewCertify).some(val => val === false))
+    }
+
+    if (this.isFirmConversionFiling) {
+      return (
+        this.getAppValidate && Object.values(this.getConversionFlagsReviewCertify).some(val => val === false))
+    }
+
+    if (this.isSpecialResolutionFiling) {
+      return (
+        this.getAppValidate && Object.values(this.getSpecialREsolutionFlagsReviewCertify).some(val => val === false))
+    }
   }
+
   /** Show fee summary only allowed filing types */
   get showFeesummaryShared (): boolean {
     return (
@@ -760,8 +774,28 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     this.setAppValidate(true)
 
     // Evaluate valid flags. Scroll to invalid components or file alteration.
-    if (await this.validateAndScroll(this.getFlagsReviewCertify, ComponentsReviewCertify)) {
-      await this.onClickSave(false)
+    if (this.isAlterationFiling) {
+      if (await this.validateAndScroll(this.getAlterationFlagsReviewCertify, ComponentsReviewCertify)) {
+        await this.onClickSave(false)
+      }
+    }
+
+    if (this.isFirmChangeFiling) {
+      if (await this.validateAndScroll(this.getChangeFlagsReviewCertify, ComponentsReviewCertify)) {
+        await this.onClickSave(false)
+      }
+    }
+
+    if (this.isFirmConversionFiling) {
+      if (await this.validateAndScroll(this.getConversionFlagsReviewCertify, ComponentsReviewCertify)) {
+        await this.onClickSave(false)
+      }
+    }
+
+    if (this.isSpecialResolutionFiling) {
+      if (await this.validateAndScroll(this.getSpecialREsolutionFlagsReviewCertify, ComponentsReviewCertify)) {
+        await this.onClickSave(false)
+      }
     }
   }
 

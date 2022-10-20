@@ -145,7 +145,7 @@
             <EffectiveDateTime
               @dateTimeString="setEffectiveDateTimeString($event)"
               @isFutureEffective="setIsFutureEffective($event); emitHaveChanges()"
-              @valid="setEffectiveDateValid($event)"
+              @valid="setAlterationEffectiveDateValid($event)"
             />
 
             <v-card
@@ -166,7 +166,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
+import { ActionBindingIF, AlterationFlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
@@ -193,12 +193,12 @@ export default class AlterationSummary extends Mixins(
   @Getter getOriginalResolutions!: ResolutionsIF[]
   @Getter getCurrentFees!: FeesIF[]
   @Getter isBusySaving!: boolean
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter getAlterationFlagsReviewCertify!: AlterationFlagsReviewCertifyIF
   @Getter haveNewResolutionDates!: boolean
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF
-  @Action setEffectiveDateValid!: ActionBindingIF
+  @Action setAlterationEffectiveDateValid!: ActionBindingIF
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean
@@ -208,7 +208,7 @@ export default class AlterationSummary extends Mixins(
   }
 
   get isEffectiveDateTimeValid (): boolean {
-    return this.getFlagsReviewCertify.isValidEffectiveDate
+    return this.getAlterationFlagsReviewCertify.isValidEffectiveDate
   }
 
   get effectiveDateTimeString (): string {
@@ -229,7 +229,7 @@ export default class AlterationSummary extends Mixins(
 
   /** True if invalid class should be set for Alteration Date-Time container. */
   get alterationDateTimeInvalid (): boolean {
-    return (this.validate && !this.getFlagsReviewCertify.isValidEffectiveDate)
+    return (this.validate && !this.getAlterationFlagsReviewCertify.isValidEffectiveDate)
   }
 
   /** Calculates the sum of alteration fees. */

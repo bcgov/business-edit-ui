@@ -138,7 +138,7 @@ export default class SpecialResolution extends Mixins(
   FilingTemplateMixin
 ) {
   // Global getters
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter getSpecialResolutionFlagsReviewCertify!: SpecialResolutionFlagsReviewCertifyIF
   @Getter getUserFirstName!: string
   @Getter getUserLastName!: string
   @Getter isSummaryMode!: boolean
@@ -176,7 +176,7 @@ export default class SpecialResolution extends Mixins(
 
   /** Check validity state, only when prompted by app. */
   get invalidCourtOrder (): boolean {
-    return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
+    return (this.getAppValidate && !this.getSpecialResolutionFlagsReviewCertify.isValidCourtOrder)
   }
 
   /** The resource file for an SpecialResolution filing. */

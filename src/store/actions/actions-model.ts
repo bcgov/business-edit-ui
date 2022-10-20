@@ -58,8 +58,8 @@ export const setEffectiveDateTimeString: ActionIF = ({ commit }, dateTime: strin
   commit('mutateEffectiveDateTimeString', dateTime)
 }
 
-export const setEffectiveDateValid: ActionIF = ({ commit }, valid: boolean): void => {
-  commit('mutateEffectiveDateValid', valid)
+export const setAlterationEffectiveDateValid: ActionIF = ({ commit }, valid: boolean): void => {
+  commit('mutateAlterationEffectiveDateValid', valid)
 }
 
 export const setResource: ActionIF = ({ commit }, resource: ResourceIF): void => {
@@ -70,32 +70,76 @@ export const setCertifyState: ActionIF = ({ commit }, certifyState: CertifyIF): 
   commit('mutateCertifyState', certifyState)
 }
 
-export const setCertifyStateValidity: ActionIF = ({ commit }, validity): void => {
-  commit('mutateCertifyStateValidity', validity)
+export const setAlterationCertifyStateValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateAlterationCertifyStateValidity', validity)
+}
+
+export const setBenClientCorrectionCertifyStateValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateBenClientCorrectionCertifyStateValidity', validity)
+}
+
+export const setChangeCertifyStateValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateChangeCertifyStateValidity', validity)
+}
+
+export const setFirmClientCorrectionCertifyStateValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateFirmClientCorrectionCertifyStateValidity', validity)
+}
+
+export const setSpecialResolutionCertifyStateValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateSpecialResolutionCertifyStateValidity', validity)
 }
 
 export const setDocumentOptionalEmail: ActionIF = ({ commit }, documentOptionalEmail: string): void => {
   commit('mutateDocumentOptionalEmail', documentOptionalEmail)
 }
 
-export const setDocumentOptionalEmailValidity: ActionIF = ({ commit }, validity): void => {
-  commit('mutateDocumentOptionalEmailValidity', validity)
+export const setAlterationDocumentOptionalEmailValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateAlterationDocumentOptionalEmailValidity', validity)
+}
+
+export const setChangeDocumentOptionalEmailValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateChangeDocumentOptionalEmailValidity', validity)
+}
+
+export const setSpecialResolutionDocumentOptionalEmailValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateSpecialResolutionDocumentOptionalEmailValidity', validity)
 }
 
 export const setCompletingParty: ActionIF = ({ commit }, cp: CompletingPartyIF): void => {
   commit('mutateCompletingParty', cp)
 }
 
-export const setCompletingPartyValidity: ActionIF = ({ commit }, validity: boolean): void => {
-  commit('mutateCompletingPartyValidity', validity)
+export const setChangeCompletingPartyValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateChangeCompletingPartyValidity', validity)
+}
+
+export const setConversionCompletingPartyValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateConversionCompletingPartyValidity', validity)
+}
+
+export const setFirmClientCorrectionCompletingPartyValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateFirmClientCorrectionCompletingPartyValidity', validity)
+}
+
+export const setSpecialResolutionCompletingPartyValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateSpecialResolutionCompletingPartyValidity', validity)
 }
 
 export const setTransactionalFolioNumber: ActionIF = ({ commit }, folioNumber: string): void => {
   commit('mutateTransactionalFolioNumber', folioNumber)
 }
 
-export const setTransactionalFolioNumberValidity: ActionIF = ({ commit }, validity): void => {
-  commit('mutateTransactionalFolioNumberValidity', validity)
+export const setAlterationTransactionalFolioNumberValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateAlterationTransactionalFolioNumberValidity', validity)
+}
+
+export const setChangeTransactionalFolioNumberValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateChangeTransactionalFolioNumberValidity', validity)
+}
+
+export const setSpecialResolutionTransactionalFolioNumberValidity: ActionIF = ({ commit }, validity): void => {
+  commit('mutateSpecialResolutionTransactionalFolioNumberValidity', validity)
 }
 
 export const setBusinessContact: ActionIF = ({ commit }, businessContact: ContactPointIF): void => {
@@ -179,8 +223,32 @@ export const setStaffPayment: ActionIF = ({ commit }, staffPayment): void => {
   commit('mutateStaffPayment', staffPayment)
 }
 
-export const setStaffPaymentValidity: ActionIF = ({ commit }, validity: boolean): void => {
-  commit('mutateStaffPaymentValidity', validity)
+export const setBenStaffCorrectionStaffPaymentValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateBenStaffCorrectionStaffPaymentValidity', validity)
+}
+
+export const setBenClientCorrectionStaffPaymentValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateBenClientCorrectionStaffPaymentValidity', validity)
+}
+
+export const setAlterationStaffPaymentValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateAlterationStaffPaymentValidity', validity)
+}
+
+export const setChangeStaffPaymentValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateChangeStaffPaymentValidity', validity)
+}
+
+export const setFirmClientCorrectionStaffPaymentValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateFirmClientCorrectionStaffPaymentValidity', validity)
+}
+
+export const setFirmStaffCorrectionStaffPaymentValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateFirmStaffCorrectionStaffPaymentValidity', validity)
+}
+
+export const setSpecialResolutionStaffPaymentValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateSpecialResolutionStaffPaymentValidity', validity)
 }
 
 export const setFilingData: ActionIF = ({ commit }, filingData: FilingDataIF[]): void => {
@@ -191,8 +259,20 @@ export const setDetailComment: ActionIF = ({ commit }, comment: string): void =>
   commit('mutateDetailComment', comment)
 }
 
-export const setDetailValidity: ActionIF = ({ commit }, validity: boolean): void => {
-  commit('mutateDetailValidity', validity)
+export const setBenStaffCorrectionDetailValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateBenStaffCorrectionDetailValidity', validity)
+}
+
+export const setBenClientCorrectionDetailValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateBenClientCorrectionDetailValidity', validity)
+}
+
+export const setFirmClientCorrectionDetailValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateFirmClientCorrectionDetailValidity', validity)
+}
+
+export const setFirmStaffCorrectionDetailValidity: ActionIF = ({ commit }, validity: boolean): void => {
+  commit('mutateFirmStaffCorrectionDetailValidity', validity)
 }
 
 export const setEditingCompanyName: ActionIF = ({ commit }, editing: boolean): void => {
@@ -251,8 +331,12 @@ export const setComponentValidate: ActionIF = ({ commit }, validate: boolean): v
   commit('mutateComponentValidate', validate)
 }
 
-export const setValidCourtOrder: ActionIF = ({ commit }, isValid: boolean): void => {
-  commit('mutateValidCourtOrder', isValid)
+export const setAlterationValidCourtOrder: ActionIF = ({ commit }, isValid: boolean): void => {
+  commit('mutateAlterationValidCourtOrder', isValid)
+}
+
+export const setChangeValidCourtOrder: ActionIF = ({ commit }, isValid: boolean): void => {
+  commit('mutateChangeValidCourtOrder', isValid)
 }
 
 export const setCurrentFees: ActionIF = ({ commit }, fees: FeesIF[]): void => {

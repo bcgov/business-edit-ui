@@ -2,8 +2,10 @@ import { AccountTypes, ActionTypes, CoopTypes, CorrectionErrorTypes, FilingCodes
   FilingTypes, PartyTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF,
-  CertifyIF,
-  NameTranslationIF, FilingDataIF, StateIF, EffectiveDateTimeIF, FlagsReviewCertifyIF,
+  CertifyIF, AlterationFlagsReviewCertifyIF, ChangeFlagsReviewCertifyIF, ConversionFlagsReviewCertifyIF,
+  SpecialResolutionFlagsReviewCertifyIF, BenStaffCorrectionFlagsReviewCertifyIF,
+  BenClientCorrectionFlagsReviewCertifyIF, FirmClientCorrectionFlagsReviewCertifyIF,
+  FirmStaffCorrectionFlagsReviewCertifyIF, NameTranslationIF, FilingDataIF, StateIF, EffectiveDateTimeIF,
   FlagsCompanyInfoIF, ResolutionsIF, FeesIF, ResourceIF, EntitySnapshotIF, ValidationFlagsIF,
   CorrectionInformationIF }
   from '@/interfaces/'
@@ -448,21 +450,6 @@ export const hasSpecialResolutionDataChanged = (state: StateIF): boolean => {
   )
 }
 
-/** Whether the special resolution filing is valid. Does NOT include:
- * - address (read only)
- * NOTE THIS IS INCOMPLETE - not entirely sure where to use this.
- * isCorrectionValid seems to disable the File and Pay button.
- */
-export const isSpecialResolutionValid = (state: StateIF): boolean => {
-  return (
-    getFlagsCompanyInfo(state).isValidOrgPersons &&
-    getFlagsCompanyInfo(state).isValidShareStructure &&
-    getFlagsReviewCertify(state).isValidDetailComment &&
-    getFlagsReviewCertify(state).isValidCertify &&
-    getFlagsReviewCertify(state).isValidStaffPayment
-  )
-}
-
 /**
  * Whether any firm change data has changed (for the purpose of showing the
  * fee summary), ie, does NOT include:
@@ -503,15 +490,26 @@ export const hasConversionDataChanged = (state: StateIF): boolean => {
 /** Whether the subject correction filing is valid. */
 export const isCorrectionValid = (state: StateIF): boolean => {
   if (isBenCorrectionFiling(state)) {
-    return (
-      getFlagsCompanyInfo(state).isValidCompanyName &&
-      getFlagsCompanyInfo(state).isValidNameTranslation &&
-      getFlagsCompanyInfo(state).isValidOrgPersons &&
-      getFlagsCompanyInfo(state).isValidShareStructure &&
-      getFlagsReviewCertify(state).isValidDetailComment &&
-      getFlagsReviewCertify(state).isValidCertify &&
-      getFlagsReviewCertify(state).isValidStaffPayment
-    )
+    if (isClientErrorCorrection(state)) {
+      return (
+        getFlagsCompanyInfo(state).isValidCompanyName &&
+        getFlagsCompanyInfo(state).isValidNameTranslation &&
+        getFlagsCompanyInfo(state).isValidOrgPersons &&
+        getFlagsCompanyInfo(state).isValidShareStructure &&
+        getBenClientCorrectionFlagsReviewCertify(state).isValidDetailComment &&
+        getBenClientCorrectionFlagsReviewCertify(state).isValidCertify &&
+        getBenClientCorrectionFlagsReviewCertify(state).isValidStaffPayment
+      )
+    } else {
+      return (
+        getFlagsCompanyInfo(state).isValidCompanyName &&
+        getFlagsCompanyInfo(state).isValidNameTranslation &&
+        getFlagsCompanyInfo(state).isValidOrgPersons &&
+        getFlagsCompanyInfo(state).isValidShareStructure &&
+        getBenStaffCorrectionFlagsReviewCertify(state).isValidDetailComment &&
+        getBenStaffCorrectionFlagsReviewCertify(state).isValidStaffPayment
+      )
+    }
   }
 
   if (isFirmCorrectionFiling(state)) {
@@ -522,10 +520,10 @@ export const isCorrectionValid = (state: StateIF): boolean => {
         getFlagsCompanyInfo(state).isValidNatureOfBusiness &&
         getFlagsCompanyInfo(state).isValidAddress &&
         getFlagsCompanyInfo(state).isValidOrgPersons &&
-        getFlagsReviewCertify(state).isValidCompletingParty &&
-        getFlagsReviewCertify(state).isValidDetailComment &&
-        getFlagsReviewCertify(state).isValidCertify &&
-        getFlagsReviewCertify(state).isValidStaffPayment
+        getFirmClientCorrectionFlagsReviewCertify(state).isValidCompletingParty &&
+        getFirmClientCorrectionFlagsReviewCertify(state).isValidDetailComment &&
+        getFirmClientCorrectionFlagsReviewCertify(state).isValidCertify &&
+        getFirmClientCorrectionFlagsReviewCertify(state).isValidStaffPayment
       )
     } else {
       return (
@@ -534,8 +532,8 @@ export const isCorrectionValid = (state: StateIF): boolean => {
         getFlagsCompanyInfo(state).isValidNatureOfBusiness &&
         getFlagsCompanyInfo(state).isValidAddress &&
         getFlagsCompanyInfo(state).isValidOrgPersons &&
-        getFlagsReviewCertify(state).isValidDetailComment &&
-        getFlagsReviewCertify(state).isValidStaffPayment
+        getFirmStaffCorrectionFlagsReviewCertify(state).isValidDetailComment &&
+        getFirmStaffCorrectionFlagsReviewCertify(state).isValidStaffPayment
       )
     }
   }
@@ -569,9 +567,44 @@ export const getComponentValidate = (state: StateIF): boolean => {
   return getValidationFlags(state).componentValidate
 }
 
-/** The review and certify page validity flags. */
-export const getFlagsReviewCertify = (state: StateIF): FlagsReviewCertifyIF => {
-  return getValidationFlags(state).flagsReviewCertify
+/** The Ben Correction review and certify page validation */
+export const getFirmClientCorrectionFlagsReviewCertify = (state: StateIF): FirmClientCorrectionFlagsReviewCertifyIF => {
+  return getValidationFlags(state).firmClientCorrectionFlagsReviewCertify
+}
+
+/** The Ben Correction review and certify page validation */
+export const getFirmStaffCorrectionFlagsReviewCertify = (state: StateIF): FirmStaffCorrectionFlagsReviewCertifyIF => {
+  return getValidationFlags(state).firmStaffCorrectionFlagsReviewCertify
+}
+
+/** The Ben Staff Correction review and certify page validation */
+export const getBenStaffCorrectionFlagsReviewCertify = (state: StateIF): BenStaffCorrectionFlagsReviewCertifyIF => {
+  return getValidationFlags(state).benStaffCorrectionFlagsReviewCertify
+}
+
+/** The Ben Client Correction review and certify page validation */
+export const getBenClientCorrectionFlagsReviewCertify = (state: StateIF): BenClientCorrectionFlagsReviewCertifyIF => {
+  return getValidationFlags(state).benClientCorrectionFlagsReviewCertify
+}
+
+/** The Alteration review and certify page validity flags. */
+export const getAlterationFlagsReviewCertify = (state: StateIF): AlterationFlagsReviewCertifyIF => {
+  return getValidationFlags(state).alterationFlagsReviewCertify
+}
+
+/** The Conversion review and certify page validity flags. */
+export const getConversionFlagsReviewCertify = (state: StateIF): ConversionFlagsReviewCertifyIF => {
+  return getValidationFlags(state).conversionFlagsReviewCertify
+}
+
+/** The Change review and certify page validity flags. */
+export const getChangeFlagsReviewCertify = (state: StateIF): ChangeFlagsReviewCertifyIF => {
+  return getValidationFlags(state).changeFlagsReviewCertify
+}
+
+/** The Special Resolution review and certify page validity flags. */
+export const getSpecialResolutionFlagsReviewCertify = (state: StateIF): SpecialResolutionFlagsReviewCertifyIF => {
+  return getValidationFlags(state).specialResolutionFlagsReviewCertify
 }
 
 /** The company info page validity flags. */
@@ -958,5 +991,5 @@ export const getSpecialResolutionFormValid = (state: StateIF): boolean => {
 
 /** The company info page validity flags. */
 export const getSpecialResolutionConfirmValid = (state: StateIF): boolean => {
-  return getFlagsReviewCertify(state).isValidSpecialResolutionConfirm
+  return getSpecialResolutionFlagsReviewCertify(state).isValidSpecialResolutionConfirm
 }

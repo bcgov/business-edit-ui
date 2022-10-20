@@ -83,9 +83,7 @@ export default class Conversion extends Mixins(
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
-  @Action setValidCourtOrder!: ActionBindingIF
   @Action setResource!: ActionBindingIF
-  @Action setCertifyStateValidity!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
@@ -184,10 +182,6 @@ export default class Conversion extends Mixins(
       console.log(err) // eslint-disable-line no-console
       this.emitFetchError(err)
     }
-
-    // since this filing type has no Certify component,
-    // just set its validity to True
-    this.setCertifyStateValidity(true)
 
     // now that all data is loaded, wait for things to stabilize and reset flag
     this.$nextTick(() => this.setHaveUnsavedChanges(false))

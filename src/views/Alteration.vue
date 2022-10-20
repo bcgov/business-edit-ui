@@ -118,7 +118,7 @@ import { CertifySection, CourtOrderPoa, CurrentDirectors, DocumentsDelivery, Sha
   TransactionalFolioNumber, YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF }
+import { ActionBindingIF, EntitySnapshotIF, ResourceIF }
   from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -144,7 +144,6 @@ export default class Alteration extends Mixins(
   FilingTemplateMixin
 ) {
   // Global getters
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getUserFirstName!: string
   @Getter getUserLastName!: string
   @Getter isSummaryMode!: boolean

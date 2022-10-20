@@ -50,17 +50,55 @@ export const stateModel: StateModelIF = {
       isValidAssociationType: true,
       isValidCreateSpecialResolution: true
     },
-    flagsReviewCertify: {
-      // NB: this must be in same order as ComponentsReviewCertify enum!
+    alterationFlagsReviewCertify: {
+      // NB: this must be in same order as AlterationReviewCertify enum!
       isValidEffectiveDate: true,
+      isValidDocumentOptionalEmail: true,
+      isValidTransactionalFolioNumber: true,
+      isValidCertify: false, // initially un-certified
+      isValidCourtOrder: true,
+      isValidStaffPayment: true
+    },
+    changeFlagsReviewCertify: {
+      // NB: this must be in same order as ChangeReviewCertify enum!
       isValidDocumentOptionalEmail: true,
       isValidCompletingParty: true,
       isValidTransactionalFolioNumber: true,
-      isValidDetailComment: true,
       isValidCertify: false, // initially un-certified
       isValidCourtOrder: true,
-      isValidStaffPayment: true,
-      isValidSpecialResolutionConfirm: true
+      isValidStaffPayment: true
+    },
+    conversionFlagsReviewCertify: {
+      // NB: this must be in same order as ConversionReviewCertify enum!
+      isValidCompletingParty: true
+    },
+    specialResolutionFlagsReviewCertify: {
+      // NB: this must be in same order as SpecialResolutionReviewCertify enum!
+      isValidSpecialResolutionConfirm: true,
+      isValidDocumentOptionalEmail: true,
+      isValidTransactionalFolioNumber: true,
+      isValidCompletingParty: true,
+      isValidCertify: false, // initially un-certified
+      isValidStaffPayment: true
+    },
+    firmClientCorrectionFlagsReviewCertify: {
+      isValidCompletingParty: true,
+      isValidDetailComment: true,
+      isValidCertify: false, // initially un-certifed
+      isValidStaffPayment: true
+    },
+    firmStaffCorrectionFlagsReviewCertify: {
+      isValidDetailComment: true,
+      isValidStaffPayment: true
+    },
+    benClientCorrectionFlagsReviewCertify: {
+      isValidDetailComment: true,
+      isValidCertify: false, // initially un-certifed
+      isValidStaffPayment: true
+    },
+    benStaffCorrectionFlagsReviewCertify: {
+      isValidDetailComment: true,
+      isValidStaffPayment: true
     }
   },
   accountInformation: {

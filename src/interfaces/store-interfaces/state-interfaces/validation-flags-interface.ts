@@ -1,8 +1,18 @@
-import { FlagsReviewCertifyIF, FlagsCompanyInfoIF } from './'
+import { AlterationFlagsReviewCertifyIF, ChangeFlagsReviewCertifyIF, ConversionFlagsReviewCertifyIF,
+  SpecialResolutionFlagsReviewCertifyIF, FlagsCompanyInfoIF, BenStaffCorrectionFlagsReviewCertifyIF,
+  BenClientCorrectionFlagsReviewCertifyIF, FirmClientCorrectionFlagsReviewCertifyIF,
+  FirmStaffCorrectionFlagsReviewCertifyIF } from './'
 
 export interface ValidationFlagsIF {
   appValidate: boolean
   componentValidate: boolean
-  flagsReviewCertify: FlagsReviewCertifyIF
+  alterationFlagsReviewCertify: AlterationFlagsReviewCertifyIF,
+  changeFlagsReviewCertify: ChangeFlagsReviewCertifyIF,
+  conversionFlagsReviewCertify: ConversionFlagsReviewCertifyIF,
+  specialResolutionFlagsReviewCertify: SpecialResolutionFlagsReviewCertifyIF,
+  benStaffCorrectionFlagsReviewCertify: BenStaffCorrectionFlagsReviewCertifyIF,
+  benClientCorrectionFlagsReviewCertify: BenClientCorrectionFlagsReviewCertifyIF,
+  firmClientCorrectionFlagsReviewCertify: FirmClientCorrectionFlagsReviewCertifyIF,
+  firmStaffCorrectionFlagsReviewCertify: FirmStaffCorrectionFlagsReviewCertifyIF,
   flagsCompanyInfo: FlagsCompanyInfoIF
 }
