@@ -2,7 +2,7 @@
  * Validity flags for Review and Certify page components. Note:
  * - order doesn't matter in an object
  * - this list must match `ComponentsReviewCertify`
- * - add any new components that need validation before filing and paying
+ * - this list must match `stateModel`
  */
 export interface FlagsReviewCertifyIF {
   isValidEffectiveDate: boolean
@@ -10,8 +10,8 @@ export interface FlagsReviewCertifyIF {
   isValidCompletingParty: boolean
   isValidTransactionalFolioNumber?: boolean // not staff
   isValidDetailComment?: boolean // corrections only
+  isValidSpecialResolutionConfirm?: boolean
   isValidCertify: boolean
   isValidCourtOrder?: boolean // staff only
   isValidStaffPayment?: boolean // staff only
-  isValidSpecialResolutionConfirm?: boolean
 }
