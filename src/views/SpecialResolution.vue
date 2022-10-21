@@ -174,11 +174,6 @@ export default class SpecialResolution extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** Check validity state, only when prompted by app. */
-  get invalidCourtOrder (): boolean {
-    return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
-  }
-
   /** The resource file for an SpecialResolution filing. */
   get specialResolutionResource (): ResourceIF {
     if (this.isEntityTypeCP) return CooperativeResource

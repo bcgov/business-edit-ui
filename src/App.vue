@@ -759,8 +759,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     // Prompt app validations.
     this.setAppValidate(true)
 
-    // Evaluate valid flags. Scroll to invalid components or file alteration.
-    if (await this.validateAndScroll(this.getFlagsReviewCertify, ComponentsReviewCertify)) {
+    // Evaluate valid flags. Scroll to invalid components or file alteration. Wait to allow app validation.
+    if (await this.$nextTick.validateAndScroll(this.getFlagsReviewCertify, ComponentsReviewCertify)) {
       await this.onClickSave(false)
     }
   }
