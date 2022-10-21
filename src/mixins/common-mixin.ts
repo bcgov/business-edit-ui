@@ -40,11 +40,12 @@ export default class CommonMixin extends Vue {
     const validFlagArray = Object.keys(flags).map(key => flags[key])
 
     // Find the _first_ corresponding component that is invalid
-    const component = document.getElementById(components[validFlagArray.indexOf(false)])
+    const component = components[validFlagArray.indexOf(false)]
 
     // If there is an invalid component, scroll to it
     if (component) {
-      await this.scrollToTop(component)
+      const element = document.getElementById(component)
+      await this.scrollToTop(element)
       return false
     }
     return true

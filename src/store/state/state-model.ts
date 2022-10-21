@@ -57,10 +57,10 @@ export const stateModel: StateModelIF = {
       isValidCompletingParty: true,
       isValidTransactionalFolioNumber: true,
       isValidDetailComment: true,
+      isValidSpecialResolutionConfirm: true,
       isValidCertify: false, // initially un-certified
       isValidCourtOrder: true,
-      isValidStaffPayment: true,
-      isValidSpecialResolutionConfirm: true
+      isValidStaffPayment: true
     }
   },
   accountInformation: {
