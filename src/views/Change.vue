@@ -75,7 +75,6 @@
           <StaffPayment
             class="mt-10"
             :sectionNumber="showTransactionalFolioNumber ? '6.' : '5.'"
-            :validate="getAppValidate"
             @haveChanges="onStaffPaymentChanges()"
           />
         </template>

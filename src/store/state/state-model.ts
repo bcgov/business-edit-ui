@@ -1,4 +1,5 @@
 import { EmptyNameRequest, StateModelIF, EmptyFees } from '@/interfaces/'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { EmptyContactPoint } from '@bcrs-shared-components/interfaces/'
 import { cloneDeep } from 'lodash'
 
@@ -108,7 +109,7 @@ export const stateModel: StateModelIF = {
   },
   entitySnapshot: null,
   staffPayment: {
-    option: NaN,
+    option: StaffPaymentOptions.NONE,
     routingSlipNumber: '',
     bcolAccountNumber: '',
     datNumber: '',
