@@ -8,7 +8,7 @@
       <v-card flat class="section-container py-6">
         <StaffPaymentShared
           :staffPaymentData="getStaffPayment"
-          :validate="validateStaffPayment"
+          :validate="getAppValidate"
           :invalidSection="invalidStaffPayment"
           @update:staffPaymentData="onStaffPaymentDataUpdate($event)"
           @valid="setStaffPaymentValidity($event)"
@@ -49,17 +49,13 @@ export default class StaffPayment extends Vue {
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber!: string
 
-  /** Whether staff payment is invalid, only when prompted by app. */
+  /** Whether sub-component should show invalid section styling. */
   get invalidStaffPayment (): boolean {
-    return this.getAppValidate && !this.getFlagsReviewCertify.isValidStaffPayment
+    return (this.getAppValidate && !this.getFlagsReviewCertify.isValidStaffPayment)
   }
 
-  /** True when prompted by the app AND the user has selected an option. */
-  get validateStaffPayment (): boolean {
-    return this.getAppValidate && !!this.getStaffPayment?.option
-  }
-
-  protected onStaffPaymentDataUpdate (event: any) {
+  /** Called by sub-component to update the staff payment data in the store. */
+  protected onStaffPaymentDataUpdate (event: StaffPaymentIF) {
     let staffPaymentData: StaffPaymentIF = { ...this.getStaffPayment, ...event }
 
     switch (staffPaymentData.option) {

@@ -90,7 +90,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   ]
 
   /** Called when component is mounted. */
-  protected mounted (): void {
+  mounted (): void {
     this.optionalEmail = this.getDocumentOptionalEmail
   }
 

@@ -71,7 +71,7 @@
           <StaffPayment
             class="mt-10"
             sectionNumber="4."
-            @haveChanges="onStaffPaymentChanges($event)"
+            @haveChanges="onStaffPaymentChanges()"
           />
         </template>
 
