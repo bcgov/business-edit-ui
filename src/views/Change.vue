@@ -128,7 +128,6 @@ export default class Change extends Mixins(
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action setValidCourtOrder!: ActionBindingIF
 
   @Action setResource!: ActionBindingIF
 

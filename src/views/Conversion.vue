@@ -83,7 +83,6 @@ export default class Conversion extends Mixins(
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
-  @Action setValidCourtOrder!: ActionBindingIF
   @Action setResource!: ActionBindingIF
   @Action setCertifyStateValidity!: ActionBindingIF
 
