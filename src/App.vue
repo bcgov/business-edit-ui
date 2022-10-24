@@ -764,7 +764,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     await Vue.nextTick()
 
     // Evaluate valid flags. Scroll to invalid components or file alteration.
-    if (this.validateAndScroll(this.getFlagsReviewCertify, ComponentsReviewCertify)) {
+    if (await this.validateAndScroll(this.getFlagsReviewCertify, ComponentsReviewCertify)) {
       await this.onClickSave(false)
     }
   }
