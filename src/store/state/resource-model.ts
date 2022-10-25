@@ -6,7 +6,6 @@ export const resourceModel: ResourceIF = {
   contactLabel: '',
   changeData: null,
   displayName: '',
-  nameRequestType: null,
   addressLabel: '',
   filingData: null,
   certifyClause: ''

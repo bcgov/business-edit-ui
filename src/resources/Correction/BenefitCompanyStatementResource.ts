@@ -1,11 +1,13 @@
 import { CorrectionTypes, FilingCodes, NameRequestTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { ResourceIF } from '@/interfaces/'
 
-export const BenefitCompanyStatementResource: any = {
-  addressLabel: 'Registered Office',
-  entityType: CorpTypeCd.BENEFIT_COMPANY,
+export const BenefitCompanyStatementResource: ResourceIF = {
   entityReference: 'Company',
   contactLabel: 'Registered Office',
+  displayName: null, // not used
+  entityType: CorpTypeCd.BENEFIT_COMPANY,
+  addressLabel: 'Registered Office',
   title: 'Benefit Company Statement',
   description: 'This company is a benefit company and, as such, has purposes that include conducting its business in' +
                ' a responsible and sustainable manner and promoting one or more public benefits.',
@@ -21,7 +23,8 @@ export const BenefitCompanyStatementResource: any = {
       CorrectionTypes.CORRECT_NAME
     ],
     orgPersonInfo: {
-      orgPersonLabel: 'Directors'
+      orgPersonLabel: 'Directors',
+      subtitle: null // not used
     },
     nameRequestTypes: [
       NameRequestTypes.CHANGE_OF_NAME,
