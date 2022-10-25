@@ -32,8 +32,8 @@
             <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
 
             <!-- Business Type Info -->
-            <template v-if="!hasNewNr && (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling
-              || isFirmConversionFiling))"
+            <template v-if="!hasNewNr && hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling ||
+              isFirmConversionFiling)"
             >
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -45,7 +45,7 @@
             </template>
 
             <!-- Name Request Info -->
-            <template v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling || isSpecialResolutionFiling)">
+            <template v-if="hasNewNr">
               <div class="company-name mt-2">{{getNameRequestNumber || 'Unknown'}}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
@@ -88,7 +88,7 @@
             <div class="actions mr-4">
               <!-- FUTURE: only show buttons for named company -->
               <v-btn
-                v-if=" hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling ||
+                v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling ||
                   isFirmChangeFiling || isSpecialResolutionFiling))"
                 text color="primary"
                 id="btn-undo-company-name"
@@ -107,7 +107,7 @@
                 <v-icon small>mdi-pencil</v-icon>
                 <span>{{editLabel}}</span>
               </v-btn>
-              <span class="more-actions" v-if=" hasCompanyNameChanged || (hasBusinessNameChanged &&
+              <span class="more-actions" v-if="hasCompanyNameChanged || (hasBusinessNameChanged &&
                 (isAlterationFiling || isFirmChangeFiling || isSpecialResolutionFiling))"
               >
                 <v-menu
