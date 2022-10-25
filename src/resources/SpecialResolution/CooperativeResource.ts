@@ -1,4 +1,4 @@
-import { CorrectionTypes, FilingCodes, NameRequestEntityTypes, NameRequestTypes } from '@/enums/'
+import { CorrectionTypes, FilingCodes, NameRequestTypes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
@@ -6,7 +6,6 @@ export const CooperativeResource: ResourceIF = {
   entityReference: 'Business',
   contactLabel: 'Registered Office',
   displayName: GetCorpFullDescription(CorpTypeCd.COOP),
-  nameRequestType: NameRequestEntityTypes.CP,
   addressLabel: 'Registered Office',
   filingData: {
     filingTypeCode: FilingCodes.SPECIAL_RESOLUTION,

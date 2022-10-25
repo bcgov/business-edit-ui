@@ -16,7 +16,6 @@ describe('Name Request Mixin', () => {
     store.state.resourceModel = {
       entityReference: '',
       displayName: '',
-      nameRequestType: '',
       addressLabel: '',
       filingData: '',
       changeData: {

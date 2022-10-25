@@ -60,8 +60,8 @@ export default class NameRequestMixin extends Vue {
    * @param nr the name request response payload
    * */
   isNrValid (nr: any): boolean {
-    let requestActionCDList = [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION]
-    if (this.getResource.changeData) requestActionCDList = this.getResource.changeData.nameRequestTypes
+    const requestActionCodeList = this.getResource.changeData?.nameRequestTypes ||
+      [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION]
     return Boolean(
       nr &&
       nr.state &&
@@ -69,7 +69,7 @@ export default class NameRequestMixin extends Vue {
       !!this.getNrApprovedName(nr) &&
       nr.nrNum &&
       nr.requestTypeCd &&
-      requestActionCDList.includes(nr.request_action_cd)
+      requestActionCodeList.includes(nr.request_action_cd)
     )
   }
 

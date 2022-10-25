@@ -1,4 +1,4 @@
-import { CorrectionTypes, FilingCodes, NameRequestEntityTypes } from '@/enums/'
+import { CorrectionTypes, FilingCodes, NameRequestTypes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
@@ -6,7 +6,6 @@ export const GeneralPartnershipResource: ResourceIF = {
   entityReference: 'Business',
   contactLabel: 'Business',
   displayName: GetCorpFullDescription(CorpTypeCd.PARTNERSHIP),
-  nameRequestType: NameRequestEntityTypes.GP,
   addressLabel: 'Business Addresses',
   filingData: {
     filingTypeCode: FilingCodes.FM_CHANGE,
@@ -31,7 +30,10 @@ export const GeneralPartnershipResource: ResourceIF = {
           'If you require assistance with adding a business partner please contact us.'
         ]
       }
-    }
+    },
+    nameRequestTypes: [
+      NameRequestTypes.CHANGE_OF_NAME
+    ]
   },
   certifyClause: 'Note: It is an offence to make or assist in making a false or misleading statement in a record ' +
     'filed under section 90.4 of the Partnership Act. A person who commits this offence is subject to a maximum ' +
