@@ -1,4 +1,4 @@
-import { CorrectionTypes, FilingCodes, NameRequestEntityTypes } from '@/enums/'
+import { CorrectionTypes, FilingCodes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
@@ -6,7 +6,6 @@ export const SoleProprietorshipResource: ResourceIF = {
   entityReference: 'Business',
   contactLabel: 'Business',
   displayName: GetCorpFullDescription(CorpTypeCd.SOLE_PROP),
-  nameRequestType: NameRequestEntityTypes.FR,
   addressLabel: 'Business Addresses',
   filingData: {
     filingTypeCode: FilingCodes.FM_CONVERSION,
@@ -28,5 +27,5 @@ export const SoleProprietorshipResource: ResourceIF = {
         'proprietor and dissolve this registration.'
     }
   },
-  certifyClause: null
+  certifyClause: null // not used
 }
