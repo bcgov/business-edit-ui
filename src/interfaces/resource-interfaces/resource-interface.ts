@@ -1,4 +1,5 @@
-import { CorrectionTypes, NameRequestEntityTypes, NameRequestTypes } from '@/enums/'
+import { CorrectionTypes, NameRequestTypes } from '@/enums/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { HelpSectionIF, FilingDataIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
 
 /** Interface to define the resource model example */
@@ -6,8 +7,10 @@ export interface ResourceIF {
   entityReference: string
   contactLabel?: string
   displayName: string
-  nameRequestType: NameRequestEntityTypes
+  entityType?: CorpTypeCd // corrections only
   addressLabel: string
+  title?: string // BEN corrections only
+  description?: string // BEN corrections only
   filingData: FilingDataIF
   changeData?: {
     nameChangeOptions?: Array<CorrectionTypes>

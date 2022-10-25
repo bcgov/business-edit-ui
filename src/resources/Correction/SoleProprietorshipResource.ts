@@ -1,11 +1,13 @@
 import { CorrectionTypes, FilingCodes, NameRequestTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { ResourceIF } from '@/interfaces/'
 
-export const SoleProprietorshipResource: any = {
-  addressLabel: 'Business Addresses',
-  entityType: CorpTypeCd.SOLE_PROP,
+export const SoleProprietorshipResource: ResourceIF = {
   entityReference: 'Business',
   contactLabel: 'Business',
+  displayName: null, // not used
+  entityType: CorpTypeCd.SOLE_PROP,
+  addressLabel: 'Business Addresses',
   filingData: {
     filingTypeCode: FilingCodes.FM_CORRECTION,
     entityType: CorpTypeCd.SOLE_PROP,
@@ -22,8 +24,7 @@ export const SoleProprietorshipResource: any = {
       orgTypesLabel: 'Business or Corporation',
       subtitle: 'You can change the legal name, mailing and delivery addresses and the email address of the ' +
         'individual proprietor. To change to a different proprietor, you must form a new business with that ' +
-        'proprietor and dissolve this registration.',
-      helpSection: null
+        'proprietor and dissolve this registration.'
     },
     nameRequestTypes: [
       NameRequestTypes.CHANGE_OF_NAME

@@ -1,4 +1,4 @@
-import { CorrectionTypes, FilingCodes, NameRequestEntityTypes } from '@/enums/'
+import { CorrectionTypes, FilingCodes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
@@ -6,7 +6,6 @@ export const GeneralPartnershipResource: ResourceIF = {
   entityReference: 'Business',
   contactLabel: 'Business',
   displayName: GetCorpFullDescription(CorpTypeCd.PARTNERSHIP),
-  nameRequestType: NameRequestEntityTypes.GP,
   addressLabel: 'Business Addresses',
   filingData: {
     filingTypeCode: FilingCodes.FM_CONVERSION,
@@ -25,9 +24,8 @@ export const GeneralPartnershipResource: ResourceIF = {
       orgTypesLabel: 'Business or Corporation',
       subtitle: 'You must have a minimum of two partners. You can add or remove partners (individual person or ' +
         'business) as well as change the mailing and delivery addresses and email address of individual people and ' +
-        'business partners.',
-      helpSection: null
+        'business partners.'
     }
   },
-  certifyClause: null
+  certifyClause: null // not used
 }

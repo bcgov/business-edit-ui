@@ -1,4 +1,4 @@
-import { CorrectionTypes, FilingCodes, NameRequestEntityTypes } from '@/enums/'
+import { CorrectionTypes, FilingCodes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
@@ -6,7 +6,6 @@ export const BenefitCompanyResource: ResourceIF = {
   entityReference: 'Company',
   contactLabel: 'Registered Office',
   displayName: GetCorpFullDescription(CorpTypeCd.BENEFIT_COMPANY),
-  nameRequestType: NameRequestEntityTypes.BC,
   addressLabel: 'Registered Office',
   filingData: {
     filingTypeCode: FilingCodes.ALTERATION,
