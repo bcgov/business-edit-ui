@@ -801,6 +801,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     // if filing is not a draft, proceed with payment
     if (!isDraft && filingComplete) {
+      // If Saving or Filing is successful then setIsFilingPaying should't be reset to false,
+      // this prevent buttons from being re-enabled if the page is slow to redirect.
       this.setIsFilingPaying(true)
       const paymentToken = filingComplete.header?.paymentToken
       const filingId = filingComplete.header?.filingId
