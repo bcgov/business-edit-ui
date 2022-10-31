@@ -130,7 +130,6 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
       return
     }
 
-    this.setIsSavingResuming(false)
     this.$root.$emit('go-to-dashboard')
   }
 

@@ -825,10 +825,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
         const error = new Error('Missing Payment Token or Filing ID')
         this.$root.$emit('save-error-event', error)
       }
-      this.setIsFilingPaying(false)
     }
-
-    this.setIsSaving(false)
   }
 }
 </script>
