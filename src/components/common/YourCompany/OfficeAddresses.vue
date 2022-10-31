@@ -606,6 +606,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     // compare valid addresses to set the "inherit mailing" flag
     // ignore Address Type since it's different
     // ignore Address Country Description since it's not always present
+    // ignore ID since it's different
     this.inheritMailingAddress = (
       this.mailingAddressValid &&
       this.deliveryAddressValid &&
@@ -616,6 +617,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /**
    * When "same as (registry) mailing address" checkbox is changed,
    * sets the Registered Delivery Address to the Registered Mailing Address.
+   * NB: retain original address IDs
    */
   protected setDeliveryAddressToMailingAddress (): void {
     if (this.inheritMailingAddress) {
@@ -634,6 +636,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /**
    * When "same as registered address" checkbox is changed,
    * sets the Records office addresses to the Registered office addresses.
+   * NB: retain original address IDs
    */
   protected setRecordOfficeToRegisteredOffice (): void {
     if (this.inheritRegisteredAddress) {
@@ -650,6 +653,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /**
    * When "same as (records) mailing address" checkbox is changed,
    * sets the Records Delivery Address to Records Mailing Address.
+   * NB: retain original address IDs
    */
   protected setRecordDeliveryAddressToMailingAddress (): void {
     if (this.inheritRecMailingAddress) {
@@ -662,13 +666,20 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 
   /**
    * Handles update events from address sub-components.
+   * NB: addresses must keep their original IDs
+   * NB: retain original address IDs
    */
   protected updateAddress (addressToUpdate: AddressTypes, newAddress: AddressIF): void {
+    // BaseAddress component returns empty Delivery Instructions as ''
+    // but Legal API returns empty Delivery Instructions as null
+    // so nullify empty Delivery Instructions for future comparisons.
+    if (!newAddress.deliveryInstructions) newAddress.deliveryInstructions = null
+
     switch (addressToUpdate) {
       case AddressTypes.MAILING_ADDRESS:
         // only update if not equal
         if (!isEqual(this.mailingAddress, newAddress)) {
-          this.mailingAddress = { ...newAddress }
+          this.mailingAddress = { ...newAddress, id: this.mailingAddress.id }
           if (this.inheritMailingAddress) {
             this.deliveryAddress = { ...newAddress, addressType: 'delivery', id: this.deliveryAddress.id }
           }
@@ -683,7 +694,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       case AddressTypes.DELIVERY_ADDRESS:
         // only update if not equal
         if (!isEqual(this.deliveryAddress, newAddress)) {
-          this.deliveryAddress = { ...newAddress }
+          this.deliveryAddress = { ...newAddress, id: this.deliveryAddress.id }
           if (this.inheritRegisteredAddress) {
             this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
           }
@@ -693,7 +704,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       case AddressTypes.REC_MAILING_ADDRESS:
         // only update if not equal
         if (!isEqual(this.recMailingAddress, newAddress)) {
-          this.recMailingAddress = { ...newAddress }
+          this.recMailingAddress = { ...newAddress, id: this.recMailingAddress.id }
           if (this.inheritRecMailingAddress) {
             this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
           }
@@ -703,7 +714,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       case AddressTypes.REC_DELIVERY_ADDRESS:
         // only update if not equal
         if (!isEqual(this.recDeliveryAddress, newAddress)) {
-          this.recDeliveryAddress = { ...newAddress }
+          this.recDeliveryAddress = { ...newAddress, id: this.recDeliveryAddress.id }
         }
         break
 
