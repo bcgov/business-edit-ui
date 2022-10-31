@@ -23,6 +23,7 @@ const store = getVuexStore()
  */
 function getAddressX (x: number): AddressIF {
   return {
+    id: x,
     addressCity: `addressCity${x}`,
     addressCountry: 'CA',
     addressRegion: 'BC',
@@ -797,7 +798,7 @@ describe('"same as" checkboxes', () => {
     expect(address.find('.v-input.address-region').props('value')).toBe('BC')
     expect(address.find('.v-input.postal-code').props('value')).toBe('')
     expect(address.find('.v-input.address-country').props('value')).toBe('CA')
-    expect(address.find('.v-input.delivery-instructions').props('value')).toBe('')
+    expect(address.find('.v-input.delivery-instructions').props('value')).toBeNull()
 
     // re-check and verify the checkbox
     await checkbox.trigger('click')
@@ -836,7 +837,7 @@ describe('"same as" checkboxes', () => {
     expect(address.find('.v-input.address-region').props('value')).toBe('BC')
     expect(address.find('.v-input.postal-code').props('value')).toBe('')
     expect(address.find('.v-input.address-country').props('value')).toBe('CA')
-    expect(address.find('.v-input.delivery-instructions').props('value')).toBe('')
+    expect(address.find('.v-input.delivery-instructions').props('value')).toBeNull()
 
     // re-check and verify the checkbox
     await checkbox.trigger('click')
@@ -887,7 +888,7 @@ describe('"same as" checkboxes', () => {
     expect(address.find('.v-input.address-region').props('value')).toBe('BC')
     expect(address.find('.v-input.postal-code').props('value')).toBe('')
     expect(address.find('.v-input.address-country').props('value')).toBe('CA')
-    expect(address.find('.v-input.delivery-instructions').props('value')).toBe('')
+    expect(address.find('.v-input.delivery-instructions').props('value')).toBeNull()
 
     // re-check and verify the checkbox
     await checkbox.trigger('click')
@@ -1117,4 +1118,108 @@ describe('For Special resolution', () => {
     expect(wrapper.find('.v-tooltip').exists()).toBe(true)
     expect(wrapper.find('.actions').exists()).toBe(false)
   })
+})
+
+describe('verify updateAddress()', () => {
+  let wrapper: any = null
+  let vm: any = null
+
+  /** Returns True if address IDs and types are unchanged and contents are as specified. */
+  function verifyAddressChanges (vals: Array<number>): boolean {
+    // verify IDs (should be same as original)
+    if (vm.$data.mailingAddress.id !== 1) return false
+    if (vm.$data.deliveryAddress.id !== 2) return false
+    if (vm.$data.recMailingAddress.id !== 3) return false
+    if (vm.$data.recDeliveryAddress.id !== 4) return false
+
+    // verify address types (should be same as original)
+    if (vm.$data.mailingAddress.addressType !== 'mailing') return false
+    if (vm.$data.deliveryAddress.addressType !== 'delivery') return false
+    if (vm.$data.recMailingAddress.addressType !== 'mailing') return false
+    if (vm.$data.recDeliveryAddress.addressType !== 'delivery') return false
+
+    // verify address contents (checking only City is sufficient)
+    if (vm.$data.mailingAddress.addressCity !== `addressCity${vals[0]}`) return false
+    if (vm.$data.deliveryAddress.addressCity !== `addressCity${vals[1]}`) return false
+    if (vm.$data.recMailingAddress.addressCity !== `addressCity${vals[2]}`) return false
+    if (vm.$data.recDeliveryAddress.addressCity !== `addressCity${vals[3]}`) return false
+
+    return true
+  }
+
+  beforeEach(async () => {
+    wrapper = mount(OfficeAddresses, { store, vuetify })
+    vm = wrapper.vm
+
+    // set original addresses
+    wrapper.setData({ mailingAddress: getAddressX(1) })
+    wrapper.setData({ deliveryAddress: getAddressX(2) })
+    wrapper.setData({ recMailingAddress: getAddressX(3) })
+    wrapper.setData({ recDeliveryAddress: getAddressX(4) })
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  const tests = [
+    {
+      inherit: false,
+      address: 1, // MAILING_ADDRESS
+      expected: [5, 2, 3, 4]
+    },
+    {
+      inherit: true,
+      address: 1, // MAILING_ADDRESS
+      expected: [5, 5, 5, 5]
+    },
+    {
+      inherit: false,
+      address: 2, // DELIVERY_ADDRESS
+      expected: [1, 5, 3, 4]
+    },
+    {
+      inherit: true,
+      address: 2, // DELIVERY_ADDRESS
+      expected: [1, 5, 3, 5]
+    },
+    {
+      inherit: false,
+      address: 3, // REC_MAILING_ADDRESS
+      expected: [1, 2, 5, 4]
+    },
+    {
+      inherit: true,
+      address: 3, // REC_MAILING_ADDRESS
+      expected: [1, 2, 5, 5]
+    },
+    {
+      inherit: false,
+      address: 4, // REC_DELIVERY_ADDRESS
+      expected: [1, 2, 3, 5]
+    },
+    {
+      inherit: true,
+      address: 4, // REC_DELIVERY_ADDRESS
+      expected: [1, 2, 3, 5]
+    }
+  ]
+
+  for (const test of tests) {
+    it(`updates address: ${test.address} with inherit flags: ${test.inherit}`, () => {
+      // set inherit state
+      wrapper.setData({
+        inheritMailingAddress: test.inherit,
+        inheritRegisteredAddress: test.inherit
+      })
+
+      // verify unchanged address
+      vm.updateAddress(test.address, getAddressX(test.address))
+      verifyAddressChanges([1, 2, 3, 4])
+
+      // verify changed address
+      vm.updateAddress(test.address, getAddressX(5))
+      verifyAddressChanges(test.expected)
+    })
+  }
 })
