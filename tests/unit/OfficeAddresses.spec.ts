@@ -798,7 +798,7 @@ describe('"same as" checkboxes', () => {
     expect(address.find('.v-input.address-region').props('value')).toBe('BC')
     expect(address.find('.v-input.postal-code').props('value')).toBe('')
     expect(address.find('.v-input.address-country').props('value')).toBe('CA')
-    expect(address.find('.v-input.delivery-instructions').props('value')).toBe('')
+    expect(address.find('.v-input.delivery-instructions').props('value')).toBeNull()
 
     // re-check and verify the checkbox
     await checkbox.trigger('click')
@@ -837,7 +837,7 @@ describe('"same as" checkboxes', () => {
     expect(address.find('.v-input.address-region').props('value')).toBe('BC')
     expect(address.find('.v-input.postal-code').props('value')).toBe('')
     expect(address.find('.v-input.address-country').props('value')).toBe('CA')
-    expect(address.find('.v-input.delivery-instructions').props('value')).toBe('')
+    expect(address.find('.v-input.delivery-instructions').props('value')).toBeNull()
 
     // re-check and verify the checkbox
     await checkbox.trigger('click')
@@ -888,7 +888,7 @@ describe('"same as" checkboxes', () => {
     expect(address.find('.v-input.address-region').props('value')).toBe('BC')
     expect(address.find('.v-input.postal-code').props('value')).toBe('')
     expect(address.find('.v-input.address-country').props('value')).toBe('CA')
-    expect(address.find('.v-input.delivery-instructions').props('value')).toBe('')
+    expect(address.find('.v-input.delivery-instructions').props('value')).toBeNull()
 
     // re-check and verify the checkbox
     await checkbox.trigger('click')
