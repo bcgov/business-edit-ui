@@ -14,7 +14,7 @@
           :isCertified="getCertifyState.valid"
           :entityDisplay="readableEntityType"
           :message="certifyMessage"
-          :isStaff="false"
+          :isStaff="isRoleStaff"
           :firstColumn="3"
           :secondColumn="9"
           :validate="validate"
@@ -46,7 +46,6 @@ export default class CertifySection extends Mixins(DateMixin) {
   @Getter getResource!: ResourceIF
   @Getter isRoleStaff!: boolean
   @Getter getEntityType!: CorpTypeCd
-  @Getter isSbcStaff!: boolean
 
   @Action setCertifyState!: ActionBindingIF
   @Action setCertifyStateValidity!: ActionBindingIF
