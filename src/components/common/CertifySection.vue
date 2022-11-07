@@ -61,9 +61,6 @@ export default class CertifySection extends Mixins(DateMixin) {
 
   /** Called when component is mounted. */
   mounted (): void {
-    console.log('Mounted')
-    console.log('sbc staff', this.isSbcStaff)
-    console.log('staff', this.isRoleStaff)
     this.setCertifyState(
       {
         valid: this.getCertifyState.valid,
