@@ -1137,9 +1137,10 @@ export default class FilingTemplateMixin extends DateMixin {
   private buildFolioNumber (filing: AlterationFilingIF | ChgRegistrationFilingIF | SpecialResolutionFilingIF): any {
     const fn = this.getFolioNumber
     const tfn = this.getTransactionalFolioNumber
+    filing.header.folioNumber = fn
 
     // if a Transactional Folio Number was entered then override the Folio Number
-    if (tfn !== fn) {
+    if (tfn && tfn !== fn) {
       filing.header.folioNumber = tfn
       filing.header.isTransactionalFolioNumber = true
     }
