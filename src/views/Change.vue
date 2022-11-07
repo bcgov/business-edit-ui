@@ -61,7 +61,7 @@
           class="mt-10"
           :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
           :validate="getAppValidate"
-          :disableEdit="!isRoleStaff"
+          :disableEdit="!(isRoleStaff || isSbcStaff)"
         />
 
         <!-- STAFF ONLY: Court Order/Plan of Arrangement and Staff Payment -->
@@ -122,6 +122,7 @@ export default class Change extends Mixins(
   @Getter getUserLastName!: string
   @Getter showFeeSummary!: boolean
   @Getter isRoleStaff!: boolean
+  @Getter isSbcStaff!: boolean
   @Getter isPremiumAccount!: boolean
 
   // Global actions
@@ -221,7 +222,7 @@ export default class Change extends Mixins(
 
       // set current profile name to store for field pre population
       // do this only if we are not staff
-      if (!this.isRoleStaff) {
+      if (!(this.isRoleStaff || this.isSbcStaff)) {
         // pre-populate Certified By name
         this.setCertifyState(
           {
