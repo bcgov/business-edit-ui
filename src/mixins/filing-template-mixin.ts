@@ -266,7 +266,7 @@ export default class FilingTemplateMixin extends DateMixin {
     // Build Staff Payment into the filing
     filing = this.buildStaffPayment(filing)
 
-    // Build Folio number if a transactional folio number was entered
+    // Build Transactional Folio Number into the filing
     filing = this.buildFolioNumber(filing)
 
     return filing
@@ -330,7 +330,7 @@ export default class FilingTemplateMixin extends DateMixin {
     // Build Staff Payment into the filing
     filing = this.buildStaffPayment(filing)
 
-    // Sets Folio number if a transactional folio number was entered
+    // Build Transactional Folio Number into the filing
     filing = this.buildFolioNumber(filing)
 
     return filing
@@ -427,7 +427,7 @@ export default class FilingTemplateMixin extends DateMixin {
     // Build Staff Payment into the filing
     filing = this.buildStaffPayment(filing)
 
-    // Sets Folio number if a transactional folio number was entered
+    // Build Transactional Folio Number into the filing
     filing = this.buildFolioNumber(filing)
 
     return filing
@@ -1070,12 +1070,19 @@ export default class FilingTemplateMixin extends DateMixin {
 
   /**
    * Prepares parties for non-draft save.
-   * @returns the updated share classes array
+   * @returns the updated parties array
    */
   private prepareParties (parties = this.getOrgPeople) : OrgPersonIF[] {
-    // filter out removed parties and delete "actions" property
-    return parties.filter(x => !x.actions?.includes(ActionTypes.REMOVED))
-      .map((x) => { const { actions, ...rest } = x; return rest })
+    // 1. filter out removed parties
+    // 2. delete added parties "id" property
+    // 3. delete "actions" property
+    return parties
+      .filter(x => !x.actions?.includes(ActionTypes.REMOVED))
+      .map(x => {
+        if (x.actions?.includes(ActionTypes.ADDED)) delete x.officer.id
+        delete x.actions
+        return x
+      })
   }
 
   /**
@@ -1130,7 +1137,7 @@ export default class FilingTemplateMixin extends DateMixin {
   }
 
   /**
-   * Builds Folio Number data into the filing.
+   * Builds Transactional Folio Number data into the filing.
    * @param filing the filing
    * @returns the updated filing
    */
@@ -1138,7 +1145,7 @@ export default class FilingTemplateMixin extends DateMixin {
     const fn = this.getFolioNumber
     const tfn = this.getTransactionalFolioNumber
 
-    // if a Transactional Folio Number was entered then override the Folio Number
+    // if a Transactional Folio Number was entered then override the Business Folio Number
     if (tfn && tfn !== fn) {
       filing.header.folioNumber = tfn
       filing.header.isTransactionalFolioNumber = true
