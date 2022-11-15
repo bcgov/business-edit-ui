@@ -5,7 +5,6 @@ import mockRouter from './MockRouter'
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
-import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)
 
@@ -42,20 +41,21 @@ describe('Name Translation component', () => {
     // Init Store
     store.state.stateModel.nameTranslations = []
 
-    wrapperFactory = (propsData: any) => {
-      return mount(NameTranslation, {
+    wrapperFactory = async (propsData: any) => {
+      const wrapper = mount(NameTranslation, {
         localVue,
         router,
         store,
         vuetify,
         propsData: { ...propsData }
       })
+      await Vue.nextTick()
+      return wrapper
     }
   })
 
   it('displays the list of name translations and action btns', async () => {
-    const wrapper = wrapperFactory({ nameTranslations: nameTranslationsListChanged, isSummaryMode: true })
-    await flushPromises()
+    const wrapper = await wrapperFactory({ nameTranslations: nameTranslationsListChanged, isSummaryMode: true })
 
     // Verify list exists
     expect(wrapper.find('#name-translation').exists()).toBeTruthy()
@@ -71,8 +71,7 @@ describe('Name Translation component', () => {
   })
 
   it('does not display translations if unchanged', async () => {
-    const wrapper = wrapperFactory({ nameTranslations: nameTranslationsList, isSummaryMode: true })
-    await flushPromises()
+    const wrapper = await wrapperFactory({ nameTranslations: nameTranslationsList, isSummaryMode: true })
 
     // Verify list exists
     expect(wrapper.find('#name-translation').exists()).toBeFalsy()

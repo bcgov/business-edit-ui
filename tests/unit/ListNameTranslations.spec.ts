@@ -6,7 +6,6 @@ import mockRouter from './MockRouter'
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import ListNameTranslation from '@/components/common/YourCompany/NameTranslations/ListNameTranslation.vue'
-import flushPromises from 'flush-promises'
 import { NameTranslationIF } from '@/interfaces/store-interfaces/state-interfaces/name-translation-interface'
 
 Vue.use(Vuetify)
@@ -15,10 +14,6 @@ Vue.use(Vuelidate)
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 document.body.setAttribute('data-app', 'true')
-
-function resetStore (): void {
-  store.state.stateModel.nameTranslations = []
-}
 
 // Local references
 const listNameTranslations = '#list-name-translations'
@@ -40,20 +35,21 @@ describe('List Name Translation component', () => {
     // Init Store
     store.state.stateModel.nameTranslations = []
 
-    wrapperFactory = (propsData: any) => {
-      return mount(ListNameTranslation, {
+    wrapperFactory = async (propsData: any) => {
+      const wrapper = mount(ListNameTranslation, {
         localVue,
         router,
         store,
         vuetify,
         propsData: { ...propsData }
       })
+      await Vue.nextTick()
+      return wrapper
     }
   })
 
   it('displays the list of name translations and action btns', async () => {
-    const wrapper = wrapperFactory({ translationList: nameTranslationsList })
-    await flushPromises()
+    const wrapper = await wrapperFactory({ translationsList: nameTranslationsList })
 
     // Verify list exists
     expect(wrapper.find(listNameTranslations).exists()).toBeTruthy()
@@ -83,8 +79,7 @@ describe('List Name Translation component', () => {
   })
 
   it('disables the edit and drop down btns when editing a name translation', async () => {
-    const wrapper = wrapperFactory({ translationList: nameTranslationsList, isAddingNameTranslation: true })
-    await Vue.nextTick()
+    const wrapper = await wrapperFactory({ translationsList: nameTranslationsList, isAddingNameTranslation: true })
 
     // Verify edit btn and default state
     expect(wrapper.find('.edit-action .v-btn').exists()).toBeTruthy()
@@ -102,8 +97,7 @@ describe('List Name Translation component', () => {
   })
 
   it('emits the correct name index when selected for edit', async () => {
-    const wrapper = wrapperFactory({ translationList: nameTranslationsList })
-    await Vue.nextTick()
+    const wrapper = await wrapperFactory({ translationsList: nameTranslationsList })
 
     const namesList = wrapper.vm.$el.querySelectorAll('.names-translation-content')
     expect(namesList[0].textContent).toContain(nameTranslationsList[0].name)
@@ -125,8 +119,7 @@ describe('List Name Translation component', () => {
   })
 
   it('emits the correct name index when selected for removal', async () => {
-    const wrapper = wrapperFactory({ translationList: nameTranslationsList })
-    await Vue.nextTick()
+    const wrapper = await wrapperFactory({ translationsList: nameTranslationsList })
 
     const namesList = wrapper.vm.$el.querySelectorAll('.names-translation-content')
     expect(namesList[0].textContent).toContain(nameTranslationsList[0].name)
