@@ -21,7 +21,7 @@ function resetStore (): void {
 }
 
 // Local references
-const nameTranslationsUi = '#name-translations-list'
+const listNameTranslations = '#list-name-translations'
 const nameTranslationsList: NameTranslationIF[] = [
   { name: 'First mock name translation ltd.' },
   { name: 'Second mock name translation inc' },
@@ -56,7 +56,7 @@ describe('List Name Translation component', () => {
     await flushPromises()
 
     // Verify list exists
-    expect(wrapper.find(nameTranslationsUi).exists()).toBeTruthy()
+    expect(wrapper.find(listNameTranslations).exists()).toBeTruthy()
 
     // Verify list title
     expect(wrapper.find('.name-translation-title').text()).toContain('Name Translations')
@@ -73,11 +73,11 @@ describe('List Name Translation component', () => {
     expect(wrapper.find('.edit-action .v-btn').attributes('disabled')).toBeUndefined()
 
     // Verify more actions drop down
-    expect(wrapper.find('.actions__more-actions__btn').exists()).toBeTruthy()
-    await wrapper.find('.actions__more-actions__btn').trigger('click')
+    expect(wrapper.find('.more-actions-btn').exists()).toBeTruthy()
+    await wrapper.find('.more-actions-btn').trigger('click')
 
     // Verify 'Remove' btn
-    expect(wrapper.find('.actions__more-actions').exists()).toBeTruthy()
+    expect(wrapper.find('.more-actions-list').exists()).toBeTruthy()
 
     wrapper.destroy()
   })
@@ -91,12 +91,12 @@ describe('List Name Translation component', () => {
     expect(wrapper.find('.edit-action .v-btn').attributes('disabled')).toBeTruthy()
 
     // Verify more actions drop down
-    expect(wrapper.find('.actions__more-actions__btn').exists()).toBeTruthy()
-    expect(wrapper.find('.actions__more-actions__btn').attributes('disabled')).toBeTruthy()
-    await wrapper.find('.actions__more-actions__btn').trigger('click')
+    expect(wrapper.find('.more-actions-btn').exists()).toBeTruthy()
+    expect(wrapper.find('.more-actions-btn').attributes('disabled')).toBeTruthy()
+    await wrapper.find('.more-actions-btn').trigger('click')
 
     // Verify 'Remove' btn
-    expect(wrapper.find('.actions__more-actions').exists()).toBeFalsy()
+    expect(wrapper.find('.more-actions-list').exists()).toBeFalsy()
 
     wrapper.destroy()
   })
@@ -115,11 +115,11 @@ describe('List Name Translation component', () => {
 
     // Select the first name to edit
     await editBtns.at(0).trigger('click')
-    expect(wrapper.emitted('editNameTranslation').pop()).toEqual([0])
+    expect(wrapper.emitted('editTranslation').pop()).toEqual([0])
 
     // Select the third name to edit
     await editBtns.at(2).trigger('click')
-    expect(wrapper.emitted('editNameTranslation').pop()).toEqual([2])
+    expect(wrapper.emitted('editTranslation').pop()).toEqual([2])
 
     wrapper.destroy()
   })
@@ -135,16 +135,16 @@ describe('List Name Translation component', () => {
     expect(namesList[3].textContent).toContain(nameTranslationsList[3].name)
 
     // Open the first list item dropdown
-    const actionsDropdown = wrapper.findAll('.actions__more-actions__btn')
+    const actionsDropdown = wrapper.findAll('.more-actions-btn')
     await actionsDropdown.at(0).trigger('click')
 
     // Select the first item for removal
-    const removeBtns = wrapper.findAll('.actions__more-actions .v-list-item')
+    const removeBtns = wrapper.findAll('.more-actions-list .v-list-item')
     expect(removeBtns.at(0).exists()).toBeTruthy()
     expect(removeBtns.at(0).attributes('disabled')).toBeUndefined()
     await removeBtns.at(0).trigger('click')
 
-    expect(wrapper.emitted('removeNameTranslation').pop()).toEqual([0])
+    expect(wrapper.emitted('removeTranslation').pop()).toEqual([0])
 
     wrapper.destroy()
   })

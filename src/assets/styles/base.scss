@@ -324,6 +324,10 @@ ul.list {
   background-color: white !important;
 }
 
+.gray-background {
+  background-color: $gray1 !important;
+}
+
 // Hides an element to all devices except screen readers
 .sr-only {
   position: absolute;
