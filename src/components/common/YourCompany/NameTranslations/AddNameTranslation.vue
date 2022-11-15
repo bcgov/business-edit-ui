@@ -6,46 +6,39 @@
     />
     <!-- Name Translation form -->
     <v-form v-model="nameTranslationForm" ref="nameTranslationForm" class="name-translation-form">
-      <v-row>
-        <v-col class="pb-0">
-          <v-text-field
-            filled
-            persistent-hint
-            label="Name Translation"
-            id="name-translation-input"
-            v-model="nameTranslation"
-            :rules="nameTranslationRules"
-          />
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <div class="action-btns">
-            <v-btn v-if="!isAddingTranslation"
-              large outlined color="error"
-              id="name-translation-remove"
-              @click="emitRemoveName(nameIndex)"
-            >
-              <span>Remove</span>
-            </v-btn>
-            <v-btn
-              large color="primary" class="ml-auto"
-              id="name-translation-btn-ok"
-              @click="validateAddTranslation()"
-            >
-                Done
-            </v-btn>
-            <v-btn
-              large outlined color="primary"
-              id="name-translation-btn-cancel"
-              @click="cancelNameTranslation()"
-            >
-              <span v-if="isAddingTranslation">Cancel New Name</span>
-              <span v-else>Cancel</span>
-            </v-btn>
-          </div>
-        </v-col>
-      </v-row>
+      <v-text-field
+        filled
+        persistent-hint
+        id="name-translation-input"
+        label="Name Translation"
+        v-model="nameTranslation"
+        :rules="nameTranslationRules"
+      />
+
+      <div class="action-btns">
+        <v-btn v-if="!isAddingTranslation"
+          large outlined color="error"
+          id="name-translation-remove"
+          @click="removeTranslation(nameIndex)"
+        >
+          <span>Remove</span>
+        </v-btn>
+        <v-btn
+          large color="primary" class="ml-auto"
+          id="name-translation-btn-ok"
+          @click="validateAddTranslation()"
+        >
+            Done
+        </v-btn>
+        <v-btn
+          large outlined color="primary"
+          id="name-translation-btn-cancel"
+          @click="cancelNameTranslation()"
+        >
+          <span v-if="isAddingTranslation">Cancel New Name</span>
+          <span v-else>Cancel</span>
+        </v-btn>
+      </div>
     </v-form>
   </div>
 </template>
@@ -70,19 +63,18 @@ export default class AddNameTranslation extends Mixins(CommonMixin) {
   }
 
   @Prop({ default: '' }) readonly editNameTranslation!: string
-
   @Prop({ default: -1 }) readonly editNameIndex!: number
 
-  // Local Properties
+  // Local properties
   protected nameTranslationForm = false
   protected nameTranslation = ''
   protected nameIndex = -1
 
-  // Validation Rules
+  // Validation rules
   readonly nameTranslationRules: Array<VuetifyRuleFunction> = [
     (v: string) => !!v || 'A name translation is required', // is not empty
     (v: string) => /^[A-Za-zÀ-ÿ_@./#’&+-]+(?: [A-Za-zÀ-ÿ_@./#’&+-]+)*$/.test(v) || 'Invalid character', // English, French and single spaces
-    (v: string) => (!v || v.length <= 150) || 'Cannot exceed 150 characters' // maximum character count
+    (v: string) => (!v || v.length <= 50) || 'Cannot exceed 50 characters' // maximum character count
   ]
 
   /** Called when component is mounted. */
@@ -117,72 +109,66 @@ export default class AddNameTranslation extends Mixins(CommonMixin) {
       }
     ).then(async (confirm) => {
       if (confirm) {
-        this.addTranslation()
+        this.addTranslation(this.nameTranslation)
       }
     }).catch(() => {
       this.cancelTranslation()
     })
   }
 
-  /**
-   * Returns True if we are adding, False if editing.
-   */
+  /** Is True if we are adding, or False if editing. */
   get isAddingTranslation (): boolean {
     return (this.editNameTranslation === '')
   }
 
-  /**
-   * Trigger validation before add in case of blank name.
-   */
+  /** Triggers validation before add in case of blank name. */
   protected validateAddTranslation (): void {
     if (this.$refs.nameTranslationForm.validate()) {
-      this.addTranslation()
+      this.addTranslation(this.nameTranslation)
     }
   }
 
-  // Events
+  /**
+   * Emits an event with a string to the parent to handle addition.
+   * @param translation the name to add
+   */
   @Emit('addTranslation')
-  private addTranslation (): string {
-    return this.nameTranslation
-  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private addTranslation (translation: string): void {}
 
+  /** Emits an event to the parent to handle cancellation. */
   @Emit('cancelTranslation')
   private cancelTranslation (): void {}
 
   /**
-   * Emit an index and event to the parent to handle removal.
-   * @param index The active index which is subject to removal.
+   * Emit an event with an index to the parent to handle removal.
+   * @param index the index of the item to remove
    */
-  @Emit('removeNameTranslation')
+  @Emit('removeTranslation')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected emitRemoveName (index: number): void {}
+  protected removeTranslation (index: number): void {}
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-.name-translation-form {
-  padding-right: 0.5rem;
+.action-btns {
+  display: flex;
 
-  .action-btns {
-    display: flex;
-    justify-content: flex-end;
-    padding-bottom: 1rem;
+  .v-btn {
+    margin: 0;
+    min-width: 6.5rem;
 
-    .v-btn + .v-btn {
+    + .v-btn {
       margin-left: 0.5rem;
     }
+  }
 
-    .v-btn {
-      min-width: 6.5rem;
-    }
-
-    .v-btn[disabled] {
-      color: white !important;
-      background-color: $app-blue !important;
-      opacity: 0.2;
-    }
+  .v-btn[disabled] {
+    color: white !important;
+    background-color: $app-blue !important;
+    opacity: 0.2;
   }
 }
 
