@@ -60,7 +60,7 @@
             <v-menu offset-y>
               <template v-slot:activator="{ on }">
                 <v-btn
-                  text color="primary"
+                  text small color="primary"
                   class="more-actions-btn"
                   v-on="on"
                   :disabled="isAddingNameTranslation"
@@ -108,7 +108,7 @@
           <v-menu offset-y>
             <template v-slot:activator="{ on }">
               <v-btn
-                text color="primary"
+                text small color="primary"
                 class="more-actions-btn"
                 v-on="on"
                 :disabled="isAddingNameTranslation"
