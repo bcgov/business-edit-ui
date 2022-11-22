@@ -129,6 +129,48 @@ describe('Name Request Mixin', () => {
     }
   })
 
+  it('handles conditional state with consent required', async () => {
+    // mock fetchNameRequest to return invalid NR state
+    get.withArgs('nameRequests/NR 1234567')
+      .returns(Promise.resolve({ data: {
+        applicants: { emailAddress: 'email', phoneNumber: 'phone' },
+        state: 'CONDITIONAL',
+        consentFlag: 'Y',
+        expirationDate: '2021-11-05T07:01:00+00:00',
+        names: [{ state: 'APPROVED', name: 'name' }],
+        nrNum: 'NR 1234567',
+        requestTypeCd: 'CR',
+        request_action_cd: 'CHG'
+      } }))
+
+    try {
+      await vm.validateNameRequest('NR 1234567', 'phone', 'email')
+    } catch (err) {
+      // verify thrown error
+      expect((err as any).message).toBe('Invalid Name request state: NEED_CONSENT')
+      // FUTURE: figure out how to verify emitted error (invalid-name-request)
+      // expect(wrapper.emitted('invalid-name-request')).toEqual([['NEED_CONSENT']])
+    }
+  })
+
+  it('handles conditional state with consent received', async () => {
+    // mock fetchNameRequest to return valid NR state
+    get.withArgs('nameRequests/NR 1234567')
+      .returns(Promise.resolve({ data: {
+        applicants: { emailAddress: 'email', phoneNumber: 'phone' },
+        state: 'CONDITIONAL',
+        consentFlag: 'R',
+        expirationDate: '2021-11-05T07:01:00+00:00',
+        names: [{ state: 'APPROVED', name: 'name' }],
+        nrNum: 'NR 1234567',
+        requestTypeCd: 'CR',
+        request_action_cd: 'CHG'
+      } }))
+
+    const nr = await vm.validateNameRequest('NR 1234567', 'phone', 'email')
+    expect(nr).not.toBeUndefined()
+  })
+
   it('identifies valid and invalid NRs', () => {
     let nr = null
     expect(vm.isNrValid(nr)).toBe(false)

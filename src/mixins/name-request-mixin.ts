@@ -47,7 +47,7 @@ export default class NameRequestMixin extends Vue {
 
     // ensure NR is consumable
     const state = this.getNrState(nrResponse)
-    if (state !== NameRequestStates.APPROVED) {
+    if (state !== NameRequestStates.APPROVED && state !== NameRequestStates.CONDITIONAL) {
       this.$root.$emit('invalid-name-request', state)
       throw new Error(`Invalid Name request state: ${state}`)
     }
@@ -87,6 +87,7 @@ export default class NameRequestMixin extends Vue {
     // null = consent not required
     // R = consent received
     // N = consent waived
+    // Y = consent required
     if (nr.state === NameRequestStates.CONDITIONAL &&
       nr.consentFlag !== null && nr.consentFlag !== 'R' && nr.consentFlag !== 'N') {
       return NameRequestStates.NEED_CONSENT
