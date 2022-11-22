@@ -533,8 +533,6 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     // now that we have user info and org info, populate the completing party
     // NB: these are all empty for staff
-    console.log('isRoleStaff', this.isRoleStaff)
-    console.log('getOrgInfo', this.getOrgInfo)
     this.setCompletingParty({
       firstName: (this.isRoleStaff || this.isSbcStaff) ? '' : this.getUserFirstName,
       lastName: (this.isRoleStaff || this.isSbcStaff) ? '' : this.getUserLastName,
