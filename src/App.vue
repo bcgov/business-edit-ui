@@ -216,6 +216,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getComponentValidate!: boolean
   @Getter isConflictingLegalType!: boolean
   @Getter isRoleStaff!: boolean
+  @Getter isSbcStaff!: boolean
 
   // Global actions
   @Action setAccountInformation!: ActionBindingIF
@@ -532,9 +533,10 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     // now that we have user info and org info, populate the completing party
     // NB: these are all empty for staff
+
     this.setCompletingParty({
-      firstName: this.isRoleStaff ? '' : this.getUserFirstName,
-      lastName: this.isRoleStaff ? '' : this.getUserLastName,
+      firstName: (this.isRoleStaff || this.isSbcStaff) ? '' : this.getUserFirstName,
+      lastName: (this.isRoleStaff || this.isSbcStaff) ? '' : this.getUserLastName,
       mailingAddress: {
         addressCity: this.getOrgInfo?.mailingAddress.city,
         addressCountry: this.getOrgInfo?.mailingAddress.country,
