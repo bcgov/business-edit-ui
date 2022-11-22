@@ -533,17 +533,18 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     // now that we have user info and org info, populate the completing party
     // NB: these are all empty for staff
-
+    console.log('isRoleStaff', this.isRoleStaff)
+    console.log('getOrgInfo', this.getOrgInfo)
     this.setCompletingParty({
       firstName: (this.isRoleStaff || this.isSbcStaff) ? '' : this.getUserFirstName,
       lastName: (this.isRoleStaff || this.isSbcStaff) ? '' : this.getUserLastName,
       mailingAddress: {
-        addressCity: this.getOrgInfo?.mailingAddress.city,
-        addressCountry: this.getOrgInfo?.mailingAddress.country,
-        addressRegion: this.getOrgInfo?.mailingAddress.region,
-        postalCode: this.getOrgInfo?.mailingAddress.postalCode,
-        streetAddress: this.getOrgInfo?.mailingAddress.street,
-        streetAddressAdditional: this.getOrgInfo?.mailingAddress.streetAdditional
+        addressCity: (this.isRoleStaff || this.isSbcStaff) ? '' : this.getOrgInfo?.mailingAddress.city,
+        addressCountry: (this.isRoleStaff || this.isSbcStaff) ? '' : this.getOrgInfo?.mailingAddress.country,
+        addressRegion: (this.isRoleStaff || this.isSbcStaff) ? '' : this.getOrgInfo?.mailingAddress.region,
+        postalCode: (this.isRoleStaff || this.isSbcStaff) ? '' : this.getOrgInfo?.mailingAddress.postalCode,
+        streetAddress: (this.isRoleStaff || this.isSbcStaff) ? '' : this.getOrgInfo?.mailingAddress.street,
+        streetAddressAdditional: (this.isRoleStaff || this.isSbcStaff) ? '' : this.getOrgInfo?.mailingAddress.streetAdditional
       }
     } as CompletingPartyIF)
 
