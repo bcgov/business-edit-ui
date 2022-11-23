@@ -216,6 +216,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter getComponentValidate!: boolean
   @Getter isConflictingLegalType!: boolean
   @Getter isRoleStaff!: boolean
+  @Getter isSbcStaff!: boolean
 
   // Global actions
   @Action setAccountInformation!: ActionBindingIF
@@ -532,16 +533,17 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
     // now that we have user info and org info, populate the completing party
     // NB: these are all empty for staff
+    const isStaff = this.isRoleStaff || this.isSbcStaff
     this.setCompletingParty({
-      firstName: this.isRoleStaff ? '' : this.getUserFirstName,
-      lastName: this.isRoleStaff ? '' : this.getUserLastName,
+      firstName: isStaff ? '' : this.getUserFirstName,
+      lastName: isStaff ? '' : this.getUserLastName,
       mailingAddress: {
-        addressCity: this.getOrgInfo?.mailingAddress.city,
-        addressCountry: this.getOrgInfo?.mailingAddress.country,
-        addressRegion: this.getOrgInfo?.mailingAddress.region,
-        postalCode: this.getOrgInfo?.mailingAddress.postalCode,
-        streetAddress: this.getOrgInfo?.mailingAddress.street,
-        streetAddressAdditional: this.getOrgInfo?.mailingAddress.streetAdditional
+        addressCity: isStaff ? '' : this.getOrgInfo?.mailingAddress.city,
+        addressCountry: isStaff ? '' : this.getOrgInfo?.mailingAddress.country,
+        addressRegion: isStaff ? '' : this.getOrgInfo?.mailingAddress.region,
+        postalCode: isStaff ? '' : this.getOrgInfo?.mailingAddress.postalCode,
+        streetAddress: isStaff ? '' : this.getOrgInfo?.mailingAddress.street,
+        streetAddressAdditional: isStaff ? '' : this.getOrgInfo?.mailingAddress.streetAdditional
       }
     } as CompletingPartyIF)
 
