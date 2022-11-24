@@ -84,6 +84,11 @@ export default class OrgPersonMixin extends Vue {
     return (person.actions?.includes(ActionTypes.REMOVED))
   }
 
+  /** Returns True if the specified orgPerson was replaced. */
+  wasReplaced (person: OrgPersonIF): boolean {
+    return (person.actions?.includes(ActionTypes.REPLACED))
+  }
+
   /** Returns True if the specified orgPerson was changed. */
   wasChanged (person: OrgPersonIF): boolean {
     return (

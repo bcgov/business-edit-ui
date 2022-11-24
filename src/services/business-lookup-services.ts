@@ -30,13 +30,15 @@ export default class BusinessLookupServices {
   /**
    * Searches for business by code or words.
    * @param query code or words to search
+   * @param status status to match (ACTIVE OR HISTORICAL or '' to match all statuses)
    * @returns a promise to return the search results
    */
-  static async search (query: string): Promise<BusinessLookupResultIF[]> {
+  static async search (query: string, status = 'ACTIVE'): Promise<BusinessLookupResultIF[]> {
     const legalType = 'BC,A,ULC,C,S,XP,GP,LP,CUL,XS,LLC,LL,BEN,CP,SP,CC,XL,FI,XCP,PA'
-    const url = this.businessApiUrl +
-      `businesses/search/facets?start=0&rows=20&categories=legalType:${legalType}::status:ACTIVE` +
-      `&query=value:${encodeURIComponent(query)}`
+
+    let url = this.businessApiUrl + 'businesses/search/facets?start=0&rows=20'
+    url += `&categories=legalType:${legalType}${status ? '::status:' + status : ''}`
+    url += `&query=value:${encodeURIComponent(query)}`
 
     return axios.get(url, {
       headers: {

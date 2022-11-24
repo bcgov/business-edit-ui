@@ -117,7 +117,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.CORRECTION,
         certifiedBy: this.getCertifyState.certifiedBy || '',
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // original folio number, unless overridden by staff payment below
+        folioNumber: this.getFolioNumber // folio number, unless overridden below
       },
       business: {
         identifier: this.getBusinessId,
@@ -182,6 +182,7 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // build Staff Payment into the filing
+    // may override folio number
     filing = this.buildStaffPayment(filing)
 
     return filing
@@ -199,7 +200,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber
+        folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
       business: {
         foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
@@ -264,9 +265,11 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // Build Staff Payment into the filing
+    // may override folio number
     filing = this.buildStaffPayment(filing)
 
     // Build Transactional Folio Number into the filing
+    // will override folio number
     filing = this.buildFolioNumber(filing)
 
     return filing
@@ -289,7 +292,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.SPECIAL_RESOLUTION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber
+        folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
       business: {
         foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
@@ -328,9 +331,11 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // Build Staff Payment into the filing
+    // may override folio number
     filing = this.buildStaffPayment(filing)
 
     // Build Transactional Folio Number into the filing
+    // will override folio number
     filing = this.buildFolioNumber(filing)
 
     return filing
@@ -348,7 +353,7 @@ export default class FilingTemplateMixin extends DateMixin {
         name: FilingTypes.CHANGE_OF_REGISTRATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber
+        folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
       business: {
         foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
@@ -425,9 +430,11 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // Build Staff Payment into the filing
+    // may override folio number
     filing = this.buildStaffPayment(filing)
 
     // Build Transactional Folio Number into the filing
+    // will override folio number
     filing = this.buildFolioNumber(filing)
 
     return filing
