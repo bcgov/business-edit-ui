@@ -82,7 +82,7 @@
           </p>
         </div>
 
-        <!-- GP add buttons (change or conversion filing only)-->
+        <!-- GP add buttons (change or conversion filings only)-->
         <div v-if="isEntityTypeGP && (isFirmChangeFiling || isFirmConversionFiling)" class="mt-8">
           <v-btn
             id="gp-btn-add-person"
@@ -132,8 +132,9 @@
           @initEdit="initEdit($event)"
           @addEdit="addEdit($event)"
           @remove="remove($event)"
+          @replace="replace($event)"
           @undo="undo($event)"
-          @reset="reset()"
+          @reset="reset(true)"
         />
       </article>
     </v-card>
@@ -343,39 +344,60 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   }
 
   /**
-   * Sets state properties to add an org/person.
+   * Sets state properties to add a new org/person.
    * @param roles The roles of this item.
    * @param type The incorporator (party) type of this item.
+   * @param actions The actions of this item.
    */
-  private initAdd (roles: RoleIF[], type: PartyTypes): void {
+  private initAdd (roles: RoleIF[], type: PartyTypes, actions = [ActionTypes.ADDED]): void {
     // make a copy so we don't change the original object
     this.currentOrgPerson = cloneDeep(EmptyOrgPerson)
     this.currentOrgPerson.roles = roles
     this.currentOrgPerson.officer.partyType = type
+    this.currentOrgPerson.actions = actions
 
+    // for firms, use business lookup initially
     if (this.isEntityTypeFirm) {
       this.currentOrgPerson.isLookupBusiness = true
     }
 
-    this.activeIndex = NaN
+    // enable the add component
+    this.activeIndex = NaN // means "new"
     this.isAddingEditingOrgPerson = true
   }
 
   /**
-   * Sets state properties to edit an org/person.
+   * Sets state properties to edit an existing org/person.
    * @param index The index of the org/person to edit.
    */
   private initEdit (index: number): void {
     // make a copy so we don't change the original object
     this.currentOrgPerson = cloneDeep(this.getOrgPeople[index])
+
+    // enable the edit component
     this.activeIndex = index
     this.isAddingEditingOrgPerson = true
   }
 
   /**
    * Resets state properties after a change is completed (or to cancel).
+   * @param restore whether to restore the replaced-removed item (if any)
    */
-  private async reset (): Promise<void> {
+  private async reset (restore = false): Promise<void> {
+    if (restore) {
+      // make a copy so Vue reacts when we set the new list
+      const tempList = cloneDeep(this.getOrgPeople)
+
+      // find the removed-replaced item and restore it
+      const deleted = tempList.find(x => this.wasReplaced(x) && this.wasRemoved(x))
+      if (deleted) {
+        delete deleted.actions
+
+        // set the new list
+        this.setPeopleAndRoles(tempList)
+      }
+    }
+
     this.currentOrgPerson = null
     this.activeIndex = NaN
     this.isAddingEditingOrgPerson = false
@@ -388,7 +410,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    * Undoes changes to the specified org/person.
    * @param index The index of the org/person to undo.
    */
-  private async undo (index: number): Promise<void> {
+  private undo (index: number): void {
     // make a copy so Vue reacts when we set the updated list
     const tempList = cloneDeep(this.getOrgPeople)
 
@@ -396,10 +418,17 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     const person = tempList[index]
 
     if (this.wasAdded(person)) {
-      // splice out the person
+      // splice out the new person
       tempList.splice(index, 1)
+
+      // check if we are undoing the added-replaced item
+      if (this.wasReplaced(person)) {
+        // find the removed-replaced item and restore it
+        const deleted = tempList.find(x => this.wasReplaced(x) && this.wasRemoved(x))
+        if (deleted) delete deleted.actions
+      }
     } else {
-      // get ID of person to undo
+      // get ID of edited person to undo
       const id = person?.officer?.id
 
       // get a copy of original person from original IA
@@ -424,20 +453,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   }
 
   /**
-   * Returns the computed action for the specified org/person compared with their original state.
-   * @param person the person to compare
-   * @returns the action (or null if none)
-   */
-  private computeAction (person: OrgPersonIF): ActionTypes {
-    if (!person) return ActionTypes.REMOVED
-    const original = this.originalParties.find(x => x.officer.id === person.officer.id)
-    if (!original) return ActionTypes.ADDED
-    // ignore "action" when comparing
-    if (!IsSame(person, original, ['actions'])) return ActionTypes.EDITED
-    return null // no actions
-  }
-
-  /**
    * Adds/changes the specified org/person.
    * @param orgPerson The data object of the org/person to change.
    */
@@ -446,11 +461,10 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     const tempList = cloneDeep(this.getOrgPeople)
 
     if (isNaN(this.activeIndex)) {
-      // add new person to list if not a current index
-      orgPerson.actions = [ActionTypes.ADDED]
+      // add new person to list
       tempList.push(orgPerson)
     } else {
-      // Assign actions
+      // assign actions
       orgPerson = this.assignAction(orgPerson)
 
       // splice in the edited person
@@ -502,29 +516,35 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 
   /** Assign action(s) to the orgPerson identifying changes. */
   private assignAction (orgPerson: OrgPersonIF): OrgPersonIF {
-    // Return if orgPerson is new (added)
+    // Don't change actions if orgPerson is new
     if (this.wasAdded(orgPerson)) return orgPerson
 
-    // If this is correction provide EDITED label and return
+    // If this is a correction then provide EDITED label and return
     if (this.isCorrectionFiling) {
       orgPerson.actions = [ActionTypes.CORRECTED]
       return orgPerson
     }
 
-    // Assign empty array for pre-existing orgPersons if not defined (ie from API)
+    // Create array if it doesn't already exist
     if (!orgPerson.actions) orgPerson.actions = []
 
     if (this.hasNameChanged(orgPerson)) {
       !orgPerson.actions.includes(ActionTypes.NAME_CHANGED) && orgPerson.actions.push(ActionTypes.NAME_CHANGED)
-    } else orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.NAME_CHANGED)
+    } else {
+      orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.NAME_CHANGED)
+    }
 
     if (this.hasEmailChanged(orgPerson)) {
       !orgPerson.actions.includes(ActionTypes.EMAIL_CHANGED) && orgPerson.actions.push(ActionTypes.EMAIL_CHANGED)
-    } else orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.EMAIL_CHANGED)
+    } else {
+      orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.EMAIL_CHANGED)
+    }
 
     if (this.hasAddressChanged(orgPerson)) {
       !orgPerson.actions.includes(ActionTypes.ADDRESS_CHANGED) && orgPerson.actions.push(ActionTypes.ADDRESS_CHANGED)
-    } else orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.ADDRESS_CHANGED)
+    } else {
+      orgPerson.actions = orgPerson.actions.filter(action => action !== ActionTypes.ADDRESS_CHANGED)
+    }
 
     // Restore orgPerson when edits are undone manually through form entry
     if (
@@ -555,7 +575,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       tempList.splice(index, 1)
     } else {
       // just set the action (ie, soft-delete)
-      // person will be filtered out on file and pay
+      // (person will be filtered out on file and pay)
       person.actions = [ActionTypes.REMOVED]
     }
 
@@ -568,6 +588,34 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 
     // reset state properties
     this.reset()
+  }
+
+  /**
+   * Processes the specified org/person for replacement.
+   * @param index The index of the org/person to replace.
+   */
+  private replace (index: number): void {
+    // make a copy so Vue reacts when we set the new list
+    const tempList = cloneDeep(this.getOrgPeople)
+
+    // get org/person to replace
+    // (we update this record right in the temp list)
+    const person = tempList[index]
+
+    // first, mark the existing item as REPLACED-REMOVED
+    // (item will be filtered out on file and pay)
+    person.actions = [ActionTypes.REPLACED, ActionTypes.REMOVED]
+
+    // set the new list
+    this.setPeopleAndRoles(tempList)
+
+    // then, add a new proprietor-org
+    // mark the new item as REPLACED-ADDED
+    this.initAdd(
+      [{ roleType: RoleTypes.PROPRIETOR, appointmentDate: this.appointmentDate }],
+      PartyTypes.ORGANIZATION,
+      [ActionTypes.REPLACED, ActionTypes.ADDED]
+    )
   }
 
   /** On initial load and when user has made changes, sets the component validity flag. */

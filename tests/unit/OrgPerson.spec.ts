@@ -965,3 +965,38 @@ describe('Org/Person component for SP/GP filings', () => {
     })
   })
 })
+
+describe('Org/Person component for SP change of registration filing', () => {
+  beforeEach(() => {
+    store.state.stateModel.tombstone.currentDate = '2020-03-30'
+    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.resourceModel = ChangePartnershipResource
+  })
+
+  it('displays Confirm Documents checkbox for a replaced-added org-person', () => {
+    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.resourceModel = ChangePartnershipResource
+
+    const currentOrgPerson = {
+      ...NewOrgProprietor,
+      actions: ['REPLACED', 'ADDED']
+    }
+
+    const wrapper = createComponent(currentOrgPerson, NaN)
+
+    expect(wrapper.find('.confirm-documents-checkbox').exists()).toBe(true)
+  })
+
+  it('does not display Confirm Documents checkbox for an added org-person', () => {
+    const currentOrgPerson = {
+      ...NewOrgProprietor,
+      action: ['ADDED']
+    }
+
+    const wrapper = createComponent(currentOrgPerson, NaN)
+
+    expect(wrapper.find('.confirm-documents-checkbox').exists()).toBe(false)
+  })
+})

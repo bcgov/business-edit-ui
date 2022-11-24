@@ -67,10 +67,7 @@
                 </v-btn>
               </template>
               <v-list class="more-actions-list">
-                <v-list-item
-                  class="actions-dropdown_item"
-                  @click="isEditing = true"
-                >
+                <v-list-item @click="isEditing = true">
                   <v-list-item-title>
                     <v-icon small>mdi-pencil</v-icon>
                     <span class="ml-2">Change</span>

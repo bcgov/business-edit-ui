@@ -257,7 +257,7 @@ export const getUserUsername = (state: StateIF): string => {
   return getUserInfo(state)?.username
 }
 
-/** The folio number. */
+/** The business folio number. */
 export const getFolioNumber = (state: StateIF): string => {
   return state.stateModel.tombstone.folioNumber
 }

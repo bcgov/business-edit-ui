@@ -82,51 +82,61 @@
 
               <!-- Business or corporation info -->
               <template v-if="isOrg">
+                <v-checkbox v-if="wasReplaced(orgPerson)"
+                  class="confirm-documents-checkbox mt-0 pt-0 mb-6"
+                  hide-details
+                  label="I confirm that the supporting documents have been received by the BC Registries."
+                  :rules="confirmDocumentsRules"
+                  v-model="orgPerson.confirmDocuments"
+                />
+
                 <!-- Add firm org using look-up -->
-                <article v-if="showAddFirmOrgComponents && orgPerson.isLookupBusiness" class="org-look-up">
-                  <label class="sub-header">Business or Corporation Look Up</label>
+                <template v-if="showAddFirmOrgComponents && orgPerson.isLookupBusiness">
+                  <article class="org-look-up">
+                    <label class="sub-header">Business or Corporation Look Up</label>
 
-                  <a class="lookup-toggle float-right" @click="toggleLookup()">
-                    Business or Corporation is Unregistered in B.C.
-                  </a>
+                    <a class="lookup-toggle float-right" @click="toggleLookup()">
+                      Business or Corporation is Unregistered in B.C.
+                    </a>
 
-                  <v-card v-if="wasBusinessSelectedFromLookup" outlined class="message-box rounded-0 mt-6">
-                    <p>
-                      <strong>Important:</strong> If the addresses shown below are out of date, you may
-                      update them here. The updates are applicable only to this registration.
-                    </p>
-                  </v-card>
+                    <v-card v-if="wasBusinessSelectedFromLookup" outlined class="message-box rounded-0 mt-6">
+                      <p>
+                        <strong>Important:</strong> If the addresses shown below are out of date, you may
+                        update them here. The updates are applicable only to this registration.
+                      </p>
+                    </v-card>
 
-                  <template v-else>
-                    <p class="info-text mt-6 pt-0 mb-0">
-                      To add a registered B.C. business or corporation as
-                      {{ isProprietor ? 'the Proprietor' : 'a Partner' }},
-                      enter the name or incorporation number.
-                    </p>
+                    <template v-else>
+                      <p class="info-text mt-6 pt-0 mb-0">
+                        To add a registered B.C. business or corporation as
+                        {{ isProprietor ? 'the Proprietor' : 'a Partner' }},
+                        enter the name or incorporation number.
+                      </p>
 
-                    <p class="info-text mt-6 pt-0 mb-0">
-                      If you are adding a company that is not legally required to register in B.C.
-                      such as a bank or a railway, use the manual entry form. All other types of
-                      businesses cannot be {{ isProprietor ? 'the Proprietor' : 'a partner' }}.
-                    </p>
+                      <p class="info-text mt-6 pt-0 mb-0">
+                        If you are adding a company that is not legally required to register in B.C.
+                        such as a bank or a railway, use the manual entry form. All other types of
+                        businesses cannot be {{ isProprietor ? 'the Proprietor' : 'a partner' }}.
+                      </p>
 
-                    <HelpSection
-                      v-if="!isRoleStaff"
+                      <HelpSection
+                        v-if="!isRoleStaff"
+                        class="mt-6"
+                        :helpSection="getResource.changeData.orgPersonInfo.helpSection"
+                      />
+                    </template>
+
+                    <BusinessLookupShared
                       class="mt-6"
-                      :helpSection="getResource.changeData.orgPersonInfo.helpSection"
+                      :class="wasBusinessSelectedFromLookup ? null : 'mb-n6'"
+                      :showErrors="showErrors"
+                      :businessLookup="inProgressBusinessLookup"
+                      :BusinessLookupServices="BusinessLookupServices"
+                      @setBusiness="updateBusinessDetails($event)"
+                      @undoBusiness="resetBusinessDetails($event)"
                     />
-                  </template>
-
-                  <BusinessLookupShared
-                    class="mt-6"
-                    :class="wasBusinessSelectedFromLookup ? null : 'mb-n6'"
-                    :showErrors="showErrors"
-                    :businessLookup="inProgressBusinessLookup"
-                    :BusinessLookupServices="BusinessLookupServices"
-                    @setBusiness="updateBusinessDetails($event)"
-                    @undoBusiness="resetBusinessDetails($event)"
-                  />
-                </article>
+                  </article>
+                </template>
 
                 <!-- Add firm org manually (ie, unregistered in BC) -->
                 <template v-else-if="showAddFirmOrgComponents && !orgPerson.isLookupBusiness">
@@ -275,8 +285,9 @@
               <!-- Delivery address (director/proprietor/partner only) -->
               <article v-if="isDirector || isProprietor || isPartner" class="delivery-address mt-6">
                 <v-checkbox
-                  class="mt-0 pt-0 mb-n2"
+                  class="mt-0 pt-0"
                   label="Delivery Address same as Mailing Address"
+                  hide-details
                   v-model="inheritMailingAddress"
                   :disabled="disableSameDeliveryAddress"
                 />
@@ -397,6 +408,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   protected orgNameRules: Array<VuetifyRuleFunction> = []
   protected proprietorEmailRules: Array<VuetifyRuleFunction> = []
   protected confirmBusinessRules: Array<VuetifyRuleFunction> = []
+  protected confirmDocumentsRules: Array<VuetifyRuleFunction> = []
   protected confirmNameChangeRules: Array<VuetifyRuleFunction> = []
   protected inProgressBusinessLookup: BusinessLookupIF = EmptyBusinessLookup
   protected showErrors = false
@@ -504,7 +516,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     )
   }
 
-  /** Whether to render the Remove button. */
+  /** Whether to show the Remove button. */
   get showRemoveBtn (): boolean {
     if (this.isAlterationFiling) {
       // alterations don't use this component
@@ -532,13 +544,17 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     return (this.isFirmChangeFiling || this.isFirmConversionFiling)
   }
 
-  /** Whether to render the add firm org components. */
+  /** Whether to show the Add Firm Org components. */
   get showAddFirmOrgComponents (): boolean {
     if (this.isAlterationFiling) {
       // alterations don't use this component
       return false
     }
     if (this.isFirmChangeFiling) {
+      // show for replaced-added item
+      // (we shouldn't see the replaced-removed item in this component)
+      if (this.wasReplaced(this.orgPerson)) return true
+
       // can only add partner (cannot add proprietor)
       return (this.isNew && this.isPartner)
     }
@@ -836,7 +852,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     ]
 
     this.confirmBusinessRules = [(v: string) => !!v]
-
+    this.confirmDocumentsRules = [(v: string) => !!v]
     this.confirmNameChangeRules = [(v: string) => !!v]
 
     // wait for component rules to be applied
@@ -1008,29 +1024,26 @@ li {
   background-color: rgba(0, 0, 0, 0.06);
 }
 
-// conditionally hide the v-messages (as we normally don't want their height)
-:deep(.v-input--checkbox .v-messages:not(.error--text)) {
-  display: none;
-}
-
-// Overrides for vuetify components (Checkbox alignment, inputField labels/text size/colour)
+// Overrides for Vuetify components
 :deep() {
   #btn-remove.v-btn.v-btn--disabled {
     color: $app-red !important;
     opacity: .4;
   }
-  .v-input--selection-controls .v-input__slot, .v-input--selection-controls .v-radio {
-    align-items: flex-start;
-  }
 
-  .theme--light.v-label {
-    font-size: 1rem;
-    color: $gray7;
+  // un-bold all input labels
+  .v-label.theme--light {
     font-weight: normal;
-    padding-top: 2px; // label align with checkbox
   }
 
-  .theme--light.v-input input, .theme--light.v-input textarea {
+  // set input and textarea text color
+  .v-input.theme--light input,
+  .v-input.theme--light textarea {
+    color: $gray9;
+  }
+
+  // set checkbox label color
+  .v-input--checkbox.theme--light label {
     color: $gray9;
   }
 }
