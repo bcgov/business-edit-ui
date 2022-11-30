@@ -121,7 +121,8 @@ import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF }
   from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { BenefitCompanyResource } from '@/resources/Alteration/'
+import { BenefitCompanyResource, LimitedCompanyResource, CommunityContributionCompanyResource,
+  UnlimitedLiabilityCompanyResource } from '@/resources/Alteration/'
 
 @Component({
   components: {
@@ -179,6 +180,9 @@ export default class Alteration extends Mixins(
   /** The resource file for an alteration filing. */
   get alterationResource (): ResourceIF {
     if (this.isEntityTypeBEN) return BenefitCompanyResource
+    if (this.isEntityTypeBC) return LimitedCompanyResource
+    if (this.isEntityTypeCCC) return CommunityContributionCompanyResource
+    if (this.isEntityTypeULC) return UnlimitedLiabilityCompanyResource
     return null
   }
 
