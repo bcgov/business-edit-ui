@@ -73,10 +73,7 @@
     <template v-if="haveNameTranslationsChanged">
       <v-divider class="mx-4" />
       <div class="section-container name-translation-summary">
-        <NameTranslation
-          :nameTranslations="getNameTranslations"
-          :isSummaryMode="true"
-        />
+        <NameTranslation :isSummaryMode="true" />
       </div>
     </template>
 

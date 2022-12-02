@@ -38,9 +38,6 @@ describe('Name Translation component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
 
-    // Init Store
-    store.state.stateModel.nameTranslations = []
-
     wrapperFactory = async (propsData: any) => {
       const wrapper = mount(NameTranslation, {
         localVue,
@@ -55,7 +52,8 @@ describe('Name Translation component', () => {
   })
 
   it('displays the list of name translations and action btns', async () => {
-    const wrapper = await wrapperFactory({ nameTranslations: nameTranslationsListChanged, isSummaryMode: true })
+    store.state.stateModel.nameTranslations = nameTranslationsListChanged
+    const wrapper = await wrapperFactory({ isSummaryMode: true })
 
     // Verify list exists
     expect(wrapper.find('#name-translation').exists()).toBeTruthy()
@@ -71,7 +69,8 @@ describe('Name Translation component', () => {
   })
 
   it('does not display translations if unchanged', async () => {
-    const wrapper = await wrapperFactory({ nameTranslations: nameTranslationsList, isSummaryMode: true })
+    store.state.stateModel.nameTranslations = nameTranslationsList
+    const wrapper = await wrapperFactory({ isSummaryMode: true })
 
     // Verify list exists
     expect(wrapper.find('#name-translation').exists()).toBeFalsy()
