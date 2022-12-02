@@ -982,7 +982,10 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // handle entity-specific values
     switch (entitySnapshot.businessInfo.legalType) {
-      case CorpTypeCd.BENEFIT_COMPANY: {
+      case CorpTypeCd.BENEFIT_COMPANY:
+      case CorpTypeCd.BC_COMPANY:
+      case CorpTypeCd.BC_CCC:
+      case CorpTypeCd.BC_ULC_COMPANY: {
         // store Name Translations
         if (entitySnapshot.nameTranslations) {
           // don't need cloneDeep because mapNameTranslations already returns new array
