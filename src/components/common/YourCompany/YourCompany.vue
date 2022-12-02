@@ -204,7 +204,7 @@
       class="section-container"
       :class="{'invalid-section': invalidTranslationSection}"
     >
-      <CorrectNameTranslation
+      <NameTranslation
         :invalidSection="invalidTranslationSection"
         @isEditingTranslations="isEditingTranslations = $event"
       />
@@ -311,8 +311,8 @@ import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF }
   from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
-import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation,
-  CorrectNameOptions, NatureOfBusiness, OfficeAddresses, BusinessStartDate } from './'
+import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameOptions,
+  NameTranslation, NatureOfBusiness, OfficeAddresses, BusinessStartDate } from './'
 import { CommonMixin, DateMixin, NameRequestMixin } from '@/mixins/'
 import { CoopTypes, CorrectionTypes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
@@ -324,7 +324,7 @@ import { ConversionNOB } from '@/components/Conversion'
     BusinessContactInfo,
     ChangeBusinessType,
     CorrectNameOptions,
-    CorrectNameTranslation,
+    NameTranslation,
     NatureOfBusiness,
     OfficeAddresses,
     FolioInformation,

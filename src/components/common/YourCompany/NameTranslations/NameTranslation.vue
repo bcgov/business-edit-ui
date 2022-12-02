@@ -107,7 +107,7 @@
           <!-- Add Name Translation component -->
           <div v-if="isAddingNameTranslation" class="mt-6">
             <AddNameTranslation
-              :editTranslation="editingNameTranslation"
+              :editNameTranslation="editingNameTranslation"
               :editNameIndex="editIndex"
               @addTranslation="addTranslation($event)"
               @removeTranslation="removeTranslation($event)"
@@ -131,7 +131,7 @@
           <v-btn large color="primary"
             id="name-translation-done"
             :disabled="isAddingNameTranslation || !hasPendingChange"
-            @click="setNameTranslations()"
+            @click="saveNameTranslations()"
           >
             <span>Done</span>
           </v-btn>
@@ -151,7 +151,7 @@
 <script lang="ts">
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash'
-import { Action } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { ListNameTranslation, AddNameTranslation } from './'
@@ -174,11 +174,14 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   }
 
   @Prop({ default: false }) readonly invalidSection!: boolean
-  @Prop({ default: () => [] }) readonly nameTranslations!: NameTranslationIF[]
   @Prop({ default: false }) readonly isSummaryMode!: boolean
 
-  // Global action
+  // Global getter
+  @Getter getNameTranslations!: NameTranslationIF[]
+
+  // Global actions
   @Action setEditingNameTranslations!: ActionBindingIF
+  @Action setNameTranslations!: ActionBindingIF
 
   // Declaration for template
   readonly ActionTypes = ActionTypes
@@ -191,11 +194,15 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   private editIndex = -1
 
   get hasPendingChange (): boolean {
-    return this.draftTranslations.length !== this.nameTranslations.length ||
+    return (
+      this.draftTranslations.length !== this.getNameTranslations.length ||
       this.draftTranslations.some((translation, index) => {
-        return this.nameTranslations[index].name !== translation.name ||
-          this.nameTranslations[index].action !== translation.action
+        return (
+          this.getNameTranslations[index].name !== translation.name ||
+          this.getNameTranslations[index].action !== translation.action
+        )
       })
+    )
   }
 
   get hasNameTranslationChange (): boolean {
@@ -211,13 +218,13 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     return this.draftTranslations.filter(x => x.action !== ActionTypes.REMOVED)
   }
 
-  protected setNameTranslations (): void {
-    this.emitNameTranslations(this.draftTranslations)
+  protected saveNameTranslations (): void {
+    this.setNameTranslations(this.draftTranslations)
     this.isEditing = false
   }
 
   protected undoNameTranslations (): void {
-    this.draftTranslations = this.nameTranslations
+    this.draftTranslations = this.getNameTranslations
       .filter(x => x.action !== ActionTypes.ADDED)
       .map(a => {
         const translation = cloneDeep(a)
@@ -226,12 +233,12 @@ export default class NameTranslation extends Mixins(CommonMixin) {
         translation.action = null
         return translation
       })
-    this.emitNameTranslations(this.draftTranslations)
+    this.setNameTranslations(this.draftTranslations)
     this.isEditing = false
   }
 
   protected cancelNameTranslations () {
-    const nameTranslations = this.nameTranslations || []
+    const nameTranslations = this.getNameTranslations
     // Compare initial/draft translation with the modified translation to identify unsaved data
     // If length is different that means added or removed (a drafted one).
     // If any value is different that means undo or editted.
@@ -262,10 +269,10 @@ export default class NameTranslation extends Mixins(CommonMixin) {
       }
     ).then(async (confirm) => {
       if (confirm) {
-        this.setNameTranslations()
+        this.saveNameTranslations()
       }
     }).catch(() => {
-      this.draftTranslations = this.nameTranslations ? cloneDeep(this.nameTranslations) : []
+      this.draftTranslations = cloneDeep(this.getNameTranslations)
       this.isEditing = false
     })
   }
@@ -334,26 +341,18 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     translation.action = null
   }
 
-  /** Updates local property initially and when prop has changed. */
-  @Watch('nameTranslations', { deep: true, immediate: true })
+  /** Updates local property initially and when store property has changed. */
+  @Watch('getNameTranslations', { deep: true, immediate: true })
   private onNameTranslationsPropValueChanged (): void {
-    this.draftTranslations = this.nameTranslations ? cloneDeep(this.nameTranslations) : []
+    this.draftTranslations = cloneDeep(this.getNameTranslations)
   }
 
   /** Updates store when local Editing property has changed. */
   @Watch('isEditing', { immediate: true })
-  private onEditingChanged (val: boolean): void {
-    this.setEditingNameTranslations(val)
-  }
-
-  @Emit('nameTranslationsChange')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitNameTranslations (translations: NameTranslationIF[]): void {}
-
-  @Watch('isEditing')
   @Emit('isEditingTranslations')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitIsEditingTranslations (isEditing: boolean): void {}
+  private onEditingChanged (isEditing: boolean): void {
+    this.setEditingNameTranslations(isEditing)
+  }
 }
 </script>
 

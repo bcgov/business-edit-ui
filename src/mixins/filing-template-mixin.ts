@@ -986,7 +986,7 @@ export default class FilingTemplateMixin extends DateMixin {
         // store Name Translations
         if (entitySnapshot.nameTranslations) {
           // don't need cloneDeep because mapNameTranslations already returns new array
-          this.setNameTranslations(this.mapNameTranslations(entitySnapshot.nameTranslations))
+          this.setNameTranslations(this.mapNameTranslations(entitySnapshot.nameTranslations) || [])
         }
 
         // clear Provisions Removed
