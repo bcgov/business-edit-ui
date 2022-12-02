@@ -107,6 +107,16 @@ export const isEntityTypeBC = (state: StateIF): boolean => {
   return (getEntityType(state) === CorpTypeCd.BC_COMPANY)
 }
 
+/** Whether the entity is a CCC Company. */
+export const isEntityTypeCCC = (state: StateIF): boolean => {
+  return (getEntityType(state) === CorpTypeCd.BC_CCC)
+}
+
+/** Whether the entity is a ULC Company. */
+export const isEntityTypeULC = (state: StateIF): boolean => {
+  return (getEntityType(state) === CorpTypeCd.BC_ULC_COMPANY)
+}
+
 /** Whether the entity is a Sole Proprietorship. */
 export const isEntityTypeSP = (state: StateIF): boolean => {
   return (getEntityType(state) === CorpTypeCd.SOLE_PROP)

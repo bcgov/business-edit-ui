@@ -56,6 +56,9 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter haveOfficeAddressesChanged!: boolean
   @Getter getCompletingParty!: CompletingPartyIF
   @Getter isEntityTypeBEN!: boolean
+  @Getter isEntityTypeBC!: boolean
+  @Getter isEntityTypeCCC!: boolean
+  @Getter isEntityTypeULC!: boolean
   @Getter isEntityTypeCP!: boolean
   @Getter isEntityTypeSP!: boolean
   @Getter isEntityTypeGP!: boolean
