@@ -2,7 +2,7 @@ import { CorrectionTypes, FilingCodes, NameRequestTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const GeneralPartnershipResource: ResourceIF = {
+export const GpCorrectionResource: ResourceIF = {
   entityReference: 'Business',
   contactLabel: 'Business',
   displayName: null, // not used

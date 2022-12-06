@@ -54,15 +54,16 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import { Articles } from '@/components/Alteration/'
 import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany, CompletingParty }
   from '@/components/common/'
 import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
-import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF } from '@/interfaces/'
-import { BenefitCompanyStatementResource } from '@/resources/Correction/'
+import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
+import { BcCorrectionResource, BenCorrectionResource, CccCorrectionResource, UlcCorrectionResource }
+  from '@/resources/Correction/'
 
 @Component({
   components: {
@@ -77,6 +78,12 @@ import { BenefitCompanyStatementResource } from '@/resources/Correction/'
   }
 })
 export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
+  // Global getters
+  @Getter isEntityTypeBC!: boolean
+  @Getter isEntityTypeBEN!: boolean
+  @Getter isEntityTypeCCC!: boolean
+  @Getter isEntityTypeULC!: boolean
+
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
@@ -91,8 +98,14 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMix
   }
 
   /** The resource object for a correction filing. */
-  get correctionResource (): any {
-    return BenefitCompanyStatementResource
+  get correctionResource (): ResourceIF {
+    switch (true) {
+      case this.isEntityTypeBC: return BcCorrectionResource
+      case this.isEntityTypeBEN: return BenCorrectionResource
+      case this.isEntityTypeCCC: return CccCorrectionResource
+      case this.isEntityTypeULC: return UlcCorrectionResource
+    }
+    throw new Error(`Invalid Correction Resource entity type = ${this.getEntityType}`)
   }
 
   /**

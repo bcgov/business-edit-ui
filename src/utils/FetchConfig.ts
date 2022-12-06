@@ -90,6 +90,12 @@ export async function FetchConfig (): Promise<any> {
     console.info('Set Siteminder Logout Url to: ' + siteminderLogoutUrl)
   }
 
+  const hotjarId: string = response.data['HOTJAR_ID']
+  if (hotjarId) {
+    (<any>window).hotjarId = hotjarId
+    console.info('Set Hotjar ID.')
+  }
+
   const addressCompleteKey: string = response.data['ADDRESS_COMPLETE_KEY']
   if (addressCompleteKey) {
     (<any>window).addressCompleteKey = addressCompleteKey

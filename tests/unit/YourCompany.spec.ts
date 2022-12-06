@@ -13,9 +13,10 @@ import CorrectNameOptions from '@/components/common/YourCompany/CompanyName/Corr
 import FolioInformation from '@/components/common/YourCompany/FolioInformation.vue'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
 import YourCompany from '@/components/common/YourCompany/YourCompany.vue'
-import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitCompanyStatementResource'
-import { BenefitCompanyResource } from '@/resources/Alteration/BenefitCompanyResource'
-import { SoleProprietorshipResource } from '@/resources/Correction/SoleProprietorshipResource'
+import { BenefitCompanyResource as BenAlterationResource } from '@/resources/Alteration/BenefitCompanyResource'
+import { SoleProprietorshipResource as SpConversionResource } from '@/resources/Conversion/SoleProprietorshipResource'
+import { BenCorrectionResource } from '@/resources/Correction/BenefitCompany'
+import { SpCorrectionResource } from '@/resources/Correction/SoleProprietorship'
 
 Vue.use(Vuetify)
 
@@ -41,7 +42,7 @@ describe('YourCompany in a BEN correction', () => {
   beforeEach(() => {
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.resourceModel = BenefitCompanyStatementResource
+    store.state.resourceModel = BenCorrectionResource
     wrapper = mount(YourCompany, { vuetify, store, localVue })
   })
 
@@ -103,8 +104,8 @@ describe('YourCompany in a SP alteration', () => {
     store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
     store.state.stateModel.entitySnapshot = entitySnapshot
     store.state.stateModel.tombstone.filingType = 'alteration'
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel = BenefitCompanyResource
+    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.state.resourceModel = BenAlterationResource
 
     wrapper = mount(YourCompany, { vuetify, store, localVue })
   })
@@ -141,13 +142,13 @@ describe('YourCompany in a SP alteration', () => {
     expect(wrapper.find('.company-name').text()).toBe('Mock Original Name')
 
     // Set new Name
-    store.state.stateModel.nameRequest.legalName = 'My Sole Prop'
+    store.state.stateModel.nameRequest.legalName = 'My Benefit Company'
     await Vue.nextTick()
 
     const companyInfo = wrapper.findAll('.info-text')
 
-    expect(wrapper.find('.company-name').text()).toBe('My Sole Prop')
-    expect(companyInfo.at(0).text()).toBe('BC Sole Proprietorship')
+    expect(wrapper.find('.company-name').text()).toBe('My Benefit Company')
+    expect(companyInfo.at(0).text()).toBe('BC Benefit Company')
     expect(companyInfo.at(1).text()).toBe('The name of this business will be the current Incorporation ' +
       'Number followed by "B.C. Ltd."')
   })
@@ -224,7 +225,7 @@ describe('YourCompany in a SP conversion', () => {
     store.state.stateModel.summaryMode = false
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.tombstone.filingType = 'conversion'
-    store.state.resourceModel = BenefitCompanyResource
+    store.state.resourceModel = SpConversionResource
     store.state.stateModel.validationFlags.componentValidate = true
     store.state.stateModel.validationFlags.flagsCompanyInfo = flagsCompanyInfo
     wrapper = mount(YourCompany, { vuetify, store, localVue })
@@ -260,7 +261,7 @@ describe('YourCompany in a SP correction', () => {
     store.state.stateModel.summaryMode = false
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.resourceModel = SoleProprietorshipResource
+    store.state.resourceModel = SpCorrectionResource
     store.state.stateModel.validationFlags.componentValidate = true
     store.state.stateModel.validationFlags.flagsCompanyInfo = flagsCompanyInfo
     store.state.stateModel.businessInformation.foundingDate = '2021-04-13T00:00:00+00:00'

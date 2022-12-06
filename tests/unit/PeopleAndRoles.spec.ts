@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { GeneralPartnershipResource } from '@/resources/Change/GeneralPartnershipResource'
-import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitCompanyStatementResource'
+import { BenCorrectionResource } from '@/resources/Correction/BenefitCompany'
 import { getVuexStore } from '@/store/'
 import { mount, shallowMount } from '@vue/test-utils'
 import PeopleAndRoles from '@/components/common/PeopleAndRoles/PeopleAndRoles.vue'
@@ -99,7 +99,7 @@ describe('People And Roles component for Correction', () => {
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.entitySnapshot = {}
-    store.state.resourceModel = BenefitCompanyStatementResource
+    store.state.resourceModel = BenCorrectionResource
 
     wrapperFactory = () => {
       return mount(PeopleAndRoles, { store, vuetify })
