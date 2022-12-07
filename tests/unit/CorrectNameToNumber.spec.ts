@@ -104,6 +104,7 @@ describe('CorrectNameToNumber', () => {
 
     // Verify Data change in store
     expect(store.state.stateModel.nameRequest.legalType).toBe('BEN')
-    expect(store.state.stateModel.nameRequest.legalName).toBeNull()
+    expect(store.state.stateModel.nameRequest.legalName).toBeUndefined()
+    expect(store.state.stateModel.nameRequest.nrNumber).toBeUndefined()
   })
 })
