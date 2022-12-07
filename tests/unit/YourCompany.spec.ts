@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store/'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
 import ConversionNOB from '@/components/Conversion/ConversionNOB.vue'
 // for some reason, ChangeBusinessType cannot be imported by its filename
@@ -15,12 +15,16 @@ import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue
 import YourCompany from '@/components/common/YourCompany/YourCompany.vue'
 import { BenefitCompanyResource as BenAlterationResource } from '@/resources/Alteration/BenefitCompanyResource'
 import { SoleProprietorshipResource as SpConversionResource } from '@/resources/Conversion/SoleProprietorshipResource'
+
 import { BenCorrectionResource } from '@/resources/Correction/BenefitCompany'
+import { CccCorrectionResource } from '@/resources/Correction/CommunityContributionCompany'
+import { GpCorrectionResource } from '@/resources/Correction/GeneralPartnership'
+import { BcCorrectionResource } from '@/resources/Correction/LimitedCompany'
 import { SpCorrectionResource } from '@/resources/Correction/SoleProprietorship'
+import { UlcCorrectionResource } from '@/resources/Correction/UnlimitedLiabilityCompany'
 
 Vue.use(Vuetify)
 
-const localVue = createLocalVue()
 const vuetify = new Vuetify({})
 
 const flagsCompanyInfo = {
@@ -36,14 +40,14 @@ const flagsCompanyInfo = {
 }
 
 describe('YourCompany in a BEN correction', () => {
+  const store = getVuexStore()
   let wrapper: any
-  let store: any = getVuexStore()
 
   beforeEach(() => {
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.resourceModel = BenCorrectionResource
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    wrapper = mount(YourCompany, { vuetify, store })
   })
 
   afterEach(() => {
@@ -86,9 +90,102 @@ describe('YourCompany in a BEN correction', () => {
   })
 })
 
+const tests = [
+  {
+    entityType: 'BEN',
+    resourceModel: BenCorrectionResource,
+    isNumberedCompany: true,
+    expectedOptions: ['correct-new-nr']
+  },
+  {
+    entityType: 'BEN',
+    resourceModel: BenCorrectionResource,
+    isNumberedCompany: false,
+    expectedOptions: ['correct-new-nr', 'correct-name-to-number', 'correct-name']
+  },
+  {
+    entityType: 'CC',
+    resourceModel: CccCorrectionResource,
+    isNumberedCompany: true,
+    expectedOptions: ['correct-new-nr']
+  },
+  {
+    entityType: 'CC',
+    resourceModel: CccCorrectionResource,
+    isNumberedCompany: false,
+    expectedOptions: ['correct-new-nr', 'correct-name-to-number', 'correct-name']
+  },
+  {
+    entityType: 'GP',
+    resourceModel: GpCorrectionResource,
+    isNumberedCompany: false,
+    expectedOptions: ['correct-new-nr']
+  },
+  {
+    entityType: 'BC',
+    resourceModel: BcCorrectionResource,
+    isNumberedCompany: true,
+    expectedOptions: ['correct-new-nr']
+  },
+  {
+    entityType: 'BC',
+    resourceModel: BcCorrectionResource,
+    isNumberedCompany: false,
+    expectedOptions: ['correct-new-nr', 'correct-name-to-number', 'correct-name']
+  },
+  {
+    entityType: 'SP',
+    resourceModel: SpCorrectionResource,
+    isNumberedCompany: false,
+    expectedOptions: ['correct-new-nr']
+  },
+  {
+    entityType: 'ULC',
+    resourceModel: UlcCorrectionResource,
+    isNumberedCompany: true,
+    expectedOptions: ['correct-new-nr']
+  },
+  {
+    entityType: 'ULC',
+    resourceModel: UlcCorrectionResource,
+    isNumberedCompany: false,
+    expectedOptions: ['correct-new-nr', 'correct-name-to-number', 'correct-name']
+  }
+]
+
+for (const test of tests) {
+  const type = test.isNumberedCompany ? 'numbered' : 'named'
+
+  describe('Name Change Options in a correction', () => {
+    const store = getVuexStore()
+
+    it(`sets the correct options for a ${type} ${test.entityType}`, async () => {
+      // init
+      store.state.stateModel.tombstone.filingType = 'correction'
+      store.state.stateModel.tombstone.entityType = test.entityType
+      store.state.resourceModel = test.resourceModel
+
+      // mount
+      const wrapper = mount(YourCompany, {
+        vuetify,
+        store,
+        computed: { isNumberedCompany: () => test.isNumberedCompany }
+      })
+      await Vue.nextTick()
+      const vm = wrapper.vm as any
+
+      // verify
+      expect(vm.nameChangeOptions).toEqual(test.expectedOptions)
+
+      // cleanup
+      wrapper.destroy()
+    })
+  })
+}
+
 describe('YourCompany in a SP alteration', () => {
+  const store = getVuexStore()
   let wrapper: any
-  let store: any = getVuexStore()
 
   const entitySnapshot = {
     businessInfo: {
@@ -107,7 +204,7 @@ describe('YourCompany in a SP alteration', () => {
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.resourceModel = BenAlterationResource
 
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    wrapper = mount(YourCompany, { vuetify, store })
   })
 
   afterEach(() => {
@@ -190,8 +287,9 @@ describe('YourCompany in a SP alteration: formats multiple phone numbers correct
   const outPuts = ['(123) 456-7890', '(098) 765-4321', '(123) 456-7890', '(123) 456-7890', 'N/A', 'N/A']
 
   phoneNumbers.forEach((phoneNumber, index) => {
+    const store = getVuexStore()
     let wrapper: any
-    let store: any = getVuexStore()
+
     beforeEach(() => {
       store.state.stateModel.nameRequest.applicant = {
         fullName: 'Mock Full Name',
@@ -200,7 +298,7 @@ describe('YourCompany in a SP alteration: formats multiple phone numbers correct
       }
       store.state.stateModel.nameRequest.nrNumber = 'NR1234567'
       store.state.stateModel.tombstone.filingType = 'alteration'
-      wrapper = mount(YourCompany, { vuetify, store, localVue })
+      wrapper = mount(YourCompany, { vuetify, store })
     })
 
     afterEach(() => {
@@ -217,8 +315,8 @@ describe('YourCompany in a SP alteration: formats multiple phone numbers correct
 })
 
 describe('YourCompany in a SP conversion', () => {
+  const store = getVuexStore()
   let wrapper: any
-  let store: any = getVuexStore()
 
   beforeEach(() => {
     // Set Original business Data
@@ -228,7 +326,7 @@ describe('YourCompany in a SP conversion', () => {
     store.state.resourceModel = SpConversionResource
     store.state.stateModel.validationFlags.componentValidate = true
     store.state.stateModel.validationFlags.flagsCompanyInfo = flagsCompanyInfo
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    wrapper = mount(YourCompany, { vuetify, store })
   })
 
   afterEach(() => {
@@ -247,14 +345,14 @@ describe('YourCompany in a SP conversion', () => {
 
   it('renders the NatureOfBusiness component with invalid styling', async () => {
     store.state.stateModel.validationFlags.flagsCompanyInfo.isValidNatureOfBusiness = false
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    wrapper = mount(YourCompany, { vuetify, store })
     expect(wrapper.find('#nature-of-business.invalid-section').exists()).toBeTruthy()
   })
 })
 
 describe('YourCompany in a SP correction', () => {
+  const store = getVuexStore()
   let wrapper: any
-  let store: any = getVuexStore()
 
   beforeEach(() => {
     // Set Original business Data
@@ -266,7 +364,7 @@ describe('YourCompany in a SP correction', () => {
     store.state.stateModel.validationFlags.flagsCompanyInfo = flagsCompanyInfo
     store.state.stateModel.businessInformation.foundingDate = '2021-04-13T00:00:00+00:00'
     store.state.stateModel.businessInformation.startDate = '2021-04-13'
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    wrapper = mount(YourCompany, { vuetify, store })
   })
 
   afterEach(() => {
@@ -337,7 +435,7 @@ describe('YourCompany in a SP correction', () => {
 
   it('renders association type for CP', async () => {
     store.state.stateModel.tombstone.entityType = 'CP'
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    wrapper = mount(YourCompany, { vuetify, store })
     expect(wrapper.findComponent(YourCompany).exists()).toBeTruthy()
     expect(wrapper.findComponent(AssociationType).exists()).toBeTruthy()
   })
