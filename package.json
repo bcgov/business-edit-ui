@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "3.9.4",
+  "version": "3.9.5",
   "private": true,
   "appName": "Edit UI",
   "sbcName": "SBC Common Components",
@@ -48,6 +48,7 @@
     "vue": "^2.7.10",
     "vue-affix": "^0.5.2",
     "vue-debounce-decorator": "^1.0.1",
+    "vue-hotjar": "^1.4.0",
     "vue-router": "^3.6.5",
     "vue-the-mask": "^0.11.1",
     "vue2-filters": "^0.14.0",

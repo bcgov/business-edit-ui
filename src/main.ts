@@ -8,6 +8,7 @@ import Vuetify from 'vuetify/lib'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
+import Hotjar from 'vue-hotjar'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
 import { getVueRouter } from '@/router/'
@@ -53,8 +54,16 @@ async function start () {
     })
   }
 
+  // initialize Hotjar
+  const hotjarId: string = window['hotjarId']
+  if (hotjarId) {
+    console.info('Initializing Hotjar...') // eslint-disable-line no-console
+    Vue.use(Hotjar, { id: hotjarId })
+  }
+
   // initialize Launch Darkly
   if (window['ldClientId']) {
+    console.info('Initializing Launch Darkly...') // eslint-disable-line no-console
     await InitLdClient()
   }
 

@@ -40,10 +40,11 @@ import { Action } from 'vuex-class'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF } from '@/interfaces/'
+import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF, ResourceIF }
+  from '@/interfaces/'
 import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
-import { GeneralPartnershipResource, SoleProprietorshipResource } from '@/resources/Correction/'
+import { GpCorrectionResource, SpCorrectionResource } from '@/resources/Correction/'
 
 @Component({
   components: {
@@ -65,9 +66,9 @@ export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTe
   @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF
 
   /** The resource file for a correction filing. */
-  get correctionResource (): any {
-    if (this.isEntityTypeSP) return SoleProprietorshipResource
-    if (this.isEntityTypeGP) return GeneralPartnershipResource
+  get correctionResource (): ResourceIF {
+    if (this.isEntityTypeSP) return SpCorrectionResource
+    if (this.isEntityTypeGP) return GpCorrectionResource
     throw new Error(`Invalid Correction Resource entity type = ${this.getEntityType}`)
   }
 

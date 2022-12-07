@@ -4,8 +4,8 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAndRoles.vue'
 import { getVuexStore } from '@/store/'
-import { GeneralPartnershipResource } from '@/resources/Change/GeneralPartnershipResource'
-import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitCompanyStatementResource'
+import { GeneralPartnershipResource as GpChangeResource } from '@/resources/Change/GeneralPartnershipResource'
+import { BenCorrectionResource } from '@/resources/Correction/BenefitCompany'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
@@ -340,7 +340,7 @@ describe('List People And Roles component for Corrections', () => {
   const wrapperFactory = (orgPeople, propsData = {}) => {
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.resourceModel = BenefitCompanyStatementResource
+    store.state.resourceModel = BenCorrectionResource
     store.state.stateModel.peopleAndRoles.orgPeople = orgPeople
     return mount(ListPeopleAndRoles, { propsData: { ...propsData }, vuetify, store })
   }
@@ -490,7 +490,7 @@ describe('List People And Roles component for Change of Registration', () => {
   const wrapperFactory = (orgPeople, propsData = {}) => {
     store.state.stateModel.tombstone.entityType = 'GP'
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
-    store.state.resourceModel = GeneralPartnershipResource
+    store.state.resourceModel = GpChangeResource
     store.state.stateModel.peopleAndRoles.orgPeople = orgPeople
     return mount(ListPeopleAndRoles, { propsData: { ...propsData }, vuetify, store })
   }

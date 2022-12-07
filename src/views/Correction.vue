@@ -1,7 +1,7 @@
 <template>
   <div>
     <BenCorrection
-      v-if="isEntityTypeBEN"
+      v-if="isBcBenCccUlc"
       :correctionFiling="correctionFiling"
       @fetchError="emitFetchError($event)"
       @haveData="emitHaveData($event)"
@@ -40,7 +40,10 @@ export default class Correction extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessId!: string
   @Getter isRoleStaff!: boolean
+  @Getter isEntityTypeBC!: boolean
   @Getter isEntityTypeBEN!: boolean
+  @Getter isEntityTypeCCC!: boolean
+  @Getter isEntityTypeULC!: boolean
   @Getter isEntityTypeFirm!: boolean
 
   // Global actions
@@ -48,6 +51,13 @@ export default class Correction extends Mixins(CommonMixin) {
   @Action setEntityType!: ActionBindingIF
 
   protected correctionFiling: CorrectionFilingIF = null
+
+  /** True is the entity type is BC/BEN/CCC/ULC. */
+  get isBcBenCccUlc (): boolean {
+    return (
+      this.isEntityTypeBC || this.isEntityTypeBEN || this.isEntityTypeCCC || this.isEntityTypeULC
+    )
+  }
 
   /** True if user is authenticated. */
   get isAuthenticated (): boolean {
@@ -116,7 +126,7 @@ export default class Correction extends Mixins(CommonMixin) {
       // set entity type for misc functionality to work
       // do not proceed if this isn't a BEN or SP/GP correction
       this.setEntityType(filing.business?.legalType)
-      if (!this.isEntityTypeBEN && !this.isEntityTypeFirm) {
+      if (!this.isBcBenCccUlc && !this.isEntityTypeFirm) {
         throw new Error('Invalid correction type')
       }
 

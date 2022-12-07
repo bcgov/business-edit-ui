@@ -1,12 +1,11 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import CreateSpecialResolution from '@/components/SpecialResolution/CreateSpecialResolution.vue'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { HelpSection } from '@/components/common/'
-import { CooperativeResource } from '@/resources/SpecialResolution/CooperativeResource'
+import { CooperativeResource } from '@/resources/SpecialResolution/Cooperative'
 
 Vue.use(Vuetify)
 

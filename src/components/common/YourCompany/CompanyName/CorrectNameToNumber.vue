@@ -47,8 +47,8 @@ export default class CorrectNameToNumber extends Vue {
       // delete the current legal name and NR number
       this.setNameRequest({
         ...this.getNameRequest,
-        legalName: null,
-        nrNumber: null
+        legalName: undefined,
+        nrNumber: undefined
       })
       this.emitIsSaved(true)
     }
