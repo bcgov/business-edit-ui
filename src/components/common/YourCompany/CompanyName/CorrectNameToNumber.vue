@@ -21,12 +21,12 @@ import { Action, Getter } from 'vuex-class'
 
 // Interfaces && enums
 import { ActionBindingIF, NameRequestIF } from '@/interfaces/'
-import { CorrectionTypes } from '@/enums/'
+import { NameChangeOptions } from '@/enums/'
 
 @Component({})
 export default class CorrectNameToNumber extends Vue {
   /** Form Submission Prop */
-  @Prop({ default: null }) readonly formType!: CorrectionTypes
+  @Prop({ default: null }) readonly formType!: NameChangeOptions
 
   @Action setNameRequest!: ActionBindingIF
 
@@ -43,7 +43,8 @@ export default class CorrectNameToNumber extends Vue {
   /** Watch for form submission and emit results. */
   @Watch('formType')
   private async onSubmit (): Promise<any> {
-    if (this.formType === CorrectionTypes.CORRECT_NAME_TO_NUMBER) {
+    // safety check
+    if (this.formType === NameChangeOptions.CORRECT_NAME_TO_NUMBER) {
       // delete the current legal name and NR number
       this.setNameRequest({
         ...this.getNameRequest,

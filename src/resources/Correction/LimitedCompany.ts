@@ -1,4 +1,4 @@
-import { CorrectionTypes, FilingCodes, NameRequestTypes } from '@/enums/'
+import { NameChangeOptions, FilingCodes, NameRequestTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
@@ -18,9 +18,9 @@ export const BcCorrectionResource: ResourceIF = {
   },
   changeData: {
     nameChangeOptions: [
-      CorrectionTypes.CORRECT_NEW_NR,
-      CorrectionTypes.CORRECT_NAME_TO_NUMBER,
-      CorrectionTypes.CORRECT_NAME
+      NameChangeOptions.CORRECT_NEW_NR,
+      NameChangeOptions.CORRECT_NAME_TO_NUMBER,
+      NameChangeOptions.CORRECT_NAME
     ],
     orgPersonInfo: {
       orgPersonLabel: 'Directors',
