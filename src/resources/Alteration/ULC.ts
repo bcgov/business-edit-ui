@@ -2,14 +2,14 @@ import { NameChangeOptions, FilingCodes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const BenefitCompanyResource: ResourceIF = {
+export const UlcAlterationResource: ResourceIF = {
   entityReference: 'Company',
   contactLabel: 'Registered Office',
-  displayName: GetCorpFullDescription(CorpTypeCd.BENEFIT_COMPANY),
+  displayName: GetCorpFullDescription(CorpTypeCd.BC_ULC_COMPANY),
   addressLabel: 'Registered Office',
   filingData: {
     filingTypeCode: FilingCodes.ALTERATION,
-    entityType: CorpTypeCd.BENEFIT_COMPANY,
+    entityType: CorpTypeCd.BC_ULC_COMPANY,
     priority: false
   },
   changeData: {

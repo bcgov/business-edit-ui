@@ -69,7 +69,7 @@ export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTe
   get correctionResource (): ResourceIF {
     if (this.isEntityTypeSP) return SpCorrectionResource
     if (this.isEntityTypeGP) return GpCorrectionResource
-    throw new Error(`Invalid Correction Resource entity type = ${this.getEntityType}`)
+    return null
   }
 
   /**
@@ -88,6 +88,10 @@ export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTe
 
       // parse draft correction filing and entity snapshot into store
       this.parseCorrectionFiling(this.correctionFiling, entitySnapshot)
+
+      if (!this.correctionResource) {
+        throw new Error(`Invalid correction resource entity type = ${this.getEntityType}`)
+      }
 
       // set the resources
       this.setResource(this.correctionResource)

@@ -147,7 +147,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   /** Watch for form submission and emit results. */
   @Watch('formType')
   private async onSubmit (): Promise<any> {
-    // safety check
+    // this component should only see correct-new-nr form type
     if (this.formType === NameChangeOptions.CORRECT_NEW_NR) {
       try {
         // Validate and return the name request data

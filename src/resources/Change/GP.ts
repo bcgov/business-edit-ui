@@ -2,32 +2,32 @@ import { NameChangeOptions, FilingCodes, NameRequestTypes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const SoleProprietorshipResource: ResourceIF = {
+export const GpChangeResource: ResourceIF = {
   entityReference: 'Business',
   contactLabel: 'Business',
-  displayName: GetCorpFullDescription(CorpTypeCd.SOLE_PROP),
+  displayName: GetCorpFullDescription(CorpTypeCd.PARTNERSHIP),
   addressLabel: 'Business Addresses',
   filingData: {
     filingTypeCode: FilingCodes.FM_CHANGE,
-    entityType: CorpTypeCd.SOLE_PROP,
+    entityType: CorpTypeCd.PARTNERSHIP,
     priority: false
   },
   changeData: {
     nameChangeOptions: [
       NameChangeOptions.CORRECT_NEW_NR
     ],
-    typeChangeInfo: 'You cannot change the business type of a Sole Proprietorship / DBA. You must form a new ' +
-      'business and dissolve this business once the new business is registered.',
+    typeChangeInfo: 'General Partnership cannot be changed into a Sole Proprietorship. If this is necessary, a new ' +
+      'Name Request Number and Statement of Registration (along with associated fees) will be required.',
     orgPersonInfo: {
-      orgPersonLabel: 'Proprietor',
+      orgPersonLabel: 'Partners',
       orgTypesLabel: 'Business or Corporation',
-      subtitle: 'You can change the legal name, mailing and delivery addresses and the email address of the ' +
-        'individual proprietor. To change to a different proprietor, you must form a new business with that ' +
-        'proprietor and dissolve this registration.',
+      subtitle: 'You must have a minimum of two partners. You can add or remove partners (individual person or ' +
+        'business) as well as change the mailing and delivery addresses and email address of individual people and ' +
+        'business partners.',
       helpSection: {
         header: 'Need Help? Contact Us',
         helpText: [
-          'If you require assistance with changes to the business proprietor please contact us.'
+          'If you require assistance with adding a business partner please contact us.'
         ]
       }
     },

@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import { GeneralPartnershipResource } from '@/resources/Change/GeneralPartnershipResource'
-import { BenCorrectionResource } from '@/resources/Correction/BenefitCompany'
+import { GpChangeResource } from '@/resources/Change/GP'
+import { BenCorrectionResource } from '@/resources/Correction/BEN'
 import { getVuexStore } from '@/store/'
 import { mount, shallowMount } from '@vue/test-utils'
 import PeopleAndRoles from '@/components/common/PeopleAndRoles/PeopleAndRoles.vue'
@@ -203,7 +203,7 @@ describe('People And Roles component for Change of Registration', () => {
   beforeAll(() => {
     store.state.stateModel.tombstone.entityType = 'GP'
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
-    store.state.resourceModel = GeneralPartnershipResource
+    store.state.resourceModel = GpChangeResource
 
     wrapperFactory = () => {
       return mount(PeopleAndRoles, {

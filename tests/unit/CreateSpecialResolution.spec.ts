@@ -5,7 +5,7 @@ import { createLocalVue, mount } from '@vue/test-utils'
 import CreateSpecialResolution from '@/components/SpecialResolution/CreateSpecialResolution.vue'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { HelpSection } from '@/components/common/'
-import { CooperativeResource } from '@/resources/SpecialResolution/Cooperative'
+import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/CP'
 
 Vue.use(Vuetify)
 
@@ -45,7 +45,7 @@ describe('Special Resolution Form component', () => {
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.resourceModel = CooperativeResource
+    store.state.resourceModel = CpSpecialResolutionResource
     store.state.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
     store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
     store.state.stateModel.summaryMode = false
@@ -86,7 +86,7 @@ describe('Special Resolution Form component', () => {
     const descText = wrapper.find('#sample-resolution-section .section-description')
 
     expect(descText.exists()).toBe(true)
-    expect(descText.text()).toContain(CooperativeResource.changeData.specialResolution.sampleFormSection.text)
+    expect(descText.text()).toContain(CpSpecialResolutionResource.changeData.specialResolution.sampleFormSection.text)
   })
 
   it('renders the form input', async () => {

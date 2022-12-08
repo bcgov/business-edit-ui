@@ -5,7 +5,7 @@ import { getVuexStore } from '@/store/'
 import { mount } from '@vue/test-utils'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
 import { AddressIF, AddressesIF } from '@/interfaces/stepper-interfaces/YourCompany/address-interfaces'
-import { BenefitCompanyResource } from '@/resources/Alteration/BenefitCompanyResource'
+import { BenAlterationResource } from '@/resources/Alteration/BEN'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()
@@ -58,7 +58,7 @@ describe('summary mode', () => {
   beforeAll(() => {
     // init entity type
     store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.resourceModel = BenefitCompanyResource
+    store.state.resourceModel = BenAlterationResource
   })
 
   it('displays the correct sections', () => {

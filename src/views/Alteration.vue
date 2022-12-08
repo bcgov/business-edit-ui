@@ -121,8 +121,8 @@ import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF }
   from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { BenefitCompanyResource, LimitedCompanyResource, CommunityContributionCompanyResource,
-  UnlimitedLiabilityCompanyResource } from '@/resources/Alteration/'
+import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
+  from '@/resources/Alteration/'
 
 @Component({
   components: {
@@ -179,10 +179,12 @@ export default class Alteration extends Mixins(
 
   /** The resource file for an alteration filing. */
   get alterationResource (): ResourceIF {
-    if (this.isEntityTypeBEN) return BenefitCompanyResource
-    if (this.isEntityTypeBC) return LimitedCompanyResource
-    if (this.isEntityTypeCCC) return CommunityContributionCompanyResource
-    if (this.isEntityTypeULC) return UnlimitedLiabilityCompanyResource
+    switch (true) {
+      case this.isEntityTypeBC: return BcAlterationResource
+      case this.isEntityTypeBEN: return BenAlterationResource
+      case this.isEntityTypeCCC: return CccAlterationResource
+      case this.isEntityTypeULC: return UlcAlterationResource
+    }
     return null
   }
 
@@ -232,20 +234,19 @@ export default class Alteration extends Mixins(
         this.parseEntitySnapshot(entitySnapshot)
       }
 
-      if (this.alterationResource) {
-        // set the specific resource
-        this.setResource(this.alterationResource)
-
-        // initialize Fee Summary data
-        const filingData = [this.alterationResource.filingData]
-        filingData.forEach(fd => {
-          fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
-        })
-        this.setFilingData(filingData)
-      } else {
-        // go to catch()
-        throw new Error(`Invalid Alteration resources entity type = ${this.getEntityType}`)
+      if (!this.alterationResource) {
+        throw new Error(`Invalid alteration resource entity type = ${this.getEntityType}`)
       }
+
+      // set the specific resource
+      this.setResource(this.alterationResource)
+
+      // initialize Fee Summary data
+      const filingData = [this.alterationResource.filingData]
+      filingData.forEach(fd => {
+        fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
+      })
+      this.setFilingData(filingData)
 
       // update the current fees for the Filing
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)

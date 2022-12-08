@@ -43,7 +43,7 @@ export default class CorrectNameToNumber extends Vue {
   /** Watch for form submission and emit results. */
   @Watch('formType')
   private async onSubmit (): Promise<any> {
-    // safety check
+    // this component should only see correct-name-to-number form type
     if (this.formType === NameChangeOptions.CORRECT_NAME_TO_NUMBER) {
       // delete the current legal name and NR number
       this.setNameRequest({

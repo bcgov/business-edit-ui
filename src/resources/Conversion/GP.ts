@@ -1,16 +1,17 @@
-import { NameChangeOptions, FilingCodes, NameRequestTypes } from '@/enums/'
+import { NameChangeOptions, FilingCodes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const GeneralPartnershipResource: ResourceIF = {
+export const GpConversionResource: ResourceIF = {
   entityReference: 'Business',
   contactLabel: 'Business',
   displayName: GetCorpFullDescription(CorpTypeCd.PARTNERSHIP),
   addressLabel: 'Business Addresses',
   filingData: {
-    filingTypeCode: FilingCodes.FM_CHANGE,
+    filingTypeCode: FilingCodes.FM_CONVERSION,
     entityType: CorpTypeCd.PARTNERSHIP,
-    priority: false
+    priority: false,
+    waiveFees: true
   },
   changeData: {
     nameChangeOptions: [
@@ -23,19 +24,8 @@ export const GeneralPartnershipResource: ResourceIF = {
       orgTypesLabel: 'Business or Corporation',
       subtitle: 'You must have a minimum of two partners. You can add or remove partners (individual person or ' +
         'business) as well as change the mailing and delivery addresses and email address of individual people and ' +
-        'business partners.',
-      helpSection: {
-        header: 'Need Help? Contact Us',
-        helpText: [
-          'If you require assistance with adding a business partner please contact us.'
-        ]
-      }
-    },
-    nameRequestTypes: [
-      NameRequestTypes.CHANGE_OF_NAME
-    ]
+        'business partners.'
+    }
   },
-  certifyClause: 'Note: It is an offence to make or assist in making a false or misleading statement in a record ' +
-    'filed under section 90.4 of the Partnership Act. A person who commits this offence is subject to a maximum ' +
-    'fine of $5,000.'
+  certifyClause: null // not used
 }

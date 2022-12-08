@@ -1,8 +1,7 @@
-import { AccountTypes, ActionTypes, CoopTypes, CorrectionErrorTypes, FilingCodes, FilingNames,
-  FilingTypes, PartyTypes } from '@/enums/'
+import { AccountTypes, ActionTypes, CoopTypes, CorrectionErrorTypes, FilingNames, FilingTypes,
+  PartyTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF,
-  CertifyIF,
+import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF,
   NameTranslationIF, FilingDataIF, StateIF, EffectiveDateTimeIF, FlagsReviewCertifyIF,
   FlagsCompanyInfoIF, ResolutionsIF, FeesIF, ResourceIF, EntitySnapshotIF, ValidationFlagsIF,
   CorrectionInformationIF }

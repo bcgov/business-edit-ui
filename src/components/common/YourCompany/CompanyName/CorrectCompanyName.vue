@@ -54,7 +54,7 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
   /** Watch for form submission and emit results. */
   @Watch('formType')
   private onSubmit (): void {
-    // safety check
+    // this component should only see correct-name form type
     if (this.formType === NameChangeOptions.CORRECT_NAME) {
       // set the new company name
       this.setNameRequest({

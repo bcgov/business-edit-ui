@@ -105,7 +105,7 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMix
       case this.isEntityTypeCCC: return CccCorrectionResource
       case this.isEntityTypeULC: return UlcCorrectionResource
     }
-    throw new Error(`Invalid Correction Resource entity type = ${this.getEntityType}`)
+    return null
   }
 
   /**
@@ -124,6 +124,10 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMix
 
       // parse draft correction filing and entity snapshot into store
       this.parseCorrectionFiling(this.correctionFiling, entitySnapshot)
+
+      if (!this.correctionResource) {
+        throw new Error(`Invalid correction resource entity type = ${this.getEntityType}`)
+      }
 
       // set the resources
       this.setResource(this.correctionResource)

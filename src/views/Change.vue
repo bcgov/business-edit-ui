@@ -95,7 +95,7 @@ import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Change/'
+import { SpChangeResource, GpChangeResource } from '@/resources/Change/'
 
 @Component({
   components: {
@@ -152,8 +152,8 @@ export default class Change extends Mixins(
 
   /** The resource file for a firm change filing. */
   get firmChangeResource (): ResourceIF {
-    if (this.isEntityTypeSP) return SoleProprietorshipResource
-    if (this.isEntityTypeGP) return GeneralPartnershipResource
+    if (this.isEntityTypeSP) return SpChangeResource
+    if (this.isEntityTypeGP) return GpChangeResource
     return null
   }
 
@@ -203,16 +203,15 @@ export default class Change extends Mixins(
         this.parseEntitySnapshot(entitySnapshot)
       }
 
-      if (this.firmChangeResource) {
-        // set the specific resource
-        this.setResource(this.firmChangeResource)
-
-        // initialize Fee Summary data
-        this.setFilingData([this.firmChangeResource.filingData])
-      } else {
-        // go to catch()
+      if (!this.firmChangeResource) {
         throw new Error(`Invalid change resource entity type = ${this.getEntityType}`)
       }
+
+      // set the specific resource
+      this.setResource(this.firmChangeResource)
+
+      // initialize Fee Summary data
+      this.setFilingData([this.firmChangeResource.filingData])
 
       // update the current fees for the Filing
       await this.setCurrentFeesFromFilingData()
