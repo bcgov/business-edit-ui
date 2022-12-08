@@ -4,8 +4,8 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAndRoles.vue'
 import { getVuexStore } from '@/store/'
-import { GeneralPartnershipResource as GpChangeResource } from '@/resources/Change/GeneralPartnershipResource'
-import { BenCorrectionResource } from '@/resources/Correction/BenefitCompany'
+import { GpChangeResource } from '@/resources/Change/GP'
+import { BenCorrectionResource } from '@/resources/Correction/BEN'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)

@@ -58,7 +58,7 @@
 import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
 import { CorrectNameOptionIF } from '@/interfaces/'
-import { CorrectionTypes } from '@/enums/'
+import { NameChangeOptions } from '@/enums/'
 
 // for some reason, CorrectXXX cannot be imported from ./
 // (it breaks a bunch of unit tests)
@@ -85,27 +85,27 @@ export default class CorrectNameOptions extends Vue {
   // local properties
   protected displayedOptions: Array<CorrectNameOptionIF> = []
   protected panel: number = null
-  protected formType: CorrectionTypes = null
-  protected currentFormType: CorrectionTypes = null
+  protected formType: NameChangeOptions = null
+  protected currentFormType: NameChangeOptions = null
   protected isLoading = false
   protected isFormValid = false
   protected validateNameChange = false
 
   readonly correctionNameOptions: Array<CorrectNameOptionIF> = [
     {
-      id: CorrectionTypes.CORRECT_NAME,
+      id: NameChangeOptions.CORRECT_NAME,
       title: 'Edit the company name',
       description: 'Correct typographical errors in the existing company name.',
       component: CorrectCompanyName
     },
     {
-      id: CorrectionTypes.CORRECT_NAME_TO_NUMBER,
+      id: NameChangeOptions.CORRECT_NAME_TO_NUMBER,
       title: 'Use the incorporation number as the name',
       description: null,
       component: CorrectNameToNumber
     },
     {
-      id: CorrectionTypes.CORRECT_NEW_NR,
+      id: NameChangeOptions.CORRECT_NEW_NR,
       title: 'Use a new name request number',
       description: 'Enter the new Name Request Number (e.g., NR 1234567) and either the applicant phone number ' +
         'OR the applicant email that was used when the name was requested.',
@@ -139,7 +139,7 @@ export default class CorrectNameOptions extends Vue {
   }
 
   /** Identify the current form */
-  protected identifyForm (type: CorrectionTypes) {
+  protected identifyForm (type: NameChangeOptions) {
     this.currentFormType = type
     this.isFormValid = false
   }

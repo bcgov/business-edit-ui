@@ -6,7 +6,7 @@ import { createLocalVue, mount } from '@vue/test-utils'
 import ConversionSummary from '@/components/Conversion/ConversionSummary.vue'
 import NatureOfBusiness from '@/components/common/YourCompany/NatureOfBusiness.vue'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
-import { GeneralPartnershipResource } from '@/resources/Change/GeneralPartnershipResource'
+import { GpChangeResource } from '@/resources/Change/GP'
 
 Vue.use(Vuetify)
 
@@ -53,7 +53,7 @@ describe('Conversion Summary component', () => {
     store.state.stateModel.entitySnapshot = entitySnapshot
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.stateModel.businessInformation = { ...entitySnapshot.businessInfo }
-    store.state.resourceModel = GeneralPartnershipResource
+    store.state.resourceModel = GpChangeResource
   })
 
   beforeEach(() => {

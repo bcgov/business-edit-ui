@@ -1,1 +1,1 @@
-export * from './Cooperative'
+export * from './CP'

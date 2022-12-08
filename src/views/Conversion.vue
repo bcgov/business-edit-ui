@@ -57,7 +57,7 @@ import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, EntitySnapshotIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Conversion/'
+import { SpConversionResource, GpConversionResource } from '@/resources/Conversion/'
 import { ConversionSummary } from '@/components/Conversion'
 import { StatusCodes } from 'http-status-codes'
 
@@ -101,8 +101,8 @@ export default class Conversion extends Mixins(
 
   /** The resource file for a firm conversion filing. */
   get firmConversionResource (): any {
-    if (this.isEntityTypeSP) return SoleProprietorshipResource
-    if (this.isEntityTypeGP) return GeneralPartnershipResource
+    if (this.isEntityTypeSP) return SpConversionResource
+    if (this.isEntityTypeGP) return GpConversionResource
     return null
   }
 
@@ -160,16 +160,15 @@ export default class Conversion extends Mixins(
         this.parseEntitySnapshot(entitySnapshot)
       }
 
-      if (this.firmConversionResource) {
-        // set the specific resource
-        this.setResource(this.firmConversionResource)
-
-        // initialize Fee Summary data
-        this.setFilingData([this.firmConversionResource.filingData])
-      } else {
-        // go to catch()
+      if (!this.firmConversionResource) {
         throw new Error(`Invalid conversion resource entity type = ${this.getEntityType}`)
       }
+
+      // set the specific resource
+      this.setResource(this.firmConversionResource)
+
+      // initialize Fee Summary data
+      this.setFilingData([this.firmConversionResource.filingData])
 
       // update the current fees for the Filing
       await this.setCurrentFeesFromFilingData()

@@ -1,21 +1,21 @@
-import { CorrectionTypes, FilingCodes, NameRequestTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { NameChangeOptions, FilingCodes } from '@/enums/'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const SpCorrectionResource: ResourceIF = {
+export const SpConversionResource: ResourceIF = {
   entityReference: 'Business',
   contactLabel: 'Business',
-  displayName: null, // not used
-  entityType: CorpTypeCd.SOLE_PROP,
+  displayName: GetCorpFullDescription(CorpTypeCd.SOLE_PROP),
   addressLabel: 'Business Addresses',
   filingData: {
-    filingTypeCode: FilingCodes.FM_CORRECTION,
+    filingTypeCode: FilingCodes.FM_CONVERSION,
     entityType: CorpTypeCd.SOLE_PROP,
-    priority: false
+    priority: false,
+    waiveFees: true
   },
   changeData: {
     nameChangeOptions: [
-      CorrectionTypes.CORRECT_NEW_NR
+      NameChangeOptions.CORRECT_NEW_NR
     ],
     typeChangeInfo: 'You cannot change the business type of a Sole Proprietorship / DBA. You must form a new ' +
       'business and dissolve this business once the new business is registered.',
@@ -25,12 +25,7 @@ export const SpCorrectionResource: ResourceIF = {
       subtitle: 'You can change the legal name, mailing and delivery addresses and the email address of the ' +
         'individual proprietor. To change to a different proprietor, you must form a new business with that ' +
         'proprietor and dissolve this registration.'
-    },
-    nameRequestTypes: [
-      NameRequestTypes.CHANGE_OF_NAME
-    ]
+    }
   },
-  certifyClause: 'Note: It is an offence to make or assist in making a false or misleading statement in a record ' +
-    'filed under section 90.4 of the Partnership Act. A person who commits this offence is subject to a maximum ' +
-    'fine of $5,000.'
+  certifyClause: null // not used
 }

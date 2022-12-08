@@ -66,7 +66,7 @@ import { Action, Getter } from 'vuex-class'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { CommonMixin, NameRequestMixin } from '@/mixins/'
 import { ActionBindingIF, ConfirmDialogType, NameRequestIF, NrCorrectionIF, NrResponseIF } from '@/interfaces/'
-import { CorrectionTypes } from '@/enums/'
+import { NameChangeOptions } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 
 @Component({
@@ -82,7 +82,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   }
 
   /** The form type. */
-  @Prop({ default: null }) readonly formType!: CorrectionTypes
+  @Prop({ default: null }) readonly formType!: NameChangeOptions
 
   /** Whether to perform validation. */
   @Prop({ default: false }) readonly validate!: boolean
@@ -147,7 +147,8 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   /** Watch for form submission and emit results. */
   @Watch('formType')
   private async onSubmit (): Promise<any> {
-    if (this.formType === CorrectionTypes.CORRECT_NEW_NR) {
+    // this component should only see correct-new-nr form type
+    if (this.formType === NameChangeOptions.CORRECT_NEW_NR) {
       try {
         // Validate and return the name request data
         const nr: NrResponseIF = await this.validateNameRequest(

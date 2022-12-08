@@ -1,4 +1,4 @@
-import { CorrectionTypes, NameRequestTypes } from '@/enums/'
+import { NameChangeOptions, NameRequestTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { HelpSectionIF, FilingDataIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
 
@@ -13,7 +13,7 @@ export interface ResourceIF {
   description?: string // BEN corrections only
   filingData: FilingDataIF
   changeData?: {
-    nameChangeOptions?: Array<CorrectionTypes>
+    nameChangeOptions?: Array<NameChangeOptions>
     typeChangeInfo?: string
     orgPersonInfo?: {
       orgPersonLabel: string

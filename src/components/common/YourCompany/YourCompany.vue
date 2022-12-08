@@ -314,7 +314,7 @@ import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameOptions,
   NameTranslation, NatureOfBusiness, OfficeAddresses, BusinessStartDate } from './'
 import { CommonMixin, DateMixin, NameRequestMixin } from '@/mixins/'
-import { CoopTypes, CorrectionTypes } from '@/enums/'
+import { CoopTypes, NameChangeOptions } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ConversionNOB } from '@/components/Conversion'
 
@@ -488,11 +488,13 @@ export default class YourCompany extends Mixins(
   }
 
   /** The current options for change of name correction or edit. */
-  get nameChangeOptions (): Array<CorrectionTypes> {
-    // remove name-to-numbered-company option when already a numbered company
+  get nameChangeOptions (): Array<NameChangeOptions> {
+    // if this is a numbered company, remove correct-name and name-to-number options
     if (this.isNumberedCompany) {
-      return this.getResource.changeData.nameChangeOptions
-        .filter(option => option !== CorrectionTypes.CORRECT_NAME_TO_NUMBER)
+      return this.getResource.changeData.nameChangeOptions.filter(option => (
+        option !== NameChangeOptions.CORRECT_NAME &&
+        option !== NameChangeOptions.CORRECT_NAME_TO_NUMBER
+      ))
     }
     return this.getResource.changeData.nameChangeOptions
   }

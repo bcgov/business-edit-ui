@@ -19,8 +19,7 @@ export function FilingTypeToName (type: FilingTypes): string {
     case FilingTypes.CORRECTION: return FilingNames.CORRECTION
     case FilingTypes.INCORPORATION_APPLICATION: return FilingNames.INCORPORATION_APPLICATION
     case FilingTypes.REGISTRATION: return FilingNames.REGISTRATION
+    case FilingTypes.SPECIAL_RESOLUTION: return FilingNames.SPECIAL_RESOLUTION
+    default: return CamelCaseToWords(type) // fallback for unknown filings
   }
-
-  // fallback for unknown filings
-  return CamelCaseToWords(type)
 }

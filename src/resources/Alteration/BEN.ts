@@ -1,21 +1,21 @@
-import { CorrectionTypes, FilingCodes } from '@/enums/'
+import { NameChangeOptions, FilingCodes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const LimitedCompanyResource: ResourceIF = {
+export const BenAlterationResource: ResourceIF = {
   entityReference: 'Company',
   contactLabel: 'Registered Office',
-  displayName: GetCorpFullDescription(CorpTypeCd.BC_COMPANY),
+  displayName: GetCorpFullDescription(CorpTypeCd.BENEFIT_COMPANY),
   addressLabel: 'Registered Office',
   filingData: {
     filingTypeCode: FilingCodes.ALTERATION,
-    entityType: CorpTypeCd.BC_COMPANY,
+    entityType: CorpTypeCd.BENEFIT_COMPANY,
     priority: false
   },
   changeData: {
     nameChangeOptions: [
-      CorrectionTypes.CORRECT_NEW_NR,
-      CorrectionTypes.CORRECT_NAME_TO_NUMBER
+      NameChangeOptions.CORRECT_NEW_NR,
+      NameChangeOptions.CORRECT_NAME_TO_NUMBER
     ]
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +

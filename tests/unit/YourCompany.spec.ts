@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store/'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
 import ConversionNOB from '@/components/Conversion/ConversionNOB.vue'
+
 // for some reason, ChangeBusinessType cannot be imported by its filename
 // also, it needs to precede the other imports
 // (otherwise a bunch of tests in this file fail)
@@ -13,14 +14,12 @@ import CorrectNameOptions from '@/components/common/YourCompany/CompanyName/Corr
 import FolioInformation from '@/components/common/YourCompany/FolioInformation.vue'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
 import YourCompany from '@/components/common/YourCompany/YourCompany.vue'
-import { BenefitCompanyResource as BenAlterationResource } from '@/resources/Alteration/BenefitCompanyResource'
-import { SoleProprietorshipResource as SpConversionResource } from '@/resources/Conversion/SoleProprietorshipResource'
-import { BenCorrectionResource } from '@/resources/Correction/BenefitCompany'
-import { SpCorrectionResource } from '@/resources/Correction/SoleProprietorship'
+import { BenAlterationResource } from '@/resources/Alteration/BEN'
+import { SpConversionResource } from '@/resources/Conversion/SP'
+import { BenCorrectionResource } from '@/resources/Correction/BEN'
+import { SpCorrectionResource } from '@/resources/Correction/SP'
 
 Vue.use(Vuetify)
-
-const localVue = createLocalVue()
 const vuetify = new Vuetify({})
 
 const flagsCompanyInfo = {
@@ -36,14 +35,14 @@ const flagsCompanyInfo = {
 }
 
 describe('YourCompany in a BEN correction', () => {
+  const store = getVuexStore()
   let wrapper: any
-  let store: any = getVuexStore()
 
   beforeEach(() => {
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.resourceModel = BenCorrectionResource
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    wrapper = mount(YourCompany, { vuetify, store })
   })
 
   afterEach(() => {
@@ -87,8 +86,8 @@ describe('YourCompany in a BEN correction', () => {
 })
 
 describe('YourCompany in a SP alteration', () => {
+  const store = getVuexStore()
   let wrapper: any
-  let store: any = getVuexStore()
 
   const entitySnapshot = {
     businessInfo: {
@@ -107,7 +106,7 @@ describe('YourCompany in a SP alteration', () => {
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.resourceModel = BenAlterationResource
 
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    wrapper = mount(YourCompany, { vuetify, store })
   })
 
   afterEach(() => {
@@ -190,8 +189,9 @@ describe('YourCompany in a SP alteration: formats multiple phone numbers correct
   const outPuts = ['(123) 456-7890', '(098) 765-4321', '(123) 456-7890', '(123) 456-7890', 'N/A', 'N/A']
 
   phoneNumbers.forEach((phoneNumber, index) => {
+    const store = getVuexStore()
     let wrapper: any
-    let store: any = getVuexStore()
+
     beforeEach(() => {
       store.state.stateModel.nameRequest.applicant = {
         fullName: 'Mock Full Name',
@@ -200,7 +200,7 @@ describe('YourCompany in a SP alteration: formats multiple phone numbers correct
       }
       store.state.stateModel.nameRequest.nrNumber = 'NR1234567'
       store.state.stateModel.tombstone.filingType = 'alteration'
-      wrapper = mount(YourCompany, { vuetify, store, localVue })
+      wrapper = mount(YourCompany, { vuetify, store })
     })
 
     afterEach(() => {
@@ -217,8 +217,8 @@ describe('YourCompany in a SP alteration: formats multiple phone numbers correct
 })
 
 describe('YourCompany in a SP conversion', () => {
+  const store = getVuexStore()
   let wrapper: any
-  let store: any = getVuexStore()
 
   beforeEach(() => {
     // Set Original business Data
@@ -228,7 +228,7 @@ describe('YourCompany in a SP conversion', () => {
     store.state.resourceModel = SpConversionResource
     store.state.stateModel.validationFlags.componentValidate = true
     store.state.stateModel.validationFlags.flagsCompanyInfo = flagsCompanyInfo
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    wrapper = mount(YourCompany, { vuetify, store })
   })
 
   afterEach(() => {
@@ -247,14 +247,14 @@ describe('YourCompany in a SP conversion', () => {
 
   it('renders the NatureOfBusiness component with invalid styling', async () => {
     store.state.stateModel.validationFlags.flagsCompanyInfo.isValidNatureOfBusiness = false
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    wrapper = mount(YourCompany, { vuetify, store })
     expect(wrapper.find('#nature-of-business.invalid-section').exists()).toBeTruthy()
   })
 })
 
 describe('YourCompany in a SP correction', () => {
+  const store = getVuexStore()
   let wrapper: any
-  let store: any = getVuexStore()
 
   beforeEach(() => {
     // Set Original business Data
@@ -266,7 +266,7 @@ describe('YourCompany in a SP correction', () => {
     store.state.stateModel.validationFlags.flagsCompanyInfo = flagsCompanyInfo
     store.state.stateModel.businessInformation.foundingDate = '2021-04-13T00:00:00+00:00'
     store.state.stateModel.businessInformation.startDate = '2021-04-13'
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    wrapper = mount(YourCompany, { vuetify, store })
   })
 
   afterEach(() => {
@@ -337,7 +337,7 @@ describe('YourCompany in a SP correction', () => {
 
   it('renders association type for CP', async () => {
     store.state.stateModel.tombstone.entityType = 'CP'
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    wrapper = mount(YourCompany, { vuetify, store })
     expect(wrapper.findComponent(YourCompany).exists()).toBeTruthy()
     expect(wrapper.findComponent(AssociationType).exists()).toBeTruthy()
   })

@@ -115,9 +115,10 @@ import { CertifySection, CurrentDirectors, DocumentsDelivery, StaffPayment, Tran
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF } from '@/interfaces/'
-import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { CooperativeResource } from '@/resources/SpecialResolution/'
+import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/'
 
 @Component({
   components: {
@@ -176,7 +177,7 @@ export default class SpecialResolution extends Mixins(
 
   /** The resource file for an SpecialResolution filing. */
   get specialResolutionResource (): ResourceIF {
-    if (this.isEntityTypeCP) return CooperativeResource
+    if (this.isEntityTypeCP) return CpSpecialResolutionResource
     return null
   }
 
@@ -234,27 +235,26 @@ export default class SpecialResolution extends Mixins(
         this.parseEntitySnapshot(entitySnapshot)
       }
 
-      if (this.specialResolutionResource) {
-        // set the specific resource
-        this.setResource(this.specialResolutionResource)
-
-        // initialize Fee Summary data
-        const filingData = [this.specialResolutionResource.filingData]
-        if (this.hasBusinessNameChanged) {
-          filingData.push({
-            filingTypeCode: FilingCodes.SPECIAL_RESOLUTION_NAME_CHANGE,
-            entityType: CorpTypeCd.COOP,
-            priority: false
-          })
-        }
-        filingData.forEach(fd => {
-          fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
-        })
-        this.setFilingData(filingData)
-      } else {
-        // go to catch()
-        throw new Error(`Invalid Special Resolution resources entity type = ${this.getEntityType}`)
+      if (!this.specialResolutionResource) {
+        throw new Error(`Invalid special resolution resource entity type = ${this.getEntityType}`)
       }
+
+      // set the specific resource
+      this.setResource(this.specialResolutionResource)
+
+      // initialize Fee Summary data
+      const filingData = [this.specialResolutionResource.filingData]
+      if (this.hasBusinessNameChanged) {
+        filingData.push({
+          filingTypeCode: FilingCodes.SPECIAL_RESOLUTION_NAME_CHANGE,
+          entityType: CorpTypeCd.COOP,
+          priority: false
+        })
+      }
+      filingData.forEach(fd => {
+        fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
+      })
+      this.setFilingData(filingData)
 
       // update the current fees for the Filing
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)

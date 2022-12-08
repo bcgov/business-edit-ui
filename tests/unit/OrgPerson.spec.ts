@@ -4,10 +4,9 @@ import Vuelidate from 'vuelidate'
 import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
 import OrgPerson from '@/components/common/PeopleAndRoles/OrgPerson.vue'
 import { getVuexStore } from '@/store/'
-import { BenCorrectionResource as CorrectionBenefitCompanyResource }
-  from '@/resources/Correction/BenefitCompany'
-import { SoleProprietorshipResource } from '@/resources/Change/SoleProprietorshipResource'
-import { GeneralPartnershipResource } from '@/resources/Change/GeneralPartnershipResource'
+import { BenCorrectionResource } from '@/resources/Correction/BEN'
+import { SpChangeResource } from '@/resources/Change/SP'
+import { GpChangeResource } from '@/resources/Change/GP'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()
@@ -207,7 +206,7 @@ describe('Org/Person component for a BEN Correction filing', () => {
     store.state.stateModel.tombstone.filingType = 'correction'
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.currentDate = '2020-03-30'
-    store.state.resourceModel = CorrectionBenefitCompanyResource
+    store.state.resourceModel = BenCorrectionResource
   })
 
   it('Loads the component and sets data for person', async () => {
@@ -577,7 +576,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'changeOfRegistration',
       name: 'adds new GP partner-person',
       entityType: 'GP',
-      resourceModel: GeneralPartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: NewPersonPartner,
       activeIndex: NaN,
       addPersonHeader: 'Add Person',
@@ -599,7 +598,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'changeOfRegistration',
       name: 'adds new GP partner-organization',
       entityType: 'GP',
-      resourceModel: GeneralPartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: NewOrgPartner,
       activeIndex: NaN,
       addPersonHeader: false,
@@ -621,7 +620,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'changeOfRegistration',
       name: 'changes existing SP proprietor-person',
       entityType: 'SP',
-      resourceModel: SoleProprietorshipResource,
+      resourceModel: SpChangeResource,
       currentOrgPerson: ExistingProprietorPersonData,
       activeIndex: 0,
       addPersonHeader: 'Edit Person',
@@ -643,7 +642,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'changeOfRegistration',
       name: 'changes existing SP proprietor-organization',
       entityType: 'SP',
-      resourceModel: SoleProprietorshipResource,
+      resourceModel: SpChangeResource,
       currentOrgPerson: ExistingProprietorOrgData,
       activeIndex: 0,
       addPersonHeader: false,
@@ -665,7 +664,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'changeOfRegistration',
       name: 'changes existing GP partner-person',
       entityType: 'GP',
-      resourceModel: GeneralPartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: ExistingPartnerPersonData,
       activeIndex: 0,
       addPersonHeader: 'Edit Person',
@@ -687,7 +686,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'changeOfRegistration',
       name: 'changes existing GP partner - organization',
       entityType: 'GP',
-      resourceModel: GeneralPartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: ExistingPartnerOrgData,
       activeIndex: 0,
       addPersonHeader: false,
@@ -709,7 +708,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'adds new SP proprietor-person',
       entityType: 'SP',
-      resourceModel: SoleProprietorshipResource,
+      resourceModel: SpChangeResource,
       currentOrgPerson: NewPersonProprietor,
       activeIndex: NaN,
       addPersonHeader: 'Add Person',
@@ -731,7 +730,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'adds new SP proprietor-organization',
       entityType: 'SP',
-      resourceModel: SoleProprietorshipResource,
+      resourceModel: SpChangeResource,
       currentOrgPerson: NewOrgProprietor,
       activeIndex: NaN,
       addPersonHeader: false,
@@ -753,7 +752,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'adds new GP partner-person',
       entityType: 'GP',
-      resourceModel: GeneralPartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: NewPersonProprietor,
       activeIndex: NaN,
       addPersonHeader: 'Add Person',
@@ -775,7 +774,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'adds new GP partner-organization',
       entityType: 'GP',
-      resourceModel: GeneralPartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: NewOrgProprietor,
       activeIndex: NaN,
       addPersonHeader: false,
@@ -797,7 +796,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'changes existing SP proprietor - person',
       entityType: 'SP',
-      resourceModel: SoleProprietorshipResource,
+      resourceModel: SpChangeResource,
       currentOrgPerson: ExistingProprietorPersonData,
       activeIndex: 0,
       addPersonHeader: 'Edit Person',
@@ -819,7 +818,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'changes existing SP proprietor-organization',
       entityType: 'SP',
-      resourceModel: SoleProprietorshipResource,
+      resourceModel: SpChangeResource,
       currentOrgPerson: ExistingProprietorOrgData,
       activeIndex: 0,
       addPersonHeader: false,
@@ -841,7 +840,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'changes existing GP partner-person',
       entityType: 'GP',
-      resourceModel: GeneralPartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: ExistingPartnerPersonData,
       activeIndex: 0,
       addPersonHeader: 'Edit Person',
@@ -863,7 +862,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'changes existing GP partner-organization',
       entityType: 'GP',
-      resourceModel: GeneralPartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: ExistingPartnerOrgData,
       activeIndex: 0,
       addPersonHeader: false,
@@ -971,13 +970,13 @@ describe('Org/Person component for SP change of registration filing', () => {
     store.state.stateModel.tombstone.currentDate = '2020-03-30'
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel = SoleProprietorshipResource
+    store.state.resourceModel = SpChangeResource
   })
 
   it('displays Confirm Documents checkbox for a replaced-added org-person', () => {
     store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
     store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel = SoleProprietorshipResource
+    store.state.resourceModel = SpChangeResource
 
     const currentOrgPerson = {
       ...NewOrgProprietor,
