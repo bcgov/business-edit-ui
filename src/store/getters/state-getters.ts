@@ -55,37 +55,37 @@ export const isConversionFiling = (state: StateIF): boolean => {
   return (state.stateModel.tombstone.filingType === FilingTypes.CONVERSION)
 }
 
-/** Whether the current filing is a firm Change of Registration. */
+/** Whether the current filing is a Change of Registration for a firm corp class. */
 export const isFirmChangeFiling = (state: StateIF): boolean => {
-  return (isTypeFirm(state) && isChangeRegFiling(state))
+  return (isCorpClassFirm(state) && isChangeRegFiling(state))
 }
 
-/** Whether the current filing is a base Correction. */
-export const isBaseCorrectionFiling = (state: StateIF): boolean => {
-  return (isTypeBase(state) && isCorrectionFiling(state))
+/** Whether the current filing is a Correction for a BC corp class. */
+export const isBcCorrectionFiling = (state: StateIF): boolean => {
+  return (isCorpClassBc(state) && isCorrectionFiling(state))
 }
 
-/** Whether the current filing is a firm Correction. */
+/** Whether the current filing is a Correction for a firm corp class. */
 export const isFirmCorrectionFiling = (state: StateIF): boolean => {
-  return (isTypeFirm(state) && isCorrectionFiling(state))
+  return (isCorpClassFirm(state) && isCorrectionFiling(state))
 }
 
-/** Whether the current filing is a firm Conversion. */
+/** Whether the current filing is a Conversion for a firm corp class. */
 export const isFirmConversionFiling = (state: StateIF): boolean => {
-  return (isTypeFirm(state) && isConversionFiling(state))
+  return (isCorpClassFirm(state) && isConversionFiling(state))
 }
 
-/** Whether the current corrected filing is an Incorporation Application. */
+/** Whether the corrected filing is an Incorporation Application. */
 export const isCorrectedIncorporationApplication = (state: StateIF): boolean => {
   return (getCorrectedFilingType(state) === FilingTypes.INCORPORATION_APPLICATION)
 }
 
-/** Whether the current corrected filing is a Registration. */
+/** Whether the corrected filing is a Registration. */
 export const isCorrectedRegistration = (state: StateIF): boolean => {
   return (getCorrectedFilingType(state) === FilingTypes.REGISTRATION)
 }
 
-/** Whether the current corrected filing is a Change of Registration. */
+/** Whether the corrected filing is a Change of Registration. */
 export const isCorrectedChangeReg = (state: StateIF): boolean => {
   return (getCorrectedFilingType(state) === FilingTypes.CHANGE_OF_REGISTRATION)
 }
@@ -96,53 +96,53 @@ export const getEntityType = (state: StateIF): CorpTypeCd => {
 }
 
 /** Whether the entity is a Benefit Company. */
-export const isTypeBEN = (state: StateIF): boolean => {
+export const isBenefitCompany = (state: StateIF): boolean => {
   return (getEntityType(state) === CorpTypeCd.BENEFIT_COMPANY)
 }
 
 /** Whether the entity is a Cooperative. */
-export const isTypeCP = (state: StateIF): boolean => {
+export const isCoop = (state: StateIF): boolean => {
   return (getEntityType(state) === CorpTypeCd.COOP)
 }
 
 /** Whether the entity is a BC Company. */
-export const isTypeBC = (state: StateIF): boolean => {
+export const isBcCompany = (state: StateIF): boolean => {
   return (getEntityType(state) === CorpTypeCd.BC_COMPANY)
 }
 
 /** Whether the entity is a Community Contribution Company. */
-export const isTypeCCC = (state: StateIF): boolean => {
+export const isBcCcc = (state: StateIF): boolean => {
   return (getEntityType(state) === CorpTypeCd.BC_CCC)
 }
 
 /** Whether the entity is an Unlimited Liability Company. */
-export const isTypeULC = (state: StateIF): boolean => {
+export const isBcUlcCompany = (state: StateIF): boolean => {
   return (getEntityType(state) === CorpTypeCd.BC_ULC_COMPANY)
 }
 
 /** Whether the entity is a Sole Proprietorship. */
-export const isTypeSP = (state: StateIF): boolean => {
+export const isSoleProp = (state: StateIF): boolean => {
   return (getEntityType(state) === CorpTypeCd.SOLE_PROP)
 }
 
 /** Whether the entity is a General Partnership. */
-export const isTypeGP = (state: StateIF): boolean => {
+export const isPartnership = (state: StateIF): boolean => {
   return (getEntityType(state) === CorpTypeCd.PARTNERSHIP)
 }
 
-/** Whether the entity is a base type (BC/BEN/CCC/ULC). */
-export const isTypeBase = (state: StateIF): boolean => {
+/** Whether the entity is of corp class BC (BC/BEN/CCC/ULC). */
+export const isCorpClassBc = (state: StateIF): boolean => {
   return (
-    isTypeBC(state) ||
-    isTypeBEN(state) ||
-    isTypeCCC(state) ||
-    isTypeULC(state)
+    isBcCompany(state) ||
+    isBenefitCompany(state) ||
+    isBcCcc(state) ||
+    isBcUlcCompany(state)
   )
 }
 
 /** Whether the entity is a Firm (GP or SP). */
-export const isTypeFirm = (state: StateIF): boolean => {
-  return (isTypeGP(state) || isTypeSP(state))
+export const isCorpClassFirm = (state: StateIF): boolean => {
+  return (isPartnership(state) || isSoleProp(state))
 }
 
 /** Whether the current account is a premium account. */
@@ -405,7 +405,7 @@ export const isFilingPaying = (state: StateIF): boolean => {
  * - staff payment
  */
 export const hasCorrectionDataChanged = (state: StateIF): boolean => {
-  if (isBaseCorrectionFiling(state)) {
+  if (isBcCorrectionFiling(state)) {
     return (
       hasBusinessNameChanged(state) ||
       hasBusinessTypeChanged(state) ||
@@ -525,7 +525,7 @@ export const hasConversionDataChanged = (state: StateIF): boolean => {
 
 /** Whether the subject correction filing is valid. */
 export const isCorrectionValid = (state: StateIF): boolean => {
-  if (isBaseCorrectionFiling(state)) {
+  if (isBcCorrectionFiling(state)) {
     if (isClientErrorCorrection(state)) {
       return (
         getFlagsCompanyInfo(state).isValidCompanyName &&
@@ -723,7 +723,7 @@ export const getOriginalOfficeAddresses = (state: StateIF): AddressesIF => {
 
 /** True if (registered) mailing address has changed. */
 export const hasMailingChanged = (state: StateIF): boolean => {
-  if (isAlterationFiling(state) || isBaseCorrectionFiling(state)) {
+  if (isAlterationFiling(state) || isBcCorrectionFiling(state)) {
     return !IsSame(
       getOfficeAddresses(state)?.registeredOffice?.mailingAddress,
       getOriginalOfficeAddresses(state)?.registeredOffice?.mailingAddress,
@@ -742,7 +742,7 @@ export const hasMailingChanged = (state: StateIF): boolean => {
 
 /** True if (registered) delivery address has changed. */
 export const hasDeliveryChanged = (state: StateIF): boolean => {
-  if (isAlterationFiling(state) || isBaseCorrectionFiling(state)) {
+  if (isAlterationFiling(state) || isBcCorrectionFiling(state)) {
     return !IsSame(
       getOfficeAddresses(state)?.registeredOffice?.deliveryAddress,
       getOriginalOfficeAddresses(state)?.registeredOffice?.deliveryAddress,

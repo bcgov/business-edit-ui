@@ -6,9 +6,11 @@ import sinon from 'sinon'
 import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
-import FmCorrection from '@/views/Correction/FmCorrection.vue'
+import { Articles } from '@/components/Alteration/'
+import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany, CompletingParty }
+  from '@/components/common/'
+import BcCorrection from '@/views/Correction/BcCorrection.vue'
 import mockRouter from './MockRouter'
-import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common'
 
 Vue.use(Vuetify)
 
@@ -18,7 +20,7 @@ const store = getVuexStore()
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
-describe('Firm Correction component', () => {
+describe('BC Correction component', () => {
   let wrapper: any
   const { assign } = window.location
 
@@ -27,8 +29,8 @@ describe('Firm Correction component', () => {
   sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
   sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
-  store.state.stateModel.tombstone.entityType = 'SP'
-  store.state.stateModel.tombstone.businessId = 'FM1234567'
+  store.state.stateModel.tombstone.entityType = 'BEN'
+  store.state.stateModel.tombstone.businessId = 'BC1234567'
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -39,52 +41,52 @@ describe('Firm Correction component', () => {
 
     // FUTURE
     // GET payment fee for immediate correction
-    // get.withArgs('https://pay.api.url/fees/SP/CORRECTION')
+    // get.withArgs('https://pay.api.url/fees/BEN/CORRECTION')
     //   .returns(Promise.resolve({
     //     data: {
-    //       filingFees: 100.0,
-    //       filingType: 'Correction',
-    //       filingTypeCode: 'CORRECTION',
-    //       futureEffectiveFees: 0,
-    //       priorityFees: 0,
-    //       processingFees: 0,
-    //       serviceFees: 1.5,
-    //       tax: {
-    //         gst: 0,
-    //         pst: 0
+    //       'filingFees': 100.0,
+    //       'filingType': 'Correction',
+    //       'filingTypeCode': 'CORRECTION',
+    //       'futureEffectiveFees': 0,
+    //       'priorityFees': 0,
+    //       'processingFees': 0,
+    //       'serviceFees': 1.5,
+    //       'tax': {
+    //         'gst': 0,
+    //         'pst': 0
     //       },
-    //       total: 101.5
+    //       'total': 101.5
     //     }
     //   }))
 
     // FUTURE
     // GET payment fee for future correction
-    // get.withArgs('https://pay.api.url/fees/SP/CORRECTION?futureEffective=true')
+    // get.withArgs('https://pay.api.url/fees/BEN/CORRECTION?futureEffective=true')
     //   .returns(Promise.resolve({
     //     data: {
-    //       filingFees: 100.0,
-    //       filingType: 'Correction',
-    //       filingTypeCode: 'CORRECTION',
-    //       futureEffectiveFees: 100.0,
-    //       priorityFees: 0,
-    //       processingFees: 0,
-    //       serviceFees: 1.5,
-    //       tax: {
-    //         gst: 0,
-    //         pst: 0
+    //       'filingFees': 100.0,
+    //       'filingType': 'Correction',
+    //       'filingTypeCode': 'CORRECTION',
+    //       'futureEffectiveFees': 100.0,
+    //       'priorityFees': 0,
+    //       'processingFees': 0,
+    //       'serviceFees': 1.5,
+    //       'tax': {
+    //         'gst': 0,
+    //         'pst': 0
     //       },
-    //       total: 201.5
+    //       'total': 201.5
     //     }
     //   }))
 
     // GET business info
-    get.withArgs('businesses/FM1234567')
+    get.withArgs('businesses/BC1234567')
       .returns(Promise.resolve({
-        data: { business: { legalType: 'SP' } }
+        data: { business: { legalType: 'BC' } }
       }))
 
     // GET auth info
-    get.withArgs('https://auth.api.url/entities/FM1234567')
+    get.withArgs('https://auth.api.url/entities/BC1234567')
       .returns(Promise.resolve({
         data: {
           contacts: [
@@ -97,15 +99,33 @@ describe('Firm Correction component', () => {
       }))
 
     // GET addresses
-    get.withArgs('businesses/FM1234567/addresses')
+    get.withArgs('businesses/BC1234567/addresses')
       .returns(Promise.resolve({
         data: {}
       }))
 
     // GET parties
-    get.withArgs('businesses/FM1234567/parties')
+    get.withArgs('businesses/BC1234567/parties')
       .returns(Promise.resolve({
         data: { parties: [] }
+      }))
+
+    // GET share structure
+    get.withArgs('businesses/BC1234567/share-classes')
+      .returns(Promise.resolve({
+        data: { shareClasses: [] }
+      }))
+
+    // GET name translations
+    get.withArgs('businesses/BC1234567/aliases')
+      .returns(Promise.resolve({
+        data: { aliases: [] }
+      }))
+
+    // GET resolutions
+    get.withArgs('businesses/BC1234567/resolutions')
+      .returns(Promise.resolve({
+        data: { resolutions: [] }
       }))
 
     // create a Local Vue and install router on it
@@ -113,34 +133,17 @@ describe('Firm Correction component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'correction' })
-    wrapper = shallowMount(
-      FmCorrection,
-      {
-        localVue,
-        store,
-        router,
-        vuetify,
-        propsData: {
-          correctionFiling: {
-            business: {},
-            correction: { correctedFilingId: 123 },
-            header: {}
-          }
-        },
-        data: () => ({
-          clientError: false
-        }),
-        computed: {
-          isClientErrorCorrection: {
-            get (): boolean {
-              return this.$data.clientError
-            },
-            set (val: boolean) {
-              this.$data.clientError = val
-            }
-          }
+    wrapper = shallowMount(BcCorrection, { localVue,
+      store,
+      router,
+      vuetify,
+      propsData: {
+        correctionFiling: {
+          business: {},
+          correction: { correctedFilingId: 123 },
+          header: {}
         }
-      })
+      } })
 
     // wait for all queries to complete
     await flushPromises()
@@ -152,34 +155,19 @@ describe('Firm Correction component', () => {
     wrapper.destroy()
   })
 
-  it('renders Firm Correction view and default components', () => {
-    expect(wrapper.findComponent(FmCorrection).exists()).toBe(true)
+  it('renders BC Correction view', () => {
+    expect(wrapper.findComponent(BcCorrection).exists()).toBe(true)
+  })
 
-    // Default components
+  it('loads each component', async () => {
     expect(wrapper.findComponent(YourCompany).exists()).toBe(true)
     expect(wrapper.findComponent(PeopleAndRoles).exists()).toBe(true)
+    expect(wrapper.findComponent(ShareStructures).exists()).toBe(true)
+    expect(wrapper.findComponent(Articles).exists()).toBe(true)
     expect(wrapper.findComponent(Detail).exists()).toBe(true)
-    expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
-
-    // Components that are only visable for client Error Corrections
-    expect(wrapper.findComponent(CompletingParty).exists()).toBe(false)
-    expect(wrapper.findComponent(CertifySection).exists()).toBe(false)
-  })
-
-  it('renders Firm Correction view and client error components', async () => {
-    wrapper.vm.clientError = true
-    // a wait needed as change to computed value triggers a re-rendering
-    await Vue.nextTick()
-
     expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
+    expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
     expect(wrapper.findComponent(CompletingParty).exists()).toBe(true)
-    wrapper.vm.clientError = false
-  })
-
-  it('staff payment is defaulted to no fee', () => {
-    // Staff payment No Fee button needs option to be set to NO_FEE enum for the no fee button
-    // to be selected in staff payment component
-    expect(store.state.stateModel.staffPayment.option).toBe(0)
   })
 
   // FUTURE
@@ -189,26 +177,33 @@ describe('Firm Correction component', () => {
     const state = store.state.stateModel
 
     // Validate business identifier
-    expect(state.tombstone.businessId).toBe('FM1234567')
+    expect(state.tombstone.businessId).toBe('BC1234567')
 
     // Validate Business
-    expect(state.businessInformation.legalType).toBe('SP')
-    expect(state.businessInformation.legalName).toBe('Mock Sole Prop')
-    expect(state.businessInformation.identifier).toBe('FM1234567')
+    expect(state.businessInformation.legalType).toBe('BEN')
+    expect(state.businessInformation.legalName).toBe('Mock Business Ltd.')
+    expect(state.businessInformation.identifier).toBe('BC1234567')
 
     // Validate Name Translations
-    expect(state.nameTranslations[0].name).toBe('Mock Sole Prop French')
+    expect(state.nameTranslations[0].name).toBe('Mock Business French Ltd.')
 
-    // Validate Business Office Addresses
+    // Validate Office Addresses
     expect(state.officeAddresses.registeredOffice.deliveryAddress.streetAddress)
-      .toBe('delivery_address - address line one')
+      .toBe('reg delivery_address - address line one')
     expect(state.officeAddresses.recordsOffice.mailingAddress.streetAddress)
-      .toBe('mailing_address - address line two')
+      .toBe('rec mailing_address - address line two')
 
-    // Validate Proprietor
+    // Validate People And Roles
     expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('CAMERON')
     expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.lastName).toBe('BOWLER')
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Proprietor')
+    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Director')
+
+    // Validate Share Structure
+    expect(store.state.stateModel.shareStructureStep.shareClasses[0].name).toBe('Class A Shares')
+    expect(store.state.stateModel.shareStructureStep.shareClasses[0].series[0].name)
+      .toBe('Series A Shares')
+    expect(store.state.stateModel.shareStructureStep.shareClasses[0].series[1].name)
+      .toBe('Series 2 Shares')
 
     // Validate Contact Info
     expect(store.state.stateModel.businessContact.email).toBe('mock@example.com')

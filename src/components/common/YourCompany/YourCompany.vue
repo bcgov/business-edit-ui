@@ -199,7 +199,7 @@
     </div>
 
     <!-- Name Translation(s) (alterations and base corrections only) -->
-    <div v-if="isAlterationFiling || isBaseCorrectionFiling"
+    <div v-if="isAlterationFiling || isBcCorrectionFiling"
       id="name-translate-section"
       class="section-container"
       :class="{'invalid-section': invalidTranslationSection}"
@@ -210,10 +210,10 @@
       />
     </div>
 
-    <v-divider v-if="isTypeCP" class="mx-4 my-1" />
+    <v-divider v-if="isCoop" class="mx-4 my-1" />
 
     <!--- Association Type (coop only) -->
-    <div v-if="isTypeCP"
+    <div v-if="isCoop"
         id="association-type-section"
         class="section-container"
         :class="{'invalid-section': invalidAssociationTypeSection}"
@@ -258,7 +258,7 @@
     </template>
 
     <!-- Recognition Date and Time (alterations and base corrections only) -->
-    <template v-if="isAlterationFiling || isBaseCorrectionFiling">
+    <template v-if="isAlterationFiling || isBcCorrectionFiling">
       <v-divider class="mx-4 my-1" />
 
       <div class="section-container">
@@ -293,7 +293,7 @@
     </template>
 
     <!-- Folio Information (all except SP or GP) -->
-    <template v-if="isPremiumAccount && !isTypeFirm">
+    <template v-if="isPremiumAccount && !isCorpClassFirm">
       <v-divider class="mx-4 my-1" />
 
       <div id="folio-number-section" class="section-container" :class="{'invalid-section': invalidFolioSection}">
@@ -353,9 +353,9 @@ export default class YourCompany extends Mixins(
   @Getter isPremiumAccount!: boolean
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
-  @Getter isTypeFirm!: boolean
-  @Getter isTypeCP!: boolean
-  @Getter isBaseCorrectionFiling!: boolean
+  @Getter isCorpClassFirm!: boolean
+  @Getter isCoop!: boolean
+  @Getter isBcCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
   @Getter getAssociationType!: CoopTypes
@@ -464,7 +464,7 @@ export default class YourCompany extends Mixins(
 
   /** The recognition date or business start date string. */
   get recognitionDateTime (): string {
-    if (this.isBaseCorrectionFiling) {
+    if (this.isBcCorrectionFiling) {
       if (this.getBusinessFoundingDateTime) {
         return this.apiToPacificDateTime(this.getBusinessFoundingDateTime)
       }

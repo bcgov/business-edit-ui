@@ -16,13 +16,13 @@ import { LegalServices } from '@/services/'
 import { ActionBindingIF, CorrectionFilingIF } from '@/interfaces/'
 import { FilingStatus, FilingTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import BaseCorrection from '@/views/Correction/BaseCorrection.vue'
-import FmCorrection from '@/views/Correction/FmCorrection.vue'
+import BcCorrection from '@/views/Correction/BcCorrection.vue'
+import FirmCorrection from '@/views/Correction/FirmCorrection.vue'
 
 @Component({
   components: {
-    BaseCorrection,
-    FmCorrection
+    BcCorrection,
+    FirmCorrection
   }
 })
 export default class Correction extends Mixins(CommonMixin) {
@@ -32,8 +32,8 @@ export default class Correction extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessId!: string
   @Getter isRoleStaff!: boolean
-  @Getter isTypeBase!: boolean
-  @Getter isTypeFirm!: boolean
+  @Getter isCorpClassBc!: boolean
+  @Getter isCorpClassFirm!: boolean
 
   // Global actions
   @Action setFilingId!: ActionBindingIF
@@ -43,8 +43,8 @@ export default class Correction extends Mixins(CommonMixin) {
 
   /** The dynamic component to render. */
   get component (): string {
-    if (this.isTypeBase) return 'BaseCorrection'
-    if (this.isTypeFirm) return 'FmCorrection'
+    if (this.isCorpClassBc) return 'BcCorrection'
+    if (this.isCorpClassFirm) return 'FirmCorrection'
     return null // should never happen
   }
 
@@ -113,9 +113,9 @@ export default class Correction extends Mixins(CommonMixin) {
       }
 
       // set entity type for misc functionality to work
-      // do not proceed if this isn't a BEN or SP/GP correction
+      // do not proceed if this isn't a BC or firm correction
       this.setEntityType(filing.business?.legalType)
-      if (!this.isTypeBase && !this.isTypeFirm) {
+      if (!this.isCorpClassBc && !this.isCorpClassFirm) {
         throw new Error('Invalid correction type')
       }
 

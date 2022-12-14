@@ -40,7 +40,7 @@
       <article id="org-person-summary-section" class="section-container pb-0">
         <v-row no-gutters>
           <v-col cols="12" sm="3">
-            <label>{{ isTypeSP ? 'Proprietor' : 'Partner' }} Information</label>
+            <label>{{ isSoleProp ? 'Proprietor' : 'Partner' }} Information</label>
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-4">
@@ -75,7 +75,7 @@ export default class ConversionSummary extends Vue {
   @Getter havePeopleAndRolesChanged!: boolean
   @Getter getResource!: ResourceIF
   @Getter getCurrentNaics!: NaicsIF
-  @Getter isTypeSP!: boolean
+  @Getter isSoleProp!: boolean
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF

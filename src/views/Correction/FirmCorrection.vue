@@ -1,30 +1,12 @@
 <template>
-  <section id="ben-correction-view">
+  <section id="firm-correction-view">
     <header>
       <h1>{{ entityTitle }}</h1>
     </header>
 
-    <section id="original-filing-date" class="mt-6">
-      <p>
-        <span id="original-filing-date-label">Original Filing Date:</span>
-        {{ originalFilingDate }}
-      </p>
-    </section>
-
-    <section id="benefit-company-statement" class="mt-6">
-      <p>
-        <span id="benefit-company-statement-label">{{ correctionResource.title }}:</span>
-        {{ correctionResource.description }}
-      </p>
-    </section>
-
     <YourCompany class="mt-10" />
 
     <PeopleAndRoles class="mt-10" />
-
-    <ShareStructures class="mt-10" />
-
-    <Articles class="mt-10" />
 
     <template v-if="isClientErrorCorrection">
       <CompletingParty class="mt-10" sectionNumber="1." validate="true" />
@@ -55,34 +37,29 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
-import { Articles } from '@/components/Alteration/'
-import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany, CompletingParty }
+import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany }
   from '@/components/common/'
-import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
+import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
+import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF, ResourceIF }
+  from '@/interfaces/'
 import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
-import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
-import { BcCorrectionResource, BenCorrectionResource, CccCorrectionResource, UlcCorrectionResource }
-  from '@/resources/Correction/'
+import { GpCorrectionResource, SpCorrectionResource } from '@/resources/Correction/'
 
 @Component({
   components: {
     CertifySection,
+    CompletingParty,
     Detail,
     PeopleAndRoles,
-    ShareStructures,
     StaffPayment,
-    YourCompany,
-    Articles,
-    CompletingParty
+    YourCompany
   }
 })
-export default class BaseCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
+export default class FirmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter isTypeBC!: boolean
-  @Getter isTypeBEN!: boolean
-  @Getter isTypeCCC!: boolean
-  @Getter isTypeULC!: boolean
+  @Getter isPartnership!: boolean
+  @Getter isSoleProp!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -92,19 +69,10 @@ export default class BaseCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
   /** The draft correction filing to process. */
   @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF
 
-  /** The original filing date, in Pacific time. */
-  get originalFilingDate (): string {
-    return this.apiToPacificDateLong(this.getCorrectedFilingDate)
-  }
-
-  /** The resource object for a correction filing. */
+  /** The resource file for a correction filing. */
   get correctionResource (): ResourceIF {
-    switch (true) {
-      case this.isTypeBC: return BcCorrectionResource
-      case this.isTypeBEN: return BenCorrectionResource
-      case this.isTypeCCC: return CccCorrectionResource
-      case this.isTypeULC: return UlcCorrectionResource
-    }
+    if (this.isPartnership) return GpCorrectionResource
+    if (this.isSoleProp) return SpCorrectionResource
     return null
   }
 
@@ -155,22 +123,16 @@ export default class BaseCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
       LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),
       LegalServices.fetchAddresses(this.getBusinessId),
-      LegalServices.fetchParties(this.getBusinessId),
-      LegalServices.fetchShareStructure(this.getBusinessId),
-      LegalServices.fetchNameTranslations(this.getBusinessId),
-      LegalServices.fetchResolutions(this.getBusinessId)
+      LegalServices.fetchParties(this.getBusinessId)
     ])
 
-    if (items.length !== 7) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')
 
     return {
       businessInfo: items[0],
       authInfo: items[1],
       addresses: items[2],
-      orgPersons: items[3],
-      shareStructure: items[4],
-      nameTranslations: items[5],
-      nameResolutions: items[6]
+      orgPersons: items[3]
     } as EntitySnapshotIF
   }
 
@@ -185,11 +147,3 @@ export default class BaseCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
   private emitHaveData (haveData = true): void {}
 }
 </script>
-
-<style lang="scss" scoped>
-#original-filing-date-label,
-#benefit-company-statement-label {
-  letter-spacing: -0.04rem;
-  font-weight: bold;
-}
-</style>
