@@ -46,6 +46,7 @@ import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { GpCorrectionResource, SpCorrectionResource } from '@/resources/Correction/'
 
+/** Correction sub-component for corp class "Firm" entities. */
 @Component({
   components: {
     CertifySection,

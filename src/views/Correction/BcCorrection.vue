@@ -65,6 +65,7 @@ import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF } fro
 import { BcCorrectionResource, BenCorrectionResource, CccCorrectionResource, UlcCorrectionResource }
   from '@/resources/Correction/'
 
+/** Correction sub-component for corp class "BC" entities. */
 @Component({
   components: {
     CertifySection,

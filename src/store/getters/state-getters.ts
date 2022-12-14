@@ -130,7 +130,7 @@ export const isPartnership = (state: StateIF): boolean => {
   return (getEntityType(state) === CorpTypeCd.PARTNERSHIP)
 }
 
-/** Whether the entity is of corp class BC (BC/BEN/CCC/ULC). */
+/** Whether the entity is of corp class "BC" (BC/BEN/CCC/ULC). */
 export const isCorpClassBc = (state: StateIF): boolean => {
   return (
     isBcCompany(state) ||
@@ -140,7 +140,7 @@ export const isCorpClassBc = (state: StateIF): boolean => {
   )
 }
 
-/** Whether the entity is a Firm (GP or SP). */
+/** Whether the entity is of corp class "Firm" (GP or SP). */
 export const isCorpClassFirm = (state: StateIF): boolean => {
   return (isPartnership(state) || isSoleProp(state))
 }
