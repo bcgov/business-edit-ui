@@ -7,7 +7,7 @@
 
     <div
       class="section-container"
-      v-if="getBusinessInformation.hasRestrictions || isBaseCorrectionFiling"
+      v-if="getBusinessInformation.hasRestrictions || isBcCorrectionFiling"
       :class="{'invalid-section': invalidCompanyProvisions}">
       <CompanyProvisions
         class="sub-section"
@@ -59,7 +59,7 @@ export default class Articles extends Mixins(CommonMixin) {
   @Getter getHasRightsOrRestrictions!: boolean
   @Getter getIsResolutionDatesValid!: boolean
   @Getter getComponentValidate!: boolean
-  @Getter isBaseCorrectionFiling!: boolean
+  @Getter isBcCorrectionFiling!: boolean
 
   // Global actions
   @Action setProvisionsRemoved!: ActionBindingIF

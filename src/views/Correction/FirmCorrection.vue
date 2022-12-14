@@ -46,6 +46,7 @@ import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { GpCorrectionResource, SpCorrectionResource } from '@/resources/Correction/'
 
+/** Correction sub-component for corp class "Firm" entities. */
 @Component({
   components: {
     CertifySection,
@@ -56,10 +57,10 @@ import { GpCorrectionResource, SpCorrectionResource } from '@/resources/Correcti
     YourCompany
   }
 })
-export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
+export default class FirmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter isTypeGP!: boolean
-  @Getter isTypeSP!: boolean
+  @Getter isPartnership!: boolean
+  @Getter isSoleProp!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -71,8 +72,8 @@ export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTe
 
   /** The resource file for a correction filing. */
   get correctionResource (): ResourceIF {
-    if (this.isTypeGP) return GpCorrectionResource
-    if (this.isTypeSP) return SpCorrectionResource
+    if (this.isPartnership) return GpCorrectionResource
+    if (this.isSoleProp) return SpCorrectionResource
     return null
   }
 

@@ -55,7 +55,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter getHasPlanOfArrangement!: boolean
   @Getter haveOfficeAddressesChanged!: boolean
   @Getter getCompletingParty!: CompletingPartyIF
-  @Getter isBaseCorrectionFiling!: boolean
+  @Getter isBcCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter isClientErrorCorrection!: boolean
   @Getter getAssociationType!: CoopTypes
@@ -155,8 +155,8 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.correction.parties = parties
     }
 
-    // add in data specific to base corrections
-    if (this.isBaseCorrectionFiling) {
+    // add in data specific to corp class BC corrections
+    if (this.isBcCorrectionFiling) {
       filing.correction.nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
       filing.correction.shareStructure = {
         shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses(),
@@ -537,8 +537,8 @@ export default class FilingTemplateMixin extends DateMixin {
     // store Correction Information
     this.setCorrectionInformation(cloneDeep(filing.correction))
 
-    // store Business Information for base corrections
-    if (this.isBaseCorrectionFiling) {
+    // store Business Information for corp class BC corrections
+    if (this.isBcCorrectionFiling) {
       this.setBusinessInformation({
         ...entitySnapshot.businessInfo,
         ...filing.business
@@ -576,8 +576,8 @@ export default class FilingTemplateMixin extends DateMixin {
       }
     ))
 
-    // store Name Translations (base corrections only)
-    if (this.isBaseCorrectionFiling) {
+    // store Name Translations (corp class BC corrections only)
+    if (this.isBcCorrectionFiling) {
       this.setNameTranslations(cloneDeep(
         this.mapNameTranslations(filing.correction.nameTranslations) ||
         this.mapNameTranslations(entitySnapshot.nameTranslations) ||
@@ -601,8 +601,8 @@ export default class FilingTemplateMixin extends DateMixin {
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(cloneDeep(orgPersons))
 
-    // store Share Classes and Resolution Dates (base corrections only)
-    if (this.isBaseCorrectionFiling) {
+    // store Share Classes and Resolution Dates (corp class BC corrections only)
+    if (this.isBcCorrectionFiling) {
       this.setShareClasses(cloneDeep(
         filing.correction.shareStructure?.shareClasses ||
         entitySnapshot.shareStructure.shareClasses

@@ -17,7 +17,7 @@ const store = getVuexStore()
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
-describe('SpecialResolution component', () => {
+describe('Special Resolution component', () => {
   let wrapper: any
   const { assign } = window.location
 

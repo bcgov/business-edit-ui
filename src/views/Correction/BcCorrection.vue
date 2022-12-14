@@ -65,6 +65,7 @@ import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF } fro
 import { BcCorrectionResource, BenCorrectionResource, CccCorrectionResource, UlcCorrectionResource }
   from '@/resources/Correction/'
 
+/** Correction sub-component for corp class "BC" entities. */
 @Component({
   components: {
     CertifySection,
@@ -77,12 +78,12 @@ import { BcCorrectionResource, BenCorrectionResource, CccCorrectionResource, Ulc
     CompletingParty
   }
 })
-export default class BaseCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
+export default class BcCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter isTypeBC!: boolean
-  @Getter isTypeBEN!: boolean
-  @Getter isTypeCCC!: boolean
-  @Getter isTypeULC!: boolean
+  @Getter isBcCompany!: boolean
+  @Getter isBenefitCompany!: boolean
+  @Getter isBcCcc!: boolean
+  @Getter isBcUlcCompany!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -100,10 +101,10 @@ export default class BaseCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
   /** The resource object for a correction filing. */
   get correctionResource (): ResourceIF {
     switch (true) {
-      case this.isTypeBC: return BcCorrectionResource
-      case this.isTypeBEN: return BenCorrectionResource
-      case this.isTypeCCC: return CccCorrectionResource
-      case this.isTypeULC: return UlcCorrectionResource
+      case this.isBcCompany: return BcCorrectionResource
+      case this.isBenefitCompany: return BenCorrectionResource
+      case this.isBcCcc: return CccCorrectionResource
+      case this.isBcUlcCompany: return UlcCorrectionResource
     }
     return null
   }

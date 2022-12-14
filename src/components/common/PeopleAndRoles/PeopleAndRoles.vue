@@ -8,22 +8,22 @@
       </div>
 
       <!-- Instructional people and roles text (base corrections only)-->
-      <article v-if="isBaseCorrectionFiling" class="section-container">
+      <article v-if="isBcCorrectionFiling" class="section-container">
         This application must include the following:
         <ul>
           <li>
             <v-icon v-if="haveMinimumDirectors" color="green darken-2" class="dir-valid">mdi-check</v-icon>
             <v-icon v-else color="red" class="dir-invalid">mdi-close</v-icon>
             <span class="ml-2">
-              <template v-if="isTypeBC || isTypeBEN || isTypeULC">At least one Director</template>
-              <template v-if="isTypeCCC">At least three Directors</template>
+              <template v-if="isBcCompany || isBenefitCompany || isBcUlcCompany">At least one Director</template>
+              <template v-if="isBcCcc">At least three Directors</template>
             </span>
           </li>
         </ul>
       </article>
 
       <!-- Correction section (base corrections only) -->
-      <article v-if="isBaseCorrectionFiling" class="section-container">
+      <article v-if="isBcCorrectionFiling" class="section-container">
         <v-btn
           id="btn-add-person"
           outlined
@@ -49,7 +49,7 @@
         />
 
         <!-- SP add buttons (conversion filing only) -->
-        <div v-if="isTypeSP && isFirmConversionFiling && !haveRequiredProprietor" class="mt-8">
+        <div v-if="isSoleProp && isFirmConversionFiling && !haveRequiredProprietor" class="mt-8">
           <v-btn
             id="sp-btn-add-person"
             outlined
@@ -86,7 +86,7 @@
         </div>
 
         <!-- GP add buttons (change or conversion filings only)-->
-        <div v-if="isTypeGP && (isFirmChangeFiling || isFirmConversionFiling)" class="mt-8">
+        <div v-if="isPartnership && (isFirmChangeFiling || isFirmConversionFiling)" class="mt-8">
           <v-btn
             id="gp-btn-add-person"
             outlined
@@ -174,14 +174,14 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter isRoleStaff!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
-  @Getter isBaseCorrectionFiling!: boolean
+  @Getter isBcCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
-  @Getter isTypeBC!: boolean
-  @Getter isTypeBEN!: boolean
-  @Getter isTypeCCC!: boolean
-  @Getter isTypeGP!: boolean
-  @Getter isTypeSP!: boolean
-  @Getter isTypeULC!: boolean
+  @Getter isBcCompany!: boolean
+  @Getter isBenefitCompany!: boolean
+  @Getter isBcCcc!: boolean
+  @Getter isPartnership!: boolean
+  @Getter isSoleProp!: boolean
+  @Getter isBcUlcCompany!: boolean
 
   // Global actions
   @Action setPeopleAndRoles!: ActionBindingIF
@@ -214,10 +214,10 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   // FUTURE: should move rules and text to resource files
   /** True when the minimum director count is met. */
   get haveMinimumDirectors (): boolean {
-    if (this.isTypeBC || this.isTypeBEN || this.isTypeULC) {
+    if (this.isBcCompany || this.isBenefitCompany || this.isBcUlcCompany) {
       return this.hasRole(RoleTypes.DIRECTOR, 1, CompareModes.AT_LEAST)
     }
-    if (this.isTypeCCC) {
+    if (this.isBcCcc) {
       return this.hasRole(RoleTypes.DIRECTOR, 3, CompareModes.AT_LEAST)
     }
     return false // should never happen
@@ -230,19 +230,19 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       return false
     }
     if (this.isFirmChangeFiling) {
-      if (this.isTypeGP) return this.haveMinimumPartners
-      if (this.isTypeSP) return this.haveRequiredProprietor
+      if (this.isPartnership) return this.haveMinimumPartners
+      if (this.isSoleProp) return this.haveRequiredProprietor
       return false
     }
     if (this.isFirmConversionFiling) {
-      if (this.isTypeGP) return this.haveMinimumPartners
-      if (this.isTypeSP) return this.haveRequiredProprietor
+      if (this.isPartnership) return this.haveMinimumPartners
+      if (this.isSoleProp) return this.haveRequiredProprietor
       return false
     }
     if (this.isCorrectionFiling) {
-      if (this.isTypeGP) return this.haveMinimumPartners
-      if (this.isTypeSP) return this.haveRequiredProprietor
-      if (this.isTypeBC || this.isTypeBEN || this.isTypeCCC || this.isTypeULC) {
+      if (this.isPartnership) return this.haveMinimumPartners
+      if (this.isSoleProp) return this.haveRequiredProprietor
+      if (this.isBcCompany || this.isBenefitCompany || this.isBcCcc || this.isBcUlcCompany) {
         return this.haveMinimumDirectors
       }
       return false
@@ -379,7 +379,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     this.currentOrgPerson.actions = actions
 
     // for firms, use business lookup initially
-    if (this.isTypeGP || this.isTypeSP) {
+    if (this.isPartnership || this.isSoleProp) {
       this.currentOrgPerson.isLookupBusiness = true
     }
 

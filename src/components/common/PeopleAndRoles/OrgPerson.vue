@@ -247,7 +247,7 @@
               </article>
 
               <!-- Roles (base corrections only) -->
-              <article v-if="isBaseCorrectionFiling" class="roles mt-6">
+              <article v-if="isBcCorrectionFiling" class="roles mt-6">
                 <label class="sub-header">Roles</label>
                 <v-row class="roles-row mt-4">
                   <v-col cols="4" class="mt-0" v-if="isPerson">
@@ -388,9 +388,9 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   // Global getter
   @Getter getCurrentDate!: string
   @Getter getResource!: ResourceIF
-  @Getter isBaseCorrectionFiling!: boolean
+  @Getter isBcCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
-  @Getter isTypeFirm!: boolean
+  @Getter isCorpClassFirm!: boolean
   @Getter isRoleStaff!: boolean
 
   // Local variables
@@ -529,7 +529,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     if (this.isFirmConversionFiling) {
       return true
     }
-    if (this.isBaseCorrectionFiling) {
+    if (this.isBcCorrectionFiling) {
       return true
     }
     if (this.isFirmCorrectionFiling) {
@@ -562,7 +562,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       // can add proprietor or partner
       return (this.isNew && (this.isProprietor || this.isPartner))
     }
-    if (this.isBaseCorrectionFiling) {
+    if (this.isBcCorrectionFiling) {
       // base corrections don't use this component
       return false
     }
@@ -716,7 +716,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       }
       person.deliveryAddress = { ...this.inProgressDeliveryAddress }
     }
-    if (this.isBaseCorrectionFiling) {
+    if (this.isBcCorrectionFiling) {
       person.roles = this.setPersonRoles(this.orgPerson)
     } else {
       person.roles = this.orgPerson.roles
@@ -831,7 +831,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       (v: string) => (v?.length <= 30) || 'Cannot exceed 30 characters' // maximum character count
     ]
 
-    if (this.isTypeFirm) {
+    if (this.isCorpClassFirm) {
       this.orgNameRules = [
         (v: string) => !!v?.trim() || 'Business or corporation name is required',
         (v: string) => (v?.length <= 150) || 'Cannot exceed 150 characters' // maximum character count

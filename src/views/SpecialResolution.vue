@@ -147,7 +147,7 @@ export default class SpecialResolution extends Mixins(
   @Getter isPremiumAccount!: boolean
   @Getter getAppValidate!: boolean
   @Getter showFeeSummary!: boolean
-  @Getter isTypeCP!: boolean
+  @Getter isCoop!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -176,9 +176,9 @@ export default class SpecialResolution extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The resource file for an SpecialResolution filing. */
+  /** The resource file for a Special Resolution filing. */
   get specialResolutionResource (): ResourceIF {
-    if (this.isTypeCP) return CpSpecialResolutionResource
+    if (this.isCoop) return CpSpecialResolutionResource
     return null
   }
 
