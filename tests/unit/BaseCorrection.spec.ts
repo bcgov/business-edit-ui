@@ -9,7 +9,7 @@ import { AxiosInstance as axios } from '@/utils/'
 import { Articles } from '@/components/Alteration/'
 import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany, CompletingParty }
   from '@/components/common/'
-import BenCorrection from '@/views/Correction/BenCorrection.vue'
+import BaseCorrection from '@/views/Correction/BaseCorrection.vue'
 import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)
@@ -133,7 +133,7 @@ describe('Benefit Company Correction component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'correction' })
-    wrapper = shallowMount(BenCorrection, { localVue,
+    wrapper = shallowMount(BaseCorrection, { localVue,
       store,
       router,
       vuetify,
@@ -156,7 +156,7 @@ describe('Benefit Company Correction component', () => {
   })
 
   it('renders Benefit Company Correction view', () => {
-    expect(wrapper.findComponent(BenCorrection).exists()).toBe(true)
+    expect(wrapper.findComponent(BaseCorrection).exists()).toBe(true)
   })
 
   it('loads each component', async () => {

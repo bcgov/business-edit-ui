@@ -152,6 +152,10 @@ export default class Alteration extends Mixins(
   @Getter isPremiumAccount!: boolean
   @Getter getAppValidate!: boolean
   @Getter showFeeSummary!: boolean
+  @Getter isTypeBC!: boolean
+  @Getter isTypeBEN!: boolean
+  @Getter isTypeCCC!: boolean
+  @Getter isTypeULC!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -180,10 +184,10 @@ export default class Alteration extends Mixins(
   /** The resource file for an alteration filing. */
   get alterationResource (): ResourceIF {
     switch (true) {
-      case this.isEntityTypeBC: return BcAlterationResource
-      case this.isEntityTypeBEN: return BenAlterationResource
-      case this.isEntityTypeCCC: return CccAlterationResource
-      case this.isEntityTypeULC: return UlcAlterationResource
+      case this.isTypeBC: return BcAlterationResource
+      case this.isTypeBEN: return BenAlterationResource
+      case this.isTypeCCC: return CccAlterationResource
+      case this.isTypeULC: return UlcAlterationResource
     }
     return null
   }

@@ -79,6 +79,8 @@ export default class Conversion extends Mixins(
   @Getter isSummaryMode!: boolean
   @Getter getAppValidate!: boolean
   @Getter showFeeSummary!: boolean
+  @Getter isTypeGP!: boolean
+  @Getter isTypeSP!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -101,8 +103,8 @@ export default class Conversion extends Mixins(
 
   /** The resource file for a firm conversion filing. */
   get firmConversionResource (): any {
-    if (this.isEntityTypeSP) return SpConversionResource
-    if (this.isEntityTypeGP) return GpConversionResource
+    if (this.isTypeGP) return GpConversionResource
+    if (this.isTypeSP) return SpConversionResource
     return null
   }
 

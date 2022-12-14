@@ -7,20 +7,23 @@
         <label class="font-weight-bold pl-2">{{ orgPersonLabel }}</label>
       </div>
 
-      <!-- Instructional people and roles text (BEN corrections only)-->
-      <article v-if="isBenCorrectionFiling" class="section-container">
+      <!-- Instructional people and roles text (base corrections only)-->
+      <article v-if="isBaseCorrectionFiling" class="section-container">
         This application must include the following:
         <ul>
           <li>
-            <v-icon v-if="dirValid" color="green darken-2" class="dir-valid">mdi-check</v-icon>
+            <v-icon v-if="haveMinimumDirectors" color="green darken-2" class="dir-valid">mdi-check</v-icon>
             <v-icon v-else color="red" class="dir-invalid">mdi-close</v-icon>
-            <span class="ml-2">At least one Director</span>
+            <span class="ml-2">
+              <template v-if="isTypeBC || isTypeBEN || isTypeULC">At least one Director</template>
+              <template v-if="isTypeCCC">At least three Directors</template>
+            </span>
           </li>
         </ul>
       </article>
 
-      <!-- Correction section (BEN corrections only) -->
-      <article v-if="isBenCorrectionFiling" class="section-container">
+      <!-- Correction section (base corrections only) -->
+      <article v-if="isBaseCorrectionFiling" class="section-container">
         <v-btn
           id="btn-add-person"
           outlined
@@ -46,7 +49,7 @@
         />
 
         <!-- SP add buttons (conversion filing only) -->
-        <div v-if="isEntityTypeSP && isFirmConversionFiling && !hasMinimumProprietor" class="mt-8">
+        <div v-if="isTypeSP && isFirmConversionFiling && !haveRequiredProprietor" class="mt-8">
           <v-btn
             id="sp-btn-add-person"
             outlined
@@ -74,7 +77,7 @@
             <v-icon>mdi-domain-plus</v-icon>
             <span>Add a {{ orgTypesLabel }}</span>
           </v-btn>
-          <p v-if="!hasMinimumProprietor" class="error-text small-text mt-5 mb-0">
+          <p v-if="!haveRequiredProprietor" class="error-text small-text mt-5 mb-0">
             You must have one proprietor (an individual or a business)
           </p>
           <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
@@ -83,7 +86,7 @@
         </div>
 
         <!-- GP add buttons (change or conversion filings only)-->
-        <div v-if="isEntityTypeGP && (isFirmChangeFiling || isFirmConversionFiling)" class="mt-8">
+        <div v-if="isTypeGP && (isFirmChangeFiling || isFirmConversionFiling)" class="mt-8">
           <v-btn
             id="gp-btn-add-person"
             outlined
@@ -111,7 +114,7 @@
             <v-icon>mdi-domain-plus</v-icon>
             <span>Add a {{ orgTypesLabel }}</span>
           </v-btn>
-          <p v-if="!hasMinimumPartners" class="error-text small-text mt-5 mb-0">
+          <p v-if="!haveMinimumPartners" class="error-text small-text mt-5 mb-0">
             You must have at least two partners on a general partnership. Optionally, you may dissolve
             the partnership and register a sole proprietorship to continue the business.
           </p>
@@ -171,14 +174,14 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter isRoleStaff!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
-  @Getter hasMinimumProprietor!: boolean
-  @Getter hasMinimumPartners!: boolean
-  @Getter isBenCorrectionFiling!: boolean
+  @Getter isBaseCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
-  @Getter isEntityTypeBEN!: boolean
-  @Getter isEntityTypeSP!: boolean
-  @Getter isEntityTypeGP!: boolean
-  @Getter isEntityTypeFirm!: boolean
+  @Getter isTypeBC!: boolean
+  @Getter isTypeBEN!: boolean
+  @Getter isTypeCCC!: boolean
+  @Getter isTypeGP!: boolean
+  @Getter isTypeSP!: boolean
+  @Getter isTypeULC!: boolean
 
   // Global actions
   @Action setPeopleAndRoles!: ActionBindingIF
@@ -198,9 +201,26 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     return this.getEntitySnapshot?.orgPersons || []
   }
 
-  /** True if we have at least 1 Director. */
-  get dirValid (): boolean {
-    return this.hasRole(RoleTypes.DIRECTOR, 1, CompareModes.AT_LEAST)
+  /** True when the required proprietor count is met. */
+  get haveRequiredProprietor (): boolean {
+    return this.hasRole(RoleTypes.PROPRIETOR, 1, CompareModes.EXACT)
+  }
+
+  /** True when the minimum partner count is met. */
+  get haveMinimumPartners (): boolean {
+    return this.hasRole(RoleTypes.PARTNER, 2, CompareModes.AT_LEAST)
+  }
+
+  // FUTURE: should move rules and text to resource files
+  /** True when the minimum director count is met. */
+  get haveMinimumDirectors (): boolean {
+    if (this.isTypeBC || this.isTypeBEN || this.isTypeULC) {
+      return this.hasRole(RoleTypes.DIRECTOR, 1, CompareModes.AT_LEAST)
+    }
+    if (this.isTypeCCC) {
+      return this.hasRole(RoleTypes.DIRECTOR, 3, CompareModes.AT_LEAST)
+    }
+    return false // should never happen
   }
 
   /** True if we have all required parties. */
@@ -210,19 +230,21 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       return false
     }
     if (this.isFirmChangeFiling) {
-      if (this.isEntityTypeSP) return this.hasMinimumProprietor
-      if (this.isEntityTypeGP) return this.hasMinimumPartners
+      if (this.isTypeGP) return this.haveMinimumPartners
+      if (this.isTypeSP) return this.haveRequiredProprietor
       return false
     }
     if (this.isFirmConversionFiling) {
-      if (this.isEntityTypeSP) return this.hasMinimumProprietor
-      if (this.isEntityTypeGP) return this.hasMinimumPartners
+      if (this.isTypeGP) return this.haveMinimumPartners
+      if (this.isTypeSP) return this.haveRequiredProprietor
       return false
     }
     if (this.isCorrectionFiling) {
-      if (this.isEntityTypeBEN) return this.dirValid
-      if (this.isEntityTypeSP) return this.hasMinimumProprietor
-      if (this.isEntityTypeGP) return this.hasMinimumPartners
+      if (this.isTypeGP) return this.haveMinimumPartners
+      if (this.isTypeSP) return this.haveRequiredProprietor
+      if (this.isTypeBC || this.isTypeBEN || this.isTypeCCC || this.isTypeULC) {
+        return this.haveMinimumDirectors
+      }
       return false
     }
     return false // should never happen
@@ -357,7 +379,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     this.currentOrgPerson.actions = actions
 
     // for firms, use business lookup initially
-    if (this.isEntityTypeFirm) {
+    if (this.isTypeGP || this.isTypeSP) {
       this.currentOrgPerson.isLookupBusiness = true
     }
 
@@ -635,7 +657,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   /** Updates store when component validity has changed. */
   @Watch('validOrgPersons')
   private onValidOrgPersonsChanged (val: boolean): void {
-    const isValid = (this.hasMinimumProprietor && this.hasMinimumPartners)
     // FUTURE: combine this component's two validity mechanisms
     //         see setPeopleAndRolesValidity() above
     this.setValidComponent({ key: 'isValidOrgPersons', value: this.validOrgPersons })

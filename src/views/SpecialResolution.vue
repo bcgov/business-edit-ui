@@ -147,6 +147,7 @@ export default class SpecialResolution extends Mixins(
   @Getter isPremiumAccount!: boolean
   @Getter getAppValidate!: boolean
   @Getter showFeeSummary!: boolean
+  @Getter isTypeCP!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -177,7 +178,7 @@ export default class SpecialResolution extends Mixins(
 
   /** The resource file for an SpecialResolution filing. */
   get specialResolutionResource (): ResourceIF {
-    if (this.isEntityTypeCP) return CpSpecialResolutionResource
+    if (this.isTypeCP) return CpSpecialResolutionResource
     return null
   }
 

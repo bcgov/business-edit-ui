@@ -124,6 +124,8 @@ export default class Change extends Mixins(
   @Getter isRoleStaff!: boolean
   @Getter isSbcStaff!: boolean
   @Getter isPremiumAccount!: boolean
+  @Getter isTypeGP!: boolean
+  @Getter isTypeSP!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -152,8 +154,8 @@ export default class Change extends Mixins(
 
   /** The resource file for a firm change filing. */
   get firmChangeResource (): ResourceIF {
-    if (this.isEntityTypeSP) return SpChangeResource
-    if (this.isEntityTypeGP) return GpChangeResource
+    if (this.isTypeGP) return GpChangeResource
+    if (this.isTypeSP) return SpChangeResource
     return null
   }
 
