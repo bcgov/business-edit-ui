@@ -57,7 +57,7 @@
       <article id="org-person-summary-section" class="section-container pb-0">
         <v-row no-gutters>
           <v-col cols="12" sm="3">
-            <label>{{ isEntityTypeSP ? 'Proprietor' : 'Partner' }} Information</label>
+            <label>{{ isTypeSP ? 'Proprietor' : 'Partner' }} Information</label>
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-4">
@@ -95,7 +95,7 @@ export default class ChangeSummary extends Vue {
   @Getter getResource!: ResourceIF
   @Getter getNameRequestLegalName!: string
   @Getter getBusinessNumber!: string
-  @Getter isEntityTypeSP!: boolean
+  @Getter isTypeSP!: boolean
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF

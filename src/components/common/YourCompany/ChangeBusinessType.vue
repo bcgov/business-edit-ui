@@ -172,7 +172,7 @@
             <span>Undo</span>
           </v-btn>
           <v-btn
-            v-else-if="isEntityTypeBC"
+            v-else-if="isTypeBC"
             text color="primary"
             id="btn-correct-business-type"
             @click="isEditingType = true"
@@ -239,9 +239,9 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter getResource!: ResourceIF
   @Getter hasBusinessTypeChanged!: boolean
   @Getter isConflictingLegalType!: boolean
-  @Getter isEntityTypeBC!: boolean
-  @Getter isEntityTypeFirm!: boolean
-  @Getter isEntityTypeCP!: boolean
+  @Getter isTypeBC!: boolean
+  @Getter isTypeFirm!: boolean
+  @Getter isTypeCP!: boolean
   @Getter getEntityType!: CorpTypeCd
 
   @Action setEntityType!: ActionBindingIF
@@ -304,7 +304,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   /** Whether to show the Change Info tooltip (firm and coop filings only). */
   get showChangeInfoTooltip ():boolean {
-    return (this.isEntityTypeFirm || this.isEntityTypeCP)
+    return (this.isTypeFirm || this.isTypeCP)
   }
 
   /** Reset company type values to original. */

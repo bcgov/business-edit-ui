@@ -77,12 +77,12 @@ import { BcCorrectionResource, BenCorrectionResource, CccCorrectionResource, Ulc
     CompletingParty
   }
 })
-export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
+export default class BaseCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter isEntityTypeBC!: boolean
-  @Getter isEntityTypeBEN!: boolean
-  @Getter isEntityTypeCCC!: boolean
-  @Getter isEntityTypeULC!: boolean
+  @Getter isTypeBC!: boolean
+  @Getter isTypeBEN!: boolean
+  @Getter isTypeCCC!: boolean
+  @Getter isTypeULC!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -100,10 +100,10 @@ export default class BenCorrection extends Mixins(CommonMixin, DateMixin, FeeMix
   /** The resource object for a correction filing. */
   get correctionResource (): ResourceIF {
     switch (true) {
-      case this.isEntityTypeBC: return BcCorrectionResource
-      case this.isEntityTypeBEN: return BenCorrectionResource
-      case this.isEntityTypeCCC: return CccCorrectionResource
-      case this.isEntityTypeULC: return UlcCorrectionResource
+      case this.isTypeBC: return BcCorrectionResource
+      case this.isTypeBEN: return BenCorrectionResource
+      case this.isTypeCCC: return CccCorrectionResource
+      case this.isTypeULC: return UlcCorrectionResource
     }
     return null
   }

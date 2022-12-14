@@ -1,18 +1,10 @@
 <template>
-  <div>
-    <BenCorrection
-      v-if="isBcBenCccUlc"
-      :correctionFiling="correctionFiling"
-      @fetchError="emitFetchError($event)"
-      @haveData="emitHaveData($event)"
-    />
-    <FmCorrection
-      v-if="isEntityTypeFirm"
-      :correctionFiling="correctionFiling"
-      @fetchError="emitFetchError($event)"
-      @haveData="emitHaveData($event)"
-    />
-  </div>
+  <component
+    :is="component"
+    :correctionFiling="correctionFiling"
+    @fetchError="emitFetchError($event)"
+    @haveData="emitHaveData($event)"
+  />
 </template>
 
 <script lang="ts">
@@ -24,12 +16,12 @@ import { LegalServices } from '@/services/'
 import { ActionBindingIF, CorrectionFilingIF } from '@/interfaces/'
 import { FilingStatus, FilingTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import BenCorrection from '@/views/Correction/BenCorrection.vue'
+import BaseCorrection from '@/views/Correction/BaseCorrection.vue'
 import FmCorrection from '@/views/Correction/FmCorrection.vue'
 
 @Component({
   components: {
-    BenCorrection,
+    BaseCorrection,
     FmCorrection
   }
 })
@@ -40,11 +32,8 @@ export default class Correction extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessId!: string
   @Getter isRoleStaff!: boolean
-  @Getter isEntityTypeBC!: boolean
-  @Getter isEntityTypeBEN!: boolean
-  @Getter isEntityTypeCCC!: boolean
-  @Getter isEntityTypeULC!: boolean
-  @Getter isEntityTypeFirm!: boolean
+  @Getter isTypeBase!: boolean
+  @Getter isTypeFirm!: boolean
 
   // Global actions
   @Action setFilingId!: ActionBindingIF
@@ -52,11 +41,11 @@ export default class Correction extends Mixins(CommonMixin) {
 
   protected correctionFiling: CorrectionFilingIF = null
 
-  /** True is the entity type is BC/BEN/CCC/ULC. */
-  get isBcBenCccUlc (): boolean {
-    return (
-      this.isEntityTypeBC || this.isEntityTypeBEN || this.isEntityTypeCCC || this.isEntityTypeULC
-    )
+  /** The dynamic component to render. */
+  get component (): string {
+    if (this.isTypeBase) return 'BaseCorrection'
+    if (this.isTypeFirm) return 'FmCorrection'
+    return null // should never happen
   }
 
   /** True if user is authenticated. */
@@ -126,7 +115,7 @@ export default class Correction extends Mixins(CommonMixin) {
       // set entity type for misc functionality to work
       // do not proceed if this isn't a BEN or SP/GP correction
       this.setEntityType(filing.business?.legalType)
-      if (!this.isBcBenCccUlc && !this.isEntityTypeFirm) {
+      if (!this.isTypeBase && !this.isTypeFirm) {
         throw new Error('Invalid correction type')
       }
 

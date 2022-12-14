@@ -7,7 +7,7 @@
           <span :class="{'error-text': !getIsResolutionDatesValid}">Resolution or<br>Court Order Dates</span>
         </label>
         <v-chip
-          v-if="haveNewResolutionDates && isBenCorrectionFiling"
+          v-if="haveNewResolutionDates && isCorrectionFiling"
           id="corrected-lbl"
           x-small label
           color="primary"
@@ -148,7 +148,7 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   @Getter haveNewResolutionDates!: boolean
   @Getter getIsResolutionDatesValid!: boolean
   @Getter isSummaryMode!: boolean
-  @Getter isBenCorrectionFiling!: boolean
+  @Getter isCorrectionFiling!: boolean
 
   // Global setter
   @Action setValidComponent!: ActionBindingIF
@@ -177,19 +177,19 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   }
 
   get addBtnIcon (): string {
-    return this.isBenCorrectionFiling ? 'mdi-pencil' : 'mdi-plus'
+    return this.isCorrectionFiling ? 'mdi-pencil' : 'mdi-plus'
   }
 
   get addBtnLabel (): string {
-    return this.isBenCorrectionFiling ? 'Correct' : 'Add'
+    return this.isCorrectionFiling ? 'Correct' : 'Add'
   }
 
   get removeBtnIcon (): string {
-    return this.isBenCorrectionFiling ? 'mdi-undo' : 'mdi-delete'
+    return this.isCorrectionFiling ? 'mdi-undo' : 'mdi-delete'
   }
 
   get removeBtnLabel (): string {
-    return this.isBenCorrectionFiling ? 'Undo' : 'Remove'
+    return this.isCorrectionFiling ? 'Undo' : 'Remove'
   }
 
   /** Called to add a new date. */

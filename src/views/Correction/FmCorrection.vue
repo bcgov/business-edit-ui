@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
@@ -57,6 +57,10 @@ import { GpCorrectionResource, SpCorrectionResource } from '@/resources/Correcti
   }
 })
 export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
+  // Global getters
+  @Getter isTypeGP!: boolean
+  @Getter isTypeSP!: boolean
+
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setCertifyStatementResource!: ActionBindingIF
@@ -67,8 +71,8 @@ export default class FmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTe
 
   /** The resource file for a correction filing. */
   get correctionResource (): ResourceIF {
-    if (this.isEntityTypeSP) return SpCorrectionResource
-    if (this.isEntityTypeGP) return GpCorrectionResource
+    if (this.isTypeGP) return GpCorrectionResource
+    if (this.isTypeSP) return SpCorrectionResource
     return null
   }
 
