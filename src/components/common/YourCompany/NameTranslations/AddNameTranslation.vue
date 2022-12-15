@@ -5,7 +5,7 @@
       attach="#add-name-translation"
     />
     <!-- Name Translation form -->
-    <v-form v-model="nameTranslationForm" ref="nameTranslationForm" class="name-translation-form">
+    <v-form v-model="nameTranslationForm" ref="nameTranslationForm">
       <v-text-field
         filled
         persistent-hint
@@ -13,6 +13,7 @@
         label="Name Translation"
         v-model="nameTranslation"
         :rules="nameTranslationRules"
+        @input="nameTranslation = nameTranslation.toUpperCase()"
       />
 
       <div class="action-btns">
