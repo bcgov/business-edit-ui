@@ -47,7 +47,7 @@ describe('Add Name Translation component', () => {
     }
   })
 
-  it('displays the input field and buttons', async () => {
+  it('Displays the input field and buttons', async () => {
     const wrapper = await wrapperFactory()
 
     // Verify input field
@@ -58,8 +58,7 @@ describe('Add Name Translation component', () => {
     // done button not disabled anymore, validation done by validation function
     expect(wrapper.find(doneBtn).attributes('disabled')).toBeUndefined()
 
-    expect(wrapper.find(removeBtn).exists()).toBeTruthy()
-    expect(wrapper.find(removeBtn).attributes('disabled')).toBe('disabled')
+    expect(wrapper.find(removeBtn).exists()).toBeFalsy()
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
@@ -67,7 +66,7 @@ describe('Add Name Translation component', () => {
     wrapper.destroy()
   })
 
-  it('enables the Done button when the input is valid', async () => {
+  it('Enables the Done button when the input is valid', async () => {
     const wrapper = await wrapperFactory()
     const vm: any = wrapper.vm
 
@@ -85,8 +84,7 @@ describe('Add Name Translation component', () => {
     expect(wrapper.find(doneBtn).exists()).toBeTruthy()
     expect(wrapper.find(doneBtn).attributes('disabled')).toBeUndefined()
 
-    expect(wrapper.find(removeBtn).exists()).toBeTruthy()
-    expect(wrapper.find(removeBtn).attributes('disabled')).toBe('disabled')
+    expect(wrapper.find(removeBtn).exists()).toBeFalsy()
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
@@ -97,7 +95,7 @@ describe('Add Name Translation component', () => {
     wrapper.destroy()
   })
 
-  it('enables the Done button when the input is valid - French characters', async () => {
+  it('Enables the Done button when the input is valid - French characters', async () => {
     const wrapper = await wrapperFactory()
     const vm: any = wrapper.vm
 
@@ -115,8 +113,7 @@ describe('Add Name Translation component', () => {
     expect(wrapper.find(doneBtn).exists()).toBeTruthy()
     expect(wrapper.find(doneBtn).attributes('disabled')).toBeUndefined()
 
-    expect(wrapper.find(removeBtn).exists()).toBeTruthy()
-    expect(wrapper.find(removeBtn).attributes('disabled')).toBe('disabled')
+    expect(wrapper.find(removeBtn).exists()).toBeFalsy()
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
@@ -124,7 +121,7 @@ describe('Add Name Translation component', () => {
     wrapper.destroy()
   })
 
-  it('shows the validation message when the input contains an invalid character', async () => {
+  it('Shows the validation message when the input contains an invalid character', async () => {
     const wrapper = await wrapperFactory()
     const vm: any = wrapper.vm
 
@@ -144,8 +141,7 @@ describe('Add Name Translation component', () => {
     // done button not disabled anymore, validation done by validation function
     expect(wrapper.find(doneBtn).attributes('disabled')).toBeUndefined()
 
-    expect(wrapper.find(removeBtn).exists()).toBeTruthy()
-    expect(wrapper.find(removeBtn).attributes('disabled')).toBe('disabled')
+    expect(wrapper.find(removeBtn).exists()).toBeFalsy()
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
@@ -159,7 +155,7 @@ describe('Add Name Translation component', () => {
     wrapper.destroy()
   })
 
-  it('shows the validation message when the input is too long', async () => {
+  it('Shows the validation message when the input is too long', async () => {
     const wrapper = await wrapperFactory()
     const vm: any = wrapper.vm
 
@@ -191,7 +187,7 @@ describe('Add Name Translation component', () => {
     wrapper.destroy()
   })
 
-  it('displays the correct name when editing a name translation', async () => {
+  it('Displays the correct name when editing a Name Translation', async () => {
     const wrapper = await wrapperFactory({ editNameTranslation: 'Mock Name Edit' })
     const vm: any = wrapper.vm
 
@@ -215,7 +211,7 @@ describe('Add Name Translation component', () => {
     wrapper.destroy()
   })
 
-  it('shows the validaton message when editing an invalid name translation', async () => {
+  it('Shows the validaton message when editing an invalid Name Translation', async () => {
     const wrapper = await wrapperFactory({ editNameTranslation: 'Mock Name Edit' })
     const vm: any = wrapper.vm
 
@@ -244,7 +240,7 @@ describe('Add Name Translation component', () => {
     wrapper.destroy()
   })
 
-  it('inputed text is capitalized', async () => {
+  it('Input text is capitalized', async () => {
     const wrapper = await wrapperFactory()
     const translationInput = wrapper.find(addTranslationInput)
     await translationInput.setValue('Lower case will be capitalized')

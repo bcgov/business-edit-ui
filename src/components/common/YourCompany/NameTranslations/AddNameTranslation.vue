@@ -19,14 +19,14 @@
       <div class="action-btns">
         <v-btn v-if="!isAddingTranslation"
           large outlined color="error"
-          id="name-translation-remove"
+          id="name-translation-btn-remove"
           @click="removeTranslation(nameIndex)"
         >
           <span>Remove</span>
         </v-btn>
         <v-btn
           large color="primary" class="ml-auto"
-          id="name-translation-btn-ok"
+          id="name-translation-btn-done"
           @click="validateAddTranslation()"
         >
             Done
