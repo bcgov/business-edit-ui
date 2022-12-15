@@ -19,7 +19,8 @@ function resetStore (): void {
 
 // Local references
 const addTranslationInput = '#name-translation-input'
-const okBtn = '#name-translation-btn-ok'
+const doneBtn = '#name-translation-btn-done'
+const removeBtn = '#name-translation-btn-remove'
 const cancelBtn = '#name-translation-btn-cancel'
 
 describe('Add Name Translation component', () => {
@@ -53,9 +54,12 @@ describe('Add Name Translation component', () => {
     expect(wrapper.find(addTranslationInput).exists()).toBeTruthy()
 
     // Verify Action btns and their default states
-    expect(wrapper.find(okBtn).exists()).toBeTruthy()
+    expect(wrapper.find(doneBtn).exists()).toBeTruthy()
     // done button not disabled anymore, validation done by validation function
-    expect(wrapper.find(okBtn).attributes('disabled')).toBeUndefined()
+    expect(wrapper.find(doneBtn).attributes('disabled')).toBeUndefined()
+
+    expect(wrapper.find(removeBtn).exists()).toBeTruthy()
+    expect(wrapper.find(removeBtn).attributes('disabled')).toBe('disabled')
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
@@ -78,8 +82,11 @@ describe('Add Name Translation component', () => {
     expect(wrapper.find(addTranslationInput).text()).toEqual('Mock Name Translation')
 
     // Verify Action btns and their states
-    expect(wrapper.find(okBtn).exists()).toBeTruthy()
-    expect(wrapper.find(okBtn).attributes('disabled')).toBeUndefined()
+    expect(wrapper.find(doneBtn).exists()).toBeTruthy()
+    expect(wrapper.find(doneBtn).attributes('disabled')).toBeUndefined()
+
+    expect(wrapper.find(removeBtn).exists()).toBeTruthy()
+    expect(wrapper.find(removeBtn).attributes('disabled')).toBe('disabled')
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
@@ -105,8 +112,11 @@ describe('Add Name Translation component', () => {
     expect(wrapper.find(addTranslationInput).text()).toEqual('Nom commercial simulé')
 
     // Verify Action btns and their states
-    expect(wrapper.find(okBtn).exists()).toBeTruthy()
-    expect(wrapper.find(okBtn).attributes('disabled')).toBeUndefined()
+    expect(wrapper.find(doneBtn).exists()).toBeTruthy()
+    expect(wrapper.find(doneBtn).attributes('disabled')).toBeUndefined()
+
+    expect(wrapper.find(removeBtn).exists()).toBeTruthy()
+    expect(wrapper.find(removeBtn).attributes('disabled')).toBe('disabled')
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
@@ -130,9 +140,12 @@ describe('Add Name Translation component', () => {
     expect(wrapper.find(addTranslationInput).text()).toEqual(invalidText)
 
     // Verify Action btns and their states
-    expect(wrapper.find(okBtn).exists()).toBeTruthy()
+    expect(wrapper.find(doneBtn).exists()).toBeTruthy()
     // done button not disabled anymore, validation done by validation function
-    expect(wrapper.find(okBtn).attributes('disabled')).toBeUndefined()
+    expect(wrapper.find(doneBtn).attributes('disabled')).toBeUndefined()
+
+    expect(wrapper.find(removeBtn).exists()).toBeTruthy()
+    expect(wrapper.find(removeBtn).attributes('disabled')).toBe('disabled')
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
@@ -162,9 +175,9 @@ describe('Add Name Translation component', () => {
     expect(wrapper.find(addTranslationInput).text()).toEqual(invalidText)
 
     // Verify Action btns and their states
-    expect(wrapper.find(okBtn).exists()).toBeTruthy()
+    expect(wrapper.find(doneBtn).exists()).toBeTruthy()
     // done button not disabled anymore, validation done by validation function
-    expect(wrapper.find(okBtn).attributes('disabled')).toBeUndefined()
+    expect(wrapper.find(doneBtn).attributes('disabled')).toBeUndefined()
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
@@ -187,8 +200,11 @@ describe('Add Name Translation component', () => {
     expect(wrapper.find(addTranslationInput).element.value).toContain('Mock Name Edit')
 
     // Verify Action btns and their states
-    expect(wrapper.find(okBtn).exists()).toBeTruthy()
-    expect(wrapper.find(okBtn).attributes('disabled')).toBeUndefined()
+    expect(wrapper.find(doneBtn).exists()).toBeTruthy()
+    expect(wrapper.find(doneBtn).attributes('disabled')).toBeUndefined()
+
+    expect(wrapper.find(removeBtn).exists()).toBeTruthy()
+    expect(wrapper.find(removeBtn).attributes('disabled')).toBeUndefined() // enabled
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
@@ -212,9 +228,9 @@ describe('Add Name Translation component', () => {
     await wrapper.find(addTranslationInput).trigger('change')
 
     // Verify Action btns and their states
-    expect(wrapper.find(okBtn).exists()).toBeTruthy()
+    expect(wrapper.find(doneBtn).exists()).toBeTruthy()
     // done button not disabled anymore, validation done by validation function
-    expect(wrapper.find(okBtn).attributes('disabled')).toBeUndefined()
+    expect(wrapper.find(doneBtn).attributes('disabled')).toBeUndefined()
 
     expect(wrapper.find(cancelBtn).exists()).toBeTruthy()
     expect(wrapper.find(cancelBtn).attributes('disabled')).toBeUndefined()
