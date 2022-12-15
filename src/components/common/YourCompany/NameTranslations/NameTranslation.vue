@@ -19,7 +19,7 @@
       <v-col cols="7" v-if="draftTranslations && translationsExceptRemoved.length">
         <div
           v-for="(translation, index) in translationsExceptRemoved"
-          class="info-text text-uppercase"
+          class="info-text"
           :key="`name_translation_${index}`"
         >
           {{ translation.name }}
