@@ -132,6 +132,7 @@
                       :showErrors="showErrors"
                       :businessLookup="inProgressBusinessLookup"
                       :BusinessLookupServices="BusinessLookupServices"
+                      :editableBusinessName="wasReplaced(currentOrgPerson)"
                       @setBusiness="updateBusinessDetails($event)"
                       @undoBusiness="resetBusinessDetails($event)"
                     />
