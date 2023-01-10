@@ -16,12 +16,12 @@ import { LegalServices } from '@/services/'
 import { ActionBindingIF, CorrectionFilingIF } from '@/interfaces/'
 import { FilingStatus, FilingTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import BcCorrection from '@/views/Correction/BcCorrection.vue'
+import CorpCorrection from '@/views/Correction/CorpCorrection.vue'
 import FirmCorrection from '@/views/Correction/FirmCorrection.vue'
 
 @Component({
   components: {
-    BcCorrection,
+    CorpCorrection,
     FirmCorrection
   }
 })
@@ -32,8 +32,8 @@ export default class Correction extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessId!: string
   @Getter isRoleStaff!: boolean
-  @Getter isCorpClassBc!: boolean
-  @Getter isCorpClassFirm!: boolean
+  @Getter isBenBcCccUlc!: boolean
+  @Getter isFirm!: boolean
 
   // Global actions
   @Action setFilingId!: ActionBindingIF
@@ -43,8 +43,8 @@ export default class Correction extends Mixins(CommonMixin) {
 
   /** The dynamic component to render. */
   get component (): string {
-    if (this.isCorpClassBc) return 'BcCorrection'
-    if (this.isCorpClassFirm) return 'FirmCorrection'
+    if (this.isBenBcCccUlc) return 'CorpCorrection'
+    if (this.isFirm) return 'FirmCorrection'
     return null // should never happen
   }
 
@@ -115,7 +115,7 @@ export default class Correction extends Mixins(CommonMixin) {
       // set entity type for misc functionality to work
       // do not proceed if this isn't a BC or firm correction
       this.setEntityType(filing.business?.legalType)
-      if (!this.isCorpClassBc && !this.isCorpClassFirm) {
+      if (!this.isBenBcCccUlc && !this.isFirm) {
         throw new Error('Invalid correction type')
       }
 

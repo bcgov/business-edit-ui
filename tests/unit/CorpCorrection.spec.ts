@@ -9,7 +9,7 @@ import { AxiosInstance as axios } from '@/utils/'
 import { Articles } from '@/components/Alteration/'
 import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany, CompletingParty }
   from '@/components/common/'
-import BcCorrection from '@/views/Correction/BcCorrection.vue'
+import CorpCorrection from '@/views/Correction/CorpCorrection.vue'
 import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)
@@ -20,7 +20,7 @@ const store = getVuexStore()
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
-describe('BC Correction component', () => {
+describe('Corp Correction component', () => {
   let wrapper: any
   const { assign } = window.location
 
@@ -133,7 +133,7 @@ describe('BC Correction component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'correction' })
-    wrapper = shallowMount(BcCorrection, { localVue,
+    wrapper = shallowMount(CorpCorrection, { localVue,
       store,
       router,
       vuetify,
@@ -156,7 +156,7 @@ describe('BC Correction component', () => {
   })
 
   it('renders BC Correction view', () => {
-    expect(wrapper.findComponent(BcCorrection).exists()).toBe(true)
+    expect(wrapper.findComponent(CorpCorrection).exists()).toBe(true)
   })
 
   it('loads each component', async () => {

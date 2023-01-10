@@ -7,8 +7,9 @@
 
     <div
       class="section-container"
-      v-if="getBusinessInformation.hasRestrictions || isBcCorrectionFiling"
-      :class="{'invalid-section': invalidCompanyProvisions}">
+      v-if="getBusinessInformation.hasRestrictions || isBenBcCccUlcCorrectionFiling"
+      :class="{'invalid-section': invalidCompanyProvisions}"
+    >
       <CompanyProvisions
         class="sub-section"
         :provisionsRemoved="areProvisionsRemoved"
@@ -20,7 +21,8 @@
 
     <div
       class="section-container"
-      :class="{'invalid-section': invalidResolutionDates}">
+      :class="{'invalid-section': invalidResolutionDates}"
+    >
       <ResolutionDates
         :addedDates="getNewResolutionDates"
         :previousDates="getOriginalResolutions"
@@ -59,7 +61,7 @@ export default class Articles extends Mixins(CommonMixin) {
   @Getter getHasRightsOrRestrictions!: boolean
   @Getter getIsResolutionDatesValid!: boolean
   @Getter getComponentValidate!: boolean
-  @Getter isBcCorrectionFiling!: boolean
+  @Getter isBenBcCccUlcCorrectionFiling!: boolean
 
   // Global actions
   @Action setProvisionsRemoved!: ActionBindingIF

@@ -198,8 +198,8 @@
       />
     </div>
 
-    <!-- Name Translation(s) (alterations and base corrections only) -->
-    <div v-if="isAlterationFiling || isBcCorrectionFiling"
+    <!-- Name Translation(s) (alterations and corp corrections only) -->
+    <div v-if="isAlterationFiling || isBenBcCccUlcCorrectionFiling"
       id="name-translate-section"
       class="section-container"
       :class="{'invalid-section': invalidTranslationSection}"
@@ -257,8 +257,8 @@
       />
     </template>
 
-    <!-- Recognition Date and Time (alterations and base corrections only) -->
-    <template v-if="isAlterationFiling || isBcCorrectionFiling">
+    <!-- Recognition Date and Time (alterations and corp corrections only) -->
+    <template v-if="isAlterationFiling || isBenBcCccUlcCorrectionFiling">
       <v-divider class="mx-4 my-1" />
 
       <div class="section-container">
@@ -293,7 +293,7 @@
     </template>
 
     <!-- Folio Information (all except SP or GP) -->
-    <template v-if="isPremiumAccount && !isCorpClassFirm">
+    <template v-if="isPremiumAccount && !isFirm">
       <v-divider class="mx-4 my-1" />
 
       <div id="folio-number-section" class="section-container" :class="{'invalid-section': invalidFolioSection}">
@@ -353,9 +353,9 @@ export default class YourCompany extends Mixins(
   @Getter isPremiumAccount!: boolean
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getBusinessContact!: ContactPointIF
-  @Getter isCorpClassFirm!: boolean
+  @Getter isFirm!: boolean
   @Getter isCoop!: boolean
-  @Getter isBcCorrectionFiling!: boolean
+  @Getter isBenBcCccUlcCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
   @Getter getAssociationType!: CoopTypes
@@ -464,7 +464,7 @@ export default class YourCompany extends Mixins(
 
   /** The recognition date or business start date string. */
   get recognitionDateTime (): string {
-    if (this.isBcCorrectionFiling) {
+    if (this.isBenBcCccUlcCorrectionFiling) {
       if (this.getBusinessFoundingDateTime) {
         return this.apiToPacificDateTime(this.getBusinessFoundingDateTime)
       }

@@ -119,7 +119,7 @@
       </v-row>
 
       <!-- Records office (BC/BEN/CCC/ULC only) -->
-      <v-row v-if="isCorpClassBc" id="summary-records-address" class="mt-4 mx-0" no-gutters>
+      <v-row v-if="isBenBcCccUlc" id="summary-records-address" class="mt-4 mx-0" no-gutters>
         <v-col cols="3" class="pr-2">
           <label :class="{'error-text': invalidSection}">Records Office</label>
         </v-col>
@@ -320,7 +320,7 @@
         </div>
 
         <!-- "Same as" checkbox -->
-        <div id="edit-records-address" v-if="isCorpClassBc">
+        <div id="edit-records-address" v-if="isBenBcCccUlc">
           <div class="address-edit-header" :class="{'mt-8': inheritMailingAddress}">
             <label class="address-edit-title">Records Office</label>
             <v-checkbox
@@ -456,9 +456,13 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter hasDeliveryChanged!: boolean
   @Getter hasRecMailingChanged!: boolean
   @Getter hasRecDeliveryChanged!: boolean
-  @Getter isCorpClassBc!: boolean
-  @Getter isBcCorrectionFiling!: boolean
+  @Getter isBenBcCccUlc!: boolean
+  @Getter isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter isAlterationFiling!: boolean
+  @Getter isFirmChangeFiling!: boolean
+  @Getter isFirmConversionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
+  @Getter isSpecialResolutionFiling!: boolean
 
   // Global actions
   @Action setOfficeAddresses!: ActionBindingIF
@@ -539,7 +543,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
-    if (this.isBcCorrectionFiling || this.isAlterationFiling) {
+    if (this.isBenBcCccUlcCorrectionFiling || this.isAlterationFiling) {
       // assign registered office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.registeredOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.registeredOffice?.deliveryAddress }
@@ -754,7 +758,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets updated office addresses in store.
    */
   private storeAddresses (): void {
-    if (this.isBcCorrectionFiling) {
+    if (this.isBenBcCccUlcCorrectionFiling) {
       // at the moment, only BEN corrections are supported
       this.setOfficeAddresses({
         registeredOffice: {
@@ -842,7 +846,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Also called when we know what kind of correction this is.
    */
   @Watch('getOfficeAddresses', { deep: true, immediate: true })
-  @Watch('isBcCorrectionFiling')
+  @Watch('isBenBcCccUlcCorrectionFiling')
   @Watch('isFirmCorrectionFiling')
   private updateAddresses (): void {
     // set local properties from store
