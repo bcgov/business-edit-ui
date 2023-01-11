@@ -157,7 +157,6 @@ export default class FilingTemplateMixin extends DateMixin {
         shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses(),
         resolutionDates: this.getNewResolutionDates
       }
-      filing.correction.provisionsRemoved = this.areProvisionsRemoved
     }
 
     // add in data specific to firm corrections
@@ -581,8 +580,6 @@ export default class FilingTemplateMixin extends DateMixin {
       this.setNewResolutionDates(cloneDeep(
         filing.correction.shareStructure?.resolutionDates || []
       ))
-      // store Provisions Removed
-      this.setProvisionsRemoved(filing.correction.provisionsRemoved || false)
     }
 
     // store Certify State
@@ -648,7 +645,7 @@ export default class FilingTemplateMixin extends DateMixin {
     ))
 
     // store Provisions Removed
-    this.setProvisionsRemoved(filing.alteration.provisionsRemoved)
+    if (filing.alteration.provisionsRemoved) this.setProvisionsRemoved(true)
 
     // store Office Addresses **from snapshot** (because we don't change office addresses in an alteration)
     this.setOfficeAddresses(cloneDeep(entitySnapshot.addresses))
