@@ -1,17 +1,16 @@
 <template>
   <v-card flat id="articles">
-    <div class="define-article-header">
+    <div class="articles-header pa-5">
       <v-icon color="appDkBlue">mdi-handshake</v-icon>
-      <label class="define-article-title">Articles</label>
+      <label class="articles-title pl-2">Articles</label>
     </div>
 
     <div
+      v-if="isAlterationFiling && getBusinessInformation.hasRestrictions"
       class="section-container"
-      v-if="getBusinessInformation.hasRestrictions || isBenBcCccUlcCorrectionFiling"
       :class="{'invalid-section': invalidCompanyProvisions}"
     >
       <CompanyProvisions
-        class="sub-section"
         :provisionsRemoved="areProvisionsRemoved"
         @isChanged="setProvisionsRemoved($event)"
         @haveChanges="emitHaveChanges($event)"
@@ -61,7 +60,7 @@ export default class Articles extends Mixins(CommonMixin) {
   @Getter getHasRightsOrRestrictions!: boolean
   @Getter getIsResolutionDatesValid!: boolean
   @Getter getComponentValidate!: boolean
-  @Getter isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter isAlterationFiling!: boolean
 
   // Global actions
   @Action setProvisionsRemoved!: ActionBindingIF
@@ -95,13 +94,8 @@ export default class Articles extends Mixins(CommonMixin) {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-.define-article-header {
+.articles-header {
   display: flex;
   background-color: $BCgovBlue5O;
-  padding: 1.25rem;
-}
-
-.define-article-title {
-  padding-left: 0.5rem;
 }
 </style>

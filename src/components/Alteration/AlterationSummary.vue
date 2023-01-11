@@ -192,6 +192,7 @@ export default class AlterationSummary extends Mixins(
   @Getter isBusySaving!: boolean
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter haveNewResolutionDates!: boolean
+  @Getter areProvisionsRemoved!: boolean
 
   // Global actions
   @Action setSummaryMode!: ActionBindingIF

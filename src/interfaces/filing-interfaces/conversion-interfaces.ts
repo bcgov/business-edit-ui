@@ -1,5 +1,5 @@
-import { AddressesIF, FilingBusinessIF, FilingHeaderIF, NameRequestIF, OrgPersonIF } from '@/interfaces/'
-import { ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { AddressesIF, BusinessInformationIF, FilingHeaderIF, NameRequestIF, OrgPersonIF } from '@/interfaces/'
+import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/conversion.json
@@ -19,6 +19,6 @@ interface ConversionIF {
 /** Interface for data object UI sends to API. */
 export interface ConversionFilingIF {
   header: FilingHeaderIF
-  business: FilingBusinessIF
+  business: BusinessInformationIF
   conversion: ConversionIF
 }

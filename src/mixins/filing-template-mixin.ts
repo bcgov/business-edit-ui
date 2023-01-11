@@ -114,12 +114,7 @@ export default class FilingTemplateMixin extends DateMixin {
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: this.getFolioNumber // folio number, unless overridden below
       },
-      business: {
-        identifier: this.getBusinessId,
-        legalName: this.getNameRequestLegalName,
-        legalType: this.getEntityType,
-        nrNumber: this.getNameRequestNumber
-      },
+      business: this.getEntitySnapshot.businessInfo,
       correction: {
         legalType: this.getEntityType,
         business: {
@@ -197,13 +192,7 @@ export default class FilingTemplateMixin extends DateMixin {
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
-      business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
-      },
+      business: this.getEntitySnapshot.businessInfo,
       alteration: {
         business: {
           identifier: this.getBusinessId,
@@ -289,13 +278,7 @@ export default class FilingTemplateMixin extends DateMixin {
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
-      business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
-      },
+      business: this.getEntitySnapshot.businessInfo,
       specialResolution: {
         ...this.getSpecialResolution
       }
@@ -350,13 +333,7 @@ export default class FilingTemplateMixin extends DateMixin {
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
-      business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
-      },
+      business: this.getEntitySnapshot.businessInfo,
       changeOfRegistration: {
         business: {
           identifier: this.getBusinessId
@@ -449,13 +426,7 @@ export default class FilingTemplateMixin extends DateMixin {
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: '' // not applicable to SP/GP
       },
-      business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
-      },
+      business: this.getEntitySnapshot.businessInfo,
       conversion: {
         business: {
           identifier: this.getBusinessId
