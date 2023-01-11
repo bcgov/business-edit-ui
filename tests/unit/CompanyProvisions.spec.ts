@@ -1,23 +1,17 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import VueRouter from 'vue-router'
 import { getVuexStore } from '@/store/'
 import { shallowMount, mount } from '@vue/test-utils'
 import CompanyProvisions from '@/components/Alteration/Articles/CompanyProvisions.vue'
-import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
-Vue.use(VueRouter)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
-const alterationRouterName = 'alteration'
-
 // Selectors
-const hasPreExistingProvisionsText = '#has-pre-existing-provisions-text'
 const changeCompanyProvisionsButton = '#change-company-provisions'
 const defineCompanyProvisionsTitle = '.define-company-provisions-title'
 const changedButton = 'span.v-chip > span.v-chip__content'
@@ -27,23 +21,21 @@ const companyProvisionsCheckbox = '#cp-checkbox'
 const companyProvisionDoneButton = '#company-provisions-done'
 const companyProvisionCancelButton = '#company-provisions-cancel'
 const companyProvisionsComponent = '#checkbox-div .v-input--selection-controls.v-input--checkbox'
+
 // CSS Classes
 const infoTextClassName = 'info-text'
 const invalidClassName = 'invalid'
 
 describe('company provisions', () => {
   it('renders the component properly', () => {
-    const router = mockRouter.mock()
-    router.push({ name: alterationRouterName })
     const wrapper = shallowMount(CompanyProvisions,
       {
-        router,
         vuetify,
         store,
         propsData: { provisionsRemoved: false }
       })
 
-    expect(wrapper.find(hasPreExistingProvisionsText).text())
+    expect(wrapper.find('#has-pre-existing-provisions-text').text())
       .toBe('This company has Pre-existing Company Provisions.')
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(true)
     expect(wrapper.find(defineCompanyProvisionsTitle).text()).toContain('Pre-existing')
@@ -54,11 +46,8 @@ describe('company provisions', () => {
   })
 
   it('should have the initial state set', async () => {
-    const router = mockRouter.mock()
-    router.push({ name: alterationRouterName })
     const wrapper = mount(CompanyProvisions,
       {
-        router,
         vuetify,
         store,
         propsData: { provisionsRemoved: false }
@@ -74,11 +63,8 @@ describe('company provisions', () => {
   })
 
   it('shows form when Change button is clicked', async () => {
-    const router = mockRouter.mock()
-    router.push({ name: alterationRouterName })
     const wrapper = mount(CompanyProvisions,
       {
-        router,
         vuetify,
         store,
         propsData: { provisionsRemoved: false }
@@ -96,11 +82,8 @@ describe('company provisions', () => {
   })
 
   it('validates if provisionsRemoved value is not changed', async () => {
-    const router = mockRouter.mock()
-    router.push({ name: alterationRouterName })
     const wrapper = mount(CompanyProvisions,
       {
-        router,
         vuetify,
         store,
         propsData: { provisionsRemoved: false }
@@ -125,15 +108,13 @@ describe('company provisions', () => {
   })
 
   it('should emit changes for company provisions', async () => {
-    const router = mockRouter.mock()
-    router.push({ name: alterationRouterName })
     const wrapper = mount(CompanyProvisions,
       {
-        router,
         vuetify,
         store,
         propsData: { provisionsRemoved: false }
       })
+
     await wrapper.find(changeCompanyProvisionsButton).trigger('click')
     await wrapper.find(companyProvisionsCheckbox).trigger('click')
     await wrapper.find(companyProvisionDoneButton).trigger('click')
@@ -145,24 +126,23 @@ describe('company provisions', () => {
 
     wrapper.destroy()
   })
+
   it('should emit changes with undo changes to company provisions', async () => {
-    const router = mockRouter.mock()
-    router.push({ name: alterationRouterName })
     const wrapper = mount(CompanyProvisions,
       {
-        router,
         vuetify,
         store,
         propsData: { provisionsRemoved: true }
       })
-    // Sets the state for the checkbox selected
+
+    // Set the state for the checkbox selected
     wrapper.vm.$data.draftProvisionsRemoved = true
     wrapper.vm.$data.haveChanges = true
     wrapper.vm.$data.originalProvisionsRemovedValue = false
     await Vue.nextTick()
 
-    expect(wrapper.find('#none-of-provisions-apply-text').text()).toBe('The company has resolved that none of the ' +
-      'Pre-existing Company Provisions are to apply to this company.')
+    expect(wrapper.find('#none-of-provisions-apply-text').text())
+      .toBe('The company has resolved that the Pre-existing Company Provisions no longer apply to this company.')
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(false)
     expect(wrapper.find(undoCompanyProvisions).exists()).toBe(true)
 
@@ -180,11 +160,8 @@ describe('company provisions', () => {
     store.state.stateModel.tombstone.entityType = 'BEN'
     store.state.stateModel.tombstone.filingType = 'correction'
 
-    const router = mockRouter.mock()
-    router.push({ name: alterationRouterName })
     const wrapper = mount(CompanyProvisions,
       {
-        router,
         vuetify,
         store,
         propsData: { provisionsRemoved: false }

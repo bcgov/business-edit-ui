@@ -16,8 +16,9 @@
         <span class="info-text" :class="{ 'has-conflict': isConflictingLegalType && isNewName}">
           {{GetCorpFullDescription(getEntityType)}}
         </span>
-        <!-- Firm info tooltip -->
-        <v-tooltip v-if="showChangeInfoTooltip"
+
+        <!-- Type change tooltip -->
+        <v-tooltip v-if="isFirm || isCoop"
                     top
                     content-class="top-tooltip"
                     transition="fade-transition"
@@ -240,7 +241,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter hasBusinessTypeChanged!: boolean
   @Getter isConflictingLegalType!: boolean
   @Getter isBcCompany!: boolean
-  @Getter isCorpClassFirm!: boolean
+  @Getter isFirm!: boolean
   @Getter isCoop!: boolean
   @Getter getEntityType!: CorpTypeCd
 
@@ -300,11 +301,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   /** Type change helper information */
   get typeChangeInfo (): string {
     return this.getResource.changeData?.typeChangeInfo
-  }
-
-  /** Whether to show the Change Info tooltip (firm and coop filings only). */
-  get showChangeInfoTooltip ():boolean {
-    return (this.isCorpClassFirm || this.isCoop)
   }
 
   /** Reset company type values to original. */

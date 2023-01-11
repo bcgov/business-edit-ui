@@ -130,7 +130,7 @@
 
             <!-- Roles -->
             <v-col cols="12" sm="2" :class="{ 'removed': wasRemoved(orgPerson)}">
-              <template v-if="isBcCorrectionFiling">
+              <template v-if="isBenBcCccUlcCorrectionFiling">
                 <!-- Warning if orgPerson has no roles -->
                 <div v-if="orgPerson.roles.length > 0">
                   <v-col v-for="(role, index) in orgPerson.roles" :key="index" class="col-roles">
@@ -408,7 +408,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   // Store getter
   @Getter getOrgPeople!: OrgPersonIF[]
   @Getter isAlterationFiling!: boolean
-  @Getter isBcCorrectionFiling!: boolean
+  @Getter isBenBcCccUlcCorrectionFiling!: boolean
   @Getter isCorrectionFiling!: boolean
   @Getter isFirmChangeFiling!: boolean
   @Getter isFirmConversionFiling!: boolean
@@ -424,7 +424,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
       'Name',
       'Mailing Address',
       'Delivery Address',
-      this.isBcCorrectionFiling ? 'Roles' : ''
+      this.isBenBcCccUlcCorrectionFiling ? 'Roles' : ''
     ]
   }
 
@@ -466,7 +466,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
     if (this.isFirmConversionFiling) {
       return true
     }
-    if (this.isBcCorrectionFiling) {
+    if (this.isBenBcCccUlcCorrectionFiling) {
       return true
     }
     if (this.isFirmCorrectionFiling) {

@@ -78,7 +78,7 @@ import { BcCorrectionResource, BenCorrectionResource, CccCorrectionResource, Ulc
     CompletingParty
   }
 })
-export default class BcCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
+export default class CorpCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
   @Getter isBcCompany!: boolean
   @Getter isBenefitCompany!: boolean

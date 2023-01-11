@@ -55,7 +55,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter getHasPlanOfArrangement!: boolean
   @Getter haveOfficeAddressesChanged!: boolean
   @Getter getCompletingParty!: CompletingPartyIF
-  @Getter isBcCorrectionFiling!: boolean
+  @Getter isBenBcCccUlcCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter isClientErrorCorrection!: boolean
   @Getter getAssociationType!: CoopTypes
@@ -114,12 +114,7 @@ export default class FilingTemplateMixin extends DateMixin {
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: this.getFolioNumber // folio number, unless overridden below
       },
-      business: {
-        identifier: this.getBusinessId,
-        legalName: this.getNameRequestLegalName,
-        legalType: this.getEntityType,
-        nrNumber: this.getNameRequestNumber
-      },
+      business: this.getEntitySnapshot.businessInfo,
       correction: {
         legalType: this.getEntityType,
         business: {
@@ -155,14 +150,13 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.correction.parties = parties
     }
 
-    // add in data specific to corp class BC corrections
-    if (this.isBcCorrectionFiling) {
+    // add in data specific to BEN/BC/CCC/ULC corrections
+    if (this.isBenBcCccUlcCorrectionFiling) {
       filing.correction.nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
       filing.correction.shareStructure = {
         shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses(),
         resolutionDates: this.getNewResolutionDates
       }
-      filing.correction.provisionsRemoved = this.areProvisionsRemoved
     }
 
     // add in data specific to firm corrections
@@ -197,13 +191,7 @@ export default class FilingTemplateMixin extends DateMixin {
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
-      business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
-      },
+      business: this.getEntitySnapshot.businessInfo,
       alteration: {
         business: {
           identifier: this.getBusinessId,
@@ -289,13 +277,7 @@ export default class FilingTemplateMixin extends DateMixin {
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
-      business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
-      },
+      business: this.getEntitySnapshot.businessInfo,
       specialResolution: {
         ...this.getSpecialResolution
       }
@@ -350,13 +332,7 @@ export default class FilingTemplateMixin extends DateMixin {
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
-      business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
-      },
+      business: this.getEntitySnapshot.businessInfo,
       changeOfRegistration: {
         business: {
           identifier: this.getBusinessId
@@ -449,13 +425,7 @@ export default class FilingTemplateMixin extends DateMixin {
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
         folioNumber: '' // not applicable to SP/GP
       },
-      business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
-      },
+      business: this.getEntitySnapshot.businessInfo,
       conversion: {
         business: {
           identifier: this.getBusinessId
@@ -537,8 +507,8 @@ export default class FilingTemplateMixin extends DateMixin {
     // store Correction Information
     this.setCorrectionInformation(cloneDeep(filing.correction))
 
-    // store Business Information for corp class BC corrections
-    if (this.isBcCorrectionFiling) {
+    // store Business Information for BEN/BC/CCC/ULC corrections
+    if (this.isBenBcCccUlcCorrectionFiling) {
       this.setBusinessInformation({
         ...entitySnapshot.businessInfo,
         ...filing.business
@@ -576,8 +546,8 @@ export default class FilingTemplateMixin extends DateMixin {
       }
     ))
 
-    // store Name Translations (corp class BC corrections only)
-    if (this.isBcCorrectionFiling) {
+    // store Name Translations (BEN/BC/CCC?ULC corrections only)
+    if (this.isBenBcCccUlcCorrectionFiling) {
       this.setNameTranslations(cloneDeep(
         this.mapNameTranslations(filing.correction.nameTranslations) ||
         this.mapNameTranslations(entitySnapshot.nameTranslations) ||
@@ -601,8 +571,8 @@ export default class FilingTemplateMixin extends DateMixin {
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(cloneDeep(orgPersons))
 
-    // store Share Classes and Resolution Dates (corp class BC corrections only)
-    if (this.isBcCorrectionFiling) {
+    // store Share Classes and Resolution Dates (BEN/BC/CCC/ULC corrections only)
+    if (this.isBenBcCccUlcCorrectionFiling) {
       this.setShareClasses(cloneDeep(
         filing.correction.shareStructure?.shareClasses ||
         entitySnapshot.shareStructure.shareClasses
@@ -610,8 +580,6 @@ export default class FilingTemplateMixin extends DateMixin {
       this.setNewResolutionDates(cloneDeep(
         filing.correction.shareStructure?.resolutionDates || []
       ))
-      // store Provisions Removed
-      this.setProvisionsRemoved(filing.correction.provisionsRemoved || false)
     }
 
     // store Certify State
@@ -677,7 +645,7 @@ export default class FilingTemplateMixin extends DateMixin {
     ))
 
     // store Provisions Removed
-    this.setProvisionsRemoved(filing.alteration.provisionsRemoved)
+    if (filing.alteration.provisionsRemoved) this.setProvisionsRemoved(true)
 
     // store Office Addresses **from snapshot** (because we don't change office addresses in an alteration)
     this.setOfficeAddresses(cloneDeep(entitySnapshot.addresses))

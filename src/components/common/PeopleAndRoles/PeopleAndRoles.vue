@@ -8,7 +8,7 @@
       </div>
 
       <!-- Instructional people and roles text (base corrections only)-->
-      <article v-if="isBcCorrectionFiling" class="section-container">
+      <article v-if="isBenBcCccUlcCorrectionFiling" class="section-container">
         This application must include the following:
         <ul>
           <li>
@@ -23,7 +23,7 @@
       </article>
 
       <!-- Correction section (base corrections only) -->
-      <article v-if="isBcCorrectionFiling" class="section-container">
+      <article v-if="isBenBcCccUlcCorrectionFiling" class="section-container">
         <v-btn
           id="btn-add-person"
           outlined
@@ -174,7 +174,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter isRoleStaff!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
-  @Getter isBcCorrectionFiling!: boolean
+  @Getter isBenBcCccUlcCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter isBcCompany!: boolean
   @Getter isBenefitCompany!: boolean

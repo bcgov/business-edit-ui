@@ -1,4 +1,4 @@
-import { CorrectionInformationIF, FilingBusinessIF, FilingHeaderIF } from '@/interfaces/'
+import { CorrectionInformationIF, BusinessInformationIF, FilingHeaderIF } from '@/interfaces/'
 
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/correction.json
@@ -7,6 +7,6 @@ import { CorrectionInformationIF, FilingBusinessIF, FilingHeaderIF } from '@/int
 /** Interface for data object UI sends to API. */
 export interface CorrectionFilingIF {
   header: FilingHeaderIF
-  business: FilingBusinessIF
+  business: BusinessInformationIF
   correction: CorrectionInformationIF
 }
