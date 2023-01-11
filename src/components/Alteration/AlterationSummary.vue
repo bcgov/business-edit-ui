@@ -101,7 +101,7 @@
 
           <v-col cols="8">
             <span class="info-text">
-              The company has resolved that none of the Pre-existing Company Provisions are to apply to this company.
+              The company has resolved that the Pre-existing Company Provisions no longer apply to this company.
             </span>
           </v-col>
         </v-row>

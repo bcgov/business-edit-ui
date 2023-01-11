@@ -142,7 +142,7 @@ describe('company provisions', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('#none-of-provisions-apply-text').text())
-      .toBe('The company has resolved that none of the Pre-existing Company Provisions are to apply to this company.')
+      .toBe('The company has resolved that the Pre-existing Company Provisions no longer apply to this company.')
     expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(false)
     expect(wrapper.find(undoCompanyProvisions).exists()).toBe(true)
 

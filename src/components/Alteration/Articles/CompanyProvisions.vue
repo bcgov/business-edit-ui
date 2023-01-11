@@ -10,7 +10,7 @@
         </v-col>
 
         <v-col v-if="provisionsRemoved" cols="7" id="none-of-provisions-apply-text" class="info-text">
-          The company has resolved that none of the Pre-existing Company Provisions are to apply to this company.
+          {{ companyResolvedText }}
         </v-col>
         <v-col v-else cols="7" id="has-pre-existing-provisions-text" class="info-text">
           This company has Pre-existing Company Provisions.
@@ -86,8 +86,7 @@
             <v-checkbox
               id="cp-checkbox"
               :class="{ 'invalid': isInvalid }"
-              label="The company has resolved that none of the Pre-existing Company Provisions are to apply to this
-                company."
+              :label="companyResolvedText"
               v-model="draftProvisionsRemoved"
             />
           </div>
@@ -164,6 +163,9 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   private onDraftProvisionsRemovedPropValueChanged (): void {
     this.isInvalid = false
   }
+
+  readonly companyResolvedText =
+    'The company has resolved that the Pre-existing Company Provisions no longer apply to this company.'
 
   private setCompanyProvisionsDone (): void {
     if (!this.haveChanges && this.draftProvisionsRemoved === this.originalProvisionsRemovedValue) {
