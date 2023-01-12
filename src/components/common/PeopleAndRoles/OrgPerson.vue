@@ -133,6 +133,7 @@
                       :businessLookup="inProgressBusinessLookup"
                       :BusinessLookupServices="BusinessLookupServices"
                       :editableBusinessName="wasReplaced(currentOrgPerson)"
+                      :searchStatus="searchStatus"
                       @setBusiness="updateBusinessDetails($event)"
                       @undoBusiness="resetBusinessDetails($event)"
                     />
@@ -577,6 +578,13 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   /** Whether the org was selected using lookup (aka business search). */
   get wasBusinessSelectedFromLookup (): boolean {
     return (this.orgPerson?.isLookupBusiness && !!this.inProgressBusinessLookup.identifier)
+  }
+
+  /** Business status to search for. */
+  get searchStatus (): string {
+    // if this is a DBA replacement then search for all statuses
+    // otherwise search for only ACTIVE statuses
+    return this.wasReplaced(this.currentOrgPerson) ? '' : 'ACTIVE'
   }
 
   /**
