@@ -81,8 +81,9 @@ export const stateModel: StateModelIF = {
     correctedFilingDate: null,
     correctedFilingId: null,
     correctedFilingType: null,
-    type: null,
-    startDate: null
+    parties: null,
+    startDate: null,
+    type: null
   },
   nameRequest: { ...EmptyNameRequest },
   nameTranslations: [],

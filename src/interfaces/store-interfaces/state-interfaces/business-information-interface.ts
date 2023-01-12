@@ -9,9 +9,11 @@ export interface BusinessInformationIF {
   identifier: string
   legalName?: string
   legalType: CorpTypeCd
+  nrNumber?: string
+  startDate?: string // YYYY-MM-DD
+
+  // SP/GP only:
   naicsCode?: string
   naicsDescription?: string
   naicsKey?: string // from API
-  nrNumber?: string
-  startDate?: string // YYYY-MM-DD
 }
