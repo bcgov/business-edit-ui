@@ -378,7 +378,7 @@
                       :address="recDeliveryAddress"
                       :editing="true"
                       :schema="InBcCanadaAddressSchema"
-                      @update:address="updateAddress(AddressTypes.REC_DELIVERY_ADDRESS, recDeliveryAddress, $event)"
+                      @update:address="updateAddress(AddressTypes.REC_DELIVERY_ADDRESS, $event)"
                       @valid="onAddressValid(AddressTypes.REC_DELIVERY_ADDRESS, $event)"
                     />
                   </div>
