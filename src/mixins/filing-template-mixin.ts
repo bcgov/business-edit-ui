@@ -127,9 +127,15 @@ export default class FilingTemplateMixin extends DateMixin {
         contactPoint: this.getContactPoint,
         nameRequest: this.getNameRequest,
         offices: this.getOfficeAddresses,
+        parties: undefined, // parties are added below
         type: this.getCorrectionErrorType
       }
     }
+
+    // delete invalid NAICS properties
+    delete filing.business.naicsCode
+    delete filing.business.naicsDescription
+    delete filing.business.naicsKey
 
     // apply parties to filing
     {
@@ -1066,13 +1072,23 @@ export default class FilingTemplateMixin extends DateMixin {
     // filter out removed classes and delete "action" property
     const shareClasses = this.getShareClasses
       .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
-      .map((x) => { const { action, ...rest } = x; return rest })
+      .map((x) => {
+        const { action, ...rest } = x
+        rest.hasMaximumShares = !!rest.hasMaximumShares // change null -> false
+        rest.hasRightsOrRestrictions = !!rest.hasRightsOrRestrictions // change null -> false
+        return rest
+      })
 
     // filter out removed series and delete "action" property
     for (const [index, share] of shareClasses.entries()) {
       shareClasses[index].series = share.series
         .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
-        .map((x) => { const { action, ...rest } = x; return rest })
+        .map((x) => {
+          const { action, ...rest } = x
+          rest.hasMaximumShares = !!rest.hasMaximumShares // change null -> false
+          rest.hasRightsOrRestrictions = !!rest.hasRightsOrRestrictions // change null -> false
+          return rest
+        })
     }
 
     return shareClasses

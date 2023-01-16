@@ -34,7 +34,7 @@
 
       <v-col cols="2" class="align-right" v-if="isEditMode && !isAdding">
         <v-btn id="add-resolution-date"
-          class="add-btn"
+          class="add-btn mt-n1"
           text color="primary"
           :disabled="haveAddedDates"
           @click="isAdding = true"
@@ -45,7 +45,7 @@
       </v-col>
       <v-col cols="2" class="align-right" v-else-if="isAdding">
         <v-btn id="close-resolution-date"
-          class="close-btn"
+          class="close-btn mt-n1"
           text color="primary"
           @click="isAdding = false"
         >
@@ -241,10 +241,6 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-
-.add-btn, .close-btn {
-  height: inherit !important;
-}
 
 .show-previous-dates-btn {
   text-decoration: underline;
