@@ -9,8 +9,9 @@
 
           <dl class="business-info">
             <dd id="entity-legal-type">{{originalEntityType}}</dd>
-            <dt class="mr-2">Business No:</dt>
-            <dd id="entity-business-number">{{ getBusinessNumber || 'Not Available' }}</dd>
+            <!-- this is actually business id but should be tax id (see ticket 15122) -->
+            <!-- <dt class="mr-2">Business No:</dt> -->
+            <!-- <dd id="entity-business-number">{{ getBusinessNumber || 'Not Available' }}</dd> -->
             <dt class="mr-2">Incorporation No:</dt>
             <dd id="entity-incorp-number">{{ getBusinessId }}</dd>
           </dl>

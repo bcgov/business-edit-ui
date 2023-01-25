@@ -77,7 +77,8 @@ describe('Entity Info component in a Correction as a named company', () => {
 
   it('renders the business name and numbers', () => {
     expect(wrapper.find('#entity-legal-name').text()).toBe('My Mock Name Inc.')
-    expect(wrapper.find('#entity-business-number').text()).toBe('1234567')
+    // this is actually business id but should be tax id (see ticket 15122)
+    // expect(wrapper.find('#entity-business-number').text()).toBe('1234567')
     expect(wrapper.find('#entity-incorp-number').text()).toBe('BC1234567')
   })
 
@@ -147,7 +148,8 @@ describe('Entity Info component in a Correction as a numbered company', () => {
 
   it('renders the business name and numbers', () => {
     expect(wrapper.find('#entity-legal-name').text()).toBe('Numbered Benefit Company')
-    expect(wrapper.find('#entity-business-number').text()).toBe('7654321')
+    // this is actually business id but should be tax id (see ticket 15122)
+    // expect(wrapper.find('#entity-business-number').text()).toBe('7654321')
     expect(wrapper.find('#entity-incorp-number').text()).toBe('BC7654321')
   })
 
