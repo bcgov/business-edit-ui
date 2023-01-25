@@ -132,6 +132,9 @@ export default class FilingTemplateMixin extends DateMixin {
       }
     }
 
+    // delete invalid tax id (see ticket 15122)
+    delete filing.business.taxId
+
     // delete invalid NAICS properties
     delete filing.business.naicsCode
     delete filing.business.naicsDescription
@@ -207,6 +210,9 @@ export default class FilingTemplateMixin extends DateMixin {
         contactPoint: this.getContactPoint
       }
     }
+
+    // delete invalid tax id (see ticket 15122)
+    delete filing.business.taxId
 
     // Apply NR / business name / business type change to filing
     if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
@@ -288,6 +294,10 @@ export default class FilingTemplateMixin extends DateMixin {
         ...this.getSpecialResolution
       }
     }
+
+    // delete invalid tax id (see ticket 15122)
+    delete filing.business.taxId
+
     /* Only add alteration if the association type has changed,
      * rules and memorandum only show up if the association type changes. */
     if (this.hasAssociationTypeChanged) {
@@ -346,6 +356,9 @@ export default class FilingTemplateMixin extends DateMixin {
         contactPoint: this.getContactPoint
       }
     }
+
+    // delete invalid tax id (see ticket 15122)
+    delete filing.business.taxId
 
     // Apply NAICS change to filing
     if (this.hasNaicsChanged) {
@@ -445,6 +458,9 @@ export default class FilingTemplateMixin extends DateMixin {
         parties: null // applied below
       }
     }
+
+    // delete invalid tax id (see ticket 15122)
+    delete filing.business.taxId
 
     // Apply NAICS change to filing
     if (this.hasNaicsChanged) {
