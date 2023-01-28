@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
   EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF,
-  NameTranslationIF, OrgPersonIF, SpecialResolutionFilingIF } from '@/interfaces/'
+  NameTranslationIF, OrgPersonIF, RestorationFilingIF, SpecialResolutionFilingIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
@@ -241,6 +241,90 @@ export default class FilingTemplateMixin extends DateMixin {
     // Apply Court Order ONLY when it is required and applied
     if (this.getHasPlanOfArrangement || this.getFileNumber) {
       filing.alteration.courtOrder = {
+        fileNumber: this.getFileNumber,
+        effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : null,
+        hasPlanOfArrangement: this.getHasPlanOfArrangement
+      }
+    }
+
+    // If FED then set header fields
+    if (this.getEffectiveDateTime.isFutureEffective) {
+      filing.header.isFutureEffective = true
+      const effectiveDate = new Date(this.getEffectiveDateTime.dateTimeString) // ISO format
+      filing.header.effectiveDate = this.dateToApi(effectiveDate) // in UTC
+    }
+
+    // Set Document Optional Email if there is one
+    if (this.getDocumentOptionalEmail) {
+      filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
+    }
+
+    // Build Staff Payment into the filing
+    // may override folio number
+    filing = this.buildStaffPayment(filing)
+
+    // Build Transactional Folio Number into the filing
+    // will override folio number
+    filing = this.buildFolioNumber(filing)
+
+    return filing
+  }
+
+  /**
+   * Builds a restoration filing from store data.
+   * @param isDraft whether this is a draft
+   * @returns the restoration filing body
+   */
+  buildRestorationFiling (isDraft: boolean): RestorationFilingIF {
+    // Build restoration filing
+    let filing: RestorationFilingIF = {
+      header: {
+        name: FilingTypes.RESTORATION,
+        certifiedBy: this.getCertifyState.certifiedBy,
+        date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
+        folioNumber: this.getFolioNumber // business folio number, unless overridden below
+      },
+      business: this.getEntitySnapshot.businessInfo,
+      restoration: {
+        business: {
+          identifier: this.getBusinessId,
+          legalType: this.getEntityType
+        },
+        provisionsRemoved: this.areProvisionsRemoved,
+        contactPoint: this.getContactPoint
+      }
+    }
+
+    // delete invalid tax id (see ticket 15122)
+    delete filing.business.taxId
+
+    // Apply NR / business name / business type change to filing
+    if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
+      filing.restoration.nameRequest = this.getNameRequest
+    }
+
+    // Apply name translation changes to filing
+    if (this.haveNameTranslationsChanged) {
+      const nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
+      filing.restoration.nameTranslations = nameTranslations
+    }
+
+    // Apply share structure changes to filing or apply new resolution dates
+    if (this.hasShareStructureChanged) {
+      const shareClasses = isDraft ? this.getShareClasses : this.prepareShareClasses()
+      filing.restoration.shareStructure = {
+        resolutionDates: this.getNewResolutionDates,
+        shareClasses
+      }
+    } else if (this.getNewResolutionDates) {
+      filing.restoration.shareStructure = {
+        resolutionDates: this.getNewResolutionDates
+      }
+    }
+
+    // Apply Court Order ONLY when it is required and applied
+    if (this.getHasPlanOfArrangement || this.getFileNumber) {
+      filing.restoration.courtOrder = {
         fileNumber: this.getFileNumber,
         effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : null,
         hasPlanOfArrangement: this.getHasPlanOfArrangement
@@ -719,6 +803,93 @@ export default class FilingTemplateMixin extends DateMixin {
   }
 
   /**
+   * Parses a draft Restoration filing into the store.
+   * @param filing the restoration filing
+   * @param entitySnapshot the latest entity snapshot
+   */
+  parseRestorationFiling (filing: RestorationFilingIF, entitySnapshot: EntitySnapshotIF): void {
+    // store Entity Snapshot
+    this.setEntitySnapshot(entitySnapshot)
+
+    // store Entity Type
+    this.setEntityType(filing.restoration.business?.legalType || entitySnapshot.businessInfo.legalType)
+
+    // store Business Information
+    this.setBusinessInformation({
+      ...filing.business,
+      ...filing.restoration?.business
+    })
+
+    // store Name Request data
+    this.setNameRequest(cloneDeep(
+      filing.restoration.nameRequest ||
+      {
+        legalType: entitySnapshot.businessInfo.legalType,
+        legalName: entitySnapshot.businessInfo.legalName,
+        nrNumber: entitySnapshot.businessInfo.nrNumber
+      }
+    ))
+
+    // store Name Translations
+    this.setNameTranslations(cloneDeep(
+      this.mapNameTranslations(filing.restoration.nameTranslations) ||
+      this.mapNameTranslations(entitySnapshot.nameTranslations) ||
+      []
+    ))
+
+    // store Provisions Removed
+    if (filing.restoration.provisionsRemoved) this.setProvisionsRemoved(true)
+
+    // store Office Addresses **from snapshot** (because we don't change office addresses in a restoration)
+    this.setOfficeAddresses(cloneDeep(entitySnapshot.addresses))
+
+    // store People And Roles **from snapshot** (because we don't change people and roles in a restoration)
+    this.setPeopleAndRoles(cloneDeep(entitySnapshot.orgPersons))
+
+    // store current Business Contact
+    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
+
+    // store Share Classes and Resolution Dates
+    this.setShareClasses(cloneDeep(
+      filing.restoration.shareStructure?.shareClasses ||
+      entitySnapshot.shareStructure?.shareClasses
+    ))
+    this.setNewResolutionDates(cloneDeep(
+      filing.restoration.shareStructure?.resolutionDates || []
+    ))
+
+    // store Certify State
+    this.setCertifyState({
+      valid: false,
+      certifiedBy: filing.header.certifiedBy
+    })
+
+    // store Folio Number
+    // FUTURE: should we store correction.folioNumber instead?
+    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
+
+    // if Transactional Folio Number was saved then store it
+    if (filing.header.isTransactionalFolioNumber) {
+      this.setTransactionalFolioNumber(filing.header.folioNumber)
+    }
+
+    // store Document Optional Email
+    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail || '')
+
+    // store Effective Date
+    const effectiveDate = this.apiToIso(filing.header.effectiveDate)
+    this.setEffectiveDateTimeString(effectiveDate)
+    this.setIsFutureEffective(filing.header.isFutureEffective)
+
+    // store File Number and POA
+    this.setFileNumber(filing.restoration.courtOrder?.fileNumber)
+    this.setHasPlanOfArrangement(filing.restoration.courtOrder?.hasPlanOfArrangement)
+
+    // store Staff Payment
+    this.storeStaffPayment(filing)
+  }
+
+  /**
    * Parses a draft special resolution filing into the store.
    * @param filing the special resolution filing
    * @param entitySnapshot the latest entity snapshot
@@ -1164,8 +1335,8 @@ export default class FilingTemplateMixin extends DateMixin {
    * @param filing the filing
    */
   private buildStaffPayment (
-    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF |
-            ChgRegistrationFilingIF | SpecialResolutionFilingIF
+    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF | ChgRegistrationFilingIF |
+      RestorationFilingIF | SpecialResolutionFilingIF
   ): any {
     // Populate Staff Payment according to payment option
     switch (this.getStaffPayment.option) {
@@ -1198,8 +1369,8 @@ export default class FilingTemplateMixin extends DateMixin {
    * @param filing the filing to parse
    */
   private storeStaffPayment (
-    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF |
-            ChgRegistrationFilingIF | SpecialResolutionFilingIF
+    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF | ChgRegistrationFilingIF |
+      RestorationFilingIF | SpecialResolutionFilingIF
   ): void {
     // Parse staff payment
     if (filing.header.routingSlipNumber) {

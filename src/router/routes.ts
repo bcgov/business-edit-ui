@@ -1,4 +1,5 @@
-import { Signin, Signout, Alteration, Change, Conversion, Correction, SpecialResolution } from '@/views/'
+import { Signin, Signout, Alteration, Change, Conversion, Correction, Restoration, SpecialResolution }
+  from '@/views/'
 import { FilingTypes, RouteNames } from '@/enums/'
 
 export const routes = [
@@ -40,6 +41,16 @@ export const routes = [
       requiresAuth: true,
       isStaffOnly: true,
       filingType: FilingTypes.CORRECTION
+    }
+  },
+  {
+    path: '/restoration',
+    name: RouteNames.RESTORATION,
+    component: Restoration,
+    meta: {
+      requiresAuth: true,
+      isStaffOnly: true,
+      filingType: FilingTypes.RESTORATION
     }
   },
   {

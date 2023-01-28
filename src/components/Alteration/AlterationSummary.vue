@@ -195,7 +195,6 @@ export default class AlterationSummary extends Mixins(
   @Getter areProvisionsRemoved!: boolean
 
   // Global actions
-  @Action setSummaryMode!: ActionBindingIF
   @Action setEffectiveDateValid!: ActionBindingIF
 
   /** Whether to perform validation. */

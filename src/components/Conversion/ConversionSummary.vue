@@ -56,7 +56,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Getter } from 'vuex-class'
 import { ListPeopleAndRoles } from '@/components/common/'
 import { OfficeAddresses } from '@/components/common/YourCompany'
 import { ActionBindingIF, ResourceIF } from '@/interfaces/'
@@ -76,9 +76,6 @@ export default class ConversionSummary extends Vue {
   @Getter getResource!: ResourceIF
   @Getter getCurrentNaics!: NaicsIF
   @Getter isSoleProp!: boolean
-
-  // Global actions
-  @Action setSummaryMode!: ActionBindingIF
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean

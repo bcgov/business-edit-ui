@@ -73,7 +73,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Getter } from 'vuex-class'
 import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common/'
 import { ActionBindingIF, NameRequestIF, ResourceIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
@@ -96,9 +96,6 @@ export default class ChangeSummary extends Vue {
   @Getter getNameRequestLegalName!: string
   @Getter getBusinessNumber!: string
   @Getter isSoleProp!: boolean
-
-  // Global actions
-  @Action setSummaryMode!: ActionBindingIF
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean

@@ -11,7 +11,8 @@ const defaultFlagSet: LDFlagSet = {
   'alteration-ui-enabled': false,
   'change-ui-enabled': false,
   'conversion-ui-enabled': false,
-  'correction-ui-enabled': false
+  'correction-ui-enabled': false,
+  'restoration-ui-enabled': false
 }
 
 /**
