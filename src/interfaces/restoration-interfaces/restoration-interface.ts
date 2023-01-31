@@ -1,24 +1,22 @@
-import { BusinessInformationIF, CourtOrderIF, NameRequestIF, NameTranslationIF, ShareStructureIF }
+import { RestorationTypes } from '@/enums'
+import { AddressesIF, BusinessInformationIF, CourtOrderIF, NameRequestIF, NameTranslationIF, OrgPersonIF }
   from '@/interfaces/'
-import { CoopTypes } from '@/enums'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/restoration.json
 //
 export interface RestorationIF {
-  provisionsRemoved?: boolean
+  date: string // today, as YYYY-MM-DD
+  type: RestorationTypes
+  relationships?: any // *** TPDP: update type
+  expiry?: string // YYYY-MM-DD
+  approvalType?: any // *** TODO: update type
   business?: BusinessInformationIF
-  /** This is different from bcrs-shared-components/interfaces/name-request-interface.ts
-   * and should be refactored in the future. */
+  courtOrder?: CourtOrderIF
   nameRequest?: NameRequestIF
   nameTranslations?: NameTranslationIF[]
-  shareStructure?: ShareStructureIF
-  contactPoint?: ContactPointIF
-  courtOrder?: CourtOrderIF
-  cooperativeAssociationType?: CoopTypes
-  rulesFileKey?: string
-  rulesFileName?: string
-  memorandumFileKey?: string
-  memorandumFileName?: string
+  parties: OrgPersonIF[]
+  offices: AddressesIF
+  contactPoint: ContactPointIF
 }

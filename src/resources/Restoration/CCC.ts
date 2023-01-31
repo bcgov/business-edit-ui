@@ -8,7 +8,7 @@ export const CccRestorationResource: ResourceIF = {
   displayName: GetCorpFullDescription(CorpTypeCd.BC_CCC),
   addressLabel: 'Registered Office',
   filingData: [
-    // order matters - see resource-getters.ts
+    // order matters - see restorationResource()
     {
       entityType: CorpTypeCd.BC_COMPANY,
       filingTypeCode: FilingCodes.RESTORATION_LTD_EXTEND,
@@ -24,7 +24,11 @@ export const CccRestorationResource: ResourceIF = {
     nameChangeOptions: [
       NameChangeOptions.CORRECT_NEW_NR,
       NameChangeOptions.CORRECT_NAME_TO_NUMBER
-    ]
+    ],
+    orgPersonInfo: {
+      orgPersonLabel: 'Applicant',
+      subtitle: null // not used
+    }
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +
     'of a material fact in a record submitted to the Corporate Registry for filing. ' +

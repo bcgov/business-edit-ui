@@ -3,8 +3,9 @@ import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
-  EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF,
-  NameTranslationIF, OrgPersonIF, RestorationFilingIF, SpecialResolutionFilingIF } from '@/interfaces/'
+  EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
+  NameRequestIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF, RestorationStateIF,
+  SpecialResolutionFilingIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
@@ -62,6 +63,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter hasAssociationTypeChanged!: boolean
   @Getter getSpecialResolution!: SpecialResolutionIF
   @Getter hasBusinessStartDateChanged!: boolean
+  @Getter getRestoration!: RestorationStateIF
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -89,6 +91,9 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setSpecialResolution!: ActionBindingIF
   @Action setCorrectionStartDate!: ActionBindingIF
+  @Action setRestorationDate!: ActionBindingIF
+  @Action setRestorationType!: ActionBindingIF
+  @Action setRestorationExpiry!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -127,7 +132,7 @@ export default class FilingTemplateMixin extends DateMixin {
         contactPoint: this.getContactPoint,
         nameRequest: this.getNameRequest,
         offices: this.getOfficeAddresses,
-        parties: undefined, // parties are added below
+        parties: null, // applied below
         type: this.getCorrectionErrorType
       }
     }
@@ -286,11 +291,14 @@ export default class FilingTemplateMixin extends DateMixin {
       },
       business: this.getEntitySnapshot.businessInfo,
       restoration: {
+        date: this.getCurrentDate,
+        type: this.getRestoration.type,
         business: {
           identifier: this.getBusinessId,
           legalType: this.getEntityType
         },
-        provisionsRemoved: this.areProvisionsRemoved,
+        parties: null, // applied below
+        offices: this.getOfficeAddresses,
         contactPoint: this.getContactPoint
       }
     }
@@ -309,19 +317,6 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.restoration.nameTranslations = nameTranslations
     }
 
-    // Apply share structure changes to filing or apply new resolution dates
-    if (this.hasShareStructureChanged) {
-      const shareClasses = isDraft ? this.getShareClasses : this.prepareShareClasses()
-      filing.restoration.shareStructure = {
-        resolutionDates: this.getNewResolutionDates,
-        shareClasses
-      }
-    } else if (this.getNewResolutionDates) {
-      filing.restoration.shareStructure = {
-        resolutionDates: this.getNewResolutionDates
-      }
-    }
-
     // Apply Court Order ONLY when it is required and applied
     if (this.getHasPlanOfArrangement || this.getFileNumber) {
       filing.restoration.courtOrder = {
@@ -329,13 +324,6 @@ export default class FilingTemplateMixin extends DateMixin {
         effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : null,
         hasPlanOfArrangement: this.getHasPlanOfArrangement
       }
-    }
-
-    // If FED then set header fields
-    if (this.getEffectiveDateTime.isFutureEffective) {
-      filing.header.isFutureEffective = true
-      const effectiveDate = new Date(this.getEffectiveDateTime.dateTimeString) // ISO format
-      filing.header.effectiveDate = this.dateToApi(effectiveDate) // in UTC
     }
 
     // Set Document Optional Email if there is one
@@ -437,7 +425,8 @@ export default class FilingTemplateMixin extends DateMixin {
         business: {
           identifier: this.getBusinessId
         },
-        contactPoint: this.getContactPoint
+        contactPoint: this.getContactPoint,
+        parties: null // applied below
       }
     }
 
@@ -816,9 +805,15 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Business Information
     this.setBusinessInformation({
+      ...entitySnapshot.businessInfo,
       ...filing.business,
       ...filing.restoration?.business
     })
+
+    // restore Restoration data
+    this.setRestorationDate(filing.restoration.date)
+    this.setRestorationType(filing.restoration.type)
+    this.setRestorationExpiry(filing.restoration.expiry || null)
 
     // store Name Request data
     this.setNameRequest(cloneDeep(
@@ -837,26 +832,20 @@ export default class FilingTemplateMixin extends DateMixin {
       []
     ))
 
-    // store Provisions Removed
-    if (filing.restoration.provisionsRemoved) this.setProvisionsRemoved(true)
+    // store Office Addresses
+    this.setOfficeAddresses(cloneDeep(
+      filing.restoration.offices ||
+      entitySnapshot.addresses
+    ))
 
-    // store Office Addresses **from snapshot** (because we don't change office addresses in a restoration)
-    this.setOfficeAddresses(cloneDeep(entitySnapshot.addresses))
-
-    // store People And Roles **from snapshot** (because we don't change people and roles in a restoration)
-    this.setPeopleAndRoles(cloneDeep(entitySnapshot.orgPersons))
+    // store People And Roles
+    this.setPeopleAndRoles(cloneDeep(
+      filing.restoration.parties ||
+      entitySnapshot.orgPersons
+    ))
 
     // store current Business Contact
     this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
-
-    // store Share Classes and Resolution Dates
-    this.setShareClasses(cloneDeep(
-      filing.restoration.shareStructure?.shareClasses ||
-      entitySnapshot.shareStructure?.shareClasses
-    ))
-    this.setNewResolutionDates(cloneDeep(
-      filing.restoration.shareStructure?.resolutionDates || []
-    ))
 
     // store Certify State
     this.setCertifyState({
@@ -875,11 +864,6 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Document Optional Email
     this.setDocumentOptionalEmail(filing.header.documentOptionalEmail || '')
-
-    // store Effective Date
-    const effectiveDate = this.apiToIso(filing.header.effectiveDate)
-    this.setEffectiveDateTimeString(effectiveDate)
-    this.setIsFutureEffective(filing.header.isFutureEffective)
 
     // store File Number and POA
     this.setFileNumber(filing.restoration.courtOrder?.fileNumber)

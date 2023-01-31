@@ -10,9 +10,12 @@ import { ConfirmDialogType } from '@/interfaces/'
 @Component({})
 export default class CommonMixin extends Vue {
   @Getter isAlterationFiling!: boolean
+  @Getter isCorrectionFiling!: boolean
   @Getter isFirmChangeFiling!: boolean
   @Getter isFirmConversionFiling!: boolean
-  @Getter isCorrectionFiling!: boolean
+  @Getter isRestorationFiling!: boolean
+  @Getter isLimitedExtendRestorationFiling!: boolean
+  @Getter isLimitedConversionRestorationFiling!: boolean
   @Getter isSpecialResolutionFiling!: boolean
 
   /** True if Jest is running the code. */
@@ -93,6 +96,7 @@ export default class CommonMixin extends Vue {
       this.isAlterationFiling ||
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling ||
+      this.isRestorationFiling ||
       this.isSpecialResolutionFiling
     ) {
       return 'Change'
@@ -109,6 +113,7 @@ export default class CommonMixin extends Vue {
       this.isAlterationFiling ||
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling ||
+      this.isRestorationFiling ||
       this.isSpecialResolutionFiling
     ) {
       return 'Changed'
@@ -125,6 +130,7 @@ export default class CommonMixin extends Vue {
       this.isAlterationFiling ||
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling ||
+      this.isRestorationFiling ||
       this.isSpecialResolutionFiling
     ) {
       return 'Changes Saved'
@@ -136,17 +142,16 @@ export default class CommonMixin extends Vue {
   /** The entity title. */
   get entityTitle (): string {
     switch (this.$route.name) {
-      case RouteNames.ALTERATION:
-        return 'Company Information'
-      case RouteNames.CHANGE:
-        return 'Business Information'
-      case RouteNames.CONVERSION:
-        return 'Record Conversion'
-      case RouteNames.CORRECTION:
-        return 'Register Correction'
-      default:
-        return ''
+      case RouteNames.ALTERATION: return 'Company Information'
+      case RouteNames.CHANGE: return 'Business Information'
+      case RouteNames.CONVERSION: return 'Record Conversion'
+      case RouteNames.CORRECTION: return 'Register Correction'
+      case RouteNames.RESTORATION: {
+        if (this.isLimitedExtendRestorationFiling) return 'Limited Restoration Extension'
+        if (this.isLimitedConversionRestorationFiling) return 'Conversion to Full Restoration'
+      }
     }
+    return 'Unknown Filing' // should never happen
   }
 
   /**

@@ -15,6 +15,7 @@ export * from './partyTypes'
 export * from './NameChangeOptions'
 export * from './nameRequestStates'
 export * from './nameRequestTypes'
+export * from './restorationTypes'
 export * from './roleTypes'
 export * from './routeNames'
 

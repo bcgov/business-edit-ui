@@ -15,7 +15,7 @@
         <YourCompany class="mt-10" />
 
         <CurrentDirectors class="mt-10" />
-          <!-- more component comes here -->
+
         <CreateSpecialResolution class="mt-10" v-if="showCreateSpecialResolution" />
       </div>
     </v-slide-x-transition>
@@ -176,7 +176,7 @@ export default class SpecialResolution extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The resource file for a Special Resolution filing. */
+  /** The resource object for a special resolution filing. */
   get specialResolutionResource (): ResourceIF {
     if (this.isCoop) return CpSpecialResolutionResource
     return null
@@ -221,12 +221,12 @@ export default class SpecialResolution extends Mixins(
 
         // do not proceed if this isn't an Special Resolution filing
         if (!filing.specialResolution) {
-          throw new Error('Invalid Special Resolution filing')
+          throw new Error('Invalid special resolution filing')
         }
 
         // do not proceed if this isn't a DRAFT filing
-        if (filing.header.status !== FilingStatus.DRAFT) {
-          throw new Error('Invalid Special Resolution status')
+        if (filing.header?.status !== FilingStatus.DRAFT) {
+          throw new Error('Invalid special resolution status')
         }
 
         // parse special resolution filing and original entity snapshot into store

@@ -14,7 +14,7 @@ export interface ChgRegistrationIF {
   contactPoint: ContactPointIF
   nameRequest?: NameRequestIF
   offices?: AddressesIF
-  parties?: Array<OrgPersonIF>
+  parties: Array<OrgPersonIF>
   startDate?: string // YYYY-MM-DD
 }
 

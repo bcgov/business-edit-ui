@@ -14,7 +14,7 @@
         <v-col cols="4" class="pr-2">
           <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
-            <v-chip v-if="isCorrectionFiling && hasMailingChanged"
+            <v-chip v-if="hasMailingChanged && (isCorrectionFiling || isRestorationFiling)"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
           <MailingAddress
@@ -29,7 +29,7 @@
         <v-col cols="4" class="pr-2">
           <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
-            <v-chip v-if="isCorrectionFiling && hasDeliveryChanged"
+            <v-chip v-if="hasDeliveryChanged && (isCorrectionFiling || isRestorationFiling)"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
           <DeliveryAddress
@@ -42,9 +42,9 @@
         </v-col>
 
         <template v-if="!isSummaryView">
-          <v-col cols="1" v-if="
-            (isCorrectionFiling || isFirmChangeFiling || isFirmConversionFiling) && haveOfficeAddressesChanged
-          ">
+          <v-col cols="1" v-if="haveOfficeAddressesChanged &&
+            (isCorrectionFiling || isFirmChangeFiling || isFirmConversionFiling || isRestorationFiling)"
+          >
             <div class="actions mr-4">
               <span class="edit-action">
                 <v-btn
@@ -88,7 +88,9 @@
             </div>
           </v-col>
 
-          <v-col cols="1" v-else-if="(isCorrectionFiling || isFirmChangeFiling || isFirmConversionFiling)">
+          <v-col cols="1" v-else-if="(isCorrectionFiling || isFirmChangeFiling || isFirmConversionFiling ||
+            isRestorationFiling)"
+          >
             <div class="actions mr-4">
               <v-btn
                 text color="primary"
@@ -128,7 +130,7 @@
         <v-col cols="4" class="pr-2">
           <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
-            <v-chip v-if="isCorrectionFiling && hasRecMailingChanged"
+            <v-chip v-if="hasRecMailingChanged && (isCorrectionFiling || isRestorationFiling)"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
           <RecMailingAddress
@@ -144,7 +146,7 @@
         <v-col cols="4" class="pr-2">
           <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
-            <v-chip v-if="isCorrectionFiling && hasRecDeliveryChanged"
+            <v-chip v-if="hasRecDeliveryChanged && (isCorrectionFiling || isRestorationFiling)"
               x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
           </label>
           <RecDeliveryAddress
@@ -257,8 +259,8 @@
       </v-row>
     </v-card>
 
-    <!-- Editing a correction filing -->
-    <v-card flat v-else-if="isCorrectionFiling">
+    <!-- Editing a correction or restoration filing -->
+    <v-card flat v-else-if="isCorrectionFiling || isRestorationFiling">
       <ul class="list address-list">
         <div id="edit-registered-address">
           <div class="address-edit-header">
@@ -463,6 +465,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter isFirmConversionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter isSpecialResolutionFiling!: boolean
+  @Getter isRestorationFiling!: boolean
 
   // Global actions
   @Action setOfficeAddresses!: ActionBindingIF
@@ -543,7 +546,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
-    if (this.isBenBcCccUlcCorrectionFiling || this.isAlterationFiling) {
+    if (this.isBenBcCccUlcCorrectionFiling || this.isAlterationFiling || this.isRestorationFiling) {
       // assign registered office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.registeredOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.registeredOffice?.deliveryAddress }
@@ -758,8 +761,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets updated office addresses in store.
    */
   private storeAddresses (): void {
-    if (this.isBenBcCccUlcCorrectionFiling) {
-      // at the moment, only BEN corrections are supported
+    if (this.isBenBcCccUlcCorrectionFiling || this.isRestorationFiling) {
+      // at the moment, only corp corrections and restorations are supported
       this.setOfficeAddresses({
         registeredOffice: {
           deliveryAddress: this.deliveryAddress,
@@ -848,6 +851,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Watch('getOfficeAddresses', { deep: true, immediate: true })
   @Watch('isBenBcCccUlcCorrectionFiling')
   @Watch('isFirmCorrectionFiling')
+  @Watch('isRestorationFiling')
   private updateAddresses (): void {
     // set local properties from store
     this.setLocalProperties()

@@ -4,7 +4,7 @@ import { AccountInformationIF, ActionKvIF, AddressesIF, BusinessInformationIF, E
 import { CompletingPartyIF, ContactPointIF, NaicsIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { FilingTypes } from '@/enums/'
+import { FilingTypes, RestorationTypes } from '@/enums/'
 
 export const mutateBusinessId = (state: StateIF, businessId: string) => {
   state.stateModel.tombstone.businessId = businessId
@@ -293,4 +293,16 @@ export const mutateSpecialResolution = (state: StateIF, specialResolution: Speci
 
 export const mutateSpecialResolutionConfirmStateValidity = (state: StateIF, validity: boolean) => {
   state.stateModel.validationFlags.flagsReviewCertify.isValidSpecialResolutionConfirm = validity
+}
+
+export const mutateRestorationDate = (state: StateIF, date: string) => {
+  state.stateModel.restoration.date = date
+}
+
+export const mutateRestorationType = (state: StateIF, type: RestorationTypes) => {
+  state.stateModel.restoration.type = type
+}
+
+export const mutateRestorationExpiry = (state: StateIF, expiry: string) => {
+  state.stateModel.restoration.expiry = expiry
 }

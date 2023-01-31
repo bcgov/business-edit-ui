@@ -9,9 +9,8 @@
 
           <dl class="business-info">
             <dd id="entity-legal-type">{{originalEntityType}}</dd>
-            <!-- this is actually business id but should be tax id (see ticket 15122) -->
-            <!-- <dt class="mr-2">Business No:</dt> -->
-            <!-- <dd id="entity-business-number">{{ getBusinessNumber || 'Not Available' }}</dd> -->
+            <dt class="mr-2">Business No:</dt>
+            <dd id="entity-business-number">{{ businessNumber || 'Not Available' }}</dd>
             <dt class="mr-2">Incorporation No:</dt>
             <dd id="entity-incorp-number">{{ getBusinessId }}</dd>
           </dl>
@@ -33,30 +32,39 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins/'
-import { EntitySnapshotIF } from '@/interfaces/'
+import { BusinessInformationIF, EntitySnapshotIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 
-@Component({})
-export default class EntityInfo extends Mixins(CommonMixin) {
+@Component({
+  mixins: [
+    CommonMixin
+  ]
+})
+export default class EntityInfo extends Vue {
   // Global getters
   @Getter getBusinessId!: string
-  @Getter getBusinessNumber!: string
+  @Getter getBusinessInformation!: BusinessInformationIF
   @Getter getOriginalLegalName!: string
-  @Getter isRoleStaff!: boolean
   @Getter getBusinessContact!: ContactPointIF
   @Getter getEntitySnapshot!: EntitySnapshotIF
 
-  /** Get original entity type. */
+  /** The original entity type. */
   get originalEntityType (): string {
     if (this.getEntitySnapshot?.businessInfo) {
       return GetCorpFullDescription(this.getEntitySnapshot.businessInfo.legalType)
     } else {
       return 'Unknown'
     }
+  }
+
+  /** The business number (aka tax id). */
+  get businessNumber (): string {
+    return this.getBusinessInformation?.taxId
   }
 }
 </script>

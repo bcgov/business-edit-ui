@@ -31,7 +31,7 @@
       }"
     >
       <!-- List Headers -->
-      <v-row v-if="showHeaders" class="people-roles-list-header list-item__subtitle pb-3" no-gutters>
+      <v-row v-if="showHeaders" class="people-roles-list-header list-item__subtitle pt-0 pb-4" no-gutters>
         <v-col
           v-for="(title, index) in tableHeaders"
           :key="index"
@@ -664,11 +664,5 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   .badges .v-icon {
     margin-top: 4px;
   }
-}
-
-// adjust error container padding for error bars
-#people-roles-add.invalid-section,
-#people-roles-list.invalid-section {
-  padding: 1.25rem 1.875rem 0;
 }
 </style>

@@ -4,12 +4,12 @@
     <v-slide-x-transition hide-on-leave>
       <div v-if="!isSummaryMode">
         <header>
-          <h1>Conversion to Full Restoration</h1>
+          <h1>{{ entityTitle }}</h1>
         </header>
 
         <YourCompany class="mt-10" />
 
-        <CurrentDirectors class="mt-10" />
+        <PeopleAndRoles class="mt-10" />
       </div>
     </v-slide-x-transition>
 
@@ -25,6 +25,8 @@
           :validate="getAppValidate"
           @haveChanges="onRestorationSummaryChanges()"
         />
+
+        <CurrentDirectors class="mt-10" />
 
         <DocumentsDelivery
           class="mt-10"
@@ -75,36 +77,40 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
-import { CertifySection, CurrentDirectors, DocumentsDelivery, StaffPayment, YourCompany }
-  from '@/components/common/'
+import { CertifySection, CurrentDirectors, DocumentsDelivery, PeopleAndRoles, StaffPayment,
+  YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF }
+import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF, RestorationFilingIF }
   from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/Restoration/'
+import { FilingDataIF } from '@bcrs-shared-components/interfaces'
 
 @Component({
   components: {
     CertifySection,
     CurrentDirectors,
     DocumentsDelivery,
+    PeopleAndRoles,
     RestorationSummary,
     StaffPayment,
     YourCompany
-  }
+  },
+  mixins: [
+    CommonMixin,
+    FeeMixin,
+    FilingTemplateMixin
+  ]
 })
-export default class Restoration extends Mixins(
-  CommonMixin,
-  FeeMixin,
-  FilingTemplateMixin
-) {
+export default class Restoration extends Vue {
   // Global getters
   @Getter getUserFirstName!: string
   @Getter getUserLastName!: string
@@ -115,6 +121,9 @@ export default class Restoration extends Mixins(
   @Getter isBenefitCompany!: boolean
   @Getter isBcCcc!: boolean
   @Getter isBcUlcCompany!: boolean
+  @Getter isRoleStaff!: boolean
+  @Getter isLimitedExtendRestorationFiling!: boolean
+  @Getter isLimitedConversionRestorationFiling!: boolean
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -135,7 +144,7 @@ export default class Restoration extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The resource file for a restoration filing. */
+  /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
     switch (true) {
       case this.isBcCompany: return BcRestorationResource
@@ -143,7 +152,7 @@ export default class Restoration extends Mixins(
       case this.isBcCcc: return CccRestorationResource
       case this.isBcUlcCompany: return UlcRestorationResource
     }
-    return null
+    return null // should never happen
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -171,34 +180,35 @@ export default class Restoration extends Mixins(
       return
     }
 
-    // try to fetch data
+    // fetch the restoration filing
     try {
+      // do not proceed if we don't have the necessary query param
+      if (!this.restorationId) {
+        throw new Error('Invalid restoration filing ID')
+      }
+
+      // store the filing ID
+      this.setFilingId(this.restorationId)
+
+      // fetch draft restoration to resume
+      const restorationFiling =
+        await LegalServices.fetchFilingById(this.getBusinessId, this.restorationId) as RestorationFilingIF
+
+      // do not proceed if this isn't a RESTORATION filing
+      if (!restorationFiling.restoration) {
+        throw new Error('Invalid Restoration filing')
+      }
+
+      // do not proceed if this isn't a DRAFT filing
+      if (restorationFiling.header?.status !== FilingStatus.DRAFT) {
+        throw new Error('Invalid Restoration status')
+      }
+
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
 
-      if (this.restorationId) {
-        // store the filing ID
-        this.setFilingId(this.restorationId)
-
-        // fetch draft restoration to resume
-        const restorationFiling = await LegalServices.fetchFilingById(this.getBusinessId, this.restorationId)
-
-        // do not proceed if this isn't a RESTORATION filing
-        if (!restorationFiling.restoration) {
-          throw new Error('Invalid Restoration filing')
-        }
-
-        // do not proceed if this isn't a DRAFT filing
-        if (restorationFiling.header.status !== FilingStatus.DRAFT) {
-          throw new Error('Invalid Restoration status')
-        }
-
-        // parse draft restoration filing and entity snapshot into store
-        this.parseRestorationFiling(restorationFiling, entitySnapshot)
-      } else {
-        // parse just the entity snapshot into store
-        this.parseEntitySnapshot(entitySnapshot)
-      }
+      // parse draft restoration filing and entity snapshot into store
+      this.parseRestorationFiling(restorationFiling, entitySnapshot)
 
       if (!this.restorationResource) {
         throw new Error(`Invalid restoration resource entity type = ${this.getEntityType}`)
@@ -208,8 +218,10 @@ export default class Restoration extends Mixins(
       this.setResource(this.restorationResource)
 
       // initialize Fee Summary data
-      // *** TODO: need to select extension or conversion depending on sub-type
-      const filingData = [this.restorationResource.filingData[0]]
+      let filingData: FilingDataIF[] = []
+      if (this.isLimitedExtendRestorationFiling) filingData = [this.restorationResource.filingData[0]]
+      if (this.isLimitedConversionRestorationFiling) filingData = [this.restorationResource.filingData[1]]
+
       filingData.forEach(fd => {
         fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
       })
@@ -240,11 +252,10 @@ export default class Restoration extends Mixins(
       LegalServices.fetchAddresses(this.getBusinessId),
       LegalServices.fetchNameTranslations(this.getBusinessId),
       LegalServices.fetchDirectors(this.getBusinessId),
-      LegalServices.fetchShareStructure(this.getBusinessId),
       LegalServices.fetchResolutions(this.getBusinessId)
     ])
 
-    if (items.length !== 7) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 6) throw new Error('Failed to fetch entity snapshot')
 
     return {
       businessInfo: items[0],
@@ -252,8 +263,7 @@ export default class Restoration extends Mixins(
       addresses: items[2],
       nameTranslations: items[3],
       orgPersons: items[4],
-      shareStructure: items[5],
-      resolutions: items[6]
+      resolutions: items[5]
     } as EntitySnapshotIF
   }
 

@@ -101,7 +101,7 @@ export default class Conversion extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The resource file for a firm conversion filing. */
+  /** The resource object for a firm conversion filing. */
   get firmConversionResource (): any {
     if (this.isPartnership) return GpConversionResource
     if (this.isSoleProp) return SpConversionResource
@@ -151,7 +151,7 @@ export default class Conversion extends Mixins(
         }
 
         // do not proceed if this isn't a DRAFT filing
-        if (conversionFiling.header.status !== FilingStatus.DRAFT) {
+        if (conversionFiling.header?.status !== FilingStatus.DRAFT) {
           throw new Error('Invalid conversion status')
         }
 

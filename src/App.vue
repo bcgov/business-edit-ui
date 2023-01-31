@@ -112,7 +112,7 @@
                   />
                 </aside>
 
-                <!-- Alteration/Change/Conversion filings use the enhanced Fee Summary shared component -->
+                <!-- Alteration/Change/Conversion/Restoration filings use the enhanced Fee Summary shared component -->
                 <v-expand-transition>
                   <FeeSummaryShared
                     v-if="showFeesummaryShared"
@@ -208,6 +208,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
   @Getter showFeeSummary!: boolean
   @Getter getCurrentJsDate!: Date
   @Getter getFilingId!: number
+  @Getter isRestorationFiling!: boolean
 
   // Alteration flag getters
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
@@ -352,7 +353,8 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
       this.isSpecialResolutionFiling ||
       this.isAlterationFiling ||
       this.isFirmChangeFiling ||
-      this.isFirmConversionFiling
+      this.isFirmConversionFiling ||
+      this.isRestorationFiling
     )
   }
 

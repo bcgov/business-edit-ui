@@ -143,5 +143,16 @@ export const stateModel: StateModelIF = {
       additionalName: null
     },
     resolutionConfirmed: false
+  },
+  restoration: {
+    businessInfoValid: false,
+    businessNameValid: false,
+    date: '',
+    type: null,
+    expiry: null
+    // defineBusinessValid: false,
+    // startDate: '',
+    // businessAddress: null,
+    // businessNumber: null
   }
 }
