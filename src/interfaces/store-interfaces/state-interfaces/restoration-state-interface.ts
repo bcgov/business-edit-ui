@@ -16,3 +16,14 @@ export interface RestorationStateIF {
   // businessAddress: BusinessAddressIF
   // businessNumber?: string
 }
+
+export const EmptyRestorationState: RestorationStateIF = {
+  businessInfoValid: false,
+  businessNameValid: false,
+  type: null,
+  expiry: null
+  // defineBusinessValid: false,
+  // startDate: '',
+  // businessAddress: null,
+  // businessNumber: null
+}
