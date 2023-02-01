@@ -10,12 +10,12 @@ export const UlcRestorationResource: ResourceIF = {
   filingData: [
     // order matters - see restorationResource()
     {
-      entityType: CorpTypeCd.BC_COMPANY,
+      entityType: CorpTypeCd.BC_ULC_COMPANY,
       filingTypeCode: FilingCodes.RESTORATION_LTD_EXTEND,
       priority: false
     },
     {
-      entityType: CorpTypeCd.BC_COMPANY,
+      entityType: CorpTypeCd.BC_ULC_COMPANY,
       filingTypeCode: FilingCodes.RESTORATION_LTD_TO_FULL,
       priority: false
     }

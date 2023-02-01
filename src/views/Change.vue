@@ -215,10 +215,10 @@ export default class Change extends Mixins(
       // initialize Fee Summary data
       this.setFilingData([this.firmChangeResource.filingData])
 
-      // update the current fees for the Filing
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()
 
-      // fetches the fee prices to display in the text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData()
 
       // set current profile name to store for field pre population

@@ -91,7 +91,6 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setSpecialResolution!: ActionBindingIF
   @Action setCorrectionStartDate!: ActionBindingIF
-  @Action setRestorationDate!: ActionBindingIF
   @Action setRestorationType!: ActionBindingIF
   @Action setRestorationExpiry!: ActionBindingIF
 
@@ -291,7 +290,6 @@ export default class FilingTemplateMixin extends DateMixin {
       },
       business: this.getEntitySnapshot.businessInfo,
       restoration: {
-        date: this.getCurrentDate,
         type: this.getRestoration.type,
         business: {
           identifier: this.getBusinessId,
@@ -811,7 +809,6 @@ export default class FilingTemplateMixin extends DateMixin {
     })
 
     // restore Restoration data
-    this.setRestorationDate(filing.restoration.date)
     this.setRestorationType(filing.restoration.type)
     this.setRestorationExpiry(filing.restoration.expiry || null)
 

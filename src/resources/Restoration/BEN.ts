@@ -10,12 +10,12 @@ export const BenRestorationResource: ResourceIF = {
   filingData: [
     // order matters - see restorationResource()
     {
-      entityType: CorpTypeCd.BC_COMPANY,
+      entityType: CorpTypeCd.BENEFIT_COMPANY,
       filingTypeCode: FilingCodes.RESTORATION_LTD_EXTEND,
       priority: false
     },
     {
-      entityType: CorpTypeCd.BC_COMPANY,
+      entityType: CorpTypeCd.BENEFIT_COMPANY,
       filingTypeCode: FilingCodes.RESTORATION_LTD_TO_FULL,
       priority: false
     }

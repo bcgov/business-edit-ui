@@ -248,7 +248,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       return false
     }
     if (this.isRestorationFiling) {
-      // *** TODO: implement
+      // FUTURE: implement (ticket 14975)
       return true
     }
     return false // should never happen

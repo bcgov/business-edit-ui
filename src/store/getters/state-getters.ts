@@ -538,6 +538,8 @@ export const hasConversionDataChanged = (state: StateIF): boolean => {
  */
 export const hasRestorationDataChanged = (state: StateIF): boolean => {
   return (
+    hasBusinessNameChanged(state) ||
+    haveNameTranslationsChanged(state) ||
     haveOfficeAddressesChanged(state) ||
     havePeopleAndRolesChanged(state)
   )

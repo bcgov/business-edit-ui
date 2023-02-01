@@ -295,10 +295,6 @@ export const mutateSpecialResolutionConfirmStateValidity = (state: StateIF, vali
   state.stateModel.validationFlags.flagsReviewCertify.isValidSpecialResolutionConfirm = validity
 }
 
-export const mutateRestorationDate = (state: StateIF, date: string) => {
-  state.stateModel.restoration.date = date
-}
-
 export const mutateRestorationType = (state: StateIF, type: RestorationTypes) => {
   state.stateModel.restoration.type = type
 }

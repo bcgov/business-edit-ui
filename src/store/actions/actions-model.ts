@@ -279,10 +279,6 @@ export const setSpecialResolutionConfirmStateValidity: ActionIF = ({ commit }, v
   commit('mutateSpecialResolutionConfirmStateValidity', validity)
 }
 
-export const setRestorationDate: ActionIF = ({ commit }, date: string): void => {
-  commit('mutateRestorationDate', date)
-}
-
 export const setRestorationType: ActionIF = ({ commit }, type: RestorationTypes): void => {
   commit('mutateRestorationType', type)
 }

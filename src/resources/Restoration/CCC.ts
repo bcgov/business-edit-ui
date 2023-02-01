@@ -10,12 +10,12 @@ export const CccRestorationResource: ResourceIF = {
   filingData: [
     // order matters - see restorationResource()
     {
-      entityType: CorpTypeCd.BC_COMPANY,
+      entityType: CorpTypeCd.BC_CCC,
       filingTypeCode: FilingCodes.RESTORATION_LTD_EXTEND,
       priority: false
     },
     {
-      entityType: CorpTypeCd.BC_COMPANY,
+      entityType: CorpTypeCd.BC_CCC,
       filingTypeCode: FilingCodes.RESTORATION_LTD_TO_FULL,
       priority: false
     }

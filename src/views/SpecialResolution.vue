@@ -257,10 +257,10 @@ export default class SpecialResolution extends Mixins(
       })
       this.setFilingData(filingData)
 
-      // update the current fees for the Filing
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
 
-      // fetches the fee prices to display in the text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData(true)
 
       // set current profile name to store for field pre population
@@ -313,9 +313,9 @@ export default class SpecialResolution extends Mixins(
       fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
     })
     this.setFilingData(filingData)
-    // update the current fees for the filing
+    // update the current fees for this filing
     await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
-    // update the fee prices to display in the text
+    // update the fee prices for the notice changes
     await this.setFeePricesFromFilingData(true)
   }
 
@@ -332,9 +332,9 @@ export default class SpecialResolution extends Mixins(
         })
       }
       this.setFilingData(filingData)
-      // update the current fees for the filing
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
-      // update the fee prices to display in the text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData(true)
     }
   }

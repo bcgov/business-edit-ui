@@ -8,7 +8,6 @@ import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import Alteration from '@/views/Alteration.vue'
 import mockRouter from './MockRouter'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 
 Vue.use(Vuetify)
 
@@ -410,7 +409,7 @@ describe('Alteration component', () => {
 
   it('updates the fees with priority and waive fees for staff payment changes', async () => {
     store.state.stateModel.staffPayment = {
-      option: StaffPaymentOptions.NO_FEE,
+      option: 0, // no fee
       isPriority: true
     }
 

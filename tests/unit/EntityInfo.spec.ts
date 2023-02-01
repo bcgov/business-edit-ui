@@ -53,11 +53,11 @@ describe('Entity Info component in a Correction as a named company', () => {
     }
   })
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'correction' })
+    await router.push({ name: 'correction' })
 
     wrapper = mount(EntityInfo, {
       localVue,
@@ -124,11 +124,11 @@ describe('Entity Info component in a Correction as a numbered company', () => {
     }
   })
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'correction' })
+    await router.push({ name: 'correction' })
 
     wrapper = mount(EntityInfo, {
       localVue,

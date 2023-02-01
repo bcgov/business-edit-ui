@@ -172,10 +172,10 @@ export default class Conversion extends Mixins(
       // initialize Fee Summary data
       this.setFilingData([this.firmConversionResource.filingData])
 
-      // update the current fees for the Filing
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()
 
-      // fetches the fee prices to display in the text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData()
 
       // tell App that we're finished loading

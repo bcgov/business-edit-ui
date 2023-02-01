@@ -23,7 +23,6 @@
         <RestorationSummary
           class="mt-10"
           :validate="getAppValidate"
-          @haveChanges="onRestorationSummaryChanges()"
         />
 
         <CurrentDirectors class="mt-10" />
@@ -37,13 +36,13 @@
 
         <CertifySection
           class="mt-10"
-          :sectionNumber="2."
+          sectionNumber="2."
           :validate="getAppValidate"
         />
 
         <StaffPayment
           class="mt-10"
-          :sectionNumber="3."
+          sectionNumber="3."
           @haveChanges="onStaffPaymentChanges()"
         />
       </div>
@@ -86,9 +85,9 @@ import { CertifySection, CurrentDirectors, DocumentsDelivery, PeopleAndRoles, St
   YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF, RestorationFilingIF }
-  from '@/interfaces/'
-import { FilingStatus } from '@/enums/'
+import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF,
+  RestorationFilingIF } from '@/interfaces/'
+import { FilingStatus, FilingTypes, RestorationTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/Restoration/'
@@ -112,8 +111,6 @@ import { FilingDataIF } from '@bcrs-shared-components/interfaces'
 })
 export default class Restoration extends Vue {
   // Global getters
-  @Getter getUserFirstName!: string
-  @Getter getUserLastName!: string
   @Getter isSummaryMode!: boolean
   @Getter getAppValidate!: boolean
   @Getter showFeeSummary!: boolean
@@ -207,6 +204,10 @@ export default class Restoration extends Vue {
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
 
+      // verify that business is in Limited Restoration status
+      // (will throw on error)
+      await this.verifyLimitedRestorationStatus(entitySnapshot.businessInfo)
+
       // parse draft restoration filing and entity snapshot into store
       this.parseRestorationFiling(restorationFiling, entitySnapshot)
 
@@ -227,10 +228,10 @@ export default class Restoration extends Vue {
       })
       this.setFilingData(filingData)
 
-      // update the current fees for the Filing
-      await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
+      // update the current fees for this filing
+      await this.setCurrentFeesFromFilingData()
 
-      // fetches the fee prices to display in the summary text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData(true)
 
       // tell App that we're finished loading
@@ -251,34 +252,37 @@ export default class Restoration extends Vue {
       AuthServices.fetchAuthInfo(this.getBusinessId),
       LegalServices.fetchAddresses(this.getBusinessId),
       LegalServices.fetchNameTranslations(this.getBusinessId),
-      LegalServices.fetchDirectors(this.getBusinessId),
-      LegalServices.fetchResolutions(this.getBusinessId)
+      LegalServices.fetchDirectors(this.getBusinessId)
     ])
 
-    if (items.length !== 6) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 5) throw new Error('Failed to fetch entity snapshot')
 
     return {
       businessInfo: items[0],
       authInfo: items[1],
       addresses: items[2],
       nameTranslations: items[3],
-      orgPersons: items[4],
-      resolutions: items[5]
+      orgPersons: items[4]
     } as EntitySnapshotIF
   }
 
-  /** Called when restoration summary data has changed. */
-  protected async onRestorationSummaryChanges (): Promise<void> {
-    // update filing data with future effective field
-    const filingData = [...this.getFilingData]
-    filingData.forEach(fd => {
-      fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
-    })
-    this.setFilingData(filingData)
-    // update the current fees for the filing
-    await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
-    // update the fee prices to display in the text
-    await this.setFeePricesFromFilingData(true)
+  /** Verifies that the business is in Limited Restoration status. */
+  private async verifyLimitedRestorationStatus (businessInfo: BusinessInformationIF): Promise<void> {
+    // fetch state filing
+    const stateFiling = businessInfo.stateFiling
+    const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
+    const type = filing?.header?.name as FilingTypes
+
+    // FUTURE: enable code below when limited restorations can be filed (ticket 14641)
+
+    // // Verify state filing. It should be a Limited Restoration filing or a
+    // // Limited Restoration Extension filing. If the expiry date has passed
+    // // then the state filing should be a dissolution.
+    // if (filing?.name === FilingTypes.RESTORATION) {
+    //   if (filing?.restoration?.type === RestorationTypes.LIMITED) return // all good
+    //   if (filing?.restoration?.type === RestorationTypes.LTD_EXTEND) return // all good
+    // }
+    // throw new Error('Business is not in Limited Restoration status')
   }
 
   /** Emits Fetch Error event. */

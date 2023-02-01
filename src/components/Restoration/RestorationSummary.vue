@@ -4,12 +4,12 @@
     <div class="summary-header px-4 mb-2 rounded-t">
       <v-row no-gutters>
         <v-col cols="9">
-          <img  class="my-n1 header-icon" src="@/assets/images/currency-usd-circle.svg">
+          <img class="header-icon" src="@/assets/images/currency-usd-circle.svg">
           <label class="summary-title">Restoration Notice Changes {{restorationFees}}</label>
         </v-col>
 
         <!-- Actions -->
-        <v-col cols="3" class="mt-n2">
+        <v-col cols="3">
           <div class="actions mr-4">
             <v-btn
               text color="primary"
@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
 import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
@@ -100,9 +100,6 @@ export default class RestorationSummary extends Mixins(
   protected onDeleteClicked (): void {
     this.$root.$emit('delete-all')
   }
-
-  @Emit('haveChanges')
-  protected emitHaveChanges (): void {}
 }
 </script>
 
@@ -127,12 +124,8 @@ export default class RestorationSummary extends Mixins(
   position: absolute;
   right: 0;
 
-  .undo-action{
-    border-right: 1px solid $gray1;
-  }
-
-  .v-btn {
-    min-width: 0.5rem;
+  #btn-delete-restoration {
+    margin-top: -6px;
   }
 }
 
