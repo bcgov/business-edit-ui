@@ -106,7 +106,7 @@ export default class CorpCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
       case this.isBcCcc: return CccCorrectionResource
       case this.isBcUlcCompany: return UlcCorrectionResource
     }
-    return null
+    return null // should never happen
   }
 
   /**

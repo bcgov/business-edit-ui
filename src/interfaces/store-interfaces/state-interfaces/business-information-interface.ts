@@ -11,6 +11,7 @@ export interface BusinessInformationIF {
   legalType: CorpTypeCd
   nrNumber?: string
   startDate?: string // YYYY-MM-DD
+  stateFiling?: string
   taxId?: string // may br BN9 or BN15
 
   // SP/GP only:

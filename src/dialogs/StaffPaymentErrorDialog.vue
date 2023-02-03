@@ -40,12 +40,9 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Emit } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
 
 @Component({})
 export default class StaffPaymentErrorDialog extends Vue {
-  @Getter isRoleStaff!: boolean
-
   /** Prop containing filing name. */
   @Prop({ default: 'Filing' }) readonly filingName!: string
 

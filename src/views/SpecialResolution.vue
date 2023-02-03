@@ -15,7 +15,7 @@
         <YourCompany class="mt-10" />
 
         <CurrentDirectors class="mt-10" />
-          <!-- more component comes here -->
+
         <CreateSpecialResolution class="mt-10" v-if="showCreateSpecialResolution" />
       </div>
     </v-slide-x-transition>
@@ -176,7 +176,7 @@ export default class SpecialResolution extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The resource file for a Special Resolution filing. */
+  /** The resource object for a special resolution filing. */
   get specialResolutionResource (): ResourceIF {
     if (this.isCoop) return CpSpecialResolutionResource
     return null
@@ -221,12 +221,12 @@ export default class SpecialResolution extends Mixins(
 
         // do not proceed if this isn't an Special Resolution filing
         if (!filing.specialResolution) {
-          throw new Error('Invalid Special Resolution filing')
+          throw new Error('Invalid special resolution filing')
         }
 
         // do not proceed if this isn't a DRAFT filing
-        if (filing.header.status !== FilingStatus.DRAFT) {
-          throw new Error('Invalid Special Resolution status')
+        if (filing.header?.status !== FilingStatus.DRAFT) {
+          throw new Error('Invalid special resolution status')
         }
 
         // parse special resolution filing and original entity snapshot into store
@@ -257,10 +257,10 @@ export default class SpecialResolution extends Mixins(
       })
       this.setFilingData(filingData)
 
-      // update the current fees for the Filing
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
 
-      // fetches the fee prices to display in the text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData(true)
 
       // set current profile name to store for field pre population
@@ -313,9 +313,9 @@ export default class SpecialResolution extends Mixins(
       fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
     })
     this.setFilingData(filingData)
-    // update the current fees for the filing
+    // update the current fees for this filing
     await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
-    // update the fee prices to display in the text
+    // update the fee prices for the notice changes
     await this.setFeePricesFromFilingData(true)
   }
 
@@ -332,9 +332,9 @@ export default class SpecialResolution extends Mixins(
         })
       }
       this.setFilingData(filingData)
-      // update the current fees for the filing
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
-      // update the fee prices to display in the text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData(true)
     }
   }

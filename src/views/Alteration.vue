@@ -181,7 +181,7 @@ export default class Alteration extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The resource file for an alteration filing. */
+  /** The resource object for an alteration filing. */
   get alterationResource (): ResourceIF {
     switch (true) {
       case this.isBcCompany: return BcAlterationResource
@@ -223,12 +223,12 @@ export default class Alteration extends Mixins(
 
         // do not proceed if this isn't an ALTERATION filing
         if (!alterationFiling.alteration) {
-          throw new Error('Invalid Alteration filing')
+          throw new Error('Invalid alteration filing')
         }
 
         // do not proceed if this isn't a DRAFT filing
-        if (alterationFiling.header.status !== FilingStatus.DRAFT) {
-          throw new Error('Invalid Alteration status')
+        if (alterationFiling.header?.status !== FilingStatus.DRAFT) {
+          throw new Error('Invalid alteration status')
         }
 
         // parse draft alteration filing and entity snapshot into store
@@ -252,10 +252,10 @@ export default class Alteration extends Mixins(
       })
       this.setFilingData(filingData)
 
-      // update the current fees for the Filing
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
 
-      // fetches the fee prices to display in the summary text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData(true)
 
       // set current profile name to store for field pre population
@@ -314,9 +314,9 @@ export default class Alteration extends Mixins(
       fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
     })
     this.setFilingData(filingData)
-    // update the current fees for the filing
+    // update the current fees for this filing
     await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
-    // update the fee prices to display in the text
+    // update the fee prices for the notice changes
     await this.setFeePricesFromFilingData(true)
   }
 

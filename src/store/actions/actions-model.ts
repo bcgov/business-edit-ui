@@ -3,7 +3,7 @@ import { ActionIF, ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, En
   CorrectionInformationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF,
   NaicsIF, ShareClassIF, SpecialResolutionIF } from '@bcrs-shared-components/interfaces/'
-import { FilingTypes } from '@/enums/'
+import { FilingTypes, RestorationTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 export const setEntityType: ActionIF = ({ commit }, entityType: CorpTypeCd): void => {
@@ -277,4 +277,12 @@ export const setSpecialResolution = ({ commit }, specialResolution: SpecialResol
 
 export const setSpecialResolutionConfirmStateValidity: ActionIF = ({ commit }, validity: boolean): void => {
   commit('mutateSpecialResolutionConfirmStateValidity', validity)
+}
+
+export const setRestorationType: ActionIF = ({ commit }, type: RestorationTypes): void => {
+  commit('mutateRestorationType', type)
+}
+
+export const setRestorationExpiry: ActionIF = ({ commit }, expiry: string): void => {
+  commit('mutateRestorationExpiry', expiry)
 }

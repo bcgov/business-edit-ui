@@ -198,8 +198,8 @@
       />
     </div>
 
-    <!-- Name Translation(s) (alterations and corp corrections only) -->
-    <div v-if="isAlterationFiling || isBenBcCccUlcCorrectionFiling"
+    <!-- Name Translation(s) (alterations, corp corrections and restorations only) -->
+    <div v-if="isAlterationFiling || isBenBcCccUlcCorrectionFiling || isRestorationFiling"
       id="name-translate-section"
       class="section-container"
       :class="{'invalid-section': invalidTranslationSection}"
@@ -257,8 +257,8 @@
       />
     </template>
 
-    <!-- Recognition Date and Time (alterations and corp corrections only) -->
-    <template v-if="isAlterationFiling || isBenBcCccUlcCorrectionFiling">
+    <!-- Recognition Date and Time (alterations, corp corrections and restorations only) -->
+    <template v-if="isAlterationFiling || isBenBcCccUlcCorrectionFiling || isRestorationFiling">
       <v-divider class="mx-4 my-1" />
 
       <div class="section-container">
@@ -357,6 +357,7 @@ export default class YourCompany extends Mixins(
   @Getter isCoop!: boolean
   @Getter isBenBcCccUlcCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
+  @Getter isRestorationFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
   @Getter getAssociationType!: CoopTypes
 
@@ -464,7 +465,7 @@ export default class YourCompany extends Mixins(
 
   /** The recognition date or business start date string. */
   get recognitionDateTime (): string {
-    if (this.isBenBcCccUlcCorrectionFiling) {
+    if (this.isBenBcCccUlcCorrectionFiling || this.isRestorationFiling) {
       if (this.getBusinessFoundingDateTime) {
         return this.apiToPacificDateTime(this.getBusinessFoundingDateTime)
       }

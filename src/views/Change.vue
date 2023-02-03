@@ -152,7 +152,7 @@ export default class Change extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The resource file for a firm change filing. */
+  /** The resource object for a firm change filing. */
   get firmChangeResource (): ResourceIF {
     if (this.isPartnership) return GpChangeResource
     if (this.isSoleProp) return SpChangeResource
@@ -194,7 +194,7 @@ export default class Change extends Mixins(
         }
 
         // do not proceed if this isn't a DRAFT filing
-        if (changeFiling.header.status !== FilingStatus.DRAFT) {
+        if (changeFiling.header?.status !== FilingStatus.DRAFT) {
           throw new Error('Invalid change status')
         }
 
@@ -215,10 +215,10 @@ export default class Change extends Mixins(
       // initialize Fee Summary data
       this.setFilingData([this.firmChangeResource.filingData])
 
-      // update the current fees for the Filing
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()
 
-      // fetches the fee prices to display in the text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData()
 
       // set current profile name to store for field pre population

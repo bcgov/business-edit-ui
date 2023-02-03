@@ -1,11 +1,26 @@
 <template>
-  <v-card flat id="special-resolution-summary">
+  <v-card flat id="restoration-summary">
     <!-- Section Header -->
     <div class="summary-header px-4 mb-2 rounded-t">
       <v-row no-gutters>
         <v-col cols="9">
-          <v-icon class="header-icon ml-n1">mdi-file-document-edit-outline</v-icon>
-          <label class="summary-title">Summary of Changes to File</label>
+          <img class="header-icon" src="@/assets/images/currency-usd-circle.svg">
+          <label class="summary-title">Restoration Notice Changes {{restorationFees}}</label>
+        </v-col>
+
+        <!-- Actions -->
+        <v-col cols="3">
+          <div class="actions mr-4">
+            <v-btn
+              text color="primary"
+              id="btn-delete-restoration"
+              :disabled="isBusySaving"
+              @click="onDeleteClicked()"
+            >
+              <v-icon small>mdi-delete</v-icon>
+              <span>Delete</span>
+            </v-btn>
+          </div>
         </v-col>
       </v-row>
     </div>
@@ -27,44 +42,29 @@
       </div>
     </template>
 
-    <!-- Association Type -->
-    <template v-if="hasAssociationTypeChanged">
+    <!-- Name Translation -->
+    <template v-if="haveNameTranslationsChanged">
       <v-divider class="mx-4" />
-      <div class="section-container association-type-summary">
-        <v-row no-gutters>
-          <v-col cols="3">
-            <label><strong>Cooperative Association Type</strong></label>
-          </v-col>
-
-          <v-col cols="8">
-            <span class="info-text">{{ associationDescription }}</span>
-          </v-col>
-        </v-row>
+      <div class="section-container name-translation-summary">
+        <NameTranslation :isSummaryMode="true" />
       </div>
     </template>
-
-    <!-- Rules and Memorandum file name add here-->
-
-    <!-- Resolution summary section -->
-    <CreateSpecialResolutionSummary />
   </v-card>
 </template>
 
 <script lang="ts">
-// this is a placceholder copied from AlterationSummary, Will add component when working on this page
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'vuex-class'
-import { ActionBindingIF, FeesIF } from '@/interfaces/'
-import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
-import { CoopTypeToDescription } from '@/utils'
+import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
+import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
+import { NameTranslation } from '@/components/common/'
 
 @Component({
   components: {
-    CreateSpecialResolutionSummary
+    NameTranslation
   }
 })
-export default class SpecialResolutionSummary extends Mixins(
+export default class RestorationSummary extends Mixins(
   DateMixin,
   FeeMixin,
   FilingTemplateMixin
@@ -73,14 +73,9 @@ export default class SpecialResolutionSummary extends Mixins(
   @Getter getBusinessNumber!: string
   @Getter getCurrentFees!: FeesIF[]
   @Getter isBusySaving!: boolean
-  @Getter getCurrentJsDate!: Date
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean
-
-  get associationDescription (): string {
-    return CoopTypeToDescription(this.getAssociationType)
-  }
 
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
@@ -89,18 +84,8 @@ export default class SpecialResolutionSummary extends Mixins(
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 
-  /** The legal type before changes. */
-  get originalLegalType (): string {
-    return this.getEntitySnapshot?.businessInfo?.legalType
-  }
-
-  /** The association type before changes. */
-  get originalAssociationType (): string {
-    return this.getEntitySnapshot?.businessInfo?.associationType
-  }
-
-  /** Calculates the sum of special resolution fees. */
-  get specialResolutionFees (): string {
+  /** Calculates the sum of restoration fees. */
+  get restorationFees (): string {
     const validFees = this.getCurrentFees.filter(f => f.filingFees !== null && f.futureEffectiveFees !== null)
     if (validFees.length === 0) {
       return ''
@@ -110,6 +95,10 @@ export default class SpecialResolutionSummary extends Mixins(
     /** Calculates the sum of future effective fees. */
     const futureEffectiveFeesSum = validFees.map(f => f.futureEffectiveFees).reduce((a, b) => a + b, 0)
     return `($${(filingFeesSum + futureEffectiveFeesSum).toFixed(2)} Fee)`
+  }
+
+  protected onDeleteClicked (): void {
+    this.$root.$emit('delete-all')
   }
 }
 </script>
@@ -135,26 +124,8 @@ export default class SpecialResolutionSummary extends Mixins(
   position: absolute;
   right: 0;
 
-  .undo-action{
-    border-right: 1px solid $gray1;
-  }
-
-  .v-btn {
-    min-width: 0.5rem;
-  }
-}
-
-.alteration-date-time {
-  padding: 2rem;
-  background-color: $gray1;
-
-  &.invalid {
-    border-left: 4px solid $BCgovInputError;
-    padding-left: calc(2rem - 4px);
-
-    label {
-      color: $BCgovInputError;
-    }
+  #btn-delete-restoration {
+    margin-top: -6px;
   }
 }
 

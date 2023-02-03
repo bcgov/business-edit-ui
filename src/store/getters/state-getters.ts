@@ -1,11 +1,10 @@
 import { AccountTypes, ActionTypes, CoopTypes, CorrectionErrorTypes, FilingNames, FilingTypes,
-  PartyTypes } from '@/enums/'
+  PartyTypes, RestorationTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF,
   NameTranslationIF, FilingDataIF, StateIF, EffectiveDateTimeIF, FlagsReviewCertifyIF,
   FlagsCompanyInfoIF, ResolutionsIF, FeesIF, ResourceIF, EntitySnapshotIF, ValidationFlagsIF,
-  CorrectionInformationIF }
-  from '@/interfaces/'
+  CorrectionInformationIF, RestorationStateIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF, SpecialResolutionIF }
   from '@bcrs-shared-components/interfaces/'
 import { IsSame } from '@/utils/'
@@ -53,6 +52,21 @@ export const isChangeRegFiling = (state: StateIF): boolean => {
 /** Whether the current filing is a Conversion. */
 export const isConversionFiling = (state: StateIF): boolean => {
   return (state.stateModel.tombstone.filingType === FilingTypes.CONVERSION)
+}
+
+/** Whether the current filing is a Restoration. */
+export const isRestorationFiling = (state: StateIF): boolean => {
+  return (state.stateModel.tombstone.filingType === FilingTypes.RESTORATION)
+}
+
+/** Whether the current filing is a Limited Extension Restoration. */
+export const isLimitedExtendRestorationFiling = (state: StateIF): boolean => {
+  return (getRestoration(state).type === RestorationTypes.LTD_EXTEND)
+}
+
+/** Whether the current filing is a Limited Conversion Restoration. */
+export const isLimitedConversionRestorationFiling = (state: StateIF): boolean => {
+  return (getRestoration(state).type === RestorationTypes.LTD_TO_FULL)
 }
 
 /** Whether the current filing is a Change of Registration for a firm corp class. */
@@ -476,21 +490,6 @@ export const hasSpecialResolutionDataChanged = (state: StateIF): boolean => {
   )
 }
 
-/** Whether the special resolution filing is valid. Does NOT include:
- * - address (read only)
- * NOTE THIS IS INCOMPLETE - not entirely sure where to use this.
- * isCorrectionValid seems to disable the File and Pay button.
- */
-export const isSpecialResolutionValid = (state: StateIF): boolean => {
-  return (
-    getFlagsCompanyInfo(state).isValidOrgPersons &&
-    getFlagsCompanyInfo(state).isValidShareStructure &&
-    getFlagsReviewCertify(state).isValidDetailComment &&
-    getFlagsReviewCertify(state).isValidCertify &&
-    getFlagsReviewCertify(state).isValidStaffPayment
-  )
-}
-
 /**
  * Whether any firm change data has changed (for the purpose of showing the
  * fee summary), ie, does NOT include:
@@ -523,6 +522,24 @@ export const hasConversionDataChanged = (state: StateIF): boolean => {
   return (
     hasBusinessStartDateChanged(state) ||
     hasNaicsChanged(state) ||
+    haveOfficeAddressesChanged(state) ||
+    havePeopleAndRolesChanged(state)
+  )
+}
+
+/**
+ * Whether any restoration data has changed (for the purpose of showing the
+ * fee summary), ie, does NOT include:
+ * - document delivery
+ * - certify
+ * - folio number
+ * - court order and POA
+ * - staff payment
+ */
+export const hasRestorationDataChanged = (state: StateIF): boolean => {
+  return (
+    hasBusinessNameChanged(state) ||
+    haveNameTranslationsChanged(state) ||
     haveOfficeAddressesChanged(state) ||
     havePeopleAndRolesChanged(state)
   )
@@ -707,7 +724,12 @@ export const hasContactInfoChanged = (state: StateIF): boolean => {
 
 /** True if any office address has changed. Applies to corrections, change and conversion filings only. */
 export const haveOfficeAddressesChanged = (state: StateIF): boolean => {
-  if (isCorrectionFiling(state) || isFirmChangeFiling(state) || isFirmConversionFiling(state)) {
+  if (
+    isCorrectionFiling(state) ||
+    isFirmChangeFiling(state) ||
+    isFirmConversionFiling(state) ||
+    isRestorationFiling(state)
+  ) {
     const hasMailingDeliveryChanged = hasMailingChanged(state) || hasDeliveryChanged(state)
     const isChangeOrConversionFiling = isFirmChangeFiling(state) || isFirmConversionFiling(state)
     const hasRecMailingDeliveryChanged = hasRecMailingChanged(state) || hasRecDeliveryChanged(state)
@@ -728,14 +750,22 @@ export const getOriginalOfficeAddresses = (state: StateIF): AddressesIF => {
 
 /** True if (registered) mailing address has changed. */
 export const hasMailingChanged = (state: StateIF): boolean => {
-  if (isAlterationFiling(state) || isBenBcCccUlcCorrectionFiling(state)) {
+  if (
+    isAlterationFiling(state) ||
+    isBenBcCccUlcCorrectionFiling(state) ||
+    isRestorationFiling(state)
+  ) {
     return !IsSame(
       getOfficeAddresses(state)?.registeredOffice?.mailingAddress,
       getOriginalOfficeAddresses(state)?.registeredOffice?.mailingAddress,
       ['addressCountryDescription', 'id']
     )
   }
-  if (isFirmChangeFiling(state) || isFirmConversionFiling(state) || isFirmCorrectionFiling(state)) {
+  if (
+    isFirmChangeFiling(state) ||
+    isFirmConversionFiling(state) ||
+    isFirmCorrectionFiling(state)
+  ) {
     return !IsSame(
       getOfficeAddresses(state)?.businessOffice?.mailingAddress,
       getOriginalOfficeAddresses(state)?.businessOffice?.mailingAddress,
@@ -747,14 +777,22 @@ export const hasMailingChanged = (state: StateIF): boolean => {
 
 /** True if (registered) delivery address has changed. */
 export const hasDeliveryChanged = (state: StateIF): boolean => {
-  if (isAlterationFiling(state) || isBenBcCccUlcCorrectionFiling(state)) {
+  if (
+    isAlterationFiling(state) ||
+    isBenBcCccUlcCorrectionFiling(state) ||
+    isRestorationFiling(state)
+  ) {
     return !IsSame(
       getOfficeAddresses(state)?.registeredOffice?.deliveryAddress,
       getOriginalOfficeAddresses(state)?.registeredOffice?.deliveryAddress,
       ['addressCountryDescription', 'id']
     )
   }
-  if (isFirmChangeFiling(state) || isFirmConversionFiling(state) || isFirmCorrectionFiling(state)) {
+  if (
+    isFirmChangeFiling(state) ||
+    isFirmConversionFiling(state) ||
+    isFirmCorrectionFiling(state)
+  ) {
     return !IsSame(
       getOfficeAddresses(state)?.businessOffice?.deliveryAddress,
       getOriginalOfficeAddresses(state)?.businessOffice?.deliveryAddress,
@@ -930,6 +968,7 @@ export const showFeeSummary = (state: StateIF): boolean => {
     (isAlterationFiling(state) && hasAlterationDataChanged(state)) ||
     (isFirmChangeFiling(state) && hasChangeDataChanged(state)) ||
     (isFirmConversionFiling(state) && hasConversionDataChanged(state)) ||
+    (isRestorationFiling(state) && hasRestorationDataChanged(state)) ||
     (isSpecialResolutionFiling(state) && hasSpecialResolutionDataChanged(state))
   )
   return (haveFilingChange && !IsSame(getFilingData(state), defaultFilingData))
@@ -957,10 +996,11 @@ export const hasMinimumShareClass = (state: StateIF): boolean => {
 
 /** The current filing name. */
 export const getFilingName = (state: StateIF): FilingNames => {
-  if (isCorrectionFiling(state)) return FilingNames.CORRECTION
   if (isAlterationFiling(state)) return FilingNames.ALTERATION
+  if (isCorrectionFiling(state)) return FilingNames.CORRECTION
   if (isFirmChangeFiling(state)) return FilingNames.CHANGE_OF_REGISTRATION
   if (isFirmConversionFiling(state)) return FilingNames.CONVERSION
+  if (isRestorationFiling(state)) return FilingNames.RESTORATION_APPLICATION
   if (isSpecialResolutionFiling(state)) return FilingNames.SPECIAL_RESOLUTION
   return null
 }
@@ -983,4 +1023,9 @@ export const getSpecialResolutionFormValid = (state: StateIF): boolean => {
 /** The company info page validity flags. */
 export const getSpecialResolutionConfirmValid = (state: StateIF): boolean => {
   return getFlagsReviewCertify(state).isValidSpecialResolutionConfirm
+}
+
+/** The restoration object. */
+export const getRestoration = (state: StateIF): RestorationStateIF => {
+  return state.stateModel.restoration
 }

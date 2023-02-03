@@ -285,7 +285,7 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'review-confirm', query: { id: 'T1234567' } })
+    await router.push({ name: 'review-confirm', query: { id: 'T1234567' } })
     wrapper = shallowMount(Actions, { localVue, store, router, vuetify })
   })
 
@@ -493,7 +493,7 @@ describe.skip('Actions component - Filing Functionality', () => {
     }
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
@@ -541,7 +541,7 @@ describe.skip('Actions component - Filing Functionality', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'define-company', query: { id: 'T1234567' } })
+    await router.push({ name: 'define-company', query: { id: 'T1234567' } })
     wrapper = shallowMount(Actions, { localVue, store, router, vuetify })
 
     // Mock the function calls that may used by updateFiling below

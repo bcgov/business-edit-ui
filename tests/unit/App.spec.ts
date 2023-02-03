@@ -343,7 +343,7 @@ describe.skip('Numbered company setup', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'define-company', query: { id: 'T7654321' } })
+    await router.push({ name: 'define-company', query: { id: 'T7654321' } })
     wrapper = shallowMount(App, { localVue, store, router, vuetify, stubs: { Affix: true } })
 
     // wait for all queries to complete
@@ -457,7 +457,7 @@ describe.skip('App component', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'define-company', query: { id: 'T1234567' } })
+    await router.push({ name: 'define-company', query: { id: 'T1234567' } })
     wrapper = shallowMount(App, { localVue, store, router, vuetify, stubs: { Affix: true } })
 
     // wait for all queries to complete

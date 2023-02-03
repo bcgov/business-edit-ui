@@ -2,9 +2,9 @@ import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ActionBindingIF, EmptyFees, FeesIF } from '@/interfaces'
-import { CorpTypeCd, FilingCodes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
+import { PayServices } from '@/services/'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { FilingDataIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { AxiosInstance as axios } from '@/utils/'
 import { cloneDeep } from 'lodash'
 
 /**
@@ -66,37 +66,14 @@ export default class FeeMixin extends Vue {
   }
 
   /** Lines up promises to fetch for filing fees, falls back to empty fees.  */
-  protected async getFilingFeesFromFilingData (isFutureEffective = false): Promise<FeesIF[]> {
+  private async getFilingFeesFromFilingData (isFutureEffective = false): Promise<FeesIF[]> {
     try {
       const feePromises = this.getFilingData
-        .map(fd => this.fetchFilingFees(fd.filingTypeCode, fd.entityType, isFutureEffective))
+        .map(fd => PayServices.fetchFilingFees(fd.filingTypeCode, fd.entityType, isFutureEffective))
       return await Promise.all(feePromises)
     } catch (error) {
       console.log(error)
       return this.getFilingData.map(() => cloneDeep(EmptyFees))
     }
-  }
-
-  /**
-   * Fetches filing fees.
-   * @returns a promise to return the fees for a filing
-   */
-  protected async fetchFilingFees (filingCode: FilingCodes, entityType: CorpTypeCd, isFutureEffective = false):
-    Promise<FeesIF> {
-    let url = sessionStorage.getItem('PAY_API_URL') + 'fees/' + entityType + '/' + filingCode
-    if (isFutureEffective) {
-      url += '?futureEffective=true'
-    }
-    return axios.get(url)
-      .then(response => {
-        const fees = response?.data
-        if (fees.filingFees == null) {
-          throw new Error('Invalid API response')
-        }
-        return fees
-      })
-      .catch((error) => {
-        throw error
-      })
   }
 }

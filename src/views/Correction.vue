@@ -82,13 +82,13 @@ export default class Correction extends Mixins(CommonMixin) {
       return
     }
 
-    // do not proceed if we don't have the necessary query param
-    if (!this.correctionId) {
-      throw new Error('Invalid correction filing ID')
-    }
-
     // fetch the correction filing
     try {
+      // do not proceed if we don't have the necessary query param
+      if (!this.correctionId) {
+        throw new Error('Invalid correction filing ID')
+      }
+
       // store the filing ID
       this.setFilingId(this.correctionId)
 

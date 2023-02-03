@@ -9,8 +9,8 @@ import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 export interface AlterationIF {
   provisionsRemoved?: boolean
   business?: BusinessInformationIF
-  /** This is different from bcrs-shared-components/interfaces/name-request-interface.ts
-   * and should be refactored in the future. */
+  // This is different from bcrs-shared-components/interfaces/name-request-interface.ts
+  // and should be refactored in the future.
   nameRequest?: NameRequestIF
   nameTranslations?: NameTranslationIF[]
   shareStructure?: ShareStructureIF

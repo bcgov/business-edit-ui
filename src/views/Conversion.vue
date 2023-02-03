@@ -101,7 +101,7 @@ export default class Conversion extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The resource file for a firm conversion filing. */
+  /** The resource object for a firm conversion filing. */
   get firmConversionResource (): any {
     if (this.isPartnership) return GpConversionResource
     if (this.isSoleProp) return SpConversionResource
@@ -151,7 +151,7 @@ export default class Conversion extends Mixins(
         }
 
         // do not proceed if this isn't a DRAFT filing
-        if (conversionFiling.header.status !== FilingStatus.DRAFT) {
+        if (conversionFiling.header?.status !== FilingStatus.DRAFT) {
           throw new Error('Invalid conversion status')
         }
 
@@ -172,10 +172,10 @@ export default class Conversion extends Mixins(
       // initialize Fee Summary data
       this.setFilingData([this.firmConversionResource.filingData])
 
-      // update the current fees for the Filing
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()
 
-      // fetches the fee prices to display in the text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData()
 
       // tell App that we're finished loading

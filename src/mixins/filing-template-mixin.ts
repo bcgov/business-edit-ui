@@ -3,8 +3,9 @@ import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
-  EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF,
-  NameTranslationIF, OrgPersonIF, SpecialResolutionFilingIF } from '@/interfaces/'
+  EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
+  NameRequestIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF, RestorationStateIF,
+  SpecialResolutionFilingIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
@@ -62,6 +63,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter hasAssociationTypeChanged!: boolean
   @Getter getSpecialResolution!: SpecialResolutionIF
   @Getter hasBusinessStartDateChanged!: boolean
+  @Getter getRestoration!: RestorationStateIF
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -89,6 +91,8 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setSpecialResolution!: ActionBindingIF
   @Action setCorrectionStartDate!: ActionBindingIF
+  @Action setRestorationType!: ActionBindingIF
+  @Action setRestorationExpiry!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -127,7 +131,7 @@ export default class FilingTemplateMixin extends DateMixin {
         contactPoint: this.getContactPoint,
         nameRequest: this.getNameRequest,
         offices: this.getOfficeAddresses,
-        parties: undefined, // parties are added below
+        parties: null, // applied below
         type: this.getCorrectionErrorType
       }
     }
@@ -271,6 +275,72 @@ export default class FilingTemplateMixin extends DateMixin {
   }
 
   /**
+   * Builds a restoration filing from store data.
+   * @param isDraft whether this is a draft
+   * @returns the restoration filing body
+   */
+  buildRestorationFiling (isDraft: boolean): RestorationFilingIF {
+    // Build restoration filing
+    let filing: RestorationFilingIF = {
+      header: {
+        name: FilingTypes.RESTORATION,
+        certifiedBy: this.getCertifyState.certifiedBy,
+        date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
+        folioNumber: this.getFolioNumber // business folio number, unless overridden below
+      },
+      business: this.getEntitySnapshot.businessInfo,
+      restoration: {
+        type: this.getRestoration.type,
+        business: {
+          identifier: this.getBusinessId,
+          legalType: this.getEntityType
+        },
+        parties: null, // applied below
+        offices: this.getOfficeAddresses,
+        contactPoint: this.getContactPoint
+      }
+    }
+
+    // delete invalid tax id (see ticket 15122)
+    delete filing.business.taxId
+
+    // Apply NR / business name / business type change to filing
+    if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
+      filing.restoration.nameRequest = this.getNameRequest
+    }
+
+    // Apply name translation changes to filing
+    if (this.haveNameTranslationsChanged) {
+      const nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
+      filing.restoration.nameTranslations = nameTranslations
+    }
+
+    // Apply Court Order ONLY when it is required and applied
+    if (this.getHasPlanOfArrangement || this.getFileNumber) {
+      filing.restoration.courtOrder = {
+        fileNumber: this.getFileNumber,
+        effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : null,
+        hasPlanOfArrangement: this.getHasPlanOfArrangement
+      }
+    }
+
+    // Set Document Optional Email if there is one
+    if (this.getDocumentOptionalEmail) {
+      filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
+    }
+
+    // Build Staff Payment into the filing
+    // may override folio number
+    filing = this.buildStaffPayment(filing)
+
+    // Build Transactional Folio Number into the filing
+    // will override folio number
+    filing = this.buildFolioNumber(filing)
+
+    return filing
+  }
+
+  /**
    * Builds an special resolution filing from store data.
    * @param isDraft whether this is a draft
    * @returns the resolution filing body
@@ -353,7 +423,8 @@ export default class FilingTemplateMixin extends DateMixin {
         business: {
           identifier: this.getBusinessId
         },
-        contactPoint: this.getContactPoint
+        contactPoint: this.getContactPoint,
+        parties: null // applied below
       }
     }
 
@@ -713,6 +784,87 @@ export default class FilingTemplateMixin extends DateMixin {
     // store File Number and POA
     this.setFileNumber(filing.alteration.courtOrder?.fileNumber)
     this.setHasPlanOfArrangement(filing.alteration.courtOrder?.hasPlanOfArrangement)
+
+    // store Staff Payment
+    this.storeStaffPayment(filing)
+  }
+
+  /**
+   * Parses a draft Restoration filing into the store.
+   * @param filing the restoration filing
+   * @param entitySnapshot the latest entity snapshot
+   */
+  parseRestorationFiling (filing: RestorationFilingIF, entitySnapshot: EntitySnapshotIF): void {
+    // store Entity Snapshot
+    this.setEntitySnapshot(entitySnapshot)
+
+    // store Entity Type
+    this.setEntityType(filing.restoration.business?.legalType || entitySnapshot.businessInfo.legalType)
+
+    // store Business Information
+    this.setBusinessInformation({
+      ...entitySnapshot.businessInfo,
+      ...filing.business,
+      ...filing.restoration?.business
+    })
+
+    // restore Restoration data
+    this.setRestorationType(filing.restoration.type)
+    this.setRestorationExpiry(filing.restoration.expiry || null)
+
+    // store Name Request data
+    this.setNameRequest(cloneDeep(
+      filing.restoration.nameRequest ||
+      {
+        legalType: entitySnapshot.businessInfo.legalType,
+        legalName: entitySnapshot.businessInfo.legalName,
+        nrNumber: entitySnapshot.businessInfo.nrNumber
+      }
+    ))
+
+    // store Name Translations
+    this.setNameTranslations(cloneDeep(
+      this.mapNameTranslations(filing.restoration.nameTranslations) ||
+      this.mapNameTranslations(entitySnapshot.nameTranslations) ||
+      []
+    ))
+
+    // store Office Addresses
+    this.setOfficeAddresses(cloneDeep(
+      filing.restoration.offices ||
+      entitySnapshot.addresses
+    ))
+
+    // store People And Roles
+    this.setPeopleAndRoles(cloneDeep(
+      filing.restoration.parties ||
+      entitySnapshot.orgPersons
+    ))
+
+    // store current Business Contact
+    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
+
+    // store Certify State
+    this.setCertifyState({
+      valid: false,
+      certifiedBy: filing.header.certifiedBy
+    })
+
+    // store Folio Number
+    // FUTURE: should we store correction.folioNumber instead?
+    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
+
+    // if Transactional Folio Number was saved then store it
+    if (filing.header.isTransactionalFolioNumber) {
+      this.setTransactionalFolioNumber(filing.header.folioNumber)
+    }
+
+    // store Document Optional Email
+    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail || '')
+
+    // store File Number and POA
+    this.setFileNumber(filing.restoration.courtOrder?.fileNumber)
+    this.setHasPlanOfArrangement(filing.restoration.courtOrder?.hasPlanOfArrangement)
 
     // store Staff Payment
     this.storeStaffPayment(filing)
@@ -1164,8 +1316,8 @@ export default class FilingTemplateMixin extends DateMixin {
    * @param filing the filing
    */
   private buildStaffPayment (
-    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF |
-            ChgRegistrationFilingIF | SpecialResolutionFilingIF
+    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF | ChgRegistrationFilingIF |
+      RestorationFilingIF | SpecialResolutionFilingIF
   ): any {
     // Populate Staff Payment according to payment option
     switch (this.getStaffPayment.option) {
@@ -1198,8 +1350,8 @@ export default class FilingTemplateMixin extends DateMixin {
    * @param filing the filing to parse
    */
   private storeStaffPayment (
-    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF |
-            ChgRegistrationFilingIF | SpecialResolutionFilingIF
+    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF | ChgRegistrationFilingIF |
+      RestorationFilingIF | SpecialResolutionFilingIF
   ): void {
     // Parse staff payment
     if (filing.header.routingSlipNumber) {

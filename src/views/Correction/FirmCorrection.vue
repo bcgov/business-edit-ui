@@ -70,11 +70,11 @@ export default class FirmCorrection extends Mixins(CommonMixin, FeeMixin, Filing
   /** The draft correction filing to process. */
   @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF
 
-  /** The resource file for a correction filing. */
+  /** The resource object for a firm correction filing. */
   get correctionResource (): ResourceIF {
     if (this.isPartnership) return GpCorrectionResource
     if (this.isSoleProp) return SpCorrectionResource
-    return null
+    return null // should never happen
   }
 
   /**

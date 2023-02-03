@@ -125,7 +125,7 @@
       </article>
 
       <!-- People and roles list -->
-      <article class="list-container mt-n2">
+      <article class="list-container">
         <ListPeopleAndRoles
           :renderOrgPersonForm="isAddingEditingOrgPerson"
           :currentOrgPerson="currentOrgPerson"
@@ -246,6 +246,10 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
         return this.haveMinimumDirectors
       }
       return false
+    }
+    if (this.isRestorationFiling) {
+      // FUTURE: implement (ticket 14975)
+      return true
     }
     return false // should never happen
   }

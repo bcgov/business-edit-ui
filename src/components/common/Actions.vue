@@ -44,6 +44,7 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter, Action } from 'vuex-class'
 import { ActionBindingIF } from '@/interfaces/'
@@ -52,8 +53,14 @@ import { LegalServices } from '@/services/'
 import { Navigate } from '@/utils/'
 
 /** This component is only implemented for Correction filings atm. */
-@Component({})
-export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, NameRequestMixin) {
+@Component({
+  mixins: [
+    DateMixin,
+    FilingTemplateMixin,
+    NameRequestMixin
+  ]
+})
+export default class Actions extends Vue {
   // Global getters
   @Getter isBusySaving!: boolean
   @Getter hasCorrectionDataChanged!: boolean

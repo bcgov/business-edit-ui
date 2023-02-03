@@ -1,4 +1,4 @@
-import { EmptyNameRequest, StateModelIF, EmptyFees } from '@/interfaces/'
+import { EmptyFees, EmptyNameRequest, EmptyRestorationState, StateModelIF } from '@/interfaces/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { EmptyContactPoint } from '@bcrs-shared-components/interfaces/'
 import { cloneDeep } from 'lodash'
@@ -143,5 +143,6 @@ export const stateModel: StateModelIF = {
       additionalName: null
     },
     resolutionConfirmed: false
-  }
+  },
+  restoration: { ...EmptyRestorationState }
 }
