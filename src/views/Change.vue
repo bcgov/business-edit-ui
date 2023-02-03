@@ -41,7 +41,6 @@
           class="mt-10"
           sectionNumber="1."
           :validate="getAppValidate"
-          @valid="setDocumentOptionalEmailValidity($event)"
         />
 
         <CompletingParty
@@ -130,8 +129,6 @@ export default class Change extends Mixins(
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setFilingId!: ActionBindingIF
-  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
-
   @Action setResource!: ActionBindingIF
 
   /** Whether App is ready. */

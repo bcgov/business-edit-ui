@@ -18,7 +18,7 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info/'
-import { AuthServices } from '@/services/'
+import { AuthServices, EmailVerificationService } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, ResourceIF, EntitySnapshotIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
@@ -69,6 +69,16 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
         this.isCorrectionFiling ||
         this.isSpecialResolutionFiling
       ) {
+        let valid = false
+        try {
+          valid = await EmailVerificationService.isValidEmail(contactInfo.email)
+        } catch {
+          valid = true // if error, assume email is valid
+        }
+        if (!valid) {
+          this.$root.$emit('update-error-event', 'Invalid email address')
+          return
+        }
         await AuthServices.updateContactInfo(contactInfo, this.getBusinessId)
       }
       this.setBusinessContact(contactInfo)

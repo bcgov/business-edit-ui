@@ -4,14 +4,18 @@ import { getVuexStore } from '@/store/'
 import { mount } from '@vue/test-utils'
 import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
 import AuthServices from '@/services/auth-services'
+import EmailVerificationService from '@/services/email-verification-service'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
 const store = getVuexStore()
 
-// mock services function
-const mockUpdateContactInfo = jest.spyOn((AuthServices as any), 'updateContactInfo').mockImplementation()
+// mock auth services function
+jest.spyOn((AuthServices as any), 'updateContactInfo').mockImplementation()
+
+// mock email verification service function
+jest.spyOn((EmailVerificationService as any), 'isValidEmail').mockReturnValue(true)
 
 const contactInfo = {
   email: 'mock@example.com',
