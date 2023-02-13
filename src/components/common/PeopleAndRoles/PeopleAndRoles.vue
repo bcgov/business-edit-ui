@@ -124,6 +124,44 @@
         </div>
       </article>
 
+      <!-- Restoration conversion and extension add buttons -->
+      <article v-if="(isLimitedConversionRestorationFiling || isLimitedExtendRestorationFiling) && !hasApplicant"
+        class="mt-8">
+        <v-btn
+          id="sp-btn-add-person"
+          outlined
+          color="primary"
+          :disabled="isAddingEditingOrgPerson"
+          @click="initAdd(
+            [{ roleType: RoleTypes.DIRECTOR, appointmentDate: appointmentDate}],
+            PartyTypes.PERSON
+          )"
+        >
+          <v-icon>mdi-account-plus</v-icon>
+          <span>Add a Person</span>
+        </v-btn>
+        <v-btn
+          id="sp-btn-add-corp"
+          outlined
+          color="primary"
+          class="ml-2"
+          :disabled="isAddingEditingOrgPerson"
+          @click="initAdd(
+            [{ roleType: RoleTypes.DIRECTOR, appointmentDate: appointmentDate }],
+            PartyTypes.ORGANIZATION
+          )"
+        >
+          <v-icon>mdi-domain-plus</v-icon>
+          <span>Add a {{ orgTypesLabel }}</span>
+        </v-btn>
+        <p v-if="!hasApplicant" class="error-text small-text mt-5 mb-0">
+          You must have one applicant
+        </p>
+        <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
+          A applicant address is missing or incorrect
+        </p>
+      </article>
+
       <!-- People and roles list -->
       <article class="list-container">
         <ListPeopleAndRoles
@@ -155,6 +193,7 @@ import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
 import { HelpSection } from '@/components/common/'
 import { ListPeopleAndRoles } from './'
 import { CommonMixin, DateMixin, OrgPersonMixin } from '@/mixins/'
+import { isLimitedExtendRestorationFiling, isLimitedConversionRestorationFiling } from '@/store/getters'
 
 @Component({
   components: {
@@ -182,6 +221,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter isPartnership!: boolean
   @Getter isSoleProp!: boolean
   @Getter isBcUlcCompany!: boolean
+  @Getter isLimitedExtendRestorationFiling!: boolean
+  @Getter isLimitedConversionRestorationFiling!: boolean
 
   // Global actions
   @Action setPeopleAndRoles!: ActionBindingIF
@@ -223,6 +264,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     return false // should never happen
   }
 
+  /** True when the required proprietor count is met. */
+  get hasApplicant (): boolean {
+    return this.hasRole(RoleTypes.DIRECTOR, 1, CompareModes.EXACT)
+  }
+
   /** True if we have all required parties. */
   get haveRequiredParties (): boolean {
     if (this.isAlterationFiling) {
@@ -249,7 +295,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     }
     if (this.isRestorationFiling) {
       // FUTURE: implement (ticket 14975)
-      return true
+      console.log('Has applicant', this.hasApplicant)
+      return this.hasApplicant
     }
     return false // should never happen
   }

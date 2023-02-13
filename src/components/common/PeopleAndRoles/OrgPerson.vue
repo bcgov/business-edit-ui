@@ -393,6 +393,8 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   @Getter isBenBcCccUlcCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter isFirm!: boolean
+  @Getter isLimitedExtendRestorationFiling!: boolean
+  @Getter isLimitedConversionRestorationFiling!: boolean
   @Getter isRoleStaff!: boolean
 
   // Local variables
@@ -537,6 +539,9 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     if (this.isFirmCorrectionFiling) {
       // cannot remove proprietor/partner
       return false
+    }
+    if (this.isLimitedConversionRestorationFiling || this.isLimitedExtendRestorationFiling) {
+      return true
     }
     return false // should never happen
   }

@@ -46,6 +46,11 @@ export default class OrgPersonMixin extends Vue {
     return this.hasRoleByType(orgPerson, RoleTypes.SUBSCRIBER)
   }
 
+  /** Returns True if the specified orgPerson has the applicant role. */
+  hasRoleApplicant (orgPerson: OrgPersonIF): boolean {
+    return this.hasRoleByType(orgPerson, RoleTypes.APPLICANT)
+  }
+
   //
   // Party Type helpers
   //

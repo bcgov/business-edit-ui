@@ -822,6 +822,7 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.restoration.parties ||
       entitySnapshot.orgPersons
     ))
+    console.log('PeopleRoles are ', this.getOrgPeople)
 
     // store current Business Contact
     this.setBusinessContact({ ...entitySnapshot.authInfo.contact })

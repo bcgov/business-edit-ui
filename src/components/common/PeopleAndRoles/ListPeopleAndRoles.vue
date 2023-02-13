@@ -413,6 +413,8 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   @Getter isFirmChangeFiling!: boolean
   @Getter isFirmConversionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
+  @Getter isLimitedExtendRestorationFiling!: boolean
+  @Getter isLimitedConversionRestorationFiling!: boolean
   @Getter isRoleStaff!: boolean
 
   /** V-model for dropdown menus. */
@@ -472,6 +474,9 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
     if (this.isFirmCorrectionFiling) {
       // cannot remove proprietor/partner
       return false
+    }
+    if (this.isLimitedConversionRestorationFiling || this.isLimitedExtendRestorationFiling) {
+      return true
     }
     return false // should never happen
   }
