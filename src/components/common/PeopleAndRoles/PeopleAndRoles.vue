@@ -131,7 +131,7 @@
           id="sp-btn-add-person"
           outlined
           color="primary"
-          :disabled="isAddingEditingOrgPerson"
+          :disabled="this.hasApplicant"
           @click="initAdd(
             [{ roleType: RoleTypes.APPLICANT, appointmentDate: appointmentDate}],
             PartyTypes.PERSON
@@ -145,7 +145,7 @@
           outlined
           color="primary"
           class="ml-2"
-          :disabled="isAddingEditingOrgPerson"
+          :disabled="this.hasApplicant"
           @click="initAdd(
             [{ roleType: RoleTypes.APPLICANT, appointmentDate: appointmentDate }],
             PartyTypes.ORGANIZATION
@@ -264,7 +264,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     return false // should never happen
   }
 
-  /** True when the required proprietor count is met. */
+  /** True when the required applicant count is met. */
   get hasApplicant (): boolean {
     return this.hasRole(RoleTypes.APPLICANT, 1, CompareModes.EXACT)
   }

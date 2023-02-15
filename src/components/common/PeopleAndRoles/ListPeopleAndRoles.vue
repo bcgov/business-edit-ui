@@ -115,7 +115,7 @@
             </v-col>
 
             <!-- Delivery Address -->
-            <v-col cols="12" sm="3" :class="{ 'removed': wasRemoved(orgPerson)}">
+            <v-col cols="12" sm="3" :class="{ 'removed': wasRemoved(orgPerson)}" v-if="showDeliveryAddressColumn">
               <template
                 v-if="hasRoleDirector(orgPerson) || hasRoleProprietor(orgPerson) || hasRolePartner(orgPerson)"
               >
@@ -126,6 +126,10 @@
                   <DeliveryAddress class="peoples-roles-delivery-address" :address="orgPerson.deliveryAddress" />
                 </template>
               </template>
+            </v-col>
+
+            <v-col cols="12" sm="3" :class="{ 'removed': wasRemoved(orgPerson)}">
+              <p>{{ orgPerson.officer.email }}</p>
             </v-col>
 
             <!-- Roles -->
@@ -425,7 +429,8 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
     return [
       'Name',
       'Mailing Address',
-      'Delivery Address',
+      !(this.isLimitedExtendRestorationFiling || this.isLimitedConversionRestorationFiling) ? 'Delivery Address' : '',
+      (this.isLimitedExtendRestorationFiling || this.isLimitedConversionRestorationFiling) ? 'Email' : '',
       this.isBenBcCccUlcCorrectionFiling ? 'Roles' : ''
     ]
   }
