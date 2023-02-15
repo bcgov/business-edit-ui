@@ -470,7 +470,7 @@ describe('People And Roles component for Change of Registration', () => {
     expect(wrapper.vm.$data.isAddingEditingOrgPerson).toBe(true)
   })
 
-  it('change button is not visible to users for SP where the sole proprietor is a non-individual', () => {
+  it('change button is not visible to users for SP where the sole proprietor is an organization', () => {
     store.state.stateModel.tombstone.keycloakRoles = ['user']
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.peopleAndRoles.orgPeople = [
@@ -485,7 +485,7 @@ describe('People And Roles component for Change of Registration', () => {
     expect(store.getters.showSoleProprietorChangeButton).toBe(false)
   })
 
-  it('change button is visible to staff for SP where the sole proprietor is a non-individual', () => {
+  it('change button is visible to staff for SP where the sole proprietor is an organization', () => {
     store.state.stateModel.tombstone.keycloakRoles = ['staff']
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.peopleAndRoles.orgPeople = [
