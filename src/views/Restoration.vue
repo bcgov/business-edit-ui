@@ -190,7 +190,6 @@ export default class Restoration extends Vue {
       // fetch draft restoration to resume
       const restorationFiling =
         await LegalServices.fetchFilingById(this.getBusinessId, this.restorationId) as RestorationFilingIF
-      console.log('Resto filing is ready', restorationFiling)
 
       // do not proceed if this isn't a RESTORATION filing
       if (!restorationFiling.restoration) {
@@ -253,7 +252,7 @@ export default class Restoration extends Vue {
       AuthServices.fetchAuthInfo(this.getBusinessId),
       LegalServices.fetchAddresses(this.getBusinessId),
       LegalServices.fetchNameTranslations(this.getBusinessId),
-      LegalServices.fetchDirectors(this.getBusinessId)
+      LegalServices.fetchParties(this.getBusinessId)
     ])
 
     if (items.length !== 5) throw new Error('Failed to fetch entity snapshot')

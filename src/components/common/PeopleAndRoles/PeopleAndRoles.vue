@@ -125,7 +125,7 @@
       </article>
 
       <!-- Restoration conversion and extension add buttons -->
-      <article v-if="(isLimitedConversionRestorationFiling || isLimitedExtendRestorationFiling) && !hasApplicant"
+      <article v-if="(isLimitedConversionRestorationFiling || isLimitedExtendRestorationFiling)"
         class="mt-8">
         <v-btn
           id="sp-btn-add-person"
@@ -133,7 +133,7 @@
           color="primary"
           :disabled="isAddingEditingOrgPerson"
           @click="initAdd(
-            [{ roleType: RoleTypes.DIRECTOR, appointmentDate: appointmentDate}],
+            [{ roleType: RoleTypes.APPLICANT, appointmentDate: appointmentDate}],
             PartyTypes.PERSON
           )"
         >
@@ -147,12 +147,12 @@
           class="ml-2"
           :disabled="isAddingEditingOrgPerson"
           @click="initAdd(
-            [{ roleType: RoleTypes.DIRECTOR, appointmentDate: appointmentDate }],
+            [{ roleType: RoleTypes.APPLICANT, appointmentDate: appointmentDate }],
             PartyTypes.ORGANIZATION
           )"
         >
           <v-icon>mdi-domain-plus</v-icon>
-          <span>Add a {{ orgTypesLabel }}</span>
+          <span>Add a Business or Corporation</span>
         </v-btn>
         <p v-if="!hasApplicant" class="error-text small-text mt-5 mb-0">
           You must have one applicant
@@ -266,7 +266,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 
   /** True when the required proprietor count is met. */
   get hasApplicant (): boolean {
-    return this.hasRole(RoleTypes.DIRECTOR, 1, CompareModes.EXACT)
+    return this.hasRole(RoleTypes.APPLICANT, 1, CompareModes.EXACT)
   }
 
   /** True if we have all required parties. */
@@ -294,8 +294,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       return false
     }
     if (this.isRestorationFiling) {
-      // FUTURE: implement (ticket 14975)
-      console.log('Has applicant', this.hasApplicant)
       return this.hasApplicant
     }
     return false // should never happen
@@ -339,6 +337,10 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       // incorporators must have just a mailing address
       // mailing address can be anywhere in the world
       if (this.hasRoleIncorporator(party)) {
+        return !isEmpty(party.mailingAddress)
+      }
+
+      if (this.hasRoleApplicant(party)) {
         return !isEmpty(party.mailingAddress)
       }
     })

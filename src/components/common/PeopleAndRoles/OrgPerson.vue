@@ -231,7 +231,7 @@
               </template>
 
               <!-- Email Address (proprietor/partner only) -->
-              <article v-if="(isProprietor || isPartner)" class="email-address mt-6">
+              <article v-if="(isApplicant || isProprietor || isPartner)" class="email-address mt-6">
                 <label class="sub-header">Email Address</label>
                 <p class="info-text">
                   Copies of the registration documents will be sent to this email address.
@@ -416,6 +416,11 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   protected confirmNameChangeRules: Array<VuetifyRuleFunction> = []
   protected inProgressBusinessLookup: BusinessLookupIF = EmptyBusinessLookup
   protected showErrors = false
+
+  /** True if org-person has Applicant role. */
+  get isApplicant (): boolean {
+    return this.hasRoleApplicant(this.orgPerson)
+  }
 
   /** True if Director is checked. */
   get isDirector (): boolean {
