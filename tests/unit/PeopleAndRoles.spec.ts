@@ -469,4 +469,49 @@ describe('People And Roles component for Change of Registration', () => {
     expect(wrapper.vm.$data.activeIndex).toBe(NaN)
     expect(wrapper.vm.$data.isAddingEditingOrgPerson).toBe(true)
   })
+
+  it('change button is not visible to users for SP where the sole proprietor is a non-individual', () => {
+    store.state.stateModel.tombstone.keycloakRoles = ['user']
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.stateModel.peopleAndRoles.orgPeople = [
+      {
+        officer: {
+          partyType: "organization",
+          id: '0'
+        },
+        roles: [{ roleType: "Proprietor" }]
+      }
+    ]
+    expect(store.getters.showSoleProprietorChangeButton).toBe(false)
+  })
+
+  it('change button is visible to staff for SP where the sole proprietor is a non-individual', () => {
+    store.state.stateModel.tombstone.keycloakRoles = ['staff']
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.stateModel.peopleAndRoles.orgPeople = [
+      {
+        officer: {
+          partyType: "organization",
+          id: '0'
+        },
+        roles: [{ roleType: "Proprietor" }]
+      }
+    ]
+    expect(store.getters.showSoleProprietorChangeButton).toBe(true)
+  })
+
+  it('change button is visible to users for SP where the sole proprietor is an individual', () => {
+    store.state.stateModel.tombstone.keycloakRoles = ['user']
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.stateModel.peopleAndRoles.orgPeople = [
+      {
+        officer: {
+          partyType: "person",
+          id: '0'
+        },
+        roles: [{ roleType: "Proprietor" }]
+      }
+    ]
+    expect(store.getters.showSoleProprietorChangeButton).toBe(true)
+  })
 })
