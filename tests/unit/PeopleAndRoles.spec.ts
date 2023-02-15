@@ -476,10 +476,10 @@ describe('People And Roles component for Change of Registration', () => {
     store.state.stateModel.peopleAndRoles.orgPeople = [
       {
         officer: {
-          partyType: "organization",
+          partyType: 'organization',
           id: '0'
         },
-        roles: [{ roleType: "Proprietor" }]
+        roles: [{ roleType: 'Proprietor' }]
       }
     ]
     expect(store.getters.showSoleProprietorChangeButton).toBe(false)
@@ -491,10 +491,10 @@ describe('People And Roles component for Change of Registration', () => {
     store.state.stateModel.peopleAndRoles.orgPeople = [
       {
         officer: {
-          partyType: "organization",
+          partyType: 'organization',
           id: '0'
         },
-        roles: [{ roleType: "Proprietor" }]
+        roles: [{ roleType: 'Proprietor' }]
       }
     ]
     expect(store.getters.showSoleProprietorChangeButton).toBe(true)
@@ -506,10 +506,10 @@ describe('People And Roles component for Change of Registration', () => {
     store.state.stateModel.peopleAndRoles.orgPeople = [
       {
         officer: {
-          partyType: "person",
+          partyType: 'person',
           id: '0'
         },
-        roles: [{ roleType: "Proprietor" }]
+        roles: [{ roleType: 'Proprietor' }]
       }
     ]
     expect(store.getters.showSoleProprietorChangeButton).toBe(true)
