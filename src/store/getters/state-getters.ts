@@ -1060,13 +1060,15 @@ export const getSpecialResolutionConfirmValid = (state: StateIF): boolean => {
 export const getRestoration = (state: StateIF): RestorationStateIF => {
   return state.stateModel.restoration
 }
+
 /** Returns true when users can change the sole proprietor (SP).
  * Restricts the ability of non-staff users from changing the sole
- * proprietor when the SP is a non-individual.  This restriction has been
+ * proprietor when the SP is an organization.  This restriction has been
  * added to ensure that changes made in business-edit-ui are also updated by
  * staff in COLIN */
 export const showSoleProprietorChangeButton = (state: StateIF, getters): boolean => {
-  const isProprietor = getters.getOrgPeople?.[0].roles?.[0]?.roleType === RoleTypes.PROPRIETOR
-  const isOrganization = getters.getOrgPeople?.[0]?.officer?.partyType === PartyTypes.ORGANIZATION
-  return !(!getters.isRoleStaff && getters.isSoleProp && isOrganization && isProprietor)
+  const isProprietor = getters.getOrgPeople[0]?.roles[0]?.roleType === RoleTypes.PROPRIETOR
+  const isOrganization = getters.getOrgPeople[0]?.officer?.partyType === PartyTypes.ORGANIZATION
+  const isDba = isProprietor && isOrganization
+  return getters.isRoleStaff || !isDba
 }
