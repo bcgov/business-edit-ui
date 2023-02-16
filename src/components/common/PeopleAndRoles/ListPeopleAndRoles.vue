@@ -128,24 +128,22 @@
               </template>
             </v-col>
 
-            <v-col cols="12" sm="3" :class="{ 'removed': wasRemoved(orgPerson)}">
+            <v-col cols="12" sm="3" :class="{ 'removed': wasRemoved(orgPerson)}" v-if="showEmailColumn">
               <p>{{ orgPerson.officer.email }}</p>
             </v-col>
 
             <!-- Roles -->
-            <v-col cols="12" sm="2" :class="{ 'removed': wasRemoved(orgPerson)}">
-              <template v-if="isBenBcCccUlcCorrectionFiling">
-                <!-- Warning if orgPerson has no roles -->
-                <div v-if="orgPerson.roles.length > 0">
-                  <v-col v-for="(role, index) in orgPerson.roles" :key="index" class="col-roles">
-                    <span class="info-text small-text break-spaces pr-2">{{ role.roleType }}</span>
-                  </v-col>
-                </div>
-                <div v-else>
-                  <v-icon color="red darken-3">mdi-alert</v-icon>
-                  <span class="warning-text small-text">Missing Role</span>
-                </div>
-              </template>
+            <v-col cols="12" sm="2" :class="{ 'removed': wasRemoved(orgPerson)}" v-if="showRolesColumn">
+              <!-- Warning if orgPerson has no roles -->
+              <div v-if="orgPerson.roles.length > 0">
+                <v-col v-for="(role, index) in orgPerson.roles" :key="index" class="col-roles">
+                  <span class="info-text small-text break-spaces pr-2">{{ role.roleType }}</span>
+                </v-col>
+              </div>
+              <div v-else>
+                <v-icon color="red darken-3">mdi-alert</v-icon>
+                <span class="warning-text small-text">Missing Role</span>
+              </div>
             </v-col>
 
             <!-- Actions Buttons -->
@@ -409,6 +407,10 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   /** Whether OrgPersons list is valid. */
   @Prop({ default: true }) readonly validOrgPersons!: boolean
 
+  @Prop({ default: true }) readonly showDeliveryAddressColumn!: boolean
+  @Prop({ default: true }) readonly showRolesColumn!: boolean
+  @Prop({ default: false }) readonly showEmailColumn!: boolean
+
   // Store getter
   @Getter getOrgPeople!: OrgPersonIF[]
   @Getter isAlterationFiling!: boolean
@@ -425,14 +427,12 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   protected dropdown: Array<boolean> = []
 
   /** Headers for the person table. */
-  get tableHeaders () {
-    return [
-      'Name',
-      'Mailing Address',
-      !(this.isLimitedExtendRestorationFiling || this.isLimitedConversionRestorationFiling) ? 'Delivery Address' : '',
-      (this.isLimitedExtendRestorationFiling || this.isLimitedConversionRestorationFiling) ? 'Email' : '',
-      this.isBenBcCccUlcCorrectionFiling ? 'Roles' : ''
-    ]
+  get tableHeaders (): Array<string> {
+    const headers = ['Name', 'Mailing Address']
+    if (this.showDeliveryAddressColumn) headers.push('Delivery Address')
+    if (this.showRolesColumn) headers.push('Roles')
+    if (this.showEmailColumn) headers.push('Email Address')
+    return headers
   }
 
   /** This component's validity state (for error styling). */

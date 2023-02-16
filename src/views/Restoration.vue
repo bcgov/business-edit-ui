@@ -7,9 +7,9 @@
           <h1>{{ entityTitle }}</h1>
         </header>
 
-        <YourCompany class="mt-10" />
-
         <PeopleAndRoles class="mt-10" />
+
+        <YourCompany class="mt-10" />
       </div>
     </v-slide-x-transition>
 
@@ -272,7 +272,7 @@ export default class Restoration extends Vue {
     const stateFiling = businessInfo.stateFiling
     const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
     const type = filing?.header?.name as FilingTypes
-
+    console.log('Filing Type', type)
     // FUTURE: enable code below when limited restorations can be filed (ticket 14641)
 
     // // Verify state filing. It should be a Limited Restoration filing or a

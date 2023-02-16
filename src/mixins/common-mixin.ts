@@ -96,13 +96,12 @@ export default class CommonMixin extends Vue {
       this.isAlterationFiling ||
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling ||
-      this.isRestorationFiling ||
       this.isSpecialResolutionFiling
     ) {
       return 'Change'
     }
 
-    return 'Edit' // should never happen
+    return 'Edit' // If Restoration extension or Conversion
   }
 
   /** The appropriate edited label for corrections, alterations, change or conversion filings. */

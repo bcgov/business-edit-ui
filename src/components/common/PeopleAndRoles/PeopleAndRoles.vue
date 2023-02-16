@@ -125,10 +125,9 @@
       </article>
 
       <!-- Restoration conversion and extension add buttons -->
-      <article v-if="(isLimitedConversionRestorationFiling || isLimitedExtendRestorationFiling)"
-        class="mt-8">
+      <article v-if="(isLimitedConversionRestorationFiling || isLimitedExtendRestorationFiling)" class="mt-8">
         <v-btn
-          id="sp-btn-add-person"
+          id="resto-btn-add-person"
           outlined
           color="primary"
           :disabled="this.hasApplicant"
@@ -141,7 +140,7 @@
           <span>Add a Person</span>
         </v-btn>
         <v-btn
-          id="sp-btn-add-corp"
+          id="resto-btn-add-corp"
           outlined
           color="primary"
           class="ml-2"
@@ -170,6 +169,9 @@
           :activeIndex="activeIndex"
           :validate="getComponentValidate"
           :validOrgPersons="validOrgPersons"
+          :showDeliveryAddressColumn="showDeliveryAddressColumn"
+          :showRolesColumn="isBenBcCccUlcCorrectionFiling"
+          :showEmailColumn="showEmailColumn"
           @initEdit="initEdit($event)"
           @addEdit="addEdit($event)"
           @remove="remove($event)"
@@ -387,6 +389,14 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   /** Appointment date in YYYY-MM-DD format. */
   get appointmentDate (): string {
     return this.dateToYyyyMmDd(this.getCurrentJsDate)
+  }
+
+  get showDeliveryAddressColumn () : boolean {
+    return !(isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling)
+  }
+
+  get showEmailColumn () : boolean {
+    return isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling
   }
 
   /** Called when component is mounted. */
