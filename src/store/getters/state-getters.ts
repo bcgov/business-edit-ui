@@ -1,13 +1,41 @@
-import { AccountTypes, ActionTypes, CoopTypes, CorrectionErrorTypes, FilingNames, FilingTypes,
-  PartyTypes } from '@/enums/'
+import {
+  AccountTypes,
+  ActionTypes,
+  CoopTypes,
+  CorrectionErrorTypes,
+  FilingNames,
+  FilingTypes,
+  PartyTypes,
+  RoleTypes
+} from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { AddressesIF, OrgPersonIF, ShareClassIF, NameRequestIF, BusinessInformationIF, CertifyIF,
-  NameTranslationIF, FilingDataIF, StateIF, EffectiveDateTimeIF, FlagsReviewCertifyIF,
-  FlagsCompanyInfoIF, ResolutionsIF, FeesIF, ResourceIF, EntitySnapshotIF, ValidationFlagsIF,
-  CorrectionInformationIF }
-  from '@/interfaces/'
-import { CompletingPartyIF, ContactPointIF, NaicsIF, StaffPaymentIF, SpecialResolutionIF }
-  from '@bcrs-shared-components/interfaces/'
+import {
+  AddressesIF,
+  BusinessInformationIF,
+  CertifyIF,
+  CorrectionInformationIF,
+  EffectiveDateTimeIF,
+  EntitySnapshotIF,
+  FeesIF,
+  FilingDataIF,
+  FlagsCompanyInfoIF,
+  FlagsReviewCertifyIF,
+  NameRequestIF,
+  NameTranslationIF,
+  OrgPersonIF,
+  ResolutionsIF,
+  ResourceIF,
+  ShareClassIF,
+  StateIF,
+  ValidationFlagsIF
+} from '@/interfaces/'
+import {
+  CompletingPartyIF,
+  ContactPointIF,
+  NaicsIF,
+  SpecialResolutionIF,
+  StaffPaymentIF
+} from '@bcrs-shared-components/interfaces/'
 import { IsSame } from '@/utils/'
 
 /** Whether the user has "staff" keycloak role. */
@@ -983,4 +1011,16 @@ export const getSpecialResolutionFormValid = (state: StateIF): boolean => {
 /** The company info page validity flags. */
 export const getSpecialResolutionConfirmValid = (state: StateIF): boolean => {
   return getFlagsReviewCertify(state).isValidSpecialResolutionConfirm
+}
+
+/** Returns true when the button to change the sole proprietor details should be hidden.
+ * Restricts the ability of non-staff users from changing the sole
+ * proprietor when the SP is an organization.  This restriction has been
+ * added to ensure that changes made in business-edit-ui are also updated by
+ * staff in COLIN */
+export const hideChangeButtonForSoleProps = (state: StateIF, getters): boolean => {
+  const isProprietor = getters.getOrgPeople[0]?.roles[0]?.roleType === RoleTypes.PROPRIETOR
+  const isOrganization = getters.getOrgPeople[0]?.officer?.partyType === PartyTypes.ORGANIZATION
+  const isDba = isProprietor && isOrganization
+  return !getters.isRoleStaff && isDba
 }

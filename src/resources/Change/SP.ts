@@ -21,9 +21,7 @@ export const SpChangeResource: ResourceIF = {
     orgPersonInfo: {
       orgPersonLabel: 'Proprietor',
       orgTypesLabel: 'Business or Corporation',
-      subtitle: 'You can change the legal name, mailing and delivery addresses and the email address of the ' +
-        'individual proprietor. To change to a different proprietor, you must form a new business with that ' +
-        'proprietor and dissolve this registration.',
+      subtitle: 'If you need to make changes to the business proprietor information, please contact BC Registries Staff.',
       helpSection: {
         header: 'Need Help? Contact Us',
         helpText: [
