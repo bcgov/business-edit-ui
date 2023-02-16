@@ -283,7 +283,7 @@
 
               <!-- org-person we haven't touched: -->
               <div v-else class="actions mr-4">
-                <span class="edit-action" v-if="showSoleProprietorChangeButton">
+                <span class="edit-action" v-if="hideChangeButtonForSoleProps">
                   <v-btn
                     text color="primary"
                     :id="`officer-${index}-edit-btn`"
@@ -376,7 +376,7 @@ import OrgPerson from './OrgPerson.vue'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { IsSame } from '@/utils/'
 import { OrgPersonIF } from '@/interfaces/'
-import { showSoleProprietorChangeButton } from '@/store/getters'
+import { hideChangeButtonForSoleProps } from '@/store/getters'
 
 @Component({
   components: {
@@ -415,7 +415,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   @Getter isFirmConversionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter isRoleStaff!: boolean
-  @Getter showSoleProprietorChangeButton!: boolean
+  @Getter hideChangeButtonForSoleProps!: boolean
 
   /** V-model for dropdown menus. */
   protected dropdown: Array<boolean> = []

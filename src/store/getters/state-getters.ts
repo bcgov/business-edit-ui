@@ -1018,7 +1018,7 @@ export const getSpecialResolutionConfirmValid = (state: StateIF): boolean => {
  * proprietor when the SP is an organization.  This restriction has been
  * added to ensure that changes made in business-edit-ui are also updated by
  * staff in COLIN */
-export const showSoleProprietorChangeButton = (state: StateIF, getters): boolean => {
+export const hideChangeButtonForSoleProps = (state: StateIF, getters): boolean => {
   const isProprietor = getters.getOrgPeople[0]?.roles[0]?.roleType === RoleTypes.PROPRIETOR
   const isOrganization = getters.getOrgPeople[0]?.officer?.partyType === PartyTypes.ORGANIZATION
   const isDba = isProprietor && isOrganization
