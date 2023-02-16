@@ -475,14 +475,11 @@ describe('People And Roles component for Change of Registration', () => {
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.peopleAndRoles.orgPeople = [
       {
-        officer: {
-          partyType: 'organization',
-          id: '0'
-        },
+        officer: { partyType: 'organization' },
         roles: [{ roleType: 'Proprietor' }]
       }
     ]
-    expect(store.getters.hideChangeButtonForSoleProps).toBe(false)
+    expect(store.getters.hideChangeButtonForSoleProps).toBe(true)
   })
 
   it('change button is visible to staff for SP where the sole proprietor is an organization', () => {
@@ -490,14 +487,11 @@ describe('People And Roles component for Change of Registration', () => {
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.peopleAndRoles.orgPeople = [
       {
-        officer: {
-          partyType: 'organization',
-          id: '0'
-        },
+        officer: { partyType: 'organization' },
         roles: [{ roleType: 'Proprietor' }]
       }
     ]
-    expect(store.getters.hideChangeButtonForSoleProps).toBe(true)
+    expect(store.getters.hideChangeButtonForSoleProps).toBe(false)
   })
 
   it('change button is visible to users for SP where the sole proprietor is an individual', () => {
@@ -505,13 +499,10 @@ describe('People And Roles component for Change of Registration', () => {
     store.state.stateModel.tombstone.entityType = 'SP'
     store.state.stateModel.peopleAndRoles.orgPeople = [
       {
-        officer: {
-          partyType: 'person',
-          id: '0'
-        },
+        officer: { partyType: 'person' },
         roles: [{ roleType: 'Proprietor' }]
       }
     ]
-    expect(store.getters.hideChangeButtonForSoleProps).toBe(true)
+    expect(store.getters.hideChangeButtonForSoleProps).toBe(false)
   })
 })
