@@ -21,7 +21,7 @@ export const SpChangeResource: ResourceIF = {
     orgPersonInfo: {
       orgPersonLabel: 'Proprietor',
       orgTypesLabel: 'Business or Corporation',
-      subtitle: 'BC Registries Staff are available to help you make changes to the business proprietor information.',
+      subtitle: 'If you need to make changes to the business proprietor information, please contact BC Registries Staff.',
       helpSection: {
         header: 'Need Help? Contact Us',
         helpText: [
