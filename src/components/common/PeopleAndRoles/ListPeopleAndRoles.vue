@@ -283,7 +283,7 @@
 
               <!-- org-person we haven't touched: -->
               <div v-else class="actions mr-4">
-                <span class="edit-action" v-if="hideChangeButtonForSoleProps">
+                <span class="edit-action" v-if="!hideChangeButtonForSoleProps">
                   <v-btn
                     text color="primary"
                     :id="`officer-${index}-edit-btn`"
@@ -376,7 +376,6 @@ import OrgPerson from './OrgPerson.vue'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { IsSame } from '@/utils/'
 import { OrgPersonIF } from '@/interfaces/'
-import { hideChangeButtonForSoleProps } from '@/store/getters'
 
 @Component({
   components: {
