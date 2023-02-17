@@ -93,9 +93,9 @@ import { CertifySection, CompletingParty, CourtOrderPoa, DocumentsDelivery, Peop
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
-import { FilingStatus } from '@/enums/'
+import { FilingStatus, PartyTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { SpChangeResource, GpChangeResource } from '@/resources/Change/'
+import { SpChangeResource, GpChangeResource, SpOrganizationChangeResource } from '@/resources/Change/'
 
 @Component({
   components: {
@@ -154,7 +154,9 @@ export default class Change extends Mixins(
 
   /** The resource file for a firm change filing. */
   get firmChangeResource (): ResourceIF {
+    const isOfficerOrganization = this.getOrgPeople[0]?.officer?.partyType === PartyTypes.ORGANIZATION
     if (this.isPartnership) return GpChangeResource
+    if (this.isSoleProp && isOfficerOrganization) return SpOrganizationChangeResource
     if (this.isSoleProp) return SpChangeResource
     return null
   }
