@@ -245,6 +245,32 @@ describe('Change component', () => {
     wrapper.vm.showFee = true
   })
 
+  it('resource subtitle states individual sole proprietors can change legal name', () => {
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.stateModel.peopleAndRoles.orgPeople = [
+      {
+        officer: { partyType: 'person' },
+        roles: [{ roleType: 'Proprietor' }]
+      }
+    ]
+    const wrapper: any = shallowMount(Change, { store, vuetify })
+    expect(wrapper.vm.firmChangeResource.changeData.orgPersonInfo.subtitle)
+      .toContain('You can change the legal name, mailing and delivery')
+  })
+
+  it('resource subtitle states organization sole proprietors cannot change legal name', () => {
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.stateModel.peopleAndRoles.orgPeople = [
+      {
+        officer: { partyType: 'organization' },
+        roles: [{ roleType: 'Proprietor' }]
+      }
+    ]
+    const wrapper: any = shallowMount(Change, { store, vuetify })
+    expect(wrapper.vm.firmChangeResource.changeData.orgPersonInfo.subtitle)
+      .toContain('If you need to make changes to the business proprietor information, please')
+  })
+
   // FUTURE
   xit('loads the entity snapshot into the store', async () => {
     await wrapper.setProps({ appReady: true })

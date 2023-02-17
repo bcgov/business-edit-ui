@@ -2,7 +2,7 @@ import { NameChangeOptions, FilingCodes, NameRequestTypes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const SpChangeResource: ResourceIF = {
+export const SpOrganizationChangeResource: ResourceIF = {
   entityReference: 'Business',
   contactLabel: 'Business',
   displayName: GetCorpFullDescription(CorpTypeCd.SOLE_PROP),
@@ -21,9 +21,8 @@ export const SpChangeResource: ResourceIF = {
     orgPersonInfo: {
       orgPersonLabel: 'Proprietor',
       orgTypesLabel: 'Business or Corporation',
-      subtitle: 'You can change the legal name, mailing and delivery addresses and the email address of the ' +
-        'individual proprietor. To change to a different proprietor, you must form a new business with that ' +
-        'proprietor and dissolve this registration.',
+      subtitle: 'If you need to make changes to the business proprietor information, please ' +
+        'contact BC Registries Staff.',
       helpSection: {
         header: 'Need Help? Contact Us',
         helpText: [
