@@ -175,6 +175,10 @@
                       <template v-else-if="isPartner" v-slot:label>
                         I confirm that the business partner being added is not legally required to register in B.C.
                       </template>
+                      <template v-else-if="isApplicant" v-slot:label>
+                        I confirm that the business or corporation being added is not legally required to register in
+                           B.C.
+                      </template>
                     </v-checkbox>
 
                     <!-- Organization Name -->
@@ -581,6 +585,11 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     if (this.isFirmCorrectionFiling) {
       // can only add partner (cannot add proprietor)
       return (this.isNew && this.isPartner)
+    }
+    if (this.isRestorationFiling) {
+      // show for replaced-added item
+      // (we shouldn't see the replaced-removed item in this component)
+      if (this.isNew) return true
     }
     return false // should never happen
   }

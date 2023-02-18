@@ -27,6 +27,7 @@ export const CccRestorationResource: ResourceIF = {
     ],
     orgPersonInfo: {
       orgPersonLabel: 'Applicant',
+      orgTypesLabel: 'Business or Corporation',
       subtitle: null // not used
     }
   },
