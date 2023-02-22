@@ -30,7 +30,11 @@
       </v-col>
 
       <!-- Actions -->
-      <v-col cols="2" class="mt-n2" v-if="!hasNameTranslationChange && !isSummaryMode">
+      <v-col cols="2" class="mt-n2" v-if="
+      !hasNameTranslationChange &&
+      !isSummaryMode &&
+      !isLimitedConversionRestorationFiling &&
+      !isLimitedExtendRestorationFiling">
         <div class="actions mr-4">
           <v-btn
             class="correct-name-translation"
@@ -178,6 +182,8 @@ export default class NameTranslation extends Mixins(CommonMixin) {
 
   // Global getter
   @Getter getNameTranslations!: NameTranslationIF[]
+  @Getter isLimitedExtendRestorationFiling!: boolean
+  @Getter isLimitedConversionRestorationFiling!: boolean
 
   // Global actions
   @Action setEditingNameTranslations!: ActionBindingIF

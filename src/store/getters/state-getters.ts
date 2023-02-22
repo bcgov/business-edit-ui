@@ -91,13 +91,13 @@ export const isRestorationFiling = (state: StateIF): boolean => {
 }
 
 /** Whether the current filing is a Limited Extension Restoration. */
-export const isLimitedExtendRestorationFiling = (state: StateIF): boolean => {
-  return (getRestoration(state).type === RestorationTypes.LTD_EXTEND)
+export const isLimitedExtendRestorationFiling = (state: StateIF, getters): boolean => {
+  return (getters.getRestoration.type === RestorationTypes.LTD_EXTEND)
 }
 
 /** Whether the current filing is a Limited Conversion Restoration. */
-export const isLimitedConversionRestorationFiling = (state: StateIF): boolean => {
-  return (getRestoration(state).type === RestorationTypes.LTD_TO_FULL)
+export const isLimitedConversionRestorationFiling = (state: StateIF, getters): boolean => {
+  return (getters.getRestoration.type === RestorationTypes.LTD_TO_FULL)
 }
 
 /** Whether the current filing is a Change of Registration for a firm corp class. */

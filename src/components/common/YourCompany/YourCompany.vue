@@ -99,7 +99,7 @@
                 <span>Undo</span>
               </v-btn>
               <v-btn
-                v-else-if="!isFirmConversionFiling"
+                v-else-if="!isFirmConversionFiling && !isLimitedExtendRestorationFiling"
                 text color="primary"
                 id="btn-correct-company-name"
                 @click="isEditingNames = true"
@@ -360,6 +360,8 @@ export default class YourCompany extends Mixins(
   @Getter isRestorationFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
   @Getter getAssociationType!: CoopTypes
+  @Getter isLimitedExtendRestorationFiling!: boolean
+  @Getter isLimitedConversionRestorationFiling!: boolean
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
