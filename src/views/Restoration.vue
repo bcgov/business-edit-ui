@@ -204,6 +204,11 @@ export default class Restoration extends Vue {
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
 
+      // set Applicant info in entitySnapshot
+      const stateFiling = entitySnapshot.businessInfo.stateFiling
+      const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
+      entitySnapshot.orgPersons = filing.restoration.parties as OrgPersonIF
+
       // verify that business is in Limited Restoration status
       // (will throw on error)
       await this.verifyLimitedRestorationStatus(entitySnapshot.businessInfo)
@@ -272,7 +277,6 @@ export default class Restoration extends Vue {
     const stateFiling = businessInfo.stateFiling
     const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
     const type = filing?.header?.name as FilingTypes
-    console.log('Filing Type', type)
     // FUTURE: enable code below when limited restorations can be filed (ticket 14641)
 
     // // Verify state filing. It should be a Limited Restoration filing or a

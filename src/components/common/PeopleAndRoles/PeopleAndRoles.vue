@@ -169,9 +169,9 @@
           :activeIndex="activeIndex"
           :validate="getComponentValidate"
           :validOrgPersons="validOrgPersons"
-          :showDeliveryAddressColumn="showDeliveryAddressColumn"
+          :showDeliveryAddressColumn="!(isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling)"
           :showRolesColumn="isBenBcCccUlcCorrectionFiling"
-          :showEmailColumn="showEmailColumn"
+          :showEmailColumn="isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling"
           @initEdit="initEdit($event)"
           @addEdit="addEdit($event)"
           @remove="remove($event)"
@@ -391,14 +391,6 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     return this.dateToYyyyMmDd(this.getCurrentJsDate)
   }
 
-  get showDeliveryAddressColumn () : boolean {
-    return !(isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling)
-  }
-
-  get showEmailColumn () : boolean {
-    return isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling
-  }
-
   /** Called when component is mounted. */
   mounted (): void {
     // initialize this component's 'valid' and 'changed' flags
@@ -513,7 +505,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
         const deleted = tempList.find(x => this.wasReplaced(x) && this.wasRemoved(x))
         if (deleted) delete deleted.actions
       }
-    } else {
+    } else if (person?.officer?.id) {
       // get ID of edited person to undo
       const id = person?.officer?.id
 
@@ -522,6 +514,14 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 
       // safety check
       if (!thisPerson) throw new Error(`Failed to find original person with id = ${id}`)
+
+      // splice in the original person
+      tempList.splice(index, 1, thisPerson)
+    } else {
+      // Special case for role type 'APPLICANT'.
+      // 'id' attribute soes not have value for Restoration extension/conversion.
+      // Assumption: Conversion/extension will have one applicant
+      const thisPerson = cloneDeep(this.originalParties[0])
 
       // splice in the original person
       tempList.splice(index, 1, thisPerson)
