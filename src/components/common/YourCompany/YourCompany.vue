@@ -361,8 +361,6 @@ export default class YourCompany extends Mixins(
   @Getter isRestorationFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
   @Getter getAssociationType!: CoopTypes
-  @Getter isLimitedExtendRestorationFiling!: boolean
-  @Getter isLimitedConversionRestorationFiling!: boolean
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
