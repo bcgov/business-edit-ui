@@ -1083,9 +1083,9 @@ export const getExpiryDateString = (state: StateIF): string => {
   return state.stateModel.restoration?.expiry
 }
 
-export const getFormattedExpiryText = (state, getters): string => {
+export const getFormattedExpiryText = (state, getters) => (today = new Date()): string => {
   if (getters.getExpiryDateString) {
-    return DateUtilities.monthDiffToToday(getters.getExpiryDateString) + ' months, expires on ' +
+    return DateUtilities.monthDiffToToday(getters.getExpiryDateString, today) + ' months, expires on ' +
       DateUtilities.yyyyMmDdToPacificDate(getters.getExpiryDateString)
   }
   return '[no expiry date]'

@@ -5,7 +5,7 @@
       <v-row no-gutters>
         <v-col cols="9">
           <img class="header-icon" src="@/assets/images/currency-usd-circle.svg">
-          <label class="summary-title">Your Company</label>
+          <label class="summary-title pl-2">Your Company</label>
         </v-col>
       </v-row>
     </div>
@@ -19,7 +19,7 @@
           </v-col>
           <v-col cols="8" class="mt-n1" v-if="isLimitedExtendRestorationFiling">
             <div class="font-weight-bold">Limited Restoration Extension</div>
-            <div>Extension Time: {{ getFormattedExpiryText }}</div>
+            <div>Extension Time: {{ getFormattedExpiryText() }}</div>
           </v-col>
           <v-col cols="8" class="mt-n1" v-if="isLimitedConversionRestorationFiling">
             <div class="font-weight-bold">Conversion to Full Restoration</div>
@@ -58,40 +58,6 @@ export default {
   display: flex;
   background-color: $BCgovBlue5O;
   padding: 1.25rem;
-}
-
-.summary-title {
-  padding-left: 0.5rem;
-}
-
-.company-name {
-  font-size: 1.5rem;
-}
-
-.actions {
-  position: absolute;
-  right: 0;
-
-  #btn-delete-restoration {
-    margin-top: -6px;
-  }
-}
-
-.inner-col-1 {
-  // adjustment to make this inner container column the same width as the outer columns
-  // ie, decrease width by 1/2 container margin + padding
-  flex: 0 0 calc(25% - 1.5rem);
-}
-
-.inner-col-2 {
-  // adjustment to make this inner container column the same width as the outer columns
-  // ie, increase width by 1/2 container margin + padding
-  flex: 0 0 calc(75% + 1.5rem);
-  max-width: calc(75% + 1.5rem);
-}
-
-#effective-date-text {
-  color: $gray7;
 }
 
 // hide first v-divider

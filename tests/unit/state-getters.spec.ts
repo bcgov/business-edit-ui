@@ -535,12 +535,14 @@ describe('SP/GP correction getters', () => {
 
 describe('test restoration expiry date', () => {
   it('when no expiry date provided returns visible error', () => {
-    expect(store.getters.getFormattedExpiryText).toEqual('[no expiry date]')
+    expect(store.getters.getFormattedExpiryText()).toEqual('[no expiry date]')
   })
 
   it('displays appropriate text when restoration expiry date is set', () => {
     store.commit('mutateRestorationExpiry', '2023-12-31')
-    expect(store.getters.getFormattedExpiryText).toEqual('10 months, expires on Dec 31, 2023')
+    // pass in date to force today's date to Feb 28th
+    expect(store.getters.getFormattedExpiryText(new Date('2023-02-28')))
+      .toEqual('10 months, expires on Dec 31, 2023')
   })
 
   it('getExpiryDateString() works correctly', () => {
