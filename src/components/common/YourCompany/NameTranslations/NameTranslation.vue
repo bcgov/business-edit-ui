@@ -30,7 +30,7 @@
       </v-col>
 
       <!-- Actions -->
-      <v-col cols="2" class="mt-n2" v-if="isEditNameTranslationButtonVisible">
+      <v-col cols="2" class="mt-n2" v-if="isHideEditNameTranslationButton">
         <div class="actions mr-4">
           <v-btn
             class="correct-name-translation"
@@ -220,12 +220,14 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     return this.draftTranslations.filter(x => x.action !== ActionTypes.REMOVED)
   }
 
-  /** Returns true when user can edit the name translations. */
-  get isEditNameTranslationButtonVisible (): boolean {
-    return (!this.hasNameTranslationChange &&
-    !this.isSummaryMode &&
-    !this.isLimitedConversionRestorationFiling &&
-    !this.isLimitedExtendRestorationFiling)
+  /** Returns true when the edit name translation button should be hidden. */
+  get isHideEditNameTranslationButton (): boolean {
+    return !(
+      this.hasNameTranslationChange ||
+      this.isSummaryMode ||
+      this.isLimitedConversionRestorationFiling ||
+      this.isLimitedExtendRestorationFiling
+    )
   }
 
   protected saveNameTranslations (): void {
