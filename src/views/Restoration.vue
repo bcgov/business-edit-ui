@@ -25,6 +25,8 @@
           :validate="getAppValidate"
         />
 
+        <YourCompanySummary class="mt-10" />
+
         <CurrentDirectors class="mt-10" />
 
         <DocumentsDelivery
@@ -81,6 +83,7 @@ import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
+import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import { CertifySection, CurrentDirectors, DocumentsDelivery, PeopleAndRoles, StaffPayment,
   YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
@@ -101,7 +104,8 @@ import { FilingDataIF } from '@bcrs-shared-components/interfaces'
     PeopleAndRoles,
     RestorationSummary,
     StaffPayment,
-    YourCompany
+    YourCompany,
+    YourCompanySummary
   },
   mixins: [
     CommonMixin,

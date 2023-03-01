@@ -39,6 +39,7 @@ import {
   StaffPaymentIF
 } from '@bcrs-shared-components/interfaces/'
 import { IsSame } from '@/utils/'
+import DateUtilities from '@/services/date-utilities'
 
 /** Whether the user has "staff" keycloak role. */
 export const isRoleStaff = (state: StateIF): boolean => {
@@ -947,6 +948,10 @@ export const haveNewResolutionDates = (state: StateIF): boolean => {
 export const getFileNumber = (state: StateIF): string => {
   return state.stateModel.newAlteration.courtOrder.fileNumber
 }
+/** Returns true if the filing has a court order number  */
+export const hasFileNumber = (state, getters): boolean => {
+  return !!getters.getFileNumber
+}
 
 /** The Plan of Arrangement state. */
 export const getHasPlanOfArrangement = (state: StateIF): boolean => {
@@ -987,7 +992,7 @@ export const getIsResolutionDatesValid = (state: StateIF): boolean => {
  * This is a safety check to ensure that fee summary component is not loaded
  * until there is a valid filing type and entity code.
  */
-export const showFeeSummary = (state: StateIF): boolean => {
+export const showFeeSummary = (state: StateIF, getters): boolean => {
   const defaultFilingData: FilingDataIF[] = [{
     filingTypeCode: null,
     entityType: null,
@@ -995,14 +1000,15 @@ export const showFeeSummary = (state: StateIF): boolean => {
     waiveFees: false
   }]
   const haveFilingChange = (
-    (isCorrectionFiling(state) && hasCorrectionDataChanged(state)) ||
-    (isAlterationFiling(state) && hasAlterationDataChanged(state)) ||
-    (isFirmChangeFiling(state) && hasChangeDataChanged(state)) ||
-    (isFirmConversionFiling(state) && hasConversionDataChanged(state)) ||
-    (isRestorationFiling(state) && hasRestorationDataChanged(state)) ||
-    (isSpecialResolutionFiling(state) && hasSpecialResolutionDataChanged(state))
+    (getters.isCorrectionFiling && getters.hasCorrectionDataChanged) ||
+    (getters.isAlterationFiling && getters.hasAlterationDataChanged) ||
+    (getters.isFirmChangeFiling && getters.hasChangeDataChanged) ||
+    (getters.isFirmConversionFiling && getters.hasConversionDataChanged) ||
+    (getters.isRestorationFiling && getters.hasRestorationDataChanged) ||
+    (getters.isSpecialResolutionFiling && getters.hasSpecialResolutionDataChanged) ||
+    getters.isRestorationFiling
   )
-  return (haveFilingChange && !IsSame(getFilingData(state), defaultFilingData))
+  return (haveFilingChange && !IsSame(getters.getFilingData, defaultFilingData))
 }
 
 /** The current fees. */
@@ -1071,4 +1077,16 @@ export const hideChangeButtonForSoleProps = (state: StateIF, getters): boolean =
   const isOrganization = getters.getOrgPeople[0]?.officer?.partyType === PartyTypes.ORGANIZATION
   const isDba = isProprietor && isOrganization
   return !getters.isRoleStaff && isDba
+}
+
+export const getExpiryDateString = (state: StateIF): string => {
+  return state.stateModel.restoration?.expiry
+}
+
+export const getFormattedExpiryText = (state, getters): string => {
+  if (getters.getExpiryDateString) {
+    return DateUtilities.monthDiffToToday(getters.getExpiryDateString) + ' months, expires on ' +
+      DateUtilities.yyyyMmDdToPacificDate(getters.getExpiryDateString)
+  }
+  return '[no expiry date]'
 }
