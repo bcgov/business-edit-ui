@@ -3,8 +3,8 @@ import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import { getVuexStore } from '@/store/'
 import Actions from '@/components/common/Actions.vue'
-import {getExpiryDateString, getFormattedExpiryText} from "@/store/getters";
-import {mutateRestorationExpiry} from "@/store/mutations";
+import { getExpiryDateString, getFormattedExpiryText } from '@/store/getters'
+import { mutateRestorationExpiry } from '@/store/mutations'
 
 Vue.use(Vuetify)
 
@@ -408,8 +408,8 @@ describe('SP/GP correction getters', () => {
     naicsDescription: 'NAICS description'
   }
   const newAddress = {
-    deliveryAddress: {postalCode: 'V8V 8V8'},
-    mailingAddress: {postalCode: 'V8V 8V8'}
+    deliveryAddress: { postalCode: 'V8V 8V8' },
+    mailingAddress: { postalCode: 'V8V 8V8' }
   }
   beforeAll(async () => {
     // initialize store
@@ -443,7 +443,7 @@ describe('SP/GP correction getters', () => {
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(Actions, {store, vuetify})
+    const wrapper = shallowMount(Actions, { store, vuetify })
     vm = wrapper.vm
     await Vue.nextTick()
   })
@@ -471,31 +471,31 @@ describe('SP/GP correction getters', () => {
     expect(vm.hasBusinessStartDateChanged).toBe(false)
 
     // verify that name translation changes are detected
-    store.state.stateModel.nameTranslations = [{action: 'ACTION'}]
+    store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
     expect(vm.haveNameTranslationsChanged).toBe(true)
     store.state.stateModel.nameTranslations = []
     expect(vm.haveNameTranslationsChanged).toBe(false)
 
     // verify that registered mailing address changes are detected
-    store.state.stateModel.officeAddresses = {businessOffice: newAddress}
+    store.state.stateModel.officeAddresses = { businessOffice: newAddress }
     expect(vm.haveOfficeAddressesChanged).toBe(true)
     store.state.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that registered delivery address changes are detected
-    store.state.stateModel.officeAddresses = {businessOffice: newAddress}
+    store.state.stateModel.officeAddresses = { businessOffice: newAddress }
     expect(vm.haveOfficeAddressesChanged).toBe(true)
     store.state.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that records mailing address changes are detected
-    store.state.stateModel.officeAddresses = {businessOffice: newAddress}
+    store.state.stateModel.officeAddresses = { businessOffice: newAddress }
     expect(vm.haveOfficeAddressesChanged).toBe(true)
     store.state.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that records delivery address changes are detected
-    store.state.stateModel.officeAddresses = {businessOffice: newAddress}
+    store.state.stateModel.officeAddresses = { businessOffice: newAddress }
     expect(vm.haveOfficeAddressesChanged).toBe(true)
     store.state.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
@@ -534,18 +534,17 @@ describe('SP/GP correction getters', () => {
 })
 
 describe('test restoration expiry date', () => {
-
   it('when no expiry date provided returns visible error', () => {
-    expect(store.getters.getFormattedExpiryText).toEqual("[no expiry date]")
+    expect(store.getters.getFormattedExpiryText).toEqual('[no expiry date]')
   })
 
   it('displays appropriate text when restoration expiry date is set', () => {
     store.commit('mutateRestorationExpiry', '2023-12-31')
-    expect(store.getters.getFormattedExpiryText).toEqual("10 months, expires on Dec 31, 2023")
+    expect(store.getters.getFormattedExpiryText).toEqual('10 months, expires on Dec 31, 2023')
   })
 
   it('getExpiryDateString() works correctly', () => {
     store.commit('mutateRestorationExpiry', '2023-12-31')
-    expect(store.getters.getExpiryDateString).toEqual("2023-12-31")
+    expect(store.getters.getExpiryDateString).toEqual('2023-12-31')
   })
 })
