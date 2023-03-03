@@ -25,8 +25,8 @@
     <div
       v-if="currentPeopleAndRoles.length > 0"
       id="people-roles-list"
+      class="section-container"
       :class="{
-        'section-container': !isSummaryView,
         'invalid-section': isComponentInvalid
       }"
     >
@@ -79,7 +79,9 @@
                   <p class="people-roles-title mb-1" :class="{ 'removed': wasRemoved(orgPerson)}">
                     {{ formatName(orgPerson) }}
                   </p>
-                  <p class="info-text mb-1 people-roles-email" :class="{ 'removed': wasRemoved(orgPerson)}">
+                  <p v-if="!(isLimitedConversionRestorationFiling || isLimitedExtendRestorationFiling)"
+                    class="info-text mb-1 people-roles-email"
+                    :class="{ 'removed': wasRemoved(orgPerson)}">
                     {{ orgPerson.officer.email }}
                   </p>
                   <p

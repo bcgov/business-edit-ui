@@ -289,7 +289,7 @@ export default class FilingTemplateMixin extends DateMixin {
           identifier: this.getBusinessId,
           legalType: this.getEntityType
         },
-        parties: null, // applied below
+        parties: this.getOrgPeople,
         offices: this.getOfficeAddresses,
         contactPoint: this.getContactPoint
       }

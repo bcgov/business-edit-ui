@@ -25,7 +25,19 @@
           :validate="getAppValidate"
         />
 
-        <CurrentDirectors class="mt-10" />
+        <v-card id="people-and-roles-vcard" flat class="mt-6">
+          <!-- Header -->
+          <div class="section-container header-container">
+            <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
+            <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Informaton</label>
+          </div>
+          <ListPeopleAndRoles
+            :isSummaryView="true"
+            :showDeliveryAddressColumn="false"
+            :showRolesColumn="false"
+            :showEmailColumn="true"
+          />
+        </v-card>
 
         <DocumentsDelivery
           class="mt-10"
@@ -79,9 +91,10 @@
 import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+import { v4 as uuidv4 } from 'uuid'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
-import { CertifySection, CurrentDirectors, DocumentsDelivery, PeopleAndRoles, StaffPayment,
+import { CertifySection, DocumentsDelivery, PeopleAndRoles, ListPeopleAndRoles, StaffPayment,
   YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
@@ -96,9 +109,9 @@ import { FilingDataIF } from '@bcrs-shared-components/interfaces'
 @Component({
   components: {
     CertifySection,
-    CurrentDirectors,
     DocumentsDelivery,
     PeopleAndRoles,
+    ListPeopleAndRoles,
     RestorationSummary,
     StaffPayment,
     YourCompany
@@ -121,6 +134,7 @@ export default class Restoration extends Vue {
   @Getter isRoleStaff!: boolean
   @Getter isLimitedExtendRestorationFiling!: boolean
   @Getter isLimitedConversionRestorationFiling!: boolean
+  @Getter getResource!: ResourceIF
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -208,6 +222,9 @@ export default class Restoration extends Vue {
       const stateFiling = entitySnapshot.businessInfo.stateFiling
       const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
       entitySnapshot.orgPersons = filing.restoration.parties as OrgPersonIF
+      entitySnapshot.orgPersons.forEach(o => {
+        o.officer.id = uuidv4()
+      })
 
       // verify that business is in Limited Restoration status
       // (will throw on error)
@@ -257,7 +274,7 @@ export default class Restoration extends Vue {
       AuthServices.fetchAuthInfo(this.getBusinessId),
       LegalServices.fetchAddresses(this.getBusinessId),
       LegalServices.fetchNameTranslations(this.getBusinessId),
-      LegalServices.fetchParties(this.getBusinessId)
+      LegalServices.fetchDirectors(this.getBusinessId)
     ])
 
     if (items.length !== 5) throw new Error('Failed to fetch entity snapshot')
@@ -289,6 +306,11 @@ export default class Restoration extends Vue {
     // throw new Error('Business is not in Limited Restoration status')
   }
 
+  /** Resource getters. */
+  get orgPersonLabel (): string {
+    return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
+  }
+
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -302,7 +324,13 @@ export default class Restoration extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
 #done-button {
   width: 10rem;
+}
+
+.header-container {
+  display: flex;
+  background-color: $BCgovBlue5O;
 }
 </style>

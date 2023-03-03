@@ -505,23 +505,21 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
         const deleted = tempList.find(x => this.wasReplaced(x) && this.wasRemoved(x))
         if (deleted) delete deleted.actions
       }
-    } else if (person?.officer?.id) {
+    } else {
       // get ID of edited person to undo
       const id = person?.officer?.id
+      const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi
 
-      // get a copy of original person from original IA
-      const thisPerson = (id !== undefined) && cloneDeep(this.originalParties.find(x => +x.officer.id === +id))
+      let thisPerson
+      if (id !== undefined && regexExp.test(id)) {
+        thisPerson = cloneDeep(this.originalParties.find(x => x.officer.id === id))
+      } else {
+        // get a copy of original person from original IA
+        thisPerson = cloneDeep(this.originalParties.find(x => +x.officer.id === +id))
+      }
 
       // safety check
       if (!thisPerson) throw new Error(`Failed to find original person with id = ${id}`)
-
-      // splice in the original person
-      tempList.splice(index, 1, thisPerson)
-    } else {
-      // Special case for role type 'APPLICANT'.
-      // 'id' attribute soes not have value for Restoration extension/conversion.
-      // Assumption: Conversion/extension will have one applicant
-      const thisPerson = cloneDeep(this.originalParties[0])
 
       // splice in the original person
       tempList.splice(index, 1, thisPerson)
