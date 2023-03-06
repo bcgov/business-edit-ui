@@ -276,7 +276,7 @@ describe('Restoration component - edit page', () => {
     expect(wrapper.findComponent(YourCompany).exists()).toBe(true)
   })
 
-  it('renders the People And Rolescomponent correctly', () => {
+  it('renders the People And Roles component correctly', () => {
     expect(wrapper.findComponent(PeopleAndRoles).exists()).toBe(true)
     expect(wrapper.find('#people-and-roles').exists()).toBe(true)
   })
