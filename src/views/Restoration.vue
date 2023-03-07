@@ -25,6 +25,8 @@
           :validate="getAppValidate"
         />
 
+        <YourCompanySummary class="mt-10" />
+
         <v-card id="people-and-roles-vcard" flat class="mt-6">
           <!-- Header -->
           <div class="section-container header-container">
@@ -94,6 +96,7 @@ import { Action, Getter } from 'vuex-class'
 import { v4 as uuidv4 } from 'uuid'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
+import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import { CertifySection, DocumentsDelivery, PeopleAndRoles, ListPeopleAndRoles, StaffPayment,
   YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
@@ -114,7 +117,8 @@ import { FilingDataIF } from '@bcrs-shared-components/interfaces'
     ListPeopleAndRoles,
     RestorationSummary,
     StaffPayment,
-    YourCompany
+    YourCompany,
+    YourCompanySummary
   },
   mixins: [
     CommonMixin,

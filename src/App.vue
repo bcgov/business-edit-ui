@@ -160,7 +160,7 @@ import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/co
 import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
 import { AuthServices, LegalServices } from '@/services/'
-import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
+import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
   AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, SpecialResolutionFilingIF }
   from '@/interfaces/'
@@ -170,6 +170,7 @@ import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/en
 import { FeeSummaryActions } from '@bcrs-shared-components/enums/'
 import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
   getStaffDashboardBreadcrumb } from '@/resources/BreadCrumbResources'
+import DateUtilities from '@/services/date-utilities'
 
 @Component({
   components: {
@@ -184,9 +185,13 @@ import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegis
     SbcFeeSummary,
     ...Dialogs,
     ...Views
-  }
+  },
+  mixins: [
+    CommonMixin,
+    FilingTemplateMixin
+  ]
 })
-export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMixin) {
+export default class App extends Vue {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -444,7 +449,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
 
   /** Fetches and stores the current JS date. */
   private async updateCurrentJsDate (): Promise<void> {
-    const jsDate = await this.getServerDate()
+    const jsDate = await DateUtilities.getServerDate()
     this.setCurrentJsDate(jsDate)
   }
 
@@ -494,7 +499,7 @@ export default class App extends Mixins(CommonMixin, DateMixin, FilingTemplateMi
     this.resetFlags()
 
     // set current date from "real time" date from server
-    this.setCurrentDate(this.dateToYyyyMmDd(this.getCurrentJsDate))
+    this.setCurrentDate(DateUtilities.dateToYyyyMmDd(this.getCurrentJsDate))
 
     // get and store keycloak roles
     try {

@@ -99,7 +99,7 @@
                 <span>Undo</span>
               </v-btn>
               <v-btn
-                v-else-if="!isFirmConversionFiling"
+                v-else-if="!isFirmConversionFiling && !isLimitedExtendRestorationFiling"
                 text color="primary"
                 id="btn-correct-company-name"
                 @click="isEditingNames = true"
@@ -317,6 +317,7 @@ import { CommonMixin, DateMixin, NameRequestMixin } from '@/mixins/'
 import { CoopTypes, NameChangeOptions } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ConversionNOB } from '@/components/Conversion'
+import DateUtilities from '@/services/date-utilities'
 
 @Component({
   components: {
@@ -360,6 +361,7 @@ export default class YourCompany extends Mixins(
   @Getter isRestorationFiling!: boolean
   @Getter getEntityType!: CorpTypeCd
   @Getter getAssociationType!: CoopTypes
+  @Getter isLimitedExtendRestorationFiling!: boolean
 
   // Alteration flag getters
   @Getter hasBusinessNameChanged!: boolean
@@ -453,7 +455,7 @@ export default class YourCompany extends Mixins(
   get expiryDate (): string {
     const expiry = this.getNameRequest?.expiry
     if (expiry) {
-      return this.apiToPacificDateTime(expiry)
+      return DateUtilities.apiToPacificDateTime(expiry)
     }
     return null
   }
@@ -467,15 +469,15 @@ export default class YourCompany extends Mixins(
   get recognitionDateTime (): string {
     if (this.isBenBcCccUlcCorrectionFiling || this.isRestorationFiling) {
       if (this.getBusinessFoundingDateTime) {
-        return this.apiToPacificDateTime(this.getBusinessFoundingDateTime)
+        return DateUtilities.apiToPacificDateTime(this.getBusinessFoundingDateTime)
       }
       if (this.getCorrectedFilingDate) {
-        return this.apiToPacificDateTime(this.getCorrectedFilingDate)
+        return DateUtilities.apiToPacificDateTime(this.getCorrectedFilingDate)
       }
     }
     if (this.isAlterationFiling) {
       if (this.getBusinessFoundingDateTime) {
-        return this.apiToPacificDateTime(this.getBusinessFoundingDateTime)
+        return DateUtilities.apiToPacificDateTime(this.getBusinessFoundingDateTime)
       }
     }
     return null

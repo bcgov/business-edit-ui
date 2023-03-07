@@ -287,7 +287,7 @@
 
               <!-- org-person we haven't touched: -->
               <div v-else class="actions mr-4">
-                <span class="edit-action">
+                <span class="edit-action" v-if="!hideChangeButtonForSoleProps">
                   <v-btn
                     text color="primary"
                     :id="`officer-${index}-edit-btn`"
@@ -424,6 +424,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   @Getter isLimitedExtendRestorationFiling!: boolean
   @Getter isLimitedConversionRestorationFiling!: boolean
   @Getter isRoleStaff!: boolean
+  @Getter hideChangeButtonForSoleProps!: boolean
 
   /** V-model for dropdown menus. */
   protected dropdown: Array<boolean> = []
