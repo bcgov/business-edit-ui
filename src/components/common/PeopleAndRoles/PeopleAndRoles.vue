@@ -4,7 +4,7 @@
       <!-- Header -->
       <div class="section-container header-container">
         <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
-        <label class="font-weight-bold pl-2">{{ orgPersonLabel }}</label>
+        <label id="role-header-lbl" class="font-weight-bold pl-2">{{ orgPersonLabel }}</label>
       </div>
 
       <!-- Instructional people and roles text (base corrections only)-->
@@ -125,8 +125,26 @@
       </article>
 
       <!-- Restoration conversion and extension add buttons -->
-      <article v-if="(isLimitedConversionRestorationFiling || isLimitedExtendRestorationFiling)" class="mt-8">
-        <v-btn
+      <article v-if="(isLimitedConversionRestorationFiling || isLimitedExtendRestorationFiling)"
+        class="section-container">
+        <header>
+          <h2 id="resto-heasder-lbl">Add Applicant Information</h2>
+        </header>
+        <section class="mt-4">
+          <h3>Your application must include one of the following:</h3>
+        </section>
+        <ul>
+          <li>
+            <v-icon>mdi-circle-small</v-icon>
+            <span>An individual</span>
+          </li>
+          <li>
+            <v-icon>mdi-circle-small</v-icon>
+            <span>A business or a corporation</span>
+          </li>
+        </ul>
+        <div class="mt-8">
+          <v-btn
           id="resto-btn-add-person"
           outlined
           color="primary"
@@ -159,6 +177,7 @@
         <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
           A applicant address is missing or incorrect
         </p>
+        </div>
       </article>
 
       <!-- People and roles list -->
@@ -737,6 +756,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 [class^="col"] {
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.subhead {
+  font-weight: bold;
+  color: $gray9;
 }
 
 ul {
