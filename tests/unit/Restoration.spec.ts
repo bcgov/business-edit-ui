@@ -230,10 +230,11 @@ describe('Restoration component - edit page', () => {
     store.state.stateModel.validationFlags.appValidate = false
     store.state.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
     store.state.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
+    store.state.stateModel.tombstone.filingType = 'restoration'
+    store.state.stateModel.restoration = filing.restoration
     store.state.stateModel.entitySnapshot = entitySnapshot
     store.state.stateModel.entitySnapshot.businessInfo.stateFiling = stateFiling
     store.state.stateModel.businessInformation = { ...entitySnapshot.businessInfo }
-    store.state.stateModel.tombstone.filingType = 'restoration'
     store.state.resourceModel = BenRestorationResource
 
     await router.push({ name: 'restoration', query: { 'restoration-id': '1234' } })
@@ -253,7 +254,7 @@ describe('Restoration component - edit page', () => {
   it('renders the page correctly', async () => {
     expect(wrapper.findComponent(Restoration).exists()).toBe(true)
     expect(wrapper.find('#restoration-view').exists()).toBe(true)
-    // expect(wrapper.find('section header').text()).toBe('Limited Restoration Extension')
+    expect(wrapper.find('section header').text()).toBe('Limited Restoration Extension')
   })
 
   it('loads the entity snapshot into the store', async () => {

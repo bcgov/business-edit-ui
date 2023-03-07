@@ -99,32 +99,56 @@
                       Business or Corporation is Unregistered in B.C.
                     </a>
 
-                    <v-card v-if="wasBusinessSelectedFromLookup" outlined class="message-box rounded-0 mt-6">
-                      <p>
-                        <strong>Important:</strong> If the addresses shown below are out of date, you may
-                        update them here. The updates are applicable only to this registration.
-                      </p>
-                    </v-card>
+                    <div v-if="wasBusinessSelectedFromLookup">
+                      <v-card outlined class="message-box rounded-0 mt-6">
+                        <p>
+                          <strong>Important:</strong> If the addresses shown below are out of date, you may
+                          update them here. The updates are applicable only to this registration.
+                        </p>
+                      </v-card>
+                    </div>
+                    <div v-else>
+                      <div v-if="isProprietor">
+                        <p class="info-text mt-6 pt-0 mb-0">
+                          To add a registered B.C. business or corporation as the Proprietor, enter the name
+                          or incorporation number.
+                        </p>
 
-                    <template v-else>
-                      <p class="info-text mt-6 pt-0 mb-0">
-                        To add a registered B.C. business or corporation as
-                        {{ isProprietor ? 'the Proprietor' : 'a Partner' }},
-                        enter the name or incorporation number.
-                      </p>
+                        <p class="info-text mt-6 pt-0 mb-0">
+                          If you are adding a company that is not legally required to register in B.C.
+                          such as a bank or a railway, use the manual entry form. All other types of
+                          businesses cannot be the Proprietor.
+                        </p>
+                      </div>
+                      <div v-else-if="isPartner">
+                        <p class="info-text mt-6 pt-0 mb-0">
+                          To add a registered B.C. business or corporation as a Partner, enter the name
+                          or incorporation number.
+                        </p>
 
-                      <p class="info-text mt-6 pt-0 mb-0">
-                        If you are adding a company that is not legally required to register in B.C.
-                        such as a bank or a railway, use the manual entry form. All other types of
-                        businesses cannot be {{ isProprietor ? 'the Proprietor' : 'a partner' }}.
-                      </p>
+                        <p class="info-text mt-6 pt-0 mb-0">
+                          If you are adding a company that is not legally required to register in B.C.
+                          such as a bank or a railway, use the manual entry form. All other types of
+                          businesses cannot be a partner.
+                        </p>
+                      </div>
+                      <div v-else>
+                        <p class="info-text mt-6 pt-0 mb-0">
+                          To add a registered B.C. business or corporation as a Partner, enter the name
+                          or incorporation number.
+                        </p>
 
+                        <p class="info-text mt-6 pt-0 mb-0">
+                          If you are adding a company that is not legally required to register in B.C.
+                          such as a bank or a railway, use the manual entry form.
+                        </p>
+                      </div>
                       <HelpSection
-                        v-if="!isRoleStaff"
-                        class="mt-6"
-                        :helpSection="getResource.changeData.orgPersonInfo.helpSection"
-                      />
-                    </template>
+                          v-if="!isRoleStaff"
+                          class="mt-6"
+                          :helpSection="getResource.changeData.orgPersonInfo.helpSection"
+                        />
+                    </div>
 
                     <BusinessLookupShared
                       class="mt-6"
