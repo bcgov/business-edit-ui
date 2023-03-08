@@ -1,5 +1,3 @@
 export * from './state-interfaces'
 export * from './action-interface'
 export * from './state-model-interface'
-export * from './store-attribute-get-interface'
-export * from './store-attribute-modify-interface'
