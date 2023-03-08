@@ -592,10 +592,15 @@ describe('List People And Roles component for Change of Registration', () => {
   })
 
   it('does not display the roles', () => {
-    const wrapper = wrapperFactory(gpPeopleAndRoles)
+    const wrapper = wrapperFactory(gpPeopleAndRoles,
+      {
+        showDeliveryAddressColumn: true,
+        showRolesColumn: false,
+        showEmailColumn: false
+      })
 
     const item1 = wrapper.findAll('.people-roles-content').at(0)
-    // expect(item1.findAll('.col-roles').exists()).toBe(false)
+    expect(item1.findAll('.col-roles').exists()).toBe(false)
 
     wrapper.destroy()
   })
