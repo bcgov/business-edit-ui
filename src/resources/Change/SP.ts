@@ -7,6 +7,7 @@ export const SpChangeResource: ResourceIF = {
   contactLabel: 'Business',
   displayName: GetCorpFullDescription(CorpTypeCd.SOLE_PROP),
   addressLabel: 'Business Addresses',
+  showEmail: true,
   filingData: {
     filingTypeCode: FilingCodes.FM_CHANGE,
     entityType: CorpTypeCd.SOLE_PROP,

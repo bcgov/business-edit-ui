@@ -99,15 +99,15 @@
                       Business or Corporation is Unregistered in B.C.
                     </a>
 
-                    <div v-if="wasBusinessSelectedFromLookup">
+                    <template v-if="wasBusinessSelectedFromLookup">
                       <v-card outlined class="message-box rounded-0 mt-6">
                         <p>
                           <strong>Important:</strong> If the addresses shown below are out of date, you may
                           update them here. The updates are applicable only to this registration.
                         </p>
                       </v-card>
-                    </div>
-                    <div v-else>
+                    </template>
+                    <template v-else>
                       <div v-if="isProprietor">
                         <p class="info-text mt-6 pt-0 mb-0">
                           To add a registered B.C. business or corporation as the Proprietor, enter the name
@@ -148,7 +148,7 @@
                           class="mt-6"
                           :helpSection="getResource.changeData.orgPersonInfo.helpSection"
                         />
-                    </div>
+                    </template>
 
                     <BusinessLookupShared
                       class="mt-6"

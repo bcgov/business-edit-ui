@@ -27,18 +27,23 @@
 
         <YourCompanySummary class="mt-10" />
 
+        <!-- Applicant list -->
         <v-card id="people-and-roles-vcard" flat class="mt-6">
           <!-- Header -->
           <div class="section-container header-container">
             <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
             <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Informaton</label>
           </div>
-          <ListPeopleAndRoles
-            :isSummaryView="true"
-            :showDeliveryAddressColumn="false"
-            :showRolesColumn="false"
-            :showEmailColumn="true"
-          />
+          <v-row no-gutters class="mt-4 section-container">
+            <v-col cols="12">
+              <ListPeopleAndRoles
+                :isSummaryView="true"
+                :showDeliveryAddressColumn="false"
+                :showRolesColumn="false"
+                :showEmailColumn="true"
+              />
+            </v-col>
+          </v-row>
         </v-card>
 
         <DocumentsDelivery

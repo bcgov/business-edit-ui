@@ -222,8 +222,8 @@ describe('Restoration component - edit page', () => {
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
-    const router: any = mockRouter.mock()
-    const store: any = getVuexStore()
+    const router = mockRouter.mock()
+    const store = getVuexStore()
 
     // init store
     store.state.stateModel.summaryMode = false
@@ -251,7 +251,7 @@ describe('Restoration component - edit page', () => {
     wrapper.destroy()
   })
 
-  it('renders the page correctly', async () => {
+  it('renders the page correctly', () => {
     expect(wrapper.findComponent(Restoration).exists()).toBe(true)
     expect(wrapper.find('#restoration-view').exists()).toBe(true)
     expect(wrapper.find('section header').text()).toBe('Limited Restoration Extension')

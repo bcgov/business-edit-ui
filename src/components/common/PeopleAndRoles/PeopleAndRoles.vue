@@ -527,14 +527,13 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     } else {
       // get ID of edited person to undo
       const id = person?.officer?.id
-      const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi
 
       let thisPerson
-      if (id !== undefined && regexExp.test(id)) {
-        thisPerson = cloneDeep(this.originalParties.find(x => x.officer.id === id))
-      } else {
+      if (isNaN(id)) {
         // get a copy of original person from original IA
         thisPerson = cloneDeep(this.originalParties.find(x => +x.officer.id === +id))
+      } else {
+        thisPerson = cloneDeep(this.originalParties.find(x => x.officer.id === id))
       }
 
       // safety check
