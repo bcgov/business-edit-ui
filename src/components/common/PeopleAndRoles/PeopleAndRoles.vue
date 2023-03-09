@@ -530,10 +530,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 
       let thisPerson
       if (isNaN(id)) {
+        // to check assigned UUID
+        thisPerson = cloneDeep(this.originalParties.find(x => x.officer.id === id))
+      } else {
         // get a copy of original person from original IA
         thisPerson = cloneDeep(this.originalParties.find(x => +x.officer.id === +id))
-      } else {
-        thisPerson = cloneDeep(this.originalParties.find(x => x.officer.id === id))
       }
 
       // safety check

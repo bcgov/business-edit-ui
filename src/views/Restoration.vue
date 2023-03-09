@@ -99,6 +99,7 @@ import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { v4 as uuidv4 } from 'uuid'
+import { cloneDeep } from 'lodash'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
@@ -108,7 +109,7 @@ import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF,
   RestorationFilingIF } from '@/interfaces/'
-import { FilingStatus, FilingTypes, RestorationTypes } from '@/enums/'
+import { FilingStatus, FilingTypes, RestorationTypes, RoleTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/Restoration/'
@@ -230,10 +231,17 @@ export default class Restoration extends Vue {
       // set Applicant info in entitySnapshot
       const stateFiling = entitySnapshot.businessInfo.stateFiling
       const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
-      entitySnapshot.orgPersons = filing.restoration.parties as OrgPersonIF
-      entitySnapshot.orgPersons.forEach(o => {
-        o.officer.id = uuidv4()
-      })
+      if (!filing) {
+        throw new Error(`Invalid fetched stateFiling = ${this.getBusinessId}`)
+      } else {
+        const parties = filing.restoration.parties
+        // filter applicant from fetched parties
+        const applicant = parties.filter(
+          orgPerson => orgPerson.roles.some(role => role.roleType === RoleTypes.APPLICANT)
+        )
+        console.log('applicant', applicant)
+        entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant[0])
+      }
 
       // verify that business is in Limited Restoration status
       // (will throw on error)
@@ -274,6 +282,27 @@ export default class Restoration extends Vue {
 
     // now that all data is loaded, wait for things to stabilize and reset flag
     this.$nextTick(() => this.setHaveUnsavedChanges(false))
+  }
+
+  // build applicant orgPerson and assign id (uuid)
+  private parseApplicantOrgPerson (applicant: OrgPersonIF[]): OrgPersonIF[] {
+    let applicantOrgPerson: Array<OrgPersonIF> = []
+    applicantOrgPerson.push({
+      deliveryAddress: applicant.deliveryAddress,
+      mailingAddress: applicant.mailingAddress,
+      officer: {
+        email: applicant.officer.email,
+        firstName: applicant.officer.firstName,
+        lastName: applicant.officer.lastName,
+        middleName: applicant.officer.middleName,
+        organizationName: applicant.officer.organizationName,
+        partyType: applicant.officer.partyType,
+        id: uuidv4()
+      },
+      roles: applicant.roles
+    })
+
+    return applicantOrgPerson
   }
 
   /** Fetches the entity snapshot. */
