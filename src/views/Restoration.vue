@@ -34,16 +34,14 @@
             <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
             <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Informaton</label>
           </div>
-          <v-row no-gutters class="mt-4 section-container">
-            <v-col cols="12">
+          <div no-gutters class="mt-4 section-container">
               <ListPeopleAndRoles
                 :isSummaryView="true"
                 :showDeliveryAddressColumn="false"
                 :showRolesColumn="false"
                 :showEmailColumn="true"
               />
-            </v-col>
-          </v-row>
+          </div>
         </v-card>
 
         <DocumentsDelivery
@@ -230,18 +228,21 @@ export default class Restoration extends Vue {
 
       // set Applicant info in entitySnapshot
       const stateFiling = entitySnapshot.businessInfo.stateFiling
+
       const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
       if (!filing) {
         throw new Error(`Invalid fetched stateFiling = ${this.getBusinessId}`)
-      } else {
-        const parties = filing.restoration.parties
-        // filter applicant from fetched parties
-        const applicant = parties.filter(
-          orgPerson => orgPerson.roles.some(role => role.roleType === RoleTypes.APPLICANT)
-        )
-        console.log('applicant', applicant)
-        entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant[0])
       }
+
+      const parties = filing.restoration?.parties || []
+
+      // find applicant from fetched parties
+      const applicants = parties.find(
+        orgPerson => orgPerson.roles.some(role => role.roleType === RoleTypes.APPLICANT)
+      )
+
+      // set applciant orgPerson
+      entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicants)
 
       // verify that business is in Limited Restoration status
       // (will throw on error)
@@ -286,7 +287,7 @@ export default class Restoration extends Vue {
 
   // build applicant orgPerson and assign id (uuid)
   private parseApplicantOrgPerson (applicant: OrgPersonIF[]): OrgPersonIF[] {
-    let applicantOrgPerson: Array<OrgPersonIF> = []
+    const applicantOrgPerson: Array<OrgPersonIF> = []
     applicantOrgPerson.push({
       deliveryAddress: applicant.deliveryAddress,
       mailingAddress: applicant.mailingAddress,

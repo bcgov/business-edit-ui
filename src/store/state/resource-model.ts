@@ -8,6 +8,5 @@ export const resourceModel: ResourceIF = {
   displayName: '',
   addressLabel: '',
   filingData: null,
-  certifyClause: '',
-  showEmail: null
+  certifyClause: ''
 }
