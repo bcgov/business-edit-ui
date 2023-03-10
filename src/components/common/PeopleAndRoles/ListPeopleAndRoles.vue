@@ -41,7 +41,7 @@
           <span>{{ title }}</span>
         </v-col>
         <!-- Spacer Column for Actions -->
-        <v-col lg="1"></v-col>
+        <v-col class="actions-width"></v-col>
       </v-row>
 
       <!-- List Content -->
@@ -149,7 +149,7 @@
             </v-col>
 
             <!-- Actions Buttons -->
-            <v-col v-if="!isSummaryView" class="pr-0">
+            <v-col v-if="!isSummaryView" class="actions">
               <!-- org-person that was replaced: -->
               <div v-if="wasReplaced(orgPerson)" class="actions pr-5">
                 <span class="undo-action">
@@ -624,18 +624,27 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
     right: 0;
     margin-top: -0.5rem;
 
-    .v-btn {
-      min-width: 0.5rem;
-    }
+    @extend .actions-width;
+    margin-top: -8px;
 
     .v-btn + .v-btn {
       margin-left: 0.5rem;
+    }
+
+    .more-actions-btn {
+      padding: 0;
+      min-width: 28px;
     }
   }
 
   .dropdown-action {
     border-left: 1px solid $gray3;
   }
+}
+
+.actions-width {
+  min-width: 150px;
+  max-width: 150px;
 }
 
 .summary-view {
@@ -683,10 +692,5 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   .badges .v-icon {
     margin-top: 4px;
   }
-}
-
-.actions-width {
-  min-width: 110px;
-  max-width: 110px;
 }
 </style>
