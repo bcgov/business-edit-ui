@@ -8,7 +8,6 @@ export const SpCorrectionResource: ResourceIF = {
   displayName: null, // not used
   entityType: CorpTypeCd.SOLE_PROP,
   addressLabel: 'Business Addresses',
-  showEmail: true,
   filingData: {
     filingTypeCode: FilingCodes.FM_CORRECTION,
     entityType: CorpTypeCd.SOLE_PROP,

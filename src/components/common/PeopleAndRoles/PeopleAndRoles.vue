@@ -191,6 +191,7 @@
           :showDeliveryAddressColumn="!(isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling)"
           :showRolesColumn="isBenBcCccUlcCorrectionFiling"
           :showEmailColumn="isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling"
+          :showEmailUnderName="showEmailUnderName"
           @initEdit="initEdit($event)"
           @addEdit="addEdit($event)"
           @remove="remove($event)"
@@ -408,6 +409,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   /** Appointment date in YYYY-MM-DD format. */
   get appointmentDate (): string {
     return this.dateToYyyyMmDd(this.getCurrentJsDate)
+  }
+
+  /** flag to show email under name. */
+  get showEmailUnderName (): string {
+    return this.getResource.showEmailUnderName
   }
 
   /** Called when component is mounted. */

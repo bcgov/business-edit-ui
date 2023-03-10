@@ -7,6 +7,7 @@ export const BenRestorationResource: ResourceIF = {
   contactLabel: 'Registered Office',
   displayName: GetCorpFullDescription(CorpTypeCd.BENEFIT_COMPANY),
   addressLabel: 'Registered Office',
+  showEmailUnderName: false,
   filingData: [
     // order matters - see restorationResource()
     {

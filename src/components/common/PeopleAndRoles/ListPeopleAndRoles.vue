@@ -79,7 +79,7 @@
                   <p class="people-roles-title mb-1" :class="{ 'removed': wasRemoved(orgPerson)}">
                     {{ formatName(orgPerson) }}
                   </p>
-                  <p v-if="showEmail"
+                  <p v-if="showEmailUnderName"
                     class="info-text mb-1 people-roles-email"
                     :class="{ 'removed': wasRemoved(orgPerson)}">
                     {{ orgPerson.officer.email }}
@@ -412,10 +412,10 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   @Prop({ default: true }) readonly showDeliveryAddressColumn!: boolean
   @Prop({ default: true }) readonly showRolesColumn!: boolean
   @Prop({ default: false }) readonly showEmailColumn!: boolean
+  @Prop({ default: true }) readonly showEmailUnderName!: string
 
   // Store getter
   @Getter getOrgPeople!: OrgPersonIF[]
-  @Getter getResource!: ResourceIF
   @Getter isAlterationFiling!: boolean
   @Getter isBenBcCccUlcCorrectionFiling!: boolean
   @Getter isCorrectionFiling!: boolean
@@ -522,11 +522,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
       return this.formatFullName(orgPerson.officer)
     }
     return ''
-  }
-
-  /** flag to show email under name. */
-  get showEmail (): string {
-    return this.getResource.showEmail
   }
 
   /**

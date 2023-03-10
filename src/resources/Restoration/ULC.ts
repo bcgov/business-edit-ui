@@ -7,6 +7,7 @@ export const UlcRestorationResource: ResourceIF = {
   contactLabel: 'Registered Office',
   displayName: GetCorpFullDescription(CorpTypeCd.BC_ULC_COMPANY),
   addressLabel: 'Registered Office',
+  showEmailUnderName: false,
   filingData: [
     // order matters - see restorationResource()
     {

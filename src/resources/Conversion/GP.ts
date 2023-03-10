@@ -7,7 +7,6 @@ export const GpConversionResource: ResourceIF = {
   contactLabel: 'Business',
   displayName: GetCorpFullDescription(CorpTypeCd.PARTNERSHIP),
   addressLabel: 'Business Addresses',
-  showEmail: true,
   filingData: {
     filingTypeCode: FilingCodes.FM_CONVERSION,
     entityType: CorpTypeCd.PARTNERSHIP,

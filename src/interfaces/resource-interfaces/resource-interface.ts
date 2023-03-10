@@ -29,5 +29,5 @@ export interface ResourceIF {
     addressChangeInfo?: string
   }
   certifyClause: string
-  showEmail?: boolean
+  showEmailUnderName?: boolean
 }

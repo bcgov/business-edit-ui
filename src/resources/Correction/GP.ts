@@ -8,7 +8,6 @@ export const GpCorrectionResource: ResourceIF = {
   displayName: null, // not used
   entityType: CorpTypeCd.PARTNERSHIP,
   addressLabel: 'Business Addresses',
-  showEmail: true,
   filingData: {
     filingTypeCode: FilingCodes.FM_CORRECTION,
     entityType: CorpTypeCd.PARTNERSHIP,

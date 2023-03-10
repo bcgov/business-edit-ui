@@ -7,7 +7,6 @@ export const GpChangeResource: ResourceIF = {
   contactLabel: 'Business',
   displayName: GetCorpFullDescription(CorpTypeCd.PARTNERSHIP),
   addressLabel: 'Business Addresses',
-  showEmail: true,
   filingData: {
     filingTypeCode: FilingCodes.FM_CHANGE,
     entityType: CorpTypeCd.PARTNERSHIP,
