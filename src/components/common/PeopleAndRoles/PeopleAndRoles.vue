@@ -1,145 +1,25 @@
 <template>
   <section id="people-and-roles">
-    <v-card flat>
-      <!-- Header -->
-      <div class="section-container header-container">
-        <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
-        <label id="role-header-lbl" class="font-weight-bold pl-2">{{ orgPersonLabel }}</label>
-      </div>
-
-      <!-- Instructional people and roles text (base corrections only)-->
-      <article v-if="isBenBcCccUlcCorrectionFiling" class="section-container">
-        This application must include the following:
-        <ul>
-          <li>
-            <v-icon v-if="haveMinimumDirectors" color="green darken-2" class="dir-valid">mdi-check</v-icon>
-            <v-icon v-else color="red" class="dir-invalid">mdi-close</v-icon>
-            <span class="ml-2">
-              <template v-if="isBcCompany || isBenefitCompany || isBcUlcCompany">At least one Director</template>
-              <template v-if="isBcCcc">At least three Directors</template>
-            </span>
-          </li>
-        </ul>
-      </article>
-
-      <!-- Correction section (base corrections only) -->
-      <article v-if="isBenBcCccUlcCorrectionFiling" class="section-container">
-        <v-btn
-          id="btn-add-person"
-          outlined
-          color="primary"
-          :disabled="isAddingEditingOrgPerson"
-          @click="initAdd([{ roleType: RoleTypes.DIRECTOR }], PartyTypes.PERSON)"
-        >
-          <v-icon>mdi-account-plus</v-icon>
-          <span>Add a Person</span>
-        </v-btn>
-      </article>
-
-      <!-- Change or conversion or firm correction section -->
-      <article v-if="isFirmChangeFiling || isFirmConversionFiling || isFirmCorrectionFiling"
-        class="section-container"
-      >
-        <p v-if="orgPersonSubtitle" class="info-text mt-2">{{ orgPersonSubtitle }}</p>
-
-        <HelpSection
-          v-if="!isRoleStaff && helpSection"
-          class="my-5"
-          :helpSection="helpSection"
-        />
-
-        <!-- SP add buttons (conversion filing only) -->
-        <div v-if="isSoleProp && isFirmConversionFiling && !haveRequiredProprietor" class="mt-8">
-          <v-btn
-            id="sp-btn-add-person"
-            outlined
-            color="primary"
-            :disabled="isAddingEditingOrgPerson"
-            @click="initAdd(
-              [{ roleType: RoleTypes.PROPRIETOR, appointmentDate: appointmentDate}],
-              PartyTypes.PERSON
-            )"
-          >
-            <v-icon>mdi-account-plus</v-icon>
-            <span>Add a Person</span>
-          </v-btn>
-          <v-btn
-            id="sp-btn-add-corp"
-            outlined
-            color="primary"
-            class="ml-2"
-            :disabled="isAddingEditingOrgPerson"
-            @click="initAdd(
-              [{ roleType: RoleTypes.PROPRIETOR, appointmentDate: appointmentDate }],
-              PartyTypes.ORGANIZATION
-            )"
-          >
-            <v-icon>mdi-domain-plus</v-icon>
-            <span>Add a {{ orgTypesLabel }}</span>
-          </v-btn>
-          <p v-if="!haveRequiredProprietor" class="error-text small-text mt-5 mb-0">
-            You must have one proprietor (an individual or a business)
-          </p>
-          <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
-            A proprietor address is missing or incorrect
-          </p>
-        </div>
-
-        <!-- GP add buttons (change or conversion filings only)-->
-        <div v-if="isPartnership && (isFirmChangeFiling || isFirmConversionFiling)" class="mt-8">
-          <v-btn
-            id="gp-btn-add-person"
-            outlined
-            color="primary"
-            :disabled="isAddingEditingOrgPerson"
-            @click="initAdd(
-              [{ roleType: RoleTypes.PARTNER, appointmentDate: appointmentDate}],
-              PartyTypes.PERSON
-            )"
-          >
-            <v-icon>mdi-account-plus</v-icon>
-            <span>Add a Person</span>
-          </v-btn>
-          <v-btn
-            id="gp-btn-add-corp"
-            outlined
-            color="primary"
-            class="ml-2"
-            :disabled="isAddingEditingOrgPerson"
-            @click="initAdd(
-              [{ roleType: RoleTypes.PARTNER, appointmentDate: appointmentDate }],
-              PartyTypes.ORGANIZATION
-            )"
-          >
-            <v-icon>mdi-domain-plus</v-icon>
-            <span>Add a {{ orgTypesLabel }}</span>
-          </v-btn>
-          <p v-if="!haveMinimumPartners" class="error-text small-text mt-5 mb-0">
-            You must have at least two partners on a general partnership. Optionally, you may dissolve
-            the partnership and register a sole proprietorship to continue the business.
-          </p>
-          <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
-            A partner address is missing or incorrect
-          </p>
-        </div>
-      </article>
-
-      <!-- Restoration conversion and extension add buttons -->
-      <article v-if="(isLimitedConversionRestorationFiling || isLimitedExtendRestorationFiling)"
-        class="section-container">
+    <!-- Restoration conversion and extension add buttons -->
+    <div v-if="(isLimitedConversionRestorationFiling || isLimitedExtendRestorationFiling)">
+      <article>
         <header>
-          <h2 id="resto-heasder-lbl">Add Applicant Information</h2>
+          <h2 id="resto-header-lbl">1. Add Applicant Information</h2>
         </header>
         <section class="mt-4">
           <h3>Your application must include one of the following:</h3>
         </section>
         <ul>
           <li>
-            <v-icon>mdi-circle-small</v-icon>
+            <v-icon v-if="hasApplicant" color="green darken-2" class="dir-valid">mdi-check</v-icon>
+            <v-icon v-else color="red">mdi-close</v-icon>
+            <!-- <v-icon>mdi-circle-small</v-icon> -->
             <span>An individual</span>
           </li>
           <li>
-            <v-icon>mdi-circle-small</v-icon>
+            <v-icon v-if="hasApplicant" color="green darken-2" class="dir-valid">mdi-check</v-icon>
+            <v-icon v-else color="red">mdi-close</v-icon>
+            <!-- <v-icon>mdi-circle-small</v-icon> -->
             <span>A business or a corporation</span>
           </li>
         </ul>
@@ -171,36 +51,164 @@
           <v-icon>mdi-domain-plus</v-icon>
           <span>Add a Business or Corporation</span>
         </v-btn>
-        <p v-if="!hasApplicant" class="error-text small-text mt-5 mb-0">
+        <!-- <p v-if="!hasApplicant" class="error-text small-text mt-5 mb-0">
           You must have one applicant
-        </p>
+        </p> -->
         <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
           A applicant address is missing or incorrect
         </p>
         </div>
       </article>
+      <v-spacer class="spacer"></v-spacer>
+    </div>
+    <div v-else>
+      <v-card flat>
+        <!-- Header -->
+        <div class="section-container header-container">
+          <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
+          <label id="role-header-lbl" class="font-weight-bold pl-2">{{ orgPersonLabel }}</label>
+        </div>
 
-      <!-- People and roles list -->
-      <article class="list-container">
-        <ListPeopleAndRoles
-          :renderOrgPersonForm="isAddingEditingOrgPerson"
-          :currentOrgPerson="currentOrgPerson"
-          :activeIndex="activeIndex"
-          :validate="getComponentValidate"
-          :validOrgPersons="validOrgPersons"
-          :showDeliveryAddressColumn="!(isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling)"
-          :showRolesColumn="isBenBcCccUlcCorrectionFiling"
-          :showEmailColumn="isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling"
-          :showEmailUnderName="showEmailUnderName"
-          @initEdit="initEdit($event)"
-          @addEdit="addEdit($event)"
-          @remove="remove($event)"
-          @replace="replace($event)"
-          @undo="undo($event)"
-          @reset="reset(true)"
-        />
-      </article>
-    </v-card>
+        <!-- Instructional people and roles text (base corrections only)-->
+        <article v-if="isBenBcCccUlcCorrectionFiling" class="section-container">
+          This application must include the following:
+          <ul>
+            <li>
+              <v-icon v-if="haveMinimumDirectors" color="green darken-2" class="dir-valid">mdi-check</v-icon>
+              <v-icon v-else color="red" class="dir-invalid">mdi-close</v-icon>
+              <span class="ml-2">
+                <template v-if="isBcCompany || isBenefitCompany || isBcUlcCompany">At least one Director</template>
+                <template v-if="isBcCcc">At least three Directors</template>
+              </span>
+            </li>
+          </ul>
+        </article>
+
+        <!-- Correction section (base corrections only) -->
+        <article v-if="isBenBcCccUlcCorrectionFiling" class="section-container">
+          <v-btn
+            id="btn-add-person"
+            outlined
+            color="primary"
+            :disabled="isAddingEditingOrgPerson"
+            @click="initAdd([{ roleType: RoleTypes.DIRECTOR }], PartyTypes.PERSON)"
+          >
+            <v-icon>mdi-account-plus</v-icon>
+            <span>Add a Person</span>
+          </v-btn>
+        </article>
+
+        <!-- Change or conversion or firm correction section -->
+        <article v-if="isFirmChangeFiling || isFirmConversionFiling || isFirmCorrectionFiling"
+          class="section-container"
+        >
+          <p v-if="orgPersonSubtitle" class="info-text mt-2">{{ orgPersonSubtitle }}</p>
+
+          <HelpSection
+            v-if="!isRoleStaff && helpSection"
+            class="my-5"
+            :helpSection="helpSection"
+          />
+
+          <!-- SP add buttons (conversion filing only) -->
+          <div v-if="isSoleProp && isFirmConversionFiling && !haveRequiredProprietor" class="mt-8">
+            <v-btn
+              id="sp-btn-add-person"
+              outlined
+              color="primary"
+              :disabled="isAddingEditingOrgPerson"
+              @click="initAdd(
+                [{ roleType: RoleTypes.PROPRIETOR, appointmentDate: appointmentDate}],
+                PartyTypes.PERSON
+              )"
+            >
+              <v-icon>mdi-account-plus</v-icon>
+              <span>Add a Person</span>
+            </v-btn>
+            <v-btn
+              id="sp-btn-add-corp"
+              outlined
+              color="primary"
+              class="ml-2"
+              :disabled="isAddingEditingOrgPerson"
+              @click="initAdd(
+                [{ roleType: RoleTypes.PROPRIETOR, appointmentDate: appointmentDate }],
+                PartyTypes.ORGANIZATION
+              )"
+            >
+              <v-icon>mdi-domain-plus</v-icon>
+              <span>Add a {{ orgTypesLabel }}</span>
+            </v-btn>
+            <p v-if="!haveRequiredProprietor" class="error-text small-text mt-5 mb-0">
+              You must have one proprietor (an individual or a business)
+            </p>
+            <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
+              A proprietor address is missing or incorrect
+            </p>
+          </div>
+
+          <!-- GP add buttons (change or conversion filings only)-->
+          <div v-if="isPartnership && (isFirmChangeFiling || isFirmConversionFiling)" class="mt-8">
+            <v-btn
+              id="gp-btn-add-person"
+              outlined
+              color="primary"
+              :disabled="isAddingEditingOrgPerson"
+              @click="initAdd(
+                [{ roleType: RoleTypes.PARTNER, appointmentDate: appointmentDate}],
+                PartyTypes.PERSON
+              )"
+            >
+              <v-icon>mdi-account-plus</v-icon>
+              <span>Add a Person</span>
+            </v-btn>
+            <v-btn
+              id="gp-btn-add-corp"
+              outlined
+              color="primary"
+              class="ml-2"
+              :disabled="isAddingEditingOrgPerson"
+              @click="initAdd(
+                [{ roleType: RoleTypes.PARTNER, appointmentDate: appointmentDate }],
+                PartyTypes.ORGANIZATION
+              )"
+            >
+              <v-icon>mdi-domain-plus</v-icon>
+              <span>Add a {{ orgTypesLabel }}</span>
+            </v-btn>
+            <p v-if="!haveMinimumPartners" class="error-text small-text mt-5 mb-0">
+              You must have at least two partners on a general partnership. Optionally, you may dissolve
+              the partnership and register a sole proprietorship to continue the business.
+            </p>
+            <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
+              A partner address is missing or incorrect
+            </p>
+          </div>
+        </article>
+      </v-card>
+  </div>
+  <v-card flat>
+    <!-- People and roles list -->
+    <article class="list-container">
+    <ListPeopleAndRoles
+      :renderOrgPersonForm="isAddingEditingOrgPerson"
+      :currentOrgPerson="currentOrgPerson"
+      :activeIndex="activeIndex"
+      :validate="getComponentValidate"
+      :validOrgPersons="validOrgPersons"
+      :showDeliveryAddressColumn="!(isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling)"
+      :showRolesColumn="isBenBcCccUlcCorrectionFiling"
+      :showEmailColumn="isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling"
+      :showEmailUnderName="showEmailUnderName"
+      @initEdit="initEdit($event)"
+      @addEdit="addEdit($event)"
+      @remove="remove($event)"
+      @replace="replace($event)"
+      @undo="undo($event)"
+      @reset="reset(true)"
+    />
+  </article>
+  </v-card>
   </section>
 </template>
 
@@ -789,5 +797,9 @@ li {
       color: $app-blue !important;
     }
   }
+}
+
+.spacer {
+  padding-top: 1.25rem;
 }
 </style>

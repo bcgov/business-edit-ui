@@ -225,6 +225,7 @@ export default class Restoration extends Vue {
 
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
+      console.log('entitySnapshot', entitySnapshot)
 
       // set Applicant info in entitySnapshot
       const stateFiling = entitySnapshot.businessInfo.stateFiling
@@ -233,6 +234,7 @@ export default class Restoration extends Vue {
       if (!filing) {
         throw new Error(`Invalid fetched stateFiling = ${this.getBusinessId}`)
       }
+      console.log('filing', filing)
 
       const parties = filing.restoration?.parties || []
 

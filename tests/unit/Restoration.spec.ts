@@ -279,7 +279,6 @@ describe('Restoration component - edit page', () => {
   it('renders the People And Rolescomponent correctly', () => {
     expect(wrapper.findComponent(PeopleAndRoles).exists()).toBe(true)
     expect(wrapper.find('#people-and-roles').exists()).toBe(true)
-    expect(wrapper.find('#role-header-lbl').text()).toBe('Applicant')
   })
 })
 
