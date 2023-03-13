@@ -32,7 +32,7 @@
           <!-- Header -->
           <div class="section-container header-container">
             <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
-            <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Informaton</label>
+            <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Information</label>
           </div>
           <div no-gutters class="mt-4 section-container">
               <ListPeopleAndRoles
@@ -225,25 +225,25 @@ export default class Restoration extends Vue {
 
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
-      console.log('entitySnapshot', entitySnapshot)
-
-      // set Applicant info in entitySnapshot
       const stateFiling = entitySnapshot.businessInfo.stateFiling
-
       const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
+
       if (!filing) {
         throw new Error(`Invalid fetched stateFiling = ${this.getBusinessId}`)
       }
-      console.log('filing', filing)
 
       const parties = filing.restoration?.parties || []
 
-      // find applicant from fetched parties
+      // find first applicant from fetched parties
       const applicants = parties.find(
         orgPerson => orgPerson.roles.some(role => role.roleType === RoleTypes.APPLICANT)
       )
 
-      // set applciant orgPerson
+      if (applicants === undefined) {
+        throw new Error(`Applicant not found for ${this.getBusinessId}`)
+      }
+
+      // set applicant orgPerson
       entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicants)
 
       // verify that business is in Limited Restoration status

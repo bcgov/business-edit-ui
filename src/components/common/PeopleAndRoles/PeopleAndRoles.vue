@@ -7,7 +7,7 @@
           <h2 id="resto-header-lbl">1. Add Applicant Information</h2>
         </header>
         <section class="mt-4">
-          <h3>Your application must include one of the following:</h3>
+          <h3 :class="{ 'invalid': !hasApplicant }">Your application must include one of the following:</h3>
         </section>
         <ul>
           <li>
@@ -51,9 +51,6 @@
           <v-icon>mdi-domain-plus</v-icon>
           <span>Add a Business or Corporation</span>
         </v-btn>
-        <!-- <p v-if="!hasApplicant" class="error-text small-text mt-5 mb-0">
-          You must have one applicant
-        </p> -->
         <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
           A applicant address is missing or incorrect
         </p>
@@ -420,7 +417,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   }
 
   /** flag to show email under name. */
-  get showEmailUnderName (): string {
+  get showEmailUnderName (): boolean {
     return this.getResource.showEmailUnderName
   }
 
@@ -466,7 +463,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     this.currentOrgPerson.officer.partyType = type
     this.currentOrgPerson.actions = actions
 
-    // for firms, use business lookup initially
+    // for firms and restoration (extension and conversion) applciations, use business lookup initially
     if (this.isPartnership || this.isSoleProp || isLimitedExtendRestorationFiling ||
        isLimitedConversionRestorationFiling) {
       this.currentOrgPerson.isLookupBusiness = true
@@ -798,8 +795,11 @@ li {
     }
   }
 }
-
 .spacer {
   padding-top: 1.25rem;
+}
+
+.invalid {
+  color: $app-red;
 }
 </style>
