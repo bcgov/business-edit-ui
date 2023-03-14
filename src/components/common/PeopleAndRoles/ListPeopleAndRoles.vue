@@ -41,7 +41,7 @@
           <span>{{ title }}</span>
         </v-col>
         <!-- Spacer Column for Actions -->
-        <v-col lg="1"></v-col>
+        <v-col class="actions-width"></v-col>
       </v-row>
 
       <!-- List Content -->
@@ -79,7 +79,9 @@
                   <p class="people-roles-title mb-1" :class="{ 'removed': wasRemoved(orgPerson)}">
                     {{ formatName(orgPerson) }}
                   </p>
-                  <p class="info-text mb-1 people-roles-email" :class="{ 'removed': wasRemoved(orgPerson)}">
+                  <p v-if="showEmailUnderName"
+                    class="info-text mb-1 people-roles-email"
+                    :class="{ 'removed': wasRemoved(orgPerson)}">
                     {{ orgPerson.officer.email }}
                   </p>
                   <p
@@ -115,7 +117,7 @@
             </v-col>
 
             <!-- Delivery Address -->
-            <v-col cols="12" sm="3" :class="{ 'removed': wasRemoved(orgPerson)}">
+            <v-col cols="12" sm="3" :class="{ 'removed': wasRemoved(orgPerson)}" v-if="showDeliveryAddressColumn">
               <template
                 v-if="hasRoleDirector(orgPerson) || hasRoleProprietor(orgPerson) || hasRolePartner(orgPerson)"
               >
@@ -128,24 +130,26 @@
               </template>
             </v-col>
 
+            <v-col cols="12" sm="3" :class="{ 'removed': wasRemoved(orgPerson)}" v-if="showEmailColumn">
+              <p>{{ orgPerson.officer.email }}</p>
+            </v-col>
+
             <!-- Roles -->
-            <v-col cols="12" sm="2" :class="{ 'removed': wasRemoved(orgPerson)}">
-              <template v-if="isBenBcCccUlcCorrectionFiling">
-                <!-- Warning if orgPerson has no roles -->
-                <div v-if="orgPerson.roles.length > 0">
-                  <v-col v-for="(role, index) in orgPerson.roles" :key="index" class="col-roles">
-                    <span class="info-text small-text break-spaces pr-2">{{ role.roleType }}</span>
-                  </v-col>
-                </div>
-                <div v-else>
-                  <v-icon color="red darken-3">mdi-alert</v-icon>
-                  <span class="warning-text small-text">Missing Role</span>
-                </div>
-              </template>
+            <v-col cols="12" sm="2" :class="{ 'removed': wasRemoved(orgPerson)}" v-if="showRolesColumn">
+              <!-- Warning if orgPerson has no roles -->
+              <div v-if="orgPerson.roles.length > 0">
+                <v-col v-for="(role, index) in orgPerson.roles" :key="index" class="col-roles">
+                  <span class="info-text small-text break-spaces pr-2">{{ role.roleType }}</span>
+                </v-col>
+              </div>
+              <div v-else>
+                <v-icon color="red darken-3">mdi-alert</v-icon>
+                <span class="warning-text small-text">Missing Role</span>
+              </div>
             </v-col>
 
             <!-- Actions Buttons -->
-            <v-col v-if="!isSummaryView" class="pr-0">
+            <v-col v-if="!isSummaryView" class="actions">
               <!-- org-person that was replaced: -->
               <div v-if="wasReplaced(orgPerson)" class="actions pr-5">
                 <span class="undo-action">
@@ -405,6 +409,11 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   /** Whether OrgPersons list is valid. */
   @Prop({ default: true }) readonly validOrgPersons!: boolean
 
+  @Prop({ default: true }) readonly showDeliveryAddressColumn!: boolean
+  @Prop({ default: true }) readonly showRolesColumn!: boolean
+  @Prop({ default: false }) readonly showEmailColumn!: boolean
+  @Prop({ default: true }) readonly showEmailUnderName!: string
+
   // Store getter
   @Getter getOrgPeople!: OrgPersonIF[]
   @Getter isAlterationFiling!: boolean
@@ -413,6 +422,8 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   @Getter isFirmChangeFiling!: boolean
   @Getter isFirmConversionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
+  @Getter isLimitedExtendRestorationFiling!: boolean
+  @Getter isLimitedConversionRestorationFiling!: boolean
   @Getter isRoleStaff!: boolean
   @Getter hideChangeButtonForSoleProps!: boolean
 
@@ -420,13 +431,12 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   protected dropdown: Array<boolean> = []
 
   /** Headers for the person table. */
-  get tableHeaders () {
-    return [
-      'Name',
-      'Mailing Address',
-      'Delivery Address',
-      this.isBenBcCccUlcCorrectionFiling ? 'Roles' : ''
-    ]
+  get tableHeaders (): Array<string> {
+    const headers = ['Name', 'Mailing Address']
+    if (this.showDeliveryAddressColumn) headers.push('Delivery Address')
+    if (this.showRolesColumn) headers.push('Roles')
+    if (this.showEmailColumn) headers.push('Email Address')
+    return headers
   }
 
   /** This component's validity state (for error styling). */
@@ -473,6 +483,9 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
     if (this.isFirmCorrectionFiling) {
       // cannot remove proprietor/partner
       return false
+    }
+    if (this.isLimitedConversionRestorationFiling || this.isLimitedExtendRestorationFiling) {
+      return true
     }
     return false // should never happen
   }
@@ -606,18 +619,27 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
     right: 0;
     margin-top: -0.5rem;
 
-    .v-btn {
-      min-width: 0.5rem;
-    }
+    @extend .actions-width;
+    margin-top: -8px;
 
     .v-btn + .v-btn {
       margin-left: 0.5rem;
+    }
+
+    .more-actions-btn {
+      padding: 0;
+      min-width: 28px;
     }
   }
 
   .dropdown-action {
     border-left: 1px solid $gray3;
   }
+}
+
+.actions-width {
+  min-width: 150px;
+  max-width: 150px;
 }
 
 .summary-view {

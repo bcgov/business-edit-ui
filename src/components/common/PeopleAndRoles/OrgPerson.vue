@@ -99,31 +99,55 @@
                       Business or Corporation is Unregistered in B.C.
                     </a>
 
-                    <v-card v-if="wasBusinessSelectedFromLookup" outlined class="message-box rounded-0 mt-6">
-                      <p>
-                        <strong>Important:</strong> If the addresses shown below are out of date, you may
-                        update them here. The updates are applicable only to this registration.
-                      </p>
-                    </v-card>
-
+                    <template v-if="wasBusinessSelectedFromLookup">
+                      <v-card outlined class="message-box rounded-0 mt-6">
+                        <p>
+                          <strong>Important:</strong> If the addresses shown below are out of date, you may
+                          update them here. The updates are applicable only to this registration.
+                        </p>
+                      </v-card>
+                    </template>
                     <template v-else>
-                      <p class="info-text mt-6 pt-0 mb-0">
-                        To add a registered B.C. business or corporation as
-                        {{ isProprietor ? 'the Proprietor' : 'a Partner' }},
-                        enter the name or incorporation number.
-                      </p>
+                      <div v-if="isProprietor">
+                        <p class="info-text mt-6 pt-0 mb-0">
+                          To add a registered B.C. business or corporation as the Proprietor, enter the name
+                          or incorporation number.
+                        </p>
 
-                      <p class="info-text mt-6 pt-0 mb-0">
-                        If you are adding a company that is not legally required to register in B.C.
-                        such as a bank or a railway, use the manual entry form. All other types of
-                        businesses cannot be {{ isProprietor ? 'the Proprietor' : 'a partner' }}.
-                      </p>
+                        <p class="info-text mt-6 pt-0 mb-0">
+                          If you are adding a company that is not legally required to register in B.C.
+                          such as a bank or a railway, use the manual entry form. All other types of
+                          businesses cannot be the Proprietor.
+                        </p>
+                      </div>
+                      <div v-else-if="isPartner">
+                        <p class="info-text mt-6 pt-0 mb-0">
+                          To add a registered B.C. business or corporation as a Partner, enter the name
+                          or incorporation number.
+                        </p>
 
+                        <p class="info-text mt-6 pt-0 mb-0">
+                          If you are adding a company that is not legally required to register in B.C.
+                          such as a bank or a railway, use the manual entry form. All other types of
+                          businesses cannot be a partner.
+                        </p>
+                      </div>
+                      <div v-else>
+                        <p class="info-text mt-6 pt-0 mb-0">
+                          To add a registered B.C. business or corporation as a Partner, enter the name
+                          or incorporation number.
+                        </p>
+
+                        <p class="info-text mt-6 pt-0 mb-0">
+                          If you are adding a company that is not legally required to register in B.C.
+                          such as a bank or a railway, use the manual entry form.
+                        </p>
+                      </div>
                       <HelpSection
-                        v-if="!isRoleStaff"
-                        class="mt-6"
-                        :helpSection="getResource.changeData.orgPersonInfo.helpSection"
-                      />
+                          v-if="!isRoleStaff"
+                          class="mt-6"
+                          :helpSection="getResource.changeData.orgPersonInfo.helpSection"
+                        />
                     </template>
 
                     <BusinessLookupShared
@@ -174,6 +198,10 @@
                       </template>
                       <template v-else-if="isPartner" v-slot:label>
                         I confirm that the business partner being added is not legally required to register in B.C.
+                      </template>
+                      <template v-else-if="isApplicant" v-slot:label>
+                        I confirm that the business or corporation being added is not legally required to register in
+                           B.C.
                       </template>
                     </v-checkbox>
 
@@ -231,7 +259,7 @@
               </template>
 
               <!-- Email Address (proprietor/partner only) -->
-              <article v-if="(isProprietor || isPartner)" class="email-address mt-6">
+              <article v-if="(isApplicant || isProprietor || isPartner)" class="email-address mt-6">
                 <label class="sub-header">Email Address</label>
                 <p class="info-text">
                   Copies of the registration documents will be sent to this email address.
@@ -393,6 +421,8 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   @Getter isBenBcCccUlcCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter isFirm!: boolean
+  @Getter isLimitedExtendRestorationFiling!: boolean
+  @Getter isLimitedConversionRestorationFiling!: boolean
   @Getter isRoleStaff!: boolean
 
   // Local variables
@@ -414,6 +444,11 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   protected confirmNameChangeRules: Array<VuetifyRuleFunction> = []
   protected inProgressBusinessLookup: BusinessLookupIF = EmptyBusinessLookup
   protected showErrors = false
+
+  /** True if org-person has Applicant role. */
+  get isApplicant (): boolean {
+    return this.hasRoleApplicant(this.orgPerson)
+  }
 
   /** True if Director is checked. */
   get isDirector (): boolean {
@@ -538,6 +573,9 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       // cannot remove proprietor/partner
       return false
     }
+    if (this.isLimitedConversionRestorationFiling || this.isLimitedExtendRestorationFiling) {
+      return true
+    }
     return false // should never happen
   }
 
@@ -571,6 +609,11 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     if (this.isFirmCorrectionFiling) {
       // can only add partner (cannot add proprietor)
       return (this.isNew && this.isPartner)
+    }
+    if (this.isRestorationFiling) {
+      // show for replaced-added item
+      // (we shouldn't see the replaced-removed item in this component)
+      if (this.isNew) return true
     }
     return false // should never happen
   }

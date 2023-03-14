@@ -7,6 +7,7 @@ export const CccRestorationResource: ResourceIF = {
   contactLabel: 'Registered Office',
   displayName: GetCorpFullDescription(CorpTypeCd.BC_CCC),
   addressLabel: 'Registered Office',
+  showEmailUnderName: false,
   filingData: [
     // order matters - see restorationResource()
     {
@@ -27,6 +28,7 @@ export const CccRestorationResource: ResourceIF = {
     ],
     orgPersonInfo: {
       orgPersonLabel: 'Applicant',
+      orgTypesLabel: 'Business or Corporation',
       subtitle: null // not used
     }
   },

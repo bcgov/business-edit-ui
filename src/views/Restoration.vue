@@ -7,9 +7,9 @@
           <h1>{{ entityTitle }}</h1>
         </header>
 
-        <YourCompany class="mt-10" />
-
         <PeopleAndRoles class="mt-10" />
+
+        <YourCompany class="mt-10" />
       </div>
     </v-slide-x-transition>
 
@@ -27,7 +27,22 @@
 
         <YourCompanySummary class="mt-10" />
 
-        <CurrentDirectors class="mt-10" />
+        <!-- Applicant list -->
+        <v-card id="people-and-roles-vcard" flat class="mt-6">
+          <!-- Header -->
+          <div class="section-container header-container">
+            <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
+            <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Information</label>
+          </div>
+          <div no-gutters class="mt-4 section-container">
+              <ListPeopleAndRoles
+                :isSummaryView="true"
+                :showDeliveryAddressColumn="false"
+                :showRolesColumn="false"
+                :showEmailColumn="true"
+              />
+          </div>
+        </v-card>
 
         <DocumentsDelivery
           class="mt-10"
@@ -81,16 +96,18 @@
 import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+import { v4 as uuidv4 } from 'uuid'
+import { cloneDeep } from 'lodash'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
-import { CertifySection, CurrentDirectors, DocumentsDelivery, PeopleAndRoles, StaffPayment,
+import { CertifySection, DocumentsDelivery, PeopleAndRoles, ListPeopleAndRoles, StaffPayment,
   YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF,
   RestorationFilingIF } from '@/interfaces/'
-import { FilingStatus, FilingTypes, RestorationTypes } from '@/enums/'
+import { FilingStatus, FilingTypes, RestorationTypes, RoleTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/Restoration/'
@@ -99,9 +116,9 @@ import { FilingDataIF } from '@bcrs-shared-components/interfaces'
 @Component({
   components: {
     CertifySection,
-    CurrentDirectors,
     DocumentsDelivery,
     PeopleAndRoles,
+    ListPeopleAndRoles,
     RestorationSummary,
     StaffPayment,
     YourCompany,
@@ -125,6 +142,7 @@ export default class Restoration extends Vue {
   @Getter isRoleStaff!: boolean
   @Getter isLimitedExtendRestorationFiling!: boolean
   @Getter isLimitedConversionRestorationFiling!: boolean
+  @Getter getResource!: ResourceIF
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -207,6 +225,26 @@ export default class Restoration extends Vue {
 
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
+      const stateFiling = entitySnapshot.businessInfo.stateFiling
+      const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
+
+      if (!filing) {
+        throw new Error(`Invalid fetched stateFiling = ${this.getBusinessId}`)
+      }
+
+      const parties = filing.restoration?.parties || []
+
+      // find first applicant from fetched parties
+      const applicant = parties.find(
+        orgPerson => orgPerson.roles.some(role => role.roleType === RoleTypes.APPLICANT)
+      )
+
+      if (applicant === undefined) {
+        throw new Error(`Applicant not found for ${this.getBusinessId}`)
+      }
+
+      // set applicant orgPerson
+      entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
 
       // verify that business is in Limited Restoration status
       // (will throw on error)
@@ -249,6 +287,27 @@ export default class Restoration extends Vue {
     this.$nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
+  // build applicant orgPerson and assign id (uuid)
+  private parseApplicantOrgPerson (applicant: OrgPersonIF): OrgPersonIF[] {
+    const applicantOrgPerson: Array<OrgPersonIF> = []
+    applicantOrgPerson.push({
+      deliveryAddress: applicant.deliveryAddress,
+      mailingAddress: applicant.mailingAddress,
+      officer: {
+        email: applicant.officer.email,
+        firstName: applicant.officer.firstName,
+        lastName: applicant.officer.lastName,
+        middleName: applicant.officer.middleName,
+        organizationName: applicant.officer.organizationName,
+        partyType: applicant.officer.partyType,
+        id: uuidv4()
+      },
+      roles: applicant.roles
+    })
+
+    return applicantOrgPerson
+  }
+
   /** Fetches the entity snapshot. */
   private async fetchEntitySnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
@@ -276,7 +335,6 @@ export default class Restoration extends Vue {
     const stateFiling = businessInfo.stateFiling
     const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
     const type = filing?.header?.name as FilingTypes
-
     // FUTURE: enable code below when limited restorations can be filed (ticket 14641)
 
     // // Verify state filing. It should be a Limited Restoration filing or a
@@ -287,6 +345,11 @@ export default class Restoration extends Vue {
     //   if (filing?.restoration?.type === RestorationTypes.LTD_EXTEND) return // all good
     // }
     // throw new Error('Business is not in Limited Restoration status')
+  }
+
+  /** Resource getters. */
+  get orgPersonLabel (): string {
+    return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
   }
 
   /** Emits Fetch Error event. */
@@ -302,7 +365,13 @@ export default class Restoration extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
 #done-button {
   width: 10rem;
+}
+
+.header-container {
+  display: flex;
+  background-color: $BCgovBlue5O;
 }
 </style>

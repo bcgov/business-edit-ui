@@ -62,7 +62,10 @@
         </v-row>
         <v-row no-gutters class="mt-4">
           <v-col cols="12">
-            <ListPeopleAndRoles :isSummaryView="true" />
+            <ListPeopleAndRoles
+              :isSummaryView="true"
+              :showRolesColumn="false"
+            />
           </v-col>
         </v-row>
       </article>
