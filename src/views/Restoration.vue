@@ -235,16 +235,16 @@ export default class Restoration extends Vue {
       const parties = filing.restoration?.parties || []
 
       // find first applicant from fetched parties
-      const applicants = parties.find(
+      const applicant = parties.find(
         orgPerson => orgPerson.roles.some(role => role.roleType === RoleTypes.APPLICANT)
       )
 
-      if (applicants === undefined) {
+      if (applicant === undefined) {
         throw new Error(`Applicant not found for ${this.getBusinessId}`)
       }
 
       // set applicant orgPerson
-      entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicants)
+      entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
 
       // verify that business is in Limited Restoration status
       // (will throw on error)
@@ -288,7 +288,7 @@ export default class Restoration extends Vue {
   }
 
   // build applicant orgPerson and assign id (uuid)
-  private parseApplicantOrgPerson (applicant: OrgPersonIF[]): OrgPersonIF[] {
+  private parseApplicantOrgPerson (applicant: OrgPersonIF): OrgPersonIF[] {
     const applicantOrgPerson: Array<OrgPersonIF> = []
     applicantOrgPerson.push({
       deliveryAddress: applicant.deliveryAddress,
