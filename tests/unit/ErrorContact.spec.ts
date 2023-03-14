@@ -17,7 +17,7 @@ describe('Error Contact component', () => {
     expect(listItems.at(0).find('.contact-key').text()).toContain('Canada')
     expect(listItems.at(0).find('.contact-value').text()).toBe('1-877-526-1526')
     expect(listItems.at(1).find('.contact-key').text()).toContain('Victoria')
-    expect(listItems.at(1).find('.contact-value').text()).toBe('250-952-0568')
+    expect(listItems.at(1).find('.contact-value').text()).toBe('250-387-7848')
     expect(listItems.at(2).find('.contact-key').text()).toContain('BC Registries')
     expect(listItems.at(2).find('.contact-value').text()).toBe('BCRegistries@gov.bc.ca')
 
