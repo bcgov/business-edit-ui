@@ -33,7 +33,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 #question_container {
   /* Set "header-counter" to 0 */
   counter-reset: header-counter;

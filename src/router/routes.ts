@@ -1,4 +1,14 @@
-import { Signin, Signout, Alteration, Change, Conversion, Correction, Restoration, SpecialResolution }
+import {
+  Signin,
+  Signout,
+  Alteration,
+  Change,
+  Conversion,
+  Correction,
+  Restoration,
+  SpecialResolution,
+  LimitedToFullRestoration
+}
   from '@/views/'
 import { FilingTypes, RouteNames } from '@/enums/'
 
@@ -57,6 +67,16 @@ export const routes = [
     path: '/limitedRestorationExtension',
     name: RouteNames.RESTORATION_EXTENSION,
     component: Restoration,
+    meta: {
+      requiresAuth: true,
+      isStaffOnly: true,
+      filingType: FilingTypes.RESTORATION
+    }
+  },
+  {
+    path: '/limited-to-full-restoration',
+    name: RouteNames.LIMITED_TO_FULL_RESTORATION,
+    component: LimitedToFullRestoration,
     meta: {
       requiresAuth: true,
       isStaffOnly: true,
