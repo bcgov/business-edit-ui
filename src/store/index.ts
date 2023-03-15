@@ -4,9 +4,9 @@ import Vuex from 'vuex'
 
 // Store modules
 import * as States from './state'
-import * as Getters from './getters'
-import * as Mutations from './mutations'
-import * as Actions from './actions'
+import getters from './getters'
+import mutations from './mutations'
+import actions from './actions'
 
 /**
  * Configures and returns Vuex Store.
@@ -14,12 +14,10 @@ import * as Actions from './actions'
 export function getVuexStore () {
   Vue.use(Vuex)
 
-  const store = new Vuex.Store<any>({
+  return new Vuex.Store<any>({
     state: { ...States },
-    getters: { ...Getters },
-    mutations: { ...Mutations },
-    actions: { ...Actions }
+    getters,
+    mutations,
+    actions
   })
-
-  return store
 }
