@@ -145,10 +145,8 @@ export default class CommonMixin extends Vue {
       case RouteNames.CHANGE: return 'Business Information'
       case RouteNames.CONVERSION: return 'Record Conversion'
       case RouteNames.CORRECTION: return 'Register Correction'
-      case RouteNames.RESTORATION: {
-        if (this.isLimitedExtendRestorationFiling) return 'Limited Restoration Extension'
-        if (this.isLimitedConversionRestorationFiling) return 'Conversion to Full Restoration'
-      }
+      case RouteNames.RESTORATION_EXTENSION: return 'Limited Restoration Extension'
+      case RouteNames.RESTORATION_CONVERSION: return 'Conversion to Full Restoration'
     }
     return 'Unknown Filing' // should never happen
   }
