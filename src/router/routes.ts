@@ -64,26 +64,6 @@ export const routes = [
     }
   },
   {
-    path: '/fullRestoration',
-    name: RouteNames.RESTORATION_FULL,
-    component: Restoration,
-    meta: {
-      requiresAuth: true,
-      isStaffOnly: true,
-      filingType: FilingTypes.RESTORATION
-    }
-  },
-  {
-    path: '/limitedRestoration',
-    name: RouteNames.RESTORATION_LIMITED,
-    component: Restoration,
-    meta: {
-      requiresAuth: true,
-      isStaffOnly: true,
-      filingType: FilingTypes.RESTORATION
-    }
-  },
-  {
     path: '/special-resolution',
     name: RouteNames.SPECIAL_RESOLUTION,
     component: SpecialResolution,

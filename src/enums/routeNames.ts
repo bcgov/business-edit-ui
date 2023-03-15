@@ -4,8 +4,6 @@ export enum RouteNames {
   CHANGE = 'change',
   CONVERSION = 'conversion',
   CORRECTION = 'correction',
-  RESTORATION_FULL = 'fullRestoration',
-  RESTORATION_LIMITED = 'limitedRestoration',
   RESTORATION_EXTENSION = 'limitedRestorationExtension',
   RESTORATION_CONVERSION = 'limitedRestorationToFull',
   SIGN_IN = 'signin',
