@@ -11,15 +11,15 @@
         </section>
         <ul>
           <li>
-            <v-icon v-if="hasApplicant" color="green darken-2" class="dir-valid">mdi-check</v-icon>
-            <v-icon v-else color="red">mdi-close</v-icon>
-            <!-- <v-icon>mdi-circle-small</v-icon> -->
+            <v-icon v-if="isApplicantPerson" color="green darken-2" class="dir-valid">mdi-check</v-icon>
+            <v-icon v-else-if="!isApplicantPerson"  color="red">mdi-close</v-icon>
+            <v-icon v-else>mdi-circle-small</v-icon>
             <span>An individual</span>
           </li>
           <li>
-            <v-icon v-if="hasApplicant" color="green darken-2" class="dir-valid">mdi-check</v-icon>
-            <v-icon v-else color="red">mdi-close</v-icon>
-            <!-- <v-icon>mdi-circle-small</v-icon> -->
+            <v-icon v-if="isApplicantOrg" color="green darken-2" class="dir-valid">mdi-check</v-icon>
+            <v-icon v-else-if="!applicantOrgs" color="red">mdi-close</v-icon>
+            <v-icon v-else>mdi-circle-small</v-icon>
             <span>A business or a corporation</span>
           </li>
         </ul>
@@ -294,6 +294,33 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   /** True when the required applicant count is met. */
   get hasApplicant (): boolean {
     return this.hasRole(RoleTypes.APPLICANT, 1, CompareModes.EXACT)
+  }
+
+  /** True when orgPerson applicant role. */
+  public isApplicant (orgPerson: OrgPersonIF): boolean {
+    return orgPerson?.roles.some(role => role.roleType === RoleTypes.APPLICANT)
+  }
+
+  get applicantPersons (): OrgPersonIF[] {
+    return this.getOrgPeople.filter(person =>
+      this.isApplicant(person) && this.isPartyTypePerson(person) && !this.wasRemoved(person)
+    )
+  }
+
+  get applicantOrgs (): OrgPersonIF[] {
+    return this.getOrgPeople.filter(person =>
+      this.isApplicant(person) && this.isPartyTypeOrg(person) && !this.wasRemoved(person)
+    )
+  }
+
+  /** True when applicant party type is org. */
+  get isApplicantOrg () : boolean {
+    return this.applicantOrgs.length > 0
+  }
+
+  /** True when applicant party type is person. */
+  get isApplicantPerson () : boolean {
+    return this.applicantPersons.length > 0
   }
 
   /** True if we have all required parties. */

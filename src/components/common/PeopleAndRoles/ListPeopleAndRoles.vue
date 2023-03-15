@@ -640,6 +640,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
 .actions-width {
   min-width: 150px;
   max-width: 150px;
+  padding: 0.35rem !important;
 }
 
 .summary-view {
