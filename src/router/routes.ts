@@ -44,8 +44,18 @@ export const routes = [
     }
   },
   {
-    path: '/restoration',
-    name: RouteNames.RESTORATION,
+    path: '/limitedRestorationToFull',
+    name: RouteNames.RESTORATION_CONVERSION,
+    component: Restoration,
+    meta: {
+      requiresAuth: true,
+      isStaffOnly: true,
+      filingType: FilingTypes.RESTORATION
+    }
+  },
+  {
+    path: '/limitedRestorationExtension',
+    name: RouteNames.RESTORATION_EXTENSION,
     component: Restoration,
     meta: {
       requiresAuth: true,
