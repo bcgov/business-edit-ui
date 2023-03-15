@@ -237,7 +237,7 @@ describe('Restoration component - edit page', () => {
     store.state.stateModel.businessInformation = { ...entitySnapshot.businessInfo }
     store.state.resourceModel = BenRestorationResource
 
-    await router.push({ name: 'restoration', query: { 'restoration-id': '1234' } })
+    await router.push({ name: 'limitedRestorationExtension', query: { 'restoration-id': '1234' } })
     wrapper = mount(Restoration, { localVue, store, router, vuetify })
 
     // enable filing and wait for all queries to complete
