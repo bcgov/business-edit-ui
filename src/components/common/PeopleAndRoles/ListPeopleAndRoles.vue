@@ -617,10 +617,9 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   .actions {
     position: absolute;
     right: 0;
-    margin-top: -0.5rem;
+    margin-top: -0.25rem;
 
     @extend .actions-width;
-    margin-top: -8px;
 
     .v-btn + .v-btn {
       margin-left: 0.5rem;
@@ -640,7 +639,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
 .actions-width {
   min-width: 150px;
   max-width: 150px;
-  padding: 0.35rem !important;
 }
 
 .summary-view {

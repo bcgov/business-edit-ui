@@ -12,13 +12,13 @@
         <ul>
           <li>
             <v-icon v-if="isApplicantPerson" color="green darken-2" class="dir-valid">mdi-check</v-icon>
-            <v-icon v-else-if="!isApplicantPerson"  color="red">mdi-close</v-icon>
+            <v-icon v-else-if="applicantPersonsRemoved && !isApplicantOrg"  color="red">mdi-close</v-icon>
             <v-icon v-else>mdi-circle-small</v-icon>
             <span>An individual</span>
           </li>
           <li>
             <v-icon v-if="isApplicantOrg" color="green darken-2" class="dir-valid">mdi-check</v-icon>
-            <v-icon v-else-if="!applicantOrgs" color="red">mdi-close</v-icon>
+            <v-icon v-else-if="applicantOrgsRemoved && !isApplicantPerson" color="red">mdi-close</v-icon>
             <v-icon v-else>mdi-circle-small</v-icon>
             <span>A business or a corporation</span>
           </li>
@@ -310,6 +310,18 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   get applicantOrgs (): OrgPersonIF[] {
     return this.getOrgPeople.filter(person =>
       this.isApplicant(person) && this.isPartyTypeOrg(person) && !this.wasRemoved(person)
+    )
+  }
+
+  get applicantPersonsRemoved (): OrgPersonIF[] {
+    return this.getOrgPeople.filter(person =>
+      this.isApplicant(person) && this.isPartyTypePerson(person) && this.wasRemoved(person)
+    )
+  }
+
+  get applicantOrgsRemoved (): OrgPersonIF[] {
+    return this.getOrgPeople.filter(person =>
+      this.isApplicant(person) && this.isPartyTypeOrg(person) && this.wasRemoved(person)
     )
   }
 
