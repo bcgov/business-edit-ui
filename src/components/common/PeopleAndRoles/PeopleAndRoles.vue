@@ -313,16 +313,18 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     )
   }
 
-  get applicantPersonsRemoved (): OrgPersonIF[] {
-    return this.getOrgPeople.filter(person =>
+  get applicantPersonsRemoved (): boolean {
+    const personRemoved = this.getOrgPeople.filter(person =>
       this.isApplicant(person) && this.isPartyTypePerson(person) && this.wasRemoved(person)
     )
+    return personRemoved.length <= 1
   }
 
-  get applicantOrgsRemoved (): OrgPersonIF[] {
-    return this.getOrgPeople.filter(person =>
-      this.isApplicant(person) && this.isPartyTypeOrg(person) && this.wasRemoved(person)
+  get applicantOrgsRemoved (): boolean {
+    const orgRemoved = this.getOrgPeople.filter(org =>
+      this.isApplicant(org) && this.isPartyTypeOrg(org) && this.wasRemoved(org)
     )
+    return orgRemoved.length <= 1
   }
 
   /** True when applicant party type is org. */
