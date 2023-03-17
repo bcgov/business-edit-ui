@@ -4,12 +4,11 @@ import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import { getVuexStore } from '@/store/'
-import { shallowMount, createLocalVue, mount } from '@vue/test-utils'
+import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import Conversion from '@/views/Conversion.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import mockRouter from './MockRouter'
-import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary'
 
 Vue.use(Vuetify)
 
@@ -232,7 +231,7 @@ describe('Conversion component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'conversion' })
-    wrapper = mount(Conversion, { localVue, store, router, vuetify })
+    wrapper = shallowMount(Conversion, { localVue, store, router, vuetify })
 
     // wait for all queries to complete
     await flushPromises()
