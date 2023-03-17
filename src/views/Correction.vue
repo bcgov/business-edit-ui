@@ -1,10 +1,13 @@
 <template>
-  <component
-    :is="component"
-    :correctionFiling="correctionFiling"
-    @fetchError="emitFetchError($event)"
-    @haveData="emitHaveData($event)"
-  />
+  <ViewWrapper>
+    <component
+      :is="component"
+      :correctionFiling="correctionFiling"
+      @fetchError="emitFetchError($event)"
+      @haveData="emitHaveData($event)"
+    />
+  </ViewWrapper>
+
 </template>
 
 <script lang="ts">
@@ -18,9 +21,11 @@ import { FilingStatus, FilingTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import CorpCorrection from '@/views/Correction/CorpCorrection.vue'
 import FirmCorrection from '@/views/Correction/FirmCorrection.vue'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 
 @Component({
   components: {
+    ViewWrapper,
     CorpCorrection,
     FirmCorrection
   }

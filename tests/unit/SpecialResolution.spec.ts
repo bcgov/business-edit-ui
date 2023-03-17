@@ -8,6 +8,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import SpecialResolution from '@/views/SpecialResolution.vue'
 import mockRouter from './MockRouter'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 
 Vue.use(Vuetify)
 
@@ -193,6 +194,7 @@ describe('Special Resolution component', () => {
 
   it('renders Special Resolution view', () => {
     expect(wrapper.findComponent(SpecialResolution).exists()).toBe(true)
+    expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true)
   })
 
   it.only('loads the entity snapshot into the store', async () => {

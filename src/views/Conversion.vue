@@ -1,50 +1,52 @@
 <template>
-  <section class="pb-10" id="conversion-view">
-    <!-- Business Information page-->
-    <v-slide-x-transition hide-on-leave>
-      <div v-if="!isSummaryMode || !showFeeSummary">
-        <header>
-          <h1>Record Conversion</h1>
-        </header>
+  <ViewWrapper>
+    <section class="pb-10" id="conversion-view">
+      <!-- Business Information page-->
+      <v-slide-x-transition hide-on-leave>
+        <div v-if="!isSummaryMode || !showFeeSummary">
+          <header>
+            <h1>Record Conversion</h1>
+          </header>
 
-        <section class="mt-6">
-          You must promptly file updates to your business information. Necessary fees will be applied as updates are
-          made.
-        </section>
+          <section class="mt-6">
+            You must promptly file updates to your business information. Necessary fees will be applied as updates are
+            made.
+          </section>
 
-        <YourCompany class="mt-10" />
+          <YourCompany class="mt-10" />
 
-        <PeopleAndRoles class="mt-10" />
-      </div>
-    </v-slide-x-transition>
+          <PeopleAndRoles class="mt-10" />
+        </div>
+      </v-slide-x-transition>
 
-    <!-- Review and Confirmm page -->
-    <v-slide-x-reverse-transition hide-on-leave>
-      <div v-if="isSummaryMode && showFeeSummary">
-        <header>
-          <h1>Review and Confirm</h1>
-        </header>
+      <!-- Review and Confirmm page -->
+      <v-slide-x-reverse-transition hide-on-leave>
+        <div v-if="isSummaryMode && showFeeSummary">
+          <header>
+            <h1>Review and Confirm</h1>
+          </header>
 
-        <section class="mt-6">
-          <p id="intro-text">
-            Changes were made to your business information that require a filing. Review and certify the changes you
-            are about the make to your business.
-          </p>
-        </section>
+          <section class="mt-6">
+            <p id="intro-text">
+              Changes were made to your business information that require a filing. Review and certify the changes you
+              are about the make to your business.
+            </p>
+          </section>
 
-        <ConversionSummary
-          class="mt-10"
-          :validate="getAppValidate"
-        />
+          <ConversionSummary
+            class="mt-10"
+            :validate="getAppValidate"
+          />
 
-        <CompletingParty
-          class="mt-10"
-          sectionNumber="1."
-          :validate="getAppValidate"
-        />
-      </div>
-    </v-slide-x-reverse-transition>
-  </section>
+          <CompletingParty
+            class="mt-10"
+            sectionNumber="1."
+            :validate="getAppValidate"
+          />
+        </div>
+      </v-slide-x-reverse-transition>
+    </section>
+  </ViewWrapper>
 </template>
 
 <script lang="ts">
@@ -60,9 +62,11 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SpConversionResource, GpConversionResource } from '@/resources/Conversion/'
 import { ConversionSummary } from '@/components/Conversion'
 import { StatusCodes } from 'http-status-codes'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 
 @Component({
   components: {
+    ViewWrapper,
     ConversionSummary,
     CompletingParty,
     PeopleAndRoles,

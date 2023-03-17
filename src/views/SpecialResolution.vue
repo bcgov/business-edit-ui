@@ -1,108 +1,110 @@
 <template>
-  <section class="pb-10" id="special-resolution-view">
-    <!-- Company Information page-->
-    <v-slide-x-transition hide-on-leave>
-      <div v-if="!isSummaryMode">
-        <header>
-          <h1>Business Information</h1>
-        </header>
+  <ViewWrapper>
+    <section class="pb-10" id="special-resolution-view">
+      <!-- Company Information page-->
+      <v-slide-x-transition hide-on-leave>
+        <div v-if="!isSummaryMode">
+          <header>
+            <h1>Business Information</h1>
+          </header>
 
-        <section class="mt-6">
-          You must keep your business information up to date. Some changes require a Special Resolution.
-          Necessary fees will be applied as updates are made.
-        </section>
+          <section class="mt-6">
+            You must keep your business information up to date. Some changes require a Special Resolution.
+            Necessary fees will be applied as updates are made.
+          </section>
 
-        <YourCompany class="mt-10" />
+          <YourCompany class="mt-10" />
 
-        <CurrentDirectors class="mt-10" />
+          <CurrentDirectors class="mt-10" />
 
-        <CreateSpecialResolution class="mt-10" v-if="showCreateSpecialResolution" />
-      </div>
-    </v-slide-x-transition>
+          <CreateSpecialResolution class="mt-10" v-if="showCreateSpecialResolution" />
+        </div>
+      </v-slide-x-transition>
 
-    <!-- Review and Certify page -->
-    <v-slide-x-reverse-transition hide-on-leave>
-      <div v-if="isSummaryMode && showFeeSummary">
-        <header>
-          <h1>Review and Certify</h1>
-        </header>
+      <!-- Review and Certify page -->
+      <v-slide-x-reverse-transition hide-on-leave>
+        <div v-if="isSummaryMode && showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
 
-        <section class="mt-6">
-          <p id="intro-text">
-            Changes were made to your business information that require a filing.
-            Review and certify the changes you are about to make to your business.
-          </p>
-        </section>
+          <section class="mt-6">
+            <p id="intro-text">
+              Changes were made to your business information that require a filing.
+              Review and certify the changes you are about to make to your business.
+            </p>
+          </section>
 
-        <SpecialResolutionSummary
-          class="mt-10"
-          :validate="getAppValidate"
-          @haveChanges="onSpecialResolutionSummaryChanges($event)"
-        />
-
-        <DocumentsDelivery
-          class="mt-10"
-          sectionNumber="1."
-          :validate="getAppValidate"
-          @valid="setDocumentOptionalEmailValidity($event)"
-        />
-
-        <TransactionalFolioNumber
-          v-if="showTransactionalFolioNumber"
-          class="mt-10"
-          sectionNumber="2."
-          :validate="getAppValidate"
-        />
-
-        <CompletingParty
-          class="mt-10"
-          :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
-          :validate="getAppValidate"
-        />
-
-        <CertifySection
-          class="mt-10"
-          :sectionNumber="showTransactionalFolioNumber ? '4.' : '3.'"
-          :validate="getAppValidate"
-          :disableEdit="!isRoleStaff"
-        />
-
-        <template v-if="isRoleStaff">
-          <StaffPayment
+          <SpecialResolutionSummary
             class="mt-10"
-            sectionNumber="4."
-            @haveChanges="onStaffPaymentChanges()"
+            :validate="getAppValidate"
+            @haveChanges="onSpecialResolutionSummaryChanges($event)"
           />
-        </template>
 
-      </div>
-    </v-slide-x-reverse-transition>
+          <DocumentsDelivery
+            class="mt-10"
+            sectionNumber="1."
+            :validate="getAppValidate"
+            @valid="setDocumentOptionalEmailValidity($event)"
+          />
 
-    <!-- Done-->
-    <v-fade-transition>
-      <div v-if="isSummaryMode && !showFeeSummary">
-        <header>
-          <h1>Review and Certify</h1>
-        </header>
+          <TransactionalFolioNumber
+            v-if="showTransactionalFolioNumber"
+            class="mt-10"
+            sectionNumber="2."
+            :validate="getAppValidate"
+          />
 
-        <section class="mt-6">
-          You have deleted all fee-based changes and your company information has reverted to its
-          original state. If you made any non-fee changes such as updates to your Registered
-          Office Contact Information, please note that these changes have already been saved.
-        </section>
+          <CompletingParty
+            class="mt-10"
+            :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
+            :validate="getAppValidate"
+          />
 
-        <v-btn
-          large
-          color="primary"
-          id="done-button"
-          class="mt-8"
-          @click="$root.$emit('go-to-dashboard')"
-        >
-          <span>Done</span>
-        </v-btn>
-      </div>
-    </v-fade-transition>
-  </section>
+          <CertifySection
+            class="mt-10"
+            :sectionNumber="showTransactionalFolioNumber ? '4.' : '3.'"
+            :validate="getAppValidate"
+            :disableEdit="!isRoleStaff"
+          />
+
+          <template v-if="isRoleStaff">
+            <StaffPayment
+              class="mt-10"
+              sectionNumber="4."
+              @haveChanges="onStaffPaymentChanges()"
+            />
+          </template>
+
+        </div>
+      </v-slide-x-reverse-transition>
+
+      <!-- Done-->
+      <v-fade-transition>
+        <div v-if="isSummaryMode && !showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
+
+          <section class="mt-6">
+            You have deleted all fee-based changes and your company information has reverted to its
+            original state. If you made any non-fee changes such as updates to your Registered
+            Office Contact Information, please note that these changes have already been saved.
+          </section>
+
+          <v-btn
+            large
+            color="primary"
+            id="done-button"
+            class="mt-8"
+            @click="$root.$emit('go-to-dashboard')"
+          >
+            <span>Done</span>
+          </v-btn>
+        </div>
+      </v-fade-transition>
+    </section>
+  </ViewWrapper>
 </template>
 
 <script lang="ts">
@@ -119,9 +121,11 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 
 @Component({
   components: {
+    ViewWrapper,
     SpecialResolutionSummary,
     CertifySection,
     CurrentDirectors,
