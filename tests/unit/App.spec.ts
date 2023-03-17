@@ -20,6 +20,7 @@ import PaymentErrorDialog from '@/dialogs/PaymentErrorDialog.vue'
 import SaveErrorDialog from '@/dialogs/SaveErrorDialog.vue'
 import NameRequestErrorDialog from '@/dialogs/NameRequestErrorDialog.vue'
 import ConfirmDeleteAllDialog from '@/dialogs/ConfirmDeleteAllDialog.vue'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)
@@ -650,5 +651,21 @@ describe('App component - other', () => {
     expect(vm.saveWarnings).toEqual([])
     expect(vm.fileAndPayInvalidNameRequestDialog).toBe(false)
     expect(vm.confirmDeleteAllDialog).toBe(false)
+  })
+
+  it('the ViewWrapper renders the fee summary properly following changes', async () => {
+    store.state.stateModel.tombstone.entityType = 'SP'
+    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
+    store.state.stateModel.entitySnapshot = mockEntitySnapshot
+    store.state.stateModel.officeAddresses = mockAddresses
+    store.state.stateModel.filingData = {
+      filingTypeCode: 'FMCHANGE',
+      entityType: 'SP',
+      priority: false,
+      waiveFees: false
+    }
+    await Vue.nextTick()
+
+    expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true) // not displayed initially
   })
 })

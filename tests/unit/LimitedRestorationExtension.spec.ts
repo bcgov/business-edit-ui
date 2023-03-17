@@ -6,7 +6,7 @@ import mockRouter from './MockRouter'
 import { getVuexStore } from '@/store/'
 import { AuthServices, LegalServices, PayServices } from '@/services/'
 import { createLocalVue, mount } from '@vue/test-utils'
-import Restoration from '@/views/Restoration.vue'
+import LimitedRestorationExtension from '@/views/LimitedRestorationExtension.vue'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import CertifySection from '@/components/common/CertifySection.vue'
 import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAndRoles.vue'
@@ -238,7 +238,7 @@ describe('Restoration component - edit page', () => {
     store.state.resourceModel = BenRestorationResource
 
     await router.push({ name: 'limitedRestorationExtension', query: { 'restoration-id': '1234' } })
-    wrapper = mount(Restoration, { localVue, store, router, vuetify })
+    wrapper = mount(LimitedRestorationExtension, { localVue, store, router, vuetify })
 
     // enable filing and wait for all queries to complete
     await wrapper.setProps({ appReady: true })
@@ -252,7 +252,7 @@ describe('Restoration component - edit page', () => {
   })
 
   it('renders the page correctly', () => {
-    expect(wrapper.findComponent(Restoration).exists()).toBe(true)
+    expect(wrapper.findComponent(LimitedRestorationExtension).exists()).toBe(true)
     expect(wrapper.find('#restoration-view').exists()).toBe(true)
     expect(wrapper.find('section header').text()).toBe('Limited Restoration Extension')
   })
@@ -320,7 +320,7 @@ describe('Restoration component - summary page (with filing changes)', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'limitedRestorationExtension', query: { 'restoration-id': '1234' } })
-    wrapper = mount(Restoration, {
+    wrapper = mount(LimitedRestorationExtension, {
       localVue,
       store,
       router,
@@ -342,7 +342,7 @@ describe('Restoration component - summary page (with filing changes)', () => {
   })
 
   it('renders the page correctly', () => {
-    expect(wrapper.findComponent(Restoration).exists()).toBe(true)
+    expect(wrapper.findComponent(LimitedRestorationExtension).exists()).toBe(true)
     expect(wrapper.find('section header').text()).toBe('Review and Certify')
   })
 
@@ -402,8 +402,8 @@ describe('Restoration component - summary page (with no filing changes)', () => 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    await router.push({ name: 'limitedRestorationExtension', query: { 'restoration-id': '1234' } })
-    wrapper = mount(Restoration, {
+    await router.push({ name: 'limitedRestorationToFull', query: { 'restoration-id': '1234' } })
+    wrapper = mount(LimitedRestorationExtension, {
       localVue,
       store,
       router,
@@ -425,7 +425,7 @@ describe('Restoration component - summary page (with no filing changes)', () => 
   })
 
   it('renders the page correctly', () => {
-    expect(wrapper.findComponent(Restoration).exists()).toBe(true)
+    expect(wrapper.findComponent(LimitedRestorationExtension).exists()).toBe(true)
     expect(wrapper.find('section header').text()).toBe('Review and Certify')
     expect(wrapper.find('section section').text()).toContain('You have deleted all')
     expect(wrapper.find('#done-button').exists()).toBe(true)

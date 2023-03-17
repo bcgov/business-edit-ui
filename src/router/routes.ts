@@ -5,9 +5,9 @@ import {
   Change,
   Conversion,
   Correction,
-  Restoration,
+  LimitedRestorationExtension,
   SpecialResolution,
-  LimitedToFullRestoration
+  LimitedRestorationToFull
 }
   from '@/views/'
 import { FilingTypes, RouteNames } from '@/enums/'
@@ -54,19 +54,12 @@ export const routes = [
     }
   },
   {
-    path: '/limitedRestorationToFull',
-    name: RouteNames.RESTORATION_CONVERSION,
-    component: Restoration,
-    meta: {
-      requiresAuth: true,
-      isStaffOnly: true,
-      filingType: FilingTypes.RESTORATION
-    }
-  },
-  {
     path: '/limitedRestorationExtension',
     name: RouteNames.RESTORATION_EXTENSION,
-    component: Restoration,
+    component: LimitedRestorationExtension,
+    props: route => ({
+      restorationId: route.query['restoration-id']
+    }),
     meta: {
       requiresAuth: true,
       isStaffOnly: true,
@@ -74,9 +67,12 @@ export const routes = [
     }
   },
   {
-    path: '/limited-to-full-restoration',
-    name: RouteNames.LIMITED_TO_FULL_RESTORATION,
-    component: LimitedToFullRestoration,
+    path: '/limitedRestorationToFull',
+    name: RouteNames.RESTORATION_CONVERSION,
+    component: LimitedRestorationToFull,
+    props: route => ({
+      restorationId: route.query['restoration-id']
+    }),
     meta: {
       requiresAuth: true,
       isStaffOnly: true,

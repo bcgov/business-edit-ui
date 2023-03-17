@@ -52,7 +52,7 @@
           <span>Add a Business or Corporation</span>
         </v-btn>
         <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
-          A applicant address is missing or incorrect
+          An applicant's address is missing or incorrect
         </p>
         </div>
       </article>
