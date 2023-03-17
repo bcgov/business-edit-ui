@@ -1,95 +1,97 @@
 <template>
-  <section class="pb-10" id="restoration-view">
-    <!-- Company Information page-->
-    <v-slide-x-transition hide-on-leave>
-      <div v-if="!isSummaryMode">
-        <header>
-          <h1>{{ entityTitle }}</h1>
-        </header>
+  <ViewWrapper>
+    <section class="pb-10" id="restoration-view">
+      <!-- Company Information page-->
+      <v-slide-x-transition hide-on-leave>
+        <div v-if="!isSummaryMode">
+          <header>
+            <h1>{{ entityTitle }}</h1>
+          </header>
 
-        <PeopleAndRoles class="mt-10" />
+          <PeopleAndRoles class="mt-10" />
 
-        <YourCompany class="mt-10" />
-      </div>
-    </v-slide-x-transition>
+          <YourCompany class="mt-10" />
+        </div>
+      </v-slide-x-transition>
 
-    <!-- Review and Certify page -->
-    <v-slide-x-reverse-transition hide-on-leave>
-      <div v-if="isSummaryMode && showFeeSummary">
-        <header>
-          <h1>Review and Certify</h1>
-        </header>
+      <!-- Review and Certify page -->
+      <v-slide-x-reverse-transition hide-on-leave>
+        <div v-if="isSummaryMode && showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
 
-        <RestorationSummary
-          class="mt-10"
-          :validate="getAppValidate"
-        />
+          <RestorationSummary
+            class="mt-10"
+            :validate="getAppValidate"
+          />
 
-        <YourCompanySummary class="mt-10" />
+          <YourCompanySummary class="mt-10" />
 
-        <!-- Applicant list -->
-        <v-card id="people-and-roles-vcard" flat class="mt-6">
-          <!-- Header -->
-          <div class="section-container header-container">
-            <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
-            <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Information</label>
-          </div>
-          <div no-gutters class="mt-4 section-container">
+          <!-- Applicant list -->
+          <v-card id="people-and-roles-vcard" flat class="mt-6">
+            <!-- Header -->
+            <div class="section-container header-container">
+              <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
+              <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Information</label>
+            </div>
+            <div no-gutters class="mt-4 section-container">
               <ListPeopleAndRoles
                 :isSummaryView="true"
                 :showDeliveryAddressColumn="false"
                 :showRolesColumn="false"
                 :showEmailColumn="true"
               />
-          </div>
-        </v-card>
+            </div>
+          </v-card>
 
-        <DocumentsDelivery
-          class="mt-10"
-          sectionNumber="1."
-          :validate="getAppValidate"
-          @valid="setDocumentOptionalEmailValidity($event)"
-        />
+          <DocumentsDelivery
+            class="mt-10"
+            sectionNumber="1."
+            :validate="getAppValidate"
+            @valid="setDocumentOptionalEmailValidity($event)"
+          />
 
-        <CertifySection
-          class="mt-10"
-          sectionNumber="2."
-          :validate="getAppValidate"
-        />
+          <CertifySection
+            class="mt-10"
+            sectionNumber="2."
+            :validate="getAppValidate"
+          />
 
-        <StaffPayment
-          class="mt-10"
-          sectionNumber="3."
-          @haveChanges="onStaffPaymentChanges()"
-        />
-      </div>
-    </v-slide-x-reverse-transition>
+          <StaffPayment
+            class="mt-10"
+            sectionNumber="3."
+            @haveChanges="onStaffPaymentChanges()"
+          />
+        </div>
+      </v-slide-x-reverse-transition>
 
-    <!-- Done-->
-    <v-fade-transition>
-      <div v-if="isSummaryMode && !showFeeSummary">
-        <header>
-          <h1>Review and Certify</h1>
-        </header>
+      <!-- Done-->
+      <v-fade-transition>
+        <div v-if="isSummaryMode && !showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
 
-        <section class="mt-6">
-          You have deleted all fee-based changes and your company information has reverted to its
-          original state. If you made any non-fee changes such as updates to your Registered
-          Office Contact Information, please note that these changes have already been saved.
-        </section>
+          <section class="mt-6">
+            You have deleted all fee-based changes and your company information has reverted to its
+            original state. If you made any non-fee changes such as updates to your Registered
+            Office Contact Information, please note that these changes have already been saved.
+          </section>
 
-        <v-btn
-          large
-          color="primary"
-          id="done-button"
-          class="mt-8"
-          @click="$root.$emit('go-to-dashboard')"
-        >
-          <span>Done</span>
-        </v-btn>
-      </div>
-    </v-fade-transition>
-  </section>
+          <v-btn
+            large
+            color="primary"
+            id="done-button"
+            class="mt-8"
+            @click="$root.$emit('go-to-dashboard')"
+          >
+            <span>Done</span>
+          </v-btn>
+        </div>
+      </v-fade-transition>
+    </section>
+  </ViewWrapper>
 </template>
 
 <script lang="ts">
@@ -112,9 +114,11 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/Restoration/'
 import { FilingDataIF } from '@bcrs-shared-components/interfaces'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 
 @Component({
   components: {
+    ViewWrapper,
     CertifySection,
     DocumentsDelivery,
     PeopleAndRoles,
