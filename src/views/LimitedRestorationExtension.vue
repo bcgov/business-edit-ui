@@ -365,9 +365,6 @@ export default class LimitedRestorationExtension extends Vue {
       if (this.isLimitedExtendRestorationFiling) filingData = [this.restorationResource.filingData[0]]
       if (this.isLimitedConversionRestorationFiling) filingData = [this.restorationResource.filingData[1]]
 
-      filingData.forEach(fd => {
-        fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
-      })
       this.setFilingData(filingData)
 
       // update the current fees for this filing
