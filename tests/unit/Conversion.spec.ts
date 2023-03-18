@@ -7,6 +7,7 @@ import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import Conversion from '@/views/Conversion.vue'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 import mockRouter from './MockRouter'
 
 Vue.use(Vuetify)
@@ -244,6 +245,7 @@ describe('Conversion component', () => {
 
   it('renders Conversion view', () => {
     expect(wrapper.findComponent(Conversion).exists()).toBe(true)
+    expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true)
   })
 
   // FUTURE

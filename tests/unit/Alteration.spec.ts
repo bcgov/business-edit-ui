@@ -8,6 +8,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import Alteration from '@/views/Alteration.vue'
 import mockRouter from './MockRouter'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 
 Vue.use(Vuetify)
 
@@ -280,6 +281,7 @@ describe('Alteration component', () => {
 
   it('renders Alteration view', () => {
     expect(wrapper.findComponent(Alteration).exists()).toBe(true)
+    expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true)
   })
 
   it('loads the entity snapshot into the store', async () => {

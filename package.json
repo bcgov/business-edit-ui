@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "3.10.7",
+  "version": "3.10.8",
   "private": true,
   "appName": "Edit UI",
   "sbcName": "SBC Common Components",
@@ -15,6 +15,7 @@
   "dependencies": {
     "@babel/compat-data": "^7.19.1",
     "@bcrs-shared-components/action-chip": "1.1.5",
+    "@bcrs-shared-components/approval-type": "1.0.15",
     "@bcrs-shared-components/breadcrumb": "2.1.5",
     "@bcrs-shared-components/business-lookup": "1.1.7",
     "@bcrs-shared-components/certify": "2.1.5",
@@ -30,7 +31,9 @@
     "@bcrs-shared-components/folio-number": "1.1.1",
     "@bcrs-shared-components/help-business-number": "1.1.1",
     "@bcrs-shared-components/interfaces": "1.0.48",
+    "@bcrs-shared-components/limited-restoration-panel": "1.0.3",
     "@bcrs-shared-components/nature-of-business": "1.2.4",
+    "@bcrs-shared-components/relationships-panel": "1.0.12",
     "@bcrs-shared-components/share-structure": "2.1.4",
     "@bcrs-shared-components/staff-payment": "2.1.4",
     "@mdi/font": "^5.9.55",

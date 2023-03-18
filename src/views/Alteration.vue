@@ -1,111 +1,113 @@
 <template>
-  <section class="pb-10" id="alteration-view">
-    <!-- Company Information page-->
-    <v-slide-x-transition hide-on-leave>
-      <div v-if="!isSummaryMode">
-        <header>
-          <h1>Company Information</h1>
-        </header>
+  <ViewWrapper>
+    <section class="pb-10" id="alteration-view">
+      <!-- Company Information page-->
+      <v-slide-x-transition hide-on-leave>
+        <div v-if="!isSummaryMode">
+          <header>
+            <h1>Company Information</h1>
+          </header>
 
-        <section class="mt-6">
-          You are legally obligated to keep your company information up to date. Necessary fees will be
-          applied as updates are made.
-        </section>
+          <section class="mt-6">
+            You are legally obligated to keep your company information up to date. Necessary fees will be
+            applied as updates are made.
+          </section>
 
-        <YourCompany class="mt-10" />
+          <YourCompany class="mt-10" />
 
-        <CurrentDirectors class="mt-10" />
+          <CurrentDirectors class="mt-10" />
 
-        <ShareStructures class="mt-10" />
+          <ShareStructures class="mt-10" />
 
-        <Articles class="mt-10" />
-      </div>
-    </v-slide-x-transition>
+          <Articles class="mt-10" />
+        </div>
+      </v-slide-x-transition>
 
-    <!-- Review and Certify page -->
-    <v-slide-x-reverse-transition hide-on-leave>
-      <div v-if="isSummaryMode && showFeeSummary">
-        <header>
-          <h1>Review and Certify</h1>
-        </header>
+      <!-- Review and Certify page -->
+      <v-slide-x-reverse-transition hide-on-leave>
+        <div v-if="isSummaryMode && showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
 
-        <section class="mt-6">
-          <p id="intro-text">
-            Review and certify the changes you are about to make to your company. Certain changes require
-            an Alteration Notice which will incur a {{filingFeesPrice}} fee. Choosing an alteration date
-            and time in the future will incur an additional {{futureEffectiveFeesPrice}} fee.
-          </p>
-        </section>
+          <section class="mt-6">
+            <p id="intro-text">
+              Review and certify the changes you are about to make to your company. Certain changes require
+              an Alteration Notice which will incur a {{filingFeesPrice}} fee. Choosing an alteration date
+              and time in the future will incur an additional {{futureEffectiveFeesPrice}} fee.
+            </p>
+          </section>
 
-        <AlterationSummary
-          class="mt-10"
-          :validate="getAppValidate"
-          @haveChanges="onAlterationSummaryChanges()"
-        />
-
-        <DocumentsDelivery
-          class="mt-10"
-          sectionNumber="1."
-          :validate="getAppValidate"
-          @valid="setDocumentOptionalEmailValidity($event)"
-        />
-
-        <TransactionalFolioNumber
-          v-if="showTransactionalFolioNumber"
-          class="mt-10"
-          sectionNumber="2."
-          :validate="getAppValidate"
-        />
-
-        <CertifySection
-          class="mt-10"
-          :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
-          :validate="getAppValidate"
-          :disableEdit="!isRoleStaff"
-        />
-
-        <!-- STAFF ONLY: Court Order/Plan of Arrangement and Staff Payment -->
-        <template v-if="isRoleStaff">
-          <CourtOrderPoa
+          <AlterationSummary
             class="mt-10"
-            :sectionNumber="showTransactionalFolioNumber ? '4.' : '3.'"
-            :autoValidation="getAppValidate"
+            :validate="getAppValidate"
+            @haveChanges="onAlterationSummaryChanges()"
           />
 
-          <StaffPayment
+          <DocumentsDelivery
             class="mt-10"
-            :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
-            @haveChanges="onStaffPaymentChanges()"
+            sectionNumber="1."
+            :validate="getAppValidate"
+            @valid="setDocumentOptionalEmailValidity($event)"
           />
-        </template>
-      </div>
-    </v-slide-x-reverse-transition>
 
-    <!-- Done-->
-    <v-fade-transition>
-      <div v-if="isSummaryMode && !showFeeSummary">
-        <header>
-          <h1>Review and Certify</h1>
-        </header>
+          <TransactionalFolioNumber
+            v-if="showTransactionalFolioNumber"
+            class="mt-10"
+            sectionNumber="2."
+            :validate="getAppValidate"
+          />
 
-        <section class="mt-6">
-          You have deleted all fee-based changes and your company information has reverted to its
-          original state. If you made any non-fee changes such as updates to your Registered
-          Office Contact Information, please note that these changes have already been saved.
-        </section>
+          <CertifySection
+            class="mt-10"
+            :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
+            :validate="getAppValidate"
+            :disableEdit="!isRoleStaff"
+          />
 
-        <v-btn
-          large
-          color="primary"
-          id="done-button"
-          class="mt-8"
-          @click="$root.$emit('go-to-dashboard')"
-        >
-          <span>Done</span>
-        </v-btn>
-      </div>
-    </v-fade-transition>
-  </section>
+          <!-- STAFF ONLY: Court Order/Plan of Arrangement and Staff Payment -->
+          <template v-if="isRoleStaff">
+            <CourtOrderPoa
+              class="mt-10"
+              :sectionNumber="showTransactionalFolioNumber ? '4.' : '3.'"
+              :autoValidation="getAppValidate"
+            />
+
+            <StaffPayment
+              class="mt-10"
+              :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
+              @haveChanges="onStaffPaymentChanges()"
+            />
+          </template>
+        </div>
+      </v-slide-x-reverse-transition>
+
+      <!-- Done-->
+      <v-fade-transition>
+        <div v-if="isSummaryMode && !showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
+
+          <section class="mt-6">
+            You have deleted all fee-based changes and your company information has reverted to its
+            original state. If you made any non-fee changes such as updates to your Registered
+            Office Contact Information, please note that these changes have already been saved.
+          </section>
+
+          <v-btn
+            large
+            color="primary"
+            id="done-button"
+            class="mt-8"
+            @click="$root.$emit('go-to-dashboard')"
+          >
+            <span>Done</span>
+          </v-btn>
+        </div>
+      </v-fade-transition>
+    </section>
+  </ViewWrapper>
 </template>
 
 <script lang="ts">
@@ -123,9 +125,11 @@ import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
   from '@/resources/Alteration/'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 
 @Component({
   components: {
+    ViewWrapper,
     AlterationSummary,
     Articles,
     CertifySection,

@@ -651,20 +651,4 @@ describe('App component - other', () => {
     expect(vm.fileAndPayInvalidNameRequestDialog).toBe(false)
     expect(vm.confirmDeleteAllDialog).toBe(false)
   })
-
-  it('renders the fee summary properly following changes', async () => {
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
-    store.state.stateModel.entitySnapshot = mockEntitySnapshot
-    store.state.stateModel.officeAddresses = mockAddresses
-    store.state.stateModel.filingData = {
-      filingTypeCode: 'FMCHANGE',
-      entityType: 'SP',
-      priority: false,
-      waiveFees: false
-    }
-    await Vue.nextTick()
-
-    expect(wrapper.findComponent(FeeSummaryShared).exists()).toBe(true) // not displayed initially
-  })
 })

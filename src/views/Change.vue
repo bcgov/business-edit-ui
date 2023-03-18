@@ -1,86 +1,88 @@
 <template>
-  <section class="pb-10" id="change-view">
-    <!-- Business Information page-->
-    <v-slide-x-transition hide-on-leave>
-      <div v-if="!isSummaryMode || !showFeeSummary">
-        <header>
-          <h1>Business Information</h1>
-        </header>
+  <ViewWrapper>
+    <section class="pb-10" id="change-view">
+      <!-- Business Information page-->
+      <v-slide-x-transition hide-on-leave>
+        <div v-if="!isSummaryMode || !showFeeSummary">
+          <header>
+            <h1>Business Information</h1>
+          </header>
 
-        <section class="mt-6">
-          You must promptly file updates to your business information. Necessary fees will be applied as
-          updates are made.
-        </section>
+          <section class="mt-6">
+            You must promptly file updates to your business information. Necessary fees will be applied as
+            updates are made.
+          </section>
 
-        <YourCompany class="mt-10" />
+          <YourCompany class="mt-10" />
 
-        <PeopleAndRoles class="mt-10" />
-      </div>
-    </v-slide-x-transition>
+          <PeopleAndRoles class="mt-10" />
+        </div>
+      </v-slide-x-transition>
 
-    <!-- Review and Confirmm page -->
-    <v-slide-x-reverse-transition hide-on-leave>
-      <div v-if="isSummaryMode && showFeeSummary">
-        <header>
-          <h1>Review and Confirm</h1>
-        </header>
+      <!-- Review and Confirmm page -->
+      <v-slide-x-reverse-transition hide-on-leave>
+        <div v-if="isSummaryMode && showFeeSummary">
+          <header>
+            <h1>Review and Confirm</h1>
+          </header>
 
-        <section class="mt-6">
-          <p id="intro-text">
-            Changes were made to your business information that require a filing. Review and certify the
-            changes you are about the make to your business.
-          </p>
-        </section>
+          <section class="mt-6">
+            <p id="intro-text">
+              Changes were made to your business information that require a filing. Review and certify the
+              changes you are about the make to your business.
+            </p>
+          </section>
 
-        <ChangeSummary
-          class="mt-10"
-          :validate="getAppValidate"
-        />
-
-        <DocumentsDelivery
-          class="mt-10"
-          sectionNumber="1."
-          :validate="getAppValidate"
-          @valid="setDocumentOptionalEmailValidity($event)"
-        />
-
-        <CompletingParty
-          class="mt-10"
-          sectionNumber="2."
-          :validate="getAppValidate"
-        />
-
-        <TransactionalFolioNumber
-          v-if="showTransactionalFolioNumber"
-          class="mt-10"
-          sectionNumber="2."
-          :validate="getAppValidate"
-        />
-
-        <CertifySection
-          class="mt-10"
-          :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
-          :validate="getAppValidate"
-          :disableEdit="!(isRoleStaff || isSbcStaff)"
-        />
-
-        <!-- STAFF ONLY: Court Order/Plan of Arrangement and Staff Payment -->
-        <template v-if="isRoleStaff">
-          <CourtOrderPoa
+          <ChangeSummary
             class="mt-10"
-            :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
-            :autoValidation="getAppValidate"
+            :validate="getAppValidate"
           />
 
-          <StaffPayment
+          <DocumentsDelivery
             class="mt-10"
-            :sectionNumber="showTransactionalFolioNumber ? '6.' : '5.'"
-            @haveChanges="onStaffPaymentChanges()"
+            sectionNumber="1."
+            :validate="getAppValidate"
+            @valid="setDocumentOptionalEmailValidity($event)"
           />
-        </template>
-      </div>
-    </v-slide-x-reverse-transition>
-  </section>
+
+          <CompletingParty
+            class="mt-10"
+            sectionNumber="2."
+            :validate="getAppValidate"
+          />
+
+          <TransactionalFolioNumber
+            v-if="showTransactionalFolioNumber"
+            class="mt-10"
+            sectionNumber="2."
+            :validate="getAppValidate"
+          />
+
+          <CertifySection
+            class="mt-10"
+            :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
+            :validate="getAppValidate"
+            :disableEdit="!(isRoleStaff || isSbcStaff)"
+          />
+
+          <!-- STAFF ONLY: Court Order/Plan of Arrangement and Staff Payment -->
+          <template v-if="isRoleStaff">
+            <CourtOrderPoa
+              class="mt-10"
+              :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
+              :autoValidation="getAppValidate"
+            />
+
+            <StaffPayment
+              class="mt-10"
+              :sectionNumber="showTransactionalFolioNumber ? '6.' : '5.'"
+              @haveChanges="onStaffPaymentChanges()"
+            />
+          </template>
+        </div>
+      </v-slide-x-reverse-transition>
+    </section>
+  </ViewWrapper>
 </template>
 
 <script lang="ts">
@@ -96,9 +98,11 @@ import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus, PartyTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SpChangeResource, GpChangeResource, SpOrganizationChangeResource } from '@/resources/Change/'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 
 @Component({
   components: {
+    ViewWrapper,
     CertifySection,
     ChangeSummary,
     CompletingParty,
