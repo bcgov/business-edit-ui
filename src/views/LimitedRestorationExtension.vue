@@ -1,9 +1,9 @@
 <template>
   <ViewWrapper>
-    <section class="pb-10" id="question_container">
+    <section class="pb-10" id="limited-restoration-extension">
       <!-- Company Information page-->
       <v-slide-x-transition hide-on-leave>
-        <div v-if="!isSummaryMode">
+        <div v-if="!isSummaryMode" id="question_container">
           <header>
             <h1>Limited Restoration Extension</h1>
           </header>

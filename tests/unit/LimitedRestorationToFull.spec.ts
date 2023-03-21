@@ -253,7 +253,7 @@ describe('LimitedRestorationToFull component - edit page', () => {
 
   it('renders the page correctly', () => {
     expect(wrapper.findComponent(LimitedRestorationToFull).exists()).toBe(true)
-    // expect(wrapper.find('#restoration-view').exists()).toBe(true)
+    expect(wrapper.find('#limited-restoration-full').exists()).toBe(true)
     expect(wrapper.find('section header').text()).toBe('Conversion to Full Restoration')
   })
 

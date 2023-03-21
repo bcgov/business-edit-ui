@@ -253,7 +253,7 @@ describe('Restoration component - edit page', () => {
 
   it('renders the page correctly', () => {
     expect(wrapper.findComponent(LimitedRestorationExtension).exists()).toBe(true)
-    expect(wrapper.find('#restoration-view').exists()).toBe(true)
+    expect(wrapper.find('#limited-restoration-extension').exists()).toBe(true)
     expect(wrapper.find('section header').text()).toBe('Limited Restoration Extension')
   })
 
