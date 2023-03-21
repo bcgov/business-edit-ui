@@ -487,8 +487,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     this.currentOrgPerson.actions = actions
 
     // for firms and restoration (extension and conversion) applciations, use business lookup initially
-    if (this.isPartnership || this.isSoleProp || isLimitedExtendRestorationFiling ||
-       isLimitedConversionRestorationFiling) {
+    if (this.isPartnership || this.isSoleProp || this.isLimitedExtendRestorationFiling ||
+       this.isLimitedConversionRestorationFiling) {
       this.currentOrgPerson.isLookupBusiness = true
     }
 

@@ -14,7 +14,7 @@ import DocumentsDelivery from '@/components/common/DocumentsDelivery.vue'
 import PeopleAndRoles from '@/components/common/PeopleAndRoles/PeopleAndRoles.vue'
 import StaffPayment from '@/components/common/StaffPayment.vue'
 import YourCompany from '@/components/common/YourCompany/YourCompany.vue'
-import { BenRestorationResource } from '@/resources/Restoration/BEN'
+import { BenRestorationResource } from '@/resources/LimitedRestorationExtension/BEN'
 
 Vue.use(Vuetify)
 
