@@ -126,7 +126,6 @@ import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summ
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel/'
 import QuestionWrapper from '@/components/common/QuestionWrapper.vue'
-import { mapActions, mapMutations } from 'vuex'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { AuthServices, LegalServices } from '@/services'
 
@@ -149,21 +148,7 @@ import { AuthServices, LegalServices } from '@/services'
     CommonMixin,
     FeeMixin,
     FilingTemplateMixin
-  ],
-  methods: {
-    ...mapActions([
-      'fetchBusinessInfo',
-      'fetchAuthentication',
-      'fetchAddresses',
-      'fetchNameTranslations',
-      'fetchDirectors',
-      'fetchFilingByIds',
-      'fetchStateFiling'
-    ]),
-    ...mapMutations([
-      'setRestorationFiling'
-    ])
-  }
+  ]
 })
 export default class LimitedRestorationExtension extends Vue {
   // Global getters
