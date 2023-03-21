@@ -1089,5 +1089,9 @@ export default {
         DateUtilities.yyyyMmDdToPacificDate(getters.getExpiryDateString)
     }
     return '[no expiry date]'
+  },
+
+  getPayApiUrl (_state): string {
+    return sessionStorage.getItem('PAY_API_URL')
   }
 }

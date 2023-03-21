@@ -1,5 +1,4 @@
 import { AuthServices, LegalServices } from '@/services'
-import { promise } from 'sinon'
 
 export default {
   /** Fetches the business info by business id */

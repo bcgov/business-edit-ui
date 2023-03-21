@@ -3,10 +3,7 @@
     <!-- Restoration conversion and extension add buttons -->
     <div v-if="(isLimitedConversionRestorationFiling || isLimitedExtendRestorationFiling)">
       <article>
-        <header>
-          <h2 id="resto-header-lbl">1. Add Applicant Information</h2>
-        </header>
-        <section class="mt-4">
+        <section>
           <h3 :class="{ 'invalid': !hasApplicant }">Your application must include one of the following:</h3>
         </section>
         <ul>
@@ -220,7 +217,6 @@ import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
 import { HelpSection } from '@/components/common/'
 import { ListPeopleAndRoles } from './'
 import { CommonMixin, DateMixin, OrgPersonMixin } from '@/mixins/'
-import { isLimitedExtendRestorationFiling, isLimitedConversionRestorationFiling } from '@/store/getters'
 
 @Component({
   components: {

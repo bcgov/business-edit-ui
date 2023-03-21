@@ -6,7 +6,6 @@ import * as States from './state'
 import getters from './getters'
 import mutations from './mutations'
 import actions from './actions'
-import Filings from './Filings'
 
 /**
  * Configures and returns Vuex Store.
@@ -18,9 +17,6 @@ export function getVuexStore () {
     state: { ...States },
     getters,
     mutations,
-    actions,
-    modules: {
-      filings: Filings
-    }
+    actions
   })
 }

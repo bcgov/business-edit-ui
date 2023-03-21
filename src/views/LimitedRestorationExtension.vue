@@ -1,158 +1,144 @@
 <template>
-  <v-container class="view-container my-8 py-0">
-    <v-row>
-      <v-col cols="9" class="left-side">
-        <section class="pb-10" id="restoration-view">
-          <!-- Company Information page-->
-          <v-slide-x-transition hide-on-leave>
-            <div v-if="!isSummaryMode">
-              <header>
-                <h1>Limited Restoration Extension</h1>
-              </header>
-              <QuestionWrapper>
-                <PeopleAndRoles class="mt-10"
+  <ViewWrapper>
+    <section class="pb-10" id="question_container">
+      <!-- Company Information page-->
+      <v-slide-x-transition hide-on-leave>
+        <div v-if="!isSummaryMode">
+          <header>
+            <h1>Limited Restoration Extension</h1>
+          </header>
+          <QuestionWrapper
+            id="applicant-information"
+            title="Applicant Information"
+            subtitle="You application must include one of the following"
+          >
+            <PeopleAndRoles />
+          </QuestionWrapper>
 
-                />
-              </QuestionWrapper>
+          <QuestionWrapper
+            id="extend-time-limit"
+            title="Extend Time Limit of Limited Restoration"
+            subtitle="Select an extension time"
+          >
+            <pre style="border: red 1px solid">TODO - Karim add your extend time limit component here</pre>
+          </QuestionWrapper>
 
-              <YourCompany class="mt-10" />
+          <YourCompany class="mt-10" />
+        </div>
+      </v-slide-x-transition>
+
+      <!-- Review and Certify page -->
+      <v-slide-x-reverse-transition hide-on-leave>
+        <div v-if="isSummaryMode && showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
+
+          <RestorationSummary
+            class="mt-10"
+            :validate="getAppValidate"
+          />
+
+          <YourCompanySummary class="mt-10" />
+
+          <!-- Applicant list -->
+          <v-card id="people-and-roles-vcard" flat class="mt-6">
+            <!-- Header -->
+            <div class="section-container header-container">
+              <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
+              <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Information</label>
             </div>
-          </v-slide-x-transition>
-
-          <!-- Review and Certify page -->
-          <v-slide-x-reverse-transition hide-on-leave>
-            <div v-if="isSummaryMode && showFeeSummary">
-              <header>
-                <h1>Review and Certify</h1>
-              </header>
-
-              <RestorationSummary
-                class="mt-10"
-                :validate="getAppValidate"
-              />
-
-              <YourCompanySummary class="mt-10" />
-
-              <!-- Applicant list -->
-              <v-card id="people-and-roles-vcard" flat class="mt-6">
-                <!-- Header -->
-                <div class="section-container header-container">
-                  <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
-                  <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Information</label>
-                </div>
-                <div no-gutters class="mt-4 section-container">
-                  <ListPeopleAndRoles
-                    :isSummaryView="true"
-                    :showDeliveryAddressColumn="false"
-                    :showRolesColumn="false"
-                    :showEmailColumn="true"
-                  />
-                </div>
-              </v-card>
-
-              <DocumentsDelivery
-                class="mt-10"
-                sectionNumber="1."
-                :validate="getAppValidate"
-                @valid="setDocumentOptionalEmailValidity($event)"
-              />
-
-              <CertifySection
-                class="mt-10"
-                sectionNumber="2."
-                :validate="getAppValidate"
-              />
-
-              <StaffPayment
-                class="mt-10"
-                sectionNumber="3."
-                @haveChanges="onStaffPaymentChanges()"
+            <div no-gutters class="mt-4 section-container">
+              <ListPeopleAndRoles
+                :isSummaryView="true"
+                :showDeliveryAddressColumn="false"
+                :showRolesColumn="false"
+                :showEmailColumn="true"
               />
             </div>
-          </v-slide-x-reverse-transition>
+          </v-card>
 
-          <!-- Done-->
-          <v-fade-transition>
-            <div v-if="isSummaryMode && !showFeeSummary">
-              <header>
-                <h1>Review and Certify</h1>
-              </header>
+          <DocumentsDelivery
+            class="mt-10"
+            sectionNumber="1."
+            :validate="getAppValidate"
+            @valid="setDocumentOptionalEmailValidity($event)"
+          />
 
-              <section class="mt-6">
-                You have deleted all fee-based changes and your company information has reverted to its
-                original state. If you made any non-fee changes such as updates to your Registered
-                Office Contact Information, please note that these changes have already been saved.
-              </section>
+          <CertifySection
+            class="mt-10"
+            sectionNumber="2."
+            :validate="getAppValidate"
+          />
 
-              <v-btn
-                large
-                color="primary"
-                id="done-button"
-                class="mt-8"
-                @click="$root.$emit('go-to-dashboard')"
-              >
-                <span>Done</span>
-              </v-btn>
-            </div>
-          </v-fade-transition>
-        </section>
-      </v-col>
+          <StaffPayment
+            class="mt-10"
+            sectionNumber="3."
+            @haveChanges="onStaffPaymentChanges()"
+          />
+        </div>
+      </v-slide-x-reverse-transition>
 
-      <v-col cols="3" class="right-side">
-        <affix v-if="showFeeSummary"
-               relative-element-selector=".left-side"
-               :offset="{ top: 86, bottom: 12 }"
-        >
-          <v-expand-transition>
-<!--            <FeeSummaryShared-->
-<!--              :filingData="getFilingData"-->
-<!--              :payApiUrl="payApiUrl"-->
-<!--              :isLoading="isBusySaving"-->
-<!--              :hasConflicts="isConflictingLegalType && getNameRequestNumber"-->
-<!--              :confirmLabel="feeSummaryConfirmLabel"-->
-<!--              :errorMessage="feeSummaryError"-->
-<!--              :isSummaryMode="isSummaryMode"-->
-<!--              @action="handleFeeSummaryActions($event)"-->
-<!--            />-->
-          </v-expand-transition>
-        </affix>
-      </v-col>
-      <!-- end of v-col -->
-    </v-row>
-  </v-container>
+      <!-- Done-->
+      <v-fade-transition>
+        <div v-if="isSummaryMode && !showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
+
+          <section class="mt-6">
+            You have deleted all fee-based changes and your company information has reverted to its
+            original state. If you made any non-fee changes such as updates to your Registered
+            Office Contact Information, please note that these changes have already been saved.
+          </section>
+
+          <v-btn
+            large
+            color="primary"
+            id="done-button"
+            class="mt-8"
+            @click="$root.$emit('go-to-dashboard')"
+          >
+            <span>Done</span>
+          </v-btn>
+        </div>
+      </v-fade-transition>
+    </section>
+  </ViewWrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter, Mutation } from 'vuex-class'
+import { v4 as uuidv4 } from 'uuid'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import { CertifySection, DocumentsDelivery, PeopleAndRoles, ListPeopleAndRoles, StaffPayment,
   YourCompany } from '@/components/common/'
-import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import {
-  ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF,
-  RestorationFilingIF, OrgPersonIF, EffectiveDateTimeIF
-} from '@/interfaces/'
+import { ActionBindingIF, ResourceIF, OrgPersonIF, RestorationFilingIF, EntitySnapshotIF } from '@/interfaces/'
 import { FilingStatus, FilingTypes, RestorationTypes, RoleTypes } from '@/enums/'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
-  from '@/resources/Restoration/'
-import { FilingDataIF } from '@bcrs-shared-components/interfaces'
+  from '@/resources/LimitedRestorationExtension/'
+import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel/'
 import QuestionWrapper from '@/components/common/QuestionWrapper.vue'
 import { mapActions, mapMutations } from 'vuex'
-import { cloneDeep } from 'lodash'
+import ViewWrapper from '@/components/ViewWrapper.vue'
+import { AuthServices, LegalServices } from '@/services'
 
 @Component({
   components: {
+    ViewWrapper,
     QuestionWrapper,
     CertifySection,
     DocumentsDelivery,
+    FeeSummaryShared,
     PeopleAndRoles,
+    LimitedRestorationPanel,
     ListPeopleAndRoles,
     RestorationSummary,
     StaffPayment,
@@ -189,11 +175,8 @@ export default class LimitedRestorationExtension extends Vue {
   @Getter isBcCcc!: boolean
   @Getter isBcUlcCompany!: boolean
   @Getter isRoleStaff!: boolean
-  @Getter isLimitedExtendRestorationFiling!: boolean
-  @Getter isLimitedConversionRestorationFiling!: boolean
   @Getter getResource!: ResourceIF
   @Getter getEntityType!: CorpTypeCd
-  @Getter getEffectiveDateTime!: EffectiveDateTimeIF
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -240,118 +223,52 @@ export default class LimitedRestorationExtension extends Vue {
 
     // fetch the restoration filing
     try {
-      // fetch draft restoration and save to store
-      this.fetchFilingByIds({ businessId: this.getBusinessId, filingId: this.restorationId })
-        .then(response => {
-          // do not proceed if this isn't a RESTORATION filing
-          if (!response.restoration) {
-            throw new Error('Invalid Restoration filing')
-          }
-          if (response.header?.status !== FilingStatus.DRAFT) {
-            throw new Error('Invalid Restoration status')
-          }
-          this.setRestorationFiling(response)
-        })
-        .catch(error => {
-          throw new Error('Error from API ' + error)
-        })
+      // do not proceed if we don't have the necessary query param
+      if (!this.restorationId) {
+        throw new Error('Invalid restoration filing ID')
+      }
 
-      // fetch data required and commit to store
-      await Promise.all([
-        this.fetchBusinessInfo(this.getBusinessId),
-        this.fetchAuthentication(this.getBusinessId),
-        this.fetchAddresses(this.getBusinessId),
-        this.fetchNameTranslations(this.getBusinessId),
-        this.fetchDirectors(this.getBusinessId)
-      ]).then(() => {
-        this.fetchStateFiling()
-          .catch(() => {
-            throw new Error(`Invalid fetched stateFiling = ${this.getBusinessId}`)
-          })
-      }).catch(() => {
-        throw new Error(`Unable to retrieve required data`)
-      })
+      // store the filing ID
+      this.setFilingId(this.restorationId)
 
-      /**
-       * Parses a draft Restoration filing into the store.
-       * @param filing the restoration filing
-       * @param entitySnapshot the latest entity snapshot
-       */
-      //   parseRestorationFiling (filing: RestorationFilingIF, entitySnapshot: EntitySnapshotIF): void {
-      //     // store Entity Snapshot
-      //     this.setEntitySnapshot(entitySnapshot)
-      //
-      //     // store Entity Type
-      //     this.setEntityType(filing.restoration.business?.legalType || entitySnapshot.businessInfo.legalType)
-      //
-      //     // store Business Information
-      //     this.setBusinessInformation({
-      //       ...entitySnapshot.businessInfo,
-      //       ...filing.business,
-      //       ...filing.restoration?.business
-      //     })
-      //
-      //     // restore Restoration data
-      //     this.setRestorationType(filing.restoration.type)
-      //     this.setRestorationExpiry(filing.restoration.expiry || null)
-      //
-      //     // store Name Request data
-      //     this.setNameRequest(cloneDeep(
-      //       filing.restoration.nameRequest ||
-      //       {
-      //         legalType: entitySnapshot.businessInfo.legalType,
-      //         legalName: entitySnapshot.businessInfo.legalName,
-      //         nrNumber: entitySnapshot.businessInfo.nrNumber
-      //       }
-      //     ))
-      //
-      //     // store Name Translations
-      //     this.setNameTranslations(cloneDeep(
-      //       this.mapNameTranslations(filing.restoration.nameTranslations) ||
-      //       this.mapNameTranslations(entitySnapshot.nameTranslations) ||
-      //       []
-      //     ))
-      //
-      //     // store Office Addresses
-      //     this.setOfficeAddresses(cloneDeep(
-      //       filing.restoration.offices ||
-      //       entitySnapshot.addresses
-      //     ))
-      //
-      //     // store People And Roles
-      //     this.setPeopleAndRoles(cloneDeep(
-      //       filing.restoration.parties ||
-      //       entitySnapshot.orgPersons
-      //     ))
-      //
-      //     // store current Business Contact
-      //     this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
-      //
-      //     // store Certify State
-      //     this.setCertifyState({
-      //       valid: false,
-      //       certifiedBy: filing.header.certifiedBy
-      //     })
-      //
-      //     // store Folio Number
-      //     // FUTURE: should we store correction.folioNumber instead?
-      //     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
-      //
-      //     // if Transactional Folio Number was saved then store it
-      //     if (filing.header.isTransactionalFolioNumber) {
-      //     this.setTransactionalFolioNumber(filing.header.folioNumber)
-      //   }
-      //
-      //   // store Document Optional Email
-      //   this.setDocumentOptionalEmail(filing.header.documentOptionalEmail || '')
-      //
-      //   // store File Number and POA
-      //   this.setFileNumber(filing.restoration.courtOrder?.fileNumber)
-      //   this.setHasPlanOfArrangement(filing.restoration.courtOrder?.hasPlanOfArrangement)
-      //
-      //   // store Staff Payment
-      //   this.storeStaffPayment(filing)
-      // }
+      // fetch draft restoration to resume
+      const restorationFiling =
+        await LegalServices.fetchFilingById(this.getBusinessId, this.restorationId) as RestorationFilingIF
+
+      // do not proceed if this isn't a RESTORATION filing
+      if (!restorationFiling.restoration) {
+        throw new Error('Invalid Restoration filing')
+      }
+
+      // do not proceed if this isn't a DRAFT filing
+      if (restorationFiling.header?.status !== FilingStatus.DRAFT) {
+        throw new Error('Invalid Restoration status')
+      }
+
+      // fetch entity snapshot
+      const entitySnapshot = await this.fetchEntitySnapshot()
+      const stateFiling = entitySnapshot.businessInfo.stateFiling
+      const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
+
+      if (!filing) {
+        throw new Error(`Invalid fetched stateFiling = ${this.getBusinessId}`)
+      }
+
+      const parties = filing.restoration?.parties || []
+
+      // find first applicant from fetched parties
+      const applicant = parties.find(
+        orgPerson => orgPerson.roles.some(role => role.roleType === RoleTypes.APPLICANT)
+      )
+
+      if (applicant === undefined) {
+        throw new Error(`Applicant not found for ${this.getBusinessId}`)
+      }
+
+      // set applicant orgPerson
+      entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
+
+      this.parseRestorationFiling(restorationFiling, entitySnapshot)
 
       if (!this.restorationResource) {
         throw new Error(`Invalid restoration resource entity type = ${this.getEntityType}`)
@@ -361,11 +278,9 @@ export default class LimitedRestorationExtension extends Vue {
       this.setResource(this.restorationResource)
 
       // initialize Fee Summary data
-      let filingData: FilingDataIF[] = []
-      if (this.isLimitedExtendRestorationFiling) filingData = [this.restorationResource.filingData[0]]
-      if (this.isLimitedConversionRestorationFiling) filingData = [this.restorationResource.filingData[1]]
-
-      this.setFilingData(filingData)
+      // set the specific resource
+      this.setResource(this.restorationResource)
+      this.setFilingData([this.restorationResource.filingData])
 
       // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()
@@ -387,6 +302,46 @@ export default class LimitedRestorationExtension extends Vue {
   /** Resource getters. */
   get orgPersonLabel (): string {
     return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
+  }
+
+  // build applicant orgPerson and assign id (uuid)
+  private parseApplicantOrgPerson (applicant: OrgPersonIF): OrgPersonIF[] {
+    const applicantOrgPerson: Array<OrgPersonIF> = []
+    applicantOrgPerson.push({
+      deliveryAddress: applicant.deliveryAddress,
+      mailingAddress: applicant.mailingAddress,
+      officer: {
+        email: applicant.officer.email,
+        firstName: applicant.officer.firstName,
+        lastName: applicant.officer.lastName,
+        middleName: applicant.officer.middleName,
+        organizationName: applicant.officer.organizationName,
+        partyType: applicant.officer.partyType,
+        id: uuidv4()
+      },
+      roles: applicant.roles
+    })
+  }
+
+  /** Fetches the entity snapshot. */
+  private async fetchEntitySnapshot (): Promise<EntitySnapshotIF> {
+    const items = await Promise.all([
+      LegalServices.fetchBusinessInfo(this.getBusinessId),
+      AuthServices.fetchAuthInfo(this.getBusinessId),
+      LegalServices.fetchAddresses(this.getBusinessId),
+      LegalServices.fetchNameTranslations(this.getBusinessId),
+      LegalServices.fetchDirectors(this.getBusinessId)
+    ])
+
+    if (items.length !== 5) throw new Error('Failed to fetch entity snapshot')
+
+    return {
+      businessInfo: items[0],
+      authInfo: items[1],
+      addresses: items[2],
+      nameTranslations: items[3],
+      orgPersons: items[4]
+    } as EntitySnapshotIF
   }
 
   /** Emits Fetch Error event. */

@@ -1,135 +1,112 @@
 <template>
-  <v-container class="view-container my-8 py-0">
-    <v-row>
-      <v-col cols="9" class="left-side">
-        <section class="pb-10" id="question_container">
-          <!-- Company Information page-->
-          <v-slide-x-transition hide-on-leave>
-            <div v-if="!isSummaryMode">
-              <header>
-                <h1>Conversion to Full Restoration</h1>
-              </header>
+  <ViewWrapper>
+    <section class="pb-10" id="question_container">
+      <!-- Company Information page-->
+      <v-slide-x-transition hide-on-leave>
+        <div v-if="!isSummaryMode">
+          <header>
+            <h1>Conversion to Full Restoration</h1>
+          </header>
 
-              <QuestionWrapper
-                id="applicant-relationship"
-                title="Applicant Relationship"
-                subtitle="Please select applicant's relationship to the company at the time the company was dissolved">
-                <RelationshipsPanel
-                  class="ml-4 pl-5 pt-1"
-                />
-              </QuestionWrapper>
-
-              <QuestionWrapper
-                id="applicant-information"
-                title="Applicant Information"
-                subtitle="Your application must include one of the following">
-                <PeopleAndRoles class="mt-10" />
-              </QuestionWrapper>
-
-              <QuestionWrapper
-                id="approval-type"
-                title="Approval Type">
-                <ApprovalType class="white-background px-9 py-4 mt-4" />
-              </QuestionWrapper>
-
-              <YourCompany class="mt-10" />
-
-            </div>
-          </v-slide-x-transition>
-
-          <!-- Review and Certify page -->
-          <v-slide-x-reverse-transition hide-on-leave>
-            <div v-if="isSummaryMode && showFeeSummary">
-              <header>
-                <h1>Review and Certify</h1>
-              </header>
-
-              <RestorationSummary
-                class="mt-10"
-                :validate="getAppValidate"
-              />
-
-              <YourCompanySummary class="mt-10" />
-
-              <CurrentDirectors class="mt-10" />
-
-              <DocumentsDelivery
-                class="mt-10"
-                sectionNumber="1."
-                :validate="getAppValidate"
-                @valid="setDocumentOptionalEmailValidity($event)"
-              />
-
-              <CertifySection
-                class="mt-10"
-                sectionNumber="2."
-                :validate="getAppValidate"
-              />
-
-              <StaffPayment
-                class="mt-10"
-                sectionNumber="3."
-                @haveChanges="onStaffPaymentChanges()"
-              />
-            </div>
-          </v-slide-x-reverse-transition>
-
-          <!-- Done-->
-          <v-fade-transition>
-            <div v-if="isSummaryMode && !showFeeSummary">
-              <header>
-                <h1>Review and Certify</h1>
-              </header>
-
-              <section class="mt-6">
-                You have deleted all fee-based changes and your company information has reverted to its
-                original state. If you made any non-fee changes such as updates to your Registered
-                Office Contact Information, please note that these changes have already been saved.
-              </section>
-
-              <v-btn
-                large
-                color="primary"
-                id="done-button"
-                class="mt-8"
-                @click="$root.$emit('go-to-dashboard')"
-              >
-                <span>Done</span>
-              </v-btn>
-            </div>
-          </v-fade-transition>
-        </section>
-      </v-col>
-
-      <v-col cols="3" class="right-side">
-        <affix v-if="showFeeSummary"
-               relative-element-selector=".left-side"
-               :offset="{ top: 86, bottom: 12 }"
-        >
-          <v-expand-transition>
-            <FeeSummaryShared
-              v-if="showFeeSummaryShared"
-              :filingData="getFilingData"
-              :payApiUrl="payApiUrl"
-              :isLoading="isBusySaving"
-              :hasConflicts="isConflictingLegalType && getNameRequestNumber"
-              :confirmLabel="feeSummaryConfirmLabel"
-              :errorMessage="feeSummaryError"
-              :isSummaryMode="isSummaryMode"
-              @action="handleFeeSummaryActions($event)"
+          <QuestionWrapper
+            id="applicant-relationship"
+            title="Applicant Relationship"
+            subtitle="Please select applicant's relationship to the company at the time the company was dissolved">
+            <RelationshipsPanel
+              class="ml-4 pl-5 pt-1"
             />
-          </v-expand-transition>
-        </affix>
-      </v-col>
-      <!-- end of v-col -->
-    </v-row>
-  </v-container>
+          </QuestionWrapper>
+
+          <QuestionWrapper
+            id="applicant-information"
+            title="Applicant Information"
+          >
+            <PeopleAndRoles />
+          </QuestionWrapper>
+
+          <QuestionWrapper
+            id="approval-type"
+            title="Approval Type">
+            <ApprovalType class="white-background px-9 py-4 mt-4" />
+          </QuestionWrapper>
+
+          <YourCompany class="mt-10" />
+
+        </div>
+      </v-slide-x-transition>
+
+      <!-- Review and Certify page -->
+      <v-slide-x-reverse-transition hide-on-leave>
+        <div v-if="isSummaryMode && showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
+
+          <RestorationSummary
+            class="mt-10"
+            :validate="getAppValidate"
+          />
+
+          <YourCompanySummary class="mt-10" />
+
+          <CurrentDirectors class="mt-10" />
+
+          <ListPeopleAndRoles class="mt-10" />
+
+          <DocumentsDelivery
+            class="mt-10"
+            sectionNumber="1."
+            :validate="getAppValidate"
+            @valid="setDocumentOptionalEmailValidity($event)"
+          />
+
+          <CertifySection
+            class="mt-10"
+            sectionNumber="2."
+            :validate="getAppValidate"
+          />
+
+          <StaffPayment
+            class="mt-10"
+            sectionNumber="3."
+            @haveChanges="onStaffPaymentChanges()"
+          />
+        </div>
+      </v-slide-x-reverse-transition>
+
+      <!-- Done-->
+      <v-fade-transition>
+        <div v-if="isSummaryMode && !showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
+
+          <section class="mt-6">
+            You have deleted all fee-based changes and your company information has reverted to its
+            original state. If you made any non-fee changes such as updates to your Registered
+            Office Contact Information, please note that these changes have already been saved.
+          </section>
+
+          <v-btn
+            large
+            color="primary"
+            id="done-button"
+            class="mt-8"
+            @click="$root.$emit('go-to-dashboard')"
+          >
+            <span>Done</span>
+          </v-btn>
+        </div>
+      </v-fade-transition>
+    </section>
+  </ViewWrapper>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
+import { v4 as uuidv4 } from 'uuid'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
@@ -137,22 +114,28 @@ import { CertifySection, CurrentDirectors, DocumentsDelivery, PeopleAndRoles, St
   YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF,
-  RestorationFilingIF } from '@/interfaces/'
-import { FilingStatus, FilingTypes, RestorationTypes } from '@/enums/'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import {
+  ActionBindingIF,
+  ResourceIF,
+  RestorationFilingIF,
+  FilingDataIF,
+  OrgPersonIF,
+  EntitySnapshotIF } from '@/interfaces/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
-  from '@/resources/Restoration/'
-import { FilingDataIF } from '@bcrs-shared-components/interfaces'
+  from '@/resources/LimitedRestorationToFull/'
+import { FilingStatus, RoleTypes } from '@/enums/'
 import { RelationshipsPanel } from '@bcrs-shared-components/relationships-panel'
 import CourtOrderPoa from '@/components/common/CourtOrderPoa.vue'
 import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
 import { ApprovalType } from '@bcrs-shared-components/approval-type'
-import QuestionWrapper from '@/components/common/QuestionWrapper.vue'
 import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
+import QuestionWrapper from '@/components/common/QuestionWrapper.vue'
+import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAndRoles.vue'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 
 @Component({
   components: {
+    ViewWrapper,
     ApprovalType,
     QuestionWrapper,
     CourtOrderPoa,
@@ -163,6 +146,7 @@ import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summ
     LimitedRestorationPanel,
     PeopleAndRoles,
     RelationshipsPanel,
+    ListPeopleAndRoles,
     RestorationSummary,
     StaffPayment,
     YourCompany,
@@ -186,6 +170,7 @@ export default class LimitedRestorationToFull extends Vue {
   @Getter isRoleStaff!: boolean
   @Getter isLimitedExtendRestorationFiling!: boolean
   @Getter isLimitedConversionRestorationFiling!: boolean
+  @Getter getResource!: ResourceIF
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -195,16 +180,7 @@ export default class LimitedRestorationToFull extends Vue {
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
-
-  /** The id of the restoration being edited. */
-  get restorationId (): number {
-    return +this.$route.query['restoration-id'] || 0
-  }
-
-  /** True if user is authenticated. */
-  get isAuthenticated (): boolean {
-    return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
-  }
+  @Prop({ required: true }) readonly restorationId!: number
 
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
@@ -222,9 +198,6 @@ export default class LimitedRestorationToFull extends Vue {
   private async onAppReady (val: boolean): Promise<void> {
     // do not proceed if app is not ready
     if (!val) return
-
-    // do not proceed if we are not authenticated (safety check - should never happen)
-    if (!this.isAuthenticated) return
 
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
@@ -268,10 +241,26 @@ export default class LimitedRestorationToFull extends Vue {
 
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
+      const stateFiling = entitySnapshot.businessInfo.stateFiling
+      const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
 
-      // verify that business is in Limited Restoration status
-      // (will throw on error)
-      await this.verifyLimitedRestorationStatus(entitySnapshot.businessInfo)
+      if (!filing) {
+        throw new Error(`Invalid fetched stateFiling = ${this.getBusinessId}`)
+      }
+
+      const parties = filing.restoration?.parties || []
+
+      // find first applicant from fetched parties
+      const applicant = parties.find(
+        orgPerson => orgPerson.roles.some(role => role.roleType === RoleTypes.APPLICANT)
+      )
+
+      if (applicant === undefined) {
+        throw new Error(`Applicant not found for ${this.getBusinessId}`)
+      }
+
+      // set applicant orgPerson
+      entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
 
       // parse draft restoration filing and entity snapshot into store
       this.parseRestorationFiling(restorationFiling, entitySnapshot)
@@ -284,11 +273,7 @@ export default class LimitedRestorationToFull extends Vue {
       this.setResource(this.restorationResource)
 
       // initialize Fee Summary data
-      let filingData: FilingDataIF[] = []
-      if (this.isLimitedExtendRestorationFiling) filingData = [this.restorationResource.filingData[0]]
-      if (this.isLimitedConversionRestorationFiling) filingData = [this.restorationResource.filingData[1]]
-
-      this.setFilingData(filingData)
+      this.setFilingData([this.restorationResource.filingData])
 
       // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()
@@ -305,6 +290,27 @@ export default class LimitedRestorationToFull extends Vue {
 
     // now that all data is loaded, wait for things to stabilize and reset flag
     this.$nextTick(() => this.setHaveUnsavedChanges(false))
+  }
+
+  // build applicant orgPerson and assign id (uuid)
+  private parseApplicantOrgPerson (applicant: OrgPersonIF): OrgPersonIF[] {
+    const applicantOrgPerson: Array<OrgPersonIF> = []
+    applicantOrgPerson.push({
+      deliveryAddress: applicant.deliveryAddress,
+      mailingAddress: applicant.mailingAddress,
+      officer: {
+        email: applicant.officer.email,
+        firstName: applicant.officer.firstName,
+        lastName: applicant.officer.lastName,
+        middleName: applicant.officer.middleName,
+        organizationName: applicant.officer.organizationName,
+        partyType: applicant.officer.partyType,
+        id: uuidv4()
+      },
+      roles: applicant.roles
+    })
+
+    return applicantOrgPerson
   }
 
   /** Fetches the entity snapshot. */
@@ -328,25 +334,6 @@ export default class LimitedRestorationToFull extends Vue {
     } as EntitySnapshotIF
   }
 
-  /** Verifies that the business is in Limited Restoration status. */
-  private async verifyLimitedRestorationStatus (businessInfo: BusinessInformationIF): Promise<void> {
-    // fetch state filing
-    const stateFiling = businessInfo.stateFiling
-    const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
-    const type = filing?.header?.name as FilingTypes
-
-    // FUTURE: enable code below when limited restorations can be filed (ticket 14641)
-
-    // // Verify state filing. It should be a Limited Restoration filing or a
-    // // Limited Restoration Extension filing. If the expiry date has passed
-    // // then the state filing should be a dissolution.
-    // if (filing?.name === FilingTypes.RESTORATION) {
-    //   if (filing?.restoration?.type === RestorationTypes.LIMITED) return // all good
-    //   if (filing?.restoration?.type === RestorationTypes.LTD_EXTEND) return // all good
-    // }
-    // throw new Error('Business is not in Limited Restoration status')
-  }
-
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -361,36 +348,12 @@ export default class LimitedRestorationToFull extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-
-article {
-  .v-card {
-    line-height: 1.2rem;
-    font-size: $px-14;
-  }
-}
-
-header p,
-section p {
-  color: $gray6;
-}
-
-section + section {
-  margin-top: 3rem;
-}
-
-h1 {
-  margin-bottom: 1.25rem;
-  line-height: 2rem;
-  letter-spacing: -0.01rem;
-}
-
-h2 {
-  margin-bottom: 0.25rem;
-  margin-top: 3rem;
-  font-size: 1.125rem;
-}
-
 #done-button {
   width: 10rem;
+}
+
+.header-container {
+  display: flex;
+  background-color: $BCgovBlue5O;
 }
 </style>

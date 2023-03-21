@@ -8,19 +8,11 @@ export const UlcRestorationResource: ResourceIF = {
   displayName: GetCorpFullDescription(CorpTypeCd.BC_ULC_COMPANY),
   addressLabel: 'Registered Office',
   showEmailUnderName: false,
-  filingData: [
-    // order matters - see restorationResource()
-    {
-      entityType: CorpTypeCd.BC_ULC_COMPANY,
-      filingTypeCode: FilingCodes.RESTORATION_LTD_EXTEND,
-      priority: false
-    },
-    {
-      entityType: CorpTypeCd.BC_ULC_COMPANY,
-      filingTypeCode: FilingCodes.RESTORATION_LTD_TO_FULL,
-      priority: false
-    }
-  ],
+  filingData: {
+    entityType: CorpTypeCd.BC_COMPANY,
+    filingTypeCode: FilingCodes.RESTORATION_LTD_TO_FULL,
+    priority: false
+  },
   changeData: {
     nameChangeOptions: [
       NameChangeOptions.CORRECT_NEW_NR,

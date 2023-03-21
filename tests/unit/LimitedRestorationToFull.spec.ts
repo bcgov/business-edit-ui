@@ -7,7 +7,6 @@ import { getVuexStore } from '@/store/'
 import { AuthServices, LegalServices, PayServices } from '@/services/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import LimitedRestorationToFull from '@/views/LimitedRestorationToFull.vue'
-import LimitedRestorationExtension from '@/views/LimitedRestorationExtension.vue'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import CertifySection from '@/components/common/CertifySection.vue'
 import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAndRoles.vue'
@@ -185,7 +184,7 @@ const filingFees = {
 sessionStorage.setItem('PAY_API_URL', 'https://pay.api.url/')
 sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token') // anything non-falsy
 
-describe('Restoration component - edit page', () => {
+describe('LimitedRestorationToFull component - edit page', () => {
   const { assign } = window.location
   let wrapper: any
 
@@ -283,7 +282,7 @@ describe('Restoration component - edit page', () => {
   })
 })
 
-describe('Restoration component - summary page (with filing changes)', () => {
+describe('LimitedRestorationToFull component - summary page (with filing changes)', () => {
   const { assign } = window.location
   let wrapper: any
 

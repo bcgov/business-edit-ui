@@ -1,8 +1,8 @@
 <template>
-  <section>
+  <section class="mt-5">
     <header>
       <h2 :id="id">{{ title }}</h2>
-      <p v-if="subtitle">{{ subtitle }}</p>
+      <p v-if="subtitle" class="pt-2">{{ subtitle }}</p>
       <p v-if="comment" class="black--text mb-0">{{ comment }}</p>
     </header>
     <slot></slot>
