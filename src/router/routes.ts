@@ -58,7 +58,7 @@ export const routes = [
     name: RouteNames.RESTORATION_EXTENSION,
     component: LimitedRestorationExtension,
     props: route => ({
-      restorationId: route.query['restoration-id']
+      restorationId: +route.query['restoration-id'] || 0
     }),
     meta: {
       requiresAuth: true,
@@ -71,7 +71,7 @@ export const routes = [
     name: RouteNames.RESTORATION_CONVERSION,
     component: LimitedRestorationToFull,
     props: route => ({
-      restorationId: route.query['restoration-id'].match(/\d+/)[0]
+      restorationId: +route.query['restoration-id'] || 0
     }),
     meta: {
       requiresAuth: true,
