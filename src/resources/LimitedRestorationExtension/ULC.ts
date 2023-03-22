@@ -14,10 +14,6 @@ export const UlcRestorationResource: ResourceIF = {
     priority: false
   },
   changeData: {
-    nameChangeOptions: [
-      NameChangeOptions.CORRECT_NEW_NR,
-      NameChangeOptions.CORRECT_NAME_TO_NUMBER
-    ],
     orgPersonInfo: {
       orgPersonLabel: 'Applicant',
       orgTypesLabel: 'Business or Corporation',
