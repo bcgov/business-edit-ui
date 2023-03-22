@@ -10,7 +10,7 @@
           <QuestionWrapper
             id="applicant-information"
             title="Applicant Information"
-            subtitle="You application must include one of the following:"
+            subtitle="Your application must include one of the following:"
           >
             <PeopleAndRoles />
           </QuestionWrapper>
