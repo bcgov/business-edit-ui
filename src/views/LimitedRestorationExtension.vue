@@ -171,7 +171,7 @@ export default class LimitedRestorationExtension extends Vue {
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
-  @Prop({ required: true }) readonly restorationId!: number
+  @Prop({ default: 0 }) readonly restorationId!: number
 
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
