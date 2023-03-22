@@ -10,7 +10,7 @@
           <QuestionWrapper
             id="applicant-information"
             title="Applicant Information"
-            subtitle="You application must include one of the following"
+            subtitle="You application must include one of the following:"
           >
             <PeopleAndRoles />
           </QuestionWrapper>
@@ -18,7 +18,7 @@
           <QuestionWrapper
             id="extend-time-limit"
             title="Extend Time Limit of Limited Restoration"
-            subtitle="Select an extension time"
+            subtitle="Select an extension time:"
           >
             <pre style="border: red 1px solid">TODO - Karim add your extend time limit component here</pre>
           </QuestionWrapper>
@@ -110,7 +110,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter, Mutation } from 'vuex-class'
+import { Action, Getter } from 'vuex-class'
 import { v4 as uuidv4 } from 'uuid'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
@@ -131,16 +131,16 @@ import { AuthServices, LegalServices } from '@/services'
 
 @Component({
   components: {
-    ViewWrapper,
-    QuestionWrapper,
     CertifySection,
     DocumentsDelivery,
     FeeSummaryShared,
-    PeopleAndRoles,
     LimitedRestorationPanel,
     ListPeopleAndRoles,
+    PeopleAndRoles,
+    QuestionWrapper,
     RestorationSummary,
     StaffPayment,
+    ViewWrapper,
     YourCompany,
     YourCompanySummary
   },
@@ -262,9 +262,9 @@ export default class LimitedRestorationExtension extends Vue {
       // set the specific resource
       this.setResource(this.restorationResource)
 
-      // initialize Fee Summary data
       // set the specific resource
       this.setResource(this.restorationResource)
+      // initialize Fee Summary data
       this.setFilingData([this.restorationResource.filingData])
 
       // update the current fees for this filing

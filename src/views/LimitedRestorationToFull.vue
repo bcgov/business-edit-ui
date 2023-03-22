@@ -11,7 +11,7 @@
           <QuestionWrapper
             id="applicant-relationship"
             title="Applicant Relationship"
-            subtitle="Please select applicant's relationship to the company at the time the company was dissolved">
+            subtitle="Please select applicant's relationship to the company at the time the company was dissolved:">
             <RelationshipsPanel
               class="ml-4 pl-5 pt-1"
             />
@@ -135,20 +135,20 @@ import ViewWrapper from '@/components/ViewWrapper.vue'
 
 @Component({
   components: {
-    ViewWrapper,
     ApprovalType,
-    QuestionWrapper,
-    CourtOrderPoa,
     CertifySection,
+    CourtOrderPoa,
     CurrentDirectors,
     DocumentsDelivery,
     FeeSummaryShared,
     LimitedRestorationPanel,
-    PeopleAndRoles,
-    RelationshipsPanel,
     ListPeopleAndRoles,
+    PeopleAndRoles,
+    QuestionWrapper,
+    RelationshipsPanel,
     RestorationSummary,
     StaffPayment,
+    ViewWrapper,
     YourCompany,
     YourCompanySummary
   },
