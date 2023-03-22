@@ -9,7 +9,7 @@ export const BenRestorationResource: ResourceIF = {
   addressLabel: 'Registered Office',
   showEmailUnderName: false,
   filingData: {
-    entityType: CorpTypeCd.BC_COMPANY,
+    entityType: CorpTypeCd.BENEFIT_COMPANY,
     filingTypeCode: FilingCodes.RESTORATION_LTD_EXTEND,
     priority: false
   },

@@ -9,7 +9,7 @@ export const CccRestorationResource: ResourceIF = {
   addressLabel: 'Registered Office',
   showEmailUnderName: false,
   filingData: {
-    entityType: CorpTypeCd.BC_COMPANY,
+    entityType: CorpTypeCd.BC_CCC,
     filingTypeCode: FilingCodes.RESTORATION_LTD_TO_FULL,
     priority: false
   },

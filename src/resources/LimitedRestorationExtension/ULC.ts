@@ -9,7 +9,7 @@ export const UlcRestorationResource: ResourceIF = {
   addressLabel: 'Registered Office',
   showEmailUnderName: false,
   filingData: {
-    entityType: CorpTypeCd.BC_COMPANY,
+    entityType: CorpTypeCd.BC_ULC_COMPANY,
     filingTypeCode: FilingCodes.RESTORATION_LTD_EXTEND,
     priority: false
   },

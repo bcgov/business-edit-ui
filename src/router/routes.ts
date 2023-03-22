@@ -1,13 +1,13 @@
 import {
-  Signin,
-  Signout,
   Alteration,
   Change,
   Conversion,
   Correction,
   LimitedRestorationExtension,
-  SpecialResolution,
-  LimitedRestorationToFull
+  LimitedRestorationToFull,
+  Signin,
+  Signout,
+  SpecialResolution
 }
   from '@/views/'
 import { FilingTypes, RouteNames } from '@/enums/'
