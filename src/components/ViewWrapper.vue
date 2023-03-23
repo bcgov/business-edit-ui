@@ -60,7 +60,7 @@ import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/co
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
-  AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, SpecialResolutionFilingIF }
+  AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, RestorationFilingIF, SpecialResolutionFilingIF }
   from '@/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums/'
