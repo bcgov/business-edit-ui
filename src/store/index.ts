@@ -2,7 +2,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-// Store modules
 import * as States from './state'
 import getters from './getters'
 import mutations from './mutations'

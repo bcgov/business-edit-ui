@@ -8,19 +8,11 @@ export const BenRestorationResource: ResourceIF = {
   displayName: GetCorpFullDescription(CorpTypeCd.BENEFIT_COMPANY),
   addressLabel: 'Registered Office',
   showEmailUnderName: false,
-  filingData: [
-    // order matters - see restorationResource()
-    {
-      entityType: CorpTypeCd.BENEFIT_COMPANY,
-      filingTypeCode: FilingCodes.RESTORATION_LTD_EXTEND,
-      priority: false
-    },
-    {
-      entityType: CorpTypeCd.BENEFIT_COMPANY,
-      filingTypeCode: FilingCodes.RESTORATION_LTD_TO_FULL,
-      priority: false
-    }
-  ],
+  filingData: {
+    entityType: CorpTypeCd.BENEFIT_COMPANY,
+    filingTypeCode: FilingCodes.RESTORATION_LTD_TO_FULL,
+    priority: false
+  },
   changeData: {
     nameChangeOptions: [
       NameChangeOptions.CORRECT_NEW_NR,

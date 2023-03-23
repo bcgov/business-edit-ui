@@ -3,10 +3,7 @@
     <!-- Restoration conversion and extension add buttons -->
     <div v-if="(isLimitedConversionRestorationFiling || isLimitedExtendRestorationFiling)">
       <article>
-        <header>
-          <h2 id="resto-header-lbl">1. Add Applicant Information</h2>
-        </header>
-        <section class="mt-4">
+        <section>
           <h3 :class="{ 'invalid': !hasApplicant }">Your application must include one of the following:</h3>
         </section>
         <ul>
@@ -52,7 +49,7 @@
           <span>Add a Business or Corporation</span>
         </v-btn>
         <p v-if="!haveRequiredAddresses" class="error-text small-text mt-5 mb-0">
-          A applicant address is missing or incorrect
+          An applicant's address is missing or incorrect
         </p>
         </div>
       </article>
@@ -220,7 +217,6 @@ import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
 import { HelpSection } from '@/components/common/'
 import { ListPeopleAndRoles } from './'
 import { CommonMixin, DateMixin, OrgPersonMixin } from '@/mixins/'
-import { isLimitedExtendRestorationFiling, isLimitedConversionRestorationFiling } from '@/store/getters'
 
 @Component({
   components: {
@@ -491,8 +487,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     this.currentOrgPerson.actions = actions
 
     // for firms and restoration (extension and conversion) applciations, use business lookup initially
-    if (this.isPartnership || this.isSoleProp || isLimitedExtendRestorationFiling ||
-       isLimitedConversionRestorationFiling) {
+    if (this.isPartnership || this.isSoleProp || this.isLimitedExtendRestorationFiling ||
+       this.isLimitedConversionRestorationFiling) {
       this.currentOrgPerson.isLookupBusiness = true
     }
 

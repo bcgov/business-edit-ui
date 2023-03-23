@@ -1,16 +1,37 @@
 <template>
   <ViewWrapper>
-    <section class="pb-10" id="restoration-view">
+    <section class="pb-10" id="limited-restoration-full">
       <!-- Company Information page-->
       <v-slide-x-transition hide-on-leave>
-        <div v-if="!isSummaryMode">
+        <div v-if="!isSummaryMode" id="question_container">
           <header>
-            <h1>{{ entityTitle }}</h1>
+            <h1>Conversion to Full Restoration</h1>
           </header>
 
-          <PeopleAndRoles class="mt-10" />
+          <QuestionWrapper
+            id="applicant-relationship"
+            title="Applicant Relationship"
+            subtitle="Please select applicant's relationship to the company at the time the company was dissolved:">
+            <RelationshipsPanel
+              class="ml-4 pl-5 pt-1"
+            />
+          </QuestionWrapper>
+
+          <QuestionWrapper
+            id="applicant-information"
+            title="Applicant Information"
+          >
+            <PeopleAndRoles />
+          </QuestionWrapper>
+
+          <QuestionWrapper
+            id="approval-type"
+            title="Approval Type">
+            <ApprovalType class="white-background px-9 py-4 mt-4" />
+          </QuestionWrapper>
 
           <YourCompany class="mt-10" />
+
         </div>
       </v-slide-x-transition>
 
@@ -28,22 +49,9 @@
 
           <YourCompanySummary class="mt-10" />
 
-          <!-- Applicant list -->
-          <v-card id="people-and-roles-vcard" flat class="mt-6">
-            <!-- Header -->
-            <div class="section-container header-container">
-              <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
-              <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Information</label>
-            </div>
-            <div no-gutters class="mt-4 section-container">
-              <ListPeopleAndRoles
-                :isSummaryView="true"
-                :showDeliveryAddressColumn="false"
-                :showRolesColumn="false"
-                :showEmailColumn="true"
-              />
-            </div>
-          </v-card>
+          <CurrentDirectors class="mt-10" />
+
+          <ListPeopleAndRoles class="mt-10" />
 
           <DocumentsDelivery
             class="mt-10"
@@ -99,32 +107,48 @@ import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { v4 as uuidv4 } from 'uuid'
-import { cloneDeep } from 'lodash'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
-import { CertifySection, DocumentsDelivery, PeopleAndRoles, ListPeopleAndRoles, StaffPayment,
+import { CertifySection, CurrentDirectors, DocumentsDelivery, PeopleAndRoles, StaffPayment,
   YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF,
-  RestorationFilingIF } from '@/interfaces/'
-import { FilingStatus, FilingTypes, RestorationTypes, RoleTypes } from '@/enums/'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import {
+  ActionBindingIF,
+  ResourceIF,
+  RestorationFilingIF,
+  FilingDataIF,
+  OrgPersonIF,
+  EntitySnapshotIF } from '@/interfaces/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
-  from '@/resources/Restoration/'
-import { FilingDataIF } from '@bcrs-shared-components/interfaces'
+  from '@/resources/LimitedRestorationToFull/'
+import { FilingStatus, RoleTypes } from '@/enums/'
+import { RelationshipsPanel } from '@bcrs-shared-components/relationships-panel'
+import CourtOrderPoa from '@/components/common/CourtOrderPoa.vue'
+import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
+import { ApprovalType } from '@bcrs-shared-components/approval-type'
+import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
+import QuestionWrapper from '@/components/common/QuestionWrapper.vue'
+import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAndRoles.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 
 @Component({
   components: {
-    ViewWrapper,
+    ApprovalType,
     CertifySection,
+    CourtOrderPoa,
+    CurrentDirectors,
     DocumentsDelivery,
-    PeopleAndRoles,
+    FeeSummaryShared,
+    LimitedRestorationPanel,
     ListPeopleAndRoles,
+    PeopleAndRoles,
+    QuestionWrapper,
+    RelationshipsPanel,
     RestorationSummary,
     StaffPayment,
+    ViewWrapper,
     YourCompany,
     YourCompanySummary
   },
@@ -134,7 +158,7 @@ import ViewWrapper from '@/components/ViewWrapper.vue'
     FilingTemplateMixin
   ]
 })
-export default class Restoration extends Vue {
+export default class LimitedRestorationToFull extends Vue {
   // Global getters
   @Getter isSummaryMode!: boolean
   @Getter getAppValidate!: boolean
@@ -156,16 +180,7 @@ export default class Restoration extends Vue {
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
-
-  /** The id of the restoration being edited. */
-  get restorationId (): number {
-    return +this.$route.query['restoration-id'] || 0
-  }
-
-  /** True if user is authenticated. */
-  get isAuthenticated (): boolean {
-    return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
-  }
+  @Prop({ default: 0 }) readonly restorationId!: number
 
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
@@ -183,9 +198,6 @@ export default class Restoration extends Vue {
   private async onAppReady (val: boolean): Promise<void> {
     // do not proceed if app is not ready
     if (!val) return
-
-    // do not proceed if we are not authenticated (safety check - should never happen)
-    if (!this.isAuthenticated) return
 
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
@@ -250,10 +262,6 @@ export default class Restoration extends Vue {
       // set applicant orgPerson
       entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
 
-      // verify that business is in Limited Restoration status
-      // (will throw on error)
-      await this.verifyLimitedRestorationStatus(entitySnapshot.businessInfo)
-
       // parse draft restoration filing and entity snapshot into store
       this.parseRestorationFiling(restorationFiling, entitySnapshot)
 
@@ -265,14 +273,7 @@ export default class Restoration extends Vue {
       this.setResource(this.restorationResource)
 
       // initialize Fee Summary data
-      let filingData: FilingDataIF[] = []
-      if (this.isLimitedExtendRestorationFiling) filingData = [this.restorationResource.filingData[0]]
-      if (this.isLimitedConversionRestorationFiling) filingData = [this.restorationResource.filingData[1]]
-
-      filingData.forEach(fd => {
-        fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
-      })
-      this.setFilingData(filingData)
+      this.setFilingData([this.restorationResource.filingData])
 
       // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()
@@ -331,29 +332,6 @@ export default class Restoration extends Vue {
       nameTranslations: items[3],
       orgPersons: items[4]
     } as EntitySnapshotIF
-  }
-
-  /** Verifies that the business is in Limited Restoration status. */
-  private async verifyLimitedRestorationStatus (businessInfo: BusinessInformationIF): Promise<void> {
-    // fetch state filing
-    const stateFiling = businessInfo.stateFiling
-    const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
-    const type = filing?.header?.name as FilingTypes
-    // FUTURE: enable code below when limited restorations can be filed (ticket 14641)
-
-    // // Verify state filing. It should be a Limited Restoration filing or a
-    // // Limited Restoration Extension filing. If the expiry date has passed
-    // // then the state filing should be a dissolution.
-    // if (filing?.name === FilingTypes.RESTORATION) {
-    //   if (filing?.restoration?.type === RestorationTypes.LIMITED) return // all good
-    //   if (filing?.restoration?.type === RestorationTypes.LTD_EXTEND) return // all good
-    // }
-    // throw new Error('Business is not in Limited Restoration status')
-  }
-
-  /** Resource getters. */
-  get orgPersonLabel (): string {
-    return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
   }
 
   /** Emits Fetch Error event. */

@@ -2,30 +2,18 @@ import { NameChangeOptions, FilingCodes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const CccRestorationResource: ResourceIF = {
+export const UlcRestorationResource: ResourceIF = {
   entityReference: 'Company',
   contactLabel: 'Registered Office',
-  displayName: GetCorpFullDescription(CorpTypeCd.BC_CCC),
+  displayName: GetCorpFullDescription(CorpTypeCd.BC_ULC_COMPANY),
   addressLabel: 'Registered Office',
   showEmailUnderName: false,
-  filingData: [
-    // order matters - see restorationResource()
-    {
-      entityType: CorpTypeCd.BC_CCC,
-      filingTypeCode: FilingCodes.RESTORATION_LTD_EXTEND,
-      priority: false
-    },
-    {
-      entityType: CorpTypeCd.BC_CCC,
-      filingTypeCode: FilingCodes.RESTORATION_LTD_TO_FULL,
-      priority: false
-    }
-  ],
+  filingData: {
+    entityType: CorpTypeCd.BC_ULC_COMPANY,
+    filingTypeCode: FilingCodes.RESTORATION_LTD_EXTEND,
+    priority: false
+  },
   changeData: {
-    nameChangeOptions: [
-      NameChangeOptions.CORRECT_NEW_NR,
-      NameChangeOptions.CORRECT_NAME_TO_NUMBER
-    ],
     orgPersonInfo: {
       orgPersonLabel: 'Applicant',
       orgTypesLabel: 'Business or Corporation',
