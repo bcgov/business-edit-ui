@@ -195,7 +195,8 @@ export default class App extends Vue {
       this.isSpecialResolutionFiling ||
       this.isAlterationFiling ||
       this.isFirmChangeFiling ||
-      this.isFirmConversionFiling
+      this.isFirmConversionFiling ||
+      this.isRestorationFiling
     )
   }
 

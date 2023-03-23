@@ -65,8 +65,6 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter getSpecialResolution!: SpecialResolutionIF
   @Getter hasBusinessStartDateChanged!: boolean
   @Getter getRestoration!: RestorationStateIF
-  @Getter getApprovalTypeValid!: boolean
-  @Getter getExpiryValid!: boolean
   @Getter getStateFilingRestoration!: StateFilingRestorationIF
 
   // Global actions

@@ -1,5 +1,5 @@
 <template>
-  <div id="extend-time-limit" class="pt-2">
+  <v-card flat id="extend-time-limit" class="pt-2 mr-8">
 
     <!-- Extension Time Section -->
     <section
@@ -41,7 +41,7 @@
         />
       </template>
     </section>
-  </div>
+  </v-card>
 </template>
 
 <script lang="ts">

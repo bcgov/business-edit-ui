@@ -20,7 +20,7 @@
             title="Extend Time Limit of Limited Restoration"
             subtitle="Select an extension time:"
           >
-            <pre style="border: red 1px solid">TODO - Karim add your extend time limit component here</pre>
+            <ExtendTimeLimit />
           </QuestionWrapper>
 
           <YourCompany class="mt-10" />
@@ -118,13 +118,15 @@ import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import { CertifySection, DocumentsDelivery, PeopleAndRoles, ListPeopleAndRoles, StaffPayment,
   YourCompany } from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, ResourceIF, OrgPersonIF, RestorationFilingIF, EntitySnapshotIF } from '@/interfaces/'
+import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, FlagsReviewCertifyIF,
+  ResourceIF, RestorationFilingIF, RestorationStateIF, StateFilingRestorationIF } from '@/interfaces/'
 import { FilingStatus, FilingTypes, RestorationTypes, RoleTypes } from '@/enums/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationExtension/'
 import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel/'
+import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
 import QuestionWrapper from '@/components/common/QuestionWrapper.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { AuthServices, LegalServices } from '@/services'
@@ -133,6 +135,7 @@ import { AuthServices, LegalServices } from '@/services'
   components: {
     CertifySection,
     DocumentsDelivery,
+    ExtendTimeLimit,
     FeeSummaryShared,
     LimitedRestorationPanel,
     ListPeopleAndRoles,
@@ -168,6 +171,7 @@ export default class LimitedRestorationExtension extends Vue {
   @Action setFilingId!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setResource!: ActionBindingIF
+  @Action setStateFilingRestoration!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
@@ -232,6 +236,15 @@ export default class LimitedRestorationExtension extends Vue {
 
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
+
+      this.setEntitySnapshot(entitySnapshot)
+
+      // parse draft restoration filing and entity snapshot into store
+      this.parseRestorationFiling(restorationFiling)
+
+      // Set the previously filed limited restoration in the store.
+      this.setStateFilingRestoration()
+
       const stateFiling = entitySnapshot.businessInfo.stateFiling
       const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
 
@@ -252,8 +265,6 @@ export default class LimitedRestorationExtension extends Vue {
 
       // set applicant orgPerson
       entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
-
-      this.parseRestorationFiling(restorationFiling, entitySnapshot)
 
       if (!this.restorationResource) {
         throw new Error(`Invalid restoration resource entity type = ${this.getEntityType}`)

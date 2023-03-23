@@ -293,21 +293,20 @@ export default {
   mutateRestorationApprovalType (state: StateIF, type: ApprovalTypes) {
     state.stateModel.restoration.approvalType = type
   },
-  
+
   mutateStateFilingRestoration (state: StateIF, restoration: StateFilingRestorationIF) {
     state.stateModel.stateFilingRestoration = restoration
   },
-  
+
   mutateRestorationCourtOrder (state: StateIF, courtOrder: CourtOrderIF) {
     state.stateModel.restoration.courtOrder = courtOrder
   },
-  
+
   mutateApprovalTypeValid (state: StateIF, valid: boolean) {
     state.stateModel.validationFlags.flagsCompanyInfo.isValidApprovalType = valid
   },
-  
+
   mutateExpiryValid (state: StateIF, valid: boolean) {
     state.stateModel.validationFlags.flagsCompanyInfo.isValidExtensionTime = valid
   }
-
 }

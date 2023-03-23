@@ -305,22 +305,22 @@ export default {
   setRestorationApprovalType ({ commit }, type: ApprovalTypes) {
     commit('mutateRestorationApprovalType', type)
   },
-  
+
   setStateFilingRestoration (context): void {
     LegalServices.fetchFiling(context.getters.getStateFilingUrl)
       .then((response) => {
         context.commit('mutateStateFilingRestoration', response.restoration)
       })
   },
-  
+
   setRestorationCourtOrder ({ commit }, courtOrder: CourtOrderIF): void {
     commit('mutateRestorationCourtOrder', courtOrder)
   },
-  
+
   setExpiryValid ({ commit }, valid: boolean): void {
     commit('mutateExpiryValid', valid)
   },
-  
+
   setApprovalTypeValid ({ commit }, valid: boolean): void {
     commit('mutateApprovalTypeValid', valid)
   }
