@@ -1,7 +1,7 @@
 import { AccountInformationIF, AddressesIF, BusinessInformationIF, CertifyIF,
   CorrectionInformationIF, DocumentDeliveryIF, EffectiveDateTimeIF, EntitySnapshotIF,
   FeesIF, FilingDataIF, PeopleAndRolesIF, NameRequestIF, NameTranslationIF,
-  NewAlterationIF, RestorationStateIF, ShareStructureIF, TombStoneIF,
+  NewAlterationIF, RestorationStateIF, ShareStructureIF, StateFilingRestorationIF, TombStoneIF,
   ValidationFlagsIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, SpecialResolutionIF, StaffPaymentIF }
   from '@bcrs-shared-components/interfaces/'
@@ -42,4 +42,5 @@ export interface StateModelIF {
   feePrices: FeesIF[],
   specialResolution: SpecialResolutionIF
   restoration: RestorationStateIF
+  stateFilingRestoration: StateFilingRestorationIF
 }

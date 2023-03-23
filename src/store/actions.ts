@@ -1,10 +1,11 @@
-import { ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, EntitySnapshotIF,
+import { ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, CourtOrderIF, EntitySnapshotIF,
   NameRequestIF, NameTranslationIF, OrgPersonIF, FeesIF, ResourceIF, FilingDataIF,
   CorrectionInformationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF,
   NaicsIF, ShareClassIF, SpecialResolutionIF } from '@bcrs-shared-components/interfaces/'
-import { FilingTypes, RestorationTypes } from '@/enums/'
+import { ApprovalTypes, FilingTypes, RestorationTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { LegalServices } from '@/services'
 
 export default {
   setEntityType ({ commit }, entityType: CorpTypeCd) {
@@ -299,5 +300,28 @@ export default {
 
   setRestorationExpiry ({ commit }, expiry: string) {
     commit('mutateRestorationExpiry', expiry)
+  },
+
+  setRestorationApprovalType ({ commit }, type: ApprovalTypes) {
+    commit('mutateRestorationApprovalType', type)
+  },
+  
+  setStateFilingRestoration (context): void {
+    LegalServices.fetchFiling(context.getters.getStateFilingUrl)
+      .then((response) => {
+        context.commit('mutateStateFilingRestoration', response.restoration)
+      })
+  },
+  
+  setRestorationCourtOrder ({ commit }, courtOrder: CourtOrderIF): void {
+    commit('mutateRestorationCourtOrder', courtOrder)
+  },
+  
+  setExpiryValid ({ commit }, valid: boolean): void {
+    commit('mutateExpiryValid', valid)
+  },
+  
+  setApprovalTypeValid ({ commit }, valid: boolean): void {
+    commit('mutateApprovalTypeValid', valid)
   }
 }

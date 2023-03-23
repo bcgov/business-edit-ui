@@ -2,10 +2,11 @@ import { Component } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
+import DateUtilities from '@/services/date-utilities'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
   EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
   NameRequestIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF, RestorationStateIF,
-  SpecialResolutionFilingIF } from '@/interfaces/'
+  SpecialResolutionFilingIF, StateFilingRestorationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
@@ -64,6 +65,9 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter getSpecialResolution!: SpecialResolutionIF
   @Getter hasBusinessStartDateChanged!: boolean
   @Getter getRestoration!: RestorationStateIF
+  @Getter getApprovalTypeValid!: boolean
+  @Getter getExpiryValid!: boolean
+  @Getter getStateFilingRestoration!: StateFilingRestorationIF
 
   // Global actions
   @Action setBusinessContact!: ActionBindingIF
@@ -93,6 +97,8 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action setCorrectionStartDate!: ActionBindingIF
   @Action setRestorationType!: ActionBindingIF
   @Action setRestorationExpiry!: ActionBindingIF
+  @Action setRestorationApprovalType!: ActionBindingIF
+  @Action setRestorationCourtOrder!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -284,6 +290,8 @@ export default class FilingTemplateMixin extends DateMixin {
       },
       business: this.getEntitySnapshot.businessInfo,
       restoration: {
+        approvalType: this.getStateFilingRestoration.approvalType,
+        expiry: this.getRestoration.expiry,
         type: this.getRestoration.type,
         business: {
           identifier: this.getBusinessId,
@@ -307,12 +315,8 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // Apply Court Order ONLY when it is required and applied
-    if (this.getHasPlanOfArrangement || this.getFileNumber) {
-      filing.restoration.courtOrder = {
-        fileNumber: this.getFileNumber,
-        effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : null,
-        hasPlanOfArrangement: this.getHasPlanOfArrangement
-      }
+    if (this.getRestoration.courtOrder?.fileNumber) {
+      filing.restoration.courtOrder = this.getRestoration.courtOrder
     }
 
     // Set Document Optional Email if there is one
@@ -776,9 +780,9 @@ export default class FilingTemplateMixin extends DateMixin {
    * @param filing the restoration filing
    * @param entitySnapshot the latest entity snapshot
    */
-  parseRestorationFiling (filing: RestorationFilingIF, entitySnapshot: EntitySnapshotIF): void {
+  parseRestorationFiling (filing: RestorationFilingIF): void {
     // store Entity Snapshot
-    this.setEntitySnapshot(entitySnapshot)
+    const entitySnapshot = this.getEntitySnapshot
 
     // store Entity Type
     this.setEntityType(filing.restoration.business?.legalType || entitySnapshot.businessInfo.legalType)
@@ -791,8 +795,17 @@ export default class FilingTemplateMixin extends DateMixin {
     })
 
     // restore Restoration data
+    this.setRestorationApprovalType(this.getStateFilingRestoration.approvalType)
+    if (filing.restoration.courtOrder) {
+      this.setRestorationCourtOrder(filing.restoration.courtOrder)
+    }
     this.setRestorationType(filing.restoration.type)
-    this.setRestorationExpiry(filing.restoration.expiry || null)
+    if (filing.restoration.expiry) {
+      this.setRestorationExpiry(filing.restoration.expiry)
+    } else {
+      // Reset radio button to 2 years
+      this.setRestorationExpiry(DateUtilities.addMonthsToDate(36, this.getStateFilingRestoration.expiry))
+    }
 
     // store Name Request data
     this.setNameRequest(cloneDeep(

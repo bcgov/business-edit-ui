@@ -1,10 +1,10 @@
-import { AccountInformationIF, ActionKvIF, AddressesIF, BusinessInformationIF, EntitySnapshotIF, CertifyIF,
-  FilingDataIF, CorrectionInformationIF, NameRequestIF, NameTranslationIF, OrgPersonIF, ShareClassIF, StateIF,
-  FeesIF, ResourceIF } from '@/interfaces/'
+import { AccountInformationIF, ActionKvIF, AddressesIF, BusinessInformationIF, CourtOrderIF, EntitySnapshotIF,
+  CertifyIF, FilingDataIF, CorrectionInformationIF, NameRequestIF, NameTranslationIF, OrgPersonIF, ShareClassIF,
+  StateIF, FeesIF, ResourceIF, StateFilingRestorationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { FilingTypes, RestorationTypes } from '@/enums/'
+import { ApprovalTypes, FilingTypes, RestorationTypes } from '@/enums/'
 
 export default {
   mutateBusinessId (state: StateIF, businessId: string) {
@@ -288,6 +288,26 @@ export default {
 
   mutateRestorationExpiry (state: StateIF, expiry: string) {
     state.stateModel.restoration.expiry = expiry
+  },
+
+  mutateRestorationApprovalType (state: StateIF, type: ApprovalTypes) {
+    state.stateModel.restoration.approvalType = type
+  },
+  
+  mutateStateFilingRestoration (state: StateIF, restoration: StateFilingRestorationIF) {
+    state.stateModel.stateFilingRestoration = restoration
+  },
+  
+  mutateRestorationCourtOrder (state: StateIF, courtOrder: CourtOrderIF) {
+    state.stateModel.restoration.courtOrder = courtOrder
+  },
+  
+  mutateApprovalTypeValid (state: StateIF, valid: boolean) {
+    state.stateModel.validationFlags.flagsCompanyInfo.isValidApprovalType = valid
+  },
+  
+  mutateExpiryValid (state: StateIF, valid: boolean) {
+    state.stateModel.validationFlags.flagsCompanyInfo.isValidExtensionTime = valid
   }
 
 }

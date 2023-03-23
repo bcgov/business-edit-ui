@@ -1,4 +1,5 @@
-import { CorpTypeCd, RestorationTypes } from '@/enums'
+import { ApprovalTypes, CorpTypeCd, RelationshipTypes, RestorationTypes } from '@/enums'
+import { CourtOrderIF } from '@/interfaces/alteration-interfaces'
 
 export interface RestorationNameRequestIF {
   legalName: string
@@ -7,23 +8,24 @@ export interface RestorationNameRequestIF {
 }
 
 export interface RestorationStateIF {
-  businessInfoValid: boolean
+  approvalType: ApprovalTypes
+  approvalTypeValid: boolean
   businessNameValid: boolean
+  courtOrder?: CourtOrderIF
   type: RestorationTypes
   expiry?: string // YYYY-MM-DD
-  // defineBusinessValid: boolean
-  // startDate: string
-  // businessAddress: BusinessAddressIF
-  // businessNumber?: string
+  expiryValid: boolean
 }
 
-export const EmptyRestorationState: RestorationStateIF = {
-  businessInfoValid: false,
-  businessNameValid: false,
-  type: null,
-  expiry: null
-  // defineBusinessValid: false,
-  // startDate: '',
-  // businessAddress: null,
-  // businessNumber: null
+export interface StateFilingRestorationIF {
+  applicationDate?: string // YYYY-MM-DD
+  approvalType: ApprovalTypes
+  approvalTypeValid: boolean
+  businessNameValid: boolean
+  courtOrder?: CourtOrderIF
+  expiry?: string // YYYY-MM-DD
+  noticeDate?: string // YYYY-MM-DD
+  relationships?: RelationshipTypes[]
+  restorationTypeValid: boolean
+  type: RestorationTypes
 }
