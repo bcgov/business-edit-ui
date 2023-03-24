@@ -32,12 +32,6 @@ describe('Fetch Config', () => {
   process.env.VUE_APP_KEYCLOAK_REALM = 'keycloak realm'
   process.env.VUE_APP_KEYCLOAK_CLIENTID = 'keycloak clientid'
 
-  beforeEach(() => {
-  })
-
-  afterEach(() => {
-  })
-
   it('fetches and loads the configuration correctly', async () => {
     // mock window.location getters
     delete window.location
