@@ -81,7 +81,14 @@
     </transition>
 
     <SbcHeader />
-    <PaySystemAlert />
+
+    <!-- Alert banner -->
+    <v-alert
+      tile dense
+      type="warning"
+      v-if="bannerText">
+      <div v-html="bannerText" class="mb-0 text-center colour-dk-text"></div>
+    </v-alert>
 
     <div class="app-body">
       <main v-if="!isErrorDialog">
@@ -105,8 +112,7 @@ import Vue from 'vue'
 import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { StatusCodes } from 'http-status-codes'
-import { GetKeycloakRoles, Navigate, UpdateLdUser, Sleep } from '@/utils/'
-import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
+import { GetFeatureFlag, GetKeycloakRoles, Navigate, UpdateLdUser, Sleep } from '@/utils/'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Actions, EntityInfo } from '@/components/common/'
@@ -131,7 +137,6 @@ import DateUtilities from '@/services/date-utilities'
     BreadcrumbShared,
     ConfirmDialogShared,
     EntityInfo,
-    PaySystemAlert,
     SbcHeader,
     SbcFooter,
     ...Dialogs,
@@ -257,6 +262,13 @@ export default class App extends Vue {
   /** The About text. */
   get aboutText (): string {
     return process.env.ABOUT_TEXT
+  }
+
+  /** Get banner text. */
+  get bannerText (): string {
+    const bannerText: string = GetFeatureFlag('banner-text')
+    // remove spaces so that " " becomes falsy
+    return bannerText?.trim() || null
   }
 
   /** Whether user is authenticated. */
