@@ -25,7 +25,7 @@ import '@/assets/styles/overrides.scss'
 import App from './App.vue'
 
 // Helpers
-import { InitLdClient, FetchConfig, Navigate } from '@/utils/'
+import { GetFeatureFlag, InitLdClient, FetchConfig, Navigate } from '@/utils/'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 
 // get rid of "element implicitly has an 'any' type..."
@@ -45,7 +45,13 @@ async function start () {
   // must come first as inits below depend on config
   await FetchConfig()
 
-  if (window['sentryEnable'] === 'true') {
+  // initialize Launch Darkly
+  if (window['ldClientId']) {
+    console.info('Initializing Launch Darkly...') // eslint-disable-line no-console
+    await InitLdClient()
+  }
+
+  if (GetFeatureFlag('sentry-enable')) {
     // initialize Sentry
     console.info('Initializing Sentry...') // eslint-disable-line no-console
     Sentry.init({
@@ -61,15 +67,15 @@ async function start () {
     Vue.use(Hotjar, { id: hotjarId })
   }
 
-  // initialize Launch Darkly
-  if (window['ldClientId']) {
-    console.info('Initializing Launch Darkly...') // eslint-disable-line no-console
-    await InitLdClient()
-  }
-
   // configure KeyCloak Service
   console.info('Starting Keycloak service...') // eslint-disable-line no-console
-  await KeycloakService.setKeycloakConfigUrl(sessionStorage.getItem('KEYCLOAK_CONFIG_PATH'))
+  const keycloakConfig: any = {
+    url: `${window['keycloakAuthUrl']}`,
+    realm: `${window['keycloakRealm']}`,
+    clientId: `${window['keycloakClientId']}`
+  }
+
+  await KeycloakService.setKeycloakConfigUrl(keycloakConfig)
 
   // initialize token service which will do a check-sso to initiate session
   // don't start during Jest tests as it messes up the test JWT
