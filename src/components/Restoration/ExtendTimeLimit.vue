@@ -5,11 +5,11 @@
     <section
       id="extension-time-section"
       class="section-container"
-      :class="{ 'invalid-section': invalidSectionExpiry }"
+      :class="{ 'invalid-section': !getExpiryValid }"
     >
       <v-row no-gutters>
         <v-col cols="12" sm="3">
-          <strong :class="{ 'error-text': invalidSectionExpiry }">Extension Time</strong>
+          <strong :class="{ 'error-text': !getExpiryValid }">Extension Time</strong>
         </v-col>
         <v-col cols="12" sm="9">
           <!-- Limited Restoration Radio Panel -->
@@ -28,14 +28,14 @@
     <!-- Approval Type Section (if applicable) -->
     <section id="approval-type-section"
       class="section-container"
-      :class="{ 'invalid-section': invalidSectionApprovalType }"
+      :class="{ 'invalid-section': !getApprovalTypeValid }"
     >
       <template v-if="approvalType == ApprovalTypes.VIA_COURT_ORDER">
         <ApprovalType
           :courtOrderNumber="courtOrderNumberText"
           :isCourtOrderOnly="true"
           :isCourtOrderRadio="false"
-          :invalidSection="invalidSectionApprovalType"
+          :invalidSection="!getApprovalTypeValid"
           @courtNumberChange="setRestorationCourtOrder({ fileNumber: $event })"
           @valid="setApprovalTypeValid($event)"
         />
@@ -87,7 +87,7 @@ export default class ExtendTimeLimit extends Vue {
 
   /** The limited restoration state filing's approval type. */
   get approvalType (): ApprovalTypes {
-    return this.getStateFilingRestoration.approvalType
+    return this.getStateFilingRestoration?.approvalType
   }
 
   /** The court order draft file number. */
@@ -100,19 +100,9 @@ export default class ExtendTimeLimit extends Vue {
     return DateUtilities.subtractMonthsToDate(this.previousNumberOfMonths, this.getRestoration.expiry)
   }
 
-  /** This extension time's validity state (when prompted by app). */
-  get invalidSectionExpiry (): boolean {
-    return !this.getExpiryValid
-  }
-
-  /** This approval type's validity state (when prompted by app). */
-  get invalidSectionApprovalType (): boolean {
-    return !this.getApprovalTypeValid
-  }
-
-  /** The previously selected number of months of limited restoration. */
+  /** The remaining number of months left for the previously filed limited restoration. */
   get previousNumberOfMonths (): string {
-    return this.subtractDates(this.getCurrentDate, this.getStateFilingRestoration.expiry)
+    return this.subtractDates(this.getCurrentDate, this.getStateFilingRestoration?.expiry)
   }
 }
 </script>

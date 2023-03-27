@@ -239,11 +239,16 @@ export default class LimitedRestorationExtension extends Vue {
 
       this.setEntitySnapshot(entitySnapshot)
 
-      // parse draft restoration filing and entity snapshot into store
-      this.parseRestorationFiling(restorationFiling)
-
-      // Set the previously filed limited restoration in the store.
-      this.setStateFilingRestoration()
+      if (!restorationFiling.restoration.expiry) {
+        // New limited restoration extension
+        // Set the previously filed limited restoration in the store.
+        await this.setStateFilingRestoration()
+        // parse draft restoration filing into store
+        this.parseRestorationFiling(restorationFiling)
+      } else {
+        this.parseRestorationFiling(restorationFiling)
+        await this.setStateFilingRestoration()
+      }
 
       const stateFiling = entitySnapshot.businessInfo.stateFiling
       const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)

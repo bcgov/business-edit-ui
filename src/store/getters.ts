@@ -1106,9 +1106,11 @@ export default {
 
   getFormattedExpiryText: (state, getters) => (today = new Date()): string => {
     if (getters.getExpiryDateString) {
-      return DateUtilities.subtractDates(getters.getStateFilingRestoration.expiry,
-        getters.getExpiryDateString) + ' months, expires on ' +
-        DateUtilities.yyyyMmDdToPacificDate(getters.getExpiryDateString)
+      const numberOfExtensionMonths = DateUtilities.subtractDates(getters.getStateFilingRestoration.expiry,
+        getters.getExpiryDateString)
+      const expiryDatePacific = DateUtilities.yyyyMmDdToPacificDate(getters.getExpiryDateString)
+      const formattedExpiryText = numberOfExtensionMonths + ' months, expires on ' + expiryDatePacific
+      return formattedExpiryText
     }
     return '[no expiry date]'
   }

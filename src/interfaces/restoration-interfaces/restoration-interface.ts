@@ -1,4 +1,4 @@
-import { ApprovalTypes, RelationshipTypes, RestorationTypes } from '@/enums'
+import { ApprovalTypes, RestorationTypes } from '@/enums'
 import { AddressesIF, BusinessInformationIF, CourtOrderIF, NameRequestIF, NameTranslationIF, OrgPersonIF }
   from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
@@ -16,6 +16,6 @@ export interface RestorationIF {
   nameTranslations?: NameTranslationIF[]
   offices: AddressesIF
   parties: OrgPersonIF[]
-  relationships?: RelationshipTypes
+  relationships?: string[]
   type: RestorationTypes
 }

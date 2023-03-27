@@ -306,11 +306,20 @@ export default {
     commit('mutateRestorationApprovalType', type)
   },
 
-  setStateFilingRestoration (context): void {
-    LegalServices.fetchFiling(context.getters.getStateFilingUrl)
-      .then((response) => {
-        context.commit('mutateStateFilingRestoration', response.restoration)
-      })
+  setStateFilingRestoration (context): Promise<any> {
+    return new Promise((resolve, reject) => {
+      LegalServices.fetchFiling(context.getters.getStateFilingUrl)
+        .then((response) => {
+          const stateFilingRestoration = response.restoration
+          // commit data to store
+          context.commit('mutateStateFilingRestoration', stateFilingRestoration)
+          // return the state filing restoration object
+          resolve(stateFilingRestoration)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
   },
 
   setRestorationCourtOrder ({ commit }, courtOrder: CourtOrderIF): void {

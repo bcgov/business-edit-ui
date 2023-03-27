@@ -304,7 +304,11 @@ export default class DateUtilities {
     const monthDiff = expiryDate.getMonth() - currDate.getMonth()
     const yearDiff = (12 * (expiryDate.getFullYear() - currDate.getFullYear()))
     let difference = monthDiff + yearDiff
-    // For example if Jan 31st and March 1, difference is 1 not 2
+    /**
+     * We're increasing 25 to the day of expiry date to subtract only if the day difference is large.
+     * @example Jan 31st and March 1st, month difference is 2 but since 26 < 31, we subtract 1.
+     * @example Jan 16th and March 15th, month difference is 2 but since 16 + 25 < 31, we don't subtract 1.
+     */
     if ((expiryDate.getDate() + 25) < currDate.getDate()) {
       difference--
     }

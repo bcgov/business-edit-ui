@@ -288,7 +288,7 @@ export default class FilingTemplateMixin extends DateMixin {
       },
       business: this.getEntitySnapshot.businessInfo,
       restoration: {
-        approvalType: this.getStateFilingRestoration.approvalType,
+        approvalType: this.getStateFilingRestoration?.approvalType,
         expiry: this.getRestoration.expiry,
         type: this.getRestoration.type,
         business: {
@@ -779,7 +779,7 @@ export default class FilingTemplateMixin extends DateMixin {
    * @param entitySnapshot the latest entity snapshot
    */
   parseRestorationFiling (filing: RestorationFilingIF): void {
-    // store Entity Snapshot
+    // Get the Entity Snapshot from store
     const entitySnapshot = this.getEntitySnapshot
 
     // store Entity Type
@@ -793,7 +793,7 @@ export default class FilingTemplateMixin extends DateMixin {
     })
 
     // restore Restoration data
-    this.setRestorationApprovalType(this.getStateFilingRestoration.approvalType)
+    this.setRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
     if (filing.restoration.courtOrder) {
       this.setRestorationCourtOrder(filing.restoration.courtOrder)
     }
@@ -802,7 +802,7 @@ export default class FilingTemplateMixin extends DateMixin {
       this.setRestorationExpiry(filing.restoration.expiry)
     } else {
       // Reset radio button to 2 years
-      this.setRestorationExpiry(DateUtilities.addMonthsToDate(36, this.getStateFilingRestoration.expiry))
+      this.setRestorationExpiry(DateUtilities.addMonthsToDate(24, this.getStateFilingRestoration?.expiry))
     }
 
     // store Name Request data

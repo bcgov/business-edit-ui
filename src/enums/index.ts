@@ -17,6 +17,5 @@ export * from './routeNames'
 
 // external enum
 export { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-export { ActionTypes, ApprovalTypes, EntityStates, FilingCodes, FilingNames, FilingTypes, RelationshipTypes,
-  RestorationTypes }
+export { ActionTypes, ApprovalTypes, EntityStates, FilingCodes, FilingNames, FilingTypes, RestorationTypes }
   from '@bcrs-shared-components/enums'

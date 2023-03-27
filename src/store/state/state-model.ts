@@ -154,18 +154,5 @@ export const stateModel: StateModelIF = {
     expiryValid: true,
     type: null
   },
-  stateFilingRestoration: {
-    applicationDate: null,
-    approvalType: null,
-    approvalTypeValid: true,
-    businessNameValid: false,
-    courtOrder: {
-      fileNumber: null
-    },
-    expiry: null,
-    noticeDate: null,
-    relationships: [],
-    restorationTypeValid: false,
-    type: null
-  }
+  stateFilingRestoration: null
 }

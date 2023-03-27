@@ -26,13 +26,13 @@
             <div>[TODO - Applicant's relationship: Director, Shareholder]</div>
           </v-col>
         </v-row>
-        <v-row no-gutters class="mt-3" v-if="getStateFilingRestoration.approvalType === ApprovalTypes.VIA_COURT_ORDER">
+        <v-row no-gutters class="mt-3" v-if="getStateFilingApprovalType === ApprovalTypes.VIA_COURT_ORDER">
           <v-col cols="3">
             <label><strong>Approval Type</strong></label>
           </v-col>
           <v-col cols="8" class="mt-n1">
             <div class="font-weight-bold">Approved by Court Order</div>
-            <div v-if="getRestoration.courtOrder">Court Order Number: {{ getRestoration.courtOrder.fileNumber }}</div>
+            <div v-if="getCourtOrder">Court Order Number: {{ getCourtOrderFileNumber }}</div>
           </v-col>
         </v-row>
       </div>
@@ -47,12 +47,21 @@ import { mapGetters } from 'vuex'
 export default {
   data () {
     return {
-      ApprovalTypes: ApprovalTypes
+      ApprovalTypes
     }
   },
   computed: {
     ...mapGetters(['isLimitedConversionRestorationFiling', 'isLimitedExtendRestorationFiling',
-      'hasFileNumber', 'getRestoration', 'getFormattedExpiryText', 'getStateFilingRestoration'])
+      'getRestoration', 'getFormattedExpiryText', 'getStateFilingRestoration']),
+    getStateFilingApprovalType () {
+      return this.getStateFilingRestoration.approvalType
+    },
+    getCourtOrder () {
+      return this.getRestoration.courtOrder
+    },
+    getCourtOrderFileNumber () {
+      return this.getRestoration.courtOrder.fileNumber
+    }
   }
 }
 </script>

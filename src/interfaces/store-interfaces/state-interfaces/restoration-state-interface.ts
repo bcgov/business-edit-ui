@@ -1,4 +1,4 @@
-import { ApprovalTypes, CorpTypeCd, RelationshipTypes, RestorationTypes } from '@/enums'
+import { ApprovalTypes, CorpTypeCd, RestorationTypes } from '@/enums'
 import { CourtOrderIF } from '@/interfaces/alteration-interfaces'
 
 export interface RestorationNameRequestIF {
@@ -25,7 +25,7 @@ export interface StateFilingRestorationIF {
   courtOrder?: CourtOrderIF
   expiry?: string // YYYY-MM-DD
   noticeDate?: string // YYYY-MM-DD
-  relationships?: RelationshipTypes[]
+  relationships?: string[]
   restorationTypeValid: boolean
   type: RestorationTypes
 }
