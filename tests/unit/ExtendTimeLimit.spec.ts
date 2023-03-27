@@ -73,17 +73,17 @@ describe('Time Limit Extension component', () => {
 
   it('get correct validity of extension time section.', () => {
     const wrapper = wrapperFactory()
-    const extendTimeLimit = wrapper.vm as any // wrapper.vm type is Vue
 
-    expect(extendTimeLimit.invalidSectionExpiry).toBeFalsy()
+    const extensionTimeValidity = store.state.stateModel.validationFlags.flagsCompanyInfo.isValidExtensionTime
+    expect(extensionTimeValidity).toBeTruthy()
     wrapper.destroy()
   })
 
   it('get correct validity of approval type section.', () => {
     const wrapper = wrapperFactory()
-    const extendTimeLimit = wrapper.vm as any // wrapper.vm type is Vue
 
-    expect(extendTimeLimit.invalidSectionApprovalType).toBeTruthy()
+    const approvalTypeValidity = store.state.stateModel.validationFlags.flagsCompanyInfo.isValidApprovalType
+    expect(approvalTypeValidity).toBeFalsy()
     wrapper.destroy()
   })
 
