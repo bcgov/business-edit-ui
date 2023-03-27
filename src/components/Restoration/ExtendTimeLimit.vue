@@ -101,7 +101,7 @@ export default class ExtendTimeLimit extends Vue {
   }
 
   /** The remaining number of months left for the previously filed limited restoration. */
-  get previousNumberOfMonths (): string {
+  get previousNumberOfMonths (): number {
     return this.subtractDates(this.getCurrentDate, this.getStateFilingRestoration?.expiry)
   }
 }

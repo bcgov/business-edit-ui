@@ -54,7 +54,7 @@ export default {
     ...mapGetters(['isLimitedConversionRestorationFiling', 'isLimitedExtendRestorationFiling',
       'getRestoration', 'getFormattedExpiryText', 'getStateFilingRestoration']),
     getStateFilingApprovalType () {
-      return this.getStateFilingRestoration.approvalType
+      return this.getStateFilingRestoration?.approvalType
     },
     getCourtOrder () {
       return this.getRestoration.courtOrder
