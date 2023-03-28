@@ -1,4 +1,4 @@
-import { EmptyFees, EmptyNameRequest, EmptyRestorationState, StateModelIF } from '@/interfaces/'
+import { EmptyFees, EmptyNameRequest, StateModelIF } from '@/interfaces/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { EmptyContactPoint } from '@bcrs-shared-components/interfaces/'
 import { cloneDeep } from 'lodash'
@@ -49,7 +49,9 @@ export const stateModel: StateModelIF = {
       isValidCompanyProvisions: true,
       isValidResolutionDate: true,
       isValidAssociationType: true,
-      isValidCreateSpecialResolution: true
+      isValidCreateSpecialResolution: true,
+      isValidApprovalType: true,
+      isValidExtensionTime: true
     },
     flagsReviewCertify: {
       // NB: this must be in same order as ComponentsReviewCertify enum!
@@ -144,5 +146,13 @@ export const stateModel: StateModelIF = {
     },
     resolutionConfirmed: false
   },
-  restoration: { ...EmptyRestorationState }
+  restoration: {
+    approvalType: null,
+    approvalTypeValid: true,
+    businessNameValid: false,
+    expiry: null,
+    expiryValid: true,
+    type: null
+  },
+  stateFilingRestoration: null
 }

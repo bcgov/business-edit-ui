@@ -254,4 +254,64 @@ export default class DateUtilities {
     return dateTo.getMonth() - dateFrom.getMonth() +
       (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
   }
+
+  /**
+   * Add a number of months to a date and return "YYYY-MM-DD".
+   * Date must be in the format of "YYYY-MM-DD" and months is a number
+   * @example (3, 2023-02-03) -> "2023-05-03"
+   * @example (18, 2023-02-03) -> "2024-08-03"
+   */
+  static addMonthsToDate (month: number, date: string): string {
+    if (!date) {
+      date = '2023-01-01'
+    }
+    const temp = this.yyyyMmDdToDate(date)
+    temp.setMonth(temp.getMonth() + month)
+    const dateAfterAddition = this.dateToYyyyMmDd(temp)
+    return dateAfterAddition
+  }
+
+  /**
+   * Subtract a number of months to a date and return "YYYY-MM-DD".
+   * Date must be in the format of "YYYY-MM-DD" and months is a number
+   * @example (3, 2023-05-03) -> "2023-02-03"
+   * @example (18, 2024-08-03) -> "2023-02-03"
+   */
+  static subtractMonthsToDate (month: number, date: string): string {
+    if (!date) {
+      date = '2023-01-01'
+    }
+    const temp = this.yyyyMmDdToDate(date)
+    temp.setMonth(temp.getMonth() - month)
+    const dateAfterSubtraction = this.dateToYyyyMmDd(temp)
+    return dateAfterSubtraction
+  }
+  /**
+   * Decrease one date from another and return number of months as the difference.
+   * Dates must be in the "YYYY-MM-DD" format
+   * @example (2023-02-03, 2024-08-03) -> 18
+   * @example (2023-02-03, 2023-04-03) -> 2
+   */
+  static subtractDates (dateFrom: string, dateTo: string): number {
+    if (!dateFrom) {
+      dateFrom = '2023-01-01'
+    }
+    if (!dateTo) {
+      dateTo = this.addMonthsToDate(24, dateFrom)
+    }
+    const expiryDate = this.yyyyMmDdToDate(dateTo)
+    const currDate = this.yyyyMmDdToDate(dateFrom)
+    const monthDiff = expiryDate.getMonth() - currDate.getMonth()
+    const yearDiff = (12 * (expiryDate.getFullYear() - currDate.getFullYear()))
+    let difference = monthDiff + yearDiff
+    /**
+     * We're increasing 25 to the day of expiry date to subtract only if the day difference is large.
+     * @example Jan 31st and March 1st, month difference is 2 but since 26 < 31, we subtract 1.
+     * @example Jan 16th and March 15th, month difference is 2 but since 16 + 25 < 31, we don't subtract 1.
+     */
+    if ((expiryDate.getDate() + 25) < currDate.getDate()) {
+      difference--
+    }
+    return difference
+  }
 }

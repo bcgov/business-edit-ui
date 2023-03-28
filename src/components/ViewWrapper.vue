@@ -60,7 +60,7 @@ import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/co
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
-  AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, SpecialResolutionFilingIF }
+  AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, RestorationFilingIF, SpecialResolutionFilingIF }
   from '@/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums/'
@@ -195,7 +195,8 @@ export default class App extends Vue {
       this.isSpecialResolutionFiling ||
       this.isAlterationFiling ||
       this.isFirmChangeFiling ||
-      this.isFirmConversionFiling
+      this.isFirmConversionFiling ||
+      this.isRestorationFiling
     )
   }
 
@@ -323,10 +324,12 @@ export default class App extends Vue {
 
     let filingComplete: any
     try {
-      let filing: AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF | SpecialResolutionFilingIF
+      let filing: AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF |
+      RestorationFilingIF | SpecialResolutionFilingIF
       if (this.isAlterationFiling) filing = this.buildAlterationFiling(isDraft)
       if (this.isFirmChangeFiling) filing = this.buildChangeRegFiling(isDraft)
       if (this.isFirmConversionFiling) filing = this.buildConversionFiling(isDraft)
+      if (this.isRestorationFiling) filing = this.buildRestorationFiling(isDraft)
       if (this.isSpecialResolutionFiling) filing = this.buildSpecialResolutionFiling(isDraft)
 
       // update the filing if we have a filingId, otherwise create a draft

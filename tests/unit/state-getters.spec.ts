@@ -542,7 +542,7 @@ describe('test restoration expiry date', () => {
     store.commit('mutateRestorationExpiry', '2023-12-31')
     // pass in date to force today's date to Feb 28th
     expect(store.getters.getFormattedExpiryText(new Date('2023-02-28')))
-      .toEqual('10 months, expires on Dec 31, 2023')
+      .toEqual('11 months, expires on Dec 31, 2023')
   })
 
   it('getExpiryDateString() works correctly', () => {

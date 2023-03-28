@@ -177,6 +177,7 @@ export default class LimitedRestorationToFull extends Vue {
   @Action setFilingId!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setResource!: ActionBindingIF
+  @Action setStateFilingRestoration!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
@@ -262,8 +263,10 @@ export default class LimitedRestorationToFull extends Vue {
       // set applicant orgPerson
       entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
 
-      // parse draft restoration filing and entity snapshot into store
-      this.parseRestorationFiling(restorationFiling, entitySnapshot)
+      // Set the previously filed limited restoration in the store.
+      await this.setStateFilingRestoration()
+      // parse draft restoration filing into store
+      this.parseRestorationFiling(restorationFiling)
 
       if (!this.restorationResource) {
         throw new Error(`Invalid restoration resource entity type = ${this.getEntityType}`)

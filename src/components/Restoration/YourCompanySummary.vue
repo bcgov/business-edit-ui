@@ -26,13 +26,13 @@
             <div>[TODO - Applicant's relationship: Director, Shareholder]</div>
           </v-col>
         </v-row>
-        <v-row no-gutters class="mt-3" v-if="hasFileNumber">
+        <v-row no-gutters class="mt-3" v-if="getStateFilingApprovalType === ApprovalTypes.VIA_COURT_ORDER">
           <v-col cols="3">
             <label><strong>Approval Type</strong></label>
           </v-col>
           <v-col cols="8" class="mt-n1">
             <div class="font-weight-bold">Approved by Court Order</div>
-            <div>Court Order Number: {{ getFileNumber }}</div>
+            <div v-if="getCourtOrder">Court Order Number: {{ getCourtOrderFileNumber }}</div>
           </v-col>
         </v-row>
       </div>
@@ -41,12 +41,27 @@
 </template>
 
 <script lang="ts">
+import { ApprovalTypes } from '@bcrs-shared-components/enums'
 import { mapGetters } from 'vuex'
 
 export default {
+  data () {
+    return {
+      ApprovalTypes
+    }
+  },
   computed: {
     ...mapGetters(['isLimitedConversionRestorationFiling', 'isLimitedExtendRestorationFiling',
-      'hasFileNumber', 'getFileNumber', 'getFormattedExpiryText'])
+      'getRestoration', 'getFormattedExpiryText', 'getStateFilingRestoration']),
+    getStateFilingApprovalType () {
+      return this.getStateFilingRestoration?.approvalType
+    },
+    getCourtOrder () {
+      return this.getRestoration.courtOrder
+    },
+    getCourtOrderFileNumber () {
+      return this.getRestoration.courtOrder.fileNumber
+    }
   }
 }
 </script>

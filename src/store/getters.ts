@@ -29,6 +29,7 @@ import {
   RestorationStateIF,
   ShareClassIF,
   StateIF,
+  StateFilingRestorationIF,
   ValidationFlagsIF } from '@/interfaces/'
 import {
   CompletingPartyIF,
@@ -279,6 +280,11 @@ export default {
   /** The original entity snapshot. */
   getEntitySnapshot (state: StateIF): EntitySnapshotIF {
     return state.stateModel.entitySnapshot
+  },
+
+  /** The original entity snapshot state filing's URL. */
+  getStateFilingUrl (state: StateIF): string {
+    return state.stateModel.entitySnapshot.businessInfo.stateFiling
   },
 
   /** The business number. */
@@ -1067,6 +1073,21 @@ export default {
     return state.stateModel.restoration
   },
 
+  /** The restoration object. */
+  getStateFilingRestoration (state: StateIF): StateFilingRestorationIF {
+    return state.stateModel.stateFilingRestoration
+  },
+
+  /** The approval type validity. */
+  getApprovalTypeValid (state: StateIF): boolean {
+    return state.stateModel.validationFlags.flagsCompanyInfo.isValidApprovalType
+  },
+
+  /** The expiry date validity. */
+  getExpiryValid (state: StateIF): boolean {
+    return state.stateModel.validationFlags.flagsCompanyInfo.isValidExtensionTime
+  },
+
   /** Returns false when users can change the sole proprietor (SP).
    * Restricts the ability of non-staff users from changing the sole
    * proprietor when the SP is an organization.  This restriction has been
@@ -1085,8 +1106,11 @@ export default {
 
   getFormattedExpiryText: (state, getters) => (today = new Date()): string => {
     if (getters.getExpiryDateString) {
-      return DateUtilities.monthDiffToToday(getters.getExpiryDateString, today) + ' months, expires on ' +
-        DateUtilities.yyyyMmDdToPacificDate(getters.getExpiryDateString)
+      const numberOfExtensionMonths = DateUtilities.subtractDates(getters.getStateFilingRestoration?.expiry,
+        getters.getExpiryDateString)
+      const expiryDatePacific = DateUtilities.yyyyMmDdToPacificDate(getters.getExpiryDateString)
+      const formattedExpiryText = numberOfExtensionMonths + ' months, expires on ' + expiryDatePacific
+      return formattedExpiryText
     }
     return '[no expiry date]'
   }

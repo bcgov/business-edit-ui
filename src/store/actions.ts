@@ -1,10 +1,11 @@
-import { ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, EntitySnapshotIF,
+import { ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, CourtOrderIF, EntitySnapshotIF,
   NameRequestIF, NameTranslationIF, OrgPersonIF, FeesIF, ResourceIF, FilingDataIF,
   CorrectionInformationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF,
   NaicsIF, ShareClassIF, SpecialResolutionIF } from '@bcrs-shared-components/interfaces/'
-import { FilingTypes, RestorationTypes } from '@/enums/'
+import { ApprovalTypes, FilingTypes, RestorationTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { LegalServices } from '@/services'
 
 export default {
   setEntityType ({ commit }, entityType: CorpTypeCd) {
@@ -293,11 +294,19 @@ export default {
     commit('mutateSpecialResolutionConfirmStateValidity', validity)
   },
 
-  setRestorationType ({ commit }, type: RestorationTypes) {
-    commit('mutateRestorationType', type)
-  },
-
-  setRestorationExpiry ({ commit }, expiry: string) {
-    commit('mutateRestorationExpiry', expiry)
+  setStateFilingRestoration (context): Promise<any> {
+    return new Promise((resolve, reject) => {
+      LegalServices.fetchFiling(context.getters.getStateFilingUrl)
+        .then((response) => {
+          const stateFilingRestoration = response.restoration
+          // commit data to store
+          context.commit('mutateStateFilingRestoration', stateFilingRestoration)
+          // return the state filing restoration object
+          resolve(stateFilingRestoration)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
   }
 }

@@ -142,4 +142,20 @@ export default class DateMixin extends Vue {
   dateToApi (date: Date): string {
     return DateUtilities.dateToApi(date)
   }
+
+  /**
+   * DEPRECATED Add a number of months to a date and return "YYYY-MM-DD".
+   * @example (18, 2023-02-03) -> "2024-08-03"
+   */
+  addMonthsToDate (month: number, date: string): string {
+    return DateUtilities.addMonthsToDate(month, date)
+  }
+
+  /**
+   * DEPRECATED Decrease one date from another and return number of months as the difference.
+   * @example (2023-02-03, 2024-08-03) -> 18
+   */
+  subtractDates (dateFrom: string, dateTo: string): number {
+    return DateUtilities.subtractDates(dateFrom, dateTo)
+  }
 }

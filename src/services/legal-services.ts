@@ -1,6 +1,6 @@
 import { AxiosInstance as axios } from '@/utils/'
 import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistrationFilingIF, ConversionFilingIF,
-  CorrectionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF, SpecialResolutionFilingIF }
+  CorrectionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF, RestorationFilingIF, SpecialResolutionFilingIF }
   from '@/interfaces/'
 import { RoleTypes } from '@/enums'
 
@@ -76,7 +76,7 @@ export default class LegalServices {
     businessId: string,
     filingId: number,
     // eslint-disable-next-line max-len
-    filing: CorrectionFilingIF | AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF | SpecialResolutionFilingIF,
+    filing: CorrectionFilingIF | AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF | RestorationFilingIF | SpecialResolutionFilingIF,
     isDraft: boolean
   ): Promise<any> {
     // put updated filing to filings endpoint
