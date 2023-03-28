@@ -294,18 +294,6 @@ export default {
     commit('mutateSpecialResolutionConfirmStateValidity', validity)
   },
 
-  setRestorationType ({ commit }, type: RestorationTypes) {
-    commit('mutateRestorationType', type)
-  },
-
-  setRestorationExpiry ({ commit }, expiry: string) {
-    commit('mutateRestorationExpiry', expiry)
-  },
-
-  setRestorationApprovalType ({ commit }, type: ApprovalTypes) {
-    commit('mutateRestorationApprovalType', type)
-  },
-
   setStateFilingRestoration (context): Promise<any> {
     return new Promise((resolve, reject) => {
       LegalServices.fetchFiling(context.getters.getStateFilingUrl)
@@ -320,17 +308,5 @@ export default {
           reject(error)
         })
     })
-  },
-
-  setRestorationCourtOrder ({ commit }, courtOrder: CourtOrderIF): void {
-    commit('mutateRestorationCourtOrder', courtOrder)
-  },
-
-  setExpiryValid ({ commit }, valid: boolean): void {
-    commit('mutateExpiryValid', valid)
-  },
-
-  setApprovalTypeValid ({ commit }, valid: boolean): void {
-    commit('mutateApprovalTypeValid', valid)
   }
 }

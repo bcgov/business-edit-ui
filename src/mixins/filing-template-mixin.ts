@@ -1,5 +1,5 @@
 import { Component } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter, Mutation } from 'vuex-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import DateUtilities from '@/services/date-utilities'
@@ -93,10 +93,11 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action setHasPlanOfArrangement!: ActionBindingIF
   @Action setSpecialResolution!: ActionBindingIF
   @Action setCorrectionStartDate!: ActionBindingIF
-  @Action setRestorationType!: ActionBindingIF
-  @Action setRestorationExpiry!: ActionBindingIF
-  @Action setRestorationApprovalType!: ActionBindingIF
-  @Action setRestorationCourtOrder!: ActionBindingIF
+
+  @Mutation mutateRestorationApprovalType!: ActionBindingIF
+  @Mutation mutateRestorationCourtOrder!: ActionBindingIF
+  @Mutation mutateRestorationExpiry!: ActionBindingIF
+  @Mutation mutateRestorationType!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -793,16 +794,16 @@ export default class FilingTemplateMixin extends DateMixin {
     })
 
     // restore Restoration data
-    this.setRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
+    this.mutateRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
     if (filing.restoration.courtOrder) {
-      this.setRestorationCourtOrder(filing.restoration.courtOrder)
+      this.mutateRestorationCourtOrder(filing.restoration.courtOrder)
     }
-    this.setRestorationType(filing.restoration.type)
+    this.mutateRestorationType(filing.restoration.type)
     if (filing.restoration.expiry) {
-      this.setRestorationExpiry(filing.restoration.expiry)
+      this.mutateRestorationExpiry(filing.restoration.expiry)
     } else {
       // Reset radio button to 2 years
-      this.setRestorationExpiry(DateUtilities.addMonthsToDate(24, this.getStateFilingRestoration?.expiry))
+      this.mutateRestorationExpiry(DateUtilities.addMonthsToDate(24, this.getStateFilingRestoration?.expiry))
     }
 
     // store Name Request data

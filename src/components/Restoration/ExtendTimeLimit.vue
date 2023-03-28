@@ -18,8 +18,8 @@
             :expiryDate="expiry"
             :key="expiry"
             :maxNumberOfMonths=36
-            @expiry="setRestorationExpiry(addMonthsToDate(previousNumberOfMonths, $event))"
-            @valid="setExpiryValid($event)"
+            @expiry="mutateRestorationExpiry(addMonthsToDate(previousNumberOfMonths, $event))"
+            @valid="mutateExpiryValid($event)"
           />
         </v-col>
       </v-row>
@@ -36,8 +36,8 @@
           :isCourtOrderOnly="true"
           :isCourtOrderRadio="false"
           :invalidSection="!getApprovalTypeValid"
-          @courtNumberChange="setRestorationCourtOrder({ fileNumber: $event })"
-          @valid="setApprovalTypeValid($event)"
+          @courtNumberChange="mutateRestorationCourtOrder({ fileNumber: $event })"
+          @valid="mutateApprovalTypeValid($event)"
         />
       </template>
     </section>
@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter, Mutation } from 'vuex-class'
 import { ApprovalType } from '@bcrs-shared-components/approval-type'
 import { ApprovalTypes, RestorationTypes } from '@/enums'
 import Actions from '@/components/common/Actions.vue'
@@ -75,11 +75,12 @@ export default class ExtendTimeLimit extends Vue {
   @Getter getRestoration!: RestorationStateIF
   @Getter getStateFilingRestoration!: StateFilingRestorationIF
 
-  @Action setApprovalTypeValid!: ActionBindingIF
-  @Action setExpiryValid!: ActionBindingIF
-  @Action setRestorationCourtOrder!: ActionBindingIF
-  @Action setRestorationExpiry!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
+
+  @Mutation mutateApprovalTypeValid!: ActionBindingIF
+  @Mutation mutateExpiryValid!: ActionBindingIF
+  @Mutation mutateRestorationCourtOrder!: ActionBindingIF
+  @Mutation mutateRestorationExpiry!: ActionBindingIF
 
   // Enum for template
   readonly ApprovalTypes = ApprovalTypes
