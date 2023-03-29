@@ -8,10 +8,10 @@
       :class="{ 'invalid-section': !getExpiryValid }"
     >
       <v-row no-gutters>
-        <v-col cols="12" sm="3">
+        <v-col cols="12" sm="2" class="pt-2">
           <strong :class="{ 'error-text': !getExpiryValid }">Extension Time</strong>
         </v-col>
-        <v-col cols="12" sm="9">
+        <v-col cols="12" sm="9" class="pl-10">
           <!-- Limited Restoration Radio Panel -->
           <LimitedRestorationPanel
             :currentDate="getCurrentDate"
@@ -29,8 +29,9 @@
     <section id="approval-type-section"
       class="section-container"
       :class="{ 'invalid-section': !getApprovalTypeValid }"
+      v-if="approvalType == ApprovalTypes.VIA_COURT_ORDER"
     >
-      <template v-if="approvalType == ApprovalTypes.VIA_COURT_ORDER">
+      <template>
         <ApprovalType
           :courtOrderNumber="courtOrderNumberText"
           :isCourtOrderOnly="true"
