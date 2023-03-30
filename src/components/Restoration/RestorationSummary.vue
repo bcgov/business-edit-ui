@@ -1,30 +1,5 @@
 <template>
   <v-card flat id="restoration-summary">
-    <!-- Section Header -->
-    <div class="summary-header px-4 mb-2 rounded-t">
-      <v-row no-gutters>
-        <v-col cols="9">
-          <img class="header-icon" src="@/assets/images/currency-usd-circle.svg">
-          <label class="summary-title">Restoration Notice Changes {{restorationFees}}</label>
-        </v-col>
-
-        <!-- Actions -->
-        <v-col cols="3">
-          <div class="actions mr-4">
-            <v-btn
-              text color="primary"
-              id="btn-delete-restoration"
-              :disabled="isBusySaving"
-              @click="onDeleteClicked()"
-            >
-              <v-icon small>mdi-delete</v-icon>
-              <span>Delete</span>
-            </v-btn>
-          </div>
-        </v-col>
-      </v-row>
-    </div>
-
     <!-- Business Name -->
     <template v-if="hasBusinessNameChanged">
       <v-divider class="mx-4" />

@@ -4,12 +4,12 @@
     <div class="summary-header px-4 mb-2 rounded-t">
       <v-row no-gutters>
         <v-col cols="9">
-          <img class="header-icon" src="@/assets/images/currency-usd-circle.svg">
+          <v-icon class="header-icon">mdi-domain</v-icon>
           <label class="summary-title pl-2">Your Company</label>
         </v-col>
       </v-row>
     </div>
-    <!-- Business Name -->
+
     <template>
       <v-divider class="mx-4" />
       <div class="section-container business-name-summary">
@@ -36,6 +36,9 @@
           </v-col>
         </v-row>
       </div>
+      <div class="section-container">
+        <OfficeAddresses :isSummaryView="true" />
+      </div>
     </template>
   </v-card>
 </template>
@@ -43,6 +46,7 @@
 <script lang="ts">
 import { ApprovalTypes } from '@bcrs-shared-components/enums'
 import { mapGetters } from 'vuex'
+import { OfficeAddresses } from '@/components/common/'
 
 export default {
   data () {
@@ -62,6 +66,9 @@ export default {
     getCourtOrderFileNumber () {
       return this.getRestoration.courtOrder.fileNumber
     }
+  },
+  components: {
+    OfficeAddresses
   }
 }
 </script>

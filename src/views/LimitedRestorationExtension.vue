@@ -34,12 +34,15 @@
             <h1>Review and Certify</h1>
           </header>
 
+          <div class="document-info py-4">
+            Review and certify the information in your application. If you need to change or complete anything,
+            return to the previous step to make the necessary change.
+          </div>
+
           <RestorationSummary
             class="mt-10"
             :validate="getAppValidate"
           />
-
-          <YourCompanySummary class="mt-10" />
 
           <!-- Applicant list -->
           <v-card id="people-and-roles-vcard" flat class="mt-6">
@@ -57,6 +60,8 @@
               />
             </div>
           </v-card>
+
+          <YourCompanySummary class="mt-10" />
 
           <DocumentsDelivery
             class="mt-10"

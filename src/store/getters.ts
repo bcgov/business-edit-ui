@@ -1043,7 +1043,10 @@ export default {
     if (getters.isCorrectionFiling) return FilingNames.CORRECTION
     if (getters.isFirmChangeFiling) return FilingNames.CHANGE_OF_REGISTRATION
     if (getters.isFirmConversionFiling) return FilingNames.CONVERSION
-    if (getters.isRestorationFiling) return FilingNames.RESTORATION_APPLICATION
+    if (getters.isRestorationFiling) {
+      if (getters.isLimitedExtendRestorationFiling) return FilingNames.RESTORATION_EXTENSION
+      if (getters.isLimitedConversionRestorationFiling) return FilingNames.RESTORATION_FULL
+    }
     if (getters.isSpecialResolutionFiling) return FilingNames.SPECIAL_RESOLUTION
     return null
   },
