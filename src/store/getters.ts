@@ -1045,7 +1045,7 @@ export default {
     if (getters.isFirmConversionFiling) return FilingNames.CONVERSION
     if (getters.isRestorationFiling) {
       if (getters.isLimitedExtendRestorationFiling) return FilingNames.RESTORATION_EXTENSION
-      if (getters.isLimitedConversionRestorationFiling) return FilingNames.RESTORATION_FULL
+      if (getters.isLimitedConversionRestorationFiling) return FilingNames.RESTORATION_CONVERSION
     }
     if (getters.isSpecialResolutionFiling) return FilingNames.SPECIAL_RESOLUTION
     return null

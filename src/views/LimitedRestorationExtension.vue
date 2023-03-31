@@ -67,6 +67,7 @@
             class="mt-10"
             sectionNumber="1."
             :validate="getAppValidate"
+            :userEmailOptional="userEmailOptional"
             @valid="setDocumentOptionalEmailValidity($event)"
           />
 
@@ -311,6 +312,10 @@ export default class LimitedRestorationExtension extends Vue {
   /** Resource getters. */
   get orgPersonLabel (): string {
     return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
+  }
+
+  get userEmailOptional (): boolean {
+    return this.getResource.userEmailOptional
   }
 
   // build applicant orgPerson and assign id (uuid)

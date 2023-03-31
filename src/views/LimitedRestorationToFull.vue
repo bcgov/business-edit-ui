@@ -42,21 +42,35 @@
             <h1>Review and Certify</h1>
           </header>
 
-          <RestorationSummary
-            class="mt-10"
-            :validate="getAppValidate"
-          />
+          <div class="document-info py-4">
+            Review and certify the information in your application. If you need to change or complete anything,
+            return to the previous step to make the necessary change.
+          </div>
+
+          <!-- Applicant list -->
+          <v-card id="people-and-roles-vcard" flat class="mt-6">
+            <!-- Header -->
+            <div class="section-container header-container">
+              <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
+              <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Information</label>
+            </div>
+            <div no-gutters class="mt-4 section-container">
+              <ListPeopleAndRoles
+                :isSummaryView="true"
+                :showDeliveryAddressColumn="false"
+                :showRolesColumn="false"
+                :showEmailColumn="true"
+              />
+            </div>
+          </v-card>
 
           <YourCompanySummary class="mt-10" />
-
-          <CurrentDirectors class="mt-10" />
-
-          <ListPeopleAndRoles class="mt-10" />
 
           <DocumentsDelivery
             class="mt-10"
             sectionNumber="1."
             :validate="getAppValidate"
+            :userEmailOptional="userEmailOptional"
             @valid="setDocumentOptionalEmailValidity($event)"
           />
 
@@ -192,6 +206,15 @@ export default class LimitedRestorationToFull extends Vue {
       case this.isBcUlcCompany: return UlcRestorationResource
     }
     return null // should never happen
+  }
+
+  /** Resource getters. */
+  get orgPersonLabel (): string {
+    return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
+  }
+
+  get userEmailOptional (): boolean {
+    return this.getResource.userEmailOptional
   }
 
   /** Called when App is ready and this component can load its data. */

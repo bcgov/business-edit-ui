@@ -30,4 +30,6 @@ export interface ResourceIF {
   }
   certifyClause: string
   showEmailUnderName?: boolean
+  certifyText?: string
+  userEmailOptional?: boolean
 }

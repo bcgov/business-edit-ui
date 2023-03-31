@@ -412,7 +412,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   @Prop({ default: true }) readonly showDeliveryAddressColumn!: boolean
   @Prop({ default: true }) readonly showRolesColumn!: boolean
   @Prop({ default: false }) readonly showEmailColumn!: boolean
-  @Prop({ default: true }) readonly showEmailUnderName!: string
+  @Prop({ default: true }) readonly showEmailUnderName!: boolean
 
   // Store getter
   @Getter getOrgPeople!: OrgPersonIF[]

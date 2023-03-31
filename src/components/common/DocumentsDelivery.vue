@@ -18,7 +18,7 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="isRoleStaff" no-gutters class="mt-6">
+        <v-row v-if="isRoleStaff && userEmailOptional" no-gutters class="mt-6">
           <v-col cols="3" class="px-0">
             <label :class="{ 'error-text': documentDeliveryInvalid }"><strong>Completing Party</strong></label>
           </v-col>
@@ -79,6 +79,8 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
 
   /** Whether to perform validation. */
   @Prop({ default: false }) readonly validate!: boolean
+
+  @Prop({ default: true }) readonly userEmailOptional!: boolean
 
   // Local properties
   private optionalEmail = ''
