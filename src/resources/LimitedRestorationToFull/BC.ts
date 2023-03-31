@@ -9,6 +9,7 @@ export const BcRestorationResource: ResourceIF = {
   addressLabel: 'Registered Office',
   showEmailUnderName: false,
   userEmailOptional: false,
+  userEmailLabel: 'Applicant',
   filingData: {
     entityType: CorpTypeCd.BC_COMPANY,
     filingTypeCode: FilingCodes.RESTORATION_LTD_TO_FULL,

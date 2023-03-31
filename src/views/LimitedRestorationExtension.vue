@@ -68,6 +68,7 @@
             sectionNumber="1."
             :validate="getAppValidate"
             :userEmailOptional="userEmailOptional"
+            :applicantEmail="applicantEmail"
             @valid="setDocumentOptionalEmailValidity($event)"
           />
 
@@ -123,7 +124,7 @@ import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import { CertifySection, DocumentsDelivery, PeopleAndRoles, ListPeopleAndRoles, StaffPayment,
   YourCompany } from '@/components/common/'
-import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
+import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
 import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, FlagsReviewCertifyIF,
   ResourceIF, RestorationFilingIF, RestorationStateIF, StateFilingRestorationIF } from '@/interfaces/'
 import { FilingStatus, FilingTypes, RestorationTypes, RoleTypes } from '@/enums/'
@@ -156,7 +157,8 @@ import { AuthServices, LegalServices } from '@/services'
   mixins: [
     CommonMixin,
     FeeMixin,
-    FilingTemplateMixin
+    FilingTemplateMixin,
+    OrgPersonMixin
   ]
 })
 export default class LimitedRestorationExtension extends Vue {
@@ -171,6 +173,7 @@ export default class LimitedRestorationExtension extends Vue {
   @Getter isRoleStaff!: boolean
   @Getter getResource!: ResourceIF
   @Getter getEntityType!: CorpTypeCd
+  @Getter getOrgPeople!: OrgPersonIF[]
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -261,11 +264,8 @@ export default class LimitedRestorationExtension extends Vue {
         throw new Error(`Applicant not found for ${this.getBusinessId}`)
       }
 
-      console.log('entitySnapshot Before', entitySnapshot.orgPersons)
-
       // set applicant orgPerson
       entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
-      console.log('entitySnapshot After', entitySnapshot.orgPersons)
 
       this.setEntitySnapshot(entitySnapshot)
 
@@ -357,6 +357,15 @@ export default class LimitedRestorationExtension extends Vue {
       nameTranslations: items[3],
       orgPersons: items[4]
     } as EntitySnapshotIF
+  }
+
+  get currentPeopleAndRoles (): Array<OrgPersonIF> {
+    return this.getOrgPeople.filter(orgPerson => !this.wasRemoved(orgPerson))
+  }
+
+  get applicantEmail (): string {
+    const currentApplicant = this.getOrgPeople.filter(orgPerson => !this.wasRemoved(orgPerson))
+    return currentApplicant[0].officer.email
   }
 
   /** Emits Fetch Error event. */

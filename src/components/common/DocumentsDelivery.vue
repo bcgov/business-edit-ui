@@ -20,7 +20,7 @@
 
         <v-row v-if="isRoleStaff && userEmailOptional" no-gutters class="mt-6">
           <v-col cols="3" class="px-0">
-            <label :class="{ 'error-text': documentDeliveryInvalid }"><strong>Completing Party</strong></label>
+            <label :class="{ 'error-text': documentDeliveryInvalid }"><strong>{{ emailLabel }}</strong></label>
           </v-col>
           <v-col cols="9" class="px-0">
             <v-text-field
@@ -39,10 +39,10 @@
 
         <v-row v-else no-gutters class="mt-6">
           <v-col cols="3" class="px-0">
-            <label><strong>Completing Party</strong></label>
+            <label><strong>{{ emailLabel }}</strong></label>
           </v-col>
           <v-col cols="9" class="px-0">
-            <span class="info-text">{{ getUserEmail }}</span>
+            <span class="info-text">{{ userEmail }}</span>
           </v-col>
         </v-row>
       </v-card>
@@ -55,7 +55,7 @@ import { Component, Mixins, Emit, Watch, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins/'
 import { FilingNames } from '@/enums/'
-import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
+import { ActionBindingIF, FlagsReviewCertifyIF, ResourceIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 // FUTURE: update this component so it doesn't set changes flag initially
@@ -69,6 +69,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   @Getter getDocumentOptionalEmail!: string
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getFilingName!: FilingNames
+  @Getter getResource!: ResourceIF
 
   // Global actions
   @Action setDocumentOptionalEmail!: ActionBindingIF
@@ -81,6 +82,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   @Prop({ default: false }) readonly validate!: boolean
 
   @Prop({ default: true }) readonly userEmailOptional!: boolean
+  @Prop({ default: '' }) readonly applicantEmail!: string
 
   // Local properties
   private optionalEmail = ''
@@ -109,6 +111,14 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   /** True if invalid class should be set for certify container. */
   get documentDeliveryInvalid (): boolean {
     return (this.validate && !this.getFlagsReviewCertify.isValidDocumentOptionalEmail)
+  }
+
+  get userEmail (): string {
+    return this.applicantEmail ? this.applicantEmail : this.getUserEmail
+  }
+
+  get emailLabel (): string {
+    return this.getResource.userEmailLabel ? this.getResource.userEmailLabel : 'Completing Party'
   }
 
   @Watch('optionalEmail')

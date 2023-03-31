@@ -47,6 +47,11 @@
             return to the previous step to make the necessary change.
           </div>
 
+          <RestorationSummary
+            class="mt-10"
+            :validate="getAppValidate"
+          />
+
           <!-- Applicant list -->
           <v-card id="people-and-roles-vcard" flat class="mt-6">
             <!-- Header -->
@@ -71,6 +76,7 @@
             sectionNumber="1."
             :validate="getAppValidate"
             :userEmailOptional="userEmailOptional"
+            :applicantEmail="applicantEmail"
             @valid="setDocumentOptionalEmailValidity($event)"
           />
 
@@ -127,7 +133,7 @@ import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import { CertifySection, CurrentDirectors, DocumentsDelivery, PeopleAndRoles, StaffPayment,
   YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
-import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
+import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
 import {
   ActionBindingIF,
   ResourceIF,
@@ -169,7 +175,8 @@ import ViewWrapper from '@/components/ViewWrapper.vue'
   mixins: [
     CommonMixin,
     FeeMixin,
-    FilingTemplateMixin
+    FilingTemplateMixin,
+    OrgPersonMixin
   ]
 })
 export default class LimitedRestorationToFull extends Vue {
@@ -185,6 +192,7 @@ export default class LimitedRestorationToFull extends Vue {
   @Getter isLimitedExtendRestorationFiling!: boolean
   @Getter isLimitedConversionRestorationFiling!: boolean
   @Getter getResource!: ResourceIF
+  @Getter getOrgPeople!: OrgPersonIF[]
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -206,15 +214,6 @@ export default class LimitedRestorationToFull extends Vue {
       case this.isBcUlcCompany: return UlcRestorationResource
     }
     return null // should never happen
-  }
-
-  /** Resource getters. */
-  get orgPersonLabel (): string {
-    return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
-  }
-
-  get userEmailOptional (): boolean {
-    return this.getResource.userEmailOptional
   }
 
   /** Called when App is ready and this component can load its data. */
@@ -361,6 +360,24 @@ export default class LimitedRestorationToFull extends Vue {
       nameTranslations: items[3],
       orgPersons: items[4]
     } as EntitySnapshotIF
+  }
+
+  /** Resource getters. */
+  get orgPersonLabel (): string {
+    return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
+  }
+
+  get userEmailOptional (): boolean {
+    return this.getResource.userEmailOptional
+  }
+
+  get currentPeopleAndRoles (): Array<OrgPersonIF> {
+    return this.getOrgPeople.filter(orgPerson => !this.wasRemoved(orgPerson))
+  }
+
+  get applicantEmail (): string {
+    const currentApplicant = this.getOrgPeople.filter(orgPerson => !this.wasRemoved(orgPerson))
+    return currentApplicant[0].officer.email
   }
 
   /** Emits Fetch Error event. */
