@@ -263,8 +263,11 @@ export default class LimitedRestorationToFull extends Vue {
       // set applicant orgPerson
       entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
 
+      this.setEntitySnapshot(entitySnapshot)
+
       // Set the previously filed limited restoration in the store.
       await this.setStateFilingRestoration()
+
       // parse draft restoration filing into store
       this.parseRestorationFiling(restorationFiling)
 

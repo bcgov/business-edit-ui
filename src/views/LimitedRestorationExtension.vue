@@ -242,19 +242,6 @@ export default class LimitedRestorationExtension extends Vue {
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
 
-      this.setEntitySnapshot(entitySnapshot)
-
-      if (!restorationFiling.restoration.expiry) {
-        // New limited restoration extension
-        // Set the previously filed limited restoration in the store.
-        await this.setStateFilingRestoration()
-        // parse draft restoration filing into store
-        this.parseRestorationFiling(restorationFiling)
-      } else {
-        this.parseRestorationFiling(restorationFiling)
-        await this.setStateFilingRestoration()
-      }
-
       const stateFiling = entitySnapshot.businessInfo.stateFiling
       const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
 
@@ -273,8 +260,24 @@ export default class LimitedRestorationExtension extends Vue {
         throw new Error(`Applicant not found for ${this.getBusinessId}`)
       }
 
+      console.log('entitySnapshot Before', entitySnapshot.orgPersons)
+
       // set applicant orgPerson
       entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
+      console.log('entitySnapshot After', entitySnapshot.orgPersons)
+
+      this.setEntitySnapshot(entitySnapshot)
+
+      if (!restorationFiling.restoration.expiry) {
+        // New limited restoration extension
+        // Set the previously filed limited restoration in the store.
+        await this.setStateFilingRestoration()
+        // parse draft restoration filing into store
+        this.parseRestorationFiling(restorationFiling)
+      } else {
+        this.parseRestorationFiling(restorationFiling)
+        await this.setStateFilingRestoration()
+      }
 
       if (!this.restorationResource) {
         throw new Error(`Invalid restoration resource entity type = ${this.getEntityType}`)
@@ -327,6 +330,7 @@ export default class LimitedRestorationExtension extends Vue {
       },
       roles: applicant.roles
     })
+    return applicantOrgPerson
   }
 
   /** Fetches the entity snapshot. */
