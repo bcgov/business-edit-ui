@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import { AxiosInstance as axios } from '@/utils/'
 
 /**
@@ -96,11 +94,9 @@ export async function FetchConfig (): Promise<any> {
   // eg, "/basePath/BCxxx/"
   const vueRouterBase = processEnvBaseUrl + id + '/'
   sessionStorage.setItem('VUE_ROUTER_BASE', vueRouterBase)
-  console.info('Set Vue Router Base to: ' + vueRouterBase)
 
   // set Base URL for returning from redirects
   // eg, http://localhost:8080/basePath/BCxxx/
   const baseUrl = windowLocationOrigin + vueRouterBase
   sessionStorage.setItem('BASE_URL', baseUrl)
-  console.info('Set Base URL to: ' + baseUrl)
 }

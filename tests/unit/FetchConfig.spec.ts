@@ -6,7 +6,7 @@ console.info = jest.fn()
 describe('Fetch Config', () => {
   // init environment variable
   process.env.BASE_URL = '/businesses/edit/'
-  process.env.VUE_APP_PATH = '/businesses/edit/'
+  process.env.VUE_APP_PATH = '/businesses/edit'
   process.env.VUE_APP_ADDRESS_COMPLETE_KEY = 'address complete key'
   process.env.VUE_APP_AUTH_API_URL = 'auth api url'
   process.env.VUE_APP_AUTH_API_VERSION = '/auth api version'
