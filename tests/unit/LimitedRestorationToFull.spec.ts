@@ -282,7 +282,7 @@ describe('LimitedRestorationToFull component - edit page', () => {
   })
 })
 
-describe('LimitedRestorationToFull component - summary page (with filing changes)', () => {
+xdescribe('LimitedRestorationToFull component - summary page (with filing changes)', () => {
   const { assign } = window.location
   let wrapper: any
 

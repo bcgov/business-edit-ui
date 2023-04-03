@@ -39,11 +39,6 @@
             return to the previous step to make the necessary change.
           </div>
 
-          <RestorationSummary
-            class="mt-10"
-            :validate="getAppValidate"
-          />
-
           <!-- Applicant list -->
           <v-card id="people-and-roles-vcard" flat class="mt-6">
             <!-- Header -->

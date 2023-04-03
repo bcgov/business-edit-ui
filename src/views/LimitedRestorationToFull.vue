@@ -12,9 +12,7 @@
             id="applicant-relationship"
             title="Applicant Relationship"
             subtitle="Please select applicant's relationship to the company at the time the company was dissolved:">
-            <RelationshipsPanel
-              class="ml-4 pl-5 pt-1"
-            />
+            <RelationshipsPanel class="ml-4 pl-5 pt-1"/>
           </QuestionWrapper>
 
           <QuestionWrapper
@@ -46,11 +44,6 @@
             Review and certify the information in your application. If you need to change or complete anything,
             return to the previous step to make the necessary change.
           </div>
-
-          <RestorationSummary
-            class="mt-10"
-            :validate="getAppValidate"
-          />
 
           <!-- Applicant list -->
           <v-card id="people-and-roles-vcard" flat class="mt-6">
@@ -266,6 +259,7 @@ export default class LimitedRestorationToFull extends Vue {
       const entitySnapshot = await this.fetchEntitySnapshot()
       const stateFiling = entitySnapshot.businessInfo.stateFiling
       const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
+      console.log('filing', filing)
 
       if (!filing) {
         throw new Error(`Invalid fetched stateFiling = ${this.getBusinessId}`)

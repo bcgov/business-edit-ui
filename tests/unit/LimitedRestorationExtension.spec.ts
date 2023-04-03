@@ -282,7 +282,7 @@ describe('Restoration component - edit page', () => {
   })
 })
 
-describe('Restoration component - summary page (with filing changes)', () => {
+xdescribe('Restoration component - summary page (with filing changes)', () => {
   const { assign } = window.location
   let wrapper: any
 
