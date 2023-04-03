@@ -3,7 +3,7 @@ import { ActionKvIF, AddressesIF, BusinessInformationIF, CertifyIF, CourtOrderIF
   CorrectionInformationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF,
   NaicsIF, ShareClassIF, SpecialResolutionIF } from '@bcrs-shared-components/interfaces/'
-import { ApprovalTypes, FilingTypes, RestorationTypes } from '@/enums/'
+import { ApprovalTypes, FilingTypes, RestorationTypes, RelationshipTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { LegalServices } from '@/services'
 
@@ -299,6 +299,7 @@ export default {
       LegalServices.fetchFiling(context.getters.getStateFilingUrl)
         .then((response) => {
           const stateFilingRestoration = response.restoration
+          console.log('Restoration', response.restoration)
           // commit data to store
           context.commit('mutateStateFilingRestoration', stateFilingRestoration)
           // return the state filing restoration object
@@ -308,5 +309,9 @@ export default {
           reject(error)
         })
     })
+  },
+
+  setRestorationRelationships ({ commit }, relationships: RelationshipTypes[]) {
+    commit('mutateRestorationRelationships', relationships)
   }
 }

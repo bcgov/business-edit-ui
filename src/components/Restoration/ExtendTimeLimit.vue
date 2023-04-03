@@ -35,7 +35,7 @@
         <ApprovalType
           :courtOrderNumber="courtOrderNumberText"
           :isCourtOrderOnly="true"
-          :isCourtOrderRadio="false"
+          :isCourtOrderRadio="testRadio"
           :invalidSection="!getApprovalTypeValid"
           @courtNumberChange="mutateRestorationCourtOrder({ fileNumber: $event })"
           @valid="mutateApprovalTypeValid($event)"
@@ -105,6 +105,17 @@ export default class ExtendTimeLimit extends Vue {
   /** The remaining number of months left for the previously filed limited restoration. */
   get previousNumberOfMonths (): number {
     return this.subtractDates(this.getCurrentDate, this.getStateFilingRestoration?.expiry)
+  }
+
+  get testRadio (): boolean {
+    let x
+    if (this.getStateFilingRestoration?.approvalType === ApprovalTypes.VIA_COURT_ORDER) {
+      x = false
+    } else {
+      x = true
+    }
+    console.log('x', x)
+    return x
   }
 }
 </script>

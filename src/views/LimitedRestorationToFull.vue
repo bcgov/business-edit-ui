@@ -12,7 +12,8 @@
             id="applicant-relationship"
             title="Applicant Relationship"
             subtitle="Please select applicant's relationship to the company at the time the company was dissolved:">
-            <RelationshipsPanel class="ml-4 pl-5 pt-1"/>
+            <RelationshipsPanel class="ml-4 pl-5 pt-1"
+              @changed="setRestorationRelationships($event)"/>
           </QuestionWrapper>
 
           <QuestionWrapper
@@ -25,7 +26,12 @@
           <QuestionWrapper
             id="approval-type"
             title="Approval Type">
-            <ApprovalType class="white-background px-9 py-4 mt-4" />
+            <ApprovalType class="white-background px-9 py-4 mt-4"
+              :approvedByRegistrar="isApprovedByRegistrar"
+              :isCourtOrderOnly="isCourtOrderOnly"
+              :courtOrderNumber="courtOrderNumberText"
+              :isCourtOrderRadio="showCourtOrderRadio"
+            />
           </QuestionWrapper>
 
           <YourCompany class="mt-10" />
@@ -136,7 +142,7 @@ import {
   EntitySnapshotIF } from '@/interfaces/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationToFull/'
-import { FilingStatus, RoleTypes } from '@/enums/'
+import { ApprovalTypes, FilingStatus, RoleTypes } from '@/enums/'
 import { RelationshipsPanel } from '@bcrs-shared-components/relationships-panel'
 import CourtOrderPoa from '@/components/common/CourtOrderPoa.vue'
 import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
@@ -193,10 +199,14 @@ export default class LimitedRestorationToFull extends Vue {
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setResource!: ActionBindingIF
   @Action setStateFilingRestoration!: ActionBindingIF
+  @Action setRestorationRelationships!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
   @Prop({ default: 0 }) readonly restorationId!: number
+
+  // Enum for template
+  readonly ApprovalTypes = ApprovalTypes
 
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
@@ -281,11 +291,11 @@ export default class LimitedRestorationToFull extends Vue {
 
       this.setEntitySnapshot(entitySnapshot)
 
-      // Set the previously filed limited restoration in the store.
-      await this.setStateFilingRestoration()
-
       // parse draft restoration filing into store
       this.parseRestorationFiling(restorationFiling)
+
+      // Set the previously filed limited restoration in the store.
+      await this.setStateFilingRestoration()
 
       if (!this.restorationResource) {
         throw new Error(`Invalid restoration resource entity type = ${this.getEntityType}`)
@@ -372,6 +382,35 @@ export default class LimitedRestorationToFull extends Vue {
   get applicantEmail (): string {
     const currentApplicant = this.getOrgPeople.filter(orgPerson => !this.wasRemoved(orgPerson))
     return currentApplicant[0].officer.email
+  }
+
+  /** The limited restoration state filing's approval type. */
+  get approvalType (): ApprovalTypes {
+    return this.getStateFilingRestoration?.approvalType
+  }
+
+  /** The court order draft file number. */
+  get courtOrderNumberText (): string {
+    return this.getRestoration.courtOrder?.fileNumber || ''
+  }
+
+  get isApprovedByRegistrar (): boolean {
+    return this.getStateFilingRestoration?.approvalType === ApprovalTypes.VIA_REGISTRAR
+  }
+
+  get isCourtOrderOnly (): boolean {
+    return this.getStateFilingRestoration?.approvalType === ApprovalTypes.VIA_COURT_ORDER
+  }
+
+  get showCourtOrderRadio (): boolean {
+    let courtOrderRadio
+    if (this.getStateFilingRestoration?.approvalType === ApprovalTypes.VIA_COURT_ORDER) {
+      courtOrderRadio = false
+    } else {
+      courtOrderRadio = true
+    }
+    console.log('courtOrderRadio', courtOrderRadio)
+    return courtOrderRadio
   }
 
   /** Emits Fetch Error event. */

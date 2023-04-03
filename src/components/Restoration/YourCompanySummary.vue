@@ -47,7 +47,7 @@
           </v-col>
           <v-col cols="8" class="mt-n1" v-if="isLimitedConversionRestorationFiling">
             <div class="font-weight-bold">Conversion to Full Restoration</div>
-            <div>[TODO - Applicant's relationship: Director, Shareholder]</div>
+            <div>Applicant's relationship: {{ getRelationships }}</div>
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-3" v-if="getStateFilingApprovalType === ApprovalTypes.VIA_COURT_ORDER">
@@ -104,6 +104,9 @@ export default {
     getCompanyName (): string {
       if (this.getNameRequestLegalName) return this.getNameRequestLegalName
       return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
+    },
+    getRelationships () {
+      return this.getRestoration.relationships.join(', ') || '[Unknown]'
     }
   },
   components: {

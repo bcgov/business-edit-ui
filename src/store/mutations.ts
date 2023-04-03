@@ -4,7 +4,7 @@ import { AccountInformationIF, ActionKvIF, AddressesIF, BusinessInformationIF, C
 import { CompletingPartyIF, ContactPointIF, NaicsIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { ApprovalTypes, FilingTypes, RestorationTypes } from '@/enums/'
+import { ApprovalTypes, FilingTypes, RestorationTypes, RelationshipTypes } from '@/enums/'
 
 export default {
   mutateBusinessId (state: StateIF, businessId: string) {
@@ -308,5 +308,9 @@ export default {
 
   mutateExpiryValid (state: StateIF, valid: boolean) {
     state.stateModel.validationFlags.flagsCompanyInfo.isValidExtensionTime = valid
+  },
+
+  mutateRestorationRelationships (state: StateIF, relationships: RelationshipTypes[]) {
+    state.stateModel.restoration.relationships = relationships
   }
 }
