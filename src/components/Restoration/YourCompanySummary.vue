@@ -98,7 +98,6 @@ export default {
       return this.getRestoration.courtOrder
     },
     getCourtOrderFileNumber () {
-      console.log('Court Order', this.getRestoration.courtOrder.fileNumber)
       return this.getRestoration.courtOrder.fileNumber
     },
     getCompanyName (): string {
