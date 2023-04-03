@@ -299,7 +299,6 @@ export default {
       LegalServices.fetchFiling(context.getters.getStateFilingUrl)
         .then((response) => {
           const stateFilingRestoration = response.restoration
-          console.log('Restoration', response.restoration)
           // commit data to store
           context.commit('mutateStateFilingRestoration', stateFilingRestoration)
           // return the state filing restoration object

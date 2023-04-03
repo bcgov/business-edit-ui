@@ -269,7 +269,6 @@ export default class LimitedRestorationToFull extends Vue {
       const entitySnapshot = await this.fetchEntitySnapshot()
       const stateFiling = entitySnapshot.businessInfo.stateFiling
       const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
-      console.log('filing', filing)
 
       if (!filing) {
         throw new Error(`Invalid fetched stateFiling = ${this.getBusinessId}`)
@@ -409,7 +408,6 @@ export default class LimitedRestorationToFull extends Vue {
     } else {
       courtOrderRadio = true
     }
-    console.log('courtOrderRadio', courtOrderRadio)
     return courtOrderRadio
   }
 
