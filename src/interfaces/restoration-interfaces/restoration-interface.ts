@@ -8,7 +8,7 @@ import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 //
 export interface RestorationIF {
   applicationDate?: string // YYYY-MM-DD
-  approvalType?: ApprovalTypes
+  approvalType: ApprovalTypes
   business?: BusinessInformationIF
   contactPoint: ContactPointIF
   courtOrder?: CourtOrderIF
@@ -18,6 +18,6 @@ export interface RestorationIF {
   noticeDate?: string // YYYY-MM-DD
   offices: AddressesIF
   parties: OrgPersonIF[]
-  relationships: RelationshipTypes[]
+  relationships?: RelationshipTypes[]
   type: RestorationTypes
 }
