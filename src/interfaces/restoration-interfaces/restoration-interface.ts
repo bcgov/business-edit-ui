@@ -7,6 +7,7 @@ import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/restoration.json
 //
 export interface RestorationIF {
+  applicationDate?: string // YYYY-MM-DD
   approvalType?: ApprovalTypes
   business?: BusinessInformationIF
   contactPoint: ContactPointIF
@@ -14,9 +15,9 @@ export interface RestorationIF {
   expiry?: string // YYYY-MM-DD
   nameRequest?: NameRequestIF
   nameTranslations?: NameTranslationIF[]
+  noticeDate?: string // YYYY-MM-DD
   offices: AddressesIF
   parties: OrgPersonIF[]
-  noticeDate?: string // YYYY-MM-DD
-  relationships?: RelationshipTypes[]
+  relationships: RelationshipTypes[]
   type: RestorationTypes
 }

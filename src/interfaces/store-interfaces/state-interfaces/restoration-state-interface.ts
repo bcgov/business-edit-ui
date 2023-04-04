@@ -16,7 +16,7 @@ export interface RestorationStateIF {
   expiry?: string // YYYY-MM-DD
   expiryValid: boolean
   noticeDate?: string // YYYY-MM-DD
-  relationships?: RelationshipTypes[]
+  relationships: RelationshipTypes[]
 }
 
 export interface StateFilingRestorationIF {
@@ -27,7 +27,7 @@ export interface StateFilingRestorationIF {
   courtOrder?: CourtOrderIF
   expiry?: string // YYYY-MM-DD
   noticeDate?: string // YYYY-MM-DD
-  relationships?: RelationshipTypes[]
+  relationships: RelationshipTypes[]
   restorationTypeValid: boolean
   type: RestorationTypes
 }

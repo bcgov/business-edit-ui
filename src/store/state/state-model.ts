@@ -152,6 +152,7 @@ export const stateModel: StateModelIF = {
     businessNameValid: false,
     expiry: null,
     expiryValid: true,
+    relationships: null,
     type: null
   },
   stateFilingRestoration: null

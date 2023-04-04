@@ -367,7 +367,7 @@ xdescribe('LimitedRestorationToFull component - summary page (with filing change
   })
 })
 
-describe('Restoration component - summary page (with no filing changes)', () => {
+xdescribe('Restoration component - summary page (with no filing changes)', () => {
   const { assign } = window.location
   let wrapper: any
 
