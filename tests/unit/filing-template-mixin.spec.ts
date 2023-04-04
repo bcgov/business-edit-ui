@@ -107,9 +107,7 @@ describe('Change of Registration Filing', () => {
           foundingDate: 'Jan 01, 2000',
           identifier: 'BC1234567',
           legalName: 'SomeMockBusiness',
-          legalType: 'SP',
-          naicsCode: '',
-          naicsDescription: ''
+          legalType: 'SP'
         },
         changeOfRegistration: {
           business: {

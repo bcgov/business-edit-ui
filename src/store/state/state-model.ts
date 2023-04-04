@@ -74,9 +74,11 @@ export const stateModel: StateModelIF = {
   },
   businessContact: { ...EmptyContactPoint },
   businessInformation: {
-    legalType: null,
+    associationType: null,
+    foundingDate: null,
     identifier: '',
-    associationType: null
+    legalName: null,
+    legalType: null
   },
   correctionInformation: {
     comment: '',

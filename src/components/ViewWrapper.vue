@@ -324,8 +324,8 @@ export default class App extends Vue {
 
     let filingComplete: any
     try {
-      let filing: AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF |
-      RestorationFilingIF | SpecialResolutionFilingIF
+      let filing = null as AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF |
+        RestorationFilingIF | SpecialResolutionFilingIF
       if (this.isAlterationFiling) filing = this.buildAlterationFiling(isDraft)
       if (this.isFirmChangeFiling) filing = this.buildChangeRegFiling(isDraft)
       if (this.isFirmConversionFiling) filing = this.buildConversionFiling(isDraft)
