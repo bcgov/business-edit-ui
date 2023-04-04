@@ -58,50 +58,14 @@ export default class RestorationSummary extends Mixins(
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
-
-  /** Calculates the sum of restoration fees. */
-  get restorationFees (): string {
-    const validFees = this.getCurrentFees.filter(f => f.filingFees !== null && f.futureEffectiveFees !== null)
-    if (validFees.length === 0) {
-      return ''
-    }
-    /** Calculates the sum of filing fees. */
-    const filingFeesSum = validFees.map(f => f.filingFees).reduce((a, b) => a + b, 0)
-    /** Calculates the sum of future effective fees. */
-    const futureEffectiveFeesSum = validFees.map(f => f.futureEffectiveFees).reduce((a, b) => a + b, 0)
-    return `($${(filingFeesSum + futureEffectiveFeesSum).toFixed(2)} Fee)`
-  }
-
-  protected onDeleteClicked (): void {
-    this.$root.$emit('delete-all')
-  }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-.summary-header {
-  display: flex;
-  background-color: $BCgovBlue5O;
-  padding: 1.25rem;
-}
-
-.summary-title {
-  padding-left: 0.5rem;
-}
-
 .company-name {
   font-size: 1.5rem;
-}
-
-.actions {
-  position: absolute;
-  right: 0;
-
-  #btn-delete-restoration {
-    margin-top: -6px;
-  }
 }
 
 .inner-col-1 {

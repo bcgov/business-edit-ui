@@ -63,7 +63,7 @@
             sectionNumber="1."
             :validate="getAppValidate"
             :userEmailOptional="userEmailOptional"
-            :applicantEmail="applicantEmail"
+            :userAltEmail="applicantEmail"
             @valid="setDocumentOptionalEmailValidity($event)"
           />
 
@@ -80,31 +80,6 @@
           />
         </div>
       </v-slide-x-reverse-transition>
-
-      <!-- Done-->
-      <v-fade-transition>
-        <div v-if="isSummaryMode && !showFeeSummary">
-          <header>
-            <h1>Review and Certify</h1>
-          </header>
-
-          <section class="mt-6">
-            You have deleted all fee-based changes and your company information has reverted to its
-            original state. If you made any non-fee changes such as updates to your Registered
-            Office Contact Information, please note that these changes have already been saved.
-          </section>
-
-          <v-btn
-            large
-            color="primary"
-            id="done-button"
-            class="mt-8"
-            @click="$root.$emit('go-to-dashboard')"
-          >
-            <span>Done</span>
-          </v-btn>
-        </div>
-      </v-fade-transition>
     </section>
   </ViewWrapper>
 </template>
@@ -264,6 +239,7 @@ export default class LimitedRestorationExtension extends Vue {
 
       this.setEntitySnapshot(entitySnapshot)
 
+      // Please refer to ticket# 15862 for more information (Reactivity issue)
       if (!restorationFiling.restoration.expiry) {
         // New limited restoration extension
         // Set the previously filed limited restoration in the store.
@@ -282,8 +258,6 @@ export default class LimitedRestorationExtension extends Vue {
       // set the specific resource
       this.setResource(this.restorationResource)
 
-      // set the specific resource
-      this.setResource(this.restorationResource)
       // initialize Fee Summary data
       this.setFilingData([this.restorationResource.filingData])
 
@@ -313,7 +287,7 @@ export default class LimitedRestorationExtension extends Vue {
     return this.getResource.userEmailOptional
   }
 
-  // build applicant orgPerson and assign id (uuid)
+  /** build applicant orgPerson and assign id (uuid) */
   private parseApplicantOrgPerson (applicant: OrgPersonIF): OrgPersonIF[] {
     const applicantOrgPerson: Array<OrgPersonIF> = []
     applicantOrgPerson.push({
@@ -377,10 +351,6 @@ export default class LimitedRestorationExtension extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-#done-button {
-  width: 10rem;
-}
-
 .header-container {
   display: flex;
   background-color: $BCgovBlue5O;

@@ -82,7 +82,7 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   @Prop({ default: false }) readonly validate!: boolean
 
   @Prop({ default: true }) readonly userEmailOptional!: boolean
-  @Prop({ default: '' }) readonly applicantEmail!: string
+  @Prop({ default: '' }) readonly userAltEmail!: string
 
   // Local properties
   private optionalEmail = ''
@@ -114,11 +114,11 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   }
 
   get userEmail (): string {
-    return this.applicantEmail ? this.applicantEmail : this.getUserEmail
+    return (this.userAltEmail || this.getUserEmail)
   }
 
   get emailLabel (): string {
-    return this.getResource.userEmailLabel ? this.getResource.userEmailLabel : 'Completing Party'
+    return (this.getResource.userEmailLabel || 'Completing Party')
   }
 
   @Watch('optionalEmail')

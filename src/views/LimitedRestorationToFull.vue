@@ -11,9 +11,12 @@
           <QuestionWrapper
             id="applicant-relationship"
             title="Applicant Relationship"
-            subtitle="Please select applicant's relationship to the company at the time the company was dissolved:">
-            <RelationshipsPanel class="ml-4 pl-5 pt-1"
-              @changed="setRestorationRelationships($event)"/>
+            subtitle="Please select applicant's relationship to the company at the time the company was dissolved:"
+          >
+            <RelationshipsPanel
+              class="ml-4 pl-5 pt-1"
+              @changed="setRestorationRelationships($event)"
+            />
           </QuestionWrapper>
 
           <QuestionWrapper
@@ -25,8 +28,10 @@
 
           <QuestionWrapper
             id="approval-type"
-            title="Approval Type">
-            <ApprovalType class="white-background px-9 py-4 mt-4"
+            title="Approval Type"
+          >
+            <ApprovalType
+              class="white-background px-9 py-4 mt-4"
               :approvedByRegistrar="isApprovedByRegistrar"
               :isCourtOrderOnly="isCourtOrderOnly"
               :courtOrderNumber="courtOrderNumberText"
@@ -75,7 +80,7 @@
             sectionNumber="1."
             :validate="getAppValidate"
             :userEmailOptional="userEmailOptional"
-            :applicantEmail="applicantEmail"
+            :userAltEmail="applicantEmail"
             @valid="setDocumentOptionalEmailValidity($event)"
           />
 
@@ -92,31 +97,6 @@
           />
         </div>
       </v-slide-x-reverse-transition>
-
-      <!-- Done-->
-      <v-fade-transition>
-        <div v-if="isSummaryMode && !showFeeSummary">
-          <header>
-            <h1>Review and Certify</h1>
-          </header>
-
-          <section class="mt-6">
-            You have deleted all fee-based changes and your company information has reverted to its
-            original state. If you made any non-fee changes such as updates to your Registered
-            Office Contact Information, please note that these changes have already been saved.
-          </section>
-
-          <v-btn
-            large
-            color="primary"
-            id="done-button"
-            class="mt-8"
-            @click="$root.$emit('go-to-dashboard')"
-          >
-            <span>Done</span>
-          </v-btn>
-        </div>
-      </v-fade-transition>
     </section>
   </ViewWrapper>
 </template>
@@ -204,9 +184,6 @@ export default class LimitedRestorationToFull extends Vue {
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
   @Prop({ default: 0 }) readonly restorationId!: number
-
-  // Enum for template
-  readonly ApprovalTypes = ApprovalTypes
 
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
@@ -323,7 +300,7 @@ export default class LimitedRestorationToFull extends Vue {
     this.$nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
-  // build applicant orgPerson and assign id (uuid)
+  /** build applicant orgPerson and assign id (uuid) */
   private parseApplicantOrgPerson (applicant: OrgPersonIF): OrgPersonIF[] {
     const applicantOrgPerson: Array<OrgPersonIF> = []
     applicantOrgPerson.push({
@@ -425,9 +402,6 @@ export default class LimitedRestorationToFull extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-#done-button {
-  width: 10rem;
-}
 
 .header-container {
   display: flex;
