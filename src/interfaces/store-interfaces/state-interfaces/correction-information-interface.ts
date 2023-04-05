@@ -34,7 +34,7 @@ export interface CorrectionInformationIF {
   }
   nameTranslations?: NameTranslationIF[]
   offices?: AddressesIF
-  parties: OrgPersonIF[]
+  parties?: OrgPersonIF[]
   shareStructure?: {
     shareClasses: ShareClassIF[]
     resolutionDates?: string[]

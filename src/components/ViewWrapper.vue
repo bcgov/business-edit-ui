@@ -1,5 +1,7 @@
 <template>
   <div>
+    <ConfirmDialogShared ref="confirm" attach="#app" />
+
     <v-container class="view-container my-8 py-0">
       <v-row>
         <v-col cols="9" class="left-side">
@@ -7,9 +9,10 @@
         </v-col>
 
         <v-col cols="3" class="right-side">
-          <affix v-if="showFeeSummary"
-                 relative-element-selector=".left-side"
-                 :offset="{ top: 86, bottom: 12 }"
+          <affix
+            v-if="showFeeSummary"
+            relative-element-selector=".left-side"
+            :offset="{ top: 86, bottom: 12 }"
           >
             <!-- Corrections still use the basic Fee Summary component -->
             <aside v-if="isCorrectionFiling && correctionHasFilingData">
@@ -35,9 +38,9 @@
             </v-expand-transition>
           </affix>
         </v-col>
-        <!-- end of v-col -->
       </v-row>
     </v-container>
+
     <!-- Actions component is for Corrections only -->
     <Actions
       v-if="isCorrectionFiling"
@@ -60,8 +63,8 @@ import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/co
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
-  AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, RestorationFilingIF, SpecialResolutionFilingIF }
-  from '@/interfaces/'
+  AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, RestorationFilingIF,
+  SpecialResolutionFilingIF } from '@/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums/'
 import { FeeSummaryActions } from '@bcrs-shared-components/enums/'
@@ -88,52 +91,54 @@ export default class App extends Vue {
   }
 
   // Global getters
+  // @Getter getCurrentJsDate!: Date
+  @Getter getFilingData!: FilingDataIF[]
+  @Getter getFilingId!: number
+  @Getter getNameRequestNumber!: string
+  @Getter getOrgInfo!: any
   @Getter getUserEmail!: string
-  @Getter getUserPhone!: string
   @Getter getUserFirstName!: string
   @Getter getUserLastName!: string
+  @Getter getUserPhone!: string
   @Getter getUserRoles!: string
   @Getter getUserUsername!: string
-  @Getter getOrgInfo!: any
-  @Getter getFilingData!: FilingDataIF[]
   @Getter haveUnsavedChanges!: boolean
   @Getter isBusySaving!: boolean
   @Getter isCorrectionEditing!: boolean
+  @Getter isCorrectionFiling!: boolean
+  @Getter isRestorationFiling!: boolean
   @Getter isSummaryMode!: boolean
   @Getter showFeeSummary!: boolean
-  @Getter getCurrentJsDate!: Date
-  @Getter getFilingId!: number
-  @Getter isRestorationFiling!: boolean
 
   // Alteration flag getters
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter getAppValidate!: boolean
   @Getter getComponentValidate!: boolean
+  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter isConflictingLegalType!: boolean
   @Getter isRoleStaff!: boolean
   @Getter isSbcStaff!: boolean
 
   // Global actions
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setSummaryMode!: ActionBindingIF
-  @Action setComponentValidate!: ActionBindingIF
   @Action setAppValidate!: ActionBindingIF
-  @Action setIsSaving!: ActionBindingIF
+  @Action setComponentValidate!: ActionBindingIF
+  @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setIsFilingPaying!: ActionBindingIF
+  @Action setIsSaving!: ActionBindingIF
+  @Action setSummaryMode!: ActionBindingIF
 
   // Local properties
   protected accountAuthorizationDialog = false
+  protected confirmDeleteAllDialog = false
   protected fetchErrorDialog = false
-  protected paymentErrorDialog = false
-  protected staffPaymentErrorDialog = false
-  protected saveErrorDialog = false
+  protected fileAndPayInvalidNameRequestDialog = false
   protected nameRequestErrorDialog = false
   protected nameRequestErrorType = ''
+  protected paymentErrorDialog = false
+  protected saveErrorDialog = false
   protected saveErrors: Array<object> = []
   protected saveWarnings: Array<object> = []
-  protected fileAndPayInvalidNameRequestDialog = false
-  protected confirmDeleteAllDialog = false
+  protected staffPaymentErrorDialog = false
 
   // FUTURE: change appReady/haveData to a state machine?
   /** Whether the app is ready and the views can now load their data. */
@@ -324,8 +329,8 @@ export default class App extends Vue {
 
     let filingComplete: any
     try {
-      let filing: AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF |
-      RestorationFilingIF | SpecialResolutionFilingIF
+      let filing = null as AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF |
+        RestorationFilingIF | SpecialResolutionFilingIF
       if (this.isAlterationFiling) filing = this.buildAlterationFiling(isDraft)
       if (this.isFirmChangeFiling) filing = this.buildChangeRegFiling(isDraft)
       if (this.isFirmConversionFiling) filing = this.buildConversionFiling(isDraft)

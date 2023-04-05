@@ -1,6 +1,6 @@
 import { ApprovalTypes, RestorationTypes, RelationshipTypes } from '@/enums'
-import { AddressesIF, BusinessInformationIF, CourtOrderIF, NameRequestIF, NameTranslationIF, OrgPersonIF }
-  from '@/interfaces/'
+import { AddressesIF, CourtOrderIF, NameRequestIF, NameTranslationIF, OrgPersonIF } from '@/interfaces/'
+import { CorpTypeCd } from '@bcrs-shared-components/enums'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 //
@@ -9,7 +9,10 @@ import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 export interface RestorationIF {
   applicationDate?: string // YYYY-MM-DD
   approvalType: ApprovalTypes
-  business?: BusinessInformationIF
+  business: {
+    identifier: string
+    legalType: CorpTypeCd
+  }
   contactPoint: ContactPointIF
   courtOrder?: CourtOrderIF
   expiry?: string // YYYY-MM-DD

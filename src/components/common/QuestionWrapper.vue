@@ -33,15 +33,15 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 #question_container {
   /* Set "header-counter" to 0 */
   counter-reset: header-counter;
-}
 
-#question_container h2::before {
-  /* Increment "header-counter" by 1 */
-  counter-increment: header-counter;
-  content: counter(header-counter) '. ';
+  h2::before {
+    /* Increment "header-counter" by 1 */
+    counter-increment: header-counter;
+    content: counter(header-counter) '. ';
+  }
 }
 </style>
