@@ -29,7 +29,7 @@
     <section id="approval-type-section"
       class="section-container"
       :class="{ 'invalid-section': !getApprovalTypeValid }"
-      v-if="approvalType == ApprovalTypes.VIA_COURT_ORDER"
+      v-if="approvalType === ApprovalTypes.VIA_COURT_ORDER"
     >
       <template>
         <ApprovalType

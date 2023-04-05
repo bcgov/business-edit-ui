@@ -14,7 +14,7 @@
             subtitle="Please select applicant's relationship to the company at the time the company was dissolved:"
           >
             <RelationshipsPanel
-              class="ml-4 pl-5 pt-1"
+              class="pl-5 pt-1"
               @changed="setRestorationRelationships($event)"
             />
           </QuestionWrapper>
