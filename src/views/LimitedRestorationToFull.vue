@@ -11,9 +11,11 @@
           <QuestionWrapper
             id="applicant-relationship"
             title="Applicant Relationship"
-            subtitle="Please select applicant's relationship to the company at the time the company was dissolved:">
+            subtitle="Please select applicant's relationship to the company at the time the company was dissolved:"
+          >
             <RelationshipsPanel
               class="ml-4 pl-5 pt-1"
+              @changed="setRestorationRelationships($event)"
             />
           </QuestionWrapper>
 
@@ -26,8 +28,15 @@
 
           <QuestionWrapper
             id="approval-type"
-            title="Approval Type">
-            <ApprovalType class="white-background px-9 py-4 mt-4" />
+            title="Approval Type"
+          >
+            <ApprovalType
+              class="white-background px-9 py-4 mt-4"
+              :approvedByRegistrar="isApprovedByRegistrar"
+              :isCourtOrderOnly="isCourtOrderOnly"
+              :courtOrderNumber="courtOrderNumberText"
+              :isCourtOrderRadio="showCourtOrderRadio"
+            />
           </QuestionWrapper>
 
           <YourCompany class="mt-10" />
@@ -42,21 +51,36 @@
             <h1>Review and Certify</h1>
           </header>
 
-          <RestorationSummary
-            class="mt-10"
-            :validate="getAppValidate"
-          />
+          <div class="document-info py-4">
+            Review and certify the information in your application. If you need to change or complete anything,
+            return to the previous step to make the necessary change.
+          </div>
+
+          <!-- Applicant list -->
+          <v-card id="people-and-roles-vcard" flat class="mt-6">
+            <!-- Header -->
+            <div class="section-container header-container">
+              <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
+              <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Information</label>
+            </div>
+            <div no-gutters class="mt-4 section-container">
+              <ListPeopleAndRoles
+                :isSummaryView="true"
+                :showDeliveryAddressColumn="false"
+                :showRolesColumn="false"
+                :showEmailColumn="true"
+              />
+            </div>
+          </v-card>
 
           <YourCompanySummary class="mt-10" />
-
-          <CurrentDirectors class="mt-10" />
-
-          <ListPeopleAndRoles class="mt-10" />
 
           <DocumentsDelivery
             class="mt-10"
             sectionNumber="1."
             :validate="getAppValidate"
+            :userEmailOptional="userEmailOptional"
+            :userAltEmail="applicantEmail"
             @valid="setDocumentOptionalEmailValidity($event)"
           />
 
@@ -73,31 +97,6 @@
           />
         </div>
       </v-slide-x-reverse-transition>
-
-      <!-- Done-->
-      <v-fade-transition>
-        <div v-if="isSummaryMode && !showFeeSummary">
-          <header>
-            <h1>Review and Certify</h1>
-          </header>
-
-          <section class="mt-6">
-            You have deleted all fee-based changes and your company information has reverted to its
-            original state. If you made any non-fee changes such as updates to your Registered
-            Office Contact Information, please note that these changes have already been saved.
-          </section>
-
-          <v-btn
-            large
-            color="primary"
-            id="done-button"
-            class="mt-8"
-            @click="$root.$emit('go-to-dashboard')"
-          >
-            <span>Done</span>
-          </v-btn>
-        </div>
-      </v-fade-transition>
     </section>
   </ViewWrapper>
 </template>
@@ -113,7 +112,7 @@ import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import { CertifySection, CurrentDirectors, DocumentsDelivery, PeopleAndRoles, StaffPayment,
   YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
-import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
+import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
 import {
   ActionBindingIF,
   ResourceIF,
@@ -123,7 +122,7 @@ import {
   EntitySnapshotIF } from '@/interfaces/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationToFull/'
-import { FilingStatus, RoleTypes } from '@/enums/'
+import { ApprovalTypes, FilingStatus, RoleTypes } from '@/enums/'
 import { RelationshipsPanel } from '@bcrs-shared-components/relationships-panel'
 import CourtOrderPoa from '@/components/common/CourtOrderPoa.vue'
 import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
@@ -155,7 +154,8 @@ import ViewWrapper from '@/components/ViewWrapper.vue'
   mixins: [
     CommonMixin,
     FeeMixin,
-    FilingTemplateMixin
+    FilingTemplateMixin,
+    OrgPersonMixin
   ]
 })
 export default class LimitedRestorationToFull extends Vue {
@@ -171,6 +171,7 @@ export default class LimitedRestorationToFull extends Vue {
   @Getter isLimitedExtendRestorationFiling!: boolean
   @Getter isLimitedConversionRestorationFiling!: boolean
   @Getter getResource!: ResourceIF
+  @Getter getOrgPeople!: OrgPersonIF[]
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -178,6 +179,7 @@ export default class LimitedRestorationToFull extends Vue {
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action setResource!: ActionBindingIF
   @Action setStateFilingRestoration!: ActionBindingIF
+  @Action setRestorationRelationships!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
@@ -263,10 +265,13 @@ export default class LimitedRestorationToFull extends Vue {
       // set applicant orgPerson
       entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
 
-      // Set the previously filed limited restoration in the store.
-      await this.setStateFilingRestoration()
+      this.setEntitySnapshot(entitySnapshot)
+
       // parse draft restoration filing into store
       this.parseRestorationFiling(restorationFiling)
+
+      // Set the previously filed limited restoration in the store.
+      await this.setStateFilingRestoration()
 
       if (!this.restorationResource) {
         throw new Error(`Invalid restoration resource entity type = ${this.getEntityType}`)
@@ -295,7 +300,7 @@ export default class LimitedRestorationToFull extends Vue {
     this.$nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
-  // build applicant orgPerson and assign id (uuid)
+  /** build applicant orgPerson and assign id (uuid) */
   private parseApplicantOrgPerson (applicant: OrgPersonIF): OrgPersonIF[] {
     const applicantOrgPerson: Array<OrgPersonIF> = []
     applicantOrgPerson.push({
@@ -337,6 +342,52 @@ export default class LimitedRestorationToFull extends Vue {
     } as EntitySnapshotIF
   }
 
+  /** Resource getters. */
+  get orgPersonLabel (): string {
+    return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
+  }
+
+  get userEmailOptional (): boolean {
+    return this.getResource.userEmailOptional
+  }
+
+  get currentPeopleAndRoles (): Array<OrgPersonIF> {
+    return this.getOrgPeople.filter(orgPerson => !this.wasRemoved(orgPerson))
+  }
+
+  get applicantEmail (): string {
+    const currentApplicant = this.getOrgPeople.filter(orgPerson => !this.wasRemoved(orgPerson))
+    return currentApplicant[0].officer.email
+  }
+
+  /** The limited restoration state filing's approval type. */
+  get approvalType (): ApprovalTypes {
+    return this.getStateFilingRestoration?.approvalType
+  }
+
+  /** The court order draft file number. */
+  get courtOrderNumberText (): string {
+    return this.getRestoration.courtOrder?.fileNumber || ''
+  }
+
+  get isApprovedByRegistrar (): boolean {
+    return this.getStateFilingRestoration?.approvalType === ApprovalTypes.VIA_REGISTRAR
+  }
+
+  get isCourtOrderOnly (): boolean {
+    return this.getStateFilingRestoration?.approvalType === ApprovalTypes.VIA_COURT_ORDER
+  }
+
+  get showCourtOrderRadio (): boolean {
+    let courtOrderRadio
+    if (this.getStateFilingRestoration?.approvalType === ApprovalTypes.VIA_COURT_ORDER) {
+      courtOrderRadio = false
+    } else {
+      courtOrderRadio = true
+    }
+    return courtOrderRadio
+  }
+
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -351,9 +402,6 @@ export default class LimitedRestorationToFull extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-#done-button {
-  width: 10rem;
-}
 
 .header-container {
   display: flex;

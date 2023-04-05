@@ -34,12 +34,10 @@
             <h1>Review and Certify</h1>
           </header>
 
-          <RestorationSummary
-            class="mt-10"
-            :validate="getAppValidate"
-          />
-
-          <YourCompanySummary class="mt-10" />
+          <div class="document-info py-4">
+            Review and certify the information in your application. If you need to change or complete anything,
+            return to the previous step to make the necessary change.
+          </div>
 
           <!-- Applicant list -->
           <v-card id="people-and-roles-vcard" flat class="mt-6">
@@ -58,10 +56,14 @@
             </div>
           </v-card>
 
+          <YourCompanySummary class="mt-10" />
+
           <DocumentsDelivery
             class="mt-10"
             sectionNumber="1."
             :validate="getAppValidate"
+            :userEmailOptional="userEmailOptional"
+            :userAltEmail="applicantEmail"
             @valid="setDocumentOptionalEmailValidity($event)"
           />
 
@@ -78,31 +80,6 @@
           />
         </div>
       </v-slide-x-reverse-transition>
-
-      <!-- Done-->
-      <v-fade-transition>
-        <div v-if="isSummaryMode && !showFeeSummary">
-          <header>
-            <h1>Review and Certify</h1>
-          </header>
-
-          <section class="mt-6">
-            You have deleted all fee-based changes and your company information has reverted to its
-            original state. If you made any non-fee changes such as updates to your Registered
-            Office Contact Information, please note that these changes have already been saved.
-          </section>
-
-          <v-btn
-            large
-            color="primary"
-            id="done-button"
-            class="mt-8"
-            @click="$root.$emit('go-to-dashboard')"
-          >
-            <span>Done</span>
-          </v-btn>
-        </div>
-      </v-fade-transition>
     </section>
   </ViewWrapper>
 </template>
@@ -117,7 +94,7 @@ import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import { CertifySection, DocumentsDelivery, PeopleAndRoles, ListPeopleAndRoles, StaffPayment,
   YourCompany } from '@/components/common/'
-import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
+import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
 import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, FlagsReviewCertifyIF,
   ResourceIF, RestorationFilingIF, RestorationStateIF, StateFilingRestorationIF } from '@/interfaces/'
 import { FilingStatus, FilingTypes, RestorationTypes, RoleTypes } from '@/enums/'
@@ -150,7 +127,8 @@ import { AuthServices, LegalServices } from '@/services'
   mixins: [
     CommonMixin,
     FeeMixin,
-    FilingTemplateMixin
+    FilingTemplateMixin,
+    OrgPersonMixin
   ]
 })
 export default class LimitedRestorationExtension extends Vue {
@@ -165,6 +143,7 @@ export default class LimitedRestorationExtension extends Vue {
   @Getter isRoleStaff!: boolean
   @Getter getResource!: ResourceIF
   @Getter getEntityType!: CorpTypeCd
+  @Getter getOrgPeople!: OrgPersonIF[]
 
   // Global actions
   @Action setHaveUnsavedChanges!: ActionBindingIF
@@ -237,19 +216,6 @@ export default class LimitedRestorationExtension extends Vue {
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
 
-      this.setEntitySnapshot(entitySnapshot)
-
-      if (!restorationFiling.restoration.expiry) {
-        // New limited restoration extension
-        // Set the previously filed limited restoration in the store.
-        await this.setStateFilingRestoration()
-        // parse draft restoration filing into store
-        this.parseRestorationFiling(restorationFiling)
-      } else {
-        this.parseRestorationFiling(restorationFiling)
-        await this.setStateFilingRestoration()
-      }
-
       const stateFiling = entitySnapshot.businessInfo.stateFiling
       const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
 
@@ -271,6 +237,20 @@ export default class LimitedRestorationExtension extends Vue {
       // set applicant orgPerson
       entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
 
+      this.setEntitySnapshot(entitySnapshot)
+
+      // Please refer to ticket# 15862 for more information (Reactivity issue)
+      if (!restorationFiling.restoration.expiry) {
+        // New limited restoration extension
+        // Set the previously filed limited restoration in the store.
+        await this.setStateFilingRestoration()
+        // parse draft restoration filing into store
+        this.parseRestorationFiling(restorationFiling)
+      } else {
+        this.parseRestorationFiling(restorationFiling)
+        await this.setStateFilingRestoration()
+      }
+
       if (!this.restorationResource) {
         throw new Error(`Invalid restoration resource entity type = ${this.getEntityType}`)
       }
@@ -278,8 +258,6 @@ export default class LimitedRestorationExtension extends Vue {
       // set the specific resource
       this.setResource(this.restorationResource)
 
-      // set the specific resource
-      this.setResource(this.restorationResource)
       // initialize Fee Summary data
       this.setFilingData([this.restorationResource.filingData])
 
@@ -305,7 +283,11 @@ export default class LimitedRestorationExtension extends Vue {
     return this.getResource.changeData?.orgPersonInfo.orgPersonLabel
   }
 
-  // build applicant orgPerson and assign id (uuid)
+  get userEmailOptional (): boolean {
+    return this.getResource.userEmailOptional
+  }
+
+  /** build applicant orgPerson and assign id (uuid) */
   private parseApplicantOrgPerson (applicant: OrgPersonIF): OrgPersonIF[] {
     const applicantOrgPerson: Array<OrgPersonIF> = []
     applicantOrgPerson.push({
@@ -322,6 +304,7 @@ export default class LimitedRestorationExtension extends Vue {
       },
       roles: applicant.roles
     })
+    return applicantOrgPerson
   }
 
   /** Fetches the entity snapshot. */
@@ -345,6 +328,15 @@ export default class LimitedRestorationExtension extends Vue {
     } as EntitySnapshotIF
   }
 
+  get currentPeopleAndRoles (): Array<OrgPersonIF> {
+    return this.getOrgPeople.filter(orgPerson => !this.wasRemoved(orgPerson))
+  }
+
+  get applicantEmail (): string {
+    const currentApplicant = this.getOrgPeople.filter(orgPerson => !this.wasRemoved(orgPerson))
+    return currentApplicant[0].officer.email
+  }
+
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -359,10 +351,6 @@ export default class LimitedRestorationExtension extends Vue {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-#done-button {
-  width: 10rem;
-}
-
 .header-container {
   display: flex;
   background-color: $BCgovBlue5O;

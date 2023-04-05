@@ -1,30 +1,5 @@
 <template>
   <v-card flat id="restoration-summary">
-    <!-- Section Header -->
-    <div class="summary-header px-4 mb-2 rounded-t">
-      <v-row no-gutters>
-        <v-col cols="9">
-          <img class="header-icon" src="@/assets/images/currency-usd-circle.svg">
-          <label class="summary-title">Restoration Notice Changes {{restorationFees}}</label>
-        </v-col>
-
-        <!-- Actions -->
-        <v-col cols="3">
-          <div class="actions mr-4">
-            <v-btn
-              text color="primary"
-              id="btn-delete-restoration"
-              :disabled="isBusySaving"
-              @click="onDeleteClicked()"
-            >
-              <v-icon small>mdi-delete</v-icon>
-              <span>Delete</span>
-            </v-btn>
-          </div>
-        </v-col>
-      </v-row>
-    </div>
-
     <!-- Business Name -->
     <template v-if="hasBusinessNameChanged">
       <v-divider class="mx-4" />
@@ -83,50 +58,14 @@ export default class RestorationSummary extends Mixins(
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
-
-  /** Calculates the sum of restoration fees. */
-  get restorationFees (): string {
-    const validFees = this.getCurrentFees.filter(f => f.filingFees !== null && f.futureEffectiveFees !== null)
-    if (validFees.length === 0) {
-      return ''
-    }
-    /** Calculates the sum of filing fees. */
-    const filingFeesSum = validFees.map(f => f.filingFees).reduce((a, b) => a + b, 0)
-    /** Calculates the sum of future effective fees. */
-    const futureEffectiveFeesSum = validFees.map(f => f.futureEffectiveFees).reduce((a, b) => a + b, 0)
-    return `($${(filingFeesSum + futureEffectiveFeesSum).toFixed(2)} Fee)`
-  }
-
-  protected onDeleteClicked (): void {
-    this.$root.$emit('delete-all')
-  }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-.summary-header {
-  display: flex;
-  background-color: $BCgovBlue5O;
-  padding: 1.25rem;
-}
-
-.summary-title {
-  padding-left: 0.5rem;
-}
-
 .company-name {
   font-size: 1.5rem;
-}
-
-.actions {
-  position: absolute;
-  right: 0;
-
-  #btn-delete-restoration {
-    margin-top: -6px;
-  }
 }
 
 .inner-col-1 {

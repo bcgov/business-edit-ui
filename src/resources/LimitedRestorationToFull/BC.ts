@@ -8,6 +8,8 @@ export const BcRestorationResource: ResourceIF = {
   displayName: GetCorpFullDescription(CorpTypeCd.BC_COMPANY),
   addressLabel: 'Registered Office',
   showEmailUnderName: false,
+  userEmailOptional: false,
+  userEmailLabel: 'Applicant',
   filingData: {
     entityType: CorpTypeCd.BC_COMPANY,
     filingTypeCode: FilingCodes.RESTORATION_LTD_TO_FULL,
@@ -24,7 +26,8 @@ export const BcRestorationResource: ResourceIF = {
       subtitle: null // not used
     }
   },
-  certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +
-    'of a material fact in a record submitted to the Corporate Registry for filing. ' +
-    'See section 427 of the Business Corporations Act.'
+  certifyClause: 'Note: It is an offence to make or assist in making a false or misleading statement in a record ' +
+    'filed under the BC Corporations Act. ' +
+    'A person who commits this offence is subject to a maximum fine of $5000.',
+  certifyText: 'BC Corporations Act'
 }

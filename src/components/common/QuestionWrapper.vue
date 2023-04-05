@@ -39,7 +39,7 @@ export default {
   counter-reset: header-counter;
 }
 
-h2::before {
+#question_container h2::before {
   /* Increment "header-counter" by 1 */
   counter-increment: header-counter;
   content: counter(header-counter) '. ';

@@ -298,7 +298,8 @@ export default class FilingTemplateMixin extends DateMixin {
         },
         parties: this.getOrgPeople,
         offices: this.getOfficeAddresses,
-        contactPoint: this.getContactPoint
+        contactPoint: this.getContactPoint,
+        relationships: this.getRestoration.relationships
       }
     }
 

@@ -71,7 +71,7 @@ export default class CertifySection extends Mixins(DateMixin) {
 
   /** Get the entity type in readable format */
   get readableEntityType (): string {
-    return GetCorpFullDescription(this.getEntityType)
+    return (this.getResource?.certifyText || GetCorpFullDescription(this.getEntityType))
   }
 
   /** Get the certify resource message */
