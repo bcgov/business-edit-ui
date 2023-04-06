@@ -10,8 +10,9 @@ export * from './utils-interfaces'
 export * from './state-interface'
 
 // External interfaces
-export {
+export type {
   BusinessLookupIF,
-  BusinessLookupResultIF,
-  EmptyBusinessLookup
+  BusinessLookupResultIF
 } from '@bcrs-shared-components/interfaces'
+
+export { EmptyBusinessLookup } from '@bcrs-shared-components/interfaces'

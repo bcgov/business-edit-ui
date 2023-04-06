@@ -72,6 +72,7 @@ export default class FeeMixin extends Vue {
         .map(fd => PayServices.fetchFilingFees(fd.filingTypeCode, fd.entityType, isFutureEffective))
       return await Promise.all(feePromises)
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log(error)
       return this.getFilingData.map(() => cloneDeep(EmptyFees))
     }
