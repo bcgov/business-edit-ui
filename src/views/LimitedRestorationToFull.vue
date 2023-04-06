@@ -160,26 +160,26 @@ import ViewWrapper from '@/components/ViewWrapper.vue'
 })
 export default class LimitedRestorationToFull extends Vue {
   // Global getters
-  @Getter isSummaryMode!: boolean
   @Getter getAppValidate!: boolean
-  @Getter showFeeSummary!: boolean
-  @Getter isBcCompany!: boolean
-  @Getter isBenefitCompany!: boolean
-  @Getter isBcCcc!: boolean
-  @Getter isBcUlcCompany!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter isLimitedExtendRestorationFiling!: boolean
-  @Getter isLimitedConversionRestorationFiling!: boolean
-  @Getter getResource!: ResourceIF
+  @Getter getEntityType!: CorpTypeCd
   @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter getResource!: ResourceIF
+  @Getter isBcCcc!: boolean
+  @Getter isBcCompany!: boolean
+  @Getter isBcUlcCompany!: boolean
+  @Getter isBenefitCompany!: boolean
+  @Getter isRoleStaff!: boolean
+  @Getter isSummaryMode!: boolean
+  @Getter showFeeSummary!: boolean
 
   // Global actions
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action setEntitySnapshot!: ActionBindingIF
+  @Action setFilingId!: ActionBindingIF
+  @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setResource!: ActionBindingIF
-  @Action setStateFilingRestoration!: ActionBindingIF
   @Action setRestorationRelationships!: ActionBindingIF
+  @Action setStateFilingRestoration!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
@@ -270,7 +270,8 @@ export default class LimitedRestorationToFull extends Vue {
       // parse draft restoration filing into store
       this.parseRestorationFiling(restorationFiling)
 
-      // Set the previously filed limited restoration in the store.
+      // set the previously filed limited restoration in the store
+      // (will throw on error)
       await this.setStateFilingRestoration()
 
       if (!this.restorationResource) {

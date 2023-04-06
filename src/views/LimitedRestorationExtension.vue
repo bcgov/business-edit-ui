@@ -133,22 +133,23 @@ import { AuthServices, LegalServices } from '@/services'
 })
 export default class LimitedRestorationExtension extends Vue {
   // Global getters
-  @Getter isSummaryMode!: boolean
   @Getter getAppValidate!: boolean
-  @Getter showFeeSummary!: boolean
-  @Getter isBcCompany!: boolean
-  @Getter isBenefitCompany!: boolean
-  @Getter isBcCcc!: boolean
-  @Getter isBcUlcCompany!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter getResource!: ResourceIF
   @Getter getEntityType!: CorpTypeCd
   @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter getResource!: ResourceIF
+  @Getter isBcCcc!: boolean
+  @Getter isBcCompany!: boolean
+  @Getter isBcUlcCompany!: boolean
+  @Getter isBenefitCompany!: boolean
+  @Getter isRoleStaff!: boolean
+  @Getter isSummaryMode!: boolean
+  @Getter showFeeSummary!: boolean
 
   // Global actions
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
   @Action setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action setEntitySnapshot!: ActionBindingIF
+  @Action setFilingId!: ActionBindingIF
+  @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setResource!: ActionBindingIF
   @Action setStateFilingRestoration!: ActionBindingIF
 
@@ -215,7 +216,6 @@ export default class LimitedRestorationExtension extends Vue {
 
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
-
       const stateFiling = entitySnapshot.businessInfo.stateFiling
       const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
 
@@ -241,13 +241,16 @@ export default class LimitedRestorationExtension extends Vue {
 
       // Please refer to ticket# 15862 for more information (Reactivity issue)
       if (!restorationFiling.restoration.expiry) {
-        // New limited restoration extension
-        // Set the previously filed limited restoration in the store.
+        // new limited restoration extension
+        // set the previously filed limited restoration in the store
+        // (will throw on error)
         await this.setStateFilingRestoration()
         // parse draft restoration filing into store
         this.parseRestorationFiling(restorationFiling)
       } else {
         this.parseRestorationFiling(restorationFiling)
+        // set the previously filed limited restoration in the store
+        // (will throw on error)
         await this.setStateFilingRestoration()
       }
 
