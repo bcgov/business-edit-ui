@@ -305,6 +305,8 @@ export default {
           resolve(stateFilingRestoration)
         })
         .catch(error => {
+          // eslint-disable-next-line no-console
+          console.log('setStateFilingRestoration() error =', error)
           reject(error)
         })
     })
