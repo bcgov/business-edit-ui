@@ -66,7 +66,7 @@ import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF,
   AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, RestorationFilingIF,
   SpecialResolutionFilingIF } from '@/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums/'
+import { ComponentsCompanyInfo, ComponentsReviewCertify } from '@/enums/'
 import { FeeSummaryActions } from '@bcrs-shared-components/enums/'
 
 @Component({
@@ -99,13 +99,6 @@ export default class App extends Vue {
   @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getNameRequestNumber!: string
-  @Getter getOrgInfo!: any
-  @Getter getUserEmail!: string
-  @Getter getUserFirstName!: string
-  @Getter getUserLastName!: string
-  @Getter getUserPhone!: string
-  @Getter getUserRoles!: string
-  @Getter getUserUsername!: string
   @Getter haveUnsavedChanges!: boolean
   @Getter isAlterationFiling!: boolean
   @Getter isBusySaving!: boolean
@@ -114,9 +107,7 @@ export default class App extends Vue {
   @Getter isFirmChangeFiling!: boolean
   @Getter isFirmConversionFiling!: boolean
   @Getter isRestorationFiling!: boolean
-  @Getter isRoleStaff!: boolean
   @Getter isSummaryMode!: boolean
-  @Getter isSbcStaff!: boolean
   @Getter isSpecialResolutionFiling!: boolean
   @Getter showFeeSummary!: boolean
 

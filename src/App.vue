@@ -122,8 +122,7 @@ import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
-import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF }
-  from '@/interfaces/'
+import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { RouteNames } from '@/enums/'
@@ -159,8 +158,6 @@ export default class App extends Vue {
   @Getter getCurrentJsDate!: Date
   @Getter getFilingData!: FilingDataIF[]
   @Getter getFilingId!: number
-  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getOrgInfo!: any
   @Getter getUserEmail!: string
   @Getter getUserFirstName!: string
