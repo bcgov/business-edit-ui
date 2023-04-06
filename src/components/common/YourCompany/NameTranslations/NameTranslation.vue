@@ -12,7 +12,7 @@
         <ActionChipShared
           v-if="hasNameTranslationChange && !isSummaryMode"
           :actionable-item="{ action: ActionTypes.EDITED }"
-          :editedLabel="editedLabel"
+          :editedLabel="getEditedLabel"
         />
       </v-col>
 
@@ -38,7 +38,7 @@
             @click="isEditing = true"
           >
             <v-icon small>mdi-pencil</v-icon>
-            <span>{{ editLabel }}</span>
+            <span>{{ getEditLabel }}</span>
           </v-btn>
         </div>
       </v-col>
@@ -177,9 +177,11 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   @Prop({ default: false }) readonly isSummaryMode!: boolean
 
   // Global getter
+  @Getter getEditLabel!: string
+  @Getter getEditedLabel!: string
   @Getter getNameTranslations!: NameTranslationIF[]
-  @Getter isLimitedExtendRestorationFiling!: boolean
   @Getter isLimitedConversionRestorationFiling!: boolean
+  @Getter isLimitedExtendRestorationFiling!: boolean
 
   // Global actions
   @Action setEditingNameTranslations!: ActionBindingIF

@@ -233,25 +233,30 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter getCurrentJsDate!: Date
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getOrgPeople!: OrgPersonIF[]
-  @Getter isRoleStaff!: boolean
   @Getter getResource!: ResourceIF
   @Getter getComponentValidate!: boolean
-  @Getter isBenBcCccUlcCorrectionFiling!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
-  @Getter isBcCompany!: boolean
-  @Getter isBenefitCompany!: boolean
+  @Getter isAlterationFiling!: boolean
   @Getter isBcCcc!: boolean
-  @Getter isPartnership!: boolean
-  @Getter isSoleProp!: boolean
+  @Getter isBcCompany!: boolean
   @Getter isBcUlcCompany!: boolean
-  @Getter isLimitedExtendRestorationFiling!: boolean
+  @Getter isBenefitCompany!: boolean
+  @Getter isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter isCorrectionFiling!: boolean
+  @Getter isFirmChangeFiling!: boolean
+  @Getter isFirmConversionFiling!: boolean
+  @Getter isFirmCorrectionFiling!: boolean
   @Getter isLimitedConversionRestorationFiling!: boolean
+  @Getter isLimitedExtendRestorationFiling!: boolean
+  @Getter isPartnership!: boolean
+  @Getter isRestorationFiling!: boolean
+  @Getter isRoleStaff!: boolean
+  @Getter isSoleProp!: boolean
 
   // Global actions
+  @Action setEditingPeopleAndRoles!: ActionBindingIF
   @Action setPeopleAndRoles!: ActionBindingIF
   @Action setPeopleAndRolesChanged!: ActionBindingIF
   @Action setPeopleAndRolesValidity!: ActionBindingIF
-  @Action setEditingPeopleAndRoles!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
 
   // Local properties

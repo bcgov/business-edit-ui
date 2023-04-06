@@ -92,8 +92,12 @@ export default class App extends Vue {
 
   // Global getters
   // @Getter getCurrentJsDate!: Date
+  @Getter getAppValidate!: boolean
+  @Getter getComponentValidate!: boolean
   @Getter getFilingData!: FilingDataIF[]
   @Getter getFilingId!: number
+  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter getNameRequestNumber!: string
   @Getter getOrgInfo!: any
   @Getter getUserEmail!: string
@@ -103,21 +107,18 @@ export default class App extends Vue {
   @Getter getUserRoles!: string
   @Getter getUserUsername!: string
   @Getter haveUnsavedChanges!: boolean
+  @Getter isAlterationFiling!: boolean
   @Getter isBusySaving!: boolean
-  @Getter isCorrectionEditing!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isRestorationFiling!: boolean
-  @Getter isSummaryMode!: boolean
-  @Getter showFeeSummary!: boolean
-
-  // Alteration flag getters
-  @Getter getAppValidate!: boolean
-  @Getter getComponentValidate!: boolean
-  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter isConflictingLegalType!: boolean
+  @Getter isCorrectionFiling!: boolean
+  @Getter isFirmChangeFiling!: boolean
+  @Getter isFirmConversionFiling!: boolean
+  @Getter isRestorationFiling!: boolean
   @Getter isRoleStaff!: boolean
+  @Getter isSummaryMode!: boolean
   @Getter isSbcStaff!: boolean
+  @Getter isSpecialResolutionFiling!: boolean
+  @Getter showFeeSummary!: boolean
 
   // Global actions
   @Action setAppValidate!: ActionBindingIF
@@ -197,11 +198,11 @@ export default class App extends Vue {
   /** Show fee summary only allowed filing types */
   get showFeeSummaryShared (): boolean {
     return (
-      this.isSpecialResolutionFiling ||
       this.isAlterationFiling ||
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling ||
-      this.isRestorationFiling
+      this.isRestorationFiling ||
+      this.isSpecialResolutionFiling
     )
   }
 

@@ -154,63 +154,61 @@ export default class App extends Vue {
   }
 
   // Global getters
-  @Getter getUserEmail!: string
-  @Getter getUserPhone!: string
-  @Getter getUserFirstName!: string
-  @Getter getUserLastName!: string
-  @Getter getUserRoles!: string
-  @Getter getUserUsername!: string
-  @Getter getOrgInfo!: any
-  @Getter getFilingData!: FilingDataIF[]
-  @Getter haveUnsavedChanges!: boolean
-  @Getter isBusySaving!: boolean
-  @Getter isCorrectionEditing!: boolean
-  @Getter isSummaryMode!: boolean
-  @Getter showFeeSummary!: boolean
-  @Getter getCurrentJsDate!: Date
-  @Getter getFilingId!: number
-  @Getter isRestorationFiling!: boolean
-
-  // Alteration flag getters
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter getAppValidate!: boolean
   @Getter getComponentValidate!: boolean
+  @Getter getCurrentJsDate!: Date
+  @Getter getFilingData!: FilingDataIF[]
+  @Getter getFilingId!: number
+  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter getOrgInfo!: any
+  @Getter getUserEmail!: string
+  @Getter getUserFirstName!: string
+  @Getter getUserLastName!: string
+  @Getter getUserPhone!: string
+  @Getter getUserRoles!: string
+  @Getter getUserUsername!: string
+  @Getter haveUnsavedChanges!: boolean
+  @Getter isBusySaving!: boolean
   @Getter isConflictingLegalType!: boolean
+  @Getter isCorrectionEditing!: boolean
+  @Getter isCorrectionFiling!: boolean
   @Getter isRoleStaff!: boolean
   @Getter isSbcStaff!: boolean
+  @Getter isSummaryMode!: boolean
+  @Getter showFeeSummary!: boolean
 
   // Global actions
   @Action setAccountInformation!: ActionBindingIF
   @Action setAppValidate!: ActionBindingIF
   @Action setAuthRoles!: ActionBindingIF
   @Action setBusinessId!: ActionBindingIF
+  @Action setCompletingParty!: ActionBindingIF
   @Action setComponentValidate!: ActionBindingIF
   @Action setCurrentDate!: ActionBindingIF
   @Action setCurrentJsDate!: ActionBindingIF
+  @Action setFilingId!: ActionBindingIF
+  @Action setFilingType!: ActionBindingIF
   @Action setHaveUnsavedChanges!: ActionBindingIF
   @Action setIsFilingPaying!: ActionBindingIF
   @Action setIsSaving!: ActionBindingIF
   @Action setKeycloakRoles!: ActionBindingIF
-  @Action setUserInfo!: ActionBindingIF
   @Action setOrgInfo!: ActionBindingIF
-  @Action setCompletingParty!: ActionBindingIF
   @Action setSummaryMode!: ActionBindingIF
-  @Action setFilingType!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
+  @Action setUserInfo!: ActionBindingIF
 
   // Local properties
   protected accountAuthorizationDialog = false
+  protected confirmDeleteAllDialog = false
   protected fetchErrorDialog = false
-  protected paymentErrorDialog = false
-  protected staffPaymentErrorDialog = false
-  protected saveErrorDialog = false
+  protected fileAndPayInvalidNameRequestDialog = false
   protected nameRequestErrorDialog = false
   protected nameRequestErrorType = ''
+  protected paymentErrorDialog = false
+  protected saveErrorDialog = false
   protected saveErrors: Array<object> = []
   protected saveWarnings: Array<object> = []
-  protected fileAndPayInvalidNameRequestDialog = false
-  protected confirmDeleteAllDialog = false
+  protected staffPaymentErrorDialog = false
 
   // FUTURE: change appReady/haveData to a state machine?
   /** Whether the app is ready and the views can now load their data. */

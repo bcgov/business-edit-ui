@@ -90,14 +90,13 @@ import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 export default class ChangeSummary extends Vue {
   // Global getters
   @Getter hasBusinessNameChanged!: boolean
-  @Getter getNameRequest!: NameRequestIF
   @Getter hasNaicsChanged!: boolean
-  @Getter getCurrentNaics!: NaicsIF
   @Getter haveOfficeAddressesChanged!: boolean
   @Getter havePeopleAndRolesChanged!: boolean
-  @Getter getResource!: ResourceIF
-  @Getter getNameRequestLegalName!: string
   @Getter getBusinessNumber!: string
+  @Getter getCurrentNaics!: NaicsIF
+  @Getter getNameRequest!: NameRequestIF
+  @Getter getNameRequestLegalName!: string
   @Getter isSoleProp!: boolean
 
   /** Whether to perform validation. */

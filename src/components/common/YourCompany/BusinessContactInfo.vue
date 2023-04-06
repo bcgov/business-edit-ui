@@ -4,8 +4,8 @@
     :businessContact="getBusinessContact"
     :originalBusinessContact="originalContact"
     :hasBusinessContactInfoChange="hasBusinessContactInfoChange"
-    :editLabel="editLabel"
-    :editedLabel="editSavedLabel"
+    :editLabel="getEditLabel"
+    :editedLabel="getEditSavedLabel"
     :disableActionTooltip="isFirmChangeFiling"
     :invalidSection="invalidSection"
     :optionalPhone="isAlterationFiling || isFirmChangeFiling"
@@ -32,9 +32,15 @@ import { isEqual } from 'lodash'
 export default class BusinessContactInfo extends Mixins(CommonMixin) {
   // Global getters
   @Getter getBusinessContact!: ContactPointIF
+  @Getter getBusinessId!: string
+  @Getter getEditLabel!: string
+  @Getter getEditSavedLabel!: string
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter getResource!: ResourceIF
-  @Getter getBusinessId!: string
+  @Getter isAlterationFiling!: boolean
+  @Getter isCorrectionFiling!: boolean
+  @Getter isFirmChangeFiling!: boolean
+  @Getter isSpecialResolutionFiling!: boolean
 
   // Global setters
   @Action setBusinessContact!: ActionBindingIF
@@ -65,8 +71,8 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
     try {
       if (
         this.isAlterationFiling ||
-        this.isFirmChangeFiling ||
         this.isCorrectionFiling ||
+        this.isFirmChangeFiling ||
         this.isSpecialResolutionFiling
       ) {
         await AuthServices.updateContactInfo(contactInfo, this.getBusinessId)

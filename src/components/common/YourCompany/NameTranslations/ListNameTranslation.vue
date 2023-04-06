@@ -134,6 +134,7 @@
 
 <script lang="ts">
 import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
 import { NameTranslationIF } from '@/interfaces/'
 import { ActionTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
@@ -142,6 +143,8 @@ import { CommonMixin } from '@/mixins/'
 export default class ListNameTranslation extends Mixins(CommonMixin) {
   @Prop({ default: () => [] }) readonly translationsList!: NameTranslationIF[]
   @Prop({ default: false }) readonly isAddingNameTranslation!: boolean
+
+  @Getter isCorrectionFiling!: boolean
 
   // Declaration for template
   readonly ActionTypes = ActionTypes

@@ -11,8 +11,8 @@
       :shareClasses="getShareClasses"
       :originalShareStructure="originalShareStructure"
       :resolutionRequired="resolutionsRequired"
-      :editLabel="editLabel"
-      :editedLabel="editedLabel"
+      :editLabel="getEditLabel"
+      :editedLabel="getEditedLabel"
       :hasRightsOrRestrictions="getHasRightsOrRestrictions"
       :invalidSection="invalidShareSection"
       :invalidMinimumShareClass="!hasMinimumShareClass"
@@ -49,18 +49,21 @@ export default class ShareStructures extends Mixins(CommonMixin) {
 
   // Global getters
   @Getter getComponentValidate!: boolean
-  @Getter getNewResolutionDates!: string[]
-  @Getter getShareClasses!: ShareClassIF[]
+  @Getter getEditLabel!: string
+  @Getter getEditedLabel!: string
   @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getHasRightsOrRestrictions!: boolean
   @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  @Getter getNewResolutionDates!: string[]
+  @Getter getHasRightsOrRestrictions!: boolean
+  @Getter getShareClasses!: ShareClassIF[]
   @Getter hasMinimumShareClass!: boolean
+  @Getter isAlterationFiling!: boolean
 
   // Global actions
-  @Action setShareClasses!: ActionBindingIF
-  @Action setShareStructureChanged!: ActionBindingIF
   @Action setCreateShareStructureStepValidity!: ActionBindingIF
   @Action setEditingShareStructure!: ActionBindingIF
+  @Action setShareClasses!: ActionBindingIF
+  @Action setShareStructureChanged!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
 
   // Local propertiues

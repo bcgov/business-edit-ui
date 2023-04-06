@@ -2,7 +2,7 @@
   <FolioNumberShared
     :initialValue="getFolioNumber"
     :originalValue="originalFolioNumber"
-    :editLabel="editLabel"
+    :editLabel="getEditLabel"
     :editedLabel="editedLabelExtended"
     :hideActions="hideActions"
     :invalidSection="invalidSection"
@@ -25,10 +25,15 @@ import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-
 })
 export default class FolioInformation extends Mixins(CommonMixin) {
   // Global getters
-  @Getter getFolioNumber!: string
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter isRoleStaff!: boolean
   @Getter getBusinessId!: string
+  @Getter getEditLabel!: string
+  @Getter getEditedLabel!: string
+  @Getter getEntitySnapshot!: EntitySnapshotIF
+  @Getter getFolioNumber!: string
+  @Getter isAlterationFiling!: boolean
+  @Getter isCorrectionFiling!: boolean
+  @Getter isRoleStaff!: boolean
+  @Getter isSpecialResolutionFiling!: boolean
 
   // Global setters
   @Action setFolioNumber!: ActionBindingIF
@@ -58,7 +63,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
 
   /** Modifies label for instant update of folio number. */
   get editedLabelExtended (): string {
-    return this.isInstantUpdate ? 'Changes Saved' : this.editedLabel
+    return this.isInstantUpdate ? 'Changes Saved' : this.getEditedLabel
   }
 
   /** On New Folio Number event, updates auth db and store. */

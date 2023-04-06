@@ -295,7 +295,7 @@
                     @click="emitInitEdit(index)"
                   >
                     <v-icon small>mdi-pencil</v-icon>
-                    <span>{{ editLabel }}</span>
+                    <span>{{ getEditLabel }}</span>
                   </v-btn>
                 </span>
 
@@ -415,7 +415,9 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   @Prop({ default: true }) readonly showEmailUnderName!: boolean
 
   // Store getter
+  @Getter getEditLabel!: string
   @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter hideChangeButtonForSoleProps!: boolean
   @Getter isAlterationFiling!: boolean
   @Getter isBenBcCccUlcCorrectionFiling!: boolean
   @Getter isCorrectionFiling!: boolean
@@ -425,7 +427,6 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   @Getter isLimitedExtendRestorationFiling!: boolean
   @Getter isLimitedConversionRestorationFiling!: boolean
   @Getter isRoleStaff!: boolean
-  @Getter hideChangeButtonForSoleProps!: boolean
 
   /** V-model for dropdown menus. */
   protected dropdown: Array<boolean> = []

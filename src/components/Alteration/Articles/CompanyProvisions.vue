@@ -5,7 +5,7 @@
         <v-col cols="3">
           <label class="define-company-provisions-title">Pre-existing<br>Company Provisions</label>
           <v-chip v-if="hasProvisionsRemovedPropsChanged" x-small label color="primary" text-color="white">
-            {{ editedLabel }}
+            {{ getEditedLabel }}
           </v-chip>
         </v-col>
 
@@ -24,7 +24,7 @@
             @click="isEditing = true"
           >
             <v-icon small>mdi-pencil</v-icon>
-            <span>{{ editLabel }}</span>
+            <span>{{ getEditLabel }}</span>
           </v-btn>
         </v-col>
         <v-col v-else cols="2" class="pt-0 mt-n2 align-right">
@@ -121,6 +121,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Mixins, Watch } from 'vue-property-decorator'
+import { Getter } from 'vuex-class'
 import { CommonMixin } from '@/mixins/'
 
 @Component({})
@@ -131,6 +132,9 @@ export default class CompanyProvisions extends Mixins(CommonMixin) {
   private originalProvisionsRemovedValue = false
   private isInvalid = false
   private dropdown = false
+
+  @Getter getEditLabel!: string
+  @Getter getEditedLabel!: string
 
   // Props
   @Prop({ default: false }) readonly provisionsRemoved!: boolean
