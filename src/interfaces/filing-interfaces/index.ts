@@ -11,4 +11,4 @@ export * from './special-resolution-filing-interface'
 
 // Alias for Shared Components that import IncorporationAddressIf
 export type { AddressesIF as IncorporationAddressIf }
-  from '../stepper-interfaces/YourCompany/address-interfaces'
+  from '@/interfaces/stepper-interfaces/YourCompany/address-interfaces'
