@@ -300,7 +300,6 @@ export default class FilingTemplateMixin extends DateMixin {
       },
       restoration: {
         approvalType: this.getStateFilingRestoration?.approvalType,
-        expiry: this.getRestoration.expiry,
         type: this.getRestoration.type,
         business: {
           identifier: this.getBusinessId,
@@ -311,6 +310,11 @@ export default class FilingTemplateMixin extends DateMixin {
         contactPoint: this.getContactPoint,
         relationships: this.getRestoration.relationships
       }
+    }
+
+    // Set expiry date property if it's not null
+    if (this.getRestoration.expiry) {
+      filing.restoration.expiry = this.getRestoration.expiry
     }
 
     // Apply NR / business name / business type change to filing
@@ -834,8 +838,6 @@ export default class FilingTemplateMixin extends DateMixin {
     } else if (filing.restoration.type === RestorationTypes.LTD_EXTEND) {
       // Reset radio button to 2 years
       this.mutateRestorationExpiry(DateUtilities.addMonthsToDate(24, this.getStateFilingRestoration?.expiry))
-    } else {
-      this.mutateRestorationExpiry(undefined)
     }
 
     // store Name Request data
