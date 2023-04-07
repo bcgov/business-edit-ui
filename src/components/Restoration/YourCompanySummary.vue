@@ -69,9 +69,9 @@
 
 <script lang="ts">
 import { ApprovalTypes } from '@bcrs-shared-components/enums'
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 import { OfficeAddresses, NameTranslation } from '@/components/common/'
-import { CommonMixin, DateMixin, FilingTemplateMixin } from '@/mixins/'
+import { useStore } from '@/store/store'
 
 export default {
   data () {
@@ -80,7 +80,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
+    ...mapState(useStore, [
       'getBusinessNumber',
       'getFormattedExpiryText',
       'getNameRequestLegalName',

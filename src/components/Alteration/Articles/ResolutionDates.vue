@@ -118,11 +118,12 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF } from '@/interfaces/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -143,15 +144,15 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   @Prop({ default: false }) readonly hasRightsOrRestrictions!: boolean
 
   // Global getters
-  @Getter getBusinessFoundingDateTime!: string
-  @Getter getCurrentDate!: string
-  @Getter haveNewResolutionDates!: boolean
-  @Getter getIsResolutionDatesValid!: boolean
-  @Getter isSummaryMode!: boolean
-  @Getter isCorrectionFiling!: boolean
+  @Getter(useStore) getBusinessFoundingDateTime!: string
+  @Getter(useStore) getCurrentDate!: string
+  @Getter(useStore) haveNewResolutionDates!: boolean
+  @Getter(useStore) getIsResolutionDatesValid!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
 
   // Global setter
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   // Local properties
   displayPreviousDates = false

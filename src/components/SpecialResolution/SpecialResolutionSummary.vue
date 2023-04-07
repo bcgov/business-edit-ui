@@ -53,11 +53,12 @@
 <script lang="ts">
 // this is a placceholder copied from AlterationSummary, Will add component when working on this page
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
-import { ActionBindingIF, FeesIF } from '@/interfaces/'
+import { Getter } from 'pinia-class'
+import { FeesIF } from '@/interfaces/'
 import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
 import { CoopTypeToDescription } from '@/utils'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -70,10 +71,10 @@ export default class SpecialResolutionSummary extends Mixins(
   FilingTemplateMixin
 ) {
   // Global getters
-  @Getter getBusinessNumber!: string
-  @Getter getCurrentFees!: FeesIF[]
-  @Getter isBusySaving!: boolean
-  @Getter getCurrentJsDate!: Date
+  @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) getCurrentFees!: FeesIF[]
+  @Getter(useStore) isBusySaving!: boolean
+  @Getter(useStore) getCurrentJsDate!: Date
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean

@@ -1,16 +1,18 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import EntityInfo from '@/components/common/EntityInfo.vue'
 import mockRouter from './MockRouter'
 import VueRouter from 'vue-router'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
-let state = store.state.stateModel
+setActivePinia(createPinia())
+const store = useStore()
+const state = store.stateModel
 document.body.setAttribute('data-app', 'true')
 
 describe('Entity Info component in a Correction as a named company', () => {
@@ -44,14 +46,14 @@ describe('Entity Info component in a Correction as a named company', () => {
 
   beforeAll(() => {
     state.tombstone.keycloakRoles = ['staff']
-    state.businessInformation = mockFiling.business
+    state.businessInformation = mockFiling.business as any
     state.tombstone.businessId = mockFiling.business.identifier
     state.businessContact = mockFiling.incorporationApplication.contactPoint
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: 'My Mock Name Inc.'
       }
-    }
+    } as any
   })
 
   beforeEach(async () => {
@@ -63,7 +65,6 @@ describe('Entity Info component in a Correction as a named company', () => {
     wrapper = mount(EntityInfo, {
       localVue,
       vuetify,
-      store,
       router
     })
   })
@@ -115,14 +116,14 @@ describe('Entity Info component in a Correction as a numbered company', () => {
 
   beforeAll(() => {
     state.tombstone.keycloakRoles = ['staff']
-    state.businessInformation = mockFiling.business
+    state.businessInformation = mockFiling.business as any
     state.tombstone.businessId = mockFiling.business.identifier
     state.businessContact = mockFiling.incorporationApplication.contactPoint
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: null
       }
-    }
+    } as any
   })
 
   beforeEach(async () => {
@@ -134,7 +135,6 @@ describe('Entity Info component in a Correction as a numbered company', () => {
     wrapper = mount(EntityInfo, {
       localVue,
       vuetify,
-      store,
       router
     })
   })

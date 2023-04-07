@@ -3,10 +3,12 @@ import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
 import OrgPerson from '@/components/common/PeopleAndRoles/OrgPerson.vue'
-import { getVuexStore } from '@/store/'
 import { BenCorrectionResource } from '@/resources/Correction/BEN'
 import { SpChangeResource } from '@/resources/Change/SP'
 import { GpChangeResource } from '@/resources/Change/GP'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()
@@ -15,7 +17,8 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // Events
 const addEditEvent = 'addEdit'
@@ -196,17 +199,16 @@ function createComponent (
   return mount(OrgPerson, {
     localVue,
     propsData: { currentOrgPerson, activeIndex },
-    store,
     vuetify
   })
 }
 
 describe('Org/Person component for a BEN Correction filing', () => {
   beforeAll(() => {
-    store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.stateModel.tombstone.currentDate = '2020-03-30'
-    store.state.resourceModel = BenCorrectionResource
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.stateModel.tombstone.currentDate = '2020-03-30'
+    store.resourceModel = BenCorrectionResource
   })
 
   it('Loads the component and sets data for person', async () => {
@@ -568,7 +570,7 @@ const ExistingPartnerOrgData = {
 
 describe('Org/Person component for SP/GP filings', () => {
   beforeAll(() => {
-    store.state.stateModel.tombstone.currentDate = '2020-03-30'
+    store.stateModel.tombstone.currentDate = '2020-03-30'
   })
 
   const tests = [
@@ -884,9 +886,9 @@ describe('Org/Person component for SP/GP filings', () => {
 
   tests.forEach((test, index) => {
     it(`${index + 1}. ${test.filingType} - ${test.name}`, () => {
-      store.state.stateModel.tombstone.filingType = test.filingType
-      store.state.stateModel.tombstone.entityType = test.entityType
-      store.state.resourceModel = test.resourceModel
+      store.stateModel.tombstone.filingType = test.filingType as FilingTypes
+      store.stateModel.tombstone.entityType = test.entityType as CorpTypeCd
+      store.resourceModel = test.resourceModel
 
       const wrapper = createComponent(test.currentOrgPerson, test.activeIndex)
 
@@ -967,16 +969,17 @@ describe('Org/Person component for SP/GP filings', () => {
 
 describe('Org/Person component for SP change of registration filing', () => {
   beforeEach(() => {
-    store.state.stateModel.tombstone.currentDate = '2020-03-30'
-    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel = SpChangeResource
+    store.stateModel.tombstone.currentDate = '2020-03-30'
+    store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.resourceModel = SpChangeResource
   })
 
   it('displays Confirm Documents checkbox for a replaced-added org-person', () => {
-    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel = SpChangeResource
+    store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    expect(CorpTypeCd.SOLE_PROP).toBe('SP')
+    store.resourceModel = SpChangeResource
 
     const currentOrgPerson = {
       ...NewOrgProprietor,

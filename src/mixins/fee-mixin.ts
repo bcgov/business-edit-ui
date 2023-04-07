@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF, EmptyFees, FeesIF } from '@/interfaces'
 import { PayServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { FilingDataIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 import { cloneDeep } from 'lodash'
+import { useStore } from '@/store/store'
 
 /**
  * Mixin that provides common functions also provides integration with PAY API.
@@ -13,14 +14,14 @@ import { cloneDeep } from 'lodash'
 @Component({})
 export default class FeeMixin extends Vue {
   // Global getters
-  @Getter getFeePrices!: FeesIF[]
-  @Getter getFilingData!: FilingDataIF[]
-  @Getter getStaffPayment!: StaffPaymentIF
+  @Getter(useStore) getFeePrices!: FeesIF[]
+  @Getter(useStore) getFilingData!: FilingDataIF[]
+  @Getter(useStore) getStaffPayment!: StaffPaymentIF
 
   // Global actions
-  @Action setCurrentFees!: ActionBindingIF
-  @Action setFeePrices!: ActionBindingIF
-  @Action setFilingData!: ActionBindingIF
+  @Action(useStore) setCurrentFees!: ActionBindingIF
+  @Action(useStore) setFeePrices!: ActionBindingIF
+  @Action(useStore) setFilingData!: ActionBindingIF
 
   /** Provides the filing fees price. */
   get filingFeesPrice (): string {

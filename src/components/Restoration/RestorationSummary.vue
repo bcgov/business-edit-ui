@@ -29,10 +29,11 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
-import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
+import { Getter } from 'pinia-class'
+import { FeesIF } from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
 import { NameTranslation } from '@/components/common/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -45,9 +46,9 @@ export default class RestorationSummary extends Mixins(
   FilingTemplateMixin
 ) {
   // Global getters
-  @Getter getBusinessNumber!: string
-  @Getter getCurrentFees!: FeesIF[]
-  @Getter isBusySaving!: boolean
+  @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) getCurrentFees!: FeesIF[]
+  @Getter(useStore) isBusySaving!: boolean
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean

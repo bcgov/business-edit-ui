@@ -21,11 +21,12 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF } from '@/interfaces/'
 import { CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party/'
 import { DefaultAddressSchema } from '@/schemas/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -40,13 +41,13 @@ export default class CompletingParty extends Vue {
   @Prop({ default: false }) readonly validate!: boolean
 
   // store getters
-  @Getter getCompletingParty!: CompletingPartyIF
-  @Getter isRoleStaff!: boolean
-  @Getter isSbcStaff!: boolean
+  @Getter(useStore) getCompletingParty!: CompletingPartyIF
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSbcStaff!: boolean
 
   // store actions
-  @Action setCompletingParty!: ActionBindingIF
-  @Action setCompletingPartyValidity!: ActionBindingIF
+  @Action(useStore) setCompletingParty!: ActionBindingIF
+  @Action(useStore) setCompletingPartyValidity!: ActionBindingIF
 
   // Declaration for template
   readonly DefaultAddressSchema = DefaultAddressSchema

@@ -109,8 +109,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Watch, Mixins } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Component, Watch } from 'vue-property-decorator'
+import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { GetFeatureFlag, GetKeycloakRoles, Navigate, UpdateLdUser, Sleep } from '@/utils/'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
@@ -120,7 +120,7 @@ import { Breadcrumb as BreadcrumbShared } from '@bcrs-shared-components/breadcru
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
-import { AuthServices, LegalServices } from '@/services/'
+import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF }
   from '@/interfaces/'
@@ -130,6 +130,7 @@ import { RouteNames } from '@/enums/'
 import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
   getStaffDashboardBreadcrumb } from '@/resources/BreadCrumbResources'
 import DateUtilities from '@/services/date-utilities'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -154,50 +155,50 @@ export default class App extends Vue {
   }
 
   // Global getters
-  @Getter getUserEmail!: string
-  @Getter getUserPhone!: string
-  @Getter getUserFirstName!: string
-  @Getter getUserLastName!: string
-  @Getter getUserRoles!: string
-  @Getter getUserUsername!: string
-  @Getter getOrgInfo!: any
-  @Getter getFilingData!: FilingDataIF[]
-  @Getter haveUnsavedChanges!: boolean
-  @Getter isBusySaving!: boolean
-  @Getter isCorrectionEditing!: boolean
-  @Getter isSummaryMode!: boolean
-  @Getter showFeeSummary!: boolean
-  @Getter getCurrentJsDate!: Date
-  @Getter getFilingId!: number
-  @Getter isRestorationFiling!: boolean
+  @Getter(useStore) getUserEmail!: string
+  @Getter(useStore) getUserPhone!: string
+  @Getter(useStore) getUserFirstName!: string
+  @Getter(useStore) getUserLastName!: string
+  @Getter(useStore) getUserRoles!: string
+  @Getter(useStore) getUserUsername!: string
+  @Getter(useStore) getOrgInfo!: any
+  @Getter(useStore) getFilingData!: FilingDataIF[]
+  @Getter(useStore) haveUnsavedChanges!: boolean
+  @Getter(useStore) isBusySaving!: boolean
+  @Getter(useStore) isCorrectionEditing!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
+  @Getter(useStore) getCurrentJsDate!: Date
+  @Getter(useStore) getFilingId!: number
+  @Getter(useStore) isRestorationFiling!: boolean
 
   // Alteration flag getters
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
-  @Getter getAppValidate!: boolean
-  @Getter getComponentValidate!: boolean
-  @Getter isConflictingLegalType!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter isSbcStaff!: boolean
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSbcStaff!: boolean
 
   // Global actions
-  @Action setAccountInformation!: ActionBindingIF
-  @Action setAppValidate!: ActionBindingIF
-  @Action setAuthRoles!: ActionBindingIF
-  @Action setBusinessId!: ActionBindingIF
-  @Action setComponentValidate!: ActionBindingIF
-  @Action setCurrentDate!: ActionBindingIF
-  @Action setCurrentJsDate!: ActionBindingIF
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setIsFilingPaying!: ActionBindingIF
-  @Action setIsSaving!: ActionBindingIF
-  @Action setKeycloakRoles!: ActionBindingIF
-  @Action setUserInfo!: ActionBindingIF
-  @Action setOrgInfo!: ActionBindingIF
-  @Action setCompletingParty!: ActionBindingIF
-  @Action setSummaryMode!: ActionBindingIF
-  @Action setFilingType!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
+  @Action(useStore) setAccountInformation!: ActionBindingIF
+  @Action(useStore) setAppValidate!: ActionBindingIF
+  @Action(useStore) setAuthRoles!: ActionBindingIF
+  @Action(useStore) setBusinessId!: ActionBindingIF
+  @Action(useStore) setComponentValidate!: ActionBindingIF
+  @Action(useStore) setCurrentDate!: ActionBindingIF
+  @Action(useStore) setCurrentJsDate!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setIsFilingPaying!: ActionBindingIF
+  @Action(useStore) setIsSaving!: ActionBindingIF
+  @Action(useStore) setKeycloakRoles!: ActionBindingIF
+  @Action(useStore) setUserInfo!: ActionBindingIF
+  @Action(useStore) setOrgInfo!: ActionBindingIF
+  @Action(useStore) setCompletingParty!: ActionBindingIF
+  @Action(useStore) setSummaryMode!: ActionBindingIF
+  @Action(useStore) setFilingType!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
 
   // Local properties
   protected accountAuthorizationDialog = false
@@ -449,12 +450,12 @@ export default class App extends Vue {
       firstName: isStaff ? '' : this.getUserFirstName,
       lastName: isStaff ? '' : this.getUserLastName,
       mailingAddress: {
-        addressCity: isStaff ? '' : this.getOrgInfo?.mailingAddress.city,
-        addressCountry: isStaff ? '' : this.getOrgInfo?.mailingAddress.country,
-        addressRegion: isStaff ? '' : this.getOrgInfo?.mailingAddress.region,
-        postalCode: isStaff ? '' : this.getOrgInfo?.mailingAddress.postalCode,
-        streetAddress: isStaff ? '' : this.getOrgInfo?.mailingAddress.street,
-        streetAddressAdditional: isStaff ? '' : this.getOrgInfo?.mailingAddress.streetAdditional
+        addressCity: isStaff ? '' : this.getOrgInfo?.mailingAddress?.city,
+        addressCountry: isStaff ? '' : this.getOrgInfo?.mailingAddress?.country,
+        addressRegion: isStaff ? '' : this.getOrgInfo?.mailingAddress?.region,
+        postalCode: isStaff ? '' : this.getOrgInfo?.mailingAddress?.postalCode,
+        streetAddress: isStaff ? '' : this.getOrgInfo?.mailingAddress?.street,
+        streetAddressAdditional: isStaff ? '' : this.getOrgInfo?.mailingAddress?.streetAdditional
       }
     } as CompletingPartyIF)
 

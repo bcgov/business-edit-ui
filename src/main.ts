@@ -12,7 +12,7 @@ import Hotjar from 'vue-hotjar'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
 import { getVueRouter } from '@/router/'
-import { getVuexStore } from '@/store/'
+import { getPiniaStore, getVuexStore } from '@/store/'
 
 // Styles
 // NB: order matters - do not change
@@ -103,7 +103,9 @@ async function start () {
       }
     }),
     router: getVueRouter(),
+    // We still need Vuex for sbc-common-components.
     store: getVuexStore(),
+    pinia: getPiniaStore(),
     render: h => h(App)
   }).$mount('#app')
 }

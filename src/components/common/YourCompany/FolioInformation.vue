@@ -14,27 +14,29 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF, EntitySnapshotIF } from '@/interfaces/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number/'
+
+import { useStore } from '@/store/store'
 
 @Component({
   components: { FolioNumberShared }
 })
 export default class FolioInformation extends Mixins(CommonMixin) {
   // Global getters
-  @Getter getFolioNumber!: string
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter isRoleStaff!: boolean
-  @Getter getBusinessId!: string
+  @Getter(useStore) getFolioNumber!: string
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) getBusinessId!: string
 
   // Global setters
-  @Action setFolioNumber!: ActionBindingIF
-  @Action setEditingFolioNumber!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
-  @Action setTransactionalFolioNumber!: ActionBindingIF
+  @Action(useStore) setFolioNumber!: ActionBindingIF
+  @Action(useStore) setEditingFolioNumber!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setTransactionalFolioNumber!: ActionBindingIF
 
   /** Whether to show invalid section styling. */
   @Prop({ default: false }) readonly invalidSection!: boolean

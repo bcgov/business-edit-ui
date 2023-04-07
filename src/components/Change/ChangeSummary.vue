@@ -76,10 +76,11 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common/'
-import { ActionBindingIF, NameRequestIF, ResourceIF } from '@/interfaces/'
+import { NameRequestIF, ResourceIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -89,16 +90,16 @@ import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 })
 export default class ChangeSummary extends Vue {
   // Global getters
-  @Getter hasBusinessNameChanged!: boolean
-  @Getter getNameRequest!: NameRequestIF
-  @Getter hasNaicsChanged!: boolean
-  @Getter getCurrentNaics!: NaicsIF
-  @Getter haveOfficeAddressesChanged!: boolean
-  @Getter havePeopleAndRolesChanged!: boolean
-  @Getter getResource!: ResourceIF
-  @Getter getNameRequestLegalName!: string
-  @Getter getBusinessNumber!: string
-  @Getter isSoleProp!: boolean
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) hasNaicsChanged!: boolean
+  @Getter(useStore) getCurrentNaics!: NaicsIF
+  @Getter(useStore) haveOfficeAddressesChanged!: boolean
+  @Getter(useStore) havePeopleAndRolesChanged!: boolean
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) isSoleProp!: boolean
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean

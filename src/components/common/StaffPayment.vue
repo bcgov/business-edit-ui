@@ -21,7 +21,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 
 // Components
 import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment/'
@@ -31,6 +31,8 @@ import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 
+import { useStore } from '@/store/store'
+
 @Component({
   components: {
     StaffPaymentShared
@@ -38,13 +40,13 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 })
 export default class StaffPayment extends Vue {
   // Global getters
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter getAppValidate!: boolean
-  @Getter getStaffPayment!: StaffPaymentIF
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getStaffPayment!: StaffPaymentIF
 
   // Global actions
-  @Action setStaffPayment!: ActionBindingIF
-  @Action setStaffPaymentValidity!: ActionBindingIF
+  @Action(useStore) setStaffPayment!: ActionBindingIF
+  @Action(useStore) setStaffPaymentValidity!: ActionBindingIF
 
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber!: string

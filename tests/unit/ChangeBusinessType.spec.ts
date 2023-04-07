@@ -1,17 +1,20 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store/'
 import ChangeBusinessType from '@/components/common/YourCompany/ChangeBusinessType.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 describe('Change Business Type component', () => {
   it('renders itself and its sub-component', () => {
-    const wrapper = mount(ChangeBusinessType, { vuetify, store })
+    const wrapper = mount(ChangeBusinessType, { vuetify })
 
     expect(wrapper.findComponent(ChangeBusinessType).exists()).toBe(true)
 
@@ -21,7 +24,6 @@ describe('Change Business Type component', () => {
   it('defaults Invalid Section prop', () => {
     const wrapper = mount(ChangeBusinessType, {
       vuetify,
-      store,
       propsData: {}
     })
     const vm: any = wrapper.vm
@@ -34,7 +36,6 @@ describe('Change Business Type component', () => {
   it('accepts Invalid Section prop', () => {
     const wrapper = mount(ChangeBusinessType, {
       vuetify,
-      store,
       propsData: { invalidSection: true }
     })
     const vm: any = wrapper.vm
@@ -46,12 +47,12 @@ describe('Change Business Type component', () => {
 
   it('Should have tooltip for Cooperative', () => {
     // init entity type
-    store.state.stateModel.tombstone.entityType = 'CP'
+    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
 
-    store.state.stateModel.tombstone.filingType = 'specialResolution'
-    store.state.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } }
+    store.stateModel.tombstone.filingType = FilingTypes.SPECIAL_RESOLUTION
+    store.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } } as any
 
-    const wrapper = mount(ChangeBusinessType, { vuetify, store })
+    const wrapper = mount(ChangeBusinessType, { vuetify })
     expect(wrapper.find('.v-tooltip').exists()).toBe(true)
 
     wrapper.destroy()
@@ -59,12 +60,12 @@ describe('Change Business Type component', () => {
 
   it('Should not have tooltip for benefit company', () => {
     // init entity type
-    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
 
-    store.state.stateModel.tombstone.filingType = 'alteration'
-    store.state.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } }
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } } as any
 
-    const wrapper = mount(ChangeBusinessType, { vuetify, store })
+    const wrapper = mount(ChangeBusinessType, { vuetify })
     expect(wrapper.find('.v-tooltip').exists()).toBe(false)
 
     wrapper.destroy()

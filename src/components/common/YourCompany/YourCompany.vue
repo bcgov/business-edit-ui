@@ -307,7 +307,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF }
   from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
@@ -318,6 +318,7 @@ import { CoopTypes, NameChangeOptions } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ConversionNOB } from '@/components/Conversion'
 import DateUtilities from '@/services/date-utilities'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -342,36 +343,36 @@ export default class YourCompany extends Mixins(
   readonly GetCorpFullDescription = GetCorpFullDescription
 
   // Global getters
-  @Getter getNameRequestLegalName!: string
-  @Getter getNameRequestNumber!: string
-  @Getter getBusinessNumber!: string
-  @Getter getComponentValidate!: boolean
-  @Getter getNameRequest!: NameRequestIF
-  @Getter getCorrectedFilingDate!: string
-  @Getter getBusinessFoundingDateTime!: string
-  @Getter isConflictingLegalType!: boolean
-  @Getter isNumberedCompany!: boolean
-  @Getter isPremiumAccount!: boolean
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getBusinessContact!: ContactPointIF
-  @Getter isFirm!: boolean
-  @Getter isCoop!: boolean
-  @Getter isBenBcCccUlcCorrectionFiling!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
-  @Getter isRestorationFiling!: boolean
-  @Getter getEntityType!: CorpTypeCd
-  @Getter getAssociationType!: CoopTypes
-  @Getter isLimitedExtendRestorationFiling!: boolean
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) getCorrectedFilingDate!: string
+  @Getter(useStore) getBusinessFoundingDateTime!: string
+  @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isNumberedCompany!: boolean
+  @Getter(useStore) isPremiumAccount!: boolean
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) isFirm!: boolean
+  @Getter(useStore) isCoop!: boolean
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isRestorationFiling!: boolean
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getAssociationType!: CoopTypes
+  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
 
   // Alteration flag getters
-  @Getter hasBusinessNameChanged!: boolean
-  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
 
   // Global actions
-  @Action setEditingCompanyName!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
-  @Action setBusinessInformation!: ActionBindingIF
-  @Action setNameRequest!: ActionBindingIF
+  @Action(useStore) setEditingCompanyName!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setBusinessInformation!: ActionBindingIF
+  @Action(useStore) setNameRequest!: ActionBindingIF
 
   /** V-model for dropdown menu. */
   protected dropdown: boolean = null
@@ -494,12 +495,12 @@ export default class YourCompany extends Mixins(
   get nameChangeOptions (): Array<NameChangeOptions> {
     // if this is a numbered company, remove correct-name and name-to-number options
     if (this.isNumberedCompany) {
-      return this.getResource.changeData.nameChangeOptions.filter(option => (
+      return this.getResource.changeData?.nameChangeOptions?.filter(option => (
         option !== NameChangeOptions.CORRECT_NAME &&
         option !== NameChangeOptions.CORRECT_NAME_TO_NUMBER
       ))
     }
-    return this.getResource.changeData.nameChangeOptions
+    return this.getResource.changeData?.nameChangeOptions
   }
 
   /**

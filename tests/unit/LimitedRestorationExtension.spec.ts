@@ -3,7 +3,6 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import mockRouter from './MockRouter'
-import { getVuexStore } from '@/store/'
 import { AuthServices, LegalServices, PayServices } from '@/services/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import LimitedRestorationExtension from '@/views/LimitedRestorationExtension.vue'
@@ -16,12 +15,15 @@ import StaffPayment from '@/components/common/StaffPayment.vue'
 import YourCompany from '@/components/common/YourCompany/YourCompany.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import { BenRestorationResource } from '@/resources/LimitedRestorationExtension/BEN'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
-
+setActivePinia(createPinia())
+const store = useStore()
 // mock data
 const filing = {
   header: {
@@ -224,22 +226,21 @@ describe('Restoration component - edit page', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    const store = getVuexStore()
 
     // init store
-    store.state.stateModel.summaryMode = false
-    store.state.stateModel.validationFlags.appValidate = false
-    store.state.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
-    store.state.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
-    store.state.stateModel.tombstone.filingType = 'restoration'
-    store.state.stateModel.restoration = filing.restoration
-    store.state.stateModel.entitySnapshot = entitySnapshot
-    store.state.stateModel.entitySnapshot.businessInfo.stateFiling = stateFiling
-    store.state.stateModel.businessInformation = { ...entitySnapshot.businessInfo }
-    store.state.resourceModel = BenRestorationResource
+    store.stateModel.summaryMode = false
+    store.stateModel.validationFlags.appValidate = false
+    store.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
+    store.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
+    store.stateModel.tombstone.filingType = FilingTypes.RESTORATION
+    store.stateModel.restoration = filing.restoration as any
+    store.stateModel.entitySnapshot = entitySnapshot as any
+    store.stateModel.entitySnapshot.businessInfo.stateFiling = stateFiling as any
+    store.stateModel.businessInformation = { ...entitySnapshot.businessInfo } as any
+    store.resourceModel = BenRestorationResource
 
     await router.push({ name: 'limitedRestorationExtension', query: { 'restoration-id': '1234' } })
-    wrapper = mount(LimitedRestorationExtension, { localVue, store, router, vuetify })
+    wrapper = mount(LimitedRestorationExtension, { localVue, router, vuetify })
 
     // enable filing and wait for all queries to complete
     await wrapper.setProps({ appReady: true })
@@ -261,7 +262,7 @@ describe('Restoration component - edit page', () => {
   it('loads the entity snapshot into the store', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
-    const state = store.state.stateModel
+    const state = store.stateModel
 
     // Validate business identifier
     expect(state.tombstone.businessId).toBe('BC1234567')
@@ -269,8 +270,9 @@ describe('Restoration component - edit page', () => {
     // Validate Business
     expect(state.businessInformation.legalType).toBe('BEN')
     expect(state.businessInformation.legalName).toBe('1234567 B.C. LTD.')
-    expect(state.businessInformation.stateFiling.restoration.type).toBe('limitedRestoration')
-    expect(state.businessInformation.stateFiling.restoration.parties[0].role).toBe('applicant')
+    // Travis Semple - stateFiling is defined as a string here, not an object. should be fixed.
+    expect((state.businessInformation.stateFiling as any).restoration.type).toBe('limitedRestoration')
+    expect((state.businessInformation.stateFiling as any).restoration.parties[0].role).toBe('applicant')
   })
 
   it('renders the Your Company component correctly', () => {
@@ -297,16 +299,16 @@ describe('Restoration component - summary page (with filing changes)', () => {
 
   beforeAll(async () => {
     // init store
-    store.state.stateModel.summaryMode = true
-    store.state.stateModel.validationFlags.appValidate = false
-    store.state.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
-    store.state.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
-    store.state.stateModel.tombstone.filingType = 'restoration'
-    store.state.stateModel.restoration = filing.restoration
-    store.state.stateModel.entitySnapshot = entitySnapshot
-    store.state.stateModel.entitySnapshot.businessInfo.stateFiling = stateFiling
-    store.state.stateModel.businessInformation = { ...entitySnapshot.businessInfo }
-    store.state.resourceModel = BenRestorationResource
+    store.stateModel.summaryMode = true
+    store.stateModel.validationFlags.appValidate = false
+    store.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
+    store.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
+    store.stateModel.tombstone.filingType = FilingTypes.RESTORATION
+    store.stateModel.restoration = filing.restoration as any
+    store.stateModel.entitySnapshot = entitySnapshot as any
+    store.stateModel.entitySnapshot.businessInfo.stateFiling = stateFiling as any
+    store.stateModel.businessInformation = { ...entitySnapshot.businessInfo } as any
+    store.resourceModel = BenRestorationResource
 
     // mock the window.location.assign function
     delete window.location
@@ -337,7 +339,6 @@ describe('Restoration component - summary page (with filing changes)', () => {
     await router.push({ name: 'limitedRestorationExtension', query: { 'restoration-id': '1234' } })
     wrapper = mount(LimitedRestorationExtension, {
       localVue,
-      store,
       router,
       vuetify,
       computed: { showFeeSummary: () => true },
@@ -388,10 +389,10 @@ xdescribe('Restoration component - summary page (with no filing changes)', () =>
 
   beforeAll(async () => {
     // init store
-    store.state.stateModel.summaryMode = true
-    store.state.stateModel.validationFlags.appValidate = false
-    store.state.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
-    store.state.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
+    store.stateModel.summaryMode = true
+    store.stateModel.validationFlags.appValidate = false
+    store.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
+    store.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
 
     // mock the window.location.assign function
     delete window.location
@@ -420,7 +421,6 @@ xdescribe('Restoration component - summary page (with no filing changes)', () =>
     await router.push({ name: 'limitedRestorationToFull', query: { 'restoration-id': '1234' } })
     wrapper = mount(LimitedRestorationExtension, {
       localVue,
-      store,
       router,
       vuetify,
       computed: { showFeeSummary: () => false },

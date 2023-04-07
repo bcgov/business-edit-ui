@@ -3,17 +3,19 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store/'
 import TransactionalFolioNumber from '@/components/common/TransactionalFolioNumber.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 describe('Transactional Folio Number component', () => {
   it('initializes with default props', () => {
     const wrapper = mount(TransactionalFolioNumber, {
       vuetify,
-      store,
       propsData: {}
     })
     const vm: any = wrapper.vm
@@ -39,7 +41,6 @@ describe('Transactional Folio Number component', () => {
   it('displays section title using Section Number prop', () => {
     const wrapper = mount(TransactionalFolioNumber, {
       vuetify,
-      store,
       propsData: { sectionNumber: '123.' }
     })
 
@@ -50,11 +51,10 @@ describe('Transactional Folio Number component', () => {
   })
 
   it('uses existing Folio Number when there is no Transactional Folio Number', () => {
-    store.state.stateModel.tombstone.folioNumber = 'A123'
+    store.stateModel.tombstone.folioNumber = 'A123'
 
     const wrapper = mount(TransactionalFolioNumber, {
       vuetify,
-      store,
       propsData: {}
     })
     const vm: any = wrapper.vm
@@ -63,18 +63,17 @@ describe('Transactional Folio Number component', () => {
     expect(vm.folioNumber).toBe('A123')
 
     // cleanup
-    store.state.stateModel.tombstone.folioNumber = ''
+    store.stateModel.tombstone.folioNumber = ''
 
     wrapper.destroy()
   })
 
   it('uses Transactional Folio Number if it exists', () => {
-    store.state.stateModel.tombstone.folioNumber = 'A123'
-    store.state.stateModel.tombstone.transactionalFolioNumber = 'B456'
+    store.stateModel.tombstone.folioNumber = 'A123'
+    store.stateModel.tombstone.transactionalFolioNumber = 'B456'
 
     const wrapper = mount(TransactionalFolioNumber, {
       vuetify,
-      store,
       propsData: {}
     })
     const vm: any = wrapper.vm
@@ -83,8 +82,8 @@ describe('Transactional Folio Number component', () => {
     expect(vm.folioNumber).toBe('B456')
 
     // cleanup
-    store.state.stateModel.tombstone.folioNumber = ''
-    store.state.stateModel.tombstone.transactionalFolioNumber = ''
+    store.stateModel.tombstone.folioNumber = ''
+    store.stateModel.tombstone.transactionalFolioNumber = ''
 
     wrapper.destroy()
   })
@@ -92,14 +91,13 @@ describe('Transactional Folio Number component', () => {
   it('sets store values and no error styling when valid Transactional Folio Number is entered', async () => {
     const wrapper = mount(TransactionalFolioNumber, {
       vuetify,
-      store,
       propsData: { validate: true }
     })
     const vm: any = wrapper.vm
 
     // verify initial Folio Number and store
     expect(vm.folioNumber).toBe('')
-    expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('')
+    expect(store.stateModel.tombstone.transactionalFolioNumber).toBe('')
 
     // enter a valid folio number
     const input = wrapper.find('#folio-number-input')
@@ -107,15 +105,15 @@ describe('Transactional Folio Number component', () => {
     await input.trigger('change')
 
     // verify updated Folio Number and store
-    expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('A123')
-    expect(store.state.stateModel.validationFlags.flagsReviewCertify.isValidTransactionalFolioNumber).toBe(true)
+    expect(store.stateModel.tombstone.transactionalFolioNumber).toBe('A123')
+    expect(store.stateModel.validationFlags.flagsReviewCertify.isValidTransactionalFolioNumber).toBe(true)
 
     // verify no error styling
     expect(wrapper.find('.error-text').exists()).toBe(false)
     expect(wrapper.find('label').classes('error-text')).toBe(false)
 
     // cleanup
-    store.state.stateModel.tombstone.transactionalFolioNumber = ''
+    store.stateModel.tombstone.transactionalFolioNumber = ''
 
     wrapper.destroy()
   })
@@ -123,14 +121,13 @@ describe('Transactional Folio Number component', () => {
   it('sets store values and error styling when invalid Transactional Folio Number is entered', async () => {
     const wrapper = mount(TransactionalFolioNumber, {
       vuetify,
-      store,
       propsData: { validate: true }
     })
     const vm: any = wrapper.vm
 
     // verify initial Folio Number and store
     expect(vm.folioNumber).toBe('')
-    expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('')
+    expect(store.stateModel.tombstone.transactionalFolioNumber).toBe('')
 
     // enter a folio number that is too long
     const input = wrapper.find('#folio-number-input')
@@ -138,15 +135,15 @@ describe('Transactional Folio Number component', () => {
     await input.trigger('change')
 
     // verify updated Folio Number and store
-    expect(store.state.stateModel.tombstone.transactionalFolioNumber).toBe('1234567890123456789012345678901')
-    expect(store.state.stateModel.validationFlags.flagsReviewCertify.isValidTransactionalFolioNumber).toBe(false)
+    expect(store.stateModel.tombstone.transactionalFolioNumber).toBe('1234567890123456789012345678901')
+    expect(store.stateModel.validationFlags.flagsReviewCertify.isValidTransactionalFolioNumber).toBe(false)
 
     // verify error styling
     expect(wrapper.find('.error-text').exists()).toBe(true)
     expect(wrapper.find('label').classes('error-text')).toBe(true)
 
     // cleanup
-    store.state.stateModel.tombstone.transactionalFolioNumber = ''
+    store.stateModel.tombstone.transactionalFolioNumber = ''
 
     wrapper.destroy()
   })

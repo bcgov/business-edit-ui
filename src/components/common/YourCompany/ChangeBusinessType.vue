@@ -217,11 +217,12 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { BcRegContacts } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -235,17 +236,17 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Prop({ default: false }) readonly invalidSection!: boolean
 
   // Global getters
-  @Getter getNameRequestLegalName!: string
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getResource!: ResourceIF
-  @Getter hasBusinessTypeChanged!: boolean
-  @Getter isConflictingLegalType!: boolean
-  @Getter isBcCompany!: boolean
-  @Getter isFirm!: boolean
-  @Getter isCoop!: boolean
-  @Getter getEntityType!: CorpTypeCd
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) hasBusinessTypeChanged!: boolean
+  @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isBcCompany!: boolean
+  @Getter(useStore) isFirm!: boolean
+  @Getter(useStore) isCoop!: boolean
+  @Getter(useStore) getEntityType!: CorpTypeCd
 
-  @Action setEntityType!: ActionBindingIF
+  @Action(useStore) setEntityType!: ActionBindingIF
 
   protected selectedEntityType: CorpTypeCd = null
   protected confirmArticles = false

@@ -27,7 +27,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 
 // Components
 import { ShareStructure as ShareStructureShared } from '@bcrs-shared-components/share-structure/'
@@ -36,6 +36,8 @@ import { CommonMixin } from '@/mixins/'
 
 import { ActionBindingIF, EntitySnapshotIF, ShareClassIF, ShareStructureIF, FlagsCompanyInfoIF }
   from '@/interfaces/'
+
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -48,20 +50,20 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Prop({ default: true }) readonly isEditMode!: boolean
 
   // Global getters
-  @Getter getComponentValidate!: boolean
-  @Getter getNewResolutionDates!: string[]
-  @Getter getShareClasses!: ShareClassIF[]
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getHasRightsOrRestrictions!: boolean
-  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
-  @Getter hasMinimumShareClass!: boolean
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getNewResolutionDates!: string[]
+  @Getter(useStore) getShareClasses!: ShareClassIF[]
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getHasRightsOrRestrictions!: boolean
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  @Getter(useStore) hasMinimumShareClass!: boolean
 
   // Global actions
-  @Action setShareClasses!: ActionBindingIF
-  @Action setShareStructureChanged!: ActionBindingIF
-  @Action setCreateShareStructureStepValidity!: ActionBindingIF
-  @Action setEditingShareStructure!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setShareClasses!: ActionBindingIF
+  @Action(useStore) setShareStructureChanged!: ActionBindingIF
+  @Action(useStore) setCreateShareStructureStepValidity!: ActionBindingIF
+  @Action(useStore) setEditingShareStructure!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   // Local propertiues
   protected isEditing = false

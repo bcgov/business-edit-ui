@@ -4,20 +4,24 @@ import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store/'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@/enums'
 
 Vue.use(Vuetify)
 
 const localVue = createLocalVue()
 const vuetify = new Vuetify({})
+setActivePinia(createPinia())
+const store = useStore()
 
 describe('Special Resolution Summary component', () => {
   let wrapper: any
-  let store: any = getVuexStore()
 
   const entitySnapshot = {
     businessInfo: {
       legalName: 'Mock Original Name',
-      legalType: 'CP'
+      legalType: CorpTypeCd.COOP
     }
   }
 
@@ -29,8 +33,8 @@ describe('Special Resolution Summary component', () => {
 
   beforeAll(() => {
     // init store
-    store.state.stateModel.entitySnapshot = entitySnapshot
-    store.state.stateModel.specialResolution = {
+    store.stateModel.entitySnapshot = entitySnapshot as any
+    store.stateModel.specialResolution = {
       resolution: 'Test Resolution',
       resolutionDate: '2022-08-02',
       signatory: { ...signatory },
@@ -41,11 +45,11 @@ describe('Special Resolution Summary component', () => {
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
-    store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
-    store.state.stateModel.summaryMode = false
+    store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
+    store.stateModel.summaryMode = false
 
-    wrapper = shallowMount(CreateSpecialResolutionSummary, { vuetify, store, localVue })
+    wrapper = shallowMount(CreateSpecialResolutionSummary, { vuetify, localVue })
   })
 
   afterEach(() => {
@@ -73,8 +77,8 @@ describe('Special Resolution Summary component', () => {
 
   it('renders the Special Resolution Confirm component with invalid styling', async () => {
     expect(wrapper.find('#special-resolution-confirm.invalid-section').exists()).toBeFalsy()
-    store.state.stateModel.validationFlags.flagsReviewCertify.isValidSpecialResolutionConfirm = false
-    store.state.stateModel.validationFlags.appValidate = true
+    store.stateModel.validationFlags.flagsReviewCertify.isValidSpecialResolutionConfirm = false
+    store.stateModel.validationFlags.appValidate = true
 
     await Vue.nextTick()
 

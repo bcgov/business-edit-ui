@@ -120,25 +120,26 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { CoopTypes } from '@/enums'
 import { CommonMixin } from '@/mixins'
 import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF } from '@/interfaces'
 import { VuetifyRuleFunction } from '@/types'
 import { CoopTypeToDescription } from '@/utils'
+import { useStore } from '@/store/store'
 
 @Component({})
 export default class AssociationType extends Mixins(CommonMixin) {
   @Prop({ default: false }) readonly invalidSection!: boolean
 
   /** Global getters */
-  @Getter getAssociationType!: CoopTypes
-  @Getter getBusinessInformation!: BusinessInformationIF
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter hasAssociationTypeChanged!: boolean
+  @Getter(useStore) getAssociationType!: CoopTypes
+  @Getter(useStore) getBusinessInformation!: BusinessInformationIF
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) hasAssociationTypeChanged!: boolean
 
   /** Global actions */
-  @Action setBusinessInformation!: ActionBindingIF
+  @Action(useStore) setBusinessInformation!: ActionBindingIF
 
   /** Select options */
   readonly associationTypeOptions: Array<any> = [

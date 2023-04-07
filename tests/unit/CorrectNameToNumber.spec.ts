@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
-import { getVuexStore } from '@/store/'
 import { mount, Wrapper } from '@vue/test-utils'
 import CorrectNameToNumber from '@/components/common/YourCompany/CompanyName/CorrectNameToNumber.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@/enums'
 
 Vue.use(Vuetify)
 
@@ -19,14 +21,15 @@ function getLastEvent (wrapper: Wrapper<CorrectNameToNumber>, name: string): any
 describe('CorrectNameToNumber', () => {
   let vuetify: any
   let wrapperFactory: any
-  let store: any = getVuexStore()
+  setActivePinia(createPinia())
+  const store = useStore()
 
   beforeEach(() => {
     vuetify = new Vuetify({})
 
-    store.state.stateModel.nameRequest = {
+    store.stateModel.nameRequest = {
       legalName: 'Bobs Plumbing',
-      legalType: 'BEN'
+      legalType: CorpTypeCd.BENEFIT_COMPANY
     }
 
     wrapperFactory = (props: any) => {
@@ -34,7 +37,6 @@ describe('CorrectNameToNumber', () => {
         propsData: {
           props
         },
-        store,
         vuetify
       })
     }
@@ -55,7 +57,7 @@ describe('CorrectNameToNumber', () => {
     // Verify data from Store
     expect(nameToNumberInput.attributes('aria-checked')).toBe('false')
     expect(wrapper.emitted('isValid')).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
+    expect(store.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
   })
 
   it('verifies the emission when checkbox state changes', async () => {
@@ -74,8 +76,8 @@ describe('CorrectNameToNumber', () => {
     // Verify local state change and event emission
     expect(nameToNumberInput.attributes('aria-checked')).toBe('true')
     expect(getLastEvent(wrapper, 'isValid')).toBe(true)
-    expect(store.state.stateModel.nameRequest.legalType).toBe('BEN')
-    expect(store.state.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
+    expect(store.stateModel.nameRequest.legalType).toBe('BEN')
+    expect(store.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
   })
 
   it('verifies the form submission and verify global state change', async () => {
@@ -94,7 +96,7 @@ describe('CorrectNameToNumber', () => {
     // Verify local state change and event emission
     expect(nameToNumberInput.attributes('aria-checked')).toBe('true')
     expect(getLastEvent(wrapper, 'isValid')).toBe(true)
-    expect(store.state.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
+    expect(store.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
 
     // Submit Change
     await wrapper.setProps({ formType: 'correct-name-to-number' })
@@ -103,8 +105,8 @@ describe('CorrectNameToNumber', () => {
     expect(getLastEvent(wrapper, 'isSaved')).toBe(true)
 
     // Verify Data change in store
-    expect(store.state.stateModel.nameRequest.legalType).toBe('BEN')
-    expect(store.state.stateModel.nameRequest.legalName).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.nrNumber).toBeUndefined()
+    expect(store.stateModel.nameRequest.legalType).toBe('BEN')
+    expect(store.stateModel.nameRequest.legalName).toBeUndefined()
+    expect(store.stateModel.nameRequest.nrNumber).toBeUndefined()
   })
 })

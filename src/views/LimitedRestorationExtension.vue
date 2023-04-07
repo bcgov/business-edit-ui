@@ -87,7 +87,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { v4 as uuidv4 } from 'uuid'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
@@ -95,9 +95,9 @@ import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import { CertifySection, DocumentsDelivery, PeopleAndRoles, ListPeopleAndRoles, StaffPayment,
   YourCompany } from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
-import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF, FlagsReviewCertifyIF,
-  ResourceIF, RestorationFilingIF, RestorationStateIF, StateFilingRestorationIF } from '@/interfaces/'
-import { FilingStatus, FilingTypes, RestorationTypes, RoleTypes } from '@/enums/'
+import { ActionBindingIF, EntitySnapshotIF, OrgPersonIF,
+  ResourceIF, RestorationFilingIF } from '@/interfaces/'
+import { FilingStatus, RoleTypes } from '@/enums/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationExtension/'
 import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
@@ -107,6 +107,7 @@ import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
 import QuestionWrapper from '@/components/common/QuestionWrapper.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { AuthServices, LegalServices } from '@/services'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -133,25 +134,25 @@ import { AuthServices, LegalServices } from '@/services'
 })
 export default class LimitedRestorationExtension extends Vue {
   // Global getters
-  @Getter getAppValidate!: boolean
-  @Getter getEntityType!: CorpTypeCd
-  @Getter getOrgPeople!: OrgPersonIF[]
-  @Getter getResource!: ResourceIF
-  @Getter isBcCcc!: boolean
-  @Getter isBcCompany!: boolean
-  @Getter isBcUlcCompany!: boolean
-  @Getter isBenefitCompany!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter isSummaryMode!: boolean
-  @Getter showFeeSummary!: boolean
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) isBcCcc!: boolean
+  @Getter(useStore) isBcCompany!: boolean
+  @Getter(useStore) isBcUlcCompany!: boolean
+  @Getter(useStore) isBenefitCompany!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action setEntitySnapshot!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setResource!: ActionBindingIF
-  @Action setStateFilingRestoration!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action(useStore) setEntitySnapshot: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setResource!: ActionBindingIF
+  @Action(useStore) setStateFilingRestoration!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
@@ -337,7 +338,7 @@ export default class LimitedRestorationExtension extends Vue {
 
   get applicantEmail (): string {
     const currentApplicant = this.getOrgPeople.filter(orgPerson => !this.wasRemoved(orgPerson))
-    return currentApplicant[0].officer.email
+    return currentApplicant[0]?.officer.email
   }
 
   /** Emits Fetch Error event. */

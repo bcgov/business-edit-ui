@@ -36,15 +36,17 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany }
   from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, FilingDataIF, ResourceIF }
+import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF }
   from '@/interfaces/'
 import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { GpCorrectionResource, SpCorrectionResource } from '@/resources/Correction/'
+
+import { useStore } from '@/store/store'
 
 /** Correction sub-component for corp class "Firm" entities. */
 @Component({
@@ -59,13 +61,13 @@ import { GpCorrectionResource, SpCorrectionResource } from '@/resources/Correcti
 })
 export default class FirmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter isPartnership!: boolean
-  @Getter isSoleProp!: boolean
+  @Getter(useStore) isPartnership!: boolean
+  @Getter(useStore) isSoleProp!: boolean
 
   // Global actions
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setCertifyStatementResource!: ActionBindingIF
-  @Action setResource!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setCertifyStatementResource!: ActionBindingIF
+  @Action(useStore) setResource!: ActionBindingIF
 
   /** The draft correction filing to process. */
   @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF

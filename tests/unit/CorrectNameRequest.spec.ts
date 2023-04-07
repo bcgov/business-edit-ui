@@ -3,14 +3,18 @@ import Vuetify from 'vuetify'
 import { AxiosInstance as axios } from '@/utils/'
 import sinon from 'sinon'
 import flushPromises from 'flush-promises'
-import { getVuexStore } from '@/store/'
 import { mount, Wrapper } from '@vue/test-utils'
 import CorrectNameRequest from '@/components/common/YourCompany/CompanyName/CorrectNameRequest.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@/enums'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()
 
 Vue.use(Vuetify)
+setActivePinia(createPinia())
+const store = useStore()
 
 function getLastEvent (wrapper: Wrapper<any>, name: string): any {
   const eventsList: Array<any> = wrapper.emitted(name)
@@ -24,19 +28,17 @@ function getLastEvent (wrapper: Wrapper<any>, name: string): any {
 describe('CorrectNameRequest', () => {
   let vuetify: any
   let wrapperFactory: any
-  let store: any = getVuexStore()
   const get = sinon.stub(axios, 'get')
 
   beforeEach(() => {
     vuetify = new Vuetify({})
-    store.state.stateModel.tombstone.entityType = 'BC'
+    store.stateModel.tombstone.entityType = CorpTypeCd.BC_COMPANY
 
     wrapperFactory = (props: any) => {
       return mount(CorrectNameRequest, {
         propsData: {
           props
         },
-        store,
         vuetify
       })
     }
@@ -52,9 +54,9 @@ describe('CorrectNameRequest', () => {
     const wrapper = wrapperFactory()
 
     const textFields = wrapper.findAll('.text-input-field')
-    let nrInput = textFields.at(0)
-    let phoneInput = textFields.at(1)
-    let emailInput = textFields.at(2)
+    const nrInput = textFields.at(0)
+    const phoneInput = textFields.at(1)
+    const emailInput = textFields.at(2)
 
     expect(nrInput.text()).toContain('Enter the NR Number')
     expect(phoneInput.text()).toContain('Applicant\'s Phone Number')
@@ -167,7 +169,7 @@ describe('CorrectNameRequest', () => {
 
   it('emits done and true when the process is done and the Name Request accepted', async () => {
     const wrapper = wrapperFactory()
-    store.state.stateModel.tombstone.currentDate = '2021-01-20'
+    store.stateModel.tombstone.currentDate = '2021-01-20'
 
     // GET NR Data
     get.withArgs('nameRequests/NR 1234567')
@@ -294,7 +296,7 @@ describe('CorrectNameRequest', () => {
 
   it('emits done and prompts confirm dialog when the Name Request is a type mismatch', async () => {
     const wrapper = wrapperFactory()
-    store.state.stateModel.tombstone.currentDate = '2021-01-20'
+    store.stateModel.tombstone.currentDate = '2021-01-20'
 
     // GET NR Data
     get.withArgs('nameRequests/NR 1234567')
@@ -337,8 +339,9 @@ describe('CorrectNameRequest', () => {
 
   it('emits done and verify Name Request accepted for NEW GP filing', async () => {
     const wrapper = wrapperFactory()
-    store.state.stateModel.tombstone.currentDate = '2021-01-20'
-    store.state.stateModel.tombstone.entityType = 'GP'
+    store.stateModel.tombstone.currentDate = '2021-01-20'
+    store.stateModel.tombstone.entityType = CorpTypeCd.PARTNERSHIP
+    expect(CorpTypeCd.PARTNERSHIP).toBe('GP')
     // GET NR Data
     get.withArgs('nameRequests/NR 1234567')
       .returns(Promise.resolve({
@@ -380,8 +383,8 @@ describe('CorrectNameRequest', () => {
 
   it('emits done and verify Name Request is a type mismatch for NEW SP filing', async () => {
     const wrapper = wrapperFactory()
-    store.state.stateModel.tombstone.currentDate = '2021-01-20'
-    store.state.stateModel.tombstone.entityType = 'SP'
+    store.stateModel.tombstone.currentDate = '2021-01-20'
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
 
     // GET NR Data
     get.withArgs('nameRequests/NR 1234567')

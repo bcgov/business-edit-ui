@@ -87,7 +87,7 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
 import { CertifySection, CompletingParty, CourtOrderPoa, DocumentsDelivery, PeopleAndRoles, StaffPayment,
@@ -99,6 +99,7 @@ import { FilingStatus, PartyTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SpChangeResource, GpChangeResource, SpOrganizationChangeResource } from '@/resources/Change/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -120,23 +121,23 @@ export default class Change extends Mixins(
   FilingTemplateMixin
 ) {
   // Global getters
-  @Getter isSummaryMode!: boolean
-  @Getter getAppValidate!: boolean
-  @Getter getUserFirstName!: string
-  @Getter getUserLastName!: string
-  @Getter showFeeSummary!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter isSbcStaff!: boolean
-  @Getter isPremiumAccount!: boolean
-  @Getter isPartnership!: boolean
-  @Getter isSoleProp!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getUserFirstName!: string
+  @Getter(useStore) getUserLastName!: string
+  @Getter(useStore) showFeeSummary!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSbcStaff!: boolean
+  @Getter(useStore) isPremiumAccount!: boolean
+  @Getter(useStore) isPartnership!: boolean
+  @Getter(useStore) isSoleProp!: boolean
 
   // Global actions
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
-  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
 
-  @Action setResource!: ActionBindingIF
+  @Action(useStore) setResource!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean

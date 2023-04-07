@@ -109,7 +109,7 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { SpecialResolutionSummary, CreateSpecialResolution } from '@/components/SpecialResolution'
 import { CertifySection, CurrentDirectors, DocumentsDelivery, StaffPayment, TransactionalFolioNumber,
@@ -122,6 +122,7 @@ import { FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -143,21 +144,21 @@ export default class SpecialResolution extends Mixins(
   FilingTemplateMixin
 ) {
   // Global getters
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter getUserFirstName!: string
-  @Getter getUserLastName!: string
-  @Getter isSummaryMode!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter isPremiumAccount!: boolean
-  @Getter getAppValidate!: boolean
-  @Getter showFeeSummary!: boolean
-  @Getter isCoop!: boolean
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getUserFirstName!: string
+  @Getter(useStore) getUserLastName!: string
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isPremiumAccount!: boolean
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
+  @Getter(useStore) isCoop!: boolean
 
   // Global actions
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
-  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action setResource!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action(useStore) setResource!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean

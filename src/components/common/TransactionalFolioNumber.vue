@@ -39,10 +39,12 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, FlagsReviewCertifyIF, FormFieldType } from '@/interfaces/'
 import { VuetifyRuleFunction } from '@/types'
+
+import { useStore } from '@/store/store'
 
 @Component({})
 export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
@@ -52,13 +54,13 @@ export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
   }
 
   // Global getters
-  @Getter getFolioNumber!: string
-  @Getter getTransactionalFolioNumber!: string
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getFolioNumber!: string
+  @Getter(useStore) getTransactionalFolioNumber!: string
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
 
   // Global actions
-  @Action setTransactionalFolioNumber!: ActionBindingIF
-  @Action setTransactionalFolioNumberValidity!: ActionBindingIF
+  @Action(useStore) setTransactionalFolioNumber!: ActionBindingIF
+  @Action(useStore) setTransactionalFolioNumberValidity!: ActionBindingIF
 
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber!: string

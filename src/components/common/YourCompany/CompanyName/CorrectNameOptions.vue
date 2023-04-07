@@ -117,7 +117,7 @@ export default class CorrectNameOptions extends Vue {
   mounted (): void {
     // Filter the options to be displayed by what id's were passed from the parent component
     this.displayedOptions = this.correctionNameOptions.filter(
-      option => this.correctionNameChoices.includes(option.id)
+      option => this.correctionNameChoices?.includes(option.id)
     )
     // open by default and assign id if only 1 option
     if (this.isOneOption) {
@@ -127,7 +127,7 @@ export default class CorrectNameOptions extends Vue {
   }
 
   get isOneOption (): boolean {
-    return (this.correctionNameChoices.length === 1)
+    return (this.correctionNameChoices?.length === 1)
   }
 
   /** Trigger form submission */

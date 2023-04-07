@@ -1,22 +1,23 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { RouteNames } from '@/enums/'
 import { ConfirmDialogType } from '@/interfaces/'
+import { useStore } from '@/store/store'
 
 /**
  * Mixin that provides some useful common utilities.
  */
 @Component({})
 export default class CommonMixin extends Vue {
-  @Getter isAlterationFiling!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isFirmChangeFiling!: boolean
-  @Getter isFirmConversionFiling!: boolean
-  @Getter isRestorationFiling!: boolean
-  @Getter isLimitedExtendRestorationFiling!: boolean
-  @Getter isLimitedConversionRestorationFiling!: boolean
-  @Getter isSpecialResolutionFiling!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isRestorationFiling!: boolean
+  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
+  @Getter(useStore) isLimitedConversionRestorationFiling!: boolean
+  @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   /** True if Jest is running the code. */
   get isJestRunning (): boolean {
@@ -158,10 +159,10 @@ export default class CommonMixin extends Vue {
    */
   toDisplayPhone (phoneNumber: string): string {
     // Filter only numbers from the input
-    let cleaned = ('' + phoneNumber).replace(/\D/g, '')
+    const cleaned = ('' + phoneNumber).replace(/\D/g, '')
 
     // Check if the input is of correct length
-    let match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
 
     if (match) {
       return '(' + match[1] + ') ' + match[2] + '-' + match[3]

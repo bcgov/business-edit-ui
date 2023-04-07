@@ -4,11 +4,15 @@ import { getVuexStore } from '@/store/'
 import { mount } from '@vue/test-utils'
 import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
 import AuthServices from '@/services/auth-services'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // mock services function
 const mockUpdateContactInfo = jest.spyOn((AuthServices as any), 'updateContactInfo').mockImplementation()
@@ -29,17 +33,17 @@ describe('Business Contact Info for a Correction', () => {
   }
 
   beforeAll(() => {
-    store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.businessContact = contactInfo
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.businessContact = contactInfo
+    store.stateModel.entitySnapshot = {
       authInfo: {
         contact: originalCorrectionContact
       }
-    }
+    } as any
   })
 
   beforeEach(async () => {
-    wrapper = mount(BusinessContactInfo, { vuetify, store })
+    wrapper = mount(BusinessContactInfo, { vuetify })
   })
 
   afterEach(() => {
@@ -79,15 +83,15 @@ describe('Business Contact Info for an Alteration', () => {
   }
 
   beforeAll(async () => {
-    store.state.stateModel.tombstone.filingType = 'alteration'
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
     sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
-    store.state.stateModel.tombstone.businessId = 'BC1234567'
-    store.state.stateModel.businessContact = contactInfo
-    store.state.stateModel.entitySnapshot = { authInfo: { contact: originalAlterationContact } }
+    store.stateModel.tombstone.businessId = 'BC1234567'
+    store.stateModel.businessContact = contactInfo
+    store.stateModel.entitySnapshot = { authInfo: { contact: originalAlterationContact } } as any
   })
 
   beforeEach(async () => {
-    wrapper = mount(BusinessContactInfo, { vuetify, store })
+    wrapper = mount(BusinessContactInfo, { vuetify })
   })
 
   afterEach(() => {
@@ -137,16 +141,16 @@ describe('Business Contact Info for a Change of Registration', () => {
   }
 
   beforeAll(async () => {
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
-    store.state.stateModel.tombstone.businessId = 'BC1234567'
-    store.state.stateModel.businessContact = contactInfo
-    store.state.stateModel.entitySnapshot = { authInfo: { contact: originalContact } }
+    store.stateModel.tombstone.businessId = 'BC1234567'
+    store.stateModel.businessContact = contactInfo
+    store.stateModel.entitySnapshot = { authInfo: { contact: originalContact } } as any
   })
 
   beforeEach(async () => {
-    wrapper = mount(BusinessContactInfo, { vuetify, store })
+    wrapper = mount(BusinessContactInfo, { vuetify })
   })
 
   afterEach(() => {

@@ -1,16 +1,18 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import ShareStructures from '@/components/common/ShareStructure/ShareStructures.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
 const localVue = createLocalVue()
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // Store
 document.body.setAttribute('data-app', 'true')
@@ -54,7 +56,6 @@ describe('Share Structures component', () => {
     wrapper = mount(ShareStructures, {
       localVue,
       vuetify,
-      store,
       propsData: {
         isEditMode: true
       }
@@ -71,11 +72,11 @@ describe('Share Structures component', () => {
 
   it('is invalid when the minimum share class requirements are not met', () => {
     // Assign empty share classes
-    store.state.stateModel.shareStructureStep.shareClasses = []
+    store.stateModel.shareStructureStep.shareClasses = []
     expect(wrapper.vm.invalidShareSection).toBe(false)
 
     // Prompt the validations
-    store.state.stateModel.validationFlags.componentValidate = true
+    store.stateModel.validationFlags.componentValidate = true
     wrapper.vm.setShareStructureValidity()
 
     // Verify invalid share section
@@ -84,11 +85,11 @@ describe('Share Structures component', () => {
 
   it('is valid when the minimum share class requirements are met', () => {
     // Assign valid share classes
-    store.state.stateModel.shareStructureStep.shareClasses = shareClasses
+    store.stateModel.shareStructureStep.shareClasses = shareClasses
     expect(wrapper.vm.hasMinimumShareClass).toBe(true)
 
     // Prompt the validations
-    store.state.stateModel.validationFlags.componentValidate = true
+    store.stateModel.validationFlags.componentValidate = true
     wrapper.vm.setShareStructureValidity()
 
     // Verify valid share section
@@ -96,7 +97,7 @@ describe('Share Structures component', () => {
   })
 
   it('stores shareClasses types as number', async () => {
-    store.state.stateModel.shareStructureStep.shareClasses = shareClasses
+    store.stateModel.shareStructureStep.shareClasses = shareClasses
     await Vue.nextTick()
 
     // Click on the button to add class
@@ -113,7 +114,7 @@ describe('Share Structures component', () => {
     await wrapper.find('#done-btn').trigger('click')
 
     // maxNumberOfShares and parValue should be number
-    expect(store.state.stateModel.shareStructureStep.shareClasses[2].maxNumberOfShares).toBe(1)
-    expect(store.state.stateModel.shareStructureStep.shareClasses[2].parValue).toBe(2)
+    expect(store.stateModel.shareStructureStep.shareClasses[2].maxNumberOfShares).toBe(1)
+    expect(store.stateModel.shareStructureStep.shareClasses[2].parValue).toBe(2)
   })
 })

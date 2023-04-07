@@ -4,8 +4,12 @@ import flushPromises from 'flush-promises'
 import { getVuexStore } from '@/store/'
 import { mount, Wrapper } from '@vue/test-utils'
 import CorrectCompanyName from '@/components/common/YourCompany/CompanyName/CorrectCompanyName.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
+setActivePinia(createPinia())
+const store = useStore()
 
 function getLastEvent (wrapper: Wrapper<CorrectCompanyName>, name: string): any {
   const eventsList: Array<any> = wrapper.emitted(name)
@@ -19,19 +23,17 @@ function getLastEvent (wrapper: Wrapper<CorrectCompanyName>, name: string): any 
 describe('CorrectCompanyName', () => {
   let vuetify: any
   let wrapperFactory: any
-  let store: any = getVuexStore()
 
   beforeEach(() => {
     vuetify = new Vuetify({})
 
-    store.state.stateModel.nameRequest.legalName = 'Bobs Plumbing'
+    store.stateModel.nameRequest.legalName = 'Bobs Plumbing'
 
     wrapperFactory = (props: any) => {
       return mount(CorrectCompanyName, {
         propsData: {
           props
         },
-        store,
         vuetify
       })
     }
@@ -84,6 +86,6 @@ describe('CorrectCompanyName', () => {
     expect(getLastEvent(wrapper, 'isSaved')).toBe(true)
 
     // Verify Data change in store
-    expect(store.state.stateModel.nameRequest.legalName).toBe('Bob\'s Plumbing Ltd.')
+    expect(store.stateModel.nameRequest.legalName).toBe('Bob\'s Plumbing Ltd.')
   })
 })

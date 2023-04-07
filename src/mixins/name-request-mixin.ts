@@ -1,16 +1,17 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { NameRequestStates, NameRequestTypes } from '@/enums/'
 import { LegalServices } from '@/services/'
 import { NrResponseIF, ResourceIF } from '@/interfaces/'
+import { useStore } from '@/store/store'
 
 /**
  * Mixin for processing Name Request objects.
  */
 @Component({})
 export default class NameRequestMixin extends Vue {
-  @Getter getResource!: ResourceIF
+  @Getter(useStore) getResource!: ResourceIF
 
   /**
    * Fetches an NR and validates it against the applicant's information.

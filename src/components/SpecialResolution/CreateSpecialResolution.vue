@@ -192,13 +192,14 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF, HelpSectionIF, ResourceIF, FormIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
 import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { SpecialResolutionIF, PersonIF } from '@bcrs-shared-components/interfaces/'
 import { VuetifyRuleFunction } from '@/types'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -207,15 +208,15 @@ import { VuetifyRuleFunction } from '@/types'
   }
 })
 export default class CreateSpecialResolution extends Mixins(DateMixin) {
-  @Getter getResource!: ResourceIF
-  @Getter getBusinessFoundingDateTime!: string
-  @Getter getCurrentDate!: string
-  @Getter getSpecialResolution!: SpecialResolutionIF
-  @Getter getComponentValidate!: boolean
-  @Getter getSpecialResolutionFormValid!: boolean
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) getBusinessFoundingDateTime!: string
+  @Getter(useStore) getCurrentDate!: string
+  @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getSpecialResolutionFormValid!: boolean
 
-  @Action setSpecialResolution!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setSpecialResolution!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   // Refs
   $refs!: {

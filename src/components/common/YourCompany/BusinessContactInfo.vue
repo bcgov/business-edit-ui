@@ -16,13 +16,14 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, ResourceIF, EntitySnapshotIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -31,14 +32,14 @@ import { isEqual } from 'lodash'
 })
 export default class BusinessContactInfo extends Mixins(CommonMixin) {
   // Global getters
-  @Getter getBusinessContact!: ContactPointIF
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getResource!: ResourceIF
-  @Getter getBusinessId!: string
+  @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) getBusinessId!: string
 
   // Global setters
-  @Action setBusinessContact!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setBusinessContact!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   /** Whether to show invalid section styling. */
   @Prop({ default: false }) readonly invalidSection!: boolean

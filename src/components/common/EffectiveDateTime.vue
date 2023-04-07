@@ -74,15 +74,19 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { DateMixin } from '@/mixins/'
 import { EffectiveDateTypes } from '@/enums/'
 import { EffectiveDateTimeIF, FormFieldType, FormIF } from '@/interfaces/'
 import { VuetifyRuleFunction } from '@/types'
 
-enum PeriodTypes {
+import { useStore } from '@/store/store'
+
+export enum PeriodTypes {
+  // eslint-disable-next-line no-unused-vars
   AM = 'am',
+  // eslint-disable-next-line no-unused-vars
   PM = 'pm'
 }
 
@@ -103,9 +107,9 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
     minuteSelector: FormFieldType // used in unit tests
   }
 
-  @Getter getCurrentJsDate!: Date
-  @Getter getEffectiveDateTime!: EffectiveDateTimeIF
-  @Getter getAppValidate!: boolean
+  @Getter(useStore) getCurrentJsDate!: Date
+  @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
+  @Getter(useStore) getAppValidate!: boolean
 
   // Declaration for template
   readonly EffectiveDateTypes = EffectiveDateTypes

@@ -18,8 +18,8 @@
             :expiryDate="expiry"
             :key="expiry"
             :maxNumberOfMonths=36
-            @expiry="mutateRestorationExpiry(addMonthsToDate(previousNumberOfMonths, $event))"
-            @valid="mutateExpiryValid($event)"
+            @expiry="setRestorationExpiry(addMonthsToDate(previousNumberOfMonths, $event))"
+            @valid="setExpiryValid($event)"
           />
         </v-col>
       </v-row>
@@ -37,8 +37,8 @@
           :isCourtOrderOnly="true"
           :isCourtOrderRadio="false"
           :invalidSection="!getApprovalTypeValid"
-          @courtNumberChange="mutateRestorationCourtOrder({ fileNumber: $event })"
-          @valid="mutateApprovalTypeValid($event)"
+          @courtNumberChange="setRestorationCourtOrder({ fileNumber: $event })"
+          @valid="setApprovalTypeValid($event)"
         />
       </template>
     </section>
@@ -47,16 +47,16 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Action, Getter, Mutation } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ApprovalType } from '@bcrs-shared-components/approval-type'
 import { ApprovalTypes, RestorationTypes } from '@/enums'
 import Actions from '@/components/common/Actions.vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
 import { DateMixin, CommonMixin } from '@/mixins'
 import DateUtilities from '@/services/date-utilities'
-import { LegalServices } from '@/services/'
 import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
-import { RestorationStateIF, StateFilingRestorationIF } from '@/interfaces'
+import { ActionBindingIF, RestorationStateIF, StateFilingRestorationIF } from '@/interfaces'
+import { useStore } from '@/store/store'
 
 @Component({
   mixins: [
@@ -70,18 +70,18 @@ import { RestorationStateIF, StateFilingRestorationIF } from '@/interfaces'
   }
 })
 export default class ExtendTimeLimit extends Vue {
-  @Getter getApprovalTypeValid!: boolean
-  @Getter getCurrentDate!: string
-  @Getter getExpiryValid!: boolean
-  @Getter getRestoration!: RestorationStateIF
-  @Getter getStateFilingRestoration!: StateFilingRestorationIF
+  @Getter(useStore) getApprovalTypeValid!: boolean
+  @Getter(useStore) getCurrentDate!: string
+  @Getter(useStore) getExpiryValid!: boolean
+  @Getter(useStore) getRestoration!: RestorationStateIF
+  @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
 
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
-  @Mutation mutateApprovalTypeValid!: ActionBindingIF
-  @Mutation mutateExpiryValid!: ActionBindingIF
-  @Mutation mutateRestorationCourtOrder!: ActionBindingIF
-  @Mutation mutateRestorationExpiry!: ActionBindingIF
+  @Action(useStore) setApprovalTypeValid!: ActionBindingIF
+  @Action(useStore) setExpiryValid!: ActionBindingIF
+  @Action(useStore) setRestorationCourtOrder!: ActionBindingIF
+  @Action(useStore) setRestorationExpiry!: ActionBindingIF
 
   // Enum for template
   readonly ApprovalTypes = ApprovalTypes

@@ -380,9 +380,11 @@ import { BusinessLookup as BusinessLookupShared } from '@bcrs-shared-components/
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { RoleTypes } from '@/enums/'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { BusinessLookupServices, LegalServices } from '@/services/'
 import { VuetifyRuleFunction } from '@/types'
+
+import { useStore } from '@/store/store'
 
 const REGION_BC = 'BC'
 const COUNTRY_CA = 'CA'
@@ -416,14 +418,14 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   @Prop() readonly activeIndex!: number
 
   // Global getter
-  @Getter getCurrentDate!: string
-  @Getter getResource!: ResourceIF
-  @Getter isBenBcCccUlcCorrectionFiling!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
-  @Getter isFirm!: boolean
-  @Getter isLimitedExtendRestorationFiling!: boolean
-  @Getter isLimitedConversionRestorationFiling!: boolean
-  @Getter isRoleStaff!: boolean
+  @Getter(useStore) getCurrentDate!: string
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isFirm!: boolean
+  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
+  @Getter(useStore) isLimitedConversionRestorationFiling!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
 
   // Local variables
   protected orgPerson: OrgPersonIF = null // current org/person being added/edited

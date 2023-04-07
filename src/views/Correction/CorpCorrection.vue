@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { Articles } from '@/components/Alteration/'
 import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany, CompletingParty }
   from '@/components/common/'
@@ -64,6 +64,8 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { BcCorrectionResource, BenCorrectionResource, CccCorrectionResource, UlcCorrectionResource }
   from '@/resources/Correction/'
+
+import { useStore } from '@/store/store'
 
 /** Correction sub-component for corp class "BC" entities. */
 @Component({
@@ -80,15 +82,15 @@ import { BcCorrectionResource, BenCorrectionResource, CccCorrectionResource, Ulc
 })
 export default class CorpCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter isBcCompany!: boolean
-  @Getter isBenefitCompany!: boolean
-  @Getter isBcCcc!: boolean
-  @Getter isBcUlcCompany!: boolean
+  @Getter(useStore) isBcCompany!: boolean
+  @Getter(useStore) isBenefitCompany!: boolean
+  @Getter(useStore) isBcCcc!: boolean
+  @Getter(useStore) isBcUlcCompany!: boolean
 
   // Global actions
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setCertifyStatementResource!: ActionBindingIF
-  @Action setResource!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setCertifyStatementResource!: ActionBindingIF
+  @Action(useStore) setResource!: ActionBindingIF
 
   /** The draft correction filing to process. */
   @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF
