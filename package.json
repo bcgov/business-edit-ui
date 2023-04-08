@@ -92,7 +92,6 @@
     "vue-property-decorator": "^9.1.2",
     "vue-template-compiler": "2.7.10",
     "vue-test-utils-helpers": "git+https://github.com/bcgov/vue-test-utils-helpers.git",
-    "vuetify-loader": "^1.9.2",
     "vuex-class": "^0.3.2",
     "vuex-module-decorators": "^1.2.0"
   },

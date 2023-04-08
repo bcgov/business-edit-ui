@@ -4,7 +4,7 @@ import 'regenerator-runtime/runtime' // to use transpiled generator functions
 
 // Other Libraries
 import Vue from 'vue'
-import Vuetify from 'vuetify/lib'
+import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
@@ -16,6 +16,7 @@ import { getPiniaStore, getVuexStore } from '@/store/'
 
 // Styles
 // NB: order matters - do not change
+import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.min.css' // ensure you are using css-loader
 import '@/assets/styles/base.scss'
 import '@/assets/styles/layout.scss'
