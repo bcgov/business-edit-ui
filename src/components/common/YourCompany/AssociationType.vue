@@ -8,7 +8,7 @@
         </label>
         <v-flex md1>
           <v-chip v-if="hasAssociationTypeChanged" x-small label color="primary" text-color="white">
-            {{ editedLabel }}
+            {{ getEditedLabel }}
           </v-chip>
         </v-flex>
       </v-col>
@@ -45,7 +45,7 @@
                 @click="isEditingAssociationType = true"
               >
                 <v-icon small>mdi-pencil</v-icon>
-                <span>{{editLabel}}</span>
+                <span>{{getEditLabel}}</span>
               </v-btn>
               </template>
               <span>
@@ -134,6 +134,8 @@ export default class AssociationType extends Mixins(CommonMixin) {
   /** Global getters */
   @Getter getAssociationType!: CoopTypes
   @Getter getBusinessInformation!: BusinessInformationIF
+  @Getter getEditLabel!: string
+  @Getter getEditedLabel!: string
   @Getter getEntitySnapshot!: EntitySnapshotIF
   @Getter hasAssociationTypeChanged!: boolean
 

@@ -7,7 +7,7 @@
           <label :class="{'error-text': invalidSection}">{{ getResource.addressLabel }}</label>
           <v-chip v-if="(isFirmChangeFiling || isFirmConversionFiling) && !isSummaryView
                   && (hasMailingChanged || hasDeliveryChanged)"
-                  x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
+                  x-small label color="primary" text-color="white" class="mt-0">{{ getEditedLabel }}</v-chip>
         </v-col>
 
         <!-- Mailing address -->
@@ -15,7 +15,7 @@
           <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
             <v-chip v-if="hasMailingChanged && (isCorrectionFiling || isRestorationFiling)"
-              x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
+              x-small label color="primary" text-color="white" class="mt-0">{{ getEditedLabel }}</v-chip>
           </label>
           <MailingAddress
             v-if="!isEmpty(mailingAddress)"
@@ -30,7 +30,7 @@
           <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
             <v-chip v-if="hasDeliveryChanged && (isCorrectionFiling || isRestorationFiling)"
-              x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
+              x-small label color="primary" text-color="white" class="mt-0">{{ getEditedLabel }}</v-chip>
           </label>
           <DeliveryAddress
             v-if="!isEmpty(deliveryAddress) && !inheritMailingAddress"
@@ -98,7 +98,7 @@
                 @click="isEditing = true"
               >
                 <v-icon small>mdi-pencil</v-icon>
-                <span>{{ editLabel }}</span>
+                <span>{{ getEditLabel }}</span>
               </v-btn>
             </div>
           </v-col>
@@ -131,7 +131,7 @@
           <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
             <v-chip v-if="hasRecMailingChanged && (isCorrectionFiling || isRestorationFiling)"
-              x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
+              x-small label color="primary" text-color="white" class="mt-0">{{ getEditedLabel }}</v-chip>
           </label>
           <RecMailingAddress
             v-if="!inheritRegisteredAddress && !isEmpty(recMailingAddress)"
@@ -147,7 +147,7 @@
           <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
             <v-chip v-if="hasRecDeliveryChanged && (isCorrectionFiling || isRestorationFiling)"
-              x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
+              x-small label color="primary" text-color="white" class="mt-0">{{ getEditedLabel }}</v-chip>
           </label>
           <RecDeliveryAddress
             v-if="!inheritRecMailingAddress && !inheritRegisteredAddress && !isEmpty(recDeliveryAddress)"
@@ -450,26 +450,29 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Prop({ default: false }) readonly isSummaryView!: boolean
 
   // Global getters
+  @Getter getEditLabel!: string
+  @Getter getEditedLabel!: string
   @Getter getOfficeAddresses!: AddressesIF // NB: may be {}
-  @Getter getResource!: ResourceIF
   @Getter getOriginalOfficeAddresses!: AddressesIF
-  @Getter haveOfficeAddressesChanged!: boolean
-  @Getter hasMailingChanged!: boolean
+  @Getter getResource!: ResourceIF
   @Getter hasDeliveryChanged!: boolean
-  @Getter hasRecMailingChanged!: boolean
+  @Getter hasMailingChanged!: boolean
   @Getter hasRecDeliveryChanged!: boolean
+  @Getter hasRecMailingChanged!: boolean
+  @Getter haveOfficeAddressesChanged!: boolean
+  @Getter isAlterationFiling!: boolean
   @Getter isBenBcCccUlc!: boolean
   @Getter isBenBcCccUlcCorrectionFiling!: boolean
-  @Getter isAlterationFiling!: boolean
+  @Getter isCorrectionFiling!: boolean
   @Getter isFirmChangeFiling!: boolean
   @Getter isFirmConversionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
-  @Getter isSpecialResolutionFiling!: boolean
   @Getter isRestorationFiling!: boolean
+  @Getter isSpecialResolutionFiling!: boolean
 
   // Global actions
-  @Action setOfficeAddresses!: ActionBindingIF
   @Action setEditingOfficeAddresses!: ActionBindingIF
+  @Action setOfficeAddresses!: ActionBindingIF
   @Action setValidComponent!: ActionBindingIF
 
   // Declarations for template

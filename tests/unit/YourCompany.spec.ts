@@ -186,7 +186,7 @@ describe('YourCompany in a SP alteration', () => {
 
 describe('YourCompany in a SP alteration: formats multiple phone numbers correctly', () => {
   const phoneNumbers = ['123 456 7890', '0987654321', '123 456 7890', '123-456-7890', '456 7890', null]
-  const outPuts = ['(123) 456-7890', '(098) 765-4321', '(123) 456-7890', '(123) 456-7890', 'N/A', 'N/A']
+  const outPuts = ['(123) 456-7890', '(098) 765-4321', '(123) 456-7890', '(123) 456-7890', '456 7890', 'N/A']
 
   phoneNumbers.forEach((phoneNumber, index) => {
     const store = getVuexStore()

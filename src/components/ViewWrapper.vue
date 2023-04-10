@@ -66,7 +66,7 @@ import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF,
   AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, RestorationFilingIF,
   SpecialResolutionFilingIF } from '@/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { ComponentsCompanyInfo, ComponentsReviewCertify, RouteNames } from '@/enums/'
+import { ComponentsCompanyInfo, ComponentsReviewCertify } from '@/enums/'
 import { FeeSummaryActions } from '@bcrs-shared-components/enums/'
 
 @Component({
@@ -92,32 +92,24 @@ export default class App extends Vue {
 
   // Global getters
   // @Getter getCurrentJsDate!: Date
-  @Getter getFilingData!: FilingDataIF[]
-  @Getter getFilingId!: number
-  @Getter getNameRequestNumber!: string
-  @Getter getOrgInfo!: any
-  @Getter getUserEmail!: string
-  @Getter getUserFirstName!: string
-  @Getter getUserLastName!: string
-  @Getter getUserPhone!: string
-  @Getter getUserRoles!: string
-  @Getter getUserUsername!: string
-  @Getter haveUnsavedChanges!: boolean
-  @Getter isBusySaving!: boolean
-  @Getter isCorrectionEditing!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isRestorationFiling!: boolean
-  @Getter isSummaryMode!: boolean
-  @Getter showFeeSummary!: boolean
-
-  // Alteration flag getters
   @Getter getAppValidate!: boolean
   @Getter getComponentValidate!: boolean
+  @Getter getFilingData!: FilingDataIF[]
+  @Getter getFilingId!: number
   @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter getNameRequestNumber!: string
+  @Getter haveUnsavedChanges!: boolean
+  @Getter isAlterationFiling!: boolean
+  @Getter isBusySaving!: boolean
   @Getter isConflictingLegalType!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter isSbcStaff!: boolean
+  @Getter isCorrectionFiling!: boolean
+  @Getter isFirmChangeFiling!: boolean
+  @Getter isFirmConversionFiling!: boolean
+  @Getter isRestorationFiling!: boolean
+  @Getter isSummaryMode!: boolean
+  @Getter isSpecialResolutionFiling!: boolean
+  @Getter showFeeSummary!: boolean
 
   // Global actions
   @Action setAppValidate!: ActionBindingIF
@@ -197,11 +189,11 @@ export default class App extends Vue {
   /** Show fee summary only allowed filing types */
   get showFeeSummaryShared (): boolean {
     return (
-      this.isSpecialResolutionFiling ||
       this.isAlterationFiling ||
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling ||
-      this.isRestorationFiling
+      this.isRestorationFiling ||
+      this.isSpecialResolutionFiling
     )
   }
 

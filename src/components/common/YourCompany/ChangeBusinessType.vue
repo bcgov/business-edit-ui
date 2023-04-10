@@ -6,7 +6,7 @@
         <label :class="{'error-text': invalidSection}"><strong>Business Type</strong></label>
         <v-flex md1>
           <v-chip v-if="hasBusinessTypeChanged" x-small label color="primary" text-color="white">
-            {{editedLabel}}
+            {{getEditedLabel}}
           </v-chip>
         </v-flex>
       </v-col>
@@ -179,7 +179,7 @@
             @click="isEditingType = true"
           >
             <v-icon small>mdi-pencil</v-icon>
-            <span>{{editLabel}}</span>
+            <span>{{getEditLabel}}</span>
           </v-btn>
           <span class="more-actions" v-if="hasBusinessTypeChanged">
             <v-menu
@@ -236,14 +236,16 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   // Global getters
   @Getter getNameRequestLegalName!: string
+  @Getter getEditLabel!: string
+  @Getter getEditedLabel!: string
   @Getter getEntitySnapshot!: EntitySnapshotIF
+  @Getter getEntityType!: CorpTypeCd
   @Getter getResource!: ResourceIF
   @Getter hasBusinessTypeChanged!: boolean
-  @Getter isConflictingLegalType!: boolean
   @Getter isBcCompany!: boolean
-  @Getter isFirm!: boolean
+  @Getter isConflictingLegalType!: boolean
   @Getter isCoop!: boolean
-  @Getter getEntityType!: CorpTypeCd
+  @Getter isFirm!: boolean
 
   @Action setEntityType!: ActionBindingIF
 

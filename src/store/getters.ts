@@ -1116,5 +1116,55 @@ export default {
       return formattedExpiryText
     }
     return '[no expiry date]'
+  },
+
+  /** The appropriate edit label for corrections, alterations, change or conversion filings. */
+  getEditLabel (_state: StateIF, getters: any): string {
+    if (getters.isCorrectionFiling) return 'Correct'
+
+    if (
+      getters.isAlterationFiling ||
+      getters.isFirmChangeFiling ||
+      getters.isFirmConversionFiling ||
+      getters.isSpecialResolutionFiling
+    ) {
+      return 'Change'
+    }
+
+    return 'Edit' // If Restoration extension or Conversion
+  },
+
+  /** The appropriate edited label for corrections, alterations, change or conversion filings. */
+  getEditedLabel (_state: StateIF, getters: any): string {
+    if (getters.isCorrectionFiling) return 'Corrected'
+
+    if (
+      getters.isAlterationFiling ||
+      getters.isFirmChangeFiling ||
+      getters.isFirmConversionFiling ||
+      getters.isRestorationFiling ||
+      getters.isSpecialResolutionFiling
+    ) {
+      return 'Changed'
+    }
+
+    return 'Edited' // should never happen
+  },
+
+  /** The appropriate edits saved label for corrections, alterations, change or conversion filings. */
+  getEditSavedLabel (_state: StateIF, getters: any): string {
+    if (getters.isCorrectionFiling) return 'Corrections Saved'
+
+    if (
+      getters.isAlterationFiling ||
+      getters.isFirmChangeFiling ||
+      getters.isFirmConversionFiling ||
+      getters.isRestorationFiling ||
+      getters.isSpecialResolutionFiling
+    ) {
+      return 'Changes Saved'
+    }
+
+    return 'Edits Saved' // should never happen
   }
 }

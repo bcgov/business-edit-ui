@@ -418,11 +418,15 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   // Global getter
   @Getter getCurrentDate!: string
   @Getter getResource!: ResourceIF
+  @Getter isAlterationFiling!: boolean
   @Getter isBenBcCccUlcCorrectionFiling!: boolean
   @Getter isFirmCorrectionFiling!: boolean
   @Getter isFirm!: boolean
+  @Getter isFirmChangeFiling!: boolean
+  @Getter isFirmConversionFiling!: boolean
   @Getter isLimitedExtendRestorationFiling!: boolean
   @Getter isLimitedConversionRestorationFiling!: boolean
+  @Getter isRestorationFiling!: boolean
   @Getter isRoleStaff!: boolean
 
   // Local variables
