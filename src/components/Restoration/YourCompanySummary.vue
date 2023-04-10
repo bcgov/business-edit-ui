@@ -36,6 +36,7 @@
         </div>
       </template>
 
+      <!-- Restoration Type -->
       <div class="section-container">
         <v-row no-gutters>
           <v-col cols="3">
@@ -47,19 +48,21 @@
           </v-col>
           <v-col cols="8" class="mt-n1" v-if="isLimitedConversionRestorationFiling">
             <div class="font-weight-bold">Conversion to Full Restoration</div>
-            <div>Applicant's relationship: {{ getRelationships }}</div>
+            <div>Applicant's relationship: {{ getRelationshipString }}</div>
           </v-col>
         </v-row>
-        <v-row no-gutters class="mt-3" v-if="getStateFilingApprovalType === ApprovalTypes.VIA_COURT_ORDER">
+        <v-row no-gutters class="mt-3" v-if="getIsRestorationTypeCourtOrder">
           <v-col cols="3">
             <label><strong>Approval Type</strong></label>
           </v-col>
           <v-col cols="8" class="mt-n1">
             <div class="font-weight-bold">Approved by Court Order</div>
-            <div v-if="getCourtOrder">Court Order Number: {{ getCourtOrderFileNumber }}</div>
+            <div v-if="getCourtOrder">Court Order Number: {{ getCourtOrderNumberText }}</div>
           </v-col>
         </v-row>
       </div>
+
+      <!-- Office Addresses -->
       <div class="section-container">
         <OfficeAddresses :isSummaryView="true" />
       </div>
@@ -81,31 +84,32 @@ export default {
   },
   computed: {
     ...mapState(useStore, [
+      'getCourtOrderNumberText',
       'getBusinessNumber',
       'getFormattedExpiryText',
       'getNameRequestLegalName',
       'getNameRequest',
+      'getRelationships',
       'getRestoration',
+      'getIsRestorationTypeCourtOrder',
       'getStateFilingRestoration',
       'hasBusinessNameChanged',
       'haveNameTranslationsChanged',
       'isLimitedConversionRestorationFiling',
-      'isLimitedExtendRestorationFiling']),
+      'isLimitedExtendRestorationFiling'
+    ]),
     getStateFilingApprovalType () {
       return this.getStateFilingRestoration?.approvalType
     },
     getCourtOrder () {
       return this.getRestoration.courtOrder
     },
-    getCourtOrderFileNumber () {
-      return this.getRestoration.courtOrder.fileNumber
-    },
     getCompanyName (): string {
       if (this.getNameRequestLegalName) return this.getNameRequestLegalName
       return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
     },
-    getRelationships () {
-      return this.getRestoration.relationships.join(', ') || '[Unknown]'
+    getRelationshipString () {
+      return this.getRelationships.join(', ') || '[Unknown]'
     }
   },
   components: {

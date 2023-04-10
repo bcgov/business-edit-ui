@@ -1,5 +1,5 @@
 <template>
-  <ViewWrapper>
+  <ViewWrapper v-if="isDataLoaded">
     <section class="pb-10" id="limited-restoration-full">
       <!-- Company Information page-->
       <v-slide-x-transition hide-on-leave>
@@ -15,7 +15,10 @@
           >
             <RelationshipsPanel
               class="pl-5 pt-1"
+              :draft-relationships="getRelationships"
+              :show-validation-errors="getComponentValidate"
               @changed="setRestorationRelationships($event)"
+              @valid="setValidComponent({ key: 'isValidRelationship', value: $event })"
             />
           </QuestionWrapper>
 
@@ -32,10 +35,13 @@
           >
             <ApprovalType
               class="white-background px-9 py-4 mt-4"
+              :courtOrderNumber="getCourtOrderNumberText"
               :approvedByRegistrar="isApprovedByRegistrar"
               :isCourtOrderOnly="isCourtOrderOnly"
-              :courtOrderNumber="courtOrderNumberText"
               :isCourtOrderRadio="showCourtOrderRadio"
+              :invalidSection="!getApprovalTypeValid"
+              @courtNumberChange="mutateRestorationCourtOrder({ 'fileNumber': $event })"
+              @valid="setValidComponent({ key: 'isValidApprovalType', value: $event })"
             />
           </QuestionWrapper>
 
@@ -113,6 +119,7 @@ import { CertifySection, CurrentDirectors, DocumentsDelivery, PeopleAndRoles, St
   YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import {
   ActionBindingIF,
   ResourceIF,
@@ -121,7 +128,7 @@ import {
   EntitySnapshotIF } from '@/interfaces/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationToFull/'
-import { ApprovalTypes, CorpTypeCd, FilingStatus, RoleTypes } from '@/enums/'
+import { ApprovalTypes, FilingStatus, RoleTypes } from '@/enums/'
 import { RelationshipsPanel } from '@bcrs-shared-components/relationships-panel'
 import CourtOrderPoa from '@/components/common/CourtOrderPoa.vue'
 import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
@@ -180,10 +187,16 @@ export default class LimitedRestorationToFull extends Vue {
   @Action(useStore) setResource!: ActionBindingIF
   @Action(useStore) setRestorationRelationships!: ActionBindingIF
   @Action(useStore) setStateFilingRestoration!: ActionBindingIF
+  @Action(useStore) mutateRestorationCourtOrder!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
   @Prop({ default: 0 }) readonly restorationId!: number
+
+  /** isDataLoaded is a flag that is to "true" after the component's data loaded
+  it's used a work-around because the shared components aren't reactive to
+  changes after the shared components are mounted. */
+  private isDataLoaded = false
 
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
@@ -292,6 +305,7 @@ export default class LimitedRestorationToFull extends Vue {
 
       // tell App that we're finished loading
       this.emitHaveData()
+      this.isDataLoaded = true
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
       this.emitFetchError(err)

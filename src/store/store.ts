@@ -1184,7 +1184,13 @@ export const useStore = defineStore('store', {
         return formattedExpiryText
       }
       return '[no expiry date]'
+    },
+
+    /** The court order draft file number. */
+    getCourtOrderNumberText (state): string {
+      return state.stateModel.restoration.courtOrder?.fileNumber || ''
     }
+
   },
   actions: {
     // no context as first argument, use `this` instead

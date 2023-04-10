@@ -33,7 +33,7 @@
     >
       <template>
         <ApprovalType
-          :courtOrderNumber="courtOrderNumberText"
+          :courtOrderNumber="getCourtOrderNumberText"
           :isCourtOrderOnly="true"
           :isCourtOrderRadio="false"
           :invalidSection="!getApprovalTypeValid"
@@ -74,6 +74,7 @@ export default class ExtendTimeLimit extends Vue {
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getExpiryValid!: boolean
   @Getter(useStore) getRestoration!: RestorationStateIF
+  @Getter(useStore) getCourtOrderNumberText!: string
   @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
 
   @Action(useStore) setValidComponent!: ActionBindingIF
@@ -92,7 +93,6 @@ export default class ExtendTimeLimit extends Vue {
     return this.getStateFilingRestoration?.approvalType
   }
 
-  /** The court order draft file number. */
   get courtOrderNumberText (): string {
     return this.getRestoration.courtOrder?.fileNumber || ''
   }
