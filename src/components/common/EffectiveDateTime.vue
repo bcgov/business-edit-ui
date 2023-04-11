@@ -77,18 +77,11 @@ import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { DateMixin } from '@/mixins/'
-import { EffectiveDateTypes } from '@/enums/'
+import { EffectiveDateTypes, PeriodTypes } from '@/enums/'
 import { EffectiveDateTimeIF, FormFieldType, FormIF } from '@/interfaces/'
 import { VuetifyRuleFunction } from '@/types'
 
 import { useStore } from '@/store/store'
-
-export enum PeriodTypes {
-  // eslint-disable-next-line no-unused-vars
-  AM = 'am',
-  // eslint-disable-next-line no-unused-vars
-  PM = 'pm'
-}
 
 @Component({
   components: {
