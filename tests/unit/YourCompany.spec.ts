@@ -38,11 +38,11 @@ const flagsCompanyInfo = {
 }
 
 describe('YourCompany in a BEN correction', () => {
-  setActivePinia(createPinia())
-  const store = useStore()
   let wrapper: any
 
   beforeEach(() => {
+    setActivePinia(createPinia())
+    const store = useStore()
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
     store.resourceModel = BenCorrectionResource
@@ -66,6 +66,7 @@ describe('YourCompany in a BEN correction', () => {
   })
 
   it('renders the FolioInformation component when account is premium', async () => {
+    const store = useStore()
     store.stateModel.accountInformation.accountType = 'PREMIUM'
     await Vue.nextTick()
 

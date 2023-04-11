@@ -501,12 +501,12 @@ export default class YourCompany extends Mixins(
   get nameChangeOptions (): Array<NameChangeOptions> {
     // if this is a numbered company, remove correct-name and name-to-number options
     if (this.isNumberedCompany) {
-      return this.getResource.changeData?.nameChangeOptions?.filter(option => (
+      return this.getResource.changeData.nameChangeOptions.filter(option => (
         option !== NameChangeOptions.CORRECT_NAME &&
         option !== NameChangeOptions.CORRECT_NAME_TO_NUMBER
       ))
     }
-    return this.getResource.changeData?.nameChangeOptions
+    return this.getResource.changeData.nameChangeOptions
   }
 
   /**

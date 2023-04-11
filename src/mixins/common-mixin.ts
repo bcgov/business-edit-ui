@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
-import { RouteNames } from '@/enums/'
 import { ConfirmDialogType } from '@/interfaces/'
 import { useStore } from '@/store/store'
 

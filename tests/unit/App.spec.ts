@@ -609,7 +609,16 @@ describe('App component - other', () => {
     // GET org info
     get.withArgs('https://auth.api.url/orgs/668')
       .returns(Promise.resolve({
-        data: {}
+        data: {
+          mailingAddress: {
+            city: 'Victoria',
+            country: 'CA',
+            postalCode: 'V8W 3E6',
+            region: 'BC',
+            street: '2-940 Blanshard St',
+            streetAdditional: ''
+          }
+        }
       }))
 
     // create a Local Vue and install router on it
