@@ -307,7 +307,7 @@ describe('Resolution Dates component - edit mode', () => {
   it('displays the Correct button for correction filings', () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
-    store.stateModel.shareStructureStep.shareClasses = shareClasses
+    store.stateModel.shareStructureStep.shareClasses = shareClasses as any
     store.stateModel.shareStructureStep.resolutionDates = addedDates
 
     const wrapper = wrapperFactory()
@@ -323,7 +323,7 @@ describe('Resolution Dates component - edit mode', () => {
   it('displays the Undo button for correction filings', async () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
-    store.stateModel.shareStructureStep.shareClasses = shareClasses
+    store.stateModel.shareStructureStep.shareClasses = shareClasses as any
     store.stateModel.shareStructureStep.resolutionDates = addedDates
 
     const wrapper = wrapperFactory({ addedDates: ['2021-03-17'] })
@@ -341,7 +341,7 @@ describe('Resolution Dates component - review mode', () => {
   let wrapperFactory: any
 
   beforeAll(() => {
-    store.stateModel.shareStructureStep.shareClasses = shareClasses
+    store.stateModel.shareStructureStep.shareClasses = shareClasses as any
     wrapperFactory = (propsData: any) => {
       return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: false }, vuetify })
     }

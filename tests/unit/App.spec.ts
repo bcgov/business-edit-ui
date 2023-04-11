@@ -378,10 +378,10 @@ describe.skip('Numbered company setup', () => {
     expect(store.stateModel.tombstone.filingId).toBe(54321)
 
     // Validate no NR Details
-    expect(store.stateModel.nameRequest.details.approvedName).toBeUndefined()
-    expect(store.stateModel.nameRequest.details.status).toBeUndefined()
-    expect(store.stateModel.nameRequest.details.consentFlag).toBeUndefined()
-    expect(store.stateModel.nameRequest.details.expirationDate).toBeUndefined()
+    expect((store.stateModel.nameRequest.details as any).approvedName).toBeUndefined()
+    expect((store.stateModel.nameRequest.details as any).status).toBeUndefined()
+    expect((store.stateModel.nameRequest.details as any).consentFlag).toBeUndefined()
+    expect((store.stateModel.nameRequest.details as any).expirationDate).toBeUndefined()
 
     // Validate no NR Applicant
     expect(store.stateModel.nameRequest.applicant.firstName).toBeUndefined()
