@@ -341,7 +341,6 @@ describe('CorrectNameRequest', () => {
     const wrapper = wrapperFactory()
     store.stateModel.tombstone.currentDate = '2021-01-20'
     store.stateModel.tombstone.entityType = CorpTypeCd.PARTNERSHIP
-    expect(CorpTypeCd.PARTNERSHIP).toBe('GP')
     // GET NR Data
     get.withArgs('nameRequests/NR 1234567')
       .returns(Promise.resolve({

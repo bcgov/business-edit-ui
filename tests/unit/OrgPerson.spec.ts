@@ -978,7 +978,6 @@ describe('Org/Person component for SP change of registration filing', () => {
   it('displays Confirm Documents checkbox for a replaced-added org-person', () => {
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
-    expect(CorpTypeCd.SOLE_PROP).toBe('SP')
     store.resourceModel = SpChangeResource
 
     const currentOrgPerson = {

@@ -307,7 +307,6 @@ describe('Resolution Dates component - edit mode', () => {
 
   it('displays the Correct button for correction filings', () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
-    expect(CorpTypeCd.BENEFIT_COMPANY).toBe('BEN')
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     store.stateModel.shareStructureStep.shareClasses = shareClasses
     store.stateModel.shareStructureStep.resolutionDates = addedDates

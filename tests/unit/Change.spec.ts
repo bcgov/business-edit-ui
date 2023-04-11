@@ -249,7 +249,6 @@ describe('Change component', () => {
 
   it('resource subtitle states individual sole proprietors can change legal name', () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
-    expect(CorpTypeCd.SOLE_PROP).toBe('SP')
     store.stateModel.peopleAndRoles.orgPeople = [
       {
         officer: { partyType: 'person' },
@@ -289,10 +288,10 @@ describe('Change component', () => {
     expect(state.businessInformation.identifier).toBe('FM1234567')
 
     // Validate Office Addresses
-    // expect(state.officeAddresses.deliveryAddress.streetAddress)
-    //   .toBe('reg delivery_address - address line one')
-    // expect(state.officeAddresses.mailingAddress.streetAddress)
-    //   .toBe('rec mailing_address - address line two')
+    expect(state.officeAddresses.registeredOffice.deliveryAddress.streetAddress)
+      .toBe('reg delivery_address - address line one')
+    expect(state.officeAddresses.registeredOffice.mailingAddress.streetAddress)
+      .toBe('rec mailing_address - address line two')
 
     // Validate People And Roles
     expect(store.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('CAMERON')

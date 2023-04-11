@@ -910,7 +910,6 @@ describe('actions and events', () => {
 
   beforeAll(() => {
     // init entity type
-    expect(CorpTypeCd.BENEFIT_COMPANY).toBe('BEN')
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
 
     // init original offices
