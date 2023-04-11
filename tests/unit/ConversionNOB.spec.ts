@@ -3,6 +3,8 @@ import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store/'
 import { mount } from '@vue/test-utils'
 import ConversionNOB from '@/components/Conversion/ConversionNOB.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -44,17 +46,17 @@ const initialProps = {
 describe('ConversionNatureOfBusiness without update', () => {
   let wrapperFactory: any
   let wrapper: any
-  let store: any = getVuexStore()
+  setActivePinia(createPinia())
+  const store = useStore()
 
   beforeEach(() => {
-    store.state.stateModel.businessInformation = businessInformation
-    store.state.stateModel.entitySnapshot = entitySnapShot
+    store.stateModel.businessInformation = businessInformation as any
+    store.stateModel.entitySnapshot = entitySnapShot as any
     wrapperFactory = (propsData: any) => {
       return mount(ConversionNOB, {
         propsData: {
           ...propsData
         },
-        store,
         vuetify
       })
     }
@@ -150,18 +152,18 @@ describe('ConversionNatureOfBusiness without update', () => {
 describe('ConversionNatureOfBusiness after the update', () => {
   let wrapperFactory: any
   let wrapper: any
-  let store: any = getVuexStore()
+  setActivePinia(createPinia())
+  const store = useStore()
 
   beforeEach(() => {
-    store.state.stateModel.businessInformation = updatedBusinessInfo
-    store.state.stateModel.entitySnapshot = entitySnapShot
+    store.stateModel.businessInformation = updatedBusinessInfo as any
+    store.stateModel.entitySnapshot = entitySnapShot as any
 
     wrapperFactory = (propsData: any) => {
       return mount(ConversionNOB, {
         propsData: {
           ...propsData
         },
-        store,
         vuetify
       })
     }

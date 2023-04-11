@@ -134,17 +134,18 @@
 
 <script lang="ts">
 import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { NameTranslationIF } from '@/interfaces/'
 import { ActionTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
+import { useStore } from '@/store/store'
 
 @Component({})
 export default class ListNameTranslation extends Mixins(CommonMixin) {
+  @Getter(useStore) isCorrectionFiling!: boolean
+
   @Prop({ default: () => [] }) readonly translationsList!: NameTranslationIF[]
   @Prop({ default: false }) readonly isAddingNameTranslation!: boolean
-
-  @Getter isCorrectionFiling!: boolean
 
   // Declaration for template
   readonly ActionTypes = ActionTypes

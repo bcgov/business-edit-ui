@@ -27,7 +27,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 
 // Components
 import { ShareStructure as ShareStructureShared } from '@bcrs-shared-components/share-structure/'
@@ -36,6 +36,8 @@ import { CommonMixin } from '@/mixins/'
 
 import { ActionBindingIF, EntitySnapshotIF, ShareClassIF, ShareStructureIF, FlagsCompanyInfoIF }
   from '@/interfaces/'
+
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -48,23 +50,23 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Prop({ default: true }) readonly isEditMode!: boolean
 
   // Global getters
-  @Getter getComponentValidate!: boolean
-  @Getter getEditLabel!: string
-  @Getter getEditedLabel!: string
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
-  @Getter getNewResolutionDates!: string[]
-  @Getter getHasRightsOrRestrictions!: boolean
-  @Getter getShareClasses!: ShareClassIF[]
-  @Getter hasMinimumShareClass!: boolean
-  @Getter isAlterationFiling!: boolean
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  @Getter(useStore) getNewResolutionDates!: string[]
+  @Getter(useStore) getHasRightsOrRestrictions!: boolean
+  @Getter(useStore) getShareClasses!: ShareClassIF[]
+  @Getter(useStore) hasMinimumShareClass!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
 
   // Global actions
-  @Action setCreateShareStructureStepValidity!: ActionBindingIF
-  @Action setEditingShareStructure!: ActionBindingIF
-  @Action setShareClasses!: ActionBindingIF
-  @Action setShareStructureChanged!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setCreateShareStructureStepValidity!: ActionBindingIF
+  @Action(useStore) setEditingShareStructure!: ActionBindingIF
+  @Action(useStore) setShareClasses!: ActionBindingIF
+  @Action(useStore) setShareStructureChanged!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   // Local propertiues
   protected isEditing = false

@@ -5,14 +5,17 @@ import mockRouter from './MockRouter'
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 function resetStore (): void {
-  store.state.stateModel.nameTranslations = []
+  store.stateModel.nameTranslations = []
 }
 
 // Local references
@@ -42,7 +45,6 @@ describe('Name Translation component', () => {
       const wrapper = mount(NameTranslation, {
         localVue,
         router,
-        store,
         vuetify,
         propsData: { ...propsData }
       })
@@ -52,7 +54,7 @@ describe('Name Translation component', () => {
   })
 
   it('displays the list of name translations and action btns', async () => {
-    store.state.stateModel.nameTranslations = nameTranslationsListChanged
+    store.stateModel.nameTranslations = nameTranslationsListChanged as any
     const wrapper = await wrapperFactory({ isSummaryMode: true })
 
     // Verify list exists
@@ -69,7 +71,7 @@ describe('Name Translation component', () => {
   })
 
   it('does not display translations if unchanged', async () => {
-    store.state.stateModel.nameTranslations = nameTranslationsList
+    store.stateModel.nameTranslations = nameTranslationsList
     const wrapper = await wrapperFactory({ isSummaryMode: true })
 
     // Verify list exists

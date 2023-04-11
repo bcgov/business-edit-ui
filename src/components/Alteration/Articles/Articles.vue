@@ -36,11 +36,12 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import CompanyProvisions from './CompanyProvisions.vue'
 import ResolutionDates from './ResolutionDates.vue'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, BusinessInformationIF, ResolutionsIF } from '@/interfaces/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -53,19 +54,19 @@ export default class Articles extends Mixins(CommonMixin) {
   private isAddingResolutionDate = false
 
   // Global getters
-  @Getter getBusinessInformation!: BusinessInformationIF
-  @Getter getNewResolutionDates!: string[]
-  @Getter areProvisionsRemoved!: boolean
-  @Getter getOriginalResolutions!: ResolutionsIF[]
-  @Getter getHasRightsOrRestrictions!: boolean
-  @Getter getIsResolutionDatesValid!: boolean
-  @Getter getComponentValidate!: boolean
-  @Getter isAlterationFiling!: boolean
+  @Getter(useStore) getBusinessInformation!: BusinessInformationIF
+  @Getter(useStore) getNewResolutionDates!: string[]
+  @Getter(useStore) areProvisionsRemoved!: boolean
+  @Getter(useStore) getOriginalResolutions!: ResolutionsIF[]
+  @Getter(useStore) getHasRightsOrRestrictions!: boolean
+  @Getter(useStore) getIsResolutionDatesValid!: boolean
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
 
   // Global actions
-  @Action setProvisionsRemoved!: ActionBindingIF
-  @Action setNewResolutionDates!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setProvisionsRemoved!: ActionBindingIF
+  @Action(useStore) setNewResolutionDates!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   /** Emits Have Changes event. */
   @Emit('haveChanges')

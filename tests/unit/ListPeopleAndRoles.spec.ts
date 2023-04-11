@@ -3,14 +3,17 @@ import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAndRoles.vue'
-import { getVuexStore } from '@/store/'
 import { GpChangeResource } from '@/resources/Change/GP'
 import { BenCorrectionResource } from '@/resources/Correction/BEN'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 const vuetify = new Vuetify({})
 
 // Sample data is from:
@@ -338,11 +341,11 @@ const emptyOrg = {
 
 describe('List People And Roles component for Corrections', () => {
   const wrapperFactory = (orgPeople, propsData = {}) => {
-    store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.resourceModel = BenCorrectionResource
-    store.state.stateModel.peopleAndRoles.orgPeople = orgPeople
-    return mount(ListPeopleAndRoles, { propsData: { ...propsData }, vuetify, store })
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.resourceModel = BenCorrectionResource
+    store.stateModel.peopleAndRoles.orgPeople = orgPeople
+    return mount(ListPeopleAndRoles, { propsData: { ...propsData }, vuetify })
   }
 
   it('does not show the list if there is no data to display', () => {
@@ -488,11 +491,11 @@ describe('List People And Roles component for Corrections', () => {
 
 describe('List People And Roles component for Change of Registration', () => {
   const wrapperFactory = (orgPeople, propsData = {}) => {
-    store.state.stateModel.tombstone.entityType = 'GP'
-    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
-    store.state.resourceModel = GpChangeResource
-    store.state.stateModel.peopleAndRoles.orgPeople = orgPeople
-    return mount(ListPeopleAndRoles, { propsData: { ...propsData }, vuetify, store })
+    store.stateModel.tombstone.entityType = CorpTypeCd.PARTNERSHIP
+    store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
+    store.resourceModel = GpChangeResource
+    store.stateModel.peopleAndRoles.orgPeople = orgPeople
+    return mount(ListPeopleAndRoles, { propsData: { ...propsData }, vuetify })
   }
 
   it('does not show the list if there is no data to display', () => {

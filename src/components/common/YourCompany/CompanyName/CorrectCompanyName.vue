@@ -16,20 +16,21 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, NameRequestIF } from '@/interfaces/'
 import { NameChangeOptions } from '@/enums/'
+import { useStore } from '@/store/store'
 
 @Component({})
 export default class CorrectCompanyName extends Mixins(CommonMixin) {
   /** Form Submission Prop */
   @Prop({ default: null }) readonly formType!: NameChangeOptions
 
-  @Action setNameRequest!: ActionBindingIF
+  @Action(useStore) setNameRequest!: ActionBindingIF
 
-  @Getter getNameRequestLegalName!: string
-  @Getter getNameRequest!: NameRequestIF
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequest!: NameRequestIF
 
   // Local properties
   protected valid = false

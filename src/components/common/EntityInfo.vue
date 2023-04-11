@@ -34,11 +34,13 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
 import { BusinessInformationIF, EntitySnapshotIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+
+import { useStore } from '@/store/store'
 
 @Component({
   mixins: [
@@ -47,11 +49,11 @@ import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module
 })
 export default class EntityInfo extends Vue {
   // Global getters
-  @Getter getBusinessId!: string
-  @Getter getBusinessInformation!: BusinessInformationIF
-  @Getter getOriginalLegalName!: string
-  @Getter getBusinessContact!: ContactPointIF
-  @Getter getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getBusinessInformation!: BusinessInformationIF
+  @Getter(useStore) getOriginalLegalName!: string
+  @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
 
   /** The original entity type. */
   get originalEntityType (): string {

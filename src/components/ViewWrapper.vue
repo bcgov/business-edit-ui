@@ -53,14 +53,14 @@
 import Vue from 'vue'
 import { Affix as affix } from 'vue-affix'
 import { Component } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { Navigate } from '@/utils/'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
 import { Actions, EntityInfo } from '@/components/common/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
-import { AuthServices, LegalServices } from '@/services/'
+import { LegalServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
   AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, RestorationFilingIF,
@@ -68,6 +68,7 @@ import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF,
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify } from '@/enums/'
 import { FeeSummaryActions } from '@bcrs-shared-components/enums/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -92,32 +93,32 @@ export default class App extends Vue {
 
   // Global getters
   // @Getter getCurrentJsDate!: Date
-  @Getter getAppValidate!: boolean
-  @Getter getComponentValidate!: boolean
-  @Getter getFilingData!: FilingDataIF[]
-  @Getter getFilingId!: number
-  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter getNameRequestNumber!: string
-  @Getter haveUnsavedChanges!: boolean
-  @Getter isAlterationFiling!: boolean
-  @Getter isBusySaving!: boolean
-  @Getter isConflictingLegalType!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isFirmChangeFiling!: boolean
-  @Getter isFirmConversionFiling!: boolean
-  @Getter isRestorationFiling!: boolean
-  @Getter isSummaryMode!: boolean
-  @Getter isSpecialResolutionFiling!: boolean
-  @Getter showFeeSummary!: boolean
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getFilingData!: FilingDataIF[]
+  @Getter(useStore) getFilingId!: number
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) haveUnsavedChanges!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isBusySaving!: boolean
+  @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isRestorationFiling!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) isSpecialResolutionFiling!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action setAppValidate!: ActionBindingIF
-  @Action setComponentValidate!: ActionBindingIF
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setIsFilingPaying!: ActionBindingIF
-  @Action setIsSaving!: ActionBindingIF
-  @Action setSummaryMode!: ActionBindingIF
+  @Action(useStore) setAppValidate!: ActionBindingIF
+  @Action(useStore) setComponentValidate!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setIsFilingPaying!: ActionBindingIF
+  @Action(useStore) setIsSaving!: ActionBindingIF
+  @Action(useStore) setSummaryMode!: ActionBindingIF
 
   // Local properties
   protected accountAuthorizationDialog = false

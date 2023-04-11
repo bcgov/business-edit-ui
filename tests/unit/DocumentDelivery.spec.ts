@@ -3,11 +3,15 @@ import Vuetify from 'vuetify'
 import { mount, Wrapper } from '@vue/test-utils'
 import { getVuexStore } from '@/store/'
 import DocumentsDelivery from '@/components/common/DocumentsDelivery.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 const optionalEmailInput = '#optionalEmail'
 
 /**
@@ -15,16 +19,15 @@ const optionalEmailInput = '#optionalEmail'
  */
 function createComponent (): Wrapper<DocumentsDelivery> {
   return mount(DocumentsDelivery, {
-    vuetify,
-    store
+    vuetify
   })
 }
 
 describe('Document Delivery component', () => {
   beforeAll(() => {
-    store.state.stateModel.tombstone.filingType = 'alteration'
-    store.state.stateModel.tombstone.keycloakRoles = ['staff']
-    store.state.stateModel.tombstone.userInfo = {
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.stateModel.tombstone.keycloakRoles = ['staff']
+    store.stateModel.tombstone.userInfo = {
       email: 'currentuser@mail.com',
       contacts: [{ email: 'currentuser@mail.com' }]
     }

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { RouteNames } from '@/enums/'
 import { ConfirmDialogType } from '@/interfaces/'
+import { RouteNames } from '@/enums'
 
 /**
  * Mixin that provides some useful common utilities.

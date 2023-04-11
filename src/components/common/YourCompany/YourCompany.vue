@@ -307,7 +307,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF }
   from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
@@ -318,6 +318,7 @@ import { CoopTypes, NameChangeOptions } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ConversionNOB } from '@/components/Conversion'
 import DateUtilities from '@/services/date-utilities'
+import { useStore } from '@/store/store'
 import { ToDisplayPhone } from '@/utils'
 
 @Component({
@@ -343,41 +344,41 @@ export default class YourCompany extends Mixins(
   readonly GetCorpFullDescription = GetCorpFullDescription
 
   // Global getters
-  @Getter getAssociationType!: CoopTypes
-  @Getter getBusinessContact!: ContactPointIF
-  @Getter getBusinessFoundingDateTime!: string
-  @Getter getBusinessNumber!: string
-  @Getter getComponentValidate!: boolean
-  @Getter getCorrectedFilingDate!: string
-  @Getter getEditLabel!: string
-  @Getter getEditedLabel!: string
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getEntityType!: CorpTypeCd
-  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
-  @Getter getNameRequestLegalName!: string
-  @Getter getNameRequestNumber!: string
-  @Getter getNameRequest!: NameRequestIF
-  @Getter hasBusinessNameChanged!: boolean
-  @Getter isAlterationFiling!: boolean
-  @Getter isBenBcCccUlcCorrectionFiling!: boolean
-  @Getter isConflictingLegalType!: boolean
-  @Getter isCoop!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isFirm!: boolean
-  @Getter isFirmChangeFiling!: boolean
-  @Getter isFirmConversionFiling!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
-  @Getter isLimitedExtendRestorationFiling!: boolean
-  @Getter isNumberedCompany!: boolean
-  @Getter isPremiumAccount!: boolean
-  @Getter isRestorationFiling!: boolean
-  @Getter isSpecialResolutionFiling!: boolean
+  @Getter(useStore) getAssociationType!: CoopTypes
+  @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) getBusinessFoundingDateTime!: string
+  @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getCorrectedFilingDate!: string
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isCoop!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isFirm!: boolean
+  @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
+  @Getter(useStore) isNumberedCompany!: boolean
+  @Getter(useStore) isPremiumAccount!: boolean
+  @Getter(useStore) isRestorationFiling!: boolean
+  @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global actions
-  @Action setBusinessInformation!: ActionBindingIF
-  @Action setEditingCompanyName!: ActionBindingIF
-  @Action setNameRequest!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setBusinessInformation!: ActionBindingIF
+  @Action(useStore) setEditingCompanyName!: ActionBindingIF
+  @Action(useStore) setNameRequest!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   /** V-model for dropdown menu. */
   protected dropdown: boolean = null

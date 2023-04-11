@@ -1,28 +1,29 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import { getVuexStore } from '@/store/'
 import Actions from '@/components/common/Actions.vue'
-import { getExpiryDateString, getFormattedExpiryText } from '@/store/getters'
-import { mutateRestorationExpiry } from '@/store/mutations'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { ActionTypes, CorpTypeCd, CorrectionErrorTypes, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 describe('State Getters', () => {
   let vm: any
 
   beforeAll(async () => {
     // initialize store
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.correctionInformation.type = 'CLIENT'
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.correctionInformation.type = CorrectionErrorTypes.CLIENT
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(Actions, { store, vuetify })
+    const wrapper = shallowMount(Actions, { vuetify })
     vm = wrapper.vm
     await Vue.nextTick()
   })
@@ -35,26 +36,26 @@ describe('State Getters', () => {
     expect(vm.isBusySaving).toBe(false)
 
     // verify that the Is Saving flag works
-    await vm.$store.commit('mutateIsSaving', true)
+    store.setIsSaving(true)
     expect(vm.isSaving).toBe(true)
     expect(vm.isBusySaving).toBe(true)
-    await vm.$store.commit('mutateIsSaving', false)
+    store.setIsSaving(false)
     expect(vm.isCorrectionEditing).toBe(false)
     expect(vm.isBusySaving).toBe(false)
 
     // verify that the Is Saving Resuming flag works
-    await vm.$store.commit('mutateIsSavingResuming', true)
+    store.setIsSavingResuming(true)
     expect(vm.isSavingResuming).toBe(true)
     expect(vm.isBusySaving).toBe(true)
-    await vm.$store.commit('mutateIsSavingResuming', false)
+    store.setIsSavingResuming(false)
     expect(vm.isSavingResuming).toBe(false)
     expect(vm.isBusySaving).toBe(false)
 
     // verify that the Is Filing Saving flag works
-    await vm.$store.commit('mutateIsFilingPaying', true)
+    store.setIsFilingPaying(true)
     expect(vm.isFilingPaying).toBe(true)
     expect(vm.isBusySaving).toBe(true)
-    await vm.$store.commit('mutateIsFilingPaying', false)
+    store.setIsFilingPaying(false)
     expect(vm.isFilingPaying).toBe(false)
     expect(vm.isBusySaving).toBe(false)
   })
@@ -65,19 +66,19 @@ describe('State Getters', () => {
     expect(vm.isCorrectionValid).toBe(false)
 
     // verify that the People And Roles Valid flag alone does nothing
-    await vm.$store.commit('mutatePeopleAndRolesValidity', true)
+    store.setPeopleAndRolesValidity(true)
     expect(vm.isCorrectionValid).toBe(false)
-    await vm.$store.commit('mutatePeopleAndRolesValidity', false)
+    store.setPeopleAndRolesValidity(false)
 
     // verify that the Detail Valid flag alone does nothing
-    await vm.$store.commit('mutateDetailValidity', true)
+    store.setDetailValidity(true)
     expect(vm.isCorrectionValid).toBe(false)
-    await vm.$store.commit('mutateDetailValidity', false)
+    store.setDetailValidity(false)
 
     // verify that the Certify State Valid flag alone does nothing
-    await vm.$store.commit('mutateCertifyStateValidity', true)
+    store.setCertifyStateValidity(true)
     expect(vm.isCorrectionValid).toBe(false)
-    await vm.$store.commit('mutateCertifyStateValidity', false)
+    store.setCertifyStateValidity(false)
 
     // verify that the Staff Payment Valid flag alone does nothing
     await vm.$store.commit('mutateStaffPaymentValidity', true)
@@ -107,66 +108,62 @@ describe('State Getters', () => {
   })
 
   it('returns correct values for "Is Correction  Valid" getter', async () => {
-    function mutateIsValidComponent (key: string, value: any): Promise<void> {
-      return vm.$store.commit('mutateIsValidComponent', { key, value })
-    }
-
     // initially, this getter should be false
     // (because certify state is initially invalid)
     expect(vm.isCorrectionValid).toBe(false)
 
     // set all flags to valid
-    await mutateIsValidComponent('isValidCompanyName', true)
-    await mutateIsValidComponent('isValidNameTranslation', true)
-    await mutateIsValidComponent('isValidAddress', true)
-    await mutateIsValidComponent('isValidOrgPersons', true)
-    await mutateIsValidComponent('isValidShareStructure', true)
-    await vm.$store.commit('mutateDetailValidity', true)
-    await vm.$store.commit('mutateCertifyStateValidity', true)
-    await vm.$store.commit('mutateStaffPaymentValidity', true)
+    store.setValidComponent({ key: 'isValidCompanyName', value: true })
+    store.setValidComponent({ key: 'isValidNameTranslation', value: true })
+    store.setValidComponent({ key: 'isValidAddress', value: true })
+    store.setValidComponent({ key: 'isValidOrgPersons', value: true })
+    store.setValidComponent({ key: 'isValidShareStructure', value: true })
+    store.setDetailValidity(true)
+    store.setCertifyStateValidity(true)
+    store.setStaffPaymentValidity(true)
 
     // now, this getter should be true
     expect(vm.isCorrectionValid).toBe(true)
 
     // verify that the Valid Company Name flag alone affects validity
-    await mutateIsValidComponent('isValidCompanyName', false)
+    store.setValidComponent({ key: 'isValidCompanyName', value: false })
     expect(vm.isCorrectionValid).toBe(false)
-    await mutateIsValidComponent('isValidCompanyName', true)
+    store.setValidComponent({ key: 'isValidCompanyName', value: true })
 
     // verify that the Valid Name Translation flag alone affects validity
-    await mutateIsValidComponent('isValidNameTranslation', false)
+    store.setValidComponent({ key: 'isValidNameTranslation', value: false })
     expect(vm.isCorrectionValid).toBe(false)
-    await mutateIsValidComponent('isValidNameTranslation', true)
+    store.setValidComponent({ key: 'isValidNameTranslation', value: true })
 
     // verify that the Valid Address flag alone affects validity
-    await mutateIsValidComponent('isValidAddress', false)
+    store.setValidComponent({ key: 'isValidAddress', value: false })
     expect(vm.isCorrectionValid).toBe(false)
-    await mutateIsValidComponent('isValidAddress', true)
+    store.setValidComponent({ key: 'isValidAddress', value: true })
 
     // verify that the Valid Org Persons flag alone affects validity
-    await mutateIsValidComponent('isValidOrgPersons', false)
+    store.setValidComponent({ key: 'isValidOrgPersons', value: false })
     expect(vm.isCorrectionValid).toBe(false)
-    await mutateIsValidComponent('isValidOrgPersons', true)
+    store.setValidComponent({ key: 'isValidOrgPersons', value: true })
 
     // verify that the Valid Share Structure flag alone affects validity
-    await mutateIsValidComponent('isValidShareStructure', false)
+    store.setValidComponent({ key: 'isValidShareStructure', value: false })
     expect(vm.isCorrectionValid).toBe(false)
-    await mutateIsValidComponent('isValidShareStructure', true)
+    store.setValidComponent({ key: 'isValidShareStructure', value: true })
 
     // verify that the Valid Detail Comment flag alone affects validity
-    await vm.$store.commit('mutateDetailValidity', false)
+    store.setDetailValidity(false)
     expect(vm.isCorrectionValid).toBe(false)
-    await vm.$store.commit('mutateDetailValidity', true)
+    store.setDetailValidity(true)
 
     // verify that the Valid Certify flag alone affects validity
-    await vm.$store.commit('mutateCertifyStateValidity', false)
+    store.setCertifyStateValidity(false)
     expect(vm.isCorrectionValid).toBe(false)
-    await vm.$store.commit('mutateCertifyStateValidity', true)
+    store.setCertifyStateValidity(true)
 
     // verify that the Valid Staff Payment flag alone affects validity
-    await vm.$store.commit('mutateStaffPaymentValidity', false)
+    store.setStaffPaymentValidity(false)
     expect(vm.isCorrectionValid).toBe(false)
-    await vm.$store.commit('mutateStaffPaymentValidity', true)
+    store.setStaffPaymentValidity(true)
 
     // this getter should be true again
     expect(vm.isCorrectionValid).toBe(true)
@@ -177,39 +174,39 @@ describe('State Getters', () => {
     expect(vm.isCorrectionEditing).toBe(false)
 
     // verify that the Editing Company Name flag works
-    await vm.$store.commit('mutateEditingCompanyName', true)
+    store.setEditingCompanyName(true)
     expect(vm.isCorrectionEditing).toBe(true)
-    await vm.$store.commit('mutateEditingCompanyName', false)
+    store.setEditingCompanyName(false)
     expect(vm.isCorrectionEditing).toBe(false)
 
     // verify that the Editing Name Translations flag works
-    await vm.$store.commit('mutateEditingNameTranslations', true)
+    store.setEditingNameTranslations(true)
     expect(vm.isCorrectionEditing).toBe(true)
-    await vm.$store.commit('mutateEditingNameTranslations', false)
+    store.setEditingNameTranslations(false)
     expect(vm.isCorrectionEditing).toBe(false)
 
     // verify that the Editing Office Addresses flag works
-    await vm.$store.commit('mutateEditingOfficeAddresses', true)
+    store.setEditingOfficeAddresses(true)
     expect(vm.isCorrectionEditing).toBe(true)
-    await vm.$store.commit('mutateEditingOfficeAddresses', false)
+    store.setEditingOfficeAddresses(false)
     expect(vm.isCorrectionEditing).toBe(false)
 
     // verify that the Editing Folio Number flag works
-    await vm.$store.commit('mutateEditingFolioNumber', true)
+    store.setEditingFolioNumber(true)
     expect(vm.isCorrectionEditing).toBe(true)
-    await vm.$store.commit('mutateEditingFolioNumber', false)
+    store.setEditingFolioNumber(false)
     expect(vm.isCorrectionEditing).toBe(false)
 
     // verify that the Editing People And Roles flag works
-    await vm.$store.commit('mutateEditingPeopleAndRoles', true)
+    store.setEditingPeopleAndRoles(true)
     expect(vm.isCorrectionEditing).toBe(true)
-    await vm.$store.commit('mutateEditingPeopleAndRoles', false)
+    store.setEditingPeopleAndRoles(false)
     expect(vm.isCorrectionEditing).toBe(false)
 
     // verify that the Editing Share Structure flag works
-    await vm.$store.commit('mutateEditingShareStructure', true)
+    store.setEditingShareStructure(true)
     expect(vm.isCorrectionEditing).toBe(true)
-    await vm.$store.commit('mutateEditingShareStructure', false)
+    store.setEditingShareStructure(false)
     expect(vm.isCorrectionEditing).toBe(false)
   })
 })
@@ -219,14 +216,14 @@ describe('Alteration getters', () => {
 
   beforeAll(async () => {
     // initialize store
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.stateModel.tombstone.filingType = 'alteration'
-    store.state.stateModel.newAlteration.provisionsRemoved = false
-    store.state.stateModel.shareStructureStep = {
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.stateModel.newAlteration.provisionsRemoved = false
+    store.stateModel.shareStructureStep = {
       resolutionDates: [],
       shareClasses: []
     }
-    store.state.stateModel.nameRequest = {
+    store.stateModel.nameRequest = {
       legalName: 'MyLegalName',
       business: {
         legalName: 'MyLegalName',
@@ -234,8 +231,8 @@ describe('Alteration getters', () => {
       },
       incorporationApplication: {},
       registration: {}
-    }
-    store.state.stateModel.entitySnapshot = {
+    } as any
+    store.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: 'MyLegalName',
         legalType: 'BEN',
@@ -247,11 +244,11 @@ describe('Alteration getters', () => {
       addresses: {
         businessOffice: null
       }
-    }
+    } as any
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(Actions, { store, vuetify })
+    const wrapper = shallowMount(Actions, { vuetify })
     vm = wrapper.vm
     await Vue.nextTick()
   })
@@ -261,39 +258,39 @@ describe('Alteration getters', () => {
     expect(vm.hasAlterationDataChanged).toBe(false)
 
     // verify that business name changes are detected
-    store.state.stateModel.nameRequest.legalName = 'MyLegalName2'
+    store.stateModel.nameRequest.legalName = 'MyLegalName2'
     expect(vm.hasBusinessNameChanged).toBe(true)
-    store.state.stateModel.nameRequest.legalName = 'MyLegalName'
+    store.stateModel.nameRequest.legalName = 'MyLegalName'
     expect(vm.hasBusinessNameChanged).toBe(false)
 
     // verify that business type changes are detected
-    store.state.stateModel.tombstone.entityType = 'BEN2'
+    store.stateModel.tombstone.entityType = CorpTypeCd.BC_COMPANY
     expect(vm.hasBusinessTypeChanged).toBe(true)
-    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
     expect(vm.hasBusinessTypeChanged).toBe(false)
 
     // verify that name translation changes are detected
-    store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
+    store.stateModel.nameTranslations = [{ action: ActionTypes.ADDED }] as any
     expect(vm.haveNameTranslationsChanged).toBe(true)
-    store.state.stateModel.nameTranslations = []
+    store.stateModel.nameTranslations = []
     expect(vm.haveNameTranslationsChanged).toBe(false)
 
     // verify that share structure changes are detected
-    store.state.stateModel.shareStructureStep.shareClasses = [{}]
+    store.stateModel.shareStructureStep.shareClasses = [{}] as any
     expect(vm.hasShareStructureChanged).toBe(true)
-    store.state.stateModel.shareStructureStep.shareClasses = []
+    store.stateModel.shareStructureStep.shareClasses = []
     expect(vm.hasShareStructureChanged).toBe(false)
 
     // verify that provisions removed is detected
-    store.state.stateModel.newAlteration.provisionsRemoved = true
+    store.stateModel.newAlteration.provisionsRemoved = true
     expect(vm.areProvisionsRemoved).toBe(true)
-    store.state.stateModel.newAlteration.provisionsRemoved = false
+    store.stateModel.newAlteration.provisionsRemoved = false
     expect(vm.areProvisionsRemoved).toBe(false)
 
     // verify that new resolution dates are detected
-    // store.state.stateModel.shareStructureStep.resolutionDates = ['s']
+    // store.stateModel.shareStructureStep.resolutionDates = ['s']
     // expect(vm.haveNewResolutionDates).toBe(true)
-    // store.state.stateModel.shareStructureStep.resolutionDates = []
+    // store.stateModel.shareStructureStep.resolutionDates = []
     // expect(vm.haveNewResolutionDates).toBe(false)
 
     // finally, this getter should be false
@@ -311,21 +308,21 @@ describe('BEN correction getters', () => {
 
   beforeAll(async () => {
     // initialize store
-    store.state.stateModel.tombstone.entityType = null
-    store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.tombstone.entityType = null
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: 'MyLegalName',
-        legalType: 'BEN'
+        legalType: CorpTypeCd.BENEFIT_COMPANY
       },
       shareStructure: {
         shareClasses: []
       }
-    }
+    } as any
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(Actions, { store, vuetify })
+    const wrapper = shallowMount(Actions, { vuetify })
     vm = wrapper.vm
     await Vue.nextTick()
   })
@@ -335,64 +332,64 @@ describe('BEN correction getters', () => {
     expect(vm.hasCorrectionDataChanged).toBe(false)
 
     // verify that business name changes are detected
-    store.state.stateModel.nameRequest.legalName = 'MyLegalName2'
+    store.stateModel.nameRequest.legalName = 'MyLegalName2'
     expect(vm.hasBusinessNameChanged).toBe(true)
-    store.state.stateModel.nameRequest.legalName = 'MyLegalName'
+    store.stateModel.nameRequest.legalName = 'MyLegalName'
     expect(vm.hasBusinessNameChanged).toBe(false)
 
     // verify that business type changes are detected
-    store.state.stateModel.tombstone.entityType = 'BEN2'
+    store.stateModel.tombstone.entityType = CorpTypeCd.BC_UNLIMITED
     expect(vm.hasBusinessTypeChanged).toBe(true)
-    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
     expect(vm.hasBusinessTypeChanged).toBe(false)
 
     // verify that name translation changes are detected
-    store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
+    store.stateModel.nameTranslations = [{ action: ActionTypes.ADDED }] as any
     expect(vm.haveNameTranslationsChanged).toBe(true)
-    store.state.stateModel.nameTranslations = []
+    store.stateModel.nameTranslations = []
     expect(vm.haveNameTranslationsChanged).toBe(false)
 
     // verify that registered mailing address changes are detected
-    store.state.stateModel.officeAddresses = { registeredOffice: newAddress }
+    store.stateModel.officeAddresses = { registeredOffice: newAddress } as any
     expect(vm.haveOfficeAddressesChanged).toBe(true)
-    store.state.stateModel.officeAddresses = null
+    store.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that registered delivery address changes are detected
-    store.state.stateModel.officeAddresses = { registeredOffice: newAddress }
+    store.stateModel.officeAddresses = { registeredOffice: newAddress } as any
     expect(vm.haveOfficeAddressesChanged).toBe(true)
-    store.state.stateModel.officeAddresses = null
+    store.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that records mailing address changes are detected
-    store.state.stateModel.officeAddresses = { recordsOffice: newAddress }
+    store.stateModel.officeAddresses = { recordsOffice: newAddress } as any
     expect(vm.haveOfficeAddressesChanged).toBe(true)
-    store.state.stateModel.officeAddresses = null
+    store.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that records delivery address changes are detected
-    store.state.stateModel.officeAddresses = { recordsOffice: newAddress }
+    store.stateModel.officeAddresses = { recordsOffice: newAddress } as any
     expect(vm.haveOfficeAddressesChanged).toBe(true)
-    store.state.stateModel.officeAddresses = null
+    store.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that people and roles changes are detected
-    store.state.stateModel.peopleAndRoles.orgPeople = [
+    store.stateModel.peopleAndRoles.orgPeople = [
       {
         deliveryAddress: {},
         mailingAddress: {},
         officer: {},
         roles: []
       }
-    ]
+    ] as any
     expect(vm.havePeopleAndRolesChanged).toBe(true)
-    store.state.stateModel.peopleAndRoles.orgPeople = []
+    store.stateModel.peopleAndRoles.orgPeople = []
     expect(vm.havePeopleAndRolesChanged).toBe(false)
 
     // verify that share structure changes are detected
-    store.state.stateModel.shareStructureStep.shareClasses = [{}]
+    store.stateModel.shareStructureStep.shareClasses = [{}] as any
     expect(vm.hasShareStructureChanged).toBe(true)
-    store.state.stateModel.shareStructureStep.shareClasses = []
+    store.stateModel.shareStructureStep.shareClasses = []
     expect(vm.hasShareStructureChanged).toBe(false)
 
     // finally, this getter should be false
@@ -413,37 +410,37 @@ describe('SP/GP correction getters', () => {
   }
   beforeAll(async () => {
     // initialize store
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.nameRequest = {
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.nameRequest = {
       legalName: 'MyLegalName',
       business: {
         legalName: 'MyLegalName',
-        legalType: 'BEN'
+        legalType: CorpTypeCd.BENEFIT_COMPANY
       },
       incorporationApplication: {},
       registration: {}
-    }
-    store.state.stateModel.entitySnapshot = {
+    } as any
+    store.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: 'MyLegalName',
-        legalType: 'SP',
+        legalType: CorpTypeCd.SOLE_PROP,
         naicsCode: '100000',
         naicsDescription: 'NAICS description'
       },
       shareStructure: {
         shareClasses: []
       }
-    }
-    store.state.stateModel.correctionInformation = {
+    } as any
+    store.stateModel.correctionInformation = {
       startDate: ''
-    }
-    store.state.stateModel.officeAddresses = null
-    store.state.stateModel.businessInformation = naics
+    } as any
+    store.stateModel.officeAddresses = null
+    store.stateModel.businessInformation = naics as any
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(Actions, { store, vuetify })
+    const wrapper = shallowMount(Actions, { vuetify })
     vm = wrapper.vm
     await Vue.nextTick()
   })
@@ -453,79 +450,79 @@ describe('SP/GP correction getters', () => {
     expect(vm.hasCorrectionDataChanged).toBe(false)
 
     // verify that business name changes are detected
-    store.state.stateModel.nameRequest.legalName = 'MyLegalName2'
+    store.stateModel.nameRequest.legalName = 'MyLegalName2'
     expect(vm.hasBusinessNameChanged).toBe(true)
-    store.state.stateModel.nameRequest.legalName = 'MyLegalName'
+    store.stateModel.nameRequest.legalName = 'MyLegalName'
     expect(vm.hasBusinessNameChanged).toBe(false)
 
     // verify that business type changes are detected
-    store.state.stateModel.tombstone.entityType = 'SP2'
+    store.stateModel.tombstone.entityType = 'SP2' as CorpTypeCd
     expect(vm.hasBusinessTypeChanged).toBe(true)
-    store.state.stateModel.tombstone.entityType = 'SP'
+    store.stateModel.tombstone.entityType = 'SP' as CorpTypeCd
     expect(vm.hasBusinessTypeChanged).toBe(false)
 
     // verify that business start date changes are detected
-    store.state.stateModel.correctionInformation.startDate = '2022-08-03'
+    store.stateModel.correctionInformation.startDate = '2022-08-03'
     expect(vm.hasBusinessStartDateChanged).toBe(true)
-    store.state.stateModel.correctionInformation.startDate = ''
+    store.stateModel.correctionInformation.startDate = ''
     expect(vm.hasBusinessStartDateChanged).toBe(false)
 
     // verify that name translation changes are detected
-    store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
+    store.stateModel.nameTranslations = [{ action: ActionTypes.ADDED }] as any
     expect(vm.haveNameTranslationsChanged).toBe(true)
-    store.state.stateModel.nameTranslations = []
+    store.stateModel.nameTranslations = []
     expect(vm.haveNameTranslationsChanged).toBe(false)
 
     // verify that registered mailing address changes are detected
-    store.state.stateModel.officeAddresses = { businessOffice: newAddress }
+    store.stateModel.officeAddresses = { businessOffice: newAddress } as any
     expect(vm.haveOfficeAddressesChanged).toBe(true)
-    store.state.stateModel.officeAddresses = null
+    store.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that registered delivery address changes are detected
-    store.state.stateModel.officeAddresses = { businessOffice: newAddress }
+    store.stateModel.officeAddresses = { businessOffice: newAddress } as any
     expect(vm.haveOfficeAddressesChanged).toBe(true)
-    store.state.stateModel.officeAddresses = null
+    store.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that records mailing address changes are detected
-    store.state.stateModel.officeAddresses = { businessOffice: newAddress }
+    store.stateModel.officeAddresses = { businessOffice: newAddress } as any
     expect(vm.haveOfficeAddressesChanged).toBe(true)
-    store.state.stateModel.officeAddresses = null
+    store.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that records delivery address changes are detected
-    store.state.stateModel.officeAddresses = { businessOffice: newAddress }
+    store.stateModel.officeAddresses = { businessOffice: newAddress } as any
     expect(vm.haveOfficeAddressesChanged).toBe(true)
-    store.state.stateModel.officeAddresses = null
+    store.stateModel.officeAddresses = null
     expect(vm.haveOfficeAddressesChanged).toBe(false)
 
     // verify that people and roles changes are detected
-    store.state.stateModel.peopleAndRoles.orgPeople = [
+    store.stateModel.peopleAndRoles.orgPeople = [
       {
         deliveryAddress: {},
         mailingAddress: {},
         officer: {},
         roles: []
       }
-    ]
+    ] as any
     expect(vm.havePeopleAndRolesChanged).toBe(true)
-    store.state.stateModel.peopleAndRoles.orgPeople = []
+    store.stateModel.peopleAndRoles.orgPeople = []
     expect(vm.havePeopleAndRolesChanged).toBe(false)
 
     // verify that share structure changes are detected
-    store.state.stateModel.shareStructureStep.shareClasses = [{}]
+    store.stateModel.shareStructureStep.shareClasses = [{}] as any
     expect(vm.hasShareStructureChanged).toBe(true)
-    store.state.stateModel.shareStructureStep.shareClasses = []
+    store.stateModel.shareStructureStep.shareClasses = []
     expect(vm.hasShareStructureChanged).toBe(false)
 
     // verify that the nature of business changes are detected
-    store.state.stateModel.businessInformation = {
+    store.stateModel.businessInformation = {
       naicsCode: '',
       naicsDescription: 'NAICS description 2'
-    }
+    } as any
     expect(vm.hasNaicsChanged).toBe(true)
-    store.state.stateModel.businessInformation = naics
+    store.stateModel.businessInformation = naics as any
     expect(vm.hasNaicsChanged).toBe(false)
 
     // finally, this getter should be false
@@ -535,18 +532,18 @@ describe('SP/GP correction getters', () => {
 
 describe('test restoration expiry date', () => {
   it('when no expiry date provided returns visible error', () => {
-    expect(store.getters.getFormattedExpiryText()).toEqual('[no expiry date]')
+    expect(store.getFormattedExpiryText()).toEqual('[no expiry date]')
   })
 
   it('displays appropriate text when restoration expiry date is set', () => {
-    store.commit('mutateRestorationExpiry', '2023-12-31')
+    store.setRestorationExpiry('2023-12-31')
     // pass in date to force today's date to Feb 28th
-    expect(store.getters.getFormattedExpiryText(new Date('2023-02-28')))
+    expect(store.getFormattedExpiryText(new Date('2023-02-28')))
       .toEqual('11 months, expires on Dec 31, 2023')
   })
 
   it('getExpiryDateString() works correctly', () => {
-    store.commit('mutateRestorationExpiry', '2023-12-31')
-    expect(store.getters.getExpiryDateString).toEqual('2023-12-31')
+    store.setRestorationExpiry('2023-12-31')
+    expect(store.getExpiryDateString).toEqual('2023-12-31')
   })
 })

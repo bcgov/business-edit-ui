@@ -9,11 +9,14 @@ import { AxiosInstance as axios } from '@/utils/'
 import SpecialResolution from '@/views/SpecialResolution.vue'
 import mockRouter from './MockRouter'
 import ViewWrapper from '@/components/ViewWrapper.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -28,7 +31,7 @@ describe('Special Resolution component', () => {
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
   sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
   sessionStorage.setItem('KEYCLOAK_TOKEN', 'sampletoken')
-  store.state.stateModel.tombstone.businessId = 'CP1234567'
+  store.stateModel.tombstone.businessId = 'CP1234567'
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -180,7 +183,7 @@ describe('Special Resolution component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'alteration' })
-    wrapper = shallowMount(SpecialResolution, { localVue, store, router, vuetify })
+    wrapper = shallowMount(SpecialResolution, { localVue, router, vuetify })
 
     // wait for all queries to complete
     await flushPromises()
@@ -200,7 +203,7 @@ describe('Special Resolution component', () => {
   it.only('loads the entity snapshot into the store', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
-    const state = store.state.stateModel
+    const state = store.stateModel
 
     // Validate business identifier
     expect(state.tombstone.businessId).toBe('CP1234567')
@@ -220,45 +223,45 @@ describe('Special Resolution component', () => {
       .toBe('rec mailing_address - address line two')
 
     // Validate People And Roles
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('USER')
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.lastName).toBe('ONE')
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Director')
+    expect(store.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('USER')
+    expect(store.stateModel.peopleAndRoles.orgPeople[0].officer.lastName).toBe('ONE')
+    expect(store.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Director')
 
     // Validate Contact Info
-    expect(store.state.stateModel.businessContact.email).toBe('mock@example.com')
-    expect(store.state.stateModel.businessContact.phone).toBe('123-456-7890')
+    expect(store.stateModel.businessContact.email).toBe('mock@example.com')
+    expect(store.stateModel.businessContact.phone).toBe('123-456-7890')
 
-    expect(store.state.stateModel.currentFees[0].filingFees).toBe(70)
+    expect(store.stateModel.currentFees[0].filingFees).toBe(70)
   })
 
   it('updates the current fees when SpecialResolutionSummary changes', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
-    expect(store.state.stateModel.currentFees[0].filingFees).toBe(70)
+    expect(store.stateModel.currentFees[0].filingFees).toBe(70)
   })
 
   it('certify text is not prefilled/editable for staff user', async () => {
-    store.state.stateModel.tombstone.keycloakRoles = ['staff']
-    store.state.stateModel.tombstone.userInfo = {
+    store.stateModel.tombstone.keycloakRoles = ['staff']
+    store.stateModel.tombstone.userInfo = {
       firstname: 'Jon',
       lastname: 'Doe'
     }
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
-    expect(store.state.stateModel.certifyState.certifiedBy).toBe('undefined undefined')
+    expect(store.stateModel.certifyState.certifiedBy).toBe('undefined undefined')
   })
 
   it('certify text is prefilled/uneditable for non-staff user', async () => {
-    store.state.stateModel.tombstone.keycloakRoles = []
-    store.state.stateModel.tombstone.userInfo = {
+    store.stateModel.tombstone.keycloakRoles = []
+    store.stateModel.tombstone.userInfo = {
       firstname: 'Jon',
       lastname: 'Doe'
     }
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
-    expect(store.state.stateModel.certifyState.certifiedBy).toBe('Jon Doe')
+    expect(store.stateModel.certifyState.certifiedBy).toBe('Jon Doe')
   })
 })

@@ -69,12 +69,14 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { OrgPersonIF } from '@/interfaces/'
 import { RoleTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
 import { IsSame } from '@/utils/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
+
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -88,7 +90,7 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
   readonly IsSame = IsSame
 
   // Global getters
-  @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
 
   /** Headers for the person table. */
   readonly tableHeaders = ['Name', 'Mailing Address', 'Delivery Address', 'Effective Dates']

@@ -4,11 +4,15 @@ import { mount } from '@vue/test-utils'
 import { getVuexStore } from '@/store'
 import CompletingParty from '@/components/common/CompletingParty.vue'
 import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party/'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // Test Case Data
 // GP will come soon
@@ -33,11 +37,11 @@ for (const test of firmTestCases) {
     let wrapper: any
 
     beforeAll(() => {
-      store.state.stateModel.tombstone.keycloakRoles = ['staff']
-      store.state.stateModel.tombstone.businessId = 'BC1234567'
-      store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
-      store.state.stateModel.tombstone.entityType = 'SP'
-      store.state.stateModel.completingParty = {
+      store.stateModel.tombstone.keycloakRoles = ['staff']
+      store.stateModel.tombstone.businessId = 'BC1234567'
+      store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
+      store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+      store.stateModel.completingParty = {
         firstName: 'First',
         lastName: 'Last',
         middleName: 'Middle',
@@ -53,7 +57,7 @@ for (const test of firmTestCases) {
       }
       wrapper = mount(
         CompletingParty,
-        { store, vuetify }
+        { vuetify }
       )
     })
 

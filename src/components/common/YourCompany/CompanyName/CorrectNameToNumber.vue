@@ -17,21 +17,22 @@
 // Libraries
 import Vue from 'vue'
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 
 // Interfaces && enums
 import { ActionBindingIF, NameRequestIF } from '@/interfaces/'
 import { NameChangeOptions } from '@/enums/'
+import { useStore } from '@/store/store'
 
 @Component({})
 export default class CorrectNameToNumber extends Vue {
   /** Form Submission Prop */
   @Prop({ default: null }) readonly formType!: NameChangeOptions
 
-  @Action setNameRequest!: ActionBindingIF
+  @Action(useStore) setNameRequest!: ActionBindingIF
 
-  @Getter getNameRequest!: NameRequestIF
-  @Getter getBusinessId!: string
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) getBusinessId!: string
 
   // Local properties
   protected correctToNumbered = false

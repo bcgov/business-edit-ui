@@ -1,5 +1,5 @@
 import { Component } from 'vue-property-decorator'
-import { Action, Getter, Mutation } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import DateUtilities from '@/services/date-utilities'
@@ -14,6 +14,7 @@ import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTyp
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { RestorationTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { FilingTypeToName } from '@/utils'
+import { useStore } from '@/store/store'
 
 /**
  * Mixin that provides the integration with the Legal API.
@@ -21,83 +22,82 @@ import { FilingTypeToName } from '@/utils'
 @Component({})
 export default class FilingTemplateMixin extends DateMixin {
   // Global getters
-  @Getter getEntityType!: CorpTypeCd
-  @Getter getNameRequestNumber!: string
-  @Getter getNameRequestLegalName!: string
-  @Getter getBusinessId!: string
-  @Getter getCurrentDate!: string
-  @Getter getCorrectedFilingDate!: string
-  @Getter getCorrectedFilingId!: number
-  @Getter getCorrectedFilingType!: FilingTypes
-  @Getter getCorrectionErrorType!: CorrectionErrorTypes
-  @Getter getCorrectionStartDate!: string
-  @Getter getEffectiveDateTime!: EffectiveDateTimeIF
-  @Getter getDocumentOptionalEmail: string
-  @Getter hasBusinessNameChanged!: boolean
-  @Getter hasBusinessTypeChanged!: boolean
-  @Getter hasNaicsChanged!: boolean
-  @Getter haveNameTranslationsChanged!: boolean
-  @Getter hasShareStructureChanged!: boolean
-  @Getter getOrgPeople!: OrgPersonIF[]
-  @Getter getShareClasses!: ShareClassIF[]
-  @Getter getFolioNumber!: string
-  @Getter getTransactionalFolioNumber!: string
-  @Getter getStaffPayment!: StaffPaymentIF
-  @Getter getDetailComment!: string
-  @Getter getCurrentNaics!: NaicsIF
-  @Getter getNameTranslations!: NameTranslationIF[]
-  @Getter getNameRequest!: NameRequestIF
-  @Getter getCertifyState!: CertifyIF
-  @Getter getOfficeAddresses!: AddressesIF
-  @Getter getBusinessContact!: ContactPointIF
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getNewResolutionDates!: string[]
-  @Getter areProvisionsRemoved!: boolean
-  @Getter getFileNumber!: string
-  @Getter getHasPlanOfArrangement!: boolean
-  @Getter haveOfficeAddressesChanged!: boolean
-  @Getter getCompletingParty!: CompletingPartyIF
-  @Getter isBenBcCccUlcCorrectionFiling!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
-  @Getter isClientErrorCorrection!: boolean
-  @Getter getAssociationType!: CoopTypes
-  @Getter hasAssociationTypeChanged!: boolean
-  @Getter getSpecialResolution!: SpecialResolutionIF
-  @Getter hasBusinessStartDateChanged!: boolean
-  @Getter getRestoration!: RestorationStateIF
-  @Getter getStateFilingRestoration!: StateFilingRestorationIF
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getCurrentDate!: string
+  @Getter(useStore) getCorrectedFilingDate!: string
+  @Getter(useStore) getCorrectedFilingId!: number
+  @Getter(useStore) getCorrectedFilingType!: FilingTypes
+  @Getter(useStore) getCorrectionErrorType!: CorrectionErrorTypes
+  @Getter(useStore) getCorrectionStartDate!: string
+  @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
+  @Getter(useStore) getDocumentOptionalEmail: string
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) hasBusinessTypeChanged!: boolean
+  @Getter(useStore) hasNaicsChanged!: boolean
+  @Getter(useStore) haveNameTranslationsChanged!: boolean
+  @Getter(useStore) hasShareStructureChanged!: boolean
+  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
+  @Getter(useStore) getShareClasses!: ShareClassIF[]
+  @Getter(useStore) getFolioNumber!: string
+  @Getter(useStore) getTransactionalFolioNumber!: string
+  @Getter(useStore) getStaffPayment!: StaffPaymentIF
+  @Getter(useStore) getDetailComment!: string
+  @Getter(useStore) getCurrentNaics!: NaicsIF
+  @Getter(useStore) getNameTranslations!: NameTranslationIF[]
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) getCertifyState!: CertifyIF
+  @Getter(useStore) getOfficeAddresses!: AddressesIF
+  @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getNewResolutionDates!: string[]
+  @Getter(useStore) areProvisionsRemoved!: boolean
+  @Getter(useStore) getFileNumber!: string
+  @Getter(useStore) getHasPlanOfArrangement!: boolean
+  @Getter(useStore) haveOfficeAddressesChanged!: boolean
+  @Getter(useStore) getCompletingParty!: CompletingPartyIF
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isClientErrorCorrection!: boolean
+  @Getter(useStore) getAssociationType!: CoopTypes
+  @Getter(useStore) hasAssociationTypeChanged!: boolean
+  @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
+  @Getter(useStore) hasBusinessStartDateChanged!: boolean
+  @Getter(useStore) getRestoration!: RestorationStateIF
+  @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
 
   // Global actions
-  @Action setBusinessContact!: ActionBindingIF
-  @Action setBusinessInformation!: ActionBindingIF
-  @Action setCorrectionInformation!: ActionBindingIF
-  @Action setEntityType!: ActionBindingIF
-  @Action setOfficeAddresses!: ActionBindingIF
-  @Action setNaics!: ActionBindingIF
-  @Action setNameTranslations!: ActionBindingIF
-  @Action setNameRequest!: ActionBindingIF
-  @Action setPeopleAndRoles!: ActionBindingIF
-  @Action setCertifyState!: ActionBindingIF
-  @Action setShareClasses!: ActionBindingIF
-  @Action setEffectiveDateTimeString!: ActionBindingIF
-  @Action setIsFutureEffective!: ActionBindingIF
-  @Action setFolioNumber!: ActionBindingIF
-  @Action setTransactionalFolioNumber!: ActionBindingIF
-  @Action setStaffPayment!: ActionBindingIF
-  @Action setDetailComment!: ActionBindingIF
-  @Action setEntitySnapshot!: ActionBindingIF
-  @Action setDocumentOptionalEmail!: ActionBindingIF
-  @Action setProvisionsRemoved!: ActionBindingIF
-  @Action setNewResolutionDates!: ActionBindingIF
-  @Action setFileNumber!: ActionBindingIF
-  @Action setHasPlanOfArrangement!: ActionBindingIF
-  @Action setSpecialResolution!: ActionBindingIF
-  @Action setCorrectionStartDate!: ActionBindingIF
-
-  @Mutation mutateRestorationApprovalType!: ActionBindingIF
-  @Mutation mutateRestorationCourtOrder!: ActionBindingIF
-  @Mutation mutateRestorationExpiry!: ActionBindingIF
-  @Mutation mutateRestorationType!: ActionBindingIF
+  @Action(useStore) setBusinessContact!: ActionBindingIF
+  @Action(useStore) setBusinessInformation!: ActionBindingIF
+  @Action(useStore) setCorrectionInformation!: ActionBindingIF
+  @Action(useStore) setEntityType!: ActionBindingIF
+  @Action(useStore) setOfficeAddresses!: ActionBindingIF
+  @Action(useStore) setNaics!: ActionBindingIF
+  @Action(useStore) setNameTranslations!: ActionBindingIF
+  @Action(useStore) setNameRequest!: ActionBindingIF
+  @Action(useStore) setPeopleAndRoles!: ActionBindingIF
+  @Action(useStore) setCertifyState!: ActionBindingIF
+  @Action(useStore) setShareClasses!: ActionBindingIF
+  @Action(useStore) setEffectiveDateTimeString!: ActionBindingIF
+  @Action(useStore) setIsFutureEffective!: ActionBindingIF
+  @Action(useStore) setFolioNumber!: ActionBindingIF
+  @Action(useStore) setTransactionalFolioNumber!: ActionBindingIF
+  @Action(useStore) setStaffPayment!: ActionBindingIF
+  @Action(useStore) setDetailComment!: ActionBindingIF
+  @Action(useStore) setEntitySnapshot!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmail!: ActionBindingIF
+  @Action(useStore) setProvisionsRemoved!: ActionBindingIF
+  @Action(useStore) setNewResolutionDates!: ActionBindingIF
+  @Action(useStore) setFileNumber!: ActionBindingIF
+  @Action(useStore) setHasPlanOfArrangement!: ActionBindingIF
+  @Action(useStore) setSpecialResolution!: ActionBindingIF
+  @Action(useStore) setCorrectionStartDate!: ActionBindingIF
+  @Action(useStore) setRestorationApprovalType!: ActionBindingIF
+  @Action(useStore) setRestorationCourtOrder!: ActionBindingIF
+  @Action(useStore) setRestorationExpiry!: ActionBindingIF
+  @Action(useStore) setRestorationType!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -828,16 +828,16 @@ export default class FilingTemplateMixin extends DateMixin {
     })
 
     // restore Restoration data
-    this.mutateRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
+    this.setRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
     if (filing.restoration.courtOrder) {
-      this.mutateRestorationCourtOrder(filing.restoration.courtOrder)
+      this.setRestorationCourtOrder(filing.restoration.courtOrder)
     }
-    this.mutateRestorationType(filing.restoration.type)
+    this.setRestorationType(filing.restoration.type)
     if (filing.restoration.expiry) {
-      this.mutateRestorationExpiry(filing.restoration.expiry)
+      this.setRestorationExpiry(filing.restoration.expiry)
     } else if (filing.restoration.type === RestorationTypes.LTD_EXTEND) {
       // Reset radio button to 2 years
-      this.mutateRestorationExpiry(DateUtilities.addMonthsToDate(24, this.getStateFilingRestoration?.expiry))
+      this.setRestorationExpiry(DateUtilities.addMonthsToDate(24, this.getStateFilingRestoration?.expiry))
     }
 
     // store Name Request data

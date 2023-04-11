@@ -4,7 +4,7 @@ import 'regenerator-runtime/runtime' // to use transpiled generator functions
 
 // Other Libraries
 import Vue from 'vue'
-import Vuetify from 'vuetify/lib'
+import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
@@ -12,10 +12,11 @@ import Hotjar from 'vue-hotjar'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
 import { getVueRouter } from '@/router/'
-import { getVuexStore } from '@/store/'
+import { getPiniaStore, getVuexStore } from '@/store/'
 
 // Styles
 // NB: order matters - do not change
+import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.min.css' // ensure you are using css-loader
 import '@/assets/styles/base.scss'
 import '@/assets/styles/layout.scss'
@@ -103,7 +104,9 @@ async function start () {
       }
     }),
     router: getVueRouter(),
+    // We still need Vuex for sbc-common-components.
     store: getVuexStore(),
+    pinia: getPiniaStore(),
     render: h => h(App)
   }).$mount('#app')
 }

@@ -9,11 +9,16 @@ import { AxiosInstance as axios } from '@/utils/'
 import FirmCorrection from '@/views/Correction/FirmCorrection.vue'
 import mockRouter from './MockRouter'
 import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { ActionTypes, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -27,8 +32,8 @@ describe('Firm Correction component', () => {
   sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
   sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
-  store.state.stateModel.tombstone.entityType = 'SP'
-  store.state.stateModel.tombstone.businessId = 'FM1234567'
+  store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+  store.stateModel.tombstone.businessId = 'FM1234567'
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -117,7 +122,6 @@ describe('Firm Correction component', () => {
       FirmCorrection,
       {
         localVue,
-        store,
         router,
         vuetify,
         propsData: {
@@ -179,14 +183,14 @@ describe('Firm Correction component', () => {
   it('staff payment is defaulted to no fee', () => {
     // Staff payment No Fee button needs option to be set to NO_FEE enum for the no fee button
     // to be selected in staff payment component
-    expect(store.state.stateModel.staffPayment.option).toBe(0)
+    expect(store.stateModel.staffPayment.option).toBe(0)
   })
 
   // FUTURE
   xit('loads the entity snapshot into the store', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
-    const state = store.state.stateModel
+    const state = store.stateModel
 
     // Validate business identifier
     expect(state.tombstone.businessId).toBe('FM1234567')
@@ -206,24 +210,24 @@ describe('Firm Correction component', () => {
       .toBe('mailing_address - address line two')
 
     // Validate Proprietor
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('CAMERON')
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.lastName).toBe('BOWLER')
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Proprietor')
+    expect(store.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('CAMERON')
+    expect(store.stateModel.peopleAndRoles.orgPeople[0].officer.lastName).toBe('BOWLER')
+    expect(store.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Proprietor')
 
     // Validate Contact Info
-    expect(store.state.stateModel.businessContact.email).toBe('mock@example.com')
-    expect(store.state.stateModel.businessContact.phone).toBe('123-456-7890')
+    expect(store.stateModel.businessContact.email).toBe('mock@example.com')
+    expect(store.stateModel.businessContact.phone).toBe('123-456-7890')
 
-    expect(store.state.stateModel.currentFees[0].filingFees).toBe(100)
-    expect(store.state.stateModel.currentFees[0].futureEffectiveFees).toBe(0)
+    expect(store.stateModel.currentFees[0].filingFees).toBe(100)
+    expect(store.stateModel.currentFees[0].futureEffectiveFees).toBe(0)
   })
 
   // FUTURE
   xit('fetches the fee prices after loading', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
-    expect(store.state.stateModel.feePrices.filingFees).toBe(100)
-    expect(store.state.stateModel.feePrices.futureEffectiveFees).toBe(100)
+    expect(store.stateModel.feePrices[0].filingFees).toBe(100)
+    expect(store.stateModel.feePrices[0].futureEffectiveFees).toBe(100)
   })
 
   // FUTURE
@@ -231,9 +235,9 @@ describe('Firm Correction component', () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
-    store.state.stateModel.summaryMode = true
-    store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
+    store.stateModel.summaryMode = true
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.nameTranslations = [{ action: ActionTypes.ADDED, name: 'hello' }]
     await Vue.nextTick()
 
     expect(
@@ -243,7 +247,7 @@ describe('Firm Correction component', () => {
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
     ).toContain('Choosing a correction date and time in the future will incur an additional $100.00 fee.')
 
-    store.state.stateModel.feePrices = [{
+    store.stateModel.feePrices = [{
       filingFees: null,
       filingType: null,
       filingTypeCode: null,
@@ -272,19 +276,19 @@ describe('Firm Correction component', () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
-    const state = store.state.stateModel
+    const state = store.stateModel
     state.effectiveDateTime.isFutureEffective = true
 
     await wrapper.vm.onAlterationSummaryChanges()
-    expect(store.state.stateModel.currentFees[0].filingFees).toBe(100)
-    expect(store.state.stateModel.currentFees[0].futureEffectiveFees).toBe(100)
+    expect(store.stateModel.currentFees[0].filingFees).toBe(100)
+    expect(store.stateModel.currentFees[0].futureEffectiveFees).toBe(100)
   })
 
   // FUTURE
   xit('loads a draft correction into the store', async () => {
     // Validate Effective Date-Time
-    expect(store.state.stateModel.effectiveDateTime.isFutureEffective).toBe(true)
-    expect(store.state.stateModel.effectiveDateTime.dateTimeString).toBe('2021-03-22T18:00:00.000Z')
-    expect(store.state.stateModel.validationFlags.flagsReviewCertify.isValidEffectiveDate).toBe(true)
+    expect(store.stateModel.effectiveDateTime.isFutureEffective).toBe(true)
+    expect(store.stateModel.effectiveDateTime.dateTimeString).toBe('2021-03-22T18:00:00.000Z')
+    expect(store.stateModel.validationFlags.flagsReviewCertify.isValidEffectiveDate).toBe(true)
   })
 })

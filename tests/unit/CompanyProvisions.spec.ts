@@ -4,12 +4,16 @@ import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store/'
 import { shallowMount, mount } from '@vue/test-utils'
 import CompanyProvisions from '@/components/Alteration/Articles/CompanyProvisions.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // Selectors
 const changeCompanyProvisionsButton = '#change-company-provisions'
@@ -31,7 +35,6 @@ describe('company provisions', () => {
     const wrapper = shallowMount(CompanyProvisions,
       {
         vuetify,
-        store,
         propsData: { provisionsRemoved: false }
       })
 
@@ -49,7 +52,6 @@ describe('company provisions', () => {
     const wrapper = mount(CompanyProvisions,
       {
         vuetify,
-        store,
         propsData: { provisionsRemoved: false }
       })
 
@@ -66,7 +68,6 @@ describe('company provisions', () => {
     const wrapper = mount(CompanyProvisions,
       {
         vuetify,
-        store,
         propsData: { provisionsRemoved: false }
       })
 
@@ -85,7 +86,6 @@ describe('company provisions', () => {
     const wrapper = mount(CompanyProvisions,
       {
         vuetify,
-        store,
         propsData: { provisionsRemoved: false }
       })
 
@@ -111,7 +111,6 @@ describe('company provisions', () => {
     const wrapper = mount(CompanyProvisions,
       {
         vuetify,
-        store,
         propsData: { provisionsRemoved: false }
       })
 
@@ -119,7 +118,7 @@ describe('company provisions', () => {
     await wrapper.find(companyProvisionsCheckbox).trigger('click')
     await wrapper.find(companyProvisionDoneButton).trigger('click')
 
-    let haveChanges = wrapper.emitted('haveChanges')
+    const haveChanges = wrapper.emitted('haveChanges')
     expect(haveChanges.length).toBe(1)
     expect(haveChanges.pop()).toEqual([true])
     expect(wrapper.emitted('isChanged').length).toBe(1)
@@ -131,7 +130,6 @@ describe('company provisions', () => {
     const wrapper = mount(CompanyProvisions,
       {
         vuetify,
-        store,
         propsData: { provisionsRemoved: true }
       })
 
@@ -148,7 +146,7 @@ describe('company provisions', () => {
 
     await wrapper.find(undoCompanyProvisions).trigger('click')
 
-    let haveChanges = wrapper.emitted('haveChanges')
+    const haveChanges = wrapper.emitted('haveChanges')
     expect(haveChanges.length).toBe(1)
     expect(haveChanges.pop()).toEqual([false])
     expect(wrapper.emitted('isChanged').length).toBe(1)
@@ -157,13 +155,12 @@ describe('company provisions', () => {
   })
 
   it('displays the Correct button for correction filings', () => {
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
 
     const wrapper = mount(CompanyProvisions,
       {
         vuetify,
-        store,
         propsData: { provisionsRemoved: false }
       })
 

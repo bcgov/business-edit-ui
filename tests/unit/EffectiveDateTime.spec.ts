@@ -4,13 +4,14 @@ import { createLocalVue, mount, Wrapper } from '@vue/test-utils'
 import { getVuexStore } from '@/store/'
 import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
 import flushPromises from 'flush-promises'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-
-// Store
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 document.body.setAttribute('data-app', 'true')
 
 /**
@@ -63,7 +64,7 @@ describe('Effective Date Time component', () => {
 
   beforeAll(() => {
     // init store
-    store.state.stateModel.currentJsDate = now
+    store.stateModel.currentJsDate = now
   })
 
   beforeEach(() => {
@@ -72,9 +73,9 @@ describe('Effective Date Time component', () => {
     wrapperFactory = (stateValues) => {
       // apply state values
       Object.keys(stateValues).forEach((key) => {
-        store.state.stateModel[key] = stateValues[key]
+        store.stateModel[key] = stateValues[key]
       })
-      return mount(EffectiveDateTime, { localVue, store, vuetify })
+      return mount(EffectiveDateTime, { localVue, vuetify })
     }
   })
 

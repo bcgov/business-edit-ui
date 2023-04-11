@@ -1,29 +1,31 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store'
 import { mount } from '@vue/test-utils'
 import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { ApprovalTypes } from '@bcrs-shared-components/enums'
 
 Vue.use(Vuetify)
-let vuetify = new Vuetify({})
-const store = getVuexStore()
+const vuetify = new Vuetify({})
+setActivePinia(createPinia())
+const store = useStore()
 
 describe('Time Limit Extension component', () => {
   let wrapperFactory: any
 
   beforeEach(() => {
-    store.state.stateModel.restoration = {
+    store.stateModel.restoration = {
       expiry: '2024-07-01',
       type: 'limitedRestorationExtension'
-    }
-    store.state.stateModel.stateFilingRestoration = {
+    } as any
+    store.stateModel.stateFilingRestoration = {
       approvalType: 'courtOrder',
       courtOrder: { fileNumber: 'testtest' },
       expiry: '2024-03-01',
       type: 'limitedRestoration'
-    }
+    } as any
     wrapperFactory = () => mount(ExtendTimeLimit, {
-      store,
       vuetify
     })
   })
@@ -47,8 +49,9 @@ describe('Time Limit Extension component', () => {
   it('get correct approval type when state restoration filing was approved by registrar.', () => {
     const wrapper = wrapperFactory()
     const extendTimeLimit = wrapper.vm as any // wrapper.vm type is Vue
-    store.state.stateModel.stateFilingRestoration.approvalType = 'registrar'
+    store.stateModel.stateFilingRestoration.approvalType = ApprovalTypes.VIA_REGISTRAR
 
+    expect(ApprovalTypes.VIA_REGISTRAR).toEqual('registrar')
     expect(extendTimeLimit.approvalType).toEqual('registrar')
     wrapper.destroy()
   })
@@ -56,7 +59,7 @@ describe('Time Limit Extension component', () => {
   it('get correct number of months of previously filed limited restoration.', () => {
     const wrapper = wrapperFactory()
     const extendTimeLimit = wrapper.vm as any // wrapper.vm type is Vue
-    store.state.stateModel.tombstone.currentDate = '2023-01-01'
+    store.stateModel.tombstone.currentDate = '2023-01-01'
 
     expect(extendTimeLimit.previousNumberOfMonths).toEqual(14)
     wrapper.destroy()
@@ -65,7 +68,7 @@ describe('Time Limit Extension component', () => {
   it('get correct expiry draft date.', () => {
     const wrapper = wrapperFactory()
     const extendTimeLimit = wrapper.vm as any // wrapper.vm type is Vue
-    store.state.stateModel.tombstone.currentDate = '2023-01-01'
+    store.stateModel.tombstone.currentDate = '2023-01-01'
 
     expect(extendTimeLimit.expiry).toEqual('2023-05-01')
     wrapper.destroy()
@@ -74,7 +77,7 @@ describe('Time Limit Extension component', () => {
   it('get correct validity of extension time section.', () => {
     const wrapper = wrapperFactory()
 
-    const extensionTimeValidity = store.state.stateModel.validationFlags.flagsCompanyInfo.isValidExtensionTime
+    const extensionTimeValidity = store.stateModel.validationFlags.flagsCompanyInfo.isValidExtensionTime
     expect(extensionTimeValidity).toBeTruthy()
     wrapper.destroy()
   })
@@ -82,7 +85,7 @@ describe('Time Limit Extension component', () => {
   it('get correct validity of approval type section.', () => {
     const wrapper = wrapperFactory()
 
-    const approvalTypeValidity = store.state.stateModel.validationFlags.flagsCompanyInfo.isValidApprovalType
+    const approvalTypeValidity = store.stateModel.validationFlags.flagsCompanyInfo.isValidApprovalType
     expect(approvalTypeValidity).toBeFalsy()
     wrapper.destroy()
   })

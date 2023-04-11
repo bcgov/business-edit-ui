@@ -81,26 +81,27 @@
 </template>
 
 <script lang="ts">
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
+import { useStore } from '@/store/store'
 
 @Component({})
 export default class ConversionNOB extends Mixins(CommonMixin) {
   /** Whether to show invalid section styling. */
   @Prop({ default: false }) readonly invalidSection!: boolean
 
-  @Getter getCurrentNaics!: NaicsIF
-  @Getter getEditLabel!: string
-  @Getter getEditedLabel!: string
-  @Getter getSnapshotNaics!: NaicsIF
-  @Getter hasNaicsChanged!: boolean
+  @Getter(useStore) getCurrentNaics!: NaicsIF
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getSnapshotNaics!: NaicsIF
+  @Getter(useStore) hasNaicsChanged!: boolean
 
-  @Action setNaics!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setNaics!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   // local variables
   protected dropdown = false
@@ -135,6 +136,7 @@ export default class ConversionNOB extends Mixins(CommonMixin) {
 
   /** Called when user has clicked the Done button. */
   protected onDoneClicked (): void {
+    // eslint-disable-next-line no-undef
     let validForm = (this.$refs.form as Vue & { validate: () => boolean }).validate()
     if (validForm) {
       if (!isEqual(this.naicsText, this.naicsSummary)) {

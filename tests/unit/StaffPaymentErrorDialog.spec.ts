@@ -3,11 +3,14 @@ import Vuetify from 'vuetify'
 import { getVuexStore } from '@/store/'
 import { shallowMount, mount } from '@vue/test-utils'
 import StaffPaymentErrorDialog from '@/dialogs/StaffPaymentErrorDialog.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -19,11 +22,10 @@ describe('Staff Payment Error Dialog', () => {
   }]
 
   it('renders the component properly with generic message', () => {
-    store.state.stateModel.tombstone.keycloakRoles = ['staff', 'edit', 'view']
+    store.stateModel.tombstone.keycloakRoles = ['staff', 'edit', 'view']
     const wrapper = shallowMount(StaffPaymentErrorDialog,
       {
         vuetify,
-        store,
         propsData: { dialog: true }
       })
 
@@ -41,7 +43,6 @@ describe('Staff Payment Error Dialog', () => {
     const wrapper = mount(StaffPaymentErrorDialog,
       {
         vuetify,
-        store,
         propsData: { dialog: true }
       })
 
@@ -58,11 +59,10 @@ describe('Staff Payment Error Dialog', () => {
   })
 
   it('renders Not Enough Balance error messages correctly when they are present', () => {
-    store.state.stateModel.tombstone.keycloakRoles = ['edit', 'view']
+    store.stateModel.tombstone.keycloakRoles = ['edit', 'view']
     const wrapper = shallowMount(StaffPaymentErrorDialog,
       {
         vuetify,
-        store,
         propsData: { dialog: true, errors: notEnoughBalance }
       })
 

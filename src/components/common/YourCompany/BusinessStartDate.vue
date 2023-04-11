@@ -97,10 +97,11 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Getter, Action } from 'vuex-class'
+import { Getter, Action } from 'pinia-class'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker'
 import { ActionBindingIF } from '@/interfaces'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -109,19 +110,19 @@ import { ActionBindingIF } from '@/interfaces'
 })
 export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   // Global getters
-  @Getter getBusinessFoundingDateTime!: string
-  @Getter getBusinessStartDate!: string
-  @Getter getCorrectionStartDate!: string
-  @Getter getCurrentJsDate!: Date
-  @Getter getEditLabel!: string
-  @Getter getEditedLabel!: string
-  @Getter hasBusinessStartDateChanged!: boolean
-  @Getter isFirmConversionFiling!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
+  @Getter(useStore) getBusinessFoundingDateTime!: string
+  @Getter(useStore) getBusinessStartDate!: string
+  @Getter(useStore) getCorrectionStartDate!: string
+  @Getter(useStore) getCurrentJsDate!: Date
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) hasBusinessStartDateChanged!: boolean
+  @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
 
   // Global setter
-  @Action setCorrectionStartDate!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setCorrectionStartDate!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   /** Whether to show invalid section styling. */
   @Prop({ default: false }) readonly invalidSection!: boolean

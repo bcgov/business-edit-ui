@@ -1,20 +1,23 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import CreateSpecialResolution from '@/components/SpecialResolution/CreateSpecialResolution.vue'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { HelpSection } from '@/components/common/'
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/CP'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@/enums'
 
 Vue.use(Vuetify)
 
 const localVue = createLocalVue()
 const vuetify = new Vuetify({})
+setActivePinia(createPinia())
+const store = useStore()
 
 describe('Special Resolution Form component', () => {
   let wrapper: any
-  let store: any = getVuexStore()
   sessionStorage.setItem('BASE_URL', 'http://localhost:8080/basePath/CP1002551/')
   sessionStorage.setItem('BUSINESS_ID', 'CP1002551')
 
@@ -33,10 +36,10 @@ describe('Special Resolution Form component', () => {
 
   beforeAll(() => {
     // init store
-    store.state.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
-    store.state.stateModel.tombstone.currentDate = '2021-03-01'
-    store.state.stateModel.entitySnapshot = entitySnapshot
-    store.state.stateModel.specialResolution = {
+    store.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
+    store.stateModel.tombstone.currentDate = '2021-03-01'
+    store.stateModel.entitySnapshot = entitySnapshot as any
+    store.stateModel.specialResolution = {
       resolution: '',
       signatory: { ...emptyPerson },
       resolutionConfirmed: false
@@ -45,12 +48,12 @@ describe('Special Resolution Form component', () => {
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.resourceModel = CpSpecialResolutionResource
-    store.state.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
-    store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
-    store.state.stateModel.summaryMode = false
+    store.resourceModel = CpSpecialResolutionResource
+    store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
+    store.stateModel.summaryMode = false
 
-    wrapper = mount(CreateSpecialResolution, { vuetify, store, localVue })
+    wrapper = mount(CreateSpecialResolution, { vuetify, localVue })
   })
 
   afterEach(() => {
@@ -109,8 +112,8 @@ describe('Special Resolution Form component', () => {
 
   it('renders the Special Resolution form  component with invalid styling', async () => {
     expect(wrapper.find('#create-special-resolution .invalid-section').exists()).toBeFalsy()
-    store.state.stateModel.validationFlags.flagsCompanyInfo.isValidCreateCreateSpecialResolution = false
-    store.state.stateModel.validationFlags.componentValidate = true
+    store.stateModel.validationFlags.flagsCompanyInfo.isValidCreateSpecialResolution = false
+    store.stateModel.validationFlags.componentValidate = true
 
     await Vue.nextTick()
 

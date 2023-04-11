@@ -45,12 +45,13 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Mixins } from 'vue-property-decorator'
-import { Getter, Action } from 'vuex-class'
+import { Component } from 'vue-property-decorator'
+import { Getter, Action } from 'pinia-class'
 import { ActionBindingIF } from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, NameRequestMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { Navigate } from '@/utils/'
+import { useStore } from '@/store/store'
 
 /** This component is only implemented for Correction filings atm. */
 @Component({
@@ -62,22 +63,22 @@ import { Navigate } from '@/utils/'
 })
 export default class Actions extends Vue {
   // Global getters
-  @Getter isBusySaving!: boolean
-  @Getter hasCorrectionDataChanged!: boolean
-  @Getter hasAlterationDataChanged!: boolean // for testing state-getters
-  @Getter havePeopleAndRolesChanged!: boolean // for testing state-getters
-  @Getter isCorrectionValid!: boolean
-  @Getter isSaving!: boolean
-  @Getter isSavingResuming!: boolean
-  @Getter isFilingPaying!: boolean
-  @Getter isCorrectionEditing!: boolean
-  @Getter getFilingId!: number
+  @Getter(useStore) isBusySaving!: boolean
+  @Getter(useStore) hasCorrectionDataChanged!: boolean
+  @Getter(useStore) hasAlterationDataChanged!: boolean // for testing state-getters
+  @Getter(useStore) havePeopleAndRolesChanged!: boolean // for testing state-getters
+  @Getter(useStore) isCorrectionValid!: boolean
+  @Getter(useStore) isSaving!: boolean
+  @Getter(useStore) isSavingResuming!: boolean
+  @Getter(useStore) isFilingPaying!: boolean
+  @Getter(useStore) isCorrectionEditing!: boolean
+  @Getter(useStore) getFilingId!: number
 
   // Global actions
-  @Action setIsSaving!: ActionBindingIF
-  @Action setIsSavingResuming!: ActionBindingIF
-  @Action setIsFilingPaying!: ActionBindingIF
-  @Action setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setIsSaving!: ActionBindingIF
+  @Action(useStore) setIsSavingResuming!: ActionBindingIF
+  @Action(useStore) setIsFilingPaying!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
 
   /** True if the Save button should be disabled. */
   get isSaveButtonDisabled (): boolean {

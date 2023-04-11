@@ -3,18 +3,20 @@ import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import mockRouter from './MockRouter'
-import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import AddNameTranslation from '@/components/common/YourCompany/NameTranslations/AddNameTranslation.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 function resetStore (): void {
-  store.state.stateModel.nameTranslations = []
+  store.stateModel.nameTranslations = []
 }
 
 // Local references
@@ -32,13 +34,12 @@ describe('Add Name Translation component', () => {
     const router = mockRouter.mock()
 
     // Init Store
-    store.state.stateModel.nameTranslations = []
+    store.stateModel.nameTranslations = []
 
     wrapperFactory = async (propsData: any) => {
       const wrapper = mount(AddNameTranslation, {
         localVue,
         router,
-        store,
         vuetify,
         propsData: { ...propsData }
       })

@@ -3,6 +3,8 @@ import Vuetify from 'vuetify'
 import { SpecialResolutionSummary } from '@/components/SpecialResolution'
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 
@@ -11,10 +13,11 @@ const vuetify = new Vuetify({})
 
 describe('Special Resolution Review', () => {
   let wrapper: any
-  let store: any = getVuexStore()
+  setActivePinia(createPinia())
+  const store = useStore()
 
   beforeEach(() => {
-    wrapper = mount(SpecialResolutionSummary, { vuetify, store, localVue })
+    wrapper = mount(SpecialResolutionSummary, { vuetify, localVue })
   })
 
   afterEach(() => {
@@ -22,7 +25,7 @@ describe('Special Resolution Review', () => {
   })
 
   it('renders multiple fees', async () => {
-    store.state.stateModel.currentFees = [{
+    store.stateModel.currentFees = [{
       'filingFees': 70.0,
       'filingType': 'Special resolution',
       'filingTypeCode': 'SPRLN',
@@ -54,7 +57,7 @@ describe('Special Resolution Review', () => {
     await Vue.nextTick()
     expect(wrapper.find('.summary-title').text()).toBe('Summary of Changes to File')
 
-    store.state.stateModel.currentFees = [{
+    store.stateModel.currentFees = [{
       filingFees: null,
       filingType: null,
       filingTypeCode: null,

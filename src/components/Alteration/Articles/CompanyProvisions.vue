@@ -121,20 +121,21 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Mixins, Watch } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
+import { useStore } from '@/store/store'
 
 @Component({})
 export default class CompanyProvisions extends Mixins(CommonMixin) {
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+
   private draftProvisionsRemoved = false
   private isEditing = false
   private haveChanges = false
   private originalProvisionsRemovedValue = false
   private isInvalid = false
   private dropdown = false
-
-  @Getter getEditLabel!: string
-  @Getter getEditedLabel!: string
 
   // Props
   @Prop({ default: false }) readonly provisionsRemoved!: boolean

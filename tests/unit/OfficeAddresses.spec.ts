@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { mount } from '@vue/test-utils'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
 import { AddressIF, AddressesIF } from '@/interfaces/stepper-interfaces/YourCompany/address-interfaces'
 import { BenAlterationResource } from '@/resources/Alteration/BEN'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()
@@ -14,7 +16,8 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 /**
  * Returns a customized Address object (except for country
@@ -31,7 +34,7 @@ function getAddressX (x: number): AddressIF {
     postalCode: `postalCode${x}`,
     streetAddress: `streetAddress${x}`,
     streetAddressAdditional: `streetAddressAdditional${x}`
-  } as AddressIF
+  } as any
 }
 
 /**
@@ -57,14 +60,14 @@ function getIncorporationAddress (a1: number, a2: number, a3: number, a4: number
 describe('summary mode', () => {
   beforeAll(() => {
     // init entity type
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.resourceModel = BenAlterationResource
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.resourceModel = BenAlterationResource
   })
 
   it('displays the correct sections', () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     expect(wrapper.find('#summary-registered-address').exists()).toBe(true)
     expect(wrapper.find('#summary-records-address').exists()).toBe(true)
@@ -76,16 +79,16 @@ describe('summary mode', () => {
   })
 
   it('displays the registered office row - not same as mailing address', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 2, 3, 4)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    store.setOfficeAddresses(getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
 
     const summaryRow = wrapper.find('#summary-registered-address')
@@ -135,16 +138,16 @@ describe('summary mode', () => {
   })
 
   it('displays the registered office row - same as mailing address', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 1, 1, 1)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
+    store.setOfficeAddresses(getIncorporationAddress(1, 1, 1, 1))
     await Vue.nextTick()
 
     const summaryRow = wrapper.find('#summary-registered-address')
@@ -184,16 +187,16 @@ describe('summary mode', () => {
   })
 
   it('displays the registered office row - changed addresses', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 2, 3, 4)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(4, 3, 2, 1))
+    store.setOfficeAddresses(getIncorporationAddress(4, 3, 2, 1))
     await Vue.nextTick()
 
     const summaryRow = wrapper.find('#summary-registered-address')
@@ -248,16 +251,16 @@ describe('summary mode', () => {
   })
 
   it('displays the records office row - not same as registered office', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 2, 3, 4)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    store.setOfficeAddresses(getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
 
     const summaryRow = wrapper.find('#summary-records-address')
@@ -302,16 +305,16 @@ describe('summary mode', () => {
   })
 
   it('displays the records office row - same as registered office', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 1, 1, 1)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
+    store.setOfficeAddresses(getIncorporationAddress(1, 1, 1, 1))
     await Vue.nextTick()
 
     const summaryRow = wrapper.find('#summary-records-address')
@@ -334,16 +337,16 @@ describe('summary mode', () => {
   })
 
   it('displays the records office row - same as mailing address', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 1, 3, 3)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
+    store.setOfficeAddresses(getIncorporationAddress(1, 1, 3, 3))
     await Vue.nextTick()
 
     const summaryRow = wrapper.find('#summary-records-address')
@@ -377,16 +380,16 @@ describe('summary mode', () => {
   })
 
   it('displays the records office row - changed addresses', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 2, 3, 4)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(4, 3, 2, 1))
+    store.setOfficeAddresses(getIncorporationAddress(4, 3, 2, 1))
     await Vue.nextTick()
 
     const summaryRow = wrapper.find('#summary-records-address')
@@ -430,20 +433,20 @@ describe('summary mode', () => {
 describe('edit mode', () => {
   beforeAll(() => {
     // init entity type
-    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
   })
 
   it('displays the correct sections', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 2, 3, 4)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    store.setOfficeAddresses(getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
 
     // change to edit mode
@@ -460,16 +463,16 @@ describe('edit mode', () => {
   })
 
   it('displays the registered office mailing address', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 2, 3, 4)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    store.setOfficeAddresses(getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
 
     // change to edit mode
@@ -503,16 +506,16 @@ describe('edit mode', () => {
   })
 
   it('displays the registered office delivery address - not same as mailing address', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 2, 3, 4)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    store.setOfficeAddresses(getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
 
     // change to edit mode
@@ -547,16 +550,16 @@ describe('edit mode', () => {
   })
 
   it('displays the registered office delivery address - same as mailing address', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 1, 3, 3)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
+    store.setOfficeAddresses(getIncorporationAddress(1, 1, 3, 3))
     await Vue.nextTick()
 
     // change to edit mode
@@ -583,16 +586,16 @@ describe('edit mode', () => {
   })
 
   it('displays the records office mailing - not same as registered office', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 2, 3, 4)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    store.setOfficeAddresses(getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
 
     // change to edit mode
@@ -627,16 +630,16 @@ describe('edit mode', () => {
   })
 
   it('displays the records office mailing address - same as registered office', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 1, 1, 1)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
+    store.setOfficeAddresses(getIncorporationAddress(1, 1, 1, 1))
     await Vue.nextTick()
 
     // change to edit mode
@@ -662,16 +665,16 @@ describe('edit mode', () => {
   })
 
   it('displays the records office delivery address - not same same as mailing address', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 2, 3, 4)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    store.setOfficeAddresses(getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
 
     // change to edit mode
@@ -706,16 +709,16 @@ describe('edit mode', () => {
   })
 
   it('displays the records office delivery address - same as mailing address', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 1, 3, 3)
-    }
+    } as any
 
-    const wrapper = mount(OfficeAddresses, { store, vuetify })
+    const wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 3, 3))
+    store.setOfficeAddresses(getIncorporationAddress(1, 1, 3, 3))
     await Vue.nextTick()
 
     // change to edit mode
@@ -747,20 +750,20 @@ describe('"same as" checkboxes', () => {
 
   beforeAll(() => {
     // init entity type
-    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
 
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 1, 1, 1)
-    }
+    } as any
   })
 
   beforeEach(async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
-    wrapper = mount(OfficeAddresses, { store, vuetify })
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 1, 1, 1))
+    store.setOfficeAddresses(getIncorporationAddress(1, 1, 1, 1))
     await Vue.nextTick()
 
     // change to edit mode
@@ -907,20 +910,20 @@ describe('actions and events', () => {
 
   beforeAll(() => {
     // init entity type
-    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
 
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 2, 3, 4)
-    }
+    } as any
   })
 
   beforeEach(async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
-    wrapper = mount(OfficeAddresses, { store, vuetify })
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    wrapper = mount(OfficeAddresses, { vuetify })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    store.setOfficeAddresses(getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
 
     // change to edit mode
@@ -1092,20 +1095,20 @@ describe('For Special resolution', () => {
 
   beforeAll(() => {
     // init entity type
-    store.state.stateModel.tombstone.entityType = 'CP'
+    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
 
     // init original offices
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       addresses: getIncorporationAddress(1, 2, 3, 4)
-    }
+    } as any
   })
 
   beforeEach(async () => {
-    store.state.stateModel.tombstone.filingType = 'specialResolution'
-    wrapper = mount(OfficeAddresses, { store, vuetify, propsData: { isSummaryView: false } })
+    store.stateModel.tombstone.filingType = FilingTypes.SPECIAL_RESOLUTION
+    wrapper = mount(OfficeAddresses, { vuetify, propsData: { isSummaryView: false } })
 
     // set office addresses to trigger watcher
-    wrapper.vm.$store.commit('mutateOfficeAddresses', getIncorporationAddress(1, 2, 3, 4))
+    store.setOfficeAddresses(getIncorporationAddress(1, 2, 3, 4))
     await Vue.nextTick()
   })
 
@@ -1148,7 +1151,7 @@ describe('verify updateAddress()', () => {
   }
 
   beforeEach(async () => {
-    wrapper = mount(OfficeAddresses, { store, vuetify })
+    wrapper = mount(OfficeAddresses, { vuetify })
     vm = wrapper.vm
 
     // set original addresses

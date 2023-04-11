@@ -24,8 +24,13 @@ import { UlcCorrectionResource } from '@/resources/Correction/ULC'
 
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/CP'
 
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
+setActivePinia(createPinia())
+const store = useStore()
 
 const alterationTests = [
   {
@@ -210,19 +215,17 @@ function runTest (test) {
     : (test.isNumberedCompany === false)
       ? `named ${test.entityType}`
       : test.entityType
-  const store = getVuexStore()
 
   describe(`Name Change Options for filing type "${test.filingType}"`, () => {
     it(`sets the correct options for a ${label}`, async () => {
       // init
-      store.state.stateModel.tombstone.filingType = test.filingType
-      store.state.stateModel.tombstone.entityType = test.entityType
-      store.state.resourceModel = test.resourceModel
+      store.stateModel.tombstone.filingType = test.filingType
+      store.stateModel.tombstone.entityType = test.entityType
+      store.resourceModel = test.resourceModel
 
       // mount
       const wrapper = mount(YourCompany, {
         vuetify,
-        store,
         computed: { isNumberedCompany: () => test.isNumberedCompany }
       })
       await Vue.nextTick()

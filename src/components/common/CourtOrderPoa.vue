@@ -28,9 +28,10 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa'
 import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -42,15 +43,15 @@ export default class CourtOrderPoa extends Vue {
   @Prop({ default: '' }) readonly sectionNumber!: string
 
   /** Store getters */
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter getAppValidate!: boolean
-  @Getter getFileNumber!: string
-  @Getter getHasPlanOfArrangement!: boolean
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getFileNumber!: string
+  @Getter(useStore) getHasPlanOfArrangement!: boolean
 
   /** Global actions */
-  @Action setValidCourtOrder!: ActionBindingIF
-  @Action setHasPlanOfArrangement!: ActionBindingIF
-  @Action setFileNumber!: ActionBindingIF
+  @Action(useStore) setValidCourtOrder!: ActionBindingIF
+  @Action(useStore) setHasPlanOfArrangement!: ActionBindingIF
+  @Action(useStore) setFileNumber!: ActionBindingIF
 
   /** Local getters */
   get invalidCourtOrder (): boolean {

@@ -162,12 +162,13 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
 import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -186,16 +187,16 @@ export default class AlterationSummary extends Mixins(
   readonly GetCorpFullDescription = GetCorpFullDescription
 
   // Global getters
-  @Getter getBusinessNumber!: string
-  @Getter getOriginalResolutions!: ResolutionsIF[]
-  @Getter getCurrentFees!: FeesIF[]
-  @Getter isBusySaving!: boolean
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter haveNewResolutionDates!: boolean
-  @Getter areProvisionsRemoved!: boolean
+  @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) getOriginalResolutions!: ResolutionsIF[]
+  @Getter(useStore) getCurrentFees!: FeesIF[]
+  @Getter(useStore) isBusySaving!: boolean
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) haveNewResolutionDates!: boolean
+  @Getter(useStore) areProvisionsRemoved!: boolean
 
   // Global actions
-  @Action setEffectiveDateValid!: ActionBindingIF
+  @Action(useStore) setEffectiveDateValid!: ActionBindingIF
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean

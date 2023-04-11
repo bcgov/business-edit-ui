@@ -51,7 +51,7 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { PeopleAndRoles, CompletingParty, YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
@@ -63,6 +63,7 @@ import { SpConversionResource, GpConversionResource } from '@/resources/Conversi
 import { ConversionSummary } from '@/components/Conversion'
 import { StatusCodes } from 'http-status-codes'
 import ViewWrapper from '@/components/ViewWrapper.vue'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -79,18 +80,18 @@ export default class Conversion extends Mixins(
   FilingTemplateMixin
 ) {
   // Global getters
-  @Getter isRoleStaff!: boolean
-  @Getter isSummaryMode!: boolean
-  @Getter getAppValidate!: boolean
-  @Getter showFeeSummary!: boolean
-  @Getter isPartnership!: boolean
-  @Getter isSoleProp!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
+  @Getter(useStore) isPartnership!: boolean
+  @Getter(useStore) isSoleProp!: boolean
 
   // Global actions
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
-  @Action setResource!: ActionBindingIF
-  @Action setCertifyStateValidity!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setResource!: ActionBindingIF
+  @Action(useStore) setCertifyStateValidity!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean

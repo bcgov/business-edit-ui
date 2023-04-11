@@ -7,6 +7,10 @@ import { getVuexStore } from '@/store/'
 import { BusinessStartDate } from '@/components/common/YourCompany'
 import { DatePicker } from '@bcrs-shared-components/date-picker'
 import flushPromises from 'flush-promises'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
@@ -15,15 +19,16 @@ const localVue = createLocalVue()
 localVue.use(VueRouter)
 
 const router: any = mockRouter.mock()
-const store: any = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 describe('Business Start Date', () => {
   let wrapper: any
 
   beforeEach(async () => {
-    store.state.stateModel.businessInformation.foundingDate = '2021-07-01T00:00:00.000000+00:00'
-    store.state.stateModel.tombstone.entityType = 'SP'
-    wrapper = mount(BusinessStartDate, { store, vuetify, localVue, router })
+    store.stateModel.businessInformation.foundingDate = '2021-07-01T00:00:00.000000+00:00'
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    wrapper = mount(BusinessStartDate, { vuetify, localVue, router })
     await flushPromises()
   })
 
@@ -32,7 +37,7 @@ describe('Business Start Date', () => {
   })
 
   it('renders the component correctly for firm change filings', async () => {
-    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
+    store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     await router.push({ name: 'change' })
     await Vue.nextTick()
 
@@ -42,7 +47,7 @@ describe('Business Start Date', () => {
   })
 
   it('renders the component correctly for firm conversion filings', async () => {
-    store.state.stateModel.tombstone.filingType = 'conversion'
+    store.stateModel.tombstone.filingType = FilingTypes.CONVERSION
     await router.push({ name: 'conversion' })
     await Vue.nextTick()
 
@@ -52,7 +57,7 @@ describe('Business Start Date', () => {
   })
 
   it('renders the component correctly for firm correction filings', async () => {
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     await router.push({ name: 'correction' })
     await Vue.nextTick()
 

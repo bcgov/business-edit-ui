@@ -2,29 +2,32 @@ import Vue from 'vue'
 import sinon from 'sinon'
 import { shallowMount, Wrapper } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
-import { getVuexStore } from '@/store/'
 import MixinTester from '@/mixin-tester.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, NameRequestTypes } from '@/enums'
 
 describe('Name Request Mixin', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let get: any
-  let store: any = getVuexStore()
+  setActivePinia(createPinia())
+  const store = useStore()
 
   beforeEach(async () => {
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.resourceModel = {
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.resourceModel = {
       entityReference: '',
       displayName: '',
       addressLabel: '',
-      filingData: '',
+      filingData: null,
       changeData: {
-        nameRequestTypes: ['CHG', 'CNV']
+        nameRequestTypes: [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION]
       },
       certifyClause: ''
     }
     get = sinon.stub(axios, 'get')
-    wrapper = shallowMount(MixinTester, { store })
+    wrapper = shallowMount(MixinTester)
     vm = wrapper.vm
     await Vue.nextTick()
   })
@@ -204,8 +207,8 @@ describe('Name Request Mixin', () => {
   })
 
   it('identifies valid and invalid NRs for firms', async () => {
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel.changeData.nameRequestTypes = ['CHG']
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.resourceModel.changeData.nameRequestTypes = [NameRequestTypes.CHANGE_OF_NAME]
 
     let nr = null
     expect(vm.isNrValid(nr)).toBe(false)

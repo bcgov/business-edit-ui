@@ -59,10 +59,10 @@ import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
 import { CorrectNameOptionIF } from '@/interfaces/'
 import { NameChangeOptions } from '@/enums/'
-
-// for some reason, CorrectXXX cannot be imported from ./
-// (it breaks a bunch of unit tests)
-import { CorrectCompanyName, CorrectNameToNumber, CorrectNameRequest } from '@/components/common/'
+// These imports below are touchy, please don't change them - they can possibly break tests.
+import CorrectCompanyName from './CorrectCompanyName.vue'
+import CorrectNameRequest from './CorrectNameRequest.vue'
+import CorrectNameToNumber from './CorrectNameToNumber.vue'
 
 /**
  * Operation:

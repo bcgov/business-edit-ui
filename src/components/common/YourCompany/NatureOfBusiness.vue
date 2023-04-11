@@ -13,13 +13,14 @@
 </template>
 
 <script lang="ts">
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import { NaicsServices } from '@/services/'
 import { ActionBindingIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { NatureOfBusiness as NatureOfBusinessShared } from '@bcrs-shared-components/nature-of-business/'
 import { CommonMixin } from '@/mixins'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -32,14 +33,14 @@ export default class NatureOfBusiness extends Mixins(CommonMixin) {
 
   readonly NaicsServices = NaicsServices
 
-  @Getter getCurrentNaics!: NaicsIF
-  @Getter getEditLabel!: string
-  @Getter getEditedLabel!: string
-  @Getter hasNaicsChanged!: boolean
-  @Getter getSnapshotNaics!: NaicsIF
+  @Getter(useStore) getCurrentNaics!: NaicsIF
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) hasNaicsChanged!: boolean
+  @Getter(useStore) getSnapshotNaics!: NaicsIF
 
-  @Action setNaics!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setNaics!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   protected onValidChanged (valid: boolean): void {
     this.setValidComponent({ key: 'isValidNatureOfBusiness', value: valid })

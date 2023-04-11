@@ -374,12 +374,14 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import OrgPerson from './OrgPerson.vue'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { IsSame } from '@/utils/'
 import { OrgPersonIF } from '@/interfaces/'
+
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -415,18 +417,18 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   @Prop({ default: true }) readonly showEmailUnderName!: boolean
 
   // Store getter
-  @Getter getEditLabel!: string
-  @Getter getOrgPeople!: OrgPersonIF[]
-  @Getter hideChangeButtonForSoleProps!: boolean
-  @Getter isAlterationFiling!: boolean
-  @Getter isBenBcCccUlcCorrectionFiling!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isFirmChangeFiling!: boolean
-  @Getter isFirmConversionFiling!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
-  @Getter isLimitedExtendRestorationFiling!: boolean
-  @Getter isLimitedConversionRestorationFiling!: boolean
-  @Getter isRoleStaff!: boolean
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
+  @Getter(useStore) hideChangeButtonForSoleProps!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
+  @Getter(useStore) isLimitedConversionRestorationFiling!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
 
   /** V-model for dropdown menus. */
   protected dropdown: Array<boolean> = []

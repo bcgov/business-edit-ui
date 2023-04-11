@@ -109,8 +109,8 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Watch, Mixins } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Component, Watch } from 'vue-property-decorator'
+import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { GetFeatureFlag, GetKeycloakRoles, Navigate, UpdateLdUser, Sleep } from '@/utils/'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
@@ -120,7 +120,7 @@ import { Breadcrumb as BreadcrumbShared } from '@bcrs-shared-components/breadcru
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
-import { AuthServices, LegalServices } from '@/services/'
+import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
@@ -129,6 +129,7 @@ import { RouteNames } from '@/enums/'
 import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
   getStaffDashboardBreadcrumb } from '@/resources/BreadCrumbResources'
 import DateUtilities from '@/services/date-utilities'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -153,46 +154,46 @@ export default class App extends Vue {
   }
 
   // Global getters
-  @Getter getAppValidate!: boolean
-  @Getter getComponentValidate!: boolean
-  @Getter getCurrentJsDate!: Date
-  @Getter getFilingData!: FilingDataIF[]
-  @Getter getFilingId!: number
-  @Getter getOrgInfo!: any
-  @Getter getUserEmail!: string
-  @Getter getUserFirstName!: string
-  @Getter getUserLastName!: string
-  @Getter getUserPhone!: string
-  @Getter getUserRoles!: string
-  @Getter getUserUsername!: string
-  @Getter haveUnsavedChanges!: boolean
-  @Getter isBusySaving!: boolean
-  @Getter isConflictingLegalType!: boolean
-  @Getter isCorrectionEditing!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter isSbcStaff!: boolean
-  @Getter isSummaryMode!: boolean
-  @Getter showFeeSummary!: boolean
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getCurrentJsDate!: Date
+  @Getter(useStore) getFilingData!: FilingDataIF[]
+  @Getter(useStore) getFilingId!: number
+  @Getter(useStore) getOrgInfo!: any
+  @Getter(useStore) getUserEmail!: string
+  @Getter(useStore) getUserFirstName!: string
+  @Getter(useStore) getUserLastName!: string
+  @Getter(useStore) getUserPhone!: string
+  @Getter(useStore) getUserRoles!: string
+  @Getter(useStore) getUserUsername!: string
+  @Getter(useStore) haveUnsavedChanges!: boolean
+  @Getter(useStore) isBusySaving!: boolean
+  @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isCorrectionEditing!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSbcStaff!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action setAccountInformation!: ActionBindingIF
-  @Action setAppValidate!: ActionBindingIF
-  @Action setAuthRoles!: ActionBindingIF
-  @Action setBusinessId!: ActionBindingIF
-  @Action setCompletingParty!: ActionBindingIF
-  @Action setComponentValidate!: ActionBindingIF
-  @Action setCurrentDate!: ActionBindingIF
-  @Action setCurrentJsDate!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
-  @Action setFilingType!: ActionBindingIF
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setIsFilingPaying!: ActionBindingIF
-  @Action setIsSaving!: ActionBindingIF
-  @Action setKeycloakRoles!: ActionBindingIF
-  @Action setOrgInfo!: ActionBindingIF
-  @Action setSummaryMode!: ActionBindingIF
-  @Action setUserInfo!: ActionBindingIF
+  @Action(useStore) setAccountInformation!: ActionBindingIF
+  @Action(useStore) setAppValidate!: ActionBindingIF
+  @Action(useStore) setAuthRoles!: ActionBindingIF
+  @Action(useStore) setBusinessId!: ActionBindingIF
+  @Action(useStore) setComponentValidate!: ActionBindingIF
+  @Action(useStore) setCurrentDate!: ActionBindingIF
+  @Action(useStore) setCurrentJsDate!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setIsFilingPaying!: ActionBindingIF
+  @Action(useStore) setIsSaving!: ActionBindingIF
+  @Action(useStore) setKeycloakRoles!: ActionBindingIF
+  @Action(useStore) setUserInfo!: ActionBindingIF
+  @Action(useStore) setOrgInfo!: ActionBindingIF
+  @Action(useStore) setCompletingParty!: ActionBindingIF
+  @Action(useStore) setSummaryMode!: ActionBindingIF
+  @Action(useStore) setFilingType!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
 
   // Local properties
   protected accountAuthorizationDialog = false

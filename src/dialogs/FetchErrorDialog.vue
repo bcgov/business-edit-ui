@@ -27,14 +27,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, Emit } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { ErrorContact } from '@/components/common/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: { ErrorContact }
 })
 export default class FetchErrorDialog extends Vue {
-  @Getter isRoleStaff!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
 
   /** Prop to display the dialog. */
   @Prop() readonly dialog!: boolean

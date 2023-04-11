@@ -208,7 +208,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { cloneDeep, isEmpty } from 'lodash'
 import { IsSame } from '@/utils/'
 import { ActionBindingIF, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF, OrgPersonIF, ResourceIF,
@@ -217,6 +217,7 @@ import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
 import { HelpSection } from '@/components/common/'
 import { ListPeopleAndRoles } from './'
 import { CommonMixin, DateMixin, OrgPersonMixin } from '@/mixins/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -230,34 +231,34 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   readonly PartyTypes = PartyTypes
 
   // Global getters
-  @Getter getCurrentJsDate!: Date
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getOrgPeople!: OrgPersonIF[]
-  @Getter getResource!: ResourceIF
-  @Getter getComponentValidate!: boolean
-  @Getter isAlterationFiling!: boolean
-  @Getter isBcCcc!: boolean
-  @Getter isBcCompany!: boolean
-  @Getter isBcUlcCompany!: boolean
-  @Getter isBenefitCompany!: boolean
-  @Getter isBenBcCccUlcCorrectionFiling!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isFirmChangeFiling!: boolean
-  @Getter isFirmConversionFiling!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
-  @Getter isLimitedConversionRestorationFiling!: boolean
-  @Getter isLimitedExtendRestorationFiling!: boolean
-  @Getter isPartnership!: boolean
-  @Getter isRestorationFiling!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter isSoleProp!: boolean
+  @Getter(useStore) getCurrentJsDate!: Date
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isBcCcc!: boolean
+  @Getter(useStore) isBcCompany!: boolean
+  @Getter(useStore) isBcUlcCompany!: boolean
+  @Getter(useStore) isBenefitCompany!: boolean
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isLimitedConversionRestorationFiling!: boolean
+  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
+  @Getter(useStore) isPartnership!: boolean
+  @Getter(useStore) isRestorationFiling!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSoleProp!: boolean
 
   // Global actions
-  @Action setEditingPeopleAndRoles!: ActionBindingIF
-  @Action setPeopleAndRoles!: ActionBindingIF
-  @Action setPeopleAndRolesChanged!: ActionBindingIF
-  @Action setPeopleAndRolesValidity!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setEditingPeopleAndRoles!: ActionBindingIF
+  @Action(useStore) setPeopleAndRoles!: ActionBindingIF
+  @Action(useStore) setPeopleAndRolesChanged!: ActionBindingIF
+  @Action(useStore) setPeopleAndRolesValidity!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   // Local properties
   protected isAddingEditingOrgPerson = false

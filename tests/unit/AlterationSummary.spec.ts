@@ -2,26 +2,30 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-import { getVuexStore } from '@/store/'
 import { createLocalVue, createWrapper, mount } from '@vue/test-utils'
 import AlterationSummary from '@/components/Alteration/AlterationSummary.vue'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
 import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 
 const localVue = createLocalVue()
 const vuetify = new Vuetify({})
 
+setActivePinia(createPinia())
+const store = useStore()
+
 describe('Alteration Summary component', () => {
   let wrapper: any
-  let store: any = getVuexStore()
 
   const entitySnapshot = {
     businessInfo: {
       legalName: 'Mock Original Name',
-      legalType: 'BC'
+      legalType: CorpTypeCd.BC_COMPANY
     }
   }
   const nameTranslationsListChanged = [
@@ -33,21 +37,21 @@ describe('Alteration Summary component', () => {
 
   beforeAll(() => {
     // init store
-    store.state.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
-    store.state.stateModel.tombstone.currentDate = '2021-03-01'
-    store.state.stateModel.entitySnapshot = entitySnapshot
-    store.state.stateModel.shareStructureStep.shareClasses = []
-    store.state.stateModel.entitySnapshot.shareStructure = { shareClasses: [] }
+    store.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
+    store.stateModel.tombstone.currentDate = '2021-03-01'
+    store.stateModel.entitySnapshot = entitySnapshot as any
+    store.stateModel.shareStructureStep.shareClasses = []
+    store.stateModel.entitySnapshot.shareStructure = { shareClasses: [] }
   })
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
-    store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
-    store.state.stateModel.summaryMode = true
-    store.state.stateModel.nameTranslations = nameTranslationsListChanged
+    store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
+    store.stateModel.summaryMode = true
+    store.stateModel.nameTranslations = nameTranslationsListChanged as any
 
-    wrapper = mount(AlterationSummary, { vuetify, store, localVue })
+    wrapper = mount(AlterationSummary, { vuetify, localVue })
   })
 
   afterEach(() => {
@@ -88,7 +92,7 @@ describe('Alteration Summary component', () => {
   })
 
   it('renders the name summary section when changes have been made', async () => {
-    store.state.stateModel.nameRequest.legalName = 'Mock New Name'
+    store.stateModel.nameRequest.legalName = 'Mock New Name'
     await Vue.nextTick()
 
     expect(wrapper.find('.business-name-summary').exists()).toBe(true)
@@ -96,7 +100,7 @@ describe('Alteration Summary component', () => {
   })
 
   it('renders the type summary section when changes have been made', async () => {
-    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
     await Vue.nextTick()
 
     expect(wrapper.find('.business-type-summary').exists()).toBe(true)
@@ -105,11 +109,11 @@ describe('Alteration Summary component', () => {
   })
 
   it('renders the default alteration date and time section', async () => {
-    store.state.stateModel.effectiveDateTime = {
+    store.stateModel.effectiveDateTime = {
       isFutureEffective: null,
       dateTimeString: ''
     }
-    store.state.stateModel.validationFlags.flagsReviewCertify.isValidEffectiveDate = false
+    store.stateModel.validationFlags.flagsReviewCertify.isValidEffectiveDate = false
     await Vue.nextTick()
 
     // verify section
@@ -124,11 +128,11 @@ describe('Alteration Summary component', () => {
   })
 
   it('renders the alteration date and time section with end blurb', async () => {
-    store.state.stateModel.effectiveDateTime = {
+    store.stateModel.effectiveDateTime = {
       isFutureEffective: true,
       dateTimeString: '2021-03-05T16:30:00Z'
     }
-    store.state.stateModel.validationFlags.flagsReviewCertify.isValidEffectiveDate = true
+    store.stateModel.validationFlags.flagsReviewCertify.isValidEffectiveDate = true
     await Vue.nextTick()
 
     // verify end blurb div
@@ -139,7 +143,7 @@ describe('Alteration Summary component', () => {
   })
 
   it('renders Alteration Notice Changes fees accordingly', async () => {
-    store.state.stateModel.currentFees = [{
+    store.stateModel.currentFees = [{
       'filingFees': 100.0,
       'filingType': 'Alteration',
       'filingTypeCode': 'ALTER',
@@ -156,7 +160,7 @@ describe('Alteration Summary component', () => {
     await Vue.nextTick()
     expect(wrapper.find('.summary-title').text()).toBe('Alteration Notice Changes ($100.00 Fee)')
 
-    store.state.stateModel.currentFees = [{
+    store.stateModel.currentFees = [{
       'filingFees': 100.0,
       'filingType': 'Alteration',
       'filingTypeCode': 'ALTER',
@@ -173,7 +177,7 @@ describe('Alteration Summary component', () => {
     await Vue.nextTick()
     expect(wrapper.find('.summary-title').text()).toBe('Alteration Notice Changes ($200.00 Fee)')
 
-    store.state.stateModel.currentFees = [{
+    store.stateModel.currentFees = [{
       filingFees: null,
       filingType: null,
       filingTypeCode: null,
@@ -193,7 +197,7 @@ describe('Alteration Summary component', () => {
   })
 
   it('renders the futureEffective fee correctly', async () => {
-    store.state.stateModel.feePrices = [{
+    store.stateModel.feePrices = [{
       'filingFees': 100.0,
       'filingType': 'Alteration',
       'filingTypeCode': 'ALTER',
@@ -214,7 +218,7 @@ describe('Alteration Summary component', () => {
       wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' ')
     ).toContain('additional fee of $100.00 to enter an alteration date and time in the future).')
 
-    store.state.stateModel.feePrices = [{
+    store.stateModel.feePrices = [{
       filingFees: null,
       filingType: null,
       filingTypeCode: null,

@@ -1,14 +1,17 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount, Wrapper } from '@vue/test-utils'
-import { getVuexStore } from '@/store/'
 import CertifySection from '@/components/common/CertifySection.vue'
 import { Certify as CertifyShared } from '@bcrs-shared-components/certify/'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@/enums'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 const defaultDate = '2019-01-01'
 const certifyClause = 'Certify Clause'
@@ -24,16 +27,15 @@ const resource = {
  */
 function createComponent (): Wrapper<CertifySection> {
   return mount(CertifySection, {
-    vuetify,
-    store
+    vuetify
   })
 }
 
 describe('Certify component', () => {
   beforeAll(() => {
-    store.state.resourceModel = resource
-    store.state.stateModel.tombstone.currentDate = defaultDate
-    store.state.stateModel.tombstone.entityType = resource.entityType
+    store.resourceModel = resource as any
+    store.stateModel.tombstone.currentDate = defaultDate
+    store.stateModel.tombstone.entityType = resource.entityType as CorpTypeCd
   })
 
   it('mounts the certify section and the imported certify component ', () => {

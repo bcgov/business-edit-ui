@@ -30,25 +30,27 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { Certify as CertifyShared } from '@bcrs-shared-components/certify/'
 import { DateMixin } from '@/mixins/'
 import { ActionBindingIF, CertifyIF, ResourceIF } from '@/interfaces/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { useStore } from '@/store/store'
+
 @Component({
   components: {
     CertifyShared
   }
 })
 export default class CertifySection extends Mixins(DateMixin) {
-  @Getter getCertifyState!: CertifyIF
-  @Getter getCurrentDate!: string
-  @Getter getResource!: ResourceIF
-  @Getter isRoleStaff!: boolean
-  @Getter getEntityType!: CorpTypeCd
+  @Getter(useStore) getCertifyState!: CertifyIF
+  @Getter(useStore) getCurrentDate!: string
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) getEntityType!: CorpTypeCd
 
-  @Action setCertifyState!: ActionBindingIF
-  @Action setCertifyStateValidity!: ActionBindingIF
+  @Action(useStore) setCertifyState!: ActionBindingIF
+  @Action(useStore) setCertifyStateValidity!: ActionBindingIF
 
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber!: string

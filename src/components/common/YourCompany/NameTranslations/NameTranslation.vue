@@ -151,13 +151,14 @@
 <script lang="ts">
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { ListNameTranslation, AddNameTranslation } from './'
 import { ActionBindingIF, ConfirmDialogType, NameTranslationIF } from '@/interfaces/'
 import { ActionTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -177,15 +178,15 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   @Prop({ default: false }) readonly isSummaryMode!: boolean
 
   // Global getter
-  @Getter getEditLabel!: string
-  @Getter getEditedLabel!: string
-  @Getter getNameTranslations!: NameTranslationIF[]
-  @Getter isLimitedConversionRestorationFiling!: boolean
-  @Getter isLimitedExtendRestorationFiling!: boolean
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getNameTranslations!: NameTranslationIF[]
+  @Getter(useStore) isLimitedConversionRestorationFiling!: boolean
+  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
 
   // Global actions
-  @Action setEditingNameTranslations!: ActionBindingIF
-  @Action setNameTranslations!: ActionBindingIF
+  @Action(useStore) setEditingNameTranslations!: ActionBindingIF
+  @Action(useStore) setNameTranslations!: ActionBindingIF
 
   // Declaration for template
   readonly ActionTypes = ActionTypes

@@ -414,7 +414,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { isEmpty, isEqual } from 'lodash'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
@@ -422,6 +422,7 @@ import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interface
 import { IsSame } from '@/utils/'
 import { AddressTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
+import { useStore } from '@/store/store'
 
 const REGION_BC = 'BC'
 const COUNTRY_CA = 'CA'
@@ -450,30 +451,30 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Prop({ default: false }) readonly isSummaryView!: boolean
 
   // Global getters
-  @Getter getEditLabel!: string
-  @Getter getEditedLabel!: string
-  @Getter getOfficeAddresses!: AddressesIF // NB: may be {}
-  @Getter getOriginalOfficeAddresses!: AddressesIF
-  @Getter getResource!: ResourceIF
-  @Getter hasDeliveryChanged!: boolean
-  @Getter hasMailingChanged!: boolean
-  @Getter hasRecDeliveryChanged!: boolean
-  @Getter hasRecMailingChanged!: boolean
-  @Getter haveOfficeAddressesChanged!: boolean
-  @Getter isAlterationFiling!: boolean
-  @Getter isBenBcCccUlc!: boolean
-  @Getter isBenBcCccUlcCorrectionFiling!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isFirmChangeFiling!: boolean
-  @Getter isFirmConversionFiling!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
-  @Getter isRestorationFiling!: boolean
-  @Getter isSpecialResolutionFiling!: boolean
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getOfficeAddresses!: AddressesIF // NB: may be {}
+  @Getter(useStore) getOriginalOfficeAddresses!: AddressesIF
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) hasDeliveryChanged!: boolean
+  @Getter(useStore) hasMailingChanged!: boolean
+  @Getter(useStore) hasRecDeliveryChanged!: boolean
+  @Getter(useStore) hasRecMailingChanged!: boolean
+  @Getter(useStore) haveOfficeAddressesChanged!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isBenBcCccUlc!: boolean
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isRestorationFiling!: boolean
+  @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global actions
-  @Action setEditingOfficeAddresses!: ActionBindingIF
-  @Action setOfficeAddresses!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setEditingOfficeAddresses!: ActionBindingIF
+  @Action(useStore) setOfficeAddresses!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   // Declarations for template
   readonly isEmpty = isEmpty

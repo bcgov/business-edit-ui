@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
@@ -22,6 +22,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import CorpCorrection from '@/views/Correction/CorpCorrection.vue'
 import FirmCorrection from '@/views/Correction/FirmCorrection.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -35,14 +36,14 @@ export default class Correction extends Mixins(CommonMixin) {
   @Prop({ default: false }) readonly appReady!: boolean
 
   // Global getters
-  @Getter getBusinessId!: string
-  @Getter isRoleStaff!: boolean
-  @Getter isBenBcCccUlc!: boolean
-  @Getter isFirm!: boolean
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isBenBcCccUlc!: boolean
+  @Getter(useStore) isFirm!: boolean
 
   // Global actions
-  @Action setFilingId!: ActionBindingIF
-  @Action setEntityType!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setEntityType!: ActionBindingIF
 
   protected correctionFiling: CorrectionFilingIF = null
 
