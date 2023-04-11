@@ -50,6 +50,9 @@ import { defineStore } from 'pinia'
 import { resourceModel, stateModel } from './state'
 import { LegalServices } from '@/services'
 
+// Possible to move getters / actions into seperate files:
+// https://github.com/vuejs/pinia/issues/802#issuecomment-1018780409
+// Not sure if I'd recommend that though.
 export const useStore = defineStore('store', {
   // convert to a function
   state: (): StateIF => ({
