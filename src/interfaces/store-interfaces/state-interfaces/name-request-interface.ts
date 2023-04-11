@@ -30,7 +30,7 @@ export interface NameRequestDetailsIF {
 /** Name Request State interface */
 export interface NameRequestIF {
   applicant?: NameRequestApplicantIF
-  details?: NameRequestDetailsIF | object
+  details?: NameRequestDetailsIF
   expiry?: string
   filingId?: number
   legalName: string

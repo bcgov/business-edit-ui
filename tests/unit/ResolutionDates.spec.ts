@@ -26,6 +26,7 @@ const previousDates = [
   }
 ]
 
+// FUTURE: this needs to be fixed so it uses the interface correctly. https://github.com/bcgov/entity/issues/15927
 const shareClasses = [
   {
     'id': 1,
