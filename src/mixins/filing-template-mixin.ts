@@ -12,7 +12,7 @@ import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolu
 import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
   RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { RestorationTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { FilingTypeToName } from '@/utils'
 import { useStore } from '@/store/store'
 
@@ -300,7 +300,6 @@ export default class FilingTemplateMixin extends DateMixin {
       },
       restoration: {
         approvalType: this.getStateFilingRestoration?.approvalType,
-        expiry: this.getRestoration.expiry,
         type: this.getRestoration.type,
         business: {
           identifier: this.getBusinessId,
@@ -311,6 +310,11 @@ export default class FilingTemplateMixin extends DateMixin {
         contactPoint: this.getContactPoint,
         relationships: this.getRestoration.relationships
       }
+    }
+
+    // Set expiry date property if it's not null
+    if (this.getRestoration.expiry) {
+      filing.restoration.expiry = this.getRestoration.expiry
     }
 
     // Apply NR / business name / business type change to filing
@@ -831,7 +835,7 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setRestorationType(filing.restoration.type)
     if (filing.restoration.expiry) {
       this.setRestorationExpiry(filing.restoration.expiry)
-    } else {
+    } else if (filing.restoration.type === RestorationTypes.LTD_EXTEND) {
       // Reset radio button to 2 years
       this.setRestorationExpiry(DateUtilities.addMonthsToDate(24, this.getStateFilingRestoration?.expiry))
     }
