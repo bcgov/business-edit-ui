@@ -4,7 +4,6 @@ import { mount } from '@vue/test-utils'
 import ResolutionDates from '@/components/Alteration/Articles/ResolutionDates.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { ShareClassIF } from '@/interfaces'
 import { CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
@@ -69,13 +68,13 @@ const shareClasses = [
     'hasRightsOrRestrictions': true,
     'series': []
   }
-] as unknown as ShareClassIF[]
+]
 
 describe('Resolution Dates component - edit mode', () => {
   let wrapperFactory: any
 
   beforeAll(() => {
-    store.stateModel.shareStructureStep.shareClasses = shareClasses
+    store.stateModel.shareStructureStep.shareClasses = shareClasses as any
     wrapperFactory = (propsData: any) => {
       return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: true }, vuetify })
     }
