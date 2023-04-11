@@ -1,19 +1,14 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { shallowMount } from '@vue/test-utils'
 import CorrectNameOptions from '@/components/common/YourCompany/CompanyName/CorrectNameOptions.vue'
 import CorrectCompanyName from '@/components/common/YourCompany/CompanyName/CorrectCompanyName.vue'
 import CorrectNameRequest from '@/components/common/YourCompany/CompanyName/CorrectNameRequest.vue'
 import CorrectNameToNumber from '@/components/common/YourCompany/CompanyName/CorrectNameToNumber.vue'
-import { createPinia, setActivePinia } from 'pinia'
-import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-setActivePinia(createPinia())
-const store = useStore()
 
 describe('CorrectNameOptions', () => {
   let wrapperFactory: any
