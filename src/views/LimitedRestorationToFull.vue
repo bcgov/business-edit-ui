@@ -308,12 +308,12 @@ export default class LimitedRestorationToFull extends Vue {
       deliveryAddress: applicant.deliveryAddress,
       mailingAddress: applicant.mailingAddress,
       officer: {
-        email: applicant?.officer.email,
-        firstName: applicant?.officer.firstName,
-        lastName: applicant?.officer.lastName,
-        middleName: applicant?.officer.middleName,
-        organizationName: applicant?.officer.organizationName,
-        partyType: applicant?.officer.partyType,
+        email: applicant.officer.email,
+        firstName: applicant.officer.firstName,
+        lastName: applicant.officer.lastName,
+        middleName: applicant.officer.middleName,
+        organizationName: applicant.officer.organizationName,
+        partyType: applicant.officer.partyType,
         id: uuidv4()
       },
       roles: applicant.roles
@@ -358,7 +358,7 @@ export default class LimitedRestorationToFull extends Vue {
 
   get applicantEmail (): string {
     const currentApplicant = this.getOrgPeople.filter(orgPerson => !this.wasRemoved(orgPerson))
-    return currentApplicant[0]?.officer?.email
+    return currentApplicant[0].officer.email
   }
 
   /** The limited restoration state filing's approval type. */
