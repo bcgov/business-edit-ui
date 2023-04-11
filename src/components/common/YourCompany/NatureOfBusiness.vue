@@ -4,8 +4,8 @@
     :naics="getCurrentNaics"
     :NaicsServices="NaicsServices"
     :hasNaicsChanges="hasNaicsChanged"
-    :editLabel="editLabel"
-    :editedLabel="editedLabel"
+    :editLabel="getEditLabel"
+    :editedLabel="getEditedLabel"
     @valid="onValidChanged($event)"
     @undoNaics="setNaics(getSnapshotNaics)"
     @setNaics="setNaics($event)"
@@ -34,8 +34,10 @@ export default class NatureOfBusiness extends Mixins(CommonMixin) {
   readonly NaicsServices = NaicsServices
 
   @Getter(useStore) getCurrentNaics!: NaicsIF
-  @Getter(useStore) getSnapshotNaics!: NaicsIF
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) hasNaicsChanged!: boolean
+  @Getter(useStore) getSnapshotNaics!: NaicsIF
 
   @Action(useStore) setNaics!: ActionBindingIF
   @Action(useStore) setValidComponent!: ActionBindingIF

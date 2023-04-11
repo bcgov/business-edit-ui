@@ -292,6 +292,56 @@ export const useStore = defineStore('store', {
       return this.getEntitySnapshot?.businessInfo?.legalName
     },
 
+    /** The appropriate edit label for corrections, alterations, change or conversion filings. */
+    getEditLabel (): string {
+      if (this.isCorrectionFiling) return 'Correct'
+
+      if (
+        this.isAlterationFiling ||
+        this.isFirmChangeFiling ||
+        this.isFirmConversionFiling ||
+        this.isSpecialResolutionFiling
+      ) {
+        return 'Change'
+      }
+
+      return 'Edit' // If Restoration extension or Conversion
+    },
+
+    /** The appropriate edited label for corrections, alterations, change or conversion filings. */
+    getEditedLabel (): string {
+      if (this.isCorrectionFiling) return 'Corrected'
+
+      if (
+        this.isAlterationFiling ||
+        this.isFirmChangeFiling ||
+        this.isFirmConversionFiling ||
+        this.isRestorationFiling ||
+        this.isSpecialResolutionFiling
+      ) {
+        return 'Changed'
+      }
+
+      return 'Edited' // should never happen
+    },
+
+    /** The appropriate edits saved label for corrections, alterations, change or conversion filings. */
+    getEditSavedLabel (): string {
+      if (this.isCorrectionFiling) return 'Corrections Saved'
+
+      if (
+        this.isAlterationFiling ||
+        this.isFirmChangeFiling ||
+        this.isFirmConversionFiling ||
+        this.isRestorationFiling ||
+        this.isSpecialResolutionFiling
+      ) {
+        return 'Changes Saved'
+      }
+
+      return 'Edits Saved' // should never happen
+    },
+
     /** The original entity snapshot. */
     getEntitySnapshot (): EntitySnapshotIF {
       return this.stateModel.entitySnapshot

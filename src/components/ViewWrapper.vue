@@ -92,33 +92,25 @@ export default class App extends Vue {
   }
 
   // Global getters
-  // @Getter(useStore) getCurrentJsDate!: Date
-  @Getter(useStore) getFilingData!: FilingDataIF[]
-  @Getter(useStore) getFilingId!: number
-  @Getter(useStore) getNameRequestNumber!: string
-  @Getter(useStore) getOrgInfo!: any
-  @Getter(useStore) getUserEmail!: string
-  @Getter(useStore) getUserFirstName!: string
-  @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) getUserPhone!: string
-  @Getter(useStore) getUserRoles!: string
-  @Getter(useStore) getUserUsername!: string
-  @Getter(useStore) haveUnsavedChanges!: boolean
-  @Getter(useStore) isBusySaving!: boolean
-  @Getter(useStore) isCorrectionEditing!: boolean
-  @Getter(useStore) isCorrectionFiling!: boolean
-  @Getter(useStore) isRestorationFiling!: boolean
-  @Getter(useStore) isSummaryMode!: boolean
-  @Getter(useStore) showFeeSummary!: boolean
-
-  // Alteration flag getters
+  // @Getter getCurrentJsDate!: Date
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getFilingData!: FilingDataIF[]
+  @Getter(useStore) getFilingId!: number
   @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) haveUnsavedChanges!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isBusySaving!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
-  @Getter(useStore) isSbcStaff!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isRestorationFiling!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) isSpecialResolutionFiling!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
   @Action(useStore) setAppValidate!: ActionBindingIF
@@ -198,11 +190,11 @@ export default class App extends Vue {
   /** Show fee summary only allowed filing types */
   get showFeeSummaryShared (): boolean {
     return (
-      this.isSpecialResolutionFiling ||
       this.isAlterationFiling ||
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling ||
-      this.isRestorationFiling
+      this.isRestorationFiling ||
+      this.isSpecialResolutionFiling
     )
   }
 

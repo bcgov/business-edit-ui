@@ -78,7 +78,7 @@ import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common/'
-import { NameRequestIF, ResourceIF } from '@/interfaces/'
+import { NameRequestIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { useStore } from '@/store/store'
 
@@ -91,14 +91,13 @@ import { useStore } from '@/store/store'
 export default class ChangeSummary extends Vue {
   // Global getters
   @Getter(useStore) hasBusinessNameChanged!: boolean
-  @Getter(useStore) getNameRequest!: NameRequestIF
   @Getter(useStore) hasNaicsChanged!: boolean
-  @Getter(useStore) getCurrentNaics!: NaicsIF
   @Getter(useStore) haveOfficeAddressesChanged!: boolean
   @Getter(useStore) havePeopleAndRolesChanged!: boolean
-  @Getter(useStore) getResource!: ResourceIF
-  @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) getCurrentNaics!: NaicsIF
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) isSoleProp!: boolean
 
   /** Whether to perform validation. */

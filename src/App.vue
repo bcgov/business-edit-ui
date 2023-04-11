@@ -122,8 +122,7 @@ import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
-import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF }
-  from '@/interfaces/'
+import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { RouteNames } from '@/enums/'
@@ -155,31 +154,27 @@ export default class App extends Vue {
   }
 
   // Global getters
-  @Getter(useStore) getUserEmail!: string
-  @Getter(useStore) getUserPhone!: string
-  @Getter(useStore) getUserFirstName!: string
-  @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) getUserRoles!: string
-  @Getter(useStore) getUserUsername!: string
-  @Getter(useStore) getOrgInfo!: any
-  @Getter(useStore) getFilingData!: FilingDataIF[]
-  @Getter(useStore) haveUnsavedChanges!: boolean
-  @Getter(useStore) isBusySaving!: boolean
-  @Getter(useStore) isCorrectionEditing!: boolean
-  @Getter(useStore) isSummaryMode!: boolean
-  @Getter(useStore) showFeeSummary!: boolean
-  @Getter(useStore) getCurrentJsDate!: Date
-  @Getter(useStore) getFilingId!: number
-  @Getter(useStore) isRestorationFiling!: boolean
-
-  // Alteration flag getters
-  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getCurrentJsDate!: Date
+  @Getter(useStore) getFilingData!: FilingDataIF[]
+  @Getter(useStore) getFilingId!: number
+  @Getter(useStore) getOrgInfo!: any
+  @Getter(useStore) getUserEmail!: string
+  @Getter(useStore) getUserFirstName!: string
+  @Getter(useStore) getUserLastName!: string
+  @Getter(useStore) getUserPhone!: string
+  @Getter(useStore) getUserRoles!: string
+  @Getter(useStore) getUserUsername!: string
+  @Getter(useStore) haveUnsavedChanges!: boolean
+  @Getter(useStore) isBusySaving!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isCorrectionEditing!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSbcStaff!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
   @Action(useStore) setAccountInformation!: ActionBindingIF
@@ -202,16 +197,16 @@ export default class App extends Vue {
 
   // Local properties
   protected accountAuthorizationDialog = false
+  protected confirmDeleteAllDialog = false
   protected fetchErrorDialog = false
-  protected paymentErrorDialog = false
-  protected staffPaymentErrorDialog = false
-  protected saveErrorDialog = false
+  protected fileAndPayInvalidNameRequestDialog = false
   protected nameRequestErrorDialog = false
   protected nameRequestErrorType = ''
+  protected paymentErrorDialog = false
+  protected saveErrorDialog = false
   protected saveErrors: Array<object> = []
   protected saveWarnings: Array<object> = []
-  protected fileAndPayInvalidNameRequestDialog = false
-  protected confirmDeleteAllDialog = false
+  protected staffPaymentErrorDialog = false
 
   // FUTURE: change appReady/haveData to a state machine?
   /** Whether the app is ready and the views can now load their data. */

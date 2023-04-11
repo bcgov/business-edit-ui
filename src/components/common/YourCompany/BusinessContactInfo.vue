@@ -4,8 +4,8 @@
     :businessContact="getBusinessContact"
     :originalBusinessContact="originalContact"
     :hasBusinessContactInfoChange="hasBusinessContactInfoChange"
-    :editLabel="editLabel"
-    :editedLabel="editSavedLabel"
+    :editLabel="getEditLabel"
+    :editedLabel="getEditSavedLabel"
     :disableActionTooltip="isFirmChangeFiling"
     :invalidSection="invalidSection"
     :optionalPhone="isAlterationFiling || isFirmChangeFiling"
@@ -33,9 +33,15 @@ import { useStore } from '@/store/store'
 export default class BusinessContactInfo extends Mixins(CommonMixin) {
   // Global getters
   @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditSavedLabel!: string
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getResource!: ResourceIF
-  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global setters
   @Action(useStore) setBusinessContact!: ActionBindingIF
@@ -66,8 +72,8 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
     try {
       if (
         this.isAlterationFiling ||
-        this.isFirmChangeFiling ||
         this.isCorrectionFiling ||
+        this.isFirmChangeFiling ||
         this.isSpecialResolutionFiling
       ) {
         await AuthServices.updateContactInfo(contactInfo, this.getBusinessId)

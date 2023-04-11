@@ -10,15 +10,6 @@ import { useStore } from '@/store/store'
  */
 @Component({})
 export default class CommonMixin extends Vue {
-  @Getter(useStore) isAlterationFiling!: boolean
-  @Getter(useStore) isCorrectionFiling!: boolean
-  @Getter(useStore) isFirmChangeFiling!: boolean
-  @Getter(useStore) isFirmConversionFiling!: boolean
-  @Getter(useStore) isRestorationFiling!: boolean
-  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
-  @Getter(useStore) isLimitedConversionRestorationFiling!: boolean
-  @Getter(useStore) isSpecialResolutionFiling!: boolean
-
   /** True if Jest is running the code. */
   get isJestRunning (): boolean {
     return (process.env.JEST_WORKER_ID !== undefined)
@@ -89,56 +80,6 @@ export default class CommonMixin extends Vue {
     this[prop] = this[prop]?.toUpperCase()
   }
 
-  /** The appropriate edit label for corrections, alterations, change or conversion filings. */
-  get editLabel (): string {
-    if (this.isCorrectionFiling) return 'Correct'
-
-    if (
-      this.isAlterationFiling ||
-      this.isFirmChangeFiling ||
-      this.isFirmConversionFiling ||
-      this.isSpecialResolutionFiling
-    ) {
-      return 'Change'
-    }
-
-    return 'Edit' // If Restoration extension or Conversion
-  }
-
-  /** The appropriate edited label for corrections, alterations, change or conversion filings. */
-  get editedLabel (): string {
-    if (this.isCorrectionFiling) return 'Corrected'
-
-    if (
-      this.isAlterationFiling ||
-      this.isFirmChangeFiling ||
-      this.isFirmConversionFiling ||
-      this.isRestorationFiling ||
-      this.isSpecialResolutionFiling
-    ) {
-      return 'Changed'
-    }
-
-    return 'Edited' // should never happen
-  }
-
-  /** The appropriate edits saved label for corrections, alterations, change or conversion filings. */
-  get editSavedLabel (): string {
-    if (this.isCorrectionFiling) return 'Corrections Saved'
-
-    if (
-      this.isAlterationFiling ||
-      this.isFirmChangeFiling ||
-      this.isFirmConversionFiling ||
-      this.isRestorationFiling ||
-      this.isSpecialResolutionFiling
-    ) {
-      return 'Changes Saved'
-    }
-
-    return 'Edits Saved' // should never happen
-  }
-
   /** The entity title. */
   get entityTitle (): string {
     switch (this.$route.name) {
@@ -150,25 +91,6 @@ export default class CommonMixin extends Vue {
       case RouteNames.RESTORATION_CONVERSION: return 'Conversion to Full Restoration'
     }
     return 'Unknown Filing' // should never happen
-  }
-
-  /**
-   * Formats a phone number for display.
-   * @param phoneNumber the phone number to format
-   * @returns a formatted phone number
-   */
-  toDisplayPhone (phoneNumber: string): string {
-    // Filter only numbers from the input
-    const cleaned = ('' + phoneNumber).replace(/\D/g, '')
-
-    // Check if the input is of correct length
-    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
-
-    if (match) {
-      return '(' + match[1] + ') ' + match[2] + '-' + match[3]
-    }
-
-    return null
   }
 
   /**

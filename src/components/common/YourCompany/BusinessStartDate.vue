@@ -11,7 +11,7 @@
           color="primary"
           text-color="white"
         >
-          <span>{{ editedLabel }}</span>
+          <span>{{ getEditedLabel }}</span>
         </v-chip>
       </v-col>
 
@@ -41,8 +41,8 @@
               nudge-top="15"
               :minDate="minDate"
               :maxDate="maxDate"
-              :editLabel="editLabel"
-              :editedLabel="editedLabel"
+              :editLabel="getEditLabel"
+              :editedLabel="getEditedLabel"
               @emitDate="onOkClicked($event)"
             />
           </div>
@@ -65,7 +65,7 @@
             id="start-changes-btn" @click="onChangeClicked()"
           >
             <v-icon small color="primary">mdi-pencil</v-icon>
-            <span>{{ editLabel }}</span>
+            <span>{{ getEditLabel }}</span>
           </v-btn>
 
           <!-- Undo Changes buttons -->
@@ -110,13 +110,15 @@ import { useStore } from '@/store/store'
 })
 export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   // Global getters
-  @Getter(useStore) isFirmCorrectionFiling!: boolean
-  @Getter(useStore) hasBusinessStartDateChanged!: boolean
-  @Getter(useStore) getCorrectionStartDate!: string
   @Getter(useStore) getBusinessFoundingDateTime!: string
   @Getter(useStore) getBusinessStartDate!: string
+  @Getter(useStore) getCorrectionStartDate!: string
   @Getter(useStore) getCurrentJsDate!: Date
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) hasBusinessStartDateChanged!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
 
   // Global setter
   @Action(useStore) setCorrectionStartDate!: ActionBindingIF

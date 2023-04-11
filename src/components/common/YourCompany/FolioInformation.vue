@@ -2,7 +2,7 @@
   <FolioNumberShared
     :initialValue="getFolioNumber"
     :originalValue="originalFolioNumber"
-    :editLabel="editLabel"
+    :editLabel="getEditLabel"
     :editedLabel="editedLabelExtended"
     :hideActions="hideActions"
     :invalidSection="invalidSection"
@@ -27,10 +27,15 @@ import { useStore } from '@/store/store'
 })
 export default class FolioInformation extends Mixins(CommonMixin) {
   // Global getters
-  @Getter(useStore) getFolioNumber!: string
-  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getFolioNumber!: string
+  @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global setters
   @Action(useStore) setFolioNumber!: ActionBindingIF
@@ -60,7 +65,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
 
   /** Modifies label for instant update of folio number. */
   get editedLabelExtended (): string {
-    return this.isInstantUpdate ? 'Changes Saved' : this.editedLabel
+    return this.isInstantUpdate ? 'Changes Saved' : this.getEditedLabel
   }
 
   /** On New Folio Number event, updates auth db and store. */

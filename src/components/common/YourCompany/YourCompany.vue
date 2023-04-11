@@ -21,7 +21,7 @@
               color="primary"
               text-color="white"
             >
-              {{editedLabel}}
+              {{getEditedLabel}}
             </v-chip>
           </v-flex>
         </v-col>
@@ -74,7 +74,7 @@
               </div>
               <div class="company-info">
                 <span class="subtitle">Expiry Date: </span>
-                <span class="info-text">{{expiryDate || 'Unknown'}}</span>
+                <span class="info-text">{{nrExpiryDate || 'Unknown'}}</span>
               </div>
               <div class="company-info">
                 <span class="subtitle">Status: </span>
@@ -105,7 +105,7 @@
                 @click="isEditingNames = true"
               >
                 <v-icon small>mdi-pencil</v-icon>
-                <span>{{editLabel}}</span>
+                <span>{{getEditLabel}}</span>
               </v-btn>
               <span class="more-actions" v-if="hasCompanyNameChanged || (hasBusinessNameChanged &&
                 (isAlterationFiling || isFirmChangeFiling || isSpecialResolutionFiling))"
@@ -175,7 +175,7 @@
           </div>
           <div class="name-request-applicant-info">
             <span class="subtitle">Phone: </span>
-            <span class="info-text">{{phoneNumber || 'N/A'}}</span>
+            <span class="info-text">{{nrPhoneNumber || 'N/A'}}</span>
           </div>
         </v-col>
       </v-row>
@@ -319,6 +319,7 @@ import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp
 import { ConversionNOB } from '@/components/Conversion'
 import DateUtilities from '@/services/date-utilities'
 import { useStore } from '@/store/store'
+import { ToDisplayPhone } from '@/utils'
 
 @Component({
   components: {
@@ -343,36 +344,41 @@ export default class YourCompany extends Mixins(
   readonly GetCorpFullDescription = GetCorpFullDescription
 
   // Global getters
-  @Getter(useStore) getNameRequestLegalName!: string
-  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) getAssociationType!: CoopTypes
+  @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) getBusinessFoundingDateTime!: string
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getComponentValidate!: boolean
-  @Getter(useStore) getNameRequest!: NameRequestIF
   @Getter(useStore) getCorrectedFilingDate!: string
-  @Getter(useStore) getBusinessFoundingDateTime!: string
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isCoop!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isFirm!: boolean
+  @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
   @Getter(useStore) isNumberedCompany!: boolean
   @Getter(useStore) isPremiumAccount!: boolean
-  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
-  @Getter(useStore) getBusinessContact!: ContactPointIF
-  @Getter(useStore) isFirm!: boolean
-  @Getter(useStore) isCoop!: boolean
-  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
-  @Getter(useStore) isFirmCorrectionFiling!: boolean
   @Getter(useStore) isRestorationFiling!: boolean
-  @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) getAssociationType!: CoopTypes
-  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
-
-  // Alteration flag getters
-  @Getter(useStore) hasBusinessNameChanged!: boolean
-  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global actions
-  @Action(useStore) setEditingCompanyName!: ActionBindingIF
-  @Action(useStore) setValidComponent!: ActionBindingIF
   @Action(useStore) setBusinessInformation!: ActionBindingIF
+  @Action(useStore) setEditingCompanyName!: ActionBindingIF
   @Action(useStore) setNameRequest!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   /** V-model for dropdown menu. */
   protected dropdown: boolean = null
@@ -442,18 +448,18 @@ export default class YourCompany extends Mixins(
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 
-  /** Name Request applicant info */
+  /** Name Request applicant info. */
   get nrApplicant (): NameRequestApplicantIF {
     return this.getNameRequest?.applicant
   }
 
-  /** Name Request status */
+  /** Name Request status. */
   get nrStatus (): string {
     return (this.getNameRequest?.status || '').toLowerCase()
   }
 
-  /** Name Request expiry */
-  get expiryDate (): string {
+  /** Name Request expiry date. */
+  get nrExpiryDate (): string {
     const expiry = this.getNameRequest?.expiry
     if (expiry) {
       return DateUtilities.apiToPacificDateTime(expiry)
@@ -461,9 +467,9 @@ export default class YourCompany extends Mixins(
     return null
   }
 
-  /** Name Request phone number */
-  get phoneNumber (): string {
-    return this.toDisplayPhone(this.nrApplicant.phoneNumber)
+  /** Name Request phone number. */
+  get nrPhoneNumber (): string {
+    return ToDisplayPhone(this.nrApplicant.phoneNumber)
   }
 
   /** The recognition date or business start date string. */

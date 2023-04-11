@@ -234,25 +234,30 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter(useStore) getCurrentJsDate!: Date
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getOrgPeople!: OrgPersonIF[]
-  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) getComponentValidate!: boolean
-  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
-  @Getter(useStore) isFirmCorrectionFiling!: boolean
-  @Getter(useStore) isBcCompany!: boolean
-  @Getter(useStore) isBenefitCompany!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isBcCcc!: boolean
-  @Getter(useStore) isPartnership!: boolean
-  @Getter(useStore) isSoleProp!: boolean
+  @Getter(useStore) isBcCompany!: boolean
   @Getter(useStore) isBcUlcCompany!: boolean
-  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
+  @Getter(useStore) isBenefitCompany!: boolean
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
   @Getter(useStore) isLimitedConversionRestorationFiling!: boolean
+  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
+  @Getter(useStore) isPartnership!: boolean
+  @Getter(useStore) isRestorationFiling!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSoleProp!: boolean
 
   // Global actions
+  @Action(useStore) setEditingPeopleAndRoles!: ActionBindingIF
   @Action(useStore) setPeopleAndRoles!: ActionBindingIF
   @Action(useStore) setPeopleAndRolesChanged!: ActionBindingIF
   @Action(useStore) setPeopleAndRolesValidity!: ActionBindingIF
-  @Action(useStore) setEditingPeopleAndRoles!: ActionBindingIF
   @Action(useStore) setValidComponent!: ActionBindingIF
 
   // Local properties

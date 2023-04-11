@@ -120,7 +120,7 @@ describe('Business Contact Info for an Alteration', () => {
 
   it('passes the correct label per filing type', async () => {
     // Verify there is a diff between current and original contact data
-    expect(wrapper.vm.editSavedLabel).toBe('Changes Saved')
+    expect(wrapper.vm.getEditSavedLabel).toBe('Changes Saved')
 
     // Call the set Contact method and set the data back to it's original
     await wrapper.vm.onContactInfoChange(originalAlterationContact)
@@ -179,7 +179,7 @@ describe('Business Contact Info for a Change of Registration', () => {
 
   it('passes the correct label per filing type', async () => {
     // Verify there is a diff between current and original contact data
-    expect(wrapper.vm.editSavedLabel).toBe('Changes Saved')
+    expect(wrapper.vm.getEditSavedLabel).toBe('Changes Saved')
 
     // Call the set Contact method and set the data back to it's original
     await wrapper.vm.onContactInfoChange(originalContact)

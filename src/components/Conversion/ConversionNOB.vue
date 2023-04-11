@@ -10,7 +10,7 @@
           color="primary"
           text-color="white"
         >
-          <span>{{ editedLabel }}</span>
+          <span>{{ getEditedLabel }}</span>
         </v-chip>
       </v-col>
 
@@ -52,7 +52,7 @@
           <div v-if="!hasNaicsChanged" class="my-n2 mr-n3">
             <v-btn text color="primary" id="nob-change-btn" @click="onChangeClicked()">
               <v-icon small>mdi-pencil</v-icon>
-              <span>{{ editLabel }}</span>
+              <span>{{ getEditLabel }}</span>
             </v-btn>
           </div>
 
@@ -95,6 +95,8 @@ export default class ConversionNOB extends Mixins(CommonMixin) {
   @Prop({ default: false }) readonly invalidSection!: boolean
 
   @Getter(useStore) getCurrentNaics!: NaicsIF
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) getSnapshotNaics!: NaicsIF
   @Getter(useStore) hasNaicsChanged!: boolean
 
