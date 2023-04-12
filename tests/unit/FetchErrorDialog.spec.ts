@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { shallowMount, mount } from '@vue/test-utils'
 import FetchErrorDialog from '@/dialogs/FetchErrorDialog.vue'
 import ErrorContact from '@/components/common/ErrorContact.vue'
@@ -30,8 +29,8 @@ describe('Fetch Error Dialog', () => {
     expect(wrapper.findAll('p').length).toBe(1)
     expect(wrapper.findAll('p').at(0).text()).toContain('We were unable to retrieve your')
     expect(wrapper.findComponent(ErrorContact).exists()).toBe(false)
-    expect(wrapper.findComponent('#dialog-exit-button').exists()).toBe(true)
-    expect(wrapper.findComponent('#dialog-retry-button').exists()).toBe(true)
+    expect(wrapper.findAll('#dialog-exit-button').exists()).toBe(true)
+    expect(wrapper.findAll('#dialog-retry-button').exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -51,8 +50,8 @@ describe('Fetch Error Dialog', () => {
     expect(wrapper.findAll('p').at(0).text()).toContain('We were unable to retrieve your')
     expect(wrapper.findAll('p').at(1).text()).toContain('If this error persists')
     expect(wrapper.findComponent(ErrorContact).exists()).toBe(true)
-    expect(wrapper.findComponent('#dialog-exit-button').exists()).toBe(true)
-    expect(wrapper.findComponent('#dialog-retry-button').exists()).toBe(true)
+    expect(wrapper.findAll('#dialog-exit-button').exists()).toBe(true)
+    expect(wrapper.findAll('#dialog-retry-button').exists()).toBe(true)
 
     wrapper.destroy()
   })

@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-
-import { getVuexStore } from '@/store/'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
 import { createPinia, setActivePinia } from 'pinia'

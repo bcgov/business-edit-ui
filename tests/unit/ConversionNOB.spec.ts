@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { mount } from '@vue/test-utils'
 import ConversionNOB from '@/components/Conversion/ConversionNOB.vue'
 import { createPinia, setActivePinia } from 'pinia'
