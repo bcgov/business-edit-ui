@@ -831,10 +831,11 @@ export default class FilingTemplateMixin extends DateMixin {
       ...filing.restoration.business
     })
 
-    // restore Restoration data
-    this.setRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
+    // set restoration approval type
     if (filing.restoration.approvalType) {
       this.mutateRestorationApprovalType(filing.restoration.approvalType)
+    } else {
+      this.setRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
     }
 
     if (filing.restoration.courtOrder) {
