@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import Vue, { nextTick } from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
@@ -91,10 +91,6 @@ describe('Time Limit Extension component', () => {
   })
 
   it('get correct court order file number.', () => {
-    const wrapper = wrapperFactory()
-    const extendTimeLimit = wrapper.vm as any // wrapper.vm type is Vue
-
-    expect(extendTimeLimit.courtOrderNumberText).toEqual('')
-    wrapper.destroy()
+    expect(store.getCourtOrderNumberText).toEqual('')
   })
 })

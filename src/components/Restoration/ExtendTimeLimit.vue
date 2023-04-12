@@ -93,10 +93,6 @@ export default class ExtendTimeLimit extends Vue {
     return this.getStateFilingRestoration?.approvalType
   }
 
-  get courtOrderNumberText (): string {
-    return this.getRestoration.courtOrder?.fileNumber || ''
-  }
-
   /** The expiry draft date for extension. */
   get expiry (): string {
     return DateUtilities.subtractMonthsToDate(this.previousNumberOfMonths, this.getRestoration.expiry)

@@ -1180,15 +1180,22 @@ export const useStore = defineStore('store', {
         const numberOfExtensionMonths = DateUtilities.subtractDates(state.stateModel.stateFilingRestoration?.expiry,
           state.stateModel.restoration?.expiry)
         const expiryDatePacific = DateUtilities.yyyyMmDdToPacificDate(state.stateModel.restoration?.expiry)
-        const formattedExpiryText = numberOfExtensionMonths + ' months, expires on ' + expiryDatePacific
-        return formattedExpiryText
+        return numberOfExtensionMonths + ' months, expires on ' + expiryDatePacific
       }
       return '[no expiry date]'
     },
 
     /** The court order draft file number. */
-    getCourtOrderNumberText (state): string {
-      return state.stateModel.restoration.courtOrder?.fileNumber || ''
+    getCourtOrderNumberText (): string {
+      return this.stateModel.restoration.courtOrder?.fileNumber || ''
+    },
+
+    getRelationships (): RelationshipTypes[] {
+      return this.stateModel.restoration.relationships
+    },
+
+    getIsRestorationTypeCourtOrder (): boolean {
+      return this.stateModel.restoration.courtOrder?.fileNumber !== null
     }
 
   },

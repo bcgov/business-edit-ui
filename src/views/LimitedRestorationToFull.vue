@@ -129,6 +129,7 @@ import {
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationToFull/'
 import { ApprovalTypes, FilingStatus, RoleTypes } from '@/enums/'
+import { RelationshipTypes } from '@bcrs-shared-components/enums'
 import { RelationshipsPanel } from '@bcrs-shared-components/relationships-panel'
 import CourtOrderPoa from '@/components/common/CourtOrderPoa.vue'
 import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
@@ -167,6 +168,7 @@ import { useStore } from '@/store/store'
 })
 export default class LimitedRestorationToFull extends Vue {
   // Global getters
+  @Getter(useStore) getRelationships!: RelationshipTypes[]
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getOrgPeople!: OrgPersonIF[]
@@ -178,6 +180,8 @@ export default class LimitedRestorationToFull extends Vue {
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getCourtOrderNumberText!: string
 
   // Global actions
   @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
@@ -187,6 +191,7 @@ export default class LimitedRestorationToFull extends Vue {
   @Action(useStore) setResource!: ActionBindingIF
   @Action(useStore) setRestorationRelationships!: ActionBindingIF
   @Action(useStore) setStateFilingRestoration!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
   @Action(useStore) mutateRestorationCourtOrder!: ActionBindingIF
 
   /** Whether App is ready. */
