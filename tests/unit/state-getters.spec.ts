@@ -547,3 +547,25 @@ describe('test restoration expiry date', () => {
     expect(store.getExpiryDateString).toEqual('2023-12-31')
   })
 })
+
+describe('test getIsRestorationTypeCourtOrder', () => {
+  it('getIsRestorationTypeCourtOrder returns true when set', () => {
+    store.stateModel.restoration.courtOrder.fileNumber = '1234'
+    expect(store.getIsRestorationTypeCourtOrder).toBe(true)
+  })
+
+  it('getIsRestorationTypeCourtOrder returns false when empty', () => {
+    store.stateModel.restoration.courtOrder.fileNumber = ''
+    expect(store.getIsRestorationTypeCourtOrder).toBe(false)
+  })
+
+  it('getIsRestorationTypeCourtOrder returns false when null', () => {
+    store.stateModel.restoration.courtOrder.fileNumber = null
+    expect(store.getIsRestorationTypeCourtOrder).toBe(false)
+  })
+
+  it('getIsRestorationTypeCourtOrder returns false when courtOrder property missing', () => {
+    store.stateModel.restoration = {}
+    expect(store.getIsRestorationTypeCourtOrder).toBe(false)
+  })
+})

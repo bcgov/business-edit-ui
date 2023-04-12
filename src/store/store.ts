@@ -1195,7 +1195,7 @@ export const useStore = defineStore('store', {
     },
 
     getIsRestorationTypeCourtOrder (): boolean {
-      return this.stateModel.restoration.courtOrder?.fileNumber !== null
+      return !!this.stateModel.restoration.courtOrder?.fileNumber
     }
 
   },
