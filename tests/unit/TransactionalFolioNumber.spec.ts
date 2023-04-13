@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store/'
 import TransactionalFolioNumber from '@/components/common/TransactionalFolioNumber.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'

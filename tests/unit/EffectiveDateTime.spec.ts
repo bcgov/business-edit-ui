@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { createLocalVue, mount, Wrapper } from '@vue/test-utils'
-import { getVuexStore } from '@/store/'
 import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
 import flushPromises from 'flush-promises'
 import { createPinia, setActivePinia } from 'pinia'

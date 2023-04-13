@@ -98,6 +98,11 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) setRestorationCourtOrder!: ActionBindingIF
   @Action(useStore) setRestorationExpiry!: ActionBindingIF
   @Action(useStore) setRestorationType!: ActionBindingIF
+  @Action(useStore) mutateRestorationApprovalType!: ActionBindingIF
+  @Action(useStore) mutateRestorationCourtOrder!: ActionBindingIF
+  @Action(useStore) mutateRestorationExpiry!: ActionBindingIF
+  @Action(useStore) mutateRestorationType!: ActionBindingIF
+  @Action(useStore) mutateRestorationRelationships!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -811,7 +816,6 @@ export default class FilingTemplateMixin extends DateMixin {
   /**
    * Parses a draft Restoration filing into the store.
    * @param filing the restoration filing
-   * @param entitySnapshot the latest entity snapshot
    */
   parseRestorationFiling (filing: RestorationFilingIF): void {
     // Get the Entity Snapshot from store
@@ -827,8 +831,13 @@ export default class FilingTemplateMixin extends DateMixin {
       ...filing.restoration.business
     })
 
-    // restore Restoration data
-    this.setRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
+    // set restoration approval type
+    if (filing.restoration.approvalType) {
+      this.mutateRestorationApprovalType(filing.restoration.approvalType)
+    } else {
+      this.setRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
+    }
+
     if (filing.restoration.courtOrder) {
       this.setRestorationCourtOrder(filing.restoration.courtOrder)
     }
@@ -849,6 +858,10 @@ export default class FilingTemplateMixin extends DateMixin {
         nrNumber: entitySnapshot.businessInfo.nrNumber
       }
     ))
+
+    if (filing.restoration.relationships) {
+      this.mutateRestorationRelationships(filing.restoration.relationships)
+    }
 
     // store Name Translations
     this.setNameTranslations(cloneDeep(

@@ -29,11 +29,11 @@
     <section id="approval-type-section"
       class="section-container"
       :class="{ 'invalid-section': !getApprovalTypeValid }"
-      v-if="approvalType == ApprovalTypes.VIA_COURT_ORDER"
+      v-if="approvalType === ApprovalTypes.VIA_COURT_ORDER"
     >
       <template>
         <ApprovalType
-          :courtOrderNumber="courtOrderNumberText"
+          :courtOrderNumber="getCourtOrderNumberText"
           :isCourtOrderOnly="true"
           :isCourtOrderRadio="false"
           :invalidSection="!getApprovalTypeValid"
@@ -74,6 +74,7 @@ export default class ExtendTimeLimit extends Vue {
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getExpiryValid!: boolean
   @Getter(useStore) getRestoration!: RestorationStateIF
+  @Getter(useStore) getCourtOrderNumberText!: string
   @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
 
   @Action(useStore) setValidComponent!: ActionBindingIF
@@ -90,11 +91,6 @@ export default class ExtendTimeLimit extends Vue {
   /** The limited restoration state filing's approval type. */
   get approvalType (): ApprovalTypes {
     return this.getStateFilingRestoration?.approvalType
-  }
-
-  /** The court order draft file number. */
-  get courtOrderNumberText (): string {
-    return this.getRestoration.courtOrder?.fileNumber || ''
   }
 
   /** The expiry draft date for extension. */

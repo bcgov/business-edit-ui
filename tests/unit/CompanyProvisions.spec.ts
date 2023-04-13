@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { shallowMount, mount } from '@vue/test-utils'
 import CompanyProvisions from '@/components/Alteration/Articles/CompanyProvisions.vue'
 import { createPinia, setActivePinia } from 'pinia'

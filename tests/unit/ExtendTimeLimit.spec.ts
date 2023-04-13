@@ -91,10 +91,6 @@ describe('Time Limit Extension component', () => {
   })
 
   it('get correct court order file number.', () => {
-    const wrapper = wrapperFactory()
-    const extendTimeLimit = wrapper.vm as any // wrapper.vm type is Vue
-
-    expect(extendTimeLimit.courtOrderNumberText).toEqual('')
-    wrapper.destroy()
+    expect(store.getCourtOrderNumberText).toEqual('')
   })
 })

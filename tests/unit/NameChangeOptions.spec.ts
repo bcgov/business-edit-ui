@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { mount } from '@vue/test-utils'
 import YourCompany from '@/components/common/YourCompany/YourCompany.vue'
 
