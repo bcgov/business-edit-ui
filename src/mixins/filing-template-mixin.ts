@@ -102,7 +102,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) mutateRestorationCourtOrder!: ActionBindingIF
   @Action(useStore) mutateRestorationExpiry!: ActionBindingIF
   @Action(useStore) mutateRestorationType!: ActionBindingIF
-  @Action(useStore) mutateRestorationRelationships!: ActionBindingIF
+  @Action(useStore) setRestorationRelationships!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -860,7 +860,7 @@ export default class FilingTemplateMixin extends DateMixin {
     ))
 
     if (filing.restoration.relationships) {
-      this.mutateRestorationRelationships(filing.restoration.relationships)
+      this.setRestorationRelationships(filing.restoration.relationships)
     }
 
     // store Name Translations
