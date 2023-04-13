@@ -40,7 +40,7 @@
               :isCourtOrderOnly="isCourtOrderOnly"
               :isCourtOrderRadio="showCourtOrderRadio"
               :invalidSection="!getApprovalTypeValid"
-              @courtNumberChange="mutateRestorationCourtOrder({ 'fileNumber': $event })"
+              @courtNumberChange="setRestorationCourtOrder({ 'fileNumber': $event })"
               @valid="setValidComponent({ key: 'isValidApprovalType', value: $event })"
             />
           </QuestionWrapper>
@@ -182,6 +182,7 @@ export default class LimitedRestorationToFull extends Vue {
   @Getter(useStore) showFeeSummary!: boolean
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCourtOrderNumberText!: string
+  @Getter(useStore) getApprovalTypeValid!: boolean
 
   // Global actions
   @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
@@ -192,7 +193,7 @@ export default class LimitedRestorationToFull extends Vue {
   @Action(useStore) setRestorationRelationships!: ActionBindingIF
   @Action(useStore) setStateFilingRestoration!: ActionBindingIF
   @Action(useStore) setValidComponent!: ActionBindingIF
-  @Action(useStore) mutateRestorationCourtOrder!: ActionBindingIF
+  @Action(useStore) setRestorationCourtOrder!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
