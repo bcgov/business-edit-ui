@@ -98,10 +98,6 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) setRestorationCourtOrder!: ActionBindingIF
   @Action(useStore) setRestorationExpiry!: ActionBindingIF
   @Action(useStore) setRestorationType!: ActionBindingIF
-  @Action(useStore) mutateRestorationApprovalType!: ActionBindingIF
-  @Action(useStore) mutateRestorationCourtOrder!: ActionBindingIF
-  @Action(useStore) mutateRestorationExpiry!: ActionBindingIF
-  @Action(useStore) mutateRestorationType!: ActionBindingIF
   @Action(useStore) setRestorationRelationships!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
@@ -833,7 +829,7 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // set restoration approval type
     if (filing.restoration.approvalType) {
-      this.mutateRestorationApprovalType(filing.restoration.approvalType)
+      this.setRestorationApprovalType(filing.restoration.approvalType)
     } else {
       this.setRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
     }
