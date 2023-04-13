@@ -4,16 +4,8 @@ import { shallowMount } from '@vue/test-utils'
 import Actions from '@/components/common/Actions.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import {
-  ActionTypes,
-  ApprovalTypes,
-  CorpTypeCd,
-  CorrectionErrorTypes,
-  FilingTypes,
-  RelationshipTypes,
-  RestorationTypes
-} from '@/enums'
-import { CourtOrderIF } from '@/interfaces'
+import { ActionTypes, CorpTypeCd, CorrectionErrorTypes, FilingTypes } from '@/enums'
+import { ApprovalTypes, RestorationTypes } from '@bcrs-shared-components/enums'
 
 Vue.use(Vuetify)
 
@@ -574,7 +566,14 @@ describe('test getIsRestorationTypeCourtOrder', () => {
   })
 
   it('getIsRestorationTypeCourtOrder returns false when courtOrder property missing', () => {
-    store.stateModel.restoration.courtOrder = {}
+    store.stateModel.restoration = {
+      approvalType: ApprovalTypes.VIA_REGISTRAR,
+      approvalTypeValid: true,
+      businessNameValid: true,
+      type: RestorationTypes.LTD_TO_FULL,
+      expiryValid: true,
+      relationships: []
+    }
     expect(store.getIsRestorationTypeCourtOrder).toBe(false)
   })
 })
