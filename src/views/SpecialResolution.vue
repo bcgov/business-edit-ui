@@ -9,7 +9,21 @@
           </header>
 
           <section class="mt-6">
-            You must keep your business information up to date. Some changes require a Special Resolution.
+            You must keep your business information up to date.
+            <v-tooltip
+              top
+              content-class="top-tooltip"
+              transition="fade-transition"
+            >
+              <template v-slot:activator="{ on }">
+                <span v-on="on" class="tooltip-text">Some changes</span>
+              </template>
+              <span>
+                A Special Resolution is required for a change to the Business name,
+                the Cooperative Association Type, the Rules or the Memorandum.
+              </span>
+            </v-tooltip>
+            require a Special Resolution.
             Necessary fees will be applied as updates are made.
           </section>
 
@@ -361,5 +375,24 @@ export default class SpecialResolution extends Mixins(
 <style lang="scss" scoped>
 #done-button {
   width: 10rem;
+}
+
+.tooltip {
+  background-color: transparent;
+  opacity: 1 !important;
+
+  .tooltip-content {
+    min-width: 30rem;
+    padding: 2rem;
+  }
+}
+
+.tooltip-text {
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+}
+
+.tooltip-text:hover {
+    cursor: pointer;
 }
 </style>

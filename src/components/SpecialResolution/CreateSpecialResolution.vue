@@ -302,7 +302,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   }
 
   /** Validations rules for resolution date field. */
-  get resolutionDateRules (): Array<Function> {
+  get resolutionDateRules (): Array<VuetifyRuleFunction> {
     return [
       (v: string) => !!v || 'Resolution date is required',
       (v: string) =>
@@ -364,13 +364,8 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     return this.getCurrentDate
   }
 
-  /** The maximum date that can be entered (today). */
-  private get signatureDateMax (): Date {
-    return this.yyyyMmDdToDate(this.getCurrentDate)
-  }
-
   /** Validations rules for signing date field. */
-  get signatureDateRules (): Array<Function> {
+  get signatureDateRules (): Array<VuetifyRuleFunction> {
     return [
       (v: string) => !!v || 'Signature date is required',
       (v: string) =>

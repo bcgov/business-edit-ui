@@ -69,8 +69,7 @@
               </v-checkbox>
               <ul>
                 <li class="mt-4">
-                  The special resolution was passed by <strong>{{ companyName }}</strong> and authorizes the
-                  dissolution.
+                  The special resolution was passed by <strong>{{ companyName }}.</strong>
                 </li>
                 <li class="mt-4">
                   A printed copy of the signed special resolution (Form 06 COO) has been retained with the Cooperative

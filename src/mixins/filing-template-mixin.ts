@@ -67,9 +67,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) hasBusinessStartDateChanged!: boolean
   @Getter(useStore) getRestoration!: RestorationStateIF
   @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
-  @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
   @Getter(useStore) isEntityTypeFirm!: boolean
-  @Getter(useStore) hasBusinessStartDateChanged!: boolean
   // Global actions
   @Action(useStore) setBusinessContact!: ActionBindingIF
   @Action(useStore) setBusinessInformation!: ActionBindingIF
@@ -100,7 +98,6 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) setRestorationCourtOrder!: ActionBindingIF
   @Action(useStore) setRestorationExpiry!: ActionBindingIF
   @Action(useStore) setRestorationType!: ActionBindingIF
-  @Action setSpecialResolution!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -392,21 +389,6 @@ export default class FilingTemplateMixin extends DateMixin {
           legalType: this.getEntityType
         },
         contactPoint: this.getContactPoint,
-        cooperativeAssociationType: this.getAssociationType,
-        rulesFileKey: 'test',
-        rulesFileName: 'testUrl',
-        memorandumFileKey: 'test',
-        memorandumFileName: 'test'
-      }
-    }
-    /* Only add alteration if the association type has changed,
-     * rules and memorandum only show up if the association type changes. */
-    if (this.hasAssociationTypeChanged) {
-      filing.alteration = {
-        business: {
-          identifier: this.getBusinessId,
-          legalType: this.getEntityType
-        },
         cooperativeAssociationType: this.getAssociationType,
         rulesFileKey: 'test',
         rulesFileName: 'testUrl',
