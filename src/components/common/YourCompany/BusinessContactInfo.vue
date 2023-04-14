@@ -47,9 +47,7 @@ export default class BusinessContactInfo extends Vue {
   @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) isAlterationFiling!: boolean
-  @Getter(useStore) isCorrectionFiling!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
-  @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global setters
   @Action(useStore) setBusinessContact!: ActionBindingIF
@@ -84,14 +82,7 @@ export default class BusinessContactInfo extends Vue {
     if (isEqual(contactInfo, this.getBusinessContact)) return
 
     try {
-      if (
-        this.isAlterationFiling ||
-        this.isCorrectionFiling ||
-        this.isFirmChangeFiling ||
-        this.isSpecialResolutionFiling
-      ) {
-        await AuthServices.updateContactInfo(contactInfo, this.getBusinessId)
-      }
+      await AuthServices.updateContactInfo(contactInfo, this.getBusinessId)
       this.setBusinessContact(contactInfo)
     } catch (error) {
       console.log('Update contact info error =', error) // eslint-disable-line no-console
