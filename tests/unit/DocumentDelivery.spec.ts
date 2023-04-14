@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount, Wrapper } from '@vue/test-utils'
-import { getVuexStore } from '@/store/'
 import DocumentsDelivery from '@/components/common/DocumentsDelivery.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'

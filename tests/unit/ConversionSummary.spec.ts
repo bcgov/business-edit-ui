@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import sinon from 'sinon'
-import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import ConversionSummary from '@/components/Conversion/ConversionSummary.vue'
 import NatureOfBusiness from '@/components/common/YourCompany/NatureOfBusiness.vue'

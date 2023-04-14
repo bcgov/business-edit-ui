@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { shallowMount, mount } from '@vue/test-utils'
 import FetchErrorDialog from '@/dialogs/FetchErrorDialog.vue'
 import ErrorContact from '@/components/common/ErrorContact.vue'
@@ -15,7 +14,7 @@ const store = useStore()
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
-describe.skip('Fetch Error Dialog', () => {
+describe('Fetch Error Dialog', () => {
   it('renders the component properly as a staff user', () => {
     store.stateModel.tombstone.keycloakRoles = ['staff', 'edit', 'view']
     const wrapper = shallowMount(FetchErrorDialog,
@@ -26,12 +25,12 @@ describe.skip('Fetch Error Dialog', () => {
 
     expect(wrapper.attributes('contentclass')).toBe('fetch-error-dialog')
     expect(wrapper.isVisible()).toBe(true)
-    expect(wrapper.find('#dialog-title').text()).toBe('Unable to Resume Application')
+    expect(wrapper.find('#dialog-title').text()).toBe('Unable to Retrieve Filing')
     expect(wrapper.findAll('p').length).toBe(1)
-    expect(wrapper.findAll('p').at(0).text()).toContain('We were unable to resume your')
-    expect(wrapper.find(ErrorContact).exists()).toBe(false)
-    expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
-    expect(wrapper.find('#dialog-retry-button').exists()).toBe(true)
+    expect(wrapper.findAll('p').at(0).text()).toContain('We were unable to retrieve your')
+    expect(wrapper.findComponent(ErrorContact).exists()).toBe(false)
+    expect(wrapper.findAll('#dialog-exit-button').exists()).toBe(true)
+    expect(wrapper.findAll('#dialog-retry-button').exists()).toBe(true)
 
     wrapper.destroy()
   })
@@ -46,13 +45,13 @@ describe.skip('Fetch Error Dialog', () => {
 
     expect(wrapper.attributes('contentclass')).toBe('fetch-error-dialog')
     expect(wrapper.isVisible()).toBe(true)
-    expect(wrapper.find('#dialog-title').text()).toBe('Unable to Resume Application')
+    expect(wrapper.find('#dialog-title').text()).toBe('Unable to Retrieve Filing')
     expect(wrapper.findAll('p').length).toBe(2)
-    expect(wrapper.findAll('p').at(0).text()).toContain('We were unable to resume your')
+    expect(wrapper.findAll('p').at(0).text()).toContain('We were unable to retrieve your')
     expect(wrapper.findAll('p').at(1).text()).toContain('If this error persists')
-    expect(wrapper.find(ErrorContact).exists()).toBe(true)
-    expect(wrapper.find('#dialog-exit-button').exists()).toBe(true)
-    expect(wrapper.find('#dialog-retry-button').exists()).toBe(true)
+    expect(wrapper.findComponent(ErrorContact).exists()).toBe(true)
+    expect(wrapper.findAll('#dialog-exit-button').exists()).toBe(true)
+    expect(wrapper.findAll('#dialog-retry-button').exists()).toBe(true)
 
     wrapper.destroy()
   })
