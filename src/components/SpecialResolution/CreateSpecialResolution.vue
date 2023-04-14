@@ -27,37 +27,9 @@
         for this amendment
       </article>
 
-      <HelpSection
+      <!-- <HelpSpecialResolution
         class="ma-6"
-        :helpSection="helpSection"
-      />
-
-      <!-- Special Resolution Form -->
-      <section id="sample-resolution-section" class="section-container mt-10">
-        <header id="sample-resolution-header">
-          <h2>{{ getSpecialResolutionResource.header}}</h2>
-        </header>
-
-        <p class="section-description mt-2"
-          v-html="getSpecialResolutionResource.text"></p>
-
-        <div class="mt-4">
-          <v-card flat class="py-8 px-6">
-            <div class="d-flex flex-column flex-sm-row justify-center align-center">
-              <img src="@/assets/images/BCRegistries_CoopSpecialResolution-x2.png"
-                :alt="getSpecialResolutionResource.label"
-                slot-scope="" class="preview-image" />
-              <div class="px-8" />
-              <div class="download-link-container py-5">
-                <v-icon color="primary" class="mt-n1">mdi-file-pdf-outline</v-icon>
-                <a :href="documentURL" download class="ml-1">
-                  {{getSpecialResolutionResource.label}}
-                </a>
-              </div>
-            </div>
-          </v-card>
-        </div>
-      </section>
+      /> -->
 
       <v-divider class="mx-4" />
 
@@ -193,9 +165,9 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { ActionBindingIF, HelpSectionIF, ResourceIF, FormIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
+import { ActionBindingIF, FormIF } from '@/interfaces/'
 import { DateMixin } from '@/mixins/'
-import { HelpSection } from '@/components/common/'
+import { HelpSpecialResolution } from '@/components/SpecialResolution/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { SpecialResolutionIF, PersonIF } from '@bcrs-shared-components/interfaces/'
 import { VuetifyRuleFunction } from '@/types'
@@ -203,12 +175,11 @@ import { useStore } from '@/store/store'
 
 @Component({
   components: {
-    HelpSection,
+    HelpSpecialResolution,
     DatePickerShared
   }
 })
 export default class CreateSpecialResolution extends Mixins(DateMixin) {
-  @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) getBusinessFoundingDateTime!: string
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
@@ -248,29 +219,6 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   readonly resolutionDateRules = [
     (v: string) => !!v || 'Resolution date is required'
   ]
-
-  /** Validations rules for signing date field. */
-  readonly signatureDateRules = [
-    (v: string) => !!v || 'Signature date is required'
-  ]
-
-  get helpSection (): HelpSectionIF {
-    return this.getResource.changeData?.specialResolution?.helpSection || {}
-  }
-
-  get getSpecialResolutionResource (): SpecialResolutionSampleFormIF {
-    return this.getResource.changeData?.specialResolution?.sampleFormSection || {}
-  }
-
-  /** download URL for pdf file */
-  get documentURL (): string {
-    /**
-     * In session is stored the BASE_URL with business ID
-     * So we are taking from process.env.BASE_URL
-     */
-    return process.env.BASE_URL +
-      this.getSpecialResolutionResource?.path
-  }
 
   /** The name section validity state (when prompted by app). */
   get invalidCreateSpecialResolutionSection (): boolean {
