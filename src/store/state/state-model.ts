@@ -1,4 +1,5 @@
-import { EmptyNameRequest, StateModelIF, EmptyFees } from '@/interfaces/'
+import { EmptyFees, EmptyNameRequest, StateModelIF } from '@/interfaces/'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { EmptyContactPoint } from '@bcrs-shared-components/interfaces/'
 import { cloneDeep } from 'lodash'
 
@@ -38,6 +39,7 @@ export const stateModel: StateModelIF = {
       isValidCompanyName: true,
       isValidBusinessType: true,
       isValidNameTranslation: true,
+      isValidStartDate: true,
       isValidNatureOfBusiness: true,
       isValidAddress: true,
       isValidContactInfo: true,
@@ -46,9 +48,10 @@ export const stateModel: StateModelIF = {
       isValidShareStructure: true,
       isValidCompanyProvisions: true,
       isValidResolutionDate: true,
-      isValidStartDate: true,
       isValidAssociationType: true,
-      isValidCreateSpecialResolution: true
+      isValidCreateSpecialResolution: true,
+      isValidApprovalType: true,
+      isValidExtensionTime: true
     },
     flagsReviewCertify: {
       // NB: this must be in same order as ComponentsReviewCertify enum!
@@ -57,10 +60,10 @@ export const stateModel: StateModelIF = {
       isValidCompletingParty: true,
       isValidTransactionalFolioNumber: true,
       isValidDetailComment: true,
+      isValidSpecialResolutionConfirm: true,
       isValidCertify: false, // initially un-certified
       isValidCourtOrder: true,
-      isValidStaffPayment: true,
-      isValidSpecialResolutionConfirm: false
+      isValidStaffPayment: true
     }
   },
   accountInformation: {
@@ -71,17 +74,20 @@ export const stateModel: StateModelIF = {
   },
   businessContact: { ...EmptyContactPoint },
   businessInformation: {
-    legalType: null,
+    associationType: null,
+    foundingDate: null,
     identifier: '',
-    associationType: null
+    legalName: null,
+    legalType: null
   },
   correctionInformation: {
     comment: '',
     correctedFilingDate: null,
     correctedFilingId: null,
     correctedFilingType: null,
-    type: null,
-    startDate: null
+    parties: null,
+    startDate: null,
+    type: null
   },
   nameRequest: { ...EmptyNameRequest },
   nameTranslations: [],
@@ -108,7 +114,7 @@ export const stateModel: StateModelIF = {
   },
   entitySnapshot: null,
   staffPayment: {
-    option: NaN,
+    option: StaffPaymentOptions.NONE,
     routingSlipNumber: '',
     bcolAccountNumber: '',
     datNumber: '',
@@ -141,5 +147,15 @@ export const stateModel: StateModelIF = {
       additionalName: null
     },
     resolutionConfirmed: false
-  }
+  },
+  restoration: {
+    approvalType: null,
+    approvalTypeValid: true,
+    businessNameValid: false,
+    expiry: null,
+    expiryValid: true,
+    relationships: [],
+    type: null
+  },
+  stateFilingRestoration: null
 }

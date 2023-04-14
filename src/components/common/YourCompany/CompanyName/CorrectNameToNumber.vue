@@ -15,22 +15,24 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Prop, Watch, Emit, Vue } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import Vue from 'vue'
+import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
+import { Action, Getter } from 'pinia-class'
 
 // Interfaces && enums
 import { ActionBindingIF, NameRequestIF } from '@/interfaces/'
-import { CorrectionTypes } from '@/enums/'
+import { NameChangeOptions } from '@/enums/'
+import { useStore } from '@/store/store'
 
 @Component({})
 export default class CorrectNameToNumber extends Vue {
   /** Form Submission Prop */
-  @Prop({ default: null }) readonly formType: CorrectionTypes
+  @Prop({ default: null }) readonly formType!: NameChangeOptions
 
-  @Action setNameRequest!: ActionBindingIF
+  @Action(useStore) setNameRequest!: ActionBindingIF
 
-  @Getter getNameRequest!: NameRequestIF
-  @Getter getBusinessId!: string
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) getBusinessId!: string
 
   // Local properties
   protected correctToNumbered = false
@@ -42,12 +44,13 @@ export default class CorrectNameToNumber extends Vue {
   /** Watch for form submission and emit results. */
   @Watch('formType')
   private async onSubmit (): Promise<any> {
-    if (this.formType === CorrectionTypes.CORRECT_NAME_TO_NUMBER) {
+    // this component should only see correct-name-to-number form type
+    if (this.formType === NameChangeOptions.CORRECT_NAME_TO_NUMBER) {
       // delete the current legal name and NR number
       this.setNameRequest({
         ...this.getNameRequest,
-        legalName: null,
-        nrNumber: null
+        legalName: undefined,
+        nrNumber: undefined
       })
       this.emitIsSaved(true)
     }
@@ -55,6 +58,7 @@ export default class CorrectNameToNumber extends Vue {
 
   /** Inform parent the process is complete. */
   @Emit('isSaved')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitIsSaved (isSaved: boolean): void {}
 
   /** Inform parent when form is valid and ready for submission. */
@@ -73,7 +77,8 @@ export default class CorrectNameToNumber extends Vue {
   padding: 0;
   margin: 0;
 }
-::v-deep .theme--light.v-label {
+
+:deep(.theme--light.v-label) {
   font-size: 1rem;
   color: $gray7;
   font-weight: normal;

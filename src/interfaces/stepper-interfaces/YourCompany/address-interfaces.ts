@@ -1,6 +1,7 @@
 /**
  * Interface to define a base address.
  * Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/address.json
+ * See also Address Interface in BCRS Shared Components repo.
  */
 export interface AddressIF {
   id?: number // from API
@@ -32,6 +33,7 @@ export interface AddressesIF {
   // Records Office is required for BCOMPs.
   // Records Office may be optional for other app types.
   recordsOffice?: OfficeIF
-  // Business Office is for required for Firms.
+  // Business Office is required for Firms.
+  // Business Office may be optional for other app types.
   businessOffice?: OfficeIF
 }

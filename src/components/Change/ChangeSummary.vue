@@ -57,12 +57,15 @@
       <article id="org-person-summary-section" class="section-container pb-0">
         <v-row no-gutters>
           <v-col cols="12" sm="3">
-            <label>{{ isEntityTypeSP ? 'Proprietor' : 'Partner' }} Information</label>
+            <label>{{ isSoleProp ? 'Proprietor' : 'Partner' }} Information</label>
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-4">
           <v-col cols="12">
-            <ListPeopleAndRoles :isSummaryView="true" />
+            <ListPeopleAndRoles
+              :isSummaryView="true"
+              :showRolesColumn="false"
+            />
           </v-col>
         </v-row>
       </article>
@@ -71,11 +74,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
+import { Getter } from 'pinia-class'
 import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common/'
-import { ActionBindingIF, NameRequestIF, ResourceIF } from '@/interfaces/'
+import { NameRequestIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -85,22 +90,18 @@ import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 })
 export default class ChangeSummary extends Vue {
   // Global getters
-  @Getter hasBusinessNameChanged!: boolean
-  @Getter getNameRequest!: NameRequestIF
-  @Getter hasNaicsChanged!: boolean
-  @Getter getCurrentNaics!: NaicsIF
-  @Getter haveOfficeAddressesChanged!: boolean
-  @Getter havePeopleAndRolesChanged!: boolean
-  @Getter getResource!: ResourceIF
-  @Getter getNameRequestLegalName!: string
-  @Getter getBusinessNumber!: string
-  @Getter isEntityTypeSP!: boolean
-
-  // Global actions
-  @Action setSummaryMode!: ActionBindingIF
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) hasNaicsChanged!: boolean
+  @Getter(useStore) haveOfficeAddressesChanged!: boolean
+  @Getter(useStore) havePeopleAndRolesChanged!: boolean
+  @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) getCurrentNaics!: NaicsIF
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) isSoleProp!: boolean
 
   /** Whether to perform validation. */
-  @Prop() readonly validate: boolean
+  @Prop() readonly validate!: boolean
 
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {

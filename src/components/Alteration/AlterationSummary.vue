@@ -52,9 +52,9 @@
           </v-col>
 
           <v-col cols="8">
-            <span class="info-text">Changing from a {{ getCorpTypeDescription(originalLegalType) }}</span>
+            <span class="info-text">Changing from a {{ GetCorpFullDescription(originalLegalType) }}</span>
             &nbsp;
-            <span class="info-text">to a {{getCorpTypeDescription(getEntityType)}}</span>
+            <span class="info-text">to a {{ GetCorpFullDescription(getEntityType) }}</span>
 
             <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
             <div class="confirmed-msg">
@@ -73,10 +73,7 @@
     <template v-if="haveNameTranslationsChanged">
       <v-divider class="mx-4" />
       <div class="section-container name-translation-summary">
-        <NameTranslation
-          :nameTranslations="getNameTranslations"
-          :isSummaryMode="true"
-        />
+        <NameTranslation :isSummaryMode="true" />
       </div>
     </template>
 
@@ -104,7 +101,7 @@
 
           <v-col cols="8">
             <span class="info-text">
-              The company has resolved that none of the Pre-existing Company Provisions are to apply to this company.
+              The company has resolved that the Pre-existing Company Provisions no longer apply to this company.
             </span>
           </v-col>
         </v-row>
@@ -143,8 +140,6 @@
             </p>
 
             <EffectiveDateTime
-              :currentJsDate="getCurrentJsDate"
-              :effectiveDateTime="getEffectiveDateTime"
               @dateTimeString="setEffectiveDateTimeString($event)"
               @isFutureEffective="setIsFutureEffective($event); emitHaveChanges()"
               @valid="setEffectiveDateValid($event)"
@@ -167,11 +162,13 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
-import { DateMixin, SharedMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
+import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
+import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -183,25 +180,26 @@ import { ResolutionDates } from '@/components/Alteration/'
 })
 export default class AlterationSummary extends Mixins(
   DateMixin,
-  SharedMixin,
   FeeMixin,
   FilingTemplateMixin
 ) {
+  // for template
+  readonly GetCorpFullDescription = GetCorpFullDescription
+
   // Global getters
-  @Getter getBusinessNumber!: string
-  @Getter getOriginalResolutions!: ResolutionsIF[]
-  @Getter getCurrentFees!: FeesIF[]
-  @Getter isBusySaving!: boolean
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter haveNewResolutionDates!: boolean
-  @Getter getCurrentJsDate!: Date
+  @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) getOriginalResolutions!: ResolutionsIF[]
+  @Getter(useStore) getCurrentFees!: FeesIF[]
+  @Getter(useStore) isBusySaving!: boolean
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) haveNewResolutionDates!: boolean
+  @Getter(useStore) areProvisionsRemoved!: boolean
 
   // Global actions
-  @Action setSummaryMode!: ActionBindingIF
-  @Action setEffectiveDateValid!: ActionBindingIF
+  @Action(useStore) setEffectiveDateValid!: ActionBindingIF
 
   /** Whether to perform validation. */
-  @Prop() readonly validate: boolean
+  @Prop() readonly validate!: boolean
 
   get isFutureEffective (): boolean {
     return this.getEffectiveDateTime.isFutureEffective
@@ -255,12 +253,12 @@ export default class AlterationSummary extends Mixins(
     return `of $${futureEffectiveFeesSum.toFixed(2)}`
   }
 
-  onDeleteClicked (): void {
+  protected onDeleteClicked (): void {
     this.$root.$emit('delete-all')
   }
 
   @Emit('haveChanges')
-  emitHaveChanges (): void {}
+  protected emitHaveChanges (): void {}
 }
 </script>
 

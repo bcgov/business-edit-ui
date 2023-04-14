@@ -3,20 +3,23 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
-import { axios } from '@/utils/'
+import { AxiosInstance as axios } from '@/utils/'
 import Change from '@/views/Change.vue'
 import mockRouter from './MockRouter'
 import { CertifySection, CompletingParty, CourtOrderPoa, DocumentsDelivery,
   PeopleAndRoles, StaffPayment, TransactionalFolioNumber, YourCompany }
   from '@/components/common'
 import { ChangeSummary } from '@/components/Change'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { ActionTypes, CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -52,7 +55,7 @@ describe('Change component', () => {
     'JiIUlDmKZ2ow7GmmDabic8igHnEDYD6sI7OFYnCJhRdgVEHN-_4KUk2YsAVl5XUr6blJKMuYDPeMyNreGTXU7foE4AT-93FwlyTyFzQGddrDv' +
     'c6kkQr7mgJNTtgg87DdYbVGbEtIetyVfvwEF0rU8JH2N-j36XIebo33FU3-gJ5Y5S69EHPqQ37R9H4d8WUrHO-4QzJQih3Yaea820XBplJeo0' +
     'DO3hQoVtPD42j0p3aIy10cnW2g')
-  store.state.stateModel.tombstone.businessId = 'FM1234567'
+  store.stateModel.tombstone.businessId = 'FM1234567'
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -153,7 +156,6 @@ describe('Change component', () => {
     const router = mockRouter.mock()
     await router.push({ name: 'change' })
     wrapper = shallowMount(Change, { localVue,
-      store,
       router,
       vuetify,
       data: () => ({
@@ -197,7 +199,7 @@ describe('Change component', () => {
 
   it('renders Change view review and confirm page', async () => {
     expect(wrapper.findComponent(Change).exists()).toBe(true)
-    store.state.stateModel.summaryMode = true
+    store.stateModel.summaryMode = true
     wrapper.vm.showFee = true
     await Vue.nextTick()
 
@@ -211,45 +213,71 @@ describe('Change component', () => {
     expect(wrapper.findComponent(YourCompany).exists()).toBe(false)
     expect(wrapper.findComponent(PeopleAndRoles).exists()).toBe(false)
 
-    store.state.stateModel.summaryMode = false
+    store.stateModel.summaryMode = false
     wrapper.vm.showFee = false
   })
 
   it('transactional folio number component renders for only premium accounts', async () => {
     expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(false)
-    store.state.stateModel.accountInformation.accountType = 'PREMIUM'
-    store.state.stateModel.summaryMode = true
+    store.stateModel.accountInformation.accountType = 'PREMIUM'
+    store.stateModel.summaryMode = true
     wrapper.vm.showFee = true
     // a wait needed as change to computed value triggers a re-rendering
     await Vue.nextTick()
 
     expect(wrapper.findComponent(TransactionalFolioNumber).exists()).toBe(true)
-    store.state.stateModel.accountInformation.accountType = ''
-    store.state.stateModel.summaryMode = false
+    store.stateModel.accountInformation.accountType = ''
+    store.stateModel.summaryMode = false
     wrapper.vm.showFee = false
   })
 
   it('Staff Payment, Court Order POA components display only for staff', async () => {
     expect(wrapper.findComponent(StaffPayment).exists()).toBe(false)
     expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(false)
-    store.state.stateModel.tombstone.keycloakRoles = ['staff']
-    store.state.stateModel.summaryMode = true
+    store.stateModel.tombstone.keycloakRoles = ['staff']
+    store.stateModel.summaryMode = true
     wrapper.vm.showFee = true
     // a wait needed as change to computed value triggers a re-rendering
     await Vue.nextTick()
 
     expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
     expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
-    store.state.stateModel.tombstone.keycloakRoles = []
-    store.state.stateModel.summaryMode = false
+    store.stateModel.tombstone.keycloakRoles = []
+    store.stateModel.summaryMode = false
     wrapper.vm.showFee = true
+  })
+
+  it('resource subtitle states individual sole proprietors can change legal name', () => {
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.stateModel.peopleAndRoles.orgPeople = [
+      {
+        officer: { partyType: 'person' },
+        roles: [{ roleType: 'Proprietor' }]
+      }
+    ] as any
+    const wrapper: any = shallowMount(Change, { vuetify })
+    expect(wrapper.vm.firmChangeResource.changeData.orgPersonInfo.subtitle)
+      .toContain('You can change the legal name, mailing and delivery')
+  })
+
+  it('resource subtitle states organization sole proprietors cannot change legal name', () => {
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.stateModel.peopleAndRoles.orgPeople = [
+      {
+        officer: { partyType: 'organization' },
+        roles: [{ roleType: 'Proprietor' }]
+      }
+    ] as any
+    const wrapper: any = shallowMount(Change, { vuetify })
+    expect(wrapper.vm.firmChangeResource.changeData.orgPersonInfo.subtitle)
+      .toContain('If you need to make changes to the business proprietor information, please')
   })
 
   // FUTURE
   xit('loads the entity snapshot into the store', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
-    const state = store.state.stateModel
+    const state = store.stateModel
 
     // Validate business identifier
     expect(state.tombstone.businessId).toBe('FM1234567')
@@ -260,30 +288,30 @@ describe('Change component', () => {
     expect(state.businessInformation.identifier).toBe('FM1234567')
 
     // Validate Office Addresses
-    expect(state.officeAddresses.deliveryAddress.streetAddress)
+    expect(state.officeAddresses.registeredOffice.deliveryAddress.streetAddress)
       .toBe('reg delivery_address - address line one')
-    expect(state.officeAddresses.mailingAddress.streetAddress)
+    expect(state.officeAddresses.registeredOffice.mailingAddress.streetAddress)
       .toBe('rec mailing_address - address line two')
 
     // Validate People And Roles
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('CAMERON')
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.lastName).toBe('BOWLER')
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Director')
+    expect(store.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('CAMERON')
+    expect(store.stateModel.peopleAndRoles.orgPeople[0].officer.lastName).toBe('BOWLER')
+    expect(store.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Director')
 
     // Validate Contact Info
-    expect(store.state.stateModel.businessContact.email).toBe('mock@example.com')
-    expect(store.state.stateModel.businessContact.phone).toBe('123-456-7890')
+    expect(store.stateModel.businessContact.email).toBe('mock@example.com')
+    expect(store.stateModel.businessContact.phone).toBe('123-456-7890')
 
-    expect(store.state.stateModel.currentFees[0].filingFees).toBe(100)
-    expect(store.state.stateModel.currentFees[0].futureEffectiveFees).toBe(0)
+    expect(store.stateModel.currentFees[0].filingFees).toBe(100)
+    expect(store.stateModel.currentFees[0].futureEffectiveFees).toBe(0)
   })
 
   // FUTURE
   xit('fetches the fee prices after loading', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
-    expect(store.state.stateModel.feePrices.filingFees).toBe(100)
-    expect(store.state.stateModel.feePrices.futureEffectiveFees).toBe(100)
+    expect(store.stateModel.feePrices[0].filingFees).toBe(100)
+    expect(store.stateModel.feePrices[0].futureEffectiveFees).toBe(100)
   })
 
   // FUTURE
@@ -291,9 +319,10 @@ describe('Change component', () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
-    store.state.stateModel.summaryMode = true
-    store.state.stateModel.tombstone.filingType = 'alteration'
-    store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
+    store.stateModel.summaryMode = true
+    expect(FilingTypes.ALTERATION).toBe('alteration')
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.stateModel.nameTranslations = [{ action: ActionTypes.ADDED, name: 'mock name' }]
     await Vue.nextTick()
 
     expect(
@@ -303,7 +332,7 @@ describe('Change component', () => {
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
     ).toContain('Choosing an alteration date and time in the future will incur an additional $100.00 fee.')
 
-    store.state.stateModel.feePrices = [{
+    store.stateModel.feePrices = [{
       filingFees: null,
       filingType: null,
       filingTypeCode: null,
@@ -332,19 +361,19 @@ describe('Change component', () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
-    const state = store.state.stateModel
+    const state = store.stateModel
     state.effectiveDateTime.isFutureEffective = true
 
     await wrapper.vm.onAlterationSummaryChanges()
-    expect(store.state.stateModel.currentFees[0].filingFees).toBe(100)
-    expect(store.state.stateModel.currentFees[0].futureEffectiveFees).toBe(100)
+    expect(store.stateModel.currentFees[0].filingFees).toBe(100)
+    expect(store.stateModel.currentFees[0].futureEffectiveFees).toBe(100)
   })
 
   // FUTURE
   xit('loads a draft alteration into the store', async () => {
     // Validate Effective Date-Time
-    expect(store.state.stateModel.effectiveDateTime.isFutureEffective).toBe(true)
-    expect(store.state.stateModel.effectiveDateTime.dateTimeString).toBe('2021-03-22T18:00:00.000Z')
-    expect(store.state.stateModel.validationFlags.flagsReviewCertify.isValidEffectiveDate).toBe(true)
+    expect(store.stateModel.effectiveDateTime.isFutureEffective).toBe(true)
+    expect(store.stateModel.effectiveDateTime.dateTimeString).toBe('2021-03-22T18:00:00.000Z')
+    expect(store.stateModel.validationFlags.flagsReviewCertify.isValidEffectiveDate).toBe(true)
   })
 })

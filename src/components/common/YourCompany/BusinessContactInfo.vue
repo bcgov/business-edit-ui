@@ -4,12 +4,11 @@
     :businessContact="getBusinessContact"
     :originalBusinessContact="originalContact"
     :hasBusinessContactInfoChange="hasBusinessContactInfoChange"
-    :editLabel="editLabel"
-    :editedLabel="editSavedLabel"
-    :disableActions="isCorrectionFiling"
-    :disableActionTooltip="isFirmChangeFiling || isFirmConversionFiling"
+    :editLabel="getEditLabel"
+    :editedLabel="getEditSavedLabel"
+    :disableActionTooltip="isFirmChangeFiling"
     :invalidSection="invalidSection"
-    :optionalPhone="isAlterationFiling || isFirmChangeFiling || isFirmConversionFiling"
+    :optionalPhone="isAlterationFiling || isFirmChangeFiling"
     @isEditingContact="isEditingContact = $event"
     @contactInfoChange="onContactInfoChange($event)"
   />
@@ -17,13 +16,14 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, ResourceIF, EntitySnapshotIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -32,20 +32,25 @@ import { isEqual } from 'lodash'
 })
 export default class BusinessContactInfo extends Mixins(CommonMixin) {
   // Global getters
-  @Getter getBusinessContact!: ContactPointIF
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getResource!: ResourceIF
-  @Getter getBusinessId!: string
+  @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditSavedLabel!: string
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global setters
-  @Action setBusinessContact!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setBusinessContact!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   /** Whether to show invalid section styling. */
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+  @Prop({ default: false }) readonly invalidSection!: boolean
 
-  protected isEditingContact = null as boolean
+  protected isEditingContact: boolean = null
 
   /** The original Contact data. */
   get originalContact (): ContactPointIF {
@@ -67,8 +72,8 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
     try {
       if (
         this.isAlterationFiling ||
+        this.isCorrectionFiling ||
         this.isFirmChangeFiling ||
-        this.isFirmConversionFiling ||
         this.isSpecialResolutionFiling
       ) {
         await AuthServices.updateContactInfo(contactInfo, this.getBusinessId)
@@ -102,11 +107,9 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
 </script>
 
 <style lang="scss" scoped>
-::v-deep {
-  .align-end {
-    position: absolute;
-    right: 0;
-    margin-right: 16px;
-  }
+:deep(.align-end) {
+  position: absolute;
+  right: 0;
+  margin-right: 16px;
 }
 </style>

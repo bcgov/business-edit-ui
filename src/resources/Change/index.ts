@@ -1,2 +1,3 @@
-export * from './GeneralPartnershipResource'
-export * from './SoleProprietorshipResource'
+export * from './GP'
+export * from './SP'
+export * from './SPOrganization'

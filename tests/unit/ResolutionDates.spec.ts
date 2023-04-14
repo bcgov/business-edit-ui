@@ -2,12 +2,15 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ResolutionDates from '@/components/Alteration/Articles/ResolutionDates.vue'
-import { getVuexStore } from '@/store/'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 const addedDates = [
   '2020-05-23',
@@ -23,6 +26,7 @@ const previousDates = [
   }
 ]
 
+// FUTURE: this needs to be fixed so it uses the interface correctly. https://github.com/bcgov/entity/issues/15927
 const shareClasses = [
   {
     'id': 1,
@@ -71,9 +75,9 @@ describe('Resolution Dates component - edit mode', () => {
   let wrapperFactory: any
 
   beforeAll(() => {
-    store.state.stateModel.shareStructureStep.shareClasses = shareClasses
+    store.stateModel.shareStructureStep.shareClasses = shareClasses as any
     wrapperFactory = (propsData: any) => {
-      return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: true }, vuetify, store })
+      return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: true }, vuetify })
     }
   })
 
@@ -204,7 +208,7 @@ describe('Resolution Dates component - edit mode', () => {
     const vm = wrapper.vm
 
     // verify there is a second row
-    let rows = wrapper.findAll('.row')
+    const rows = wrapper.findAll('.row')
     expect(rows.length).toBe(2)
 
     // click the Remove button
@@ -260,7 +264,7 @@ describe('Resolution Dates component - edit mode', () => {
 
     // inject a date
     vm.onDateEmitted('2021-03-17')
-    store.state.stateModel.shareStructureStep.resolutionDates = ['2021-03-17']
+    store.stateModel.shareStructureStep.resolutionDates = ['2021-03-17']
     await Vue.nextTick()
 
     // verify new date is emitted
@@ -275,7 +279,7 @@ describe('Resolution Dates component - edit mode', () => {
   it('sets component as invalid when editing', async () => {
     const wrapper = wrapperFactory()
     await Vue.nextTick()
-    expect(store.state.stateModel.validationFlags.flagsCompanyInfo.isValidResolutionDate).toBe(true)
+    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidResolutionDate).toBe(true)
 
     const rows = wrapper.findAll('.row')
     expect(rows.length).toBe(1)
@@ -286,7 +290,7 @@ describe('Resolution Dates component - edit mode', () => {
     const button = cols.at(2).find('.add-btn')
     await button.trigger('click')
 
-    expect(store.state.stateModel.validationFlags.flagsCompanyInfo.isValidResolutionDate).toBe(false)
+    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidResolutionDate).toBe(false)
 
     wrapper.destroy()
   })
@@ -300,15 +304,47 @@ describe('Resolution Dates component - edit mode', () => {
 
     wrapper.destroy()
   })
+
+  it('displays the Correct button for correction filings', () => {
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.shareStructureStep.shareClasses = shareClasses as any
+    store.stateModel.shareStructureStep.resolutionDates = addedDates
+
+    const wrapper = wrapperFactory()
+
+    const addBtn = wrapper.find('#add-resolution-date')
+    expect(addBtn.exists()).toBe(true)
+    expect(addBtn.text()).toBe('Correct')
+    expect(addBtn.find('.v-icon.mdi-pencil').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('displays the Undo button for correction filings', async () => {
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.shareStructureStep.shareClasses = shareClasses as any
+    store.stateModel.shareStructureStep.resolutionDates = addedDates
+
+    const wrapper = wrapperFactory({ addedDates: ['2021-03-17'] })
+
+    const removeBtn = wrapper.find('#remove-resolution-date')
+    expect(removeBtn.exists()).toBe(true)
+    expect(removeBtn.text()).toBe('Undo')
+    expect(removeBtn.find('.v-icon.mdi-undo').exists()).toBe(true)
+
+    wrapper.destroy()
+  })
 })
 
 describe('Resolution Dates component - review mode', () => {
   let wrapperFactory: any
 
   beforeAll(() => {
-    store.state.stateModel.shareStructureStep.shareClasses = shareClasses
+    store.stateModel.shareStructureStep.shareClasses = shareClasses as any
     wrapperFactory = (propsData: any) => {
-      return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: false }, vuetify, store })
+      return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: false }, vuetify })
     }
   })
 

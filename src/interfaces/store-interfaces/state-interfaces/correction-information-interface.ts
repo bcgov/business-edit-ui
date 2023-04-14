@@ -14,9 +14,10 @@ import { ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
 export interface CorrectionInformationIF {
   comment: string // max 4096 characters
   correctedFilingId: number
-  correctedFilingDate: string // API format
+  correctedFilingDate?: string // API format
   correctedFilingType: FilingTypes
   type: CorrectionErrorTypes
+  legalType?: CorpTypeCd
 
   //
   // optional objects with new correction data:
@@ -38,5 +39,6 @@ export interface CorrectionInformationIF {
     shareClasses: ShareClassIF[]
     resolutionDates?: string[]
   }
-  startDate?: string // YYYY-MM-DD
+  startDate?: string // YYYY-MM-DD (firms only)
+  provisionsRemoved?: boolean
 }

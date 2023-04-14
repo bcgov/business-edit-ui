@@ -10,7 +10,7 @@
           <dl class="business-info">
             <dd id="entity-legal-type">{{originalEntityType}}</dd>
             <dt class="mr-2">Business No:</dt>
-            <dd id="entity-business-number">{{ getBusinessNumber || 'Not Available' }}</dd>
+            <dd id="entity-business-number">{{ businessNumber || 'Not Available' }}</dd>
             <dt class="mr-2">Incorporation No:</dt>
             <dd id="entity-incorp-number">{{ getBusinessId }}</dd>
           </dl>
@@ -32,29 +32,41 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
-import { CommonMixin, SharedMixin } from '@/mixins/'
-import { EntitySnapshotIF } from '@/interfaces/'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
+import { Getter } from 'pinia-class'
+import { CommonMixin } from '@/mixins/'
+import { BusinessInformationIF, EntitySnapshotIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
+import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 
-@Component({})
-export default class EntityInfo extends Mixins(CommonMixin, SharedMixin) {
+import { useStore } from '@/store/store'
+
+@Component({
+  mixins: [
+    CommonMixin
+  ]
+})
+export default class EntityInfo extends Vue {
   // Global getters
-  @Getter getBusinessId!: string
-  @Getter getBusinessNumber!: string
-  @Getter getOriginalLegalName!: string
-  @Getter isRoleStaff!: boolean
-  @Getter getBusinessContact!: ContactPointIF
-  @Getter getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getBusinessInformation!: BusinessInformationIF
+  @Getter(useStore) getOriginalLegalName!: string
+  @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
 
-  /** Get original entity type. */
+  /** The original entity type. */
   get originalEntityType (): string {
     if (this.getEntitySnapshot?.businessInfo) {
-      return this.getCorpTypeDescription(this.getEntitySnapshot.businessInfo.legalType)
+      return GetCorpFullDescription(this.getEntitySnapshot.businessInfo.legalType)
     } else {
       return 'Unknown'
     }
+  }
+
+  /** The business number (aka tax id). */
+  get businessNumber (): string {
+    return this.getBusinessInformation?.taxId
   }
 }
 </script>
@@ -70,7 +82,7 @@ export default class EntityInfo extends Mixins(CommonMixin, SharedMixin) {
   font-size: $px-12;
 }
 
-::v-deep {
+:deep() {
   .v-breadcrumbs a {
     color: $gray8 !important;
   }

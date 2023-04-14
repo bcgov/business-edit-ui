@@ -8,16 +8,14 @@
         </label>
         <v-flex md1>
           <v-chip v-if="hasAssociationTypeChanged" x-small label color="primary" text-color="white">
-            {{ editedLabel }}
+            {{ getEditedLabel }}
           </v-chip>
         </v-flex>
       </v-col>
 
       <!-- Display Mode -->
       <v-col cols="7" v-if="!isEditingAssociationType">
-        <span class="info-text">
-          {{ associationTypeToDescription(getAssociationType) }}
-        </span>
+        <span class="info-text">{{ associationDescription }}</span>
       </v-col>
 
       <!-- Actions -->
@@ -47,7 +45,7 @@
                 @click="isEditingAssociationType = true"
               >
                 <v-icon small>mdi-pencil</v-icon>
-                <span>{{editLabel}}</span>
+                <span>{{getEditLabel}}</span>
               </v-btn>
               </template>
               <span>
@@ -96,8 +94,7 @@
           :items="associationTypeOptions"
           v-model="selectedAssociationType"
           :rules="AssociationTypeRules"
-        >
-        </v-select>
+        />
 
         <!-- Done Actions -->
         <div class="action-btns">
@@ -123,52 +120,62 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
-import { AssociationTypes } from '@/enums'
-import { CommonMixin, EnumMixin } from '@/mixins'
+import { Action, Getter } from 'pinia-class'
+import { CoopTypes } from '@/enums'
+import { CommonMixin } from '@/mixins'
 import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF } from '@/interfaces'
+import { VuetifyRuleFunction } from '@/types'
+import { CoopTypeToDescription } from '@/utils'
+import { useStore } from '@/store/store'
 
 @Component({})
-export default class AssociationType extends Mixins(CommonMixin, EnumMixin) {
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+export default class AssociationType extends Mixins(CommonMixin) {
+  @Prop({ default: false }) readonly invalidSection!: boolean
+
   /** Global getters */
-  @Getter getAssociationType!: AssociationTypes
-  @Getter getBusinessInformation!: BusinessInformationIF
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter hasAssociationTypeChanged!: boolean
+  @Getter(useStore) getAssociationType!: CoopTypes
+  @Getter(useStore) getBusinessInformation!: BusinessInformationIF
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) hasAssociationTypeChanged!: boolean
 
   /** Global actions */
-  @Action setBusinessInformation!: ActionBindingIF
+  @Action(useStore) setBusinessInformation!: ActionBindingIF
 
   /** Select options */
   readonly associationTypeOptions: Array<any> = [
     {
-      value: AssociationTypes.COMMUNITY_SERVICE_COOPERATIVE,
-      text: this.associationTypeToDescription(AssociationTypes.COMMUNITY_SERVICE_COOPERATIVE)
+      value: CoopTypes.COMMUNITY_SERVICE_COOPERATIVE,
+      text: CoopTypeToDescription(CoopTypes.COMMUNITY_SERVICE_COOPERATIVE)
     },
     {
-      value: AssociationTypes.ORDINARY_COOPERATIVE,
-      text: this.associationTypeToDescription(AssociationTypes.ORDINARY_COOPERATIVE)
+      value: CoopTypes.ORDINARY_COOPERATIVE,
+      text: CoopTypeToDescription(CoopTypes.ORDINARY_COOPERATIVE)
     },
     {
-      value: AssociationTypes.HOUSING_COOPERATIVE,
-      text: this.associationTypeToDescription(AssociationTypes.HOUSING_COOPERATIVE)
+      value: CoopTypes.HOUSING_COOPERATIVE,
+      text: CoopTypeToDescription(CoopTypes.HOUSING_COOPERATIVE)
     }
   ]
 
-  protected selectedAssociationType = null as AssociationTypes
+  protected selectedAssociationType: CoopTypes = null
   protected isEditingAssociationType = false
 
   /** V-model for dropdown menu. */
   protected dropdown: boolean = null
 
   /** Validation rules. */
-  readonly AssociationTypeRules: Array<Function> = [
+  readonly AssociationTypeRules: Array<VuetifyRuleFunction> = [
     v => !!v || 'This field is required' // is not empty
   ]
 
-  protected mounted (): void {
+  get associationDescription (): string {
+    return CoopTypeToDescription(this.getAssociationType)
+  }
+
+  /** Called when component is mounted. */
+  mounted (): void {
     this.initializeAssociationType()
   }
 
@@ -192,8 +199,8 @@ export default class AssociationType extends Mixins(CommonMixin, EnumMixin) {
 
   @Emit('isEditingAssociationType')
   @Watch('isEditingAssociationType', { immediate: true })
-  private isEditingAssociationTypeChange (isEditing: boolean): void {
-  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private isEditingAssociationTypeChange (isEditing: boolean): void {}
 }
 </script>
 
@@ -233,29 +240,30 @@ export default class AssociationType extends Mixins(CommonMixin, EnumMixin) {
   }
 }
 
-/** Below brought over from business-create-ui.
-    remove extra space taken by error message */
-::v-deep .v-text-field__details {
+// allow selection to be full height so tail of "g" is visible
+:deep(.v-select__selections) {
+  line-height: unset;
+}
+
+// remove extra space taken by error message
+:deep(.v-text-field__details) {
   margin-bottom: -8px !important;
 }
 
 // Vuetify Overrides
-::v-deep .v-list-item .v-list-item__title, .v-list-item .v-list-item__subtitle {
-  color: $gray7;
-}
+:deep() {
+  .v-list-item .v-list-item__title {
+    color: $gray7;
+  }
 
-::v-deep .v-list-item--link:hover:not(.v-list-item--active) {
-  background-color: $gray1;
-  color: $app-blue !important;
-}
-
-::v-deep .v-list-item:hover {
-  .v-list-item__title {
+  .v-list-item--link:hover:not(.v-list-item--active) {
+    background-color: $gray1;
     color: $app-blue !important;
   }
-}
 
-::v-deep .v-list-item--active .v-list-item__title, .v-list-item .v-list-item__subtitle {
-  color: $app-blue !important;
+  .v-list-item:hover .v-list-item__title,
+  .v-list-item--active .v-list-item__title {
+    color: $app-blue !important;
+  }
 }
 </style>

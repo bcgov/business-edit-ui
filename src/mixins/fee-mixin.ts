@@ -1,10 +1,12 @@
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
+import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF, EmptyFees, FeesIF } from '@/interfaces'
-import { CorpTypeCd, FilingCodes, StaffPaymentOptions } from '@bcrs-shared-components/enums'
+import { PayServices } from '@/services/'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { FilingDataIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
-import { axios } from '@/utils/'
 import { cloneDeep } from 'lodash'
-import { Component, Vue } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { useStore } from '@/store/store'
 
 /**
  * Mixin that provides common functions also provides integration with PAY API.
@@ -12,14 +14,14 @@ import { Action, Getter } from 'vuex-class'
 @Component({})
 export default class FeeMixin extends Vue {
   // Global getters
-  @Getter getFeePrices!: FeesIF[]
-  @Getter getFilingData!: FilingDataIF[]
-  @Getter getStaffPayment!: StaffPaymentIF
+  @Getter(useStore) getFeePrices!: FeesIF[]
+  @Getter(useStore) getFilingData!: FilingDataIF[]
+  @Getter(useStore) getStaffPayment!: StaffPaymentIF
 
   // Global actions
-  @Action setCurrentFees!: ActionBindingIF
-  @Action setFeePrices!: ActionBindingIF
-  @Action setFilingData!: ActionBindingIF
+  @Action(useStore) setCurrentFees!: ActionBindingIF
+  @Action(useStore) setFeePrices!: ActionBindingIF
+  @Action(useStore) setFilingData!: ActionBindingIF
 
   /** Provides the filing fees price. */
   get filingFeesPrice (): string {
@@ -55,47 +57,25 @@ export default class FeeMixin extends Vue {
   }
 
   /** Sets the current fees by fetching fee using filing data. */
-  protected async setCurrentFeesFromFilingData (isFutureEffective: boolean = false): Promise<void> {
+  protected async setCurrentFeesFromFilingData (isFutureEffective = false): Promise<void> {
     this.setCurrentFees(await this.getFilingFeesFromFilingData(isFutureEffective))
   }
 
   /** Sets the fee prices by fetching fee using filing data. */
-  protected async setFeePricesFromFilingData (isFutureEffective: boolean = false): Promise<void> {
+  protected async setFeePricesFromFilingData (isFutureEffective = false): Promise<void> {
     this.setFeePrices(await this.getFilingFeesFromFilingData(isFutureEffective))
   }
 
   /** Lines up promises to fetch for filing fees, falls back to empty fees.  */
-  protected async getFilingFeesFromFilingData (isFutureEffective: boolean = false): Promise<FeesIF[]> {
+  private async getFilingFeesFromFilingData (isFutureEffective = false): Promise<FeesIF[]> {
     try {
       const feePromises = this.getFilingData
-        .map(fd => this.fetchFilingFees(fd.filingTypeCode, fd.entityType, isFutureEffective))
+        .map(fd => PayServices.fetchFilingFees(fd.filingTypeCode, fd.entityType, isFutureEffective))
       return await Promise.all(feePromises)
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.log(error)
       return this.getFilingData.map(() => cloneDeep(EmptyFees))
     }
-  }
-
-  /**
-   * Fetches filing fees.
-   * @returns a promise to return the fees for a filing
-   */
-  protected async fetchFilingFees (filingCode: FilingCodes, entityType: CorpTypeCd, isFutureEffective: boolean = false):
-    Promise<FeesIF> {
-    let url = sessionStorage.getItem('PAY_API_URL') + 'fees/' + entityType + '/' + filingCode
-    if (isFutureEffective) {
-      url += '?futureEffective=true'
-    }
-    return axios.get(url)
-      .then(response => {
-        const fees = response?.data
-        if (fees.filingFees == null) {
-          throw new Error('Invalid API response')
-        }
-        return fees
-      })
-      .catch((error) => {
-        throw error
-      })
   }
 }

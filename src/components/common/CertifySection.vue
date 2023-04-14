@@ -30,38 +30,39 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { Certify as CertifyShared } from '@bcrs-shared-components/certify/'
-import { DateMixin, SharedMixin } from '@/mixins/'
+import { DateMixin } from '@/mixins/'
 import { ActionBindingIF, CertifyIF, ResourceIF } from '@/interfaces/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
     CertifyShared
   }
 })
-export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
-  @Getter getCertifyState!: CertifyIF
-  @Getter getCurrentDate!: string
-  @Getter getResource!: ResourceIF
-  @Getter isRoleStaff!: boolean
-  @Getter getEntityType!: CorpTypeCd
+export default class CertifySection extends Mixins(DateMixin) {
+  @Getter(useStore) getCertifyState!: CertifyIF
+  @Getter(useStore) getCurrentDate!: string
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) getEntityType!: CorpTypeCd
 
-  @Action setCertifyState!: ActionBindingIF
-  @Action setCertifyStateValidity!: ActionBindingIF
+  @Action(useStore) setCertifyState!: ActionBindingIF
+  @Action(useStore) setCertifyStateValidity!: ActionBindingIF
 
   /** Prop to provide section number. */
-  @Prop({ default: '' }) readonly sectionNumber: string
+  @Prop({ default: '' }) readonly sectionNumber!: string
 
   /** Whether to perform validation. */
-  @Prop({ default: false }) readonly validate: boolean
+  @Prop({ default: false }) readonly validate!: boolean
 
   /** To determine whether user input is enabled. */
-  @Prop({ default: false }) readonly disableEdit: boolean
+  @Prop({ default: false }) readonly disableEdit!: boolean
 
   /** Called when component is mounted. */
-  protected mounted (): void {
+  mounted (): void {
     this.setCertifyState(
       {
         valid: this.getCertifyState.valid,
@@ -72,7 +73,7 @@ export default class CertifySection extends Mixins(DateMixin, SharedMixin) {
 
   /** Get the entity type in readable format */
   get readableEntityType (): string {
-    return this.getCorpTypeDescription(this.getEntityType)
+    return (this.getResource?.certifyText || GetCorpFullDescription(this.getEntityType))
   }
 
   /** Get the certify resource message */

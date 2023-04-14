@@ -1,11 +1,5 @@
 import { ActionTypes } from '@/enums/'
 
-export interface ShareStructureIF {
-  resolutionDates?: string[]
-  changed?: boolean // FUTURE: change to a getter like the others
-  shareClasses?: ShareClassIF[]
-}
-
 export interface ShareClassIF {
   id: string
   type?: string // Indicates whether class or series
@@ -19,4 +13,10 @@ export interface ShareClassIF {
   hasRightsOrRestrictions: boolean
   series?: ShareClassIF[]
   action?: ActionTypes // Local state indicates corrected/added/removed
+}
+
+export interface ShareStructureIF {
+  resolutionDates?: string[]
+  changed?: boolean // FUTURE: change to a getter like the others
+  shareClasses?: ShareClassIF[]
 }

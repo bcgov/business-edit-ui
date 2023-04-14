@@ -11,5 +11,5 @@ export interface ActionBindingIF {
 
 export interface ActionKvIF {
   key: string,
-  value: string
+  value: any
 }

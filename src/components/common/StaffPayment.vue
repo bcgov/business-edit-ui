@@ -1,24 +1,27 @@
 <template>
-  <section id="staff-payment">
+  <section class="pb-6" id="staff-payment">
     <header>
       <h2>{{sectionNumber}} Staff Payment</h2>
     </header>
 
-    <div :class="{'invalid-section': invalidStaffPayment}">
-      <StaffPaymentShared
-        :staffPaymentData="getStaffPayment"
-        :validate="validateStaffPayment"
-        :invalidSection="invalidStaffPayment"
-        @update:staffPaymentData="onStaffPaymentDataUpdate($event)"
-        @valid="setStaffPaymentValidity($event)"
-      />
+    <div :class="{'invalid-section': invalidStaffPayment}" class="mt-4">
+      <v-card flat class="section-container py-6">
+        <StaffPaymentShared
+          :staffPaymentData="getStaffPayment"
+          :validate="getAppValidate"
+          :invalidSection="invalidStaffPayment"
+          @update:staffPaymentData="onStaffPaymentDataUpdate($event)"
+          @valid="setStaffPaymentValidity($event)"
+        />
+      </v-card>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import Vue from 'vue'
+import { Component, Emit, Prop } from 'vue-property-decorator'
+import { Action, Getter } from 'pinia-class'
 
 // Components
 import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment/'
@@ -28,6 +31,8 @@ import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 
+import { useStore } from '@/store/store'
+
 @Component({
   components: {
     StaffPaymentShared
@@ -35,28 +40,24 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 })
 export default class StaffPayment extends Vue {
   // Global getters
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter getAppValidate!: boolean
-  @Getter getStaffPayment!: StaffPaymentIF
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getStaffPayment!: StaffPaymentIF
 
   // Global actions
-  @Action setStaffPayment!: ActionBindingIF
-  @Action setStaffPaymentValidity!: ActionBindingIF
+  @Action(useStore) setStaffPayment!: ActionBindingIF
+  @Action(useStore) setStaffPaymentValidity!: ActionBindingIF
 
   /** Prop to provide section number. */
-  @Prop({ default: '' }) readonly sectionNumber: string
+  @Prop({ default: '' }) readonly sectionNumber!: string
 
-  /** Whether staff payment is invalid, only when prompted by app. */
+  /** Whether sub-component should show invalid section styling. */
   get invalidStaffPayment (): boolean {
-    return this.getAppValidate && !this.getFlagsReviewCertify.isValidStaffPayment
+    return (this.getAppValidate && !this.getFlagsReviewCertify.isValidStaffPayment)
   }
 
-  /** True when prompted by the app AND the user has selected an option. */
-  get validateStaffPayment (): boolean {
-    return this.getAppValidate && !!this.getStaffPayment?.option
-  }
-
-  protected onStaffPaymentDataUpdate (event: any) {
+  /** Called by sub-component to update the staff payment data in the store. */
+  protected onStaffPaymentDataUpdate (event: StaffPaymentIF) {
     let staffPaymentData: StaffPaymentIF = { ...this.getStaffPayment, ...event }
 
     switch (staffPaymentData.option) {
@@ -105,43 +106,3 @@ export default class StaffPayment extends Vue {
   private emitHaveChanges (): void {}
 }
 </script>
-
-<style lang="scss" scoped>
-@import '@/assets/styles/theme.scss';
-
-::v-deep .v-input .v-label {
-  font-weight: normal;
-}
-
-::v-deep .v-input--radio-group__input {
-  .v-radio:not(:first-child) {
-    padding-top: 2rem;
-  }
-  .v-input--checkbox {
-    padding-top: 2rem;
-  }
-}
-
-::v-deep .v-input--selection-controls__ripple {
-  color: $gray7;
-}
-
-::v-deep .v-text-field__slot {
-  .v-label {
-    color: $gray7;
-  }
-}
-
-// fix hard-coded whitespace inside shared component
-// we want the same padding as "section-container py-6"
-::v-deep {
-  #staff-payment-container {
-    padding-top: 1.5rem !important;
-    padding-right: 1.875rem !important;
-    padding-bottom: 0 !important;
-    padding-left: 0.625rem !important;
-  }
-  .payment-group {
-    margin-bottom: -0.75rem !important;
-  }
-}</style>

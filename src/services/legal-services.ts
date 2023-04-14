@@ -1,6 +1,6 @@
-import { axios } from '@/utils/'
+import { AxiosInstance as axios } from '@/utils/'
 import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistrationFilingIF, ConversionFilingIF,
-  CorrectionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF, SpecialResolutionFilingIF }
+  CorrectionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF, RestorationFilingIF, SpecialResolutionFilingIF }
   from '@/interfaces/'
 import { RoleTypes } from '@/enums'
 
@@ -10,8 +10,28 @@ import { ShareStructureIF } from '@bcrs-shared-components/interfaces/'
  */
 export default class LegalServices {
   /**
+   * Fetches a filing by its URL.
+   * @param url the full URL of the filing
+   * @returns a promise to return the filing
+   */
+  static async fetchFiling (url: string): Promise<any> {
+    return axios.get(url)
+      .then(response => {
+        const filing = response?.data?.filing
+        if (!filing) {
+          // eslint-disable-next-line no-console
+          console.log('fetchFiling() error - invalid response =', response)
+          throw new Error('Invalid API response')
+        }
+        return filing
+      })
+  }
+
+  /**
    * Fetches a filing by its id.
-   * @returns a promise to return the filing of the specified type
+   * @param businessId the id of the business
+   * @param filingId the id of the filing
+   * @returns a promise to return the filing
    */
   static async fetchFilingById (businessId: string, filingId: number): Promise<any> {
     const url = `businesses/${businessId}/filings/${filingId}`
@@ -29,7 +49,9 @@ export default class LegalServices {
 
   /**
    * Deletes a filing by its id.
-   * @returns a promise to delete the filing or return a failure.
+   * @param businessId the id of the business
+   * @param filingId the id of the filing
+   * @returns a promise to delete the filing
    */
   static async deleteFilingById (businessId: string, filingId: number): Promise<any> {
     const url = `businesses/${businessId}/filings/${filingId}`
@@ -44,8 +66,8 @@ export default class LegalServices {
 
   /**
    * Updates an existing filing.
-   * @param businessId the id of the business to update
-   * @param filingId the id of the filing to update
+   * @param businessId the id of the business
+   * @param filingId the id of the filing
    * @param filing the object body of the filing
    * @param isDraft boolean indicating whether to save draft or complete the filing
    * @returns a promise to return the updated filing
@@ -54,7 +76,7 @@ export default class LegalServices {
     businessId: string,
     filingId: number,
     // eslint-disable-next-line max-len
-    filing: CorrectionFilingIF | AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF | SpecialResolutionFilingIF,
+    filing: CorrectionFilingIF | AlterationFilingIF | ChgRegistrationFilingIF | ConversionFilingIF | RestorationFilingIF | SpecialResolutionFilingIF,
     isDraft: boolean
   ): Promise<any> {
     // put updated filing to filings endpoint
@@ -77,10 +99,10 @@ export default class LegalServices {
 
   /**
    * Creates a new filing.
-   * @param businessId the id of the business to update
+   * @param businessId the id of the business
    * @param filing the object body of the filing
    * @param isDraft boolean indicating whether to save draft or complete the filing
-   * @returns a promise to return the updated filing
+   * @returns a promise to return the new filing
    */
   static async createFiling (
     businessId: string,
@@ -108,6 +130,7 @@ export default class LegalServices {
 
   /**
    * Fetches the business info of the current business.
+   * @param businessId the id of the business
    * @returns a promise to return the data
    */
   static async fetchBusinessInfo (businessId: string): Promise<BusinessInformationIF> {
@@ -126,6 +149,7 @@ export default class LegalServices {
 
   /**
    * Fetches the name translations of the current business.
+   * @param businessId the id of the business
    * @returns a promise to return the data
    */
   static async fetchNameTranslations (businessId: string): Promise<NameTranslationIF[]> {
@@ -144,6 +168,7 @@ export default class LegalServices {
 
   /**
    * Fetches the address of the current entity.
+   * @param businessId the id of the business
    * @returns a promise to return the data
    */
   static async fetchAddresses (businessId: string): Promise<AddressesIF> {
@@ -162,6 +187,7 @@ export default class LegalServices {
 
   /**
    * Fetches the directors of the current business.
+   * @param businessId the id of the business
    * @returns a promise to return the data
    */
   static async fetchDirectors (businessId: string): Promise<OrgPersonIF[]> {
@@ -197,6 +223,7 @@ export default class LegalServices {
 
   /**
    * Fetches the parties of the current business.
+   * @param businessId the id of the business
    * @returns a promise to return the data
    */
   static async fetchParties (businessId: string): Promise<OrgPersonIF[]> {
@@ -216,6 +243,7 @@ export default class LegalServices {
 
   /**
    * Fetch the share structure of the current business.
+   * @param businessId the id of the business
    * @returns a promise to return the data
    */
   static async fetchShareStructure (businessId: string): Promise<ShareStructureIF> {
@@ -241,6 +269,7 @@ export default class LegalServices {
 
   /**
    * Fetch the resolutions of the current business.
+   * @param businessId the id of the business
    * @returns a promise to return the data
    */
   static async fetchResolutions (businessId: string): Promise<ResolutionsIF[]> {

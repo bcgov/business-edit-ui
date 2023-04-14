@@ -1,105 +1,109 @@
 <template>
-  <section class="pb-10" id="change-view">
-    <!-- Business Information page-->
-    <v-slide-x-transition hide-on-leave>
-      <div v-if="!isSummaryMode || !showFeeSummary">
-        <header>
-          <h1>Business Information</h1>
-        </header>
+  <ViewWrapper>
+    <section class="pb-10" id="change-view">
+      <!-- Business Information page-->
+      <v-slide-x-transition hide-on-leave>
+        <div v-if="!isSummaryMode || !showFeeSummary">
+          <header>
+            <h1>Business Information</h1>
+          </header>
 
-        <section class="mt-6">
-          You must promptly file updates to your business information. Necessary fees will be applied as
-          updates are made.
-        </section>
+          <section class="mt-6">
+            You must promptly file updates to your business information. Necessary fees will be applied as
+            updates are made.
+          </section>
 
-        <YourCompany class="mt-10" />
+          <YourCompany class="mt-10" />
 
-        <PeopleAndRoles class="mt-10" />
-      </div>
-    </v-slide-x-transition>
+          <PeopleAndRoles class="mt-10" />
+        </div>
+      </v-slide-x-transition>
 
-    <!-- Review and Confirmm page -->
-    <v-slide-x-reverse-transition hide-on-leave>
-      <div v-if="isSummaryMode && showFeeSummary">
-        <header>
-          <h1>Review and Confirm</h1>
-        </header>
+      <!-- Review and Confirmm page -->
+      <v-slide-x-reverse-transition hide-on-leave>
+        <div v-if="isSummaryMode && showFeeSummary">
+          <header>
+            <h1>Review and Confirm</h1>
+          </header>
 
-        <section class="mt-6">
-          <p id="intro-text">
-            Changes were made to your business information that require a filing. Review and certify the
-            changes you are about the make to your business.
-          </p>
-        </section>
+          <section class="mt-6">
+            <p id="intro-text">
+              Changes were made to your business information that require a filing. Review and certify the
+              changes you are about the make to your business.
+            </p>
+          </section>
 
-        <ChangeSummary
-          class="mt-10"
-          :validate="getAppValidate"
-        />
-
-        <DocumentsDelivery
-          class="mt-10"
-          sectionNumber="1."
-          :validate="getAppValidate"
-          @valid="setDocumentOptionalEmailValidity($event)"
-        />
-
-        <CompletingParty
-          class="mt-10"
-          sectionNumber="2."
-          :validate="getAppValidate"
-        />
-
-        <TransactionalFolioNumber
-          v-if="showTransactionalFolioNumber"
-          class="mt-10"
-          sectionNumber="2."
-          :validate="getAppValidate"
-        />
-
-        <CertifySection
-          class="mt-10"
-          :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
-          :validate="getAppValidate"
-          :disableEdit="!isRoleStaff"
-        />
-
-        <!-- STAFF ONLY: Court Order/Plan of Arrangement and Staff Payment -->
-        <template v-if="isRoleStaff">
-          <CourtOrderPoa
+          <ChangeSummary
             class="mt-10"
-            :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
-            :autoValidation="getAppValidate"
-          />
-
-          <StaffPayment
-            class="mt-10"
-            :sectionNumber="showTransactionalFolioNumber ? '6.' : '5.'"
             :validate="getAppValidate"
-            @haveChanges="onStaffPaymentChanges()"
           />
-        </template>
-      </div>
-    </v-slide-x-reverse-transition>
-  </section>
+
+          <DocumentsDelivery
+            class="mt-10"
+            sectionNumber="1."
+            :validate="getAppValidate"
+            @valid="setDocumentOptionalEmailValidity($event)"
+          />
+
+          <CompletingParty
+            class="mt-10"
+            sectionNumber="2."
+            :validate="getAppValidate"
+          />
+
+          <TransactionalFolioNumber
+            v-if="showTransactionalFolioNumber"
+            class="mt-10"
+            sectionNumber="2."
+            :validate="getAppValidate"
+          />
+
+          <CertifySection
+            class="mt-10"
+            :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
+            :validate="getAppValidate"
+            :disableEdit="!(isRoleStaff || isSbcStaff)"
+          />
+
+          <!-- STAFF ONLY: Court Order/Plan of Arrangement and Staff Payment -->
+          <template v-if="isRoleStaff">
+            <CourtOrderPoa
+              class="mt-10"
+              :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
+              :autoValidation="getAppValidate"
+            />
+
+            <StaffPayment
+              class="mt-10"
+              :sectionNumber="showTransactionalFolioNumber ? '6.' : '5.'"
+              @haveChanges="onStaffPaymentChanges()"
+            />
+          </template>
+        </div>
+      </v-slide-x-reverse-transition>
+    </section>
+  </ViewWrapper>
 </template>
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils/'
+import { Action, Getter } from 'pinia-class'
+import { GetFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
 import { CertifySection, CompletingParty, CourtOrderPoa, DocumentsDelivery, PeopleAndRoles, StaffPayment,
   TransactionalFolioNumber, YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
-import { FilingStatus } from '@/enums/'
+import { FilingStatus, PartyTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Change/'
+import { SpChangeResource, GpChangeResource, SpOrganizationChangeResource } from '@/resources/Change/'
+import ViewWrapper from '@/components/ViewWrapper.vue'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
+    ViewWrapper,
     CertifySection,
     ChangeSummary,
     CompletingParty,
@@ -117,25 +121,26 @@ export default class Change extends Mixins(
   FilingTemplateMixin
 ) {
   // Global getters
-  @Getter isSummaryMode!: boolean
-  @Getter getAppValidate!: boolean
-  @Getter getUserFirstName!: string
-  @Getter getUserLastName!: string
-  @Getter showFeeSummary!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter isPremiumAccount!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getUserFirstName!: string
+  @Getter(useStore) getUserLastName!: string
+  @Getter(useStore) showFeeSummary!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSbcStaff!: boolean
+  @Getter(useStore) isPremiumAccount!: boolean
+  @Getter(useStore) isPartnership!: boolean
+  @Getter(useStore) isSoleProp!: boolean
 
   // Global actions
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
-  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action setValidCourtOrder!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
 
-  @Action setResource!: ActionBindingIF
+  @Action(useStore) setResource!: ActionBindingIF
 
   /** Whether App is ready. */
-  @Prop({ default: false })
-  readonly appReady: boolean
+  @Prop({ default: false }) readonly appReady!: boolean
 
   /** Whether the Transactional Folio Number section is shown. */
   get showTransactionalFolioNumber (): boolean {
@@ -152,10 +157,12 @@ export default class Change extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The resource file for a firm change filing. */
+  /** The resource object for a firm change filing. */
   get firmChangeResource (): ResourceIF {
-    if (this.isEntityTypeSP) return SoleProprietorshipResource
-    if (this.isEntityTypeGP) return GeneralPartnershipResource
+    const isOfficerOrganization = this.getOrgPeople[0]?.officer?.partyType === PartyTypes.ORGANIZATION
+    if (this.isPartnership) return GpChangeResource
+    if (this.isSoleProp && isOfficerOrganization) return SpOrganizationChangeResource
+    if (this.isSoleProp) return SpChangeResource
     return null
   }
 
@@ -170,7 +177,7 @@ export default class Change extends Mixins(
 
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
-    if (!this.isJestRunning && !getFeatureFlag('change-ui-enabled')) {
+    if (!this.isJestRunning && !GetFeatureFlag('change-ui-enabled')) {
       window.alert('Change filings are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard', true)
       return
@@ -194,7 +201,7 @@ export default class Change extends Mixins(
         }
 
         // do not proceed if this isn't a DRAFT filing
-        if (changeFiling.header.status !== FilingStatus.DRAFT) {
+        if (changeFiling.header?.status !== FilingStatus.DRAFT) {
           throw new Error('Invalid change status')
         }
 
@@ -205,26 +212,25 @@ export default class Change extends Mixins(
         this.parseEntitySnapshot(entitySnapshot)
       }
 
-      if (this.firmChangeResource) {
-        // set the specific resource
-        this.setResource(this.firmChangeResource)
-
-        // initialize Fee Summary data
-        this.setFilingData([this.firmChangeResource.filingData])
-      } else {
-        // go to catch()
+      if (!this.firmChangeResource) {
         throw new Error(`Invalid change resource entity type = ${this.getEntityType}`)
       }
 
-      // update the current fees for the Filing
+      // set the specific resource
+      this.setResource(this.firmChangeResource)
+
+      // initialize Fee Summary data
+      this.setFilingData([this.firmChangeResource.filingData])
+
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()
 
-      // fetches the fee prices to display in the text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData()
 
       // set current profile name to store for field pre population
       // do this only if we are not staff
-      if (!this.isRoleStaff) {
+      if (!(this.isRoleStaff || this.isSbcStaff)) {
         // pre-populate Certified By name
         this.setCertifyState(
           {
@@ -277,10 +283,12 @@ export default class Change extends Mixins(
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: boolean = true): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitHaveData (haveData = true): void {}
 }
 </script>

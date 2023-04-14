@@ -1,21 +1,25 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import ChangeBusinessType from '@/components/common/YourCompany/ChangeBusinessType.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { FilingTypes } from '@bcrs-shared-components/enums'
+import { CorpTypeCd as CorpTypeModuleCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 
 const localVue = createLocalVue()
 const vuetify = new Vuetify({})
+setActivePinia(createPinia())
+const store = useStore()
 
 describe('CorrectBusinessType in a Correction', () => {
   let wrapper: any
-  let store: any = getVuexStore()
 
   beforeEach(() => {
-    store.state.stateModel.tombstone.filingType = 'correction'
-    wrapper = mount(ChangeBusinessType, { vuetify, store, localVue })
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    wrapper = mount(ChangeBusinessType, { vuetify, localVue })
   })
 
   afterEach(() => {
@@ -29,23 +33,22 @@ describe('CorrectBusinessType in a Correction', () => {
 
 describe('ChangeBusinessType in an Alteration', () => {
   let wrapper: any
-  let store: any = getVuexStore()
 
   const entitySnapshot = {
     businessInfo: {
       legalName: 'Mock Original Name',
       legalType: 'BC'
     }
-  }
+  } as any
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
-    store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
-    store.state.stateModel.entitySnapshot = entitySnapshot
-    store.state.stateModel.tombstone.filingType = 'alteration'
+    store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
+    store.stateModel.entitySnapshot = entitySnapshot
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
 
-    wrapper = mount(ChangeBusinessType, { vuetify, store, localVue })
+    wrapper = mount(ChangeBusinessType, { vuetify, localVue })
   })
 
   afterEach(() => {
@@ -102,7 +105,7 @@ describe('ChangeBusinessType in an Alteration', () => {
   })
 
   it('hides the CHANGE option for editing a business type when NOT Limited Company', async () => {
-    store.state.stateModel.tombstone.entityType = 'BEN'
+    store.stateModel.tombstone.entityType = CorpTypeModuleCd.BENEFIT_COMPANY
     await Vue.nextTick()
 
     expect(wrapper.find('#btn-correct-business-type').exists()).toBe(false)

@@ -21,7 +21,7 @@
               color="primary"
               text-color="white"
             >
-              {{editedLabel}}
+              {{getEditedLabel}}
             </v-chip>
           </v-flex>
         </v-col>
@@ -32,12 +32,12 @@
             <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
 
             <!-- Business Type Info -->
-            <template v-if="!hasNewNr && (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling
-              || isFirmConversionFiling))"
+            <template v-if="!hasNewNr && hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling ||
+              isFirmConversionFiling)"
             >
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
-                <span class="info-text">{{getCorpTypeDescription(getEntityType)}}</span>
+                <span class="info-text">{{GetCorpFullDescription(getEntityType)}}</span>
               </div>
               <div class="info-text pt-3">
                 <span>The name of this business will be the current Incorporation Number followed by "B.C. Ltd."</span>
@@ -45,12 +45,12 @@
             </template>
 
             <!-- Name Request Info -->
-            <template v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling || isSpecialResolutionFiling)">
+            <template v-if="hasNewNr">
               <div class="company-name mt-2">{{getNameRequestNumber || 'Unknown'}}</div>
               <div class="company-info mt-4">
                 <span class="subtitle">Business Type: </span>
                 <span :class="{ 'has-conflict': isConflictingLegalType}"
-                      class="info-text">{{getCorpTypeDescription(getNameRequest.legalType)}}
+                      class="info-text">{{GetCorpFullDescription(getNameRequest.legalType)}}
                 </span>
                 <v-tooltip
                   v-if="isConflictingLegalType"
@@ -74,7 +74,7 @@
               </div>
               <div class="company-info">
                 <span class="subtitle">Expiry Date: </span>
-                <span class="info-text">{{expiryDate || 'Unknown'}}</span>
+                <span class="info-text">{{nrExpiryDate || 'Unknown'}}</span>
               </div>
               <div class="company-info">
                 <span class="subtitle">Status: </span>
@@ -84,11 +84,11 @@
           </v-col>
 
           <!-- Actions -->
-          <v-col cols="2" class="mt-n2">
+          <v-col cols="2" class="my-n2">
             <div class="actions mr-4">
               <!-- FUTURE: only show buttons for named company -->
               <v-btn
-                v-if=" hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling ||
+                v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling ||
                   isFirmChangeFiling || isSpecialResolutionFiling))"
                 text color="primary"
                 id="btn-undo-company-name"
@@ -99,15 +99,15 @@
                 <span>Undo</span>
               </v-btn>
               <v-btn
-                v-else-if="!isFirmConversionFiling"
+                v-else-if="!isFirmConversionFiling && !isLimitedExtendRestorationFiling"
                 text color="primary"
                 id="btn-correct-company-name"
                 @click="isEditingNames = true"
               >
                 <v-icon small>mdi-pencil</v-icon>
-                <span>{{editLabel}}</span>
+                <span>{{getEditLabel}}</span>
               </v-btn>
-              <span class="more-actions" v-if=" hasCompanyNameChanged || (hasBusinessNameChanged &&
+              <span class="more-actions" v-if="hasCompanyNameChanged || (hasBusinessNameChanged &&
                 (isAlterationFiling || isFirmChangeFiling || isSpecialResolutionFiling))"
               >
                 <v-menu
@@ -175,7 +175,7 @@
           </div>
           <div class="name-request-applicant-info">
             <span class="subtitle">Phone: </span>
-            <span class="info-text">{{phoneNumber || 'N/A'}}</span>
+            <span class="info-text">{{nrPhoneNumber || 'N/A'}}</span>
           </div>
         </v-col>
       </v-row>
@@ -198,22 +198,22 @@
       />
     </div>
 
-    <!-- Name Translation(s) (alterations and BEN corrections only) -->
-    <div v-if="isAlterationFiling || isBenCorrectionFiling"
+    <!-- Name Translation(s) (alterations, corp corrections and restorations only) -->
+    <div v-if="isAlterationFiling || isBenBcCccUlcCorrectionFiling || isRestorationFiling"
       id="name-translate-section"
       class="section-container"
       :class="{'invalid-section': invalidTranslationSection}"
     >
-      <CorrectNameTranslation
+      <NameTranslation
         :invalidSection="invalidTranslationSection"
         @isEditingTranslations="isEditingTranslations = $event"
       />
     </div>
 
-    <v-divider v-if="isEntityTypeCP" class="mx-4 my-1" />
+    <v-divider v-if="isCoop" class="mx-4 my-1" />
 
     <!--- Association Type (coop only) -->
-    <div v-if="isEntityTypeCP"
+    <div v-if="isCoop"
         id="association-type-section"
         class="section-container"
         :class="{'invalid-section': invalidAssociationTypeSection}"
@@ -228,14 +228,14 @@
     <template v-if="isFirmChangeFiling || isFirmConversionFiling || isFirmCorrectionFiling">
       <v-divider class="mx-4 my-1" />
 
-      <StartDate
+      <BusinessStartDate
         class="section-container"
         :class="{'invalid-section': invalidStartDate}"
         :invalidSection="invalidStartDate"
       />
     </template>
 
-    <!-- Nature of Business (firm change and corrections filings only) -->
+    <!-- Nature of Business (firm changes and corrections only) -->
     <template v-if="isFirmChangeFiling || isFirmCorrectionFiling">
       <v-divider class="mx-4 my-1" />
 
@@ -257,8 +257,8 @@
       />
     </template>
 
-    <!-- Recognition Date and Time (alterations and BEN corrections only) -->
-    <template v-if="isAlterationFiling || isBenCorrectionFiling">
+    <!-- Recognition Date and Time (alterations, corp corrections and restorations only) -->
+    <template v-if="isAlterationFiling || isBenBcCccUlcCorrectionFiling || isRestorationFiling">
       <v-divider class="mx-4 my-1" />
 
       <div class="section-container">
@@ -281,17 +281,19 @@
       <OfficeAddresses :invalidSection="invalidAddressSection" />
     </div>
 
-    <v-divider class="mx-4 my-1" />
-
     <!-- Business Contact Information -->
-    <div id="contact-info-section" class="section-container" :class="{'invalid-section': invalidContactSection}">
-      <BusinessContactInfo
-        :invalidSection="invalidContactSection"
-      />
-    </div>
+    <template v-if="showBusinessContactInformation">
+      <v-divider class="mx-4 my-1" />
+
+      <div id="contact-info-section" class="section-container" :class="{'invalid-section': invalidContactSection}">
+        <BusinessContactInfo
+          :invalidSection="invalidContactSection"
+        />
+      </div>
+    </template>
 
     <!-- Folio Information (all except SP or GP) -->
-    <template v-if="isPremiumAccount && !isEntityTypeFirm">
+    <template v-if="isPremiumAccount && !isFirm">
       <v-divider class="mx-4 my-1" />
 
       <div id="folio-number-section" class="section-container" :class="{'invalid-section': invalidFolioSection}">
@@ -305,16 +307,19 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF, NameRequestApplicantIF, NameRequestIF }
   from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
-import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameTranslation,
-  CorrectNameOptions, NatureOfBusiness, OfficeAddresses, StartDate } from './'
-import { CommonMixin, SharedMixin, DateMixin, NameRequestMixin } from '@/mixins/'
-import { AssociationTypes, CorrectionTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { AssociationType, BusinessContactInfo, ChangeBusinessType, FolioInformation, CorrectNameOptions,
+  NameTranslation, NatureOfBusiness, OfficeAddresses, BusinessStartDate } from './'
+import { CommonMixin, DateMixin, NameRequestMixin } from '@/mixins/'
+import { CoopTypes, NameChangeOptions } from '@/enums/'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ConversionNOB } from '@/components/Conversion'
+import DateUtilities from '@/services/date-utilities'
+import { useStore } from '@/store/store'
+import { ToDisplayPhone } from '@/utils'
 
 @Component({
   components: {
@@ -322,49 +327,58 @@ import { ConversionNOB } from '@/components/Conversion'
     BusinessContactInfo,
     ChangeBusinessType,
     CorrectNameOptions,
-    CorrectNameTranslation,
+    NameTranslation,
     NatureOfBusiness,
     OfficeAddresses,
     FolioInformation,
     ConversionNOB,
-    StartDate
+    BusinessStartDate
   }
 })
 export default class YourCompany extends Mixins(
   CommonMixin,
   DateMixin,
-  SharedMixin,
   NameRequestMixin
 ) {
-  // Global getters
-  @Getter getNameRequestLegalName!: string
-  @Getter getNameRequestNumber!: string
-  @Getter getBusinessNumber!: string
-  @Getter getComponentValidate!: boolean
-  @Getter getNameRequest!: NameRequestIF
-  @Getter getCorrectedFilingDate!: string
-  @Getter getBusinessFoundingDate!: string // actually date-time
-  @Getter isConflictingLegalType!: boolean
-  @Getter isNumberedCompany!: boolean
-  @Getter isPremiumAccount!: boolean
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getBusinessContact!: ContactPointIF
-  @Getter isEntityTypeFirm!: boolean
-  @Getter isEntityTypeCP!: boolean
-  @Getter isBenCorrectionFiling!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
-  @Getter getEntityType!: CorpTypeCd
-  @Getter getAssociationType!: AssociationTypes
+  // for template
+  readonly GetCorpFullDescription = GetCorpFullDescription
 
-  // Alteration flag getters
-  @Getter hasBusinessNameChanged!: boolean
-  @Getter getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  // Global getters
+  @Getter(useStore) getAssociationType!: CoopTypes
+  @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) getBusinessFoundingDateTime!: string
+  @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getCorrectedFilingDate!: string
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isCoop!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isFirm!: boolean
+  @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
+  @Getter(useStore) isNumberedCompany!: boolean
+  @Getter(useStore) isPremiumAccount!: boolean
+  @Getter(useStore) isRestorationFiling!: boolean
+  @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global actions
-  @Action setEditingCompanyName!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
-  @Action setBusinessInformation!: ActionBindingIF
-  @Action setNameRequest!: ActionBindingIF
+  @Action(useStore) setBusinessInformation!: ActionBindingIF
+  @Action(useStore) setEditingCompanyName!: ActionBindingIF
+  @Action(useStore) setNameRequest!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   /** V-model for dropdown menu. */
   protected dropdown: boolean = null
@@ -434,44 +448,43 @@ export default class YourCompany extends Mixins(
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 
-  /** Name Request applicant info */
+  /** Name Request applicant info. */
   get nrApplicant (): NameRequestApplicantIF {
     return this.getNameRequest?.applicant
   }
 
-  /** Name Request status */
+  /** Name Request status. */
   get nrStatus (): string {
     return (this.getNameRequest?.status || '').toLowerCase()
   }
 
-  /** Name Request expiry */
-  get expiryDate (): string {
+  /** Name Request expiry date. */
+  get nrExpiryDate (): string {
     const expiry = this.getNameRequest?.expiry
     if (expiry) {
-      // FUTURE: use date mixin method to create date
-      const date = new Date(expiry)
-      return this.dateToPacificDateTime(date)
+      return DateUtilities.apiToPacificDateTime(expiry)
     }
     return null
   }
 
-  /** Name Request phone number */
-  get phoneNumber (): string {
-    return this.toDisplayPhone(this.nrApplicant.phoneNumber)
+  /** Name Request phone number. */
+  get nrPhoneNumber (): string {
+    return ToDisplayPhone(this.nrApplicant.phoneNumber)
   }
 
   /** The recognition date or business start date string. */
   get recognitionDateTime (): string {
-    if (this.isBenCorrectionFiling) {
-      if (this.getBusinessFoundingDate) {
-        return this.apiToPacificDateTime(this.getBusinessFoundingDate)
-      } else if (this.getCorrectedFilingDate) {
-        return this.apiToPacificDateTime(this.getCorrectedFilingDate)
+    if (this.isBenBcCccUlcCorrectionFiling || this.isRestorationFiling) {
+      if (this.getBusinessFoundingDateTime) {
+        return DateUtilities.apiToPacificDateTime(this.getBusinessFoundingDateTime)
+      }
+      if (this.getCorrectedFilingDate) {
+        return DateUtilities.apiToPacificDateTime(this.getCorrectedFilingDate)
       }
     }
     if (this.isAlterationFiling) {
-      if (this.getBusinessFoundingDate) {
-        return this.apiToPacificDateTime(this.getBusinessFoundingDate)
+      if (this.getBusinessFoundingDateTime) {
+        return DateUtilities.apiToPacificDateTime(this.getBusinessFoundingDateTime)
       }
     }
     return null
@@ -485,11 +498,13 @@ export default class YourCompany extends Mixins(
   }
 
   /** The current options for change of name correction or edit. */
-  get nameChangeOptions (): Array<CorrectionTypes> {
-    // remove name-to-numbered-company option when already a numbered company
+  get nameChangeOptions (): Array<NameChangeOptions> {
+    // if this is a numbered company, remove correct-name and name-to-number options
     if (this.isNumberedCompany) {
-      return this.getResource.changeData.nameChangeOptions
-        .filter(option => option !== CorrectionTypes.CORRECT_NAME_TO_NUMBER)
+      return this.getResource.changeData.nameChangeOptions.filter(option => (
+        option !== NameChangeOptions.CORRECT_NAME &&
+        option !== NameChangeOptions.CORRECT_NAME_TO_NUMBER
+      ))
     }
     return this.getResource.changeData.nameChangeOptions
   }
@@ -505,6 +520,20 @@ export default class YourCompany extends Mixins(
       this.isFirmChangeFiling ||
       this.isFirmConversionFiling ||
       this.isSpecialResolutionFiling
+    )
+  }
+
+  /**
+   * Whether to show Business Contact Information section.
+   * Currently excluding isFirmConversionFiling
+   */
+  get showBusinessContactInformation (): boolean {
+    return (
+      this.isAlterationFiling ||
+      this.isFirmChangeFiling ||
+      this.isCorrectionFiling ||
+      this.isSpecialResolutionFiling ||
+      this.isRestorationFiling
     )
   }
 
@@ -532,7 +561,7 @@ export default class YourCompany extends Mixins(
   }
 
   /** Updates UI when correct name options are done.  */
-  private nameChangeHandler (isSaved: boolean = false): void {
+  private nameChangeHandler (isSaved = false): void {
     this.hasCompanyNameChanged = this.isNewName
     if (isSaved) this.isEditingNames = false
   }
@@ -613,5 +642,4 @@ export default class YourCompany extends Mixins(
 #contact-info-section {
   border-bottom-left-radius: 0 !important;
 }
-
 </style>

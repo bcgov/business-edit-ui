@@ -1,4 +1,4 @@
 export interface EffectiveDateTimeIF {
-  dateTimeString: string
+  dateTimeString: string // ISO format
   isFutureEffective: boolean
 }

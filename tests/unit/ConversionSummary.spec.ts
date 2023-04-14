@@ -6,7 +6,10 @@ import { createLocalVue, mount } from '@vue/test-utils'
 import ConversionSummary from '@/components/Conversion/ConversionSummary.vue'
 import NatureOfBusiness from '@/components/common/YourCompany/NatureOfBusiness.vue'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
-import { GeneralPartnershipResource } from '@/resources/Change/GeneralPartnershipResource'
+import { GpChangeResource } from '@/resources/Change/GP'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
@@ -15,7 +18,8 @@ const vuetify = new Vuetify({})
 
 describe('Conversion Summary component', () => {
   let wrapper: any
-  let store: any = getVuexStore()
+  setActivePinia(createPinia())
+  const store = useStore()
 
   const addresses = {
     businessOffice: {
@@ -48,22 +52,22 @@ describe('Conversion Summary component', () => {
 
   beforeAll(() => {
     // init store
-    store.state.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
-    store.state.stateModel.tombstone.currentDate = '2021-03-01'
-    store.state.stateModel.entitySnapshot = entitySnapshot
-    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
-    store.state.stateModel.businessInformation = { ...entitySnapshot.businessInfo }
-    store.state.resourceModel = GeneralPartnershipResource
+    store.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
+    store.stateModel.tombstone.currentDate = '2021-03-01'
+    store.stateModel.entitySnapshot = entitySnapshot as any
+    store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
+    store.stateModel.businessInformation = { ...entitySnapshot.businessInfo } as any
+    store.resourceModel = GpChangeResource
   })
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
-    store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
-    store.state.stateModel.officeAddresses = addresses
-    store.state.stateModel.summaryMode = true
+    store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as any
+    store.stateModel.officeAddresses = addresses
+    store.stateModel.summaryMode = true
 
-    wrapper = mount(ConversionSummary, { vuetify, store, localVue })
+    wrapper = mount(ConversionSummary, { vuetify, localVue })
   })
 
   afterEach(() => {
@@ -81,7 +85,7 @@ describe('Conversion Summary component', () => {
   })
 
   it('renders the Nature of Business summary section when changes have been made', async () => {
-    store.state.stateModel.businessInformation.naicsCode = '654321'
+    store.stateModel.businessInformation.naicsCode = '654321'
     await Vue.nextTick()
 
     expect(wrapper.find('#nob-summary-section').exists()).toBe(true)
@@ -90,7 +94,7 @@ describe('Conversion Summary component', () => {
   })
 
   it('renders the Address summary section when changes have been made', async () => {
-    store.state.stateModel.officeAddresses = {}
+    store.stateModel.officeAddresses = {}
     await Vue.nextTick()
 
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)

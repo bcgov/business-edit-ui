@@ -1,28 +1,7 @@
 import { NameRequestStates, NameRequestTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
-// Name Request State interface
-export interface NameRequestIF {
-  applicant?: NameRequestApplicantIF
-  details?: NameRequestDetailsIF | {}
-  expiry?: string
-  filingId?: number
-  legalName: string
-  legalType: CorpTypeCd
-  nrNumber?: string
-  requestType?: NameRequestTypes
-  status?: NameRequestStates
-}
-
-// Name request response details interface
-export interface NameRequestDetailsIF {
-  approvedName: string
-  status: string
-  consentFlag: string
-  expirationDate: string
-}
-
-// Name request applicant details interface
+/** Name request applicant details interface */
 export interface NameRequestApplicantIF {
   fullAddress?: string
   fullName?: string
@@ -38,6 +17,27 @@ export interface NameRequestApplicantIF {
   countryTypeCode: string
   postalCode: string
   stateProvinceCode: string
+}
+
+/** Name request response details interface */
+export interface NameRequestDetailsIF {
+  approvedName: string
+  status: string
+  consentFlag: string
+  expirationDate: string
+}
+
+/** Name Request State interface */
+export interface NameRequestIF {
+  applicant?: NameRequestApplicantIF
+  details?: NameRequestDetailsIF
+  expiry?: string
+  filingId?: number
+  legalName: string
+  legalType: CorpTypeCd
+  nrNumber?: string
+  requestType?: NameRequestTypes
+  status?: NameRequestStates
 }
 
 export const EmptyNameRequest: NameRequestIF = {

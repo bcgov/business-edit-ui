@@ -7,15 +7,15 @@
           <label :class="{'error-text': invalidSection}">{{ getResource.addressLabel }}</label>
           <v-chip v-if="(isFirmChangeFiling || isFirmConversionFiling) && !isSummaryView
                   && (hasMailingChanged || hasDeliveryChanged)"
-                  x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
+                  x-small label color="primary" text-color="white" class="mt-0">{{ getEditedLabel }}</v-chip>
         </v-col>
 
         <!-- Mailing address -->
         <v-col cols="4" class="pr-2">
           <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
-            <v-chip v-if="isCorrectionFiling && hasMailingChanged"
-              x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
+            <v-chip v-if="hasMailingChanged && (isCorrectionFiling || isRestorationFiling)"
+              x-small label color="primary" text-color="white" class="mt-0">{{ getEditedLabel }}</v-chip>
           </label>
           <MailingAddress
             v-if="!isEmpty(mailingAddress)"
@@ -29,8 +29,8 @@
         <v-col cols="4" class="pr-2">
           <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
-            <v-chip v-if="isCorrectionFiling && hasDeliveryChanged"
-              x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
+            <v-chip v-if="hasDeliveryChanged && (isCorrectionFiling || isRestorationFiling)"
+              x-small label color="primary" text-color="white" class="mt-0">{{ getEditedLabel }}</v-chip>
           </label>
           <DeliveryAddress
             v-if="!isEmpty(deliveryAddress) && !inheritMailingAddress"
@@ -42,9 +42,9 @@
         </v-col>
 
         <template v-if="!isSummaryView">
-          <v-col cols="1" v-if="
-            (isCorrectionFiling || isFirmChangeFiling || isFirmConversionFiling) && haveOfficeAddressesChanged
-          ">
+          <v-col cols="1" v-if="haveOfficeAddressesChanged &&
+            (isCorrectionFiling || isFirmChangeFiling || isFirmConversionFiling || isRestorationFiling)"
+          >
             <div class="actions mr-4">
               <span class="edit-action">
                 <v-btn
@@ -79,7 +79,7 @@
                     >
                       <v-list-item-subtitle>
                         <v-icon small>mdi-pencil</v-icon>
-                        <span class="ml-1">{{ editLabel }}</span>
+                        <span class="ml-1">Change</span>
                       </v-list-item-subtitle>
                     </v-list-item>
                   </v-list>
@@ -88,7 +88,9 @@
             </div>
           </v-col>
 
-          <v-col cols="1" v-else-if="(isCorrectionFiling || isFirmChangeFiling || isFirmConversionFiling)">
+          <v-col cols="1" v-else-if="(isCorrectionFiling || isFirmChangeFiling || isFirmConversionFiling ||
+            isRestorationFiling)"
+          >
             <div class="actions mr-4">
               <v-btn
                 text color="primary"
@@ -96,7 +98,7 @@
                 @click="isEditing = true"
               >
                 <v-icon small>mdi-pencil</v-icon>
-                <span>{{ editLabel }}</span>
+                <span>{{ getEditLabel }}</span>
               </v-btn>
             </div>
           </v-col>
@@ -118,8 +120,8 @@
         </template>
       </v-row>
 
-      <!-- Records office (BEN only) -->
-      <v-row v-if="isEntityTypeBEN" id="summary-records-address" class="mt-4 mx-0" no-gutters>
+      <!-- Records office (BC/BEN/CCC/ULC only) -->
+      <v-row v-if="isBenBcCccUlc" id="summary-records-address" class="mt-4 mx-0" no-gutters>
         <v-col cols="3" class="pr-2">
           <label :class="{'error-text': invalidSection}">Records Office</label>
         </v-col>
@@ -128,8 +130,8 @@
         <v-col cols="4" class="pr-2">
           <label>
             <span class="subtitle text-body-3 mr-2">Mailing Address</span>
-            <v-chip v-if="isCorrectionFiling && hasRecMailingChanged"
-              x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
+            <v-chip v-if="hasRecMailingChanged && (isCorrectionFiling || isRestorationFiling)"
+              x-small label color="primary" text-color="white" class="mt-0">{{ getEditedLabel }}</v-chip>
           </label>
           <RecMailingAddress
             v-if="!inheritRegisteredAddress && !isEmpty(recMailingAddress)"
@@ -144,8 +146,8 @@
         <v-col cols="4" class="pr-2">
           <label>
             <span class="subtitle text-body-3 mr-2">Delivery Address</span>
-            <v-chip v-if="isCorrectionFiling && hasRecDeliveryChanged"
-              x-small label color="primary" text-color="white" class="mt-0">{{ editedLabel }}</v-chip>
+            <v-chip v-if="hasRecDeliveryChanged && (isCorrectionFiling || isRestorationFiling)"
+              x-small label color="primary" text-color="white" class="mt-0">{{ getEditedLabel }}</v-chip>
           </label>
           <RecDeliveryAddress
             v-if="!inheritRecMailingAddress && !inheritRegisteredAddress && !isEmpty(recDeliveryAddress)"
@@ -257,8 +259,8 @@
       </v-row>
     </v-card>
 
-    <!-- Editing a correction filing -->
-    <v-card flat v-else-if="isCorrectionFiling">
+    <!-- Editing a correction or restoration filing -->
+    <v-card flat v-else-if="isCorrectionFiling || isRestorationFiling">
       <ul class="list address-list">
         <div id="edit-registered-address">
           <div class="address-edit-header">
@@ -301,7 +303,7 @@
                 </div>
                 <div
                   class="address-wrapper pt-6"
-                  v-if="!isSame(mailingAddress, deliveryAddress, ['actions', 'addressType', 'id']) ||
+                  v-if="!IsSame(mailingAddress, deliveryAddress, ['actions', 'addressType', 'id']) ||
                   !inheritMailingAddress"
                 >
                   <RegDeliveryAddress
@@ -320,7 +322,7 @@
         </div>
 
         <!-- "Same as" checkbox -->
-        <div id="edit-records-address" v-if="isEntityTypeBEN">
+        <div id="edit-records-address" v-if="isBenBcCccUlc">
           <div class="address-edit-header" :class="{'mt-8': inheritMailingAddress}">
             <label class="address-edit-title">Records Office</label>
             <v-checkbox
@@ -370,7 +372,7 @@
                   </div>
                   <div
                     class="address-wrapper pt-6"
-                    v-if="!isSame(recMailingAddress, recDeliveryAddress, ['actions', 'addressType', 'id']) ||
+                    v-if="!IsSame(recMailingAddress, recDeliveryAddress, ['actions', 'addressType', 'id']) ||
                     !inheritRecMailingAddress"
                   >
                     <RecDeliveryAddress
@@ -378,7 +380,7 @@
                       :address="recDeliveryAddress"
                       :editing="true"
                       :schema="InBcCanadaAddressSchema"
-                      @update:address="updateAddress(AddressTypes.REC_DELIVERY_ADDRESS, recDeliveryAddress, $event)"
+                      @update:address="updateAddress(AddressTypes.REC_DELIVERY_ADDRESS, $event)"
                       @valid="onAddressValid(AddressTypes.REC_DELIVERY_ADDRESS, $event)"
                     />
                   </div>
@@ -412,14 +414,15 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { isEmpty, isEqual } from 'lodash'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces/'
-import { isSame } from '@/utils/'
+import { IsSame } from '@/utils/'
 import { AddressTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
+import { useStore } from '@/store/store'
 
 const REGION_BC = 'BC'
 const COUNTRY_CA = 'CA'
@@ -442,35 +445,40 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   }
 
   /** Whether to show invalid section styling. */
-  @Prop({ default: false })
-  readonly invalidSection: boolean
+  @Prop({ default: false }) readonly invalidSection!: boolean
 
   /** Prop to set readonly state (ie disable form actions). */
-  @Prop({ default: false })
-  readonly isSummaryView: boolean
+  @Prop({ default: false }) readonly isSummaryView!: boolean
 
   // Global getters
-  @Getter getOfficeAddresses!: AddressesIF // NB: may be {}
-  @Getter getResource!: ResourceIF
-  @Getter getOriginalOfficeAddresses!: AddressesIF
-  @Getter haveOfficeAddressesChanged!: boolean
-  @Getter hasMailingChanged!: boolean
-  @Getter hasDeliveryChanged!: boolean
-  @Getter hasRecMailingChanged!: boolean
-  @Getter hasRecDeliveryChanged!: boolean
-  @Getter isEntityTypeBEN!: boolean
-  @Getter isEntityTypeFirm!: boolean
-  @Getter isBenCorrectionFiling!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
+  @Getter(useStore) getEditLabel!: string
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getOfficeAddresses!: AddressesIF // NB: may be {}
+  @Getter(useStore) getOriginalOfficeAddresses!: AddressesIF
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) hasDeliveryChanged!: boolean
+  @Getter(useStore) hasMailingChanged!: boolean
+  @Getter(useStore) hasRecDeliveryChanged!: boolean
+  @Getter(useStore) hasRecMailingChanged!: boolean
+  @Getter(useStore) haveOfficeAddressesChanged!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
+  @Getter(useStore) isBenBcCccUlc!: boolean
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isFirmChangeFiling!: boolean
+  @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isRestorationFiling!: boolean
+  @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global actions
-  @Action setOfficeAddresses!: ActionBindingIF
-  @Action setEditingOfficeAddresses!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setEditingOfficeAddresses!: ActionBindingIF
+  @Action(useStore) setOfficeAddresses!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   // Declarations for template
   readonly isEmpty = isEmpty
-  readonly isSame = isSame
+  readonly IsSame = IsSame
   readonly AddressTypes = AddressTypes
   readonly DefaultAddressSchema = DefaultAddressSchema
   readonly InBcCanadaAddressSchema = InBcCanadaAddressSchema
@@ -492,10 +500,10 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   protected dropdown = false
 
   // The 4 addresses that are the current state of the BaseAddress sub-components:
-  private mailingAddress = {} as AddressIF
-  private deliveryAddress = {} as AddressIF
-  private recMailingAddress = {} as AddressIF
-  private recDeliveryAddress = {} as AddressIF
+  private mailingAddress: AddressIF = {}
+  private deliveryAddress: AddressIF = {}
+  private recMailingAddress: AddressIF = {}
+  private recDeliveryAddress: AddressIF = {}
 
   // The 4 validation events from each BaseAddress sub-component:
   private mailingAddressValid = true
@@ -542,7 +550,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets local address data and "inherit" flags from store.
    */
   private setLocalProperties (): void {
-    if (this.isBenCorrectionFiling || this.isAlterationFiling) {
+    if (this.isBenBcCccUlcCorrectionFiling || this.isAlterationFiling || this.isRestorationFiling) {
       // assign registered office addresses (may be {})
       this.mailingAddress = { ...this.getOfficeAddresses?.registeredOffice?.mailingAddress }
       this.deliveryAddress = { ...this.getOfficeAddresses?.registeredOffice?.deliveryAddress }
@@ -565,8 +573,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
         this.deliveryAddressValid &&
         this.recMailingAddressValid &&
         this.recDeliveryAddressValid &&
-        isSame(this.mailingAddress, this.recMailingAddress, ['addressCountryDescription', 'id']) &&
-        isSame(this.deliveryAddress, this.recDeliveryAddress, ['addressCountryDescription', 'id'])
+        IsSame(this.mailingAddress, this.recMailingAddress, ['addressCountryDescription', 'id']) &&
+        IsSame(this.deliveryAddress, this.recDeliveryAddress, ['addressCountryDescription', 'id'])
       )
 
       // compare addresses to set the "inherit records mailing" flag
@@ -575,7 +583,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       this.inheritRecMailingAddress = (
         this.recMailingAddressValid &&
         this.recDeliveryAddressValid &&
-        isSame(this.recMailingAddress, this.recDeliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
+        IsSame(this.recMailingAddress, this.recDeliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
       )
     }
 
@@ -608,16 +616,18 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     // compare valid addresses to set the "inherit mailing" flag
     // ignore Address Type since it's different
     // ignore Address Country Description since it's not always present
+    // ignore ID since it's different
     this.inheritMailingAddress = (
       this.mailingAddressValid &&
       this.deliveryAddressValid &&
-      isSame(this.mailingAddress, this.deliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
+      IsSame(this.mailingAddress, this.deliveryAddress, ['addressType', 'addressCountryDescription', 'id'])
     )
   }
 
   /**
    * When "same as (registry) mailing address" checkbox is changed,
    * sets the Registered Delivery Address to the Registered Mailing Address.
+   * NB: retain original address IDs
    */
   protected setDeliveryAddressToMailingAddress (): void {
     if (this.inheritMailingAddress) {
@@ -636,6 +646,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /**
    * When "same as registered address" checkbox is changed,
    * sets the Records office addresses to the Registered office addresses.
+   * NB: retain original address IDs
    */
   protected setRecordOfficeToRegisteredOffice (): void {
     if (this.inheritRegisteredAddress) {
@@ -652,6 +663,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   /**
    * When "same as (records) mailing address" checkbox is changed,
    * sets the Records Delivery Address to Records Mailing Address.
+   * NB: retain original address IDs
    */
   protected setRecordDeliveryAddressToMailingAddress (): void {
     if (this.inheritRecMailingAddress) {
@@ -664,13 +676,20 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
 
   /**
    * Handles update events from address sub-components.
+   * NB: addresses must keep their original IDs
+   * NB: retain original address IDs
    */
   protected updateAddress (addressToUpdate: AddressTypes, newAddress: AddressIF): void {
+    // BaseAddress component returns empty Delivery Instructions as ''
+    // but Legal API returns empty Delivery Instructions as null
+    // so nullify empty Delivery Instructions for future comparisons.
+    if (!newAddress.deliveryInstructions) newAddress.deliveryInstructions = null
+
     switch (addressToUpdate) {
       case AddressTypes.MAILING_ADDRESS:
         // only update if not equal
         if (!isEqual(this.mailingAddress, newAddress)) {
-          this.mailingAddress = { ...newAddress }
+          this.mailingAddress = { ...newAddress, id: this.mailingAddress.id }
           if (this.inheritMailingAddress) {
             this.deliveryAddress = { ...newAddress, addressType: 'delivery', id: this.deliveryAddress.id }
           }
@@ -685,7 +704,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       case AddressTypes.DELIVERY_ADDRESS:
         // only update if not equal
         if (!isEqual(this.deliveryAddress, newAddress)) {
-          this.deliveryAddress = { ...newAddress }
+          this.deliveryAddress = { ...newAddress, id: this.deliveryAddress.id }
           if (this.inheritRegisteredAddress) {
             this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
           }
@@ -695,7 +714,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       case AddressTypes.REC_MAILING_ADDRESS:
         // only update if not equal
         if (!isEqual(this.recMailingAddress, newAddress)) {
-          this.recMailingAddress = { ...newAddress }
+          this.recMailingAddress = { ...newAddress, id: this.recMailingAddress.id }
           if (this.inheritRecMailingAddress) {
             this.recDeliveryAddress = { ...newAddress, addressType: 'delivery', id: this.recDeliveryAddress.id }
           }
@@ -705,7 +724,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
       case AddressTypes.REC_DELIVERY_ADDRESS:
         // only update if not equal
         if (!isEqual(this.recDeliveryAddress, newAddress)) {
-          this.recDeliveryAddress = { ...newAddress }
+          this.recDeliveryAddress = { ...newAddress, id: this.recDeliveryAddress.id }
         }
         break
 
@@ -746,8 +765,8 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Sets updated office addresses in store.
    */
   private storeAddresses (): void {
-    if (this.isBenCorrectionFiling) {
-      // at the moment, only BEN corrections are supported
+    if (this.isBenBcCccUlcCorrectionFiling || this.isRestorationFiling) {
+      // at the moment, only corp corrections and restorations are supported
       this.setOfficeAddresses({
         registeredOffice: {
           deliveryAddress: this.deliveryAddress,
@@ -834,8 +853,9 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
    * Also called when we know what kind of correction this is.
    */
   @Watch('getOfficeAddresses', { deep: true, immediate: true })
-  @Watch('isBenCorrectionFiling')
+  @Watch('isBenBcCccUlcCorrectionFiling')
   @Watch('isFirmCorrectionFiling')
+  @Watch('isRestorationFiling')
   private updateAddresses (): void {
     // set local properties from store
     this.setLocalProperties()
@@ -987,29 +1007,6 @@ ul {
 
   .v-btn {
     min-width: 6.5rem;
-  }
-}
-
-// Override Base Address font styling
-::v-deep {
-  // italicize the delivery instructions in the base address component
-  .address-block .delivery-instructions {
-    font-style: italic;
-  }
-
-  .address-block__info-row {
-    color: $gray7;
-    font-weight: normal;
-  }
-
-  .theme--light.v-label {
-    color: $gray7;
-    font-size: $px-16;
-    font-weight: normal;
-  }
-
-  .v-input input {
-    color: $gray9
   }
 }
 </style>

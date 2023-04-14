@@ -1,31 +1,33 @@
 import Vue from 'vue'
 import sinon from 'sinon'
 import { shallowMount, Wrapper } from '@vue/test-utils'
-import { axios } from '@/utils/'
-import { getVuexStore } from '@/store/'
-import MixinTester from './mixin-tester.vue'
+import { AxiosInstance as axios } from '@/utils/'
+import MixinTester from '@/mixin-tester.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, NameRequestTypes } from '@/enums'
 
 describe('Name Request Mixin', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let get: any
-  let store: any = getVuexStore()
+  setActivePinia(createPinia())
+  const store = useStore()
 
   beforeEach(async () => {
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.resourceModel = {
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.resourceModel = {
       entityReference: '',
       displayName: '',
-      nameRequestType: '',
       addressLabel: '',
-      filingData: '',
+      filingData: null,
       changeData: {
-        nameRequestTypes: ['CHG', 'CNV']
+        nameRequestTypes: [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION]
       },
       certifyClause: ''
     }
     get = sinon.stub(axios, 'get')
-    wrapper = shallowMount(MixinTester, { store })
+    wrapper = shallowMount(MixinTester)
     vm = wrapper.vm
     await Vue.nextTick()
   })
@@ -130,6 +132,48 @@ describe('Name Request Mixin', () => {
     }
   })
 
+  it('handles conditional state with consent required', async () => {
+    // mock fetchNameRequest to return invalid NR state
+    get.withArgs('nameRequests/NR 1234567')
+      .returns(Promise.resolve({ data: {
+        applicants: { emailAddress: 'email', phoneNumber: 'phone' },
+        state: 'CONDITIONAL',
+        consentFlag: 'Y',
+        expirationDate: '2021-11-05T07:01:00+00:00',
+        names: [{ state: 'APPROVED', name: 'name' }],
+        nrNum: 'NR 1234567',
+        requestTypeCd: 'CR',
+        request_action_cd: 'CHG'
+      } }))
+
+    try {
+      await vm.validateNameRequest('NR 1234567', 'phone', 'email')
+    } catch (err) {
+      // verify thrown error
+      expect((err as any).message).toBe('Invalid Name request state: NEED_CONSENT')
+      // FUTURE: figure out how to verify emitted error (invalid-name-request)
+      // expect(wrapper.emitted('invalid-name-request')).toEqual([['NEED_CONSENT']])
+    }
+  })
+
+  it('handles conditional state with consent received', async () => {
+    // mock fetchNameRequest to return valid NR state
+    get.withArgs('nameRequests/NR 1234567')
+      .returns(Promise.resolve({ data: {
+        applicants: { emailAddress: 'email', phoneNumber: 'phone' },
+        state: 'CONDITIONAL',
+        consentFlag: 'R',
+        expirationDate: '2021-11-05T07:01:00+00:00',
+        names: [{ state: 'APPROVED', name: 'name' }],
+        nrNum: 'NR 1234567',
+        requestTypeCd: 'CR',
+        request_action_cd: 'CHG'
+      } }))
+
+    const nr = await vm.validateNameRequest('NR 1234567', 'phone', 'email')
+    expect(nr).not.toBeUndefined()
+  })
+
   it('identifies valid and invalid NRs', () => {
     let nr = null
     expect(vm.isNrValid(nr)).toBe(false)
@@ -163,8 +207,8 @@ describe('Name Request Mixin', () => {
   })
 
   it('identifies valid and invalid NRs for firms', async () => {
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel.changeData.nameRequestTypes = ['CHG']
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.resourceModel.changeData.nameRequestTypes = [NameRequestTypes.CHANGE_OF_NAME]
 
     let nr = null
     expect(vm.isNrValid(nr)).toBe(false)

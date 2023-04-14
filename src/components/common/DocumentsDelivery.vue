@@ -18,9 +18,9 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="isRoleStaff" no-gutters class="mt-6">
+        <v-row v-if="isRoleStaff && userEmailOptional" no-gutters class="mt-6">
           <v-col cols="3" class="px-0">
-            <label :class="{ 'error-text': documentDeliveryInvalid }"><strong>Completing Party</strong></label>
+            <label :class="{ 'error-text': documentDeliveryInvalid }"><strong>{{ emailLabel }}</strong></label>
           </v-col>
           <v-col cols="9" class="px-0">
             <v-text-field
@@ -39,10 +39,10 @@
 
         <v-row v-else no-gutters class="mt-6">
           <v-col cols="3" class="px-0">
-            <label><strong>Completing Party</strong></label>
+            <label><strong>{{ emailLabel }}</strong></label>
           </v-col>
           <v-col cols="9" class="px-0">
-            <span class="info-text">{{ getUserEmail }}</span>
+            <span class="info-text">{{ userEmail }}</span>
           </v-col>
         </v-row>
       </v-card>
@@ -52,36 +52,42 @@
 
 <script lang="ts">
 import { Component, Mixins, Emit, Watch, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
 import { FilingNames } from '@/enums/'
-import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
+import { ActionBindingIF, FlagsReviewCertifyIF, ResourceIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
+
+import { useStore } from '@/store/store'
 
 // FUTURE: update this component so it doesn't set changes flag initially
 
 @Component({})
 export default class DocumentsDelivery extends Mixins(CommonMixin) {
   // Global getters
-  @Getter getUserEmail!: string
-  @Getter getBusinessContact!: ContactPointIF
-  @Getter isRoleStaff!: boolean
-  @Getter getDocumentOptionalEmail!: string
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter getFilingName!: FilingNames
+  @Getter(useStore) getUserEmail!: string
+  @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) getDocumentOptionalEmail!: string
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getFilingName!: FilingNames
+  @Getter(useStore) getResource!: ResourceIF
 
   // Global actions
-  @Action setDocumentOptionalEmail!: ActionBindingIF
-  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmail!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
 
   /** Prop to provide section number. */
-  @Prop({ default: '' }) readonly sectionNumber: string
+  @Prop({ default: '' }) readonly sectionNumber!: string
 
   /** Whether to perform validation. */
-  @Prop({ default: false }) readonly validate: boolean
+  @Prop({ default: false }) readonly validate!: boolean
+
+  @Prop({ default: true }) readonly userEmailOptional!: boolean
+  @Prop({ default: '' }) readonly userAltEmail!: string
 
   // Local properties
-  private optionalEmail: string = ''
+  private optionalEmail = ''
 
   private entityEmailRules = [
     (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
@@ -89,7 +95,8 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
     (v: string) => this.validateEmailFormat(v) || 'Enter valid email address'
   ]
 
-  protected mounted (): void {
+  /** Called when component is mounted. */
+  mounted (): void {
     this.optionalEmail = this.getDocumentOptionalEmail
   }
 
@@ -106,6 +113,14 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   /** True if invalid class should be set for certify container. */
   get documentDeliveryInvalid (): boolean {
     return (this.validate && !this.getFlagsReviewCertify.isValidDocumentOptionalEmail)
+  }
+
+  get userEmail (): string {
+    return (this.userAltEmail || this.getUserEmail)
+  }
+
+  get emailLabel (): string {
+    return (this.getResource.userEmailLabel || 'Completing Party')
   }
 
   @Watch('optionalEmail')
@@ -130,10 +145,8 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-::v-deep {
-  .v-label {
-    font-weight: normal;
-  }
+:deep(.v-label) {
+  font-weight: normal;
 }
 
 #document-delivery-section {

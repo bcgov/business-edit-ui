@@ -1,126 +1,132 @@
 <template>
-  <section class="pb-10" id="special-resolution-view">
-    <!-- Company Information page-->
-    <v-slide-x-transition hide-on-leave>
-      <div v-if="!isSummaryMode">
-        <header>
-          <h1>Business Information</h1>
-        </header>
+  <ViewWrapper>
+    <section class="pb-10" id="special-resolution-view">
+      <!-- Company Information page-->
+      <v-slide-x-transition hide-on-leave>
+        <div v-if="!isSummaryMode">
+          <header>
+            <h1>Business Information</h1>
+          </header>
 
-        <section class="mt-6">
-          You must keep your business information up to date. Some changes require a Special Resolution.
-          Necessary fees will be applied as updates are made.
-        </section>
+          <section class="mt-6">
+            You must keep your business information up to date. Some changes require a Special Resolution.
+            Necessary fees will be applied as updates are made.
+          </section>
 
-        <YourCompany class="mt-10" />
+          <YourCompany class="mt-10" />
 
-        <CurrentDirectors class="mt-10" />
-          <!-- more component comes here -->
-        <CreateSpecialResolution class="mt-10" v-if="showCreateSpecialResolution" />
-      </div>
-    </v-slide-x-transition>
+          <CurrentDirectors class="mt-10" />
 
-    <!-- Review and Certify page -->
-    <v-slide-x-reverse-transition hide-on-leave>
-      <div v-if="isSummaryMode && showFeeSummary">
-        <header>
-          <h1>Review and Certify</h1>
-        </header>
+          <CreateSpecialResolution class="mt-10" v-if="showCreateSpecialResolution" />
+        </div>
+      </v-slide-x-transition>
 
-        <section class="mt-6">
-          <p id="intro-text">
-            Changes were made to your business information that require a filing.
-            Review and certify the changes you are about to make to your business.
-          </p>
-        </section>
+      <!-- Review and Certify page -->
+      <v-slide-x-reverse-transition hide-on-leave>
+        <div v-if="isSummaryMode && showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
 
-        <SpecialResolutionSummary
-          class="mt-10"
-          :validate="getAppValidate"
-          @haveChanges="onSpecialResolutionSummaryChanges($event)"
-        />
+          <section class="mt-6">
+            <p id="intro-text">
+              Changes were made to your business information that require a filing.
+              Review and certify the changes you are about to make to your business.
+            </p>
+          </section>
 
-        <DocumentsDelivery
-          class="mt-10"
-          sectionNumber="1."
-          :validate="getAppValidate"
-          @valid="setDocumentOptionalEmailValidity($event)"
-        />
-
-        <TransactionalFolioNumber
-          v-if="showTransactionalFolioNumber"
-          class="mt-10"
-          sectionNumber="2."
-          :validate="getAppValidate"
-        />
-
-        <CompletingParty
-          class="mt-10"
-          :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
-          :validate="getAppValidate"
-        />
-
-        <CertifySection
-          class="mt-10"
-          :sectionNumber="showTransactionalFolioNumber ? '4.' : '3.'"
-          :validate="getAppValidate"
-          :disableEdit="!isRoleStaff"
-        />
-
-        <template v-if="isRoleStaff">
-          <StaffPayment
+          <SpecialResolutionSummary
             class="mt-10"
-            sectionNumber="4."
-            @haveChanges="onStaffPaymentChanges($event)"
+            :validate="getAppValidate"
+            @haveChanges="onSpecialResolutionSummaryChanges($event)"
           />
-        </template>
 
-      </div>
-    </v-slide-x-reverse-transition>
+          <DocumentsDelivery
+            class="mt-10"
+            sectionNumber="1."
+            :validate="getAppValidate"
+            @valid="setDocumentOptionalEmailValidity($event)"
+          />
 
-    <!-- Done-->
-    <v-fade-transition>
-      <div v-if="isSummaryMode && !showFeeSummary">
-        <header>
-          <h1>Review and Certify</h1>
-        </header>
+          <TransactionalFolioNumber
+            v-if="showTransactionalFolioNumber"
+            class="mt-10"
+            sectionNumber="2."
+            :validate="getAppValidate"
+          />
 
-        <section class="mt-6">
-          You have deleted all fee-based changes and your company information has reverted to its
-          original state. If you made any non-fee changes such as updates to your Registered
-          Office Contact Information, please note that these changes have already been saved.
-        </section>
+          <CompletingParty
+            class="mt-10"
+            :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
+            :validate="getAppValidate"
+          />
 
-        <v-btn
-          large
-          color="primary"
-          id="done-button"
-          class="mt-8"
-          @click="$root.$emit('go-to-dashboard')"
-        >
-          <span>Done</span>
-        </v-btn>
-      </div>
-    </v-fade-transition>
-  </section>
+          <CertifySection
+            class="mt-10"
+            :sectionNumber="showTransactionalFolioNumber ? '4.' : '3.'"
+            :validate="getAppValidate"
+            :disableEdit="!isRoleStaff"
+          />
+
+          <template v-if="isRoleStaff">
+            <StaffPayment
+              class="mt-10"
+              sectionNumber="4."
+              @haveChanges="onStaffPaymentChanges()"
+            />
+          </template>
+
+        </div>
+      </v-slide-x-reverse-transition>
+
+      <!-- Done-->
+      <v-fade-transition>
+        <div v-if="isSummaryMode && !showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
+
+          <section class="mt-6">
+            You have deleted all fee-based changes and your company information has reverted to its
+            original state. If you made any non-fee changes such as updates to your Registered
+            Office Contact Information, please note that these changes have already been saved.
+          </section>
+
+          <v-btn
+            large
+            color="primary"
+            id="done-button"
+            class="mt-8"
+            @click="$root.$emit('go-to-dashboard')"
+          >
+            <span>Done</span>
+          </v-btn>
+        </div>
+      </v-fade-transition>
+    </section>
+  </ViewWrapper>
 </template>
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils/'
+import { Action, Getter } from 'pinia-class'
+import { GetFeatureFlag } from '@/utils/'
 import { SpecialResolutionSummary, CreateSpecialResolution } from '@/components/SpecialResolution'
 import { CertifySection, CurrentDirectors, DocumentsDelivery, StaffPayment, TransactionalFolioNumber,
   YourCompany, CompletingParty } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF } from '@/interfaces/'
-import { CorpTypeCd, FilingCodes, FilingStatus } from '@/enums/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { CooperativeResource } from '@/resources/SpecialResolution/'
+import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/'
+import ViewWrapper from '@/components/ViewWrapper.vue'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
+    ViewWrapper,
     SpecialResolutionSummary,
     CertifySection,
     CurrentDirectors,
@@ -138,27 +144,28 @@ export default class SpecialResolution extends Mixins(
   FilingTemplateMixin
 ) {
   // Global getters
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter getUserFirstName!: string
-  @Getter getUserLastName!: string
-  @Getter isSummaryMode!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter isPremiumAccount!: boolean
-  @Getter getAppValidate!: boolean
-  @Getter showFeeSummary!: boolean
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getUserFirstName!: string
+  @Getter(useStore) getUserLastName!: string
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isPremiumAccount!: boolean
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
+  @Getter(useStore) isCoop!: boolean
 
   // Global actions
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
-  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action setResource!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action(useStore) setResource!: ActionBindingIF
 
   /** Whether App is ready. */
-  @Prop({ default: false })
-  readonly appReady: boolean
+  @Prop({ default: false }) readonly appReady!: boolean
 
   /** Determines if data is loaded, will trigger loading certain components. */
   protected loadedData = false
+
   /** Whether to show the Transactional Folio Number section. */
   get showTransactionalFolioNumber (): boolean {
     return (this.isPremiumAccount && !this.isRoleStaff)
@@ -174,14 +181,9 @@ export default class SpecialResolution extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** Check validity state, only when prompted by app. */
-  get invalidCourtOrder (): boolean {
-    return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
-  }
-
-  /** The resource file for an SpecialResolution filing. */
+  /** The resource object for a special resolution filing. */
   get specialResolutionResource (): ResourceIF {
-    if (this.isEntityTypeCP) return CooperativeResource
+    if (this.isCoop) return CpSpecialResolutionResource
     return null
   }
 
@@ -203,7 +205,7 @@ export default class SpecialResolution extends Mixins(
 
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
-    if (!this.isJestRunning && !getFeatureFlag('alteration-ui-enabled')) {
+    if (!this.isJestRunning && !GetFeatureFlag('alteration-ui-enabled')) {
       window.alert('Alterations are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard', true)
       return
@@ -224,12 +226,12 @@ export default class SpecialResolution extends Mixins(
 
         // do not proceed if this isn't an Special Resolution filing
         if (!filing.specialResolution) {
-          throw new Error('Invalid Special Resolution filing')
+          throw new Error('Invalid special resolution filing')
         }
 
         // do not proceed if this isn't a DRAFT filing
-        if (filing.header.status !== FilingStatus.DRAFT) {
-          throw new Error('Invalid Special Resolution status')
+        if (filing.header?.status !== FilingStatus.DRAFT) {
+          throw new Error('Invalid special resolution status')
         }
 
         // parse special resolution filing and original entity snapshot into store
@@ -239,32 +241,31 @@ export default class SpecialResolution extends Mixins(
         this.parseEntitySnapshot(entitySnapshot)
       }
 
-      if (this.specialResolutionResource) {
-        // set the specific resource
-        this.setResource(this.specialResolutionResource)
-
-        // initialize Fee Summary data
-        const filingData = [this.specialResolutionResource.filingData]
-        if (this.hasBusinessNameChanged) {
-          filingData.push({
-            filingTypeCode: FilingCodes.SPECIAL_RESOLUTION_NAME_CHANGE,
-            entityType: CorpTypeCd.COOP,
-            priority: false
-          })
-        }
-        filingData.forEach(fd => {
-          fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
-        })
-        this.setFilingData(filingData)
-      } else {
-        // go to catch()
-        throw new Error(`Invalid Special Resolution resources entity type = ${this.getEntityType}`)
+      if (!this.specialResolutionResource) {
+        throw new Error(`Invalid special resolution resource entity type = ${this.getEntityType}`)
       }
 
-      // update the current fees for the Filing
+      // set the specific resource
+      this.setResource(this.specialResolutionResource)
+
+      // initialize Fee Summary data
+      const filingData = [this.specialResolutionResource.filingData]
+      if (this.hasBusinessNameChanged) {
+        filingData.push({
+          filingTypeCode: FilingCodes.SPECIAL_RESOLUTION_NAME_CHANGE,
+          entityType: CorpTypeCd.COOP,
+          priority: false
+        })
+      }
+      filingData.forEach(fd => {
+        fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
+      })
+      this.setFilingData(filingData)
+
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
 
-      // fetches the fee prices to display in the text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData(true)
 
       // set current profile name to store for field pre population
@@ -317,9 +318,9 @@ export default class SpecialResolution extends Mixins(
       fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
     })
     this.setFilingData(filingData)
-    // update the current fees for the filing
+    // update the current fees for this filing
     await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
-    // update the fee prices to display in the text
+    // update the fee prices for the notice changes
     await this.setFeePricesFromFilingData(true)
   }
 
@@ -336,20 +337,22 @@ export default class SpecialResolution extends Mixins(
         })
       }
       this.setFilingData(filingData)
-      // update the current fees for the filing
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
-      // update the fee prices to display in the text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData(true)
     }
   }
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: Boolean = true): void {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitHaveData (haveData = true): void {
     this.loadedData = true
   }
 }

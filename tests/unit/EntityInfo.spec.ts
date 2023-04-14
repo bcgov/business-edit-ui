@@ -1,16 +1,18 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import EntityInfo from '@/components/common/EntityInfo.vue'
 import mockRouter from './MockRouter'
 import VueRouter from 'vue-router'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
-let state = store.state.stateModel
+setActivePinia(createPinia())
+const store = useStore()
+const state = store.stateModel
 document.body.setAttribute('data-app', 'true')
 
 describe('Entity Info component in a Correction as a named company', () => {
@@ -23,7 +25,8 @@ describe('Entity Info component in a Correction as a named company', () => {
     },
     business: {
       identifier: 'BC1234567',
-      legalType: 'BEN'
+      legalType: 'BEN',
+      taxId: '123456789' // sample BN9
     },
     incorporationApplication: {
       contactPoint: {
@@ -36,33 +39,32 @@ describe('Entity Info component in a Correction as a named company', () => {
         legalName: 'My Mock Name Inc.'
       },
       offices: {},
-      parties: [] as [],
-      shareClasses: [] as []
+      parties: [],
+      shareClasses: []
     }
   }
 
   beforeAll(() => {
     state.tombstone.keycloakRoles = ['staff']
-    state.businessInformation = mockFiling.business
+    state.businessInformation = mockFiling.business as any
     state.tombstone.businessId = mockFiling.business.identifier
     state.businessContact = mockFiling.incorporationApplication.contactPoint
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: 'My Mock Name Inc.'
       }
-    }
+    } as any
   })
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'correction' })
+    await router.push({ name: 'correction' })
 
     wrapper = mount(EntityInfo, {
       localVue,
       vuetify,
-      store,
       router
     })
   })
@@ -77,7 +79,7 @@ describe('Entity Info component in a Correction as a named company', () => {
 
   it('renders the business name and numbers', () => {
     expect(wrapper.find('#entity-legal-name').text()).toBe('My Mock Name Inc.')
-    expect(wrapper.find('#entity-business-number').text()).toBe('1234567')
+    expect(wrapper.find('#entity-business-number').text()).toBe('123456789')
     expect(wrapper.find('#entity-incorp-number').text()).toBe('BC1234567')
   })
 
@@ -96,8 +98,9 @@ describe('Entity Info component in a Correction as a numbered company', () => {
       filingId: 12345
     },
     business: {
-      identifier: 'BC7654321',
-      legalType: 'BEN'
+      identifier: 'BC1234567',
+      legalType: 'BEN',
+      taxId: '123456789BC0001' // sample BN15
     },
     incorporationApplication: {
       contactPoint: {
@@ -106,33 +109,32 @@ describe('Entity Info component in a Correction as a numbered company', () => {
       },
       nameRequest: {},
       offices: {},
-      parties: [] as [],
-      shareClasses: [] as []
+      parties: [],
+      shareClasses: []
     }
   }
 
   beforeAll(() => {
     state.tombstone.keycloakRoles = ['staff']
-    state.businessInformation = mockFiling.business
+    state.businessInformation = mockFiling.business as any
     state.tombstone.businessId = mockFiling.business.identifier
     state.businessContact = mockFiling.incorporationApplication.contactPoint
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: null
       }
-    }
+    } as any
   })
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'correction' })
+    await router.push({ name: 'correction' })
 
     wrapper = mount(EntityInfo, {
       localVue,
       vuetify,
-      store,
       router
     })
   })
@@ -147,8 +149,8 @@ describe('Entity Info component in a Correction as a numbered company', () => {
 
   it('renders the business name and numbers', () => {
     expect(wrapper.find('#entity-legal-name').text()).toBe('Numbered Benefit Company')
-    expect(wrapper.find('#entity-business-number').text()).toBe('7654321')
-    expect(wrapper.find('#entity-incorp-number').text()).toBe('BC7654321')
+    expect(wrapper.find('#entity-business-number').text()).toBe('123456789BC0001')
+    expect(wrapper.find('#entity-incorp-number').text()).toBe('BC1234567')
   })
 
   it('renders the business contact information', () => {

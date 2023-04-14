@@ -3,17 +3,13 @@ export interface FilingHeaderIF {
   name: string
   certifiedBy: string
   date: string
-  folioNumber?: string
-  filingId?: number
-  status?: string
+  folioNumber?: string // also used for staff BCOL payments
   isTransactionalFolioNumber?: boolean
+  documentOptionalEmail?: string
 
   // future effective properties:
   effectiveDate?: string
   isFutureEffective?: boolean
-
-  // document delivery optional email property:
-  documentOptionalEmail?: string
 
   // staff payment properties:
   routingSlipNumber?: string

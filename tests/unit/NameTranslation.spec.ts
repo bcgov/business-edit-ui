@@ -5,19 +5,20 @@ import mockRouter from './MockRouter'
 import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
-import flushPromises from 'flush-promises'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 function resetStore (): void {
-  store.state.stateModel.nameTranslations = []
+  store.stateModel.nameTranslations = []
 }
 
 // Local references
-const nameTranslationsUi = '#name-translations-list'
 const nameTranslationsList = [
   { name: 'First mock name translation ltd.' },
   { name: 'Second mock name translation inc' },
@@ -40,23 +41,21 @@ describe('Name Translation component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
 
-    // Init Store
-    store.state.stateModel.nameTranslations = []
-
-    wrapperFactory = (propsData: any) => {
-      return mount(NameTranslation, {
+    wrapperFactory = async (propsData: any) => {
+      const wrapper = mount(NameTranslation, {
         localVue,
         router,
-        store,
         vuetify,
         propsData: { ...propsData }
       })
+      await Vue.nextTick()
+      return wrapper
     }
   })
 
   it('displays the list of name translations and action btns', async () => {
-    const wrapper = wrapperFactory({ nameTranslations: nameTranslationsListChanged, isSummaryMode: true })
-    await flushPromises()
+    store.stateModel.nameTranslations = nameTranslationsListChanged as any
+    const wrapper = await wrapperFactory({ isSummaryMode: true })
 
     // Verify list exists
     expect(wrapper.find('#name-translation').exists()).toBeTruthy()
@@ -72,8 +71,8 @@ describe('Name Translation component', () => {
   })
 
   it('does not display translations if unchanged', async () => {
-    const wrapper = wrapperFactory({ nameTranslations: nameTranslationsList, isSummaryMode: true })
-    await flushPromises()
+    store.stateModel.nameTranslations = nameTranslationsList
+    const wrapper = await wrapperFactory({ isSummaryMode: true })
 
     // Verify list exists
     expect(wrapper.find('#name-translation').exists()).toBeFalsy()

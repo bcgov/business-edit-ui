@@ -16,20 +16,21 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, NameRequestIF } from '@/interfaces/'
-import { CorrectionTypes } from '@/enums/'
+import { NameChangeOptions } from '@/enums/'
+import { useStore } from '@/store/store'
 
 @Component({})
 export default class CorrectCompanyName extends Mixins(CommonMixin) {
   /** Form Submission Prop */
-  @Prop({ default: null }) readonly formType: CorrectionTypes
+  @Prop({ default: null }) readonly formType!: NameChangeOptions
 
-  @Action setNameRequest!: ActionBindingIF
+  @Action(useStore) setNameRequest!: ActionBindingIF
 
-  @Getter getNameRequestLegalName!: string
-  @Getter getNameRequest!: NameRequestIF
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequest!: NameRequestIF
 
   // Local properties
   protected valid = false
@@ -43,7 +44,8 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
     (v: string) => !!v || ' A company name is required'
   ]
 
-  protected mounted (): void {
+  /** Called when component is mounted. */
+  mounted (): void {
     // Set the current company name to the form
     if (this.getNameRequestLegalName) {
       this.companyName = this.getNameRequestLegalName
@@ -53,7 +55,8 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
   /** Watch for form submission and emit results. */
   @Watch('formType')
   private onSubmit (): void {
-    if (this.formType === CorrectionTypes.CORRECT_NAME) {
+    // this component should only see correct-name form type
+    if (this.formType === NameChangeOptions.CORRECT_NAME) {
       // set the new company name
       this.setNameRequest({
         ...this.getNameRequest,
@@ -65,6 +68,7 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
 
   /** Inform parent the process is complete. */
   @Emit('isSaved')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitIsSaved (isSaved: boolean): void {}
 
   /** Inform parent when form is valid and ready for submission. */

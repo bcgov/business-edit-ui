@@ -3,9 +3,8 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
-import { axios } from '@/utils/'
+import { AxiosInstance as axios } from '@/utils/'
 import App from '@/App.vue'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
@@ -20,12 +19,18 @@ import PaymentErrorDialog from '@/dialogs/PaymentErrorDialog.vue'
 import SaveErrorDialog from '@/dialogs/SaveErrorDialog.vue'
 import NameRequestErrorDialog from '@/dialogs/NameRequestErrorDialog.vue'
 import ConfirmDeleteAllDialog from '@/dialogs/ConfirmDeleteAllDialog.vue'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 import mockRouter from './MockRouter'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+
+setActivePinia(createPinia())
+const store = useStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -214,14 +219,14 @@ const nrData = {
     stateProvinceCd: 'BC'
   },
   consentFlag: 'R',
-  corpNum: null as string,
+  corpNum: null,
   expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
   requestTypeCd: 'BC',
   names: [
     {
       choice: 1,
-      consumptionDate: null as string,
-      corpNum: null as string,
+      consumptionDate: null,
+      corpNum: null,
       name: 'ABC 1234',
       state: 'APPROVED'
     },
@@ -343,8 +348,9 @@ describe.skip('Numbered company setup', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'define-company', query: { id: 'T7654321' } })
-    wrapper = shallowMount(App, { localVue, store, router, vuetify, stubs: { Affix: true } })
+    await router.push({ name: 'define-company', query: { id: 'T7654321' } })
+    // Still need store for sbc-common-components
+    wrapper = shallowMount(App, { localVue, router, vuetify, stubs: { Affix: true } })
 
     // wait for all queries to complete
     await flushPromises()
@@ -352,44 +358,44 @@ describe.skip('Numbered company setup', () => {
 
   it('loads a draft filing into the store', () => {
     // Validate IA for numbered company
-    expect(store.state.stateModel.tombstone.entityType).toBe('BEN')
-    expect(store.state.stateModel.tombstone.filingId).toBe(54321)
+    expect(store.stateModel.tombstone.entityType).toBe('BEN')
+    expect(store.stateModel.tombstone.filingId).toBe(54321)
 
     // Validate no offices are loaded
-    expect(store.state.stateModel.officeAddresses).toBeDefined()
-    expect(store.state.stateModel.officeAddresses.recordsOffice).toBeUndefined()
+    expect(store.stateModel.officeAddresses).toBeDefined()
+    expect(store.stateModel.officeAddresses.recordsOffice).toBeUndefined()
 
     // Validate Contact Info
-    expect(store.state.stateModel.businessContact).toBeDefined()
+    expect(store.stateModel.businessContact).toBeDefined()
 
     // Validate Share Structure
-    expect(store.state.stateModel.shareStructureStep.shareClasses).toBeDefined()
+    expect(store.stateModel.shareStructureStep.shareClasses).toBeDefined()
   })
 
   it('does not load a name request into the store', () => {
     // All Name request specific fields should be empty
-    expect(store.state.stateModel.nameRequest.nrNumber).toEqual('')
-    expect(store.state.stateModel.tombstone.filingId).toBe(54321)
+    expect(store.stateModel.nameRequest.nrNumber).toEqual('')
+    expect(store.stateModel.tombstone.filingId).toBe(54321)
 
     // Validate no NR Details
-    expect(store.state.stateModel.nameRequest.details.approvedName).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.details.status).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.details.consentFlag).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.details.expirationDate).toBeUndefined()
+    expect(store.stateModel.nameRequest.details.approvedName).toBeUndefined()
+    expect(store.stateModel.nameRequest.details.status).toBeUndefined()
+    expect(store.stateModel.nameRequest.details.consentFlag).toBeUndefined()
+    expect(store.stateModel.nameRequest.details.expirationDate).toBeUndefined()
 
     // Validate no NR Applicant
-    expect(store.state.stateModel.nameRequest.applicant.firstName).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.applicant.middleName).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.applicant.lastName).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.applicant.emailAddress).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.applicant.phoneNumber).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.applicant.addressLine1).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.applicant.addressLine2).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.applicant.addressLine3).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.applicant.city).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.applicant.countryTypeCode).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.applicant.postalCode).toBeUndefined()
-    expect(store.state.stateModel.nameRequest.applicant.stateProvinceCode).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicant.firstName).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicant.middleName).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicant.lastName).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicant.emailAddress).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicant.phoneNumber).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicant.addressLine1).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicant.addressLine2).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicant.addressLine3).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicant.city).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicant.countryTypeCode).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicant.postalCode).toBeUndefined()
+    expect(store.stateModel.nameRequest.applicant.stateProvinceCode).toBeUndefined()
   })
 
   afterEach(() => {
@@ -457,8 +463,9 @@ describe.skip('App component', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'define-company', query: { id: 'T1234567' } })
-    wrapper = shallowMount(App, { localVue, store, router, vuetify, stubs: { Affix: true } })
+    await router.push({ name: 'define-company', query: { id: 'T1234567' } })
+    // Still need store for sbc-common-components
+    wrapper = shallowMount(App, { localVue, router, vuetify, stubs: { Affix: true } })
 
     // wait for all queries to complete
     await flushPromises()
@@ -471,69 +478,69 @@ describe.skip('App component', () => {
   })
 
   it('gets auth and user info properly', () => {
-    expect(store.getters.isAuthEdit).toBe(true)
-    expect(store.getters.isAuthView).toBe(true)
-    expect(store.state.stateModel.tombstone.userEmail).toBe('completing-party@example.com')
+    expect(store.isAuthEdit).toBe(true)
+    expect(store.isAuthView).toBe(true)
+    expect(store.stateModel.tombstone.userEmail).toBe('completing-party@example.com')
   })
 
   it('loads a draft filing into the store', () => {
     // Validate Filing ID - set by fetchDraft()
-    expect(store.state.stateModel.tombstone.filingId).toBe(12345)
+    expect(store.stateModel.tombstone.filingId).toBe(12345)
 
     // Validate Entity Type
-    expect(store.state.stateModel.tombstone.entityType).toBe('BEN')
+    expect(store.stateModel.tombstone.entityType).toBe('BEN')
 
     // Validate Office Addresses
-    expect(store.state.stateModel.officeAddresses.registeredOffice)
+    expect(store.stateModel.officeAddresses.registeredOffice)
       .toStrictEqual(filingData.incorporationApplication.offices.registeredOffice)
-    expect(store.state.stateModel.officeAddresses.recordsOffice)
+    expect(store.stateModel.officeAddresses.recordsOffice)
       .toStrictEqual(filingData.incorporationApplication.offices.recordsOffice)
 
     // Validate Contact Info
-    expect(store.state.stateModel.businessContact)
+    expect(store.stateModel.businessContact)
       .toStrictEqual(filingData.incorporationApplication.contactPoint)
 
     // Validate People And Roles
-    expect(store.state.stateModel.peopleAndRoles.orgPeople)
+    expect(store.stateModel.peopleAndRoles.orgPeople)
       .toStrictEqual(filingData.incorporationApplication.parties)
 
     // Validate Share Structure
-    expect(store.state.stateModel.shareStructureStep.shareClasses)
+    expect(store.stateModel.shareStructureStep.shareClasses)
       .toStrictEqual(filingData.incorporationApplication.shareClasses)
   })
 
   it('loads a name request into the store', () => {
     // Validate Name Request
-    expect(store.state.stateModel.tombstone.entityType).toBe(nrData.requestTypeCd)
-    expect(store.state.stateModel.nameRequest.nrNumber).toBe(nrData.nrNum)
-    expect(store.state.stateModel.tombstone.filingId).toBe(12345)
-    expect(store.state.stateModel.nameRequest.details).toBeDefined()
-    expect(store.state.stateModel.nameRequest.applicant).toBeDefined()
+    expect(store.stateModel.tombstone.entityType).toBe(nrData.requestTypeCd)
+    expect(store.stateModel.nameRequest.nrNumber).toBe(nrData.nrNum)
+    expect(store.stateModel.tombstone.filingId).toBe(12345)
+    expect(store.stateModel.nameRequest.details).toBeDefined()
+    expect(store.stateModel.nameRequest.applicant).toBeDefined()
 
     // Validate NR Details
-    expect(store.state.stateModel.nameRequest.details.approvedName).toBe(nrData.names[0].name)
-    expect(store.state.stateModel.nameRequest.details.status).toBe(nrData.state)
-    expect(store.state.stateModel.nameRequest.details.consentFlag).toBe(nrData.consentFlag)
-    expect(store.state.stateModel.nameRequest.details.expirationDate).toBe(nrData.expirationDate)
+    expect((store.stateModel.nameRequest.details as any).approvedName).toBe(nrData.names[0].name)
+    expect((store.stateModel.nameRequest.details as any).status).toBe(nrData.state)
+    expect((store.stateModel.nameRequest.details as any).consentFlag).toBe(nrData.consentFlag)
+    expect((store.stateModel.nameRequest.details as any).expirationDate).toBe(nrData.expirationDate)
 
     // Validate NR Applicant
-    expect(store.state.stateModel.nameRequest.applicant.firstName).toBe(nrData.applicants.firstName)
-    expect(store.state.stateModel.nameRequest.applicant.middleName).toBe(nrData.applicants.middleName)
-    expect(store.state.stateModel.nameRequest.applicant.lastName).toBe(nrData.applicants.lastName)
-    expect(store.state.stateModel.nameRequest.applicant.emailAddress).toBe(nrData.applicants.emailAddress)
-    expect(store.state.stateModel.nameRequest.applicant.phoneNumber).toBe(nrData.applicants.phoneNumber)
-    expect(store.state.stateModel.nameRequest.applicant.addressLine1).toBe(nrData.applicants.addrLine1)
-    expect(store.state.stateModel.nameRequest.applicant.addressLine2).toBe(nrData.applicants.addrLine2)
-    expect(store.state.stateModel.nameRequest.applicant.addressLine3).toBe(nrData.applicants.addrLine3)
-    expect(store.state.stateModel.nameRequest.applicant.city).toBe(nrData.applicants.city)
-    expect(store.state.stateModel.nameRequest.applicant.countryTypeCode).toBe(nrData.applicants.countryTypeCd)
-    expect(store.state.stateModel.nameRequest.applicant.postalCode).toBe(nrData.applicants.postalCd)
-    expect(store.state.stateModel.nameRequest.applicant.stateProvinceCode).toBe(nrData.applicants.stateProvinceCd)
+    expect(store.stateModel.nameRequest.applicant.firstName).toBe(nrData.applicants.firstName)
+    expect(store.stateModel.nameRequest.applicant.middleName).toBe(nrData.applicants.middleName)
+    expect(store.stateModel.nameRequest.applicant.lastName).toBe(nrData.applicants.lastName)
+    expect(store.stateModel.nameRequest.applicant.emailAddress).toBe(nrData.applicants.emailAddress)
+    expect(store.stateModel.nameRequest.applicant.phoneNumber).toBe(nrData.applicants.phoneNumber)
+    expect(store.stateModel.nameRequest.applicant.addressLine1).toBe(nrData.applicants.addrLine1)
+    expect(store.stateModel.nameRequest.applicant.addressLine2).toBe(nrData.applicants.addrLine2)
+    expect(store.stateModel.nameRequest.applicant.addressLine3).toBe(nrData.applicants.addrLine3)
+    expect(store.stateModel.nameRequest.applicant.city).toBe(nrData.applicants.city)
+    expect(store.stateModel.nameRequest.applicant.countryTypeCode).toBe(nrData.applicants.countryTypeCd)
+    expect(store.stateModel.nameRequest.applicant.postalCode).toBe(nrData.applicants.postalCd)
+    expect(store.stateModel.nameRequest.applicant.stateProvinceCode).toBe(nrData.applicants.stateProvinceCd)
   })
 
   it('shows confirm popup if exiting before saving changes', async () => {
     // simulate that we have unsaved changes
-    store.state.stateModel.tombstone.haveUnsavedChanges = true
+    store.stateModel.tombstone.haveUnsavedChanges = true
 
     // call Go To Dashboard event handler
     await wrapper.vm.goToDashboard()
@@ -550,7 +557,7 @@ describe.skip('App component', () => {
 
   it('redirects to dashboard if exiting after saving changes', async () => {
     // simulate that we have no unsaved changes
-    store.state.stateModel.tombstone.haveUnsavedChanges = false
+    store.stateModel.tombstone.haveUnsavedChanges = false
 
     // call Go To Dashboard event handler
     await wrapper.vm.goToDashboard()
@@ -580,7 +587,7 @@ describe('App component - other', () => {
     const get = sinon.stub(axios, 'get')
 
     // GET current user
-    get.withArgs('users/@me')
+    get.withArgs('https://auth.api.url/users/@me')
       .returns(Promise.resolve({
         data:
         {
@@ -602,15 +609,23 @@ describe('App component - other', () => {
     // GET org info
     get.withArgs('https://auth.api.url/orgs/668')
       .returns(Promise.resolve({
-        data: {}
+        data: {
+          mailingAddress: {
+            city: 'Victoria',
+            country: 'CA',
+            postalCode: 'V8W 3E6',
+            region: 'BC',
+            street: '2-940 Blanshard St',
+            streetAdditional: ''
+          }
+        }
       }))
 
     // create a Local Vue and install router on it
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-
-    wrapper = shallowMount(App, { localVue, store, router, vuetify, stubs: { Affix: true } })
+    wrapper = shallowMount(App, { localVue, router, vuetify, stubs: { Affix: true } })
   })
 
   afterEach(() => {
@@ -652,19 +667,19 @@ describe('App component - other', () => {
     expect(vm.confirmDeleteAllDialog).toBe(false)
   })
 
-  it('renders the fee summary properly following changes', async () => {
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
-    store.state.stateModel.entitySnapshot = mockEntitySnapshot
-    store.state.stateModel.officeAddresses = mockAddresses
-    store.state.stateModel.filingData = {
+  it('the ViewWrapper renders the fee summary properly following changes', async () => {
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
+    store.stateModel.entitySnapshot = mockEntitySnapshot as any
+    store.stateModel.officeAddresses = mockAddresses
+    store.stateModel.filingData = {
       filingTypeCode: 'FMCHANGE',
       entityType: 'SP',
       priority: false,
       waiveFees: false
-    }
+    } as any
     await Vue.nextTick()
 
-    expect(wrapper.findComponent(FeeSummaryShared).exists()).toBe(true) // not displayed initially
+    expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true) // not displayed initially
   })
 })

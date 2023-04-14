@@ -36,21 +36,23 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { DetailComment as DetailCommentShared } from '@bcrs-shared-components/detail-comment/'
-import { Action } from 'vuex-class'
+import { Action } from 'pinia-class'
 import { ActionBindingIF } from '@/interfaces/'
 import { FilingTemplateMixin } from '@/mixins'
+
+import { useStore } from '@/store/store'
 
 @Component({
   components: { DetailCommentShared }
 })
 export default class Detail extends Mixins(FilingTemplateMixin) {
   /** Prop to provide section number. */
-  @Prop({ default: '' }) readonly sectionNumber: string
+  @Prop({ default: '' }) readonly sectionNumber!: string
 
   /** Whether to perform validation. */
-  @Prop({ default: false }) readonly validate: boolean
+  @Prop({ default: false }) readonly validate!: boolean
 
-  @Action setDetailValidity!: ActionBindingIF
+  @Action(useStore) setDetailValidity!: ActionBindingIF
 
   protected comment: string = null
 

@@ -21,20 +21,21 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 
 @Component({})
 export default class ConfirmRemoveDialog extends Vue {
-  // Prop to display the dialog.
-  @Prop() readonly dialog: boolean
+  /** Prop to display the dialog. */
+  @Prop() readonly dialog!: boolean
 
-  // Prop to provide attachment selector.
-  @Prop() readonly attach: string
-
-  // Pass click event to parent.
-  @Emit() protected confirm () {}
+  /** Prop to provide attachment selector. */
+  @Prop() readonly attach!: string
 
   // Pass click event to parent.
-  @Emit() protected exit () {}
+  @Emit() protected confirm (): void {}
+
+  // Pass click event to parent.
+  @Emit() protected exit (): void {}
 }
 </script>

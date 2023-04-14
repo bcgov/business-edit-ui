@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
 import ConversionNOB from '@/components/Conversion/ConversionNOB.vue'
+
 // for some reason, ChangeBusinessType cannot be imported by its filename
 // also, it needs to precede the other imports
 // (otherwise a bunch of tests in this file fail)
@@ -13,13 +13,16 @@ import CorrectNameOptions from '@/components/common/YourCompany/CompanyName/Corr
 import FolioInformation from '@/components/common/YourCompany/FolioInformation.vue'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
 import YourCompany from '@/components/common/YourCompany/YourCompany.vue'
-import { BenefitCompanyStatementResource } from '@/resources/Correction/BenefitCompanyStatementResource'
-import { BenefitCompanyResource } from '@/resources/Alteration/BenefitCompanyResource'
-import { SoleProprietorshipResource } from '@/resources/Correction/SoleProprietorshipResource'
+import { BenAlterationResource } from '@/resources/Alteration/BEN'
+import { SpConversionResource } from '@/resources/Conversion/SP'
+import { BenCorrectionResource } from '@/resources/Correction/BEN'
+import { SpCorrectionResource } from '@/resources/Correction/SP'
+
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, FilingTypes, NameRequestStates, NameRequestTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
-const localVue = createLocalVue()
 const vuetify = new Vuetify({})
 
 const flagsCompanyInfo = {
@@ -36,13 +39,14 @@ const flagsCompanyInfo = {
 
 describe('YourCompany in a BEN correction', () => {
   let wrapper: any
-  let store: any = getVuexStore()
 
   beforeEach(() => {
-    store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.resourceModel = BenefitCompanyStatementResource
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    setActivePinia(createPinia())
+    const store = useStore()
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.resourceModel = BenCorrectionResource
+    wrapper = mount(YourCompany, { vuetify })
   })
 
   afterEach(() => {
@@ -62,7 +66,8 @@ describe('YourCompany in a BEN correction', () => {
   })
 
   it('renders the FolioInformation component when account is premium', async () => {
-    store.state.stateModel.accountInformation.accountType = 'PREMIUM'
+    const store = useStore()
+    store.stateModel.accountInformation.accountType = 'PREMIUM'
     await Vue.nextTick()
 
     expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
@@ -76,7 +81,6 @@ describe('YourCompany in a BEN correction', () => {
   it('renders the CorrectNameOptions component when correcting Company Name', async () => {
     // Click the `Correct` btn
     await wrapper.find('#btn-correct-company-name').trigger('click')
-
     expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(true)
   })
 
@@ -86,8 +90,9 @@ describe('YourCompany in a BEN correction', () => {
 })
 
 describe('YourCompany in a SP alteration', () => {
+  setActivePinia(createPinia())
+  const store = useStore()
   let wrapper: any
-  let store: any = getVuexStore()
 
   const entitySnapshot = {
     businessInfo: {
@@ -98,15 +103,15 @@ describe('YourCompany in a SP alteration', () => {
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.stateModel.summaryMode = false
-    store.state.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
-    store.state.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
-    store.state.stateModel.entitySnapshot = entitySnapshot
-    store.state.stateModel.tombstone.filingType = 'alteration'
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.resourceModel = BenefitCompanyResource
+    store.stateModel.summaryMode = false
+    store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
+    store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
+    store.stateModel.entitySnapshot = entitySnapshot as any
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.resourceModel = BenAlterationResource
 
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    wrapper = mount(YourCompany, { vuetify })
   })
 
   afterEach(() => {
@@ -141,28 +146,28 @@ describe('YourCompany in a SP alteration', () => {
     expect(wrapper.find('.company-name').text()).toBe('Mock Original Name')
 
     // Set new Name
-    store.state.stateModel.nameRequest.legalName = 'My Sole Prop'
+    store.stateModel.nameRequest.legalName = 'My Benefit Company'
     await Vue.nextTick()
 
     const companyInfo = wrapper.findAll('.info-text')
 
-    expect(wrapper.find('.company-name').text()).toBe('My Sole Prop')
-    expect(companyInfo.at(0).text()).toBe('BC Sole Proprietorship')
+    expect(wrapper.find('.company-name').text()).toBe('My Benefit Company')
+    expect(companyInfo.at(0).text()).toBe('BC Benefit Company')
     expect(companyInfo.at(1).text()).toBe('The name of this business will be the current Incorporation ' +
       'Number followed by "B.C. Ltd."')
   })
 
   it('displays the Name Request information when NR data changes', async () => {
-    store.state.stateModel.nameRequest.nrNumber = 'NR1234567'
-    store.state.stateModel.nameRequest.legalType = 'CR'
-    store.state.stateModel.nameRequest.expiry = 'Wed, 10 Mar 2021 08:00:00 GMT'
-    store.state.stateModel.nameRequest.status = 'APPROVED'
-    store.state.stateModel.nameRequest.requestType = 'NEW'
-    store.state.stateModel.nameRequest.applicant = {
+    store.stateModel.nameRequest.nrNumber = 'NR1234567'
+    store.stateModel.nameRequest.legalType = 'CR' as CorpTypeCd
+    store.stateModel.nameRequest.expiry = '2021-03-10T08:00:00+00:00'
+    store.stateModel.nameRequest.status = NameRequestStates.APPROVED
+    store.stateModel.nameRequest.requestType = NameRequestTypes.NEW
+    store.stateModel.nameRequest.applicant = {
       fullName: 'Mock Full Name',
       fullAddress: '123 Mock Lane, Victoria, BC, 1t2 3t4, CA',
       phoneNumber: '2501234567'
-    }
+    } as any
     await Vue.nextTick()
 
     const companyInfo = wrapper.findAll('.company-info')
@@ -186,20 +191,22 @@ describe('YourCompany in a SP alteration', () => {
 
 describe('YourCompany in a SP alteration: formats multiple phone numbers correctly', () => {
   const phoneNumbers = ['123 456 7890', '0987654321', '123 456 7890', '123-456-7890', '456 7890', null]
-  const outPuts = ['(123) 456-7890', '(098) 765-4321', '(123) 456-7890', '(123) 456-7890', 'N/A', 'N/A']
+  const outPuts = ['(123) 456-7890', '(098) 765-4321', '(123) 456-7890', '(123) 456-7890', '456 7890', 'N/A']
 
   phoneNumbers.forEach((phoneNumber, index) => {
+    setActivePinia(createPinia())
+    const store = useStore()
     let wrapper: any
-    let store: any = getVuexStore()
+
     beforeEach(() => {
-      store.state.stateModel.nameRequest.applicant = {
+      store.stateModel.nameRequest.applicant = {
         fullName: 'Mock Full Name',
         fullAddress: '123 Mock Lane, Victoria, BC, 1t2 3t4, CA',
         phoneNumber: phoneNumber
-      }
-      store.state.stateModel.nameRequest.nrNumber = 'NR1234567'
-      store.state.stateModel.tombstone.filingType = 'alteration'
-      wrapper = mount(YourCompany, { vuetify, store, localVue })
+      } as any
+      store.stateModel.nameRequest.nrNumber = 'NR1234567'
+      store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+      wrapper = mount(YourCompany, { vuetify })
     })
 
     afterEach(() => {
@@ -207,7 +214,7 @@ describe('YourCompany in a SP alteration: formats multiple phone numbers correct
     })
 
     it('formats something', async () => {
-      store.state.stateModel.nameRequest.applicant.phoneNumber = phoneNumber
+      store.stateModel.nameRequest.applicant.phoneNumber = phoneNumber
       await Vue.nextTick()
       const nameRequestApplicantInfo = wrapper.findAll('.name-request-applicant-info')
       expect(nameRequestApplicantInfo.at(3).text()).toBe(`Phone:  ${outPuts[index]}`)
@@ -216,18 +223,19 @@ describe('YourCompany in a SP alteration: formats multiple phone numbers correct
 })
 
 describe('YourCompany in a SP conversion', () => {
+  setActivePinia(createPinia())
+  const store = useStore()
   let wrapper: any
-  let store: any = getVuexStore()
 
   beforeEach(() => {
     // Set Original business Data
-    store.state.stateModel.summaryMode = false
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.stateModel.tombstone.filingType = 'conversion'
-    store.state.resourceModel = BenefitCompanyResource
-    store.state.stateModel.validationFlags.componentValidate = true
-    store.state.stateModel.validationFlags.flagsCompanyInfo = flagsCompanyInfo
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    store.stateModel.summaryMode = false
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.stateModel.tombstone.filingType = FilingTypes.CONVERSION
+    store.resourceModel = SpConversionResource
+    store.stateModel.validationFlags.componentValidate = true
+    store.stateModel.validationFlags.flagsCompanyInfo = flagsCompanyInfo as any
+    wrapper = mount(YourCompany, { vuetify })
   })
 
   afterEach(() => {
@@ -237,7 +245,7 @@ describe('YourCompany in a SP conversion', () => {
   it('renders the YourCompany component and default subcomponents', async () => {
     expect(wrapper.findComponent(YourCompany).exists()).toBeTruthy()
     expect(wrapper.findComponent(ChangeBusinessType).exists()).toBeTruthy()
-    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBeTruthy()
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBeFalsy()
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBeTruthy()
     expect(wrapper.findComponent(ConversionNOB).exists()).toBeTruthy()
     // Not currently editing Company Name
@@ -245,26 +253,28 @@ describe('YourCompany in a SP conversion', () => {
   })
 
   it('renders the NatureOfBusiness component with invalid styling', async () => {
-    store.state.stateModel.validationFlags.flagsCompanyInfo.isValidNatureOfBusiness = false
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    store.stateModel.validationFlags.flagsCompanyInfo.isValidNatureOfBusiness = false
+    wrapper = mount(YourCompany, { vuetify })
     expect(wrapper.find('#nature-of-business.invalid-section').exists()).toBeTruthy()
   })
 })
 
 describe('YourCompany in a SP correction', () => {
   let wrapper: any
-  let store: any = getVuexStore()
 
   beforeEach(() => {
+    setActivePinia(createPinia())
+    const store = useStore()
     // Set Original business Data
-    store.state.stateModel.summaryMode = false
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.resourceModel = SoleProprietorshipResource
-    store.state.stateModel.validationFlags.componentValidate = true
-    store.state.stateModel.validationFlags.flagsCompanyInfo = flagsCompanyInfo
-    store.state.stateModel.businessInformation.foundingDate = '2021-04-13T00:00:00+00:00'
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
+    store.stateModel.summaryMode = false
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.resourceModel = SpCorrectionResource
+    store.stateModel.validationFlags.componentValidate = true
+    store.stateModel.validationFlags.flagsCompanyInfo = flagsCompanyInfo as any
+    store.stateModel.businessInformation.foundingDate = '2021-04-13T00:00:00+00:00'
+    store.stateModel.businessInformation.startDate = '2021-04-13'
+    wrapper = mount(YourCompany, { vuetify })
   })
 
   afterEach(() => {
@@ -334,9 +344,10 @@ describe('YourCompany in a SP correction', () => {
   })
 
   it('renders association type for CP', async () => {
-    store.state.stateModel.tombstone.entityType = 'CP'
-    wrapper = mount(YourCompany, { vuetify, store, localVue })
-    expect(wrapper.findComponent(YourCompany).exists()).toBeTruthy()
-    expect(wrapper.findComponent(AssociationType).exists()).toBeTruthy()
+    const store = useStore()
+    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
+    const wrapper2 = mount(YourCompany, { vuetify })
+    expect(wrapper2.findComponent(YourCompany).exists()).toBeTruthy()
+    expect(wrapper2.findComponent(AssociationType).exists()).toBeTruthy()
   })
 })

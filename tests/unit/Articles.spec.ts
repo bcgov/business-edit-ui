@@ -1,152 +1,104 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import VueRouter from 'vue-router'
-import { getVuexStore } from '@/store/'
+import { FilingTypes } from '@/enums'
 import { mount } from '@vue/test-utils'
 import Articles from '@/components/Alteration/Articles/Articles.vue'
-import mockRouter from './MockRouter'
+import CompanyProvisions from '@/components/Alteration/Articles/CompanyProvisions.vue'
+import ResolutionDates from '@/components/Alteration/Articles/ResolutionDates.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 Vue.use(Vuelidate)
-Vue.use(VueRouter)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
-
-const alterationRoute = 'alteration'
+setActivePinia(createPinia())
+const store = useStore()
 
 // Selectors
-const articlesTitle = '#articles'
-const articlesHeaderIcon = '#articles > div.define-article-header > i.v-icon'
-const articlesHeaderLabel = '#articles > div.define-article-header > label.define-article-title'
-const companyProvisionsSection = '#company-provisions'
+const articlesHeaderIcon = '.articles-header > .v-icon'
+const articlesHeaderLabel = '.articles-title'
 const changeCompanyProvisionsButton = '#change-company-provisions'
-const undoCompanyProvisions = '#undo-company-provisions'
-const companyProvisionsCheckbox = '#cp-checkbox'
-const companyProvisionDoneButton = '#company-provisions-done'
+const addResolutionDateButton = '#add-resolution-date'
 
-describe('Articles component', () => {
-  it('displays the correct sections', () => {
-    const router = mockRouter.mock()
-    router.push({ name: alterationRoute })
-    store.state.stateModel.businessInformation.hasRestrictions = true
-    store.state.stateModel.newAlteration.provisionsRemoved = false
-    const wrapper = mount(Articles, { router, store, vuetify })
+describe('Articles component - Company Provisions', () => {
+  it('displays correct sections when this is an alteration filing and business has restrictions', async () => {
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.stateModel.businessInformation.hasRestrictions = true
 
-    expect(wrapper.find(articlesTitle).exists()).toBe(true)
-    expect(wrapper.find(articlesHeaderIcon).exists()).toBe(true)
-    expect(wrapper.find(articlesHeaderLabel).text()).toBe('Articles')
-    expect(wrapper.find(companyProvisionsSection).exists()).toBe(true)
-
-    wrapper.destroy()
-  })
-
-  it('should not display the company provisions sections when company doesn\'t have pre-existing provisions', () => {
-    const router = mockRouter.mock()
-    router.push({ name: alterationRoute })
-    store.state.stateModel.businessInformation.hasRestrictions = false
-    store.state.stateModel.newAlteration.provisionsRemoved = false
-    const wrapper = mount(Articles, { router, store, vuetify })
-
-    expect(wrapper.find(articlesTitle).exists()).toBe(true)
-    expect(wrapper.find(articlesHeaderIcon).exists()).toBe(true)
-    expect(wrapper.find(articlesHeaderLabel).text()).toBe('Articles')
-    expect(wrapper.find(companyProvisionsSection).exists()).toBe(false)
-
-    wrapper.destroy()
-  })
-
-  it('shows only Change button when list for the initial state', () => {
-    const router = mockRouter.mock()
-    router.push({ name: alterationRoute })
-    store.state.stateModel.businessInformation.hasRestrictions = true
-    store.state.stateModel.newAlteration.provisionsRemoved = false
-    const wrapper = mount(Articles, { router, store, vuetify })
-
-    expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(true)
-    expect(wrapper.find(undoCompanyProvisions).exists()).toBe(false)
-
-    wrapper.destroy()
-  })
-
-  it('should emit changes', async () => {
-    const router = mockRouter.mock()
-    router.push({ name: alterationRoute })
-    store.state.stateModel.businessInformation.hasRestrictions = true
-    store.state.stateModel.newAlteration.provisionsRemoved = false
-    const wrapper = mount(Articles, { router, store, vuetify })
-
-    await wrapper.find(changeCompanyProvisionsButton).trigger('click')
-
-    expect(wrapper.emitted('haveChanges')).toBeUndefined()
-
-    await wrapper.find(companyProvisionDoneButton).trigger('click')
-
-    // Should validate and not emit changes
-    expect(wrapper.emitted('haveChanges')).toBeUndefined()
-
-    await wrapper.find(companyProvisionsCheckbox).trigger('click')
-    await wrapper.find(companyProvisionDoneButton).trigger('click')
-
-    expect(wrapper.emitted('haveChanges').length).toEqual(1)
-
-    wrapper.destroy()
-  })
-
-  it('sets company provisions component as invalid when editing', async () => {
-    const router = mockRouter.mock()
-    router.push({ name: alterationRoute })
-    store.state.stateModel.businessInformation.hasRestrictions = true
-    store.state.stateModel.newAlteration.provisionsRemoved = false
-    const wrapper = mount(Articles, { router, store, vuetify })
+    const wrapper = mount(Articles, { vuetify })
     await Vue.nextTick()
-    expect(store.state.stateModel.validationFlags.flagsCompanyInfo.isValidCompanyProvisions).toBe(true)
 
-    await wrapper.find(changeCompanyProvisionsButton).trigger('click')
-
-    expect(store.state.stateModel.validationFlags.flagsCompanyInfo.isValidCompanyProvisions).toBe(false)
-
-    wrapper.destroy()
-  })
-
-  it('should allow the user to change company provisions', async () => {
-    const router = mockRouter.mock()
-    router.push({ name: alterationRoute })
-    store.state.stateModel.businessInformation.hasRestrictions = true
-    store.state.stateModel.newAlteration.provisionsRemoved = false
-    const wrapper = mount(Articles, { router, store, vuetify })
-
-    await wrapper.find(changeCompanyProvisionsButton).trigger('click')
-    await wrapper.find(companyProvisionsCheckbox).trigger('click')
-    await wrapper.find(companyProvisionDoneButton).trigger('click')
-
-    expect(store.state.stateModel.newAlteration.provisionsRemoved).toBeTruthy()
+    expect(wrapper.findComponent(Articles).exists()).toBe(true)
+    expect(wrapper.find(articlesHeaderIcon).exists()).toBe(true)
+    expect(wrapper.find(articlesHeaderLabel).text()).toBe('Articles')
+    expect(wrapper.findComponent(CompanyProvisions).exists()).toBe(true)
+    expect(wrapper.findComponent(ResolutionDates).exists()).toBe(true)
 
     wrapper.destroy()
   })
 
-  it('should allow the user to undo changes to company provisions', async () => {
-    const router = mockRouter.mock()
-    router.push({ name: alterationRoute })
-    store.state.stateModel.businessInformation.hasRestrictions = true
-    store.state.stateModel.newAlteration.provisionsRemoved = false
-    const wrapper = mount(Articles, { router, store, vuetify })
+  it('does not display Company Provisions when this is not an alteration filing', async () => {
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.businessInformation.hasRestrictions = true
 
-    expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(true)
+    const wrapper = mount(Articles, { vuetify })
+    await Vue.nextTick()
+
+    expect(wrapper.findComponent(Articles).exists()).toBe(true)
+    expect(wrapper.find(articlesHeaderIcon).exists()).toBe(true)
+    expect(wrapper.find(articlesHeaderLabel).text()).toBe('Articles')
+    expect(wrapper.findComponent(CompanyProvisions).exists()).toBe(false)
+    expect(wrapper.findComponent(ResolutionDates).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('does not display Company Provisions when business does not have restrictions', async () => {
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.stateModel.businessInformation.hasRestrictions = false
+
+    const wrapper = mount(Articles, { vuetify })
+    await Vue.nextTick()
+
+    expect(wrapper.findComponent(Articles).exists()).toBe(true)
+    expect(wrapper.find(articlesHeaderIcon).exists()).toBe(true)
+    expect(wrapper.find(articlesHeaderLabel).text()).toBe('Articles')
+    expect(wrapper.findComponent(CompanyProvisions).exists()).toBe(false)
+    expect(wrapper.findComponent(ResolutionDates).exists()).toBe(true)
+
+    wrapper.destroy()
+  })
+
+  it('sets CompanyProvisions component as invalid when editing', async () => {
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.stateModel.businessInformation.hasRestrictions = true
+
+    const wrapper = mount(Articles, { vuetify })
+    await Vue.nextTick()
+
+    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidCompanyProvisions).toBe(true)
 
     await wrapper.find(changeCompanyProvisionsButton).trigger('click')
-    await wrapper.find(companyProvisionsCheckbox).trigger('click')
-    await wrapper.find(companyProvisionDoneButton).trigger('click')
 
-    expect(store.state.stateModel.newAlteration.provisionsRemoved).toBeTruthy()
-    expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(false)
-    expect(wrapper.find(undoCompanyProvisions).exists()).toBe(true)
+    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidCompanyProvisions).toBe(false)
 
-    await wrapper.find(undoCompanyProvisions).trigger('click')
+    wrapper.destroy()
+  })
 
-    expect(store.state.stateModel.newAlteration.provisionsRemoved).toBeFalsy()
-    expect(wrapper.find(changeCompanyProvisionsButton).exists()).toBe(true)
+  it('sets ResolutionDates component as invalid when editing', async () => {
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.stateModel.newAlteration.provisionsRemoved = true
+
+    const wrapper = mount(Articles, { vuetify })
+    await Vue.nextTick()
+
+    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidResolutionDate).toBe(true)
+
+    await wrapper.find(addResolutionDateButton).trigger('click')
+
+    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidResolutionDate).toBe(false)
 
     wrapper.destroy()
   })

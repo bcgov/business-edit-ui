@@ -6,6 +6,15 @@
         <label>
           <span :class="{'error-text': !getIsResolutionDatesValid}">Resolution or<br>Court Order Dates</span>
         </label>
+        <v-chip
+          v-if="haveNewResolutionDates && isCorrectionFiling"
+          id="corrected-lbl"
+          x-small label
+          color="primary"
+          text-color="white"
+        >
+          Corrected
+        </v-chip>
       </v-col>
 
       <v-col :cols="isEditMode ? '7' : '8'">
@@ -25,20 +34,20 @@
 
       <v-col cols="2" class="align-right" v-if="isEditMode && !isAdding">
         <v-btn id="add-resolution-date"
-               class="add-btn"
-               text color="primary"
-               :disabled="haveAddedDates"
-               @click="isAdding = true"
+          class="add-btn mt-n1"
+          text color="primary"
+          :disabled="haveAddedDates"
+          @click="isAdding = true"
         >
-          <v-icon small>mdi-plus</v-icon>
-          <span>Add</span>
+          <v-icon small>{{ addBtnIcon }}</v-icon>
+          <span>{{ addBtnLabel }}</span>
         </v-btn>
       </v-col>
       <v-col cols="2" class="align-right" v-else-if="isAdding">
         <v-btn id="close-resolution-date"
-               class="close-btn"
-               text color="primary"
-               @click="isAdding = false"
+          class="close-btn mt-n1"
+          text color="primary"
+          @click="isAdding = false"
         >
           <v-icon small>mdi-close</v-icon>
           <span>Cancel</span>
@@ -52,17 +61,17 @@
       <v-col cols="7">
         <ul class="resolution-date-list info-text pl-0 mt-2">
           <li v-for="(date, index) in addedDates"
-              :key="`newResolutionDate-${index}`"
+            :key="`newResolutionDate-${index}`"
           >
             <strong class="mr-2">{{date}}</strong>
             <v-btn v-if="isEditMode"
-                   id="remove-resolution-date"
-                   class="remove-btn mt-n1"
-                   text color="primary"
-                   @click="onRemove(index)"
+              id="remove-resolution-date"
+              class="remove-btn mt-n1"
+              text color="primary"
+              @click="onRemove(index)"
             >
-              <v-icon small>mdi-delete</v-icon>
-              <span>Remove</span>
+              <v-icon small>{{ removeBtnIcon }}</v-icon>
+              <span>{{ removeBtnLabel }}</span>
             </v-btn>
           </li>
         </ul>
@@ -77,8 +86,8 @@
           title="Resolution or Court Order Date"
           nudge-right="80"
           nudge-top="15"
-          :minDate="getBusinessFoundingDate"
-          :maxDate="getCurrentDate"
+          :minDate="minDate"
+          :maxDate="maxDate"
           @emitDate="onDateEmitted($event)"
           @emitCancel="isAdding = false"
         />
@@ -109,48 +118,56 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
-import { CommonMixin } from '@/mixins/'
+import { Action, Getter } from 'pinia-class'
+import { CommonMixin, DateMixin } from '@/mixins/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF } from '@/interfaces/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
     DatePickerShared
   }
 })
-export default class ResolutionDates extends Mixins(CommonMixin) {
+export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   /** New resolution dates. */
-  @Prop({ default: () => [] })
-  readonly addedDates: string[]
+  @Prop({ default: () => [] }) readonly addedDates!: string[]
 
   /** Previously existing resolution dates. */
-  @Prop({ default: () => [] })
-  readonly previousDates: string[]
+  @Prop({ default: () => [] }) readonly previousDates!: string[]
 
   /** Whether this component should be in edit mode or review mode. */
-  @Prop({ default: true })
-  readonly isEditMode: boolean
+  @Prop({ default: true }) readonly isEditMode!: boolean
 
   /** Boolean indicating rights or restrictions in ShareStructure. */
-  @Prop({ default: false })
-  readonly hasRightsOrRestrictions: boolean
+  @Prop({ default: false }) readonly hasRightsOrRestrictions!: boolean
 
   // Global getters
-  @Getter getBusinessFoundingDate!: string
-  @Getter getCurrentDate!: string
-  @Getter hasShareStructureChanged!: boolean
-  @Getter getHasOriginalRightsOrRestrictions!: boolean
-  @Getter getIsResolutionDatesValid!: boolean
-  @Getter isSummaryMode!: boolean
+  @Getter(useStore) getBusinessFoundingDateTime!: string
+  @Getter(useStore) getCurrentDate!: string
+  @Getter(useStore) haveNewResolutionDates!: boolean
+  @Getter(useStore) getIsResolutionDatesValid!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) isCorrectionFiling!: boolean
 
   // Global setter
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   // Local properties
   displayPreviousDates = false
   isAdding = false
+
+  /** The minimum date that can be entered (business founding date). */
+  get minDate (): string {
+    const date = this.apiToDate(this.getBusinessFoundingDateTime)
+    return this.dateToYyyyMmDd(date)
+  }
+
+  /** The maximum date that can be entered (today). */
+  get maxDate (): string {
+    return this.getCurrentDate
+  }
 
   get haveAddedDates (): boolean {
     return (this.addedDates?.length > 0)
@@ -158,6 +175,22 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
 
   get havePreviousDates (): boolean {
     return (this.previousDates?.length > 0)
+  }
+
+  get addBtnIcon (): string {
+    return this.isCorrectionFiling ? 'mdi-pencil' : 'mdi-plus'
+  }
+
+  get addBtnLabel (): string {
+    return this.isCorrectionFiling ? 'Correct' : 'Add'
+  }
+
+  get removeBtnIcon (): string {
+    return this.isCorrectionFiling ? 'mdi-undo' : 'mdi-delete'
+  }
+
+  get removeBtnLabel (): string {
+    return this.isCorrectionFiling ? 'Undo' : 'Remove'
   }
 
   /** Called to add a new date. */
@@ -196,6 +229,7 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
 
   /** Emit updated list of dates. */
   @Emit('addRemoveDate')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitAddRemoveDate (dates: string[]): void {}
 
   @Watch('isAdding', { immediate: true })
@@ -208,10 +242,6 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
-
-.add-btn, .close-btn {
-  height: inherit !important;
-}
 
 .show-previous-dates-btn {
   text-decoration: underline;
@@ -226,7 +256,7 @@ export default class ResolutionDates extends Mixins(CommonMixin) {
   opacity: 0.4;
 }
 
-::v-deep .theme--light.v-btn.v-btn--disabled .v-icon {
+:deep(.theme--light.v-btn.v-btn--disabled .v-icon) {
   color: $app-blue !important;
   opacity: 0.4;
 }

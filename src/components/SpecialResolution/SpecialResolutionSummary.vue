@@ -37,7 +37,7 @@
           </v-col>
 
           <v-col cols="8">
-            <span class="info-text">{{ associationTypeToDescription(getAssociationType) }}</span>
+            <span class="info-text">{{ associationDescription }}</span>
           </v-col>
         </v-row>
       </div>
@@ -52,39 +52,36 @@
 
 <script lang="ts">
 // this is a placceholder copied from AlterationSummary, Will add component when working on this page
-import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
-import { ActionBindingIF, FeesIF } from '@/interfaces/'
-import { DateMixin, SharedMixin, FeeMixin, FilingTemplateMixin, EnumMixin } from '@/mixins/'
-import { EffectiveDateTime, NameTranslation } from '@/components/common/'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Getter } from 'pinia-class'
+import { FeesIF } from '@/interfaces/'
+import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
+import { CoopTypeToDescription } from '@/utils'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
-    EffectiveDateTime,
-    NameTranslation,
     CreateSpecialResolutionSummary
-
   }
 })
 export default class SpecialResolutionSummary extends Mixins(
   DateMixin,
-  SharedMixin,
   FeeMixin,
-  FilingTemplateMixin,
-  EnumMixin
+  FilingTemplateMixin
 ) {
   // Global getters
-  @Getter getBusinessNumber!: string
-  @Getter getCurrentFees!: FeesIF[]
-  @Getter isBusySaving!: boolean
-  @Getter getCurrentJsDate!: Date
-
-  // Global actions
-  @Action setSummaryMode!: ActionBindingIF
+  @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) getCurrentFees!: FeesIF[]
+  @Getter(useStore) isBusySaving!: boolean
+  @Getter(useStore) getCurrentJsDate!: Date
 
   /** Whether to perform validation. */
-  @Prop() readonly validate: boolean
+  @Prop() readonly validate!: boolean
+
+  get associationDescription (): string {
+    return CoopTypeToDescription(this.getAssociationType)
+  }
 
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
@@ -115,13 +112,6 @@ export default class SpecialResolutionSummary extends Mixins(
     const futureEffectiveFeesSum = validFees.map(f => f.futureEffectiveFees).reduce((a, b) => a + b, 0)
     return `($${(filingFeesSum + futureEffectiveFeesSum).toFixed(2)} Fee)`
   }
-
-  onDeleteClicked (): void {
-    this.$root.$emit('delete-all')
-  }
-
-  @Emit('haveChanges')
-  emitHaveChanges (): void {}
 }
 </script>
 
@@ -132,13 +122,6 @@ export default class SpecialResolutionSummary extends Mixins(
   display: flex;
   background-color: $BCgovBlue5O;
   padding: 1.25rem;
-}
-
-.confirmed-msg {
-  display: flex;
-  .confirmed-icon, .confirmed-note {
-    display: block;
-  }
 }
 
 .summary-title {

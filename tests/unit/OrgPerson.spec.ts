@@ -3,11 +3,12 @@ import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
 import OrgPerson from '@/components/common/PeopleAndRoles/OrgPerson.vue'
-import { getVuexStore } from '@/store/'
-import { BenefitCompanyStatementResource as CorrectionBenefitCompanyResource }
-  from '@/resources/Correction/BenefitCompanyStatementResource'
-import { SoleProprietorshipResource as ChangeSolePropResource } from '@/resources/Change/SoleProprietorshipResource'
-import { GeneralPartnershipResource as ChangePartnershipResource } from '@/resources/Change/GeneralPartnershipResource'
+import { BenCorrectionResource } from '@/resources/Correction/BEN'
+import { SpChangeResource } from '@/resources/Change/SP'
+import { GpChangeResource } from '@/resources/Change/GP'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()
@@ -16,7 +17,8 @@ Vue.use(Vuetify)
 Vue.use(Vuelidate)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // Events
 const addEditEvent = 'addEdit'
@@ -188,7 +190,7 @@ function getLastEvent (wrapper: Wrapper<OrgPerson>, name: string): any {
  */
 function createComponent (
   currentOrgPerson: any,
-  activeIndex: number = NaN
+  activeIndex = NaN
 ): Wrapper<OrgPerson> {
   const localVue = createLocalVue()
   localVue.use(Vuetify)
@@ -197,17 +199,16 @@ function createComponent (
   return mount(OrgPerson, {
     localVue,
     propsData: { currentOrgPerson, activeIndex },
-    store,
     vuetify
   })
 }
 
 describe('Org/Person component for a BEN Correction filing', () => {
   beforeAll(() => {
-    store.state.stateModel.tombstone.filingType = 'correction'
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.stateModel.tombstone.currentDate = '2020-03-30'
-    store.state.resourceModel = CorrectionBenefitCompanyResource
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.stateModel.tombstone.currentDate = '2020-03-30'
+    store.resourceModel = BenCorrectionResource
   })
 
   it('Loads the component and sets data for person', async () => {
@@ -325,7 +326,8 @@ describe('Org/Person component for a BEN Correction filing', () => {
 
   it('Emits "reset" event when clicking Cancel button', async () => {
     const wrapper = createComponent(validOrgData, 0)
-    const vm = wrapper.vm as any
+    const vm: any = wrapper.vm
+
     vm.applyRules()
     await Vue.nextTick()
 
@@ -353,7 +355,8 @@ describe('Org/Person component for a BEN Correction filing', () => {
 
   it('Displays error message when user enters invalid org name', async () => {
     const wrapper = createComponent(validOrgData, NaN)
-    const vm = wrapper.vm as any
+    const vm: any = wrapper.vm
+
     vm.applyRules()
     await Vue.nextTick()
 
@@ -390,7 +393,8 @@ describe('Org/Person component for a BEN Correction filing', () => {
 
   it('Displays error message when user does not enter person names', async () => {
     const wrapper = createComponent(validPersonData, NaN)
-    const vm = wrapper.vm as any
+    const vm: any = wrapper.vm
+
     vm.applyRules()
     await Vue.nextTick()
 
@@ -417,7 +421,8 @@ describe('Org/Person component for a BEN Correction filing', () => {
 
   it('Displays error message when user enters person names that are too long', async () => {
     const wrapper = createComponent(validPersonData, NaN)
-    const vm = wrapper.vm as any
+    const vm: any = wrapper.vm
+
     vm.applyRules()
     await Vue.nextTick()
 
@@ -445,7 +450,8 @@ describe('Org/Person component for a BEN Correction filing', () => {
 
   it('Displays errors and does not submit form when clicking Done button and form is invalid', async () => {
     const wrapper = createComponent(EmptyPerson, NaN)
-    const vm = wrapper.vm as any
+    const vm: any = wrapper.vm
+
     vm.applyRules()
     await Vue.nextTick()
 
@@ -564,7 +570,7 @@ const ExistingPartnerOrgData = {
 
 describe('Org/Person component for SP/GP filings', () => {
   beforeAll(() => {
-    store.state.stateModel.tombstone.currentDate = '2020-03-30'
+    store.stateModel.tombstone.currentDate = '2020-03-30'
   })
 
   const tests = [
@@ -572,7 +578,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'changeOfRegistration',
       name: 'adds new GP partner-person',
       entityType: 'GP',
-      resourceModel: ChangePartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: NewPersonPartner,
       activeIndex: NaN,
       addPersonHeader: 'Add Person',
@@ -594,7 +600,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'changeOfRegistration',
       name: 'adds new GP partner-organization',
       entityType: 'GP',
-      resourceModel: ChangePartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: NewOrgPartner,
       activeIndex: NaN,
       addPersonHeader: false,
@@ -616,7 +622,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'changeOfRegistration',
       name: 'changes existing SP proprietor-person',
       entityType: 'SP',
-      resourceModel: ChangeSolePropResource,
+      resourceModel: SpChangeResource,
       currentOrgPerson: ExistingProprietorPersonData,
       activeIndex: 0,
       addPersonHeader: 'Edit Person',
@@ -638,7 +644,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'changeOfRegistration',
       name: 'changes existing SP proprietor-organization',
       entityType: 'SP',
-      resourceModel: ChangeSolePropResource,
+      resourceModel: SpChangeResource,
       currentOrgPerson: ExistingProprietorOrgData,
       activeIndex: 0,
       addPersonHeader: false,
@@ -660,7 +666,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'changeOfRegistration',
       name: 'changes existing GP partner-person',
       entityType: 'GP',
-      resourceModel: ChangePartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: ExistingPartnerPersonData,
       activeIndex: 0,
       addPersonHeader: 'Edit Person',
@@ -682,7 +688,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'changeOfRegistration',
       name: 'changes existing GP partner - organization',
       entityType: 'GP',
-      resourceModel: ChangePartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: ExistingPartnerOrgData,
       activeIndex: 0,
       addPersonHeader: false,
@@ -704,7 +710,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'adds new SP proprietor-person',
       entityType: 'SP',
-      resourceModel: ChangeSolePropResource,
+      resourceModel: SpChangeResource,
       currentOrgPerson: NewPersonProprietor,
       activeIndex: NaN,
       addPersonHeader: 'Add Person',
@@ -726,7 +732,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'adds new SP proprietor-organization',
       entityType: 'SP',
-      resourceModel: ChangeSolePropResource,
+      resourceModel: SpChangeResource,
       currentOrgPerson: NewOrgProprietor,
       activeIndex: NaN,
       addPersonHeader: false,
@@ -748,7 +754,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'adds new GP partner-person',
       entityType: 'GP',
-      resourceModel: ChangePartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: NewPersonProprietor,
       activeIndex: NaN,
       addPersonHeader: 'Add Person',
@@ -770,7 +776,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'adds new GP partner-organization',
       entityType: 'GP',
-      resourceModel: ChangePartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: NewOrgProprietor,
       activeIndex: NaN,
       addPersonHeader: false,
@@ -792,7 +798,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'changes existing SP proprietor - person',
       entityType: 'SP',
-      resourceModel: ChangeSolePropResource,
+      resourceModel: SpChangeResource,
       currentOrgPerson: ExistingProprietorPersonData,
       activeIndex: 0,
       addPersonHeader: 'Edit Person',
@@ -814,7 +820,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'changes existing SP proprietor-organization',
       entityType: 'SP',
-      resourceModel: ChangeSolePropResource,
+      resourceModel: SpChangeResource,
       currentOrgPerson: ExistingProprietorOrgData,
       activeIndex: 0,
       addPersonHeader: false,
@@ -836,7 +842,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'changes existing GP partner-person',
       entityType: 'GP',
-      resourceModel: ChangePartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: ExistingPartnerPersonData,
       activeIndex: 0,
       addPersonHeader: 'Edit Person',
@@ -858,7 +864,7 @@ describe('Org/Person component for SP/GP filings', () => {
       filingType: 'conversion',
       name: 'changes existing GP partner-organization',
       entityType: 'GP',
-      resourceModel: ChangePartnershipResource,
+      resourceModel: GpChangeResource,
       currentOrgPerson: ExistingPartnerOrgData,
       activeIndex: 0,
       addPersonHeader: false,
@@ -880,9 +886,9 @@ describe('Org/Person component for SP/GP filings', () => {
 
   tests.forEach((test, index) => {
     it(`${index + 1}. ${test.filingType} - ${test.name}`, () => {
-      store.state.stateModel.tombstone.filingType = test.filingType
-      store.state.stateModel.tombstone.entityType = test.entityType
-      store.state.resourceModel = test.resourceModel
+      store.stateModel.tombstone.filingType = test.filingType as FilingTypes
+      store.stateModel.tombstone.entityType = test.entityType as CorpTypeCd
+      store.resourceModel = test.resourceModel
 
       const wrapper = createComponent(test.currentOrgPerson, test.activeIndex)
 
@@ -958,5 +964,40 @@ describe('Org/Person component for SP/GP filings', () => {
 
       wrapper.destroy()
     })
+  })
+})
+
+describe('Org/Person component for SP change of registration filing', () => {
+  beforeEach(() => {
+    store.stateModel.tombstone.currentDate = '2020-03-30'
+    store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.resourceModel = SpChangeResource
+  })
+
+  it('displays Confirm Documents checkbox for a replaced-added org-person', () => {
+    store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.resourceModel = SpChangeResource
+
+    const currentOrgPerson = {
+      ...NewOrgProprietor,
+      actions: ['REPLACED', 'ADDED']
+    }
+
+    const wrapper = createComponent(currentOrgPerson, NaN)
+
+    expect(wrapper.find('.confirm-documents-checkbox').exists()).toBe(true)
+  })
+
+  it('does not display Confirm Documents checkbox for an added org-person', () => {
+    const currentOrgPerson = {
+      ...NewOrgProprietor,
+      action: ['ADDED']
+    }
+
+    const wrapper = createComponent(currentOrgPerson, NaN)
+
+    expect(wrapper.find('.confirm-documents-checkbox').exists()).toBe(false)
   })
 })

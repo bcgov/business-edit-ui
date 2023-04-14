@@ -1,16 +1,16 @@
 <template>
   <v-card flat id="articles">
-    <div class="define-article-header">
+    <div class="articles-header pa-5">
       <v-icon color="appDkBlue">mdi-handshake</v-icon>
-      <label class="define-article-title">Articles</label>
+      <label class="articles-title pl-2">Articles</label>
     </div>
 
     <div
+      v-if="isAlterationFiling && getBusinessInformation.hasRestrictions"
       class="section-container"
-      v-if="getBusinessInformation.hasRestrictions"
-      :class="{'invalid-section': invalidCompanyProvisions}">
+      :class="{'invalid-section': invalidCompanyProvisions}"
+    >
       <CompanyProvisions
-        class="sub-section"
         :provisionsRemoved="areProvisionsRemoved"
         @isChanged="setProvisionsRemoved($event)"
         @haveChanges="emitHaveChanges($event)"
@@ -20,7 +20,8 @@
 
     <div
       class="section-container"
-      :class="{'invalid-section': invalidResolutionDates}">
+      :class="{'invalid-section': invalidResolutionDates}"
+    >
       <ResolutionDates
         :addedDates="getNewResolutionDates"
         :previousDates="getOriginalResolutions"
@@ -35,11 +36,12 @@
 
 <script lang="ts">
 import { Component, Emit, Mixins } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import CompanyProvisions from './CompanyProvisions.vue'
 import ResolutionDates from './ResolutionDates.vue'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, BusinessInformationIF, ResolutionsIF } from '@/interfaces/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -52,29 +54,31 @@ export default class Articles extends Mixins(CommonMixin) {
   private isAddingResolutionDate = false
 
   // Global getters
-  @Getter getBusinessInformation!: BusinessInformationIF
-  @Getter getNewResolutionDates!: string[]
-  @Getter areProvisionsRemoved!: boolean
-  @Getter getOriginalResolutions!: ResolutionsIF[]
-  @Getter getHasRightsOrRestrictions!: boolean
-  @Getter getIsResolutionDatesValid!: boolean
-  @Getter getComponentValidate!: boolean
+  @Getter(useStore) getBusinessInformation!: BusinessInformationIF
+  @Getter(useStore) getNewResolutionDates!: string[]
+  @Getter(useStore) areProvisionsRemoved!: boolean
+  @Getter(useStore) getOriginalResolutions!: ResolutionsIF[]
+  @Getter(useStore) getHasRightsOrRestrictions!: boolean
+  @Getter(useStore) getIsResolutionDatesValid!: boolean
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) isAlterationFiling!: boolean
 
   // Global actions
-  @Action setProvisionsRemoved!: ActionBindingIF
-  @Action setNewResolutionDates!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setProvisionsRemoved!: ActionBindingIF
+  @Action(useStore) setNewResolutionDates!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   /** Emits Have Changes event. */
   @Emit('haveChanges')
-  emitHaveChanges (haveChanges: boolean): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected emitHaveChanges (haveChanges: boolean): void {}
 
-  setEditingCompanyProvisions (editing: boolean) {
+  protected setEditingCompanyProvisions (editing: boolean) {
     this.isEditingCompanyProvisions = editing
     this.setValidComponent({ key: 'isValidCompanyProvisions', value: !editing })
   }
 
-  setIsAddingResolutionDate (addingResolutionDate: boolean) {
+  protected setIsAddingResolutionDate (addingResolutionDate: boolean) {
     this.isAddingResolutionDate = addingResolutionDate
   }
 
@@ -91,13 +95,8 @@ export default class Articles extends Mixins(CommonMixin) {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-.define-article-header {
+.articles-header {
   display: flex;
   background-color: $BCgovBlue5O;
-  padding: 1.25rem;
-}
-
-.define-article-title {
-  padding-left: 0.5rem;
 }
 </style>

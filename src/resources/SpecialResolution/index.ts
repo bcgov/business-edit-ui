@@ -1,1 +1,1 @@
-export * from './CooperativeResource'
+export * from './CP'

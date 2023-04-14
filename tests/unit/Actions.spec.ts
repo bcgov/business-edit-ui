@@ -1,17 +1,20 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
-import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue, createWrapper } from '@vue/test-utils'
 import sinon from 'sinon'
-import { axios } from '@/utils/'
+import { AxiosInstance as axios } from '@/utils/'
 import Actions from '@/components/common/Actions.vue'
 import mockRouter from './MockRouter'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, CorrectionErrorTypes, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // Mock NR data
 const nrData = {
@@ -30,14 +33,14 @@ const nrData = {
     stateProvinceCd: 'BC'
   },
   consentFlag: 'R',
-  corpNum: null as string,
+  corpNum: null,
   expirationDate: 'Thu, 31 Dec 2099 23:59:59 GMT',
   requestTypeCd: 'BC',
   names: [
     {
       choice: 1,
-      consumptionDate: null as string,
-      corpNum: null as string,
+      consumptionDate: null,
+      corpNum: null,
       name: 'ABC 1234',
       state: 'APPROVED'
     },
@@ -55,44 +58,14 @@ const nrData = {
 
 describe('Action button states', () => {
   let wrapper: any
-  let setEntityType: Function
-  let setChanged: Function
-  let setValidity: Function
-  let setEditing: Function
 
   beforeAll(async () => {
     // initialize store
-    store.state.stateModel.tombstone.filingType = 'correction'
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    store.stateModel.correctionInformation.type = CorrectionErrorTypes.CLIENT
 
-    wrapper = shallowMount(Actions, { store, vuetify })
+    wrapper = shallowMount(Actions, { vuetify })
     await Vue.nextTick()
-
-    setEntityType = async (val: string) => {
-      await wrapper.vm.$store.commit('mutateEntityType', val)
-    }
-
-    setChanged = async (val: boolean) => {
-      // set any changed flag
-      await wrapper.vm.$store.commit('mutatePeopleAndRolesChanged', val)
-    }
-
-    setValidity = async (val: boolean) => {
-      // set all validity flags
-      await wrapper.vm.$store.commit('mutatePeopleAndRolesValidity', val)
-      await wrapper.vm.$store.commit('mutateCreateShareStructureStepValidity', val)
-      await wrapper.vm.$store.commit('mutateDetailValidity', val)
-      await wrapper.vm.$store.commit('mutateCertifyState', {
-        valid: val,
-        certifiedBy: val ? 'user' : ''
-      })
-      await wrapper.vm.$store.commit('mutateCertifyStateValidity', val)
-      await wrapper.vm.$store.commit('mutateStaffPaymentValidity', val)
-    }
-
-    setEditing = async (val: boolean) => {
-      // set any editing flag
-      await wrapper.vm.$store.commit('mutateEditingCompanyName', val)
-    }
   })
 
   afterAll(() => {
@@ -109,7 +82,10 @@ describe('Action button states', () => {
   })
 
   it('renders buttons once Entity Type is known', async () => {
-    await setEntityType('BEN')
+    store.setEntityType(CorpTypeCd.BENEFIT_COMPANY)
+
+    await Vue.nextTick()
+
     // all buttons are rendered
     expect(wrapper.find('#action-buttons-container').exists()).toBe(true)
     expect(wrapper.find('#save-btn').exists()).toBe(true)
@@ -119,9 +95,10 @@ describe('Action button states', () => {
   })
 
   it('shows initial enabled buttons', async () => {
-    await setEntityType('BEN')
+    store.setEntityType(CorpTypeCd.BENEFIT_COMPANY)
+
     // only the File and Pay button should be disabled
-    // (because the filing has not changed and is invalid)
+    // (because the filing has not changed and is initially invalid due to certify)
     expect(wrapper.find('#save-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
@@ -129,10 +106,11 @@ describe('Action button states', () => {
   })
 
   it('disables buttons while saving', async () => {
-    await setEntityType('BEN')
-    await setChanged(true)
-    await setValidity(true)
+    store.setEntityType(CorpTypeCd.BENEFIT_COMPANY)
+    store.setPeopleAndRolesChanged(true)
+    store.setCertifyStateValidity(true)
     await wrapper.vm.setIsSaving(true)
+
     // all buttons should be disabled
     // Save button should be loading
     expect(wrapper.find('#save-btn').props('disabled')).toBe(true)
@@ -140,17 +118,19 @@ describe('Action button states', () => {
     expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(true)
+
     // reset
-    await setChanged(false)
-    await setValidity(false)
+    store.setPeopleAndRolesChanged(false)
+    store.setCertifyStateValidity(false)
     await wrapper.vm.setIsSaving(false)
   })
 
   it('disables buttons while saving and resuming', async () => {
-    await setEntityType('BEN')
-    await setChanged(true)
-    await setValidity(true)
+    store.setEntityType(CorpTypeCd.BENEFIT_COMPANY)
+    store.setPeopleAndRolesChanged(true)
+    store.setCertifyStateValidity(true)
     await wrapper.vm.setIsSavingResuming(true)
+
     // all buttons should be disabled
     // Save and Resume button should be loading
     expect(wrapper.find('#save-btn').props('disabled')).toBe(true)
@@ -158,17 +138,19 @@ describe('Action button states', () => {
     expect(wrapper.find('#save-resume-btn').props('loading')).toBe(true)
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(true)
+
     // reset
-    await setChanged(false)
-    await setValidity(false)
+    store.setPeopleAndRolesChanged(false)
+    store.setCertifyStateValidity(false)
     await wrapper.vm.setIsSavingResuming(false)
   })
 
   it('disables buttons while filing and paying', async () => {
-    await setEntityType('BEN')
-    await setChanged(true)
-    await setValidity(true)
+    store.setEntityType(CorpTypeCd.BENEFIT_COMPANY)
+    store.setPeopleAndRolesChanged(true)
+    store.setCertifyStateValidity(true)
     await wrapper.vm.setIsFilingPaying(true)
+
     // all buttons should be disabled
     // File and Pay button should be loading
     expect(wrapper.find('#save-btn').props('disabled')).toBe(true)
@@ -176,52 +158,63 @@ describe('Action button states', () => {
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#file-pay-btn').props('loading')).toBe(true)
     expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(true)
+
     // reset
-    await setChanged(false)
-    await setValidity(false)
+    store.setPeopleAndRolesChanged(false)
+    store.setCertifyStateValidity(false)
     await wrapper.vm.setIsFilingPaying(false)
   })
 
   it('disables buttons while editing', async () => {
-    await setEntityType('BEN')
-    await setChanged(true)
-    await setValidity(true)
-    await setEditing(true)
+    store.setEntityType(CorpTypeCd.BENEFIT_COMPANY)
+    store.setPeopleAndRolesChanged(true)
+    store.setCertifyStateValidity(true)
+    store.setEditingCompanyName(true)
+
+    await Vue.nextTick()
+
     // all buttons should be disabled except Cancel
     expect(wrapper.find('#save-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(false)
+
     // reset
-    await setChanged(false)
-    await setValidity(false)
-    await setEditing(false)
+    store.setPeopleAndRolesChanged(false)
+    store.setCertifyStateValidity(false)
+    store.setEditingCompanyName(false)
   })
 
   it('disables File and Pay button when filing is changed but not valid', async () => {
-    await setEntityType('BEN')
-    await setChanged(true)
+    store.setEntityType(CorpTypeCd.BENEFIT_COMPANY)
+    store.setPeopleAndRolesChanged(true)
+
     // only the File and Pay button should be disabled
     expect(wrapper.find('#save-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(true)
     expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(false)
+
     // reset
-    await setChanged(false)
+    store.setPeopleAndRolesChanged(false)
   })
 
   it('enables File and Pay button when filing is changed and valid', async () => {
-    await setEntityType('BEN')
-    await setChanged(true)
-    await setValidity(true)
+    store.setEntityType(CorpTypeCd.BENEFIT_COMPANY)
+    store.setPeopleAndRolesChanged(true)
+    store.setCertifyStateValidity(true)
+
+    await Vue.nextTick()
+
     // all buttons should be enabled
     expect(wrapper.find('#save-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#save-resume-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#file-pay-btn').props('disabled')).toBe(false)
     expect(wrapper.find('#app-cancel-btn').props('disabled')).toBe(false)
+
     // reset
-    await setChanged(false)
-    await setValidity(false)
+    store.setPeopleAndRolesChanged(false)
+    store.setCertifyStateValidity(false)
   })
 })
 
@@ -239,7 +232,7 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
 
     const get = sinon.stub(axios, 'get')
 
-    let expiredNR = { ...nrData }
+    const expiredNR = { ...nrData }
     expiredNR['expirationDate'] = 'Thu, 31 Dec 2019 23:59:59 GMT'
 
     // GET NR data
@@ -249,23 +242,23 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
       }))
 
     // init store
-    store.state.stateModel.tombstone.currentDate = '2020/01/29'
-    store.state.stateModel.nameRequest = {
+    store.stateModel.tombstone.currentDate = '2020/01/29'
+    store.stateModel.nameRequest = {
       entityType: 'BEN',
       nrNumber: 'NR 1234567',
       details: { approvedName: 'My Name Request Inc.' }
-    }
-    store.state.stateModel.tombstone = {
+    } as any
+    store.stateModel.tombstone = {
       keycloakRoles: [],
       authRoles: [],
       userEmail: 'completing-party@example.com'
-    }
-    store.state.stateModel.certifyState = {
+    } as any
+    store.stateModel.certifyState = {
       valid: true,
       certifiedBy: 'Some certifier'
     }
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.stateModel.validationFlags = {
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.stateModel.validationFlags = {
       flagsCompanyInfo: {
         isValidOrgPersons: true,
         isValidShareStructure: true
@@ -273,13 +266,13 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
       flagsReviewCertify: {
         isValidEffectiveDate: true
       }
-    }
+    } as any
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'review-confirm', query: { id: 'T1234567' } })
-    wrapper = shallowMount(Actions, { localVue, store, router, vuetify })
+    await router.push({ name: 'review-confirm', query: { id: 'T1234567' } })
+    wrapper = shallowMount(Actions, { localVue, router, vuetify })
   })
 
   afterEach(() => {
@@ -319,7 +312,7 @@ describe.skip('Actions component - Filing Functionality', () => {
         certifiedBy: 'Certified By',
         date: '2020/01/29',
         effectiveDate: formattedEffectiveDate,
-        folioNumber: null as string,
+        folioNumber: null,
         isFutureEffective: false
       },
       business: {
@@ -333,7 +326,7 @@ describe.skip('Actions component - Filing Functionality', () => {
           legalName: 'My Name Request Inc.'
         },
         nameTranslations: {
-          new: [] as string[]
+          new: []
         },
         offices: {
           registeredOffice: {
@@ -486,7 +479,7 @@ describe.skip('Actions component - Filing Functionality', () => {
     }
   }
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
@@ -502,40 +495,40 @@ describe.skip('Actions component - Filing Functionality', () => {
       }))
 
     // init store
-    store.state.stateModel.tombstone.currentDate = '2020/01/29'
-    store.state.stateModel.nameRequest = {
-      entityType: 'BEN',
+    store.stateModel.tombstone.currentDate = '2020/01/29'
+    store.stateModel.nameRequest = {
+      entityType: CorpTypeCd.BENEFIT_COMPANY,
       nrNumber: 'NR 1234567',
       details: { approvedName: 'My Name Request Inc.' }
-    }
-    store.state.stateModel.nameTranslations = []
-    store.state.stateModel.tombstone = {
+    } as any
+    store.stateModel.nameTranslations = []
+    store.stateModel.tombstone = {
       keycloakRoles: [],
       authRoles: [],
       userEmail: 'completing-party@example.com'
-    }
-    store.state.stateModel.certifyState.certifiedBy = filing.filing.header.certifiedBy
-    store.state.stateModel.effectiveDateTime.dateTimeString = effectiveDate.toISOString()
-    store.state.stateModel.businessContact = {
+    } as any
+    store.stateModel.certifyState.certifiedBy = filing.filing.header.certifiedBy
+    store.stateModel.effectiveDateTime.dateTimeString = effectiveDate.toISOString()
+    store.stateModel.businessContact = {
       email: 'registered-office@example.com',
       confirmEmail: 'registered-office@example.com',
       phone: '111-222-3333',
       extension: '444'
-    }
-    store.state.stateModel.officeAddresses = filing.filing.incorporationApplication.offices
-    store.state.stateModel.tombstone.folioNumber = filing.filing.header.folioNumber
-    store.state.stateModel.peopleAndRoles.orgPeople = filing.filing.incorporationApplication.parties
-    store.state.stateModel.shareStructureStep.shareClasses = filing.filing.incorporationApplication.shareClasses
-    store.state.stateModel.tombstone.filingId = 1234
-    store.state.stateModel.tombstone.entityType = 'BEN'
-    store.state.stateModel.tombstone.businessId = 'T1234567'
-    store.state.stateModel.effectiveDateTime.isFutureEffective = filing.filing.header.isFutureEffective
+    } as any
+    store.stateModel.officeAddresses = filing.filing.incorporationApplication.offices
+    store.stateModel.tombstone.folioNumber = filing.filing.header.folioNumber
+    store.stateModel.peopleAndRoles.orgPeople = filing.filing.incorporationApplication.parties as any
+    store.stateModel.shareStructureStep.shareClasses = filing.filing.incorporationApplication.shareClasses as any
+    store.stateModel.tombstone.filingId = 1234
+    store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
+    store.stateModel.tombstone.businessId = 'T1234567'
+    store.stateModel.effectiveDateTime.isFutureEffective = filing.filing.header.isFutureEffective
 
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
-    router.push({ name: 'define-company', query: { id: 'T1234567' } })
-    wrapper = shallowMount(Actions, { localVue, store, router, vuetify })
+    await router.push({ name: 'define-company', query: { id: 'T1234567' } })
+    wrapper = shallowMount(Actions, { localVue, router, vuetify })
 
     // Mock the function calls that may used by updateFiling below
     jest.spyOn(wrapper.vm, 'updateFiling').mockImplementation()

@@ -39,9 +39,12 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, FlagsReviewCertifyIF, FormFieldType } from '@/interfaces/'
+import { VuetifyRuleFunction } from '@/types'
+
+import { useStore } from '@/store/store'
 
 @Component({})
 export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
@@ -51,30 +54,30 @@ export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
   }
 
   // Global getters
-  @Getter getFolioNumber!: string
-  @Getter getTransactionalFolioNumber!: string
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getFolioNumber!: string
+  @Getter(useStore) getTransactionalFolioNumber!: string
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
 
   // Global actions
-  @Action setTransactionalFolioNumber!: ActionBindingIF
-  @Action setTransactionalFolioNumberValidity!: ActionBindingIF
+  @Action(useStore) setTransactionalFolioNumber!: ActionBindingIF
+  @Action(useStore) setTransactionalFolioNumberValidity!: ActionBindingIF
 
   /** Prop to provide section number. */
-  @Prop({ default: '' }) readonly sectionNumber: string
+  @Prop({ default: '' }) readonly sectionNumber!: string
 
   /** Whether to perform validation. */
-  @Prop({ default: false }) readonly validate: boolean
+  @Prop({ default: false }) readonly validate!: boolean
 
   // Local properties
-  private folioNumber = ''
+  protected folioNumber = ''
 
   // Validation rules
-  readonly rules: Array<Function> = [
+  readonly rules: Array<VuetifyRuleFunction> = [
     (v: string) => (!v || v.length <= 30) || 'Maximum 30 characters reached'
   ]
 
   /** Called when component is mounted. */
-  protected mounted (): void {
+  mounted (): void {
     // assign transactional FN if it exists, otherwise business FN
     this.folioNumber = this.getTransactionalFolioNumber || this.getFolioNumber
   }
@@ -97,11 +100,12 @@ export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-::v-deep {
+:deep() {
   .container {
     padding-bottom: 0px;
     padding-top: 0px;
   }
+
   .v-label {
     font-weight: normal;
   }

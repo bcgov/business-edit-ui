@@ -5,14 +5,19 @@ import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
-import { axios } from '@/utils/'
+import { AxiosInstance as axios } from '@/utils/'
 import Conversion from '@/views/Conversion.vue'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 import mockRouter from './MockRouter'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { ActionTypes, FilingTypes } from '@bcrs-shared-components/enums'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
@@ -48,7 +53,7 @@ describe('Conversion component', () => {
     'JiIUlDmKZ2ow7GmmDabic8igHnEDYD6sI7OFYnCJhRdgVEHN-_4KUk2YsAVl5XUr6blJKMuYDPeMyNreGTXU7foE4AT-93FwlyTyFzQGddrDv' +
     'c6kkQr7mgJNTtgg87DdYbVGbEtIetyVfvwEF0rU8JH2N-j36XIebo33FU3-gJ5Y5S69EHPqQ37R9H4d8WUrHO-4QzJQih3Yaea820XBplJeo0' +
     'DO3hQoVtPD42j0p3aIy10cnW2g')
-  store.state.stateModel.tombstone.businessId = 'BC1234567'
+  store.stateModel.tombstone.businessId = 'BC1234567'
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -230,7 +235,7 @@ describe('Conversion component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'conversion' })
-    wrapper = shallowMount(Conversion, { localVue, store, router, vuetify })
+    wrapper = shallowMount(Conversion, { localVue, router, vuetify })
 
     // wait for all queries to complete
     await flushPromises()
@@ -244,13 +249,14 @@ describe('Conversion component', () => {
 
   it('renders Conversion view', () => {
     expect(wrapper.findComponent(Conversion).exists()).toBe(true)
+    expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true)
   })
 
   // FUTURE
   xit('loads the entity snapshot into the store', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
-    const state = store.state.stateModel
+    const state = store.stateModel
 
     // Validate business identifier
     expect(state.tombstone.businessId).toBe('BC1234567')
@@ -270,31 +276,31 @@ describe('Conversion component', () => {
       .toBe('rec mailing_address - address line two')
 
     // Validate People And Roles
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('CAMERON')
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].officer.lastName).toBe('BOWLER')
-    expect(store.state.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Director')
+    expect(store.stateModel.peopleAndRoles.orgPeople[0].officer.firstName).toBe('CAMERON')
+    expect(store.stateModel.peopleAndRoles.orgPeople[0].officer.lastName).toBe('BOWLER')
+    expect(store.stateModel.peopleAndRoles.orgPeople[0].roles[0].roleType).toBe('Director')
 
     // Validate Share Structure
-    expect(store.state.stateModel.shareStructureStep.shareClasses[0].name).toBe('Class A Shares')
-    expect(store.state.stateModel.shareStructureStep.shareClasses[0].series[0].name)
+    expect(store.stateModel.shareStructureStep.shareClasses[0].name).toBe('Class A Shares')
+    expect(store.stateModel.shareStructureStep.shareClasses[0].series[0].name)
       .toBe('Series A Shares')
-    expect(store.state.stateModel.shareStructureStep.shareClasses[0].series[1].name)
+    expect(store.stateModel.shareStructureStep.shareClasses[0].series[1].name)
       .toBe('Series 2 Shares')
 
     // Validate Contact Info
-    expect(store.state.stateModel.businessContact.email).toBe('mock@example.com')
-    expect(store.state.stateModel.businessContact.phone).toBe('123-456-7890')
+    expect(store.stateModel.businessContact.email).toBe('mock@example.com')
+    expect(store.stateModel.businessContact.phone).toBe('123-456-7890')
 
-    expect(store.state.stateModel.currentFees[0].filingFees).toBe(100)
-    expect(store.state.stateModel.currentFees[0].futureEffectiveFees).toBe(0)
+    expect(store.stateModel.currentFees[0].filingFees).toBe(100)
+    expect(store.stateModel.currentFees[0].futureEffectiveFees).toBe(0)
   })
 
   // FUTURE
   xit('fetches the fee prices after loading', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
-    expect(store.state.stateModel.feePrices.filingFees).toBe(100)
-    expect(store.state.stateModel.feePrices.futureEffectiveFees).toBe(100)
+    expect(store.stateModel.feePrices[0].filingFees).toBe(100)
+    expect(store.stateModel.feePrices[0].futureEffectiveFees).toBe(100)
   })
 
   // FUTURE
@@ -302,9 +308,9 @@ describe('Conversion component', () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
-    store.state.stateModel.summaryMode = true
-    store.state.stateModel.tombstone.filingType = 'alteration'
-    store.state.stateModel.nameTranslations = [{ action: 'ACTION' }]
+    store.stateModel.summaryMode = true
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
+    store.stateModel.nameTranslations = [{ action: ActionTypes.ADDED, name: 'test' }]
     await Vue.nextTick()
 
     expect(
@@ -314,7 +320,7 @@ describe('Conversion component', () => {
       wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
     ).toContain('Choosing an alteration date and time in the future will incur an additional $100.00 fee.')
 
-    store.state.stateModel.feePrices = [{
+    store.stateModel.feePrices = [{
       filingFees: null,
       filingType: null,
       filingTypeCode: null,
@@ -343,19 +349,19 @@ describe('Conversion component', () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
-    const state = store.state.stateModel
+    const state = store.stateModel
     state.effectiveDateTime.isFutureEffective = true
 
     await wrapper.vm.onAlterationSummaryChanges()
-    expect(store.state.stateModel.currentFees[0].filingFees).toBe(100)
-    expect(store.state.stateModel.currentFees[0].futureEffectiveFees).toBe(100)
+    expect(store.stateModel.currentFees[0].filingFees).toBe(100)
+    expect(store.stateModel.currentFees[0].futureEffectiveFees).toBe(100)
   })
 
   // FUTURE
   xit('loads a draft alteration into the store', async () => {
     // Validate Effective Date-Time
-    expect(store.state.stateModel.effectiveDateTime.isFutureEffective).toBe(true)
-    expect(store.state.stateModel.effectiveDateTime.dateTimeString).toBe('2021-03-22T18:00:00.000Z')
-    expect(store.state.stateModel.validationFlags.flagsReviewCertify.isValidEffectiveDate).toBe(true)
+    expect(store.stateModel.effectiveDateTime.isFutureEffective).toBe(true)
+    expect(store.stateModel.effectiveDateTime.dateTimeString).toBe('2021-03-22T18:00:00.000Z')
+    expect(store.stateModel.validationFlags.flagsReviewCertify.isValidEffectiveDate).toBe(true)
   })
 })

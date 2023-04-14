@@ -7,7 +7,7 @@
       <CompletingPartyShared
         class="section-container py-6"
         :completingParty="getCompletingParty"
-        :enableAddEdit="isRoleStaff"
+        :enableAddEdit="isRoleStaff || isSbcStaff"
         :addressSchema="DefaultAddressSchema"
         :validate="validate"
         :invalidSection="invalidSection"
@@ -19,12 +19,14 @@
 </template>
 
 <script lang="ts">
-import { Action, Getter } from 'vuex-class'
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
+import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF } from '@/interfaces/'
 import { CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party/'
 import { DefaultAddressSchema } from '@/schemas/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -33,18 +35,19 @@ import { DefaultAddressSchema } from '@/schemas/'
 })
 export default class CompletingParty extends Vue {
   /** Prop to provide section number. */
-  @Prop({ default: '' }) readonly sectionNumber: string
+  @Prop({ default: '' }) readonly sectionNumber!: string
 
   /** Whether to perform validation. */
-  @Prop({ default: false }) readonly validate: boolean
+  @Prop({ default: false }) readonly validate!: boolean
 
   // store getters
-  @Getter getCompletingParty!: CompletingPartyIF
-  @Getter isRoleStaff!: boolean
+  @Getter(useStore) getCompletingParty!: CompletingPartyIF
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSbcStaff!: boolean
 
   // store actions
-  @Action setCompletingParty!: ActionBindingIF
-  @Action setCompletingPartyValidity!: ActionBindingIF
+  @Action(useStore) setCompletingParty!: ActionBindingIF
+  @Action(useStore) setCompletingPartyValidity!: ActionBindingIF
 
   // Declaration for template
   readonly DefaultAddressSchema = DefaultAddressSchema

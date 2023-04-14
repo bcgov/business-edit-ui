@@ -20,18 +20,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
 
 @Component({})
 export default class AccountAuthorizationDialog extends Vue {
-  // Prop to display the dialog.
-  @Prop() readonly dialog: boolean
+  /** Prop to display the dialog. */
+  @Prop() readonly dialog!: boolean
 
-  // Prop to provide attachment selector.
-  @Prop() readonly attach: string
+  /** Prop to provide attachment selector. */
+  @Prop() readonly attach!: string
 
   // Pass click events to parent.
-  @Emit() protected exit () {}
-  @Emit() protected retry () {}
+  @Emit() protected exit (): void {}
+  @Emit() protected retry (): void {}
 }
 </script>

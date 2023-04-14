@@ -1,8 +1,11 @@
 import { shallowMount } from '@vue/test-utils'
-import MixinTester from './mixin-tester.vue'
-import { getVuexStore } from '@/store/'
+import MixinTester from '@/mixin-tester.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // FUTURE
 describe('Correction Filing', () => {
@@ -14,10 +17,9 @@ describe('Alteration Filing', () => {
 
 describe('Change of Registration Filing', () => {
   let wrapper: any
-  let store: any = getVuexStore()
 
   beforeEach(() => {
-    wrapper = shallowMount(MixinTester, { store })
+    wrapper = shallowMount(MixinTester, { })
   })
 
   afterEach(() => {
@@ -25,10 +27,10 @@ describe('Change of Registration Filing', () => {
   })
 
   it('correctly builds a change of registration filing', () => {
-    store.state.stateModel.tombstone.businessId = 'BC1234567'
-    store.state.stateModel.tombstone.filingType = 'changeOfRegistration'
-    store.state.stateModel.tombstone.entityType = 'SP'
-    store.state.stateModel.completingParty = {
+    store.stateModel.tombstone.businessId = 'BC1234567'
+    store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
+    store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
+    store.stateModel.completingParty = {
       firstName: 'First',
       lastName: 'Last',
       middleName: 'Middle',
@@ -40,11 +42,11 @@ describe('Change of Registration Filing', () => {
         addressCountry: 'CA'
       }
     }
-    store.state.stateModel.nameRequest.legalName = 'SomeMockBusiness'
-    store.state.stateModel.entitySnapshot = {
+    store.stateModel.nameRequest.legalName = 'SomeMockBusiness'
+    store.stateModel.entitySnapshot = {
       businessInfo: {
         foundingDate: 'Jan 01, 2000',
-        legalType: 'SP',
+        legalType: CorpTypeCd.SOLE_PROP,
         identifier: 'BC1234567',
         legalName: 'SomeMockBusiness',
         naicsCode: '',
@@ -72,8 +74,8 @@ describe('Change of Registration Filing', () => {
           }
         }
       }
-    }
-    store.state.stateModel.officeAddresses = {
+    } as any
+    store.stateModel.officeAddresses = {
       businessOffice: {
         mailingAddress: {
           addressCity: 'Bravo',
@@ -95,8 +97,8 @@ describe('Change of Registration Filing', () => {
         }
       }
     }
-    store.state.stateModel.businessInformation.naicsCode = '123456'
-    store.state.stateModel.businessInformation.naicsDescription = 'Mock Description'
+    store.stateModel.businessInformation.naicsCode = '123456'
+    store.stateModel.businessInformation.naicsDescription = 'Mock Description'
 
     const filing = wrapper.vm.buildChangeRegFiling(true)
 

@@ -55,13 +55,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop } from 'vue-property-decorator'
 import { CorrectNameOptionIF } from '@/interfaces/'
-import { CorrectionTypes } from '@/enums/'
-
-// for some reason, CorrectXXX cannot be imported from ./
-// (it breaks a bunch of unit tests)
-import { CorrectCompanyName, CorrectNameToNumber, CorrectNameRequest } from '@/components/common/'
+import { NameChangeOptions } from '@/enums/'
+// These imports below are touchy, please don't change them - they can possibly break tests.
+import CorrectCompanyName from './CorrectCompanyName.vue'
+import CorrectNameRequest from './CorrectNameRequest.vue'
+import CorrectNameToNumber from './CorrectNameToNumber.vue'
 
 /**
  * Operation:
@@ -79,32 +80,32 @@ import { CorrectCompanyName, CorrectNameToNumber, CorrectNameRequest } from '@/c
 })
 export default class CorrectNameOptions extends Vue {
   /** The options to display */
-  @Prop() readonly correctionNameChoices: Array<string>
+  @Prop() readonly correctionNameChoices!: Array<string>
 
   // local properties
   protected displayedOptions: Array<CorrectNameOptionIF> = []
   protected panel: number = null
-  protected formType: CorrectionTypes = null
-  protected currentFormType: CorrectionTypes = null
+  protected formType: NameChangeOptions = null
+  protected currentFormType: NameChangeOptions = null
   protected isLoading = false
   protected isFormValid = false
   protected validateNameChange = false
 
   readonly correctionNameOptions: Array<CorrectNameOptionIF> = [
     {
-      id: CorrectionTypes.CORRECT_NAME,
+      id: NameChangeOptions.CORRECT_NAME,
       title: 'Edit the company name',
       description: 'Correct typographical errors in the existing company name.',
       component: CorrectCompanyName
     },
     {
-      id: CorrectionTypes.CORRECT_NAME_TO_NUMBER,
+      id: NameChangeOptions.CORRECT_NAME_TO_NUMBER,
       title: 'Use the incorporation number as the name',
       description: null,
       component: CorrectNameToNumber
     },
     {
-      id: CorrectionTypes.CORRECT_NEW_NR,
+      id: NameChangeOptions.CORRECT_NEW_NR,
       title: 'Use a new name request number',
       description: 'Enter the new Name Request Number (e.g., NR 1234567) and either the applicant phone number ' +
         'OR the applicant email that was used when the name was requested.',
@@ -112,7 +113,8 @@ export default class CorrectNameOptions extends Vue {
     }
   ]
 
-  protected mounted (): void {
+  /** Called when component is mounted. */
+  mounted (): void {
     // Filter the options to be displayed by what id's were passed from the parent component
     this.displayedOptions = this.correctionNameOptions.filter(
       option => this.correctionNameChoices.includes(option.id)
@@ -137,7 +139,7 @@ export default class CorrectNameOptions extends Vue {
   }
 
   /** Identify the current form */
-  protected identifyForm (type: CorrectionTypes) {
+  protected identifyForm (type: NameChangeOptions) {
     this.currentFormType = type
     this.isFormValid = false
   }
@@ -180,8 +182,10 @@ export default class CorrectNameOptions extends Vue {
   color: $app-blue;
 }
 
-.v-expansion-panel-content ::v-deep .v-expansion-panel-content__wrap {
-  padding: 0;
+.v-expansion-panel-content {
+  :deep(.v-expansion-panel-content__wrap) {
+    padding: 0;
+  }
 }
 
 .v-expansion-panel-header {

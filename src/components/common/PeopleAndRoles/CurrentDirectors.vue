@@ -48,13 +48,12 @@
 
             <!-- Delivery Address -->
             <td class="px-0">
-              <p
-                v-if="isSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])"
-                class="director-detail"
-              >
-                Same as Mailing Address
-              </p>
-              <DeliveryAddress v-else class="director-detail" :address="orgPerson.deliveryAddress"/>
+              <template v-if="IsSame(orgPerson.mailingAddress, orgPerson.deliveryAddress, ['id'])">
+                <span class="director-detail">Same as Mailing Address</span>
+              </template>
+              <template v-else>
+                <DeliveryAddress class="director-detail" :address="orgPerson.deliveryAddress"/>
+              </template>
             </td>
 
             <!-- Appointment Date -->
@@ -70,12 +69,14 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import { Getter } from 'pinia-class'
 import { OrgPersonIF } from '@/interfaces/'
 import { RoleTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
-import { isSame } from '@/utils/'
+import { IsSame } from '@/utils/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
+
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -86,10 +87,10 @@ import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 export default class CurrentDirectors extends Mixins(CommonMixin) {
   // Declarations for template
   readonly RoleTypes = RoleTypes
-  readonly isSame = isSame
+  readonly IsSame = IsSame
 
   // Global getters
-  @Getter getOrgPeople!: OrgPersonIF[]
+  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
 
   /** Headers for the person table. */
   readonly tableHeaders = ['Name', 'Mailing Address', 'Delivery Address', 'Effective Dates']
@@ -131,7 +132,7 @@ export default class CurrentDirectors extends Mixins(CommonMixin) {
     vertical-align: text-top;
   }
 
-  td:not(:first-child){
+  .director-detail {
     font-size: $px-14;
     color: $gray7;
     font-weight: normal;

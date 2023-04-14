@@ -1,4 +1,5 @@
 export enum RoleTypes {
+  APPLICANT = 'Applicant',
   COMPLETING_PARTY = 'Completing Party',
   DIRECTOR = 'Director',
   INCORPORATOR = 'Incorporator',

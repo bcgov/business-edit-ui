@@ -1,4 +1,5 @@
-import { Component, Vue } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import { OrgPersonIF } from '@/interfaces'
 import { ActionTypes, PartyTypes, RoleTypes } from '@/enums/'
 
@@ -45,6 +46,11 @@ export default class OrgPersonMixin extends Vue {
     return this.hasRoleByType(orgPerson, RoleTypes.SUBSCRIBER)
   }
 
+  /** Returns True if the specified orgPerson has the applicant role. */
+  hasRoleApplicant (orgPerson: OrgPersonIF): boolean {
+    return this.hasRoleByType(orgPerson, RoleTypes.APPLICANT)
+  }
+
   //
   // Party Type helpers
   //
@@ -81,6 +87,11 @@ export default class OrgPersonMixin extends Vue {
   /** Returns True if the specified orgPerson was removed. */
   wasRemoved (person: OrgPersonIF): boolean {
     return (person.actions?.includes(ActionTypes.REMOVED))
+  }
+
+  /** Returns True if the specified orgPerson was replaced. */
+  wasReplaced (person: OrgPersonIF): boolean {
+    return (person.actions?.includes(ActionTypes.REPLACED))
   }
 
   /** Returns True if the specified orgPerson was changed. */

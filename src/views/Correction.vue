@@ -1,54 +1,58 @@
 <template>
-  <div>
-    <BenCorrection
-      v-if="isEntityTypeBEN"
+  <ViewWrapper>
+    <component
+      :is="component"
       :correctionFiling="correctionFiling"
       @fetchError="emitFetchError($event)"
       @haveData="emitHaveData($event)"
     />
-    <FmCorrection
-      v-if="isEntityTypeFirm"
-      :correctionFiling="correctionFiling"
-      @fetchError="emitFetchError($event)"
-      @haveData="emitHaveData($event)"
-    />
-  </div>
+  </ViewWrapper>
+
 </template>
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils/'
+import { Action, Getter } from 'pinia-class'
+import { GetFeatureFlag } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { ActionBindingIF, CorrectionFilingIF } from '@/interfaces/'
 import { FilingStatus, FilingTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import BenCorrection from '@/views/Correction/BenCorrection.vue'
-import FmCorrection from '@/views/Correction/FmCorrection.vue'
+import CorpCorrection from '@/views/Correction/CorpCorrection.vue'
+import FirmCorrection from '@/views/Correction/FirmCorrection.vue'
+import ViewWrapper from '@/components/ViewWrapper.vue'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
-    BenCorrection,
-    FmCorrection
+    ViewWrapper,
+    CorpCorrection,
+    FirmCorrection
   }
 })
 export default class Correction extends Mixins(CommonMixin) {
   /** Whether App is ready. */
-  @Prop({ default: false })
-  readonly appReady: boolean
+  @Prop({ default: false }) readonly appReady!: boolean
 
   // Global getters
-  @Getter getBusinessId!: string
-  @Getter isRoleStaff!: boolean
-  @Getter isEntityTypeBEN!: boolean
-  @Getter isEntityTypeFirm!: boolean
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isBenBcCccUlc!: boolean
+  @Getter(useStore) isFirm!: boolean
 
   // Global actions
-  @Action setFilingId!: ActionBindingIF
-  @Action setEntityType!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setEntityType!: ActionBindingIF
 
   protected correctionFiling: CorrectionFilingIF = null
+
+  /** The dynamic component to render. */
+  get component (): string {
+    if (this.isBenBcCccUlc) return 'CorpCorrection'
+    if (this.isFirm) return 'FirmCorrection'
+    return null // should never happen
+  }
 
   /** True if user is authenticated. */
   get isAuthenticated (): boolean {
@@ -70,7 +74,7 @@ export default class Correction extends Mixins(CommonMixin) {
 
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
-    if (!this.isJestRunning && !getFeatureFlag('correction-ui-enabled')) {
+    if (!this.isJestRunning && !GetFeatureFlag('correction-ui-enabled')) {
       window.alert('Corrections are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard', true)
       return
@@ -84,13 +88,13 @@ export default class Correction extends Mixins(CommonMixin) {
       return
     }
 
-    // do not proceed if we don't have the necessary query param
-    if (!this.correctionId) {
-      throw new Error('Invalid correction filing ID')
-    }
-
     // fetch the correction filing
     try {
+      // do not proceed if we don't have the necessary query param
+      if (!this.correctionId) {
+        throw new Error('Invalid correction filing ID')
+      }
+
       // store the filing ID
       this.setFilingId(this.correctionId)
 
@@ -115,9 +119,9 @@ export default class Correction extends Mixins(CommonMixin) {
       }
 
       // set entity type for misc functionality to work
-      // do not proceed if this isn't a BEN or SP/GP correction
+      // do not proceed if this isn't a BC or firm correction
       this.setEntityType(filing.business?.legalType)
-      if (!this.isEntityTypeBEN && !this.isEntityTypeFirm) {
+      if (!this.isBenBcCccUlc && !this.isFirm) {
         throw new Error('Invalid correction type')
       }
 
@@ -136,10 +140,12 @@ export default class Correction extends Mixins(CommonMixin) {
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: Boolean = true): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitHaveData (haveData = true): void {}
 }
 </script>

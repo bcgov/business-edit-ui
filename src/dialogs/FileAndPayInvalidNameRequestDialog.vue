@@ -34,23 +34,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Emit } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import Vue from 'vue'
+import { Component, Prop, Emit } from 'vue-property-decorator'
+import { Getter } from 'pinia-class'
 import { ErrorContact } from '@/components/common/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: { ErrorContact }
 })
 export default class FileAndPayInvalidNameRequestDialog extends Vue {
   /** Prop to display the dialog. */
-  @Prop() readonly dialog: boolean
+  @Prop() readonly dialog!: boolean
 
   /** Prop to provide attachment selector. */
-  @Prop() readonly attach: string
+  @Prop() readonly attach!: string
 
-  @Getter getNameRequestNumber!: string
-  @Getter getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) getNameRequestLegalName!: string
 
-  @Emit() protected okay () {}
+  @Emit() protected okay (): void {}
 }
 </script>

@@ -3,6 +3,7 @@
  * - these values MUST match component IDs to scroll correctly
  * - order this according to component layout
  * - this list must match `FlagsReviewCertifyIF`
+ * - this list must match the order in `stateModel`
  */
 export enum ComponentsReviewCertify {
   'effective-date-time',

@@ -1,15 +1,17 @@
-import { Component, Mixins } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
+import { Getter } from 'pinia-class'
 import { NameRequestStates, NameRequestTypes } from '@/enums/'
-import { DateMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { NrResponseIF, ResourceIF } from '@/interfaces/'
+import { useStore } from '@/store/store'
+
 /**
  * Mixin for processing Name Request objects.
  */
 @Component({})
-export default class NameRequestMixin extends Mixins(DateMixin) {
-  @Getter getResource!: ResourceIF
+export default class NameRequestMixin extends Vue {
+  @Getter(useStore) getResource!: ResourceIF
 
   /**
    * Fetches an NR and validates it against the applicant's information.
@@ -46,7 +48,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
 
     // ensure NR is consumable
     const state = this.getNrState(nrResponse)
-    if (state !== NameRequestStates.APPROVED) {
+    if (state !== NameRequestStates.APPROVED && state !== NameRequestStates.CONDITIONAL) {
       this.$root.$emit('invalid-name-request', state)
       throw new Error(`Invalid Name request state: ${state}`)
     }
@@ -59,15 +61,16 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
    * @param nr the name request response payload
    * */
   isNrValid (nr: any): boolean {
-    let requestActionCDList = [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION]
-    if (this.getResource.changeData) requestActionCDList = this.getResource.changeData.nameRequestTypes
-    return Boolean(nr &&
+    const requestActionCodeList = this.getResource.changeData?.nameRequestTypes ||
+      [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION]
+    return Boolean(
+      nr &&
       nr.state &&
       nr.expirationDate &&
       !!this.getNrApprovedName(nr) &&
       nr.nrNum &&
       nr.requestTypeCd &&
-      requestActionCDList.includes(nr.request_action_cd)
+      requestActionCodeList.includes(nr.request_action_cd)
     )
   }
 
@@ -85,6 +88,7 @@ export default class NameRequestMixin extends Mixins(DateMixin) {
     // null = consent not required
     // R = consent received
     // N = consent waived
+    // Y = consent required
     if (nr.state === NameRequestStates.CONDITIONAL &&
       nr.consentFlag !== null && nr.consentFlag !== 'R' && nr.consentFlag !== 'N') {
       return NameRequestStates.NEED_CONSENT

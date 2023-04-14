@@ -13,8 +13,8 @@
           title="Resolution or Court Order Date"
           :error-msg="errors"
           nudge-right="100"
-          :minDate="getBusinessFoundingDate"
-          :maxDate="getCurrentDate"
+          :minDate="minDate"
+          :maxDate="maxDate"
           @emitDate="onDateEmitted($event)"
           @emitCancel="exit()"
           @emitDateSync="date = $event"
@@ -33,33 +33,46 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit, Vue } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
+import { Action, Getter } from 'pinia-class'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF } from '@/interfaces/'
+import { DateMixin } from '@/mixins/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: { DatePickerShared }
 })
-export default class ResolutionDateDialog extends Vue {
+export default class ResolutionDateDialog extends Mixins(DateMixin) {
   /** Prop to provide attachment selector. */
-  @Prop() readonly attach: string
+  @Prop() readonly attach!: string
 
   /** Prop to display the dialog. */
-  @Prop() readonly dialog: boolean
+  @Prop() readonly dialog!: boolean
 
   // Global getter
-  @Getter getBusinessFoundingDate!: string
-  @Getter getCurrentDate!: string
-  @Getter getNewResolutionDates!: string []
+  @Getter(useStore) getBusinessFoundingDateTime!: string
+  @Getter(useStore) getCurrentDate!: string
+  @Getter(useStore) getNewResolutionDates!: string []
 
   // Global action
-  @Action setNewResolutionDates!: ActionBindingIF
+  @Action(useStore) setNewResolutionDates!: ActionBindingIF
 
   // Local properties
   private date = ''
   private errorMsg = ''
+
+  /** The minimum date that can be entered (business founding date). */
+  get minDate (): string {
+    const date = this.apiToDate(this.getBusinessFoundingDateTime)
+    return this.dateToYyyyMmDd(date)
+  }
+
+  /** The maximum date that can be entered (today). */
+  get maxDate (): string {
+    return this.getCurrentDate
+  }
 
   /** Return an error msg if there is no date at Done. */
   get errors (): string {
@@ -67,13 +80,13 @@ export default class ResolutionDateDialog extends Vue {
   }
 
   /** Clear local properties. */
-  clearLocal (): void {
+  private clearLocal (): void {
     this.date = ''
     this.errorMsg = ''
   }
 
   /** Add a new date event. */
-  onDateEmitted (date: string): void {
+  protected onDateEmitted (date: string): void {
     if (date) {
       // Create a copy of the prop and add the new date
       const tempNewDates = cloneDeep(this.getNewResolutionDates)
@@ -88,12 +101,15 @@ export default class ResolutionDateDialog extends Vue {
   }
 
   // Pass click events to parent.
-  @Emit('emitClose') protected exit () { this.clearLocal() }
+  @Emit('emitClose')
+  protected exit (): void {
+    this.clearLocal()
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-::v-deep .v-card__actions > .v-btn.v-btn {
+:deep(.v-card__actions > .v-btn.v-btn) {
   min-width: 100px;
   min-height: 40px;
 }

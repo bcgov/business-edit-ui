@@ -62,19 +62,20 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
-import { CommonMixin, SharedMixin, NameRequestMixin } from '@/mixins/'
+import { CommonMixin, NameRequestMixin } from '@/mixins/'
 import { ActionBindingIF, ConfirmDialogType, NameRequestIF, NrCorrectionIF, NrResponseIF } from '@/interfaces/'
-import { CorrectionTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { NameChangeOptions } from '@/enums/'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 
+import { useStore } from '@/store/store'
 @Component({
   components: {
     ConfirmDialogShared
   }
 })
-export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin, NameRequestMixin) {
+export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -82,17 +83,15 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
   }
 
   /** The form type. */
-  @Prop({ default: null })
-  readonly formType: CorrectionTypes
+  @Prop({ default: null }) readonly formType!: NameChangeOptions
 
   /** Whether to perform validation. */
-  @Prop({ default: false })
-  readonly validate: boolean
+  @Prop({ default: false }) readonly validate!: boolean
 
-  @Action setNameRequest!: ActionBindingIF
+  @Action(useStore) setNameRequest!: ActionBindingIF
 
-  @Getter getNameRequest!: NameRequestIF
-  @Getter getEntityType!: CorpTypeCd
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) getEntityType!: CorpTypeCd
 
   // V-model properties
   protected formValid = false
@@ -100,7 +99,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
   protected applicantPhone = ''
   protected applicantEmail = ''
 
-  // *** FUTURE: use this to turn on/off validations
+  // FUTURE: use this to turn on/off validations
   protected done = true
 
   // Rules
@@ -149,7 +148,8 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
   /** Watch for form submission and emit results. */
   @Watch('formType')
   private async onSubmit (): Promise<any> {
-    if (this.formType === CorrectionTypes.CORRECT_NEW_NR) {
+    // this component should only see correct-new-nr form type
+    if (this.formType === NameChangeOptions.CORRECT_NEW_NR) {
       try {
         // Validate and return the name request data
         const nr: NrResponseIF = await this.validateNameRequest(
@@ -162,9 +162,9 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
           // Invalid NR type, inform parent the process is done and prompt confirm dialog
           this.emitIsSaved()
 
-          const dialogContent = `<p class="info-text">This ${this.getCorpTypeDescription(nr.entity_type_cd)} ` +
+          const dialogContent = `<p class="info-text">This ${GetCorpFullDescription(nr.entity_type_cd)} ` +
             `Name Request does not match the current business type ` +
-            `<b>${this.getCorpTypeDescription(this.getEntityType)}</b>.\n\n` +
+            `<b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n` +
             `The Name Request type must match the business type before you can continue.</p>`
           await this.showConfirmDialog(
             this.$refs.confirm,
@@ -210,7 +210,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
 
   /** Inform parent the process is complete. */
   @Emit('isSaved')
-  private emitIsSaved (isSaved: boolean = false): boolean {
+  private emitIsSaved (isSaved = false): boolean {
     if (!isSaved) this.$refs.correctNrForm.resetValidation()
     return isSaved
   }
@@ -236,12 +236,12 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, SharedMixin,
   pointer-events: none;
 }
 
-::v-deep #nr-number {
+:deep(#nr-number) {
   // hide uppercase transformation delay from user
   text-transform: uppercase;
 }
 
-::v-deep .theme--light.v-label {
+:deep(.theme--light.v-label) {
   font-size: 1rem;
   color: $gray7;
   font-weight: normal;

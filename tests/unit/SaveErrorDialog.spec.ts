@@ -4,22 +4,24 @@ import { getVuexStore } from '@/store/'
 import { shallowMount, mount } from '@vue/test-utils'
 import SaveErrorDialog from '@/dialogs/SaveErrorDialog.vue'
 import ErrorContact from '@/components/common/ErrorContact.vue'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 
 const vuetify = new Vuetify({})
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
 describe('Save Error Dialog', () => {
   it('renders the component properly as a staff user with no errors or warnings', () => {
-    store.state.stateModel.tombstone.keycloakRoles = ['staff', 'edit', 'view']
+    store.stateModel.tombstone.keycloakRoles = ['staff', 'edit', 'view']
     const wrapper = shallowMount(SaveErrorDialog,
       {
         vuetify,
-        store,
         propsData: { dialog: true }
       })
 
@@ -36,11 +38,10 @@ describe('Save Error Dialog', () => {
   })
 
   it('renders the component properly as a regular user with no errors or warnings', () => {
-    store.state.stateModel.tombstone.keycloakRoles = ['edit', 'view']
+    store.stateModel.tombstone.keycloakRoles = ['edit', 'view']
     const wrapper = shallowMount(SaveErrorDialog,
       {
         vuetify,
-        store,
         propsData: { dialog: true }
       })
 
@@ -59,11 +60,10 @@ describe('Save Error Dialog', () => {
   })
 
   it('renders the component properly when there are only errors', () => {
-    store.state.stateModel.tombstone.keycloakRoles = ['edit', 'view']
+    store.stateModel.tombstone.keycloakRoles = ['edit', 'view']
     const wrapper = shallowMount(SaveErrorDialog,
       {
         vuetify,
-        store,
         propsData: {
           dialog: true,
           errors: [
@@ -87,11 +87,10 @@ describe('Save Error Dialog', () => {
   })
 
   it('renders the component properly when there are only warnings', () => {
-    store.state.stateModel.tombstone.keycloakRoles = ['edit', 'view']
+    store.stateModel.tombstone.keycloakRoles = ['edit', 'view']
     const wrapper = shallowMount(SaveErrorDialog,
       {
         vuetify,
-        store,
         propsData: {
           dialog: true,
           warnings: [
@@ -115,11 +114,10 @@ describe('Save Error Dialog', () => {
   })
 
   it('renders the component properly when there are both errors and warnings', () => {
-    store.state.stateModel.tombstone.keycloakRoles = ['edit', 'view']
+    store.stateModel.tombstone.keycloakRoles = ['edit', 'view']
     const wrapper = shallowMount(SaveErrorDialog,
       {
         vuetify,
-        store,
         propsData: {
           dialog: true,
           errors: [{ error: 'Test Error' }],
@@ -145,7 +143,6 @@ describe('Save Error Dialog', () => {
     const wrapper = mount(SaveErrorDialog,
       {
         vuetify,
-        store,
         propsData: { dialog: true }
       })
 
@@ -165,7 +162,6 @@ describe('Save Error Dialog', () => {
     const wrapper = mount(SaveErrorDialog,
       {
         vuetify,
-        store,
         propsData: { dialog: true }
       })
 

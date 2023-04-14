@@ -1,5 +1,5 @@
 import sinon from 'sinon'
-import { axios } from '@/utils'
+import { AxiosInstance as axios } from '@/utils/'
 import BusinessLookupServices from '@/services/business-lookup-services'
 
 describe('Business Lookup Services', () => {
@@ -20,11 +20,11 @@ describe('Business Lookup Services', () => {
     // mock successsful search
     sinon.stub(axios, 'get')
       .withArgs('https://search.api.url/businesses/search/facets?start=0&rows=20&categories=legalType:' +
-        'BC,A,ULC,C,S,XP,GP,LP,CUL,XS,LLC,LL,BEN,CP,SP,CC,XL,FI,XCP,PA::status:ACTIVE&query=value:FM1000002')
+        'BC,A,ULC,C,S,XP,GP,LP,CUL,XS,LLC,LL,BEN,CP,CC,XL,FI,XCP,PA::status:ACTIVE&query=value:FM1000002')
       .returns(new Promise(resolve => resolve({ data: { searchResults: { results: [result] } } })))
 
     // search and look at results
-    const results = await BusinessLookupServices.search('FM1000002')
+    const results = await BusinessLookupServices.search('FM1000002', 'ACTIVE')
     expect(results.length).toBe(1)
     expect(results[0]).toEqual(result)
 
@@ -35,12 +35,44 @@ describe('Business Lookup Services', () => {
     // mock unsuccesssful search
     sinon.stub(axios, 'get')
       .withArgs('https://search.api.url/businesses/search/facets?start=0&rows=20&categories=legalType' +
-        ':BC,A,ULC,C,S,XP,GP,LP,CUL,XS,LLC,LL,BEN,CP,SP,CC,XL,FI,XCP,PA::status:ACTIVE&query=value:FM1000003')
+        ':BC,A,ULC,C,S,XP,GP,LP,CUL,XS,LLC,LL,BEN,CP,CC,XL,FI,XCP,PA::status:ACTIVE&query=value:FM1000003')
       .returns(new Promise(resolve => resolve({ data: { searchResults: { results: [] } } })))
 
     // search and look at results
-    const results = await BusinessLookupServices.search('FM1000003')
+    const results = await BusinessLookupServices.search('FM1000003', 'ACTIVE')
     expect(results.length).toBe(0)
+
+    sinon.restore()
+  })
+
+  it('returns active and historical results when status is empty', async () => {
+    const result1 = {
+      identifier: 'FM1000001',
+      legalType: 'GP',
+      name: 'INDUSTIRES GP',
+      score: 12.966249,
+      status: 'ACTIVE'
+    }
+    const result2 = {
+      bn: '701819922',
+      identifier: 'FM1000002',
+      legalType: 'SP',
+      name: 'KK CONSTRUCTION',
+      score: 10.642771,
+      status: 'HISTORICAL'
+    }
+
+    // mock successsful search
+    sinon.stub(axios, 'get')
+      .withArgs('https://search.api.url/businesses/search/facets?start=0&rows=20&categories=legalType:' +
+        'BC,A,ULC,C,S,XP,GP,LP,CUL,XS,LLC,LL,BEN,CP,CC,XL,FI,XCP,PA&query=value:FM100000')
+      .returns(new Promise(resolve => resolve({ data: { searchResults: { results: [result1, result2] } } })))
+
+    // search and look at results
+    const results = await BusinessLookupServices.search('FM100000', '')
+    expect(results.length).toBe(2)
+    expect(results[0]).toEqual(result1)
+    expect(results[1]).toEqual(result2)
 
     sinon.restore()
   })

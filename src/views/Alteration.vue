@@ -1,118 +1,119 @@
 <template>
-  <section class="pb-10" id="alteration-view">
-    <!-- Company Information page-->
-    <v-slide-x-transition hide-on-leave>
-      <div v-if="!isSummaryMode">
-        <header>
-          <h1>Company Information</h1>
-        </header>
+  <ViewWrapper>
+    <section class="pb-10" id="alteration-view">
+      <!-- Company Information page-->
+      <v-slide-x-transition hide-on-leave>
+        <div v-if="!isSummaryMode">
+          <header>
+            <h1>Company Information</h1>
+          </header>
 
-        <section class="mt-6">
-          You are legally obligated to keep your company information up to date. Necessary fees will be
-          applied as updates are made.
-        </section>
+          <section class="mt-6">
+            You are legally obligated to keep your company information up to date. Necessary fees will be
+            applied as updates are made.
+          </section>
 
-        <YourCompany class="mt-10" />
+          <YourCompany class="mt-10" />
 
-        <CurrentDirectors class="mt-10" />
+          <CurrentDirectors class="mt-10" />
 
-        <ShareStructures class="mt-10" />
+          <ShareStructures class="mt-10" />
 
-        <Articles class="mt-10" />
-      </div>
-    </v-slide-x-transition>
+          <Articles class="mt-10" />
+        </div>
+      </v-slide-x-transition>
 
-    <!-- Review and Certify page -->
-    <v-slide-x-reverse-transition hide-on-leave>
-      <div v-if="isSummaryMode && showFeeSummary">
-        <header>
-          <h1>Review and Certify</h1>
-        </header>
+      <!-- Review and Certify page -->
+      <v-slide-x-reverse-transition hide-on-leave>
+        <div v-if="isSummaryMode && showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
 
-        <section class="mt-6">
-          <p id="intro-text">
-            Review and certify the changes you are about to make to your company. Certain changes require
-            an Alteration Notice which will incur a {{filingFeesPrice}} fee. Choosing an alteration date
-            and time in the future will incur an additional {{futureEffectiveFeesPrice}} fee.
-          </p>
-        </section>
+          <section class="mt-6">
+            <p id="intro-text">
+              Review and certify the changes you are about to make to your company. Certain changes require
+              an Alteration Notice which will incur a {{filingFeesPrice}} fee. Choosing an alteration date
+              and time in the future will incur an additional {{futureEffectiveFeesPrice}} fee.
+            </p>
+          </section>
 
-        <AlterationSummary
-          class="mt-10"
-          :validate="getAppValidate"
-          @haveChanges="onAlterationSummaryChanges()"
-        />
-
-        <DocumentsDelivery
-          class="mt-10"
-          sectionNumber="1."
-          :validate="getAppValidate"
-          @valid="setDocumentOptionalEmailValidity($event)"
-        />
-
-        <TransactionalFolioNumber
-          v-if="showTransactionalFolioNumber"
-          class="mt-10"
-          sectionNumber="2."
-          :validate="getAppValidate"
-        />
-
-        <CertifySection
-          class="mt-10"
-          :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
-          :validate="getAppValidate"
-          :disableEdit="!isRoleStaff"
-        />
-
-        <!-- STAFF ONLY: Court Order/Plan of Arrangement and Staff Payment -->
-        <template v-if="isRoleStaff">
-          <CourtOrderPoa
+          <AlterationSummary
             class="mt-10"
-            :sectionNumber="showTransactionalFolioNumber ? '4.' : '3.'"
-            :autoValidation="getAppValidate"
-          />
-
-          <StaffPayment
-            class="mt-10"
-            :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
             :validate="getAppValidate"
-            @haveChanges="onStaffPaymentChanges()"
+            @haveChanges="onAlterationSummaryChanges()"
           />
-        </template>
-      </div>
-    </v-slide-x-reverse-transition>
 
-    <!-- Done-->
-    <v-fade-transition>
-      <div v-if="isSummaryMode && !showFeeSummary">
-        <header>
-          <h1>Review and Certify</h1>
-        </header>
+          <DocumentsDelivery
+            class="mt-10"
+            sectionNumber="1."
+            :validate="getAppValidate"
+            @valid="setDocumentOptionalEmailValidity($event)"
+          />
 
-        <section class="mt-6">
-          You have deleted all fee-based changes and your company information has reverted to its
-          original state. If you made any non-fee changes such as updates to your Registered
-          Office Contact Information, please note that these changes have already been saved.
-        </section>
+          <TransactionalFolioNumber
+            v-if="showTransactionalFolioNumber"
+            class="mt-10"
+            sectionNumber="2."
+            :validate="getAppValidate"
+          />
 
-        <v-btn
-          large
-          color="primary"
-          id="done-button"
-          class="mt-8"
-          @click="$root.$emit('go-to-dashboard')"
-        >
-          <span>Done</span>
-        </v-btn>
-      </div>
-    </v-fade-transition>
-  </section>
+          <CertifySection
+            class="mt-10"
+            :sectionNumber="showTransactionalFolioNumber ? '3.' : '2.'"
+            :validate="getAppValidate"
+            :disableEdit="!isRoleStaff"
+          />
+
+          <!-- STAFF ONLY: Court Order/Plan of Arrangement and Staff Payment -->
+          <template v-if="isRoleStaff">
+            <CourtOrderPoa
+              class="mt-10"
+              :sectionNumber="showTransactionalFolioNumber ? '4.' : '3.'"
+              :autoValidation="getAppValidate"
+            />
+
+            <StaffPayment
+              class="mt-10"
+              :sectionNumber="showTransactionalFolioNumber ? '5.' : '4.'"
+              @haveChanges="onStaffPaymentChanges()"
+            />
+          </template>
+        </div>
+      </v-slide-x-reverse-transition>
+
+      <!-- Done-->
+      <v-fade-transition>
+        <div v-if="isSummaryMode && !showFeeSummary">
+          <header>
+            <h1>Review and Certify</h1>
+          </header>
+
+          <section class="mt-6">
+            You have deleted all fee-based changes and your company information has reverted to its
+            original state. If you made any non-fee changes such as updates to your Registered
+            Office Contact Information, please note that these changes have already been saved.
+          </section>
+
+          <v-btn
+            large
+            color="primary"
+            id="done-button"
+            class="mt-8"
+            @click="$root.$emit('go-to-dashboard')"
+          >
+            <span>Done</span>
+          </v-btn>
+        </div>
+      </v-fade-transition>
+    </section>
+  </ViewWrapper>
 </template>
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils/'
+import { Action, Getter } from 'pinia-class'
+import { GetFeatureFlag } from '@/utils/'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
 import { CertifySection, CourtOrderPoa, CurrentDirectors, DocumentsDelivery, ShareStructures, StaffPayment,
   TransactionalFolioNumber, YourCompany } from '@/components/common/'
@@ -122,10 +123,15 @@ import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF }
   from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { BenefitCompanyResource } from '@/resources/Alteration/'
+import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
+  from '@/resources/Alteration/'
+import ViewWrapper from '@/components/ViewWrapper.vue'
+
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
+    ViewWrapper,
     AlterationSummary,
     Articles,
     CertifySection,
@@ -144,24 +150,27 @@ export default class Alteration extends Mixins(
   FilingTemplateMixin
 ) {
   // Global getters
-  @Getter getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter getUserFirstName!: string
-  @Getter getUserLastName!: string
-  @Getter isSummaryMode!: boolean
-  @Getter isRoleStaff!: boolean
-  @Getter isPremiumAccount!: boolean
-  @Getter getAppValidate!: boolean
-  @Getter showFeeSummary!: boolean
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getUserFirstName!: string
+  @Getter(useStore) getUserLastName!: string
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isPremiumAccount!: boolean
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
+  @Getter(useStore) isBcCompany!: boolean
+  @Getter(useStore) isBenefitCompany!: boolean
+  @Getter(useStore) isBcCcc!: boolean
+  @Getter(useStore) isBcUlcCompany!: boolean
 
   // Global actions
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
-  @Action setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action setResource!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action(useStore) setResource!: ActionBindingIF
 
   /** Whether App is ready. */
-  @Prop({ default: false })
-  readonly appReady: boolean
+  @Prop({ default: false }) readonly appReady!: boolean
 
   /** Whether to show the Transactional Folio Number section. */
   get showTransactionalFolioNumber (): boolean {
@@ -178,9 +187,14 @@ export default class Alteration extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The resource file for an alteration filing. */
+  /** The resource object for an alteration filing. */
   get alterationResource (): ResourceIF {
-    if (this.isEntityTypeBEN) return BenefitCompanyResource
+    switch (true) {
+      case this.isBcCompany: return BcAlterationResource
+      case this.isBenefitCompany: return BenAlterationResource
+      case this.isBcCcc: return CccAlterationResource
+      case this.isBcUlcCompany: return UlcAlterationResource
+    }
     return null
   }
 
@@ -195,7 +209,7 @@ export default class Alteration extends Mixins(
 
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
-    if (!this.isJestRunning && !getFeatureFlag('alteration-ui-enabled')) {
+    if (!this.isJestRunning && !GetFeatureFlag('alteration-ui-enabled')) {
       window.alert('Alterations are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard', true)
       return
@@ -215,12 +229,12 @@ export default class Alteration extends Mixins(
 
         // do not proceed if this isn't an ALTERATION filing
         if (!alterationFiling.alteration) {
-          throw new Error('Invalid Alteration filing')
+          throw new Error('Invalid alteration filing')
         }
 
         // do not proceed if this isn't a DRAFT filing
-        if (alterationFiling.header.status !== FilingStatus.DRAFT) {
-          throw new Error('Invalid Alteration status')
+        if (alterationFiling.header?.status !== FilingStatus.DRAFT) {
+          throw new Error('Invalid alteration status')
         }
 
         // parse draft alteration filing and entity snapshot into store
@@ -230,25 +244,24 @@ export default class Alteration extends Mixins(
         this.parseEntitySnapshot(entitySnapshot)
       }
 
-      if (this.alterationResource) {
-        // set the specific resource
-        this.setResource(this.alterationResource)
-
-        // initialize Fee Summary data
-        const filingData = [this.alterationResource.filingData]
-        filingData.forEach(fd => {
-          fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
-        })
-        this.setFilingData(filingData)
-      } else {
-        // go to catch()
-        throw new Error(`Invalid Alteration resources entity type = ${this.getEntityType}`)
+      if (!this.alterationResource) {
+        throw new Error(`Invalid alteration resource entity type = ${this.getEntityType}`)
       }
 
-      // update the current fees for the Filing
+      // set the specific resource
+      this.setResource(this.alterationResource)
+
+      // initialize Fee Summary data
+      const filingData = [this.alterationResource.filingData]
+      filingData.forEach(fd => {
+        fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
+      })
+      this.setFilingData(filingData)
+
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
 
-      // fetches the fee prices to display in the summary text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData(true)
 
       // set current profile name to store for field pre population
@@ -307,19 +320,21 @@ export default class Alteration extends Mixins(
       fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
     })
     this.setFilingData(filingData)
-    // update the current fees for the filing
+    // update the current fees for this filing
     await this.setCurrentFeesFromFilingData(this.getEffectiveDateTime.isFutureEffective)
-    // update the fee prices to display in the text
+    // update the fee prices for the notice changes
     await this.setFeePricesFromFilingData(true)
   }
 
   /** Emits Fetch Error event. */
   @Emit('fetchError')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: Boolean = true): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitHaveData (haveData = true): void {}
 }
 </script>
 

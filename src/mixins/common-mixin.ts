@@ -1,19 +1,13 @@
-import { Component, Vue } from 'vue-property-decorator'
-import { Getter } from 'vuex-class'
-import { RouteNames } from '@/enums/'
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
 import { ConfirmDialogType } from '@/interfaces/'
+import { RouteNames } from '@/enums'
 
 /**
  * Mixin that provides some useful common utilities.
  */
 @Component({})
 export default class CommonMixin extends Vue {
-  @Getter isAlterationFiling!: boolean
-  @Getter isFirmChangeFiling!: boolean
-  @Getter isFirmConversionFiling!: boolean
-  @Getter isCorrectionFiling!: boolean
-  @Getter isSpecialResolutionFiling!: boolean
-
   /** True if Jest is running the code. */
   get isJestRunning (): boolean {
     return (process.env.JEST_WORKER_ID !== undefined)
@@ -39,11 +33,12 @@ export default class CommonMixin extends Vue {
     const validFlagArray = Object.keys(flags).map(key => flags[key])
 
     // Find the _first_ corresponding component that is invalid
-    const component = document.getElementById(components[validFlagArray.indexOf(false)])
+    const component = components[validFlagArray.indexOf(false)]
 
     // If there is an invalid component, scroll to it
     if (component) {
-      await this.scrollToTop(component)
+      const element = document.getElementById(component)
+      await this.scrollToTop(element)
       return false
     }
     return true
@@ -55,7 +50,7 @@ export default class CommonMixin extends Vue {
    * @returns the formatted full name string
    */
   formatFullName (officer: any): string {
-    let fullName: string = ''
+    let fullName = ''
     if (officer?.firstName) fullName += officer.firstName + ' '
     if (officer?.middleName) fullName += officer.middleName + ' '
     if (officer?.lastName) fullName += officer.lastName
@@ -68,7 +63,7 @@ export default class CommonMixin extends Vue {
    * @returns the formatted full address string
    */
   formatFullAddress (addressData: any): string {
-    let fullAddress: string = ''
+    let fullAddress = ''
     if (addressData?.addrLine1) fullAddress += addressData.addrLine1 + ', '
     if (addressData?.city) fullAddress += addressData.city + ', '
     if (addressData?.stateProvinceCd) fullAddress += addressData.stateProvinceCd + ', '
@@ -83,87 +78,17 @@ export default class CommonMixin extends Vue {
     this[prop] = this[prop]?.toUpperCase()
   }
 
-  /** The appropriate edit label for corrections, alterations, change or conversion filings. */
-  get editLabel (): string {
-    if (this.isCorrectionFiling) return 'Correct'
-
-    if (
-      this.isAlterationFiling ||
-      this.isFirmChangeFiling ||
-      this.isFirmConversionFiling ||
-      this.isSpecialResolutionFiling
-    ) {
-      return 'Change'
-    }
-
-    return 'Edit' // should never happen
-  }
-
-  /** The appropriate edited label for corrections, alterations, change or conversion filings. */
-  get editedLabel (): string {
-    if (this.isCorrectionFiling) return 'Corrected'
-
-    if (
-      this.isAlterationFiling ||
-      this.isFirmChangeFiling ||
-      this.isFirmConversionFiling ||
-      this.isSpecialResolutionFiling
-    ) {
-      return 'Changed'
-    }
-
-    return 'Edited' // should never happen
-  }
-
-  /** The appropriate edits saved label for corrections, alterations, change or conversion filings. */
-  get editSavedLabel (): string {
-    if (this.isCorrectionFiling) return 'Corrections Saved'
-
-    if (
-      this.isAlterationFiling ||
-      this.isFirmChangeFiling ||
-      this.isFirmConversionFiling ||
-      this.isSpecialResolutionFiling
-    ) {
-      return 'Changes Saved'
-    }
-
-    return 'Edits Saved' // should never happen
-  }
-
   /** The entity title. */
   get entityTitle (): string {
     switch (this.$route.name) {
-      case RouteNames.ALTERATION:
-        return 'Company Information'
-      case RouteNames.CHANGE:
-        return 'Business Information'
-      case RouteNames.CONVERSION:
-        return 'Record Conversion'
-      case RouteNames.CORRECTION:
-        return 'Register Correction'
-      default:
-        return ''
+      case RouteNames.ALTERATION: return 'Company Information'
+      case RouteNames.CHANGE: return 'Business Information'
+      case RouteNames.CONVERSION: return 'Record Conversion'
+      case RouteNames.CORRECTION: return 'Register Correction'
+      case RouteNames.RESTORATION_EXTENSION: return 'Limited Restoration Extension'
+      case RouteNames.RESTORATION_CONVERSION: return 'Conversion to Full Restoration'
     }
-  }
-
-  /**
-   * Formats a phone number for display.
-   * @param phoneNumber the phone number to format
-   * @returns a formatted phone number
-   */
-  toDisplayPhone (phoneNumber: string): string {
-    // Filter only numbers from the input
-    let cleaned = ('' + phoneNumber).replace(/\D/g, '')
-
-    // Check if the input is of correct length
-    let match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
-
-    if (match) {
-      return '(' + match[1] + ') ' + match[2] + '-' + match[3]
-    }
-
-    return null
+    return 'Unknown Filing' // should never happen
   }
 
   /**

@@ -1,68 +1,73 @@
 <template>
-  <section class="pb-10" id="conversion-view">
-    <!-- Business Information page-->
-    <v-slide-x-transition hide-on-leave>
-      <div v-if="!isSummaryMode || !showFeeSummary">
-        <header>
-          <h1>Record Conversion</h1>
-        </header>
+  <ViewWrapper>
+    <section class="pb-10" id="conversion-view">
+      <!-- Business Information page-->
+      <v-slide-x-transition hide-on-leave>
+        <div v-if="!isSummaryMode || !showFeeSummary">
+          <header>
+            <h1>Record Conversion</h1>
+          </header>
 
-        <section class="mt-6">
-          You must promptly file updates to your business information. Necessary fees will be applied as updates are
-          made.
-        </section>
+          <section class="mt-6">
+            You must promptly file updates to your business information. Necessary fees will be applied as updates are
+            made.
+          </section>
 
-        <YourCompany class="mt-10" />
+          <YourCompany class="mt-10" />
 
-        <PeopleAndRoles class="mt-10" />
-      </div>
-    </v-slide-x-transition>
+          <PeopleAndRoles class="mt-10" />
+        </div>
+      </v-slide-x-transition>
 
-    <!-- Review and Confirmm page -->
-    <v-slide-x-reverse-transition hide-on-leave>
-      <div v-if="isSummaryMode && showFeeSummary">
-        <header>
-          <h1>Review and Confirm</h1>
-        </header>
+      <!-- Review and Confirmm page -->
+      <v-slide-x-reverse-transition hide-on-leave>
+        <div v-if="isSummaryMode && showFeeSummary">
+          <header>
+            <h1>Review and Confirm</h1>
+          </header>
 
-        <section class="mt-6">
-          <p id="intro-text">
-            Changes were made to your business information that require a filing. Review and certify the changes you
-            are about the make to your business.
-          </p>
-        </section>
+          <section class="mt-6">
+            <p id="intro-text">
+              Changes were made to your business information that require a filing. Review and certify the changes you
+              are about the make to your business.
+            </p>
+          </section>
 
-        <ConversionSummary
-          class="mt-10"
-          :validate="getAppValidate"
-        />
+          <ConversionSummary
+            class="mt-10"
+            :validate="getAppValidate"
+          />
 
-        <CompletingParty
-          class="mt-10"
-          sectionNumber="1."
-          :validate="getAppValidate"
-        />
-      </div>
-    </v-slide-x-reverse-transition>
-  </section>
+          <CompletingParty
+            class="mt-10"
+            sectionNumber="1."
+            :validate="getAppValidate"
+          />
+        </div>
+      </v-slide-x-reverse-transition>
+    </section>
+  </ViewWrapper>
 </template>
 
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
-import { getFeatureFlag } from '@/utils/'
+import { Action, Getter } from 'pinia-class'
+import { GetFeatureFlag } from '@/utils/'
 import { PeopleAndRoles, CompletingParty, YourCompany } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, EntitySnapshotIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { SoleProprietorshipResource, GeneralPartnershipResource } from '@/resources/Conversion/'
+import { SpConversionResource, GpConversionResource } from '@/resources/Conversion/'
 import { ConversionSummary } from '@/components/Conversion'
-import { NOT_FOUND } from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
+import ViewWrapper from '@/components/ViewWrapper.vue'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
+    ViewWrapper,
     ConversionSummary,
     CompletingParty,
     PeopleAndRoles,
@@ -75,21 +80,21 @@ export default class Conversion extends Mixins(
   FilingTemplateMixin
 ) {
   // Global getters
-  @Getter isRoleStaff!: boolean
-  @Getter isSummaryMode!: boolean
-  @Getter getAppValidate!: boolean
-  @Getter showFeeSummary!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
+  @Getter(useStore) isPartnership!: boolean
+  @Getter(useStore) isSoleProp!: boolean
 
   // Global actions
-  @Action setHaveUnsavedChanges!: ActionBindingIF
-  @Action setFilingId!: ActionBindingIF
-  @Action setValidCourtOrder!: ActionBindingIF
-  @Action setResource!: ActionBindingIF
-  @Action setCertifyStateValidity!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setResource!: ActionBindingIF
+  @Action(useStore) setCertifyStateValidity!: ActionBindingIF
 
   /** Whether App is ready. */
-  @Prop({ default: false })
-  readonly appReady: boolean
+  @Prop({ default: false }) readonly appReady!: boolean
 
   /** The id of the conversion filing being edited. */
   get conversionId (): number {
@@ -101,10 +106,10 @@ export default class Conversion extends Mixins(
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** The resource file for a firm conversion filing. */
+  /** The resource object for a firm conversion filing. */
   get firmConversionResource (): any {
-    if (this.isEntityTypeSP) return SoleProprietorshipResource
-    if (this.isEntityTypeGP) return GeneralPartnershipResource
+    if (this.isPartnership) return GpConversionResource
+    if (this.isSoleProp) return SpConversionResource
     return null
   }
 
@@ -119,7 +124,7 @@ export default class Conversion extends Mixins(
 
     // do not proceed if FF is disabled
     // bypass this when Jest is running as FF are not fetched
-    if (!this.isJestRunning && !getFeatureFlag('conversion-ui-enabled')) {
+    if (!this.isJestRunning && !GetFeatureFlag('conversion-ui-enabled')) {
       window.alert('Conversion filings are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard', true)
       return
@@ -151,7 +156,7 @@ export default class Conversion extends Mixins(
         }
 
         // do not proceed if this isn't a DRAFT filing
-        if (conversionFiling.header.status !== FilingStatus.DRAFT) {
+        if (conversionFiling.header?.status !== FilingStatus.DRAFT) {
           throw new Error('Invalid conversion status')
         }
 
@@ -162,21 +167,20 @@ export default class Conversion extends Mixins(
         this.parseEntitySnapshot(entitySnapshot)
       }
 
-      if (this.firmConversionResource) {
-        // set the specific resource
-        this.setResource(this.firmConversionResource)
-
-        // initialize Fee Summary data
-        this.setFilingData([this.firmConversionResource.filingData])
-      } else {
-        // go to catch()
+      if (!this.firmConversionResource) {
         throw new Error(`Invalid conversion resource entity type = ${this.getEntityType}`)
       }
 
-      // update the current fees for the Filing
+      // set the specific resource
+      this.setResource(this.firmConversionResource)
+
+      // initialize Fee Summary data
+      this.setFilingData([this.firmConversionResource.filingData])
+
+      // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()
 
-      // fetches the fee prices to display in the text
+      // update the fee prices for the notice changes
       await this.setFeePricesFromFilingData()
 
       // tell App that we're finished loading
@@ -207,7 +211,7 @@ export default class Conversion extends Mixins(
     const addresses = await LegalServices.fetchAddresses(this.getBusinessId)
       .catch(reason => {
         // error message for business address has the pattern "FMXXXXXXX address not found"
-        if (reason.response?.status === NOT_FOUND &&
+        if (reason.response?.status === StatusCodes.NOT_FOUND &&
           reason.response?.data.message.includes('address')) return { businessOffice: null }
         throw new Error('Failed to fetch entity addresses')
       })
@@ -232,10 +236,12 @@ export default class Conversion extends Mixins(
   }
   /** Emits Fetch Error event. */
   @Emit('fetchError')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
-  private emitHaveData (haveData: boolean = true): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private emitHaveData (haveData = true): void {}
 }
 </script>

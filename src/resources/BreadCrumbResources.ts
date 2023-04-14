@@ -1,7 +1,9 @@
 import { BreadcrumbIF } from '@bcrs-shared-components/interfaces/'
-import { getVuexStore } from '@/store/'
+import { createPinia, setActivePinia } from 'pinia'
+import { useStore } from '@/store/store'
 
-const store = getVuexStore()
+setActivePinia(createPinia())
+const store = useStore()
 
 /** Returns URL param string with Account ID if present, else empty string. */
 function getParams (): string {
@@ -10,8 +12,8 @@ function getParams (): string {
 }
 
 export function getEntityDashboardBreadcrumb (): BreadcrumbIF {
-  const getOriginalLegalName = store.getters.getOriginalLegalName as string
-  const getBusinessId = store.getters.getBusinessId as string
+  const getOriginalLegalName: string = store.getOriginalLegalName
+  const getBusinessId:string = store.getBusinessId
   return {
     text: getOriginalLegalName || 'Numbered Benefit Company',
     href: `${sessionStorage.getItem('DASHBOARD_URL')}${getBusinessId}/${getParams()}`

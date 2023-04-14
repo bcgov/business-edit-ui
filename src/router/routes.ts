@@ -1,4 +1,15 @@
-import { Signin, Signout, Alteration, Change, Conversion, Correction, SpecialResolution } from '@/views/'
+import {
+  Alteration,
+  Change,
+  Conversion,
+  Correction,
+  LimitedRestorationExtension,
+  LimitedRestorationToFull,
+  Signin,
+  Signout,
+  SpecialResolution
+}
+  from '@/views/'
 import { FilingTypes, RouteNames } from '@/enums/'
 
 export const routes = [
@@ -40,6 +51,32 @@ export const routes = [
       requiresAuth: true,
       isStaffOnly: true,
       filingType: FilingTypes.CORRECTION
+    }
+  },
+  {
+    path: '/limitedRestorationExtension',
+    name: RouteNames.RESTORATION_EXTENSION,
+    component: LimitedRestorationExtension,
+    props: route => ({
+      restorationId: +route.query['restoration-id'] || 0
+    }),
+    meta: {
+      requiresAuth: true,
+      isStaffOnly: true,
+      filingType: FilingTypes.RESTORATION
+    }
+  },
+  {
+    path: '/limitedRestorationToFull',
+    name: RouteNames.RESTORATION_CONVERSION,
+    component: LimitedRestorationToFull,
+    props: route => ({
+      restorationId: +route.query['restoration-id'] || 0
+    }),
+    meta: {
+      requiresAuth: true,
+      isStaffOnly: true,
+      filingType: FilingTypes.RESTORATION
     }
   },
   {

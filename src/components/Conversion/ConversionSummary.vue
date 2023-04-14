@@ -40,12 +40,15 @@
       <article id="org-person-summary-section" class="section-container pb-0">
         <v-row no-gutters>
           <v-col cols="12" sm="3">
-            <label>{{ isEntityTypeSP ? 'Proprietor' : 'Partner' }} Information</label>
+            <label>{{ isSoleProp ? 'Proprietor' : 'Partner' }} Information</label>
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-4">
           <v-col cols="12">
-            <ListPeopleAndRoles :isSummaryView="true" />
+            <ListPeopleAndRoles
+              :isSummaryView="true"
+              :showRolesColumn="false"
+            />
           </v-col>
         </v-row>
       </article>
@@ -54,12 +57,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
+import { Getter } from 'pinia-class'
 import { ListPeopleAndRoles } from '@/components/common/'
 import { OfficeAddresses } from '@/components/common/YourCompany'
-import { ActionBindingIF, ResourceIF } from '@/interfaces/'
+import { ResourceIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -69,18 +74,15 @@ import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 })
 export default class ConversionSummary extends Vue {
   // Global getters
-  @Getter hasNaicsChanged!: boolean
-  @Getter haveOfficeAddressesChanged!: boolean
-  @Getter havePeopleAndRolesChanged!: boolean
-  @Getter getResource!: ResourceIF
-  @Getter getCurrentNaics!: NaicsIF
-  @Getter isEntityTypeSP!: boolean
-
-  // Global actions
-  @Action setSummaryMode!: ActionBindingIF
+  @Getter(useStore) hasNaicsChanged!: boolean
+  @Getter(useStore) haveOfficeAddressesChanged!: boolean
+  @Getter(useStore) havePeopleAndRolesChanged!: boolean
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) getCurrentNaics!: NaicsIF
+  @Getter(useStore) isSoleProp!: boolean
 
   /** Whether to perform validation. */
-  @Prop() readonly validate: boolean
+  @Prop() readonly validate!: boolean
 
   /** The NAICS code, description or null. */
   get naicsSummary (): string {

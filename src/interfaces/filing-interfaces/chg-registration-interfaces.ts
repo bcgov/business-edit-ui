@@ -1,4 +1,4 @@
-import { AddressesIF, CourtOrderIF, FilingBusinessIF, FilingHeaderIF, NameRequestIF, OrgPersonIF }
+import { AddressesIF, CourtOrderIF, BusinessInformationIF, FilingHeaderIF, NameRequestIF, OrgPersonIF }
   from '@/interfaces/'
 import { ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
 
@@ -14,12 +14,13 @@ export interface ChgRegistrationIF {
   contactPoint: ContactPointIF
   nameRequest?: NameRequestIF
   offices?: AddressesIF
-  parties?: Array<OrgPersonIF>
+  parties: Array<OrgPersonIF>
+  startDate?: string // YYYY-MM-DD
 }
 
 /** Interface for data object UI sends to API. */
 export interface ChgRegistrationFilingIF {
   header: FilingHeaderIF
-  business: FilingBusinessIF
+  business: BusinessInformationIF
   changeOfRegistration: ChgRegistrationIF
 }

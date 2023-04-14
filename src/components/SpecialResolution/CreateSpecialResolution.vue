@@ -1,74 +1,80 @@
 <template>
   <v-card flat id="create-special-resolution">
-      <!-- Header -->
-      <article class="header-container section-container">
-        <v-icon color="appDkBlue">mdi-handshake</v-icon>
-        <label class="font-weight-bold pl-2">Special Resolution</label>
-      </article>
-      <v-card flat :class="{'invalid-section': invalidCreateSpecialResolutionSection}">
-        <!-- Instructional Text -->
-        <article class="instructional-text section-container">
-          Before submitting this filing, you must pass a
-            <v-tooltip  top
+    <!-- Header -->
+    <article class="header-container section-container">
+      <v-icon color="appDkBlue">mdi-handshake</v-icon>
+      <label class="font-weight-bold pl-2">Special Resolution</label>
+    </article>
+
+    <v-card flat :class="{'invalid-section': invalidCreateSpecialResolutionSection}">
+      <!-- Instructional Text -->
+      <article class="instructional-text section-container">
+        Before submitting this filing, you must pass a
+        <v-tooltip top
                     content-class="top-tooltip"
                     transition="fade-transition"
-                    nudge-right="3">
-            <template v-slot:activator="{ on, attrs }">
-              <span
-                v-bind="attrs"
-                v-on="on"
-                class="tool-tip-text"
-              >special resolution</span>
-            </template>
-            <span>Special Resolution -  A decision voted on by the voting members of a Cooperative Association.</span>
-          </v-tooltip>
+                    nudge-right="3"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <span
+              v-bind="attrs"
+              v-on="on"
+              class="tool-tip-text"
+            >special resolution</span>
+          </template>
+          <span>Special Resolution -  A decision voted on by the voting members of a Cooperative Association.</span>
+        </v-tooltip>
         for this amendment
-        </article>
+      </article>
 
-        <HelpSection
-            class="ma-6"
-            :helpSection="helpSection"
-          />
+      <HelpSection
+        class="ma-6"
+        :helpSection="helpSection"
+      />
 
       <!-- Special Resolution Form -->
-        <section id="sample-resolution-section" class="section-container mt-10">
-          <header id="sample-resolution-header">
-            <h2>{{ getSpecialResolutionResource.header}}</h2>
-          </header>
+      <section id="sample-resolution-section" class="section-container mt-10">
+        <header id="sample-resolution-header">
+          <h2>{{ getSpecialResolutionResource.header}}</h2>
+        </header>
 
-          <p class="section-description mt-2"
-            v-html="getSpecialResolutionResource.text"></p>
+        <p class="section-description mt-2"
+          v-html="getSpecialResolutionResource.text"></p>
 
-          <div class="mt-4">
-            <v-card flat class="py-8 px-6">
-              <div class="d-flex flex-column flex-sm-row justify-center align-center">
-                <img src="@/assets/images/BCRegistries_CoopSpecialResolution-x2.png"
-                  :alt="getSpecialResolutionResource.label"
-                  slot-scope="" class="preview-image" />
-                <div class="px-8" />
-                <div class="download-link-container py-5">
-                  <v-icon color="primary" class="mt-n1">mdi-file-pdf-outline</v-icon>
-                  <a :href="documentURL" download class="ml-1">
-                    {{getSpecialResolutionResource.label}}
-                  </a>
-                </div>
+        <div class="mt-4">
+          <v-card flat class="py-8 px-6">
+            <div class="d-flex flex-column flex-sm-row justify-center align-center">
+              <img src="@/assets/images/BCRegistries_CoopSpecialResolution-x2.png"
+                :alt="getSpecialResolutionResource.label"
+                slot-scope="" class="preview-image" />
+              <div class="px-8" />
+              <div class="download-link-container py-5">
+                <v-icon color="primary" class="mt-n1">mdi-file-pdf-outline</v-icon>
+                <a :href="documentURL" download class="ml-1">
+                  {{getSpecialResolutionResource.label}}
+                </a>
               </div>
-            </v-card>
-          </div>
-        </section>
-        <v-divider class="mx-4" />
+            </div>
+          </v-card>
+        </div>
+      </section>
 
-        <section id="resolution-date-section" class="section-container mt-10">
-          <header id="resolution-date-header">
-            <h2>Special Resolution</h2>
-          </header>
+      <v-divider class="mx-4" />
 
-          <p class="section-description mt-2">
-            Enter the date the special resolution passed and the text as it appears on your printed form.
-          </p>
-          <v-form v-model="formValid" ref="createSpecialResolutionRef">
+      <section id="resolution-date-section" class="section-container mt-10">
+        <!-- Special Resolution -->
+        <header id="resolution-date-header">
+          <h2>Special Resolution</h2>
+        </header>
+
+        <p class="section-description mt-2">
+          Enter the date the special resolution passed and the text as it appears on your printed form.
+        </p>
+
+        <v-form v-model="formValid" ref="createSpecialResolutionRef">
           <div class="mt-4" >
             <v-card flat id="resolution-date-card" class="py-8">
+              <!-- Resolution Date -->
               <v-row no-gutters>
                 <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block">
                   <label class="resolution-date-vcard-title mt-4">
@@ -82,13 +88,15 @@
                     :nudgeRight="40"
                     :nudgeTop="85"
                     :initialValue="resolutionDateText"
-                    :minDate="dateToYyyyMmDd(resolutionDateMin)"
-                    :maxDate="dateToYyyyMmDd(resolutionDateMax)"
+                    :minDate="resolutionDateMin"
+                    :maxDate="resolutionDateMax"
                     :inputRules="resolutionDateRules"
                     @emitDateSync="onResolutionDateSync($event)"
                   />
                 </v-col>
               </v-row>
+
+              <!-- Resolution Text -->
               <v-row no-gutters>
                 <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block">
                   <label class="resolution-text-vcard-title mt-4">
@@ -97,14 +105,14 @@
                 </v-col>
                 <v-col cols="12" sm="9">
                   <v-textarea
-                              auto-grow
-                              filled
-                              label="Resolution Text"
-                              rows="6"
-                              :counter="MAX_RESOLUTION_TEXT_LENGTH"
-                              v-model="resolution"
-                              :rules="resolutionRules"
-                              @change="onResolutionChanged($event)"
+                    auto-grow
+                    filled
+                    label="Resolution Text"
+                    rows="6"
+                    :counter="MAX_RESOLUTION_TEXT_LENGTH"
+                    v-model="resolution"
+                    :rules="resolutionTextRules"
+                    @change="onResolutionTextChanged($event)"
                   />
                 </v-col>
               </v-row>
@@ -112,83 +120,86 @@
           </div>
 
           <!-- Resolution Signature -->
-
           <header id="resolution-signature-info-header">
-            <h2> Resolution signature</h2>
+            <h2>Resolution Signature</h2>
           </header>
 
           <p class="section-description mt-2">
             Enter the full name of the person who signed the special resolution and the date they signed it.
-            </p>
+          </p>
 
-            <v-card flat id="resolution-signature-card" class="py-8">
-              <v-row no-gutters>
-                <v-col cols="12" sm="3" class="pr-4">
-                  <label class="resolution-signature-vcard-title">Signing Party</label>
-                </v-col>
-                <v-col cols="12" sm="9" class="pt-4 pt-sm-0">
-                  <div class="form__row three-column">
-                    <v-text-field
-                      filled
-                      class="item"
-                      label="First Name"
-                      id="person__first-name"
-                      v-model="signatory.givenName"
-                      :rules="firstNameRules"
-                    />
-                    <v-text-field
-                      filled
-                      class="item"
-                      label="Middle Name (Optional)"
-                      id="person__middle-name"
-                      v-model="signatory.additionalName"
-                      :rules="middleNameRules"
-                    />
-                    <v-text-field
-                      filled
-                      class="item"
-                      label="Last Name"
-                      id="person__last-name"
-                      v-model="signatory.familyName"
-                      :rules="lastNameRules"
-                      />
-                  </div>
-                </v-col>
-              </v-row>
-
-              <v-row no-gutters>
-                <v-col cols="12" sm="3" class="pr-4">
-                  <label class="resolution-signature-vcard-title">Date Signed</label>
-                </v-col>
-                <v-col cols="12" sm="9" class="pt-4 pt-sm-0">
-                  <DatePickerShared
-                    ref="signatureDatePickerRef"
-                    title="Date Signed"
-                    :nudgeRight="40"
-                    :nudgeTop="85"
-                    :initialValue="signingDate"
-                    :minDate="dateToYyyyMmDd(signatureDateMin)"
-                    :maxDate="dateToYyyyMmDd(signatureDateMax)"
-                    :inputRules="signatureDateRules"
-                    @emitDateSync="onSigningDateSync($event)"
+          <v-card flat id="resolution-signature-card" class="py-8">
+            <!-- Signing Party -->
+            <v-row no-gutters>
+              <v-col cols="12" sm="3" class="pr-4">
+                <label class="resolution-signature-vcard-title">Signing Party</label>
+              </v-col>
+              <v-col cols="12" sm="9" class="pt-4 pt-sm-0">
+                <div class="form__row three-column">
+                  <v-text-field
+                    filled
+                    class="item"
+                    label="First Name"
+                    id="person__first-name"
+                    v-model="signatory.givenName"
+                    :rules="firstNameRules"
                   />
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-form>
-        </section>
-      </v-card>
+                  <v-text-field
+                    filled
+                    class="item"
+                    label="Middle Name (Optional)"
+                    id="person__middle-name"
+                    v-model="signatory.additionalName"
+                    :rules="middleNameRules"
+                  />
+                  <v-text-field
+                    filled
+                    class="item"
+                    label="Last Name"
+                    id="person__last-name"
+                    v-model="signatory.familyName"
+                    :rules="lastNameRules"
+                  />
+                </div>
+              </v-col>
+            </v-row>
+
+            <!-- Date Signed -->
+            <v-row no-gutters>
+              <v-col cols="12" sm="3" class="pr-4">
+                <label class="resolution-signature-vcard-title">Date Signed</label>
+              </v-col>
+              <v-col cols="12" sm="9" class="pt-4 pt-sm-0">
+                <DatePickerShared
+                  ref="signatureDatePickerRef"
+                  title="Date Signed"
+                  :nudgeRight="40"
+                  :nudgeTop="85"
+                  :initialValue="signingDate"
+                  :minDate="signatureDateMin"
+                  :maxDate="signatureDateMax"
+                  :inputRules="signatureDateRules"
+                  @emitDateSync="onSigningDateSync($event)"
+                />
+              </v-col>
+            </v-row>
+          </v-card>
+        </v-form>
+      </section>
+    </v-card>
   </v-card>
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF, HelpSectionIF, ResourceIF, FormIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
 import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { SpecialResolutionIF, PersonIF } from '@bcrs-shared-components/interfaces/'
+import { VuetifyRuleFunction } from '@/types'
+import { useStore } from '@/store/store'
 
 @Component({
   components: {
@@ -197,16 +208,15 @@ import { SpecialResolutionIF, PersonIF } from '@bcrs-shared-components/interface
   }
 })
 export default class CreateSpecialResolution extends Mixins(DateMixin) {
-  @Getter getResource!: ResourceIF
-  @Getter getBusinessFoundingDate!: string
-  @Getter getCurrentDate!: string
-  @Getter getCurrentJsDate!: string
-  @Getter getSpecialResolution!: SpecialResolutionIF
-  @Getter getComponentValidate!: boolean
-  @Getter getSpecialResolutionFormValid!: boolean
+  @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) getBusinessFoundingDateTime!: string
+  @Getter(useStore) getCurrentDate!: string
+  @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getSpecialResolutionFormValid!: boolean
 
-  @Action setSpecialResolution!: ActionBindingIF
-  @Action setValidComponent!: ActionBindingIF
+  @Action(useStore) setSpecialResolution!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   // Refs
   $refs!: {
@@ -234,6 +244,16 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   readonly middleNameRules = this.nameRules('Middle Name', false)
   readonly lastNameRules = this.nameRules('Last Name')
 
+  /** Validations rules for resolution date field. */
+  readonly resolutionDateRules = [
+    (v: string) => !!v || 'Resolution date is required'
+  ]
+
+  /** Validations rules for signing date field. */
+  readonly signatureDateRules = [
+    (v: string) => !!v || 'Signature date is required'
+  ]
+
   get helpSection (): HelpSectionIF {
     return this.getResource.changeData?.specialResolution?.helpSection || {}
   }
@@ -248,7 +268,6 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
      * In session is stored the BASE_URL with business ID
      * So we are taking from process.env.BASE_URL
      */
-
     return process.env.BASE_URL +
       this.getSpecialResolutionResource?.path
   }
@@ -259,19 +278,22 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     return (this.getComponentValidate && !this.getSpecialResolutionFormValid)
   }
 
-  /** The minimum date that can be entered (can't be earlier than incorporation date ). */
-  get resolutionDateMin (): Date {
-    /** TODO: Needs to be after the most recent filing date, I don't think the business founding date is correct
-     * Will be fixed in 13231 */
-    return this.apiToDate(this.getBusinessFoundingDate)
+  /** The minimum resolution date that can be entered (incorporation date). */
+  get resolutionDateMin (): string {
+    /**
+     * TODO: Needs to be after the most recent filing date, I don't think the business founding date is correct
+     * Will be fixed in 13231
+     */
+    const date = this.apiToDate(this.getBusinessFoundingDateTime)
+    return this.dateToYyyyMmDd(date)
   }
 
-  /** The maximum date that can be entered (today). */
-  get resolutionDateMax (): Date {
-    return this.yyyyMmDdToDate(this.getCurrentDate)
+  /** The maximum resolution date that can be entered (today). */
+  get resolutionDateMax (): string {
+    return this.getCurrentDate
   }
 
-  get resolutionRules (): Array<Function> {
+  get resolutionTextRules (): Array<VuetifyRuleFunction> {
     return [
       v => (v && v.trim().length > 0) || 'Resolution text is required',
       v => (v && v.length <= this.MAX_RESOLUTION_TEXT_LENGTH) || 'Maximum characters exceeded',
@@ -306,7 +328,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   }
 
   /** Called to update resolution date. */
-  async onResolutionDateSync (val: string): Promise<void> {
+  protected async onResolutionDateSync (val: string): Promise<void> {
     this.resolutionDateText = val
     this.setSpecialResolution({
       ...this.getSpecialResolution,
@@ -315,8 +337,8 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     await this.validate()
   }
 
-  /** called to add new resolutionDateText. */
-  protected async onResolutionChanged (val: string) {
+  /** Called to update resolution text. */
+  protected async onResolutionTextChanged (val: string) {
     this.setSpecialResolution({
       ...this.getSpecialResolution,
       resolution: val
@@ -324,21 +346,22 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     await this.validate()
   }
 
-  /** Validation rule for name */
-  private nameRules (label, isRequired = true): Array<Function> {
+  /** Validation rule for name. */
+  private nameRules (label, isRequired = true): Array<VuetifyRuleFunction> {
     return [
       v => isRequired ? (!!v?.trim() || `${label} is required`) : true,
       v => v ? (v?.length <= 30) || 'Cannot exceed 30 characters' : true // maximum character count
     ]
   }
 
-  /** The minimum date that can be entered (resolution date). */
-  get signatureDateMin (): Date {
-    if (this.resolutionDateText) {
-      const resolutionDate = this.yyyyMmDdToDate(this.resolutionDateText)
-      return resolutionDate
-    }
-    return this.yyyyMmDdToDate(this.getCurrentDate)
+  /** The minimum signature date that can be entered (resolution date or today). */
+  get signatureDateMin (): string {
+    return this.resolutionDateText || this.getCurrentDate
+  }
+
+  /** The maximum signature date that can be entered (today). */
+  get signatureDateMax (): string {
+    return this.getCurrentDate
   }
 
   /** The maximum date that can be entered (today). */
@@ -370,7 +393,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
 
   /** Set validate on file and pay click. */
   @Watch('getComponentValidate')
-  protected updateResolutionValidationDetail (): void {
+  private updateResolutionValidationDetail (): void {
     this.$refs.createSpecialResolutionRef.validate()
     this.$refs.resolutionDatePickerRef.validateForm()
     this.$refs.signatureDatePickerRef.validateForm()
@@ -378,7 +401,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
 
   /** called to store signing party. */
   @Watch('signatory', { deep: true })
-  protected async onSignatoryChanged (): Promise<void> {
+  private async onSignatoryChanged (): Promise<void> {
     this.setSpecialResolution({
       ...this.getSpecialResolution,
       signatory: this.signatory
@@ -389,7 +412,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   }
 
   /** called to store component validity to store. */
-  protected async validate () {
+  private async validate () {
     // wait to reflect validation state
     await this.$nextTick()
 
@@ -402,11 +425,12 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     this.setValidComponent({ key: 'isValidCreateSpecialResolution', value: isFormValid })
   }
 
-  /** Set values if exist
-   * while coming back from summary page this form need to show existing values.
+  /**
+   * Called when component is created.
+   * While coming back from summary page, this form need to show existing values.
    * Note: The data is loaded before the component is created.
-  */
-  protected created () {
+   */
+  created () {
     this.signatory = this.getSpecialResolution.signatory ||
       {
         givenName: '',
@@ -437,6 +461,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   border-top: solid 1px $gray3;
   border-bottom: solid 1px $gray3;
 }
+
 #sample-resolution-section {
   a {
     text-decoration: none;
@@ -458,16 +483,21 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
     margin-right: 0.5rem;
   }
 }
-::v-deep label.v-label.theme--light {
+
+:deep(label.v-label.theme--light) {
   color: $gray7 !important;
   font-weight: normal;
 }
-.tool-tip-text{
+
+.tool-tip-text {
    border-bottom: 1px dashed $gray6;
 }
 
-// this is to show error color for label and placeholder
-::v-deep .invalid-section label.v-label.error--text , .invalid-section label {
+// show error color for label and placeholder
+:deep() {
+  .invalid-section label,
+  .invalid-section label.v-label.error--text {
     color: $BCgovInputError !important;
+  }
 }
 </style>

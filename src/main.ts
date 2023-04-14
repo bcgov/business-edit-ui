@@ -4,17 +4,19 @@ import 'regenerator-runtime/runtime' // to use transpiled generator functions
 
 // Other Libraries
 import Vue from 'vue'
-import Vuetify from 'vuetify/lib'
+import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
+import Hotjar from 'vue-hotjar'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
 import { getVueRouter } from '@/router/'
-import { getVuexStore } from '@/store/'
+import { getPiniaStore, getVuexStore } from '@/store/'
 
 // Styles
 // NB: order matters - do not change
+import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.min.css' // ensure you are using css-loader
 import '@/assets/styles/base.scss'
 import '@/assets/styles/layout.scss'
@@ -24,7 +26,7 @@ import '@/assets/styles/overrides.scss'
 import App from './App.vue'
 
 // Helpers
-import { initLdClient, fetchConfig, navigate } from '@/utils/'
+import { GetFeatureFlag, InitLdClient, FetchConfig, Navigate } from '@/utils/'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 
 // get rid of "element implicitly has an 'any' type..."
@@ -42,9 +44,15 @@ Vue.use(Vue2Filters)
 async function start () {
   // fetch config from environment and API
   // must come first as inits below depend on config
-  await fetchConfig()
+  await FetchConfig()
 
-  if (window['sentryEnable'] === 'true') {
+  // initialize Launch Darkly
+  if (window['ldClientId']) {
+    console.info('Initializing Launch Darkly...') // eslint-disable-line no-console
+    await InitLdClient()
+  }
+
+  if (GetFeatureFlag('sentry-enable')) {
     // initialize Sentry
     console.info('Initializing Sentry...') // eslint-disable-line no-console
     Sentry.init({
@@ -53,14 +61,22 @@ async function start () {
     })
   }
 
-  // initialize Launch Darkly
-  if (window['ldClientId']) {
-    await initLdClient()
+  // initialize Hotjar
+  const hotjarId: string = window['hotjarId']
+  if (hotjarId) {
+    console.info('Initializing Hotjar...') // eslint-disable-line no-console
+    Vue.use(Hotjar, { id: hotjarId })
   }
 
   // configure KeyCloak Service
   console.info('Starting Keycloak service...') // eslint-disable-line no-console
-  await KeycloakService.setKeycloakConfigUrl(sessionStorage.getItem('KEYCLOAK_CONFIG_PATH'))
+  const keycloakConfig: any = {
+    url: `${window['keycloakAuthUrl']}`,
+    realm: `${window['keycloakRealm']}`,
+    clientId: `${window['keycloakClientId']}`
+  }
+
+  await KeycloakService.setKeycloakConfigUrl(keycloakConfig)
 
   // initialize token service which will do a check-sso to initiate session
   // don't start during Jest tests as it messes up the test JWT
@@ -88,7 +104,9 @@ async function start () {
       }
     }),
     router: getVueRouter(),
+    // We still need Vuex for sbc-common-components.
     store: getVuexStore(),
+    pinia: getPiniaStore(),
     render: h => h(App)
   }).$mount('#app')
 }
@@ -99,5 +117,5 @@ start().catch(error => {
   window.alert('There was an error starting this page. (See console for details.)\n' +
     'Please try again later.')
   // try to navigate to Business Registry home page
-  navigate(sessionStorage.getItem('BUSINESSES_URL'))
+  Navigate(sessionStorage.getItem('BUSINESSES_URL'))
 })

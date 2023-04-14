@@ -1,101 +1,110 @@
-import { Component, Mixins } from 'vue-property-decorator'
-import { Action, Getter } from 'vuex-class'
+import { Component } from 'vue-property-decorator'
+import { Action, Getter } from 'pinia-class'
 import { cloneDeep } from 'lodash'
-import { DateMixin, EnumMixin } from '@/mixins/'
-import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF, EffectiveDateTimeIF,
-  EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF, NameRequestIF, NameTranslationIF,
-  OrgPersonIF, SpecialResolutionFilingIF } from '@/interfaces/'
+import { DateMixin } from '@/mixins/'
+import DateUtilities from '@/services/date-utilities'
+import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
+  EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
+  NameRequestIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF, RestorationStateIF,
+  SpecialResolutionFilingIF, StateFilingRestorationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
-import { ActionTypes, AssociationTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
+import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
   RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { RestorationTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { FilingTypeToName } from '@/utils'
+import { useStore } from '@/store/store'
 
 /**
  * Mixin that provides the integration with the Legal API.
  */
 @Component({})
-export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
+export default class FilingTemplateMixin extends DateMixin {
   // Global getters
-  @Getter getEntityType!: CorpTypeCd
-  @Getter getNameRequestNumber!: string
-  @Getter getNameRequestLegalName!: string
-  @Getter getBusinessId!: string
-  @Getter getCurrentDate!: string
-  @Getter getCorrectedFilingDate!: string
-  @Getter getCorrectedFilingId!: number
-  @Getter getCorrectedFilingType!: FilingTypes
-  @Getter getCorrectionErrorType!: CorrectionErrorTypes
-  @Getter getCorrectionStartDate!: string
-  @Getter getEffectiveDateTime!: EffectiveDateTimeIF
-  @Getter getDocumentOptionalEmail: string
-  @Getter hasBusinessNameChanged!: boolean
-  @Getter hasBusinessTypeChanged!: boolean
-  @Getter hasNaicsChanged!: boolean
-  @Getter haveNameTranslationsChanged!: boolean
-  @Getter hasShareStructureChanged!: boolean
-  @Getter getOrgPeople!: OrgPersonIF[]
-  @Getter getShareClasses!: ShareClassIF[]
-  @Getter getFolioNumber!: string
-  @Getter getTransactionalFolioNumber!: string
-  @Getter getStaffPayment!: StaffPaymentIF
-  @Getter getDetailComment!: string
-  @Getter getCurrentNaics!: NaicsIF
-  @Getter getNameTranslations!: NameTranslationIF[]
-  @Getter getNameRequest!: NameRequestIF
-  @Getter getCertifyState!: CertifyIF
-  @Getter getOfficeAddresses!: AddressesIF
-  @Getter getBusinessContact!: ContactPointIF
-  @Getter getEntitySnapshot!: EntitySnapshotIF
-  @Getter getNewResolutionDates!: string[]
-  @Getter areProvisionsRemoved!: boolean
-  @Getter getFileNumber!: string
-  @Getter getHasPlanOfArrangement!: boolean
-  @Getter haveOfficeAddressesChanged!: boolean
-  @Getter getCompletingParty!: CompletingPartyIF
-  @Getter isEntityTypeBEN!: boolean
-  @Getter isEntityTypeCP!: boolean
-  @Getter isEntityTypeSP!: boolean
-  @Getter isEntityTypeGP!: boolean
-  @Getter isBenCorrectionFiling!: boolean
-  @Getter isFirmCorrectionFiling!: boolean
-  @Getter isClientErrorCorrection!: boolean
-  @Getter getAssociationType!: AssociationTypes
-  @Getter hasAssociationTypeChanged!: boolean
-  @Getter getSpecialResolution!: SpecialResolutionIF
-  @Getter isEntityTypeFirm!: boolean
-  @Getter hasBusinessStartDateChanged!: boolean
-
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getCurrentDate!: string
+  @Getter(useStore) getCorrectedFilingDate!: string
+  @Getter(useStore) getCorrectedFilingId!: number
+  @Getter(useStore) getCorrectedFilingType!: FilingTypes
+  @Getter(useStore) getCorrectionErrorType!: CorrectionErrorTypes
+  @Getter(useStore) getCorrectionStartDate!: string
+  @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
+  @Getter(useStore) getDocumentOptionalEmail: string
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) hasBusinessTypeChanged!: boolean
+  @Getter(useStore) hasNaicsChanged!: boolean
+  @Getter(useStore) haveNameTranslationsChanged!: boolean
+  @Getter(useStore) hasShareStructureChanged!: boolean
+  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
+  @Getter(useStore) getShareClasses!: ShareClassIF[]
+  @Getter(useStore) getFolioNumber!: string
+  @Getter(useStore) getTransactionalFolioNumber!: string
+  @Getter(useStore) getStaffPayment!: StaffPaymentIF
+  @Getter(useStore) getDetailComment!: string
+  @Getter(useStore) getCurrentNaics!: NaicsIF
+  @Getter(useStore) getNameTranslations!: NameTranslationIF[]
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) getCertifyState!: CertifyIF
+  @Getter(useStore) getOfficeAddresses!: AddressesIF
+  @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getNewResolutionDates!: string[]
+  @Getter(useStore) areProvisionsRemoved!: boolean
+  @Getter(useStore) getFileNumber!: string
+  @Getter(useStore) getHasPlanOfArrangement!: boolean
+  @Getter(useStore) haveOfficeAddressesChanged!: boolean
+  @Getter(useStore) getCompletingParty!: CompletingPartyIF
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isClientErrorCorrection!: boolean
+  @Getter(useStore) getAssociationType!: CoopTypes
+  @Getter(useStore) hasAssociationTypeChanged!: boolean
+  @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
+  @Getter(useStore) hasBusinessStartDateChanged!: boolean
+  @Getter(useStore) getRestoration!: RestorationStateIF
+  @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
+  @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
+  @Getter(useStore) isEntityTypeFirm!: boolean
+  @Getter(useStore) hasBusinessStartDateChanged!: boolean
   // Global actions
-  @Action setBusinessContact!: ActionBindingIF
-  @Action setBusinessInformation!: ActionBindingIF
-  @Action setCorrectionInformation!: ActionBindingIF
-  @Action setEntityType!: ActionBindingIF
-  @Action setOfficeAddresses!: ActionBindingIF
-  @Action setNaics!: ActionBindingIF
-  @Action setNameTranslations!: ActionBindingIF
-  @Action setNameRequest!: ActionBindingIF
-  @Action setPeopleAndRoles!: ActionBindingIF
-  @Action setCertifyState!: ActionBindingIF
-  @Action setShareClasses!: ActionBindingIF
-  @Action setEffectiveDateTimeString!: ActionBindingIF
-  @Action setIsFutureEffective!: ActionBindingIF
-  @Action setFolioNumber!: ActionBindingIF
-  @Action setTransactionalFolioNumber!: ActionBindingIF
-  @Action setStaffPayment!: ActionBindingIF
-  @Action setDetailComment!: ActionBindingIF
-  @Action setEntitySnapshot!: ActionBindingIF
-  @Action setDocumentOptionalEmail!: ActionBindingIF
-  @Action setProvisionsRemoved!: ActionBindingIF
-  @Action setNewResolutionDates!: ActionBindingIF
-  @Action setFileNumber!: ActionBindingIF
-  @Action setHasPlanOfArrangement!: ActionBindingIF
+  @Action(useStore) setBusinessContact!: ActionBindingIF
+  @Action(useStore) setBusinessInformation!: ActionBindingIF
+  @Action(useStore) setCorrectionInformation!: ActionBindingIF
+  @Action(useStore) setEntityType!: ActionBindingIF
+  @Action(useStore) setOfficeAddresses!: ActionBindingIF
+  @Action(useStore) setNaics!: ActionBindingIF
+  @Action(useStore) setNameTranslations!: ActionBindingIF
+  @Action(useStore) setNameRequest!: ActionBindingIF
+  @Action(useStore) setPeopleAndRoles!: ActionBindingIF
+  @Action(useStore) setCertifyState!: ActionBindingIF
+  @Action(useStore) setShareClasses!: ActionBindingIF
+  @Action(useStore) setEffectiveDateTimeString!: ActionBindingIF
+  @Action(useStore) setIsFutureEffective!: ActionBindingIF
+  @Action(useStore) setFolioNumber!: ActionBindingIF
+  @Action(useStore) setTransactionalFolioNumber!: ActionBindingIF
+  @Action(useStore) setStaffPayment!: ActionBindingIF
+  @Action(useStore) setDetailComment!: ActionBindingIF
+  @Action(useStore) setEntitySnapshot!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmail!: ActionBindingIF
+  @Action(useStore) setProvisionsRemoved!: ActionBindingIF
+  @Action(useStore) setNewResolutionDates!: ActionBindingIF
+  @Action(useStore) setFileNumber!: ActionBindingIF
+  @Action(useStore) setHasPlanOfArrangement!: ActionBindingIF
+  @Action(useStore) setSpecialResolution!: ActionBindingIF
+  @Action(useStore) setCorrectionStartDate!: ActionBindingIF
+  @Action(useStore) setRestorationApprovalType!: ActionBindingIF
+  @Action(useStore) setRestorationCourtOrder!: ActionBindingIF
+  @Action(useStore) setRestorationExpiry!: ActionBindingIF
+  @Action(useStore) setRestorationType!: ActionBindingIF
   @Action setSpecialResolution!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
-    const correctedFilingName = this.filingTypeToName(this.getCorrectedFilingType)
+    const correctedFilingName = FilingTypeToName(this.getCorrectedFilingType)
     return `Correction for ${correctedFilingName} filed on ${this.correctedFilingDate}`
   }
 
@@ -115,15 +124,16 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         name: FilingTypes.CORRECTION,
         certifiedBy: this.getCertifyState.certifiedBy || '',
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber // original folio number, unless overridden by staff payment below
+        folioNumber: this.getFolioNumber // folio number, unless overridden below
       },
       business: {
-        identifier: this.getBusinessId,
-        legalName: this.getNameRequestLegalName,
-        legalType: this.getEntityType,
-        nrNumber: this.getNameRequestNumber
+        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
+        identifier: this.getEntitySnapshot.businessInfo.identifier,
+        legalName: this.getEntitySnapshot.businessInfo.legalName,
+        legalType: this.getEntitySnapshot.businessInfo.legalType
       },
       correction: {
+        legalType: this.getEntityType,
         business: {
           identifier: this.getBusinessId
         },
@@ -134,6 +144,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         contactPoint: this.getContactPoint,
         nameRequest: this.getNameRequest,
         offices: this.getOfficeAddresses,
+        parties: null, // applied below
         type: this.getCorrectionErrorType
       }
     }
@@ -157,11 +168,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       filing.correction.parties = parties
     }
 
-    // add in data specific to BEN corrections
-    if (this.isBenCorrectionFiling) {
+    // add in data specific to BEN/BC/CCC/ULC corrections
+    if (this.isBenBcCccUlcCorrectionFiling) {
       filing.correction.nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
       filing.correction.shareStructure = {
-        shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses()
+        shareClasses: isDraft ? this.getShareClasses : this.prepareShareClasses(),
+        resolutionDates: this.getNewResolutionDates
       }
     }
 
@@ -177,6 +189,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     }
 
     // build Staff Payment into the filing
+    // may override folio number
     filing = this.buildStaffPayment(filing)
 
     return filing
@@ -194,14 +207,13 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         name: FilingTypes.ALTERATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber
+        folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
       business: {
         foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
         identifier: this.getEntitySnapshot.businessInfo.identifier,
         legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
+        legalType: this.getEntitySnapshot.businessInfo.legalType
       },
       alteration: {
         business: {
@@ -249,9 +261,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // If FED then set header fields
     if (this.getEffectiveDateTime.isFutureEffective) {
       filing.header.isFutureEffective = true
-      const effectiveDate = new Date(this.getEffectiveDateTime.dateTimeString)
-      const effectiveDateApi = this.dateToApi(effectiveDate)
-      filing.header.effectiveDate = effectiveDateApi // in UTC
+      const effectiveDate = new Date(this.getEffectiveDateTime.dateTimeString) // ISO format
+      filing.header.effectiveDate = this.dateToApi(effectiveDate) // in UTC
     }
 
     // Set Document Optional Email if there is one
@@ -260,9 +271,82 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     }
 
     // Build Staff Payment into the filing
+    // may override folio number
     filing = this.buildStaffPayment(filing)
 
-    // Build Folio number if a transactional folio number was entered
+    // Build Transactional Folio Number into the filing
+    // will override folio number
+    filing = this.buildFolioNumber(filing)
+
+    return filing
+  }
+
+  /**
+   * Builds a restoration filing from store data.
+   * @param isDraft whether this is a draft
+   * @returns the restoration filing body
+   */
+  buildRestorationFiling (isDraft: boolean): RestorationFilingIF {
+    // Build restoration filing
+    let filing: RestorationFilingIF = {
+      header: {
+        name: FilingTypes.RESTORATION,
+        certifiedBy: this.getCertifyState.certifiedBy,
+        date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
+        folioNumber: this.getFolioNumber // business folio number, unless overridden below
+      },
+      business: {
+        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
+        identifier: this.getEntitySnapshot.businessInfo.identifier,
+        legalName: this.getEntitySnapshot.businessInfo.legalName,
+        legalType: this.getEntitySnapshot.businessInfo.legalType
+      },
+      restoration: {
+        approvalType: this.getStateFilingRestoration?.approvalType,
+        type: this.getRestoration.type,
+        business: {
+          identifier: this.getBusinessId,
+          legalType: this.getEntityType
+        },
+        parties: this.getOrgPeople,
+        offices: this.getOfficeAddresses,
+        contactPoint: this.getContactPoint,
+        relationships: this.getRestoration.relationships
+      }
+    }
+
+    // Set expiry date property if it's not null
+    if (this.getRestoration.expiry) {
+      filing.restoration.expiry = this.getRestoration.expiry
+    }
+
+    // Apply NR / business name / business type change to filing
+    if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
+      filing.restoration.nameRequest = this.getNameRequest
+    }
+
+    // Apply name translation changes to filing
+    if (this.haveNameTranslationsChanged) {
+      const nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
+      filing.restoration.nameTranslations = nameTranslations
+    }
+
+    // Apply Court Order ONLY when it is required and applied
+    if (this.getRestoration.courtOrder?.fileNumber) {
+      filing.restoration.courtOrder = this.getRestoration.courtOrder
+    }
+
+    // Set Document Optional Email if there is one
+    if (this.getDocumentOptionalEmail) {
+      filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
+    }
+
+    // Build Staff Payment into the filing
+    // may override folio number
+    filing = this.buildStaffPayment(filing)
+
+    // Build Transactional Folio Number into the filing
+    // will override folio number
     filing = this.buildFolioNumber(filing)
 
     return filing
@@ -274,7 +358,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    * @returns the resolution filing body
    */
   buildSpecialResolutionFiling (isDraft: boolean): SpecialResolutionFilingIF {
-    // *** FUTURE: add in as needed - see buildAlterationFiling()
+    // FUTURE: add in as needed - see buildAlterationFiling()
     // const parties = isDraft ? this.getOrgPeople : this.prepareParties()
     // const shareClasses = isDraft ? this.getShareClasses : this.prepareShareClasses()
     // const nameTranslations = isDraft ? this.getNameTranslations : this.prepareNameTranslations()
@@ -285,7 +369,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         name: FilingTypes.SPECIAL_RESOLUTION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber
+        folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
       business: {
         foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
@@ -296,6 +380,23 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       },
       specialResolution: {
         ...this.getSpecialResolution
+      }
+    }
+
+    /* Only add alteration if the association type has changed,
+     * rules and memorandum only show up if the association type changes. */
+    if (this.hasAssociationTypeChanged) {
+      filing.alteration = {
+        business: {
+          identifier: this.getBusinessId,
+          legalType: this.getEntityType
+        },
+        contactPoint: this.getContactPoint,
+        cooperativeAssociationType: this.getAssociationType,
+        rulesFileKey: 'test',
+        rulesFileName: 'testUrl',
+        memorandumFileKey: 'test',
+        memorandumFileName: 'test'
       }
     }
     /* Only add alteration if the association type has changed,
@@ -324,9 +425,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     }
 
     // Build Staff Payment into the filing
+    // may override folio number
     filing = this.buildStaffPayment(filing)
 
-    // Sets Folio number if a transactional folio number was entered
+    // Build Transactional Folio Number into the filing
+    // will override folio number
     filing = this.buildFolioNumber(filing)
 
     return filing
@@ -344,20 +447,20 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         name: FilingTypes.CHANGE_OF_REGISTRATION,
         certifiedBy: this.getCertifyState.certifiedBy,
         date: this.getCurrentDate, // "absolute day" (YYYY-MM-DD in Pacific time)
-        folioNumber: this.getFolioNumber
+        folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
       business: {
         foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
         identifier: this.getEntitySnapshot.businessInfo.identifier,
         legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
+        legalType: this.getEntitySnapshot.businessInfo.legalType
       },
       changeOfRegistration: {
         business: {
           identifier: this.getBusinessId
         },
-        contactPoint: this.getContactPoint
+        contactPoint: this.getContactPoint,
+        parties: null // applied below
       }
     }
 
@@ -415,10 +518,17 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       filing.header.documentOptionalEmail = this.getDocumentOptionalEmail
     }
 
+    // Apply Business Start Date to filing
+    if (this.hasBusinessStartDateChanged) {
+      filing.changeOfRegistration.startDate = this.getCorrectionStartDate
+    }
+
     // Build Staff Payment into the filing
+    // may override folio number
     filing = this.buildStaffPayment(filing)
 
-    // Sets Folio number if a transactional folio number was entered
+    // Build Transactional Folio Number into the filing
+    // will override folio number
     filing = this.buildFolioNumber(filing)
 
     return filing
@@ -442,14 +552,12 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
         foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
         identifier: this.getEntitySnapshot.businessInfo.identifier,
         legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
+        legalType: this.getEntitySnapshot.businessInfo.legalType
       },
       conversion: {
         business: {
           identifier: this.getBusinessId
         },
-        contactPoint: this.getContactPoint,
         offices: {
           businessOffice: {
             mailingAddress: this.getOfficeAddresses.businessOffice?.mailingAddress,
@@ -490,6 +598,11 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       filing.conversion.parties = parties
     }
 
+    // Apply Business Start Date to filing
+    if (this.hasBusinessStartDateChanged) {
+      filing.conversion.startDate = this.getCorrectionStartDate
+    }
+
     // Build Staff Payment into the filing
     filing = this.buildStaffPayment(filing)
 
@@ -522,15 +635,20 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // store Correction Information
     this.setCorrectionInformation(cloneDeep(filing.correction))
 
-    // store Business Information for BEN corrections
-    if (this.isBenCorrectionFiling) {
-      this.setBusinessInformation({ ...filing.business })
+    // store Business Information for BEN/BC/CCC/ULC corrections
+    if (this.isBenBcCccUlcCorrectionFiling) {
+      this.setBusinessInformation({
+        ...entitySnapshot.businessInfo,
+        ...filing.business,
+        ...filing.correction.business
+      })
     }
 
     // store Business Information for firm corrections
     if (this.isFirmCorrectionFiling) {
       this.setBusinessInformation({
         ...entitySnapshot.businessInfo,
+        ...filing.business,
         ...filing.correction.business
       })
     }
@@ -558,8 +676,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
       }
     ))
 
-    // store Name Translations (BEN corrections only)
-    if (this.isBenCorrectionFiling) {
+    // store Name Translations (BEN/BC/CCC?ULC corrections only)
+    if (this.isBenBcCccUlcCorrectionFiling) {
       this.setNameTranslations(cloneDeep(
         this.mapNameTranslations(filing.correction.nameTranslations) ||
         this.mapNameTranslations(entitySnapshot.nameTranslations) ||
@@ -583,8 +701,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(cloneDeep(orgPersons))
 
-    // store Share Classes and Resolution Dates (BEN corrections only)
-    if (this.isBenCorrectionFiling) {
+    // store Share Classes and Resolution Dates (BEN/BC/CCC/ULC corrections only)
+    if (this.isBenBcCccUlcCorrectionFiling) {
       this.setShareClasses(cloneDeep(
         filing.correction.shareStructure?.shareClasses ||
         entitySnapshot.shareStructure.shareClasses
@@ -603,17 +721,18 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // store Detail Comment
     if (filing.correction.comment) {
       // NB: remove the first line (default comment)
-      const comment: string = filing.correction.comment
+      const comment = filing.correction.comment
       const detailComment = comment.split('\n').slice(1).join('\n')
       this.setDetailComment(detailComment)
     }
 
     // store Folio Number
-    // *** FUTURE: should we store correction.folioNumber instead?
+    // FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // store Effective Date
-    this.setEffectiveDateTimeString(filing.header.effectiveDate)
+    const effectiveDate = this.apiToIso(filing.header.effectiveDate)
+    this.setEffectiveDateTimeString(effectiveDate)
     this.setIsFutureEffective(filing.header.isFutureEffective)
 
     // store Staff Payment
@@ -634,6 +753,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
 
     // store Business Information
     this.setBusinessInformation({
+      ...entitySnapshot.businessInfo,
       ...filing.business,
       ...filing.alteration?.business
     })
@@ -656,7 +776,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     ))
 
     // store Provisions Removed
-    this.setProvisionsRemoved(filing.alteration.provisionsRemoved)
+    if (filing.alteration.provisionsRemoved) this.setProvisionsRemoved(true)
 
     // store Office Addresses **from snapshot** (because we don't change office addresses in an alteration)
     this.setOfficeAddresses(cloneDeep(entitySnapshot.addresses))
@@ -683,7 +803,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     })
 
     // store Folio Number
-    // *** FUTURE: should we store correction.folioNumber instead?
+    // FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
@@ -695,12 +815,103 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     this.setDocumentOptionalEmail(filing.header.documentOptionalEmail || '')
 
     // store Effective Date
-    this.setEffectiveDateTimeString(filing.header.effectiveDate)
+    const effectiveDate = this.apiToIso(filing.header.effectiveDate)
+    this.setEffectiveDateTimeString(effectiveDate)
     this.setIsFutureEffective(filing.header.isFutureEffective)
 
     // store File Number and POA
     this.setFileNumber(filing.alteration.courtOrder?.fileNumber)
     this.setHasPlanOfArrangement(filing.alteration.courtOrder?.hasPlanOfArrangement)
+
+    // store Staff Payment
+    this.storeStaffPayment(filing)
+  }
+
+  /**
+   * Parses a draft Restoration filing into the store.
+   * @param filing the restoration filing
+   * @param entitySnapshot the latest entity snapshot
+   */
+  parseRestorationFiling (filing: RestorationFilingIF): void {
+    // Get the Entity Snapshot from store
+    const entitySnapshot = this.getEntitySnapshot
+
+    // store Entity Type
+    this.setEntityType(filing.restoration.business?.legalType || entitySnapshot.businessInfo.legalType)
+
+    // store Business Information
+    this.setBusinessInformation({
+      ...entitySnapshot.businessInfo,
+      ...filing.business,
+      ...filing.restoration.business
+    })
+
+    // restore Restoration data
+    this.setRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
+    if (filing.restoration.courtOrder) {
+      this.setRestorationCourtOrder(filing.restoration.courtOrder)
+    }
+    this.setRestorationType(filing.restoration.type)
+    if (filing.restoration.expiry) {
+      this.setRestorationExpiry(filing.restoration.expiry)
+    } else if (filing.restoration.type === RestorationTypes.LTD_EXTEND) {
+      // Reset radio button to 2 years
+      this.setRestorationExpiry(DateUtilities.addMonthsToDate(24, this.getStateFilingRestoration?.expiry))
+    }
+
+    // store Name Request data
+    this.setNameRequest(cloneDeep(
+      filing.restoration.nameRequest ||
+      {
+        legalType: entitySnapshot.businessInfo.legalType,
+        legalName: entitySnapshot.businessInfo.legalName,
+        nrNumber: entitySnapshot.businessInfo.nrNumber
+      }
+    ))
+
+    // store Name Translations
+    this.setNameTranslations(cloneDeep(
+      this.mapNameTranslations(filing.restoration.nameTranslations) ||
+      this.mapNameTranslations(entitySnapshot.nameTranslations) ||
+      []
+    ))
+
+    // store Office Addresses
+    this.setOfficeAddresses(cloneDeep(
+      filing.restoration.offices ||
+      entitySnapshot.addresses
+    ))
+
+    // store People And Roles
+    this.setPeopleAndRoles(cloneDeep(
+      filing.restoration.parties ||
+      entitySnapshot.orgPersons
+    ))
+
+    // store current Business Contact
+    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
+
+    // store Certify State
+    this.setCertifyState({
+      valid: false,
+      certifiedBy: filing.header.certifiedBy
+    })
+
+    // store Folio Number
+    // FUTURE: should we store correction.folioNumber instead?
+    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
+
+    // if Transactional Folio Number was saved then store it
+    if (filing.header.isTransactionalFolioNumber) {
+      this.setTransactionalFolioNumber(filing.header.folioNumber)
+    }
+
+    // store Document Optional Email
+    this.setDocumentOptionalEmail(filing.header.documentOptionalEmail || '')
+
+    // store File Number and POA
+    this.setFileNumber(filing.restoration.courtOrder?.fileNumber)
+    this.setHasPlanOfArrangement(filing.restoration.courtOrder?.hasPlanOfArrangement)
 
     // store Staff Payment
     this.storeStaffPayment(filing)
@@ -715,11 +926,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // store Entity Snapshot
     this.setEntitySnapshot(entitySnapshot)
 
+    // NB: filing.alteration object may not be present
+
     // store Entity Type
     this.setEntityType(filing.alteration?.business?.legalType || entitySnapshot.businessInfo.legalType)
 
     // store Business Information
     this.setBusinessInformation({
+      ...entitySnapshot.businessInfo,
       ...filing.business,
       ...filing.alteration?.business,
       associationType: filing.alteration?.cooperativeAssociationType || entitySnapshot.businessInfo.associationType
@@ -754,7 +968,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     })
 
     // store Folio Number
-    // *** FUTURE: should we store correction.folioNumber instead?
+    // FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
@@ -830,7 +1044,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     })
 
     // store Folio Number
-    // *** FUTURE: should we store correction.folioNumber instead?
+    // FUTURE: should we store correction.folioNumber instead?
     this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
@@ -844,6 +1058,9 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // store File Number and POA
     this.setFileNumber(filing.changeOfRegistration.courtOrder?.fileNumber)
     this.setHasPlanOfArrangement(filing.changeOfRegistration.courtOrder?.hasPlanOfArrangement)
+
+    // store Business Start Date
+    this.setCorrectionStartDate(filing.changeOfRegistration.startDate || null)
 
     // store Staff Payment
     this.storeStaffPayment(filing)
@@ -885,7 +1102,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     ))
 
     // store Office Addresses
-    let addresses
+    let addresses = null
     if (filing.conversion.offices?.businessOffice) {
       addresses = { businessOffice: filing.conversion.offices.businessOffice }
     }
@@ -901,8 +1118,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(cloneDeep(orgPersons))
 
-    // store current Business Contact
-    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
+    // store Business Start Date
+    this.setCorrectionStartDate(filing.conversion.startDate || null)
 
     // store Certify State
     this.setCertifyState({
@@ -949,11 +1166,14 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
 
     // handle entity-specific values
     switch (entitySnapshot.businessInfo.legalType) {
-      case CorpTypeCd.BENEFIT_COMPANY: {
+      case CorpTypeCd.BENEFIT_COMPANY:
+      case CorpTypeCd.BC_COMPANY:
+      case CorpTypeCd.BC_CCC:
+      case CorpTypeCd.BC_ULC_COMPANY: {
         // store Name Translations
         if (entitySnapshot.nameTranslations) {
           // don't need cloneDeep because mapNameTranslations already returns new array
-          this.setNameTranslations(this.mapNameTranslations(entitySnapshot.nameTranslations))
+          this.setNameTranslations(this.mapNameTranslations(entitySnapshot.nameTranslations) || [])
         }
 
         // clear Provisions Removed
@@ -968,7 +1188,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
 
       case CorpTypeCd.SOLE_PROP:
       case CorpTypeCd.PARTNERSHIP: {
-        // *** FUTURE: expand here as needed
+        // FUTURE: expand here as needed
         break
       }
     }
@@ -1047,12 +1267,19 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
 
   /**
    * Prepares parties for non-draft save.
-   * @returns the updated share classes array
+   * @returns the updated parties array
    */
   private prepareParties (parties = this.getOrgPeople) : OrgPersonIF[] {
-    // filter out removed parties and delete "actions" property
-    return parties.filter(x => !x.actions?.includes(ActionTypes.REMOVED))
-      .map((x) => { const { actions, ...rest } = x; return rest })
+    // 1. filter out removed parties
+    // 2. delete added parties "id" property
+    // 3. delete "actions" property
+    return parties
+      .filter(x => !x.actions?.includes(ActionTypes.REMOVED))
+      .map(x => {
+        if (x.actions?.includes(ActionTypes.ADDED)) delete x.officer.id
+        delete x.actions
+        return x
+      })
   }
 
   /**
@@ -1063,13 +1290,23 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     // filter out removed classes and delete "action" property
     const shareClasses = this.getShareClasses
       .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
-      .map((x) => { const { action, ...rest } = x; return rest })
+      .map((x) => {
+        const { action, ...rest } = x
+        rest.hasMaximumShares = !!rest.hasMaximumShares // change null -> false
+        rest.hasRightsOrRestrictions = !!rest.hasRightsOrRestrictions // change null -> false
+        return rest
+      })
 
     // filter out removed series and delete "action" property
     for (const [index, share] of shareClasses.entries()) {
       shareClasses[index].series = share.series
         .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
-        .map((x) => { const { action, ...rest } = x; return rest })
+        .map((x) => {
+          const { action, ...rest } = x
+          rest.hasMaximumShares = !!rest.hasMaximumShares // change null -> false
+          rest.hasRightsOrRestrictions = !!rest.hasRightsOrRestrictions // change null -> false
+          return rest
+        })
     }
 
     return shareClasses
@@ -1107,7 +1344,7 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
   }
 
   /**
-   * Builds Folio Number data into the filing.
+   * Builds Transactional Folio Number data into the filing.
    * @param filing the filing
    * @returns the updated filing
    */
@@ -1115,8 +1352,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
     const fn = this.getFolioNumber
     const tfn = this.getTransactionalFolioNumber
 
-    // if a Transactional Folio Number was entered then override the Folio Number
-    if (tfn !== fn) {
+    // if a Transactional Folio Number was entered then override the Business Folio Number
+    if (tfn && tfn !== fn) {
       filing.header.folioNumber = tfn
       filing.header.isTransactionalFolioNumber = true
     }
@@ -1129,8 +1366,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    * @param filing the filing
    */
   private buildStaffPayment (
-    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF |
-            ChgRegistrationFilingIF | SpecialResolutionFilingIF
+    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF | ChgRegistrationFilingIF |
+      RestorationFilingIF | SpecialResolutionFilingIF
   ): any {
     // Populate Staff Payment according to payment option
     switch (this.getStaffPayment.option) {
@@ -1163,8 +1400,8 @@ export default class FilingTemplateMixin extends Mixins(DateMixin, EnumMixin) {
    * @param filing the filing to parse
    */
   private storeStaffPayment (
-    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF |
-            ChgRegistrationFilingIF | SpecialResolutionFilingIF
+    filing: AlterationFilingIF | CorrectionFilingIF | ConversionFilingIF | ChgRegistrationFilingIF |
+      RestorationFilingIF | SpecialResolutionFilingIF
   ): void {
     // Parse staff payment
     if (filing.header.routingSlipNumber) {
