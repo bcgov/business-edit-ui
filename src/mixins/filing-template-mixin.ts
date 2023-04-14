@@ -400,7 +400,10 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // Apply NR / business name / business type change to filing
     if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
-      filing.changeOfName = { nameRequest: this.getNameRequest }
+      filing.changeOfName = {
+        nameRequest: this.getNameRequest,
+        legalName: this.getNameRequest.legalName
+      }
     }
 
     if (this.getDocumentOptionalEmail) {

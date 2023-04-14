@@ -26,7 +26,7 @@ describe('Special Resolution Summary component', () => {
   const signatory = {
     givenName: 'User',
     familyName: 'One',
-    additionalName: null
+    additionalName: ''
   }
 
   beforeAll(() => {

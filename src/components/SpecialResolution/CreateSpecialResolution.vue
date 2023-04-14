@@ -236,7 +236,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   protected signatory: PersonIF = {
     givenName: '',
     familyName: '',
-    additionalName: null
+    additionalName: ''
   }
 
   /** Validation rule for individual name fields */
@@ -430,7 +430,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
       {
         givenName: '',
         familyName: '',
-        additionalName: null
+        additionalName: ''
       }
     this.resolution = this.getSpecialResolution.resolution || ''
     this.resolutionDateText = this.getSpecialResolution.resolutionDate || ''

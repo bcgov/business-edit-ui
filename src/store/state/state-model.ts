@@ -145,7 +145,7 @@ export const stateModel: StateModelIF = {
     signatory: {
       givenName: '',
       familyName: '',
-      additionalName: null
+      additionalName: ''
     },
     resolutionConfirmed: false
   },
