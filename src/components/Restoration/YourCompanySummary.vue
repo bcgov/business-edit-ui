@@ -42,11 +42,11 @@
           <v-col cols="3">
             <label><strong>Restoration Type</strong></label>
           </v-col>
-          <v-col cols="8" class="mt-n1" v-if="isLimitedExtendRestorationFiling">
+          <v-col cols="8" v-if="isLimitedExtendRestorationFiling">
             <div class="font-weight-bold">Limited Restoration Extension</div>
             <div>Extension Time: {{ getFormattedExpiryText() }}</div>
           </v-col>
-          <v-col cols="8" class="mt-n1" v-if="isLimitedConversionRestorationFiling">
+          <v-col cols="8" v-if="isLimitedConversionRestorationFiling">
             <div class="font-weight-bold">Conversion to Full Restoration</div>
             <div>Applicant's relationship: {{ getRelationshipString }}</div>
           </v-col>
@@ -55,12 +55,13 @@
           <v-col cols="3">
             <label><strong>Approval Type</strong></label>
           </v-col>
-          <v-col cols="8" class="mt-n1">
+          <v-col cols="8">
             <div class="font-weight-bold">Approved by Court Order</div>
             <div v-if="getCourtOrder">Court Order Number: {{ getCourtOrderNumberText }}</div>
           </v-col>
         </v-row>
       </div>
+      <v-divider class="mx-4 my-1" />
 
       <!-- Office Addresses -->
       <div class="section-container">
