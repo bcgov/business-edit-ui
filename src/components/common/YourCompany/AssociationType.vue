@@ -1,5 +1,9 @@
 <template>
-  <div id="association-type">
+  <div
+    id="association-type"
+    class="section-container"
+    :class="{'invalid-section': invalidSection}"
+  >
     <v-row no-gutters>
       <!-- Row Title -->
       <v-col cols="3">
@@ -119,7 +123,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CoopTypes } from '@/enums'
 import { CommonMixin } from '@/mixins'
@@ -128,13 +133,14 @@ import { VuetifyRuleFunction } from '@/types'
 import { CoopTypeToDescription } from '@/utils'
 import { useStore } from '@/store/store'
 
-@Component({})
-export default class AssociationType extends Mixins(CommonMixin) {
-  @Prop({ default: false }) readonly invalidSection!: boolean
-
+@Component({
+  mixins: [CommonMixin]
+})
+export default class AssociationType extends Vue {
   /** Global getters */
   @Getter(useStore) getAssociationType!: CoopTypes
   @Getter(useStore) getBusinessInformation!: BusinessInformationIF
+  @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
@@ -142,6 +148,7 @@ export default class AssociationType extends Mixins(CommonMixin) {
 
   /** Global actions */
   @Action(useStore) setBusinessInformation!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
   /** Select options */
   readonly associationTypeOptions: Array<any> = [
@@ -159,16 +166,19 @@ export default class AssociationType extends Mixins(CommonMixin) {
     }
   ]
 
-  protected selectedAssociationType: CoopTypes = null
+  protected selectedAssociationType = null as CoopTypes
   protected isEditingAssociationType = false
-
-  /** V-model for dropdown menu. */
-  protected dropdown: boolean = null
+  protected dropdown = false // v-model for dropdown menu
 
   /** Validation rules. */
   readonly AssociationTypeRules: Array<VuetifyRuleFunction> = [
     v => !!v || 'This field is required' // is not empty
   ]
+
+  /** The section validity state (when prompted by app). */
+  get invalidSection (): boolean {
+    return (this.getComponentValidate && this.isEditingAssociationType)
+  }
 
   get associationDescription (): string {
     return CoopTypeToDescription(this.getAssociationType)
@@ -186,21 +196,23 @@ export default class AssociationType extends Mixins(CommonMixin) {
   }
 
   /** Reset association type value to original */
-  private resetAssociationType () {
+  protected resetAssociationType () {
     this.setBusinessInformation(this.getEntitySnapshot.businessInfo)
     this.isEditingAssociationType = false
   }
 
   /** Submit association type value */
-  private submitAssociationTypeChange () {
+  protected submitAssociationTypeChange () {
     this.setBusinessInformation({ ...this.getBusinessInformation, associationType: this.selectedAssociationType })
     this.isEditingAssociationType = false
   }
 
-  @Emit('isEditingAssociationType')
+  /** Updates store initially and when isEditingAssociationType property has changed. */
   @Watch('isEditingAssociationType', { immediate: true })
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private isEditingAssociationTypeChange (isEditing: boolean): void {}
+  private onEditingAssociationTypeChanged (): void {
+    const isValid = !this.isEditingAssociationType
+    this.setValidComponent({ key: 'isValidAssociationType', value: isValid })
+  }
 }
 </script>
 

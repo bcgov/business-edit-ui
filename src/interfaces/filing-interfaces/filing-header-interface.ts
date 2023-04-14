@@ -1,3 +1,5 @@
+import { FilingStatus } from '@/enums'
+
 /** Interface for filing header object UI sends to API. */
 export interface FilingHeaderIF {
   name: string
@@ -6,6 +8,7 @@ export interface FilingHeaderIF {
   folioNumber?: string // also used for staff BCOL payments
   isTransactionalFolioNumber?: boolean
   documentOptionalEmail?: string
+  status?: FilingStatus
 
   // future effective properties:
   effectiveDate?: string

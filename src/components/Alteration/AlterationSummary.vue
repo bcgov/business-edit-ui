@@ -161,13 +161,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { ActionBindingIF, FlagsReviewCertifyIF, FeesIF, ResolutionsIF } from '@/interfaces/'
+import { ActionBindingIF, EffectiveDateTimeIF, FeesIF, FlagsReviewCertifyIF, ResolutionsIF }
+  from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
-import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -176,24 +178,26 @@ import { useStore } from '@/store/store'
     NameTranslation,
     ResolutionDates,
     ShareStructures
-  }
+  },
+  mixins: [DateMixin, FeeMixin, FilingTemplateMixin]
 })
-export default class AlterationSummary extends Mixins(
-  DateMixin,
-  FeeMixin,
-  FilingTemplateMixin
-) {
+export default class AlterationSummary extends Vue {
   // for template
   readonly GetCorpFullDescription = GetCorpFullDescription
 
   // Global getters
-  @Getter(useStore) getBusinessNumber!: string
-  @Getter(useStore) getOriginalResolutions!: ResolutionsIF[]
-  @Getter(useStore) getCurrentFees!: FeesIF[]
-  @Getter(useStore) isBusySaving!: boolean
-  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter(useStore) haveNewResolutionDates!: boolean
   @Getter(useStore) areProvisionsRemoved!: boolean
+  @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) getCurrentFees!: FeesIF[]
+  @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getOriginalResolutions!: ResolutionsIF[]
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) haveNameTranslationsChanged!: boolean
+  @Getter(useStore) haveNewResolutionDates!: boolean
+  @Getter(useStore) isBusySaving!: boolean
 
   // Global actions
   @Action(useStore) setEffectiveDateValid!: ActionBindingIF

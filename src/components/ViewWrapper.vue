@@ -92,8 +92,9 @@ export default class App extends Vue {
   }
 
   // Global getters
-  // @Getter getCurrentJsDate!: Date
+  // @Getter(useStore) getCurrentJsDate!: Date
   @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getFilingData!: FilingDataIF[]
   @Getter(useStore) getFilingId!: number

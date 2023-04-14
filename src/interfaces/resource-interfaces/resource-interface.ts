@@ -13,7 +13,7 @@ export interface ResourceIF {
   description?: string // BEN corrections only
   filingData: FilingDataIF | Array<FilingDataIF>
   changeData?: {
-    nameChangeOptions?: Array<NameChangeOptions>
+    nameChangeOptions: Array<NameChangeOptions>
     typeChangeInfo?: string
     orgPersonInfo?: {
       orgPersonLabel: string

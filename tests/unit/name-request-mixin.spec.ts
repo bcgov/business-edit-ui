@@ -7,12 +7,13 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd, NameRequestTypes } from '@/enums'
 
+setActivePinia(createPinia())
+const store = useStore()
+
 describe('Name Request Mixin', () => {
   let wrapper: Wrapper<Vue>
   let vm: any
   let get: any
-  setActivePinia(createPinia())
-  const store = useStore()
 
   beforeEach(async () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
@@ -22,11 +23,15 @@ describe('Name Request Mixin', () => {
       addressLabel: '',
       filingData: null,
       changeData: {
-        nameRequestTypes: [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION]
+        nameRequestTypes: [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION],
+        nameChangeOptions: []
       },
       certifyClause: ''
     }
+
     get = sinon.stub(axios, 'get')
+
+    // mount the component and wait for everything to stabilize
     wrapper = shallowMount(MixinTester)
     vm = wrapper.vm
     await Vue.nextTick()

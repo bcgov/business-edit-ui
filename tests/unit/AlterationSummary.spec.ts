@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-import { createLocalVue, createWrapper, mount } from '@vue/test-utils'
+import { createWrapper, mount } from '@vue/test-utils'
 import AlterationSummary from '@/components/Alteration/AlterationSummary.vue'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
@@ -12,8 +12,6 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
-
-const localVue = createLocalVue()
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())
@@ -51,7 +49,7 @@ describe('Alteration Summary component', () => {
     store.stateModel.summaryMode = true
     store.stateModel.nameTranslations = nameTranslationsListChanged as any
 
-    wrapper = mount(AlterationSummary, { vuetify, localVue })
+    wrapper = mount(AlterationSummary, { vuetify })
   })
 
   afterEach(() => {

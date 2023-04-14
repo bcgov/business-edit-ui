@@ -52,6 +52,7 @@ import { DateMixin, FilingTemplateMixin, NameRequestMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { Navigate } from '@/utils/'
 import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 /** This component is only implemented for Correction filings atm. */
 @Component({
@@ -63,16 +64,18 @@ import { useStore } from '@/store/store'
 })
 export default class Actions extends Vue {
   // Global getters
-  @Getter(useStore) isBusySaving!: boolean
-  @Getter(useStore) hasCorrectionDataChanged!: boolean
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getFilingId!: number
   @Getter(useStore) hasAlterationDataChanged!: boolean // for testing state-getters
+  @Getter(useStore) hasCorrectionDataChanged!: boolean
   @Getter(useStore) havePeopleAndRolesChanged!: boolean // for testing state-getters
+  @Getter(useStore) isBusySaving!: boolean
+  @Getter(useStore) isCorrectionEditing!: boolean
   @Getter(useStore) isCorrectionValid!: boolean
+  @Getter(useStore) isFilingPaying!: boolean
   @Getter(useStore) isSaving!: boolean
   @Getter(useStore) isSavingResuming!: boolean
-  @Getter(useStore) isFilingPaying!: boolean
-  @Getter(useStore) isCorrectionEditing!: boolean
-  @Getter(useStore) getFilingId!: number
 
   // Global actions
   @Action(useStore) setIsSaving!: ActionBindingIF

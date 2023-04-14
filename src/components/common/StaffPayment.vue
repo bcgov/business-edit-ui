@@ -51,7 +51,7 @@ export default class StaffPayment extends Vue {
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber!: string
 
-  /** Whether sub-component should show invalid section styling. */
+  /** True if this component is invalid. */
   get invalidStaffPayment (): boolean {
     return (this.getAppValidate && !this.getFlagsReviewCertify.isValidStaffPayment)
   }

@@ -23,7 +23,7 @@
                 :textAreaStyle="'filled'"
                 :maxLength="maxLength"
                 :rowCount="2"
-                @valid="onValidityChange($event)"
+                @valid="setDetailValidity($event)"
               />
             </div>
           </v-col>
@@ -54,7 +54,7 @@ export default class Detail extends Mixins(FilingTemplateMixin) {
 
   @Action(useStore) setDetailValidity!: ActionBindingIF
 
-  protected comment: string = null
+  protected comment = null as string
 
   get maxLength (): number {
     // = (max size in db) - (default comment length) - (Carriage Return)
@@ -68,10 +68,6 @@ export default class Detail extends Mixins(FilingTemplateMixin) {
   /** True if invalid class should be set for certify section container. */
   get invalidSection (): boolean {
     return (this.validate && !this.isValid)
-  }
-
-  protected onValidityChange (valid: boolean): void {
-    this.setDetailValidity(valid)
   }
 
   @Watch('comment')

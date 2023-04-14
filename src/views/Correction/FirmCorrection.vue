@@ -1,10 +1,19 @@
 <template>
   <section id="firm-correction-view">
     <header>
-      <h1>{{ entityTitle }}</h1>
+      <h1>Register Correction</h1>
     </header>
 
-    <YourCompany class="mt-10" />
+    <YourCompanyWrapper class="mt-10">
+      <div>
+        <EntityName />
+        <BusinessType />
+      </div>
+      <BusinessStartDate />
+      <NatureOfBusiness />
+      <OfficeAddresses />
+      <BusinessContactInfo />
+    </YourCompanyWrapper>
 
     <PeopleAndRoles class="mt-10" />
 
@@ -35,9 +44,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany }
+import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, CompletingParty, Detail,
+  EntityName, NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment, YourCompanyWrapper }
   from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF }
@@ -45,29 +56,41 @@ import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF }
 import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { GpCorrectionResource, SpCorrectionResource } from '@/resources/Correction/'
-
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
 
 /** Correction sub-component for corp class "Firm" entities. */
 @Component({
   components: {
+    BusinessContactInfo,
+    BusinessStartDate,
+    BusinessType,
     CertifySection,
     CompletingParty,
     Detail,
+    EntityName,
+    NatureOfBusiness,
+    OfficeAddresses,
     PeopleAndRoles,
     StaffPayment,
-    YourCompany
-  }
+    YourCompanyWrapper
+  },
+  mixins: [CommonMixin, FeeMixin, FilingTemplateMixin]
 })
-export default class FirmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
+export default class FirmCorrection extends Vue {
   // Global getters
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) isClientErrorCorrection!: boolean
   @Getter(useStore) isPartnership!: boolean
   @Getter(useStore) isSoleProp!: boolean
 
   // Global actions
+  @Action(useStore) setFilingData!: ActionBindingIF
   @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setCertifyStatementResource!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF
+  @Action(useStore) setStaffPayment!: ActionBindingIF
 
   /** The draft correction filing to process. */
   @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF

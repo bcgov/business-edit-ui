@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import ChangeBusinessType from '@/components/common/YourCompany/ChangeBusinessType.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
@@ -8,9 +8,8 @@ import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd as CorpTypeModuleCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
-
-const localVue = createLocalVue()
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -19,7 +18,7 @@ describe('CorrectBusinessType in a Correction', () => {
 
   beforeEach(() => {
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
-    wrapper = mount(ChangeBusinessType, { vuetify, localVue })
+    wrapper = mount(ChangeBusinessType, { vuetify })
   })
 
   afterEach(() => {
@@ -48,7 +47,7 @@ describe('ChangeBusinessType in an Alteration', () => {
     store.stateModel.entitySnapshot = entitySnapshot
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
 
-    wrapper = mount(ChangeBusinessType, { vuetify, localVue })
+    wrapper = mount(ChangeBusinessType, { vuetify })
   })
 
   afterEach(() => {

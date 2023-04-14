@@ -12,7 +12,7 @@ export enum ComponentsCompanyInfo {
   'business-start-date',
   'nature-of-business',
   'office-addresses',
-  'contact-info-section',
+  'business-contact-info',
   'folio-number-section',
   'people-and-roles',
   'share-structures',

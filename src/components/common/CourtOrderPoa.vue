@@ -42,18 +42,18 @@ export default class CourtOrderPoa extends Vue {
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber!: string
 
-  /** Store getters */
+  // Store getters
   @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getFileNumber!: string
   @Getter(useStore) getHasPlanOfArrangement!: boolean
 
-  /** Global actions */
+  // Store actions
   @Action(useStore) setValidCourtOrder!: ActionBindingIF
   @Action(useStore) setHasPlanOfArrangement!: ActionBindingIF
   @Action(useStore) setFileNumber!: ActionBindingIF
 
-  /** Local getters */
+  /** True if this component is invalid. */
   get invalidCourtOrder (): boolean {
     return (this.getAppValidate && !this.getFlagsReviewCertify.isValidCourtOrder)
   }

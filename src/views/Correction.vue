@@ -11,7 +11,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
@@ -29,9 +30,10 @@ import { useStore } from '@/store/store'
     ViewWrapper,
     CorpCorrection,
     FirmCorrection
-  }
+  },
+  mixins: [CommonMixin]
 })
-export default class Correction extends Mixins(CommonMixin) {
+export default class Correction extends Vue {
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
 
@@ -45,7 +47,7 @@ export default class Correction extends Mixins(CommonMixin) {
   @Action(useStore) setFilingId!: ActionBindingIF
   @Action(useStore) setEntityType!: ActionBindingIF
 
-  protected correctionFiling: CorrectionFilingIF = null
+  correctionFiling = null as CorrectionFilingIF
 
   /** The dynamic component to render. */
   get component (): string {

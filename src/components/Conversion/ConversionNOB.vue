@@ -1,5 +1,9 @@
 <template>
-  <section id="nature-of-business">
+  <div
+    id="nature-of-business"
+    class="section-container"
+    :class="{'invalid-section': invalidSection}"
+  >
     <v-row no-gutters>
       <v-col cols="12" sm="3" class="pr-4">
         <label :class="{'error-text': invalidSection}">Nature of Business</label>
@@ -77,26 +81,26 @@
         </div>
       </v-col>
     </v-row>
-  </section>
+  </div>
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { CommonMixin } from '@/mixins/'
-import { ActionBindingIF } from '@/interfaces/'
+import { ActionBindingIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 import { useStore } from '@/store/store'
 
 @Component({})
 export default class ConversionNOB extends Mixins(CommonMixin) {
-  /** Whether to show invalid section styling. */
-  @Prop({ default: false }) readonly invalidSection!: boolean
-
+  @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentNaics!: NaicsIF
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter(useStore) getSnapshotNaics!: NaicsIF
   @Getter(useStore) hasNaicsChanged!: boolean
 
@@ -104,7 +108,7 @@ export default class ConversionNOB extends Mixins(CommonMixin) {
   @Action(useStore) setValidComponent!: ActionBindingIF
 
   // local variables
-  protected dropdown = false
+  protected dropdown = false // v-model for dropdown menu
   protected onEditMode = false
   protected naicsText = ''
 
@@ -112,6 +116,11 @@ export default class ConversionNOB extends Mixins(CommonMixin) {
     (v: string) => !!v || 'Nature of Business is required',
     (v: string) => (v?.length <= 300) || 'Maximum 300 characters reached'
   ]
+
+  /** The section validity state (when prompted by app). */
+  get invalidSection (): boolean {
+    return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidNatureOfBusiness)
+  }
 
   /** The NAICS code, description or (Not entered). */
   get naicsSummary (): string {

@@ -1,16 +1,18 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { createLocalVue, mount, Wrapper } from '@vue/test-utils'
+import { mount, Wrapper } from '@vue/test-utils'
 import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
 import flushPromises from 'flush-promises'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
+
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
 /**
@@ -67,14 +69,12 @@ describe('Effective Date Time component', () => {
   })
 
   beforeEach(() => {
-    const localVue = createLocalVue()
-
     wrapperFactory = (stateValues) => {
       // apply state values
       Object.keys(stateValues).forEach((key) => {
         store.stateModel[key] = stateValues[key]
       })
-      return mount(EffectiveDateTime, { localVue, vuetify })
+      return mount(EffectiveDateTime, { vuetify })
     }
   })
 

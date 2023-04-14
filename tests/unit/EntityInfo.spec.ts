@@ -8,11 +8,12 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
-const state = store.stateModel
+
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
 describe('Entity Info component in a Correction as a named company', () => {
@@ -45,10 +46,10 @@ describe('Entity Info component in a Correction as a named company', () => {
   }
 
   beforeAll(() => {
-    state.tombstone.keycloakRoles = ['staff']
-    state.businessInformation = mockFiling.business as any
-    state.tombstone.businessId = mockFiling.business.identifier
-    state.businessContact = mockFiling.incorporationApplication.contactPoint
+    store.stateModel.tombstone.keycloakRoles = ['staff']
+    store.stateModel.businessInformation = mockFiling.business as any
+    store.stateModel.tombstone.businessId = mockFiling.business.identifier
+    store.stateModel.businessContact = mockFiling.incorporationApplication.contactPoint
     store.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: 'My Mock Name Inc.'
@@ -115,10 +116,10 @@ describe('Entity Info component in a Correction as a numbered company', () => {
   }
 
   beforeAll(() => {
-    state.tombstone.keycloakRoles = ['staff']
-    state.businessInformation = mockFiling.business as any
-    state.tombstone.businessId = mockFiling.business.identifier
-    state.businessContact = mockFiling.incorporationApplication.contactPoint
+    store.stateModel.tombstone.keycloakRoles = ['staff']
+    store.stateModel.businessInformation = mockFiling.business as any
+    store.stateModel.tombstone.businessId = mockFiling.business.identifier
+    store.stateModel.businessContact = mockFiling.incorporationApplication.contactPoint
     store.stateModel.entitySnapshot = {
       businessInfo: {
         legalName: null

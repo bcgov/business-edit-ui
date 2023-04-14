@@ -12,12 +12,12 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 const localVue = createLocalVue()
 localVue.use(VueRouter)
+const router = mockRouter.mock()
 
-const router: any = mockRouter.mock()
 setActivePinia(createPinia())
 const store = useStore()
 

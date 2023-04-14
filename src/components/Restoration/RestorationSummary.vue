@@ -11,7 +11,7 @@
 
           <v-col cols="8" class="mt-n1">
             <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
-            <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
+            <div class="company-name mt-2">{{ getNameRequestNumber }}</div>
           </v-col>
         </v-row>
       </div>
@@ -28,26 +28,28 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { FeesIF } from '@/interfaces/'
-import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
+import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { NameTranslation } from '@/components/common/'
 import { useStore } from '@/store/store'
 
 @Component({
   components: {
     NameTranslation
-  }
+  },
+  mixins: [DateMixin, FeeMixin, FilingTemplateMixin]
 })
-export default class RestorationSummary extends Mixins(
-  DateMixin,
-  FeeMixin,
-  FilingTemplateMixin
-) {
+export default class RestorationSummary extends Vue {
   // Global getters
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentFees!: FeesIF[]
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) haveNameTranslationsChanged!: boolean
   @Getter(useStore) isBusySaving!: boolean
 
   /** Whether to perform validation. */

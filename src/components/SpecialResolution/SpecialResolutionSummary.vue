@@ -21,7 +21,7 @@
 
           <v-col cols="8" class="mt-n1">
             <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
-            <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
+            <div class="company-name mt-2">{{ getNameRequestNumber }}</div>
           </v-col>
         </v-row>
       </div>
@@ -52,9 +52,11 @@
 
 <script lang="ts">
 // this is a placceholder copied from AlterationSummary, Will add component when working on this page
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
-import { FeesIF } from '@/interfaces/'
+import { CoopTypes } from '@/enums'
+import { EntitySnapshotIF, FeesIF } from '@/interfaces/'
 import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
 import { CoopTypeToDescription } from '@/utils'
@@ -63,18 +65,19 @@ import { useStore } from '@/store/store'
 @Component({
   components: {
     CreateSpecialResolutionSummary
-  }
+  },
+  mixins: [DateMixin, FeeMixin, FilingTemplateMixin]
 })
-export default class SpecialResolutionSummary extends Mixins(
-  DateMixin,
-  FeeMixin,
-  FilingTemplateMixin
-) {
+export default class SpecialResolutionSummary extends Vue {
   // Global getters
+  @Getter(useStore) getAssociationType!: CoopTypes
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentFees!: FeesIF[]
-  @Getter(useStore) isBusySaving!: boolean
-  @Getter(useStore) getCurrentJsDate!: Date
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) hasAssociationTypeChanged!: boolean
+  @Getter(useStore) hasBusinessNameChanged!: boolean
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean

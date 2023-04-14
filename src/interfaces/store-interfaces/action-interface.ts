@@ -6,7 +6,7 @@ export interface ActionIF {
 }
 
 export interface ActionBindingIF {
-  (x: any): void
+  (x?: any): void
 }
 
 export interface ActionKvIF {

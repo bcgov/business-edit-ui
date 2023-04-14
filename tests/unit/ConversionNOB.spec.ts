@@ -37,29 +37,18 @@ const entitySnapShot = {
   resolutions: null
 }
 
-const initialProps = {
-  onEditMode: false,
-  naicsText: ''
-}
-
 describe('ConversionNatureOfBusiness without update', () => {
   let wrapperFactory: any
   let wrapper: any
+
   setActivePinia(createPinia())
   const store = useStore()
 
   beforeEach(() => {
     store.stateModel.businessInformation = businessInformation as any
     store.stateModel.entitySnapshot = entitySnapShot as any
-    wrapperFactory = (propsData: any) => {
-      return mount(ConversionNOB, {
-        propsData: {
-          ...propsData
-        },
-        vuetify
-      })
-    }
-    wrapper = wrapperFactory(initialProps)
+    wrapperFactory = () => mount(ConversionNOB, { vuetify })
+    wrapper = wrapperFactory()
   })
 
   afterEach(() => {
@@ -120,9 +109,7 @@ describe('ConversionNatureOfBusiness without update', () => {
   })
 
   it('simulates error for over 300 characters length', async () => {
-    const wrapper = wrapperFactory({ ...initialProps,
-      naicsRules: ['Maximum 300 characters reached']
-    })
+    const wrapper = wrapperFactory()
 
     const changeBtn = wrapper.find('#nob-change-btn')
     await changeBtn.trigger('click')
@@ -151,6 +138,7 @@ describe('ConversionNatureOfBusiness without update', () => {
 describe('ConversionNatureOfBusiness after the update', () => {
   let wrapperFactory: any
   let wrapper: any
+
   setActivePinia(createPinia())
   const store = useStore()
 
@@ -158,18 +146,8 @@ describe('ConversionNatureOfBusiness after the update', () => {
     store.stateModel.businessInformation = updatedBusinessInfo as any
     store.stateModel.entitySnapshot = entitySnapShot as any
 
-    wrapperFactory = (propsData: any) => {
-      return mount(ConversionNOB, {
-        propsData: {
-          ...propsData
-        },
-        vuetify
-      })
-    }
-    wrapper = wrapperFactory({
-      onEditMode: false,
-      dropdown: false
-    })
+    wrapperFactory = () => mount(ConversionNOB, { vuetify })
+    wrapper = wrapperFactory()
   })
 
   afterEach(() => {

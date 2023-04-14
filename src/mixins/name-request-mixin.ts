@@ -122,12 +122,10 @@ export default class NameRequestMixin extends Vue {
    */
   getNrRequestDesc (nrRequestType: NameRequestTypes): string {
     switch (nrRequestType) {
-      case NameRequestTypes.NEW:
-        return 'New Business'
-      case NameRequestTypes.CHANGE_OF_NAME:
-        return 'Change of Name'
-      case NameRequestTypes.CONVERSION:
-        return 'Conversion'
+      case NameRequestTypes.NEW: return 'New Business'
+      case NameRequestTypes.CHANGE_OF_NAME: return 'Change of Name'
+      case NameRequestTypes.CONVERSION: return 'Conversion'
+      default: return null // should never happen
     }
   }
 }

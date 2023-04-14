@@ -6,17 +6,18 @@ import sinon from 'sinon'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import { Articles } from '@/components/Alteration/'
-import { CertifySection, Detail, PeopleAndRoles, ShareStructures, StaffPayment, YourCompany, CompletingParty }
-  from '@/components/common/'
+import { BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityName, FolioInformation,
+  NameTranslation, OfficeAddresses, PeopleAndRoles, RecognitionDateTime, ShareStructures, StaffPayment,
+  YourCompanyWrapper } from '@/components/common/'
 import CorpCorrection from '@/views/Correction/CorpCorrection.vue'
 import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { ActionTypes, CorpTypeCd, FilingTypes } from '@/enums'
+import { AccountTypes, ActionTypes, CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -32,8 +33,10 @@ describe('Corp Correction component', () => {
   sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
   sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
+
   store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
   store.stateModel.tombstone.businessId = 'BC1234567'
+  store.stateModel.accountInformation.accountType = AccountTypes.PREMIUM
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -136,6 +139,7 @@ describe('Corp Correction component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'correction' })
+
     wrapper = shallowMount(CorpCorrection, { localVue,
       router,
       vuetify,
@@ -162,7 +166,13 @@ describe('Corp Correction component', () => {
   })
 
   it('loads each component', async () => {
-    expect(wrapper.findComponent(YourCompany).exists()).toBe(true)
+    expect(wrapper.findComponent(YourCompanyWrapper).exists()).toBe(true)
+    expect(wrapper.findComponent(EntityName).exists()).toBe(true)
+    expect(wrapper.findComponent(NameTranslation).exists()).toBe(true)
+    expect(wrapper.findComponent(RecognitionDateTime).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
     expect(wrapper.findComponent(PeopleAndRoles).exists()).toBe(true)
     expect(wrapper.findComponent(ShareStructures).exists()).toBe(true)
     expect(wrapper.findComponent(Articles).exists()).toBe(true)

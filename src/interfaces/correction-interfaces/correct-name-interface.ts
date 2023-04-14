@@ -16,7 +16,7 @@ export interface NrCorrectionIF {
   expiry: string,
   requestType: string,
   status: NameRequestStates,
-  applicant: NameRequestApplicantIF | object
+  applicant: NameRequestApplicantIF
 }
 
 export interface NrResponseIF {

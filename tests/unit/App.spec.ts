@@ -26,7 +26,6 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())
@@ -349,7 +348,7 @@ describe.skip('Numbered company setup', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'define-company', query: { id: 'T7654321' } })
-    // Still need store for sbc-common-components
+
     wrapper = shallowMount(App, { localVue, router, vuetify, stubs: { Affix: true } })
 
     // wait for all queries to complete
@@ -464,7 +463,7 @@ describe.skip('App component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'define-company', query: { id: 'T1234567' } })
-    // Still need store for sbc-common-components
+
     wrapper = shallowMount(App, { localVue, router, vuetify, stubs: { Affix: true } })
 
     // wait for all queries to complete
@@ -625,6 +624,7 @@ describe('App component - other', () => {
     const localVue = createLocalVue()
     localVue.use(VueRouter)
     const router = mockRouter.mock()
+
     wrapper = shallowMount(App, { localVue, router, vuetify, stubs: { Affix: true } })
   })
 

@@ -8,6 +8,10 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@/enums'
 
 Vue.use(Vuetify)
+const vuetify = new Vuetify({})
+
+setActivePinia(createPinia())
+const store = useStore()
 
 function getLastEvent (wrapper: Wrapper<CorrectNameToNumber>, name: string): any {
   const eventsList: Array<any> = wrapper.emitted(name)
@@ -19,14 +23,9 @@ function getLastEvent (wrapper: Wrapper<CorrectNameToNumber>, name: string): any
 }
 
 describe('CorrectNameToNumber', () => {
-  let vuetify: any
   let wrapperFactory: any
-  setActivePinia(createPinia())
-  const store = useStore()
 
   beforeEach(() => {
-    vuetify = new Vuetify({})
-
     store.stateModel.nameRequest = {
       legalName: 'Bobs Plumbing',
       legalType: CorpTypeCd.BENEFIT_COMPANY

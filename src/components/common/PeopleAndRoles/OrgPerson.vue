@@ -417,7 +417,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   /** The index of the org/person to edit, or NaN to add. */
   @Prop() readonly activeIndex!: number
 
-  // Global getter
+  // Global getters
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) isAlterationFiling!: boolean
@@ -426,8 +426,8 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   @Getter(useStore) isFirm!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
-  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
-  @Getter(useStore) isLimitedConversionRestorationFiling!: boolean
+  @Getter(useStore) isLimitedRestorationExtension!: boolean
+  @Getter(useStore) isLimitedRestorationToFull!: boolean
   @Getter(useStore) isRestorationFiling!: boolean
   @Getter(useStore) isRoleStaff!: boolean
 
@@ -579,7 +579,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       // cannot remove proprietor/partner
       return false
     }
-    if (this.isLimitedConversionRestorationFiling || this.isLimitedExtendRestorationFiling) {
+    if (this.isLimitedRestorationToFull || this.isLimitedRestorationExtension) {
       return true
     }
     return false // should never happen

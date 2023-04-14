@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import mockRouter from './MockRouter'
@@ -9,15 +8,10 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
-Vue.use(Vuelidate)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
-
-function resetStore (): void {
-  store.stateModel.nameTranslations = []
-}
 
 // Local references
 const addTranslationInput = '#name-translation-input'

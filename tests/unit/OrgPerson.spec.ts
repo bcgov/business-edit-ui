@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
-import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
+import { mount, Wrapper } from '@vue/test-utils'
 import OrgPerson from '@/components/common/PeopleAndRoles/OrgPerson.vue'
 import { BenCorrectionResource } from '@/resources/Correction/BEN'
 import { SpChangeResource } from '@/resources/Change/SP'
@@ -13,10 +13,15 @@ import { CorpTypeCd, FilingTypes } from '@/enums'
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()
 
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
+document.body.setAttribute('data-app', 'true')
+
 Vue.use(Vuetify)
+const vuetify = new Vuetify({})
+
+// needed for address component
 Vue.use(Vuelidate)
 
-const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -192,12 +197,7 @@ function createComponent (
   currentOrgPerson: any,
   activeIndex = NaN
 ): Wrapper<OrgPerson> {
-  const localVue = createLocalVue()
-  localVue.use(Vuetify)
-  document.body.setAttribute('data-app', 'true')
-
   return mount(OrgPerson, {
-    localVue,
     propsData: { currentOrgPerson, activeIndex },
     vuetify
   })

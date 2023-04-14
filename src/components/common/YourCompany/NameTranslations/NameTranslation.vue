@@ -1,5 +1,10 @@
 <template>
-  <div id="name-translation" v-if="!isSummaryMode || hasNameTranslationChange">
+  <div
+    v-if="!isSummaryMode || hasNameTranslationChange"
+    id="name-translation"
+    class="section-container"
+    :class="{'invalid-section': invalidSection}"
+  >
     <ConfirmDialogShared
       ref="confirmTranslationDialog"
       attach="#name-translation"
@@ -149,13 +154,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Watch } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash'
 import { Action, Getter } from 'pinia-class'
 import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { ListNameTranslation, AddNameTranslation } from './'
-import { ActionBindingIF, ConfirmDialogType, NameTranslationIF } from '@/interfaces/'
+import { ActionBindingIF, ConfirmDialogType, NameTranslationIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { ActionTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
 import { useStore } from '@/store/store'
@@ -166,37 +172,48 @@ import { useStore } from '@/store/store'
     AddNameTranslation,
     ListNameTranslation,
     ConfirmDialogShared
-  }
+  },
+  mixins: [CommonMixin]
 })
-export default class NameTranslation extends Mixins(CommonMixin) {
+export default class NameTranslation extends Vue {
   // Refs
   $refs!: {
     confirmTranslationDialog: ConfirmDialogType
   }
 
-  @Prop({ default: false }) readonly invalidSection!: boolean
   @Prop({ default: false }) readonly isSummaryMode!: boolean
 
-  // Global getter
+  // Global getters
+  @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter(useStore) getNameTranslations!: NameTranslationIF[]
-  @Getter(useStore) isLimitedConversionRestorationFiling!: boolean
-  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
+  @Getter(useStore) isLimitedRestorationExtension!: boolean
+  @Getter(useStore) isLimitedRestorationToFull!: boolean
 
   // Global actions
   @Action(useStore) setEditingNameTranslations!: ActionBindingIF
   @Action(useStore) setNameTranslations!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
-  // Declaration for template
+  // declaration for template
   readonly ActionTypes = ActionTypes
 
-  // Local properties
-  private draftTranslations: NameTranslationIF[] = []
-  private isEditing = false
-  private isAddingNameTranslation = false
-  private editingNameTranslation = ''
-  private editIndex = -1
+  // local properties
+  protected draftTranslations: NameTranslationIF[] = []
+  protected isEditing = false
+  protected isAddingNameTranslation = false
+  protected editingNameTranslation = ''
+  protected editIndex = -1
+
+  /** The section validity state (when prompted by app). */
+  get invalidSection (): boolean {
+    return (
+      this.getComponentValidate &&
+      !this.getFlagsCompanyInfo.isValidNameTranslation
+    )
+  }
 
   get hasPendingChange (): boolean {
     return (
@@ -228,8 +245,8 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     return !(
       this.hasNameTranslationChange ||
       this.isSummaryMode ||
-      this.isLimitedConversionRestorationFiling ||
-      this.isLimitedExtendRestorationFiling
+      this.isLimitedRestorationToFull ||
+      this.isLimitedRestorationExtension
     )
   }
 
@@ -362,11 +379,11 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     this.draftTranslations = cloneDeep(this.getNameTranslations)
   }
 
-  /** Updates store when local Editing property has changed. */
+  /** Sets validity in store initially and when validity conditions have changed. */
   @Watch('isEditing', { immediate: true })
-  @Emit('isEditingTranslations')
-  private onEditingChanged (isEditing: boolean): void {
-    this.setEditingNameTranslations(isEditing)
+  private updateValidity (): void {
+    const isValid = !this.isEditing
+    this.setValidComponent({ key: 'isValidNameTranslation', value: isValid })
   }
 }
 </script>

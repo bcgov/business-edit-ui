@@ -1,7 +1,7 @@
 <template>
   <section id="people-and-roles">
     <!-- Restoration conversion and extension add buttons -->
-    <div v-if="(isLimitedConversionRestorationFiling || isLimitedExtendRestorationFiling)">
+    <div v-if="(isLimitedRestorationToFull || isLimitedRestorationExtension)">
       <article>
         <section>
           <h3 :class="{ 'invalid': !hasApplicant }">Your application must include one of the following:</h3>
@@ -190,9 +190,9 @@
       :activeIndex="activeIndex"
       :validate="getComponentValidate"
       :validOrgPersons="validOrgPersons"
-      :showDeliveryAddressColumn="!(isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling)"
+      :showDeliveryAddressColumn="!(isLimitedRestorationExtension || isLimitedRestorationToFull)"
       :showRolesColumn="isBenBcCccUlcCorrectionFiling"
-      :showEmailColumn="isLimitedExtendRestorationFiling || isLimitedConversionRestorationFiling"
+      :showEmailColumn="isLimitedRestorationExtension || isLimitedRestorationToFull"
       :showEmailUnderName="showEmailUnderName"
       @initEdit="initEdit($event)"
       @addEdit="addEdit($event)"
@@ -246,8 +246,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter(useStore) isFirmChangeFiling!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
   @Getter(useStore) isFirmCorrectionFiling!: boolean
-  @Getter(useStore) isLimitedConversionRestorationFiling!: boolean
-  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
+  @Getter(useStore) isLimitedRestorationExtension!: boolean
+  @Getter(useStore) isLimitedRestorationToFull!: boolean
   @Getter(useStore) isPartnership!: boolean
   @Getter(useStore) isRestorationFiling!: boolean
   @Getter(useStore) isRoleStaff!: boolean
@@ -493,8 +493,8 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     this.currentOrgPerson.actions = actions
 
     // for firms and restoration (extension and conversion) applciations, use business lookup initially
-    if (this.isPartnership || this.isSoleProp || this.isLimitedExtendRestorationFiling ||
-       this.isLimitedConversionRestorationFiling) {
+    if (this.isPartnership || this.isSoleProp || this.isLimitedRestorationExtension ||
+       this.isLimitedRestorationToFull) {
       this.currentOrgPerson.isLookupBusiness = true
     }
 

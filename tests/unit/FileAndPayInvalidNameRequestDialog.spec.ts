@@ -7,8 +7,8 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd as CorpTypeModuleCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 

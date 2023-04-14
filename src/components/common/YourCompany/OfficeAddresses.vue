@@ -1,5 +1,9 @@
 <template>
-  <div id="office-addresses">
+  <div
+    id="office-addresses"
+    class="section-container"
+    :class="{'invalid-section': invalidSection}"
+  >
     <!-- Addresses Summary -->
     <template v-if="!isEditing">
       <v-row id="summary-registered-address" class="mx-0" no-gutters>
@@ -413,12 +417,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { isEmpty, isEqual } from 'lodash'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-import { ActionBindingIF, AddressIF, AddressesIF, ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, AddressIF, AddressesIF, FlagsCompanyInfoIF, ResourceIF } from '@/interfaces/'
 import { IsSame } from '@/utils/'
 import { AddressTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
@@ -435,24 +440,24 @@ const COUNTRY_CA = 'CA'
     RecDeliveryAddress: BaseAddress,
     RegMailingAddress: BaseAddress,
     RegDeliveryAddress: BaseAddress
-  }
+  },
+  mixins: [CommonMixin]
 })
-export default class OfficeAddresses extends Mixins(CommonMixin) {
+export default class OfficeAddresses extends Vue {
   // Refs for BaseAddress components so we can access form validation
   $refs!: {
     mailingAddress: any
     deliveryAddress: any
   }
 
-  /** Whether to show invalid section styling. */
-  @Prop({ default: false }) readonly invalidSection!: boolean
-
   /** Prop to set readonly state (ie disable form actions). */
   @Prop({ default: false }) readonly isSummaryView!: boolean
 
   // Global getters
+  @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter(useStore) getOfficeAddresses!: AddressesIF // NB: may be {}
   @Getter(useStore) getOriginalOfficeAddresses!: AddressesIF
   @Getter(useStore) getResource!: ResourceIF
@@ -494,16 +499,15 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   }
 
   /** Whether to show the editable forms for the addresses (true) or the static display addresses (false). */
-  private isEditing = false
+  protected isEditing = false
 
-  /** V-model for dropdown menu. */
-  protected dropdown = false
+  protected dropdown = false // v-model for dropdown menu
 
   // The 4 addresses that are the current state of the BaseAddress sub-components:
-  private mailingAddress: AddressIF = {}
-  private deliveryAddress: AddressIF = {}
-  private recMailingAddress: AddressIF = {}
-  private recDeliveryAddress: AddressIF = {}
+  protected mailingAddress = {} as AddressIF
+  protected deliveryAddress = {} as AddressIF
+  protected recMailingAddress = {} as AddressIF
+  protected recDeliveryAddress = {} as AddressIF
 
   // The 4 validation events from each BaseAddress sub-component:
   private mailingAddressValid = true
@@ -512,13 +516,18 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   private recDeliveryAddressValid = true
 
   /** Model value for "same as (registered) mailing address" checkbox. */
-  private inheritMailingAddress = true
+  protected inheritMailingAddress = true
 
   /** Model value for "same as registered address" checkbox. */
-  private inheritRegisteredAddress = true
+  protected inheritRegisteredAddress = true
 
   /** Model value for "same as (records) mailing address" checkbox. */
-  private inheritRecMailingAddress = true
+  protected inheritRecMailingAddress = true
+
+  /** The section validity state (when prompted by app). */
+  get invalidSection (): boolean {
+    return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidAddress)
+  }
 
   /** Whether to disable "same as" checkbox. */
   get disableSameDeliveryAddress (): boolean {
@@ -868,10 +877,7 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
     this.updateValidity()
   }
 
-  /**
-   * Updates component validity when any address validity has changed.
-   * Also called when addresses are set/reset.
-   */
+  /** Sets validity in store initially and when validity conditions have changed. */
   @Watch('mailingAddressValid')
   @Watch('deliveryAddressValid')
   @Watch('recMailingAddressValid')
