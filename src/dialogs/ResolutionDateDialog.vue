@@ -33,7 +33,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { cloneDeep } from 'lodash'
@@ -42,16 +43,17 @@ import { DateMixin } from '@/mixins/'
 import { useStore } from '@/store/store'
 
 @Component({
-  components: { DatePickerShared }
+  components: { DatePickerShared },
+  mixins: [DateMixin]
 })
-export default class ResolutionDateDialog extends Mixins(DateMixin) {
+export default class ResolutionDateDialog extends Vue {
   /** Prop to provide attachment selector. */
   @Prop() readonly attach!: string
 
   /** Prop to display the dialog. */
   @Prop() readonly dialog!: boolean
 
-  // Global getter
+  // Global getters
   @Getter(useStore) getBusinessFoundingDateTime!: string
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getNewResolutionDates!: string []

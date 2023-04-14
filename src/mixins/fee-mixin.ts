@@ -45,7 +45,7 @@ export default class FeeMixin extends Vue {
     return `$${futureEffectiveFeesSum.toFixed(2)}`
   }
 
-  /** Called when staff payment data has changed. */
+  /** Called by Staff Payment component when data has changed. */
   protected onStaffPaymentChanges (): void {
     // update filing data with staff payment fields
     const filingData = [...this.getFilingData]

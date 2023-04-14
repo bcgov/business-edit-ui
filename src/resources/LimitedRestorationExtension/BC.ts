@@ -20,7 +20,8 @@ export const BcRestorationResource: ResourceIF = {
       orgPersonLabel: 'Applicant',
       orgTypesLabel: 'Business or Corporation',
       subtitle: null // not used
-    }
+    },
+    nameChangeOptions: []
   },
   certifyClause: 'Note: It is an offence to make or assist in making a false or misleading statement in a record ' +
     'filed under the BC Corporations Act. ' +

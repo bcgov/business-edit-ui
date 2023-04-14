@@ -133,7 +133,6 @@ export const stateModel: StateModelIF = {
     companyName: false,
     nameTranslations: false,
     officeAddresses: false,
-    folioNumber: false,
     peopleAndRoles: false,
     shareStructure: false
   },

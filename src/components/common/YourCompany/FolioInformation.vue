@@ -1,21 +1,28 @@
 <template>
-  <FolioNumberShared
-    :initialValue="getFolioNumber"
-    :originalValue="originalFolioNumber"
-    :editLabel="getEditLabel"
-    :editedLabel="editedLabelExtended"
-    :hideActions="hideActions"
-    :invalidSection="invalidSection"
-    @newFolioNumber="onNewFolioNumber($event)"
-    @haveChanges="onHaveChanges($event)"
-    @isEditing="onIsEditing($event)"
-  />
+  <div
+    v-if="isPremiumAccount"
+    id="folio-information"
+    class="section-container"
+    :class="{'invalid-section': invalidSection}"
+  >
+    <FolioNumberShared
+      :initialValue="getFolioNumber"
+      :originalValue="originalFolioNumber"
+      :editLabel="getEditLabel"
+      :editedLabel="editedLabelExtended"
+      :hideActions="hideActions"
+      :invalidSection="invalidSection"
+      @newFolioNumber="onNewFolioNumber($event)"
+      @isEditing="isEditingFolioNumber = $event"
+    />
+  </div>
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { ActionBindingIF, EntitySnapshotIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number/'
@@ -23,28 +30,38 @@ import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-
 import { useStore } from '@/store/store'
 
 @Component({
-  components: { FolioNumberShared }
+  components: {
+    FolioNumberShared
+  },
+  mixins: [CommonMixin]
 })
-export default class FolioInformation extends Mixins(CommonMixin) {
+export default class FolioInformation extends Vue {
   // Global getters
   @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter(useStore) getFolioNumber!: string
   @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
+  @Getter(useStore) isPremiumAccount!: boolean
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global setters
   @Action(useStore) setFolioNumber!: ActionBindingIF
-  @Action(useStore) setEditingFolioNumber!: ActionBindingIF
-  @Action(useStore) setValidComponent!: ActionBindingIF
   @Action(useStore) setTransactionalFolioNumber!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
-  /** Whether to show invalid section styling. */
-  @Prop({ default: false }) readonly invalidSection!: boolean
+  // local properties
+  protected isEditingFolioNumber = false
+
+  /** The section validity state (when prompted by app). */
+  get invalidSection (): boolean {
+    return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidFolioInfo)
+  }
 
   /** The original Folio Number. */
   get originalFolioNumber (): string {
@@ -90,16 +107,11 @@ export default class FolioInformation extends Mixins(CommonMixin) {
     }
   }
 
-  /** On Have Changes event, emits event. */
-  @Emit('haveChanges')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected onHaveChanges (val: boolean): void {}
-
-  /** On Is Editing event, updates store and emits event. */
-  @Emit('isEditing')
-  protected onIsEditing (val: boolean): void {
-    this.setEditingFolioNumber(val)
-    this.setValidComponent({ key: 'isValidFolioInfo', value: !val })
+  /** Sets validity in store initially and when validity conditions have changed. */
+  @Watch('isEditingFolioNumber')
+  protected updateValidity (): void {
+    const isValid = !this.isEditingFolioNumber
+    this.setValidComponent({ key: 'isValidFolioInfo', value: isValid })
   }
 }
 </script>

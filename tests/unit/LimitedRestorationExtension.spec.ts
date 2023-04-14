@@ -6,24 +6,26 @@ import mockRouter from './MockRouter'
 import { AuthServices, LegalServices, PayServices } from '@/services/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import LimitedRestorationExtension from '@/views/LimitedRestorationExtension.vue'
-import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 import CertifySection from '@/components/common/CertifySection.vue'
 import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAndRoles.vue'
 import DocumentsDelivery from '@/components/common/DocumentsDelivery.vue'
 import PeopleAndRoles from '@/components/common/PeopleAndRoles/PeopleAndRoles.vue'
 import StaffPayment from '@/components/common/StaffPayment.vue'
-import YourCompany from '@/components/common/YourCompany/YourCompany.vue'
-import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
+import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
 import { BenRestorationResource } from '@/resources/LimitedRestorationExtension/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { FilingTypes } from '@/enums'
+import { AccountTypes, FilingTypes } from '@/enums'
+import { EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
+  YourCompanyWrapper } from '@/components/common'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
+
 // mock data
 const filing = {
   header: {
@@ -187,7 +189,7 @@ const filingFees = {
 sessionStorage.setItem('PAY_API_URL', 'https://pay.api.url/')
 sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token') // anything non-falsy
 
-describe('Restoration component - edit page', () => {
+describe('Limited Restoration Extension component - edit page', () => {
   const { assign } = window.location
   let wrapper: any
 
@@ -237,6 +239,7 @@ describe('Restoration component - edit page', () => {
     store.stateModel.entitySnapshot = entitySnapshot as any
     store.stateModel.entitySnapshot.businessInfo.stateFiling = stateFiling as any
     store.stateModel.businessInformation = { ...entitySnapshot.businessInfo } as any
+    store.stateModel.accountInformation.accountType = AccountTypes.PREMIUM
     store.resourceModel = BenRestorationResource
 
     await router.push({ name: 'limitedRestorationExtension', query: { 'restoration-id': '1234' } })
@@ -253,10 +256,17 @@ describe('Restoration component - edit page', () => {
     wrapper.destroy()
   })
 
-  it('renders the page correctly', () => {
+  it('renders Limited Restoration Extension view and sub-components', () => {
     expect(wrapper.findComponent(LimitedRestorationExtension).exists()).toBe(true)
-    expect(wrapper.find('#limited-restoration-extension').exists()).toBe(true)
+    expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true)
     expect(wrapper.find('section header').text()).toBe('Limited Restoration Extension')
+    expect(wrapper.findComponent(YourCompanyWrapper).exists()).toBe(true)
+    expect(wrapper.findComponent(EntityName).exists()).toBe(true)
+    expect(wrapper.findComponent(NameTranslation).exists()).toBe(true)
+    expect(wrapper.findComponent(RecognitionDateTime).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
   })
 
   it('loads the entity snapshot into the store', async () => {
@@ -276,7 +286,7 @@ describe('Restoration component - edit page', () => {
   })
 
   it('renders the Your Company component correctly', () => {
-    expect(wrapper.findComponent(YourCompany).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
   })
 
   it('renders the People And Roles component correctly', () => {
@@ -285,7 +295,7 @@ describe('Restoration component - edit page', () => {
   })
 })
 
-describe('Restoration component - summary page (with filing changes)', () => {
+xdescribe('Limited Restoration Extension component - summary page (with filing changes)', () => {
   const { assign } = window.location
   let wrapper: any
 
@@ -337,6 +347,7 @@ describe('Restoration component - summary page (with filing changes)', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'limitedRestorationExtension', query: { 'restoration-id': '1234' } })
+
     wrapper = mount(LimitedRestorationExtension, {
       localVue,
       router,
@@ -361,29 +372,29 @@ describe('Restoration component - summary page (with filing changes)', () => {
     wrapper.destroy()
   })
 
-  xit('renders the page correctly', () => {
+  it('renders the page correctly', () => {
     expect(wrapper.findComponent(LimitedRestorationExtension).exists()).toBe(true)
     // expect(wrapper.find('section header').text()).toBe('Review and Certify')
   })
 
-  xit('renders the ListPeopleAndRoles component correctly for Applicant', () => {
+  it('renders the ListPeopleAndRoles component correctly for Applicant', () => {
     expect(wrapper.findComponent(ListPeopleAndRoles).exists()).toBe(true)
   })
 
-  xit('renders the Documents Delivery component correctly', () => {
+  it('renders the Documents Delivery component correctly', () => {
     expect(wrapper.findComponent(DocumentsDelivery).exists()).toBe(true)
   })
 
-  xit('renders the Certify Section component correctly', () => {
+  it('renders the Certify Section component correctly', () => {
     expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
   })
 
-  xit('renders the Staff Payment component correctly', () => {
+  it('renders the Staff Payment component correctly', () => {
     expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
   })
 })
 
-xdescribe('Restoration component - summary page (with no filing changes)', () => {
+xdescribe('Limited Restoration Extension component - summary page (with no filing changes)', () => {
   const { assign } = window.location
   let wrapper: any
 
@@ -419,6 +430,7 @@ xdescribe('Restoration component - summary page (with no filing changes)', () =>
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'limitedRestorationToFull', query: { 'restoration-id': '1234' } })
+
     wrapper = mount(LimitedRestorationExtension, {
       localVue,
       router,

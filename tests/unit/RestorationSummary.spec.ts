@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-import { createLocalVue, createWrapper, mount } from '@vue/test-utils'
+import { createWrapper, mount } from '@vue/test-utils'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
@@ -12,14 +12,14 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@/enums'
 
 Vue.use(Vuetify)
-
-const localVue = createLocalVue()
 const vuetify = new Vuetify({})
 
+setActivePinia(createPinia())
+const store = useStore()
+
+// FUTURE: update tests
 xdescribe('Restoration Summary component', () => {
   let wrapper: any
-  setActivePinia(createPinia())
-  const store = useStore()
 
   const entitySnapshot = {
     businessInfo: {
@@ -50,7 +50,7 @@ xdescribe('Restoration Summary component', () => {
     store.stateModel.summaryMode = true
     store.stateModel.nameTranslations = nameTranslationsListChanged as any
 
-    wrapper = mount(RestorationSummary, { vuetify, localVue })
+    wrapper = mount(RestorationSummary, { vuetify })
   })
 
   afterEach(() => {

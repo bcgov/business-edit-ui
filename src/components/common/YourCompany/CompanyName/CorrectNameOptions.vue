@@ -1,5 +1,5 @@
 <template>
-  <v-container id="name-options-container" class="pa-0 pr-4">
+  <v-container id="correct-name-options" class="pa-0 pr-4">
     <p class="info-text mb-5 pb-5 bottom-border" v-if="!isOneOption">
       You can correct the company name in one of the following ways:
     </p>

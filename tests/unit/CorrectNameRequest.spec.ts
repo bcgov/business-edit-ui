@@ -13,6 +13,8 @@ import { CorpTypeCd } from '@/enums'
 console.warn = jest.fn()
 
 Vue.use(Vuetify)
+const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -26,12 +28,10 @@ function getLastEvent (wrapper: Wrapper<any>, name: string): any {
 }
 
 describe('CorrectNameRequest', () => {
-  let vuetify: any
   let wrapperFactory: any
   const get = sinon.stub(axios, 'get')
 
   beforeEach(() => {
-    vuetify = new Vuetify({})
     store.stateModel.tombstone.entityType = CorpTypeCd.BC_COMPANY
 
     wrapperFactory = (props: any) => {

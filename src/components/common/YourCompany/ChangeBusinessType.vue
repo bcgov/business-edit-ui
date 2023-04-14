@@ -18,7 +18,7 @@
         </span>
 
         <!-- Type change tooltip -->
-        <v-tooltip v-if="isFirm || isCoop"
+        <v-tooltip v-if="typeChangeInfo"
                     top
                     content-class="top-tooltip"
                     transition="fade-transition"
@@ -44,6 +44,7 @@
             Business Types do not match. The Name Request type must match the business type before you can continue.
           </span>
         </v-tooltip>
+
         <template v-if="hasBusinessTypeChanged">
           <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
           <div class="confirmed-msg">
@@ -245,12 +246,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) hasBusinessTypeChanged!: boolean
   @Getter(useStore) isBcCompany!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
-  @Getter(useStore) isCoop!: boolean
-  @Getter(useStore) isFirm!: boolean
 
   @Action(useStore) setEntityType!: ActionBindingIF
 
-  protected selectedEntityType: CorpTypeCd = null
+  protected selectedEntityType = null as CorpTypeCd
   protected confirmArticles = false
   protected helpToggle = false
   protected isEditingType = false
@@ -307,14 +306,14 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   /** Reset company type values to original. */
-  private resetType () {
+  protected resetType () {
     this.setEntityType(this.getEntitySnapshot?.businessInfo?.legalType)
     this.isEditingType = false
     this.confirmArticles = false
   }
 
   /** Submit new company type. */
-  private submitTypeChange () {
+  protected submitTypeChange () {
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
   }

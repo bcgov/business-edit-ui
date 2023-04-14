@@ -7,9 +7,10 @@ import { useStore } from '@/store/store'
 import { ActionTypes, CorpTypeCd, CorrectionErrorTypes, FilingTypes } from '@/enums'
 import { ApprovalTypes, RestorationTypes } from '@bcrs-shared-components/enums'
 
+// Vuetify is needed for Actions component
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -24,7 +25,7 @@ describe('State Getters', () => {
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(Actions, { vuetify })
+    const wrapper = shallowMount(Actions)
     vm = wrapper.vm
     await Vue.nextTick()
   })
@@ -82,29 +83,29 @@ describe('State Getters', () => {
     store.setCertifyStateValidity(false)
 
     // verify that the Staff Payment Valid flag alone does nothing
-    await vm.$store.commit('mutateStaffPaymentValidity', true)
+    store.setStaffPaymentValidity(true)
     expect(vm.isCorrectionValid).toBe(false)
-    await vm.$store.commit('mutateStaffPaymentValidity', false)
+    store.setStaffPaymentValidity(false)
 
     // verify that all flags works
-    await vm.$store.commit('mutatePeopleAndRolesValidity', true)
-    await vm.$store.commit('mutateCreateShareStructureStepValidity', true)
-    await vm.$store.commit('mutateDetailValidity', true)
-    await vm.$store.commit('mutateCertifyState', {
+    store.setPeopleAndRolesValidity(true)
+    store.setCreateShareStructureStepValidity(true)
+    store.setDetailValidity(true)
+    store.setCertifyState({
       valid: true,
       certifiedBy: 'user'
     })
-    await vm.$store.commit('mutateCertifyStateValidity', true)
-    await vm.$store.commit('mutateStaffPaymentValidity', true)
+    store.setCertifyStateValidity(true)
+    store.setStaffPaymentValidity(true)
     expect(vm.isCorrectionValid).toBe(true)
-    await vm.$store.commit('mutatePeopleAndRolesValidity', false)
-    await vm.$store.commit('mutateDetailValidity', false)
-    await vm.$store.commit('mutateCertifyState', {
+    store.setPeopleAndRolesValidity(false)
+    store.setDetailValidity(false)
+    store.setCertifyState({
       valid: false,
       certifiedBy: ''
     })
-    await vm.$store.commit('mutateCertifyStateValidity', false)
-    await vm.$store.commit('mutateStaffPaymentValidity', false)
+    store.setCertifyStateValidity(false)
+    store.setStaffPaymentValidity(false)
     expect(vm.isCorrectionValid).toBe(false)
   })
 
@@ -192,12 +193,6 @@ describe('State Getters', () => {
     store.setEditingOfficeAddresses(false)
     expect(vm.isCorrectionEditing).toBe(false)
 
-    // verify that the Editing Folio Number flag works
-    store.setEditingFolioNumber(true)
-    expect(vm.isCorrectionEditing).toBe(true)
-    store.setEditingFolioNumber(false)
-    expect(vm.isCorrectionEditing).toBe(false)
-
     // verify that the Editing People And Roles flag works
     store.setEditingPeopleAndRoles(true)
     expect(vm.isCorrectionEditing).toBe(true)
@@ -249,7 +244,7 @@ describe('Alteration getters', () => {
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(Actions, { vuetify })
+    const wrapper = shallowMount(Actions)
     vm = wrapper.vm
     await Vue.nextTick()
   })
@@ -323,7 +318,7 @@ describe('BEN correction getters', () => {
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(Actions, { vuetify })
+    const wrapper = shallowMount(Actions)
     vm = wrapper.vm
     await Vue.nextTick()
   })

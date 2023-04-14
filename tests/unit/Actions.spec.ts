@@ -11,8 +11,8 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd, CorrectionErrorTypes, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -272,6 +272,7 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'review-confirm', query: { id: 'T1234567' } })
+
     wrapper = shallowMount(Actions, { localVue, router, vuetify })
   })
 
@@ -528,6 +529,7 @@ describe.skip('Actions component - Filing Functionality', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'define-company', query: { id: 'T1234567' } })
+
     wrapper = shallowMount(Actions, { localVue, router, vuetify })
 
     // Mock the function calls that may used by updateFiling below

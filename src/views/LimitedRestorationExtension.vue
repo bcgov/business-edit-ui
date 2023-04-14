@@ -7,6 +7,7 @@
           <header>
             <h1>Limited Restoration Extension</h1>
           </header>
+
           <QuestionWrapper
             id="applicant-information"
             title="Applicant Information"
@@ -23,7 +24,16 @@
             <ExtendTimeLimit />
           </QuestionWrapper>
 
-          <YourCompany class="mt-10" />
+          <YourCompanyWrapper class="mt-10">
+            <div>
+              <EntityName />
+              <NameTranslation />
+            </div>
+            <RecognitionDateTime />
+            <OfficeAddresses />
+            <BusinessContactInfo />
+            <FolioInformation />
+          </YourCompanyWrapper>
         </div>
       </v-slide-x-transition>
 
@@ -92,11 +102,12 @@ import { v4 as uuidv4 } from 'uuid'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
-import { CertifySection, DocumentsDelivery, PeopleAndRoles, ListPeopleAndRoles, StaffPayment,
-  YourCompany } from '@/components/common/'
+import { BusinessContactInfo, CertifySection, DocumentsDelivery, EntityName, FolioInformation,
+  ListPeopleAndRoles, NameTranslation, OfficeAddresses, PeopleAndRoles, QuestionWrapper,
+  RecognitionDateTime, StaffPayment, YourCompanyWrapper } from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
-import { ActionBindingIF, EntitySnapshotIF, OrgPersonIF,
-  ResourceIF, RestorationFilingIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, OrgPersonIF, ResourceIF, RestorationFilingIF }
+  from '@/interfaces/'
 import { FilingStatus, RoleTypes } from '@/enums/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationExtension/'
@@ -104,25 +115,30 @@ import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summ
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel/'
 import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
-import QuestionWrapper from '@/components/common/QuestionWrapper.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { AuthServices, LegalServices } from '@/services'
 import { useStore } from '@/store/store'
 
 @Component({
   components: {
+    BusinessContactInfo,
     CertifySection,
     DocumentsDelivery,
+    EntityName,
     ExtendTimeLimit,
     FeeSummaryShared,
+    FolioInformation,
     LimitedRestorationPanel,
     ListPeopleAndRoles,
+    NameTranslation,
+    OfficeAddresses,
     PeopleAndRoles,
     QuestionWrapper,
+    RecognitionDateTime,
     RestorationSummary,
     StaffPayment,
     ViewWrapper,
-    YourCompany,
+    YourCompanyWrapper,
     YourCompanySummary
   },
   mixins: [
@@ -135,6 +151,7 @@ import { useStore } from '@/store/store'
 export default class LimitedRestorationExtension extends Vue {
   // Global getters
   @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getOrgPeople!: OrgPersonIF[]
   @Getter(useStore) getResource!: ResourceIF
@@ -149,6 +166,7 @@ export default class LimitedRestorationExtension extends Vue {
   // Global actions
   @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action(useStore) setEntitySnapshot: ActionBindingIF
+  @Action(useStore) setFilingData!: ActionBindingIF
   @Action(useStore) setFilingId!: ActionBindingIF
   @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF
@@ -156,6 +174,8 @@ export default class LimitedRestorationExtension extends Vue {
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
+
+  /** The restoration filing ID. */
   @Prop({ default: 0 }) readonly restorationId!: number
 
   /** The resource object for a restoration filing. */

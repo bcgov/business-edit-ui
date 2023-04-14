@@ -28,7 +28,7 @@
         </div>
         <p v-if="!getIsResolutionDatesValid" class="error-text small-text mt-6">
           You must add a resolution or court order date because your share structure contains a class or series of
-          shares with special rights or restrictions and changes were made to you share structure.
+          shares with special rights or restrictions and changes were made to your share structure.
         </p>
       </v-col>
 

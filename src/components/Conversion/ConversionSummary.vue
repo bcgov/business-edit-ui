@@ -62,7 +62,6 @@ import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { ListPeopleAndRoles } from '@/components/common/'
 import { OfficeAddresses } from '@/components/common/YourCompany'
-import { ResourceIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { useStore } from '@/store/store'
 
@@ -77,7 +76,6 @@ export default class ConversionSummary extends Vue {
   @Getter(useStore) hasNaicsChanged!: boolean
   @Getter(useStore) haveOfficeAddressesChanged!: boolean
   @Getter(useStore) havePeopleAndRolesChanged!: boolean
-  @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) getCurrentNaics!: NaicsIF
   @Getter(useStore) isSoleProp!: boolean
 
