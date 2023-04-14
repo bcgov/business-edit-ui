@@ -22,7 +22,7 @@ export interface OrgPersonIF {
   confirmNameChange?: boolean // for UI use only
   confirmBusiness?: boolean // for firms only // for UI use only
   confirmDocuments?: boolean // for proprietor-orgs only // for UI use only
-  isLookupBusiness: boolean // for firms only // for UI use only
+  isLookupBusiness?: boolean // for firms only // for UI use only
 }
 
 /**

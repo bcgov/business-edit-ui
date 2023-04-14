@@ -1,15 +1,10 @@
 /* eslint max-len: 0 */
 import Vue from 'vue'
-import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import ErrorContact from '@/components/common/ErrorContact.vue'
-import { DateMixin } from '@/mixins/'
+import MixinTester from '@/mixin-tester.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
-Vue.use(Vuetify)
-
-const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -18,8 +13,7 @@ describe('Date Mixin', () => {
 
   beforeAll(async () => {
     // mount the component and wait for everything to stabilize
-    // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(ErrorContact, { vuetify, mixins: [DateMixin] })
+    const wrapper = shallowMount(MixinTester)
     vm = wrapper.vm
     await Vue.nextTick()
   })

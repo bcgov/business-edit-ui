@@ -32,7 +32,6 @@ export interface StateModelIF {
     companyName: boolean
     nameTranslations: boolean
     officeAddresses: boolean
-    folioNumber: boolean
     peopleAndRoles: boolean
     shareStructure: boolean
   }

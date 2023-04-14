@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { ConfirmDialogType } from '@/interfaces/'
-import { RouteNames } from '@/enums'
 
 /**
  * Mixin that provides some useful common utilities.
@@ -76,19 +75,6 @@ export default class CommonMixin extends Vue {
   /** Changes the specified prop to uppercase. */
   uppercase (prop: string): void {
     this[prop] = this[prop]?.toUpperCase()
-  }
-
-  /** The entity title. */
-  get entityTitle (): string {
-    switch (this.$route.name) {
-      case RouteNames.ALTERATION: return 'Company Information'
-      case RouteNames.CHANGE: return 'Business Information'
-      case RouteNames.CONVERSION: return 'Record Conversion'
-      case RouteNames.CORRECTION: return 'Register Correction'
-      case RouteNames.RESTORATION_EXTENSION: return 'Limited Restoration Extension'
-      case RouteNames.RESTORATION_CONVERSION: return 'Conversion to Full Restoration'
-    }
-    return 'Unknown Filing' // should never happen
   }
 
   /**

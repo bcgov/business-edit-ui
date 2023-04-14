@@ -13,9 +13,11 @@ import { CorpTypeCd, FilingTypes } from '@/enums'
 console.warn = jest.fn()
 
 Vue.use(Vuetify)
+const vuetify = new Vuetify({})
+
+// needed for address component
 Vue.use(Vuelidate)
 
-const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const store = useStore()
 

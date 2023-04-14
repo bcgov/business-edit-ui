@@ -7,7 +7,6 @@ import CorrectNameRequest from '@/components/common/YourCompany/CompanyName/Corr
 import CorrectNameToNumber from '@/components/common/YourCompany/CompanyName/CorrectNameToNumber.vue'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
 
 describe('CorrectNameOptions', () => {
@@ -25,30 +24,25 @@ describe('CorrectNameOptions', () => {
     }
   })
 
-  it('renders the CorrectNameOptions Component and default subcomponents', async () => {
-    correctionNameChoices = ['correct-new-nr']
-    const wrapper = wrapperFactory({ correctionNameChoices })
-
-    expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(true)
-  })
-
-  it('renders the CorrectNameRequest when a numbered company', async () => {
+  it('renders the appropriate choices for a numbered company', async () => {
     correctionNameChoices = ['correct-new-nr']
     const wrapper = wrapperFactory({ correctionNameChoices })
     await Vue.nextTick()
 
-    // Verify correct sub components are mounted
+    // Verify correct components are rendered
+    expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(true)
     expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
     expect(wrapper.findComponent(CorrectCompanyName).exists()).toBe(false)
     expect(wrapper.findComponent(CorrectNameToNumber).exists()).toBe(false)
   })
 
-  it('renders the Correction selector when correcting a Named Company', async () => {
+  it('renders the appropriate choices for a named company', async () => {
     correctionNameChoices = ['correct-name', 'correct-new-nr', 'correct-name-to-number']
     const wrapper = wrapperFactory({ correctionNameChoices })
     await Vue.nextTick()
 
-    // Verify correct sub components are mounted
+    // Verify correct components are rendered
+    expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(true)
     expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
     expect(wrapper.findComponent(CorrectCompanyName).exists()).toBe(true)
     expect(wrapper.findComponent(CorrectNameToNumber).exists()).toBe(true)

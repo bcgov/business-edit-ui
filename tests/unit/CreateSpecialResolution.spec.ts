@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import CreateSpecialResolution from '@/components/SpecialResolution/CreateSpecialResolution.vue'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { HelpSection } from '@/components/common/'
@@ -10,9 +10,8 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@/enums'
 
 Vue.use(Vuetify)
-
-const localVue = createLocalVue()
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -53,7 +52,7 @@ describe('Special Resolution Form component', () => {
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
     store.stateModel.summaryMode = false
 
-    wrapper = mount(CreateSpecialResolution, { vuetify, localVue })
+    wrapper = mount(CreateSpecialResolution, { vuetify })
   })
 
   afterEach(() => {

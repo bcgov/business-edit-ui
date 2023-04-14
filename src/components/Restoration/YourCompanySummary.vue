@@ -42,11 +42,11 @@
           <v-col cols="3">
             <label><strong>Restoration Type</strong></label>
           </v-col>
-          <v-col cols="8" v-if="isLimitedExtendRestorationFiling">
+          <v-col cols="8" v-if="isLimitedRestorationExtension">
             <div class="font-weight-bold">Limited Restoration Extension</div>
             <div>Extension Time: {{ getFormattedExpiryText() }}</div>
           </v-col>
-          <v-col cols="8" v-if="isLimitedConversionRestorationFiling">
+          <v-col cols="8" v-if="isLimitedRestorationToFull">
             <div class="font-weight-bold">Conversion to Full Restoration</div>
             <div>Applicant's relationship: {{ getRelationshipString }}</div>
           </v-col>
@@ -96,8 +96,8 @@ export default {
       'getStateFilingRestoration',
       'hasBusinessNameChanged',
       'haveNameTranslationsChanged',
-      'isLimitedConversionRestorationFiling',
-      'isLimitedExtendRestorationFiling'
+      'isLimitedRestorationExtension',
+      'isLimitedRestorationToFull'
     ]),
     getStateFilingApprovalType () {
       return this.getStateFilingRestoration?.approvalType

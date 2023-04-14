@@ -8,6 +8,7 @@ import { ApprovalTypes } from '@bcrs-shared-components/enums'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 

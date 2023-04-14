@@ -122,7 +122,7 @@ import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
-import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces/'
+import { ActionBindingIF, ConfirmDialogType } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { RouteNames } from '@/enums/'
@@ -155,9 +155,9 @@ export default class App extends Vue {
 
   // Global getters
   @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentJsDate!: Date
-  @Getter(useStore) getFilingData!: FilingDataIF[]
   @Getter(useStore) getFilingId!: number
   @Getter(useStore) getOrgInfo!: any
   @Getter(useStore) getUserEmail!: string
@@ -168,7 +168,6 @@ export default class App extends Vue {
   @Getter(useStore) getUserUsername!: string
   @Getter(useStore) haveUnsavedChanges!: boolean
   @Getter(useStore) isBusySaving!: boolean
-  @Getter(useStore) isConflictingLegalType!: boolean
   @Getter(useStore) isCorrectionEditing!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
   @Getter(useStore) isRoleStaff!: boolean
@@ -217,6 +216,19 @@ export default class App extends Vue {
 
   /** The Update Current JS Date timer id. */
   private updateCurrentJsDateId = 0
+
+  /** The entity title. */
+  get entityTitle (): string {
+    switch (this.$route.name) {
+      case RouteNames.ALTERATION: return 'Company Information'
+      case RouteNames.CHANGE: return 'Business Information'
+      case RouteNames.CONVERSION: return 'Record Conversion'
+      case RouteNames.CORRECTION: return 'Register Correction'
+      case RouteNames.RESTORATION_EXTENSION: return 'Limited Restoration Extension'
+      case RouteNames.RESTORATION_CONVERSION: return 'Conversion to Full Restoration'
+    }
+    return 'Unknown Filing' // should never happen
+  }
 
   /** The route breadcrumbs list. */
   get breadcrumbs (): Array<BreadcrumbIF> {
@@ -483,7 +495,7 @@ export default class App extends Vue {
   }
 
   /** Called to navigate to dashboard. */
-  private async goToDashboard (force = false): Promise<void> {
+  protected async goToDashboard (force = false): Promise<void> {
     const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL') + this.getBusinessId
 
     // check if there are no data changes

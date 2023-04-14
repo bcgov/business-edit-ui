@@ -1,5 +1,9 @@
 <template>
-  <section id="business-start-date">
+  <div
+    id="business-start-date"
+    class="section-container"
+    :class="{'invalid-section': invalidSection}"
+  >
     <v-row no-gutters>
       <v-col cols="3" class="pr-2">
         <label :class="{'error-text': invalidSection}">
@@ -92,30 +96,34 @@
         </span>
       </v-col>
     </v-row>
-  </section>
+  </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Watch } from 'vue-property-decorator'
 import { Getter, Action } from 'pinia-class'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker'
-import { ActionBindingIF } from '@/interfaces'
+import { ActionBindingIF, FlagsCompanyInfoIF } from '@/interfaces'
 import { useStore } from '@/store/store'
 
 @Component({
   components: {
     DatePickerShared
-  }
+  },
+  mixins: [CommonMixin, DateMixin]
 })
-export default class StartDate extends Mixins(CommonMixin, DateMixin) {
+export default class BusinessStartDate extends Vue {
   // Global getters
   @Getter(useStore) getBusinessFoundingDateTime!: string
   @Getter(useStore) getBusinessStartDate!: string
+  @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCorrectionStartDate!: string
   @Getter(useStore) getCurrentJsDate!: Date
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter(useStore) hasBusinessStartDateChanged!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
   @Getter(useStore) isFirmCorrectionFiling!: boolean
@@ -124,13 +132,15 @@ export default class StartDate extends Mixins(CommonMixin, DateMixin) {
   @Action(useStore) setCorrectionStartDate!: ActionBindingIF
   @Action(useStore) setValidComponent!: ActionBindingIF
 
-  /** Whether to show invalid section styling. */
-  @Prop({ default: false }) readonly invalidSection!: boolean
-
   protected dropdown = false
   protected onEditMode = false
   protected isCorrected: boolean = null
   protected newCorrectedStartDate: string = null // date is "Month Day, Year"
+
+  /** The section validity state (when prompted by app). */
+  get invalidSection (): boolean {
+    return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidStartDate)
+  }
 
   get isApplicableFiling (): boolean {
     // can change Business Start Date in firm corrections and firm conversions only

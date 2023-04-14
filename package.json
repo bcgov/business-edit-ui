@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "4.2.3",
+  "version": "4.2.4",
   "private": true,
   "appName": "Edit UI",
   "sbcName": "SBC Common Components",
@@ -70,6 +70,7 @@
     "@types/vuelidate": "^0.7.16",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",
+    "@volar-plugins/vetur": "latest",
     "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-eslint": "^5.0.8",
     "@vue/cli-plugin-typescript": "^5.0.8",

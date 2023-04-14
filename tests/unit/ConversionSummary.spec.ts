@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import sinon from 'sinon'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import ConversionSummary from '@/components/Conversion/ConversionSummary.vue'
 import NatureOfBusiness from '@/components/common/YourCompany/NatureOfBusiness.vue'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
@@ -11,14 +11,13 @@ import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
-const localVue = createLocalVue()
 const vuetify = new Vuetify({})
+
+setActivePinia(createPinia())
+const store = useStore()
 
 describe('Conversion Summary component', () => {
   let wrapper: any
-  setActivePinia(createPinia())
-  const store = useStore()
 
   const addresses = {
     businessOffice: {
@@ -66,7 +65,7 @@ describe('Conversion Summary component', () => {
     store.stateModel.officeAddresses = addresses
     store.stateModel.summaryMode = true
 
-    wrapper = mount(ConversionSummary, { vuetify, localVue })
+    wrapper = mount(ConversionSummary, { vuetify })
   })
 
   afterEach(() => {

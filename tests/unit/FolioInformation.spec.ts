@@ -11,14 +11,29 @@ import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
 describe('Folio Information component', () => {
-  it('renders itself and its sub-component', () => {
-    const wrapper = mount(FolioInformation, { vuetify })
+  it('renders correctly when account is not premium', () => {
+    const wrapper = mount(FolioInformation, {
+      vuetify,
+      computed: { isPremiumAccount: () => false }
+    })
+
+    expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
+    expect(wrapper.findComponent(FolioNumberShared).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
+  it('renders correctly when account is premium', () => {
+    const wrapper = mount(FolioInformation, {
+      vuetify,
+      computed: { isPremiumAccount: () => true }
+    })
 
     expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
     expect(wrapper.findComponent(FolioNumberShared).exists()).toBe(true)
@@ -26,10 +41,14 @@ describe('Folio Information component', () => {
     wrapper.destroy()
   })
 
-  it('defaults Invalid Section prop', () => {
+  it('is not invalid initially', () => {
     const wrapper = mount(FolioInformation, {
       vuetify,
-      propsData: {}
+      computed: {
+        isPremiumAccount: () => true,
+        getComponentValidate: () => false,
+        getFlagsCompanyInfo: () => ({})
+      }
     })
     const vm: any = wrapper.vm
 
@@ -38,10 +57,14 @@ describe('Folio Information component', () => {
     wrapper.destroy()
   })
 
-  it('accepts Invalid Section prop', () => {
+  it('is invalid when global flag is True and component is invalid', () => {
     const wrapper = mount(FolioInformation, {
       vuetify,
-      propsData: { invalidSection: true }
+      computed: {
+        isPremiumAccount: () => true,
+        getComponentValidate: () => true,
+        getFlagsCompanyInfo: () => ({ isValidFolioInfo: false })
+      }
     })
     const vm: any = wrapper.vm
 
@@ -50,11 +73,30 @@ describe('Folio Information component', () => {
     wrapper.destroy()
   })
 
+  it('is not invalid when global flag is True and component is valid', () => {
+    const wrapper = mount(FolioInformation, {
+      vuetify,
+      computed: {
+        isPremiumAccount: () => true,
+        getComponentValidate: () => true,
+        getFlagsCompanyInfo: () => ({ isValidFolioInfo: true })
+      }
+    })
+    const vm: any = wrapper.vm
+
+    expect(vm.invalidSection).toBe(false)
+
+    wrapper.destroy()
+  })
+
   it('gets Original Folio Number for a correction', () => {
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     store.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } } as any
 
-    const wrapper = mount(FolioInformation, { vuetify })
+    const wrapper = mount(FolioInformation, {
+      vuetify,
+      computed: { isPremiumAccount: () => true }
+    })
     const vm: any = wrapper.vm
 
     expect(vm.originalFolioNumber).toBe('A123')
@@ -66,7 +108,10 @@ describe('Folio Information component', () => {
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
     store.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } } as any
 
-    const wrapper = mount(FolioInformation, { vuetify })
+    const wrapper = mount(FolioInformation, {
+      vuetify,
+      computed: { isPremiumAccount: () => true }
+    })
     const vm: any = wrapper.vm
 
     expect(vm.originalFolioNumber).toBe('A123')
@@ -78,7 +123,10 @@ describe('Folio Information component', () => {
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     store.stateModel.entitySnapshot = { authInfo: { folioNumber: null } } as any
 
-    const wrapper = mount(FolioInformation, { vuetify })
+    const wrapper = mount(FolioInformation, {
+      vuetify,
+      computed: { isPremiumAccount: () => true }
+    })
     const vm: any = wrapper.vm
 
     const mockUpdateFolioNumber = jest.spyOn((AuthServices as any), 'updateFolioNumber')
@@ -101,7 +149,10 @@ describe('Folio Information component', () => {
     // mock auth "patch business" endpoint
     sinon.stub(axios, 'patch').withArgs('myhost/basePath/auth/entities/BC1234567')
 
-    const wrapper = mount(FolioInformation, { vuetify })
+    const wrapper = mount(FolioInformation, {
+      vuetify,
+      computed: { isPremiumAccount: () => true }
+    })
     const vm: any = wrapper.vm
 
     const mockUpdateFolioNumber = jest.spyOn((AuthServices as any), 'updateFolioNumber')
@@ -115,26 +166,17 @@ describe('Folio Information component', () => {
     wrapper.destroy()
   })
 
-  it('emits Have Changes event', async () => {
-    const wrapper = mount(FolioInformation, { vuetify })
-    const vm: any = wrapper.vm
+  it('sets validity in store', async () => {
+    const wrapper = mount(FolioInformation, {
+      vuetify,
+      computed: { isPremiumAccount: () => true }
+    })
 
-    await vm.onHaveChanges(true)
-
-    expect(wrapper.emitted('haveChanges')).toEqual([[true]])
-
-    wrapper.destroy()
-  })
-
-  it('updates store and emits Is Editing event', async () => {
-    const wrapper = mount(FolioInformation, { vuetify })
-    const vm: any = wrapper.vm
-
-    await vm.onIsEditing(true)
-
-    expect(store.stateModel.editingFlags.folioNumber).toBe(true)
+    await wrapper.setData({ isEditingFolioNumber: true })
     expect(store.stateModel.validationFlags.flagsCompanyInfo['isValidFolioInfo']).toBe(false)
-    expect(wrapper.emitted('isEditing')).toEqual([[true]])
+
+    await wrapper.setData({ isEditingFolioNumber: false })
+    expect(store.stateModel.validationFlags.flagsCompanyInfo['isValidFolioInfo']).toBe(true)
 
     wrapper.destroy()
   })

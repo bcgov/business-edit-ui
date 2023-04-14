@@ -10,9 +10,11 @@ import mockRouter from './MockRouter'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { ActionTypes, FilingTypes } from '@/enums'
-Vue.use(Vuetify)
+import { AccountTypes, ActionTypes, FilingTypes } from '@/enums'
+import { BusinessContactInfo, BusinessType, EntityName, FolioInformation, NameTranslation, OfficeAddresses,
+  RecognitionDateTime, YourCompanyWrapper } from '@/components/common'
 
+Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
@@ -52,7 +54,9 @@ describe('Alteration component', () => {
 
   setActivePinia(createPinia())
   const store = useStore()
+
   store.stateModel.tombstone.businessId = 'BC1234567'
+  store.stateModel.accountInformation.accountType = AccountTypes.PREMIUM
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -270,6 +274,7 @@ describe('Alteration component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'alteration' })
+
     wrapper = shallowMount(Alteration, { localVue, router, vuetify })
 
     // wait for all queries to complete
@@ -282,9 +287,17 @@ describe('Alteration component', () => {
     wrapper.destroy()
   })
 
-  it('renders Alteration view', () => {
+  it('renders Alteration view and sub-components', () => {
     expect(wrapper.findComponent(Alteration).exists()).toBe(true)
     expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true)
+    expect(wrapper.findComponent(YourCompanyWrapper).exists()).toBe(true)
+    expect(wrapper.findComponent(EntityName).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessType).exists()).toBe(true)
+    expect(wrapper.findComponent(NameTranslation).exists()).toBe(true)
+    expect(wrapper.findComponent(RecognitionDateTime).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
   })
 
   it('loads the entity snapshot into the store', async () => {

@@ -7,13 +7,13 @@ const store = useStore()
 
 /** Returns URL param string with Account ID if present, else empty string. */
 function getParams (): string {
-  const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id
+  const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id as string
   return accountId ? `?accountid=${accountId}` : ''
 }
 
 export function getEntityDashboardBreadcrumb (): BreadcrumbIF {
-  const getOriginalLegalName: string = store.getOriginalLegalName
-  const getBusinessId:string = store.getBusinessId
+  const getOriginalLegalName = store.getOriginalLegalName
+  const getBusinessId = store.getBusinessId
   return {
     text: getOriginalLegalName || 'Numbered Benefit Company',
     href: `${sessionStorage.getItem('DASHBOARD_URL')}${getBusinessId}/${getParams()}`

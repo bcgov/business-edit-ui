@@ -21,6 +21,9 @@ import { useStore } from '@/store/store'
  */
 @Component({})
 export default class FilingTemplateMixin extends DateMixin {
+  // FUTURE: import entire store instead of individual getters, actions and mutations?
+  // Ref: https://pinia.vuejs.org/cookbook/options-api.html#giving-access-to-the-whole-store
+
   // Global getters
   @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getNameRequestNumber!: string
@@ -71,6 +74,7 @@ export default class FilingTemplateMixin extends DateMixin {
   // Global actions
   @Action(useStore) setBusinessContact!: ActionBindingIF
   @Action(useStore) setBusinessInformation!: ActionBindingIF
+  @Action(useStore) setCertifyState!: ActionBindingIF
   @Action(useStore) setCorrectionInformation!: ActionBindingIF
   @Action(useStore) setEntityType!: ActionBindingIF
   @Action(useStore) setOfficeAddresses!: ActionBindingIF
@@ -78,7 +82,6 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) setNameTranslations!: ActionBindingIF
   @Action(useStore) setNameRequest!: ActionBindingIF
   @Action(useStore) setPeopleAndRoles!: ActionBindingIF
-  @Action(useStore) setCertifyState!: ActionBindingIF
   @Action(useStore) setShareClasses!: ActionBindingIF
   @Action(useStore) setEffectiveDateTimeString!: ActionBindingIF
   @Action(useStore) setIsFutureEffective!: ActionBindingIF
