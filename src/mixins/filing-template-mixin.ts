@@ -70,6 +70,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) hasBusinessStartDateChanged!: boolean
   @Getter(useStore) getRestoration!: RestorationStateIF
   @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
+  @Getter(useStore) isLimitedRestorationToFull!: boolean
 
   // Global actions
   @Action(useStore) setBusinessContact!: ActionBindingIF
@@ -321,9 +322,18 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.restoration.expiry = this.getRestoration.expiry
     }
 
-    // Apply NR / business name / business type change to filing
-    if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
-      filing.restoration.nameRequest = this.getNameRequest
+    // Set Name Request object for a full restoration only
+    if (this.isLimitedRestorationToFull) {
+      // Apply NR / business name change to filing
+      if (this.getNameRequestNumber || this.hasBusinessNameChanged) {
+        filing.restoration.nameRequest = this.getNameRequest
+      } else {
+        // Otherwise save default data
+        filing.restoration.nameRequest = {
+          legalName: this.getEntitySnapshot.businessInfo.legalName,
+          legalType: this.getEntitySnapshot.businessInfo.legalType
+        }
+      }
     }
 
     // Apply name translation changes to filing
