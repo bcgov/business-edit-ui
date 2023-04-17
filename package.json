@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "4.2.7",
+  "version": "4.2.8",
   "private": true,
   "appName": "Edit UI",
   "sbcName": "SBC Common Components",
@@ -15,7 +15,7 @@
   "dependencies": {
     "@babel/compat-data": "^7.19.1",
     "@bcrs-shared-components/action-chip": "1.1.5",
-    "@bcrs-shared-components/approval-type": "1.0.18",
+    "@bcrs-shared-components/approval-type": "1.0.19",
     "@bcrs-shared-components/breadcrumb": "2.1.5",
     "@bcrs-shared-components/business-lookup": "1.1.7",
     "@bcrs-shared-components/certify": "2.1.5",
