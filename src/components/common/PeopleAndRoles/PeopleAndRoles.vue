@@ -55,6 +55,7 @@
       </article>
       <v-spacer class="spacer"></v-spacer>
     </div>
+
     <div v-else>
       <v-card flat>
         <!-- Header -->
@@ -180,29 +181,30 @@
           </div>
         </article>
       </v-card>
-  </div>
-  <v-card flat>
-    <!-- People and roles list -->
-    <article class="list-container">
-    <ListPeopleAndRoles
-      :renderOrgPersonForm="isAddingEditingOrgPerson"
-      :currentOrgPerson="currentOrgPerson"
-      :activeIndex="activeIndex"
-      :validate="getComponentValidate"
-      :validOrgPersons="validOrgPersons"
-      :showDeliveryAddressColumn="!(isLimitedRestorationExtension || isLimitedRestorationToFull)"
-      :showRolesColumn="isBenBcCccUlcCorrectionFiling"
-      :showEmailColumn="isLimitedRestorationExtension || isLimitedRestorationToFull"
-      :showEmailUnderName="showEmailUnderName"
-      @initEdit="initEdit($event)"
-      @addEdit="addEdit($event)"
-      @remove="remove($event)"
-      @replace="replace($event)"
-      @undo="undo($event)"
-      @reset="reset(true)"
-    />
-  </article>
-  </v-card>
+    </div>
+
+    <v-card flat>
+      <!-- People and roles list -->
+      <article class="list-container">
+        <ListPeopleAndRoles
+          :renderOrgPersonForm="isAddingEditingOrgPerson"
+          :currentOrgPerson="currentOrgPerson"
+          :activeIndex="activeIndex"
+          :validate="getComponentValidate"
+          :validOrgPersons="validOrgPersons"
+          :showDeliveryAddressColumn="!(isLimitedRestorationExtension || isLimitedRestorationToFull)"
+          :showRolesColumn="isBenBcCccUlcCorrectionFiling"
+          :showEmailColumn="isLimitedRestorationExtension || isLimitedRestorationToFull"
+          :showEmailUnderName="showEmailUnderName"
+          @initEdit="initEdit($event)"
+          @addEdit="addEdit($event)"
+          @remove="remove($event)"
+          @replace="replace($event)"
+          @undo="undo($event)"
+          @reset="reset(true)"
+        />
+      </article>
+    </v-card>
   </section>
 </template>
 
