@@ -48,7 +48,7 @@
       <template v-for="(orgPerson, index) in currentPeopleAndRoles">
         <v-row
           v-if="!(wasReplaced(orgPerson) && wasRemoved(orgPerson))"
-          class="people-roles-content py-3"
+          class="people-roles-content section-container"
           :class="{ 'summary-view': isSummaryView, }"
           :key="index"
           no-gutters
