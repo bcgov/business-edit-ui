@@ -17,7 +17,6 @@
             :currentDate="getCurrentDate"
             :expiryDate="expiry"
             :key="expiry"
-            :maxNumberOfMonths=36
             @expiry="setRestorationExpiry(addMonthsToDate(previousNumberOfMonths, $event))"
             @valid="setExpiryValid($event)"
           />

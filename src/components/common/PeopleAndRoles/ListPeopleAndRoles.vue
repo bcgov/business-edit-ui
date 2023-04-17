@@ -48,7 +48,7 @@
       <template v-for="(orgPerson, index) in currentPeopleAndRoles">
         <v-row
           v-if="!(wasReplaced(orgPerson) && wasRemoved(orgPerson))"
-          class="people-roles-content section-container"
+          class="people-roles-content py-3"
           :class="{ 'summary-view': isSummaryView, }"
           :key="index"
           no-gutters
@@ -130,6 +130,7 @@
               </template>
             </v-col>
 
+            <!-- Email Address -->
             <v-col cols="12" sm="3" :class="{ 'removed': wasRemoved(orgPerson)}" v-if="showEmailColumn">
               <p>{{ orgPerson.officer.email }}</p>
             </v-col>

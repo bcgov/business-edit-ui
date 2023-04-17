@@ -312,9 +312,13 @@ export default class FilingTemplateMixin extends DateMixin {
         },
         parties: this.getOrgPeople,
         offices: this.getOfficeAddresses,
-        contactPoint: this.getContactPoint,
-        relationships: this.getRestoration.relationships
+        contactPoint: this.getContactPoint
       }
+    }
+
+    // Set relationships object for a full restoration only
+    if (this.isLimitedRestorationToFull) {
+      filing.restoration.relationships = this.getRestoration.relationships
     }
 
     // Set expiry date property if it's not null
@@ -868,7 +872,8 @@ export default class FilingTemplateMixin extends DateMixin {
       }
     ))
 
-    if (filing.restoration.relationships) {
+    // store relationships
+    if (filing.restoration.relationships?.length > 0) {
       this.setRestorationRelationships(filing.restoration.relationships)
     }
 

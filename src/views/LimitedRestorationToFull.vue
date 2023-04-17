@@ -120,6 +120,7 @@ import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { v4 as uuidv4 } from 'uuid'
+import { cloneDeep } from 'lodash'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
@@ -219,9 +220,11 @@ export default class LimitedRestorationToFull extends Vue {
   /** The restoration filing ID. */
   @Prop({ default: 0 }) readonly restorationId!: number
 
-  /** isDataLoaded is a flag that is to "true" after the component's data loaded
-  it's used a work-around because the shared components aren't reactive to
-  changes after the shared components are mounted. */
+  /**
+   * "isDataLoaded" is a flag that is to "true" after the component's data is loaded.
+   * It's used a work-around because the shared components aren't reactive to changes
+   * after the shared components are mounted.
+   */
   private isDataLoaded = false
 
   /** The resource object for a restoration filing. */
@@ -290,19 +293,9 @@ export default class LimitedRestorationToFull extends Vue {
         throw new Error(`Invalid fetched stateFiling = ${this.getBusinessId}`)
       }
 
-      const parties = filing.restoration?.parties || []
-
-      // find first applicant from fetched parties
-      const applicant = parties.find(
-        orgPerson => orgPerson.roles.some(role => role.roleType === RoleTypes.APPLICANT)
-      )
-
-      if (applicant === undefined) {
-        throw new Error(`Applicant not found for ${this.getBusinessId}`)
-      }
-
-      // set applicant orgPerson
-      entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
+      // get applicant from state filing and set into orgPersons
+      const applicant = this.getApplicant(filing) // throws error if not found
+      entitySnapshot.orgPersons = [applicant]
 
       this.setEntitySnapshot(entitySnapshot)
 
@@ -341,25 +334,28 @@ export default class LimitedRestorationToFull extends Vue {
     this.$nextTick(() => this.setHaveUnsavedChanges(false))
   }
 
-  /** build applicant orgPerson and assign id (uuid) */
-  private parseApplicantOrgPerson (applicant: OrgPersonIF): OrgPersonIF[] {
-    const applicantOrgPerson: Array<OrgPersonIF> = []
-    applicantOrgPerson.push({
-      deliveryAddress: applicant.deliveryAddress,
-      mailingAddress: applicant.mailingAddress,
-      officer: {
-        email: applicant.officer.email,
-        firstName: applicant.officer.firstName,
-        lastName: applicant.officer.lastName,
-        middleName: applicant.officer.middleName,
-        organizationName: applicant.officer.organizationName,
-        partyType: applicant.officer.partyType,
-        id: uuidv4()
-      },
-      roles: applicant.roles
-    })
+  /**
+   * Gets applicant from restoration filing parties and returns a new object.
+   * @param filing the restoration state filing
+   * @returns a new applicant object
+   */
+  private getApplicant (filing: RestorationFilingIF): OrgPersonIF {
+    const parties = filing.restoration?.parties || []
 
-    return applicantOrgPerson
+    // find first applicant from fetched parties
+    const applicant = parties.find(
+      orgPerson => orgPerson.roles.some(role => role.roleType === RoleTypes.APPLICANT)
+    )
+
+    if (!applicant) {
+      throw new Error(`Applicant not found for ${this.getBusinessId}`)
+    }
+
+    // make a copy of the original object and assign a new id (for UI use only)
+    const copy = cloneDeep(applicant)
+    copy.officer.id = uuidv4()
+
+    return copy
   }
 
   /** Fetches the entity snapshot. */
