@@ -20,7 +20,7 @@
     <!-- Name Translation -->
     <template v-if="haveNameTranslationsChanged">
       <v-divider class="mx-4" />
-      <div class="section-container name-translation-summary">
+      <div class="name-translation-summary">
         <NameTranslation :isSummaryMode="true" />
       </div>
     </template>

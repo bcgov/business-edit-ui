@@ -31,7 +31,7 @@
 
       <!-- Name Translation -->
       <template v-if="haveNameTranslationsChanged">
-        <div class="section-container name-translation-summary">
+        <div class="name-translation-summary">
           <NameTranslation :isSummaryMode="true" />
         </div>
       </template>
@@ -64,9 +64,7 @@
       <v-divider class="mx-4 my-1" />
 
       <!-- Office Addresses -->
-      <div class="section-container">
-        <OfficeAddresses :isSummaryView="true" />
-      </div>
+      <OfficeAddresses :isSummaryView="true" />
     </template>
   </v-card>
 </template>
