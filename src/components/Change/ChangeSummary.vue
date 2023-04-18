@@ -46,7 +46,7 @@
     <!-- Business Addresses -->
     <template v-if="haveOfficeAddressesChanged">
       <v-divider class="mx-8" />
-      <article id="address-summary-section" class="section-container">
+      <article id="address-summary-section">
         <OfficeAddresses :isSummaryView="true" />
       </article>
     </template>
