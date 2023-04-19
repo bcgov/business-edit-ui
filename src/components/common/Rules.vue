@@ -39,7 +39,7 @@
                 <div v-if="!selectChange && getRules?.length > 0" class="mx-4">
                   <div class="download-link-container" v-for="rule in getRules" :key="rule.key">
                     <v-icon color="primary" class="mt-n1">mdi-file-pdf-outline</v-icon>
-                    <a :href="documentURL" download class="ml-1">
+                    <a :href="rule.url" download class="ml-1">
                       {{rule.name}}
                     </a>
                   </div>
@@ -158,7 +158,7 @@
                     <div v-if="!selectChange && getRules?.length > 0" class="mx-4">
                     <div class="download-link-container" v-for="rule in getRules" :key="rule.key">
                       <v-icon color="primary" class="mt-n1">mdi-file-pdf-outline</v-icon>
-                      <a :href="documentURL" download class="ml-1">
+                      <a :href="documenrule.url" download class="ml-1">
                         {{rule.name}}
                       </a>
                     </div>
@@ -257,7 +257,7 @@ export default class Rules extends Vue {
     protected confirmed = false
     protected helpToggle = false
     protected isEditingRules = false
-  protected selectChange = false
+    protected selectChange = false
     protected describeDropdown = false
     protected uploadDropdown = false
 
@@ -327,6 +327,13 @@ export default class Rules extends Vue {
         ...this.getRules,
         confirmed: this.confirmed
       })
+    }
+
+    /** Updates store initially and when isEditingRules property has changed. */
+    @Watch('isEditingRules', { immediate: true })
+    private onEditingRulesChanged (val: boolean): void {
+      // this.setValidComponent({ key: 'isValidRule', value: !val })
+      this.setRules(val)
     }
 }
 </script>

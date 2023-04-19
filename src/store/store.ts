@@ -1486,6 +1486,9 @@ export const useStore = defineStore('store', {
     },
     setRestorationRelationships (relationships: RelationshipTypes[]) {
       this.stateModel.restoration.relationships = relationships
+    },
+    setRules (editing: boolean) {
+      this.stateModel.editingFlags.rule = editing
     }
   }
 })

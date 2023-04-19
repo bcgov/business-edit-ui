@@ -39,7 +39,7 @@
                 <div v-if="!selectChange && getMemorandum?.length > 0" class="mx-4">
                   <div class="download-link-container" v-for="memorandum in getMemorandum" :key="memorandum.key">
                     <v-icon color="primary" class="mt-n1">mdi-file-pdf-outline</v-icon>
-                    <a :href="documentURL" download class="ml-1">
+                    <a :href="memorandum.url" download class="ml-1">
                       {{memorandum.name}}
                     </a>
                   </div>
