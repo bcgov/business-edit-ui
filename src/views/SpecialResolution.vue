@@ -17,6 +17,10 @@
 
           <CurrentDirectors class="mt-10" />
 
+          <Rules class="mt-10" />
+
+          <Memorandum class="mt-10" />
+
           <CreateSpecialResolution class="mt-10" v-if="showCreateSpecialResolution" />
         </div>
       </v-slide-x-transition>
@@ -123,6 +127,8 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
+import Rules from '@/components/common/Rules.vue'
+import Memorandum from '@/components/common/Memorandum.vue'
 
 @Component({
   components: {
@@ -135,7 +141,9 @@ import { useStore } from '@/store/store'
     TransactionalFolioNumber,
     YourCompany,
     CreateSpecialResolution,
-    CompletingParty
+    CompletingParty,
+    Rules,
+    Memorandum
   }
 })
 export default class SpecialResolution extends Mixins(

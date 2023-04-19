@@ -49,6 +49,7 @@ import DateUtilities from '@/services/date-utilities'
 import { defineStore } from 'pinia'
 import { resourceModel, stateModel } from './state'
 import { LegalServices } from '@/services'
+import { RulesMemorandumIF, RulesMemorandumResourceIF } from '@/interfaces/rules-memorandum-interfaces'
 
 // Possible to move getters / actions into seperate files:
 // https://github.com/vuejs/pinia/issues/802#issuecomment-1018780409
@@ -1184,6 +1185,45 @@ export const useStore = defineStore('store', {
         return formattedExpiryText
       }
       return '[no expiry date]'
+    },
+
+    getRules (): RulesMemorandumIF[] {
+      return [{
+        name: 'test',
+        key: '111',
+        url: '#'
+      }]
+    },
+    getRulesResource (): RulesMemorandumResourceIF {
+      return {
+        confirm: ['test'],
+        helpSection: {
+          header: 'header test',
+          helpText: ['helptest']
+        }
+      }
+    },
+    invalidRulesSection (): boolean {
+      return false
+    },
+    getUserKeycloakGuid (): string {
+      return ''
+    },
+    getMemorandum (): RulesMemorandumIF[] {
+      return [{
+        name: 'test',
+        key: '111',
+        url: '#'
+      }]
+    },
+    getMemorandumResource (): RulesMemorandumResourceIF {
+      return {
+        confirm: ['test'],
+        helpSection: {
+          header: 'header test',
+          helpText: ['helptest']
+        }
+      }
     }
   },
   actions: {

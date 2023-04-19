@@ -15,6 +15,7 @@ export * from './nameRequestStates'
 export * from './nameRequestTypes'
 export * from './roleTypes'
 export * from './routeNames'
+export * from './PdfPageSize'
 
 // external enum
 export { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
