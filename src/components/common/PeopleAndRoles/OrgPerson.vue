@@ -745,7 +745,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   /** Returns True if person name or org name has changed from its original properties. */
   protected hasNameChanged (orgPerson: OrgPersonIF): boolean {
     // is this a pre-existing person?
-    if (this.isPreExisting && this.isPerson) {
+    if (this.isFirmCorrectionFiling && this.isPreExisting && this.isPerson) {
       const firstName = !isEqual(orgPerson.officer.firstName, this.currentOrgPerson?.officer.firstName)
       const lastName = !isEqual(orgPerson.officer.lastName, this.currentOrgPerson?.officer.lastName)
       const middleName =
