@@ -324,6 +324,20 @@ describe('Org/Person component for a BEN Correction filing', () => {
     wrapper.destroy()
   })
 
+  it('Does not display name change checkbox when Person first name has changed', async () => {
+    const wrapper = createComponent(validPersonData, 0)
+    await Vue.nextTick()
+
+    // change org name
+    const input = wrapper.find(firstNameSelector)
+    await input.setValue('Different Test Person')
+    await input.trigger('change')
+
+    expect(wrapper.find(confirmNameChangeSelector).exists()).toBe(false)
+
+    wrapper.destroy()
+  })
+
   it('Emits "reset" event when clicking Cancel button', async () => {
     const wrapper = createComponent(validOrgData, 0)
     const vm: any = wrapper.vm
