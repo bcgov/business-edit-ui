@@ -10,7 +10,7 @@
         <label :class="{'error-text': invalidSection}">
           <strong>{{ getResource.entityReference }} Name</strong>
         </label>
-        <v-flex md1>
+        <v-col md="1">
           <v-chip
             v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling ||
               isFirmConversionFiling || isSpecialResolutionFiling))"
@@ -21,7 +21,7 @@
           >
             {{getEditedLabel}}
           </v-chip>
-        </v-flex>
+        </v-col>
       </v-col>
 
       <!-- Display Mode -->

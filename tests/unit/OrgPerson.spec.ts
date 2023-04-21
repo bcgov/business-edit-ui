@@ -73,36 +73,6 @@ const validPersonData = {
   }
 }
 
-const validIncorporator = {
-  officer: {
-    id: '1',
-    firstName: 'Adam',
-    lastName: 'Smith',
-    middleName: 'D',
-    organizationName: '',
-    partyType: 'person'
-  },
-  roles: [
-    { roleType: 'Incorporator', appointmentDate: '2020-03-30' }
-  ],
-  mailingAddress: {
-    streetAddress: '123 Fake Street',
-    streetAddressAdditional: '',
-    addressCity: 'Victoria',
-    addressRegion: 'BC',
-    postalCode: 'V8Z 5C6',
-    addressCountry: 'CA'
-  },
-  deliveryAddress: {
-    streetAddress: '123 Fake Street',
-    streetAddressAdditional: '',
-    addressCity: 'Victoria',
-    addressRegion: 'BC',
-    postalCode: 'V8Z 5C6',
-    addressCountry: 'CA'
-  }
-}
-
 const validOrgData = {
   officer: {
     id: '2',

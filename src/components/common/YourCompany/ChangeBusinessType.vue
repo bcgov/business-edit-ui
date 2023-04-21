@@ -4,11 +4,11 @@
       <!-- Row Title -->
       <v-col cols="3">
         <label :class="{'error-text': invalidSection}"><strong>Business Type</strong></label>
-        <v-flex md1>
+        <v-col md="1">
           <v-chip v-if="hasBusinessTypeChanged" x-small label color="primary" text-color="white">
             {{getEditedLabel}}
           </v-chip>
-        </v-flex>
+        </v-col>
       </v-col>
 
       <!-- Display Mode -->

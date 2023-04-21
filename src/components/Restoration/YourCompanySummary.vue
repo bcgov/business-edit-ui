@@ -10,7 +10,7 @@
       </v-row>
     </div>
 
-    <template>
+    <div>
       <v-divider class="mx-4" />
 
       <!-- Business Name -->
@@ -65,7 +65,7 @@
 
       <!-- Office Addresses -->
       <OfficeAddresses :isSummaryView="true" />
-    </template>
+    </div>
   </v-card>
 </template>
 
@@ -76,6 +76,10 @@ import { OfficeAddresses, NameTranslation } from '@/components/common/'
 import { useStore } from '@/store/store'
 
 export default {
+  components: {
+    OfficeAddresses,
+    NameTranslation
+  },
   data () {
     return {
       ApprovalTypes
@@ -110,10 +114,6 @@ export default {
     getRelationshipString () {
       return this.getRelationships.join(', ') || '[Unknown]'
     }
-  },
-  components: {
-    OfficeAddresses,
-    NameTranslation
   }
 }
 </script>

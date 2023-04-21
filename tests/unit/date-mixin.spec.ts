@@ -6,7 +6,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
 setActivePinia(createPinia())
-const store = useStore()
+const store = useStore() // eslint-disable-line @typescript-eslint/no-unused-vars
 
 describe('Date Mixin', () => {
   let vm: any

@@ -10,7 +10,7 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())
-const store = useStore()
+const store = useStore() // eslint-disable-line @typescript-eslint/no-unused-vars
 
 describe('Detail component', () => {
   let wrapper: Wrapper<Detail>

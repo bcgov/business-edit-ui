@@ -1,7 +1,5 @@
-const vetur = require('@volar-plugins/vetur')
+import vetur from '@volar-plugins/vetur'
 
-module.exports = {
-  plugins: [
-    vetur()
-  ]
-}
+export const plugins = [
+  vetur()
+]

@@ -14,6 +14,7 @@ setActivePinia(createPinia())
 const store = useStore()
 
 // mock services function
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mockUpdateContactInfo = jest.spyOn((AuthServices as any), 'updateContactInfo').mockImplementation()
 
 const contactInfo = {

@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
-import mockRouter from './MockRouter'
 import { AuthServices, LegalServices, PayServices } from '@/services/'
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import LimitedRestorationExtension from '@/views/LimitedRestorationExtension.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import CertifySection from '@/components/common/CertifySection.vue'
@@ -16,7 +14,7 @@ import BusinessContactInfo from '@/components/common/YourCompany/BusinessContact
 import { BenRestorationResource } from '@/resources/LimitedRestorationExtension/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { RoleTypes, FilingTypes } from '@/enums'
+import { FilingTypes } from '@/enums'
 import { EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
   YourCompanyWrapper } from '@/components/common'
 
@@ -24,7 +22,7 @@ Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())
-const store = useStore()
+const store = useStore() // eslint-disable-line @typescript-eslint/no-unused-vars
 
 // mock data
 const filing = {
