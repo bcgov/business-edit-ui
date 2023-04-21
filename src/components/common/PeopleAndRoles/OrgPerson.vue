@@ -636,14 +636,6 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
     return this.wasReplaced(this.currentOrgPerson) ? '' : 'ACTIVE'
   }
 
-  /** Flag to show confirm name change checkbox.
-  This check is only for firm corrections, change, conversion, Corp extension and Corp conversion filings.
-  Does not apply to corps corrections */
-  get showConfirmNameChange () : boolean {
-    return this.isFirmCorrectionFiling || this.isFirmChangeFiling || this.isFirmConversionFiling ||
-      this.isLimitedRestorationExtension || this.isLimitedRestorationToFull
-  }
-
   /**
    * Called when component is created.
    * Sets local properties.
@@ -752,8 +744,13 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
   /** Returns True if person name or org name has changed from its original properties. */
   protected hasNameChanged (orgPerson: OrgPersonIF): boolean {
-    // is this a pre-existing person?
-    if (this.showConfirmNameChange && this.isPreExisting && this.isPerson) {
+    /** This check is only for firm corrections, change, conversion, Corp extension and Corp conversion filings.
+    Does not apply to corps corrections */
+    const showConfirmNameChange = this.isFirmCorrectionFiling || this.isFirmChangeFiling ||
+      this.isFirmConversionFiling || this.isLimitedRestorationExtension || this.isLimitedRestorationToFull
+
+    // check showConfirmNameChange and is this a pre-existing person?
+    if (showConfirmNameChange && this.isPreExisting && this.isPerson) {
       const firstName = !isEqual(orgPerson.officer.firstName, this.currentOrgPerson?.officer.firstName)
       const lastName = !isEqual(orgPerson.officer.lastName, this.currentOrgPerson?.officer.lastName)
       const middleName =
