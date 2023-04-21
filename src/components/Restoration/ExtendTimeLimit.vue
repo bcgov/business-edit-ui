@@ -1,6 +1,5 @@
 <template>
   <v-card flat id="extend-time-limit" class="pt-2 mr-8">
-
     <!-- Extension Time Section -->
     <section
       id="extension-time-section"
@@ -30,16 +29,14 @@
       :class="{ 'invalid-section': !getApprovalTypeValid }"
       v-if="approvalType === ApprovalTypes.VIA_COURT_ORDER"
     >
-      <template>
-        <ApprovalType
-          :courtOrderNumber="getCourtOrderNumberText"
-          :isCourtOrderOnly="true"
-          :isCourtOrderRadio="false"
-          :invalidSection="!getApprovalTypeValid"
-          @courtNumberChange="setRestorationCourtOrder({ fileNumber: $event })"
-          @valid="setApprovalTypeValid($event)"
-        />
-      </template>
+      <ApprovalType
+        :courtOrderNumber="getCourtOrderNumberText"
+        :isCourtOrderOnly="true"
+        :isCourtOrderRadio="false"
+        :invalidSection="!getApprovalTypeValid"
+        @courtNumberChange="setRestorationCourtOrder({ fileNumber: $event })"
+        @valid="setApprovalTypeValid($event)"
+      />
     </section>
   </v-card>
 </template>

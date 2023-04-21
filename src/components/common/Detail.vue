@@ -11,10 +11,10 @@
     <div :class="{ 'invalid-section': invalidSection }">
       <v-card flat class="detail-card">
         <v-row no-gutters>
-          <v-col cols="2" xs="3">
+          <v-col cols="3" sm="2">
             <label><strong>Detail</strong></label>
           </v-col>
-          <v-col cols="10" xs="9">
+          <v-col cols="10" sm="9">
             <label><strong>{{defaultCorrectionDetailComment}}</strong></label>
             <div class="pt-2">
               <DetailCommentShared

@@ -317,28 +317,28 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   }
 
   @Watch('dateText')
-  onDateTextChanged (val: string): void {
+  onDateTextChanged (): void {
     if (this.isFutureEffective) {
       this.constructAndUpdate()
     }
   }
 
   @Watch('selectHour')
-  onSelectHourChanged (val: string): void {
+  onSelectHourChanged (): void {
     if (this.isFutureEffective) {
       this.constructAndUpdate()
     }
   }
 
   @Watch('selectMinute')
-  onSelectMinuteChanged (val: string): void {
+  onSelectMinuteChanged (): void {
     if (this.isFutureEffective) {
       this.constructAndUpdate()
     }
   }
 
   @Watch('selectPeriod')
-  onSelectPeriodChanged (val: string): void {
+  onSelectPeriodChanged (): void {
     if (this.isFutureEffective) {
       this.constructAndUpdate()
     }

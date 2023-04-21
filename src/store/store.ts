@@ -964,6 +964,7 @@ export const useStore = defineStore('store', {
       const removeNullProps = (obj) => {
         return Object.fromEntries(
           Object.entries(obj)
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             .filter(([_, v]) => v != null)
             .map(([k, v]) => [k, v === Object(v) ? removeNullProps(v) : v])
         )
@@ -1021,7 +1022,7 @@ export const useStore = defineStore('store', {
       return this.stateModel.newAlteration.courtOrder.fileNumber
     },
     /** Returns true if the filing has a court order number  */
-    hasFileNumber (state): boolean {
+    hasFileNumber (): boolean {
       return !!this.getFileNumber
     },
 
@@ -1173,6 +1174,8 @@ export const useStore = defineStore('store', {
       return this.stateModel.restoration?.expiry
     },
 
+    // FUTURE: should do something with "today"
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getFormattedExpiryText: (state) => (today = new Date()): string => {
       if (state.stateModel.restoration?.expiry) {
         const numberOfExtensionMonths = DateUtilities.subtractDates(state.stateModel.stateFilingRestoration?.expiry,

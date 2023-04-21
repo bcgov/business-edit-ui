@@ -219,7 +219,7 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   /** Updates store when resolution dates validity changes. */
   @Watch('isAdding', { immediate: true })
   @Watch('getIsResolutionDatesValid', { immediate: true })
-  private onEditingNameChanged (val: boolean): void {
+  private onEditingNameChanged (): void {
     if (this.isAdding) {
       this.setValidComponent({ key: 'isValidResolutionDate', value: false })
     } else {

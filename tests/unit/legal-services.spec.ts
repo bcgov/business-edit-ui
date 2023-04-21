@@ -36,10 +36,6 @@ describe('Legal Services', () => {
   })
 
   it('deletes filing by id correctly', async () => {
-    const FILING = {
-      foo: 'bar'
-    }
-
     // mock endpoint
     del.withArgs('businesses/CP1234567/filings/1234')
       .returns(Promise.resolve(true))

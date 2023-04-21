@@ -372,6 +372,7 @@ export default class FilingTemplateMixin extends DateMixin {
    * @param isDraft whether this is a draft
    * @returns the resolution filing body
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   buildSpecialResolutionFiling (isDraft: boolean): SpecialResolutionFilingIF {
     // FUTURE: add in as needed - see buildAlterationFiling()
     // const parties = isDraft ? this.getOrgPeople : this.prepareParties()
@@ -1299,6 +1300,7 @@ export default class FilingTemplateMixin extends DateMixin {
     const shareClasses = this.getShareClasses
       .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
       .map((x) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { action, ...rest } = x
         rest.hasMaximumShares = !!rest.hasMaximumShares // change null -> false
         rest.hasRightsOrRestrictions = !!rest.hasRightsOrRestrictions // change null -> false
@@ -1310,6 +1312,7 @@ export default class FilingTemplateMixin extends DateMixin {
       shareClasses[index].series = share.series
         .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
         .map((x) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { action, ...rest } = x
           rest.hasMaximumShares = !!rest.hasMaximumShares // change null -> false
           rest.hasRightsOrRestrictions = !!rest.hasRightsOrRestrictions // change null -> false

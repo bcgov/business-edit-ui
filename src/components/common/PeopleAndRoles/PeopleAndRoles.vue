@@ -779,7 +779,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
 
   /** Updates store when component validity has changed. */
   @Watch('validOrgPersons')
-  private onValidOrgPersonsChanged (val: boolean): void {
+  private onValidOrgPersonsChanged (): void {
     // FUTURE: combine this component's two validity mechanisms
     //         see setPeopleAndRolesValidity() above
     this.setValidComponent({ key: 'isValidOrgPersons', value: this.validOrgPersons })
