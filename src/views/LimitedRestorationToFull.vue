@@ -1,9 +1,15 @@
 <template>
   <ViewWrapper v-if="isDataLoaded">
-    <section class="pb-10" id="limited-restoration-full">
+    <section
+      id="limited-restoration-full"
+      class="pb-10"
+    >
       <!-- Company Information page-->
       <v-slide-x-transition hide-on-leave>
-        <div v-if="!isSummaryMode" id="question_container">
+        <div
+          v-if="!isSummaryMode"
+          id="question_container"
+        >
           <header>
             <h1>Conversion to Full Restoration</h1>
           </header>
@@ -71,13 +77,22 @@
           </div>
 
           <!-- Applicant list -->
-          <v-card id="people-and-roles-vcard" flat class="mt-6">
+          <v-card
+            id="people-and-roles-vcard"
+            flat
+            class="mt-6"
+          >
             <!-- Header -->
             <div class="section-container header-container">
-              <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
+              <v-icon color="appDkBlue">
+                mdi-account-multiple-plus
+              </v-icon>
               <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Information</label>
             </div>
-            <div no-gutters class="mt-4 section-container">
+            <div
+              no-gutters
+              class="mt-4 section-container"
+            >
               <ListPeopleAndRoles
                 :isSummaryView="true"
                 :showDeliveryAddressColumn="false"

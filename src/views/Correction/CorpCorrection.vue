@@ -4,14 +4,20 @@
       <h1>Register Correction</h1>
     </header>
 
-    <section id="original-filing-date" class="mt-6">
+    <section
+      id="original-filing-date"
+      class="mt-6"
+    >
       <p>
         <span id="original-filing-date-label">Original Filing Date:</span>
         {{ originalFilingDate }}
       </p>
     </section>
 
-    <section id="benefit-company-statement" class="mt-6">
+    <section
+      id="benefit-company-statement"
+      class="mt-6"
+    >
       <p>
         <span id="benefit-company-statement-label">{{ correctionResource.title }}:</span>
         {{ correctionResource.description }}
@@ -36,7 +42,11 @@
     <Articles class="mt-10" />
 
     <template v-if="isClientErrorCorrection">
-      <CompletingParty class="mt-10" sectionNumber="1." validate="true" />
+      <CompletingParty
+        class="mt-10"
+        sectionNumber="1."
+        validate="true"
+      />
     </template>
 
     <Detail

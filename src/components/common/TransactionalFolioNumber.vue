@@ -1,6 +1,9 @@
 <template>
-  <div class="pb-6" id="transactional-folio-number-section">
-    <h2>{{sectionNumber}} Folio or Reference Number for this Filing</h2>
+  <div
+    id="transactional-folio-number-section"
+    class="pb-6"
+  >
+    <h2>{{ sectionNumber }} Folio or Reference Number for this Filing</h2>
 
     <div class="py-4">
       Enter the folio or reference number you want to use for this filing for your own tracking purposes. The
@@ -10,22 +13,32 @@
     </div>
 
     <div :class="{ 'invalid-section': !sectionValid }">
-      <v-card flat class="pt-4 pr-8">
+      <v-card
+        flat
+        class="pt-4 pr-8"
+      >
         <v-container>
           <v-row class="ml-5">
-            <v-col cols="3" class="px-0">
+            <v-col
+              cols="3"
+              class="px-0"
+            >
               <label :class="{ 'error-text': !sectionValid }">
                 <strong>Folio or Reference<br>Number</strong>
               </label>
             </v-col>
-            <v-col cols="9" class="px-0">
+            <v-col
+              cols="9"
+              class="px-0"
+            >
               <v-text-field
-                filled persistent-hint
                 id="folio-number-input"
                 ref="folioNumberInput"
+                v-model="folioNumber"
+                filled
+                persistent-hint
                 autocomplete="chrome-off"
                 label="Folio or Reference Number (Optional)"
-                v-model="folioNumber"
                 :name="Math.random()"
                 :rules="rules"
               />

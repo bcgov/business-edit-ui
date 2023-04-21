@@ -4,30 +4,56 @@
       <v-row no-gutters>
         <v-col cols="3">
           <label class="define-company-provisions-title">Pre-existing<br>Company Provisions</label>
-          <v-chip v-if="hasProvisionsRemovedPropsChanged" x-small label color="primary" text-color="white">
+          <v-chip
+            v-if="hasProvisionsRemovedPropsChanged"
+            x-small
+            label
+            color="primary"
+            text-color="white"
+          >
             {{ getEditedLabel }}
           </v-chip>
         </v-col>
 
-        <v-col v-if="provisionsRemoved" cols="7" id="none-of-provisions-apply-text" class="info-text">
+        <v-col
+          v-if="provisionsRemoved"
+          id="none-of-provisions-apply-text"
+          cols="7"
+          class="info-text"
+        >
           {{ companyResolvedText }}
         </v-col>
-        <v-col v-else cols="7" id="has-pre-existing-provisions-text" class="info-text">
+        <v-col
+          v-else
+          id="has-pre-existing-provisions-text"
+          cols="7"
+          class="info-text"
+        >
           This company has Pre-existing Company Provisions.
         </v-col>
 
-        <v-col v-if="!hasProvisionsRemovedPropsChanged" cols="2" class="mt-n2 align-right">
+        <v-col
+          v-if="!hasProvisionsRemovedPropsChanged"
+          cols="2"
+          class="mt-n2 align-right"
+        >
           <v-btn
             id="change-company-provisions"
             text
             color="primary"
             @click="isEditing = true"
           >
-            <v-icon small>mdi-pencil</v-icon>
+            <v-icon small>
+              mdi-pencil
+            </v-icon>
             <span>{{ getEditLabel }}</span>
           </v-btn>
         </v-col>
-        <v-col v-else cols="2" class="pt-0 mt-n2 align-right">
+        <v-col
+          v-else
+          cols="2"
+          class="pt-0 mt-n2 align-right"
+        >
           <v-btn
             id="undo-company-provisions"
             text
@@ -35,23 +61,29 @@
             class="undo-company-provisions"
             @click="resetCompanyProvisions"
           >
-            <v-icon small>mdi-undo</v-icon>
+            <v-icon small>
+              mdi-undo
+            </v-icon>
             <span>Undo</span>
           </v-btn>
 
           <!-- More Actions Menu -->
           <span class="more-actions">
             <v-menu
-              offset-y left nudge-bottom="4"
               v-model="dropdown"
+              offset-y
+              left
+              nudge-bottom="4"
             >
-              <template v-slot:activator="{ on }">
+              <template #activator="{ on }">
                 <v-btn
-                  text small color="primary"
+                  text
+                  small
+                  color="primary"
                   class="more-actions-btn"
                   v-on="on"
                 >
-                  <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                  <v-icon>{{ dropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                 </v-btn>
               </template>
               <v-list>
@@ -60,7 +92,10 @@
                   @click="isEditing = true; dropdown = false"
                 >
                   <v-list-item-subtitle>
-                    <v-icon small color="primary">mdi-pencil</v-icon>
+                    <v-icon
+                      small
+                      color="primary"
+                    >mdi-pencil</v-icon>
                     <span class="drop-down-action ml-1">Change</span>
                   </v-list-item-subtitle>
                 </v-list-item>
@@ -71,13 +106,16 @@
       </v-row>
     </template>
 
-     <template v-else>
+    <template v-else>
       <v-row no-gutters>
         <v-col cols="3">
           <label class="font-weight-bold">Pre-existing Company Provisions</label>
         </v-col>
         <v-col cols="9">
-          <p id="company-provisions-user-instructions" class="info-text mb-0">
+          <p
+            id="company-provisions-user-instructions"
+            class="info-text mb-0"
+          >
             Complete this item only if the company has resolved that none of the Pre-existing Company Provisions
             are to apply to this company (refer to Part 17 and Table 3 of the Regulation under the Business
             Corporations Act).
@@ -85,30 +123,30 @@
           <div id="checkbox-div">
             <v-checkbox
               id="cp-checkbox"
+              v-model="draftProvisionsRemoved"
               :class="{ 'invalid': isInvalid }"
               :label="companyResolvedText"
-              v-model="draftProvisionsRemoved"
             />
           </div>
         </v-col>
       </v-row>
 
       <v-row no-gutters>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <div class="action-btns">
           <v-btn
+            id="company-provisions-done"
             large
             color="primary"
-            id="company-provisions-done"
             @click="setCompanyProvisionsDone()"
           >
             <span>Done</span>
           </v-btn>
           <v-btn
+            id="company-provisions-cancel"
             large
             outlined
             color="primary"
-            id="company-provisions-cancel"
             @click="cancelCompanyProvisionChange()"
           >
             <span>Cancel</span>

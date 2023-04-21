@@ -94,7 +94,8 @@ describe('Alteration Summary component', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('.business-name-summary').exists()).toBe(true)
-    expect(wrapper.find('.business-name-summary').text()).toContain('Company Name Mock New Name')
+    expect(wrapper.find('.business-name-summary').text()).toContain('Company Name')
+    expect(wrapper.find('.business-name-summary').text()).toContain('Mock New Name')
   })
 
   it('renders the type summary section when changes have been made', async () => {

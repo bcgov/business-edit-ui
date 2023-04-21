@@ -1,14 +1,23 @@
 <template>
   <div>
-    <ConfirmDialogShared ref="confirm" attach="#app" />
+    <ConfirmDialogShared
+      ref="confirm"
+      attach="#app"
+    />
 
     <v-container class="view-container my-8 py-0">
       <v-row>
-        <v-col cols="9" class="left-side">
-          <slot></slot>
+        <v-col
+          cols="9"
+          class="left-side"
+        >
+          <slot />
         </v-col>
 
-        <v-col cols="3" class="right-side">
+        <v-col
+          cols="3"
+          class="right-side"
+        >
           <affix
             v-if="showFeeSummary"
             relative-element-selector=".left-side"

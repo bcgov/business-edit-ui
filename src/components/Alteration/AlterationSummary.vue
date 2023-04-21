@@ -1,23 +1,35 @@
 <template>
-  <v-card flat id="alteration-summary">
+  <v-card
+    id="alteration-summary"
+    flat
+  >
     <!-- Section Header -->
     <div class="summary-header px-4 mb-2 rounded-t">
       <v-row no-gutters>
         <v-col cols="9">
-          <img  class="my-n1 header-icon" src="@/assets/images/currency-usd-circle.svg">
-          <label class="summary-title">Alteration Notice Changes {{alterationFees}}</label>
+          <img
+            class="my-n1 header-icon"
+            src="@/assets/images/currency-usd-circle.svg"
+          >
+          <label class="summary-title">Alteration Notice Changes {{ alterationFees }}</label>
         </v-col>
 
         <!-- Actions -->
-        <v-col cols="3" class="mt-n2">
+        <v-col
+          cols="3"
+          class="mt-n2"
+        >
           <div class="actions mr-4">
             <v-btn
-              text color="primary"
               id="btn-delete-alteration"
+              text
+              color="primary"
               :disabled="isBusySaving"
               @click="onDeleteClicked()"
             >
-              <v-icon small>mdi-delete</v-icon>
+              <v-icon small>
+                mdi-delete
+              </v-icon>
               <span>Delete</span>
             </v-btn>
           </div>
@@ -34,9 +46,16 @@
             <label><strong>Company Name</strong></label>
           </v-col>
 
-          <v-col cols="8" class="mt-n1">
-            <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
-            <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
+          <v-col
+            cols="8"
+            class="mt-n1"
+          >
+            <div class="company-name font-weight-bold text-uppercase">
+              {{ companyName }}
+            </div>
+            <div class="company-name mt-2">
+              {{ getNameRequest.nrNumber }}
+            </div>
           </v-col>
         </v-row>
       </div>
@@ -56,9 +75,16 @@
             &nbsp;
             <span class="info-text">to a {{ GetCorpFullDescription(getEntityType) }}</span>
 
-            <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
+            <p class="subtitle mt-2 pt-2">
+              Benefit Company Articles
+            </p>
             <div class="confirmed-msg">
-              <v-icon color="success" class="confirmed-icon">mdi-check</v-icon>
+              <v-icon
+                color="success"
+                class="confirmed-icon"
+              >
+                mdi-check
+              </v-icon>
               <span class="info-text text-body-3 confirmed-icon ml-2">
                 The company has completed a set Benefit Company Articles containing a benefit provision, and a copy
                 of these articles has been added to the company's record book.
@@ -86,7 +112,10 @@
             <label><strong>Share Structure</strong></label>
           </v-col>
         </v-row>
-        <ShareStructures class="mt-6" :is-edit-mode="false" />
+        <ShareStructures
+          class="mt-6"
+          :is-edit-mode="false"
+        />
       </div>
     </template>
 
@@ -125,16 +154,26 @@
       <v-container
         id="effective-date-time"
         class="alteration-date-time"
-        :class="{ 'invalid': alterationDateTimeInvalid }">
+        :class="{ 'invalid': alterationDateTimeInvalid }"
+      >
         <v-row no-gutters>
-          <v-col cols="3" class="inner-col-1">
+          <v-col
+            cols="3"
+            class="inner-col-1"
+          >
             <label><strong>Alteration Date<br>and Time</strong></label>
           </v-col>
 
-          <v-col cols="9" class="inner-col-2">
-            <p id="effective-date-time-instructions" class="info-text">
+          <v-col
+            cols="9"
+            class="inner-col-2"
+          >
+            <p
+              id="effective-date-time-instructions"
+              class="info-text"
+            >
               Select the date and time of alteration of your business. You may select a date and time up to 10 days in
-              the future (note: there is an <strong>additional fee {{futureEffectiveFeePrice}}</strong> to
+              the future (note: there is an <strong>additional fee {{ futureEffectiveFeePrice }}</strong> to
               enter an alteration date and time in the future). Unless a business has special requirements, most
               businesses select an immediate Alteration Date and Time.
             </p>
@@ -146,12 +185,13 @@
             />
 
             <v-card
+              v-if="isFutureEffective && isEffectiveDateTimeValid"
+              id="effective-date-text"
               flat
               class="px-16 pb-8 mt-n12"
-              id="effective-date-text"
-              v-if="isFutureEffective && isEffectiveDateTimeValid">
+            >
               The alteration for this business will be effective as of:<br>
-              <strong>{{effectiveDateTimeString}}</strong>
+              <strong>{{ effectiveDateTimeString }}</strong>
             </v-card>
           </v-col>
         </v-row>

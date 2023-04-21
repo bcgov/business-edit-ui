@@ -1,6 +1,9 @@
 <template>
   <ViewWrapper>
-    <section class="pb-10" id="conversion-view">
+    <section
+      id="conversion-view"
+      class="pb-10"
+    >
       <!-- Business Information page-->
       <v-slide-x-transition hide-on-leave>
         <div v-if="!isSummaryMode || !showFeeSummary">

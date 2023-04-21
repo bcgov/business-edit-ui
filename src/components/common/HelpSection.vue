@@ -1,9 +1,20 @@
 <template>
   <div class="help-section-component">
-    <div class="help-btn top" @click="helpToggle = !helpToggle">
-      <v-icon color="primary">mdi-help-circle-outline</v-icon>
-      <span v-if="!helpToggle" class="pl-2">{{ header }}</span>
-      <span v-else class="pl-2">Hide Help</span>
+    <div
+      class="help-btn top"
+      @click="helpToggle = !helpToggle"
+    >
+      <v-icon color="primary">
+        mdi-help-circle-outline
+      </v-icon>
+      <span
+        v-if="!helpToggle"
+        class="pl-2"
+      >{{ header }}</span>
+      <span
+        v-else
+        class="pl-2"
+      >Hide Help</span>
     </div>
 
     <v-expand-transition v-if="helpToggle">
@@ -12,14 +23,27 @@
           <h2>Contact BC Registries</h2>
         </header>
 
-        <p v-for="(item, index) in items" :key="index" class="mt-4 py-1" v-html="item" />
+        <p
+          v-for="(item, index) in items"
+          :key="index"
+          class="mt-4 py-1"
+          v-html="item"
+        />
 
         <!-- BC Registry Contacts -->
-        <BcRegContacts class="mb-6" :direction="'col'" />
+        <BcRegContacts
+          class="mb-6"
+          :direction="'col'"
+        />
 
         <label>Hours of Operation:</label>
         <p>Monday to Friday, 8:30am - 4:30pm Pacific time</p>
-        <div class="help-btn bottom" @click="helpToggle = !helpToggle">Hide Help</div>
+        <div
+          class="help-btn bottom"
+          @click="helpToggle = !helpToggle"
+        >
+          Hide Help
+        </div>
       </section>
     </v-expand-transition>
   </div>

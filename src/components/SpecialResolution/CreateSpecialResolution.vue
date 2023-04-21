@@ -1,25 +1,34 @@
 <template>
-  <v-card flat id="create-special-resolution">
+  <v-card
+    id="create-special-resolution"
+    flat
+  >
     <!-- Header -->
     <article class="header-container section-container">
-      <v-icon color="appDkBlue">mdi-handshake</v-icon>
+      <v-icon color="appDkBlue">
+        mdi-handshake
+      </v-icon>
       <label class="font-weight-bold pl-2">Special Resolution</label>
     </article>
 
-    <v-card flat :class="{'invalid-section': invalidCreateSpecialResolutionSection}">
+    <v-card
+      flat
+      :class="{'invalid-section': invalidCreateSpecialResolutionSection}"
+    >
       <!-- Instructional Text -->
       <article class="instructional-text section-container">
         Before submitting this filing, you must pass a
-        <v-tooltip top
-                    content-class="top-tooltip"
-                    transition="fade-transition"
-                    nudge-right="3"
+        <v-tooltip
+          top
+          content-class="top-tooltip"
+          transition="fade-transition"
+          nudge-right="3"
         >
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <span
               v-bind="attrs"
-              v-on="on"
               class="tool-tip-text"
+              v-on="on"
             >special resolution</span>
           </template>
           <span>Special Resolution -  A decision voted on by the voting members of a Cooperative Association.</span>
@@ -33,25 +42,45 @@
       />
 
       <!-- Special Resolution Form -->
-      <section id="sample-resolution-section" class="section-container mt-10">
+      <section
+        id="sample-resolution-section"
+        class="section-container mt-10"
+      >
         <header id="sample-resolution-header">
-          <h2>{{ getSpecialResolutionResource.header}}</h2>
+          <h2>{{ getSpecialResolutionResource.header }}</h2>
         </header>
 
-        <p class="section-description mt-2"
-          v-html="getSpecialResolutionResource.text"></p>
+        <p
+          class="section-description mt-2"
+          v-html="getSpecialResolutionResource.text"
+        />
 
         <div class="mt-4">
-          <v-card flat class="py-8 px-6">
+          <v-card
+            flat
+            class="py-8 px-6"
+          >
             <div class="d-flex flex-column flex-sm-row justify-center align-center">
-              <img src="@/assets/images/BCRegistries_CoopSpecialResolution-x2.png"
+              <img
+                slot-scope=""
+                src="@/assets/images/BCRegistries_CoopSpecialResolution-x2.png"
                 :alt="getSpecialResolutionResource.label"
-                slot-scope="" class="preview-image" />
+                class="preview-image"
+              >
               <div class="px-8" />
               <div class="download-link-container py-5">
-                <v-icon color="primary" class="mt-n1">mdi-file-pdf-outline</v-icon>
-                <a :href="documentURL" download class="ml-1">
-                  {{getSpecialResolutionResource.label}}
+                <v-icon
+                  color="primary"
+                  class="mt-n1"
+                >
+                  mdi-file-pdf-outline
+                </v-icon>
+                <a
+                  :href="documentURL"
+                  download
+                  class="ml-1"
+                >
+                  {{ getSpecialResolutionResource.label }}
                 </a>
               </div>
             </div>
@@ -61,7 +90,10 @@
 
       <v-divider class="mx-4" />
 
-      <section id="resolution-date-section" class="section-container mt-10">
+      <section
+        id="resolution-date-section"
+        class="section-container mt-10"
+      >
         <!-- Special Resolution -->
         <header id="resolution-date-header">
           <h2>Special Resolution</h2>
@@ -71,17 +103,31 @@
           Enter the date the special resolution passed and the text as it appears on your printed form.
         </p>
 
-        <v-form v-model="formValid" ref="createSpecialResolutionRef">
-          <div class="mt-4" >
-            <v-card flat id="resolution-date-card" class="py-8">
+        <v-form
+          ref="createSpecialResolutionRef"
+          v-model="formValid"
+        >
+          <div class="mt-4">
+            <v-card
+              id="resolution-date-card"
+              flat
+              class="py-8"
+            >
               <!-- Resolution Date -->
               <v-row no-gutters>
-                <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block">
+                <v-col
+                  cols="12"
+                  sm="3"
+                  class="pr-4 d-none d-sm-block"
+                >
                   <label class="resolution-date-vcard-title mt-4">
                     Resolution Date
                   </label>
                 </v-col>
-                <v-col cols="12" sm="9">
+                <v-col
+                  cols="12"
+                  sm="9"
+                >
                   <DatePickerShared
                     ref="resolutionDatePickerRef"
                     title="Resolution Date"
@@ -98,19 +144,26 @@
 
               <!-- Resolution Text -->
               <v-row no-gutters>
-                <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block">
+                <v-col
+                  cols="12"
+                  sm="3"
+                  class="pr-4 d-none d-sm-block"
+                >
                   <label class="resolution-text-vcard-title mt-4">
                     Resolution Text
                   </label>
                 </v-col>
-                <v-col cols="12" sm="9">
+                <v-col
+                  cols="12"
+                  sm="9"
+                >
                   <v-textarea
+                    v-model="resolution"
                     auto-grow
                     filled
                     label="Resolution Text"
                     rows="6"
                     :counter="MAX_RESOLUTION_TEXT_LENGTH"
-                    v-model="resolution"
                     :rules="resolutionTextRules"
                     @change="onResolutionTextChanged($event)"
                   />
@@ -128,36 +181,48 @@
             Enter the full name of the person who signed the special resolution and the date they signed it.
           </p>
 
-          <v-card flat id="resolution-signature-card" class="py-8">
+          <v-card
+            id="resolution-signature-card"
+            flat
+            class="py-8"
+          >
             <!-- Signing Party -->
             <v-row no-gutters>
-              <v-col cols="12" sm="3" class="pr-4">
+              <v-col
+                cols="12"
+                sm="3"
+                class="pr-4"
+              >
                 <label class="resolution-signature-vcard-title">Signing Party</label>
               </v-col>
-              <v-col cols="12" sm="9" class="pt-4 pt-sm-0">
+              <v-col
+                cols="12"
+                sm="9"
+                class="pt-4 pt-sm-0"
+              >
                 <div class="form__row three-column">
                   <v-text-field
+                    id="person__first-name"
+                    v-model="signatory.givenName"
                     filled
                     class="item"
                     label="First Name"
-                    id="person__first-name"
-                    v-model="signatory.givenName"
                     :rules="firstNameRules"
                   />
                   <v-text-field
+                    id="person__middle-name"
+                    v-model="signatory.additionalName"
                     filled
                     class="item"
                     label="Middle Name (Optional)"
-                    id="person__middle-name"
-                    v-model="signatory.additionalName"
                     :rules="middleNameRules"
                   />
                   <v-text-field
+                    id="person__last-name"
+                    v-model="signatory.familyName"
                     filled
                     class="item"
                     label="Last Name"
-                    id="person__last-name"
-                    v-model="signatory.familyName"
                     :rules="lastNameRules"
                   />
                 </div>
@@ -166,10 +231,18 @@
 
             <!-- Date Signed -->
             <v-row no-gutters>
-              <v-col cols="12" sm="3" class="pr-4">
+              <v-col
+                cols="12"
+                sm="3"
+                class="pr-4"
+              >
                 <label class="resolution-signature-vcard-title">Date Signed</label>
               </v-col>
-              <v-col cols="12" sm="9" class="pt-4 pt-sm-0">
+              <v-col
+                cols="12"
+                sm="9"
+                class="pt-4 pt-sm-0"
+              >
                 <DatePickerShared
                   ref="signatureDatePickerRef"
                   title="Date Signed"

@@ -1,8 +1,11 @@
 <template>
   <section id="completing-party-section">
-    <h2>{{sectionNumber}} Completing Party</h2>
+    <h2>{{ sectionNumber }} Completing Party</h2>
 
-    <div class="mt-4" :class="{ 'invalid-section': invalidSection }">
+    <div
+      class="mt-4"
+      :class="{ 'invalid-section': invalidSection }"
+    >
       <!-- FUTURE: update this component so it doesn't set flag until user changes something -->
       <CompletingPartyShared
         class="section-container py-6"

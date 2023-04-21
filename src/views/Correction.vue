@@ -7,7 +7,6 @@
       @haveData="emitHaveData($event)"
     />
   </ViewWrapper>
-
 </template>
 
 <script lang="ts">

@@ -1,6 +1,9 @@
 <template>
   <ViewWrapper>
-    <section class="pb-10" id="special-resolution-view">
+    <section
+      id="special-resolution-view"
+      class="pb-10"
+    >
       <!-- Company Information page-->
       <v-slide-x-transition hide-on-leave>
         <div v-if="!isSummaryMode">
@@ -26,7 +29,10 @@
 
           <CurrentDirectors class="mt-10" />
 
-          <CreateSpecialResolution class="mt-10" v-if="showCreateSpecialResolution" />
+          <CreateSpecialResolution
+            v-if="showCreateSpecialResolution"
+            class="mt-10"
+          />
         </div>
       </v-slide-x-transition>
 
@@ -84,7 +90,6 @@
               @haveChanges="onStaffPaymentChanges()"
             />
           </template>
-
         </div>
       </v-slide-x-reverse-transition>
 
@@ -102,9 +107,9 @@
           </section>
 
           <v-btn
+            id="done-button"
             large
             color="primary"
-            id="done-button"
             class="mt-8"
             @click="$root.$emit('go-to-dashboard')"
           >

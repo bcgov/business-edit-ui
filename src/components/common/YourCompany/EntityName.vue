@@ -5,8 +5,14 @@
     :class="{'invalid-section': invalidSection}"
   >
     <!-- Business/Company Name -->
-    <v-row no-gutters class="mt-4">
-      <v-col cols="3" class="pr-2">
+    <v-row
+      no-gutters
+      class="mt-4"
+    >
+      <v-col
+        cols="3"
+        class="pr-2"
+      >
         <label :class="{'error-text': invalidSection}">
           <strong>{{ getResource.entityReference }} Name</strong>
         </label>
@@ -15,11 +21,12 @@
             v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling ||
               isFirmConversionFiling || isSpecialResolutionFiling))"
             id="corrected-lbl"
-            x-small label
+            x-small
+            label
             color="primary"
             text-color="white"
           >
-            {{getEditedLabel}}
+            {{ getEditedLabel }}
           </v-chip>
         </v-col>
       </v-col>
@@ -27,15 +34,18 @@
       <!-- Display Mode -->
       <template v-if="!isEditingNames">
         <v-col cols="7">
-          <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
+          <div class="company-name font-weight-bold text-uppercase">
+            {{ companyName }}
+          </div>
 
           <!-- Business Type Info -->
-          <template v-if="!hasNewNr && hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling ||
-            isFirmConversionFiling)"
+          <template
+            v-if="!hasNewNr && hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling ||
+              isFirmConversionFiling)"
           >
             <div class="company-info mt-4">
               <span class="subtitle">Business Type: </span>
-              <span class="info-text">{{GetCorpFullDescription(getEntityType)}}</span>
+              <span class="info-text">{{ GetCorpFullDescription(getEntityType) }}</span>
             </div>
             <div class="info-text pt-3">
               <span>The name of this business will be the current Incorporation Number followed by "B.C. Ltd."</span>
@@ -44,11 +54,15 @@
 
           <!-- Name Request Info -->
           <template v-if="hasNewNr">
-            <div class="company-name mt-2">{{getNameRequestNumber || 'Unknown'}}</div>
+            <div class="company-name mt-2">
+              {{ getNameRequestNumber || 'Unknown' }}
+            </div>
             <div class="company-info mt-4">
               <span class="subtitle">Business Type: </span>
-              <span :class="{ 'has-conflict': isConflictingLegalType}"
-                    class="info-text">{{GetCorpFullDescription(getNameRequest.legalType)}}
+              <span
+                :class="{ 'has-conflict': isConflictingLegalType}"
+                class="info-text"
+              >{{ GetCorpFullDescription(getNameRequest.legalType) }}
               </span>
               <v-tooltip
                 v-if="isConflictingLegalType"
@@ -57,8 +71,12 @@
                 transition="fade-transition"
                 nudge-right="3"
               >
-                <template v-slot:activator="{ on }">
-                  <v-icon v-on="on" color="error" small>
+                <template #activator="{ on }">
+                  <v-icon
+                    color="error"
+                    small
+                    v-on="on"
+                  >
                     mdi-alert
                   </v-icon>
                 </template>
@@ -68,67 +86,86 @@
             </div>
             <div class="company-info">
               <span class="subtitle">Request Type: </span>
-              <span class="info-text">{{getNrRequestDesc(getNameRequest.requestType)}}</span>
+              <span class="info-text">{{ getNrRequestDesc(getNameRequest.requestType) }}</span>
             </div>
             <div class="company-info">
               <span class="subtitle">Expiry Date: </span>
-              <span class="info-text">{{nrExpiryDate || 'Unknown'}}</span>
+              <span class="info-text">{{ nrExpiryDate || 'Unknown' }}</span>
             </div>
             <div class="company-info">
               <span class="subtitle">Status: </span>
-              <span class="info-text text-capitalize">{{nrStatus}}</span>
+              <span class="info-text text-capitalize">{{ nrStatus }}</span>
             </div>
           </template>
         </v-col>
 
         <!-- Actions -->
-        <v-col cols="2" class="my-n2" v-if="showNameOptions">
+        <v-col
+          v-if="showNameOptions"
+          cols="2"
+          class="my-n2"
+        >
           <div class="actions mr-4">
             <!-- FUTURE: only show buttons for named company -->
             <v-btn
               v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling ||
                 isFirmChangeFiling || isSpecialResolutionFiling))"
-              text color="primary"
               id="btn-undo-company-name"
+              text
+              color="primary"
               class="undo-action"
               @click="resetName()"
             >
-              <v-icon small>mdi-undo</v-icon>
+              <v-icon small>
+                mdi-undo
+              </v-icon>
               <span>Undo</span>
             </v-btn>
             <v-btn
               v-else-if="!isFirmConversionFiling && !isLimitedRestorationExtension"
-              text color="primary"
               id="btn-correct-company-name"
+              text
+              color="primary"
               @click="isEditingNames = true"
             >
-              <v-icon small>mdi-pencil</v-icon>
-              <span>{{getEditLabel}}</span>
+              <v-icon small>
+                mdi-pencil
+              </v-icon>
+              <span>{{ getEditLabel }}</span>
             </v-btn>
-            <span class="more-actions" v-if="hasCompanyNameChanged || (hasBusinessNameChanged &&
-              (isAlterationFiling || isFirmChangeFiling || isSpecialResolutionFiling))"
+            <span
+              v-if="hasCompanyNameChanged || (hasBusinessNameChanged &&
+                (isAlterationFiling || isFirmChangeFiling || isSpecialResolutionFiling))"
+              class="more-actions"
             >
               <v-menu
-                offset-y left nudge-bottom="4"
                 v-model="dropdown"
+                offset-y
+                left
+                nudge-bottom="4"
               >
-                <template v-slot:activator="{ on }">
+                <template #activator="{ on }">
                   <v-btn
-                    text small color="primary"
                     id="btn-more-actions"
+                    text
+                    small
+                    color="primary"
                     v-on="on"
                   >
-                    <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                    <v-icon>{{ dropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                   </v-btn>
                 </template>
                 <v-list class="pa-0">
                   <v-list-item
-                    class="v-list-item"
                     id="btn-more-actions-edit"
+                    class="v-list-item"
                     @click="isEditingNames = true; dropdown = false"
                   >
                     <v-list-item-subtitle>
-                      <v-icon small color="primary">mdi-pencil</v-icon>
+                      <v-icon
+                        small
+                        color="primary"
+                      >mdi-pencil</v-icon>
                       <span class="drop-down-action ml-1">Change</span>
                     </v-list-item-subtitle>
                   </v-list-item>
@@ -140,7 +177,10 @@
       </template>
 
       <!-- Editing Mode -->
-      <v-col cols="9" v-else>
+      <v-col
+        v-else
+        cols="9"
+      >
         <CorrectNameOptions
           :correctionNameChoices="nameChangeOptions"
           @isSaved="nameChangeHandler($event)"
@@ -150,8 +190,10 @@
     </v-row>
 
     <!-- Name Request Applicant -->
-    <v-row no-gutters v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling || isFirmConversionFiling ||
+    <v-row
+      v-if="hasNewNr && (isAlterationFiling || isFirmChangeFiling || isFirmConversionFiling ||
         isSpecialResolutionFiling)"
+      no-gutters
       class="sub-section"
     >
       <v-col cols="3">
@@ -161,19 +203,19 @@
       <v-col cols="7">
         <div class="name-request-applicant-info">
           <span class="subtitle">Name: </span>
-          <span class="info-text">{{nrApplicant.fullName}}</span>
+          <span class="info-text">{{ nrApplicant.fullName }}</span>
         </div>
         <div class="name-request-applicant-info">
           <span class="subtitle">Address: </span>
-          <span class="info-text">{{nrApplicant.fullAddress}}</span>
+          <span class="info-text">{{ nrApplicant.fullAddress }}</span>
         </div>
         <div class="name-request-applicant-info">
           <span class="subtitle">Email: </span>
-          <span class="info-text">{{nrApplicant.emailAddress || 'N/A'}}</span>
+          <span class="info-text">{{ nrApplicant.emailAddress || 'N/A' }}</span>
         </div>
         <div class="name-request-applicant-info">
           <span class="subtitle">Phone: </span>
-          <span class="info-text">{{nrPhoneNumber || 'N/A'}}</span>
+          <span class="info-text">{{ nrPhoneNumber || 'N/A' }}</span>
         </div>
       </v-col>
     </v-row>
