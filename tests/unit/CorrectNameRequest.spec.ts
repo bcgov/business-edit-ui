@@ -111,7 +111,7 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
   })
 
-  // the spaces between 'NR' and the numbers is ignored
+  // the spaces between 'NR' and the numbers are ignored
   it('verifies valid NR input', async () => {
     const wrapper = wrapperFactory()
 
