@@ -111,6 +111,23 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
   })
 
+  // the spaces between 'NR' and the numbers is ignored
+  it('verifies valid NR input', async () => {
+    const wrapper = wrapperFactory()
+
+    // Verify Invalid before input
+    expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.vm.nameRequestNumber = 'NR   1234567'
+    wrapper.vm.applicantPhone = '123 456 7890'
+    wrapper.vm.applicantEmail = 'mock@example.com'
+
+    await flushPromises()
+
+    expect(wrapper.vm.isFormValid).toBe(true)
+    expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
+  })
+
   it('verifies invalid NR', async () => {
     const wrapper = wrapperFactory()
 
@@ -118,6 +135,38 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(false)
 
     wrapper.vm.nameRequestNumber = '123123NR'
+    wrapper.vm.applicantEmail = 'mock@example.com'
+
+    await flushPromises()
+
+    expect(wrapper.vm.isFormValid).toBe(false)
+  })
+
+  // the leading or tearing spaces of a NR are invalid
+  it('verifies invalid NR', async () => {
+    const wrapper = wrapperFactory()
+
+    // Verify Invalid before input
+    expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.vm.nameRequestNumber = '   NR 1234567'
+    wrapper.vm.applicantPhone = '123 456 7890'
+    wrapper.vm.applicantEmail = 'mock@example.com'
+
+    await flushPromises()
+
+    expect(wrapper.vm.isFormValid).toBe(false)
+  })
+
+  // the leading or tearing spaces are invalid
+  it('verifies invalid NR', async () => {
+    const wrapper = wrapperFactory()
+
+    // Verify Invalid before input
+    expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.vm.nameRequestNumber = 'NR 1234567    '
+    wrapper.vm.applicantPhone = '123 456 7890'
     wrapper.vm.applicantEmail = 'mock@example.com'
 
     await flushPromises()
