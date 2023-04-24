@@ -1,5 +1,11 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="confirm-delete-all-dialog">
+  <v-dialog
+    v-model="dialog"
+    width="45rem"
+    persistent
+    :attach="attach"
+    content-class="confirm-delete-all-dialog"
+  >
     <v-card>
       <v-card-title id="dialog-title">
         Delete Alterations
@@ -10,12 +16,26 @@
         do not require a fee, such as updates to your Registered Office Contact Information.
       </v-card-text>
 
-      <v-divider class="my-0"></v-divider>
+      <v-divider class="my-0" />
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn id="dialog-delete-btn" color="primary" text @click="confirm()">Delete Alterations</v-btn>
-        <v-btn id="dialog-cancel-btn" color="primary" text @click="cancel()">Cancel</v-btn>
+        <v-spacer />
+        <v-btn
+          id="dialog-delete-btn"
+          color="primary"
+          text
+          @click="confirm()"
+        >
+          Delete Alterations
+        </v-btn>
+        <v-btn
+          id="dialog-cancel-btn"
+          color="primary"
+          text
+          @click="cancel()"
+        >
+          Cancel
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

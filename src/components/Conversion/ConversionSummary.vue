@@ -1,10 +1,15 @@
 <template>
-  <v-card flat id="conversion-summary">
+  <v-card
+    id="conversion-summary"
+    flat
+  >
     <!-- Section Header -->
     <section class="section-container summary-header rounded-t">
       <v-row no-gutters>
         <v-col>
-          <v-icon class="header-icon ml-n1">mdi-file-document-edit-outline</v-icon>
+          <v-icon class="header-icon ml-n1">
+            mdi-file-document-edit-outline
+          </v-icon>
           <label class="summary-title">Summary of Changes to File</label>
         </v-col>
       </v-row>
@@ -13,14 +18,23 @@
     <!-- Nature of Business -->
     <template v-if="hasNaicsChanged">
       <v-divider class="mx-8" />
-      <article id="nob-summary-section" class="section-container">
+      <article
+        id="nob-summary-section"
+        class="section-container"
+      >
         <v-row no-gutters>
-          <v-col cols="12" sm="3">
+          <v-col
+            cols="12"
+            sm="3"
+          >
             <label>Nature of Business</label>
           </v-col>
 
-          <v-col cols="12" sm="8">
-            <span class="info-text">{{naicsSummary || '(Not entered)'}}</span>
+          <v-col
+            cols="12"
+            sm="8"
+          >
+            <span class="info-text">{{ naicsSummary || '(Not entered)' }}</span>
           </v-col>
         </v-row>
       </article>
@@ -37,13 +51,22 @@
     <!-- Proprietor/Partner Information -->
     <template v-if="havePeopleAndRolesChanged">
       <v-divider class="mx-8" />
-      <article id="org-person-summary-section" class="section-container pb-0">
+      <article
+        id="org-person-summary-section"
+        class="section-container pb-0"
+      >
         <v-row no-gutters>
-          <v-col cols="12" sm="3">
+          <v-col
+            cols="12"
+            sm="3"
+          >
             <label>{{ isSoleProp ? 'Proprietor' : 'Partner' }} Information</label>
           </v-col>
         </v-row>
-        <v-row no-gutters class="mt-4">
+        <v-row
+          no-gutters
+          class="mt-4"
+        >
           <v-col cols="12">
             <ListPeopleAndRoles
               :isSummaryView="true"

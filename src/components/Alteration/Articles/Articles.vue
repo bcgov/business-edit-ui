@@ -1,7 +1,12 @@
 <template>
-  <v-card flat id="articles">
+  <v-card
+    id="articles"
+    flat
+  >
     <div class="articles-header pa-5">
-      <v-icon color="appDkBlue">mdi-handshake</v-icon>
+      <v-icon color="appDkBlue">
+        mdi-handshake
+      </v-icon>
       <label class="articles-title pl-2">Articles</label>
     </div>
 

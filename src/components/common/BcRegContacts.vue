@@ -1,12 +1,26 @@
 <template>
-  <div id="bc-reg-contacts" :class="{ 'flex-column': direction === 'col' }">
+  <div
+    id="bc-reg-contacts"
+    :class="{ 'flex-column': direction === 'col' }"
+  >
     <div
-      class="contact-container" :class="{ 'justify-center': direction === 'row' }"
-      v-for="(contact, i) in contacts" :key="i"
+      v-for="(contact, i) in contacts"
+      :key="i"
+      class="contact-container"
+      :class="{ 'justify-center': direction === 'row' }"
     >
-      <v-icon class="contact-icon">{{contact.icon}}</v-icon>
-      <div class="contact-key info-text" v-html="contact.key" />
-      <a :href="contact.href" class="contact-value" v-html="contact.val" />
+      <v-icon class="contact-icon">
+        {{ contact.icon }}
+      </v-icon>
+      <div
+        class="contact-key info-text"
+        v-html="contact.key"
+      />
+      <a
+        :href="contact.href"
+        class="contact-value"
+        v-html="contact.val"
+      />
     </div>
   </div>
 </template>

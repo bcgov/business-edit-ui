@@ -1,11 +1,27 @@
 <template>
-  <v-card flat id="effective-date-time-box">
-    <v-radio-group column class="pt-0 mt-0" v-model="effectiveDateType">
-      <v-radio label="Immediate (date and time of filing)" :value=EffectiveDateTypes.IMMEDIATE />
-      <v-radio label="A date and time in the future" :value=EffectiveDateTypes.FUTUREEFFECTIVE />
+  <v-card
+    id="effective-date-time-box"
+    flat
+  >
+    <v-radio-group
+      v-model="effectiveDateType"
+      column
+      class="pt-0 mt-0"
+    >
+      <v-radio
+        label="Immediate (date and time of filing)"
+        :value="EffectiveDateTypes.IMMEDIATE"
+      />
+      <v-radio
+        label="A date and time in the future"
+        :value="EffectiveDateTypes.FUTUREEFFECTIVE"
+      />
     </v-radio-group>
 
-    <v-form ref="form" class="date-time-selectors">
+    <v-form
+      ref="form"
+      class="date-time-selectors"
+    >
       <DatePickerShared
         ref="datePickerRef"
         title="Date"
@@ -19,51 +35,83 @@
       />
 
       <v-row>
-        <v-col cols="12" sm="6" md="3">
+        <v-col
+          cols="12"
+          sm="6"
+          md="3"
+        >
           <v-combobox
             id="hour-selector"
             ref="hourSelector"
+            v-model="selectHour"
             filled
             class="mr-1"
-            v-model="selectHour"
             label="Hour"
             :items="hours"
             :disabled="!isFutureEffective"
-            :rules="hourRules" />
+            :rules="hourRules"
+          />
         </v-col>
-        <span class="time-colon" :class="{ 'disabled': !isFutureEffective }">:</span>
-        <v-col cols="12" sm="6" md="3">
+        <span
+          class="time-colon"
+          :class="{ 'disabled': !isFutureEffective }"
+        >:</span>
+        <v-col
+          cols="12"
+          sm="6"
+          md="3"
+        >
           <v-combobox
             id="minute-selector"
             ref="minuteSelector"
+            v-model="selectMinute"
             filled
             class="ml-1"
-            v-model="selectMinute"
             label="Minute"
             :items="minutes"
             :disabled="!isFutureEffective"
-            :rules="minuteRules" />
+            :rules="minuteRules"
+          />
         </v-col>
-        <v-col cols="12" sm="6" md="3">
+        <v-col
+          cols="12"
+          sm="6"
+          md="3"
+        >
           <v-select
             id="period-selector"
-            filled
             v-model="selectPeriod"
+            filled
             :items="timePeriod"
-            :disabled="!isFutureEffective" />
+            :disabled="!isFutureEffective"
+          />
         </v-col>
-        <v-col cols="12" sm="6" md="3" class="label-col">
-          <span class="time-zone-label" :class="{ 'disabled': !isFutureEffective }">Pacific time</span>
+        <v-col
+          cols="12"
+          sm="6"
+          md="3"
+          class="label-col"
+        >
+          <span
+            class="time-zone-label"
+            :class="{ 'disabled': !isFutureEffective }"
+          >Pacific time</span>
         </v-col>
       </v-row>
 
       <!-- display validation alert only after date and time have been entered -->
       <v-row v-if="isFutureEffective && dateText && (selectHour.length > 0) && (selectMinute.length > 0)">
         <v-col class="validation-alert">
-          <p class="validation-alert-msg" v-if="isUnderTime">
+          <p
+            v-if="isUnderTime"
+            class="validation-alert-msg"
+          >
             The time must be at least {{ dateToPacificTime(minDate) }} for the selected date
           </p>
-          <p class="validation-alert-msg" v-if="isOverTime">
+          <p
+            v-if="isOverTime"
+            class="validation-alert-msg"
+          >
             The time must be at most {{ dateToPacificTime(maxDate) }} for the selected date
           </p>
         </v-col>

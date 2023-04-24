@@ -1,5 +1,8 @@
 <template>
-  <v-app class="app-container" id="app">
+  <v-app
+    id="app"
+    class="app-container"
+  >
     <!-- Dialogs -->
     <ConfirmDialogShared
       ref="confirm"
@@ -72,10 +75,19 @@
 
     <!-- Initial Page Load Transition -->
     <transition name="fade">
-      <div class="loading-container" v-show="!haveData && !isErrorDialog">
+      <div
+        v-show="!haveData && !isErrorDialog"
+        class="loading-container"
+      >
         <div class="loading__content">
-          <v-progress-circular color="primary" size="50" indeterminate />
-          <div class="loading-msg">Loading</div>
+          <v-progress-circular
+            color="primary"
+            size="50"
+            indeterminate
+          />
+          <div class="loading-msg">
+            Loading
+          </div>
         </div>
       </div>
     </transition>
@@ -84,10 +96,15 @@
 
     <!-- Alert banner -->
     <v-alert
-      tile dense
+      v-if="bannerText"
+      tile
+      dense
       type="warning"
-      v-if="bannerText">
-      <div v-html="bannerText" class="mb-0 text-center colour-dk-text"></div>
+    >
+      <div
+        class="mb-0 text-center colour-dk-text"
+        v-html="bannerText"
+      />
     </v-alert>
 
     <div class="app-body">
@@ -95,7 +112,7 @@
         <BreadcrumbShared :breadcrumbs="breadcrumbs" />
         <EntityInfo />
         <router-view
-          :appReady=appReady
+          :appReady="appReady"
           :isSummaryMode="isSummaryMode"
           @fetchError="fetchErrorDialog = true"
           @haveData="haveData = true"
@@ -103,7 +120,7 @@
       </main>
     </div>
 
-    <SbcFooter :aboutText=aboutText />
+    <SbcFooter :aboutText="aboutText" />
   </v-app>
 </template>
 

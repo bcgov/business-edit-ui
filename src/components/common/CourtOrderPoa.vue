@@ -1,7 +1,10 @@
 <template>
-  <section class="pb-6" id="court-order-poa">
+  <section
+    id="court-order-poa"
+    class="pb-6"
+  >
     <header>
-      <h2>{{sectionNumber}} Court Order and Plan of Arrangement</h2>
+      <h2>{{ sectionNumber }} Court Order and Plan of Arrangement</h2>
       <div class="py-4">
         If this filing is pursuant to a court order, enter the court order number. If this
         filing is pursuant to a plan of arrangement, enter the court order number and select
@@ -9,7 +12,10 @@
       </div>
     </header>
     <div :class="{ 'invalid-section': invalidCourtOrder }">
-      <v-card flat class="section-container py-6">
+      <v-card
+        flat
+        class="section-container py-6"
+      >
         <CourtOrderPoaShared
           id="court-order"
           :autoValidation="getAppValidate"

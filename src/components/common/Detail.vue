@@ -1,7 +1,7 @@
 <template>
   <section id="detail-section">
     <header>
-      <h2>{{sectionNumber}} Detail</h2>
+      <h2>{{ sectionNumber }} Detail</h2>
     </header>
 
     <div class="py-4">
@@ -9,13 +9,22 @@
     </div>
 
     <div :class="{ 'invalid-section': invalidSection }">
-      <v-card flat class="detail-card">
+      <v-card
+        flat
+        class="detail-card"
+      >
         <v-row no-gutters>
-          <v-col cols="3" sm="2">
+          <v-col
+            cols="3"
+            sm="2"
+          >
             <label><strong>Detail</strong></label>
           </v-col>
-          <v-col cols="10" sm="9">
-            <label><strong>{{defaultCorrectionDetailComment}}</strong></label>
+          <v-col
+            cols="10"
+            sm="9"
+          >
+            <label><strong>{{ defaultCorrectionDetailComment }}</strong></label>
             <div class="pt-2">
               <DetailCommentShared
                 v-model="comment"
