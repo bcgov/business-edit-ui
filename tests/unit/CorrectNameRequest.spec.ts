@@ -76,6 +76,39 @@ describe('CorrectNameRequest', () => {
     await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(true)
+    expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
+  })
+
+  it('verifies inputs when valid', async () => {
+    const wrapper = wrapperFactory()
+
+    // Verify Invalid before input
+    expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.vm.nameRequestNumber = 'NR 1234567'
+    wrapper.vm.applicantPhone = '123 456 7890'
+    wrapper.vm.applicantEmail = 'mock@example.com'
+
+    await flushPromises()
+
+    expect(wrapper.vm.isFormValid).toBe(true)
+    expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
+  })
+
+  it('verifies inputs when valid', async () => {
+    const wrapper = wrapperFactory()
+
+    // Verify Invalid before input
+    expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.vm.nameRequestNumber = '1234567'
+    wrapper.vm.applicantPhone = '123 456 7890'
+    wrapper.vm.applicantEmail = 'mock@example.com'
+
+    await flushPromises()
+
+    expect(wrapper.vm.isFormValid).toBe(true)
+    expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
   })
 
   it('verifies invalid NR', async () => {
