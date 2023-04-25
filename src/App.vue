@@ -383,6 +383,7 @@ export default class App extends Vue {
   }
 
   /** Called before component is destroyed. */
+  // *** TODO: change this to beforeUnmount()
   beforeDestroy (): void {
     // stop Update Current Js Date timer
     clearInterval(this.updateCurrentJsDateId)

@@ -11,6 +11,21 @@ const aboutText1 = (appName && appVersion) ? `${appName} v${appVersion}` : ''
 const aboutText2 = (sbcName && sbcVersion) ? `${sbcName} v${sbcVersion}` : ''
 
 module.exports = {
+  chainWebpack: (config) => {
+    config.resolve.alias.set('vue', '@vue/compat')
+
+    config.module
+      .rule('vue')
+      .use('vue-loader')
+      .tap((options) => {
+        return {
+          ...options,
+          compilerOptions: {
+            compatConfig: { MODE: 2 }
+          }
+        }
+      })
+  },
   configureWebpack: {
     plugins: [
       new webpack.DefinePlugin({
