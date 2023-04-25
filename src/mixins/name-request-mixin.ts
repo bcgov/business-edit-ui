@@ -1,6 +1,5 @@
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Component, Vue } from 'vue-facing-decorator'
+import { Getter } from '@/utils/'
 import { NameRequestStates, NameRequestTypes } from '@/enums/'
 import { LegalServices } from '@/services/'
 import { NrResponseIF, ResourceIF } from '@/interfaces/'

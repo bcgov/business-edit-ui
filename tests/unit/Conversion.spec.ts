@@ -10,7 +10,7 @@ import ViewWrapper from '@/components/ViewWrapper.vue'
 import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { ActionTypes, FilingTypes } from '@bcrs-shared-components/enums'
+import { ActionTypes, FilingTypes } from '@/bcrs-shared-components/enums'
 import { BusinessStartDate, BusinessType, EntityName, FolioInformation, OfficeAddresses,
   YourCompanyWrapper } from '@/components/common'
 import { ConversionNOB } from '@/components/Conversion'

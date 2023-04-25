@@ -121,9 +121,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Watch } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
-import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
+import { Component, Emit, Vue, Watch } from 'vue-facing-decorator'
+import { Getter } from '@/utils/'
+import { DatePicker as DatePickerShared } from '@/bcrs-shared-components/date-picker/'
 import { DateMixin } from '@/mixins/'
 import { EffectiveDateTypes, PeriodTypes } from '@/enums/'
 import { EffectiveDateTimeIF, FormFieldType, FormIF } from '@/interfaces/'
@@ -132,16 +132,15 @@ import { VuetifyRuleFunction } from '@/types'
 import { useStore } from '@/store/store'
 
 @Component({
-  components: {
-    DatePickerShared
-  }
+  components: { DatePickerShared },
+  mixins: [DateMixin]
 })
-export default class EffectiveDateTime extends Mixins(DateMixin) {
+export default class EffectiveDateTime extends Vue {
   readonly MIN_DIFF_MINUTES = 3
   readonly MAX_DIFF_DAYS = 10
 
   // Add element types to refs
-  $refs!: {
+  declare $refs: Vue['$refs'] & {
     form: FormIF,
     datePickerRef: any, // should be DatePickerShared but public methods can't be found
     hourSelector: FormFieldType, // used in unit tests

@@ -19,13 +19,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
-import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number/'
+import { FolioNumber as FolioNumberShared } from '@/bcrs-shared-components/folio-number/'
 
 import { useStore } from '@/store/store'
 

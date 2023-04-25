@@ -116,9 +116,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Emit } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
+import { Getter } from '@/utils/'
 import { ErrorContact } from '@/components/common/'
 import { useStore } from '@/store/store'
 

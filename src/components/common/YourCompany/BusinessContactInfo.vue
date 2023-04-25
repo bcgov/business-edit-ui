@@ -21,14 +21,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
-import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info/'
+import { Component, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
+import { ContactInfo as ContactInfoShared } from '@/bcrs-shared-components/contact-info/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, ResourceIF, EntitySnapshotIF, FlagsCompanyInfoIF } from '@/interfaces/'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
+import { ContactPointIF } from '@/bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 import { useStore } from '@/store/store'
 

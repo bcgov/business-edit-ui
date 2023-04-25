@@ -13,6 +13,6 @@ export * from './state-interface'
 export type {
   BusinessLookupIF,
   BusinessLookupResultIF
-} from '@bcrs-shared-components/interfaces'
+} from '@/bcrs-shared-components/interfaces'
 
-export { EmptyBusinessLookup } from '@bcrs-shared-components/interfaces'
+export { EmptyBusinessLookup } from '@/bcrs-shared-components/interfaces'

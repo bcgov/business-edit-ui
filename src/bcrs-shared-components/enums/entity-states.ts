@@ -1,0 +1,5 @@
+export enum EntityStates {
+  ACTIVE = 'ACTIVE',
+  HISTORICAL = 'HISTORICAL',
+  LIQUIDATION = 'LIQUIDATION'
+}

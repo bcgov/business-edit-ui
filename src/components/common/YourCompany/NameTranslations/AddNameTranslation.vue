@@ -55,20 +55,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Mixins } from 'vue-property-decorator'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
+import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
+import { ConfirmDialog as ConfirmDialogShared } from '@/bcrs-shared-components/confirm-dialog/'
 import { ConfirmDialogType, FormIF } from '@/interfaces/'
 import { CommonMixin } from '@/mixins/'
 import { VuetifyRuleFunction } from '@/types'
 
 @Component({
-  components: {
-    ConfirmDialogShared
-  }
+  components: { ConfirmDialogShared },
+  mixins: [CommonMixin]
 })
-export default class AddNameTranslation extends Mixins(CommonMixin) {
+export default class AddNameTranslation extends Vue {
   // Refs
-  $refs!: {
+  declare $refs: Vue['$refs'] & {
     confirmTranslationDialog: ConfirmDialogType,
     nameTranslationForm: FormIF
   }

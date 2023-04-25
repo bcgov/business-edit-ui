@@ -1,5 +1,5 @@
 import { AddressesIF, NameRequestIF, OrgPersonIF } from '@/interfaces/'
-import { ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { ContactPointIF, NaicsIF } from '@/bcrs-shared-components/interfaces/'
 import { BusinessTypes } from '@/enums'
 
 //

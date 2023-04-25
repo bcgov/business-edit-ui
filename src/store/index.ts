@@ -1,6 +1,6 @@
 // Libraries
 import { createPinia, PiniaVuePlugin } from 'pinia'
-import Vue from 'vue'
+import { Vue } from 'vue-facing-decorator'
 import Vuex from 'vuex'
 
 import * as States from './state'

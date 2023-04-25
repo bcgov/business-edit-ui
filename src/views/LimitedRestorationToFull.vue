@@ -131,12 +131,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter, GetFeatureFlag } from '@/utils/'
 import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep } from 'lodash'
-import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import { BusinessContactInfo, CertifySection, CourtOrderPoa, DocumentsDelivery, EntityName,
@@ -144,7 +142,7 @@ import { BusinessContactInfo, CertifySection, CourtOrderPoa, DocumentsDelivery, 
   QuestionWrapper, RecognitionDateTime, StaffPayment, YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
 import {
   ActionBindingIF,
   EntitySnapshotIF,
@@ -157,11 +155,11 @@ import {
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationToFull/'
 import { ApprovalTypes, FilingStatus, RoleTypes } from '@/enums/'
-import { RelationshipTypes } from '@bcrs-shared-components/enums'
-import { RelationshipsPanel } from '@bcrs-shared-components/relationships-panel'
-import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
-import { ApprovalType } from '@bcrs-shared-components/approval-type'
-import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
+import { RelationshipTypes } from '@/bcrs-shared-components/enums'
+import { RelationshipsPanel } from '@/bcrs-shared-components/relationships-panel'
+import { LimitedRestorationPanel } from '@/bcrs-shared-components/limited-restoration-panel'
+import { ApprovalType } from '@/bcrs-shared-components/approval-type'
+import { FeeSummary as FeeSummaryShared } from '@/bcrs-shared-components/fee-summary/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
 

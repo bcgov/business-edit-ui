@@ -4,12 +4,12 @@ import flushPromises from 'flush-promises'
 import sinon from 'sinon'
 import { createWrapper, mount } from '@vue/test-utils'
 import AlterationSummary from '@/components/Alteration/AlterationSummary.vue'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
+import { ConfirmDialog as ConfirmDialogShared } from '@/bcrs-shared-components/confirm-dialog/'
 import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
 import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})

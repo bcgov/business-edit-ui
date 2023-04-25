@@ -100,7 +100,7 @@
 </template>
 
 <script lang="ts">
-import { ApprovalTypes } from '@bcrs-shared-components/enums'
+import { ApprovalTypes } from '@/bcrs-shared-components/enums'
 import { mapState } from 'pinia'
 import { OfficeAddresses, NameTranslation } from '@/components/common/'
 import { useStore } from '@/store/store'

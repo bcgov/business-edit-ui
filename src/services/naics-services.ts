@@ -1,4 +1,4 @@
-import { NaicsResultIF } from '@bcrs-shared-components/interfaces/'
+import { NaicsResultIF } from '@/bcrs-shared-components/interfaces/'
 import { AxiosInstance as axios } from '@/utils/'
 
 /**

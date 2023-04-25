@@ -571,14 +571,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter, IsSame } from '@/utils/'
 import { isEmpty, isEqual } from 'lodash'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, AddressesIF, FlagsCompanyInfoIF, ResourceIF } from '@/interfaces/'
-import { IsSame } from '@/utils/'
 import { AddressTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
 import { useStore } from '@/store/store'
@@ -599,7 +597,7 @@ const COUNTRY_CA = 'CA'
 })
 export default class OfficeAddresses extends Vue {
   // Refs for BaseAddress components so we can access form validation
-  $refs!: {
+  declare $refs: Vue['$refs'] & {
     mailingAddress: any
     deliveryAddress: any
   }

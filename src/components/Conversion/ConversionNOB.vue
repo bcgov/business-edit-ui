@@ -153,17 +153,18 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, FlagsCompanyInfoIF } from '@/interfaces/'
-import { NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { NaicsIF } from '@/bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 import { useStore } from '@/store/store'
 
-@Component({})
-export default class ConversionNOB extends Mixins(CommonMixin) {
+@Component({
+  mixins: [CommonMixin]
+})
+export default class ConversionNOB extends Vue {
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentNaics!: NaicsIF
   @Getter(useStore) getEditLabel!: string

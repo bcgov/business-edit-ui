@@ -12,7 +12,7 @@ import { BusinessStartDate, BusinessType, CertifySection, CompletingParty, Detai
   from '@/components/common'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
 import { ActionTypes, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)

@@ -12,9 +12,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { ActionBindingIF } from '@/interfaces/'
 import ChangeBusinessType from '@/components/common/YourCompany/ChangeBusinessType.vue'
 import { useStore } from '@/store/store'

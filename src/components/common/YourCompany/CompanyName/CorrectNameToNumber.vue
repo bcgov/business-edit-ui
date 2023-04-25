@@ -18,9 +18,8 @@
 
 <script lang="ts">
 // Libraries
-import Vue from 'vue'
-import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 
 // Interfaces && enums
 import { ActionBindingIF, NameRequestIF } from '@/interfaces/'

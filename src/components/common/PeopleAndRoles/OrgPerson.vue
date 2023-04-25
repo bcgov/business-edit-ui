@@ -439,20 +439,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { cloneDeep, isEqual } from 'lodash'
 import { mask } from 'vue-the-mask'
 import { v4 as uuidv4 } from 'uuid'
-import { IsSame } from '@/utils/'
+import { Getter, IsSame } from '@/utils/'
 import { OrgPersonIF, FormIF, AddressIF, AddressSchemaIF, RoleIF, ResourceIF, EmptyBusinessLookup,
   BusinessLookupIF } from '@/interfaces/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { HelpSection } from '@/components/common/'
-import { BusinessLookup as BusinessLookupShared } from '@bcrs-shared-components/business-lookup'
+import { BusinessLookup as BusinessLookupShared } from '@/bcrs-shared-components/business-lookup'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { RoleTypes } from '@/enums/'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
-import { Getter } from 'pinia-class'
 import { BusinessLookupServices, LegalServices } from '@/services/'
 import { VuetifyRuleFunction } from '@/types'
 
@@ -468,11 +467,12 @@ const COUNTRY_CA = 'CA'
     BusinessLookupShared,
     HelpSection
   },
-  directives: { mask }
+  directives: { mask },
+  mixins: [CommonMixin, OrgPersonMixin]
 })
-export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
+export default class OrgPerson extends Vue {
   // Refs
-  $refs!: {
+  declare $refs: Vue['$refs'] & {
     orgPersonForm: FormIF,
     mailingAddress: FormIF,
     deliveryAddress: FormIF

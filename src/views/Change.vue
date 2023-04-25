@@ -98,10 +98,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
-import { GetFeatureFlag } from '@/utils/'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter, GetFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
 import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
   DocumentsDelivery, EntityName, NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment,
@@ -114,7 +112,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SpChangeResource, GpChangeResource, SpOrganizationChangeResource } from '@/resources/Change/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
 
 @Component({
   components: {

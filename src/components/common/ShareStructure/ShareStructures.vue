@@ -26,11 +26,11 @@
 
 <script lang="ts">
 // Libraries
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 
 // Components
-import { ShareStructure as ShareStructureShared } from '@bcrs-shared-components/share-structure/'
+import { ShareStructure as ShareStructureShared } from '@/bcrs-shared-components/share-structure/'
 import { ResolutionDateDialog } from '@/dialogs/'
 import { CommonMixin } from '@/mixins/'
 
@@ -43,9 +43,10 @@ import { useStore } from '@/store/store'
   components: {
     ShareStructureShared,
     ResolutionDateDialog
-  }
+  },
+  mixins: [CommonMixin]
 })
-export default class ShareStructures extends Mixins(CommonMixin) {
+export default class ShareStructures extends Vue {
   /** Whether this component should be in edit mode or review mode. */
   @Prop({ default: true }) readonly isEditMode!: boolean
 

@@ -44,8 +44,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Emit } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
 
 @Component({})
 export default class AccountAuthorizationDialog extends Vue {

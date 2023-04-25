@@ -80,12 +80,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Component, Prop, Vue } from 'vue-facing-decorator'
+import { Getter } from '@/utils/'
 import { ListPeopleAndRoles } from '@/components/common/'
 import { OfficeAddresses } from '@/components/common/YourCompany'
-import { NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { NaicsIF } from '@/bcrs-shared-components/interfaces/'
 import { useStore } from '@/store/store'
 
 @Component({

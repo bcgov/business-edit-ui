@@ -40,8 +40,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Emit, Vue } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import CompanyProvisions from './CompanyProvisions.vue'
 import ResolutionDates from './ResolutionDates.vue'
 import { CommonMixin } from '@/mixins/'
@@ -52,9 +52,10 @@ import { useStore } from '@/store/store'
   components: {
     CompanyProvisions,
     ResolutionDates
-  }
+  },
+  mixins: [CommonMixin]
 })
-export default class Articles extends Mixins(CommonMixin) {
+export default class Articles extends Vue {
   private isEditingCompanyProvisions = false
   private isAddingResolutionDate = false
 

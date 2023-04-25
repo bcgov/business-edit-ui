@@ -19,13 +19,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Vue } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { NaicsServices } from '@/services/'
 import { ActionBindingIF, FlagsCompanyInfoIF } from '@/interfaces/'
-import { NaicsIF } from '@bcrs-shared-components/interfaces/'
-import { NatureOfBusiness as NatureOfBusinessShared } from '@bcrs-shared-components/nature-of-business/'
+import { NaicsIF } from '@/bcrs-shared-components/interfaces/'
+import { NatureOfBusiness as NatureOfBusinessShared } from '@/bcrs-shared-components/nature-of-business/'
 import { CommonMixin } from '@/mixins'
 import { useStore } from '@/store/store'
 

@@ -48,9 +48,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, CompletingParty, Detail,
   EntityName, NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment, YourCompanyWrapper }
   from '@/components/common/'
@@ -58,9 +57,9 @@ import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF }
   from '@/interfaces/'
 import { AuthServices, LegalServices } from '@/services/'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { StaffPaymentOptions } from '@/bcrs-shared-components/enums/'
 import { GpCorrectionResource, SpCorrectionResource } from '@/resources/Correction/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
 
 /** Correction sub-component for corp class "Firm" entities. */

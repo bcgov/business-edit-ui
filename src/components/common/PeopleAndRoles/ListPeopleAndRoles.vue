@@ -520,12 +520,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
+import { Getter, IsSame } from '@/utils/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import OrgPerson from './OrgPerson.vue'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
-import { IsSame } from '@/utils/'
 import { OrgPersonIF } from '@/interfaces/'
 
 import { useStore } from '@/store/store'
@@ -535,9 +534,10 @@ import { useStore } from '@/store/store'
     DeliveryAddress: BaseAddress,
     MailingAddress: BaseAddress,
     OrgPerson
-  }
+  },
+  mixins: [CommonMixin, OrgPersonMixin]
 })
-export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMixin) {
+export default class ListPeopleAndRoles extends Vue {
   // Declaration for template
   readonly IsSame = IsSame
 

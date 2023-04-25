@@ -76,8 +76,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop } from 'vue-property-decorator'
+import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
 import { CorrectNameOptionIF } from '@/interfaces/'
 import { NameChangeOptions } from '@/enums/'
 // These imports below are touchy, please don't change them - they can possibly break tests.

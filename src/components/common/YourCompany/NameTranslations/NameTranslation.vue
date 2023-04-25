@@ -201,12 +201,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { cloneDeep } from 'lodash'
-import { Action, Getter } from 'pinia-class'
-import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip/'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
+import { Action, Getter } from '@/utils/'
+import { ActionChip as ActionChipShared } from '@/bcrs-shared-components/action-chip/'
+import { ConfirmDialog as ConfirmDialogShared } from '@/bcrs-shared-components/confirm-dialog/'
 import { ListNameTranslation, AddNameTranslation } from './'
 import { ActionBindingIF, ConfirmDialogType, NameTranslationIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { ActionTypes } from '@/enums/'
@@ -224,7 +223,7 @@ import { useStore } from '@/store/store'
 })
 export default class NameTranslation extends Vue {
   // Refs
-  $refs!: {
+  declare $refs: Vue['$refs'] & {
     confirmTranslationDialog: ConfirmDialogType
   }
 

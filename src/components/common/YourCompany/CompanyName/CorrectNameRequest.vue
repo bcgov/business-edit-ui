@@ -97,23 +97,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
+import { ConfirmDialog as ConfirmDialogShared } from '@/bcrs-shared-components/confirm-dialog/'
 import { CommonMixin, NameRequestMixin } from '@/mixins/'
 import { ActionBindingIF, ConfirmDialogType, NameRequestIF, NrCorrectionIF, NrResponseIF } from '@/interfaces/'
 import { NameChangeOptions } from '@/enums/'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
 
 import { useStore } from '@/store/store'
 @Component({
-  components: {
-    ConfirmDialogShared
-  }
+  components: { ConfirmDialogShared },
+  mixins: [CommonMixin, NameRequestMixin]
 })
-export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestMixin) {
+export default class CorrectNameRequest extends Vue {
   // Refs
-  $refs!: {
+  declare $refs: Vue['$refs'] & {
     confirm: ConfirmDialogType
     correctNrForm: HTMLFormElement
   }

@@ -46,13 +46,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Component, Vue } from 'vue-facing-decorator'
+import { Getter } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { BusinessInformationIF, EntitySnapshotIF } from '@/interfaces/'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
-import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { ContactPointIF } from '@/bcrs-shared-components/interfaces/'
+import { GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
 
 import { useStore } from '@/store/store'
 

@@ -22,12 +22,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Prop, Vue } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { ActionBindingIF } from '@/interfaces/'
-import { CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
-import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party/'
+import { CompletingPartyIF } from '@/bcrs-shared-components/interfaces/'
+import { CompletingParty as CompletingPartyShared } from '@/bcrs-shared-components/completing-party/'
 import { DefaultAddressSchema } from '@/schemas/'
 import { useStore } from '@/store/store'
 

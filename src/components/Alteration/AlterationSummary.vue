@@ -201,15 +201,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { ActionBindingIF, EffectiveDateTimeIF, FeesIF, FlagsReviewCertifyIF, ResolutionsIF }
   from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({

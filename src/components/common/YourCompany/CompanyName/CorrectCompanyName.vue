@@ -20,15 +20,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, NameRequestIF } from '@/interfaces/'
 import { NameChangeOptions } from '@/enums/'
 import { useStore } from '@/store/store'
 
-@Component({})
-export default class CorrectCompanyName extends Mixins(CommonMixin) {
+@Component({
+  mixins: [CommonMixin]
+})
+export default class CorrectCompanyName extends Vue {
   /** Form Submission Prop */
   @Prop({ default: null }) readonly formType!: NameChangeOptions
 
@@ -42,7 +44,9 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
   protected companyName = ''
 
   // Form Ref
-  $refs: { correctNameForm: HTMLFormElement }
+  declare $refs: Vue['$refs'] & {
+    correctNameForm: HTMLFormElement
+  }
 
   // Rules
   readonly companyNameRules = [

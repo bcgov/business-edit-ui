@@ -164,11 +164,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
-import { Getter, Action } from 'pinia-class'
+import { Component, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { CommonMixin, DateMixin } from '@/mixins/'
-import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker'
+import { DatePicker as DatePickerShared } from '@/bcrs-shared-components/date-picker'
 import { ActionBindingIF, FlagsCompanyInfoIF } from '@/interfaces'
 import { useStore } from '@/store/store'
 

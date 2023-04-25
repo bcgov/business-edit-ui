@@ -28,17 +28,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 
 // Components
-import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment/'
+import { StaffPayment as StaffPaymentShared } from '@/bcrs-shared-components/staff-payment/'
 
 // Interfaces and Enums
 import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
-import { StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
-import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { StaffPaymentIF } from '@/bcrs-shared-components/interfaces/'
+import { StaffPaymentOptions } from '@/bcrs-shared-components/enums/'
 
 import { useStore } from '@/store/store'
 

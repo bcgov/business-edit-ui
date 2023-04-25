@@ -264,13 +264,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { ActionBindingIF, HelpSectionIF, ResourceIF, FormIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
 import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
-import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
-import { SpecialResolutionIF, PersonIF } from '@bcrs-shared-components/interfaces/'
+import { DatePicker as DatePickerShared } from '@/bcrs-shared-components/date-picker/'
+import { SpecialResolutionIF, PersonIF } from '@/bcrs-shared-components/interfaces/'
 import { VuetifyRuleFunction } from '@/types'
 import { useStore } from '@/store/store'
 
@@ -278,9 +278,10 @@ import { useStore } from '@/store/store'
   components: {
     HelpSection,
     DatePickerShared
-  }
+  },
+  mixins: [DateMixin]
 })
-export default class CreateSpecialResolution extends Mixins(DateMixin) {
+export default class CreateSpecialResolution extends Vue {
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) getBusinessFoundingDateTime!: string
   @Getter(useStore) getCurrentDate!: string
@@ -292,7 +293,7 @@ export default class CreateSpecialResolution extends Mixins(DateMixin) {
   @Action(useStore) setValidComponent!: ActionBindingIF
 
   // Refs
-  $refs!: {
+  declare $refs: Vue['$refs'] & {
     resolutionDatePickerRef: DatePickerShared,
     signatureDatePickerRef: DatePickerShared,
     createSpecialResolutionRef: FormIF

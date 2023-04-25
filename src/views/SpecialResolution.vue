@@ -122,10 +122,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
-import { GetFeatureFlag } from '@/utils/'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter, GetFeatureFlag } from '@/utils/'
 import { SpecialResolutionSummary, CreateSpecialResolution } from '@/components/SpecialResolution'
 import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CurrentDirectors,
   DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, StaffPayment, TransactionalFolioNumber,
@@ -134,7 +132,7 @@ import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, CertifyIF, EffectiveDateTimeIF, EntitySnapshotIF, FilingDataIF,
   ResourceIF } from '@/interfaces/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
 import { FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/'

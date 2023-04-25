@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { Wrapper, mount } from '@vue/test-utils'
 import Detail from '@/components/common/Detail.vue'
-import { DetailComment as DetailCommentShared } from '@bcrs-shared-components/detail-comment/'
+import { DetailComment as DetailCommentShared } from '@/bcrs-shared-components/detail-comment/'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 

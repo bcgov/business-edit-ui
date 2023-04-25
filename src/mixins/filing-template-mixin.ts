@@ -1,5 +1,5 @@
-import { Component } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import DateUtilities from '@/services/date-utilities'
@@ -8,11 +8,11 @@ import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, Correction
   NameRequestIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF, RestorationStateIF,
   SpecialResolutionFilingIF, StateFilingRestorationIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
-  StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
+  StaffPaymentIF } from '@/bcrs-shared-components/interfaces/'
 import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
   RoleTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { RestorationTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
+import { RestorationTypes, StaffPaymentOptions } from '@/bcrs-shared-components/enums/'
 import { FilingTypeToName } from '@/utils'
 import { useStore } from '@/store/store'
 

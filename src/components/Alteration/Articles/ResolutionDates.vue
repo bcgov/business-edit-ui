@@ -170,20 +170,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { CommonMixin, DateMixin } from '@/mixins/'
-import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
+import { DatePicker as DatePickerShared } from '@/bcrs-shared-components/date-picker/'
 import { cloneDeep } from 'lodash'
 import { ActionBindingIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 
 @Component({
-  components: {
-    DatePickerShared
-  }
+  components: { DatePickerShared },
+  mixins: [CommonMixin, DateMixin]
 })
-export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
+export default class ResolutionDates extends Vue {
   /** New resolution dates. */
   @Prop({ default: () => [] }) readonly addedDates!: string[]
 

@@ -159,9 +159,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { CoopTypes } from '@/enums'
 import { CommonMixin } from '@/mixins'
 import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF } from '@/interfaces'

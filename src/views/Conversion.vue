@@ -62,10 +62,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
-import { GetFeatureFlag } from '@/utils/'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter, GetFeatureFlag } from '@/utils/'
 import { ConversionNOB, ConversionSummary } from '@/components/Conversion'
 import { CompletingParty, BusinessStartDate, BusinessType, EntityName, FolioInformation, OfficeAddresses,
   PeopleAndRoles, YourCompanyWrapper } from '@/components/common/'
@@ -78,7 +76,7 @@ import { SpConversionResource, GpConversionResource } from '@/resources/Conversi
 import { StatusCodes } from 'http-status-codes'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
 
 @Component({
   components: {

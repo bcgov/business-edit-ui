@@ -58,15 +58,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
-import { Getter, Action } from 'pinia-class'
+import { Component, Vue } from 'vue-facing-decorator'
+import { Action, Getter, Navigate } from '@/utils/'
 import { ActionBindingIF } from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, NameRequestMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
-import { Navigate } from '@/utils/'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
 
 /** This component is only implemented for Correction filings atm. */
 @Component({

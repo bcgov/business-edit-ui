@@ -287,10 +287,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter, IsSame } from '@/utils/'
 import { cloneDeep, isEmpty } from 'lodash'
-import { IsSame } from '@/utils/'
 import { ActionBindingIF, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF, OrgPersonIF, ResourceIF,
   RoleIF } from '@/interfaces/'
 import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
@@ -303,9 +302,10 @@ import { useStore } from '@/store/store'
   components: {
     HelpSection,
     ListPeopleAndRoles
-  }
+  },
+  mixins: [CommonMixin, DateMixin, OrgPersonMixin]
 })
-export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPersonMixin) {
+export default class PeopleAndRoles extends Vue {
   // Declarations for template
   readonly RoleTypes = RoleTypes
   readonly PartyTypes = PartyTypes

@@ -4,7 +4,7 @@ import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistration
   from '@/interfaces/'
 import { RoleTypes } from '@/enums'
 
-import { ShareStructureIF } from '@bcrs-shared-components/interfaces/'
+import { ShareStructureIF } from '@/bcrs-shared-components/interfaces/'
 /**
  * Class that provides integration with the Legal API.
  */

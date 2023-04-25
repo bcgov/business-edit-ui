@@ -15,9 +15,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Component, Vue } from 'vue-facing-decorator'
+import { Getter } from '@/utils/'
 import { ResourceIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 

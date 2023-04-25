@@ -51,18 +51,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, FlagsReviewCertifyIF, FormFieldType } from '@/interfaces/'
 import { VuetifyRuleFunction } from '@/types'
 
 import { useStore } from '@/store/store'
 
-@Component({})
-export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
+@Component({
+  mixins: [CommonMixin]
+})
+export default class TransactionalFolioNumber extends Vue {
   // Add element type to refs
-  $refs!: {
+  declare $refs: Vue['$refs'] & {
     folioNumberInput: FormFieldType
   }
 

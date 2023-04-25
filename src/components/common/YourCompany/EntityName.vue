@@ -223,9 +223,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { CoopTypes, NameChangeOptions } from '@/enums/'
 import { ActionBindingIF, EntitySnapshotIF, NameRequestApplicantIF, NameRequestIF, ResourceIF }
   from '@/interfaces/'
@@ -233,7 +232,7 @@ import { CorrectNameOptions } from '@/components/common/YourCompany'
 import { NameRequestMixin } from '@/mixins'
 import DateUtilities from '@/services/date-utilities'
 import { ToDisplayPhone } from '@/utils'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({

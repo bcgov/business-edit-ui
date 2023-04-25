@@ -158,13 +158,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Prop, Mixins, Watch } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Getter } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { useStore } from '@/store/store'
 
-@Component({})
-export default class CompanyProvisions extends Mixins(CommonMixin) {
+@Component({
+  mixins: [CommonMixin]
+})
+export default class CompanyProvisions extends Vue {
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
 

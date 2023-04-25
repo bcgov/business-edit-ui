@@ -144,22 +144,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { ActionBindingIF, FormIF, EntitySnapshotIF } from '@/interfaces/'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
-import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
-import { SpecialResolutionIF } from '@bcrs-shared-components/interfaces'
+import { DatePicker as DatePickerShared } from '@/bcrs-shared-components/date-picker/'
+import { SpecialResolutionIF } from '@/bcrs-shared-components/interfaces'
 import { useStore } from '@/store/store'
 
 @Component({
   components: {
     HelpSection,
     DatePickerShared
-  }
+  },
+  mixins: [CommonMixin, DateMixin]
 })
-export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, DateMixin) {
+export default class CreateSpecialResolutionSummary extends Vue {
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getSpecialResolutionConfirmValid!: boolean
@@ -169,9 +170,9 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
   @Action(useStore) setSpecialResolutionConfirmStateValidity!: ActionBindingIF
 
   // Refs
-  $refs!: {
+  declare $refs: Vue['$refs'] & {
     confirmResolutionChkFormRef: FormIF
-  };
+  }
 
   protected resolutionConfirmed = false
 
@@ -180,7 +181,7 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
     v => {
       return !!v
     }
-  ];
+  ]
 
   protected async onResolutionConfirmedChange (resolutionConfirmed: boolean): Promise<void> {
     // This is required as there are timing issues between this component and the CompleteResolutionSummary

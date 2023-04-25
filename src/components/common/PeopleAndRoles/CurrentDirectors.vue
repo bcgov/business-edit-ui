@@ -86,12 +86,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Component, Vue } from 'vue-facing-decorator'
+import { Getter, IsSame } from '@/utils/'
 import { OrgPersonIF } from '@/interfaces/'
 import { RoleTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
-import { IsSame } from '@/utils/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 
 import { useStore } from '@/store/store'
@@ -100,9 +99,10 @@ import { useStore } from '@/store/store'
   components: {
     DeliveryAddress: BaseAddress,
     MailingAddress: BaseAddress
-  }
+  },
+  mixins: [CommonMixin]
 })
-export default class CurrentDirectors extends Mixins(CommonMixin) {
+export default class CurrentDirectors extends Vue {
   // Declarations for template
   readonly RoleTypes = RoleTypes
   readonly IsSame = IsSame

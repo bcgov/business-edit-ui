@@ -298,20 +298,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { BcRegContacts } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
 import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 
 @Component({
-  components: {
-    BcRegContacts
-  }
+  components: { BcRegContacts },
+  mixins: [CommonMixin]
 })
-export default class ChangeBusinessType extends Mixins(CommonMixin) {
+export default class ChangeBusinessType extends Vue {
   // for template
   readonly GetCorpFullDescription = GetCorpFullDescription
 

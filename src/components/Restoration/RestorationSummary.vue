@@ -38,9 +38,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Component, Prop, Vue } from 'vue-facing-decorator'
+import { Getter } from '@/utils/'
 import { FeesIF } from '@/interfaces/'
 import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { NameTranslation } from '@/components/common/'

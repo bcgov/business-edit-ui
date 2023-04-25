@@ -35,20 +35,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
-import { Certify as CertifyShared } from '@bcrs-shared-components/certify/'
+import { Component, Prop, Vue } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
+import { Certify as CertifyShared } from '@/bcrs-shared-components/certify/'
 import { DateMixin } from '@/mixins/'
 import { ActionBindingIF, CertifyIF, ResourceIF } from '@/interfaces/'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({
-  components: {
-    CertifyShared
-  }
+  components: { CertifyShared },
+  mixins: [DateMixin]
 })
-export default class CertifySection extends Mixins(DateMixin) {
+export default class CertifySection extends Vue {
   @Getter(useStore) getCertifyState!: CertifyIF
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getResource!: ResourceIF

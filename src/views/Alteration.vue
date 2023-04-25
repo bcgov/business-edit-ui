@@ -124,10 +124,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
-import { GetFeatureFlag } from '@/utils/'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter, GetFeatureFlag } from '@/utils/'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
 import { BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, CurrentDirectors,
   DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
@@ -143,7 +141,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
   from '@/resources/Alteration/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
 
 @Component({

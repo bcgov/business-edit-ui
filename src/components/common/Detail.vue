@@ -43,18 +43,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { DetailComment as DetailCommentShared } from '@bcrs-shared-components/detail-comment/'
-import { Action } from 'pinia-class'
+import { Component, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { DetailComment as DetailCommentShared } from '@/bcrs-shared-components/detail-comment/'
+import { Action } from '@/utils/'
 import { ActionBindingIF } from '@/interfaces/'
 import { FilingTemplateMixin } from '@/mixins'
 
 import { useStore } from '@/store/store'
 
 @Component({
-  components: { DetailCommentShared }
+  components: { DetailCommentShared },
+  mixins: [FilingTemplateMixin]
 })
-export default class Detail extends Mixins(FilingTemplateMixin) {
+export default class Detail extends Vue {
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber!: string
 

@@ -55,15 +55,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Action, Getter } from 'pinia-class'
-import { ApprovalType } from '@bcrs-shared-components/approval-type'
+import { Action, Getter } from '@/utils/'
+import { ApprovalType } from '@/bcrs-shared-components/approval-type'
 import { ApprovalTypes, RestorationTypes } from '@/enums'
 import Actions from '@/components/common/Actions.vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-facing-decorator'
 import { DateMixin, CommonMixin } from '@/mixins'
 import DateUtilities from '@/services/date-utilities'
-import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
+import { LimitedRestorationPanel } from '@/bcrs-shared-components/limited-restoration-panel'
 import { ActionBindingIF, RestorationStateIF, StateFilingRestorationIF } from '@/interfaces'
 import { useStore } from '@/store/store'
 

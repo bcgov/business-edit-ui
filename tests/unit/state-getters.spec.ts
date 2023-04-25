@@ -5,7 +5,7 @@ import Actions from '@/components/common/Actions.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { ActionTypes, CorpTypeCd, CorrectionErrorTypes, FilingTypes } from '@/enums'
-import { ApprovalTypes, RestorationTypes } from '@bcrs-shared-components/enums'
+import { ApprovalTypes, RestorationTypes } from '@/bcrs-shared-components/enums'
 
 // Vuetify is needed for Actions component
 Vue.use(Vuetify)

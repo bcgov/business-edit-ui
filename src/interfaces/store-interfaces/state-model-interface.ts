@@ -4,7 +4,7 @@ import { AccountInformationIF, AddressesIF, BusinessInformationIF, CertifyIF,
   NewAlterationIF, RestorationStateIF, ShareStructureIF, StateFilingRestorationIF, TombStoneIF,
   ValidationFlagsIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, SpecialResolutionIF, StaffPaymentIF }
-  from '@bcrs-shared-components/interfaces/'
+  from '@/bcrs-shared-components/interfaces/'
 
 /** Data object used internally only (not to/from API). */
 export interface StateModelIF {

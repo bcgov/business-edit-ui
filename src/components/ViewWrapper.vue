@@ -59,16 +59,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import { Affix as affix } from 'vue-affix'
-import { Component } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
-import { Navigate } from '@/utils/'
+import { Component, Vue } from 'vue-facing-decorator'
+import { Action, Getter, Navigate } from '@/utils/'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
 import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
-import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
+import { FeeSummary as FeeSummaryShared } from '@/bcrs-shared-components/fee-summary/'
 import { Actions, EntityInfo } from '@/components/common/'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
+import { ConfirmDialog as ConfirmDialogShared } from '@/bcrs-shared-components/confirm-dialog/'
 import { LegalServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
@@ -76,7 +74,7 @@ import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF,
   SpecialResolutionFilingIF } from '@/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify } from '@/enums/'
-import { FeeSummaryActions } from '@bcrs-shared-components/enums/'
+import { FeeSummaryActions } from '@/bcrs-shared-components/enums/'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -96,7 +94,7 @@ import { useStore } from '@/store/store'
 })
 export default class App extends Vue {
   // Refs
-  $refs!: {
+  declare $refs: Vue['$refs'] & {
     confirm: ConfirmDialogType
   }
 
@@ -313,7 +311,7 @@ export default class App extends Vue {
     this.setAppValidate(true)
 
     // Wait to allow app validation.
-    await Vue.nextTick()
+    await this.$nextTick()
 
     // Evaluate valid flags. Scroll to invalid components or file alteration.
     if (await this.validateAndScroll(this.getFlagsReviewCertify, ComponentsReviewCertify)) {

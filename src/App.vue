@@ -125,26 +125,29 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter, GetFeatureFlag, GetKeycloakRoles, Navigate, Sleep, UpdateLdUser }
+  from '@/utils/'
 import { StatusCodes } from 'http-status-codes'
-import { GetFeatureFlag, GetKeycloakRoles, Navigate, UpdateLdUser, Sleep } from '@/utils/'
 import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
 import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
 import { Actions, EntityInfo } from '@/components/common/'
-import { Breadcrumb as BreadcrumbShared } from '@bcrs-shared-components/breadcrumb/'
-import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
+import { Breadcrumb as BreadcrumbShared } from '@/bcrs-shared-components/breadcrumb/'
+import { ConfirmDialog as ConfirmDialogShared } from '@/bcrs-shared-components/confirm-dialog/'
 import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, ConfirmDialogType } from '@/interfaces/'
-import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
+import { BreadcrumbIF, CompletingPartyIF } from '@/bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { RouteNames } from '@/enums/'
-import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
-  getStaffDashboardBreadcrumb } from '@/resources/BreadCrumbResources'
+import {
+  getEntityDashboardBreadcrumb,
+  getMyBusinessRegistryBreadcrumb,
+  getRegistryDashboardBreadcrumb,
+  getStaffDashboardBreadcrumb
+} from '@/resources/BreadCrumbResources'
 import DateUtilities from '@/services/date-utilities'
 import { useStore } from '@/store/store'
 
@@ -166,7 +169,7 @@ import { useStore } from '@/store/store'
 })
 export default class App extends Vue {
   // Refs
-  $refs!: {
+  declare $refs: Vue['$refs'] & {
     confirm: ConfirmDialogType
   }
 

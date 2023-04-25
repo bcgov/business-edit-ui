@@ -1,7 +1,6 @@
 import { CommonMixin } from '@/mixins/'
-import Vue from 'vue'
 import DateUtilities from '@/services/date-utilities'
-import { Component } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-facing-decorator'
 
 /**
  * Mixin that provides some useful date utilities.

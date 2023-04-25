@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { Wrapper, mount } from '@vue/test-utils'
 import CourtOrderPoa from '@/components/common/CourtOrderPoa.vue'
-import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa/'
+import { CourtOrderPoa as CourtOrderPoaShared } from '@/bcrs-shared-components/court-order-poa/'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 

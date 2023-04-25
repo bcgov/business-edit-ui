@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { Vue } from 'vue-facing-decorator'
 import VueRouter, { Route } from 'vue-router'
 import { routes } from './routes'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'

@@ -80,19 +80,21 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Emit, Watch, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { FilingNames } from '@/enums/'
 import { ActionBindingIF, FlagsReviewCertifyIF, ResourceIF } from '@/interfaces/'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
+import { ContactPointIF } from '@/bcrs-shared-components/interfaces/'
 
 import { useStore } from '@/store/store'
 
 // FUTURE: update this component so it doesn't set changes flag initially
 
-@Component({})
-export default class DocumentsDelivery extends Mixins(CommonMixin) {
+@Component({
+  mixins: [CommonMixin]
+})
+export default class DocumentsDelivery extends Vue {
   // Global getters
   @Getter(useStore) getUserEmail!: string
   @Getter(useStore) getBusinessContact!: ContactPointIF

@@ -167,15 +167,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit, Mixins } from 'vue-property-decorator'
-import { Getter } from 'pinia-class'
+import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
+import { Getter } from '@/utils/'
 import { NameTranslationIF } from '@/interfaces/'
 import { ActionTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
 import { useStore } from '@/store/store'
 
-@Component({})
-export default class ListNameTranslation extends Mixins(CommonMixin) {
+@Component({
+  mixins: [CommonMixin]
+})
+export default class ListNameTranslation extends Vue {
   @Getter(useStore) isCorrectionFiling!: boolean
 
   @Prop({ default: () => [] }) readonly translationsList!: NameTranslationIF[]

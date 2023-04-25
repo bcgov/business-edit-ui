@@ -10,16 +10,14 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
-import { GetFeatureFlag } from '@/utils/'
+import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
+import { Action, Getter, GetFeatureFlag } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { ActionBindingIF, CorrectionFilingIF } from '@/interfaces/'
 import { FilingStatus, FilingTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
 import CorpCorrection from '@/views/Correction/CorpCorrection.vue'
 import FirmCorrection from '@/views/Correction/FirmCorrection.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'

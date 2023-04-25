@@ -25,8 +25,8 @@ import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/CP'
 
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { FilingTypes } from '@bcrs-shared-components/enums'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { FilingTypes } from '@/bcrs-shared-components/enums'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
 import { NameRequestStates, NameRequestTypes } from '@/enums'
 
 Vue.use(Vuetify)
