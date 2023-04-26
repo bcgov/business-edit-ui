@@ -15,7 +15,7 @@
               <label>
                 <strong>Memorandum</strong>
               </label>
-              <v-flex md1>
+              <v-col md="1">
                 <v-chip
                   v-if="isEditingMemorandum"
                   id="corrected-lbl"
@@ -25,7 +25,7 @@
                 >
                   {{getEditedLabel}}
                 </v-chip>
-              </v-flex>
+              </v-col>
             </v-col>
 
             <!-- Display Mode -->
