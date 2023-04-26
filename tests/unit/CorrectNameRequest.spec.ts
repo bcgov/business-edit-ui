@@ -142,7 +142,7 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(false)
   })
 
-  // the leading or tearing spaces of a NR are invalid
+  // the leading or trailing spaces of a NR are invalid
   it('verifies invalid NR', async () => {
     const wrapper = wrapperFactory()
 
@@ -158,7 +158,7 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(false)
   })
 
-  // the leading or tearing spaces are invalid
+  // the leading or trailing spaces are invalid
   it('verifies invalid NR', async () => {
     const wrapper = wrapperFactory()
 
