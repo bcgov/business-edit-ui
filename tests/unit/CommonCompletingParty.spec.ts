@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
-import { getVuexStore } from '@/store'
 import CompletingParty from '@/components/common/CompletingParty.vue'
 import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party/'
 import { createPinia, setActivePinia } from 'pinia'
@@ -9,8 +8,8 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 

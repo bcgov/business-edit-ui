@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { FilingTypes } from '@/enums'
 import { mount } from '@vue/test-utils'
@@ -10,9 +9,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
-Vue.use(Vuelidate)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 

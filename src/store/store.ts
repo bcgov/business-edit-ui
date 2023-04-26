@@ -56,10 +56,7 @@ import { RulesMemorandumIF, RulesMemorandumResourceIF } from '@/interfaces/rules
 // Not sure if I'd recommend that though.
 export const useStore = defineStore('store', {
   // convert to a function
-  state: (): StateIF => ({
-    stateModel: stateModel,
-    resourceModel: resourceModel
-  }),
+  state: (): StateIF => ({ resourceModel, stateModel }),
   getters: {
     /** Whether the user has "staff" keycloak role. */
     isRoleStaff (): boolean {
@@ -111,13 +108,13 @@ export const useStore = defineStore('store', {
       return (this.stateModel.tombstone.filingType === FilingTypes.RESTORATION)
     },
 
-    /** Whether the current filing is a Limited Extension Restoration. */
-    isLimitedExtendRestorationFiling (): boolean {
+    /** Whether the current filing is a Limited Restoration Extension. */
+    isLimitedRestorationExtension (): boolean {
       return (this.getRestoration.type === RestorationTypes.LTD_EXTEND)
     },
 
-    /** Whether the current filing is a Limited Conversion Restoration. */
-    isLimitedConversionRestorationFiling (): boolean {
+    /** Whether the current filing is a Limited Restoration To Full (aka conversion). */
+    isLimitedRestorationToFull (): boolean {
       return (this.getRestoration.type === RestorationTypes.LTD_TO_FULL)
     },
 
@@ -713,13 +710,14 @@ export const useStore = defineStore('store', {
 
     /** Whether the subject correction filing has any sections in editing mode. */
     isCorrectionEditing (): boolean {
-      // NB: Detail, Certify and Staff Payment don't have an "editing" mode.
-      return (this.stateModel.editingFlags.companyName ||
+      // NB: Folio Number, Detail, Certify and Staff Payment don't have an "editing" mode.
+      return (
+        this.stateModel.editingFlags.companyName ||
         this.stateModel.editingFlags.nameTranslations ||
         this.stateModel.editingFlags.officeAddresses ||
-        this.stateModel.editingFlags.folioNumber ||
         this.stateModel.editingFlags.peopleAndRoles ||
-        this.stateModel.editingFlags.shareStructure)
+        this.stateModel.editingFlags.shareStructure
+      )
     },
 
     /** The validation flags. */
@@ -967,6 +965,7 @@ export const useStore = defineStore('store', {
       const removeNullProps = (obj) => {
         return Object.fromEntries(
           Object.entries(obj)
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             .filter(([_, v]) => v != null)
             .map(([k, v]) => [k, v === Object(v) ? removeNullProps(v) : v])
         )
@@ -980,7 +979,7 @@ export const useStore = defineStore('store', {
 
     /** Whether NAICS data has changed. */
     hasNaicsChanged (): boolean {
-      const currentNaicsCode = this.getBusinessInformation?.naicsCode
+      const currentNaicsCode = this.getBusinessInformation.naicsCode
       const originalNaicsCode = this.getEntitySnapshot?.businessInfo?.naicsCode
 
       // first try to compare codes
@@ -988,7 +987,7 @@ export const useStore = defineStore('store', {
         return (currentNaicsCode !== originalNaicsCode)
       }
 
-      const currentNaicsDescription = this.getBusinessInformation?.naicsDescription
+      const currentNaicsDescription = this.getBusinessInformation.naicsDescription
       const originalNaicsDescription = this.getEntitySnapshot?.businessInfo?.naicsDescription
 
       // then try to compare descriptions
@@ -1024,7 +1023,7 @@ export const useStore = defineStore('store', {
       return this.stateModel.newAlteration.courtOrder.fileNumber
     },
     /** Returns true if the filing has a court order number  */
-    hasFileNumber (state): boolean {
+    hasFileNumber (): boolean {
       return !!this.getFileNumber
     },
 
@@ -1113,8 +1112,8 @@ export const useStore = defineStore('store', {
       if (this.isFirmChangeFiling) return FilingNames.CHANGE_OF_REGISTRATION
       if (this.isFirmConversionFiling) return FilingNames.CONVERSION
       if (this.isRestorationFiling) {
-        if (this.isLimitedExtendRestorationFiling) return FilingNames.RESTORATION_EXTENSION
-        if (this.isLimitedConversionRestorationFiling) return FilingNames.RESTORATION_CONVERSION
+        if (this.isLimitedRestorationExtension) return FilingNames.RESTORATION_EXTENSION
+        if (this.isLimitedRestorationToFull) return FilingNames.RESTORATION_CONVERSION
       }
       if (this.isSpecialResolutionFiling) return FilingNames.SPECIAL_RESOLUTION
       return null
@@ -1176,17 +1175,17 @@ export const useStore = defineStore('store', {
       return this.stateModel.restoration?.expiry
     },
 
+    // FUTURE: should do something with "today"
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getFormattedExpiryText: (state) => (today = new Date()): string => {
       if (state.stateModel.restoration?.expiry) {
         const numberOfExtensionMonths = DateUtilities.subtractDates(state.stateModel.stateFilingRestoration?.expiry,
           state.stateModel.restoration?.expiry)
         const expiryDatePacific = DateUtilities.yyyyMmDdToPacificDate(state.stateModel.restoration?.expiry)
-        const formattedExpiryText = numberOfExtensionMonths + ' months, expires on ' + expiryDatePacific
-        return formattedExpiryText
+        return numberOfExtensionMonths + ' months, expires on ' + expiryDatePacific
       }
       return '[no expiry date]'
     },
-
     getRules (): RulesMemorandumIF[] {
       return [{
         name: 'test',
@@ -1237,6 +1236,7 @@ export const useStore = defineStore('store', {
     getIsRestorationTypeCourtOrder (): boolean {
       return !!this.stateModel.restoration.courtOrder?.fileNumber
     }
+
   },
   actions: {
     // no context as first argument, use `this` instead
@@ -1403,9 +1403,6 @@ export const useStore = defineStore('store', {
     },
     setEditingOfficeAddresses (editing: boolean) {
       this.stateModel.editingFlags.officeAddresses = editing
-    },
-    setEditingFolioNumber (editing: boolean) {
-      this.stateModel.editingFlags.folioNumber = editing
     },
     setEditingPeopleAndRoles (editing: boolean) {
       this.stateModel.editingFlags.peopleAndRoles = editing

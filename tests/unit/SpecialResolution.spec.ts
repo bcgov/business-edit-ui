@@ -3,18 +3,19 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import SpecialResolution from '@/views/SpecialResolution.vue'
-import mockRouter from './MockRouter'
 import ViewWrapper from '@/components/ViewWrapper.vue'
+import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
+import { AssociationType, BusinessContactInfo, BusinessType, EntityName, FolioInformation, OfficeAddresses,
+  YourCompanyWrapper } from '@/components/common'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -31,6 +32,7 @@ describe('Special Resolution component', () => {
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
   sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
   sessionStorage.setItem('KEYCLOAK_TOKEN', 'sampletoken')
+
   store.stateModel.tombstone.businessId = 'CP1234567'
 
   beforeEach(async () => {
@@ -183,6 +185,7 @@ describe('Special Resolution component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'alteration' })
+
     wrapper = shallowMount(SpecialResolution, { localVue, router, vuetify })
 
     // wait for all queries to complete
@@ -195,12 +198,19 @@ describe('Special Resolution component', () => {
     wrapper.destroy()
   })
 
-  it('renders Special Resolution view', () => {
+  it('renders view and sub-components', () => {
     expect(wrapper.findComponent(SpecialResolution).exists()).toBe(true)
     expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true)
+    expect(wrapper.findComponent(YourCompanyWrapper).exists()).toBe(true)
+    expect(wrapper.findComponent(EntityName).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessType).exists()).toBe(true)
+    expect(wrapper.findComponent(AssociationType).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
   })
 
-  it.only('loads the entity snapshot into the store', async () => {
+  it('loads the entity snapshot into the store', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
     const state = store.stateModel

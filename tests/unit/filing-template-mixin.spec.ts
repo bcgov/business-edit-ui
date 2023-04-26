@@ -19,7 +19,7 @@ describe('Change of Registration Filing', () => {
   let wrapper: any
 
   beforeEach(() => {
-    wrapper = shallowMount(MixinTester, { })
+    wrapper = shallowMount(MixinTester)
   })
 
   afterEach(() => {

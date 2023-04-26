@@ -1,20 +1,17 @@
 import Vue from 'vue'
-import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import ShareStructures from '@/components/common/ShareStructure/ShareStructures.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
-Vue.use(Vuelidate)
-
 const vuetify = new Vuetify({})
-const localVue = createLocalVue()
+
 setActivePinia(createPinia())
 const store = useStore()
 
-// Store
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
 describe('Share Structures component', () => {
@@ -54,7 +51,6 @@ describe('Share Structures component', () => {
 
   beforeEach(() => {
     wrapper = mount(ShareStructures, {
-      localVue,
       vuetify,
       propsData: {
         isEditMode: true

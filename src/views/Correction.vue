@@ -7,11 +7,11 @@
       @haveData="emitHaveData($event)"
     />
   </ViewWrapper>
-
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
@@ -19,6 +19,7 @@ import { LegalServices } from '@/services/'
 import { ActionBindingIF, CorrectionFilingIF } from '@/interfaces/'
 import { FilingStatus, FilingTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import CorpCorrection from '@/views/Correction/CorpCorrection.vue'
 import FirmCorrection from '@/views/Correction/FirmCorrection.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -29,14 +30,16 @@ import { useStore } from '@/store/store'
     ViewWrapper,
     CorpCorrection,
     FirmCorrection
-  }
+  },
+  mixins: [CommonMixin]
 })
-export default class Correction extends Mixins(CommonMixin) {
+export default class Correction extends Vue {
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
 
   // Global getters
   @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isBenBcCccUlc!: boolean
   @Getter(useStore) isFirm!: boolean
@@ -45,7 +48,7 @@ export default class Correction extends Mixins(CommonMixin) {
   @Action(useStore) setFilingId!: ActionBindingIF
   @Action(useStore) setEntityType!: ActionBindingIF
 
-  protected correctionFiling: CorrectionFilingIF = null
+  correctionFiling = null as CorrectionFilingIF
 
   /** The dynamic component to render. */
   get component (): string {
@@ -71,14 +74,6 @@ export default class Correction extends Mixins(CommonMixin) {
 
     // do not proceed if we are not authenticated (safety check - should never happen)
     if (!this.isAuthenticated) return
-
-    // do not proceed if FF is disabled
-    // bypass this when Jest is running as FF are not fetched
-    if (!this.isJestRunning && !GetFeatureFlag('correction-ui-enabled')) {
-      window.alert('Corrections are not available at the moment. Please check again later.')
-      this.$root.$emit('go-to-dashboard', true)
-      return
-    }
 
     // do not proceed if user is not staff
     const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
@@ -125,6 +120,14 @@ export default class Correction extends Mixins(CommonMixin) {
         throw new Error('Invalid correction type')
       }
 
+      // NB: specific entities are targeted via LaunchDarkly
+      if (!GetFeatureFlag('supported-correction-entities')?.includes(this.getEntityType)) {
+        window.alert('Corrections for this entity type are not available at the moment.\n' +
+          'Please check again later.')
+        this.$root.$emit('go-to-dashboard', true)
+        return
+      }
+
       // do not proceed if this isn't a DRAFT filing
       if (filing.header?.status !== FilingStatus.DRAFT) {
         throw new Error('Invalid correction status')
@@ -141,11 +144,11 @@ export default class Correction extends Mixins(CommonMixin) {
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitFetchError (err: unknown = null): void {}
+  emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitHaveData (haveData = true): void {}
+  emitHaveData (haveData = true): void {}
 }
 </script>

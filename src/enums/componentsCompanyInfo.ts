@@ -5,13 +5,14 @@
  * - this list must match `FlagsCompanyInfoIF`
  */
 export enum ComponentsCompanyInfo {
+  'relationships-panel',
   'company-name-section',
   'change-business-type',
   'name-translation',
   'business-start-date',
   'nature-of-business',
   'office-addresses',
-  'contact-info-section',
+  'business-contact-info',
   'folio-number-section',
   'people-and-roles',
   'share-structures',

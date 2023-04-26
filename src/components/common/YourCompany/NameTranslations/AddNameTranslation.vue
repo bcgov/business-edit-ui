@@ -5,35 +5,45 @@
       attach="#add-name-translation"
     />
     <!-- Name Translation form -->
-    <v-form v-model="nameTranslationForm" ref="nameTranslationForm">
+    <v-form
+      ref="nameTranslationForm"
+      v-model="nameTranslationForm"
+    >
       <v-text-field
+        id="name-translation-input"
+        v-model="nameTranslation"
         filled
         persistent-hint
-        id="name-translation-input"
         label="Name Translation"
-        v-model="nameTranslation"
         :rules="nameTranslationRules"
         @input="nameTranslation = nameTranslation.toUpperCase()"
       />
 
       <div class="action-btns">
-        <v-btn v-if="!isAddingTranslation"
-          large outlined color="error"
+        <v-btn
+          v-if="!isAddingTranslation"
           id="name-translation-btn-remove"
+          large
+          outlined
+          color="error"
           @click="removeTranslation(nameIndex)"
         >
           <span>Remove</span>
         </v-btn>
         <v-btn
-          large color="primary" class="ml-auto"
           id="name-translation-btn-done"
+          large
+          color="primary"
+          class="ml-auto"
           @click="validateAddTranslation()"
         >
-            Done
+          Done
         </v-btn>
         <v-btn
-          large outlined color="primary"
           id="name-translation-btn-cancel"
+          large
+          outlined
+          color="primary"
           @click="cancelNameTranslation()"
         >
           <span v-if="isAddingTranslation">Cancel New Name</span>

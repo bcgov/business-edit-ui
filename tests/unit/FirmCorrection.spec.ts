@@ -3,20 +3,21 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import FirmCorrection from '@/views/Correction/FirmCorrection.vue'
 import mockRouter from './MockRouter'
-import { CertifySection, CompletingParty, Detail, PeopleAndRoles, StaffPayment, YourCompany } from '@/components/common'
+import { BusinessStartDate, BusinessType, CertifySection, CompletingParty, Detail, EntityName,
+  NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment, YourCompanyWrapper }
+  from '@/components/common'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { ActionTypes, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -32,6 +33,7 @@ describe('Firm Correction component', () => {
   sessionStorage.setItem('AUTH_API_URL', 'https://auth.api.url/')
   sessionStorage.setItem('AUTH_WEB_URL', 'https://auth.web.url/')
   sessionStorage.setItem('DASHBOARD_URL', 'https://dashboard.url/')
+
   store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
   store.stateModel.tombstone.businessId = 'FM1234567'
 
@@ -118,6 +120,7 @@ describe('Firm Correction component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'correction' })
+
     wrapper = shallowMount(
       FirmCorrection,
       {
@@ -160,12 +163,17 @@ describe('Firm Correction component', () => {
     expect(wrapper.findComponent(FirmCorrection).exists()).toBe(true)
 
     // Default components
-    expect(wrapper.findComponent(YourCompany).exists()).toBe(true)
+    expect(wrapper.findComponent(YourCompanyWrapper).exists()).toBe(true)
+    expect(wrapper.findComponent(EntityName).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessType).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessStartDate).exists()).toBe(true)
+    expect(wrapper.findComponent(NatureOfBusiness).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
     expect(wrapper.findComponent(PeopleAndRoles).exists()).toBe(true)
     expect(wrapper.findComponent(Detail).exists()).toBe(true)
     expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
 
-    // Components that are only visable for client Error Corrections
+    // Components that are only visible for Client Error Corrections
     expect(wrapper.findComponent(CompletingParty).exists()).toBe(false)
     expect(wrapper.findComponent(CertifySection).exists()).toBe(false)
   })

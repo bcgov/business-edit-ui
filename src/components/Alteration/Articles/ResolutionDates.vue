@@ -9,7 +9,8 @@
         <v-chip
           v-if="haveNewResolutionDates && isCorrectionFiling"
           id="corrected-lbl"
-          x-small label
+          x-small
+          label
           color="primary"
           text-color="white"
         >
@@ -18,59 +19,93 @@
       </v-col>
 
       <v-col :cols="isEditMode ? '7' : '8'">
-        <div class="info-text" v-if="isAdding">
+        <div
+          v-if="isAdding"
+          class="info-text"
+        >
           Indicate the date of the resolution or court order used to alter the company's share
           structure or the special rights and restrictions of a class or series of shares:
         </div>
-        <div class="info-text" v-else>
+        <div
+          v-else
+          class="info-text"
+        >
           Dates of resolutions or court orders to alter the company's share structure or the
           special rights or restrictions attached to a class or series of shares:
         </div>
-        <p v-if="!getIsResolutionDatesValid" class="error-text small-text mt-6">
+        <p
+          v-if="!getIsResolutionDatesValid"
+          class="error-text small-text mt-6"
+        >
           You must add a resolution or court order date because your share structure contains a class or series of
-          shares with special rights or restrictions and changes were made to you share structure.
+          shares with special rights or restrictions and changes were made to your share structure.
         </p>
       </v-col>
 
-      <v-col cols="2" class="align-right" v-if="isEditMode && !isAdding">
-        <v-btn id="add-resolution-date"
+      <v-col
+        v-if="isEditMode && !isAdding"
+        cols="2"
+        class="align-right"
+      >
+        <v-btn
+          id="add-resolution-date"
           class="add-btn mt-n1"
-          text color="primary"
+          text
+          color="primary"
           :disabled="haveAddedDates"
           @click="isAdding = true"
         >
-          <v-icon small>{{ addBtnIcon }}</v-icon>
+          <v-icon small>
+            {{ addBtnIcon }}
+          </v-icon>
           <span>{{ addBtnLabel }}</span>
         </v-btn>
       </v-col>
-      <v-col cols="2" class="align-right" v-else-if="isAdding">
-        <v-btn id="close-resolution-date"
+      <v-col
+        v-else-if="isAdding"
+        cols="2"
+        class="align-right"
+      >
+        <v-btn
+          id="close-resolution-date"
           class="close-btn mt-n1"
-          text color="primary"
+          text
+          color="primary"
           @click="isAdding = false"
         >
-          <v-icon small>mdi-close</v-icon>
+          <v-icon small>
+            mdi-close
+          </v-icon>
           <span>Cancel</span>
         </v-btn>
       </v-col>
     </v-row>
 
     <!-- Added Dates -->
-    <v-row no-gutters v-if="haveAddedDates" class="mt-2 mb-1">
-      <v-col cols="3"></v-col>
+    <v-row
+      v-if="haveAddedDates"
+      no-gutters
+      class="mt-2 mb-1"
+    >
+      <v-col cols="3" />
       <v-col cols="7">
         <ul class="resolution-date-list info-text pl-0 mt-2">
-          <li v-for="(date, index) in addedDates"
+          <li
+            v-for="(date, index) in addedDates"
             :key="`newResolutionDate-${index}`"
           >
-            <strong class="mr-2">{{date}}</strong>
-            <v-btn v-if="isEditMode"
+            <strong class="mr-2">{{ date }}</strong>
+            <v-btn
+              v-if="isEditMode"
               id="remove-resolution-date"
               class="remove-btn mt-n1"
-              text color="primary"
+              text
+              color="primary"
               @click="onRemove(index)"
             >
-              <v-icon small>{{ removeBtnIcon }}</v-icon>
+              <v-icon small>
+                {{ removeBtnIcon }}
+              </v-icon>
               <span>{{ removeBtnLabel }}</span>
             </v-btn>
           </li>
@@ -79,9 +114,16 @@
     </v-row>
 
     <!-- Date Picker -->
-    <v-row no-gutters v-if="isAdding" class="mt-4">
-      <v-col cols="3"></v-col>
-      <v-col cols="9" class="mb-n4 pr-3">
+    <v-row
+      v-if="isAdding"
+      no-gutters
+      class="mt-4"
+    >
+      <v-col cols="3" />
+      <v-col
+        cols="9"
+        class="mb-n4 pr-3"
+      >
         <DatePickerShared
           title="Resolution or Court Order Date"
           nudge-right="80"
@@ -95,20 +137,31 @@
     </v-row>
 
     <!-- Previous Dates -->
-    <v-row no-gutters v-if="havePreviousDates && !isSummaryMode" class="mt-2 mb-1">
-      <v-col cols="3"></v-col>
+    <v-row
+      v-if="havePreviousDates && !isSummaryMode"
+      no-gutters
+      class="mt-2 mb-1"
+    >
+      <v-col cols="3" />
       <v-col cols="7">
-        <v-btn class="show-previous-dates-btn ml-n4"
-               text color="primary"
-               :ripple="false"
-               @click="displayPreviousDates = !displayPreviousDates"
+        <v-btn
+          class="show-previous-dates-btn ml-n4"
+          text
+          color="primary"
+          :ripple="false"
+          @click="displayPreviousDates = !displayPreviousDates"
         >
           <span v-if="!displayPreviousDates">Show previous resolutions or court order dates</span>
           <span v-else>Hide previous resolutions or court order dates</span>
         </v-btn>
         <template v-if="displayPreviousDates">
           <ul class="resolution-date-list info-text pl-0 mt-3">
-            <li v-for="(resolutions, index) in previousDates" :key="`resolutionDate-${index}`">{{resolutions.date}}</li>
+            <li
+              v-for="(resolutions, index) in previousDates"
+              :key="`resolutionDate-${index}`"
+            >
+              {{ resolutions.date }}
+            </li>
           </ul>
         </template>
       </v-col>
@@ -219,7 +272,7 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   /** Updates store when resolution dates validity changes. */
   @Watch('isAdding', { immediate: true })
   @Watch('getIsResolutionDatesValid', { immediate: true })
-  private onEditingNameChanged (val: boolean): void {
+  private onEditingNameChanged (): void {
     if (this.isAdding) {
       this.setValidComponent({ key: 'isValidResolutionDate', value: false })
     } else {

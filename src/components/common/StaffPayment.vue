@@ -1,11 +1,20 @@
 <template>
-  <section class="pb-6" id="staff-payment">
+  <section
+    id="staff-payment"
+    class="pb-6"
+  >
     <header>
-      <h2>{{sectionNumber}} Staff Payment</h2>
+      <h2>{{ sectionNumber }} Staff Payment</h2>
     </header>
 
-    <div :class="{'invalid-section': invalidStaffPayment}" class="mt-4">
-      <v-card flat class="section-container py-6">
+    <div
+      :class="{'invalid-section': invalidStaffPayment}"
+      class="mt-4"
+    >
+      <v-card
+        flat
+        class="section-container py-6"
+      >
         <StaffPaymentShared
           :staffPaymentData="getStaffPayment"
           :validate="getAppValidate"
@@ -51,7 +60,7 @@ export default class StaffPayment extends Vue {
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber!: string
 
-  /** Whether sub-component should show invalid section styling. */
+  /** True if this component is invalid. */
   get invalidStaffPayment (): boolean {
     return (this.getAppValidate && !this.getFlagsReviewCertify.isValidStaffPayment)
   }

@@ -1,5 +1,8 @@
 <template>
-  <v-card flat id="restoration-summary">
+  <v-card
+    id="restoration-summary"
+    flat
+  >
     <!-- Business Name -->
     <template v-if="hasBusinessNameChanged">
       <v-divider class="mx-4" />
@@ -9,9 +12,16 @@
             <label><strong>Company Name</strong></label>
           </v-col>
 
-          <v-col cols="8" class="mt-n1">
-            <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
-            <div class="company-name mt-2">{{ getNameRequest.nrNumber }}</div>
+          <v-col
+            cols="8"
+            class="mt-n1"
+          >
+            <div class="company-name font-weight-bold text-uppercase">
+              {{ companyName }}
+            </div>
+            <div class="company-name mt-2">
+              {{ getNameRequestNumber }}
+            </div>
           </v-col>
         </v-row>
       </div>
@@ -20,7 +30,7 @@
     <!-- Name Translation -->
     <template v-if="haveNameTranslationsChanged">
       <v-divider class="mx-4" />
-      <div class="section-container name-translation-summary">
+      <div class="name-translation-summary">
         <NameTranslation :isSummaryMode="true" />
       </div>
     </template>
@@ -28,26 +38,28 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { FeesIF } from '@/interfaces/'
-import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
+import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { NameTranslation } from '@/components/common/'
 import { useStore } from '@/store/store'
 
 @Component({
   components: {
     NameTranslation
-  }
+  },
+  mixins: [DateMixin, FeeMixin, FilingTemplateMixin]
 })
-export default class RestorationSummary extends Mixins(
-  DateMixin,
-  FeeMixin,
-  FilingTemplateMixin
-) {
+export default class RestorationSummary extends Vue {
   // Global getters
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentFees!: FeesIF[]
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) haveNameTranslationsChanged!: boolean
   @Getter(useStore) isBusySaving!: boolean
 
   /** Whether to perform validation. */

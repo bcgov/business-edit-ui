@@ -1,17 +1,17 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount, Wrapper } from '@vue/test-utils'
-import { getVuexStore } from '@/store/'
 import DocumentsDelivery from '@/components/common/DocumentsDelivery.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
+
 const optionalEmailInput = '#optionalEmail'
 
 /**

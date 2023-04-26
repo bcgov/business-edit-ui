@@ -4,74 +4,114 @@
       <!-- Row Title -->
       <v-col cols="3">
         <label :class="{'error-text': invalidSection}"><strong>Business Type</strong></label>
-        <v-flex md1>
-          <v-chip v-if="hasBusinessTypeChanged" x-small label color="primary" text-color="white">
-            {{getEditedLabel}}
+        <v-col md="1">
+          <v-chip
+            v-if="hasBusinessTypeChanged"
+            x-small
+            label
+            color="primary"
+            text-color="white"
+          >
+            {{ getEditedLabel }}
           </v-chip>
-        </v-flex>
+        </v-col>
       </v-col>
 
       <!-- Display Mode -->
-      <v-col cols="7" v-if="!isEditingType">
-        <span class="info-text" :class="{ 'has-conflict': isConflictingLegalType && isNewName}">
-          {{GetCorpFullDescription(getEntityType)}}
+      <v-col
+        v-if="!isEditingType"
+        cols="7"
+      >
+        <span
+          class="info-text"
+          :class="{ 'has-conflict': isConflictingLegalType && isNewName}"
+        >
+          {{ GetCorpFullDescription(getEntityType) }}
         </span>
 
         <!-- Type change tooltip -->
-        <v-tooltip v-if="isFirm || isCoop"
-                    top
-                    content-class="top-tooltip"
-                    transition="fade-transition"
-                    nudge-right="3"
+        <v-tooltip
+          v-if="typeChangeInfo"
+          top
+          content-class="top-tooltip"
+          transition="fade-transition"
+          nudge-right="3"
         >
-          <template v-slot:activator="{ on }">
-            <v-icon v-on="on" class="info-icon">mdi-information-outline</v-icon>
+          <template #activator="{ on }">
+            <v-icon
+              class="info-icon"
+              v-on="on"
+            >
+              mdi-information-outline
+            </v-icon>
           </template>
           <span>{{ typeChangeInfo }}</span>
         </v-tooltip>
 
         <!-- Type mismatch tooltip -->
-        <v-tooltip v-if="isConflictingLegalType && isNewName"
-                    top
-                    content-class="top-tooltip"
-                    transition="fade-transition"
-                    nudge-right="3"
+        <v-tooltip
+          v-if="isConflictingLegalType && isNewName"
+          top
+          content-class="top-tooltip"
+          transition="fade-transition"
+          nudge-right="3"
         >
-          <template v-slot:activator="{ on }">
-            <v-icon v-on="on" color="error" small>mdi-alert</v-icon>
+          <template #activator="{ on }">
+            <v-icon
+              color="error"
+              small
+              v-on="on"
+            >
+              mdi-alert
+            </v-icon>
           </template>
           <span>
             Business Types do not match. The Name Request type must match the business type before you can continue.
           </span>
         </v-tooltip>
+
         <template v-if="hasBusinessTypeChanged">
-          <p class="subtitle mt-2 pt-2">Benefit Company Articles</p>
+          <p class="subtitle mt-2 pt-2">
+            Benefit Company Articles
+          </p>
           <div class="confirmed-msg">
-            <v-icon color="success" class="confirmed-icon">mdi-check</v-icon>
+            <v-icon
+              color="success"
+              class="confirmed-icon"
+            >
+              mdi-check
+            </v-icon>
             <span class="info-text text-body-3 confirmed-icon ml-2">
-            The company has completed a set Benefit Company Articles containing a benefit provision, and a copy of
-            these articles has been added to the company's record book.
+              The company has completed a set Benefit Company Articles containing a benefit provision, and a copy of
+              these articles has been added to the company's record book.
             </span>
           </div>
         </template>
       </v-col>
 
       <!-- Editing Mode -->
-      <v-col cols="9" v-if="isEditingType" class="pr-4">
-        <v-select id="business-type-selector"
-                  :items="entityTypeOptions"
-                  v-model="selectedEntityType"
-                  hint="Select a New Business Type"
-                  persistent-hint
-                  filled
+      <v-col
+        v-if="isEditingType"
+        cols="9"
+        class="pr-4"
+      >
+        <v-select
+          id="business-type-selector"
+          v-model="selectedEntityType"
+          :items="entityTypeOptions"
+          hint="Select a New Business Type"
+          persistent-hint
+          filled
         >
-          <template v-slot:item="data">
+          <template #item="data">
             <span class="list-item">{{ data.item.text }}</span>
           </template>
         </v-select>
         <div class="my-6">
-          <p class="info-text">Businesses can only be altered to specific types. If the business type you want is
-          not listed, contact BC Registry staff:</p>
+          <p class="info-text">
+            Businesses can only be altered to specific types. If the business type you want is
+            not listed, contact BC Registry staff:
+          </p>
         </div>
 
         <!-- BC Registry Contacts -->
@@ -79,23 +119,40 @@
 
         <template v-if="isBenefit">
           <div class="my-6">
-            <p class="subtitle">Benefit Company Articles</p>
-            <p class="info-text">Before submitting your alteration notice you <span class="font-weight-bold">must
-              change your company's articles to include a set of Benefit Company Articles</span> OR draft new articles
-              containing a benefit provision.</p>
+            <p class="subtitle">
+              Benefit Company Articles
+            </p>
+            <p class="info-text">
+              Before submitting your alteration notice you <span class="font-weight-bold">must
+                change your company's articles to include a set of Benefit Company Articles</span> OR draft new articles
+              containing a benefit provision.
+            </p>
           </div>
 
           <section class="text-body-3">
             <!-- Help Section Toggle -->
-            <div class="info-text help-toggle pt-2" @click="helpToggle = !helpToggle">
-              <v-icon class="pr-2 mt-n2" color="primary">mdi-help-circle-outline</v-icon>
+            <div
+              class="info-text help-toggle pt-2"
+              @click="helpToggle = !helpToggle"
+            >
+              <v-icon
+                class="pr-2 mt-n2"
+                color="primary"
+              >
+                mdi-help-circle-outline
+              </v-icon>
               <span v-if="!helpToggle">Learn More</span>
               <span v-else>Hide Learn More</span>
             </div>
 
             <!-- Help Section -->
-            <section v-show="helpToggle" class="mx-8 my-7">
-              <p class="subtitle mb-2">Benefit Provision</p>
+            <section
+              v-show="helpToggle"
+              class="mx-8 my-7"
+            >
+              <p class="subtitle mb-2">
+                Benefit Provision
+              </p>
               <p class="info-text">
                 A benefit company must include a benefit provision (a statement by the company of its public benefits
                 and its commitments to promote those public benefits and to conduct business in a responsible and
@@ -103,7 +160,9 @@
                 company's existing articles or as part of new articles.
               </p>
               <div class="provision-help">
-                <p class="subtitle">Part 1 - Benefit Provision</p>
+                <p class="subtitle">
+                  Part 1 - Benefit Provision
+                </p>
                 <ol class="info-text ml-2 pl-0">
                   <li style="list-style:none;">
                     <ol>
@@ -130,10 +189,10 @@
             <!-- Confirm Articles Checkbox -->
             <div class="pr-2">
               <v-checkbox
-                v-model="confirmArticles"
                 id="confirm-articles-checkbox"
+                v-model="confirmArticles"
                 :label="confirmLabel"
-              ></v-checkbox>
+              />
             </div>
           </section>
         </template>
@@ -142,7 +201,8 @@
         <div class="action-btns">
           <v-btn
             id="done-btn"
-            large color="primary"
+            large
+            color="primary"
             :disabled="!confirmArticles"
             @click="submitTypeChange()"
           >
@@ -151,7 +211,9 @@
 
           <v-btn
             id="cancel-btn"
-            large outlined color="primary"
+            large
+            outlined
+            color="primary"
             @click="isEditingType = false"
           >
             <span>Cancel</span>
@@ -160,49 +222,69 @@
       </v-col>
 
       <!-- Edit Actions -->
-      <v-col cols="2" v-if="!isEditingType" class="mt-n2">
+      <v-col
+        v-if="!isEditingType"
+        cols="2"
+        class="mt-n2"
+      >
         <div class="actions mr-4">
           <v-btn
             v-if="hasBusinessTypeChanged"
-            text color="primary"
             id="btn-undo-business-type"
+            text
+            color="primary"
             class="undo-action"
             @click="resetType()"
           >
-            <v-icon small>mdi-undo</v-icon>
+            <v-icon small>
+              mdi-undo
+            </v-icon>
             <span>Undo</span>
           </v-btn>
           <v-btn
             v-else-if="isBcCompany"
-            text color="primary"
             id="btn-correct-business-type"
+            text
+            color="primary"
             @click="isEditingType = true"
           >
-            <v-icon small>mdi-pencil</v-icon>
-            <span>{{getEditLabel}}</span>
+            <v-icon small>
+              mdi-pencil
+            </v-icon>
+            <span>{{ getEditLabel }}</span>
           </v-btn>
-          <span class="more-actions" v-if="hasBusinessTypeChanged">
+          <span
+            v-if="hasBusinessTypeChanged"
+            class="more-actions"
+          >
             <v-menu
-              offset-y left nudge-bottom="4"
               v-model="dropdown"
+              offset-y
+              left
+              nudge-bottom="4"
             >
-              <template v-slot:activator="{ on }">
+              <template #activator="{ on }">
                 <v-btn
-                  text small color="primary"
                   id="btn-more-actions"
+                  text
+                  small
+                  color="primary"
                   v-on="on"
                 >
-                  <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                  <v-icon>{{ dropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                 </v-btn>
               </template>
               <v-list>
                 <v-list-item
-                  class="v-list-item"
                   id="btn-more-actions-edit"
+                  class="v-list-item"
                   @click="isEditingType = true; dropdown = false"
                 >
                   <v-list-item-subtitle>
-                    <v-icon small color="primary">mdi-pencil</v-icon>
+                    <v-icon
+                      small
+                      color="primary"
+                    >mdi-pencil</v-icon>
                     <span class="drop-down-action ml-1">Change</span>
                   </v-list-item-subtitle>
                 </v-list-item>
@@ -245,12 +327,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) hasBusinessTypeChanged!: boolean
   @Getter(useStore) isBcCompany!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
-  @Getter(useStore) isCoop!: boolean
-  @Getter(useStore) isFirm!: boolean
 
   @Action(useStore) setEntityType!: ActionBindingIF
 
-  protected selectedEntityType: CorpTypeCd = null
+  protected selectedEntityType = null as CorpTypeCd
   protected confirmArticles = false
   protected helpToggle = false
   protected isEditingType = false
@@ -307,14 +387,14 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   /** Reset company type values to original. */
-  private resetType () {
+  protected resetType () {
     this.setEntityType(this.getEntitySnapshot?.businessInfo?.legalType)
     this.isEditingType = false
     this.confirmArticles = false
   }
 
   /** Submit new company type. */
-  private submitTypeChange () {
+  protected submitTypeChange () {
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
   }

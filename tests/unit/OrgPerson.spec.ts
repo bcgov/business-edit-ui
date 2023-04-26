@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
-import { mount, Wrapper, createLocalVue } from '@vue/test-utils'
+import { mount, Wrapper } from '@vue/test-utils'
 import OrgPerson from '@/components/common/PeopleAndRoles/OrgPerson.vue'
 import { BenCorrectionResource } from '@/resources/Correction/BEN'
 import { SpChangeResource } from '@/resources/Change/SP'
@@ -13,10 +13,15 @@ import { CorpTypeCd, FilingTypes } from '@/enums'
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()
 
+// Prevent the warning "[Vuetify] Unable to locate target [data-app]"
+document.body.setAttribute('data-app', 'true')
+
 Vue.use(Vuetify)
+const vuetify = new Vuetify({})
+
+// needed for address component
 Vue.use(Vuelidate)
 
-const vuetify = new Vuetify({})
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -49,36 +54,6 @@ const validPersonData = {
   },
   roles: [
     { roleType: 'Director', appointmentDate: '2020-03-30' }
-  ],
-  mailingAddress: {
-    streetAddress: '123 Fake Street',
-    streetAddressAdditional: '',
-    addressCity: 'Victoria',
-    addressRegion: 'BC',
-    postalCode: 'V8Z 5C6',
-    addressCountry: 'CA'
-  },
-  deliveryAddress: {
-    streetAddress: '123 Fake Street',
-    streetAddressAdditional: '',
-    addressCity: 'Victoria',
-    addressRegion: 'BC',
-    postalCode: 'V8Z 5C6',
-    addressCountry: 'CA'
-  }
-}
-
-const validIncorporator = {
-  officer: {
-    id: '1',
-    firstName: 'Adam',
-    lastName: 'Smith',
-    middleName: 'D',
-    organizationName: '',
-    partyType: 'person'
-  },
-  roles: [
-    { roleType: 'Incorporator', appointmentDate: '2020-03-30' }
   ],
   mailingAddress: {
     streetAddress: '123 Fake Street',
@@ -192,12 +167,7 @@ function createComponent (
   currentOrgPerson: any,
   activeIndex = NaN
 ): Wrapper<OrgPerson> {
-  const localVue = createLocalVue()
-  localVue.use(Vuetify)
-  document.body.setAttribute('data-app', 'true')
-
   return mount(OrgPerson, {
-    localVue,
     propsData: { currentOrgPerson, activeIndex },
     vuetify
   })
@@ -320,6 +290,20 @@ describe('Org/Person component for a BEN Correction filing', () => {
     await Vue.nextTick()
 
     expect(getLastEvent(wrapper, addEditEvent).officer.organizationName).toBe('Different Test Org')
+
+    wrapper.destroy()
+  })
+
+  it('Does not display name change checkbox when Person first name has changed', async () => {
+    const wrapper = createComponent(validPersonData, 0)
+    await Vue.nextTick()
+
+    // change org name
+    const input = wrapper.find(firstNameSelector)
+    await input.setValue('Different Test Person')
+    await input.trigger('change')
+
+    expect(wrapper.find(confirmNameChangeSelector).exists()).toBe(false)
 
     wrapper.destroy()
   })

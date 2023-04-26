@@ -16,17 +16,15 @@ export interface NrCorrectionIF {
   expiry: string,
   requestType: string,
   status: NameRequestStates,
-  applicant: NameRequestApplicantIF | object
+  applicant: NameRequestApplicantIF
 }
 
 export interface NrResponseIF {
   legalType: CorpTypeCd,
-  // eslint-disable-next-line camelcase
-  entity_type_cd: CorpTypeCd,
+  entity_type_cd: CorpTypeCd, // eslint-disable-line camelcase
   expirationDate: string,
   state: NameRequestStates,
-  // eslint-disable-next-line camelcase
-  request_action_cd: NameRequestTypes,
+  request_action_cd: NameRequestTypes, // eslint-disable-line camelcase
   applicants: {
     firstName: string,
     lastName: string

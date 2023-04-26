@@ -1,10 +1,15 @@
 <template>
-  <v-container id="action-buttons-container" class="list-item">
+  <v-container
+    id="action-buttons-container"
+    class="list-item"
+  >
     <!-- don't show buttons until Entity Type is identified -->
     <template v-if="!!getEntityType">
       <div class="buttons-left">
         <!-- disable Save button for now -->
-        <v-btn id="save-btn" large
+        <v-btn
+          id="save-btn"
+          large
           :disabled="isSaveButtonDisabled"
           :loading="isSaving"
           @click="onClickSave()"
@@ -12,7 +17,9 @@
           <span>Save</span>
         </v-btn>
 
-        <v-btn id="save-resume-btn" large
+        <v-btn
+          id="save-resume-btn"
+          large
           :disabled="isSaveResumeButtonDisabled"
           :loading="isSavingResuming"
           @click="onClickSaveResume()"
@@ -23,7 +30,10 @@
 
       <div class="buttons-right">
         <v-fade-transition hide-on-leave>
-          <v-btn id="file-pay-btn" large color="primary"
+          <v-btn
+            id="file-pay-btn"
+            large
+            color="primary"
             :disabled="isFilePayButtonDisabled"
             :loading="isFilingPaying"
             @click="onClickFilePay()"
@@ -32,7 +42,11 @@
           </v-btn>
         </v-fade-transition>
 
-        <v-btn id="app-cancel-btn" large outlined color="primary"
+        <v-btn
+          id="app-cancel-btn"
+          large
+          outlined
+          color="primary"
           :disabled="isBusySaving"
           @click="onClickCancel()"
         >
@@ -52,6 +66,7 @@ import { DateMixin, FilingTemplateMixin, NameRequestMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { Navigate } from '@/utils/'
 import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 /** This component is only implemented for Correction filings atm. */
 @Component({
@@ -63,16 +78,18 @@ import { useStore } from '@/store/store'
 })
 export default class Actions extends Vue {
   // Global getters
-  @Getter(useStore) isBusySaving!: boolean
-  @Getter(useStore) hasCorrectionDataChanged!: boolean
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getFilingId!: number
   @Getter(useStore) hasAlterationDataChanged!: boolean // for testing state-getters
+  @Getter(useStore) hasCorrectionDataChanged!: boolean
   @Getter(useStore) havePeopleAndRolesChanged!: boolean // for testing state-getters
+  @Getter(useStore) isBusySaving!: boolean
+  @Getter(useStore) isCorrectionEditing!: boolean
   @Getter(useStore) isCorrectionValid!: boolean
+  @Getter(useStore) isFilingPaying!: boolean
   @Getter(useStore) isSaving!: boolean
   @Getter(useStore) isSavingResuming!: boolean
-  @Getter(useStore) isFilingPaying!: boolean
-  @Getter(useStore) isCorrectionEditing!: boolean
-  @Getter(useStore) getFilingId!: number
 
   // Global actions
   @Action(useStore) setIsSaving!: ActionBindingIF

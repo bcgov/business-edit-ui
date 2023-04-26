@@ -8,21 +8,35 @@
           </div>
 
           <dl class="business-info">
-            <dd id="entity-legal-type">{{originalEntityType}}</dd>
-            <dt class="mr-2">Business No:</dt>
-            <dd id="entity-business-number">{{ businessNumber || 'Not Available' }}</dd>
-            <dt class="mr-2">Incorporation No:</dt>
-            <dd id="entity-incorp-number">{{ getBusinessId }}</dd>
+            <dd id="entity-legal-type">
+              {{ originalEntityType }}
+            </dd>
+            <dt class="mr-2">
+              Business No:
+            </dt>
+            <dd id="entity-business-number">
+              {{ businessNumber || 'Not Available' }}
+            </dd>
+            <dt class="mr-2">
+              Incorporation No:
+            </dt>
+            <dd id="entity-incorp-number">
+              {{ getBusinessId }}
+            </dd>
           </dl>
         </div>
 
         <div class="right-column text-right align-self-end">
           <dl class="profile-info">
             <dt><span class="sr-only mr-2">Business Email:</span></dt>
-            <dd id="entity-business-email">{{getBusinessContact.email || 'Unknown Email'}}</dd>
+            <dd id="entity-business-email">
+              {{ getBusinessContact.email || 'Unknown Email' }}
+            </dd>
             <template v-if="getBusinessContact.phone">
               <dt><span class="sr-only mr-2">Business Phone:</span></dt>
-              <dd id="entity-business-phone">{{getBusinessContact.phone}}</dd>
+              <dd id="entity-business-phone">
+                {{ getBusinessContact.phone }}
+              </dd>
             </template>
           </dl>
         </div>

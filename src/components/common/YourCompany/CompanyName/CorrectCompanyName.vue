@@ -1,10 +1,15 @@
 <template>
-  <v-form id="correct-name-form" ref="correctNameForm" v-model="valid" lazy-validation>
+  <v-form
+    id="correct-name-form"
+    ref="correctNameForm"
+    v-model="valid"
+    lazy-validation
+  >
     <v-row no-gutters>
       <v-col>
         <v-text-field
-          v-model="companyName"
           id="company-name-input"
+          v-model="companyName"
           class="mb-n3"
           filled
           :rules="companyNameRules"

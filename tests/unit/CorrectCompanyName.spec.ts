@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
-import { getVuexStore } from '@/store/'
 import { mount, Wrapper } from '@vue/test-utils'
 import CorrectCompanyName from '@/components/common/YourCompany/CompanyName/CorrectCompanyName.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
+const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -21,12 +22,9 @@ function getLastEvent (wrapper: Wrapper<CorrectCompanyName>, name: string): any 
 }
 
 describe('CorrectCompanyName', () => {
-  let vuetify: any
   let wrapperFactory: any
 
   beforeEach(() => {
-    vuetify = new Vuetify({})
-
     store.stateModel.nameRequest.legalName = 'Bobs Plumbing'
 
     wrapperFactory = (props: any) => {

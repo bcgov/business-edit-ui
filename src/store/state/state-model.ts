@@ -36,6 +36,7 @@ export const stateModel: StateModelIF = {
     componentValidate: false,
     flagsCompanyInfo: {
       // NB: this must be in same order as ComponentsCompanyInfo enum!
+      isValidRelationship: true,
       isValidCompanyName: true,
       isValidBusinessType: true,
       isValidNameTranslation: true,
@@ -132,7 +133,6 @@ export const stateModel: StateModelIF = {
     companyName: false,
     nameTranslations: false,
     officeAddresses: false,
-    folioNumber: false,
     peopleAndRoles: false,
     shareStructure: false,
     rule: false,
@@ -154,6 +154,9 @@ export const stateModel: StateModelIF = {
     approvalType: null,
     approvalTypeValid: true,
     businessNameValid: false,
+    courtOrder: {
+      fileNumber: null
+    },
     expiry: null,
     expiryValid: true,
     relationships: [],

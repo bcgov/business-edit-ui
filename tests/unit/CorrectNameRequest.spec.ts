@@ -13,6 +13,8 @@ import { CorpTypeCd } from '@/enums'
 console.warn = jest.fn()
 
 Vue.use(Vuetify)
+const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -26,12 +28,10 @@ function getLastEvent (wrapper: Wrapper<any>, name: string): any {
 }
 
 describe('CorrectNameRequest', () => {
-  let vuetify: any
   let wrapperFactory: any
   const get = sinon.stub(axios, 'get')
 
   beforeEach(() => {
-    vuetify = new Vuetify({})
     store.stateModel.tombstone.entityType = CorpTypeCd.BC_COMPANY
 
     wrapperFactory = (props: any) => {
@@ -76,6 +76,56 @@ describe('CorrectNameRequest', () => {
     await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(true)
+    expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
+  })
+
+  it('verifies inputs when valid', async () => {
+    const wrapper = wrapperFactory()
+
+    // Verify Invalid before input
+    expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.vm.nameRequestNumber = 'NR 1234567'
+    wrapper.vm.applicantPhone = '123 456 7890'
+    wrapper.vm.applicantEmail = 'mock@example.com'
+
+    await flushPromises()
+
+    expect(wrapper.vm.isFormValid).toBe(true)
+    expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
+  })
+
+  it('verifies inputs when valid', async () => {
+    const wrapper = wrapperFactory()
+
+    // Verify Invalid before input
+    expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.vm.nameRequestNumber = '1234567'
+    wrapper.vm.applicantPhone = '123 456 7890'
+    wrapper.vm.applicantEmail = 'mock@example.com'
+
+    await flushPromises()
+
+    expect(wrapper.vm.isFormValid).toBe(true)
+    expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
+  })
+
+  // the spaces between 'NR' and the numbers are ignored
+  it('verifies valid NR input', async () => {
+    const wrapper = wrapperFactory()
+
+    // Verify Invalid before input
+    expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.vm.nameRequestNumber = 'NR   1234567'
+    wrapper.vm.applicantPhone = '123 456 7890'
+    wrapper.vm.applicantEmail = 'mock@example.com'
+
+    await flushPromises()
+
+    expect(wrapper.vm.isFormValid).toBe(true)
+    expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
   })
 
   it('verifies invalid NR', async () => {
@@ -85,6 +135,38 @@ describe('CorrectNameRequest', () => {
     expect(wrapper.vm.isFormValid).toBe(false)
 
     wrapper.vm.nameRequestNumber = '123123NR'
+    wrapper.vm.applicantEmail = 'mock@example.com'
+
+    await flushPromises()
+
+    expect(wrapper.vm.isFormValid).toBe(false)
+  })
+
+  // the leading or trailing spaces of a NR are invalid
+  it('verifies invalid NR', async () => {
+    const wrapper = wrapperFactory()
+
+    // Verify Invalid before input
+    expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.vm.nameRequestNumber = '   NR 1234567'
+    wrapper.vm.applicantPhone = '123 456 7890'
+    wrapper.vm.applicantEmail = 'mock@example.com'
+
+    await flushPromises()
+
+    expect(wrapper.vm.isFormValid).toBe(false)
+  })
+
+  // the leading or trailing spaces are invalid
+  it('verifies invalid NR', async () => {
+    const wrapper = wrapperFactory()
+
+    // Verify Invalid before input
+    expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.vm.nameRequestNumber = 'NR 1234567    '
+    wrapper.vm.applicantPhone = '123 456 7890'
     wrapper.vm.applicantEmail = 'mock@example.com'
 
     await flushPromises()

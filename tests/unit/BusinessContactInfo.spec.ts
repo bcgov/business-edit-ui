@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { mount } from '@vue/test-utils'
 import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
 import AuthServices from '@/services/auth-services'
@@ -9,12 +8,13 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
 // mock services function
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mockUpdateContactInfo = jest.spyOn((AuthServices as any), 'updateContactInfo').mockImplementation()
 
 const contactInfo = {

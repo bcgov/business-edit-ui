@@ -1,12 +1,19 @@
 <template>
   <ViewWrapper>
-    <section class="pb-10" id="limited-restoration-extension">
+    <section
+      id="limited-restoration-extension"
+      class="pb-10"
+    >
       <!-- Company Information page-->
       <v-slide-x-transition hide-on-leave>
-        <div v-if="!isSummaryMode" id="question_container">
+        <div
+          v-if="!isSummaryMode"
+          id="question_container"
+        >
           <header>
             <h1>Limited Restoration Extension</h1>
           </header>
+
           <QuestionWrapper
             id="applicant-information"
             title="Applicant Information"
@@ -23,7 +30,16 @@
             <ExtendTimeLimit />
           </QuestionWrapper>
 
-          <YourCompany class="mt-10" />
+          <YourCompanyWrapper class="mt-10">
+            <div>
+              <EntityName />
+              <NameTranslation />
+            </div>
+            <RecognitionDateTime />
+            <OfficeAddresses />
+            <BusinessContactInfo />
+            <FolioInformation />
+          </YourCompanyWrapper>
         </div>
       </v-slide-x-transition>
 
@@ -40,13 +56,22 @@
           </div>
 
           <!-- Applicant list -->
-          <v-card id="people-and-roles-vcard" flat class="mt-6">
+          <v-card
+            id="people-and-roles-vcard"
+            flat
+            class="mt-6"
+          >
             <!-- Header -->
             <div class="section-container header-container">
-              <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
+              <v-icon color="appDkBlue">
+                mdi-account-multiple-plus
+              </v-icon>
               <label class="font-weight-bold pl-2">{{ orgPersonLabel }} Information</label>
             </div>
-            <div no-gutters class="mt-4 section-container">
+            <div
+              no-gutters
+              class="mt-4 section-container"
+            >
               <ListPeopleAndRoles
                 :isSummaryView="true"
                 :showDeliveryAddressColumn="false"
@@ -89,14 +114,16 @@ import Vue from 'vue'
 import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { v4 as uuidv4 } from 'uuid'
+import { cloneDeep } from 'lodash'
 import { GetFeatureFlag } from '@/utils/'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
-import { CertifySection, DocumentsDelivery, PeopleAndRoles, ListPeopleAndRoles, StaffPayment,
-  YourCompany } from '@/components/common/'
+import { BusinessContactInfo, CertifySection, DocumentsDelivery, EntityName, FolioInformation,
+  ListPeopleAndRoles, NameTranslation, OfficeAddresses, PeopleAndRoles, QuestionWrapper,
+  RecognitionDateTime, StaffPayment, YourCompanyWrapper } from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
-import { ActionBindingIF, EntitySnapshotIF, OrgPersonIF,
-  ResourceIF, RestorationFilingIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, OrgPersonIF, ResourceIF, RestorationFilingIF }
+  from '@/interfaces/'
 import { FilingStatus, RoleTypes } from '@/enums/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationExtension/'
@@ -104,25 +131,30 @@ import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summ
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel/'
 import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
-import QuestionWrapper from '@/components/common/QuestionWrapper.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { AuthServices, LegalServices } from '@/services'
 import { useStore } from '@/store/store'
 
 @Component({
   components: {
+    BusinessContactInfo,
     CertifySection,
     DocumentsDelivery,
+    EntityName,
     ExtendTimeLimit,
     FeeSummaryShared,
+    FolioInformation,
     LimitedRestorationPanel,
     ListPeopleAndRoles,
+    NameTranslation,
+    OfficeAddresses,
     PeopleAndRoles,
     QuestionWrapper,
+    RecognitionDateTime,
     RestorationSummary,
     StaffPayment,
     ViewWrapper,
-    YourCompany,
+    YourCompanyWrapper,
     YourCompanySummary
   },
   mixins: [
@@ -135,6 +167,7 @@ import { useStore } from '@/store/store'
 export default class LimitedRestorationExtension extends Vue {
   // Global getters
   @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getOrgPeople!: OrgPersonIF[]
   @Getter(useStore) getResource!: ResourceIF
@@ -149,6 +182,7 @@ export default class LimitedRestorationExtension extends Vue {
   // Global actions
   @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
   @Action(useStore) setEntitySnapshot: ActionBindingIF
+  @Action(useStore) setFilingData!: ActionBindingIF
   @Action(useStore) setFilingId!: ActionBindingIF
   @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF
@@ -156,6 +190,8 @@ export default class LimitedRestorationExtension extends Vue {
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
+
+  /** The restoration filing ID. */
   @Prop({ default: 0 }) readonly restorationId!: number
 
   /** The resource object for a restoration filing. */
@@ -224,19 +260,9 @@ export default class LimitedRestorationExtension extends Vue {
         throw new Error(`Invalid fetched stateFiling = ${this.getBusinessId}`)
       }
 
-      const parties = filing.restoration?.parties || []
-
-      // find first applicant from fetched parties
-      const applicant = parties.find(
-        orgPerson => orgPerson.roles.some(role => role.roleType === RoleTypes.APPLICANT)
-      )
-
-      if (applicant === undefined) {
-        throw new Error(`Applicant not found for ${this.getBusinessId}`)
-      }
-
-      // set applicant orgPerson
-      entitySnapshot.orgPersons = this.parseApplicantOrgPerson(applicant)
+      // get applicant from state filing and set into orgPersons
+      const applicant = this.getApplicant(filing) // throws error if not found
+      entitySnapshot.orgPersons = [applicant]
 
       this.setEntitySnapshot(entitySnapshot)
 
@@ -291,24 +317,28 @@ export default class LimitedRestorationExtension extends Vue {
     return this.getResource.userEmailOptional
   }
 
-  /** build applicant orgPerson and assign id (uuid) */
-  private parseApplicantOrgPerson (applicant: OrgPersonIF): OrgPersonIF[] {
-    const applicantOrgPerson: Array<OrgPersonIF> = []
-    applicantOrgPerson.push({
-      deliveryAddress: applicant.deliveryAddress,
-      mailingAddress: applicant.mailingAddress,
-      officer: {
-        email: applicant.officer.email,
-        firstName: applicant.officer.firstName,
-        lastName: applicant.officer.lastName,
-        middleName: applicant.officer.middleName,
-        organizationName: applicant.officer.organizationName,
-        partyType: applicant.officer.partyType,
-        id: uuidv4()
-      },
-      roles: applicant.roles
-    })
-    return applicantOrgPerson
+  /**
+   * Gets applicant from restoration filing parties and returns a new object.
+   * @param filing the restoration state filing
+   * @returns a new applicant object
+   */
+  private getApplicant (filing: RestorationFilingIF): OrgPersonIF {
+    const parties = filing.restoration?.parties || []
+
+    // find first applicant from fetched parties
+    const applicant = parties.find(
+      orgPerson => orgPerson.roles.some(role => role.roleType === RoleTypes.APPLICANT)
+    )
+
+    if (!applicant) {
+      throw new Error(`Applicant not found for ${this.getBusinessId}`)
+    }
+
+    // make a copy of the original object and assign a new id (for UI use only)
+    const copy = cloneDeep(applicant)
+    copy.officer.id = uuidv4()
+
+    return copy
   }
 
   /** Fetches the entity snapshot. */

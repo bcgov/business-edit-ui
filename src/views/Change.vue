@@ -1,6 +1,9 @@
 <template>
   <ViewWrapper>
-    <section class="pb-10" id="change-view">
+    <section
+      id="change-view"
+      class="pb-10"
+    >
       <!-- Business Information page-->
       <v-slide-x-transition hide-on-leave>
         <div v-if="!isSummaryMode || !showFeeSummary">
@@ -13,7 +16,16 @@
             updates are made.
           </section>
 
-          <YourCompany class="mt-10" />
+          <YourCompanyWrapper class="mt-10">
+            <div>
+              <EntityName />
+              <BusinessType />
+            </div>
+            <BusinessStartDate />
+            <NatureOfBusiness />
+            <OfficeAddresses />
+            <BusinessContactInfo />
+          </YourCompanyWrapper>
 
           <PeopleAndRoles class="mt-10" />
         </div>
@@ -86,57 +98,68 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
-import { CertifySection, CompletingParty, CourtOrderPoa, DocumentsDelivery, PeopleAndRoles, StaffPayment,
-  TransactionalFolioNumber, YourCompany } from '@/components/common/'
+import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
+  DocumentsDelivery, EntityName, NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment,
+  TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, CertifyIF, EntitySnapshotIF, OrgPersonIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus, PartyTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SpChangeResource, GpChangeResource, SpOrganizationChangeResource } from '@/resources/Change/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
   components: {
-    ViewWrapper,
+    BusinessContactInfo,
+    BusinessStartDate,
+    BusinessType,
     CertifySection,
     ChangeSummary,
     CompletingParty,
     CourtOrderPoa,
     DocumentsDelivery,
+    EntityName,
+    NatureOfBusiness,
+    OfficeAddresses,
     PeopleAndRoles,
     StaffPayment,
     TransactionalFolioNumber,
-    YourCompany
-  }
+    ViewWrapper,
+    YourCompanyWrapper
+  },
+  mixins: [CommonMixin, FeeMixin, FilingTemplateMixin]
 })
-export default class Change extends Mixins(
-  CommonMixin,
-  FeeMixin,
-  FilingTemplateMixin
-) {
+export default class Change extends Vue {
   // Global getters
-  @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getCertifyState!: CertifyIF
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) showFeeSummary!: boolean
+  @Getter(useStore) isPartnership!: boolean
+  @Getter(useStore) isPremiumAccount!: boolean
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSbcStaff!: boolean
-  @Getter(useStore) isPremiumAccount!: boolean
-  @Getter(useStore) isPartnership!: boolean
   @Getter(useStore) isSoleProp!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
-  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setCertifyState!: ActionBindingIF
   @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
-
+  @Action(useStore) setFilingData!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF
 
   /** Whether App is ready. */

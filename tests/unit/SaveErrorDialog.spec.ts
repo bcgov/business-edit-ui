@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { shallowMount, mount } from '@vue/test-utils'
 import SaveErrorDialog from '@/dialogs/SaveErrorDialog.vue'
 import ErrorContact from '@/components/common/ErrorContact.vue'
@@ -8,8 +7,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 

@@ -3,7 +3,6 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-import { getVuexStore } from '@/store/'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import Conversion from '@/views/Conversion.vue'
@@ -12,10 +11,14 @@ import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { ActionTypes, FilingTypes } from '@bcrs-shared-components/enums'
+import { BusinessStartDate, BusinessType, EntityName, FolioInformation, OfficeAddresses,
+  YourCompanyWrapper } from '@/components/common'
+import { ConversionNOB } from '@/components/Conversion'
+import { AccountTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -53,7 +56,9 @@ describe('Conversion component', () => {
     'JiIUlDmKZ2ow7GmmDabic8igHnEDYD6sI7OFYnCJhRdgVEHN-_4KUk2YsAVl5XUr6blJKMuYDPeMyNreGTXU7foE4AT-93FwlyTyFzQGddrDv' +
     'c6kkQr7mgJNTtgg87DdYbVGbEtIetyVfvwEF0rU8JH2N-j36XIebo33FU3-gJ5Y5S69EHPqQ37R9H4d8WUrHO-4QzJQih3Yaea820XBplJeo0' +
     'DO3hQoVtPD42j0p3aIy10cnW2g')
+
   store.stateModel.tombstone.businessId = 'BC1234567'
+  store.stateModel.accountInformation.accountType = AccountTypes.PREMIUM
 
   beforeEach(async () => {
     // mock the window.location.assign function
@@ -235,6 +240,7 @@ describe('Conversion component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'conversion' })
+
     wrapper = shallowMount(Conversion, { localVue, router, vuetify })
 
     // wait for all queries to complete
@@ -247,9 +253,16 @@ describe('Conversion component', () => {
     wrapper.destroy()
   })
 
-  it('renders Conversion view', () => {
+  it('renders Conversion view and sub-components', () => {
     expect(wrapper.findComponent(Conversion).exists()).toBe(true)
     expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true)
+    expect(wrapper.findComponent(YourCompanyWrapper).exists()).toBe(true)
+    expect(wrapper.findComponent(EntityName).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessType).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessStartDate).exists()).toBe(true)
+    expect(wrapper.findComponent(ConversionNOB).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
+    expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
   })
 
   // FUTURE

@@ -6,18 +6,19 @@ import sinon from 'sinon'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import Change from '@/views/Change.vue'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 import mockRouter from './MockRouter'
-import { CertifySection, CompletingParty, CourtOrderPoa, DocumentsDelivery,
-  PeopleAndRoles, StaffPayment, TransactionalFolioNumber, YourCompany }
-  from '@/components/common'
+import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, CompletingParty,
+  CourtOrderPoa, DocumentsDelivery, EntityName, NatureOfBusiness, OfficeAddresses, PeopleAndRoles,
+  StaffPayment, TransactionalFolioNumber } from '@/components/common'
 import { ChangeSummary } from '@/components/Change'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { ActionTypes, CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -55,6 +56,7 @@ describe('Change component', () => {
     'JiIUlDmKZ2ow7GmmDabic8igHnEDYD6sI7OFYnCJhRdgVEHN-_4KUk2YsAVl5XUr6blJKMuYDPeMyNreGTXU7foE4AT-93FwlyTyFzQGddrDv' +
     'c6kkQr7mgJNTtgg87DdYbVGbEtIetyVfvwEF0rU8JH2N-j36XIebo33FU3-gJ5Y5S69EHPqQ37R9H4d8WUrHO-4QzJQih3Yaea820XBplJeo0' +
     'DO3hQoVtPD42j0p3aIy10cnW2g')
+
   store.stateModel.tombstone.businessId = 'FM1234567'
 
   beforeEach(async () => {
@@ -155,6 +157,7 @@ describe('Change component', () => {
     localVue.use(VueRouter)
     const router = mockRouter.mock()
     await router.push({ name: 'change' })
+
     wrapper = shallowMount(Change, { localVue,
       router,
       vuetify,
@@ -183,11 +186,17 @@ describe('Change component', () => {
     wrapper.destroy()
   })
 
-  it('renders Change view business information page', () => {
+  it('renders Change view and sub-components - edit mode', () => {
     expect(wrapper.findComponent(Change).exists()).toBe(true)
+    expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true)
 
     // Business information page components
-    expect(wrapper.findComponent(YourCompany).exists()).toBe(true)
+    expect(wrapper.findComponent(EntityName).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessType).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessStartDate).exists()).toBe(true)
+    expect(wrapper.findComponent(NatureOfBusiness).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
     expect(wrapper.findComponent(PeopleAndRoles).exists()).toBe(true)
 
     // Review and confirm page components
@@ -197,8 +206,10 @@ describe('Change component', () => {
     expect(wrapper.findComponent(CertifySection).exists()).toBe(false)
   })
 
-  it('renders Change view review and confirm page', async () => {
+  it('renders Change view and sub-components - summary mode', async () => {
     expect(wrapper.findComponent(Change).exists()).toBe(true)
+
+    // change to summary mode
     store.stateModel.summaryMode = true
     wrapper.vm.showFee = true
     await Vue.nextTick()
@@ -210,9 +221,15 @@ describe('Change component', () => {
     expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
 
     // Business information page components
-    expect(wrapper.findComponent(YourCompany).exists()).toBe(false)
+    expect(wrapper.findComponent(EntityName).exists()).toBe(false)
+    expect(wrapper.findComponent(BusinessType).exists()).toBe(false)
+    expect(wrapper.findComponent(BusinessStartDate).exists()).toBe(false)
+    expect(wrapper.findComponent(NatureOfBusiness).exists()).toBe(false)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(false)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(false)
     expect(wrapper.findComponent(PeopleAndRoles).exists()).toBe(false)
 
+    // cleanup
     store.stateModel.summaryMode = false
     wrapper.vm.showFee = false
   })

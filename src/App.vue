@@ -1,5 +1,8 @@
 <template>
-  <v-app class="app-container" id="app">
+  <v-app
+    id="app"
+    class="app-container"
+  >
     <!-- Dialogs -->
     <ConfirmDialogShared
       ref="confirm"
@@ -72,10 +75,19 @@
 
     <!-- Initial Page Load Transition -->
     <transition name="fade">
-      <div class="loading-container" v-show="!haveData && !isErrorDialog">
+      <div
+        v-show="!haveData && !isErrorDialog"
+        class="loading-container"
+      >
         <div class="loading__content">
-          <v-progress-circular color="primary" size="50" indeterminate />
-          <div class="loading-msg">Loading</div>
+          <v-progress-circular
+            color="primary"
+            size="50"
+            indeterminate
+          />
+          <div class="loading-msg">
+            Loading
+          </div>
         </div>
       </div>
     </transition>
@@ -84,10 +96,15 @@
 
     <!-- Alert banner -->
     <v-alert
-      tile dense
+      v-if="bannerText"
+      tile
+      dense
       type="warning"
-      v-if="bannerText">
-      <div v-html="bannerText" class="mb-0 text-center colour-dk-text"></div>
+    >
+      <div
+        class="mb-0 text-center colour-dk-text"
+        v-html="bannerText"
+      />
     </v-alert>
 
     <div class="app-body">
@@ -95,7 +112,7 @@
         <BreadcrumbShared :breadcrumbs="breadcrumbs" />
         <EntityInfo />
         <router-view
-          :appReady=appReady
+          :appReady="appReady"
           :isSummaryMode="isSummaryMode"
           @fetchError="fetchErrorDialog = true"
           @haveData="haveData = true"
@@ -103,7 +120,7 @@
       </main>
     </div>
 
-    <SbcFooter :aboutText=aboutText />
+    <SbcFooter :aboutText="aboutText" />
   </v-app>
 </template>
 
@@ -122,7 +139,7 @@ import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
-import { FilingDataIF, ActionBindingIF, ConfirmDialogType } from '@/interfaces/'
+import { ActionBindingIF, ConfirmDialogType } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { RouteNames } from '@/enums/'
@@ -155,9 +172,9 @@ export default class App extends Vue {
 
   // Global getters
   @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentJsDate!: Date
-  @Getter(useStore) getFilingData!: FilingDataIF[]
   @Getter(useStore) getFilingId!: number
   @Getter(useStore) getOrgInfo!: any
   @Getter(useStore) getUserEmail!: string
@@ -168,7 +185,6 @@ export default class App extends Vue {
   @Getter(useStore) getUserUsername!: string
   @Getter(useStore) haveUnsavedChanges!: boolean
   @Getter(useStore) isBusySaving!: boolean
-  @Getter(useStore) isConflictingLegalType!: boolean
   @Getter(useStore) isCorrectionEditing!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
   @Getter(useStore) isRoleStaff!: boolean
@@ -217,6 +233,19 @@ export default class App extends Vue {
 
   /** The Update Current JS Date timer id. */
   private updateCurrentJsDateId = 0
+
+  /** The entity title. */
+  get entityTitle (): string {
+    switch (this.$route.name) {
+      case RouteNames.ALTERATION: return 'Company Information'
+      case RouteNames.CHANGE: return 'Business Information'
+      case RouteNames.CONVERSION: return 'Record Conversion'
+      case RouteNames.CORRECTION: return 'Register Correction'
+      case RouteNames.RESTORATION_EXTENSION: return 'Limited Restoration Extension'
+      case RouteNames.RESTORATION_CONVERSION: return 'Conversion to Full Restoration'
+    }
+    return 'Unknown Filing' // should never happen
+  }
 
   /** The route breadcrumbs list. */
   get breadcrumbs (): Array<BreadcrumbIF> {
@@ -483,7 +512,7 @@ export default class App extends Vue {
   }
 
   /** Called to navigate to dashboard. */
-  private async goToDashboard (force = false): Promise<void> {
+  protected async goToDashboard (force = false): Promise<void> {
     const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL') + this.getBusinessId
 
     // check if there are no data changes

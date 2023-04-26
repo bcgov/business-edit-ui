@@ -1,6 +1,9 @@
 <template>
   <ViewWrapper>
-    <section class="pb-10" id="special-resolution-view">
+    <section
+      id="special-resolution-view"
+      class="pb-10"
+    >
       <!-- Company Information page-->
       <v-slide-x-transition hide-on-leave>
         <div v-if="!isSummaryMode">
@@ -13,7 +16,16 @@
             Necessary fees will be applied as updates are made.
           </section>
 
-          <YourCompany class="mt-10" />
+          <YourCompanyWrapper class="mt-10">
+            <div>
+              <EntityName />
+              <BusinessType />
+            </div>
+            <AssociationType />
+            <OfficeAddresses />
+            <BusinessContactInfo />
+            <FolioInformation />
+          </YourCompanyWrapper>
 
           <CurrentDirectors class="mt-10" />
 
@@ -82,7 +94,6 @@
               @haveChanges="onStaffPaymentChanges()"
             />
           </template>
-
         </div>
       </v-slide-x-reverse-transition>
 
@@ -100,9 +111,9 @@
           </section>
 
           <v-btn
+            id="done-button"
             large
             color="primary"
-            id="done-button"
             class="mt-8"
             @click="$root.$emit('go-to-dashboard')"
           >
@@ -115,15 +126,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { SpecialResolutionSummary, CreateSpecialResolution } from '@/components/SpecialResolution'
-import { CertifySection, CurrentDirectors, DocumentsDelivery, StaffPayment, TransactionalFolioNumber,
-  YourCompany, CompletingParty } from '@/components/common/'
+import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CurrentDirectors,
+  DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, StaffPayment, TransactionalFolioNumber,
+  YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, CertifyIF, EffectiveDateTimeIF, EntitySnapshotIF, FilingDataIF,
+  ResourceIF } from '@/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -135,40 +149,54 @@ import Memorandum from '@/components/common/Memorandum.vue'
 
 @Component({
   components: {
-    ViewWrapper,
-    SpecialResolutionSummary,
+    AssociationType,
+    BusinessContactInfo,
+    BusinessType,
     CertifySection,
+    CompletingParty,
+    CreateSpecialResolution,
     CurrentDirectors,
     DocumentsDelivery,
+    EntityName,
+    FolioInformation,
+    OfficeAddresses,
+    SpecialResolutionSummary,
     StaffPayment,
     TransactionalFolioNumber,
     YourCompany,
     CreateSpecialResolution,
     CompletingParty,
     Rules,
-    Memorandum
-  }
+    Memorandum,
+    ViewWrapper,
+    YourCompanyWrapper
+  },
+  mixins: [CommonMixin, FeeMixin, FilingTemplateMixin]
 })
-export default class SpecialResolution extends Mixins(
-  CommonMixin,
-  FeeMixin,
-  FilingTemplateMixin
-) {
+export default class SpecialResolution extends Vue {
   // Global getters
-  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getCertifyState!: CertifyIF
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
+  @Getter(useStore) getFilingData!: FilingDataIF[]
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) isSummaryMode!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
-  @Getter(useStore) isPremiumAccount!: boolean
-  @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) showFeeSummary!: boolean
+  @Getter(useStore) hasAssociationTypeChanged!: boolean
+  @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) isCoop!: boolean
+  @Getter(useStore) isPremiumAccount!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
-  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setCertifyState!: ActionBindingIF
   @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action(useStore) setFilingData!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF
 
   /** Whether App is ready. */
@@ -269,6 +297,7 @@ export default class SpecialResolution extends Mixins(
         })
       }
       filingData.forEach(fd => {
+        // FUTURE: verify type of fd and fix following type error accordingly
         fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
       })
       this.setFilingData(filingData)

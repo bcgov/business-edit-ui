@@ -1,7 +1,7 @@
 <template>
   <section id="detail-section">
     <header>
-      <h2>{{sectionNumber}} Detail</h2>
+      <h2>{{ sectionNumber }} Detail</h2>
     </header>
 
     <div class="py-4">
@@ -9,13 +9,22 @@
     </div>
 
     <div :class="{ 'invalid-section': invalidSection }">
-      <v-card flat class="detail-card">
+      <v-card
+        flat
+        class="detail-card"
+      >
         <v-row no-gutters>
-          <v-col cols="2" xs="3">
+          <v-col
+            cols="3"
+            sm="2"
+          >
             <label><strong>Detail</strong></label>
           </v-col>
-          <v-col cols="10" xs="9">
-            <label><strong>{{defaultCorrectionDetailComment}}</strong></label>
+          <v-col
+            cols="10"
+            sm="9"
+          >
+            <label><strong>{{ defaultCorrectionDetailComment }}</strong></label>
             <div class="pt-2">
               <DetailCommentShared
                 v-model="comment"
@@ -23,7 +32,7 @@
                 :textAreaStyle="'filled'"
                 :maxLength="maxLength"
                 :rowCount="2"
-                @valid="onValidityChange($event)"
+                @valid="setDetailValidity($event)"
               />
             </div>
           </v-col>
@@ -54,7 +63,7 @@ export default class Detail extends Mixins(FilingTemplateMixin) {
 
   @Action(useStore) setDetailValidity!: ActionBindingIF
 
-  protected comment: string = null
+  protected comment = null as string
 
   get maxLength (): number {
     // = (max size in db) - (default comment length) - (Carriage Return)
@@ -68,10 +77,6 @@ export default class Detail extends Mixins(FilingTemplateMixin) {
   /** True if invalid class should be set for certify section container. */
   get invalidSection (): boolean {
     return (this.validate && !this.isValid)
-  }
-
-  protected onValidityChange (valid: boolean): void {
-    this.setDetailValidity(valid)
   }
 
   @Watch('comment')

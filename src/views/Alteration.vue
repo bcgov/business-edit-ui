@@ -1,6 +1,9 @@
 <template>
   <ViewWrapper>
-    <section class="pb-10" id="alteration-view">
+    <section
+      id="alteration-view"
+      class="pb-10"
+    >
       <!-- Company Information page-->
       <v-slide-x-transition hide-on-leave>
         <div v-if="!isSummaryMode">
@@ -13,7 +16,17 @@
             applied as updates are made.
           </section>
 
-          <YourCompany class="mt-10" />
+          <YourCompanyWrapper class="mt-10">
+            <div>
+              <EntityName />
+              <BusinessType />
+              <NameTranslation />
+            </div>
+            <RecognitionDateTime />
+            <OfficeAddresses />
+            <BusinessContactInfo />
+            <FolioInformation />
+          </YourCompanyWrapper>
 
           <CurrentDirectors class="mt-10" />
 
@@ -33,8 +46,8 @@
           <section class="mt-6">
             <p id="intro-text">
               Review and certify the changes you are about to make to your company. Certain changes require
-              an Alteration Notice which will incur a {{filingFeesPrice}} fee. Choosing an alteration date
-              and time in the future will incur an additional {{futureEffectiveFeesPrice}} fee.
+              an Alteration Notice which will incur a {{ filingFeesPrice }} fee. Choosing an alteration date
+              and time in the future will incur an additional {{ futureEffectiveFeesPrice }} fee.
             </p>
           </section>
 
@@ -96,9 +109,9 @@
           </section>
 
           <v-btn
+            id="done-button"
             large
             color="primary"
-            id="done-button"
             class="mt-8"
             @click="$root.$emit('go-to-dashboard')"
           >
@@ -111,62 +124,76 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
-import { CertifySection, CourtOrderPoa, CurrentDirectors, DocumentsDelivery, ShareStructures, StaffPayment,
-  TransactionalFolioNumber, YourCompany } from '@/components/common/'
+import { BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, CurrentDirectors,
+  DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
+  ShareStructures, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper }
+  from '@/components/common/'
+import { NameTranslation } from '@/components/common/YourCompany/NameTranslations/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, EntitySnapshotIF, FlagsReviewCertifyIF, ResourceIF }
-  from '@/interfaces/'
+import { ActionBindingIF, CertifyIF, EffectiveDateTimeIF, EntitySnapshotIF, FilingDataIF,
+  ResourceIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
   from '@/resources/Alteration/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
-
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
 
 @Component({
   components: {
-    ViewWrapper,
     AlterationSummary,
     Articles,
+    BusinessContactInfo,
+    BusinessType,
     CertifySection,
     CourtOrderPoa,
     CurrentDirectors,
     DocumentsDelivery,
+    EntityName,
+    FolioInformation,
+    NameTranslation,
+    OfficeAddresses,
+    RecognitionDateTime,
     ShareStructures,
     StaffPayment,
     TransactionalFolioNumber,
-    YourCompany
-  }
+    ViewWrapper,
+    YourCompanyWrapper
+  },
+  mixins: [CommonMixin, FeeMixin, FilingTemplateMixin]
 })
-export default class Alteration extends Mixins(
-  CommonMixin,
-  FeeMixin,
-  FilingTemplateMixin
-) {
+export default class Alteration extends Vue {
   // Global getters
-  @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
+  @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getCertifyState!: CertifyIF
+  @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
+  @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getFilingData!: FilingDataIF[]
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) isSummaryMode!: boolean
-  @Getter(useStore) isRoleStaff!: boolean
-  @Getter(useStore) isPremiumAccount!: boolean
-  @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) showFeeSummary!: boolean
-  @Getter(useStore) isBcCompany!: boolean
-  @Getter(useStore) isBenefitCompany!: boolean
   @Getter(useStore) isBcCcc!: boolean
+  @Getter(useStore) isBcCompany!: boolean
   @Getter(useStore) isBcUlcCompany!: boolean
+  @Getter(useStore) isBenefitCompany!: boolean
+  @Getter(useStore) isPremiumAccount!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
-  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setCertifyState!: ActionBindingIF
   @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action(useStore) setFilingData!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF
 
   /** Whether App is ready. */

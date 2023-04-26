@@ -31,31 +31,39 @@
       }"
     >
       <!-- List Headers -->
-      <v-row v-if="showHeaders" class="people-roles-list-header list-item__subtitle pt-0 pb-4" no-gutters>
+      <v-row
+        v-if="showHeaders"
+        class="people-roles-list-header list-item__subtitle pt-0 pb-4"
+        no-gutters
+      >
         <v-col
           v-for="(title, index) in tableHeaders"
           :key="index"
-          cols="12" sm="3"
+          cols="12"
+          sm="3"
           :class="{'summary-cols': isSummaryView}"
         >
           <span>{{ title }}</span>
         </v-col>
         <!-- Spacer Column for Actions -->
-        <v-col class="actions-width"></v-col>
+        <v-col class="actions-width" />
       </v-row>
 
       <!-- List Content -->
       <template v-for="(orgPerson, index) in currentPeopleAndRoles">
         <v-row
           v-if="!(wasReplaced(orgPerson) && wasRemoved(orgPerson))"
+          :key="index"
           class="people-roles-content section-container"
           :class="{ 'summary-view': isSummaryView, }"
-          :key="index"
           no-gutters
         >
           <!-- conditionally render edit component instead of table row -->
           <v-expand-transition>
-            <div id="people-roles-edit" v-if="renderOrgPersonForm && (index === activeIndex)">
+            <div
+              v-if="renderOrgPersonForm && (index === activeIndex)"
+              id="people-roles-edit"
+            >
               <OrgPerson
                 :currentOrgPerson="currentOrgPerson"
                 :activeIndex="activeIndex"
@@ -69,40 +77,84 @@
           <!-- normal table row -->
           <template v-if="!renderOrgPersonForm || (index != activeIndex)">
             <!-- Name + Badge -->
-            <v-col class="pr-2" cols="12" sm="3">
+            <v-col
+              class="pr-2"
+              cols="12"
+              sm="3"
+            >
               <v-row no-gutters>
-                <v-col cols="1" class="mt-n1 ml-n1 mr-3 badges" :class="{ 'removed': wasRemoved(orgPerson)}">
-                  <v-icon color="gray9" v-if="isPartyTypePerson(orgPerson)">mdi-account</v-icon>
-                  <v-icon color="gray9" v-if="isPartyTypeOrg(orgPerson)">mdi-domain</v-icon>
+                <v-col
+                  cols="1"
+                  class="mt-n1 ml-n1 mr-3 badges"
+                  :class="{ 'removed': wasRemoved(orgPerson)}"
+                >
+                  <v-icon
+                    v-if="isPartyTypePerson(orgPerson)"
+                    color="gray9"
+                  >
+                    mdi-account
+                  </v-icon>
+                  <v-icon
+                    v-if="isPartyTypeOrg(orgPerson)"
+                    color="gray9"
+                  >
+                    mdi-domain
+                  </v-icon>
                 </v-col>
                 <v-col class="overflow-hidden">
-                  <p class="people-roles-title mb-1" :class="{ 'removed': wasRemoved(orgPerson)}">
+                  <p
+                    class="people-roles-title mb-1"
+                    :class="{ 'removed': wasRemoved(orgPerson)}"
+                  >
                     {{ formatName(orgPerson) }}
                   </p>
-                  <p v-if="showEmailUnderName"
+                  <p
+                    v-if="showEmailUnderName"
                     class="info-text mb-1 people-roles-email"
-                    :class="{ 'removed': wasRemoved(orgPerson)}">
+                    :class="{ 'removed': wasRemoved(orgPerson)}"
+                  >
                     {{ orgPerson.officer.email }}
                   </p>
                   <p
                     v-if="orgPerson.officer.identifier"
                     class="info-text mb-1 people-roles-inc-number"
-                    :class="{ 'removed': wasRemoved(orgPerson)}">
-                    Incorporation Number: {{orgPerson.officer.identifier}}
+                    :class="{ 'removed': wasRemoved(orgPerson)}"
+                  >
+                    Incorporation Number: {{ orgPerson.officer.identifier }}
                   </p>
 
                   <div v-if="!isSummaryView && orgPerson.actions">
                     <!-- show DELETED item as black on light gray -->
-                    <v-chip v-if="wasRemoved(orgPerson)" x-small label color="grey lighten-2">
+                    <v-chip
+                      v-if="wasRemoved(orgPerson)"
+                      x-small
+                      label
+                      color="grey lighten-2"
+                    >
                       REMOVED
                     </v-chip>
                     <!-- show REPLACED item separately (since item also has ADDED action) -->
-                    <v-chip v-else-if="wasReplaced(orgPerson)" x-small label color="primary" text-color="white">
+                    <v-chip
+                      v-else-if="wasReplaced(orgPerson)"
+                      x-small
+                      label
+                      color="primary"
+                      text-color="white"
+                    >
                       CHANGED
                     </v-chip>
                     <!-- all other states -->
-                    <template v-else v-for="(action, i) in orgPerson.actions">
-                      <v-chip x-small label color="primary" text-color="white" :key="`action-chip-${i}`">
+                    <template
+                      v-for="(action, i) in orgPerson.actions"
+                      v-else
+                    >
+                      <v-chip
+                        :key="`action-chip-${i}`"
+                        x-small
+                        label
+                        color="primary"
+                        text-color="white"
+                      >
                         {{ action }}
                       </v-chip>
                     </template>
@@ -112,12 +164,24 @@
             </v-col>
 
             <!-- Mailing Address -->
-            <v-col cols="12" :sm="isSummaryView ? 4 : 3" :class="{ 'removed': wasRemoved(orgPerson)}">
-              <MailingAddress class="peoples-roles-mailing-address" :address="orgPerson.mailingAddress" />
+            <v-col
+              cols="12"
+              :sm="isSummaryView ? 4 : 3"
+              :class="{ 'removed': wasRemoved(orgPerson)}"
+            >
+              <MailingAddress
+                class="peoples-roles-mailing-address"
+                :address="orgPerson.mailingAddress"
+              />
             </v-col>
 
             <!-- Delivery Address -->
-            <v-col cols="12" sm="3" :class="{ 'removed': wasRemoved(orgPerson)}" v-if="showDeliveryAddressColumn">
+            <v-col
+              v-if="showDeliveryAddressColumn"
+              cols="12"
+              sm="3"
+              :class="{ 'removed': wasRemoved(orgPerson)}"
+            >
               <template
                 v-if="hasRoleDirector(orgPerson) || hasRoleProprietor(orgPerson) || hasRolePartner(orgPerson)"
               >
@@ -125,37 +189,64 @@
                   <span class="peoples-roles-delivery-address info-text">Same as Mailing Address</span>
                 </template>
                 <template v-else>
-                  <DeliveryAddress class="peoples-roles-delivery-address" :address="orgPerson.deliveryAddress" />
+                  <DeliveryAddress
+                    class="peoples-roles-delivery-address"
+                    :address="orgPerson.deliveryAddress"
+                  />
                 </template>
               </template>
             </v-col>
 
-            <v-col cols="12" sm="3" :class="{ 'removed': wasRemoved(orgPerson)}" v-if="showEmailColumn">
+            <!-- Email Address -->
+            <v-col
+              v-if="showEmailColumn"
+              cols="12"
+              sm="3"
+              :class="{ 'removed': wasRemoved(orgPerson)}"
+            >
               <p>{{ orgPerson.officer.email }}</p>
             </v-col>
 
             <!-- Roles -->
-            <v-col cols="12" sm="2" :class="{ 'removed': wasRemoved(orgPerson)}" v-if="showRolesColumn">
+            <v-col
+              v-if="showRolesColumn"
+              cols="12"
+              sm="2"
+              :class="{ 'removed': wasRemoved(orgPerson)}"
+            >
               <!-- Warning if orgPerson has no roles -->
               <div v-if="orgPerson.roles.length > 0">
-                <v-col v-for="(role, index) in orgPerson.roles" :key="index" class="col-roles">
+                <v-col
+                  v-for="(role, index) in orgPerson.roles"
+                  :key="index"
+                  class="col-roles"
+                >
                   <span class="info-text small-text break-spaces pr-2">{{ role.roleType }}</span>
                 </v-col>
               </div>
               <div v-else>
-                <v-icon color="red darken-3">mdi-alert</v-icon>
+                <v-icon color="red darken-3">
+                  mdi-alert
+                </v-icon>
                 <span class="warning-text small-text">Missing Role</span>
               </div>
             </v-col>
 
             <!-- Actions Buttons -->
-            <v-col v-if="!isSummaryView" class="actions">
+            <v-col
+              v-if="!isSummaryView"
+              class="actions"
+            >
               <!-- org-person that was replaced: -->
-              <div v-if="wasReplaced(orgPerson)" class="actions pr-5">
+              <div
+                v-if="wasReplaced(orgPerson)"
+                class="actions pr-5"
+              >
                 <span class="undo-action">
                   <v-btn
-                    text color="primary"
                     :id="`officer-${index}-undo-btn`"
+                    text
+                    color="primary"
                     :disabled="renderOrgPersonForm"
                     @click="emitUndo(index); dropdown[index]=false"
                   >
@@ -166,11 +257,15 @@
               </div>
 
               <!-- org-person that was added: -->
-              <div v-else-if="wasAdded(orgPerson)" class="actions">
+              <div
+                v-else-if="wasAdded(orgPerson)"
+                class="actions"
+              >
                 <span class="edit-action">
                   <v-btn
-                    text color="primary"
                     :id="`officer-${index}-edit-btn`"
+                    text
+                    color="primary"
                     :disabled="renderOrgPersonForm"
                     @click="emitInitEdit(index)"
                   >
@@ -180,20 +275,27 @@
                 </span>
 
                 <!-- More Actions Menu (Remove action) -->
-                <span class="dropdown-action mr-4" :class="`more-actions-${index}`">
+                <span
+                  class="dropdown-action mr-4"
+                  :class="`more-actions-${index}`"
+                >
                   <v-menu
-                    offset-y left nudge-bottom="4"
                     v-model="dropdown[index]"
+                    offset-y
+                    left
+                    nudge-bottom="4"
                     :attach="`#list-people-roles .more-actions-${index}`"
                   >
-                    <template v-slot:activator="{ on }">
+                    <template #activator="{ on }">
                       <v-btn
-                        text small color="primary"
+                        text
+                        small
+                        color="primary"
                         class="more-actions-btn"
-                        v-on="on"
                         :disabled="renderOrgPersonForm"
+                        v-on="on"
                       >
-                        <v-icon>{{dropdown[index] ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                        <v-icon>{{ dropdown[index] ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                       </v-btn>
                     </template>
 
@@ -213,11 +315,15 @@
               </div>
 
               <!-- org-person that was removed: -->
-              <div v-else-if="wasRemoved(orgPerson)" class="actions pr-5">
+              <div
+                v-else-if="wasRemoved(orgPerson)"
+                class="actions pr-5"
+              >
                 <span class="undo-action">
                   <v-btn
-                    text color="primary"
                     :id="`officer-${index}-undo-btn`"
+                    text
+                    color="primary"
                     :disabled="renderOrgPersonForm"
                     @click="emitUndo(index); dropdown[index]=false"
                   >
@@ -228,11 +334,15 @@
               </div>
 
               <!-- org-person that was edited/corrected/changed: -->
-              <div v-else-if="wasEdited(orgPerson) || wasCorrected(orgPerson) || wasChanged(orgPerson)" class="actions">
+              <div
+                v-else-if="wasEdited(orgPerson) || wasCorrected(orgPerson) || wasChanged(orgPerson)"
+                class="actions"
+              >
                 <span class="undo-action">
                   <v-btn
-                    text color="primary"
                     :id="`officer-${index}-undo-btn`"
+                    text
+                    color="primary"
                     :disabled="renderOrgPersonForm"
                     @click="emitUndo(index); dropdown[index]=false"
                   >
@@ -242,20 +352,27 @@
                 </span>
 
                 <!-- More Actions Menu (Change + Remove actions) -->
-                <span class="dropdown-action mr-4" :class="`more-actions-${index}`">
+                <span
+                  class="dropdown-action mr-4"
+                  :class="`more-actions-${index}`"
+                >
                   <v-menu
-                    offset-y left nudge-bottom="4"
                     v-model="dropdown[index]"
+                    offset-y
+                    left
+                    nudge-bottom="4"
                     :attach="`#list-people-roles .more-actions-${index}`"
                   >
-                    <template v-slot:activator="{ on }">
+                    <template #activator="{ on }">
                       <v-btn
-                        text small color="primary"
+                        text
+                        small
+                        color="primary"
                         class="more-actions-btn"
-                        v-on="on"
                         :disabled="renderOrgPersonForm"
+                        v-on="on"
                       >
-                        <v-icon>{{dropdown[index] ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                        <v-icon>{{ dropdown[index] ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                       </v-btn>
                     </template>
 
@@ -286,11 +403,18 @@
               </div>
 
               <!-- org-person we haven't touched: -->
-              <div v-else class="actions mr-4">
-                <span class="edit-action" v-if="!hideChangeButtonForSoleProps">
+              <div
+                v-else
+                class="actions mr-4"
+              >
+                <span
+                  v-if="!hideChangeButtonForSoleProps"
+                  class="edit-action"
+                >
                   <v-btn
-                    text color="primary"
                     :id="`officer-${index}-edit-btn`"
+                    text
+                    color="primary"
                     :disabled="renderOrgPersonForm"
                     @click="emitInitEdit(index)"
                   >
@@ -300,20 +424,28 @@
                 </span>
 
                 <!-- More Actions Menu (Remove action) -->
-                <span v-if="canRemove(orgPerson)" class="dropdown-action" :class="`more-actions-${index}`">
+                <span
+                  v-if="canRemove(orgPerson)"
+                  class="dropdown-action"
+                  :class="`more-actions-${index}`"
+                >
                   <v-menu
-                    offset-y left nudge-bottom="4"
                     v-model="dropdown[index]"
+                    offset-y
+                    left
+                    nudge-bottom="4"
                     :attach="`#list-people-roles .more-actions-${index}`"
                   >
-                    <template v-slot:activator="{ on }">
+                    <template #activator="{ on }">
                       <v-btn
-                        text small color="primary"
+                        text
+                        small
+                        color="primary"
                         class="more-actions-btn"
-                        v-on="on"
                         :disabled="renderOrgPersonForm"
+                        v-on="on"
                       >
-                        <v-icon>{{dropdown[index] ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                        <v-icon>{{ dropdown[index] ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                       </v-btn>
                     </template>
 
@@ -332,30 +464,42 @@
                 </span>
 
                 <!-- More Actions Menu (Replace action) -->
-                <span v-if="canReplace(orgPerson)" class="dropdown-action" :class="`more-actions-${index}`">
+                <span
+                  v-if="canReplace(orgPerson)"
+                  class="dropdown-action"
+                  :class="`more-actions-${index}`"
+                >
                   <v-menu
-                    offset-y left nudge-bottom="4"
                     v-model="dropdown[index]"
+                    offset-y
+                    left
+                    nudge-bottom="4"
                     :attach="`#list-people-roles .more-actions-${index}`"
                   >
-                    <template v-slot:activator="{ on }">
+                    <template #activator="{ on }">
                       <v-btn
-                        text small color="primary"
+                        text
+                        small
+                        color="primary"
                         class="more-actions-btn"
-                        v-on="on"
                         :disabled="renderOrgPersonForm"
+                        v-on="on"
                       >
-                        <v-icon>{{dropdown[index] ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                        <v-icon>{{ dropdown[index] ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                       </v-btn>
                     </template>
 
                     <v-list>
-                      <v-list-item v-if="canReplace(orgPerson)"
+                      <v-list-item
+                        v-if="canReplace(orgPerson)"
                         :id="`officer-${index}-replace-btn`"
                         @click="emitReplace(index); dropdown[index]=false"
                       >
                         <v-list-item-subtitle>
-                          <v-icon size="24" class="my-n1">mdi-swap-horizontal</v-icon>
+                          <v-icon
+                            size="24"
+                            class="my-n1"
+                          >mdi-swap-horizontal</v-icon>
                           <span class="ml-1">Replace</span>
                         </v-list-item-subtitle>
                       </v-list-item>
@@ -364,7 +508,10 @@
                 </span>
               </div>
             </v-col>
-            <v-col v-else cols="1"></v-col>
+            <v-col
+              v-else
+              cols="1"
+            />
           </template>
         </v-row>
       </template>
@@ -426,8 +573,8 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   @Getter(useStore) isFirmChangeFiling!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
   @Getter(useStore) isFirmCorrectionFiling!: boolean
-  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
-  @Getter(useStore) isLimitedConversionRestorationFiling!: boolean
+  @Getter(useStore) isLimitedRestorationExtension!: boolean
+  @Getter(useStore) isLimitedRestorationToFull!: boolean
   @Getter(useStore) isRoleStaff!: boolean
 
   /** V-model for dropdown menus. */
@@ -487,7 +634,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
       // cannot remove proprietor/partner
       return false
     }
-    if (this.isLimitedConversionRestorationFiling || this.isLimitedExtendRestorationFiling) {
+    if (this.isLimitedRestorationToFull || this.isLimitedRestorationExtension) {
       return true
     }
     return false // should never happen

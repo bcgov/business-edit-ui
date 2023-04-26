@@ -1,29 +1,29 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
-import mockRouter from './MockRouter'
 import { AuthServices, LegalServices, PayServices } from '@/services/'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import LimitedRestorationExtension from '@/views/LimitedRestorationExtension.vue'
-import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
+import ViewWrapper from '@/components/ViewWrapper.vue'
 import CertifySection from '@/components/common/CertifySection.vue'
 import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAndRoles.vue'
 import DocumentsDelivery from '@/components/common/DocumentsDelivery.vue'
-import PeopleAndRoles from '@/components/common/PeopleAndRoles/PeopleAndRoles.vue'
-import StaffPayment from '@/components/common/StaffPayment.vue'
-import YourCompany from '@/components/common/YourCompany/YourCompany.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
+import StaffPayment from '@/components/common/StaffPayment.vue'
+import BusinessContactInfo from '@/components/common/YourCompany/BusinessContactInfo.vue'
 import { BenRestorationResource } from '@/resources/LimitedRestorationExtension/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
+import { EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
+  YourCompanyWrapper } from '@/components/common'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
-const store = useStore()
+const store = useStore() // eslint-disable-line @typescript-eslint/no-unused-vars
+
 // mock data
 const filing = {
   header: {
@@ -38,6 +38,56 @@ const filing = {
   restoration: {
     expiry: '2023-02-28',
     type: 'limitedRestorationExtension'
+  }
+}
+const stateFiling = {
+  header: {
+    name: 'restoration',
+    status: 'COMPLETED'
+  },
+  business: {
+    identifier: 'BC1234567',
+    legalName: '1234567 B.C. LTD.',
+    legalType: 'BEN'
+  },
+  restoration: {
+    expiry: '2023-01-31',
+    type: 'limitedRestoration',
+    parties: [
+      {
+        deliveryAddress: {
+          addressCity: 'Victoria',
+          addressCountry: 'CA',
+          addressRegion: 'BC',
+          deliveryInstructions: null,
+          id: 55555,
+          postalCode: 'V5V 5V5',
+          streetAddress: '555 Main Street',
+          streetAddressAdditional: null
+        },
+        mailingAddress: {
+          addressCity: 'Victoria',
+          addressCountry: 'CA',
+          addressRegion: 'BC',
+          deliveryInstructions: null,
+          id: 66666,
+          postalCode: 'V6V 6V6',
+          streetAddress: '666 Main Street',
+          streetAddressAdditional: null
+        },
+        officer: {
+          email: 'test@test.com',
+          firstName: 'SEVERIN',
+          lastName: 'BEAUVAIS',
+          partyType: 'person'
+        },
+        roles: [
+          {
+            roleType: 'Applicant'
+          }
+        ]
+      }
+    ]
   }
 }
 const businessInfo = {
@@ -138,68 +188,32 @@ const directors = {
     }
   ]
 }
-const stateFiling = {
-  header: {
-    name: 'restoration',
-    status: 'COMPLETED'
-  },
-  business: {
-    identifier: 'BC1234567',
-    legalName: '1234567 B.C. LTD.',
-    legalType: 'BEN'
-  },
-  restoration: {
-    expiry: '2023-01-31',
-    type: 'limitedRestoration',
-    parties: [
-      {
-        deliveryAddress: {
-          addressCity: 'Victoria',
-          addressCountry: 'CA',
-          addressRegion: 'BC',
-          deliveryInstructions: null,
-          id: 55555,
-          postalCode: 'V5V 5V5',
-          streetAddress: '555 Main Street',
-          streetAddressAdditional: null
-        },
-        mailingAddress: {
-          addressCity: 'Victoria',
-          addressCountry: 'CA',
-          addressRegion: 'BC',
-          deliveryInstructions: null,
-          id: 66666,
-          postalCode: 'V6V 6V6',
-          streetAddress: '666 Main Street',
-          streetAddressAdditional: null
-        },
-        officer: {},
-        role: 'applicant'
-      }
-    ]
-  }
-}
 const filingFees = {
   filingFees: 20.0
+}
+const newAddress = {
+  mailingAddress: { deliveryInstructions: 'Test' }
 }
 
 // init session storage variables
 sessionStorage.setItem('PAY_API_URL', 'https://pay.api.url/')
 sessionStorage.setItem('KEYCLOAK_TOKEN', 'keycloak-token') // anything non-falsy
 
-describe('Restoration component - edit page', () => {
+describe('Limited Restoration Extension component - edit page', () => {
   const { assign } = window.location
   let wrapper: any
 
+  setActivePinia(createPinia())
+  const store = useStore()
+
   const entitySnapshot = {
-    businessInfo: {
-      legalName: '1234567 B.C. LTD.',
-      legalType: 'BEN',
-      stateFiling: stateFiling
-    }
+    businessInfo: businessInfo,
+    addresses: addresses
   }
 
   beforeAll(async () => {
+    store.resourceModel = BenRestorationResource
+
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
@@ -221,11 +235,6 @@ describe('Restoration component - edit page', () => {
       () => Promise.resolve(stateFiling))
     jest.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
       () => Promise.resolve(filingFees))
-
-    // create a Local Vue and install router on it
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-    const router = mockRouter.mock()
 
     // init store
     store.stateModel.summaryMode = false
@@ -236,14 +245,23 @@ describe('Restoration component - edit page', () => {
     store.stateModel.restoration = filing.restoration as any
     store.stateModel.entitySnapshot = entitySnapshot as any
     store.stateModel.entitySnapshot.businessInfo.stateFiling = stateFiling as any
+    store.stateModel.peopleAndRoles.orgPeople = stateFiling.restoration.parties[0] as any
     store.stateModel.businessInformation = { ...entitySnapshot.businessInfo } as any
     store.resourceModel = BenRestorationResource
 
-    await router.push({ name: 'limitedRestorationExtension', query: { 'restoration-id': '1234' } })
-    wrapper = mount(LimitedRestorationExtension, { localVue, router, vuetify })
+    wrapper = shallowMount(LimitedRestorationExtension, {
+      vuetify,
+      computed: { showFeeSummary: () => false },
+      propsData: {
+        restorationId: 1234
+      },
+      mocks: { $route: { matched: [] } }
+    })
 
     // enable filing and wait for all queries to complete
     await wrapper.setProps({ appReady: true })
+    await wrapper.vm.$nextTick()
+
     await flushPromises()
   })
 
@@ -253,48 +271,43 @@ describe('Restoration component - edit page', () => {
     wrapper.destroy()
   })
 
-  it('renders the page correctly', () => {
+  it('renders Limited Restoration Extension view and sub-components', () => {
     expect(wrapper.findComponent(LimitedRestorationExtension).exists()).toBe(true)
-    expect(wrapper.find('#limited-restoration-extension').exists()).toBe(true)
+    expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true)
     expect(wrapper.find('section header').text()).toBe('Limited Restoration Extension')
+    expect(wrapper.findComponent(YourCompanyWrapper).exists()).toBe(true)
+    expect(wrapper.findComponent(EntityName).exists()).toBe(true)
+    expect(wrapper.findComponent(NameTranslation).exists()).toBe(true)
+    expect(wrapper.findComponent(RecognitionDateTime).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
   })
 
   it('loads the entity snapshot into the store', async () => {
-    await wrapper.setProps({ appReady: true })
-    await flushPromises()
-    const state = store.stateModel
-
     // Validate business identifier
-    expect(state.tombstone.businessId).toBe('BC1234567')
+    expect(store.stateModel.tombstone.businessId).toBe('BC1234567')
 
     // Validate Business
-    expect(state.businessInformation.legalType).toBe('BEN')
-    expect(state.businessInformation.legalName).toBe('1234567 B.C. LTD.')
+    expect(store.stateModel.businessInformation.legalType).toBe('BEN')
+    expect(store.stateModel.businessInformation.legalName).toBe('1234567 B.C. LTD.')
     // Travis Semple - stateFiling is defined as a string here, not an object. should be fixed.
-    expect((state.businessInformation.stateFiling as any).restoration.type).toBe('limitedRestoration')
-    expect((state.businessInformation.stateFiling as any).restoration.parties[0].role).toBe('applicant')
-  })
-
-  it('renders the Your Company component correctly', () => {
-    expect(wrapper.findComponent(YourCompany).exists()).toBe(true)
-  })
-
-  it('renders the People And Roles component correctly', () => {
-    expect(wrapper.findComponent(PeopleAndRoles).exists()).toBe(true)
-    expect(wrapper.find('#people-and-roles').exists()).toBe(true)
+    expect((store.stateModel.businessInformation.stateFiling as any).restoration.type).toBe('limitedRestoration')
+    expect((store.stateModel.businessInformation.stateFiling as any).restoration.parties[0].roles[0].roleType)
+      .toBe('Applicant')
   })
 })
 
-describe('Restoration component - summary page (with filing changes)', () => {
+describe('Limited Restoration Extension component - summary page (with no filing changes)', () => {
   const { assign } = window.location
   let wrapper: any
 
+  setActivePinia(createPinia())
+  const store = useStore()
+
   const entitySnapshot = {
-    businessInfo: {
-      legalName: '1234567 B.C. LTD.',
-      legalType: 'BEN',
-      stateFiling: stateFiling
-    }
+    businessInfo: businessInfo,
+    addresses: addresses
   }
 
   beforeAll(async () => {
@@ -307,7 +320,7 @@ describe('Restoration component - summary page (with filing changes)', () => {
     store.stateModel.restoration = filing.restoration as any
     store.stateModel.entitySnapshot = entitySnapshot as any
     store.stateModel.entitySnapshot.businessInfo.stateFiling = stateFiling as any
-    store.stateModel.businessInformation = { ...entitySnapshot.businessInfo } as any
+    store.stateModel.peopleAndRoles.orgPeople = stateFiling.restoration.parties as any
     store.resourceModel = BenRestorationResource
 
     // mock the window.location.assign function
@@ -332,26 +345,18 @@ describe('Restoration component - summary page (with filing changes)', () => {
     jest.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
       () => Promise.resolve(filingFees))
 
-    // create a Local Vue and install router on it
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-    const router = mockRouter.mock()
-    await router.push({ name: 'limitedRestorationExtension', query: { 'restoration-id': '1234' } })
-    wrapper = mount(LimitedRestorationExtension, {
-      localVue,
-      router,
+    wrapper = shallowMount(LimitedRestorationExtension, {
       vuetify,
       computed: { showFeeSummary: () => true },
-      // FUTURE: make these components work
-      stubs: { ListPeopleAndRoles: true,
-        YourCompanySummary: true,
-        DocumentsDelivery: true,
-        CertifySection: true,
-        StaffPayment: true }
+      propsData: {
+        restorationId: 1234
+      },
+      mocks: { $route: { matched: [] } }
     })
 
     // enable filing and wait for all queries to complete
     await wrapper.setProps({ appReady: true })
+    await wrapper.vm.$nextTick()
     await flushPromises()
   })
 
@@ -361,39 +366,25 @@ describe('Restoration component - summary page (with filing changes)', () => {
     wrapper.destroy()
   })
 
-  xit('renders the page correctly', () => {
-    expect(wrapper.findComponent(LimitedRestorationExtension).exists()).toBe(true)
-    // expect(wrapper.find('section header').text()).toBe('Review and Certify')
-  })
-
-  xit('renders the ListPeopleAndRoles component correctly for Applicant', () => {
-    expect(wrapper.findComponent(ListPeopleAndRoles).exists()).toBe(true)
-  })
-
-  xit('renders the Documents Delivery component correctly', () => {
-    expect(wrapper.findComponent(DocumentsDelivery).exists()).toBe(true)
-  })
-
-  xit('renders the Certify Section component correctly', () => {
-    expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
-  })
-
-  xit('renders the Staff Payment component correctly', () => {
-    expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
+  it('Returns correct flags with Address changes', () => {
+    store.stateModel.officeAddresses = { businessOffice: newAddress } as any
+    expect(wrapper.vm.haveOfficeAddressesChanged).toBe(true)
   })
 })
 
-xdescribe('Restoration component - summary page (with no filing changes)', () => {
+describe('Limited Restoration Extension component - summary page (with filing changes)', () => {
   const { assign } = window.location
   let wrapper: any
 
-  beforeAll(async () => {
-    // init store
-    store.stateModel.summaryMode = true
-    store.stateModel.validationFlags.appValidate = false
-    store.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
-    store.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
+  setActivePinia(createPinia())
+  const store = useStore()
 
+  const entitySnapshot = {
+    businessInfo: businessInfo,
+    addresses: addresses
+  }
+
+  beforeAll(async () => {
     // mock the window.location.assign function
     delete window.location
     window.location = { assign: jest.fn() } as any
@@ -411,29 +402,36 @@ xdescribe('Restoration component - summary page (with no filing changes)', () =>
       () => Promise.resolve(nameTranslations))
     jest.spyOn((LegalServices as any), 'fetchDirectors').mockImplementation(
       () => Promise.resolve(directors))
+    jest.spyOn((LegalServices as any), 'fetchFiling').mockImplementation(
+      () => Promise.resolve(stateFiling))
     jest.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
       () => Promise.resolve(filingFees))
 
-    // create a Local Vue and install router on it
-    const localVue = createLocalVue()
-    localVue.use(VueRouter)
-    const router = mockRouter.mock()
-    await router.push({ name: 'limitedRestorationToFull', query: { 'restoration-id': '1234' } })
-    wrapper = mount(LimitedRestorationExtension, {
-      localVue,
-      router,
+    // init store
+    store.stateModel.summaryMode = true
+    store.stateModel.validationFlags.appValidate = false
+    store.stateModel.tombstone.businessId = 'BC1234567' // normally set in App.vue
+    store.stateModel.tombstone.keycloakRoles = ['staff'] // normally set in App.vue
+    store.stateModel.tombstone.filingType = FilingTypes.RESTORATION
+    store.stateModel.restoration = filing.restoration as any
+    store.stateModel.entitySnapshot = entitySnapshot as any
+    store.stateModel.entitySnapshot.businessInfo.stateFiling = stateFiling as any
+    store.stateModel.peopleAndRoles.orgPeople = stateFiling.restoration.parties as any
+    store.stateModel.businessInformation = { ...entitySnapshot.businessInfo } as any
+    store.resourceModel = BenRestorationResource
+
+    wrapper = shallowMount(LimitedRestorationExtension, {
       vuetify,
-      computed: { showFeeSummary: () => false },
-      // FUTURE: make these components work
-      stubs: { ListPeopleAndRoles: true,
-        YourCompanySummary: true,
-        DocumentsDelivery: true,
-        CertifySection: true,
-        StaffPayment: true }
+      computed: { showFeeSummary: () => true },
+      propsData: {
+        restorationId: 1234
+      },
+      mocks: { $route: { matched: [] } }
     })
 
     // enable filing and wait for all queries to complete
     await wrapper.setProps({ appReady: true })
+    await wrapper.vm.$nextTick()
     await flushPromises()
   })
 
@@ -443,10 +441,13 @@ xdescribe('Restoration component - summary page (with no filing changes)', () =>
     wrapper.destroy()
   })
 
-  it('renders the page correctly', () => {
+  it('renders the page correctly and mounted components', () => {
     expect(wrapper.findComponent(LimitedRestorationExtension).exists()).toBe(true)
     expect(wrapper.find('section header').text()).toBe('Review and Certify')
-    expect(wrapper.find('section section').text()).toContain('You have deleted all')
-    expect(wrapper.find('#done-button').exists()).toBe(true)
+    expect(wrapper.findComponent(ListPeopleAndRoles).exists()).toBe(true)
+    expect(wrapper.findComponent(YourCompanySummary).exists()).toBe(true)
+    expect(wrapper.findComponent(DocumentsDelivery).exists()).toBe(true)
+    expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
+    expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
   })
 })

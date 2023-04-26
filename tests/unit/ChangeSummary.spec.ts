@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import sinon from 'sinon'
-import { getVuexStore } from '@/store/'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import ChangeSummary from '@/components/Change/ChangeSummary.vue'
 import NatureOfBusiness from '@/components/common/YourCompany/NatureOfBusiness.vue'
 import OfficeAddresses from '@/components/common/YourCompany/OfficeAddresses.vue'
@@ -12,8 +11,6 @@ import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-
-const localVue = createLocalVue()
 const vuetify = new Vuetify({})
 
 describe('Change Summary component', () => {
@@ -67,7 +64,7 @@ describe('Change Summary component', () => {
     store.stateModel.officeAddresses = addresses
     store.stateModel.summaryMode = true
 
-    wrapper = mount(ChangeSummary, { vuetify, localVue })
+    wrapper = mount(ChangeSummary, { vuetify })
   })
 
   afterEach(() => {

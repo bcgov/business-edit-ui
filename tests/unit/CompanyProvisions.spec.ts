@@ -1,7 +1,5 @@
 import Vue from 'vue'
-import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
-import { getVuexStore } from '@/store/'
 import { shallowMount, mount } from '@vue/test-utils'
 import CompanyProvisions from '@/components/Alteration/Articles/CompanyProvisions.vue'
 import { createPinia, setActivePinia } from 'pinia'
@@ -9,9 +7,8 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
-Vue.use(Vuelidate)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -25,10 +22,6 @@ const companyProvisionsCheckbox = '#cp-checkbox'
 const companyProvisionDoneButton = '#company-provisions-done'
 const companyProvisionCancelButton = '#company-provisions-cancel'
 const companyProvisionsComponent = '#checkbox-div .v-input--selection-controls.v-input--checkbox'
-
-// CSS Classes
-const infoTextClassName = 'info-text'
-const invalidClassName = 'invalid'
 
 describe('company provisions', () => {
   it('renders the component properly', () => {
@@ -92,17 +85,17 @@ describe('company provisions', () => {
     await wrapper.find(changeCompanyProvisionsButton).trigger('click')
 
     // Initial state (valid)
-    expect(wrapper.find(companyProvisionsComponent).element.classList.value.includes(invalidClassName)).toBeFalsy()
+    expect(wrapper.find(companyProvisionsComponent).element.classList.value.includes('invalid')).toBeFalsy()
 
     await wrapper.find(companyProvisionDoneButton).trigger('click')
 
     // Invalid state
-    expect(wrapper.find(companyProvisionsComponent).element.classList.value.includes(invalidClassName)).toBeTruthy()
+    expect(wrapper.find(companyProvisionsComponent).element.classList.value.includes('invalid')).toBeTruthy()
 
     await wrapper.find(companyProvisionsCheckbox).trigger('click')
 
     // Valid state
-    expect(wrapper.find(companyProvisionsComponent).element.classList.value.includes(invalidClassName)).toBeFalsy()
+    expect(wrapper.find(companyProvisionsComponent).element.classList.value.includes('invalid')).toBeFalsy()
 
     wrapper.destroy()
   })

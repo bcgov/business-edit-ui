@@ -8,6 +8,7 @@ import { ApprovalTypes } from '@bcrs-shared-components/enums'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -91,10 +92,6 @@ describe('Time Limit Extension component', () => {
   })
 
   it('get correct court order file number.', () => {
-    const wrapper = wrapperFactory()
-    const extendTimeLimit = wrapper.vm as any // wrapper.vm type is Vue
-
-    expect(extendTimeLimit.courtOrderNumberText).toEqual('')
-    wrapper.destroy()
+    expect(store.getCourtOrderNumberText).toEqual('')
   })
 })

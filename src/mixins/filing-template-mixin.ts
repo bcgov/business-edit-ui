@@ -21,6 +21,9 @@ import { useStore } from '@/store/store'
  */
 @Component({})
 export default class FilingTemplateMixin extends DateMixin {
+  // FUTURE: import entire store instead of individual getters, actions and mutations?
+  // Ref: https://pinia.vuejs.org/cookbook/options-api.html#giving-access-to-the-whole-store
+
   // Global getters
   @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getNameRequestNumber!: string
@@ -67,10 +70,12 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) hasBusinessStartDateChanged!: boolean
   @Getter(useStore) getRestoration!: RestorationStateIF
   @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
+  @Getter(useStore) isLimitedRestorationToFull!: boolean
 
   // Global actions
   @Action(useStore) setBusinessContact!: ActionBindingIF
   @Action(useStore) setBusinessInformation!: ActionBindingIF
+  @Action(useStore) setCertifyState!: ActionBindingIF
   @Action(useStore) setCorrectionInformation!: ActionBindingIF
   @Action(useStore) setEntityType!: ActionBindingIF
   @Action(useStore) setOfficeAddresses!: ActionBindingIF
@@ -78,7 +83,6 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) setNameTranslations!: ActionBindingIF
   @Action(useStore) setNameRequest!: ActionBindingIF
   @Action(useStore) setPeopleAndRoles!: ActionBindingIF
-  @Action(useStore) setCertifyState!: ActionBindingIF
   @Action(useStore) setShareClasses!: ActionBindingIF
   @Action(useStore) setEffectiveDateTimeString!: ActionBindingIF
   @Action(useStore) setIsFutureEffective!: ActionBindingIF
@@ -98,6 +102,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) setRestorationCourtOrder!: ActionBindingIF
   @Action(useStore) setRestorationExpiry!: ActionBindingIF
   @Action(useStore) setRestorationType!: ActionBindingIF
+  @Action(useStore) setRestorationRelationships!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -307,9 +312,13 @@ export default class FilingTemplateMixin extends DateMixin {
         },
         parties: this.getOrgPeople,
         offices: this.getOfficeAddresses,
-        contactPoint: this.getContactPoint,
-        relationships: this.getRestoration.relationships
+        contactPoint: this.getContactPoint
       }
+    }
+
+    // Set relationships object for a full restoration only
+    if (this.isLimitedRestorationToFull) {
+      filing.restoration.relationships = this.getRestoration.relationships
     }
 
     // Set expiry date property if it's not null
@@ -317,9 +326,18 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.restoration.expiry = this.getRestoration.expiry
     }
 
-    // Apply NR / business name / business type change to filing
-    if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
-      filing.restoration.nameRequest = this.getNameRequest
+    // Set Name Request object for a full restoration only
+    if (this.isLimitedRestorationToFull) {
+      // Apply NR / business name change to filing
+      if (this.getNameRequestNumber || this.hasBusinessNameChanged) {
+        filing.restoration.nameRequest = this.getNameRequest
+      } else {
+        // Otherwise save default data
+        filing.restoration.nameRequest = {
+          legalName: this.getEntitySnapshot.businessInfo.legalName,
+          legalType: this.getEntitySnapshot.businessInfo.legalType
+        }
+      }
     }
 
     // Apply name translation changes to filing
@@ -354,6 +372,7 @@ export default class FilingTemplateMixin extends DateMixin {
    * @param isDraft whether this is a draft
    * @returns the resolution filing body
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   buildSpecialResolutionFiling (isDraft: boolean): SpecialResolutionFilingIF {
     // FUTURE: add in as needed - see buildAlterationFiling()
     // const parties = isDraft ? this.getOrgPeople : this.prepareParties()
@@ -811,7 +830,6 @@ export default class FilingTemplateMixin extends DateMixin {
   /**
    * Parses a draft Restoration filing into the store.
    * @param filing the restoration filing
-   * @param entitySnapshot the latest entity snapshot
    */
   parseRestorationFiling (filing: RestorationFilingIF): void {
     // Get the Entity Snapshot from store
@@ -827,8 +845,13 @@ export default class FilingTemplateMixin extends DateMixin {
       ...filing.restoration.business
     })
 
-    // restore Restoration data
-    this.setRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
+    // set restoration approval type
+    if (filing.restoration.approvalType) {
+      this.setRestorationApprovalType(filing.restoration.approvalType)
+    } else {
+      this.setRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
+    }
+
     if (filing.restoration.courtOrder) {
       this.setRestorationCourtOrder(filing.restoration.courtOrder)
     }
@@ -849,6 +872,11 @@ export default class FilingTemplateMixin extends DateMixin {
         nrNumber: entitySnapshot.businessInfo.nrNumber
       }
     ))
+
+    // store relationships
+    if (filing.restoration.relationships?.length > 0) {
+      this.setRestorationRelationships(filing.restoration.relationships)
+    }
 
     // store Name Translations
     this.setNameTranslations(cloneDeep(
@@ -1272,6 +1300,7 @@ export default class FilingTemplateMixin extends DateMixin {
     const shareClasses = this.getShareClasses
       .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
       .map((x) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { action, ...rest } = x
         rest.hasMaximumShares = !!rest.hasMaximumShares // change null -> false
         rest.hasRightsOrRestrictions = !!rest.hasRightsOrRestrictions // change null -> false
@@ -1283,6 +1312,7 @@ export default class FilingTemplateMixin extends DateMixin {
       shareClasses[index].series = share.series
         .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
         .map((x) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { action, ...rest } = x
           rest.hasMaximumShares = !!rest.hasMaximumShares // change null -> false
           rest.hasRightsOrRestrictions = !!rest.hasRightsOrRestrictions // change null -> false

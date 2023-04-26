@@ -1,26 +1,44 @@
 <template>
-  <v-container id="name-options-container" class="pa-0 pr-4">
-    <p class="info-text mb-5 pb-5 bottom-border" v-if="!isOneOption">
+  <v-container
+    id="correct-name-options"
+    class="pa-0 pr-4"
+  >
+    <p
+      v-if="!isOneOption"
+      class="info-text mb-5 pb-5 bottom-border"
+    >
       You can correct the company name in one of the following ways:
     </p>
-    <v-expansion-panels v-model="panel" class="bottom-border" accordion>
+    <v-expansion-panels
+      v-model="panel"
+      class="bottom-border"
+      accordion
+    >
       <v-expansion-panel
         v-for="(item,i) in displayedOptions"
-        class="mb-4"
         :id="`x-panel-${item.id}`"
         :key="i"
+        class="mb-4"
         :disabled="isOneOption"
         @click="identifyForm(item.id)"
       >
         <v-expansion-panel-header :class="{'name-options-header': isOneOption}">
-          <span class="names-option-title">{{item.title}}</span>
-          <template v-slot:actions>
-            <v-icon color="primary">mdi-menu-down</v-icon>
+          <span class="names-option-title">{{ item.title }}</span>
+          <template #actions>
+            <v-icon color="primary">
+              mdi-menu-down
+            </v-icon>
           </template>
         </v-expansion-panel-header>
 
         <v-expansion-panel-content class="name-options-content pt-4">
-          <div v-if="item.description" class="info-text mb-4" color="primary">{{item.description}}</div>
+          <div
+            v-if="item.description"
+            class="info-text mb-4"
+            color="primary"
+          >
+            {{ item.description }}
+          </div>
           <component
             :is="item.component"
             :key="item.id"
@@ -36,7 +54,8 @@
     <div class="action-btns">
       <v-btn
         id="done-btn"
-        large color="primary"
+        large
+        color="primary"
         :loading="isLoading"
         @click="submitNameCorrection()"
       >
@@ -45,7 +64,9 @@
 
       <v-btn
         id="cancel-btn"
-        large outlined color="primary"
+        large
+        outlined
+        color="primary"
         @click="emitCancel()"
       >
         <span>Cancel</span>

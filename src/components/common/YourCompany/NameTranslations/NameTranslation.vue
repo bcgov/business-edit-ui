@@ -1,13 +1,24 @@
 <template>
-  <div id="name-translation" v-if="!isSummaryMode || hasNameTranslationChange">
+  <div
+    v-if="!isSummaryMode || hasNameTranslationChange"
+    id="name-translation"
+    class="section-container"
+    :class="{'invalid-section': invalidSection}"
+  >
     <ConfirmDialogShared
       ref="confirmTranslationDialog"
       attach="#name-translation"
     />
 
     <!-- Summary mode -->
-    <v-row no-gutters v-if="!isEditing">
-      <v-col cols="3" class="pr-2">
+    <v-row
+      v-if="!isEditing"
+      no-gutters
+    >
+      <v-col
+        cols="3"
+        class="pr-2"
+      >
         <label><strong>Name Translation(s)</strong></label>
         <ActionChipShared
           v-if="hasNameTranslationChange && !isSummaryMode"
@@ -16,50 +27,76 @@
         />
       </v-col>
 
-      <v-col cols="7" v-if="draftTranslations && translationsExceptRemoved.length">
+      <v-col
+        v-if="draftTranslations && translationsExceptRemoved.length"
+        cols="7"
+      >
         <div
           v-for="(translation, index) in translationsExceptRemoved"
-          class="info-text"
           :key="`name_translation_${index}`"
+          class="info-text"
         >
           {{ translation.name }}
         </div>
       </v-col>
-      <v-col cols="7" class="info-text" v-else>
+      <v-col
+        v-else
+        cols="7"
+        class="info-text"
+      >
         No name translations
       </v-col>
 
       <!-- Actions -->
-      <v-col cols="2" class="mt-n2" v-if="isEditNameTranslationButtonVisible">
+      <v-col
+        v-if="isEditNameTranslationButtonVisible"
+        cols="2"
+        class="mt-n2"
+      >
         <div class="actions mr-4">
           <v-btn
             class="correct-name-translation"
-            text color="primary"
+            text
+            color="primary"
             @click="isEditing = true"
           >
-            <v-icon small>mdi-pencil</v-icon>
+            <v-icon small>
+              mdi-pencil
+            </v-icon>
             <span>{{ getEditLabel }}</span>
           </v-btn>
         </div>
       </v-col>
 
-      <v-col cols="2" class="mt-n2" v-else-if="hasNameTranslationChange && !isSummaryMode">
+      <v-col
+        v-else-if="hasNameTranslationChange && !isSummaryMode"
+        cols="2"
+        class="mt-n2"
+      >
         <div class="actions mr-4">
           <v-btn
             class="undo-name-translation"
-            text color="primary"
+            text
+            color="primary"
             @click="undoNameTranslations()"
           >
-            <v-icon small>mdi-undo</v-icon>
+            <v-icon small>
+              mdi-undo
+            </v-icon>
             <span>Undo</span>
           </v-btn>
 
           <!-- More Actions Menu -->
           <span class="more-actions">
-            <v-menu offset-y left nudge-bottom="4">
-              <template v-slot:activator="{ on }">
+            <v-menu
+              offset-y
+              left
+              nudge-bottom="4"
+            >
+              <template #activator="{ on }">
                 <v-btn
-                  text color="primary"
+                  text
+                  color="primary"
                   class="more-actions-btn"
                   v-on="on"
                 >
@@ -81,7 +118,10 @@
     </v-row>
 
     <!-- Edit mode -->
-    <v-row no-gutters v-else>
+    <v-row
+      v-else
+      no-gutters
+    >
       <v-col cols="3">
         <label :class="{'error-text': invalidSection}"><strong>Name Translation(s)</strong></label>
       </v-col>
@@ -95,17 +135,21 @@
           </p>
 
           <v-btn
-            outlined color="primary"
+            outlined
+            color="primary"
             class="mt-6"
-            @click="isAddingNameTranslation=true"
             :disabled="isAddingNameTranslation"
+            @click="isAddingNameTranslation=true"
           >
             <v-icon>mdi-plus</v-icon>
             <span>Add Name Translation</span>
           </v-btn>
 
           <!-- Add Name Translation component -->
-          <div v-if="isAddingNameTranslation" class="mt-6">
+          <div
+            v-if="isAddingNameTranslation"
+            class="mt-6"
+          >
             <AddNameTranslation
               :editNameTranslation="editingNameTranslation"
               :editNameIndex="editIndex"
@@ -116,7 +160,10 @@
           </div>
 
           <!-- List Name Translation component -->
-          <div v-if="draftTranslations && draftTranslations.length > 0" class="mt-6">
+          <div
+            v-if="draftTranslations && draftTranslations.length > 0"
+            class="mt-6"
+          >
             <ListNameTranslation
               :isAddingNameTranslation="isAddingNameTranslation"
               :translationsList="draftTranslations"
@@ -128,17 +175,22 @@
         </div>
 
         <div class="action-btns mt-6">
-          <v-btn large color="primary"
+          <v-btn
             id="name-translation-done"
+            large
+            color="primary"
             :disabled="isAddingNameTranslation || !hasPendingChange"
             @click="saveNameTranslations()"
           >
             <span>Done</span>
           </v-btn>
-          <v-btn large outlined color="primary"
+          <v-btn
             id="name-translation-cancel"
-            @click="cancelNameTranslations()"
+            large
+            outlined
+            color="primary"
             :disabled="isAddingNameTranslation"
+            @click="cancelNameTranslations()"
           >
             <span>Cancel</span>
           </v-btn>
@@ -149,13 +201,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Prop, Watch } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash'
 import { Action, Getter } from 'pinia-class'
 import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { ListNameTranslation, AddNameTranslation } from './'
-import { ActionBindingIF, ConfirmDialogType, NameTranslationIF } from '@/interfaces/'
+import { ActionBindingIF, ConfirmDialogType, NameTranslationIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { ActionTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
 import { useStore } from '@/store/store'
@@ -166,37 +219,48 @@ import { useStore } from '@/store/store'
     AddNameTranslation,
     ListNameTranslation,
     ConfirmDialogShared
-  }
+  },
+  mixins: [CommonMixin]
 })
-export default class NameTranslation extends Mixins(CommonMixin) {
+export default class NameTranslation extends Vue {
   // Refs
   $refs!: {
     confirmTranslationDialog: ConfirmDialogType
   }
 
-  @Prop({ default: false }) readonly invalidSection!: boolean
   @Prop({ default: false }) readonly isSummaryMode!: boolean
 
-  // Global getter
+  // Global getters
+  @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter(useStore) getNameTranslations!: NameTranslationIF[]
-  @Getter(useStore) isLimitedConversionRestorationFiling!: boolean
-  @Getter(useStore) isLimitedExtendRestorationFiling!: boolean
+  @Getter(useStore) isLimitedRestorationExtension!: boolean
+  @Getter(useStore) isLimitedRestorationToFull!: boolean
 
   // Global actions
   @Action(useStore) setEditingNameTranslations!: ActionBindingIF
   @Action(useStore) setNameTranslations!: ActionBindingIF
+  @Action(useStore) setValidComponent!: ActionBindingIF
 
-  // Declaration for template
+  // declaration for template
   readonly ActionTypes = ActionTypes
 
-  // Local properties
-  private draftTranslations: NameTranslationIF[] = []
-  private isEditing = false
-  private isAddingNameTranslation = false
-  private editingNameTranslation = ''
-  private editIndex = -1
+  // local properties
+  protected draftTranslations: NameTranslationIF[] = []
+  protected isEditing = false
+  protected isAddingNameTranslation = false
+  protected editingNameTranslation = ''
+  protected editIndex = -1
+
+  /** The section validity state (when prompted by app). */
+  get invalidSection (): boolean {
+    return (
+      this.getComponentValidate &&
+      !this.getFlagsCompanyInfo.isValidNameTranslation
+    )
+  }
 
   get hasPendingChange (): boolean {
     return (
@@ -228,8 +292,8 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     return !(
       this.hasNameTranslationChange ||
       this.isSummaryMode ||
-      this.isLimitedConversionRestorationFiling ||
-      this.isLimitedExtendRestorationFiling
+      this.isLimitedRestorationToFull ||
+      this.isLimitedRestorationExtension
     )
   }
 
@@ -362,11 +426,11 @@ export default class NameTranslation extends Mixins(CommonMixin) {
     this.draftTranslations = cloneDeep(this.getNameTranslations)
   }
 
-  /** Updates store when local Editing property has changed. */
+  /** Sets validity in store initially and when validity conditions have changed. */
   @Watch('isEditing', { immediate: true })
-  @Emit('isEditingTranslations')
-  private onEditingChanged (isEditing: boolean): void {
-    this.setEditingNameTranslations(isEditing)
+  private updateValidity (): void {
+    const isValid = !this.isEditing
+    this.setValidComponent({ key: 'isValidNameTranslation', value: isValid })
   }
 }
 </script>

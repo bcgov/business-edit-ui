@@ -1,17 +1,14 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-
-import { getVuexStore } from '@/store/'
-import { createLocalVue, shallowMount } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@/enums'
 
 Vue.use(Vuetify)
-
-const localVue = createLocalVue()
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
 
@@ -49,7 +46,7 @@ describe('Special Resolution Summary component', () => {
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
     store.stateModel.summaryMode = false
 
-    wrapper = shallowMount(CreateSpecialResolutionSummary, { vuetify, localVue })
+    wrapper = shallowMount(CreateSpecialResolutionSummary, { vuetify })
   })
 
   afterEach(() => {

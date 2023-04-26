@@ -1,69 +1,127 @@
 <template>
   <div id="special-resolution-summary">
     <v-divider class="mx-4" />
-    <section id="resolution-date-section" class="section-container">
-      <header id="resolution-date-header" class="mt-3">
+    <section
+      id="resolution-date-section"
+      class="section-container"
+    >
+      <header
+        id="resolution-date-header"
+        class="mt-3"
+      >
         <h2>Special Resolution</h2>
       </header>
 
       <div class="mt-8">
-        <v-row no-gutters class="mt-6">
-          <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block resolution-date-label">
+        <v-row
+          no-gutters
+          class="mt-6"
+        >
+          <v-col
+            cols="12"
+            sm="3"
+            class="pr-4 d-none d-sm-block resolution-date-label"
+          >
             <label><strong> Resolution Date</strong></label>
           </v-col>
-          <v-col cols="12" sm="9" class="resolution-date">
+          <v-col
+            cols="12"
+            sm="9"
+            class="resolution-date"
+          >
             {{ resolutionDateText }}
           </v-col>
         </v-row>
-        <v-row no-gutters class="mt-6">
-          <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block resolution-text-label">
+        <v-row
+          no-gutters
+          class="mt-6"
+        >
+          <v-col
+            cols="12"
+            sm="3"
+            class="pr-4 d-none d-sm-block resolution-text-label"
+          >
             <label><strong>Resolution Text</strong></label>
           </v-col>
-          <v-col cols="12" sm="9" class="resolution-text">
+          <v-col
+            cols="12"
+            sm="9"
+            class="resolution-text"
+          >
             {{ getSpecialResolution && getSpecialResolution.resolution }}
           </v-col>
         </v-row>
-        <v-row no-gutters class="mt-6">
-          <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block siging-party-label">
+        <v-row
+          no-gutters
+          class="mt-6"
+        >
+          <v-col
+            cols="12"
+            sm="3"
+            class="pr-4 d-none d-sm-block siging-party-label"
+          >
             <label><strong> Signing Party</strong></label>
           </v-col>
-          <v-col cols="12" sm="9" class="siging-party">
+          <v-col
+            cols="12"
+            sm="9"
+            class="siging-party"
+          >
             {{ signingParty }}
           </v-col>
         </v-row>
 
-        <v-row no-gutters class="mt-6">
-          <v-col cols="12" sm="3" class="pr-4 siging-date-label">
+        <v-row
+          no-gutters
+          class="mt-6"
+        >
+          <v-col
+            cols="12"
+            sm="3"
+            class="pr-4 siging-date-label"
+          >
             <label><strong> Date Signed</strong></label>
           </v-col>
-          <v-col cols="12" sm="9" class="pt-4 pt-sm-0 siging-date">
+          <v-col
+            cols="12"
+            sm="9"
+            class="pt-4 pt-sm-0 siging-date"
+          >
             {{ signingDate }}
           </v-col>
         </v-row>
 
         <!-- Confirm Resolution -->
         <v-row
+          id="special-resolution-confirm"
           no-gutters
           class="mt-6 section-confirm-resolution"
-          id="special-resolution-confirm"
           :class="{ 'invalid-section': invalidSpecialResolutionConfirmSection }"
         >
-          <v-col cols="12" sm="3" class="pr-4">
+          <v-col
+            cols="12"
+            sm="3"
+            class="pr-4"
+          >
             <label :class="{ 'error-text': invalidSpecialResolutionConfirmSection }">
               <strong>Confirm Special Resolution</strong></label>
           </v-col>
-          <v-col cols="12" sm="9" class="pt-4 pt-sm-0 ml-n5">
+          <v-col
+            cols="12"
+            sm="9"
+            class="pt-4 pt-sm-0 ml-n5"
+          >
             <v-form ref="confirmResolutionChkFormRef">
               <v-checkbox
-                ref="confirmResolutionChkRef"
                 id="chk-confirm-resolution"
-                class="chk-resolution mt-0 pt-0"
+                ref="confirmResolutionChkRef"
                 v-model="resolutionConfirmed"
+                class="chk-resolution mt-0 pt-0"
                 hide-details
                 :rules="confirmCompletionResolution"
                 @change="onResolutionConfirmedChange($event)"
               >
-                <template v-slot:label>
+                <template #label>
                   <div>I confirm the following:</div>
                 </template>
               </v-checkbox>

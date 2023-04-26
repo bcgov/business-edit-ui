@@ -10,11 +10,13 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)
+const vuetify = new Vuetify({})
+
+// needed for address component
 Vue.use(Vuelidate)
 
 setActivePinia(createPinia())
 const store = useStore()
-const vuetify = new Vuetify({})
 
 // Sample data is from:
 // https://www.name-generator.org.uk/quick/

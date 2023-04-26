@@ -2,21 +2,16 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import mockRouter from './MockRouter'
-import { getVuexStore } from '@/store/'
 import { createLocalVue, mount } from '@vue/test-utils'
 import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
-
 const vuetify = new Vuetify({})
+
 setActivePinia(createPinia())
 const store = useStore()
-
-function resetStore (): void {
-  store.stateModel.nameTranslations = []
-}
 
 // Local references
 const nameTranslationsList = [

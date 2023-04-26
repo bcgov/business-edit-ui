@@ -11,7 +11,7 @@ export interface IncorporationApplicationIF {
     legalName?: string // only set when there is an NR
   }
   nameTranslations: NameTranslationIF[]
-  offices: AddressesIF | object
+  offices: AddressesIF
   contactPoint: ContactPointIF
   parties: OrgPersonIF[]
   shareStructure: {

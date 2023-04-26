@@ -1,6 +1,9 @@
 <template>
   <ViewWrapper>
-    <section class="pb-10" id="conversion-view">
+    <section
+      id="conversion-view"
+      class="pb-10"
+    >
       <!-- Business Information page-->
       <v-slide-x-transition hide-on-leave>
         <div v-if="!isSummaryMode || !showFeeSummary">
@@ -13,7 +16,16 @@
             made.
           </section>
 
-          <YourCompany class="mt-10" />
+          <YourCompanyWrapper class="mt-10">
+            <div>
+              <EntityName />
+              <BusinessType />
+            </div>
+            <BusinessStartDate />
+            <ConversionNOB />
+            <OfficeAddresses />
+            <FolioInformation />
+          </YourCompanyWrapper>
 
           <PeopleAndRoles class="mt-10" />
         </div>
@@ -50,45 +62,54 @@
 </template>
 
 <script lang="ts">
-import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
-import { PeopleAndRoles, CompletingParty, YourCompany } from '@/components/common/'
+import { ConversionNOB, ConversionSummary } from '@/components/Conversion'
+import { CompletingParty, BusinessStartDate, BusinessType, EntityName, FolioInformation, OfficeAddresses,
+  PeopleAndRoles, YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, EntitySnapshotIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SpConversionResource, GpConversionResource } from '@/resources/Conversion/'
-import { ConversionSummary } from '@/components/Conversion'
 import { StatusCodes } from 'http-status-codes'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
   components: {
-    ViewWrapper,
-    ConversionSummary,
+    BusinessStartDate,
+    BusinessType,
     CompletingParty,
+    ConversionNOB,
+    ConversionSummary,
+    EntityName,
+    FolioInformation,
+    OfficeAddresses,
     PeopleAndRoles,
-    YourCompany
-  }
+    ViewWrapper,
+    YourCompanyWrapper
+  },
+  mixins: [CommonMixin, FeeMixin, FilingTemplateMixin]
 })
-export default class Conversion extends Mixins(
-  CommonMixin,
-  FeeMixin,
-  FilingTemplateMixin
-) {
+export default class Conversion extends Vue {
   // Global getters
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) showFeeSummary!: boolean
   @Getter(useStore) isPartnership!: boolean
   @Getter(useStore) isSoleProp!: boolean
 
   // Global actions
   @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setFilingData!: ActionBindingIF
   @Action(useStore) setFilingId!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF
   @Action(useStore) setCertifyStateValidity!: ActionBindingIF
