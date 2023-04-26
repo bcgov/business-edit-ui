@@ -166,8 +166,12 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   }
 
   private isValidNrNumber (value: string): boolean {
-    const VALID_FORMAT = new RegExp(/^(NR )\d{7}$/)
-    return VALID_FORMAT.test(value)
+    const VALID_FORMAT = new RegExp(/^(NR)?\s*(\d{7})$/)
+    if (VALID_FORMAT.test(value)) {
+      this.nameRequestNumber = 'NR ' + value.match(VALID_FORMAT)[2]
+      return true
+    }
+    return false
   }
 
   private validateEmailFormat (value: string): boolean {
