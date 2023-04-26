@@ -1,0 +1,34 @@
+<template>
+  <article class="instructional-text section-container">
+    Before submitting this filing, you must pass a
+    <v-tooltip top
+                content-class="top-tooltip"
+                transition="fade-transition"
+                nudge-right="3"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <span
+          v-bind="attrs"
+          v-on="on"
+          class="tool-tip-text"
+        >special resolution</span>
+      </template>
+      <span>Special Resolution -  A decision voted on by the voting members of a Cooperative Association.</span>
+    </v-tooltip>
+    for this amendment
+  </article>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
+@Component({})
+export default class InstructionalText extends Vue { }
+</script>
+
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+.tool-tip-text {
+   border-bottom: 1px dashed $gray6;
+}
+</style>

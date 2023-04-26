@@ -280,7 +280,8 @@ export default class App extends Vue {
 
   /** Perform high level component validations before proceeding to summary page. */
   private async validateCompanyInfoPage (): Promise<void> {
-    this.setComponentValidate(true)
+    // awaited so watch hooks can run before it executes validateAndScroll.
+    await this.setComponentValidate(true)
 
     // Evaluate valid flags. Scroll to invalid components or continue to review.
     if (await this.validateAndScroll(this.getFlagsCompanyInfo, ComponentsCompanyInfo)) {

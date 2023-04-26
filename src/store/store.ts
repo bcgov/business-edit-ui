@@ -237,7 +237,7 @@ export const useStore = defineStore('store', {
       return this.stateModel.accountInformation.id
     },
 
-    /** The current date, which is refreshed every time the app inits. */
+    /** The current date in format (YYYY-MM-DD), which is refreshed every time the app inits. */
     getCurrentDate (): string {
       return this.stateModel.tombstone.currentDate
     },
@@ -1129,7 +1129,16 @@ export const useStore = defineStore('store', {
 
     /** The special resolution validity flags. */
     getSpecialResolutionFormValid (): boolean {
-      return this.getValidationFlags.flagsCompanyInfo.isValidCreateSpecialResolution
+      return this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolution &&
+        this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature
+    },
+
+    getSpecialResolutionValid (): boolean {
+      return this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolution
+    },
+
+    getSpecialResolutionSignatureValid (): boolean {
+      return this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature
     },
 
     /** The company info page validity flags. */
@@ -1454,6 +1463,12 @@ export const useStore = defineStore('store', {
     },
     setRestorationRelationships (relationships: RelationshipTypes[]) {
       this.stateModel.restoration.relationships = relationships
+    },
+    setResolutionValid (valid: boolean) {
+      this.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolution = valid
+    },
+    setResolutionSignatureValid (valid: boolean) {
+      this.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature = valid
     }
   }
 })

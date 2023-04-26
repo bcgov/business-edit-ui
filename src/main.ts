@@ -9,6 +9,7 @@ import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
 import Hotjar from 'vue-hotjar'
+import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 import * as Sentry from '@sentry/browser'
 import * as Integrations from '@sentry/integrations'
 import { getVueRouter } from '@/router/'
@@ -16,6 +17,7 @@ import { getPiniaStore, getVuexStore } from '@/store/'
 
 // Styles
 // NB: order matters - do not change
+import 'tiptap-vuetify/dist/main.css'
 import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.min.css' // ensure you are using css-loader
 import '@/assets/styles/base.scss'
@@ -39,6 +41,28 @@ Vue.use(Vuetify)
 Vue.use(Affix)
 Vue.use(Vuelidate)
 Vue.use(Vue2Filters)
+const vuetify = new Vuetify({
+  iconfont: 'mdi',
+  theme: {
+    themes: {
+      light: {
+        primary: '#1669bb', // same as $app-blue
+        appDkBlue: '#38598a', // same as $app-dk-blue
+        error: '#d3272c', // same as $app-red
+        success: '#1a9031', // same as $app-green
+        gray7: '#495057', // same as $gray7
+        gray9: '#212529' // Same as $gray9
+      }
+    }
+  }
+})
+// For Vue 3: remove - consult assets team for a replacement.
+Vue.use(TiptapVuetifyPlugin, {
+  // the next line is important! You need to provide the Vuetify Object to this place.
+  vuetify, // same as "vuetify: vuetify"
+  // optional, default to 'md' (default vuetify icons before v2.0.0)
+  iconsGroup: 'mdi'
+})
 
 // main code
 async function start () {
@@ -88,21 +112,7 @@ async function start () {
   // start Vue application
   console.info('Starting app...') // eslint-disable-line no-console
   new Vue({
-    vuetify: new Vuetify({
-      iconfont: 'mdi',
-      theme: {
-        themes: {
-          light: {
-            primary: '#1669bb', // same as $app-blue
-            appDkBlue: '#38598a', // same as $app-dk-blue
-            error: '#d3272c', // same as $app-red
-            success: '#1a9031', // same as $app-green
-            gray7: '#495057', // same as $gray7
-            gray9: '#212529' // Same as $gray9
-          }
-        }
-      }
-    }),
+    vuetify: vuetify,
     router: getVueRouter(),
     // We still need Vuex for sbc-common-components.
     store: getVuexStore(),

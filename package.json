@@ -49,6 +49,7 @@
     "pinia-class": "^0.0.3",
     "regenerator-runtime": "^0.13.9",
     "sbc-common-components": "3.0.5",
+    "tiptap-vuetify": "^2.24.0",
     "uuid": "^9.0.0",
     "vue": "^2.7.10",
     "vue-affix": "^0.5.2",

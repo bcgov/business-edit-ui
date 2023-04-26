@@ -7,6 +7,10 @@
           <v-icon class="header-icon ml-n1">mdi-file-document-edit-outline</v-icon>
           <label class="summary-title">Summary of Changes to File</label>
         </v-col>
+        <v-col @click="onClickDelete()" class="text-right">
+          <v-icon class="header-icon ml-n1">mdi-trash-can</v-icon>
+          <span class="summary-delete-title">Delete</span>
+        </v-col>
       </v-row>
     </div>
 
@@ -115,6 +119,10 @@ export default class SpecialResolutionSummary extends Vue {
     const futureEffectiveFeesSum = validFees.map(f => f.futureEffectiveFees).reduce((a, b) => a + b, 0)
     return `($${(filingFeesSum + futureEffectiveFeesSum).toFixed(2)} Fee)`
   }
+
+  protected onClickDelete (): void {
+    this.$root.$emit('delete-all')
+  }
 }
 </script>
 
@@ -129,6 +137,11 @@ export default class SpecialResolutionSummary extends Vue {
 
 .summary-title {
   padding-left: 0.5rem;
+}
+
+.summary-delete-title {
+ color: $app-blue;
+ font-weight: regular;
 }
 
 .company-name {

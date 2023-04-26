@@ -111,7 +111,8 @@ describe('Special Resolution Form component', () => {
 
   it('renders the Special Resolution form  component with invalid styling', async () => {
     expect(wrapper.find('#create-special-resolution .invalid-section').exists()).toBeFalsy()
-    store.stateModel.validationFlags.flagsCompanyInfo.isValidCreateSpecialResolution = false
+    store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolution = false
+    store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature = false
     store.stateModel.validationFlags.componentValidate = true
 
     await Vue.nextTick()

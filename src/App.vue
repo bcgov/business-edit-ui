@@ -226,6 +226,7 @@ export default class App extends Vue {
       case RouteNames.CORRECTION: return 'Register Correction'
       case RouteNames.RESTORATION_EXTENSION: return 'Limited Restoration Extension'
       case RouteNames.RESTORATION_CONVERSION: return 'Conversion to Full Restoration'
+      case RouteNames.SPECIAL_RESOLUTION: return 'Special Resolution'
     }
     return 'Unknown Filing' // should never happen
   }

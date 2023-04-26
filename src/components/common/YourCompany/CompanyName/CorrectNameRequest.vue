@@ -38,7 +38,7 @@
           hint="Example: 555-555-5555"
           persistent-hint
           type="tel"
-          :rules="done && phoneRules"
+          :rules="!applicantEmail && done && phoneRules"
           id="applicant-phone"
         />
       </v-col>
@@ -52,7 +52,7 @@
           hint="Example: name@email.com"
           persistent-hint
           type="email"
-          :rules="done && emailRules"
+          :rules="!applicantPhone && done && emailRules"
           id="applicant-email"
         />
       </v-col>
@@ -108,11 +108,13 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
     (v: string) => this.isValidNrNumber(v) || 'Name Request Number is invalid'
   ]
   readonly phoneRules = [
+    (v: string) => !!v || 'Phone Number or Email is required',
     (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
     (v: string) => !(v?.length > 12) || 'Phone number is invalid'
   ]
   readonly emailRules = [
+    (v: string) => !!v || 'Phone Number or Email is required',
     (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
     (v: string) => this.isValidEmail(v) || 'Email is invalid'

@@ -2,3 +2,6 @@ export { default as SpecialResolutionSummary } from './SpecialResolutionSummary.
 export { default as CreateSpecialResolution } from './CreateSpecialResolution.vue'
 export { default as CreateSpecialResolutionSummary } from './CreateSpecialResolutionSummary.vue'
 export { default as HelpSpecialResolution } from './HelpSpecialResolution.vue'
+export { default as InstructionalText } from './InstructionalText.vue'
+export { default as ResolutionEditor } from './ResolutionEditor.vue'
+export { default as SigningParty } from './SigningParty.vue'

@@ -20,7 +20,7 @@
             <label><strong>Resolution Text</strong></label>
           </v-col>
           <v-col cols="12" sm="9" class="resolution-text">
-            {{ getSpecialResolution && getSpecialResolution.resolution }}
+            <div class="resizable" v-if="getSpecialResolution" v-html="getSpecialResolution.resolution"/>
           </v-col>
         </v-row>
         <v-row no-gutters class="mt-6">
@@ -204,5 +204,16 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
     font-weight: normal;
     color: $gray9;
   }
+}
+
+.resizable {
+  background: #f1f3f5;
+  overflow-y: auto;
+  resize: vertical;
+  min-width: 100%;
+  max-width: 400px;
+  min-height: 90px;
+  height: 425px;
+  max-height: 800px;
 }
 </style>
