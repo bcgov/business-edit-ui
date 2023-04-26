@@ -1224,6 +1224,18 @@ export const useStore = defineStore('store', {
           helpText: ['helptest']
         }
       }
+    },
+    /** The court order draft file number. */
+    getCourtOrderNumberText (): string {
+      return this.stateModel.restoration.courtOrder?.fileNumber || ''
+    },
+
+    getRelationships (): RelationshipTypes[] {
+      return this.stateModel.restoration.relationships
+    },
+
+    getIsRestorationTypeCourtOrder (): boolean {
+      return !!this.stateModel.restoration.courtOrder?.fileNumber
     }
   },
   actions: {

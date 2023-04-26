@@ -21,7 +21,10 @@
 
           <Memorandum class="mt-10" />
 
-          <CreateSpecialResolution class="mt-10" v-if="showCreateSpecialResolution" />
+          <CreateSpecialResolution
+            v-if="showCreateSpecialResolution"
+            class="mt-10"
+          />
         </div>
       </v-slide-x-transition>
 
