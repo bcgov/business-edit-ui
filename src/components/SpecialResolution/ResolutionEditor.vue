@@ -210,7 +210,6 @@ export default class ResolutionEditor extends Vue {
 
   /** Called to update resolution date. */
   protected async onResolutionDate (val: string): Promise<void> {
-    debugger
     if (this.resolutionDateText === val) {
       return
     }
