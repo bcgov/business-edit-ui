@@ -70,6 +70,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) hasBusinessStartDateChanged!: boolean
   @Getter(useStore) getRestoration!: RestorationStateIF
   @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
+  @Getter(useStore) isLimitedRestorationToFull!: boolean
   @Getter(useStore) isEntityTypeFirm!: boolean
   // Global actions
   @Action(useStore) setBusinessContact!: ActionBindingIF
@@ -311,9 +312,13 @@ export default class FilingTemplateMixin extends DateMixin {
         },
         parties: this.getOrgPeople,
         offices: this.getOfficeAddresses,
-        contactPoint: this.getContactPoint,
-        relationships: this.getRestoration.relationships
+        contactPoint: this.getContactPoint
       }
+    }
+
+    // Set relationships object for a full restoration only
+    if (this.isLimitedRestorationToFull) {
+      filing.restoration.relationships = this.getRestoration.relationships
     }
 
     // Set expiry date property if it's not null
@@ -321,9 +326,18 @@ export default class FilingTemplateMixin extends DateMixin {
       filing.restoration.expiry = this.getRestoration.expiry
     }
 
-    // Apply NR / business name / business type change to filing
-    if (this.getNameRequestNumber || this.hasBusinessNameChanged || this.hasBusinessTypeChanged) {
-      filing.restoration.nameRequest = this.getNameRequest
+    // Set Name Request object for a full restoration only
+    if (this.isLimitedRestorationToFull) {
+      // Apply NR / business name change to filing
+      if (this.getNameRequestNumber || this.hasBusinessNameChanged) {
+        filing.restoration.nameRequest = this.getNameRequest
+      } else {
+        // Otherwise save default data
+        filing.restoration.nameRequest = {
+          legalName: this.getEntitySnapshot.businessInfo.legalName,
+          legalType: this.getEntitySnapshot.businessInfo.legalType
+        }
+      }
     }
 
     // Apply name translation changes to filing
@@ -358,6 +372,7 @@ export default class FilingTemplateMixin extends DateMixin {
    * @param isDraft whether this is a draft
    * @returns the resolution filing body
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   buildSpecialResolutionFiling (isDraft: boolean): SpecialResolutionFilingIF {
     // FUTURE: add in as needed - see buildAlterationFiling()
     // const parties = isDraft ? this.getOrgPeople : this.prepareParties()
@@ -862,7 +877,8 @@ export default class FilingTemplateMixin extends DateMixin {
       }
     ))
 
-    if (filing.restoration.relationships) {
+    // store relationships
+    if (filing.restoration.relationships?.length > 0) {
       this.setRestorationRelationships(filing.restoration.relationships)
     }
 
@@ -1288,6 +1304,7 @@ export default class FilingTemplateMixin extends DateMixin {
     const shareClasses = this.getShareClasses
       .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
       .map((x) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { action, ...rest } = x
         rest.hasMaximumShares = !!rest.hasMaximumShares // change null -> false
         rest.hasRightsOrRestrictions = !!rest.hasRightsOrRestrictions // change null -> false
@@ -1299,6 +1316,7 @@ export default class FilingTemplateMixin extends DateMixin {
       shareClasses[index].series = share.series
         .filter(x => x.action?.toUpperCase() !== ActionTypes.REMOVED)
         .map((x) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { action, ...rest } = x
           rest.hasMaximumShares = !!rest.hasMaximumShares // change null -> false
           rest.hasRightsOrRestrictions = !!rest.hasRightsOrRestrictions // change null -> false

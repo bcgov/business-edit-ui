@@ -10,93 +10,126 @@
         <label :class="{'error-text': invalidSection}">
           <strong>Cooperative Association Type</strong>
         </label>
-        <v-flex md1>
-          <v-chip v-if="hasAssociationTypeChanged" x-small label color="primary" text-color="white">
+        <v-col md="1">
+          <v-chip
+            v-if="hasAssociationTypeChanged"
+            x-small
+            label
+            color="primary"
+            text-color="white"
+          >
             {{ getEditedLabel }}
           </v-chip>
-        </v-flex>
+        </v-col>
       </v-col>
 
       <!-- Display Mode -->
-      <v-col cols="7" v-if="!isEditingAssociationType">
+      <v-col
+        v-if="!isEditingAssociationType"
+        cols="7"
+      >
         <span class="info-text">{{ associationDescription }}</span>
       </v-col>
 
       <!-- Actions -->
-      <v-col cols="2" class="mt-n2" v-if="!isEditingAssociationType">
+      <v-col
+        v-if="!isEditingAssociationType"
+        cols="2"
+        class="mt-n2"
+      >
         <div class="actions mr-4">
           <v-btn
             v-if="hasAssociationTypeChanged"
-            text color="primary"
             id="btn-undo-association-type"
+            text
+            color="primary"
             class="undo-action"
             @click="resetAssociationType()"
           >
-            <v-icon small>mdi-undo</v-icon>
+            <v-icon small>
+              mdi-undo
+            </v-icon>
             <span>Undo</span>
           </v-btn>
           <v-tooltip
-              v-else top
-              content-class="top-tooltip"
-              transition="fade-transition"
-              nudge-right="3"
-            >
-            <template v-slot:activator="{ on }">
+            v-else
+            top
+            content-class="top-tooltip"
+            transition="fade-transition"
+            nudge-right="3"
+          >
+            <template #activator="{ on }">
               <v-btn
-                v-on="on"
-                text color="primary"
+                text
+                color="primary"
                 class="edit-button"
+                v-on="on"
                 @click="isEditingAssociationType = true"
               >
-                <v-icon small>mdi-pencil</v-icon>
-                <span>{{getEditLabel}}</span>
+                <v-icon small>
+                  mdi-pencil
+                </v-icon>
+                <span>{{ getEditLabel }}</span>
               </v-btn>
-              </template>
-              <span>
-                We recommend you seek legal advice before changing your cooperative association type.
-                Refer to section 68 "Amendment of memorandum and rules" in the Cooperative Associations Act.
-              </span>
-            </v-tooltip>
-
-            <!-- Drop Down Actions -->
-            <span class="more-actions" v-if="hasAssociationTypeChanged">
-              <v-menu
-                offset-y left nudge-bottom="4"
-                v-model="dropdown"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    text small color="primary"
-                    id="btn-more-actions"
-                    v-on="on"
-                  >
-                    <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
-                  </v-btn>
-                </template>
-                <v-list>
-                  <v-list-item
-                    id="btn-more-actions-edit"
-                    class="v-list-item"
-                    @click="isEditingAssociationType = true; dropdown = false"
-                  >
-                    <v-list-item-subtitle>
-                      <v-icon small color="primary">mdi-pencil</v-icon>
-                      <span class="drop-down-action ml-1">Change</span>
-                    </v-list-item-subtitle>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
+            </template>
+            <span>
+              We recommend you seek legal advice before changing your cooperative association type.
+              Refer to section 68 "Amendment of memorandum and rules" in the Cooperative Associations Act.
             </span>
+          </v-tooltip>
+
+          <!-- Drop Down Actions -->
+          <span
+            v-if="hasAssociationTypeChanged"
+            class="more-actions"
+          >
+            <v-menu
+              v-model="dropdown"
+              offset-y
+              left
+              nudge-bottom="4"
+            >
+              <template #activator="{ on }">
+                <v-btn
+                  id="btn-more-actions"
+                  text
+                  small
+                  color="primary"
+                  v-on="on"
+                >
+                  <v-icon>{{ dropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item
+                  id="btn-more-actions-edit"
+                  class="v-list-item"
+                  @click="isEditingAssociationType = true; dropdown = false"
+                >
+                  <v-list-item-subtitle>
+                    <v-icon
+                      small
+                      color="primary"
+                    >mdi-pencil</v-icon>
+                    <span class="drop-down-action ml-1">Change</span>
+                  </v-list-item-subtitle>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </span>
         </div>
       </v-col>
 
       <!-- Editing Mode -->
-      <v-col cols="9" v-if="isEditingAssociationType">
+      <v-col
+        v-if="isEditingAssociationType"
+        cols="9"
+      >
         <v-select
-          filled
           id="association-type-input"
-          :items="associationTypeOptions"
           v-model="selectedAssociationType"
+          filled
+          :items="associationTypeOptions"
           :rules="AssociationTypeRules"
         />
 
@@ -104,14 +137,17 @@
         <div class="action-btns">
           <v-btn
             id="done-btn"
-            large color="primary"
+            large
+            color="primary"
             @click="submitAssociationTypeChange()"
           >
             <span>Done</span>
           </v-btn>
           <v-btn
             id="cancel-btn"
-            large outlined color="primary"
+            large
+            outlined
+            color="primary"
             @click="isEditingAssociationType = false"
           >
             <span>Cancel</span>

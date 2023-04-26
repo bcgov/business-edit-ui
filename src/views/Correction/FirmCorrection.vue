@@ -18,7 +18,11 @@
     <PeopleAndRoles class="mt-10" />
 
     <template v-if="isClientErrorCorrection">
-      <CompletingParty class="mt-10" sectionNumber="1." validate="true" />
+      <CompletingParty
+        class="mt-10"
+        sectionNumber="1."
+        validate="true"
+      />
     </template>
 
     <Detail

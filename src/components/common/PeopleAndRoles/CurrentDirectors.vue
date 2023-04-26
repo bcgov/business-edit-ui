@@ -1,10 +1,11 @@
 <template>
   <div id="current-directors">
-
     <v-card flat>
       <!-- Header -->
       <article class="header-container section-container">
-        <v-icon color="appDkBlue">mdi-account-multiple-plus</v-icon>
+        <v-icon color="appDkBlue">
+          mdi-account-multiple-plus
+        </v-icon>
         <label class="font-weight-bold pl-2">Directors</label>
       </article>
 
@@ -18,7 +19,11 @@
         <thead v-if="getOrgPeople.length > 0">
           <!-- List Headers -->
           <tr class="director-list-header pb-3">
-            <th v-for="(title, index) in tableHeaders" :key="index" class="px-0">
+            <th
+              v-for="(title, index) in tableHeaders"
+              :key="index"
+              class="px-0"
+            >
               <span class="directors-title">{{ title }}</span>
             </th>
           </tr>
@@ -26,16 +31,23 @@
         <tbody>
           <!-- List Content -->
           <tr
-            class="director-content py-3"
             v-for="(orgPerson, index) in getOrgPeople"
             :key="`director:${index}`"
+            class="director-content py-3"
           >
             <!-- Name + Badge -->
             <td class="text-truncate px-0">
               <!-- provide tooltip to display full name if name is longer than 25 chars -->
-              <v-tooltip top :disabled="formatFullName(orgPerson.officer).length < 25" color="primary">
-                <template v-slot:activator="{ on }">
-                  <span v-on="on" class="director-name">{{ formatFullName(orgPerson.officer) }}</span>
+              <v-tooltip
+                top
+                :disabled="formatFullName(orgPerson.officer).length < 25"
+                color="primary"
+              >
+                <template #activator="{ on }">
+                  <span
+                    class="director-name"
+                    v-on="on"
+                  >{{ formatFullName(orgPerson.officer) }}</span>
                 </template>
                 <span class="director-name">{{ formatFullName(orgPerson.officer) }}</span>
               </v-tooltip>
@@ -43,7 +55,10 @@
 
             <!-- Mailing Address -->
             <td class="px-0">
-              <MailingAddress class="director-detail" :address="orgPerson.mailingAddress" />
+              <MailingAddress
+                class="director-detail"
+                :address="orgPerson.mailingAddress"
+              />
             </td>
 
             <!-- Delivery Address -->
@@ -52,7 +67,10 @@
                 <span class="director-detail">Same as Mailing Address</span>
               </template>
               <template v-else>
-                <DeliveryAddress class="director-detail" :address="orgPerson.deliveryAddress"/>
+                <DeliveryAddress
+                  class="director-detail"
+                  :address="orgPerson.deliveryAddress"
+                />
               </template>
             </td>
 

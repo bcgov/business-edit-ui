@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter, { Route } from 'vue-router'
 import { routes } from './routes'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { Dictionary } from 'vue-router/types/router'
 
 /**
  * Configures and returns Vue Router.
@@ -15,6 +14,7 @@ export function getVueRouter () {
     // set base URL for Vue Router
     base: sessionStorage.getItem('VUE_ROUTER_BASE'),
     routes,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     scrollBehavior (to, from, savedPosition) {
       // see https://router.vuejs.org/guide/advanced/scroll-behavior.html
       return { x: 0, y: 0 }
@@ -44,21 +44,6 @@ export function getVueRouter () {
   function isAuthenticated (): boolean {
     // FUTURE: also check that token isn't expired!
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
-  }
-
-  /** Returns True if route is Signin, else False. */
-  function isSigninRoute (route: Route): boolean {
-    return Boolean(route.name === 'signin')
-  }
-
-  /** Returns True if route is Signout, else False. */
-  function isSignoutRoute (route: Route): boolean {
-    return Boolean(route.name === 'signout')
-  }
-
-  /** Returns True if there is at least one of our expected query parameters. */
-  function haveQueryParam (query: Dictionary<string | string[]>): boolean {
-    return Boolean(query['correction-id'] || query['filing-id'])
   }
 
   return router

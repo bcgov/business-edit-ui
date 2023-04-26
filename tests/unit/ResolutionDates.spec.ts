@@ -145,7 +145,6 @@ describe('Resolution Dates component - edit mode', () => {
 
   it('displays added dates', () => {
     const wrapper = wrapperFactory({ addedDates })
-    const vm = wrapper.vm
 
     // verify there is a second row
     const rows = wrapper.findAll('.row')
@@ -407,7 +406,6 @@ describe('Resolution Dates component - review mode', () => {
 
   it('displays added dates', () => {
     const wrapper = wrapperFactory({ addedDates })
-    const vm = wrapper.vm
 
     // verify there is a second row
     const rows = wrapper.findAll('.row')

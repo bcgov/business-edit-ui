@@ -1,5 +1,10 @@
 <template>
-  <v-form id="correct-nr-form" ref="correctNrForm" v-model="formValid" lazy-validation>
+  <v-form
+    id="correct-nr-form"
+    ref="correctNrForm"
+    v-model="formValid"
+    lazy-validation
+  >
     <!-- Dialogs -->
     <ConfirmDialogShared
       ref="confirm"
@@ -7,11 +12,25 @@
     />
 
     <v-row no-gutters>
-      <v-col cols="1" class="mt-1">
-        <v-btn x-small fab outlined :ripple="false" color="gray7" class="step-icon" tabindex="-1">1</v-btn>
+      <v-col
+        cols="1"
+        class="mt-1"
+      >
+        <v-btn
+          x-small
+          fab
+          outlined
+          :ripple="false"
+          color="gray7"
+          class="step-icon"
+          tabindex="-1"
+        >
+          1
+        </v-btn>
       </v-col>
       <v-col>
         <v-text-field
+          id="nr-number"
           v-model="nameRequestNumber"
           class="text-input-field"
           filled
@@ -19,18 +38,34 @@
           hint="Example: NR 1234567"
           persistent-hint
           :rules="done && nrNumRules"
-          id="nr-number"
           @keyup="uppercase('nameRequestNumber')"
         />
       </v-col>
     </v-row>
 
-    <v-row no-gutters class="mt-4 mb-n1">
-      <v-col cols="1" class="mt-1">
-        <v-btn x-small fab outlined :ripple="false" color="gray7" class="step-icon" tabindex="-1">2</v-btn>
+    <v-row
+      no-gutters
+      class="mt-4 mb-n1"
+    >
+      <v-col
+        cols="1"
+        class="mt-1"
+      >
+        <v-btn
+          x-small
+          fab
+          outlined
+          :ripple="false"
+          color="gray7"
+          class="step-icon"
+          tabindex="-1"
+        >
+          2
+        </v-btn>
       </v-col>
       <v-col cols="5">
         <v-text-field
+          id="applicant-phone"
           v-model="applicantPhone"
           class="text-input-field"
           filled
@@ -39,12 +74,14 @@
           persistent-hint
           type="tel"
           :rules="!applicantEmail && done && phoneRules"
-          id="applicant-phone"
         />
       </v-col>
-      <div class="ma-5">or</div>
+      <div class="ma-5">
+        or
+      </div>
       <v-col>
         <v-text-field
+          id="applicant-email"
           v-model="applicantEmail"
           class="text-input-field"
           filled
@@ -53,7 +90,6 @@
           persistent-hint
           type="email"
           :rules="!applicantPhone && done && emailRules"
-          id="applicant-email"
         />
       </v-col>
     </v-row>
@@ -132,8 +168,12 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   }
 
   private isValidNrNumber (value: string): boolean {
-    const VALID_FORMAT = new RegExp(/^(NR )\d{7}$/)
-    return VALID_FORMAT.test(value)
+    const VALID_FORMAT = new RegExp(/^(NR)?\s*(\d{7})$/)
+    if (VALID_FORMAT.test(value)) {
+      this.nameRequestNumber = 'NR ' + value.match(VALID_FORMAT)[2]
+      return true
+    }
+    return false
   }
 
   private validateEmailFormat (value: string): boolean {

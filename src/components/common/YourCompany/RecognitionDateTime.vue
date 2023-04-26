@@ -4,12 +4,15 @@
     class="section-container"
   >
     <v-row no-gutters>
-      <v-col cols="3" class="pr-2">
+      <v-col
+        cols="3"
+        class="pr-2"
+      >
         <label><strong>Recognition Date and Time</strong></label>
       </v-col>
 
       <v-col cols="9">
-        <span class="info-text mr-1">{{recognitionDateTime || 'Unknown'}}</span>
+        <span class="info-text mr-1">{{ recognitionDateTime || 'Unknown' }}</span>
       </v-col>
     </v-row>
   </div>

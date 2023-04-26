@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "4.2.4",
+  "version": "5.0.0",
   "private": true,
   "appName": "Edit UI",
   "sbcName": "SBC Common Components",
@@ -15,7 +15,7 @@
   "dependencies": {
     "@babel/compat-data": "^7.19.1",
     "@bcrs-shared-components/action-chip": "1.1.5",
-    "@bcrs-shared-components/approval-type": "1.0.18",
+    "@bcrs-shared-components/approval-type": "1.0.19",
     "@bcrs-shared-components/breadcrumb": "2.1.5",
     "@bcrs-shared-components/business-lookup": "1.1.7",
     "@bcrs-shared-components/certify": "2.1.5",
@@ -83,6 +83,7 @@
     "@vue/vue2-jest": "^27.0.0",
     "eslint": "~7.32.0",
     "eslint-plugin-vue": "^8.0.3",
+    "eslint-plugin-vuetify": "^1.1.0",
     "flush-promises": "^1.0.2",
     "sass": "~1.32.13",
     "sass-loader": "^10.1.1",

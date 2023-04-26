@@ -5,12 +5,17 @@
     :class="{'invalid-section': invalidSection}"
   >
     <v-row no-gutters>
-      <v-col cols="12" sm="3" class="pr-4">
+      <v-col
+        cols="12"
+        sm="3"
+        class="pr-4"
+      >
         <label :class="{'error-text': invalidSection}">Nature of Business</label>
         <v-chip
           v-if="hasNaicsChanged"
           id="changed-chip"
-          x-small label
+          x-small
+          label
           color="primary"
           text-color="white"
         >
@@ -18,31 +23,49 @@
         </v-chip>
       </v-col>
 
-      <v-col cols="12" sm="9">
+      <v-col
+        cols="12"
+        sm="9"
+      >
         <!-- Edit mode -->
         <template v-if="onEditMode">
           <p class="ma-0">
             Provide a brief description of the nature of business (e.g., corner grocery store,
             automotive repair service, landscaping, etc.).
           </p>
-          <v-form ref="form" lazy-validation>
+          <v-form
+            ref="form"
+            lazy-validation
+          >
             <v-textarea
+              v-model="naicsText"
               filled
               auto-grow
               class="mt-5"
               autocomplete="chrome-off"
               placeholder="Enter Nature of Business"
               rows="3"
-              v-model="naicsText"
               counter="300"
               :rules="naicsRules"
               validate-on-blur
             />
             <div class="float-right mb-2">
-              <v-btn large color="primary" id="nob-done-btn" class="mr-2" @click="onDoneClicked()">
+              <v-btn
+                id="nob-done-btn"
+                large
+                color="primary"
+                class="mr-2"
+                @click="onDoneClicked()"
+              >
                 <span>Done</span>
               </v-btn>
-              <v-btn large outlined color="primary" id="nob-cancel-btn" @click="onCancelClicked()">
+              <v-btn
+                id="nob-cancel-btn"
+                large
+                outlined
+                color="primary"
+                @click="onCancelClicked()"
+              >
                 <span>Cancel</span>
               </v-btn>
             </div>
@@ -50,30 +73,75 @@
         </template>
 
         <!-- Display mode -->
-        <div v-if="!onEditMode" class="d-flex justify-space-between align-start">
+        <div
+          v-if="!onEditMode"
+          class="d-flex justify-space-between align-start"
+        >
           <span id="naics-summary">{{ naicsSummary }}</span>
 
-          <div v-if="!hasNaicsChanged" class="my-n2 mr-n3">
-            <v-btn text color="primary" id="nob-change-btn" @click="onChangeClicked()">
-              <v-icon small>mdi-pencil</v-icon>
+          <div
+            v-if="!hasNaicsChanged"
+            class="my-n2 mr-n3"
+          >
+            <v-btn
+              id="nob-change-btn"
+              text
+              color="primary"
+              @click="onChangeClicked()"
+            >
+              <v-icon small>
+                mdi-pencil
+              </v-icon>
               <span>{{ getEditLabel }}</span>
             </v-btn>
           </div>
 
-          <div v-else id="nob-more-actions" class="my-n2 mr-n3">
-            <v-btn text color="primary" id="nob-undo-btn" @click="onUndoClicked()">
-              <v-icon small>mdi-undo</v-icon>
+          <div
+            v-else
+            id="nob-more-actions"
+            class="my-n2 mr-n3"
+          >
+            <v-btn
+              id="nob-undo-btn"
+              text
+              color="primary"
+              @click="onUndoClicked()"
+            >
+              <v-icon small>
+                mdi-undo
+              </v-icon>
               <span>Undo</span>
             </v-btn>
-            <v-menu offset-y left nudge-bottom="4" v-model="dropdown">
-              <template v-slot:activator="{ on }">
-                <v-btn text small color="primary" id="nob-menu-btn" v-on="on">
+            <v-menu
+              v-model="dropdown"
+              offset-y
+              left
+              nudge-bottom="4"
+            >
+              <template #activator="{ on }">
+                <v-btn
+                  id="nob-menu-btn"
+                  text
+                  small
+                  color="primary"
+                  v-on="on"
+                >
                   <v-icon>{{ dropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                 </v-btn>
               </template>
-              <v-btn text color="primary" id="more-changes-btn" class="py-5"
-                @click="onChangeClicked(); dropdown = false">
-                <v-icon small color="primary">mdi-pencil</v-icon>
+              <v-btn
+                id="more-changes-btn"
+                text
+                color="primary"
+                class="py-5"
+                @click="onChangeClicked(); dropdown = false"
+              >
+                <v-icon
+                  small
+                  color="primary"
+                >
+                  mdi-pencil
+                </v-icon>
                 <span>Change</span>
               </v-btn>
             </v-menu>

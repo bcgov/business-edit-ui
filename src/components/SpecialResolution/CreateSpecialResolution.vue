@@ -1,11 +1,20 @@
 <template>
-  <v-card flat >
+  <v-card
+    id="create-special-resolution"
+    flat
+  >
+    <!-- Header -->
     <article class="header-container section-container">
-      <v-icon color="appDkBlue">mdi-handshake</v-icon>
+      <v-icon color="appDkBlue">
+        mdi-handshake
+      </v-icon>
       <label class="font-weight-bold pl-2">Special Resolution</label>
     </article>
 
-    <v-card flat :class="{'invalid-section': invalidCreateSpecialResolutionSection}">
+    <v-card
+      flat
+      :class="{'invalid-section': invalidCreateSpecialResolutionSection}"
+    >
       <InstructionalText/>
 
       <HelpSpecialResolution />

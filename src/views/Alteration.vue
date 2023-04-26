@@ -1,6 +1,9 @@
 <template>
   <ViewWrapper>
-    <section class="pb-10" id="alteration-view">
+    <section
+      id="alteration-view"
+      class="pb-10"
+    >
       <!-- Company Information page-->
       <v-slide-x-transition hide-on-leave>
         <div v-if="!isSummaryMode">
@@ -43,8 +46,8 @@
           <section class="mt-6">
             <p id="intro-text">
               Review and certify the changes you are about to make to your company. Certain changes require
-              an Alteration Notice which will incur a {{filingFeesPrice}} fee. Choosing an alteration date
-              and time in the future will incur an additional {{futureEffectiveFeesPrice}} fee.
+              an Alteration Notice which will incur a {{ filingFeesPrice }} fee. Choosing an alteration date
+              and time in the future will incur an additional {{ futureEffectiveFeesPrice }} fee.
             </p>
           </section>
 
@@ -106,9 +109,9 @@
           </section>
 
           <v-btn
+            id="done-button"
             large
             color="primary"
-            id="done-button"
             class="mt-8"
             @click="$root.$emit('go-to-dashboard')"
           >

@@ -11,8 +11,14 @@
     />
 
     <!-- Summary mode -->
-    <v-row no-gutters v-if="!isEditing">
-      <v-col cols="3" class="pr-2">
+    <v-row
+      v-if="!isEditing"
+      no-gutters
+    >
+      <v-col
+        cols="3"
+        class="pr-2"
+      >
         <label><strong>Name Translation(s)</strong></label>
         <ActionChipShared
           v-if="hasNameTranslationChange && !isSummaryMode"
@@ -21,50 +27,76 @@
         />
       </v-col>
 
-      <v-col cols="7" v-if="draftTranslations && translationsExceptRemoved.length">
+      <v-col
+        v-if="draftTranslations && translationsExceptRemoved.length"
+        cols="7"
+      >
         <div
           v-for="(translation, index) in translationsExceptRemoved"
-          class="info-text"
           :key="`name_translation_${index}`"
+          class="info-text"
         >
           {{ translation.name }}
         </div>
       </v-col>
-      <v-col cols="7" class="info-text" v-else>
+      <v-col
+        v-else
+        cols="7"
+        class="info-text"
+      >
         No name translations
       </v-col>
 
       <!-- Actions -->
-      <v-col cols="2" class="mt-n2" v-if="isEditNameTranslationButtonVisible">
+      <v-col
+        v-if="isEditNameTranslationButtonVisible"
+        cols="2"
+        class="mt-n2"
+      >
         <div class="actions mr-4">
           <v-btn
             class="correct-name-translation"
-            text color="primary"
+            text
+            color="primary"
             @click="isEditing = true"
           >
-            <v-icon small>mdi-pencil</v-icon>
+            <v-icon small>
+              mdi-pencil
+            </v-icon>
             <span>{{ getEditLabel }}</span>
           </v-btn>
         </div>
       </v-col>
 
-      <v-col cols="2" class="mt-n2" v-else-if="hasNameTranslationChange && !isSummaryMode">
+      <v-col
+        v-else-if="hasNameTranslationChange && !isSummaryMode"
+        cols="2"
+        class="mt-n2"
+      >
         <div class="actions mr-4">
           <v-btn
             class="undo-name-translation"
-            text color="primary"
+            text
+            color="primary"
             @click="undoNameTranslations()"
           >
-            <v-icon small>mdi-undo</v-icon>
+            <v-icon small>
+              mdi-undo
+            </v-icon>
             <span>Undo</span>
           </v-btn>
 
           <!-- More Actions Menu -->
           <span class="more-actions">
-            <v-menu offset-y left nudge-bottom="4">
-              <template v-slot:activator="{ on }">
+            <v-menu
+              offset-y
+              left
+              nudge-bottom="4"
+            >
+              <template #activator="{ on }">
                 <v-btn
-                  text color="primary"
+                  text
+                  color="primary"
                   class="more-actions-btn"
                   v-on="on"
                 >
@@ -86,7 +118,10 @@
     </v-row>
 
     <!-- Edit mode -->
-    <v-row no-gutters v-else>
+    <v-row
+      v-else
+      no-gutters
+    >
       <v-col cols="3">
         <label :class="{'error-text': invalidSection}"><strong>Name Translation(s)</strong></label>
       </v-col>
@@ -100,17 +135,21 @@
           </p>
 
           <v-btn
-            outlined color="primary"
+            outlined
+            color="primary"
             class="mt-6"
-            @click="isAddingNameTranslation=true"
             :disabled="isAddingNameTranslation"
+            @click="isAddingNameTranslation=true"
           >
             <v-icon>mdi-plus</v-icon>
             <span>Add Name Translation</span>
           </v-btn>
 
           <!-- Add Name Translation component -->
-          <div v-if="isAddingNameTranslation" class="mt-6">
+          <div
+            v-if="isAddingNameTranslation"
+            class="mt-6"
+          >
             <AddNameTranslation
               :editNameTranslation="editingNameTranslation"
               :editNameIndex="editIndex"
@@ -121,7 +160,10 @@
           </div>
 
           <!-- List Name Translation component -->
-          <div v-if="draftTranslations && draftTranslations.length > 0" class="mt-6">
+          <div
+            v-if="draftTranslations && draftTranslations.length > 0"
+            class="mt-6"
+          >
             <ListNameTranslation
               :isAddingNameTranslation="isAddingNameTranslation"
               :translationsList="draftTranslations"
@@ -133,17 +175,22 @@
         </div>
 
         <div class="action-btns mt-6">
-          <v-btn large color="primary"
+          <v-btn
             id="name-translation-done"
+            large
+            color="primary"
             :disabled="isAddingNameTranslation || !hasPendingChange"
             @click="saveNameTranslations()"
           >
             <span>Done</span>
           </v-btn>
-          <v-btn large outlined color="primary"
+          <v-btn
             id="name-translation-cancel"
-            @click="cancelNameTranslations()"
+            large
+            outlined
+            color="primary"
             :disabled="isAddingNameTranslation"
+            @click="cancelNameTranslations()"
           >
             <span>Cancel</span>
           </v-btn>

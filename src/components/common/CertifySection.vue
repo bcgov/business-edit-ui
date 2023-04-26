@@ -1,13 +1,19 @@
 <template>
-  <section class="pb-6" id="certify-section">
-    <h2>{{sectionNumber}} Certify</h2>
+  <section
+    id="certify-section"
+    class="pb-6"
+  >
+    <h2>{{ sectionNumber }} Certify</h2>
 
     <div class="py-4">
       Enter the legal name of the person authorized to complete and submit these changes.
     </div>
 
     <div :class="{ 'invalid-section': invalidSection }">
-      <v-card flat class="section-container py-6">
+      <v-card
+        flat
+        class="section-container py-6"
+      >
         <CertifyShared
           :currentDate="getCurrentDate"
           :certifiedBy="getCertifyState.certifiedBy"

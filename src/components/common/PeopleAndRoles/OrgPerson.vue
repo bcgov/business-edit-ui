@@ -4,57 +4,74 @@
       <li class="add-person-container">
         <section class="meta-container">
           <!-- Add/edit person -->
-          <label class="add-person-header" v-if="isPerson">
+          <label
+            v-if="isPerson"
+            class="add-person-header"
+          >
             <span v-if="isNew">Add Person</span>
             <span v-else>Edit Person</span>
           </label>
 
           <!-- Add/edit org -->
-          <label class="add-org-header" v-if="isOrg">
+          <label
+            v-if="isOrg"
+            class="add-org-header"
+          >
             <span v-if="isNew">Add {{ orgTypesLabel }}</span>
             <span v-else>Edit {{ orgTypesLabel }}</span>
           </label>
 
           <!-- Form container -->
           <div class="d-flex">
-            <v-form id="org-person-form" ref="orgPersonForm" v-model="orgPersonFormValid" v-on:submit.prevent>
+            <v-form
+              id="org-person-form"
+              ref="orgPersonForm"
+              v-model="orgPersonFormValid"
+              @submit.prevent
+            >
               <!-- Person info -->
               <template v-if="isPerson">
                 <!-- Name -->
                 <article class="person-name">
                   <label class="sub-header">Person's Name</label>
 
-                  <p v-if="(isExisting && isProprietor)" class="info-text mb-0">
+                  <p
+                    v-if="(isExisting && isProprietor)"
+                    class="info-text mb-0"
+                  >
                     If the proprietor has changed their legal name, enter their new legal name.
                   </p>
-                  <p v-if="(isExisting && isPartner)" class="info-text mb-0">
+                  <p
+                    v-if="(isExisting && isPartner)"
+                    class="info-text mb-0"
+                  >
                     If the partner has changed their legal name, enter their new legal name.
                   </p>
 
                   <!-- First/middle/last -->
                   <div class="d-flex mx-n2 pt-4">
                     <v-text-field
+                      id="person__first-name"
+                      v-model="orgPerson.officer.firstName"
                       filled
                       class="item mx-2 mb-n6"
                       label="First Name"
-                      id="person__first-name"
-                      v-model="orgPerson.officer.firstName"
                       :rules="firstNameRules"
                     />
                     <v-text-field
+                      id="person__middle-name"
+                      v-model="orgPerson.officer.middleName"
                       filled
                       class="item mx-2 mb-n6"
                       label="Middle Name (Optional)"
-                      id="person__middle-name"
-                      v-model="orgPerson.officer.middleName"
                       :rules="middleNameRules"
                     />
                     <v-text-field
+                      id="person__last-name"
+                      v-model="orgPerson.officer.lastName"
                       filled
                       class="item mx-2 mb-n6"
                       label="Last Name"
-                      id="person__last-name"
-                      v-model="orgPerson.officer.lastName"
                       :rules="lastNameRules"
                     />
                   </div>
@@ -62,17 +79,20 @@
 
                 <!-- Confirm name change -->
                 <v-expand-transition>
-                  <article v-if="hasNameChanged(orgPerson)" class="confirm-name-change mt-6">
+                  <article
+                    v-if="hasNameChanged(orgPerson)"
+                    class="confirm-name-change mt-6"
+                  >
                     <v-checkbox
-                      class="mt-0 pt-0"
                       id="confirm-name-change-checkbox"
+                      v-model="orgPerson.confirmNameChange"
+                      class="mt-0 pt-0"
                       hide-details
                       :rules="confirmNameChangeRules"
-                      v-model="orgPerson.confirmNameChange"
                     >
-                      <template v-slot:label>
-                        I confirm {{isProprietor ? 'the proprietor' : isPartner ? 'this partner' :
-                        'this person'}} has legally changed their name and that they remain the same
+                      <template #label>
+                        I confirm {{ isProprietor ? 'the proprietor' : isPartner ? 'this partner' :
+                          'this person' }} has legally changed their name and that they remain the same
                         person.
                       </template>
                     </v-checkbox>
@@ -82,12 +102,13 @@
 
               <!-- Business or corporation info -->
               <template v-if="isOrg">
-                <v-checkbox v-if="wasReplaced(orgPerson)"
+                <v-checkbox
+                  v-if="wasReplaced(orgPerson)"
+                  v-model="orgPerson.confirmDocuments"
                   class="confirm-documents-checkbox mt-0 pt-0 mb-6"
                   hide-details
                   label="I confirm that the supporting documents have been received by the BC Registries."
                   :rules="confirmDocumentsRules"
-                  v-model="orgPerson.confirmDocuments"
                 />
 
                 <!-- Add firm org using look-up -->
@@ -95,12 +116,18 @@
                   <article class="org-look-up">
                     <label class="sub-header">Business or Corporation Look Up</label>
 
-                    <a class="lookup-toggle float-right" @click="toggleLookup()">
+                    <a
+                      class="lookup-toggle float-right"
+                      @click="toggleLookup()"
+                    >
                       Business or Corporation is Unregistered in B.C.
                     </a>
 
                     <template v-if="wasBusinessSelectedFromLookup">
-                      <v-card outlined class="message-box rounded-0 mt-6">
+                      <v-card
+                        outlined
+                        class="message-box rounded-0 mt-6"
+                      >
                         <p>
                           <strong>Important:</strong> If the addresses shown below are out of date, you may
                           update them here. The updates are applicable only to this registration.
@@ -144,10 +171,10 @@
                         </p>
                       </div>
                       <HelpSection
-                          v-if="!isRoleStaff"
-                          class="mt-6"
-                          :helpSection="getResource.changeData.orgPersonInfo.helpSection"
-                        />
+                        v-if="!isRoleStaff"
+                        class="mt-6"
+                        :helpSection="getResource.changeData.orgPersonInfo.helpSection"
+                      />
                     </template>
 
                     <BusinessLookupShared
@@ -169,7 +196,10 @@
                   <article class="org-manual-entry">
                     <label class="sub-header">Business or Corporation Unregistered in B.C.</label>
 
-                    <a class="lookup-toggle float-right" @click="toggleLookup()">
+                    <a
+                      class="lookup-toggle float-right"
+                      @click="toggleLookup()"
+                    >
                       Business or Corporation Look Up
                     </a>
 
@@ -177,7 +207,7 @@
                       Use this form to add a company that is not legally required to register in B.C. such as
                       a bank or railway as {{ isProprietor ? 'the Proprietor' : 'a partner' }}. All other
                       types of businesses not registered in B.C. cannot be {{ isProprietor ? 'the Proprietor'
-                      : 'a partner' }}.
+                        : 'a partner' }}.
                     </p>
 
                     <HelpSection
@@ -188,30 +218,39 @@
 
                     <!-- Confirm business -->
                     <v-checkbox
+                      v-model="orgPerson.confirmBusiness"
                       class="confirm-business-checkbox mt-6 pt-0"
                       hide-details
-                      v-model="orgPerson.confirmBusiness"
                       :rules="confirmBusinessRules"
                     >
-                      <template v-if="isProprietor" v-slot:label>
+                      <template
+                        v-if="isProprietor"
+                        #label
+                      >
                         I confirm that the business proprietor being added is not legally required to register in B.C.
                       </template>
-                      <template v-else-if="isPartner" v-slot:label>
+                      <template
+                        v-else-if="isPartner"
+                        #label
+                      >
                         I confirm that the business partner being added is not legally required to register in B.C.
                       </template>
-                      <template v-else-if="isApplicant" v-slot:label>
+                      <template
+                        v-else-if="isApplicant"
+                        #label
+                      >
                         I confirm that the business or corporation being added is not legally required to register in
-                           B.C.
+                        B.C.
                       </template>
                     </v-checkbox>
 
                     <!-- Organization Name -->
                     <v-text-field
+                      id="organization-name"
+                      v-model.trim="orgPerson.officer.organizationName"
                       filled
                       class="mt-6 mb-n6"
-                      id="organization-name"
                       label="Business or Corporation Name"
-                      v-model.trim="orgPerson.officer.organizationName"
                       :rules="orgNameRules"
                     />
                   </article>
@@ -222,11 +261,11 @@
                   <article class="other-edit-org">
                     <label class="sub-header">{{ orgTypesLabel }} Name</label>
                     <v-text-field
+                      id="organization-name"
+                      v-model="orgPerson.officer.organizationName"
                       filled
                       class="mt-4 mb-n6"
                       :label="`${ orgTypesLabel } Name`"
-                      id="organization-name"
-                      v-model="orgPerson.officer.organizationName"
                       :rules="orgNameRules"
                       :disabled="orgPerson.isLookupBusiness"
                     />
@@ -235,15 +274,15 @@
                     <v-expand-transition>
                       <v-checkbox
                         v-if="hasNameChanged(orgPerson)"
-                        class="mt-6 pt-0"
                         id="confirm-name-change-checkbox"
+                        v-model="orgPerson.confirmNameChange"
+                        class="mt-6 pt-0"
                         hide-details
                         :rules="confirmNameChangeRules"
-                        v-model="orgPerson.confirmNameChange"
                       >
-                        <template v-slot:label>
-                          I confirm {{isProprietor ? 'the proprietor' : isPartner ? 'this partner' :
-                          'this corporation or firm'}} has legally changed their name and that they remain
+                        <template #label>
+                          I confirm {{ isProprietor ? 'the proprietor' : isPartner ? 'this partner' :
+                            'this corporation or firm' }} has legally changed their name and that they remain
                           the same business.
                         </template>
                       </v-checkbox>
@@ -251,7 +290,10 @@
                   </article>
 
                   <!-- Show incorporation number -->
-                  <article v-if="orgPerson.officer.identifier" class="incorporation-number mt-6">
+                  <article
+                    v-if="orgPerson.officer.identifier"
+                    class="incorporation-number mt-6"
+                  >
                     <label class="sub-header">Incorporation/Registration Number:</label>
                     <span class="sub-header-text">{{ orgPerson.officer.identifier || 'Not entered' }}</span>
                   </article>
@@ -259,36 +301,46 @@
               </template>
 
               <!-- Email Address (proprietor/partner only) -->
-              <article v-if="(isApplicant || isProprietor || isPartner)" class="email-address mt-6">
+              <article
+                v-if="(isApplicant || isProprietor || isPartner)"
+                class="email-address mt-6"
+              >
                 <label class="sub-header">Email Address</label>
                 <p class="info-text">
                   Copies of the registration documents will be sent to this email address.
                 </p>
                 <v-text-field
                   id="proprietor-partner-email"
+                  v-model="orgPerson.officer.email"
                   :label="isEmailOptional ? 'Email Address (Optional)' : 'Email Address' "
                   filled
                   class="mb-n6"
                   persistent-hint
                   validate-on-blur
-                  v-model="orgPerson.officer.email"
                   :rules="proprietorEmailRules"
                 />
               </article>
 
               <!-- Roles (base corrections only) -->
-              <article v-if="isBenBcCccUlcCorrectionFiling" class="roles mt-6">
+              <article
+                v-if="isBenBcCccUlcCorrectionFiling"
+                class="roles mt-6"
+              >
                 <label class="sub-header">Roles</label>
                 <v-row class="roles-row mt-4">
-                  <v-col cols="4" class="mt-0" v-if="isPerson">
+                  <v-col
+                    v-if="isPerson"
+                    cols="4"
+                    class="mt-0"
+                  >
                     <div class="pa-1">
                       <v-checkbox
                         id="dir-checkbox"
-                        class="mt-1"
                         v-model="selectedRoles"
+                        class="mt-1"
                         :value="RoleTypes.DIRECTOR"
                         :label="RoleTypes.DIRECTOR"
-                        :disabled=true
+                        :disabled="true"
                         @change="assignDirectorRole()"
                       />
                     </div>
@@ -313,16 +365,22 @@
               </article>
 
               <!-- Delivery address (director/proprietor/partner only) -->
-              <article v-if="isDirector || isProprietor || isPartner" class="delivery-address mt-6">
+              <article
+                v-if="isDirector || isProprietor || isPartner"
+                class="delivery-address mt-6"
+              >
                 <v-checkbox
+                  v-model="inheritMailingAddress"
                   class="mt-0 pt-0"
                   label="Delivery Address same as Mailing Address"
                   hide-details
-                  v-model="inheritMailingAddress"
                   :disabled="disableSameDeliveryAddress"
                 />
                 <v-expand-transition>
-                  <div v-if="!inheritMailingAddress || disableSameDeliveryAddress" class="mt-6 mb-n6">
+                  <div
+                    v-if="!inheritMailingAddress || disableSameDeliveryAddress"
+                    class="mt-6 mb-n6"
+                  >
                     <label class="sub-header">Delivery Address</label>
                     <div class="address-wrapper pt-4">
                       <!-- NB: prevent edit when business was looked up -->
@@ -345,18 +403,32 @@
                 <v-btn
                   v-if="showRemoveBtn"
                   id="btn-remove"
-                  large outlined color="error"
+                  large
+                  outlined
+                  color="error"
                   :disabled="isNew"
-                  @click="emitRemove(activeIndex)">Remove</v-btn>
+                  @click="emitRemove(activeIndex)"
+                >
+                  Remove
+                </v-btn>
                 <v-btn
                   id="btn-done"
-                  large color="primary"
+                  large
+                  color="primary"
                   class="ml-auto"
-                  @click="validateOrgPersonForm()">Done</v-btn>
+                  @click="validateOrgPersonForm()"
+                >
+                  Done
+                </v-btn>
                 <v-btn
                   id="btn-cancel"
-                  large outlined color="primary"
-                  @click="resetAddPersonData(true)">Cancel</v-btn>
+                  large
+                  outlined
+                  color="primary"
+                  @click="resetAddPersonData(true)"
+                >
+                  Cancel
+                </v-btn>
               </div>
             </v-form>
           </div>
@@ -744,8 +816,13 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
 
   /** Returns True if person name or org name has changed from its original properties. */
   protected hasNameChanged (orgPerson: OrgPersonIF): boolean {
-    // is this a pre-existing person?
-    if (this.isPreExisting && this.isPerson) {
+    /** This check is only for firm corrections, change, conversion, Corp extension and Corp conversion filings.
+    Does not apply to corps corrections */
+    const showConfirmNameChange = this.isFirmCorrectionFiling || this.isFirmChangeFiling ||
+      this.isFirmConversionFiling || this.isLimitedRestorationExtension || this.isLimitedRestorationToFull
+
+    // check showConfirmNameChange and is this a pre-existing person?
+    if (showConfirmNameChange && this.isPreExisting && this.isPerson) {
       const firstName = !isEqual(orgPerson.officer.firstName, this.currentOrgPerson?.officer.firstName)
       const lastName = !isEqual(orgPerson.officer.lastName, this.currentOrgPerson?.officer.lastName)
       const middleName =

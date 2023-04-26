@@ -1,6 +1,6 @@
 <template>
   <section id="document-delivery-section">
-    <h2>{{sectionNumber}} Documents Delivery</h2>
+    <h2>{{ sectionNumber }} Documents Delivery</h2>
 
     <div class="document-info py-4">
       Copies of the {{ getFilingName.toLowerCase() }} documents will be sent
@@ -8,24 +8,43 @@
     </div>
 
     <div :class="{ 'invalid-section': documentDeliveryInvalid }">
-      <v-card flat class="section-container py-6">
+      <v-card
+        flat
+        class="section-container py-6"
+      >
         <v-row no-gutters>
-          <v-col cols="3" class="px-0">
+          <v-col
+            cols="3"
+            class="px-0"
+          >
             <label><strong>Registered Office</strong></label>
           </v-col>
-          <v-col cols="9" class="px-0">
-            <span class="info-text">{{getBusinessContact.email || '(Not entered)'}}</span>
+          <v-col
+            cols="9"
+            class="px-0"
+          >
+            <span class="info-text">{{ getBusinessContact.email || '(Not entered)' }}</span>
           </v-col>
         </v-row>
 
-        <v-row v-if="isRoleStaff && userEmailOptional" no-gutters class="mt-6">
-          <v-col cols="3" class="px-0">
+        <v-row
+          v-if="isRoleStaff && userEmailOptional"
+          no-gutters
+          class="mt-6"
+        >
+          <v-col
+            cols="3"
+            class="px-0"
+          >
             <label :class="{ 'error-text': documentDeliveryInvalid }"><strong>{{ emailLabel }}</strong></label>
           </v-col>
-          <v-col cols="9" class="px-0">
+          <v-col
+            cols="9"
+            class="px-0"
+          >
             <v-text-field
-              v-model="optionalEmail"
               id="optionalEmail"
+              v-model="optionalEmail"
               class="email-input-field mb-n2"
               filled
               label="Client Email Address (Optional)"
@@ -37,11 +56,21 @@
           </v-col>
         </v-row>
 
-        <v-row v-else no-gutters class="mt-6">
-          <v-col cols="3" class="px-0">
+        <v-row
+          v-else
+          no-gutters
+          class="mt-6"
+        >
+          <v-col
+            cols="3"
+            class="px-0"
+          >
             <label><strong>{{ emailLabel }}</strong></label>
           </v-col>
-          <v-col cols="9" class="px-0">
+          <v-col
+            cols="9"
+            class="px-0"
+          >
             <span class="info-text">{{ userEmail }}</span>
           </v-col>
         </v-row>

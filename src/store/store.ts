@@ -49,6 +49,7 @@ import DateUtilities from '@/services/date-utilities'
 import { defineStore } from 'pinia'
 import { resourceModel, stateModel } from './state'
 import { LegalServices } from '@/services'
+import { RulesMemorandumIF, RulesMemorandumResourceIF } from '@/interfaces/rules-memorandum-interfaces'
 
 // Possible to move getters / actions into seperate files:
 // https://github.com/vuejs/pinia/issues/802#issuecomment-1018780409
@@ -964,6 +965,7 @@ export const useStore = defineStore('store', {
       const removeNullProps = (obj) => {
         return Object.fromEntries(
           Object.entries(obj)
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             .filter(([_, v]) => v != null)
             .map(([k, v]) => [k, v === Object(v) ? removeNullProps(v) : v])
         )
@@ -1021,7 +1023,7 @@ export const useStore = defineStore('store', {
       return this.stateModel.newAlteration.courtOrder.fileNumber
     },
     /** Returns true if the filing has a court order number  */
-    hasFileNumber (state): boolean {
+    hasFileNumber (): boolean {
       return !!this.getFileNumber
     },
 
@@ -1182,6 +1184,8 @@ export const useStore = defineStore('store', {
       return this.stateModel.restoration?.expiry
     },
 
+    // FUTURE: should do something with "today"
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getFormattedExpiryText: (state) => (today = new Date()): string => {
       if (state.stateModel.restoration?.expiry) {
         const numberOfExtensionMonths = DateUtilities.subtractDates(state.stateModel.stateFilingRestoration?.expiry,
@@ -1191,7 +1195,44 @@ export const useStore = defineStore('store', {
       }
       return '[no expiry date]'
     },
-
+    getRules (): RulesMemorandumIF[] {
+      return [{
+        name: 'test',
+        key: '111',
+        url: '#'
+      }]
+    },
+    getRulesResource (): RulesMemorandumResourceIF {
+      return {
+        confirm: ['test'],
+        helpSection: {
+          header: 'header test',
+          helpText: ['helptest']
+        }
+      }
+    },
+    invalidRulesSection (): boolean {
+      return false
+    },
+    getUserKeycloakGuid (): string {
+      return ''
+    },
+    getMemorandum (): RulesMemorandumIF[] {
+      return [{
+        name: 'test',
+        key: '111',
+        url: '#'
+      }]
+    },
+    getMemorandumResource (): RulesMemorandumResourceIF {
+      return {
+        confirm: ['test'],
+        helpSection: {
+          header: 'header test',
+          helpText: ['helptest']
+        }
+      }
+    },
     /** The court order draft file number. */
     getCourtOrderNumberText (): string {
       return this.stateModel.restoration.courtOrder?.fileNumber || ''
@@ -1469,6 +1510,9 @@ export const useStore = defineStore('store', {
     },
     setResolutionSignatureValid (valid: boolean) {
       this.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature = valid
+    },
+    setRules (editing: boolean) {
+      this.stateModel.editingFlags.rule = editing
     }
   }
 })

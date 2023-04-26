@@ -1,11 +1,16 @@
 <template>
-  <v-card flat id="your-company">
+  <v-card
+    id="your-company"
+    flat
+  >
     <div class="your-company-header">
-      <v-icon class="header-icon">mdi-domain</v-icon>
+      <v-icon class="header-icon">
+        mdi-domain
+      </v-icon>
       <label class="your-company-title">Your {{ getResource.entityReference }}</label>
     </div>
 
-    <slot></slot>
+    <slot />
   </v-card>
 </template>
 

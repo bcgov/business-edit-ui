@@ -1,6 +1,9 @@
 <template>
-  <v-card flat id="extend-time-limit" class="pt-2 mr-8">
-
+  <v-card
+    id="extend-time-limit"
+    flat
+    class="pt-2 mr-8"
+  >
     <!-- Extension Time Section -->
     <section
       id="extension-time-section"
@@ -8,16 +11,23 @@
       :class="{ 'invalid-section': !getExpiryValid }"
     >
       <v-row no-gutters>
-        <v-col cols="12" sm="2" class="pt-2">
+        <v-col
+          cols="12"
+          sm="2"
+          class="pt-2"
+        >
           <strong :class="{ 'error-text': !getExpiryValid }">Extension Time</strong>
         </v-col>
-        <v-col cols="12" sm="9" class="pl-10">
+        <v-col
+          cols="12"
+          sm="9"
+          class="pl-10"
+        >
           <!-- Limited Restoration Radio Panel -->
           <LimitedRestorationPanel
+            :key="expiry"
             :currentDate="getCurrentDate"
             :expiryDate="expiry"
-            :key="expiry"
-            :maxNumberOfMonths=36
             @expiry="setRestorationExpiry(addMonthsToDate(previousNumberOfMonths, $event))"
             @valid="setExpiryValid($event)"
           />
@@ -26,21 +36,20 @@
     </section>
 
     <!-- Approval Type Section (if applicable) -->
-    <section id="approval-type-section"
+    <section
+      v-if="approvalType === ApprovalTypes.VIA_COURT_ORDER"
+      id="approval-type-section"
       class="section-container"
       :class="{ 'invalid-section': !getApprovalTypeValid }"
-      v-if="approvalType === ApprovalTypes.VIA_COURT_ORDER"
     >
-      <template>
-        <ApprovalType
-          :courtOrderNumber="getCourtOrderNumberText"
-          :isCourtOrderOnly="true"
-          :isCourtOrderRadio="false"
-          :invalidSection="!getApprovalTypeValid"
-          @courtNumberChange="setRestorationCourtOrder({ fileNumber: $event })"
-          @valid="setApprovalTypeValid($event)"
-        />
-      </template>
+      <ApprovalType
+        :courtOrderNumber="getCourtOrderNumberText"
+        :isCourtOrderOnly="true"
+        :isCourtOrderRadio="false"
+        :invalidSection="!getApprovalTypeValid"
+        @courtNumberChange="setRestorationCourtOrder({ fileNumber: $event })"
+        @valid="setApprovalTypeValid($event)"
+      />
     </section>
   </v-card>
 </template>

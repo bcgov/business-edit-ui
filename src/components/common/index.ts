@@ -12,6 +12,9 @@ export { default as HelpSection } from './HelpSection.vue'
 export { default as QuestionWrapper } from './QuestionWrapper.vue'
 export { default as StaffPayment } from './StaffPayment.vue'
 export { default as TransactionalFolioNumber } from './TransactionalFolioNumber.vue'
+export { default as Rules } from './Rules.vue'
+export { default as Memorandum } from './Memorandum.vue'
+export { default as UploadRulesMemorandum } from './UploadRulesMemorandum.vue'
 
 // these must come last as they depend on the above
 export * from './PeopleAndRoles'

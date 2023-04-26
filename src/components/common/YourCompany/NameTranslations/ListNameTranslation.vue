@@ -1,7 +1,14 @@
 <template>
-  <v-card flat id="list-name-translations" :style="{opacity: isAddingNameTranslation ? '0.4' : '1.0'}">
+  <v-card
+    id="list-name-translations"
+    flat
+    :style="{opacity: isAddingNameTranslation ? '0.4' : '1.0'}"
+  >
     <!-- List Headers -->
-    <v-row class="name-translation-title list-item__subtitle" no-gutters>
+    <v-row
+      class="name-translation-title list-item__subtitle"
+      no-gutters
+    >
       <v-col>
         <h3>Name Translations</h3>
       </v-col>
@@ -9,31 +16,43 @@
 
     <!-- List Content -->
     <v-row
-      class="names-translation-content gray-background"
       v-for="(translation, index) in translationsList"
       :key="`name_translation_${index}`"
+      class="names-translation-content gray-background"
       no-gutters
     >
       <v-col class="text-truncate">
-        <span class="name-title text-uppercase">{{translation.name}}</span>
+        <span class="name-title text-uppercase">{{ translation.name }}</span>
 
         <br v-if="!!translation.action">
 
-        <v-chip v-if="translation.action === ActionTypes.ADDED"
-          x-small label color="primary" text-color="white"
+        <v-chip
+          v-if="translation.action === ActionTypes.ADDED"
+          x-small
+          label
+          color="primary"
+          text-color="white"
         >
           <span>ADDED</span>
         </v-chip>
 
-        <v-chip v-if="translation.action === ActionTypes.EDITED"
-          x-small label color="primary" text-color="white"
+        <v-chip
+          v-if="translation.action === ActionTypes.EDITED"
+          x-small
+          label
+          color="primary"
+          text-color="white"
         >
           <span v-if="isCorrectionFiling">CORRECTED</span>
           <span v-else>CHANGED</span>
         </v-chip>
 
-        <v-chip v-if="translation.action === ActionTypes.REMOVED"
-          x-small label color="grey lighten-2" text-color="grey darken-4"
+        <v-chip
+          v-if="translation.action === ActionTypes.REMOVED"
+          x-small
+          label
+          color="grey lighten-2"
+          text-color="grey darken-4"
         >
           <span>REMOVED</span>
         </v-chip>
@@ -45,7 +64,8 @@
         <div class="actions mt-n1 float-right">
           <span class="edit-action">
             <v-btn
-              text small
+              text
+              small
               color="primary"
               :disabled="isAddingNameTranslation"
               @click="undoTranslation(index)"
@@ -58,12 +78,14 @@
           <!-- more actions menu -->
           <template v-if="translation.action !== ActionTypes.REMOVED">
             <v-menu offset-y>
-              <template v-slot:activator="{ on }">
+              <template #activator="{ on }">
                 <v-btn
-                  text small color="primary"
+                  text
+                  small
+                  color="primary"
                   class="more-actions-btn"
-                  v-on="on"
                   :disabled="isAddingNameTranslation"
+                  v-on="on"
                 >
                   <v-icon>mdi-menu-down</v-icon>
                 </v-btn>
@@ -72,14 +94,18 @@
               <v-list class="more-actions-list">
                 <v-list-item @click="editTranslation(index)">
                   <v-list-item-title>
-                    <v-icon small>mdi-pencil</v-icon>
+                    <v-icon small>
+                      mdi-pencil
+                    </v-icon>
                     <span class="ml-2">Correct</span>
                   </v-list-item-title>
                 </v-list-item>
 
                 <v-list-item @click="removeTranslation(index)">
                   <v-list-item-title>
-                    <v-icon small>mdi-delete</v-icon>
+                    <v-icon small>
+                      mdi-delete
+                    </v-icon>
                     <span class="ml-2">Remove</span>
                   </v-list-item-title>
                 </v-list-item>
@@ -90,11 +116,15 @@
       </v-col>
 
       <!-- Actions Column - Not Edited or Removed -->
-      <v-col v-else class="col-auto">
+      <v-col
+        v-else
+        class="col-auto"
+      >
         <div class="actions mt-n1 float-right">
           <span class="edit-action">
             <v-btn
-              text small
+              text
+              small
               color="primary"
               :disabled="isAddingNameTranslation"
               @click="editTranslation(index)"
@@ -106,12 +136,14 @@
 
           <!-- more actions menu -->
           <v-menu offset-y>
-            <template v-slot:activator="{ on }">
+            <template #activator="{ on }">
               <v-btn
-                text small color="primary"
+                text
+                small
+                color="primary"
                 class="more-actions-btn"
-                v-on="on"
                 :disabled="isAddingNameTranslation"
+                v-on="on"
               >
                 <v-icon>mdi-menu-down</v-icon>
               </v-btn>
@@ -120,7 +152,9 @@
             <v-list class="more-actions-list">
               <v-list-item @click="removeTranslation(index)">
                 <v-list-item-title>
-                  <v-icon small>mdi-delete</v-icon>
+                  <v-icon small>
+                    mdi-delete
+                  </v-icon>
                   <span class="ml-2">Remove</span>
                 </v-list-item-title>
               </v-list-item>

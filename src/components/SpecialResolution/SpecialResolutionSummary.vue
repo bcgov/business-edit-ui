@@ -1,10 +1,15 @@
 <template>
-  <v-card flat id="special-resolution-summary">
+  <v-card
+    id="special-resolution-summary"
+    flat
+  >
     <!-- Section Header -->
     <div class="summary-header px-4 mb-2 rounded-t">
       <v-row no-gutters>
         <v-col cols="9">
-          <v-icon class="header-icon ml-n1">mdi-file-document-edit-outline</v-icon>
+          <v-icon class="header-icon ml-n1">
+            mdi-file-document-edit-outline
+          </v-icon>
           <label class="summary-title">Summary of Changes to File</label>
         </v-col>
         <v-col @click="onClickDelete()" class="text-right">
@@ -23,9 +28,16 @@
             <label><strong>Company Name</strong></label>
           </v-col>
 
-          <v-col cols="8" class="mt-n1">
-            <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
-            <div class="company-name mt-2">{{ getNameRequestNumber }}</div>
+          <v-col
+            cols="8"
+            class="mt-n1"
+          >
+            <div class="company-name font-weight-bold text-uppercase">
+              {{ companyName }}
+            </div>
+            <div class="company-name mt-2">
+              {{ getNameRequestNumber }}
+            </div>
           </v-col>
         </v-row>
       </div>

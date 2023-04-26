@@ -135,7 +135,9 @@ export const stateModel: StateModelIF = {
     nameTranslations: false,
     officeAddresses: false,
     peopleAndRoles: false,
-    shareStructure: false
+    shareStructure: false,
+    rule: false,
+    memorandum: false
   },
   summaryMode: false,
   currentFees: [cloneDeep(EmptyFees)],
@@ -161,5 +163,7 @@ export const stateModel: StateModelIF = {
     relationships: [],
     type: null
   },
-  stateFilingRestoration: null
+  stateFilingRestoration: null,
+  rule: null,
+  memorandum: null
 }

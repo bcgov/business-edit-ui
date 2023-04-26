@@ -73,36 +73,6 @@ const validPersonData = {
   }
 }
 
-const validIncorporator = {
-  officer: {
-    id: '1',
-    firstName: 'Adam',
-    lastName: 'Smith',
-    middleName: 'D',
-    organizationName: '',
-    partyType: 'person'
-  },
-  roles: [
-    { roleType: 'Incorporator', appointmentDate: '2020-03-30' }
-  ],
-  mailingAddress: {
-    streetAddress: '123 Fake Street',
-    streetAddressAdditional: '',
-    addressCity: 'Victoria',
-    addressRegion: 'BC',
-    postalCode: 'V8Z 5C6',
-    addressCountry: 'CA'
-  },
-  deliveryAddress: {
-    streetAddress: '123 Fake Street',
-    streetAddressAdditional: '',
-    addressCity: 'Victoria',
-    addressRegion: 'BC',
-    postalCode: 'V8Z 5C6',
-    addressCountry: 'CA'
-  }
-}
-
 const validOrgData = {
   officer: {
     id: '2',
@@ -320,6 +290,20 @@ describe('Org/Person component for a BEN Correction filing', () => {
     await Vue.nextTick()
 
     expect(getLastEvent(wrapper, addEditEvent).officer.organizationName).toBe('Different Test Org')
+
+    wrapper.destroy()
+  })
+
+  it('Does not display name change checkbox when Person first name has changed', async () => {
+    const wrapper = createComponent(validPersonData, 0)
+    await Vue.nextTick()
+
+    // change org name
+    const input = wrapper.find(firstNameSelector)
+    await input.setValue('Different Test Person')
+    await input.trigger('change')
+
+    expect(wrapper.find(confirmNameChangeSelector).exists()).toBe(false)
 
     wrapper.destroy()
   })

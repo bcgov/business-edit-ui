@@ -1,12 +1,22 @@
 <template>
-  <v-dialog v-model="dialog" width="45rem" persistent :attach="attach" content-class="resolution-date-dialog">
+  <v-dialog
+    v-model="dialog"
+    width="45rem"
+    persistent
+    :attach="attach"
+    content-class="resolution-date-dialog"
+  >
     <v-card id="resolution-dates-dialog">
-      <v-card-title id="dialog-title">Resolution or Court Order Required</v-card-title>
+      <v-card-title id="dialog-title">
+        Resolution or Court Order Required
+      </v-card-title>
 
       <v-card-text id="dialog-text">
         <div>
-          <p>Your share structure contains a class or series of shares with special rights or restrictions. You must
-          have passed a resolution or have a court order to change your share structure.</p>
+          <p>
+            Your share structure contains a class or series of shares with special rights or restrictions. You must
+            have passed a resolution or have a court order to change your share structure.
+          </p>
           <p>Enter the date of the Resolution or Court Order here:</p>
         </div>
         <DatePickerShared
@@ -21,12 +31,25 @@
         />
       </v-card-text>
 
-      <v-divider class="my-0"></v-divider>
+      <v-divider class="my-0" />
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn id="dialog-done-button" color="primary" @click="onDateEmitted(date)">Done</v-btn>
-        <v-btn id="dialog-cancel-button" color="primary" outlined @click="exit()">Cancel</v-btn>
+        <v-spacer />
+        <v-btn
+          id="dialog-done-button"
+          color="primary"
+          @click="onDateEmitted(date)"
+        >
+          Done
+        </v-btn>
+        <v-btn
+          id="dialog-cancel-button"
+          color="primary"
+          outlined
+          @click="exit()"
+        >
+          Cancel
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

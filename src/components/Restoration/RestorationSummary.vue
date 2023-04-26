@@ -1,5 +1,8 @@
 <template>
-  <v-card flat id="restoration-summary">
+  <v-card
+    id="restoration-summary"
+    flat
+  >
     <!-- Business Name -->
     <template v-if="hasBusinessNameChanged">
       <v-divider class="mx-4" />
@@ -9,9 +12,16 @@
             <label><strong>Company Name</strong></label>
           </v-col>
 
-          <v-col cols="8" class="mt-n1">
-            <div class="company-name font-weight-bold text-uppercase">{{ companyName }}</div>
-            <div class="company-name mt-2">{{ getNameRequestNumber }}</div>
+          <v-col
+            cols="8"
+            class="mt-n1"
+          >
+            <div class="company-name font-weight-bold text-uppercase">
+              {{ companyName }}
+            </div>
+            <div class="company-name mt-2">
+              {{ getNameRequestNumber }}
+            </div>
           </v-col>
         </v-row>
       </div>
@@ -20,7 +30,7 @@
     <!-- Name Translation -->
     <template v-if="haveNameTranslationsChanged">
       <v-divider class="mx-4" />
-      <div class="section-container name-translation-summary">
+      <div class="name-translation-summary">
         <NameTranslation :isSummaryMode="true" />
       </div>
     </template>
