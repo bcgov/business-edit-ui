@@ -126,11 +126,11 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter, GetFeatureFlag, GetKeycloakRoles, Navigate, Sleep, UpdateLdUser }
-  from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
+import { GetFeatureFlag, GetKeycloakRoles, Navigate, Sleep, UpdateLdUser } from '@/utils/'
 import { StatusCodes } from 'http-status-codes'
-import SbcHeader from 'sbc-common-components/src/components/SbcHeader.vue'
-import SbcFooter from 'sbc-common-components/src/components/SbcFooter.vue'
+import SbcHeader from '@/sbc-common-components/src/components/SbcHeader.vue'
+import SbcFooter from '@/sbc-common-components/src/components/SbcFooter.vue'
 import { Actions, EntityInfo } from '@/components/common/'
 import { Breadcrumb as BreadcrumbShared } from '@/bcrs-shared-components/breadcrumb/'
 import { ConfirmDialog as ConfirmDialogShared } from '@/bcrs-shared-components/confirm-dialog/'
@@ -140,7 +140,7 @@ import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, ConfirmDialogType } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@/bcrs-shared-components/interfaces/'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { SessionStorageKeys } from '@/sbc-common-components/src/util/constants'
 import { RouteNames } from '@/enums/'
 import {
   getEntityDashboardBreadcrumb,

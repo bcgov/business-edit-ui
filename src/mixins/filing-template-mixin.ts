@@ -1,5 +1,5 @@
 import { Component } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import DateUtilities from '@/services/date-utilities'

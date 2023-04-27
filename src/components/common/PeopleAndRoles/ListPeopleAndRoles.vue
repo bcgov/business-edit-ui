@@ -521,8 +521,9 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
-import { Getter, IsSame } from '@/utils/'
-import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
+import { Getter } from '@/store/PiniaClass'
+import { IsSame } from '@/utils/'
+import BaseAddress from '@/sbc-common-components/src/components/BaseAddress.vue'
 import OrgPerson from './OrgPerson.vue'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { OrgPersonIF } from '@/interfaces/'

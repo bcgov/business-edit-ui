@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { Certify as CertifyShared } from '@/bcrs-shared-components/certify/'
 import { DateMixin } from '@/mixins/'
 import { ActionBindingIF, CertifyIF, ResourceIF } from '@/interfaces/'

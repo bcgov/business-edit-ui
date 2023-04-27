@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { ContactInfo as ContactInfoShared } from '@/bcrs-shared-components/contact-info/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'

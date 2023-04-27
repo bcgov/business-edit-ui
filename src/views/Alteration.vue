@@ -125,7 +125,8 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter, GetFeatureFlag } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
+import { GetFeatureFlag } from '@/utils/'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
 import { BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, CurrentDirectors,
   DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
@@ -137,7 +138,7 @@ import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, CertifyIF, EffectiveDateTimeIF, EntitySnapshotIF, FilingDataIF,
   ResourceIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { SessionStorageKeys } from '@/sbc-common-components/src/util/constants'
 import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
   from '@/resources/Alteration/'
 import ViewWrapper from '@/components/ViewWrapper.vue'

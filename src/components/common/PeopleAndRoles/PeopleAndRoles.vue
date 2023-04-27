@@ -288,7 +288,8 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter, IsSame } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
+import { IsSame } from '@/utils/'
 import { cloneDeep, isEmpty } from 'lodash'
 import { ActionBindingIF, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF, OrgPersonIF, ResourceIF,
   RoleIF } from '@/interfaces/'

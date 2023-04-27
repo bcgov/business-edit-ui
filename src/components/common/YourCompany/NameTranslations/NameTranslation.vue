@@ -203,7 +203,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { cloneDeep } from 'lodash'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { ActionChip as ActionChipShared } from '@/bcrs-shared-components/action-chip/'
 import { ConfirmDialog as ConfirmDialogShared } from '@/bcrs-shared-components/confirm-dialog/'
 import { ListNameTranslation, AddNameTranslation } from './'

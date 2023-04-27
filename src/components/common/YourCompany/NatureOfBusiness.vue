@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { NaicsServices } from '@/services/'
 import { ActionBindingIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { NaicsIF } from '@/bcrs-shared-components/interfaces/'

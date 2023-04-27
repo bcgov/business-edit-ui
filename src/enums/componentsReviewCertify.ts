@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  * List of components on Review and Certify page. Note:
  * - these values MUST match component IDs to scroll correctly

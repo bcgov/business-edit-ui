@@ -59,7 +59,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-facing-decorator'
-import { Action, Getter, Navigate } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
+import { Navigate } from '@/utils/'
 import { ActionBindingIF } from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, NameRequestMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'

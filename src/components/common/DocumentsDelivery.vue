@@ -81,7 +81,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { CommonMixin } from '@/mixins/'
 import { FilingNames } from '@/enums/'
 import { ActionBindingIF, FlagsReviewCertifyIF, ResourceIF } from '@/interfaces/'

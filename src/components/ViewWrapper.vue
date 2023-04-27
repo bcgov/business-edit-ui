@@ -61,9 +61,10 @@
 <script lang="ts">
 import { Affix as affix } from 'vue-affix'
 import { Component, Vue } from 'vue-facing-decorator'
-import { Action, Getter, Navigate } from '@/utils/'
-import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
-import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
+import { Action, Getter } from '@/store/PiniaClass'
+import { Navigate } from '@/utils/'
+import PaySystemAlert from '@/sbc-common-components/src/components/PaySystemAlert.vue'
+import SbcFeeSummary from '@/sbc-common-components/src/components/SbcFeeSummary.vue'
 import { FeeSummary as FeeSummaryShared } from '@/bcrs-shared-components/fee-summary/'
 import { Actions, EntityInfo } from '@/components/common/'
 import { ConfirmDialog as ConfirmDialogShared } from '@/bcrs-shared-components/confirm-dialog/'
@@ -72,7 +73,7 @@ import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
 import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
   AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, RestorationFilingIF,
   SpecialResolutionFilingIF } from '@/interfaces/'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { SessionStorageKeys } from '@/sbc-common-components/src/util/constants'
 import { ComponentsCompanyInfo, ComponentsReviewCertify } from '@/enums/'
 import { FeeSummaryActions } from '@/bcrs-shared-components/enums/'
 import { useStore } from '@/store/store'

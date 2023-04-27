@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'

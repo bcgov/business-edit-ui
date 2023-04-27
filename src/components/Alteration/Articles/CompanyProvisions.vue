@@ -159,7 +159,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Getter } from '@/utils/'
+import { Getter } from '@/store/PiniaClass'
 import { CommonMixin } from '@/mixins/'
 import { useStore } from '@/store/store'
 

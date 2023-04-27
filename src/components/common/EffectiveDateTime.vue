@@ -122,7 +122,7 @@
 
 <script lang="ts">
 import { Component, Emit, Vue, Watch } from 'vue-facing-decorator'
-import { Getter } from '@/utils/'
+import { Getter } from '@/store/PiniaClass'
 import { DatePicker as DatePickerShared } from '@/bcrs-shared-components/date-picker/'
 import { DateMixin } from '@/mixins/'
 import { EffectiveDateTypes, PeriodTypes } from '@/enums/'

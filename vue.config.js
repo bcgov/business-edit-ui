@@ -6,7 +6,8 @@ const packageJson = fs.readFileSync('./package.json')
 const appName = JSON.parse(packageJson).appName
 const appVersion = JSON.parse(packageJson).version
 const sbcName = JSON.parse(packageJson).sbcName
-const sbcVersion = JSON.parse(packageJson).dependencies['sbc-common-components']
+// *** TODO: fix this
+const sbcVersion = 'Unknown' // JSON.parse(packageJson).dependencies['sbc-common-components']
 const aboutText1 = (appName && appVersion) ? `${appName} v${appVersion}` : ''
 const aboutText2 = (sbcName && sbcVersion) ? `${sbcName} v${sbcVersion}` : ''
 

@@ -572,10 +572,11 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter, IsSame } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
+import { IsSame } from '@/utils/'
 import { isEmpty, isEqual } from 'lodash'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
-import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
+import BaseAddress from '@/sbc-common-components/src/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, AddressesIF, FlagsCompanyInfoIF, ResourceIF } from '@/interfaces/'
 import { AddressTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'

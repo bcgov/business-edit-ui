@@ -299,7 +299,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { BcRegContacts } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'

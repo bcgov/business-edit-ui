@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { ActionBindingIF } from '@/interfaces/'
 import { CompletingPartyIF } from '@/bcrs-shared-components/interfaces/'
 import { CompletingParty as CompletingPartyShared } from '@/bcrs-shared-components/completing-party/'

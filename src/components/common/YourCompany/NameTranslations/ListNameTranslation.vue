@@ -168,7 +168,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
-import { Getter } from '@/utils/'
+import { Getter } from '@/store/PiniaClass'
 import { NameTranslationIF } from '@/interfaces/'
 import { ActionTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'

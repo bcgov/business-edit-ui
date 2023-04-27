@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-facing-decorator'
-import { Getter } from '@/utils/'
+import { Getter } from '@/store/PiniaClass'
 import { FeesIF } from '@/interfaces/'
 import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { NameTranslation } from '@/components/common/'

@@ -202,7 +202,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { ActionBindingIF, EffectiveDateTimeIF, FeesIF, FlagsReviewCertifyIF, ResolutionsIF }
   from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'

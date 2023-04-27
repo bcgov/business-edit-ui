@@ -11,12 +11,13 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter, GetFeatureFlag } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
+import { GetFeatureFlag } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { ActionBindingIF, CorrectionFilingIF } from '@/interfaces/'
 import { FilingStatus, FilingTypes } from '@/enums/'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { SessionStorageKeys } from '@/sbc-common-components/src/util/constants'
 import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
 import CorpCorrection from '@/views/Correction/CorpCorrection.vue'
 import FirmCorrection from '@/views/Correction/FirmCorrection.vue'

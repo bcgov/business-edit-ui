@@ -160,7 +160,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { CoopTypes } from '@/enums'
 import { CommonMixin } from '@/mixins'
 import { ActionBindingIF, BusinessInformationIF, EntitySnapshotIF } from '@/interfaces'

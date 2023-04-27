@@ -27,7 +27,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 
 // Components
 import { ShareStructure as ShareStructureShared } from '@/bcrs-shared-components/share-structure/'

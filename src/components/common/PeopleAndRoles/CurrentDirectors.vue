@@ -87,11 +87,12 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-facing-decorator'
-import { Getter, IsSame } from '@/utils/'
+import { Getter } from '@/store/PiniaClass'
+import { IsSame } from '@/utils/'
 import { OrgPersonIF } from '@/interfaces/'
 import { RoleTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
-import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
+import BaseAddress from '@/sbc-common-components/src/components/BaseAddress.vue'
 
 import { useStore } from '@/store/store'
 

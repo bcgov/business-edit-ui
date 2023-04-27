@@ -1,3 +1,4 @@
+// *** TODO: compare this with jest.config.js in sbc-common-components
 module.exports = {
   globals: {
     'ts-jest': {

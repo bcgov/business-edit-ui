@@ -49,7 +49,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, CompletingParty, Detail,
   EntityName, NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment, YourCompanyWrapper }
   from '@/components/common/'

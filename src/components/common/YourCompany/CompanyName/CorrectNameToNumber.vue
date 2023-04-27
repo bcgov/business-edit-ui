@@ -19,7 +19,7 @@
 <script lang="ts">
 // Libraries
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 
 // Interfaces && enums
 import { ActionBindingIF, NameRequestIF } from '@/interfaces/'

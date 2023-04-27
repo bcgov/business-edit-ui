@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, NameRequestIF } from '@/interfaces/'
 import { NameChangeOptions } from '@/enums/'

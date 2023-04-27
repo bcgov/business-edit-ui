@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-facing-decorator'
-import { Getter } from '@/utils/'
+import { Getter } from '@/store/PiniaClass'
 import { ResourceIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 

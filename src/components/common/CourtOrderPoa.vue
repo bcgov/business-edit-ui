@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { CourtOrderPoa as CourtOrderPoaShared } from '@/bcrs-shared-components/court-order-poa'
 import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
 import { useStore } from '@/store/store'

@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-facing-decorator'
-import { Getter } from '@/utils/'
+import { Getter } from '@/store/PiniaClass'
 import { NameRequestStates, NameRequestTypes } from '@/enums/'
 import { LegalServices } from '@/services/'
 import { NrResponseIF, ResourceIF } from '@/interfaces/'

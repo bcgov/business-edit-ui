@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 
 // Components
 import { StaffPayment as StaffPaymentShared } from '@/bcrs-shared-components/staff-payment/'

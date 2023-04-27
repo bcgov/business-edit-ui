@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-facing-decorator'
-import { Getter } from '@/utils/'
+import { Getter } from '@/store/PiniaClass'
 import DateUtilities from '@/services/date-utilities'
 import { useStore } from '@/store/store'
 

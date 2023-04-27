@@ -265,8 +265,9 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
-import { ActionBindingIF, HelpSectionIF, ResourceIF, FormIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
+import { Action, Getter } from '@/store/PiniaClass'
+import { ActionBindingIF, HelpSectionIF, ResourceIF, FormIF, SpecialResolutionSampleFormIF }
+  from '@/interfaces/'
 import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@/bcrs-shared-components/date-picker/'

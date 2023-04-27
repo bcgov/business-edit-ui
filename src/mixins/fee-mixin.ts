@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { ActionBindingIF, EmptyFees, FeesIF } from '@/interfaces'
 import { PayServices } from '@/services/'
 import { StaffPaymentOptions } from '@/bcrs-shared-components/enums'

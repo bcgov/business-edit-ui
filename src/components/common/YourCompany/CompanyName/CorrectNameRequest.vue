@@ -98,7 +98,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { ConfirmDialog as ConfirmDialogShared } from '@/bcrs-shared-components/confirm-dialog/'
 import { CommonMixin, NameRequestMixin } from '@/mixins/'
 import { ActionBindingIF, ConfirmDialogType, NameRequestIF, NrCorrectionIF, NrResponseIF } from '@/interfaces/'

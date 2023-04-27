@@ -99,7 +99,8 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter, GetFeatureFlag } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
+import { GetFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
 import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
   DocumentsDelivery, EntityName, NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment,
@@ -108,7 +109,7 @@ import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, CertifyIF, EntitySnapshotIF, OrgPersonIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus, PartyTypes } from '@/enums/'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { SessionStorageKeys } from '@/sbc-common-components/src/util/constants'
 import { SpChangeResource, GpChangeResource, SpOrganizationChangeResource } from '@/resources/Change/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'

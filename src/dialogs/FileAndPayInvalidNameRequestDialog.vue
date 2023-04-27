@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
-import { Getter } from '@/utils/'
+import { Getter } from '@/store/PiniaClass'
 import { ErrorContact } from '@/components/common/'
 import { useStore } from '@/store/store'
 

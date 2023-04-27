@@ -111,7 +111,8 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter, GetFeatureFlag } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
+import { GetFeatureFlag } from '@/utils/'
 import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep } from 'lodash'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'

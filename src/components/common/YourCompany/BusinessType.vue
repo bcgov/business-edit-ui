@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { ActionBindingIF } from '@/interfaces/'
 import ChangeBusinessType from '@/components/common/YourCompany/ChangeBusinessType.vue'
 import { useStore } from '@/store/store'

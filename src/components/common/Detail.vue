@@ -45,7 +45,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { DetailComment as DetailCommentShared } from '@/bcrs-shared-components/detail-comment/'
-import { Action } from '@/utils/'
+import { Action } from '@/store/PiniaClass'
 import { ActionBindingIF } from '@/interfaces/'
 import { FilingTemplateMixin } from '@/mixins'
 

@@ -65,7 +65,7 @@
 <script lang="ts">
 // this is a placceholder copied from AlterationSummary, Will add component when working on this page
 import { Component, Prop, Vue } from 'vue-facing-decorator'
-import { Getter } from '@/utils/'
+import { Getter } from '@/store/PiniaClass'
 import { CoopTypes } from '@/enums'
 import { EntitySnapshotIF, FeesIF } from '@/interfaces/'
 import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'

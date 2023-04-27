@@ -61,7 +61,7 @@ import { FeeSummaryActions } from '@/bcrs-shared-components/enums'
 import { FilingDataIF } from '@/bcrs-shared-components/interfaces'
 
 // Component Dependency
-import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
+import SbcFeeSummary from '@/sbc-common-components/src/components/SbcFeeSummary.vue'
 
 @Component({
   components: { SbcFeeSummary }

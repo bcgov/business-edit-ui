@@ -73,7 +73,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { Articles } from '@/components/Alteration/'
 import { BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityName, FolioInformation,
   NameTranslation, OfficeAddresses, PeopleAndRoles, RecognitionDateTime, ShareStructures, StaffPayment,

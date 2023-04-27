@@ -41,7 +41,7 @@
 
 <script lang="ts">
 import { Component, Emit, Vue } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import CompanyProvisions from './CompanyProvisions.vue'
 import ResolutionDates from './ResolutionDates.vue'
 import { CommonMixin } from '@/mixins/'

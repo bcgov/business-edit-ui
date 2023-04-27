@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, FlagsReviewCertifyIF, FormFieldType } from '@/interfaces/'
 import { VuetifyRuleFunction } from '@/types'

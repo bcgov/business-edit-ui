@@ -112,7 +112,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-facing-decorator'
-import { Getter } from '@/utils/'
+import { Getter } from '@/store/PiniaClass'
 import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common/'
 import { NameRequestIF } from '@/interfaces/'
 import { NaicsIF } from '@/bcrs-shared-components/interfaces/'

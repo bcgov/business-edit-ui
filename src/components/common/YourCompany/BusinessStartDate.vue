@@ -165,7 +165,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { DatePicker as DatePickerShared } from '@/bcrs-shared-components/date-picker'
 import { ActionBindingIF, FlagsCompanyInfoIF } from '@/interfaces'

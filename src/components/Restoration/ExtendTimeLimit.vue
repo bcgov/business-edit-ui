@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { Action, Getter } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
 import { ApprovalType } from '@/bcrs-shared-components/approval-type'
 import { ApprovalTypes, RestorationTypes } from '@/enums'
 import Actions from '@/components/common/Actions.vue'

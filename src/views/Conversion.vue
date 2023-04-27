@@ -63,7 +63,8 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter, GetFeatureFlag } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
+import { GetFeatureFlag } from '@/utils/'
 import { ConversionNOB, ConversionSummary } from '@/components/Conversion'
 import { CompletingParty, BusinessStartDate, BusinessType, EntityName, FolioInformation, OfficeAddresses,
   PeopleAndRoles, YourCompanyWrapper } from '@/components/common/'
@@ -71,7 +72,7 @@ import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, EntitySnapshotIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { SessionStorageKeys } from '@/sbc-common-components/src/util/constants'
 import { SpConversionResource, GpConversionResource } from '@/resources/Conversion/'
 import { StatusCodes } from 'http-status-codes'
 import ViewWrapper from '@/components/ViewWrapper.vue'

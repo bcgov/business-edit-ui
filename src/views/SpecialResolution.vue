@@ -123,7 +123,8 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { Action, Getter, GetFeatureFlag } from '@/utils/'
+import { Action, Getter } from '@/store/PiniaClass'
+import { GetFeatureFlag } from '@/utils/'
 import { SpecialResolutionSummary, CreateSpecialResolution } from '@/components/SpecialResolution'
 import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CurrentDirectors,
   DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, StaffPayment, TransactionalFolioNumber,
@@ -134,7 +135,7 @@ import { ActionBindingIF, CertifyIF, EffectiveDateTimeIF, EntitySnapshotIF, Fili
   ResourceIF } from '@/interfaces/'
 import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
 import { FilingCodes, FilingStatus } from '@/enums/'
-import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
+import { SessionStorageKeys } from '@/sbc-common-components/src/util/constants'
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'

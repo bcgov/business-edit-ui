@@ -81,7 +81,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-facing-decorator'
-import { Getter } from '@/utils/'
+import { Getter } from '@/store/PiniaClass'
 import { ListPeopleAndRoles } from '@/components/common/'
 import { OfficeAddresses } from '@/components/common/YourCompany'
 import { NaicsIF } from '@/bcrs-shared-components/interfaces/'
