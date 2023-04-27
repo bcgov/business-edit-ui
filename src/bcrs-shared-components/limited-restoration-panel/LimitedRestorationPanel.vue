@@ -1,25 +1,61 @@
 <template id="limited-restoration-panel">
-  <v-radio-group class="mt-0 pt-0 ml-8" v-model="selectMonths" mandatory>
-    <v-radio class="radio-button pt-2" id="twentyFour-radio" name="selectMonths" label="2 years" :value=24 />
-    <v-radio class="radio-button pt-2" id="eighteen-radio" name="selectMonths" label="18 months" :value=18 />
-    <v-radio class="radio-button pt-2" id="twelve-radio" name="selectMonths" label="12 months" :value=12 />
-    <v-radio class="radio-button pt-2" id="six-radio" name="selectMonths" label="6 months" :value=6 />
+  <v-radio-group
+    v-model="selectMonths"
+    class="mt-0 pt-0 ml-8"
+    mandatory
+  >
+    <v-radio
+      id="twentyFour-radio"
+      class="radio-button pt-2"
+      name="selectMonths"
+      label="2 years"
+      :value="24"
+    />
+    <v-radio
+      id="eighteen-radio"
+      class="radio-button pt-2"
+      name="selectMonths"
+      label="18 months"
+      :value="18"
+    />
+    <v-radio
+      id="twelve-radio"
+      class="radio-button pt-2"
+      name="selectMonths"
+      label="12 months"
+      :value="12"
+    />
+    <v-radio
+      id="six-radio"
+      class="radio-button pt-2"
+      name="selectMonths"
+      label="6 months"
+      :value="6"
+    />
     <v-row class="ml-0 mt-0 radio-button pt-2">
-      <v-radio class="mt-n4" id="custom-months" name="selectMonths" value="customMonths" />
+      <v-radio
+        id="custom-months"
+        class="mt-n4"
+        name="selectMonths"
+        value="customMonths"
+      />
       <v-form ref="monthsRef">
         <v-text-field
           id="months-text-field"
+          v-model="numberOfMonths"
           class="number-months-field"
           type="number"
-          dense
+          density="compact"
           hide-spin-buttons
           :rules="monthRules"
-          v-model="numberOfMonths"
           :disabled="!customMonths"
+          variant="filled"
           @change="onMonthsChanged"
-          filled />
+        />
       </v-form>
-      <div class="ml-2 mt-2 month-text">month(s)</div>
+      <div class="ml-2 mt-2 month-text">
+        month(s)
+      </div>
     </v-row>
   </v-radio-group>
 </template>
@@ -27,7 +63,7 @@
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { DateMixin } from '@/mixins' // NB: local mixin (StoryBook can't find it otherwise)
-import { FormIF } from '@/bcrs-shared-components/interfaces'
+import { FormIF } from '@bcrs-shared-components/interfaces'
 
 @Component({
   mixins: [DateMixin]
@@ -98,7 +134,7 @@ export default class LimitedRestorationPanel extends Vue {
    */
   onMonthsChanged (): void {
     // Trigger form validation.
-    let status = this.$refs.monthsRef.validate()
+    const status = this.$refs.monthsRef.validate()
     this.monthsValid(status)
     this.expiryChanged(this.addMonthsToDate(Number(this.numberOfMonths), this.currentDate))
   }

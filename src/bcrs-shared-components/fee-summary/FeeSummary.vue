@@ -6,10 +6,13 @@
     />
 
     <v-row no-gutters>
-      <v-col v-if="isSummaryMode" class="pt-3 pr-3">
+      <v-col
+        v-if="isSummaryMode"
+        class="pt-3 pr-3"
+      >
         <v-btn
           id="back-btn"
-          large
+          size="large"
           :loading="isLoading"
           @click="emitAction(FeeSummaryActions.BACK)"
         >
@@ -19,7 +22,7 @@
       <v-col class="pt-3">
         <v-btn
           id="cancel-btn"
-          large
+          size="large"
           :loading="isLoading"
           @click="emitAction(FeeSummaryActions.CANCEL)"
         >
@@ -29,7 +32,7 @@
       <v-col class="pt-3">
         <v-btn
           id="save-resume-later-btn"
-          large
+          size="large"
           :loading="isLoading"
           @click="emitAction(FeeSummaryActions.SAVE_RESUME_LATER)"
         >
@@ -39,17 +42,21 @@
       <v-col class="pt-3">
         <v-btn
           id="confirm-btn"
-          large
+          size="large"
           :disabled="hasConflicts"
           :loading="isLoading"
           @click="emitAction(FeeSummaryActions.CONFIRM)"
         >
-          <span>{{confirmLabel}}<v-icon>mdi-chevron-right</v-icon></span>
+          <span>{{ confirmLabel }}<v-icon>mdi-chevron-right</v-icon></span>
         </v-btn>
       </v-col>
     </v-row>
 
-    <div v-if="errorMessage" v-html="errorMessage" class="error-msg pre-wrap mt-1" />
+    <div
+      v-if="errorMessage"
+      class="error-msg pre-wrap mt-1"
+      v-html="errorMessage"
+    />
   </aside>
 </template>
 
@@ -58,10 +65,10 @@ import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
 
 // Enums and Interfaces
 import { FeeSummaryActions } from '@/bcrs-shared-components/enums'
-import { FilingDataIF } from '@/bcrs-shared-components/interfaces'
+import { FilingDataIF } from '@bcrs-shared-components/interfaces'
 
 // Component Dependency
-import SbcFeeSummary from '@/sbc-common-components/src/components/SbcFeeSummary.vue'
+import SbcFeeSummary from '@/sbc-common-components/components/SbcFeeSummary.vue'
 
 @Component({
   components: { SbcFeeSummary }

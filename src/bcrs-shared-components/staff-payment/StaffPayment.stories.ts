@@ -1,6 +1,6 @@
 import { StaffPayment } from './index'
 import { StaffPaymentOptions } from '@/bcrs-shared-components/enums'
-import { StaffPaymentIF } from '@/bcrs-shared-components/interfaces'
+import { StaffPaymentIF } from '@bcrs-shared-components/interfaces'
 
 export default {
   title: 'component/StaffPayment',
@@ -26,5 +26,5 @@ const staffPaymentData: StaffPaymentIF = {
 
 export const Default = Template.bind({})
 Default.args = {
-  staffPaymentData: staffPaymentData
+  staffPaymentData
 }

@@ -1,18 +1,20 @@
 <template>
-  <v-card flat id="detail-comment-container">
+  <v-card
+    id="detail-comment-container"
+    flat
+  >
     <v-textarea
+      id="detail-comment-textarea"
       ref="textarea"
-      :outlined="isStyle('outlined')"
-      :filled="isStyle('filled')"
+      :variant="variant"
       auto-grow
       :rows="rowCount"
-      id="detail-comment-textarea"
       :counter="maxLength"
       :rules="rules"
-      :value="value"
+      :model-value="value"
       :placeholder="placeholder"
       :autofocus="autofocus"
-      @input="emitInput($event)"
+      @update:model-value="emitInput($event)"
     />
   </v-card>
 </template>
@@ -62,6 +64,13 @@ export default class DetailComment extends Vue {
 
   protected isStyle (style: string): boolean {
     return this.textAreaStyle.toLowerCase() === style.toLowerCase()
+  }
+
+  // *** TODO: test this
+  get variant (): any {
+    if (this.isStyle('outlined')) return 'outlined'
+    if (this.isStyle('filled')) return 'filled'
+    return null
   }
 
   /**

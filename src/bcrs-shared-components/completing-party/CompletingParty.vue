@@ -1,9 +1,15 @@
 <template>
-  <v-card flat id="completing-party">
+  <v-card
+    id="completing-party"
+    flat
+  >
     <!-- Add/Edit Block -->
     <template v-if="enableAddEdit">
       <v-row no-gutters>
-        <v-col cols="12" sm="3">
+        <v-col
+          cols="12"
+          sm="3"
+        >
           <label class="add-person-header">
             <span :class="{ 'error-text': invalidSection }">Add Person</span>
           </label>
@@ -13,41 +19,44 @@
           <v-form
             ref="completingPartyForm"
             v-model="completingPartyFormValid"
-            v-on:submit.prevent
+            @submit.prevent
           >
             <!-- Person's Name -->
             <label class="sub-header">Person's Name</label>
-            <v-row no-gutters class="pt-6">
+            <v-row
+              no-gutters
+              class="pt-6"
+            >
               <v-col>
                 <v-text-field
-                  filled
+                  id="person__first-name"
+                  variant="filled"
                   class="item"
                   label="First Name"
-                  id="person__first-name"
                   :rules="firstNameRules"
-                  :value="completingParty.firstName"
+                  :model-value="completingParty.firstName"
                   @change="newCompletingParty.firstName = $event"
                 />
               </v-col>
               <v-col class="px-4">
                 <v-text-field
-                  filled
+                  id="person__middle-name"
+                  variant="filled"
                   class="item"
                   label="Middle Name"
-                  id="person__middle-name"
                   :rules="middleNameRules"
-                  :value="completingParty.middleName"
+                  :model-value="completingParty.middleName"
                   @change="newCompletingParty.middleName = $event"
                 />
               </v-col>
               <v-col>
                 <v-text-field
-                  filled
+                  id="person__last-name"
+                  variant="filled"
                   class="item"
                   label="Last Name"
-                  id="person__last-name"
                   :rules="lastNameRules"
-                  :value="completingParty.lastName"
+                  :model-value="completingParty.lastName"
                   @change="newCompletingParty.lastName = $event"
                 />
               </v-col>
@@ -73,27 +82,57 @@
     <!-- Summary Block -->
     <template v-else>
       <!-- Table Headers -->
-      <v-row class="list-header pb-3" no-gutters>
-        <v-col cols="12" sm="3">Name</v-col>
-        <v-col cols="12" sm="3">Mailing Address</v-col>
+      <v-row
+        class="list-header pb-3"
+        no-gutters
+      >
+        <v-col
+          cols="12"
+          sm="3"
+        >
+          Name
+        </v-col>
+        <v-col
+          cols="12"
+          sm="3"
+        >
+          Mailing Address
+        </v-col>
       </v-row>
 
       <!-- Table Content -->
-      <v-row class="list-content pt-3" no-gutters>
+      <v-row
+        class="list-content pt-3"
+        no-gutters
+      >
         <!-- Name -->
-        <v-col class="pr-2" cols="12" sm="3">
+        <v-col
+          class="pr-2"
+          cols="12"
+          sm="3"
+        >
           <v-row no-gutters>
-            <v-col cols="1" class="mt-n1 ml-n1 mr-3">
-              <v-icon color="gray9">mdi-account</v-icon>
+            <v-col
+              cols="1"
+              class="mt-n1 ml-n1 mr-3"
+            >
+              <v-icon color="gray9">
+                mdi-account
+              </v-icon>
             </v-col>
             <v-col>
-              <p class="list-subtitle ma-0 mb-1">{{ completingPartyName }}</p>
+              <p class="list-subtitle ma-0 mb-1">
+                {{ completingPartyName }}
+              </p>
             </v-col>
           </v-row>
         </v-col>
 
         <!-- Mailing Address -->
-        <v-col cols="12" sm="8">
+        <v-col
+          cols="12"
+          sm="8"
+        >
           <BaseAddress
             class="peoples-roles-mailing-address"
             :address="completingParty.mailingAddress"
@@ -106,8 +145,8 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { AddressIF, CompletingPartyIF, FormIF } from '@/bcrs-shared-components/interfaces/'
-import BaseAddress from '@/sbc-common-components/src/components/BaseAddress.vue'
+import { AddressIF, CompletingPartyIF, FormIF } from '@bcrs-shared-components/interfaces/'
+import BaseAddress from '@/sbc-common-components/components/BaseAddress.vue'
 import { isEqual } from 'lodash'
 
 @Component({

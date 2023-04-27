@@ -1,22 +1,41 @@
 <template>
   <div id="approval-type">
     <v-row no-gutters>
-      <v-col cols="12" sm="3" class="pr-4">
+      <v-col
+        cols="12"
+        sm="3"
+        class="pr-4"
+      >
         <label :class="{ 'error-text': invalidSection }">Approval Type</label>
       </v-col>
-      <v-col cols="12" sm="9" class="mt-n4">
-        <v-radio-group class="payment-group pt-0" v-model="approvalTypeSelected" @change="radioButtonChanged">
+      <v-col
+        cols="12"
+        sm="9"
+        class="mt-n4"
+      >
+        <v-radio-group
+          v-model="approvalTypeSelected"
+          class="payment-group pt-0"
+          @update:model-value="radioButtonChanged"
+        >
           <!-- COURT ORDER section -->
           <template v-if="!isCourtOrderRadio">
             <span class="v-label ml-2">{{ getRadioText(ApprovalTypes.VIA_COURT_ORDER) }}</span>
           </template>
           <template v-else>
-            <v-radio id="court-order-radio" class="mb-0"
+            <v-radio
+              id="court-order-radio"
+              class="mb-0"
               :label="getRadioText(ApprovalTypes.VIA_COURT_ORDER)"
               :value="ApprovalTypes.VIA_COURT_ORDER"
             />
           </template>
-          <v-form ref="courtNumRef" id="court-num-form" v-model="valid" class="mt-8 ml-2">
+          <v-form
+            id="court-num-form"
+            ref="courtNumRef"
+            v-model="valid"
+            class="mt-8 ml-2"
+          >
             <v-expand-transition class="pb-0 mb-0">
               <v-text-field
                 v-if="approvalTypeSelected === ApprovalTypes.VIA_COURT_ORDER"
@@ -24,29 +43,34 @@
                 v-model="courtOrderNumberText"
                 label="Court Order Number"
                 :rules="courtOrderNumRules"
-                @input="courtOrderNumberChanged"
-                @update:error="emitValidationError($event)"
                 hide-details="auto"
-                filled
+                variant="filled"
+                @update:model-value="courtOrderNumberChanged"
+                @update:error="emitValidationError($event)"
               />
             </v-expand-transition>
           </v-form>
           <!-- REGISTRAR section -->
-          <v-radio v-if="!isCourtOrderOnly"
-            id="registrar-radio" class="mb-n5 pt-2"
+          <v-radio
+            v-if="!isCourtOrderOnly"
+            id="registrar-radio"
+            class="mb-n5 pt-2"
             :label="getRadioText(ApprovalTypes.VIA_REGISTRAR)"
             :value="ApprovalTypes.VIA_REGISTRAR"
           />
           <v-expand-transition>
-            <div flat v-if="approvalTypeSelected === ApprovalTypes.VIA_REGISTRAR">
+            <div
+              v-if="approvalTypeSelected === ApprovalTypes.VIA_REGISTRAR"
+              flat
+            >
               <div class="ml-8 mt-3">
                 <span class="v-label">Enter the date the Notice of the Application for Restoration was published in
                   the BC Gazette:
                 </span>
                 <DatePicker
-                  class="mt-2"
                   id="date-picker-notice"
                   ref="noticeDateRef"
+                  class="mt-2"
                   title="Select Date"
                   :nudgeRight="150"
                   :initialValue="noticeDate"
@@ -57,9 +81,9 @@
               <div class="ml-8">
                 <span class="v-label">Enter the date the Application for Restoration was mailed to the company:</span>
                 <DatePicker
-                  class="mt-2"
                   id="date-picker-application"
                   ref="applicationDateRef"
+                  class="mt-2"
                   title="Select Date"
                   :nudgeRight="150"
                   :initialValue="applicationDate"
@@ -78,7 +102,7 @@
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
 import { ApprovalTypes } from '@/bcrs-shared-components/enums'
-import { FormIF } from '@/bcrs-shared-components/interfaces'
+import { FormIF } from '@bcrs-shared-components/interfaces'
 import { DatePicker } from '@/bcrs-shared-components/date-picker'
 
 @Component({
@@ -159,12 +183,12 @@ export default class ApprovalType extends Vue {
   /** Triggers the form validation. */
   public validate (): boolean {
     if (this.approvalTypeSelected === ApprovalTypes.VIA_COURT_ORDER) {
-      let status = this.$refs.courtNumRef.validate()
+      const status = this.$refs.courtNumRef.validate()
       this.$emit('valid', status)
       return status
     } else if (this.approvalTypeSelected === ApprovalTypes.VIA_REGISTRAR) {
       // Emit true (valid) if both dates were selected. Emit false (invalid) if at least one was empty.
-      let status = (!!this.noticeDateText && !!this.applicationDateText)
+      const status = (!!this.noticeDateText && !!this.applicationDateText)
       this.$emit('valid', status)
       return status
     } else {

@@ -60,7 +60,7 @@
         <v-btn
           id="dialog-exit-button"
           color="primary"
-          text
+          variant="text"
           @click="close()"
         >
           OK

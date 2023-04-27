@@ -138,12 +138,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep } from 'lodash'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
-import { BusinessContactInfo, CertifySection, CourtOrderPoa, DocumentsDelivery, EntityName,
+import {
+  BusinessContactInfo, CertifySection, CourtOrderPoa, DocumentsDelivery, EntityName,
   FolioInformation, ListPeopleAndRoles, NameTranslation, OfficeAddresses, PeopleAndRoles,
-  QuestionWrapper, RecognitionDateTime, StaffPayment, YourCompanyWrapper } from '@/components/common/'
+  QuestionWrapper, RecognitionDateTime, StaffPayment, YourCompanyWrapper
+} from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import {
   ActionBindingIF,
   EntitySnapshotIF,

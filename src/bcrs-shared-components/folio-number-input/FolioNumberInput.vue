@@ -1,23 +1,27 @@
 <template>
-    <v-form id="folio-number-form" ref="folioForm" v-model="folioFormValid">
-      <v-text-field
-        filled
-        id="folio-number-textfield"
-        label="Folio Number (Optional)"
-        :value="folioNumber"
-        :rules="folioNumberRules"
-        :disabled="disabled"
-        @input="emitFolioNumber($event)"
-        @focus="emitFocus($event)"
-        autocomplete="chrome-off"
-        :name="Math.random()"
-      />
-    </v-form>
+  <v-form
+    id="folio-number-form"
+    ref="folioForm"
+    v-model="folioFormValid"
+  >
+    <v-text-field
+      id="folio-number-textfield"
+      variant="filled"
+      label="Folio Number (Optional)"
+      :model-value="folioNumber"
+      :rules="folioNumberRules"
+      :disabled="disabled"
+      autocomplete="chrome-off"
+      :name="Math.random()"
+      @update:model-value="emitFolioNumber($event)"
+      @focus="emitFocus($event)"
+    />
+  </v-form>
 </template>
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { FormIF } from '@/bcrs-shared-components/interfaces'
+import { FormIF } from '@bcrs-shared-components/interfaces'
 
 @Component({})
 export default class FolioNumberInput extends Vue {

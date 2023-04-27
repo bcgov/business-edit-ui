@@ -53,7 +53,7 @@
                     <v-text-field
                       id="person__first-name"
                       v-model="orgPerson.officer.firstName"
-                      filled
+                      variant="filled"
                       class="item mx-2 mb-n6"
                       label="First Name"
                       :rules="firstNameRules"
@@ -61,7 +61,7 @@
                     <v-text-field
                       id="person__middle-name"
                       v-model="orgPerson.officer.middleName"
-                      filled
+                      variant="filled"
                       class="item mx-2 mb-n6"
                       label="Middle Name (Optional)"
                       :rules="middleNameRules"
@@ -69,7 +69,7 @@
                     <v-text-field
                       id="person__last-name"
                       v-model="orgPerson.officer.lastName"
-                      filled
+                      variant="filled"
                       class="item mx-2 mb-n6"
                       label="Last Name"
                       :rules="lastNameRules"
@@ -125,7 +125,7 @@
 
                     <template v-if="wasBusinessSelectedFromLookup">
                       <v-card
-                        outlined
+                        variant="outlined"
                         class="message-box rounded-0 mt-6"
                       >
                         <p>
@@ -248,7 +248,7 @@
                     <v-text-field
                       id="organization-name"
                       v-model.trim="orgPerson.officer.organizationName"
-                      filled
+                      variant="filled"
                       class="mt-6 mb-n6"
                       label="Business or Corporation Name"
                       :rules="orgNameRules"
@@ -263,7 +263,7 @@
                     <v-text-field
                       id="organization-name"
                       v-model="orgPerson.officer.organizationName"
-                      filled
+                      variant="filled"
                       class="mt-4 mb-n6"
                       :label="`${ orgTypesLabel } Name`"
                       :rules="orgNameRules"
@@ -313,10 +313,10 @@
                   id="proprietor-partner-email"
                   v-model="orgPerson.officer.email"
                   :label="isEmailOptional ? 'Email Address (Optional)' : 'Email Address' "
-                  filled
+                  variant="filled"
                   class="mb-n6"
                   persistent-hint
-                  validate-on-blur
+                  validate-on="blur"
                   :rules="proprietorEmailRules"
                 />
               </article>
@@ -341,7 +341,7 @@
                         :value="RoleTypes.DIRECTOR"
                         :label="RoleTypes.DIRECTOR"
                         :disabled="true"
-                        @change="assignDirectorRole()"
+                        @update:model-value="assignDirectorRole()"
                       />
                     </div>
                   </v-col>
@@ -403,8 +403,8 @@
                 <v-btn
                   v-if="showRemoveBtn"
                   id="btn-remove"
-                  large
-                  outlined
+                  size="large"
+                  variant="outlined"
                   color="error"
                   :disabled="isNew"
                   @click="emitRemove(activeIndex)"
@@ -413,7 +413,7 @@
                 </v-btn>
                 <v-btn
                   id="btn-done"
-                  large
+                  size="large"
                   color="primary"
                   class="ml-auto"
                   @click="validateOrgPersonForm()"
@@ -422,8 +422,8 @@
                 </v-btn>
                 <v-btn
                   id="btn-cancel"
-                  large
-                  outlined
+                  size="large"
+                  variant="outlined"
                   color="primary"
                   @click="resetAddPersonData(true)"
                 >
@@ -445,9 +445,11 @@ import { mask } from 'vue-the-mask'
 import { v4 as uuidv4 } from 'uuid'
 import { Getter } from '@/store/PiniaClass'
 import { IsSame } from '@/utils/'
-import { OrgPersonIF, FormIF, AddressIF, AddressSchemaIF, RoleIF, ResourceIF, EmptyBusinessLookup,
-  BusinessLookupIF } from '@/interfaces/'
-import BaseAddress from '@/sbc-common-components/src/components/BaseAddress.vue'
+import {
+  OrgPersonIF, FormIF, AddressIF, AddressSchemaIF, RoleIF, ResourceIF, EmptyBusinessLookup,
+  BusinessLookupIF
+} from '@/interfaces/'
+import BaseAddress from '@/sbc-common-components/components/BaseAddress.vue'
 import { HelpSection } from '@/components/common/'
 import { BusinessLookup as BusinessLookupShared } from '@/bcrs-shared-components/business-lookup'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
@@ -862,7 +864,7 @@ export default class OrgPerson extends Vue {
 
   private setPersonRoles (orgPerson: OrgPersonIF): RoleIF[] {
     // NB: if roles previously existed, retain old appointment dates
-    let roles: Array<RoleIF> = []
+    const roles: Array<RoleIF> = []
     if (this.isDirector) {
       const role = orgPerson.roles.find(r => r.roleType === RoleTypes.DIRECTOR)
       roles.push({
@@ -901,7 +903,8 @@ export default class OrgPerson extends Vue {
   /** Updates the business details when the user has selected a business (or by reset, below). */
   protected async updateBusinessDetails (businessLookup: BusinessLookupIF): Promise<void> {
     // convert BN15 to BN9 or null
-    businessLookup.bn = (businessLookup.bn?.length === 9) ? businessLookup.bn
+    businessLookup.bn = (businessLookup.bn?.length === 9)
+      ? businessLookup.bn
       : (businessLookup.bn?.length > 9) ? businessLookup.bn.slice(0, 9) : null
 
     // save working data
@@ -997,7 +1000,7 @@ export default class OrgPerson extends Vue {
 
   /** Returns True if email is valid. */
   private validateEmailFormat (email: string): boolean {
-    const VALID_FORMAT = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+    const VALID_FORMAT = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return VALID_FORMAT.test(email)
   }
 

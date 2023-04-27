@@ -42,7 +42,7 @@
         <v-btn
           id="dialog-okay-button"
           color="primary"
-          text
+          variant="text"
           @click="okay()"
         >
           OK

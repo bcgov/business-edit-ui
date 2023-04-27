@@ -1,4 +1,4 @@
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 /** Enum to help map name request type codes */
 export enum NameRequestTypes {

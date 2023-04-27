@@ -89,8 +89,8 @@ export default class CommonMixin extends Vue {
     return ref.open(title, message, {
       width: '45rem',
       persistent: true,
-      yes: yes,
-      no: no,
+      yes,
+      no,
       cancel: null
     }).catch(() => false)
   }

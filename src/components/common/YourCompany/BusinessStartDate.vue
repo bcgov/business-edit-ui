@@ -41,7 +41,7 @@
             <p class="mt-4">
               Enter the start date of the business. The start date can be
               <v-tooltip
-                top
+                location="top"
                 max-width="20rem"
                 content-class="top-tooltip"
                 transition="fade-transition"
@@ -74,7 +74,7 @@
           <div class="float-right mb-2">
             <v-btn
               id="start-done-btn"
-              large
+              size="large"
               color="primary"
               class="mr-2"
               @click="onDoneClicked()"
@@ -83,8 +83,8 @@
             </v-btn>
             <v-btn
               id="start-cancel-btn"
-              large
-              outlined
+              size="large"
+              variant="outlined"
               color="primary"
               @click="onCancelClicked()"
             >
@@ -102,12 +102,12 @@
           <v-btn
             v-if="!onEditMode && !isCorrected"
             id="start-changes-btn"
-            text
+            variant="text"
             color="primary"
             @click="onChangeClicked()"
           >
             <v-icon
-              small
+              size="small"
               color="primary"
             >mdi-pencil</v-icon>
             <span>{{ getEditLabel }}</span>
@@ -117,11 +117,11 @@
           <v-btn
             v-if="!onEditMode && isCorrected"
             id="start-undo-btn"
-            text
+            variant="text"
             color="primary"
             @click="onUndoClicked()"
           >
-            <v-icon small>mdi-undo</v-icon>
+            <v-icon size="small">mdi-undo</v-icon>
             <span>Undo</span>
           </v-btn>
 
@@ -130,14 +130,14 @@
             v-if="!onEditMode && isCorrected"
             v-model="dropdown"
             offset-y
-            left
+            location="left"
             nudge-bottom="4"
           >
             <template #activator="{ on }">
               <v-btn
                 id="start-menu-btn"
-                text
-                small
+                variant="text"
+                size="small"
                 color="primary"
                 v-on="on"
               >
@@ -146,12 +146,12 @@
             </template>
             <v-btn
               id="more-changes-btn"
-              text
+              variant="text"
               color="primary"
               @click="onChangeClicked(); dropdown = false"
             >
               <v-icon
-                small
+                size="small"
                 color="primary"
               >mdi-pencil</v-icon>
               <span>Change</span>

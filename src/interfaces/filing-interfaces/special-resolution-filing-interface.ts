@@ -1,5 +1,5 @@
 import { FilingHeaderIF, AlterationIF, BusinessInformationIF, NameRequestIF } from '@/interfaces/'
-import { SpecialResolutionIF } from '@/bcrs-shared-components/interfaces'
+import { SpecialResolutionIF } from '@bcrs-shared-components/interfaces'
 
 /** Override what's in BCRS Shared Components, needs to be refactored in the future. */
 export interface ChangeOfNameIF {

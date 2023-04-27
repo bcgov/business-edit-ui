@@ -143,35 +143,35 @@ xdescribe('Restoration Summary component', () => {
 
   it('renders Restoration Notice Changes fees accordingly', async () => {
     store.stateModel.currentFees = [{
-      'filingFees': 100.0,
-      'filingType': 'Restoration',
-      'filingTypeCode': 'ALTER',
-      'futureEffectiveFees': 0,
-      'priorityFees': 0,
-      'processingFees': 0,
-      'serviceFees': 1.5,
-      'tax': {
-        'gst': 0,
-        'pst': 0
+      filingFees: 100.0,
+      filingType: 'Restoration',
+      filingTypeCode: 'ALTER',
+      futureEffectiveFees: 0,
+      priorityFees: 0,
+      processingFees: 0,
+      serviceFees: 1.5,
+      tax: {
+        gst: 0,
+        pst: 0
       },
-      'total': 101.5
+      total: 101.5
     }]
     await Vue.nextTick()
     expect(wrapper.find('.summary-title').text()).toBe('Restoration Notice Changes ($100.00 Fee)')
 
     store.stateModel.currentFees = [{
-      'filingFees': 100.0,
-      'filingType': 'Restoration',
-      'filingTypeCode': 'ALTER',
-      'futureEffectiveFees': 100.0,
-      'priorityFees': 0,
-      'processingFees': 0,
-      'serviceFees': 1.5,
-      'tax': {
-        'gst': 0,
-        'pst': 0
+      filingFees: 100.0,
+      filingType: 'Restoration',
+      filingTypeCode: 'ALTER',
+      futureEffectiveFees: 100.0,
+      priorityFees: 0,
+      processingFees: 0,
+      serviceFees: 1.5,
+      tax: {
+        gst: 0,
+        pst: 0
       },
-      'total': 201.5
+      total: 201.5
     }]
     await Vue.nextTick()
     expect(wrapper.find('.summary-title').text()).toBe('Restoration Notice Changes ($200.00 Fee)')
@@ -197,18 +197,18 @@ xdescribe('Restoration Summary component', () => {
 
   it('renders the futureEffective fee correctly', async () => {
     store.stateModel.feePrices = [{
-      'filingFees': 100.0,
-      'filingType': 'Restoration',
-      'filingTypeCode': 'ALTER',
-      'futureEffectiveFees': 100.0,
-      'priorityFees': 0,
-      'processingFees': 0,
-      'serviceFees': 1.5,
-      'tax': {
-        'gst': 0,
-        'pst': 0
+      filingFees: 100.0,
+      filingType: 'Restoration',
+      filingTypeCode: 'ALTER',
+      futureEffectiveFees: 100.0,
+      priorityFees: 0,
+      processingFees: 0,
+      serviceFees: 1.5,
+      tax: {
+        gst: 0,
+        pst: 0
       },
-      'total': 201.5
+      total: 201.5
     }]
     await Vue.nextTick()
     await flushPromises()

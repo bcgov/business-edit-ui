@@ -1,12 +1,17 @@
 <template>
   <div id="nature-of-business">
     <v-row no-gutters>
-      <v-col cols="12" sm="3" class="pr-4">
+      <v-col
+        cols="12"
+        sm="3"
+        class="pr-4"
+      >
         <label>Nature of Business</label>
         <v-chip
           v-if="hasNaicsChanges"
           id="edited-chip"
-          x-small label
+          x-small
+          label
           color="primary"
           text-color="white"
         >
@@ -14,35 +19,59 @@
         </v-chip>
       </v-col>
 
-      <v-col cols="12" sm="9">
+      <v-col
+        cols="12"
+        sm="9"
+      >
         <div v-if="state !== States.SUMMARY">
           <p class="ma-0">
             Enter one or more keywords that describe the primary nature of your business or enter
             the six-digit NAICS code. Learn more by visiting the
-            <a :href="STATS_CAN_URL" target="_blank" rel="noopener noreferrer">
+            <a
+              :href="STATS_CAN_URL"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <span>Statistics Canada website</span>
             </a>
-            <v-icon small color="primary">mdi-open-in-new</v-icon>.
+            <v-icon
+              size="small"
+              color="primary"
+            >
+              mdi-open-in-new
+            </v-icon>.
           </p>
           <v-text-field
-            filled
+            v-model="searchField"
+            variant="filled"
             persistent-hint
             class="mt-5"
             autocomplete="chrome-off"
             label="Keywords or Six-Digit NAICS"
             hint="Example: landscaping, grocery, automotive repair, etc."
-            v-model="searchField"
             :name="Math.random()"
             :rules="showErrors ? natureOfBusinessRules: []"
             @keydown.enter="onSearchClicked()"
           >
             <template #append>
-              <v-btn depressed id="nob-search-btn" color="primary" :loading="state === States.SEARCHING"
-                @click="onSearchClicked()"><v-icon>mdi-magnify</v-icon></v-btn>
+              <v-btn
+                id="nob-search-btn"
+                variant="flat"
+                color="primary"
+                :loading="state === States.SEARCHING"
+                @click="onSearchClicked()"
+              >
+                <v-icon>mdi-magnify</v-icon>
+              </v-btn>
             </template>
           </v-text-field>
           <template v-if="state === States.INITIAL && haveNaics">
-            <v-btn large outlined color="primary" id="nob-cancel1-btn" class="float-right"
+            <v-btn
+              id="nob-cancel1-btn"
+              size="large"
+              variant="outlined"
+              color="primary"
+              class="float-right"
               @click="onCancelClicked()"
             >
               <span>Cancel</span>
@@ -50,11 +79,17 @@
           </template>
         </div>
 
-        <div v-if="state === States.SHOW_RESULTS" class="mt-5">
+        <div
+          v-if="state === States.SHOW_RESULTS"
+          class="mt-5"
+        >
           <p class="ma-0">
             Select an option below that best describes the nature of your business:
           </p>
-          <div id="result-list" class="mt-5">
+          <div
+            id="result-list"
+            class="mt-5"
+          >
             <NaicsResult
               v-for="(result, index) in searchResults"
               :key="index"
@@ -62,55 +97,116 @@
               @click="onResultClicked(result)"
             />
             <!-- NB: NAICS help panel needs same formatting as NaicsResult -->
-            <v-row no-gutters class="pa-6">
+            <v-row
+              no-gutters
+              class="pa-6"
+            >
               <v-col cols="2" />
               <v-col cols="10">
-                <NaicsHelpText  />
+                <NaicsHelpText />
               </v-col>
             </v-row>
           </div>
-          <v-btn large outlined color="primary" id="nob-cancel2-btn" class="float-right mt-8"
+          <v-btn
+            id="nob-cancel2-btn"
+            size="large"
+            variant="outlined"
+            color="primary"
+            class="float-right mt-8"
             @click="onCancelClicked()"
           >
             <span>Cancel</span>
           </v-btn>
         </div>
 
-        <div v-if="state === States.NO_RESULTS" class="mt-5">
-          <p class="font-weight-bold">No results found.</p>
+        <div
+          v-if="state === States.NO_RESULTS"
+          class="mt-5"
+        >
+          <p class="font-weight-bold">
+            No results found.
+          </p>
           <NaicsHelpText />
-          <v-btn large outlined color="primary" id="nob-cancel3-btn" class="float-right mt-8"
+          <v-btn
+            id="nob-cancel3-btn"
+            size="large"
+            variant="outlined"
+            color="primary"
+            class="float-right mt-8"
             @click="onCancelClicked()"
           >
             <span>Cancel</span>
           </v-btn>
         </div>
 
-        <div v-if="state === States.SUMMARY" class="summary-block d-flex justify-space-between align-center">
-          <span v-if="naicsCode && naicsDescription">{{naicsCode}} - {{naicsDescription}}</span>
-          <span v-else-if="naicsCode">{{naicsCode}}</span>
-          <span v-else-if="naicsDescription">{{naicsDescription}}</span>
+        <div
+          v-if="state === States.SUMMARY"
+          class="summary-block d-flex justify-space-between align-center"
+        >
+          <span v-if="naicsCode && naicsDescription">{{ naicsCode }} - {{ naicsDescription }}</span>
+          <span v-else-if="naicsCode">{{ naicsCode }}</span>
+          <span v-else-if="naicsDescription">{{ naicsDescription }}</span>
           <span v-else>(Not entered)</span>
 
-          <v-btn v-if="!hasNaicsChanges" text color="primary" id="nob-edit-btn" @click="onChangeClicked()">
-            <v-icon small>mdi-pencil</v-icon>
+          <v-btn
+            v-if="!hasNaicsChanges"
+            id="nob-edit-btn"
+            variant="text"
+            color="primary"
+            @click="onChangeClicked()"
+          >
+            <v-icon size="small">
+              mdi-pencil
+            </v-icon>
             <span>{{ editLabel }}</span>
           </v-btn>
 
-          <div v-else id="nob-more-actions">
-            <v-btn text color="primary" id="nob-undo-btn" @click="emitUndo()">
-              <v-icon small>mdi-undo</v-icon>
+          <div
+            v-else
+            id="nob-more-actions"
+          >
+            <v-btn
+              id="nob-undo-btn"
+              variant="text"
+              color="primary"
+              @click="emitUndo()"
+            >
+              <v-icon size="small">
+                mdi-undo
+              </v-icon>
               <span>Undo</span>
             </v-btn>
-            <v-menu offset-y left nudge-bottom="4" v-model="dropdown">
-              <template v-slot:activator="{ on }">
-                <v-btn text small color="primary" id="nob-menu-btn" v-on="on">
-                  <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+            <v-menu
+              v-model="dropdown"
+              offset-y
+              location="left"
+              nudge-bottom="4"
+            >
+              <template #activator="{ on }">
+                <v-btn
+                  id="nob-menu-btn"
+                  variant="text"
+                  size="small"
+                  color="primary"
+                  v-on="on"
+                >
+                  <v-icon>{{ dropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                 </v-btn>
               </template>
-              <v-btn text color="primary" id="more-changes-btn" class="py-5"
-                @click="onChangeClicked(); dropdown = false">
-                <v-icon small color="primary">mdi-pencil</v-icon>Change</v-btn>
+              <v-btn
+                id="more-changes-btn"
+                variant="text"
+                color="primary"
+                class="py-5"
+                @click="onChangeClicked(); dropdown = false"
+              >
+                <v-icon
+                  size="small"
+                  color="primary"
+                >
+                  mdi-pencil
+                </v-icon>Change
+              </v-btn>
             </v-menu>
           </div>
         </div>
@@ -123,7 +219,7 @@
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import NaicsHelpText from './NaicsHelpText.vue'
 import NaicsResult from './NaicsResult.vue'
-import { NaicsIF, NaicsResultIF } from '@/bcrs-shared-components/interfaces'
+import { NaicsIF, NaicsResultIF } from '@bcrs-shared-components/interfaces'
 
 enum States {
   INITIAL = 'initial',

@@ -3,15 +3,21 @@ import { Action, Getter } from '@/store/PiniaClass'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
 import DateUtilities from '@/services/date-utilities'
-import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
+import {
+  ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
   EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
   NameRequestIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF, RestorationStateIF,
-  SpecialResolutionFilingIF, StateFilingRestorationIF } from '@/interfaces/'
-import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
-  StaffPaymentIF } from '@/bcrs-shared-components/interfaces/'
-import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
-  RoleTypes } from '@/enums/'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
+  SpecialResolutionFilingIF, StateFilingRestorationIF
+} from '@/interfaces/'
+import {
+  CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
+  StaffPaymentIF
+} from '@bcrs-shared-components/interfaces/'
+import {
+  ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
+  RoleTypes
+} from '@/enums/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { RestorationTypes, StaffPaymentOptions } from '@/bcrs-shared-components/enums/'
 import { FilingTypeToName } from '@/utils'
 import { useStore } from '@/store/store'

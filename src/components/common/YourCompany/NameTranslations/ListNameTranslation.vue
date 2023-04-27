@@ -51,7 +51,7 @@
           v-if="translation.action === ActionTypes.REMOVED"
           x-small
           label
-          color="grey lighten-2"
+          color="grey-lighten-2"
           text-color="grey darken-4"
         >
           <span>REMOVED</span>
@@ -64,13 +64,13 @@
         <div class="actions mt-n1 float-right">
           <span class="edit-action">
             <v-btn
-              text
-              small
+              variant="text"
+              size="small"
               color="primary"
               :disabled="isAddingNameTranslation"
               @click="undoTranslation(index)"
             >
-              <v-icon small>mdi-undo</v-icon>
+              <v-icon size="small">mdi-undo</v-icon>
               <span>Undo</span>
             </v-btn>
           </span>
@@ -80,8 +80,8 @@
             <v-menu offset-y>
               <template #activator="{ on }">
                 <v-btn
-                  text
-                  small
+                  variant="text"
+                  size="small"
                   color="primary"
                   class="more-actions-btn"
                   :disabled="isAddingNameTranslation"
@@ -94,7 +94,7 @@
               <v-list class="more-actions-list">
                 <v-list-item @click="editTranslation(index)">
                   <v-list-item-title>
-                    <v-icon small>
+                    <v-icon size="small">
                       mdi-pencil
                     </v-icon>
                     <span class="ml-2">Correct</span>
@@ -103,7 +103,7 @@
 
                 <v-list-item @click="removeTranslation(index)">
                   <v-list-item-title>
-                    <v-icon small>
+                    <v-icon size="small">
                       mdi-delete
                     </v-icon>
                     <span class="ml-2">Remove</span>
@@ -123,13 +123,13 @@
         <div class="actions mt-n1 float-right">
           <span class="edit-action">
             <v-btn
-              text
-              small
+              variant="text"
+              size="small"
               color="primary"
               :disabled="isAddingNameTranslation"
               @click="editTranslation(index)"
             >
-              <v-icon small>mdi-pencil</v-icon>
+              <v-icon size="small">mdi-pencil</v-icon>
               <span>Change</span>
             </v-btn>
           </span>
@@ -138,8 +138,8 @@
           <v-menu offset-y>
             <template #activator="{ on }">
               <v-btn
-                text
-                small
+                variant="text"
+                size="small"
                 color="primary"
                 class="more-actions-btn"
                 :disabled="isAddingNameTranslation"
@@ -152,7 +152,7 @@
             <v-list class="more-actions-list">
               <v-list-item @click="removeTranslation(index)">
                 <v-list-item-title>
-                  <v-icon small>
+                  <v-icon size="small">
                     mdi-delete
                   </v-icon>
                   <span class="ml-2">Remove</span>

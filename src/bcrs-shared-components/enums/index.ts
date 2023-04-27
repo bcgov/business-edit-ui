@@ -17,4 +17,4 @@ export * from './staff-payment-options'
 export * from './relationship-types'
 
 // export the enums from corp type module
-export { CorpTypeCd, CorpClass } from '@/bcrs-shared-components/corp-type-module'
+export { CorpTypeCd, CorpClass } from '@bcrs-shared-components/corp-type-module'

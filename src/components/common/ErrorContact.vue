@@ -2,7 +2,7 @@
   <ul class="pl-0">
     <li class="contact-container">
       <v-icon
-        small
+        size="small"
         class="contact-icon"
       >
         mdi-phone
@@ -15,7 +15,7 @@
     </li>
     <li class="contact-container">
       <v-icon
-        small
+        size="small"
         class="contact-icon"
       >
         mdi-phone
@@ -28,7 +28,7 @@
     </li>
     <li class="contact-container">
       <v-icon
-        small
+        size="small"
         class="contact-icon"
       >
         mdi-email

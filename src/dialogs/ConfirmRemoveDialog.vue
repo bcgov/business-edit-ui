@@ -24,14 +24,14 @@
         <v-btn
           id="dialog-remove-btn"
           color="primary"
-          text
+          variant="text"
           @click="confirm()"
         >
           Remove
         </v-btn>
         <v-btn
           id="dialog-cancel-btn"
-          text
+          variant="text"
           @click="exit()"
         >
           Cancel

@@ -19,55 +19,55 @@ const addedDates = [
 
 const previousDates = [
   {
-    'date': '2020-06-12'
+    date: '2020-06-12'
   },
   {
-    'date': '2021-07-05'
+    date: '2021-07-05'
   }
 ]
 
 // FUTURE: this needs to be fixed so it uses the interface correctly. https://github.com/bcgov/entity/issues/15927
 const shareClasses = [
   {
-    'id': 1,
-    'name': 'Share Class 1',
-    'priority': 1,
-    'hasMaximumShares': true,
-    'maxNumberOfShares': 100,
-    'hasParValue': true,
-    'parValue': 10,
-    'currency': 'CAD',
-    'hasRightsOrRestrictions': false,
-    'series': [
+    id: 1,
+    name: 'Share Class 1',
+    priority: 1,
+    hasMaximumShares: true,
+    maxNumberOfShares: 100,
+    hasParValue: true,
+    parValue: 10,
+    currency: 'CAD',
+    hasRightsOrRestrictions: false,
+    series: [
       {
-        'id': 1,
-        'name': 'Share Series 1',
-        'priority': 1,
-        'hasMaximumShares': true,
-        'maxNumberOfShares': 50,
-        'hasRightsOrRestrictions': false
+        id: 1,
+        name: 'Share Series 1',
+        priority: 1,
+        hasMaximumShares: true,
+        maxNumberOfShares: 50,
+        hasRightsOrRestrictions: false
       },
       {
-        'id': 2,
-        'name': 'Share Series 2',
-        'priority': 2,
-        'hasMaximumShares': true,
-        'maxNumberOfShares': 100,
-        'hasRightsOrRestrictions': false
+        id: 2,
+        name: 'Share Series 2',
+        priority: 2,
+        hasMaximumShares: true,
+        maxNumberOfShares: 100,
+        hasRightsOrRestrictions: false
       }
     ]
   },
   {
-    'id': 2,
-    'name': 'Share Class 2',
-    'priority': 1,
-    'hasMaximumShares': false,
-    'maxNumberOfShares': null,
-    'hasParValue': false,
-    'parValue': null,
-    'currency': null,
-    'hasRightsOrRestrictions': true,
-    'series': []
+    id: 2,
+    name: 'Share Class 2',
+    priority: 1,
+    hasMaximumShares: false,
+    maxNumberOfShares: null,
+    hasParValue: false,
+    parValue: null,
+    currency: null,
+    hasRightsOrRestrictions: true,
+    series: []
   }
 ]
 

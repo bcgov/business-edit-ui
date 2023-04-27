@@ -16,7 +16,7 @@ document.body.setAttribute('data-app', 'true')
 
 describe('Staff Payment Error Dialog', () => {
   const notEnoughBalance = [{
-    message: `There is not enough balance in this Routing slip. The current balance is: $30.00`,
+    message: 'There is not enough balance in this Routing slip. The current balance is: $30.00',
     payment_error_type: 'INSUFFICIENT_BALANCE_IN_ROUTING_SLIP'
   }]
 

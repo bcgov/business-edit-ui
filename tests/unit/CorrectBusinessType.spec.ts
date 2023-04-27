@@ -5,7 +5,7 @@ import ChangeBusinessType from '@/components/common/YourCompany/ChangeBusinessTy
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/bcrs-shared-components/enums'
-import { CorpTypeCd as CorpTypeModuleCd } from '@/bcrs-shared-components/corp-type-module'
+import { CorpTypeCd as CorpTypeModuleCd } from '@bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})

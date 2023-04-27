@@ -56,11 +56,11 @@
         <div class="actions mr-4">
           <v-btn
             class="correct-name-translation"
-            text
+            variant="text"
             color="primary"
             @click="isEditing = true"
           >
-            <v-icon small>
+            <v-icon size="small">
               mdi-pencil
             </v-icon>
             <span>{{ getEditLabel }}</span>
@@ -76,11 +76,11 @@
         <div class="actions mr-4">
           <v-btn
             class="undo-name-translation"
-            text
+            variant="text"
             color="primary"
             @click="undoNameTranslations()"
           >
-            <v-icon small>
+            <v-icon size="small">
               mdi-undo
             </v-icon>
             <span>Undo</span>
@@ -90,12 +90,12 @@
           <span class="more-actions">
             <v-menu
               offset-y
-              left
+              location="left"
               nudge-bottom="4"
             >
               <template #activator="{ on }">
                 <v-btn
-                  text
+                  variant="text"
                   color="primary"
                   class="more-actions-btn"
                   v-on="on"
@@ -106,7 +106,7 @@
               <v-list class="more-actions-list">
                 <v-list-item @click="isEditing = true">
                   <v-list-item-title>
-                    <v-icon small>mdi-pencil</v-icon>
+                    <v-icon size="small">mdi-pencil</v-icon>
                     <span class="ml-2">Change</span>
                   </v-list-item-title>
                 </v-list-item>
@@ -135,7 +135,7 @@
           </p>
 
           <v-btn
-            outlined
+            variant="outlined"
             color="primary"
             class="mt-6"
             :disabled="isAddingNameTranslation"
@@ -177,7 +177,7 @@
         <div class="action-btns mt-6">
           <v-btn
             id="name-translation-done"
-            large
+            size="large"
             color="primary"
             :disabled="isAddingNameTranslation || !hasPendingChange"
             @click="saveNameTranslations()"
@@ -186,8 +186,8 @@
           </v-btn>
           <v-btn
             id="name-translation-cancel"
-            large
-            outlined
+            size="large"
+            variant="outlined"
             color="primary"
             :disabled="isAddingNameTranslation"
             @click="cancelNameTranslations()"
@@ -374,7 +374,7 @@ export default class NameTranslation extends Vue {
       }
       translation.name = name
     } else {
-      this.draftTranslations.push({ name: name, oldName: null, action: ActionTypes.ADDED })
+      this.draftTranslations.push({ name, oldName: null, action: ActionTypes.ADDED })
     }
 
     this.cancelTranslation()

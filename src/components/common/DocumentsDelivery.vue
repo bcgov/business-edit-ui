@@ -46,11 +46,11 @@
               id="optionalEmail"
               v-model="optionalEmail"
               class="email-input-field mb-n2"
-              filled
+              variant="filled"
               label="Client Email Address (Optional)"
               hint="Example: name@email.com"
               persistent-hint
-              validate-on-blur
+              validate-on="blur"
               :rules="entityEmailRules"
             />
           </v-col>
@@ -85,7 +85,7 @@ import { Action, Getter } from '@/store/PiniaClass'
 import { CommonMixin } from '@/mixins/'
 import { FilingNames } from '@/enums/'
 import { ActionBindingIF, FlagsReviewCertifyIF, ResourceIF } from '@/interfaces/'
-import { ContactPointIF } from '@/bcrs-shared-components/interfaces/'
+import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 import { useStore } from '@/store/store'
 
@@ -136,7 +136,7 @@ export default class DocumentsDelivery extends Vue {
     if (!value) {
       return true
     } else {
-      const VALID_FORMAT = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+      const VALID_FORMAT = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       return VALID_FORMAT.test(value)
     }
   }

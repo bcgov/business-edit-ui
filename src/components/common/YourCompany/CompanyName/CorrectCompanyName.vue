@@ -11,7 +11,7 @@
           id="company-name-input"
           v-model="companyName"
           class="mb-n3"
-          filled
+          variant="filled"
           :rules="companyNameRules"
         />
       </v-col>

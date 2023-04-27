@@ -14,8 +14,10 @@ import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
 import { BenRestorationResource } from '@/resources/LimitedRestorationToFull/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { BusinessContactInfo, EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
-  YourCompanyWrapper } from '@/components/common'
+import {
+  BusinessContactInfo, EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
+  YourCompanyWrapper
+} from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -94,7 +96,7 @@ const businessInfo = {
   legalName: '1234567 B.C. LTD.',
   legalType: 'BEN',
   state: 'ACTIVE',
-  stateFiling: stateFiling
+  stateFiling
 }
 const authInfo = {
   businessIdentifier: 'BC1234567',
@@ -206,8 +208,8 @@ describe('Limited Restoration To Full component - edit page', () => {
   const store = useStore()
 
   const entitySnapshot = {
-    businessInfo: businessInfo,
-    addresses: addresses
+    businessInfo,
+    addresses
   }
 
   beforeAll(async () => {
@@ -309,8 +311,8 @@ describe('Limited Restoration To Full component - summary page (with no filing c
   const store = useStore()
 
   const entitySnapshot = {
-    businessInfo: businessInfo,
-    addresses: addresses
+    businessInfo,
+    addresses
   }
 
   beforeAll(async () => {
@@ -393,8 +395,8 @@ describe('Limited Restoration To Full component - summary page (with filing chan
   const store = useStore()
 
   const entitySnapshot = {
-    businessInfo: businessInfo,
-    addresses: addresses
+    businessInfo,
+    addresses
   }
 
   beforeAll(async () => {

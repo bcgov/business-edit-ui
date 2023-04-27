@@ -17,9 +17,9 @@
         class="mt-1"
       >
         <v-btn
-          x-small
+          size="x-small"
           fab
-          outlined
+          variant="outlined"
           :ripple="false"
           color="gray7"
           class="step-icon"
@@ -33,7 +33,7 @@
           id="nr-number"
           v-model="nameRequestNumber"
           class="text-input-field"
-          filled
+          variant="filled"
           label="Enter the NR Number"
           hint="Example: NR 1234567"
           persistent-hint
@@ -52,9 +52,9 @@
         class="mt-1"
       >
         <v-btn
-          x-small
+          size="x-small"
           fab
-          outlined
+          variant="outlined"
           :ripple="false"
           color="gray7"
           class="step-icon"
@@ -68,7 +68,7 @@
           id="applicant-phone"
           v-model="applicantPhone"
           class="text-input-field"
-          filled
+          variant="filled"
           label="Applicant's Phone Number"
           hint="Example: 555-555-5555"
           persistent-hint
@@ -84,7 +84,7 @@
           id="applicant-email"
           v-model="applicantEmail"
           class="text-input-field"
-          filled
+          variant="filled"
           label="Applicant's Notification Email"
           hint="Example: name@email.com"
           persistent-hint
@@ -103,7 +103,7 @@ import { ConfirmDialog as ConfirmDialogShared } from '@/bcrs-shared-components/c
 import { CommonMixin, NameRequestMixin } from '@/mixins/'
 import { ActionBindingIF, ConfirmDialogType, NameRequestIF, NrCorrectionIF, NrResponseIF } from '@/interfaces/'
 import { NameChangeOptions } from '@/enums/'
-import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 
 import { useStore } from '@/store/store'
 @Component({
@@ -142,11 +142,13 @@ export default class CorrectNameRequest extends Vue {
     (v: string) => !!v || 'Name Request Number is required',
     (v: string) => this.isValidNrNumber(v) || 'Name Request Number is invalid'
   ]
+
   readonly phoneRules = [
     (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
     (v: string) => !(v?.length > 12) || 'Phone number is invalid'
   ]
+
   readonly emailRules = [
     (v: string) => !/^\s/g.test(v) || 'Invalid spaces', // leading spaces
     (v: string) => !/\s$/g.test(v) || 'Invalid spaces', // trailing spaces
@@ -165,13 +167,13 @@ export default class CorrectNameRequest extends Vue {
   }
 
   private isValidNrNumber (value: string): boolean {
-    const VALID_FORMAT = new RegExp(/^(NR )\d{7}$/)
+    const VALID_FORMAT = /^(NR )\d{7}$/
     return VALID_FORMAT.test(value)
   }
 
   private validateEmailFormat (value: string): boolean {
     // eslint-disable-next-line max-len
-    const VALID_FORMAT = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+    const VALID_FORMAT = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     return VALID_FORMAT.test(value)
   }
 
@@ -198,9 +200,9 @@ export default class CorrectNameRequest extends Vue {
           this.emitIsSaved()
 
           const dialogContent = `<p class="info-text">This ${GetCorpFullDescription(nr.entity_type_cd)} ` +
-            `Name Request does not match the current business type ` +
+            'Name Request does not match the current business type ' +
             `<b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n` +
-            `The Name Request type must match the business type before you can continue.</p>`
+            'The Name Request type must match the business type before you can continue.</p>'
           await this.showConfirmDialog(
             this.$refs.confirm,
             'Name Request Type Does Not Match Business Type',

@@ -19,7 +19,7 @@
       <article class="instructional-text section-container">
         Before submitting this filing, you must pass a
         <v-tooltip
-          top
+          location="top"
           content-class="top-tooltip"
           transition="fade-transition"
           nudge-right="3"
@@ -160,7 +160,7 @@
                   <v-textarea
                     v-model="resolution"
                     auto-grow
-                    filled
+                    variant="filled"
                     label="Resolution Text"
                     rows="6"
                     :counter="MAX_RESOLUTION_TEXT_LENGTH"
@@ -204,7 +204,7 @@
                   <v-text-field
                     id="person__first-name"
                     v-model="signatory.givenName"
-                    filled
+                    variant="filled"
                     class="item"
                     label="First Name"
                     :rules="firstNameRules"
@@ -212,7 +212,7 @@
                   <v-text-field
                     id="person__middle-name"
                     v-model="signatory.additionalName"
-                    filled
+                    variant="filled"
                     class="item"
                     label="Middle Name (Optional)"
                     :rules="middleNameRules"
@@ -220,7 +220,7 @@
                   <v-text-field
                     id="person__last-name"
                     v-model="signatory.familyName"
-                    filled
+                    variant="filled"
                     class="item"
                     label="Last Name"
                     :rules="lastNameRules"
@@ -271,7 +271,7 @@ import { ActionBindingIF, HelpSectionIF, ResourceIF, FormIF, SpecialResolutionSa
 import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@/bcrs-shared-components/date-picker/'
-import { SpecialResolutionIF, PersonIF } from '@/bcrs-shared-components/interfaces/'
+import { SpecialResolutionIF, PersonIF } from '@bcrs-shared-components/interfaces/'
 import { VuetifyRuleFunction } from '@/types'
 import { useStore } from '@/store/store'
 

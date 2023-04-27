@@ -44,7 +44,7 @@
             id="hour-selector"
             ref="hourSelector"
             v-model="selectHour"
-            filled
+            variant="filled"
             class="mr-1"
             label="Hour"
             :items="hours"
@@ -65,7 +65,7 @@
             id="minute-selector"
             ref="minuteSelector"
             v-model="selectMinute"
-            filled
+            variant="filled"
             class="ml-1"
             label="Minute"
             :items="minutes"
@@ -81,7 +81,7 @@
           <v-select
             id="period-selector"
             v-model="selectPeriod"
-            filled
+            variant="filled"
             :items="timePeriod"
             :disabled="!isFutureEffective"
           />

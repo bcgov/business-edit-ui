@@ -1,5 +1,8 @@
 <template>
-  <v-card flat id="share-structure">
+  <v-card
+    id="share-structure"
+    flat
+  >
     <ConfirmDialog
       ref="confirm"
       attach="#share-structure"
@@ -9,7 +12,9 @@
       <div id="share-summary">
         <!-- Summary Header -->
         <div class="share-summary-header">
-          <v-icon color="app-dk-blue">mdi-sitemap</v-icon>
+          <v-icon color="app-dk-blue">
+            mdi-sitemap
+          </v-icon>
           <label class="share-summary-header-title"><strong>Share Structure</strong></label>
         </div>
       </div>
@@ -21,7 +26,10 @@
         must have the same Resolution or Court Order Date. If you need to enter changes that occurred on multiple dates
         you must file and pay for each change separately.
 
-        <p v-if="invalidMinimumShareClass" class="error-text small-text mt-6">
+        <p
+          v-if="invalidMinimumShareClass"
+          class="error-text small-text mt-6"
+        >
           Your share structure must contain at least one share class.
         </p>
       </div>
@@ -30,7 +38,7 @@
       <div class="btn-container py-6 px-4">
         <v-btn
           id="btn-add-person"
-          outlined
+          variant="outlined"
           color="primary"
           :disabled="addEditInProgress"
           @click="initNewShareClass()"
@@ -43,7 +51,11 @@
 
     <div :class="{'invalid-section': invalidSection}">
       <v-expand-transition>
-        <v-card flat class="add-share-structure-container" v-if="showAddShareStructureForm">
+        <v-card
+          v-if="showAddShareStructureForm"
+          flat
+          class="add-share-structure-container"
+        >
           <EditShareStructure
             :initialValue="currentShareStructure"
             :activeIndex="activeIndex"
@@ -68,7 +80,7 @@
       disable-sort
       hide-default-footer
     >
-      <template v-slot:item="row">
+      <template #item="row">
         <!-- Share Class Rows -->
         <tr
           v-if="!showClassEditForm[row.index] && !(!isEditMode && row.item.action === ActionTypes.REMOVED)"
@@ -87,27 +99,41 @@
             ]"
           >
             {{ row.item.name }}
-            <ActionChip v-if="row.item.action && isEditMode" :actionable-item="row.item" :edited-label="editedLabel"
-            class="pb-2"/>
+            <ActionChip
+              v-if="row.item.action && isEditMode"
+              :actionable-item="row.item"
+              :edited-label="editedLabel"
+              class="pb-2"
+            />
           </td>
           <td class="text-right">
             {{ row.item.maxNumberOfShares ? (+row.item.maxNumberOfShares).toLocaleString() : 'No Maximum' }}
           </td>
-          <td class="text-right">{{ row.item.parValue ? `$${formatParValue(row.item.parValue)}` : 'No Par Value' }}</td>
+          <td class="text-right">
+            {{ row.item.parValue ? `$${formatParValue(row.item.parValue)}` : 'No Par Value' }}
+          </td>
           <td>{{ row.item.currency }}</td>
           <td>{{ row.item.hasRightsOrRestrictions ? 'Yes' : 'No' }}</td>
 
           <!-- Share Class Action Btns -->
-          <td v-if="isEditMode" class="actions-cell pt-4">
+          <td
+            v-if="isEditMode"
+            class="actions-cell pt-4"
+          >
             <div class="actions">
               <!-- Share Class Correct Btn -->
-              <span v-if="!row.item.action" class="edit-action">
-                <v-btn text color="primary"
-                       :id="'class-' + row.index + '-change-btn'"
-                       @click="initShareClassForEdit(row.index)"
-                       :disabled="addEditInProgress"
+              <span
+                v-if="!row.item.action"
+                class="edit-action"
+              >
+                <v-btn
+                  :id="'class-' + row.index + '-change-btn'"
+                  variant="text"
+                  color="primary"
+                  :disabled="addEditInProgress"
+                  @click="initShareClassForEdit(row.index)"
                 >
-                  <v-icon small>mdi-pencil</v-icon>
+                  <v-icon size="small">mdi-pencil</v-icon>
                   <span>{{ editLabel }}</span>
                 </v-btn>
               </span>
@@ -117,50 +143,66 @@
                 v-if="row.item.action === ActionTypes.EDITED || row.item.action === ActionTypes.REMOVED"
                 :class="{ 'undo-action': row.item.action !== ActionTypes.REMOVED }"
               >
-                <v-btn text color="primary"
-                       :id="'class-' + row.index + '-undo-btn'"
-                       @click="undoCorrection(true, row.item.action, row.index)"
-                       :disabled="addEditInProgress"
+                <v-btn
+                  :id="'class-' + row.index + '-undo-btn'"
+                  variant="text"
+                  color="primary"
+                  :disabled="addEditInProgress"
+                  @click="undoCorrection(true, row.item.action, row.index)"
                 >
-                  <v-icon small>mdi-undo</v-icon>
+                  <v-icon size="small">mdi-undo</v-icon>
                   <span>Undo</span>
                 </v-btn>
               </span>
 
               <!-- Share Class Edit Btn -->
-              <span v-if="row.item.action === ActionTypes.ADDED" class="edit-action">
-                <v-btn text color="primary"
-                       :id="'class-' + row.index + '-change-added-btn'"
-                       @click="initShareClassForEdit(row.index)"
-                       :disabled="addEditInProgress"
+              <span
+                v-if="row.item.action === ActionTypes.ADDED"
+                class="edit-action"
+              >
+                <v-btn
+                  :id="'class-' + row.index + '-change-added-btn'"
+                  variant="text"
+                  color="primary"
+                  :disabled="addEditInProgress"
+                  @click="initShareClassForEdit(row.index)"
                 >
-                  <v-icon small>mdi-pencil</v-icon>
+                  <v-icon size="small">mdi-pencil</v-icon>
                   <span>Edit</span>
                 </v-btn>
               </span>
 
               <!-- Share Class Dropdown Actions -->
               <span v-if="row.item.action !== ActionTypes.REMOVED">
-                <v-menu offset-y left v-model="classDropdown[row.index]">
-                  <template v-slot:activator="{ on }">
-                    <v-btn text
-                           color="primary"
-                           class="actions__more-actions__btn"
-                           :disabled="addEditInProgress"
-                           v-on="on"
-                      >
-                      <v-icon>{{classDropdown[row.index] ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                <v-menu
+                  v-model="classDropdown[row.index]"
+                  offset-y
+                  location="left"
+                >
+                  <template #activator="{ on }">
+                    <v-btn
+                      variant="text"
+                      color="primary"
+                      class="actions__more-actions__btn"
+                      :disabled="addEditInProgress"
+                      v-on="on"
+                    >
+                      <v-icon>{{ classDropdown[row.index] ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                     </v-btn>
                   </template>
                   <v-list class="more-actions">
                     <v-list-item
                       v-if="row.item.action === ActionTypes.EDITED"
                       class="actions-dropdown_item"
-                      @click="initShareClassForEdit(row.index)"
                       :disabled="addEditInProgress"
+                      @click="initShareClassForEdit(row.index)"
                     >
                       <v-list-item-subtitle>
-                        <v-icon small color="primary" class="mr-3">mdi-pencil</v-icon>
+                        <v-icon
+                          size="small"
+                          color="primary"
+                          class="mr-3"
+                        >mdi-pencil</v-icon>
                         <span>Change</span>
                       </v-list-item-subtitle>
                     </v-list-item>
@@ -178,8 +220,8 @@
                     <v-list-item
                       class="actions-dropdown_item"
                       :class="{ 'item-disabled': isMoveDisabled(row.index, 'up') }"
-                      @click="moveIndex(row.index, 'up')"
                       :disabled="isMoveDisabled(row.index, 'up')"
+                      @click="moveIndex(row.index, 'up')"
                     >
                       <v-list-item-subtitle class="move-up-selector">
                         <v-icon color="primary">mdi-arrow-up</v-icon>
@@ -189,8 +231,8 @@
                     <v-list-item
                       class="actions-dropdown_item"
                       :class="{ 'item-disabled': isMoveDisabled(row.index, 'down') }"
-                      @click="moveIndex(row.index, 'down')"
                       :disabled="isMoveDisabled(row.index, 'down')"
+                      @click="moveIndex(row.index, 'down')"
                     >
                       <v-list-item-subtitle class="move-down-selector">
                         <v-icon color="primary">mdi-arrow-down</v-icon>
@@ -212,12 +254,17 @@
             </div>
           </td>
           <!-- Placeholder template to preserve table cell and stylings -->
-          <template v-else><span></span></template>
+          <template v-else>
+            <span />
+          </template>
         </tr>
 
         <!-- Share Class Edit Form -->
         <tr v-if="showClassEditForm[row.index]">
-          <td colspan="6" :class="{'invalid-section': invalidSection}">
+          <td
+            colspan="6"
+            :class="{'invalid-section': invalidSection}"
+          >
             <v-expand-transition>
               <div class="edit-share-structure-container">
                 <EditShareStructure
@@ -250,10 +297,16 @@
               { 'removed' : row.item.action === ActionTypes.REMOVED || seriesItem.action === ActionTypes.REMOVED }
             ]"
           >
-            <td class="series-name" :class="{ 'invalid-section': invalidMinimumShareClass }">
+            <td
+              class="series-name"
+              :class="{ 'invalid-section': invalidMinimumShareClass }"
+            >
               <li>
-                <span class="h3 ml-n2" :class="{'list-item__subtitle' : row.item.action === ActionTypes.REMOVED ||
-                  seriesItem.action === ActionTypes.REMOVED }">{{ seriesItem.name }}</span>
+                <span
+                  class="h3 ml-n2"
+                  :class="{'list-item__subtitle' : row.item.action === ActionTypes.REMOVED ||
+                    seriesItem.action === ActionTypes.REMOVED }"
+                >{{ seriesItem.name }}</span>
               </li>
               <ActionChip
                 v-if="row.item.action !== ActionTypes.REMOVED && seriesItem.action && isEditMode"
@@ -271,16 +324,27 @@
             <td>{{ seriesItem.hasRightsOrRestrictions ? 'Yes' : 'No' }}</td>
 
             <!-- Share Series Edit Btn -->
-            <td v-if="isEditMode" class="actions-cell pt-4">
-              <div class="actions" v-if="row.item.action !== ActionTypes.REMOVED">
+            <td
+              v-if="isEditMode"
+              class="actions-cell pt-4"
+            >
+              <div
+                v-if="row.item.action !== ActionTypes.REMOVED"
+                class="actions"
+              >
                 <!-- Series Correct Btn -->
-                <span v-if="!seriesItem.action" class="edit-action">
-                  <v-btn text color="primary"
-                         :id="'series-' + index + '-change-btn'"
-                         @click="editSeries(row.index, index)"
-                         :disabled="addEditInProgress"
+                <span
+                  v-if="!seriesItem.action"
+                  class="edit-action"
+                >
+                  <v-btn
+                    :id="'series-' + index + '-change-btn'"
+                    variant="text"
+                    color="primary"
+                    :disabled="addEditInProgress"
+                    @click="editSeries(row.index, index)"
                   >
-                    <v-icon small>mdi-pencil</v-icon>
+                    <v-icon size="small">mdi-pencil</v-icon>
                     <span>{{ editLabel }}</span>
                   </v-btn>
                 </span>
@@ -290,39 +354,53 @@
                   v-else-if="row.item.hasRightsOrRestrictions && seriesItem.action !== ActionTypes.ADDED"
                   :class="{ 'undo-action': seriesItem.action !== ActionTypes.REMOVED }"
                 >
-                  <v-btn text color="primary"
-                         :id="'series-' + index + '-undo-btn'"
-                         @click="
-                           undoCorrection(false, seriesItem.action, index, row.index, row.item.id, seriesItem.id)
-                          "
-                         :disabled="addEditInProgress"
+                  <v-btn
+                    :id="'series-' + index + '-undo-btn'"
+                    variant="text"
+                    color="primary"
+                    :disabled="addEditInProgress"
+                    @click="
+                      undoCorrection(false, seriesItem.action, index, row.index, row.item.id, seriesItem.id)
+                    "
                   >
-                    <v-icon small>mdi-undo</v-icon>
+                    <v-icon size="small">mdi-undo</v-icon>
                     <span>Undo</span>
                   </v-btn>
                 </span>
 
                 <!-- Series Edit Btn -->
-                <span v-else-if="seriesItem.action !== ActionTypes.REMOVED" class="edit-action">
-                  <v-btn text color="primary"
-                         :id="'series-' + index + '-change-added-btn'"
-                         @click="editSeries(row.index, index)"
-                         :disabled="addEditInProgress"
+                <span
+                  v-else-if="seriesItem.action !== ActionTypes.REMOVED"
+                  class="edit-action"
+                >
+                  <v-btn
+                    :id="'series-' + index + '-change-added-btn'"
+                    variant="text"
+                    color="primary"
+                    :disabled="addEditInProgress"
+                    @click="editSeries(row.index, index)"
                   >
-                    <v-icon small>mdi-pencil</v-icon>
+                    <v-icon size="small">mdi-pencil</v-icon>
                     <span>Edit</span>
                   </v-btn>
                 </span>
 
                 <!-- Share Series Dropdown Actions -->
                 <span v-if="seriesItem.action !== ActionTypes.REMOVED">
-                  <v-menu offset-y left v-model="seriesDropdown[row.index][index]">
-                    <template v-slot:activator="{ on }">
-                      <v-btn text color="primary"
-                             class="actions__more-actions__btn" v-on="on"
-                             :disabled="addEditInProgress"
+                  <v-menu
+                    v-model="seriesDropdown[row.index][index]"
+                    offset-y
+                    location="left"
+                  >
+                    <template #activator="{ on }">
+                      <v-btn
+                        variant="text"
+                        color="primary"
+                        class="actions__more-actions__btn"
+                        :disabled="addEditInProgress"
+                        v-on="on"
                       >
-                        <v-icon>{{seriesDropdown[row.index][index] ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                        <v-icon>{{ seriesDropdown[row.index][index] ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                       </v-btn>
                     </template>
 
@@ -330,19 +408,23 @@
                       <v-list-item
                         v-if="seriesItem.action === ActionTypes.EDITED"
                         class="actions-dropdown_item"
-                        @click="editSeries(row.index, index)"
                         :disabled="addEditInProgress"
+                        @click="editSeries(row.index, index)"
                       >
                         <v-list-item-subtitle>
-                          <v-icon small color="primary" class="mr-2">mdi-pencil</v-icon> {{editLabel}}
+                          <v-icon
+                            size="small"
+                            color="primary"
+                            class="mr-2"
+                          >mdi-pencil</v-icon> {{ editLabel }}
                         </v-list-item-subtitle>
                       </v-list-item>
 
                       <v-list-item
                         class="actions-dropdown_item"
                         :class="{ 'item-disabled': isMoveDisabled(row.index, 'up', index) }"
-                        @click="moveIndex(row.index, 'up', index)"
                         :disabled="isMoveDisabled(row.index, 'up', index)"
+                        @click="moveIndex(row.index, 'up', index)"
                       >
                         <v-list-item-subtitle class="move-up-selector">
                           <v-icon color="primary">mdi-arrow-up</v-icon> Move Up
@@ -352,15 +434,18 @@
                       <v-list-item
                         class="actions-dropdown_item"
                         :class="{ 'item-disabled': isMoveDisabled(row.index, 'down', index) }"
-                        @click="moveIndex(row.index, 'down', index)"
                         :disabled="isMoveDisabled(row.index, 'down', index)"
+                        @click="moveIndex(row.index, 'down', index)"
                       >
                         <v-list-item-subtitle class="move-down-selector">
                           <v-icon color="primary">mdi-arrow-down</v-icon> Move Down
                         </v-list-item-subtitle>
                       </v-list-item>
 
-                      <v-list-item class="actions-dropdown_item" @click="removeSeries(index, row.index)">
+                      <v-list-item
+                        class="actions-dropdown_item"
+                        @click="removeSeries(index, row.index)"
+                      >
                         <v-list-item-subtitle>
                           <v-icon color="primary">mdi-delete</v-icon> Remove
                         </v-list-item-subtitle>
@@ -371,7 +456,9 @@
               </div>
             </td>
             <!-- Placeholder template to preserve table cell and stylings -->
-            <template v-else><span></span></template>
+            <template v-else>
+              <span />
+            </template>
           </tr>
 
           <!-- Series Share Edit Form -->
@@ -379,7 +466,10 @@
             v-if="showSeriesEditForm[row.index] && showSeriesEditForm[row.index][index]"
             :key="`class:${row.index}-Series:${index}-edit-form`"
           >
-            <td colspan="6" :class="{'invalid-section': invalidSection}">
+            <td
+              colspan="6"
+              :class="{'invalid-section': invalidSection}"
+            >
               <v-expand-transition>
                 <div class="edit-share-structure-container">
                   <EditShareStructure
@@ -404,7 +494,10 @@
 
         <!-- Series Share Add Form -->
         <tr v-if="showSeriesAddForm[row.index]">
-          <td colspan="6" :class="{'invalid-section': invalidSection}">
+          <td
+            colspan="6"
+            :class="{'invalid-section': invalidSection}"
+          >
             <v-expand-transition>
               <div class="edit-share-structure-container">
                 <EditShareStructure
@@ -443,7 +536,7 @@ import { ConfirmDialog } from '@/bcrs-shared-components/confirm-dialog'
 import EditShareStructure from './EditShareStructure.vue'
 
 // Interfaces and Enums
-import { ConfirmDialogType, ShareClassIF, ShareStructureIF } from '@/bcrs-shared-components/interfaces'
+import { ConfirmDialogType, ShareClassIF, ShareStructureIF } from '@bcrs-shared-components/interfaces'
 import { ActionTypes } from '@/bcrs-shared-components/enums'
 
 @Component({
@@ -622,7 +715,7 @@ export default class ShareStructure extends Vue {
       shareStructure.action = this.isShareClassEdited(shareStructure) ? ActionTypes.EDITED : null
     }
 
-    let newList: ShareClassIF[] = [...this.shareClasses]
+    const newList: ShareClassIF[] = [...this.shareClasses]
     // New Share Structure.
     if (this.activeIndex === -1) {
       newList.push(shareStructure)
@@ -659,7 +752,7 @@ export default class ShareStructure extends Vue {
     // get share class to remove
     // make a copy so we don't change the item in the list
     const shareClass = { ...this.shareClasses[index] }
-    let tempList: ShareClassIF[] = [...this.shareClasses]
+    const tempList: ShareClassIF[] = [...this.shareClasses]
 
     if (shareClass.action === ActionTypes.ADDED) {
       tempList.splice(index, 1)
@@ -685,7 +778,7 @@ export default class ShareStructure extends Vue {
     )
 
     // Create a new ShareClass List and restore the original data
-    let newList: ShareClassIF[] = [...this.shareClasses]
+    const newList: ShareClassIF[] = [...this.shareClasses]
     newList[index] = { ...shareClassToRestore, series: [...shareClassToRestore.series] }
 
     newList.forEach(classShare => {
@@ -708,7 +801,7 @@ export default class ShareStructure extends Vue {
     this.activeIndex = -1
     this.parentIndex = shareClassIndex
 
-    let newList: ShareClassIF[] = [...this.shareClasses]
+    const newList: ShareClassIF[] = [...this.shareClasses]
     const parentShareClass = newList[shareClassIndex]
     const shareSeries = parentShareClass.series
     this.currentShareStructure = { ...this.newShareSeries }
@@ -731,9 +824,9 @@ export default class ShareStructure extends Vue {
       shareSeries.action = ActionTypes.EDITED
     }
 
-    let newList: ShareClassIF[] = [...this.shareClasses]
+    const newList: ShareClassIF[] = [...this.shareClasses]
     const parentShareClass = newList[this.parentIndex]
-    let series = [...parentShareClass.series]
+    const series = [...parentShareClass.series]
     // New Share Structure.
     if (this.activeIndex === -1) {
       series.push(shareSeries)
@@ -755,7 +848,7 @@ export default class ShareStructure extends Vue {
   protected editSeries (index: number, seriesIndex: number): void {
     this.activeIndex = seriesIndex
     this.parentIndex = index
-    let newList: ShareClassIF[] = [...this.shareClasses]
+    const newList: ShareClassIF[] = [...this.shareClasses]
     this.currentShareStructure = { ...newList[this.parentIndex].series[this.activeIndex] }
     this.addEditInProgress = true
     this.showSeriesEditForm[index][seriesIndex] = true
@@ -768,7 +861,7 @@ export default class ShareStructure extends Vue {
    */
   protected removeSeries (seriesIndex: number, parentIndex: number): void {
     const shareSeries = { ...this.shareClasses[parentIndex].series[seriesIndex] }
-    let tempList: ShareClassIF[] = [...this.shareClasses]
+    const tempList: ShareClassIF[] = [...this.shareClasses]
 
     if (shareSeries.action === ActionTypes.ADDED) {
       tempList[parentIndex].series.splice(seriesIndex, 1)
@@ -805,7 +898,7 @@ export default class ShareStructure extends Vue {
       ))
 
     // Create a new ShareSeries List and restore the original data
-    let newList: ShareClassIF[] = [...this.shareClasses]
+    const newList: ShareClassIF[] = [...this.shareClasses]
     newList[parentIndex].series[seriesIndex] = shareSeriesToRestore
 
     this.emitShareClasses(newList)

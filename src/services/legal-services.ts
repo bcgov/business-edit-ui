@@ -1,10 +1,12 @@
 import { AxiosInstance as axios } from '@/utils/'
-import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistrationFilingIF, ConversionFilingIF,
-  CorrectionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF, RestorationFilingIF, SpecialResolutionFilingIF }
+import {
+  AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistrationFilingIF, ConversionFilingIF,
+  CorrectionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF, RestorationFilingIF, SpecialResolutionFilingIF
+}
   from '@/interfaces/'
 import { RoleTypes } from '@/enums'
 
-import { ShareStructureIF } from '@/bcrs-shared-components/interfaces/'
+import { ShareStructureIF } from '@bcrs-shared-components/interfaces/'
 /**
  * Class that provides integration with the Legal API.
  */

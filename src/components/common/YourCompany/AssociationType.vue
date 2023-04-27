@@ -41,32 +41,32 @@
           <v-btn
             v-if="hasAssociationTypeChanged"
             id="btn-undo-association-type"
-            text
+            variant="text"
             color="primary"
             class="undo-action"
             @click="resetAssociationType()"
           >
-            <v-icon small>
+            <v-icon size="small">
               mdi-undo
             </v-icon>
             <span>Undo</span>
           </v-btn>
           <v-tooltip
             v-else
-            top
+            location="top"
             content-class="top-tooltip"
             transition="fade-transition"
             nudge-right="3"
           >
             <template #activator="{ on }">
               <v-btn
-                text
+                variant="text"
                 color="primary"
                 class="edit-button"
                 v-on="on"
                 @click="isEditingAssociationType = true"
               >
-                <v-icon small>
+                <v-icon size="small">
                   mdi-pencil
                 </v-icon>
                 <span>{{ getEditLabel }}</span>
@@ -86,14 +86,14 @@
             <v-menu
               v-model="dropdown"
               offset-y
-              left
+              location="left"
               nudge-bottom="4"
             >
               <template #activator="{ on }">
                 <v-btn
                   id="btn-more-actions"
-                  text
-                  small
+                  variant="text"
+                  size="small"
                   color="primary"
                   v-on="on"
                 >
@@ -108,7 +108,7 @@
                 >
                   <v-list-item-subtitle>
                     <v-icon
-                      small
+                      size="small"
                       color="primary"
                     >mdi-pencil</v-icon>
                     <span class="drop-down-action ml-1">Change</span>
@@ -128,7 +128,7 @@
         <v-select
           id="association-type-input"
           v-model="selectedAssociationType"
-          filled
+          variant="filled"
           :items="associationTypeOptions"
           :rules="AssociationTypeRules"
         />
@@ -137,7 +137,7 @@
         <div class="action-btns">
           <v-btn
             id="done-btn"
-            large
+            size="large"
             color="primary"
             @click="submitAssociationTypeChange()"
           >
@@ -145,8 +145,8 @@
           </v-btn>
           <v-btn
             id="cancel-btn"
-            large
-            outlined
+            size="large"
+            variant="outlined"
             color="primary"
             @click="isEditingAssociationType = false"
           >

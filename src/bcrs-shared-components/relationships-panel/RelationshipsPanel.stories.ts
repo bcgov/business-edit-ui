@@ -15,7 +15,7 @@ const Template = (args, { argTypes }) => ({
 
 export const Default = Template.bind({})
 Default.args = {
-  bgHex: `#fff`,
+  bgHex: '#fff',
   showValidationErrors: false
 }
 

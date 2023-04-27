@@ -103,11 +103,11 @@
               <span class="edit-action">
                 <v-btn
                   id="btn-undo-office-addresses"
-                  text
+                  variant="text"
                   color="primary"
                   @click="resetOfficeAddresses(); dropdown = false"
                 >
-                  <v-icon small>mdi-undo</v-icon>
+                  <v-icon size="small">mdi-undo</v-icon>
                   <span>Undo</span>
                 </v-btn>
               </span>
@@ -115,15 +115,15 @@
                 <v-menu
                   v-model="dropdown"
                   offset-y
-                  left
+                  location="left"
                   nudge-bottom="4"
                   attach="#office-addresses .more-actions"
                 >
                   <template #activator="{ on }">
                     <v-btn
                       id="btn-more-actions"
-                      text
-                      small
+                      variant="text"
+                      size="small"
                       color="primary"
                       v-on="on"
                     >
@@ -137,7 +137,7 @@
                       @click="isEditing = true; dropdown = false"
                     >
                       <v-list-item-subtitle>
-                        <v-icon small>mdi-pencil</v-icon>
+                        <v-icon size="small">mdi-pencil</v-icon>
                         <span class="ml-1">Change</span>
                       </v-list-item-subtitle>
                     </v-list-item>
@@ -155,11 +155,11 @@
             <div class="actions mr-4">
               <v-btn
                 id="btn-correct-office-addresses"
-                text
+                variant="text"
                 color="primary"
                 @click="isEditing = true"
               >
-                <v-icon small>
+                <v-icon size="small">
                   mdi-pencil
                 </v-icon>
                 <span>{{ getEditLabel }}</span>
@@ -172,7 +172,7 @@
           >
             <div class="d-flex justify-end align-end align-sm-start">
               <v-tooltip
-                top
+                location="top"
                 content-class="top-tooltip"
                 transition="fade-transition"
                 nudge-right="3"
@@ -339,7 +339,7 @@
             label="Delivery Address same as Mailing Address"
             hide-details
             :disabled="disableSameDeliveryAddress"
-            @change="setDeliveryAddressToMailingAddress()"
+            @update:model-value="setDeliveryAddressToMailingAddress()"
           />
         </v-col>
       </v-row>
@@ -382,7 +382,7 @@
           <div class="action-btns">
             <v-btn
               id="address-done-btn"
-              large
+              size="large"
               color="primary"
               @click="acceptChanges()"
             >
@@ -390,8 +390,8 @@
             </v-btn>
             <v-btn
               id="address-cancel-btn"
-              large
-              outlined
+              size="large"
+              variant="outlined"
               color="primary"
               @click="discardChanges()"
             >
@@ -444,7 +444,7 @@
                     class="inherit-checkbox"
                     label="Same as Mailing Address"
                     hide-details
-                    @change="setDeliveryAddressToMailingAddress()"
+                    @update:model-value="setDeliveryAddressToMailingAddress()"
                   />
                 </div>
                 <div
@@ -483,7 +483,7 @@
               class="records-inherit-checkbox"
               label="Same as Registered Office"
               hide-details
-              @change="setRecordOfficeToRegisteredOffice()"
+              @update:model-value="setRecordOfficeToRegisteredOffice()"
             />
           </div>
 
@@ -519,7 +519,7 @@
                       class="inherit-checkbox"
                       label="Same as Mailing Address"
                       hide-details
-                      @change="setRecordDeliveryAddressToMailingAddress()"
+                      @update:model-value="setRecordDeliveryAddressToMailingAddress()"
                     />
                   </div>
                   <div
@@ -549,7 +549,7 @@
       >
         <v-btn
           id="done-btn"
-          large
+          size="large"
           color="primary"
           :disabled="!formValid"
           @click="acceptChanges()"
@@ -558,8 +558,8 @@
         </v-btn>
         <v-btn
           id="cancel-btn"
-          large
-          outlined
+          size="large"
+          variant="outlined"
           color="primary"
           @click="discardChanges()"
         >
@@ -576,7 +576,7 @@ import { Action, Getter } from '@/store/PiniaClass'
 import { IsSame } from '@/utils/'
 import { isEmpty, isEqual } from 'lodash'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
-import BaseAddress from '@/sbc-common-components/src/components/BaseAddress.vue'
+import BaseAddress from '@/sbc-common-components/components/BaseAddress.vue'
 import { ActionBindingIF, AddressIF, AddressesIF, FlagsCompanyInfoIF, ResourceIF } from '@/interfaces/'
 import { AddressTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'

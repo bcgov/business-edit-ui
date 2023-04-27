@@ -6,24 +6,51 @@
     :style="{ zIndex: options.zIndex }"
     :persistent="options.persistent"
     :attach="attach"
-    @keydown.esc="onClickCancel">
-
+    @keydown.esc="onClickCancel"
+  >
     <v-card>
       <v-card-title>{{ title }}</v-card-title>
-      <!-- eslint-disable-next-line vue/no-v-text-v-html-on-component -->
-      <v-card-text class="pre-wrap" v-show="!!message" v-html="message" />
-      <v-divider class="my-0" v-show="!!options.yes || !!options.no || !!options.cancel" />
+      <!-- eslint-disable vue/no-v-text-v-html-on-component -->
+      <v-card-text
+        v-show="!!message"
+        class="pre-wrap"
+        v-html="message"
+      />
+      <v-divider
+        v-show="!!options.yes || !!options.no || !!options.cancel"
+        class="my-0"
+      />
       <v-card-actions>
         <v-spacer />
-        <v-btn text color="primary" class="dialog-yes-btn" v-if="!!options.yes"
-          @click.native="onClickYes()">{{ options.yes }}</v-btn>
-        <v-btn text color="primary" class="dialog-no-btn" v-if="!!options.no"
-          @click.native="onClickNo()">{{ options.no }}</v-btn>
-        <v-btn text color="primary" class="dialog-cancel-btn" v-if="!!options.cancel"
-          @click.native="onClickCancel()">{{ options.cancel }}</v-btn>
+        <v-btn
+          v-if="!!options.yes"
+          variant="text"
+          color="primary"
+          class="dialog-yes-btn"
+          @click.native="onClickYes()"
+        >
+          {{ options.yes }}
+        </v-btn>
+        <v-btn
+          v-if="!!options.no"
+          variant="text"
+          color="primary"
+          class="dialog-no-btn"
+          @click.native="onClickNo()"
+        >
+          {{ options.no }}
+        </v-btn>
+        <v-btn
+          v-if="!!options.cancel"
+          variant="text"
+          color="primary"
+          class="dialog-cancel-btn"
+          @click.native="onClickCancel()"
+        >
+          {{ options.cancel }}
+        </v-btn>
       </v-card-actions>
     </v-card>
-
   </v-dialog>
 </template>
 

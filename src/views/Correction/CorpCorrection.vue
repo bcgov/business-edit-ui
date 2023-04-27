@@ -75,16 +75,18 @@
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { Action, Getter } from '@/store/PiniaClass'
 import { Articles } from '@/components/Alteration/'
-import { BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityName, FolioInformation,
+import {
+  BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityName, FolioInformation,
   NameTranslation, OfficeAddresses, PeopleAndRoles, RecognitionDateTime, ShareStructures, StaffPayment,
-  YourCompanyWrapper } from '@/components/common/'
+  YourCompanyWrapper
+} from '@/components/common/'
 import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@/bcrs-shared-components/enums/'
 import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { BcCorrectionResource, BenCorrectionResource, CccCorrectionResource, UlcCorrectionResource }
   from '@/resources/Correction/'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
 
 /** Correction sub-component for corp class "BC" entities. */

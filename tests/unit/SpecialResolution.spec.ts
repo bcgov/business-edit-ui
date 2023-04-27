@@ -10,8 +10,10 @@ import ViewWrapper from '@/components/ViewWrapper.vue'
 import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { AssociationType, BusinessContactInfo, BusinessType, EntityName, FolioInformation, OfficeAddresses,
-  YourCompanyWrapper } from '@/components/common'
+import {
+  AssociationType, BusinessContactInfo, BusinessType, EntityName, FolioInformation, OfficeAddresses,
+  YourCompanyWrapper
+} from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -45,36 +47,38 @@ describe('Special Resolution component', () => {
     // GET payment fees for immediate alteration
     get.withArgs('https://pay.api.url/fees/CP/SPRLN')
       .returns(Promise.resolve({
-        data: { 'filingFees': 70.0,
-          'filingType': 'Special resolution',
-          'filingTypeCode': 'SPRLN',
-          'futureEffectiveFees': 0,
-          'priorityFees': 0,
-          'processingFees': 0,
-          'serviceFees': 0,
-          'tax': {
-            'gst': 0,
-            'pst': 0
+        data: {
+          filingFees: 70.0,
+          filingType: 'Special resolution',
+          filingTypeCode: 'SPRLN',
+          futureEffectiveFees: 0,
+          priorityFees: 0,
+          processingFees: 0,
+          serviceFees: 0,
+          tax: {
+            gst: 0,
+            pst: 0
           },
-          'total': 70.0
+          total: 70.0
         }
       }))
 
     // GET payment fees for future effective alteration
     get.withArgs('https://pay.api.url/fees/CP/SPRLN?futureEffective=true')
       .returns(Promise.resolve({
-        data: { 'filingFees': 70.0,
-          'filingType': 'Special resolution',
-          'filingTypeCode': 'SPRLN',
-          'futureEffectiveFees': 100.0,
-          'priorityFees': 0,
-          'processingFees': 0,
-          'serviceFees': 0,
-          'tax': {
-            'gst': 0,
-            'pst': 0
+        data: {
+          filingFees: 70.0,
+          filingType: 'Special resolution',
+          filingTypeCode: 'SPRLN',
+          futureEffectiveFees: 100.0,
+          priorityFees: 0,
+          processingFees: 0,
+          serviceFees: 0,
+          tax: {
+            gst: 0,
+            pst: 0
           },
-          'total': 170.0
+          total: 170.0
         }
       }))
 

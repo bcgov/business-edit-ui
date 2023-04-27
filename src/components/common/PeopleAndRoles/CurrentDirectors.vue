@@ -14,7 +14,7 @@
         To change directors, please use the Change feature in the Current Directors list on your business dashboard.
       </article>
 
-      <v-simple-table class="director-table section-container">
+      <v-table class="director-table section-container">
         <!-- List Display Section -->
         <thead v-if="getOrgPeople.length > 0">
           <!-- List Headers -->
@@ -39,7 +39,7 @@
             <td class="text-truncate px-0">
               <!-- provide tooltip to display full name if name is longer than 25 chars -->
               <v-tooltip
-                top
+                location="top"
                 :disabled="formatFullName(orgPerson.officer).length < 25"
                 color="primary"
               >
@@ -80,7 +80,7 @@
             </td>
           </tr>
         </tbody>
-      </v-simple-table>
+      </v-table>
     </v-card>
   </div>
 </template>
@@ -92,7 +92,7 @@ import { IsSame } from '@/utils/'
 import { OrgPersonIF } from '@/interfaces/'
 import { RoleTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
-import BaseAddress from '@/sbc-common-components/src/components/BaseAddress.vue'
+import BaseAddress from '@/sbc-common-components/components/BaseAddress.vue'
 
 import { useStore } from '@/store/store'
 

@@ -15,8 +15,10 @@ import { BenRestorationResource } from '@/resources/LimitedRestorationExtension/
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
-import { EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
-  YourCompanyWrapper } from '@/components/common'
+import {
+  EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
+  YourCompanyWrapper
+} from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -207,8 +209,8 @@ describe('Limited Restoration Extension component - edit page', () => {
   const store = useStore()
 
   const entitySnapshot = {
-    businessInfo: businessInfo,
-    addresses: addresses
+    businessInfo,
+    addresses
   }
 
   beforeAll(async () => {
@@ -306,8 +308,8 @@ describe('Limited Restoration Extension component - summary page (with no filing
   const store = useStore()
 
   const entitySnapshot = {
-    businessInfo: businessInfo,
-    addresses: addresses
+    businessInfo,
+    addresses
   }
 
   beforeAll(async () => {
@@ -380,8 +382,8 @@ describe('Limited Restoration Extension component - summary page (with filing ch
   const store = useStore()
 
   const entitySnapshot = {
-    businessInfo: businessInfo,
-    addresses: addresses
+    businessInfo,
+    addresses
   }
 
   beforeAll(async () => {

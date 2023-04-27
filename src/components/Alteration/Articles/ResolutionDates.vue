@@ -50,12 +50,12 @@
         <v-btn
           id="add-resolution-date"
           class="add-btn mt-n1"
-          text
+          variant="text"
           color="primary"
           :disabled="haveAddedDates"
           @click="isAdding = true"
         >
-          <v-icon small>
+          <v-icon size="small">
             {{ addBtnIcon }}
           </v-icon>
           <span>{{ addBtnLabel }}</span>
@@ -69,11 +69,11 @@
         <v-btn
           id="close-resolution-date"
           class="close-btn mt-n1"
-          text
+          variant="text"
           color="primary"
           @click="isAdding = false"
         >
-          <v-icon small>
+          <v-icon size="small">
             mdi-close
           </v-icon>
           <span>Cancel</span>
@@ -99,11 +99,11 @@
               v-if="isEditMode"
               id="remove-resolution-date"
               class="remove-btn mt-n1"
-              text
+              variant="text"
               color="primary"
               @click="onRemove(index)"
             >
-              <v-icon small>
+              <v-icon size="small">
                 {{ removeBtnIcon }}
               </v-icon>
               <span>{{ removeBtnLabel }}</span>
@@ -146,7 +146,7 @@
       <v-col cols="7">
         <v-btn
           class="show-previous-dates-btn ml-n4"
-          text
+          variant="text"
           color="primary"
           :ripple="false"
           @click="displayPreviousDates = !displayPreviousDates"

@@ -45,7 +45,7 @@ describe('Conversion Summary component', () => {
       naicsCode: '123456',
       naicsDescription: 'Mock description'
     },
-    addresses: addresses
+    addresses
   }
 
   beforeAll(() => {

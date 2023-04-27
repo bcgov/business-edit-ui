@@ -1,22 +1,44 @@
 <template>
   <div id="help-business-number">
-    <div class="help-btn" @click="helpToggle = !helpToggle">
-      <v-icon color="primary">mdi-help-circle-outline</v-icon>
-      <span v-if="!helpToggle" class="pl-2">{{ Header }}</span>
-      <span v-else class="pl-2">Hide Help</span>
+    <div
+      class="help-btn"
+      @click="helpToggle = !helpToggle"
+    >
+      <v-icon color="primary">
+        mdi-help-circle-outline
+      </v-icon>
+      <span
+        v-if="!helpToggle"
+        class="pl-2"
+      >{{ Header }}</span>
+      <span
+        v-else
+        class="pl-2"
+      >Hide Help</span>
     </div>
 
     <v-expand-transition>
-      <section v-if="helpToggle" class="help-section">
+      <section
+        v-if="helpToggle"
+        class="help-section"
+      >
         <header class="help-header">
-          <h2 class="py-4 px-0">{{ Header }}</h2>
+          <h2 class="py-4 px-0">
+            {{ Header }}
+          </h2>
         </header>
 
         <p class="my-4">
           The supplied business number will be used to link this registration with
-          <a :href="ProgramAccountUrl" target="_blank">
+          <a
+            :href="ProgramAccountUrl"
+            target="_blank"
+          >
             a program account by Canada Revenue Agency
-            <v-icon dense color="primary">mdi-open-in-new</v-icon>
+            <v-icon
+              dense
+              color="primary"
+            >mdi-open-in-new</v-icon>
           </a>.
           <span v-if="isTypeSoleProp">
             You will have a business number if the sole proprietorship you are
@@ -48,9 +70,11 @@
           </p>
 
           <ul class="bulleted-list">
-            <li>You are an individual registering a sole proprietorship: you may already have
+            <li>
+              You are an individual registering a sole proprietorship: you may already have
               a business number if you have previously registered a sole proprietorship (in
-              any province) as an individual.</li>
+              any province) as an individual.
+            </li>
           </ul>
         </template>
 
@@ -62,13 +86,24 @@
 
         <p class="my-4">
           To learn more,
-          <a :href="BusNumInfoUrl" target="_blank">
+          <a
+            :href="BusNumInfoUrl"
+            target="_blank"
+          >
             visit the Business Number information page
-            <v-icon dense color="primary">mdi-open-in-new</v-icon>
+            <v-icon
+              dense
+              color="primary"
+            >mdi-open-in-new</v-icon>
           </a>.
         </p>
 
-        <div class="help-btn bottom" @click="helpToggle = !helpToggle">Hide Help</div>
+        <div
+          class="help-btn bottom"
+          @click="helpToggle = !helpToggle"
+        >
+          Hide Help
+        </div>
       </section>
     </v-expand-transition>
   </div>
@@ -88,6 +123,7 @@ export default class HelpBusinessNumber extends Vue {
   readonly Header = 'Help with Business Number'
   readonly ProgramAccountUrl = 'https://www.canada.ca/en/revenue-agency/services/tax/businesses/' +
     'topics/registering-your-business/you-need-a-business-number-a-program-account.html'
+
   readonly BusNumInfoUrl = 'https://www2.gov.bc.ca/gov/content/employment-business/business/' +
     'managing-a-business/permits-licences/businesses-incorporated-companies/business-number'
 

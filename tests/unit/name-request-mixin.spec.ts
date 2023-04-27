@@ -66,9 +66,11 @@ describe('Name Request Mixin', () => {
   it('handles incorrect email errors', async () => {
     // mock fetchNameRequest to return different email address
     get.withArgs('nameRequests/NR 1234567')
-      .returns(Promise.resolve({ data: {
-        applicants: { emailAddress: 'other' }
-      } }))
+      .returns(Promise.resolve({
+        data: {
+          applicants: { emailAddress: 'other' }
+        }
+      }))
 
     try {
       await vm.validateNameRequest('NR 1234567', 'phone', 'email')
@@ -83,9 +85,11 @@ describe('Name Request Mixin', () => {
   it('handles incorrect phone errors', async () => {
     // mock fetchNameRequest to return different phone number
     get.withArgs('nameRequests/NR 1234567')
-      .returns(Promise.resolve({ data: {
-        applicants: { emailAddress: 'email', phoneNumber: 'other' }
-      } }))
+      .returns(Promise.resolve({
+        data: {
+          applicants: { emailAddress: 'email', phoneNumber: 'other' }
+        }
+      }))
 
     try {
       await vm.validateNameRequest('NR 1234567', 'phone', 'email')
@@ -100,9 +104,11 @@ describe('Name Request Mixin', () => {
   it('handles invalid name requests', async () => {
     // mock fetchNameRequest to return invalid NR
     get.withArgs('nameRequests/NR 1234567')
-      .returns(Promise.resolve({ data: {
-        applicants: { emailAddress: 'email', phoneNumber: 'phone' }
-      } }))
+      .returns(Promise.resolve({
+        data: {
+          applicants: { emailAddress: 'email', phoneNumber: 'phone' }
+        }
+      }))
 
     try {
       await vm.validateNameRequest('NR 1234567', 'phone', 'email')
@@ -117,15 +123,17 @@ describe('Name Request Mixin', () => {
   it('handles invalid name request states', async () => {
     // mock fetchNameRequest to return invalid NR state
     get.withArgs('nameRequests/NR 1234567')
-      .returns(Promise.resolve({ data: {
-        applicants: { emailAddress: 'email', phoneNumber: 'phone' },
-        state: 'DRAFT',
-        expirationDate: '2021-11-05T07:01:00+00:00',
-        names: [{ state: 'APPROVED', name: 'name' }],
-        nrNum: 'NR 1234567',
-        requestTypeCd: 'CR',
-        request_action_cd: 'CHG'
-      } }))
+      .returns(Promise.resolve({
+        data: {
+          applicants: { emailAddress: 'email', phoneNumber: 'phone' },
+          state: 'DRAFT',
+          expirationDate: '2021-11-05T07:01:00+00:00',
+          names: [{ state: 'APPROVED', name: 'name' }],
+          nrNum: 'NR 1234567',
+          requestTypeCd: 'CR',
+          request_action_cd: 'CHG'
+        }
+      }))
 
     try {
       await vm.validateNameRequest('NR 1234567', 'phone', 'email')
@@ -140,16 +148,18 @@ describe('Name Request Mixin', () => {
   it('handles conditional state with consent required', async () => {
     // mock fetchNameRequest to return invalid NR state
     get.withArgs('nameRequests/NR 1234567')
-      .returns(Promise.resolve({ data: {
-        applicants: { emailAddress: 'email', phoneNumber: 'phone' },
-        state: 'CONDITIONAL',
-        consentFlag: 'Y',
-        expirationDate: '2021-11-05T07:01:00+00:00',
-        names: [{ state: 'APPROVED', name: 'name' }],
-        nrNum: 'NR 1234567',
-        requestTypeCd: 'CR',
-        request_action_cd: 'CHG'
-      } }))
+      .returns(Promise.resolve({
+        data: {
+          applicants: { emailAddress: 'email', phoneNumber: 'phone' },
+          state: 'CONDITIONAL',
+          consentFlag: 'Y',
+          expirationDate: '2021-11-05T07:01:00+00:00',
+          names: [{ state: 'APPROVED', name: 'name' }],
+          nrNum: 'NR 1234567',
+          requestTypeCd: 'CR',
+          request_action_cd: 'CHG'
+        }
+      }))
 
     try {
       await vm.validateNameRequest('NR 1234567', 'phone', 'email')
@@ -164,16 +174,18 @@ describe('Name Request Mixin', () => {
   it('handles conditional state with consent received', async () => {
     // mock fetchNameRequest to return valid NR state
     get.withArgs('nameRequests/NR 1234567')
-      .returns(Promise.resolve({ data: {
-        applicants: { emailAddress: 'email', phoneNumber: 'phone' },
-        state: 'CONDITIONAL',
-        consentFlag: 'R',
-        expirationDate: '2021-11-05T07:01:00+00:00',
-        names: [{ state: 'APPROVED', name: 'name' }],
-        nrNum: 'NR 1234567',
-        requestTypeCd: 'CR',
-        request_action_cd: 'CHG'
-      } }))
+      .returns(Promise.resolve({
+        data: {
+          applicants: { emailAddress: 'email', phoneNumber: 'phone' },
+          state: 'CONDITIONAL',
+          consentFlag: 'R',
+          expirationDate: '2021-11-05T07:01:00+00:00',
+          names: [{ state: 'APPROVED', name: 'name' }],
+          nrNum: 'NR 1234567',
+          requestTypeCd: 'CR',
+          request_action_cd: 'CHG'
+        }
+      }))
 
     const nr = await vm.validateNameRequest('NR 1234567', 'phone', 'email')
     expect(nr).not.toBeUndefined()
@@ -259,21 +271,27 @@ describe('Name Request Mixin', () => {
   })
 
   it('returns a NR\'s approved name', () => {
-    let nr = { names: [
-      { state: 'NE', name: 'ne' },
-      { state: 'APPROVED', name: 'approved' }
-    ] }
+    let nr = {
+      names: [
+        { state: 'NE', name: 'ne' },
+        { state: 'APPROVED', name: 'approved' }
+      ]
+    }
     expect(vm.getNrApprovedName(nr)).toBe('approved')
 
-    nr = { names: [
-      { state: 'NE', name: 'ne' },
-      { state: 'CONDITION', name: 'condition' }
-    ] }
+    nr = {
+      names: [
+        { state: 'NE', name: 'ne' },
+        { state: 'CONDITION', name: 'condition' }
+      ]
+    }
     expect(vm.getNrApprovedName(nr)).toBe('condition')
 
-    nr = { names: [
-      { state: 'NE', name: 'ne' }
-    ] }
+    nr = {
+      names: [
+        { state: 'NE', name: 'ne' }
+      ]
+    }
     expect(vm.getNrApprovedName(nr)).toBeUndefined()
 
     nr = { names: [] }

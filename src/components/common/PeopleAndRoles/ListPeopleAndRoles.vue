@@ -129,7 +129,7 @@
                       v-if="wasRemoved(orgPerson)"
                       x-small
                       label
-                      color="grey lighten-2"
+                      color="grey-lighten-2"
                     >
                       REMOVED
                     </v-chip>
@@ -225,7 +225,7 @@
                 </v-col>
               </div>
               <div v-else>
-                <v-icon color="red darken-3">
+                <v-icon color="red-darken-3">
                   mdi-alert
                 </v-icon>
                 <span class="warning-text small-text">Missing Role</span>
@@ -245,12 +245,12 @@
                 <span class="undo-action">
                   <v-btn
                     :id="`officer-${index}-undo-btn`"
-                    text
+                    variant="text"
                     color="primary"
                     :disabled="renderOrgPersonForm"
                     @click="emitUndo(index); dropdown[index]=false"
                   >
-                    <v-icon small>mdi-undo</v-icon>
+                    <v-icon size="small">mdi-undo</v-icon>
                     <span>Undo</span>
                   </v-btn>
                 </span>
@@ -264,12 +264,12 @@
                 <span class="edit-action">
                   <v-btn
                     :id="`officer-${index}-edit-btn`"
-                    text
+                    variant="text"
                     color="primary"
                     :disabled="renderOrgPersonForm"
                     @click="emitInitEdit(index)"
                   >
-                    <v-icon small>mdi-pencil</v-icon>
+                    <v-icon size="small">mdi-pencil</v-icon>
                     <span>Edit</span>
                   </v-btn>
                 </span>
@@ -282,14 +282,14 @@
                   <v-menu
                     v-model="dropdown[index]"
                     offset-y
-                    left
+                    location="left"
                     nudge-bottom="4"
                     :attach="`#list-people-roles .more-actions-${index}`"
                   >
                     <template #activator="{ on }">
                       <v-btn
-                        text
-                        small
+                        variant="text"
+                        size="small"
                         color="primary"
                         class="more-actions-btn"
                         :disabled="renderOrgPersonForm"
@@ -305,7 +305,7 @@
                         @click="emitRemove(index); dropdown[index]=false"
                       >
                         <v-list-item-subtitle>
-                          <v-icon small>mdi-delete</v-icon>
+                          <v-icon size="small">mdi-delete</v-icon>
                           <span class="ml-1">Remove</span>
                         </v-list-item-subtitle>
                       </v-list-item>
@@ -322,12 +322,12 @@
                 <span class="undo-action">
                   <v-btn
                     :id="`officer-${index}-undo-btn`"
-                    text
+                    variant="text"
                     color="primary"
                     :disabled="renderOrgPersonForm"
                     @click="emitUndo(index); dropdown[index]=false"
                   >
-                    <v-icon small>mdi-undo</v-icon>
+                    <v-icon size="small">mdi-undo</v-icon>
                     <span>Undo</span>
                   </v-btn>
                 </span>
@@ -341,12 +341,12 @@
                 <span class="undo-action">
                   <v-btn
                     :id="`officer-${index}-undo-btn`"
-                    text
+                    variant="text"
                     color="primary"
                     :disabled="renderOrgPersonForm"
                     @click="emitUndo(index); dropdown[index]=false"
                   >
-                    <v-icon small>mdi-undo</v-icon>
+                    <v-icon size="small">mdi-undo</v-icon>
                     <span>Undo</span>
                   </v-btn>
                 </span>
@@ -359,14 +359,14 @@
                   <v-menu
                     v-model="dropdown[index]"
                     offset-y
-                    left
+                    location="left"
                     nudge-bottom="4"
                     :attach="`#list-people-roles .more-actions-${index}`"
                   >
                     <template #activator="{ on }">
                       <v-btn
-                        text
-                        small
+                        variant="text"
+                        size="small"
                         color="primary"
                         class="more-actions-btn"
                         :disabled="renderOrgPersonForm"
@@ -382,7 +382,7 @@
                         @click="emitInitEdit(index); dropdown[index]=false"
                       >
                         <v-list-item-subtitle>
-                          <v-icon small>mdi-pencil</v-icon>
+                          <v-icon size="small">mdi-pencil</v-icon>
                           <span class="ml-1">Change</span>
                         </v-list-item-subtitle>
                       </v-list-item>
@@ -393,7 +393,7 @@
                         @click="emitRemove(index); dropdown[index]=false"
                       >
                         <v-list-item-subtitle>
-                          <v-icon small>mdi-delete</v-icon>
+                          <v-icon size="small">mdi-delete</v-icon>
                           <span class="ml-1">Remove</span>
                         </v-list-item-subtitle>
                       </v-list-item>
@@ -413,12 +413,12 @@
                 >
                   <v-btn
                     :id="`officer-${index}-edit-btn`"
-                    text
+                    variant="text"
                     color="primary"
                     :disabled="renderOrgPersonForm"
                     @click="emitInitEdit(index)"
                   >
-                    <v-icon small>mdi-pencil</v-icon>
+                    <v-icon size="small">mdi-pencil</v-icon>
                     <span>{{ getEditLabel }}</span>
                   </v-btn>
                 </span>
@@ -432,14 +432,14 @@
                   <v-menu
                     v-model="dropdown[index]"
                     offset-y
-                    left
+                    location="left"
                     nudge-bottom="4"
                     :attach="`#list-people-roles .more-actions-${index}`"
                   >
                     <template #activator="{ on }">
                       <v-btn
-                        text
-                        small
+                        variant="text"
+                        size="small"
                         color="primary"
                         class="more-actions-btn"
                         :disabled="renderOrgPersonForm"
@@ -455,7 +455,7 @@
                         @click="emitRemove(index)"
                       >
                         <v-list-item-subtitle>
-                          <v-icon small>mdi-delete</v-icon>
+                          <v-icon size="small">mdi-delete</v-icon>
                           <span class="ml-1">Remove</span>
                         </v-list-item-subtitle>
                       </v-list-item>
@@ -472,14 +472,14 @@
                   <v-menu
                     v-model="dropdown[index]"
                     offset-y
-                    left
+                    location="left"
                     nudge-bottom="4"
                     :attach="`#list-people-roles .more-actions-${index}`"
                   >
                     <template #activator="{ on }">
                       <v-btn
-                        text
-                        small
+                        variant="text"
+                        size="small"
                         color="primary"
                         class="more-actions-btn"
                         :disabled="renderOrgPersonForm"
@@ -523,7 +523,7 @@
 import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
 import { Getter } from '@/store/PiniaClass'
 import { IsSame } from '@/utils/'
-import BaseAddress from '@/sbc-common-components/src/components/BaseAddress.vue'
+import BaseAddress from '@/sbc-common-components/components/BaseAddress.vue'
 import OrgPerson from './OrgPerson.vue'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'
 import { OrgPersonIF } from '@/interfaces/'

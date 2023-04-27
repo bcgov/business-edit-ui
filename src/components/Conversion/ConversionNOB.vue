@@ -39,7 +39,7 @@
           >
             <v-textarea
               v-model="naicsText"
-              filled
+              variant="filled"
               auto-grow
               class="mt-5"
               autocomplete="chrome-off"
@@ -47,12 +47,12 @@
               rows="3"
               counter="300"
               :rules="naicsRules"
-              validate-on-blur
+              validate-on="blur"
             />
             <div class="float-right mb-2">
               <v-btn
                 id="nob-done-btn"
-                large
+                size="large"
                 color="primary"
                 class="mr-2"
                 @click="onDoneClicked()"
@@ -61,8 +61,8 @@
               </v-btn>
               <v-btn
                 id="nob-cancel-btn"
-                large
-                outlined
+                size="large"
+                variant="outlined"
                 color="primary"
                 @click="onCancelClicked()"
               >
@@ -85,11 +85,11 @@
           >
             <v-btn
               id="nob-change-btn"
-              text
+              variant="text"
               color="primary"
               @click="onChangeClicked()"
             >
-              <v-icon small>
+              <v-icon size="small">
                 mdi-pencil
               </v-icon>
               <span>{{ getEditLabel }}</span>
@@ -103,11 +103,11 @@
           >
             <v-btn
               id="nob-undo-btn"
-              text
+              variant="text"
               color="primary"
               @click="onUndoClicked()"
             >
-              <v-icon small>
+              <v-icon size="small">
                 mdi-undo
               </v-icon>
               <span>Undo</span>
@@ -115,14 +115,14 @@
             <v-menu
               v-model="dropdown"
               offset-y
-              left
+              location="left"
               nudge-bottom="4"
             >
               <template #activator="{ on }">
                 <v-btn
                   id="nob-menu-btn"
-                  text
-                  small
+                  variant="text"
+                  size="small"
                   color="primary"
                   v-on="on"
                 >
@@ -131,13 +131,13 @@
               </template>
               <v-btn
                 id="more-changes-btn"
-                text
+                variant="text"
                 color="primary"
                 class="py-5"
                 @click="onChangeClicked(); dropdown = false"
               >
                 <v-icon
-                  small
+                  size="small"
                   color="primary"
                 >
                   mdi-pencil
@@ -157,7 +157,7 @@ import { Component, Vue, Watch } from 'vue-facing-decorator'
 import { Action, Getter } from '@/store/PiniaClass'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, FlagsCompanyInfoIF } from '@/interfaces/'
-import { NaicsIF } from '@/bcrs-shared-components/interfaces/'
+import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 import { useStore } from '@/store/store'
 
@@ -215,7 +215,7 @@ export default class ConversionNOB extends Vue {
   /** Called when user has clicked the Done button. */
   protected onDoneClicked (): void {
     // eslint-disable-next-line no-undef
-    let validForm = (this.$refs.form as Vue & { validate: () => boolean }).validate()
+    const validForm = (this.$refs.form as Vue & { validate: () => boolean }).validate()
     if (validForm) {
       if (!isEqual(this.naicsText, this.naicsSummary)) {
         this.setNaics({

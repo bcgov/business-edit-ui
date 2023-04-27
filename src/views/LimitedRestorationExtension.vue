@@ -117,9 +117,11 @@ import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep } from 'lodash'
 import RestorationSummary from '@/components/Restoration/RestorationSummary.vue'
 import YourCompanySummary from '@/components/Restoration/YourCompanySummary.vue'
-import { BusinessContactInfo, CertifySection, DocumentsDelivery, EntityName, FolioInformation,
+import {
+  BusinessContactInfo, CertifySection, DocumentsDelivery, EntityName, FolioInformation,
   ListPeopleAndRoles, NameTranslation, OfficeAddresses, PeopleAndRoles, QuestionWrapper,
-  RecognitionDateTime, StaffPayment, YourCompanyWrapper } from '@/components/common/'
+  RecognitionDateTime, StaffPayment, YourCompanyWrapper
+} from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
 import { ActionBindingIF, EntitySnapshotIF, OrgPersonIF, ResourceIF, RestorationFilingIF }
   from '@/interfaces/'
@@ -127,7 +129,7 @@ import { FilingStatus, RoleTypes } from '@/enums/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationExtension/'
 import { FeeSummary as FeeSummaryShared } from '@/bcrs-shared-components/fee-summary/'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { LimitedRestorationPanel } from '@/bcrs-shared-components/limited-restoration-panel/'
 import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'

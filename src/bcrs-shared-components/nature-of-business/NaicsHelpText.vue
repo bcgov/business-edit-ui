@@ -2,10 +2,14 @@
   <div id="naics-help-text">
     <p>If you are having difficulty locating a NAICS code, try the following:</p>
     <ul>
-      <li>Use more general terms (for example, instead of searching 'imported shoe
-        sales', try 'shoe').</li>
-      <li>Remove pluralization or unnecessary endings (for example, instead of
-        searching 'deliveries', try 'deliver').</li>
+      <li>
+        Use more general terms (for example, instead of searching 'imported shoe
+        sales', try 'shoe').
+      </li>
+      <li>
+        Remove pluralization or unnecessary endings (for example, instead of
+        searching 'deliveries', try 'deliver').
+      </li>
     </ul>
   </div>
 </template>

@@ -11,8 +11,10 @@ import ViewWrapper from '@/components/ViewWrapper.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { AccountTypes, ActionTypes, FilingTypes } from '@/enums'
-import { BusinessContactInfo, BusinessType, EntityName, FolioInformation, NameTranslation, OfficeAddresses,
-  RecognitionDateTime, YourCompanyWrapper } from '@/components/common'
+import {
+  BusinessContactInfo, BusinessType, EntityName, FolioInformation, NameTranslation, OfficeAddresses,
+  RecognitionDateTime, YourCompanyWrapper
+} from '@/components/common'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -69,18 +71,18 @@ describe('Alteration component', () => {
     get.withArgs('https://pay.api.url/fees/BEN/ALTER')
       .returns(Promise.resolve({
         data: {
-          'filingFees': 100.0,
-          'filingType': 'Alteration',
-          'filingTypeCode': 'ALTER',
-          'futureEffectiveFees': 0,
-          'priorityFees': 0,
-          'processingFees': 0,
-          'serviceFees': 1.5,
-          'tax': {
-            'gst': 0,
-            'pst': 0
+          filingFees: 100.0,
+          filingType: 'Alteration',
+          filingTypeCode: 'ALTER',
+          futureEffectiveFees: 0,
+          priorityFees: 0,
+          processingFees: 0,
+          serviceFees: 1.5,
+          tax: {
+            gst: 0,
+            pst: 0
           },
-          'total': 101.5
+          total: 101.5
         }
       }))
 
@@ -88,18 +90,18 @@ describe('Alteration component', () => {
     get.withArgs('https://pay.api.url/fees/BEN/ALTER?futureEffective=true')
       .returns(Promise.resolve({
         data: {
-          'filingFees': 100.0,
-          'filingType': 'Alteration',
-          'filingTypeCode': 'ALTER',
-          'futureEffectiveFees': 100.0,
-          'priorityFees': 0,
-          'processingFees': 0,
-          'serviceFees': 1.5,
-          'tax': {
-            'gst': 0,
-            'pst': 0
+          filingFees: 100.0,
+          filingType: 'Alteration',
+          filingTypeCode: 'ALTER',
+          futureEffectiveFees: 100.0,
+          priorityFees: 0,
+          processingFees: 0,
+          serviceFees: 1.5,
+          tax: {
+            gst: 0,
+            pst: 0
           },
-          'total': 201.5
+          total: 201.5
         }
       }))
 

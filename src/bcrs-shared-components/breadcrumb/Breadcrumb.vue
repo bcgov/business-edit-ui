@@ -8,19 +8,37 @@
             class="back-btn"
             exact
             :href="backUrl"
-            icon small
+            icon
+            size="small"
             :disabled="breadcrumbs.length <= 1"
           >
-            <v-icon color="primary">mdi-arrow-left</v-icon>
+            <v-icon color="primary">
+              mdi-arrow-left
+            </v-icon>
           </v-btn>
         </v-col>
 
-        <v-divider class="mx-3" color="white" vertical />
+        <v-divider
+          class="mx-3"
+          color="white"
+          vertical
+        />
 
-        <v-col cols="auto" class="breadcrumb-col">
-          <v-breadcrumbs :items="breadcrumbs" class="pa-0 ma-0">
-            <template v-slot:divider>
-              <v-icon color="white" class="mx-n2">mdi-chevron-right</v-icon>
+        <v-col
+          cols="auto"
+          class="breadcrumb-col"
+        >
+          <v-breadcrumbs
+            :items="breadcrumbs"
+            class="pa-0 ma-0"
+          >
+            <template #divider>
+              <v-icon
+                color="white"
+                class="mx-n2"
+              >
+                mdi-chevron-right
+              </v-icon>
             </template>
 
             <v-breadcrumbs-item
@@ -46,7 +64,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-facing-decorator'
-import { BreadcrumbIF } from '@/bcrs-shared-components/interfaces'
+import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
 
 @Component({})
 export default class Breadcrumb extends Vue {

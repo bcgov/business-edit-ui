@@ -1,5 +1,5 @@
 import { NameChangeOptions, FilingCodes } from '@/enums/'
-import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
 export const BcRestorationResource: ResourceIF = {

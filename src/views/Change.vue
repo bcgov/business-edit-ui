@@ -102,18 +102,20 @@ import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { Action, Getter } from '@/store/PiniaClass'
 import { GetFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
-import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
+import {
+  BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
   DocumentsDelivery, EntityName, NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment,
-  TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
+  TransactionalFolioNumber, YourCompanyWrapper
+} from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, CertifyIF, EntitySnapshotIF, OrgPersonIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus, PartyTypes } from '@/enums/'
-import { SessionStorageKeys } from '@/sbc-common-components/src/util/constants'
+import { SessionStorageKeys } from '@/sbc-common-components/util/constants'
 import { SpChangeResource, GpChangeResource, SpOrganizationChangeResource } from '@/resources/Change/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
   components: {
@@ -287,10 +289,10 @@ export default class Change extends Vue {
     // WORK-AROUND WARNING !!!
     // convert orgPersons from "middleInitial" to "middleName"
     const orgPersons = items[3].map(orgPerson => {
-      const middleInitial = orgPerson.officer['middleInitial']
+      const middleInitial = orgPerson.officer.middleInitial
       if (middleInitial !== undefined) {
         orgPerson.officer.middleName = middleInitial
-        delete orgPerson.officer['middleInitial']
+        delete orgPerson.officer.middleInitial
       }
       return orgPerson
     })

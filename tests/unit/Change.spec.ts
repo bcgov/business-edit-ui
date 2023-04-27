@@ -8,9 +8,11 @@ import { AxiosInstance as axios } from '@/utils/'
 import Change from '@/views/Change.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import mockRouter from './MockRouter'
-import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, CompletingParty,
+import {
+  BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, CompletingParty,
   CourtOrderPoa, DocumentsDelivery, EntityName, NatureOfBusiness, OfficeAddresses, PeopleAndRoles,
-  StaffPayment, TransactionalFolioNumber } from '@/components/common'
+  StaffPayment, TransactionalFolioNumber
+} from '@/components/common'
 import { ChangeSummary } from '@/components/Change'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
@@ -70,18 +72,18 @@ describe('Change component', () => {
     get.withArgs('https://pay.api.url/fees/FM/CHANGE')
       .returns(Promise.resolve({
         data: {
-          'filingFees': 100.0,
-          'filingType': 'Change',
-          'filingTypeCode': 'CHANGE',
-          'futureEffectiveFees': 0,
-          'priorityFees': 0,
-          'processingFees': 0,
-          'serviceFees': 1.5,
-          'tax': {
-            'gst': 0,
-            'pst': 0
+          filingFees: 100.0,
+          filingType: 'Change',
+          filingTypeCode: 'CHANGE',
+          futureEffectiveFees: 0,
+          priorityFees: 0,
+          processingFees: 0,
+          serviceFees: 1.5,
+          tax: {
+            gst: 0,
+            pst: 0
           },
-          'total': 101.5
+          total: 101.5
         }
       }))
 
@@ -89,18 +91,18 @@ describe('Change component', () => {
     get.withArgs('https://pay.api.url/fees/FM/CHANGE?futureEffective=true')
       .returns(Promise.resolve({
         data: {
-          'filingFees': 100.0,
-          'filingType': 'Change',
-          'filingTypeCode': 'CHANGE',
-          'futureEffectiveFees': 100.0,
-          'priorityFees': 0,
-          'processingFees': 0,
-          'serviceFees': 1.5,
-          'tax': {
-            'gst': 0,
-            'pst': 0
+          filingFees: 100.0,
+          filingType: 'Change',
+          filingTypeCode: 'CHANGE',
+          futureEffectiveFees: 100.0,
+          priorityFees: 0,
+          processingFees: 0,
+          serviceFees: 1.5,
+          tax: {
+            gst: 0,
+            pst: 0
           },
-          'total': 201.5
+          total: 201.5
         }
       }))
 
@@ -158,7 +160,8 @@ describe('Change component', () => {
     const router = mockRouter.mock()
     await router.push({ name: 'change' })
 
-    wrapper = shallowMount(Change, { localVue,
+    wrapper = shallowMount(Change, {
+      localVue,
       router,
       vuetify,
       data: () => ({

@@ -7,12 +7,14 @@ import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import FirmCorrection from '@/views/Correction/FirmCorrection.vue'
 import mockRouter from './MockRouter'
-import { BusinessStartDate, BusinessType, CertifySection, CompletingParty, Detail, EntityName,
-  NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment, YourCompanyWrapper }
+import {
+  BusinessStartDate, BusinessType, CertifySection, CompletingParty, Detail, EntityName,
+  NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment, YourCompanyWrapper
+}
   from '@/components/common'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { ActionTypes, FilingTypes } from '@/enums'
 
 Vue.use(Vuetify)

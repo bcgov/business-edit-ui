@@ -23,7 +23,7 @@
         <v-btn
           id="dialog-delete-btn"
           color="primary"
-          text
+          variant="text"
           @click="confirm()"
         >
           Delete Alterations
@@ -31,7 +31,7 @@
         <v-btn
           id="dialog-cancel-btn"
           color="primary"
-          text
+          variant="text"
           @click="cancel()"
         >
           Cancel

@@ -1,28 +1,53 @@
 <template>
-  <v-row no-gutters class="naics-result" v-if="!!result" @click="emitClick()">
+  <v-row
+    v-if="!!result"
+    no-gutters
+    class="naics-result"
+    @click="emitClick()"
+  >
     <v-col cols="2">
-      <div class="result-code">{{result.code}}</div>
+      <div class="result-code">
+        {{ result.code }}
+      </div>
     </v-col>
 
     <v-col cols="10">
       <div class="d-flex justify-space-between align-top">
-        <label class="result-class-title">{{result.classTitle}}</label>
-        <v-btn large depressed color="primary" class="mt-n2">Select</v-btn>
+        <label class="result-class-title">{{ result.classTitle }}</label>
+        <v-btn
+          size="large"
+          variant="flat"
+          color="primary"
+          class="mt-n2"
+        >
+          Select
+        </v-btn>
       </div>
 
-      <div class="result-class-definition">{{result.classDefinition}}</div>
+      <div class="result-class-definition">
+        {{ result.classDefinition }}
+      </div>
 
       <template v-if="elements.length > 0">
-        <div class="sample-activities">Sample activities:</div>
+        <div class="sample-activities">
+          Sample activities:
+        </div>
         <ul>
           <template v-for="(element, index) in elements">
-            <li v-if="showMore || (index < 5)" :key="index">
-              {{capitalize(element.elementDescription)}}
+            <li
+              v-if="showMore || (index < 5)"
+              :key="index"
+            >
+              {{ capitalize(element.elementDescription) }}
             </li>
           </template>
         </ul>
 
-        <div v-if="!showMore && (elements.length >= 5)" class="show-more" @click.stop="showMore = true">
+        <div
+          v-if="!showMore && (elements.length >= 5)"
+          class="show-more"
+          @click.stop="showMore = true"
+        >
           Show more...
         </div>
       </template>
@@ -32,7 +57,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
-import { NaicsElementIF, NaicsResultIF } from '@/bcrs-shared-components/interfaces'
+import { NaicsElementIF, NaicsResultIF } from '@bcrs-shared-components/interfaces'
 
 @Component({})
 export default class NaicsResult extends Vue {

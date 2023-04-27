@@ -51,7 +51,7 @@
         <v-btn
           id="dialog-ok-button"
           color="primary"
-          text
+          variant="text"
           @click="emitClose()"
         >
           OK

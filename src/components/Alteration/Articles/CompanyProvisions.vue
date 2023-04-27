@@ -39,11 +39,11 @@
         >
           <v-btn
             id="change-company-provisions"
-            text
+            variant="text"
             color="primary"
             @click="isEditing = true"
           >
-            <v-icon small>
+            <v-icon size="small">
               mdi-pencil
             </v-icon>
             <span>{{ getEditLabel }}</span>
@@ -56,12 +56,12 @@
         >
           <v-btn
             id="undo-company-provisions"
-            text
+            variant="text"
             color="primary"
             class="undo-company-provisions"
             @click="resetCompanyProvisions"
           >
-            <v-icon small>
+            <v-icon size="small">
               mdi-undo
             </v-icon>
             <span>Undo</span>
@@ -72,13 +72,13 @@
             <v-menu
               v-model="dropdown"
               offset-y
-              left
+              location="left"
               nudge-bottom="4"
             >
               <template #activator="{ on }">
                 <v-btn
-                  text
-                  small
+                  variant="text"
+                  size="small"
                   color="primary"
                   class="more-actions-btn"
                   v-on="on"
@@ -93,7 +93,7 @@
                 >
                   <v-list-item-subtitle>
                     <v-icon
-                      small
+                      size="small"
                       color="primary"
                     >mdi-pencil</v-icon>
                     <span class="drop-down-action ml-1">Change</span>
@@ -136,7 +136,7 @@
         <div class="action-btns">
           <v-btn
             id="company-provisions-done"
-            large
+            size="large"
             color="primary"
             @click="setCompanyProvisionsDone()"
           >
@@ -144,8 +144,8 @@
           </v-btn>
           <v-btn
             id="company-provisions-cancel"
-            large
-            outlined
+            size="large"
+            variant="outlined"
             color="primary"
             @click="cancelCompanyProvisionChange()"
           >

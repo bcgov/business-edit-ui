@@ -110,7 +110,7 @@
 
           <v-btn
             id="done-button"
-            large
+            size="large"
             color="primary"
             class="mt-8"
             @click="$root.$emit('go-to-dashboard')"
@@ -128,21 +128,25 @@ import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { Action, Getter } from '@/store/PiniaClass'
 import { GetFeatureFlag } from '@/utils/'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
-import { BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, CurrentDirectors,
+import {
+  BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, CurrentDirectors,
   DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
-  ShareStructures, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper }
+  ShareStructures, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper
+}
   from '@/components/common/'
 import { NameTranslation } from '@/components/common/YourCompany/NameTranslations/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, CertifyIF, EffectiveDateTimeIF, EntitySnapshotIF, FilingDataIF,
-  ResourceIF } from '@/interfaces/'
+import {
+  ActionBindingIF, CertifyIF, EffectiveDateTimeIF, EntitySnapshotIF, FilingDataIF,
+  ResourceIF
+} from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
-import { SessionStorageKeys } from '@/sbc-common-components/src/util/constants'
+import { SessionStorageKeys } from '@/sbc-common-components/util/constants'
 import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
   from '@/resources/Alteration/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
 
 @Component({

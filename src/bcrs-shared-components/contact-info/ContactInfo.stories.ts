@@ -1,5 +1,5 @@
 import { ContactInfo } from './index'
-import { ContactPointIF } from '@/bcrs-shared-components/interfaces'
+import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 
 export default {
   title: 'component/ContactInfo',

@@ -9,7 +9,7 @@
         <!-- disable Save button for now -->
         <v-btn
           id="save-btn"
-          large
+          size="large"
           :disabled="isSaveButtonDisabled"
           :loading="isSaving"
           @click="onClickSave()"
@@ -19,7 +19,7 @@
 
         <v-btn
           id="save-resume-btn"
-          large
+          size="large"
           :disabled="isSaveResumeButtonDisabled"
           :loading="isSavingResuming"
           @click="onClickSaveResume()"
@@ -32,7 +32,7 @@
         <v-fade-transition hide-on-leave>
           <v-btn
             id="file-pay-btn"
-            large
+            size="large"
             color="primary"
             :disabled="isFilePayButtonDisabled"
             :loading="isFilingPaying"
@@ -44,8 +44,8 @@
 
         <v-btn
           id="app-cancel-btn"
-          large
-          outlined
+          size="large"
+          variant="outlined"
           color="primary"
           :disabled="isBusySaving"
           @click="onClickCancel()"
@@ -65,7 +65,7 @@ import { ActionBindingIF } from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, NameRequestMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 /** This component is only implemented for Correction filings atm. */
 @Component({

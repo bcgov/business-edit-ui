@@ -1,15 +1,13 @@
 module.exports = {
   root: true,
   env: {
+    'vue/setup-compiler-macros': true,
     node: true
   },
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:vue/base',
-    'plugin:vue/essential',
-    'plugin:vue/recommended',
-    'plugin:vue/strongly-recommended',
     'plugin:vue/vue3-essential',
     'plugin:vue/vue3-recommended',
     'plugin:vue/vue3-strongly-recommended',
@@ -21,7 +19,7 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-unused-vars': 'warn',
+    'no-unused-vars': 'off',
     'max-len': ['warn', { code: 120, ignoreRegExpLiterals: true }],
     'vue/attribute-hyphenation': 'off',
     'vue/no-deprecated-filter': 'warn',
@@ -32,15 +30,21 @@ module.exports = {
     'vue/no-v-for-template-key-on-child': 'warn',
     'vue/no-v-html': 'off',
     'vue/v-on-event-hyphenation': 'off',
+    'vuetify/no-deprecated-classes': 'warn',
     'vuetify/no-deprecated-colors': 'warn',
     'vuetify/no-deprecated-components': 'warn',
     'vuetify/no-deprecated-events': 'warn',
     'vuetify/no-deprecated-props': 'warn',
     '@typescript-eslint/ban-types': 'warn',
     '@typescript-eslint/no-empty-function': 'off',
-    '@typescript-eslint/no-explicit-any': 'off'
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      { argsIgnorePattern: '^_' }
+    ]
   },
   parserOptions: {
+    ecmaVersion: 2022,
     parser: '@typescript-eslint/parser',
     plugins: ['@typescript-eslint']
   },

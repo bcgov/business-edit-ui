@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-facing-decorator'
-import SbcSignout from '@/sbc-common-components/src/components/SbcSignout.vue'
+import SbcSignout from '@/sbc-common-components/components/SbcSignout.vue'
 
 @Component({
   components: {

@@ -1,6 +1,6 @@
 import { AddressesIF, NameTranslationIF, OrgPersonIF, ShareClassIF } from '@/interfaces/'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
-import { ContactPointIF } from '@/bcrs-shared-components/interfaces'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { ContactPointIF } from '@bcrs-shared-components/interfaces'
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/incorporation_application.json
 //

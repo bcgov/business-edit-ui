@@ -117,11 +117,13 @@ describe('Payment Error Dialog', () => {
     const wrapper = shallowMount(PaymentErrorDialog,
       {
         vuetify,
-        propsData: { dialog: true,
+        propsData: {
+          dialog: true,
           warnings: [
             { message: 'Test Warning 1' },
             { message: 'Test Warning 2' }
-          ] }
+          ]
+        }
       })
 
     expect(wrapper.attributes('contentclass')).toBe('payment-error-dialog')

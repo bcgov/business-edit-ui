@@ -139,7 +139,7 @@ describe('People And Roles component for Correction', () => {
   })
 
   it('shows check icons next to the director role when people list is complete', () => {
-    store.stateModel.peopleAndRoles.orgPeople = getPersonList([ directorRole ])
+    store.stateModel.peopleAndRoles.orgPeople = getPersonList([directorRole])
     const wrapper = wrapperFactory()
     expect(wrapper.find(checkDirector).exists()).toBe(true)
     wrapper.destroy()
@@ -174,7 +174,7 @@ describe('People And Roles component for Correction', () => {
   })
 
   it('sets Valid flag to True when the component is valid', () => {
-    store.stateModel.peopleAndRoles.orgPeople = getPersonList([ directorRole ])
+    store.stateModel.peopleAndRoles.orgPeople = getPersonList([directorRole])
     const wrapper = wrapperFactory()
 
     expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidOrgPersons).toBe(true)
@@ -183,7 +183,7 @@ describe('People And Roles component for Correction', () => {
   })
 
   it('sets Changed flag to False when component has no changes', () => {
-    store.stateModel.peopleAndRoles.orgPeople = getPersonList([ directorRole ])
+    store.stateModel.peopleAndRoles.orgPeople = getPersonList([directorRole])
     const wrapper = wrapperFactory()
 
     expect(store.stateModel.peopleAndRoles.changed).toBe(false)
@@ -192,7 +192,7 @@ describe('People And Roles component for Correction', () => {
   })
 
   it('sets Changed flag to True when component has changes', () => {
-    store.stateModel.peopleAndRoles.orgPeople = getPersonList([ directorRole ])
+    store.stateModel.peopleAndRoles.orgPeople = getPersonList([directorRole])
     store.stateModel.peopleAndRoles.orgPeople[0].actions = [ActionTypes.EDITED]
     const wrapper = wrapperFactory()
 

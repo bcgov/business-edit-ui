@@ -13,7 +13,7 @@
       </p>
       <p
         v-if="comment"
-        class="black--text mb-0"
+        class="text-black mb-0"
       >
         {{ comment }}
       </p>

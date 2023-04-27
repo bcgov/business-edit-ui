@@ -12,19 +12,19 @@
       <v-text-field
         id="name-translation-input"
         v-model="nameTranslation"
-        filled
+        variant="filled"
         persistent-hint
         label="Name Translation"
         :rules="nameTranslationRules"
-        @input="nameTranslation = nameTranslation.toUpperCase()"
+        @update:model-value="nameTranslation = nameTranslation.toUpperCase()"
       />
 
       <div class="action-btns">
         <v-btn
           v-if="!isAddingTranslation"
           id="name-translation-btn-remove"
-          large
-          outlined
+          size="large"
+          variant="outlined"
           color="error"
           @click="removeTranslation(nameIndex)"
         >
@@ -32,7 +32,7 @@
         </v-btn>
         <v-btn
           id="name-translation-btn-done"
-          large
+          size="large"
           color="primary"
           class="ml-auto"
           @click="validateAddTranslation()"
@@ -41,8 +41,8 @@
         </v-btn>
         <v-btn
           id="name-translation-btn-cancel"
-          large
-          outlined
+          size="large"
+          variant="outlined"
           color="primary"
           @click="cancelNameTranslation()"
         >

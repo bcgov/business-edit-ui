@@ -1,46 +1,75 @@
 <template>
-  <v-form :attach="attach" ref="form" class="date-picker-form">
-    <v-menu v-model="displayPicker"
-            :close-on-click="false"
-            :close-on-content-click="false"
-            :nudge-top="nudgeTop"
-            :nudge-bottom="nudgeBottom"
-            :nudge-left="nudgeLeft"
-            :nudge-right="nudgeRight"
-            transition="scale-transition"
-            offset-y
-            bottom
-            min-width="290"
+  <v-form
+    ref="form"
+    :attach="attach"
+    class="date-picker-form"
+  >
+    <v-menu
+      v-model="displayPicker"
+      persistent
+      :close-on-content-click="false"
+      :nudge-top="nudgeTop"
+      :nudge-bottom="nudgeBottom"
+      :nudge-left="nudgeLeft"
+      :nudge-right="nudgeRight"
+      transition="scale-transition"
+      offset-y
+      location="bottom"
+      min-width="290"
     >
-      <template v-slot:activator="{ on }">
-        <span :class="{'date-text-field-pointer': enableSelector}" v-on="enableSelector && on">
-          <v-text-field id="date-text-field"
-                        ref="dateTextField"
-                        append-icon="mdi-calendar"
-                        autocomplete="chrome-off"
-                        :clearable="clearable"
-                        :error-messages="errorMsg"
-                        :error="!!errorMsg"
-                        :value="displayDate"
-                        :label="title"
-                        :name="Math.random().toString()"
-                        :rules="inputRules"
-                        :disabled="disablePicker"
-                        :hint="hint"
-                        :persistent-hint="persistentHint"
-                        @click:clear="emitClear()"
-                        @keydown="$event.preventDefault()"
-                        @keyup.enter="emitDate(dateText)"
-                        readonly
-                        filled
+      <template #activator="{ on }">
+        <span
+          :class="{'date-text-field-pointer': enableSelector}"
+          v-on="enableSelector && on"
+        >
+          <v-text-field
+            id="date-text-field"
+            ref="dateTextField"
+            append-icon="mdi-calendar"
+            autocomplete="chrome-off"
+            :clearable="clearable"
+            :error-messages="errorMsg"
+            :error="!!errorMsg"
+            :model-value="displayDate"
+            :label="title"
+            :name="Math.random().toString()"
+            :rules="inputRules"
+            :disabled="disablePicker"
+            :hint="hint"
+            :persistent-hint="persistentHint"
+            readonly
+            variant="filled"
+            @click:clear="emitClear()"
+            @keydown="$event.preventDefault()"
+            @keyup.enter="emitDate(dateText)"
           />
         </span>
       </template>
-      <v-date-picker id="date-picker-calendar" width="490" v-model="dateText" :min="minDate" :max="maxDate">
-        <template v-slot:default>
+      <v-date-picker
+        id="date-picker-calendar"
+        v-model="dateText"
+        width="490"
+        :min="minDate"
+        :max="maxDate"
+      >
+        <template #default>
           <div>
-            <v-btn id="btn-done" text color="primary" @click="emitDate(dateText)"><strong>OK</strong></v-btn>
-            <v-btn id="btn-cancel" text color="primary" @click="emitCancel()">Cancel</v-btn>
+            <v-btn
+              id="btn-done"
+              variant="text"
+              color="primary"
+              @click="emitDate(dateText)"
+            >
+              <strong>OK</strong>
+            </v-btn>
+            <v-btn
+              id="btn-cancel"
+              variant="text"
+              color="primary"
+              @click="emitCancel()"
+            >
+              Cancel
+            </v-btn>
           </div>
         </template>
       </v-date-picker>
@@ -50,7 +79,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { FormIF } from '@/bcrs-shared-components/interfaces'
+import { FormIF } from '@bcrs-shared-components/interfaces'
 import { DateMixin } from '@/mixins' // NB: local mixin (StoryBook can't find it otherwise)
 
 @Component({

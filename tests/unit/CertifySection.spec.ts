@@ -19,7 +19,7 @@ const certifyClause = 'Certify Clause'
 const resource = {
   entityType: 'BEN',
   displayName: 'BC Benefit Company',
-  certifyClause: certifyClause
+  certifyClause
 }
 
 /**

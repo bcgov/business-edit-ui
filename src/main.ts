@@ -27,7 +27,7 @@ import App from './App.vue'
 
 // Helpers
 import { GetFeatureFlag, InitLdClient, FetchConfig, Navigate } from '@/utils/'
-import KeycloakService from '@/sbc-common-components/src/services/keycloak.services'
+import KeycloakService from '@/sbc-common-components/services/keycloak.services'
 
 // get rid of "element implicitly has an 'any' type..."
 declare const window: any
@@ -47,7 +47,7 @@ async function start () {
   await FetchConfig()
 
   // initialize Launch Darkly
-  if (window['ldClientId']) {
+  if (window.ldClientId) {
     console.info('Initializing Launch Darkly...') // eslint-disable-line no-console
     await InitLdClient()
   }
@@ -56,13 +56,13 @@ async function start () {
     // initialize Sentry
     console.info('Initializing Sentry...') // eslint-disable-line no-console
     Sentry.init({
-      dsn: window['sentryDsn'],
+      dsn: window.sentryDsn,
       integrations: [new Integrations.Vue({ Vue, attachProps: true })]
     })
   }
 
   // initialize Hotjar
-  const hotjarId: string = window['hotjarId']
+  const hotjarId: string = window.hotjarId
   if (hotjarId) {
     console.info('Initializing Hotjar...') // eslint-disable-line no-console
     Vue.use(Hotjar, { id: hotjarId })
@@ -71,9 +71,9 @@ async function start () {
   // configure KeyCloak Service
   console.info('Starting Keycloak service...') // eslint-disable-line no-console
   const keycloakConfig: any = {
-    url: `${window['keycloakAuthUrl']}`,
-    realm: `${window['keycloakRealm']}`,
-    clientId: `${window['keycloakClientId']}`
+    url: `${window.keycloakAuthUrl}`,
+    realm: `${window.keycloakRealm}`,
+    clientId: `${window.keycloakClientId}`
   }
 
   await KeycloakService.setKeycloakConfigUrl(keycloakConfig)

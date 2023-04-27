@@ -24,32 +24,32 @@ describe('Special Resolution Review', () => {
 
   it('renders multiple fees', async () => {
     store.stateModel.currentFees = [{
-      'filingFees': 70.0,
-      'filingType': 'Special resolution',
-      'filingTypeCode': 'SPRLN',
-      'futureEffectiveFees': 0,
-      'priorityFees': 0,
-      'processingFees': 0,
-      'serviceFees': 0,
-      'tax': {
-        'gst': 0,
-        'pst': 0
+      filingFees: 70.0,
+      filingType: 'Special resolution',
+      filingTypeCode: 'SPRLN',
+      futureEffectiveFees: 0,
+      priorityFees: 0,
+      processingFees: 0,
+      serviceFees: 0,
+      tax: {
+        gst: 0,
+        pst: 0
       },
-      'total': 70.0
+      total: 70.0
     },
     {
-      'filingFees': 70.0,
-      'filingType': 'Special resolution',
-      'filingTypeCode': 'SPRLN',
-      'futureEffectiveFees': 0,
-      'priorityFees': 0,
-      'processingFees': 0,
-      'serviceFees': 0,
-      'tax': {
-        'gst': 0,
-        'pst': 0
+      filingFees: 70.0,
+      filingType: 'Special resolution',
+      filingTypeCode: 'SPRLN',
+      futureEffectiveFees: 0,
+      priorityFees: 0,
+      processingFees: 0,
+      serviceFees: 0,
+      tax: {
+        gst: 0,
+        pst: 0
       },
-      'total': 70.0
+      total: 70.0
     }]
     // Next tick is needed here, because the data wont update in component until next tick.
     await Vue.nextTick()

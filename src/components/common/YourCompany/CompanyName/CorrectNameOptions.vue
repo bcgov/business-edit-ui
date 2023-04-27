@@ -12,7 +12,7 @@
     <v-expansion-panels
       v-model="panel"
       class="bottom-border"
-      accordion
+      variant="accordion"
     >
       <v-expansion-panel
         v-for="(item,i) in displayedOptions"
@@ -54,7 +54,7 @@
     <div class="action-btns">
       <v-btn
         id="done-btn"
-        large
+        size="large"
         color="primary"
         :loading="isLoading"
         @click="submitNameCorrection()"
@@ -64,8 +64,8 @@
 
       <v-btn
         id="cancel-btn"
-        large
-        outlined
+        size="large"
+        variant="outlined"
         color="primary"
         @click="emitCancel()"
       >

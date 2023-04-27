@@ -16,90 +16,90 @@ const Template = (args, { argTypes }) => ({
 })
 
 const IA = {
-  'business': {
-    'identifier': 'BC1230105',
-    'legalType': 'BEN'
+  business: {
+    identifier: 'BC1230105',
+    legalType: 'BEN'
   },
-  'header': {
-    'certifiedBy': 'Cameron',
-    'date': '2021-03-04T16:59:54.905823+00:00',
-    'effectiveDate': '2021-03-04T16:59:54.905880+00:00',
-    'filingId': 111645,
-    'isFutureEffective': false,
-    'name': 'incorporationApplication',
-    'status': 'COMPLETED'
+  header: {
+    certifiedBy: 'Cameron',
+    date: '2021-03-04T16:59:54.905823+00:00',
+    effectiveDate: '2021-03-04T16:59:54.905880+00:00',
+    filingId: 111645,
+    isFutureEffective: false,
+    name: 'incorporationApplication',
+    status: 'COMPLETED'
   },
-  'incorporationApplication': {
-    'contactPoint': {
-      'email': 'cameron@freshworks.io',
-      'extension': '',
-      'phone': '(123) 456-7890'
+  incorporationApplication: {
+    contactPoint: {
+      email: 'cameron@freshworks.io',
+      extension: '',
+      phone: '(123) 456-7890'
     },
-    'incorporationAgreement': {
-      'agreementType': 'sample'
+    incorporationAgreement: {
+      agreementType: 'sample'
     },
-    'nameRequest': {
-      'legalType': 'BEN'
+    nameRequest: {
+      legalType: 'BEN'
     },
-    'nameTranslations': [],
-    'offices': {},
-    'parties': [],
-    'shareStructure': {
-      'shareClasses': [
+    nameTranslations: [],
+    offices: {},
+    parties: [],
+    shareStructure: {
+      shareClasses: [
         {
-          'currency': 'CAD',
-          'hasMaximumShares': true,
-          'hasParValue': true,
-          'hasRightsOrRestrictions': true,
-          'id': '434416',
-          'maxNumberOfShares': 100,
-          'name': 'Class A Shares',
-          'parValue': 1,
-          'priority': 1,
-          'series': [
+          currency: 'CAD',
+          hasMaximumShares: true,
+          hasParValue: true,
+          hasRightsOrRestrictions: true,
+          id: '434416',
+          maxNumberOfShares: 100,
+          name: 'Class A Shares',
+          parValue: 1,
+          priority: 1,
+          series: [
             {
-              'hasMaximumShares': true,
-              'hasRightsOrRestrictions': false,
-              'id': '434265',
-              'maxNumberOfShares': 10,
-              'name': 'Series 1A Shares',
-              'priority': 1,
-              'type': 'Series'
+              hasMaximumShares: true,
+              hasRightsOrRestrictions: false,
+              id: '434265',
+              maxNumberOfShares: 10,
+              name: 'Series 1A Shares',
+              priority: 1,
+              type: 'Series'
             },
             {
-              'hasMaximumShares': true,
-              'hasRightsOrRestrictions': false,
-              'id': '434266',
-              'maxNumberOfShares': 2,
-              'name': 'Series 2 Shares',
-              'priority': 2,
-              'type': 'Series'
+              hasMaximumShares: true,
+              hasRightsOrRestrictions: false,
+              id: '434266',
+              maxNumberOfShares: 2,
+              name: 'Series 2 Shares',
+              priority: 2,
+              type: 'Series'
             }
           ],
-          'type': 'Class'
+          type: 'Class'
         },
         {
-          'currency': 'CAD',
-          'hasMaximumShares': true,
-          'hasParValue': true,
-          'hasRightsOrRestrictions': true,
-          'id': '434417',
-          'maxNumberOfShares': 122,
-          'name': 'Class B Shares',
-          'parValue': 2,
-          'priority': 2,
-          'series': [
+          currency: 'CAD',
+          hasMaximumShares: true,
+          hasParValue: true,
+          hasRightsOrRestrictions: true,
+          id: '434417',
+          maxNumberOfShares: 122,
+          name: 'Class B Shares',
+          parValue: 2,
+          priority: 2,
+          series: [
             {
-              'hasMaximumShares': true,
-              'hasRightsOrRestrictions': false,
-              'id': '434267',
-              'maxNumberOfShares': 22,
-              'name': 'Series b1 Shares',
-              'priority': 1,
-              'type': 'Series'
+              hasMaximumShares: true,
+              hasRightsOrRestrictions: false,
+              id: '434267',
+              maxNumberOfShares: 22,
+              name: 'Series b1 Shares',
+              priority: 1,
+              type: 'Series'
             }
           ],
-          'type': 'Class'
+          type: 'Class'
         }
       ]
     }
@@ -108,74 +108,74 @@ const IA = {
 
 const businessSnapshot = [
   {
-    'business': {}
+    business: {}
   },
   {
-    'aliases': []
+    aliases: []
   },
   {
-    'recordsOffice': {},
-    'registeredOffice': {}
+    recordsOffice: {},
+    registeredOffice: {}
   },
   {
-    'directors': []
+    directors: []
   },
   {
-    'shareClasses': [
+    shareClasses: [
       {
-        'currency': 'CAD',
-        'hasMaximumShares': true,
-        'hasParValue': true,
-        'hasRightsOrRestrictions': true,
-        'id': 434416,
-        'maxNumberOfShares': 100,
-        'name': 'Class A Shares',
-        'parValue': 1,
-        'priority': 1,
-        'series': [
+        currency: 'CAD',
+        hasMaximumShares: true,
+        hasParValue: true,
+        hasRightsOrRestrictions: true,
+        id: 434416,
+        maxNumberOfShares: 100,
+        name: 'Class A Shares',
+        parValue: 1,
+        priority: 1,
+        series: [
           {
-            'hasMaximumShares': true,
-            'hasRightsOrRestrictions': false,
-            'id': 434265,
-            'maxNumberOfShares': 10,
-            'name': 'Series 1A Shares',
-            'priority': 1,
-            'type': 'Series'
+            hasMaximumShares: true,
+            hasRightsOrRestrictions: false,
+            id: 434265,
+            maxNumberOfShares: 10,
+            name: 'Series 1A Shares',
+            priority: 1,
+            type: 'Series'
           },
           {
-            'hasMaximumShares': true,
-            'hasRightsOrRestrictions': false,
-            'id': 434266,
-            'maxNumberOfShares': 2,
-            'name': 'Series 2 Shares',
-            'priority': 2,
-            'type': 'Series'
+            hasMaximumShares: true,
+            hasRightsOrRestrictions: false,
+            id: 434266,
+            maxNumberOfShares: 2,
+            name: 'Series 2 Shares',
+            priority: 2,
+            type: 'Series'
           }
         ],
-        'type': 'Class'
+        type: 'Class'
       },
       {
-        'currency': 'CAD',
-        'hasMaximumShares': true,
-        'hasParValue': true,
-        'hasRightsOrRestrictions': true,
-        'id': 434417,
-        'maxNumberOfShares': 122,
-        'name': 'Class B Shares',
-        'parValue': 2,
-        'priority': 2,
-        'series': [
+        currency: 'CAD',
+        hasMaximumShares: true,
+        hasParValue: true,
+        hasRightsOrRestrictions: true,
+        id: 434417,
+        maxNumberOfShares: 122,
+        name: 'Class B Shares',
+        parValue: 2,
+        priority: 2,
+        series: [
           {
-            'hasMaximumShares': true,
-            'hasRightsOrRestrictions': false,
-            'id': 434267,
-            'maxNumberOfShares': 22,
-            'name': 'Series b1 Shares',
-            'priority': 1,
-            'type': 'Series'
+            hasMaximumShares: true,
+            hasRightsOrRestrictions: false,
+            id: 434267,
+            maxNumberOfShares: 22,
+            name: 'Series b1 Shares',
+            priority: 1,
+            type: 'Series'
           }
         ],
-        'type': 'Class'
+        type: 'Class'
       }
     ]
   },
@@ -189,7 +189,7 @@ correction.args = {
   editedLabel: 'CORRECTED',
   isCorrection: true,
   incorporationApplication: IA,
-  businessSnapshot: businessSnapshot,
+  businessSnapshot,
   shareClasses: IA.incorporationApplication.shareStructure.shareClasses,
   resolutionRequired: false
 }
@@ -201,7 +201,7 @@ alteration.args = {
   editedLabel: 'CHANGED',
   isCorrection: true,
   incorporationApplication: IA,
-  businessSnapshot: businessSnapshot,
+  businessSnapshot,
   shareClasses: businessSnapshot[4].shareClasses,
   resolutionRequired: true
 }

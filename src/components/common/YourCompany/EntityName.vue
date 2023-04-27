@@ -66,7 +66,7 @@
               </span>
               <v-tooltip
                 v-if="isConflictingLegalType"
-                top
+                location="top"
                 content-class="top-tooltip"
                 transition="fade-transition"
                 nudge-right="3"
@@ -74,7 +74,7 @@
                 <template #activator="{ on }">
                   <v-icon
                     color="error"
-                    small
+                    size="small"
                     v-on="on"
                   >
                     mdi-alert
@@ -111,12 +111,12 @@
               v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling ||
                 isFirmChangeFiling || isSpecialResolutionFiling))"
               id="btn-undo-company-name"
-              text
+              variant="text"
               color="primary"
               class="undo-action"
               @click="resetName()"
             >
-              <v-icon small>
+              <v-icon size="small">
                 mdi-undo
               </v-icon>
               <span>Undo</span>
@@ -124,11 +124,11 @@
             <v-btn
               v-else-if="!isFirmConversionFiling && !isLimitedRestorationExtension"
               id="btn-correct-company-name"
-              text
+              variant="text"
               color="primary"
               @click="isEditingNames = true"
             >
-              <v-icon small>
+              <v-icon size="small">
                 mdi-pencil
               </v-icon>
               <span>{{ getEditLabel }}</span>
@@ -141,14 +141,14 @@
               <v-menu
                 v-model="dropdown"
                 offset-y
-                left
+                location="left"
                 nudge-bottom="4"
               >
                 <template #activator="{ on }">
                   <v-btn
                     id="btn-more-actions"
-                    text
-                    small
+                    variant="text"
+                    size="small"
                     color="primary"
                     v-on="on"
                   >
@@ -163,7 +163,7 @@
                   >
                     <v-list-item-subtitle>
                       <v-icon
-                        small
+                        size="small"
                         color="primary"
                       >mdi-pencil</v-icon>
                       <span class="drop-down-action ml-1">Change</span>
@@ -232,7 +232,7 @@ import { CorrectNameOptions } from '@/components/common/YourCompany'
 import { NameRequestMixin } from '@/mixins'
 import DateUtilities from '@/services/date-utilities'
 import { ToDisplayPhone } from '@/utils'
-import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({

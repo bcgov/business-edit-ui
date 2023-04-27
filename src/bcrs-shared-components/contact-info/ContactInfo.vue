@@ -3,20 +3,37 @@
     <!-- SUMMARY SECTION -->
     <template v-if="!isEditing">
       <!-- Display Contact Info -->
-      <v-row no-gutters class="edit-section">
-        <v-col cols="12" sm="3" class="pr-4">
+      <v-row
+        no-gutters
+        class="edit-section"
+      >
+        <v-col
+          cols="12"
+          sm="3"
+          class="pr-4"
+        >
           <label class="contact-info-label">
             <span>{{ contactLabel }} Contact Information</span>
             <v-flex>
-              <v-chip v-if="hasBusinessContactInfoChange" x-small label color="primary" text-color="white">
-                {{editedLabel}}
+              <v-chip
+                v-if="hasBusinessContactInfoChange"
+                x-small
+                label
+                color="primary"
+                text-color="white"
+              >
+                {{ editedLabel }}
               </v-chip>
             </v-flex>
           </label>
         </v-col>
 
         <!-- Email Address -->
-        <v-col cols="12" sm="4" class="pr-4">
+        <v-col
+          cols="12"
+          sm="4"
+          class="pr-4"
+        >
           <label class="item-label">Email Address</label>
           <div id="lbl-email">
             {{ !!businessContact.email ? businessContact.email : "(Not entered)" }}
@@ -24,62 +41,92 @@
         </v-col>
 
         <!-- Phone Number -->
-        <v-col cols="6" sm="3" class="pr-4">
+        <v-col
+          cols="6"
+          sm="3"
+          class="pr-4"
+        >
           <label class="item-label">Phone Number</label>
-          <div v-if="!!businessContact.phone" id="lbl-phone">
+          <div
+            v-if="!!businessContact.phone"
+            id="lbl-phone"
+          >
             {{ businessContact.phone }}
             <span v-if="!!businessContact.extension">Ext: {{ businessContact.extension }}</span>
           </div>
-          <div v-else id="lbl-no-phone">(Not entered)</div>
+          <div
+            v-else
+            id="lbl-no-phone"
+          >
+            (Not entered)
+          </div>
         </v-col>
 
         <!-- Edit Actions -->
-        <v-col v-if="!disableActions" cols="6" sm="2">
+        <v-col
+          v-if="!disableActions"
+          cols="6"
+          sm="2"
+        >
           <div class="d-flex justify-end align-end align-sm-start">
             <v-btn
               v-if="hasBusinessContactInfoChange"
               id="contact-info-undo-btn"
-              text color="primary"
+              variant="text"
+              color="primary"
               @click="resetContactInfo()"
             >
-              <v-icon small>mdi-undo</v-icon>
+              <v-icon size="small">
+                mdi-undo
+              </v-icon>
               <span>Undo</span>
             </v-btn>
 
             <v-tooltip
-              v-else top
+              v-else
+              location="top"
               content-class="top-tooltip"
               transition="fade-transition"
               nudge-right="3"
               :disabled="disableActionTooltip"
             >
-              <template v-slot:activator="{ on }">
+              <template #activator="{ on }">
                 <v-btn
-                  v-on="on"
                   id="contact-info-edit-btn"
-                  text color="primary"
+                  variant="text"
+                  color="primary"
+                  v-on="on"
                   @click="isEditing = true"
                 >
-                  <v-icon small>mdi-pencil</v-icon>
-                  <span>{{editLabel}}</span>
+                  <v-icon size="small">
+                    mdi-pencil
+                  </v-icon>
+                  <span>{{ editLabel }}</span>
                 </v-btn>
               </template>
               <span>No fee to change</span>
             </v-tooltip>
 
             <!-- Drop Down Actions -->
-            <span class="more-actions" v-if="hasBusinessContactInfoChange">
+            <span
+              v-if="hasBusinessContactInfoChange"
+              class="more-actions"
+            >
               <v-menu
-                offset-y left nudge-bottom="4"
                 v-model="dropdown"
+                offset-y
+                location="left"
+                nudge-bottom="4"
               >
-                <template v-slot:activator="{ on }">
+                <template #activator="{ on }">
                   <v-btn
-                    text small color="primary"
                     id="btn-more-actions"
+                    variant="text"
+                    size="small"
+                    color="primary"
                     v-on="on"
                   >
-                    <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                    <v-icon>{{ dropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                   </v-btn>
                 </template>
                 <v-list>
@@ -89,7 +136,10 @@
                     @click="isEditing = true; dropdown = false"
                   >
                     <v-list-item-subtitle>
-                      <v-icon small color="primary">mdi-pencil</v-icon>
+                      <v-icon
+                        size="small"
+                        color="primary"
+                      >mdi-pencil</v-icon>
                       <span class="drop-down-action ml-1">Change</span>
                     </v-list-item-subtitle>
                   </v-list-item>
@@ -103,113 +153,163 @@
 
     <!-- EDIT SECTION -->
     <template v-else>
-      <v-row no-gutters class="summary-section">
-        <v-col cols="12" sm="3">
-          <label class="title-label" :class="{'error-text': invalidSection}">
+      <v-row
+        no-gutters
+        class="summary-section"
+      >
+        <v-col
+          cols="12"
+          sm="3"
+        >
+          <label
+            class="title-label"
+            :class="{'error-text': invalidSection}"
+          >
             {{ contactLabel }} Contact Information
           </label>
         </v-col>
 
-        <v-col v-if="customMsg" cols="12" sm="9">
+        <v-col
+          v-if="customMsg"
+          cols="12"
+          sm="9"
+        >
           {{ customMsg }}
         </v-col>
 
-        <v-col v-else cols="12" sm="9">
+        <v-col
+          v-else
+          cols="12"
+          sm="9"
+        >
           There is no fee or filing to change {{ contactLabel }} Contact Information. Any
           changes made will be applied immediately.
         </v-col>
       </v-row>
 
       <v-form
-        v-model="formValid"
         ref="editContactForm"
+        v-model="formValid"
         name="business-contact-form"
         class="business-contact-form pt-5"
         @submit.prevent="submitContact()"
       >
         <!-- Email Address -->
         <v-row no-gutters>
-          <v-col cols="12" sm="3" class="pr-4">
+          <v-col
+            cols="12"
+            sm="3"
+            class="pr-4"
+          >
             <label class="title-label">Email Address</label>
           </v-col>
 
-          <v-col cols="12" sm="9">
+          <v-col
+            cols="12"
+            sm="9"
+          >
             <v-text-field
               id="txt-email"
-              filled
+              v-model="contactInfo.email"
+              variant="filled"
               label="Email Address"
               req
               persistent-hint
               :rules="emailRules"
-              v-model="contactInfo.email"
-              validate-on-blur
-            >
-            </v-text-field>
+              validate-on="blur"
+            />
           </v-col>
         </v-row>
 
         <!-- Confirm Email -->
         <v-row no-gutters>
-          <v-col cols="12" sm="3" class="pr-4">
+          <v-col
+            cols="12"
+            sm="3"
+            class="pr-4"
+          >
             <label class="title-label">Confirm Email</label>
           </v-col>
 
-          <v-col cols="12" sm="9">
+          <v-col
+            cols="12"
+            sm="9"
+          >
             <v-text-field
               id="txt-confirm-email"
-              filled
+              v-model="contactInfo.confirmEmail"
+              variant="filled"
               label="Confirm Email Address"
               req
               persistent-hint
               :rules="confirmEmailRules"
-              v-model="contactInfo.confirmEmail"
-              validate-on-blur
-            >
-            </v-text-field>
+              validate-on="blur"
+            />
           </v-col>
         </v-row>
 
         <!-- Phone Number -->
         <v-row no-gutters>
-          <v-col cols="12" sm="3" class="pr-4">
+          <v-col
+            cols="12"
+            sm="3"
+            class="pr-4"
+          >
             <label class="title-label">Phone Number</label>
           </v-col>
 
-          <v-col cols="6" sm="5" class="pr-4">
+          <v-col
+            cols="6"
+            sm="5"
+            class="pr-4"
+          >
             <v-text-field
               id="txt-phone"
-              filled
+              v-model="contactInfo.phone"
+              v-mask="['(###) ###-####']"
+              variant="filled"
               :label="phoneLabel"
               persistent-hint
               hint="Example: (555) 555-5555"
               type="tel"
-              v-mask="['(###) ###-####']"
-              v-model="contactInfo.phone"
               :rules="phoneRules"
-              validate-on-blur
-            >
-            </v-text-field>
+              validate-on="blur"
+            />
           </v-col>
 
-          <v-col cols="6" sm="4">
+          <v-col
+            cols="6"
+            sm="4"
+          >
             <v-text-field
               id="txt-phone-extension"
-              filled
+              v-model="contactInfo.extension"
+              v-mask="'#####'"
+              variant="filled"
               label="Extension (Optional)"
               persistent-hint
-              v-mask="'#####'"
-              v-model="contactInfo.extension"
-            >
-            </v-text-field>
+            />
           </v-col>
         </v-row>
 
         <!-- Form Actions -->
         <div class="action-btns d-flex justify-center justify-sm-end">
-          <v-btn id="contact-info-done-btn" large color="primary" type="submit" value="Submit">
+          <v-btn
+            id="contact-info-done-btn"
+            size="large"
+            color="primary"
+            type="submit"
+            value="Submit"
+          >
             <span>Save</span>
           </v-btn>
-          <v-btn id="contact-info-cancel-btn" large outlined color="primary" @click="cancelEdit()">
+          <v-btn
+            id="contact-info-cancel-btn"
+            size="large"
+            variant="outlined"
+            color="primary"
+            @click="cancelEdit()"
+          >
             <span>Cancel</span>
           </v-btn>
         </div>
@@ -224,7 +324,7 @@ import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { mask } from 'vue-the-mask'
 
 // Interfaces & enums
-import { ContactPointIF, FormIF } from '@/bcrs-shared-components/interfaces'
+import { ContactPointIF, FormIF } from '@bcrs-shared-components/interfaces'
 
 @Component({
   directives: { mask }
@@ -324,11 +424,12 @@ export default class ContactInfo extends Vue {
       (v: string) => !v || (v.toString() === (this.$refs.editContactForm && this.$refs.editContactForm.$el[0].value)) ||
         'Email addresses must match'
     ]
-    this.phoneRules = this.optionalPhone ? []
+    this.phoneRules = this.optionalPhone
+      ? []
       : [
-        (v: string) => !!v || 'Phone number is required',
-        (v: any) => !v || (v.length === 0 || v.length === 14) || 'Phone number is invalid'
-      ]
+          (v: string) => !!v || 'Phone number is required',
+          (v: any) => !v || (v.length === 0 || v.length === 14) || 'Phone number is invalid'
+        ]
 
     // Validate form and wait for v-model to get updated
     this.$refs.editContactForm.validate()

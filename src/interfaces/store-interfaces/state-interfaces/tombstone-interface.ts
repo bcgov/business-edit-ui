@@ -1,5 +1,5 @@
 import { FilingTypes } from '@/enums/'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 /** Interface for tombstone object in store (not to/from API). */
 export interface TombStoneIF {

@@ -2,87 +2,115 @@
   <div id="business-lookup">
     <div v-if="state !== States.SUMMARY">
       <v-autocomplete
-        filled no-filter append-icon="" return-object
+        v-model="selectedBusiness"
+        v-model:search-input="searchField"
+        variant="filled"
+        no-filter
+        append-icon=""
+        return-object
         class="mt-5"
         autocomplete="chrome-off"
         menu-props="{ maxHeight: 380 }"
         label="Business or Corporation Name or Incorporation Number"
-        item-text="identifier"
-        v-model="selectedBusiness"
+        item-title="identifier"
         :name="Math.random()"
         :rules="showErrors ? businessLookupRules: []"
         :items="searchResults"
         :loading="state == States.SEARCHING"
-        :search-input.sync="searchField"
         :hide-no-data="state != States.NO_RESULTS"
       >
         <!-- Empty selection slot will stop re-triggering of searchField @Watch -->
-        <template v-slot:selection=""></template>
+        <template #selection="" />
 
-        <template v-slot:no-data>
+        <template #no-data>
           <v-list-item>
             <div>No matches found.</div>
           </v-list-item>
         </template>
 
-        <template v-slot:item="{ item }">
+        <template #item="{ item }">
           <v-row class="business-lookup-result pt-1">
             <v-col cols="2">
-              <div class="result-identifier">{{item.identifier}}</div>
+              <div class="result-identifier">
+                {{ item.identifier }}
+              </div>
             </v-col>
             <v-col cols="10">
-              <div class="result-name">{{item.name}}</div>
-              <div class="result-bn">{{item.bn}}</div>
+              <div class="result-name">
+                {{ item.name }}
+              </div>
+              <div class="result-bn">
+                {{ item.bn }}
+              </div>
             </v-col>
           </v-row>
         </template>
       </v-autocomplete>
     </div>
 
-    <div v-if="state === States.SUMMARY && haveBusiness" class="summary-block mt-5">
+    <div
+      v-if="state === States.SUMMARY && haveBusiness"
+      class="summary-block mt-5"
+    >
       <v-row no-gutters>
         <v-col cols="10">
           <v-row no-gutters>
             <v-col cols="12">
-              <div v-if="editableBusinessName" class="d-flex align-center">
+              <div
+                v-if="editableBusinessName"
+                class="d-flex align-center"
+              >
                 <label>Business or Corporation Name:</label>
                 <v-text-field
-                  dense
-                  filled
-                  hide-details="auto"
                   id="organization-name"
+                  density="compact"
+                  variant="filled"
+                  hide-details="auto"
                   class="mx-4 mr-md-0"
                   :rules="businessNameRules"
-                  :value="businessName"
-                  @input="setBusinessName($event)"
+                  :model-value="businessName"
+                  @update:model-value="setBusinessName($event)"
                 />
               </div>
               <template v-else>
                 <label>Name: </label>
-                <span>{{businessName}}</span>
+                <span>{{ businessName }}</span>
               </template>
             </v-col>
           </v-row>
 
-          <v-row no-gutters class="mt-1">
+          <v-row
+            no-gutters
+            class="mt-1"
+          >
             <v-col cols="12">
               <label>Incorporation Number: </label>
-              <span>{{identifier}}</span>
+              <span>{{ identifier }}</span>
             </v-col>
           </v-row>
 
-          <v-row no-gutters class="mt-1">
+          <v-row
+            no-gutters
+            class="mt-1"
+          >
             <v-col cols="12">
               <label>Business Number: </label>
-              <span>{{businessNumber}}</span>
+              <span>{{ businessNumber }}</span>
             </v-col>
           </v-row>
         </v-col>
 
         <v-col cols="2">
           <div id="bl-more-actions">
-            <v-btn text color="primary" id="bl-undo-btn" @click="emitUndo()">
-              <v-icon small>mdi-undo</v-icon>
+            <v-btn
+              id="bl-undo-btn"
+              variant="text"
+              color="primary"
+              @click="emitUndo()"
+            >
+              <v-icon size="small">
+                mdi-undo
+              </v-icon>
               <span>Undo</span>
             </v-btn>
           </div>

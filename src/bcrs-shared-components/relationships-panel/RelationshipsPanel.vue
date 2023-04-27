@@ -1,58 +1,77 @@
 <template>
-  <v-card flat id="relationships-panel">
-    <div class="relationship-content" :style="{ backgroundColor: bgHex }">
-      <v-row no-gutters class="align-center mt-5">
+  <v-card
+    id="relationships-panel"
+    flat
+  >
+    <div
+      class="relationship-content"
+      :style="{ backgroundColor: bgHex }"
+    >
+      <v-row
+        no-gutters
+        class="align-center mt-5"
+      >
         <v-col cols="4">
-          <v-checkbox id="heir-legal-rep-checkbox" class="mt-0"
+          <v-checkbox
+            id="heir-legal-rep-checkbox"
             v-model="selectedRelationships"
+            class="mt-0"
             :value="RelationshipTypes.HEIR_LEGAL_REP"
             :error="displayErrorState"
           >
-            <template v-slot:label>
+            <template #label>
               <span class="vuetify-label">{{ RelationshipTypes.HEIR_LEGAL_REP }}</span>
             </template>
           </v-checkbox>
         </v-col>
         <v-col cols="4">
-          <v-checkbox id="officer-checkbox" class="mt-0"
+          <v-checkbox
+            id="officer-checkbox"
             v-model="selectedRelationships"
+            class="mt-0"
             :value="RelationshipTypes.OFFICER"
             :error="displayErrorState"
           >
-            <template v-slot:label>
+            <template #label>
               <span class="vuetify-label">{{ RelationshipTypes.OFFICER }}</span>
             </template>
           </v-checkbox>
         </v-col>
         <v-col cols="4">
-          <v-checkbox id="director-checkbox" class="mt-0"
+          <v-checkbox
+            id="director-checkbox"
             v-model="selectedRelationships"
+            class="mt-0"
             :value="RelationshipTypes.DIRECTOR"
             :error="displayErrorState"
           >
-            <template v-slot:label>
+            <template #label>
               <span class="vuetify-label">{{ RelationshipTypes.DIRECTOR }}</span>
             </template>
           </v-checkbox>
         </v-col>
         <v-col cols="4">
-          <v-checkbox id="shareholder-checkbox" class="mt-0"
+          <v-checkbox
+            id="shareholder-checkbox"
             v-model="selectedRelationships"
+            class="mt-0"
             :value="RelationshipTypes.SHAREHOLDER"
             :error="displayErrorState"
           >
-            <template v-slot:label>
+            <template #label>
               <span class="vuetify-label">{{ RelationshipTypes.SHAREHOLDER }}</span>
             </template>
           </v-checkbox>
         </v-col>
         <v-col cols="4">
-          <v-checkbox id="court-ordered-party-checkbox" class="mt-0"
+          <v-checkbox
+            id="court-ordered-party-checkbox"
             v-model="selectedRelationships"
+            class="mt-0"
             :value="RelationshipTypes.COURT_ORDERED_PARTY"
             :error="displayErrorState"
           >
-            <template v-slot:label>
+            <template #label>
               <span class="vuetify-label">{{ RelationshipTypes.COURT_ORDERED_PARTY }}</span>
             </template>
           </v-checkbox>

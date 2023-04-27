@@ -66,18 +66,20 @@ import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { Action, Getter } from '@/store/PiniaClass'
 import { GetFeatureFlag } from '@/utils/'
 import { ConversionNOB, ConversionSummary } from '@/components/Conversion'
-import { CompletingParty, BusinessStartDate, BusinessType, EntityName, FolioInformation, OfficeAddresses,
-  PeopleAndRoles, YourCompanyWrapper } from '@/components/common/'
+import {
+  CompletingParty, BusinessStartDate, BusinessType, EntityName, FolioInformation, OfficeAddresses,
+  PeopleAndRoles, YourCompanyWrapper
+} from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { ActionBindingIF, EntitySnapshotIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
-import { SessionStorageKeys } from '@/sbc-common-components/src/util/constants'
+import { SessionStorageKeys } from '@/sbc-common-components/util/constants'
 import { SpConversionResource, GpConversionResource } from '@/resources/Conversion/'
 import { StatusCodes } from 'http-status-codes'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
   components: {
@@ -239,10 +241,10 @@ export default class Conversion extends Vue {
     // WORK-AROUND WARNING !!!
     // convert orgPersons from "middleInitial" to "middleName"
     const orgPersons = items[2].map(orgPerson => {
-      const middleInitial = orgPerson.officer['middleInitial']
+      const middleInitial = orgPerson.officer.middleInitial
       if (middleInitial !== undefined) {
         orgPerson.officer.middleName = middleInitial
-        delete orgPerson.officer['middleInitial']
+        delete orgPerson.officer.middleInitial
       }
       return orgPerson
     })
@@ -254,6 +256,7 @@ export default class Conversion extends Vue {
       orgPersons
     } as EntitySnapshotIF
   }
+
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

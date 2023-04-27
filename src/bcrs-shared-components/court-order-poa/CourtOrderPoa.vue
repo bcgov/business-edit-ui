@@ -1,31 +1,54 @@
 <template>
   <div id="court-order-poa">
     <v-row no-gutters>
-      <v-col cols="12" sm="3" class="pr-4" v-if="displaySideLabels">
-        <label id="court-order-label" :class="{'error-text': invalidSection}">Court Order Number</label>
+      <v-col
+        v-if="displaySideLabels"
+        cols="12"
+        sm="3"
+        class="pr-4"
+      >
+        <label
+          id="court-order-label"
+          :class="{'error-text': invalidSection}"
+        >Court Order Number</label>
       </v-col>
-      <v-col cols="12" :sm="displaySideLabels ? 9 : 12">
-        <v-form ref="courtNumRef" id="court-num-form" v-model="valid">
+      <v-col
+        cols="12"
+        :sm="displaySideLabels ? 9 : 12"
+      >
+        <v-form
+          id="court-num-form"
+          ref="courtNumRef"
+          v-model="valid"
+        >
           <v-text-field
             id="court-order-number-input"
             v-model="courtOrderNumber"
             label="Court Order Number"
             :rules="courtOrderNumRules"
-            filled
+            variant="filled"
           />
         </v-form>
       </v-col>
     </v-row>
     <v-row no-gutters>
-      <v-col cols="12" sm="3" class="pr-4" v-if="displaySideLabels">
+      <v-col
+        v-if="displaySideLabels"
+        cols="12"
+        sm="3"
+        class="pr-4"
+      >
         <label id="poa-label">Plan of Arrangement</label>
       </v-col>
-      <v-col cols="12" :sm="displaySideLabels ? 9 : 12">
+      <v-col
+        cols="12"
+        :sm="displaySideLabels ? 9 : 12"
+      >
         <v-checkbox
           id="plan-of-arrangement-checkbox"
+          v-model="planOfArrangement"
           class="mt-0 pt-0"
           hide-details
-          v-model="planOfArrangement"
           label="This filing is pursuant to a Plan of Arrangement"
         />
       </v-col>
@@ -35,7 +58,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { FormIF } from '@/bcrs-shared-components/interfaces'
+import { FormIF } from '@bcrs-shared-components/interfaces'
 
 @Component({})
 export default class CourtOrderPoa extends Vue {

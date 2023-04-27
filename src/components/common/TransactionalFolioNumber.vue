@@ -35,7 +35,7 @@
                 id="folio-number-input"
                 ref="folioNumberInput"
                 v-model="folioNumber"
-                filled
+                variant="filled"
                 persistent-hint
                 autocomplete="chrome-off"
                 label="Folio or Reference Number (Optional)"

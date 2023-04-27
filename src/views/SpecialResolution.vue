@@ -108,7 +108,7 @@
 
           <v-btn
             id="done-button"
-            large
+            size="large"
             color="primary"
             class="mt-8"
             @click="$root.$emit('go-to-dashboard')"
@@ -126,16 +126,20 @@ import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { Action, Getter } from '@/store/PiniaClass'
 import { GetFeatureFlag } from '@/utils/'
 import { SpecialResolutionSummary, CreateSpecialResolution } from '@/components/SpecialResolution'
-import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CurrentDirectors,
+import {
+  AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CurrentDirectors,
   DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, StaffPayment, TransactionalFolioNumber,
-  YourCompanyWrapper } from '@/components/common/'
+  YourCompanyWrapper
+} from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, CertifyIF, EffectiveDateTimeIF, EntitySnapshotIF, FilingDataIF,
-  ResourceIF } from '@/interfaces/'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
+import {
+  ActionBindingIF, CertifyIF, EffectiveDateTimeIF, EntitySnapshotIF, FilingDataIF,
+  ResourceIF
+} from '@/interfaces/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { FilingCodes, FilingStatus } from '@/enums/'
-import { SessionStorageKeys } from '@/sbc-common-components/src/util/constants'
+import { SessionStorageKeys } from '@/sbc-common-components/util/constants'
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
@@ -356,7 +360,7 @@ export default class SpecialResolution extends Vue {
   @Watch('hasBusinessNameChanged', { immediate: true })
   private async businessNameChanged (hasBusinessNameChanged: boolean): Promise<void> {
     if (this.specialResolutionResource) {
-      let filingData = [this.specialResolutionResource.filingData]
+      const filingData = [this.specialResolutionResource.filingData]
       if (hasBusinessNameChanged) {
         filingData.push({
           filingTypeCode: FilingCodes.SPECIAL_RESOLUTION_NAME_CHANGE,

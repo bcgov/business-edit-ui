@@ -1,5 +1,5 @@
 import { ActionChip } from './index'
-import { ActionableItemIF } from '@/bcrs-shared-components/interfaces'
+import { ActionableItemIF } from '@bcrs-shared-components/interfaces'
 import { ActionTypes } from '@/bcrs-shared-components/enums'
 import Vuetify from 'vuetify'
 

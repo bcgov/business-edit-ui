@@ -12,7 +12,7 @@
           <li>
             <v-icon
               v-if="isApplicantPerson && hasApplicant"
-              color="green darken-2"
+              color="green-darken-2"
               class="dir-valid"
             >
               mdi-check
@@ -31,7 +31,7 @@
           <li>
             <v-icon
               v-if="isApplicantOrg && hasApplicant"
-              color="green darken-2"
+              color="green-darken-2"
               class="dir-valid"
             >
               mdi-check
@@ -51,7 +51,7 @@
         <div class="mt-8">
           <v-btn
             id="resto-btn-add-person"
-            outlined
+            variant="outlined"
             color="primary"
             :disabled="hasApplicant"
             @click="initAdd(
@@ -64,7 +64,7 @@
           </v-btn>
           <v-btn
             id="resto-btn-add-corp"
-            outlined
+            variant="outlined"
             color="primary"
             class="ml-2"
             :disabled="hasApplicant"
@@ -110,7 +110,7 @@
             <li>
               <v-icon
                 v-if="haveMinimumDirectors"
-                color="green darken-2"
+                color="green-darken-2"
                 class="dir-valid"
               >
                 mdi-check
@@ -137,7 +137,7 @@
         >
           <v-btn
             id="btn-add-person"
-            outlined
+            variant="outlined"
             color="primary"
             :disabled="isAddingEditingOrgPerson"
             @click="initAdd([{ roleType: RoleTypes.DIRECTOR }], PartyTypes.PERSON)"
@@ -172,7 +172,7 @@
           >
             <v-btn
               id="sp-btn-add-person"
-              outlined
+              variant="outlined"
               color="primary"
               :disabled="isAddingEditingOrgPerson"
               @click="initAdd(
@@ -185,7 +185,7 @@
             </v-btn>
             <v-btn
               id="sp-btn-add-corp"
-              outlined
+              variant="outlined"
               color="primary"
               class="ml-2"
               :disabled="isAddingEditingOrgPerson"
@@ -218,7 +218,7 @@
           >
             <v-btn
               id="gp-btn-add-person"
-              outlined
+              variant="outlined"
               color="primary"
               :disabled="isAddingEditingOrgPerson"
               @click="initAdd(
@@ -231,7 +231,7 @@
             </v-btn>
             <v-btn
               id="gp-btn-add-corp"
-              outlined
+              variant="outlined"
               color="primary"
               class="ml-2"
               :disabled="isAddingEditingOrgPerson"
@@ -291,8 +291,10 @@ import { Component, Vue, Watch } from 'vue-facing-decorator'
 import { Action, Getter } from '@/store/PiniaClass'
 import { IsSame } from '@/utils/'
 import { cloneDeep, isEmpty } from 'lodash'
-import { ActionBindingIF, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF, OrgPersonIF, ResourceIF,
-  RoleIF } from '@/interfaces/'
+import {
+  ActionBindingIF, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF, OrgPersonIF, ResourceIF,
+  RoleIF
+} from '@/interfaces/'
 import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
 import { HelpSection } from '@/components/common/'
 import { ListPeopleAndRoles } from './'
@@ -480,6 +482,8 @@ export default class PeopleAndRoles extends Vue {
       if (this.hasRoleApplicant(party)) {
         return !isEmpty(party.mailingAddress)
       }
+
+      return true // *** TODO: need to test this
     })
   }
 

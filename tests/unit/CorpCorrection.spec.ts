@@ -6,9 +6,11 @@ import sinon from 'sinon'
 import { shallowMount, createLocalVue } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import { Articles } from '@/components/Alteration/'
-import { BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityName, FolioInformation,
+import {
+  BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityName, FolioInformation,
   NameTranslation, OfficeAddresses, PeopleAndRoles, RecognitionDateTime, ShareStructures, StaffPayment,
-  YourCompanyWrapper } from '@/components/common/'
+  YourCompanyWrapper
+} from '@/components/common/'
 import CorpCorrection from '@/views/Correction/CorpCorrection.vue'
 import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
@@ -140,7 +142,8 @@ describe('Corp Correction component', () => {
     const router = mockRouter.mock()
     await router.push({ name: 'correction' })
 
-    wrapper = shallowMount(CorpCorrection, { localVue,
+    wrapper = shallowMount(CorpCorrection, {
+      localVue,
       router,
       vuetify,
       propsData: {
@@ -149,7 +152,8 @@ describe('Corp Correction component', () => {
           correction: { correctedFilingId: 123 },
           header: {}
         }
-      } })
+      }
+    })
 
     // wait for all queries to complete
     await flushPromises()

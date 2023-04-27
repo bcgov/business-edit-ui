@@ -1,68 +1,98 @@
 <template>
   <div id="folio-number">
     <!-- Display Folio Number -->
-    <v-row v-if="!isEditing" id="display-folio-number" no-gutters>
+    <v-row
+      v-if="!isEditing"
+      id="display-folio-number"
+      no-gutters
+    >
       <v-col cols="3">
         <label>
           <strong>Business Folio or<br>Reference Number</strong>
           <v-flex>
-            <v-chip v-if="hasFolioNumberChanged" x-small label color="primary" text-color="white">
-              {{editedLabel}}
+            <v-chip
+              v-if="hasFolioNumberChanged"
+              x-small
+              label
+              color="primary"
+              text-color="white"
+            >
+              {{ editedLabel }}
             </v-chip>
           </v-flex>
         </label>
       </v-col>
 
       <v-col :cols="hideActions ? '9' : '7'">
-        <div id="folio-number-readonly">{{ !!folioNumber ? folioNumber : 'None' }}</div>
+        <div id="folio-number-readonly">
+          {{ !!folioNumber ? folioNumber : 'None' }}
+        </div>
       </v-col>
 
       <!-- Edit Actions -->
-      <v-col cols="2" class="mt-n2" v-if="!hideActions">
+      <v-col
+        v-if="!hideActions"
+        cols="2"
+        class="mt-n2"
+      >
         <div class="edit-actions mr-4">
           <v-btn
             v-if="hasFolioNumberChanged"
-            text color="primary"
+            variant="text"
+            color="primary"
             class="undo-button"
             @click="onUndoClicked()"
           >
-            <v-icon small>mdi-undo</v-icon>
+            <v-icon size="small">
+              mdi-undo
+            </v-icon>
             <span>Undo</span>
           </v-btn>
 
           <v-tooltip
             v-else
-            top nudge-right="3"
+            location="top"
+            nudge-right="3"
             content-class="top-tooltip"
             transition="fade-transition"
           >
-            <template v-slot:activator="{ on }">
+            <template #activator="{ on }">
               <v-btn
-                v-on="on"
-                text color="primary"
+                variant="text"
+                color="primary"
                 class="edit-button"
+                v-on="on"
                 @click="isEditing = true"
               >
-                <v-icon small>mdi-pencil</v-icon>
-                <span>{{editLabel}}</span>
+                <v-icon size="small">
+                  mdi-pencil
+                </v-icon>
+                <span>{{ editLabel }}</span>
               </v-btn>
             </template>
             <span>No fee to change</span>
           </v-tooltip>
 
           <!-- Drop Down Actions -->
-          <span class="drop-down-actions" v-if="hasFolioNumberChanged">
+          <span
+            v-if="hasFolioNumberChanged"
+            class="drop-down-actions"
+          >
             <v-menu
-              offset-y left nudge-bottom="4"
               v-model="dropdown"
+              offset-y
+              location="left"
+              nudge-bottom="4"
             >
-              <template v-slot:activator="{ on }">
+              <template #activator="{ on }">
                 <v-btn
-                  text small color="primary"
+                  variant="text"
+                  size="small"
+                  color="primary"
                   class="more-button"
                   v-on="on"
                 >
-                  <v-icon>{{dropdown ? 'mdi-menu-up' : 'mdi-menu-down'}}</v-icon>
+                  <v-icon>{{ dropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
                 </v-btn>
               </template>
               <v-list>
@@ -71,7 +101,10 @@
                   @click="isEditing = true; dropdown = false"
                 >
                   <v-list-item-subtitle>
-                    <v-icon small color="primary">mdi-pencil</v-icon>
+                    <v-icon
+                      size="small"
+                      color="primary"
+                    >mdi-pencil</v-icon>
                     <span class="drop-down-action ml-1">Change</span>
                   </v-list-item-subtitle>
                 </v-list-item>
@@ -83,7 +116,12 @@
     </v-row>
 
     <!-- Edit Folio Number -->
-    <v-form v-else id="edit-folio-number" v-model="formValid" @submit.prevent="onFormSubmit()">
+    <v-form
+      v-else
+      id="edit-folio-number"
+      v-model="formValid"
+      @submit.prevent="onFormSubmit()"
+    >
       <!-- Line 1 -->
       <v-row no-gutters>
         <v-col cols="3">
@@ -97,9 +135,14 @@
       <!-- Line 2 -->
       <v-row no-gutters>
         <v-col cols="3" />
-        <v-col cols="9" class="my-4">
-          <p>This is the Folio or Reference Number for this business for your own tracking purposes.
-            There is no fee to change this number. Any changes made will be applied immediately.</p>
+        <v-col
+          cols="9"
+          class="my-4"
+        >
+          <p>
+            This is the Folio or Reference Number for this business for your own tracking purposes.
+            There is no fee to change this number. Any changes made will be applied immediately.
+          </p>
         </v-col>
       </v-row>
 
@@ -107,15 +150,16 @@
       <v-row no-gutters>
         <v-col cols="3" />
         <v-col cols="9">
-            <v-text-field
-              filled persistent-hint
-              id="folio-number-input"
-              autocomplete="chrome-off"
-              label="Folio or Reference Number (Optional)"
-              v-model="folioNumber"
-              :name="Math.random()"
-              :rules="rules"
-            />
+          <v-text-field
+            id="folio-number-input"
+            v-model="folioNumber"
+            variant="filled"
+            persistent-hint
+            autocomplete="chrome-off"
+            label="Folio or Reference Number (Optional)"
+            :name="Math.random()"
+            :rules="rules"
+          />
         </v-col>
       </v-row>
 
@@ -124,7 +168,8 @@
         <v-col>
           <div class="form-actions">
             <v-btn
-              large color="primary"
+              size="large"
+              color="primary"
               class="save-button"
               type="submit"
               value="Submit"
@@ -132,7 +177,9 @@
               <span>Save</span>
             </v-btn>
             <v-btn
-              large outlined color="primary"
+              size="large"
+              variant="outlined"
+              color="primary"
               class="cancel-button"
               @click="onCancelClicked()"
             >

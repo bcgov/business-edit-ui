@@ -141,7 +141,7 @@ describe('Folio Information component', () => {
   })
 
   it('updates folio number for an alteration', async () => {
-    sessionStorage.setItem('AUTH_API_URL', `myhost/basePath/auth/`)
+    sessionStorage.setItem('AUTH_API_URL', 'myhost/basePath/auth/')
     store.stateModel.tombstone.businessId = 'BC1234567'
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
     store.stateModel.entitySnapshot = { authInfo: { folioNumber: 'A123' } } as any
@@ -173,10 +173,10 @@ describe('Folio Information component', () => {
     })
 
     await wrapper.setData({ isEditingFolioNumber: true })
-    expect(store.stateModel.validationFlags.flagsCompanyInfo['isValidFolioInfo']).toBe(false)
+    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidFolioInfo).toBe(false)
 
     await wrapper.setData({ isEditingFolioNumber: false })
-    expect(store.stateModel.validationFlags.flagsCompanyInfo['isValidFolioInfo']).toBe(true)
+    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidFolioInfo).toBe(true)
 
     wrapper.destroy()
   })

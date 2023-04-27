@@ -11,8 +11,10 @@ import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { ActionTypes, FilingTypes } from '@/bcrs-shared-components/enums'
-import { BusinessStartDate, BusinessType, EntityName, FolioInformation, OfficeAddresses,
-  YourCompanyWrapper } from '@/components/common'
+import {
+  BusinessStartDate, BusinessType, EntityName, FolioInformation, OfficeAddresses,
+  YourCompanyWrapper
+} from '@/components/common'
 import { ConversionNOB } from '@/components/Conversion'
 import { AccountTypes } from '@/enums'
 
@@ -71,18 +73,18 @@ describe('Conversion component', () => {
     get.withArgs('https://pay.api.url/fees/FM/CONVERSION')
       .returns(Promise.resolve({
         data: {
-          'filingFees': 100.0,
-          'filingType': 'Conversion',
-          'filingTypeCode': 'CONVERSION',
-          'futureEffectiveFees': 0,
-          'priorityFees': 0,
-          'processingFees': 0,
-          'serviceFees': 1.5,
-          'tax': {
-            'gst': 0,
-            'pst': 0
+          filingFees: 100.0,
+          filingType: 'Conversion',
+          filingTypeCode: 'CONVERSION',
+          futureEffectiveFees: 0,
+          priorityFees: 0,
+          processingFees: 0,
+          serviceFees: 1.5,
+          tax: {
+            gst: 0,
+            pst: 0
           },
-          'total': 101.5
+          total: 101.5
         }
       }))
 
@@ -90,18 +92,18 @@ describe('Conversion component', () => {
     get.withArgs('https://pay.api.url/fees/FM/CONVERSION?futureEffective=true')
       .returns(Promise.resolve({
         data: {
-          'filingFees': 100.0,
-          'filingType': 'Conversion',
-          'filingTypeCode': 'CONVERION',
-          'futureEffectiveFees': 100.0,
-          'priorityFees': 0,
-          'processingFees': 0,
-          'serviceFees': 1.5,
-          'tax': {
-            'gst': 0,
-            'pst': 0
+          filingFees: 100.0,
+          filingType: 'Conversion',
+          filingTypeCode: 'CONVERION',
+          futureEffectiveFees: 100.0,
+          priorityFees: 0,
+          processingFees: 0,
+          serviceFees: 1.5,
+          tax: {
+            gst: 0,
+            pst: 0
           },
-          'total': 201.5
+          total: 201.5
         }
       }))
 

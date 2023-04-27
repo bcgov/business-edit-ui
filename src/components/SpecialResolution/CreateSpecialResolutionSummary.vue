@@ -119,7 +119,7 @@
                 class="chk-resolution mt-0 pt-0"
                 hide-details
                 :rules="confirmCompletionResolution"
-                @change="onResolutionConfirmedChange($event)"
+                @update:model-value="onResolutionConfirmedChange($event)"
               >
                 <template #label>
                   <div>I confirm the following:</div>
@@ -150,7 +150,7 @@ import { ActionBindingIF, FormIF, EntitySnapshotIF } from '@/interfaces/'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@/bcrs-shared-components/date-picker/'
-import { SpecialResolutionIF } from '@/bcrs-shared-components/interfaces'
+import { SpecialResolutionIF } from '@bcrs-shared-components/interfaces'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -190,7 +190,7 @@ export default class CreateSpecialResolutionSummary extends Vue {
     await this.$nextTick()
     this.setSpecialResolution({
       ...this.getSpecialResolution,
-      resolutionConfirmed: resolutionConfirmed
+      resolutionConfirmed
     })
     this.setSpecialResolutionConfirmStateValidity(resolutionConfirmed)
   }
@@ -199,6 +199,7 @@ export default class CreateSpecialResolutionSummary extends Vue {
   get invalidSpecialResolutionConfirmSection (): boolean {
     return this.getAppValidate && !this.getSpecialResolutionConfirmValid
   }
+
   /** The resolution date in readable. */
   get resolutionDateText (): string {
     return this.yyyyMmDdToPacificDate(this.getSpecialResolution.resolutionDate, true)

@@ -1,5 +1,5 @@
 import { NameChangeOptions, NameRequestTypes } from '@/enums/'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { HelpSectionIF, FilingDataIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
 
 /** Interface to define the resource model example */

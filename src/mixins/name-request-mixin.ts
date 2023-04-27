@@ -29,13 +29,13 @@ export default class NameRequestMixin extends Vue {
     // validate email
     if (email && nrResponse.applicants?.emailAddress !== email) {
       this.$root.$emit('invalid-name-request', NameRequestStates.INCORRECT_EMAIL)
-      throw new Error(`Incorrect Email`)
+      throw new Error('Incorrect Email')
     }
 
     // validate phone
     if (phone && nrResponse.applicants?.phoneNumber !== phone) {
       this.$root.$emit('invalid-name-request', NameRequestStates.INCORRECT_PHONE)
-      throw new Error(`Incorrect Phone`)
+      throw new Error('Incorrect Phone')
     }
 
     // ensure NR is valid

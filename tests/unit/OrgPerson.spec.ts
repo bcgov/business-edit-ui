@@ -208,11 +208,11 @@ describe('Org/Person component for a BEN Correction filing', () => {
 
     // verify person's name
     expect((wrapper.find(firstNameSelector).element as HTMLInputElement).value)
-      .toEqual(validPersonData['officer']['firstName'])
+      .toEqual(validPersonData.officer.firstName)
     expect((wrapper.find(middleNameSelector).element as HTMLInputElement).value)
-      .toEqual(validPersonData['officer']['middleName'])
+      .toEqual(validPersonData.officer.middleName)
     expect((wrapper.find(lastNameSelector).element as HTMLInputElement).value)
-      .toEqual(validPersonData['officer']['lastName'])
+      .toEqual(validPersonData.officer.lastName)
 
     // verify role checkbox
     expect(wrapper.find(directorChkBoxSelector).attributes('aria-checked')).toBe('true')

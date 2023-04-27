@@ -103,7 +103,7 @@ export default class DateUtilities {
 
     // convert mm/dd/yyyy to yyyy-mm-dd
     // and make sure month and day are 2 digits (eg, 03)
-    const [ mm, dd, yyyy ] = dateStr.split('/')
+    const [mm, dd, yyyy] = dateStr.split('/')
     return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`
   }
 
@@ -286,6 +286,7 @@ export default class DateUtilities {
     const dateAfterSubtraction = this.dateToYyyyMmDd(temp)
     return dateAfterSubtraction
   }
+
   /**
    * Decrease one date from another and return number of months as the difference.
    * Dates must be in the "YYYY-MM-DD" format

@@ -22,12 +22,12 @@
           <div class="actions mr-4">
             <v-btn
               id="btn-delete-alteration"
-              text
+              variant="text"
               color="primary"
               :disabled="isBusySaving"
               @click="onDeleteClicked()"
             >
-              <v-icon small>
+              <v-icon size="small">
                 mdi-delete
               </v-icon>
               <span>Delete</span>
@@ -208,7 +208,7 @@ import { ActionBindingIF, EffectiveDateTimeIF, FeesIF, FlagsReviewCertifyIF, Res
 import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
-import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({

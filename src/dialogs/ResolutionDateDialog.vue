@@ -45,7 +45,7 @@
         <v-btn
           id="dialog-cancel-button"
           color="primary"
-          outlined
+          variant="outlined"
           @click="exit()"
         >
           Cancel

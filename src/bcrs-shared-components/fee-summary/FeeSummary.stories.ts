@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { FeeSummary } from './index'
 import { FilingCodes, CorpTypeCd } from '@/bcrs-shared-components/enums/'
-import { FilingDataIF } from '@/bcrs-shared-components/interfaces/'
+import { FilingDataIF } from '@bcrs-shared-components/interfaces/'
 
 // for SbcFeeSummary
 Vue.filter('currency', x => `$${x}`)
@@ -26,7 +26,7 @@ const filingData = [{
 
 export const Default = Template.bind({})
 Default.args = {
-  filingData: filingData,
+  filingData,
   payApiUrl: 'https://pay-api-dev.apps.silver.devops.gov.bc.ca/api/v1/',
   hasConflicts: false,
   isLoading: false,
@@ -36,7 +36,7 @@ Default.args = {
 
 export const summaryMode = Template.bind({})
 summaryMode.args = {
-  filingData: filingData,
+  filingData,
   payApiUrl: 'https://pay-api-dev.apps.silver.devops.gov.bc.ca/api/v1/',
   hasConflicts: false,
   isLoading: false,

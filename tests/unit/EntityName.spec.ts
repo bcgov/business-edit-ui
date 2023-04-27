@@ -26,7 +26,7 @@ import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/CP'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/bcrs-shared-components/enums'
-import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { NameRequestStates, NameRequestTypes } from '@/enums'
 
 Vue.use(Vuetify)
@@ -216,8 +216,8 @@ function runTest (test: any) {
   const label = (test.isNumberedCompany === true)
     ? `numbered ${test.entityType}`
     : (test.isNumberedCompany === false)
-      ? `named ${test.entityType}`
-      : test.entityType
+        ? `named ${test.entityType}`
+        : test.entityType
 
   describe(`Name Change Options for filing type "${test.filingType}"`, () => {
     it(`sets the correct options for a ${label}`, async () => {

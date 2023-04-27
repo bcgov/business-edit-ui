@@ -32,7 +32,7 @@
         <!-- Type change tooltip -->
         <v-tooltip
           v-if="typeChangeInfo"
-          top
+          location="top"
           content-class="top-tooltip"
           transition="fade-transition"
           nudge-right="3"
@@ -51,7 +51,7 @@
         <!-- Type mismatch tooltip -->
         <v-tooltip
           v-if="isConflictingLegalType && isNewName"
-          top
+          location="top"
           content-class="top-tooltip"
           transition="fade-transition"
           nudge-right="3"
@@ -59,7 +59,7 @@
           <template #activator="{ on }">
             <v-icon
               color="error"
-              small
+              size="small"
               v-on="on"
             >
               mdi-alert
@@ -101,7 +101,7 @@
           :items="entityTypeOptions"
           hint="Select a New Business Type"
           persistent-hint
-          filled
+          variant="filled"
         >
           <template #item="data">
             <span class="list-item">{{ data.item.text }}</span>
@@ -201,7 +201,7 @@
         <div class="action-btns">
           <v-btn
             id="done-btn"
-            large
+            size="large"
             color="primary"
             :disabled="!confirmArticles"
             @click="submitTypeChange()"
@@ -211,8 +211,8 @@
 
           <v-btn
             id="cancel-btn"
-            large
-            outlined
+            size="large"
+            variant="outlined"
             color="primary"
             @click="isEditingType = false"
           >
@@ -231,12 +231,12 @@
           <v-btn
             v-if="hasBusinessTypeChanged"
             id="btn-undo-business-type"
-            text
+            variant="text"
             color="primary"
             class="undo-action"
             @click="resetType()"
           >
-            <v-icon small>
+            <v-icon size="small">
               mdi-undo
             </v-icon>
             <span>Undo</span>
@@ -244,11 +244,11 @@
           <v-btn
             v-else-if="isBcCompany"
             id="btn-correct-business-type"
-            text
+            variant="text"
             color="primary"
             @click="isEditingType = true"
           >
-            <v-icon small>
+            <v-icon size="small">
               mdi-pencil
             </v-icon>
             <span>{{ getEditLabel }}</span>
@@ -260,14 +260,14 @@
             <v-menu
               v-model="dropdown"
               offset-y
-              left
+              location="left"
               nudge-bottom="4"
             >
               <template #activator="{ on }">
                 <v-btn
                   id="btn-more-actions"
-                  text
-                  small
+                  variant="text"
+                  size="small"
                   color="primary"
                   v-on="on"
                 >
@@ -282,7 +282,7 @@
                 >
                   <v-list-item-subtitle>
                     <v-icon
-                      small
+                      size="small"
                       color="primary"
                     >mdi-pencil</v-icon>
                     <span class="drop-down-action ml-1">Change</span>
@@ -302,7 +302,7 @@ import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { Action, Getter } from '@/store/PiniaClass'
 import { BcRegContacts } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
-import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 
