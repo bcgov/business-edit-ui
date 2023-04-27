@@ -9,8 +9,7 @@ import Vuelidate from 'vuelidate'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
 import Hotjar from 'vue-hotjar'
-import * as Sentry from '@sentry/browser'
-import * as Integrations from '@sentry/integrations'
+import * as Sentry from '@sentry/vue'
 import { getVueRouter } from '@/router/'
 import { getPiniaStore, getVuexStore } from '@/store/'
 
@@ -57,7 +56,7 @@ async function start () {
     console.info('Initializing Sentry...') // eslint-disable-line no-console
     Sentry.init({
       dsn: window['sentryDsn'],
-      integrations: [new Integrations.Vue({ Vue, attachProps: true })]
+      Vue
     })
   }
 
