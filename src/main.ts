@@ -56,7 +56,7 @@ async function start () {
     console.info('Initializing Sentry...') // eslint-disable-line no-console
     Sentry.init({
       dsn: window['sentryDsn'],
-      Vue: Vue
+      Vue
     })
   }
 
