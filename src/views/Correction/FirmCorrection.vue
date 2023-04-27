@@ -61,7 +61,7 @@ import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF }
 import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@/bcrs-shared-components/enums/'
 import { GpCorrectionResource, SpCorrectionResource } from '@/resources/Correction/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
 
 /** Correction sub-component for corp class "Firm" entities. */

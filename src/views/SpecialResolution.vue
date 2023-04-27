@@ -137,7 +137,7 @@ import {
   ActionBindingIF, CertifyIF, EffectiveDateTimeIF, EntitySnapshotIF, FilingDataIF,
   ResourceIF
 } from '@/interfaces/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
 import { FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from '@/sbc-common-components/util/constants'
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/'

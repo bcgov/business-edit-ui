@@ -225,7 +225,7 @@ import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { ConfirmDialog } from '@/bcrs-shared-components/confirm-dialog'
 
 // Interfaces and Enums
-import { ConfirmDialogType, FormIF, ShareClassIF } from '@bcrs-shared-components/interfaces'
+import { ConfirmDialogType, FormIF, ShareClassIF } from '@/bcrs-shared-components/interfaces'
 import { ActionTypes } from '@/bcrs-shared-components/enums'
 
 // Mixin

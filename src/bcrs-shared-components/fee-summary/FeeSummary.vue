@@ -65,10 +65,10 @@ import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
 
 // Enums and Interfaces
 import { FeeSummaryActions } from '@/bcrs-shared-components/enums'
-import { FilingDataIF } from '@bcrs-shared-components/interfaces'
+import { FilingDataIF } from '@/bcrs-shared-components/interfaces'
 
 // Component Dependency
-import SbcFeeSummary from '@/sbc-common-components/components/SbcFeeSummary.vue'
+import SbcFeeSummary from 'sbc-common-components/src/components/SbcFeeSummary.vue'
 
 @Component({
   components: { SbcFeeSummary }

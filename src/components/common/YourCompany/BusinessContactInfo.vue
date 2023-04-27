@@ -27,7 +27,7 @@ import { ContactInfo as ContactInfoShared } from '@/bcrs-shared-components/conta
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, ResourceIF, EntitySnapshotIF, FlagsCompanyInfoIF } from '@/interfaces/'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
+import { ContactPointIF } from '@/bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 import { useStore } from '@/store/store'
 

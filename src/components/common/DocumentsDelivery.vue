@@ -85,7 +85,7 @@ import { Action, Getter } from '@/store/PiniaClass'
 import { CommonMixin } from '@/mixins/'
 import { FilingNames } from '@/enums/'
 import { ActionBindingIF, FlagsReviewCertifyIF, ResourceIF } from '@/interfaces/'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
+import { ContactPointIF } from '@/bcrs-shared-components/interfaces/'
 
 import { useStore } from '@/store/store'
 

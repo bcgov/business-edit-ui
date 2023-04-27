@@ -36,7 +36,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-facing-decorator'
 import { ActionTypes } from '@/bcrs-shared-components/enums'
-import { ActionableItemIF } from '@bcrs-shared-components/interfaces'
+import { ActionableItemIF } from '@/bcrs-shared-components/interfaces'
 
 @Component({})
 export default class ActionChip extends Vue {

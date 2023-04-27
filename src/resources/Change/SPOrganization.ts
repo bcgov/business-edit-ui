@@ -1,5 +1,5 @@
 import { NameChangeOptions, FilingCodes, NameRequestTypes } from '@/enums/'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
 export const SpOrganizationChangeResource: ResourceIF = {

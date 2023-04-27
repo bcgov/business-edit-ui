@@ -1,7 +1,7 @@
 import { ApprovalTypes, RestorationTypes, RelationshipTypes } from '@/enums'
 import { AddressesIF, CourtOrderIF, NameRequestIF, NameTranslationIF, OrgPersonIF } from '@/interfaces/'
 import { CorpTypeCd } from '@/bcrs-shared-components/enums'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
+import { ContactPointIF } from '@/bcrs-shared-components/interfaces/'
 
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/restoration.json

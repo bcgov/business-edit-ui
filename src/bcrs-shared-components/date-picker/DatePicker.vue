@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
-import { FormIF } from '@bcrs-shared-components/interfaces'
+import { FormIF } from '@/bcrs-shared-components/interfaces'
 import { DateMixin } from '@/mixins' // NB: local mixin (StoryBook can't find it otherwise)
 
 @Component({

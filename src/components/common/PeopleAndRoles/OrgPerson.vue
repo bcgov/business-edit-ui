@@ -449,7 +449,7 @@ import {
   OrgPersonIF, FormIF, AddressIF, AddressSchemaIF, RoleIF, ResourceIF, EmptyBusinessLookup,
   BusinessLookupIF
 } from '@/interfaces/'
-import BaseAddress from '@/sbc-common-components/components/BaseAddress.vue'
+import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
 import { HelpSection } from '@/components/common/'
 import { BusinessLookup as BusinessLookupShared } from '@/bcrs-shared-components/business-lookup'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'

@@ -102,7 +102,7 @@
 <script lang="ts">
 import { Component, Emit, Prop, Vue } from 'vue-facing-decorator'
 import { ApprovalTypes } from '@/bcrs-shared-components/enums'
-import { FormIF } from '@bcrs-shared-components/interfaces'
+import { FormIF } from '@/bcrs-shared-components/interfaces'
 import { DatePicker } from '@/bcrs-shared-components/date-picker'
 
 @Component({

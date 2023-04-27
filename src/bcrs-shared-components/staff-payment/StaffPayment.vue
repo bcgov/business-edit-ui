@@ -123,7 +123,7 @@
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { StaffPaymentOptions } from '@/bcrs-shared-components/enums'
 import { FolioNumberInput } from '@/bcrs-shared-components/folio-number-input'
-import { FormIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+import { FormIF, StaffPaymentIF } from '@/bcrs-shared-components/interfaces'
 
 @Component({
   components: { FolioNumberInput }

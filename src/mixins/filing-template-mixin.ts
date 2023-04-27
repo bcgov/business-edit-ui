@@ -12,12 +12,12 @@ import {
 import {
   CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF
-} from '@bcrs-shared-components/interfaces/'
+} from '@/bcrs-shared-components/interfaces/'
 import {
   ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
   RoleTypes
 } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
 import { RestorationTypes, StaffPaymentOptions } from '@/bcrs-shared-components/enums/'
 import { FilingTypeToName } from '@/utils'
 import { useStore } from '@/store/store'

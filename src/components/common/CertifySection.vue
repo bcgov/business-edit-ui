@@ -40,7 +40,7 @@ import { Action, Getter } from '@/store/PiniaClass'
 import { Certify as CertifyShared } from '@/bcrs-shared-components/certify/'
 import { DateMixin } from '@/mixins/'
 import { ActionBindingIF, CertifyIF, ResourceIF } from '@/interfaces/'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({

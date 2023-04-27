@@ -3,7 +3,7 @@ import { Action, Getter } from '@/store/PiniaClass'
 import { ActionBindingIF, EmptyFees, FeesIF } from '@/interfaces'
 import { PayServices } from '@/services/'
 import { StaffPaymentOptions } from '@/bcrs-shared-components/enums'
-import { FilingDataIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
+import { FilingDataIF, StaffPaymentIF } from '@/bcrs-shared-components/interfaces'
 import { cloneDeep } from 'lodash'
 import { useStore } from '@/store/store'
 

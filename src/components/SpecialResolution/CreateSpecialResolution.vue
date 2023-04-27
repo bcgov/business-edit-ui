@@ -271,7 +271,7 @@ import { ActionBindingIF, HelpSectionIF, ResourceIF, FormIF, SpecialResolutionSa
 import { DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@/bcrs-shared-components/date-picker/'
-import { SpecialResolutionIF, PersonIF } from '@bcrs-shared-components/interfaces/'
+import { SpecialResolutionIF, PersonIF } from '@/bcrs-shared-components/interfaces/'
 import { VuetifyRuleFunction } from '@/types'
 import { useStore } from '@/store/store'
 

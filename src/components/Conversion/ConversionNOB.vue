@@ -157,7 +157,7 @@ import { Component, Vue, Watch } from 'vue-facing-decorator'
 import { Action, Getter } from '@/store/PiniaClass'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, FlagsCompanyInfoIF } from '@/interfaces/'
-import { NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { NaicsIF } from '@/bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 import { useStore } from '@/store/store'
 

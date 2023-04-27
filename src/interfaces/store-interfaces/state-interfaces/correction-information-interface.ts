@@ -1,7 +1,7 @@
 import { AddressesIF, NameTranslationIF, OrgPersonIF, ShareClassIF } from '@/interfaces/'
 import { CorrectionErrorTypes, FilingTypes } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
+import { ContactPointIF, NaicsIF } from '@/bcrs-shared-components/interfaces/'
 
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/correction.json

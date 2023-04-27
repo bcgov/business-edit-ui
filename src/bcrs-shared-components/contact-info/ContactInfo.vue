@@ -324,7 +324,7 @@ import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import { mask } from 'vue-the-mask'
 
 // Interfaces & enums
-import { ContactPointIF, FormIF } from '@bcrs-shared-components/interfaces'
+import { ContactPointIF, FormIF } from '@/bcrs-shared-components/interfaces'
 
 @Component({
   directives: { mask }

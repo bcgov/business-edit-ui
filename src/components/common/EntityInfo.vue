@@ -50,8 +50,8 @@ import { Component, Vue } from 'vue-facing-decorator'
 import { Getter } from '@/store/PiniaClass'
 import { CommonMixin } from '@/mixins/'
 import { BusinessInformationIF, EntitySnapshotIF } from '@/interfaces/'
-import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
-import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { ContactPointIF } from '@/bcrs-shared-components/interfaces/'
+import { GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
 
 import { useStore } from '@/store/store'
 

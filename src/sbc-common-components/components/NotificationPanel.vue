@@ -11,7 +11,7 @@
     >
       <v-app-bar
         flat
-        border
+        :border="true"
       >
         <v-toolbar-title class="toolbar-title">
           What's New at BC Registries

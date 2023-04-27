@@ -12,7 +12,7 @@ import {
   RestorationTypes,
   RoleTypes
 } from '@/enums/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module/'
 import {
   AddressesIF,
   BusinessInformationIF,
@@ -43,7 +43,7 @@ import {
   NaicsIF,
   SpecialResolutionIF,
   StaffPaymentIF
-} from '@bcrs-shared-components/interfaces/'
+} from '@/bcrs-shared-components/interfaces/'
 import { IsSame } from '@/utils/'
 import DateUtilities from '@/services/date-utilities'
 

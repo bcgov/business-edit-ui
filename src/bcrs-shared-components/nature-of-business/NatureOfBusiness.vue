@@ -219,7 +219,7 @@
 import { Component, Emit, Prop, Vue, Watch } from 'vue-facing-decorator'
 import NaicsHelpText from './NaicsHelpText.vue'
 import NaicsResult from './NaicsResult.vue'
-import { NaicsIF, NaicsResultIF } from '@bcrs-shared-components/interfaces'
+import { NaicsIF, NaicsResultIF } from '@/bcrs-shared-components/interfaces'
 
 enum States {
   INITIAL = 'initial',

@@ -9,7 +9,7 @@ import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
 import NameTranslation from '@/components/common/YourCompany/NameTranslations/NameTranslation.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import { CorpTypeCd } from '@/bcrs-shared-components/corp-type-module'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})

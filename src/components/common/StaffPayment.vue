@@ -36,7 +36,7 @@ import { StaffPayment as StaffPaymentShared } from '@/bcrs-shared-components/sta
 
 // Interfaces and Enums
 import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
-import { StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
+import { StaffPaymentIF } from '@/bcrs-shared-components/interfaces/'
 import { StaffPaymentOptions } from '@/bcrs-shared-components/enums/'
 
 import { useStore } from '@/store/store'

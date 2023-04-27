@@ -1,4 +1,4 @@
-import { BreadcrumbIF } from '@bcrs-shared-components/interfaces/'
+import { BreadcrumbIF } from '@/bcrs-shared-components/interfaces/'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 

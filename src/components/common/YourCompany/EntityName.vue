@@ -232,7 +232,7 @@ import { CorrectNameOptions } from '@/components/common/YourCompany'
 import { NameRequestMixin } from '@/mixins'
 import DateUtilities from '@/services/date-utilities'
 import { ToDisplayPhone } from '@/utils'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({

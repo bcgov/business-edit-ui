@@ -103,7 +103,7 @@ import { ConfirmDialog as ConfirmDialogShared } from '@/bcrs-shared-components/c
 import { CommonMixin, NameRequestMixin } from '@/mixins/'
 import { ActionBindingIF, ConfirmDialogType, NameRequestIF, NrCorrectionIF, NrResponseIF } from '@/interfaces/'
 import { NameChangeOptions } from '@/enums/'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd, GetCorpFullDescription } from '@/bcrs-shared-components/corp-type-module/'
 
 import { useStore } from '@/store/store'
 @Component({

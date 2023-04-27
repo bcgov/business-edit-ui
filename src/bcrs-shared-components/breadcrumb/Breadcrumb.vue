@@ -64,7 +64,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-facing-decorator'
-import { BreadcrumbIF } from '@bcrs-shared-components/interfaces'
+import { BreadcrumbIF } from '@/bcrs-shared-components/interfaces'
 
 @Component({})
 export default class Breadcrumb extends Vue {

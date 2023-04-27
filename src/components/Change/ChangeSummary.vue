@@ -115,7 +115,7 @@ import { Component, Prop, Vue } from 'vue-facing-decorator'
 import { Getter } from '@/store/PiniaClass'
 import { OfficeAddresses, ListPeopleAndRoles } from '@/components/common/'
 import { NameRequestIF } from '@/interfaces/'
-import { NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { NaicsIF } from '@/bcrs-shared-components/interfaces/'
 import { useStore } from '@/store/store'
 
 @Component({

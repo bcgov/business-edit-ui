@@ -150,7 +150,7 @@ import { ActionBindingIF, FormIF, EntitySnapshotIF } from '@/interfaces/'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@/bcrs-shared-components/date-picker/'
-import { SpecialResolutionIF } from '@bcrs-shared-components/interfaces'
+import { SpecialResolutionIF } from '@/bcrs-shared-components/interfaces'
 import { useStore } from '@/store/store'
 
 @Component({

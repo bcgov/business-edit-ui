@@ -536,7 +536,7 @@ import { ConfirmDialog } from '@/bcrs-shared-components/confirm-dialog'
 import EditShareStructure from './EditShareStructure.vue'
 
 // Interfaces and Enums
-import { ConfirmDialogType, ShareClassIF, ShareStructureIF } from '@bcrs-shared-components/interfaces'
+import { ConfirmDialogType, ShareClassIF, ShareStructureIF } from '@/bcrs-shared-components/interfaces'
 import { ActionTypes } from '@/bcrs-shared-components/enums'
 
 @Component({
