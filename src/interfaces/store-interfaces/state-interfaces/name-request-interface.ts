@@ -1,4 +1,5 @@
-import { NameRequestStates, NameRequestTypes } from '@/enums/'
+import { NameRequestStates } from '@/enums/'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 /** Name request applicant details interface */
@@ -36,7 +37,7 @@ export interface NameRequestIF {
   legalName: string
   legalType: CorpTypeCd
   nrNumber?: string
-  requestType?: NameRequestTypes
+  requestType?: NrRequestActionCodes
   status?: NameRequestStates
 }
 

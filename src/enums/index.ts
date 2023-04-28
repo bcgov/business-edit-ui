@@ -12,7 +12,6 @@ export * from './partyTypes'
 export * from './periodTypes'
 export * from './nameChangeOptions'
 export * from './nameRequestStates'
-export * from './nameRequestTypes'
 export * from './roleTypes'
 export * from './routeNames'
 
