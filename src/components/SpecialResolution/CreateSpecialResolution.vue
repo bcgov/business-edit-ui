@@ -62,7 +62,6 @@
           >
             <div class="d-flex flex-column flex-sm-row justify-center align-center">
               <img
-                slot-scope=""
                 src="@/assets/images/BCRegistries_CoopSpecialResolution-x2.png"
                 :alt="getSpecialResolutionResource.label"
                 class="preview-image"
