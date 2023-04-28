@@ -1,5 +1,6 @@
 import { NameRequestApplicantIF } from '@/interfaces/'
-import { NameChangeOptions, NameRequestStates, NameRequestTypes } from '@/enums/'
+import { NameChangeOptions, NameRequestStates } from '@/enums/'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 export interface CorrectNameOptionIF {
@@ -24,7 +25,7 @@ export interface NrResponseIF {
   entity_type_cd: CorpTypeCd, // eslint-disable-line camelcase
   expirationDate: string,
   state: NameRequestStates,
-  request_action_cd: NameRequestTypes, // eslint-disable-line camelcase
+  request_action_cd: NrRequestActionCodes, // eslint-disable-line camelcase
   applicants: {
     firstName: string,
     lastName: string

@@ -1,4 +1,5 @@
 import { NameChangeOptions, FilingCodes } from '@/enums/'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
@@ -24,7 +25,10 @@ export const CccRestorationResource: ResourceIF = {
       orgPersonLabel: 'Applicant',
       orgTypesLabel: 'Business or Corporation',
       subtitle: null // not used
-    }
+    },
+    nameRequestTypes: [
+      NrRequestActionCodes.RESTORE
+    ]
   },
   certifyClause: 'Note: It is an offence to make or assist in making a false or misleading statement in a record ' +
     'filed under the BC Corporations Act. ' +

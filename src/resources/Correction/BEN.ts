@@ -1,4 +1,5 @@
-import { NameChangeOptions, FilingCodes, NameRequestTypes } from '@/enums/'
+import { NameChangeOptions, FilingCodes } from '@/enums/'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
@@ -27,8 +28,8 @@ export const BenCorrectionResource: ResourceIF = {
       subtitle: null // not used
     },
     nameRequestTypes: [
-      NameRequestTypes.CHANGE_OF_NAME,
-      NameRequestTypes.CONVERSION
+      NrRequestActionCodes.CHANGE_NAME,
+      NrRequestActionCodes.CONVERSION
     ]
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +

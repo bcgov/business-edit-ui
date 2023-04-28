@@ -25,9 +25,9 @@ import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/CP'
 
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { FilingTypes } from '@bcrs-shared-components/enums'
+import { FilingTypes, NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
-import { NameRequestStates, NameRequestTypes } from '@/enums'
+import { NameRequestStates } from '@/enums'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -315,7 +315,7 @@ describe('Name Changes for a SP alteration', () => {
     store.stateModel.nameRequest.legalType = 'CR' as CorpTypeCd
     store.stateModel.nameRequest.expiry = '2021-03-10T08:00:00+00:00'
     store.stateModel.nameRequest.status = NameRequestStates.APPROVED
-    store.stateModel.nameRequest.requestType = NameRequestTypes.NEW
+    store.stateModel.nameRequest.requestType = NrRequestActionCodes.NEW_BUSINESS
     store.stateModel.nameRequest.applicant = {
       fullName: 'Mock Full Name',
       fullAddress: '123 Mock Lane, Victoria, BC, 1t2 3t4, CA',

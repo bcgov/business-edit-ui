@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
-import { NameRequestStates, NameRequestTypes } from '@/enums/'
+import { NameRequestStates } from '@/enums/'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { LegalServices } from '@/services/'
 import { NrResponseIF, ResourceIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
@@ -62,7 +63,7 @@ export default class NameRequestMixin extends Vue {
    * */
   isNrValid (nr: any): boolean {
     const requestActionCodeList = this.getResource.changeData?.nameRequestTypes ||
-      [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION]
+      [NrRequestActionCodes.CHANGE_NAME, NrRequestActionCodes.CONVERSION, NrRequestActionCodes.RESTORE]
     return Boolean(
       nr &&
       nr.state &&
@@ -120,11 +121,12 @@ export default class NameRequestMixin extends Vue {
   /** Map the request type to a display description.
    * @param nrRequestType The name request type code
    */
-  getNrRequestDesc (nrRequestType: NameRequestTypes): string {
+  getNrRequestDesc (nrRequestType: NrRequestActionCodes): string {
     switch (nrRequestType) {
-      case NameRequestTypes.NEW: return 'New Business'
-      case NameRequestTypes.CHANGE_OF_NAME: return 'Change of Name'
-      case NameRequestTypes.CONVERSION: return 'Conversion'
+      case NrRequestActionCodes.NEW_BUSINESS: return 'New Business'
+      case NrRequestActionCodes.CHANGE_NAME: return 'Change of Name'
+      case NrRequestActionCodes.CONVERSION: return 'Conversion'
+      case NrRequestActionCodes.RESTORE: return 'Restoration'
       default: return null // should never happen
     }
   }
