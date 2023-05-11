@@ -110,8 +110,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep } from 'lodash'
@@ -128,7 +127,6 @@ import { FilingStatus, RoleTypes } from '@/enums/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationExtension/'
 import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel/'
 import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -156,20 +154,16 @@ import { useStore } from '@/store/store'
     ViewWrapper,
     YourCompanyWrapper,
     YourCompanySummary
-  },
-  mixins: [
-    CommonMixin,
-    FeeMixin,
-    FilingTemplateMixin,
-    OrgPersonMixin
-  ]
+  }
 })
-export default class LimitedRestorationExtension extends Vue {
+export default class LimitedRestorationExtension extends Mixins(
+  CommonMixin,
+  FeeMixin,
+  FilingTemplateMixin,
+  OrgPersonMixin
+) {
   // Global getters
   @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) getBusinessId!: string
-  @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) isBcCcc!: boolean
   @Getter(useStore) isBcCompany!: boolean
@@ -181,8 +175,6 @@ export default class LimitedRestorationExtension extends Vue {
 
   // Global actions
   @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action(useStore) setEntitySnapshot: ActionBindingIF
-  @Action(useStore) setFilingData!: ActionBindingIF
   @Action(useStore) setFilingId!: ActionBindingIF
   @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF

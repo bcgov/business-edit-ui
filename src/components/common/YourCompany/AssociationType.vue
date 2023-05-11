@@ -159,8 +159,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CoopTypes } from '@/enums'
 import { CommonMixin } from '@/mixins'
@@ -169,10 +168,8 @@ import { VuetifyRuleFunction } from '@/types'
 import { CoopTypeToDescription } from '@/utils'
 import { useStore } from '@/store/store'
 
-@Component({
-  mixins: [CommonMixin]
-})
-export default class AssociationType extends Vue {
+@Component({})
+export default class AssociationType extends Mixins(CommonMixin) {
   /** Global getters */
   @Getter(useStore) getAssociationType!: CoopTypes
   @Getter(useStore) getBusinessInformation!: BusinessInformationIF

@@ -248,12 +248,10 @@ describe('Firm Correction component', () => {
     store.stateModel.nameTranslations = [{ action: ActionTypes.ADDED, name: 'hello' }]
     await Vue.nextTick()
 
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Certain changes require a Correction Notice which will incur a $100.00 fee.')
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Choosing a correction date and time in the future will incur an additional $100.00 fee.')
+    expect(wrapper.find('#intro-text').text().replace(/\s+/g, ' '))
+      .toContain('Certain changes require a Correction Notice which will incur a $100.00 fee.')
+    expect(wrapper.find('#intro-text').text().replace(/\s+/g, ' '))
+      .toContain('Choosing a correction date and time in the future will incur an additional $100.00 fee.')
 
     store.stateModel.feePrices = [{
       filingFees: null,
@@ -271,12 +269,10 @@ describe('Firm Correction component', () => {
     }]
     await flushPromises()
 
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Certain changes require a Correction Notice which will incur a fee.')
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Choosing a correction date and time in the future will incur an additional fee.')
+    expect(wrapper.find('#intro-text').text().replace(/\s+/g, ' '))
+      .toContain('Certain changes require a Correction Notice which will incur a fee.')
+    expect(wrapper.find('#intro-text').text().replace(/\s+/g, ' '))
+      .toContain('Choosing a correction date and time in the future will incur an additional fee.')
   })
 
   // FUTURE

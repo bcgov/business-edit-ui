@@ -3,8 +3,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import {
   CommonMixin,
   DateMixin,
@@ -13,16 +12,14 @@ import {
   NameRequestMixin
 } from '@/mixins/'
 
-@Component({
-  mixins: [
-    CommonMixin,
-    DateMixin,
-    FeeMixin,
-    FilingTemplateMixin,
-    NameRequestMixin
-  ]
-})
-export default class MixinTester extends Vue {}
+@Component({})
+export default class MixinTester extends Mixins(
+  CommonMixin,
+  DateMixin,
+  FeeMixin,
+  FilingTemplateMixin,
+  NameRequestMixin
+) {}
 </script>
 
 <style>

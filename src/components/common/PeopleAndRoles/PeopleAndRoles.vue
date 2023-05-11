@@ -341,10 +341,9 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Action(useStore) setValidComponent!: ActionBindingIF
 
   // Local properties
-  protected isAddingEditingOrgPerson = false
-  protected activeIndex = NaN
-  protected currentOrgPerson: OrgPersonIF = null
-  protected helpToggle = false
+  isAddingEditingOrgPerson = false
+  activeIndex = NaN
+  currentOrgPerson: OrgPersonIF = null
 
   /** The list of original parties. */
   get originalParties (): OrgPersonIF[] {
@@ -565,7 +564,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    * @param type The incorporator (party) type of this item.
    * @param actions The actions of this item.
    */
-  private initAdd (roles: RoleIF[], type: PartyTypes, actions = [ActionTypes.ADDED]): void {
+  initAdd (roles: RoleIF[], type: PartyTypes, actions = [ActionTypes.ADDED]): void {
     // make a copy so we don't change the original object
     this.currentOrgPerson = cloneDeep(EmptyOrgPerson)
     this.currentOrgPerson.roles = roles
@@ -587,7 +586,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    * Sets state properties to edit an existing org/person.
    * @param index The index of the org/person to edit.
    */
-  private initEdit (index: number): void {
+  initEdit (index: number): void {
     // make a copy so we don't change the original object
     this.currentOrgPerson = cloneDeep(this.getOrgPeople[index])
 
@@ -600,7 +599,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    * Resets state properties after a change is completed (or to cancel).
    * @param restore whether to restore the replaced-removed item (if any)
    */
-  private async reset (restore = false): Promise<void> {
+  async reset (restore = false): Promise<void> {
     if (restore) {
       // make a copy so Vue reacts when we set the new list
       const tempList = cloneDeep(this.getOrgPeople)
@@ -627,7 +626,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    * Undoes changes to the specified org/person.
    * @param index The index of the org/person to undo.
    */
-  private undo (index: number): void {
+  undo (index: number): void {
     // make a copy so Vue reacts when we set the updated list
     const tempList = cloneDeep(this.getOrgPeople)
 
@@ -649,7 +648,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       const id = person?.officer?.id
 
       let thisPerson
-      if (isNaN(id)) {
+      if (isNaN(+id)) {
         // to check assigned UUID
         thisPerson = cloneDeep(this.originalParties.find(x => x.officer.id === id))
       } else {
@@ -679,7 +678,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    * Adds/changes the specified org/person.
    * @param orgPerson The data object of the org/person to change.
    */
-  private addEdit (orgPerson: OrgPersonIF): void {
+  addEdit (orgPerson: OrgPersonIF): void {
     // make a copy so Vue reacts when we set the new list
     const tempList = cloneDeep(this.getOrgPeople)
 
@@ -785,7 +784,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    * Tags the specified org/person for removal.
    * @param index The index of the org/person to remove.
    */
-  private remove (index: number): void {
+  remove (index: number): void {
     // make a copy so Vue reacts when we set the new list
     const tempList = cloneDeep(this.getOrgPeople)
 
@@ -817,7 +816,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
    * Processes the specified org/person for replacement.
    * @param index The index of the org/person to replace.
    */
-  private replace (index: number): void {
+  replace (index: number): void {
     // make a copy so Vue reacts when we set the new list
     const tempList = cloneDeep(this.getOrgPeople)
 

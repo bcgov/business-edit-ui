@@ -36,6 +36,7 @@ describe('Time Limit Extension component', () => {
     const wrapper = wrapperFactory()
 
     expect(wrapper.find('#extend-time-limit').exists()).toBe(true)
+
     wrapper.destroy()
   })
 
@@ -44,6 +45,7 @@ describe('Time Limit Extension component', () => {
     const extendTimeLimit = wrapper.vm as any // wrapper.vm type is Vue
 
     expect(extendTimeLimit.approvalType).toEqual('courtOrder')
+
     wrapper.destroy()
   })
 
@@ -54,6 +56,7 @@ describe('Time Limit Extension component', () => {
 
     expect(ApprovalTypes.VIA_REGISTRAR).toEqual('registrar')
     expect(extendTimeLimit.approvalType).toEqual('registrar')
+
     wrapper.destroy()
   })
 
@@ -63,6 +66,7 @@ describe('Time Limit Extension component', () => {
     store.stateModel.tombstone.currentDate = '2023-01-01'
 
     expect(extendTimeLimit.previousNumberOfMonths).toEqual(14)
+
     wrapper.destroy()
   })
 
@@ -72,6 +76,7 @@ describe('Time Limit Extension component', () => {
     store.stateModel.tombstone.currentDate = '2023-01-01'
 
     expect(extendTimeLimit.expiry).toEqual('2023-05-01')
+
     wrapper.destroy()
   })
 
@@ -80,6 +85,7 @@ describe('Time Limit Extension component', () => {
 
     const extensionTimeValidity = store.stateModel.validationFlags.flagsCompanyInfo.isValidExtensionTime
     expect(extensionTimeValidity).toBeTruthy()
+
     wrapper.destroy()
   })
 
@@ -88,6 +94,7 @@ describe('Time Limit Extension component', () => {
 
     const approvalTypeValidity = store.stateModel.validationFlags.flagsCompanyInfo.isValidApprovalType
     expect(approvalTypeValidity).toBeFalsy()
+
     wrapper.destroy()
   })
 

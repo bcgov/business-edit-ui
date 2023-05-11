@@ -48,8 +48,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, CompletingParty, Detail,
   EntityName, NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment, YourCompanyWrapper }
@@ -60,7 +59,6 @@ import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF }
 import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { GpCorrectionResource, SpCorrectionResource } from '@/resources/Correction/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
 
 /** Correction sub-component for corp class "Firm" entities. */
@@ -78,23 +76,17 @@ import { useStore } from '@/store/store'
     PeopleAndRoles,
     StaffPayment,
     YourCompanyWrapper
-  },
-  mixins: [CommonMixin, FeeMixin, FilingTemplateMixin]
+  }
 })
-export default class FirmCorrection extends Vue {
+export default class FirmCorrection extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter(useStore) getBusinessId!: string
-  @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) isClientErrorCorrection!: boolean
   @Getter(useStore) isPartnership!: boolean
   @Getter(useStore) isSoleProp!: boolean
 
   // Global actions
-  @Action(useStore) setFilingData!: ActionBindingIF
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setCertifyStatementResource!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF
-  @Action(useStore) setStaffPayment!: ActionBindingIF
 
   /** The draft correction filing to process. */
   @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF

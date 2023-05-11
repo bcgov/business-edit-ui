@@ -1,4 +1,4 @@
-import { NameChangeOptions, FilingCodes } from '@/enums/'
+import { CorrectNameOptions, FilingCodes } from '@/enums/'
 import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
@@ -18,10 +18,10 @@ export const UlcCorrectionResource: ResourceIF = {
     priority: false
   },
   changeData: {
-    nameChangeOptions: [
-      NameChangeOptions.CORRECT_NEW_NR,
-      NameChangeOptions.CORRECT_NAME_TO_NUMBER,
-      NameChangeOptions.CORRECT_NAME
+    correctNameOptions: [
+      CorrectNameOptions.CORRECT_NEW_NR,
+      CorrectNameOptions.CORRECT_NAME_TO_NUMBER,
+      CorrectNameOptions.CORRECT_NAME
     ],
     orgPersonInfo: {
       orgPersonLabel: 'Directors',

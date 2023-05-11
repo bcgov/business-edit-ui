@@ -79,7 +79,7 @@
 import Vue from 'vue'
 import { Component, Emit, Prop } from 'vue-property-decorator'
 import { CorrectNameOptionIF } from '@/interfaces/'
-import { NameChangeOptions } from '@/enums/'
+import { CorrectNameOptions } from '@/enums/'
 // These imports below are touchy, please don't change them - they can possibly break tests.
 import CorrectCompanyName from './CorrectCompanyName.vue'
 import CorrectNameRequest from './CorrectNameRequest.vue'
@@ -99,34 +99,35 @@ import CorrectNameToNumber from './CorrectNameToNumber.vue'
     CorrectNameRequest
   }
 })
-export default class CorrectNameOptions extends Vue {
+export default class CorrectName extends Vue {
   /** The options to display */
   @Prop() readonly correctionNameChoices!: Array<string>
 
   // local properties
-  protected displayedOptions: Array<CorrectNameOptionIF> = []
-  protected panel: number = null
-  protected formType: NameChangeOptions = null
-  protected currentFormType: NameChangeOptions = null
-  protected isLoading = false
-  protected isFormValid = false
-  protected validateNameChange = false
+  displayedOptions: Array<CorrectNameOptionIF> = []
+  panel: number = null
+  formType: CorrectNameOptions = null
+  isLoading = false
+  isFormValid = false
+  validateNameChange = false
+
+  private currentFormType: CorrectNameOptions = null
 
   readonly correctionNameOptions: Array<CorrectNameOptionIF> = [
     {
-      id: NameChangeOptions.CORRECT_NAME,
+      id: CorrectNameOptions.CORRECT_NAME,
       title: 'Edit the company name',
       description: 'Correct typographical errors in the existing company name.',
       component: CorrectCompanyName
     },
     {
-      id: NameChangeOptions.CORRECT_NAME_TO_NUMBER,
+      id: CorrectNameOptions.CORRECT_NAME_TO_NUMBER,
       title: 'Use the incorporation number as the name',
       description: null,
       component: CorrectNameToNumber
     },
     {
-      id: NameChangeOptions.CORRECT_NEW_NR,
+      id: CorrectNameOptions.CORRECT_NEW_NR,
       title: 'Use a new name request number',
       description: 'Enter the new Name Request Number (e.g., NR 1234567) and either the applicant phone number ' +
         'OR the applicant email that was used when the name was requested.',
@@ -152,7 +153,7 @@ export default class CorrectNameOptions extends Vue {
   }
 
   /** Trigger form submission */
-  protected submitNameCorrection (): void {
+  submitNameCorrection (): void {
     if (this.isFormValid) {
       this.isLoading = true
       this.formType = this.currentFormType
@@ -160,14 +161,14 @@ export default class CorrectNameOptions extends Vue {
   }
 
   /** Identify the current form */
-  protected identifyForm (type: NameChangeOptions) {
+  identifyForm (type: CorrectNameOptions) {
     this.currentFormType = type
     this.isFormValid = false
   }
 
   /** Inform Parent name correction process is done. */
   @Emit('isSaved')
-  protected emitIsSaved (isSaved: boolean): boolean {
+  emitIsSaved (isSaved: boolean): boolean {
     this.isLoading = false
     this.formType = null
     if (isSaved) this.panel = null
@@ -176,7 +177,7 @@ export default class CorrectNameOptions extends Vue {
 
   /** cancel name correction */
   @Emit('cancel')
-  protected emitCancel (): void {
+  emitCancel (): void {
     this.panel = null
   }
 }

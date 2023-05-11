@@ -52,7 +52,9 @@ import { FilingTemplateMixin } from '@/mixins'
 import { useStore } from '@/store/store'
 
 @Component({
-  components: { DetailCommentShared }
+  components: {
+    DetailCommentShared
+  }
 })
 export default class Detail extends Mixins(FilingTemplateMixin) {
   /** Prop to provide section number. */

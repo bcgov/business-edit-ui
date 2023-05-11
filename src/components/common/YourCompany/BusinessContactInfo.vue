@@ -21,8 +21,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info/'
 import { AuthServices } from '@/services/'
@@ -33,10 +32,11 @@ import { isEqual } from 'lodash'
 import { useStore } from '@/store/store'
 
 @Component({
-  components: { ContactInfoShared },
-  mixins: [CommonMixin]
+  components: {
+    ContactInfoShared
+  }
 })
-export default class BusinessContactInfo extends Vue {
+export default class BusinessContactInfo extends Mixins(CommonMixin) {
   // Global getters
   @Getter(useStore) getBusinessContact!: ContactPointIF
   @Getter(useStore) getBusinessId!: string

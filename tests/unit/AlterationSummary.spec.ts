@@ -213,9 +213,8 @@ describe('Alteration Summary component', () => {
     await Vue.nextTick()
     await flushPromises()
     await Vue.nextTick()
-    expect(
-      wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' ')
-    ).toContain('additional fee of $100.00 to enter an alteration date and time in the future).')
+    expect(wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' '))
+      .toContain('additional fee of $100.00 to enter an alteration date and time in the future).')
 
     store.stateModel.feePrices = [{
       filingFees: null,
@@ -233,8 +232,7 @@ describe('Alteration Summary component', () => {
     }]
 
     await flushPromises()
-    expect(
-      wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' ')
-    ).toContain('additional fee to enter an alteration date and time in the future).')
+    expect(wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' '))
+      .toContain('additional fee to enter an alteration date and time in the future).')
   })
 })

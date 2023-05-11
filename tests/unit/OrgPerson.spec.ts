@@ -972,6 +972,8 @@ describe('Org/Person component for SP change of registration filing', () => {
     const wrapper = createComponent(currentOrgPerson, NaN)
 
     expect(wrapper.find('.confirm-documents-checkbox').exists()).toBe(true)
+
+    wrapper.destroy()
   })
 
   it('does not display Confirm Documents checkbox for an added org-person', () => {
@@ -983,5 +985,7 @@ describe('Org/Person component for SP change of registration filing', () => {
     const wrapper = createComponent(currentOrgPerson, NaN)
 
     expect(wrapper.find('.confirm-documents-checkbox').exists()).toBe(false)
+
+    wrapper.destroy()
   })
 })

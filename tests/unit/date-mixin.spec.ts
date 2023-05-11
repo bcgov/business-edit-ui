@@ -9,13 +9,18 @@ setActivePinia(createPinia())
 const store = useStore() // eslint-disable-line @typescript-eslint/no-unused-vars
 
 describe('Date Mixin', () => {
+  let wrapper: any
   let vm: any
 
   beforeAll(async () => {
     // mount the component and wait for everything to stabilize
-    const wrapper = shallowMount(MixinTester)
-    vm = wrapper.vm
+    wrapper = shallowMount(MixinTester)
+    vm = wrapper.vm as any
     await Vue.nextTick()
+  })
+
+  afterAll(() => {
+    wrapper.destroy()
   })
 
   // FUTURE: this works locally but not in GHA; fix later

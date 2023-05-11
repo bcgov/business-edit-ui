@@ -748,7 +748,7 @@ describe('edit mode', () => {
 })
 
 describe('"same as" checkboxes', () => {
-  let wrapper: any = null
+  let wrapper: any
 
   beforeAll(() => {
     // init entity type
@@ -908,7 +908,7 @@ describe('"same as" checkboxes', () => {
 })
 
 describe('actions and events', () => {
-  let wrapper: any = null
+  let wrapper: any
 
   beforeAll(() => {
     // init entity type
@@ -1093,7 +1093,7 @@ describe('actions and events', () => {
 })
 
 describe('For Special resolution', () => {
-  let wrapper: any = null
+  let wrapper: any
 
   beforeAll(() => {
     // init entity type
@@ -1126,8 +1126,8 @@ describe('For Special resolution', () => {
 })
 
 describe('verify updateAddress()', () => {
-  let wrapper: any = null
-  let vm: any = null
+  let wrapper: any
+  let vm: any
 
   /** Returns True if address IDs and types are unchanged and contents are as specified. */
   function verifyAddressChanges (vals: Array<number>): boolean {

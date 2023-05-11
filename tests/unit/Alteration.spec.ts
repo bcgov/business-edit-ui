@@ -359,12 +359,10 @@ describe('Alteration component', () => {
     store.stateModel.nameTranslations = [{ action: ActionTypes.ADDED, name: 'zz' }]
     await Vue.nextTick()
 
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Certain changes require an Alteration Notice which will incur a $100.00 fee.')
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Choosing an alteration date and time in the future will incur an additional $100.00 fee.')
+    expect(wrapper.find('#intro-text').text().replace(/\s+/g, ' '))
+      .toContain('Certain changes require an Alteration Notice which will incur a $100.00 fee.')
+    expect(wrapper.find('#intro-text').text().replace(/\s+/g, ' '))
+      .toContain('Choosing an alteration date and time in the future will incur an additional $100.00 fee.')
 
     store.stateModel.feePrices = [{
       filingFees: null,
@@ -382,12 +380,10 @@ describe('Alteration component', () => {
     }]
     await flushPromises()
 
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Certain changes require an Alteration Notice which will incur a fee.')
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Choosing an alteration date and time in the future will incur an additional fee.')
+    expect(wrapper.find('#intro-text').text().replace(/\s+/g, ' '))
+      .toContain('Certain changes require an Alteration Notice which will incur a fee.')
+    expect(wrapper.find('#intro-text').text().replace(/\s+/g, ' '))
+      .toContain('Choosing an alteration date and time in the future will incur an additional fee.')
   })
 
   it('updates the current fees when AlterationSummary changes', async () => {

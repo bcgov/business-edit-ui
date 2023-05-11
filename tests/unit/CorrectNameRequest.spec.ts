@@ -4,7 +4,7 @@ import { AxiosInstance as axios } from '@/utils/'
 import sinon from 'sinon'
 import flushPromises from 'flush-promises'
 import { mount, Wrapper } from '@vue/test-utils'
-import CorrectNameRequest from '@/components/common/YourCompany/CompanyName/CorrectNameRequest.vue'
+import CorrectNameRequest from '@/components/common/YourCompany/CorrectName/CorrectNameRequest.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@/enums'
@@ -48,6 +48,8 @@ describe('CorrectNameRequest', () => {
     const wrapper = wrapperFactory()
 
     expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
+
+    wrapper.destroy()
   })
 
   it('verify the text fields and there label', async () => {
@@ -61,6 +63,8 @@ describe('CorrectNameRequest', () => {
     expect(nrInput.text()).toContain('Enter the NR Number')
     expect(phoneInput.text()).toContain('Applicant\'s Phone Number')
     expect(emailInput.text()).toContain('Applicant\'s Notification Email')
+
+    wrapper.destroy()
   })
 
   it('verifies inputs when valid', async () => {
@@ -77,6 +81,8 @@ describe('CorrectNameRequest', () => {
 
     expect(wrapper.vm.isFormValid).toBe(true)
     expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
+
+    wrapper.destroy()
   })
 
   it('verifies inputs when valid', async () => {
@@ -93,6 +99,8 @@ describe('CorrectNameRequest', () => {
 
     expect(wrapper.vm.isFormValid).toBe(true)
     expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
+
+    wrapper.destroy()
   })
 
   it('verifies inputs when valid', async () => {
@@ -109,6 +117,8 @@ describe('CorrectNameRequest', () => {
 
     expect(wrapper.vm.isFormValid).toBe(true)
     expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
+
+    wrapper.destroy()
   })
 
   // the spaces between 'NR' and the numbers are ignored
@@ -126,6 +136,8 @@ describe('CorrectNameRequest', () => {
 
     expect(wrapper.vm.isFormValid).toBe(true)
     expect(wrapper.vm.nameRequestNumber).toEqual('NR 1234567')
+
+    wrapper.destroy()
   })
 
   it('verifies invalid NR', async () => {
@@ -140,6 +152,8 @@ describe('CorrectNameRequest', () => {
     await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.destroy()
   })
 
   // the leading or trailing spaces of a NR are invalid
@@ -156,6 +170,8 @@ describe('CorrectNameRequest', () => {
     await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.destroy()
   })
 
   // the leading or trailing spaces are invalid
@@ -172,6 +188,8 @@ describe('CorrectNameRequest', () => {
     await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.destroy()
   })
 
   it('verifies invalid email', async () => {
@@ -186,6 +204,8 @@ describe('CorrectNameRequest', () => {
     await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.destroy()
   })
 
   it('verifies invalid phone', async () => {
@@ -200,6 +220,8 @@ describe('CorrectNameRequest', () => {
     await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.destroy()
   })
 
   it('verifies missing values', async () => {
@@ -215,6 +237,8 @@ describe('CorrectNameRequest', () => {
     await flushPromises()
 
     expect(wrapper.vm.isFormValid).toBe(false)
+
+    wrapper.destroy()
   })
 
   it('emits true when the form is valid', async () => {
@@ -231,6 +255,8 @@ describe('CorrectNameRequest', () => {
 
     expect(wrapper.vm.isFormValid).toBe(true)
     expect(getLastEvent(wrapper, 'isValid')).toBe(true)
+
+    wrapper.destroy()
   })
 
   it('emits false when the form is invalid', async () => {
@@ -247,6 +273,8 @@ describe('CorrectNameRequest', () => {
 
     expect(wrapper.vm.isFormValid).toBe(false)
     expect(getLastEvent(wrapper, 'isValid')).toBe(false)
+
+    wrapper.destroy()
   })
 
   it('emits done and true when the process is done and the Name Request accepted', async () => {
@@ -290,6 +318,8 @@ describe('CorrectNameRequest', () => {
 
     // verify form emission
     expect(getLastEvent(wrapper, 'isSaved')).toBe(true)
+
+    wrapper.destroy()
   })
 
   it('emits done and false when the process is done but Name Request phone is rejected', async () => {
@@ -332,6 +362,8 @@ describe('CorrectNameRequest', () => {
 
     // verify form emission
     expect(getLastEvent(wrapper, 'isSaved')).toBe(false)
+
+    wrapper.destroy()
   })
 
   it('emits done and false when the process is done but Name Request email is rejected', async () => {
@@ -374,6 +406,8 @@ describe('CorrectNameRequest', () => {
 
     // verify form emission
     expect(getLastEvent(wrapper, 'isSaved')).toBe(false)
+
+    wrapper.destroy()
   })
 
   it('emits done and prompts confirm dialog when the Name Request is a type mismatch', async () => {
@@ -417,12 +451,15 @@ describe('CorrectNameRequest', () => {
     // verify Confirm Dialog
     expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
     expect(wrapper.findComponent(CorrectNameRequest).text()).toContain('Name Request Type Does Not Match')
+
+    wrapper.destroy()
   })
 
   it('emits done and verify Name Request accepted for NEW GP filing', async () => {
     const wrapper = wrapperFactory()
     store.stateModel.tombstone.currentDate = '2021-01-20'
     store.stateModel.tombstone.entityType = CorpTypeCd.PARTNERSHIP
+
     // GET NR Data
     get.withArgs('nameRequests/NR 1234567')
       .returns(Promise.resolve({
@@ -460,6 +497,8 @@ describe('CorrectNameRequest', () => {
 
     // verify form emission
     expect(getLastEvent(wrapper, 'isSaved')).toBe(true)
+
+    wrapper.destroy()
   })
 
   it('emits done and verify Name Request is a type mismatch for NEW SP filing', async () => {
@@ -504,5 +543,7 @@ describe('CorrectNameRequest', () => {
     // verify Confirm Dialog
     expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
     expect(wrapper.findComponent(CorrectNameRequest).text()).toContain('Name Request Type Does Not Match')
+
+    wrapper.destroy()
   })
 })

@@ -31,10 +31,10 @@
               class="mt-n1"
             >
               <div class="company-name font-weight-bold text-uppercase">
-                {{ getCompanyName }}
+                {{ companyName }}
               </div>
               <div class="company-name mt-2">
-                {{ getNameRequest.nrNumber }}
+                {{ getNameRequest.nrNum }}
               </div>
             </v-col>
           </v-row>
@@ -70,7 +70,7 @@
             <div class="font-weight-bold">
               Conversion to Full Restoration
             </div>
-            <div>Applicant's relationship: {{ getRelationshipString }}</div>
+            <div>Applicant's relationship: {{ relationshipString }}</div>
           </v-col>
         </v-row>
         <v-row
@@ -85,7 +85,7 @@
             <div class="font-weight-bold">
               Approved by Court Order
             </div>
-            <div v-if="getCourtOrder">
+            <div v-if="courtOrder">
               Court Order Number: {{ getCourtOrderNumberText }}
             </div>
           </v-col>
@@ -100,50 +100,49 @@
 </template>
 
 <script lang="ts">
-import { ApprovalTypes } from '@bcrs-shared-components/enums'
-import { mapState } from 'pinia'
-import { OfficeAddresses, NameTranslation } from '@/components/common/'
+import { Component, Vue } from 'vue-property-decorator'
+import { Getter } from 'pinia-class'
 import { useStore } from '@/store/store'
+import { ApprovalTypes, RelationshipTypes } from '@bcrs-shared-components/enums'
+import { OfficeAddresses, NameTranslation } from '@/components/common/'
+import { NameRequestIF } from '@bcrs-shared-components/interfaces'
+import { CourtOrderIF } from '@/interfaces/alteration-interfaces'
+import { RestorationStateIF } from '@/interfaces'
 
-export default {
+@Component({
   components: {
     OfficeAddresses,
     NameTranslation
-  },
-  data () {
-    return {
-      ApprovalTypes
-    }
-  },
-  computed: {
-    ...mapState(useStore, [
-      'getCourtOrderNumberText',
-      'getBusinessNumber',
-      'getFormattedExpiryText',
-      'getNameRequestLegalName',
-      'getNameRequest',
-      'getRelationships',
-      'getRestoration',
-      'getIsRestorationTypeCourtOrder',
-      'getStateFilingRestoration',
-      'hasBusinessNameChanged',
-      'haveNameTranslationsChanged',
-      'isLimitedRestorationExtension',
-      'isLimitedRestorationToFull'
-    ]),
-    getStateFilingApprovalType () {
-      return this.getStateFilingRestoration?.approvalType
-    },
-    getCourtOrder () {
-      return this.getRestoration.courtOrder
-    },
-    getCompanyName (): string {
-      if (this.getNameRequestLegalName) return this.getNameRequestLegalName
-      return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
-    },
-    getRelationshipString () {
-      return this.getRelationships.join(', ') || '[Unknown]'
-    }
+  }
+})
+export default class YourCompanySummary extends Vue {
+  // for template
+  readonly ApprovalTypes = ApprovalTypes
+
+  @Getter(useStore) getBusinessNumber!: string
+  @Getter(useStore) getCourtOrderNumberText!: string
+  @Getter(useStore) getFormattedExpiryText!: () => string
+  @Getter(useStore) getIsRestorationTypeCourtOrder!: boolean
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getRelationships!: RelationshipTypes[]
+  @Getter(useStore) getRestoration!: RestorationStateIF
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) haveNameTranslationsChanged!: boolean
+  @Getter(useStore) isLimitedRestorationExtension!: boolean
+  @Getter(useStore) isLimitedRestorationToFull!: boolean
+
+  get courtOrder (): CourtOrderIF {
+    return this.getRestoration.courtOrder
+  }
+
+  get companyName (): string {
+    if (this.getNameRequestLegalName) return this.getNameRequestLegalName
+    return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
+  }
+
+  get relationshipString (): string {
+    return this.getRelationships.join(', ') || '[Unknown]'
   }
 }
 </script>

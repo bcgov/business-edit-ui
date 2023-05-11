@@ -355,6 +355,12 @@ describe.skip('Numbered company setup', () => {
     await flushPromises()
   })
 
+  afterEach(() => {
+    window.location.assign = assign
+    sinon.restore()
+    wrapper.destroy()
+  })
+
   it('loads a draft filing into the store', () => {
     // Validate IA for numbered company
     expect(store.stateModel.tombstone.entityType).toBe('BEN')
@@ -395,12 +401,6 @@ describe.skip('Numbered company setup', () => {
     expect(store.stateModel.nameRequest.applicant.countryTypeCode).toBeUndefined()
     expect(store.stateModel.nameRequest.applicant.postalCode).toBeUndefined()
     expect(store.stateModel.nameRequest.applicant.stateProvinceCode).toBeUndefined()
-  })
-
-  afterEach(() => {
-    window.location.assign = assign
-    sinon.restore()
-    wrapper.destroy()
   })
 })
 

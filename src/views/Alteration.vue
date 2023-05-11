@@ -124,8 +124,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
@@ -136,14 +135,12 @@ import { BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, Curre
 import { NameTranslation } from '@/components/common/YourCompany/NameTranslations/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, CertifyIF, EffectiveDateTimeIF, EntitySnapshotIF, FilingDataIF,
-  ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
   from '@/resources/Alteration/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -166,17 +163,11 @@ import { useStore } from '@/store/store'
     TransactionalFolioNumber,
     ViewWrapper,
     YourCompanyWrapper
-  },
-  mixins: [CommonMixin, FeeMixin, FilingTemplateMixin]
+  }
 })
-export default class Alteration extends Vue {
+export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
   @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) getBusinessId!: string
-  @Getter(useStore) getCertifyState!: CertifyIF
-  @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
-  @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) getFilingData!: FilingDataIF[]
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
   @Getter(useStore) isBcCcc!: boolean
@@ -189,9 +180,7 @@ export default class Alteration extends Vue {
   @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action(useStore) setCertifyState!: ActionBindingIF
   @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action(useStore) setFilingData!: ActionBindingIF
   @Action(useStore) setFilingId!: ActionBindingIF
   @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF
@@ -281,7 +270,7 @@ export default class Alteration extends Vue {
       // initialize Fee Summary data
       const filingData = [this.alterationResource.filingData]
       filingData.forEach(fd => {
-        fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
+        (fd as FilingDataIF).futureEffective = this.getEffectiveDateTime.isFutureEffective
       })
       this.setFilingData(filingData)
 
@@ -340,7 +329,7 @@ export default class Alteration extends Vue {
   }
 
   /** Called when alteration summary data has changed. */
-  protected async onAlterationSummaryChanges (): Promise<void> {
+  async onAlterationSummaryChanges (): Promise<void> {
     // update filing data with future effective field
     const filingData = [...this.getFilingData]
     filingData.forEach(fd => {

@@ -55,12 +55,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ApprovalType } from '@bcrs-shared-components/approval-type'
 import { ApprovalTypes, RestorationTypes } from '@/enums'
 import Actions from '@/components/common/Actions.vue'
-import { Component } from 'vue-property-decorator'
 import { DateMixin, CommonMixin } from '@/mixins'
 import DateUtilities from '@/services/date-utilities'
 import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
@@ -68,17 +67,13 @@ import { ActionBindingIF, RestorationStateIF, StateFilingRestorationIF } from '@
 import { useStore } from '@/store/store'
 
 @Component({
-  mixins: [
-    CommonMixin,
-    DateMixin
-  ],
   components: {
     Actions,
     ApprovalType,
     LimitedRestorationPanel
   }
 })
-export default class ExtendTimeLimit extends Vue {
+export default class ExtendTimeLimit extends Mixins(CommonMixin, DateMixin) {
   @Getter(useStore) getApprovalTypeValid!: boolean
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getExpiryValid!: boolean

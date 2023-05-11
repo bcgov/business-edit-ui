@@ -58,28 +58,18 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Getter, Action } from 'pinia-class'
 import { ActionBindingIF } from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, NameRequestMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { Navigate } from '@/utils/'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 /** This component is only implemented for Correction filings atm. */
-@Component({
-  mixins: [
-    DateMixin,
-    FilingTemplateMixin,
-    NameRequestMixin
-  ]
-})
-export default class Actions extends Vue {
+@Component({})
+export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, NameRequestMixin) {
   // Global getters
-  @Getter(useStore) getBusinessId!: string
-  @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getFilingId!: number
   @Getter(useStore) hasAlterationDataChanged!: boolean // for testing state-getters
   @Getter(useStore) hasCorrectionDataChanged!: boolean
@@ -116,7 +106,7 @@ export default class Actions extends Vue {
    * Called when Save button is clicked.
    * @returns a promise (ie, this is an async method)
    */
-  protected async onClickSave (): Promise<void> {
+  async onClickSave (): Promise<void> {
     // prevent double saving
     if (this.isBusySaving) return
     this.setIsSaving(true)
@@ -139,7 +129,7 @@ export default class Actions extends Vue {
    * Called when Save and Resume Later button is clicked.
    * @returns a promise (ie, this is an async method)
    */
-  protected async onClickSaveResume (): Promise<void> {
+  async onClickSaveResume (): Promise<void> {
     // prevent double saving
     if (this.isBusySaving) return
     // If Save and Resume is successful setIsSavingResuming should't be reset to false,
@@ -164,7 +154,7 @@ export default class Actions extends Vue {
    * Called when File and Pay button is clicked.
    * @returns a promise (ie, this is an async method)
    */
-  protected async onClickFilePay (): Promise<void> {
+  async onClickFilePay (): Promise<void> {
     // prevent double saving
     if (this.isBusySaving) return
     this.setIsFilingPaying(true)
@@ -219,7 +209,7 @@ export default class Actions extends Vue {
   }
 
   /** Called when Cancel button is clicked. */
-  protected onClickCancel (): void {
+  onClickCancel (): void {
     this.$root.$emit('go-to-dashboard')
   }
 }

@@ -201,11 +201,9 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { ActionBindingIF, EffectiveDateTimeIF, FeesIF, FlagsReviewCertifyIF, ResolutionsIF }
-  from '@/interfaces/'
+import { ActionBindingIF, FeesIF, FlagsReviewCertifyIF, ResolutionsIF } from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
@@ -218,24 +216,17 @@ import { useStore } from '@/store/store'
     NameTranslation,
     ResolutionDates,
     ShareStructures
-  },
-  mixins: [DateMixin, FeeMixin, FilingTemplateMixin]
+  }
 })
-export default class AlterationSummary extends Vue {
+export default class AlterationSummary extends Mixins(DateMixin, FeeMixin, FilingTemplateMixin) {
   // for template
   readonly GetCorpFullDescription = GetCorpFullDescription
 
   // Global getters
-  @Getter(useStore) areProvisionsRemoved!: boolean
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentFees!: FeesIF[]
-  @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
-  @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getOriginalResolutions!: ResolutionsIF[]
-  @Getter(useStore) hasBusinessNameChanged!: boolean
-  @Getter(useStore) haveNameTranslationsChanged!: boolean
   @Getter(useStore) haveNewResolutionDates!: boolean
   @Getter(useStore) isBusySaving!: boolean
 
@@ -265,7 +256,7 @@ export default class AlterationSummary extends Vue {
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 
-  get originalLegalType (): string {
+  get originalLegalType (): CorpTypeCd {
     return this.getEntitySnapshot?.businessInfo?.legalType
   }
 
@@ -297,12 +288,12 @@ export default class AlterationSummary extends Vue {
     return `of $${futureEffectiveFeesSum.toFixed(2)}`
   }
 
-  protected onDeleteClicked (): void {
+  onDeleteClicked (): void {
     this.$root.$emit('delete-all')
   }
 
   @Emit('haveChanges')
-  protected emitHaveChanges (): void {}
+  emitHaveChanges (): void {}
 }
 </script>
 

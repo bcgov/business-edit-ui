@@ -1,4 +1,4 @@
-import { NameChangeOptions, FilingCodes } from '@/enums/'
+import { CorrectNameOptions, FilingCodes } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
@@ -13,9 +13,9 @@ export const UlcAlterationResource: ResourceIF = {
     priority: false
   },
   changeData: {
-    nameChangeOptions: [
-      NameChangeOptions.CORRECT_NEW_NR,
-      NameChangeOptions.CORRECT_NAME_TO_NUMBER
+    correctNameOptions: [
+      CorrectNameOptions.CORRECT_NEW_NR,
+      CorrectNameOptions.CORRECT_NAME_TO_NUMBER
     ]
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +

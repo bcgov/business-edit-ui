@@ -15,6 +15,7 @@ setActivePinia(createPinia())
 const store = useStore()
 
 describe('State Getters', () => {
+  let wrapper: any
   let vm: any
 
   beforeAll(async () => {
@@ -25,9 +26,13 @@ describe('State Getters', () => {
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(Actions)
+    wrapper = shallowMount(Actions)
     vm = wrapper.vm
     await Vue.nextTick()
+  })
+
+  afterAll(() => {
+    wrapper.destroy()
   })
 
   it('returns correct values for "Is Busy Saving" et al getters', async () => {
@@ -208,6 +213,7 @@ describe('State Getters', () => {
 })
 
 describe('Alteration getters', () => {
+  let wrapper: any
   let vm: any
 
   beforeAll(async () => {
@@ -244,9 +250,13 @@ describe('Alteration getters', () => {
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(Actions)
+    wrapper = shallowMount(Actions)
     vm = wrapper.vm
     await Vue.nextTick()
+  })
+
+  afterAll(() => {
+    wrapper.destroy()
   })
 
   it('returns correct values for "Has Alteration Changed" getter', async () => {
@@ -295,6 +305,7 @@ describe('Alteration getters', () => {
 })
 
 describe('BEN correction getters', () => {
+  let wrapper: any
   let vm: any
 
   const newAddress = {
@@ -318,9 +329,13 @@ describe('BEN correction getters', () => {
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(Actions)
+    wrapper = shallowMount(Actions)
     vm = wrapper.vm
     await Vue.nextTick()
+  })
+
+  afterAll(() => {
+    wrapper.destroy()
   })
 
   it('returns correct values for "Has Correction Changed" getter', async () => {
@@ -394,6 +409,7 @@ describe('BEN correction getters', () => {
 })
 
 describe('SP/GP correction getters', () => {
+  let wrapper: any
   let vm: any
 
   const naics = {
@@ -404,6 +420,7 @@ describe('SP/GP correction getters', () => {
     deliveryAddress: { postalCode: 'V8V 8V8' },
     mailingAddress: { postalCode: 'V8V 8V8' }
   }
+
   beforeAll(async () => {
     // initialize store
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
@@ -436,9 +453,13 @@ describe('SP/GP correction getters', () => {
 
     // mount the component and wait for everything to stabilize
     // (this can be any component since we are not really using it)
-    const wrapper = shallowMount(Actions, { vuetify })
+    wrapper = shallowMount(Actions, { vuetify })
     vm = wrapper.vm
     await Vue.nextTick()
+  })
+
+  afterAll(() => {
+    wrapper.destroy()
   })
 
   it('returns correct values for "Has Correction Changed" getter', async () => {

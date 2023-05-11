@@ -59,9 +59,8 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import { Affix as affix } from 'vue-affix'
-import { Component } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { Navigate } from '@/utils/'
 import PaySystemAlert from 'sbc-common-components/src/components/PaySystemAlert.vue'
@@ -88,13 +87,9 @@ import { useStore } from '@/store/store'
     FeeSummaryShared,
     PaySystemAlert,
     SbcFeeSummary
-  },
-  mixins: [
-    CommonMixin,
-    FilingTemplateMixin
-  ]
+  }
 })
-export default class App extends Vue {
+export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -103,13 +98,11 @@ export default class App extends Vue {
   // Global getters
   // @Getter(useStore) getCurrentJsDate!: Date
   @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getFilingData!: FilingDataIF[]
   @Getter(useStore) getFilingId!: number
   @Getter(useStore) getFlagsCompanyInfo!: FlagsCompanyInfoIF
   @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
-  @Getter(useStore) getNameRequestNumber!: string
   @Getter(useStore) haveUnsavedChanges!: boolean
   @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isBusySaving!: boolean
@@ -222,7 +215,7 @@ export default class App extends Vue {
    * NOTE: This is only implemented for Alteration filings atm.
    * @param action the emitted action
    */
-  protected async handleFeeSummaryActions (action: FeeSummaryActions): Promise<void> {
+  async handleFeeSummaryActions (action: FeeSummaryActions): Promise<void> {
     switch (action) {
       case FeeSummaryActions.BACK:
         this.setSummaryMode(false)
@@ -313,7 +306,7 @@ export default class App extends Vue {
     this.setAppValidate(true)
 
     // Wait to allow app validation.
-    await Vue.nextTick()
+    await this.$nextTick()
 
     // Evaluate valid flags. Scroll to invalid components or file alteration.
     if (await this.validateAndScroll(this.getFlagsReviewCertify, ComponentsReviewCertify)) {
