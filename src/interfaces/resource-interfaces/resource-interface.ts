@@ -1,4 +1,5 @@
-import { NameChangeOptions, NameRequestTypes } from '@/enums/'
+import { NameChangeOptions } from '@/enums/'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { HelpSectionIF, FilingDataIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
 
@@ -25,7 +26,7 @@ export interface ResourceIF {
       helpSection?: HelpSectionIF,
       sampleFormSection?: SpecialResolutionSampleFormIF
     }
-    nameRequestTypes?: Array<NameRequestTypes>
+    nameRequestTypes?: Array<NrRequestActionCodes>
     addressChangeInfo?: string
   }
   certifyClause: string

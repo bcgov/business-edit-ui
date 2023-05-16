@@ -1,4 +1,5 @@
-import { NameChangeOptions, FilingCodes, NameRequestTypes } from '@/enums/'
+import { NameChangeOptions, FilingCodes } from '@/enums/'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
@@ -21,7 +22,7 @@ export const CpSpecialResolutionResource: ResourceIF = {
     addressChangeInfo: 'To change addresses, please use the Change feature in the' +
     ' Office Addresses list on your business dashboard.',
     nameRequestTypes: [
-      NameRequestTypes.CHANGE_OF_NAME
+      NrRequestActionCodes.CHANGE_NAME
     ],
     specialResolution: {
       helpSection: {

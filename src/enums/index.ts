@@ -13,7 +13,6 @@ export * from './pdf-page-size'
 export * from './periodTypes'
 export * from './nameChangeOptions'
 export * from './nameRequestStates'
-export * from './nameRequestTypes'
 export * from './roleTypes'
 export * from './routeNames'
 

@@ -1,4 +1,5 @@
-import { NameChangeOptions, FilingCodes, NameRequestTypes } from '@/enums/'
+import { NameChangeOptions, FilingCodes } from '@/enums/'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
@@ -31,7 +32,7 @@ export const SpOrganizationChangeResource: ResourceIF = {
       }
     },
     nameRequestTypes: [
-      NameRequestTypes.CHANGE_OF_NAME
+      NrRequestActionCodes.CHANGE_NAME
     ]
   },
   certifyClause: 'Note: It is an offence to make or assist in making a false or misleading statement in a record ' +

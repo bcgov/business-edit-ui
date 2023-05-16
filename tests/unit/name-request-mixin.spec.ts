@@ -5,7 +5,8 @@ import { AxiosInstance as axios } from '@/utils/'
 import MixinTester from '@/mixin-tester.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd, NameRequestTypes } from '@/enums'
+import { CorpTypeCd } from '@/enums'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 
 setActivePinia(createPinia())
 const store = useStore()
@@ -23,7 +24,7 @@ describe('Name Request Mixin', () => {
       addressLabel: '',
       filingData: null,
       changeData: {
-        nameRequestTypes: [NameRequestTypes.CHANGE_OF_NAME, NameRequestTypes.CONVERSION],
+        nameRequestTypes: [NrRequestActionCodes.CHANGE_NAME, NrRequestActionCodes.CONVERSION],
         nameChangeOptions: []
       },
       certifyClause: ''
@@ -213,7 +214,7 @@ describe('Name Request Mixin', () => {
 
   it('identifies valid and invalid NRs for firms', async () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
-    store.resourceModel.changeData.nameRequestTypes = [NameRequestTypes.CHANGE_OF_NAME]
+    store.resourceModel.changeData.nameRequestTypes = [NrRequestActionCodes.CHANGE_NAME]
 
     let nr = null
     expect(vm.isNrValid(nr)).toBe(false)

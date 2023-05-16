@@ -101,7 +101,8 @@ import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { CommonMixin, NameRequestMixin } from '@/mixins/'
-import { ActionBindingIF, ConfirmDialogType, NameRequestIF, NrCorrectionIF, NrResponseIF } from '@/interfaces/'
+import { ActionBindingIF, ConfirmDialogType, NameRequestApplicantIF, NameRequestIF, NrCorrectionIF,
+  NrResponseIF } from '@/interfaces/'
 import { NameChangeOptions } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 
@@ -243,7 +244,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
         fullAddress: this.formatFullAddress(nr.applicants),
         phoneNumber: nr.applicants.phoneNumber,
         emailAddress: nr.applicants.emailAddress
-      }
+      } as NameRequestApplicantIF
     }
 
     // set the new correction NR data
