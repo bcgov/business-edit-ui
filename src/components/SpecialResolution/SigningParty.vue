@@ -226,7 +226,7 @@ export default class SigningParty extends Vue {
   @Watch('getComponentValidate')
   async onValidate (): Promise<void> {
     const hasSigningData = !!this.signingDate && !!this.signatory.givenName && !!this.signatory.familyName
-    await this.$refs?.signatureDatePickerRef?.validateForm()
+    this.$refs?.signatureDatePickerRef?.validateForm()
     const isSignatureDateValid = this.$refs?.signatureDatePickerRef?.isDateValid()
     this.setResolutionSignatureValid(hasSigningData && isSignatureDateValid)
   }

@@ -225,7 +225,11 @@ export default class ResolutionEditor extends Vue {
 
   /** The maximum resolution date that can be entered (today). */
   get resolutionDateMax (): string {
-    return this.getCurrentDate
+    if (this.getSpecialResolution.resolutionDate) {
+      return DateUtilities.dateToYyyyMmDd(DateUtilities.yyyyMmDdToDate(this.getSpecialResolution.resolutionDate))
+    } else {
+      return this.getCurrentDate
+    }
   }
 
   /* Determines if we should show validation for resolution text, substitute for rules. */
