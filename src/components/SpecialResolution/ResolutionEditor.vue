@@ -152,8 +152,8 @@ export default class ResolutionEditor extends Vue {
     resolutionDatePickerRef: DatePickerShared,
   }
 
-  protected resolutionDateText = ''
-  protected resolution = ''
+  resolutionDateText = ''
+  resolution = ''
 
   extensions = [
     History,
@@ -207,7 +207,7 @@ export default class ResolutionEditor extends Vue {
    * True if date is >= the minimum (ie, today) and <= the maximum (ie, the 10th day).
    * This is used for Vue form validation (in Date Rules above).
    */
-  private isValidDateRange (minDateStr: string, maxDateStr: string, dateStrToValidate: string): boolean {
+  isValidDateRange (minDateStr: string, maxDateStr: string, dateStrToValidate: string): boolean {
     if (!dateStrToValidate) { return true }
     const minDate = DateUtilities.yyyyMmDdToDate(minDateStr)
     const maxDate = DateUtilities.yyyyMmDdToDate(maxDateStr)
@@ -234,7 +234,7 @@ export default class ResolutionEditor extends Vue {
   }
 
   /** Called to update resolution date. */
-  protected async onResolutionDate (val: string): Promise<void> {
+  async onResolutionDate (val: string): Promise<void> {
     if (this.resolutionDateText === val) {
       return
     }
@@ -250,7 +250,7 @@ export default class ResolutionEditor extends Vue {
 
   /** This is a watch, because the component only provides keydown. */
   @Watch('resolution')
-  protected async onResolutionChange (val: string) {
+  async onResolutionChange (val: string) {
     this.setSpecialResolution({
       ...this.getSpecialResolution,
       resolution: val
@@ -271,7 +271,7 @@ export default class ResolutionEditor extends Vue {
 
   /** Used to trigger validate from outside of component. */
   @Watch('getComponentValidate')
-  private async onValidate (): Promise<void> {
+  async onValidate (): Promise<void> {
     const hasData = !!this.resolutionDateText && !!this.resolution && this.resolution !== '<p></p>'
     this.$refs?.resolutionDatePickerRef?.validateForm()
     const isResolutionDateValid = this.$refs?.resolutionDatePickerRef?.isDateValid()
