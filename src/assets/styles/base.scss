@@ -177,6 +177,10 @@ p {
   border-bottom-left-radius: 0 !important;
 }
 
+.invalid-text {
+  color: $app-red;
+}
+
 // Loading Indicator
 .loading-container {
   display: flex;

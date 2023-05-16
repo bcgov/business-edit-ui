@@ -1,5 +1,6 @@
 <template>
   <v-card
+    v-if="showCreateSpecialResolution"
     id="create-special-resolution"
     flat
   >
@@ -15,11 +16,14 @@
       flat
       :class="{'invalid-section': invalidCreateSpecialResolutionSection}"
     >
-      <InstructionalText/>
+      <InstructionalText />
 
       <HelpSpecialResolution />
 
-      <section id="resolution-date-section" class="section-container mt-4">
+      <section
+        id="resolution-date-section"
+        class="section-container mt-4"
+      >
         <header id="resolution-date-header">
           <h2>Special Resolution</h2>
         </header>
@@ -27,8 +31,8 @@
           Enter the date the special resolution passed and the text as it appears on your printed form.
         </p>
         <v-form ref="resolutionForm">
-          <ResolutionEditor :validate="getComponentValidate"/>
-          <SigningParty :validate="getComponentValidate"/>
+          <ResolutionEditor />
+          <SigningParty />
         </v-form>
       </section>
     </v-card>
@@ -61,6 +65,7 @@ export default class CreateSpecialResolution extends Vue {
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
   @Getter(useStore) getSpecialResolutionFormValid!: boolean
+  @Getter(useStore) showCreateSpecialResolution!: boolean
 
   @Action(useStore) setSpecialResolution!: ActionBindingIF
 

@@ -18,6 +18,8 @@ export interface FlagsCompanyInfoIF {
   isValidCompanyProvisions: boolean
   isValidResolutionDate: boolean
   isValidAssociationType: boolean
+  isValidRules: boolean
+  isValidMemorandum: boolean
   isValidSpecialResolution: boolean
   isValidSpecialResolutionSignature: boolean
   isValidApprovalType: boolean

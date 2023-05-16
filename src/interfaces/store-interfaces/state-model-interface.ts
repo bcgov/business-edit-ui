@@ -29,7 +29,7 @@ export interface StateModelIF {
   staffPayment: StaffPaymentIF
   filingData: FilingDataIF[]
   detailComment: string
-  rule: RulesMemorandumIF
+  rules: RulesMemorandumIF
   memorandum: RulesMemorandumIF
   editingFlags: {
     companyName: boolean
@@ -37,7 +37,7 @@ export interface StateModelIF {
     officeAddresses: boolean
     peopleAndRoles: boolean
     shareStructure: boolean
-    rule: boolean
+    rules: boolean
     memorandum: boolean
   }
   validationFlags: ValidationFlagsIF

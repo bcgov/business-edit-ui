@@ -217,8 +217,8 @@
               <!-- Warning if orgPerson has no roles -->
               <div v-if="orgPerson.roles.length > 0">
                 <v-col
-                  v-for="(role, index) in orgPerson.roles"
-                  :key="index"
+                  v-for="(role, i) in orgPerson.roles"
+                  :key="i"
                   class="col-roles"
                 >
                   <span class="info-text small-text break-spaces pr-2">{{ role.roleType }}</span>

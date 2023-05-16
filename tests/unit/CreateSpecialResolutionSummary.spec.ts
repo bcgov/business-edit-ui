@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import VSanitize from 'v-sanitize'
 import { shallowMount } from '@vue/test-utils'
 import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
 import { createPinia, setActivePinia } from 'pinia'
@@ -7,6 +8,8 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@/enums'
 
 Vue.use(Vuetify)
+Vue.use(VSanitize)
+
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

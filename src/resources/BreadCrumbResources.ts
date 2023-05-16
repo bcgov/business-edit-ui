@@ -1,9 +1,5 @@
 import { BreadcrumbIF } from '@bcrs-shared-components/interfaces/'
-import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-
-setActivePinia(createPinia())
-const store = useStore()
 
 /** Returns URL param string with Account ID if present, else empty string. */
 function getParams (): string {
@@ -12,6 +8,7 @@ function getParams (): string {
 }
 
 export function getEntityDashboardBreadcrumb (): BreadcrumbIF {
+  const store = useStore()
   const getOriginalLegalName = store.getOriginalLegalName
   const getBusinessId = store.getBusinessId
   return {

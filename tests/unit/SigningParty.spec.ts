@@ -1,0 +1,65 @@
+import { createPinia, setActivePinia } from 'pinia'
+import { mount } from '@vue/test-utils'
+import SigningParty from '@/components/SpecialResolution/SigningParty.vue'
+
+setActivePinia(createPinia())
+
+describe('SigningParty', () => {
+  let wrapper
+
+  beforeEach(() => {
+    wrapper = mount(SigningParty)
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('initializes with empty signatory and signingDate', () => {
+    expect(wrapper.vm.signatory).toEqual({
+      givenName: '',
+      familyName: '',
+      additionalName: ''
+    })
+    expect(wrapper.vm.signingDate).toBe('')
+  })
+
+  it('sets the signing date when onSigningDate is called', async () => {
+    const date = '2023-05-08'
+    await wrapper.vm.onSigningDate(date)
+    expect(wrapper.vm.signingDate).toBe(date)
+    expect(wrapper.vm.getSpecialResolution.signingDate).toBe(date)
+  })
+
+  it('updates the signatory when onSignatoryChanged is called', async () => {
+    const signatory = {
+      givenName: 'John',
+      familyName: 'Doe',
+      additionalName: 'Smith'
+    }
+    wrapper.setData({ signatory })
+    await wrapper.vm.onSignatoryChanged()
+    expect(wrapper.vm.getSpecialResolution.signatory).toEqual(signatory)
+  })
+
+  it('validates the form onValidate is called', async () => {
+    const signatory = {
+      givenName: 'John',
+      familyName: 'Doe',
+      additionalName: 'Smith'
+    }
+    const signingDate = '2023-01-01'
+    wrapper.setData({ signatory, signingDate })
+    wrapper.vm.$refs.signatureDatePickerRef = {
+      validateForm: jest.fn(),
+      isDateValid: jest.fn().mockReturnValue(true)
+    }
+
+    wrapper.vm.setResolutionSignatureValid = jest.fn()
+
+    wrapper.vm.onValidate()
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.vm.setResolutionSignatureValid).toHaveBeenCalledWith(true)
+  })
+})

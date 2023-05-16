@@ -6,7 +6,7 @@ import DateUtilities from '@/services/date-utilities'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
   EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
   NameRequestIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF, RestorationStateIF,
-  SpecialResolutionFilingIF, StateFilingRestorationIF } from '@/interfaces/'
+  SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
@@ -72,6 +72,11 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
   @Getter(useStore) isLimitedRestorationToFull!: boolean
   @Getter(useStore) isEntityTypeFirm!: boolean
+  @Getter(useStore) hasMemorandumChanged!: boolean
+  @Getter(useStore) hasRulesChanged!: boolean
+  @Getter(useStore) getMemorandum!: RulesMemorandumIF
+  @Getter(useStore) getRules!: RulesMemorandumIF
+
   // Global actions
   @Action(useStore) setBusinessContact!: ActionBindingIF
   @Action(useStore) setBusinessInformation!: ActionBindingIF
@@ -103,6 +108,8 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) setRestorationExpiry!: ActionBindingIF
   @Action(useStore) setRestorationType!: ActionBindingIF
   @Action(useStore) setRestorationRelationships!: ActionBindingIF
+  @Action(useStore) setMemorandum!: ActionBindingIF
+  @Action(useStore) setRules!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -399,9 +406,9 @@ export default class FilingTemplateMixin extends DateMixin {
       }
     }
 
-    /* Only add alteration if the association type has changed,
-     * rules and memorandum only show up if the association type changes. */
-    if (this.hasAssociationTypeChanged) {
+    // Only add alteration if the association type or rules or memorandum have changed
+    if (this.hasAssociationTypeChanged || this.hasMemorandumChanged || this.hasRulesChanged) {
+      // Conditional access - Rules or memorandum could be empty here if it was done on paper.
       filing.alteration = {
         business: {
           identifier: this.getBusinessId,
@@ -409,10 +416,20 @@ export default class FilingTemplateMixin extends DateMixin {
         },
         contactPoint: this.getContactPoint,
         cooperativeAssociationType: this.getAssociationType,
-        rulesFileKey: 'test',
-        rulesFileName: 'testUrl',
-        memorandumFileKey: 'test',
-        memorandumFileName: 'test'
+        rulesFileKey: this.getRules?.key,
+        rulesFileName: this.getRules?.name,
+        memorandumFileKey: this.getMemorandum?.key,
+        memorandumFileName: this.getMemorandum?.name
+      }
+      if (this.getMemorandum?.includedInResolution) {
+        delete filing.alteration.memorandumFileKey
+        delete filing.alteration.memorandumFileName
+        filing.alteration.memorandumInResolution = true
+      }
+      if (this.getRules?.includedInResolution) {
+        delete filing.alteration.rulesFileKey
+        delete filing.alteration.rulesFileName
+        filing.alteration.rulesInResolution = true
       }
     }
 
@@ -962,7 +979,27 @@ export default class FilingTemplateMixin extends DateMixin {
       }
     ))
 
-    // store Special Resolution
+    const documentInfo = entitySnapshot.businessDocuments.documentsInfo
+    this.setRules(
+      {
+        name: filing.alteration?.rulesFileName || documentInfo.certifiedRules.name,
+        key: filing.alteration?.rulesFileKey || documentInfo.certifiedRules.key,
+        url: filing.alteration?.rulesFileKey ? null : entitySnapshot.businessDocuments.documents.certifiedRules,
+        includedInResolution: filing.alteration?.rulesInResolution,
+        previouslyInResolution: documentInfo?.certifiedRules?.includedInResolution,
+        uploaded: documentInfo?.certifiedRules?.uploaded
+      })
+
+    this.setMemorandum(
+      {
+        name: filing.alteration?.memorandumFileName || documentInfo.certifiedMemorandum.name,
+        key: filing.alteration?.memorandumFileKey || documentInfo.certifiedMemorandum.key,
+        url: filing.alteration?.rulesFileKey ? null : entitySnapshot.businessDocuments.documents.certifiedMemorandum,
+        includedInResolution: filing.alteration?.memorandumInResolution,
+        previouslyInResolution: documentInfo?.certifiedMemorandum?.includedInResolution,
+        uploaded: documentInfo?.certifiedMemorandum?.uploaded
+      })
+
     this.setSpecialResolution(cloneDeep(filing.specialResolution))
 
     // store Office Addresses **from snapshot** (because we don't change office addresses in an special resolution)
@@ -1203,6 +1240,27 @@ export default class FilingTemplateMixin extends DateMixin {
       case CorpTypeCd.PARTNERSHIP: {
         // FUTURE: expand here as needed
         break
+      }
+      case CorpTypeCd.COOP: {
+        // Note: it's possible for the COOP to have a paper resolution or memorandum, documentsInfo would be empty.
+        const documentsInfo = entitySnapshot.businessDocuments?.documentsInfo
+        this.setMemorandum(
+          {
+            name: documentsInfo?.certifiedMemorandum?.name,
+            key: documentsInfo?.certifiedMemorandum?.key,
+            url: entitySnapshot.businessDocuments?.documents?.certifiedMemorandum,
+            previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
+            uploaded: documentsInfo.certifiedMemorandum?.uploaded
+          })
+
+        this.setRules(
+          {
+            name: documentsInfo.certifiedRules?.name,
+            key: documentsInfo.certifiedRules?.key,
+            url: entitySnapshot.businessDocuments?.documents?.certifiedRules,
+            previouslyInResolution: documentsInfo.certifiedRules?.includedInResolution,
+            uploaded: documentsInfo.certifiedRules?.uploaded
+          })
       }
     }
   }

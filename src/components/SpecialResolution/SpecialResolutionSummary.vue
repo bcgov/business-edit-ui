@@ -12,8 +12,13 @@
           </v-icon>
           <label class="summary-title">Summary of Changes to File</label>
         </v-col>
-        <v-col @click="onClickDelete()" class="text-right">
-          <v-icon class="header-icon ml-n1">mdi-trash-can</v-icon>
+        <v-col
+          class="text-right"
+          @click="onClickDelete()"
+        >
+          <v-icon class="header-icon ml-n1">
+            mdi-trash-can
+          </v-icon>
           <span class="summary-delete-title">Delete</span>
         </v-col>
       </v-row>
@@ -35,7 +40,7 @@
             <div class="company-name font-weight-bold text-uppercase">
               {{ companyName }}
             </div>
-            <div class="company-name mt-2">
+            <div class="company-nr mt-2">
               {{ getNameRequestNumber }}
             </div>
           </v-col>
@@ -53,15 +58,67 @@
           </v-col>
 
           <v-col cols="8">
-            <span class="info-text">{{ associationDescription }}</span>
+            <span
+              id="association-description"
+              class="info-text"
+            >{{ associationDescription }}</span>
           </v-col>
         </v-row>
       </div>
     </template>
 
-    <!-- Rules and Memorandum file name add here-->
+    <!-- Rules -->
+    <template v-if="hasRulesChanged">
+      <v-divider class="mx-4" />
+      <div class="section-container association-type-summary">
+        <v-row no-gutters>
+          <v-col cols="3">
+            <label><strong>Rules</strong></label>
+          </v-col>
 
-    <!-- Resolution summary section -->
+          <v-col cols="8">
+            <span
+              v-if="getRules.includedInResolution"
+              id="rules-included-resolution"
+              class="info-text"
+            > Changes will be described in the special resolution </span>
+            <span
+              v-else
+              id="rules-uploaded"
+              class="info-text"
+            >
+              <v-icon
+                color="success"
+                class="confirmed-icon mt-n1 mr-1"
+              >
+                mdi-check
+              </v-icon>
+              {{ getRules.name }}
+            </span>
+          </v-col>
+        </v-row>
+      </div>
+    </template>
+
+    <!-- Memorandum -->
+    <template v-if="hasMemorandumChanged">
+      <v-divider class="mx-4" />
+      <div class="section-container association-type-summary">
+        <v-row no-gutters>
+          <v-col cols="3">
+            <label><strong>Memorandum</strong></label>
+          </v-col>
+
+          <v-col cols="8">
+            <span
+              id="memorandum-included-resolution"
+              class="info-text"
+            > Changes will be described in the special resolution </span>
+          </v-col>
+        </v-row>
+      </div>
+    </template>
+
     <CreateSpecialResolutionSummary />
   </v-card>
 </template>
@@ -72,7 +129,7 @@ import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { CoopTypes } from '@/enums'
-import { EntitySnapshotIF, FeesIF } from '@/interfaces/'
+import { EntitySnapshotIF, FeesIF, RulesMemorandumIF } from '@/interfaces/'
 import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
 import { CoopTypeToDescription } from '@/utils'
@@ -94,6 +151,9 @@ export default class SpecialResolutionSummary extends Vue {
   @Getter(useStore) getNameRequestNumber!: string
   @Getter(useStore) hasAssociationTypeChanged!: boolean
   @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) hasMemorandumChanged!: boolean
+  @Getter(useStore) hasRulesChanged!: boolean
+  @Getter(useStore) getRules!: RulesMemorandumIF
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean
@@ -156,7 +216,7 @@ export default class SpecialResolutionSummary extends Vue {
  font-weight: regular;
 }
 
-.company-name {
+.company-name, .company-nr {
   font-size: 1.5rem;
 }
 

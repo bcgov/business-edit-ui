@@ -12,6 +12,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { AssociationType, BusinessContactInfo, BusinessType, EntityName, FolioInformation, OfficeAddresses,
   YourCompanyWrapper } from '@/components/common'
+import { Memorandum, Rules } from '@/components/SpecialResolution'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -178,6 +179,30 @@ describe('Special Resolution component', () => {
         }
       }))
 
+    // GET business documents
+    get.withArgs('businesses/CP1234567/documents')
+      .returns(Promise.resolve({
+        data: {
+          documents: {
+            certifiedMemorandum: 'url',
+            certifiedRules: 'url2'
+          },
+          documentsInfo: {
+            certifiedMemorandum: {
+              key: null,
+              name: 'name2',
+              includedInResolution: true,
+              uploaded: '2022-01-01T08:00:00.000000+00:00'
+            },
+            certifiedRules: {
+              key: null,
+              name: 'name',
+              includedInResolution: true,
+              uploaded: '2022-01-01T08:00:00.000000+00:00'
+            }
+          }
+        }
+      }))
     // FUTURE: mock GET alteration filing
 
     // create a Local Vue and install router on it
@@ -208,6 +233,8 @@ describe('Special Resolution component', () => {
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
     expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
     expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
+    expect(wrapper.findComponent(Rules).exists()).toBe(true)
+    expect(wrapper.findComponent(Memorandum).exists()).toBe(true)
   })
 
   it('loads the entity snapshot into the store', async () => {

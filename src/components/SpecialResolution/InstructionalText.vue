@@ -1,19 +1,22 @@
 <template>
   <article class="instructional-text section-container">
     Before submitting this filing, you must pass a
-    <v-tooltip top
-                content-class="top-tooltip"
-                transition="fade-transition"
-                nudge-right="3"
+    <v-tooltip
+      top
+      content-class="top-tooltip"
+      transition="fade-transition"
+      nudge-right="3"
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template #activator="{ on, attrs }">
         <span
           v-bind="attrs"
-          v-on="on"
           class="tool-tip-text"
+          v-on="on"
         >special resolution</span>
       </template>
-      <span>Special Resolution -  A decision voted on by the voting members of a Cooperative Association.</span>
+      <span class="tool-tip-content">
+        Special Resolution -  A decision voted on by the voting members of a Cooperative Association.
+      </span>
     </v-tooltip>
     for this amendment
   </article>

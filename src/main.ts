@@ -6,6 +6,7 @@ import 'regenerator-runtime/runtime' // to use transpiled generator functions
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
+import VSanitize from 'v-sanitize'
 import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
 import Hotjar from 'vue-hotjar'
@@ -41,6 +42,8 @@ Vue.use(Vuetify)
 Vue.use(Affix)
 Vue.use(Vuelidate)
 Vue.use(Vue2Filters)
+// Default options - https://github.com/apostrophecms/sanitize-html (under Default options)
+Vue.use(VSanitize)
 const vuetify = new Vuetify({
   iconfont: 'mdi',
   theme: {

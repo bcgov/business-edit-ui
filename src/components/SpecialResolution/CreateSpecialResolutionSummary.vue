@@ -48,7 +48,11 @@
             sm="9"
             class="resolution-text"
           >
-            <div class="resizable" v-if="getSpecialResolution" v-html="getSpecialResolution.resolution"/>
+            <div
+              v-if="getSpecialResolution"
+              v-sanitize="getSpecialResolution.resolution"
+              class="resizable"
+            />
           </v-col>
         </v-row>
         <v-row
@@ -172,16 +176,16 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
     confirmResolutionChkFormRef: FormIF
   };
 
-  protected resolutionConfirmed = false
+  resolutionConfirmed = false
 
   /** Validation rule for checkbox. */
-  protected confirmCompletionResolution = [
+  confirmCompletionResolution = [
     v => {
       return !!v
     }
   ];
 
-  protected async onResolutionConfirmedChange (resolutionConfirmed: boolean): Promise<void> {
+  async onResolutionConfirmedChange (resolutionConfirmed: boolean): Promise<void> {
     // This is required as there are timing issues between this component and the CompleteResolutionSummary
     // component.  The CompleteResolutionSummary isn't always able to detect that the confirm checkbox
     // value has changed without using nextTick()
@@ -227,15 +231,15 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
 
   /** Set validate on file and pay click. */
   @Watch('getAppValidate')
-  protected updateResolutionStepValidationDetail (): void {
+  updateResolutionStepValidationDetail (): void {
     // don't call validation during Jest tests because we are setting app valid
     !this.isJestRunning && this.$refs.confirmResolutionChkFormRef.validate()
   }
 
   /** Called when component is mounted. */
   mounted () {
-    // set values if exist
     this.resolutionConfirmed = this.getSpecialResolution.resolutionConfirmed || false
+    this.setSpecialResolutionConfirmStateValidity(this.resolutionConfirmed)
   }
 }
 </script>

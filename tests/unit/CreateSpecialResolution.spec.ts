@@ -1,16 +1,27 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
+import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 import { mount } from '@vue/test-utils'
 import CreateSpecialResolution from '@/components/SpecialResolution/CreateSpecialResolution.vue'
-import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
-import { HelpSection } from '@/components/common/'
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/CP'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@/enums'
+import {
+  HelpSpecialResolution, InstructionalText, ResolutionEditor, SigningParty
+} from '@/components/SpecialResolution'
+import flushPromises from 'flush-promises'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
+
+// For Vue 3: remove - consult assets team for a replacement.
+Vue.use(TiptapVuetifyPlugin, {
+  // the next line is important! You need to provide the Vuetify Object to this place.
+  vuetify, // same as "vuetify: vuetify"
+  // optional, default to 'md' (default vuetify icons before v2.0.0)
+  iconsGroup: 'mdi'
+})
 
 setActivePinia(createPinia())
 const store = useStore()
@@ -27,21 +38,19 @@ describe('Special Resolution Form component', () => {
     }
   }
 
-  const emptyPerson = {
-    givenName: '',
-    familyName: '',
-    additionalName: ''
-  }
-
   beforeAll(() => {
     // init store
     store.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
-    store.stateModel.tombstone.currentDate = '2021-03-01'
+    store.stateModel.tombstone.currentDate = '2030-03-01'
     store.stateModel.entitySnapshot = entitySnapshot as any
     store.stateModel.specialResolution = {
-      resolution: '',
-      signatory: { ...emptyPerson },
-      resolutionConfirmed: false
+      resolution: '<p> heyhey </p> ',
+      resolutionDate: '2022-03-01',
+      signingDate: '2024-01-01',
+      signatory: {
+        givenName: 't',
+        familyName: 't'
+      }
     }
   })
 
@@ -51,7 +60,8 @@ describe('Special Resolution Form component', () => {
     store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
     store.stateModel.summaryMode = false
-
+    store.stateModel.rules = {}
+    store.stateModel.entitySnapshot = null
     wrapper = mount(CreateSpecialResolution, { vuetify })
   })
 
@@ -61,13 +71,10 @@ describe('Special Resolution Form component', () => {
 
   it('renders the components', async () => {
     expect(wrapper.findComponent(CreateSpecialResolution).exists()).toBe(true)
-    expect(wrapper.findComponent(DatePickerShared).exists()).toBe(true)
-    expect(wrapper.findComponent(HelpSection).exists()).toBe(true)
-  })
-
-  it('renders the sample-resolution-header', async () => {
-    const instructional = wrapper.find('#sample-resolution-header').text()
-    expect(instructional).toContain('Special Resolution (Form 06 COO)')
+    expect(wrapper.findComponent(InstructionalText).exists()).toBe(true)
+    expect(wrapper.findComponent(HelpSpecialResolution).exists()).toBe(true)
+    expect(wrapper.findComponent(ResolutionEditor).exists()).toBe(true)
+    expect(wrapper.findComponent(SigningParty).exists()).toBe(true)
   })
 
   it('displays the correct help text', async () => {
@@ -78,17 +85,6 @@ describe('Special Resolution Form component', () => {
     const helpHeader = wrapper.find('.help-header h2')
 
     expect(helpHeader.exists()).toBe(true)
-  })
-
-  it('renders the sample resolution section', async () => {
-    expect(wrapper.find('#sample-resolution-section').exists()).toBe(true)
-  })
-
-  it('renders the correct sample resolution text', async () => {
-    const descText = wrapper.find('#sample-resolution-section .section-description')
-
-    expect(descText.exists()).toBe(true)
-    expect(descText.text()).toContain(CpSpecialResolutionResource.changeData.specialResolution.sampleFormSection.text)
   })
 
   it('renders the form input', async () => {
@@ -118,5 +114,25 @@ describe('Special Resolution Form component', () => {
     await Vue.nextTick()
 
     expect(wrapper.find('#create-special-resolution .invalid-section').exists()).toBeTruthy()
+  })
+
+  it('validation - signatory date should be after or on resolution date', async () => {
+    store.stateModel.validationFlags.componentValidate = true
+    await Vue.nextTick()
+    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature).toBe(true)
+    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolution).toBe(true)
+    store.stateModel.specialResolution = {
+      ...store.stateModel.specialResolution,
+      resolutionDate: '2026-03-01',
+      signingDate: '2024-01-01'
+    }
+    await Vue.nextTick()
+    wrapper = mount(CreateSpecialResolution, { vuetify })
+    store.stateModel.validationFlags.componentValidate = true
+    await flushPromises()
+
+    // Should fail on the signature, because the signing date is before the resolution date.
+    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature).toBe(false)
+    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolution).toBe(true)
   })
 })

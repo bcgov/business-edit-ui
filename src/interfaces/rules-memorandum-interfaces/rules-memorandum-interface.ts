@@ -10,4 +10,7 @@ export interface RulesMemorandumIF {
     confirmed?: boolean
     valid?: boolean
     url?: string
+    previouslyInResolution?: boolean
+    includedInResolution?: boolean,
+    uploaded?: string
   }

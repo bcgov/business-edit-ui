@@ -52,17 +52,19 @@ export const stateModel: StateModelIF = {
       isValidAssociationType: true,
       isValidSpecialResolution: true,
       isValidSpecialResolutionSignature: true,
+      isValidRules: true,
+      isValidMemorandum: true,
       isValidApprovalType: true,
       isValidExtensionTime: true
     },
     flagsReviewCertify: {
       // NB: this must be in same order as ComponentsReviewCertify enum!
+      isValidSpecialResolutionConfirm: true,
       isValidEffectiveDate: true,
       isValidDocumentOptionalEmail: true,
       isValidCompletingParty: true,
       isValidTransactionalFolioNumber: true,
       isValidDetailComment: true,
-      isValidSpecialResolutionConfirm: true,
       isValidCertify: false, // initially un-certified
       isValidCourtOrder: true,
       isValidStaffPayment: true
@@ -136,7 +138,7 @@ export const stateModel: StateModelIF = {
     officeAddresses: false,
     peopleAndRoles: false,
     shareStructure: false,
-    rule: false,
+    rules: false,
     memorandum: false
   },
   summaryMode: false,
@@ -164,6 +166,6 @@ export const stateModel: StateModelIF = {
     type: null
   },
   stateFilingRestoration: null,
-  rule: null,
+  rules: null,
   memorandum: null
 }

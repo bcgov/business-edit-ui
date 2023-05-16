@@ -13,8 +13,6 @@ export interface AlterationIF {
     identifier: string
     legalType: CorpTypeCd
   }
-  // This is different from bcrs-shared-components/interfaces/name-request-interface.ts
-  // and should be refactored in the future.
   /** This is different from bcrs-shared-components/interfaces/name-request-interface.ts
    * and should be refactored in the future. */
   nameRequest?: NameRequestIF
@@ -23,8 +21,10 @@ export interface AlterationIF {
   contactPoint: ContactPointIF
   courtOrder?: CourtOrderIF
   cooperativeAssociationType?: CoopTypes
+  rulesInResolution?: boolean
   rulesFileKey?: string
   rulesFileName?: string
+  memorandumInResolution?: boolean
   memorandumFileKey?: string
   memorandumFileName?: string
 }

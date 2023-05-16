@@ -18,8 +18,11 @@
               content-class="top-tooltip"
               transition="fade-transition"
             >
-              <template v-slot:activator="{ on }">
-                <span v-on="on" class="tooltip-text">Some changes</span>
+              <template #activator="{ on }">
+                <span
+                  class="tooltip-text"
+                  v-on="on"
+                >Some changes</span>
               </template>
               <span>
                 A Special Resolution is required for a change to the Business name,
@@ -47,10 +50,7 @@
 
           <Memorandum class="mt-10" />
 
-          <CreateSpecialResolution
-            v-if="showCreateSpecialResolution"
-            class="mt-10"
-          />
+          <CreateSpecialResolution class="mt-10" />
         </div>
       </v-slide-x-transition>
 
@@ -158,8 +158,8 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
-import Rules from '@/components/common/Rules.vue'
-import Memorandum from '@/components/common/Memorandum.vue'
+import Rules from '@/components/SpecialResolution/Rules.vue'
+import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
 
 @Component({
   components: {
@@ -194,8 +194,7 @@ export default class SpecialResolution extends Vue {
   @Getter(useStore) getFilingData!: FilingDataIF[]
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) hasAssociationTypeChanged!: boolean
-  @Getter(useStore) hasBusinessNameChanged!: boolean
+
   @Getter(useStore) isCoop!: boolean
   @Getter(useStore) isPremiumAccount!: boolean
   @Getter(useStore) isRoleStaff!: boolean
@@ -212,9 +211,6 @@ export default class SpecialResolution extends Vue {
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
-
-  /** Determines if data is loaded, will trigger loading certain components. */
-  protected loadedData = false
 
   /** Whether to show the Transactional Folio Number section. */
   get showTransactionalFolioNumber (): boolean {
@@ -237,16 +233,9 @@ export default class SpecialResolution extends Vue {
     return null
   }
 
-  /** show special resolution form component.
-   * (Business name change, association type change)
-   * to add : memorandum, rules */
-  get showCreateSpecialResolution (): boolean {
-    return this.loadedData && (this.hasBusinessNameChanged || this.hasAssociationTypeChanged)
-  }
-
   /** Called when App is ready and this component can load its data. */
   @Watch('appReady')
-  private async onAppReady (val: boolean): Promise<void> {
+  async onAppReady (val: boolean): Promise<void> {
     // do not proceed if app is not ready
     if (!val) return
 
@@ -343,26 +332,28 @@ export default class SpecialResolution extends Vue {
   }
 
   /** Fetches the entity snapshot. */
-  private async fetchEntitySnapshot (): Promise<EntitySnapshotIF> {
+  async fetchEntitySnapshot (): Promise<EntitySnapshotIF> {
     const items = await Promise.all([
       LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),
       LegalServices.fetchAddresses(this.getBusinessId),
-      LegalServices.fetchDirectors(this.getBusinessId)
+      LegalServices.fetchDirectors(this.getBusinessId),
+      LegalServices.fetchBusinessDocuments(this.getBusinessId)
     ])
 
-    if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 5) throw new Error('Failed to fetch entity snapshot')
 
     return {
       businessInfo: items[0],
       authInfo: items[1],
       addresses: items[2],
-      orgPersons: items[3]
+      orgPersons: items[3],
+      businessDocuments: items[4]
     } as EntitySnapshotIF
   }
 
   /** Called when resolution summary data has changed. */
-  protected async onSpecialResolutionSummaryChanges (): Promise<void> {
+  async onSpecialResolutionSummaryChanges (): Promise<void> {
     // update filing data with future effective field
     const filingData = [...this.getFilingData]
     filingData.forEach(fd => {
@@ -377,7 +368,7 @@ export default class SpecialResolution extends Vue {
 
   /** Updates fees depending on business name change. */
   @Watch('hasBusinessNameChanged', { immediate: true })
-  private async businessNameChanged (hasBusinessNameChanged: boolean): Promise<void> {
+  async businessNameChanged (hasBusinessNameChanged: boolean): Promise<void> {
     if (this.specialResolutionResource) {
       let filingData = [this.specialResolutionResource.filingData]
       if (hasBusinessNameChanged) {
@@ -398,14 +389,12 @@ export default class SpecialResolution extends Vue {
   /** Emits Fetch Error event. */
   @Emit('fetchError')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitFetchError (err: unknown = null): void {}
+  emitFetchError (err: unknown = null): void {}
 
   /** Emits Have Data event. */
   @Emit('haveData')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitHaveData (haveData = true): void {
-    this.loadedData = true
-  }
+  emitHaveData (haveData = true): void {}
 }
 </script>
 

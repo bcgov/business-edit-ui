@@ -1,14 +1,28 @@
 <template>
-  <div id="special-resolution" class="mt-4">
-    <v-card flat id="resolution-date-card" class="py-8">
+  <div
+    id="special-resolution"
+    class="mt-4"
+  >
+    <v-card
+      id="resolution-date-card"
+      flat
+      class="py-8"
+    >
       <!-- Resolution Date -->
       <v-row no-gutters>
-        <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block">
+        <v-col
+          cols="12"
+          sm="3"
+          class="pr-4 d-none d-sm-block"
+        >
           <label class="resolution-date-vcard-title mt-4">
             Resolution Date
           </label>
         </v-col>
-        <v-col cols="12" sm="9">
+        <v-col
+          cols="12"
+          sm="9"
+        >
           <DatePickerShared
             ref="resolutionDatePickerRef"
             title="Resolution Date"
@@ -26,19 +40,26 @@
 
       <!-- Resolution Text -->
       <v-row no-gutters>
-        <v-col cols="12" sm="3" class="pr-4 d-none d-sm-block">
+        <v-col
+          cols="12"
+          sm="3"
+          class="pr-4 d-none d-sm-block"
+        >
           <label class="resolution-text-vcard-title mt-4">
             Resolution Text
           </label>
         </v-col>
-        <v-col cols="12" sm="9">
+        <v-col
+          cols="12"
+          sm="9"
+        >
           <!-- For Vue 3, remove this WYSIWYG editor, consult with assets team -->
           <tiptap-vuetify
+            id="resolutionTextEditor"
+            v-model="resolution"
             auto-grow
             :extensions="extensions"
-            v-model="resolution"
             :class="{ 'invalid': resolutionInvalid }"
-            id="resolutionTextEditor"
             placeholder="Full text of the resolution"
             :card-props="{
               flat: true,
@@ -49,13 +70,20 @@
           <!-- Note: This component has no built in validation or rules. -->
           <div
             id="editorValidation"
-            :class="{'v-text-field__details': true, 'mt-2': true }" >
-            <div class="v-messages theme--light error--text" role="alert">
+            :class="{'v-text-field__details': true, 'mt-2': true }"
+          >
+            <div
+              class="v-messages theme--light error--text"
+              role="alert"
+            >
               <div class="v-messages__wrapper">
                 <v-slide-y-transition>
-                    <div v-if="resolutionInvalid" class="v-messages__message">
-                      Resolution Text is required
-                    </div>
+                  <div
+                    v-if="resolutionInvalid"
+                    class="v-messages__message"
+                  >
+                    Resolution Text is required
+                  </div>
                 </v-slide-y-transition>
               </div>
             </div>
@@ -76,7 +104,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Watch, Prop } from 'vue-property-decorator'
+import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import {
   TiptapVuetify,
@@ -112,16 +140,13 @@ import DateUtilities from '@/services/date-utilities'
 })
 export default class ResolutionEditor extends Vue {
   @Getter(useStore) getBusinessFoundingDateTime!: string
+  @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
   @Getter(useStore) getSpecialResolutionFormValid!: boolean
-  @Getter(useStore) getSpecialResolutionValid!: boolean
 
   @Action(useStore) setSpecialResolution!: ActionBindingIF
   @Action(useStore) setResolutionValid!: ActionBindingIF
-
-  /** Whether to perform validation. */
-  @Prop({ default: false }) readonly validate!: boolean
 
   $refs!: {
     resolutionDatePickerRef: DatePickerShared,
@@ -205,7 +230,7 @@ export default class ResolutionEditor extends Vue {
 
   /* Determines if we should show validation for resolution text, substitute for rules. */
   get resolutionInvalid (): boolean {
-    return this.resolution === '<p></p>' || (this.validate && !this.resolution)
+    return this.resolution === '<p></p>' || (this.getComponentValidate && !this.resolution)
   }
 
   /** Called to update resolution date. */
@@ -218,8 +243,8 @@ export default class ResolutionEditor extends Vue {
       ...this.getSpecialResolution,
       resolutionDate: val
     })
-    if (this.validate) {
-      await this.onValidate(true)
+    if (this.getComponentValidate) {
+      await this.onValidate()
     }
   }
 
@@ -230,8 +255,8 @@ export default class ResolutionEditor extends Vue {
       ...this.getSpecialResolution,
       resolution: val
     })
-    if (this.validate) {
-      await this.onValidate(true)
+    if (this.getComponentValidate) {
+      await this.onValidate()
     }
   }
 
@@ -245,8 +270,8 @@ export default class ResolutionEditor extends Vue {
   }
 
   /** Used to trigger validate from outside of component. */
-  @Watch('validate')
-  private async onValidate (val: boolean): Promise<void> {
+  @Watch('getComponentValidate')
+  private async onValidate (): Promise<void> {
     const hasData = !!this.resolutionDateText && !!this.resolution && this.resolution !== '<p></p>'
     this.$refs?.resolutionDatePickerRef?.validateForm()
     const isResolutionDateValid = this.$refs?.resolutionDatePickerRef?.isDateValid()

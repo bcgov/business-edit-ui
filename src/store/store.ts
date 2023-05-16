@@ -49,7 +49,7 @@ import DateUtilities from '@/services/date-utilities'
 import { defineStore } from 'pinia'
 import { resourceModel, stateModel } from './state'
 import { LegalServices } from '@/services'
-import { RulesMemorandumIF, RulesMemorandumResourceIF } from '@/interfaces/rules-memorandum-interfaces'
+import { RulesMemorandumIF } from '@/interfaces/rules-memorandum-interfaces'
 
 // Possible to move getters / actions into seperate files:
 // https://github.com/vuejs/pinia/issues/802#issuecomment-1018780409
@@ -590,7 +590,9 @@ export const useStore = defineStore('store', {
       return (
         this.hasBusinessNameChanged ||
         this.hasBusinessTypeChanged ||
-        this.hasAssociationTypeChanged
+        this.hasAssociationTypeChanged ||
+        this.hasMemorandumChanged ||
+        this.hasRulesChanged
       )
     },
 
@@ -1124,30 +1126,6 @@ export const useStore = defineStore('store', {
       return this.stateModel.completingParty
     },
 
-    /** The special resolution object. */
-    getSpecialResolution (): SpecialResolutionIF {
-      return this.stateModel.specialResolution
-    },
-
-    /** The special resolution validity flags. */
-    getSpecialResolutionFormValid (): boolean {
-      return this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolution &&
-        this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature
-    },
-
-    getSpecialResolutionValid (): boolean {
-      return this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolution
-    },
-
-    getSpecialResolutionSignatureValid (): boolean {
-      return this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature
-    },
-
-    /** The company info page validity flags. */
-    getSpecialResolutionConfirmValid (): boolean {
-      return this.getFlagsReviewCertify.isValidSpecialResolutionConfirm
-    },
-
     /** The restoration object. */
     getRestoration (): RestorationStateIF {
       return this.stateModel.restoration
@@ -1195,44 +1173,7 @@ export const useStore = defineStore('store', {
       }
       return '[no expiry date]'
     },
-    getRules (): RulesMemorandumIF[] {
-      return [{
-        name: 'test',
-        key: '111',
-        url: '#'
-      }]
-    },
-    getRulesResource (): RulesMemorandumResourceIF {
-      return {
-        confirm: ['test'],
-        helpSection: {
-          header: 'header test',
-          helpText: ['helptest']
-        }
-      }
-    },
-    invalidRulesSection (): boolean {
-      return false
-    },
-    getUserKeycloakGuid (): string {
-      return ''
-    },
-    getMemorandum (): RulesMemorandumIF[] {
-      return [{
-        name: 'test',
-        key: '111',
-        url: '#'
-      }]
-    },
-    getMemorandumResource (): RulesMemorandumResourceIF {
-      return {
-        confirm: ['test'],
-        helpSection: {
-          header: 'header test',
-          helpText: ['helptest']
-        }
-      }
-    },
+
     /** The court order draft file number. */
     getCourtOrderNumberText (): string {
       return this.stateModel.restoration.courtOrder?.fileNumber || ''
@@ -1244,6 +1185,47 @@ export const useStore = defineStore('store', {
 
     getIsRestorationTypeCourtOrder (): boolean {
       return !!this.stateModel.restoration.courtOrder?.fileNumber
+    },
+
+    /** The special resolution object. */
+    getSpecialResolution (): SpecialResolutionIF {
+      return this.stateModel.specialResolution
+    },
+
+    /** The special resolution validity flags. */
+    getSpecialResolutionFormValid (): boolean {
+      return this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolution &&
+        this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature
+    },
+
+    /** The company info page validity flags. */
+    getSpecialResolutionConfirmValid (): boolean {
+      return this.getFlagsReviewCertify.isValidSpecialResolutionConfirm
+    },
+
+    getRules (): RulesMemorandumIF {
+      return this.stateModel.rules
+    },
+
+    getMemorandum (): RulesMemorandumIF {
+      return this.stateModel.memorandum
+    },
+
+    hasMemorandumChanged (): boolean {
+      return this.getMemorandum?.includedInResolution
+    },
+
+    hasRulesChanged (): boolean {
+      return this.getRules?.includedInResolution ||
+        this.getRules?.key !== this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key
+    },
+
+    /** Determine if we should show the create special resolution component. */
+    showCreateSpecialResolution (): boolean {
+      return (this.hasBusinessNameChanged ||
+         this.hasAssociationTypeChanged ||
+         this.hasRulesChanged ||
+         this.hasMemorandumChanged)
     }
 
   },
@@ -1511,8 +1493,17 @@ export const useStore = defineStore('store', {
     setResolutionSignatureValid (valid: boolean) {
       this.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature = valid
     },
-    setRules (editing: boolean) {
-      this.stateModel.editingFlags.rule = editing
+    setRulesValid (valid: boolean) {
+      this.stateModel.validationFlags.flagsCompanyInfo.isValidRules = valid
+    },
+    setMemorandumValid (valid: boolean) {
+      this.stateModel.validationFlags.flagsCompanyInfo.isValidMemorandum = valid
+    },
+    setRules (rule: RulesMemorandumIF) {
+      this.stateModel.rules = rule
+    },
+    setMemorandum (memorandum: RulesMemorandumIF) {
+      this.stateModel.memorandum = memorandum
     }
   }
 })
