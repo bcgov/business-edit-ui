@@ -1,5 +1,5 @@
 <template>
-  <ViewWrapper>
+  <ViewWrapper v-if="loadView">
     <section
       id="special-resolution-view"
       class="pb-10"
@@ -212,6 +212,8 @@ export default class SpecialResolution extends Vue {
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
 
+  loadView = false
+
   /** Whether to show the Transactional Folio Number section. */
   get showTransactionalFolioNumber (): boolean {
     return (this.isPremiumAccount && !this.isRoleStaff)
@@ -322,6 +324,7 @@ export default class SpecialResolution extends Vue {
 
       // tell App that we're finished loading
       this.emitHaveData()
+      this.loadView = true
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
       this.emitFetchError(err)
