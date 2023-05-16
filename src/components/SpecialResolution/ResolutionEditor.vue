@@ -143,7 +143,6 @@ export default class ResolutionEditor extends Vue {
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
-  @Getter(useStore) getSpecialResolutionFormValid!: boolean
 
   @Action(useStore) setSpecialResolution!: ActionBindingIF
   @Action(useStore) setResolutionValid!: ActionBindingIF

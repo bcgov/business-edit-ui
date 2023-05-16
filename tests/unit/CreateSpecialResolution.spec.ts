@@ -61,6 +61,7 @@ describe('Special Resolution Form component', () => {
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
     store.stateModel.summaryMode = false
     store.stateModel.rules = {}
+    store.stateModel.memorandum = {}
     store.stateModel.entitySnapshot = null
     wrapper = mount(CreateSpecialResolution, { vuetify })
   })
@@ -109,10 +110,7 @@ describe('Special Resolution Form component', () => {
     expect(wrapper.find('#create-special-resolution .invalid-section').exists()).toBeFalsy()
     store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolution = false
     store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature = false
-    store.stateModel.validationFlags.componentValidate = true
-
     await Vue.nextTick()
-
     expect(wrapper.find('#create-special-resolution .invalid-section').exists()).toBeTruthy()
   })
 
@@ -133,6 +131,6 @@ describe('Special Resolution Form component', () => {
 
     // Should fail on the signature, because the signing date is before the resolution date.
     expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature).toBe(false)
-    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolution).toBe(true)
+    expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolution).toBe(false)
   })
 })

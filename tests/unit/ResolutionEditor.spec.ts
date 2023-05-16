@@ -3,11 +3,13 @@ import Vuetify from 'vuetify'
 import { createPinia, setActivePinia } from 'pinia'
 import { shallowMount } from '@vue/test-utils'
 import ResolutionEditor from '@/components/SpecialResolution/ResolutionEditor.vue'
+import { useStore } from '@/store/store'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())
+const store = useStore()
 
 describe('ResolutionEditor', () => {
   let wrapper
@@ -36,7 +38,7 @@ describe('ResolutionEditor', () => {
     wrapper.setData({ resolutionDateText: '2023-05-08', resolution: '<p>Resolution text</p>' })
     wrapper.setData({ getComponentValidate: true })
     await wrapper.vm.$nextTick()
-    expect(wrapper.vm.getSpecialResolutionFormValid).toBe(true)
+    expect(store.getSpecialResolutionFormValid).toBe(true)
   })
 
   // NOTE: Leaving out unit tests for Vuetify Tiptap editor, it will be scrapped soon.
