@@ -3,8 +3,8 @@ import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistration
   CorrectionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF, RestorationFilingIF, SpecialResolutionFilingIF }
   from '@/interfaces/'
 import { RoleTypes } from '@/enums'
-
 import { ShareStructureIF } from '@bcrs-shared-components/interfaces/'
+
 /**
  * Class that provides integration with the Legal API.
  */

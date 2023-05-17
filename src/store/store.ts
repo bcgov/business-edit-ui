@@ -1170,18 +1170,26 @@ export const useStore = defineStore('store', {
       return !this.isRoleStaff && isDba
     },
 
-    getExpiryDateString (): string {
+    /**
+     * The restoration expiry date (YYYY-MM-DD).
+     * Only applicable to limited restoration extension filing.
+     */
+    getRestorationExpiryDate (): string {
       return this.stateModel.restoration?.expiry
     },
 
+    /** The restoration expiry text. */
+    // *** TODO: fix this as needed
     // FUTURE: should do something with "today"
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    getFormattedExpiryText: (state) => (today = new Date()): string => {
-      if (state.stateModel.restoration?.expiry) {
-        const numberOfExtensionMonths = DateUtilities.subtractDates(state.stateModel.stateFilingRestoration?.expiry,
-          state.stateModel.restoration?.expiry)
-        const expiryDatePacific = DateUtilities.yyyyMmDdToPacificDate(state.stateModel.restoration?.expiry)
-        return numberOfExtensionMonths + ' months, expires on ' + expiryDatePacific
+    getRestorationExpiryText: (state) => (today = new Date()): string => {
+      const expiry = state.stateModel.restoration?.expiry
+      if (expiry) {
+        const numberOfExtensionMonths = DateUtilities.subtractDates(
+          state.stateModel.stateFilingRestoration?.expiry, expiry
+        )
+        const expiryDatePacific = DateUtilities.yyyyMmDdToPacificDate(expiry)
+        return (numberOfExtensionMonths + ' months, expires on ' + expiryDatePacific)
       }
       return '[no expiry date]'
     },

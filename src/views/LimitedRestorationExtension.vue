@@ -1,5 +1,6 @@
 <template>
-  <ViewWrapper>
+  <!-- wait for the current date to be set -->
+  <ViewWrapper v-if="appReady">
     <section
       id="limited-restoration-extension"
       class="pb-10"

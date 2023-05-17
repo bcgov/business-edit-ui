@@ -226,7 +226,7 @@ export default class LimitedRestorationToFull extends Mixins(
    * It's used a work-around because the shared components aren't reactive to changes
    * after the shared components are mounted.
    */
-  private isDataLoaded = false
+  isDataLoaded = false
 
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {

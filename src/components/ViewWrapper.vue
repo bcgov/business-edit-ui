@@ -89,7 +89,7 @@ import { useStore } from '@/store/store'
     SbcFeeSummary
   }
 })
-export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
+export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType

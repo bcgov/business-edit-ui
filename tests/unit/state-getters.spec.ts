@@ -548,20 +548,21 @@ describe('SP/GP correction getters', () => {
 })
 
 describe('test restoration expiry date', () => {
-  it('when no expiry date provided returns visible error', () => {
-    expect(store.getFormattedExpiryText()).toEqual('[no expiry date]')
+  it('returns fallback string when no restoration expiry date exists', () => {
+    store.setRestorationExpiry(null)
+    expect(store.getRestorationExpiryText()).toEqual('[no expiry date]')
   })
 
-  it('displays appropriate text when restoration expiry date is set', () => {
+  it('returns correct string when restoration expiry date exists', () => {
     store.setRestorationExpiry('2023-12-31')
-    // pass in date to force today's date to Feb 28th
-    expect(store.getFormattedExpiryText(new Date('2023-02-28')))
+    // force today's date to Feb 28th
+    expect(store.getRestorationExpiryText(new Date('2023-02-28')))
       .toEqual('11 months, expires on Dec 31, 2023')
   })
 
-  it('getExpiryDateString() works correctly', () => {
+  it('getRestorationExpiryDate() works correctly', () => {
     store.setRestorationExpiry('2023-12-31')
-    expect(store.getExpiryDateString).toEqual('2023-12-31')
+    expect(store.getRestorationExpiryDate).toEqual('2023-12-31')
   })
 })
 
