@@ -25,7 +25,7 @@
         >
           <LimitedRestorationPanel
             :months="expiryMonths"
-            @expiry="onExpiryChanged($event)"
+            @months="onMonthsChanged($event)"
             @valid="setExpiryValid($event)"
           />
         </v-col>
@@ -59,7 +59,8 @@ import { ApprovalTypes } from '@/enums'
 import Actions from '@/components/common/Actions.vue'
 import { DateMixin } from '@/mixins'
 import DateUtilities from '@/services/date-utilities'
-import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
+// import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
+import LimitedRestorationPanel from '@/components/LimitedRestorationPanel.vue'
 import { ActionBindingIF, StateFilingRestorationIF } from '@/interfaces'
 import { useStore } from '@/store/store'
 
@@ -81,7 +82,7 @@ export default class ExtendTimeLimit extends Mixins(DateMixin) {
   @Action(useStore) setApprovalTypeValid!: ActionBindingIF
   @Action(useStore) setExpiryValid!: ActionBindingIF
   @Action(useStore) setRestorationCourtOrder!: ActionBindingIF
-  @Action(useStore) setRestorationExpiry!: ActionBindingIF
+  @Action(useStore) setRestorationExpiryDate!: ActionBindingIF
 
   /** Whether to show the Approval Type component. */
   get showApprovalType (): boolean {
@@ -89,26 +90,33 @@ export default class ExtendTimeLimit extends Mixins(DateMixin) {
     return (this.getStateFilingRestoration?.approvalType === ApprovalTypes.VIA_COURT_ORDER)
   }
 
-  /** The remaining number of months left for the previously filed limited restoration. */
+  /** The state filing (previous limited restoration) expiry date. */
+  get stateFilingExpiry (): string {
+    // should always exist but fall back to today just in case
+    return (this.getStateFilingRestoration?.expiry || this.getCurrentDate)
+  }
+
+  /** The number of months remaining from the state filing. */
   get monthsRemaining (): number {
-    const stateFilingExpiry = this.getStateFilingRestoration?.expiry
-    if (stateFilingExpiry) return DateUtilities.subtractDates(this.getCurrentDate, stateFilingExpiry)
-    return 0
+    return DateUtilities.subtractDates(this.getCurrentDate, this.stateFilingExpiry)
   }
 
-  /** The calculated expiry date offset. */
-  get expiryDate (): string {
-    return DateUtilities.subtractMonthsFromDate(this.monthsRemaining, this.getRestorationExpiryDate)
-  }
-
+  /** The expiry months from the current limited restoration extension. */
   get expiryMonths (): number {
-    return DateUtilities.subtractDates(this.getCurrentDate, this.getRestorationExpiryDate)
+    if (this.getRestorationExpiryDate) {
+      const totalMonths = DateUtilities.subtractDates(this.getCurrentDate, this.getRestorationExpiryDate)
+      return (totalMonths - this.monthsRemaining)
+    }
+    return 24 // default if no expiry date was set
   }
 
-  /** Sets the new expiry date in the store. */
-  onExpiryChanged (expiry: string): void {
-    // add the previous remaining months to the new expiry date
-    this.setRestorationExpiry(DateUtilities.addMonthsToDate(this.monthsRemaining, expiry))
+  /**
+   * When months has changed, sets the limited restoration extension expiry date
+   * in the store.
+   */
+  onMonthsChanged (months: number): void {
+    // add the new expiry months to the original expiry date
+    this.setRestorationExpiryDate(DateUtilities.addMonthsToDate(months, this.stateFilingExpiry))
   }
 }
 </script>
@@ -118,11 +126,9 @@ export default class ExtendTimeLimit extends Mixins(DateMixin) {
 
 :deep() {
   // Fix font of radio buttons.
-  .radio-button {
-    label {
-      font-weight: normal;
-      color: $gray7;
-    }
+  .radio-button label {
+    font-weight: normal;
+    color: $gray7;
   }
 }
 </style>

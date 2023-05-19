@@ -258,29 +258,27 @@ export default class DateUtilities {
   /**
    * Add a number of months to a date and return "YYYY-MM-DD".
    * @param months the number of months to add
-   * @param date the date to add months to, in "YYYY-MM-DD" format
+   * @param dateStr the date to add months to, in "YYYY-MM-DD" format
    * @example (3, 2023-02-03) -> "2023-05-03"
    * @example (18, 2023-02-03) -> "2024-08-03"
    */
-  static addMonthsToDate (months = 0, date: string): string {
-    const temp = date ? this.yyyyMmDdToDate(date) : new Date()
-    temp.setMonth(temp.getMonth() + months)
-    const dateAfterAddition = this.dateToYyyyMmDd(temp)
-    return dateAfterAddition
+  static addMonthsToDate (months = 0, dateStr: string): string {
+    const date = dateStr ? this.yyyyMmDdToDate(dateStr) : new Date()
+    date.setMonth(date.getMonth() + months)
+    return this.dateToYyyyMmDd(date)
   }
 
   /**
    * Subtract a number of months from a date and return "YYYY-MM-DD".
    * @param months the number of months to subtract
-   * @param date the date to subtract months from, in "YYYY-MM-DD" format
+   * @param dateStr the date to subtract months from, in "YYYY-MM-DD" format
    * @example (3, 2023-05-03) -> "2023-02-03"
    * @example (18, 2024-08-03) -> "2023-02-03"
    */
-  static subtractMonthsFromDate (months = 0, date: string): string {
-    const temp = date ? this.yyyyMmDdToDate(date) : new Date()
-    temp.setMonth(temp.getMonth() - months)
-    const dateAfterSubtraction = this.dateToYyyyMmDd(temp)
-    return dateAfterSubtraction
+  static subtractMonthsFromDate (months = 0, dateStr: string): string {
+    const date = dateStr ? this.yyyyMmDdToDate(dateStr) : new Date()
+    date.setMonth(date.getMonth() - months)
+    return this.dateToYyyyMmDd(date)
   }
 
   /**
@@ -291,12 +289,6 @@ export default class DateUtilities {
    * @example (2023-02-03, 2023-02-03) -> 0
    */
   static subtractDates (dateFrom: string, dateTo: string): number {
-    // if (!dateFrom) {
-    //   dateFrom = '2023-01-01'
-    // }
-    // if (!dateTo) {
-    //   dateTo = this.addMonthsToDate(24, dateFrom)
-    // }
     const startDate = dateFrom ? this.yyyyMmDdToDate(dateFrom) : new Date()
     const endDate = dateTo ? this.yyyyMmDdToDate(dateTo) : new Date()
     const monthDiff = endDate.getMonth() - startDate.getMonth()

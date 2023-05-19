@@ -2,7 +2,6 @@ import { Component } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
-import DateUtilities from '@/services/date-utilities'
 import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
   EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
   NameRequestIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF, RestorationStateIF,
@@ -12,7 +11,7 @@ import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolu
 import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
   RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { RestorationTypes, StaffPaymentOptions } from '@bcrs-shared-components/enums/'
+import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { FilingTypeToName } from '@/utils'
 import { useStore } from '@/store/store'
 
@@ -100,7 +99,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) setCorrectionStartDate!: ActionBindingIF
   @Action(useStore) setRestorationApprovalType!: ActionBindingIF
   @Action(useStore) setRestorationCourtOrder!: ActionBindingIF
-  @Action(useStore) setRestorationExpiry!: ActionBindingIF
+  @Action(useStore) setRestorationExpiryDate!: ActionBindingIF
   @Action(useStore) setRestorationType!: ActionBindingIF
   @Action(useStore) setRestorationRelationships!: ActionBindingIF
 
@@ -855,12 +854,11 @@ export default class FilingTemplateMixin extends DateMixin {
     if (filing.restoration.courtOrder) {
       this.setRestorationCourtOrder(filing.restoration.courtOrder)
     }
+
     this.setRestorationType(filing.restoration.type)
+
     if (filing.restoration.expiry) {
-      this.setRestorationExpiry(filing.restoration.expiry)
-    } else if (filing.restoration.type === RestorationTypes.LTD_EXTEND) {
-      // Reset radio button to 2 years
-      this.setRestorationExpiry(DateUtilities.addMonthsToDate(24, this.getStateFilingRestoration?.expiry))
+      this.setRestorationExpiryDate(filing.restoration.expiry)
     }
 
     // store Name Request data

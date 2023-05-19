@@ -61,7 +61,7 @@
             <div class="font-weight-bold">
               Limited Restoration Extension
             </div>
-            <div>Extension Time: {{ getRestorationExpiryText() }}</div>
+            <div>Extension Time: {{ getRestorationExpiryText }}</div>
           </v-col>
           <v-col
             v-if="isLimitedRestorationToFull"
@@ -126,7 +126,7 @@ export default class YourCompanySummary extends Vue {
   @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getRelationships!: RelationshipTypes[]
   @Getter(useStore) getRestoration!: RestorationStateIF
-  @Getter(useStore) getRestorationExpiryText!: () => string
+  @Getter(useStore) getRestorationExpiryText!: string
   @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) haveNameTranslationsChanged!: boolean
   @Getter(useStore) isLimitedRestorationExtension!: boolean

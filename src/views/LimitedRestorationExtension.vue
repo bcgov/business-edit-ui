@@ -1,6 +1,5 @@
 <template>
-  <!-- wait for the current date to be set -->
-  <ViewWrapper v-if="appReady">
+  <ViewWrapper v-if="isDataLoaded">
     <section
       id="limited-restoration-extension"
       class="pb-10"
@@ -128,7 +127,6 @@ import { FilingStatus, RoleTypes } from '@/enums/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationExtension/'
 import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
-import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel/'
 import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { AuthServices, LegalServices } from '@/services'
@@ -143,7 +141,6 @@ import { useStore } from '@/store/store'
     ExtendTimeLimit,
     FeeSummaryShared,
     FolioInformation,
-    LimitedRestorationPanel,
     ListPeopleAndRoles,
     NameTranslation,
     OfficeAddresses,
@@ -186,6 +183,12 @@ export default class LimitedRestorationExtension extends Mixins(
 
   /** The restoration filing ID. */
   @Prop({ default: 0 }) readonly restorationId!: number
+
+  /**
+   * "isDataLoaded" is a flag that is to "true" after all data is loaded.
+   * This is to prevent using the state filing restoration before it's fetched.
+   */
+  isDataLoaded = false
 
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {
@@ -292,6 +295,7 @@ export default class LimitedRestorationExtension extends Mixins(
 
       // tell App that we're finished loading
       this.emitHaveData()
+      this.isDataLoaded = true
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
       this.emitFetchError(err)

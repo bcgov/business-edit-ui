@@ -643,8 +643,4 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
 .app-header {
   z-index: 1000;
 }
-
-.right-side {
-  position: relative;
-}
 </style>

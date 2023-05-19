@@ -1179,16 +1179,13 @@ export const useStore = defineStore('store', {
     },
 
     /** The restoration expiry text. */
-    // *** TODO: fix this as needed
-    // FUTURE: should do something with "today"
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    getRestorationExpiryText: (state) => (today = new Date()): string => {
-      const expiry = state.stateModel.restoration?.expiry
-      if (expiry) {
+    getRestorationExpiryText (): string {
+      if (this.getRestorationExpiryDate) {
         const numberOfExtensionMonths = DateUtilities.subtractDates(
-          state.stateModel.stateFilingRestoration?.expiry, expiry
+          this.getStateFilingRestoration?.expiry,
+          this.getRestorationExpiryDate
         )
-        const expiryDatePacific = DateUtilities.yyyyMmDdToPacificDate(expiry)
+        const expiryDatePacific = DateUtilities.yyyyMmDdToPacificDate(this.getRestorationExpiryDate)
         return (numberOfExtensionMonths + ' months, expires on ' + expiryDatePacific)
       }
       return '[no expiry date]'
@@ -1431,7 +1428,7 @@ export const useStore = defineStore('store', {
     setRestorationType (type: RestorationTypes) {
       this.stateModel.restoration.type = type
     },
-    setRestorationExpiry (expiry: string) {
+    setRestorationExpiryDate (expiry: string) {
       this.stateModel.restoration.expiry = expiry
     },
     setRestorationApprovalType (approvalType: ApprovalTypes) {

@@ -155,7 +155,6 @@ import { BcRestorationResource, BenRestorationResource, CccRestorationResource, 
 import { ApprovalTypes, FilingStatus, RoleTypes } from '@/enums/'
 import { RelationshipTypes } from '@bcrs-shared-components/enums'
 import { RelationshipsPanel } from '@bcrs-shared-components/relationships-panel'
-import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
 import { ApprovalType } from '@bcrs-shared-components/approval-type'
 import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -171,7 +170,6 @@ import { useStore } from '@/store/store'
     EntityName,
     FeeSummaryShared,
     FolioInformation,
-    LimitedRestorationPanel,
     ListPeopleAndRoles,
     NameTranslation,
     OfficeAddresses,
@@ -222,9 +220,8 @@ export default class LimitedRestorationToFull extends Mixins(
   @Prop({ default: 0 }) readonly restorationId!: number
 
   /**
-   * "isDataLoaded" is a flag that is to "true" after the component's data is loaded.
-   * It's used a work-around because the shared components aren't reactive to changes
-   * after the shared components are mounted.
+   * "isDataLoaded" is a flag that is to "true" after all data is loaded.
+   * This is to prevent using the state filing restoration before it's fetched.
    */
   isDataLoaded = false
 
