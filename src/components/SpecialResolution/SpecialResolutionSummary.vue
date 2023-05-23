@@ -126,8 +126,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
-import { CoopTypes } from '@/enums'
-import { EntitySnapshotIF, FeesIF, RulesMemorandumIF } from '@/interfaces/'
+import { FeesIF } from '@/interfaces/'
 import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
 import { CoopTypeToDescription } from '@/utils'
