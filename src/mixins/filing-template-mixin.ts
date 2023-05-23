@@ -303,7 +303,7 @@ export default class FilingTemplateMixin extends DateMixin {
         legalType: this.getEntitySnapshot.businessInfo.legalType
       },
       restoration: {
-        approvalType: this.getStateFilingRestoration?.approvalType,
+        approvalType: this.getRestoration.approvalType,
         type: this.getRestoration.type,
         business: {
           identifier: this.getBusinessId,
@@ -844,13 +844,14 @@ export default class FilingTemplateMixin extends DateMixin {
       ...filing.restoration.business
     })
 
-    // set restoration approval type
+    // store Approval Type
     if (filing.restoration.approvalType) {
       this.setRestorationApprovalType(filing.restoration.approvalType)
     } else {
       this.setRestorationApprovalType(this.getStateFilingRestoration?.approvalType)
     }
 
+    // store Court Order data
     if (filing.restoration.courtOrder) {
       this.setRestorationCourtOrder(filing.restoration.courtOrder)
     }
