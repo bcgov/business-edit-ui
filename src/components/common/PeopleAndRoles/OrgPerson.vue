@@ -504,24 +504,24 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   @Getter(useStore) isRoleStaff!: boolean
 
   // Local variables
-  protected orgPerson: OrgPersonIF = null // current org/person being added/edited
-  protected orgPersonFormValid = true // model value for org/person form validity
-  protected inProgressMailingAddress: AddressIF = {}
-  protected inProgressDeliveryAddress: AddressIF = {}
-  protected inheritMailingAddress = true
-  protected mailingAddressValid = false
-  protected deliveryAddressValid = false
-  protected selectedRoles: Array<RoleTypes> = [] // model value for roles checkboxes
-  protected firstNameRules: Array<VuetifyRuleFunction> = []
-  protected middleNameRules: Array<VuetifyRuleFunction> = []
-  protected lastNameRules: Array<VuetifyRuleFunction> = []
-  protected orgNameRules: Array<VuetifyRuleFunction> = []
-  protected proprietorEmailRules: Array<VuetifyRuleFunction> = []
-  protected confirmBusinessRules: Array<VuetifyRuleFunction> = []
-  protected confirmDocumentsRules: Array<VuetifyRuleFunction> = []
-  protected confirmNameChangeRules: Array<VuetifyRuleFunction> = []
-  protected inProgressBusinessLookup: BusinessLookupIF = EmptyBusinessLookup
-  protected showErrors = false
+  orgPerson: OrgPersonIF = null // current org/person being added/edited
+  orgPersonFormValid = true // model value for org/person form validity
+  inProgressMailingAddress = {} as AddressIF
+  inProgressDeliveryAddress = {} as AddressIF
+  inheritMailingAddress = true
+  mailingAddressValid = false
+  deliveryAddressValid = false
+  selectedRoles: Array<RoleTypes> = [] // model value for roles checkboxes
+  firstNameRules: Array<VuetifyRuleFunction> = []
+  middleNameRules: Array<VuetifyRuleFunction> = []
+  lastNameRules: Array<VuetifyRuleFunction> = []
+  orgNameRules: Array<VuetifyRuleFunction> = []
+  proprietorEmailRules: Array<VuetifyRuleFunction> = []
+  confirmBusinessRules: Array<VuetifyRuleFunction> = []
+  confirmDocumentsRules: Array<VuetifyRuleFunction> = []
+  confirmNameChangeRules: Array<VuetifyRuleFunction> = []
+  inProgressBusinessLookup: BusinessLookupIF = EmptyBusinessLookup
+  showErrors = false
 
   /** True if org-person has Applicant role. */
   get isApplicant (): boolean {
@@ -746,7 +746,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   /**
    * Called when Director checkbox is changed.
    */
-  protected assignDirectorRole (): void {
+  assignDirectorRole (): void {
     // if this person becomes a director and has no delivery address
     // then initialize it to prevent a template error
     if (this.isDirector && !this.inProgressDeliveryAddress) {
@@ -758,12 +758,12 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
    * Handles update events from address sub-components.
    * This is needed to stop address event-prop infinite looping.
    */
-  protected updateAddress (baseAddress: AddressIF, newAddress: AddressIF): void {
+  updateAddress (baseAddress: AddressIF, newAddress: AddressIF): void {
     Object.assign(baseAddress, newAddress)
   }
 
   /** Called when user clicks Done button. */
-  protected async validateOrgPersonForm (): Promise<void> {
+  async validateOrgPersonForm (): Promise<void> {
     await this.applyRules()
 
     // validate the main form and address form(s)
@@ -815,7 +815,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   }
 
   /** Returns True if person name or org name has changed from its original properties. */
-  protected hasNameChanged (orgPerson: OrgPersonIF): boolean {
+  hasNameChanged (orgPerson: OrgPersonIF): boolean {
     /** This check is only for firm corrections, change, conversion, Corp extension and Corp conversion filings.
     Does not apply to corps corrections */
     const showConfirmNameChange = this.isFirmCorrectionFiling || this.isFirmChangeFiling ||
@@ -873,7 +873,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   }
 
   /** Cancels an edit or resets the data after adding a person. */
-  protected resetAddPersonData (emitEvent: boolean): void {
+  resetAddPersonData (emitEvent: boolean): void {
     if (this.orgPerson.isLookupBusiness && emitEvent) {
       this.emitReset()
       // in lookup mode, don't reset the forms // FUTURE: explain why not
@@ -892,13 +892,13 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   }
 
   /** Toggles the org-person's lookup flag and resets the business details. */
-  protected toggleLookup (): void {
+  toggleLookup (): void {
     this.orgPerson.isLookupBusiness = !this.orgPerson.isLookupBusiness
     this.resetBusinessDetails()
   }
 
   /** Updates the business details when the user has selected a business (or by reset, below). */
-  protected async updateBusinessDetails (businessLookup: BusinessLookupIF): Promise<void> {
+  async updateBusinessDetails (businessLookup: BusinessLookupIF): Promise<void> {
     // convert BN15 to BN9 or null
     businessLookup.bn = (businessLookup.bn?.length === 9) ? businessLookup.bn
       : (businessLookup.bn?.length > 9) ? businessLookup.bn.slice(0, 9) : null
@@ -926,7 +926,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   }
 
   /** Resets the business details when the user has clicked the Undo button. */
-  protected resetBusinessDetails (): void {
+  resetBusinessDetails (): void {
     // clear the data
     this.updateBusinessDetails(EmptyBusinessLookup)
     this.inProgressMailingAddress = {} as AddressIF
@@ -1030,7 +1030,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
    */
   @Emit('remove')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private emitRemove (index: number): void {}
+  emitRemove (index: number): void {}
 
   /** Emits an event to the parent to reset the state. */
   @Emit('reset')

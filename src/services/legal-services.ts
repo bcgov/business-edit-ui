@@ -4,8 +4,8 @@ import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistration
   SpecialResolutionFilingIF }
   from '@/interfaces/'
 import { RoleTypes } from '@/enums'
-
 import { ShareStructureIF } from '@bcrs-shared-components/interfaces/'
+
 import { BusinessDocumentsIF } from '@/interfaces/business-document-interface'
 import { AxiosResponse } from 'axios'
 /**

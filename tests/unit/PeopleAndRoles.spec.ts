@@ -114,41 +114,53 @@ describe('People And Roles component for Correction', () => {
   it('shows 1 add button when people list is empty', () => {
     store.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
+
     expect(wrapper.find(btnAddPerson).exists()).toBe(true)
+
     wrapper.destroy()
   })
 
   it('sets the data attributes as expected when Add Person button is clicked', async () => {
     store.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
+
     await wrapper.find(btnAddPerson).trigger('click')
     expect(wrapper.vm.$data.isAddingEditingOrgPerson).toBe(true)
+
     wrapper.destroy()
   })
 
   it('shows the add person form when Add Person button is clicked', async () => {
     store.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
+
     await wrapper.find(btnAddPerson).trigger('click')
+
     // verify button is now disabled
     expect(wrapper.find(btnAddPerson).attributes('disabled')).toBe('disabled')
+
     // check form
     expect(wrapper.find(orgPersonForm).exists()).toBe(true)
     expect(wrapper.find('.add-person-header').text()).toBe('Add Person')
+
     wrapper.destroy()
   })
 
   it('shows check icons next to the director role when people list is complete', () => {
     store.stateModel.peopleAndRoles.orgPeople = getPersonList([ directorRole ])
     const wrapper = wrapperFactory()
+
     expect(wrapper.find(checkDirector).exists()).toBe(true)
+
     wrapper.destroy()
   })
 
   it('shows close icons next to the director role when people list is empty', () => {
     store.stateModel.peopleAndRoles.orgPeople = []
     const wrapper = wrapperFactory()
+
     expect(wrapper.find(closeDirector).exists()).toBe(true)
+
     wrapper.destroy()
   })
 
@@ -302,24 +314,27 @@ describe('People And Roles component for Change of Registration', () => {
         actions: [ActionTypes.REMOVED, ActionTypes.REPLACED]
       }
     ] as any
-    const wrapper: any = shallowMount(PeopleAndRoles, {
+    const wrapper = shallowMount(PeopleAndRoles, {
       data: () => ({ isAddingEditingOrgPerson: true }),
       vuetify
     })
-    const mockScrollToTop = jest.spyOn(wrapper.vm, 'scrollToTop').mockImplementation()
+    const vm = wrapper.vm as any
+    const mockScrollToTop = jest.spyOn(vm, 'scrollToTop').mockImplementation()
 
     // call reset, restoring the removed-replaced item
-    await wrapper.vm.reset(true)
+    await vm.reset(true)
 
     // verify that item is no longer removed-replaced
     expect(store.stateModel.peopleAndRoles.orgPeople.length).toBe(1)
     expect(store.stateModel.peopleAndRoles.orgPeople[0].actions).toBeUndefined()
 
     // verify other things
-    expect(wrapper.vm.$data.currentOrgPerson).toBeNull()
-    expect(wrapper.vm.$data.activeIndex).toBe(NaN)
-    expect(wrapper.vm.$data.isAddingEditingOrgPerson).toBe(false)
+    expect(vm.$data.currentOrgPerson).toBeNull()
+    expect(vm.$data.activeIndex).toBe(NaN)
+    expect(vm.$data.isAddingEditingOrgPerson).toBe(false)
     expect(mockScrollToTop).toHaveBeenCalled()
+
+    wrapper.destroy()
   })
 
   it('undoes "added" changes correctly', () => {
@@ -331,7 +346,7 @@ describe('People And Roles component for Change of Registration', () => {
         actions: [ActionTypes.ADDED]
       }
     ] as any
-    const wrapper: any = shallowMount(PeopleAndRoles, {
+    const wrapper = shallowMount(PeopleAndRoles, {
       computed: {
         // bypass checks we don't care about
         haveRequiredParties: () => true,
@@ -340,11 +355,12 @@ describe('People And Roles component for Change of Registration', () => {
       },
       vuetify
     })
-    const mockSetValidity = jest.spyOn(wrapper.vm, 'setPeopleAndRolesValidity')
-    const mockSetChanged = jest.spyOn(wrapper.vm, 'setPeopleAndRolesChanged')
+    const vm = wrapper.vm as any
+    const mockSetValidity = jest.spyOn(vm, 'setPeopleAndRolesValidity')
+    const mockSetChanged = jest.spyOn(vm, 'setPeopleAndRolesChanged')
 
     // call undo for the added item
-    wrapper.vm.undo(0)
+    vm.undo(0)
 
     // verify that item is no longer added
     expect(store.stateModel.peopleAndRoles.orgPeople.length).toBe(0)
@@ -352,6 +368,8 @@ describe('People And Roles component for Change of Registration', () => {
     // verify other things
     expect(mockSetValidity).toHaveBeenCalledWith(true)
     expect(mockSetChanged).toHaveBeenCalledWith(false)
+
+    wrapper.destroy()
   })
 
   it('undoes "removed" changes correctly', () => {
@@ -370,7 +388,7 @@ describe('People And Roles component for Change of Registration', () => {
         actions: [ActionTypes.REMOVED]
       }
     ] as any
-    const wrapper: any = shallowMount(PeopleAndRoles, {
+    const wrapper = shallowMount(PeopleAndRoles, {
       computed: {
         // bypass checks we don't care about
         haveRequiredParties: () => true,
@@ -379,11 +397,12 @@ describe('People And Roles component for Change of Registration', () => {
       },
       vuetify
     })
-    const mockSetValidity = jest.spyOn(wrapper.vm, 'setPeopleAndRolesValidity')
-    const mockSetChanged = jest.spyOn(wrapper.vm, 'setPeopleAndRolesChanged')
+    const vm = wrapper.vm as any
+    const mockSetValidity = jest.spyOn(vm, 'setPeopleAndRolesValidity')
+    const mockSetChanged = jest.spyOn(vm, 'setPeopleAndRolesChanged')
 
     // call undo for the removed item
-    wrapper.vm.undo(0)
+    vm.undo(0)
 
     // verify that item is no longer removed
     expect(store.stateModel.peopleAndRoles.orgPeople.length).toBe(1)
@@ -392,6 +411,8 @@ describe('People And Roles component for Change of Registration', () => {
     // verify other things
     expect(mockSetValidity).toHaveBeenCalledWith(true)
     expect(mockSetChanged).toHaveBeenCalledWith(false)
+
+    wrapper.destroy()
   })
 
   it('undoes "replace" changes correctly', () => {
@@ -416,7 +437,7 @@ describe('People And Roles component for Change of Registration', () => {
         actions: ['ADDED', 'REPLACED']
       }
     ] as any
-    const wrapper: any = shallowMount(PeopleAndRoles, {
+    const wrapper = shallowMount(PeopleAndRoles, {
       computed: {
         // bypass checks we don't care about
         haveRequiredParties: () => true,
@@ -425,11 +446,12 @@ describe('People And Roles component for Change of Registration', () => {
       },
       vuetify
     })
-    const mockSetValidity = jest.spyOn(wrapper.vm, 'setPeopleAndRolesValidity')
-    const mockSetChanged = jest.spyOn(wrapper.vm, 'setPeopleAndRolesChanged')
+    const vm = wrapper.vm as any
+    const mockSetValidity = jest.spyOn(vm, 'setPeopleAndRolesValidity')
+    const mockSetChanged = jest.spyOn(vm, 'setPeopleAndRolesChanged')
 
     // call undo for the added-replaced item
-    wrapper.vm.undo(1)
+    vm.undo(1)
 
     // verify that item is no longer replaced
     expect(store.stateModel.peopleAndRoles.orgPeople.length).toBe(1)
@@ -438,6 +460,8 @@ describe('People And Roles component for Change of Registration', () => {
     // verify other things
     expect(mockSetValidity).toHaveBeenCalledWith(true)
     expect(mockSetChanged).toHaveBeenCalledWith(false)
+
+    wrapper.destroy()
   })
 
   it('initializes "replace" correctly', () => {
@@ -448,25 +472,28 @@ describe('People And Roles component for Change of Registration', () => {
         mailingAddress: null
       }
     ] as any
-    const wrapper: any = shallowMount(PeopleAndRoles, {
+    const wrapper = shallowMount(PeopleAndRoles, {
       computed: { appointmentDate: { get (): string { return '2022-11-24' } } },
       vuetify
     })
+    const vm = wrapper.vm as any
 
     // call replace for the existing item
-    wrapper.vm.replace(0)
+    vm.replace(0)
 
     // verify replaced-removed item
     expect(store.stateModel.peopleAndRoles.orgPeople[0].actions).toEqual(['REPLACED', 'REMOVED'])
 
     // verify replaced-added item
-    expect(wrapper.vm.$data.currentOrgPerson.roles).toEqual([{ roleType: 'Proprietor', appointmentDate: '2022-11-24' }])
-    expect(wrapper.vm.$data.currentOrgPerson.officer.partyType).toBe('organization')
-    expect(wrapper.vm.$data.currentOrgPerson.actions).toEqual(['REPLACED', 'ADDED'])
+    expect(vm.$data.currentOrgPerson.roles).toEqual([{ roleType: 'Proprietor', appointmentDate: '2022-11-24' }])
+    expect(vm.$data.currentOrgPerson.officer.partyType).toBe('organization')
+    expect(vm.$data.currentOrgPerson.actions).toEqual(['REPLACED', 'ADDED'])
 
     // verify other things
-    expect(wrapper.vm.$data.activeIndex).toBe(NaN)
-    expect(wrapper.vm.$data.isAddingEditingOrgPerson).toBe(true)
+    expect(vm.$data.activeIndex).toBe(NaN)
+    expect(vm.$data.isAddingEditingOrgPerson).toBe(true)
+
+    wrapper.destroy()
   })
 
   it('change button is not visible to users for SP where the sole proprietor is an organization', () => {

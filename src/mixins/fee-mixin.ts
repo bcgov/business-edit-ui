@@ -46,7 +46,7 @@ export default class FeeMixin extends Vue {
   }
 
   /** Called by Staff Payment component when data has changed. */
-  protected onStaffPaymentChanges (): void {
+  onStaffPaymentChanges (): void {
     // update filing data with staff payment fields
     const filingData = [...this.getFilingData]
     filingData.forEach(fd => {

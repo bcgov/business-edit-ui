@@ -124,9 +124,7 @@
 </template>
 
 <script lang="ts">
-// this is a placceholder copied from AlterationSummary, Will add component when working on this page
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { CoopTypes } from '@/enums'
 import { EntitySnapshotIF, FeesIF, RulesMemorandumIF } from '@/interfaces/'
@@ -138,20 +136,12 @@ import { useStore } from '@/store/store'
 @Component({
   components: {
     CreateSpecialResolutionSummary
-  },
-  mixins: [DateMixin, FeeMixin, FilingTemplateMixin]
+  }
 })
-export default class SpecialResolutionSummary extends Vue {
+export default class SpecialResolutionSummary extends Mixins(DateMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter(useStore) getAssociationType!: CoopTypes
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentFees!: FeesIF[]
-  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
-  @Getter(useStore) getNameRequestLegalName!: string
-  @Getter(useStore) getNameRequestNumber!: string
-  @Getter(useStore) getSpecialResolutionRules!: RulesMemorandumIF
-  @Getter(useStore) hasAssociationTypeChanged!: boolean
-  @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
   @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
 

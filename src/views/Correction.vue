@@ -10,8 +10,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
@@ -30,10 +29,9 @@ import { useStore } from '@/store/store'
     ViewWrapper,
     CorpCorrection,
     FirmCorrection
-  },
-  mixins: [CommonMixin]
+  }
 })
-export default class Correction extends Vue {
+export default class Correction extends Mixins(CommonMixin) {
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
 

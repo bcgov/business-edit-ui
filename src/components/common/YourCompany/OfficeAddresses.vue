@@ -571,8 +571,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { isEmpty, isEqual } from 'lodash'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
@@ -594,10 +593,9 @@ const COUNTRY_CA = 'CA'
     RecDeliveryAddress: BaseAddress,
     RegMailingAddress: BaseAddress,
     RegDeliveryAddress: BaseAddress
-  },
-  mixins: [CommonMixin]
+  }
 })
-export default class OfficeAddresses extends Vue {
+export default class OfficeAddresses extends Mixins(CommonMixin) {
   // Refs for BaseAddress components so we can access form validation
   $refs!: {
     mailingAddress: any

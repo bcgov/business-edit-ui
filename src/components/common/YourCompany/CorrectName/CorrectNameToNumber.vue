@@ -24,13 +24,13 @@ import { Action, Getter } from 'pinia-class'
 
 // Interfaces && enums
 import { ActionBindingIF, NameRequestIF } from '@/interfaces/'
-import { NameChangeOptions } from '@/enums/'
+import { CorrectNameOptions } from '@/enums/'
 import { useStore } from '@/store/store'
 
 @Component({})
 export default class CorrectNameToNumber extends Vue {
   /** Form Submission Prop */
-  @Prop({ default: null }) readonly formType!: NameChangeOptions
+  @Prop({ default: null }) readonly formType!: CorrectNameOptions
 
   @Action(useStore) setNameRequest!: ActionBindingIF
 
@@ -48,7 +48,7 @@ export default class CorrectNameToNumber extends Vue {
   @Watch('formType')
   private async onSubmit (): Promise<any> {
     // this component should only see correct-name-to-number form type
-    if (this.formType === NameChangeOptions.CORRECT_NAME_TO_NUMBER) {
+    if (this.formType === CorrectNameOptions.CORRECT_NAME_TO_NUMBER) {
       // delete the current legal name and NR number
       this.setNameRequest({
         ...this.getNameRequest,

@@ -1,4 +1,4 @@
-import { NameChangeOptions, FilingCodes } from '@/enums/'
+import { CorrectNameOptions, FilingCodes } from '@/enums/'
 import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
@@ -15,8 +15,8 @@ export const SpCorrectionResource: ResourceIF = {
     priority: false
   },
   changeData: {
-    nameChangeOptions: [
-      NameChangeOptions.CORRECT_NEW_NR
+    correctNameOptions: [
+      CorrectNameOptions.CORRECT_NEW_NR
     ],
     typeChangeInfo: 'You cannot change the business type of a Sole Proprietorship / DBA. You must form a new ' +
       'business and dissolve this business once the new business is registered.',

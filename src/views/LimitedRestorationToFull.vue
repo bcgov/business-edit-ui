@@ -131,8 +131,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { v4 as uuidv4 } from 'uuid'
 import { cloneDeep } from 'lodash'
@@ -144,22 +143,18 @@ import { BusinessContactInfo, CertifySection, CourtOrderPoa, DocumentsDelivery, 
   QuestionWrapper, RecognitionDateTime, StaffPayment, YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import {
   ActionBindingIF,
   EntitySnapshotIF,
   OrgPersonIF,
   ResourceIF,
-  RestorationFilingIF,
-  RestorationStateIF,
-  StateFilingRestorationIF
+  RestorationFilingIF
 } from '@/interfaces/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
   from '@/resources/LimitedRestorationToFull/'
 import { ApprovalTypes, FilingStatus, RoleTypes } from '@/enums/'
 import { RelationshipTypes } from '@bcrs-shared-components/enums'
 import { RelationshipsPanel } from '@bcrs-shared-components/relationships-panel'
-import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
 import { ApprovalType } from '@bcrs-shared-components/approval-type'
 import { FeeSummary as FeeSummaryShared } from '@bcrs-shared-components/fee-summary/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -175,7 +170,6 @@ import { useStore } from '@/store/store'
     EntityName,
     FeeSummaryShared,
     FolioInformation,
-    LimitedRestorationPanel,
     ListPeopleAndRoles,
     NameTranslation,
     OfficeAddresses,
@@ -188,24 +182,21 @@ import { useStore } from '@/store/store'
     ViewWrapper,
     YourCompanySummary,
     YourCompanyWrapper
-  },
-  mixins: [
-    CommonMixin,
-    FeeMixin,
-    FilingTemplateMixin,
-    OrgPersonMixin
-  ]
+  }
 })
-export default class LimitedRestorationToFull extends Vue {
+export default class LimitedRestorationToFull extends Mixins(
+  CommonMixin,
+  FeeMixin,
+  FilingTemplateMixin,
+  OrgPersonMixin
+) {
   // Global getters
-  @Getter(useStore) getRelationships!: RelationshipTypes[]
   @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) getBusinessId!: string
-  @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
+  @Getter(useStore) getApprovalTypeValid!: boolean
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getCourtOrderNumberText!: string
+  @Getter(useStore) getRelationships!: RelationshipTypes[]
   @Getter(useStore) getResource!: ResourceIF
-  @Getter(useStore) getRestoration!: RestorationStateIF
-  @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
   @Getter(useStore) isBcCcc!: boolean
   @Getter(useStore) isBcCompany!: boolean
   @Getter(useStore) isBcUlcCompany!: boolean
@@ -213,21 +204,14 @@ export default class LimitedRestorationToFull extends Vue {
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) showFeeSummary!: boolean
-  @Getter(useStore) getComponentValidate!: boolean
-  @Getter(useStore) getCourtOrderNumberText!: string
-  @Getter(useStore) getApprovalTypeValid!: boolean
 
   // Global actions
   @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action(useStore) setEntitySnapshot: ActionBindingIF
-  @Action(useStore) setFilingData!: ActionBindingIF
   @Action(useStore) setFilingId!: ActionBindingIF
   @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF
-  @Action(useStore) setRestorationRelationships!: ActionBindingIF
   @Action(useStore) setStateFilingRestoration!: ActionBindingIF
   @Action(useStore) setValidComponent!: ActionBindingIF
-  @Action(useStore) setRestorationCourtOrder!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
@@ -236,11 +220,10 @@ export default class LimitedRestorationToFull extends Vue {
   @Prop({ default: 0 }) readonly restorationId!: number
 
   /**
-   * "isDataLoaded" is a flag that is to "true" after the component's data is loaded.
-   * It's used a work-around because the shared components aren't reactive to changes
-   * after the shared components are mounted.
+   * "isDataLoaded" is a flag that is to "true" after all data is loaded.
+   * This is to prevent using the state filing restoration before it's fetched.
    */
-  private isDataLoaded = false
+  isDataLoaded = false
 
   /** The resource object for a restoration filing. */
   get restorationResource (): ResourceIF {

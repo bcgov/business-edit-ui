@@ -5,7 +5,6 @@
  * - this list must match `FlagsCompanyInfoIF`
  */
 export enum ComponentsCompanyInfo {
-  'relationships-panel',
   'company-name-section',
   'change-business-type',
   'name-translation',
@@ -24,5 +23,6 @@ export enum ComponentsCompanyInfo {
   'special-resolution-editor',
   'special-resolution-signing-party',
   'approval-type-section',
+  'relationships-panel',
   'extension-time-section'
 }

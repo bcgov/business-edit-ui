@@ -133,6 +133,7 @@
                     >
                       REMOVED
                     </v-chip>
+
                     <!-- show REPLACED item separately (since item also has ADDED action) -->
                     <v-chip
                       v-else-if="wasReplaced(orgPerson)"
@@ -143,12 +144,11 @@
                     >
                       CHANGED
                     </v-chip>
+
                     <!-- all other states -->
-                    <template
-                      v-for="(action, i) in orgPerson.actions"
-                      v-else
-                    >
+                    <template v-else>
                       <v-chip
+                        v-for="(action, i) in orgPerson.actions"
                         :key="`action-chip-${i}`"
                         x-small
                         label
@@ -217,8 +217,8 @@
               <!-- Warning if orgPerson has no roles -->
               <div v-if="orgPerson.roles.length > 0">
                 <v-col
-                  v-for="(role, i) in orgPerson.roles"
-                  :key="i"
+                  v-for="(role, key) in orgPerson.roles"
+                  :key="key"
                   class="col-roles"
                 >
                   <span class="info-text small-text break-spaces pr-2">{{ role.roleType }}</span>
@@ -578,7 +578,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   @Getter(useStore) isRoleStaff!: boolean
 
   /** V-model for dropdown menus. */
-  protected dropdown: Array<boolean> = []
+  dropdown: Array<boolean> = []
 
   /** Headers for the person table. */
   get tableHeaders (): Array<string> {
@@ -615,7 +615,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   }
 
   /** Returns True if the specified org-person can be removed. */
-  protected canRemove (orgPerson: OrgPersonIF): boolean {
+  canRemove (orgPerson: OrgPersonIF): boolean {
     if (this.isAlterationFiling) {
       // alterations don't use this component
       return false
@@ -641,7 +641,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
   }
 
   /** Returns True if the specified org-person can be replaced. */
-  protected canReplace (orgPerson: OrgPersonIF): boolean {
+  canReplace (orgPerson: OrgPersonIF): boolean {
     // staff only
     if (this.isRoleStaff) {
       // change filing only
@@ -664,7 +664,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
    * @param orgPerson the org/person object
    * @returns the formatted name
    */
-  protected formatName (orgPerson: OrgPersonIF): string {
+  formatName (orgPerson: OrgPersonIF): string {
     if (orgPerson?.officer?.organizationName) {
       return orgPerson.officer.organizationName
     }
@@ -680,7 +680,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
    */
   @Emit('undo')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected emitUndo (index: number): void {}
+  emitUndo (index: number): void {}
 
   /**
    * Emits an event and index to the parent to start editing.
@@ -688,7 +688,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
    */
   @Emit('initEdit')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected emitInitEdit (index: number): void {}
+  emitInitEdit (index: number): void {}
 
   /**
    * Emits an event and index to the parent to handle removal.
@@ -696,7 +696,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
    */
   @Emit('remove')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected emitRemove (index: number): void {}
+  emitRemove (index: number): void {}
 
   /**
    * Emits an event and index to the parent to handle replacement.
@@ -704,7 +704,7 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
    */
   @Emit('replace')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected emitReplace (index: number): void {}
+  emitReplace (index: number): void {}
 
   /**
    * Emits an event and org/person object to the parent handle adding or editing.
@@ -712,13 +712,13 @@ export default class ListPeopleAndRoles extends Mixins(CommonMixin, OrgPersonMix
    */
   @Emit('addEdit')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected emitAddEdit (person: OrgPersonIF): void {}
+  emitAddEdit (person: OrgPersonIF): void {}
 
   /**
    * Emits an event to the parent to reset the state.
    */
   @Emit('reset')
-  protected emitReset (): void {}
+  emitReset (): void {}
 }
 </script>
 

@@ -103,7 +103,7 @@ import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/co
 import { CommonMixin, NameRequestMixin } from '@/mixins/'
 import { ActionBindingIF, ConfirmDialogType, NameRequestApplicantIF, NameRequestIF, NrCorrectionIF,
   NrResponseIF } from '@/interfaces/'
-import { NameChangeOptions } from '@/enums/'
+import { CorrectNameOptions } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 
 import { useStore } from '@/store/store'
@@ -120,7 +120,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   }
 
   /** The form type. */
-  @Prop({ default: null }) readonly formType!: NameChangeOptions
+  @Prop({ default: null }) readonly formType!: CorrectNameOptions
 
   /** Whether to perform validation. */
   @Prop({ default: false }) readonly validate!: boolean
@@ -130,14 +130,12 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   @Getter(useStore) getNameRequest!: NameRequestIF
   @Getter(useStore) getEntityType!: CorpTypeCd
 
-  // V-model properties
-  protected formValid = false
-  protected nameRequestNumber = ''
-  protected applicantPhone = ''
-  protected applicantEmail = ''
-
-  // FUTURE: use this to turn on/off validations
-  protected done = true
+  // Local properties
+  formValid = false
+  nameRequestNumber = ''
+  applicantPhone = ''
+  applicantEmail = ''
+  done = true // used to turn on/off validations
 
   // Rules
   readonly nrNumRules = [
@@ -192,7 +190,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   @Watch('formType')
   private async onSubmit (): Promise<any> {
     // this component should only see correct-new-nr form type
-    if (this.formType === NameChangeOptions.CORRECT_NEW_NR) {
+    if (this.formType === CorrectNameOptions.CORRECT_NEW_NR) {
       try {
         // Validate and return the name request data
         const nr: NrResponseIF = await this.validateNameRequest(

@@ -164,8 +164,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter, Action } from 'pinia-class'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker'
@@ -175,10 +174,9 @@ import { useStore } from '@/store/store'
 @Component({
   components: {
     DatePickerShared
-  },
-  mixins: [CommonMixin, DateMixin]
+  }
 })
-export default class BusinessStartDate extends Vue {
+export default class BusinessStartDate extends Mixins(CommonMixin, DateMixin) {
   // Global getters
   @Getter(useStore) getBusinessFoundingDateTime!: string
   @Getter(useStore) getBusinessStartDate!: string

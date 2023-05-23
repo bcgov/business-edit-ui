@@ -19,8 +19,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { AuthServices } from '@/services/'
@@ -32,10 +31,9 @@ import { useStore } from '@/store/store'
 @Component({
   components: {
     FolioNumberShared
-  },
-  mixins: [CommonMixin]
+  }
 })
-export default class FolioInformation extends Vue {
+export default class FolioInformation extends Mixins(CommonMixin) {
   // Global getters
   @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getComponentValidate!: boolean

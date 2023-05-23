@@ -257,59 +257,49 @@ export default class DateUtilities {
 
   /**
    * Add a number of months to a date and return "YYYY-MM-DD".
-   * Date must be in the format of "YYYY-MM-DD" and months is a number
+   * @param months the number of months to add
+   * @param dateStr the date to add months to, in "YYYY-MM-DD" format
    * @example (3, 2023-02-03) -> "2023-05-03"
    * @example (18, 2023-02-03) -> "2024-08-03"
    */
-  static addMonthsToDate (month: number, date: string): string {
-    if (!date) {
-      date = '2023-01-01'
-    }
-    const temp = this.yyyyMmDdToDate(date)
-    temp.setMonth(temp.getMonth() + month)
-    const dateAfterAddition = this.dateToYyyyMmDd(temp)
-    return dateAfterAddition
+  static addMonthsToDate (months = 0, dateStr: string): string {
+    const date = dateStr ? this.yyyyMmDdToDate(dateStr) : new Date()
+    date.setMonth(date.getMonth() + months)
+    return this.dateToYyyyMmDd(date)
   }
 
   /**
-   * Subtract a number of months to a date and return "YYYY-MM-DD".
-   * Date must be in the format of "YYYY-MM-DD" and months is a number
+   * Subtract a number of months from a date and return "YYYY-MM-DD".
+   * @param months the number of months to subtract
+   * @param dateStr the date to subtract months from, in "YYYY-MM-DD" format
    * @example (3, 2023-05-03) -> "2023-02-03"
    * @example (18, 2024-08-03) -> "2023-02-03"
    */
-  static subtractMonthsToDate (month: number, date: string): string {
-    if (!date) {
-      date = '2023-01-01'
-    }
-    const temp = this.yyyyMmDdToDate(date)
-    temp.setMonth(temp.getMonth() - month)
-    const dateAfterSubtraction = this.dateToYyyyMmDd(temp)
-    return dateAfterSubtraction
+  static subtractMonthsFromDate (months = 0, dateStr: string): string {
+    const date = dateStr ? this.yyyyMmDdToDate(dateStr) : new Date()
+    date.setMonth(date.getMonth() - months)
+    return this.dateToYyyyMmDd(date)
   }
+
   /**
-   * Decrease one date from another and return number of months as the difference.
-   * Dates must be in the "YYYY-MM-DD" format
+   * Subtract one date from another and return number of months they differ by.
+   * Dates must be in the "YYYY-MM-DD" format.
    * @example (2023-02-03, 2024-08-03) -> 18
    * @example (2023-02-03, 2023-04-03) -> 2
+   * @example (2023-02-03, 2023-02-03) -> 0
    */
   static subtractDates (dateFrom: string, dateTo: string): number {
-    if (!dateFrom) {
-      dateFrom = '2023-01-01'
-    }
-    if (!dateTo) {
-      dateTo = this.addMonthsToDate(24, dateFrom)
-    }
-    const expiryDate = this.yyyyMmDdToDate(dateTo)
-    const currDate = this.yyyyMmDdToDate(dateFrom)
-    const monthDiff = expiryDate.getMonth() - currDate.getMonth()
-    const yearDiff = (12 * (expiryDate.getFullYear() - currDate.getFullYear()))
-    let difference = monthDiff + yearDiff
+    const startDate = dateFrom ? this.yyyyMmDdToDate(dateFrom) : new Date()
+    const endDate = dateTo ? this.yyyyMmDdToDate(dateTo) : new Date()
+    const monthDiff = endDate.getMonth() - startDate.getMonth()
+    const yearDiff = (12 * (endDate.getFullYear() - startDate.getFullYear()))
+    let difference = monthDiff + yearDiff // in months
     /**
-     * We're increasing 25 to the day of expiry date to subtract only if the day difference is large.
+     * Add 25 days to the end date to properly compare only if the day difference is large.
      * @example Jan 31st and March 1st, month difference is 2 but since 26 < 31, we subtract 1.
      * @example Jan 16th and March 15th, month difference is 2 but since 16 + 25 < 31, we don't subtract 1.
      */
-    if ((expiryDate.getDate() + 25) < currDate.getDate()) {
+    if ((endDate.getDate() + 25) < startDate.getDate()) {
       difference--
     }
     return difference

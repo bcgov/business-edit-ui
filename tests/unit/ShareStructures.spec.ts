@@ -58,8 +58,8 @@ describe('Share Structures component', () => {
     })
   })
 
-  afterEach(async () => {
-    await wrapper.destroy()
+  afterEach(() => {
+    wrapper.destroy()
   })
 
   it('displays share-structures component', () => {

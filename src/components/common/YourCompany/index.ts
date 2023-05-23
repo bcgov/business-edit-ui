@@ -1,4 +1,3 @@
-export * from './CompanyName'
 export * from './NameTranslations'
 export { default as AssociationType } from './AssociationType.vue'
 export { default as BusinessContactInfo } from './BusinessContactInfo.vue'

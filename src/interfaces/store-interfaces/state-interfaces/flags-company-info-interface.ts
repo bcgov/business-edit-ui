@@ -23,6 +23,6 @@ export interface FlagsCompanyInfoIF {
   isValidSpecialResolution: boolean
   isValidSpecialResolutionSignature: boolean
   isValidApprovalType: boolean
-  isValidExtensionTime: boolean
   isValidRelationship: boolean
+  isValidExtensionTime: boolean
 }

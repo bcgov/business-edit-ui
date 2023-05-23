@@ -25,7 +25,7 @@ describe('Name Request Mixin', () => {
       filingData: null,
       changeData: {
         nameRequestTypes: [NrRequestActionCodes.CHANGE_NAME, NrRequestActionCodes.CONVERSION],
-        nameChangeOptions: []
+        correctNameOptions: []
       },
       certifyClause: ''
     }

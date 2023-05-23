@@ -1,21 +1,21 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
-import CorrectNameOptions from '@/components/common/YourCompany/CompanyName/CorrectNameOptions.vue'
-import CorrectCompanyName from '@/components/common/YourCompany/CompanyName/CorrectCompanyName.vue'
-import CorrectNameRequest from '@/components/common/YourCompany/CompanyName/CorrectNameRequest.vue'
-import CorrectNameToNumber from '@/components/common/YourCompany/CompanyName/CorrectNameToNumber.vue'
+import CorrectName from '@/components/common/YourCompany/CorrectName/CorrectName.vue'
+import CorrectCompanyName from '@/components/common/YourCompany/CorrectName/CorrectCompanyName.vue'
+import CorrectNameRequest from '@/components/common/YourCompany/CorrectName/CorrectNameRequest.vue'
+import CorrectNameToNumber from '@/components/common/YourCompany/CorrectName/CorrectNameToNumber.vue'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
-describe('CorrectNameOptions', () => {
+describe('Correct Name component', () => {
   let wrapperFactory: any
   let correctionNameChoices: any
 
   beforeEach(() => {
     wrapperFactory = (propsData: any) => {
-      return shallowMount(CorrectNameOptions, {
+      return shallowMount(CorrectName, {
         propsData: {
           ...propsData
         },
@@ -30,10 +30,12 @@ describe('CorrectNameOptions', () => {
     await Vue.nextTick()
 
     // Verify correct components are rendered
-    expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectName).exists()).toBe(true)
     expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
     expect(wrapper.findComponent(CorrectCompanyName).exists()).toBe(false)
     expect(wrapper.findComponent(CorrectNameToNumber).exists()).toBe(false)
+
+    wrapper.destroy()
   })
 
   it('renders the appropriate choices for a named company', async () => {
@@ -42,7 +44,7 @@ describe('CorrectNameOptions', () => {
     await Vue.nextTick()
 
     // Verify correct components are rendered
-    expect(wrapper.findComponent(CorrectNameOptions).exists()).toBe(true)
+    expect(wrapper.findComponent(CorrectName).exists()).toBe(true)
     expect(wrapper.findComponent(CorrectNameRequest).exists()).toBe(true)
     expect(wrapper.findComponent(CorrectCompanyName).exists()).toBe(true)
     expect(wrapper.findComponent(CorrectNameToNumber).exists()).toBe(true)
@@ -55,5 +57,7 @@ describe('CorrectNameOptions', () => {
     expect(correctCompanyName.textContent).toBe('Edit the company name')
     expect(correctNameToNumber.textContent).toBe('Use the incorporation number as the name')
     expect(correctNewNr.textContent).toBe('Use a new name request number')
+
+    wrapper.destroy()
   })
 })

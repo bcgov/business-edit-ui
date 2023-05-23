@@ -38,8 +38,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { FeesIF } from '@/interfaces/'
 import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
@@ -49,17 +48,12 @@ import { useStore } from '@/store/store'
 @Component({
   components: {
     NameTranslation
-  },
-  mixins: [DateMixin, FeeMixin, FilingTemplateMixin]
+  }
 })
-export default class RestorationSummary extends Vue {
+export default class RestorationSummary extends Mixins(DateMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentFees!: FeesIF[]
-  @Getter(useStore) getNameRequestLegalName!: string
-  @Getter(useStore) getNameRequestNumber!: string
-  @Getter(useStore) hasBusinessNameChanged!: boolean
-  @Getter(useStore) haveNameTranslationsChanged!: boolean
   @Getter(useStore) isBusySaving!: boolean
 
   /** Whether to perform validation. */
