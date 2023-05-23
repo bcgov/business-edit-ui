@@ -21,12 +21,12 @@ describe('Time Limit Extension component', () => {
     store.stateModel.stateFilingRestoration = {
       approvalType: 'courtOrder',
       courtOrder: { fileNumber: 'testtest' },
-      expiry: '2024-01-01', // 12 months remaining from today
+      expiry: '2024-01-01', // 12 months remaining from current date above
       type: 'limitedRestoration'
     } as any
 
     store.stateModel.restoration = {
-      expiry: '2025-01-01', // extra 12 months from today
+      expiry: '2025-01-01', // extra 12 months from current date above
       type: 'limitedRestorationExtension'
     } as any
 
