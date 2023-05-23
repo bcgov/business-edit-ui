@@ -986,9 +986,9 @@ export default class FilingTemplateMixin extends DateMixin {
     const documentInfo = entitySnapshot.businessDocuments.documentsInfo
     this.setSpecialResolutionRules(
       {
-        name: filing.alteration?.rulesFileName || documentInfo.certifiedRules.name,
-        key: filing.alteration?.rulesFileKey || documentInfo.certifiedRules.key,
-        url: filing.alteration?.rulesFileKey ? null : entitySnapshot.businessDocuments.documents.certifiedRules,
+        name: filing.alteration?.rulesFileName || documentInfo?.certifiedRules?.name,
+        key: filing.alteration?.rulesFileKey || documentInfo?.certifiedRules?.key,
+        url: filing.alteration?.rulesFileKey ? null : entitySnapshot.businessDocuments.documents?.certifiedRules,
         includedInResolution: filing.alteration?.rulesInResolution,
         previouslyInResolution: documentInfo?.certifiedRules?.includedInResolution,
         uploaded: documentInfo?.certifiedRules?.uploaded
@@ -996,9 +996,9 @@ export default class FilingTemplateMixin extends DateMixin {
 
     this.setSpecialResolutionMemorandum(
       {
-        name: filing.alteration?.memorandumFileName || documentInfo.certifiedMemorandum.name,
-        key: filing.alteration?.memorandumFileKey || documentInfo.certifiedMemorandum.key,
-        url: filing.alteration?.rulesFileKey ? null : entitySnapshot.businessDocuments.documents.certifiedMemorandum,
+        name: filing.alteration?.memorandumFileName || documentInfo?.certifiedMemorandum?.name,
+        key: filing.alteration?.memorandumFileKey || documentInfo?.certifiedMemorandum?.key,
+        url: filing.alteration?.rulesFileKey ? null : entitySnapshot.businessDocuments.documents?.certifiedMemorandum,
         includedInResolution: filing.alteration?.memorandumInResolution,
         previouslyInResolution: documentInfo?.certifiedMemorandum?.includedInResolution,
         uploaded: documentInfo?.certifiedMemorandum?.uploaded
@@ -1250,11 +1250,11 @@ export default class FilingTemplateMixin extends DateMixin {
         const documentsInfo = entitySnapshot.businessDocuments?.documentsInfo
         this.setSpecialResolutionRules(
           {
-            name: documentsInfo.certifiedRules?.name,
-            key: documentsInfo.certifiedRules?.key,
+            name: documentsInfo?.certifiedRules?.name,
+            key: documentsInfo?.certifiedRules?.key,
             url: entitySnapshot.businessDocuments?.documents?.certifiedRules,
             previouslyInResolution: documentsInfo.certifiedRules?.includedInResolution,
-            uploaded: documentsInfo.certifiedRules?.uploaded
+            uploaded: documentsInfo?.certifiedRules?.uploaded
           })
 
         this.setSpecialResolutionMemorandum(
@@ -1263,7 +1263,7 @@ export default class FilingTemplateMixin extends DateMixin {
             key: documentsInfo?.certifiedMemorandum?.key,
             url: entitySnapshot.businessDocuments?.documents?.certifiedMemorandum,
             previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
-            uploaded: documentsInfo.certifiedMemorandum?.uploaded
+            uploaded: documentsInfo?.certifiedMemorandum?.uploaded
           })
       }
     }
