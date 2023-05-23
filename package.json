@@ -31,7 +31,7 @@
     "@bcrs-shared-components/folio-number": "1.1.1",
     "@bcrs-shared-components/help-business-number": "1.1.1",
     "@bcrs-shared-components/interfaces": "1.0.60",
-    "@bcrs-shared-components/limited-restoration-panel": "1.0.4",
+    "@bcrs-shared-components/limited-restoration-panel": "2.0.1",
     "@bcrs-shared-components/nature-of-business": "1.2.4",
     "@bcrs-shared-components/relationships-panel": "1.0.14",
     "@bcrs-shared-components/share-structure": "2.1.4",
