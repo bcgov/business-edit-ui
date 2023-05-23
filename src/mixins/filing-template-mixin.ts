@@ -1253,7 +1253,7 @@ export default class FilingTemplateMixin extends DateMixin {
             name: documentsInfo?.certifiedRules?.name,
             key: documentsInfo?.certifiedRules?.key,
             url: entitySnapshot.businessDocuments?.documents?.certifiedRules,
-            previouslyInResolution: documentsInfo.certifiedRules?.includedInResolution,
+            previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
             uploaded: documentsInfo?.certifiedRules?.uploaded
           })
 
