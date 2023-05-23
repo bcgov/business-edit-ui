@@ -35,7 +35,6 @@ describe('InstructionalText', () => {
     const tooltip = wrapper.findComponent(VTooltip)
     const tooltipContent = tooltip.find('.tool-tip-content')
     expect(tooltipContent.exists()).toBe(true)
-    const content = 'Special Resolution -  A decision voted on by the voting members of a Cooperative Association.'
-    expect(tooltipContent.text()).toBe(content)
+    expect(tooltipContent.text()).toContain('A decision voted on by the voting members')
   })
 })

@@ -591,8 +591,8 @@ export const useStore = defineStore('store', {
         this.hasBusinessNameChanged ||
         this.hasBusinessTypeChanged ||
         this.hasAssociationTypeChanged ||
-        this.hasMemorandumChanged ||
-        this.hasRulesChanged
+        this.hasSpecialResolutionMemorandumChanged ||
+        this.hasSpecialResolutionRulesChanged
       )
     },
 
@@ -1203,34 +1203,34 @@ export const useStore = defineStore('store', {
       return this.getFlagsReviewCertify.isValidSpecialResolutionConfirm
     },
 
-    getRules (): RulesMemorandumIF {
+    getSpecialResolutionRules (): RulesMemorandumIF {
       return this.stateModel.rules
     },
 
-    getMemorandum (): RulesMemorandumIF {
+    getSpecialResolutionMemorandum (): RulesMemorandumIF {
       return this.stateModel.memorandum
     },
 
-    hasMemorandumChanged (): boolean {
-      return this.getMemorandum?.includedInResolution
+    hasSpecialResolutionMemorandumChanged (): boolean {
+      return this.getSpecialResolutionMemorandum?.includedInResolution
     },
 
-    hasRulesChanged (): boolean {
-      return this.getRules?.includedInResolution ||
-        this.getRules?.key !== this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key
+    hasSpecialResolutionRulesChanged (): boolean {
+      return this.getSpecialResolutionRules?.includedInResolution ||
+        this.getSpecialResolutionRules?.key !==
+        this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key
     },
 
     /** Determine if we should show the create special resolution component. */
     showCreateSpecialResolution (): boolean {
       return (this.hasBusinessNameChanged ||
          this.hasAssociationTypeChanged ||
-         this.hasRulesChanged ||
-         this.hasMemorandumChanged)
+         this.hasSpecialResolutionRulesChanged ||
+         this.hasSpecialResolutionMemorandumChanged)
     }
 
   },
   actions: {
-    // no context as first argument, use `this` instead
     setEntityType (entityType: CorpTypeCd) {
       this.stateModel.tombstone.entityType = entityType
     },
@@ -1487,22 +1487,22 @@ export const useStore = defineStore('store', {
     setRestorationRelationships (relationships: RelationshipTypes[]) {
       this.stateModel.restoration.relationships = relationships
     },
-    setResolutionValid (valid: boolean) {
+    setSpecialResolutionValid (valid: boolean) {
       this.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolution = valid
     },
-    setResolutionSignatureValid (valid: boolean) {
+    setSpecialResolutionSignatureValid (valid: boolean) {
       this.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature = valid
     },
-    setRulesValid (valid: boolean) {
+    setSpecialResolutionRulesValid (valid: boolean) {
       this.stateModel.validationFlags.flagsCompanyInfo.isValidRules = valid
     },
-    setMemorandumValid (valid: boolean) {
+    setSpecialResolutionMemorandumValid (valid: boolean) {
       this.stateModel.validationFlags.flagsCompanyInfo.isValidMemorandum = valid
     },
-    setRules (rule: RulesMemorandumIF) {
+    setSpecialResolutionRules (rule: RulesMemorandumIF) {
       this.stateModel.rules = rule
     },
-    setMemorandum (memorandum: RulesMemorandumIF) {
+    setSpecialResolutionMemorandum (memorandum: RulesMemorandumIF) {
       this.stateModel.memorandum = memorandum
     }
   }

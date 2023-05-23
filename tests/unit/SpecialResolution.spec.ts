@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-import { shallowMount, createLocalVue } from '@vue/test-utils'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import SpecialResolution from '@/views/SpecialResolution.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -13,6 +13,7 @@ import { useStore } from '@/store/store'
 import { AssociationType, BusinessContactInfo, BusinessType, EntityName, FolioInformation, OfficeAddresses,
   YourCompanyWrapper } from '@/components/common'
 import { Memorandum, Rules } from '@/components/SpecialResolution'
+import { LegalServices } from '@/services'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -180,26 +181,24 @@ describe('Special Resolution component', () => {
       }))
 
     // GET business documents
-    get.withArgs('businesses/CP1234567/documents')
-      .returns(Promise.resolve({
-        data: {
-          documents: {
-            certifiedMemorandum: 'url',
-            certifiedRules: 'url2'
+    jest.spyOn((LegalServices as any), 'fetchBusinessDocuments').mockImplementation(
+      () => Promise.resolve({
+        documents: {
+          certifiedMemorandum: 'url',
+          certifiedRules: 'url2'
+        },
+        documentsInfo: {
+          certifiedMemorandum: {
+            key: null,
+            name: 'name2',
+            includedInResolution: true,
+            uploaded: '2022-01-01T08:00:00.000000+00:00'
           },
-          documentsInfo: {
-            certifiedMemorandum: {
-              key: null,
-              name: 'name2',
-              includedInResolution: true,
-              uploaded: '2022-01-01T08:00:00.000000+00:00'
-            },
-            certifiedRules: {
-              key: null,
-              name: 'name',
-              includedInResolution: true,
-              uploaded: '2022-01-01T08:00:00.000000+00:00'
-            }
+          certifiedRules: {
+            key: null,
+            name: 'name',
+            includedInResolution: true,
+            uploaded: '2022-01-01T08:00:00.000000+00:00'
           }
         }
       }))
@@ -223,7 +222,9 @@ describe('Special Resolution component', () => {
     wrapper.destroy()
   })
 
-  it('renders view and sub-components', () => {
+  it('renders view and sub-components', async () => {
+    wrapper.vm.isDataLoaded = true
+    await Vue.nextTick()
     expect(wrapper.findComponent(SpecialResolution).exists()).toBe(true)
     expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true)
     expect(wrapper.findComponent(YourCompanyWrapper).exists()).toBe(true)

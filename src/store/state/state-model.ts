@@ -50,10 +50,10 @@ export const stateModel: StateModelIF = {
       isValidCompanyProvisions: true,
       isValidResolutionDate: true,
       isValidAssociationType: true,
-      isValidSpecialResolution: true,
-      isValidSpecialResolutionSignature: true,
       isValidRules: true,
       isValidMemorandum: true,
+      isValidSpecialResolution: true,
+      isValidSpecialResolutionSignature: true,
       isValidApprovalType: true,
       isValidExtensionTime: true
     },

@@ -1,6 +1,6 @@
 
 <template>
-  <div id="special-resolution-signature">
+  <div id="special-resolution-signing-party">
     <!-- Resolution Signature, can make this more generic later. -->
     <header id="resolution-signature-info-header">
       <h2>Resolution Signature</h2>
@@ -110,7 +110,7 @@ export default class SigningParty extends Vue {
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
 
   @Action(useStore) setSpecialResolution!: ActionBindingIF
-  @Action(useStore) setResolutionSignatureValid!: ActionBindingIF
+  @Action(useStore) setSpecialResolutionSignatureValid!: ActionBindingIF
 
   // Refs
   $refs!: {
@@ -181,12 +181,10 @@ export default class SigningParty extends Vue {
   /** called to add new signature date  */
   async onSigningDate (val: string): Promise<void> {
     this.signingDate = val
-    this.setSpecialResolution({
+    await this.setSpecialResolution({
       ...this.getSpecialResolution,
       signingDate: val
     })
-    // wait for store update
-    await this.$nextTick()
     if (this.getComponentValidate) {
       await this.onValidate()
     }
@@ -195,12 +193,10 @@ export default class SigningParty extends Vue {
   /** called to store signing party. */
   @Watch('signatory', { deep: true })
   async onSignatoryChanged (): Promise<void> {
-    this.setSpecialResolution({
+    await this.setSpecialResolution({
       ...this.getSpecialResolution,
       signatory: this.signatory
     })
-    // wait for store update
-    await this.$nextTick()
     if (this.getComponentValidate) {
       await this.onValidate()
     }
@@ -227,7 +223,7 @@ export default class SigningParty extends Vue {
     const hasSigningData = !!this.signingDate && !!this.signatory.givenName && !!this.signatory.familyName
     this.$refs?.signatureDatePickerRef?.validateForm()
     const isSignatureDateValid = this.$refs?.signatureDatePickerRef?.isDateValid()
-    this.setResolutionSignatureValid(hasSigningData && isSignatureDateValid)
+    await this.setSpecialResolutionSignatureValid(hasSigningData && isSignatureDateValid)
   }
 }
 </script>

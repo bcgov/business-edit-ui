@@ -40,7 +40,7 @@ describe('ResolutionEditor', () => {
     const resolutionDatePickerRef = wrapper.vm.$refs.resolutionDatePickerRef
     const resolutionDate = '2023-05-08'
     resolutionDatePickerRef.$emit('emitDate', resolutionDate)
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.vm.resolutionDateText).toBe(resolutionDate)
   })
 
@@ -51,19 +51,19 @@ describe('ResolutionEditor', () => {
     await wrapper.findComponent(DatePickerShared).setData({ dateText: '2023-05-08' })
     await wrapper.setData({ resolutionDateText: '2023-05-08', resolution: '<p></p>' })
     store.setComponentValidate(true)
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(store.getValidationFlags.flagsCompanyInfo.isValidSpecialResolution).toBe(false)
     await wrapper.findComponent(DatePickerShared).setData({ dateText: '' })
     await wrapper.setData({ resolutionDateText: '', resolution: '<p>Resolution text</p>' })
     store.setComponentValidate(true)
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(store.getValidationFlags.flagsCompanyInfo.isValidSpecialResolution).toBe(false)
     await wrapper.findComponent(DatePickerShared).setData({ dateText: '2020-03-01' })
     await wrapper.setData({ resolutionDateText: '2020-03-01', resolution: '<p> Resolution tex </p>' })
     store.setComponentValidate(true)
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(store.getValidationFlags.flagsCompanyInfo.isValidSpecialResolution).toBe(true)
   })
 
-  // NOTE: Leaving out unit tests for Vuetify Tiptap editor, it will be scrapped soon.
+  // No unit test for Vuetify Tiptap editor, it will be scrapped soon. Not our job to test external components.
 })

@@ -1,7 +1,9 @@
+import Vue from 'vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { mount } from '@vue/test-utils'
 import SigningParty from '@/components/SpecialResolution/SigningParty.vue'
 
+// Store required for component, although not read or modified in unit test.
 setActivePinia(createPinia())
 
 describe('SigningParty', () => {
@@ -55,11 +57,11 @@ describe('SigningParty', () => {
       isDateValid: jest.fn().mockReturnValue(true)
     }
 
-    wrapper.vm.setResolutionSignatureValid = jest.fn()
+    wrapper.vm.setSpecialResolutionSignatureValid = jest.fn()
 
     wrapper.vm.onValidate()
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
 
-    expect(wrapper.vm.setResolutionSignatureValid).toHaveBeenCalledWith(true)
+    expect(wrapper.vm.setSpecialResolutionSignatureValid).toHaveBeenCalledWith(true)
   })
 })

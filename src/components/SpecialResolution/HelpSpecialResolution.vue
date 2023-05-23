@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="help-section-component ma-6">
+  <div id="help-special-resolution">
+    <div class="ma-6">
       <div
         class="help-btn top"
         @click="helpToggle = !helpToggle"
@@ -60,10 +60,11 @@
               </li>
             </ul>
           </div>
-          <br>
-          <br>
           <!-- Special Resolution Example Form -->
-          <header id="sample-resolution-header">
+          <header
+            id="sample-resolution-header"
+            class="mt-12"
+          >
             <h2>{{ getSpecialResolutionResource.header }}</h2>
           </header>
           <p
@@ -139,8 +140,7 @@ export default class HelpSpecialResolution extends Vue {
      * In session is stored the BASE_URL with business ID
      * So we are taking from process.env.BASE_URL
      */
-    return process.env.BASE_URL +
-      this.getSpecialResolutionResource?.path
+    return `${sessionStorage.getItem('BASE_URL')}${this.getSpecialResolutionResource?.path}`
   }
 }
 </script>

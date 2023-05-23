@@ -1,4 +1,5 @@
 export * from './alteration-interfaces'
+export * from './business-document-interface'
 export * from './correction-interfaces'
 export * from './filing-interfaces'
 export * from './payment-interfaces'

@@ -14,10 +14,15 @@ const store = useStore()
 
 describe('Rules', () => {
   let wrapper: any
+
   beforeEach(async () => {
     store.stateModel.rules = {}
     store.stateModel.entitySnapshot = null
     wrapper = mount(Rules, { vuetify })
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
   })
 
   it('renders the component', () => {
@@ -101,7 +106,7 @@ describe('Rules', () => {
         }
       }
     }
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.find('#rules-paper-not-changed').text()).toContain('Available on paper only')
 
     await wrapper.find('#btn-change-rules').trigger('click')
@@ -110,12 +115,12 @@ describe('Rules', () => {
     await wrapper.find('#btn-rules-done').trigger('click')
 
     store.stateModel.rules = { previouslyInResolution: false, includedInResolution: true }
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.find('#rules-paper-changed').text()).toContain('Available on paper only')
     expect(wrapper.find('#rules-changes-included-resolution').text()).not.toContain('New')
     expect(wrapper.find('#rules-changes-included-resolution').text()).toContain('Changes will be described')
     store.stateModel.rules = { previouslyInResolution: true, includedInResolution: true }
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.find('#rules-changes-included-resolution').text()).toContain('New')
   })
 
@@ -138,10 +143,10 @@ describe('Rules', () => {
     }
     wrapper.vm.hasChanged = true
     wrapper.vm.isEditing = false
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.find('#rules-paper-changed').text()).toContain('Available on paper only')
     store.stateModel.rules = { previouslyInResolution: false, key: '12345', name: '12345' }
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.find('#rules-paper-changed').exists()).toBe(false)
     expect(wrapper.find('a').text()).toEqual('12345')
   })
@@ -149,7 +154,7 @@ describe('Rules', () => {
   it('rules on paper only - unchanged - previously included in special resolution', async () => {
     store.stateModel.rules = { previouslyInResolution: true, key: null }
     wrapper.vm.hasChanged = false
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.find('#rules-paper-not-changed').text()).toContain('Available on paper only')
     expect(wrapper.find('.last-modified-details').text()).toContain('filed previously to view any changes')
   })
@@ -162,7 +167,7 @@ describe('Rules', () => {
       uploaded: '2022-01-01T08:00:00.000000+00:00',
       previouslyInResolution: false
     }
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.find('a').text()).toEqual('test')
     expect(wrapper.find('.last-modified-details').text()).toEqual('Uploaded January 1, 2022')
     expect(wrapper.find('.last-modified-details').text()).not.toContain('filed previously to view any changes')
@@ -177,7 +182,7 @@ describe('Rules', () => {
       uploaded: '2022-01-01T08:00:00.000000+00:00',
       previouslyInResolution: true
     }
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.find('a').text()).toEqual('test')
     expect(wrapper.find('.last-modified-details').text()).toContain('uploaded on January 1, 2022. Please refer')
     expect(wrapper.find('.last-modified-details').text()).toContain('after this date to view')

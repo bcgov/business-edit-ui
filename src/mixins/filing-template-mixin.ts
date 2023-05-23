@@ -72,10 +72,10 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
   @Getter(useStore) isLimitedRestorationToFull!: boolean
   @Getter(useStore) isEntityTypeFirm!: boolean
-  @Getter(useStore) hasMemorandumChanged!: boolean
-  @Getter(useStore) hasRulesChanged!: boolean
-  @Getter(useStore) getMemorandum!: RulesMemorandumIF
-  @Getter(useStore) getRules!: RulesMemorandumIF
+  @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
+  @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
+  @Getter(useStore) getSpecialResolutionMemorandum!: RulesMemorandumIF
+  @Getter(useStore) getSpecialResolutionRules!: RulesMemorandumIF
 
   // Global actions
   @Action(useStore) setBusinessContact!: ActionBindingIF
@@ -108,8 +108,8 @@ export default class FilingTemplateMixin extends DateMixin {
   @Action(useStore) setRestorationExpiry!: ActionBindingIF
   @Action(useStore) setRestorationType!: ActionBindingIF
   @Action(useStore) setRestorationRelationships!: ActionBindingIF
-  @Action(useStore) setMemorandum!: ActionBindingIF
-  @Action(useStore) setRules!: ActionBindingIF
+  @Action(useStore) setSpecialResolutionMemorandum!: ActionBindingIF
+  @Action(useStore) setSpecialResolutionRules!: ActionBindingIF
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -407,7 +407,8 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     // Only add alteration if the association type or rules or memorandum have changed
-    if (this.hasAssociationTypeChanged || this.hasMemorandumChanged || this.hasRulesChanged) {
+    if (this.hasAssociationTypeChanged || this.hasSpecialResolutionMemorandumChanged ||
+        this.hasSpecialResolutionRulesChanged) {
       // Conditional access - Rules or memorandum could be empty here if it was done on paper.
       filing.alteration = {
         business: {
@@ -416,20 +417,24 @@ export default class FilingTemplateMixin extends DateMixin {
         },
         contactPoint: this.getContactPoint,
         cooperativeAssociationType: this.getAssociationType,
-        rulesFileKey: this.getRules?.key,
-        rulesFileName: this.getRules?.name,
-        memorandumFileKey: this.getMemorandum?.key,
-        memorandumFileName: this.getMemorandum?.name
+        rulesFileKey: this.getSpecialResolutionRules?.key,
+        rulesFileName: this.getSpecialResolutionRules?.name,
+        memorandumFileKey: this.getSpecialResolutionMemorandum?.key,
+        memorandumFileName: this.getSpecialResolutionMemorandum?.name
       }
-      if (this.getMemorandum?.includedInResolution) {
-        delete filing.alteration.memorandumFileKey
-        delete filing.alteration.memorandumFileName
-        filing.alteration.memorandumInResolution = true
-      }
-      if (this.getRules?.includedInResolution) {
+      /* Ensures a key isn't passed when including the rules or memorandum in the resolution.
+        See validator here:
+        https://github.com/bcgov/lear/blob/main/legal-api/src/legal_api/services/filings/validations/alteration.py#L177
+      */
+      if (this.getSpecialResolutionRules?.includedInResolution) {
         delete filing.alteration.rulesFileKey
         delete filing.alteration.rulesFileName
         filing.alteration.rulesInResolution = true
+      }
+      if (this.getSpecialResolutionMemorandum?.includedInResolution) {
+        delete filing.alteration.memorandumFileKey
+        delete filing.alteration.memorandumFileName
+        filing.alteration.memorandumInResolution = true
       }
     }
 
@@ -776,7 +781,7 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setBusinessInformation({
       ...entitySnapshot.businessInfo,
       ...filing.business,
-      ...filing.alteration?.business
+      ...filing.alteration.business
     })
 
     // store Name Request data
@@ -980,7 +985,7 @@ export default class FilingTemplateMixin extends DateMixin {
     ))
 
     const documentInfo = entitySnapshot.businessDocuments.documentsInfo
-    this.setRules(
+    this.setSpecialResolutionRules(
       {
         name: filing.alteration?.rulesFileName || documentInfo.certifiedRules.name,
         key: filing.alteration?.rulesFileKey || documentInfo.certifiedRules.key,
@@ -990,7 +995,7 @@ export default class FilingTemplateMixin extends DateMixin {
         uploaded: documentInfo?.certifiedRules?.uploaded
       })
 
-    this.setMemorandum(
+    this.setSpecialResolutionMemorandum(
       {
         name: filing.alteration?.memorandumFileName || documentInfo.certifiedMemorandum.name,
         key: filing.alteration?.memorandumFileKey || documentInfo.certifiedMemorandum.key,
@@ -1244,22 +1249,22 @@ export default class FilingTemplateMixin extends DateMixin {
       case CorpTypeCd.COOP: {
         // Note: it's possible for the COOP to have a paper resolution or memorandum, documentsInfo would be empty.
         const documentsInfo = entitySnapshot.businessDocuments?.documentsInfo
-        this.setMemorandum(
-          {
-            name: documentsInfo?.certifiedMemorandum?.name,
-            key: documentsInfo?.certifiedMemorandum?.key,
-            url: entitySnapshot.businessDocuments?.documents?.certifiedMemorandum,
-            previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
-            uploaded: documentsInfo.certifiedMemorandum?.uploaded
-          })
-
-        this.setRules(
+        this.setSpecialResolutionRules(
           {
             name: documentsInfo.certifiedRules?.name,
             key: documentsInfo.certifiedRules?.key,
             url: entitySnapshot.businessDocuments?.documents?.certifiedRules,
             previouslyInResolution: documentsInfo.certifiedRules?.includedInResolution,
             uploaded: documentsInfo.certifiedRules?.uploaded
+          })
+
+        this.setSpecialResolutionMemorandum(
+          {
+            name: documentsInfo?.certifiedMemorandum?.name,
+            key: documentsInfo?.certifiedMemorandum?.key,
+            url: entitySnapshot.businessDocuments?.documents?.certifiedMemorandum,
+            previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
+            uploaded: documentsInfo.certifiedMemorandum?.uploaded
           })
       }
     }

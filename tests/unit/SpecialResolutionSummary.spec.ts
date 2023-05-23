@@ -105,40 +105,37 @@ describe('Special Resolution Review', () => {
   it('business name', async () => {
     store.stateModel.nameRequest.legalName = 'Mock name'
     store.stateModel.nameRequest.nrNumber = 'NR 12345678'
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.find('.company-name').text()).toBe('Mock name')
     expect(wrapper.find('.company-nr').text()).toBe('NR 12345678')
   })
 
   it('association type', async () => {
     store.stateModel.businessInformation.associationType = CoopTypes.HOUSING_COOPERATIVE
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.find('#association-description').text()).toBe('Housing Cooperative')
   })
 
   it('rules', async () => {
-    store.stateModel.rules = {
-      ...store.stateModel.rules,
+    await store.setSpecialResolutionRules({
+      ...store.getSpecialResolutionRules,
       includedInResolution: true
-    }
-    await wrapper.vm.$nextTick()
+    })
     expect(wrapper.find('#rules-included-resolution').text()).toContain('described in the special resolution')
-    store.stateModel.rules = {
-      ...store.stateModel.rules,
+    await store.setSpecialResolutionRules({
+      ...store.getSpecialResolutionRules,
       key: '123',
       name: '12',
       includedInResolution: false
-    }
-    await wrapper.vm.$nextTick()
+    })
     expect(wrapper.find('#rules-uploaded').text()).toBe('12')
   })
 
   it('memorandum', async () => {
-    store.stateModel.memorandum = {
-      ...store.stateModel.memorandum,
+    await store.setSpecialResolutionMemorandum({
+      ...store.getSpecialResolutionMemorandum,
       includedInResolution: true
-    }
-    await wrapper.vm.$nextTick()
+    })
     expect(wrapper.find('#memorandum-included-resolution').text()).toContain('described in the special resolution')
   })
 })

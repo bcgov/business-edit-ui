@@ -68,7 +68,7 @@
     </template>
 
     <!-- Rules -->
-    <template v-if="hasRulesChanged">
+    <template v-if="hasSpecialResolutionRulesChanged">
       <v-divider class="mx-4" />
       <div class="section-container association-type-summary">
         <v-row no-gutters>
@@ -78,7 +78,7 @@
 
           <v-col cols="8">
             <span
-              v-if="getRules.includedInResolution"
+              v-if="getSpecialResolutionRules.includedInResolution"
               id="rules-included-resolution"
               class="info-text"
             > Changes will be described in the special resolution </span>
@@ -93,7 +93,7 @@
               >
                 mdi-check
               </v-icon>
-              {{ getRules.name }}
+              {{ getSpecialResolutionRules.name }}
             </span>
           </v-col>
         </v-row>
@@ -101,7 +101,7 @@
     </template>
 
     <!-- Memorandum -->
-    <template v-if="hasMemorandumChanged">
+    <template v-if="hasSpecialResolutionMemorandumChanged">
       <v-divider class="mx-4" />
       <div class="section-container association-type-summary">
         <v-row no-gutters>
@@ -149,11 +149,11 @@ export default class SpecialResolutionSummary extends Vue {
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) getSpecialResolutionRules!: RulesMemorandumIF
   @Getter(useStore) hasAssociationTypeChanged!: boolean
   @Getter(useStore) hasBusinessNameChanged!: boolean
-  @Getter(useStore) hasMemorandumChanged!: boolean
-  @Getter(useStore) hasRulesChanged!: boolean
-  @Getter(useStore) getRules!: RulesMemorandumIF
+  @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
+  @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean
@@ -192,7 +192,8 @@ export default class SpecialResolutionSummary extends Vue {
     return `($${(filingFeesSum + futureEffectiveFeesSum).toFixed(2)} Fee)`
   }
 
-  protected onClickDelete (): void {
+  onClickDelete (): void {
+    // May not work in Vue3.
     this.$root.$emit('delete-all')
   }
 }

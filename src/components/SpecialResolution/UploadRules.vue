@@ -1,5 +1,8 @@
 <template>
-  <div class="section-container overflow-hidden px-0 py-0">
+  <div
+    id="upload-rules"
+    class="section-container overflow-hidden px-0 py-0"
+  >
     <header>
       <ul
         class="mt-5"
@@ -23,14 +26,15 @@
       <FileUploadPdf
         ref="fileUploadRef"
         class="flex-grow-1"
-        :isRequired="true"
         customErrorMSg="Rules document required"
-        pageSize="LETTER"
+        :isRequired="true"
+        :pageSize="PageSizes.LETTER_PORTRAIT"
         :file="file"
         :fileKey="fileKey"
-        :userId="userKeycloakGuid"
+        :maxSize="30"
         :getPresignedUrl="LegalServices.getPresignedUrl"
         :uploadToUrl="LegalServices.uploadToUrl"
+        :userId="userKeycloakGuid"
         @update:file="updateFile"
         @update:fileKey="updateDocumentKey"
       />
@@ -43,7 +47,7 @@ import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ActionBindingIF, FormIF, RulesMemorandumIF } from '@/interfaces'
-import { PdfPageSize } from '@/enums/'
+import { PageSizes } from '@/enums/'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
 import { useStore } from '@/store/store'
 import { LegalServices } from '@/services/'
@@ -54,16 +58,16 @@ import { LegalServices } from '@/services/'
   }
 })
 export default class UploadRules extends Vue {
-  @Getter(useStore) getRules!: RulesMemorandumIF
+  @Getter(useStore) getSpecialResolutionRules!: RulesMemorandumIF
   @Getter(useStore) getUserInfo!: any
 
-  @Action(useStore) setRules!: ActionBindingIF
+  @Action(useStore) setSpecialResolutionRules!: ActionBindingIF
 
   @Prop({ default: false })
   readonly invalidSection: boolean
 
   readonly LegalServices = LegalServices
-  readonly PdfPageSize = PdfPageSize
+  readonly PageSizes = PageSizes
 
   file: File = null
   fileKey: string = null

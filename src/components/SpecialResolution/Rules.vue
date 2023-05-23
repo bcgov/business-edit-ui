@@ -18,8 +18,7 @@
             class="mt-4"
           >
             <v-col
-              cols="2"
-              class="pr-2"
+              :cols="isEditing ? 2 : 3"
             >
               <label :class="{'invalid-text': rulesEditingInvalid}">
                 <strong>Rules</strong>
@@ -40,15 +39,14 @@
             <!-- Display Mode -->
             <template v-if="!hasChanged">
               <v-col
-                :cols="isEditing ? 10 : 9"
+                :cols="isEditing ? 10 : 8"
                 class="pr-2"
               >
                 <div
                   v-if="!isEditing"
-                  class="mx-4"
                 >
                   <div
-                    v-if="!getRules || !getRules.key"
+                    v-if="!getSpecialResolutionRules || !getSpecialResolutionRules.key"
                   >
                     <span
                       id="rules-paper-not-changed"
@@ -61,7 +59,7 @@
                     v-else
                   >
                     <div
-                      :key="getRules.key"
+                      :key="getSpecialResolutionRules.key"
                       class="download-link-container"
                     >
                       <v-icon
@@ -75,7 +73,7 @@
                         class="ml-1"
                         @click="openPdf()"
                       >
-                        {{ getRules.name }}
+                        {{ getSpecialResolutionRules.name }}
                       </a>
                     </div>
                   </div>
@@ -108,7 +106,7 @@
                               uploadDropdown = false; describeDropdown = !describeDropdown"
                     >
                       <v-expand-transition>
-                        <span :style="describeDropdown ? 'color: black !important; font-weight: bold !important' : ''">
+                        <span :class="{'black-bold-font' : describeDropdown}">
                           Describe the rule changes within the special resolution</span>
                       </v-expand-transition>
                       <v-spacer class="spacer" />
@@ -142,7 +140,7 @@
                               describeDropdown = false; uploadDropdown = !uploadDropdown"
                     >
                       <span
-                        :style="uploadDropdown ? 'color: black !important; font-weight: bold !important' : ''"
+                        :class="{'black-bold-font' : uploadDropdown}"
                       >
                         Upload a new full set of the rules PDF document
                       </span>
@@ -217,109 +215,107 @@
             <!-- Editing Mode -->
             <v-col
               v-else
-              cols="9"
+              cols="8"
             >
               <section
                 id="rules-actions-section"
               >
-                <v-row no-gutters>
-                  <v-col cols="10">
-                    <div
-                      v-if="!isEditing"
-                      class="mx-4"
-                    >
-                      <div
-                        class="download-link-container"
-                      >
-                        <v-icon
-                          v-if="getRules && getRules.key"
-                          color="primary"
-                          class="mt-n1"
-                          :style="!getRules.url ? 'color: rgba(0,0,0,.87) !important; cursor: auto;' : ''"
-                        >
-                          mdi-file-pdf-outline
-                        </v-icon>
-                        <a
-                          v-if="getRules && getRules.key"
-                          :key="getRules.key"
-                          download
-                          class="ml-1"
-                          :style="!getRules.url ? 'color: rgba(0,0,0,.87) !important; cursor: auto;' : ''"
-                          @click="openPdf()"
-                        >
-                          {{ getRules.name }}
-                        </a>
-                        <span
-                          v-else
-                          id="rules-paper-changed"
-                          class="ml-7 d-block"
-                        >
-                          Available on paper only
-                        </span>
-                        <span
-                          v-if="lastUploadedDetails"
-                          class="mt-1 mb-2 last-modified-details"
-                        >
-                          {{ lastUploadedDetails }}
-                        </span>
-                        <div
-                          v-if="getRules.includedInResolution"
-                        >
-                          <v-icon
-                            color="green darken-2"
-                          >
-                            mdi-check
-                          </v-icon>
-                          <span
-                            id="rules-changes-included-resolution"
-                            class="ml-1 d-inline-flex"
-                          >{{ getRules.previouslyInResolution ? 'New' : '' }}
-                            Changes will be described in the special resolution text.</span>
-                        </div>
-                      </div>
-                    </div>
-                  </v-col>
-                  <v-col
-                    cols="2"
-                    class="pt-0 mt-n2 align-right"
+                <div
+                  v-if="!isEditing"
+                >
+                  <div
+                    class="download-link-container"
                   >
-                    <!-- Actions -->
-                    <div class="actions mr-4">
-                      <v-btn
-                        id="rules-undo"
-                        text
-                        color="primary"
-                        class="undo-action"
-                        @click="resetRules()"
+                    <v-icon
+                      v-if="getSpecialResolutionRules && getSpecialResolutionRules.key"
+                      color="primary"
+                      class="mt-n1"
+                      :class=" {'dropdown-active': !getSpecialResolutionRules.url}"
+                    >
+                      mdi-file-pdf-outline
+                    </v-icon>
+                    <a
+                      v-if="getSpecialResolutionRules && getSpecialResolutionRules.key"
+                      :key="getSpecialResolutionRules.key"
+                      download
+                      class="ml-1"
+                      :class=" {'dropdown-active': !getSpecialResolutionRules.url}"
+                      @click="openPdf()"
+                    >
+                      {{ getSpecialResolutionRules.name }}
+                    </a>
+                    <span
+                      v-else
+                      id="rules-paper-changed"
+                      class="ml-7 mb-2 d-block"
+                    >
+                      Available on paper only
+                    </span>
+                    <span
+                      v-if="lastUploadedDetails"
+                      class="mt-1 mb-2 last-modified-details"
+                    >
+                      {{ lastUploadedDetails }}
+                    </span>
+                    <div
+                      v-if="getSpecialResolutionRules.includedInResolution"
+                    >
+                      <v-icon
+                        color="green darken-2"
                       >
-                        <v-icon small>
-                          mdi-undo
-                        </v-icon>
-                        <span>Undo</span>
-                      </v-btn>
+                        mdi-check
+                      </v-icon>
+                      <span
+                        id="rules-changes-included-resolution"
+                        class="ml-1 d-inline-flex"
+                      >{{ getSpecialResolutionRules.previouslyInResolution ? 'New' : '' }}
+                        Changes will be described in the special resolution text.</span>
                     </div>
-                  </v-col>
-                </v-row>
+                  </div>
+                </div>
               </section>
             </v-col>
             <!-- Actions -->
             <v-col
               v-if="!isEditing && !hasChanged"
               cols="1"
-              class="mt-n2"
+              class="mt-n2 align-right"
             >
-              <v-btn
-                id="btn-change-rules"
-                text
-                color="primary"
-                @click="isEditing = true; rulesInResolution = false; rulesInUpload = false;
-                        describeDropdown = false; uploadDropdown = false;"
-              >
-                <v-icon small>
-                  mdi-pencil
-                </v-icon>
-                <span>Change</span>
-              </v-btn>
+              <div class="actions mr-4">
+                <v-btn
+                  id="btn-change-rules"
+                  text
+                  color="primary"
+                  @click="isEditing = true; rulesInResolution = false; rulesInUpload = false;
+                          describeDropdown = false; uploadDropdown = false;"
+                >
+                  <v-icon small>
+                    mdi-pencil
+                  </v-icon>
+                  <span>Change</span>
+                </v-btn>
+              </div>
+            </v-col>
+            <v-col
+              v-if="!isEditing && hasChanged"
+              cols="1"
+              class="pt-0 mt-n2 align-right"
+            >
+              <!-- Actions -->
+              <div class="actions mr-4">
+                <v-btn
+                  id="rules-undo"
+                  text
+                  color="primary"
+                  class="undo-action"
+                  @click="resetRules()"
+                >
+                  <v-icon small>
+                    mdi-undo
+                  </v-icon>
+                  <span>Undo</span>
+                </v-btn>
+              </div>
             </v-col>
           </v-row>
         </div>
@@ -333,7 +329,6 @@ import Vue from 'vue'
 import { HelpSection } from '@/components/common/'
 import { ActionBindingIF, EntitySnapshotIF, RulesMemorandumIF } from '@/interfaces'
 import DateUtilities from '@/services/date-utilities'
-import { PdfPageSize } from '@/enums'
 import { FormIF } from '@bcrs-shared-components/interfaces'
 import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
@@ -349,25 +344,23 @@ import { LegalServices } from '@/services'
 })
 export default class Rules extends Vue {
     @Getter(useStore) getComponentValidate!: boolean
-    @Getter(useStore) getRules!: RulesMemorandumIF
+    @Getter(useStore) getSpecialResolutionRules!: RulesMemorandumIF
     @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
     @Getter(useStore) getUserFirstName!: string
     @Getter(useStore) getUserLastName!: string
     @Getter(useStore) getEditLabel!: string
     @Getter(useStore) getEditedLabel!: string
-    @Getter(useStore) getRulesValid!: boolean
+    @Getter(useStore) getSpecialResolutionRulesValid!: boolean
     @Getter(useStore) getNameRequestLegalName!: string
-    @Getter(useStore) hasRulesChanged!: boolean
+    @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
 
-    @Action(useStore) setRules!: ActionBindingIF
-    @Action(useStore) setRulesValid!: ActionBindingIF
+    @Action(useStore) setSpecialResolutionRules!: ActionBindingIF
+    @Action(useStore) setSpecialResolutionRulesValid!: ActionBindingIF
 
     $refs!: {
       rulesForm: FormIF,
       uploadRulesRef: FormIF
     }
-    readonly PdfPageSize = PdfPageSize
-
     describeDropdown = false
     hasChanged = false
     isEditing = false
@@ -381,11 +374,11 @@ export default class Rules extends Vue {
     ]
 
     created (): void {
-      this.hasChanged = this.hasRulesChanged
+      this.hasChanged = this.hasSpecialResolutionRulesChanged
     }
 
     get lastUploadedDetails (): string {
-      const rules = this.getRules
+      const rules = this.getSpecialResolutionRules
       if (!rules) return ''
       if (rules.previouslyInResolution) {
         let uploadedDetails = ''
@@ -412,7 +405,7 @@ export default class Rules extends Vue {
     }
 
     openPdf (): void {
-      const rules = this.getRules
+      const rules = this.getSpecialResolutionRules
       if (!rules.url) return
       LegalServices.fetchDocument({
         title: 'Certified Rules',
@@ -439,16 +432,16 @@ export default class Rules extends Vue {
       this.isEditing = false
       this.hasChanged = false
       this.noOptionSelected = false
-      this.setRules({
+      this.setSpecialResolutionRules({
         ...this.initialRules()
       })
     }
 
-    saveRules (): void {
+    async saveRules (): Promise<void> {
       if (this.validate(false)) {
         this.hasChanged = true
         this.isEditing = false
-        let rules = this.getRules
+        let rules = this.getSpecialResolutionRules
         if (this.uploadDropdown) {
           rules = {
             ...rules,
@@ -463,11 +456,11 @@ export default class Rules extends Vue {
             includedInResolution: true
           }
         }
-        this.setRules(rules)
+        await this.setSpecialResolutionRules(rules)
       }
     }
 
-    validate (includeIsEditing: boolean) {
+    validate (includeIsEditing: boolean): boolean {
       // Show error in section, if no option is selected.
       this.noOptionSelected = this.isEditing && !this.rulesInResolution && !this.rulesInUpload
       // Validate the form.
@@ -480,7 +473,7 @@ export default class Rules extends Vue {
       if (includeIsEditing) {
         rulesValid = rulesValid && !this.isEditing
       }
-      this.setRulesValid(rulesValid)
+      this.setSpecialResolutionRulesValid(rulesValid)
       return rulesValid
     }
 
@@ -493,65 +486,75 @@ export default class Rules extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/styles/theme.scss';
+@import '@/assets/styles/theme.scss';
 
-  header {
-    p {
-      padding-top: 0.5rem;
-    }
+header {
+  p {
+    padding-top: 0.5rem;
   }
+}
 
-  #rules-confirmation-buttons {
-    //  ensure both Done and cancel buttons are the same width
-    .v-btn {
-      min-width: 6rem;
-    }
+#rules-confirmation-buttons {
+  //  ensure both Done and cancel buttons are the same width
+  .v-btn {
+    min-width: 6rem;
   }
+}
 
-  .section-container {
-    color: black;
-  }
+.black-bold-font {
+  color: black !important;
+  font-weight: bold !important
+}
 
-  :deep(#confirm-rules-section) {
-    // override default validation styling so checkbox does not turn red on validation error
-    .v-input--selection-controls__input .error--text{
-      color: $app-lt-gray !important;
-    }
-  }
-  .header-container {
-    display: flex;
-    background-color: $BCgovBlue5O;
-  }
+.section-container {
+  color: black;
+}
 
-  .rules-coop-name {
-    display: block;
-    min-width: 100%
-  }
+.dropdown-active {
+  color: rgba(0,0,0,.87) !important; cursor: auto;
+}
 
-  .actions {
-    position: absolute;
-    right: 0;
-
-    .v-btn {
-      min-width: 0.5rem;
-    }
+:deep(#confirm-rules-section) {
+  // override default validation styling so checkbox does not turn red on validation error
+  .v-input--selection-controls__input .error--text{
+    color: $app-dk-blue !important;
   }
+}
+.header-container {
+  display: flex;
+  background-color: $BCgovBlue5O;
+}
 
-  .last-modified-details {
-    display: block;
-    font-size: .75rem;
-    line-height: 1.25rem;
-    margin-left: 30px;
-  }
+.rules-coop-name {
+  display: block;
+  min-width: 100%
+}
 
-  a {
-    display: inline-flex;
-    text-decoration: none;
-  }
-  .undo-action {
-    border: 0;
-  }
+.actions {
+  position: absolute;
+  right: 0;
 
+  .v-btn {
+    min-width: 0.5rem;
+  }
+}
+
+.last-modified-details {
+  display: block;
+  font-size: .75rem;
+  line-height: 1.25rem;
+  margin-left: 30px;
+}
+
+a {
+  display: inline-flex;
+  text-decoration: none;
+}
+.undo-action {
+  border: 0;
+}
+
+/* Override bold weight to regular weight. */
 :deep(.v-label) {
   font-weight: normal;
 }

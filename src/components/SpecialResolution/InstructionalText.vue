@@ -1,6 +1,6 @@
 <template>
   <article class="instructional-text section-container">
-    Before submitting this filing, you must pass a
+    You have made changes that require a
     <v-tooltip
       top
       content-class="top-tooltip"
@@ -18,13 +18,14 @@
         Special Resolution -  A decision voted on by the voting members of a Cooperative Association.
       </span>
     </v-tooltip>
-    for this amendment
+    to be submitted. The full text of the special resolution must be entered.
   </article>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
+
 @Component({})
 export default class InstructionalText extends Vue { }
 </script>

@@ -22,8 +22,7 @@
           class="mt-4"
         >
           <v-col
-            cols="2"
-            class="pr-2"
+            :cols="isEditing ? 2 : 3"
           >
             <label
               id="memorandum-title"
@@ -48,13 +47,11 @@
           <!-- Display Mode -->
           <template v-if="!hasChanged">
             <v-col
-              :cols="isEditing ? 10 : 9"
-              class="pr-2"
+              :cols="isEditing ? 10 : 8"
             >
               <div v-if="!isEditing">
                 <div
-                  v-if="!getMemorandum || !getMemorandum.key"
-                  class="mx-4"
+                  v-if="!getSpecialResolutionMemorandum || !getSpecialResolutionMemorandum.key"
                 >
                   <span
                     id="memorandum-paper-not-changed"
@@ -62,17 +59,16 @@
                   >Available on paper only</span>
                   <span
                     v-if="lastUploadedDetails"
-                    class="mt-1 last-modified-details"
+                    class="mt-1 last-modified-details d-block mb-2"
                   >
                     {{ lastUploadedDetails }}
                   </span>
                 </div>
                 <div
                   v-else
-                  class="mx-4"
                 >
                   <div
-                    :key="getMemorandum.key"
+                    :key="getSpecialResolutionMemorandum.key"
                     class="download-link-container"
                   >
                     <v-icon
@@ -87,11 +83,11 @@
                       download
                       @click="openPdf()"
                     >
-                      {{ getMemorandum.name }}
+                      {{ getSpecialResolutionMemorandum.name }}
                     </a>
                     <span
                       v-if="lastUploadedDetails"
-                      class="mt-1 last-modified-details"
+                      class="mt-1 last-modified-details d-block mb-2"
                     >
                       {{ lastUploadedDetails }}
                     </span>
@@ -101,7 +97,7 @@
 
               <div
                 v-if="isEditing"
-                class="px-4 pt-0 section-container"
+                class="pt-0 section-container"
               >
                 <v-checkbox
                   id="chk-memorandum-in-resolution"
@@ -150,17 +146,15 @@
           <!-- Editing Mode -->
           <v-col
             v-if="hasChanged"
-            cols="9"
+            cols="8"
           >
-            <div
-              class="mx-4"
-            >
+            <div>
               <div
                 class="download-link-container"
               >
                 <div
-                  v-if="getMemorandum && getMemorandum.key"
-                  :key="getMemorandum.key"
+                  v-if="getSpecialResolutionMemorandum && getSpecialResolutionMemorandum.key"
+                  :key="getSpecialResolutionMemorandum.key"
                   class="mb-2"
                 >
                   <v-icon
@@ -176,28 +170,25 @@
                     download
                     @click="openPdf()"
                   >
-                    {{ getMemorandum.name }}
+                    {{ getSpecialResolutionMemorandum.name }}
                   </a>
-                  <span
-                    v-if="lastUploadedDetails"
-                    class="mt-1 last-modified-details"
-                  >
-                    {{ lastUploadedDetails }}
-                  </span>
                 </div>
-
                 <!-- Paper only -->
                 <div
                   v-else
-                  class="mb-2"
+                  class="mb-1"
                 >
                   <span
                     id="memorandum-paper-changed"
-                    class="ml-7"
+                    class="ml-7 mb-2"
                   >Available on paper only</span>
-                  <br>
-                  <br>
                 </div>
+                <span
+                  v-if="lastUploadedDetails"
+                  class="mt-1 last-modified-details d-block mb-2"
+                >
+                  {{ lastUploadedDetails }}
+                </span>
                 <v-icon
                   color="green darken-2"
                 >
@@ -207,7 +198,8 @@
                   id="memorandum-changes-included-resolution"
                   class="ml-1 d-inline-flex"
                 >
-                  {{ getMemorandum && getMemorandum.previouslyInResolution ? 'New ' : ' ' }}
+                  {{ getSpecialResolutionMemorandum && getSpecialResolutionMemorandum.previouslyInResolution ?
+                    'New ' : ' ' }}
                   Changes will be described in the special resolution text.
                 </span>
               </div>
@@ -236,19 +228,21 @@
           <v-col
             v-if="!isEditing && !hasChanged"
             cols="1"
-            class="mt-n2"
+            class="mt-n2 align-right"
           >
-            <v-btn
-              id="btn-change-memorandum"
-              text
-              color="primary"
-              @click="isEditing = true"
-            >
-              <v-icon small>
-                mdi-pencil
-              </v-icon>
-              <span>Change</span>
-            </v-btn>
+            <div class="actions mr-4">
+              <v-btn
+                id="btn-change-memorandum"
+                text
+                color="primary"
+                @click="isEditing = true"
+              >
+                <v-icon small>
+                  mdi-pencil
+                </v-icon>
+                <span>Change</span>
+              </v-btn>
+            </div>
           </v-col>
         </v-row>
       </div>
@@ -273,168 +267,170 @@ import { LegalServices } from '@/services'
   }
 })
 export default class Memorandum extends Vue {
-    @Getter(useStore) getComponentValidate!: boolean
-    @Getter(useStore) getMemorandum!: RulesMemorandumIF
-    @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
-    @Getter(useStore) getEditedLabel!: string
-    @Getter(useStore) hasMemorandumChanged!: boolean
+  @Getter(useStore) getComponentValidate!: boolean
+  @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getSpecialResolutionMemorandum!: RulesMemorandumIF
+  @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
 
-    @Action(useStore) setMemorandum!: ActionBindingIF
-    @Action(useStore) setMemorandumValid!: ActionBindingIF
+  @Action(useStore) setSpecialResolutionMemorandum!: ActionBindingIF
+  @Action(useStore) setSpecialResolutionMemorandumValid!: ActionBindingIF
 
-    $refs!: {
-      memorandumForm: FormIF
-    }
+  $refs!: {
+    memorandumForm: FormIF
+  }
 
-    hasChanged = false
-    isEditing = false
-    memorandumInResolution = false
+  hasChanged = false
+  isEditing = false
+  memorandumInResolution = false
 
-    confirmCompletionMemorandum = [
-      (v) => { return !!v }
-    ]
+  readonly confirmCompletionMemorandum = [
+    (v) => { return !!v }
+  ]
 
-    created (): void {
-      this.hasChanged = this.hasMemorandumChanged
-    }
+  created (): void {
+    this.hasChanged = this.hasSpecialResolutionMemorandumChanged
+  }
 
-    get lastUploadedDetails (): string {
-      const memorandum = this.getMemorandum
-      if (!memorandum) return ''
-      if (memorandum.previouslyInResolution) {
-        let uploadedDetails = ''
-        if (memorandum.key) {
-          uploadedDetails +=
-            `This document was uploaded on ${DateUtilities.apiToPacificDateLong(memorandum.uploaded)}.`
-        } else {
-          return 'Please refer to the special resolution filed previously to view any changes to the memorandum.'
-        }
-        if (memorandum.uploaded) {
-          uploadedDetails +=
-            ' Please refer to the special resolution filed after this date to view any changes to the memorandum.'
-        }
-        return uploadedDetails
-      } else if (memorandum.uploaded) {
-        return `Uploaded ${DateUtilities.apiToPacificDateLong(memorandum.uploaded)}`
+  get lastUploadedDetails (): string {
+    const memorandum = this.getSpecialResolutionMemorandum
+    if (!memorandum) return ''
+    if (memorandum.previouslyInResolution) {
+      let uploadedDetails = ''
+      if (memorandum.key) {
+        uploadedDetails +=
+          `This document was uploaded on ${DateUtilities.apiToPacificDateLong(memorandum.uploaded)}.`
       } else {
-        return ''
+        return 'Please refer to the special resolution filed previously to view any changes to the memorandum.'
       }
+      if (memorandum.uploaded) {
+        uploadedDetails +=
+          ' Please refer to the special resolution filed after this date to view any changes to the memorandum.'
+      }
+      return uploadedDetails
+    } else if (memorandum.uploaded) {
+      return `Uploaded ${DateUtilities.apiToPacificDateLong(memorandum.uploaded)}`
+    } else {
+      return ''
     }
+  }
 
-    get memorandumEditingInvalid (): boolean {
-      return this.getComponentValidate && this.isEditing
-    }
+  get memorandumEditingInvalid (): boolean {
+    return this.getComponentValidate && this.isEditing
+  }
 
-    openPdf (): void {
-      const memorandum = this.getMemorandum
-      if (!memorandum.url) return
-      LegalServices.fetchDocument({
-        title: 'Certified Memorandum',
-        filename: memorandum.name,
-        link: memorandum.url
-      })
-    }
+  openPdf (): void {
+    const memorandum = this.getSpecialResolutionMemorandum
+    if (!memorandum.url) return
+    LegalServices.fetchDocument({
+      title: 'Certified Memorandum',
+      filename: memorandum.name,
+      link: memorandum.url
+    })
+  }
 
-    resetMemorandum (): void {
-      this.hasChanged = false
+  resetMemorandum (): void {
+    this.hasChanged = false
+    this.isEditing = false
+    this.setSpecialResolutionMemorandum({
+      ...this.getSpecialResolutionMemorandum,
+      includedInResolution: false
+    })
+  }
+
+  saveMemorandum (): void {
+    if (this.validate(false)) {
+      this.hasChanged = true
       this.isEditing = false
-      this.setMemorandum({
-        ...this.getMemorandum,
-        includedInResolution: false
+      this.setSpecialResolutionMemorandum({
+        ...this.getSpecialResolutionMemorandum,
+        includedInResolution: true
       })
     }
+  }
 
-    saveMemorandum (): void {
-      if (this.validate(false)) {
-        this.hasChanged = true
-        this.isEditing = false
-        this.setMemorandum({
-          ...this.getMemorandum,
-          includedInResolution: true
-        })
-      }
+  validate (includeIsEditing: boolean): boolean {
+    // This validates the checkbox.
+    let memorandumValid = this.$refs.memorandumForm.validate()
+    if (includeIsEditing) {
+      memorandumValid = memorandumValid && !this.isEditing
     }
+    this.setSpecialResolutionMemorandumValid(memorandumValid)
+    return memorandumValid
+  }
 
-    validate (includeIsEditing: boolean): boolean {
-      // This validates the checkbox.
-      let memorandumValid = this.$refs.memorandumForm.validate()
-      if (includeIsEditing) {
-        memorandumValid = memorandumValid && !this.isEditing
-      }
-      this.setMemorandumValid(memorandumValid)
-      return memorandumValid
-    }
-
-    // Higher level component validation - when Review and Certify is pressed.
-    @Watch('getComponentValidate')
-    onComponentValidate (): void {
-      this.validate(true)
-    }
+  // Higher level component validation - when Review and Certify is pressed.
+  @Watch('getComponentValidate')
+  onComponentValidate (): void {
+    this.validate(true)
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-  @import '@/assets/styles/theme.scss';
+@import '@/assets/styles/theme.scss';
 
-  a {
-      display: inline-flex;
-      text-decoration: none;
-  }
-
-  header {
-    p {
-      padding-top: 0.5rem;
-    }
-  }
-
-  ul {
-    list-style: none;
-    color: $gray7;
-  }
-
-  #memorandum-confirmation-buttons {
-    //  ensure both Done and cancel buttons are the same width
-    .v-btn {
-      min-width: 6rem;
-    }
-  }
-
-  .section-container {
-    color: black;
-  }
-
-  .last-modified-details {
+a {
     display: inline-flex;
-    font-size: .75rem;
-    line-height: 1.25rem;
-    margin-left: 30px;
-  }
+    text-decoration: none;
+}
 
-  .header-container {
-    display: flex;
-    background-color: $BCgovBlue5O;
+header {
+  p {
+    padding-top: 0.5rem;
   }
+}
 
-  .actions {
-    position: absolute;
-    right: 0;
+ul {
+  list-style: none;
+  color: $gray7;
+}
 
-    .v-btn {
-      min-width: 0.5rem;
-    }
+#memorandum-confirmation-buttons {
+  //  ensure both Done and cancel buttons are the same width
+  .v-btn {
+    min-width: 6rem;
   }
+}
 
-  .undo-action {
-      border: 0;
-  }
+.section-container {
+  color: black;
+}
 
-  :deep() {
-    .v-label {
-      font-weight: normal;
-    }
-    .v-input--selection-controls {
-      padding-top: 0;
-      margin-top: 0;
-    }
+.last-modified-details {
+  display: inline-flex;
+  font-size: .75rem;
+  line-height: 1.25rem;
+  margin-left: 28px;
+}
+
+.header-container {
+  display: flex;
+  background-color: $BCgovBlue5O;
+}
+
+.actions {
+  position: absolute;
+  right: 0;
+
+  .v-btn {
+    min-width: 0.5rem;
   }
+}
+
+.undo-action {
+    border: 0;
+}
+
+:deep() {
+  /* Override bold font for labels. */
+  .v-label {
+    font-weight: normal;
+  }
+  /* Align memorandum checkbox with Memorandum left side text.  */
+  .v-input--selection-controls {
+    padding-top: 0;
+    margin-top: 0;
+  }
+}
 </style>

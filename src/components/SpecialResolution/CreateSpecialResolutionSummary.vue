@@ -1,5 +1,5 @@
 <template>
-  <div id="special-resolution-summary">
+  <div id="create-special-resolution-summary">
     <v-divider class="mx-4" />
     <section
       id="resolution-date-section"

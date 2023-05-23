@@ -1,6 +1,6 @@
 <template>
   <div
-    id="special-resolution"
+    id="special-resolution-editor"
     class="mt-4"
   >
     <v-card
@@ -145,7 +145,7 @@ export default class ResolutionEditor extends Vue {
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
 
   @Action(useStore) setSpecialResolution!: ActionBindingIF
-  @Action(useStore) setResolutionValid!: ActionBindingIF
+  @Action(useStore) setSpecialResolutionValid!: ActionBindingIF
 
   $refs!: {
     resolutionDatePickerRef: DatePickerShared,
@@ -278,7 +278,7 @@ export default class ResolutionEditor extends Vue {
     const hasData = !!this.resolutionDateText && !!this.resolution && this.resolution !== '<p></p>'
     this.$refs?.resolutionDatePickerRef?.validateForm()
     const isResolutionDateValid = this.$refs?.resolutionDatePickerRef?.isDateValid()
-    this.setResolutionValid(hasData && isResolutionDateValid)
+    this.setSpecialResolutionValid(hasData && isResolutionDateValid)
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <ViewWrapper v-if="loadView">
+  <ViewWrapper v-if="isDataLoaded">
     <section
       id="special-resolution-view"
       class="pb-10"
@@ -71,7 +71,7 @@
           <SpecialResolutionSummary
             class="mt-10"
             :validate="getAppValidate"
-            @haveChanges="onSpecialResolutionSummaryChanges($event)"
+            @haveChanges="onSpecialResolutionSummaryChanges()"
           />
 
           <DocumentsDelivery
@@ -212,7 +212,7 @@ export default class SpecialResolution extends Vue {
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
 
-  loadView = false
+  isDataLoaded = false
 
   /** Whether to show the Transactional Folio Number section. */
   get showTransactionalFolioNumber (): boolean {
@@ -324,7 +324,7 @@ export default class SpecialResolution extends Vue {
 
       // tell App that we're finished loading
       this.emitHaveData()
-      this.loadView = true
+      this.isDataLoaded = true
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
       this.emitFetchError(err)

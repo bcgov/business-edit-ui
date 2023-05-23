@@ -14,10 +14,15 @@ const store = useStore()
 
 describe('Memorandum', () => {
   let wrapper: any
+
   beforeEach(async () => {
     store.stateModel.memorandum = {}
     store.stateModel.entitySnapshot = null
     wrapper = mount(Memorandum, { vuetify })
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
   })
 
   it('renders the component', () => {
@@ -52,7 +57,7 @@ describe('Memorandum', () => {
 
   it('memorandum on paper only, previously included in special resolution - unchanged', async () => {
     store.stateModel.memorandum = { ...store.stateModel.memorandum, previouslyInResolution: true, key: null }
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.find('#memorandum-paper-not-changed').text()).toContain('Available on paper only')
     expect(wrapper.find('.last-modified-details').text()).toContain('filed previously to view any changes')
   })
@@ -65,7 +70,7 @@ describe('Memorandum', () => {
       uploaded: '2022-01-01T08:00:00.000000+00:00',
       previouslyInResolution: false
     }
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.find('a').text()).toEqual('test')
     expect(wrapper.find('.last-modified-details').text()).toEqual('Uploaded January 1, 2022')
   })
@@ -78,7 +83,7 @@ describe('Memorandum', () => {
       uploaded: '2022-01-01T08:00:00.000000+00:00',
       previouslyInResolution: true
     }
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     expect(wrapper.find('a').text()).toEqual('test')
     expect(wrapper.find('.last-modified-details').text()).toContain('uploaded on January 1, 2022. Please refer')
     expect(wrapper.find('.last-modified-details').text()).toContain('after this date to view')

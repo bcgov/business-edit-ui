@@ -21,8 +21,8 @@ export enum ComponentsCompanyInfo {
   'association-type',
   'rules',
   'memorandum',
-  'special-resolution',
-  'special-resolution-signature',
+  'special-resolution-editor',
+  'special-resolution-signing-party',
   'approval-type-section',
   'extension-time-section'
 }

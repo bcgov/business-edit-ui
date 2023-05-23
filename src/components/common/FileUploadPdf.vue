@@ -19,7 +19,7 @@
 import Vue from 'vue'
 import { AxiosResponse } from 'axios'
 import { Component, Emit, Prop } from 'vue-property-decorator'
-import { PdfPageSize } from '@/enums'
+import { PageSizes, PAGE_SIZE_DICT } from '@/enums'
 import { PdfInfoIF, PresignedUrlIF } from '@/interfaces'
 
 @Component({})
@@ -28,8 +28,8 @@ export default class FileUploadPdf extends Vue {
   @Prop({ default: null }) readonly file!: File
   @Prop({ default: null }) readonly fileKey!: string
   @Prop({ default: true }) readonly isRequired!: boolean
-  @Prop({ default: FileUploadPdf.MAX_FILE_SIZE_MB }) readonly maxSize!: number // in MB
-  @Prop({ default: null }) readonly pageSize!: PdfPageSize
+  @Prop({ default: 0 }) readonly maxSize!: number // in MB
+  @Prop({ default: null }) readonly pageSize!: PageSizes
   @Prop({ required: true }) readonly userId!: string
 
   // Network service functions
@@ -39,15 +39,6 @@ export default class FileUploadPdf extends Vue {
   readonly uploadToUrl!: (url: string, file: File, key: string, userId: string) => Promise<AxiosResponse>
 
   private pdfjsLib: any
-  static readonly MAX_FILE_SIZE_MB = 30
-  static readonly PAGE_SIZE_DICT = {
-    'LETTER': {
-      'pointsPerInch': 72,
-      'width': 8.5,
-      'height': 11,
-      'validationErrorMsg': 'Document must be set to fit onto 8.5” x 11” letter-size paper'
-    }
-  }
   /** Component key, used to force it to re-render. */
   count = 0
 
@@ -55,9 +46,10 @@ export default class FileUploadPdf extends Vue {
   errorMessages = [] as Array<string>
 
   created (): void {
-    // NB: we load the lib and worker this way to avoid a memory leak (esp in unit tests)
-    // NB: must use require instead of import or this doesn't work
-    // NB: must use legacy build for unit tests not running in Node 18+
+    /** Load the lib and worker this way to avoid a memory leak (esp in unit tests)
+     *  Must use require instead of import or this doesn't work
+     *  Must use legacy build for unit tests not running in Node 18+
+     */
     this.pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js')
     this.pdfjsLib.GlobalWorkerOptions.workerSrc = require('pdfjs-dist/legacy/build/pdf.worker.entry')
   }
@@ -194,7 +186,7 @@ export default class FileUploadPdf extends Vue {
         return false
       }
       if (!valid) {
-        this.errorMessages = [FileUploadPdf.PAGE_SIZE_DICT[this.pageSize].validationErrorMsg]
+        this.errorMessages = [PAGE_SIZE_DICT[this.pageSize].validationErrorMsg]
         return false
       }
     }
@@ -216,7 +208,7 @@ export default class FileUploadPdf extends Vue {
       const pdf = await this.pdfjsLib.getDocument({ data: pdfData }).promise
       const perms = await pdf.getPermissions()
       return { isEncrypted: false, isContentLocked: !!perms }
-    } catch (err) {
+    } catch (err: any) {
       if (err.name === 'PasswordException') {
         return { isEncrypted: true, isContentLocked: true }
       }
@@ -231,8 +223,8 @@ export default class FileUploadPdf extends Vue {
    * @param pageSize page size to check for
    * @return whether file is expected page size
    */
-  async isPageSize (file: File, pageSize: PdfPageSize): Promise<boolean> {
-    const pageSizeInfo = FileUploadPdf.PAGE_SIZE_DICT[pageSize]
+  async isPageSize (file: File, pageSize: PageSizes): Promise<boolean> {
+    const pageSizeInfo = PAGE_SIZE_DICT[pageSize]
     const pdfBufferData = await file.arrayBuffer()
     const pdfData = new Uint8Array(pdfBufferData) // put it in a Uint8Array
     const pdf = await this.pdfjsLib.getDocument({ data: pdfData }).promise

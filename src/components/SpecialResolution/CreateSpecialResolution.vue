@@ -73,7 +73,7 @@ export default class CreateSpecialResolution extends Vue {
     resolutionForm: HTMLFormElement
   }
 
-  /** The section validity state (when prompted by app). */
+  /** Displays an invalid section to user if form is invalid. */
   get invalidCreateSpecialResolutionSection (): boolean {
     return !this.getSpecialResolutionFormValid
   }
