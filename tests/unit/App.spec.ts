@@ -355,6 +355,12 @@ describe.skip('Numbered company setup', () => {
     await flushPromises()
   })
 
+  afterEach(() => {
+    window.location.assign = assign
+    sinon.restore()
+    wrapper.destroy()
+  })
+
   it('loads a draft filing into the store', () => {
     // Validate IA for numbered company
     expect(store.stateModel.tombstone.entityType).toBe('BEN')
@@ -395,12 +401,6 @@ describe.skip('Numbered company setup', () => {
     expect(store.stateModel.nameRequest.applicant.countryTypeCode).toBeUndefined()
     expect(store.stateModel.nameRequest.applicant.postalCode).toBeUndefined()
     expect(store.stateModel.nameRequest.applicant.stateProvinceCode).toBeUndefined()
-  })
-
-  afterEach(() => {
-    window.location.assign = assign
-    sinon.restore()
-    wrapper.destroy()
   })
 })
 
@@ -667,7 +667,10 @@ describe('App component - other', () => {
     expect(vm.confirmDeleteAllDialog).toBe(false)
   })
 
-  it('the ViewWrapper renders the fee summary properly following changes', async () => {
+  // FUTURE: fix this
+  // atm it can't work because we are shallow-mounting App, so we only get a router view stub
+  // also the comment on the expect statement doesn't match the test
+  xit('the ViewWrapper renders the fee summary properly following changes', async () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.stateModel.entitySnapshot = mockEntitySnapshot as any

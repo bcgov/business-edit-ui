@@ -60,7 +60,9 @@ import { ErrorContact } from '@/components/common/'
 import { useStore } from '@/store/store'
 
 @Component({
-  components: { ErrorContact }
+  components: {
+    ErrorContact
+  }
 })
 export default class FileAndPayInvalidNameRequestDialog extends Vue {
   /** Prop to display the dialog. */

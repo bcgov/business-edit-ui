@@ -62,8 +62,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { ConversionNOB, ConversionSummary } from '@/components/Conversion'
@@ -78,7 +77,6 @@ import { SpConversionResource, GpConversionResource } from '@/resources/Conversi
 import { StatusCodes } from 'http-status-codes'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
   components: {
@@ -93,26 +91,22 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
     PeopleAndRoles,
     ViewWrapper,
     YourCompanyWrapper
-  },
-  mixins: [CommonMixin, FeeMixin, FilingTemplateMixin]
+  }
 })
-export default class Conversion extends Vue {
+export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter(useStore) isRoleStaff!: boolean
-  @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) getBusinessId!: string
-  @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) showFeeSummary!: boolean
   @Getter(useStore) isPartnership!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSoleProp!: boolean
+  @Getter(useStore) isSummaryMode!: boolean
+  @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
-  @Action(useStore) setFilingData!: ActionBindingIF
-  @Action(useStore) setFilingId!: ActionBindingIF
-  @Action(useStore) setResource!: ActionBindingIF
   @Action(useStore) setCertifyStateValidity!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setResource!: ActionBindingIF
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean

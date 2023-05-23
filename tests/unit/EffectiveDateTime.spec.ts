@@ -31,34 +31,30 @@ function getLastEvent (wrapper: Wrapper<EffectiveDateTime>, name: string): any {
 }
 
 describe('Effective Date Time component', () => {
-  let wrapperFactory: any
+  let wrapper: any
   const now = new Date()
 
   // invalid future effective date is more than 10 days from now
   const futureInvalidDate = new Date(now.getTime() + 11 * 24 * 60 * 60 * 1000)
 
   const dateTimeDefault = {
-    valid: false,
     isFutureEffective: false,
     dateTimeString: null
   }
 
   const dateTimeValid = {
-    valid: false,
     isFutureEffective: true,
     // effective date is 5 days from now
     dateTimeString: new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000).toISOString()
   }
 
   const dateTimeUnder = {
-    valid: false,
     isFutureEffective: true,
     // effective date is less than 3 minutes from now
     dateTimeString: new Date(now.getTime()).toISOString()
   }
 
   const dateTimeOver = {
-    valid: false,
     isFutureEffective: true,
     dateTimeString: futureInvalidDate.toISOString()
   }
@@ -66,23 +62,17 @@ describe('Effective Date Time component', () => {
   beforeAll(() => {
     // init store
     store.stateModel.currentJsDate = now
+
+    wrapper = mount(EffectiveDateTime, { vuetify })
   })
 
-  beforeEach(() => {
-    wrapperFactory = (stateValues) => {
-      // apply state values
-      Object.keys(stateValues).forEach((key) => {
-        store.stateModel[key] = stateValues[key]
-      })
-      return mount(EffectiveDateTime, { vuetify })
-    }
+  afterAll(() => {
+    wrapper.destroy()
   })
 
-  it('confirms no default Date-Time Selection', () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeDefault
-    })
+  it('confirms no default Date-Time Selection', async () => {
+    store.stateModel.effectiveDateTime = dateTimeDefault
+    await flushPromises() // wait a bit for validation to complete
 
     // Reference the Radios
     const radioInput = wrapper.findAll('input[type="radio"]')
@@ -95,10 +85,8 @@ describe('Effective Date Time component', () => {
   })
 
   it('confirms the selector fields are disabled if future effective is NOT selected', async () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeDefault
-    })
+    store.stateModel.effectiveDateTime = dateTimeDefault
+    await flushPromises() // wait a bit for validation to complete
 
     const radioInput = wrapper.findAll('input[type="radio"]')
     const radioIsImmediate = radioInput.at(0)
@@ -112,10 +100,8 @@ describe('Effective Date Time component', () => {
   })
 
   it('confirms the selector fields are NOT disabled if future effective is selected', async () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeDefault
-    })
+    store.stateModel.effectiveDateTime = dateTimeDefault
+    await flushPromises() // wait a bit for validation to complete
 
     const radioInput = wrapper.findAll('input[type="radio"]')
     const radioIsFutureEffective = radioInput.at(1)
@@ -130,10 +116,8 @@ describe('Effective Date Time component', () => {
   })
 
   it('confirms the selector fields are toggled to disabled if Immediate Filing is selected', async () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeDefault
-    })
+    store.stateModel.effectiveDateTime = dateTimeDefault
+    await flushPromises() // wait a bit for validation to complete
 
     const radioInput = wrapper.findAll('input[type="radio"]')
     const radioIsImmediate = radioInput.at(0)
@@ -157,10 +141,8 @@ describe('Effective Date Time component', () => {
   })
 
   it('emits a valid state when Immediate is selected', async () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeDefault
-    })
+    store.stateModel.effectiveDateTime = dateTimeDefault
+    await flushPromises() // wait a bit for validation to complete
 
     // select Immediate
     const radioInput = wrapper.findAll('input[type="radio"]')
@@ -175,10 +157,8 @@ describe('Effective Date Time component', () => {
   })
 
   it('emits an invalid state when Future Effective is selected and no date is entered', async () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeDefault
-    })
+    store.stateModel.effectiveDateTime = dateTimeDefault
+    await flushPromises() // wait a bit for validation to complete
 
     // select Future Effective
     const radioInput = wrapper.findAll('input[type="radio"]')
@@ -196,10 +176,8 @@ describe('Effective Date Time component', () => {
   })
 
   it('emits a invalid state when Future Effective is selected and no hour is entered', async () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeDefault
-    })
+    store.stateModel.effectiveDateTime = dateTimeDefault
+    await flushPromises() // wait a bit for validation to complete
 
     // select Future Effective
     const radioInput = wrapper.findAll('input[type="radio"]')
@@ -217,10 +195,8 @@ describe('Effective Date Time component', () => {
   })
 
   it('emits a invalid state when Future Effective is selected and no minute is entered', async () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeDefault
-    })
+    store.stateModel.effectiveDateTime = dateTimeDefault
+    await flushPromises() // wait a bit for validation to complete
 
     // select Future Effective
     const radioInput = wrapper.findAll('input[type="radio"]')
@@ -239,10 +215,8 @@ describe('Effective Date Time component', () => {
 
   // FUTURE: this works locally but not in GHA; fix later
   xit('emits a valid state when Future Effective is selected and valid date and time are entered', async () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeDefault
-    })
+    store.stateModel.effectiveDateTime = dateTimeDefault
+    await flushPromises() // wait a bit for validation to complete
 
     // select Future Effective
     const radioInput = wrapper.findAll('input[type="radio"]')
@@ -261,26 +235,16 @@ describe('Effective Date Time component', () => {
 
   // FUTURE: It was decided not to load FED from draft for now
   xit('emits a valid state when component mounts with valid Effective Date Time', async () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeValid
-    })
-
-    // wait a bit for validation to complete
-    await flushPromises()
+    store.stateModel.effectiveDateTime = dateTimeValid
+    await flushPromises() // wait a bit for validation to complete
 
     // Verify the last Valid event is true
     expect(getLastEvent(wrapper, 'valid')).toEqual(true)
   })
 
   it('emits a invalid state when component mounts with invalid Effective Date ', async () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeOver
-    })
-
-    // wait a bit for validation to complete
-    await flushPromises()
+    store.stateModel.effectiveDateTime = dateTimeOver
+    await flushPromises() // wait a bit for validation to complete
 
     // Verify the last Valid event is false
     expect(getLastEvent(wrapper, 'valid')).toEqual(false)
@@ -288,13 +252,8 @@ describe('Effective Date Time component', () => {
 
   // FUTURE: this works locally but not in GHA; fix later
   xit('displays an invalid Date Alert when the date is invalid', async () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeOver
-    })
-
-    // wait a bit for validation to complete
-    await flushPromises()
+    store.stateModel.effectiveDateTime = dateTimeOver
+    await flushPromises() // wait a bit for validation to complete
 
     const minDate = wrapper.vm.dateToYyyyMmDd(wrapper.vm.minDate)
     const maxDate = wrapper.vm.dateToYyyyMmDd((wrapper.vm.maxDate))
@@ -306,10 +265,8 @@ describe('Effective Date Time component', () => {
   })
 
   it('displays a validation error when the effective time is less than 3 minutes from now', async () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeUnder
-    })
+    store.stateModel.effectiveDateTime = dateTimeUnder
+    await flushPromises() // wait a bit for validation to complete
 
     // select Future Effective
     const radioInput = wrapper.findAll('input[type="radio"]')
@@ -337,10 +294,8 @@ describe('Effective Date Time component', () => {
   })
 
   it('displays a validation error when the effective time is more than 10 days from now', async () => {
-    const wrapper = wrapperFactory({
-      currentJsDate: now,
-      effectiveDateTime: dateTimeOver
-    })
+    store.stateModel.effectiveDateTime = dateTimeOver
+    await flushPromises() // wait a bit for validation to complete
 
     // select Future Effective
     const radioInput = wrapper.findAll('input[type="radio"]')

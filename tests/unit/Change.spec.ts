@@ -272,9 +272,12 @@ describe('Change component', () => {
         roles: [{ roleType: 'Proprietor' }]
       }
     ] as any
-    const wrapper: any = shallowMount(Change, { vuetify })
-    expect(wrapper.vm.firmChangeResource.changeData.orgPersonInfo.subtitle)
+    const wrapper = shallowMount(Change, { vuetify })
+
+    expect((wrapper.vm as any).firmChangeResource.changeData.orgPersonInfo.subtitle)
       .toContain('You can change the legal name, mailing and delivery')
+
+    wrapper.destroy()
   })
 
   it('resource subtitle states organization sole proprietors cannot change legal name', () => {
@@ -285,9 +288,12 @@ describe('Change component', () => {
         roles: [{ roleType: 'Proprietor' }]
       }
     ] as any
-    const wrapper: any = shallowMount(Change, { vuetify })
-    expect(wrapper.vm.firmChangeResource.changeData.orgPersonInfo.subtitle)
+    const wrapper = shallowMount(Change, { vuetify })
+
+    expect((wrapper.vm as any).firmChangeResource.changeData.orgPersonInfo.subtitle)
       .toContain('If you need to make changes to the business proprietor information, please')
+
+    wrapper.destroy()
   })
 
   // FUTURE
@@ -342,12 +348,10 @@ describe('Change component', () => {
     store.stateModel.nameTranslations = [{ action: ActionTypes.ADDED, name: 'mock name' }]
     await Vue.nextTick()
 
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Certain changes require an Alteration Notice which will incur a $100.00 fee.')
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Choosing an alteration date and time in the future will incur an additional $100.00 fee.')
+    expect(wrapper.find('#intro-text').text().replace(/\s+/g, ' '))
+      .toContain('Certain changes require an Alteration Notice which will incur a $100.00 fee.')
+    expect(wrapper.find('#intro-text').text().replace(/\s+/g, ' '))
+      .toContain('Choosing an alteration date and time in the future will incur an additional $100.00 fee.')
 
     store.stateModel.feePrices = [{
       filingFees: null,
@@ -365,12 +369,10 @@ describe('Change component', () => {
     }]
     await flushPromises()
 
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Certain changes require an Alteration Notice which will incur a fee.')
-    expect(
-      wrapper.find('#intro-text').text().replace(/\s+/g, ' ')
-    ).toContain('Choosing an alteration date and time in the future will incur an additional fee.')
+    expect(wrapper.find('#intro-text').text().replace(/\s+/g, ' '))
+      .toContain('Certain changes require an Alteration Notice which will incur a fee.')
+    expect(wrapper.find('#intro-text').text().replace(/\s+/g, ' '))
+      .toContain('Choosing an alteration date and time in the future will incur an additional fee.')
   })
 
   // FUTURE

@@ -201,8 +201,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash'
 import { Action, Getter } from 'pinia-class'
 import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip/'
@@ -219,10 +218,9 @@ import { useStore } from '@/store/store'
     AddNameTranslation,
     ListNameTranslation,
     ConfirmDialogShared
-  },
-  mixins: [CommonMixin]
+  }
 })
-export default class NameTranslation extends Vue {
+export default class NameTranslation extends Mixins(CommonMixin) {
   // Refs
   $refs!: {
     confirmTranslationDialog: ConfirmDialogType

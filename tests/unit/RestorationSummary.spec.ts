@@ -83,6 +83,8 @@ xdescribe('Restoration Summary component', () => {
 
     expect(mock).toHaveBeenCalled()
     expect(rootWrapper.emitted('delete-all').length).toBe(1)
+
+    rootWrapper.destroy()
   })
 
   it('does not render the summary sections when no changes have been made', async () => {
@@ -213,9 +215,8 @@ xdescribe('Restoration Summary component', () => {
     await Vue.nextTick()
     await flushPromises()
     await Vue.nextTick()
-    expect(
-      wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' ')
-    ).toContain('additional fee of $100.00 to enter a restoration date and time in the future).')
+    expect(wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' '))
+      .toContain('additional fee of $100.00 to enter a restoration date and time in the future).')
 
     store.stateModel.feePrices = [{
       filingFees: null,
@@ -233,8 +234,7 @@ xdescribe('Restoration Summary component', () => {
     }]
 
     await flushPromises()
-    expect(
-      wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' ')
-    ).toContain('additional fee to enter a restoration date and time in the future).')
+    expect(wrapper.find('#effective-date-time-instructions').text().replace(/\s+/g, ' '))
+      .toContain('additional fee to enter a restoration date and time in the future).')
   })
 })

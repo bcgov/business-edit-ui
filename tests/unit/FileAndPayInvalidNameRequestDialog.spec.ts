@@ -20,10 +20,7 @@ store.stateModel.nameRequest = {
 
 describe.skip('FileAndPayInvalidNameRequestDialog - Verify that dialog is displayed correctly', () => {
   it('displays dialog with the proper store data', async () => {
-    const wrapper = shallowMount(FileAndPayInvalidNameRequestDialog,
-      {
-        vuetify
-      })
+    const wrapper = shallowMount(FileAndPayInvalidNameRequestDialog, { vuetify })
 
     expect(wrapper.find('#dialog-title').text()).toBe('Invalid Name Request (NR) / Incorporation Application')
     expect(wrapper.findAll('p').at(0).text())
@@ -41,6 +38,7 @@ describe.skip('FileAndPayInvalidNameRequestDialog - Verify that dialog is displa
     expect(wrapper.findAll('.info-section').at(1).text())
       .toContain('available to anyone wishing to start their business with that name.')
     expect(wrapper.find('#dialog-okay-button')).toBeDefined()
+
     wrapper.destroy()
   })
 })

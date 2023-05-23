@@ -39,12 +39,16 @@ describe('Document Delivery component', () => {
     expect(wrapper.findComponent(DocumentsDelivery).exists()).toBe(true)
     expect(wrapper.find('#document-delivery-section').exists()).toBe(true)
     expect(wrapper.find('.document-info').text()).toContain('Copies of the alteration')
+
+    wrapper.destroy()
   })
 
   it('shows users email', () => {
     const wrapper: Wrapper<DocumentsDelivery> = createComponent()
 
     expect((wrapper.vm as any).getUserEmail).toBe('currentuser@mail.com')
+
+    wrapper.destroy()
   })
 
   it('validates a valid email', async () => {
@@ -58,6 +62,8 @@ describe('Document Delivery component', () => {
 
     // verify email is valid
     expect(vm.validateEmailFormat).toBeTruthy()
+
+    wrapper.destroy()
   })
 
   it('validates an invalid email', async () => {
@@ -74,5 +80,7 @@ describe('Document Delivery component', () => {
 
     // verify there is an error. Vue doesn't like the blur event with testing
     expect(wrapper.findAll('.v-messages__message').length).toBe(1)
+
+    wrapper.destroy()
   })
 })

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import { mount, Wrapper } from '@vue/test-utils'
-import CorrectNameToNumber from '@/components/common/YourCompany/CompanyName/CorrectNameToNumber.vue'
+import CorrectNameToNumber from '@/components/common/YourCompany/CorrectName/CorrectNameToNumber.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@/enums'
@@ -45,6 +45,8 @@ describe('CorrectNameToNumber', () => {
     const wrapper = wrapperFactory()
 
     expect(wrapper.findComponent(CorrectNameToNumber).exists()).toBe(true)
+
+    wrapper.destroy()
   })
 
   it('verifies the checkbox default state', async () => {
@@ -57,6 +59,8 @@ describe('CorrectNameToNumber', () => {
     expect(nameToNumberInput.attributes('aria-checked')).toBe('false')
     expect(wrapper.emitted('isValid')).toBeUndefined()
     expect(store.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
+
+    wrapper.destroy()
   })
 
   it('verifies the emission when checkbox state changes', async () => {
@@ -77,6 +81,8 @@ describe('CorrectNameToNumber', () => {
     expect(getLastEvent(wrapper, 'isValid')).toBe(true)
     expect(store.stateModel.nameRequest.legalType).toBe('BEN')
     expect(store.stateModel.nameRequest.legalName).toBe('Bobs Plumbing')
+
+    wrapper.destroy()
   })
 
   it('verifies the form submission and verify global state change', async () => {
@@ -107,5 +113,7 @@ describe('CorrectNameToNumber', () => {
     expect(store.stateModel.nameRequest.legalType).toBe('BEN')
     expect(store.stateModel.nameRequest.legalName).toBeUndefined()
     expect(store.stateModel.nameRequest.nrNumber).toBeUndefined()
+
+    wrapper.destroy()
   })
 })

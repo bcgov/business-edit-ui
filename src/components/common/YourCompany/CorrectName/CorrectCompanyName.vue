@@ -24,13 +24,13 @@ import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
 import { ActionBindingIF, NameRequestIF } from '@/interfaces/'
-import { NameChangeOptions } from '@/enums/'
+import { CorrectNameOptions } from '@/enums/'
 import { useStore } from '@/store/store'
 
 @Component({})
 export default class CorrectCompanyName extends Mixins(CommonMixin) {
   /** Form Submission Prop */
-  @Prop({ default: null }) readonly formType!: NameChangeOptions
+  @Prop({ default: null }) readonly formType!: CorrectNameOptions
 
   @Action(useStore) setNameRequest!: ActionBindingIF
 
@@ -61,7 +61,7 @@ export default class CorrectCompanyName extends Mixins(CommonMixin) {
   @Watch('formType')
   private onSubmit (): void {
     // this component should only see correct-name form type
-    if (this.formType === NameChangeOptions.CORRECT_NAME) {
+    if (this.formType === CorrectNameOptions.CORRECT_NAME) {
       // set the new company name
       this.setNameRequest({
         ...this.getNameRequest,

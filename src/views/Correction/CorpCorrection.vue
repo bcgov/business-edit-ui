@@ -72,8 +72,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { Articles } from '@/components/Alteration/'
 import { BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityName, FolioInformation,
@@ -85,7 +84,6 @@ import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { BcCorrectionResource, BenCorrectionResource, CccCorrectionResource, UlcCorrectionResource }
   from '@/resources/Correction/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { useStore } from '@/store/store'
 
 /** Correction sub-component for corp class "BC" entities. */
@@ -105,26 +103,19 @@ import { useStore } from '@/store/store'
     ShareStructures,
     StaffPayment,
     YourCompanyWrapper
-  },
-  mixins: [CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin]
+  }
 })
-export default class CorpCorrection extends Vue {
+export default class CorpCorrection extends Mixins(CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
-  @Getter(useStore) getBusinessId!: string
-  @Getter(useStore) getCorrectedFilingDate!: string
-  @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) isBcCompany!: boolean
-  @Getter(useStore) isBenefitCompany!: boolean
   @Getter(useStore) isBcCcc!: boolean
+  @Getter(useStore) isBcCompany!: boolean
   @Getter(useStore) isBcUlcCompany!: boolean
-  @Getter(useStore) isClientErrorCorrection!: boolean
+  @Getter(useStore) isBenefitCompany!: boolean
 
   // Global actions
-  @Action(useStore) setFilingData!: ActionBindingIF
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setCertifyStatementResource!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF
-  @Action(useStore) setStaffPayment!: ActionBindingIF
 
   /** The draft correction filing to process. */
   @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF

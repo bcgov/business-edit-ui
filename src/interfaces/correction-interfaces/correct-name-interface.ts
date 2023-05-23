@@ -1,10 +1,10 @@
 import { NameRequestApplicantIF } from '@/interfaces/'
-import { NameChangeOptions, NameRequestStates } from '@/enums/'
+import { CorrectNameOptions, NameRequestStates } from '@/enums/'
 import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 export interface CorrectNameOptionIF {
-  id: NameChangeOptions,
+  id: CorrectNameOptions,
   title: string,
   description?: string,
   component: any

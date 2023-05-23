@@ -19,8 +19,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { NaicsServices } from '@/services/'
 import { ActionBindingIF, FlagsCompanyInfoIF } from '@/interfaces/'
@@ -32,10 +31,9 @@ import { useStore } from '@/store/store'
 @Component({
   components: {
     NatureOfBusinessShared
-  },
-  mixins: [CommonMixin]
+  }
 })
-export default class NatureOfBusiness extends Vue {
+export default class NatureOfBusiness extends Mixins(CommonMixin) {
   readonly NaicsServices = NaicsServices
 
   @Getter(useStore) getComponentValidate!: boolean

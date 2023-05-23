@@ -181,8 +181,8 @@
         v-else
         cols="9"
       >
-        <CorrectNameOptions
-          :correctionNameChoices="nameChangeOptions"
+        <CorrectName
+          :correctionNameChoices="correctionNameChoices"
           @isSaved="nameChangeHandler($event)"
           @cancel="isEditingNames = false"
         />
@@ -223,13 +223,12 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { CoopTypes, NameChangeOptions } from '@/enums/'
-import { ActionBindingIF, EntitySnapshotIF, NameRequestApplicantIF, NameRequestIF, ResourceIF }
+import { CoopTypes, CorrectNameOptions } from '@/enums/'
+import { ActionBindingIF, EntitySnapshotIF, NameRequestApplicantIF, NameRequestIF }
   from '@/interfaces/'
-import { CorrectNameOptions } from '@/components/common/YourCompany'
+import CorrectName from '@/components/common/YourCompany/CorrectName/CorrectName.vue'
 import { NameRequestMixin } from '@/mixins'
 import DateUtilities from '@/services/date-utilities'
 import { ToDisplayPhone } from '@/utils'
@@ -237,10 +236,11 @@ import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp
 import { useStore } from '@/store/store'
 
 @Component({
-  components: { CorrectNameOptions },
-  mixins: [NameRequestMixin]
+  components: {
+    CorrectName
+  }
 })
-export default class EntityName extends Vue {
+export default class EntityName extends Mixins(NameRequestMixin) {
   // for template
   readonly GetCorpFullDescription = GetCorpFullDescription
 
@@ -255,7 +255,6 @@ export default class EntityName extends Vue {
   @Getter(useStore) getNameRequest!: NameRequestIF
   @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getNameRequestNumber!: string
-  @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
@@ -272,9 +271,9 @@ export default class EntityName extends Vue {
   @Action(useStore) setValidComponent!: ActionBindingIF
 
   // local properties
-  protected dropdown = false // v-model for dropdown menu
-  protected hasCompanyNameChanged = false // only used by corrections
-  protected isEditingNames = false
+  dropdown = false // v-model for dropdown menu
+  hasCompanyNameChanged = false // only used by corrections
+  isEditingNames = false
 
   /** The company name (from NR, or incorporation number). */
   get companyName (): string {
@@ -300,24 +299,24 @@ export default class EntityName extends Vue {
     return (originalName !== currentName)
   }
 
-  /** The current options for change of name correction or edit. */
-  get nameChangeOptions (): Array<NameChangeOptions> {
+  /** The current options for name changes. */
+  get correctionNameChoices (): Array<CorrectNameOptions> {
     // safety check
     if (!this.getResource.changeData) return []
 
     // if this is a numbered company, remove correct-name and name-to-number options
     if (this.isNumberedCompany) {
-      return this.getResource.changeData?.nameChangeOptions.filter(option => (
-        option !== NameChangeOptions.CORRECT_NAME &&
-        option !== NameChangeOptions.CORRECT_NAME_TO_NUMBER
+      return this.getResource.changeData?.correctNameOptions.filter(option => (
+        option !== CorrectNameOptions.CORRECT_NAME &&
+        option !== CorrectNameOptions.CORRECT_NAME_TO_NUMBER
       ))
     }
-    return this.getResource.changeData.nameChangeOptions
+    return this.getResource.changeData.correctNameOptions
   }
 
   /** Whether to show the name options button and component. */
   get showNameOptions (): boolean {
-    return (this.nameChangeOptions.length > 0)
+    return (this.correctionNameChoices.length > 0)
   }
 
   /** The Name Request applicant info. */
@@ -345,13 +344,13 @@ export default class EntityName extends Vue {
   }
 
   /** Updates UI when correct name options are done.  */
-  protected nameChangeHandler (isSaved = false): void {
+  nameChangeHandler (isSaved = false): void {
     this.hasCompanyNameChanged = this.isNewName
     if (isSaved) this.isEditingNames = false
   }
 
   /** Reset company name values to original. */
-  protected resetName () {
+  resetName () {
     // reset business information, except for association type.
     const businessInfo = { ...this.getEntitySnapshot.businessInfo, associationType: this.getAssociationType }
     this.setBusinessInformation(businessInfo)

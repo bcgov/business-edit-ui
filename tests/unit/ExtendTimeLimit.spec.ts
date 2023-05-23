@@ -16,19 +16,21 @@ describe('Time Limit Extension component', () => {
   let wrapperFactory: any
 
   beforeEach(() => {
-    store.stateModel.restoration = {
-      expiry: '2024-07-01',
-      type: 'limitedRestorationExtension'
-    } as any
+    store.stateModel.tombstone.currentDate = '2023-01-01'
+
     store.stateModel.stateFilingRestoration = {
       approvalType: 'courtOrder',
       courtOrder: { fileNumber: 'testtest' },
-      expiry: '2024-03-01',
+      expiry: '2024-01-01', // 12 months remaining from current date above
       type: 'limitedRestoration'
     } as any
-    wrapperFactory = () => mount(ExtendTimeLimit, {
-      vuetify
-    })
+
+    store.stateModel.restoration = {
+      expiry: '2025-01-01', // extra 12 months from current date above
+      type: 'limitedRestorationExtension'
+    } as any
+
+    wrapperFactory = () => mount(ExtendTimeLimit, { vuetify })
   })
 
   it('renders the component properly', () => {
@@ -36,58 +38,63 @@ describe('Time Limit Extension component', () => {
     const wrapper = wrapperFactory()
 
     expect(wrapper.find('#extend-time-limit').exists()).toBe(true)
+
     wrapper.destroy()
   })
 
-  it('get correct approval type when state restoration filing was approved by court order.', () => {
+  it('computes showApprovalType=true when state restoration filing was approved by court order', () => {
     const wrapper = wrapperFactory()
-    const extendTimeLimit = wrapper.vm as any // wrapper.vm type is Vue
+    const vm = wrapper.vm as any
 
-    expect(extendTimeLimit.approvalType).toEqual('courtOrder')
+    expect(vm.showApprovalType).toBe(true)
+
     wrapper.destroy()
   })
 
-  it('get correct approval type when state restoration filing was approved by registrar.', () => {
+  it('computes showApprovalType=false when state restoration filing was approved by registrar', () => {
     const wrapper = wrapperFactory()
-    const extendTimeLimit = wrapper.vm as any // wrapper.vm type is Vue
+    const vm = wrapper.vm as any
+
     store.stateModel.stateFilingRestoration.approvalType = ApprovalTypes.VIA_REGISTRAR
-
     expect(ApprovalTypes.VIA_REGISTRAR).toEqual('registrar')
-    expect(extendTimeLimit.approvalType).toEqual('registrar')
+    expect(vm.showApprovalType).toBe(false)
+
     wrapper.destroy()
   })
 
-  it('get correct number of months of previously filed limited restoration.', () => {
+  it('computes months remaining from previously filed limited restoration', () => {
     const wrapper = wrapperFactory()
-    const extendTimeLimit = wrapper.vm as any // wrapper.vm type is Vue
-    store.stateModel.tombstone.currentDate = '2023-01-01'
+    const vm = wrapper.vm as any
 
-    expect(extendTimeLimit.previousNumberOfMonths).toEqual(14)
+    expect(vm.monthsRemaining).toEqual(12)
+
     wrapper.destroy()
   })
 
-  it('get correct expiry draft date.', () => {
+  it('computes expiry months from curent limited restoration extension', () => {
     const wrapper = wrapperFactory()
-    const extendTimeLimit = wrapper.vm as any // wrapper.vm type is Vue
-    store.stateModel.tombstone.currentDate = '2023-01-01'
+    const vm = wrapper.vm as any
 
-    expect(extendTimeLimit.expiry).toEqual('2023-05-01')
+    expect(vm.expiryMonths).toEqual(12)
+
     wrapper.destroy()
   })
 
   it('get correct validity of extension time section.', () => {
     const wrapper = wrapperFactory()
+    const vm = wrapper.vm as any
 
-    const extensionTimeValidity = store.stateModel.validationFlags.flagsCompanyInfo.isValidExtensionTime
-    expect(extensionTimeValidity).toBeTruthy()
+    expect(vm.getExpiryValid).toBe(true)
+
     wrapper.destroy()
   })
 
   it('get correct validity of approval type section.', () => {
     const wrapper = wrapperFactory()
+    const vm = wrapper.vm as any
 
-    const approvalTypeValidity = store.stateModel.validationFlags.flagsCompanyInfo.isValidApprovalType
-    expect(approvalTypeValidity).toBeFalsy()
+    expect(vm.getApprovalTypeValid).toBe(false)
+
     wrapper.destroy()
   })
 

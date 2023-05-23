@@ -60,6 +60,10 @@ for (const test of firmTestCases) {
       )
     })
 
+    afterAll(() => {
+      wrapper.destroy()
+    })
+
     it('displays Completing Party section', async () => {
       expect(wrapper.findComponent(CompletingParty).exists()).toBe(true)
       expect(wrapper.findComponent(CompletingPartyShared).exists()).toBe(true)

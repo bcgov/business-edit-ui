@@ -159,21 +159,20 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
   private isImmediate = false
 
   /** Whether Is Future Effective is selected. */
-  private isFutureEffective = false
+  isFutureEffective = false
 
   /** The minimum date that can be entered (ie, now + 3 minutes). */
-  private minDate: Date = null
+  minDate: Date = null
 
   /** The maximum date that can be entered (ie, 10 days from now). */
-  private maxDate: Date = null
+  maxDate: Date = null
 
   // V-model values
-  protected effectiveDateType: EffectiveDateTypes = null
-  protected datePicker = ''
-  protected dateText = ''
-  protected selectHour: string[] = []
-  protected selectMinute: string[] = []
-  protected selectPeriod = PeriodTypes.AM
+  effectiveDateType: EffectiveDateTypes = null
+  dateText = ''
+  selectHour: string[] = []
+  selectMinute: string[] = []
+  selectPeriod = PeriodTypes.AM
 
   // Combobox items
   readonly hours = [...Array(12).keys()].map(num => (num + 1).toString())
@@ -358,12 +357,6 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
     }
   }
 
-  @Watch('datePicker')
-  onDatePickerChanged (val: string): void {
-    this.dateText = val
-    // the watcher for dateText will fire next
-  }
-
   @Watch('dateText')
   onDateTextChanged (): void {
     if (this.isFutureEffective) {
@@ -399,7 +392,6 @@ export default class EffectiveDateTime extends Mixins(DateMixin) {
 
     // if we changed to IMMEDIATE then clear the model values (otherwise retain them)
     if (this.isImmediate) {
-      this.datePicker = ''
       this.dateText = ''
       this.selectHour = []
       this.selectMinute = []

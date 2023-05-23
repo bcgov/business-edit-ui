@@ -122,8 +122,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { SpecialResolutionSummary, CreateSpecialResolution } from '@/components/SpecialResolution'
@@ -132,8 +131,7 @@ import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, Com
   YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, CertifyIF, EffectiveDateTimeIF, EntitySnapshotIF, FilingDataIF,
-  ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -159,21 +157,13 @@ import { useStore } from '@/store/store'
     TransactionalFolioNumber,
     ViewWrapper,
     YourCompanyWrapper
-  },
-  mixins: [CommonMixin, FeeMixin, FilingTemplateMixin]
+  }
 })
-export default class SpecialResolution extends Vue {
+export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
   @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) getBusinessId!: string
-  @Getter(useStore) getCertifyState!: CertifyIF
-  @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
-  @Getter(useStore) getFilingData!: FilingDataIF[]
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) hasAssociationTypeChanged!: boolean
-  @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) isCoop!: boolean
   @Getter(useStore) isPremiumAccount!: boolean
   @Getter(useStore) isRoleStaff!: boolean
@@ -181,9 +171,7 @@ export default class SpecialResolution extends Vue {
   @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action(useStore) setCertifyState!: ActionBindingIF
   @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action(useStore) setFilingData!: ActionBindingIF
   @Action(useStore) setFilingId!: ActionBindingIF
   @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF
@@ -287,7 +275,7 @@ export default class SpecialResolution extends Vue {
       }
       filingData.forEach(fd => {
         // FUTURE: verify type of fd and fix following type error accordingly
-        fd.futureEffective = this.getEffectiveDateTime.isFutureEffective
+        (fd as FilingDataIF).futureEffective = this.getEffectiveDateTime.isFutureEffective
       })
       this.setFilingData(filingData)
 

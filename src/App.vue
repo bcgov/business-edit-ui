@@ -125,8 +125,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { StatusCodes } from 'http-status-codes'
 import { GetFeatureFlag, GetKeycloakRoles, Navigate, UpdateLdUser, Sleep } from '@/utils/'
@@ -158,13 +157,9 @@ import { useStore } from '@/store/store'
     SbcFooter,
     ...Dialogs,
     ...Views
-  },
-  mixins: [
-    CommonMixin,
-    FilingTemplateMixin
-  ]
+  }
 })
-export default class App extends Vue {
+export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   // Refs
   $refs!: {
     confirm: ConfirmDialogType
@@ -172,7 +167,6 @@ export default class App extends Vue {
 
   // Global getters
   @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentJsDate!: Date
   @Getter(useStore) getFilingId!: number
@@ -212,24 +206,24 @@ export default class App extends Vue {
   @Action(useStore) setFilingId!: ActionBindingIF
 
   // Local properties
-  protected accountAuthorizationDialog = false
-  protected confirmDeleteAllDialog = false
-  protected fetchErrorDialog = false
-  protected fileAndPayInvalidNameRequestDialog = false
-  protected nameRequestErrorDialog = false
-  protected nameRequestErrorType = ''
-  protected paymentErrorDialog = false
-  protected saveErrorDialog = false
-  protected saveErrors: Array<object> = []
-  protected saveWarnings: Array<object> = []
-  protected staffPaymentErrorDialog = false
+  accountAuthorizationDialog = false
+  confirmDeleteAllDialog = false
+  fetchErrorDialog = false
+  fileAndPayInvalidNameRequestDialog = false
+  nameRequestErrorDialog = false
+  nameRequestErrorType = ''
+  paymentErrorDialog = false
+  saveErrorDialog = false
+  saveErrors: Array<object> = []
+  saveWarnings: Array<object> = []
+  staffPaymentErrorDialog = false
 
   // FUTURE: change appReady/haveData to a state machine?
   /** Whether the app is ready and the views can now load their data. */
-  protected appReady = false
+  appReady = false
 
   /** Whether the views have loaded their data and the spinner can be hidden. */
-  protected haveData = false
+  haveData = false
 
   /** The Update Current JS Date timer id. */
   private updateCurrentJsDateId = 0
@@ -396,7 +390,7 @@ export default class App extends Vue {
   }
 
   /** Navigates to current location, refreshing the page. */
-  protected reload (): void {
+  reload (): void {
     this.setHaveUnsavedChanges(false)
     this.$router.go(0)
   }
@@ -503,7 +497,7 @@ export default class App extends Vue {
   }
 
   /** Navigates to Manage Businesses dashboard. */
-  protected goToManageBusinessDashboard (): void {
+  goToManageBusinessDashboard (): void {
     this.fileAndPayInvalidNameRequestDialog = false
     this.setHaveUnsavedChanges(false)
     // FUTURE: Manage Businesses URL should come from config
@@ -512,7 +506,7 @@ export default class App extends Vue {
   }
 
   /** Called to navigate to dashboard. */
-  protected async goToDashboard (force = false): Promise<void> {
+  async goToDashboard (force = false): Promise<void> {
     const dashboardUrl = sessionStorage.getItem('DASHBOARD_URL') + this.getBusinessId
 
     // check if there are no data changes
@@ -541,7 +535,7 @@ export default class App extends Vue {
     }
   }
 
-  protected async doDeleteAll (): Promise<void> {
+  async doDeleteAll (): Promise<void> {
     // Restore baseline data to original snapshot.
     this.parseEntitySnapshot()
     this.setHaveUnsavedChanges(false)
@@ -648,9 +642,5 @@ export default class App extends Vue {
 // place app header on top of dialogs (and therefore still usable)
 .app-header {
   z-index: 1000;
-}
-
-.right-side {
-  position: relative;
 }
 </style>

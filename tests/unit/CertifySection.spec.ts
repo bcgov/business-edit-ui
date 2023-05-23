@@ -26,9 +26,7 @@ const resource = {
  * Creates and mounts a component, so that it can be tested.
  */
 function createComponent (): Wrapper<CertifySection> {
-  return mount(CertifySection, {
-    vuetify
-  })
+  return mount(CertifySection, { vuetify })
 }
 
 describe('Certify component', () => {
@@ -43,23 +41,31 @@ describe('Certify component', () => {
 
     expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
     expect(wrapper.findComponent(CertifyShared).exists()).toBe(true)
+
+    wrapper.destroy()
   })
 
   it('fetches date to pass to Certify and converts to a readable format', () => {
     const wrapper: Wrapper<CertifySection> = createComponent()
 
     expect((wrapper.vm as any).getCurrentDate).toBe('2019-01-01')
+
+    wrapper.destroy()
   })
 
   it('fetches entityType to pass to Certify in a readable format', () => {
     const wrapper: Wrapper<CertifySection> = createComponent()
 
     expect((wrapper.vm as any).readableEntityType).toBe('BC Benefit Company')
+
+    wrapper.destroy()
   })
 
   it('fetches certify resource message to pass to Certify component', () => {
     const wrapper: Wrapper<CertifySection> = createComponent()
 
     expect((wrapper.vm as any).certifyMessage).toBe('Certify Clause')
+
+    wrapper.destroy()
   })
 })

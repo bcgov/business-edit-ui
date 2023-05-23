@@ -104,7 +104,9 @@ import { ErrorContact } from '@/components/common/'
 import { useStore } from '@/store/store'
 
 @Component({
-  components: { ErrorContact }
+  components: {
+    ErrorContact
+  }
 })
 export default class PaymentErrorDialog extends Vue {
   @Getter(useStore) isRoleStaff!: boolean

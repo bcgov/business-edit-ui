@@ -1,17 +1,12 @@
+import { Component, Mixins } from 'vue-property-decorator'
 import { CommonMixin } from '@/mixins/'
-import Vue from 'vue'
 import DateUtilities from '@/services/date-utilities'
-import { Component } from 'vue-property-decorator'
 
 /**
  * Mixin that provides some useful date utilities.
  */
-@Component({
-  mixins: [
-    CommonMixin
-  ]
-})
-export default class DateMixin extends Vue {
+@Component({})
+export default class DateMixin extends Mixins(CommonMixin) {
   /**
    * DEPRECATED Fetches and returns the web server's current date (in UTC).
    * Used to bypass the user's local clock/timezone.

@@ -25,7 +25,7 @@ import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/CP'
 
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { FilingTypes, NrRequestActionCodes } from '@bcrs-shared-components/enums'
+import { CorrectNameOptions, FilingTypes, NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { NameRequestStates } from '@/enums'
 
@@ -37,177 +37,205 @@ const store = useStore()
 
 const alterationTests = [
   {
-    filingType: 'alteration',
-    entityType: 'BC',
+    filingType: FilingTypes.ALTERATION,
+    entityType: CorpTypeCd.BC_COMPANY,
     resourceModel: BcAlterationResource,
     isNumberedCompany: true,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
-    filingType: 'alteration',
-    entityType: 'BC',
+    filingType: FilingTypes.ALTERATION,
+    entityType: CorpTypeCd.BC_COMPANY,
     resourceModel: BcAlterationResource,
     isNumberedCompany: false,
-    expectedOptions: ['correct-new-nr', 'correct-name-to-number']
+    expectedOptions: [
+      CorrectNameOptions.CORRECT_NEW_NR,
+      CorrectNameOptions.CORRECT_NAME_TO_NUMBER
+    ]
   },
   {
-    filingType: 'alteration',
-    entityType: 'BEN',
+    filingType: FilingTypes.ALTERATION,
+    entityType: CorpTypeCd.BENEFIT_COMPANY,
     resourceModel: BenAlterationResource,
     isNumberedCompany: true,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
-    filingType: 'alteration',
-    entityType: 'BEN',
+    filingType: FilingTypes.ALTERATION,
+    entityType: CorpTypeCd.BENEFIT_COMPANY,
     resourceModel: BenAlterationResource,
     isNumberedCompany: false,
-    expectedOptions: ['correct-new-nr', 'correct-name-to-number']
+    expectedOptions: [
+      CorrectNameOptions.CORRECT_NEW_NR,
+      CorrectNameOptions.CORRECT_NAME_TO_NUMBER
+    ]
   },
   {
-    filingType: 'alteration',
-    entityType: 'CC',
+    filingType: FilingTypes.ALTERATION,
+    entityType: CorpTypeCd.BC_CCC,
     resourceModel: CccAlterationResource,
     isNumberedCompany: true,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
-    filingType: 'alteration',
-    entityType: 'CC',
+    filingType: FilingTypes.ALTERATION,
+    entityType: CorpTypeCd.BC_CCC,
     resourceModel: CccAlterationResource,
     isNumberedCompany: false,
-    expectedOptions: ['correct-new-nr', 'correct-name-to-number']
+    expectedOptions: [
+      CorrectNameOptions.CORRECT_NEW_NR,
+      CorrectNameOptions.CORRECT_NAME_TO_NUMBER
+    ]
   },
   {
-    filingType: 'alteration',
-    entityType: 'ULC',
+    filingType: FilingTypes.ALTERATION,
+    entityType: CorpTypeCd.BC_ULC_COMPANY,
     resourceModel: UlcAlterationResource,
     isNumberedCompany: true,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
-    filingType: 'alteration',
-    entityType: 'ULC',
+    filingType: FilingTypes.ALTERATION,
+    entityType: CorpTypeCd.BC_ULC_COMPANY,
     resourceModel: UlcAlterationResource,
     isNumberedCompany: false,
-    expectedOptions: ['correct-new-nr', 'correct-name-to-number']
+    expectedOptions: [
+      CorrectNameOptions.CORRECT_NEW_NR,
+      CorrectNameOptions.CORRECT_NAME_TO_NUMBER
+    ]
   }
 ]
 
 const changeTests = [
   {
-    filingType: 'changeOfRegistration',
-    entityType: 'GP',
+    filingType: FilingTypes.CHANGE_OF_REGISTRATION,
+    entityType: CorpTypeCd.PARTNERSHIP,
     resourceModel: GpChangeResource,
     isNumberedCompany: null,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
-    filingType: 'changeOfRegistration',
-    entityType: 'SP',
+    filingType: FilingTypes.CHANGE_OF_REGISTRATION,
+    entityType: CorpTypeCd.SOLE_PROP,
     resourceModel: SpChangeResource,
     isNumberedCompany: null,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   }
 ]
 
 const conversionTests = [
   {
-    filingType: 'conversion',
-    entityType: 'GP',
+    filingType: FilingTypes.CONVERSION,
+    entityType: CorpTypeCd.PARTNERSHIP,
     resourceModel: GpConversionResource,
     isNumberedCompany: null,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
-    filingType: 'conversion',
-    entityType: 'SP',
+    filingType: FilingTypes.CONVERSION,
+    entityType: CorpTypeCd.SOLE_PROP,
     resourceModel: SpConversionResource,
     isNumberedCompany: null,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   }
 ]
 
 const correctionTests = [
   {
-    filingType: 'correction',
-    entityType: 'BEN',
+    filingType: FilingTypes.CORRECTION,
+    entityType: CorpTypeCd.BENEFIT_COMPANY,
     resourceModel: BenCorrectionResource,
     isNumberedCompany: true,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
-    filingType: 'correction',
-    entityType: 'BEN',
+    filingType: FilingTypes.CORRECTION,
+    entityType: CorpTypeCd.BENEFIT_COMPANY,
     resourceModel: BenCorrectionResource,
     isNumberedCompany: false,
-    expectedOptions: ['correct-new-nr', 'correct-name-to-number', 'correct-name']
+    expectedOptions: [
+      CorrectNameOptions.CORRECT_NEW_NR,
+      CorrectNameOptions.CORRECT_NAME_TO_NUMBER,
+      CorrectNameOptions.CORRECT_NAME
+    ]
   },
   {
-    filingType: 'correction',
-    entityType: 'CC',
+    filingType: FilingTypes.CORRECTION,
+    entityType: CorpTypeCd.BC_CCC,
     resourceModel: CccCorrectionResource,
     isNumberedCompany: true,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
-    filingType: 'correction',
-    entityType: 'CC',
+    filingType: FilingTypes.CORRECTION,
+    entityType: CorpTypeCd.BC_CCC,
     resourceModel: CccCorrectionResource,
     isNumberedCompany: false,
-    expectedOptions: ['correct-new-nr', 'correct-name-to-number', 'correct-name']
+    expectedOptions: [
+      CorrectNameOptions.CORRECT_NEW_NR,
+      CorrectNameOptions.CORRECT_NAME_TO_NUMBER,
+      CorrectNameOptions.CORRECT_NAME
+    ]
   },
   {
-    filingType: 'correction',
-    entityType: 'GP',
+    filingType: FilingTypes.CORRECTION,
+    entityType: CorpTypeCd.PARTNERSHIP,
     resourceModel: GpCorrectionResource,
     isNumberedCompany: false,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
-    filingType: 'correction',
-    entityType: 'BC',
+    filingType: FilingTypes.CORRECTION,
+    entityType: CorpTypeCd.BC_COMPANY,
     resourceModel: BcCorrectionResource,
     isNumberedCompany: true,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
-    filingType: 'correction',
-    entityType: 'BC',
+    filingType: FilingTypes.CORRECTION,
+    entityType: CorpTypeCd.BC_COMPANY,
     resourceModel: BcCorrectionResource,
     isNumberedCompany: false,
-    expectedOptions: ['correct-new-nr', 'correct-name-to-number', 'correct-name']
+    expectedOptions: [
+      CorrectNameOptions.CORRECT_NEW_NR,
+      CorrectNameOptions.CORRECT_NAME_TO_NUMBER,
+      CorrectNameOptions.CORRECT_NAME
+    ]
   },
   {
-    filingType: 'correction',
-    entityType: 'SP',
+    filingType: FilingTypes.CORRECTION,
+    entityType: CorpTypeCd.SOLE_PROP,
     resourceModel: SpCorrectionResource,
     isNumberedCompany: false,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
-    filingType: 'correction',
-    entityType: 'ULC',
+    filingType: FilingTypes.CORRECTION,
+    entityType: CorpTypeCd.BC_ULC_COMPANY,
     resourceModel: UlcCorrectionResource,
     isNumberedCompany: true,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   },
   {
-    filingType: 'correction',
-    entityType: 'ULC',
+    filingType: FilingTypes.CORRECTION,
+    entityType: CorpTypeCd.BC_ULC_COMPANY,
     resourceModel: UlcCorrectionResource,
     isNumberedCompany: false,
-    expectedOptions: ['correct-new-nr', 'correct-name-to-number', 'correct-name']
+    expectedOptions: [
+      CorrectNameOptions.CORRECT_NEW_NR,
+      CorrectNameOptions.CORRECT_NAME_TO_NUMBER,
+      CorrectNameOptions.CORRECT_NAME
+    ]
   }
 ]
 
 const specialResolutionTests = [
   {
-    filingType: 'specialResolution',
-    entityType: 'CP',
+    filingType: FilingTypes.SPECIAL_RESOLUTION,
+    entityType: CorpTypeCd.COOP,
     resourceModel: CpSpecialResolutionResource,
     isNumberedCompany: null,
-    expectedOptions: ['correct-new-nr']
+    expectedOptions: [CorrectNameOptions.CORRECT_NEW_NR]
   }
 ]
 
@@ -235,7 +263,7 @@ function runTest (test: any) {
       const vm = wrapper.vm as any
 
       // verify
-      expect(vm.nameChangeOptions).toEqual(test.expectedOptions)
+      expect(vm.correctionNameChoices).toEqual(test.expectedOptions)
 
       // verify name edit section (if rendered)
       const btn = wrapper.find('#btn-correct-company-name')
@@ -245,13 +273,13 @@ function runTest (test: any) {
         // FUTURE: check button text (Change, Correct, Edit)
 
         // check for expected Correct Name Options panels
-        if (test.expectedOptions.includes('correct-new-nr')) {
+        if (test.expectedOptions.includes(CorrectNameOptions.CORRECT_NEW_NR)) {
           expect(wrapper.find('#x-panel-correct-new-nr').exists()).toBe(true)
         }
-        if (test.expectedOptions.includes('correct-name-to-number')) {
+        if (test.expectedOptions.includes(CorrectNameOptions.CORRECT_NAME_TO_NUMBER)) {
           expect(wrapper.find('#x-panel-correct-name-to-number').exists()).toBe(true)
         }
-        if (test.expectedOptions.includes('correct-name')) {
+        if (test.expectedOptions.includes(CorrectNameOptions.CORRECT_NAME)) {
           expect(wrapper.find('#x-panel-correct-name').exists()).toBe(true)
         }
       }
@@ -274,7 +302,7 @@ describe('Name Changes for a SP alteration', () => {
   const entitySnapshot = {
     businessInfo: {
       legalName: 'Mock Original Name',
-      legalType: 'SP'
+      legalType: CorpTypeCd.SOLE_PROP
     }
   }
 
@@ -282,7 +310,7 @@ describe('Name Changes for a SP alteration', () => {
     // Set original business Data
     store.stateModel.summaryMode = false
     store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
-    store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
+    store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType
     store.stateModel.entitySnapshot = entitySnapshot as any
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
     store.stateModel.tombstone.entityType = CorpTypeCd.BENEFIT_COMPANY
@@ -312,7 +340,7 @@ describe('Name Changes for a SP alteration', () => {
 
   it('displays the Name Request information when NR data changes', async () => {
     store.stateModel.nameRequest.nrNumber = 'NR1234567'
-    store.stateModel.nameRequest.legalType = 'CR' as CorpTypeCd
+    store.stateModel.nameRequest.legalType = CorpTypeCd.BC_CORPORATION
     store.stateModel.nameRequest.expiry = '2021-03-10T08:00:00+00:00'
     store.stateModel.nameRequest.status = NameRequestStates.APPROVED
     store.stateModel.nameRequest.requestType = NrRequestActionCodes.NEW_BUSINESS

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import { mount, Wrapper } from '@vue/test-utils'
-import CorrectCompanyName from '@/components/common/YourCompany/CompanyName/CorrectCompanyName.vue'
+import CorrectCompanyName from '@/components/common/YourCompany/CorrectName/CorrectCompanyName.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
@@ -41,6 +41,8 @@ describe('CorrectCompanyName', () => {
     const wrapper = wrapperFactory()
 
     expect(wrapper.findComponent(CorrectCompanyName).exists()).toBe(true)
+
+    wrapper.destroy()
   })
 
   it('verifies the text field populated from store', async () => {
@@ -52,6 +54,8 @@ describe('CorrectCompanyName', () => {
     // Verify data from Store
     expect(companyNameInput.element.value).toBe('Bobs Plumbing')
     expect(getLastEvent(wrapper, 'isValid')).toBe(true)
+
+    wrapper.destroy()
   })
 
   it('verifies it is invalid with no Company Name', async () => {
@@ -64,6 +68,8 @@ describe('CorrectCompanyName', () => {
     // Verify data from Store
     expect(companyNameInput.element.value).toBe('')
     expect(getLastEvent(wrapper, 'isValid')).toBe(false)
+
+    wrapper.destroy()
   })
 
   it('verifies the done emission when the change is complete', async () => {
@@ -85,5 +91,7 @@ describe('CorrectCompanyName', () => {
 
     // Verify Data change in store
     expect(store.stateModel.nameRequest.legalName).toBe('Bob\'s Plumbing Ltd.')
+
+    wrapper.destroy()
   })
 })

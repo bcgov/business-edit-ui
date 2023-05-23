@@ -46,8 +46,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
 import { BusinessInformationIF, EntitySnapshotIF } from '@/interfaces/'
@@ -56,12 +55,8 @@ import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module
 
 import { useStore } from '@/store/store'
 
-@Component({
-  mixins: [
-    CommonMixin
-  ]
-})
-export default class EntityInfo extends Vue {
+@Component({})
+export default class EntityInfo extends Mixins(CommonMixin) {
   // Global getters
   @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getBusinessInformation!: BusinessInformationIF

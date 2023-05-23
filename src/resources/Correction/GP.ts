@@ -1,4 +1,4 @@
-import { NameChangeOptions, FilingCodes } from '@/enums/'
+import { CorrectNameOptions, FilingCodes } from '@/enums/'
 import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
@@ -15,8 +15,8 @@ export const GpCorrectionResource: ResourceIF = {
     priority: false
   },
   changeData: {
-    nameChangeOptions: [
-      NameChangeOptions.CORRECT_NEW_NR
+    correctNameOptions: [
+      CorrectNameOptions.CORRECT_NEW_NR
     ],
     typeChangeInfo: 'General Partnership cannot be changed into a Sole Proprietorship. If this is necessary, a new ' +
     'Name Request Number and Statement of Registration (along with associated fees) will be required.',

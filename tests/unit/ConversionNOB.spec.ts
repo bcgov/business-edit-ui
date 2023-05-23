@@ -132,6 +132,8 @@ describe('ConversionNatureOfBusiness without update', () => {
     expect(wrapper.find('.v-counter').text()).toBe('311 / 300')
     expect(wrapper.find('.v-messages').text()).toBe('Maximum 300 characters reached')
     expect(wrapper.find('#naics-summary').exists()).toBeFalsy()
+
+    wrapper.destroy()
   })
 })
 

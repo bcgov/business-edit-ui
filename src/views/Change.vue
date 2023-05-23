@@ -98,8 +98,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { ChangeSummary } from '@/components/Change/'
@@ -108,13 +107,12 @@ import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, C
   TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, CertifyIF, EntitySnapshotIF, OrgPersonIF, ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus, PartyTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SpChangeResource, GpChangeResource, SpOrganizationChangeResource } from '@/resources/Change/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
 @Component({
   components: {
@@ -134,16 +132,11 @@ import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
     TransactionalFolioNumber,
     ViewWrapper,
     YourCompanyWrapper
-  },
-  mixins: [CommonMixin, FeeMixin, FilingTemplateMixin]
+  }
 })
-export default class Change extends Vue {
+export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplateMixin) {
   // Global getters
   @Getter(useStore) getAppValidate!: boolean
-  @Getter(useStore) getBusinessId!: string
-  @Getter(useStore) getCertifyState!: CertifyIF
-  @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
   @Getter(useStore) isPartnership!: boolean
@@ -155,9 +148,7 @@ export default class Change extends Vue {
   @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action(useStore) setCertifyState!: ActionBindingIF
   @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action(useStore) setFilingData!: ActionBindingIF
   @Action(useStore) setFilingId!: ActionBindingIF
   @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setResource!: ActionBindingIF

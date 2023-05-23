@@ -241,5 +241,7 @@ describe('Add Name Translation component', () => {
     await translationInput.setValue('Lower case will be capitalized')
 
     expect(wrapper.find(addTranslationInput).element.value).toBe('LOWER CASE WILL BE CAPITALIZED')
+
+    wrapper.destroy()
   })
 })
