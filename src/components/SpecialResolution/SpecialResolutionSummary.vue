@@ -141,8 +141,6 @@ export default class SpecialResolutionSummary extends Mixins(DateMixin, FeeMixin
   // Global getters
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentFees!: FeesIF[]
-  @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
-  @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean

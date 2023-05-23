@@ -122,10 +122,7 @@ import { Component } from 'vue-property-decorator'
 import { ResourceIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 
-@Component({
-  components: {
-  }
-})
+@Component({})
 export default class HelpSpecialResolution extends Vue {
   @Getter(useStore) getResource!: ResourceIF
   helpToggle = false
