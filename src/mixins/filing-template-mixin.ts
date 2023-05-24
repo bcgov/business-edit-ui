@@ -418,7 +418,7 @@ export default class FilingTemplateMixin extends DateMixin {
         cooperativeAssociationType: this.getAssociationType,
         rulesFileKey: this.getSpecialResolutionRules?.key,
         rulesFileName: this.getSpecialResolutionRules?.name,
-        rulesUploadedOn: this.dateToApi(new Date()),
+        rulesUploadedOn: this.getSpecialResolutionRules?.uploaded,
         memorandumFileKey: this.getSpecialResolutionMemorandum?.key,
         memorandumFileName: this.getSpecialResolutionMemorandum?.name
       }
@@ -429,6 +429,7 @@ export default class FilingTemplateMixin extends DateMixin {
       if (this.getSpecialResolutionRules?.includedInResolution) {
         delete filing.alteration.rulesFileKey
         delete filing.alteration.rulesFileName
+        delete filing.alteration.rulesUploadedOn
         filing.alteration.rulesInResolution = true
       }
       if (this.getSpecialResolutionMemorandum?.includedInResolution) {

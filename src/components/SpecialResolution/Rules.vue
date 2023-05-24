@@ -447,7 +447,7 @@ export default class Rules extends Vue {
             ...rules,
             ...this.$refs.uploadRulesRef.getNewRulesNameAndKey(),
             includedInResolution: false,
-            uploaded: new Date().toISOString(),
+            uploaded: DateUtilities.dateToApi(new Date()),
             url: null // No URL, because we can't currently re-download drafts securely from Minio.
           }
         } else {
