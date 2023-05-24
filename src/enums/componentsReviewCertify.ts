@@ -6,12 +6,12 @@
  * - this list must match the order in `stateModel`
  */
 export enum ComponentsReviewCertify {
+  'special-resolution-confirm',
   'effective-date-time',
   'document-delivery-section',
   'completing-party-section',
   'transactional-folio-number-section',
   'detail-section',
-  'special-resolution-confirm',
   'certify-section',
   'court-order',
   'staff-payment'

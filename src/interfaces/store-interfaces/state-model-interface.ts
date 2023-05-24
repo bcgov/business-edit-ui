@@ -2,7 +2,8 @@ import { AccountInformationIF, AddressesIF, BusinessInformationIF, CertifyIF,
   CorrectionInformationIF, DocumentDeliveryIF, EffectiveDateTimeIF, EntitySnapshotIF,
   FeesIF, FilingDataIF, PeopleAndRolesIF, NameRequestIF, NameTranslationIF,
   NewAlterationIF, RestorationStateIF, ShareStructureIF, StateFilingRestorationIF, TombStoneIF,
-  ValidationFlagsIF } from '@/interfaces/'
+  ValidationFlagsIF,
+  RulesMemorandumIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, SpecialResolutionIF, StaffPaymentIF }
   from '@bcrs-shared-components/interfaces/'
 
@@ -28,12 +29,16 @@ export interface StateModelIF {
   staffPayment: StaffPaymentIF
   filingData: FilingDataIF[]
   detailComment: string
+  rules: RulesMemorandumIF
+  memorandum: RulesMemorandumIF
   editingFlags: {
     companyName: boolean
     nameTranslations: boolean
     officeAddresses: boolean
     peopleAndRoles: boolean
     shareStructure: boolean
+    rules: boolean
+    memorandum: boolean
   }
   validationFlags: ValidationFlagsIF
   summaryMode: boolean,

@@ -49,6 +49,7 @@ import DateUtilities from '@/services/date-utilities'
 import { defineStore } from 'pinia'
 import { resourceModel, stateModel } from './state'
 import { LegalServices } from '@/services'
+import { RulesMemorandumIF } from '@/interfaces/rules-memorandum-interfaces'
 
 // Possible to move getters / actions into seperate files:
 // https://github.com/vuejs/pinia/issues/802#issuecomment-1018780409
@@ -237,7 +238,7 @@ export const useStore = defineStore('store', {
       return this.stateModel.accountInformation.id
     },
 
-    /** The current date, which is refreshed every time the app inits. */
+    /** The current date in format (YYYY-MM-DD), which is refreshed every time the app inits. */
     getCurrentDate (): string {
       return this.stateModel.tombstone.currentDate
     },
@@ -589,7 +590,9 @@ export const useStore = defineStore('store', {
       return (
         this.hasBusinessNameChanged ||
         this.hasBusinessTypeChanged ||
-        this.hasAssociationTypeChanged
+        this.hasAssociationTypeChanged ||
+        this.hasSpecialResolutionMemorandumChanged ||
+        this.hasSpecialResolutionRulesChanged
       )
     },
 
@@ -1123,21 +1126,6 @@ export const useStore = defineStore('store', {
       return this.stateModel.completingParty
     },
 
-    /** The special resolution object. */
-    getSpecialResolution (): SpecialResolutionIF {
-      return this.stateModel.specialResolution
-    },
-
-    /** The special resolution validity flags. */
-    getSpecialResolutionFormValid (): boolean {
-      return this.getValidationFlags.flagsCompanyInfo.isValidCreateSpecialResolution
-    },
-
-    /** The company info page validity flags. */
-    getSpecialResolutionConfirmValid (): boolean {
-      return this.getFlagsReviewCertify.isValidSpecialResolutionConfirm
-    },
-
     /** The restoration object. */
     getRestoration (): RestorationStateIF {
       return this.stateModel.restoration
@@ -1202,11 +1190,52 @@ export const useStore = defineStore('store', {
 
     getIsRestorationTypeCourtOrder (): boolean {
       return !!this.stateModel.restoration.courtOrder?.fileNumber
+    },
+
+    /** The special resolution object. */
+    getSpecialResolution (): SpecialResolutionIF {
+      return this.stateModel.specialResolution
+    },
+
+    /** The special resolution validity flags. */
+    getSpecialResolutionFormValid (): boolean {
+      return this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolution &&
+        this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature
+    },
+
+    /** The company info page validity flags. */
+    getSpecialResolutionConfirmValid (): boolean {
+      return this.getFlagsReviewCertify.isValidSpecialResolutionConfirm
+    },
+
+    getSpecialResolutionRules (): RulesMemorandumIF {
+      return this.stateModel.rules
+    },
+
+    getSpecialResolutionMemorandum (): RulesMemorandumIF {
+      return this.stateModel.memorandum
+    },
+
+    hasSpecialResolutionMemorandumChanged (): boolean {
+      return this.getSpecialResolutionMemorandum?.includedInResolution
+    },
+
+    hasSpecialResolutionRulesChanged (): boolean {
+      return this.getSpecialResolutionRules?.includedInResolution ||
+        this.getSpecialResolutionRules?.key !==
+        this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key
+    },
+
+    /** Determine if we should show the create special resolution component. */
+    showCreateSpecialResolution (): boolean {
+      return (this.hasBusinessNameChanged ||
+         this.hasAssociationTypeChanged ||
+         this.hasSpecialResolutionRulesChanged ||
+         this.hasSpecialResolutionMemorandumChanged)
     }
 
   },
   actions: {
-    // no context as first argument, use `this` instead
     setEntityType (entityType: CorpTypeCd) {
       this.stateModel.tombstone.entityType = entityType
     },
@@ -1462,6 +1491,24 @@ export const useStore = defineStore('store', {
     },
     setRestorationRelationships (relationships: RelationshipTypes[]) {
       this.stateModel.restoration.relationships = relationships
+    },
+    setSpecialResolutionValid (valid: boolean) {
+      this.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolution = valid
+    },
+    setSpecialResolutionSignatureValid (valid: boolean) {
+      this.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature = valid
+    },
+    setSpecialResolutionRulesValid (valid: boolean) {
+      this.stateModel.validationFlags.flagsCompanyInfo.isValidRules = valid
+    },
+    setSpecialResolutionMemorandumValid (valid: boolean) {
+      this.stateModel.validationFlags.flagsCompanyInfo.isValidMemorandum = valid
+    },
+    setSpecialResolutionRules (rule: RulesMemorandumIF) {
+      this.stateModel.rules = rule
+    },
+    setSpecialResolutionMemorandum (memorandum: RulesMemorandumIF) {
+      this.stateModel.memorandum = memorandum
     }
   }
 })

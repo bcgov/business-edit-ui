@@ -258,7 +258,7 @@ describe('Limited Restoration To Full component - edit page', () => {
     // enable filing and wait for all queries to complete
     await wrapper.setProps({ appReady: true })
     wrapper.vm.$data.isDataLoaded = true
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
 
     await flushPromises()
   })
@@ -363,7 +363,7 @@ describe('Limited Restoration To Full component - summary page (with no filing c
     // enable filing and wait for all queries to complete
     await wrapper.setProps({ appReady: true })
     await wrapper.setData({ isDataLoaded: true })
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
 
     await flushPromises()
   })
@@ -443,7 +443,7 @@ describe('Limited Restoration To Full component - summary page (with filing chan
     // enable filing and wait for all queries to complete
     await wrapper.setProps({ appReady: true })
     await wrapper.setData({ isDataLoaded: true })
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
 
     await flushPromises()
   })

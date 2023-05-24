@@ -1,4 +1,4 @@
-import { AddressesIF, AuthInformationIF, BusinessInformationIF, NameTranslationIF, OrgPersonIF,
+import { AddressesIF, AuthInformationIF, BusinessDocumentsIF, BusinessInformationIF, NameTranslationIF, OrgPersonIF,
   ResolutionsIF, ShareStructureIF } from '@/interfaces/'
 
 /** Entity snapshot object. */
@@ -12,4 +12,5 @@ export interface EntitySnapshotIF {
   nameTranslations?: NameTranslationIF[]
   shareStructure?: ShareStructureIF
   resolutions?: ResolutionsIF[]
+  businessDocuments?: BusinessDocumentsIF
 }

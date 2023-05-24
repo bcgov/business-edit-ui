@@ -1,10 +1,13 @@
 import { AxiosInstance as axios } from '@/utils/'
 import { AddressesIF, AlterationFilingIF, BusinessInformationIF, ChgRegistrationFilingIF, ConversionFilingIF,
-  CorrectionFilingIF, NameTranslationIF, OrgPersonIF, ResolutionsIF, RestorationFilingIF, SpecialResolutionFilingIF }
+  CorrectionFilingIF, DocumentIF, NameTranslationIF, OrgPersonIF, PresignedUrlIF, ResolutionsIF, RestorationFilingIF,
+  SpecialResolutionFilingIF }
   from '@/interfaces/'
 import { RoleTypes } from '@/enums'
 import { ShareStructureIF } from '@bcrs-shared-components/interfaces/'
 
+import { BusinessDocumentsIF } from '@/interfaces/business-document-interface'
+import { AxiosResponse } from 'axios'
 /**
  * Class that provides integration with the Legal API.
  */
@@ -303,5 +306,99 @@ export default class LegalServices {
         console.log('fetchNameRequest() error - invalid response =', response)
         throw new Error('Invalid API response')
       })
+  }
+
+  /** Fetches the document info for a business. EG. Rules / Memorandum keys
+   * @param businessId the id of the business
+   * @returns a promise to return the data
+   */
+  static async fetchBusinessDocuments (businessId: string): Promise<BusinessDocumentsIF> {
+    const url = `businesses/${businessId}/documents`
+
+    return axios.get(url)
+      .then(response => {
+        if (response?.data) {
+          return response.data
+        }
+        // eslint-disable-next-line no-console
+        console.log('fetchBusinessDocuments() error - invalid response =', response)
+        throw new Error('Invalid API response')
+      })
+  }
+
+  /**
+   * Fetches a document and prompts browser to open/save it.
+   * @param document the document info object
+   * @returns the axios response
+   */
+  static async fetchDocument (document: DocumentIF): Promise<AxiosResponse> {
+    // safety checks
+    if (!document?.link || !document?.filename) {
+      throw new Error('Invalid parameters')
+    }
+
+    const config = {
+      headers: { 'Accept': 'application/pdf' },
+      responseType: 'blob' as 'json'
+    }
+
+    return axios.get(document.link, config).then(response => {
+      if (!response) throw new Error('Null response')
+
+      /* solution from https://github.com/axios/axios/issues/1392 */
+
+      // it is necessary to create a new blob object with mime-type explicitly set
+      // otherwise only Chrome works like it should
+      const blob = new Blob([response.data], { type: 'application/pdf' })
+
+      // use Navigator.msSaveOrOpenBlob if available (possibly IE)
+      // warning: this is now deprecated
+      // ref: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/msSaveOrOpenBlob
+      if (window.navigator && window.navigator['msSaveOrOpenBlob']) {
+        window.navigator['msSaveOrOpenBlob'](blob, document.filename)
+      } else {
+        // for other browsers, create a link pointing to the ObjectURL containing the blob
+        const url = window.URL.createObjectURL(blob)
+        const a = window.document.createElement('a')
+        window.document.body.appendChild(a)
+        a.setAttribute('style', 'display: none')
+        a.href = url
+        a.download = document.filename
+        a.click()
+        window.URL.revokeObjectURL(url)
+        a.remove()
+      }
+
+      return response
+    })
+  }
+
+  /**
+   * Gets a pre-signed URL for the specified filename.
+   * @param filename the file name
+   * @returns the presigned url object
+   */
+  static async getPresignedUrl (fileName: string): Promise<PresignedUrlIF> {
+    const url = `documents/${fileName}/signatures`
+    return axios.get(url)
+      .then(response => response?.data)
+  }
+
+  /**
+ * Uploads the specified file to the specified URL.
+ * @param url the URL to upload to
+ * @param file the file to upload
+ * @param key the file key
+ * @param userId the file user id
+ * @returns the axios response
+ */
+  static async uploadToUrl (url: string, file: File, key: string, userId: string): Promise<AxiosResponse> {
+    const headers = {
+      'Content-Type': file.type,
+      'x-amz-meta-userid': `${userId}`,
+      'x-amz-meta-key': `${key}`,
+      'Content-Disposition': `attachment; filename=${file.name}`
+    }
+    return axios.put(url, file, { headers })
   }
 }

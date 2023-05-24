@@ -260,7 +260,7 @@ describe('Limited Restoration Extension component - edit page', () => {
 
     // enable filing and wait for all queries to complete
     await wrapper.setProps({ appReady: true })
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
 
     await flushPromises()
   })
@@ -356,7 +356,7 @@ describe('Limited Restoration Extension component - summary page (with no filing
 
     // enable filing and wait for all queries to complete
     await wrapper.setProps({ appReady: true })
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     await flushPromises()
   })
 
@@ -431,7 +431,7 @@ describe('Limited Restoration Extension component - summary page (with filing ch
 
     // enable filing and wait for all queries to complete
     await wrapper.setProps({ appReady: true })
-    await wrapper.vm.$nextTick()
+    await Vue.nextTick()
     await flushPromises()
   })
 

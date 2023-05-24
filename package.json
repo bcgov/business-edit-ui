@@ -1,6 +1,6 @@
 {
   "name": "business-edit-ui",
-  "version": "4.3.8",
+  "version": "4.4.0",
   "private": true,
   "appName": "Edit UI",
   "sbcName": "SBC Common Components",
@@ -34,7 +34,7 @@
     "@bcrs-shared-components/limited-restoration-panel": "2.0.1",
     "@bcrs-shared-components/nature-of-business": "1.2.4",
     "@bcrs-shared-components/relationships-panel": "1.0.14",
-    "@bcrs-shared-components/share-structure": "2.1.4",
+    "@bcrs-shared-components/share-structure": "2.1.18",
     "@bcrs-shared-components/staff-payment": "2.1.4",
     "@mdi/font": "^5.9.55",
     "@sentry/vue": "^7.49.0",
@@ -49,7 +49,9 @@
     "pinia-class": "^0.0.3",
     "regenerator-runtime": "^0.13.11",
     "sbc-common-components": "3.0.8",
+    "tiptap-vuetify": "^2.24.0",
     "uuid": "^9.0.0",
+    "v-sanitize": "^0.0.11",
     "vue": "^2.7.14",
     "vue-affix": "^0.5.2",
     "vue-debounce-decorator": "^1.0.1",
@@ -62,6 +64,7 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-methods": "^7.18.6",
     "@pinia/testing": "^0.0.16",
     "@types/jest": "^27.5.2",
     "@types/lodash": "^4.14.194",

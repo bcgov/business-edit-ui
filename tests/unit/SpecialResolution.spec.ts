@@ -3,7 +3,7 @@ import Vuetify from 'vuetify'
 import VueRouter from 'vue-router'
 import flushPromises from 'flush-promises'
 import sinon from 'sinon'
-import { shallowMount, createLocalVue } from '@vue/test-utils'
+import { createLocalVue, shallowMount } from '@vue/test-utils'
 import { AxiosInstance as axios } from '@/utils/'
 import SpecialResolution from '@/views/SpecialResolution.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -12,6 +12,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { AssociationType, BusinessContactInfo, BusinessType, EntityName, FolioInformation, OfficeAddresses,
   YourCompanyWrapper } from '@/components/common'
+import { Memorandum, Rules } from '@/components/SpecialResolution'
+import { LegalServices } from '@/services'
 
 Vue.use(Vuetify)
 const vuetify = new Vuetify({})
@@ -178,6 +180,28 @@ describe('Special Resolution component', () => {
         }
       }))
 
+    // GET business documents
+    jest.spyOn((LegalServices as any), 'fetchBusinessDocuments').mockImplementation(
+      () => Promise.resolve({
+        documents: {
+          certifiedMemorandum: 'url',
+          certifiedRules: 'url2'
+        },
+        documentsInfo: {
+          certifiedMemorandum: {
+            key: null,
+            name: 'name2',
+            includedInResolution: true,
+            uploaded: '2022-01-01T08:00:00.000000+00:00'
+          },
+          certifiedRules: {
+            key: null,
+            name: 'name',
+            includedInResolution: true,
+            uploaded: '2022-01-01T08:00:00.000000+00:00'
+          }
+        }
+      }))
     // FUTURE: mock GET alteration filing
 
     // create a Local Vue and install router on it
@@ -198,7 +222,9 @@ describe('Special Resolution component', () => {
     wrapper.destroy()
   })
 
-  it('renders view and sub-components', () => {
+  it('renders view and sub-components', async () => {
+    wrapper.vm.isDataLoaded = true
+    await Vue.nextTick()
     expect(wrapper.findComponent(SpecialResolution).exists()).toBe(true)
     expect(wrapper.findComponent(ViewWrapper).exists()).toBe(true)
     expect(wrapper.findComponent(YourCompanyWrapper).exists()).toBe(true)
@@ -208,6 +234,8 @@ describe('Special Resolution component', () => {
     expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
     expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
     expect(wrapper.findComponent(FolioInformation).exists()).toBe(true)
+    expect(wrapper.findComponent(Rules).exists()).toBe(true)
+    expect(wrapper.findComponent(Memorandum).exists()).toBe(true)
   })
 
   it('loads the entity snapshot into the store', async () => {

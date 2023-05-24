@@ -50,18 +50,21 @@ export const stateModel: StateModelIF = {
       isValidCompanyProvisions: true,
       isValidResolutionDate: true,
       isValidAssociationType: true,
-      isValidCreateSpecialResolution: true,
+      isValidRules: true,
+      isValidMemorandum: true,
+      isValidSpecialResolution: true,
+      isValidSpecialResolutionSignature: true,
       isValidApprovalType: true,
       isValidExtensionTime: true
     },
     flagsReviewCertify: {
       // NB: this must be in same order as ComponentsReviewCertify enum!
+      isValidSpecialResolutionConfirm: true,
       isValidEffectiveDate: true,
       isValidDocumentOptionalEmail: true,
       isValidCompletingParty: true,
       isValidTransactionalFolioNumber: true,
       isValidDetailComment: true,
-      isValidSpecialResolutionConfirm: true,
       isValidCertify: false, // initially un-certified
       isValidCourtOrder: true,
       isValidStaffPayment: true
@@ -134,7 +137,9 @@ export const stateModel: StateModelIF = {
     nameTranslations: false,
     officeAddresses: false,
     peopleAndRoles: false,
-    shareStructure: false
+    shareStructure: false,
+    rules: false,
+    memorandum: false
   },
   summaryMode: false,
   currentFees: [cloneDeep(EmptyFees)],
@@ -144,7 +149,7 @@ export const stateModel: StateModelIF = {
     signatory: {
       givenName: '',
       familyName: '',
-      additionalName: null
+      additionalName: ''
     },
     resolutionConfirmed: false
   },
@@ -160,5 +165,7 @@ export const stateModel: StateModelIF = {
     relationships: [],
     type: null
   },
-  stateFilingRestoration: null
+  stateFilingRestoration: null,
+  rules: null,
+  memorandum: null
 }

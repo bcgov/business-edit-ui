@@ -1,5 +1,5 @@
 <template>
-  <div id="special-resolution-summary">
+  <div id="create-special-resolution-summary">
     <v-divider class="mx-4" />
     <section
       id="resolution-date-section"
@@ -48,7 +48,11 @@
             sm="9"
             class="resolution-text"
           >
-            {{ getSpecialResolution && getSpecialResolution.resolution }}
+            <div
+              v-if="getSpecialResolution"
+              v-sanitize="getSpecialResolution.resolution"
+              class="resizable"
+            />
           </v-col>
         </v-row>
         <v-row
@@ -127,8 +131,7 @@
               </v-checkbox>
               <ul>
                 <li class="mt-4">
-                  The special resolution was passed by <strong>{{ companyName }}</strong> and authorizes the
-                  dissolution.
+                  The special resolution was passed by <strong>{{ companyName }}.</strong>
                 </li>
                 <li class="mt-4">
                   A printed copy of the signed special resolution (Form 06 COO) has been retained with the Cooperative
@@ -173,16 +176,16 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
     confirmResolutionChkFormRef: FormIF
   };
 
-  protected resolutionConfirmed = false
+  resolutionConfirmed = false
 
   /** Validation rule for checkbox. */
-  protected confirmCompletionResolution = [
+  confirmCompletionResolution = [
     v => {
       return !!v
     }
   ];
 
-  protected async onResolutionConfirmedChange (resolutionConfirmed: boolean): Promise<void> {
+  async onResolutionConfirmedChange (resolutionConfirmed: boolean): Promise<void> {
     // This is required as there are timing issues between this component and the CompleteResolutionSummary
     // component.  The CompleteResolutionSummary isn't always able to detect that the confirm checkbox
     // value has changed without using nextTick()
@@ -228,15 +231,15 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
 
   /** Set validate on file and pay click. */
   @Watch('getAppValidate')
-  protected updateResolutionStepValidationDetail (): void {
+  updateResolutionStepValidationDetail (): void {
     // don't call validation during Jest tests because we are setting app valid
     !this.isJestRunning && this.$refs.confirmResolutionChkFormRef.validate()
   }
 
   /** Called when component is mounted. */
   mounted () {
-    // set values if exist
     this.resolutionConfirmed = this.getSpecialResolution.resolutionConfirmed || false
+    this.setSpecialResolutionConfirmStateValidity(this.resolutionConfirmed)
   }
 }
 </script>
@@ -263,5 +266,16 @@ export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, 
     font-weight: normal;
     color: $gray9;
   }
+}
+
+.resizable {
+  background: #f1f3f5;
+  overflow-y: auto;
+  resize: vertical;
+  min-width: 100%;
+  max-width: 400px;
+  min-height: 90px;
+  height: 425px;
+  max-height: 800px;
 }
 </style>

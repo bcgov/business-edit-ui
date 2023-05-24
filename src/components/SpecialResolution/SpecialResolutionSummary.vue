@@ -12,6 +12,15 @@
           </v-icon>
           <label class="summary-title">Summary of Changes to File</label>
         </v-col>
+        <v-col
+          class="text-right"
+          @click="onClickDelete()"
+        >
+          <v-icon class="header-icon ml-n1">
+            mdi-trash-can
+          </v-icon>
+          <span class="summary-delete-title">Delete</span>
+        </v-col>
       </v-row>
     </div>
 
@@ -31,7 +40,7 @@
             <div class="company-name font-weight-bold text-uppercase">
               {{ companyName }}
             </div>
-            <div class="company-name mt-2">
+            <div class="company-nr mt-2">
               {{ getNameRequestNumber }}
             </div>
           </v-col>
@@ -49,15 +58,67 @@
           </v-col>
 
           <v-col cols="8">
-            <span class="info-text">{{ associationDescription }}</span>
+            <span
+              id="association-description"
+              class="info-text"
+            >{{ associationDescription }}</span>
           </v-col>
         </v-row>
       </div>
     </template>
 
-    <!-- Rules and Memorandum file name add here-->
+    <!-- Rules -->
+    <template v-if="hasSpecialResolutionRulesChanged">
+      <v-divider class="mx-4" />
+      <div class="section-container association-type-summary">
+        <v-row no-gutters>
+          <v-col cols="3">
+            <label><strong>Rules</strong></label>
+          </v-col>
 
-    <!-- Resolution summary section -->
+          <v-col cols="8">
+            <span
+              v-if="getSpecialResolutionRules.includedInResolution"
+              id="rules-included-resolution"
+              class="info-text"
+            > Changes will be described in the special resolution </span>
+            <span
+              v-else
+              id="rules-uploaded"
+              class="info-text"
+            >
+              <v-icon
+                color="success"
+                class="confirmed-icon mt-n1 mr-1"
+              >
+                mdi-check
+              </v-icon>
+              {{ getSpecialResolutionRules.name }}
+            </span>
+          </v-col>
+        </v-row>
+      </div>
+    </template>
+
+    <!-- Memorandum -->
+    <template v-if="hasSpecialResolutionMemorandumChanged">
+      <v-divider class="mx-4" />
+      <div class="section-container association-type-summary">
+        <v-row no-gutters>
+          <v-col cols="3">
+            <label><strong>Memorandum</strong></label>
+          </v-col>
+
+          <v-col cols="8">
+            <span
+              id="memorandum-included-resolution"
+              class="info-text"
+            > Changes will be described in the special resolution </span>
+          </v-col>
+        </v-row>
+      </div>
+    </template>
+
     <CreateSpecialResolutionSummary />
   </v-card>
 </template>
@@ -117,6 +178,11 @@ export default class SpecialResolutionSummary extends Mixins(DateMixin, FeeMixin
     const futureEffectiveFeesSum = validFees.map(f => f.futureEffectiveFees).reduce((a, b) => a + b, 0)
     return `($${(filingFeesSum + futureEffectiveFeesSum).toFixed(2)} Fee)`
   }
+
+  onClickDelete (): void {
+    // May not work in Vue3.
+    this.$root.$emit('delete-all')
+  }
 }
 </script>
 
@@ -133,7 +199,12 @@ export default class SpecialResolutionSummary extends Mixins(DateMixin, FeeMixin
   padding-left: 0.5rem;
 }
 
-.company-name {
+.summary-delete-title {
+ color: $app-blue;
+ font-weight: regular;
+}
+
+.company-name, .company-nr {
   font-size: 1.5rem;
 }
 
