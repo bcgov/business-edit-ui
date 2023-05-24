@@ -37,7 +37,7 @@
           label="Enter the NR Number"
           hint="Example: NR 1234567"
           persistent-hint
-          :rules="done && nrNumRules"
+          :rules="done ? nrNumRules : []"
           @keyup="uppercase('nameRequestNumber')"
         />
       </v-col>
@@ -73,7 +73,7 @@
           hint="Example: 555-555-5555"
           persistent-hint
           type="tel"
-          :rules="!applicantEmail && done && phoneRules"
+          :rules="(!applicantEmail && done) ? phoneRules: []"
         />
       </v-col>
       <div class="ma-5">
@@ -89,7 +89,7 @@
           hint="Example: name@email.com"
           persistent-hint
           type="email"
-          :rules="!applicantPhone && done && emailRules"
+          :rules="(!applicantPhone && done) ? emailRules : []"
         />
       </v-col>
     </v-row>

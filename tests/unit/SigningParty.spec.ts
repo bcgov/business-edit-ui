@@ -1,7 +1,11 @@
 import Vue from 'vue'
+import Vuetify from 'vuetify'
 import { createPinia, setActivePinia } from 'pinia'
 import { mount } from '@vue/test-utils'
 import SigningParty from '@/components/SpecialResolution/SigningParty.vue'
+
+Vue.use(Vuetify)
+const vuetify = new Vuetify({})
 
 // Store required for component, although not read or modified in unit test.
 setActivePinia(createPinia())
@@ -10,7 +14,7 @@ describe('SigningParty', () => {
   let wrapper
 
   beforeEach(() => {
-    wrapper = mount(SigningParty)
+    wrapper = mount(SigningParty, { vuetify })
   })
 
   afterEach(() => {
