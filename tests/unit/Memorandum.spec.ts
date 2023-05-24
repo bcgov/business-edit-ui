@@ -102,7 +102,7 @@ describe('Memorandum', () => {
     store.stateModel.validationFlags.componentValidate = true
     await wrapper.find('#btn-change-memorandum').trigger('click')
     expect(wrapper.find('#memorandum-section').classes()).toContain('invalid-section')
-    expect(wrapper.find('#memorandum-title').classes()).toContain('invalid-text')
-    expect(wrapper.find('#memorandum-in-resolution-text').classes()).toContain('invalid-text')
+    expect(wrapper.find('#memorandum-title').classes()).toContain('error-text')
+    expect(wrapper.find('#memorandum-in-resolution-text').classes()).toContain('error-text')
   })
 })

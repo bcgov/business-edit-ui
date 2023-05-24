@@ -20,7 +20,7 @@
             <v-col
               :cols="isEditing ? 2 : 3"
             >
-              <label :class="{'invalid-text': rulesEditingInvalid}">
+              <label :class="{'error-text': rulesEditingInvalid}">
                 <strong>Rules</strong>
               </label>
               <v-col md="1">
@@ -87,7 +87,7 @@
                 <div v-else>
                   <div
                     class="px-4 pt-0 section-container"
-                    :class="{'invalid-text': rulesEditingInvalid}"
+                    :class="{'error-text': rulesEditingInvalid}"
                   >
                     You can update the rules of association in one of the following ways:
                   </div>
@@ -420,7 +420,7 @@ export default class Rules extends Vue {
       const documents = this.getEntitySnapshot?.businessDocuments?.documents
       return {
         includedInResolution: false,
-        key: documentsInfo?.certifiedRules?.key,
+        key: documentsInfo?.certifiedRules?.key || null,
         name: documentsInfo?.certifiedRules?.name,
         previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
         uploaded: documentsInfo?.certifiedRules?.uploaded,

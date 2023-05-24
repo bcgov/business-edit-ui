@@ -24,6 +24,7 @@ export interface AlterationIF {
   rulesInResolution?: boolean
   rulesFileKey?: string
   rulesFileName?: string
+  rulesUploadedOn?: string
   memorandumInResolution?: boolean
   memorandumFileKey?: string
   memorandumFileName?: string

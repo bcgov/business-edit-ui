@@ -85,7 +85,8 @@ export default class UploadRules extends Vue {
   }
 
   updateDocumentKey (fileKey: string): void {
-    this.fileKey = fileKey
+    // Ensure we aren't setting it to undefined.
+    this.fileKey = fileKey || null
   }
 
   getNewRulesNameAndKey (): RulesMemorandumIF {

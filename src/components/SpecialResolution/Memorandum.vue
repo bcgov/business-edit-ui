@@ -26,7 +26,7 @@
           >
             <label
               id="memorandum-title"
-              :class="{'invalid-text': memorandumEditingInvalid}"
+              :class="{'error-text': memorandumEditingInvalid}"
             >
               <strong>Memorandum</strong>
             </label>
@@ -108,7 +108,7 @@
                   <template #label>
                     <span
                       id="memorandum-in-resolution-text"
-                      :class="{'invalid-text': memorandumEditingInvalid}"
+                      :class="{'error-text': memorandumEditingInvalid}"
                     >
                       The memorandum has changed and I will describe those changes in the Special Resolution.
                     </span>

@@ -418,6 +418,7 @@ export default class FilingTemplateMixin extends DateMixin {
         cooperativeAssociationType: this.getAssociationType,
         rulesFileKey: this.getSpecialResolutionRules?.key,
         rulesFileName: this.getSpecialResolutionRules?.name,
+        rulesUploadedOn: this.dateToApi(new Date()),
         memorandumFileKey: this.getSpecialResolutionMemorandum?.key,
         memorandumFileName: this.getSpecialResolutionMemorandum?.name
       }
@@ -983,26 +984,66 @@ export default class FilingTemplateMixin extends DateMixin {
       }
     ))
 
-    const documentInfo = entitySnapshot.businessDocuments.documentsInfo
-    this.setSpecialResolutionRules(
-      {
-        name: filing.alteration?.rulesFileName || documentInfo?.certifiedRules?.name,
-        key: filing.alteration?.rulesFileKey || documentInfo?.certifiedRules?.key,
-        url: filing.alteration?.rulesFileKey ? null : entitySnapshot.businessDocuments.documents?.certifiedRules,
-        includedInResolution: filing.alteration?.rulesInResolution,
-        previouslyInResolution: documentInfo?.certifiedRules?.includedInResolution,
-        uploaded: documentInfo?.certifiedRules?.uploaded
-      })
+    // Documents Info can possibly be undefined, if the co-op was created via paper.
+    const documentsInfo = entitySnapshot.businessDocuments?.documentsInfo
+    if (filing.alteration?.rulesFileKey) {
+      // Scenario 1 - From draft, rules are uploaded in the draft.
+      this.setSpecialResolutionRules(
+        {
+          name: filing.alteration.rulesFileName,
+          key: filing.alteration.rulesFileKey,
+          url: null, // no url for drafts, this is intentional.
+          includedInResolution: false,
+          previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
+          uploaded: filing.alteration.rulesUploadedOn
+        })
+    } else if (filing.alteration?.rulesInResolution) {
+      // Scenario 2 - From draft, rules are included in the resolution.
+      this.setSpecialResolutionRules(
+        {
+          name: documentsInfo?.certifiedRules?.name,
+          key: documentsInfo?.certifiedRules?.key || null,
+          url: entitySnapshot.businessDocuments.documents?.certifiedRules,
+          includedInResolution: true,
+          previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
+          uploaded: documentsInfo?.certifiedRules?.uploaded
+        })
+    } else {
+      // Scenario 3 + 4 - Not draft, rules exist or rules are on paper.
+      this.setSpecialResolutionRules(
+        {
+          name: documentsInfo?.certifiedRules?.name,
+          key: documentsInfo?.certifiedRules?.key || null,
+          url: entitySnapshot.businessDocuments.documents?.certifiedRules,
+          includedInResolution: false,
+          previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
+          uploaded: documentsInfo?.certifiedRules?.uploaded
+        })
+    }
 
-    this.setSpecialResolutionMemorandum(
-      {
-        name: filing.alteration?.memorandumFileName || documentInfo?.certifiedMemorandum?.name,
-        key: filing.alteration?.memorandumFileKey || documentInfo?.certifiedMemorandum?.key,
-        url: filing.alteration?.rulesFileKey ? null : entitySnapshot.businessDocuments.documents?.certifiedMemorandum,
-        includedInResolution: filing.alteration?.memorandumInResolution,
-        previouslyInResolution: documentInfo?.certifiedMemorandum?.includedInResolution,
-        uploaded: documentInfo?.certifiedMemorandum?.uploaded
-      })
+    if (filing.alteration?.memorandumInResolution) {
+      // Scenario 1 - From draft - Memorandum is in the resolution.
+      this.setSpecialResolutionMemorandum(
+        {
+          name: documentsInfo?.certifiedMemorandum?.name,
+          key: documentsInfo?.certifiedMemorandum?.key || null,
+          url: entitySnapshot.businessDocuments.documents?.certifiedMemorandum,
+          includedInResolution: true,
+          previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
+          uploaded: documentsInfo?.certifiedMemorandum?.uploaded
+        })
+    } else {
+      // Scenario 2 + 3 - Not Draft - Memorandum is not in the resolution or are on paper.
+      this.setSpecialResolutionMemorandum(
+        {
+          name: documentsInfo?.certifiedMemorandum?.name,
+          key: documentsInfo?.certifiedMemorandum?.key || null,
+          url: entitySnapshot.businessDocuments.documents?.certifiedMemorandum,
+          includedInResolution: false,
+          previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
+          uploaded: documentsInfo?.certifiedMemorandum?.uploaded
+        })
+    }
 
     this.setSpecialResolution(cloneDeep(filing.specialResolution))
 
@@ -1251,7 +1292,7 @@ export default class FilingTemplateMixin extends DateMixin {
         this.setSpecialResolutionRules(
           {
             name: documentsInfo?.certifiedRules?.name,
-            key: documentsInfo?.certifiedRules?.key,
+            key: documentsInfo?.certifiedRules?.key || null,
             url: entitySnapshot.businessDocuments?.documents?.certifiedRules,
             previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
             uploaded: documentsInfo?.certifiedRules?.uploaded
