@@ -20,7 +20,8 @@ export const routes = [
     meta: {
       requiresAuth: true,
       isStaffOnly: false,
-      filingType: FilingTypes.ALTERATION
+      filingType: FilingTypes.ALTERATION,
+      title: 'Company Information page'
     }
   },
   {
@@ -30,7 +31,8 @@ export const routes = [
     meta: {
       requiresAuth: true,
       isStaffOnly: false,
-      filingType: FilingTypes.CHANGE_OF_REGISTRATION
+      filingType: FilingTypes.CHANGE_OF_REGISTRATION,
+      title: 'Business Information'
     }
   },
   {
@@ -40,7 +42,8 @@ export const routes = [
     meta: {
       requiresAuth: true,
       isStaffOnly: true,
-      filingType: FilingTypes.CONVERSION
+      filingType: FilingTypes.CONVERSION,
+      title: 'Record Conversion'
     }
   },
   {
@@ -50,7 +53,8 @@ export const routes = [
     meta: {
       requiresAuth: true,
       isStaffOnly: true,
-      filingType: FilingTypes.CORRECTION
+      filingType: FilingTypes.CORRECTION,
+      title: 'Register Correction'
     }
   },
   {
@@ -63,7 +67,8 @@ export const routes = [
     meta: {
       requiresAuth: true,
       isStaffOnly: true,
-      filingType: FilingTypes.RESTORATION
+      filingType: FilingTypes.RESTORATION,
+      title: 'Limited Restoration Extension'
     }
   },
   {
@@ -76,7 +81,8 @@ export const routes = [
     meta: {
       requiresAuth: true,
       isStaffOnly: true,
-      filingType: FilingTypes.RESTORATION
+      filingType: FilingTypes.RESTORATION,
+      title: 'Conversion to Full Restoration'
     }
   },
   {
@@ -86,7 +92,8 @@ export const routes = [
     meta: {
       requiresAuth: true,
       isStaffOnly: false,
-      filingType: FilingTypes.SPECIAL_RESOLUTION
+      filingType: FilingTypes.SPECIAL_RESOLUTION,
+      title: 'Special Resolution'
     }
   },
   {
