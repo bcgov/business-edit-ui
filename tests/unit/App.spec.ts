@@ -476,9 +476,7 @@ describe.skip('App component', () => {
     wrapper.destroy()
   })
 
-  it('gets auth and user info properly', () => {
-    expect(store.isAuthEdit).toBe(true)
-    expect(store.isAuthView).toBe(true)
+  it('gets user info properly', () => {
     expect(store.stateModel.tombstone.userEmail).toBe('completing-party@example.com')
   })
 

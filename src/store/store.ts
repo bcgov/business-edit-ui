@@ -58,7 +58,7 @@ export const useStore = defineStore('store', {
   // convert to a function
   state: (): StateIF => ({ resourceModel, stateModel }),
   getters: {
-    /** Whether the user has "staff" keycloak role. */
+    /** Whether the user has "staff" Keycloak role. */
     isRoleStaff (): boolean {
       return this.stateModel.tombstone.keycloakRoles.includes('staff')
     },
@@ -66,16 +66,6 @@ export const useStore = defineStore('store', {
     /** Whether the current account is SBC Staff. */
     isSbcStaff (): boolean {
       return this.stateModel.accountInformation?.accountType === AccountTypes.SBC_STAFF
-    },
-
-    /** Whether the user is authorized to edit. */
-    isAuthEdit (): boolean {
-      return this.stateModel.tombstone.authRoles.includes('edit')
-    },
-
-    /** Whether the user is authorized to view. */
-    isAuthView (): boolean {
-      return this.stateModel.tombstone.authRoles.includes('view')
     },
 
     /** Whether the current filing is a Correction. */
@@ -364,6 +354,11 @@ export const useStore = defineStore('store', {
       return this.stateModel.tombstone.userInfo
     },
 
+    /** The current user's keycloak roles. */
+    getKeycloakRoles (): Array<string> {
+      return this.stateModel.tombstone.keycloakRoles
+    },
+
     /** The org info. (May be null.) */
     getOrgInfo (): any {
       return this.stateModel.tombstone.orgInfo
@@ -391,11 +386,6 @@ export const useStore = defineStore('store', {
     /** The current user's last name. (May be undefined.) */
     getUserLastName (): string {
       return this.getUserInfo?.lastname
-    },
-
-    /** The current user's roles. (May be undefined.) */
-    getUserRoles (): any {
-      return this.getUserInfo?.roles
     },
 
     /** The current user's username. (May be undefined.) */
@@ -1253,9 +1243,6 @@ export const useStore = defineStore('store', {
     },
     setKeycloakRoles (keycloakRoles) {
       this.stateModel.tombstone.keycloakRoles = keycloakRoles
-    },
-    setAuthRoles (authRoles) {
-      this.stateModel.tombstone.authRoles = authRoles
     },
     setUserInfo (userInfo) {
       this.stateModel.tombstone.userInfo = userInfo
