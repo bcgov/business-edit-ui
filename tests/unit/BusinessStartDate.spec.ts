@@ -73,7 +73,7 @@ describe('Business Start Date', () => {
     expect(cancelBtn.text()).toBe('Cancel')
     expect(wrapper.find('#start-done-btn').text()).toBe('Done')
     expect(wrapper.find('.start-date-title').text()).toBe('Start Date')
-    expect(wrapper.find('.dotted-underline').text()).toBe('up to 2 years before the Registration Date')
+    expect(wrapper.find('.dotted-underline').text()).toBe('up to 10 years before the Registration Date')
     expect(wrapper.findComponent(DatePicker).exists()).toBe(true)
     await cancelBtn.trigger('click')
 

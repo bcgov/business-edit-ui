@@ -39,24 +39,29 @@
           >
             <label class="start-date-title title-label">Start Date</label>
             <p class="mt-4">
-              Enter the start date of the business. The start date can be
-              <v-tooltip
-                top
-                max-width="20rem"
-                content-class="top-tooltip"
-                transition="fade-transition"
-              >
-                <template #activator="{ on }">
-                  <span
-                    class="tool-tip dotted-underline"
-                    v-on="on"
-                  >up to 2 years before the Registration Date</span>
-                </template>
-                <span>Choose the oldest date possible even if the actual start date is older than 2 years before
-                  the Registration Date.</span>
-              </v-tooltip>
-              and up 90 days after the Registration Date. Make certain that this is the correct date as it cannot be
-              easily corrected afterwards.
+              Enter the start date of the business.
+
+              <template v-if="!isRoleStaff">
+                The start date can be
+                <v-tooltip
+                  top
+                  max-width="20rem"
+                  content-class="top-tooltip"
+                  transition="fade-transition"
+                >
+                  <template #activator="{ on }">
+                    <span
+                      class="tool-tip dotted-underline"
+                      v-on="on"
+                    >up to 10 years before the Registration Date</span>
+                  </template>
+                  <span>Choose the oldest date possible even if the actual start date is older than 10 years before
+                    the Registration Date.</span>
+                </v-tooltip>
+                and up 90 days after the Registration Date.
+              </template>
+
+              Make certain that this is the correct date as it cannot be easily corrected afterwards.
             </p>
             <DatePickerShared
               title="Start Date"
@@ -189,15 +194,16 @@ export default class BusinessStartDate extends Mixins(CommonMixin, DateMixin) {
   @Getter(useStore) hasBusinessStartDateChanged!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
   @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isRoleStaff!: boolean
 
   // Global setter
   @Action(useStore) setCorrectionStartDate!: ActionBindingIF
   @Action(useStore) setValidComponent!: ActionBindingIF
 
-  protected dropdown = false
-  protected onEditMode = false
-  protected isCorrected: boolean = null
-  protected newCorrectedStartDate: string = null // date is "Month Day, Year"
+  dropdown = false
+  onEditMode = false
+  isCorrected: boolean = null
+  private newCorrectedStartDate: string = null // date is "Month Day, Year"
 
   /** The section validity state (when prompted by app). */
   get invalidSection (): boolean {
@@ -209,13 +215,13 @@ export default class BusinessStartDate extends Mixins(CommonMixin, DateMixin) {
     return (this.isFirmCorrectionFiling || this.isFirmConversionFiling)
   }
 
-  /** The minimum start date that can be entered (up to 2 years before reg date). */
+  /** The minimum start date that can be entered (up to 10 years before reg date). */
   get minDate (): string {
-    // no min date for conversion
-    if (this.isFirmConversionFiling) return null
+    // no min date for staff
+    if (this.isRoleStaff) return null
 
     const date = this.apiToDate(this.getBusinessFoundingDateTime)
-    date.setFullYear(date.getUTCFullYear() - 2)
+    date.setFullYear(date.getUTCFullYear() - 10)
     return this.dateToYyyyMmDd(date)
   }
 
@@ -247,18 +253,18 @@ export default class BusinessStartDate extends Mixins(CommonMixin, DateMixin) {
     return (!this.onEditMode && (!!this.getCorrectionStartDate || !!this.getBusinessStartDate))
   }
 
-  protected onChangeClicked (): void {
+  onChangeClicked (): void {
     this.onEditMode = true
   }
 
   /** Called to add a new date. */
-  protected onOkClicked (date: string): void {
+  onOkClicked (date: string): void {
     if (date) {
       this.newCorrectedStartDate = date
     }
   }
 
-  protected onDoneClicked (): void {
+  onDoneClicked (): void {
     if (this.newCorrectedStartDate) {
       // For firms only the date is valid
       if (this.newCorrectedStartDate !== this.getBusinessStartDate) {
@@ -271,11 +277,11 @@ export default class BusinessStartDate extends Mixins(CommonMixin, DateMixin) {
     this.onEditMode = false
   }
 
-  protected onCancelClicked (): void {
+  onCancelClicked (): void {
     this.onEditMode = false
   }
 
-  protected onUndoClicked (): void {
+  onUndoClicked (): void {
     this.setCorrectionStartDate(null)
     this.newCorrectedStartDate = null
     this.isCorrected = false
