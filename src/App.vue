@@ -39,6 +39,7 @@
       @exit="goToDashboard()"
     />
 
+    <!-- FUTURE: pass actual filing name -->
     <StaffPaymentErrorDialog
       attach="#app"
       filingName="Application"
@@ -170,12 +171,12 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentJsDate!: Date
   @Getter(useStore) getFilingId!: number
+  @Getter(useStore) getKeycloakRoles!: Array<string>
   @Getter(useStore) getOrgInfo!: any
   @Getter(useStore) getUserEmail!: string
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
   @Getter(useStore) getUserPhone!: string
-  @Getter(useStore) getUserRoles!: string
   @Getter(useStore) getUserUsername!: string
   @Getter(useStore) haveUnsavedChanges!: boolean
   @Getter(useStore) isBusySaving!: boolean
@@ -189,21 +190,20 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   // Global actions
   @Action(useStore) setAccountInformation!: ActionBindingIF
   @Action(useStore) setAppValidate!: ActionBindingIF
-  @Action(useStore) setAuthRoles!: ActionBindingIF
   @Action(useStore) setBusinessId!: ActionBindingIF
+  @Action(useStore) setCompletingParty!: ActionBindingIF
   @Action(useStore) setComponentValidate!: ActionBindingIF
   @Action(useStore) setCurrentDate!: ActionBindingIF
   @Action(useStore) setCurrentJsDate!: ActionBindingIF
+  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setFilingType!: ActionBindingIF
   @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
   @Action(useStore) setIsFilingPaying!: ActionBindingIF
   @Action(useStore) setIsSaving!: ActionBindingIF
   @Action(useStore) setKeycloakRoles!: ActionBindingIF
-  @Action(useStore) setUserInfo!: ActionBindingIF
   @Action(useStore) setOrgInfo!: ActionBindingIF
-  @Action(useStore) setCompletingParty!: ActionBindingIF
   @Action(useStore) setSummaryMode!: ActionBindingIF
-  @Action(useStore) setFilingType!: ActionBindingIF
-  @Action(useStore) setFilingId!: ActionBindingIF
+  @Action(useStore) setUserInfo!: ActionBindingIF
 
   // Local properties
   accountAuthorizationDialog = false
@@ -228,26 +228,12 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   /** The Update Current JS Date timer id. */
   private updateCurrentJsDateId = 0
 
-  /** The entity title. */
-  get entityTitle (): string {
-    switch (this.$route.name) {
-      case RouteNames.ALTERATION: return 'Company Information'
-      case RouteNames.CHANGE: return 'Business Information'
-      case RouteNames.CONVERSION: return 'Record Conversion'
-      case RouteNames.CORRECTION: return 'Register Correction'
-      case RouteNames.RESTORATION_EXTENSION: return 'Limited Restoration Extension'
-      case RouteNames.RESTORATION_CONVERSION: return 'Conversion to Full Restoration'
-      case RouteNames.SPECIAL_RESOLUTION: return 'Special Resolution'
-    }
-    return 'Unknown Filing' // should never happen
-  }
-
   /** The route breadcrumbs list. */
   get breadcrumbs (): Array<BreadcrumbIF> {
     const crumbs: Array<BreadcrumbIF> = [
       getEntityDashboardBreadcrumb(),
       {
-        text: this.entityTitle,
+        text: this.$route.meta?.title || 'Unknown Filing',
         to: { name: this.$route.name }
       }
     ]
@@ -296,7 +282,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     return Boolean(sessionStorage.getItem(SessionStorageKeys.KeyCloakToken))
   }
 
-  /** Helper to check is the current route matches */
+  /** Helper to check if the current route matches. */
   private isRouteName (routeName: RouteNames): boolean {
     return (this.$route.name === routeName)
   }
@@ -564,7 +550,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     this.saveWarnings = []
   }
 
-  /** Gets account and org information and stores it. */
+  /** Fetches org information and stores it. */
   private async loadAccountInformation (): Promise<void> {
     // NB: staff don't have current account (but SBC Staff do)
     if (!this.isRoleStaff) {
@@ -584,20 +570,19 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     }
   }
 
-  /** Fetches authorizations and verifies and stores roles. */
+  /** Fetches authorizations and verifies roles. */
   private async loadAuth (): Promise<any> {
     // NB: will throw if API error
-    const response = await AuthServices.fetchAuthorizations(this.getBusinessId)
+    const authRoles = await AuthServices.fetchAuthorizations(this.getBusinessId)
+
+    // verify that array has at least one role
     // NB: roles array may contain 'view', 'edit', 'staff' or nothing
-    const authRoles = response?.data?.roles
-    if (authRoles && authRoles.length > 0) {
-      this.setAuthRoles(authRoles)
-    } else {
+    if (!Array.isArray(authRoles) || authRoles.length < 1) {
       throw new Error('Invalid auth roles')
     }
   }
 
-  /** Fetches current user info and stores it. */
+  /** Fetches user info and stores it. */
   private async loadUserInfo (): Promise<any> {
     // NB: will throw if API error
     const response = await AuthServices.fetchUserInfo()
@@ -611,11 +596,11 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
 
   /**
    * Gets current account from object in session storage.
-   * Waits up to 10 sec for current account to be synced (typically by SbcHeader).
+   * Waits up to 5 sec for current account to be synced (typically by SbcHeader).
    */
   private async getCurrentAccount (): Promise<any> {
     let account: any
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 50; i++) {
       const currentAccount = sessionStorage.getItem(SessionStorageKeys.CurrentAccount) // may be null
       account = JSON.parse(currentAccount) // may be null
       if (account) break
@@ -631,8 +616,8 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     const email = this.getUserEmail
     const firstName = this.getUserFirstName
     const lastName = this.getUserLastName
-    // remove leading { and trailing } and tokenize string
-    const custom: any = { roles: this.getUserRoles?.slice(1, -1).split(',') }
+    // store Keycloak roles in custom object
+    const custom = { roles: this.getKeycloakRoles } as any
 
     await UpdateLdUser(key, email, firstName, lastName, custom)
   }
