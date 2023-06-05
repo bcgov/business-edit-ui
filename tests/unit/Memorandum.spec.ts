@@ -51,7 +51,7 @@ describe('Memorandum', () => {
     await wrapper.find('#btn-memorandum-done').trigger('click')
 
     expect(wrapper.find('#memorandum-paper-changed').text()).toContain('Available on paper only')
-    expect(wrapper.find('#memorandum-changes-included-resolution').text()).not.toContain('New')
+    expect(wrapper.find('#memorandum-changes-included-resolution').text()).not.toContain('new')
     expect(wrapper.find('#memorandum-changes-included-resolution').text()).toContain('changes will be described')
   })
 
