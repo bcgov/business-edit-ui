@@ -23,7 +23,10 @@
               <label :class="{'error-text': rulesEditingInvalid}">
                 <strong>Rules</strong>
               </label>
-              <v-col md="1">
+              <v-col
+                md="1"
+                class="pa-0"
+              >
                 <v-chip
                   v-if="hasChanged"
                   x-small
@@ -50,7 +53,7 @@
                   >
                     <span
                       id="rules-paper-not-changed"
-                      class="ml-7 d-block"
+                      class="ml-7 d-block info-text"
                     >
                       Available on paper only
                     </span>
@@ -79,21 +82,21 @@
                   </div>
                   <span
                     v-if="lastUploadedDetails"
-                    class="mt-1 mb-2 last-modified-details"
+                    class="mt-1 mb-2 last-modified-details info-text"
                   >
                     {{ lastUploadedDetails }}
                   </span>
                 </div>
                 <div v-else>
                   <div
-                    class="px-4 pt-0 section-container"
+                    class="px-4 pt-0 section-container info-text"
                     :class="{'error-text': rulesEditingInvalid}"
                   >
                     You can update the rules of association in one of the following ways:
                   </div>
                   <v-divider class="mx-4" />
                   <section
-                    class="px-4 py-2 section-container"
+                    class="px-4 py-4 section-container"
                   >
                     <v-btn
                       id="btn-describe-rules"
@@ -127,7 +130,7 @@
                   </section>
                   <v-divider class="mx-4" />
                   <section
-                    class="px-4 py-2 section-container"
+                    class="px-4 py-9 section-container"
                   >
                     <v-btn
                       id="btn-upload-rules"
@@ -172,12 +175,15 @@
                           class="mt-5 ml-6"
                         >
                           <li class="mt-1">
-                            <span>The Cooperative name is identified
+                            <span class="info-text">The Cooperative name is identified
                               <strong>exactly</strong> as follows throughout the Rules of the Association:
-                              <strong>{{ getNameRequestLegalName }}</strong></span>
+                              <strong>{{ getNameRequestLegalName }}</strong>
+                            </span>
                           </li>
                           <li class="mt-1">
-                            <span>The full and complete Rules of the Association are being uploaded.</span>
+                            <span class="info-text">
+                              The full and complete Rules of the Association are being uploaded.
+                            </span>
                           </li>
                         </ul>
                       </header>
@@ -247,13 +253,13 @@
                     <span
                       v-else
                       id="rules-paper-changed"
-                      class="ml-7 mb-2 d-block"
+                      class="ml-7 mb-2 d-block info-text"
                     >
                       Available on paper only
                     </span>
                     <span
                       v-if="lastUploadedDetails"
-                      class="mt-1 mb-2 last-modified-details"
+                      class="mt-1 mb-2 last-modified-details info-text"
                     >
                       {{ lastUploadedDetails }}
                     </span>
@@ -267,9 +273,9 @@
                       </v-icon>
                       <span
                         id="rules-changes-included-resolution"
-                        class="ml-1 d-inline-flex"
-                      >{{ getSpecialResolutionRules.previouslyInResolution ? 'New' : '' }}
-                        Changes will be described in the special resolution text.</span>
+                        class="ml-1 d-inline-block info-text"
+                      >{{ getSpecialResolutionRules.previouslyInResolution ? 'new' : '' }}
+                        changes will be described in the special resolution text.</span>
                     </div>
                   </div>
                 </div>
@@ -492,6 +498,10 @@ header {
   p {
     padding-top: 0.5rem;
   }
+}
+
+#rules-changes-included-resolution:first-letter {
+  text-transform: capitalize;
 }
 
 #rules-confirmation-buttons {

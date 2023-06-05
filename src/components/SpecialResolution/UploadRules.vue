@@ -5,7 +5,7 @@
   >
     <header>
       <ul
-        class="mt-5"
+        class="mt-5 info-text"
       >
         <li class="mt-1">
           <span class="ml-2">Must be set to fit onto 8.5" x 11" letter-size paper</span>
@@ -103,9 +103,16 @@ export default class UploadRules extends Vue {
 <style lang="scss" scoped>
   @import '@/assets/styles/theme.scss';
 
+  // Override vuetify's invalid label color.
   :deep(.invalid-label) {
     .v-label {
       color: $app-red;
+    }
+  }
+  // Override paperclip icon color. Previously this would change color.
+  :deep() {
+    .mdi-paperclip::before {
+      color: $app-blue;
     }
   }
 </style>

@@ -146,7 +146,7 @@ export default class HelpSpecialResolution extends Vue {
 @import '@/assets/styles/theme.scss';
 
 #sr-heading {
-  color: $app-blue
+  color: $gray9
 }
 
 .help-btn {

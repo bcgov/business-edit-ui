@@ -27,7 +27,7 @@
           <v-col
             cols="12"
             sm="9"
-            class="resolution-date"
+            class="resolution-date info-text"
           >
             {{ resolutionDateText }}
           </v-col>
@@ -69,7 +69,7 @@
           <v-col
             cols="12"
             sm="9"
-            class="siging-party"
+            class="siging-party info-text"
           >
             {{ signingParty }}
           </v-col>
@@ -89,7 +89,7 @@
           <v-col
             cols="12"
             sm="9"
-            class="pt-4 pt-sm-0 siging-date"
+            class="pt-4 pt-sm-0 siging-date info-text"
           >
             {{ signingDate }}
           </v-col>
@@ -120,7 +120,7 @@
                 id="chk-confirm-resolution"
                 ref="confirmResolutionChkRef"
                 v-model="resolutionConfirmed"
-                class="chk-resolution mt-0 pt-0"
+                class="chk-resolution mt-0 pt-0 info-text"
                 hide-details
                 :rules="confirmCompletionResolution"
                 @change="onResolutionConfirmedChange($event)"
@@ -129,7 +129,7 @@
                   <div>I confirm the following:</div>
                 </template>
               </v-checkbox>
-              <ul>
+              <ul class="info-text">
                 <li class="mt-4">
                   The special resolution was passed by <strong>{{ companyName }}.</strong>
                 </li>
