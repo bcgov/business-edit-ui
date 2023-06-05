@@ -118,7 +118,7 @@ describe('Rules', () => {
     await Vue.nextTick()
     expect(wrapper.find('#rules-paper-changed').text()).toContain('Available on paper only')
     expect(wrapper.find('#rules-changes-included-resolution').text()).not.toContain('New')
-    expect(wrapper.find('#rules-changes-included-resolution').text()).toContain('Changes will be described')
+    expect(wrapper.find('#rules-changes-included-resolution').text()).toContain('changes will be described')
     store.stateModel.rules = { previouslyInResolution: true, includedInResolution: true }
     await Vue.nextTick()
     expect(wrapper.find('#rules-changes-included-resolution').text()).toContain('New')
