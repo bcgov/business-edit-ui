@@ -137,7 +137,9 @@ export default class HelpSpecialResolution extends Vue {
      * In session is stored the BASE_URL with business ID
      * So we are taking from process.env.BASE_URL
      */
-    return `${sessionStorage.getItem('BASE_URL')}${this.getSpecialResolutionResource?.path}`
+    const baseUrl = new URL(sessionStorage.getItem('BASE_URL'))
+    // Strip out the /CP10230123/ from the end of the url.
+    return `${baseUrl.origin}${this.getSpecialResolutionResource?.path}`
   }
 }
 </script>
