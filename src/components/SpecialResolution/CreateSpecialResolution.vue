@@ -27,7 +27,7 @@
         <header id="resolution-date-header">
           <h2>Special Resolution</h2>
         </header>
-        <p class="section-description mt-2">
+        <p class="section-description mt-2 info-text">
           Enter the date the special resolution passed and the text as it appears on your printed form.
         </p>
         <v-form ref="resolutionForm">

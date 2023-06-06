@@ -22,14 +22,13 @@
                 <span
                   class="tooltip-text"
                   v-on="on"
-                >Some changes</span>
+                >Some changes require a Special Resolution.</span>
               </template>
               <span>
                 A Special Resolution is required for a change to the Business name,
                 the Cooperative Association Type, the Rules or the Memorandum.
               </span>
             </v-tooltip>
-            require a Special Resolution.
             Necessary fees will be applied as updates are made.
           </section>
 

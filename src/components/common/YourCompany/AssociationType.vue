@@ -10,7 +10,10 @@
         <label :class="{'error-text': invalidSection}">
           <strong>Cooperative Association Type</strong>
         </label>
-        <v-col md="1">
+        <v-col
+          md="1"
+          class="pa-0"
+        >
           <v-chip
             v-if="hasAssociationTypeChanged"
             x-small

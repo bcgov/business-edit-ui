@@ -30,7 +30,10 @@
             >
               <strong>Memorandum</strong>
             </label>
-            <v-col md="1">
+            <v-col
+              md="1"
+              class="pa-0"
+            >
               <v-chip
                 v-if="hasChanged"
                 id="corrected-lbl"
@@ -55,11 +58,11 @@
                 >
                   <span
                     id="memorandum-paper-not-changed"
-                    class="ml-7"
+                    class="ml-7 info-text"
                   >Available on paper only</span>
                   <span
                     v-if="lastUploadedDetails"
-                    class="mt-1 last-modified-details d-block mb-2"
+                    class="mt-1 last-modified-details d-block mb-2 info-text"
                   >
                     {{ lastUploadedDetails }}
                   </span>
@@ -87,7 +90,7 @@
                     </a>
                     <span
                       v-if="lastUploadedDetails"
-                      class="mt-1 last-modified-details d-block mb-2"
+                      class="mt-1 last-modified-details d-block mb-2 info-text"
                     >
                       {{ lastUploadedDetails }}
                     </span>
@@ -108,7 +111,7 @@
                   <template #label>
                     <span
                       id="memorandum-in-resolution-text"
-                      :class="{'error-text': memorandumEditingInvalid}"
+                      :class="{'error-text': memorandumEditingInvalid, 'info-text': true}"
                     >
                       The memorandum has changed and I will describe those changes in the Special Resolution.
                     </span>
@@ -180,12 +183,12 @@
                 >
                   <span
                     id="memorandum-paper-changed"
-                    class="ml-7 mb-2"
+                    class="ml-7 mb-2 info-text"
                   >Available on paper only</span>
                 </div>
                 <span
                   v-if="lastUploadedDetails"
-                  class="mt-1 last-modified-details d-block mb-2"
+                  class="mt-1 last-modified-details d-block mb-2 info-text"
                 >
                   {{ lastUploadedDetails }}
                 </span>
@@ -196,11 +199,11 @@
                 </v-icon>
                 <span
                   id="memorandum-changes-included-resolution"
-                  class="ml-1 d-inline-flex"
+                  class="ml-1 d-inline-block info-text"
                 >
                   {{ getSpecialResolutionMemorandum && getSpecialResolutionMemorandum.previouslyInResolution ?
-                    'New ' : ' ' }}
-                  Changes will be described in the special resolution text.
+                    'new ' : ' ' }}
+                  changes will be described in the special resolution text.
                 </span>
               </div>
             </div>
@@ -384,6 +387,10 @@ header {
 ul {
   list-style: none;
   color: $gray7;
+}
+
+#memorandum-changes-included-resolution:first-letter {
+  text-transform: capitalize;
 }
 
 #memorandum-confirmation-buttons {

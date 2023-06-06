@@ -88,7 +88,7 @@
               </div>
             </div>
           </div>
-          <p class="summary-text">
+          <p class="summary-text info-text">
             Note: If you are pasting text,
             <strong>we recommend pasting plain text</strong>
             to avoid formatting and font issues with PDF and printed
