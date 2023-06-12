@@ -1,4 +1,4 @@
-name: Business Edit UI CI
+name: BUSINESS EDIT UI CI
 
 on:
   pull_request:
