@@ -67,8 +67,8 @@
               title="Start Date"
               nudge-right="80"
               nudge-top="15"
-              :minDate="minDate"
-              :maxDate="maxDate"
+              :minDate="startDateMin"
+              :maxDate="startDateMax"
               :editLabel="getEditLabel"
               :editedLabel="getEditedLabel"
               @emitDate="onOkClicked($event)"
@@ -216,22 +216,22 @@ export default class BusinessStartDate extends Mixins(CommonMixin, DateMixin) {
   }
 
   /** The minimum start date that can be entered (up to 10 years before reg date). */
-  get minDate (): string {
+  get startDateMin (): string {
     // no min date for staff
     if (this.isRoleStaff) return null
 
     const date = this.apiToDate(this.getBusinessFoundingDateTime)
-    date.setFullYear(date.getUTCFullYear() - 10)
+    date.setFullYear(date.getFullYear() - 10)
     return this.dateToYyyyMmDd(date)
   }
 
   /** The maximum start date that can be entered (up to 90 days after reg date). */
-  get maxDate (): string {
+  get startDateMax (): string {
     // no max date for conversion
     if (this.isFirmConversionFiling) return null
 
     const date = this.apiToDate(this.getBusinessFoundingDateTime)
-    date.setDate(date.getUTCDate() + 90)
+    date.setDate(date.getDate() + 90)
     return this.dateToYyyyMmDd(date)
   }
 
