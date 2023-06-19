@@ -25,7 +25,7 @@ describe('Business Start Date', () => {
   let wrapper: any
 
   beforeEach(async () => {
-    store.stateModel.businessInformation.foundingDate = '2021-07-01T00:00:00.000000+00:00'
+    store.stateModel.businessInformation.foundingDate = '2021-07-01T12:00:00.000000+00:00'
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     wrapper = mount(BusinessStartDate, { vuetify, localVue, router })
     await flushPromises()
@@ -86,5 +86,19 @@ describe('Business Start Date', () => {
 
     expect(wrapper.find('.v-chip__content').text()).toBe('Corrected')
     expect(wrapper.find('#start-undo-btn').text()).toBe('Undo')
+  })
+
+  it('has correct minimum and maximum dates for a staff user ', () => {
+    store.setKeycloakRoles(['staff'])
+
+    expect(wrapper.vm.startDateMin).toBe(null) // no minimum date
+    expect(wrapper.vm.startDateMax).toBe('2021-09-29') // 90 days after founding date
+  })
+
+  it('has correct minimum and maximum dates for a regular user', () => {
+    store.setKeycloakRoles([])
+
+    expect(wrapper.vm.startDateMin).toBe('2011-07-01') // 10 years before founding date
+    expect(wrapper.vm.startDateMax).toBe('2021-09-29') // 90 days after founding date
   })
 })

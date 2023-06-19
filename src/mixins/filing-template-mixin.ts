@@ -1331,6 +1331,7 @@ export default class FilingTemplateMixin extends DateMixin {
   // Local helper methods
   //
 
+  // FUTURE: probably don't need this becayse Corrected Filing Date is already YYYY-MM-DD
   /** The corrected filing date as YYYY-MM-DD. */
   private get correctedFilingDate (): string {
     const date = this.apiToDate(this.getCorrectedFilingDate)
