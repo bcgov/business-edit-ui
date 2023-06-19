@@ -1,27 +1,17 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 import { mount } from '@vue/test-utils'
-import CreateSpecialResolution from '@/components/SpecialResolution/CreateSpecialResolution.vue'
+import Resolution from '@/components/SpecialResolution/Resolution.vue'
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/CP'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { CorpTypeCd } from '@/enums'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 import {
-  HelpSpecialResolution, InstructionalText, ResolutionEditor, SigningParty
+  HelpResolution, InstructionalText, ResolutionEditor, SigningParty
 } from '@/components/SpecialResolution'
 import flushPromises from 'flush-promises'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
-
-// For Vue 3: remove - consult assets team for a replacement.
-Vue.use(TiptapVuetifyPlugin, {
-  // the next line is important! You need to provide the Vuetify Object to this place.
-  vuetify, // same as "vuetify: vuetify"
-  // optional, default to 'md' (default vuetify icons before v2.0.0)
-  iconsGroup: 'mdi'
-})
 
 setActivePinia(createPinia())
 const store = useStore()
@@ -63,7 +53,7 @@ describe('Special Resolution Form component', () => {
     store.stateModel.rules = {}
     store.stateModel.memorandum = {}
     store.stateModel.entitySnapshot = null
-    wrapper = mount(CreateSpecialResolution, { vuetify })
+    wrapper = mount(Resolution, { vuetify })
   })
 
   afterEach(() => {
@@ -71,9 +61,9 @@ describe('Special Resolution Form component', () => {
   })
 
   it('renders the components', async () => {
-    expect(wrapper.findComponent(CreateSpecialResolution).exists()).toBe(true)
+    expect(wrapper.findComponent(Resolution).exists()).toBe(true)
     expect(wrapper.findComponent(InstructionalText).exists()).toBe(true)
-    expect(wrapper.findComponent(HelpSpecialResolution).exists()).toBe(true)
+    expect(wrapper.findComponent(HelpResolution).exists()).toBe(true)
     expect(wrapper.findComponent(ResolutionEditor).exists()).toBe(true)
     expect(wrapper.findComponent(SigningParty).exists()).toBe(true)
   })
@@ -107,10 +97,10 @@ describe('Special Resolution Form component', () => {
   })
 
   it('renders the Special Resolution form  component with invalid styling', async () => {
-    expect(wrapper.find('#create-special-resolution .invalid-section').exists()).toBeFalsy()
+    expect(wrapper.find('#resolution .invalid-section').exists()).toBeFalsy()
     await store.setSpecialResolutionValid(false)
     await store.setSpecialResolutionSignatureValid(false)
-    expect(wrapper.find('#create-special-resolution .invalid-section').exists()).toBeTruthy()
+    expect(wrapper.find('#resolution .invalid-section').exists()).toBeTruthy()
   })
 
   it('validation - signatory date should be after or on resolution date', async () => {
@@ -124,12 +114,54 @@ describe('Special Resolution Form component', () => {
       signingDate: '2024-01-01'
     }
     await Vue.nextTick()
-    wrapper = mount(CreateSpecialResolution, { vuetify })
+    wrapper = mount(Resolution, { vuetify })
     store.stateModel.validationFlags.componentValidate = true
     await flushPromises()
 
     // Should fail on the signature, because the signing date is before the resolution date.
     expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature).toBe(false)
     expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolution).toBe(false)
+  })
+
+  it('test isEditing and isCoopCorrectionFiling', async () => {
+    // Ensure the change button doesn't exist for special resolution.
+    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
+    store.stateModel.tombstone.filingType = FilingTypes.SPECIAL_RESOLUTION
+    await Vue.nextTick()
+    expect(wrapper.find('#btn-change-resolution').exists()).toBe(false)
+
+    // Ensure the change button exists for correction.
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    await Vue.nextTick()
+    await wrapper.find('#btn-change-resolution').trigger('click')
+    expect(wrapper.vm.isEditing).toBe(true)
+    expect(wrapper.vm.hasChanged).toBe(false)
+    await Vue.nextTick()
+
+    await wrapper.find('#btn-resolution-cancel').trigger('click')
+
+    expect(wrapper.vm.hasChanged).toBe(false)
+  })
+
+  it('(correction) toggle edit, should be able to submit right away - without validation error', async () => {
+    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+    await Vue.nextTick()
+    await wrapper.find('#btn-change-resolution').trigger('click')
+    await wrapper.find('#btn-resolution-done').trigger('click')
+    await Vue.nextTick()
+    expect(wrapper.vm.hasChanged).toBe(true)
+    expect(wrapper.find('#btn-resolution-undo').exists()).toBe(true)
+  })
+
+  it('(non correction) normal special resolution ', async () => {
+    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
+    store.stateModel.tombstone.filingType = FilingTypes.SPECIAL_RESOLUTION
+    await Vue.nextTick()
+    // No change button needed.
+    await wrapper.find('#btn-resolution-done').trigger('click')
+    await Vue.nextTick()
+    expect(wrapper.vm.hasChanged).toBe(true)
+    expect(wrapper.find('#btn-resolution-undo').exists()).toBe(false)
   })
 })

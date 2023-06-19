@@ -7,10 +7,10 @@ export interface EntitySnapshotIF {
   authInfo: AuthInformationIF
   orgPersons: OrgPersonIF[]
   addresses: AddressesIF
+  resolutions?: ResolutionsIF[]
 
   // Properties exclusive to Companies
   nameTranslations?: NameTranslationIF[]
   shareStructure?: ShareStructureIF
-  resolutions?: ResolutionsIF[]
   businessDocuments?: BusinessDocumentsIF
 }

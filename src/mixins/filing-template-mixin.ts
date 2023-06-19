@@ -2,8 +2,8 @@ import { Component } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
-import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CorrectionFilingIF,
-  EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
+import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CoopAlterationIF, CorrectionInformationIF,
+  CorrectionFilingIF, EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
   NameRequestIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF, RestorationStateIF,
   SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
@@ -75,6 +75,8 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
   @Getter(useStore) getSpecialResolutionMemorandum!: RulesMemorandumIF
   @Getter(useStore) getSpecialResolutionRules!: RulesMemorandumIF
+  @Getter(useStore) isCoopCorrectionFiling!: boolean
+  @Getter(useStore) getLatestResolutionForBusiness!: SpecialResolutionIF
 
   // Global actions
   @Action(useStore) setBusinessContact!: ActionBindingIF
@@ -193,6 +195,53 @@ export default class FilingTemplateMixin extends DateMixin {
       }
       if (this.hasBusinessStartDateChanged) {
         filing.correction.startDate = this.getCorrectionStartDate
+      }
+    }
+
+    if (this.isCoopCorrectionFiling) {
+      // Parties and offices aren't required for Coop corrections.
+      delete filing.correction.parties
+      delete filing.correction.offices
+      filing.correction = {
+        ...filing.correction,
+        resolution: this.getSpecialResolution.resolution,
+        resolutionDate: this.getSpecialResolution.resolutionDate,
+        signingDate: this.getSpecialResolution.signingDate,
+        signatory: this.getSpecialResolution.signatory
+      }
+
+      // Apply Court Order ONLY when it is required and applied
+      if (this.getHasPlanOfArrangement || this.getFileNumber) {
+        filing.correction.courtOrder = {
+          fileNumber: this.getFileNumber,
+          effectOfOrder: this.getHasPlanOfArrangement ? EffectOfOrders.PLAN_OF_ARRANGEMENT : null,
+          hasPlanOfArrangement: this.getHasPlanOfArrangement
+        }
+      }
+
+      if (this.hasAssociationTypeChanged || this.hasSpecialResolutionMemorandumChanged ||
+          this.hasSpecialResolutionRulesChanged) {
+        filing.correction = {
+          ...filing.correction,
+          cooperativeAssociationType: this.getAssociationType,
+          rulesFileKey: this.getSpecialResolutionRules?.key,
+          rulesFileName: this.getSpecialResolutionRules?.name,
+          rulesUploadedOn: this.getSpecialResolutionRules?.uploaded,
+          memorandumFileKey: this.getSpecialResolutionMemorandum?.key,
+          memorandumFileName: this.getSpecialResolutionMemorandum?.name
+        }
+        // Ensures a key isn't passed when including the rules or memorandum in the resolution.
+        if (this.getSpecialResolutionRules?.includedInResolution) {
+          delete filing.correction.rulesFileKey
+          delete filing.correction.rulesFileName
+          delete filing.correction.rulesUploadedOn
+          filing.correction.rulesInResolution = true
+        }
+        if (this.getSpecialResolutionMemorandum?.includedInResolution) {
+          delete filing.correction.memorandumFileKey
+          delete filing.correction.memorandumFileName
+          filing.correction.memorandumInResolution = true
+        }
       }
     }
 
@@ -671,6 +720,15 @@ export default class FilingTemplateMixin extends DateMixin {
       })
     }
 
+    if (this.isCoopCorrectionFiling) {
+      this.setBusinessInformation({
+        ...entitySnapshot.businessInfo,
+        ...filing.business,
+        ...filing.correction.business,
+        associationType: filing.correction.cooperativeAssociationType || entitySnapshot.businessInfo.associationType
+      })
+    }
+
     // store Business Information for firm corrections
     if (this.isFirmCorrectionFiling) {
       this.setBusinessInformation({
@@ -703,6 +761,17 @@ export default class FilingTemplateMixin extends DateMixin {
       }
     ))
 
+    if (this.isCoopCorrectionFiling) {
+      this.storeSpecialResolutionRulesAndMemorandum(filing.correction, entitySnapshot)
+      let specialResolution: SpecialResolutionIF = {}
+      if (filing.correction.resolution) {
+        specialResolution = filing.correction
+      } else {
+        specialResolution = this.getLatestResolutionForBusiness
+      }
+      this.setSpecialResolution(cloneDeep(specialResolution))
+    }
+
     // store Name Translations (BEN/BC/CCC?ULC corrections only)
     if (this.isBenBcCccUlcCorrectionFiling) {
       this.setNameTranslations(cloneDeep(
@@ -721,12 +790,14 @@ export default class FilingTemplateMixin extends DateMixin {
     // store current Business Contact
     this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
 
-    // store People And Roles
-    let orgPersons = filing.correction.parties || entitySnapshot.orgPersons
-    // exclude Completing Party
-    // (it is managed separately and added to the filing in buildCorrectionFiling())
-    orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
-    this.setPeopleAndRoles(cloneDeep(orgPersons))
+    if (!this.isCoopCorrectionFiling) {
+      // store People And Roles
+      let orgPersons = filing.correction.parties || entitySnapshot.orgPersons
+      // exclude Completing Party
+      // (it is managed separately and added to the filing in buildCorrectionFiling())
+      orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
+      this.setPeopleAndRoles(cloneDeep(orgPersons))
+    }
 
     // store Share Classes and Resolution Dates (BEN/BC/CCC/ULC corrections only)
     if (this.isBenBcCccUlcCorrectionFiling) {
@@ -762,6 +833,10 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setEffectiveDateTimeString(effectiveDate)
     this.setIsFutureEffective(filing.header.isFutureEffective)
 
+    if (this.isCoopCorrectionFiling) {
+      this.setFileNumber(filing.correction.courtOrder?.fileNumber)
+      this.setHasPlanOfArrangement(filing.correction.courtOrder?.hasPlanOfArrangement)
+    }
     // store Staff Payment
     this.storeStaffPayment(filing)
   }
@@ -985,66 +1060,7 @@ export default class FilingTemplateMixin extends DateMixin {
       }
     ))
 
-    // Documents Info can possibly be undefined, if the co-op was created via paper.
-    const documentsInfo = entitySnapshot.businessDocuments?.documentsInfo
-    if (filing.alteration?.rulesFileKey) {
-      // Scenario 1 - From draft, rules are uploaded in the draft.
-      this.setSpecialResolutionRules(
-        {
-          name: filing.alteration.rulesFileName,
-          key: filing.alteration.rulesFileKey,
-          url: null, // no url for drafts, this is intentional.
-          includedInResolution: false,
-          previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
-          uploaded: filing.alteration.rulesUploadedOn
-        })
-    } else if (filing.alteration?.rulesInResolution) {
-      // Scenario 2 - From draft, rules are included in the resolution.
-      this.setSpecialResolutionRules(
-        {
-          name: documentsInfo?.certifiedRules?.name,
-          key: documentsInfo?.certifiedRules?.key || null,
-          url: entitySnapshot.businessDocuments.documents?.certifiedRules,
-          includedInResolution: true,
-          previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
-          uploaded: documentsInfo?.certifiedRules?.uploaded
-        })
-    } else {
-      // Scenario 3 + 4 - Not draft, rules exist or rules are on paper.
-      this.setSpecialResolutionRules(
-        {
-          name: documentsInfo?.certifiedRules?.name,
-          key: documentsInfo?.certifiedRules?.key || null,
-          url: entitySnapshot.businessDocuments.documents?.certifiedRules,
-          includedInResolution: false,
-          previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
-          uploaded: documentsInfo?.certifiedRules?.uploaded
-        })
-    }
-
-    if (filing.alteration?.memorandumInResolution) {
-      // Scenario 1 - From draft - Memorandum is in the resolution.
-      this.setSpecialResolutionMemorandum(
-        {
-          name: documentsInfo?.certifiedMemorandum?.name,
-          key: documentsInfo?.certifiedMemorandum?.key || null,
-          url: entitySnapshot.businessDocuments.documents?.certifiedMemorandum,
-          includedInResolution: true,
-          previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
-          uploaded: documentsInfo?.certifiedMemorandum?.uploaded
-        })
-    } else {
-      // Scenario 2 + 3 - Not Draft - Memorandum is not in the resolution or are on paper.
-      this.setSpecialResolutionMemorandum(
-        {
-          name: documentsInfo?.certifiedMemorandum?.name,
-          key: documentsInfo?.certifiedMemorandum?.key || null,
-          url: entitySnapshot.businessDocuments.documents?.certifiedMemorandum,
-          includedInResolution: false,
-          previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
-          uploaded: documentsInfo?.certifiedMemorandum?.uploaded
-        })
-    }
+    this.storeSpecialResolutionRulesAndMemorandum(filing.alteration, entitySnapshot)
 
     this.setSpecialResolution(cloneDeep(filing.specialResolution))
 
@@ -1559,6 +1575,75 @@ export default class FilingTemplateMixin extends DateMixin {
         folioNumber: '',
         isPriority: false
       })
+    }
+  }
+
+  /**
+   * Parses Special Resolution Rules and Memorandum data into store, also used for corrections for Special Resolution.
+   * @param filingInformation the filing information to parse.
+   * @param entitySnapshot the entity snapshot.
+   */
+  storeSpecialResolutionRulesAndMemorandum (filingInformation: CoopAlterationIF | CorrectionInformationIF,
+    entitySnapshot: EntitySnapshotIF) :void {
+    // Documents Info can possibly be undefined, if the co-op was created via paper.
+    const documentsInfo = entitySnapshot.businessDocuments?.documentsInfo
+    if (filingInformation?.rulesFileKey) {
+      // Scenario 1 - From draft, rules are uploaded in the draft.
+      this.setSpecialResolutionRules(
+        {
+          name: filingInformation.rulesFileName,
+          key: filingInformation.rulesFileKey,
+          url: null, // no url for drafts, this is intentional.
+          includedInResolution: false,
+          previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
+          uploaded: filingInformation.rulesUploadedOn
+        })
+    } else if (filingInformation?.rulesInResolution) {
+      // Scenario 2 - From draft, rules are included in the resolution.
+      this.setSpecialResolutionRules(
+        {
+          name: documentsInfo?.certifiedRules?.name,
+          key: documentsInfo?.certifiedRules?.key || null,
+          url: entitySnapshot.businessDocuments.documents?.certifiedRules,
+          includedInResolution: true,
+          previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
+          uploaded: documentsInfo?.certifiedRules?.uploaded
+        })
+    } else {
+      // Scenario 3 + 4 - Not draft, rules exist or rules are on paper.
+      this.setSpecialResolutionRules(
+        {
+          name: documentsInfo?.certifiedRules?.name,
+          key: documentsInfo?.certifiedRules?.key || null,
+          url: entitySnapshot.businessDocuments.documents?.certifiedRules,
+          includedInResolution: false,
+          previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
+          uploaded: documentsInfo?.certifiedRules?.uploaded
+        })
+    }
+
+    if (filingInformation?.memorandumInResolution) {
+      // Scenario 1 - From draft - Memorandum is in the resolution.
+      this.setSpecialResolutionMemorandum(
+        {
+          name: documentsInfo?.certifiedMemorandum?.name,
+          key: documentsInfo?.certifiedMemorandum?.key || null,
+          url: entitySnapshot.businessDocuments.documents?.certifiedMemorandum,
+          includedInResolution: true,
+          previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
+          uploaded: documentsInfo?.certifiedMemorandum?.uploaded
+        })
+    } else {
+      // Scenario 2 + 3 - Not Draft - Memorandum is not in the resolution or are on paper.
+      this.setSpecialResolutionMemorandum(
+        {
+          name: documentsInfo?.certifiedMemorandum?.name,
+          key: documentsInfo?.certifiedMemorandum?.key || null,
+          url: entitySnapshot.businessDocuments.documents?.certifiedMemorandum,
+          includedInResolution: false,
+          previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
+          uploaded: documentsInfo?.certifiedMemorandum?.uploaded
+        })
     }
   }
 }

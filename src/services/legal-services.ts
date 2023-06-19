@@ -273,10 +273,13 @@ export default class LegalServices {
   /**
    * Fetch the resolutions of the current business.
    * @param businessId the id of the business
+   * @param isSpecialResolution whether to fetch resolution type SPECIAL
    * @returns a promise to return the data
    */
-  static async fetchResolutions (businessId: string): Promise<ResolutionsIF[]> {
-    const url = `businesses/${businessId}/resolutions`
+  static async fetchResolutions (businessId: string, isSpecialResolution = false): Promise<ResolutionsIF[]> {
+    let url = `businesses/${businessId}/resolutions`
+
+    if (isSpecialResolution) url += '?type=SPECIAL'
 
     return axios.get(url)
       .then(response => {

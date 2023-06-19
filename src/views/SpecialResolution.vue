@@ -49,7 +49,7 @@
 
           <Memorandum class="mt-10" />
 
-          <CreateSpecialResolution class="mt-10" />
+          <Resolution class="mt-10" />
         </div>
       </v-slide-x-transition>
 
@@ -142,7 +142,7 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
-import { SpecialResolutionSummary, CreateSpecialResolution } from '@/components/SpecialResolution'
+import { SpecialResolutionSummary, Resolution } from '@/components/SpecialResolution'
 import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CurrentDirectors,
   DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, StaffPayment, TransactionalFolioNumber,
   YourCompanyWrapper } from '@/components/common/'
@@ -165,7 +165,7 @@ import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
     BusinessType,
     CertifySection,
     CompletingParty,
-    CreateSpecialResolution,
+    Resolution,
     CurrentDirectors,
     DocumentsDelivery,
     EntityName,

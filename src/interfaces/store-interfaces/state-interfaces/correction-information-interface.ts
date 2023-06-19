@@ -1,7 +1,8 @@
-import { AddressesIF, NameTranslationIF, OrgPersonIF, ShareClassIF } from '@/interfaces/'
+import { AddressesIF, CoopAlterationIF, CourtOrderIF, NameTranslationIF, OrgPersonIF,
+  ShareClassIF } from '@/interfaces/'
 import { CorrectionErrorTypes, FilingTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
+import { ContactPointIF, NaicsIF, SpecialResolutionIF } from '@bcrs-shared-components/interfaces/'
 
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/correction.json
@@ -11,7 +12,7 @@ import { ContactPointIF, NaicsIF } from '@bcrs-shared-components/interfaces/'
  * Interface for correction information object in store
  * and sent to/from the API.
  */
-export interface CorrectionInformationIF {
+export interface CorrectionInformationIF extends CoopAlterationIF, SpecialResolutionIF {
   comment: string // max 4096 characters
   correctedFilingId: number
   correctedFilingDate?: string // API format
@@ -27,6 +28,8 @@ export interface CorrectionInformationIF {
     naics?: NaicsIF
   }
   contactPoint?: ContactPointIF
+  // Required for Special Resolution Corrections.
+  courtOrder?: CourtOrderIF
   nameRequest?: {
     legalType: CorpTypeCd
     nrNumber?: string // only set when there is an NR

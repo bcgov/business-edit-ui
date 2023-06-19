@@ -298,7 +298,7 @@
                   <v-icon small>
                     mdi-pencil
                   </v-icon>
-                  <span>Change</span>
+                  <span>{{ getEditLabel }}</span>
                 </v-btn>
               </div>
             </v-col>
@@ -354,12 +354,13 @@ export default class Rules extends Vue {
     @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
     @Getter(useStore) getUserFirstName!: string
     @Getter(useStore) getUserLastName!: string
-    @Getter(useStore) getEditLabel!: string
     @Getter(useStore) getEditedLabel!: string
+    @Getter(useStore) getEditLabel!: string
     @Getter(useStore) getSpecialResolutionRulesValid!: boolean
     @Getter(useStore) getNameRequestLegalName!: string
     @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
 
+    @Action(useStore) setEditingRules!: ActionBindingIF
     @Action(useStore) setSpecialResolutionRules!: ActionBindingIF
     @Action(useStore) setSpecialResolutionRulesValid!: ActionBindingIF
 
@@ -487,6 +488,12 @@ export default class Rules extends Vue {
     @Watch('getComponentValidate')
     onComponentValidate (): void {
       this.validate(true)
+    }
+
+    /* Used for isCorrectionEditing */
+    @Watch('isEditing', { immediate: true })
+    async onIsEditingChanged (value: boolean): Promise<void> {
+      await this.setEditingRules(value)
     }
 }
 </script>

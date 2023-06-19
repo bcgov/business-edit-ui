@@ -33,12 +33,14 @@ export interface StateModelIF {
   memorandum: RulesMemorandumIF
   editingFlags: {
     companyName: boolean
+    associationType: boolean
     nameTranslations: boolean
     officeAddresses: boolean
     peopleAndRoles: boolean
     shareStructure: boolean
     rules: boolean
     memorandum: boolean
+    specialResolution: boolean
   }
   validationFlags: ValidationFlagsIF
   summaryMode: boolean,

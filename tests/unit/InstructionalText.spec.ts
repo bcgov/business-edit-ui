@@ -3,9 +3,12 @@ import Vuetify from 'vuetify'
 import { mount, shallowMount } from '@vue/test-utils'
 import InstructionalText from '@/components/SpecialResolution/InstructionalText.vue'
 import { VTooltip } from 'vuetify/lib'
+import { createPinia, setActivePinia } from 'pinia'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
+
+// Uses the store for the component.
+setActivePinia(createPinia())
 
 describe('InstructionalText', () => {
   let wrapper

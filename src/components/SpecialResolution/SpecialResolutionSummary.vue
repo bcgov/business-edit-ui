@@ -119,7 +119,7 @@
       </div>
     </template>
 
-    <CreateSpecialResolutionSummary />
+    <ResolutionSummary />
   </v-card>
 </template>
 
@@ -128,13 +128,13 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { FeesIF } from '@/interfaces/'
 import { DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
+import ResolutionSummary from '@/components/SpecialResolution/ResolutionSummary.vue'
 import { CoopTypeToDescription } from '@/utils'
 import { useStore } from '@/store/store'
 
 @Component({
   components: {
-    CreateSpecialResolutionSummary
+    ResolutionSummary
   }
 })
 export default class SpecialResolutionSummary extends Mixins(DateMixin, FeeMixin, FilingTemplateMixin) {

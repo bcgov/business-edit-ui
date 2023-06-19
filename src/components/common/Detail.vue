@@ -16,7 +16,7 @@
         <v-row no-gutters>
           <v-col
             cols="3"
-            sm="2"
+            sm="3"
           >
             <label><strong>Detail</strong></label>
           </v-col>
@@ -31,7 +31,7 @@
                 placeholder="Add a Detail that will appear on the ledger for this entity."
                 :textAreaStyle="'filled'"
                 :maxLength="maxLength"
-                :rowCount="2"
+                :rowCount="rowCount"
                 @valid="setDetailValidity($event)"
               />
             </div>
@@ -62,6 +62,8 @@ export default class Detail extends Mixins(FilingTemplateMixin) {
 
   /** Whether to perform validation. */
   @Prop({ default: false }) readonly validate!: boolean
+
+  @Prop({ default: 2 }) readonly rowCount!: number
 
   @Action(useStore) setDetailValidity!: ActionBindingIF
 

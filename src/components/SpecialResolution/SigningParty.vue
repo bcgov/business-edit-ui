@@ -1,14 +1,16 @@
 
 <template>
   <div id="special-resolution-signing-party">
-    <!-- Resolution Signature, can make this more generic later. -->
-    <header id="resolution-signature-info-header">
-      <h2>Resolution Signature</h2>
-    </header>
+    <div v-if="!isCoopCorrectionFiling">
+      <!-- Resolution Signature -->
+      <header id="resolution-signature-info-header">
+        <h2>Resolution Signature</h2>
+      </header>
 
-    <p class="section-description mt-2">
-      Enter the full name of the person who signed the special resolution and the date they signed it.
-    </p>
+      <p class="section-description mt-2">
+        Enter the full name of the person who signed the special resolution and the date they signed it.
+      </p>
+    </div>
     <v-card
       id="resolution-signature-card"
       flat
@@ -28,7 +30,10 @@
           sm="9"
           class="pt-4 pt-sm-0"
         >
-          <div class="form__row three-column">
+          <div
+            v-if="isEditing"
+            class="form__row three-column"
+          >
             <v-text-field
               id="person__first-name"
               v-model="signatory.givenName"
@@ -54,10 +59,19 @@
               :rules="lastNameRules"
             />
           </div>
+          <span
+            v-else
+            class="info-text"
+          >
+            {{ signatory.givenName }} {{ signatory.additionalName }} {{ signatory.familyName }}
+          </span>
         </v-col>
       </v-row>
       <!-- Date Signed -->
-      <v-row no-gutters>
+      <v-row
+        no-gutters
+        class="mt-8"
+      >
         <v-col
           cols="12"
           sm="3"
@@ -71,6 +85,7 @@
           class="pt-4 pt-sm-0"
         >
           <DatePickerShared
+            v-show="isEditing"
             ref="signatureDatePickerRef"
             title="Date Signed"
             :nudgeRight="40"
@@ -82,6 +97,12 @@
             @emitDate="onSigningDate($event)"
             @emitCancel="onSigningDate($event)"
           />
+          <span
+            v-show="!isEditing"
+            class="info-text"
+          >
+            {{ signingDateLongPacificFormat }}
+          </span>
         </v-col>
       </v-row>
     </v-card>
@@ -96,7 +117,7 @@ import { useStore } from '@/store/store'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { SpecialResolutionIF, PersonIF } from '@bcrs-shared-components/interfaces/'
 import { VuetifyRuleFunction } from '@/types'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Prop, Watch } from 'vue-property-decorator'
 import DateUtilities from '@/services/date-utilities'
 
 @Component({
@@ -108,11 +129,13 @@ export default class SigningParty extends Vue {
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
+  @Getter(useStore) isCoopCorrectionFiling: boolean
 
   @Action(useStore) setSpecialResolution!: ActionBindingIF
   @Action(useStore) setSpecialResolutionSignatureValid!: ActionBindingIF
 
-  // Refs
+  @Prop({ default: false }) readonly isEditing!: boolean
+
   $refs!: {
     signatureDatePickerRef: DatePickerShared,
   }
@@ -123,6 +146,9 @@ export default class SigningParty extends Vue {
     familyName: '',
     additionalName: ''
   }
+  // Used for undo for corrections.
+  signingDateOriginal = ''
+  signatoryOriginal = {}
 
   /** Validation rule for individual name fields */
   readonly firstNameRules = this.signatureNameRules('First Name')
@@ -170,6 +196,10 @@ export default class SigningParty extends Vue {
     return this.getCurrentDate
   }
 
+  get signingDateLongPacificFormat (): string {
+    return DateUtilities.yyyyMmDdToPacificDate(this.signingDate, true, false)
+  }
+
   /** Validation rule for name. */
   signatureNameRules (label, isRequired = true): Array<VuetifyRuleFunction> {
     return [
@@ -181,10 +211,6 @@ export default class SigningParty extends Vue {
   /** called to add new signature date  */
   async onSigningDate (val: string): Promise<void> {
     this.signingDate = val
-    await this.setSpecialResolution({
-      ...this.getSpecialResolution,
-      signingDate: val
-    })
     if (this.getComponentValidate) {
       await this.onValidate()
     }
@@ -193,13 +219,29 @@ export default class SigningParty extends Vue {
   /** called to store signing party. */
   @Watch('signatory', { deep: true })
   async onSignatoryChanged (): Promise<void> {
-    await this.setSpecialResolution({
-      ...this.getSpecialResolution,
-      signatory: this.signatory
-    })
     if (this.getComponentValidate) {
       await this.onValidate()
     }
+  }
+
+  /* Save event called from parent via ref. */
+  async saveToStore (): Promise<void> {
+    await this.setSpecialResolution({
+      ...this.getSpecialResolution,
+      signatory: this.signatory,
+      signingDate: this.signingDate
+    })
+  }
+
+  /* Undo event called from parent via ref. */
+  async undoToStore (): Promise<void> {
+    this.signatory = { ...this.signatoryOriginal }
+    this.signingDate = this.signingDateOriginal
+    await this.setSpecialResolution({
+      ...this.getSpecialResolution,
+      signatory: this.signatory,
+      signingDate: this.signingDate
+    })
   }
 
   /**
@@ -214,15 +256,31 @@ export default class SigningParty extends Vue {
         familyName: '',
         additionalName: ''
       }
+    this.signatoryOriginal = { ...this.signatory }
     this.signingDate = this.getSpecialResolution.signingDate || ''
+    this.signingDateOriginal = this.signingDate
+  }
+
+  /**
+  * Sets the undo states when editing is enabled.
+  */
+  @Watch('isEditing')
+  onIsEditingChange (val: boolean): void {
+    if (!val) return
+    this.signatoryOriginal = { ...this.signatory }
+    this.signingDateOriginal = this.signingDate
   }
 
   /** Used to trigger validate from outside of component. */
   @Watch('getComponentValidate')
   async onValidate (): Promise<void> {
+    if (!this.isEditing) {
+      await this.setSpecialResolutionSignatureValid(true)
+      return
+    }
     const hasSigningData = !!this.signingDate && !!this.signatory.givenName && !!this.signatory.familyName
-    this.$refs?.signatureDatePickerRef?.validateForm()
-    const isSignatureDateValid = this.$refs?.signatureDatePickerRef?.isDateValid()
+    this.$refs.signatureDatePickerRef.validateForm()
+    const isSignatureDateValid = this.$refs.signatureDatePickerRef.isDateValid()
     await this.setSpecialResolutionSignatureValid(hasSigningData && isSignatureDateValid)
   }
 }

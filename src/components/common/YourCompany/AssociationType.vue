@@ -63,6 +63,7 @@
           >
             <template #activator="{ on }">
               <v-btn
+                id="btn-edit-association-type"
                 text
                 color="primary"
                 class="edit-button"
@@ -114,7 +115,7 @@
                       small
                       color="primary"
                     >mdi-pencil</v-icon>
-                    <span class="drop-down-action ml-1">Change</span>
+                    <span class="drop-down-action ml-1">{{ getEditLabel }}</span>
                   </v-list-item-subtitle>
                 </v-list-item>
               </v-list>
@@ -184,6 +185,7 @@ export default class AssociationType extends Mixins(CommonMixin) {
 
   /** Global actions */
   @Action(useStore) setBusinessInformation!: ActionBindingIF
+  @Action(useStore) setEditingAssociationType!: ActionBindingIF
   @Action(useStore) setValidComponent!: ActionBindingIF
 
   /** Select options */
@@ -202,9 +204,9 @@ export default class AssociationType extends Mixins(CommonMixin) {
     }
   ]
 
-  protected selectedAssociationType = null as CoopTypes
-  protected isEditingAssociationType = false
-  protected dropdown = false // v-model for dropdown menu
+  selectedAssociationType = null as CoopTypes
+  isEditingAssociationType = false
+  dropdown = false // v-model for dropdown menu
 
   /** Validation rules. */
   readonly AssociationTypeRules: Array<VuetifyRuleFunction> = [
@@ -227,27 +229,29 @@ export default class AssociationType extends Mixins(CommonMixin) {
 
   /** Define the association type locally once the value has been populated in the store */
   @Watch('getAssociationType')
-  private initializeAssociationType () {
+  initializeAssociationType () {
     this.selectedAssociationType = this.getAssociationType
   }
 
   /** Reset association type value to original */
-  protected resetAssociationType () {
+  resetAssociationType () {
     this.setBusinessInformation(this.getEntitySnapshot.businessInfo)
     this.isEditingAssociationType = false
   }
 
   /** Submit association type value */
-  protected submitAssociationTypeChange () {
+  submitAssociationTypeChange () {
     this.setBusinessInformation({ ...this.getBusinessInformation, associationType: this.selectedAssociationType })
     this.isEditingAssociationType = false
   }
 
   /** Updates store initially and when isEditingAssociationType property has changed. */
   @Watch('isEditingAssociationType', { immediate: true })
-  private onEditingAssociationTypeChanged (): void {
+  async onEditingAssociationTypeChanged (): Promise<void> {
     const isValid = !this.isEditingAssociationType
     this.setValidComponent({ key: 'isValidAssociationType', value: isValid })
+    /* Used for isCorrectionEditing */
+    this.setEditingAssociationType(this.isEditingAssociationType)
   }
 }
 </script>

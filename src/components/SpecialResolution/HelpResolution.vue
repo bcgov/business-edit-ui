@@ -1,5 +1,9 @@
 <template>
-  <div id="help-special-resolution">
+  <div
+    v-if="!isCoopCorrectionFiling"
+    id="help-resolution"
+    class="mb-4"
+  >
     <div class="ma-6">
       <div
         class="help-btn top"
@@ -123,8 +127,10 @@ import { ResourceIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 
 @Component({})
-export default class HelpSpecialResolution extends Vue {
+export default class HelpResolution extends Vue {
+  @Getter(useStore) isCoopCorrectionFiling!: boolean
   @Getter(useStore) getResource!: ResourceIF
+
   helpToggle = false
 
   get getSpecialResolutionResource (): SpecialResolutionSampleFormIF {
