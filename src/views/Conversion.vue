@@ -159,12 +159,12 @@ export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemp
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
 
-      switch (entitySnapshot.businessInfo.legalType) {
-        case CorpTypeCd.BENEFIT_COMPANY:
-        case CorpTypeCd.BC_COMPANY:
-        case CorpTypeCd.BC_CCC:
-        case CorpTypeCd.BC_ULC_COMPANY:
-          throw new Error(`Invalid entity type, must not be benefit company id`)
+      switch (entitySnapshot?.businessInfo?.legalType) {
+        case CorpTypeCd.SOLE_PROP:
+        case CorpTypeCd.PARTNERSHIP:
+          break // acceptable types
+        default:
+          throw new Error(`Invalid entity type, must be a firm (Sole Prop or General Partnership)`)
       }
 
       if (this.conversionId) {
