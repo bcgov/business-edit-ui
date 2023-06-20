@@ -147,7 +147,7 @@ export default class SigningParty extends Vue {
     additionalName: ''
   }
   signingDateOriginal = '' // Used for undo for corrections.
-  signatoryOriginal: PersonIF // Used for undo for corrections.
+  signatoryOriginal: PersonIF = null// Used for undo for corrections.
 
   /** Validation rule for individual name fields */
   readonly firstNameRules = this.signatureNameRules('First Name')
