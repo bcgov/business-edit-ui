@@ -548,7 +548,6 @@ export const useStore = defineStore('store', {
       }
 
       if (this.isCoopCorrectionFiling) {
-        debugger
         return (
           this.hasBusinessNameChanged ||
           this.hasAssociationTypeChanged ||
