@@ -141,6 +141,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
   from '@/resources/Alteration/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -235,6 +236,16 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
     try {
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
+
+      switch (entitySnapshot?.businessInfo?.legalType) {
+        case CorpTypeCd.BC_COMPANY:
+        case CorpTypeCd.BENEFIT_COMPANY:
+        case CorpTypeCd.BC_CCC:
+        case CorpTypeCd.BC_ULC_COMPANY:
+          break // acceptable types
+        default:
+          throw new Error(`Invalid entity type, alterations are for corporations (BC/BEN/CCC/ULC) only`)
+      }
 
       if (this.alterationId) {
         // store the filing ID
