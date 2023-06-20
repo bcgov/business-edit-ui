@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount, shallowMount } from '@vue/test-utils'
 import InstructionalText from '@/components/SpecialResolution/InstructionalText.vue'

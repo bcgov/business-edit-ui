@@ -548,6 +548,7 @@ export const useStore = defineStore('store', {
       }
 
       if (this.isCoopCorrectionFiling) {
+        debugger
         return (
           this.hasBusinessNameChanged ||
           this.hasAssociationTypeChanged ||
@@ -1266,18 +1267,22 @@ export const useStore = defineStore('store', {
     // Only used for correction filings.
     hasSpecialResolutionResolutionChanged (): boolean {
       const entitySnapshotResolution = this.getLatestResolutionForBusiness
-      return entitySnapshotResolution.resolution !== this.getSpecialResolution.resolution ||
-             !isEqual(entitySnapshotResolution.signatory, this.getSpecialResolution.signatory) ||
-             entitySnapshotResolution.resolutionDate !== this.getSpecialResolution.resolutionDate ||
-             entitySnapshotResolution.signingDate !== this.getSpecialResolution.signingDate
+      return (
+        entitySnapshotResolution.resolution !== this.getSpecialResolution.resolution ||
+        !isEqual(entitySnapshotResolution.signatory, this.getSpecialResolution.signatory) ||
+        entitySnapshotResolution.resolutionDate !== this.getSpecialResolution.resolutionDate ||
+        entitySnapshotResolution.signingDate !== this.getSpecialResolution.signingDate
+      )
     },
 
     /** Determine if we should show the create special resolution component. */
     showSpecialResolutionResolution (): boolean {
-      return (this.hasBusinessNameChanged ||
-         this.hasAssociationTypeChanged ||
-         this.hasSpecialResolutionRulesChanged ||
-         this.hasSpecialResolutionMemorandumChanged) || this.isCoopCorrectionFiling
+      return (
+        this.hasBusinessNameChanged ||
+        this.hasAssociationTypeChanged ||
+        this.hasSpecialResolutionRulesChanged ||
+        this.hasSpecialResolutionMemorandumChanged) ||
+        this.isCoopCorrectionFiling
     }
 
   },

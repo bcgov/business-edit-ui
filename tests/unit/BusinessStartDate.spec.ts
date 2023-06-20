@@ -11,7 +11,6 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { FilingTypes } from '@/enums'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 const localVue = createLocalVue()

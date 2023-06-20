@@ -1,13 +1,10 @@
 import Vue from 'vue'
-import VSanitize from 'v-sanitize'
 import Vuetify from 'vuetify'
 import { createPinia, setActivePinia } from 'pinia'
 import { mount } from '@vue/test-utils'
 import SigningParty from '@/components/SpecialResolution/SigningParty.vue'
 import { useStore } from '@/store/store'
 
-Vue.use(Vuetify)
-Vue.use(VSanitize)
 const vuetify = new Vuetify({})
 
 // Store required for component, although not read or modified in unit test.

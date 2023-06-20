@@ -11,7 +11,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

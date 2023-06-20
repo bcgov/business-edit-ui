@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount } from '@vue/test-utils'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -8,7 +7,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes } from '@/enums'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

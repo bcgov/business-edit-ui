@@ -8,7 +8,6 @@ import { ActionTypes, CorpTypeCd, CorrectionErrorTypes, FilingTypes } from '@/en
 import { ApprovalTypes, RestorationTypes } from '@bcrs-shared-components/enums'
 
 // Vuetify is needed for Actions component
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

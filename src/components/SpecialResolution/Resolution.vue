@@ -77,12 +77,14 @@
             </v-col>
           </v-row>
         </div>
+
         <p
           v-if="isEditing"
           class="section-description mt-2 info-text"
         >
           Enter the date the special resolution passed and the text as it appears on your printed form.
         </p>
+
         <v-form ref="resolutionForm">
           <ResolutionEditor
             ref="resolutionEditor"
@@ -92,11 +94,11 @@
             ref="signingParty"
             :isEditing="isEditing"
           />
-          <v-row
+          <div
             v-if="isEditing"
             id="resolution-confirmation-buttons"
             no-gutters
-            class="justify-end pr-8 pb-8 mt-8"
+            class="justify-end pr-8 pb-8 mt-8 flex"
           >
             <v-btn
               id="btn-resolution-done"
@@ -116,7 +118,7 @@
             >
               <span>Cancel</span>
             </v-btn>
-          </v-row>
+          </div>
         </v-form>
       </section>
     </v-card>

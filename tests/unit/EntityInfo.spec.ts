@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { createLocalVue, mount } from '@vue/test-utils'
 import EntityInfo from '@/components/common/EntityInfo.vue'
@@ -7,7 +6,6 @@ import VueRouter from 'vue-router'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

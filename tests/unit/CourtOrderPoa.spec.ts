@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { Wrapper, mount } from '@vue/test-utils'
 import CourtOrderPoa from '@/components/common/CourtOrderPoa.vue'
@@ -6,7 +5,6 @@ import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/co
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

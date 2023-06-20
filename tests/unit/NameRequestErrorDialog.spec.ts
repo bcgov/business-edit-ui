@@ -3,7 +3,6 @@ import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import NameRequestErrorDialog from '@/dialogs/NameRequestErrorDialog.vue'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"

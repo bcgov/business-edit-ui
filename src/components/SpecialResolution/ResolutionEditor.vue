@@ -66,7 +66,7 @@
           <div v-if="isEditing">
             <!-- For Vue 3, remove this WYSIWYG editor, consult with assets team -->
             <tiptap-vuetify
-              id="resolutionTextEditor"
+              id="resolution-text-editor"
               v-model="resolution"
               auto-grow
               :extensions="extensions"
@@ -172,9 +172,8 @@ export default class ResolutionEditor extends Vue {
 
   resolution = ''
   resolutionDateText = ''
-  // Used for undo for corrections.
-  resolutionOriginal = ''
-  resolutionDateTextOriginal = ''
+  resolutionOriginal = '' // for undo for corrections.
+  resolutionDateTextOriginal = '' // for undo for corrections.
 
   extensions = [
     History,
@@ -353,7 +352,7 @@ export default class ResolutionEditor extends Vue {
   }
 }
 
-div#resolutionTextEditor {
+div#resolution-text-editor {
   border-bottom: 1px solid;
   &:deep(.is-editor-empty:first-child:before) {
       font-style: normal;

@@ -130,7 +130,7 @@
                   </section>
                   <v-divider class="mx-4" />
                   <section
-                    class="px-4 py-4 section-container"
+                    class="pa-4 section-container"
                   >
                     <v-btn
                       id="btn-upload-rules"

@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { Wrapper, mount } from '@vue/test-utils'
 import Detail from '@/components/common/Detail.vue'
@@ -6,7 +5,6 @@ import { DetailComment as DetailCommentShared } from '@bcrs-shared-components/de
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

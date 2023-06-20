@@ -6,7 +6,6 @@ import CorrectCompanyName from '@/components/common/YourCompany/CorrectName/Corr
 import CorrectNameRequest from '@/components/common/YourCompany/CorrectName/CorrectNameRequest.vue'
 import CorrectNameToNumber from '@/components/common/YourCompany/CorrectName/CorrectNameToNumber.vue'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 describe('Correct Name component', () => {

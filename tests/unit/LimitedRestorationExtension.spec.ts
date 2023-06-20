@@ -18,7 +18,6 @@ import { FilingTypes } from '@/enums'
 import { EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
   YourCompanyWrapper } from '@/components/common'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

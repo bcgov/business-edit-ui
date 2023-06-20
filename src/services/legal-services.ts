@@ -346,7 +346,11 @@ export default class LegalServices {
     }
 
     return axios.get(document.link, config).then(response => {
-      if (!response) throw new Error('Null response')
+      if (!response?.data) {
+        // eslint-disable-next-line no-console
+        console.log('fetchDocument() error - invalid response =', response)
+        throw new Error('Invalid API response')
+      }
 
       /* solution from https://github.com/axios/axios/issues/1392 */
 

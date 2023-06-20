@@ -219,8 +219,11 @@ export default class FilingTemplateMixin extends DateMixin {
         }
       }
 
-      if (this.hasAssociationTypeChanged || this.hasSpecialResolutionMemorandumChanged ||
-          this.hasSpecialResolutionRulesChanged) {
+      if (
+        this.hasAssociationTypeChanged ||
+        this.hasSpecialResolutionMemorandumChanged ||
+        this.hasSpecialResolutionRulesChanged
+      ) {
         filing.correction = {
           ...filing.correction,
           cooperativeAssociationType: this.getAssociationType,

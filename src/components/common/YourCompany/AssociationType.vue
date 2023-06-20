@@ -247,7 +247,7 @@ export default class AssociationType extends Mixins(CommonMixin) {
 
   /** Updates store initially and when isEditingAssociationType property has changed. */
   @Watch('isEditingAssociationType', { immediate: true })
-  async onEditingAssociationTypeChanged (): Promise<void> {
+  onEditingAssociationTypeChanged (): void {
     const isValid = !this.isEditingAssociationType
     this.setValidComponent({ key: 'isValidAssociationType', value: isValid })
     /* Used for isCorrectionEditing */

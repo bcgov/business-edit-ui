@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { AxiosInstance as axios } from '@/utils/'
 import sinon from 'sinon'
@@ -12,7 +11,6 @@ import { CorpTypeCd } from '@/enums'
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

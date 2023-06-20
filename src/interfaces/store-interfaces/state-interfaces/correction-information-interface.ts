@@ -19,17 +19,12 @@ export interface CorrectionInformationIF extends CoopAlterationIF, SpecialResolu
   correctedFilingType: FilingTypes
   type: CorrectionErrorTypes
   legalType?: CorpTypeCd
-
-  //
-  // optional objects with new correction data:
-  //
-  business?: {
+  business?: { // optional objects with new correction data
     identifier: string
     naics?: NaicsIF
   }
   contactPoint?: ContactPointIF
-  // Required for Special Resolution Corrections.
-  courtOrder?: CourtOrderIF
+  courtOrder?: CourtOrderIF // Required for Special Resolution Corrections.
   nameRequest?: {
     legalType: CorpTypeCd
     nrNumber?: string // only set when there is an NR

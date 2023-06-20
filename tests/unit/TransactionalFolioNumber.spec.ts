@@ -1,11 +1,9 @@
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import TransactionalFolioNumber from '@/components/common/TransactionalFolioNumber.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

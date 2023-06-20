@@ -5,7 +5,6 @@ import ConversionNOB from '@/components/Conversion/ConversionNOB.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
