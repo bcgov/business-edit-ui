@@ -98,7 +98,7 @@
             v-if="isEditing"
             id="resolution-confirmation-buttons"
             no-gutters
-            class="justify-end pr-8 pb-8 mt-8 flex"
+            class="justify-end pr-8 pb-8 mt-8 d-flex"
           >
             <v-btn
               id="btn-resolution-done"
