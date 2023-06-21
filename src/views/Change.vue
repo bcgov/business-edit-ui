@@ -112,6 +112,7 @@ import { FilingStatus, PartyTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SpChangeResource, GpChangeResource, SpOrganizationChangeResource } from '@/resources/Change/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -201,6 +202,14 @@ export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplate
     try {
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
+
+      switch (entitySnapshot?.businessInfo?.legalType) {
+        case CorpTypeCd.SOLE_PROP:
+        case CorpTypeCd.PARTNERSHIP:
+          break // acceptable types
+        default:
+          throw new Error(`Invalid entity type, must be a firm (Sole Prop or General Partnership)`)
+      }
 
       if (this.changeId) {
         // store the filing ID

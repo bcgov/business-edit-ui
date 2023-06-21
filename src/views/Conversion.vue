@@ -76,6 +76,7 @@ import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SpConversionResource, GpConversionResource } from '@/resources/Conversion/'
 import { StatusCodes } from 'http-status-codes'
 import ViewWrapper from '@/components/ViewWrapper.vue'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -157,6 +158,14 @@ export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemp
     try {
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
+
+      switch (entitySnapshot?.businessInfo?.legalType) {
+        case CorpTypeCd.SOLE_PROP:
+        case CorpTypeCd.PARTNERSHIP:
+          break // acceptable types
+        default:
+          throw new Error(`Invalid entity type, must be a firm (Sole Prop or General Partnership)`)
+      }
 
       if (this.conversionId) {
         // store the filing ID
