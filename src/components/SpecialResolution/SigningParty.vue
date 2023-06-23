@@ -1,7 +1,6 @@
 
 <template>
   <div id="special-resolution-signing-party">
-    <!-- Hide if it's a correction. -->
     <div v-if="isSpecialResolutionFiling && isEditing">
       <!-- Resolution Signature -->
       <header id="resolution-signature-info-header">
