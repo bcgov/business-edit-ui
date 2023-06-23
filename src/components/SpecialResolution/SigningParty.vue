@@ -1,7 +1,8 @@
 
 <template>
   <div id="special-resolution-signing-party">
-    <div v-if="!isCoopCorrectionFiling && isEditing">
+    <!-- Hide if it's a correction. -->
+    <div v-if="isSpecialResolutionFiling && isEditing">
       <!-- Resolution Signature -->
       <header id="resolution-signature-info-header">
         <h2>Resolution Signature</h2>
@@ -129,7 +130,7 @@ export default class SigningParty extends Vue {
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
-  @Getter(useStore) isCoopCorrectionFiling: boolean
+  @Getter(useStore) isSpecialResolutionFiling: boolean
 
   @Action(useStore) setSpecialResolution!: ActionBindingIF
   @Action(useStore) setSpecialResolutionSignatureValid!: ActionBindingIF

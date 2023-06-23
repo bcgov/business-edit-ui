@@ -1,6 +1,7 @@
 <template>
+  <!-- Hide if correction filing -->
   <article
-    v-if="!isCoopCorrectionFiling"
+    v-if="isSpecialResolutionFiling"
     class="instructional-text section-container"
   >
     You have made changes that require a
@@ -33,7 +34,7 @@ import { useStore } from '@/store/store'
 
 @Component({})
 export default class InstructionalText extends Vue {
-  @Getter(useStore) isCoopCorrectionFiling: boolean
+  @Getter(useStore) isSpecialResolutionFiling: boolean
 }
 </script>
 

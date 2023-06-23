@@ -34,7 +34,7 @@
             <v-col>
               <h2>Special Resolution</h2>
               <v-chip
-                v-if="hasChanged && isCoopCorrectionFiling"
+                v-if="isCoopCorrectionFiling && hasChanged"
                 id="resolution-corrected-lbl"
                 x-small
                 label
@@ -54,15 +54,19 @@
                   text
                   color="primary"
                   class="undo-action"
-                  @click="undoSpecialResolutionStore();"
+                  @click="undoSpecialResolutionStore()"
                 >
                   <v-icon small>
                     mdi-undo
                   </v-icon>
                   <span>Undo</span>
                 </v-btn>
+                <!-- Change behaviour for edit
+                  - Special Resolution: show edit button when not editing
+                  - Correction: show edit button when not editing and not changed
+                  -->
                 <v-btn
-                  v-if="(!hasChanged || !isCoopCorrectionFiling) && !isEditing"
+                  v-if="(!hasChanged || isSpecialResolutionFiling) && !isEditing"
                   id="btn-change-resolution"
                   text
                   color="primary"
@@ -155,6 +159,7 @@ export default class Resolution extends Vue {
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
   @Getter(useStore) getSpecialResolutionFormValid!: boolean
   @Getter(useStore) isCoopCorrectionFiling: boolean
+  @Getter(useStore) isSpecialResolutionFiling: boolean
   @Getter(useStore) showSpecialResolutionResolution!: boolean
 
   @Action(useStore) setEditingSpecialResolution!: ActionBindingIF
@@ -188,8 +193,8 @@ export default class Resolution extends Vue {
 
   /** For cancel/undo button, stores using setSpecialResolution. */
   async undoSpecialResolutionStore (): Promise<void> {
-    // Remain in edit mode, if special resolution filing.
-    if (!this.isCoopCorrectionFiling) {
+    // Special Resolution has create functionality for the resolution, correction has edit functionality.
+    if (this.isSpecialResolutionFiling) {
       this.isEditing = true
     } else {
       this.isEditing = false
