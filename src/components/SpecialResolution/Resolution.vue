@@ -34,7 +34,7 @@
             <v-col>
               <h2>Special Resolution</h2>
               <v-chip
-                v-if="isCoopCorrectionFiling && hasChanged"
+                v-if="hasChanged && isCoopCorrectionFiling"
                 id="resolution-corrected-lbl"
                 x-small
                 label
@@ -54,7 +54,7 @@
                   text
                   color="primary"
                   class="undo-action"
-                  @click="undoSpecialResolutionStore(); isEditing = false"
+                  @click="undoSpecialResolutionStore();"
                 >
                   <v-icon small>
                     mdi-undo
@@ -62,7 +62,7 @@
                   <span>Undo</span>
                 </v-btn>
                 <v-btn
-                  v-if="!isEditing && !hasChanged && isCoopCorrectionFiling"
+                  v-if="(!hasChanged || !isCoopCorrectionFiling) && !isEditing"
                   id="btn-change-resolution"
                   text
                   color="primary"
@@ -110,6 +110,7 @@
               <span>Done</span>
             </v-btn>
             <v-btn
+              v-if="isCoopCorrectionFiling"
               id="btn-resolution-cancel"
               large
               outlined
@@ -175,6 +176,8 @@ export default class Resolution extends Vue {
 
   /** For ok button, stores using setSpecialResolution. */
   async updateSpecialResolutionStore (): Promise<void> {
+    await this.$refs.resolutionEditor.onValidate()
+    await this.$refs.signingParty.onValidate()
     if (this.getSpecialResolutionFormValid) {
       this.isEditing = false
       this.hasChanged = true
@@ -185,7 +188,12 @@ export default class Resolution extends Vue {
 
   /** For cancel/undo button, stores using setSpecialResolution. */
   async undoSpecialResolutionStore (): Promise<void> {
-    this.isEditing = false
+    // Remain in edit mode, if special resolution filing.
+    if (!this.isCoopCorrectionFiling) {
+      this.isEditing = true
+    } else {
+      this.isEditing = false
+    }
     this.hasChanged = false
     await this.$refs.resolutionEditor.undoToStore()
     await this.$refs.signingParty.undoToStore()

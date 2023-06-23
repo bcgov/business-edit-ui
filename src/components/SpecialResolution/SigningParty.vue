@@ -1,7 +1,7 @@
 
 <template>
   <div id="special-resolution-signing-party">
-    <div v-if="!isCoopCorrectionFiling">
+    <div v-if="!isCoopCorrectionFiling && isEditing">
       <!-- Resolution Signature -->
       <header id="resolution-signature-info-header">
         <h2>Resolution Signature</h2>
