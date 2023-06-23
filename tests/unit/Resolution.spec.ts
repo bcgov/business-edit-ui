@@ -32,6 +32,7 @@ describe('Special Resolution Form component', () => {
     // init store
     store.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
     store.stateModel.tombstone.currentDate = '2030-03-01'
+    store.stateModel.tombstone.filingType = FilingTypes.SPECIAL_RESOLUTION
     store.stateModel.entitySnapshot = entitySnapshot as any
     store.stateModel.specialResolution = {
       resolution: '<p> heyhey </p> ',
@@ -148,7 +149,7 @@ describe('Special Resolution Form component', () => {
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     await Vue.nextTick()
     await wrapper.find('#btn-change-resolution').trigger('click')
-    await wrapper.find('#btn-resolution-done').trigger('click')
+    await wrapper.vm.updateSpecialResolutionStore()
     await Vue.nextTick()
     expect(wrapper.vm.hasChanged).toBe(true)
     expect(wrapper.find('#btn-resolution-undo').exists()).toBe(true)
@@ -159,7 +160,7 @@ describe('Special Resolution Form component', () => {
     store.stateModel.tombstone.filingType = FilingTypes.SPECIAL_RESOLUTION
     await Vue.nextTick()
     // No change button needed.
-    await wrapper.find('#btn-resolution-done').trigger('click')
+    await wrapper.vm.updateSpecialResolutionStore()
     await Vue.nextTick()
     expect(wrapper.vm.hasChanged).toBe(true)
     expect(wrapper.find('#btn-resolution-undo').exists()).toBe(false)

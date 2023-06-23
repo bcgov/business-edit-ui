@@ -1,5 +1,4 @@
 <template>
-  <!-- Hide if correction filing -->
   <div
     v-if="isSpecialResolutionFiling"
     id="help-resolution"
