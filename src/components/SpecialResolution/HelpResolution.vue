@@ -1,6 +1,7 @@
 <template>
+  <!-- Hide if correction filing -->
   <div
-    v-if="!isCoopCorrectionFiling"
+    v-if="isSpecialResolutionFiling"
     id="help-resolution"
     class="mb-4"
   >
@@ -128,7 +129,7 @@ import { useStore } from '@/store/store'
 
 @Component({})
 export default class HelpResolution extends Vue {
-  @Getter(useStore) isCoopCorrectionFiling!: boolean
+  @Getter(useStore) isSpecialResolutionFiling!: boolean
   @Getter(useStore) getResource!: ResourceIF
 
   helpToggle = false
