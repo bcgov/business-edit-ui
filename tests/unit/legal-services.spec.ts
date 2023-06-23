@@ -1,6 +1,7 @@
 import sinon from 'sinon'
 import { AxiosInstance as axios } from '@/utils/'
 import LegalServices from '@/services/legal-services'
+import { DocumentIF } from '@/interfaces'
 
 describe('Legal Services', () => {
   let del: any
@@ -231,6 +232,53 @@ describe('Legal Services', () => {
     expect(nr).toEqual(NR)
   })
 
+  it('fetches business document correctly', async () => {
+    const BUSINESS_DOCUMENTS = {
+      'documents': {
+        'certifiedMemorandum': 'https://xxx/api/v2/businesses/CP1002552/filings/145222/documents/certifiedMemorandum',
+        'certifiedRules': 'https://xxx/api/v2/businesses/CP1002552/filings/145222/documents/certifiedRules'
+      },
+      'documentsInfo': {
+        'certifiedMemorandum': {
+          'includedInResolution': true,
+          'includedInResolutionDate': '2023-06-05T17:20:51.087429+00:00',
+          'key': 'test',
+          'name': 'CP1002552 - Certified Memorandum - 2023-05-26.pdf',
+          'uploaded': '2023-05-26T16:11:27.098606+00:00'
+        },
+        'certifiedRules': {
+          'includedInResolution': true,
+          'includedInResolutionDate': '2023-06-05T17:20:51.087429+00:00',
+          'key': '304bf897-06ef-4868-94d7-c50419cc366f.pdf',
+          'name': 'CP1002552 - Certified Rules - 2023-05-26.pdf',
+          'uploaded': '2023-05-26T16:11:27.098606+00:00'
+        }
+      }
+    }
+    get.withArgs('businesses/CP1234567/documents').returns(Promise.resolve({ data: {
+      ...BUSINESS_DOCUMENTS } }))
+    const businessDocuments = await LegalServices.fetchBusinessDocuments('CP1234567')
+    expect(businessDocuments).toEqual(BUSINESS_DOCUMENTS)
+  })
+
+  it('fetches document correctly', async () => {
+    const documentRequest: DocumentIF = {
+      title: 'hey',
+      link: 'document.link',
+      filename: 'test'
+    }
+    get.withArgs('document.link').returns(Promise.resolve({ data: '1234' }))
+    const createObjectURL = window.URL.createObjectURL
+    const revokeObjectURL = window.URL.revokeObjectURL
+    window.URL.createObjectURL = jest.fn()
+    window.URL.revokeObjectURL = jest.fn()
+    const documentResponse = await LegalServices.fetchDocument(documentRequest)
+    // Restore window object.
+    window.URL.createObjectURL = createObjectURL
+    window.URL.revokeObjectURL = revokeObjectURL
+    expect(documentResponse).toEqual({ 'data': '1234' })
+  })
+
   it('handles errors as expected', async () => {
     // mock the console.log function to suppress messages
     const log = console.log
@@ -285,6 +333,19 @@ describe('Legal Services', () => {
     // verify fetchNameRequest with no response.data
     get.withArgs('nameRequests/NR1234567').returns(Promise.resolve({}))
     await expect(LegalServices.fetchNameRequest('NR1234567')).rejects.toThrow('Invalid API response')
+
+    // verify fetchBusinessDocuments with no response.data
+    get.withArgs('businesses/CP1234567/documents').returns(Promise.resolve({}))
+    await expect(LegalServices.fetchBusinessDocuments('CP1234567')).rejects.toThrow('Invalid API response')
+
+    // verify fetchDocuments with no response.data
+    get.withArgs('53453453453463463').returns(Promise.resolve({}))
+    const documentRequest: DocumentIF = {
+      title: 'hey',
+      link: '53453453453463463',
+      filename: 'test'
+    }
+    await expect(LegalServices.fetchDocument(documentRequest)).rejects.toThrow('Invalid API response')
 
     // restore console.log
     console.log = log

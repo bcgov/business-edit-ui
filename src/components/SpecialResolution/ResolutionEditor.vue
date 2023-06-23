@@ -6,7 +6,7 @@
     <v-card
       id="resolution-date-card"
       flat
-      class="py-8"
+      class="pt-8"
     >
       <!-- Resolution Date -->
       <v-row no-gutters>
@@ -24,6 +24,7 @@
           sm="9"
         >
           <DatePickerShared
+            v-show="isEditing"
             ref="resolutionDatePickerRef"
             title="Resolution Date"
             :nudgeRight="40"
@@ -35,11 +36,20 @@
             @emitDate="onResolutionDate($event)"
             @emitCancel="onResolutionDate($event)"
           />
+          <span
+            v-show="!isEditing"
+            class="info-text"
+          >
+            {{ resolutionDateLongPacificFormat }}
+          </span>
         </v-col>
       </v-row>
 
       <!-- Resolution Text -->
-      <v-row no-gutters>
+      <v-row
+        no-gutters
+        class="mt-8"
+      >
         <v-col
           cols="12"
           sm="3"
@@ -53,49 +63,56 @@
           cols="12"
           sm="9"
         >
-          <!-- For Vue 3, remove this WYSIWYG editor, consult with assets team -->
-          <tiptap-vuetify
-            id="resolutionTextEditor"
-            v-model="resolution"
-            auto-grow
-            :extensions="extensions"
-            :class="{ 'invalid': resolutionInvalid }"
-            placeholder="Full text of the resolution"
-            :card-props="{
-              flat: true,
-              style: 'background: rgba(0, 0, 0, 0.06)',
-            }"
-            :editor-properties="{ editorProps: editorProperties }"
-          />
-          <!-- Note: This component has no built in validation or rules. -->
-          <div
-            id="editorValidation"
-            :class="{'v-text-field__details': true, 'mt-2': true }"
-          >
+          <div v-if="isEditing">
+            <!-- For Vue 3, remove this WYSIWYG editor, consult with assets team -->
+            <tiptap-vuetify
+              id="resolution-text-editor"
+              v-model="resolution"
+              auto-grow
+              :extensions="extensions"
+              :class="{ 'invalid': resolutionInvalid }"
+              placeholder="Full text of the resolution"
+              :card-props="{
+                flat: true,
+                style: 'background: rgba(0, 0, 0, 0.06)',
+              }"
+              :editor-properties="{ editorProps: editorProperties }"
+            />
+            <!-- Note: This component has no built in validation or rules. -->
             <div
-              class="v-messages theme--light error--text"
-              role="alert"
+              id="editorValidation"
+              :class="{'v-text-field__details': true, 'mt-2': true }"
             >
-              <div class="v-messages__wrapper">
-                <v-slide-y-transition>
-                  <div
-                    v-if="resolutionInvalid"
-                    class="v-messages__message"
-                  >
-                    Resolution Text is required
-                  </div>
-                </v-slide-y-transition>
+              <div
+                class="v-messages theme--light error--text"
+                role="alert"
+              >
+                <div class="v-messages__wrapper">
+                  <v-slide-y-transition>
+                    <div
+                      v-if="resolutionInvalid"
+                      class="v-messages__message"
+                    >
+                      Resolution Text is required
+                    </div>
+                  </v-slide-y-transition>
+                </div>
               </div>
             </div>
+            <p class="summary-text info-text">
+              Note: If you are pasting text,
+              <strong>we recommend pasting plain text</strong>
+              to avoid formatting and font issues with PDF and printed
+              registrations. If you have pasted text other than plain text, verify
+              that your documents are correct. If they are not correct, they will
+              need to be amended.
+            </p>
           </div>
-          <p class="summary-text info-text">
-            Note: If you are pasting text,
-            <strong>we recommend pasting plain text</strong>
-            to avoid formatting and font issues with PDF and printed
-            registrations. If you have pasted text other than plain text, verify
-            that your documents are correct. If they are not correct, they will
-            need to be amended.
-          </p>
+          <div
+            v-else
+            v-sanitize="getSpecialResolution.resolution"
+            class="resizable info-text"
+          />
         </v-col>
       </v-row>
     </v-card>
@@ -104,7 +121,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Watch } from 'vue-property-decorator'
+import { Component, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import {
   TiptapVuetify,
@@ -147,12 +164,16 @@ export default class ResolutionEditor extends Vue {
   @Action(useStore) setSpecialResolution!: ActionBindingIF
   @Action(useStore) setSpecialResolutionValid!: ActionBindingIF
 
+  @Prop({ default: false }) readonly isEditing!: boolean
+
   $refs!: {
     resolutionDatePickerRef: DatePickerShared,
   }
 
-  resolutionDateText = ''
   resolution = ''
+  resolutionDateText = ''
+  resolutionOriginal = '' // for undo for corrections.
+  resolutionDateTextOriginal = '' // for undo for corrections.
 
   extensions = [
     History,
@@ -236,28 +257,50 @@ export default class ResolutionEditor extends Vue {
     return this.resolution === '<p></p>' || (this.getComponentValidate && !this.resolution)
   }
 
+  get resolutionDateLongPacificFormat (): string {
+    return DateUtilities.yyyyMmDdToPacificDate(this.resolutionDateText, true, false)
+  }
+
   /** Called to update resolution date. */
   async onResolutionDate (val: string): Promise<void> {
     if (this.resolutionDateText === val) {
       return
     }
     this.resolutionDateText = val
-    this.setSpecialResolution({
-      ...this.getSpecialResolution,
-      resolutionDate: val
-    })
     if (this.getComponentValidate) {
       await this.onValidate()
     }
   }
 
-  /** This is a watch, because the component only provides keydown. */
-  @Watch('resolution')
-  async onResolutionChange (val: string) {
-    this.setSpecialResolution({
+  /* Save event called from parent via ref. */
+  async saveToStore (): Promise<void> {
+    await this.setSpecialResolution({
       ...this.getSpecialResolution,
-      resolution: val
+      resolutionDate: this.resolutionDateText,
+      resolution: this.resolution
     })
+  }
+
+  /* Undo event called from parent via ref. */
+  async undoToStore (): Promise<void> {
+    this.resolution = this.resolutionOriginal
+    this.resolutionDateText = this.resolutionDateTextOriginal
+    await this.setSpecialResolution({
+      ...this.getSpecialResolution,
+      resolutionDate: this.resolutionDateText,
+      resolution: this.resolution
+    })
+  }
+
+  @Watch('isEditing')
+  onIsEditingChange (val: boolean): void {
+    if (!val) return
+    this.resolutionOriginal = this.resolution
+    this.resolutionDateTextOriginal = this.resolutionDateText
+  }
+
+  @Watch('resolution')
+  async onResolutionChange () : Promise<void> {
     if (this.getComponentValidate) {
       await this.onValidate()
     }
@@ -270,14 +313,20 @@ export default class ResolutionEditor extends Vue {
   created () {
     this.resolution = this.getSpecialResolution.resolution || ''
     this.resolutionDateText = this.getSpecialResolution.resolutionDate || ''
+    this.resolutionOriginal = this.resolution
+    this.resolutionDateTextOriginal = this.resolutionDateText
   }
 
   /** Used to trigger validate from outside of component. */
   @Watch('getComponentValidate')
   async onValidate (): Promise<void> {
+    if (!this.isEditing) {
+      this.setSpecialResolutionValid(true)
+      return
+    }
     const hasData = !!this.resolutionDateText && !!this.resolution && this.resolution !== '<p></p>'
-    this.$refs?.resolutionDatePickerRef?.validateForm()
-    const isResolutionDateValid = this.$refs?.resolutionDatePickerRef?.isDateValid()
+    this.$refs.resolutionDatePickerRef.validateForm()
+    const isResolutionDateValid = this.$refs.resolutionDatePickerRef.isDateValid()
     this.setSpecialResolutionValid(hasData && isResolutionDateValid)
   }
 }
@@ -303,7 +352,7 @@ export default class ResolutionEditor extends Vue {
   }
 }
 
-div#resolutionTextEditor {
+div#resolution-text-editor {
   border-bottom: 1px solid;
   &:deep(.is-editor-empty:first-child:before) {
       font-style: normal;
@@ -314,5 +363,17 @@ div#resolutionTextEditor {
       color: $BCgovInputError;
     }
   }
+}
+
+.resizable {
+  padding: 30px;
+  border: 1px solid $gray1;
+  overflow-y: auto;
+  resize: vertical;
+  min-width: 100%;
+  max-width: 400px;
+  min-height: 90px;
+  height: 425px;
+  max-height: 800px;
 }
 </style>

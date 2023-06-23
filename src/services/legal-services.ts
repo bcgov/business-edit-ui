@@ -273,10 +273,13 @@ export default class LegalServices {
   /**
    * Fetch the resolutions of the current business.
    * @param businessId the id of the business
+   * @param isSpecialResolution whether to fetch resolution type SPECIAL
    * @returns a promise to return the data
    */
-  static async fetchResolutions (businessId: string): Promise<ResolutionsIF[]> {
-    const url = `businesses/${businessId}/resolutions`
+  static async fetchResolutions (businessId: string, isSpecialResolution = false): Promise<ResolutionsIF[]> {
+    let url = `businesses/${businessId}/resolutions`
+
+    if (isSpecialResolution) url += '?type=SPECIAL'
 
     return axios.get(url)
       .then(response => {
@@ -343,7 +346,11 @@ export default class LegalServices {
     }
 
     return axios.get(document.link, config).then(response => {
-      if (!response) throw new Error('Null response')
+      if (!response?.data) {
+        // eslint-disable-next-line no-console
+        console.log('fetchDocument() error - invalid response =', response)
+        throw new Error('Invalid API response')
+      }
 
       /* solution from https://github.com/axios/axios/issues/1392 */
 

@@ -1,5 +1,8 @@
 <template>
-  <article class="instructional-text section-container">
+  <article
+    v-if="isSpecialResolutionFiling"
+    class="instructional-text section-container"
+  >
     You have made changes that require a
     <v-tooltip
       top
@@ -24,10 +27,14 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Getter } from 'pinia-class'
 import { Component } from 'vue-property-decorator'
+import { useStore } from '@/store/store'
 
 @Component({})
-export default class InstructionalText extends Vue { }
+export default class InstructionalText extends Vue {
+  @Getter(useStore) isSpecialResolutionFiling: boolean
+}
 </script>
 
 <style lang="scss" scoped>

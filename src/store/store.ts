@@ -50,6 +50,7 @@ import { defineStore } from 'pinia'
 import { resourceModel, stateModel } from './state'
 import { LegalServices } from '@/services'
 import { RulesMemorandumIF } from '@/interfaces/rules-memorandum-interfaces'
+import { isEqual } from 'lodash'
 
 // Possible to move getters / actions into seperate files:
 // https://github.com/vuejs/pinia/issues/802#issuecomment-1018780409
@@ -116,6 +117,11 @@ export const useStore = defineStore('store', {
     /** Whether the current filing is a Correction for a BEN/BC/CCC/ULC. */
     isBenBcCccUlcCorrectionFiling (): boolean {
       return (this.isBenBcCccUlc && this.isCorrectionFiling)
+    },
+
+    /* Whether the current filing is a Correction for a cooperative. */
+    isCoopCorrectionFiling (): boolean {
+      return (this.isCoop && this.isCorrectionFiling)
     },
 
     /** Whether the current filing is a Correction for a firm corp class. */
@@ -541,6 +547,16 @@ export const useStore = defineStore('store', {
         )
       }
 
+      if (this.isCoopCorrectionFiling) {
+        return (
+          this.hasBusinessNameChanged ||
+          this.hasAssociationTypeChanged ||
+          this.hasSpecialResolutionMemorandumChanged ||
+          this.hasSpecialResolutionRulesChanged ||
+          this.hasSpecialResolutionResolutionChanged
+        )
+      }
+
       return false // should never happen
     },
 
@@ -566,7 +582,7 @@ export const useStore = defineStore('store', {
     },
 
     /**
-     * Whether any special resolution data has changed (for the purpose of showing the
+     * Whether any special resolution filing (non-correction) has changed (for the purpose of showing the
      * fee summary), ie, does NOT include:
      * - certify
      * - folio number
@@ -575,7 +591,6 @@ export const useStore = defineStore('store', {
      * - address (read only)
      * - contact info
      */
-    // more to add while adding components
     hasSpecialResolutionDataChanged (): boolean {
       return (
         this.hasBusinessNameChanged ||
@@ -697,6 +712,23 @@ export const useStore = defineStore('store', {
         }
       }
 
+      if (this.isCoopCorrectionFiling) {
+        return (
+          this.getFlagsCompanyInfo.isValidCompanyName &&
+          this.getFlagsCompanyInfo.isValidAssociationType &&
+          this.getFlagsCompanyInfo.isValidContactInfo &&
+          this.getFlagsCompanyInfo.isValidRules &&
+          this.getFlagsCompanyInfo.isValidMemorandum &&
+          this.getFlagsCompanyInfo.isValidSpecialResolution &&
+          this.getFlagsCompanyInfo.isValidSpecialResolutionSignature &&
+          this.getFlagsReviewCertify.isValidCompletingParty &&
+          this.getFlagsReviewCertify.isValidDetailComment &&
+          this.getFlagsReviewCertify.isValidCourtOrder &&
+          // Check certify for client correction only.
+          (!this.isClientErrorCorrection || this.getFlagsReviewCertify.isValidCertify) &&
+          this.getFlagsReviewCertify.isValidStaffPayment
+        )
+      }
       return false // should never happen
     },
 
@@ -705,10 +737,14 @@ export const useStore = defineStore('store', {
       // NB: Folio Number, Detail, Certify and Staff Payment don't have an "editing" mode.
       return (
         this.stateModel.editingFlags.companyName ||
+        this.stateModel.editingFlags.associationType ||
         this.stateModel.editingFlags.nameTranslations ||
         this.stateModel.editingFlags.officeAddresses ||
         this.stateModel.editingFlags.peopleAndRoles ||
-        this.stateModel.editingFlags.shareStructure
+        this.stateModel.editingFlags.shareStructure ||
+        this.stateModel.editingFlags.rules ||
+        this.stateModel.editingFlags.memorandum ||
+        this.stateModel.editingFlags.specialResolution
       )
     },
 
@@ -1216,12 +1252,36 @@ export const useStore = defineStore('store', {
         this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key
     },
 
+    // Grab the latest resolution from the entity snapshot.
+    getLatestResolutionForBusiness (): SpecialResolutionIF {
+      // Obtain latest resolution ID. Assumes that the latest resolution is the one to be corrected.
+      const latestResolution = this.getEntitySnapshot.resolutions
+        .reduce((prev, current) => (prev.id > current.id) ? prev : current)
+      return {
+        ...latestResolution,
+        resolutionDate: latestResolution.date
+      }
+    },
+
+    // Only used for correction filings.
+    hasSpecialResolutionResolutionChanged (): boolean {
+      const entitySnapshotResolution = this.getLatestResolutionForBusiness
+      return (
+        entitySnapshotResolution.resolution !== this.getSpecialResolution.resolution ||
+        !isEqual(entitySnapshotResolution.signatory, this.getSpecialResolution.signatory) ||
+        entitySnapshotResolution.resolutionDate !== this.getSpecialResolution.resolutionDate ||
+        entitySnapshotResolution.signingDate !== this.getSpecialResolution.signingDate
+      )
+    },
+
     /** Determine if we should show the create special resolution component. */
-    showCreateSpecialResolution (): boolean {
-      return (this.hasBusinessNameChanged ||
-         this.hasAssociationTypeChanged ||
-         this.hasSpecialResolutionRulesChanged ||
-         this.hasSpecialResolutionMemorandumChanged)
+    showSpecialResolutionResolution (): boolean {
+      return (
+        this.hasBusinessNameChanged ||
+        this.hasAssociationTypeChanged ||
+        this.hasSpecialResolutionRulesChanged ||
+        this.hasSpecialResolutionMemorandumChanged) ||
+        this.isCoopCorrectionFiling
     }
 
   },
@@ -1381,6 +1441,9 @@ export const useStore = defineStore('store', {
     setEditingCompanyName (editing: boolean) {
       this.stateModel.editingFlags.companyName = editing
     },
+    setEditingAssociationType (editing: boolean) {
+      this.stateModel.editingFlags.associationType = editing
+    },
     setEditingNameTranslations (editing: boolean) {
       this.stateModel.editingFlags.nameTranslations = editing
     },
@@ -1392,6 +1455,15 @@ export const useStore = defineStore('store', {
     },
     setEditingShareStructure (editing: boolean) {
       this.stateModel.editingFlags.shareStructure = editing
+    },
+    setEditingRules (editing: boolean) {
+      this.stateModel.editingFlags.rules = editing
+    },
+    setEditingMemorandum (editing: boolean) {
+      this.stateModel.editingFlags.memorandum = editing
+    },
+    setEditingSpecialResolution (editing: boolean) {
+      this.stateModel.editingFlags.specialResolution = editing
     },
     setSummaryMode (summaryMode: boolean) {
       this.stateModel.summaryMode = summaryMode

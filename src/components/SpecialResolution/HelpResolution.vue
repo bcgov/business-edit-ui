@@ -1,5 +1,9 @@
 <template>
-  <div id="help-special-resolution">
+  <div
+    v-if="isSpecialResolutionFiling"
+    id="help-resolution"
+    class="mb-4"
+  >
     <div class="ma-6">
       <div
         class="help-btn top"
@@ -123,8 +127,10 @@ import { ResourceIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 
 @Component({})
-export default class HelpSpecialResolution extends Vue {
+export default class HelpResolution extends Vue {
+  @Getter(useStore) isSpecialResolutionFiling!: boolean
   @Getter(useStore) getResource!: ResourceIF
+
   helpToggle = false
 
   get getSpecialResolutionResource (): SpecialResolutionSampleFormIF {
@@ -137,7 +143,9 @@ export default class HelpSpecialResolution extends Vue {
      * In session is stored the BASE_URL with business ID
      * So we are taking from process.env.BASE_URL
      */
-    return `${sessionStorage.getItem('BASE_URL')}${this.getSpecialResolutionResource?.path}`
+    const baseUrl = new URL(sessionStorage.getItem('BASE_URL'))
+    // Strip out the /CP10230123/ from the end of the url.
+    return `${baseUrl.origin}${this.getSpecialResolutionResource?.path}`
   }
 }
 </script>

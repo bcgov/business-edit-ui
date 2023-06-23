@@ -16,7 +16,6 @@ import { BusinessStartDate, BusinessType, EntityName, FolioInformation, OfficeAd
 import { ConversionNOB } from '@/components/Conversion'
 import { AccountTypes } from '@/enums'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

@@ -1,8 +1,8 @@
 <template>
-  <div id="create-special-resolution-summary">
+  <div id="resolution-summary">
     <v-divider class="mx-4" />
     <section
-      id="resolution-date-section"
+      id="resolution-date-section-summary"
       class="section-container"
     >
       <header
@@ -162,7 +162,7 @@ import { useStore } from '@/store/store'
     DatePickerShared
   }
 })
-export default class CreateSpecialResolutionSummary extends Mixins(CommonMixin, DateMixin) {
+export default class ResolutionSummary extends Mixins(CommonMixin, DateMixin) {
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getSpecialResolutionConfirmValid!: boolean

@@ -16,7 +16,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { ActionTypes, CorpTypeCd, FilingTypes } from '@/enums'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

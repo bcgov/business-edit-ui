@@ -1,5 +1,3 @@
-import Vue from 'vue'
-import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ListPeopleAndRoles from '@/components/common/PeopleAndRoles/ListPeopleAndRoles.vue'
@@ -9,11 +7,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes } from '@/enums'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
-
-// needed for address component
-Vue.use(Vuelidate)
 
 setActivePinia(createPinia())
 const store = useStore()

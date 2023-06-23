@@ -158,7 +158,6 @@
                 <div
                   v-if="getSpecialResolutionMemorandum && getSpecialResolutionMemorandum.key"
                   :key="getSpecialResolutionMemorandum.key"
-                  class="mb-2"
                 >
                   <v-icon
                     color="primary"
@@ -243,7 +242,7 @@
                 <v-icon small>
                   mdi-pencil
                 </v-icon>
-                <span>Change</span>
+                <span>{{ getEditLabel }}</span>
               </v-btn>
             </div>
           </v-col>
@@ -272,12 +271,14 @@ import { LegalServices } from '@/services'
 export default class Memorandum extends Vue {
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getEditedLabel!: string
+  @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getSpecialResolutionMemorandum!: RulesMemorandumIF
   @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
 
-  @Action(useStore) setSpecialResolutionMemorandum!: ActionBindingIF
+  @Action(useStore) setEditingMemorandum!: ActionBindingIF
   @Action(useStore) setSpecialResolutionMemorandumValid!: ActionBindingIF
+  @Action(useStore) setSpecialResolutionMemorandum!: ActionBindingIF
 
   $refs!: {
     memorandumForm: FormIF
@@ -366,6 +367,11 @@ export default class Memorandum extends Vue {
   @Watch('getComponentValidate')
   onComponentValidate (): void {
     this.validate(true)
+  }
+
+  @Watch('isEditing', { immediate: true })
+  async onIsEditingChanged (value: boolean): Promise<void> {
+    await this.setEditingMemorandum(value)
   }
 }
 </script>

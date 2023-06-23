@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount, Wrapper } from '@vue/test-utils'
 import EffectiveDateTime from '@/components/common/EffectiveDateTime.vue'
@@ -6,7 +5,6 @@ import flushPromises from 'flush-promises'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

@@ -17,7 +17,6 @@ import { useStore } from '@/store/store'
 import { BusinessContactInfo, EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
   YourCompanyWrapper } from '@/components/common'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 // mock data

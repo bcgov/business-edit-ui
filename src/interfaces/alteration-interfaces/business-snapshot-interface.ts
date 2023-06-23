@@ -11,6 +11,8 @@ export interface EntitySnapshotIF {
   // Properties exclusive to Companies
   nameTranslations?: NameTranslationIF[]
   shareStructure?: ShareStructureIF
-  resolutions?: ResolutionsIF[]
   businessDocuments?: BusinessDocumentsIF
+
+  // Properties exclusive to CO-OPS
+  resolutions?: ResolutionsIF[]
 }

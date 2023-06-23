@@ -7,7 +7,6 @@ import NameTranslation from '@/components/common/YourCompany/NameTranslations/Na
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

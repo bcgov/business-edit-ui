@@ -1,14 +1,10 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import VSanitize from 'v-sanitize'
 import { shallowMount } from '@vue/test-utils'
-import CreateSpecialResolutionSummary from '@/components/SpecialResolution/CreateSpecialResolutionSummary.vue'
+import ResolutionSummary from '@/components/SpecialResolution/ResolutionSummary.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@/enums'
-
-Vue.use(Vuetify)
-Vue.use(VSanitize)
 
 const vuetify = new Vuetify({})
 
@@ -49,7 +45,7 @@ describe('Special Resolution Summary component', () => {
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
     store.stateModel.summaryMode = false
 
-    wrapper = shallowMount(CreateSpecialResolutionSummary, { vuetify })
+    wrapper = shallowMount(ResolutionSummary, { vuetify })
   })
 
   afterEach(() => {
@@ -57,7 +53,7 @@ describe('Special Resolution Summary component', () => {
   })
 
   it('renders the components', async () => {
-    expect(wrapper.findComponent(CreateSpecialResolutionSummary).exists()).toBe(true)
+    expect(wrapper.findComponent(ResolutionSummary).exists()).toBe(true)
   })
 
   it('renders the Resolution label', async () => {

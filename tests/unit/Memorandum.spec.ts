@@ -6,7 +6,6 @@ import { mount } from '@vue/test-utils'
 import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
 import flushPromises from 'flush-promises'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

@@ -14,7 +14,6 @@ import { AccountTypes, ActionTypes, FilingTypes } from '@/enums'
 import { BusinessContactInfo, BusinessType, EntityName, FolioInformation, NameTranslation, OfficeAddresses,
   RecognitionDateTime, YourCompanyWrapper } from '@/components/common'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"

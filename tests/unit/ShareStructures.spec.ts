@@ -5,7 +5,6 @@ import ShareStructures from '@/components/common/ShareStructure/ShareStructures.
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

@@ -29,7 +29,6 @@ import { CorrectNameOptions, FilingTypes, NrRequestActionCodes } from '@bcrs-sha
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import { NameRequestStates } from '@/enums'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

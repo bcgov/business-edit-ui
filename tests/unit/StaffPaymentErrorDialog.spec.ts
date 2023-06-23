@@ -1,11 +1,9 @@
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount, mount } from '@vue/test-utils'
 import StaffPaymentErrorDialog from '@/dialogs/StaffPaymentErrorDialog.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

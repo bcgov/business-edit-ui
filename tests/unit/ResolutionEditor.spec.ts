@@ -1,22 +1,12 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify'
-import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 import { createPinia, setActivePinia } from 'pinia'
 import { mount } from '@vue/test-utils'
 import ResolutionEditor from '@/components/SpecialResolution/ResolutionEditor.vue'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { useStore } from '@/store/store'
+import Vuetify from 'vuetify/lib'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
-
-// For Vue 3: remove - consult assets team for a replacement.
-Vue.use(TiptapVuetifyPlugin, {
-  // the next line is important! You need to provide the Vuetify Object to this place.
-  vuetify, // same as "vuetify: vuetify"
-  // optional, default to 'md' (default vuetify icons before v2.0.0)
-  iconsGroup: 'mdi'
-})
 
 setActivePinia(createPinia())
 const store = useStore()
@@ -37,6 +27,8 @@ describe('ResolutionEditor', () => {
   })
 
   it('sets the resolution date', async () => {
+    // This shows datepicker component
+    await wrapper.setProps({ isEditing: true })
     const resolutionDatePickerRef = wrapper.vm.$refs.resolutionDatePickerRef
     const resolutionDate = '2023-05-08'
     resolutionDatePickerRef.$emit('emitDate', resolutionDate)
@@ -45,6 +37,8 @@ describe('ResolutionEditor', () => {
   })
 
   it('validates the form when required fields are filled', async () => {
+    // This shows datepicker component
+    await wrapper.setProps({ isEditing: true })
     store.stateModel.tombstone.currentDate = '2020-05-07'
     store.stateModel.businessInformation.foundingDate = '2020-01-01'
     expect(store.getValidationFlags.flagsCompanyInfo.isValidSpecialResolution).toBe(true)
@@ -65,5 +59,30 @@ describe('ResolutionEditor', () => {
     expect(store.getValidationFlags.flagsCompanyInfo.isValidSpecialResolution).toBe(true)
   })
 
+  it('undo and save to store works as expected', async () => {
+    const firstResolution = '<b>Resolution text</b>'
+    const firstResolutionDateText = '2025-01-01'
+    wrapper.setData({ resolution: firstResolution, resolutionDateText: firstResolutionDateText })
+
+    // This should save the local component state.
+    await wrapper.setProps({ isEditing: true })
+
+    const secondResolution = '<b> Second resolution text </b>'
+    const secondResolutionDateText = '2022-01-01'
+
+    wrapper.setData({ resolution: secondResolution, resolutionDateText: secondResolutionDateText })
+
+    await Vue.nextTick()
+
+    // Called by parent component via ref
+    await wrapper.vm.saveToStore()
+    expect(store.getSpecialResolution.resolution).toEqual(secondResolution)
+    expect(store.getSpecialResolution.resolutionDate).toEqual(secondResolutionDateText)
+
+    // Called by parent component via ref
+    await wrapper.vm.undoToStore()
+    expect(store.getSpecialResolution.resolution).toEqual(firstResolution)
+    expect(store.getSpecialResolution.resolutionDate).toEqual(firstResolutionDateText)
+  })
   // No unit test for Vuetify Tiptap editor, it will be scrapped soon. Not our job to test external components.
 })

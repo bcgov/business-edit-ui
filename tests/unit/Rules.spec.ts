@@ -6,7 +6,6 @@ import { mount } from '@vue/test-utils'
 import Rules from '@/components/SpecialResolution/Rules.vue'
 import UploadRules from '@/components/SpecialResolution/UploadRules.vue'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

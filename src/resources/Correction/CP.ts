@@ -1,15 +1,16 @@
 import { CorrectNameOptions, FilingCodes } from '@/enums/'
 import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceIF } from '@/interfaces/'
 
-export const CpSpecialResolutionResource: ResourceIF = {
+export const CpCorrectionResource: ResourceIF = {
   entityReference: 'Business',
   contactLabel: 'Registered Office',
-  displayName: GetCorpFullDescription(CorpTypeCd.COOP),
+  displayName: null, // not used
+  entityType: CorpTypeCd.COOP,
   addressLabel: 'Business Addresses',
   filingData: {
-    filingTypeCode: FilingCodes.SPECIAL_RESOLUTION,
+    filingTypeCode: FilingCodes.CORRECTION,
     entityType: CorpTypeCd.COOP,
     priority: false
   },
@@ -38,7 +39,7 @@ export const CpSpecialResolutionResource: ResourceIF = {
           Do not mail the paper form to BC Registries.  Once you have completed this form, enter the details
           from the paper form into this filing.`,
         label: 'Download the Special Resolution Form 06 COO',
-        path: '/files/cooperative_sample_special_resolution_form_06.pdf'
+        path: 'files/cooperative_sample_special_resolution_form_06.pdf'
       }
     }
   },

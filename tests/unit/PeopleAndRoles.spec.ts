@@ -1,5 +1,3 @@
-import Vue from 'vue'
-import Vuelidate from 'vuelidate'
 import Vuetify from 'vuetify'
 import { GpChangeResource } from '@/resources/Change/GP'
 import { BenCorrectionResource } from '@/resources/Correction/BEN'
@@ -12,11 +10,7 @@ import { ActionTypes, CorpTypeCd, FilingTypes } from '@/enums'
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
 console.warn = jest.fn()
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
-
-// needed for address component
-Vue.use(Vuelidate)
 
 setActivePinia(createPinia())
 const store = useStore()

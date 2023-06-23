@@ -134,12 +134,14 @@ export const stateModel: StateModelIF = {
   detailComment: '',
   editingFlags: {
     companyName: false,
+    associationType: false,
     nameTranslations: false,
     officeAddresses: false,
     peopleAndRoles: false,
     shareStructure: false,
     rules: false,
-    memorandum: false
+    memorandum: false,
+    specialResolution: false
   },
   summaryMode: false,
   currentFees: [cloneDeep(EmptyFees)],

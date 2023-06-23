@@ -19,6 +19,7 @@ import { ActionBindingIF, CorrectionFilingIF } from '@/interfaces/'
 import { FilingStatus, FilingTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import CoopCorrection from '@/views/Correction/CoopCorrection.vue'
 import CorpCorrection from '@/views/Correction/CorpCorrection.vue'
 import FirmCorrection from '@/views/Correction/FirmCorrection.vue'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -27,6 +28,7 @@ import { useStore } from '@/store/store'
 @Component({
   components: {
     ViewWrapper,
+    CoopCorrection,
     CorpCorrection,
     FirmCorrection
   }
@@ -40,6 +42,7 @@ export default class Correction extends Mixins(CommonMixin) {
   @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isBenBcCccUlc!: boolean
+  @Getter(useStore) isCoop!: boolean
   @Getter(useStore) isFirm!: boolean
 
   // Global actions
@@ -50,6 +53,7 @@ export default class Correction extends Mixins(CommonMixin) {
 
   /** The dynamic component to render. */
   get component (): string {
+    if (this.isCoop) return 'CoopCorrection'
     if (this.isBenBcCccUlc) return 'CorpCorrection'
     if (this.isFirm) return 'FirmCorrection'
     return null // should never happen
@@ -112,9 +116,9 @@ export default class Correction extends Mixins(CommonMixin) {
       }
 
       // set entity type for misc functionality to work
-      // do not proceed if this isn't a BC or firm correction
+      // do not proceed if this isn't a BC/Firm/Coop correction
       this.setEntityType(filing.business?.legalType)
-      if (!this.isBenBcCccUlc && !this.isFirm) {
+      if (!this.isBenBcCccUlc && !this.isFirm && !this.isCoop) {
         throw new Error('Invalid correction type')
       }
 

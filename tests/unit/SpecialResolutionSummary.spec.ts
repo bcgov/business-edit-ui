@@ -5,10 +5,7 @@ import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CoopTypes } from '@/enums'
-import VSanitize from 'v-sanitize'
 
-Vue.use(Vuetify)
-Vue.use(VSanitize)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

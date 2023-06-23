@@ -7,7 +7,19 @@ import { CorpTypeCd } from '@bcrs-shared-components/enums'
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/alteration.json
 //
-export interface AlterationIF {
+
+export interface CoopAlterationIF {
+  cooperativeAssociationType?: CoopTypes
+  memorandumInResolution?: boolean
+  memorandumFileKey?: string
+  memorandumFileName?: string
+  rulesFileKey?: string
+  rulesFileName?: string
+  rulesInResolution?: boolean
+  rulesUploadedOn?: string
+}
+
+export interface AlterationIF extends CoopAlterationIF {
   provisionsRemoved?: boolean
   business: {
     identifier: string
@@ -20,12 +32,4 @@ export interface AlterationIF {
   shareStructure?: ShareStructureIF
   contactPoint: ContactPointIF
   courtOrder?: CourtOrderIF
-  cooperativeAssociationType?: CoopTypes
-  rulesInResolution?: boolean
-  rulesFileKey?: string
-  rulesFileName?: string
-  rulesUploadedOn?: string
-  memorandumInResolution?: boolean
-  memorandumFileKey?: string
-  memorandumFileName?: string
 }

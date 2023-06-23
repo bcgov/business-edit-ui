@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import Vuelidate from 'vuelidate'
 import { mount, Wrapper } from '@vue/test-utils'
 import OrgPerson from '@/components/common/PeopleAndRoles/OrgPerson.vue'
 import { BenCorrectionResource } from '@/resources/Correction/BEN'
@@ -16,11 +15,7 @@ console.warn = jest.fn()
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
-
-// needed for address component
-Vue.use(Vuelidate)
 
 setActivePinia(createPinia())
 const store = useStore()

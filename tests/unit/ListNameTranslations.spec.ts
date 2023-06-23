@@ -8,7 +8,6 @@ import { NameTranslationIF } from '@/interfaces/store-interfaces/state-interface
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

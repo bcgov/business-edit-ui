@@ -15,7 +15,6 @@ import { AssociationType, BusinessContactInfo, BusinessType, EntityName, FolioIn
 import { Memorandum, Rules } from '@/components/SpecialResolution'
 import { LegalServices } from '@/services'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

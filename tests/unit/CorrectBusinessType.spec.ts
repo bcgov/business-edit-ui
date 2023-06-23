@@ -7,7 +7,6 @@ import { useStore } from '@/store/store'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd as CorpTypeModuleCd } from '@bcrs-shared-components/corp-type-module'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())

@@ -1,9 +1,7 @@
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { shallowMount, mount } from '@vue/test-utils'
 import AccountAuthorizationDialog from '@/dialogs/AccountAuthorizationDialog.vue'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"

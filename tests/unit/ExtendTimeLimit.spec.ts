@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import Vuetify from 'vuetify'
 import { mount } from '@vue/test-utils'
 import ExtendTimeLimit from '@/components/Restoration/ExtendTimeLimit.vue'
@@ -6,7 +5,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { ApprovalTypes } from '@bcrs-shared-components/enums'
 
-Vue.use(Vuetify)
 const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())
