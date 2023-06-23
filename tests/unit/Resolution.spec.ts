@@ -27,8 +27,7 @@ describe('Special Resolution Form component', () => {
       legalType: 'CP'
     }
   }
-
-  beforeAll(() => {
+  beforeEach(() => {
     // init store
     store.stateModel.currentJsDate = new Date('2020-03-01T16:30:00Z')
     store.stateModel.tombstone.currentDate = '2030-03-01'
@@ -43,10 +42,6 @@ describe('Special Resolution Form component', () => {
         familyName: 't'
       }
     }
-  })
-
-  beforeEach(() => {
-    // Set Original business Data
     store.resourceModel = CpSpecialResolutionResource
     store.stateModel.nameRequest.legalName = entitySnapshot.businessInfo.legalName
     store.stateModel.tombstone.entityType = entitySnapshot.businessInfo.legalType as CorpTypeCd
@@ -147,6 +142,7 @@ describe('Special Resolution Form component', () => {
   it('(correction) toggle edit, should be able to submit right away - without validation error', async () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.COOP
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
+
     await Vue.nextTick()
     await wrapper.find('#btn-change-resolution').trigger('click')
     await wrapper.vm.updateSpecialResolutionStore()
@@ -158,6 +154,16 @@ describe('Special Resolution Form component', () => {
   it('(non correction) normal special resolution ', async () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.COOP
     store.stateModel.tombstone.filingType = FilingTypes.SPECIAL_RESOLUTION
+    store.stateModel.entitySnapshot = entitySnapshot as any
+    store.stateModel.specialResolution = {
+      resolution: '<p> heyhey </p> ',
+      resolutionDate: '2022-03-01',
+      signingDate: '2024-01-01',
+      signatory: {
+        givenName: 't',
+        familyName: 't'
+      }
+    }
     await Vue.nextTick()
     // No change button needed.
     await wrapper.vm.updateSpecialResolutionStore()
