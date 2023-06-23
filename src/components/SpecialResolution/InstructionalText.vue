@@ -1,5 +1,4 @@
 <template>
-  <!-- Hide if correction filing -->
   <article
     v-if="isSpecialResolutionFiling"
     class="instructional-text section-container"
