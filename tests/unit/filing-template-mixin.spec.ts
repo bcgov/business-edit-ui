@@ -24,6 +24,10 @@ describe('Correction Filing', () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.COOP
     store.stateModel.specialResolution.resolution = '<p>xxxx</p>'
     store.stateModel.specialResolution.resolutionConfirmed = true
+    store.stateModel.rules = store.stateModel.rules || {}
+    store.stateModel.memorandum = store.stateModel.memorandum || {}
+    store.stateModel.rules.includedInResolution = true
+    store.stateModel.memorandum.includedInResolution = true
     store.stateModel.specialResolution.signatory = {
       familyName: 'SGSG',
       givenName: 'GSG'
@@ -103,7 +107,9 @@ describe('Correction Filing', () => {
           cooperativeAssociationType: null,
           rulesFileKey: undefined,
           rulesFileName: undefined,
-          rulesUploadedOn: undefined
+          rulesUploadedOn: undefined,
+          rulesInResolution: true,
+          memorandumInResolution: true
         },
         changeOfName: {
           legalName: null,
