@@ -7,8 +7,121 @@ import { CorpTypeCd, FilingTypes } from '@/enums'
 setActivePinia(createPinia())
 const store = useStore()
 
-// FUTURE
 describe('Correction Filing', () => {
+  let wrapper: any
+
+  beforeEach(() => {
+    wrapper = shallowMount(MixinTester)
+  })
+
+  afterEach(() => {
+    wrapper.destroy()
+  })
+
+  it('correctly builds a special resolution filing', () => {
+    store.stateModel.tombstone.businessId = 'CP1234567'
+    store.stateModel.tombstone.filingType = FilingTypes.SPECIAL_RESOLUTION
+    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
+    store.stateModel.specialResolution.resolution = '<p>xxxx</p>'
+    store.stateModel.specialResolution.resolutionConfirmed = true
+    store.stateModel.specialResolution.signatory = {
+      familyName: 'SGSG',
+      givenName: 'GSG'
+    }
+    store.stateModel.completingParty = {
+      firstName: 'First',
+      lastName: 'Last',
+      middleName: 'Middle',
+      mailingAddress: {
+        streetAddress: '123 Completing Ave',
+        addressCity: 'Party',
+        addressRegion: 'BC',
+        postalCode: 'V0V 0V0',
+        addressCountry: 'CA'
+      }
+    }
+    store.stateModel.entitySnapshot = {
+      businessInfo: {
+        foundingDate: 'Jan 01, 2000',
+        legalType: CorpTypeCd.COOP,
+        identifier: 'CP1234567',
+        legalName: 'SomeMockBusiness'
+      },
+      addresses: {
+        businessOffice: {
+          mailingAddress: {
+            addressCity: 'Charlie',
+            addressCountry: 'CA',
+            addressRegion: 'BC',
+            deliveryInstructions: 'Mailing address',
+            postalCode: 'V2V 2V2',
+            streetAddress: '222 Second St',
+            streetAddressAdditional: 'Suite 2'
+          },
+          deliveryAddress: {
+            addressCity: 'Alpha',
+            addressCountry: 'CA',
+            addressRegion: 'BC',
+            deliveryInstructions: 'Delivery address',
+            postalCode: 'V1V 1V1',
+            streetAddress: '111 First St',
+            streetAddressAdditional: 'Suite 1'
+          }
+        }
+      }
+    } as any
+
+    const filing = wrapper.vm.buildSpecialResolutionFiling(true)
+
+    // FUTURE: check filing data...
+    expect(filing).toEqual(
+      expect.objectContaining({
+        business: {
+          foundingDate: 'Jan 01, 2000',
+          identifier: 'CP1234567',
+          legalName: 'SomeMockBusiness',
+          legalType: 'CP',
+          nrNumber: undefined
+        },
+        specialResolution: {
+          resolution: '<p>xxxx</p>',
+          resolutionConfirmed: true,
+          signatory: {
+            familyName: 'SGSG',
+            givenName: 'GSG'
+          }
+        },
+        alteration: {
+          business: {
+            identifier: 'CP1234567',
+            legalType: 'CP'
+          },
+          contactPoint: {
+            email: '',
+            phone: ''
+          },
+          cooperativeAssociationType: null,
+          rulesFileKey: undefined,
+          rulesFileName: undefined,
+          rulesUploadedOn: undefined
+        },
+        changeOfName: {
+          legalName: null,
+          nameRequest: {
+            legalName: null,
+            legalType: null,
+            nrNumber: null
+          }
+        },
+        header: {
+          certifiedBy: '',
+          date: '',
+          folioNumber: '',
+          name: 'specialResolution'
+        }
+      })
+    )
+  })
 })
 
 // FUTURE
