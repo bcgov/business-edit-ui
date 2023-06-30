@@ -768,7 +768,12 @@ export default class FilingTemplateMixin extends DateMixin {
       this.storeSpecialResolutionRulesAndMemorandum(filing.correction, entitySnapshot)
       let specialResolution: SpecialResolutionIF = {}
       if (filing.correction.resolution) {
-        specialResolution = filing.correction
+        specialResolution = {
+          resolution: filing.correction?.resolution,
+          resolutionDate: filing.correction?.resolutionDate,
+          signingDate: filing.correction?.signingDate,
+          signatory: filing.correction?.signatory
+        }
       } else {
         specialResolution = this.getLatestResolutionForBusiness
       }
