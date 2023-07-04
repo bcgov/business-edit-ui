@@ -219,31 +219,38 @@ export default class FilingTemplateMixin extends DateMixin {
         }
       }
 
-      if (
-        this.hasAssociationTypeChanged ||
-        this.hasSpecialResolutionMemorandumChanged ||
-        this.hasSpecialResolutionRulesChanged
-      ) {
-        filing.correction = {
-          ...filing.correction,
-          cooperativeAssociationType: this.getAssociationType,
-          rulesFileKey: this.getSpecialResolutionRules?.key,
-          rulesFileName: this.getSpecialResolutionRules?.name,
-          rulesUploadedOn: this.getSpecialResolutionRules?.uploaded,
-          memorandumFileKey: this.getSpecialResolutionMemorandum?.key,
-          memorandumFileName: this.getSpecialResolutionMemorandum?.name
-        }
-        // Ensures a key isn't passed when including the rules or memorandum in the resolution.
-        if (this.getSpecialResolutionRules?.includedInResolution) {
-          delete filing.correction.rulesFileKey
-          delete filing.correction.rulesFileName
-          delete filing.correction.rulesUploadedOn
-          filing.correction.rulesInResolution = true
-        }
+      // Business rules are a bit different for corrections.
+      if (this.hasAssociationTypeChanged) {
+        filing.correction.cooperativeAssociationType = this.getAssociationType
+      }
+
+      if (this.hasSpecialResolutionMemorandumChanged) {
         if (this.getSpecialResolutionMemorandum?.includedInResolution) {
-          delete filing.correction.memorandumFileKey
-          delete filing.correction.memorandumFileName
-          filing.correction.memorandumInResolution = true
+          filing.correction = {
+            ...filing.correction,
+            memorandumInResolution: true
+          }
+        } else {
+          filing.correction = {
+            ...filing.correction,
+            memorandumFileKey: this.getSpecialResolutionMemorandum?.key,
+            memorandumFileName: this.getSpecialResolutionMemorandum?.name
+          }
+        }
+      }
+
+      if (this.hasSpecialResolutionRulesChanged) {
+        if (this.getSpecialResolutionRules?.includedInResolution) {
+          filing.correction = {
+            ...filing.correction,
+            rulesInResolution: true
+          }
+        } else {
+          filing.correction = {
+            ...filing.correction,
+            rulesFileKey: this.getSpecialResolutionRules?.key,
+            rulesFileName: this.getSpecialResolutionRules?.name
+          }
         }
       }
     }
