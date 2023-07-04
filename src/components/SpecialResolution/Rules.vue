@@ -519,7 +519,7 @@ header {
 }
 
 .black-bold-font {
-  color: black !important;
+  color: $gray9 !important;
   font-weight: bold !important
 }
 

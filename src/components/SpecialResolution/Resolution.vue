@@ -102,13 +102,12 @@
             v-if="isEditing"
             id="resolution-confirmation-buttons"
             no-gutters
-            class="justify-end pr-8 pb-8 mt-8 d-flex"
+            class="justify-end pb-8 mt-8 d-flex"
           >
             <v-btn
               id="btn-resolution-done"
               large
               color="primary"
-              class="mr-2"
               @click="updateSpecialResolutionStore()"
             >
               <span>Done</span>
