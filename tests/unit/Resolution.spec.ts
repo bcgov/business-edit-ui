@@ -100,6 +100,8 @@ describe('Special Resolution Form component', () => {
   })
 
   it('validation - signatory date should be after or on resolution date', async () => {
+    wrapper.vm.isEditing = false
+    await Vue.nextTick()
     store.stateModel.validationFlags.componentValidate = true
     await Vue.nextTick()
     expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature).toBe(true)
@@ -111,6 +113,7 @@ describe('Special Resolution Form component', () => {
     }
     await Vue.nextTick()
     wrapper = mount(Resolution, { vuetify })
+    wrapper.vm.isEditing = false
     store.stateModel.validationFlags.componentValidate = true
     await flushPromises()
 
