@@ -477,27 +477,36 @@ export default class FilingTemplateMixin extends DateMixin {
           legalType: this.getEntityType
         },
         contactPoint: this.getContactPoint,
-        cooperativeAssociationType: this.getAssociationType,
-        rulesFileKey: this.getSpecialResolutionRules?.key,
-        rulesFileName: this.getSpecialResolutionRules?.name,
-        rulesUploadedOn: this.getSpecialResolutionRules?.uploaded,
-        memorandumFileKey: this.getSpecialResolutionMemorandum?.key,
-        memorandumFileName: this.getSpecialResolutionMemorandum?.name
+        cooperativeAssociationType: this.getAssociationType
       }
+    }
+
+    if (this.hasSpecialResolutionRulesChanged) {
       /* Ensures a key isn't passed when including the rules or memorandum in the resolution.
         See validator here:
         https://github.com/bcgov/lear/blob/main/legal-api/src/legal_api/services/filings/validations/alteration.py#L177
       */
       if (this.getSpecialResolutionRules?.includedInResolution) {
-        delete filing.alteration.rulesFileKey
-        delete filing.alteration.rulesFileName
-        delete filing.alteration.rulesUploadedOn
         filing.alteration.rulesInResolution = true
+      } else {
+        filing.alteration = {
+          ...filing.alteration,
+          rulesFileKey: this.getSpecialResolutionRules?.key,
+          rulesFileName: this.getSpecialResolutionRules?.name,
+          rulesUploadedOn: this.getSpecialResolutionRules?.uploaded
+        }
       }
+    }
+
+    if (this.hasSpecialResolutionMemorandumChanged) {
       if (this.getSpecialResolutionMemorandum?.includedInResolution) {
-        delete filing.alteration.memorandumFileKey
-        delete filing.alteration.memorandumFileName
         filing.alteration.memorandumInResolution = true
+      } else {
+        filing.alteration = {
+          ...filing.alteration,
+          memorandumFileKey: this.getSpecialResolutionMemorandum?.key,
+          memorandumFileName: this.getSpecialResolutionMemorandum?.name
+        }
       }
     }
 
