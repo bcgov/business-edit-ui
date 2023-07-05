@@ -10,6 +10,8 @@
         <v-btn
           id="save-btn"
           large
+          outlined
+          color="primary"
           :disabled="isSaveButtonDisabled"
           :loading="isSaving"
           @click="onClickSave()"
@@ -20,6 +22,8 @@
         <v-btn
           id="save-resume-btn"
           large
+          outlined
+          color="primary"
           :disabled="isSaveResumeButtonDisabled"
           :loading="isSavingResuming"
           @click="onClickSaveResume()"

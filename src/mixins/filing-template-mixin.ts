@@ -77,6 +77,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) getSpecialResolutionRules!: RulesMemorandumIF
   @Getter(useStore) isCoopCorrectionFiling!: boolean
   @Getter(useStore) getLatestResolutionForBusiness!: SpecialResolutionIF
+  @Getter(useStore) hasSpecialResolutionResolutionChanged!: boolean
 
   // Global actions
   @Action(useStore) setBusinessContact!: ActionBindingIF
@@ -199,16 +200,8 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     if (this.isCoopCorrectionFiling) {
-      // Parties and offices aren't required for Coop corrections.
-      delete filing.correction.parties
+      // Offices aren't required for Coop corrections.
       delete filing.correction.offices
-      filing.correction = {
-        ...filing.correction,
-        resolution: this.getSpecialResolution.resolution,
-        resolutionDate: this.getSpecialResolution.resolutionDate,
-        signingDate: this.getSpecialResolution.signingDate,
-        signatory: this.getSpecialResolution.signatory
-      }
 
       // Apply Court Order ONLY when it is required and applied
       if (this.getHasPlanOfArrangement || this.getFileNumber) {
@@ -222,6 +215,21 @@ export default class FilingTemplateMixin extends DateMixin {
       // Business rules are a bit different for corrections.
       if (this.hasAssociationTypeChanged) {
         filing.correction.cooperativeAssociationType = this.getAssociationType
+      }
+
+      if (this.hasSpecialResolutionRulesChanged) {
+        if (this.getSpecialResolutionRules?.includedInResolution) {
+          filing.correction = {
+            ...filing.correction,
+            rulesInResolution: true
+          }
+        } else {
+          filing.correction = {
+            ...filing.correction,
+            rulesFileKey: this.getSpecialResolutionRules?.key,
+            rulesFileName: this.getSpecialResolutionRules?.name
+          }
+        }
       }
 
       if (this.hasSpecialResolutionMemorandumChanged) {
@@ -239,18 +247,13 @@ export default class FilingTemplateMixin extends DateMixin {
         }
       }
 
-      if (this.hasSpecialResolutionRulesChanged) {
-        if (this.getSpecialResolutionRules?.includedInResolution) {
-          filing.correction = {
-            ...filing.correction,
-            rulesInResolution: true
-          }
-        } else {
-          filing.correction = {
-            ...filing.correction,
-            rulesFileKey: this.getSpecialResolutionRules?.key,
-            rulesFileName: this.getSpecialResolutionRules?.name
-          }
+      if (this.hasSpecialResolutionResolutionChanged) {
+        filing.correction = {
+          ...filing.correction,
+          resolution: this.getSpecialResolution.resolution,
+          resolutionDate: this.getSpecialResolution.resolutionDate,
+          signingDate: this.getSpecialResolution.signingDate,
+          signatory: this.getSpecialResolution.signatory
         }
       }
     }

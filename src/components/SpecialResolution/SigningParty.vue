@@ -272,15 +272,12 @@ export default class SigningParty extends Vue {
 
   /** Used to trigger validate from outside of component. */
   @Watch('getComponentValidate')
-  async onValidate (): Promise<void> {
-    if (!this.isEditing) {
-      await this.setSpecialResolutionSignatureValid(true)
-      return
-    }
+  async onValidate (includeIsEditing = true): Promise<void> {
     const hasSigningData = !!this.signingDate && !!this.signatory.givenName && !!this.signatory.familyName
     this.$refs.signatureDatePickerRef.validateForm()
     const isSignatureDateValid = this.$refs.signatureDatePickerRef.isDateValid()
-    await this.setSpecialResolutionSignatureValid(hasSigningData && isSignatureDateValid)
+    const isValid = hasSigningData && isSignatureDateValid && (!includeIsEditing || !this.isEditing)
+    await this.setSpecialResolutionSignatureValid(isValid)
   }
 }
 </script>

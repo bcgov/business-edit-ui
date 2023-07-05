@@ -180,8 +180,8 @@ export default class Resolution extends Vue {
 
   /** For ok button, stores using setSpecialResolution. */
   async updateSpecialResolutionStore (): Promise<void> {
-    await this.$refs.resolutionEditor.onValidate()
-    await this.$refs.signingParty.onValidate()
+    await this.$refs.resolutionEditor.onValidate(false)
+    await this.$refs.signingParty.onValidate(false)
     if (this.getSpecialResolutionFormValid) {
       this.isEditing = false
       this.hasChanged = true

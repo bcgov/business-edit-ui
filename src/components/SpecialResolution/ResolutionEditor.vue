@@ -319,15 +319,12 @@ export default class ResolutionEditor extends Vue {
 
   /** Used to trigger validate from outside of component. */
   @Watch('getComponentValidate')
-  async onValidate (): Promise<void> {
-    if (!this.isEditing) {
-      this.setSpecialResolutionValid(true)
-      return
-    }
+  async onValidate (includeIsEditing = true): Promise<void> {
     const hasData = !!this.resolutionDateText && !!this.resolution && this.resolution !== '<p></p>'
     this.$refs.resolutionDatePickerRef.validateForm()
     const isResolutionDateValid = this.$refs.resolutionDatePickerRef.isDateValid()
-    this.setSpecialResolutionValid(hasData && isResolutionDateValid)
+    const isValid = hasData && isResolutionDateValid && (!includeIsEditing || !this.isEditing)
+    this.setSpecialResolutionValid(isValid)
   }
 }
 </script>
