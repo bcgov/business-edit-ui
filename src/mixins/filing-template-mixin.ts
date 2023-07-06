@@ -77,6 +77,7 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) getSpecialResolutionRules!: RulesMemorandumIF
   @Getter(useStore) isCoopCorrectionFiling!: boolean
   @Getter(useStore) getLatestResolutionForBusiness!: SpecialResolutionIF
+  @Getter(useStore) hasSpecialResolutionResolutionChanged!: boolean
 
   // Global actions
   @Action(useStore) setBusinessContact!: ActionBindingIF
@@ -199,16 +200,8 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     if (this.isCoopCorrectionFiling) {
-      // Parties and offices aren't required for Coop corrections.
-      delete filing.correction.parties
+      // Offices aren't required for Coop corrections.
       delete filing.correction.offices
-      filing.correction = {
-        ...filing.correction,
-        resolution: this.getSpecialResolution.resolution,
-        resolutionDate: this.getSpecialResolution.resolutionDate,
-        signingDate: this.getSpecialResolution.signingDate,
-        signatory: this.getSpecialResolution.signatory
-      }
 
       // Apply Court Order ONLY when it is required and applied
       if (this.getHasPlanOfArrangement || this.getFileNumber) {
@@ -219,31 +212,48 @@ export default class FilingTemplateMixin extends DateMixin {
         }
       }
 
-      if (
-        this.hasAssociationTypeChanged ||
-        this.hasSpecialResolutionMemorandumChanged ||
-        this.hasSpecialResolutionRulesChanged
-      ) {
+      // Business rules are a bit different for corrections.
+      if (this.hasAssociationTypeChanged) {
+        filing.correction.cooperativeAssociationType = this.getAssociationType
+      }
+
+      if (this.hasSpecialResolutionRulesChanged) {
+        if (this.getSpecialResolutionRules?.includedInResolution) {
+          filing.correction = {
+            ...filing.correction,
+            rulesInResolution: true
+          }
+        } else {
+          filing.correction = {
+            ...filing.correction,
+            rulesFileKey: this.getSpecialResolutionRules?.key,
+            rulesFileName: this.getSpecialResolutionRules?.name
+          }
+        }
+      }
+
+      if (this.hasSpecialResolutionMemorandumChanged) {
+        if (this.getSpecialResolutionMemorandum?.includedInResolution) {
+          filing.correction = {
+            ...filing.correction,
+            memorandumInResolution: true
+          }
+        } else {
+          filing.correction = {
+            ...filing.correction,
+            memorandumFileKey: this.getSpecialResolutionMemorandum?.key,
+            memorandumFileName: this.getSpecialResolutionMemorandum?.name
+          }
+        }
+      }
+
+      if (this.hasSpecialResolutionResolutionChanged) {
         filing.correction = {
           ...filing.correction,
-          cooperativeAssociationType: this.getAssociationType,
-          rulesFileKey: this.getSpecialResolutionRules?.key,
-          rulesFileName: this.getSpecialResolutionRules?.name,
-          rulesUploadedOn: this.getSpecialResolutionRules?.uploaded,
-          memorandumFileKey: this.getSpecialResolutionMemorandum?.key,
-          memorandumFileName: this.getSpecialResolutionMemorandum?.name
-        }
-        // Ensures a key isn't passed when including the rules or memorandum in the resolution.
-        if (this.getSpecialResolutionRules?.includedInResolution) {
-          delete filing.correction.rulesFileKey
-          delete filing.correction.rulesFileName
-          delete filing.correction.rulesUploadedOn
-          filing.correction.rulesInResolution = true
-        }
-        if (this.getSpecialResolutionMemorandum?.includedInResolution) {
-          delete filing.correction.memorandumFileKey
-          delete filing.correction.memorandumFileName
-          filing.correction.memorandumInResolution = true
+          resolution: this.getSpecialResolution.resolution,
+          resolutionDate: this.getSpecialResolution.resolutionDate,
+          signingDate: this.getSpecialResolution.signingDate,
+          signatory: this.getSpecialResolution.signatory
         }
       }
     }
@@ -467,27 +477,36 @@ export default class FilingTemplateMixin extends DateMixin {
           legalType: this.getEntityType
         },
         contactPoint: this.getContactPoint,
-        cooperativeAssociationType: this.getAssociationType,
-        rulesFileKey: this.getSpecialResolutionRules?.key,
-        rulesFileName: this.getSpecialResolutionRules?.name,
-        rulesUploadedOn: this.getSpecialResolutionRules?.uploaded,
-        memorandumFileKey: this.getSpecialResolutionMemorandum?.key,
-        memorandumFileName: this.getSpecialResolutionMemorandum?.name
+        cooperativeAssociationType: this.getAssociationType
       }
+    }
+
+    if (this.hasSpecialResolutionRulesChanged) {
       /* Ensures a key isn't passed when including the rules or memorandum in the resolution.
         See validator here:
         https://github.com/bcgov/lear/blob/main/legal-api/src/legal_api/services/filings/validations/alteration.py#L177
       */
       if (this.getSpecialResolutionRules?.includedInResolution) {
-        delete filing.alteration.rulesFileKey
-        delete filing.alteration.rulesFileName
-        delete filing.alteration.rulesUploadedOn
         filing.alteration.rulesInResolution = true
+      } else {
+        filing.alteration = {
+          ...filing.alteration,
+          rulesFileKey: this.getSpecialResolutionRules?.key,
+          rulesFileName: this.getSpecialResolutionRules?.name,
+          rulesUploadedOn: this.getSpecialResolutionRules?.uploaded
+        }
       }
+    }
+
+    if (this.hasSpecialResolutionMemorandumChanged) {
       if (this.getSpecialResolutionMemorandum?.includedInResolution) {
-        delete filing.alteration.memorandumFileKey
-        delete filing.alteration.memorandumFileName
         filing.alteration.memorandumInResolution = true
+      } else {
+        filing.alteration = {
+          ...filing.alteration,
+          memorandumFileKey: this.getSpecialResolutionMemorandum?.key,
+          memorandumFileName: this.getSpecialResolutionMemorandum?.name
+        }
       }
     }
 
@@ -766,7 +785,17 @@ export default class FilingTemplateMixin extends DateMixin {
 
     if (this.isCoopCorrectionFiling) {
       this.storeSpecialResolutionRulesAndMemorandum(filing.correction, entitySnapshot)
-      const specialResolution = this.getLatestResolutionForBusiness
+      let specialResolution: SpecialResolutionIF = {}
+      if (filing.correction.resolution) {
+        specialResolution = {
+          resolution: filing.correction?.resolution,
+          resolutionDate: filing.correction?.resolutionDate,
+          signingDate: filing.correction?.signingDate,
+          signatory: filing.correction?.signatory
+        }
+      } else {
+        specialResolution = this.getLatestResolutionForBusiness
+      }
       this.setSpecialResolution(cloneDeep(specialResolution))
     }
 

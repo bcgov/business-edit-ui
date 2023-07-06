@@ -102,13 +102,12 @@
             v-if="isEditing"
             id="resolution-confirmation-buttons"
             no-gutters
-            class="justify-end pr-8 pb-8 mt-8 d-flex"
+            class="justify-end pb-8 mt-8 d-flex"
           >
             <v-btn
               id="btn-resolution-done"
               large
               color="primary"
-              class="mr-2"
               @click="updateSpecialResolutionStore()"
             >
               <span>Done</span>
@@ -181,8 +180,8 @@ export default class Resolution extends Vue {
 
   /** For ok button, stores using setSpecialResolution. */
   async updateSpecialResolutionStore (): Promise<void> {
-    await this.$refs.resolutionEditor.onValidate()
-    await this.$refs.signingParty.onValidate()
+    await this.$refs.resolutionEditor.onValidate(false)
+    await this.$refs.signingParty.onValidate(false)
     if (this.getSpecialResolutionFormValid) {
       this.isEditing = false
       this.hasChanged = true

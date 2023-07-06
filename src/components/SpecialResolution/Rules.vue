@@ -89,14 +89,14 @@
                 </div>
                 <div v-else>
                   <div
-                    class="px-4 pt-0 section-container info-text"
+                    class="pt-0 instructional-text section-container"
                     :class="{'error-text': rulesEditingInvalid}"
                   >
                     You can update the rules of association in one of the following ways:
                   </div>
-                  <v-divider class="mx-4" />
+                  <v-divider class="mx-8" />
                   <section
-                    class="px-4 py-4 section-container"
+                    class="py-4 section-container"
                   >
                     <v-btn
                       id="btn-describe-rules"
@@ -128,9 +128,9 @@
                       </template>
                     </v-checkbox>
                   </section>
-                  <v-divider class="mx-4" />
+                  <v-divider class="mx-8" />
                   <section
-                    class="pa-4 section-container"
+                    class="section-container"
                   >
                     <v-btn
                       id="btn-upload-rules"
@@ -189,7 +189,7 @@
                       </header>
                     </v-expand-transition>
                   </section>
-                  <v-divider class="mx-4" />
+                  <v-divider class="mx-8" />
 
                   <v-row
                     id="rules-confirmation-buttons"
@@ -519,7 +519,7 @@ header {
 }
 
 .black-bold-font {
-  color: black !important;
+  color: $gray9 !important;
   font-weight: bold !important
 }
 
@@ -574,6 +574,9 @@ a {
 /* Override bold weight to regular weight. */
 :deep(.v-label) {
   font-weight: normal;
+}
+.instructional-text {
+  color: $gray7;
 }
 
 </style>
