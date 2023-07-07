@@ -184,16 +184,18 @@ export default class CoopCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
       LegalServices.fetchBusinessInfo(this.getBusinessId),
       AuthServices.fetchAuthInfo(this.getBusinessId),
       LegalServices.fetchBusinessDocuments(this.getBusinessId),
-      LegalServices.fetchResolutions(this.getBusinessId, true)
+      LegalServices.fetchResolutions(this.getBusinessId, true),
+      LegalServices.fetchParties(this.getBusinessId)
     ])
 
-    if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 5) throw new Error('Failed to fetch entity snapshot')
 
     return {
       businessInfo: items[0],
       authInfo: items[1],
       businessDocuments: items[2],
-      resolutions: items[3]
+      resolutions: items[3],
+      orgPersons: items[4]
     } as EntitySnapshotIF
   }
 
