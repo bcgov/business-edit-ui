@@ -160,6 +160,12 @@ describe('Coop Correction component', () => {
       }
     ])
 
+    LegalServices.fetchParties = jest.fn().mockResolvedValue([
+      { roles: [{ appointmentDate: '2022-04-01', roleType: 'Completing Party' }] },
+      { roles: [{ appointmentDate: '2022-04-01', roleType: 'Incorporator' }] },
+      { roles: [{ appointmentDate: '2022-05-01', roleType: 'Director' }] }
+    ])
+
     wrapper = mount(CoopCorrection, {
       vuetify,
       propsData: {

@@ -124,7 +124,7 @@ export default class FilingTemplateMixin extends DateMixin {
   //
 
   /**
-   * Builds an IA/change/registration correction filing from store data.
+   * Builds an IA/change/registration/special resolution correction filing from store data.
    * @param isDraft whether this is a draft
    * @returns the correction filing body
    */
@@ -817,14 +817,12 @@ export default class FilingTemplateMixin extends DateMixin {
     // store current Business Contact
     this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
 
-    if (!this.isCoopCorrectionFiling) {
-      // store People And Roles
-      let orgPersons = filing.correction.parties || entitySnapshot.orgPersons
-      // exclude Completing Party
-      // (it is managed separately and added to the filing in buildCorrectionFiling())
-      orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
-      this.setPeopleAndRoles(cloneDeep(orgPersons))
-    }
+    // store People And Roles
+    let orgPersons = filing.correction.parties || entitySnapshot.orgPersons
+    // exclude Completing Party
+    // (it is managed separately and added to the filing in buildCorrectionFiling())
+    orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
+    this.setPeopleAndRoles(cloneDeep(orgPersons))
 
     // store Share Classes and Resolution Dates (BEN/BC/CCC/ULC corrections only)
     if (this.isBenBcCccUlcCorrectionFiling) {
