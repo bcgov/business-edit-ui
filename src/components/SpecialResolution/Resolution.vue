@@ -77,6 +77,43 @@
                   </v-icon>
                   <span>{{ getEditLabel }}</span>
                 </v-btn>
+                <!-- Dropdown menu - allows us to change without having to undo. -->
+                <v-menu
+                  v-if="(hasChanged && !isSpecialResolutionFiling) && !isEditing"
+                  v-model="dropdown"
+                  offset-y
+                  left
+                  nudge-bottom="4"
+                >
+                  <template #activator="{ on }">
+                    <v-btn
+                      id="btn-more-actions"
+                      text
+                      small
+                      color="primary"
+                      v-on="on"
+                    >
+                      <v-icon>{{ dropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item
+                      id="btn-more-actions-edit"
+                      class="v-list-item"
+                      @click="isEditing = true; dropdown = false"
+                    >
+                      <v-list-item-subtitle>
+                        <v-icon
+                          small
+                          color="primary"
+                        >
+                          mdi-pencil
+                        </v-icon>
+                        <span class="drop-down-action ml-1">{{ getEditLabel }}</span>
+                      </v-list-item-subtitle>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
               </div>
             </v-col>
           </v-row>
@@ -172,6 +209,7 @@ export default class Resolution extends Vue {
 
   isEditing = true
   hasChanged = false
+  dropdown = false
 
   /** Displays an invalid section to user if form is invalid. */
   get invalidResolutionSection (): boolean {
@@ -244,8 +282,18 @@ export default class Resolution extends Vue {
   }
 }
 
-.actions .undo-action {
-  border-right: 0px;
-}
+.actions {
+  position: absolute;
+  right: 0;
 
+  .undo-action {
+    border-right: 1px solid $gray1;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .v-btn {
+    min-width: 0.5rem;
+  }
+}
 </style>
