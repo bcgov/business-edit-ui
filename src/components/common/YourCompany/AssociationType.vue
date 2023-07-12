@@ -263,8 +263,10 @@ export default class AssociationType extends Mixins(CommonMixin) {
   position: absolute;
   right: 0;
 
-  .undo-action{
+  .undo-action {
     border-right: 1px solid $gray1;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
   }
 
   .v-btn {
