@@ -107,6 +107,14 @@
             <span class="list-item">{{ data.item.text }}</span>
           </template>
         </v-select>
+
+        <span
+          v-if="minimumThreeDirectorError"
+          class="my-6 error-text"
+        >
+          The business type cannot be changed. A Community Contribution Company requires a minimum of three directors.
+        </span>
+
         <div class="my-6">
           <p class="info-text">
             Businesses can only be altered to specific types. If the business type you want is
@@ -203,7 +211,7 @@
             id="done-btn"
             large
             color="primary"
-            :disabled="!confirmArticles"
+            :disabled="!confirmArticles && !minimumThreeDirectorError"
             @click="submitTypeChange()"
           >
             <span>Done</span>
@@ -323,6 +331,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getNumberOfDirectors!: number
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) hasBusinessTypeChanged!: boolean
   @Getter(useStore) isBcCompany!: boolean
@@ -367,6 +376,16 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       value: 'BEN',
       SHORT_DESC: 'BC Benefit Company',
       text: 'BC Benefit Company'
+    },
+    {
+      value: 'ULC',
+      SHORT_DESC: 'BC Unlimited Liability Company',
+      text: 'BC Unlimited Liability Company'
+    },
+    {
+      value: 'CC',
+      SHORT_DESC: 'BC Community Contribution Company',
+      text: 'BC Community Contribution Company'
     }
   ]
 
@@ -381,9 +400,23 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     return (this.selectedEntityType === CorpTypeCd.BENEFIT_COMPANY)
   }
 
+  /** Check if current entity selection is a Unlimited Liability Company */
+  get isUnlimitedLiability (): boolean {
+    return (this.selectedEntityType === CorpTypeCd.BC_ULC_COMPANY)
+  }
+
+  /** Check if current entity selection is a Community Contribution Company */
+  get isCommunityContribution (): boolean {
+    return (this.selectedEntityType === CorpTypeCd.BC_CCC)
+  }
+
   /** Type change helper information */
   get typeChangeInfo (): string {
     return this.getResource.changeData?.typeChangeInfo
+  }
+
+  get minimumThreeDirectorError (): boolean {
+    return this.isUnlimitedLiability && this.getNumberOfDirectors < 3
   }
 
   /** Reset company type values to original. */

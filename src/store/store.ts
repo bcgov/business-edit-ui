@@ -1282,6 +1282,10 @@ export const useStore = defineStore('store', {
         this.hasSpecialResolutionRulesChanged ||
         this.hasSpecialResolutionMemorandumChanged) ||
         this.isCoopCorrectionFiling
+    },
+
+    getNumberOfDirectors (): number {
+      return this.getOrgPeople.map(person => person.roles.filter(role => role.roleType === RoleTypes.DIRECTOR)).length
     }
 
   },
