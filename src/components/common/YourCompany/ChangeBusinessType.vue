@@ -108,12 +108,14 @@
           </template>
         </v-select>
 
-        <span
+        <div
           v-if="minimumThreeDirectorError"
-          class="my-6 error-text"
+          class="my-6"
         >
-          The business type cannot be changed. A Community Contribution Company requires a minimum of three directors.
-        </span>
+          <p class="error-text">
+            The business type cannot be changed. A Community Contribution Company requires a minimum of three directors.
+          </p>
+        </div>
 
         <div class="my-6">
           <p class="info-text">
@@ -416,7 +418,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   get minimumThreeDirectorError (): boolean {
-    return this.isUnlimitedLiability && this.getNumberOfDirectors < 3
+    return this.isCommunityContribution && this.getNumberOfDirectors < 3
   }
 
   /** Reset company type values to original. */
