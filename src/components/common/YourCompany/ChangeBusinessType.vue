@@ -213,7 +213,7 @@
             id="done-btn"
             large
             color="primary"
-            :disabled="!confirmArticles && !minimumThreeDirectorError"
+            :disabled="!confirmArticles || minimumThreeDirectorError"
             @click="submitTypeChange()"
           >
             <span>Done</span>
