@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify'
-import { mount } from '@vue/test-utils'
+import { mount, shallowMount } from '@vue/test-utils'
 import EntityName from '@/components/common/YourCompany/EntityName.vue'
 
 import { BcAlterationResource } from '@/resources/Alteration/BC'
@@ -366,5 +366,26 @@ describe('Name Changes for a SP alteration', () => {
     expect(nameRequestApplicantInfo.at(1).text()).toBe('Address:  123 Mock Lane, Victoria, BC, 1t2 3t4, CA')
     expect(nameRequestApplicantInfo.at(2).text()).toBe('Email:  N/A')
     expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  (250) 123-4567')
+  })
+})
+
+describe('Name Changes by Type change', () => {
+  it('displays the edited label when the company name has changed and is not changed by type', () => {
+    // set up the component with a changed company name and not changed by type
+    const wrapper = shallowMount(EntityName, {
+      data () {
+        return {
+          hasCompanyNameChanged: true,
+          isNameChangedByType: true,
+          getEditedLabel: 'Edited'
+        }
+      }
+    })
+
+    // check that the edited label and reminder is displayed
+    expect(wrapper.text()).toContain('Edited')
+    expect(wrapper.text()).toMatch(
+      /We have changed your numbered company\s+name based on the business type you selected\./
+    )
   })
 })

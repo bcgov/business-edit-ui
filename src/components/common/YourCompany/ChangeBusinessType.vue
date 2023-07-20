@@ -4,7 +4,10 @@
       <!-- Row Title -->
       <v-col cols="3">
         <label :class="{'error-text': invalidSection}"><strong>Business Type</strong></label>
-        <v-col md="1">
+        <v-col
+          md="1"
+          class="pa-0"
+        >
           <v-chip
             v-if="hasBusinessTypeChanged"
             x-small
@@ -72,7 +75,7 @@
 
         <template v-if="hasBusinessTypeChanged">
           <p class="subtitle mt-2 pt-2">
-            Benefit Company Articles
+            {{ updatedArticleTitle }}
           </p>
           <div class="confirmed-msg">
             <v-icon
@@ -82,8 +85,7 @@
               mdi-check
             </v-icon>
             <span class="info-text text-body-3 confirmed-icon ml-2">
-              The company has completed a set Benefit Company Articles containing a benefit provision, and a copy of
-              these articles has been added to the company's record book.
+              {{ updatedArticleInfo }}
             </span>
           </div>
         </template>
@@ -117,85 +119,15 @@
         <!-- BC Registry Contacts -->
         <BcRegContacts :direction="'col'" />
 
-        <template v-if="isBenefit">
-          <div class="my-6">
-            <p class="subtitle">
-              Benefit Company Articles
-            </p>
-            <p class="info-text">
-              Before submitting your alteration notice you <span class="font-weight-bold">must
-                change your company's articles to include a set of Benefit Company Articles</span> OR draft new articles
-              containing a benefit provision.
-            </p>
-          </div>
-
-          <section class="text-body-3">
-            <!-- Help Section Toggle -->
-            <div
-              class="info-text help-toggle pt-2"
-              @click="helpToggle = !helpToggle"
-            >
-              <v-icon
-                class="pr-2 mt-n2"
-                color="primary"
-              >
-                mdi-help-circle-outline
-              </v-icon>
-              <span v-if="!helpToggle">Learn More</span>
-              <span v-else>Hide Learn More</span>
-            </div>
-
-            <!-- Help Section -->
-            <section
-              v-show="helpToggle"
-              class="mx-8 my-7"
-            >
-              <p class="subtitle mb-2">
-                Benefit Provision
-              </p>
-              <p class="info-text">
-                A benefit company must include a benefit provision (a statement by the company of its public benefits
-                and its commitments to promote those public benefits and to conduct business in a responsible and
-                sustainable manner) in the company's articles. The benefit provision can be added as part of the
-                company's existing articles or as part of new articles.
-              </p>
-              <div class="provision-help">
-                <p class="subtitle">
-                  Part 1 - Benefit Provision
-                </p>
-                <ol class="info-text ml-2 pl-0">
-                  <li style="list-style:none;">
-                    <ol>
-                      <li class="mb-4">
-                        <span class="ml-4">The Company commits to promote the following public benefits:</span><br>
-                        <span class="ml-2">[List your public benefits in this section]</span>
-                      </li>
-                      <li>
-                        <span class="ml-4">The Company commits</span>
-                        <br>
-                        <div class="ml-5">
-                          <span class="ml-n3">i) to conduct the benefit company's business in a responsible and
-                            sustainable manner;</span>
-                          <br>
-                          <span class="ml-n3">ii) to promote the public benefits specific in paragraph 1.1</span>
-                        </div>
-                      </li>
-                    </ol>
-                  </li>
-                </ol>
-              </div>
-            </section>
-
-            <!-- Confirm Articles Checkbox -->
-            <div class="pr-2">
-              <v-checkbox
-                id="confirm-articles-checkbox"
-                v-model="confirmArticles"
-                :label="confirmLabel"
-              />
-            </div>
-          </section>
-        </template>
+        <BcRegComments
+          :isBenefit="isBenefit"
+          :isUnlimitedLiability="isUnlimitedLiability"
+          :isCommunityContribution="isCommunityContribution"
+          :isBcLimited="isBcLimited"
+          :selectedEntityType="selectedEntityType"
+          :confirmArticles="confirmArticles"
+          @update:confirmArticles="confirmArticles = $event"
+        />
 
         <!-- Done Actions -->
         <div class="action-btns">
@@ -242,7 +174,7 @@
             <span>Undo</span>
           </v-btn>
           <v-btn
-            v-else-if="isBcCompany"
+            v-else-if="isBcCompany || isBcUlcCompany || isBenefitCompany"
             id="btn-correct-business-type"
             text
             color="primary"
@@ -300,15 +232,17 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { BcRegContacts } from '@/components/common/'
+import { BcRegContacts, BcRegComments } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { entityTypeInfo } from '@/enums/'
 import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 
 @Component({
   components: {
-    BcRegContacts
+    BcRegContacts,
+    BcRegComments
   }
 })
 export default class ChangeBusinessType extends Mixins(CommonMixin) {
@@ -324,20 +258,23 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getResource!: ResourceIF
+  @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) hasBusinessTypeChanged!: boolean
   @Getter(useStore) isBcCompany!: boolean
+  @Getter(useStore) isBenefitCompany!: boolean
+  @Getter(useStore) isBcUlcCompany!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isNumberedCompany!: boolean
 
   @Action(useStore) setEntityType!: ActionBindingIF
+  @Action(useStore) setNameRequest!: ActionBindingIF
+  @Action(useStore) setNameChangedByType!: ActionBindingIF
 
-  protected selectedEntityType = null as CorpTypeCd
+  selectedEntityType = null as CorpTypeCd
   protected confirmArticles = false
   protected helpToggle = false
   protected isEditingType = false
   protected dropdown: boolean = null
-
-  readonly confirmLabel = `The company has completed a set Benefit Company Articles containing a benefit
-    provision, and a copy of these articles has been added to company's record book.`
 
   /** Called when component is mounted. */
   mounted (): void {
@@ -356,8 +293,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     this.confirmArticles = false
   }
 
-  /** Entity Options. */
-  readonly entityTypeOptions = [
+  /** BC Entity Options. */
+  readonly entityTypeOptionsBC = [
     {
       value: 'BC',
       SHORT_DESC: 'BC Limited Company',
@@ -367,6 +304,49 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       value: 'BEN',
       SHORT_DESC: 'BC Benefit Company',
       text: 'BC Benefit Company'
+    },
+    {
+      value: 'ULC',
+      SHORT_DESC: 'BC Unlimited Liability Company',
+      text: 'BC Unlimited Liability Company'
+    },
+    {
+      value: 'CC',
+      SHORT_DESC: 'BC Community Contribution Company',
+      text: 'BC Community Contribution Company'
+    }
+  ]
+
+  /** BEN Entity Options. */
+  readonly entityTypeOptionsBEN = [
+    {
+      value: 'BEN',
+      SHORT_DESC: 'BC Benefit Company',
+      text: 'BC Benefit Company'
+    },
+    {
+      value: 'BC',
+      SHORT_DESC: 'BC Limited Company',
+      text: 'BC Limited Company'
+    },
+    {
+      value: 'CC',
+      SHORT_DESC: 'BC Community Contribution Company',
+      text: 'BC Community Contribution Company'
+    }
+  ]
+
+  /** ULC Entity Options. */
+  readonly entityTypeOptionsULC = [
+    {
+      value: 'ULC',
+      SHORT_DESC: 'BC Unlimited Liability Company',
+      text: 'BC Unlimited Liability Company'
+    },
+    {
+      value: 'BC',
+      SHORT_DESC: 'BC Limited Company',
+      text: 'BC Limited Company'
     }
   ]
 
@@ -376,19 +356,34 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       (this.getNameRequestLegalName !== this.getEntitySnapshot?.businessInfo?.legalName)
   }
 
-  /** Check if current entity selection is a Benefit Company */
-  get isBenefit (): boolean {
-    return (this.selectedEntityType === CorpTypeCd.BENEFIT_COMPANY)
-  }
-
   /** Type change helper information */
   get typeChangeInfo (): string {
     return this.getResource.changeData?.typeChangeInfo
   }
 
+  /** Entity type options based on the company type */
+  get entityTypeOptions (): Array<{ value: string, SHORT_DESC: string, text: string }> {
+    if (this.isBcCompany) {
+      return this.entityTypeOptionsBC
+    } else if (this.isBenefitCompany) {
+      return this.entityTypeOptionsBEN
+    } else if (this.isBcUlcCompany) {
+      return this.entityTypeOptionsULC
+    } else {
+      return [] // default value when none of the conditions are met
+    }
+  }
+
   /** Reset company type values to original. */
   protected resetType () {
     this.setEntityType(this.getEntitySnapshot?.businessInfo?.legalType)
+    // reset name request
+    this.setNameRequest({
+      legalType: this.getEntitySnapshot?.businessInfo?.legalType,
+      legalName: this.getEntitySnapshot?.businessInfo?.legalName,
+      nrNumber: this.getEntitySnapshot?.businessInfo?.nrNumber
+    })
+    this.setNameChangedByType(false)
     this.isEditingType = false
     this.confirmArticles = false
   }
@@ -397,6 +392,64 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   protected submitTypeChange () {
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
+
+    if (this.shouldUpdateName()) {
+      const originalName = this.getEntitySnapshot?.businessInfo.legalName
+      const updatedName = this.getUpdatedName(originalName)
+
+      if (originalName !== updatedName) {
+        const nameRequest = {
+          legalType: this.selectedEntityType,
+          legalName: updatedName,
+          nrNumber: this.getEntitySnapshot?.businessInfo?.nrNumber
+        }
+
+        this.setNameRequest(nameRequest)
+        this.setNameChangedByType(true)
+      }
+    }
+  }
+
+  private shouldUpdateName (): boolean {
+    return this.isNumberedCompany && !this.hasBusinessNameChanged
+  }
+
+  private getUpdatedName (originalName: string): string {
+    if (this.isUnlimitedLiability || this.isCommunityContribution) {
+      return originalName.endsWith(' LTD.') ? originalName : originalName + ' LTD.'
+    } else if (this.isBcLimited && this.isBcUlcCompany) {
+      return originalName.replace(/\sLTD\.$/, '')
+    }
+
+    return originalName
+  }
+
+  /** Check if current entity selection is a Benefit Company */
+  get isBenefit (): boolean {
+    return (this.selectedEntityType === CorpTypeCd.BENEFIT_COMPANY)
+  }
+
+  /** Check if current entity selection is a Unlimited Liability Company */
+  get isUnlimitedLiability (): boolean {
+    return (this.selectedEntityType === CorpTypeCd.BC_ULC_COMPANY)
+  }
+
+  /** Check if current entity selection is a Community Contribution Company */
+  get isCommunityContribution (): boolean {
+    return (this.selectedEntityType === CorpTypeCd.BC_CCC)
+  }
+
+  /** Check if current entity selection is a Benefit Company */
+  get isBcLimited (): boolean {
+    return (this.selectedEntityType === CorpTypeCd.BC_COMPANY)
+  }
+
+  get updatedArticleTitle (): string {
+    return entityTypeInfo[this.selectedEntityType]?.title || ''
+  }
+
+  get updatedArticleInfo (): string {
+    return entityTypeInfo[this.selectedEntityType]?.info || ''
   }
 
   @Watch('isEditingType')
@@ -409,25 +462,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-.v-icon {
+:deep(.v-icon) {
   line-height: 1.5rem
-}
-
-ol {
-  counter-reset: item;
-
-  > li {
-    counter-increment: item;
-  }
-
-  ol > li {
-    display: block;
-  }
-
-  ol > li:before {
-    content: counters(item, ".");
-    margin-left: -32px;
-  }
 }
 
 .confirmed-msg {
@@ -435,19 +471,6 @@ ol {
   .confirmed-icon, .confirmed-note {
     display: block;
   }
-}
-
-.help-toggle {
-  color: $app-blue;
-
-  :hover {
-    cursor: pointer;
-  }
-}
-
-.provision-help {
-  padding: 40px;
-  background-color: $gray1;
 }
 
 .actions {
