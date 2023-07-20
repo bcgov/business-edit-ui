@@ -43,8 +43,7 @@
 
           <!-- Business Type Info -->
           <template
-            v-if="!hasNewNr && hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling ||
-              isFirmConversionFiling) && !isNameChangedByType"
+            v-if="shouldShowTypeDetail"
           >
             <div class="company-info mt-4">
               <span class="subtitle">Business Type: </span>
@@ -133,8 +132,7 @@
           <div class="actions mr-4">
             <!-- FUTURE: only show buttons for named company -->
             <v-btn
-              v-if="(hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling ||
-                isFirmChangeFiling || isSpecialResolutionFiling))) && !isNameChangedByType"
+              v-if="shouldShowUndoButton"
               id="btn-undo-company-name"
               text
               color="primary"
@@ -159,8 +157,7 @@
               <span>{{ getEditLabel }}</span>
             </v-btn>
             <span
-              v-if="(hasCompanyNameChanged || (hasBusinessNameChanged &&
-                (isAlterationFiling || isFirmChangeFiling || isSpecialResolutionFiling))) && !isNameChangedByType"
+              v-if="shouldShowUndoButton"
               class="more-actions"
             >
               <v-menu
@@ -295,6 +292,19 @@ export default class EntityName extends Mixins(NameRequestMixin) {
   @Action(useStore) setEditingCompanyName!: ActionBindingIF
   @Action(useStore) setNameRequest!: ActionBindingIF
   @Action(useStore) setValidComponent!: ActionBindingIF
+
+  get shouldShowUndoButton () {
+    return (this.hasCompanyNameChanged ||
+            (this.hasBusinessNameChanged &&
+             (this.isAlterationFiling || this.isFirmChangeFiling || this.isSpecialResolutionFiling))) &&
+            !this.isNameChangedByType
+  }
+
+  get shouldShowTypeDetail () {
+    return !this.hasNewNr && this.hasBusinessNameChanged &&
+           (this.isAlterationFiling || this.isFirmChangeFiling || this.isFirmConversionFiling) &&
+           !this.isNameChangedByType
+  }
 
   // local properties
   dropdown = false // v-model for dropdown menu

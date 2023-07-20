@@ -1,7 +1,7 @@
 import Vuetify from 'vuetify'
 import { mount, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { BcRegComments } from '@/components/common'
+import { BcRegEntityDetails } from '@/components/common'
 import HelpSectionToggle from '@/components/common/HelpSectionToggle.vue'
 
 const vuetify = new Vuetify({})
@@ -10,15 +10,15 @@ setActivePinia(createPinia())
 
 describe('BC Reg Comments component', () => {
   it('renders itself', () => {
-    const wrapper = mount(BcRegComments, { vuetify })
+    const wrapper = mount(BcRegEntityDetails, { vuetify })
 
-    expect(wrapper.findComponent(BcRegComments).exists()).toBe(true)
+    expect(wrapper.findComponent(BcRegEntityDetails).exists()).toBe(true)
 
     wrapper.destroy()
   })
 
   it('toggles the help section when clicked', async () => {
-    const wrapper = shallowMount(BcRegComments, {
+    const wrapper = shallowMount(BcRegEntityDetails, {
       propsData: {
         confirmArticles: true,
         isBenefit: true,
@@ -57,7 +57,7 @@ describe('BC Reg Comments component', () => {
   test.each(typeCommentTests)(
     'renders the component correctly for different entity types',
     (propsData, expectedTitle) => {
-      const wrapper = shallowMount(BcRegComments, { propsData })
+      const wrapper = shallowMount(BcRegEntityDetails, { propsData })
 
       expect(wrapper.find('.subtitle').text()).toBe(expectedTitle)
       expect(wrapper.find('.info-text').exists()).toBe(true)

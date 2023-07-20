@@ -16,7 +16,32 @@ export const BcAlterationResource: ResourceIF = {
     correctNameOptions: [
       CorrectNameOptions.CORRECT_NEW_NR,
       CorrectNameOptions.CORRECT_NAME_TO_NUMBER
-    ]
+    ],
+    entityTypeOptions: [
+      {
+        value: 'BC',
+        SHORT_DESC: 'BC Limited Company',
+        text: 'BC Limited Company'
+      },
+      {
+        value: 'BEN',
+        SHORT_DESC: 'BC Benefit Company',
+        text: 'BC Benefit Company'
+      },
+      {
+        value: 'ULC',
+        SHORT_DESC: 'BC Unlimited Liability Company',
+        text: 'BC Unlimited Liability Company'
+      },
+      {
+        value: 'CC',
+        SHORT_DESC: 'BC Community Contribution Company',
+        text: 'BC Community Contribution Company'
+      }
+    ],
+    articleTitle: 'Limited Company Articles',
+    articleInfo: `The company has completed a set of BC LTD Company Articles, and a copy of these articles has been
+      added to company's record book.`
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +
     'of a material fact in a record submitted to the Corporate Registry for filing. ' +

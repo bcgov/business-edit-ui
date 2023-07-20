@@ -16,7 +16,22 @@ export const UlcAlterationResource: ResourceIF = {
     correctNameOptions: [
       CorrectNameOptions.CORRECT_NEW_NR,
       CorrectNameOptions.CORRECT_NAME_TO_NUMBER
-    ]
+    ],
+    entityTypeOptions: [
+      {
+        value: 'ULC',
+        SHORT_DESC: 'BC Unlimited Liability Company',
+        text: 'BC Unlimited Liability Company'
+      },
+      {
+        value: 'BC',
+        SHORT_DESC: 'BC Limited Company',
+        text: 'BC Limited Company'
+      }
+    ],
+    articleTitle: 'Unlimited Liability Company Articles',
+    articleInfo: `The company has completed a set of Unlimited Liability Company Articles containing a liability
+      provision, and a copy of these articles has been added to company's record book.`
   },
   certifyClause: 'Note: It is an offence to make a false or misleading statement in respect ' +
     'of a material fact in a record submitted to the Corporate Registry for filing. ' +

@@ -33,7 +33,7 @@
             sustainable manner) in the company's articles. The benefit provision can be added as part of the
             company's existing articles or as part of new articles.
           </p>
-          <div class="provision-help">
+          <div class="provision-help p-10">
             <p class="subtitle">
               Part 1 - Benefit Provision
             </p>
@@ -103,7 +103,7 @@
             satisfy all debts and liabilities of the company. An Unlimited Liability Company must
             include a Liability Provision in its Articles.
           </p>
-          <div class="provision-help">
+          <div class="provision-help p-10">
             <span class="info-text">
               Refer to <span class="font-weight-bold">
                 sections 51.31, 257 and 259 of the Business Corporations Act. </span>
@@ -157,7 +157,7 @@
             restrictions in its ability to pay dividends and distribute assets. A Community Contribution
             Company must include a community provision in its Articles.
           </p>
-          <div class="provision-help">
+          <div class="provision-help p-10">
             <span class="info-text">
               TEXT FOR RELATED LEGISLATION
             </span>
@@ -205,7 +205,7 @@
             Articles should outline the rules and procedures for corporate matters such as holding meetings,
             issuing and transferring shares, and duties of directors and officers.
           </p>
-          <div class="provision-help">
+          <div class="provision-help p-10">
             <span class="info-text">
               Refer to <span class="font-weight-bold">
                 sections 51.4, 257 and 259 of the Business Corporations Act. </span>
@@ -231,18 +231,17 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
 import HelpSectionToggle from '@/components/common/HelpSectionToggle.vue'
-import { entityTypeInfo } from '@/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/enums'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { EntityTypeMixin } from '@/mixins'
 
 @Component({
   components: {
     HelpSectionToggle
   }
 })
-export default class BcRegComments extends Vue {
+export default class BcRegEntityDetails extends Mixins(EntityTypeMixin) {
   @Prop({ default: false }) readonly confirmArticles!: boolean
   @Prop({ default: false }) readonly isBenefit!: boolean
   @Prop({ default: false }) readonly isUnlimitedLiability!: boolean
@@ -252,10 +251,10 @@ export default class BcRegComments extends Vue {
 
   protected helpToggle = false
 
-  data () {
-    return {
-      localConfirmArticles: this.confirmArticles
-    }
+  localConfirmArticles = false
+
+  mounted () {
+    this.localConfirmArticles = this.confirmArticles
   }
 
   // Watch for changes to confirmArticles prop
@@ -271,11 +270,11 @@ export default class BcRegComments extends Vue {
   }
 
   get confirmLabel (): string {
-    return entityTypeInfo[this.selectedEntityType]?.info || ''
+    return this.articleInfo(this.selectedEntityType)
   }
 
   get updatedArticleTitle (): string {
-    return entityTypeInfo[this.selectedEntityType]?.title || ''
+    return this.articleTitle(this.selectedEntityType)
   }
 }
 </script>
@@ -305,7 +304,6 @@ ol {
   }
 }
 .provision-help {
-  padding: 40px;
   background-color: $gray1;
 }
 </style>

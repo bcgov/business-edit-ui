@@ -119,7 +119,7 @@
         <!-- BC Registry Contacts -->
         <BcRegContacts :direction="'col'" />
 
-        <BcRegComments
+        <BcRegEntityDetails
           :isBenefit="isBenefit"
           :isUnlimitedLiability="isUnlimitedLiability"
           :isCommunityContribution="isCommunityContribution"
@@ -232,20 +232,19 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { BcRegContacts, BcRegComments } from '@/components/common/'
-import { CommonMixin } from '@/mixins/'
+import { BcRegContacts, BcRegEntityDetails } from '@/components/common/'
+import { CommonMixin, EntityTypeMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
-import { entityTypeInfo } from '@/enums/'
-import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
+import { ActionBindingIF, EntitySnapshotIF, EntityTypeOption, ResourceIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 
 @Component({
   components: {
     BcRegContacts,
-    BcRegComments
+    BcRegEntityDetails
   }
 })
-export default class ChangeBusinessType extends Mixins(CommonMixin) {
+export default class ChangeBusinessType extends Mixins(CommonMixin, EntityTypeMixin) {
   // for template
   readonly GetCorpFullDescription = GetCorpFullDescription
 
@@ -271,10 +270,9 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Action(useStore) setNameChangedByType!: ActionBindingIF
 
   selectedEntityType = null as CorpTypeCd
-  protected confirmArticles = false
-  protected helpToggle = false
-  protected isEditingType = false
-  protected dropdown: boolean = null
+  confirmArticles = false
+  isEditingType = false
+  dropdown: boolean = null
 
   /** Called when component is mounted. */
   mounted (): void {
@@ -293,63 +291,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     this.confirmArticles = false
   }
 
-  /** BC Entity Options. */
-  readonly entityTypeOptionsBC = [
-    {
-      value: 'BC',
-      SHORT_DESC: 'BC Limited Company',
-      text: 'BC Limited Company'
-    },
-    {
-      value: 'BEN',
-      SHORT_DESC: 'BC Benefit Company',
-      text: 'BC Benefit Company'
-    },
-    {
-      value: 'ULC',
-      SHORT_DESC: 'BC Unlimited Liability Company',
-      text: 'BC Unlimited Liability Company'
-    },
-    {
-      value: 'CC',
-      SHORT_DESC: 'BC Community Contribution Company',
-      text: 'BC Community Contribution Company'
-    }
-  ]
-
-  /** BEN Entity Options. */
-  readonly entityTypeOptionsBEN = [
-    {
-      value: 'BEN',
-      SHORT_DESC: 'BC Benefit Company',
-      text: 'BC Benefit Company'
-    },
-    {
-      value: 'BC',
-      SHORT_DESC: 'BC Limited Company',
-      text: 'BC Limited Company'
-    },
-    {
-      value: 'CC',
-      SHORT_DESC: 'BC Community Contribution Company',
-      text: 'BC Community Contribution Company'
-    }
-  ]
-
-  /** ULC Entity Options. */
-  readonly entityTypeOptionsULC = [
-    {
-      value: 'ULC',
-      SHORT_DESC: 'BC Unlimited Liability Company',
-      text: 'BC Unlimited Liability Company'
-    },
-    {
-      value: 'BC',
-      SHORT_DESC: 'BC Limited Company',
-      text: 'BC Limited Company'
-    }
-  ]
-
   /** Verify New Business name. */
   get isNewName (): boolean {
     return this.getNameRequestLegalName &&
@@ -362,16 +303,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   /** Entity type options based on the company type */
-  get entityTypeOptions (): Array<{ value: string, SHORT_DESC: string, text: string }> {
-    if (this.isBcCompany) {
-      return this.entityTypeOptionsBC
-    } else if (this.isBenefitCompany) {
-      return this.entityTypeOptionsBEN
-    } else if (this.isBcUlcCompany) {
-      return this.entityTypeOptionsULC
-    } else {
-      return [] // default value when none of the conditions are met
-    }
+  get entityTypeOptions (): EntityTypeOption[] {
+    return this.getResource.changeData?.entityTypeOptions
   }
 
   /** Reset company type values to original. */
@@ -410,11 +343,11 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     }
   }
 
-  private shouldUpdateName (): boolean {
+  shouldUpdateName (): boolean {
     return this.isNumberedCompany && !this.hasBusinessNameChanged
   }
 
-  private getUpdatedName (originalName: string): string {
+  getUpdatedName (originalName: string): string {
     if (this.isUnlimitedLiability || this.isCommunityContribution) {
       return originalName.endsWith(' LTD.') ? originalName : originalName + ' LTD.'
     } else if (this.isBcLimited && this.isBcUlcCompany) {
@@ -444,12 +377,12 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     return (this.selectedEntityType === CorpTypeCd.BC_COMPANY)
   }
 
-  get updatedArticleTitle (): string {
-    return entityTypeInfo[this.selectedEntityType]?.title || ''
+  get updatedArticleInfo (): string {
+    return this.articleInfo(this.selectedEntityType)
   }
 
-  get updatedArticleInfo (): string {
-    return entityTypeInfo[this.selectedEntityType]?.info || ''
+  get updatedArticleTitle (): string {
+    return this.articleTitle(this.selectedEntityType)
   }
 
   @Watch('isEditingType')
