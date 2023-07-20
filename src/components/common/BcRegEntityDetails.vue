@@ -231,17 +231,18 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue'
 import HelpSectionToggle from '@/components/common/HelpSectionToggle.vue'
-import { CorpTypeCd } from '@bcrs-shared-components/enums'
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { EntityTypeMixin } from '@/mixins'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
+import { Component, Prop, Watch } from 'vue-property-decorator'
+import { ResourceUtilities } from '@/utils'
 
 @Component({
   components: {
     HelpSectionToggle
   }
 })
-export default class BcRegEntityDetails extends Mixins(EntityTypeMixin) {
+export default class BcRegEntityDetails extends Vue {
   @Prop({ default: false }) readonly confirmArticles!: boolean
   @Prop({ default: false }) readonly isBenefit!: boolean
   @Prop({ default: false }) readonly isUnlimitedLiability!: boolean
@@ -270,11 +271,11 @@ export default class BcRegEntityDetails extends Mixins(EntityTypeMixin) {
   }
 
   get confirmLabel (): string {
-    return this.articleInfo(this.selectedEntityType)
+    return ResourceUtilities.articleInfo(this.selectedEntityType)
   }
 
   get updatedArticleTitle (): string {
-    return this.articleTitle(this.selectedEntityType)
+    return ResourceUtilities.articleTitle(this.selectedEntityType)
   }
 }
 </script>

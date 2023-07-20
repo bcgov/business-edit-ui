@@ -233,9 +233,10 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { BcRegContacts, BcRegEntityDetails } from '@/components/common/'
-import { CommonMixin, EntityTypeMixin } from '@/mixins/'
+import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ActionBindingIF, EntitySnapshotIF, EntityTypeOption, ResourceIF } from '@/interfaces/'
+import { ResourceUtilities } from '@/utils'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -244,7 +245,7 @@ import { useStore } from '@/store/store'
     BcRegEntityDetails
   }
 })
-export default class ChangeBusinessType extends Mixins(CommonMixin, EntityTypeMixin) {
+export default class ChangeBusinessType extends Mixins(CommonMixin) {
   // for template
   readonly GetCorpFullDescription = GetCorpFullDescription
 
@@ -378,11 +379,11 @@ export default class ChangeBusinessType extends Mixins(CommonMixin, EntityTypeMi
   }
 
   get updatedArticleInfo (): string {
-    return this.articleInfo(this.selectedEntityType)
+    return ResourceUtilities.articleInfo(this.selectedEntityType)
   }
 
   get updatedArticleTitle (): string {
-    return this.articleTitle(this.selectedEntityType)
+    return ResourceUtilities.articleTitle(this.selectedEntityType)
   }
 
   @Watch('isEditingType')
