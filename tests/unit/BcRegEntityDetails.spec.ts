@@ -16,18 +16,6 @@ describe('BC Reg Comments component', () => {
     wrapper.destroy()
   })
 
-  it('toggles the help section when clicked', async () => {
-    const wrapper = shallowMount(BcRegEntityDetails, {
-      propsData: {
-        confirmArticles: true,
-        isBenefit: true,
-        selectedEntityType: 'BC',
-        helpToggle: true
-      }
-    })
-    expect(wrapper.find('.mx-8.my-7').isVisible()).toBe(true)
-  })
-
   const typeCommentTests: [Record<string, unknown>, string][] = [
     [{
       confirmArticles: false,

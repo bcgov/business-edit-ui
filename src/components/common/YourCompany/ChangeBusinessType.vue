@@ -126,25 +126,8 @@
           :isBcLimited="isBcLimited"
           :selectedEntityType="selectedEntityType"
           :confirmArticles="confirmArticles"
-          :helpToggle="helpToggle"
           @update:confirmArticles="confirmArticles = $event"
-        >
-          <template #toggle>
-            <div
-              class="info-text help-toggle pt-2"
-              @click="helpToggle = !helpToggle"
-            >
-              <v-icon
-                class="pr-2 mt-n1"
-                color="primary"
-              >
-                mdi-help-circle-outline
-              </v-icon>
-              <span v-if="!helpToggle">Learn More</span>
-              <span v-else>Hide Learn More</span>
-            </div>
-          </template>
-        </BcRegEntityDetails>
+        />
 
         <!-- Done Actions -->
         <div class="action-btns">
@@ -291,7 +274,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   selectedEntityType = null as CorpTypeCd
   confirmArticles = false
   isEditingType = false
-  helpToggle = false
   dropdown: boolean = null
 
   /** Called when component is mounted. */
