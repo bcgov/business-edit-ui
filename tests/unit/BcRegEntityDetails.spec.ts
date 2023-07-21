@@ -21,12 +21,10 @@ describe('BC Reg Comments component', () => {
       propsData: {
         confirmArticles: true,
         isBenefit: true,
-        selectedEntityType: 'BC'
+        selectedEntityType: 'BC',
+        helpToggle: true
       }
     })
-
-    expect(wrapper.find('.mx-8.my-7').isVisible()).toBe(false)
-    await wrapper.find('.help-toggle').trigger('click')
     expect(wrapper.find('.mx-8.my-7').isVisible()).toBe(true)
   })
 

@@ -14,19 +14,7 @@
 
       <section class="text-body-3">
         <!-- Help Section Toggle -->
-        <div
-          class="info-text help-toggle pt-2"
-          @click="helpToggle = !helpToggle"
-        >
-          <v-icon
-            class="pr-2 mt-n1"
-            color="primary"
-          >
-            mdi-help-circle-outline
-          </v-icon>
-          <span v-if="!isHelpVisible">Learn More</span>
-          <span v-else>Hide Learn More</span>
-        </div>
+        <slot name="toggle" />
 
         <!-- Help Section -->
         <section
@@ -94,19 +82,7 @@
 
       <section class="text-body-3">
         <!-- Help Section Toggle -->
-        <div
-          class="info-text help-toggle pt-2"
-          @click="helpToggle = !helpToggle"
-        >
-          <v-icon
-            class="pr-2 mt-n1"
-            color="primary"
-          >
-            mdi-help-circle-outline
-          </v-icon>
-          <span v-if="!isHelpVisible">Learn More</span>
-          <span v-else>Hide Learn More</span>
-        </div>
+        <slot name="toggle" />
 
         <!-- Help Section -->
         <section
@@ -157,19 +133,7 @@
 
       <section class="text-body-3">
         <!-- Help Section Toggle -->
-        <div
-          class="info-text help-toggle pt-2"
-          @click="helpToggle = !helpToggle"
-        >
-          <v-icon
-            class="pr-2 mt-n1"
-            color="primary"
-          >
-            mdi-help-circle-outline
-          </v-icon>
-          <span v-if="!isHelpVisible">Learn More</span>
-          <span v-else>Hide Learn More</span>
-        </div>
+        <slot name="toggle" />
 
         <!-- Help Section -->
         <section
@@ -215,19 +179,7 @@
 
       <section class="text-body-3">
         <!-- Help Section Toggle -->
-        <div
-          class="info-text help-toggle pt-2"
-          @click="helpToggle = !helpToggle"
-        >
-          <v-icon
-            class="pr-2 mt-n1"
-            color="primary"
-          >
-            mdi-help-circle-outline
-          </v-icon>
-          <span v-if="!isHelpVisible">Learn More</span>
-          <span v-else>Hide Learn More</span>
-        </div>
+        <slot name="toggle" />
 
         <!-- Help Section -->
         <section
@@ -280,8 +232,7 @@ export default class BcRegEntityDetails extends Vue {
   @Prop({ default: false }) readonly isCommunityContribution!: boolean
   @Prop({ default: false }) readonly isBcLimited!: boolean
   @Prop({ default: '' }) readonly selectedEntityType: CorpTypeCd
-
-  protected helpToggle = false
+  @Prop({ default: false }) readonly helpToggle!: boolean
 
   localConfirmArticles = false
 

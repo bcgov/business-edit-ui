@@ -126,8 +126,25 @@
           :isBcLimited="isBcLimited"
           :selectedEntityType="selectedEntityType"
           :confirmArticles="confirmArticles"
+          :helpToggle="helpToggle"
           @update:confirmArticles="confirmArticles = $event"
-        />
+        >
+          <template #toggle>
+            <div
+              class="info-text help-toggle pt-2"
+              @click="helpToggle = !helpToggle"
+            >
+              <v-icon
+                class="pr-2 mt-n1"
+                color="primary"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+              <span v-if="!isHelpVisible">Learn More</span>
+              <span v-else>Hide Learn More</span>
+            </div>
+          </template>
+        </BcRegEntityDetails>
 
         <!-- Done Actions -->
         <div class="action-btns">
@@ -274,7 +291,9 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   selectedEntityType = null as CorpTypeCd
   confirmArticles = false
   isEditingType = false
+  helpToggle = false
   dropdown: boolean = null
+  isHelpVisible: false
 
   /** Called when component is mounted. */
   mounted (): void {
@@ -398,7 +417,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 @import '@/assets/styles/theme.scss';
 
 // Using :deep to apply styles to .v-icon elements in child components.
-:deep(.v-icon) {
+.v-icon {
   line-height: 1.5rem
 }
 
