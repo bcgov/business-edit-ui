@@ -287,7 +287,6 @@ ol {
   }
 }
 .provision-help {
-  // padding: 40px;
   background-color: $gray1;
 }
 </style>
