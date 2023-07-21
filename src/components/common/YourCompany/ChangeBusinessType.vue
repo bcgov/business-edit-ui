@@ -416,7 +416,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
-// Using :deep to apply styles to .v-icon elements in child components.
 .v-icon {
   line-height: 1.5rem
 }
