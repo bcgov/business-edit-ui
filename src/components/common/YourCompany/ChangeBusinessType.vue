@@ -140,7 +140,7 @@
               >
                 mdi-help-circle-outline
               </v-icon>
-              <span v-if="!isHelpVisible">Learn More</span>
+              <span v-if="!helpToggle">Learn More</span>
               <span v-else>Hide Learn More</span>
             </div>
           </template>
@@ -293,7 +293,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   isEditingType = false
   helpToggle = false
   dropdown: boolean = null
-  isHelpVisible: false
 
   /** Called when component is mounted. */
   mounted (): void {
