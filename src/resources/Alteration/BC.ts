@@ -20,22 +20,22 @@ export const BcAlterationResource: ResourceIF = {
     entityTypeOptions: [
       {
         value: 'BC',
-        SHORT_DESC: 'BC Limited Company',
+        shortDesc: 'BC Limited Company',
         text: 'BC Limited Company'
       },
       {
         value: 'BEN',
-        SHORT_DESC: 'BC Benefit Company',
+        shortDesc: 'BC Benefit Company',
         text: 'BC Benefit Company'
       },
       {
         value: 'ULC',
-        SHORT_DESC: 'BC Unlimited Liability Company',
+        shortDesc: 'BC Unlimited Liability Company',
         text: 'BC Unlimited Liability Company'
       },
       {
         value: 'CC',
-        SHORT_DESC: 'BC Community Contribution Company',
+        shortDesc: 'BC Community Contribution Company',
         text: 'BC Community Contribution Company'
       }
     ],

@@ -232,7 +232,8 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { BcRegContacts, BcRegEntityDetails } from '@/components/common/'
+import BcRegEntityDetails from '@/components/Alteration/BcRegEntityDetails.vue'
+import { BcRegContacts } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ActionBindingIF, EntitySnapshotIF, EntityTypeOption, ResourceIF } from '@/interfaces/'
@@ -305,7 +306,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   /** Entity type options based on the company type */
   get entityTypeOptions (): EntityTypeOption[] {
-    return this.getResource.changeData?.entityTypeOptions
+    return this.getResource.changeData?.entityTypeOptions || []
   }
 
   /** Reset company type values to original. */
@@ -373,7 +374,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     return (this.selectedEntityType === CorpTypeCd.BC_CCC)
   }
 
-  /** Check if current entity selection is a Benefit Company */
+  /** Check if current entity selection is a BC Limited Company */
   get isBcLimited (): boolean {
     return (this.selectedEntityType === CorpTypeCd.BC_COMPANY)
   }
@@ -396,6 +397,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 <style lang="scss" scoped>
 @import '@/assets/styles/theme.scss';
 
+// Using :deep to apply styles to .v-icon elements in child components.
 :deep(.v-icon) {
   line-height: 1.5rem
 }

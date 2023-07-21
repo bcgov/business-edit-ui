@@ -293,14 +293,20 @@ export default class EntityName extends Mixins(NameRequestMixin) {
   @Action(useStore) setNameRequest!: ActionBindingIF
   @Action(useStore) setValidComponent!: ActionBindingIF
 
-  get shouldShowUndoButton () {
+  // Returns true if the undo button should be displayed. This is the case when the company name has changed,
+  // or the business name has changed during an alteration, firm change, or special resolution filing,
+  // and the name has not been changed by type.
+  get shouldShowUndoButton (): boolean {
     return (this.hasCompanyNameChanged ||
             (this.hasBusinessNameChanged &&
              (this.isAlterationFiling || this.isFirmChangeFiling || this.isSpecialResolutionFiling))) &&
             !this.isNameChangedByType
   }
 
-  get shouldShowTypeDetail () {
+  // Returns true if the type details should be displayed. This is the case when there is no new NR,
+  // the business name has changed, and the filing is an alteration, firm change, or firm conversion filing,
+  // and the name has not been changed by type.
+  get shouldShowTypeDetail (): boolean {
     return !this.hasNewNr && this.hasBusinessNameChanged &&
            (this.isAlterationFiling || this.isFirmChangeFiling || this.isFirmConversionFiling) &&
            !this.isNameChangedByType

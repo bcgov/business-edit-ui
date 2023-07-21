@@ -1392,7 +1392,7 @@ export const useStore = defineStore('store', {
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
     },
     setNameChangedByType (changedByType: boolean) {
-      if (changedByType) this.stateModel.tombstone.nameChangedByType = changedByType
+      this.stateModel.tombstone.nameChangedByType = changedByType
     },
     setNameTranslations (nameTranslations: NameTranslationIF[]) {
       this.stateModel.nameTranslations = nameTranslations

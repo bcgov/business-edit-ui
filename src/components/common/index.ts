@@ -1,6 +1,5 @@
 export { default as Actions } from './Actions.vue'
 export { default as BcRegContacts } from './BcRegContacts.vue'
-export { default as BcRegEntityDetails } from './BcRegEntityDetails.vue'
 export { default as CertifySection } from './CertifySection.vue'
 export { default as CompletingParty } from './CompletingParty.vue'
 export { default as CourtOrderPoa } from './CourtOrderPoa.vue'

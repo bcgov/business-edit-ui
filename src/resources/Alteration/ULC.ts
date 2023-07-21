@@ -20,12 +20,12 @@ export const UlcAlterationResource: ResourceIF = {
     entityTypeOptions: [
       {
         value: 'ULC',
-        SHORT_DESC: 'BC Unlimited Liability Company',
+        shortDesc: 'BC Unlimited Liability Company',
         text: 'BC Unlimited Liability Company'
       },
       {
         value: 'BC',
-        SHORT_DESC: 'BC Limited Company',
+        shortDesc: 'BC Limited Company',
         text: 'BC Limited Company'
       }
     ],

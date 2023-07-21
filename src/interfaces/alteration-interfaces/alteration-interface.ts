@@ -33,9 +33,3 @@ export interface AlterationIF extends CoopAlterationIF {
   contactPoint: ContactPointIF
   courtOrder?: CourtOrderIF
 }
-
-export interface EntityTypeOption {
-  value: string;
-  SHORT_DESC: string;
-  text: string;
-}

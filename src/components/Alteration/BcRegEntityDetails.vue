@@ -14,10 +14,19 @@
 
       <section class="text-body-3">
         <!-- Help Section Toggle -->
-        <HelpSectionToggle
-          :isHelpVisible="helpToggle"
-          @toggle="helpToggle = !helpToggle"
-        />
+        <div
+          class="info-text help-toggle pt-2"
+          @click="helpToggle = !helpToggle"
+        >
+          <v-icon
+            class="pr-2 mt-n1"
+            color="primary"
+          >
+            mdi-help-circle-outline
+          </v-icon>
+          <span v-if="!isHelpVisible">Learn More</span>
+          <span v-else>Hide Learn More</span>
+        </div>
 
         <!-- Help Section -->
         <section
@@ -33,7 +42,7 @@
             sustainable manner) in the company's articles. The benefit provision can be added as part of the
             company's existing articles or as part of new articles.
           </p>
-          <div class="provision-help p-10">
+          <div class="provision-help pa-10">
             <p class="subtitle">
               Part 1 - Benefit Provision
             </p>
@@ -85,10 +94,19 @@
 
       <section class="text-body-3">
         <!-- Help Section Toggle -->
-        <HelpSectionToggle
-          :isHelpVisible="helpToggle"
-          @toggle="helpToggle = !helpToggle"
-        />
+        <div
+          class="info-text help-toggle pt-2"
+          @click="helpToggle = !helpToggle"
+        >
+          <v-icon
+            class="pr-2 mt-n1"
+            color="primary"
+          >
+            mdi-help-circle-outline
+          </v-icon>
+          <span v-if="!isHelpVisible">Learn More</span>
+          <span v-else>Hide Learn More</span>
+        </div>
 
         <!-- Help Section -->
         <section
@@ -103,7 +121,7 @@
             satisfy all debts and liabilities of the company. An Unlimited Liability Company must
             include a Liability Provision in its Articles.
           </p>
-          <div class="provision-help p-10">
+          <div class="provision-help pa-10">
             <span class="info-text">
               Refer to <span class="font-weight-bold">
                 sections 51.31, 257 and 259 of the Business Corporations Act. </span>
@@ -139,10 +157,19 @@
 
       <section class="text-body-3">
         <!-- Help Section Toggle -->
-        <HelpSectionToggle
-          :isHelpVisible="helpToggle"
-          @toggle="helpToggle = !helpToggle"
-        />
+        <div
+          class="info-text help-toggle pt-2"
+          @click="helpToggle = !helpToggle"
+        >
+          <v-icon
+            class="pr-2 mt-n1"
+            color="primary"
+          >
+            mdi-help-circle-outline
+          </v-icon>
+          <span v-if="!isHelpVisible">Learn More</span>
+          <span v-else>Hide Learn More</span>
+        </div>
 
         <!-- Help Section -->
         <section
@@ -157,7 +184,7 @@
             restrictions in its ability to pay dividends and distribute assets. A Community Contribution
             Company must include a community provision in its Articles.
           </p>
-          <div class="provision-help p-10">
+          <div class="provision-help pa-10">
             <span class="info-text">
               TEXT FOR RELATED LEGISLATION
             </span>
@@ -188,10 +215,19 @@
 
       <section class="text-body-3">
         <!-- Help Section Toggle -->
-        <HelpSectionToggle
-          :isHelpVisible="helpToggle"
-          @toggle="helpToggle = !helpToggle"
-        />
+        <div
+          class="info-text help-toggle pt-2"
+          @click="helpToggle = !helpToggle"
+        >
+          <v-icon
+            class="pr-2 mt-n1"
+            color="primary"
+          >
+            mdi-help-circle-outline
+          </v-icon>
+          <span v-if="!isHelpVisible">Learn More</span>
+          <span v-else>Hide Learn More</span>
+        </div>
 
         <!-- Help Section -->
         <section
@@ -205,7 +241,7 @@
             Articles should outline the rules and procedures for corporate matters such as holding meetings,
             issuing and transferring shares, and duties of directors and officers.
           </p>
-          <div class="provision-help p-10">
+          <div class="provision-help pa-10">
             <span class="info-text">
               Refer to <span class="font-weight-bold">
                 sections 51.4, 257 and 259 of the Business Corporations Act. </span>
@@ -232,16 +268,11 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import HelpSectionToggle from '@/components/common/HelpSectionToggle.vue'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { Component, Prop, Watch } from 'vue-property-decorator'
 import { ResourceUtilities } from '@/utils'
 
-@Component({
-  components: {
-    HelpSectionToggle
-  }
-})
+@Component({})
 export default class BcRegEntityDetails extends Vue {
   @Prop({ default: false }) readonly confirmArticles!: boolean
   @Prop({ default: false }) readonly isBenefit!: boolean
@@ -305,6 +336,7 @@ ol {
   }
 }
 .provision-help {
+  // padding: 40px;
   background-color: $gray1;
 }
 </style>

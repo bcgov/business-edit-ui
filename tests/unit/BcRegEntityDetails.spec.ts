@@ -1,8 +1,7 @@
 import Vuetify from 'vuetify'
 import { mount, shallowMount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import { BcRegEntityDetails } from '@/components/common'
-import HelpSectionToggle from '@/components/common/HelpSectionToggle.vue'
+import BcRegEntityDetails from '@/components/Alteration/BcRegEntityDetails.vue'
 
 const vuetify = new Vuetify({})
 
@@ -27,8 +26,7 @@ describe('BC Reg Comments component', () => {
     })
 
     expect(wrapper.find('.mx-8.my-7').isVisible()).toBe(false)
-    await wrapper.findComponent(HelpSectionToggle).vm.$emit('toggle')
-    await wrapper.vm.$nextTick()
+    await wrapper.find('.help-toggle').trigger('click')
     expect(wrapper.find('.mx-8.my-7').isVisible()).toBe(true)
   })
 
