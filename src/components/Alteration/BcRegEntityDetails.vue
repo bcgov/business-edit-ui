@@ -279,13 +279,6 @@ ol {
     margin-left: -32px;
   }
 }
-.help-toggle {
-  color: $app-blue;
-
-  :hover {
-    cursor: pointer;
-  }
-}
 .provision-help {
   background-color: $gray1;
 }

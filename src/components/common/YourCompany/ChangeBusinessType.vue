@@ -427,6 +427,14 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 }
 
+.help-toggle {
+  color: $app-blue;
+
+  :hover {
+    cursor: pointer;
+  }
+}
+
 .actions {
   position: absolute;
   right: 0;
