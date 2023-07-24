@@ -58,3 +58,18 @@ export default class BusinessType extends Mixins(FilingTemplateMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+.confirmed-msg {
+  display: flex;
+  .confirmed-icon, .confirmed-note {
+    display: block;
+  }
+}
+
+// hide first v-divider
+.v-divider:first-of-type {
+  display: none;
+}
+</style>
