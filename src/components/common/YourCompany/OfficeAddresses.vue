@@ -576,7 +576,7 @@ import { Action, Getter } from 'pinia-class'
 import { isEmpty, isEqual } from 'lodash'
 import { DefaultAddressSchema, InBcCanadaAddressSchema } from '@/schemas/'
 import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
-import { ActionBindingIF, AddressIF, AddressesIF, FlagsCompanyInfoIF, ResourceIF } from '@/interfaces/'
+import { ActionKvIF, AddressIF, AddressesIF, FlagsCompanyInfoIF, ResourceIF } from '@/interfaces/'
 import { IsSame } from '@/utils/'
 import { AddressTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
@@ -629,9 +629,9 @@ export default class OfficeAddresses extends Mixins(CommonMixin) {
   @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global actions
-  @Action(useStore) setEditingOfficeAddresses!: ActionBindingIF
-  @Action(useStore) setOfficeAddresses!: ActionBindingIF
-  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setEditingOfficeAddresses!: (x: boolean) => void
+  @Action(useStore) setOfficeAddresses!: (x: AddressesIF) => void
+  @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // Declarations for template
   readonly isEmpty = isEmpty

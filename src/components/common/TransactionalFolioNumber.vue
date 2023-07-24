@@ -54,7 +54,7 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
-import { ActionBindingIF, FlagsReviewCertifyIF, FormFieldType } from '@/interfaces/'
+import { FlagsReviewCertifyIF, FormFieldType } from '@/interfaces/'
 import { VuetifyRuleFunction } from '@/types'
 
 import { useStore } from '@/store/store'
@@ -72,8 +72,8 @@ export default class TransactionalFolioNumber extends Mixins(CommonMixin) {
   @Getter(useStore) getFlagsReviewCertify!: FlagsReviewCertifyIF
 
   // Global actions
-  @Action(useStore) setTransactionalFolioNumber!: ActionBindingIF
-  @Action(useStore) setTransactionalFolioNumberValidity!: ActionBindingIF
+  @Action(useStore) setTransactionalFolioNumber!: (x: string) => void
+  @Action(useStore) setTransactionalFolioNumberValidity!: (x: boolean) => void
 
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber!: string

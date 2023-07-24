@@ -21,7 +21,7 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { ActionBindingIF, EntitySnapshotIF, FlagsCompanyInfoIF } from '@/interfaces/'
+import { ActionKvIF, EntitySnapshotIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
 import { FolioNumber as FolioNumberShared } from '@bcrs-shared-components/folio-number/'
@@ -49,9 +49,9 @@ export default class FolioInformation extends Mixins(CommonMixin) {
   @Getter(useStore) isSpecialResolutionFiling!: boolean
 
   // Global setters
-  @Action(useStore) setFolioNumber!: ActionBindingIF
-  @Action(useStore) setTransactionalFolioNumber!: ActionBindingIF
-  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setFolioNumber!: (x: string) => void
+  @Action(useStore) setTransactionalFolioNumber!: (x: string) => void
+  @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // local properties
   protected isEditingFolioNumber = false

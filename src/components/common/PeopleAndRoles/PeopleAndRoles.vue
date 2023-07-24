@@ -291,7 +291,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { cloneDeep, isEmpty } from 'lodash'
 import { IsSame } from '@/utils/'
-import { ActionBindingIF, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF, OrgPersonIF, ResourceIF,
+import { ActionKvIF, EmptyOrgPerson, EntitySnapshotIF, HelpSectionIF, OrgPersonIF, ResourceIF,
   RoleIF } from '@/interfaces/'
 import { ActionTypes, CompareModes, PartyTypes, RoleTypes } from '@/enums/'
 import { HelpSection } from '@/components/common/'
@@ -334,11 +334,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter(useStore) isSoleProp!: boolean
 
   // Global actions
-  @Action(useStore) setEditingPeopleAndRoles!: ActionBindingIF
-  @Action(useStore) setPeopleAndRoles!: ActionBindingIF
-  @Action(useStore) setPeopleAndRolesChanged!: ActionBindingIF
-  @Action(useStore) setPeopleAndRolesValidity!: ActionBindingIF
-  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setEditingPeopleAndRoles!: (x: boolean) => void
+  @Action(useStore) setPeopleAndRoles!: (x: OrgPersonIF[]) => void
+  @Action(useStore) setPeopleAndRolesChanged!: (x: boolean) => void
+  @Action(useStore) setPeopleAndRolesValidity!: (x: boolean) => void
+  @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // Local properties
   isAddingEditingOrgPerson = false

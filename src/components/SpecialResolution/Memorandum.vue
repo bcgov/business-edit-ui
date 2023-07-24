@@ -255,7 +255,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { HelpSection } from '@/components/common/'
-import { ActionBindingIF, EntitySnapshotIF, RulesMemorandumIF } from '@/interfaces'
+import { EntitySnapshotIF, RulesMemorandumIF } from '@/interfaces'
 import DateUtilities from '@/services/date-utilities'
 import { FormIF } from '@bcrs-shared-components/interfaces'
 import { Component, Watch } from 'vue-property-decorator'
@@ -276,9 +276,9 @@ export default class Memorandum extends Vue {
   @Getter(useStore) getSpecialResolutionMemorandum!: RulesMemorandumIF
   @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
 
-  @Action(useStore) setEditingMemorandum!: ActionBindingIF
-  @Action(useStore) setSpecialResolutionMemorandumValid!: ActionBindingIF
-  @Action(useStore) setSpecialResolutionMemorandum!: ActionBindingIF
+  @Action(useStore) setEditingMemorandum!: (x: boolean) => void
+  @Action(useStore) setSpecialResolutionMemorandumValid!: (x: boolean) => void
+  @Action(useStore) setSpecialResolutionMemorandum!: (x: RulesMemorandumIF) => void
 
   $refs!: {
     memorandumForm: FormIF

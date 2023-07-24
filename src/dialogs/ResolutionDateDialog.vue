@@ -60,7 +60,6 @@ import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { cloneDeep } from 'lodash'
-import { ActionBindingIF } from '@/interfaces/'
 import { DateMixin } from '@/mixins/'
 import { useStore } from '@/store/store'
 
@@ -82,7 +81,7 @@ export default class ResolutionDateDialog extends Mixins(DateMixin) {
   @Getter(useStore) getNewResolutionDates!: string []
 
   // Global action
-  @Action(useStore) setNewResolutionDates!: ActionBindingIF
+  @Action(useStore) setNewResolutionDates!: (x: string[]) => void
 
   // Local properties
   private date = ''

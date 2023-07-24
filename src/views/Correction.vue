@@ -15,7 +15,7 @@ import { Action, Getter } from 'pinia-class'
 import { GetFeatureFlag } from '@/utils/'
 import { CommonMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
-import { ActionBindingIF, CorrectionFilingIF } from '@/interfaces/'
+import { CorrectionFilingIF } from '@/interfaces/'
 import { FilingStatus, FilingTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -46,8 +46,8 @@ export default class Correction extends Mixins(CommonMixin) {
   @Getter(useStore) isFirm!: boolean
 
   // Global actions
-  @Action(useStore) setFilingId!: ActionBindingIF
-  @Action(useStore) setEntityType!: ActionBindingIF
+  @Action(useStore) setFilingId!: (x: number) => void
+  @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
 
   correctionFiling = null as CorrectionFilingIF
 

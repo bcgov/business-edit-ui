@@ -70,7 +70,7 @@ import { Actions, EntityInfo } from '@/components/common/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { LegalServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
-import { FilingDataIF, ActionBindingIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
+import { FilingDataIF, ConfirmDialogType, FlagsReviewCertifyIF, FlagsCompanyInfoIF,
   AlterationFilingIF, ChgRegistrationFilingIF, ConversionFilingIF, RestorationFilingIF,
   SpecialResolutionFilingIF } from '@/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
@@ -116,12 +116,12 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
   @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action(useStore) setAppValidate!: ActionBindingIF
-  @Action(useStore) setComponentValidate!: ActionBindingIF
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
-  @Action(useStore) setIsFilingPaying!: ActionBindingIF
-  @Action(useStore) setIsSaving!: ActionBindingIF
-  @Action(useStore) setSummaryMode!: ActionBindingIF
+  @Action(useStore) setAppValidate!: (x: boolean) => void
+  @Action(useStore) setComponentValidate!: (x: boolean) => void
+  @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
+  @Action(useStore) setIsFilingPaying!: (x: boolean) => void
+  @Action(useStore) setIsSaving!: (x: boolean) => void
+  @Action(useStore) setSummaryMode!: (x: boolean) => void
 
   // Local properties
   protected accountAuthorizationDialog = false

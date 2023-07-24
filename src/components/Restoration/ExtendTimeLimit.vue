@@ -60,7 +60,7 @@ import Actions from '@/components/common/Actions.vue'
 import { DateMixin } from '@/mixins'
 import DateUtilities from '@/services/date-utilities'
 import { LimitedRestorationPanel } from '@bcrs-shared-components/limited-restoration-panel'
-import { ActionBindingIF, StateFilingRestorationIF } from '@/interfaces'
+import { CourtOrderIF, StateFilingRestorationIF } from '@/interfaces'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -78,10 +78,10 @@ export default class ExtendTimeLimit extends Mixins(DateMixin) {
   @Getter(useStore) getRestorationExpiryDate!: string
   @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
 
-  @Action(useStore) setApprovalTypeValid!: ActionBindingIF
-  @Action(useStore) setExpiryValid!: ActionBindingIF
-  @Action(useStore) setRestorationCourtOrder!: ActionBindingIF
-  @Action(useStore) setRestorationExpiryDate!: ActionBindingIF
+  @Action(useStore) setApprovalTypeValid!: (x: boolean) => void
+  @Action(useStore) setExpiryValid!: (x: boolean) => void
+  @Action(useStore) setRestorationCourtOrder!: (x: CourtOrderIF) => void
+  @Action(useStore) setRestorationExpiryDate!: (x: string) => void
 
   /** Whether to show the Approval Type component. */
   get showApprovalType (): boolean {

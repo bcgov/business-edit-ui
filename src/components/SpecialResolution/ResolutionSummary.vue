@@ -149,7 +149,7 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { ActionBindingIF, FormIF, EntitySnapshotIF } from '@/interfaces/'
+import { FormIF, EntitySnapshotIF } from '@/interfaces/'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
@@ -168,8 +168,8 @@ export default class ResolutionSummary extends Mixins(CommonMixin, DateMixin) {
   @Getter(useStore) getSpecialResolutionConfirmValid!: boolean
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
 
-  @Action(useStore) setSpecialResolution!: ActionBindingIF
-  @Action(useStore) setSpecialResolutionConfirmStateValidity!: ActionBindingIF
+  @Action(useStore) setSpecialResolution!: (x: SpecialResolutionIF) => void
+  @Action(useStore) setSpecialResolutionConfirmStateValidity!: (x: boolean) => void
 
   // Refs
   $refs!: {

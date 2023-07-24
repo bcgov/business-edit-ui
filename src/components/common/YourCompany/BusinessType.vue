@@ -15,7 +15,7 @@
 import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { ActionBindingIF } from '@/interfaces/'
+import { ActionKvIF } from '@/interfaces/'
 import ChangeBusinessType from '@/components/common/YourCompany/ChangeBusinessType.vue'
 import { useStore } from '@/store/store'
 
@@ -29,7 +29,7 @@ export default class BusinessType extends Vue {
   @Getter(useStore) getComponentValidate!: boolean
 
   // global setters
-  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // local variable
   protected isEditingType = false

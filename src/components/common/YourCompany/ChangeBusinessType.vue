@@ -262,7 +262,7 @@ import BcRegEntityDetails from '@/components/Alteration/BcRegEntityDetails.vue'
 import { BcRegContacts } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
-import { ActionBindingIF, EntitySnapshotIF, EntityTypeOption, ResourceIF } from '@/interfaces/'
+import { EntitySnapshotIF, EntityTypeOption, NameRequestIF, ResourceIF } from '@/interfaces/'
 import { GetFeatureFlag, ResourceUtilities } from '@/utils'
 import { useStore } from '@/store/store'
 
@@ -296,9 +296,9 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) isNameChangedByType!: boolean
   @Getter(useStore) isNumberedCompany!: boolean
 
-  @Action(useStore) setEntityType!: ActionBindingIF
-  @Action(useStore) setNameRequest!: ActionBindingIF
-  @Action(useStore) setNameChangedByType!: ActionBindingIF
+  @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
+  @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
+  @Action(useStore) setNameChangedByType!: (x: boolean) => void
 
   selectedEntityType = null as CorpTypeCd
   confirmArticles = false

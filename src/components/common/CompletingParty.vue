@@ -25,7 +25,6 @@
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { ActionBindingIF } from '@/interfaces/'
 import { CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { CompletingParty as CompletingPartyShared } from '@bcrs-shared-components/completing-party/'
 import { DefaultAddressSchema } from '@/schemas/'
@@ -49,8 +48,8 @@ export default class CompletingParty extends Vue {
   @Getter(useStore) isSbcStaff!: boolean
 
   // store actions
-  @Action(useStore) setCompletingParty!: ActionBindingIF
-  @Action(useStore) setCompletingPartyValidity!: ActionBindingIF
+  @Action(useStore) setCompletingParty!: (x: CompletingPartyIF) => void
+  @Action(useStore) setCompletingPartyValidity!: (x: boolean) => void
 
   // Declaration for template
   readonly DefaultAddressSchema = DefaultAddressSchema

@@ -36,7 +36,7 @@ import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CourtOrderPoa as CourtOrderPoaShared } from '@bcrs-shared-components/court-order-poa'
-import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
+import { FlagsReviewCertifyIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -55,9 +55,9 @@ export default class CourtOrderPoa extends Vue {
   @Getter(useStore) getHasPlanOfArrangement!: boolean
 
   // Store actions
-  @Action(useStore) setValidCourtOrder!: ActionBindingIF
-  @Action(useStore) setHasPlanOfArrangement!: ActionBindingIF
-  @Action(useStore) setFileNumber!: ActionBindingIF
+  @Action(useStore) setValidCourtOrder!: (x: boolean) => void
+  @Action(useStore) setHasPlanOfArrangement!: (x: boolean) => void
+  @Action(useStore) setFileNumber!: (x: string) => void
 
   /** True if this component is invalid. */
   get invalidCourtOrder (): boolean {

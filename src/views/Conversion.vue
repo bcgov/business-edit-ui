@@ -70,7 +70,7 @@ import { CompletingParty, BusinessStartDate, BusinessType, EntityName, FolioInfo
   PeopleAndRoles, YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, EntitySnapshotIF } from '@/interfaces/'
+import { EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SpConversionResource, GpConversionResource } from '@/resources/Conversion/'
@@ -104,10 +104,10 @@ export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemp
   @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action(useStore) setCertifyStateValidity!: ActionBindingIF
-  @Action(useStore) setFilingId!: ActionBindingIF
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
-  @Action(useStore) setResource!: ActionBindingIF
+  @Action(useStore) setCertifyStateValidity!: (x: boolean) => void
+  @Action(useStore) setFilingId!: (x: number) => void
+  @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
+  @Action(useStore) setResource!: (x: ResourceIF) => void
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean

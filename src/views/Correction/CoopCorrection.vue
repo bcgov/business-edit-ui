@@ -80,7 +80,7 @@ import Rules from '@/components/SpecialResolution/Rules.vue'
 import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
 import { Action, Getter } from 'pinia-class'
 import { useStore } from '@/store/store'
-import { ActionBindingIF, CorrectionFilingIF, ResourceIF, EntitySnapshotIF } from '@/interfaces'
+import { CorrectionFilingIF, ResourceIF, EntitySnapshotIF } from '@/interfaces'
 import { CpCorrectionResource } from '@/resources/Correction'
 import { LegalServices, AuthServices } from '@/services'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
@@ -117,9 +117,8 @@ export default class CoopCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
   @Getter(useStore) isSoleProp!: boolean
 
   // Global actions
-  @Action(useStore) setCertifyStatementResource!: ActionBindingIF
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
-  @Action(useStore) setResource!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
+  @Action(useStore) setResource!: (x: ResourceIF) => void
 
   /** The draft correction filing to process. */
   @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF

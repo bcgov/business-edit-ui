@@ -46,7 +46,6 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { DetailComment as DetailCommentShared } from '@bcrs-shared-components/detail-comment/'
 import { Action } from 'pinia-class'
-import { ActionBindingIF } from '@/interfaces/'
 import { FilingTemplateMixin } from '@/mixins'
 
 import { useStore } from '@/store/store'
@@ -65,7 +64,7 @@ export default class Detail extends Mixins(FilingTemplateMixin) {
 
   @Prop({ default: 2 }) readonly rowCount!: number
 
-  @Action(useStore) setDetailValidity!: ActionBindingIF
+  @Action(useStore) setDetailValidity!: (x: boolean) => void
 
   protected comment = null as string
 

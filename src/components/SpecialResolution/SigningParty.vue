@@ -112,7 +112,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Action, Getter } from 'pinia-class'
-import { ActionBindingIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { SpecialResolutionIF, PersonIF } from '@bcrs-shared-components/interfaces/'
@@ -131,8 +130,8 @@ export default class SigningParty extends Vue {
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
   @Getter(useStore) isSpecialResolutionFiling: boolean
 
-  @Action(useStore) setSpecialResolution!: ActionBindingIF
-  @Action(useStore) setSpecialResolutionSignatureValid!: ActionBindingIF
+  @Action(useStore) setSpecialResolution!: (x: SpecialResolutionIF) => void
+  @Action(useStore) setSpecialResolutionSignatureValid!: (x: boolean) => void
 
   @Prop({ default: false }) readonly isEditing!: boolean
 

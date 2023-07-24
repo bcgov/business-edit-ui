@@ -144,7 +144,6 @@ import {
 } from 'tiptap-vuetify'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { useStore } from '@/store/store'
-import { ActionBindingIF } from '@/interfaces'
 import { VuetifyRuleFunction } from '@/types'
 import { SpecialResolutionIF } from '@bcrs-shared-components/interfaces'
 import DateUtilities from '@/services/date-utilities'
@@ -161,8 +160,8 @@ export default class ResolutionEditor extends Vue {
   @Getter(useStore) getCurrentDate!: string
   @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
 
-  @Action(useStore) setSpecialResolution!: ActionBindingIF
-  @Action(useStore) setSpecialResolutionValid!: ActionBindingIF
+  @Action(useStore) setSpecialResolution!: (x: SpecialResolutionIF) => void
+  @Action(useStore) setSpecialResolutionValid!: (x: boolean) => void
 
   @Prop({ default: false }) readonly isEditing!: boolean
 

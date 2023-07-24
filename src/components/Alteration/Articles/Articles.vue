@@ -45,7 +45,7 @@ import { Action, Getter } from 'pinia-class'
 import CompanyProvisions from './CompanyProvisions.vue'
 import ResolutionDates from './ResolutionDates.vue'
 import { CommonMixin } from '@/mixins/'
-import { ActionBindingIF, BusinessInformationIF, ResolutionsIF } from '@/interfaces/'
+import { ActionKvIF, BusinessInformationIF, ResolutionsIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -69,9 +69,9 @@ export default class Articles extends Mixins(CommonMixin) {
   @Getter(useStore) isAlterationFiling!: boolean
 
   // Global actions
-  @Action(useStore) setProvisionsRemoved!: ActionBindingIF
-  @Action(useStore) setNewResolutionDates!: ActionBindingIF
-  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setProvisionsRemoved!: (x: boolean) => void
+  @Action(useStore) setNewResolutionDates!: (x: string[]) => void
+  @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   /** Emits Have Changes event. */
   @Emit('haveChanges')

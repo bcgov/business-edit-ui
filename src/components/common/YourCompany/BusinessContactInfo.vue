@@ -26,7 +26,7 @@ import { Action, Getter } from 'pinia-class'
 import { ContactInfo as ContactInfoShared } from '@bcrs-shared-components/contact-info/'
 import { AuthServices } from '@/services/'
 import { CommonMixin } from '@/mixins/'
-import { ActionBindingIF, ResourceIF, EntitySnapshotIF, FlagsCompanyInfoIF } from '@/interfaces/'
+import { ActionKvIF, ResourceIF, EntitySnapshotIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 import { useStore } from '@/store/store'
@@ -50,8 +50,8 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   @Getter(useStore) isFirmChangeFiling!: boolean
 
   // Global setters
-  @Action(useStore) setBusinessContact!: ActionBindingIF
-  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setBusinessContact!: (x: ContactPointIF) => void
+  @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // Local variable
   protected isEditingContact = false

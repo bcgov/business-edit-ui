@@ -173,7 +173,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Getter, Action } from 'pinia-class'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker'
-import { ActionBindingIF, FlagsCompanyInfoIF } from '@/interfaces'
+import { ActionKvIF, FlagsCompanyInfoIF } from '@/interfaces'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -197,8 +197,8 @@ export default class BusinessStartDate extends Mixins(CommonMixin, DateMixin) {
   @Getter(useStore) isRoleStaff!: boolean
 
   // Global setter
-  @Action(useStore) setCorrectionStartDate!: ActionBindingIF
-  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setCorrectionStartDate!: (x: string) => void
+  @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   dropdown = false
   onEditMode = false

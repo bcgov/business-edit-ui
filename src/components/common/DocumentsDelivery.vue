@@ -84,7 +84,7 @@ import { Component, Mixins, Emit, Watch, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
 import { FilingNames } from '@/enums/'
-import { ActionBindingIF, FlagsReviewCertifyIF, ResourceIF } from '@/interfaces/'
+import { FlagsReviewCertifyIF, ResourceIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 import { useStore } from '@/store/store'
@@ -103,8 +103,8 @@ export default class DocumentsDelivery extends Mixins(CommonMixin) {
   @Getter(useStore) getResource!: ResourceIF
 
   // Global actions
-  @Action(useStore) setDocumentOptionalEmail!: ActionBindingIF
-  @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmail!: (x: string) => void
+  @Action(useStore) setDocumentOptionalEmailValidity!: (x: boolean) => void
 
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber!: string

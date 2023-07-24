@@ -121,7 +121,7 @@ import { BusinessContactInfo, CertifySection, DocumentsDelivery, EntityName, Fol
   ListPeopleAndRoles, NameTranslation, OfficeAddresses, PeopleAndRoles, QuestionWrapper,
   RecognitionDateTime, StaffPayment, YourCompanyWrapper } from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin, OrgPersonMixin } from '@/mixins/'
-import { ActionBindingIF, EntitySnapshotIF, OrgPersonIF, ResourceIF, RestorationFilingIF }
+import { EntitySnapshotIF, OrgPersonIF, ResourceIF, RestorationFilingIF }
   from '@/interfaces/'
 import { FilingStatus, RoleTypes } from '@/enums/'
 import { BcRestorationResource, BenRestorationResource, CccRestorationResource, UlcRestorationResource }
@@ -172,11 +172,11 @@ export default class LimitedRestorationExtension extends Mixins(
   @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action(useStore) setFilingId!: ActionBindingIF
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
-  @Action(useStore) setResource!: ActionBindingIF
-  @Action(useStore) setStateFilingRestoration!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmailValidity!: (x: boolean) => void
+  @Action(useStore) setFilingId!: (x: number) => void
+  @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
+  @Action(useStore) setResource!: (x: ResourceIF) => void
+  @Action(useStore) setStateFilingRestoration!: (x: Promise<any>) => void
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean
