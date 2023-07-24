@@ -61,39 +61,7 @@
       </div>
     </template>
 
-    <!-- Business Type -->
-    <template v-if="hasBusinessTypeChanged">
-      <v-divider class="mx-4" />
-      <div class="section-container business-type-summary">
-        <v-row no-gutters>
-          <v-col cols="3">
-            <label><strong>Business Type</strong></label>
-          </v-col>
-
-          <v-col cols="8">
-            <span class="info-text">Changing from a {{ GetCorpFullDescription(originalLegalType) }}</span>
-            &nbsp;
-            <span class="info-text">to a {{ GetCorpFullDescription(getEntityType) }}</span>
-
-            <p class="subtitle mt-2 pt-2">
-              Benefit Company Articles
-            </p>
-            <div class="confirmed-msg">
-              <v-icon
-                color="success"
-                class="confirmed-icon"
-              >
-                mdi-check
-              </v-icon>
-              <span class="info-text text-body-3 confirmed-icon ml-2">
-                The company has completed a set Benefit Company Articles containing a benefit provision, and a copy
-                of these articles has been added to the company's record book.
-              </span>
-            </div>
-          </v-col>
-        </v-row>
-      </div>
-    </template>
+    <BusinessType />
 
     <!-- Name Translation -->
     <template v-if="haveNameTranslationsChanged">
@@ -207,11 +175,13 @@ import { ActionBindingIF, FeesIF, FlagsReviewCertifyIF, ResolutionsIF } from '@/
 import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import BusinessType from '@/components/Alteration/summary/BusinessType.vue'
+import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({
   components: {
+    BusinessType,
     EffectiveDateTime,
     NameTranslation,
     ResolutionDates,
@@ -254,10 +224,6 @@ export default class AlterationSummary extends Mixins(DateMixin, FeeMixin, Filin
     if (this.getNameRequestLegalName) return this.getNameRequestLegalName
 
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
-  }
-
-  get originalLegalType (): CorpTypeCd {
-    return this.getEntitySnapshot?.businessInfo?.legalType
   }
 
   /** True if invalid class should be set for Alteration Date-Time container. */
