@@ -109,6 +109,16 @@
             <span class="list-item">{{ data.item.text }}</span>
           </template>
         </v-select>
+
+        <div
+          v-if="minimumThreeDirectorError"
+          class="my-6"
+        >
+          <p class="error-text">
+            The business type cannot be changed. A Community Contribution Company requires a minimum of three directors.
+          </p>
+        </div>
+
         <div class="my-6">
           <p class="info-text">
             Businesses can only be altered to specific types. If the business type you want is
@@ -135,7 +145,7 @@
             id="done-btn"
             large
             color="primary"
-            :disabled="!confirmArticles"
+            :disabled="!confirmArticles || minimumThreeDirectorError"
             @click="submitTypeChange()"
           >
             <span>Done</span>
@@ -258,6 +268,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getNumberOfDirectors!: number
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) hasBusinessTypeChanged!: boolean
@@ -307,6 +318,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   /** Entity type options based on the company type */
   get entityTypeOptions (): EntityTypeOption[] {
     return this.getResource.changeData?.entityTypeOptions || []
+  }
+
+  get minimumThreeDirectorError (): boolean {
+    return this.isCommunityContribution && this.getNumberOfDirectors < 3
   }
 
   /** Reset company type values to original. */
