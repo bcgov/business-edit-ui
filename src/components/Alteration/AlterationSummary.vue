@@ -272,13 +272,6 @@ export default class AlterationSummary extends Mixins(DateMixin, FeeMixin, Filin
   padding: 1.25rem;
 }
 
-.confirmed-msg {
-  display: flex;
-  .confirmed-icon, .confirmed-note {
-    display: block;
-  }
-}
-
 .summary-title {
   padding-left: 0.5rem;
 }
