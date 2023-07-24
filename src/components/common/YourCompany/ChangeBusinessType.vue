@@ -119,6 +119,16 @@
           </p>
         </div>
 
+        <div
+          v-if="nameRequestRequiredError"
+          class="my-6"
+        >
+          <p class="error-text">
+            An alteration of business type Name Request is required to make this change. After the name is approved,
+            you can then select 'change' beside the company name to update it.
+          </p>
+        </div>
+
         <div class="my-6">
           <p class="info-text">
             Businesses can only be altered to specific types. If the business type you want is
@@ -145,7 +155,7 @@
             id="done-btn"
             large
             color="primary"
-            :disabled="!confirmArticles || minimumThreeDirectorError"
+            :disabled="disableDoneButton"
             @click="submitTypeChange()"
           >
             <span>Done</span>
@@ -320,6 +330,21 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     return this.getResource.changeData?.entityTypeOptions || []
   }
 
+  get nameRequestRequiredError (): boolean {
+    if (this.isNumberedCompany) {
+      return false
+    }
+    // Named companies to CC or ULC require a name request.
+    if (this.isCommunityContribution || this.isUnlimitedLiability) {
+      return true
+    }
+    // Named ULC to BC Limited require a name request.
+    if (this.getEntitySnapshot?.businessInfo?.legalType === CorpTypeCd.BC_ULC_COMPANY && this.isBcLimited) {
+      return true
+    }
+    return false
+  }
+
   get minimumThreeDirectorError (): boolean {
     return this.isCommunityContribution && this.getNumberOfDirectors < 3
   }
@@ -365,12 +390,20 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   getUpdatedName (originalName: string): string {
-    if (this.isUnlimitedLiability || this.isCommunityContribution) {
-      return originalName.endsWith(' LTD.') ? originalName : originalName + ' LTD.'
-    } else if (this.isBcLimited && this.isBcUlcCompany) {
-      return originalName.replace(/\sLTD\.$/, '')
+    if (this.isBcUlcCompany) {
+      originalName = originalName.replace(' LTD.', '')
+      originalName += ' UNLIMITED LIABILITY COMPANY'
+      return originalName
+    } else if (this.isCommunityContribution) {
+      originalName = originalName.replace(' LTD.', '')
+      originalName += ' COMMUNITY CONTRIBUTION COMPANY'
+      return originalName
+    } else if (this.isBcLimited && this.isBenefitCompany) {
+      originalName = originalName.replace(' UNLIMITED LIABILITY COMPANY', '').replace(' ULC', '')
+      originalName = originalName.replace(' COMMUNITY CONTRIBUTION COMPANY', '').replace(' CCC', '')
+      originalName += ' LTD.'
+      return originalName
     }
-
     return originalName
   }
 
@@ -400,6 +433,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   get updatedArticleTitle (): string {
     return ResourceUtilities.articleTitle(this.selectedEntityType)
+  }
+
+  get disableDoneButton (): boolean {
+    return !this.confirmArticles || this.minimumThreeDirectorError || this.nameRequestRequiredError
   }
 
   @Watch('isEditingType')
