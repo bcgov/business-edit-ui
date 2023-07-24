@@ -60,7 +60,6 @@ export default class BusinessType extends Mixins(FilingTemplateMixin) {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/theme.scss';
 .confirmed-msg {
   display: flex;
   .confirmed-icon, .confirmed-note {
