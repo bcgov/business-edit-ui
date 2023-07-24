@@ -323,9 +323,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   /** Display the edit, so the user has to reconfirm articles. */
   @Watch('isEntityTypeChangedByName')
   entityTypeChangedByName (val): void {
-    if (val) {
-      this.isEditingType = true
-    }
+    this.isEditingType = val
   }
 
   /** Verify New Business name. */
