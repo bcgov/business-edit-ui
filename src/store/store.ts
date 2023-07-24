@@ -827,6 +827,11 @@ export const useStore = defineStore('store', {
       return this.stateModel.tombstone.nameChangedByType
     },
 
+    /** Whether business type has changed by name change. */
+    isEntityTypeChangedByName (): boolean {
+      return this.stateModel.tombstone.entityTypeChangedByName
+    },
+
     /** Whether business type has changed. */
     hasBusinessTypeChanged (): boolean {
       const currentEntityType = this.getEntityType
@@ -1297,6 +1302,9 @@ export const useStore = defineStore('store', {
   actions: {
     setEntityType (entityType: CorpTypeCd) {
       this.stateModel.tombstone.entityType = entityType
+    },
+    setEntityTypeChangedByName (entityTypeChangedByName: boolean) {
+      this.stateModel.tombstone.entityTypeChangedByName = entityTypeChangedByName
     },
     setBusinessId (businessId) {
       this.stateModel.tombstone.businessId = businessId
