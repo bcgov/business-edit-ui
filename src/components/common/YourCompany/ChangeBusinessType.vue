@@ -276,6 +276,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) isBenefitCompany!: boolean
   @Getter(useStore) isBcUlcCompany!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isNameChangedByType!: boolean
   @Getter(useStore) isNumberedCompany!: boolean
 
   @Action(useStore) setEntityType!: ActionBindingIF
@@ -327,12 +328,14 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   /** Reset company type values to original. */
   protected resetType () {
     this.setEntityType(this.getEntitySnapshot?.businessInfo?.legalType)
-    // reset name request
-    this.setNameRequest({
-      legalType: this.getEntitySnapshot?.businessInfo?.legalType,
-      legalName: this.getEntitySnapshot?.businessInfo?.legalName,
-      nrNumber: this.getEntitySnapshot?.businessInfo?.nrNumber
-    })
+    if (this.isNameChangedByType) {
+      // reset name request
+      this.setNameRequest({
+        legalType: this.getEntitySnapshot?.businessInfo?.legalType,
+        legalName: this.getEntitySnapshot?.businessInfo?.legalName,
+        nrNumber: this.getEntitySnapshot?.businessInfo?.nrNumber
+      })
+    }
     this.setNameChangedByType(false)
     this.isEditingType = false
     this.confirmArticles = false
