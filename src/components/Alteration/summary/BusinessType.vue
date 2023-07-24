@@ -1,5 +1,5 @@
-<template v-if="hasBusinessTypeChanged">
-  <div>
+<template>
+  <div v-if="hasBusinessTypeChanged">
     <v-divider class="mx-4" />
     <div class="section-container business-type-summary">
       <v-row no-gutters>
