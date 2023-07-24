@@ -39,18 +39,11 @@
 import { FilingTemplateMixin } from '@/mixins'
 import { Component, Mixins } from 'vue-property-decorator'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
-import { Getter } from 'pinia-class'
-import { useStore } from '@/store/store'
 import { ResourceUtilities } from '@/utils/resource-utils'
 
 @Component({})
 export default class BusinessType extends Mixins(FilingTemplateMixin) {
   readonly GetCorpFullDescription = GetCorpFullDescription // for template
-
-  @Getter(useStore) isBenefitCompany!: boolean
-  @Getter(useStore) isBcCcc!: boolean
-  @Getter(useStore) isBcCompany!: boolean
-  @Getter(useStore) isBcUlcCompany!: boolean
 
   get originalLegalType (): CorpTypeCd {
     return this.getEntitySnapshot?.businessInfo?.legalType
