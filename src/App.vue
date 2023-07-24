@@ -563,7 +563,6 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
 
       const orgInfo = await AuthServices.fetchOrgInfo(currentAccount?.id).catch(() => null)
       if (orgInfo) {
-        console.log(orgInfo)
         this.setOrgInfo(orgInfo)
       } else {
         throw new Error('Invalid org info')
@@ -589,7 +588,6 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
     const response = await AuthServices.fetchUserInfo()
     const userInfo = response?.data
     if (userInfo) {
-      console.log(userInfo)
       this.setUserInfo(userInfo)
     } else {
       throw new Error('Invalid user info')
