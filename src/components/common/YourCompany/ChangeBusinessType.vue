@@ -179,7 +179,10 @@
         cols="2"
         class="mt-n2"
       >
-        <div class="actions mr-4">
+        <div
+          v-if="!isEntityTypeChangedByName"
+          class="actions mr-4"
+        >
           <v-btn
             v-if="hasBusinessTypeChanged"
             id="btn-undo-business-type"
@@ -354,7 +357,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   /** Reset company type values to original. */
   protected resetType () {
     this.setEntityType(this.getEntitySnapshot?.businessInfo?.legalType)
-    if (this.isNameChangedByType || this.isEntityTypeChangedByName) {
+    if (this.isNameChangedByType) {
       // reset name request
       this.setNameRequest({
         legalType: this.getEntitySnapshot?.businessInfo?.legalType,
