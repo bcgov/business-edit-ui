@@ -310,16 +310,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       (this.getNameRequestLegalName !== this.getEntitySnapshot?.businessInfo?.legalName)
   }
 
-  /** Check if current entity selection is a Unlimited Liability Company */
-  get isUnlimitedLiability (): boolean {
-    return (this.selectedEntityType === CorpTypeCd.BC_ULC_COMPANY)
-  }
-
-  /** Check if current entity selection is a Community Contribution Company */
-  get isCommunityContribution (): boolean {
-    return (this.selectedEntityType === CorpTypeCd.BC_CCC)
-  }
-
   /** Type change helper information */
   get typeChangeInfo (): string {
     return this.getResource.changeData?.typeChangeInfo
