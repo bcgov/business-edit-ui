@@ -8,9 +8,10 @@
         </v-col>
 
         <v-col cols="8">
-          <span class="info-text">Changing from a {{ GetCorpFullDescription(originalLegalType) }}</span>
-          &nbsp;
-          <span class="info-text">to a {{ GetCorpFullDescription(getEntityType) }}</span>
+          <span class="info-text">
+            Changing from a {{ GetCorpFullDescription(originalLegalType) }} to a
+            {{ GetCorpFullDescription(getEntityType) }}
+          </span>
 
           <div>
             <p class="subtitle mt-2 pt-2">
