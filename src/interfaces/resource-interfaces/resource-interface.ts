@@ -1,7 +1,7 @@
 import { CorrectNameOptions } from '@/enums/'
 import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { HelpSectionIF, FilingDataIF, SpecialResolutionSampleFormIF } from '@/interfaces/'
+import { HelpSectionIF, FilingDataIF, SpecialResolutionSampleFormIF, EntityTypeOption } from '@/interfaces/'
 
 /** Interface to define the resource model example */
 export interface ResourceIF {
@@ -27,7 +27,10 @@ export interface ResourceIF {
       sampleFormSection?: SpecialResolutionSampleFormIF
     }
     nameRequestTypes?: Array<NrRequestActionCodes>
-    addressChangeInfo?: string
+    addressChangeInfo?: string,
+    entityTypeOptions?: Array<EntityTypeOption>,
+    articleTitle?: string,
+    articleInfo?: string
   }
   certifyClause: string
   showEmailUnderName?: boolean

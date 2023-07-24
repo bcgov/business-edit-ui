@@ -822,6 +822,11 @@ export const useStore = defineStore('store', {
       return (currentLegalName !== originalLegalName)
     },
 
+    /** Whether business name has changed by type change. */
+    isNameChangedByType (): boolean {
+      return this.stateModel.tombstone.nameChangedByType
+    },
+
     /** Whether business type has changed. */
     hasBusinessTypeChanged (): boolean {
       const currentEntityType = this.getEntityType
@@ -1389,6 +1394,9 @@ export const useStore = defineStore('store', {
     setNameRequest (nameRequest: NameRequestIF) {
       this.stateModel.nameRequest = nameRequest
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
+    },
+    setNameChangedByType (changedByType: boolean) {
+      this.stateModel.tombstone.nameChangedByType = changedByType
     },
     setNameTranslations (nameTranslations: NameTranslationIF[]) {
       this.stateModel.nameTranslations = nameTranslations

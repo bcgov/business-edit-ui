@@ -43,8 +43,7 @@
 
           <!-- Business Type Info -->
           <template
-            v-if="!hasNewNr && hasBusinessNameChanged && (isAlterationFiling || isFirmChangeFiling ||
-              isFirmConversionFiling)"
+            v-if="shouldShowTypeDetail"
           >
             <div class="company-info mt-4">
               <span class="subtitle">Business Type: </span>
@@ -53,6 +52,28 @@
             <div class="info-text pt-3">
               <span>The name of this business will be the current Incorporation Number followed by "B.C. Ltd."</span>
             </div>
+          </template>
+          <template v-if="isNameChangedByType && hasCompanyNameChanged">
+            <!-- Reminder: Name changed based on selected business type -->
+            <v-row
+              no-gutters
+              class="pt-4"
+            >
+              <v-col cols="auto">
+                <v-icon
+                  class="pr-2"
+                  color="primary"
+                >
+                  mdi-alert-circle-outline
+                </v-icon>
+              </v-col>
+
+              <v-col>
+                <div class="info-text">
+                  We have changed your numbered company name based on the business type you selected.
+                </div>
+              </v-col>
+            </v-row>
           </template>
 
           <!-- Name Request Info -->
@@ -111,8 +132,7 @@
           <div class="actions mr-4">
             <!-- FUTURE: only show buttons for named company -->
             <v-btn
-              v-if="hasCompanyNameChanged || (hasBusinessNameChanged && (isAlterationFiling ||
-                isFirmChangeFiling || isSpecialResolutionFiling))"
+              v-if="shouldShowUndoButton"
               id="btn-undo-company-name"
               text
               color="primary"
@@ -125,7 +145,7 @@
               <span>Undo</span>
             </v-btn>
             <v-btn
-              v-else-if="!isFirmConversionFiling && !isLimitedRestorationExtension"
+              v-else-if="!isFirmConversionFiling && !isLimitedRestorationExtension && !isNameChangedByType"
               id="btn-correct-company-name"
               text
               color="primary"
@@ -137,8 +157,7 @@
               <span>{{ getEditLabel }}</span>
             </v-btn>
             <span
-              v-if="hasCompanyNameChanged || (hasBusinessNameChanged &&
-                (isAlterationFiling || isFirmChangeFiling || isSpecialResolutionFiling))"
+              v-if="shouldShowUndoButton"
               class="more-actions"
             >
               <v-menu
@@ -266,12 +285,32 @@ export default class EntityName extends Mixins(NameRequestMixin) {
   @Getter(useStore) isLimitedRestorationExtension!: boolean
   @Getter(useStore) isNumberedCompany!: boolean
   @Getter(useStore) isSpecialResolutionFiling!: boolean
+  @Getter(useStore) isNameChangedByType!: boolean
 
   // store actions
   @Action(useStore) setBusinessInformation!: ActionBindingIF
   @Action(useStore) setEditingCompanyName!: ActionBindingIF
   @Action(useStore) setNameRequest!: ActionBindingIF
   @Action(useStore) setValidComponent!: ActionBindingIF
+
+  // Returns true if the undo button should be displayed. This is the case when the company name has changed,
+  // or the business name has changed during an alteration, firm change, or special resolution filing,
+  // and the name has not been changed by type.
+  get shouldShowUndoButton (): boolean {
+    return (this.hasCompanyNameChanged ||
+            (this.hasBusinessNameChanged &&
+             (this.isAlterationFiling || this.isFirmChangeFiling || this.isSpecialResolutionFiling))) &&
+            !this.isNameChangedByType
+  }
+
+  // Returns true if the type details should be displayed. This is the case when there is no new NR,
+  // the business name has changed, and the filing is an alteration, firm change, or firm conversion filing,
+  // and the name has not been changed by type.
+  get shouldShowTypeDetail (): boolean {
+    return !this.hasNewNr && this.hasBusinessNameChanged &&
+           (this.isAlterationFiling || this.isFirmChangeFiling || this.isFirmConversionFiling) &&
+           !this.isNameChangedByType
+  }
 
   // local properties
   dropdown = false // v-model for dropdown menu
