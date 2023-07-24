@@ -100,8 +100,9 @@
         <v-select
           id="business-type-selector"
           v-model="selectedEntityType"
+          :disabled="isEntityTypeChangedByName"
           :items="entityTypeOptions"
-          hint="Select a New Business Type"
+          :hint="isEntityTypeChangedByName ? '' : 'Select a New Business Type'"
           persistent-hint
           filled
         >
@@ -317,6 +318,14 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Watch('selectedEntityType')
   private clearConfirmArticles (): void {
     this.confirmArticles = false
+  }
+
+  /** Display the edit, so the user has to reconfirm articles. */
+  @Watch('isEntityTypeChangedByName')
+  entityTypeChangedByName (val): void {
+    if (val) {
+      this.isEditingType = true
+    }
   }
 
   /** Verify New Business name. */
