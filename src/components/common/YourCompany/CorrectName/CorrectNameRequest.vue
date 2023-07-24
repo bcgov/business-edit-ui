@@ -230,7 +230,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
     }
   }
 
-  /* Checks to see if namerequest type matches, or if it's a valid conversion request */
+  /* Checks name request type or if it's an invalid conversion name request. */
   isNameRequestInvalid (nr: NrResponseIF): boolean {
     const isNameEntityTypeDifferent = this.getEntityType !== nr.legalType
     const entityTypeOptions = this.getResource?.changeData?.entityTypeOptions
