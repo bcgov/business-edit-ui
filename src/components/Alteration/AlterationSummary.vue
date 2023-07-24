@@ -176,7 +176,6 @@ import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
 import BusinessType from '@/components/Alteration/summary/BusinessType.vue'
-import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -189,9 +188,6 @@ import { useStore } from '@/store/store'
   }
 })
 export default class AlterationSummary extends Mixins(DateMixin, FeeMixin, FilingTemplateMixin) {
-  // for template
-  readonly GetCorpFullDescription = GetCorpFullDescription
-
   // Global getters
   @Getter(useStore) getBusinessNumber!: string
   @Getter(useStore) getCurrentFees!: FeesIF[]
