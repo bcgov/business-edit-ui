@@ -10,6 +10,7 @@ import NameTranslation from '@/components/common/YourCompany/NameTranslations/Na
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
+import BusinessType from '@/components/Alteration/summary/BusinessType.vue'
 
 const vuetify = new Vuetify({})
 
@@ -61,6 +62,7 @@ describe('Alteration Summary component', () => {
     expect(wrapper.findComponent(EffectiveDateTime).exists()).toBe(true)
     expect(wrapper.findComponent(ConfirmDialogShared).exists()).toBe(true)
     expect(wrapper.findComponent(NameTranslation).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessType).exists()).toBe(true)
   })
 
   it('renders the Remove actions', async () => {
@@ -103,7 +105,7 @@ describe('Alteration Summary component', () => {
 
     expect(wrapper.find('.business-type-summary').exists()).toBe(true)
     expect(wrapper.find('.business-type-summary').text()).toContain('Changing from a BC Limited Company')
-    expect(wrapper.find('.business-type-summary').text()).toContain('to a BC Benefit Company')
+    expect(wrapper.find('.business-type-summary').text()).toContain('BC Benefit Company')
   })
 
   it('renders the default alteration date and time section', async () => {

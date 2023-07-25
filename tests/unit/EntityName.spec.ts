@@ -371,12 +371,12 @@ describe('Name Changes for a SP alteration', () => {
 
 describe('Name Changes by Type change', () => {
   it('displays the edited label when the company name has changed and is not changed by type', () => {
+    store.stateModel.tombstone.nameChangedByType = true
     // set up the component with a changed company name and not changed by type
     const wrapper = shallowMount(EntityName, {
       data () {
         return {
           hasCompanyNameChanged: true,
-          isNameChangedByType: true,
           getEditedLabel: 'Edited'
         }
       }

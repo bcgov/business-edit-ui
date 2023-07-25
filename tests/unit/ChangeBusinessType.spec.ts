@@ -83,13 +83,15 @@ describe('Change Business Type component', () => {
     wrapper.destroy()
   })
 
-  it('should have correct button and no tooltip for BC Alteration filing', () => {
+  it('should have correct button and no tooltip for BC Alteration filing', async () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.BC_COMPANY
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
     store.stateModel.entitySnapshot = { businessInfo: { legalType: 'BC' } } as any
     store.resourceModel.changeData = { typeChangeInfo: null } as any
 
     const wrapper = mount(ChangeBusinessType, { vuetify })
+
+    await Vue.nextTick()
 
     expect(wrapper.find('.v-tooltip').exists()).toBe(false)
     expect(wrapper.find('#btn-correct-business-type').exists()).toBe(true)
