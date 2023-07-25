@@ -113,6 +113,7 @@
 
         <div
           v-if="minimumThreeDirectorError"
+          id="minimum-three-director-error"
           class="my-6"
         >
           <p class="error-text">
@@ -122,6 +123,7 @@
 
         <div
           v-if="nameRequestRequiredError"
+          id="name-request-required-error"
           class="my-6"
         >
           <p class="error-text">
@@ -362,7 +364,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   /** Reset company type values to original. */
-  protected resetType () {
+  resetType () {
     this.setEntityType(this.getEntitySnapshot?.businessInfo?.legalType)
     // reset name request
     this.setNameRequest({
@@ -376,7 +378,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   /** Submit new company type. */
-  protected submitTypeChange () {
+  submitTypeChange () {
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
 
