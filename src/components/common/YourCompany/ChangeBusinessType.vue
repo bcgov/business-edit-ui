@@ -364,14 +364,12 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   /** Reset company type values to original. */
   protected resetType () {
     this.setEntityType(this.getEntitySnapshot?.businessInfo?.legalType)
-    if (this.isNameChangedByType) {
-      // reset name request
-      this.setNameRequest({
-        legalType: this.getEntitySnapshot?.businessInfo?.legalType,
-        legalName: this.getEntitySnapshot?.businessInfo?.legalName,
-        nrNumber: this.getEntitySnapshot?.businessInfo?.nrNumber
-      })
-    }
+    // reset name request
+    this.setNameRequest({
+      legalType: this.getEntitySnapshot?.businessInfo?.legalType,
+      legalName: this.getEntitySnapshot?.businessInfo?.legalName,
+      nrNumber: this.getEntitySnapshot?.businessInfo?.nrNumber
+    })
     this.setNameChangedByType(false)
     this.isEditingType = false
     this.confirmArticles = false
