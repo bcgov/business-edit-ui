@@ -159,7 +159,6 @@ describe('Change Business Type component', () => {
     const wrapper: any = mount(ChangeBusinessType, { vuetify })
     wrapper.vm.isEditingType = true
     await Vue.nextTick()
-    await flushPromises()
 
     expect(wrapper.find('#name-request-required-error').exists()).toBe(true)
 
