@@ -7,7 +7,7 @@ declare const window: any
  * Default flag values when LD is not available.
  * Uses "business-edit" project (per LD client id in config).
  */
-const defaultFlagSet: LDFlagSet = {
+export const defaultFlagSet: LDFlagSet = {
   'alteration-ui-enabled': false,
   'banner-text': '', // by default, there is no banner text
   'change-ui-enabled': false,
@@ -15,7 +15,7 @@ const defaultFlagSet: LDFlagSet = {
   'restoration-ui-enabled': false,
   'sentry-enable': false, // by default, no sentry logs
   'supported-correction-entities': [],
-  'supported-alteration-change-business-types': ['BEN', 'BC', 'CC', 'ULC']
+  'supported-alteration-change-business-types': []
 }
 
 /**
