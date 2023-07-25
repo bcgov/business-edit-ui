@@ -14,7 +14,8 @@ const defaultFlagSet: LDFlagSet = {
   'conversion-ui-enabled': false,
   'restoration-ui-enabled': false,
   'sentry-enable': false, // by default, no sentry logs
-  'supported-correction-entities': []
+  'supported-correction-entities': [],
+  'supported-alteration-change-business-types': ['BEN', 'BC', 'CC', 'ULC']
 }
 
 /**

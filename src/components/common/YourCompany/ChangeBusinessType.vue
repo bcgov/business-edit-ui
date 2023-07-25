@@ -184,7 +184,7 @@
             <span>Undo</span>
           </v-btn>
           <v-btn
-            v-else-if="isBcCompany || isBcUlcCompany || isBenefitCompany"
+            v-else-if="enableEditButton"
             id="btn-correct-business-type"
             text
             color="primary"
@@ -247,7 +247,7 @@ import { BcRegContacts } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ActionBindingIF, EntitySnapshotIF, EntityTypeOption, ResourceIF } from '@/interfaces/'
-import { ResourceUtilities } from '@/utils'
+import { GetFeatureFlag, ResourceUtilities } from '@/utils'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -286,10 +286,12 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   confirmArticles = false
   isEditingType = false
   dropdown: boolean = null
+  supportedEntityTypes = null
 
   /** Called when component is mounted. */
   mounted (): void {
     this.initializeEntityType()
+    this.supportedEntityTypes = GetFeatureFlag('supported-alteration-change-business-types') || []
   }
 
   /** Define the entity type locally once the value has been populated in the store. */
@@ -317,7 +319,18 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   /** Entity type options based on the company type */
   get entityTypeOptions (): EntityTypeOption[] {
-    return this.getResource.changeData?.entityTypeOptions || []
+    const entityTypeOptions = this.getResource.changeData?.entityTypeOptions || []
+    return entityTypeOptions.filter((option: EntityTypeOption) => {
+      return this.supportedEntityTypes?.includes(option.value)
+    })
+  }
+
+  get enableEditButton (): boolean {
+    // Exclude CCC - Originally: isBcCompany || isBcUlcCompany || isBenefitCompany
+    if (this.getEntitySnapshot?.businessInfo?.legalType === CorpTypeCd.BC_CCC) {
+      return false
+    }
+    return this.supportedEntityTypes?.includes(this.getEntitySnapshot?.businessInfo?.legalType)
   }
 
   get minimumThreeDirectorError (): boolean {
