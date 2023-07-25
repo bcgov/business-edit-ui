@@ -115,7 +115,7 @@ describe('Change Business Type component', () => {
     } as EntitySnapshotIF
     store.stateModel.nameRequest.legalName = '1234567 LTD.'
     store.stateModel.tombstone.entityType = CorpTypeCd.BC_ULC_COMPANY
-    const wrapper = mount(ChangeBusinessType, { vuetify })
+    const wrapper: any = mount(ChangeBusinessType, { vuetify })
     wrapper.vm.selectedEntityType = CorpTypeCd.BC_ULC_COMPANY
     wrapper.vm.submitTypeChange()
 
@@ -149,14 +149,17 @@ describe('Change Business Type component', () => {
 
   it('should have name request required error for business type change', async () => {
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
-
-    // Is not numbered company
-    store.stateModel.businessInformation.legalName = 'HELLO LTD.'
+    store.stateModel.entitySnapshot = {
+      businessInfo: {
+        legalName: 'HELLO LTD.'
+      }
+    } as EntitySnapshotIF
     store.stateModel.tombstone.entityType = CorpTypeCd.BC_CCC
 
-    const wrapper = mount(ChangeBusinessType, { vuetify })
+    const wrapper: any = mount(ChangeBusinessType, { vuetify })
     wrapper.vm.isEditingType = true
     await Vue.nextTick()
+    await flushPromises()
 
     expect(wrapper.find('#name-request-required-error').exists()).toBe(true)
 
@@ -188,7 +191,7 @@ describe('Change Business Type component', () => {
     ] as OrgPersonIF[]
 
     const wrapper = mount(ChangeBusinessType, { vuetify })
-    wrapper.vm.isEditingType = true
+    wrapper.setData({ isEditingType: true })
 
     await Vue.nextTick()
 
