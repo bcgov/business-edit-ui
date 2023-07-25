@@ -412,7 +412,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       originalName = originalName.replace(' LTD.', '')
       originalName += ' COMMUNITY CONTRIBUTION COMPANY'
       return originalName
-    } else if (this.isBcLimited && this.isBenefitCompany) {
+    } else if (this.isBcLimited || this.isBenefitCompany) {
       originalName = originalName.replace(' UNLIMITED LIABILITY COMPANY', '').replace(' ULC', '')
       originalName = originalName.replace(' COMMUNITY CONTRIBUTION COMPANY', '').replace(' CCC', '')
       originalName = originalName.replace(' LTD.', '')
