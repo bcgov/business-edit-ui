@@ -77,14 +77,14 @@
           <p class="subtitle mt-2 pt-2">
             {{ updatedArticleTitle }}
           </p>
-          <div class="confirmed-msg">
+          <div class="confirmed-msg d-flex">
             <v-icon
               color="success"
-              class="confirmed-icon"
+              class="confirmed-icon d-block"
             >
               mdi-check
             </v-icon>
-            <span class="info-text text-body-3 confirmed-icon ml-2">
+            <span class="info-text text-body-3 confirmed-icon ml-2 d-block">
               {{ updatedArticleInfo }}
             </span>
           </div>
@@ -276,6 +276,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) isBenefitCompany!: boolean
   @Getter(useStore) isBcUlcCompany!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isNameChangedByType!: boolean
   @Getter(useStore) isNumberedCompany!: boolean
 
   @Action(useStore) setEntityType!: ActionBindingIF
@@ -414,13 +415,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
 .v-icon {
   line-height: 1.5rem
-}
-
-.confirmed-msg {
-  display: flex;
-  .confirmed-icon, .confirmed-note {
-    display: block;
-  }
 }
 
 .help-toggle {
