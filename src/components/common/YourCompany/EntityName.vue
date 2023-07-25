@@ -286,12 +286,15 @@ export default class EntityName extends Mixins(NameRequestMixin) {
   @Getter(useStore) isNumberedCompany!: boolean
   @Getter(useStore) isSpecialResolutionFiling!: boolean
   @Getter(useStore) isNameChangedByType!: boolean
+  @Getter(useStore) isEntityTypeChangedByName!: boolean
 
   // store actions
   @Action(useStore) setBusinessInformation!: ActionBindingIF
   @Action(useStore) setEditingCompanyName!: ActionBindingIF
   @Action(useStore) setNameRequest!: ActionBindingIF
   @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setEntityType!: ActionBindingIF
+  @Action(useStore) setEntityTypeChangedByName!: ActionBindingIF
 
   // Returns true if the undo button should be displayed. This is the case when the company name has changed,
   // or the business name has changed during an alteration, firm change, or special resolution filing,
@@ -403,6 +406,11 @@ export default class EntityName extends Mixins(NameRequestMixin) {
       legalName: this.getEntitySnapshot.businessInfo.legalName,
       nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
     })
+
+    if (this.isEntityTypeChangedByName) {
+      this.setEntityType(this.getEntitySnapshot.businessInfo.legalType)
+      this.setEntityTypeChangedByName(false)
+    }
 
     // reset flag
     this.hasCompanyNameChanged = false

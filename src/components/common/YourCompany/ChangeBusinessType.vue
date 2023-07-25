@@ -100,8 +100,9 @@
         <v-select
           id="business-type-selector"
           v-model="selectedEntityType"
+          :disabled="isEntityTypeChangedByName"
           :items="entityTypeOptions"
-          hint="Select a New Business Type"
+          :hint="isEntityTypeChangedByName ? '' : 'Select a New Business Type'"
           persistent-hint
           filled
         >
@@ -112,10 +113,22 @@
 
         <div
           v-if="minimumThreeDirectorError"
+          id="minimum-three-director-error"
           class="my-6"
         >
           <p class="error-text">
             The business type cannot be changed. A Community Contribution Company requires a minimum of three directors.
+          </p>
+        </div>
+
+        <div
+          v-if="nameRequestRequiredError"
+          id="name-request-required-error"
+          class="my-6"
+        >
+          <p class="error-text">
+            An alteration of business type Name Request is required to make this change. After the name is approved,
+            you can then select 'change' beside the company name to update it.
           </p>
         </div>
 
@@ -145,7 +158,7 @@
             id="done-btn"
             large
             color="primary"
-            :disabled="!confirmArticles || minimumThreeDirectorError"
+            :disabled="disableDoneButton"
             @click="submitTypeChange()"
           >
             <span>Done</span>
@@ -169,7 +182,10 @@
         cols="2"
         class="mt-n2"
       >
-        <div class="actions mr-4">
+        <div
+          v-if="!isEntityTypeChangedByName"
+          class="actions mr-4"
+        >
           <v-btn
             v-if="hasBusinessTypeChanged"
             id="btn-undo-business-type"
@@ -276,6 +292,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Getter(useStore) isBenefitCompany!: boolean
   @Getter(useStore) isBcUlcCompany!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
+  @Getter(useStore) isEntityTypeChangedByName!: boolean
   @Getter(useStore) isNameChangedByType!: boolean
   @Getter(useStore) isNumberedCompany!: boolean
 
@@ -307,6 +324,12 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     this.confirmArticles = false
   }
 
+  /** Display the edit, so the user has to reconfirm articles. */
+  @Watch('isEntityTypeChangedByName')
+  entityTypeChangedByName (val): void {
+    this.isEditingType = val
+  }
+
   /** Verify New Business name. */
   get isNewName (): boolean {
     return this.getNameRequestLegalName &&
@@ -334,12 +357,27 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     return this.supportedEntityTypes?.includes(this.getEntitySnapshot?.businessInfo?.legalType)
   }
 
+  get nameRequestRequiredError (): boolean {
+    if (this.isNumberedCompany) {
+      return false
+    }
+    // Named companies to CC or ULC require a name request.
+    if (this.isCommunityContribution || this.isUnlimitedLiability) {
+      return true
+    }
+    // Named ULC to BC Limited require a name request.
+    if (this.getEntitySnapshot?.businessInfo?.legalType === CorpTypeCd.BC_ULC_COMPANY && this.isBcLimited) {
+      return true
+    }
+    return false
+  }
+
   get minimumThreeDirectorError (): boolean {
     return this.isCommunityContribution && this.getNumberOfDirectors < 3
   }
 
   /** Reset company type values to original. */
-  protected resetType () {
+  resetType () {
     this.setEntityType(this.getEntitySnapshot?.businessInfo?.legalType)
     // reset name request
     this.setNameRequest({
@@ -353,7 +391,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   /** Submit new company type. */
-  protected submitTypeChange () {
+  submitTypeChange () {
     this.setEntityType(this.selectedEntityType)
     this.isEditingType = false
 
@@ -379,12 +417,21 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   }
 
   getUpdatedName (originalName: string): string {
-    if (this.isUnlimitedLiability || this.isCommunityContribution) {
-      return originalName.endsWith(' LTD.') ? originalName : originalName + ' LTD.'
-    } else if (this.isBcLimited && this.isBcUlcCompany) {
-      return originalName.replace(/\sLTD\.$/, '')
+    if (this.isBcUlcCompany) {
+      originalName = originalName.replace(' LTD.', '')
+      originalName += ' UNLIMITED LIABILITY COMPANY'
+      return originalName
+    } else if (this.isCommunityContribution) {
+      originalName = originalName.replace(' LTD.', '')
+      originalName += ' COMMUNITY CONTRIBUTION COMPANY'
+      return originalName
+    } else if (this.isBcLimited || this.isBenefitCompany) {
+      originalName = originalName.replace(' UNLIMITED LIABILITY COMPANY', '').replace(' ULC', '')
+      originalName = originalName.replace(' COMMUNITY CONTRIBUTION COMPANY', '').replace(' CCC', '')
+      originalName = originalName.replace(' LTD.', '')
+      originalName += ' LTD.'
+      return originalName
     }
-
     return originalName
   }
 
@@ -414,6 +461,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   get updatedArticleTitle (): string {
     return ResourceUtilities.articleTitle(this.selectedEntityType)
+  }
+
+  get disableDoneButton (): boolean {
+    return !this.confirmArticles || this.minimumThreeDirectorError || this.nameRequestRequiredError
   }
 
   @Watch('isEditingType')

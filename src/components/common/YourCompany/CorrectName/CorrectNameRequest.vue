@@ -105,6 +105,7 @@ import { ActionBindingIF, ConfirmDialogType, NameRequestApplicantIF, NameRequest
   NrResponseIF } from '@/interfaces/'
 import { CorrectNameOptions } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 
 import { useStore } from '@/store/store'
 @Component({
@@ -125,10 +126,12 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   /** Whether to perform validation. */
   @Prop({ default: false }) readonly validate!: boolean
 
-  @Action(useStore) setNameRequest!: ActionBindingIF
-
   @Getter(useStore) getNameRequest!: NameRequestIF
   @Getter(useStore) getEntityType!: CorpTypeCd
+
+  @Action(useStore) setNameRequest!: ActionBindingIF
+  @Action(useStore) setEntityType!: ActionBindingIF
+  @Action(useStore) setEntityTypeChangedByName!: ActionBindingIF
 
   // Local properties
   formValid = false
@@ -161,12 +164,12 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
       (!!this.applicantPhone || !!this.applicantEmail)
   }
 
-  private isValidEmail (value: string): boolean {
+  isValidEmail (value: string): boolean {
     if (value?.length < 1) return true
     return ((!!this.applicantPhone && !!value) || !!this.validateEmailFormat(value))
   }
 
-  private isValidNrNumber (value: string): boolean {
+  isValidNrNumber (value: string): boolean {
     const VALID_FORMAT = new RegExp(/^(NR)?\s*(\d{7})$/)
     if (VALID_FORMAT.test(value)) {
       this.nameRequestNumber = 'NR ' + value.match(VALID_FORMAT)[2]
@@ -175,20 +178,20 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
     return false
   }
 
-  private validateEmailFormat (value: string): boolean {
+  validateEmailFormat (value: string): boolean {
     // eslint-disable-next-line max-len
     const VALID_FORMAT = new RegExp(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
     return VALID_FORMAT.test(value)
   }
 
   @Watch('validate')
-  private onValidate (): void {
+  onValidate (): void {
     this.$refs.correctNrForm.validate()
   }
 
   /** Watch for form submission and emit results. */
   @Watch('formType')
-  private async onSubmit (): Promise<any> {
+  async onSubmit (): Promise<any> {
     // this component should only see correct-new-nr form type
     if (this.formType === CorrectNameOptions.CORRECT_NEW_NR) {
       try {
@@ -199,14 +202,11 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
           this.applicantEmail
         )
 
-        if (this.getEntityType !== nr.legalType) {
+        if (this.isNameRequestInvalid(nr)) {
           // Invalid NR type, inform parent the process is done and prompt confirm dialog
           this.emitIsSaved()
 
-          const dialogContent = `<p class="info-text">This ${GetCorpFullDescription(nr.entity_type_cd)} ` +
-            `Name Request does not match the current business type ` +
-            `<b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n` +
-            `The Name Request type must match the business type before you can continue.</p>`
+          const dialogContent = this.nameRequestErrorText(nr)
           await this.showConfirmDialog(
             this.$refs.confirm,
             'Name Request Type Does Not Match Business Type',
@@ -215,6 +215,11 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
           )
         } else {
           this.parseNameRequest(nr)
+          // Set our entity type, if it's a conversion request
+          if (nr.request_action_cd === NrRequestActionCodes.CONVERSION) {
+            this.setEntityType(nr.legalType)
+            this.setEntityTypeChangedByName(true)
+          }
           this.emitIsSaved(true)
         }
       } catch {
@@ -225,11 +230,39 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
     }
   }
 
+  /* Checks name request type or if it's an invalid conversion name request. */
+  isNameRequestInvalid (nr: NrResponseIF): boolean {
+    const isNameEntityTypeDifferent = this.getEntityType !== nr.legalType
+    const entityTypeOptions = this.getResource?.changeData?.entityTypeOptions
+    const isValidConversionNameRequest = nr.request_action_cd === NrRequestActionCodes.CONVERSION &&
+          entityTypeOptions?.some(options => options.value === nr.legalType)
+    return (isNameEntityTypeDifferent && !isValidConversionNameRequest)
+  }
+
+  /* Generate content of error depending on name request type. */
+  nameRequestErrorText (nr: NrResponseIF): string {
+    const isConversionOrAlterationNameRequest = nr.request_action_cd === NrRequestActionCodes.CONVERSION
+    let dialogContent = ''
+    if (isConversionOrAlterationNameRequest) {
+      dialogContent = `<p class="info-text">This alteration name request from ` +
+        `${GetCorpFullDescription(nr.entity_type_cd)} to ${GetCorpFullDescription(nr.legalType)} ` +
+        `does not match the current business type ` +
+        `<b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n` +
+        `The Name Request type must match the business type before you can continue.</p>`
+    } else {
+      dialogContent = `<p class="info-text">This ${GetCorpFullDescription(nr.entity_type_cd)} ` +
+      `Name Request does not match the current business type ` +
+      `<b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n` +
+      `The Name Request type must match the business type before you can continue.</p>`
+    }
+    return dialogContent
+  }
+
   /**
    * Parse and Set the Name Request date to Store.
    * @param nr The name request data
    */
-  private parseNameRequest (nr: NrResponseIF): void {
+  parseNameRequest (nr: NrResponseIF): void {
     const nrCorrection: NrCorrectionIF = {
       legalType: nr.legalType,
       nrNumber: this.nameRequestNumber,
@@ -251,7 +284,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
 
   /** Inform parent the process is complete. */
   @Emit('isSaved')
-  private emitIsSaved (isSaved = false): boolean {
+  emitIsSaved (isSaved = false): boolean {
     if (!isSaved) this.$refs.correctNrForm.resetValidation()
     return isSaved
   }
@@ -262,7 +295,7 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   @Watch('applicantPhone')
   @Watch('applicantEmail')
   @Emit('isValid')
-  private emitValid (): boolean {
+  emitValid (): boolean {
     return this.isFormValid
   }
 }
