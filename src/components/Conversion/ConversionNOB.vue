@@ -157,7 +157,7 @@ import Vue from 'vue'
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
-import { ActionBindingIF, FlagsCompanyInfoIF } from '@/interfaces/'
+import { ActionKvIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { isEqual } from 'lodash'
 import { useStore } from '@/store/store'
@@ -172,8 +172,8 @@ export default class ConversionNOB extends Mixins(CommonMixin) {
   @Getter(useStore) getSnapshotNaics!: NaicsIF
   @Getter(useStore) hasNaicsChanged!: boolean
 
-  @Action(useStore) setNaics!: ActionBindingIF
-  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setNaics!: (x: NaicsIF) => void
+  @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // local variables
   protected dropdown = false // v-model for dropdown menu

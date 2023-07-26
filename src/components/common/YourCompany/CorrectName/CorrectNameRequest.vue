@@ -101,7 +101,7 @@ import { Component, Prop, Watch, Emit, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { CommonMixin, NameRequestMixin } from '@/mixins/'
-import { ActionBindingIF, ConfirmDialogType, NameRequestApplicantIF, NameRequestIF, NrCorrectionIF,
+import { ConfirmDialogType, NameRequestApplicantIF, NameRequestIF, NrCorrectionIF,
   NrResponseIF } from '@/interfaces/'
 import { CorrectNameOptions } from '@/enums/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
@@ -129,9 +129,9 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
   @Getter(useStore) getNameRequest!: NameRequestIF
   @Getter(useStore) getEntityType!: CorpTypeCd
 
-  @Action(useStore) setNameRequest!: ActionBindingIF
-  @Action(useStore) setEntityType!: ActionBindingIF
-  @Action(useStore) setEntityTypeChangedByName!: ActionBindingIF
+  @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
+  @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
+  @Action(useStore) setEntityTypeChangedByName!: (x: boolean) => void
 
   // Local properties
   formValid = false

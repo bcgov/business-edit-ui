@@ -64,7 +64,6 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter, Action } from 'pinia-class'
-import { ActionBindingIF } from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, NameRequestMixin } from '@/mixins/'
 import { LegalServices } from '@/services/'
 import { Navigate } from '@/utils/'
@@ -86,10 +85,10 @@ export default class Actions extends Mixins(DateMixin, FilingTemplateMixin, Name
   @Getter(useStore) isSavingResuming!: boolean
 
   // Global actions
-  @Action(useStore) setIsSaving!: ActionBindingIF
-  @Action(useStore) setIsSavingResuming!: ActionBindingIF
-  @Action(useStore) setIsFilingPaying!: ActionBindingIF
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
+  @Action(useStore) setIsSaving!: (x: boolean) => void
+  @Action(useStore) setIsSavingResuming!: (x: boolean) => void
+  @Action(useStore) setIsFilingPaying!: (x: boolean) => void
+  @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
 
   /** True if the Save button should be disabled. */
   get isSaveButtonDisabled (): boolean {

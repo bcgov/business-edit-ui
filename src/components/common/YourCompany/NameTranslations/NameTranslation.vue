@@ -207,7 +207,7 @@ import { Action, Getter } from 'pinia-class'
 import { ActionChip as ActionChipShared } from '@bcrs-shared-components/action-chip/'
 import { ConfirmDialog as ConfirmDialogShared } from '@bcrs-shared-components/confirm-dialog/'
 import { ListNameTranslation, AddNameTranslation } from './'
-import { ActionBindingIF, ConfirmDialogType, NameTranslationIF, FlagsCompanyInfoIF } from '@/interfaces/'
+import { ActionKvIF, ConfirmDialogType, NameTranslationIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { ActionTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
 import { useStore } from '@/store/store'
@@ -238,9 +238,9 @@ export default class NameTranslation extends Mixins(CommonMixin) {
   @Getter(useStore) isLimitedRestorationToFull!: boolean
 
   // Global actions
-  @Action(useStore) setEditingNameTranslations!: ActionBindingIF
-  @Action(useStore) setNameTranslations!: ActionBindingIF
-  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setEditingNameTranslations!: (x: boolean) => void
+  @Action(useStore) setNameTranslations!: (x: NameTranslationIF[]) => void
+  @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // declaration for template
   readonly ActionTypes = ActionTypes

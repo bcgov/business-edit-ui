@@ -333,7 +333,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { HelpSection } from '@/components/common/'
-import { ActionBindingIF, EntitySnapshotIF, RulesMemorandumIF } from '@/interfaces'
+import { EntitySnapshotIF, RulesMemorandumIF } from '@/interfaces'
 import DateUtilities from '@/services/date-utilities'
 import { FormIF } from '@bcrs-shared-components/interfaces'
 import { Component, Watch } from 'vue-property-decorator'
@@ -360,9 +360,9 @@ export default class Rules extends Vue {
     @Getter(useStore) getNameRequestLegalName!: string
     @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
 
-    @Action(useStore) setEditingRules!: ActionBindingIF
-    @Action(useStore) setSpecialResolutionRules!: ActionBindingIF
-    @Action(useStore) setSpecialResolutionRulesValid!: ActionBindingIF
+    @Action(useStore) setEditingRules!: (x: boolean) => void
+    @Action(useStore) setSpecialResolutionRules!: (x: RulesMemorandumIF) => void
+    @Action(useStore) setSpecialResolutionRulesValid!: (x: boolean) => void
 
     $refs!: {
       rulesForm: FormIF,

@@ -22,7 +22,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { NaicsServices } from '@/services/'
-import { ActionBindingIF, FlagsCompanyInfoIF } from '@/interfaces/'
+import { ActionKvIF, FlagsCompanyInfoIF } from '@/interfaces/'
 import { NaicsIF } from '@bcrs-shared-components/interfaces/'
 import { NatureOfBusiness as NatureOfBusinessShared } from '@bcrs-shared-components/nature-of-business/'
 import { CommonMixin } from '@/mixins'
@@ -44,8 +44,8 @@ export default class NatureOfBusiness extends Mixins(CommonMixin) {
   @Getter(useStore) hasNaicsChanged!: boolean
   @Getter(useStore) getSnapshotNaics!: NaicsIF
 
-  @Action(useStore) setNaics!: ActionBindingIF
-  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setNaics!: (x: NaicsIF) => void
+  @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   /** The section validity state (when prompted by app). */
   get invalidSection (): boolean {

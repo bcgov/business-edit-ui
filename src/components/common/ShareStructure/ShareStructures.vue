@@ -34,7 +34,7 @@ import { ShareStructure as ShareStructureShared } from '@bcrs-shared-components/
 import { ResolutionDateDialog } from '@/dialogs/'
 import { CommonMixin } from '@/mixins/'
 
-import { ActionBindingIF, EntitySnapshotIF, ShareClassIF, ShareStructureIF, FlagsCompanyInfoIF }
+import { ActionKvIF, EntitySnapshotIF, ShareClassIF, ShareStructureIF, FlagsCompanyInfoIF }
   from '@/interfaces/'
 
 import { useStore } from '@/store/store'
@@ -62,11 +62,11 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Getter(useStore) isAlterationFiling!: boolean
 
   // Global actions
-  @Action(useStore) setCreateShareStructureStepValidity!: ActionBindingIF
-  @Action(useStore) setEditingShareStructure!: ActionBindingIF
-  @Action(useStore) setShareClasses!: ActionBindingIF
-  @Action(useStore) setShareStructureChanged!: ActionBindingIF
-  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setCreateShareStructureStepValidity!: (x: boolean) => void
+  @Action(useStore) setEditingShareStructure!: (x: boolean) => void
+  @Action(useStore) setShareClasses!: (x: ShareClassIF[]) => void
+  @Action(useStore) setShareStructureChanged!: (x: boolean) => void
+  @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // Local propertiues
   protected isEditing = false

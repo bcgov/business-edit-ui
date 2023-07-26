@@ -34,7 +34,7 @@ export interface NameRequestIF {
   details?: NameRequestDetailsIF
   expiry?: string
   filingId?: number
-  legalName: string
+  legalName?: string
   legalType: CorpTypeCd
   nrNumber?: string
   requestType?: NrRequestActionCodes

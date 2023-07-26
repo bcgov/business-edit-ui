@@ -2,7 +2,7 @@ import { CourtOrderIF, NameRequestIF, NameTranslationIF, ShareStructureIF }
   from '@/interfaces/'
 import { CoopTypes } from '@/enums'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
-import { CorpTypeCd } from '@bcrs-shared-components/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 
 //
 // Ref: https://github.com/bcgov/business-schemas/blob/main/src/registry_schemas/schemas/alteration.json

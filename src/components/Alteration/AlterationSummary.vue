@@ -171,7 +171,7 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { ActionBindingIF, FeesIF, FlagsReviewCertifyIF, ResolutionsIF } from '@/interfaces/'
+import { FeesIF, FlagsReviewCertifyIF, ResolutionsIF } from '@/interfaces/'
 import { DateMixin, FilingTemplateMixin, FeeMixin } from '@/mixins/'
 import { EffectiveDateTime, NameTranslation, ShareStructures } from '@/components/common/'
 import { ResolutionDates } from '@/components/Alteration/'
@@ -197,7 +197,7 @@ export default class AlterationSummary extends Mixins(DateMixin, FeeMixin, Filin
   @Getter(useStore) isBusySaving!: boolean
 
   // Global actions
-  @Action(useStore) setEffectiveDateValid!: ActionBindingIF
+  @Action(useStore) setEffectiveDateValid!: (x: boolean) => void
 
   /** Whether to perform validation. */
   @Prop() readonly validate!: boolean

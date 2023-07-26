@@ -2,14 +2,14 @@ import { Component } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
-import { ActionBindingIF, AddressesIF, AlterationFilingIF, CertifyIF, CoopAlterationIF, CorrectionInformationIF,
-  CorrectionFilingIF, EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
+import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, CoopAlterationIF, CorrectionInformationIF,
+  CorrectionFilingIF, CourtOrderIF, EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
   NameRequestIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF, RestorationStateIF,
   SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF } from '@/interfaces/'
 import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
   StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
-import { ActionTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
-  RoleTypes } from '@/enums/'
+import { ActionTypes, ApprovalTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
+  RelationshipTypes, RestorationTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { FilingTypeToName } from '@/utils'
@@ -80,38 +80,38 @@ export default class FilingTemplateMixin extends DateMixin {
   @Getter(useStore) hasSpecialResolutionResolutionChanged!: boolean
 
   // Global actions
-  @Action(useStore) setBusinessContact!: ActionBindingIF
-  @Action(useStore) setBusinessInformation!: ActionBindingIF
-  @Action(useStore) setCertifyState!: ActionBindingIF
-  @Action(useStore) setCorrectionInformation!: ActionBindingIF
-  @Action(useStore) setEntityType!: ActionBindingIF
-  @Action(useStore) setOfficeAddresses!: ActionBindingIF
-  @Action(useStore) setNaics!: ActionBindingIF
-  @Action(useStore) setNameTranslations!: ActionBindingIF
-  @Action(useStore) setNameRequest!: ActionBindingIF
-  @Action(useStore) setPeopleAndRoles!: ActionBindingIF
-  @Action(useStore) setShareClasses!: ActionBindingIF
-  @Action(useStore) setEffectiveDateTimeString!: ActionBindingIF
-  @Action(useStore) setIsFutureEffective!: ActionBindingIF
-  @Action(useStore) setFolioNumber!: ActionBindingIF
-  @Action(useStore) setTransactionalFolioNumber!: ActionBindingIF
-  @Action(useStore) setStaffPayment!: ActionBindingIF
-  @Action(useStore) setDetailComment!: ActionBindingIF
-  @Action(useStore) setEntitySnapshot!: ActionBindingIF
-  @Action(useStore) setDocumentOptionalEmail!: ActionBindingIF
-  @Action(useStore) setProvisionsRemoved!: ActionBindingIF
-  @Action(useStore) setNewResolutionDates!: ActionBindingIF
-  @Action(useStore) setFileNumber!: ActionBindingIF
-  @Action(useStore) setHasPlanOfArrangement!: ActionBindingIF
-  @Action(useStore) setSpecialResolution!: ActionBindingIF
-  @Action(useStore) setCorrectionStartDate!: ActionBindingIF
-  @Action(useStore) setRestorationApprovalType!: ActionBindingIF
-  @Action(useStore) setRestorationCourtOrder!: ActionBindingIF
-  @Action(useStore) setRestorationExpiryDate!: ActionBindingIF
-  @Action(useStore) setRestorationType!: ActionBindingIF
-  @Action(useStore) setRestorationRelationships!: ActionBindingIF
-  @Action(useStore) setSpecialResolutionMemorandum!: ActionBindingIF
-  @Action(useStore) setSpecialResolutionRules!: ActionBindingIF
+  @Action(useStore) setBusinessContact!: (x: ContactPointIF) => void
+  @Action(useStore) setBusinessInformation!: (x: BusinessInformationIF) => void
+  @Action(useStore) setCertifyState!: (x: CertifyIF) => void
+  @Action(useStore) setCorrectionInformation!: (x: CorrectionInformationIF) => void
+  @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
+  @Action(useStore) setOfficeAddresses!: (x: AddressesIF) => void
+  @Action(useStore) setNaics!: (x: NaicsIF) => void
+  @Action(useStore) setNameTranslations!: (x: NameTranslationIF[]) => void
+  @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
+  @Action(useStore) setPeopleAndRoles!: (x: OrgPersonIF[]) => void
+  @Action(useStore) setShareClasses!: (x: ShareClassIF[]) => void
+  @Action(useStore) setEffectiveDateTimeString!: (x: string) => void
+  @Action(useStore) setIsFutureEffective!: (x: boolean) => void
+  @Action(useStore) setFolioNumber!: (x: string) => void
+  @Action(useStore) setTransactionalFolioNumber!: (x: string) => void
+  @Action(useStore) setStaffPayment!: (x: StaffPaymentIF) => void
+  @Action(useStore) setDetailComment!: (x: string) => void
+  @Action(useStore) setEntitySnapshot!: (x: EntitySnapshotIF) => void
+  @Action(useStore) setDocumentOptionalEmail!: (x: string) => void
+  @Action(useStore) setProvisionsRemoved!: (x: boolean) => void
+  @Action(useStore) setNewResolutionDates!: (x: string[]) => void
+  @Action(useStore) setFileNumber!: (x: string) => void
+  @Action(useStore) setHasPlanOfArrangement!: (x: boolean) => void
+  @Action(useStore) setSpecialResolution!: (x: SpecialResolutionIF) => void
+  @Action(useStore) setCorrectionStartDate!: (x: string) => void
+  @Action(useStore) setRestorationApprovalType!: (x: ApprovalTypes) => void
+  @Action(useStore) setRestorationCourtOrder!: (x: CourtOrderIF) => void
+  @Action(useStore) setRestorationExpiryDate!: (x: string) => void
+  @Action(useStore) setRestorationType!: (x: RestorationTypes) => void
+  @Action(useStore) setRestorationRelationships!: (x: RelationshipTypes[]) => void
+  @Action(useStore) setSpecialResolutionMemorandum!: (x: RulesMemorandumIF) => void
+  @Action(useStore) setSpecialResolutionRules!: (x: RulesMemorandumIF) => void
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {

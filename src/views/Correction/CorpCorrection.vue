@@ -81,7 +81,7 @@ import { BusinessContactInfo, CertifySection, CompletingParty, Detail, EntityNam
 import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
-import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
+import { CorrectionFilingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { BcCorrectionResource, BenCorrectionResource, CccCorrectionResource, UlcCorrectionResource }
   from '@/resources/Correction/'
 import { useStore } from '@/store/store'
@@ -113,9 +113,8 @@ export default class CorpCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
   @Getter(useStore) isBenefitCompany!: boolean
 
   // Global actions
-  @Action(useStore) setCertifyStatementResource!: ActionBindingIF
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
-  @Action(useStore) setResource!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
+  @Action(useStore) setResource!: (x: ResourceIF) => void
 
   /** The draft correction filing to process. */
   @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF

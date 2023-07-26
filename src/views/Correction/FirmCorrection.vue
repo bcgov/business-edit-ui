@@ -54,7 +54,7 @@ import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, C
   EntityName, NatureOfBusiness, OfficeAddresses, PeopleAndRoles, StaffPayment, YourCompanyWrapper }
   from '@/components/common/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, CorrectionFilingIF, EntitySnapshotIF, ResourceIF }
+import { CorrectionFilingIF, EntitySnapshotIF, ResourceIF }
   from '@/interfaces/'
 import { AuthServices, LegalServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
@@ -84,9 +84,8 @@ export default class FirmCorrection extends Mixins(CommonMixin, FeeMixin, Filing
   @Getter(useStore) isSoleProp!: boolean
 
   // Global actions
-  @Action(useStore) setCertifyStatementResource!: ActionBindingIF
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
-  @Action(useStore) setResource!: ActionBindingIF
+  @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
+  @Action(useStore) setResource!: (x: ResourceIF) => void
 
   /** The draft correction filing to process. */
   @Prop({ default: () => null }) readonly correctionFiling!: CorrectionFilingIF

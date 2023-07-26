@@ -14,10 +14,13 @@ import {
 } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import {
+  ActionKvIF,
+  AccountInformationIF,
   AddressesIF,
   BusinessInformationIF,
   CertifyIF,
   CorrectionInformationIF,
+  CourtOrderIF,
   EffectiveDateTimeIF,
   EntitySnapshotIF,
   FeesIF,
@@ -33,9 +36,7 @@ import {
   ShareClassIF,
   StateIF,
   StateFilingRestorationIF,
-  ValidationFlagsIF,
-  ActionKvIF,
-  CourtOrderIF } from '@/interfaces/'
+  ValidationFlagsIF } from '@/interfaces/'
 import {
   CompletingPartyIF,
   ContactPointIF,
@@ -1306,25 +1307,25 @@ export const useStore = defineStore('store', {
     setEntityTypeChangedByName (entityTypeChangedByName: boolean) {
       this.stateModel.tombstone.entityTypeChangedByName = entityTypeChangedByName
     },
-    setBusinessId (businessId) {
+    setBusinessId (businessId: string) {
       this.stateModel.tombstone.businessId = businessId
     },
-    setIsSaving (isSaving) {
+    setIsSaving (isSaving: boolean) {
       this.stateModel.tombstone.isSaving = isSaving
     },
-    setIsSavingResuming (isSavingResuming) {
+    setIsSavingResuming (isSavingResuming: boolean) {
       this.stateModel.tombstone.isSavingResuming = isSavingResuming
     },
-    setIsFilingPaying (isFilingPaying) {
+    setIsFilingPaying (isFilingPaying: boolean) {
       this.stateModel.tombstone.isFilingPaying = isFilingPaying
     },
-    setKeycloakRoles (keycloakRoles) {
+    setKeycloakRoles (keycloakRoles: string[]) {
       this.stateModel.tombstone.keycloakRoles = keycloakRoles
     },
-    setUserInfo (userInfo) {
+    setUserInfo (userInfo: any) {
       this.stateModel.tombstone.userInfo = userInfo
     },
-    setOrgInfo (orgInfo) {
+    setOrgInfo (orgInfo: any) {
       this.stateModel.tombstone.orgInfo = orgInfo
     },
     setCurrentDate (dateString: string) {
@@ -1351,14 +1352,14 @@ export const useStore = defineStore('store', {
       this.stateModel.certifyState = certifyState
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
     },
-    setCertifyStateValidity (validity) {
+    setCertifyStateValidity (validity: boolean) {
       this.stateModel.validationFlags.flagsReviewCertify.isValidCertify = validity
     },
     setDocumentOptionalEmail (documentOptionalEmail: string) {
       this.stateModel.documentDelivery.documentOptionalEmail = documentOptionalEmail
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
     },
-    setDocumentOptionalEmailValidity (validity) {
+    setDocumentOptionalEmailValidity (validity: boolean) {
       this.stateModel.validationFlags.flagsReviewCertify.isValidDocumentOptionalEmail = validity
     },
     setCompletingParty (cp: CompletingPartyIF) {
@@ -1372,7 +1373,7 @@ export const useStore = defineStore('store', {
       this.stateModel.tombstone.transactionalFolioNumber = folioNumber
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
     },
-    setTransactionalFolioNumberValidity (validity) {
+    setTransactionalFolioNumberValidity (validity: boolean) {
       this.stateModel.validationFlags.flagsReviewCertify.isValidTransactionalFolioNumber = validity
     },
     setBusinessContact (businessContact: ContactPointIF) {
@@ -1387,7 +1388,7 @@ export const useStore = defineStore('store', {
       this.stateModel.tombstone.folioNumber = folioNumber
       // NB: folio number was changed immediately in auth db - do not set unsaved Changes flag
     },
-    setAccountInformation (accountInformation) {
+    setAccountInformation (accountInformation: AccountInformationIF) {
       this.stateModel.accountInformation = accountInformation
     },
     setBusinessInformation (businessInformation: BusinessInformationIF) {
@@ -1442,7 +1443,7 @@ export const useStore = defineStore('store', {
     setEntitySnapshot (entitySnapshot: EntitySnapshotIF) {
       this.stateModel.entitySnapshot = entitySnapshot
     },
-    setStaffPayment (staffPayment) {
+    setStaffPayment (staffPayment: StaffPaymentIF) {
       this.stateModel.staffPayment = staffPayment
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
     },

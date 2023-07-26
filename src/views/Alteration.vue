@@ -135,7 +135,7 @@ import { BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, Curre
 import { NameTranslation } from '@/components/common/YourCompany/NameTranslations/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
+import { EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
@@ -181,10 +181,10 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
   @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action(useStore) setFilingId!: ActionBindingIF
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
-  @Action(useStore) setResource!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmailValidity!: (x: boolean) => void
+  @Action(useStore) setFilingId!: (x: number) => void
+  @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
+  @Action(useStore) setResource!: (x: ResourceIF) => void
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean

@@ -107,7 +107,7 @@ import { BusinessContactInfo, BusinessStartDate, BusinessType, CertifySection, C
   TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, EntitySnapshotIF, ResourceIF } from '@/interfaces/'
+import { EntitySnapshotIF, ResourceIF } from '@/interfaces/'
 import { FilingStatus, PartyTypes } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { SpChangeResource, GpChangeResource, SpOrganizationChangeResource } from '@/resources/Change/'
@@ -149,10 +149,10 @@ export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplate
   @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action(useStore) setDocumentOptionalEmailValidity!: ActionBindingIF
-  @Action(useStore) setFilingId!: ActionBindingIF
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
-  @Action(useStore) setResource!: ActionBindingIF
+  @Action(useStore) setDocumentOptionalEmailValidity!: (x: boolean) => void
+  @Action(useStore) setFilingId!: (x: number) => void
+  @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
+  @Action(useStore) setResource!: (x: ResourceIF) => void
 
   /** Whether App is ready. */
   @Prop({ default: false }) readonly appReady!: boolean

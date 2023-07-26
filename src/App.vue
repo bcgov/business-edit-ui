@@ -139,10 +139,10 @@ import * as Views from '@/views/'
 import * as Dialogs from '@/dialogs/'
 import { AuthServices } from '@/services/'
 import { CommonMixin, FilingTemplateMixin } from '@/mixins/'
-import { ActionBindingIF, ConfirmDialogType } from '@/interfaces/'
+import { AccountInformationIF, ConfirmDialogType } from '@/interfaces/'
 import { BreadcrumbIF, CompletingPartyIF } from '@bcrs-shared-components/interfaces/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
-import { RouteNames } from '@/enums/'
+import { FilingTypes, RouteNames } from '@/enums/'
 import { getEntityDashboardBreadcrumb, getMyBusinessRegistryBreadcrumb, getRegistryDashboardBreadcrumb,
   getStaffDashboardBreadcrumb } from '@/resources/BreadCrumbResources'
 import DateUtilities from '@/services/date-utilities'
@@ -188,22 +188,22 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   @Getter(useStore) showFeeSummary!: boolean
 
   // Global actions
-  @Action(useStore) setAccountInformation!: ActionBindingIF
-  @Action(useStore) setAppValidate!: ActionBindingIF
-  @Action(useStore) setBusinessId!: ActionBindingIF
-  @Action(useStore) setCompletingParty!: ActionBindingIF
-  @Action(useStore) setComponentValidate!: ActionBindingIF
-  @Action(useStore) setCurrentDate!: ActionBindingIF
-  @Action(useStore) setCurrentJsDate!: ActionBindingIF
-  @Action(useStore) setFilingId!: ActionBindingIF
-  @Action(useStore) setFilingType!: ActionBindingIF
-  @Action(useStore) setHaveUnsavedChanges!: ActionBindingIF
-  @Action(useStore) setIsFilingPaying!: ActionBindingIF
-  @Action(useStore) setIsSaving!: ActionBindingIF
-  @Action(useStore) setKeycloakRoles!: ActionBindingIF
-  @Action(useStore) setOrgInfo!: ActionBindingIF
-  @Action(useStore) setSummaryMode!: ActionBindingIF
-  @Action(useStore) setUserInfo!: ActionBindingIF
+  @Action(useStore) setAccountInformation!: (x: AccountInformationIF) => void
+  @Action(useStore) setAppValidate!: (x: boolean) => void
+  @Action(useStore) setBusinessId!: (x: string) => void
+  @Action(useStore) setCompletingParty!: (x: CompletingPartyIF) => void
+  @Action(useStore) setComponentValidate!: (x: boolean) => void
+  @Action(useStore) setCurrentDate!: (x: string) => void
+  @Action(useStore) setCurrentJsDate!: (x: Date) => void
+  @Action(useStore) setFilingId!: (x: number) => void
+  @Action(useStore) setFilingType!: (x: FilingTypes) => void
+  @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
+  @Action(useStore) setIsFilingPaying!: (x: boolean) => void
+  @Action(useStore) setIsSaving!: (x: boolean) => void
+  @Action(useStore) setKeycloakRoles!: (x: string[]) => void
+  @Action(useStore) setOrgInfo!: (x: any) => void
+  @Action(useStore) setSummaryMode!: (x: boolean) => void
+  @Action(useStore) setUserInfo!: (x: any) => void
 
   // Local properties
   accountAuthorizationDialog = false

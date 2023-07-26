@@ -170,7 +170,6 @@
 import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { ActionBindingIF } from '@/interfaces/'
 import HelpResolution from './HelpResolution.vue'
 import InstructionalText from './InstructionalText.vue'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
@@ -198,8 +197,8 @@ export default class Resolution extends Vue {
   @Getter(useStore) isSpecialResolutionFiling: boolean
   @Getter(useStore) showSpecialResolutionResolution!: boolean
 
-  @Action(useStore) setEditingSpecialResolution!: ActionBindingIF
-  @Action(useStore) setSpecialResolution!: ActionBindingIF
+  @Action(useStore) setEditingSpecialResolution!: (x: boolean) => void
+  @Action(useStore) setSpecialResolution!: (x: SpecialResolutionIF) => void
 
   $refs!: {
     resolutionEditor: FormIF,

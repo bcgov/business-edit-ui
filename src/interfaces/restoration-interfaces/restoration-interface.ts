@@ -1,6 +1,6 @@
 import { ApprovalTypes, RestorationTypes, RelationshipTypes } from '@/enums'
 import { AddressesIF, CourtOrderIF, NameRequestIF, NameTranslationIF, OrgPersonIF } from '@/interfaces/'
-import { CorpTypeCd } from '@bcrs-shared-components/enums'
+import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
 
 //

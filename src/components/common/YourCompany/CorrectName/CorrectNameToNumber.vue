@@ -23,7 +23,7 @@ import { Component, Prop, Watch, Emit } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 
 // Interfaces && enums
-import { ActionBindingIF, NameRequestIF } from '@/interfaces/'
+import { NameRequestIF } from '@/interfaces/'
 import { CorrectNameOptions } from '@/enums/'
 import { useStore } from '@/store/store'
 
@@ -32,7 +32,7 @@ export default class CorrectNameToNumber extends Vue {
   /** Form Submission Prop */
   @Prop({ default: null }) readonly formType!: CorrectNameOptions
 
-  @Action(useStore) setNameRequest!: ActionBindingIF
+  @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
 
   @Getter(useStore) getNameRequest!: NameRequestIF
   @Getter(useStore) getBusinessId!: string

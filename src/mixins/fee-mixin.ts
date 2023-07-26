@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { ActionBindingIF, EmptyFees, FeesIF } from '@/interfaces'
+import { EmptyFees, FeesIF } from '@/interfaces'
 import { PayServices } from '@/services/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums'
 import { FilingDataIF, StaffPaymentIF } from '@bcrs-shared-components/interfaces'
@@ -19,9 +19,9 @@ export default class FeeMixin extends Vue {
   @Getter(useStore) getStaffPayment!: StaffPaymentIF
 
   // Global actions
-  @Action(useStore) setCurrentFees!: ActionBindingIF
-  @Action(useStore) setFeePrices!: ActionBindingIF
-  @Action(useStore) setFilingData!: ActionBindingIF
+  @Action(useStore) setCurrentFees!: (x: FeesIF[]) => void
+  @Action(useStore) setFeePrices!: (x: FeesIF[]) => void
+  @Action(useStore) setFilingData!: (x: FilingDataIF[]) => void
 
   /** Provides the filing fees price. */
   get filingFeesPrice (): string {

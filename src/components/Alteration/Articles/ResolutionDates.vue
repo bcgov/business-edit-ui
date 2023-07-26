@@ -175,7 +175,7 @@ import { Action, Getter } from 'pinia-class'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { cloneDeep } from 'lodash'
-import { ActionBindingIF } from '@/interfaces/'
+import { ActionKvIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -205,7 +205,7 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   @Getter(useStore) isCorrectionFiling!: boolean
 
   // Global setter
-  @Action(useStore) setValidComponent!: ActionBindingIF
+  @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // Local properties
   displayPreviousDates = false

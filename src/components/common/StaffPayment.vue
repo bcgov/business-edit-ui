@@ -36,7 +36,7 @@ import { Action, Getter } from 'pinia-class'
 import { StaffPayment as StaffPaymentShared } from '@bcrs-shared-components/staff-payment/'
 
 // Interfaces and Enums
-import { ActionBindingIF, FlagsReviewCertifyIF } from '@/interfaces/'
+import { FlagsReviewCertifyIF } from '@/interfaces/'
 import { StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 
@@ -54,8 +54,8 @@ export default class StaffPayment extends Vue {
   @Getter(useStore) getStaffPayment!: StaffPaymentIF
 
   // Global actions
-  @Action(useStore) setStaffPayment!: ActionBindingIF
-  @Action(useStore) setStaffPaymentValidity!: ActionBindingIF
+  @Action(useStore) setStaffPayment!: (x: StaffPaymentIF) => void
+  @Action(useStore) setStaffPaymentValidity!: (x: boolean) => void
 
   /** Prop to provide section number. */
   @Prop({ default: '' }) readonly sectionNumber!: string

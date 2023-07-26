@@ -248,7 +248,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CoopTypes, CorrectNameOptions } from '@/enums/'
-import { ActionBindingIF, EntitySnapshotIF, NameRequestApplicantIF, NameRequestIF }
+import { ActionKvIF, BusinessInformationIF, EntitySnapshotIF, NameRequestApplicantIF, NameRequestIF }
   from '@/interfaces/'
 import CorrectName from '@/components/common/YourCompany/CorrectName/CorrectName.vue'
 import { NameRequestMixin } from '@/mixins'
@@ -289,12 +289,12 @@ export default class EntityName extends Mixins(NameRequestMixin) {
   @Getter(useStore) isEntityTypeChangedByName!: boolean
 
   // store actions
-  @Action(useStore) setBusinessInformation!: ActionBindingIF
-  @Action(useStore) setEditingCompanyName!: ActionBindingIF
-  @Action(useStore) setNameRequest!: ActionBindingIF
-  @Action(useStore) setValidComponent!: ActionBindingIF
-  @Action(useStore) setEntityType!: ActionBindingIF
-  @Action(useStore) setEntityTypeChangedByName!: ActionBindingIF
+  @Action(useStore) setBusinessInformation!: (x: BusinessInformationIF) => void
+  @Action(useStore) setEditingCompanyName!: (x: boolean) => void
+  @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
+  @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
+  @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
+  @Action(useStore) setEntityTypeChangedByName!: (x: boolean) => void
 
   // Returns true if the undo button should be displayed. This is the case when the company name has changed,
   // or the business name has changed during an alteration, firm change, or special resolution filing,
