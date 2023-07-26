@@ -10,7 +10,6 @@ import Affix from 'vue-affix'
 import Vue2Filters from 'vue2-filters' // needed by SbcFeeSummary
 import Vuetify from 'vuetify'
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
-import * as util from '@/utils/'
 
 Vue.use(Vuetify)
 Vue.use(Affix)
@@ -29,13 +28,3 @@ Vue.use(TiptapVuetifyPlugin, {
   // optional, default to 'md' (default vuetify icons before v2.0.0)
   iconsGroup: 'mdi'
 })
-
-// Mock feature flags for unit tests.
-jest.spyOn(util, 'GetFeatureFlag').mockImplementation(
-  (name) => {
-    if (name === 'supported-alteration-change-business-types') {
-      return ['BEN', 'BC', 'CC', 'ULC']
-    } else {
-      return util.defaultFlagSet[name]
-    }
-  })

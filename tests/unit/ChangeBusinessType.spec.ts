@@ -6,6 +6,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes, RoleTypes } from '@/enums'
 import { EntitySnapshotIF, OrgPersonIF } from '@/interfaces'
+import { mockFeatureFlagsForAlterationChangeBusinessTypes } from './utils'
 
 const vuetify = new Vuetify({})
 
@@ -84,6 +85,7 @@ describe('Change Business Type component', () => {
   })
 
   it('should have correct button and no tooltip for BC Alteration filing', async () => {
+    mockFeatureFlagsForAlterationChangeBusinessTypes()
     store.stateModel.tombstone.entityType = CorpTypeCd.BC_COMPANY
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
     store.stateModel.entitySnapshot = { businessInfo: { legalType: 'BC' } } as any
@@ -97,6 +99,7 @@ describe('Change Business Type component', () => {
     expect(wrapper.find('#btn-correct-business-type').exists()).toBe(true)
 
     wrapper.destroy()
+    jest.clearAllMocks()
   })
 
   it('should have actions hidden when entityTypeChangedByName is enabled', () => {

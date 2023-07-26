@@ -136,7 +136,7 @@ import { NameTranslation } from '@/components/common/YourCompany/NameTranslation
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
-import { FilingStatus } from '@/enums/'
+import { FilingCodes, FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
   from '@/resources/Alteration/'
@@ -213,6 +213,19 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
       case this.isBcUlcCompany: return UlcAlterationResource
     }
     return null
+  }
+
+  @Watch('hasBusinessTypeChanged')
+  onBusinessTypeChanged () {
+    // When we are converting from BC to ULC, it's $1000 not $100.
+    if (this.getEntitySnapshot?.businessInfo?.legalType === CorpTypeCd.BC_COMPANY &&
+        this.getEntityType === CorpTypeCd.BC_ULC_COMPANY) {
+      this.setFilingData([{
+        filingTypeCode: FilingCodes.ALTERATION_BC_TO_ULC,
+        entityType: CorpTypeCd.BC_COMPANY,
+        priority: false
+      }])
+    }
   }
 
   /** Called when App is ready and this component can load its data. */

@@ -244,16 +244,16 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
     const isConversionOrAlterationNameRequest = nr.request_action_cd === NrRequestActionCodes.CONVERSION
     let dialogContent = ''
     if (isConversionOrAlterationNameRequest) {
-      dialogContent = `<p class="info-text">This alteration name request from ` +
-        `${GetCorpFullDescription(nr.entity_type_cd)} to ${GetCorpFullDescription(nr.legalType)} ` +
-        `does not match the current business type ` +
-        `<b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n` +
-        `The Name Request type must match the business type before you can continue.</p>`
+      dialogContent = `<p class="info-text">This alteration name request from
+        ${GetCorpFullDescription(nr.entity_type_cd)} to ${GetCorpFullDescription(nr.legalType)}
+        does not match the current business type
+        <b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n
+        The Name Request type must match the business type before you can continue.</p>`
     } else {
-      dialogContent = `<p class="info-text">This ${GetCorpFullDescription(nr.entity_type_cd)} ` +
-      `Name Request does not match the current business type ` +
-      `<b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n` +
-      `The Name Request type must match the business type before you can continue.</p>`
+      dialogContent = `<p class="info-text">This ${GetCorpFullDescription(nr.entity_type_cd)}
+      Name Request does not match the current business type
+      <b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n
+      The Name Request type must match the business type before you can continue.</p>`
     }
     return dialogContent
   }
