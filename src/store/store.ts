@@ -14,10 +14,13 @@ import {
 } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
 import {
+  ActionKvIF,
+  AccountInformationIF,
   AddressesIF,
   BusinessInformationIF,
   CertifyIF,
   CorrectionInformationIF,
+  CourtOrderIF,
   EffectiveDateTimeIF,
   EntitySnapshotIF,
   FeesIF,
@@ -33,10 +36,7 @@ import {
   ShareClassIF,
   StateIF,
   StateFilingRestorationIF,
-  ValidationFlagsIF,
-  ActionKvIF,
-  CourtOrderIF,
-  AccountInformationIF } from '@/interfaces/'
+  ValidationFlagsIF } from '@/interfaces/'
 import {
   CompletingPartyIF,
   ContactPointIF,
