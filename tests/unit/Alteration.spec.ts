@@ -409,7 +409,8 @@ describe('Alteration component', () => {
     } as EntitySnapshotIF
     await Vue.nextTick()
 
-    expect(store.stateModel.filingData[0].filingTypeCode).toBe(FilingCodes.ALTERATION_BC_TO_ULC)
+    // Travis Semple - will use ENUM after bcrs-shared-components has been updated.
+    expect(store.stateModel.filingData[0].filingTypeCode).toBe('NOALU')
   })
 
   it('certify text is not prefilled/editable for staff user', async () => {
