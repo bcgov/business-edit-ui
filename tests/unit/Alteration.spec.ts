@@ -10,7 +10,7 @@ import mockRouter from './MockRouter'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { AccountTypes, ActionTypes, CorpTypeCd, FilingTypes } from '@/enums'
+import { AccountTypes, ActionTypes, CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
 import { BusinessContactInfo, BusinessType, EntityName, FolioInformation, NameTranslation, OfficeAddresses,
   RecognitionDateTime, YourCompanyWrapper } from '@/components/common'
 import { EntitySnapshotIF } from '@/interfaces'
@@ -409,7 +409,7 @@ describe('Alteration component', () => {
     } as EntitySnapshotIF
     await Vue.nextTick()
 
-    expect(store.stateModel.filingData[0].filingTypeCode).toBe('NOALU')
+    expect(store.stateModel.filingData[0].filingTypeCode).toBe(FilingCodes.ALTERATION_BC_TO_ULC)
   })
 
   it('certify text is not prefilled/editable for staff user', async () => {
