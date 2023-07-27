@@ -409,7 +409,6 @@ describe('Alteration component', () => {
     } as EntitySnapshotIF
     await Vue.nextTick()
 
-    // Travis Semple - will use ENUM after bcrs-shared-components has been updated.
     expect(store.stateModel.filingData[0].filingTypeCode).toBe('NOALU')
   })
 

@@ -12,6 +12,12 @@ export const BcAlterationResource: ResourceIF = {
     entityType: CorpTypeCd.BC_COMPANY,
     priority: false
   },
+  // Conditionally used in place of filingData when switching from BC to ULC.
+  additionalFilingData: {
+    filingTypeCode: 'NOALU' as FilingCodes,
+    entityType: CorpTypeCd.BC_COMPANY,
+    priority: false
+  },
   changeData: {
     correctNameOptions: [
       CorrectNameOptions.CORRECT_NEW_NR,

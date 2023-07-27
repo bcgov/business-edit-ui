@@ -13,6 +13,12 @@ export const CpSpecialResolutionResource: ResourceIF = {
     entityType: CorpTypeCd.COOP,
     priority: false
   },
+  // Conditionally used with the filingData above for special resolution name changes.
+  additionalFilingData: {
+    filingTypeCode: FilingCodes.SPECIAL_RESOLUTION_NAME_CHANGE,
+    entityType: CorpTypeCd.COOP,
+    priority: false
+  },
   changeData: {
     correctNameOptions: [
       CorrectNameOptions.CORRECT_NEW_NR

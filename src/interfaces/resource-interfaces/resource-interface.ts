@@ -13,6 +13,7 @@ export interface ResourceIF {
   title?: string // BEN corrections only
   description?: string // BEN corrections only
   filingData: FilingDataIF | Array<FilingDataIF>
+  additionalFilingData?: FilingDataIF,
   changeData?: {
     correctNameOptions: Array<CorrectNameOptions>
     typeChangeInfo?: string

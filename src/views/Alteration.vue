@@ -221,10 +221,9 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
     // When we are converting from BC to ULC, it's $1000 not $100.
     if (this.getEntitySnapshot?.businessInfo?.legalType === CorpTypeCd.BC_COMPANY &&
         this.getEntityType === CorpTypeCd.BC_ULC_COMPANY) {
-      // Travis Semple - will use ENUM after bcrs-shared-components has been updated.
       this.setFilingData([{
-        filingTypeCode: 'NOALU' as FilingCodes,
-        entityType: CorpTypeCd.BC_COMPANY,
+        filingTypeCode: BcAlterationResource.additionalFilingData.filingTypeCode,
+        entityType: BcAlterationResource.additionalFilingData.entityType,
         priority: filingData[0].priority,
         futureEffective: filingData[0].futureEffective
       }])
