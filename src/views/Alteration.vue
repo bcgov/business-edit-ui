@@ -136,7 +136,7 @@ import { NameTranslation } from '@/components/common/YourCompany/NameTranslation
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
-import { FilingCodes, FilingStatus } from '@/enums/'
+import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
   from '@/resources/Alteration/'
