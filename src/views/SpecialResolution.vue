@@ -149,8 +149,7 @@ import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, Com
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import { EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
-import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
-import { FilingCodes, FilingStatus } from '@/enums/'
+import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { CpSpecialResolutionResource } from '@/resources/SpecialResolution/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
@@ -280,11 +279,7 @@ export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, Fil
       // initialize Fee Summary data
       const filingData = [this.specialResolutionResource.filingData]
       if (this.hasBusinessNameChanged) {
-        filingData.push({
-          filingTypeCode: FilingCodes.SPECIAL_RESOLUTION_NAME_CHANGE,
-          entityType: CorpTypeCd.COOP,
-          priority: false
-        })
+        filingData.push(this.specialResolutionResource.additionalFilingData)
       }
       filingData.forEach(fd => {
         // FUTURE: verify type of fd and fix following type error accordingly
@@ -363,11 +358,7 @@ export default class SpecialResolution extends Mixins(CommonMixin, FeeMixin, Fil
     if (this.specialResolutionResource) {
       let filingData = [this.specialResolutionResource.filingData]
       if (hasBusinessNameChanged) {
-        filingData.push({
-          filingTypeCode: FilingCodes.SPECIAL_RESOLUTION_NAME_CHANGE,
-          entityType: CorpTypeCd.COOP,
-          priority: false
-        })
+        filingData.push(this.specialResolutionResource.additionalFilingData)
       }
       this.setFilingData(filingData)
       // update the current fees for this filing

@@ -215,6 +215,29 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
     return null
   }
 
+  @Watch('hasBusinessTypeChanged')
+  onBusinessTypeChanged () {
+    const filingData = this.getFilingData
+    // When we are converting from BC to ULC, it's $1000 not $100.
+    if (this.getEntitySnapshot?.businessInfo?.legalType === CorpTypeCd.BC_COMPANY &&
+        this.getEntityType === CorpTypeCd.BC_ULC_COMPANY) {
+      this.setFilingData([{
+        filingTypeCode: BcAlterationResource.additionalFilingData.filingTypeCode,
+        entityType: BcAlterationResource.additionalFilingData.entityType,
+        priority: filingData[0].priority,
+        futureEffective: filingData[0].futureEffective
+      }])
+    } else {
+      const resourceFilingData = this.alterationResource.filingData as FilingDataIF
+      this.setFilingData([{
+        filingTypeCode: resourceFilingData.filingTypeCode,
+        entityType: resourceFilingData.entityType,
+        priority: filingData[0].priority,
+        futureEffective: filingData[0].futureEffective
+      }])
+    }
+  }
+
   /** Called when App is ready and this component can load its data. */
   @Watch('appReady')
   private async onAppReady (val: boolean): Promise<void> {

@@ -10,9 +10,10 @@ import mockRouter from './MockRouter'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
-import { AccountTypes, ActionTypes, FilingTypes } from '@/enums'
+import { AccountTypes, ActionTypes, CorpTypeCd, FilingCodes, FilingTypes } from '@/enums'
 import { BusinessContactInfo, BusinessType, EntityName, FolioInformation, NameTranslation, OfficeAddresses,
   RecognitionDateTime, YourCompanyWrapper } from '@/components/common'
+import { EntitySnapshotIF } from '@/interfaces'
 
 const vuetify = new Vuetify({})
 
@@ -395,6 +396,20 @@ describe('Alteration component', () => {
     await wrapper.vm.onAlterationSummaryChanges()
     expect(store.stateModel.currentFees[0].filingFees).toBe(100)
     expect(store.stateModel.currentFees[0].futureEffectiveFees).toBe(100)
+  })
+
+  it('updates the current fees when alterating business type from BC to ULC', async () => {
+    sinon.restore()
+
+    store.stateModel.tombstone.entityType = CorpTypeCd.BC_ULC_COMPANY
+    store.stateModel.entitySnapshot = {
+      businessInfo: {
+        legalType: CorpTypeCd.BC_COMPANY
+      }
+    } as EntitySnapshotIF
+    await Vue.nextTick()
+
+    expect(store.stateModel.filingData[0].filingTypeCode).toBe(FilingCodes.ALTERATION_BC_TO_ULC)
   })
 
   it('certify text is not prefilled/editable for staff user', async () => {

@@ -6,6 +6,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@bcrs-shared-components/enums'
 import { CorpTypeCd as CorpTypeModuleCd } from '@bcrs-shared-components/corp-type-module'
+import { mockFeatureFlagsForAlterationChangeBusinessTypes } from './utils'
 
 const vuetify = new Vuetify({})
 
@@ -46,10 +47,12 @@ describe('ChangeBusinessType in an Alteration', () => {
     store.stateModel.entitySnapshot = entitySnapshot
     store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
 
+    mockFeatureFlagsForAlterationChangeBusinessTypes()
     wrapper = mount(ChangeBusinessType, { vuetify })
   })
 
   afterEach(() => {
+    jest.clearAllMocks()
     wrapper.destroy()
   })
 
