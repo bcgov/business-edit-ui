@@ -331,9 +331,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   /** Called when component is mounted. */
   mounted (): void {
     this.initializeEntityType()
-    // this.supportedEntityTypes = GetFeatureFlag('supported-alteration-change-business-types') || []
-    this.supportedEntityTypes = GetFeatureFlag('supported-alteration-change-business-types') ||
-      ['BEN', 'BC', 'CC', 'ULC']
+    this.supportedEntityTypes = GetFeatureFlag('supported-alteration-change-business-types') || []
   }
 
   /** Define the entity type locally once the value has been populated in the store. */
