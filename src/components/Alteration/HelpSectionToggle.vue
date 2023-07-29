@@ -30,3 +30,13 @@ export default class HelpSectionToggle extends Vue {
     isHelpVisible = false
 }
 </script>
+<style lang="scss" scoped>
+@import '@/assets/styles/theme.scss';
+.help-toggle {
+  color: $app-blue;
+
+  :hover {
+    cursor: pointer;
+  }
+}
+</style>

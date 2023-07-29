@@ -171,10 +171,10 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
   @Getter(useStore) getAppValidate!: boolean
   @Getter(useStore) getUserFirstName!: string
   @Getter(useStore) getUserLastName!: string
-  @Getter(useStore) isBcCcc!: boolean
-  @Getter(useStore) isBcCompany!: boolean
-  @Getter(useStore) isBcUlcCompany!: boolean
-  @Getter(useStore) isBenefitCompany!: boolean
+  @Getter(useStore) isOriginBcCompany!: boolean
+  @Getter(useStore) isOriginBenefitCompany!: boolean
+  @Getter(useStore) isOriginBcCcc!: boolean
+  @Getter(useStore) isOriginBcUlcCompany!: boolean
   @Getter(useStore) isPremiumAccount!: boolean
   @Getter(useStore) isRoleStaff!: boolean
   @Getter(useStore) isSummaryMode!: boolean
@@ -207,10 +207,10 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
   /** The resource object for an alteration filing. */
   get alterationResource (): ResourceIF {
     switch (true) {
-      case this.isBcCompany: return BcAlterationResource
-      case this.isBenefitCompany: return BenAlterationResource
-      case this.isBcCcc: return CccAlterationResource
-      case this.isBcUlcCompany: return UlcAlterationResource
+      case this.isOriginBcCompany: return BcAlterationResource
+      case this.isOriginBenefitCompany: return BenAlterationResource
+      case this.isOriginBcCcc: return CccAlterationResource
+      case this.isOriginBcUlcCompany: return UlcAlterationResource
     }
     return null
   }

@@ -446,7 +446,12 @@ describe('CorrectNameRequest', () => {
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@example.com'
-            }
+            },
+            actions: [
+              {
+                filingName: 'BC'
+              }
+            ]
           }
       }))
 
@@ -542,7 +547,12 @@ describe('CorrectNameRequest', () => {
             applicants: {
               phoneNumber: '250 516 8257',
               emailAddress: 'mock@example.com'
-            }
+            },
+            actions: [
+              {
+                filingName: 'BC'
+              }
+            ]
           }
       }))
 

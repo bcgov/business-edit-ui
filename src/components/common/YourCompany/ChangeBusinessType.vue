@@ -100,6 +100,7 @@
         <v-select
           id="business-type-selector"
           v-model="selectedEntityType"
+          :class="{ 'disabled-select': isEntityTypeChangedByName }"
           :disabled="isEntityTypeChangedByName"
           :items="entityTypeOptions"
           :hint="isEntityTypeChangedByName ? '' : 'Select a New Business Type'"
@@ -110,6 +111,27 @@
             <span class="list-item">{{ data.item.text }}</span>
           </template>
         </v-select>
+        <template v-if="isEntityTypeChangedByName && hasBusinessTypeChanged">
+          <!-- Reminder: Type changed based on name request -->
+          <v-row
+            no-gutters
+          >
+            <v-col cols="auto">
+              <v-icon
+                class="pr-2"
+                color="primary"
+              >
+                mdi-alert-circle-outline
+              </v-icon>
+            </v-col>
+
+            <v-col>
+              <div class="info-text">
+                We have changed your business type based on the Name Request you entered.
+              </div>
+            </v-col>
+          </v-row>
+        </template>
 
         <div
           v-if="minimumThreeDirectorError"
@@ -309,7 +331,9 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   /** Called when component is mounted. */
   mounted (): void {
     this.initializeEntityType()
-    this.supportedEntityTypes = GetFeatureFlag('supported-alteration-change-business-types') || []
+    // this.supportedEntityTypes = GetFeatureFlag('supported-alteration-change-business-types') || []
+    this.supportedEntityTypes = GetFeatureFlag('supported-alteration-change-business-types') ||
+      ['BEN', 'BC', 'CC', 'ULC']
   }
 
   /** Define the entity type locally once the value has been populated in the store. */
@@ -481,14 +505,6 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   line-height: 1.5rem
 }
 
-.help-toggle {
-  color: $app-blue;
-
-  :hover {
-    cursor: pointer;
-  }
-}
-
 .actions {
   position: absolute;
   right: 0;
@@ -520,6 +536,15 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     background-color: $app-blue !important;
     opacity: 0.2;
   }
+}
+
+/*
+This rule changes the color and opacity of the text in a disabled v-select component.
+The :deep pseudo-element and !important flag are used to override Vuetify's default styles.
+*/
+:deep(.disabled-select.theme--light.v-select .v-select__selection--disabled) {
+  color: $gray9 !important;
+  opacity: 1 !important;
 }
 
 :deep(.theme--light.v-label) {

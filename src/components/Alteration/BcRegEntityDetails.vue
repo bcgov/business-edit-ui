@@ -151,7 +151,11 @@
               </p>
               <div class="provision-help pa-10">
                 <span class="info-text">
-                  TEXT FOR RELATED LEGISLATION
+                  Refer to <span class="font-weight-bold">
+                    51.97, 257 and 259 of the Business Corporations Act. </span>
+                  Please read these sections carefully before you proceed with filing the Notice of
+                  Alteration. Every alteration to the company's Notice of Articles must be appropriately
+                  authorized by the company or the court.
                 </span>
               </div>
             </section>
