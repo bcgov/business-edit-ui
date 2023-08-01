@@ -241,16 +241,13 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
 
   /* Generate content of error depending on name request type. */
   nameRequestErrorText (nr: NrResponseIF): string {
-    let changeFrom = GetCorpFullDescription(nr.actions[0].filingName.split(' ')[0] as CorpTypeCd)
     const isConversionOrAlterationNameRequest = nr.request_action_cd === NrRequestActionCodes.CONVERSION
     let dialogContent = ''
     if (isConversionOrAlterationNameRequest) {
       dialogContent = `<p class="info-text">
-        This alteration name request from
-        ${changeFrom} to ${GetCorpFullDescription(nr.legalType)}
-        does not match the current business type
+        This alteration name request does not match the current business type
         <b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n
-        The Name Request type must match the business type before you can continue.</p>`
+        The Name Request type must match the busines type before you can continue.</p>`
     } else {
       dialogContent = `<p class="info-text">
       This ${GetCorpFullDescription(nr.legalType)}
