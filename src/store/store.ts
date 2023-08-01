@@ -150,6 +150,28 @@ export const useStore = defineStore('store', {
       return (this.getCorrectedFilingType === FilingTypes.CHANGE_OF_REGISTRATION)
     },
 
+    /** The original entity type, this is for entity type alteration */
+    getOriginLegalType (): CorpTypeCd {
+      return this.getEntitySnapshot?.businessInfo?.legalType
+    },
+
+    // Original entity type getters
+    isOriginBcCompany (): boolean {
+      return (this.getOriginLegalType === CorpTypeCd.BC_COMPANY)
+    },
+
+    isOriginBenefitCompany (): boolean {
+      return (this.getOriginLegalType === CorpTypeCd.BENEFIT_COMPANY)
+    },
+
+    isOriginBcUlcCompany (): boolean {
+      return (this.getOriginLegalType === CorpTypeCd.BC_ULC_COMPANY)
+    },
+
+    isOriginBcCcc (): boolean {
+      return (this.getOriginLegalType === CorpTypeCd.BC_CCC)
+    },
+
     /** The entity type. */
     getEntityType (): CorpTypeCd {
       return this.stateModel.tombstone.entityType

@@ -36,7 +36,10 @@
 
       <!-- Display Mode -->
       <template v-if="!isEditingNames">
-        <v-col cols="7">
+        <v-col
+          cols="7"
+          class="mt-1"
+        >
           <div class="company-name font-weight-bold text-uppercase">
             {{ companyName }}
           </div>

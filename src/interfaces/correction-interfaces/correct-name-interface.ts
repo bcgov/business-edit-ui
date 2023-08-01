@@ -20,7 +20,15 @@ export interface NrCorrectionIF {
   applicant: NameRequestApplicantIF
 }
 
+export interface NrActionIF {
+  URL: string | null,
+  entitiesFilingName: string | null,
+  filingName: string,
+  learTemplate: string | null
+}
+
 export interface NrResponseIF {
+  actions?: NrActionIF[]
   legalType: CorpTypeCd,
   entity_type_cd: CorpTypeCd, // eslint-disable-line camelcase
   expirationDate: string,

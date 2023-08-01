@@ -38,7 +38,7 @@
                 :filingData="getFilingData"
                 :payApiUrl="payApiUrl"
                 :isLoading="isBusySaving"
-                :hasConflicts="isConflictingLegalType && getNameRequestNumber"
+                :hasConflicts="isConflictingLegalType && (getNameRequestNumber || isNameChangedByType)"
                 :confirmLabel="feeSummaryConfirmLabel"
                 :errorMessage="feeSummaryError"
                 :isSummaryMode="isSummaryMode"
@@ -110,6 +110,7 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
   @Getter(useStore) isCorrectionFiling!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
+  @Getter(useStore) isNameChangedByType!: boolean
   @Getter(useStore) isRestorationFiling!: boolean
   @Getter(useStore) isSummaryMode!: boolean
   @Getter(useStore) isSpecialResolutionFiling!: boolean
