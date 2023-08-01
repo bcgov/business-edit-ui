@@ -150,7 +150,7 @@ export const useStore = defineStore('store', {
       return (this.getCorrectedFilingType === FilingTypes.CHANGE_OF_REGISTRATION)
     },
 
-    /** The origin entity type. */
+    /** The original entity type, this is for entity type alteration */
     getOriginLegalType (): CorpTypeCd {
       return this.getEntitySnapshot?.businessInfo?.legalType
     },

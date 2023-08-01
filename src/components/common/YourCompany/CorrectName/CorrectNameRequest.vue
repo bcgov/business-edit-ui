@@ -247,13 +247,13 @@ export default class CorrectNameRequest extends Mixins(CommonMixin, NameRequestM
       dialogContent = `<p class="info-text">
         This alteration name request does not match the current business type
         <b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n
-        The Name Request type must match the busines type before you can continue.</p>`
+        The Name Request type must match the business type before you can continue.</p>`
     } else {
       dialogContent = `<p class="info-text">
-      This ${GetCorpFullDescription(nr.legalType)}
-      Name Request does not match the current business type
-      <b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n
-      The Name Request type must match the business type before you can continue.</p>`
+        This ${GetCorpFullDescription(nr.legalType)}
+        Name Request does not match the current business type
+        <b>${GetCorpFullDescription(this.getEntityType)}</b>.\n\n
+        The Name Request type must match the business type before you can continue.</p>`
     }
     return dialogContent
   }
