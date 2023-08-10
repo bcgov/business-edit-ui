@@ -376,6 +376,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     if (this.getEntitySnapshot?.businessInfo?.legalType === CorpTypeCd.BC_CCC) {
       return false
     }
+    // If our feature flag is off, don't allow editing of the business type.
+    if (this.supportedEntityTypes == null || this.supportedEntityTypes?.length === 0) {
+      return false
+    }
     return this.supportedEntityTypes?.includes(this.getEntitySnapshot?.businessInfo?.legalType)
   }
 
