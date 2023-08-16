@@ -14,6 +14,7 @@ import { AccountTypes, ActionTypes, CorpTypeCd, FilingCodes, FilingTypes } from 
 import { BusinessContactInfo, BusinessType, EntityName, FolioInformation, NameTranslation, OfficeAddresses,
   RecognitionDateTime, YourCompanyWrapper } from '@/components/common'
 import { EntitySnapshotIF } from '@/interfaces'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -61,7 +62,7 @@ describe('Alteration component', () => {
   beforeEach(async () => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     const get = sinon.stub(axios, 'get')
 
@@ -463,7 +464,7 @@ describe('Alteration component', () => {
   })
 
   // FUTURE
-  xit('loads a draft alteration into the store', async () => {
+  it.skip('loads a draft alteration into the store', async () => {
     // Validate Effective Date-Time
     expect(store.stateModel.effectiveDateTime.isFutureEffective).toBe(true)
     expect(store.stateModel.effectiveDateTime.dateTimeString).toBe('2021-03-22T18:00:00.000Z')

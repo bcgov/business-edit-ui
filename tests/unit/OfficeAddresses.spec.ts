@@ -7,9 +7,10 @@ import { BenAlterationResource } from '@/resources/Alteration/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes } from '@/enums'
+import { vi } from 'vitest'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
-console.warn = jest.fn()
+console.warn = vi.fn()
 
 const vuetify = new Vuetify({})
 

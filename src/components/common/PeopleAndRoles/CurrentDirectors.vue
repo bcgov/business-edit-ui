@@ -92,7 +92,7 @@ import { OrgPersonIF } from '@/interfaces/'
 import { RoleTypes } from '@/enums/'
 import { CommonMixin } from '@/mixins/'
 import { IsSame } from '@/utils/'
-import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
+import { BaseAddress } from '@bcrs-shared-components/base-address'
 
 import { useStore } from '@/store/store'
 

@@ -4,6 +4,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { mount } from '@vue/test-utils'
 import SigningParty from '@/components/SpecialResolution/SigningParty.vue'
 import { useStore } from '@/store/store'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -59,11 +60,11 @@ describe('SigningParty', () => {
     const signingDate = '2023-01-01'
     wrapper.setData({ signatory, signingDate })
     wrapper.vm.$refs.signatureDatePickerRef = {
-      validateForm: jest.fn(),
-      isDateValid: jest.fn().mockReturnValue(true)
+      validateForm: vi.fn(),
+      isDateValid: vi.fn().mockReturnValue(true)
     }
 
-    wrapper.vm.setSpecialResolutionSignatureValid = jest.fn()
+    wrapper.vm.setSpecialResolutionSignatureValid = vi.fn()
 
     wrapper.vm.onValidate()
     await Vue.nextTick()

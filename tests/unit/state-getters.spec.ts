@@ -67,7 +67,7 @@ describe('State Getters', () => {
   })
 
   // FUTURE: fix this to work for non-correction filing
-  xit('returns correct values for "Is Filing Valid" getter', async () => {
+  it.skip('returns correct values for "Is Filing Valid" getter', async () => {
     // initially, this getter should be false
     expect(vm.isCorrectionValid).toBe(false)
 

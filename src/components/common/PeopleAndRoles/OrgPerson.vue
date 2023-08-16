@@ -446,7 +446,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { IsSame } from '@/utils/'
 import { OrgPersonIF, FormIF, AddressIF, AddressSchemaIF, RoleIF, ResourceIF, EmptyBusinessLookup,
   BusinessLookupIF } from '@/interfaces/'
-import BaseAddress from 'sbc-common-components/src/components/BaseAddress.vue'
+import { BaseAddress } from '@bcrs-shared-components/base-address'
 import { HelpSection } from '@/components/common/'
 import { BusinessLookup as BusinessLookupShared } from '@bcrs-shared-components/business-lookup'
 import { CommonMixin, OrgPersonMixin } from '@/mixins/'

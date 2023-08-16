@@ -2,6 +2,7 @@ import sinon from 'sinon'
 import { AxiosInstance as axios } from '@/utils/'
 import LegalServices from '@/services/legal-services'
 import { DocumentIF } from '@/interfaces'
+import { vi } from 'vitest'
 
 describe('Legal Services', () => {
   let del: any
@@ -270,8 +271,8 @@ describe('Legal Services', () => {
     get.withArgs('document.link').returns(Promise.resolve({ data: '1234' }))
     const createObjectURL = window.URL.createObjectURL
     const revokeObjectURL = window.URL.revokeObjectURL
-    window.URL.createObjectURL = jest.fn()
-    window.URL.revokeObjectURL = jest.fn()
+    window.URL.createObjectURL = vi.fn()
+    window.URL.revokeObjectURL = vi.fn()
     const documentResponse = await LegalServices.fetchDocument(documentRequest)
     // Restore window object.
     window.URL.createObjectURL = createObjectURL
@@ -282,7 +283,7 @@ describe('Legal Services', () => {
   it('handles errors as expected', async () => {
     // mock the console.log function to suppress messages
     const log = console.log
-    console.log = jest.fn()
+    console.log = vi.fn()
 
     // verify fetchFilingById with no response.data
     get.withArgs('businesses/CP1234567/filings/1234').returns(Promise.resolve({}))

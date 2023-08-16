@@ -8,9 +8,10 @@ import { GpChangeResource } from '@/resources/Change/GP'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes } from '@/enums'
+import { vi } from 'vitest'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
-console.warn = jest.fn()
+console.warn = vi.fn()
 
 // Prevent the warning "[Vuetify] Unable to locate target [data-app]"
 document.body.setAttribute('data-app', 'true')

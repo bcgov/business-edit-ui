@@ -10,6 +10,7 @@ import NameTranslation from '@/components/common/YourCompany/NameTranslations/Na
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@/enums'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -17,7 +18,7 @@ setActivePinia(createPinia())
 const store = useStore()
 
 // FUTURE: update tests
-xdescribe('Restoration Summary component', () => {
+describe.skip('Restoration Summary component', () => {
   let wrapper: any
 
   const entitySnapshot = {
@@ -70,7 +71,7 @@ xdescribe('Restoration Summary component', () => {
   })
 
   it('displays the confirm dialog when selecting Remove action', async () => {
-    const mock = jest.spyOn(wrapper.vm, 'onDeleteClicked')
+    const mock = vi.spyOn(wrapper.vm, 'onDeleteClicked')
     expect(mock).not.toHaveBeenCalled()
 
     const rootWrapper = createWrapper(wrapper.vm.$root)

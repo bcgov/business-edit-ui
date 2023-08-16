@@ -141,7 +141,7 @@ export default class HelpResolution extends Vue {
   get documentURL (): string {
     /**
      * In session is stored the BASE_URL with business ID
-     * So we are taking from process.env.BASE_URL
+     * So we are taking from import.meta.env.BASE_URL
      */
     const baseUrl = new URL(sessionStorage.getItem('BASE_URL'))
     // Strip out the /CP10230123/ from the end of the url.

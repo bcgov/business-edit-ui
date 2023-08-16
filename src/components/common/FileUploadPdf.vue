@@ -21,6 +21,7 @@ import { AxiosResponse } from 'axios'
 import { Component, Emit, Prop } from 'vue-property-decorator'
 import { PageSizes, PAGE_SIZE_DICT } from '@/enums'
 import { PdfInfoIF, PresignedUrlIF } from '@/interfaces'
+import * as pdfjs from 'pdfjs-dist/legacy/build/pdf'
 
 @Component({})
 export default class FileUploadPdf extends Vue {
@@ -38,20 +39,19 @@ export default class FileUploadPdf extends Vue {
   @Prop({ required: true })
   readonly uploadToUrl!: (url: string, file: File, key: string, userId: string) => Promise<AxiosResponse>
 
-  private pdfjsLib: any
+  pdfjsLib: any
   /** Component key, used to force it to re-render. */
   count = 0
 
   /** Custom errors messages, use to put component into manual error mode. */
   errorMessages = [] as Array<string>
 
-  created (): void {
+  async created () {
     /** Load the lib and worker this way to avoid a memory leak (esp in unit tests)
-     *  Must use require instead of import or this doesn't work
      *  Must use legacy build for unit tests not running in Node 18+
      */
-    this.pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js')
-    this.pdfjsLib.GlobalWorkerOptions.workerSrc = require('pdfjs-dist/legacy/build/pdf.worker.entry')
+    this.pdfjsLib = pdfjs
+    this.pdfjsLib.GlobalWorkerOptions.workerSrc = await import('pdfjs-dist/legacy/build/pdf.worker.entry')
   }
 
   /** Clears data and local state. */

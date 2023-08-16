@@ -43,7 +43,7 @@ describe('Date Mixin', () => {
   })
 
   // FUTURE: this works locally but not in GHA; fix later
-  xit('returns correct values for dateToYyyyMmDd()', () => {
+  it.skip('returns correct values for dateToYyyyMmDd()', () => {
     expect(vm.dateToYyyyMmDd(null)).toBeNull()
     expect(vm.dateToYyyyMmDd(new Date('not a date'))).toBeNull()
     // verify that GMT/UTC is correctly converted to Pacific
@@ -63,7 +63,7 @@ describe('Date Mixin', () => {
     expect(vm.dateToYyyyMmDd(new Date('2021-07-01 03:00:00 EDT'))).toBe('2021-07-01')
   })
 
-  xit('returns correct values for dateToPacificDate()', () => {
+  it.skip('returns correct values for dateToPacificDate()', () => {
     // FUTURE
   })
 
@@ -98,7 +98,7 @@ describe('Date Mixin', () => {
     expect(vm.dateToPacificDateTime(new Date('2021-07-01 07:00:00 GMT'))).toBe('July 1, 2021 at 12:00 am Pacific time')
   })
 
-  xit('returns correct values for apiToDate()', () => {
+  it.skip('returns correct values for apiToDate()', () => {
     // FUTURE
   })
 

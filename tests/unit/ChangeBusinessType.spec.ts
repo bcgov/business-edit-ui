@@ -7,6 +7,7 @@ import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes, RoleTypes } from '@/enums'
 import { EntitySnapshotIF, OrgPersonIF } from '@/interfaces'
 import { mockFeatureFlagsForAlterationChangeBusinessTypes } from './utils'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -99,7 +100,7 @@ describe('Change Business Type component', () => {
     expect(wrapper.find('#btn-correct-business-type').exists()).toBe(true)
 
     wrapper.destroy()
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   it('should have actions hidden when entityTypeChangedByName is enabled', () => {

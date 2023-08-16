@@ -6,9 +6,10 @@ import PeopleAndRoles from '@/components/common/PeopleAndRoles/PeopleAndRoles.vu
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { ActionTypes, CorpTypeCd, FilingTypes } from '@/enums'
+import { vi } from 'vitest'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
-console.warn = jest.fn()
+console.warn = vi.fn()
 
 const vuetify = new Vuetify({})
 
@@ -313,7 +314,7 @@ describe('People And Roles component for Change of Registration', () => {
       vuetify
     })
     const vm = wrapper.vm as any
-    const mockScrollToTop = jest.spyOn(vm, 'scrollToTop').mockImplementation()
+    const mockScrollToTop = vi.spyOn(vm, 'scrollToTop').mockImplementation()
 
     // call reset, restoring the removed-replaced item
     await vm.reset(true)
@@ -350,8 +351,8 @@ describe('People And Roles component for Change of Registration', () => {
       vuetify
     })
     const vm = wrapper.vm as any
-    const mockSetValidity = jest.spyOn(vm, 'setPeopleAndRolesValidity')
-    const mockSetChanged = jest.spyOn(vm, 'setPeopleAndRolesChanged')
+    const mockSetValidity = vi.spyOn(vm, 'setPeopleAndRolesValidity')
+    const mockSetChanged = vi.spyOn(vm, 'setPeopleAndRolesChanged')
 
     // call undo for the added item
     vm.undo(0)
@@ -392,8 +393,8 @@ describe('People And Roles component for Change of Registration', () => {
       vuetify
     })
     const vm = wrapper.vm as any
-    const mockSetValidity = jest.spyOn(vm, 'setPeopleAndRolesValidity')
-    const mockSetChanged = jest.spyOn(vm, 'setPeopleAndRolesChanged')
+    const mockSetValidity = vi.spyOn(vm, 'setPeopleAndRolesValidity')
+    const mockSetChanged = vi.spyOn(vm, 'setPeopleAndRolesChanged')
 
     // call undo for the removed item
     vm.undo(0)
@@ -441,8 +442,8 @@ describe('People And Roles component for Change of Registration', () => {
       vuetify
     })
     const vm = wrapper.vm as any
-    const mockSetValidity = jest.spyOn(vm, 'setPeopleAndRolesValidity')
-    const mockSetChanged = jest.spyOn(vm, 'setPeopleAndRolesChanged')
+    const mockSetValidity = vi.spyOn(vm, 'setPeopleAndRolesValidity')
+    const mockSetChanged = vi.spyOn(vm, 'setPeopleAndRolesChanged')
 
     // call undo for the added-replaced item
     vm.undo(1)

@@ -17,6 +17,7 @@ import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
 import { EntityName, FolioInformation, NameTranslation, OfficeAddresses, RecognitionDateTime,
   YourCompanyWrapper } from '@/components/common'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -215,24 +216,24 @@ describe('Limited Restoration Extension component - edit page', () => {
 
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     // mock services function
-    jest.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
       () => Promise.resolve(filing))
-    jest.spyOn((LegalServices as any), 'fetchBusinessInfo').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockImplementation(
       () => Promise.resolve(businessInfo))
-    jest.spyOn((AuthServices as any), 'fetchAuthInfo').mockImplementation(
+    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockImplementation(
       () => Promise.resolve(authInfo))
-    jest.spyOn((LegalServices as any), 'fetchAddresses').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchAddresses').mockImplementation(
       () => Promise.resolve(addresses))
-    jest.spyOn((LegalServices as any), 'fetchNameTranslations').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockImplementation(
       () => Promise.resolve(nameTranslations))
-    jest.spyOn((LegalServices as any), 'fetchDirectors').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchDirectors').mockImplementation(
       () => Promise.resolve(directors))
-    jest.spyOn((LegalServices as any), 'fetchFiling').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchFiling').mockImplementation(
       () => Promise.resolve(stateFiling))
-    jest.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
+    vi.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
       () => Promise.resolve(filingFees))
 
     // init store
@@ -266,7 +267,7 @@ describe('Limited Restoration Extension component - edit page', () => {
 
   afterAll(() => {
     window.location.assign = assign
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 
@@ -324,24 +325,24 @@ describe('Limited Restoration Extension component - summary page (with no filing
 
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     // mock services function
-    jest.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
       () => Promise.resolve(filing))
-    jest.spyOn((LegalServices as any), 'fetchBusinessInfo').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockImplementation(
       () => Promise.resolve(businessInfo))
-    jest.spyOn((AuthServices as any), 'fetchAuthInfo').mockImplementation(
+    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockImplementation(
       () => Promise.resolve(authInfo))
-    jest.spyOn((LegalServices as any), 'fetchAddresses').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchAddresses').mockImplementation(
       () => Promise.resolve(addresses))
-    jest.spyOn((LegalServices as any), 'fetchNameTranslations').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockImplementation(
       () => Promise.resolve(nameTranslations))
-    jest.spyOn((LegalServices as any), 'fetchDirectors').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchDirectors').mockImplementation(
       () => Promise.resolve(directors))
-    jest.spyOn((LegalServices as any), 'fetchFiling').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchFiling').mockImplementation(
       () => Promise.resolve(stateFiling))
-    jest.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
+    vi.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
       () => Promise.resolve(filingFees))
 
     wrapper = shallowMount(LimitedRestorationExtension, {
@@ -361,7 +362,7 @@ describe('Limited Restoration Extension component - summary page (with no filing
 
   afterAll(() => {
     window.location.assign = assign
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 
@@ -386,24 +387,24 @@ describe('Limited Restoration Extension component - summary page (with filing ch
   beforeAll(async () => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     // mock services function
-    jest.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchFilingById').mockImplementation(
       () => Promise.resolve(filing))
-    jest.spyOn((LegalServices as any), 'fetchBusinessInfo').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchBusinessInfo').mockImplementation(
       () => Promise.resolve(businessInfo))
-    jest.spyOn((AuthServices as any), 'fetchAuthInfo').mockImplementation(
+    vi.spyOn((AuthServices as any), 'fetchAuthInfo').mockImplementation(
       () => Promise.resolve(authInfo))
-    jest.spyOn((LegalServices as any), 'fetchAddresses').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchAddresses').mockImplementation(
       () => Promise.resolve(addresses))
-    jest.spyOn((LegalServices as any), 'fetchNameTranslations').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchNameTranslations').mockImplementation(
       () => Promise.resolve(nameTranslations))
-    jest.spyOn((LegalServices as any), 'fetchDirectors').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchDirectors').mockImplementation(
       () => Promise.resolve(directors))
-    jest.spyOn((LegalServices as any), 'fetchFiling').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchFiling').mockImplementation(
       () => Promise.resolve(stateFiling))
-    jest.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
+    vi.spyOn((PayServices as any), 'fetchFilingFees').mockImplementation(
       () => Promise.resolve(filingFees))
 
     // init store
@@ -436,7 +437,7 @@ describe('Limited Restoration Extension component - summary page (with filing ch
 
   afterAll(() => {
     window.location.assign = assign
-    jest.restoreAllMocks()
+    vi.restoreAllMocks()
     wrapper.destroy()
   })
 

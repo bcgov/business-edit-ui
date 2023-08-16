@@ -7,6 +7,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@/enums'
 import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
+import { vi } from 'vitest'
 
 setActivePinia(createPinia())
 const store = useStore()
@@ -46,7 +47,7 @@ describe('Name Request Mixin', () => {
   it('handles fetch errors', async () => {
     // mock the console.log function to suppress messages
     const log = console.log
-    console.log = jest.fn()
+    console.log = vi.fn()
 
     // mock fetchNameRequest to throw an error
     get.withArgs('nameRequests/NR 1234567').returns(Promise.resolve(null))

@@ -5,6 +5,7 @@ import { useStore } from '@/store/store'
 import { mount } from '@vue/test-utils'
 import Rules from '@/components/SpecialResolution/Rules.vue'
 import UploadRules from '@/components/SpecialResolution/UploadRules.vue'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -49,7 +50,7 @@ describe('Rules', () => {
     }
     uploadRules.vm.fileKey = 'test-new-file'
     // Mock out the PDF file upload validation. There are unit tests in business-filings-ui.
-    jest.spyOn(uploadRules.vm, 'validate').mockImplementation(() => true)
+    vi.spyOn(uploadRules.vm, 'validate').mockImplementation(() => true)
     await wrapper.find('#btn-rules-done').trigger('click')
     expect(wrapper.vm.isEditing).toBe(false)
     expect(wrapper.vm.hasChanged).toBe(true)

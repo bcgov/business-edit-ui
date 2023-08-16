@@ -6,6 +6,7 @@ import AuthServices from '@/services/auth-services'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes } from '@/enums'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -14,7 +15,7 @@ const store = useStore()
 
 // mock services function
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const mockUpdateContactInfo = jest.spyOn((AuthServices as any), 'updateContactInfo').mockImplementation()
+const mockUpdateContactInfo = vi.spyOn((AuthServices as any), 'updateContactInfo').mockImplementation()
 
 const contactInfo = {
   email: 'mock@example.com',
