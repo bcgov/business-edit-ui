@@ -18,7 +18,7 @@ setup: ## Clean and Install npm dependencies
 ci: lint test
 
 lint:  ## Run linting of code.
-	npm run lint:nofix
+	npm run lint
 
 test:  ## Unit testing
 	npm run test:unit

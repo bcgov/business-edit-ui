@@ -4,7 +4,7 @@ import EnvironmentPlugin from 'vite-plugin-environment'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path')
-
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs')
 const packageJson = fs.readFileSync('./package.json')
 const appName = JSON.parse(packageJson).appName
