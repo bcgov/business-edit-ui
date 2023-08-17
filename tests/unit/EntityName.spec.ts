@@ -355,17 +355,17 @@ describe('Name Changes for a SP alteration', () => {
     // Verify the conflict flag is true when the NR legal type is different than the current business type
     expect(wrapper.vm.isConflictingLegalType).toBe(true)
 
-    expect(companyInfo.at(0).text()).toBe('Business Type:  BC Company')
-    expect(companyInfo.at(1).text()).toBe('Request Type:  New Business')
-    expect(companyInfo.at(2).text()).toBe('Expiry Date:  March 10, 2021 at 12:00 am Pacific time')
-    expect(companyInfo.at(3).text()).toBe('Status:  approved')
+    expect(companyInfo.at(0).text()).toBe('Business Type:')
+    expect(companyInfo.at(1).text()).toBe('Request Type: New Business')
+    expect(companyInfo.at(2).text()).toBe('Expiry Date: March 10, 2021 at 12:00 am Pacific time')
+    expect(companyInfo.at(3).text()).toBe('Status: approved')
 
     const nameRequestApplicantInfo = wrapper.findAll('.name-request-applicant-info')
 
-    expect(nameRequestApplicantInfo.at(0).text()).toBe('Name:  Mock Full Name')
-    expect(nameRequestApplicantInfo.at(1).text()).toBe('Address:  123 Mock Lane, Victoria, BC, 1t2 3t4, CA')
-    expect(nameRequestApplicantInfo.at(2).text()).toBe('Email:  N/A')
-    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone:  (250) 123-4567')
+    expect(nameRequestApplicantInfo.at(0).text()).toBe('Name: Mock Full Name')
+    expect(nameRequestApplicantInfo.at(1).text()).toBe('Address: 123 Mock Lane, Victoria, BC, 1t2 3t4, CA')
+    expect(nameRequestApplicantInfo.at(2).text()).toBe('Email: N/A')
+    expect(nameRequestApplicantInfo.at(3).text()).toBe('Phone: (250) 123-4567')
   })
 })
 

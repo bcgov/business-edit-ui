@@ -15,7 +15,7 @@ const store = useStore()
 
 // mock services function
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const mockUpdateContactInfo = vi.spyOn((AuthServices as any), 'updateContactInfo').mockImplementation()
+const mockUpdateContactInfo = vi.spyOn((AuthServices as any), 'updateContactInfo').mockImplementation(() => {})
 
 const contactInfo = {
   email: 'mock@example.com',

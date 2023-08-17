@@ -131,7 +131,7 @@ describe('Correction Filing', () => {
 })
 
 // FUTURE
-describe('Alteration Filing', () => {
+describe.skip('Alteration Filing', () => {
 })
 
 describe('Change of Registration Filing', () => {
@@ -300,5 +300,5 @@ describe('Change of Registration Filing', () => {
 })
 
 // FUTURE
-describe('Conversion Filing', () => {
+describe.skip('Conversion Filing', () => {
 })

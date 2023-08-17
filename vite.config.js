@@ -35,7 +35,9 @@ export default defineConfig(() => {
       alias: {
         '@': path.resolve(__dirname, './src')
       },
-      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
+      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+      // Fix inline dependency of a dependency, which is the case in Tiptap-Vuetify
+      mainFields: ['module']
     },
     server: {
       host: true,
