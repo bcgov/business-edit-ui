@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue2'
 import EnvironmentPlugin from 'vite-plugin-environment'
-import { NgmiPolyfill } from "vite-plugin-ngmi-polyfill"
+import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path')
@@ -30,9 +30,7 @@ export default defineConfig(() => {
       vue(),
       EnvironmentPlugin({
         BUILD: 'web' // Fix for Vuelidate, allows process.env with Vite.
-      }),
-      // Fix Module has been externalized for browser compatibility warning.
-      NgmiPolyfill()
+      })
     ],
     resolve: {
       alias: {
@@ -59,6 +57,14 @@ export default defineConfig(() => {
         if (log.includes('Download the Vue Devtools extension')) {
           return false
         }
+      }
+    },
+    optimizeDeps: {
+      esbuildOptions: {
+        // Fix Module has been externalized for browser compatibility warning.
+        plugins: [
+          NodeModulesPolyfillPlugin()
+        ]
       }
     }
   }
