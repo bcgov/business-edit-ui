@@ -16,7 +16,7 @@ const addedDates = [
   '2020-06-01'
 ]
 
-const previousDates = [
+const originalResolutions = [
   {
     'date': '2020-06-12'
   },
@@ -74,6 +74,7 @@ describe('Resolution Dates component - edit mode', () => {
   let wrapperFactory: any
 
   beforeAll(() => {
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
     store.stateModel.shareStructureStep.shareClasses = shareClasses as any
     wrapperFactory = (propsData: any) => {
       return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: true }, vuetify })
@@ -105,7 +106,7 @@ describe('Resolution Dates component - edit mode', () => {
   })
 
   it('displays previous dates', async () => {
-    const wrapper = wrapperFactory({ previousDates })
+    const wrapper = wrapperFactory({ originalResolutions })
     const vm = wrapper.vm
 
     // verify there is a second row
@@ -366,7 +367,7 @@ describe('Resolution Dates component - review mode', () => {
   })
 
   it('displays previous dates', async () => {
-    const wrapper = wrapperFactory({ previousDates })
+    const wrapper = wrapperFactory({ originalResolutions })
     const vm = wrapper.vm
 
     // verify there is a second row
