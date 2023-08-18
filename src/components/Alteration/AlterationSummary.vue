@@ -110,8 +110,8 @@
       <v-divider class="mx-4" />
       <div class="section-container new-resolution-dates-summary">
         <ResolutionDates
-          :added-dates="getNewResolutionDates"
-          :previous-dates="getOriginalResolutions"
+          :addedDates="getNewResolutionDates"
+          :originalResolutions="getOriginalResolutions"
           :isEditMode="false"
         />
       </div>

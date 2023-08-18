@@ -1114,6 +1114,7 @@ export const useStore = defineStore('store', {
     /** True if resolution dates are valid. */
     getIsResolutionDatesValid (): boolean {
       if (
+        this.isAlterationFiling &&
         this.hasShareStructureChanged &&
         (this.getHasOriginalRightsOrRestrictions || this.getHasRightsOrRestrictions)
       ) {

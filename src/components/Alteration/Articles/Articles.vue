@@ -29,7 +29,7 @@
     >
       <ResolutionDates
         :addedDates="getNewResolutionDates"
-        :previousDates="getOriginalResolutions"
+        :originalResolutions="getOriginalResolutions"
         :isEditMode="true"
         :hasRightsOrRestrictions="getHasRightsOrRestrictions"
         @addRemoveDate="setNewResolutionDates($event)"
@@ -76,14 +76,14 @@ export default class Articles extends Mixins(CommonMixin) {
   /** Emits Have Changes event. */
   @Emit('haveChanges')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected emitHaveChanges (haveChanges: boolean): void {}
+  emitHaveChanges (haveChanges: boolean): void {}
 
-  protected setEditingCompanyProvisions (editing: boolean) {
+  setEditingCompanyProvisions (editing: boolean) {
     this.isEditingCompanyProvisions = editing
     this.setValidComponent({ key: 'isValidCompanyProvisions', value: !editing })
   }
 
-  protected setIsAddingResolutionDate (addingResolutionDate: boolean) {
+  setIsAddingResolutionDate (addingResolutionDate: boolean) {
     this.isAddingResolutionDate = addingResolutionDate
   }
 
