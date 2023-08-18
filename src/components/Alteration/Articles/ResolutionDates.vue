@@ -158,10 +158,10 @@
         <template v-if="displayPreviousDates">
           <ul class="resolution-date-list info-text pl-0 mt-3">
             <li
-              v-for="(resolutions, index) in previousDates"
+              v-for="(resolution, index) in originalResolutions"
               :key="`resolutionDate-${index}`"
             >
-              {{ resolutions.date }}
+              {{ resolution.date }}
             </li>
           </ul>
         </template>
@@ -188,8 +188,8 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   /** New resolution dates. */
   @Prop({ default: () => [] }) readonly addedDates!: string[]
 
-  /** Previously existing resolution dates. */
-  @Prop({ default: () => [] }) readonly previousDates!: ResolutionsIF[]
+  /** Previously existing resolutions (ie, dates). */
+  @Prop({ default: () => [] }) readonly originalResolutions!: ResolutionsIF[]
 
   /** Whether this component should be in edit mode or review mode. */
   @Prop({ default: true }) readonly isEditMode!: boolean
@@ -228,7 +228,7 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   }
 
   get havePreviousDates (): boolean {
-    return (this.previousDates?.length > 0)
+    return (this.originalResolutions?.length > 0)
   }
 
   get addBtnIcon (): string {

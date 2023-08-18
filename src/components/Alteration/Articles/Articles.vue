@@ -29,7 +29,7 @@
     >
       <ResolutionDates
         :addedDates="getNewResolutionDates"
-        :previousDates="getOriginalResolutions"
+        :originalResolutions="getOriginalResolutions"
         :isEditMode="true"
         :hasRightsOrRestrictions="getHasRightsOrRestrictions"
         @addRemoveDate="setNewResolutionDates($event)"
