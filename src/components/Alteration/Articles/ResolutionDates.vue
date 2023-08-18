@@ -61,6 +61,7 @@
           <span>{{ addBtnLabel }}</span>
         </v-btn>
       </v-col>
+
       <v-col
         v-else-if="isAdding"
         cols="2"
@@ -175,7 +176,7 @@ import { Action, Getter } from 'pinia-class'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
 import { cloneDeep } from 'lodash'
-import { ActionKvIF } from '@/interfaces/'
+import { ActionKvIF, ResolutionsIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
 
 @Component({
@@ -188,7 +189,7 @@ export default class ResolutionDates extends Mixins(CommonMixin, DateMixin) {
   @Prop({ default: () => [] }) readonly addedDates!: string[]
 
   /** Previously existing resolution dates. */
-  @Prop({ default: () => [] }) readonly previousDates!: string[]
+  @Prop({ default: () => [] }) readonly previousDates!: ResolutionsIF[]
 
   /** Whether this component should be in edit mode or review mode. */
   @Prop({ default: true }) readonly isEditMode!: boolean

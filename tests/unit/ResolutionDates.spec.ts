@@ -74,6 +74,7 @@ describe('Resolution Dates component - edit mode', () => {
   let wrapperFactory: any
 
   beforeAll(() => {
+    store.stateModel.tombstone.filingType = FilingTypes.ALTERATION
     store.stateModel.shareStructureStep.shareClasses = shareClasses as any
     wrapperFactory = (propsData: any) => {
       return mount(ResolutionDates, { propsData: { ...propsData, isEditMode: true }, vuetify })
