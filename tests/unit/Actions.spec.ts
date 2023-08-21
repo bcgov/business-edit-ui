@@ -9,6 +9,7 @@ import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd, CorrectionErrorTypes, FilingTypes } from '@/enums'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -227,7 +228,7 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
   beforeEach(async () => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     const get = sinon.stub(axios, 'get')
 
@@ -282,7 +283,7 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
   })
 
   it('Emits the error event for an expired NR', async () => {
-    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildIaFiling')
+    const mockBuildFiling = vi.spyOn(wrapper.vm, 'buildIaFiling')
 
     await wrapper.vm.onClickFilePay()
 
@@ -482,7 +483,7 @@ describe.skip('Actions component - Filing Functionality', () => {
   beforeEach(async () => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
     const get = sinon.stub(axios, 'get')
 
     // GET NR data
@@ -532,7 +533,7 @@ describe.skip('Actions component - Filing Functionality', () => {
     wrapper = shallowMount(Actions, { localVue, router, vuetify })
 
     // Mock the function calls that may used by updateFiling below
-    jest.spyOn(wrapper.vm, 'updateFiling').mockImplementation()
+    vi.spyOn(wrapper.vm, 'updateFiling').mockImplementation()
   })
 
   afterEach(() => {
@@ -543,7 +544,7 @@ describe.skip('Actions component - Filing Functionality', () => {
 
   it('Calls the buildIaFiling method when onClickSave is called', async () => {
     // Mock the function call
-    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildIaFiling')
+    const mockBuildFiling = vi.spyOn(wrapper.vm, 'buildIaFiling')
 
     // Work-around to interact with the stubbed vuetify button component in ShallowMount
     await wrapper.vm.onClickSave()
@@ -559,7 +560,7 @@ describe.skip('Actions component - Filing Functionality', () => {
   })
 
   it('Calls the updateFiling method with the correct filing structure when onClickSave is called', async () => {
-    const mockUpdateFiling = jest.spyOn(wrapper.vm, 'updateFiling')
+    const mockUpdateFiling = vi.spyOn(wrapper.vm, 'updateFiling')
 
     await wrapper.vm.onClickSave()
 
@@ -574,7 +575,7 @@ describe.skip('Actions component - Filing Functionality', () => {
   })
 
   it('Calls the buildIaFiling method when onClickSaveResume is called', async () => {
-    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildIaFiling')
+    const mockBuildFiling = vi.spyOn(wrapper.vm, 'buildIaFiling')
 
     await wrapper.vm.onClickSaveResume()
 
@@ -587,7 +588,7 @@ describe.skip('Actions component - Filing Functionality', () => {
   })
 
   it('Calls the updateFiling method with the correct filing structure when onClickSaveResume is called', async () => {
-    const mockUpdateFiling = jest.spyOn(wrapper.vm, 'updateFiling')
+    const mockUpdateFiling = vi.spyOn(wrapper.vm, 'updateFiling')
 
     await wrapper.vm.onClickSaveResume()
 
@@ -610,8 +611,8 @@ describe.skip('Actions component - Filing Functionality', () => {
       ],
       'filing': filing
     }
-    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildFiling')
-    const mockUpdateFiling = jest.spyOn(wrapper.vm, 'updateFiling')
+    const mockBuildFiling = vi.spyOn(wrapper.vm, 'buildFiling')
+    const mockUpdateFiling = vi.spyOn(wrapper.vm, 'updateFiling')
       .mockImplementation(() => {
         return Promise.reject(padErrorFiling)
       })
@@ -635,8 +636,8 @@ describe.skip('Actions component - Filing Functionality', () => {
   })
 
   it('Calls the buildIaFiling and updateFiling methods when onClickFilePay is called', async () => {
-    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildIaFiling')
-    const mockUpdateFiling = jest.spyOn(wrapper.vm, 'updateFiling')
+    const mockBuildFiling = vi.spyOn(wrapper.vm, 'buildIaFiling')
+    const mockUpdateFiling = vi.spyOn(wrapper.vm, 'updateFiling')
       .mockImplementation(() => Promise.resolve({
         header: {
           paymentToken: 789,
@@ -659,8 +660,8 @@ describe.skip('Actions component - Filing Functionality', () => {
   })
 
   it('Emits "Go To Dashboard" event when onClickCancel is called', async () => {
-    const mockBuildFiling = jest.spyOn(wrapper.vm, 'buildIaFiling')
-    const mockUpdateFiling = jest.spyOn(wrapper.vm, 'updateFiling')
+    const mockBuildFiling = vi.spyOn(wrapper.vm, 'buildIaFiling')
+    const mockUpdateFiling = vi.spyOn(wrapper.vm, 'updateFiling')
 
     await wrapper.vm.onClickCancel()
 

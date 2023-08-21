@@ -7,9 +7,9 @@ import { ConfirmDialogType } from '@/interfaces/'
  */
 @Component({})
 export default class CommonMixin extends Vue {
-  /** True if Jest is running the code. */
-  get isJestRunning (): boolean {
-    return (process.env.JEST_WORKER_ID !== undefined)
+  /** Is True if Vitest is running the code. */
+  get isVitestRunning (): boolean {
+    return (import.meta.env.VITEST !== undefined)
   }
 
   /**
@@ -17,8 +17,8 @@ export default class CommonMixin extends Vue {
    * @param element the element to scroll to the top of
    */
   async scrollToTop (element: any): Promise<void> {
-    // don't call window.scrollTo during Jest tests because jsdom doesn't implement it
-    if (!this.isJestRunning) await element.scrollIntoView({ behavior: 'smooth' })
+    // don't call window.scrollTo during Vitest tests because jsdom doesn't implement it
+    if (!this.isVitestRunning) await element.scrollIntoView({ behavior: 'smooth' })
   }
 
   /**

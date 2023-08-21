@@ -139,8 +139,8 @@ export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemp
     if (!this.isAuthenticated) return
 
     // do not proceed if FF is disabled
-    // bypass this when Jest is running as FF are not fetched
-    if (!this.isJestRunning && !GetFeatureFlag('conversion-ui-enabled')) {
+    // bypass this when Vitest is running as FF are not fetched
+    if (!this.isVitestRunning && !GetFeatureFlag('conversion-ui-enabled')) {
       window.alert('Conversion filings are not available at the moment. Please check again later.')
       this.$root.$emit('go-to-dashboard', true)
       return

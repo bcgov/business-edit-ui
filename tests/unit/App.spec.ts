@@ -24,6 +24,7 @@ import mockRouter from './MockRouter'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes } from '@/enums'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -294,7 +295,7 @@ describe.skip('Numbered company setup', () => {
   beforeEach(async () => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     const get = sinon.stub(axios, 'get')
 
@@ -413,7 +414,7 @@ describe.skip('App component', () => {
   beforeEach(async () => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     const get = sinon.stub(axios, 'get')
 
@@ -667,7 +668,7 @@ describe('App component - other', () => {
   // FUTURE: fix this
   // atm it can't work because we are shallow-mounting App, so we only get a router view stub
   // also the comment on the expect statement doesn't match the test
-  xit('the ViewWrapper renders the fee summary properly following changes', async () => {
+  it.skip('the ViewWrapper renders the fee summary properly following changes', async () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.stateModel.entitySnapshot = mockEntitySnapshot as any

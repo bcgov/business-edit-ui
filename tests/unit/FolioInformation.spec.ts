@@ -8,6 +8,7 @@ import AuthServices from '@/services/auth-services'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { FilingTypes } from '@/enums'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -127,7 +128,7 @@ describe('Folio Information component', () => {
     })
     const vm: any = wrapper.vm
 
-    const mockUpdateFolioNumber = jest.spyOn((AuthServices as any), 'updateFolioNumber')
+    const mockUpdateFolioNumber = vi.spyOn((AuthServices as any), 'updateFolioNumber')
 
     await vm.onNewFolioNumber('A123')
 
@@ -153,7 +154,7 @@ describe('Folio Information component', () => {
     })
     const vm: any = wrapper.vm
 
-    const mockUpdateFolioNumber = jest.spyOn((AuthServices as any), 'updateFolioNumber')
+    const mockUpdateFolioNumber = vi.spyOn((AuthServices as any), 'updateFolioNumber')
 
     await vm.onNewFolioNumber('A321')
 

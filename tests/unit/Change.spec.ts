@@ -15,6 +15,7 @@ import { ChangeSummary } from '@/components/Change'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { ActionTypes, CorpTypeCd, FilingTypes } from '@/enums'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -61,7 +62,7 @@ describe('Change component', () => {
   beforeEach(async () => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     const get = sinon.stub(axios, 'get')
 
@@ -296,7 +297,7 @@ describe('Change component', () => {
   })
 
   // FUTURE
-  xit('loads the entity snapshot into the store', async () => {
+  it.skip('loads the entity snapshot into the store', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
     const state = store.stateModel
@@ -329,7 +330,7 @@ describe('Change component', () => {
   })
 
   // FUTURE
-  xit('fetches the fee prices after loading', async () => {
+  it.skip('fetches the fee prices after loading', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
     expect(store.stateModel.feePrices[0].filingFees).toBe(100)
@@ -337,7 +338,7 @@ describe('Change component', () => {
   })
 
   // FUTURE
-  xit('display the fee prices properly', async () => {
+  it.skip('display the fee prices properly', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
@@ -375,7 +376,7 @@ describe('Change component', () => {
   })
 
   // FUTURE
-  xit('updates the current fees when AlterationSummary changes', async () => {
+  it.skip('updates the current fees when AlterationSummary changes', async () => {
     await wrapper.setProps({ appReady: true })
     await flushPromises()
 
@@ -388,7 +389,7 @@ describe('Change component', () => {
   })
 
   // FUTURE
-  xit('loads a draft alteration into the store', async () => {
+  it.skip('loads a draft alteration into the store', async () => {
     // Validate Effective Date-Time
     expect(store.stateModel.effectiveDateTime.isFutureEffective).toBe(true)
     expect(store.stateModel.effectiveDateTime.dateTimeString).toBe('2021-03-22T18:00:00.000Z')

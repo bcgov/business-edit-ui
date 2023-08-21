@@ -8,12 +8,12 @@ export default class DateUtilities {
    * @returns a promise to return a Date object
    */
   static async getServerDate (): Promise<Date> {
-    const input = `${window.location.origin}${process.env.VUE_APP_PATH}`
+    const input = `${window.location.origin}${import.meta.env.VUE_APP_PATH}`
     const init: RequestInit = { cache: 'no-store', method: 'HEAD' }
 
-    // don't call fetch() during Jest tests
+    // don't call fetch() during Vitest tests
     // because it's not defined
-    if (process.env.JEST_WORKER_ID !== undefined) return new Date()
+    if (import.meta.env.VITEST !== undefined) return new Date()
 
     try {
       const { headers, ok, statusText } = await fetch(input, init)

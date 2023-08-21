@@ -212,7 +212,7 @@ describe('Effective Date Time component', () => {
   })
 
   // FUTURE: this works locally but not in GHA; fix later
-  xit('emits a valid state when Future Effective is selected and valid date and time are entered', async () => {
+  it.skip('emits a valid state when Future Effective is selected and valid date and time are entered', async () => {
     store.stateModel.effectiveDateTime = dateTimeDefault
     await flushPromises() // wait a bit for validation to complete
 
@@ -232,7 +232,7 @@ describe('Effective Date Time component', () => {
   })
 
   // FUTURE: It was decided not to load FED from draft for now
-  xit('emits a valid state when component mounts with valid Effective Date Time', async () => {
+  it.skip('emits a valid state when component mounts with valid Effective Date Time', async () => {
     store.stateModel.effectiveDateTime = dateTimeValid
     await flushPromises() // wait a bit for validation to complete
 
@@ -249,7 +249,7 @@ describe('Effective Date Time component', () => {
   })
 
   // FUTURE: this works locally but not in GHA; fix later
-  xit('displays an invalid Date Alert when the date is invalid', async () => {
+  it.skip('displays an invalid Date Alert when the date is invalid', async () => {
     store.stateModel.effectiveDateTime = dateTimeOver
     await flushPromises() // wait a bit for validation to complete
 

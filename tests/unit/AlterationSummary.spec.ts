@@ -11,6 +11,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module'
 import BusinessType from '@/components/Alteration/summary/BusinessType.vue'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -71,7 +72,7 @@ describe('Alteration Summary component', () => {
   })
 
   it('displays the confirm dialog when selecting Remove action', async () => {
-    const mock = jest.spyOn(wrapper.vm, 'onDeleteClicked')
+    const mock = vi.spyOn(wrapper.vm, 'onDeleteClicked')
     expect(mock).not.toHaveBeenCalled()
 
     const rootWrapper = createWrapper(wrapper.vm.$root)

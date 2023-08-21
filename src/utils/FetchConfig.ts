@@ -8,8 +8,8 @@ import { AxiosInstance as axios } from '@/utils/'
 export async function FetchConfig (): Promise<any> {
   // get config from environment
   const origin = window.location.origin
-  const processEnvVueAppPath: string = process.env.VUE_APP_PATH
-  const processEnvBaseUrl: string = process.env.BASE_URL
+  const processEnvVueAppPath: string = import.meta.env.VUE_APP_PATH
+  const processEnvBaseUrl: string = import.meta.env.BASE_URL
   const windowLocationPathname = window.location.pathname // eg, /basePath/BC1218875/correction/
   const windowLocationOrigin = window.location.origin // eg, http://localhost:8080
 
@@ -17,66 +17,67 @@ export async function FetchConfig (): Promise<any> {
     return Promise.reject(new Error('Missing environment variables.'))
   }
 
-  const authWebUrl: string = process.env.VUE_APP_AUTH_WEB_URL
+  const authWebUrl: string = import.meta.env.VUE_APP_AUTH_WEB_URL
   sessionStorage.setItem('AUTH_WEB_URL', authWebUrl)
 
-  const registryHomeUrl: string = process.env.VUE_APP_REGISTRY_HOME_URL
+  const registryHomeUrl: string = import.meta.env.VUE_APP_REGISTRY_HOME_URL
   sessionStorage.setItem('REGISTRY_HOME_URL', registryHomeUrl)
 
-  const businessesUrl: string = process.env.VUE_APP_BUSINESSES_URL
+  const businessesUrl: string = import.meta.env.VUE_APP_BUSINESSES_URL
   sessionStorage.setItem('BUSINESSES_URL', businessesUrl)
 
-  const dashboardUrl: string = process.env.VUE_APP_DASHBOARD_URL
+  const dashboardUrl: string = import.meta.env.VUE_APP_DASHBOARD_URL
   sessionStorage.setItem('DASHBOARD_URL', dashboardUrl)
 
-  const legalApiUrl: string = (process.env.VUE_APP_LEGAL_API_URL + process.env.VUE_APP_LEGAL_API_VERSION_2 + '/')
+  const legalApiUrl: string = (import.meta.env.VUE_APP_LEGAL_API_URL +
+    import.meta.env.VUE_APP_LEGAL_API_VERSION_2 + '/')
   // set base URL for axios calls
   axios.defaults.baseURL = legalApiUrl
 
-  const naicsUrl: string = (process.env.VUE_APP_NAICS_API_URL + process.env.VUE_APP_NAICS_API_VERSION_2 + '/')
+  const naicsUrl: string = (import.meta.env.VUE_APP_NAICS_API_URL + import.meta.env.VUE_APP_NAICS_API_VERSION_2 + '/')
   sessionStorage.setItem('NAICS_URL', naicsUrl)
 
   const registriesSearchApiUrl: string =
-    (process.env.VUE_APP_REGISTRIES_SEARCH_API_URL + process.env.VUE_APP_REGISTRIES_SEARCH_API_VERSION + '/')
+    (import.meta.env.VUE_APP_REGISTRIES_SEARCH_API_URL + import.meta.env.VUE_APP_REGISTRIES_SEARCH_API_VERSION + '/')
   sessionStorage.setItem('REGISTRIES_SEARCH_API_URL', registriesSearchApiUrl)
 
-  const businessApiKey: string = process.env.VUE_APP_REGISTRIES_SEARCH_API_KEY
+  const businessApiKey: string = import.meta.env.VUE_APP_REGISTRIES_SEARCH_API_KEY
   sessionStorage.setItem('BUSINESS_API_KEY', businessApiKey)
 
-  const authApiUrl: string = (process.env.VUE_APP_AUTH_API_URL + process.env.VUE_APP_AUTH_API_VERSION + '/')
+  const authApiUrl: string = (import.meta.env.VUE_APP_AUTH_API_URL + import.meta.env.VUE_APP_AUTH_API_VERSION + '/')
   sessionStorage.setItem('AUTH_API_URL', authApiUrl)
 
-  const payApiUrl: string = (process.env.VUE_APP_PAY_API_URL + process.env.VUE_APP_PAY_API_VERSION + '/')
+  const payApiUrl: string = (import.meta.env.VUE_APP_PAY_API_URL + import.meta.env.VUE_APP_PAY_API_VERSION + '/')
   sessionStorage.setItem('PAY_API_URL', payApiUrl)
 
   // for system alert banner (sbc-common-components)
-  const statusApiUrl: string = (process.env.VUE_APP_STATUS_API_URL + process.env.VUE_APP_STATUS_API_VERSION)
+  const statusApiUrl: string = (import.meta.env.VUE_APP_STATUS_API_URL + import.meta.env.VUE_APP_STATUS_API_VERSION)
   sessionStorage.setItem('STATUS_API_URL', statusApiUrl)
 
-  const siteminderLogoutUrl: string = process.env.VUE_APP_SITEMINDER_LOGOUT_URL
+  const siteminderLogoutUrl: string = import.meta.env.VUE_APP_SITEMINDER_LOGOUT_URL
   if (siteminderLogoutUrl) {
     sessionStorage.setItem('SITEMINDER_LOGOUT_URL', siteminderLogoutUrl)
   }
 
-  const keycloakAuthUrl: string = process.env.VUE_APP_KEYCLOAK_AUTH_URL;
+  const keycloakAuthUrl: string = import.meta.env.VUE_APP_KEYCLOAK_AUTH_URL;
   (<any>window).keycloakAuthUrl = keycloakAuthUrl
 
-  const keycloakRealm: string = process.env.VUE_APP_KEYCLOAK_REALM;
+  const keycloakRealm: string = import.meta.env.VUE_APP_KEYCLOAK_REALM;
   (<any>window).keycloakRealm = keycloakRealm
 
-  const keycloakClientId: string = process.env.VUE_APP_KEYCLOAK_CLIENTID;
+  const keycloakClientId: string = import.meta.env.VUE_APP_KEYCLOAK_CLIENTID;
   (<any>window).keycloakClientId = keycloakClientId
 
-  const hotjarId: string = process.env.VUE_APP_HOTJAR_ID;
+  const hotjarId: string = import.meta.env.VUE_APP_HOTJAR_ID;
   (<any>window).hotjarId = hotjarId
 
-  const addressCompleteKey: string = process.env.VUE_APP_ADDRESS_COMPLETE_KEY;
+  const addressCompleteKey: string = import.meta.env.VUE_APP_ADDRESS_COMPLETE_KEY;
   (<any>window).addressCompleteKey = addressCompleteKey
 
-  const ldClientId: string = process.env.VUE_APP_BUSINESS_EDIT_LD_CLIENT_ID;
+  const ldClientId: string = import.meta.env.VUE_APP_BUSINESS_EDIT_LD_CLIENT_ID;
   (<any>window).ldClientId = ldClientId
 
-  const sentryDsn: string = process.env.VUE_APP_SENTRY_DSN;
+  const sentryDsn: string = import.meta.env.VUE_APP_SENTRY_DSN;
   (<any>window).sentryDsn = sentryDsn
 
   // get Business ID and validate that it looks OK

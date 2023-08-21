@@ -14,6 +14,7 @@ import { AssociationType, BusinessContactInfo, BusinessType, EntityName, FolioIn
   YourCompanyWrapper } from '@/components/common'
 import { Memorandum, Rules } from '@/components/SpecialResolution'
 import { LegalServices } from '@/services'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -39,7 +40,7 @@ describe('Special Resolution component', () => {
   beforeEach(async () => {
     // mock the window.location.assign function
     delete window.location
-    window.location = { assign: jest.fn() } as any
+    window.location = { assign: vi.fn() } as any
 
     const get = sinon.stub(axios, 'get')
 
@@ -180,7 +181,7 @@ describe('Special Resolution component', () => {
       }))
 
     // GET business documents
-    jest.spyOn((LegalServices as any), 'fetchBusinessDocuments').mockImplementation(
+    vi.spyOn((LegalServices as any), 'fetchBusinessDocuments').mockImplementation(
       () => Promise.resolve({
         documents: {
           certifiedMemorandum: 'url',

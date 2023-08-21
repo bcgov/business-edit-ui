@@ -10,6 +10,7 @@ import { useStore } from '@/store/store'
 import { AccountTypes, CoopTypes, CorpTypeCd, CorrectionErrorTypes, FilingTypes } from '@/enums'
 import { Memorandum, Resolution, Rules } from '@/components/SpecialResolution'
 import { AuthServices, LegalServices } from '@/services'
+import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
 
@@ -42,7 +43,7 @@ describe('Coop Correction component', () => {
 
   beforeEach(async () => {
     // For Entity Snapshot
-    LegalServices.fetchBusinessInfo = jest.fn().mockResolvedValue(
+    LegalServices.fetchBusinessInfo = vi.fn().mockResolvedValue(
       {
         'adminFreeze': false,
         'allowedActions': {
@@ -101,13 +102,13 @@ describe('Coop Correction component', () => {
       }
     )
 
-    AuthServices.fetchAuthInfo = jest.fn().mockResolvedValue({ contact: {
+    AuthServices.fetchAuthInfo = vi.fn().mockResolvedValue({ contact: {
       email: 'hello@haha.com',
       phone: '(525) 252-5544',
       extension: ''
     } })
 
-    LegalServices.fetchBusinessDocuments = jest.fn().mockResolvedValue(
+    LegalServices.fetchBusinessDocuments = vi.fn().mockResolvedValue(
       {
         'documents': {
           'certifiedMemorandum': 'https://xxx/api/v2/businesses/CP1002552/filings/145222/documents/certifiedMemorandum',
@@ -132,7 +133,7 @@ describe('Coop Correction component', () => {
       }
     )
 
-    LegalServices.fetchResolutions = jest.fn().mockResolvedValue([
+    LegalServices.fetchResolutions = vi.fn().mockResolvedValue([
       {
         'date': '2022-09-05',
         'id': 246918,
@@ -160,7 +161,7 @@ describe('Coop Correction component', () => {
       }
     ])
 
-    LegalServices.fetchParties = jest.fn().mockResolvedValue([
+    LegalServices.fetchParties = vi.fn().mockResolvedValue([
       { roles: [{ appointmentDate: '2022-04-01', roleType: 'Completing Party' }] },
       { roles: [{ appointmentDate: '2022-04-01', roleType: 'Incorporator' }] },
       { roles: [{ appointmentDate: '2022-05-01', roleType: 'Director' }] }

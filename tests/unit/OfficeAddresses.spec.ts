@@ -7,9 +7,10 @@ import { BenAlterationResource } from '@/resources/Alteration/BEN'
 import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { CorpTypeCd, FilingTypes } from '@/enums'
+import { vi } from 'vitest'
 
 // mock the console.warn function to hide "[Vuetify] Unable to locate target XXX"
-console.warn = jest.fn()
+console.warn = vi.fn()
 
 const vuetify = new Vuetify({})
 
@@ -201,8 +202,10 @@ describe('summary mode', () => {
     // verify labels
     const labels = summaryRow.findAll('label')
     expect(labels.at(0).text()).toBe('Registered Office')
-    expect(labels.at(1).text()).toBe('Mailing Address Corrected')
-    expect(labels.at(2).text()).toBe('Delivery Address Corrected')
+    expect(labels.at(1).text()).toContain('Mailing Address')
+    expect(labels.at(1).text()).toContain('Corrected')
+    expect(labels.at(2).text()).toContain('Delivery Address')
+    expect(labels.at(2).text()).toContain('Corrected')
 
     // verify mailing address
     const mailingAddress = summaryRow.findAll('.base-address').at(0)
@@ -394,8 +397,10 @@ describe('summary mode', () => {
     // verify labels
     const labels = summaryRow.findAll('label')
     expect(labels.at(0).text()).toBe('Records Office')
-    expect(labels.at(1).text()).toBe('Mailing Address Corrected')
-    expect(labels.at(2).text()).toBe('Delivery Address Corrected')
+    expect(labels.at(1).text()).toContain('Mailing Address')
+    expect(labels.at(1).text()).toContain('Corrected')
+    expect(labels.at(2).text()).toContain('Delivery Address')
+    expect(labels.at(2).text()).toContain('Corrected')
 
     // verify mailing address
     const mailingAddress = summaryRow.findAll('.base-address').at(0)

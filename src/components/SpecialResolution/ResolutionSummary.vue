@@ -232,8 +232,8 @@ export default class ResolutionSummary extends Mixins(CommonMixin, DateMixin) {
   /** Set validate on file and pay click. */
   @Watch('getAppValidate')
   updateResolutionStepValidationDetail (): void {
-    // don't call validation during Jest tests because we are setting app valid
-    !this.isJestRunning && this.$refs.confirmResolutionChkFormRef.validate()
+    // don't call validation during Vitest tests because we are setting app valid
+    !this.isVitestRunning && this.$refs.confirmResolutionChkFormRef.validate()
   }
 
   /** Called when component is mounted. */
