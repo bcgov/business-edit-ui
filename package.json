@@ -64,7 +64,6 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-methods": "^7.18.6",
     "@esbuild-plugins/node-modules-polyfill": "0.2.2",
     "@pinia/testing": "^0.0.16",
     "@types/lodash": "^4.14.194",
