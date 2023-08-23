@@ -30,7 +30,6 @@
             :nudgeRight="40"
             :nudgeTop="85"
             :initialValue="resolutionDateText"
-            :minDate="resolutionDateMin"
             :maxDate="resolutionDateMax"
             :inputRules="dateRules"
             @emitDate="onResolutionDate($event)"
@@ -121,7 +120,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import {
   TiptapVuetify,
@@ -209,46 +208,38 @@ export default class ResolutionEditor extends Vue {
     }
   }
 
-  /** Validations rules for resolution date field. */
+  /** Validation rules for resolution date field. */
   get dateRules (): Array<VuetifyRuleFunction> {
     return [
       (v: string) => !!v || 'Resolution date is required',
       (v: string) =>
-        this.isValidDateRange(this.resolutionDateMin,
-          this.resolutionDateMax,
-          v) ||
-        `Date should be between ${DateUtilities.yyyyMmDdToPacificDate(this.resolutionDateMin, true)} and
-         ${DateUtilities.yyyyMmDdToPacificDate(this.resolutionDateMax, true)}`
+        this.isValidDateRange(this.resolutionDateMax, v) ||
+        `Date should be up to ${DateUtilities.yyyyMmDdToPacificDate(this.resolutionDateMax, true)}`
     ]
   }
 
   /**
-   * True if date is >= the minimum (ie, today) and <= the maximum (ie, the 10th day).
+   * True if date is <= the maximum (ie, the 10th day).
    * This is used for Vue form validation (in Date Rules above).
    */
-  isValidDateRange (minDateStr: string, maxDateStr: string, dateStrToValidate: string): boolean {
+  isValidDateRange (maxDateStr: string, dateStrToValidate: string, minDateStr?: string): boolean {
     if (!dateStrToValidate) { return true }
-    const minDate = DateUtilities.yyyyMmDdToDate(minDateStr)
+
     const maxDate = DateUtilities.yyyyMmDdToDate(maxDateStr)
     // Input is in the format of MM dd, yyyy - only compare year/month/day (ignore time)
     const utcDateStr = new Date(dateStrToValidate + ' 00:00 UTC').toISOString().split('T')[0]
     const pstDate = DateUtilities.yyyyMmDdToDate(utcDateStr)
-    return (pstDate >= minDate && pstDate <= maxDate)
-  }
 
-  /** The minimum resolution date that can be entered (incorporation date). */
-  get resolutionDateMin (): string {
-    const date = DateUtilities.apiToDate(this.getBusinessFoundingDateTime)
-    return DateUtilities.dateToYyyyMmDd(date)
+    if (minDateStr) {
+      const minDate = DateUtilities.yyyyMmDdToDate(minDateStr)
+      return (pstDate >= minDate && pstDate <= maxDate)
+    }
+    return (pstDate <= maxDate)
   }
 
   /** The maximum resolution date that can be entered (today). */
   get resolutionDateMax (): string {
-    if (this.getSpecialResolution.signingDate) {
-      return DateUtilities.dateToYyyyMmDd(DateUtilities.yyyyMmDdToDate(this.getSpecialResolution.signingDate))
-    } else {
-      return this.getCurrentDate
-    }
+    return this.getCurrentDate
   }
 
   /* Determines if we should show validation for resolution text, substitute for rules. */
@@ -267,6 +258,7 @@ export default class ResolutionEditor extends Vue {
     }
     this.resolutionDateText = val
     if (this.getComponentValidate) {
+      this.emitDate(this.resolutionDateText)
       await this.onValidate()
     }
   }
@@ -284,6 +276,7 @@ export default class ResolutionEditor extends Vue {
   async undoToStore (): Promise<void> {
     this.resolution = this.resolutionOriginal
     this.resolutionDateText = this.resolutionDateTextOriginal
+    this.emitDate(this.resolutionDateText)
     await this.setSpecialResolution({
       ...this.getSpecialResolution,
       resolutionDate: this.resolutionDateText,
@@ -325,6 +318,9 @@ export default class ResolutionEditor extends Vue {
     const isValid = hasData && isResolutionDateValid && (!includeIsEditing || !this.isEditing)
     this.setSpecialResolutionValid(isValid)
   }
+
+  @Emit('emitDate')
+  emitDate (date: string) { return date }
 }
 </script>
 

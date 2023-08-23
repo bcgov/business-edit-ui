@@ -130,10 +130,12 @@
           <ResolutionEditor
             ref="resolutionEditor"
             :isEditing="isEditing"
+            @emitDate="onResolutionDate($event)"
           />
           <SigningParty
             ref="signingParty"
             :isEditing="isEditing"
+            :changedResolutionDate="changedResolutionDate"
           />
           <div
             v-if="isEditing"
@@ -209,6 +211,7 @@ export default class Resolution extends Vue {
   isEditing = true
   hasChanged = false
   dropdown = false
+  changedResolutionDate = ''
 
   /** Displays an invalid section to user if form is invalid. */
   get invalidResolutionSection (): boolean {
@@ -256,6 +259,10 @@ export default class Resolution extends Vue {
   @Watch('isEditing', { immediate: true })
   async updateIsEditingSpecialResolution (val): Promise<void> {
     await this.setEditingSpecialResolution(val)
+  }
+
+  onResolutionDate (date: string) {
+    this.changedResolutionDate = date
   }
 }
 </script>
