@@ -134,6 +134,7 @@ export default class SigningParty extends Vue {
   @Action(useStore) setSpecialResolutionSignatureValid!: (x: boolean) => void
 
   @Prop({ default: false }) readonly isEditing!: boolean
+  @Prop({ default: '' }) readonly changedResolutionDate!: string
 
   $refs!: {
     signatureDatePickerRef: DatePickerShared,
@@ -180,13 +181,13 @@ export default class SigningParty extends Vue {
     return (pstDate >= minDate && pstDate <= maxDate)
   }
 
-  /** The minimum signature date that can be entered (resolution date or today). */
+  /** The minimum signature date that can be entered (resolution date). */
   get signatureDateMin (): string {
-    if (this.getSpecialResolution.resolutionDate) {
-      return DateUtilities.dateToYyyyMmDd(DateUtilities.yyyyMmDdToDate(this.getSpecialResolution.resolutionDate))
-    } else {
-      return this.getCurrentDate
-    }
+    const dateToUse = (this.changedResolutionDate && this.changedResolutionDate.trim() !== '')
+      ? this.changedResolutionDate
+      : (this.getSpecialResolution.resolutionDate || this.getCurrentDate)
+
+    return DateUtilities.dateToYyyyMmDd(DateUtilities.yyyyMmDdToDate(dateToUse))
   }
 
   /** The maximum signature date that can be entered (today). */

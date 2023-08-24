@@ -121,7 +121,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Prop, Watch } from 'vue-property-decorator'
+import { Component, Emit, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import {
   TiptapVuetify,
@@ -244,11 +244,7 @@ export default class ResolutionEditor extends Vue {
 
   /** The maximum resolution date that can be entered (today). */
   get resolutionDateMax (): string {
-    if (this.getSpecialResolution.signingDate) {
-      return DateUtilities.dateToYyyyMmDd(DateUtilities.yyyyMmDdToDate(this.getSpecialResolution.signingDate))
-    } else {
-      return this.getCurrentDate
-    }
+    return this.getCurrentDate
   }
 
   /* Determines if we should show validation for resolution text, substitute for rules. */
@@ -267,6 +263,7 @@ export default class ResolutionEditor extends Vue {
     }
     this.resolutionDateText = val
     if (this.getComponentValidate) {
+      this.emitDate(this.resolutionDateText)
       await this.onValidate()
     }
   }
@@ -284,6 +281,7 @@ export default class ResolutionEditor extends Vue {
   async undoToStore (): Promise<void> {
     this.resolution = this.resolutionOriginal
     this.resolutionDateText = this.resolutionDateTextOriginal
+    this.emitDate(this.resolutionDateText)
     await this.setSpecialResolution({
       ...this.getSpecialResolution,
       resolutionDate: this.resolutionDateText,
@@ -325,6 +323,9 @@ export default class ResolutionEditor extends Vue {
     const isValid = hasData && isResolutionDateValid && (!includeIsEditing || !this.isEditing)
     this.setSpecialResolutionValid(isValid)
   }
+
+  @Emit('emitDate')
+  emitDate (date: string) { return date }
 }
 </script>
 

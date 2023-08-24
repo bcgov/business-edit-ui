@@ -106,10 +106,14 @@ describe('Special Resolution Form component', () => {
     await Vue.nextTick()
     expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature).toBe(true)
     expect(store.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolution).toBe(true)
+    // Set resolutionDate to a date AFTER the current date to make it invalid
+    const dayAfterCurrentDate = new Date(store.stateModel.tombstone.currentDate)
+    dayAfterCurrentDate.setDate(dayAfterCurrentDate.getDate() + 1)
+    const invalidResolutionDate = dayAfterCurrentDate.toISOString().split('T')[0]
     store.stateModel.specialResolution = {
       ...store.stateModel.specialResolution,
-      resolutionDate: '2026-03-01',
-      signingDate: '2024-01-01'
+      resolutionDate: invalidResolutionDate,
+      signingDate: '2021-01-01'
     }
     await Vue.nextTick()
     wrapper = mount(Resolution, { vuetify })
