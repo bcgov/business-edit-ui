@@ -30,6 +30,7 @@
             :nudgeRight="40"
             :nudgeTop="85"
             :initialValue="resolutionDateText"
+            :minDate="resolutionDateMin"
             :maxDate="resolutionDateMax"
             :inputRules="dateRules"
             @emitDate="onResolutionDate($event)"
@@ -208,33 +209,37 @@ export default class ResolutionEditor extends Vue {
     }
   }
 
-  /** Validation rules for resolution date field. */
+  /** Validations rules for resolution date field. */
   get dateRules (): Array<VuetifyRuleFunction> {
     return [
       (v: string) => !!v || 'Resolution date is required',
       (v: string) =>
-        this.isValidDateRange(this.resolutionDateMax, v) ||
-        `Date should be up to ${DateUtilities.yyyyMmDdToPacificDate(this.resolutionDateMax, true)}`
+        this.isValidDateRange(this.resolutionDateMin,
+          this.resolutionDateMax,
+          v) ||
+        `Date should be between ${DateUtilities.yyyyMmDdToPacificDate(this.resolutionDateMin, true)} and
+         ${DateUtilities.yyyyMmDdToPacificDate(this.resolutionDateMax, true)}`
     ]
   }
 
+  /** The minimum resolution date that can be entered (incorporation date). */
+  get resolutionDateMin (): string {
+    const date = DateUtilities.apiToDate(this.getBusinessFoundingDateTime)
+    return DateUtilities.dateToYyyyMmDd(date)
+  }
+
   /**
-   * True if date is <= the maximum (ie, the 10th day).
+   * True if date is >= the minimum (ie, today) and <= the maximum (ie, the 10th day).
    * This is used for Vue form validation (in Date Rules above).
    */
-  isValidDateRange (maxDateStr: string, dateStrToValidate: string, minDateStr?: string): boolean {
+  isValidDateRange (minDateStr: string, maxDateStr: string, dateStrToValidate: string): boolean {
     if (!dateStrToValidate) { return true }
-
+    const minDate = DateUtilities.yyyyMmDdToDate(minDateStr)
     const maxDate = DateUtilities.yyyyMmDdToDate(maxDateStr)
     // Input is in the format of MM dd, yyyy - only compare year/month/day (ignore time)
     const utcDateStr = new Date(dateStrToValidate + ' 00:00 UTC').toISOString().split('T')[0]
     const pstDate = DateUtilities.yyyyMmDdToDate(utcDateStr)
-
-    if (minDateStr) {
-      const minDate = DateUtilities.yyyyMmDdToDate(minDateStr)
-      return (pstDate >= minDate && pstDate <= maxDate)
-    }
-    return (pstDate <= maxDate)
+    return (pstDate >= minDate && pstDate <= maxDate)
   }
 
   /** The maximum resolution date that can be entered (today). */
