@@ -222,12 +222,6 @@ export default class ResolutionEditor extends Vue {
     ]
   }
 
-  /** The minimum resolution date that can be entered (incorporation date). */
-  get resolutionDateMin (): string {
-    const date = DateUtilities.apiToDate(this.getBusinessFoundingDateTime)
-    return DateUtilities.dateToYyyyMmDd(date)
-  }
-
   /**
    * True if date is >= the minimum (ie, today) and <= the maximum (ie, the 10th day).
    * This is used for Vue form validation (in Date Rules above).
@@ -240,6 +234,12 @@ export default class ResolutionEditor extends Vue {
     const utcDateStr = new Date(dateStrToValidate + ' 00:00 UTC').toISOString().split('T')[0]
     const pstDate = DateUtilities.yyyyMmDdToDate(utcDateStr)
     return (pstDate >= minDate && pstDate <= maxDate)
+  }
+
+  /** The minimum resolution date that can be entered (incorporation date). */
+  get resolutionDateMin (): string {
+    const date = DateUtilities.apiToDate(this.getBusinessFoundingDateTime)
+    return DateUtilities.dateToYyyyMmDd(date)
   }
 
   /** The maximum resolution date that can be entered (today). */
