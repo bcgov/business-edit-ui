@@ -99,7 +99,7 @@ describe('Special Resolution Form component', () => {
     expect(wrapper.find('#resolution .invalid-section').exists()).toBeTruthy()
   })
 
-  it.only('validation - signatory date should be after or on resolution date', async () => {
+  it('validation - signatory date should be after or on resolution date', async () => {
     wrapper.vm.isEditing = false
     await Vue.nextTick()
     store.stateModel.validationFlags.componentValidate = true
