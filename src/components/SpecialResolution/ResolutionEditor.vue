@@ -262,8 +262,8 @@ export default class ResolutionEditor extends Vue {
       return
     }
     this.resolutionDateText = val
+    this.emitDate(this.resolutionDateText)
     if (this.getComponentValidate) {
-      this.emitDate(this.resolutionDateText)
       await this.onValidate()
     }
   }
