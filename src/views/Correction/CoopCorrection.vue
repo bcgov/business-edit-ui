@@ -4,7 +4,7 @@
     id="coop-correction-view"
   >
     <header>
-      <h1>Special Resolution Register Correction</h1>
+      <h1>REGISTER CORRECTION</h1>
     </header>
 
     <section
@@ -24,7 +24,10 @@
         <EntityName />
       </div>
       <AssociationType />
+      <RecognitionDateTime />
+      <OfficeAddresses />
       <BusinessContactInfo />
+      <FolioInformation />
     </YourCompanyWrapper>
 
     <Rules class="mt-10" />
@@ -72,8 +75,8 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { SpecialResolutionSummary, Resolution } from '@/components/SpecialResolution'
 import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
-  CurrentDirectors, Detail, DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, StaffPayment,
-  TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
+  CurrentDirectors, Detail, DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
+  StaffPayment, TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
 import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import Rules from '@/components/SpecialResolution/Rules.vue'
@@ -102,6 +105,7 @@ import { FilingDataIF } from '@bcrs-shared-components/interfaces'
     EntityName,
     FolioInformation,
     OfficeAddresses,
+    RecognitionDateTime,
     SpecialResolutionSummary,
     StaffPayment,
     TransactionalFolioNumber,
@@ -184,17 +188,19 @@ export default class CoopCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
       AuthServices.fetchAuthInfo(this.getBusinessId),
       LegalServices.fetchBusinessDocuments(this.getBusinessId),
       LegalServices.fetchResolutions(this.getBusinessId, true),
-      LegalServices.fetchParties(this.getBusinessId)
+      LegalServices.fetchParties(this.getBusinessId),
+      LegalServices.fetchAddresses(this.getBusinessId)
     ])
 
-    if (items.length !== 5) throw new Error('Failed to fetch entity snapshot')
+    if (items.length !== 6) throw new Error('Failed to fetch entity snapshot')
 
     return {
       businessInfo: items[0],
       authInfo: items[1],
       businessDocuments: items[2],
       resolutions: items[3],
-      orgPersons: items[4]
+      orgPersons: items[4],
+      addresses: items[5]
     } as EntitySnapshotIF
   }
 

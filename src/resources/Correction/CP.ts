@@ -8,7 +8,7 @@ export const CpCorrectionResource: ResourceIF = {
   contactLabel: 'Registered Office',
   displayName: null, // not used
   entityType: CorpTypeCd.COOP,
-  addressLabel: 'Business Addresses',
+  addressLabel: 'Registered Office',
   filingData: {
     filingTypeCode: FilingCodes.CORRECTION,
     entityType: CorpTypeCd.COOP,
