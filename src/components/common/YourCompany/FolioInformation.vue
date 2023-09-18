@@ -75,7 +75,7 @@ export default class FolioInformation extends Mixins(CommonMixin) {
 
   /** Helps builds edit label and determine if folio number update should be instant. */
   get isInstantUpdate (): boolean {
-    return this.isAlterationFiling || this.isSpecialResolutionFiling
+    return this.isAlterationFiling
   }
 
   /** Modifies label for instant update of folio number. */

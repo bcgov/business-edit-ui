@@ -575,6 +575,7 @@ export const useStore = defineStore('store', {
           this.hasBusinessNameChanged ||
           this.hasAssociationTypeChanged ||
           this.hasSpecialResolutionMemorandumChanged ||
+          this.haveOfficeAddressesChanged ||
           this.hasSpecialResolutionRulesChanged ||
           this.hasSpecialResolutionResolutionChanged
         )
@@ -738,6 +739,7 @@ export const useStore = defineStore('store', {
       if (this.isCoopCorrectionFiling) {
         return (
           this.getFlagsCompanyInfo.isValidCompanyName &&
+          this.getFlagsCompanyInfo.isValidAddress &&
           this.getFlagsCompanyInfo.isValidAssociationType &&
           this.getFlagsCompanyInfo.isValidContactInfo &&
           this.getFlagsCompanyInfo.isValidRules &&
@@ -938,6 +940,15 @@ export const useStore = defineStore('store', {
           ['addressCountryDescription', 'id']
         )
       }
+      if (
+        this.isCoopCorrectionFiling
+      ) {
+        return !IsSame(
+          this.getOfficeAddresses?.registeredOffice?.mailingAddress,
+          this.getOriginalOfficeAddresses?.registeredOffice?.mailingAddress,
+          ['addressCountryDescription', 'id']
+        )
+      }
       return false // should never happen
     },
 
@@ -957,7 +968,8 @@ export const useStore = defineStore('store', {
       if (
         this.isFirmChangeFiling ||
         this.isFirmConversionFiling ||
-        this.isFirmCorrectionFiling
+        this.isFirmCorrectionFiling ||
+        this.isCoopCorrectionFiling
       ) {
         return !IsSame(
           this.getOfficeAddresses?.businessOffice?.deliveryAddress,

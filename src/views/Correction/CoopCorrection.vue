@@ -27,7 +27,6 @@
       <RecognitionDateTime />
       <OfficeAddresses />
       <BusinessContactInfo />
-      <FolioInformation />
     </YourCompanyWrapper>
 
     <Rules class="mt-10" />
