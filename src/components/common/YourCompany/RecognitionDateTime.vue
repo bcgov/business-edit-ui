@@ -32,11 +32,12 @@ export default class RecognitionDateTime extends Vue {
   @Getter(useStore) getCorrectedFilingDate!: string
   @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isCoopCorrectionFiling!: boolean
   @Getter(useStore) isRestorationFiling!: boolean
 
   /** The recognition date or business start date string. */
   get recognitionDateTime (): string {
-    if (this.isBenBcCccUlcCorrectionFiling || this.isRestorationFiling) {
+    if (this.isBenBcCccUlcCorrectionFiling || this.isRestorationFiling || this.isCoopCorrectionFiling) {
       if (this.getBusinessFoundingDateTime) {
         return DateUtilities.apiToPacificDateTime(this.getBusinessFoundingDateTime)
       }
