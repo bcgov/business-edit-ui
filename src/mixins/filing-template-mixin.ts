@@ -200,9 +200,6 @@ export default class FilingTemplateMixin extends DateMixin {
     }
 
     if (this.isCoopCorrectionFiling) {
-      // Offices aren't required for Coop corrections.
-      delete filing.correction.offices
-
       // Apply Court Order ONLY when it is required and applied
       if (this.getHasPlanOfArrangement || this.getFileNumber) {
         filing.correction.courtOrder = {
