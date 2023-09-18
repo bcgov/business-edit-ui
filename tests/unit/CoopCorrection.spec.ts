@@ -3,6 +3,8 @@ import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import { mount } from '@vue/test-utils'
 import { AssociationType, BusinessContactInfo, CertifySection, CompletingParty, CourtOrderPoa, Detail, EntityName,
+  OfficeAddresses,
+  RecognitionDateTime,
   StaffPayment, YourCompanyWrapper } from '@/components/common/'
 import CoopCorrection from '@/views/Correction/CoopCorrection.vue'
 import { createPinia, setActivePinia } from 'pinia'
@@ -161,6 +163,36 @@ describe('Coop Correction component', () => {
       }
     ])
 
+    LegalServices.fetchAddresses = vi.fn().mockResolvedValue([
+      {
+        'registeredOffice': {
+          'deliveryAddress': {
+            'addressCity': 'Scarborough',
+            'addressCountry': 'CA',
+            'addressRegion': 'BC',
+            'addressType': 'delivery',
+            'deliveryInstructions': null,
+            'id': 2660329,
+            'postalCode': 'M1B 4B9',
+            'streetAddress': '34-70 Alford Cres',
+            'streetAddressAdditional': ''
+          },
+          'mailingAddress': {
+            'addressCity': 'Scarborough',
+            'addressCountry': 'CA',
+            'addressRegion': 'BC',
+            'addressType': 'mailing',
+            'deliveryInstructions': null,
+            'id': 2660328,
+            'postalCode': 'M1B 4B9',
+            'streetAddress': '34-70 Alford Cres',
+            'streetAddressAdditional': ''
+          }
+        }
+      }
+
+    ])
+
     LegalServices.fetchParties = vi.fn().mockResolvedValue([
       { roles: [{ appointmentDate: '2022-04-01', roleType: 'Completing Party' }] },
       { roles: [{ appointmentDate: '2022-04-01', roleType: 'Incorporator' }] },
@@ -192,6 +224,8 @@ describe('Coop Correction component', () => {
     expect(wrapper.findComponent(YourCompanyWrapper).exists()).toBe(true)
     expect(wrapper.findComponent(EntityName).exists()).toBe(true)
     expect(wrapper.findComponent(AssociationType).exists()).toBe(true)
+    expect(wrapper.findComponent(RecognitionDateTime).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
     expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
     expect(wrapper.findComponent(Rules).exists()).toBe(true)
     expect(wrapper.findComponent(Memorandum).exists()).toBe(true)
