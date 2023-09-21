@@ -23,7 +23,9 @@
           sm="3"
           class="pr-4"
         >
-          <label class="resolution-signature-vcard-title">Signing Party</label>
+          <label
+            :class="['resolution-signature-vcard-title', { 'invalid-label': !hasSigningData }]"
+          >Signing Party</label>
         </v-col>
         <v-col
           cols="12"
@@ -77,7 +79,9 @@
           sm="3"
           class="pr-4"
         >
-          <label class="resolution-signature-vcard-title">Date Signed</label>
+          <label
+            :class="['resolution-signature-vcard-title', { 'invalid-label': !isSignatureDateValid }]"
+          >Date Signed</label>
         </v-col>
         <v-col
           cols="12"
@@ -148,6 +152,8 @@ export default class SigningParty extends Vue {
   }
   signingDateOriginal = '' // Used for undo for corrections.
   signatoryOriginal: PersonIF = null// Used for undo for corrections.
+  hasSigningData = true
+  isSignatureDateValid = true
 
   /** Validation rule for individual name fields */
   readonly firstNameRules = this.signatureNameRules('First Name')
@@ -273,10 +279,10 @@ export default class SigningParty extends Vue {
   /** Used to trigger validate from outside of component. */
   @Watch('getComponentValidate')
   async onValidate (includeIsEditing = true): Promise<void> {
-    const hasSigningData = !!this.signingDate && !!this.signatory.givenName && !!this.signatory.familyName
+    this.hasSigningData = !!this.signingDate && !!this.signatory.givenName && !!this.signatory.familyName
     this.$refs.signatureDatePickerRef.validateForm()
-    const isSignatureDateValid = this.$refs.signatureDatePickerRef.isDateValid()
-    const isValid = hasSigningData && isSignatureDateValid && (!includeIsEditing || !this.isEditing)
+    this.isSignatureDateValid = this.$refs.signatureDatePickerRef.isDateValid()
+    const isValid = this.hasSigningData && this.isSignatureDateValid && (!includeIsEditing || !this.isEditing)
     await this.setSpecialResolutionSignatureValid(isValid)
   }
 }
@@ -299,5 +305,8 @@ export default class SigningParty extends Vue {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
   }
+}
+.invalid-label{
+  color: $BCgovInputError !important;
 }
 </style>
