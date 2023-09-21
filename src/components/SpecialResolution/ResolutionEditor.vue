@@ -15,7 +15,9 @@
           sm="3"
           class="pr-4 d-none d-sm-block"
         >
-          <label class="resolution-date-vcard-title mt-4">
+          <label
+            :class="['resolution-date-vcard-title mt-4', { 'invalid-label': !isResolutionDateValid }]"
+          >
             Resolution Date
           </label>
         </v-col>
@@ -55,7 +57,9 @@
           sm="3"
           class="pr-4 d-none d-sm-block"
         >
-          <label class="resolution-text-vcard-title mt-4">
+          <label
+            :class="['resolution-text-vcard-title mt-4', { 'invalid-label': !isResolutionhasData }]"
+          >
             Resolution Text
           </label>
         </v-col>
@@ -173,6 +177,8 @@ export default class ResolutionEditor extends Vue {
   resolutionDateText = ''
   resolutionOriginal = '' // for undo for corrections.
   resolutionDateTextOriginal = '' // for undo for corrections.
+  isResolutionhasData = true // for resolution error text
+  isResolutionDateValid = true // for resolution error text
 
   extensions = [
     History,
@@ -317,10 +323,10 @@ export default class ResolutionEditor extends Vue {
   /** Used to trigger validate from outside of component. */
   @Watch('getComponentValidate')
   async onValidate (includeIsEditing = true): Promise<void> {
-    const hasData = !!this.resolutionDateText && !!this.resolution && this.resolution !== '<p></p>'
+    this.isResolutionhasData = !!this.resolutionDateText && !!this.resolution && this.resolution !== '<p></p>'
     this.$refs.resolutionDatePickerRef.validateForm()
-    const isResolutionDateValid = this.$refs.resolutionDatePickerRef.isDateValid()
-    const isValid = hasData && isResolutionDateValid && (!includeIsEditing || !this.isEditing)
+    this.isResolutionDateValid = this.$refs.resolutionDatePickerRef.isDateValid()
+    const isValid = this.isResolutionhasData && this.isResolutionDateValid && (!includeIsEditing || !this.isEditing)
     this.setSpecialResolutionValid(isValid)
   }
 
@@ -347,6 +353,10 @@ export default class ResolutionEditor extends Vue {
   table td {
     white-space: normal;
   }
+}
+
+.invalid-label{
+  color: $BCgovInputError !important;
 }
 
 div#resolution-text-editor {

@@ -280,14 +280,6 @@ export default class Resolution extends Vue {
   font-weight: normal;
 }
 
-// show error color for label and placeholder
-:deep() {
-  .invalid-section label,
-  .invalid-section label.v-label.error--text {
-    color: $BCgovInputError !important;
-  }
-}
-
 .actions {
   position: absolute;
   right: 0;
