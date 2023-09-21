@@ -16,7 +16,7 @@
           class="pr-4 d-none d-sm-block"
         >
           <label
-            :class="['resolution-signature-vcard-title mt-4', { 'invalid-label': !isResolutionDateValid }]"
+            :class="['resolution-date-vcard-title mt-4', { 'invalid-label': !isResolutionDateValid }]"
           >
             Resolution Date
           </label>
@@ -58,7 +58,7 @@
           class="pr-4 d-none d-sm-block"
         >
           <label
-            :class="['resolution-signature-vcard-title mt-4', { 'invalid-label': !isResolutionhasData }]"
+            :class="['resolution-text-vcard-title mt-4', { 'invalid-label': !isResolutionhasData }]"
           >
             Resolution Text
           </label>
