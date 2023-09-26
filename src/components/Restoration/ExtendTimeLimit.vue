@@ -30,10 +30,11 @@
           />
         </v-col>
       </v-row>
-
-      <!-- Vuetify Divider Line to separate approval type -->
-      <v-divider></v-divider>
     </section>
+
+    <!-- Vuetify Divider Line to separate approval type -->
+    <v-divider />
+
     <!-- Approval Type -->
     <section
       v-if="showApprovalType"
