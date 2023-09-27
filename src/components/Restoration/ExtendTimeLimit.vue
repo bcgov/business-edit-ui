@@ -32,6 +32,9 @@
       </v-row>
     </section>
 
+    <!-- Vuetify Divider Line to separate approval type -->
+    <v-divider />
+
     <!-- Approval Type -->
     <section
       v-if="showApprovalType"
