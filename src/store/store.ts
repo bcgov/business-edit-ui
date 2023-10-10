@@ -307,8 +307,14 @@ export const useStore = defineStore('store', {
       return this.stateModel.tombstone.businessId
     },
 
-    /** The original legal name. */
+    /** The original legal name (or operating name if this is a firm). */
     getOriginalLegalName (): string {
+      if (this.isFirm) {
+        // return the operating name, if it exists
+        const businessInfo = this.getEntitySnapshot?.businessInfo
+        const alternateName = businessInfo?.alternateNames?.find(x => x.identifier === businessInfo.identifier)
+        return alternateName?.operatingName || 'Unknown'
+      }
       return this.getEntitySnapshot?.businessInfo?.legalName
     },
 

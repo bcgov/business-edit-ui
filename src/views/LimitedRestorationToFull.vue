@@ -210,7 +210,7 @@ export default class LimitedRestorationToFull extends Mixins(
   @Action(useStore) setFilingId!: (x: number) => void
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
   @Action(useStore) setResource!: (x: ResourceIF) => void
-  @Action(useStore) setStateFilingRestoration!: (x: Promise<any>) => void
+  @Action(useStore) setStateFilingRestoration!: () => void
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   /** Whether App is ready. */
@@ -312,7 +312,7 @@ export default class LimitedRestorationToFull extends Mixins(
       this.setResource(this.restorationResource)
 
       // initialize Fee Summary data
-      this.setFilingData([this.restorationResource.filingData])
+      this.setFilingData([this.restorationResource.filingData as any])
 
       // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()

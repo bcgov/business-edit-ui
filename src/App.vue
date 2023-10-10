@@ -226,7 +226,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   haveData = false
 
   /** The Update Current JS Date timer id. */
-  private updateCurrentJsDateId = 0
+  private updateCurrentJsDateId = null as any // NodeJS.Timeout
 
   /** The route breadcrumbs list. */
   get breadcrumbs (): Array<BreadcrumbIF> {
