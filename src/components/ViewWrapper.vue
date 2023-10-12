@@ -297,6 +297,9 @@ export default class ViewWrapper extends Mixins(CommonMixin, FilingTemplateMixin
       // Reset global flag
       this.setComponentValidate(false)
 
+      // Extra wait for firefox, otherwise it scrolls too early.
+      await this.$nextTick()
+
       // We don't change views, just interchange components, so scroll to top for better UX.
       await this.scrollToTop(document.getElementById('app'))
     }
