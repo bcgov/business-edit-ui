@@ -36,3 +36,11 @@ export interface BusinessInformationIF {
   naicsDescription?: string
   naicsKey?: string // from API
 }
+
+export const EmptyBusinessInfo: BusinessInformationIF = {
+  associationType: null,
+  foundingDate: null,
+  identifier: '',
+  legalName: null,
+  legalType: null
+}

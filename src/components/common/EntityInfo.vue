@@ -49,10 +49,9 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { Getter } from 'pinia-class'
 import { CommonMixin } from '@/mixins/'
-import { BusinessInformationIF, EntitySnapshotIF } from '@/interfaces/'
+import { BusinessInformationIF } from '@/interfaces/'
 import { ContactPointIF } from '@bcrs-shared-components/interfaces/'
-import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
-
+import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { useStore } from '@/store/store'
 
 @Component({})
@@ -60,14 +59,15 @@ export default class EntityInfo extends Mixins(CommonMixin) {
   // Global getters
   @Getter(useStore) getBusinessId!: string
   @Getter(useStore) getBusinessInformation!: BusinessInformationIF
+  @Getter(useStore) getOriginalLegalType!: CorpTypeCd
   @Getter(useStore) getOriginalLegalName!: string
   @Getter(useStore) getBusinessContact!: ContactPointIF
-  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
 
   /** The original entity type. */
   get originalEntityType (): string {
-    if (this.getEntitySnapshot?.businessInfo) {
-      return GetCorpFullDescription(this.getEntitySnapshot.businessInfo.legalType)
+    const legalType = this.getOriginalLegalType
+    if (legalType) {
+      return GetCorpFullDescription(legalType)
     } else {
       return 'Unknown'
     }
@@ -75,7 +75,7 @@ export default class EntityInfo extends Mixins(CommonMixin) {
 
   /** The business number (aka tax id). */
   get businessNumber (): string {
-    return this.getBusinessInformation?.taxId
+    return this.getBusinessInformation.taxId
   }
 }
 </script>

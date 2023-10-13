@@ -249,7 +249,7 @@ export default class LimitedRestorationExtension extends Mixins(
 
       // fetch entity snapshot
       const entitySnapshot = await this.fetchEntitySnapshot()
-      const stateFiling = entitySnapshot.businessInfo.stateFiling
+      const stateFiling = entitySnapshot?.businessInfo?.stateFiling || null
       const filing = stateFiling && await LegalServices.fetchFiling(stateFiling)
 
       if (!filing) {
