@@ -4,6 +4,7 @@ import flushPromises from 'flush-promises'
 import { mount } from '@vue/test-utils'
 import { AssociationType, BusinessContactInfo, CertifySection, CompletingParty, CourtOrderPoa, Detail, EntityName,
   OfficeAddresses,
+  PeopleAndRoles,
   RecognitionDateTime,
   StaffPayment, YourCompanyWrapper } from '@/components/common/'
 import CoopCorrection from '@/views/Correction/CoopCorrection.vue'
@@ -194,9 +195,141 @@ describe('Coop Correction component', () => {
     ])
 
     LegalServices.fetchParties = vi.fn().mockResolvedValue([
-      { roles: [{ appointmentDate: '2022-04-01', roleType: 'Completing Party' }] },
-      { roles: [{ appointmentDate: '2022-04-01', roleType: 'Incorporator' }] },
-      { roles: [{ appointmentDate: '2022-05-01', roleType: 'Director' }] }
+      {
+        officer: {
+          id: 1,
+          firstName: 'Joe',
+          lastName: 'Swanson',
+          middleName: 'P',
+          organizationName: '',
+          partyType: 'person',
+          email: 'completing-party@example.com'
+        },
+        deliveryAddress: {
+          'addressCity': 'Scarborough',
+          'addressCountry': 'CA',
+          'addressRegion': 'BC',
+          'addressType': 'mailing',
+          'deliveryInstructions': null,
+          'id': 2660328,
+          'postalCode': 'M1B 4B9',
+          'streetAddress': '34-70 Alford Cres',
+          'streetAddressAdditional': ''
+        },
+        mailingAddress: {
+          'addressCity': 'Scarborough',
+          'addressCountry': 'CA',
+          'addressRegion': 'BC',
+          'addressType': 'mailing',
+          'deliveryInstructions': null,
+          'id': 2660328,
+          'postalCode': 'M1B 4B9',
+          'streetAddress': '34-70 Alford Cres',
+          'streetAddressAdditional': ''
+        },
+        roles: [{ appointmentDate: '2022-04-01', roleType: 'Incorporator' }] },
+      {
+        officer: {
+          id: 1,
+          firstName: 'Joe',
+          lastName: 'Swanson',
+          middleName: 'P',
+          organizationName: '',
+          partyType: 'person',
+          email: 'completing-party@example.com'
+        },
+        deliveryAddress: {
+          'addressCity': 'Scarborough',
+          'addressCountry': 'CA',
+          'addressRegion': 'BC',
+          'addressType': 'mailing',
+          'deliveryInstructions': null,
+          'id': 2660328,
+          'postalCode': 'M1B 4B9',
+          'streetAddress': '34-70 Alford Cres',
+          'streetAddressAdditional': ''
+        },
+        mailingAddress: {
+          'addressCity': 'Scarborough',
+          'addressCountry': 'CA',
+          'addressRegion': 'BC',
+          'addressType': 'mailing',
+          'deliveryInstructions': null,
+          'id': 2660328,
+          'postalCode': 'M1B 4B9',
+          'streetAddress': '34-70 Alford Cres',
+          'streetAddressAdditional': ''
+        },
+        roles: [{ appointmentDate: '2022-05-01', roleType: 'Director' }]
+      },
+      {
+        officer: {
+          id: 21,
+          firstName: 'Joe2',
+          lastName: 'Swanson',
+          middleName: 'P',
+          organizationName: '',
+          partyType: 'person',
+          email: 'completing-party@example.com'
+        },
+        deliveryAddress: {
+          'addressCity': 'Scarborough',
+          'addressCountry': 'CA',
+          'addressRegion': 'BC',
+          'addressType': 'mailing',
+          'deliveryInstructions': null,
+          'id': 2660328,
+          'postalCode': 'M1B 4B9',
+          'streetAddress': '34-70 Alford Cres',
+          'streetAddressAdditional': ''
+        },
+        mailingAddress: {
+          'addressCity': 'Scarborough',
+          'addressCountry': 'CA',
+          'addressRegion': 'BC',
+          'addressType': 'mailing',
+          'deliveryInstructions': null,
+          'id': 2660328,
+          'postalCode': 'M1B 4B9',
+          'streetAddress': '34-70 Alford Cres',
+          'streetAddressAdditional': ''
+        },
+        roles: [{ appointmentDate: '2022-05-01', roleType: 'Director' }]
+      },
+      {
+        officer: {
+          id: 33,
+          firstName: 'Joef',
+          lastName: 'Swanson',
+          middleName: 'P',
+          organizationName: '',
+          partyType: 'person',
+          email: 'completing-party@example.com'
+        },
+        deliveryAddress: {
+          'addressCity': 'Scarborough',
+          'addressCountry': 'CA',
+          'addressRegion': 'BC',
+          'addressType': 'mailing',
+          'deliveryInstructions': null,
+          'id': 2660328,
+          'postalCode': 'M1B 4B9',
+          'streetAddress': '34-70 Alford Cres',
+          'streetAddressAdditional': ''
+        },
+        mailingAddress: {
+          'addressCity': 'Scarborough',
+          'addressCountry': 'CA',
+          'addressRegion': 'BC',
+          'addressType': 'mailing',
+          'deliveryInstructions': null,
+          'id': 2660328,
+          'postalCode': 'M1B 4B9',
+          'streetAddress': '34-70 Alford Cres',
+          'streetAddressAdditional': ''
+        },
+        roles: [{ appointmentDate: '2022-05-01', roleType: 'Director' }]
+      }
     ])
 
     wrapper = mount(CoopCorrection, {
@@ -244,6 +377,7 @@ describe('Coop Correction component', () => {
     expect(wrapper.findComponent(EntityName).isVisible()).toBe(true)
     expect(wrapper.findComponent(AssociationType).isVisible()).toBe(true)
     expect(wrapper.findComponent(BusinessContactInfo).isVisible()).toBe(true)
+    expect(wrapper.findComponent(PeopleAndRoles).isVisible()).toBe(true)
     expect(wrapper.findComponent(Rules).isVisible()).toBe(true)
     expect(wrapper.findComponent(Memorandum).isVisible()).toBe(true)
     expect(wrapper.findComponent(Resolution).isVisible()).toBe(true)
@@ -261,6 +395,7 @@ describe('Coop Correction component', () => {
     expect(wrapper.findComponent(EntityName).isVisible()).toBe(true)
     expect(wrapper.findComponent(AssociationType).isVisible()).toBe(true)
     expect(wrapper.findComponent(BusinessContactInfo).isVisible()).toBe(true)
+    expect(wrapper.findComponent(PeopleAndRoles).isVisible()).toBe(true)
     expect(wrapper.findComponent(Rules).isVisible()).toBe(true)
     expect(wrapper.findComponent(Memorandum).isVisible()).toBe(true)
     expect(wrapper.findComponent(Resolution).isVisible()).toBe(true)
@@ -299,6 +434,7 @@ describe('Coop Correction component', () => {
     await Vue.nextTick()
 
     expect(store.getFlagsCompanyInfo.isValidAssociationType).toBe(true)
+    expect(store.getFlagsCompanyInfo.isValidOrgPersons).toBe(true)
     expect(store.getFlagsCompanyInfo.isValidRules).toBe(true)
     expect(store.getFlagsCompanyInfo.isValidMemorandum).toBe(true)
     expect(store.getFlagsCompanyInfo.isValidSpecialResolution).toBe(true)
