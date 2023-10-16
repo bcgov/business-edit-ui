@@ -167,7 +167,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { CoopTypes } from '@/enums'
 import { CommonMixin } from '@/mixins'
-import { ActionKvIF, BusinessInformationIF, EntitySnapshotIF } from '@/interfaces'
+import { ActionKvIF, BusinessInformationIF, EmptyBusinessInfo } from '@/interfaces'
 import { VuetifyRuleFunction } from '@/types'
 import { CoopTypeToDescription } from '@/utils'
 import { useStore } from '@/store/store'
@@ -180,7 +180,7 @@ export default class AssociationType extends Mixins(CommonMixin) {
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
-  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
+  @Getter(useStore) getOriginalBusinessInfo!: BusinessInformationIF
   @Getter(useStore) hasAssociationTypeChanged!: boolean
 
   /** Global actions */
@@ -235,8 +235,7 @@ export default class AssociationType extends Mixins(CommonMixin) {
 
   /** Reset association type value to original */
   resetAssociationType () {
-    this.setBusinessInformation(this.getEntitySnapshot.businessInfo)
-    this.onComponentValidateChanged()
+    this.setBusinessInformation(this.getOriginalBusinessInfo || { ...EmptyBusinessInfo })
     this.isEditingAssociationType = false
   }
 

@@ -149,7 +149,7 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { FormIF, EntitySnapshotIF } from '@/interfaces/'
+import { FormIF } from '@/interfaces/'
 import { CommonMixin, DateMixin } from '@/mixins/'
 import { HelpSection } from '@/components/common/'
 import { DatePicker as DatePickerShared } from '@bcrs-shared-components/date-picker/'
@@ -163,10 +163,10 @@ import { useStore } from '@/store/store'
   }
 })
 export default class ResolutionSummary extends Mixins(CommonMixin, DateMixin) {
-  @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
   @Getter(useStore) getAppValidate!: boolean
+  @Getter(useStore) getOriginalLegalName!: string
+  @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
   @Getter(useStore) getSpecialResolutionConfirmValid!: boolean
-  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
 
   @Action(useStore) setSpecialResolution!: (x: SpecialResolutionIF) => void
   @Action(useStore) setSpecialResolutionConfirmStateValidity!: (x: boolean) => void
@@ -226,7 +226,7 @@ export default class ResolutionSummary extends Mixins(CommonMixin, DateMixin) {
   /** The company name. */
   get companyName (): string {
     // old company name need show even they change it
-    return this.getEntitySnapshot?.businessInfo?.legalName || ''
+    return this.getOriginalLegalName || ''
   }
 
   /** Set validate on file and pay click. */

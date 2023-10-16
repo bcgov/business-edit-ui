@@ -11,13 +11,13 @@ export interface CorrectNameOptionIF {
 }
 
 export interface NrCorrectionIF {
+  applicant: NameRequestApplicantIF
+  expiry: string,
+  legalName: string,
   legalType: CorpTypeCd,
   nrNumber: string,
-  legalName: string,
-  expiry: string,
-  requestType: string,
+  requestType: NrRequestActionCodes,
   status: NameRequestStates,
-  applicant: NameRequestApplicantIF
 }
 
 export interface NrActionIF {

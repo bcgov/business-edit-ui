@@ -269,7 +269,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { HelpSection } from '@/components/common/'
-import { EntitySnapshotIF, RulesMemorandumIF } from '@/interfaces'
+import { RulesMemorandumIF } from '@/interfaces'
 import DateUtilities from '@/services/date-utilities'
 import { FormIF } from '@bcrs-shared-components/interfaces'
 import { Component, Watch } from 'vue-property-decorator'
@@ -288,7 +288,6 @@ export default class Memorandum extends Vue {
   @Getter(useStore) getComponentValidate!: boolean
   @Getter(useStore) getEditedLabel!: string
   @Getter(useStore) getEditLabel!: string
-  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getSpecialResolutionMemorandum!: RulesMemorandumIF
   @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
   @Getter(useStore) hasResolutionSection!: boolean
