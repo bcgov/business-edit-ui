@@ -29,6 +29,8 @@
       <BusinessContactInfo />
     </YourCompanyWrapper>
 
+    <PeopleAndRoles class="mt-10" />
+
     <Rules class="mt-10" />
 
     <Memorandum class="mt-10" />
@@ -74,8 +76,8 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { SpecialResolutionSummary, Resolution } from '@/components/SpecialResolution'
 import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
-  CurrentDirectors, Detail, DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
-  StaffPayment, TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
+  CurrentDirectors, Detail, DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, PeopleAndRoles,
+  RecognitionDateTime, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
 import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import Rules from '@/components/SpecialResolution/Rules.vue'
@@ -104,6 +106,7 @@ import { FilingDataIF } from '@bcrs-shared-components/interfaces'
     EntityName,
     FolioInformation,
     OfficeAddresses,
+    PeopleAndRoles,
     RecognitionDateTime,
     SpecialResolutionSummary,
     StaffPayment,

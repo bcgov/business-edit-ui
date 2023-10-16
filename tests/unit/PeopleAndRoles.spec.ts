@@ -526,4 +526,52 @@ describe('People And Roles component for Change of Registration', () => {
     ] as any
     expect(store.hideChangeButtonForSoleProps).toBe(false)
   })
+
+  it('test majority of directors in Canada for CP', () => {
+    const wrapper = wrapperFactory()
+    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
+    store.stateModel.peopleAndRoles.orgPeople = [
+      {
+        officer: { partyType: 'organization' },
+        mailingAddress: {
+          addressCountry: 'US'
+        },
+        roles: [{ roleType: 'Director' }]
+      },
+      {
+        officer: { partyType: 'organization' },
+        mailingAddress: {
+          addressCountry: 'US'
+        },
+        roles: [{ roleType: 'Director' }]
+      },
+      {
+        officer: { partyType: 'organization' },
+        mailingAddress: {
+          addressCountry: 'CA'
+        },
+        roles: [{ roleType: 'Director' }]
+      }
+    ] as any
+    expect(wrapper.vm.haveMajorityDirectorsInCanada).toBe(false)
+    store.stateModel.peopleAndRoles.orgPeople[1].mailingAddress.addressCountry = 'CA'
+    expect(wrapper.vm.haveMajorityDirectorsInCanada).toBe(true)
+  })
+
+  it('test least one director in BC for CP', () => {
+    const wrapper = wrapperFactory()
+    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
+    store.stateModel.peopleAndRoles.orgPeople = [
+      {
+        officer: { partyType: 'organization' },
+        mailingAddress: {
+          addressRegion: 'AB'
+        },
+        roles: [{ roleType: 'Director' }]
+      }
+    ] as any
+    expect(wrapper.vm.haveOneDirectorResideInBC).toBe(false)
+    store.stateModel.peopleAndRoles.orgPeople[0].mailingAddress.addressRegion = 'BC'
+    expect(wrapper.vm.haveOneDirectorResideInBC).toBe(true)
+  })
 })
