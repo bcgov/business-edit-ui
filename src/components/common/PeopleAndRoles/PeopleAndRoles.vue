@@ -102,7 +102,7 @@
 
         <!-- Instructional people and roles text (base corrections only)-->
         <article
-          v-if="isBenBcCccUlcCorrectionFiling"
+          v-if="isBenBcCccUlcCorrectionFiling || isCoopCorrectionFiling"
           class="section-container"
         >
           This application must include the following:
@@ -124,15 +124,49 @@
               </v-icon>
               <span class="ml-2">
                 <template v-if="isBcCompany || isBenefitCompany || isBcUlcCompany">At least one Director</template>
-                <template v-if="isBcCcc">At least three Directors</template>
+                <template v-if="isBcCcc || isCoopCorrectionFiling">At least three Directors</template>
               </span>
+            </li>
+            <li v-if="isCoopCorrectionFiling">
+              <v-icon
+                v-if="haveMajorityDirectorsInCanada"
+                color="green darken-2"
+                class="dir-valid"
+              >
+                mdi-check
+              </v-icon>
+              <v-icon
+                v-else
+                color="red"
+                class="dir-invalid"
+              >
+                mdi-close
+              </v-icon>
+              <span class="ml-2">The majority of Directors must reside in Canada</span>
+            </li>
+            <li v-if="isCoopCorrectionFiling">
+              <v-icon
+                v-if="haveOneDirectorResideInBC"
+                color="green darken-2"
+                class="dir-valid"
+              >
+                mdi-check
+              </v-icon>
+              <v-icon
+                v-else
+                color="red"
+                class="dir-invalid"
+              >
+                mdi-close
+              </v-icon>
+              <span class="ml-2">At least one Director must reside in BC</span>
             </li>
           </ul>
         </article>
 
         <!-- Correction section (base corrections only) -->
         <article
-          v-if="isBenBcCccUlcCorrectionFiling"
+          v-if="isBenBcCccUlcCorrectionFiling || isCoopCorrectionFiling"
           class="section-container"
         >
           <v-btn
@@ -271,7 +305,7 @@
           :validate="getComponentValidate"
           :validOrgPersons="validOrgPersons"
           :showDeliveryAddressColumn="!(isLimitedRestorationExtension || isLimitedRestorationToFull)"
-          :showRolesColumn="isBenBcCccUlcCorrectionFiling"
+          :showRolesColumn="isBenBcCccUlcCorrectionFiling || isCoopCorrectionFiling"
           :showEmailColumn="isLimitedRestorationExtension || isLimitedRestorationToFull"
           :showEmailUnderName="showEmailUnderName"
           @initEdit="initEdit($event)"
@@ -322,6 +356,7 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
   @Getter(useStore) isBcUlcCompany!: boolean
   @Getter(useStore) isBenefitCompany!: boolean
   @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isCoopCorrectionFiling!: boolean
   @Getter(useStore) isCorrectionFiling!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
   @Getter(useStore) isFirmConversionFiling!: boolean
@@ -366,10 +401,38 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
     if (this.isBcCompany || this.isBenefitCompany || this.isBcUlcCompany) {
       return this.hasRole(RoleTypes.DIRECTOR, 1, CompareModes.AT_LEAST)
     }
-    if (this.isBcCcc) {
+    if (this.isBcCcc || this.isCoopCorrectionFiling) {
       return this.hasRole(RoleTypes.DIRECTOR, 3, CompareModes.AT_LEAST)
     }
     return false // should never happen
+  }
+
+  /** True when majority of Directors reside in Canada. CP only for now. */
+  get haveMajorityDirectorsInCanada (): boolean {
+    const existingDirectors = this.getOrgPeople
+      .filter(people => !this.wasRemoved(people))
+      .filter(people => people.roles.some(role => role.roleType === RoleTypes.DIRECTOR))
+
+    const numberOfDirectorsResidingInCanada = existingDirectors
+      .filter(people => people.mailingAddress.addressCountry === 'CA')
+      .length
+
+    const numberOfDirectorsResidingOutsideCanada = existingDirectors
+      .filter(people => people.mailingAddress.addressCountry !== 'CA')
+      .length
+
+    return numberOfDirectorsResidingInCanada > numberOfDirectorsResidingOutsideCanada
+  }
+
+  /** True when at least one Director resides in BC. CP only for now. */
+  get haveOneDirectorResideInBC (): boolean {
+    const numberOfDirectorsResidingInBC = this.getOrgPeople
+      .filter(people => !this.wasRemoved(people))
+      .filter(people => people.roles.some(role => role.roleType === RoleTypes.DIRECTOR))
+      .filter(people => people.mailingAddress.addressRegion === 'BC')
+      .length
+
+    return numberOfDirectorsResidingInBC >= 1
   }
 
   /** True when the required applicant count is met. */
@@ -425,6 +488,11 @@ export default class PeopleAndRoles extends Mixins(CommonMixin, DateMixin, OrgPe
       if (this.isSoleProp) return this.haveRequiredProprietor
       if (this.isBcCompany || this.isBenefitCompany || this.isBcCcc || this.isBcUlcCompany) {
         return this.haveMinimumDirectors
+      }
+      if (this.isCoopCorrectionFiling) {
+        return this.haveMinimumDirectors &&
+          this.haveMajorityDirectorsInCanada &&
+          this.haveOneDirectorResideInBC
       }
       return false
     }
