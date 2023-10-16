@@ -529,6 +529,7 @@ describe('People And Roles component for Change of Registration', () => {
 
   it('test majority of directors in Canada for CP', () => {
     const wrapper = wrapperFactory()
+    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
     store.stateModel.peopleAndRoles.orgPeople = [
       {
         officer: { partyType: 'organization' },
@@ -559,6 +560,7 @@ describe('People And Roles component for Change of Registration', () => {
 
   it('test least one director in BC for CP', () => {
     const wrapper = wrapperFactory()
+    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
     store.stateModel.peopleAndRoles.orgPeople = [
       {
         officer: { partyType: 'organization' },
