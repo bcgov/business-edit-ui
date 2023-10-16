@@ -22,6 +22,10 @@ export const CpCorrectionResource: ResourceIF = {
     'business and dissolve this business once the new business is registered.',
     addressChangeInfo: 'To change addresses, please use the Change feature in the' +
     ' Office Addresses list on your business dashboard.',
+    orgPersonInfo: {
+      orgPersonLabel: 'Directors',
+      subtitle: null // not used
+    },
     nameRequestTypes: [
       NrRequestActionCodes.CHANGE_NAME
     ],

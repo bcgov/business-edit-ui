@@ -576,6 +576,7 @@ export const useStore = defineStore('store', {
           this.hasAssociationTypeChanged ||
           this.hasSpecialResolutionMemorandumChanged ||
           this.haveOfficeAddressesChanged ||
+          this.havePeopleAndRolesChanged ||
           this.hasSpecialResolutionRulesChanged ||
           this.hasSpecialResolutionResolutionChanged
         )
@@ -742,6 +743,7 @@ export const useStore = defineStore('store', {
           this.getFlagsCompanyInfo.isValidAddress &&
           this.getFlagsCompanyInfo.isValidAssociationType &&
           this.getFlagsCompanyInfo.isValidContactInfo &&
+          this.getFlagsCompanyInfo.isValidOrgPersons &&
           this.getFlagsCompanyInfo.isValidRules &&
           this.getFlagsCompanyInfo.isValidMemorandum &&
           this.getFlagsCompanyInfo.isValidSpecialResolution &&
