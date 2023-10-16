@@ -134,7 +134,8 @@ import { BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, Curre
 import { NameTranslation } from '@/components/common/YourCompany/NameTranslations/'
 import { AuthServices, LegalServices } from '@/services/'
 import { CommonMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
-import { EntitySnapshotIF, FilingDataIF, ResourceIF } from '@/interfaces/'
+import { EntitySnapshotIF, ResourceIF } from '@/interfaces/'
+import { FilingDataIF } from '@bcrs-shared-components/interfaces/'
 import { FilingStatus } from '@/enums/'
 import { SessionStorageKeys } from 'sbc-common-components/src/util/constants'
 import { BcAlterationResource, BenAlterationResource, CccAlterationResource, UlcAlterationResource }
@@ -218,19 +219,21 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
   onBusinessTypeChanged () {
     const filingData = this.getFilingData
     // When we are converting from BC to ULC, it's $1000 not $100.
-    if (this.getEntitySnapshot?.businessInfo?.legalType === CorpTypeCd.BC_COMPANY &&
-        this.getEntityType === CorpTypeCd.BC_ULC_COMPANY) {
+    if (
+      this.getOriginalLegalType === CorpTypeCd.BC_COMPANY &&
+      this.getEntityType === CorpTypeCd.BC_ULC_COMPANY
+    ) {
       this.setFilingData([{
         filingTypeCode: BcAlterationResource.additionalFilingData.filingTypeCode,
-        entityType: BcAlterationResource.additionalFilingData.entityType,
+        entityType: BcAlterationResource.additionalFilingData.entityType as any,
         priority: filingData[0].priority,
         futureEffective: filingData[0].futureEffective
       }])
     } else {
-      const resourceFilingData = this.alterationResource.filingData as FilingDataIF
+      const resourceFilingData = this.alterationResource.filingData as unknown as FilingDataIF
       this.setFilingData([{
         filingTypeCode: resourceFilingData.filingTypeCode,
-        entityType: resourceFilingData.entityType,
+        entityType: resourceFilingData.entityType as any,
         priority: filingData[0].priority,
         futureEffective: filingData[0].futureEffective
       }])
@@ -293,7 +296,7 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
       this.setResource(this.alterationResource)
 
       // initialize Fee Summary data
-      const filingData = [this.alterationResource.filingData]
+      const filingData = [this.alterationResource.filingData as unknown as FilingDataIF]
       filingData.forEach(fd => {
         (fd as FilingDataIF).futureEffective = this.getEffectiveDateTime.isFutureEffective
       })

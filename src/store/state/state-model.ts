@@ -1,4 +1,4 @@
-import { EmptyFees, EmptyNameRequest, StateModelIF } from '@/interfaces/'
+import { EmptyBusinessInfo, EmptyFees, EmptyNameRequest, StateModelIF } from '@/interfaces/'
 import { StaffPaymentOptions } from '@bcrs-shared-components/enums/'
 import { EmptyContactPoint } from '@bcrs-shared-components/interfaces/'
 import { cloneDeep } from 'lodash'
@@ -79,13 +79,7 @@ export const stateModel: StateModelIF = {
     type: ''
   },
   businessContact: { ...EmptyContactPoint },
-  businessInformation: {
-    associationType: null,
-    foundingDate: null,
-    identifier: '',
-    legalName: null,
-    legalType: null
-  },
+  businessInformation: { ...EmptyBusinessInfo },
   correctionInformation: {
     comment: '',
     correctedFilingDate: null,

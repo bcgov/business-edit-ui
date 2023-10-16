@@ -54,7 +54,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // Local variable
-  protected isEditingContact = false
+  isEditingContact = false
 
   /** The section validity state (when prompted by app). */
   get invalidSection (): boolean {
@@ -77,7 +77,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
   }
 
   /** On Contact Info Change event, updates auth db and store. */
-  protected async onContactInfoChange (contactInfo: ContactPointIF): Promise<void> {
+  async onContactInfoChange (contactInfo: ContactPointIF): Promise<void> {
     // do nothing if contact info was not changed
     if (isEqual(contactInfo, this.getBusinessContact)) return
 
@@ -90,7 +90,7 @@ export default class BusinessContactInfo extends Mixins(CommonMixin) {
       // reset business contact to previous value
       const prev = this.getBusinessContact
       // toggle for reactivity
-      this.setBusinessContact({})
+      this.setBusinessContact({} as ContactPointIF)
       this.$nextTick(() => this.setBusinessContact(prev))
     }
   }

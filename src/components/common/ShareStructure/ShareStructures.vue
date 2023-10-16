@@ -69,8 +69,8 @@ export default class ShareStructures extends Mixins(CommonMixin) {
   @Action(useStore) setValidComponent!: (x: ActionKvIF) => void
 
   // Local propertiues
-  protected isEditing = false
-  protected showResolutionDateDialog = false
+  isEditing = false
+  showResolutionDateDialog = false
 
   /** Whether share section is invalid, only when prompted by app. */
   get invalidShareSection (): boolean {
