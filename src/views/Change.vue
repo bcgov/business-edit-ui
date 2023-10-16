@@ -243,7 +243,7 @@ export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplate
       this.setResource(this.firmChangeResource)
 
       // initialize Fee Summary data
-      this.setFilingData([this.firmChangeResource.filingData])
+      this.setFilingData([this.firmChangeResource.filingData as any])
 
       // update the current fees for this filing
       await this.setCurrentFeesFromFilingData()

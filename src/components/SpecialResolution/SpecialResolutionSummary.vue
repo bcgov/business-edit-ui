@@ -156,14 +156,9 @@ export default class SpecialResolutionSummary extends Mixins(DateMixin, FeeMixin
     return `${this.getBusinessNumber || '[Incorporation Number]'} B.C. Ltd.`
   }
 
-  /** The legal type before changes. */
-  get originalLegalType (): string {
-    return this.getEntitySnapshot?.businessInfo?.legalType
-  }
-
   /** The association type before changes. */
   get originalAssociationType (): string {
-    return this.getEntitySnapshot?.businessInfo?.associationType
+    return this.getOriginalBusinessInfo?.associationType
   }
 
   /** Calculates the sum of special resolution fees. */

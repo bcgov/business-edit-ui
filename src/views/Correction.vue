@@ -117,7 +117,7 @@ export default class Correction extends Mixins(CommonMixin) {
 
       // set entity type for misc functionality to work
       // do not proceed if this isn't a BC/Firm/Coop correction
-      this.setEntityType(filing.business?.legalType)
+      this.setEntityType(filing.business?.legalType || null)
       if (!this.isBenBcCccUlc && !this.isFirm && !this.isCoop) {
         throw new Error('Invalid correction type')
       }

@@ -36,7 +36,8 @@ import {
   ShareClassIF,
   StateIF,
   StateFilingRestorationIF,
-  ValidationFlagsIF } from '@/interfaces/'
+  ValidationFlagsIF
+} from '@/interfaces/'
 import {
   CompletingPartyIF,
   ContactPointIF,
@@ -150,26 +151,36 @@ export const useStore = defineStore('store', {
       return (this.getCorrectedFilingType === FilingTypes.CHANGE_OF_REGISTRATION)
     },
 
-    /** The original entity type, this is for entity type alteration */
-    getOriginLegalType (): CorpTypeCd {
-      return this.getEntitySnapshot?.businessInfo?.legalType
+    /** The original business info. NB: may be null. */
+    getOriginalBusinessInfo (): BusinessInformationIF {
+      return this.getEntitySnapshot?.businessInfo || null
+    },
+
+    /** The original legal type. */
+    getOriginalLegalType (): CorpTypeCd {
+      return this.getOriginalBusinessInfo?.legalType || null
+    },
+
+    /** The original NR number. */
+    getOriginalNrNumber (): string {
+      return this.getOriginalBusinessInfo?.nrNumber || ''
     },
 
     // Original entity type getters
     isOriginBcCompany (): boolean {
-      return (this.getOriginLegalType === CorpTypeCd.BC_COMPANY)
+      return (this.getOriginalLegalType === CorpTypeCd.BC_COMPANY)
     },
 
     isOriginBenefitCompany (): boolean {
-      return (this.getOriginLegalType === CorpTypeCd.BENEFIT_COMPANY)
+      return (this.getOriginalLegalType === CorpTypeCd.BENEFIT_COMPANY)
     },
 
     isOriginBcUlcCompany (): boolean {
-      return (this.getOriginLegalType === CorpTypeCd.BC_ULC_COMPANY)
+      return (this.getOriginalLegalType === CorpTypeCd.BC_ULC_COMPANY)
     },
 
     isOriginBcCcc (): boolean {
-      return (this.getOriginLegalType === CorpTypeCd.BC_CCC)
+      return (this.getOriginalLegalType === CorpTypeCd.BC_CCC)
     },
 
     /** The entity type. */
@@ -234,10 +245,10 @@ export const useStore = defineStore('store', {
 
     /** Whether the current account is a premium account. */
     isPremiumAccount (): boolean {
-      return (this.stateModel.accountInformation.accountType === AccountTypes.PREMIUM)
+      return (this.stateModel.accountInformation?.accountType === AccountTypes.PREMIUM)
     },
 
-    /** The filing's effective date-time object. */
+    /** The effective date-time object. */
     getEffectiveDateTime (): EffectiveDateTimeIF {
       return this.stateModel.effectiveDateTime
     },
@@ -254,7 +265,7 @@ export const useStore = defineStore('store', {
 
     /** The current account id. */
     getAccountId (): number {
-      return this.stateModel.accountInformation.id
+      return this.stateModel.accountInformation?.id || null
     },
 
     /** The current date in format (YYYY-MM-DD), which is refreshed every time the app inits. */
@@ -307,9 +318,15 @@ export const useStore = defineStore('store', {
       return this.stateModel.tombstone.businessId
     },
 
-    /** The original legal name. */
+    /** The original legal name (or operating name if this is a firm). */
     getOriginalLegalName (): string {
-      return this.getEntitySnapshot?.businessInfo?.legalName
+      if (this.isFirm) {
+        // return the operating name, if it exists
+        const alternateNames = this.getOriginalBusinessInfo?.alternateNames || []
+        const alternateName = alternateNames.find(x => x.identifier === this.getBusinessId)
+        return alternateName?.operatingName || 'Unknown'
+      }
+      return this.getOriginalBusinessInfo?.legalName || ''
     },
 
     /** The appropriate edit label for corrections, alterations, change or conversion filings. */
@@ -362,14 +379,14 @@ export const useStore = defineStore('store', {
       return 'Edits Saved' // should never happen
     },
 
-    /** The original entity snapshot. */
+    /** The entity snapshot (ie, original data). NB: may be null. */
     getEntitySnapshot (): EntitySnapshotIF {
       return this.stateModel.entitySnapshot
     },
 
     /** The original entity snapshot state filing's URL. */
     getStateFilingUrl (): string {
-      return this.stateModel.entitySnapshot?.businessInfo?.stateFiling
+      return this.getOriginalBusinessInfo?.stateFiling || ''
     },
 
     /** The business number. */
@@ -443,8 +460,8 @@ export const useStore = defineStore('store', {
     /** The snapshot NAICS object. */
     getSnapshotNaics (): NaicsIF {
       return {
-        naicsCode: this.getEntitySnapshot?.businessInfo?.naicsCode,
-        naicsDescription: this.getEntitySnapshot?.businessInfo?.naicsDescription
+        naicsCode: this.getOriginalBusinessInfo?.naicsCode,
+        naicsDescription: this.getOriginalBusinessInfo?.naicsDescription
       }
     },
 
@@ -483,7 +500,7 @@ export const useStore = defineStore('store', {
       return this.stateModel.officeAddresses
     },
 
-    /** The org-people list. */
+    /** The org-people (aka parties) list. */
     getOrgPeople (): Array<OrgPersonIF> {
       return this.stateModel.peopleAndRoles.orgPeople
     },
@@ -773,7 +790,7 @@ export const useStore = defineStore('store', {
       )
     },
 
-    /** The validation flags. */
+    /** The validation flags object. */
     getValidationFlags (): ValidationFlagsIF {
       return this.stateModel.validationFlags
     },
@@ -831,7 +848,7 @@ export const useStore = defineStore('store', {
 
     /** Check for conflicting legal types between current type and altered type. */
     isConflictingLegalType (): boolean {
-      return (this.getEntityType !== this.stateModel.nameRequest.legalType)
+      return (this.getEntityType !== this.getNameRequest.legalType)
     },
 
     /** The Summary Mode state. */
@@ -842,7 +859,7 @@ export const useStore = defineStore('store', {
     /** Whether business name has changed. */
     hasBusinessNameChanged (): boolean {
       const currentLegalName = this.getNameRequestLegalName // may be empty
-      const originalLegalName = this.getOriginalLegalName
+      const originalLegalName = this.getOriginalLegalName // from original business record
 
       return (currentLegalName !== originalLegalName)
     },
@@ -860,7 +877,7 @@ export const useStore = defineStore('store', {
     /** Whether business type has changed. */
     hasBusinessTypeChanged (): boolean {
       const currentEntityType = this.getEntityType
-      const originalLegalType = this.getEntitySnapshot?.businessInfo?.legalType
+      const originalLegalType = this.getOriginalLegalType
 
       return (currentEntityType !== originalLegalType)
     },
@@ -873,7 +890,7 @@ export const useStore = defineStore('store', {
     /** Whether association type has changed. */
     hasAssociationTypeChanged (): boolean {
       const currentAssociationType = this.getAssociationType
-      const originalAssociationType = this.getEntitySnapshot?.businessInfo?.associationType
+      const originalAssociationType = this.getOriginalBusinessInfo?.associationType
 
       return (currentAssociationType !== originalAssociationType)
     },
@@ -911,9 +928,9 @@ export const useStore = defineStore('store', {
       return false
     },
 
-    /** The office addresses from the original filing. NB: may be {} */
+    /** The office addresses from the original filing. NB: may be null. */
     getOriginalOfficeAddresses (): AddressesIF {
-      return this.getEntitySnapshot?.addresses
+      return this.getEntitySnapshot?.addresses || null
     },
 
     /** True if (registered) mailing address has changed. */
@@ -1053,7 +1070,7 @@ export const useStore = defineStore('store', {
     /** Whether NAICS data has changed. */
     hasNaicsChanged (): boolean {
       const currentNaicsCode = this.getBusinessInformation.naicsCode
-      const originalNaicsCode = this.getEntitySnapshot?.businessInfo?.naicsCode
+      const originalNaicsCode = this.getOriginalBusinessInfo?.naicsCode
 
       // first try to compare codes
       if (currentNaicsCode || originalNaicsCode) {
@@ -1061,7 +1078,7 @@ export const useStore = defineStore('store', {
       }
 
       const currentNaicsDescription = this.getBusinessInformation.naicsDescription
-      const originalNaicsDescription = this.getEntitySnapshot?.businessInfo?.naicsDescription
+      const originalNaicsDescription = this.getOriginalBusinessInfo?.naicsDescription
 
       // then try to compare descriptions
       if (currentNaicsDescription || originalNaicsDescription) {
@@ -1076,9 +1093,9 @@ export const useStore = defineStore('store', {
       return (this.stateModel.newAlteration.provisionsRemoved === true)
     },
 
-    /** The original resolution dates. */
+    /** The original resolution dates. NB: may be []. */
     getOriginalResolutions (): ResolutionsIF[] {
-      return this.getEntitySnapshot?.resolutions
+      return this.getEntitySnapshot?.resolutions || []
     },
 
     /** The new resolution dates. */
@@ -1106,7 +1123,7 @@ export const useStore = defineStore('store', {
     },
 
     /** True if the share structure contains any special rights of restrictions. */
-    getHasRightsOrRestrictions (): any {
+    getHasRightsOrRestrictions (): boolean {
       const shareClasses = this.stateModel.shareStructureStep.shareClasses
 
       // Search and return on the first match
@@ -1115,8 +1132,8 @@ export const useStore = defineStore('store', {
     },
 
     /** True if the share structure contains any special rights of restrictions. */
-    getHasOriginalRightsOrRestrictions (): any {
-      const shareClasses = this.getEntitySnapshot?.shareStructure?.shareClasses
+    getHasOriginalRightsOrRestrictions (): boolean {
+      const shareClasses = this.getEntitySnapshot?.shareStructure?.shareClasses || []
 
       // Search and return on the first match
       // Don't need to search Series, as they can't exist on a parent without rights or restrictions
@@ -1203,19 +1220,19 @@ export const useStore = defineStore('store', {
       return this.stateModel.restoration
     },
 
-    /** The restoration object. */
+    /** The state filing restoration object. */
     getStateFilingRestoration (): StateFilingRestorationIF {
       return this.stateModel.stateFilingRestoration
     },
 
     /** The approval type validity. */
     getApprovalTypeValid (): boolean {
-      return this.stateModel.validationFlags.flagsCompanyInfo.isValidApprovalType
+      return this.getValidationFlags.flagsCompanyInfo.isValidApprovalType
     },
 
     /** The expiry date validity. */
     getExpiryValid (): boolean {
-      return this.stateModel.validationFlags.flagsCompanyInfo.isValidExtensionTime
+      return this.getValidationFlags.flagsCompanyInfo.isValidExtensionTime
     },
 
     /** Returns false when users can change the sole proprietor (SP).
@@ -1235,7 +1252,7 @@ export const useStore = defineStore('store', {
      * Only applicable to limited restoration extension filing.
      */
     getRestorationExpiryDate (): string {
-      return this.stateModel.restoration?.expiry
+      return this.getRestoration.expiry
     },
 
     /** The restoration expiry text. */
@@ -1253,15 +1270,15 @@ export const useStore = defineStore('store', {
 
     /** The court order draft file number. */
     getCourtOrderNumberText (): string {
-      return this.stateModel.restoration.courtOrder?.fileNumber || ''
+      return this.getRestoration.courtOrder?.fileNumber || ''
     },
 
     getRelationships (): RelationshipTypes[] {
-      return this.stateModel.restoration.relationships
+      return this.getRestoration.relationships
     },
 
     getIsRestorationTypeCourtOrder (): boolean {
-      return !!this.stateModel.restoration.courtOrder?.fileNumber
+      return !!this.getRestoration.courtOrder?.fileNumber
     },
 
     /** The special resolution object. */
@@ -1293,15 +1310,17 @@ export const useStore = defineStore('store', {
     },
 
     hasSpecialResolutionRulesChanged (): boolean {
-      return this.getSpecialResolutionRules?.includedInResolution ||
-        this.getSpecialResolutionRules?.key !==
-        this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key
+      return (
+        this.getSpecialResolutionRules?.includedInResolution ||
+          (this.getSpecialResolutionRules?.key !==
+            this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key)
+      )
     },
 
     // Grab the latest resolution from the entity snapshot.
     getLatestResolutionForBusiness (): SpecialResolutionIF {
       // Obtain latest resolution ID. Assumes that the latest resolution is the one to be corrected.
-      const latestResolution = this.getEntitySnapshot.resolutions
+      const latestResolution = this.getOriginalResolutions
         .reduce((prev, current) => (prev.id > current.id) ? prev : current)
       return {
         ...latestResolution,
@@ -1370,15 +1389,15 @@ export const useStore = defineStore('store', {
       this.stateModel.currentJsDate = date
     },
     setIsFutureEffective (isFutureEffective: boolean) {
-      this.stateModel.effectiveDateTime.isFutureEffective = isFutureEffective
+      this.getEffectiveDateTime.isFutureEffective = isFutureEffective
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
     },
     setEffectiveDateTimeString (dateTime: string) {
-      this.stateModel.effectiveDateTime.dateTimeString = dateTime
+      this.getEffectiveDateTime.dateTimeString = dateTime
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
     },
     setEffectiveDateValid (valid: boolean) {
-      this.stateModel.validationFlags.flagsReviewCertify.isValidEffectiveDate = valid
+      this.getValidationFlags.flagsReviewCertify.isValidEffectiveDate = valid
     },
     setResource (resource: ResourceIF) {
       this.resourceModel = resource
@@ -1388,28 +1407,28 @@ export const useStore = defineStore('store', {
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
     },
     setCertifyStateValidity (validity: boolean) {
-      this.stateModel.validationFlags.flagsReviewCertify.isValidCertify = validity
+      this.getValidationFlags.flagsReviewCertify.isValidCertify = validity
     },
     setDocumentOptionalEmail (documentOptionalEmail: string) {
       this.stateModel.documentDelivery.documentOptionalEmail = documentOptionalEmail
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
     },
     setDocumentOptionalEmailValidity (validity: boolean) {
-      this.stateModel.validationFlags.flagsReviewCertify.isValidDocumentOptionalEmail = validity
+      this.getValidationFlags.flagsReviewCertify.isValidDocumentOptionalEmail = validity
     },
     setCompletingParty (cp: CompletingPartyIF) {
       this.stateModel.completingParty = cp
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
     },
     setCompletingPartyValidity (validity: boolean) {
-      this.stateModel.validationFlags.flagsReviewCertify.isValidCompletingParty = validity
+      this.getValidationFlags.flagsReviewCertify.isValidCompletingParty = validity
     },
     setTransactionalFolioNumber (folioNumber: string) {
       this.stateModel.tombstone.transactionalFolioNumber = folioNumber
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
     },
     setTransactionalFolioNumberValidity (validity: boolean) {
-      this.stateModel.validationFlags.flagsReviewCertify.isValidTransactionalFolioNumber = validity
+      this.getValidationFlags.flagsReviewCertify.isValidTransactionalFolioNumber = validity
     },
     setBusinessContact (businessContact: ContactPointIF) {
       this.stateModel.businessContact = businessContact
@@ -1457,7 +1476,7 @@ export const useStore = defineStore('store', {
       this.stateModel.peopleAndRoles.changed = changed
     },
     setPeopleAndRolesValidity (validity: boolean) {
-      this.stateModel.validationFlags.flagsCompanyInfo.isValidOrgPersons = validity
+      this.getValidationFlags.flagsCompanyInfo.isValidOrgPersons = validity
     },
     setShareClasses (shareClasses: ShareClassIF[]) {
       this.stateModel.shareStructureStep.shareClasses = shareClasses
@@ -1467,7 +1486,7 @@ export const useStore = defineStore('store', {
       this.stateModel.shareStructureStep.changed = changed
     },
     setCreateShareStructureStepValidity (validity: boolean) {
-      this.stateModel.validationFlags.flagsCompanyInfo.isValidShareStructure = validity
+      this.getValidationFlags.flagsCompanyInfo.isValidShareStructure = validity
     },
     setIgnoreChanges (ignoreChanges: boolean) {
       this.stateModel.tombstone.ignoreChanges = ignoreChanges
@@ -1483,7 +1502,7 @@ export const useStore = defineStore('store', {
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
     },
     setStaffPaymentValidity (validity: boolean) {
-      this.stateModel.validationFlags.flagsReviewCertify.isValidStaffPayment = validity
+      this.getValidationFlags.flagsReviewCertify.isValidStaffPayment = validity
     },
     setFilingData (filingData: FilingDataIF[]) {
       this.stateModel.filingData = filingData
@@ -1492,7 +1511,7 @@ export const useStore = defineStore('store', {
       this.stateModel.detailComment = comment
     },
     setDetailValidity (validity: boolean) {
-      this.stateModel.validationFlags.flagsReviewCertify.isValidDetailComment = validity
+      this.getValidationFlags.flagsReviewCertify.isValidDetailComment = validity
     },
     setEditingCompanyName (editing: boolean) {
       this.stateModel.editingFlags.companyName = editing
@@ -1541,13 +1560,13 @@ export const useStore = defineStore('store', {
       this.stateModel.newAlteration.courtOrder.hasPlanOfArrangement = hasPoa
     },
     setAppValidate (validate: boolean) {
-      this.stateModel.validationFlags.appValidate = validate
+      this.getValidationFlags.appValidate = validate
     },
     setComponentValidate (validate: boolean) {
-      this.stateModel.validationFlags.componentValidate = validate
+      this.getValidationFlags.componentValidate = validate
     },
     setValidCourtOrder (isValid: boolean) {
-      this.stateModel.validationFlags.flagsReviewCertify.isValidCourtOrder = isValid
+      this.getValidationFlags.flagsReviewCertify.isValidCourtOrder = isValid
     },
     setCurrentFees (fees: FeesIF[]) {
       this.stateModel.currentFees = fees
@@ -1556,27 +1575,27 @@ export const useStore = defineStore('store', {
       this.stateModel.feePrices = feePrices
     },
     setValidComponent (kv: ActionKvIF) {
-      this.stateModel.validationFlags.flagsCompanyInfo[kv.key] = kv.value
+      this.getValidationFlags.flagsCompanyInfo[kv.key] = kv.value
     },
     setNaics (naics: NaicsIF) {
-      this.stateModel.businessInformation.naicsCode = naics.naicsCode
-      this.stateModel.businessInformation.naicsDescription = naics.naicsDescription
+      this.getBusinessInformation.naicsCode = naics?.naicsCode || null
+      this.getBusinessInformation.naicsDescription = naics?.naicsDescription || null
       if (!this.stateModel.tombstone.ignoreChanges) this.stateModel.tombstone.haveUnsavedChanges = true
     },
     setSpecialResolution (specialResolution: SpecialResolutionIF) {
       this.stateModel.specialResolution = specialResolution
     },
     setSpecialResolutionConfirmStateValidity (validity: boolean) {
-      this.stateModel.validationFlags.flagsReviewCertify.isValidSpecialResolutionConfirm = validity
+      this.getValidationFlags.flagsReviewCertify.isValidSpecialResolutionConfirm = validity
     },
     setRestorationType (type: RestorationTypes) {
-      this.stateModel.restoration.type = type
+      this.getRestoration.type = type
     },
     setRestorationExpiryDate (expiry: string) {
-      this.stateModel.restoration.expiry = expiry
+      this.getRestoration.expiry = expiry
     },
     setRestorationApprovalType (approvalType: ApprovalTypes) {
-      this.stateModel.restoration.approvalType = approvalType
+      this.getRestoration.approvalType = approvalType
     },
     setStateFilingRestoration (): Promise<any> {
       return new Promise((resolve, reject) => {
@@ -1596,28 +1615,28 @@ export const useStore = defineStore('store', {
       })
     },
     setRestorationCourtOrder (courtOrder: CourtOrderIF) {
-      this.stateModel.restoration.courtOrder = courtOrder
+      this.getRestoration.courtOrder = courtOrder
     },
     setApprovalTypeValid (valid: boolean) {
-      this.stateModel.validationFlags.flagsCompanyInfo.isValidApprovalType = valid
+      this.getValidationFlags.flagsCompanyInfo.isValidApprovalType = valid
     },
     setExpiryValid (valid: boolean) {
-      this.stateModel.validationFlags.flagsCompanyInfo.isValidExtensionTime = valid
+      this.getValidationFlags.flagsCompanyInfo.isValidExtensionTime = valid
     },
     setRestorationRelationships (relationships: RelationshipTypes[]) {
-      this.stateModel.restoration.relationships = relationships
+      this.getRestoration.relationships = relationships
     },
     setSpecialResolutionValid (valid: boolean) {
-      this.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolution = valid
+      this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolution = valid
     },
     setSpecialResolutionSignatureValid (valid: boolean) {
-      this.stateModel.validationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature = valid
+      this.getValidationFlags.flagsCompanyInfo.isValidSpecialResolutionSignature = valid
     },
     setSpecialResolutionRulesValid (valid: boolean) {
-      this.stateModel.validationFlags.flagsCompanyInfo.isValidRules = valid
+      this.getValidationFlags.flagsCompanyInfo.isValidRules = valid
     },
     setSpecialResolutionMemorandumValid (valid: boolean) {
-      this.stateModel.validationFlags.flagsCompanyInfo.isValidMemorandum = valid
+      this.getValidationFlags.flagsCompanyInfo.isValidMemorandum = valid
     },
     setSpecialResolutionRules (rule: RulesMemorandumIF) {
       this.stateModel.rules = rule

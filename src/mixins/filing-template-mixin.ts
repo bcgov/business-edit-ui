@@ -2,12 +2,13 @@ import { Component } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
 import { cloneDeep } from 'lodash'
 import { DateMixin } from '@/mixins/'
-import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, CoopAlterationIF, CorrectionInformationIF,
-  CorrectionFilingIF, CourtOrderIF, EffectiveDateTimeIF, EntitySnapshotIF, ChgRegistrationFilingIF, ConversionFilingIF,
-  NameRequestIF, NameTranslationIF, OrgPersonIF, RestorationFilingIF, RestorationStateIF,
-  SpecialResolutionFilingIF, StateFilingRestorationIF, RulesMemorandumIF } from '@/interfaces/'
-import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF,
-  StaffPaymentIF } from '@bcrs-shared-components/interfaces/'
+import { AddressesIF, AlterationFilingIF, BusinessInformationIF, CertifyIF, ChgRegistrationFilingIF,
+  ConversionFilingIF, CoopAlterationIF, CorrectionFilingIF, CorrectionInformationIF, CourtOrderIF,
+  EffectiveDateTimeIF, EmptyBusinessInfo, EntitySnapshotIF, NameRequestIF, NameTranslationIF, OrgPersonIF,
+  RestorationFilingIF, RestorationStateIF, RulesMemorandumIF, SpecialResolutionFilingIF, StateFilingRestorationIF
+} from '@/interfaces/'
+import { CompletingPartyIF, ContactPointIF, NaicsIF, ShareClassIF, SpecialResolutionIF, StaffPaymentIF }
+  from '@bcrs-shared-components/interfaces/'
 import { ActionTypes, ApprovalTypes, CoopTypes, CorrectionErrorTypes, EffectOfOrders, FilingTypes, PartyTypes,
   RelationshipTypes, RestorationTypes, RoleTypes } from '@/enums/'
 import { CorpTypeCd } from '@bcrs-shared-components/corp-type-module/'
@@ -24,94 +25,99 @@ export default class FilingTemplateMixin extends DateMixin {
   // Ref: https://pinia.vuejs.org/cookbook/options-api.html#giving-access-to-the-whole-store
 
   // Global getters
-  @Getter(useStore) getEntityType!: CorpTypeCd
-  @Getter(useStore) getNameRequestNumber!: string
-  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) areProvisionsRemoved!: boolean
+  @Getter(useStore) getAssociationType!: CoopTypes
+  @Getter(useStore) getBusinessContact!: ContactPointIF
   @Getter(useStore) getBusinessId!: string
+  @Getter(useStore) getCertifyState!: CertifyIF
+  @Getter(useStore) getCompletingParty!: CompletingPartyIF
   @Getter(useStore) getCurrentDate!: string
+  @Getter(useStore) getCurrentNaics!: NaicsIF
   @Getter(useStore) getCorrectedFilingDate!: string
   @Getter(useStore) getCorrectedFilingId!: number
   @Getter(useStore) getCorrectedFilingType!: FilingTypes
   @Getter(useStore) getCorrectionErrorType!: CorrectionErrorTypes
   @Getter(useStore) getCorrectionStartDate!: string
-  @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
-  @Getter(useStore) getDocumentOptionalEmail: string
-  @Getter(useStore) hasBusinessNameChanged!: boolean
-  @Getter(useStore) hasBusinessTypeChanged!: boolean
-  @Getter(useStore) hasNaicsChanged!: boolean
-  @Getter(useStore) haveNameTranslationsChanged!: boolean
-  @Getter(useStore) hasShareStructureChanged!: boolean
-  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
-  @Getter(useStore) getShareClasses!: ShareClassIF[]
-  @Getter(useStore) getFolioNumber!: string
-  @Getter(useStore) getTransactionalFolioNumber!: string
-  @Getter(useStore) getStaffPayment!: StaffPaymentIF
   @Getter(useStore) getDetailComment!: string
-  @Getter(useStore) getCurrentNaics!: NaicsIF
-  @Getter(useStore) getNameTranslations!: NameTranslationIF[]
-  @Getter(useStore) getNameRequest!: NameRequestIF
-  @Getter(useStore) getCertifyState!: CertifyIF
-  @Getter(useStore) getOfficeAddresses!: AddressesIF
-  @Getter(useStore) getBusinessContact!: ContactPointIF
+  @Getter(useStore) getDocumentOptionalEmail: string
+  @Getter(useStore) getEffectiveDateTime!: EffectiveDateTimeIF
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
-  @Getter(useStore) getNewResolutionDates!: string[]
-  @Getter(useStore) areProvisionsRemoved!: boolean
+  @Getter(useStore) getEntityType!: CorpTypeCd
   @Getter(useStore) getFileNumber!: string
+  @Getter(useStore) getFolioNumber!: string
   @Getter(useStore) getHasPlanOfArrangement!: boolean
-  @Getter(useStore) haveOfficeAddressesChanged!: boolean
-  @Getter(useStore) getCompletingParty!: CompletingPartyIF
-  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
-  @Getter(useStore) isFirmCorrectionFiling!: boolean
-  @Getter(useStore) isClientErrorCorrection!: boolean
-  @Getter(useStore) getAssociationType!: CoopTypes
-  @Getter(useStore) hasAssociationTypeChanged!: boolean
-  @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
-  @Getter(useStore) hasBusinessStartDateChanged!: boolean
+  @Getter(useStore) getLatestResolutionForBusiness!: SpecialResolutionIF
+  @Getter(useStore) getNameRequest!: NameRequestIF
+  @Getter(useStore) getNameRequestLegalName!: string
+  @Getter(useStore) getNameRequestNumber!: string
+  @Getter(useStore) getNameTranslations!: NameTranslationIF[]
+  @Getter(useStore) getNewResolutionDates!: string[]
+  @Getter(useStore) getOfficeAddresses!: AddressesIF
+  @Getter(useStore) getOrgPeople!: OrgPersonIF[]
+  @Getter(useStore) getOriginalBusinessInfo!: BusinessInformationIF
+  @Getter(useStore) getOriginalLegalName!: string
+  @Getter(useStore) getOriginalLegalType!: CorpTypeCd
+  @Getter(useStore) getOriginalNrNumber!: string
   @Getter(useStore) getRestoration!: RestorationStateIF
-  @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
-  @Getter(useStore) isLimitedRestorationToFull!: boolean
-  @Getter(useStore) isEntityTypeFirm!: boolean
-  @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
-  @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
+  @Getter(useStore) getShareClasses!: ShareClassIF[]
+  @Getter(useStore) getSnapshotNaics!: NaicsIF
+  @Getter(useStore) getSpecialResolution!: SpecialResolutionIF
   @Getter(useStore) getSpecialResolutionMemorandum!: RulesMemorandumIF
   @Getter(useStore) getSpecialResolutionRules!: RulesMemorandumIF
-  @Getter(useStore) isCoopCorrectionFiling!: boolean
-  @Getter(useStore) getLatestResolutionForBusiness!: SpecialResolutionIF
+  @Getter(useStore) getStaffPayment!: StaffPaymentIF
+  @Getter(useStore) getStateFilingRestoration!: StateFilingRestorationIF
+  @Getter(useStore) getTransactionalFolioNumber!: string
+  @Getter(useStore) hasAssociationTypeChanged!: boolean
+  @Getter(useStore) hasBusinessNameChanged!: boolean
+  @Getter(useStore) hasBusinessStartDateChanged!: boolean
+  @Getter(useStore) hasBusinessTypeChanged!: boolean
+  @Getter(useStore) hasNaicsChanged!: boolean
+  @Getter(useStore) hasShareStructureChanged!: boolean
+  @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
   @Getter(useStore) hasSpecialResolutionResolutionChanged!: boolean
+  @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
+  @Getter(useStore) haveNameTranslationsChanged!: boolean
+  @Getter(useStore) haveOfficeAddressesChanged!: boolean
+  @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isClientErrorCorrection!: boolean
+  @Getter(useStore) isCoopCorrectionFiling!: boolean
+  @Getter(useStore) isEntityTypeFirm!: boolean
+  @Getter(useStore) isFirmCorrectionFiling!: boolean
+  @Getter(useStore) isLimitedRestorationToFull!: boolean
 
   // Global actions
   @Action(useStore) setBusinessContact!: (x: ContactPointIF) => void
   @Action(useStore) setBusinessInformation!: (x: BusinessInformationIF) => void
   @Action(useStore) setCertifyState!: (x: CertifyIF) => void
   @Action(useStore) setCorrectionInformation!: (x: CorrectionInformationIF) => void
-  @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
-  @Action(useStore) setOfficeAddresses!: (x: AddressesIF) => void
-  @Action(useStore) setNaics!: (x: NaicsIF) => void
-  @Action(useStore) setNameTranslations!: (x: NameTranslationIF[]) => void
-  @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
-  @Action(useStore) setPeopleAndRoles!: (x: OrgPersonIF[]) => void
-  @Action(useStore) setShareClasses!: (x: ShareClassIF[]) => void
+  @Action(useStore) setCorrectionStartDate!: (x: string) => void
+  @Action(useStore) setDocumentOptionalEmail!: (x: string) => void
   @Action(useStore) setEffectiveDateTimeString!: (x: string) => void
-  @Action(useStore) setIsFutureEffective!: (x: boolean) => void
-  @Action(useStore) setFolioNumber!: (x: string) => void
-  @Action(useStore) setTransactionalFolioNumber!: (x: string) => void
-  @Action(useStore) setStaffPayment!: (x: StaffPaymentIF) => void
   @Action(useStore) setDetailComment!: (x: string) => void
   @Action(useStore) setEntitySnapshot!: (x: EntitySnapshotIF) => void
-  @Action(useStore) setDocumentOptionalEmail!: (x: string) => void
-  @Action(useStore) setProvisionsRemoved!: (x: boolean) => void
-  @Action(useStore) setNewResolutionDates!: (x: string[]) => void
+  @Action(useStore) setEntityType!: (x: CorpTypeCd) => void
   @Action(useStore) setFileNumber!: (x: string) => void
+  @Action(useStore) setFolioNumber!: (x: string) => void
   @Action(useStore) setHasPlanOfArrangement!: (x: boolean) => void
-  @Action(useStore) setSpecialResolution!: (x: SpecialResolutionIF) => void
-  @Action(useStore) setCorrectionStartDate!: (x: string) => void
+  @Action(useStore) setIsFutureEffective!: (x: boolean) => void
+  @Action(useStore) setNaics!: (x: NaicsIF) => void
+  @Action(useStore) setNameRequest!: (x: NameRequestIF) => void
+  @Action(useStore) setNameTranslations!: (x: NameTranslationIF[]) => void
+  @Action(useStore) setNewResolutionDates!: (x: string[]) => void
+  @Action(useStore) setOfficeAddresses!: (x: AddressesIF) => void
+  @Action(useStore) setPeopleAndRoles!: (x: OrgPersonIF[]) => void
+  @Action(useStore) setProvisionsRemoved!: (x: boolean) => void
   @Action(useStore) setRestorationApprovalType!: (x: ApprovalTypes) => void
   @Action(useStore) setRestorationCourtOrder!: (x: CourtOrderIF) => void
   @Action(useStore) setRestorationExpiryDate!: (x: string) => void
-  @Action(useStore) setRestorationType!: (x: RestorationTypes) => void
   @Action(useStore) setRestorationRelationships!: (x: RelationshipTypes[]) => void
+  @Action(useStore) setRestorationType!: (x: RestorationTypes) => void
+  @Action(useStore) setShareClasses!: (x: ShareClassIF[]) => void
+  @Action(useStore) setSpecialResolution!: (x: SpecialResolutionIF) => void
   @Action(useStore) setSpecialResolutionMemorandum!: (x: RulesMemorandumIF) => void
   @Action(useStore) setSpecialResolutionRules!: (x: RulesMemorandumIF) => void
+  @Action(useStore) setStaffPayment!: (x: StaffPaymentIF) => void
+  @Action(useStore) setTransactionalFolioNumber!: (x: string) => void
 
   /** The default (hard-coded first line) correction detail comment. */
   public get defaultCorrectionDetailComment (): string {
@@ -138,10 +144,11 @@ export default class FilingTemplateMixin extends DateMixin {
         folioNumber: this.getFolioNumber // folio number, unless overridden below
       },
       business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType
+        // use original properties (not specific getters)
+        foundingDate: this.getOriginalBusinessInfo?.foundingDate,
+        identifier: this.getOriginalBusinessInfo?.identifier,
+        legalName: this.getOriginalBusinessInfo?.legalName,
+        legalType: this.getOriginalBusinessInfo?.legalType
       },
       correction: {
         legalType: this.getEntityType,
@@ -277,10 +284,11 @@ export default class FilingTemplateMixin extends DateMixin {
         folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
       business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType
+        // use original properties (not specific getters)
+        foundingDate: this.getOriginalBusinessInfo?.foundingDate,
+        identifier: this.getOriginalBusinessInfo?.identifier,
+        legalName: this.getOriginalBusinessInfo?.legalName,
+        legalType: this.getOriginalBusinessInfo?.legalType
       },
       alteration: {
         business: {
@@ -363,10 +371,11 @@ export default class FilingTemplateMixin extends DateMixin {
         folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
       business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType
+        // use original properties (not specific getters)
+        foundingDate: this.getOriginalBusinessInfo?.foundingDate,
+        identifier: this.getOriginalBusinessInfo?.identifier,
+        legalName: this.getOriginalBusinessInfo?.legalName,
+        legalType: this.getOriginalBusinessInfo?.legalType
       },
       restoration: {
         approvalType: this.getRestoration.approvalType,
@@ -399,8 +408,8 @@ export default class FilingTemplateMixin extends DateMixin {
       } else {
         // Otherwise save default data
         filing.restoration.nameRequest = {
-          legalName: this.getEntitySnapshot.businessInfo.legalName,
-          legalType: this.getEntitySnapshot.businessInfo.legalType
+          legalName: this.getOriginalLegalName,
+          legalType: this.getOriginalLegalType
         }
       }
     }
@@ -453,11 +462,12 @@ export default class FilingTemplateMixin extends DateMixin {
         folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
       business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType,
-        nrNumber: this.getEntitySnapshot.businessInfo.nrNumber
+        // use original properties (not specific getters)
+        foundingDate: this.getOriginalBusinessInfo?.foundingDate,
+        identifier: this.getOriginalBusinessInfo?.identifier,
+        legalName: this.getOriginalBusinessInfo?.legalName,
+        legalType: this.getOriginalBusinessInfo?.legalType,
+        nrNumber: this.getOriginalBusinessInfo?.nrNumber
       },
       specialResolution: {
         ...this.getSpecialResolution
@@ -545,10 +555,11 @@ export default class FilingTemplateMixin extends DateMixin {
         folioNumber: this.getFolioNumber // business folio number, unless overridden below
       },
       business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType
+        // use original properties (not specific getters)
+        foundingDate: this.getOriginalBusinessInfo?.foundingDate,
+        identifier: this.getOriginalBusinessInfo?.identifier,
+        legalName: this.getOriginalBusinessInfo?.legalName,
+        legalType: this.getOriginalBusinessInfo?.legalType
       },
       changeOfRegistration: {
         business: {
@@ -644,10 +655,11 @@ export default class FilingTemplateMixin extends DateMixin {
         folioNumber: '' // not applicable to SP/GP
       },
       business: {
-        foundingDate: this.getEntitySnapshot.businessInfo.foundingDate,
-        identifier: this.getEntitySnapshot.businessInfo.identifier,
-        legalName: this.getEntitySnapshot.businessInfo.legalName,
-        legalType: this.getEntitySnapshot.businessInfo.legalType
+        // use original properties (not specific getters)
+        foundingDate: this.getOriginalBusinessInfo?.foundingDate,
+        identifier: this.getOriginalBusinessInfo?.identifier,
+        legalName: this.getOriginalBusinessInfo?.legalName,
+        legalType: this.getOriginalBusinessInfo?.legalType
       },
       conversion: {
         business: {
@@ -733,7 +745,7 @@ export default class FilingTemplateMixin extends DateMixin {
     // store Business Information for BEN/BC/CCC/ULC corrections
     if (this.isBenBcCccUlcCorrectionFiling) {
       this.setBusinessInformation({
-        ...entitySnapshot.businessInfo,
+        ...entitySnapshot?.businessInfo,
         ...filing.business,
         ...filing.correction.business
       })
@@ -741,17 +753,19 @@ export default class FilingTemplateMixin extends DateMixin {
 
     if (this.isCoopCorrectionFiling) {
       this.setBusinessInformation({
-        ...entitySnapshot.businessInfo,
+        ...entitySnapshot?.businessInfo,
         ...filing.business,
         ...filing.correction.business,
-        associationType: filing.correction.cooperativeAssociationType || entitySnapshot.businessInfo.associationType
+        associationType: (
+          filing.correction.cooperativeAssociationType || entitySnapshot?.businessInfo?.associationType || null
+        )
       })
     }
 
     // store Business Information for firm corrections
     if (this.isFirmCorrectionFiling) {
       this.setBusinessInformation({
-        ...entitySnapshot.businessInfo,
+        ...entitySnapshot?.businessInfo,
         ...filing.business,
         ...filing.correction.business
       })
@@ -763,10 +777,7 @@ export default class FilingTemplateMixin extends DateMixin {
       if (filing.correction.business?.naics) {
         this.setNaics({ ...filing.correction.business.naics })
       } else {
-        this.setNaics({
-          naicsCode: entitySnapshot.businessInfo.naicsCode,
-          naicsDescription: entitySnapshot.businessInfo.naicsDescription
-        })
+        this.setNaics(this.getSnapshotNaics)
       }
     }
 
@@ -774,9 +785,9 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setNameRequest(cloneDeep(
       filing.correction.nameRequest ||
       {
-        legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
+        legalType: this.getOriginalLegalType,
+        legalName: this.getOriginalLegalName,
+        nrNumber: this.getOriginalNrNumber
       }
     ))
 
@@ -800,7 +811,7 @@ export default class FilingTemplateMixin extends DateMixin {
     if (this.isBenBcCccUlcCorrectionFiling) {
       this.setNameTranslations(cloneDeep(
         this.mapNameTranslations(filing.correction.nameTranslations) ||
-        this.mapNameTranslations(entitySnapshot.nameTranslations) ||
+        this.mapNameTranslations(entitySnapshot?.nameTranslations) ||
         []
       ))
     }
@@ -808,14 +819,15 @@ export default class FilingTemplateMixin extends DateMixin {
     // store Office Addresses
     this.setOfficeAddresses(cloneDeep(
       filing.correction.offices ||
-      entitySnapshot.addresses
+      entitySnapshot?.addresses ||
+      null
     ))
 
     // store current Business Contact
-    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
+    this.setBusinessContact({ ...entitySnapshot?.authInfo?.contact || null })
 
     // store People And Roles
-    let orgPersons = filing.correction.parties || entitySnapshot.orgPersons
+    let orgPersons = filing.correction.parties || entitySnapshot?.orgPersons || []
     // exclude Completing Party
     // (it is managed separately and added to the filing in buildCorrectionFiling())
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
@@ -825,7 +837,8 @@ export default class FilingTemplateMixin extends DateMixin {
     if (this.isBenBcCccUlcCorrectionFiling) {
       this.setShareClasses(cloneDeep(
         filing.correction.shareStructure?.shareClasses ||
-        entitySnapshot.shareStructure.shareClasses
+        entitySnapshot?.shareStructure?.shareClasses ||
+        []
       ))
       this.setNewResolutionDates(cloneDeep(
         filing.correction.shareStructure?.resolutionDates || []
@@ -848,7 +861,7 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Folio Number
     // FUTURE: should we store correction.folioNumber instead?
-    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
+    this.setFolioNumber(entitySnapshot?.authInfo?.folioNumber || '')
 
     // store Effective Date
     const effectiveDate = this.apiToIso(filing.header.effectiveDate)
@@ -873,11 +886,13 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setEntitySnapshot(entitySnapshot)
 
     // store Entity Type
-    this.setEntityType(filing.alteration.business?.legalType || entitySnapshot.businessInfo.legalType)
+    this.setEntityType(
+      filing.alteration.business?.legalType || entitySnapshot?.businessInfo?.legalType || null
+    )
 
     // store Business Information
     this.setBusinessInformation({
-      ...entitySnapshot.businessInfo,
+      ...entitySnapshot?.businessInfo,
       ...filing.business,
       ...filing.alteration.business
     })
@@ -886,16 +901,16 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setNameRequest(cloneDeep(
       filing.alteration.nameRequest ||
       {
-        legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
+        legalType: this.getOriginalLegalType,
+        legalName: this.getOriginalLegalName,
+        nrNumber: this.getOriginalNrNumber
       }
     ))
 
     // store Name Translations
     this.setNameTranslations(cloneDeep(
       this.mapNameTranslations(filing.alteration.nameTranslations) ||
-      this.mapNameTranslations(entitySnapshot.nameTranslations) ||
+      this.mapNameTranslations(entitySnapshot?.nameTranslations) ||
       []
     ))
 
@@ -903,18 +918,19 @@ export default class FilingTemplateMixin extends DateMixin {
     if (filing.alteration.provisionsRemoved) this.setProvisionsRemoved(true)
 
     // store Office Addresses **from snapshot** (because we don't change office addresses in an alteration)
-    this.setOfficeAddresses(cloneDeep(entitySnapshot.addresses))
+    this.setOfficeAddresses(cloneDeep(entitySnapshot?.addresses || null))
 
     // store People And Roles **from snapshot** (because we don't change people and roles in an alteration)
-    this.setPeopleAndRoles(cloneDeep(entitySnapshot.orgPersons))
+    this.setPeopleAndRoles(cloneDeep(entitySnapshot?.orgPersons || []))
 
     // store current Business Contact
-    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
+    this.setBusinessContact({ ...entitySnapshot?.authInfo?.contact || null })
 
     // store Share Classes and Resolution Dates
     this.setShareClasses(cloneDeep(
       filing.alteration.shareStructure?.shareClasses ||
-      entitySnapshot.shareStructure?.shareClasses
+      entitySnapshot?.shareStructure?.shareClasses ||
+      []
     ))
     this.setNewResolutionDates(cloneDeep(
       filing.alteration.shareStructure?.resolutionDates || []
@@ -928,7 +944,7 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Folio Number
     // FUTURE: should we store correction.folioNumber instead?
-    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
+    this.setFolioNumber(entitySnapshot?.authInfo?.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
     if (filing.header.isTransactionalFolioNumber) {
@@ -956,15 +972,17 @@ export default class FilingTemplateMixin extends DateMixin {
    * @param filing the restoration filing
    */
   parseRestorationFiling (filing: RestorationFilingIF): void {
-    // Get the Entity Snapshot from store
-    const entitySnapshot = this.getEntitySnapshot
+    // get the Entity Snapshot from store
+    const entitySnapshot = this.getEntitySnapshot // may be null
 
     // store Entity Type
-    this.setEntityType(filing.restoration.business?.legalType || entitySnapshot.businessInfo.legalType)
+    this.setEntityType(
+      filing.restoration.business?.legalType || this.getOriginalLegalType || null
+    )
 
     // store Business Information
     this.setBusinessInformation({
-      ...entitySnapshot.businessInfo,
+      ...entitySnapshot?.businessInfo,
       ...filing.business,
       ...filing.restoration.business
     })
@@ -991,9 +1009,9 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setNameRequest(cloneDeep(
       filing.restoration.nameRequest ||
       {
-        legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
+        legalType: this.getOriginalLegalType,
+        legalName: this.getOriginalLegalName,
+        nrNumber: this.getOriginalNrNumber
       }
     ))
 
@@ -1005,24 +1023,26 @@ export default class FilingTemplateMixin extends DateMixin {
     // store Name Translations
     this.setNameTranslations(cloneDeep(
       this.mapNameTranslations(filing.restoration.nameTranslations) ||
-      this.mapNameTranslations(entitySnapshot.nameTranslations) ||
+      this.mapNameTranslations(entitySnapshot?.nameTranslations) ||
       []
     ))
 
     // store Office Addresses
     this.setOfficeAddresses(cloneDeep(
       filing.restoration.offices ||
-      entitySnapshot.addresses
+      entitySnapshot?.addresses ||
+      null
     ))
 
     // store People And Roles
     this.setPeopleAndRoles(cloneDeep(
       filing.restoration.parties ||
-      entitySnapshot.orgPersons
+      entitySnapshot?.orgPersons ||
+      []
     ))
 
     // store current Business Contact
-    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
+    this.setBusinessContact({ ...entitySnapshot?.authInfo?.contact })
 
     // store Certify State
     this.setCertifyState({
@@ -1032,7 +1052,7 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Folio Number
     // FUTURE: should we store correction.folioNumber instead?
-    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
+    this.setFolioNumber(entitySnapshot?.authInfo?.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
     if (filing.header.isTransactionalFolioNumber) {
@@ -1062,23 +1082,27 @@ export default class FilingTemplateMixin extends DateMixin {
     // NB: filing.alteration object may not be present
 
     // store Entity Type
-    this.setEntityType(filing.alteration?.business?.legalType || entitySnapshot.businessInfo.legalType)
+    this.setEntityType(
+      filing.alteration?.business?.legalType || entitySnapshot?.businessInfo?.legalType || null
+    )
 
     // store Business Information
     this.setBusinessInformation({
-      ...entitySnapshot.businessInfo,
+      ...entitySnapshot?.businessInfo,
       ...filing.business,
       ...filing.alteration?.business,
-      associationType: filing.alteration?.cooperativeAssociationType || entitySnapshot.businessInfo.associationType
+      associationType: (
+        filing.alteration?.cooperativeAssociationType || entitySnapshot?.businessInfo?.associationType || null
+      )
     })
 
     // store Name Request data
     this.setNameRequest(cloneDeep(
       filing.changeOfName?.nameRequest ||
       {
-        legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
+        legalType: this.getOriginalLegalType,
+        legalName: this.getOriginalLegalName,
+        nrNumber: this.getOriginalNrNumber
       }
     ))
 
@@ -1087,13 +1111,13 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setSpecialResolution(cloneDeep(filing.specialResolution))
 
     // store Office Addresses **from snapshot** (because we don't change office addresses in an special resolution)
-    this.setOfficeAddresses(cloneDeep(entitySnapshot.addresses))
+    this.setOfficeAddresses(cloneDeep(entitySnapshot?.addresses || null))
 
     // store People And Roles **from snapshot** (because we don't change people and roles in an special resolution)
-    this.setPeopleAndRoles(cloneDeep(entitySnapshot.orgPersons))
+    this.setPeopleAndRoles(cloneDeep(entitySnapshot?.orgPersons || []))
 
     // store current Business Contact
-    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
+    this.setBusinessContact({ ...entitySnapshot?.authInfo?.contact || null })
 
     // store Certify State
     this.setCertifyState({
@@ -1103,7 +1127,7 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Folio Number
     // FUTURE: should we store correction.folioNumber instead?
-    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
+    this.setFolioNumber(entitySnapshot?.authInfo?.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
     if (filing.header.isTransactionalFolioNumber) {
@@ -1127,11 +1151,13 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setEntitySnapshot(entitySnapshot)
 
     // store Entity Type
-    this.setEntityType(filing.business?.legalType || entitySnapshot.businessInfo.legalType)
+    this.setEntityType(
+      filing.business?.legalType || entitySnapshot?.businessInfo?.legalType || null
+    )
 
     // store Business Information
     this.setBusinessInformation({
-      ...entitySnapshot.businessInfo,
+      ...entitySnapshot?.businessInfo,
       ...filing.business
     })
 
@@ -1145,9 +1171,9 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setNameRequest(cloneDeep(
       filing.changeOfRegistration.nameRequest ||
       {
-        legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
+        legalType: this.getOriginalLegalType,
+        legalName: this.getOriginalLegalName,
+        nrNumber: this.getOriginalNrNumber
       }
     ))
 
@@ -1158,18 +1184,19 @@ export default class FilingTemplateMixin extends DateMixin {
     }
     this.setOfficeAddresses(cloneDeep(
       addresses ||
-      entitySnapshot.addresses
+      entitySnapshot?.addresses ||
+      null
     ))
 
     // store People And Roles
-    let orgPersons = filing.changeOfRegistration.parties || entitySnapshot.orgPersons
+    let orgPersons = filing.changeOfRegistration.parties || entitySnapshot?.orgPersons || []
     // exclude Completing Party
     // (it is managed separately and added to the filing in buildChangeRegFiling())
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(cloneDeep(orgPersons))
 
     // store current Business Contact
-    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
+    this.setBusinessContact({ ...entitySnapshot?.authInfo?.contact || null })
 
     // store Certify State
     this.setCertifyState({
@@ -1179,7 +1206,7 @@ export default class FilingTemplateMixin extends DateMixin {
 
     // store Folio Number
     // FUTURE: should we store correction.folioNumber instead?
-    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
+    this.setFolioNumber(entitySnapshot?.authInfo?.folioNumber || '')
 
     // if Transactional Folio Number was saved then store it
     if (filing.header.isTransactionalFolioNumber) {
@@ -1194,7 +1221,7 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setHasPlanOfArrangement(filing.changeOfRegistration.courtOrder?.hasPlanOfArrangement)
 
     // store Business Start Date
-    this.setCorrectionStartDate(filing.changeOfRegistration.startDate || null)
+    this.setCorrectionStartDate(filing.changeOfRegistration.startDate || '')
 
     // store Staff Payment
     this.storeStaffPayment(filing)
@@ -1207,15 +1234,14 @@ export default class FilingTemplateMixin extends DateMixin {
    */
   parseFirmConversionFiling (filing: ConversionFilingIF, entitySnapshot: EntitySnapshotIF): void {
     // store Entity Snapshot
-    // make a copy so snapshot objects are different from objects below
     this.setEntitySnapshot(entitySnapshot)
 
     // store Entity Type
-    this.setEntityType(filing.business?.legalType || entitySnapshot.businessInfo.legalType)
+    this.setEntityType(filing.business?.legalType || entitySnapshot?.businessInfo?.legalType || null)
 
     // store Business Information
     this.setBusinessInformation({
-      ...entitySnapshot.businessInfo,
+      ...entitySnapshot?.businessInfo,
       ...filing.business
     })
 
@@ -1229,9 +1255,9 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setNameRequest(cloneDeep(
       filing.conversion.nameRequest ||
       {
-        legalType: entitySnapshot.businessInfo.legalType,
-        legalName: entitySnapshot.businessInfo.legalName,
-        nrNumber: entitySnapshot.businessInfo.nrNumber
+        legalType: this.getOriginalLegalType,
+        legalName: this.getOriginalLegalName,
+        nrNumber: this.getOriginalNrNumber
       }
     ))
 
@@ -1242,18 +1268,19 @@ export default class FilingTemplateMixin extends DateMixin {
     }
     this.setOfficeAddresses(cloneDeep(
       addresses ||
-      entitySnapshot.addresses
+      entitySnapshot?.addresses ||
+      null
     ))
 
     // store People And Roles
-    let orgPersons = filing.conversion.parties || entitySnapshot.orgPersons
+    let orgPersons = filing.conversion.parties || entitySnapshot?.orgPersons || []
     // exclude Completing Party
     // (it is managed separately and added to the filing in buildConversionFiling())
     orgPersons = orgPersons.filter(op => !(op?.roles.some(role => role.roleType === RoleTypes.COMPLETING_PARTY)))
     this.setPeopleAndRoles(cloneDeep(orgPersons))
 
     // store Business Start Date
-    this.setCorrectionStartDate(filing.conversion.startDate || null)
+    this.setCorrectionStartDate(filing.conversion.startDate || '')
 
     // store Certify State
     this.setCertifyState({
@@ -1266,7 +1293,7 @@ export default class FilingTemplateMixin extends DateMixin {
   }
 
   /**
-   * Parses an entity snapshot into the store.
+   * Parses an entity snapshot into the store. Used when there isn't a draft.
    * @param entitySnapshot the latest entity snapshot
    */
   parseEntitySnapshot (entitySnapshot = this.getEntitySnapshot): void {
@@ -1274,47 +1301,45 @@ export default class FilingTemplateMixin extends DateMixin {
     this.setEntitySnapshot(entitySnapshot)
 
     // store Folio Number
-    this.setFolioNumber(entitySnapshot.authInfo.folioNumber || '')
+    this.setFolioNumber(entitySnapshot?.authInfo?.folioNumber || '')
 
     // store Entity Type
-    this.setEntityType(entitySnapshot.businessInfo.legalType)
+    this.setEntityType(entitySnapshot?.businessInfo?.legalType || null)
 
     // store Business Information
-    this.setBusinessInformation({ ...entitySnapshot.businessInfo })
+    this.setBusinessInformation({ ...entitySnapshot?.businessInfo } || { ...EmptyBusinessInfo })
 
     // store Name Request data
     this.setNameRequest({
-      legalType: entitySnapshot.businessInfo.legalType,
-      legalName: entitySnapshot.businessInfo.legalName,
-      nrNumber: entitySnapshot.businessInfo.nrNumber
+      legalType: this.getOriginalLegalType,
+      legalName: this.getOriginalLegalName,
+      nrNumber: this.getOriginalNrNumber
     })
 
     // store People and Roles
-    this.setPeopleAndRoles(cloneDeep(entitySnapshot.orgPersons))
+    this.setPeopleAndRoles(cloneDeep(entitySnapshot?.orgPersons || []))
 
     // store current Business Contact
-    this.setBusinessContact({ ...entitySnapshot.authInfo.contact })
+    this.setBusinessContact({ ...entitySnapshot?.authInfo?.contact || null })
 
     // store Office Addresses
-    this.setOfficeAddresses(cloneDeep(entitySnapshot.addresses))
+    this.setOfficeAddresses(cloneDeep(entitySnapshot?.addresses || null))
 
     // handle entity-specific values
-    switch (entitySnapshot.businessInfo.legalType) {
+    switch (entitySnapshot?.businessInfo?.legalType) {
       case CorpTypeCd.BENEFIT_COMPANY:
       case CorpTypeCd.BC_COMPANY:
       case CorpTypeCd.BC_CCC:
       case CorpTypeCd.BC_ULC_COMPANY: {
         // store Name Translations
-        if (entitySnapshot.nameTranslations) {
-          // don't need cloneDeep because mapNameTranslations already returns new array
-          this.setNameTranslations(this.mapNameTranslations(entitySnapshot.nameTranslations) || [])
-        }
+        // don't need cloneDeep because mapNameTranslations already returns new array
+        this.setNameTranslations(this.mapNameTranslations(entitySnapshot?.nameTranslations || []))
 
         // clear Provisions Removed
         this.setProvisionsRemoved(null)
 
         // store Share Classes and clear New Resolution Dates
-        this.setShareClasses(cloneDeep(entitySnapshot.shareStructure.shareClasses))
+        this.setShareClasses(cloneDeep(entitySnapshot?.shareStructure?.shareClasses || []))
         this.setNewResolutionDates([])
 
         break
@@ -1327,12 +1352,12 @@ export default class FilingTemplateMixin extends DateMixin {
       }
       case CorpTypeCd.COOP: {
         // Note: it's possible for the COOP to have a paper resolution or memorandum, documentsInfo would be empty.
-        const documentsInfo = entitySnapshot.businessDocuments?.documentsInfo
+        const documentsInfo = entitySnapshot?.businessDocuments?.documentsInfo
         this.setSpecialResolutionRules(
           {
             name: documentsInfo?.certifiedRules?.name,
             key: documentsInfo?.certifiedRules?.key || null,
-            url: entitySnapshot.businessDocuments?.documents?.certifiedRules,
+            url: entitySnapshot?.businessDocuments?.documents?.certifiedRules,
             previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
             uploaded: documentsInfo?.certifiedRules?.uploaded
           })
@@ -1341,7 +1366,7 @@ export default class FilingTemplateMixin extends DateMixin {
           {
             name: documentsInfo?.certifiedMemorandum?.name,
             key: documentsInfo?.certifiedMemorandum?.key,
-            url: entitySnapshot.businessDocuments?.documents?.certifiedMemorandum,
+            url: entitySnapshot?.businessDocuments?.documents?.certifiedMemorandum,
             previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
             uploaded: documentsInfo?.certifiedMemorandum?.uploaded
           })
@@ -1606,10 +1631,12 @@ export default class FilingTemplateMixin extends DateMixin {
    * @param filingInformation the filing information to parse.
    * @param entitySnapshot the entity snapshot.
    */
-  storeSpecialResolutionRulesAndMemorandum (filingInformation: CoopAlterationIF | CorrectionInformationIF,
-    entitySnapshot: EntitySnapshotIF) :void {
+  storeSpecialResolutionRulesAndMemorandum (
+    filingInformation: CoopAlterationIF | CorrectionInformationIF,
+    entitySnapshot: EntitySnapshotIF
+  ): void {
     // Documents Info can possibly be undefined, if the co-op was created via paper.
-    const documentsInfo = entitySnapshot.businessDocuments?.documentsInfo
+    const documentsInfo = entitySnapshot?.businessDocuments?.documentsInfo
     if (filingInformation?.rulesFileKey) {
       // Scenario 1 - From draft, rules are uploaded in the draft.
       this.setSpecialResolutionRules(
@@ -1627,7 +1654,7 @@ export default class FilingTemplateMixin extends DateMixin {
         {
           name: documentsInfo?.certifiedRules?.name,
           key: documentsInfo?.certifiedRules?.key || null,
-          url: entitySnapshot.businessDocuments.documents?.certifiedRules,
+          url: entitySnapshot?.businessDocuments?.documents?.certifiedRules,
           includedInResolution: true,
           previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
           uploaded: documentsInfo?.certifiedRules?.uploaded
@@ -1638,7 +1665,7 @@ export default class FilingTemplateMixin extends DateMixin {
         {
           name: documentsInfo?.certifiedRules?.name,
           key: documentsInfo?.certifiedRules?.key || null,
-          url: entitySnapshot.businessDocuments.documents?.certifiedRules,
+          url: entitySnapshot?.businessDocuments?.documents?.certifiedRules,
           includedInResolution: false,
           previouslyInResolution: documentsInfo?.certifiedRules?.includedInResolution,
           uploaded: documentsInfo?.certifiedRules?.uploaded
@@ -1651,7 +1678,7 @@ export default class FilingTemplateMixin extends DateMixin {
         {
           name: documentsInfo?.certifiedMemorandum?.name,
           key: documentsInfo?.certifiedMemorandum?.key || null,
-          url: entitySnapshot.businessDocuments.documents?.certifiedMemorandum,
+          url: entitySnapshot?.businessDocuments?.documents?.certifiedMemorandum,
           includedInResolution: true,
           previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
           uploaded: documentsInfo?.certifiedMemorandum?.uploaded
@@ -1662,7 +1689,7 @@ export default class FilingTemplateMixin extends DateMixin {
         {
           name: documentsInfo?.certifiedMemorandum?.name,
           key: documentsInfo?.certifiedMemorandum?.key || null,
-          url: entitySnapshot.businessDocuments.documents?.certifiedMemorandum,
+          url: entitySnapshot?.businessDocuments?.documents?.certifiedMemorandum,
           includedInResolution: false,
           previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
           uploaded: documentsInfo?.certifiedMemorandum?.uploaded

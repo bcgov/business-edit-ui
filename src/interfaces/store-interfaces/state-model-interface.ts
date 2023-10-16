@@ -7,6 +7,18 @@ import { AccountInformationIF, AddressesIF, BusinessInformationIF, CertifyIF,
 import { CompletingPartyIF, ContactPointIF, SpecialResolutionIF, StaffPaymentIF }
   from '@bcrs-shared-components/interfaces/'
 
+export interface EditingFlagsIF {
+  companyName: boolean
+  associationType: boolean
+  nameTranslations: boolean
+  officeAddresses: boolean
+  peopleAndRoles: boolean
+  shareStructure: boolean
+  rules: boolean
+  memorandum: boolean
+  specialResolution: boolean
+}
+
 /** Data object used internally only (not to/from API). */
 export interface StateModelIF {
   currentJsDate: Date
@@ -31,17 +43,7 @@ export interface StateModelIF {
   detailComment: string
   rules: RulesMemorandumIF
   memorandum: RulesMemorandumIF
-  editingFlags: {
-    companyName: boolean
-    associationType: boolean
-    nameTranslations: boolean
-    officeAddresses: boolean
-    peopleAndRoles: boolean
-    shareStructure: boolean
-    rules: boolean
-    memorandum: boolean
-    specialResolution: boolean
-  }
+  editingFlags: EditingFlagsIF
   validationFlags: ValidationFlagsIF
   summaryMode: boolean,
   currentFees: FeesIF[],

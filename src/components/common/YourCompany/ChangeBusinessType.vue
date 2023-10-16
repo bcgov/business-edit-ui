@@ -284,7 +284,7 @@ import BcRegEntityDetails from '@/components/Alteration/BcRegEntityDetails.vue'
 import { BcRegContacts } from '@/components/common/'
 import { CommonMixin } from '@/mixins/'
 import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
-import { EntitySnapshotIF, EntityTypeOption, NameRequestIF, ResourceIF } from '@/interfaces/'
+import { EntityTypeOption, NameRequestIF, ResourceIF } from '@/interfaces/'
 import { GetFeatureFlag, ResourceUtilities } from '@/utils'
 import { useStore } from '@/store/store'
 
@@ -301,18 +301,20 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   @Prop({ default: false }) readonly invalidSection!: boolean
 
   // Global getters
-  @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getEditedLabel!: string
-  @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getEntityType!: CorpTypeCd
+  @Getter(useStore) getNameRequestLegalName!: string
   @Getter(useStore) getNumberOfDirectors!: number
+  @Getter(useStore) getOriginalLegalName!: string
+  @Getter(useStore) getOriginalLegalType!: CorpTypeCd
+  @Getter(useStore) getOriginalNrNumber!: string
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) hasBusinessNameChanged!: boolean
   @Getter(useStore) hasBusinessTypeChanged!: boolean
   @Getter(useStore) isBcCompany!: boolean
-  @Getter(useStore) isBenefitCompany!: boolean
   @Getter(useStore) isBcUlcCompany!: boolean
+  @Getter(useStore) isBenefitCompany!: boolean
   @Getter(useStore) isConflictingLegalType!: boolean
   @Getter(useStore) isEntityTypeChangedByName!: boolean
   @Getter(useStore) isNameChangedByType!: boolean
@@ -355,7 +357,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
   /** Verify New Business name. */
   get isNewName (): boolean {
     return this.getNameRequestLegalName &&
-      (this.getNameRequestLegalName !== this.getEntitySnapshot?.businessInfo?.legalName)
+      (this.getNameRequestLegalName !== this.getOriginalLegalName)
   }
 
   /** Type change helper information */
@@ -373,10 +375,10 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   get enableEditButton (): boolean {
     // Exclude CCC - Originally: isBcCompany || isBcUlcCompany || isBenefitCompany
-    if (this.getEntitySnapshot?.businessInfo?.legalType === CorpTypeCd.BC_CCC) {
+    if (this.getOriginalLegalType === CorpTypeCd.BC_CCC) {
       return false
     }
-    return this.supportedEntityTypes?.includes(this.getEntitySnapshot?.businessInfo?.legalType)
+    return this.supportedEntityTypes?.includes(this.getOriginalLegalType)
   }
 
   get nameRequestRequiredError (): boolean {
@@ -388,7 +390,7 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       return true
     }
     // Named ULC to BC Limited require a name request.
-    if (this.getEntitySnapshot?.businessInfo?.legalType === CorpTypeCd.BC_ULC_COMPANY && this.isBcLimited) {
+    if (this.getOriginalLegalType === CorpTypeCd.BC_ULC_COMPANY && this.isBcLimited) {
       return true
     }
     return false
@@ -400,12 +402,12 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
 
   /** Reset company type values to original. */
   resetType () {
-    this.setEntityType(this.getEntitySnapshot?.businessInfo?.legalType)
+    this.setEntityType(this.getOriginalLegalType || null)
     // reset name request
     this.setNameRequest({
-      legalType: this.getEntitySnapshot?.businessInfo?.legalType,
-      legalName: this.getEntitySnapshot?.businessInfo?.legalName,
-      nrNumber: this.getEntitySnapshot?.businessInfo?.nrNumber
+      legalType: this.getOriginalLegalType,
+      legalName: this.getOriginalLegalName,
+      nrNumber: this.getOriginalNrNumber
     })
     this.setNameChangedByType(false)
     this.isEditingType = false
@@ -418,14 +420,14 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
     this.isEditingType = false
 
     if (this.shouldUpdateName()) {
-      const originalName = this.getEntitySnapshot?.businessInfo.legalName
+      const originalName = this.getOriginalLegalName
       const updatedName = this.getUpdatedName(originalName)
 
       if (originalName !== updatedName) {
         const nameRequest = {
           legalType: this.selectedEntityType,
           legalName: updatedName,
-          nrNumber: this.getEntitySnapshot?.businessInfo?.nrNumber
+          nrNumber: this.getOriginalNrNumber
         }
 
         this.setNameRequest(nameRequest)
