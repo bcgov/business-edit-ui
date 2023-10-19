@@ -494,6 +494,7 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
   @Getter(useStore) getResource!: ResourceIF
   @Getter(useStore) isAlterationFiling!: boolean
   @Getter(useStore) isBenBcCccUlcCorrectionFiling!: boolean
+  @Getter(useStore) isCoopCorrectionFiling!: boolean
   @Getter(useStore) isFirmCorrectionFiling!: boolean
   @Getter(useStore) isFirm!: boolean
   @Getter(useStore) isFirmChangeFiling!: boolean
@@ -851,7 +852,9 @@ export default class OrgPerson extends Mixins(CommonMixin, OrgPersonMixin) {
       }
       person.deliveryAddress = { ...this.inProgressDeliveryAddress }
     }
-    if (this.isBenBcCccUlcCorrectionFiling) {
+    // Note: For corrections if the appointmentDate isn't included - you may run into some issues where adding a new
+    // director as it wont show up in the parties or directors call.
+    if (this.isBenBcCccUlcCorrectionFiling || this.isCoopCorrectionFiling) {
       person.roles = this.setPersonRoles(this.orgPerson)
     } else {
       person.roles = this.orgPerson.roles
