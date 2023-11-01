@@ -168,6 +168,9 @@ export default class CoopCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
       }
       this.setFilingData(filingData)
 
+      // pre-select FAS, this will display a dollar amount in the fee summary.
+      this.setStaffPayment({ option: StaffPaymentOptions.FAS })
+
       // tell App that we're finished loading
       this.emitHaveData()
       this.isDataLoaded = true
