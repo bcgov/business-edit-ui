@@ -8,6 +8,7 @@ import { ShareStructureIF } from '@bcrs-shared-components/interfaces/'
 
 import { BusinessDocumentsIF } from '@/interfaces/business-document-interface'
 import { AxiosResponse } from 'axios'
+import { StatusCodes } from 'http-status-codes'
 /**
  * Class that provides integration with the Legal API.
  */
@@ -295,10 +296,12 @@ export default class LegalServices {
   /**
    * Fetches name request data.
    * @param nrNumber the name request number (eg, NR 1234567) to fetch
+   * @param phone the name request phone (eg, 12321232)
+   * @param email the name request email (eg, nr@example.com)
    * @returns a promise to return the NR data, or null if not found
    */
-  static async fetchNameRequest (nrNumber: string): Promise<any> {
-    const url = `nameRequests/${nrNumber}`
+  static async fetchNameRequest (nrNumber: string, phone = '', email = ''): Promise<any> {
+    const url = `nameRequests/${nrNumber}/validate?phone=${phone}&email=${email}`
 
     return axios.get(url)
       .then(response => {
@@ -308,6 +311,15 @@ export default class LegalServices {
         // eslint-disable-next-line no-console
         console.log('fetchNameRequest() error - invalid response =', response)
         throw new Error('Invalid API response')
+      }).catch(error => {
+        if (error?.response?.status === StatusCodes.NOT_FOUND) {
+          return null // NR not found (not an error)
+        } else if (error?.response?.status === StatusCodes.BAD_REQUEST) {
+          throw new Error('Sent invalid email or phone number.') // Sent invalid email or phone
+        } else if (error?.response?.status === StatusCodes.FORBIDDEN) {
+          throw new Error('Not sent email or phone number.') // Not sent the email or phone
+        }
+        throw error
       })
   }
 

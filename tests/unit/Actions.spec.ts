@@ -236,7 +236,7 @@ describe.skip('Emits error event if NR validation fails in file and pay', () => 
     expiredNR['expirationDate'] = 'Thu, 31 Dec 2019 23:59:59 GMT'
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(Promise.resolve({
         data: expiredNR
       }))
@@ -487,7 +487,7 @@ describe.skip('Actions component - Filing Functionality', () => {
     const get = sinon.stub(axios, 'get')
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(Promise.resolve({
         data:
         {

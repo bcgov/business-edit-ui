@@ -223,7 +223,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('nameRequests/NR1234567')
+    get.withArgs('nameRequests/NR1234567/validate?phone=&email=')
       .returns(Promise.resolve({ data: NR }))
 
     // call method
@@ -332,7 +332,7 @@ describe('Legal Services', () => {
     await expect(LegalServices.fetchResolutions('CP1234567')).rejects.toThrow('Invalid API response')
 
     // verify fetchNameRequest with no response.data
-    get.withArgs('nameRequests/NR1234567').returns(Promise.resolve({}))
+    get.withArgs('nameRequests/NR1234567/validate?phone=&email=').returns(Promise.resolve({}))
     await expect(LegalServices.fetchNameRequest('NR1234567')).rejects.toThrow('Invalid API response')
 
     // verify fetchBusinessDocuments with no response.data
