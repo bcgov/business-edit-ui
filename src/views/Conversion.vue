@@ -64,7 +64,6 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { GetFeatureFlag } from '@/utils/'
 import { ConversionNOB, ConversionSummary } from '@/components/Conversion'
 import { CompletingParty, BusinessStartDate, BusinessType, EntityName, FolioInformation, OfficeAddresses,
   PeopleAndRoles, YourCompanyWrapper } from '@/components/common/'
@@ -137,14 +136,6 @@ export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemp
 
     // do not proceed if we are not authenticated (safety check - should never happen)
     if (!this.isAuthenticated) return
-
-    // do not proceed if FF is disabled
-    // bypass this when Vitest is running as FF are not fetched
-    if (!this.isVitestRunning && !GetFeatureFlag('conversion-ui-enabled')) {
-      window.alert('Conversion filings are not available at the moment. Please check again later.')
-      this.$root.$emit('go-to-dashboard', true)
-      return
-    }
 
     // do not proceed if user is not staff
     const isStaffOnly = this.$route.matched.some(r => r.meta?.isStaffOnly)
