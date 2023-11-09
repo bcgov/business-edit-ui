@@ -240,22 +240,11 @@ export default class Conversion extends Mixins(CommonMixin, FeeMixin, FilingTemp
         throw new Error('Failed to fetch entity addresses')
       })
 
-    // WORK-AROUND WARNING !!!
-    // convert orgPersons from "middleInitial" to "middleName"
-    const orgPersons = items[2].map(orgPerson => {
-      const middleInitial = orgPerson.officer['middleInitial']
-      if (middleInitial !== undefined) {
-        orgPerson.officer.middleName = middleInitial
-        delete orgPerson.officer['middleInitial']
-      }
-      return orgPerson
-    })
-
     return {
       businessInfo: items[0],
       authInfo: items[1],
       addresses,
-      orgPersons
+      orgPersons: items[2]
     } as EntitySnapshotIF
   }
   /** Emits Fetch Error event. */
