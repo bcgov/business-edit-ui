@@ -126,7 +126,6 @@
 <script lang="ts">
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import { GetFeatureFlag } from '@/utils/'
 import { AlterationSummary, Articles } from '@/components/Alteration/'
 import { BusinessContactInfo, BusinessType, CertifySection, CourtOrderPoa, CurrentDirectors,
   DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
@@ -249,14 +248,6 @@ export default class Alteration extends Mixins(CommonMixin, FeeMixin, FilingTemp
 
     // do not proceed if we are not authenticated (safety check - should never happen)
     if (!this.isAuthenticated) return
-
-    // do not proceed if FF is disabled
-    // bypass this when Vitest is running as FF are not fetched
-    if (!this.isVitestRunning && !GetFeatureFlag('alteration-ui-enabled')) {
-      window.alert('Alterations are not available at the moment. Please check again later.')
-      this.$root.$emit('go-to-dashboard', true)
-      return
-    }
 
     // try to fetch data
     try {
