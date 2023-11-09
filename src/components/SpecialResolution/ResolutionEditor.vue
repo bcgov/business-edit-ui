@@ -114,7 +114,7 @@
           </div>
           <div
             v-else
-            v-sanitize="getSpecialResolution.resolution"
+            v-sanitize.basic="getSpecialResolution.resolution"
             class="resizable info-text"
           />
         </v-col>
