@@ -285,22 +285,11 @@ export default class Change extends Mixins(CommonMixin, FeeMixin, FilingTemplate
 
     if (items.length !== 4) throw new Error('Failed to fetch entity snapshot')
 
-    // WORK-AROUND WARNING !!!
-    // convert orgPersons from "middleInitial" to "middleName"
-    const orgPersons = items[3].map(orgPerson => {
-      const middleInitial = orgPerson.officer['middleInitial']
-      if (middleInitial !== undefined) {
-        orgPerson.officer.middleName = middleInitial
-        delete orgPerson.officer['middleInitial']
-      }
-      return orgPerson
-    })
-
     return {
       businessInfo: items[0],
       authInfo: items[1],
       addresses: items[2],
-      orgPersons
+      orgPersons: items[3]
     } as EntitySnapshotIF
   }
 
