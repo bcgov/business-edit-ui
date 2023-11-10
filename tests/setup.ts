@@ -3,7 +3,7 @@
  * why some of the errors are showing up due to Vue not having the plugins it needs.
  * See src/main.ts.
  */
-import VSanitize from 'v-sanitize'
+import VueSanitize from 'vue-sanitize-directive'
 import Vuelidate from 'vuelidate'
 import Vue from 'vue'
 import Affix from 'vue-affix'
@@ -16,7 +16,7 @@ Vue.use(Affix)
 // needed for address component or Completing Party
 Vue.use(Vuelidate)
 Vue.use(Vue2Filters)
-Vue.use(VSanitize)
+Vue.use(VueSanitize)
 
 const vuetify = new Vuetify({})
 
