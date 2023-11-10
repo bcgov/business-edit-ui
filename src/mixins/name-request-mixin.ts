@@ -25,13 +25,15 @@ export default class NameRequestMixin extends Vue {
    */
   async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<NrResponseIF> {
     const nrResponse: NrResponseIF = await LegalServices.fetchNameRequest(nrNumber, phone, email).catch(error => {
-      console.log(error, 'name-request-mixin')
       if (error?.response?.status === StatusCodes.NOT_FOUND) {
         this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
+        throw new Error(`${nrNumber} not found`) // Sent invalid NR number
       } else if (error?.response?.status === StatusCodes.BAD_REQUEST) {
         this.$root.$emit('invalid-name-request', NameRequestStates.INCORRECT_CONTACT)
+        throw new Error('Sent invalid email or phone number.') // Sent invalid email or phone
       } else if (error?.response?.status === StatusCodes.FORBIDDEN) {
         this.$root.$emit('invalid-name-request', NameRequestStates.NO_CONTACT)
+        throw new Error('Not sent email or phone number.') // Not sent the email or phone
       }
       throw new Error(`Fetch Name Request error: ${error}`)
     })
