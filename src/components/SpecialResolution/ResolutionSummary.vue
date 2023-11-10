@@ -50,7 +50,7 @@
           >
             <div
               v-if="getSpecialResolution"
-              v-sanitize="getSpecialResolution.resolution"
+              v-sanitize.basic="getSpecialResolution.resolution"
               class="resizable"
             />
           </v-col>
