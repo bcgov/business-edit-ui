@@ -312,6 +312,7 @@ export default class LegalServices {
         console.log('fetchNameRequest() error - invalid response =', response)
         throw new Error('Invalid API response')
       }).catch(error => {
+        console.log(error, 'legal-service')
         if (error?.response?.status === StatusCodes.NOT_FOUND) {
           return null // NR not found (not an error)
         } else if (error?.response?.status === StatusCodes.BAD_REQUEST) {
