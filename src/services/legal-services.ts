@@ -8,7 +8,6 @@ import { ShareStructureIF } from '@bcrs-shared-components/interfaces/'
 
 import { BusinessDocumentsIF } from '@/interfaces/business-document-interface'
 import { AxiosResponse } from 'axios'
-import { StatusCodes } from 'http-status-codes'
 /**
  * Class that provides integration with the Legal API.
  */
@@ -311,16 +310,6 @@ export default class LegalServices {
         // eslint-disable-next-line no-console
         console.log('fetchNameRequest() error - invalid response =', response)
         throw new Error('Invalid API response')
-      }).catch(error => {
-        console.log(error, 'legal-service')
-        // if (error?.response?.status === StatusCodes.NOT_FOUND) {
-        //   return null // NR not found (not an error)
-        // } else if (error?.response?.status === StatusCodes.BAD_REQUEST) {
-        //   throw new Error('Sent invalid email or phone number.') // Sent invalid email or phone
-        // } else if (error?.response?.status === StatusCodes.FORBIDDEN) {
-        //   throw new Error('Not sent email or phone number.') // Not sent the email or phone
-        // }
-        throw error
       })
   }
 

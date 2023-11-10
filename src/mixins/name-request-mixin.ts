@@ -6,6 +6,7 @@ import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { LegalServices } from '@/services/'
 import { NrResponseIF, ResourceIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
+import { StatusCodes } from 'http-status-codes'
 
 /**
  * Mixin for processing Name Request objects.
@@ -25,7 +26,13 @@ export default class NameRequestMixin extends Vue {
   async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<NrResponseIF> {
     const nrResponse: NrResponseIF = await LegalServices.fetchNameRequest(nrNumber, phone, email).catch(error => {
       console.log(error, 'name-request-mixin')
-      this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
+      if (error?.response?.status === StatusCodes.NOT_FOUND) {
+        this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
+      } else if (error?.response?.status === StatusCodes.BAD_REQUEST) {
+        this.$root.$emit('invalid-name-request', NameRequestStates.INCORRECT_CONTACT)
+      } else if (error?.response?.status === StatusCodes.FORBIDDEN) {
+        this.$root.$emit('invalid-name-request', NameRequestStates.NO_CONTACT)
+      }
       throw new Error(`Fetch Name Request error: ${error}`)
     })
 
