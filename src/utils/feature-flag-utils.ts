@@ -8,10 +8,7 @@ declare const window: any
  * Uses "business-edit" project (per LD client id in config).
  */
 export const defaultFlagSet: LDFlagSet = {
-  'alteration-ui-enabled': false,
   'banner-text': '', // by default, there is no banner text
-  'change-ui-enabled': false,
-  'conversion-ui-enabled': false,
   'restoration-ui-enabled': false,
   'sentry-enable': false, // by default, no sentry logs
   'supported-correction-entities': [],

@@ -138,8 +138,8 @@ describe('Legal Services', () => {
 
   it('fetches directors correctly', async () => {
     const DIRECTORS = [
-      { appointmentDate: '2022-04-01' },
-      { appointmentDate: '2022-05-01' }
+      { appointmentDate: '2022-04-01', officer: {} },
+      { appointmentDate: '2022-05-01', officer: {} }
     ]
     const ORGPERSONS = [
       { roles: [{ appointmentDate: '2022-04-01', roleType: 'Director' }] },
@@ -160,9 +160,9 @@ describe('Legal Services', () => {
 
   it('fetches parties correctly', async () => {
     const PARTIES = [
-      { roles: [{ appointmentDate: '2022-04-01', roleType: 'Completing Party' }] },
-      { roles: [{ appointmentDate: '2022-04-01', roleType: 'Incorporator' }] },
-      { roles: [{ appointmentDate: '2022-05-01', roleType: 'Director' }] }
+      { officer: {}, roles: [{ appointmentDate: '2022-04-01', roleType: 'Completing Party' }] },
+      { officer: {}, roles: [{ appointmentDate: '2022-04-01', roleType: 'Incorporator' }] },
+      { officer: {}, roles: [{ appointmentDate: '2022-05-01', roleType: 'Director' }] }
     ]
 
     // mock endpoint
