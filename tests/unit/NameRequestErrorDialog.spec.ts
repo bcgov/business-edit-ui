@@ -30,7 +30,7 @@ describe('Name Request Error Dialog', () => {
   it('displays "incorrect email" message', async () => {
     const wrapper = mount(NameRequestErrorDialog, {
       vuetify,
-      propsData: { dialog: true, type: 'INCORRECT_EMAIL' }
+      propsData: { dialog: true, type: 'INCORRECT_CONTACT' }
     })
     await Vue.nextTick()
 
@@ -48,7 +48,7 @@ describe('Name Request Error Dialog', () => {
   it('displays "incorrect phone" message', async () => {
     const wrapper = mount(NameRequestErrorDialog, {
       vuetify,
-      propsData: { dialog: true, type: 'INCORRECT_PHONE' }
+      propsData: { dialog: true, type: 'NO_CONTACT' }
     })
     await Vue.nextTick()
 
