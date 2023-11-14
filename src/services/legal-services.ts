@@ -312,10 +312,12 @@ export default class LegalServices {
   /**
    * Fetches name request data.
    * @param nrNumber the name request number (eg, NR 1234567) to fetch
+   * @param phone the name request phone (eg, 12321232)
+   * @param email the name request email (eg, nr@example.com)
    * @returns a promise to return the NR data, or null if not found
    */
-  static async fetchNameRequest (nrNumber: string): Promise<any> {
-    const url = `nameRequests/${nrNumber}`
+  static async fetchNameRequest (nrNumber: string, phone = '', email = ''): Promise<any> {
+    const url = `nameRequests/${nrNumber}/validate?phone=${phone}&email=${email}`
 
     return axios.get(url)
       .then(response => {

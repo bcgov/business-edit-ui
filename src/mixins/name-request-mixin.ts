@@ -6,6 +6,7 @@ import { NrRequestActionCodes } from '@bcrs-shared-components/enums'
 import { LegalServices } from '@/services/'
 import { NrResponseIF, ResourceIF } from '@/interfaces/'
 import { useStore } from '@/store/store'
+import { StatusCodes } from 'http-status-codes'
 
 /**
  * Mixin for processing Name Request objects.
@@ -23,22 +24,19 @@ export default class NameRequestMixin extends Vue {
    * @returns the name request response payload
    */
   async validateNameRequest (nrNumber: string, phone?: string, email?: string): Promise<NrResponseIF> {
-    const nrResponse: NrResponseIF = await LegalServices.fetchNameRequest(nrNumber).catch(error => {
-      this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
+    const nrResponse: NrResponseIF = await LegalServices.fetchNameRequest(nrNumber, phone, email).catch(error => {
+      if (error?.response?.status === StatusCodes.NOT_FOUND) {
+        this.$root.$emit('invalid-name-request', NameRequestStates.NOT_FOUND)
+        throw new Error(`${nrNumber} not found`) // Sent invalid NR number
+      } else if (error?.response?.status === StatusCodes.BAD_REQUEST) {
+        this.$root.$emit('invalid-name-request', NameRequestStates.INCORRECT_CONTACT)
+        throw new Error('Sent invalid email or phone number.') // Sent invalid email or phone
+      } else if (error?.response?.status === StatusCodes.FORBIDDEN) {
+        this.$root.$emit('invalid-name-request', NameRequestStates.NO_CONTACT)
+        throw new Error('Not sent email or phone number.') // Not sent the email or phone
+      }
       throw new Error(`Fetch Name Request error: ${error}`)
     })
-
-    // validate email
-    if (email && nrResponse.applicants?.emailAddress !== email) {
-      this.$root.$emit('invalid-name-request', NameRequestStates.INCORRECT_EMAIL)
-      throw new Error(`Incorrect Email`)
-    }
-
-    // validate phone
-    if (phone && nrResponse.applicants?.phoneNumber !== phone) {
-      this.$root.$emit('invalid-name-request', NameRequestStates.INCORRECT_PHONE)
-      throw new Error(`Incorrect Phone`)
-    }
 
     // ensure NR is valid
     const isNrValid = this.isNrValid(nrResponse)

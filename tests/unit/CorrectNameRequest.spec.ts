@@ -293,7 +293,7 @@ describe('CorrectNameRequest', () => {
     store.stateModel.tombstone.currentDate = '2021-01-20'
 
     // GET NR Data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=250 516 8257&email=')
       .returns(Promise.resolve({
         data:
           {
@@ -338,7 +338,7 @@ describe('CorrectNameRequest', () => {
     const vm = wrapper.vm as any
 
     // GET NR Data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=250 516 8258&email=mock@example.com')
       .returns(Promise.resolve({
         data:
           {
@@ -383,7 +383,7 @@ describe('CorrectNameRequest', () => {
     const vm = wrapper.vm as any
 
     // GET NR Data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=250 516 8258&email=mock@example.com')
       .returns(Promise.resolve({
         data:
           {
@@ -430,7 +430,7 @@ describe('CorrectNameRequest', () => {
     store.stateModel.tombstone.currentDate = '2021-01-20'
 
     // GET NR Data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=250 516 8257&email=')
       .returns(Promise.resolve({
         data:
           {
@@ -483,7 +483,7 @@ describe('CorrectNameRequest', () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.PARTNERSHIP
 
     // GET NR Data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=250 516 8257&email=')
       .returns(Promise.resolve({
         data:
           {
@@ -531,7 +531,7 @@ describe('CorrectNameRequest', () => {
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
 
     // GET NR Data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=250 516 8258&email=')
       .returns(Promise.resolve({
         data:
           {
