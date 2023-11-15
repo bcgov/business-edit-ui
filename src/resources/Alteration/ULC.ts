@@ -24,6 +24,11 @@ export const UlcAlterationResource: ResourceIF = {
         text: 'BC Unlimited Liability Company'
       },
       {
+        value: 'BEN',
+        shortDesc: 'BC Benefit Company',
+        text: 'BC Benefit Company'
+      },
+      {
         value: 'BC',
         shortDesc: 'BC Limited Company',
         text: 'BC Limited Company'
