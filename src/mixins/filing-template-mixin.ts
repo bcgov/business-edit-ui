@@ -782,7 +782,7 @@ export default class FilingTemplateMixin extends DateMixin {
 
     if (this.isCoopCorrectionFiling) {
       this.storeSpecialResolutionRulesAndMemorandum(filing.correction, entitySnapshot)
-      let specialResolution: SpecialResolutionIF | null = {}
+      let specialResolution: SpecialResolutionIF = {}
       if (filing.correction.resolution) {
         specialResolution = {
           resolution: filing.correction?.resolution,

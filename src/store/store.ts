@@ -1318,11 +1318,13 @@ export const useStore = defineStore('store', {
     // Only used for correction filings.
     hasSpecialResolutionResolutionChanged (): boolean {
       const entitySnapshotResolution = this.getLatestResolutionForBusiness
+
       return (
-        entitySnapshotResolution.resolution !== this.getSpecialResolution.resolution ||
-        !isEqual(entitySnapshotResolution.signatory, this.getSpecialResolution.signatory) ||
-        entitySnapshotResolution.resolutionDate !== this.getSpecialResolution.resolutionDate ||
-        entitySnapshotResolution.signingDate !== this.getSpecialResolution.signingDate
+        (!!entitySnapshotResolution !== !!this.getSpecialResolution) ||
+          entitySnapshotResolution.resolution !== this.getSpecialResolution.resolution ||
+          !isEqual(entitySnapshotResolution.signatory, this.getSpecialResolution.signatory) ||
+          entitySnapshotResolution.resolutionDate !== this.getSpecialResolution.resolutionDate ||
+          entitySnapshotResolution.signingDate !== this.getSpecialResolution.signingDate
       )
     },
 
