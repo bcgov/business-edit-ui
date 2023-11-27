@@ -1305,7 +1305,7 @@ export const useStore = defineStore('store', {
       const resolutions = this.getEntitySnapshot.resolutions
 
       if (resolutions.length === 0) {
-        return null
+        return {}
       }
       // Obtain latest resolution ID. Assumes that the latest resolution is the one to be corrected.
       const latestResolution = resolutions.reduce((prev, current) => (prev.id > current.id) ? prev : current)
@@ -1320,11 +1320,10 @@ export const useStore = defineStore('store', {
       const entitySnapshotResolution = this.getLatestResolutionForBusiness
 
       return (
-        (!!entitySnapshotResolution !== !!this.getSpecialResolution) ||
-          entitySnapshotResolution.resolution !== this.getSpecialResolution.resolution ||
-          !isEqual(entitySnapshotResolution.signatory, this.getSpecialResolution.signatory) ||
-          entitySnapshotResolution.resolutionDate !== this.getSpecialResolution.resolutionDate ||
-          entitySnapshotResolution.signingDate !== this.getSpecialResolution.signingDate
+        entitySnapshotResolution.resolution !== this.getSpecialResolution.resolution ||
+        !isEqual(entitySnapshotResolution.signatory, this.getSpecialResolution.signatory) ||
+        entitySnapshotResolution.resolutionDate !== this.getSpecialResolution.resolutionDate ||
+        entitySnapshotResolution.signingDate !== this.getSpecialResolution.signingDate
       )
     },
 

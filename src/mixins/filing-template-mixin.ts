@@ -791,11 +791,7 @@ export default class FilingTemplateMixin extends DateMixin {
           signatory: filing.correction?.signatory
         }
       } else {
-        const latestResolution = this.getLatestResolutionForBusiness
-
-        if (latestResolution !== null) {
-          specialResolution = latestResolution
-        }
+        specialResolution = this.getLatestResolutionForBusiness
       }
       this.setSpecialResolution(cloneDeep(specialResolution))
     }
