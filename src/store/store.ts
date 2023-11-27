@@ -1301,10 +1301,14 @@ export const useStore = defineStore('store', {
     },
 
     // Grab the latest resolution from the entity snapshot.
-    getLatestResolutionForBusiness (): SpecialResolutionIF {
+    getLatestResolutionForBusiness (): SpecialResolutionIF | null {
+      const resolutions = this.getEntitySnapshot.resolutions
+
+      if (resolutions.length === 0) {
+        return null
+      }
       // Obtain latest resolution ID. Assumes that the latest resolution is the one to be corrected.
-      const latestResolution = this.getEntitySnapshot.resolutions
-        .reduce((prev, current) => (prev.id > current.id) ? prev : current)
+      const latestResolution = resolutions.reduce((prev, current) => (prev.id > current.id) ? prev : current)
       return {
         ...latestResolution,
         resolutionDate: latestResolution.date
