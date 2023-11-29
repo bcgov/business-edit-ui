@@ -1328,7 +1328,8 @@ export const useStore = defineStore('store', {
         this.hasBusinessNameChanged ||
         this.hasAssociationTypeChanged ||
         this.hasSpecialResolutionRulesChanged ||
-        this.hasSpecialResolutionMemorandumChanged)
+        this.hasSpecialResolutionMemorandumChanged) ||
+        this.isCoopCorrectionFiling
     },
 
     getNumberOfDirectors (): number {
