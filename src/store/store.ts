@@ -1297,7 +1297,7 @@ export const useStore = defineStore('store', {
     hasSpecialResolutionRulesChanged (): boolean {
       return this.getSpecialResolutionRules?.includedInResolution ||
         this.getSpecialResolutionRules?.key !==
-        this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key
+        (this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key || null)
     },
 
     // Grab the latest resolution from the entity snapshot.
@@ -1328,8 +1328,7 @@ export const useStore = defineStore('store', {
         this.hasBusinessNameChanged ||
         this.hasAssociationTypeChanged ||
         this.hasSpecialResolutionRulesChanged ||
-        this.hasSpecialResolutionMemorandumChanged) ||
-        this.isCoopCorrectionFiling
+        this.hasSpecialResolutionMemorandumChanged)
     },
 
     getNumberOfDirectors (): number {
