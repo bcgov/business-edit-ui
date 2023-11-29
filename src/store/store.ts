@@ -1296,8 +1296,8 @@ export const useStore = defineStore('store', {
 
     hasSpecialResolutionRulesChanged (): boolean {
       return this.getSpecialResolutionRules?.includedInResolution ||
-        this.getSpecialResolutionRules?.key !==
-        this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key
+        (this.getSpecialResolutionRules?.key || null) !==
+        (this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key || null)
     },
 
     // Grab the latest resolution from the entity snapshot.
