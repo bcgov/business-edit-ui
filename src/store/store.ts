@@ -1296,7 +1296,7 @@ export const useStore = defineStore('store', {
 
     hasSpecialResolutionRulesChanged (): boolean {
       return this.getSpecialResolutionRules?.includedInResolution ||
-        this.getSpecialResolutionRules?.key !==
+        (this.getSpecialResolutionRules?.key || null) !==
         (this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key || null)
     },
 
