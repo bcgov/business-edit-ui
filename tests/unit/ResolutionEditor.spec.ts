@@ -10,12 +10,15 @@ const vuetify = new Vuetify({})
 
 setActivePinia(createPinia())
 const store = useStore()
+const firstResolution = '<b>Resolution text</b>'
+const firstResolutionDateText = '2025-01-01'
 
 describe('ResolutionEditor', () => {
   let wrapper
 
   beforeEach(() => {
     wrapper = mount(ResolutionEditor, { vuetify })
+    store.stateModel.specialResolution = ({ resolution: firstResolution, resolutionDate: firstResolutionDateText })
   })
 
   afterEach(() => {
@@ -64,11 +67,6 @@ describe('ResolutionEditor', () => {
   })
 
   it('undo and save to store works as expected', async () => {
-    const firstResolution = '<b>Resolution text</b>'
-    const firstResolutionDateText = '2025-01-01'
-    wrapper.setData({ resolution: firstResolution, resolutionDateText: firstResolutionDateText })
-
-    // This should save the local component state.
     await wrapper.setProps({ isEditing: true })
 
     const secondResolution = '<b> Second resolution text </b>'

@@ -11,12 +11,19 @@ const vuetify = new Vuetify({})
 // Store required for component, although not read or modified in unit test.
 setActivePinia(createPinia())
 const store = useStore()
+const originSignatoryDate = '2021-05-06'
+const originSignatory = {
+  givenName: 'John_',
+  familyName: 'Doe_',
+  additionalName: 'Smith_'
+}
 
 describe('SigningParty', () => {
   let wrapper
 
   beforeEach(() => {
     wrapper = mount(SigningParty, { vuetify })
+    store.stateModel.specialResolution = ({ signatory: originSignatory, signingDate: originSignatoryDate })
   })
 
   afterEach(() => {
@@ -48,6 +55,7 @@ describe('SigningParty', () => {
     }
     wrapper.setData({ signatory })
     await wrapper.vm.onSignatoryChanged()
+    await wrapper.vm.saveToStore()
     expect(wrapper.vm.getSpecialResolution.signatory).toEqual(signatory)
   })
 
@@ -74,15 +82,6 @@ describe('SigningParty', () => {
 
   it('Undo and save to store works as expected', async () => {
     // Fire isEditing / Save to store / undo to store
-    const firstSignatoryDate = '2021-05-05'
-    const firstSignatory = {
-      givenName: 'John',
-      familyName: 'Doe',
-      additionalName: 'Smith'
-    }
-    wrapper.setData({ signatory: firstSignatory, signingDate: firstSignatoryDate })
-
-    // This should save the local component state.
     await wrapper.setProps({ isEditing: true })
 
     const secondSignatory = {
@@ -91,9 +90,7 @@ describe('SigningParty', () => {
       additionalName: 'Smith2'
     }
     const secondSignatoryDate = '2025-05-05'
-
     wrapper.setData({ signatory: secondSignatory, signingDate: secondSignatoryDate })
-
     await Vue.nextTick()
 
     // Called by parent component Resolution via ref
@@ -103,7 +100,7 @@ describe('SigningParty', () => {
 
     // Called by parent component Resolution via ref
     await wrapper.vm.undoToStore()
-    expect(store.getSpecialResolution.signatory).toEqual(firstSignatory)
-    expect(store.getSpecialResolution.signingDate).toEqual(firstSignatoryDate)
+    expect(store.getSpecialResolution.signatory).toEqual(originSignatory)
+    expect(store.getSpecialResolution.signingDate).toEqual(originSignatoryDate)
   })
 })

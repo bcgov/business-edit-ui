@@ -1,7 +1,7 @@
 
 <template>
   <div id="special-resolution-signing-party">
-    <div v-if="isSpecialResolutionFiling && isEditing">
+    <div v-if="isEditing">
       <!-- Resolution Signature -->
       <header id="resolution-signature-info-header">
         <h2>Resolution Signature</h2>
@@ -90,6 +90,7 @@
         >
           <DatePickerShared
             v-show="isEditing"
+            :key="datePickerKey"
             ref="signatureDatePickerRef"
             title="Date Signed"
             :nudgeRight="40"
@@ -154,6 +155,7 @@ export default class SigningParty extends Vue {
   signatoryOriginal: PersonIF = null// Used for undo for corrections.
   hasSigningData = true
   isSignatureDateValid = true
+  datePickerKey = 0 // for undo for corrections.
 
   /** Validation rule for individual name fields */
   readonly firstNameRules = this.signatureNameRules('First Name')
@@ -240,12 +242,17 @@ export default class SigningParty extends Vue {
 
   /* Undo event called from parent via ref. */
   async undoToStore (): Promise<void> {
-    this.signatory = { ...this.signatoryOriginal }
-    this.signingDate = this.signingDateOriginal
+    this.signatory = {
+      givenName: '',
+      familyName: '',
+      additionalName: ''
+    }
+    this.signingDate = ''
+    this.datePickerKey++
     await this.setSpecialResolution({
       ...this.getSpecialResolution,
-      signatory: this.signatory,
-      signingDate: this.signingDate
+      signatory: { ...this.signatoryOriginal },
+      signingDate: this.signingDateOriginal
     })
   }
 
@@ -255,25 +262,17 @@ export default class SigningParty extends Vue {
   * Note: The data is loaded before the component is created.
   */
   created () {
-    this.signatory = this.getSpecialResolution.signatory ||
+    if (this.isSpecialResolutionFiling) {
+      this.signatory = this.getSpecialResolution.signatory ||
       {
         givenName: '',
         familyName: '',
         additionalName: ''
       }
-    this.signatoryOriginal = { ...this.signatory }
-    this.signingDate = this.getSpecialResolution.signingDate || ''
-    this.signingDateOriginal = this.signingDate
-  }
-
-  /**
-  * Sets the undo states when editing is enabled.
-  */
-  @Watch('isEditing')
-  onIsEditingChange (val: boolean): void {
-    if (!val) return
-    this.signatoryOriginal = { ...this.signatory }
-    this.signingDateOriginal = this.signingDate
+      this.signingDate = this.getSpecialResolution.signingDate || ''
+    }
+    this.signatoryOriginal = this.getSpecialResolution.signatory
+    this.signingDateOriginal = this.getSpecialResolution.signingDate
   }
 
   /** Used to trigger validate from outside of component. */

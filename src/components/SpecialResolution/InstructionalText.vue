@@ -1,9 +1,9 @@
 <template>
   <article
-    v-if="isSpecialResolutionFiling"
     class="instructional-text section-container"
   >
-    You have made changes that require a
+    <span v-if="isSpecialResolutionFiling">You have made changes that require a </span>
+    <span v-else>If you have made changes that require a </span>
     <v-tooltip
       top
       content-class="top-tooltip"
