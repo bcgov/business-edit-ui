@@ -59,12 +59,12 @@
         </v-col>
       </v-row>
 
-      <InstructionalText v-if="(requireCorrectionCheck && isCoopCorrectionFiling) || isSpecialResolutionFiling" />
+      <InstructionalText v-if="shouldDisplayResolution" />
 
-      <HelpResolution v-if="(requireCorrectionCheck && isCoopCorrectionFiling) || isSpecialResolutionFiling" />
+      <HelpResolution v-if="shouldDisplayResolution" />
 
       <section
-        v-if="(requireCorrectionCheck && isCoopCorrectionFiling) || isSpecialResolutionFiling"
+        v-if="shouldDisplayResolution"
         id="resolution-section"
         class="section-container"
       >
@@ -258,6 +258,13 @@ export default class Resolution extends Vue {
   dropdown = false
   changedResolutionDate = ''
   requireCorrectionCheck = true
+
+  /** Resolution section should display:
+   * 1.special resolution
+   * 2.coop correction with checkbox unchecked (require resolution) */
+  get shouldDisplayResolution () {
+    return (this.requireCorrectionCheck && this.isCoopCorrectionFiling) || this.isSpecialResolutionFiling
+  }
 
   /** Displays an invalid section to user if form is invalid. */
   get invalidResolutionSection (): boolean {
