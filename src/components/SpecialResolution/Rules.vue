@@ -89,13 +89,18 @@
                 </div>
                 <div v-else>
                   <div
+                    v-if="hasResolutionOnFile"
                     class="pt-0 instructional-text section-container"
                     :class="{'error-text': rulesEditingInvalid}"
                   >
                     You can update the rules of association in one of the following ways:
                   </div>
-                  <v-divider class="mx-8" />
+                  <v-divider
+                    v-if="hasResolutionOnFile"
+                    class="mx-8"
+                  />
                   <section
+                    v-if="hasResolutionOnFile"
                     class="py-4 section-container"
                   >
                     <v-btn
@@ -128,10 +133,11 @@
                       </template>
                     </v-checkbox>
                   </section>
-                  <v-divider class="mx-8" />
-                  <section
-                    class="section-container"
-                  >
+                  <v-divider
+                    v-if="hasResolutionOnFile"
+                    class="mx-8"
+                  />
+                  <section :class="{'section-container': hasResolutionOnFile}">
                     <v-btn
                       id="btn-upload-rules"
                       text
@@ -143,15 +149,17 @@
                               describeDropdown = false; uploadDropdown = !uploadDropdown"
                     >
                       <span
-                        :class="{'black-bold-font' : uploadDropdown}"
+                        :class="{'black-bold-font' : uploadDropdown || !hasResolutionOnFile}"
                       >
                         Upload a new full set of the rules PDF document
                       </span>
                       <v-spacer class="spacer" />
-                      <v-icon>{{ uploadDropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
+                      <v-icon v-if="hasResolutionOnFile">
+                        {{ uploadDropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}
+                      </v-icon>
                     </v-btn>
                     <UploadRules
-                      v-if="uploadDropdown"
+                      v-if="uploadDropdown || !hasResolutionOnFile"
                       ref="uploadRulesRef"
                       :invalidSection="rulesEditingInvalid"
                     />
@@ -189,7 +197,10 @@
                       </header>
                     </v-expand-transition>
                   </section>
-                  <v-divider class="mx-8" />
+                  <v-divider
+                    v-if="hasResolutionOnFile"
+                    class="mx-8"
+                  />
 
                   <v-row
                     id="rules-confirmation-buttons"
@@ -359,6 +370,7 @@ export default class Rules extends Vue {
     @Getter(useStore) getSpecialResolutionRulesValid!: boolean
     @Getter(useStore) getNameRequestLegalName!: string
     @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
+    @Getter(useStore) hasResolutionOnFile!: boolean
 
     @Action(useStore) setEditingRules!: (x: boolean) => void
     @Action(useStore) setSpecialResolutionRules!: (x: RulesMemorandumIF) => void
@@ -449,7 +461,7 @@ export default class Rules extends Vue {
         this.hasChanged = true
         this.isEditing = false
         let rules = this.getSpecialResolutionRules
-        if (this.uploadDropdown) {
+        if (this.uploadDropdown || !this.hasResolutionOnFile) {
           rules = {
             ...rules,
             ...this.$refs.uploadRulesRef.getNewRulesNameAndKey(),
@@ -469,7 +481,9 @@ export default class Rules extends Vue {
 
     validate (includeIsEditing: boolean): boolean {
       // Show error in section, if no option is selected.
-      this.noOptionSelected = this.isEditing && !this.rulesInResolution && !this.rulesInUpload
+      // No options when there is no resolution on file.
+      this.noOptionSelected = this.hasResolutionOnFile
+        ? (this.isEditing && !this.rulesInResolution && !this.rulesInUpload) : false
       // Validate the form.
       let rulesValid = this.$refs.rulesForm.validate() && !this.noOptionSelected
       // If we have the rules upload, validate the file.

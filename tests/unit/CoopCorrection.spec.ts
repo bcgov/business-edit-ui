@@ -43,6 +43,13 @@ describe('Coop Correction component', () => {
       deliveryInstructions: ''
     }
   }
+  store.stateModel.entitySnapshot = {
+    resolutions: [{
+      date: '2020-02-02',
+      id: 1,
+      type: 'text'
+    }]
+  } as any
 
   beforeEach(async () => {
     // For Entity Snapshot
@@ -363,6 +370,25 @@ describe('Coop Correction component', () => {
     expect(wrapper.findComponent(Rules).exists()).toBe(true)
     expect(wrapper.findComponent(Memorandum).exists()).toBe(true)
     expect(wrapper.findComponent(Resolution).exists()).toBe(true)
+    expect(wrapper.findComponent(CompletingParty).exists()).toBe(true)
+    expect(wrapper.findComponent(Detail).exists()).toBe(true)
+    expect(wrapper.findComponent(CertifySection).exists()).toBe(true)
+    expect(wrapper.findComponent(CourtOrderPoa).exists()).toBe(true)
+    expect(wrapper.findComponent(StaffPayment).exists()).toBe(true)
+  })
+
+  it('not loads resolution when it has no resolution on file', async () => {
+    store.stateModel.entitySnapshot.resolutions = []
+    await wrapper.vm.$nextTick()
+    expect(wrapper.findComponent(YourCompanyWrapper).exists()).toBe(true)
+    expect(wrapper.findComponent(EntityName).exists()).toBe(true)
+    expect(wrapper.findComponent(AssociationType).exists()).toBe(true)
+    expect(wrapper.findComponent(RecognitionDateTime).exists()).toBe(true)
+    expect(wrapper.findComponent(OfficeAddresses).exists()).toBe(true)
+    expect(wrapper.findComponent(BusinessContactInfo).exists()).toBe(true)
+    expect(wrapper.findComponent(Rules).exists()).toBe(true)
+    expect(wrapper.findComponent(Memorandum).exists()).toBe(true)
+    expect(wrapper.findComponent(Resolution).exists()).toBe(false)
     expect(wrapper.findComponent(CompletingParty).exists()).toBe(true)
     expect(wrapper.findComponent(Detail).exists()).toBe(true)
     expect(wrapper.findComponent(CertifySection).exists()).toBe(true)

@@ -17,7 +17,13 @@ describe('Rules', () => {
 
   beforeEach(async () => {
     store.stateModel.rules = {}
-    store.stateModel.entitySnapshot = null
+    store.stateModel.entitySnapshot = {
+      resolutions: [{
+        date: '2020-02-02',
+        id: 1,
+        type: 'text'
+      }]
+    } as any
     wrapper = mount(Rules, { vuetify })
   })
 

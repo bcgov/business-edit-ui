@@ -103,6 +103,7 @@
                 class="pt-0 section-container"
               >
                 <v-checkbox
+                  v-if="hasResolutionOnFile"
                   id="chk-memorandum-in-resolution"
                   v-model="memorandumInResolution"
                   hide-details
@@ -117,8 +118,18 @@
                     </span>
                   </template>
                 </v-checkbox>
+                <span
+                  v-if="!hasResolutionOnFile"
+                  class="black-bold-font"
+                >
+                  Upload a new full set of the memorandum PDF document
+                </span>
+                <v-spacer class="spacer" />
+                <UploadRules
+                  v-if="!hasResolutionOnFile"
+                  ref="uploadMemorandumRef"
+                />
               </div>
-
               <v-row
                 v-if="isEditing"
                 id="memorandum-confirmation-buttons"
@@ -260,12 +271,14 @@ import DateUtilities from '@/services/date-utilities'
 import { FormIF } from '@bcrs-shared-components/interfaces'
 import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
+import UploadRules from './UploadRules.vue'
 import { useStore } from '@/store/store'
 import { LegalServices } from '@/services'
 
 @Component({
   components: {
-    HelpSection
+    HelpSection,
+    UploadRules
   }
 })
 export default class Memorandum extends Vue {
@@ -275,6 +288,7 @@ export default class Memorandum extends Vue {
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getSpecialResolutionMemorandum!: RulesMemorandumIF
   @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
+  @Getter(useStore) hasResolutionOnFile!: boolean
 
   @Action(useStore) setEditingMemorandum!: (x: boolean) => void
   @Action(useStore) setSpecialResolutionMemorandumValid!: (x: boolean) => void
@@ -282,6 +296,7 @@ export default class Memorandum extends Vue {
 
   $refs!: {
     memorandumForm: FormIF
+    uploadMemorandumRef: FormIF
   }
 
   hasChanged = false
@@ -333,29 +348,54 @@ export default class Memorandum extends Vue {
     })
   }
 
+  /** Initial memorandum for the business, this is loaded in when undo or cancel is pressed. */
+  initialMemorandum (): RulesMemorandumIF {
+    const documentsInfo = this.getEntitySnapshot?.businessDocuments?.documentsInfo
+    const documents = this.getEntitySnapshot?.businessDocuments?.documents
+    return {
+      includedInResolution: false,
+      key: documentsInfo?.certifiedMemorandum?.key || null,
+      name: documentsInfo?.certifiedMemorandum?.name,
+      previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
+      uploaded: documentsInfo?.certifiedMemorandum?.uploaded,
+      url: documents?.certifiedMemorandum
+    }
+  }
+
   resetMemorandum (): void {
     this.hasChanged = false
     this.isEditing = false
     this.setSpecialResolutionMemorandum({
-      ...this.getSpecialResolutionMemorandum,
-      includedInResolution: false
+      ...this.initialMemorandum()
     })
   }
 
-  saveMemorandum (): void {
+  async saveMemorandum (): Promise<void> {
     if (this.validate(false)) {
       this.hasChanged = true
       this.isEditing = false
-      this.setSpecialResolutionMemorandum({
-        ...this.getSpecialResolutionMemorandum,
-        includedInResolution: true
-      })
+      let memorandum = this.getSpecialResolutionMemorandum
+      if (!this.hasResolutionOnFile) {
+        memorandum = {
+          ...memorandum,
+          ...this.$refs.uploadMemorandumRef.getNewRulesNameAndKey(),
+          includedInResolution: false,
+          uploaded: DateUtilities.dateToApi(new Date()),
+          url: null // No URL, because we can't currently re-download drafts securely from Minio.
+        }
+      } else {
+        memorandum = {
+          ...this.getSpecialResolutionMemorandum,
+          includedInResolution: true
+        }
+      }
+      await this.setSpecialResolutionMemorandum(memorandum)
     }
   }
 
   validate (includeIsEditing: boolean): boolean {
     // This validates the checkbox.
-    let memorandumValid = this.$refs.memorandumForm.validate()
+    let memorandumValid = this.$refs.memorandumForm.validate() || !this.hasResolutionOnFile
     if (includeIsEditing) {
       memorandumValid = memorandumValid && !this.isEditing
     }
