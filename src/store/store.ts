@@ -918,6 +918,11 @@ export const useStore = defineStore('store', {
       return this.getEntitySnapshot?.addresses
     },
 
+    /** Check if the original filing includes resolutions. */
+    hasResolutionOnFile (): boolean {
+      return this.getEntitySnapshot?.resolutions.length > 0
+    },
+
     /** True if (registered) mailing address has changed. */
     hasMailingChanged (): boolean {
       if (
@@ -1291,7 +1296,9 @@ export const useStore = defineStore('store', {
     },
 
     hasSpecialResolutionMemorandumChanged (): boolean {
-      return this.getSpecialResolutionMemorandum?.includedInResolution
+      return this.getSpecialResolutionMemorandum?.includedInResolution ||
+        (this.getSpecialResolutionMemorandum?.key || null) !==
+        (this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedMemorandum?.key || null)
     },
 
     hasSpecialResolutionRulesChanged (): boolean {
@@ -1302,6 +1309,9 @@ export const useStore = defineStore('store', {
 
     // Grab the latest resolution from the entity snapshot.
     getLatestResolutionForBusiness (): SpecialResolutionIF {
+      if (!this.hasResolutionOnFile) {
+        return {}
+      }
       // Obtain latest resolution ID. Assumes that the latest resolution is the one to be corrected.
       const latestResolution = this.getEntitySnapshot.resolutions
         .reduce((prev, current) => (prev.id > current.id) ? prev : current)
