@@ -108,6 +108,7 @@ describe('Correction Filing', () => {
           rulesFileKey: undefined,
           rulesFileName: undefined,
           rulesUploadedOn: undefined,
+          memorandumloadedOn: undefined,
           rulesInResolution: true,
           memorandumInResolution: true
         },
