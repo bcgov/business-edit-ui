@@ -1297,8 +1297,8 @@ export const useStore = defineStore('store', {
 
     hasSpecialResolutionMemorandumChanged (): boolean {
       return this.getSpecialResolutionMemorandum?.includedInResolution ||
-      (this.getSpecialResolutionMemorandum?.key || null) !==
-      (this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedMemorandum?.key || null)
+        (this.getSpecialResolutionMemorandum?.key || null) !==
+        (this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedMemorandum?.key || null)
     },
 
     hasSpecialResolutionRulesChanged (): boolean {
