@@ -125,7 +125,7 @@
                   Upload a new full set of the memorandum PDF document
                 </span>
                 <v-spacer class="spacer" />
-                <UploadRules
+                <UploadRulesOrMemorandum
                   v-if="!hasResolutionOnFile"
                   ref="uploadMemorandumRef"
                 />
@@ -271,14 +271,14 @@ import DateUtilities from '@/services/date-utilities'
 import { FormIF } from '@bcrs-shared-components/interfaces'
 import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import UploadRules from './UploadRules.vue'
+import UploadRulesOrMemorandum from './UploadRulesOrMemorandum.vue'
 import { useStore } from '@/store/store'
 import { LegalServices } from '@/services'
 
 @Component({
   components: {
     HelpSection,
-    UploadRules
+    UploadRulesOrMemorandum
   }
 })
 export default class Memorandum extends Vue {

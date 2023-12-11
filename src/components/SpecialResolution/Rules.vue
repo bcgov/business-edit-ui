@@ -158,7 +158,7 @@
                         {{ uploadDropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}
                       </v-icon>
                     </v-btn>
-                    <UploadRules
+                    <UploadRulesOrMemorandum
                       v-if="uploadDropdown || !hasResolutionOnFile"
                       ref="uploadRulesRef"
                       :invalidSection="rulesEditingInvalid"
@@ -349,14 +349,14 @@ import DateUtilities from '@/services/date-utilities'
 import { FormIF } from '@bcrs-shared-components/interfaces'
 import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import UploadRules from './UploadRules.vue'
+import UploadRulesOrMemorandum from './UploadRulesOrMemorandum.vue'
 import { useStore } from '@/store/store'
 import { LegalServices } from '@/services'
 
 @Component({
   components: {
     HelpSection,
-    UploadRules
+    UploadRulesOrMemorandum
   }
 })
 export default class Rules extends Vue {

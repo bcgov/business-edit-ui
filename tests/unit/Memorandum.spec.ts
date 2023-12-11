@@ -4,7 +4,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { mount } from '@vue/test-utils'
 import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
-import UploadRules from '@/components/SpecialResolution/UploadRules.vue'
+import UploadRulesOrMemorandum from '@/components/SpecialResolution/UploadRulesOrMemorandum.vue'
 import flushPromises from 'flush-promises'
 
 const vuetify = new Vuetify({})
@@ -116,7 +116,7 @@ describe('Memorandum', () => {
     store.stateModel.entitySnapshot.resolutions = []
     await wrapper.vm.$nextTick()
     await wrapper.find('#btn-change-memorandum').trigger('click')
-    const uploadRules = wrapper.findComponent(UploadRules)
+    const uploadRules = wrapper.findComponent(UploadRulesOrMemorandum)
     expect(uploadRules.exists()).toBe(true)
     uploadRules.vm.file = {
       name: 'test-new-file'
