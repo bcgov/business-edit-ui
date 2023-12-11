@@ -4,6 +4,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { mount } from '@vue/test-utils'
 import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
+import UploadRulesOrMemorandum from '@/components/SpecialResolution/UploadRulesOrMemorandum.vue'
 import flushPromises from 'flush-promises'
 
 const vuetify = new Vuetify({})
@@ -16,7 +17,13 @@ describe('Memorandum', () => {
 
   beforeEach(async () => {
     store.stateModel.memorandum = {}
-    store.stateModel.entitySnapshot = null
+    store.stateModel.entitySnapshot = {
+      resolutions: [{
+        date: '2020-02-02',
+        id: 1,
+        type: 'text'
+      }]
+    } as any
     wrapper = mount(Memorandum, { vuetify })
   })
 
@@ -103,5 +110,25 @@ describe('Memorandum', () => {
     expect(wrapper.find('#memorandum-section').classes()).toContain('invalid-section')
     expect(wrapper.find('#memorandum-title').classes()).toContain('error-text')
     expect(wrapper.find('#memorandum-in-resolution-text').classes()).toContain('error-text')
+  })
+
+  it('saveMemorandum - valid - memorandum in upload', async () => {
+    store.stateModel.entitySnapshot.resolutions = []
+    await wrapper.vm.$nextTick()
+    await wrapper.find('#btn-change-memorandum').trigger('click')
+    const uploadRules = wrapper.findComponent(UploadRulesOrMemorandum)
+    expect(uploadRules.exists()).toBe(true)
+    uploadRules.vm.file = {
+      name: 'test-new-file'
+    }
+    uploadRules.vm.fileKey = 'test-new-file'
+    // Mock out the PDF file upload validation. There are unit tests in business-filings-ui.
+    vi.spyOn(uploadRules.vm, 'validate').mockImplementation(() => true)
+    await wrapper.find('#btn-memorandum-done').trigger('click')
+    expect(wrapper.vm.isEditing).toBe(false)
+    expect(wrapper.vm.hasChanged).toBe(true)
+    expect(store.stateModel.memorandum.includedInResolution).toBe(false)
+    expect(store.stateModel.memorandum.key).toBe('test-new-file')
+    expect(store.stateModel.memorandum.name).toBe('test-new-file')
   })
 })
