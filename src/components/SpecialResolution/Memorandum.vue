@@ -103,7 +103,7 @@
                 class="pt-0 section-container"
               >
                 <v-checkbox
-                  v-if="hasResolutionOnFile"
+                  v-if="hasResolutionSection"
                   id="chk-memorandum-in-resolution"
                   v-model="memorandumInResolution"
                   hide-details
@@ -119,14 +119,14 @@
                   </template>
                 </v-checkbox>
                 <span
-                  v-if="!hasResolutionOnFile"
+                  v-if="!hasResolutionSection"
                   class="black-bold-font"
                 >
                   Upload a new full set of the memorandum PDF document
                 </span>
                 <v-spacer class="spacer" />
                 <UploadRulesOrMemorandum
-                  v-if="!hasResolutionOnFile"
+                  v-if="!hasResolutionSection"
                   ref="uploadMemorandumRef"
                 />
               </div>
@@ -288,7 +288,7 @@ export default class Memorandum extends Vue {
   @Getter(useStore) getEntitySnapshot!: EntitySnapshotIF
   @Getter(useStore) getSpecialResolutionMemorandum!: RulesMemorandumIF
   @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
-  @Getter(useStore) hasResolutionOnFile!: boolean
+  @Getter(useStore) hasResolutionSection!: boolean
 
   @Action(useStore) setEditingMemorandum!: (x: boolean) => void
   @Action(useStore) setSpecialResolutionMemorandumValid!: (x: boolean) => void
@@ -375,7 +375,7 @@ export default class Memorandum extends Vue {
       this.hasChanged = true
       this.isEditing = false
       let memorandum = this.getSpecialResolutionMemorandum
-      if (!this.hasResolutionOnFile) {
+      if (!this.hasResolutionSection) {
         memorandum = {
           ...memorandum,
           ...this.$refs.uploadMemorandumRef.getNewRulesNameAndKey(),
@@ -395,7 +395,7 @@ export default class Memorandum extends Vue {
 
   validate (includeIsEditing: boolean): boolean {
     // This validates the checkbox.
-    let memorandumValid = this.$refs.memorandumForm.validate() || !this.hasResolutionOnFile
+    let memorandumValid = this.$refs.memorandumForm.validate() || !this.hasResolutionSection
     if (includeIsEditing) {
       memorandumValid = memorandumValid && !this.isEditing
     }
