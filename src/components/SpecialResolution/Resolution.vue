@@ -5,59 +5,64 @@
     flat
   >
     <!-- Header -->
-    <article class="header-container section-container">
+    <div class="section-container header-container">
       <v-icon color="appDkBlue">
         mdi-handshake
       </v-icon>
       <label class="font-weight-bold pl-2">Special Resolution</label>
-    </article>
-    <v-card
+    </div>
+    <v-form
+      ref="resolutionTextForm"
       flat
       :class="{'invalid-section':
         isCoopCorrectionFiling ?
           (invalidResolutionSection && requireCorrectionCheck) :
           invalidResolutionSection}"
     >
-      <v-row
-        class="section-container pr-0"
+      <div
+        class="section-container"
       >
-        <v-col
-          cols="auto"
+        <v-row
+          no-gutters
         >
-          <v-checkbox
-            v-if="requireCorrectionCheck && isCoopCorrectionFiling"
-            id="resolution-text-not-require-chkbx"
-            class="inherit-checkbox"
-            label="Correction to the special resolution text is not required."
-            hide-details
-            @change="onResolutionCorrectionChk"
-          />
-          <v-label
-            v-if="!requireCorrectionCheck && isCoopCorrectionFiling"
+          <v-col
+            cols="auto"
           >
-            Correction to the special resolution text is not required.
-          </v-label>
-        </v-col>
-        <v-col
-          cols="auto"
-          class="ml-auto mt-n1"
-        >
-          <!-- Column for the button -->
-          <v-btn
-            v-if="!requireCorrectionCheck && isCoopCorrectionFiling"
-            id="btn-resolution-correction-undo"
-            text
-            color="primary"
-            class="undo-action"
-            @click="requireCorrectionCheck = !requireCorrectionCheck"
+            <v-checkbox
+              v-if="requireCorrectionCheck && isCoopCorrectionFiling"
+              id="resolution-text-not-require-chkbx"
+              class="inherit-checkbox"
+              label="Correction to the special resolution text is not required."
+              hide-details
+              @change="onResolutionCorrectionChk"
+            />
+            <v-label
+              v-if="!requireCorrectionCheck && isCoopCorrectionFiling"
+            >
+              Correction to the special resolution text is not required.
+            </v-label>
+          </v-col>
+          <v-col
+            cols="1"
+            class="pt-0 mt-n2 align-right"
           >
-            <v-icon small>
-              mdi-undo
-            </v-icon>
-            <span>Undo</span>
-          </v-btn>
-        </v-col>
-      </v-row>
+            <div class="actions mr-4">
+              <v-btn
+                v-if="!requireCorrectionCheck && isCoopCorrectionFiling"
+                id="btn-resolution-correction-undo"
+                text
+                color="primary"
+                @click="requireCorrectionCheck = !requireCorrectionCheck"
+              >
+                <v-icon small>
+                  mdi-undo
+                </v-icon>
+                <span>Undo</span>
+              </v-btn>
+            </div>
+          </v-col>
+        </v-row>
+      </div>
 
       <InstructionalText v-if="shouldDisplayResolution" />
 
@@ -209,7 +214,7 @@
           </div>
         </v-form>
       </section>
-    </v-card>
+    </v-form>
   </v-card>
 </template>
 

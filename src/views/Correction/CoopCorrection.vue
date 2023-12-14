@@ -36,7 +36,7 @@
     <Memorandum class="mt-10" />
 
     <Resolution
-      v-if="hasResolutionOnFile"
+      v-if="hasResolutionSection"
       class="mt-10"
     />
 
@@ -124,7 +124,7 @@ export default class CoopCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
   // Global getters
   @Getter(useStore) isPartnership!: boolean
   @Getter(useStore) isSoleProp!: boolean
-  @Getter(useStore) hasResolutionOnFile!: boolean
+  @Getter(useStore) hasResolutionSection!: boolean
 
   // Global actions
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void

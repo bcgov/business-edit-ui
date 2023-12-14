@@ -6,6 +6,7 @@ import { mount } from '@vue/test-utils'
 import Memorandum from '@/components/SpecialResolution/Memorandum.vue'
 import UploadRulesOrMemorandum from '@/components/SpecialResolution/UploadRulesOrMemorandum.vue'
 import flushPromises from 'flush-promises'
+import { CorpTypeCd, FilingTypes } from '@/enums'
 
 const vuetify = new Vuetify({})
 
@@ -113,7 +114,9 @@ describe('Memorandum', () => {
   })
 
   it('saveMemorandum - valid - memorandum in upload', async () => {
-    store.stateModel.entitySnapshot.resolutions = []
+    store.stateModel.entitySnapshot.resolutions = null
+    store.stateModel.tombstone.entityType = CorpTypeCd.COOP
+    store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
     await wrapper.vm.$nextTick()
     await wrapper.find('#btn-change-memorandum').trigger('click')
     const uploadRules = wrapper.findComponent(UploadRulesOrMemorandum)

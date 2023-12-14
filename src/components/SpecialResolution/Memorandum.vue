@@ -103,7 +103,7 @@
                 class="pt-0 section-container"
               >
                 <v-checkbox
-                  v-if="hasResolutionOnFile"
+                  v-if="hasResolutionSection"
                   id="chk-memorandum-in-resolution"
                   v-model="memorandumInResolution"
                   hide-details
@@ -119,14 +119,14 @@
                   </template>
                 </v-checkbox>
                 <span
-                  v-if="!hasResolutionOnFile"
+                  v-if="!hasResolutionSection"
                   class="black-bold-font"
                 >
                   Upload a new full set of the memorandum PDF document
                 </span>
                 <v-spacer class="spacer" />
                 <UploadRulesOrMemorandum
-                  v-if="!hasResolutionOnFile"
+                  v-if="!hasResolutionSection"
                   ref="uploadMemorandumRef"
                 />
               </div>
@@ -168,7 +168,6 @@
               >
                 <div
                   v-if="getSpecialResolutionMemorandum && getSpecialResolutionMemorandum.key"
-                  :key="getSpecialResolutionMemorandum.key"
                 >
                   <v-icon
                     color="primary"
@@ -179,7 +178,9 @@
 
                   <!-- New Memorandum -->
                   <a
+                    :key="getSpecialResolutionMemorandum.key"
                     class="ml-1"
+                    :class=" {'dropdown-active': (!getSpecialResolutionMemorandum.url)}"
                     download
                     @click="openPdf()"
                   >
@@ -203,11 +204,13 @@
                   {{ lastUploadedDetails }}
                 </span>
                 <v-icon
+                  v-if="hasResolutionSection"
                   color="green darken-2"
                 >
                   mdi-check
                 </v-icon>
                 <span
+                  v-if="hasResolutionSection"
                   id="memorandum-changes-included-resolution"
                   class="ml-1 d-inline-block info-text"
                 >
@@ -287,7 +290,7 @@ export default class Memorandum extends Vue {
   @Getter(useStore) getEditLabel!: string
   @Getter(useStore) getSpecialResolutionMemorandum!: RulesMemorandumIF
   @Getter(useStore) hasSpecialResolutionMemorandumChanged!: boolean
-  @Getter(useStore) hasResolutionOnFile!: boolean
+  @Getter(useStore) hasResolutionSection!: boolean
 
   @Action(useStore) setEditingMemorandum!: (x: boolean) => void
   @Action(useStore) setSpecialResolutionMemorandumValid!: (x: boolean) => void
@@ -374,7 +377,7 @@ export default class Memorandum extends Vue {
       this.hasChanged = true
       this.isEditing = false
       let memorandum = this.getSpecialResolutionMemorandum
-      if (!this.hasResolutionOnFile) {
+      if (!this.hasResolutionSection) {
         memorandum = {
           ...memorandum,
           ...this.$refs.uploadMemorandumRef.getNewRulesNameAndKey(),
@@ -394,7 +397,7 @@ export default class Memorandum extends Vue {
 
   validate (includeIsEditing: boolean): boolean {
     // This validates the checkbox.
-    let memorandumValid = this.$refs.memorandumForm.validate() || !this.hasResolutionOnFile
+    let memorandumValid = this.$refs.memorandumForm.validate() || !this.hasResolutionSection
     if (includeIsEditing) {
       memorandumValid = memorandumValid && !this.isEditing
     }
@@ -447,6 +450,10 @@ ul {
 
 .section-container {
   color: black;
+}
+
+.dropdown-active {
+  color: rgba(0,0,0,.87) !important; cursor: auto;
 }
 
 .last-modified-details {
