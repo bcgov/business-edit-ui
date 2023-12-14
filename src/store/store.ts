@@ -920,7 +920,12 @@ export const useStore = defineStore('store', {
 
     /** Check if the original filing includes resolutions. */
     hasResolutionOnFile (): boolean {
-      return this.getEntitySnapshot?.resolutions.length > 0
+      return this.getEntitySnapshot?.resolutions?.length > 0
+    },
+
+    /** Display resolution text section when a correction filing has existing resolution or not correction filing. */
+    hasResolutionSection (): boolean {
+      return this.hasResolutionOnFile || !this.isCoopCorrectionFiling
     },
 
     /** True if (registered) mailing address has changed. */
