@@ -139,6 +139,7 @@
                   />
                   <section :class="{'section-container': hasResolutionSection}">
                     <v-btn
+                      v-if="hasResolutionSection"
                       id="btn-upload-rules"
                       text
                       block
@@ -149,7 +150,7 @@
                               describeDropdown = false; uploadDropdown = !uploadDropdown"
                     >
                       <span
-                        :class="{'black-bold-font' : uploadDropdown || !hasResolutionSection}"
+                        :class="{'black-bold-font' : uploadDropdown}"
                       >
                         Upload a new full set of the rules PDF document
                       </span>
@@ -158,6 +159,9 @@
                         {{ uploadDropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}
                       </v-icon>
                     </v-btn>
+                    <span v-else>
+                      Upload a new full set of the rules PDF document
+                    </span>
                     <UploadRulesOrMemorandum
                       v-if="uploadDropdown || !hasResolutionSection"
                       ref="uploadRulesRef"
@@ -251,6 +255,7 @@
                     >
                       mdi-file-pdf-outline
                     </v-icon>
+                    <!-- New Rule -->
                     <a
                       v-if="getSpecialResolutionRules && getSpecialResolutionRules.key"
                       :key="getSpecialResolutionRules.key"

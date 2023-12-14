@@ -168,7 +168,6 @@
               >
                 <div
                   v-if="getSpecialResolutionMemorandum && getSpecialResolutionMemorandum.key"
-                  :key="getSpecialResolutionMemorandum.key"
                 >
                   <v-icon
                     color="primary"
@@ -179,9 +178,11 @@
 
                   <!-- New Memorandum -->
                   <a
+                    :key="getSpecialResolutionMemorandum.key"
                     class="ml-1"
                     download
                     @click="openPdf()"
+                    :class=" {'dropdown-active': (!getSpecialResolutionMemorandum.url)}"
                   >
                     {{ getSpecialResolutionMemorandum.name }}
                   </a>
@@ -203,11 +204,13 @@
                   {{ lastUploadedDetails }}
                 </span>
                 <v-icon
+                  v-if="hasResolutionSection"
                   color="green darken-2"
                 >
                   mdi-check
                 </v-icon>
                 <span
+                  v-if="hasResolutionSection"
                   id="memorandum-changes-included-resolution"
                   class="ml-1 d-inline-block info-text"
                 >
@@ -448,6 +451,10 @@ ul {
 
 .section-container {
   color: black;
+}
+
+.dropdown-active {
+  color: rgba(0,0,0,.87) !important; cursor: auto;
 }
 
 .last-modified-details {
