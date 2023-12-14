@@ -180,9 +180,9 @@
                   <a
                     :key="getSpecialResolutionMemorandum.key"
                     class="ml-1"
+                    :class=" {'dropdown-active': (!getSpecialResolutionMemorandum.url)}"
                     download
                     @click="openPdf()"
-                    :class=" {'dropdown-active': (!getSpecialResolutionMemorandum.url)}"
                   >
                     {{ getSpecialResolutionMemorandum.name }}
                   </a>
