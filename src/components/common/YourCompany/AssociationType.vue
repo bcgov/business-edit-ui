@@ -215,7 +215,7 @@ export default class AssociationType extends Mixins(CommonMixin) {
 
   /** The section validity state (when prompted by app). */
   get invalidSection (): boolean {
-    return (this.getComponentValidate && this.isEditingAssociationType)
+    return this.getComponentValidate && (this.isEditingAssociationType || !this.getAssociationType)
   }
 
   get associationDescription (): string {
@@ -236,6 +236,7 @@ export default class AssociationType extends Mixins(CommonMixin) {
   /** Reset association type value to original */
   resetAssociationType () {
     this.setBusinessInformation(this.getEntitySnapshot.businessInfo)
+    this.onComponentValidateChanged()
     this.isEditingAssociationType = false
   }
 
@@ -248,10 +249,17 @@ export default class AssociationType extends Mixins(CommonMixin) {
   /** Updates store initially and when isEditingAssociationType property has changed. */
   @Watch('isEditingAssociationType', { immediate: true })
   onEditingAssociationTypeChanged (): void {
-    const isValid = !this.isEditingAssociationType
+    const isValid = !this.isEditingAssociationType && !!this.getAssociationType
     this.setValidComponent({ key: 'isValidAssociationType', value: isValid })
     /* Used for isCorrectionEditing */
     this.setEditingAssociationType(this.isEditingAssociationType)
+  }
+
+  /** Used to trigger validate from outside of component. */
+  @Watch('getComponentValidate')
+  onComponentValidateChanged (): void {
+    const isValid = !!this.getAssociationType
+    this.setValidComponent({ key: 'isValidAssociationType', value: isValid })
   }
 }
 </script>
