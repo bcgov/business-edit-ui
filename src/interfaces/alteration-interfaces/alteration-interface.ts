@@ -13,6 +13,7 @@ export interface CoopAlterationIF {
   memorandumInResolution?: boolean
   memorandumFileKey?: string
   memorandumFileName?: string
+  memorandumloadedOn?: string
   rulesFileKey?: string
   rulesFileName?: string
   rulesInResolution?: boolean

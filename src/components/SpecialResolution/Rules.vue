@@ -89,13 +89,18 @@
                 </div>
                 <div v-else>
                   <div
+                    v-if="hasResolutionSection"
                     class="pt-0 instructional-text section-container"
                     :class="{'error-text': rulesEditingInvalid}"
                   >
                     You can update the rules of association in one of the following ways:
                   </div>
-                  <v-divider class="mx-8" />
+                  <v-divider
+                    v-if="hasResolutionSection"
+                    class="mx-8"
+                  />
                   <section
+                    v-if="hasResolutionSection"
                     class="py-4 section-container"
                   >
                     <v-btn
@@ -128,11 +133,13 @@
                       </template>
                     </v-checkbox>
                   </section>
-                  <v-divider class="mx-8" />
-                  <section
-                    class="section-container"
-                  >
+                  <v-divider
+                    v-if="hasResolutionSection"
+                    class="mx-8"
+                  />
+                  <section :class="{'section-container': hasResolutionSection}">
                     <v-btn
+                      v-if="hasResolutionSection"
                       id="btn-upload-rules"
                       text
                       block
@@ -148,10 +155,15 @@
                         Upload a new full set of the rules PDF document
                       </span>
                       <v-spacer class="spacer" />
-                      <v-icon>{{ uploadDropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}</v-icon>
+                      <v-icon v-if="hasResolutionSection">
+                        {{ uploadDropdown ? 'mdi-menu-up' : 'mdi-menu-down' }}
+                      </v-icon>
                     </v-btn>
-                    <UploadRules
-                      v-if="uploadDropdown"
+                    <span v-else>
+                      Upload a new full set of the rules PDF document
+                    </span>
+                    <UploadRulesOrMemorandum
+                      v-if="uploadDropdown || !hasResolutionSection"
                       ref="uploadRulesRef"
                       :invalidSection="rulesEditingInvalid"
                     />
@@ -189,7 +201,10 @@
                       </header>
                     </v-expand-transition>
                   </section>
-                  <v-divider class="mx-8" />
+                  <v-divider
+                    v-if="hasResolutionSection"
+                    class="mx-8"
+                  />
 
                   <v-row
                     id="rules-confirmation-buttons"
@@ -240,6 +255,7 @@
                     >
                       mdi-file-pdf-outline
                     </v-icon>
+                    <!-- New Rule -->
                     <a
                       v-if="getSpecialResolutionRules && getSpecialResolutionRules.key"
                       :key="getSpecialResolutionRules.key"
@@ -338,14 +354,14 @@ import DateUtilities from '@/services/date-utilities'
 import { FormIF } from '@bcrs-shared-components/interfaces'
 import { Component, Watch } from 'vue-property-decorator'
 import { Action, Getter } from 'pinia-class'
-import UploadRules from './UploadRules.vue'
+import UploadRulesOrMemorandum from './UploadRulesOrMemorandum.vue'
 import { useStore } from '@/store/store'
 import { LegalServices } from '@/services'
 
 @Component({
   components: {
     HelpSection,
-    UploadRules
+    UploadRulesOrMemorandum
   }
 })
 export default class Rules extends Vue {
@@ -359,6 +375,7 @@ export default class Rules extends Vue {
     @Getter(useStore) getSpecialResolutionRulesValid!: boolean
     @Getter(useStore) getNameRequestLegalName!: string
     @Getter(useStore) hasSpecialResolutionRulesChanged!: boolean
+    @Getter(useStore) hasResolutionSection!: boolean
 
     @Action(useStore) setEditingRules!: (x: boolean) => void
     @Action(useStore) setSpecialResolutionRules!: (x: RulesMemorandumIF) => void
@@ -449,7 +466,7 @@ export default class Rules extends Vue {
         this.hasChanged = true
         this.isEditing = false
         let rules = this.getSpecialResolutionRules
-        if (this.uploadDropdown) {
+        if (this.uploadDropdown || !this.hasResolutionSection) {
           rules = {
             ...rules,
             ...this.$refs.uploadRulesRef.getNewRulesNameAndKey(),
@@ -469,7 +486,9 @@ export default class Rules extends Vue {
 
     validate (includeIsEditing: boolean): boolean {
       // Show error in section, if no option is selected.
-      this.noOptionSelected = this.isEditing && !this.rulesInResolution && !this.rulesInUpload
+      // No options when there is no resolution on file.
+      this.noOptionSelected = this.hasResolutionSection
+        ? (this.isEditing && !this.rulesInResolution && !this.rulesInUpload) : false
       // Validate the form.
       let rulesValid = this.$refs.rulesForm.validate() && !this.noOptionSelected
       // If we have the rules upload, validate the file.

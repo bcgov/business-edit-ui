@@ -27,6 +27,7 @@
         >
           <DatePickerShared
             v-show="isEditing"
+            :key="datePickerKey"
             ref="resolutionDatePickerRef"
             title="Resolution Date"
             :nudgeRight="40"
@@ -114,7 +115,7 @@
           </div>
           <div
             v-else
-            v-sanitize="getSpecialResolution.resolution"
+            v-sanitize.basic="resolution"
             class="resizable info-text"
           />
         </v-col>
@@ -166,7 +167,7 @@ export default class ResolutionEditor extends Vue {
 
   @Action(useStore) setSpecialResolution!: (x: SpecialResolutionIF) => void
   @Action(useStore) setSpecialResolutionValid!: (x: boolean) => void
-
+  @Getter(useStore) isSpecialResolutionFiling: boolean
   @Prop({ default: false }) readonly isEditing!: boolean
 
   $refs!: {
@@ -179,6 +180,7 @@ export default class ResolutionEditor extends Vue {
   resolutionDateTextOriginal = '' // for undo for corrections.
   isResolutionhasData = true // for resolution error text
   isResolutionDateValid = true // for resolution error text
+  datePickerKey = 0 // for undo for corrections.
 
   extensions = [
     History,
@@ -285,21 +287,15 @@ export default class ResolutionEditor extends Vue {
 
   /* Undo event called from parent via ref. */
   async undoToStore (): Promise<void> {
-    this.resolution = this.resolutionOriginal
-    this.resolutionDateText = this.resolutionDateTextOriginal
+    this.resolution = ''
+    this.resolutionDateText = ''
     this.emitDate(this.resolutionDateText)
+    this.datePickerKey++
     await this.setSpecialResolution({
       ...this.getSpecialResolution,
-      resolutionDate: this.resolutionDateText,
-      resolution: this.resolution
+      resolutionDate: this.resolutionDateTextOriginal,
+      resolution: this.resolutionOriginal
     })
-  }
-
-  @Watch('isEditing')
-  onIsEditingChange (val: boolean): void {
-    if (!val) return
-    this.resolutionOriginal = this.resolution
-    this.resolutionDateTextOriginal = this.resolutionDateText
   }
 
   @Watch('resolution')
@@ -314,10 +310,12 @@ export default class ResolutionEditor extends Vue {
   * Note: The data is loaded before the component is created.
   */
   created () {
-    this.resolution = this.getSpecialResolution.resolution || ''
-    this.resolutionDateText = this.getSpecialResolution.resolutionDate || ''
-    this.resolutionOriginal = this.resolution
-    this.resolutionDateTextOriginal = this.resolutionDateText
+    if (this.isSpecialResolutionFiling) {
+      this.resolution = this.getSpecialResolution.resolution || ''
+      this.resolutionDateText = this.getSpecialResolution.resolutionDate || ''
+    }
+    this.resolutionOriginal = this.getSpecialResolution.resolution
+    this.resolutionDateTextOriginal = this.getSpecialResolution.resolutionDate
   }
 
   /** Used to trigger validate from outside of component. */

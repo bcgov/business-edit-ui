@@ -1672,8 +1672,19 @@ export default class FilingTemplateMixin extends DateMixin {
         })
     }
 
-    if (filingInformation?.memorandumInResolution) {
-      // Scenario 1 - From draft - Memorandum is in the resolution.
+    if (filingInformation?.memorandumFileKey) {
+      // Scenario 1 - From draft, memorandum are uploaded in the draft.
+      this.setSpecialResolutionMemorandum(
+        {
+          name: filingInformation.memorandumFileName,
+          key: filingInformation.memorandumFileKey,
+          url: null, // no url for drafts, this is intentional.
+          includedInResolution: false,
+          previouslyInResolution: documentsInfo?.certifiedMemorandum?.includedInResolution,
+          uploaded: filingInformation.memorandumloadedOn
+        })
+    } else if (filingInformation?.memorandumInResolution) {
+      // Scenario 2 - From draft - Memorandum is in the resolution.
       this.setSpecialResolutionMemorandum(
         {
           name: documentsInfo?.certifiedMemorandum?.name,

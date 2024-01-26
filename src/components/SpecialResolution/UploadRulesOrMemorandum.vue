@@ -45,7 +45,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { Action, Getter } from 'pinia-class'
+import { Getter } from 'pinia-class'
 import { FormIF, RulesMemorandumIF } from '@/interfaces'
 import { PageSizes } from '@/enums/'
 import FileUploadPdf from '@/components/common/FileUploadPdf.vue'
@@ -57,11 +57,8 @@ import { LegalServices } from '@/services/'
     FileUploadPdf
   }
 })
-export default class UploadRules extends Vue {
-  @Getter(useStore) getSpecialResolutionRules!: RulesMemorandumIF
+export default class UploadRulesOrMemorandum extends Vue {
   @Getter(useStore) getUserInfo!: any
-
-  @Action(useStore) setSpecialResolutionRules!: RulesMemorandumIF
 
   @Prop({ default: false })
   readonly invalidSection: boolean

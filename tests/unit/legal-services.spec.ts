@@ -138,8 +138,8 @@ describe('Legal Services', () => {
 
   it('fetches directors correctly', async () => {
     const DIRECTORS = [
-      { appointmentDate: '2022-04-01' },
-      { appointmentDate: '2022-05-01' }
+      { appointmentDate: '2022-04-01', officer: {} },
+      { appointmentDate: '2022-05-01', officer: {} }
     ]
     const ORGPERSONS = [
       { roles: [{ appointmentDate: '2022-04-01', roleType: 'Director' }] },
@@ -160,9 +160,9 @@ describe('Legal Services', () => {
 
   it('fetches parties correctly', async () => {
     const PARTIES = [
-      { roles: [{ appointmentDate: '2022-04-01', roleType: 'Completing Party' }] },
-      { roles: [{ appointmentDate: '2022-04-01', roleType: 'Incorporator' }] },
-      { roles: [{ appointmentDate: '2022-05-01', roleType: 'Director' }] }
+      { officer: {}, roles: [{ appointmentDate: '2022-04-01', roleType: 'Completing Party' }] },
+      { officer: {}, roles: [{ appointmentDate: '2022-04-01', roleType: 'Incorporator' }] },
+      { officer: {}, roles: [{ appointmentDate: '2022-05-01', roleType: 'Director' }] }
     ]
 
     // mock endpoint
@@ -223,7 +223,7 @@ describe('Legal Services', () => {
     }
 
     // mock endpoint
-    get.withArgs('nameRequests/NR1234567')
+    get.withArgs('nameRequests/NR1234567/validate?phone=&email=')
       .returns(Promise.resolve({ data: NR }))
 
     // call method
@@ -332,7 +332,7 @@ describe('Legal Services', () => {
     await expect(LegalServices.fetchResolutions('CP1234567')).rejects.toThrow('Invalid API response')
 
     // verify fetchNameRequest with no response.data
-    get.withArgs('nameRequests/NR1234567').returns(Promise.resolve({}))
+    get.withArgs('nameRequests/NR1234567/validate?phone=&email=').returns(Promise.resolve({}))
     await expect(LegalServices.fetchNameRequest('NR1234567')).rejects.toThrow('Invalid API response')
 
     // verify fetchBusinessDocuments with no response.data

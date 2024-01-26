@@ -593,6 +593,7 @@ export const useStore = defineStore('store', {
           this.hasAssociationTypeChanged ||
           this.hasSpecialResolutionMemorandumChanged ||
           this.haveOfficeAddressesChanged ||
+          this.havePeopleAndRolesChanged ||
           this.hasSpecialResolutionRulesChanged ||
           this.hasSpecialResolutionResolutionChanged
         )
@@ -759,6 +760,7 @@ export const useStore = defineStore('store', {
           this.getFlagsCompanyInfo.isValidAddress &&
           this.getFlagsCompanyInfo.isValidAssociationType &&
           this.getFlagsCompanyInfo.isValidContactInfo &&
+          this.getFlagsCompanyInfo.isValidOrgPersons &&
           this.getFlagsCompanyInfo.isValidRules &&
           this.getFlagsCompanyInfo.isValidMemorandum &&
           this.getFlagsCompanyInfo.isValidSpecialResolution &&
@@ -931,6 +933,16 @@ export const useStore = defineStore('store', {
     /** The office addresses from the original filing. NB: may be null. */
     getOriginalOfficeAddresses (): AddressesIF {
       return this.getEntitySnapshot?.addresses || null
+    },
+
+    /** Check if the original filing includes resolutions. */
+    hasResolutionOnFile (): boolean {
+      return this.getEntitySnapshot?.resolutions?.length > 0
+    },
+
+    /** Display resolution text section when a correction filing has existing resolution or not correction filing. */
+    hasResolutionSection (): boolean {
+      return this.hasResolutionOnFile || !this.isCoopCorrectionFiling
     },
 
     /** True if (registered) mailing address has changed. */
@@ -1306,19 +1318,22 @@ export const useStore = defineStore('store', {
     },
 
     hasSpecialResolutionMemorandumChanged (): boolean {
-      return this.getSpecialResolutionMemorandum?.includedInResolution
+      return this.getSpecialResolutionMemorandum?.includedInResolution ||
+        (this.getSpecialResolutionMemorandum?.key || null) !==
+        (this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedMemorandum?.key || null)
     },
 
     hasSpecialResolutionRulesChanged (): boolean {
-      return (
-        this.getSpecialResolutionRules?.includedInResolution ||
-          (this.getSpecialResolutionRules?.key !==
-            this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key)
-      )
+      return this.getSpecialResolutionRules?.includedInResolution ||
+        (this.getSpecialResolutionRules?.key || null) !==
+        (this.getEntitySnapshot?.businessDocuments?.documentsInfo?.certifiedRules?.key || null)
     },
 
     // Grab the latest resolution from the entity snapshot.
     getLatestResolutionForBusiness (): SpecialResolutionIF {
+      if (!this.hasResolutionOnFile) {
+        return {}
+      }
       // Obtain latest resolution ID. Assumes that the latest resolution is the one to be corrected.
       const latestResolution = this.getOriginalResolutions
         .reduce((prev, current) => (prev.id > current.id) ? prev : current)

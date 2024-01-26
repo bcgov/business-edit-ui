@@ -202,6 +202,14 @@ export default class LegalServices {
         if (directors) {
           // convert director list to org-person list
           return directors.map(director => {
+            // WORK-AROUND WARNING !!!
+            // convert directors from "middleInitial" to "middleName"
+            const middleInitial = director.officer['middleInitial']
+            if (middleInitial !== undefined) {
+              director.officer.middleName = middleInitial
+              delete director.officer['middleInitial']
+            }
+
             const orgPerson: OrgPersonIF = {
               deliveryAddress: director.deliveryAddress,
               mailingAddress: director.mailingAddress,
@@ -236,7 +244,16 @@ export default class LegalServices {
       .then(response => {
         const parties = response?.data?.parties
         if (parties) {
-          return parties
+          // WORK-AROUND WARNING !!!
+          // convert parties from "middleInitial" to "middleName"
+          return parties.map(party => {
+            const middleInitial = party.officer['middleInitial']
+            if (middleInitial !== undefined) {
+              party.officer.middleName = middleInitial
+              delete party.officer['middleInitial']
+            }
+            return party
+          })
         }
         // eslint-disable-next-line no-console
         console.log('fetchParties() error - invalid response =', response)
@@ -295,10 +312,12 @@ export default class LegalServices {
   /**
    * Fetches name request data.
    * @param nrNumber the name request number (eg, NR 1234567) to fetch
+   * @param phone the name request phone (eg, 12321232)
+   * @param email the name request email (eg, nr@example.com)
    * @returns a promise to return the NR data, or null if not found
    */
-  static async fetchNameRequest (nrNumber: string): Promise<any> {
-    const url = `nameRequests/${nrNumber}`
+  static async fetchNameRequest (nrNumber: string, phone = '', email = ''): Promise<any> {
+    const url = `nameRequests/${nrNumber}/validate?phone=${phone}&email=${email}`
 
     return axios.get(url)
       .then(response => {

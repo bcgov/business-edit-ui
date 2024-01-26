@@ -29,11 +29,16 @@
       <BusinessContactInfo />
     </YourCompanyWrapper>
 
+    <PeopleAndRoles class="mt-10" />
+
     <Rules class="mt-10" />
 
     <Memorandum class="mt-10" />
 
-    <Resolution class="mt-10" />
+    <Resolution
+      v-if="hasResolutionSection"
+      class="mt-10"
+    />
 
     <CompletingParty
       v-if="isClientErrorCorrection"
@@ -64,7 +69,7 @@
 
     <StaffPayment
       class="mt-10"
-      sectionNumber="3."
+      :sectionNumber="isClientErrorCorrection ? '5.' : '3.'"
       @haveChanges="onStaffPaymentChanges()"
     />
   </section>
@@ -74,8 +79,8 @@
 import { Component, Emit, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { SpecialResolutionSummary, Resolution } from '@/components/SpecialResolution'
 import { AssociationType, BusinessContactInfo, BusinessType, CertifySection, CompletingParty, CourtOrderPoa,
-  CurrentDirectors, Detail, DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, RecognitionDateTime,
-  StaffPayment, TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
+  CurrentDirectors, Detail, DocumentsDelivery, EntityName, FolioInformation, OfficeAddresses, PeopleAndRoles,
+  RecognitionDateTime, StaffPayment, TransactionalFolioNumber, YourCompanyWrapper } from '@/components/common/'
 import { CommonMixin, DateMixin, FeeMixin, FilingTemplateMixin } from '@/mixins/'
 import ViewWrapper from '@/components/ViewWrapper.vue'
 import Rules from '@/components/SpecialResolution/Rules.vue'
@@ -104,6 +109,7 @@ import { FilingDataIF } from '@bcrs-shared-components/interfaces'
     EntityName,
     FolioInformation,
     OfficeAddresses,
+    PeopleAndRoles,
     RecognitionDateTime,
     SpecialResolutionSummary,
     StaffPayment,
@@ -118,6 +124,7 @@ export default class CoopCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
   // Global getters
   @Getter(useStore) isPartnership!: boolean
   @Getter(useStore) isSoleProp!: boolean
+  @Getter(useStore) hasResolutionSection!: boolean
 
   // Global actions
   @Action(useStore) setHaveUnsavedChanges!: (x: boolean) => void
@@ -165,8 +172,8 @@ export default class CoopCorrection extends Mixins(CommonMixin, DateMixin, FeeMi
       }
       this.setFilingData(filingData)
 
-      // pre-select No Fee option
-      this.setStaffPayment({ option: StaffPaymentOptions.NO_FEE })
+      // pre-select FAS, this will display a dollar amount in the fee summary.
+      this.setStaffPayment({ option: StaffPaymentOptions.FAS })
 
       // tell App that we're finished loading
       this.emitHaveData()

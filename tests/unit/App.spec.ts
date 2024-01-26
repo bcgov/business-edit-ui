@@ -439,7 +439,7 @@ describe.skip('App component', () => {
       }))
 
     // GET NR data
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=&email=')
       .returns(Promise.resolve({
         data:
         {

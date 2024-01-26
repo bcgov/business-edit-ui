@@ -50,7 +50,7 @@ describe('Name Request Mixin', () => {
     console.log = vi.fn()
 
     // mock fetchNameRequest to throw an error
-    get.withArgs('nameRequests/NR 1234567').returns(Promise.resolve(null))
+    get.withArgs('nameRequests/NR 1234567/validate?phone=phone&email=email').returns(Promise.resolve(null))
 
     try {
       await vm.validateNameRequest('NR 1234567', 'phone', 'email')
@@ -65,43 +65,9 @@ describe('Name Request Mixin', () => {
     console.log = log
   })
 
-  it('handles incorrect email errors', async () => {
-    // mock fetchNameRequest to return different email address
-    get.withArgs('nameRequests/NR 1234567')
-      .returns(Promise.resolve({ data: {
-        applicants: { emailAddress: 'other' }
-      } }))
-
-    try {
-      await vm.validateNameRequest('NR 1234567', 'phone', 'email')
-    } catch (err) {
-      // verify thrown error
-      expect((err as any).message).toBe('Incorrect Email')
-      // FUTURE: figure out how to verify emitted error (invalid-name-request)
-      // expect(wrapper.emitted('invalid-name-request')).toEqual([['INCORRECT_EMAIL']])
-    }
-  })
-
-  it('handles incorrect phone errors', async () => {
-    // mock fetchNameRequest to return different phone number
-    get.withArgs('nameRequests/NR 1234567')
-      .returns(Promise.resolve({ data: {
-        applicants: { emailAddress: 'email', phoneNumber: 'other' }
-      } }))
-
-    try {
-      await vm.validateNameRequest('NR 1234567', 'phone', 'email')
-    } catch (err) {
-      // verify thrown error
-      expect((err as any).message).toBe('Incorrect Phone')
-      // FUTURE: figure out how to verify emitted error (invalid-name-request)
-      // expect(wrapper.emitted('invalid-name-request')).toEqual([['INCORRECT_PHONE']])
-    }
-  })
-
   it('handles invalid name requests', async () => {
     // mock fetchNameRequest to return invalid NR
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=phone&email=email')
       .returns(Promise.resolve({ data: {
         applicants: { emailAddress: 'email', phoneNumber: 'phone' }
       } }))
@@ -118,7 +84,7 @@ describe('Name Request Mixin', () => {
 
   it('handles invalid name request states', async () => {
     // mock fetchNameRequest to return invalid NR state
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=phone&email=email')
       .returns(Promise.resolve({ data: {
         applicants: { emailAddress: 'email', phoneNumber: 'phone' },
         state: 'DRAFT',
@@ -141,7 +107,7 @@ describe('Name Request Mixin', () => {
 
   it('handles conditional state with consent required', async () => {
     // mock fetchNameRequest to return invalid NR state
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=phone&email=email')
       .returns(Promise.resolve({ data: {
         applicants: { emailAddress: 'email', phoneNumber: 'phone' },
         state: 'CONDITIONAL',
@@ -165,7 +131,7 @@ describe('Name Request Mixin', () => {
 
   it('handles conditional state with consent received', async () => {
     // mock fetchNameRequest to return valid NR state
-    get.withArgs('nameRequests/NR 1234567')
+    get.withArgs('nameRequests/NR 1234567/validate?phone=phone&email=email')
       .returns(Promise.resolve({ data: {
         applicants: { emailAddress: 'email', phoneNumber: 'phone' },
         state: 'CONDITIONAL',

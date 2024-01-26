@@ -4,7 +4,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useStore } from '@/store/store'
 import { mount } from '@vue/test-utils'
 import Rules from '@/components/SpecialResolution/Rules.vue'
-import UploadRules from '@/components/SpecialResolution/UploadRules.vue'
+import UploadRulesOrMemorandum from '@/components/SpecialResolution/UploadRulesOrMemorandum.vue'
 import { vi } from 'vitest'
 
 const vuetify = new Vuetify({})
@@ -17,7 +17,13 @@ describe('Rules', () => {
 
   beforeEach(async () => {
     store.stateModel.rules = {}
-    store.stateModel.entitySnapshot = null
+    store.stateModel.entitySnapshot = {
+      resolutions: [{
+        date: '2020-02-02',
+        id: 1,
+        type: 'text'
+      }]
+    } as any
     wrapper = mount(Rules, { vuetify })
   })
 
@@ -43,7 +49,7 @@ describe('Rules', () => {
     await wrapper.find('#btn-change-rules').trigger('click')
     await wrapper.find('#btn-upload-rules').trigger('click')
     await wrapper.find('#chk-rules-upload').trigger('click')
-    const uploadRules = wrapper.findComponent(UploadRules)
+    const uploadRules = wrapper.findComponent(UploadRulesOrMemorandum)
     expect(uploadRules.exists()).toBe(true)
     uploadRules.vm.file = {
       name: 'test-new-file'

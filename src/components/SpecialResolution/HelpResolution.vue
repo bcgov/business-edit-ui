@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="isSpecialResolutionFiling"
     id="help-resolution"
     class="mb-4"
   >

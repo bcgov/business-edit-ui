@@ -5,22 +5,71 @@
     flat
   >
     <!-- Header -->
-    <article class="header-container section-container">
+    <div class="section-container header-container">
       <v-icon color="appDkBlue">
         mdi-handshake
       </v-icon>
       <label class="font-weight-bold pl-2">Special Resolution</label>
-    </article>
-
-    <v-card
+    </div>
+    <v-form
+      ref="resolutionTextForm"
       flat
-      :class="{'invalid-section': invalidResolutionSection}"
+      :class="{'invalid-section':
+        isCoopCorrectionFiling ?
+          (invalidResolutionSection && requireCorrectionCheck) :
+          invalidResolutionSection}"
     >
-      <InstructionalText />
+      <div
+        class="section-container"
+      >
+        <v-row
+          no-gutters
+        >
+          <v-col
+            cols="auto"
+          >
+            <v-checkbox
+              v-if="requireCorrectionCheck && isCoopCorrectionFiling"
+              id="resolution-text-not-require-chkbx"
+              class="inherit-checkbox"
+              label="Correction to the special resolution text is not required."
+              hide-details
+              @change="onResolutionCorrectionChk"
+            />
+            <v-label
+              v-if="!requireCorrectionCheck && isCoopCorrectionFiling"
+            >
+              Correction to the special resolution text is not required.
+            </v-label>
+          </v-col>
+          <v-col
+            cols="1"
+            class="pt-0 mt-n2 align-right"
+          >
+            <div class="actions mr-4">
+              <v-btn
+                v-if="!requireCorrectionCheck && isCoopCorrectionFiling"
+                id="btn-resolution-correction-undo"
+                text
+                color="primary"
+                @click="requireCorrectionCheck = !requireCorrectionCheck"
+              >
+                <v-icon small>
+                  mdi-undo
+                </v-icon>
+                <span>Undo</span>
+              </v-btn>
+            </div>
+          </v-col>
+        </v-row>
+      </div>
 
-      <HelpResolution />
+      <InstructionalText v-if="shouldDisplayResolution" />
+
+      <HelpResolution v-if="shouldDisplayResolution" />
 
       <section
+        v-if="shouldDisplayResolution"
         id="resolution-section"
         class="section-container"
       >
@@ -120,7 +169,7 @@
         </div>
 
         <p
-          v-if="isEditing"
+          v-if="isEditing || isCoopCorrectionFiling"
           class="section-description mt-2 info-text"
         >
           Enter the date the special resolution passed and the text as it appears on your printed form.
@@ -145,6 +194,7 @@
           >
             <v-btn
               id="btn-resolution-done"
+              class="mr-2"
               large
               color="primary"
               @click="updateSpecialResolutionStore()"
@@ -164,7 +214,7 @@
           </div>
         </v-form>
       </section>
-    </v-card>
+    </v-form>
   </v-card>
 </template>
 
@@ -212,6 +262,14 @@ export default class Resolution extends Vue {
   hasChanged = false
   dropdown = false
   changedResolutionDate = ''
+  requireCorrectionCheck = true
+
+  /** Resolution section should display:
+   * 1.special resolution
+   * 2.coop correction with checkbox unchecked (require resolution) */
+  get shouldDisplayResolution () {
+    return (this.requireCorrectionCheck && this.isCoopCorrectionFiling) || this.isSpecialResolutionFiling
+  }
 
   /** Displays an invalid section to user if form is invalid. */
   get invalidResolutionSection (): boolean {
@@ -263,6 +321,13 @@ export default class Resolution extends Vue {
 
   onResolutionDate (date: string) {
     this.changedResolutionDate = date
+  }
+
+  async onResolutionCorrectionChk (isChecked) {
+    this.requireCorrectionCheck = !isChecked
+    if (!this.requireCorrectionCheck && this.hasChanged) {
+      await this.undoSpecialResolutionStore()
+    }
   }
 }
 </script>
