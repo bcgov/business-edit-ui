@@ -236,6 +236,7 @@ export default class AssociationType extends Mixins(CommonMixin) {
   /** Reset association type value to original */
   resetAssociationType () {
     this.setBusinessInformation(this.getOriginalBusinessInfo || { ...EmptyBusinessInfo })
+    this.onComponentValidateChanged()
     this.isEditingAssociationType = false
   }
 

@@ -390,7 +390,8 @@ export default class ChangeBusinessType extends Mixins(CommonMixin) {
       return true
     }
     // Named ULC to BC Limited require a name request.
-    if (this.getOriginalLegalType === CorpTypeCd.BC_ULC_COMPANY && this.isBcLimited) {
+    if (this.getOriginalLegalType === CorpTypeCd.BC_ULC_COMPANY &&
+      (this.isBcLimited || this.isBenefitCompany)) {
       return true
     }
     return false

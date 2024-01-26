@@ -44,7 +44,6 @@ Vue.use(Vue2Filters)
 
 // Default options - https://github.com/apostrophecms/sanitize-html (under Default options)
 Vue.use(VueSanitize)
-
 const vuetify = new Vuetify({
   iconfont: 'mdi',
   theme: {
