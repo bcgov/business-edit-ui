@@ -226,7 +226,7 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
   haveData = false
 
   /** The Update Current JS Date timer id. */
-  private updateCurrentJsDateId = 0
+  private updateCurrentJsDateId = null // may be number or NodeJS.Timeout
 
   /** The route breadcrumbs list. */
   get breadcrumbs (): Array<BreadcrumbIF> {
@@ -267,7 +267,9 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
 
   /** The About text. */
   get aboutText (): string {
-    return import.meta.env.ABOUT_TEXT
+    const aboutApp = import.meta.env.ABOUT_APP
+    const aboutSbc = import.meta.env.ABOUT_SBC
+    return `${aboutApp}<br>${aboutSbc}`
   }
 
   /** Get banner text. */
