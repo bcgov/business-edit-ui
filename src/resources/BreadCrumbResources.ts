@@ -7,7 +7,7 @@ const store = useStore()
 
 /** Returns URL param string with Account ID if present, else empty string. */
 function getParams (): string {
-  const accountId = JSON.parse(sessionStorage.getItem('CURRENT_ACCOUNT'))?.id as string
+  const accountId = store.getAccountId || 0
   return accountId ? `?accountid=${accountId}` : ''
 }
 
