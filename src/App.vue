@@ -267,7 +267,9 @@ export default class App extends Mixins(CommonMixin, FilingTemplateMixin) {
 
   /** The About text. */
   get aboutText (): string {
-    return import.meta.env.ABOUT_TEXT
+    const aboutApp = import.meta.env.ABOUT_APP
+    const aboutSbc = import.meta.env.ABOUT_SBC
+    return `${aboutApp}<br>${aboutSbc}`
   }
 
   /** Get banner text. */

@@ -28,7 +28,7 @@ import '@/assets/styles/overrides.scss'
 import App from './App.vue'
 
 // Helpers
-import { GetFeatureFlag, InitLdClient, FetchConfig, Navigate } from '@/utils/'
+import { GetFeatureFlag, InitLdClient, FetchConfig, Navigate, Sleep } from '@/utils/'
 import KeycloakService from 'sbc-common-components/src/services/keycloak.services'
 
 // get rid of "element implicitly has an 'any' type..."
@@ -41,6 +41,7 @@ Vue.use(Vuetify)
 Vue.use(Affix)
 Vue.use(Vuelidate)
 Vue.use(Vue2Filters)
+
 // Default options - https://github.com/apostrophecms/sanitize-html (under Default options)
 Vue.use(VueSanitize)
 const vuetify = new Vuetify({
@@ -58,7 +59,8 @@ const vuetify = new Vuetify({
     }
   }
 })
-// For Vue 3: remove - consult assets team for a replacement.
+
+// For Vue 3: remove - consult Assets team for a replacement.
 Vue.use(TiptapVuetifyPlugin, {
   vuetify,
   iconsGroup: 'mdi'
@@ -110,7 +112,8 @@ async function start () {
   }
 
   // start Vue application
-  console.info('Starting app...') // eslint-disable-line no-console
+  const aboutApp = import.meta.env.ABOUT_APP
+  console.info(`Starting ${aboutApp}...`) // eslint-disable-line no-console
   new Vue({
     vuetify: vuetify,
     router: getVueRouter(),
@@ -122,10 +125,13 @@ async function start () {
 }
 
 // execution and error handling
-start().catch(error => {
+start().catch(async (error) => {
   console.error(error) // eslint-disable-line no-console
+  await Sleep(100) // wait for console error to be shown before alert
+
   window.alert('There was an error starting this page. (See console for details.)\n' +
     'Please try again later.')
+
   // try to navigate to Business Registry home page
   Navigate(sessionStorage.getItem('BUSINESSES_URL'))
 })
