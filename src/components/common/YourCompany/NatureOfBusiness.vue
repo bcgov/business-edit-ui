@@ -52,7 +52,7 @@ export default class NatureOfBusiness extends Mixins(CommonMixin) {
     return (this.getComponentValidate && !this.getFlagsCompanyInfo.isValidNatureOfBusiness)
   }
 
-  protected onValidChanged (valid: boolean): void {
+  onValidChanged (valid: boolean): void {
     this.setValidComponent({ key: 'isValidNatureOfBusiness', value: valid })
   }
 }

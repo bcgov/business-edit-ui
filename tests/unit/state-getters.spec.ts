@@ -424,21 +424,21 @@ describe('SP/GP correction getters', () => {
     // initialize store
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.tombstone.filingType = FilingTypes.CORRECTION
-    store.stateModel.nameRequest = {
-      legalName: 'MyLegalName',
-      business: {
-        legalName: 'MyLegalName',
-        legalType: CorpTypeCd.BENEFIT_COMPANY
-      },
-      incorporationApplication: {},
-      registration: {}
-    } as any
+    store.stateModel.tombstone.businessId = 'FM1234567'
+    store.stateModel.nameRequest.legalName = 'My Operating Name'
     store.stateModel.entitySnapshot = {
       businessInfo: {
+        identifier: 'FM1234567',
         legalName: 'MyLegalName',
         legalType: CorpTypeCd.SOLE_PROP,
         naicsCode: '100000',
-        naicsDescription: 'NAICS description'
+        naicsDescription: 'NAICS description',
+        alternateNames: [
+          {
+            identifier: 'FM1234567',
+            operatingName: 'My Operating Name'
+          }
+        ]
       },
       shareStructure: {
         shareClasses: []
@@ -468,7 +468,7 @@ describe('SP/GP correction getters', () => {
     // verify that business name changes are detected
     store.stateModel.nameRequest.legalName = 'MyLegalName2'
     expect(vm.hasBusinessNameChanged).toBe(true)
-    store.stateModel.nameRequest.legalName = 'MyLegalName'
+    store.stateModel.nameRequest.legalName = 'My Operating Name'
     expect(vm.hasBusinessNameChanged).toBe(false)
 
     // verify that business type changes are detected

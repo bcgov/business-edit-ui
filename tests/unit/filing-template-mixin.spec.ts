@@ -147,7 +147,7 @@ describe('Change of Registration Filing', () => {
   })
 
   it('correctly builds a change of registration filing', () => {
-    store.stateModel.tombstone.businessId = 'BC1234567'
+    store.stateModel.tombstone.businessId = 'FM1234567'
     store.stateModel.tombstone.filingType = FilingTypes.CHANGE_OF_REGISTRATION
     store.stateModel.tombstone.entityType = CorpTypeCd.SOLE_PROP
     store.stateModel.completingParty = {
@@ -162,15 +162,21 @@ describe('Change of Registration Filing', () => {
         addressCountry: 'CA'
       }
     }
-    store.stateModel.nameRequest.legalName = 'SomeMockBusiness'
+    store.stateModel.nameRequest.legalName = 'My Operating Name'
     store.stateModel.entitySnapshot = {
       businessInfo: {
         foundingDate: 'Jan 01, 2000',
         legalType: CorpTypeCd.SOLE_PROP,
-        identifier: 'BC1234567',
+        identifier: 'FM1234567',
         legalName: 'SomeMockBusiness',
         naicsCode: '',
-        naicsDescription: ''
+        naicsDescription: '',
+        alternateNames: [
+          {
+            identifier: 'FM1234567',
+            operatingName: 'My Operating Name'
+          }
+        ]
       },
       addresses: {
         businessOffice: {
@@ -227,13 +233,13 @@ describe('Change of Registration Filing', () => {
       expect.objectContaining({
         business: {
           foundingDate: 'Jan 01, 2000',
-          identifier: 'BC1234567',
+          identifier: 'FM1234567',
           legalName: 'SomeMockBusiness',
           legalType: 'SP'
         },
         changeOfRegistration: {
           business: {
-            identifier: 'BC1234567',
+            identifier: 'FM1234567',
             naics: {
               naicsCode: '123456',
               naicsDescription: 'Mock Description'
@@ -241,6 +247,7 @@ describe('Change of Registration Filing', () => {
           },
           contactPoint: {
             email: '',
+            extension: undefined,
             phone: ''
           },
           offices: {

@@ -9,7 +9,7 @@
 
         <v-col cols="8">
           <span class="info-text">
-            Changing from a {{ GetCorpFullDescription(originalLegalType) }} to a
+            Changing from a {{ GetCorpFullDescription(getOriginalLegalType) }} to a
             {{ GetCorpFullDescription(getEntityType) }}
           </span>
 
@@ -38,16 +38,12 @@
 <script lang="ts">
 import { FilingTemplateMixin } from '@/mixins'
 import { Component, Mixins } from 'vue-property-decorator'
-import { CorpTypeCd, GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
+import { GetCorpFullDescription } from '@bcrs-shared-components/corp-type-module/'
 import { ResourceUtilities } from '@/utils/resource-utils'
 
 @Component({})
 export default class BusinessType extends Mixins(FilingTemplateMixin) {
   readonly GetCorpFullDescription = GetCorpFullDescription // for template
-
-  get originalLegalType (): CorpTypeCd {
-    return this.getEntitySnapshot?.businessInfo?.legalType
-  }
 
   get articleInfo (): string {
     return ResourceUtilities.articleInfo(this.getEntityType)
